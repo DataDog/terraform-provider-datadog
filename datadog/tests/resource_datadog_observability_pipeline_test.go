@@ -1051,3 +1051,149 @@ resource "datadog_observability_pipeline" "sentinel" {
 		},
 	})
 }
+
+func TestAccDatadogObservabilityPipeline_sensitiveDataScannerProcessor(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	resourceName := "datadog_observability_pipeline.sds"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "sds" {
+  name = "sds-full-test"
+
+  config {
+    sources {
+      datadog_agent {
+        id = "source-a"
+      }
+    }
+
+    processors {
+      sensitive_data_scanner {
+        id      = "sds-1"
+        include = "*"
+        inputs  = ["source-a"]
+
+        rules {
+          name = "Redact with Exclude"
+          tags = ["confidential", "mask"]
+
+          keyword_options {
+            keywords  = ["secret", "token"]
+            proximity = 4
+          }
+
+          pattern {
+            custom {
+              rule = "\\bsecret-[a-z0-9]+\\b"
+            }
+          }
+
+          scope {
+            exclude {
+              fields = ["not_this_field"]
+            }
+          }
+
+          on_match {
+            redact {
+              replace = "[REDACTED]"
+            }
+          }
+        }
+
+        rules {
+          name = "Library Hash"
+          tags = ["pii"]
+
+          pattern {
+            library {
+              id = "ip_address"
+              use_recommended_keywords = true
+            }
+          }
+
+          scope {
+            all = true
+          }
+
+          on_match {
+            hash {}
+          }
+        }
+
+        rules {
+          name = "Partial Default Scope"
+          tags = ["user", "pii"]
+
+          pattern {
+            custom {
+              rule = "user\\d{3,}"
+            }
+          }
+
+		  scope {
+            include {
+              fields = ["this_field_only"]
+            }
+          }
+
+          on_match {
+            partial_redact {
+              characters = 3
+              direction  = "first"
+            }
+          }
+        }
+      }
+    }
+
+    destinations {
+      datadog_logs {
+        id     = "sink"
+        inputs = ["sds-1"]
+      }
+    }
+  }
+}
+`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+
+					// Processor metadata
+					resource.TestCheckResourceAttr(resourceName, "config.processors.sensitive_data_scanner.0.id", "sds-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.sensitive_data_scanner.0.include", "*"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.sensitive_data_scanner.0.inputs.0", "source-a"),
+
+					// Rule 0 - Full custom + exclude + redact
+					resource.TestCheckResourceAttr(resourceName, "config.processors.sensitive_data_scanner.0.rules.0.name", "Redact with Exclude"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.sensitive_data_scanner.0.rules.0.tags.0", "confidential"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.sensitive_data_scanner.0.rules.0.tags.1", "mask"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.sensitive_data_scanner.0.rules.0.keyword_options.keywords.0", "secret"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.sensitive_data_scanner.0.rules.0.keyword_options.keywords.1", "token"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.sensitive_data_scanner.0.rules.0.keyword_options.proximity", "4"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.sensitive_data_scanner.0.rules.0.pattern.custom.rule", "\\bsecret-[a-z0-9]+\\b"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.sensitive_data_scanner.0.rules.0.scope.exclude.fields.0", "not_this_field"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.sensitive_data_scanner.0.rules.0.on_match.redact.replace", "[REDACTED]"),
+
+					// Rule 1 - Library + all + hash
+					resource.TestCheckResourceAttr(resourceName, "config.processors.sensitive_data_scanner.0.rules.1.name", "Library Hash"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.sensitive_data_scanner.0.rules.1.pattern.library.id", "ip_address"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.sensitive_data_scanner.0.rules.1.pattern.library.use_recommended_keywords", "true"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.sensitive_data_scanner.0.rules.1.scope.all", "true"),
+
+					// Rule 2 - Partial redact
+					resource.TestCheckResourceAttr(resourceName, "config.processors.sensitive_data_scanner.0.rules.2.name", "Partial Default Scope"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.sensitive_data_scanner.0.rules.2.pattern.custom.rule", "user\\d{3,}"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.sensitive_data_scanner.0.rules.2.on_match.partial_redact.characters", "3"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.sensitive_data_scanner.0.rules.2.on_match.partial_redact.direction", "first"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.sensitive_data_scanner.0.rules.2.scope.include.fields.0", "this_field_only"),
+				),
+			},
+		},
+	})
+}

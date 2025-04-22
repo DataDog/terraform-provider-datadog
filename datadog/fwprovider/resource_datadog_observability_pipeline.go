@@ -79,12 +79,13 @@ type tlsModel struct {
 // Processor models
 
 type processorsModel struct {
-	FilterProcessor       []*filterProcessorModel       `tfsdk:"filter"`
-	ParseJsonProcessor    []*parseJsonProcessorModel    `tfsdk:"parse_json"`
-	AddFieldsProcessor    []*addFieldsProcessor         `tfsdk:"add_fields"`
-	RenameFieldsProcessor []*renameFieldsProcessorModel `tfsdk:"rename_fields"`
-	RemoveFieldsProcessor []*removeFieldsProcessorModel `tfsdk:"remove_fields"`
-	QuotaProcessor        []*quotaProcessorModel        `tfsdk:"quota"`
+	FilterProcessor               []*filterProcessorModel               `tfsdk:"filter"`
+	ParseJsonProcessor            []*parseJsonProcessorModel            `tfsdk:"parse_json"`
+	AddFieldsProcessor            []*addFieldsProcessor                 `tfsdk:"add_fields"`
+	RenameFieldsProcessor         []*renameFieldsProcessorModel         `tfsdk:"rename_fields"`
+	RemoveFieldsProcessor         []*removeFieldsProcessorModel         `tfsdk:"remove_fields"`
+	QuotaProcessor                []*quotaProcessorModel                `tfsdk:"quota"`
+	SensitiveDataScannerProcessor []*sensitiveDataScannerProcessorModel `tfsdk:"sensitive_data_scanner"`
 }
 
 type filterProcessorModel struct {
@@ -233,6 +234,71 @@ type microsoftSentinelDestinationModel struct {
 	TenantId       types.String `tfsdk:"tenant_id"`
 	DcrImmutableId types.String `tfsdk:"dcr_immutable_id"`
 	Table          types.String `tfsdk:"table"`
+}
+
+type sensitiveDataScannerProcessorModel struct {
+	Id      types.String                        `tfsdk:"id"`
+	Include types.String                        `tfsdk:"include"`
+	Inputs  types.List                          `tfsdk:"inputs"`
+	Rules   []sensitiveDataScannerProcessorRule `tfsdk:"rules"`
+}
+
+type sensitiveDataScannerProcessorRule struct {
+	Name           types.String                                 `tfsdk:"name"`
+	Tags           []types.String                               `tfsdk:"tags"`
+	KeywordOptions *sensitiveDataScannerProcessorKeywordOptions `tfsdk:"keyword_options"`
+	Pattern        *sensitiveDataScannerProcessorPattern        `tfsdk:"pattern"`
+	Scope          *sensitiveDataScannerProcessorScope          `tfsdk:"scope"`
+	OnMatch        *sensitiveDataScannerProcessorAction         `tfsdk:"on_match"`
+}
+
+// Nested structs (extracted per your preference)
+type sensitiveDataScannerProcessorKeywordOptions struct {
+	Keywords  []types.String `tfsdk:"keywords"`
+	Proximity types.Int64    `tfsdk:"proximity"`
+}
+
+type sensitiveDataScannerProcessorPattern struct {
+	Custom  *sensitiveDataScannerCustomPattern  `tfsdk:"custom"`
+	Library *sensitiveDataScannerLibraryPattern `tfsdk:"library"`
+}
+
+type sensitiveDataScannerCustomPattern struct {
+	Rule types.String `tfsdk:"rule"`
+}
+
+type sensitiveDataScannerLibraryPattern struct {
+	Id                     types.String `tfsdk:"id"`
+	UseRecommendedKeywords types.Bool   `tfsdk:"use_recommended_keywords"`
+}
+
+type sensitiveDataScannerProcessorScope struct {
+	Include *sensitiveDataScannerScopeOptions `tfsdk:"include"`
+	Exclude *sensitiveDataScannerScopeOptions `tfsdk:"exclude"`
+	All     *bool                             `tfsdk:"all"`
+}
+
+type sensitiveDataScannerScopeOptions struct {
+	Fields []types.String `tfsdk:"fields"`
+}
+
+type sensitiveDataScannerProcessorAction struct {
+	Redact        *sensitiveDataScannerRedactAction        `tfsdk:"redact"`
+	Hash          *sensitiveDataScannerHashAction          `tfsdk:"hash"`
+	PartialRedact *sensitiveDataScannerPartialRedactAction `tfsdk:"partial_redact"`
+}
+
+type sensitiveDataScannerRedactAction struct {
+	Replace types.String `tfsdk:"replace"`
+}
+
+type sensitiveDataScannerHashAction struct {
+	// no fields; schema allows empty options
+}
+
+type sensitiveDataScannerPartialRedactAction struct {
+	Characters types.Int64  `tfsdk:"characters"`
+	Direction  types.String `tfsdk:"direction"` // "first" | "last"
 }
 
 func NewObservabilitPipelineResource() resource.Resource {
@@ -607,6 +673,149 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 																"value": schema.StringAttribute{
 																	Description: "The field value.",
 																	Required:    true,
+																},
+															},
+														},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+							"sensitive_data_scanner": schema.ListNestedBlock{
+								Description: "The `sensitive_data_scanner` processor detects and optionally redacts sensitive data in log events.",
+								NestedObject: schema.NestedBlockObject{
+									Attributes: map[string]schema.Attribute{
+										"id": schema.StringAttribute{
+											Required:    true,
+											Description: "The unique identifier for this component. Used to reference this component in other parts of the pipeline (e.g., as input to downstream components).",
+										},
+										"include": schema.StringAttribute{
+											Required:    true,
+											Description: "A Datadog search query used to determine which logs this processor targets.",
+										},
+										"inputs": schema.ListAttribute{
+											Required:    true,
+											Description: "A list of component IDs whose output is used as the `input` for this component.",
+											ElementType: types.StringType,
+										},
+									},
+									Blocks: map[string]schema.Block{
+										"rules": schema.ListNestedBlock{
+											Description: "A list of rules for identifying and acting on sensitive data patterns.",
+											NestedObject: schema.NestedBlockObject{
+												Attributes: map[string]schema.Attribute{
+													"name": schema.StringAttribute{
+														Optional:    true,
+														Description: "A name identifying the rule.",
+													},
+													"tags": schema.ListAttribute{
+														Optional:    true,
+														ElementType: types.StringType,
+														Description: "Tags assigned to this rule for filtering and classification.",
+													},
+												},
+												Blocks: map[string]schema.Block{
+													"keyword_options": schema.SingleNestedBlock{
+														Description: "Keyword-based proximity matching for sensitive data.",
+														Attributes: map[string]schema.Attribute{
+															"keywords": schema.ListAttribute{
+																Optional:    true,
+																ElementType: types.StringType,
+																Description: "A list of keywords to match near the sensitive pattern.",
+															},
+															"proximity": schema.Int64Attribute{
+																Optional:    true,
+																Description: "Maximum number of tokens between a keyword and a sensitive value match.",
+															},
+														},
+													},
+													"pattern": schema.SingleNestedBlock{
+														Description: "Pattern detection configuration for identifying sensitive data using either a custom regex or a library reference.",
+														Blocks: map[string]schema.Block{
+															"custom": schema.SingleNestedBlock{
+																Description: "Pattern detection using a custom regular expression.",
+																Attributes: map[string]schema.Attribute{
+																	"rule": schema.StringAttribute{
+																		Optional:    true,
+																		Description: "A regular expression used to detect sensitive values. Must be a valid regex.",
+																	},
+																},
+															},
+															"library": schema.SingleNestedBlock{
+																Description: "Pattern detection using a predefined pattern from the sensitive data scanner pattern library.",
+																Attributes: map[string]schema.Attribute{
+																	"id": schema.StringAttribute{
+																		Optional:    true,
+																		Description: "Identifier for a predefined pattern from the sensitive data scanner pattern library.",
+																	},
+																	"use_recommended_keywords": schema.BoolAttribute{
+																		Optional:    true,
+																		Description: "Whether to augment the pattern with recommended keywords (optional).",
+																	},
+																},
+															},
+														},
+													},
+													"scope": schema.SingleNestedBlock{
+														Description: "Field-level targeting options that determine where the scanner should operate.",
+														Blocks: map[string]schema.Block{
+															"include": schema.SingleNestedBlock{
+																Description: "Explicitly include these fields for scanning.",
+																Attributes: map[string]schema.Attribute{
+																	"fields": schema.ListAttribute{
+																		Optional:    true,
+																		ElementType: types.StringType,
+																		Description: "The fields to include in scanning.",
+																	},
+																},
+															},
+															"exclude": schema.SingleNestedBlock{
+																Description: "Explicitly exclude these fields from scanning.",
+																Attributes: map[string]schema.Attribute{
+																	"fields": schema.ListAttribute{
+																		Optional:    true,
+																		ElementType: types.StringType,
+																		Description: "The fields to exclude from scanning.",
+																	},
+																},
+															},
+														},
+														Attributes: map[string]schema.Attribute{
+															"all": schema.BoolAttribute{
+																Optional:    true,
+																Description: "Scan all fields.",
+															},
+														},
+													},
+													"on_match": schema.SingleNestedBlock{
+														Description: "The action to take when a sensitive value is found.",
+														Blocks: map[string]schema.Block{
+															"redact": schema.SingleNestedBlock{
+																Description: "Redacts the matched value.",
+																Attributes: map[string]schema.Attribute{
+																	"replace": schema.StringAttribute{
+																		Optional:    true,
+																		Description: "Replacement string for redacted values (e.g., `***`).",
+																	},
+																},
+															},
+															"hash": schema.SingleNestedBlock{
+																Description: "Hashes the matched value.",
+																Attributes:  map[string]schema.Attribute{}, // empty options
+															},
+															"partial_redact": schema.SingleNestedBlock{
+																Description: "Redacts part of the matched value (e.g., keep last 4 characters).",
+																Attributes: map[string]schema.Attribute{
+																	"characters": schema.Int64Attribute{
+																		Optional:    true,
+																		Description: "Number of characters to keep.",
+																	},
+																	"direction": schema.StringAttribute{
+																		Optional:    true,
+																		Description: "Direction from which to keep characters: `first` or `last`.",
+																	},
 																},
 															},
 														},
@@ -995,6 +1204,9 @@ func expandPipelineRequest(ctx context.Context, state *observabilityPipelineMode
 	for _, p := range state.Config.Processors.QuotaProcessor {
 		config.Processors = append(config.Processors, expandQuotaProcessor(ctx, p))
 	}
+	for _, p := range state.Config.Processors.SensitiveDataScannerProcessor {
+		config.Processors = append(config.Processors, expandSensitiveDataScannerProcessor(ctx, p))
+	}
 
 	// Destinations
 	for _, d := range state.Config.Destinations.DatadogLogsDestination {
@@ -1066,6 +1278,9 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 		}
 		if f := flattenQuotaProcessor(ctx, p.ObservabilityPipelineQuotaProcessor); f != nil {
 			outCfg.Processors.QuotaProcessor = append(outCfg.Processors.QuotaProcessor, f)
+		}
+		if s := flattenSensitiveDataScannerProcessor(ctx, p.ObservabilityPipelineSensitiveDataScannerProcessor); s != nil {
+			outCfg.Processors.SensitiveDataScannerProcessor = append(outCfg.Processors.SensitiveDataScannerProcessor, s)
 		}
 	}
 	for _, d := range cfg.GetDestinations() {
@@ -1816,4 +2031,237 @@ func flattenMicrosoftSentinelDestination(ctx context.Context, src *datadogV2.Mic
 		DcrImmutableId: types.StringValue(src.GetDcrImmutableId()),
 		Table:          types.StringValue(src.GetTable()),
 	}
+}
+
+func expandSensitiveDataScannerProcessor(ctx context.Context, src *sensitiveDataScannerProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
+	obj := datadogV2.NewObservabilityPipelineSensitiveDataScannerProcessorWithDefaults()
+
+	obj.SetId(src.Id.ValueString())
+	obj.SetInclude(src.Include.ValueString())
+
+	var inputs []string
+	src.Inputs.ElementsAs(ctx, &inputs, false)
+	obj.SetInputs(inputs)
+
+	var rules []datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorRule
+	for _, rule := range src.Rules {
+		r := datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorRule{
+			Name: rule.Name.ValueString(),
+		}
+
+		for _, tag := range rule.Tags {
+			r.Tags = append(r.Tags, tag.ValueString())
+		}
+
+		if rule.KeywordOptions != nil {
+			r.KeywordOptions = &datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorKeywordOptions{}
+
+			for _, k := range rule.KeywordOptions.Keywords {
+				r.KeywordOptions.Keywords = append(r.KeywordOptions.Keywords, k.ValueString())
+			}
+
+			r.KeywordOptions.Proximity = rule.KeywordOptions.Proximity.ValueInt64()
+		}
+
+		if rule.Pattern != nil {
+			if rule.Pattern.Custom != nil {
+				r.Pattern = datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorPattern{
+					ObservabilityPipelineSensitiveDataScannerProcessorCustomPattern: &datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorCustomPattern{
+						Type: "custom",
+						Options: datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorCustomPatternOptions{
+							Rule: rule.Pattern.Custom.Rule.ValueString(),
+						},
+					},
+				}
+			} else if rule.Pattern.Library != nil {
+				r.Pattern = datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorPattern{
+					ObservabilityPipelineSensitiveDataScannerProcessorLibraryPattern: &datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorLibraryPattern{
+						Type: "library",
+						Options: datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorLibraryPatternOptions{
+							Id: rule.Pattern.Library.Id.ValueString(),
+						},
+					},
+				}
+				if !rule.Pattern.Library.UseRecommendedKeywords.IsNull() {
+					r.Pattern.ObservabilityPipelineSensitiveDataScannerProcessorLibraryPattern.Options.
+						SetUseRecommendedKeywords(rule.Pattern.Library.UseRecommendedKeywords.ValueBool())
+				}
+			}
+		}
+
+		if rule.Scope != nil {
+			if rule.Scope.Include != nil {
+				r.Scope = datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorScope{
+					ObservabilityPipelineSensitiveDataScannerProcessorScopeInclude: &datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorScopeInclude{
+						Target: "include",
+						Options: datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorScopeOptions{
+							Fields: extractStringList(rule.Scope.Include.Fields),
+						},
+					},
+				}
+			} else if rule.Scope.Exclude != nil {
+				r.Scope = datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorScope{
+					ObservabilityPipelineSensitiveDataScannerProcessorScopeExclude: &datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorScopeExclude{
+						Target: "exclude",
+						Options: datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorScopeOptions{
+							Fields: extractStringList(rule.Scope.Exclude.Fields),
+						},
+					},
+				}
+			} else if rule.Scope.All != nil && *rule.Scope.All {
+				r.Scope = datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorScope{
+					ObservabilityPipelineSensitiveDataScannerProcessorScopeAll: &datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorScopeAll{
+						Target: "all",
+					},
+				}
+			}
+		}
+
+		if rule.OnMatch != nil {
+			if rule.OnMatch.Redact != nil {
+				r.OnMatch = datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorAction{
+					ObservabilityPipelineSensitiveDataScannerProcessorActionRedact: &datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorActionRedact{
+						Action: "redact",
+						Options: datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorActionRedactOptions{
+							Replace: rule.OnMatch.Redact.Replace.ValueString(),
+						},
+					},
+				}
+			} else if rule.OnMatch.Hash != nil {
+				r.OnMatch = datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorAction{
+					ObservabilityPipelineSensitiveDataScannerProcessorActionHash: &datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorActionHash{
+						Action: "hash",
+					},
+				}
+			} else if rule.OnMatch.PartialRedact != nil {
+				r.OnMatch = datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorAction{
+					ObservabilityPipelineSensitiveDataScannerProcessorActionPartialRedact: &datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorActionPartialRedact{
+						Action: "partial_redact",
+						Options: datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorActionPartialRedactOptions{
+							Characters: rule.OnMatch.PartialRedact.Characters.ValueInt64(),
+							Direction:  datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorActionPartialRedactOptionsDirection(rule.OnMatch.PartialRedact.Direction.ValueString()),
+						},
+					},
+				}
+			}
+		}
+
+		rules = append(rules, r)
+	}
+	obj.SetRules(rules)
+
+	return datadogV2.ObservabilityPipelineConfigProcessorItem{
+		ObservabilityPipelineSensitiveDataScannerProcessor: obj,
+	}
+}
+
+func extractStringList(list []types.String) []string {
+	var out []string
+	for _, s := range list {
+		out = append(out, s.ValueString())
+	}
+	return out
+}
+
+func wrapStringList(vals []string) []types.String {
+	out := make([]types.String, len(vals))
+	for i, v := range vals {
+		out[i] = types.StringValue(v)
+	}
+	return out
+}
+
+func flattenSensitiveDataScannerProcessor(ctx context.Context, src *datadogV2.ObservabilityPipelineSensitiveDataScannerProcessor) *sensitiveDataScannerProcessorModel {
+	if src == nil {
+		return nil
+	}
+
+	inputs, _ := types.ListValueFrom(ctx, types.StringType, src.GetInputs())
+	out := &sensitiveDataScannerProcessorModel{
+		Id:      types.StringValue(src.GetId()),
+		Include: types.StringValue(src.GetInclude()),
+		Inputs:  inputs,
+	}
+
+	for _, r := range src.GetRules() {
+		rule := sensitiveDataScannerProcessorRule{
+			Name: types.StringValue(r.GetName()),
+		}
+
+		for _, tag := range r.GetTags() {
+			rule.Tags = append(rule.Tags, types.StringValue(tag))
+		}
+
+		if ko, ok := r.GetKeywordOptionsOk(); ok {
+			rule.KeywordOptions = &sensitiveDataScannerProcessorKeywordOptions{
+				Proximity: types.Int64Value(ko.Proximity),
+			}
+			for _, k := range ko.Keywords {
+				rule.KeywordOptions.Keywords = append(rule.KeywordOptions.Keywords, types.StringValue(k))
+			}
+		}
+
+		switch p := r.Pattern; {
+		case p.ObservabilityPipelineSensitiveDataScannerProcessorCustomPattern != nil:
+			rule.Pattern = &sensitiveDataScannerProcessorPattern{
+				Custom: &sensitiveDataScannerCustomPattern{
+					Rule: types.StringValue(p.ObservabilityPipelineSensitiveDataScannerProcessorCustomPattern.Options.Rule),
+				},
+			}
+		case p.ObservabilityPipelineSensitiveDataScannerProcessorLibraryPattern != nil:
+			opts := p.ObservabilityPipelineSensitiveDataScannerProcessorLibraryPattern.Options
+			rule.Pattern = &sensitiveDataScannerProcessorPattern{
+				Library: &sensitiveDataScannerLibraryPattern{
+					Id: types.StringValue(opts.Id),
+				},
+			}
+			if v, ok := opts.GetUseRecommendedKeywordsOk(); ok {
+				rule.Pattern.Library.UseRecommendedKeywords = types.BoolValue(*v)
+			}
+		}
+
+		switch s := r.Scope; {
+		case s.ObservabilityPipelineSensitiveDataScannerProcessorScopeInclude != nil:
+			rule.Scope = &sensitiveDataScannerProcessorScope{
+				Include: &sensitiveDataScannerScopeOptions{
+					Fields: wrapStringList(s.ObservabilityPipelineSensitiveDataScannerProcessorScopeInclude.Options.Fields),
+				},
+			}
+		case s.ObservabilityPipelineSensitiveDataScannerProcessorScopeExclude != nil:
+			rule.Scope = &sensitiveDataScannerProcessorScope{
+				Exclude: &sensitiveDataScannerScopeOptions{
+					Fields: wrapStringList(s.ObservabilityPipelineSensitiveDataScannerProcessorScopeExclude.Options.Fields),
+				},
+			}
+		case s.ObservabilityPipelineSensitiveDataScannerProcessorScopeAll != nil:
+			all := true
+			rule.Scope = &sensitiveDataScannerProcessorScope{
+				All: &all,
+			}
+		}
+
+		switch a := r.OnMatch; {
+		case a.ObservabilityPipelineSensitiveDataScannerProcessorActionRedact != nil:
+			rule.OnMatch = &sensitiveDataScannerProcessorAction{
+				Redact: &sensitiveDataScannerRedactAction{
+					Replace: types.StringValue(a.ObservabilityPipelineSensitiveDataScannerProcessorActionRedact.Options.Replace),
+				},
+			}
+		case a.ObservabilityPipelineSensitiveDataScannerProcessorActionHash != nil:
+			rule.OnMatch = &sensitiveDataScannerProcessorAction{
+				Hash: &sensitiveDataScannerHashAction{},
+			}
+		case a.ObservabilityPipelineSensitiveDataScannerProcessorActionPartialRedact != nil:
+			rule.OnMatch = &sensitiveDataScannerProcessorAction{
+				PartialRedact: &sensitiveDataScannerPartialRedactAction{
+					Characters: types.Int64Value(a.ObservabilityPipelineSensitiveDataScannerProcessorActionPartialRedact.Options.Characters),
+					Direction:  types.StringValue(string(a.ObservabilityPipelineSensitiveDataScannerProcessorActionPartialRedact.Options.Direction)),
+				},
+			}
+		}
+
+		out.Rules = append(out.Rules, rule)
+	}
+
+	return out
 }
