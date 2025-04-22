@@ -71,7 +71,8 @@ resource "datadog_synthetics_test" "test_api" {
       interval = 300
     }
     monitor_options {
-      renotify_interval = 120
+      renotify_interval  = 120
+      escalation_message = "test escalation message"
     }
   }
 }
