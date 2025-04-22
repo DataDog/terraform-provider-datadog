@@ -156,10 +156,26 @@ type fieldValue struct {
 
 type destinationsModel struct {
 	DatadogLogsDestination []*datadogLogsDestinationModel `tfsdk:"datadog_logs"`
+	SumoLogicDestination   []*sumoLogicDestinationModel   `tfsdk:"sumo_logic"`
 }
 type datadogLogsDestinationModel struct {
 	Id     types.String `tfsdk:"id"`
 	Inputs types.List   `tfsdk:"inputs"`
+}
+
+type sumoLogicDestinationModel struct {
+	Id                   types.String             `tfsdk:"id"`
+	Inputs               types.List               `tfsdk:"inputs"`
+	Encoding             types.String             `tfsdk:"encoding"`
+	HeaderHostName       types.String             `tfsdk:"header_host_name"`
+	HeaderSourceName     types.String             `tfsdk:"header_source_name"`
+	HeaderSourceCategory types.String             `tfsdk:"header_source_category"`
+	HeaderCustomFields   []headerCustomFieldModel `tfsdk:"header_custom_fields"`
+}
+
+type headerCustomFieldModel struct {
+	Name  types.String `tfsdk:"name"`
+	Value types.String `tfsdk:"value"`
 }
 
 func NewObservabilitPipelineResource() resource.Resource {
@@ -529,6 +545,55 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 									},
 								},
 							},
+							"sumo_logic": schema.ListNestedBlock{
+								Description: "The `sumo_logic` destination forwards logs to Sumo Logic.",
+								NestedObject: schema.NestedBlockObject{
+									Attributes: map[string]schema.Attribute{
+										"id": schema.StringAttribute{
+											Required:    true,
+											Description: "The unique identifier for this component.",
+										},
+										"inputs": schema.ListAttribute{
+											Required:    true,
+											Description: "A list of component IDs whose output is used as the `input` for this component.",
+											ElementType: types.StringType,
+										},
+										"encoding": schema.StringAttribute{
+											Optional:    true,
+											Description: "The output encoding format.",
+										},
+										"header_host_name": schema.StringAttribute{
+											Optional:    true,
+											Description: "Optional override for the host name header.",
+										},
+										"header_source_name": schema.StringAttribute{
+											Optional:    true,
+											Description: "Optional override for the source name header.",
+										},
+										"header_source_category": schema.StringAttribute{
+											Optional:    true,
+											Description: "Optional override for the source category header.",
+										},
+									},
+									Blocks: map[string]schema.Block{
+										"header_custom_fields": schema.ListNestedBlock{
+											Description: "A list of custom headers to include in the request to Sumo Logic.",
+											NestedObject: schema.NestedBlockObject{
+												Attributes: map[string]schema.Attribute{
+													"name": schema.StringAttribute{
+														Optional:    true,
+														Description: "The header field name.",
+													},
+													"value": schema.StringAttribute{
+														Optional:    true,
+														Description: "The header field value.",
+													},
+												},
+											},
+										},
+									},
+								},
+							},
 						},
 					},
 				},
@@ -710,6 +775,9 @@ func expandPipelineRequest(ctx context.Context, state *observabilityPipelineMode
 	for _, d := range state.Config.Destinations.DatadogLogsDestination {
 		config.Destinations = append(config.Destinations, expandDatadogLogsDestination(ctx, d))
 	}
+	for _, d := range state.Config.Destinations.SumoLogicDestination {
+		config.Destinations = append(config.Destinations, expandSumoLogicDestination(ctx, d))
+	}
 
 	attrs.SetConfig(*config)
 	data.SetAttributes(*attrs)
@@ -757,6 +825,9 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 	for _, d := range cfg.GetDestinations() {
 		if logs := flattenDatadogLogsDestination(ctx, d.ObservabilityPipelineDatadogLogsDestination); logs != nil {
 			outCfg.Destinations.DatadogLogsDestination = append(outCfg.Destinations.DatadogLogsDestination, logs)
+		}
+		if s := flattenSumoLogicDestination(ctx, d.ObservabilityPipelineSumoLogicDestination); s != nil {
+			outCfg.Destinations.SumoLogicDestination = append(outCfg.Destinations.SumoLogicDestination, s)
 		}
 	}
 
@@ -1166,4 +1237,77 @@ func expandTls(tlsTF *tlsModel) *datadogV2.ObservabilityPipelineTls {
 		tls.SetKeyFile(tlsTF.KeyFile.ValueString())
 	}
 	return tls
+}
+
+func expandSumoLogicDestination(ctx context.Context, src *sumoLogicDestinationModel) datadogV2.ObservabilityPipelineConfigDestinationItem {
+	dest := datadogV2.NewObservabilityPipelineSumoLogicDestinationWithDefaults()
+	dest.SetId(src.Id.ValueString())
+
+	var inputs []string
+	src.Inputs.ElementsAs(ctx, &inputs, false)
+	dest.SetInputs(inputs)
+
+	if !src.Encoding.IsNull() {
+		dest.SetEncoding(datadogV2.ObservabilityPipelineSumoLogicDestinationEncoding(src.Encoding.ValueString()))
+	}
+	if !src.HeaderHostName.IsNull() {
+		dest.SetHeaderHostName(src.HeaderHostName.ValueString())
+	}
+	if !src.HeaderSourceName.IsNull() {
+		dest.SetHeaderSourceName(src.HeaderSourceName.ValueString())
+	}
+	if !src.HeaderSourceCategory.IsNull() {
+		dest.SetHeaderSourceCategory(src.HeaderSourceCategory.ValueString())
+	}
+
+	if len(src.HeaderCustomFields) > 0 {
+		var fields []datadogV2.ObservabilityPipelineSumoLogicDestinationHeaderCustomFieldsItem
+		for _, f := range src.HeaderCustomFields {
+			fields = append(fields, datadogV2.ObservabilityPipelineSumoLogicDestinationHeaderCustomFieldsItem{
+				Name:  f.Name.ValueString(),
+				Value: f.Value.ValueString(),
+			})
+		}
+		dest.SetHeaderCustomFields(fields)
+	}
+
+	return datadogV2.ObservabilityPipelineConfigDestinationItem{
+		ObservabilityPipelineSumoLogicDestination: dest,
+	}
+}
+
+func flattenSumoLogicDestination(ctx context.Context, src *datadogV2.ObservabilityPipelineSumoLogicDestination) *sumoLogicDestinationModel {
+	if src == nil {
+		return nil
+	}
+
+	inputs, _ := types.ListValueFrom(ctx, types.StringType, src.GetInputs())
+
+	out := &sumoLogicDestinationModel{
+		Id:     types.StringValue(src.GetId()),
+		Inputs: inputs,
+	}
+
+	if v, ok := src.GetEncodingOk(); ok {
+		out.Encoding = types.StringValue(string(*v))
+	}
+	if v, ok := src.GetHeaderHostNameOk(); ok {
+		out.HeaderHostName = types.StringValue(*v)
+	}
+	if v, ok := src.GetHeaderSourceNameOk(); ok {
+		out.HeaderSourceName = types.StringValue(*v)
+	}
+	if v, ok := src.GetHeaderSourceCategoryOk(); ok {
+		out.HeaderSourceCategory = types.StringValue(*v)
+	}
+	if v, ok := src.GetHeaderCustomFieldsOk(); ok {
+		for _, f := range *v {
+			out.HeaderCustomFields = append(out.HeaderCustomFields, headerCustomFieldModel{
+				Name:  types.StringValue(f.Name),
+				Value: types.StringValue(f.Value),
+			})
+		}
+	}
+
+	return out
 }

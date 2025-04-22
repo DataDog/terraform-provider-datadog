@@ -651,3 +651,66 @@ resource "datadog_observability_pipeline" "add_fields" {
 		},
 	})
 }
+
+func TestAccDatadogObservabilityPipeline_sumoLogicDestination(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	resourceName := "datadog_observability_pipeline.sumo"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "sumo" {
+  name = "sumo pipeline"
+
+  config {
+    sources {
+      datadog_agent {
+        id = "source-1"
+      }
+    }
+
+    processors {}
+
+    destinations {
+      sumo_logic {
+        id     = "sumo-dest-1"
+        inputs = ["source-1"]
+        encoding = "json"
+        header_host_name = "host-123"
+        header_source_name = "source-name"
+        header_source_category = "source-category"
+
+        header_custom_fields {
+          name  = "X-Sumo-Category"
+          value = "my-app-logs"
+        }
+
+        header_custom_fields {
+          name  = "X-Custom-Header"
+          value = "debug=true"
+        }
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "sumo pipeline"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.sumo_logic.0.id", "sumo-dest-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.sumo_logic.0.inputs.0", "source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.sumo_logic.0.encoding", "json"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.sumo_logic.0.header_host_name", "host-123"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.sumo_logic.0.header_source_name", "source-name"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.sumo_logic.0.header_source_category", "source-category"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.sumo_logic.0.header_custom_fields.0.name", "X-Sumo-Category"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.sumo_logic.0.header_custom_fields.0.value", "my-app-logs"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.sumo_logic.0.header_custom_fields.1.name", "X-Custom-Header"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.sumo_logic.0.header_custom_fields.1.value", "debug=true"),
+				),
+			},
+		},
+	})
+}
