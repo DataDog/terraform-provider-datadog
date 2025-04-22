@@ -42,6 +42,7 @@ type configModel struct {
 type sourcesModel struct {
 	DatadogAgentSource []*datadogAgentSourceModel `tfsdk:"datadog_agent"`
 	KafkaSource        []*kafkaSourceModel        `tfsdk:"kafka"`
+	RsyslogSource      []*rsyslogSourceModel      `tfsdk:"rsyslog"`
 }
 
 // / Source models
@@ -178,6 +179,12 @@ type headerCustomFieldModel struct {
 	Value types.String `tfsdk:"value"`
 }
 
+type rsyslogSourceModel struct {
+	Id   types.String `tfsdk:"id"`
+	Mode types.String `tfsdk:"mode"`
+	Tls  *tlsModel    `tfsdk:"tls"`
+}
+
 func NewObservabilitPipelineResource() resource.Resource {
 	return &observabilityPipelineResource{}
 }
@@ -269,6 +276,24 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 												},
 											},
 										},
+										"tls": tlsSchema(),
+									},
+								},
+							},
+							"rsyslog": schema.ListNestedBlock{
+								Description: "The `rsyslog` source listens for logs over TCP or UDP from an `rsyslog` server using the syslog protocol.",
+								NestedObject: schema.NestedBlockObject{
+									Attributes: map[string]schema.Attribute{
+										"id": schema.StringAttribute{
+											Required:    true,
+											Description: "The unique identifier for this component. Used to reference this component in other parts of the pipeline (e.g., as input to downstream components).",
+										},
+										"mode": schema.StringAttribute{
+											Optional:    true,
+											Description: "Protocol used by the syslog source to receive messages.",
+										},
+									},
+									Blocks: map[string]schema.Block{
 										"tls": tlsSchema(),
 									},
 								},
@@ -750,6 +775,9 @@ func expandPipelineRequest(ctx context.Context, state *observabilityPipelineMode
 	for _, k := range state.Config.Sources.KafkaSource {
 		config.Sources = append(config.Sources, expandKafkaSource(k))
 	}
+	for _, s := range state.Config.Sources.RsyslogSource {
+		config.Sources = append(config.Sources, expandRsyslogSource(s))
+	}
 
 	// Processors
 	for _, p := range state.Config.Processors.FilterProcessor {
@@ -800,6 +828,9 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 		}
 		if k := flattenKafkaSource(src.ObservabilityPipelineKafkaSource); k != nil {
 			outCfg.Sources.KafkaSource = append(outCfg.Sources.KafkaSource, k)
+		}
+		if r := flattenRsyslogSource(src.ObservabilityPipelineRsyslogSource); r != nil {
+			outCfg.Sources.RsyslogSource = append(outCfg.Sources.RsyslogSource, r)
 		}
 	}
 	for _, p := range cfg.GetProcessors() {
@@ -1309,5 +1340,36 @@ func flattenSumoLogicDestination(ctx context.Context, src *datadogV2.Observabili
 		}
 	}
 
+	return out
+}
+
+func expandRsyslogSource(src *rsyslogSourceModel) datadogV2.ObservabilityPipelineConfigSourceItem {
+	obj := datadogV2.NewObservabilityPipelineRsyslogSourceWithDefaults()
+	obj.SetId(src.Id.ValueString())
+	if !src.Mode.IsNull() {
+		obj.SetMode(datadogV2.ObservabilityPipelineSyslogSourceMode(src.Mode.ValueString()))
+	}
+	if src.Tls != nil {
+		obj.Tls = expandTls(src.Tls)
+	}
+	return datadogV2.ObservabilityPipelineConfigSourceItem{
+		ObservabilityPipelineRsyslogSource: obj,
+	}
+}
+
+func flattenRsyslogSource(src *datadogV2.ObservabilityPipelineRsyslogSource) *rsyslogSourceModel {
+	if src == nil {
+		return nil
+	}
+	out := &rsyslogSourceModel{
+		Id: types.StringValue(src.GetId()),
+	}
+	if v, ok := src.GetModeOk(); ok {
+		out.Mode = types.StringValue(string(*v))
+	}
+	if src.Tls != nil {
+		tls := flattenTls(src.Tls)
+		out.Tls = &tls
+	}
 	return out
 }

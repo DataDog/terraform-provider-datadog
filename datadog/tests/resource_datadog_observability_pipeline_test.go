@@ -714,3 +714,52 @@ resource "datadog_observability_pipeline" "sumo" {
 		},
 	})
 }
+
+func TestAccDatadogObservabilityPipeline_rsyslogSource(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	resourceName := "datadog_observability_pipeline.rsyslog_source"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "rsyslog_source" {
+  name = "rsyslog-source-pipeline"
+
+  config {
+    sources {
+      rsyslog {
+        id   = "rsyslog-source-1"
+        mode = "tcp"
+
+        tls {
+          crt_file = "/etc/certs/rsyslog.crt"
+        }
+      }
+    }
+
+    processors {}
+
+    destinations {
+      datadog_logs {
+        id     = "destination-1"
+        inputs = ["rsyslog-source-1"]
+      }
+    }
+  }
+}
+`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "rsyslog-source-pipeline"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.rsyslog.0.id", "rsyslog-source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.rsyslog.0.mode", "tcp"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.rsyslog.0.tls.crt_file", "/etc/certs/rsyslog.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.datadog_logs.0.inputs.0", "rsyslog-source-1"),
+				),
+			},
+		},
+	})
+}
