@@ -44,6 +44,7 @@ type sourcesModel struct {
 	KafkaSource        []*kafkaSourceModel        `tfsdk:"kafka"`
 	RsyslogSource      []*rsyslogSourceModel      `tfsdk:"rsyslog"`
 	SyslogNgSource     []*syslogNgSourceModel     `tfsdk:"syslog_ng"`
+	SumoLogicSource    []*sumoLogicSourceModel    `tfsdk:"sumo_logic"`
 }
 
 // / Source models
@@ -301,6 +302,10 @@ type sensitiveDataScannerPartialRedactAction struct {
 	Direction  types.String `tfsdk:"direction"` // "first" | "last"
 }
 
+type sumoLogicSourceModel struct {
+	Id types.String `tfsdk:"id"`
+}
+
 func NewObservabilitPipelineResource() resource.Resource {
 	return &observabilityPipelineResource{}
 }
@@ -429,6 +434,17 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 									},
 									Blocks: map[string]schema.Block{
 										"tls": tlsSchema(),
+									},
+								},
+							},
+							"sumo_logic": schema.ListNestedBlock{
+								Description: "The `sumo_logic` source receives logs from Sumo Logic collectors.",
+								NestedObject: schema.NestedBlockObject{
+									Attributes: map[string]schema.Attribute{
+										"id": schema.StringAttribute{
+											Required:    true,
+											Description: "The unique identifier for this component. Used to reference this component in other parts of the pipeline (e.g., as input to downstream components).",
+										},
 									},
 								},
 							},
@@ -1184,6 +1200,9 @@ func expandPipelineRequest(ctx context.Context, state *observabilityPipelineMode
 	for _, s := range state.Config.Sources.SyslogNgSource {
 		config.Sources = append(config.Sources, expandSyslogNgSource(s))
 	}
+	for _, s := range state.Config.Sources.SumoLogicSource {
+		config.Sources = append(config.Sources, expandSumoLogicSource(s))
+	}
 
 	// Processors
 	for _, p := range state.Config.Processors.FilterProcessor {
@@ -1258,6 +1277,9 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 		}
 		if s := flattenSyslogNgSource(src.ObservabilityPipelineSyslogNgSource); s != nil {
 			outCfg.Sources.SyslogNgSource = append(outCfg.Sources.SyslogNgSource, s)
+		}
+		if s := flattenSumoLogicSource(src.ObservabilityPipelineSumoLogicSource); s != nil {
+			outCfg.Sources.SumoLogicSource = append(outCfg.Sources.SumoLogicSource, s)
 		}
 	}
 	for _, p := range cfg.GetProcessors() {
@@ -2264,4 +2286,22 @@ func flattenSensitiveDataScannerProcessor(ctx context.Context, src *datadogV2.Ob
 	}
 
 	return out
+}
+
+func expandSumoLogicSource(src *sumoLogicSourceModel) datadogV2.ObservabilityPipelineConfigSourceItem {
+	obj := datadogV2.NewObservabilityPipelineSumoLogicSourceWithDefaults()
+	obj.SetId(src.Id.ValueString())
+
+	return datadogV2.ObservabilityPipelineConfigSourceItem{
+		ObservabilityPipelineSumoLogicSource: obj,
+	}
+}
+
+func flattenSumoLogicSource(src *datadogV2.ObservabilityPipelineSumoLogicSource) *sumoLogicSourceModel {
+	if src == nil {
+		return nil
+	}
+	return &sumoLogicSourceModel{
+		Id: types.StringValue(src.GetId()),
+	}
 }

@@ -1197,3 +1197,45 @@ resource "datadog_observability_pipeline" "sds" {
 		},
 	})
 }
+
+func TestAccDatadogObservabilityPipeline_sumoLogicSource(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	resourceName := "datadog_observability_pipeline.sumo_source"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "sumo_source" {
+  name = "sumo-source-pipeline"
+
+  config {
+    sources {
+      sumo_logic {
+        id = "sumo-logic-source-1"
+      }
+    }
+
+    processors {}
+
+    destinations {
+      datadog_logs {
+        id     = "logs-1"
+        inputs = ["sumo-logic-source-1"]
+      }
+    }
+  }
+}
+`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "sumo-source-pipeline"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.sumo_logic.0.id", "sumo-logic-source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.datadog_logs.0.inputs.0", "sumo-logic-source-1"),
+				),
+			},
+		},
+	})
+}
