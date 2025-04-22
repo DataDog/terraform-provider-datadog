@@ -107,7 +107,27 @@ Optional:
 
 Optional:
 
+- `azure_storage` (Block List) The `azure_storage` destination forwards logs to an Azure Blob Storage container. (see [below for nested schema](#nestedblock--config--destinations--azure_storage))
 - `datadog_logs` (Block List) The `datadog_logs` destination forwards logs to Datadog Log Management. (see [below for nested schema](#nestedblock--config--destinations--datadog_logs))
+- `elasticsearch` (Block List) The `elasticsearch` destination writes logs to an Elasticsearch cluster. (see [below for nested schema](#nestedblock--config--destinations--elasticsearch))
+- `microsoft_sentinel` (Block List) The `microsoft_sentinel` destination forwards logs to Microsoft Sentinel. (see [below for nested schema](#nestedblock--config--destinations--microsoft_sentinel))
+- `rsyslog` (Block List) The `rsyslog` destination forwards logs to an external `rsyslog` server over TCP or UDP using the syslog protocol. (see [below for nested schema](#nestedblock--config--destinations--rsyslog))
+- `sumo_logic` (Block List) The `sumo_logic` destination forwards logs to Sumo Logic. (see [below for nested schema](#nestedblock--config--destinations--sumo_logic))
+- `syslog_ng` (Block List) The `syslog_ng` destination forwards logs to an external `syslog-ng` server over TCP or UDP using the syslog protocol. (see [below for nested schema](#nestedblock--config--destinations--syslog_ng))
+
+<a id="nestedblock--config--destinations--azure_storage"></a>
+### Nested Schema for `config.destinations.azure_storage`
+
+Required:
+
+- `container_name` (String) The name of the Azure Blob Storage container to store logs in.
+- `id` (String) The unique identifier for this component.
+- `inputs` (List of String) A list of component IDs whose output is used as the `input` for this component.
+
+Optional:
+
+- `blob_prefix` (String) Optional prefix for blobs written to the container.
+
 
 <a id="nestedblock--config--destinations--datadog_logs"></a>
 ### Nested Schema for `config.destinations.datadog_logs`
@@ -116,6 +136,107 @@ Required:
 
 - `id` (String) The unique ID of the destination.
 - `inputs` (List of String) The inputs for the destination.
+
+
+<a id="nestedblock--config--destinations--elasticsearch"></a>
+### Nested Schema for `config.destinations.elasticsearch`
+
+Required:
+
+- `id` (String) The unique identifier for this component.
+- `inputs` (List of String) A list of component IDs whose output is used as the `input` for this component.
+
+Optional:
+
+- `api_version` (String) The Elasticsearch API version to use. Set to `auto` to auto-detect.
+- `bulk_index` (String) The index or datastream to write logs to in Elasticsearch.
+
+
+<a id="nestedblock--config--destinations--microsoft_sentinel"></a>
+### Nested Schema for `config.destinations.microsoft_sentinel`
+
+Required:
+
+- `client_id` (String) Azure AD client ID used for authentication.
+- `dcr_immutable_id` (String) The immutable ID of the Data Collection Rule (DCR).
+- `id` (String) The unique identifier for this component.
+- `inputs` (List of String) A list of component IDs whose output is used as the `input` for this component.
+- `table` (String) The name of the Log Analytics table where logs will be sent.
+- `tenant_id` (String) Azure AD tenant ID.
+
+
+<a id="nestedblock--config--destinations--rsyslog"></a>
+### Nested Schema for `config.destinations.rsyslog`
+
+Required:
+
+- `id` (String) The unique identifier for this component.
+- `inputs` (List of String) A list of component IDs whose output is used as the `input` for this component.
+
+Optional:
+
+- `keepalive` (Number) Optional socket keepalive duration in milliseconds.
+- `tls` (Block, Optional) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--destinations--rsyslog--tls))
+
+<a id="nestedblock--config--destinations--rsyslog--tls"></a>
+### Nested Schema for `config.destinations.rsyslog.tls`
+
+Optional:
+
+- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server’s TLS certificate.
+- `crt_file` (String) Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.
+- `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
+
+
+
+<a id="nestedblock--config--destinations--sumo_logic"></a>
+### Nested Schema for `config.destinations.sumo_logic`
+
+Required:
+
+- `id` (String) The unique identifier for this component.
+- `inputs` (List of String) A list of component IDs whose output is used as the `input` for this component.
+
+Optional:
+
+- `encoding` (String) The output encoding format.
+- `header_custom_fields` (Block List) A list of custom headers to include in the request to Sumo Logic. (see [below for nested schema](#nestedblock--config--destinations--sumo_logic--header_custom_fields))
+- `header_host_name` (String) Optional override for the host name header.
+- `header_source_category` (String) Optional override for the source category header.
+- `header_source_name` (String) Optional override for the source name header.
+
+<a id="nestedblock--config--destinations--sumo_logic--header_custom_fields"></a>
+### Nested Schema for `config.destinations.sumo_logic.header_custom_fields`
+
+Optional:
+
+- `name` (String) The header field name.
+- `value` (String) The header field value.
+
+
+
+<a id="nestedblock--config--destinations--syslog_ng"></a>
+### Nested Schema for `config.destinations.syslog_ng`
+
+Required:
+
+- `id` (String) The unique identifier for this component.
+- `inputs` (List of String) A list of component IDs whose output is used as the `input` for this component.
+
+Optional:
+
+- `keepalive` (Number) Optional socket keepalive duration in milliseconds.
+- `tls` (Block, Optional) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--destinations--syslog_ng--tls))
+
+<a id="nestedblock--config--destinations--syslog_ng--tls"></a>
+### Nested Schema for `config.destinations.syslog_ng.tls`
+
+Optional:
+
+- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server’s TLS certificate.
+- `crt_file` (String) Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.
+- `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
+
 
 
 
@@ -130,6 +251,7 @@ Optional:
 - `quota` (Block List) The `quota` measures logging traffic for logs that match a specified filter. When the configured daily quota is met, the processor can drop or alert. (see [below for nested schema](#nestedblock--config--processors--quota))
 - `remove_fields` (Block List) The `remove_fields` processor deletes specified fields from logs. (see [below for nested schema](#nestedblock--config--processors--remove_fields))
 - `rename_fields` (Block List) The `rename_fields` processor changes field names. (see [below for nested schema](#nestedblock--config--processors--rename_fields))
+- `sensitive_data_scanner` (Block List) The `sensitive_data_scanner` processor detects and optionally redacts sensitive data in log events. (see [below for nested schema](#nestedblock--config--processors--sensitive_data_scanner))
 
 <a id="nestedblock--config--processors--add_fields"></a>
 ### Nested Schema for `config.processors.add_fields`
@@ -265,6 +387,125 @@ Required:
 
 
 
+<a id="nestedblock--config--processors--sensitive_data_scanner"></a>
+### Nested Schema for `config.processors.sensitive_data_scanner`
+
+Required:
+
+- `id` (String) The unique identifier for this component. Used to reference this component in other parts of the pipeline (e.g., as input to downstream components).
+- `include` (String) A Datadog search query used to determine which logs this processor targets.
+- `inputs` (List of String) A list of component IDs whose output is used as the `input` for this component.
+
+Optional:
+
+- `rules` (Block List) A list of rules for identifying and acting on sensitive data patterns. (see [below for nested schema](#nestedblock--config--processors--sensitive_data_scanner--rules))
+
+<a id="nestedblock--config--processors--sensitive_data_scanner--rules"></a>
+### Nested Schema for `config.processors.sensitive_data_scanner.rules`
+
+Optional:
+
+- `keyword_options` (Block, Optional) Keyword-based proximity matching for sensitive data. (see [below for nested schema](#nestedblock--config--processors--sensitive_data_scanner--rules--keyword_options))
+- `name` (String) A name identifying the rule.
+- `on_match` (Block, Optional) The action to take when a sensitive value is found. (see [below for nested schema](#nestedblock--config--processors--sensitive_data_scanner--rules--on_match))
+- `pattern` (Block, Optional) Pattern detection configuration for identifying sensitive data using either a custom regex or a library reference. (see [below for nested schema](#nestedblock--config--processors--sensitive_data_scanner--rules--pattern))
+- `scope` (Block, Optional) Field-level targeting options that determine where the scanner should operate. (see [below for nested schema](#nestedblock--config--processors--sensitive_data_scanner--rules--scope))
+- `tags` (List of String) Tags assigned to this rule for filtering and classification.
+
+<a id="nestedblock--config--processors--sensitive_data_scanner--rules--keyword_options"></a>
+### Nested Schema for `config.processors.sensitive_data_scanner.rules.keyword_options`
+
+Optional:
+
+- `keywords` (List of String) A list of keywords to match near the sensitive pattern.
+- `proximity` (Number) Maximum number of tokens between a keyword and a sensitive value match.
+
+
+<a id="nestedblock--config--processors--sensitive_data_scanner--rules--on_match"></a>
+### Nested Schema for `config.processors.sensitive_data_scanner.rules.on_match`
+
+Optional:
+
+- `hash` (Block, Optional) Hashes the matched value. (see [below for nested schema](#nestedblock--config--processors--sensitive_data_scanner--rules--on_match--hash))
+- `partial_redact` (Block, Optional) Redacts part of the matched value (e.g., keep last 4 characters). (see [below for nested schema](#nestedblock--config--processors--sensitive_data_scanner--rules--on_match--partial_redact))
+- `redact` (Block, Optional) Redacts the matched value. (see [below for nested schema](#nestedblock--config--processors--sensitive_data_scanner--rules--on_match--redact))
+
+<a id="nestedblock--config--processors--sensitive_data_scanner--rules--on_match--hash"></a>
+### Nested Schema for `config.processors.sensitive_data_scanner.rules.on_match.hash`
+
+
+<a id="nestedblock--config--processors--sensitive_data_scanner--rules--on_match--partial_redact"></a>
+### Nested Schema for `config.processors.sensitive_data_scanner.rules.on_match.partial_redact`
+
+Optional:
+
+- `characters` (Number) Number of characters to keep.
+- `direction` (String) Direction from which to keep characters: `first` or `last`.
+
+
+<a id="nestedblock--config--processors--sensitive_data_scanner--rules--on_match--redact"></a>
+### Nested Schema for `config.processors.sensitive_data_scanner.rules.on_match.redact`
+
+Optional:
+
+- `replace` (String) Replacement string for redacted values (e.g., `***`).
+
+
+
+<a id="nestedblock--config--processors--sensitive_data_scanner--rules--pattern"></a>
+### Nested Schema for `config.processors.sensitive_data_scanner.rules.pattern`
+
+Optional:
+
+- `custom` (Block, Optional) Pattern detection using a custom regular expression. (see [below for nested schema](#nestedblock--config--processors--sensitive_data_scanner--rules--pattern--custom))
+- `library` (Block, Optional) Pattern detection using a predefined pattern from the sensitive data scanner pattern library. (see [below for nested schema](#nestedblock--config--processors--sensitive_data_scanner--rules--pattern--library))
+
+<a id="nestedblock--config--processors--sensitive_data_scanner--rules--pattern--custom"></a>
+### Nested Schema for `config.processors.sensitive_data_scanner.rules.pattern.custom`
+
+Optional:
+
+- `rule` (String) A regular expression used to detect sensitive values. Must be a valid regex.
+
+
+<a id="nestedblock--config--processors--sensitive_data_scanner--rules--pattern--library"></a>
+### Nested Schema for `config.processors.sensitive_data_scanner.rules.pattern.library`
+
+Optional:
+
+- `id` (String) Identifier for a predefined pattern from the sensitive data scanner pattern library.
+- `use_recommended_keywords` (Boolean) Whether to augment the pattern with recommended keywords (optional).
+
+
+
+<a id="nestedblock--config--processors--sensitive_data_scanner--rules--scope"></a>
+### Nested Schema for `config.processors.sensitive_data_scanner.rules.scope`
+
+Optional:
+
+- `all` (Boolean) Scan all fields.
+- `exclude` (Block, Optional) Explicitly exclude these fields from scanning. (see [below for nested schema](#nestedblock--config--processors--sensitive_data_scanner--rules--scope--exclude))
+- `include` (Block, Optional) Explicitly include these fields for scanning. (see [below for nested schema](#nestedblock--config--processors--sensitive_data_scanner--rules--scope--include))
+
+<a id="nestedblock--config--processors--sensitive_data_scanner--rules--scope--exclude"></a>
+### Nested Schema for `config.processors.sensitive_data_scanner.rules.scope.exclude`
+
+Optional:
+
+- `fields` (List of String) The fields to exclude from scanning.
+
+
+<a id="nestedblock--config--processors--sensitive_data_scanner--rules--scope--include"></a>
+### Nested Schema for `config.processors.sensitive_data_scanner.rules.scope.include`
+
+Optional:
+
+- `fields` (List of String) The fields to include in scanning.
+
+
+
+
+
 
 <a id="nestedblock--config--sources"></a>
 ### Nested Schema for `config.sources`
@@ -273,6 +514,9 @@ Optional:
 
 - `datadog_agent` (Block List) The `datadog_agent` source collects logs from the Datadog Agent. (see [below for nested schema](#nestedblock--config--sources--datadog_agent))
 - `kafka` (Block List) The `kafka` source ingests data from Apache Kafka topics. (see [below for nested schema](#nestedblock--config--sources--kafka))
+- `rsyslog` (Block List) The `rsyslog` source listens for logs over TCP or UDP from an `rsyslog` server using the syslog protocol. (see [below for nested schema](#nestedblock--config--sources--rsyslog))
+- `sumo_logic` (Block List) The `sumo_logic` source receives logs from Sumo Logic collectors. (see [below for nested schema](#nestedblock--config--sources--sumo_logic))
+- `syslog_ng` (Block List) The `syslog_ng` source listens for logs over TCP or UDP from a `syslog-ng` server using the syslog protocol. (see [below for nested schema](#nestedblock--config--sources--syslog_ng))
 
 <a id="nestedblock--config--sources--datadog_agent"></a>
 ### Nested Schema for `config.sources.datadog_agent`
@@ -283,18 +527,15 @@ Required:
 
 Optional:
 
-- `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--sources--datadog_agent--tls))
+- `tls` (Block, Optional) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--sources--datadog_agent--tls))
 
 <a id="nestedblock--config--sources--datadog_agent--tls"></a>
 ### Nested Schema for `config.sources.datadog_agent.tls`
 
-Required:
-
-- `crt_file` (String) Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.
-
 Optional:
 
 - `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server’s TLS certificate.
+- `crt_file` (String) Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.
 - `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
 
 
@@ -312,7 +553,7 @@ Optional:
 
 - `librdkafka_option` (Block List) Advanced librdkafka client configuration options. (see [below for nested schema](#nestedblock--config--sources--kafka--librdkafka_option))
 - `sasl` (Block, Optional) SASL authentication settings. (see [below for nested schema](#nestedblock--config--sources--kafka--sasl))
-- `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--sources--kafka--tls))
+- `tls` (Block, Optional) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--sources--kafka--tls))
 
 <a id="nestedblock--config--sources--kafka--librdkafka_option"></a>
 ### Nested Schema for `config.sources.kafka.librdkafka_option`
@@ -334,11 +575,62 @@ Required:
 <a id="nestedblock--config--sources--kafka--tls"></a>
 ### Nested Schema for `config.sources.kafka.tls`
 
+Optional:
+
+- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server’s TLS certificate.
+- `crt_file` (String) Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.
+- `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
+
+
+
+<a id="nestedblock--config--sources--rsyslog"></a>
+### Nested Schema for `config.sources.rsyslog`
+
 Required:
 
-- `crt_file` (String) Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.
+- `id` (String) The unique identifier for this component. Used to reference this component in other parts of the pipeline (e.g., as input to downstream components).
+
+Optional:
+
+- `mode` (String) Protocol used by the syslog source to receive messages.
+- `tls` (Block, Optional) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--sources--rsyslog--tls))
+
+<a id="nestedblock--config--sources--rsyslog--tls"></a>
+### Nested Schema for `config.sources.rsyslog.tls`
 
 Optional:
 
 - `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server’s TLS certificate.
+- `crt_file` (String) Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.
+- `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
+
+
+
+<a id="nestedblock--config--sources--sumo_logic"></a>
+### Nested Schema for `config.sources.sumo_logic`
+
+Required:
+
+- `id` (String) The unique identifier for this component. Used to reference this component in other parts of the pipeline (e.g., as input to downstream components).
+
+
+<a id="nestedblock--config--sources--syslog_ng"></a>
+### Nested Schema for `config.sources.syslog_ng`
+
+Required:
+
+- `id` (String) The unique identifier for this component. Used to reference this component in other parts of the pipeline (e.g., as input to downstream components).
+
+Optional:
+
+- `mode` (String) Protocol used by the syslog source to receive messages.
+- `tls` (Block, Optional) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--sources--syslog_ng--tls))
+
+<a id="nestedblock--config--sources--syslog_ng--tls"></a>
+### Nested Schema for `config.sources.syslog_ng.tls`
+
+Optional:
+
+- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server’s TLS certificate.
+- `crt_file` (String) Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.
 - `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
