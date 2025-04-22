@@ -63,7 +63,7 @@ type destinationsModel struct {
 
 type datadogAgentSourceModel struct {
 	Id  types.String `tfsdk:"id"`
-	Tls []tlsModel   `tfsdk:"tls"`
+	Tls *tlsModel    `tfsdk:"tls"`
 }
 
 type kafkaSourceModel struct {
@@ -72,7 +72,7 @@ type kafkaSourceModel struct {
 	Topics            []types.String          `tfsdk:"topics"`
 	LibrdkafkaOptions []librdkafkaOptionModel `tfsdk:"librdkafka_option"`
 	Sasl              *kafkaSourceSaslModel   `tfsdk:"sasl"`
-	Tls               []tlsModel              `tfsdk:"tls"`
+	Tls               *tlsModel               `tfsdk:"tls"`
 }
 
 type librdkafkaOptionModel struct {
@@ -191,14 +191,14 @@ type sampleProcessorModel struct {
 
 type fluentSourceModel struct {
 	Id  types.String `tfsdk:"id"`
-	Tls []tlsModel   `tfsdk:"tls"`
+	Tls *tlsModel    `tfsdk:"tls"`
 }
 
 type httpServerSourceModel struct {
 	Id           types.String `tfsdk:"id"`
 	AuthStrategy types.String `tfsdk:"auth_strategy"`
 	Decoding     types.String `tfsdk:"decoding"`
-	Tls          []tlsModel   `tfsdk:"tls"`
+	Tls          *tlsModel    `tfsdk:"tls"`
 }
 
 func NewObservabilitPipelineResource() resource.Resource {
@@ -709,27 +709,21 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 	}
 }
 
-func tlsSchema() schema.ListNestedBlock {
-	return schema.ListNestedBlock{
-		Validators: []validator.List{
-			// this is the only way to make the block optional
-			listvalidator.SizeAtMost(1),
-		},
+func tlsSchema() schema.SingleNestedBlock {
+	return schema.SingleNestedBlock{
 		Description: "Configuration for enabling TLS encryption between the pipeline component and external services.",
-		NestedObject: schema.NestedBlockObject{
-			Attributes: map[string]schema.Attribute{
-				"crt_file": schema.StringAttribute{
-					Required:    true,
-					Description: "Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.",
-				},
-				"ca_file": schema.StringAttribute{
-					Optional:    true,
-					Description: "Path to the Certificate Authority (CA) file used to validate the server’s TLS certificate.",
-				},
-				"key_file": schema.StringAttribute{
-					Optional:    true,
-					Description: "Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.",
-				},
+		Attributes: map[string]schema.Attribute{
+			"crt_file": schema.StringAttribute{
+				Optional:    true, // must be be optional to make the TLS optional
+				Description: "Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.",
+			},
+			"ca_file": schema.StringAttribute{
+				Optional:    true,
+				Description: "Path to the Certificate Authority (CA) file used to validate the server’s TLS certificate.",
+			},
+			"key_file": schema.StringAttribute{
+				Optional:    true,
+				Description: "Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.",
 			},
 		},
 	}
@@ -975,7 +969,8 @@ func flattenDatadogAgentSource(src *datadogV2.ObservabilityPipelineDatadogAgentS
 		Id: types.StringValue(src.Id),
 	}
 	if src.Tls != nil {
-		out.Tls = []tlsModel{flattenTls(src.Tls)}
+		tls := flattenTls(src.Tls)
+		out.Tls = &tls
 	}
 	return out
 }
@@ -983,7 +978,7 @@ func flattenDatadogAgentSource(src *datadogV2.ObservabilityPipelineDatadogAgentS
 func expandDatadogAgentSource(src *datadogAgentSourceModel) datadogV2.ObservabilityPipelineConfigSourceItem {
 	agent := datadogV2.NewObservabilityPipelineDatadogAgentSourceWithDefaults()
 	agent.SetId(src.Id.ValueString())
-	if len(src.Tls) > 0 {
+	if src.Tls != nil {
 		agent.Tls = expandTls(src.Tls)
 	}
 	return datadogV2.ObservabilityPipelineConfigSourceItem{
@@ -1003,7 +998,8 @@ func flattenKafkaSource(src *datadogV2.ObservabilityPipelineKafkaSource) *kafkaS
 		out.Topics = append(out.Topics, types.StringValue(topic))
 	}
 	if src.Tls != nil {
-		out.Tls = []tlsModel{flattenTls(src.Tls)}
+		tls := flattenTls(src.Tls)
+		out.Tls = &tls
 	}
 	if sasl, ok := src.GetSaslOk(); ok {
 		out.Sasl = &kafkaSourceSaslModel{
@@ -1029,7 +1025,7 @@ func expandKafkaSource(src *kafkaSourceModel) datadogV2.ObservabilityPipelineCon
 	}
 	source.SetTopics(topics)
 
-	if len(src.Tls) > 0 {
+	if src.Tls != nil {
 		source.Tls = expandTls(src.Tls)
 	}
 
@@ -1356,10 +1352,8 @@ func flattenTls(src *datadogV2.ObservabilityPipelineTls) tlsModel {
 	}
 }
 
-func expandTls(src []tlsModel) *datadogV2.ObservabilityPipelineTls {
+func expandTls(tlsTF *tlsModel) *datadogV2.ObservabilityPipelineTls {
 	tls := &datadogV2.ObservabilityPipelineTls{}
-	// there must be no more than one TLS block
-	tlsTF := src[0]
 	tls.SetCrtFile(tlsTF.CrtFile.ValueString())
 	if !tlsTF.CaFile.IsNull() {
 		tls.SetCaFile(tlsTF.CaFile.ValueString())
@@ -1508,7 +1502,7 @@ func expandFluentSource(src *fluentSourceModel) datadogV2.ObservabilityPipelineC
 	source := datadogV2.NewObservabilityPipelineFluentSourceWithDefaults()
 	source.SetId(src.Id.ValueString())
 
-	if len(src.Tls) > 0 {
+	if src.Tls != nil {
 		source.Tls = expandTls(src.Tls)
 	}
 
@@ -1526,7 +1520,8 @@ func flattenFluentSource(src *datadogV2.ObservabilityPipelineFluentSource) *flue
 		Id: types.StringValue(src.GetId()),
 	}
 	if src.Tls != nil {
-		out.Tls = []tlsModel{flattenTls(src.Tls)}
+		tls := flattenTls(src.Tls)
+		out.Tls = &tls
 	}
 	return out
 }
@@ -1548,7 +1543,7 @@ func expandHttpServerSource(src *httpServerSourceModel) datadogV2.ObservabilityP
 	s.SetAuthStrategy(datadogV2.ObservabilityPipelineHttpServerSourceAuthStrategy(src.AuthStrategy.ValueString()))
 	s.SetDecoding(datadogV2.ObservabilityPipelineDecoding(src.Decoding.ValueString()))
 
-	if len(src.Tls) > 0 {
+	if src.Tls != nil {
 		s.Tls = expandTls(src.Tls)
 	}
 
@@ -1569,7 +1564,8 @@ func flattenHttpServerSource(src *datadogV2.ObservabilityPipelineHttpServerSourc
 	}
 
 	if src.Tls != nil {
-		out.Tls = []tlsModel{flattenTls(src.Tls)}
+		tls := flattenTls(src.Tls)
+		out.Tls = &tls
 	}
 
 	return out
