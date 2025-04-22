@@ -112,7 +112,8 @@ resource "datadog_synthetics_test" "test_api" {
       interval = 300
     }
     monitor_options {
-      renotify_interval = 120
+      renotify_interval  = 120
+      escalation_message = "test escalation message"
     }
   }
 }
@@ -1243,7 +1244,7 @@ Required:
 
 Optional:
 
-- `escalation_message` (String)
+- `escalation_message` (String) A message to include with a re-notification.
 - `notification_preset_name` (String) Valid values are `show_all`, `hide_all`, `hide_query`, `hide_handles`.
 - `renotify_interval` (Number) Specify a renotification frequency in minutes. Values available by default are `0`, `10`, `20`, `30`, `40`, `50`, `60`, `90`, `120`, `180`, `240`, `300`, `360`, `720`, `1440`. Defaults to `0`.
 - `renotify_occurrences` (Number) The number of times a monitor renotifies. It can only be set if `renotify_interval` is set.
@@ -1423,6 +1424,7 @@ Optional:
 
 Optional:
 
+- `escalation_message` (String) A message to include with a re-notification.
 - `renotify_interval` (Number) Specify a renotification frequency in minutes. Values available by default are `0`, `10`, `20`, `30`, `40`, `50`, `60`, `90`, `120`, `180`, `240`, `300`, `360`, `720`, `1440`. Defaults to `0`.
 - `renotify_occurrences` (Number) The number of times a monitor renotifies. It can only be set if `renotify_interval` is set.
 
