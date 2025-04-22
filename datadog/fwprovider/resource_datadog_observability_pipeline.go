@@ -157,11 +157,13 @@ type fieldValue struct {
 // Destination models
 
 type destinationsModel struct {
-	DatadogLogsDestination []*datadogLogsDestinationModel `tfsdk:"datadog_logs"`
-	SumoLogicDestination   []*sumoLogicDestinationModel   `tfsdk:"sumo_logic"`
-	RsyslogDestination     []*rsyslogDestinationModel     `tfsdk:"rsyslog"`
-	SyslogNgDestination    []*syslogNgDestinationModel    `tfsdk:"syslog_ng"`
+	DatadogLogsDestination   []*datadogLogsDestinationModel   `tfsdk:"datadog_logs"`
+	SumoLogicDestination     []*sumoLogicDestinationModel     `tfsdk:"sumo_logic"`
+	RsyslogDestination       []*rsyslogDestinationModel       `tfsdk:"rsyslog"`
+	SyslogNgDestination      []*syslogNgDestinationModel      `tfsdk:"syslog_ng"`
+	ElasticsearchDestination []*elasticsearchDestinationModel `tfsdk:"elasticsearch"`
 }
+
 type datadogLogsDestinationModel struct {
 	Id     types.String `tfsdk:"id"`
 	Inputs types.List   `tfsdk:"inputs"`
@@ -206,6 +208,13 @@ type syslogNgDestinationModel struct {
 	Inputs    types.List   `tfsdk:"inputs"`
 	Keepalive types.Int64  `tfsdk:"keepalive"`
 	Tls       *tlsModel    `tfsdk:"tls"`
+}
+
+type elasticsearchDestinationModel struct {
+	Id         types.String `tfsdk:"id"`
+	Inputs     types.List   `tfsdk:"inputs"`
+	ApiVersion types.String `tfsdk:"api_version"`
+	BulkIndex  types.String `tfsdk:"bulk_index"`
 }
 
 func NewObservabilitPipelineResource() resource.Resource {
@@ -706,6 +715,30 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 									},
 								},
 							},
+							"elasticsearch": schema.ListNestedBlock{
+								Description: "The `elasticsearch` destination writes logs to an Elasticsearch cluster.",
+								NestedObject: schema.NestedBlockObject{
+									Attributes: map[string]schema.Attribute{
+										"id": schema.StringAttribute{
+											Required:    true,
+											Description: "The unique identifier for this component.",
+										},
+										"inputs": schema.ListAttribute{
+											Required:    true,
+											Description: "A list of component IDs whose output is used as the `input` for this component.",
+											ElementType: types.StringType,
+										},
+										"api_version": schema.StringAttribute{
+											Optional:    true,
+											Description: "The Elasticsearch API version to use. Set to `auto` to auto-detect.",
+										},
+										"bulk_index": schema.StringAttribute{
+											Optional:    true,
+											Description: "The index or datastream to write logs to in Elasticsearch.",
+										},
+									},
+								},
+							},
 						},
 					},
 				},
@@ -902,6 +935,9 @@ func expandPipelineRequest(ctx context.Context, state *observabilityPipelineMode
 	for _, d := range state.Config.Destinations.SyslogNgDestination {
 		config.Destinations = append(config.Destinations, expandSyslogNgDestination(ctx, d))
 	}
+	for _, d := range state.Config.Destinations.ElasticsearchDestination {
+		config.Destinations = append(config.Destinations, expandElasticsearchDestination(ctx, d))
+	}
 
 	attrs.SetConfig(*config)
 	data.SetAttributes(*attrs)
@@ -964,6 +1000,9 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 		}
 		if s := flattenSyslogNgDestination(ctx, d.ObservabilityPipelineSyslogNgDestination); s != nil {
 			outCfg.Destinations.SyslogNgDestination = append(outCfg.Destinations.SyslogNgDestination, s)
+		}
+		if e := flattenElasticsearchDestination(ctx, d.ObservabilityPipelineElasticsearchDestination); e != nil {
+			outCfg.Destinations.ElasticsearchDestination = append(outCfg.Destinations.ElasticsearchDestination, e)
 		}
 	}
 
@@ -1583,6 +1622,44 @@ func flattenSyslogNgDestination(ctx context.Context, src *datadogV2.Observabilit
 	if src.Tls != nil {
 		tls := flattenTls(src.Tls)
 		out.Tls = &tls
+	}
+	return out
+}
+
+func expandElasticsearchDestination(ctx context.Context, src *elasticsearchDestinationModel) datadogV2.ObservabilityPipelineConfigDestinationItem {
+	obj := datadogV2.NewObservabilityPipelineElasticsearchDestinationWithDefaults()
+	obj.SetId(src.Id.ValueString())
+
+	var inputs []string
+	src.Inputs.ElementsAs(ctx, &inputs, false)
+	obj.SetInputs(inputs)
+
+	if !src.ApiVersion.IsNull() {
+		obj.SetApiVersion(datadogV2.ObservabilityPipelineElasticsearchDestinationApiVersion(src.ApiVersion.ValueString()))
+	}
+	if !src.BulkIndex.IsNull() {
+		obj.SetBulkIndex(src.BulkIndex.ValueString())
+	}
+
+	return datadogV2.ObservabilityPipelineConfigDestinationItem{
+		ObservabilityPipelineElasticsearchDestination: obj,
+	}
+}
+
+func flattenElasticsearchDestination(ctx context.Context, src *datadogV2.ObservabilityPipelineElasticsearchDestination) *elasticsearchDestinationModel {
+	if src == nil {
+		return nil
+	}
+	inputs, _ := types.ListValueFrom(ctx, types.StringType, src.GetInputs())
+	out := &elasticsearchDestinationModel{
+		Id:     types.StringValue(src.GetId()),
+		Inputs: inputs,
+	}
+	if v, ok := src.GetApiVersionOk(); ok {
+		out.ApiVersion = types.StringValue(string(*v))
+	}
+	if v, ok := src.GetBulkIndexOk(); ok {
+		out.BulkIndex = types.StringValue(*v)
 	}
 	return out
 }

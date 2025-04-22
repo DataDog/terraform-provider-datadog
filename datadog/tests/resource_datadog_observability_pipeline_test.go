@@ -910,3 +910,49 @@ resource "datadog_observability_pipeline" "syslogng_dest" {
 		},
 	})
 }
+
+func TestAccDatadogObservabilityPipeline_elasticsearchDestination(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	resourceName := "datadog_observability_pipeline.elasticsearch_dest"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "elasticsearch_dest" {
+  name = "elasticsearch-dest-pipeline"
+
+  config {
+    sources {
+      datadog_agent {
+        id = "source-1"
+      }
+    }
+
+    processors {}
+
+    destinations {
+      elasticsearch {
+        id          = "elasticsearch-destination-1"
+        inputs      = ["source-1"]
+        api_version = "v7"
+        bulk_index  = "logs-datastream"
+      }
+    }
+  }
+}
+`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "elasticsearch-dest-pipeline"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.elasticsearch.0.id", "elasticsearch-destination-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.elasticsearch.0.api_version", "v7"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.elasticsearch.0.bulk_index", "logs-datastream"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.elasticsearch.0.inputs.0", "source-1"),
+				),
+			},
+		},
+	})
+}
