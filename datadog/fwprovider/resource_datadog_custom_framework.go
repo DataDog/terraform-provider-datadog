@@ -20,23 +20,13 @@ type customFrameworkResource struct {
 }
 
 type customFrameworkModel struct {
-	ID           types.String       `tfsdk:"id"`
-	Description  types.String       `tfsdk:"description"`
-	Version      types.String       `tfsdk:"version"`
-	Handle       types.String       `tfsdk:"handle"`
-	Name         types.String       `tfsdk:"name"`
-	IconURL      types.String       `tfsdk:"icon_url"`
-	Requirements []requirementModel `tfsdk:"requirements"`
-}
-
-type requirementModel struct {
-	Name     types.String   `tfsdk:"name"`
-	Controls []controlModel `tfsdk:"controls"`
-}
-
-type controlModel struct {
-	Name    types.String `tfsdk:"name"`
-	RulesID types.List   `tfsdk:"rules_id"`
+	ID           types.String `tfsdk:"id"`
+	Description  types.String `tfsdk:"description"`
+	Version      types.String `tfsdk:"version"`
+	Handle       types.String `tfsdk:"handle"`
+	Name         types.String `tfsdk:"name"`
+	IconURL      types.String `tfsdk:"icon_url"`
+	Requirements types.Set    `tfsdk:"requirements"`
 }
 
 func NewCustomFrameworkResource() resource.Resource {
@@ -77,7 +67,7 @@ func (r *customFrameworkResource) Schema(_ context.Context, _ resource.SchemaReq
 			},
 		},
 		Blocks: map[string]schema.Block{
-			"requirements": schema.ListNestedBlock{
+			"requirements": schema.SetNestedBlock{
 				Description: "The requirements of the framework.",
 				NestedObject: schema.NestedBlockObject{
 					Attributes: map[string]schema.Attribute{
@@ -87,7 +77,7 @@ func (r *customFrameworkResource) Schema(_ context.Context, _ resource.SchemaReq
 						},
 					},
 					Blocks: map[string]schema.Block{
-						"controls": schema.ListNestedBlock{
+						"controls": schema.SetNestedBlock{
 							Description: "The controls of the requirement.",
 							NestedObject: schema.NestedBlockObject{
 								Attributes: map[string]schema.Attribute{
@@ -95,7 +85,7 @@ func (r *customFrameworkResource) Schema(_ context.Context, _ resource.SchemaReq
 										Description: "The name of the control.",
 										Required:    true,
 									},
-									"rules_id": schema.ListAttribute{
+									"rules_id": schema.SetAttribute{
 										Description: "The list of rules IDs for the control.",
 										ElementType: types.StringType,
 										Required:    true,
@@ -183,12 +173,11 @@ func (r *customFrameworkResource) Create(ctx context.Context, request resource.C
 		return
 	}
 
-	_, _, err := r.Api.CreateCustomFramework(ctx, *buildCreateFrameworkRequest(ctx, state))
+	_, _, err := r.Api.CreateCustomFramework(r.Auth, *buildCreateFrameworkRequest(ctx, state))
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error creating custom framework"))
 		return
 	}
-
 	state.ID = types.StringValue(state.Handle.ValueString() + string('-') + state.Version.ValueString())
 	diags = response.State.Set(ctx, &state)
 	response.Diagnostics.Append(diags...)
@@ -201,7 +190,7 @@ func (r *customFrameworkResource) Delete(ctx context.Context, request resource.D
 	if response.Diagnostics.HasError() {
 		return
 	}
-	_, err := r.Api.DeleteCustomFramework(ctx, state.Handle.ValueString(), state.Version.ValueString())
+	_, _, err := r.Api.DeleteCustomFramework(r.Auth, state.Handle.ValueString(), state.Version.ValueString())
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error deleting framework"))
 		return
@@ -216,14 +205,9 @@ func (r *customFrameworkResource) Read(ctx context.Context, request resource.Rea
 		return
 	}
 
-	data, _, err := r.Api.RetrieveCustomFramework(ctx, state.Handle.String(), state.Version.String())
+	data, _, err := r.Api.RetrieveCustomFramework(r.Auth, state.Handle.ValueString(), state.Version.ValueString())
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error reading custom framework"))
-		return
-	}
-	// convert data to state and set it as the new state
-	if err := utils.CheckForUnparsed(data); err != nil {
-		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
 		return
 	}
 	state.ID = types.StringValue(data.GetData().Attributes.Handle + string('-') + data.GetData().Attributes.Version)
@@ -232,8 +216,11 @@ func (r *customFrameworkResource) Read(ctx context.Context, request resource.Rea
 	state.Version = types.StringValue(data.GetData().Attributes.Version)
 	state.Handle = types.StringValue(data.GetData().Attributes.Handle)
 	state.Name = types.StringValue(data.GetData().Attributes.Name)
+
+	// Convert requirements to set
 	requirements := make([]attr.Value, len(data.GetData().Attributes.Requirements))
 	for i, req := range data.GetData().Attributes.Requirements {
+		// Convert controls to set
 		controls := make([]attr.Value, len(req.Controls))
 		for j, ctrl := range req.Controls {
 			rulesID := make([]attr.Value, len(ctrl.RulesId))
@@ -243,50 +230,41 @@ func (r *customFrameworkResource) Read(ctx context.Context, request resource.Rea
 			controls[j] = types.ObjectValueMust(
 				map[string]attr.Type{
 					"name":     types.StringType,
-					"rules_id": types.ListType{ElemType: types.StringType},
+					"rules_id": types.SetType{ElemType: types.StringType},
 				},
 				map[string]attr.Value{
 					"name":     types.StringValue(ctrl.Name),
-					"rules_id": types.ListValueMust(types.StringType, rulesID),
+					"rules_id": types.SetValueMust(types.StringType, rulesID),
 				},
 			)
 		}
 		requirements[i] = types.ObjectValueMust(
 			map[string]attr.Type{
 				"name": types.StringType,
-				"controls": types.ListType{ElemType: types.ObjectType{
-					AttrTypes: map[string]attr.Type{
-						"name":     types.StringType,
-						"rules_id": types.ListType{ElemType: types.StringType},
-					},
-				}},
+				"controls": types.SetType{ElemType: types.ObjectType{AttrTypes: map[string]attr.Type{
+					"name":     types.StringType,
+					"rules_id": types.SetType{ElemType: types.StringType},
+				}}},
 			},
 			map[string]attr.Value{
 				"name": types.StringValue(req.Name),
-				"controls": types.ListValueMust(types.ObjectType{
-					AttrTypes: map[string]attr.Type{
-						"name":     types.StringType,
-						"rules_id": types.ListType{ElemType: types.StringType},
-					},
-				}, controls),
+				"controls": types.SetValueMust(types.ObjectType{AttrTypes: map[string]attr.Type{
+					"name":     types.StringType,
+					"rules_id": types.SetType{ElemType: types.StringType},
+				}}, controls),
 			},
 		)
 	}
-	// state.Requirements = types.ListValueMust(
-	// 	types.ObjectType{
-	// 		AttrTypes: map[string]attr.Type{
-	// 			"name": types.StringType,
-	// 			"controls": types.ListType{ElemType: types.ObjectType{
-	// 				AttrTypes: map[string]attr.Type{
-	// 					"name":     types.StringType,
-	// 					"rules_id": types.ListType{ElemType: types.StringType},
-	// 				},
-	// 			}},
-	// 		},
-	// 	},
-	// 	requirements,
-	// )
-
+	state.Requirements = types.SetValueMust(
+		types.ObjectType{AttrTypes: map[string]attr.Type{
+			"name": types.StringType,
+			"controls": types.SetType{ElemType: types.ObjectType{AttrTypes: map[string]attr.Type{
+				"name":     types.StringType,
+				"rules_id": types.SetType{ElemType: types.StringType},
+			}}},
+		}},
+		requirements,
+	)
 	diags = response.State.Set(ctx, &state)
 	response.Diagnostics.Append(diags...)
 }
@@ -299,7 +277,7 @@ func (r *customFrameworkResource) Update(ctx context.Context, request resource.U
 		return
 	}
 
-	_, _, err := r.Api.UpdateCustomFramework(ctx, state.Handle.String(), state.Version.String(), *buildUpdateFrameworkRequest(ctx, state))
+	_, _, err := r.Api.UpdateCustomFramework(r.Auth, state.Handle.ValueString(), state.Version.ValueString(), *buildUpdateFrameworkRequest(ctx, state))
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error updating custom framework"))
 		return
@@ -321,21 +299,23 @@ func buildCreateFrameworkRequest(ctx context.Context, state customFrameworkModel
 			IconUrl:     &iconURL,
 			Version:     state.Version.ValueString(),
 			Requirements: func() []datadogV2.CustomFrameworkRequirement {
-				requirements := make([]datadogV2.CustomFrameworkRequirement, len(state.Requirements))
-				for i, req := range state.Requirements {
-					controls := make([]datadogV2.CustomFrameworkControl, len(req.Controls))
-					for j, ctrl := range req.Controls {
-						rulesID := make([]string, len(ctrl.RulesID.Elements()))
-						for k, ruleID := range ctrl.RulesID.Elements() {
+				requirements := make([]datadogV2.CustomFrameworkRequirement, len(state.Requirements.Elements()))
+				for i, req := range state.Requirements.Elements() {
+					reqObj := req.(types.Object)
+					controls := make([]datadogV2.CustomFrameworkControl, len(reqObj.Attributes()["controls"].(types.Set).Elements()))
+					for j, ctrl := range reqObj.Attributes()["controls"].(types.Set).Elements() {
+						ctrlObj := ctrl.(types.Object)
+						rulesID := make([]string, len(ctrlObj.Attributes()["rules_id"].(types.Set).Elements()))
+						for k, ruleID := range ctrlObj.Attributes()["rules_id"].(types.Set).Elements() {
 							rulesID[k] = ruleID.(types.String).ValueString()
 						}
 						controls[j] = datadogV2.CustomFrameworkControl{
-							Name:    ctrl.Name.ValueString(),
+							Name:    ctrlObj.Attributes()["name"].(types.String).ValueString(),
 							RulesId: rulesID,
 						}
 					}
 					requirements[i] = datadogV2.CustomFrameworkRequirement{
-						Name:     req.Name.ValueString(),
+						Name:     reqObj.Attributes()["name"].(types.String).ValueString(),
 						Controls: controls,
 					}
 				}
@@ -359,21 +339,23 @@ func buildUpdateFrameworkRequest(ctx context.Context, state customFrameworkModel
 			IconUrl:     &iconURL,
 			Version:     state.Version.ValueString(),
 			Requirements: func() []datadogV2.CustomFrameworkRequirement {
-				requirements := make([]datadogV2.CustomFrameworkRequirement, len(state.Requirements))
-				for i, req := range state.Requirements {
-					controls := make([]datadogV2.CustomFrameworkControl, len(req.Controls))
-					for j, ctrl := range req.Controls {
-						rulesID := make([]string, len(ctrl.RulesID.Elements()))
-						for k, ruleID := range ctrl.RulesID.Elements() {
+				requirements := make([]datadogV2.CustomFrameworkRequirement, len(state.Requirements.Elements()))
+				for i, req := range state.Requirements.Elements() {
+					reqObj := req.(types.Object)
+					controls := make([]datadogV2.CustomFrameworkControl, len(reqObj.Attributes()["controls"].(types.Set).Elements()))
+					for j, ctrl := range reqObj.Attributes()["controls"].(types.Set).Elements() {
+						ctrlObj := ctrl.(types.Object)
+						rulesID := make([]string, len(ctrlObj.Attributes()["rules_id"].(types.Set).Elements()))
+						for k, ruleID := range ctrlObj.Attributes()["rules_id"].(types.Set).Elements() {
 							rulesID[k] = ruleID.(types.String).ValueString()
 						}
 						controls[j] = datadogV2.CustomFrameworkControl{
-							Name:    ctrl.Name.ValueString(),
+							Name:    ctrlObj.Attributes()["name"].(types.String).ValueString(),
 							RulesId: rulesID,
 						}
 					}
 					requirements[i] = datadogV2.CustomFrameworkRequirement{
-						Name:     req.Name.ValueString(),
+						Name:     reqObj.Attributes()["name"].(types.String).ValueString(),
 						Controls: controls,
 					}
 				}
