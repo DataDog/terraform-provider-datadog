@@ -16,7 +16,10 @@ datadog/*datadog_integration_aws*         @DataDog/web-frameworks @DataDog/api-r
 datadog/*datadog_integration_pagerduty*   @DataDog/web-frameworks @DataDog/api-reliability @DataDog/collaboration-integrations
 datadog/*datadog_integration_opsgenie*    @DataDog/web-frameworks @DataDog/api-reliability @Datadog/collaboration-integrations
 datadog/*datadog_logs*                    @DataDog/web-frameworks @DataDog/api-reliability @DataDog/logs-backend @DataDog/logs-core @DataDog/logs-forwarding @DataDog/logs-app
-datadog/*datadog_metric*                  @DataDog/web-frameworks @DataDog/api-reliability @DataDog/metrics-intake @DataDog/metrics-query @DataDog/points-aggregation
+datadog/*datadog_metric*                  @DataDog/web-frameworks @DataDog/api-reliability @DataDog/metrics-intake @DataDog/xpq-timeseries-query @DataDog/metrics-storage-platform
+datadog/*datadog_metric_tags*             @DataDog/web-frameworks @DataDog/api-reliability @DataDog/metrics-index
+datadog/*datadog_metric_metadata*         @DataDog/web-frameworks @DataDog/api-reliability @DataDog/metrics-experience
+datadog/*datadog_metric_tag_configuration*  @DataDog/web-frameworks @DataDog/api-reliability @DataDog/metrics-experience
 datadog/*datadog_monitor*                 @DataDog/web-frameworks @DataDog/api-reliability @DataDog/monitor-app
 datadog/*datadog_screenboard*             @DataDog/web-frameworks @DataDog/api-reliability @DataDog/dashboards-backend
 datadog/*datadog_security*                @DataDog/web-frameworks @DataDog/api-reliability @DataDog/k9-cloud-security-platform
