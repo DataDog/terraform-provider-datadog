@@ -94,6 +94,19 @@ type processorsModel struct {
 	DedupeProcessor       []*dedupeProcessorModel       `tfsdk:"dedupe"`
 	ReduceProcessor       []*reduceProcessorModel       `tfsdk:"reduce"`
 	ThrottleProcessor     []*throttleProcessorModel     `tfsdk:"throttle"`
+	AddEnvVarsProcessor   []*addEnvVarsProcessorModel   `tfsdk:"add_env_vars"`
+}
+
+type addEnvVarsProcessorModel struct {
+	Id        types.String         `tfsdk:"id"`
+	Include   types.String         `tfsdk:"include"`
+	Inputs    types.List           `tfsdk:"inputs"`
+	Variables []envVarMappingModel `tfsdk:"variables"`
+}
+
+type envVarMappingModel struct {
+	Field types.String `tfsdk:"field"`
+	Name  types.String `tfsdk:"name"`
 }
 
 type throttleProcessorModel struct {
@@ -797,6 +810,43 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 									},
 								},
 							},
+							"add_env_vars": schema.ListNestedBlock{
+								Description: "The `add_env_vars` processor adds environment variable values to log events.",
+								NestedObject: schema.NestedBlockObject{
+									Attributes: map[string]schema.Attribute{
+										"id": schema.StringAttribute{
+											Required:    true,
+											Description: "The unique identifier for this component. Used to reference this processor in the pipeline.",
+										},
+										"include": schema.StringAttribute{
+											Required:    true,
+											Description: "A Datadog search query used to determine which logs this processor targets.",
+										},
+										"inputs": schema.ListAttribute{
+											Required:    true,
+											ElementType: types.StringType,
+											Description: "A list of component IDs whose output is used as the input for this processor.",
+										},
+									},
+									Blocks: map[string]schema.Block{
+										"variables": schema.ListNestedBlock{
+											Description: "A list of environment variable mappings to apply to log fields.",
+											NestedObject: schema.NestedBlockObject{
+												Attributes: map[string]schema.Attribute{
+													"field": schema.StringAttribute{
+														Required:    true,
+														Description: "The target field in the log event.",
+													},
+													"name": schema.StringAttribute{
+														Required:    true,
+														Description: "The name of the environment variable to read.",
+													},
+												},
+											},
+										},
+									},
+								},
+							},
 						},
 					},
 					"destinations": schema.SingleNestedBlock{
@@ -1015,6 +1065,9 @@ func expandPipelineRequest(ctx context.Context, state *observabilityPipelineMode
 	for _, p := range state.Config.Processors.ThrottleProcessor {
 		config.Processors = append(config.Processors, expandThrottleProcessor(ctx, p))
 	}
+	for _, p := range state.Config.Processors.AddEnvVarsProcessor {
+		config.Processors = append(config.Processors, expandAddEnvVarsProcessor(ctx, p))
+	}
 
 	// Destinations
 	for _, d := range state.Config.Destinations.DatadogLogsDestination {
@@ -1083,6 +1136,9 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 		}
 		if f := flattenThrottleProcessor(ctx, p.ObservabilityPipelineThrottleProcessor); f != nil {
 			outCfg.Processors.ThrottleProcessor = append(outCfg.Processors.ThrottleProcessor, f)
+		}
+		if f := flattenAddEnvVarsProcessor(ctx, p.ObservabilityPipelineAddEnvVarsProcessor); f != nil {
+			outCfg.Processors.AddEnvVarsProcessor = append(outCfg.Processors.AddEnvVarsProcessor, f)
 		}
 
 	}
@@ -1820,5 +1876,51 @@ func flattenThrottleProcessor(ctx context.Context, src *datadogV2.ObservabilityP
 		Threshold: types.Int64Value(src.Threshold),
 		Window:    types.Float64Value(src.Window),
 		GroupBy:   groupBy,
+	}
+}
+
+func expandAddEnvVarsProcessor(ctx context.Context, src *addEnvVarsProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
+	proc := datadogV2.NewObservabilityPipelineAddEnvVarsProcessorWithDefaults()
+	proc.SetId(src.Id.ValueString())
+	proc.SetInclude(src.Include.ValueString())
+
+	var inputs []string
+	src.Inputs.ElementsAs(ctx, &inputs, false)
+	proc.SetInputs(inputs)
+
+	var vars []datadogV2.ObservabilityPipelineAddEnvVarsProcessorVariable
+	for _, v := range src.Variables {
+		vars = append(vars, datadogV2.ObservabilityPipelineAddEnvVarsProcessorVariable{
+			Field: v.Field.ValueString(),
+			Name:  v.Name.ValueString(),
+		})
+	}
+	proc.SetVariables(vars)
+
+	return datadogV2.ObservabilityPipelineConfigProcessorItem{
+		ObservabilityPipelineAddEnvVarsProcessor: proc,
+	}
+}
+
+func flattenAddEnvVarsProcessor(ctx context.Context, src *datadogV2.ObservabilityPipelineAddEnvVarsProcessor) *addEnvVarsProcessorModel {
+	if src == nil {
+		return nil
+	}
+
+	inputs, _ := types.ListValueFrom(ctx, types.StringType, src.Inputs)
+
+	var vars []envVarMappingModel
+	for _, v := range src.Variables {
+		vars = append(vars, envVarMappingModel{
+			Field: types.StringValue(v.Field),
+			Name:  types.StringValue(v.Name),
+		})
+	}
+
+	return &addEnvVarsProcessorModel{
+		Id:        types.StringValue(src.Id),
+		Include:   types.StringValue(src.Include),
+		Inputs:    inputs,
+		Variables: vars,
 	}
 }

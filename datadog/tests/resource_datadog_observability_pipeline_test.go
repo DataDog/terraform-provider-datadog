@@ -1052,3 +1052,62 @@ resource "datadog_observability_pipeline" "throttle" {
 		},
 	})
 }
+
+func TestAccDatadogObservabilityPipeline_addEnvVarsProcessor(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.add_env_vars"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "add_env_vars" {
+  name = "add-env-vars pipeline"
+
+  config {
+    sources {
+      datadog_agent {
+        id = "source-1"
+      }
+    }
+
+    processors {
+      add_env_vars {
+        id      = "add-env-1"
+        include = "*"
+        inputs  = ["source-1"]
+
+        variables {
+          field = "log.environment.region"
+          name  = "AWS_REGION"
+        }
+
+        variables {
+          field = "log.environment.account"
+          name  = "AWS_ACCOUNT_ID"
+        }
+
+      }
+    }
+
+    destinations {
+      datadog_logs {
+        id     = "destination-1"
+        inputs = ["add-env-1"]
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.add_env_vars.0.id", "add-env-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.add_env_vars.0.variables.0.name", "AWS_REGION"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.add_env_vars.0.variables.1.name", "AWS_ACCOUNT_ID"),
+				),
+			},
+		},
+	})
+}
