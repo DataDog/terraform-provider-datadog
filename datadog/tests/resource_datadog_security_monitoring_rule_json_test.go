@@ -100,14 +100,14 @@ func testAccCheckDatadogSecurityMonitoringRuleJSONDestroy(accProvider *fwprovide
 func testAccCheckDatadogSecurityMonitoringRuleJSONConfig(name string) string {
 	return fmt.Sprintf(`
 resource "datadog_security_monitoring_rule_json" "acceptance_test" {
-	json = %s
+	json = jsonencode(%s)
 }`, testAccSecurityMonitoringRuleJSON(name))
 }
 
 func testAccCheckDatadogSecurityMonitoringRuleJSONUpdatedConfig(name string) string {
 	return fmt.Sprintf(`
 resource "datadog_security_monitoring_rule_json" "acceptance_test" {
-	json = %s
+	json = jsonencode(%s)
 }`, testAccSecurityMonitoringRuleJSONUpdated(name))
 }
 

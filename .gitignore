@@ -34,3 +34,6 @@ website/vendor
 
 # python
 *.pyc
+
+#cursor
+.cursor/
