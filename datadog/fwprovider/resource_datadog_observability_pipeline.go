@@ -40,8 +40,9 @@ type configModel struct {
 	Destinations destinationsModel `tfsdk:"destinations"`
 }
 type sourcesModel struct {
-	DatadogAgentSource []*datadogAgentSourceModel `tfsdk:"datadog_agent"`
-	KafkaSource        []*kafkaSourceModel        `tfsdk:"kafka"`
+	DatadogAgentSource       []*datadogAgentSourceModel       `tfsdk:"datadog_agent"`
+	KafkaSource              []*kafkaSourceModel              `tfsdk:"kafka"`
+	AmazonDataFirehoseSource []*amazonDataFirehoseSourceModel `tfsdk:"amazon_data_firehose"`
 }
 
 // / Source models
@@ -162,6 +163,18 @@ type datadogLogsDestinationModel struct {
 	Inputs types.List   `tfsdk:"inputs"`
 }
 
+type amazonDataFirehoseSourceModel struct {
+	Id   types.String  `tfsdk:"id"`
+	Auth *awsAuthModel `tfsdk:"auth"`
+	Tls  *tlsModel     `tfsdk:"tls"`
+}
+
+type awsAuthModel struct {
+	AssumeRole  types.String `tfsdk:"assume_role"`
+	ExternalId  types.String `tfsdk:"external_id"`
+	SessionName types.String `tfsdk:"session_name"`
+}
+
 func NewObservabilitPipelineResource() resource.Resource {
 	return &observabilityPipelineResource{}
 }
@@ -250,6 +263,37 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 													Validators: []validator.String{
 														stringvalidator.OneOf("PLAIN", "SCRAM-SHA-256", "SCRAM-SHA-512"),
 													},
+												},
+											},
+										},
+										"tls": tlsSchema(),
+									},
+								},
+							},
+							"amazon_data_firehose": schema.ListNestedBlock{
+								Description: "The `amazon_data_firehose` source ingests logs from AWS Data Firehose.",
+								NestedObject: schema.NestedBlockObject{
+									Attributes: map[string]schema.Attribute{
+										"id": schema.StringAttribute{
+											Required:    true,
+											Description: "The unique identifier for this component. Used to reference this component in other parts of the pipeline (e.g., as input to downstream components).",
+										},
+									},
+									Blocks: map[string]schema.Block{
+										"auth": schema.SingleNestedBlock{
+											Description: "AWS authentication credentials used for accessing AWS services such as S3. If omitted, the system’s default credentials are used (for example, the IAM role and environment variables).",
+											Attributes: map[string]schema.Attribute{
+												"assume_role": schema.StringAttribute{
+													Optional:    true,
+													Description: "The Amazon Resource Name (ARN) of the role to assume.",
+												},
+												"external_id": schema.StringAttribute{
+													Optional:    true,
+													Description: "A unique identifier for cross-account role assumption.",
+												},
+												"session_name": schema.StringAttribute{
+													Optional:    true,
+													Description: "A session identifier used for logging and tracing the assumed role session.",
 												},
 											},
 										},
@@ -685,6 +729,9 @@ func expandPipelineRequest(ctx context.Context, state *observabilityPipelineMode
 	for _, k := range state.Config.Sources.KafkaSource {
 		config.Sources = append(config.Sources, expandKafkaSource(k))
 	}
+	for _, a := range state.Config.Sources.AmazonDataFirehoseSource {
+		config.Sources = append(config.Sources, expandAmazonDataFirehoseSource(a))
+	}
 
 	// Processors
 	for _, p := range state.Config.Processors.FilterProcessor {
@@ -732,6 +779,9 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 		}
 		if k := flattenKafkaSource(src.ObservabilityPipelineKafkaSource); k != nil {
 			outCfg.Sources.KafkaSource = append(outCfg.Sources.KafkaSource, k)
+		}
+		if f := flattenAmazonDataFirehoseSource(src.ObservabilityPipelineAmazonDataFirehoseSource); f != nil {
+			outCfg.Sources.AmazonDataFirehoseSource = append(outCfg.Sources.AmazonDataFirehoseSource, f)
 		}
 	}
 	for _, p := range cfg.GetProcessors() {
@@ -1166,4 +1216,60 @@ func expandTls(tlsTF *tlsModel) *datadogV2.ObservabilityPipelineTls {
 		tls.SetKeyFile(tlsTF.KeyFile.ValueString())
 	}
 	return tls
+}
+
+func expandAmazonDataFirehoseSource(src *amazonDataFirehoseSourceModel) datadogV2.ObservabilityPipelineConfigSourceItem {
+	firehose := datadogV2.NewObservabilityPipelineAmazonDataFirehoseSourceWithDefaults()
+	firehose.SetId(src.Id.ValueString())
+
+	if src.Auth != nil {
+		auth := datadogV2.ObservabilityPipelineAwsAuth{}
+		if !src.Auth.AssumeRole.IsNull() {
+			auth.SetAssumeRole(src.Auth.AssumeRole.ValueString())
+		}
+		if !src.Auth.ExternalId.IsNull() {
+			auth.SetExternalId(src.Auth.ExternalId.ValueString())
+		}
+		if !src.Auth.SessionName.IsNull() {
+			auth.SetSessionName(src.Auth.SessionName.ValueString())
+		}
+		firehose.SetAuth(auth)
+	}
+
+	if src.Tls != nil {
+		firehose.Tls = expandTls(src.Tls)
+	}
+
+	return datadogV2.ObservabilityPipelineConfigSourceItem{
+		ObservabilityPipelineAmazonDataFirehoseSource: firehose,
+	}
+}
+
+func flattenAmazonDataFirehoseSource(src *datadogV2.ObservabilityPipelineAmazonDataFirehoseSource) *amazonDataFirehoseSourceModel {
+	if src == nil {
+		return nil
+	}
+
+	out := &amazonDataFirehoseSourceModel{
+		Id: types.StringValue(src.GetId()),
+	}
+
+	if src.Auth != nil {
+		auth := awsAuthModel{}
+		if v, ok := src.GetAuthOk(); ok {
+			auth = awsAuthModel{
+				AssumeRole:  types.StringPointerValue(v.AssumeRole),
+				ExternalId:  types.StringPointerValue(v.ExternalId),
+				SessionName: types.StringPointerValue(v.SessionName),
+			}
+		}
+		out.Auth = &auth
+	}
+
+	if src.Tls != nil {
+		tls := flattenTls(src.Tls)
+		out.Tls = &tls
+	}
+
+	return out
 }

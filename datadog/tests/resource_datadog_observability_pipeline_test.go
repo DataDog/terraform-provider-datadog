@@ -651,3 +651,56 @@ resource "datadog_observability_pipeline" "add_fields" {
 		},
 	})
 }
+
+func TestAccDatadogObservabilityPipeline_amazonDataFirehose(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.firehose_test"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "firehose_test" {
+  name = "firehose pipeline"
+
+  config {
+    sources {
+      amazon_data_firehose {
+        id = "firehose-source-1"
+        auth {
+          assume_role = "arn:aws:iam::123456789012:role/ExampleRole"
+          external_id = "external-id-123"
+          session_name = "firehose-session"
+        }
+        tls {
+          crt_file = "/path/to/firehose.crt"
+        }
+      }
+    }
+
+    processors {}
+
+    destinations {
+      datadog_logs {
+        id     = "destination-1"
+        inputs = ["firehose-source-1"]
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "firehose pipeline"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.amazon_data_firehose.0.id", "firehose-source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.amazon_data_firehose.0.auth.assume_role", "arn:aws:iam::123456789012:role/ExampleRole"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.amazon_data_firehose.0.auth.external_id", "external-id-123"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.amazon_data_firehose.0.auth.session_name", "firehose-session"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.amazon_data_firehose.0.tls.crt_file", "/path/to/firehose.crt"),
+				),
+			},
+		},
+	})
+}
