@@ -812,3 +812,47 @@ resource "datadog_observability_pipeline" "pubsub" {
 		},
 	})
 }
+
+func TestAccDatadogObservabilityPipeline_logstashSource(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.logstash"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "logstash" {
+  name = "logstash pipeline"
+
+  config {
+    sources {
+      logstash {
+        id = "logstash-source-1"
+        tls {
+          crt_file = "/path/to/logstash.crt"
+        }
+      }
+    }
+
+    processors {}
+
+    destinations {
+      datadog_logs {
+        id     = "destination-1"
+        inputs = ["logstash-source-1"]
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.logstash.0.id", "logstash-source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.logstash.0.tls.crt_file", "/path/to/logstash.crt"),
+				),
+			},
+		},
+	})
+}

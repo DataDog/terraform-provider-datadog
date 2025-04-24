@@ -45,9 +45,14 @@ type sourcesModel struct {
 	AmazonDataFirehoseSource []*amazonDataFirehoseSourceModel `tfsdk:"amazon_data_firehose"`
 	HttpClientSource         []*httpClientSourceModel         `tfsdk:"http_client"`
 	GooglePubSubSource       []*googlePubSubSourceModel       `tfsdk:"google_pubsub"`
+	LogstashSource           []*logstashSourceModel           `tfsdk:"logstash"`
 }
 
-// / Source models
+type logstashSourceModel struct {
+	Id  types.String `tfsdk:"id"`
+	Tls *tlsModel    `tfsdk:"tls"`
+}
+
 type datadogAgentSourceModel struct {
 	Id  types.String `tfsdk:"id"`
 	Tls *tlsModel    `tfsdk:"tls"`
@@ -386,6 +391,20 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 												},
 											},
 										},
+										"tls": tlsSchema(),
+									},
+								},
+							},
+							"logstash": schema.ListNestedBlock{
+								Description: "The `logstash` source ingests logs from a Logstash forwarder.",
+								NestedObject: schema.NestedBlockObject{
+									Attributes: map[string]schema.Attribute{
+										"id": schema.StringAttribute{
+											Required:    true,
+											Description: "The unique identifier for this component. Used to reference this component in other parts of the pipeline (e.g., as input to downstream components).",
+										},
+									},
+									Blocks: map[string]schema.Block{
 										"tls": tlsSchema(),
 									},
 								},
@@ -827,6 +846,9 @@ func expandPipelineRequest(ctx context.Context, state *observabilityPipelineMode
 	for _, g := range state.Config.Sources.GooglePubSubSource {
 		config.Sources = append(config.Sources, expandGooglePubSubSource(g))
 	}
+	for _, l := range state.Config.Sources.LogstashSource {
+		config.Sources = append(config.Sources, expandLogstashSource(l))
+	}
 
 	// Processors
 	for _, p := range state.Config.Processors.FilterProcessor {
@@ -883,6 +905,9 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 		}
 		if g := flattenGooglePubSubSource(src.ObservabilityPipelineGooglePubSubSource); g != nil {
 			outCfg.Sources.GooglePubSubSource = append(outCfg.Sources.GooglePubSubSource, g)
+		}
+		if l := flattenLogstashSource(src.ObservabilityPipelineLogstashSource); l != nil {
+			outCfg.Sources.LogstashSource = append(outCfg.Sources.LogstashSource, l)
 		}
 	}
 	for _, p := range cfg.GetProcessors() {
@@ -1468,5 +1493,30 @@ func flattenGooglePubSubSource(src *datadogV2.ObservabilityPipelineGooglePubSubS
 		out.Tls = &tls
 	}
 
+	return out
+}
+
+func expandLogstashSource(src *logstashSourceModel) datadogV2.ObservabilityPipelineConfigSourceItem {
+	logstash := datadogV2.NewObservabilityPipelineLogstashSourceWithDefaults()
+	logstash.SetId(src.Id.ValueString())
+	if src.Tls != nil {
+		logstash.Tls = expandTls(src.Tls)
+	}
+	return datadogV2.ObservabilityPipelineConfigSourceItem{
+		ObservabilityPipelineLogstashSource: logstash,
+	}
+}
+
+func flattenLogstashSource(src *datadogV2.ObservabilityPipelineLogstashSource) *logstashSourceModel {
+	if src == nil {
+		return nil
+	}
+	out := &logstashSourceModel{
+		Id: types.StringValue(src.GetId()),
+	}
+	if src.Tls != nil {
+		tls := flattenTls(src.Tls)
+		out.Tls = &tls
+	}
 	return out
 }
