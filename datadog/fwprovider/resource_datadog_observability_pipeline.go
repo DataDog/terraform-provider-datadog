@@ -43,6 +43,7 @@ type sourcesModel struct {
 	DatadogAgentSource       []*datadogAgentSourceModel       `tfsdk:"datadog_agent"`
 	KafkaSource              []*kafkaSourceModel              `tfsdk:"kafka"`
 	AmazonDataFirehoseSource []*amazonDataFirehoseSourceModel `tfsdk:"amazon_data_firehose"`
+	HttpClientSource         []*httpClientSourceModel         `tfsdk:"http_client"`
 }
 
 // / Source models
@@ -175,6 +176,15 @@ type awsAuthModel struct {
 	SessionName types.String `tfsdk:"session_name"`
 }
 
+type httpClientSourceModel struct {
+	Id             types.String `tfsdk:"id"`
+	Decoding       types.String `tfsdk:"decoding"`
+	ScrapeInterval types.Int64  `tfsdk:"scrape_interval_secs"`
+	ScrapeTimeout  types.Int64  `tfsdk:"scrape_timeout_secs"`
+	AuthStrategy   types.String `tfsdk:"auth_strategy"`
+	Tls            *tlsModel    `tfsdk:"tls"`
+}
+
 func NewObservabilitPipelineResource() resource.Resource {
 	return &observabilityPipelineResource{}
 }
@@ -297,6 +307,36 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 												},
 											},
 										},
+										"tls": tlsSchema(),
+									},
+								},
+							},
+							"http_client": schema.ListNestedBlock{
+								Description: "The `http_client` source scrapes logs from HTTP endpoints at regular intervals.",
+								NestedObject: schema.NestedBlockObject{
+									Attributes: map[string]schema.Attribute{
+										"id": schema.StringAttribute{
+											Required:    true,
+											Description: "The unique identifier for this component. Used to reference this component in other parts of the pipeline (e.g., as input to downstream components).",
+										},
+										"decoding": schema.StringAttribute{
+											Required:    true,
+											Description: "The decoding format used to interpret incoming logs.",
+										},
+										"scrape_interval_secs": schema.Int64Attribute{
+											Optional:    true,
+											Description: "The interval (in seconds) between HTTP scrape requests.",
+										},
+										"scrape_timeout_secs": schema.Int64Attribute{
+											Optional:    true,
+											Description: "The timeout (in seconds) for each scrape request.",
+										},
+										"auth_strategy": schema.StringAttribute{
+											Optional:    true,
+											Description: "Optional authentication strategy for HTTP requests.",
+										},
+									},
+									Blocks: map[string]schema.Block{
 										"tls": tlsSchema(),
 									},
 								},
@@ -732,6 +772,9 @@ func expandPipelineRequest(ctx context.Context, state *observabilityPipelineMode
 	for _, a := range state.Config.Sources.AmazonDataFirehoseSource {
 		config.Sources = append(config.Sources, expandAmazonDataFirehoseSource(a))
 	}
+	for _, h := range state.Config.Sources.HttpClientSource {
+		config.Sources = append(config.Sources, expandHttpClientSource(h))
+	}
 
 	// Processors
 	for _, p := range state.Config.Processors.FilterProcessor {
@@ -782,6 +825,9 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 		}
 		if f := flattenAmazonDataFirehoseSource(src.ObservabilityPipelineAmazonDataFirehoseSource); f != nil {
 			outCfg.Sources.AmazonDataFirehoseSource = append(outCfg.Sources.AmazonDataFirehoseSource, f)
+		}
+		if h := flattenHttpClientSource(src.ObservabilityPipelineHttpClientSource); h != nil {
+			outCfg.Sources.HttpClientSource = append(outCfg.Sources.HttpClientSource, h)
 		}
 	}
 	for _, p := range cfg.GetProcessors() {
@@ -1266,6 +1312,57 @@ func flattenAmazonDataFirehoseSource(src *datadogV2.ObservabilityPipelineAmazonD
 		out.Auth = &auth
 	}
 
+	if src.Tls != nil {
+		tls := flattenTls(src.Tls)
+		out.Tls = &tls
+	}
+
+	return out
+}
+
+func expandHttpClientSource(src *httpClientSourceModel) datadogV2.ObservabilityPipelineConfigSourceItem {
+	httpSrc := datadogV2.NewObservabilityPipelineHttpClientSourceWithDefaults()
+	httpSrc.SetId(src.Id.ValueString())
+	httpSrc.SetDecoding(datadogV2.ObservabilityPipelineDecoding(src.Decoding.ValueString()))
+
+	if !src.ScrapeInterval.IsNull() {
+		httpSrc.SetScrapeIntervalSecs(src.ScrapeInterval.ValueInt64())
+	}
+	if !src.ScrapeTimeout.IsNull() {
+		httpSrc.SetScrapeTimeoutSecs(src.ScrapeTimeout.ValueInt64())
+	}
+	if !src.AuthStrategy.IsNull() {
+		auth := datadogV2.ObservabilityPipelineHttpClientSourceAuthStrategy(src.AuthStrategy.ValueString())
+		httpSrc.SetAuthStrategy(auth)
+	}
+	if src.Tls != nil {
+		httpSrc.Tls = expandTls(src.Tls)
+	}
+
+	return datadogV2.ObservabilityPipelineConfigSourceItem{
+		ObservabilityPipelineHttpClientSource: httpSrc,
+	}
+}
+
+func flattenHttpClientSource(src *datadogV2.ObservabilityPipelineHttpClientSource) *httpClientSourceModel {
+	if src == nil {
+		return nil
+	}
+
+	out := &httpClientSourceModel{
+		Id:       types.StringValue(src.GetId()),
+		Decoding: types.StringValue(string(src.GetDecoding())),
+	}
+
+	if v, ok := src.GetScrapeIntervalSecsOk(); ok {
+		out.ScrapeInterval = types.Int64Value(*v)
+	}
+	if v, ok := src.GetScrapeTimeoutSecsOk(); ok {
+		out.ScrapeTimeout = types.Int64Value(*v)
+	}
+	if v, ok := src.GetAuthStrategyOk(); ok && v != nil {
+		out.AuthStrategy = types.StringValue(string(*v))
+	}
 	if src.Tls != nil {
 		tls := flattenTls(src.Tls)
 		out.Tls = &tls

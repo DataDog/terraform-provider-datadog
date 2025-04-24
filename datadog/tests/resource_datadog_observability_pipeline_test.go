@@ -652,7 +652,7 @@ resource "datadog_observability_pipeline" "add_fields" {
 	})
 }
 
-func TestAccDatadogObservabilityPipeline_amazonDataFirehose(t *testing.T) {
+func TestAccDatadogObservabilityPipeline_amazonDataFirehoseSource(t *testing.T) {
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
 	resourceName := "datadog_observability_pipeline.firehose_test"
@@ -699,6 +699,58 @@ resource "datadog_observability_pipeline" "firehose_test" {
 					resource.TestCheckResourceAttr(resourceName, "config.sources.amazon_data_firehose.0.auth.external_id", "external-id-123"),
 					resource.TestCheckResourceAttr(resourceName, "config.sources.amazon_data_firehose.0.auth.session_name", "firehose-session"),
 					resource.TestCheckResourceAttr(resourceName, "config.sources.amazon_data_firehose.0.tls.crt_file", "/path/to/firehose.crt"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogObservabilityPipeline_httpClientSource(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.http_client"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "http_client" {
+  name = "http-client pipeline"
+
+  config {
+    sources {
+      http_client {
+        id                  = "http-source-1"
+        decoding            = "json"
+        scrape_interval_secs = 60
+        scrape_timeout_secs  = 10
+        auth_strategy       = "basic"
+        tls {
+          crt_file = "/path/to/http.crt"
+        }
+      }
+    }
+
+    processors {}
+
+    destinations {
+      datadog_logs {
+        id     = "destination-1"
+        inputs = ["http-source-1"]
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.http_client.0.id", "http-source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.http_client.0.decoding", "json"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.http_client.0.scrape_interval_secs", "60"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.http_client.0.scrape_timeout_secs", "10"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.http_client.0.auth_strategy", "basic"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.http_client.0.tls.crt_file", "/path/to/http.crt"),
 				),
 			},
 		},
