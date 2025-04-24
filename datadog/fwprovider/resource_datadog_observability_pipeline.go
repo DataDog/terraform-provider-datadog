@@ -44,6 +44,7 @@ type sourcesModel struct {
 	KafkaSource              []*kafkaSourceModel              `tfsdk:"kafka"`
 	AmazonDataFirehoseSource []*amazonDataFirehoseSourceModel `tfsdk:"amazon_data_firehose"`
 	HttpClientSource         []*httpClientSourceModel         `tfsdk:"http_client"`
+	GooglePubSubSource       []*googlePubSubSourceModel       `tfsdk:"google_pubsub"`
 }
 
 // / Source models
@@ -183,6 +184,19 @@ type httpClientSourceModel struct {
 	ScrapeTimeout  types.Int64  `tfsdk:"scrape_timeout_secs"`
 	AuthStrategy   types.String `tfsdk:"auth_strategy"`
 	Tls            *tlsModel    `tfsdk:"tls"`
+}
+
+type googlePubSubSourceModel struct {
+	Id           types.String  `tfsdk:"id"`
+	Project      types.String  `tfsdk:"project"`
+	Subscription types.String  `tfsdk:"subscription"`
+	Decoding     types.String  `tfsdk:"decoding"`
+	Auth         *gcpAuthModel `tfsdk:"auth"`
+	Tls          *tlsModel     `tfsdk:"tls"`
+}
+
+type gcpAuthModel struct {
+	CredentialsFile types.String `tfsdk:"credentials_file"`
 }
 
 func NewObservabilitPipelineResource() resource.Resource {
@@ -337,6 +351,41 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 										},
 									},
 									Blocks: map[string]schema.Block{
+										"tls": tlsSchema(),
+									},
+								},
+							},
+							"google_pubsub": schema.ListNestedBlock{
+								Description: "The `google_pubsub` source ingests logs from a Google Cloud Pub/Sub subscription.",
+								NestedObject: schema.NestedBlockObject{
+									Attributes: map[string]schema.Attribute{
+										"id": schema.StringAttribute{
+											Required:    true,
+											Description: "The unique identifier for this component. Used to reference this component in other parts of the pipeline (e.g., as input to downstream components).",
+										},
+										"project": schema.StringAttribute{
+											Required:    true,
+											Description: "The GCP project ID that owns the Pub/Sub subscription.",
+										},
+										"subscription": schema.StringAttribute{
+											Required:    true,
+											Description: "The Pub/Sub subscription name from which messages are consumed.",
+										},
+										"decoding": schema.StringAttribute{
+											Required:    true,
+											Description: "The decoding format used to interpret incoming logs.",
+										},
+									},
+									Blocks: map[string]schema.Block{
+										"auth": schema.SingleNestedBlock{
+											Description: "GCP credentials used to authenticate with Google Cloud Storage.",
+											Attributes: map[string]schema.Attribute{
+												"credentials_file": schema.StringAttribute{
+													Required:    true,
+													Description: "Path to the GCP service account key file.",
+												},
+											},
+										},
 										"tls": tlsSchema(),
 									},
 								},
@@ -775,6 +824,9 @@ func expandPipelineRequest(ctx context.Context, state *observabilityPipelineMode
 	for _, h := range state.Config.Sources.HttpClientSource {
 		config.Sources = append(config.Sources, expandHttpClientSource(h))
 	}
+	for _, g := range state.Config.Sources.GooglePubSubSource {
+		config.Sources = append(config.Sources, expandGooglePubSubSource(g))
+	}
 
 	// Processors
 	for _, p := range state.Config.Processors.FilterProcessor {
@@ -828,6 +880,9 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 		}
 		if h := flattenHttpClientSource(src.ObservabilityPipelineHttpClientSource); h != nil {
 			outCfg.Sources.HttpClientSource = append(outCfg.Sources.HttpClientSource, h)
+		}
+		if g := flattenGooglePubSubSource(src.ObservabilityPipelineGooglePubSubSource); g != nil {
+			outCfg.Sources.GooglePubSubSource = append(outCfg.Sources.GooglePubSubSource, g)
 		}
 	}
 	for _, p := range cfg.GetProcessors() {
@@ -1363,6 +1418,51 @@ func flattenHttpClientSource(src *datadogV2.ObservabilityPipelineHttpClientSourc
 	if v, ok := src.GetAuthStrategyOk(); ok && v != nil {
 		out.AuthStrategy = types.StringValue(string(*v))
 	}
+	if src.Tls != nil {
+		tls := flattenTls(src.Tls)
+		out.Tls = &tls
+	}
+
+	return out
+}
+
+func expandGooglePubSubSource(src *googlePubSubSourceModel) datadogV2.ObservabilityPipelineConfigSourceItem {
+	pubsub := datadogV2.NewObservabilityPipelineGooglePubSubSourceWithDefaults()
+	pubsub.SetId(src.Id.ValueString())
+	pubsub.SetProject(src.Project.ValueString())
+	pubsub.SetSubscription(src.Subscription.ValueString())
+	pubsub.SetDecoding(datadogV2.ObservabilityPipelineDecoding(src.Decoding.ValueString()))
+
+	if src.Auth != nil {
+		auth := datadogV2.ObservabilityPipelineGcpAuth{}
+		auth.SetCredentialsFile(src.Auth.CredentialsFile.ValueString())
+		pubsub.SetAuth(auth)
+	}
+
+	if src.Tls != nil {
+		pubsub.Tls = expandTls(src.Tls)
+	}
+
+	return datadogV2.ObservabilityPipelineConfigSourceItem{
+		ObservabilityPipelineGooglePubSubSource: pubsub,
+	}
+}
+
+func flattenGooglePubSubSource(src *datadogV2.ObservabilityPipelineGooglePubSubSource) *googlePubSubSourceModel {
+	if src == nil {
+		return nil
+	}
+	out := &googlePubSubSourceModel{
+		Id:           types.StringValue(src.GetId()),
+		Project:      types.StringValue(src.GetProject()),
+		Subscription: types.StringValue(src.GetSubscription()),
+		Decoding:     types.StringValue(string(src.GetDecoding())),
+	}
+
+	out.Auth = &gcpAuthModel{
+		CredentialsFile: types.StringValue(src.Auth.CredentialsFile),
+	}
+
 	if src.Tls != nil {
 		tls := flattenTls(src.Tls)
 		out.Tls = &tls

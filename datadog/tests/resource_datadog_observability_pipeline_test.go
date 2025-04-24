@@ -756,3 +756,59 @@ resource "datadog_observability_pipeline" "http_client" {
 		},
 	})
 }
+
+func TestAccDatadogObservabilityPipeline_googlePubSubSource(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.pubsub"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "pubsub" {
+  name = "pubsub pipeline"
+
+  config {
+    sources {
+      google_pubsub {
+        id           = "pubsub-source-1"
+        project      = "my-gcp-project"
+        subscription = "logs-subscription"
+        decoding     = "json"
+
+        auth {
+          credentials_file = "/secrets/creds.json"
+        }
+
+        tls {
+          crt_file = "/certs/pubsub.crt"
+        }
+      }
+    }
+
+    processors {}
+
+    destinations {
+      datadog_logs {
+        id     = "destination-1"
+        inputs = ["pubsub-source-1"]
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.google_pubsub.0.id", "pubsub-source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.google_pubsub.0.project", "my-gcp-project"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.google_pubsub.0.subscription", "logs-subscription"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.google_pubsub.0.decoding", "json"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.google_pubsub.0.auth.credentials_file", "/secrets/creds.json"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.google_pubsub.0.tls.crt_file", "/certs/pubsub.crt"),
+				),
+			},
+		},
+	})
+}
