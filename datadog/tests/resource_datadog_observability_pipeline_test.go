@@ -1300,3 +1300,45 @@ resource "datadog_observability_pipeline" "newrelic" {
 		},
 	})
 }
+
+func TestAccDatadogObservabilityPipeline_sentinelOneDestination(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.sentinelone"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "sentinelone" {
+  name = "sentinelone pipeline"
+
+  config {
+    sources {
+      datadog_agent {
+        id = "source-1"
+      }
+    }
+
+    processors {}
+
+    destinations {
+      sentinel_one {
+        id     = "sentinelone-dest-1"
+        inputs = ["source-1"]
+        region = "us"
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.sentinel_one.0.id", "sentinelone-dest-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.sentinel_one.0.region", "us"),
+				),
+			},
+		},
+	})
+}
