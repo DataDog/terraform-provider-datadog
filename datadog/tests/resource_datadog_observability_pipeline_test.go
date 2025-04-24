@@ -1111,3 +1111,99 @@ resource "datadog_observability_pipeline" "add_env_vars" {
 		},
 	})
 }
+
+func TestAccDatadogObservabilityPipeline_enrichmentTableProcessor(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.enrichment"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "enrichment" {
+  name = "enrichment pipeline"
+
+  config {
+    sources {
+      datadog_agent {
+        id = "source-1"
+      }
+    }
+
+    processors {
+      enrichment_table {
+        id      = "csv-enrichment"
+        include = "*"
+        inputs  = ["source-1"]
+        target  = "log.geo.csv"
+
+        file {
+          path = "/etc/enrichment/lookup.csv"
+
+          encoding {
+            type             = "csv"
+            delimiter        = ","
+            includes_headers = true
+          }
+
+          schema {
+            column = "region"
+            type   = "string"
+          }
+
+          schema {
+            column = "city"
+            type   = "string"
+          }
+
+          key {
+            column     = "user_id"
+            comparison = "equals"
+            field      = "log.user.id"
+          }
+        }
+      }
+
+      enrichment_table {
+        id      = "geoip-enrichment"
+        include = "*"
+        inputs  = ["csv-enrichment"]
+        target  = "log.geo.geoip"
+
+        geoip {
+          key_field = "log.source.ip"
+          locale    = "en"
+          path      = "/etc/geoip/GeoLite2-City.mmdb"
+        }
+      }
+    }
+
+    destinations {
+      datadog_logs {
+        id     = "destination-1"
+        inputs = ["geoip-enrichment"]
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					// CSV enrichment checks
+					resource.TestCheckResourceAttr(resourceName, "config.processors.enrichment_table.0.id", "csv-enrichment"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.enrichment_table.0.file.path", "/etc/enrichment/lookup.csv"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.enrichment_table.0.file.encoding.delimiter", ","),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.enrichment_table.0.file.schema.0.column", "region"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.enrichment_table.0.file.key.0.field", "log.user.id"),
+					// GeoIP enrichment checks
+					resource.TestCheckResourceAttr(resourceName, "config.processors.enrichment_table.1.id", "geoip-enrichment"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.enrichment_table.1.geoip.key_field", "log.source.ip"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.enrichment_table.1.geoip.locale", "en"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.enrichment_table.1.geoip.path", "/etc/geoip/GeoLite2-City.mmdb"),
+				),
+			},
+		},
+	})
+}

@@ -85,16 +85,56 @@ type tlsModel struct {
 // Processor models
 
 type processorsModel struct {
-	FilterProcessor       []*filterProcessorModel       `tfsdk:"filter"`
-	ParseJsonProcessor    []*parseJsonProcessorModel    `tfsdk:"parse_json"`
-	AddFieldsProcessor    []*addFieldsProcessor         `tfsdk:"add_fields"`
-	RenameFieldsProcessor []*renameFieldsProcessorModel `tfsdk:"rename_fields"`
-	RemoveFieldsProcessor []*removeFieldsProcessorModel `tfsdk:"remove_fields"`
-	QuotaProcessor        []*quotaProcessorModel        `tfsdk:"quota"`
-	DedupeProcessor       []*dedupeProcessorModel       `tfsdk:"dedupe"`
-	ReduceProcessor       []*reduceProcessorModel       `tfsdk:"reduce"`
-	ThrottleProcessor     []*throttleProcessorModel     `tfsdk:"throttle"`
-	AddEnvVarsProcessor   []*addEnvVarsProcessorModel   `tfsdk:"add_env_vars"`
+	FilterProcessor          []*filterProcessorModel          `tfsdk:"filter"`
+	ParseJsonProcessor       []*parseJsonProcessorModel       `tfsdk:"parse_json"`
+	AddFieldsProcessor       []*addFieldsProcessor            `tfsdk:"add_fields"`
+	RenameFieldsProcessor    []*renameFieldsProcessorModel    `tfsdk:"rename_fields"`
+	RemoveFieldsProcessor    []*removeFieldsProcessorModel    `tfsdk:"remove_fields"`
+	QuotaProcessor           []*quotaProcessorModel           `tfsdk:"quota"`
+	DedupeProcessor          []*dedupeProcessorModel          `tfsdk:"dedupe"`
+	ReduceProcessor          []*reduceProcessorModel          `tfsdk:"reduce"`
+	ThrottleProcessor        []*throttleProcessorModel        `tfsdk:"throttle"`
+	AddEnvVarsProcessor      []*addEnvVarsProcessorModel      `tfsdk:"add_env_vars"`
+	EnrichmentTableProcessor []*enrichmentTableProcessorModel `tfsdk:"enrichment_table"`
+}
+
+type enrichmentTableProcessorModel struct {
+	Id      types.String          `tfsdk:"id"`
+	Include types.String          `tfsdk:"include"`
+	Inputs  types.List            `tfsdk:"inputs"`
+	Target  types.String          `tfsdk:"target"`
+	File    *enrichmentFileModel  `tfsdk:"file"`
+	GeoIp   *enrichmentGeoIpModel `tfsdk:"geoip"`
+}
+
+type enrichmentFileModel struct {
+	Path     types.String          `tfsdk:"path"`
+	Encoding fileEncodingModel     `tfsdk:"encoding"`
+	Schema   []fileSchemaItemModel `tfsdk:"schema"`
+	Key      []fileKeyItemModel    `tfsdk:"key"`
+}
+
+type fileEncodingModel struct {
+	Type            types.String `tfsdk:"type"`
+	Delimiter       types.String `tfsdk:"delimiter"`
+	IncludesHeaders types.Bool   `tfsdk:"includes_headers"`
+}
+
+type fileSchemaItemModel struct {
+	Column types.String `tfsdk:"column"`
+	Type   types.String `tfsdk:"type"`
+}
+
+type fileKeyItemModel struct {
+	Column     types.String `tfsdk:"column"`
+	Comparison types.String `tfsdk:"comparison"`
+	Field      types.String `tfsdk:"field"`
+}
+
+type enrichmentGeoIpModel struct {
+	KeyField types.String `tfsdk:"key_field"`
+	Locale   types.String `tfsdk:"locale"`
+	Path     types.String `tfsdk:"path"`
 }
 
 type addEnvVarsProcessorModel struct {
@@ -847,6 +887,110 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 									},
 								},
 							},
+							"enrichment_table": schema.ListNestedBlock{
+								Description: "The `enrichment_table` processor enriches logs using a static CSV file or GeoIP database.",
+								NestedObject: schema.NestedBlockObject{
+									Attributes: map[string]schema.Attribute{
+										"id": schema.StringAttribute{
+											Required:    true,
+											Description: "The unique identifier for this processor.",
+										},
+										"include": schema.StringAttribute{
+											Required:    true,
+											Description: "A Datadog search query used to determine which logs this processor targets.",
+										},
+										"inputs": schema.ListAttribute{
+											Required:    true,
+											ElementType: types.StringType,
+											Description: "A list of component IDs whose output is used as the input for this processor.",
+										},
+										"target": schema.StringAttribute{
+											Required:    true,
+											Description: "Path where enrichment results should be stored in the log.",
+										},
+									},
+									Blocks: map[string]schema.Block{
+										"file": schema.SingleNestedBlock{
+											Description: "Defines a static enrichment table loaded from a CSV file.",
+											Attributes: map[string]schema.Attribute{
+												"path": schema.StringAttribute{
+													Optional:    true,
+													Description: "Path to the CSV file.",
+												},
+											},
+											Blocks: map[string]schema.Block{
+												"encoding": schema.SingleNestedBlock{
+													Attributes: map[string]schema.Attribute{
+														"type": schema.StringAttribute{
+															Optional:    true,
+															Description: "File encoding format.",
+														},
+														"delimiter": schema.StringAttribute{
+															Optional:    true,
+															Description: "The `encoding` `delimiter`.",
+														},
+														"includes_headers": schema.BoolAttribute{
+															Optional:    true,
+															Description: "The `encoding` `includes_headers`.",
+														},
+													},
+												},
+												"schema": schema.ListNestedBlock{
+													Description: "Schema defining column names and their types.",
+													NestedObject: schema.NestedBlockObject{
+														Attributes: map[string]schema.Attribute{
+															"column": schema.StringAttribute{
+																Optional:    true,
+																Description: "The `items` `column`.",
+															},
+															"type": schema.StringAttribute{
+																Optional:    true,
+																Description: "The type of the column (e.g. string, boolean, integer, etc.).",
+															},
+														},
+													},
+												},
+												"key": schema.ListNestedBlock{
+													Description: "Key fields used to look up enrichment values.",
+													NestedObject: schema.NestedBlockObject{
+														Attributes: map[string]schema.Attribute{
+															"column": schema.StringAttribute{
+																Optional:    true,
+																Description: "The `items` `column`.",
+															},
+															"comparison": schema.StringAttribute{
+																Optional:    true,
+																Description: "The comparison method (e.g. equals).",
+															},
+															"field": schema.StringAttribute{
+																Optional:    true,
+																Description: "The `items` `field`.",
+															},
+														},
+													},
+												},
+											},
+										},
+										"geoip": schema.SingleNestedBlock{
+											Description: "Uses a GeoIP database to enrich logs based on an IP field.",
+											Attributes: map[string]schema.Attribute{
+												"key_field": schema.StringAttribute{
+													Optional:    true,
+													Description: "Path to the IP field in the log.",
+												},
+												"locale": schema.StringAttribute{
+													Optional:    true,
+													Description: "Locale used to resolve geographical names.",
+												},
+												"path": schema.StringAttribute{
+													Optional:    true,
+													Description: "Path to the GeoIP database file.",
+												},
+											},
+										},
+									},
+								},
+							},
 						},
 					},
 					"destinations": schema.SingleNestedBlock{
@@ -1068,6 +1212,9 @@ func expandPipelineRequest(ctx context.Context, state *observabilityPipelineMode
 	for _, p := range state.Config.Processors.AddEnvVarsProcessor {
 		config.Processors = append(config.Processors, expandAddEnvVarsProcessor(ctx, p))
 	}
+	for _, p := range state.Config.Processors.EnrichmentTableProcessor {
+		config.Processors = append(config.Processors, expandEnrichmentTableProcessor(ctx, p))
+	}
 
 	// Destinations
 	for _, d := range state.Config.Destinations.DatadogLogsDestination {
@@ -1139,6 +1286,9 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 		}
 		if f := flattenAddEnvVarsProcessor(ctx, p.ObservabilityPipelineAddEnvVarsProcessor); f != nil {
 			outCfg.Processors.AddEnvVarsProcessor = append(outCfg.Processors.AddEnvVarsProcessor, f)
+		}
+		if f := flattenEnrichmentTableProcessor(ctx, p.ObservabilityPipelineEnrichmentTableProcessor); f != nil {
+			outCfg.Processors.EnrichmentTableProcessor = append(outCfg.Processors.EnrichmentTableProcessor, f)
 		}
 
 	}
@@ -1923,4 +2073,102 @@ func flattenAddEnvVarsProcessor(ctx context.Context, src *datadogV2.Observabilit
 		Inputs:    inputs,
 		Variables: vars,
 	}
+}
+
+func expandEnrichmentTableProcessor(ctx context.Context, src *enrichmentTableProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
+	proc := datadogV2.NewObservabilityPipelineEnrichmentTableProcessorWithDefaults()
+	proc.SetId(src.Id.ValueString())
+	proc.SetInclude(src.Include.ValueString())
+	proc.SetTarget(src.Target.ValueString())
+
+	var inputs []string
+	src.Inputs.ElementsAs(ctx, &inputs, false)
+	proc.SetInputs(inputs)
+
+	if src.File != nil {
+		file := datadogV2.ObservabilityPipelineEnrichmentTableFile{
+			Path: src.File.Path.ValueString(),
+		}
+		file.Encoding = datadogV2.ObservabilityPipelineEnrichmentTableFileEncoding{
+			Type:            datadogV2.ObservabilityPipelineEnrichmentTableFileEncodingType(src.File.Encoding.Type.ValueString()),
+			Delimiter:       src.File.Encoding.Delimiter.ValueString(),
+			IncludesHeaders: src.File.Encoding.IncludesHeaders.ValueBool(),
+		}
+		for _, s := range src.File.Schema {
+			file.Schema = append(file.Schema, datadogV2.ObservabilityPipelineEnrichmentTableFileSchemaItems{
+				Column: s.Column.ValueString(),
+				Type:   datadogV2.ObservabilityPipelineEnrichmentTableFileSchemaItemsType(s.Type.ValueString()),
+			})
+		}
+		for _, k := range src.File.Key {
+			file.Key = append(file.Key, datadogV2.ObservabilityPipelineEnrichmentTableFileKeyItems{
+				Column:     k.Column.ValueString(),
+				Comparison: datadogV2.ObservabilityPipelineEnrichmentTableFileKeyItemsComparison(k.Comparison.ValueString()),
+				Field:      k.Field.ValueString(),
+			})
+		}
+		proc.File = &file
+	}
+
+	if src.GeoIp != nil {
+		proc.Geoip = &datadogV2.ObservabilityPipelineEnrichmentTableGeoIp{
+			KeyField: src.GeoIp.KeyField.ValueString(),
+			Locale:   src.GeoIp.Locale.ValueString(),
+			Path:     src.GeoIp.Path.ValueString(),
+		}
+	}
+
+	return datadogV2.ObservabilityPipelineConfigProcessorItem{
+		ObservabilityPipelineEnrichmentTableProcessor: proc,
+	}
+}
+
+func flattenEnrichmentTableProcessor(ctx context.Context, src *datadogV2.ObservabilityPipelineEnrichmentTableProcessor) *enrichmentTableProcessorModel {
+	if src == nil {
+		return nil
+	}
+
+	inputs, _ := types.ListValueFrom(ctx, types.StringType, src.Inputs)
+
+	out := &enrichmentTableProcessorModel{
+		Id:      types.StringValue(src.Id),
+		Include: types.StringValue(src.Include),
+		Inputs:  inputs,
+		Target:  types.StringValue(src.Target),
+	}
+
+	if src.File != nil {
+		file := enrichmentFileModel{
+			Path: types.StringValue(src.File.Path),
+		}
+		file.Encoding = fileEncodingModel{
+			Type:            types.StringValue(string(src.File.Encoding.Type)),
+			Delimiter:       types.StringValue(src.File.Encoding.Delimiter),
+			IncludesHeaders: types.BoolValue(src.File.Encoding.IncludesHeaders),
+		}
+		for _, s := range src.File.Schema {
+			file.Schema = append(file.Schema, fileSchemaItemModel{
+				Column: types.StringValue(s.Column),
+				Type:   types.StringValue(string(s.Type)),
+			})
+		}
+		for _, k := range src.File.Key {
+			file.Key = append(file.Key, fileKeyItemModel{
+				Column:     types.StringValue(k.Column),
+				Comparison: types.StringValue(string(k.Comparison)),
+				Field:      types.StringValue(k.Field),
+			})
+		}
+		out.File = &file
+	}
+
+	if src.Geoip != nil {
+		out.GeoIp = &enrichmentGeoIpModel{
+			KeyField: types.StringValue(src.Geoip.KeyField),
+			Locale:   types.StringValue(src.Geoip.Locale),
+			Path:     types.StringValue(src.Geoip.Path),
+		}
+	}
+
+	return out
 }
