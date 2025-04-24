@@ -93,6 +93,16 @@ type processorsModel struct {
 	QuotaProcessor        []*quotaProcessorModel        `tfsdk:"quota"`
 	DedupeProcessor       []*dedupeProcessorModel       `tfsdk:"dedupe"`
 	ReduceProcessor       []*reduceProcessorModel       `tfsdk:"reduce"`
+	ThrottleProcessor     []*throttleProcessorModel     `tfsdk:"throttle"`
+}
+
+type throttleProcessorModel struct {
+	Id        types.String   `tfsdk:"id"`
+	Include   types.String   `tfsdk:"include"`
+	Inputs    types.List     `tfsdk:"inputs"`
+	Threshold types.Int64    `tfsdk:"threshold"`
+	Window    types.Float64  `tfsdk:"window"`
+	GroupBy   []types.String `tfsdk:"group_by"`
 }
 
 type reduceProcessorModel struct {
@@ -754,6 +764,39 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 									},
 								},
 							},
+							"throttle": schema.ListNestedBlock{
+								Description: "The `throttle` processor limits the number of events that pass through over a given time window.",
+								NestedObject: schema.NestedBlockObject{
+									Attributes: map[string]schema.Attribute{
+										"id": schema.StringAttribute{
+											Required:    true,
+											Description: "The unique identifier for this processor.",
+										},
+										"include": schema.StringAttribute{
+											Required:    true,
+											Description: "A Datadog search query used to determine which logs this processor targets.",
+										},
+										"inputs": schema.ListAttribute{
+											Required:    true,
+											ElementType: types.StringType,
+											Description: "A list of component IDs whose output is used as the input for this processor.",
+										},
+										"threshold": schema.Int64Attribute{
+											Required:    true,
+											Description: "The number of events to allow before throttling is applied.",
+										},
+										"window": schema.Float64Attribute{
+											Required:    true,
+											Description: "The time window in seconds over which the threshold applies.",
+										},
+										"group_by": schema.ListAttribute{
+											Optional:    true,
+											ElementType: types.StringType,
+											Description: "Optional list of fields used to group events before applying throttling.",
+										},
+									},
+								},
+							},
 						},
 					},
 					"destinations": schema.SingleNestedBlock{
@@ -969,6 +1012,9 @@ func expandPipelineRequest(ctx context.Context, state *observabilityPipelineMode
 	for _, p := range state.Config.Processors.ReduceProcessor {
 		config.Processors = append(config.Processors, expandReduceProcessor(ctx, p))
 	}
+	for _, p := range state.Config.Processors.ThrottleProcessor {
+		config.Processors = append(config.Processors, expandThrottleProcessor(ctx, p))
+	}
 
 	// Destinations
 	for _, d := range state.Config.Destinations.DatadogLogsDestination {
@@ -1035,6 +1081,10 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 		if f := flattenReduceProcessor(ctx, p.ObservabilityPipelineReduceProcessor); f != nil {
 			outCfg.Processors.ReduceProcessor = append(outCfg.Processors.ReduceProcessor, f)
 		}
+		if f := flattenThrottleProcessor(ctx, p.ObservabilityPipelineThrottleProcessor); f != nil {
+			outCfg.Processors.ThrottleProcessor = append(outCfg.Processors.ThrottleProcessor, f)
+		}
+
 	}
 	for _, d := range cfg.GetDestinations() {
 		if logs := flattenDatadogLogsDestination(ctx, d.ObservabilityPipelineDatadogLogsDestination); logs != nil {
@@ -1723,5 +1773,52 @@ func flattenReduceProcessor(ctx context.Context, src *datadogV2.ObservabilityPip
 		Inputs:          inputs,
 		GroupBy:         groupBy,
 		MergeStrategies: strategies,
+	}
+}
+
+func expandThrottleProcessor(ctx context.Context, src *throttleProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
+	proc := datadogV2.NewObservabilityPipelineThrottleProcessorWithDefaults()
+	proc.SetId(src.Id.ValueString())
+	proc.SetInclude(src.Include.ValueString())
+
+	var inputs []string
+	src.Inputs.ElementsAs(ctx, &inputs, false)
+	proc.SetInputs(inputs)
+
+	proc.SetThreshold(src.Threshold.ValueInt64())
+	proc.SetWindow(src.Window.ValueFloat64())
+
+	var groupBy []string
+	for _, g := range src.GroupBy {
+		groupBy = append(groupBy, g.ValueString())
+	}
+	if len(groupBy) > 0 {
+		proc.SetGroupBy(groupBy)
+	}
+
+	return datadogV2.ObservabilityPipelineConfigProcessorItem{
+		ObservabilityPipelineThrottleProcessor: proc,
+	}
+}
+
+func flattenThrottleProcessor(ctx context.Context, src *datadogV2.ObservabilityPipelineThrottleProcessor) *throttleProcessorModel {
+	if src == nil {
+		return nil
+	}
+
+	inputs, _ := types.ListValueFrom(ctx, types.StringType, src.Inputs)
+
+	var groupBy []types.String
+	for _, g := range src.GroupBy {
+		groupBy = append(groupBy, types.StringValue(g))
+	}
+
+	return &throttleProcessorModel{
+		Id:        types.StringValue(src.Id),
+		Include:   types.StringValue(src.Include),
+		Inputs:    inputs,
+		Threshold: types.Int64Value(src.Threshold),
+		Window:    types.Float64Value(src.Window),
+		GroupBy:   groupBy,
 	}
 }

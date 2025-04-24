@@ -991,3 +991,64 @@ resource "datadog_observability_pipeline" "reduce" {
 		},
 	})
 }
+
+func TestAccDatadogObservabilityPipeline_throttleProcessor(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.throttle"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "throttle" {
+  name = "throttle pipeline"
+
+  config {
+    sources {
+      datadog_agent {
+        id = "source-1"
+      }
+    }
+
+    processors {
+      throttle {
+        id        = "throttle-global"
+        include   = "*"
+        inputs    = ["source-1"]
+        threshold = 1000
+        window    = 60.0
+      }
+
+      throttle {
+        id        = "throttle-grouped"
+        include   = "*"
+        inputs    = ["throttle-global"]
+        threshold = 100
+        window    = 10.0
+        group_by  = ["log.user.id", "log.level"]
+      }
+    }
+
+    destinations {
+      datadog_logs {
+        id     = "destination-1"
+        inputs = ["throttle-grouped"]
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.throttle.0.id", "throttle-global"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.throttle.0.threshold", "1000"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.throttle.1.id", "throttle-grouped"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.throttle.1.group_by.0", "log.user.id"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.throttle.1.group_by.1", "log.level"),
+				),
+			},
+		},
+	})
+}
