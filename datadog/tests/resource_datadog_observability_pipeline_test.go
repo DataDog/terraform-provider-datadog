@@ -880,29 +880,38 @@ resource "datadog_observability_pipeline" "dedupe" {
 
     processors {
       dedupe {
-        id      = "dedupe-1"
+        id      = "dedupe-match"
         include = "*"
         inputs  = ["source-1"]
-        fields  = ["log.message", "log.error"]
+        fields  = ["log.message", "log.tags"]
         mode    = "match"
+      }
+
+      dedupe {
+        id      = "dedupe-ignore"
+        include = "*"
+        inputs  = ["dedupe-match"]
+        fields  = ["log.source", "log.context"]
+        mode    = "ignore"
       }
     }
 
     destinations {
       datadog_logs {
         id     = "destination-1"
-        inputs = ["dedupe-1"]
+        inputs = ["dedupe-ignore"]
       }
     }
   }
 }`,
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.dedupe.0.id", "dedupe-1"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.dedupe.0.include", "*"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.dedupe.0.fields.0", "log.message"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.dedupe.0.fields.1", "log.error"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.dedupe.0.id", "dedupe-match"),
 					resource.TestCheckResourceAttr(resourceName, "config.processors.dedupe.0.mode", "match"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.dedupe.1.id", "dedupe-ignore"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.dedupe.1.mode", "ignore"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.dedupe.0.fields.0", "log.message"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.dedupe.1.fields.1", "log.context"),
 				),
 			},
 		},
