@@ -94,7 +94,7 @@ func TestCustomFramework_delete(t *testing.T) {
 	})
 }
 
-func TestCustomFramework_updateMultipleRequirements(t *testing.T) {
+func TestCustomFramework_createMultipleRequirements(t *testing.T) {
 	t.Parallel()
 	handle := fmt.Sprintf("handle-%d", rand.Intn(100000))
 	version := fmt.Sprintf("version-%d", rand.Intn(100000))
@@ -126,6 +126,149 @@ func TestCustomFramework_updateMultipleRequirements(t *testing.T) {
 					resource.TestCheckTypeSetElemAttr(path, "requirements.*.controls.*.rules_id.*", "def-000-be9"),
 					resource.TestCheckTypeSetElemAttr(path, "requirements.*.controls.*.rules_id.*", "def-000-cea"),
 				),
+			},
+		},
+	})
+}
+
+func TestCustomFramework_sameConfigNoUpdate(t *testing.T) {
+	t.Parallel()
+	handle := fmt.Sprintf("handle-%d", rand.Intn(100000))
+	version := fmt.Sprintf("version-%d", rand.Intn(100000))
+
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	path := "datadog_custom_framework.sample_rules"
+
+	// First config with one order of requirements
+	config1 := fmt.Sprintf(`
+		resource "datadog_custom_framework" "sample_rules" {
+			version       = "%s"
+			handle        = "%s"
+			name          = "new-framework-terraform"
+			description   = "test description"
+			icon_url      = "test url"
+			requirements  {
+				name = "requirement1"
+				controls {
+					name = "control1"
+					rules_id = ["def-000-be9"]
+				}
+			}
+			requirements  {
+				name = "requirement2"
+				controls {
+					name = "control2"
+					rules_id = ["def-000-cea"]
+				}
+			}
+			requirements  {
+				name = "requirement3"
+				controls {
+					name = "control3"
+					rules_id = ["def-000-be9", "def-000-cea"]
+				}
+			}
+		}
+	`, version, handle)
+
+	// Second config with different order of requirements
+	config2 := fmt.Sprintf(`
+		resource "datadog_custom_framework" "sample_rules" {
+			version       = "%s"
+			handle        = "%s"
+			name          = "new-framework-terraform"
+			description   = "test description"
+			icon_url      = "test url"
+			requirements  {
+				name = "requirement3"
+				controls {
+					name = "control3"
+					rules_id = ["def-000-be9"]
+				}
+			}
+			requirements  {
+				name = "requirement1"
+				controls {
+					name = "control1"
+					rules_id = ["def-000-be9"]
+				}
+			}
+			requirements  {
+				name = "requirement2"
+				controls {
+					name = "control2"
+					rules_id = ["def-000-be9", "def-000-cea"]
+				}
+			}
+		}
+	`, version, handle)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogFrameworkDestroy(ctx, providers.frameworkProvider, path, version, handle),
+		Steps: []resource.TestStep{
+			{
+				Config: config1,
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(path, "handle", handle),
+					resource.TestCheckResourceAttr(path, "version", version),
+					resource.TestCheckResourceAttr(path, "name", "new-framework-terraform"),
+					resource.TestCheckResourceAttr(path, "description", "test description"),
+					resource.TestCheckResourceAttr(path, "icon_url", "test url"),
+					resource.TestCheckTypeSetElemNestedAttrs(path, "requirements.*", map[string]string{
+						"name": "requirement1",
+					}),
+					resource.TestCheckTypeSetElemNestedAttrs(path, "requirements.*", map[string]string{
+						"name": "requirement2",
+					}),
+					resource.TestCheckTypeSetElemNestedAttrs(path, "requirements.*", map[string]string{
+						"name": "requirement3",
+					}),
+					resource.TestCheckTypeSetElemNestedAttrs(path, "requirements.*.controls.*", map[string]string{
+						"name": "control1",
+					}),
+					resource.TestCheckTypeSetElemNestedAttrs(path, "requirements.*.controls.*", map[string]string{
+						"name": "control2",
+					}),
+					resource.TestCheckTypeSetElemNestedAttrs(path, "requirements.*.controls.*", map[string]string{
+						"name": "control3",
+					}),
+					resource.TestCheckTypeSetElemAttr(path, "requirements.*.controls.*.rules_id.*", "def-000-be9"),
+					resource.TestCheckTypeSetElemAttr(path, "requirements.*.controls.*.rules_id.*", "def-000-cea"),
+				),
+			},
+			{
+				Config: config2,
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(path, "handle", handle),
+					resource.TestCheckResourceAttr(path, "version", version),
+					resource.TestCheckResourceAttr(path, "name", "new-framework-terraform"),
+					resource.TestCheckResourceAttr(path, "description", "test description"),
+					resource.TestCheckResourceAttr(path, "icon_url", "test url"),
+					resource.TestCheckTypeSetElemNestedAttrs(path, "requirements.*", map[string]string{
+						"name": "requirement1",
+					}),
+					resource.TestCheckTypeSetElemNestedAttrs(path, "requirements.*", map[string]string{
+						"name": "requirement2",
+					}),
+					resource.TestCheckTypeSetElemNestedAttrs(path, "requirements.*", map[string]string{
+						"name": "requirement3",
+					}),
+					resource.TestCheckTypeSetElemNestedAttrs(path, "requirements.*.controls.*", map[string]string{
+						"name": "control1",
+					}),
+					resource.TestCheckTypeSetElemNestedAttrs(path, "requirements.*.controls.*", map[string]string{
+						"name": "control2",
+					}),
+					resource.TestCheckTypeSetElemNestedAttrs(path, "requirements.*.controls.*", map[string]string{
+						"name": "control3",
+					}),
+					resource.TestCheckTypeSetElemAttr(path, "requirements.*.controls.*.rules_id.*", "def-000-be9"),
+					resource.TestCheckTypeSetElemAttr(path, "requirements.*.controls.*.rules_id.*", "def-000-cea"),
+				),
+				// This step should not trigger an update since only the order is different
+				ExpectNonEmptyPlan: false,
 			},
 		},
 	})
