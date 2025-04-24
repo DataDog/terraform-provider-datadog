@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"math/rand"
+	"regexp"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
@@ -274,6 +275,34 @@ func TestCustomFramework_sameConfigNoUpdate(t *testing.T) {
 	})
 }
 
+func TestCustomFramework_InvalidCreate(t *testing.T) {
+	t.Parallel()
+	handle := fmt.Sprintf("handle-%d", rand.Intn(100000))
+	version := fmt.Sprintf("version-%d", rand.Intn(100000))
+
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	path := "datadog_custom_framework.sample_rules"
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogFrameworkDestroy(ctx, providers.frameworkProvider, path, version, handle),
+		Steps: []resource.TestStep{
+			{
+				Config:      testAccCheckDatadogCreateInvalidFramework(version, handle),
+				ExpectError: regexp.MustCompile("400 Bad Request"),
+			},
+			{
+				Config:      testAccCheckDatadogCreateFrameworkRuleIdsInvalid(version, handle),
+				ExpectError: regexp.MustCompile("400 Bad Request"),
+			},
+			{
+				Config:      testAccCheckDatadogCreateFrameworkNoRequirements(version, handle),
+				ExpectError: regexp.MustCompile("400 Bad Request"),
+			},
+		},
+	})
+}
+
 func testAccCheckDatadogCreateFrameworkWithMultipleRequirements(version string, handle string) string {
 	return fmt.Sprintf(`
 		resource "datadog_custom_framework" "sample_rules" {
@@ -306,6 +335,56 @@ func testAccCheckDatadogCreateFramework(version string, handle string) string {
 			version       = "%s"
 			handle        = "%s"
 			name          = "new-framework-terraform"
+			description   = "test description"
+			icon_url      = "test url"
+			requirements  {
+				name = "requirement1"
+				controls {
+					name = "control1"
+					rules_id = ["def-000-be9"]
+				}
+			}
+		}
+	`, version, handle)
+}
+
+func testAccCheckDatadogCreateFrameworkRuleIdsInvalid(version string, handle string) string {
+	return fmt.Sprintf(`
+		resource "datadog_custom_framework" "sample_rules" {
+			version       = "%s"
+			handle        = "%s"
+			name          = "new-framework-terraform"
+			description   = "test description"
+			icon_url      = "test url"
+			requirements  {
+				name = "requirement1"
+				controls {
+					name = "control1"
+					rules_id = ["invalid-rule-id"]
+				}
+			}
+		}
+	`, version, handle)
+}
+
+func testAccCheckDatadogCreateFrameworkNoRequirements(version string, handle string) string {
+	return fmt.Sprintf(`
+		resource "datadog_custom_framework" "sample_rules" {
+			version       = "%s"
+			handle        = "%s"
+			name          = "new-framework-terraform"
+			description   = "test description"
+			icon_url      = "test url"
+		}
+	`, version, handle)
+}
+
+func testAccCheckDatadogCreateInvalidFramework(version string, handle string) string {
+	return fmt.Sprintf(`
+		resource "datadog_custom_framework" "sample_rules" {
+			version       = "%s"
+			handle        = "%s"
+			name          = ""  # Invalid empty name
 			description   = "test description"
 			icon_url      = "test url"
 			requirements  {
