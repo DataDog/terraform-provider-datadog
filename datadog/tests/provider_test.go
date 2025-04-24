@@ -74,6 +74,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/data_source_datadog_logs_pipelines_test":                          "logs-pipelines",
 	"tests/data_source_datadog_monitor_config_policies_test":                 "monitor-config-policies",
 	"tests/data_source_datadog_monitor_config_policy_test":                   "monitor-config-policies",
+	"tests/data_source_datadog_metric_tags_test":                             "metrics",
 	"tests/data_source_datadog_monitor_test":                                 "monitors",
 	"tests/data_source_datadog_monitors_test":                                "monitors",
 	"tests/data_source_datadog_permissions_test":                             "permissions",
