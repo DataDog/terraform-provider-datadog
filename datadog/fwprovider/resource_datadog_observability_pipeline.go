@@ -91,6 +91,15 @@ type processorsModel struct {
 	RenameFieldsProcessor []*renameFieldsProcessorModel `tfsdk:"rename_fields"`
 	RemoveFieldsProcessor []*removeFieldsProcessorModel `tfsdk:"remove_fields"`
 	QuotaProcessor        []*quotaProcessorModel        `tfsdk:"quota"`
+	DedupeProcessor       []*dedupeProcessorModel       `tfsdk:"dedupe"`
+}
+
+type dedupeProcessorModel struct {
+	Id      types.String   `tfsdk:"id"`
+	Include types.String   `tfsdk:"include"`
+	Inputs  types.List     `tfsdk:"inputs"`
+	Fields  []types.String `tfsdk:"fields"`
+	Mode    types.String   `tfsdk:"mode"`
 }
 
 type filterProcessorModel struct {
@@ -660,6 +669,35 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 									},
 								},
 							},
+							"dedupe": schema.ListNestedBlock{
+								Description: "The `dedupe` processor removes duplicate fields in log events.",
+								NestedObject: schema.NestedBlockObject{
+									Attributes: map[string]schema.Attribute{
+										"id": schema.StringAttribute{
+											Required:    true,
+											Description: "The unique identifier for this processor.",
+										},
+										"include": schema.StringAttribute{
+											Required:    true,
+											Description: "A Datadog search query used to determine which logs this processor targets.",
+										},
+										"inputs": schema.ListAttribute{
+											Required:    true,
+											ElementType: types.StringType,
+											Description: "A list of component IDs whose output is used as the input for this processor.",
+										},
+										"fields": schema.ListAttribute{
+											Required:    true,
+											ElementType: types.StringType,
+											Description: "A list of log field paths to check for duplicates.",
+										},
+										"mode": schema.StringAttribute{
+											Required:    true,
+											Description: "The deduplication mode to apply to the fields.",
+										},
+									},
+								},
+							},
 						},
 					},
 					"destinations": schema.SingleNestedBlock{
@@ -869,6 +907,9 @@ func expandPipelineRequest(ctx context.Context, state *observabilityPipelineMode
 	for _, p := range state.Config.Processors.QuotaProcessor {
 		config.Processors = append(config.Processors, expandQuotaProcessor(ctx, p))
 	}
+	for _, p := range state.Config.Processors.DedupeProcessor {
+		config.Processors = append(config.Processors, expandDedupeProcessor(ctx, p))
+	}
 
 	// Destinations
 	for _, d := range state.Config.Destinations.DatadogLogsDestination {
@@ -928,6 +969,9 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 		}
 		if f := flattenQuotaProcessor(ctx, p.ObservabilityPipelineQuotaProcessor); f != nil {
 			outCfg.Processors.QuotaProcessor = append(outCfg.Processors.QuotaProcessor, f)
+		}
+		if f := flattenDedupeProcessor(ctx, p.ObservabilityPipelineDedupeProcessor); f != nil {
+			outCfg.Processors.DedupeProcessor = append(outCfg.Processors.DedupeProcessor, f)
 		}
 	}
 	for _, d := range cfg.GetDestinations() {
@@ -1519,4 +1563,47 @@ func flattenLogstashSource(src *datadogV2.ObservabilityPipelineLogstashSource) *
 		out.Tls = &tls
 	}
 	return out
+}
+
+func expandDedupeProcessor(ctx context.Context, src *dedupeProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
+	proc := datadogV2.NewObservabilityPipelineDedupeProcessorWithDefaults()
+	proc.SetId(src.Id.ValueString())
+	proc.SetInclude(src.Include.ValueString())
+
+	var inputs []string
+	src.Inputs.ElementsAs(ctx, &inputs, false)
+	proc.SetInputs(inputs)
+
+	var fields []string
+	for _, f := range src.Fields {
+		fields = append(fields, f.ValueString())
+	}
+	proc.SetFields(fields)
+
+	proc.SetMode(datadogV2.ObservabilityPipelineDedupeProcessorMode(src.Mode.ValueString()))
+
+	return datadogV2.ObservabilityPipelineConfigProcessorItem{
+		ObservabilityPipelineDedupeProcessor: proc,
+	}
+}
+
+func flattenDedupeProcessor(ctx context.Context, src *datadogV2.ObservabilityPipelineDedupeProcessor) *dedupeProcessorModel {
+	if src == nil {
+		return nil
+	}
+
+	inputs, _ := types.ListValueFrom(ctx, types.StringType, src.Inputs)
+
+	var fields []types.String
+	for _, f := range src.Fields {
+		fields = append(fields, types.StringValue(f))
+	}
+
+	return &dedupeProcessorModel{
+		Id:      types.StringValue(src.Id),
+		Include: types.StringValue(src.Include),
+		Inputs:  inputs,
+		Fields:  fields,
+		Mode:    types.StringValue(string(src.Mode)),
+	}
 }

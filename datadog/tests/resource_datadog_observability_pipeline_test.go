@@ -856,3 +856,55 @@ resource "datadog_observability_pipeline" "logstash" {
 		},
 	})
 }
+
+func TestAccDatadogObservabilityPipeline_dedupeProcessor(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.dedupe"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "dedupe" {
+  name = "dedupe pipeline"
+
+  config {
+    sources {
+      datadog_agent {
+        id = "source-1"
+      }
+    }
+
+    processors {
+      dedupe {
+        id      = "dedupe-1"
+        include = "*"
+        inputs  = ["source-1"]
+        fields  = ["log.message", "log.error"]
+        mode    = "match"
+      }
+    }
+
+    destinations {
+      datadog_logs {
+        id     = "destination-1"
+        inputs = ["dedupe-1"]
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.dedupe.0.id", "dedupe-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.dedupe.0.include", "*"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.dedupe.0.fields.0", "log.message"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.dedupe.0.fields.1", "log.error"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.dedupe.0.mode", "match"),
+				),
+			},
+		},
+	})
+}
