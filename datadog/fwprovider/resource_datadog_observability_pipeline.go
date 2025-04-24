@@ -96,6 +96,19 @@ type processorsModel struct {
 	ThrottleProcessor        []*throttleProcessorModel        `tfsdk:"throttle"`
 	AddEnvVarsProcessor      []*addEnvVarsProcessorModel      `tfsdk:"add_env_vars"`
 	EnrichmentTableProcessor []*enrichmentTableProcessorModel `tfsdk:"enrichment_table"`
+	OcsfMapperProcessor      []*ocsfMapperProcessorModel      `tfsdk:"ocsf_mapper"`
+}
+
+type ocsfMapperProcessorModel struct {
+	Id      types.String       `tfsdk:"id"`
+	Include types.String       `tfsdk:"include"`
+	Inputs  types.List         `tfsdk:"inputs"`
+	Mapping []ocsfMappingModel `tfsdk:"mapping"`
+}
+
+type ocsfMappingModel struct {
+	Include        types.String `tfsdk:"include"`
+	LibraryMapping types.String `tfsdk:"library_mapping"`
 }
 
 type enrichmentTableProcessorModel struct {
@@ -1016,6 +1029,43 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 									},
 								},
 							},
+							"ocsf_mapper": schema.ListNestedBlock{
+								Description: "The `ocsf_mapper` processor transforms logs into the OCSF schema using predefined library mappings.",
+								NestedObject: schema.NestedBlockObject{
+									Attributes: map[string]schema.Attribute{
+										"id": schema.StringAttribute{
+											Required:    true,
+											Description: "The unique identifier for this component.",
+										},
+										"include": schema.StringAttribute{
+											Required:    true,
+											Description: "Search query to select logs.",
+										},
+										"inputs": schema.ListAttribute{
+											Required:    true,
+											ElementType: types.StringType,
+											Description: "List of component IDs whose output is used as input.",
+										},
+									},
+									Blocks: map[string]schema.Block{
+										"mapping": schema.ListNestedBlock{
+											Description: "List of OCSF mapping entries using library mapping.",
+											NestedObject: schema.NestedBlockObject{
+												Attributes: map[string]schema.Attribute{
+													"include": schema.StringAttribute{
+														Required:    true,
+														Description: "Search query for selecting which logs the mapping applies to.",
+													},
+													"library_mapping": schema.StringAttribute{
+														Required:    true,
+														Description: "Predefined library mapping for log transformation.",
+													},
+												},
+											},
+										},
+									},
+								},
+							},
 						},
 					},
 					"destinations": schema.SingleNestedBlock{
@@ -1320,6 +1370,9 @@ func expandPipelineRequest(ctx context.Context, state *observabilityPipelineMode
 		for _, p := range state.Config.Processors.EnrichmentTableProcessor {
 			config.Processors = append(config.Processors, expandEnrichmentTableProcessor(ctx, p))
 		}
+		for _, p := range state.Config.Processors.OcsfMapperProcessor {
+			config.Processors = append(config.Processors, expandOcsfMapperProcessor(ctx, p))
+		}
 	}
 
 	// Destinations
@@ -1407,7 +1460,9 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 		if f := flattenEnrichmentTableProcessor(ctx, p.ObservabilityPipelineEnrichmentTableProcessor); f != nil {
 			outCfg.Processors.EnrichmentTableProcessor = append(outCfg.Processors.EnrichmentTableProcessor, f)
 		}
-
+		if f := flattenOcsfMapperProcessor(ctx, p.ObservabilityPipelineOcsfMapperProcessor); f != nil {
+			outCfg.Processors.OcsfMapperProcessor = append(outCfg.Processors.OcsfMapperProcessor, f)
+		}
 	}
 	for _, d := range cfg.GetDestinations() {
 		if logs := flattenDatadogLogsDestination(ctx, d.ObservabilityPipelineDatadogLogsDestination); logs != nil {
@@ -2407,5 +2462,56 @@ func flattenSentinelOneDestination(ctx context.Context, src *datadogV2.Observabi
 		Id:     types.StringValue(src.GetId()),
 		Inputs: inputs,
 		Region: types.StringValue(string(src.GetRegion())),
+	}
+}
+
+func expandOcsfMapperProcessor(ctx context.Context, src *ocsfMapperProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
+	proc := datadogV2.NewObservabilityPipelineOcsfMapperProcessorWithDefaults()
+	proc.SetId(src.Id.ValueString())
+	proc.SetInclude(src.Include.ValueString())
+
+	var inputs []string
+	src.Inputs.ElementsAs(ctx, &inputs, false)
+	proc.SetInputs(inputs)
+
+	var mappings []datadogV2.ObservabilityPipelineOcsfMapperProcessorMapping
+	for _, m := range src.Mapping {
+		library := datadogV2.ObservabilityPipelineOcsfMappingLibrary(m.LibraryMapping.ValueString())
+		mappings = append(mappings, datadogV2.ObservabilityPipelineOcsfMapperProcessorMapping{
+			Include: m.Include.ValueString(),
+			Mapping: datadogV2.ObservabilityPipelineOcsfMapperProcessorMappingMapping{
+				ObservabilityPipelineOcsfMappingLibrary: &library,
+			},
+		})
+	}
+
+	proc.SetMappings(mappings)
+
+	return datadogV2.ObservabilityPipelineConfigProcessorItem{
+		ObservabilityPipelineOcsfMapperProcessor: proc,
+	}
+}
+
+func flattenOcsfMapperProcessor(ctx context.Context, src *datadogV2.ObservabilityPipelineOcsfMapperProcessor) *ocsfMapperProcessorModel {
+	if src == nil {
+		return nil
+	}
+
+	inputs, _ := types.ListValueFrom(ctx, types.StringType, src.Inputs)
+
+	var mappings []ocsfMappingModel
+	for _, m := range src.Mappings {
+		mapping := ocsfMappingModel{
+			Include:        types.StringValue(m.Include),
+			LibraryMapping: types.StringValue(string(*m.Mapping.ObservabilityPipelineOcsfMappingLibrary)),
+		}
+		mappings = append(mappings, mapping)
+	}
+
+	return &ocsfMapperProcessorModel{
+		Id:      types.StringValue(src.Id),
+		Include: types.StringValue(src.Include),
+		Inputs:  inputs,
+		Mapping: mappings,
 	}
 }

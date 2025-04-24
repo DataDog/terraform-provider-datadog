@@ -1340,3 +1340,57 @@ resource "datadog_observability_pipeline" "sentinelone" {
 		},
 	})
 }
+
+func TestAccDatadogObservabilityPipeline_ocsfMapperLibraryOnly(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.ocsf"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "ocsf" {
+  name = "ocsf mapper (library only)"
+
+  config {
+    sources {
+      datadog_agent {
+        id = "source-1"
+      }
+    }
+
+    processors {
+      ocsf_mapper {
+        id      = "ocsf-mapper"
+        include = "*"
+        inputs  = ["source-1"]
+
+        mapping {
+          include         = "source:lib"
+          library_mapping = "CloudTrail Account Change"
+        }
+      }
+    }
+
+    destinations {
+      datadog_logs {
+        id     = "destination-1"
+        inputs = ["ocsf-mapper"]
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.ocsf_mapper.0.id", "ocsf-mapper"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.ocsf_mapper.0.include", "*"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.ocsf_mapper.0.mapping.0.include", "source:lib"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.ocsf_mapper.0.mapping.0.library_mapping", "CloudTrail Account Change"),
+				),
+			},
+		},
+	})
+}
