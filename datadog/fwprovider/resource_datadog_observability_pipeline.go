@@ -251,6 +251,13 @@ type fieldValue struct {
 type destinationsModel struct {
 	DatadogLogsDestination     []*datadogLogsDestinationModel     `tfsdk:"datadog_logs"`
 	GoogleChronicleDestination []*googleChronicleDestinationModel `tfsdk:"google_chronicle"`
+	NewRelicDestination        []*newRelicDestinationModel        `tfsdk:"new_relic"`
+}
+
+type newRelicDestinationModel struct {
+	Id     types.String `tfsdk:"id"`
+	Inputs types.List   `tfsdk:"inputs"`
+	Region types.String `tfsdk:"region"`
 }
 
 type googleChronicleDestinationModel struct {
@@ -1062,6 +1069,26 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 									},
 								},
 							},
+							"new_relic": schema.ListNestedBlock{
+								Description: "The `new_relic` destination sends logs to the New Relic platform.",
+								NestedObject: schema.NestedBlockObject{
+									Attributes: map[string]schema.Attribute{
+										"id": schema.StringAttribute{
+											Required:    true,
+											Description: "The unique identifier for this component.",
+										},
+										"inputs": schema.ListAttribute{
+											Required:    true,
+											ElementType: types.StringType,
+											Description: "A list of component IDs whose output is used as the `input` for this component.",
+										},
+										"region": schema.StringAttribute{
+											Required:    true,
+											Description: "The New Relic region.",
+										},
+									},
+								},
+							},
 						},
 					},
 				},
@@ -1273,6 +1300,9 @@ func expandPipelineRequest(ctx context.Context, state *observabilityPipelineMode
 	for _, d := range state.Config.Destinations.GoogleChronicleDestination {
 		config.Destinations = append(config.Destinations, expandGoogleChronicleDestination(ctx, d))
 	}
+	for _, d := range state.Config.Destinations.NewRelicDestination {
+		config.Destinations = append(config.Destinations, expandNewRelicDestination(ctx, d))
+	}
 
 	attrs.SetConfig(*config)
 	data.SetAttributes(*attrs)
@@ -1351,6 +1381,9 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 		}
 		if d := flattenGoogleChronicleDestination(ctx, d.ObservabilityPipelineGoogleChronicleDestination); d != nil {
 			outCfg.Destinations.GoogleChronicleDestination = append(outCfg.Destinations.GoogleChronicleDestination, d)
+		}
+		if d := flattenNewRelicDestination(ctx, d.ObservabilityPipelineNewRelicDestination); d != nil {
+			outCfg.Destinations.NewRelicDestination = append(outCfg.Destinations.NewRelicDestination, d)
 		}
 	}
 
@@ -2280,4 +2313,33 @@ func flattenGoogleChronicleDestination(ctx context.Context, src *datadogV2.Obser
 	}
 
 	return out
+}
+
+func expandNewRelicDestination(ctx context.Context, src *newRelicDestinationModel) datadogV2.ObservabilityPipelineConfigDestinationItem {
+	dest := datadogV2.NewObservabilityPipelineNewRelicDestinationWithDefaults()
+	dest.SetId(src.Id.ValueString())
+
+	var inputs []string
+	src.Inputs.ElementsAs(ctx, &inputs, false)
+	dest.SetInputs(inputs)
+
+	dest.SetRegion(datadogV2.ObservabilityPipelineNewRelicDestinationRegion(src.Region.ValueString()))
+
+	return datadogV2.ObservabilityPipelineConfigDestinationItem{
+		ObservabilityPipelineNewRelicDestination: dest,
+	}
+}
+
+func flattenNewRelicDestination(ctx context.Context, src *datadogV2.ObservabilityPipelineNewRelicDestination) *newRelicDestinationModel {
+	if src == nil {
+		return nil
+	}
+
+	inputs, _ := types.ListValueFrom(ctx, types.StringType, src.Inputs)
+
+	return &newRelicDestinationModel{
+		Id:     types.StringValue(src.GetId()),
+		Inputs: inputs,
+		Region: types.StringValue(string(src.GetRegion())),
+	}
 }

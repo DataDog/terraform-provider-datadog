@@ -1258,3 +1258,45 @@ resource "datadog_observability_pipeline" "chronicle" {
 		},
 	})
 }
+
+func TestAccDatadogObservabilityPipeline_newRelicDestination(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.newrelic"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "newrelic" {
+  name = "newrelic pipeline"
+
+  config {
+    sources {
+      datadog_agent {
+        id = "source-1"
+      }
+    }
+
+    processors {}
+
+    destinations {
+      new_relic {
+        id     = "newrelic-dest-1"
+        inputs = ["source-1"]
+        region = "us"
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.new_relic.0.id", "newrelic-dest-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.new_relic.0.region", "us"),
+				),
+			},
+		},
+	})
+}
