@@ -908,3 +908,77 @@ resource "datadog_observability_pipeline" "dedupe" {
 		},
 	})
 }
+
+func TestAccDatadogObservabilityPipeline_reduceProcessor(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.reduce"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "reduce" {
+  name = "reduce pipeline"
+
+  config {
+    sources {
+      datadog_agent {
+        id = "source-1"
+      }
+    }
+
+    processors {
+      reduce {
+        id       = "reduce-1"
+        include  = "env:prod"
+        inputs   = ["source-1"]
+        group_by = ["log.user.id", "log.device.id"]
+
+        merge_strategies {
+          path     = "log.user.roles"
+          strategy = "flat_unique"
+        }
+
+        merge_strategies {
+          path     = "log.error.messages"
+          strategy = "concat"
+        }
+
+        merge_strategies {
+          path     = "log.count"
+          strategy = "sum"
+        }
+
+        merge_strategies {
+          path     = "log.status"
+          strategy = "retain"
+        }
+      }
+    }
+
+    destinations {
+      datadog_logs {
+        id     = "destination-1"
+        inputs = ["reduce-1"]
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.reduce.0.id", "reduce-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.reduce.0.include", "env:prod"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.reduce.0.group_by.0", "log.user.id"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.reduce.0.group_by.1", "log.device.id"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.reduce.0.merge_strategies.0.strategy", "flat_unique"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.reduce.0.merge_strategies.1.strategy", "concat"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.reduce.0.merge_strategies.2.strategy", "sum"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.reduce.0.merge_strategies.3.strategy", "retain"),
+				),
+			},
+		},
+	})
+}

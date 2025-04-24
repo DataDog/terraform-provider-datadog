@@ -92,6 +92,20 @@ type processorsModel struct {
 	RemoveFieldsProcessor []*removeFieldsProcessorModel `tfsdk:"remove_fields"`
 	QuotaProcessor        []*quotaProcessorModel        `tfsdk:"quota"`
 	DedupeProcessor       []*dedupeProcessorModel       `tfsdk:"dedupe"`
+	ReduceProcessor       []*reduceProcessorModel       `tfsdk:"reduce"`
+}
+
+type reduceProcessorModel struct {
+	Id              types.String         `tfsdk:"id"`
+	Include         types.String         `tfsdk:"include"`
+	Inputs          types.List           `tfsdk:"inputs"`
+	GroupBy         []types.String       `tfsdk:"group_by"`
+	MergeStrategies []mergeStrategyModel `tfsdk:"merge_strategies"`
+}
+
+type mergeStrategyModel struct {
+	Path     types.String `tfsdk:"path"`
+	Strategy types.String `tfsdk:"strategy"`
 }
 
 type dedupeProcessorModel struct {
@@ -698,6 +712,48 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 									},
 								},
 							},
+							"reduce": schema.ListNestedBlock{
+								Description: "The `reduce` processor aggregates and merges logs based on matching keys and merge strategies.",
+								NestedObject: schema.NestedBlockObject{
+									Attributes: map[string]schema.Attribute{
+										"id": schema.StringAttribute{
+											Required:    true,
+											Description: "The unique identifier for this processor.",
+										},
+										"include": schema.StringAttribute{
+											Required:    true,
+											Description: "A Datadog search query used to determine which logs this processor targets.",
+										},
+										"inputs": schema.ListAttribute{
+											Required:    true,
+											ElementType: types.StringType,
+											Description: "A list of component IDs whose output is used as the input for this processor.",
+										},
+										"group_by": schema.ListAttribute{
+											Required:    true,
+											ElementType: types.StringType,
+											Description: "A list of fields used to group log events for merging.",
+										},
+									},
+									Blocks: map[string]schema.Block{
+										"merge_strategies": schema.ListNestedBlock{
+											Description: "List of merge strategies defining how values from grouped events should be combined.",
+											NestedObject: schema.NestedBlockObject{
+												Attributes: map[string]schema.Attribute{
+													"path": schema.StringAttribute{
+														Required:    true,
+														Description: "The field path in the log event.",
+													},
+													"strategy": schema.StringAttribute{
+														Required:    true,
+														Description: "The merge strategy to apply.",
+													},
+												},
+											},
+										},
+									},
+								},
+							},
 						},
 					},
 					"destinations": schema.SingleNestedBlock{
@@ -910,6 +966,9 @@ func expandPipelineRequest(ctx context.Context, state *observabilityPipelineMode
 	for _, p := range state.Config.Processors.DedupeProcessor {
 		config.Processors = append(config.Processors, expandDedupeProcessor(ctx, p))
 	}
+	for _, p := range state.Config.Processors.ReduceProcessor {
+		config.Processors = append(config.Processors, expandReduceProcessor(ctx, p))
+	}
 
 	// Destinations
 	for _, d := range state.Config.Destinations.DatadogLogsDestination {
@@ -972,6 +1031,9 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 		}
 		if f := flattenDedupeProcessor(ctx, p.ObservabilityPipelineDedupeProcessor); f != nil {
 			outCfg.Processors.DedupeProcessor = append(outCfg.Processors.DedupeProcessor, f)
+		}
+		if f := flattenReduceProcessor(ctx, p.ObservabilityPipelineReduceProcessor); f != nil {
+			outCfg.Processors.ReduceProcessor = append(outCfg.Processors.ReduceProcessor, f)
 		}
 	}
 	for _, d := range cfg.GetDestinations() {
@@ -1605,5 +1667,61 @@ func flattenDedupeProcessor(ctx context.Context, src *datadogV2.ObservabilityPip
 		Inputs:  inputs,
 		Fields:  fields,
 		Mode:    types.StringValue(string(src.Mode)),
+	}
+}
+
+func expandReduceProcessor(ctx context.Context, src *reduceProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
+	proc := datadogV2.NewObservabilityPipelineReduceProcessorWithDefaults()
+	proc.SetId(src.Id.ValueString())
+	proc.SetInclude(src.Include.ValueString())
+
+	var inputs, groupBy []string
+	src.Inputs.ElementsAs(ctx, &inputs, false)
+	for _, g := range src.GroupBy {
+		groupBy = append(groupBy, g.ValueString())
+	}
+	proc.SetInputs(inputs)
+	proc.SetGroupBy(groupBy)
+
+	var strategies []datadogV2.ObservabilityPipelineReduceProcessorMergeStrategy
+	for _, s := range src.MergeStrategies {
+		strategies = append(strategies, datadogV2.ObservabilityPipelineReduceProcessorMergeStrategy{
+			Path:     s.Path.ValueString(),
+			Strategy: datadogV2.ObservabilityPipelineReduceProcessorMergeStrategyStrategy(s.Strategy.ValueString()),
+		})
+	}
+	proc.SetMergeStrategies(strategies)
+
+	return datadogV2.ObservabilityPipelineConfigProcessorItem{
+		ObservabilityPipelineReduceProcessor: proc,
+	}
+}
+
+func flattenReduceProcessor(ctx context.Context, src *datadogV2.ObservabilityPipelineReduceProcessor) *reduceProcessorModel {
+	if src == nil {
+		return nil
+	}
+
+	inputs, _ := types.ListValueFrom(ctx, types.StringType, src.Inputs)
+
+	var groupBy []types.String
+	for _, g := range src.GroupBy {
+		groupBy = append(groupBy, types.StringValue(g))
+	}
+
+	var strategies []mergeStrategyModel
+	for _, s := range src.MergeStrategies {
+		strategies = append(strategies, mergeStrategyModel{
+			Path:     types.StringValue(s.Path),
+			Strategy: types.StringValue(string(s.Strategy)),
+		})
+	}
+
+	return &reduceProcessorModel{
+		Id:              types.StringValue(src.Id),
+		Include:         types.StringValue(src.Include),
+		Inputs:          inputs,
+		GroupBy:         groupBy,
+		MergeStrategies: strategies,
 	}
 }
