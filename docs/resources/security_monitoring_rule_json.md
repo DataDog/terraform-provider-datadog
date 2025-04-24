@@ -3,47 +3,47 @@
 page_title: "datadog_security_monitoring_rule_json Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Provides a Datadog security monitoring rule JSON resource. This can be used to create and manage Datadog security monitoring rules using the JSON definition.
+  Provides a Datadog Security Monitoring Rule JSON resource. This can be used to create and manage Datadog security monitoring rules using raw JSON.
 ---
 
 # datadog_security_monitoring_rule_json (Resource)
 
-Provides a Datadog security monitoring rule JSON resource. This can be used to create and manage Datadog security monitoring rules using the JSON definition.
+Provides a Datadog Security Monitoring Rule JSON resource. This can be used to create and manage Datadog security monitoring rules using raw JSON.
 
 ## Example Usage
 
 ```terraform
 # Example Security Monitoring Rule JSON
 resource "datadog_security_monitoring_rule_json" "security_rule_json" {
-  json = <<EOF
+  rule = <<EOF
 {
-  "name": "High number of errors",
+  "name": "High error rate security monitoring",
   "isEnabled": true,
   "type": "log_detection",
-  "message": "A high number of errors have been detected in the logs.",
-  "tags": ["type:error", "env:prod"],
+  "message": "High error rate detected in logs",
+  "tags": ["env:prod", "security"],
+  "cases": [
+    {
+      "name": "high case",
+      "status": "high",
+      "condition": "errors > 100 && warnings > 1000",
+      "notifications": ["@security-team"]
+    }
+  ],
   "queries": [
     {
       "name": "errors",
       "query": "status:error",
       "aggregation": "count",
       "dataSource": "logs",
-      "groupByFields": ["host"]
+      "groupByFields": ["service", "env"]
     },
     {
       "name": "warnings",
       "query": "status:warning",
       "aggregation": "count",
       "dataSource": "logs",
-      "groupByFields": ["host"]
-    }
-  ],
-  "cases": [
-    {
-      "name": "High Error Rate",
-      "status": "high",
-      "condition": "errors > 3 && warnings > 10",
-      "notifications": ["@user"]
+      "groupByFields": ["service", "env"]
     }
   ],
   "options": {
@@ -62,7 +62,7 @@ EOF
 
 ### Required
 
-- `json` (String) The JSON definition of the security monitoring rule. The format of this JSON must match the format returned by the Datadog API.
+- `json` (String) The JSON definition of the Security Monitoring Rule.
 
 ### Read-Only
 
@@ -70,8 +70,8 @@ EOF
 
 ## Import
 
-Security monitoring rules can be imported using their ID, e.g.:
+Import is supported using the following syntax:
 
 ```shell
-$ terraform import datadog_security_monitoring_rule_json.security_rule_json aaa-yyy-vvv
-``` 
+terraform import datadog_security_monitoring_rule_json.security_rule_json aaa-yyy-vvv
+```
