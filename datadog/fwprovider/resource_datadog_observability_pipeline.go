@@ -249,8 +249,19 @@ type fieldValue struct {
 // Destination models
 
 type destinationsModel struct {
-	DatadogLogsDestination []*datadogLogsDestinationModel `tfsdk:"datadog_logs"`
+	DatadogLogsDestination     []*datadogLogsDestinationModel     `tfsdk:"datadog_logs"`
+	GoogleChronicleDestination []*googleChronicleDestinationModel `tfsdk:"google_chronicle"`
 }
+
+type googleChronicleDestinationModel struct {
+	Id         types.String  `tfsdk:"id"`
+	Inputs     types.List    `tfsdk:"inputs"`
+	Auth       *gcpAuthModel `tfsdk:"auth"`
+	CustomerId types.String  `tfsdk:"customer_id"`
+	Encoding   types.String  `tfsdk:"encoding"`
+	LogType    types.String  `tfsdk:"log_type"`
+}
+
 type datadogLogsDestinationModel struct {
 	Id     types.String `tfsdk:"id"`
 	Inputs types.List   `tfsdk:"inputs"`
@@ -1012,6 +1023,45 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 									},
 								},
 							},
+							"google_chronicle": schema.ListNestedBlock{
+								Description: "The `google_chronicle` destination sends logs to Google Chronicle.",
+								NestedObject: schema.NestedBlockObject{
+									Attributes: map[string]schema.Attribute{
+										"id": schema.StringAttribute{
+											Required:    true,
+											Description: "The unique identifier for this component.",
+										},
+										"inputs": schema.ListAttribute{
+											Required:    true,
+											ElementType: types.StringType,
+											Description: "A list of component IDs whose output is used as the `input` for this component.",
+										},
+										"customer_id": schema.StringAttribute{
+											Optional:    true,
+											Description: "The Google Chronicle customer ID.",
+										},
+										"encoding": schema.StringAttribute{
+											Optional:    true,
+											Description: "The encoding format for the logs sent to Chronicle.",
+										},
+										"log_type": schema.StringAttribute{
+											Optional:    true,
+											Description: "The log type metadata associated with the Chronicle destination.",
+										},
+									},
+									Blocks: map[string]schema.Block{
+										"auth": schema.SingleNestedBlock{
+											Description: "GCP credentials used to authenticate with Google Cloud Storage.",
+											Attributes: map[string]schema.Attribute{
+												"credentials_file": schema.StringAttribute{
+													Optional:    true,
+													Description: "Path to the GCP service account key file.",
+												},
+											},
+										},
+									},
+								},
+							},
 						},
 					},
 				},
@@ -1220,6 +1270,9 @@ func expandPipelineRequest(ctx context.Context, state *observabilityPipelineMode
 	for _, d := range state.Config.Destinations.DatadogLogsDestination {
 		config.Destinations = append(config.Destinations, expandDatadogLogsDestination(ctx, d))
 	}
+	for _, d := range state.Config.Destinations.GoogleChronicleDestination {
+		config.Destinations = append(config.Destinations, expandGoogleChronicleDestination(ctx, d))
+	}
 
 	attrs.SetConfig(*config)
 	data.SetAttributes(*attrs)
@@ -1295,6 +1348,9 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 	for _, d := range cfg.GetDestinations() {
 		if logs := flattenDatadogLogsDestination(ctx, d.ObservabilityPipelineDatadogLogsDestination); logs != nil {
 			outCfg.Destinations.DatadogLogsDestination = append(outCfg.Destinations.DatadogLogsDestination, logs)
+		}
+		if d := flattenGoogleChronicleDestination(ctx, d.ObservabilityPipelineGoogleChronicleDestination); d != nil {
+			outCfg.Destinations.GoogleChronicleDestination = append(outCfg.Destinations.GoogleChronicleDestination, d)
 		}
 	}
 
@@ -2168,6 +2224,59 @@ func flattenEnrichmentTableProcessor(ctx context.Context, src *datadogV2.Observa
 			Locale:   types.StringValue(src.Geoip.Locale),
 			Path:     types.StringValue(src.Geoip.Path),
 		}
+	}
+
+	return out
+}
+
+func expandGoogleChronicleDestination(ctx context.Context, src *googleChronicleDestinationModel) datadogV2.ObservabilityPipelineConfigDestinationItem {
+	dest := datadogV2.NewObservabilityPipelineGoogleChronicleDestinationWithDefaults()
+	dest.SetId(src.Id.ValueString())
+
+	var inputs []string
+	src.Inputs.ElementsAs(ctx, &inputs, false)
+	dest.SetInputs(inputs)
+
+	if src.Auth != nil {
+		auth := datadogV2.ObservabilityPipelineGcpAuth{}
+		if !src.Auth.CredentialsFile.IsNull() {
+			auth.SetCredentialsFile(src.Auth.CredentialsFile.ValueString())
+		}
+		dest.Auth = auth
+	}
+
+	if !src.CustomerId.IsNull() {
+		dest.SetCustomerId(src.CustomerId.ValueString())
+	}
+	if !src.Encoding.IsNull() {
+		dest.SetEncoding(datadogV2.ObservabilityPipelineGoogleChronicleDestinationEncoding(src.Encoding.ValueString()))
+	}
+	if !src.LogType.IsNull() {
+		dest.SetLogType(src.LogType.ValueString())
+	}
+
+	return datadogV2.ObservabilityPipelineConfigDestinationItem{
+		ObservabilityPipelineGoogleChronicleDestination: dest,
+	}
+}
+
+func flattenGoogleChronicleDestination(ctx context.Context, src *datadogV2.ObservabilityPipelineGoogleChronicleDestination) *googleChronicleDestinationModel {
+	if src == nil {
+		return nil
+	}
+
+	inputs, _ := types.ListValueFrom(ctx, types.StringType, src.Inputs)
+
+	out := &googleChronicleDestinationModel{
+		Id:         types.StringValue(src.GetId()),
+		Inputs:     inputs,
+		CustomerId: types.StringValue(src.GetCustomerId()),
+		Encoding:   types.StringValue(string(src.GetEncoding())),
+		LogType:    types.StringValue(src.GetLogType()),
+	}
+
+	out.Auth = &gcpAuthModel{
+		CredentialsFile: types.StringValue(src.Auth.CredentialsFile),
 	}
 
 	return out

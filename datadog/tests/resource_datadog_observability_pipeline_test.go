@@ -1207,3 +1207,54 @@ resource "datadog_observability_pipeline" "enrichment" {
 		},
 	})
 }
+
+func TestAccDatadogObservabilityPipeline_googleChronicleDestination(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.chronicle"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "chronicle" {
+  name = "chronicle pipeline"
+
+  config {
+    sources {
+      datadog_agent {
+        id = "source-1"
+      }
+    }
+
+	processors {}
+
+    destinations {
+      google_chronicle {
+        id          = "chronicle-dest-1"
+        inputs      = ["source-1"]
+        customer_id = "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+        encoding    = "json"
+        log_type    = "nginx_logs"
+
+        auth {
+          credentials_file = "/secrets/gcp.json"
+        }
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.google_chronicle.0.id", "chronicle-dest-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.google_chronicle.0.customer_id", "3fa85f64-5717-4562-b3fc-2c963f66afa6"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.google_chronicle.0.encoding", "json"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.google_chronicle.0.log_type", "nginx_logs"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.google_chronicle.0.auth.credentials_file", "/secrets/gcp.json"),
+				),
+			},
+		},
+	})
+}
