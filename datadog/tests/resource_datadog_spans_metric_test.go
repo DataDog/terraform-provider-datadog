@@ -114,6 +114,64 @@ func TestAccSpansMetricGroupBys(t *testing.T) {
 	})
 }
 
+func TestAccSpansMetricDynamicGroupBys_empty(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	uniq := strings.ReplaceAll(uniqueEntityName(ctx, t), "-", "_")
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogSpansMetricDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogSpansMetricTestingDynamicGroupBys_empty(uniq),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogSpansMetricExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(
+						"datadog_spans_metric.testing_spans_metric", "compute.aggregation_type", "count"),
+					resource.TestCheckResourceAttr(
+						"datadog_spans_metric.testing_spans_metric", "filter.query", "@http.status_code:200 service:my-service"),
+					resource.TestCheckResourceAttr(
+						"datadog_spans_metric.testing_spans_metric", "group_by.#", "0"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccSpansMetricDynamicGroupBys_populated(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	uniq := strings.ReplaceAll(uniqueEntityName(ctx, t), "-", "_")
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogSpansMetricDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogSpansMetricTestingDynamicGroupBys_populated(uniq),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogSpansMetricExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(
+						"datadog_spans_metric.testing_spans_metric", "compute.aggregation_type", "count"),
+					resource.TestCheckResourceAttr(
+						"datadog_spans_metric.testing_spans_metric", "filter.query", "@http.status_code:200 service:my-service"),
+					resource.TestCheckResourceAttr(
+						"datadog_spans_metric.testing_spans_metric", "group_by.#", "2"),
+					resource.TestCheckResourceAttr(
+						"datadog_spans_metric.testing_spans_metric", "group_by.0.path", "resource_name1"),
+					resource.TestCheckResourceAttr(
+						"datadog_spans_metric.testing_spans_metric", "group_by.0.tag_name", "my_resource1"),
+					resource.TestCheckResourceAttr(
+						"datadog_spans_metric.testing_spans_metric", "group_by.1.path", "resource_name2"),
+					resource.TestCheckResourceAttr(
+						"datadog_spans_metric.testing_spans_metric", "group_by.1.tag_name", "my_resource2"),
+				),
+			},
+		},
+	})
+}
+
 func testAccCheckDatadogSpansMetricDestroy(accProvider *fwprovider.FrameworkProvider) func(*terraform.State) error {
 	return func(s *terraform.State) error {
 		apiInstances := accProvider.DatadogApiInstances
@@ -227,6 +285,71 @@ func testAccCheckDatadogSpansMetricTestingCountGroupBys(uniq string) string {
 			group_by {
 				path     = "resource_name1"
 				tag_name = "MY_RESOURCE1"
+			}
+		}
+	`, uniq)
+}
+
+func testAccCheckDatadogSpansMetricTestingDynamicGroupBys_empty(uniq string) string {
+	return fmt.Sprintf(`
+		variable "spans_metric_group_by" {
+		type = set(object({
+			path     = string
+			tag_name = optional(string)
+		}))
+		default = []
+		}
+
+		resource "datadog_spans_metric" "testing_spans_metric" {
+			name = "%s"
+			compute {
+				aggregation_type    = "count"
+			}
+			filter {
+				query = "@http.status_code:200 service:my-service"
+			}
+			dynamic "group_by" {
+				for_each = var.spans_metric_group_by
+				content {
+					path     = group_by.value["path"]
+					tag_name = group_by.value["tag_name"]
+				}
+			}
+		}
+	`, uniq)
+}
+func testAccCheckDatadogSpansMetricTestingDynamicGroupBys_populated(uniq string) string {
+	return fmt.Sprintf(`
+		variable "spans_metric_group_by" {
+		type = set(object({
+			path     = string
+			tag_name = optional(string)
+		}))
+		default = [{
+				path     = "resource_name2"
+				tag_name = "my_resource2"
+			},
+			{
+				path     = "resource_name1"
+				tag_name = "MY_RESOURCE1"
+			}
+			]
+		}
+
+		resource "datadog_spans_metric" "testing_spans_metric" {
+			name = "%s"
+			compute {
+				aggregation_type    = "count"
+			}
+			filter {
+				query = "@http.status_code:200 service:my-service"
+			}
+			dynamic "group_by" {
+				for_each = var.spans_metric_group_by
+				content {
+					path     = group_by.value["path"]
+					tag_name = group_by.value["tag_name"]
+				}
 			}
 		}
 	`, uniq)
