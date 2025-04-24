@@ -36,7 +36,7 @@ type observabilityPipelineModel struct {
 
 type configModel struct {
 	Sources      sourcesModel      `tfsdk:"sources"`
-	Processors   processorsModel   `tfsdk:"processors"`
+	Processors   *processorsModel  `tfsdk:"processors"`
 	Destinations destinationsModel `tfsdk:"destinations"`
 }
 type sourcesModel struct {
@@ -1286,38 +1286,40 @@ func expandPipelineRequest(ctx context.Context, state *observabilityPipelineMode
 	}
 
 	// Processors
-	for _, p := range state.Config.Processors.FilterProcessor {
-		config.Processors = append(config.Processors, expandFilterProcessor(ctx, p))
-	}
-	for _, p := range state.Config.Processors.ParseJsonProcessor {
-		config.Processors = append(config.Processors, expandParseJsonProcessor(ctx, p))
-	}
-	for _, p := range state.Config.Processors.AddFieldsProcessor {
-		config.Processors = append(config.Processors, expandAddFieldsProcessor(ctx, p))
-	}
-	for _, p := range state.Config.Processors.RenameFieldsProcessor {
-		config.Processors = append(config.Processors, expandRenameFieldsProcessor(ctx, p))
-	}
-	for _, p := range state.Config.Processors.RemoveFieldsProcessor {
-		config.Processors = append(config.Processors, expandRemoveFieldsProcessor(ctx, p))
-	}
-	for _, p := range state.Config.Processors.QuotaProcessor {
-		config.Processors = append(config.Processors, expandQuotaProcessor(ctx, p))
-	}
-	for _, p := range state.Config.Processors.DedupeProcessor {
-		config.Processors = append(config.Processors, expandDedupeProcessor(ctx, p))
-	}
-	for _, p := range state.Config.Processors.ReduceProcessor {
-		config.Processors = append(config.Processors, expandReduceProcessor(ctx, p))
-	}
-	for _, p := range state.Config.Processors.ThrottleProcessor {
-		config.Processors = append(config.Processors, expandThrottleProcessor(ctx, p))
-	}
-	for _, p := range state.Config.Processors.AddEnvVarsProcessor {
-		config.Processors = append(config.Processors, expandAddEnvVarsProcessor(ctx, p))
-	}
-	for _, p := range state.Config.Processors.EnrichmentTableProcessor {
-		config.Processors = append(config.Processors, expandEnrichmentTableProcessor(ctx, p))
+	if state.Config.Processors != nil {
+		for _, p := range state.Config.Processors.FilterProcessor {
+			config.Processors = append(config.Processors, expandFilterProcessor(ctx, p))
+		}
+		for _, p := range state.Config.Processors.ParseJsonProcessor {
+			config.Processors = append(config.Processors, expandParseJsonProcessor(ctx, p))
+		}
+		for _, p := range state.Config.Processors.AddFieldsProcessor {
+			config.Processors = append(config.Processors, expandAddFieldsProcessor(ctx, p))
+		}
+		for _, p := range state.Config.Processors.RenameFieldsProcessor {
+			config.Processors = append(config.Processors, expandRenameFieldsProcessor(ctx, p))
+		}
+		for _, p := range state.Config.Processors.RemoveFieldsProcessor {
+			config.Processors = append(config.Processors, expandRemoveFieldsProcessor(ctx, p))
+		}
+		for _, p := range state.Config.Processors.QuotaProcessor {
+			config.Processors = append(config.Processors, expandQuotaProcessor(ctx, p))
+		}
+		for _, p := range state.Config.Processors.DedupeProcessor {
+			config.Processors = append(config.Processors, expandDedupeProcessor(ctx, p))
+		}
+		for _, p := range state.Config.Processors.ReduceProcessor {
+			config.Processors = append(config.Processors, expandReduceProcessor(ctx, p))
+		}
+		for _, p := range state.Config.Processors.ThrottleProcessor {
+			config.Processors = append(config.Processors, expandThrottleProcessor(ctx, p))
+		}
+		for _, p := range state.Config.Processors.AddEnvVarsProcessor {
+			config.Processors = append(config.Processors, expandAddEnvVarsProcessor(ctx, p))
+		}
+		for _, p := range state.Config.Processors.EnrichmentTableProcessor {
+			config.Processors = append(config.Processors, expandEnrichmentTableProcessor(ctx, p))
+		}
 	}
 
 	// Destinations
@@ -1347,7 +1349,9 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 	state.Name = types.StringValue(attrs.GetName())
 
 	cfg := attrs.GetConfig()
-	outCfg := configModel{}
+	outCfg := configModel{
+		Processors: &processorsModel{},
+	}
 
 	for _, src := range cfg.GetSources() {
 		if a := flattenDatadogAgentSource(src.ObservabilityPipelineDatadogAgentSource); a != nil {

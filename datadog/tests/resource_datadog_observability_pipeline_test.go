@@ -1322,8 +1322,6 @@ resource "datadog_observability_pipeline" "sentinelone" {
       }
     }
 
-    processors {}
-
     destinations {
       sentinel_one {
         id     = "sentinelone-dest-1"
