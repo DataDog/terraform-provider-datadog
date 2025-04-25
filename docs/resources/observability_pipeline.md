@@ -161,7 +161,7 @@ Required:
 - `dcr_immutable_id` (String) The immutable ID of the Data Collection Rule (DCR).
 - `id` (String) The unique identifier for this component.
 - `inputs` (List of String) A list of component IDs whose output is used as the `input` for this component.
-- `table` (String) The name of the Log Analytics table where logs will be sent.
+- `table` (String) The name of the Log Analytics table where logs are sent.
 - `tenant_id` (String) Azure AD tenant ID.
 
 
@@ -458,7 +458,7 @@ Optional:
 Optional:
 
 - `custom` (Block, Optional) Pattern detection using a custom regular expression. (see [below for nested schema](#nestedblock--config--processors--sensitive_data_scanner--rules--pattern--custom))
-- `library` (Block, Optional) Pattern detection using a predefined pattern from the sensitive data scanner pattern library. (see [below for nested schema](#nestedblock--config--processors--sensitive_data_scanner--rules--pattern--library))
+- `library` (Block, Optional) Pattern detection using a predefined pattern from the Sensitive Data Scanner pattern library. (see [below for nested schema](#nestedblock--config--processors--sensitive_data_scanner--rules--pattern--library))
 
 <a id="nestedblock--config--processors--sensitive_data_scanner--rules--pattern--custom"></a>
 ### Nested Schema for `config.processors.sensitive_data_scanner.rules.pattern.custom`
@@ -473,7 +473,7 @@ Optional:
 
 Optional:
 
-- `id` (String) Identifier for a predefined pattern from the sensitive data scanner pattern library.
+- `id` (String) Identifier for a predefined pattern from the Sensitive Data Scanner pattern library.
 - `use_recommended_keywords` (Boolean) Whether to augment the pattern with recommended keywords (optional).
 
 
