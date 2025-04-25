@@ -2,6 +2,7 @@ package fwprovider
 
 import (
 	"context"
+	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -28,13 +29,6 @@ type customFrameworkModel struct {
 	IconURL      types.String `tfsdk:"icon_url"`
 	Requirements types.Set    `tfsdk:"requirements"` // have to define requirements as a set to be unordered
 }
-
-// the only way I could get the requirements to be unordered was to define them as a set in Terraform :(
-// if I could define requirements as a list, I could use the following:
-// type requirementModel struct {
-// 	Name types.String `tfsdk:"name"`
-// 	Controls types.Set `tfsdk:"controls"`
-// }
 
 func NewCustomFrameworkResource() resource.Resource {
 	return &customFrameworkResource{}
@@ -122,6 +116,7 @@ func (r *customFrameworkResource) Create(ctx context.Context, request resource.C
 	}
 
 	_, _, err := r.Api.CreateCustomFramework(r.Auth, *buildCreateFrameworkRequest(state))
+
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error creating custom framework"))
 		return
@@ -158,12 +153,37 @@ func (r *customFrameworkResource) Read(ctx context.Context, request resource.Rea
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error reading custom framework"))
 		return
 	}
-	state.ID = types.StringValue(data.GetData().Attributes.Handle + string('-') + data.GetData().Attributes.Version)
+	databaseState := readStateFromDatabase(data, state.Handle.ValueString(), state.Version.ValueString())
+	diags = response.State.Set(ctx, &databaseState)
+	response.Diagnostics.Append(diags...)
+}
+
+func (r *customFrameworkResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
+	var state customFrameworkModel
+	diags := request.Config.Get(ctx, &state)
+	response.Diagnostics.Append(diags...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	_, _, err := r.Api.UpdateCustomFramework(r.Auth, state.Handle.ValueString(), state.Version.ValueString(), *buildUpdateFrameworkRequest(state))
+	if err != nil {
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error updating custom framework"))
+		return
+	}
+	diags = response.State.Set(ctx, &state)
+	response.Diagnostics.Append(diags...)
+}
+
+func readStateFromDatabase(data datadogV2.RetrieveCustomFrameworkResponse, handle string, version string) customFrameworkModel {
+	// Set the state
+	var state customFrameworkModel
+	state.ID = types.StringValue(handle + "-" + version)
+	state.Handle = types.StringValue(handle)
+	state.Version = types.StringValue(version)
+	state.Name = types.StringValue(data.GetData().Attributes.Name)
 	state.Description = types.StringValue(data.GetData().Attributes.Description)
 	state.IconURL = types.StringValue(data.GetData().Attributes.IconUrl)
-	state.Version = types.StringValue(data.GetData().Attributes.Version)
-	state.Handle = types.StringValue(data.GetData().Attributes.Handle)
-	state.Name = types.StringValue(data.GetData().Attributes.Name)
 
 	// Convert requirements to set
 	requirements := make([]attr.Value, len(data.GetData().Attributes.Requirements))
@@ -186,7 +206,6 @@ func (r *customFrameworkResource) Read(ctx context.Context, request resource.Rea
 				},
 			)
 		}
-		// set requirement
 		requirements[i] = types.ObjectValueMust(
 			map[string]attr.Type{
 				"name": types.StringType,
@@ -204,7 +223,6 @@ func (r *customFrameworkResource) Read(ctx context.Context, request resource.Rea
 			},
 		)
 	}
-	// set state requirements
 	state.Requirements = types.SetValueMust(
 		types.ObjectType{AttrTypes: map[string]attr.Type{
 			"name": types.StringType,
@@ -215,25 +233,29 @@ func (r *customFrameworkResource) Read(ctx context.Context, request resource.Rea
 		}},
 		requirements,
 	)
-	diags = response.State.Set(ctx, &state)
-	response.Diagnostics.Append(diags...)
+	return state
 }
 
-func (r *customFrameworkResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
-	var state customFrameworkModel
-	diags := request.Config.Get(ctx, &state)
-	response.Diagnostics.Append(diags...)
-	if response.Diagnostics.HasError() {
+// ImportState is used to import a resource from an existing framework so we can update it if it exists in the database and not in terraform
+func (r *customFrameworkResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
+	// Split the ID into handle and version
+	// The last hyphen separates handle and version
+	lastHyphenIndex := strings.LastIndex(request.ID, "-")
+	if lastHyphenIndex == -1 {
+		response.Diagnostics.AddError("Invalid import ID", "Import ID must contain a hyphen to separate handle and version")
+		return
+	}
+	handle := request.ID[:lastHyphenIndex]
+	version := request.ID[lastHyphenIndex+1:]
+
+	data, _, err := r.Api.RetrieveCustomFramework(r.Auth, handle, version)
+	if err != nil {
+		response.Diagnostics.AddError("Error importing resource", err.Error())
 		return
 	}
 
-	_, _, err := r.Api.UpdateCustomFramework(r.Auth, state.Handle.ValueString(), state.Version.ValueString(), *buildUpdateFrameworkRequest(state))
-	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error updating custom framework"))
-		return
-	}
-	diags = response.State.Set(ctx, &state)
-	response.Diagnostics.Append(diags...)
+	state := readStateFromDatabase(data, handle, version)
+	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
 func convertStateRequirementsToFrameworkRequirements(requirements types.Set) []datadogV2.CustomFrameworkRequirement {
