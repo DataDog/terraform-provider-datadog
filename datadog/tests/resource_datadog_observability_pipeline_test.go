@@ -799,10 +799,10 @@ resource "datadog_observability_pipeline" "sample" {
 	})
 }
 
-func TestAccDatadogObservabilityPipeline_fluentSource(t *testing.T) {
+func TestAccDatadogObservabilityPipeline_fluentdSource(t *testing.T) {
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
-	resourceName := "datadog_observability_pipeline.fluent"
+	resourceName := "datadog_observability_pipeline.fluentd"
 
 	resource.Test(t, resource.TestCase{
 		ProtoV5ProviderFactories: accProviders,
@@ -810,7 +810,58 @@ func TestAccDatadogObservabilityPipeline_fluentSource(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: `
-resource "datadog_observability_pipeline" "fluent" {
+resource "datadog_observability_pipeline" "fluentd" {
+  name = "fluent-pipeline"
+
+  config {
+    sources {
+      fluent {
+        id = "fluent-source-1"
+        tls {
+          crt_file = "/etc/ssl/certs/fluent.crt"
+          ca_file  = "/etc/ssl/certs/ca.crt"
+          key_file = "/etc/ssl/private/fluent.key"
+        }
+      }
+    }
+
+    processors {}
+
+    destinations {
+      datadog_logs {
+        id     = "destination-1"
+        inputs = ["fluent-source-1"]
+      }
+    }
+  }
+}
+`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "fluent-pipeline"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.fluent.0.id", "fluent-source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.fluent.0.tls.crt_file", "/etc/ssl/certs/fluent.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.fluent.0.tls.ca_file", "/etc/ssl/certs/ca.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.fluent.0.tls.key_file", "/etc/ssl/private/fluent.key"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.datadog_logs.0.inputs.0", "fluent-source-1"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogObservabilityPipeline_fluentBitSource(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.fluent_bit"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "fluent_bit" {
   name = "fluent-pipeline"
 
   config {
@@ -909,7 +960,7 @@ resource "datadog_observability_pipeline" "http_server" {
 func TestAccDatadogObservabilityPipeline_amazonS3Source(t *testing.T) {
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
-	resourceName := "datadog_observability_pipeline.s3"
+	resourceName := "datadog_observability_pipeline.s3_source"
 
 	resource.Test(t, resource.TestCase{
 		ProtoV5ProviderFactories: accProviders,
@@ -917,7 +968,7 @@ func TestAccDatadogObservabilityPipeline_amazonS3Source(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: `
-resource "datadog_observability_pipeline" "amazon_s3" {
+resource "datadog_observability_pipeline" "s3_source" {
   name = "amazon_s3-source-pipeline"
 
   config {
