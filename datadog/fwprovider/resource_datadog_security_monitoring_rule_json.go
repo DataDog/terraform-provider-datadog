@@ -3,7 +3,6 @@ package fwprovider
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
@@ -14,8 +13,6 @@ import (
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
-
-const securityMonitoringRulePath = "/api/v2/security_monitoring/rules"
 
 var (
 	_ resource.ResourceWithConfigure   = &securityMonitoringRuleJSONResource{}
@@ -76,47 +73,43 @@ func (r *securityMonitoringRuleJSONResource) Create(ctx context.Context, request
 		return
 	}
 
-	respByte, httpResp, err := utils.SendRequest(ctx, r.Api.Client, "POST", securityMonitoringRulePath, rule)
+	// Convert the map to SecurityMonitoringRuleCreatePayload
+	payload := datadogV2.SecurityMonitoringRuleCreatePayload{}
+	jsonBytes, err := json.Marshal(rule)
+	if err != nil {
+		response.Diagnostics.AddError("Failed to marshal rule", err.Error())
+		return
+	}
+	if err := json.Unmarshal(jsonBytes, &payload); err != nil {
+		response.Diagnostics.AddError("Failed to unmarshal to payload", err.Error())
+		return
+	}
+
+	res, httpResp, err := r.Api.CreateSecurityMonitoringRule(r.Auth, payload)
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(utils.TranslateClientError(err, httpResp, "error creating security monitoring rule"), ""))
 		return
 	}
-
-	var result map[string]interface{}
-	if err := json.Unmarshal(respByte, &result); err != nil {
+	if err := utils.CheckForUnparsed(res); err != nil {
 		response.Diagnostics.AddError("Failed to parse response", err.Error())
 		return
 	}
 
-	id, ok := result["id"].(string)
-	if !ok {
-		response.Diagnostics.AddError("Invalid response", "Response did not contain an ID")
-		return
-	}
-
-	state.ID = types.StringValue(id)
-	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
-}
-
-func (r *securityMonitoringRuleJSONResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
-	var state securityMonitoringRuleJSONModel
-	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
-	if response.Diagnostics.HasError() {
-		return
-	}
-
-	respByte, httpResp, err := utils.SendRequest(ctx, r.Api.Client, "GET", fmt.Sprintf("%s/%s", securityMonitoringRulePath, state.ID.ValueString()), nil)
-	if err != nil {
-		if httpResp != nil && httpResp.StatusCode == http.StatusNotFound {
-			response.State.RemoveResource(ctx)
-			return
-		}
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(utils.TranslateClientError(err, httpResp, "error reading security monitoring rule"), ""))
-		return
-	}
-
 	var result map[string]interface{}
-	if err := json.Unmarshal(respByte, &result); err != nil {
+	if res.SecurityMonitoringStandardRuleResponse != nil {
+		jsonBytes, err = json.Marshal(res.SecurityMonitoringStandardRuleResponse)
+	} else if res.SecurityMonitoringSignalRuleResponse != nil {
+		jsonBytes, err = json.Marshal(res.SecurityMonitoringSignalRuleResponse)
+	} else {
+		response.Diagnostics.AddError("Invalid response", "Response did not contain a rule")
+		return
+	}
+	if err != nil {
+		response.Diagnostics.AddError("Failed to marshal response", err.Error())
+		return
+	}
+
+	if err := json.Unmarshal(jsonBytes, &result); err != nil {
 		response.Diagnostics.AddError("Failed to parse response", err.Error())
 		return
 	}
@@ -128,7 +121,73 @@ func (r *securityMonitoringRuleJSONResource) Read(ctx context.Context, request r
 	delete(result, "creator")
 	delete(result, "version")
 
-	jsonBytes, err := json.Marshal(result)
+	jsonBytes, err = json.Marshal(result)
+	if err != nil {
+		response.Diagnostics.AddError("Failed to marshal response", err.Error())
+		return
+	}
+
+	state.JSON = types.StringValue(string(jsonBytes))
+	if res.SecurityMonitoringStandardRuleResponse != nil {
+		state.ID = types.StringValue(res.SecurityMonitoringStandardRuleResponse.GetId())
+	} else if res.SecurityMonitoringSignalRuleResponse != nil {
+		state.ID = types.StringValue(res.SecurityMonitoringSignalRuleResponse.GetId())
+	} else {
+		response.Diagnostics.AddError("Invalid response", "Response did not contain an ID")
+		return
+	}
+	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+}
+
+func (r *securityMonitoringRuleJSONResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
+	var state securityMonitoringRuleJSONModel
+	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	res, httpResp, err := r.Api.GetSecurityMonitoringRule(r.Auth, state.ID.ValueString())
+	if err != nil {
+		if httpResp != nil && httpResp.StatusCode == http.StatusNotFound {
+			response.State.RemoveResource(ctx)
+			return
+		}
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(utils.TranslateClientError(err, httpResp, "error reading security monitoring rule"), ""))
+		return
+	}
+	if err := utils.CheckForUnparsed(res); err != nil {
+		response.Diagnostics.AddError("Failed to parse response", err.Error())
+		return
+	}
+
+	var result map[string]interface{}
+	var jsonBytes []byte
+	if res.SecurityMonitoringStandardRuleResponse != nil {
+		jsonBytes, err = json.Marshal(res.SecurityMonitoringStandardRuleResponse)
+	} else if res.SecurityMonitoringSignalRuleResponse != nil {
+		jsonBytes, err = json.Marshal(res.SecurityMonitoringSignalRuleResponse)
+	} else {
+		response.Diagnostics.AddError("Invalid response", "Response did not contain a rule")
+		return
+	}
+	if err != nil {
+		response.Diagnostics.AddError("Failed to marshal response", err.Error())
+		return
+	}
+
+	if err := json.Unmarshal(jsonBytes, &result); err != nil {
+		response.Diagnostics.AddError("Failed to parse response", err.Error())
+		return
+	}
+
+	// Remove computed fields before saving to state
+	delete(result, "id")
+	delete(result, "created_at")
+	delete(result, "updated_at")
+	delete(result, "creator")
+	delete(result, "version")
+
+	jsonBytes, err = json.Marshal(result)
 	if err != nil {
 		response.Diagnostics.AddError("Failed to marshal response", err.Error())
 		return
@@ -151,14 +210,43 @@ func (r *securityMonitoringRuleJSONResource) Update(ctx context.Context, request
 		return
 	}
 
-	respByte, httpResp, err := utils.SendRequest(ctx, r.Api.Client, "PUT", fmt.Sprintf("%s/%s", securityMonitoringRulePath, state.ID.ValueString()), rule)
+	// Convert the map to SecurityMonitoringRuleUpdatePayload
+	payload := datadogV2.SecurityMonitoringRuleUpdatePayload{}
+	jsonBytes, err := json.Marshal(rule)
+	if err != nil {
+		response.Diagnostics.AddError("Failed to marshal rule", err.Error())
+		return
+	}
+	if err := json.Unmarshal(jsonBytes, &payload); err != nil {
+		response.Diagnostics.AddError("Failed to unmarshal to payload", err.Error())
+		return
+	}
+
+	res, httpResp, err := r.Api.UpdateSecurityMonitoringRule(r.Auth, state.ID.ValueString(), payload)
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(utils.TranslateClientError(err, httpResp, "error updating security monitoring rule"), ""))
 		return
 	}
+	if err := utils.CheckForUnparsed(res); err != nil {
+		response.Diagnostics.AddError("Failed to parse response", err.Error())
+		return
+	}
 
 	var result map[string]interface{}
-	if err := json.Unmarshal(respByte, &result); err != nil {
+	if res.SecurityMonitoringStandardRuleResponse != nil {
+		jsonBytes, err = json.Marshal(res.SecurityMonitoringStandardRuleResponse)
+	} else if res.SecurityMonitoringSignalRuleResponse != nil {
+		jsonBytes, err = json.Marshal(res.SecurityMonitoringSignalRuleResponse)
+	} else {
+		response.Diagnostics.AddError("Invalid response", "Response did not contain a rule")
+		return
+	}
+	if err != nil {
+		response.Diagnostics.AddError("Failed to marshal response", err.Error())
+		return
+	}
+
+	if err := json.Unmarshal(jsonBytes, &result); err != nil {
 		response.Diagnostics.AddError("Failed to parse response", err.Error())
 		return
 	}
@@ -170,7 +258,7 @@ func (r *securityMonitoringRuleJSONResource) Update(ctx context.Context, request
 	delete(result, "creator")
 	delete(result, "version")
 
-	jsonBytes, err := json.Marshal(result)
+	jsonBytes, err = json.Marshal(result)
 	if err != nil {
 		response.Diagnostics.AddError("Failed to marshal response", err.Error())
 		return
@@ -187,7 +275,7 @@ func (r *securityMonitoringRuleJSONResource) Delete(ctx context.Context, request
 		return
 	}
 
-	_, httpResp, err := utils.SendRequest(ctx, r.Api.Client, "DELETE", fmt.Sprintf("%s/%s", securityMonitoringRulePath, state.ID.ValueString()), nil)
+	httpResp, err := r.Api.DeleteSecurityMonitoringRule(r.Auth, state.ID.ValueString())
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == http.StatusNotFound {
 			return
