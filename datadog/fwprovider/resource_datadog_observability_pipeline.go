@@ -262,6 +262,7 @@ type quotaProcessorModel struct {
 	PartitionFields             []types.String       `tfsdk:"partition_fields"`
 	IgnoreWhenMissingPartitions types.Bool           `tfsdk:"ignore_when_missing_partitions"`
 	Overrides                   []quotaOverrideModel `tfsdk:"overrides"`
+	OverflowAction              types.String         `tfsdk:"overflow_action"`
 }
 
 type quotaLimitModel struct {
@@ -1169,6 +1170,10 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 											Optional:    true,
 											ElementType: types.StringType,
 											Description: "List of partition fields.",
+										},
+										"overflow_action": schema.StringAttribute{
+											Optional:    true,
+											Description: "The action to take when the quota is exceeded: `drop`, `no_action`, or `overflow_routing`.",
 										},
 									},
 									Blocks: map[string]schema.Block{
@@ -3006,6 +3011,10 @@ func flattenQuotaProcessor(ctx context.Context, src *datadogV2.ObservabilityPipe
 		},
 	}
 
+	if !src.OverflowAction.isNull() {
+		out.OverflowAction = types.StringValue(string(src.OverflowAction))
+	}
+
 	for _, o := range src.Overrides {
 		override := quotaOverrideModel{
 			Limit: quotaLimitModel{
@@ -3045,6 +3054,10 @@ func expandQuotaProcessor(ctx context.Context, src *quotaProcessorModel) datadog
 		Enforce: datadogV2.ObservabilityPipelineQuotaProcessorLimitEnforceType(src.Limit.Enforce.ValueString()),
 		Limit:   src.Limit.Limit.ValueInt64(),
 	})
+
+	if !src.OverflowAction.IsNull() {
+		proc.SetOverflowAction(datadogV2.ObservabilityPipelineQuotaProcessorOverflowAction(src.OverflowAction.ValueString()))
+	}
 
 	var overrides []datadogV2.ObservabilityPipelineQuotaProcessorOverride
 	for _, o := range src.Overrides {

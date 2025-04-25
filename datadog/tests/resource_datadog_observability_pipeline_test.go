@@ -2805,3 +2805,64 @@ resource "datadog_observability_pipeline" "amazon_opensearch_basic" {
 		},
 	})
 }
+
+func TestAccDatadogObservabilityPipeline_quotaProcessor_overflowAction(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.quota"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "quota" {
+  name = "quota with overflow_action"
+
+  config {
+    sources {
+      datadog_agent {
+        id = "source-1"
+      }
+    }
+
+    processors {
+      quota {
+        id      = "quota-1"
+        include = "*"
+        name    = "MyQuota"
+        drop_events = false
+        inputs  = ["source-1"]
+
+        overflow_action = "drop"
+
+        limit {
+          enforce = "events"
+          limit   = 1000
+        }
+      }
+    }
+
+    destinations {
+      datadog_logs {
+        id     = "logs-1"
+        inputs = ["quota-1"]
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+
+					resource.TestCheckResourceAttr(resourceName, "config.processors.quota.0.id", "quota-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.quota.0.include", "*"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.quota.0.name", "MyQuota"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.quota.0.overflow_action", "drop"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.quota.0.limit.enforce", "events"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.quota.0.limit.limit", "1000"),
+				),
+			},
+		},
+	})
+}
