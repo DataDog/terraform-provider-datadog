@@ -42,6 +42,9 @@ type configModel struct {
 type sourcesModel struct {
 	DatadogAgentSource []*datadogAgentSourceModel `tfsdk:"datadog_agent"`
 	KafkaSource        []*kafkaSourceModel        `tfsdk:"kafka"`
+	RsyslogSource      []*rsyslogSourceModel      `tfsdk:"rsyslog"`
+	SyslogNgSource     []*syslogNgSourceModel     `tfsdk:"syslog_ng"`
+	SumoLogicSource    []*sumoLogicSourceModel    `tfsdk:"sumo_logic"`
 	FluentdSource      []*fluentdSourceModel      `tfsdk:"fluentd"`
 	FluentBitSource    []*fluentBitSourceModel    `tfsdk:"fluent_bit"`
 	HttpServerSource   []*httpServerSourceModel   `tfsdk:"http_server"`
@@ -95,15 +98,16 @@ type tlsModel struct {
 // Processor models
 
 type processorsModel struct {
-	FilterProcessor          []*filterProcessorModel          `tfsdk:"filter"`
-	ParseJsonProcessor       []*parseJsonProcessorModel       `tfsdk:"parse_json"`
-	AddFieldsProcessor       []*addFieldsProcessor            `tfsdk:"add_fields"`
-	RenameFieldsProcessor    []*renameFieldsProcessorModel    `tfsdk:"rename_fields"`
-	RemoveFieldsProcessor    []*removeFieldsProcessorModel    `tfsdk:"remove_fields"`
-	QuotaProcessor           []*quotaProcessorModel           `tfsdk:"quota"`
-	GenerateMetricsProcessor []*generateMetricsProcessorModel `tfsdk:"generate_datadog_metrics"`
-	ParseGrokProcessor       []*parseGrokProcessorModel       `tfsdk:"parse_grok"`
-	SampleProcessor          []*sampleProcessorModel          `tfsdk:"sample"`
+	FilterProcessor               []*filterProcessorModel               `tfsdk:"filter"`
+	ParseJsonProcessor            []*parseJsonProcessorModel            `tfsdk:"parse_json"`
+	AddFieldsProcessor            []*addFieldsProcessor                 `tfsdk:"add_fields"`
+	RenameFieldsProcessor         []*renameFieldsProcessorModel         `tfsdk:"rename_fields"`
+	RemoveFieldsProcessor         []*removeFieldsProcessorModel         `tfsdk:"remove_fields"`
+	QuotaProcessor                []*quotaProcessorModel                `tfsdk:"quota"`
+	GenerateMetricsProcessor      []*generateMetricsProcessorModel      `tfsdk:"generate_datadog_metrics"`
+	ParseGrokProcessor            []*parseGrokProcessorModel            `tfsdk:"parse_grok"`
+	SampleProcessor               []*sampleProcessorModel               `tfsdk:"sample"`
+	SensitiveDataScannerProcessor []*sensitiveDataScannerProcessorModel `tfsdk:"sensitive_data_scanner"`
 }
 
 type filterProcessorModel struct {
@@ -176,9 +180,15 @@ type fieldValue struct {
 // Destination models
 
 type destinationsModel struct {
-	DatadogLogsDestination        []*datadogLogsDestinationModel `tfsdk:"datadog_logs"`
-	GoogleCloudStorageDestination []*gcsDestinationModel         `tfsdk:"google_cloud_storage"`
-	SplunkHecDestination          []*splunkHecDestinationModel   `tfsdk:"splunk_hec"`
+	DatadogLogsDestination        []*datadogLogsDestinationModel       `tfsdk:"datadog_logs"`
+	GoogleCloudStorageDestination []*gcsDestinationModel               `tfsdk:"google_cloud_storage"`
+	SplunkHecDestination          []*splunkHecDestinationModel         `tfsdk:"splunk_hec"`
+	SumoLogicDestination          []*sumoLogicDestinationModel         `tfsdk:"sumo_logic"`
+	RsyslogDestination            []*rsyslogDestinationModel           `tfsdk:"rsyslog"`
+	SyslogNgDestination           []*syslogNgDestinationModel          `tfsdk:"syslog_ng"`
+	ElasticsearchDestination      []*elasticsearchDestinationModel     `tfsdk:"elasticsearch"`
+	AzureStorageDestination       []*azureStorageDestinationModel      `tfsdk:"azure_storage"`
+	MicrosoftSentinelDestination  []*microsoftSentinelDestinationModel `tfsdk:"microsoft_sentinel"`
 }
 
 type datadogLogsDestinationModel struct {
@@ -287,6 +297,139 @@ type gcpAuthModel struct {
 type metadataEntry struct {
 	Name  types.String `tfsdk:"name"`
 	Value types.String `tfsdk:"value"`
+}
+
+type sumoLogicDestinationModel struct {
+	Id                   types.String             `tfsdk:"id"`
+	Inputs               types.List               `tfsdk:"inputs"`
+	Encoding             types.String             `tfsdk:"encoding"`
+	HeaderHostName       types.String             `tfsdk:"header_host_name"`
+	HeaderSourceName     types.String             `tfsdk:"header_source_name"`
+	HeaderSourceCategory types.String             `tfsdk:"header_source_category"`
+	HeaderCustomFields   []headerCustomFieldModel `tfsdk:"header_custom_fields"`
+}
+
+type headerCustomFieldModel struct {
+	Name  types.String `tfsdk:"name"`
+	Value types.String `tfsdk:"value"`
+}
+
+type rsyslogSourceModel struct {
+	Id   types.String `tfsdk:"id"`
+	Mode types.String `tfsdk:"mode"`
+	Tls  *tlsModel    `tfsdk:"tls"`
+}
+
+type syslogNgSourceModel struct {
+	Id   types.String `tfsdk:"id"`
+	Mode types.String `tfsdk:"mode"`
+	Tls  *tlsModel    `tfsdk:"tls"`
+}
+
+type rsyslogDestinationModel struct {
+	Id        types.String `tfsdk:"id"`
+	Inputs    types.List   `tfsdk:"inputs"`
+	Keepalive types.Int64  `tfsdk:"keepalive"`
+	Tls       *tlsModel    `tfsdk:"tls"`
+}
+
+type syslogNgDestinationModel struct {
+	Id        types.String `tfsdk:"id"`
+	Inputs    types.List   `tfsdk:"inputs"`
+	Keepalive types.Int64  `tfsdk:"keepalive"`
+	Tls       *tlsModel    `tfsdk:"tls"`
+}
+
+type elasticsearchDestinationModel struct {
+	Id         types.String `tfsdk:"id"`
+	Inputs     types.List   `tfsdk:"inputs"`
+	ApiVersion types.String `tfsdk:"api_version"`
+	BulkIndex  types.String `tfsdk:"bulk_index"`
+}
+
+type azureStorageDestinationModel struct {
+	Id            types.String `tfsdk:"id"`
+	Inputs        types.List   `tfsdk:"inputs"`
+	ContainerName types.String `tfsdk:"container_name"`
+	BlobPrefix    types.String `tfsdk:"blob_prefix"`
+}
+
+type microsoftSentinelDestinationModel struct {
+	Id             types.String `tfsdk:"id"`
+	Inputs         types.List   `tfsdk:"inputs"`
+	ClientId       types.String `tfsdk:"client_id"`
+	TenantId       types.String `tfsdk:"tenant_id"`
+	DcrImmutableId types.String `tfsdk:"dcr_immutable_id"`
+	Table          types.String `tfsdk:"table"`
+}
+
+type sensitiveDataScannerProcessorModel struct {
+	Id      types.String                        `tfsdk:"id"`
+	Include types.String                        `tfsdk:"include"`
+	Inputs  types.List                          `tfsdk:"inputs"`
+	Rules   []sensitiveDataScannerProcessorRule `tfsdk:"rules"`
+}
+
+type sensitiveDataScannerProcessorRule struct {
+	Name           types.String                                 `tfsdk:"name"`
+	Tags           []types.String                               `tfsdk:"tags"`
+	KeywordOptions *sensitiveDataScannerProcessorKeywordOptions `tfsdk:"keyword_options"`
+	Pattern        *sensitiveDataScannerProcessorPattern        `tfsdk:"pattern"`
+	Scope          *sensitiveDataScannerProcessorScope          `tfsdk:"scope"`
+	OnMatch        *sensitiveDataScannerProcessorAction         `tfsdk:"on_match"`
+}
+
+// Nested structs (extracted per your preference)
+type sensitiveDataScannerProcessorKeywordOptions struct {
+	Keywords  []types.String `tfsdk:"keywords"`
+	Proximity types.Int64    `tfsdk:"proximity"`
+}
+
+type sensitiveDataScannerProcessorPattern struct {
+	Custom  *sensitiveDataScannerCustomPattern  `tfsdk:"custom"`
+	Library *sensitiveDataScannerLibraryPattern `tfsdk:"library"`
+}
+
+type sensitiveDataScannerCustomPattern struct {
+	Rule types.String `tfsdk:"rule"`
+}
+
+type sensitiveDataScannerLibraryPattern struct {
+	Id                     types.String `tfsdk:"id"`
+	UseRecommendedKeywords types.Bool   `tfsdk:"use_recommended_keywords"`
+}
+
+type sensitiveDataScannerProcessorScope struct {
+	Include *sensitiveDataScannerScopeOptions `tfsdk:"include"`
+	Exclude *sensitiveDataScannerScopeOptions `tfsdk:"exclude"`
+	All     *bool                             `tfsdk:"all"`
+}
+
+type sensitiveDataScannerScopeOptions struct {
+	Fields []types.String `tfsdk:"fields"`
+}
+
+type sensitiveDataScannerProcessorAction struct {
+	Redact        *sensitiveDataScannerRedactAction        `tfsdk:"redact"`
+	Hash          *sensitiveDataScannerHashAction          `tfsdk:"hash"`
+	PartialRedact *sensitiveDataScannerPartialRedactAction `tfsdk:"partial_redact"`
+}
+
+type sensitiveDataScannerRedactAction struct {
+	Replace types.String `tfsdk:"replace"`
+}
+
+type sensitiveDataScannerHashAction struct {
+	// no fields; schema allows empty options
+}
+
+type sensitiveDataScannerPartialRedactAction struct {
+	Characters types.Int64  `tfsdk:"characters"`
+	Direction  types.String `tfsdk:"direction"` // "first" | "last"
+}
+
+type sumoLogicSourceModel struct {
+	Id types.String `tfsdk:"id"`
 }
 
 func NewObservabilitPipelineResource() resource.Resource {
@@ -494,6 +637,53 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 									},
 									Blocks: map[string]schema.Block{
 										"tls": tlsSchema(),
+									},
+								},
+							},
+							"rsyslog": schema.ListNestedBlock{
+								Description: "The `rsyslog` source listens for logs over TCP or UDP from an `rsyslog` server using the syslog protocol.",
+								NestedObject: schema.NestedBlockObject{
+									Attributes: map[string]schema.Attribute{
+										"id": schema.StringAttribute{
+											Required:    true,
+											Description: "The unique identifier for this component. Used to reference this component in other parts of the pipeline (e.g., as input to downstream components).",
+										},
+										"mode": schema.StringAttribute{
+											Optional:    true,
+											Description: "Protocol used by the syslog source to receive messages.",
+										},
+									},
+									Blocks: map[string]schema.Block{
+										"tls": tlsSchema(),
+									},
+								},
+							},
+							"syslog_ng": schema.ListNestedBlock{
+								Description: "The `syslog_ng` source listens for logs over TCP or UDP from a `syslog-ng` server using the syslog protocol.",
+								NestedObject: schema.NestedBlockObject{
+									Attributes: map[string]schema.Attribute{
+										"id": schema.StringAttribute{
+											Required:    true,
+											Description: "The unique identifier for this component. Used to reference this component in other parts of the pipeline (e.g., as input to downstream components).",
+										},
+										"mode": schema.StringAttribute{
+											Optional:    true,
+											Description: "Protocol used by the syslog source to receive messages.",
+										},
+									},
+									Blocks: map[string]schema.Block{
+										"tls": tlsSchema(),
+									},
+								},
+							},
+							"sumo_logic": schema.ListNestedBlock{
+								Description: "The `sumo_logic` source receives logs from Sumo Logic collectors.",
+								NestedObject: schema.NestedBlockObject{
+									Attributes: map[string]schema.Attribute{
+										"id": schema.StringAttribute{
+											Required:    true,
+											Description: "The unique identifier for this component. Used to reference this component in other parts of the pipeline (e.g., as input to downstream components).",
+										},
 									},
 								},
 							},
@@ -738,6 +928,149 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 																"value": schema.StringAttribute{
 																	Description: "The field value.",
 																	Required:    true,
+																},
+															},
+														},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+							"sensitive_data_scanner": schema.ListNestedBlock{
+								Description: "The `sensitive_data_scanner` processor detects and optionally redacts sensitive data in log events.",
+								NestedObject: schema.NestedBlockObject{
+									Attributes: map[string]schema.Attribute{
+										"id": schema.StringAttribute{
+											Required:    true,
+											Description: "The unique identifier for this component. Used to reference this component in other parts of the pipeline (e.g., as input to downstream components).",
+										},
+										"include": schema.StringAttribute{
+											Required:    true,
+											Description: "A Datadog search query used to determine which logs this processor targets.",
+										},
+										"inputs": schema.ListAttribute{
+											Required:    true,
+											Description: "A list of component IDs whose output is used as the `input` for this component.",
+											ElementType: types.StringType,
+										},
+									},
+									Blocks: map[string]schema.Block{
+										"rules": schema.ListNestedBlock{
+											Description: "A list of rules for identifying and acting on sensitive data patterns.",
+											NestedObject: schema.NestedBlockObject{
+												Attributes: map[string]schema.Attribute{
+													"name": schema.StringAttribute{
+														Optional:    true,
+														Description: "A name identifying the rule.",
+													},
+													"tags": schema.ListAttribute{
+														Optional:    true,
+														ElementType: types.StringType,
+														Description: "Tags assigned to this rule for filtering and classification.",
+													},
+												},
+												Blocks: map[string]schema.Block{
+													"keyword_options": schema.SingleNestedBlock{
+														Description: "Keyword-based proximity matching for sensitive data.",
+														Attributes: map[string]schema.Attribute{
+															"keywords": schema.ListAttribute{
+																Optional:    true,
+																ElementType: types.StringType,
+																Description: "A list of keywords to match near the sensitive pattern.",
+															},
+															"proximity": schema.Int64Attribute{
+																Optional:    true,
+																Description: "Maximum number of tokens between a keyword and a sensitive value match.",
+															},
+														},
+													},
+													"pattern": schema.SingleNestedBlock{
+														Description: "Pattern detection configuration for identifying sensitive data using either a custom regex or a library reference.",
+														Blocks: map[string]schema.Block{
+															"custom": schema.SingleNestedBlock{
+																Description: "Pattern detection using a custom regular expression.",
+																Attributes: map[string]schema.Attribute{
+																	"rule": schema.StringAttribute{
+																		Optional:    true,
+																		Description: "A regular expression used to detect sensitive values. Must be a valid regex.",
+																	},
+																},
+															},
+															"library": schema.SingleNestedBlock{
+																Description: "Pattern detection using a predefined pattern from the sensitive data scanner pattern library.",
+																Attributes: map[string]schema.Attribute{
+																	"id": schema.StringAttribute{
+																		Optional:    true,
+																		Description: "Identifier for a predefined pattern from the sensitive data scanner pattern library.",
+																	},
+																	"use_recommended_keywords": schema.BoolAttribute{
+																		Optional:    true,
+																		Description: "Whether to augment the pattern with recommended keywords (optional).",
+																	},
+																},
+															},
+														},
+													},
+													"scope": schema.SingleNestedBlock{
+														Description: "Field-level targeting options that determine where the scanner should operate.",
+														Blocks: map[string]schema.Block{
+															"include": schema.SingleNestedBlock{
+																Description: "Explicitly include these fields for scanning.",
+																Attributes: map[string]schema.Attribute{
+																	"fields": schema.ListAttribute{
+																		Optional:    true,
+																		ElementType: types.StringType,
+																		Description: "The fields to include in scanning.",
+																	},
+																},
+															},
+															"exclude": schema.SingleNestedBlock{
+																Description: "Explicitly exclude these fields from scanning.",
+																Attributes: map[string]schema.Attribute{
+																	"fields": schema.ListAttribute{
+																		Optional:    true,
+																		ElementType: types.StringType,
+																		Description: "The fields to exclude from scanning.",
+																	},
+																},
+															},
+														},
+														Attributes: map[string]schema.Attribute{
+															"all": schema.BoolAttribute{
+																Optional:    true,
+																Description: "Scan all fields.",
+															},
+														},
+													},
+													"on_match": schema.SingleNestedBlock{
+														Description: "The action to take when a sensitive value is found.",
+														Blocks: map[string]schema.Block{
+															"redact": schema.SingleNestedBlock{
+																Description: "Redacts the matched value.",
+																Attributes: map[string]schema.Attribute{
+																	"replace": schema.StringAttribute{
+																		Optional:    true,
+																		Description: "Replacement string for redacted values (e.g., `***`).",
+																	},
+																},
+															},
+															"hash": schema.SingleNestedBlock{
+																Description: "Hashes the matched value.",
+																Attributes:  map[string]schema.Attribute{}, // empty options
+															},
+															"partial_redact": schema.SingleNestedBlock{
+																Description: "Redacts part of the matched value (e.g., keep last 4 characters).",
+																Attributes: map[string]schema.Attribute{
+																	"characters": schema.Int64Attribute{
+																		Optional:    true,
+																		Description: "Number of characters to keep.",
+																	},
+																	"direction": schema.StringAttribute{
+																		Optional:    true,
+																		Description: "Direction from which to keep characters: `first` or `last`.",
+																	},
 																},
 															},
 														},
@@ -1017,6 +1350,181 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 									},
 								},
 							},
+							"sumo_logic": schema.ListNestedBlock{
+								Description: "The `sumo_logic` destination forwards logs to Sumo Logic.",
+								NestedObject: schema.NestedBlockObject{
+									Attributes: map[string]schema.Attribute{
+										"id": schema.StringAttribute{
+											Required:    true,
+											Description: "The unique identifier for this component.",
+										},
+										"inputs": schema.ListAttribute{
+											Required:    true,
+											Description: "A list of component IDs whose output is used as the `input` for this component.",
+											ElementType: types.StringType,
+										},
+										"encoding": schema.StringAttribute{
+											Optional:    true,
+											Description: "The output encoding format.",
+										},
+										"header_host_name": schema.StringAttribute{
+											Optional:    true,
+											Description: "Optional override for the host name header.",
+										},
+										"header_source_name": schema.StringAttribute{
+											Optional:    true,
+											Description: "Optional override for the source name header.",
+										},
+										"header_source_category": schema.StringAttribute{
+											Optional:    true,
+											Description: "Optional override for the source category header.",
+										},
+									},
+									Blocks: map[string]schema.Block{
+										"header_custom_fields": schema.ListNestedBlock{
+											Description: "A list of custom headers to include in the request to Sumo Logic.",
+											NestedObject: schema.NestedBlockObject{
+												Attributes: map[string]schema.Attribute{
+													"name": schema.StringAttribute{
+														Optional:    true,
+														Description: "The header field name.",
+													},
+													"value": schema.StringAttribute{
+														Optional:    true,
+														Description: "The header field value.",
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+							"rsyslog": schema.ListNestedBlock{
+								Description: "The `rsyslog` destination forwards logs to an external `rsyslog` server over TCP or UDP using the syslog protocol.",
+								NestedObject: schema.NestedBlockObject{
+									Attributes: map[string]schema.Attribute{
+										"id": schema.StringAttribute{
+											Required:    true,
+											Description: "The unique identifier for this component.",
+										},
+										"inputs": schema.ListAttribute{
+											Required:    true,
+											Description: "A list of component IDs whose output is used as the `input` for this component.",
+											ElementType: types.StringType,
+										},
+										"keepalive": schema.Int64Attribute{
+											Optional:    true,
+											Description: "Optional socket keepalive duration in milliseconds.",
+										},
+									},
+									Blocks: map[string]schema.Block{
+										"tls": tlsSchema(),
+									},
+								},
+							},
+							"syslog_ng": schema.ListNestedBlock{
+								Description: "The `syslog_ng` destination forwards logs to an external `syslog-ng` server over TCP or UDP using the syslog protocol.",
+								NestedObject: schema.NestedBlockObject{
+									Attributes: map[string]schema.Attribute{
+										"id": schema.StringAttribute{
+											Required:    true,
+											Description: "The unique identifier for this component.",
+										},
+										"inputs": schema.ListAttribute{
+											Required:    true,
+											Description: "A list of component IDs whose output is used as the `input` for this component.",
+											ElementType: types.StringType,
+										},
+										"keepalive": schema.Int64Attribute{
+											Optional:    true,
+											Description: "Optional socket keepalive duration in milliseconds.",
+										},
+									},
+									Blocks: map[string]schema.Block{
+										"tls": tlsSchema(),
+									},
+								},
+							},
+							"elasticsearch": schema.ListNestedBlock{
+								Description: "The `elasticsearch` destination writes logs to an Elasticsearch cluster.",
+								NestedObject: schema.NestedBlockObject{
+									Attributes: map[string]schema.Attribute{
+										"id": schema.StringAttribute{
+											Required:    true,
+											Description: "The unique identifier for this component.",
+										},
+										"inputs": schema.ListAttribute{
+											Required:    true,
+											Description: "A list of component IDs whose output is used as the `input` for this component.",
+											ElementType: types.StringType,
+										},
+										"api_version": schema.StringAttribute{
+											Optional:    true,
+											Description: "The Elasticsearch API version to use. Set to `auto` to auto-detect.",
+										},
+										"bulk_index": schema.StringAttribute{
+											Optional:    true,
+											Description: "The index or datastream to write logs to in Elasticsearch.",
+										},
+									},
+								},
+							},
+							"azure_storage": schema.ListNestedBlock{
+								Description: "The `azure_storage` destination forwards logs to an Azure Blob Storage container.",
+								NestedObject: schema.NestedBlockObject{
+									Attributes: map[string]schema.Attribute{
+										"id": schema.StringAttribute{
+											Required:    true,
+											Description: "The unique identifier for this component.",
+										},
+										"inputs": schema.ListAttribute{
+											Required:    true,
+											Description: "A list of component IDs whose output is used as the `input` for this component.",
+											ElementType: types.StringType,
+										},
+										"container_name": schema.StringAttribute{
+											Required:    true,
+											Description: "The name of the Azure Blob Storage container to store logs in.",
+										},
+										"blob_prefix": schema.StringAttribute{
+											Optional:    true,
+											Description: "Optional prefix for blobs written to the container.",
+										},
+									},
+								},
+							},
+							"microsoft_sentinel": schema.ListNestedBlock{
+								Description: "The `microsoft_sentinel` destination forwards logs to Microsoft Sentinel.",
+								NestedObject: schema.NestedBlockObject{
+									Attributes: map[string]schema.Attribute{
+										"id": schema.StringAttribute{
+											Required:    true,
+											Description: "The unique identifier for this component.",
+										},
+										"inputs": schema.ListAttribute{
+											Required:    true,
+											Description: "A list of component IDs whose output is used as the `input` for this component.",
+											ElementType: types.StringType,
+										},
+										"client_id": schema.StringAttribute{
+											Required:    true,
+											Description: "Azure AD client ID used for authentication.",
+										},
+										"tenant_id": schema.StringAttribute{
+											Required:    true,
+											Description: "Azure AD tenant ID.",
+										},
+										"dcr_immutable_id": schema.StringAttribute{
+											Required:    true,
+											Description: "The immutable ID of the Data Collection Rule (DCR).",
+										},
+										"table": schema.StringAttribute{
+											Required:    true,
+											Description: "The name of the Log Analytics table where logs will be sent.",
+										},
+									},
+								},
+							},
 						},
 					},
 				},
@@ -1191,6 +1699,15 @@ func expandPipeline(ctx context.Context, state *observabilityPipelineModel) (*da
 	for _, s := range state.Config.Sources.AmazonS3Source {
 		config.Sources = append(config.Sources, expandAmazonS3Source(s))
 	}
+	for _, s := range state.Config.Sources.RsyslogSource {
+		config.Sources = append(config.Sources, expandRsyslogSource(s))
+	}
+	for _, s := range state.Config.Sources.SyslogNgSource {
+		config.Sources = append(config.Sources, expandSyslogNgSource(s))
+	}
+	for _, s := range state.Config.Sources.SumoLogicSource {
+		config.Sources = append(config.Sources, expandSumoLogicSource(s))
+	}
 
 	// Processors
 	for _, p := range state.Config.Processors.FilterProcessor {
@@ -1220,6 +1737,9 @@ func expandPipeline(ctx context.Context, state *observabilityPipelineModel) (*da
 	for _, p := range state.Config.Processors.GenerateMetricsProcessor {
 		config.Processors = append(config.Processors, expandGenerateMetricsProcessor(ctx, p))
 	}
+	for _, p := range state.Config.Processors.SensitiveDataScannerProcessor {
+		config.Processors = append(config.Processors, expandSensitiveDataScannerProcessor(ctx, p))
+	}
 
 	// Destinations
 	for _, d := range state.Config.Destinations.DatadogLogsDestination {
@@ -1230,6 +1750,24 @@ func expandPipeline(ctx context.Context, state *observabilityPipelineModel) (*da
 	}
 	for _, d := range state.Config.Destinations.GoogleCloudStorageDestination {
 		config.Destinations = append(config.Destinations, expandGoogleCloudStorageDestination(ctx, d))
+	}
+	for _, d := range state.Config.Destinations.SumoLogicDestination {
+		config.Destinations = append(config.Destinations, expandSumoLogicDestination(ctx, d))
+	}
+	for _, d := range state.Config.Destinations.RsyslogDestination {
+		config.Destinations = append(config.Destinations, expandRsyslogDestination(ctx, d))
+	}
+	for _, d := range state.Config.Destinations.SyslogNgDestination {
+		config.Destinations = append(config.Destinations, expandSyslogNgDestination(ctx, d))
+	}
+	for _, d := range state.Config.Destinations.ElasticsearchDestination {
+		config.Destinations = append(config.Destinations, expandElasticsearchDestination(ctx, d))
+	}
+	for _, d := range state.Config.Destinations.AzureStorageDestination {
+		config.Destinations = append(config.Destinations, expandAzureStorageDestination(ctx, d))
+	}
+	for _, d := range state.Config.Destinations.MicrosoftSentinelDestination {
+		config.Destinations = append(config.Destinations, expandMicrosoftSentinelDestination(ctx, d))
 	}
 
 	attrs.SetConfig(*config)
@@ -1276,6 +1814,15 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 		if s3 := flattenAmazonS3Source(src.ObservabilityPipelineAmazonS3Source); s3 != nil {
 			outCfg.Sources.AmazonS3Source = append(outCfg.Sources.AmazonS3Source, s3)
 		}
+		if r := flattenRsyslogSource(src.ObservabilityPipelineRsyslogSource); r != nil {
+			outCfg.Sources.RsyslogSource = append(outCfg.Sources.RsyslogSource, r)
+		}
+		if s := flattenSyslogNgSource(src.ObservabilityPipelineSyslogNgSource); s != nil {
+			outCfg.Sources.SyslogNgSource = append(outCfg.Sources.SyslogNgSource, s)
+		}
+		if s := flattenSumoLogicSource(src.ObservabilityPipelineSumoLogicSource); s != nil {
+			outCfg.Sources.SumoLogicSource = append(outCfg.Sources.SumoLogicSource, s)
+		}
 	}
 
 	for _, p := range cfg.GetProcessors() {
@@ -1314,6 +1861,9 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 			outCfg.Processors.GenerateMetricsProcessor = append(outCfg.Processors.GenerateMetricsProcessor, f)
 		}
 
+		if s := flattenSensitiveDataScannerProcessor(ctx, p.ObservabilityPipelineSensitiveDataScannerProcessor); s != nil {
+			outCfg.Processors.SensitiveDataScannerProcessor = append(outCfg.Processors.SensitiveDataScannerProcessor, s)
+		}
 	}
 
 	for _, d := range cfg.GetDestinations() {
@@ -1329,6 +1879,24 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 			outCfg.Destinations.GoogleCloudStorageDestination = append(outCfg.Destinations.GoogleCloudStorageDestination, gcs)
 		}
 
+		if s := flattenSumoLogicDestination(ctx, d.ObservabilityPipelineSumoLogicDestination); s != nil {
+			outCfg.Destinations.SumoLogicDestination = append(outCfg.Destinations.SumoLogicDestination, s)
+		}
+		if r := flattenRsyslogDestination(ctx, d.ObservabilityPipelineRsyslogDestination); r != nil {
+			outCfg.Destinations.RsyslogDestination = append(outCfg.Destinations.RsyslogDestination, r)
+		}
+		if s := flattenSyslogNgDestination(ctx, d.ObservabilityPipelineSyslogNgDestination); s != nil {
+			outCfg.Destinations.SyslogNgDestination = append(outCfg.Destinations.SyslogNgDestination, s)
+		}
+		if e := flattenElasticsearchDestination(ctx, d.ObservabilityPipelineElasticsearchDestination); e != nil {
+			outCfg.Destinations.ElasticsearchDestination = append(outCfg.Destinations.ElasticsearchDestination, e)
+		}
+		if a := flattenAzureStorageDestination(ctx, d.AzureStorageDestination); a != nil {
+			outCfg.Destinations.AzureStorageDestination = append(outCfg.Destinations.AzureStorageDestination, a)
+		}
+		if m := flattenMicrosoftSentinelDestination(ctx, d.MicrosoftSentinelDestination); m != nil {
+			outCfg.Destinations.MicrosoftSentinelDestination = append(outCfg.Destinations.MicrosoftSentinelDestination, m)
+		}
 	}
 
 	state.Config = &outCfg
@@ -2277,4 +2845,573 @@ func flattenAmazonS3Source(src *datadogV2.ObservabilityPipelineAmazonS3Source) *
 	}
 
 	return out
+}
+
+func expandSumoLogicDestination(ctx context.Context, src *sumoLogicDestinationModel) datadogV2.ObservabilityPipelineConfigDestinationItem {
+	dest := datadogV2.NewObservabilityPipelineSumoLogicDestinationWithDefaults()
+	dest.SetId(src.Id.ValueString())
+
+	var inputs []string
+	src.Inputs.ElementsAs(ctx, &inputs, false)
+	dest.SetInputs(inputs)
+
+	if !src.Encoding.IsNull() {
+		dest.SetEncoding(datadogV2.ObservabilityPipelineSumoLogicDestinationEncoding(src.Encoding.ValueString()))
+	}
+	if !src.HeaderHostName.IsNull() {
+		dest.SetHeaderHostName(src.HeaderHostName.ValueString())
+	}
+	if !src.HeaderSourceName.IsNull() {
+		dest.SetHeaderSourceName(src.HeaderSourceName.ValueString())
+	}
+	if !src.HeaderSourceCategory.IsNull() {
+		dest.SetHeaderSourceCategory(src.HeaderSourceCategory.ValueString())
+	}
+
+	if len(src.HeaderCustomFields) > 0 {
+		var fields []datadogV2.ObservabilityPipelineSumoLogicDestinationHeaderCustomFieldsItem
+		for _, f := range src.HeaderCustomFields {
+			fields = append(fields, datadogV2.ObservabilityPipelineSumoLogicDestinationHeaderCustomFieldsItem{
+				Name:  f.Name.ValueString(),
+				Value: f.Value.ValueString(),
+			})
+		}
+		dest.SetHeaderCustomFields(fields)
+	}
+
+	return datadogV2.ObservabilityPipelineConfigDestinationItem{
+		ObservabilityPipelineSumoLogicDestination: dest,
+	}
+}
+
+func flattenSumoLogicDestination(ctx context.Context, src *datadogV2.ObservabilityPipelineSumoLogicDestination) *sumoLogicDestinationModel {
+	if src == nil {
+		return nil
+	}
+
+	inputs, _ := types.ListValueFrom(ctx, types.StringType, src.GetInputs())
+
+	out := &sumoLogicDestinationModel{
+		Id:     types.StringValue(src.GetId()),
+		Inputs: inputs,
+	}
+
+	if v, ok := src.GetEncodingOk(); ok {
+		out.Encoding = types.StringValue(string(*v))
+	}
+	if v, ok := src.GetHeaderHostNameOk(); ok {
+		out.HeaderHostName = types.StringValue(*v)
+	}
+	if v, ok := src.GetHeaderSourceNameOk(); ok {
+		out.HeaderSourceName = types.StringValue(*v)
+	}
+	if v, ok := src.GetHeaderSourceCategoryOk(); ok {
+		out.HeaderSourceCategory = types.StringValue(*v)
+	}
+	if v, ok := src.GetHeaderCustomFieldsOk(); ok {
+		for _, f := range *v {
+			out.HeaderCustomFields = append(out.HeaderCustomFields, headerCustomFieldModel{
+				Name:  types.StringValue(f.Name),
+				Value: types.StringValue(f.Value),
+			})
+		}
+	}
+
+	return out
+}
+
+func expandRsyslogSource(src *rsyslogSourceModel) datadogV2.ObservabilityPipelineConfigSourceItem {
+	obj := datadogV2.NewObservabilityPipelineRsyslogSourceWithDefaults()
+	obj.SetId(src.Id.ValueString())
+	if !src.Mode.IsNull() {
+		obj.SetMode(datadogV2.ObservabilityPipelineSyslogSourceMode(src.Mode.ValueString()))
+	}
+	if src.Tls != nil {
+		obj.Tls = expandTls(src.Tls)
+	}
+	return datadogV2.ObservabilityPipelineConfigSourceItem{
+		ObservabilityPipelineRsyslogSource: obj,
+	}
+}
+
+func flattenRsyslogSource(src *datadogV2.ObservabilityPipelineRsyslogSource) *rsyslogSourceModel {
+	if src == nil {
+		return nil
+	}
+	out := &rsyslogSourceModel{
+		Id: types.StringValue(src.GetId()),
+	}
+	if v, ok := src.GetModeOk(); ok {
+		out.Mode = types.StringValue(string(*v))
+	}
+	if src.Tls != nil {
+		tls := flattenTls(src.Tls)
+		out.Tls = &tls
+	}
+	return out
+}
+
+func expandSyslogNgSource(src *syslogNgSourceModel) datadogV2.ObservabilityPipelineConfigSourceItem {
+	obj := datadogV2.NewObservabilityPipelineSyslogNgSourceWithDefaults()
+	obj.SetId(src.Id.ValueString())
+	if !src.Mode.IsNull() {
+		obj.SetMode(datadogV2.ObservabilityPipelineSyslogSourceMode(src.Mode.ValueString()))
+	}
+	if src.Tls != nil {
+		obj.Tls = expandTls(src.Tls)
+	}
+	return datadogV2.ObservabilityPipelineConfigSourceItem{
+		ObservabilityPipelineSyslogNgSource: obj,
+	}
+}
+
+func flattenSyslogNgSource(src *datadogV2.ObservabilityPipelineSyslogNgSource) *syslogNgSourceModel {
+	if src == nil {
+		return nil
+	}
+	out := &syslogNgSourceModel{
+		Id: types.StringValue(src.GetId()),
+	}
+	if v, ok := src.GetModeOk(); ok {
+		out.Mode = types.StringValue(string(*v))
+	}
+	if src.Tls != nil {
+		tls := flattenTls(src.Tls)
+		out.Tls = &tls
+	}
+	return out
+}
+
+func expandRsyslogDestination(ctx context.Context, src *rsyslogDestinationModel) datadogV2.ObservabilityPipelineConfigDestinationItem {
+	obj := datadogV2.NewObservabilityPipelineRsyslogDestinationWithDefaults()
+	obj.SetId(src.Id.ValueString())
+
+	var inputs []string
+	src.Inputs.ElementsAs(ctx, &inputs, false)
+	obj.SetInputs(inputs)
+
+	if !src.Keepalive.IsNull() {
+		obj.SetKeepalive(src.Keepalive.ValueInt64())
+	}
+	if src.Tls != nil {
+		obj.Tls = expandTls(src.Tls)
+	}
+	return datadogV2.ObservabilityPipelineConfigDestinationItem{
+		ObservabilityPipelineRsyslogDestination: obj,
+	}
+}
+
+func flattenRsyslogDestination(ctx context.Context, src *datadogV2.ObservabilityPipelineRsyslogDestination) *rsyslogDestinationModel {
+	if src == nil {
+		return nil
+	}
+	inputs, _ := types.ListValueFrom(ctx, types.StringType, src.GetInputs())
+	out := &rsyslogDestinationModel{
+		Id:     types.StringValue(src.GetId()),
+		Inputs: inputs,
+	}
+	if v, ok := src.GetKeepaliveOk(); ok {
+		out.Keepalive = types.Int64Value(*v)
+	}
+	if src.Tls != nil {
+		tls := flattenTls(src.Tls)
+		out.Tls = &tls
+	}
+	return out
+}
+
+func expandSyslogNgDestination(ctx context.Context, src *syslogNgDestinationModel) datadogV2.ObservabilityPipelineConfigDestinationItem {
+	obj := datadogV2.NewObservabilityPipelineSyslogNgDestinationWithDefaults()
+	obj.SetId(src.Id.ValueString())
+
+	var inputs []string
+	src.Inputs.ElementsAs(ctx, &inputs, false)
+	obj.SetInputs(inputs)
+
+	if !src.Keepalive.IsNull() {
+		obj.SetKeepalive(src.Keepalive.ValueInt64())
+	}
+	if src.Tls != nil {
+		obj.Tls = expandTls(src.Tls)
+	}
+
+	return datadogV2.ObservabilityPipelineConfigDestinationItem{
+		ObservabilityPipelineSyslogNgDestination: obj,
+	}
+}
+
+func flattenSyslogNgDestination(ctx context.Context, src *datadogV2.ObservabilityPipelineSyslogNgDestination) *syslogNgDestinationModel {
+	if src == nil {
+		return nil
+	}
+	inputs, _ := types.ListValueFrom(ctx, types.StringType, src.GetInputs())
+	out := &syslogNgDestinationModel{
+		Id:     types.StringValue(src.GetId()),
+		Inputs: inputs,
+	}
+	if v, ok := src.GetKeepaliveOk(); ok {
+		out.Keepalive = types.Int64Value(*v)
+	}
+	if src.Tls != nil {
+		tls := flattenTls(src.Tls)
+		out.Tls = &tls
+	}
+	return out
+}
+
+func expandElasticsearchDestination(ctx context.Context, src *elasticsearchDestinationModel) datadogV2.ObservabilityPipelineConfigDestinationItem {
+	obj := datadogV2.NewObservabilityPipelineElasticsearchDestinationWithDefaults()
+	obj.SetId(src.Id.ValueString())
+
+	var inputs []string
+	src.Inputs.ElementsAs(ctx, &inputs, false)
+	obj.SetInputs(inputs)
+
+	if !src.ApiVersion.IsNull() {
+		obj.SetApiVersion(datadogV2.ObservabilityPipelineElasticsearchDestinationApiVersion(src.ApiVersion.ValueString()))
+	}
+	if !src.BulkIndex.IsNull() {
+		obj.SetBulkIndex(src.BulkIndex.ValueString())
+	}
+
+	return datadogV2.ObservabilityPipelineConfigDestinationItem{
+		ObservabilityPipelineElasticsearchDestination: obj,
+	}
+}
+
+func flattenElasticsearchDestination(ctx context.Context, src *datadogV2.ObservabilityPipelineElasticsearchDestination) *elasticsearchDestinationModel {
+	if src == nil {
+		return nil
+	}
+	inputs, _ := types.ListValueFrom(ctx, types.StringType, src.GetInputs())
+	out := &elasticsearchDestinationModel{
+		Id:     types.StringValue(src.GetId()),
+		Inputs: inputs,
+	}
+	if v, ok := src.GetApiVersionOk(); ok {
+		out.ApiVersion = types.StringValue(string(*v))
+	}
+	if v, ok := src.GetBulkIndexOk(); ok {
+		out.BulkIndex = types.StringValue(*v)
+	}
+	return out
+}
+
+func expandAzureStorageDestination(ctx context.Context, src *azureStorageDestinationModel) datadogV2.ObservabilityPipelineConfigDestinationItem {
+	obj := datadogV2.NewAzureStorageDestinationWithDefaults()
+	obj.SetId(src.Id.ValueString())
+
+	var inputs []string
+	src.Inputs.ElementsAs(ctx, &inputs, false)
+	obj.SetInputs(inputs)
+
+	obj.SetContainerName(src.ContainerName.ValueString())
+
+	if !src.BlobPrefix.IsNull() {
+		obj.SetBlobPrefix(src.BlobPrefix.ValueString())
+	}
+
+	return datadogV2.ObservabilityPipelineConfigDestinationItem{
+		AzureStorageDestination: obj,
+	}
+}
+
+func flattenAzureStorageDestination(ctx context.Context, src *datadogV2.AzureStorageDestination) *azureStorageDestinationModel {
+	if src == nil {
+		return nil
+	}
+	inputs, _ := types.ListValueFrom(ctx, types.StringType, src.GetInputs())
+	out := &azureStorageDestinationModel{
+		Id:            types.StringValue(src.GetId()),
+		Inputs:        inputs,
+		ContainerName: types.StringValue(src.GetContainerName()),
+	}
+	if v, ok := src.GetBlobPrefixOk(); ok {
+		out.BlobPrefix = types.StringValue(*v)
+	}
+	return out
+}
+
+func expandMicrosoftSentinelDestination(ctx context.Context, src *microsoftSentinelDestinationModel) datadogV2.ObservabilityPipelineConfigDestinationItem {
+	obj := datadogV2.NewMicrosoftSentinelDestinationWithDefaults()
+	obj.SetId(src.Id.ValueString())
+
+	var inputs []string
+	src.Inputs.ElementsAs(ctx, &inputs, false)
+	obj.SetInputs(inputs)
+
+	obj.SetClientId(src.ClientId.ValueString())
+	obj.SetTenantId(src.TenantId.ValueString())
+	obj.SetDcrImmutableId(src.DcrImmutableId.ValueString())
+	obj.SetTable(src.Table.ValueString())
+
+	return datadogV2.ObservabilityPipelineConfigDestinationItem{
+		MicrosoftSentinelDestination: obj,
+	}
+}
+
+func flattenMicrosoftSentinelDestination(ctx context.Context, src *datadogV2.MicrosoftSentinelDestination) *microsoftSentinelDestinationModel {
+	if src == nil {
+		return nil
+	}
+	inputs, _ := types.ListValueFrom(ctx, types.StringType, src.GetInputs())
+	return &microsoftSentinelDestinationModel{
+		Id:             types.StringValue(src.GetId()),
+		Inputs:         inputs,
+		ClientId:       types.StringValue(src.GetClientId()),
+		TenantId:       types.StringValue(src.GetTenantId()),
+		DcrImmutableId: types.StringValue(src.GetDcrImmutableId()),
+		Table:          types.StringValue(src.GetTable()),
+	}
+}
+
+func expandSensitiveDataScannerProcessor(ctx context.Context, src *sensitiveDataScannerProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
+	obj := datadogV2.NewObservabilityPipelineSensitiveDataScannerProcessorWithDefaults()
+
+	obj.SetId(src.Id.ValueString())
+	obj.SetInclude(src.Include.ValueString())
+
+	var inputs []string
+	src.Inputs.ElementsAs(ctx, &inputs, false)
+	obj.SetInputs(inputs)
+
+	var rules []datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorRule
+	for _, rule := range src.Rules {
+		r := datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorRule{
+			Name: rule.Name.ValueString(),
+		}
+
+		for _, tag := range rule.Tags {
+			r.Tags = append(r.Tags, tag.ValueString())
+		}
+
+		if rule.KeywordOptions != nil {
+			r.KeywordOptions = &datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorKeywordOptions{}
+
+			for _, k := range rule.KeywordOptions.Keywords {
+				r.KeywordOptions.Keywords = append(r.KeywordOptions.Keywords, k.ValueString())
+			}
+
+			r.KeywordOptions.Proximity = rule.KeywordOptions.Proximity.ValueInt64()
+		}
+
+		if rule.Pattern != nil {
+			if rule.Pattern.Custom != nil {
+				r.Pattern = datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorPattern{
+					ObservabilityPipelineSensitiveDataScannerProcessorCustomPattern: &datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorCustomPattern{
+						Type: "custom",
+						Options: datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorCustomPatternOptions{
+							Rule: rule.Pattern.Custom.Rule.ValueString(),
+						},
+					},
+				}
+			} else if rule.Pattern.Library != nil {
+				r.Pattern = datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorPattern{
+					ObservabilityPipelineSensitiveDataScannerProcessorLibraryPattern: &datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorLibraryPattern{
+						Type: "library",
+						Options: datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorLibraryPatternOptions{
+							Id: rule.Pattern.Library.Id.ValueString(),
+						},
+					},
+				}
+				if !rule.Pattern.Library.UseRecommendedKeywords.IsNull() {
+					r.Pattern.ObservabilityPipelineSensitiveDataScannerProcessorLibraryPattern.Options.
+						SetUseRecommendedKeywords(rule.Pattern.Library.UseRecommendedKeywords.ValueBool())
+				}
+			}
+		}
+
+		if rule.Scope != nil {
+			if rule.Scope.Include != nil {
+				r.Scope = datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorScope{
+					ObservabilityPipelineSensitiveDataScannerProcessorScopeInclude: &datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorScopeInclude{
+						Target: "include",
+						Options: datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorScopeOptions{
+							Fields: extractStringList(rule.Scope.Include.Fields),
+						},
+					},
+				}
+			} else if rule.Scope.Exclude != nil {
+				r.Scope = datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorScope{
+					ObservabilityPipelineSensitiveDataScannerProcessorScopeExclude: &datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorScopeExclude{
+						Target: "exclude",
+						Options: datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorScopeOptions{
+							Fields: extractStringList(rule.Scope.Exclude.Fields),
+						},
+					},
+				}
+			} else if rule.Scope.All != nil && *rule.Scope.All {
+				r.Scope = datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorScope{
+					ObservabilityPipelineSensitiveDataScannerProcessorScopeAll: &datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorScopeAll{
+						Target: "all",
+					},
+				}
+			}
+		}
+
+		if rule.OnMatch != nil {
+			if rule.OnMatch.Redact != nil {
+				r.OnMatch = datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorAction{
+					ObservabilityPipelineSensitiveDataScannerProcessorActionRedact: &datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorActionRedact{
+						Action: "redact",
+						Options: datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorActionRedactOptions{
+							Replace: rule.OnMatch.Redact.Replace.ValueString(),
+						},
+					},
+				}
+			} else if rule.OnMatch.Hash != nil {
+				r.OnMatch = datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorAction{
+					ObservabilityPipelineSensitiveDataScannerProcessorActionHash: &datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorActionHash{
+						Action: "hash",
+					},
+				}
+			} else if rule.OnMatch.PartialRedact != nil {
+				r.OnMatch = datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorAction{
+					ObservabilityPipelineSensitiveDataScannerProcessorActionPartialRedact: &datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorActionPartialRedact{
+						Action: "partial_redact",
+						Options: datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorActionPartialRedactOptions{
+							Characters: rule.OnMatch.PartialRedact.Characters.ValueInt64(),
+							Direction:  datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorActionPartialRedactOptionsDirection(rule.OnMatch.PartialRedact.Direction.ValueString()),
+						},
+					},
+				}
+			}
+		}
+
+		rules = append(rules, r)
+	}
+	obj.SetRules(rules)
+
+	return datadogV2.ObservabilityPipelineConfigProcessorItem{
+		ObservabilityPipelineSensitiveDataScannerProcessor: obj,
+	}
+}
+
+func extractStringList(list []types.String) []string {
+	var out []string
+	for _, s := range list {
+		out = append(out, s.ValueString())
+	}
+	return out
+}
+
+func wrapStringList(vals []string) []types.String {
+	out := make([]types.String, len(vals))
+	for i, v := range vals {
+		out[i] = types.StringValue(v)
+	}
+	return out
+}
+
+func flattenSensitiveDataScannerProcessor(ctx context.Context, src *datadogV2.ObservabilityPipelineSensitiveDataScannerProcessor) *sensitiveDataScannerProcessorModel {
+	if src == nil {
+		return nil
+	}
+
+	inputs, _ := types.ListValueFrom(ctx, types.StringType, src.GetInputs())
+	out := &sensitiveDataScannerProcessorModel{
+		Id:      types.StringValue(src.GetId()),
+		Include: types.StringValue(src.GetInclude()),
+		Inputs:  inputs,
+	}
+
+	for _, r := range src.GetRules() {
+		rule := sensitiveDataScannerProcessorRule{
+			Name: types.StringValue(r.GetName()),
+		}
+
+		for _, tag := range r.GetTags() {
+			rule.Tags = append(rule.Tags, types.StringValue(tag))
+		}
+
+		if ko, ok := r.GetKeywordOptionsOk(); ok {
+			rule.KeywordOptions = &sensitiveDataScannerProcessorKeywordOptions{
+				Proximity: types.Int64Value(ko.Proximity),
+			}
+			for _, k := range ko.Keywords {
+				rule.KeywordOptions.Keywords = append(rule.KeywordOptions.Keywords, types.StringValue(k))
+			}
+		}
+
+		switch p := r.Pattern; {
+		case p.ObservabilityPipelineSensitiveDataScannerProcessorCustomPattern != nil:
+			rule.Pattern = &sensitiveDataScannerProcessorPattern{
+				Custom: &sensitiveDataScannerCustomPattern{
+					Rule: types.StringValue(p.ObservabilityPipelineSensitiveDataScannerProcessorCustomPattern.Options.Rule),
+				},
+			}
+		case p.ObservabilityPipelineSensitiveDataScannerProcessorLibraryPattern != nil:
+			opts := p.ObservabilityPipelineSensitiveDataScannerProcessorLibraryPattern.Options
+			rule.Pattern = &sensitiveDataScannerProcessorPattern{
+				Library: &sensitiveDataScannerLibraryPattern{
+					Id: types.StringValue(opts.Id),
+				},
+			}
+			if v, ok := opts.GetUseRecommendedKeywordsOk(); ok {
+				rule.Pattern.Library.UseRecommendedKeywords = types.BoolValue(*v)
+			}
+		}
+
+		switch s := r.Scope; {
+		case s.ObservabilityPipelineSensitiveDataScannerProcessorScopeInclude != nil:
+			rule.Scope = &sensitiveDataScannerProcessorScope{
+				Include: &sensitiveDataScannerScopeOptions{
+					Fields: wrapStringList(s.ObservabilityPipelineSensitiveDataScannerProcessorScopeInclude.Options.Fields),
+				},
+			}
+		case s.ObservabilityPipelineSensitiveDataScannerProcessorScopeExclude != nil:
+			rule.Scope = &sensitiveDataScannerProcessorScope{
+				Exclude: &sensitiveDataScannerScopeOptions{
+					Fields: wrapStringList(s.ObservabilityPipelineSensitiveDataScannerProcessorScopeExclude.Options.Fields),
+				},
+			}
+		case s.ObservabilityPipelineSensitiveDataScannerProcessorScopeAll != nil:
+			all := true
+			rule.Scope = &sensitiveDataScannerProcessorScope{
+				All: &all,
+			}
+		}
+
+		switch a := r.OnMatch; {
+		case a.ObservabilityPipelineSensitiveDataScannerProcessorActionRedact != nil:
+			rule.OnMatch = &sensitiveDataScannerProcessorAction{
+				Redact: &sensitiveDataScannerRedactAction{
+					Replace: types.StringValue(a.ObservabilityPipelineSensitiveDataScannerProcessorActionRedact.Options.Replace),
+				},
+			}
+		case a.ObservabilityPipelineSensitiveDataScannerProcessorActionHash != nil:
+			rule.OnMatch = &sensitiveDataScannerProcessorAction{
+				Hash: &sensitiveDataScannerHashAction{},
+			}
+		case a.ObservabilityPipelineSensitiveDataScannerProcessorActionPartialRedact != nil:
+			rule.OnMatch = &sensitiveDataScannerProcessorAction{
+				PartialRedact: &sensitiveDataScannerPartialRedactAction{
+					Characters: types.Int64Value(a.ObservabilityPipelineSensitiveDataScannerProcessorActionPartialRedact.Options.Characters),
+					Direction:  types.StringValue(string(a.ObservabilityPipelineSensitiveDataScannerProcessorActionPartialRedact.Options.Direction)),
+				},
+			}
+		}
+
+		out.Rules = append(out.Rules, rule)
+	}
+
+	return out
+}
+
+func expandSumoLogicSource(src *sumoLogicSourceModel) datadogV2.ObservabilityPipelineConfigSourceItem {
+	obj := datadogV2.NewObservabilityPipelineSumoLogicSourceWithDefaults()
+	obj.SetId(src.Id.ValueString())
+
+	return datadogV2.ObservabilityPipelineConfigSourceItem{
+		ObservabilityPipelineSumoLogicSource: obj,
+	}
+}
+
+func flattenSumoLogicSource(src *datadogV2.ObservabilityPipelineSumoLogicSource) *sumoLogicSourceModel {
+	if src == nil {
+		return nil
+	}
+	return &sumoLogicSourceModel{
+		Id: types.StringValue(src.GetId()),
+	}
 }
