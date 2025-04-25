@@ -126,10 +126,12 @@ Optional:
 
 - `add_fields` (Block List) The `add_fields` processor adds static key-value fields to logs. (see [below for nested schema](#nestedblock--config--processors--add_fields))
 - `filter` (Block List) The `filter` processor allows conditional processing of logs based on a Datadog search query. Logs that match the `include` query are passed through; others are discarded. (see [below for nested schema](#nestedblock--config--processors--filter))
+- `parse_grok` (Block List) The `parse_grok` processor extracts structured fields from unstructured log messages using Grok patterns. (see [below for nested schema](#nestedblock--config--processors--parse_grok))
 - `parse_json` (Block List) The `parse_json` processor extracts JSON from a specified field and flattens it into the event. This is useful when logs contain embedded JSON as a string. (see [below for nested schema](#nestedblock--config--processors--parse_json))
 - `quota` (Block List) The `quota` measures logging traffic for logs that match a specified filter. When the configured daily quota is met, the processor can drop or alert. (see [below for nested schema](#nestedblock--config--processors--quota))
 - `remove_fields` (Block List) The `remove_fields` processor deletes specified fields from logs. (see [below for nested schema](#nestedblock--config--processors--remove_fields))
 - `rename_fields` (Block List) The `rename_fields` processor changes field names. (see [below for nested schema](#nestedblock--config--processors--rename_fields))
+- `sample` (Block List) The `sample` processor allows probabilistic sampling of logs at a fixed rate. (see [below for nested schema](#nestedblock--config--processors--sample))
 
 <a id="nestedblock--config--processors--add_fields"></a>
 ### Nested Schema for `config.processors.add_fields`
@@ -162,6 +164,52 @@ Required:
 - `id` (String) The unique ID of the processor.
 - `include` (String) A Datadog search query used to determine which logs should pass through the filter. Logs that match this query continue to downstream components; others are dropped.
 - `inputs` (List of String) The inputs for the processor.
+
+
+<a id="nestedblock--config--processors--parse_grok"></a>
+### Nested Schema for `config.processors.parse_grok`
+
+Required:
+
+- `id` (String) A unique identifier for this processor.
+- `include` (String) A Datadog search query used to determine which logs this processor targets.
+- `inputs` (List of String) A list of component IDs whose output is used as the `input` for this component.
+
+Optional:
+
+- `disable_library_rules` (Boolean) If set to `true`, disables the default Grok rules provided by Datadog.
+- `rules` (Block List) The list of Grok parsing rules. If multiple parsing rules are provided, they are evaluated in order. The first successful match is applied. (see [below for nested schema](#nestedblock--config--processors--parse_grok--rules))
+
+<a id="nestedblock--config--processors--parse_grok--rules"></a>
+### Nested Schema for `config.processors.parse_grok.rules`
+
+Required:
+
+- `source` (String) The name of the field in the log event to apply the Grok rules to.
+
+Optional:
+
+- `match_rule` (Block List) A list of Grok parsing rules that define how to extract fields from the source field. Each rule must contain a name and a valid Grok pattern. (see [below for nested schema](#nestedblock--config--processors--parse_grok--rules--match_rule))
+- `support_rule` (Block List) A list of helper Grok rules that can be referenced by the parsing rules. (see [below for nested schema](#nestedblock--config--processors--parse_grok--rules--support_rule))
+
+<a id="nestedblock--config--processors--parse_grok--rules--match_rule"></a>
+### Nested Schema for `config.processors.parse_grok.rules.match_rule`
+
+Required:
+
+- `name` (String) The name of the rule.
+- `rule` (String) The definition of the Grok rule.
+
+
+<a id="nestedblock--config--processors--parse_grok--rules--support_rule"></a>
+### Nested Schema for `config.processors.parse_grok.rules.support_rule`
+
+Required:
+
+- `name` (String) The name of the helper Grok rule.
+- `rule` (String) The definition of the helper Grok rule.
+
+
 
 
 <a id="nestedblock--config--processors--parse_json"></a>
@@ -235,7 +283,7 @@ Required:
 
 Required:
 
-- `fields` (List of String) List of fields to remove from the events.
+- `fields` (List of String) A list of field names to be removed from each log event.
 - `id` (String) The unique ID of the processor.
 - `include` (String) A Datadog search query used to determine which logs this processor targets.
 - `inputs` (List of String) The inputs for the processor.
@@ -248,11 +296,11 @@ Required:
 
 - `id` (String) The unique ID of the processor.
 - `include` (String) A Datadog search query used to determine which logs this processor targets.
-- `inputs` (List of String) he inputs for the processor.
+- `inputs` (List of String) The inputs for the processor.
 
 Optional:
 
-- `field` (Block List) List of fields to rename. (see [below for nested schema](#nestedblock--config--processors--rename_fields--field))
+- `field` (Block List) A list of rename rules specifying which fields to rename in the event, what to rename them to, and whether to preserve the original fields. (see [below for nested schema](#nestedblock--config--processors--rename_fields--field))
 
 <a id="nestedblock--config--processors--rename_fields--field"></a>
 ### Nested Schema for `config.processors.rename_fields.field`
@@ -265,6 +313,21 @@ Required:
 
 
 
+<a id="nestedblock--config--processors--sample"></a>
+### Nested Schema for `config.processors.sample`
+
+Required:
+
+- `id` (String) The unique identifier for this component. Used to reference this component in other parts of the pipeline (for example, as the `input` to downstream components).
+- `include` (String) A Datadog search query used to determine which logs this processor targets.
+- `inputs` (List of String) A list of component IDs whose output is used as the `input` for this component.
+
+Optional:
+
+- `percentage` (Number) The percentage of logs to sample.
+- `rate` (Number) Number of events to sample (1 in N).
+
+
 
 <a id="nestedblock--config--sources"></a>
 ### Nested Schema for `config.sources`
@@ -272,6 +335,8 @@ Required:
 Optional:
 
 - `datadog_agent` (Block List) The `datadog_agent` source collects logs from the Datadog Agent. (see [below for nested schema](#nestedblock--config--sources--datadog_agent))
+- `fluent` (Block List) The `fluent` source ingests logs from a Fluentd-compatible service. (see [below for nested schema](#nestedblock--config--sources--fluent))
+- `http_server` (Block List) The `http_server` source collects logs over HTTP POST from external services. (see [below for nested schema](#nestedblock--config--sources--http_server))
 - `kafka` (Block List) The `kafka` source ingests data from Apache Kafka topics. (see [below for nested schema](#nestedblock--config--sources--kafka))
 
 <a id="nestedblock--config--sources--datadog_agent"></a>
@@ -283,18 +348,61 @@ Required:
 
 Optional:
 
-- `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--sources--datadog_agent--tls))
+- `tls` (Block, Optional) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--sources--datadog_agent--tls))
 
 <a id="nestedblock--config--sources--datadog_agent--tls"></a>
 ### Nested Schema for `config.sources.datadog_agent.tls`
 
+Optional:
+
+- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server’s TLS certificate.
+- `crt_file` (String) Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.
+- `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
+
+
+
+<a id="nestedblock--config--sources--fluent"></a>
+### Nested Schema for `config.sources.fluent`
+
 Required:
 
-- `crt_file` (String) Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.
+- `id` (String) The unique identifier for this component. Used to reference this component in other parts of the pipeline (for example, as the `input` to downstream components).
+
+Optional:
+
+- `tls` (Block, Optional) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--sources--fluent--tls))
+
+<a id="nestedblock--config--sources--fluent--tls"></a>
+### Nested Schema for `config.sources.fluent.tls`
 
 Optional:
 
 - `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server’s TLS certificate.
+- `crt_file` (String) Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.
+- `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
+
+
+
+<a id="nestedblock--config--sources--http_server"></a>
+### Nested Schema for `config.sources.http_server`
+
+Required:
+
+- `auth_strategy` (String) HTTP authentication method. Valid values are `none`, `plain`.
+- `decoding` (String) The decoding format used to interpret incoming logs. Valid values are `json`, `gelf`, `syslog`, `bytes`.
+- `id` (String) Unique ID for the HTTP server source.
+
+Optional:
+
+- `tls` (Block, Optional) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--sources--http_server--tls))
+
+<a id="nestedblock--config--sources--http_server--tls"></a>
+### Nested Schema for `config.sources.http_server.tls`
+
+Optional:
+
+- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server’s TLS certificate.
+- `crt_file` (String) Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.
 - `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
 
 
@@ -312,7 +420,7 @@ Optional:
 
 - `librdkafka_option` (Block List) Advanced librdkafka client configuration options. (see [below for nested schema](#nestedblock--config--sources--kafka--librdkafka_option))
 - `sasl` (Block, Optional) SASL authentication settings. (see [below for nested schema](#nestedblock--config--sources--kafka--sasl))
-- `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--sources--kafka--tls))
+- `tls` (Block, Optional) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--sources--kafka--tls))
 
 <a id="nestedblock--config--sources--kafka--librdkafka_option"></a>
 ### Nested Schema for `config.sources.kafka.librdkafka_option`
@@ -326,7 +434,7 @@ Required:
 <a id="nestedblock--config--sources--kafka--sasl"></a>
 ### Nested Schema for `config.sources.kafka.sasl`
 
-Required:
+Optional:
 
 - `mechanism` (String) SASL mechanism to use (e.g., PLAIN, SCRAM-SHA-256, SCRAM-SHA-512). Valid values are `PLAIN`, `SCRAM-SHA-256`, `SCRAM-SHA-512`.
 
@@ -334,11 +442,8 @@ Required:
 <a id="nestedblock--config--sources--kafka--tls"></a>
 ### Nested Schema for `config.sources.kafka.tls`
 
-Required:
-
-- `crt_file` (String) Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.
-
 Optional:
 
 - `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server’s TLS certificate.
+- `crt_file` (String) Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.
 - `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.

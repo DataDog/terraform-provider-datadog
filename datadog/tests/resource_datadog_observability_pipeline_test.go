@@ -267,9 +267,9 @@ resource "datadog_observability_pipeline" "agent_tls" {
 					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(resourceName, "name", "agent with tls"),
 					resource.TestCheckResourceAttr(resourceName, "config.sources.datadog_agent.0.id", "source-with-tls"),
-					resource.TestCheckResourceAttr(resourceName, "config.sources.datadog_agent.0.tls.0.crt_file", "/etc/certs/agent.crt"),
-					resource.TestCheckResourceAttr(resourceName, "config.sources.datadog_agent.0.tls.0.ca_file", "/etc/certs/ca.crt"),
-					resource.TestCheckResourceAttr(resourceName, "config.sources.datadog_agent.0.tls.0.key_file", "/etc/certs/agent.key"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.datadog_agent.0.tls.crt_file", "/etc/certs/agent.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.datadog_agent.0.tls.ca_file", "/etc/certs/ca.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.datadog_agent.0.tls.key_file", "/etc/certs/agent.key"),
 					resource.TestCheckResourceAttr(resourceName, "config.destinations.datadog_logs.0.id", "destination-1"),
 				),
 			},
@@ -646,6 +646,260 @@ resource "datadog_observability_pipeline" "add_fields" {
 					resource.TestCheckResourceAttr(resourceName, "config.processors.add_fields.0.field.0.value", "hello-world"),
 					resource.TestCheckResourceAttr(resourceName, "config.processors.add_fields.0.field.1.name", "env"),
 					resource.TestCheckResourceAttr(resourceName, "config.processors.add_fields.0.field.1.value", "prod"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogObservabilityPipeline_parseGrokProcessor(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.parse_grok"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "parse_grok" {
+  name = "parse-grok-test"
+
+  config {
+    sources {
+      datadog_agent {
+        id = "source-1"
+      }
+    }
+
+    processors {
+      parse_grok {
+        id      = "parse-grok-1"
+        include = "*"
+        inputs  = ["source-1"]
+        disable_library_rules = true
+
+        rules {
+          source = "message"
+
+          match_rule {
+            name = "match_user"
+            rule = "%%{word:user.name}"
+          }
+
+          match_rule {
+            name = "match_action"
+            rule = "%%{word:action}"
+          }
+
+          support_rule {
+            name = "word"
+            rule = "\\w+"
+          }
+
+          support_rule {
+            name = "custom_word"
+            rule = "[a-zA-Z]+"
+          }
+        }
+      }
+    }
+
+    destinations {
+      datadog_logs {
+        id     = "destination-1"
+        inputs = ["parse-grok-1"]
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "parse-grok-test"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.parse_grok.0.id", "parse-grok-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.parse_grok.0.include", "*"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.parse_grok.0.disable_library_rules", "true"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.parse_grok.0.rules.0.source", "message"),
+
+					// Match Rules
+					resource.TestCheckResourceAttr(resourceName, "config.processors.parse_grok.0.rules.0.match_rule.0.name", "match_user"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.parse_grok.0.rules.0.match_rule.0.rule", "%{word:user.name}"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.parse_grok.0.rules.0.match_rule.1.name", "match_action"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.parse_grok.0.rules.0.match_rule.1.rule", "%{word:action}"),
+
+					// Support Rules
+					resource.TestCheckResourceAttr(resourceName, "config.processors.parse_grok.0.rules.0.support_rule.0.name", "word"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.parse_grok.0.rules.0.support_rule.0.rule", "\\w+"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.parse_grok.0.rules.0.support_rule.1.name", "custom_word"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.parse_grok.0.rules.0.support_rule.1.rule", "[a-zA-Z]+"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogObservabilityPipeline_sampleProcessor(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.sample"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "sample" {
+  name = "sample-pipeline"
+
+  config {
+    sources {
+      datadog_agent {
+        id = "source-1"
+      }
+    }
+
+    processors {
+      sample {
+        id      = "sample-1"
+        include = "*"
+        inputs  = ["source-1"]
+        rate    = 10
+      }
+
+      sample {
+        id      = "sample-2"
+        include = "*"
+        inputs  = ["sample-1"]
+        percentage    = 4.99
+      }	
+    }
+
+    destinations {
+      datadog_logs {
+        id     = "destination-1"
+        inputs = ["sample-2"]
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "sample-pipeline"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.sample.0.id", "sample-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.sample.0.include", "*"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.sample.0.rate", "10"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.sample.1.id", "sample-2"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.sample.1.include", "*"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.sample.1.percentage", "4.99"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogObservabilityPipeline_fluentSource(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.fluent"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "fluent" {
+  name = "fluent-pipeline"
+
+  config {
+    sources {
+      fluent {
+        id = "fluent-source-1"
+        tls {
+          crt_file = "/etc/ssl/certs/fluent.crt"
+          ca_file  = "/etc/ssl/certs/ca.crt"
+          key_file = "/etc/ssl/private/fluent.key"
+        }
+      }
+    }
+
+    processors {}
+
+    destinations {
+      datadog_logs {
+        id     = "destination-1"
+        inputs = ["fluent-source-1"]
+      }
+    }
+  }
+}
+`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "fluent-pipeline"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.fluent.0.id", "fluent-source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.fluent.0.tls.crt_file", "/etc/ssl/certs/fluent.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.fluent.0.tls.ca_file", "/etc/ssl/certs/ca.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.fluent.0.tls.key_file", "/etc/ssl/private/fluent.key"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.datadog_logs.0.inputs.0", "fluent-source-1"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogObservabilityPipeline_httpServerSource(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.http_server"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "http_server" {
+  name = "http-server-pipeline"
+
+  config {
+    sources {
+      http_server {
+        id            = "http-source-1"
+        auth_strategy = "plain"
+        decoding      = "json"
+
+        tls {
+          crt_file = "/etc/ssl/certs/http.crt"
+          ca_file  = "/etc/ssl/certs/ca.crt"
+          key_file = "/etc/ssl/private/http.key"
+        }
+      }
+    }
+
+    processors {}
+
+    destinations {
+      datadog_logs {
+        id     = "destination-1"
+        inputs = ["http-source-1"]
+      }
+    }
+  }
+}
+`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "http-server-pipeline"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.http_server.0.id", "http-source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.http_server.0.auth_strategy", "plain"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.http_server.0.decoding", "json"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.http_server.0.tls.crt_file", "/etc/ssl/certs/http.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.http_server.0.tls.ca_file", "/etc/ssl/certs/ca.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.http_server.0.tls.key_file", "/etc/ssl/private/http.key"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.datadog_logs.0.inputs.0", "http-source-1"),
 				),
 			},
 		},

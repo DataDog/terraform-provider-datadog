@@ -42,12 +42,28 @@ type configModel struct {
 type sourcesModel struct {
 	DatadogAgentSource []*datadogAgentSourceModel `tfsdk:"datadog_agent"`
 	KafkaSource        []*kafkaSourceModel        `tfsdk:"kafka"`
+	FluentSource       []*fluentSourceModel       `tfsdk:"fluent"`
+	HttpServerSource   []*httpServerSourceModel   `tfsdk:"http_server"`
 }
 
-// / Source models
+type processorsModel struct {
+	FilterProcessor       []*filterProcessorModel       `tfsdk:"filter"`
+	ParseJsonProcessor    []*parseJsonProcessorModel    `tfsdk:"parse_json"`
+	AddFieldsProcessor    []*addFieldsProcessor         `tfsdk:"add_fields"`
+	RenameFieldsProcessor []*renameFieldsProcessorModel `tfsdk:"rename_fields"`
+	RemoveFieldsProcessor []*removeFieldsProcessorModel `tfsdk:"remove_fields"`
+	QuotaProcessor        []*quotaProcessorModel        `tfsdk:"quota"`
+	ParseGrokProcessor    []*parseGrokProcessorModel    `tfsdk:"parse_grok"`
+	SampleProcessor       []*sampleProcessorModel       `tfsdk:"sample"`
+}
+
+type destinationsModel struct {
+	DatadogLogsDestination []*datadogLogsDestinationModel `tfsdk:"datadog_logs"`
+}
+
 type datadogAgentSourceModel struct {
 	Id  types.String `tfsdk:"id"`
-	Tls []tlsModel   `tfsdk:"tls"`
+	Tls *tlsModel    `tfsdk:"tls"`
 }
 
 type kafkaSourceModel struct {
@@ -56,7 +72,7 @@ type kafkaSourceModel struct {
 	Topics            []types.String          `tfsdk:"topics"`
 	LibrdkafkaOptions []librdkafkaOptionModel `tfsdk:"librdkafka_option"`
 	Sasl              *kafkaSourceSaslModel   `tfsdk:"sasl"`
-	Tls               []tlsModel              `tfsdk:"tls"`
+	Tls               *tlsModel               `tfsdk:"tls"`
 }
 
 type librdkafkaOptionModel struct {
@@ -72,17 +88,6 @@ type tlsModel struct {
 	CrtFile types.String `tfsdk:"crt_file"`
 	CaFile  types.String `tfsdk:"ca_file"`
 	KeyFile types.String `tfsdk:"key_file"`
-}
-
-// Processor models
-
-type processorsModel struct {
-	FilterProcessor       []*filterProcessorModel       `tfsdk:"filter"`
-	ParseJsonProcessor    []*parseJsonProcessorModel    `tfsdk:"parse_json"`
-	AddFieldsProcessor    []*addFieldsProcessor         `tfsdk:"add_fields"`
-	RenameFieldsProcessor []*renameFieldsProcessorModel `tfsdk:"rename_fields"`
-	RemoveFieldsProcessor []*removeFieldsProcessorModel `tfsdk:"remove_fields"`
-	QuotaProcessor        []*quotaProcessorModel        `tfsdk:"quota"`
 }
 
 type filterProcessorModel struct {
@@ -152,14 +157,48 @@ type fieldValue struct {
 	Value types.String `tfsdk:"value"`
 }
 
-// Destination models
-
-type destinationsModel struct {
-	DatadogLogsDestination []*datadogLogsDestinationModel `tfsdk:"datadog_logs"`
-}
 type datadogLogsDestinationModel struct {
 	Id     types.String `tfsdk:"id"`
 	Inputs types.List   `tfsdk:"inputs"`
+}
+
+type parseGrokProcessorModel struct {
+	Id                  types.String                  `tfsdk:"id"`
+	Include             types.String                  `tfsdk:"include"`
+	Inputs              types.List                    `tfsdk:"inputs"`
+	DisableLibraryRules types.Bool                    `tfsdk:"disable_library_rules"`
+	Rules               []parseGrokProcessorRuleModel `tfsdk:"rules"`
+}
+
+type parseGrokProcessorRuleModel struct {
+	Source       types.String    `tfsdk:"source"`
+	MatchRules   []grokRuleModel `tfsdk:"match_rule"`
+	SupportRules []grokRuleModel `tfsdk:"support_rule"`
+}
+
+type grokRuleModel struct {
+	Name types.String `tfsdk:"name"`
+	Rule types.String `tfsdk:"rule"`
+}
+
+type sampleProcessorModel struct {
+	Id         types.String  `tfsdk:"id"`
+	Include    types.String  `tfsdk:"include"`
+	Inputs     types.List    `tfsdk:"inputs"`
+	Rate       types.Int64   `tfsdk:"rate"`
+	Percentage types.Float64 `tfsdk:"percentage"`
+}
+
+type fluentSourceModel struct {
+	Id  types.String `tfsdk:"id"`
+	Tls *tlsModel    `tfsdk:"tls"`
+}
+
+type httpServerSourceModel struct {
+	Id           types.String `tfsdk:"id"`
+	AuthStrategy types.String `tfsdk:"auth_strategy"`
+	Decoding     types.String `tfsdk:"decoding"`
+	Tls          *tlsModel    `tfsdk:"tls"`
 }
 
 func NewObservabilitPipelineResource() resource.Resource {
@@ -245,7 +284,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 											Description: "SASL authentication settings.",
 											Attributes: map[string]schema.Attribute{
 												"mechanism": schema.StringAttribute{
-													Required:    true,
+													Optional:    true, // must be optional to make the block optional
 													Description: "SASL mechanism to use (e.g., PLAIN, SCRAM-SHA-256, SCRAM-SHA-512).",
 													Validators: []validator.String{
 														stringvalidator.OneOf("PLAIN", "SCRAM-SHA-256", "SCRAM-SHA-512"),
@@ -253,6 +292,42 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 												},
 											},
 										},
+										"tls": tlsSchema(),
+									},
+								},
+							},
+							"fluent": schema.ListNestedBlock{
+								Description: "The `fluent` source ingests logs from a Fluentd-compatible service.",
+								NestedObject: schema.NestedBlockObject{
+									Attributes: map[string]schema.Attribute{
+										"id": schema.StringAttribute{
+											Required:    true,
+											Description: "The unique identifier for this component. Used to reference this component in other parts of the pipeline (for example, as the `input` to downstream components).",
+										},
+									},
+									Blocks: map[string]schema.Block{
+										"tls": tlsSchema(),
+									},
+								},
+							},
+							"http_server": schema.ListNestedBlock{
+								Description: "The `http_server` source collects logs over HTTP POST from external services.",
+								NestedObject: schema.NestedBlockObject{
+									Attributes: map[string]schema.Attribute{
+										"id": schema.StringAttribute{
+											Required:    true,
+											Description: "Unique ID for the HTTP server source.",
+										},
+										"auth_strategy": schema.StringAttribute{
+											Required:    true,
+											Description: "HTTP authentication method.",
+											Validators: []validator.String{
+												stringvalidator.OneOf("none", "plain"),
+											},
+										},
+										"decoding": decodingSchema(),
+									},
+									Blocks: map[string]schema.Block{
 										"tls": tlsSchema(),
 									},
 								},
@@ -361,7 +436,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 										},
 										"inputs": schema.ListAttribute{
 											Required:    true,
-											Description: "he inputs for the processor.",
+											Description: "The inputs for the processor.",
 											ElementType: types.StringType,
 										},
 									},
@@ -371,7 +446,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 												// this is the only way to make the list of fields required in Terraform
 												listvalidator.SizeAtLeast(1),
 											},
-											Description: "List of fields to rename.",
+											Description: "A list of rename rules specifying which fields to rename in the event, what to rename them to, and whether to preserve the original fields.",
 											NestedObject: schema.NestedBlockObject{
 												Attributes: map[string]schema.Attribute{
 													"source": schema.StringAttribute{
@@ -411,7 +486,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 										},
 										"fields": schema.ListAttribute{
 											Required:    true,
-											Description: "List of fields to remove from the events.",
+											Description: "A list of field names to be removed from each log event.",
 											ElementType: types.StringType,
 										},
 									},
@@ -508,6 +583,103 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 									},
 								},
 							},
+							"parse_grok": schema.ListNestedBlock{
+								Description: "The `parse_grok` processor extracts structured fields from unstructured log messages using Grok patterns.",
+								NestedObject: schema.NestedBlockObject{
+									Attributes: map[string]schema.Attribute{
+										"id": schema.StringAttribute{
+											Required:    true,
+											Description: "A unique identifier for this processor.",
+										},
+										"include": schema.StringAttribute{
+											Required:    true,
+											Description: "A Datadog search query used to determine which logs this processor targets.",
+										},
+										"inputs": schema.ListAttribute{
+											Required:    true,
+											ElementType: types.StringType,
+											Description: "A list of component IDs whose output is used as the `input` for this component.",
+										},
+										"disable_library_rules": schema.BoolAttribute{
+											Optional:    true,
+											Description: "If set to `true`, disables the default Grok rules provided by Datadog.",
+										},
+									},
+									Blocks: map[string]schema.Block{
+										"rules": schema.ListNestedBlock{
+											Description: "The list of Grok parsing rules. If multiple parsing rules are provided, they are evaluated in order. The first successful match is applied.",
+											NestedObject: schema.NestedBlockObject{
+												Attributes: map[string]schema.Attribute{
+													"source": schema.StringAttribute{
+														Required:    true,
+														Description: "The name of the field in the log event to apply the Grok rules to.",
+													},
+												},
+												Blocks: map[string]schema.Block{
+													"match_rule": schema.ListNestedBlock{
+														Description: "A list of Grok parsing rules that define how to extract fields from the source field. Each rule must contain a name and a valid Grok pattern.",
+														NestedObject: schema.NestedBlockObject{
+															Attributes: map[string]schema.Attribute{
+																"name": schema.StringAttribute{
+																	Required:    true,
+																	Description: "The name of the rule.",
+																},
+																"rule": schema.StringAttribute{
+																	Required:    true,
+																	Description: "The definition of the Grok rule.",
+																},
+															},
+														},
+													},
+													"support_rule": schema.ListNestedBlock{
+														Description: "A list of helper Grok rules that can be referenced by the parsing rules.",
+														NestedObject: schema.NestedBlockObject{
+															Attributes: map[string]schema.Attribute{
+																"name": schema.StringAttribute{
+																	Required:    true,
+																	Description: "The name of the helper Grok rule.",
+																},
+																"rule": schema.StringAttribute{
+																	Required:    true,
+																	Description: "The definition of the helper Grok rule.",
+																},
+															},
+														},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+							"sample": schema.ListNestedBlock{
+								Description: "The `sample` processor allows probabilistic sampling of logs at a fixed rate.",
+								NestedObject: schema.NestedBlockObject{
+									Attributes: map[string]schema.Attribute{
+										"id": schema.StringAttribute{
+											Required:    true,
+											Description: "The unique identifier for this component. Used to reference this component in other parts of the pipeline (for example, as the `input` to downstream components).",
+										},
+										"include": schema.StringAttribute{
+											Required:    true,
+											Description: "A Datadog search query used to determine which logs this processor targets.",
+										},
+										"inputs": schema.ListAttribute{
+											Required:    true,
+											ElementType: types.StringType,
+											Description: "A list of component IDs whose output is used as the `input` for this component.",
+										},
+										"rate": schema.Int64Attribute{
+											Optional:    true,
+											Description: "Number of events to sample (1 in N).",
+										},
+										"percentage": schema.Float64Attribute{
+											Optional:    true,
+											Description: "The percentage of logs to sample.",
+										},
+									},
+								},
+							},
 						},
 					},
 					"destinations": schema.SingleNestedBlock{
@@ -537,27 +709,21 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 	}
 }
 
-func tlsSchema() schema.ListNestedBlock {
-	return schema.ListNestedBlock{
-		Validators: []validator.List{
-			// this is the only way to make the block optional
-			listvalidator.SizeAtMost(1),
-		},
+func tlsSchema() schema.SingleNestedBlock {
+	return schema.SingleNestedBlock{
 		Description: "Configuration for enabling TLS encryption between the pipeline component and external services.",
-		NestedObject: schema.NestedBlockObject{
-			Attributes: map[string]schema.Attribute{
-				"crt_file": schema.StringAttribute{
-					Required:    true,
-					Description: "Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.",
-				},
-				"ca_file": schema.StringAttribute{
-					Optional:    true,
-					Description: "Path to the Certificate Authority (CA) file used to validate the server’s TLS certificate.",
-				},
-				"key_file": schema.StringAttribute{
-					Optional:    true,
-					Description: "Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.",
-				},
+		Attributes: map[string]schema.Attribute{
+			"crt_file": schema.StringAttribute{
+				Optional:    true, // must be be optional to make the TLS optional
+				Description: "Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.",
+			},
+			"ca_file": schema.StringAttribute{
+				Optional:    true,
+				Description: "Path to the Certificate Authority (CA) file used to validate the server’s TLS certificate.",
+			},
+			"key_file": schema.StringAttribute{
+				Optional:    true,
+				Description: "Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.",
 			},
 		},
 	}
@@ -574,7 +740,7 @@ func (r *observabilityPipelineResource) Create(ctx context.Context, req resource
 		return
 	}
 
-	body, diags := expandPipelineRequest(ctx, &state)
+	body, diags := expandPipeline(ctx, &state)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -632,7 +798,7 @@ func (r *observabilityPipelineResource) Update(ctx context.Context, req resource
 	}
 
 	id := state.ID.ValueString()
-	body, diags := expandPipelineRequest(ctx, &state)
+	body, diags := expandPipeline(ctx, &state)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -671,7 +837,7 @@ func (r *observabilityPipelineResource) Delete(ctx context.Context, req resource
 }
 
 // --- Expansion - converting TF state to API model ---
-func expandPipelineRequest(ctx context.Context, state *observabilityPipelineModel) (*datadogV2.ObservabilityPipeline, diag.Diagnostics) {
+func expandPipeline(ctx context.Context, state *observabilityPipelineModel) (*datadogV2.ObservabilityPipeline, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
 
 	req := datadogV2.NewObservabilityPipelineWithDefaults()
@@ -690,6 +856,12 @@ func expandPipelineRequest(ctx context.Context, state *observabilityPipelineMode
 	}
 	for _, k := range state.Config.Sources.KafkaSource {
 		config.Sources = append(config.Sources, expandKafkaSource(k))
+	}
+	for _, f := range state.Config.Sources.FluentSource {
+		config.Sources = append(config.Sources, expandFluentSource(f))
+	}
+	for _, s := range state.Config.Sources.HttpServerSource {
+		config.Sources = append(config.Sources, expandHttpServerSource(s))
 	}
 
 	// Processors
@@ -710,6 +882,12 @@ func expandPipelineRequest(ctx context.Context, state *observabilityPipelineMode
 	}
 	for _, p := range state.Config.Processors.QuotaProcessor {
 		config.Processors = append(config.Processors, expandQuotaProcessor(ctx, p))
+	}
+	for _, p := range state.Config.Processors.ParseGrokProcessor {
+		config.Processors = append(config.Processors, expandParseGrokProcessor(ctx, p))
+	}
+	for _, p := range state.Config.Processors.SampleProcessor {
+		config.Processors = append(config.Processors, expandSampleProcessor(ctx, p))
 	}
 
 	// Destinations
@@ -739,6 +917,12 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 		if k := flattenKafkaSource(src.ObservabilityPipelineKafkaSource); k != nil {
 			outCfg.Sources.KafkaSource = append(outCfg.Sources.KafkaSource, k)
 		}
+		if f := flattenFluentSource(src.ObservabilityPipelineFluentSource); f != nil {
+			outCfg.Sources.FluentSource = append(outCfg.Sources.FluentSource, f)
+		}
+		if s := flattenHttpServerSource(src.ObservabilityPipelineHttpServerSource); s != nil {
+			outCfg.Sources.HttpServerSource = append(outCfg.Sources.HttpServerSource, s)
+		}
 	}
 	for _, p := range cfg.GetProcessors() {
 		if f := flattenFilterProcessor(ctx, p.ObservabilityPipelineFilterProcessor); f != nil {
@@ -758,6 +942,12 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 		}
 		if f := flattenQuotaProcessor(ctx, p.ObservabilityPipelineQuotaProcessor); f != nil {
 			outCfg.Processors.QuotaProcessor = append(outCfg.Processors.QuotaProcessor, f)
+		}
+		if f := flattenParseGrokProcessor(ctx, p.ObservabilityPipelineParseGrokProcessor); f != nil {
+			outCfg.Processors.ParseGrokProcessor = append(outCfg.Processors.ParseGrokProcessor, f)
+		}
+		if s := flattenSampleProcessor(ctx, p.ObservabilityPipelineSampleProcessor); s != nil {
+			outCfg.Processors.SampleProcessor = append(outCfg.Processors.SampleProcessor, s)
 		}
 	}
 	for _, d := range cfg.GetDestinations() {
@@ -779,7 +969,8 @@ func flattenDatadogAgentSource(src *datadogV2.ObservabilityPipelineDatadogAgentS
 		Id: types.StringValue(src.Id),
 	}
 	if src.Tls != nil {
-		out.Tls = []tlsModel{flattenTls(src.Tls)}
+		tls := flattenTls(src.Tls)
+		out.Tls = &tls
 	}
 	return out
 }
@@ -787,7 +978,7 @@ func flattenDatadogAgentSource(src *datadogV2.ObservabilityPipelineDatadogAgentS
 func expandDatadogAgentSource(src *datadogAgentSourceModel) datadogV2.ObservabilityPipelineConfigSourceItem {
 	agent := datadogV2.NewObservabilityPipelineDatadogAgentSourceWithDefaults()
 	agent.SetId(src.Id.ValueString())
-	if len(src.Tls) > 0 {
+	if src.Tls != nil {
 		agent.Tls = expandTls(src.Tls)
 	}
 	return datadogV2.ObservabilityPipelineConfigSourceItem{
@@ -807,7 +998,8 @@ func flattenKafkaSource(src *datadogV2.ObservabilityPipelineKafkaSource) *kafkaS
 		out.Topics = append(out.Topics, types.StringValue(topic))
 	}
 	if src.Tls != nil {
-		out.Tls = []tlsModel{flattenTls(src.Tls)}
+		tls := flattenTls(src.Tls)
+		out.Tls = &tls
 	}
 	if sasl, ok := src.GetSaslOk(); ok {
 		out.Sasl = &kafkaSourceSaslModel{
@@ -833,7 +1025,7 @@ func expandKafkaSource(src *kafkaSourceModel) datadogV2.ObservabilityPipelineCon
 	}
 	source.SetTopics(topics)
 
-	if len(src.Tls) > 0 {
+	if src.Tls != nil {
 		source.Tls = expandTls(src.Tls)
 	}
 
@@ -1160,10 +1352,8 @@ func flattenTls(src *datadogV2.ObservabilityPipelineTls) tlsModel {
 	}
 }
 
-func expandTls(src []tlsModel) *datadogV2.ObservabilityPipelineTls {
+func expandTls(tlsTF *tlsModel) *datadogV2.ObservabilityPipelineTls {
 	tls := &datadogV2.ObservabilityPipelineTls{}
-	// there must be no more than one TLS block
-	tlsTF := src[0]
 	tls.SetCrtFile(tlsTF.CrtFile.ValueString())
 	if !tlsTF.CaFile.IsNull() {
 		tls.SetCaFile(tlsTF.CaFile.ValueString())
@@ -1172,4 +1362,211 @@ func expandTls(src []tlsModel) *datadogV2.ObservabilityPipelineTls {
 		tls.SetKeyFile(tlsTF.KeyFile.ValueString())
 	}
 	return tls
+}
+
+func expandParseGrokProcessor(ctx context.Context, p *parseGrokProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
+	proc := datadogV2.NewObservabilityPipelineParseGrokProcessorWithDefaults()
+	proc.SetId(p.Id.ValueString())
+	proc.SetInclude(p.Include.ValueString())
+
+	var inputs []string
+	p.Inputs.ElementsAs(ctx, &inputs, false)
+	proc.SetInputs(inputs)
+
+	if !p.DisableLibraryRules.IsNull() {
+		proc.SetDisableLibraryRules(p.DisableLibraryRules.ValueBool())
+	}
+
+	var rules []datadogV2.ObservabilityPipelineParseGrokProcessorRule
+	for _, r := range p.Rules {
+		var matchRules []datadogV2.ObservabilityPipelineParseGrokProcessorRuleMatchRule
+		for _, m := range r.MatchRules {
+			matchRules = append(matchRules, datadogV2.ObservabilityPipelineParseGrokProcessorRuleMatchRule{
+				Name: m.Name.ValueString(),
+				Rule: m.Rule.ValueString(),
+			})
+		}
+
+		var supportRules []datadogV2.ObservabilityPipelineParseGrokProcessorRuleSupportRule
+		for _, s := range r.SupportRules {
+			supportRules = append(supportRules, datadogV2.ObservabilityPipelineParseGrokProcessorRuleSupportRule{
+				Name: s.Name.ValueString(),
+				Rule: s.Rule.ValueString(),
+			})
+		}
+
+		rules = append(rules, datadogV2.ObservabilityPipelineParseGrokProcessorRule{
+			Source:       r.Source.ValueString(),
+			MatchRules:   matchRules,
+			SupportRules: supportRules,
+		})
+	}
+	proc.SetRules(rules)
+
+	return datadogV2.ObservabilityPipelineConfigProcessorItem{
+		ObservabilityPipelineParseGrokProcessor: proc,
+	}
+}
+
+func flattenParseGrokProcessor(ctx context.Context, proc *datadogV2.ObservabilityPipelineParseGrokProcessor) *parseGrokProcessorModel {
+	if proc == nil {
+		return nil
+	}
+
+	inputs, _ := types.ListValueFrom(ctx, types.StringType, proc.GetInputs())
+
+	out := &parseGrokProcessorModel{
+		Id:                  types.StringValue(proc.GetId()),
+		Include:             types.StringValue(proc.GetInclude()),
+		Inputs:              inputs,
+		DisableLibraryRules: types.BoolValue(proc.GetDisableLibraryRules()),
+	}
+
+	for _, r := range proc.GetRules() {
+		var matchRules []grokRuleModel
+		for _, m := range r.MatchRules {
+			matchRules = append(matchRules, grokRuleModel{
+				Name: types.StringValue(m.Name),
+				Rule: types.StringValue(m.Rule),
+			})
+		}
+
+		var supportRules []grokRuleModel
+		for _, s := range r.SupportRules {
+			supportRules = append(supportRules, grokRuleModel{
+				Name: types.StringValue(s.Name),
+				Rule: types.StringValue(s.Rule),
+			})
+		}
+
+		out.Rules = append(out.Rules, parseGrokProcessorRuleModel{
+			Source:       types.StringValue(r.Source),
+			MatchRules:   matchRules,
+			SupportRules: supportRules,
+		})
+	}
+
+	return out
+}
+
+func expandSampleProcessor(ctx context.Context, p *sampleProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
+	proc := datadogV2.NewObservabilityPipelineSampleProcessorWithDefaults()
+	proc.SetId(p.Id.ValueString())
+	proc.SetInclude(p.Include.ValueString())
+
+	var inputs []string
+	p.Inputs.ElementsAs(ctx, &inputs, false)
+	proc.SetInputs(inputs)
+
+	if !p.Rate.IsNull() {
+		proc.SetRate(p.Rate.ValueInt64())
+	}
+	if !p.Percentage.IsNull() {
+		proc.SetPercentage(p.Percentage.ValueFloat64())
+	}
+
+	return datadogV2.ObservabilityPipelineConfigProcessorItem{
+		ObservabilityPipelineSampleProcessor: proc,
+	}
+}
+
+func flattenSampleProcessor(ctx context.Context, proc *datadogV2.ObservabilityPipelineSampleProcessor) *sampleProcessorModel {
+	if proc == nil {
+		return nil
+	}
+
+	inputs, _ := types.ListValueFrom(ctx, types.StringType, proc.GetInputs())
+
+	out := &sampleProcessorModel{
+		Id:      types.StringValue(proc.GetId()),
+		Include: types.StringValue(proc.GetInclude()),
+		Inputs:  inputs,
+	}
+
+	if rate, ok := proc.GetRateOk(); ok {
+		out.Rate = types.Int64Value(*rate)
+	} else {
+		out.Rate = types.Int64Null()
+	}
+
+	if pct, ok := proc.GetPercentageOk(); ok {
+		out.Percentage = types.Float64Value(*pct)
+	} else {
+		out.Percentage = types.Float64Null()
+	}
+
+	return out
+}
+
+func expandFluentSource(src *fluentSourceModel) datadogV2.ObservabilityPipelineConfigSourceItem {
+	source := datadogV2.NewObservabilityPipelineFluentSourceWithDefaults()
+	source.SetId(src.Id.ValueString())
+
+	if src.Tls != nil {
+		source.Tls = expandTls(src.Tls)
+	}
+
+	return datadogV2.ObservabilityPipelineConfigSourceItem{
+		ObservabilityPipelineFluentSource: source,
+	}
+}
+
+func flattenFluentSource(src *datadogV2.ObservabilityPipelineFluentSource) *fluentSourceModel {
+	if src == nil {
+		return nil
+	}
+
+	out := &fluentSourceModel{
+		Id: types.StringValue(src.GetId()),
+	}
+	if src.Tls != nil {
+		tls := flattenTls(src.Tls)
+		out.Tls = &tls
+	}
+	return out
+}
+
+func decodingSchema() schema.StringAttribute {
+	return schema.StringAttribute{
+		Required:    true,
+		Description: "The decoding format used to interpret incoming logs.",
+		Validators: []validator.String{
+			stringvalidator.OneOf("json", "gelf", "syslog", "bytes"),
+		},
+	}
+}
+
+func expandHttpServerSource(src *httpServerSourceModel) datadogV2.ObservabilityPipelineConfigSourceItem {
+	s := datadogV2.NewObservabilityPipelineHttpServerSourceWithDefaults()
+	s.SetId(src.Id.ValueString())
+
+	s.SetAuthStrategy(datadogV2.ObservabilityPipelineHttpServerSourceAuthStrategy(src.AuthStrategy.ValueString()))
+	s.SetDecoding(datadogV2.ObservabilityPipelineDecoding(src.Decoding.ValueString()))
+
+	if src.Tls != nil {
+		s.Tls = expandTls(src.Tls)
+	}
+
+	return datadogV2.ObservabilityPipelineConfigSourceItem{
+		ObservabilityPipelineHttpServerSource: s,
+	}
+}
+
+func flattenHttpServerSource(src *datadogV2.ObservabilityPipelineHttpServerSource) *httpServerSourceModel {
+	if src == nil {
+		return nil
+	}
+
+	out := &httpServerSourceModel{
+		Id:           types.StringValue(src.GetId()),
+		AuthStrategy: types.StringValue(string(src.GetAuthStrategy())),
+		Decoding:     types.StringValue(string(src.GetDecoding())),
+	}
+
+	if src.Tls != nil {
+		tls := flattenTls(src.Tls)
+		out.Tls = &tls
+	}
+
+	return out
 }
