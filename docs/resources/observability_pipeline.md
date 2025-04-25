@@ -447,3 +447,11 @@ Optional:
 - `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server’s TLS certificate.
 - `crt_file` (String) Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.
 - `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
+
+## Import
+
+Import is supported using the following syntax:
+
+```shell
+terraform import datadog_observability_pipeline.example_pipeline 8beabbc4-1f4d-11f0-942b-da7ad0900001
+```

@@ -13,6 +13,28 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
 
+func TestAccDatadogObservabilityPipelineImport(t *testing.T) {
+	t.Parallel()
+	resourceName := "datadog_observability_pipeline.basic"
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogRumMetricDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccObservabilityPipelineBasicConfig(),
+			},
+			{
+				ResourceName:      resourceName,
+				ImportState:       true,
+				ImportStateVerify: true,
+			},
+		},
+	})
+}
+
 func TestAccDatadogObservabilityPipeline_basic(t *testing.T) {
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
