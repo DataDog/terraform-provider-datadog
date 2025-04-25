@@ -2700,3 +2700,108 @@ resource "datadog_observability_pipeline" "opensearch" {
 		},
 	})
 }
+
+func TestAccDatadogObservabilityPipeline_amazonOpenSearchDestination(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.amazon_opensearch"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "amazon_opensearch" {
+  name = "amazon opensearch pipeline"
+
+  config {
+    sources {
+      datadog_agent {
+        id = "source-1"
+      }
+    }
+
+    processors {}
+
+    destinations {
+      amazon_opensearch {
+        id         = "aos-dest-1"
+        inputs     = ["source-1"]
+        bulk_index = "logs-datastream"
+
+        auth {
+          strategy     = "aws"
+          aws_region   = "us-east-1"
+          assume_role  = "arn:aws:iam::123456789012:role/example-role"
+          external_id  = "external-id-123"
+          session_name = "aos-session"
+        }
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.amazon_opensearch.0.id", "aos-dest-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.amazon_opensearch.0.inputs.0", "source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.amazon_opensearch.0.bulk_index", "logs-datastream"),
+
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.amazon_opensearch.0.auth.strategy", "aws"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.amazon_opensearch.0.auth.aws_region", "us-east-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.amazon_opensearch.0.auth.assume_role", "arn:aws:iam::123456789012:role/example-role"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.amazon_opensearch.0.auth.external_id", "external-id-123"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.amazon_opensearch.0.auth.session_name", "aos-session"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogObservabilityPipeline_amazonOpenSearchDestination_basic(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.amazon_opensearch_basic"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "amazon_opensearch_basic" {
+  name = "amazon opensearch (basic auth)"
+
+  config {
+    sources {
+      datadog_agent {
+        id = "source-1"
+      }
+    }
+
+    processors {}
+
+    destinations {
+      amazon_opensearch {
+        id         = "aos-basic-1"
+        inputs     = ["source-1"]
+
+        auth {
+          strategy = "basic"
+        }
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.amazon_opensearch.0.id", "aos-basic-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.amazon_opensearch.0.inputs.0", "source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.amazon_opensearch.0.auth.strategy", "basic"),
+				),
+			},
+		},
+	})
+}

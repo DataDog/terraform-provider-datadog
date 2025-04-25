@@ -295,6 +295,22 @@ type destinationsModel struct {
 	NewRelicDestination           []*newRelicDestinationModel          `tfsdk:"new_relic"`
 	SentinelOneDestination        []*sentinelOneDestinationModel       `tfsdk:"sentinel_one"`
 	OpenSearchDestination         []*opensearchDestinationModel        `tfsdk:"opensearch"`
+	AmazonOpenSearchDestination   []*amazonOpenSearchDestinationModel  `tfsdk:"amazon_opensearch"`
+}
+
+type amazonOpenSearchDestinationModel struct {
+	Id        types.String               `tfsdk:"id"`
+	Inputs    types.List                 `tfsdk:"inputs"`
+	BulkIndex types.String               `tfsdk:"bulk_index"`
+	Auth      *amazonOpenSearchAuthModel `tfsdk:"auth"`
+}
+
+type amazonOpenSearchAuthModel struct {
+	Strategy    types.String `tfsdk:"strategy"`
+	AwsRegion   types.String `tfsdk:"aws_region"`
+	AssumeRole  types.String `tfsdk:"assume_role"`
+	ExternalId  types.String `tfsdk:"external_id"`
+	SessionName types.String `tfsdk:"session_name"`
 }
 
 type opensearchDestinationModel struct {
@@ -2044,6 +2060,52 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 									},
 								},
 							},
+							"amazon_opensearch": schema.ListNestedBlock{
+								Description: "The `amazon_opensearch` destination writes logs to Amazon OpenSearch.",
+								NestedObject: schema.NestedBlockObject{
+									Attributes: map[string]schema.Attribute{
+										"id": schema.StringAttribute{
+											Required:    true,
+											Description: "The unique identifier for this component.",
+										},
+										"inputs": schema.ListAttribute{
+											Required:    true,
+											ElementType: types.StringType,
+											Description: "A list of component IDs whose output is used as the input for this component.",
+										},
+										"bulk_index": schema.StringAttribute{
+											Optional:    true,
+											Description: "The index or datastream to write logs to.",
+										},
+									},
+									Blocks: map[string]schema.Block{
+										"auth": schema.SingleNestedBlock{
+											Attributes: map[string]schema.Attribute{
+												"strategy": schema.StringAttribute{
+													Required:    true,
+													Description: "The authentication strategy to use (e.g. aws or basic).",
+												},
+												"aws_region": schema.StringAttribute{
+													Optional:    true,
+													Description: "AWS region override (if applicable).",
+												},
+												"assume_role": schema.StringAttribute{
+													Optional:    true,
+													Description: "ARN of the role to assume.",
+												},
+												"external_id": schema.StringAttribute{
+													Optional:    true,
+													Description: "External ID for assumed role.",
+												},
+												"session_name": schema.StringAttribute{
+													Optional:    true,
+													Description: "Session name for assumed role.",
+												},
+											},
+										},
+									},
+								},
+							},
 							"azure_storage": schema.ListNestedBlock{
 								Description: "The `azure_storage` destination forwards logs to an Azure Blob Storage container.",
 								NestedObject: schema.NestedBlockObject{
@@ -2465,6 +2527,9 @@ func expandPipeline(ctx context.Context, state *observabilityPipelineModel) (*da
 	for _, d := range state.Config.Destinations.OpenSearchDestination {
 		config.Destinations = append(config.Destinations, expandOpenSearchDestination(ctx, d))
 	}
+	for _, d := range state.Config.Destinations.AmazonOpenSearchDestination {
+		config.Destinations = append(config.Destinations, expandAmazonOpenSearchDestination(ctx, d))
+	}
 
 	attrs.SetConfig(*config)
 	data.SetAttributes(*attrs)
@@ -2635,6 +2700,10 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 		if d := flattenOpenSearchDestination(ctx, d.ObservabilityPipelineOpenSearchDestination); d != nil {
 			outCfg.Destinations.OpenSearchDestination = append(outCfg.Destinations.OpenSearchDestination, d)
 		}
+		if d := flattenAmazonOpenSearchDestination(ctx, d.ObservabilityPipelineAmazonOpenSearchDestination); d != nil {
+			outCfg.Destinations.AmazonOpenSearchDestination = append(outCfg.Destinations.AmazonOpenSearchDestination, d)
+		}
+
 	}
 
 	state.Config = &outCfg
@@ -4808,4 +4877,66 @@ func flattenOpenSearchDestination(ctx context.Context, src *datadogV2.Observabil
 		Inputs:    inputs,
 		BulkIndex: types.StringValue(src.GetBulkIndex()),
 	}
+}
+
+func expandAmazonOpenSearchDestination(ctx context.Context, src *amazonOpenSearchDestinationModel) datadogV2.ObservabilityPipelineConfigDestinationItem {
+	dest := datadogV2.NewObservabilityPipelineAmazonOpenSearchDestinationWithDefaults()
+	dest.SetId(src.Id.ValueString())
+
+	var inputs []string
+	src.Inputs.ElementsAs(ctx, &inputs, false)
+	dest.SetInputs(inputs)
+
+	if !src.BulkIndex.IsNull() {
+		dest.SetBulkIndex(src.BulkIndex.ValueString())
+	}
+
+	if src.Auth != nil {
+		auth := datadogV2.ObservabilityPipelineAmazonOpenSearchDestinationAuth{
+			Strategy: datadogV2.ObservabilityPipelineAmazonOpenSearchDestinationAuthStrategy(src.Auth.Strategy.ValueString()),
+		}
+		if !src.Auth.AwsRegion.IsNull() {
+			auth.AwsRegion = src.Auth.AwsRegion.ValueString()
+		}
+		if !src.Auth.AssumeRole.IsNull() {
+			auth.AssumeRole = src.Auth.AssumeRole.ValueString()
+		}
+		if !src.Auth.ExternalId.IsNull() {
+			auth.ExternalId = src.Auth.ExternalId.ValueString()
+		}
+		if !src.Auth.SessionName.IsNull() {
+			auth.SessionName = src.Auth.SessionName.ValueString()
+		}
+		dest.SetAuth(auth)
+	}
+
+	return datadogV2.ObservabilityPipelineConfigDestinationItem{
+		ObservabilityPipelineAmazonOpenSearchDestination: dest,
+	}
+}
+
+func flattenAmazonOpenSearchDestination(ctx context.Context, src *datadogV2.ObservabilityPipelineAmazonOpenSearchDestination) *amazonOpenSearchDestinationModel {
+	if src == nil {
+		return nil
+	}
+
+	inputs, _ := types.ListValueFrom(ctx, types.StringType, src.Inputs)
+
+	model := &amazonOpenSearchDestinationModel{
+		Id:        types.StringValue(src.GetId()),
+		Inputs:    inputs,
+		BulkIndex: types.StringValue(src.GetBulkIndex()),
+	}
+
+	if src.Auth != nil {
+		model.Auth = &amazonOpenSearchAuthModel{
+			Strategy:    types.StringValue(string(src.Auth.Strategy)),
+			AwsRegion:   types.StringValue(src.Auth.AwsRegion),
+			AssumeRole:  types.StringValue(src.Auth.AssumeRole),
+			ExternalId:  types.StringValue(src.Auth.ExternalId),
+			SessionName: types.StringValue(src.Auth.SessionName),
+		}
+	}
+
+	return model
 }
