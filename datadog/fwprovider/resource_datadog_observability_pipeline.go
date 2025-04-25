@@ -36,21 +36,21 @@ type observabilityPipelineModel struct {
 
 type configModel struct {
 	Sources      sourcesModel      `tfsdk:"sources"`
-	Processors   *processorsModel  `tfsdk:"processors"`
+	Processors   processorsModel   `tfsdk:"processors"`
 	Destinations destinationsModel `tfsdk:"destinations"`
 }
 type sourcesModel struct {
-	DatadogAgentSource []*datadogAgentSourceModel `tfsdk:"datadog_agent"`
-	KafkaSource        []*kafkaSourceModel        `tfsdk:"kafka"`
-	RsyslogSource      []*rsyslogSourceModel      `tfsdk:"rsyslog"`
-	SyslogNgSource     []*syslogNgSourceModel     `tfsdk:"syslog_ng"`
-	SumoLogicSource    []*sumoLogicSourceModel    `tfsdk:"sumo_logic"`
-	FluentdSource      []*fluentdSourceModel      `tfsdk:"fluentd"`
-	FluentBitSource    []*fluentBitSourceModel    `tfsdk:"fluent_bit"`
-	HttpServerSource   []*httpServerSourceModel   `tfsdk:"http_server"`
-	AmazonS3Source     []*amazonS3SourceModel     `tfsdk:"amazon_s3"`
-	SplunkHecSource    []*splunkHecSourceModel    `tfsdk:"splunk_hec"`
-	SplunkTcpSource    []*splunkTcpSourceModel    `tfsdk:"splunk_tcp"`
+	DatadogAgentSource       []*datadogAgentSourceModel       `tfsdk:"datadog_agent"`
+	KafkaSource              []*kafkaSourceModel              `tfsdk:"kafka"`
+	RsyslogSource            []*rsyslogSourceModel            `tfsdk:"rsyslog"`
+	SyslogNgSource           []*syslogNgSourceModel           `tfsdk:"syslog_ng"`
+	SumoLogicSource          []*sumoLogicSourceModel          `tfsdk:"sumo_logic"`
+	FluentdSource            []*fluentdSourceModel            `tfsdk:"fluentd"`
+	FluentBitSource          []*fluentBitSourceModel          `tfsdk:"fluent_bit"`
+	HttpServerSource         []*httpServerSourceModel         `tfsdk:"http_server"`
+	AmazonS3Source           []*amazonS3SourceModel           `tfsdk:"amazon_s3"`
+	SplunkHecSource          []*splunkHecSourceModel          `tfsdk:"splunk_hec"`
+	SplunkTcpSource          []*splunkTcpSourceModel          `tfsdk:"splunk_tcp"`
 	AmazonDataFirehoseSource []*amazonDataFirehoseSourceModel `tfsdk:"amazon_data_firehose"`
 	HttpClientSource         []*httpClientSourceModel         `tfsdk:"http_client"`
 	GooglePubSubSource       []*googlePubSubSourceModel       `tfsdk:"google_pubsub"`
@@ -92,12 +92,6 @@ type amazonS3SourceModel struct {
 	Tls    *tlsModel     `tfsdk:"tls"`    // TLS encryption configuration
 }
 
-type awsAuthModel struct {
-	AssumeRole  types.String `tfsdk:"assume_role"`  // ARN of the role to assume
-	ExternalId  types.String `tfsdk:"external_id"`  // Unique identifier for cross-account assumption
-	SessionName types.String `tfsdk:"session_name"` // Session identifier for logging/tracing
-}
-
 type tlsModel struct {
 	CrtFile types.String `tfsdk:"crt_file"`
 	CaFile  types.String `tfsdk:"ca_file"`
@@ -117,12 +111,12 @@ type processorsModel struct {
 	ParseGrokProcessor            []*parseGrokProcessorModel            `tfsdk:"parse_grok"`
 	SampleProcessor               []*sampleProcessorModel               `tfsdk:"sample"`
 	SensitiveDataScannerProcessor []*sensitiveDataScannerProcessorModel `tfsdk:"sensitive_data_scanner"`
-	DedupeProcessor          []*dedupeProcessorModel          `tfsdk:"dedupe"`
-	ReduceProcessor          []*reduceProcessorModel          `tfsdk:"reduce"`
-	ThrottleProcessor        []*throttleProcessorModel        `tfsdk:"throttle"`
-	AddEnvVarsProcessor      []*addEnvVarsProcessorModel      `tfsdk:"add_env_vars"`
-	EnrichmentTableProcessor []*enrichmentTableProcessorModel `tfsdk:"enrichment_table"`
-	OcsfMapperProcessor      []*ocsfMapperProcessorModel      `tfsdk:"ocsf_mapper"`
+	DedupeProcessor               []*dedupeProcessorModel               `tfsdk:"dedupe"`
+	ReduceProcessor               []*reduceProcessorModel               `tfsdk:"reduce"`
+	ThrottleProcessor             []*throttleProcessorModel             `tfsdk:"throttle"`
+	AddEnvVarsProcessor           []*addEnvVarsProcessorModel           `tfsdk:"add_env_vars"`
+	EnrichmentTableProcessor      []*enrichmentTableProcessorModel      `tfsdk:"enrichment_table"`
+	OcsfMapperProcessor           []*ocsfMapperProcessorModel           `tfsdk:"ocsf_mapper"`
 }
 
 type ocsfMapperProcessorModel struct {
@@ -297,9 +291,9 @@ type destinationsModel struct {
 	ElasticsearchDestination      []*elasticsearchDestinationModel     `tfsdk:"elasticsearch"`
 	AzureStorageDestination       []*azureStorageDestinationModel      `tfsdk:"azure_storage"`
 	MicrosoftSentinelDestination  []*microsoftSentinelDestinationModel `tfsdk:"microsoft_sentinel"`
-	GoogleChronicleDestination []*googleChronicleDestinationModel `tfsdk:"google_chronicle"`
-	NewRelicDestination        []*newRelicDestinationModel        `tfsdk:"new_relic"`
-	SentinelOneDestination     []*sentinelOneDestinationModel     `tfsdk:"sentinel_one"`
+	GoogleChronicleDestination    []*googleChronicleDestinationModel   `tfsdk:"google_chronicle"`
+	NewRelicDestination           []*newRelicDestinationModel          `tfsdk:"new_relic"`
+	SentinelOneDestination        []*sentinelOneDestinationModel       `tfsdk:"sentinel_one"`
 }
 
 type sentinelOneDestinationModel struct {
@@ -307,7 +301,6 @@ type sentinelOneDestinationModel struct {
 	Inputs types.List   `tfsdk:"inputs"`
 	Region types.String `tfsdk:"region"`
 }
-
 
 type newRelicDestinationModel struct {
 	Id     types.String `tfsdk:"id"`
@@ -421,10 +414,6 @@ type gcsDestinationModel struct {
 	Acl          types.String    `tfsdk:"acl"`
 	Auth         gcpAuthModel    `tfsdk:"auth"`
 	Metadata     []metadataEntry `tfsdk:"metadata"`
-}
-
-type gcpAuthModel struct {
-	CredentialsFile types.String `tfsdk:"credentials_file"`
 }
 
 type metadataEntry struct {
@@ -2360,43 +2349,41 @@ func expandPipeline(ctx context.Context, state *observabilityPipelineModel) (*da
 	}
 
 	// Processors
-	if state.Config.Processors != nil {
-		for _, p := range state.Config.Processors.FilterProcessor {
-			config.Processors = append(config.Processors, expandFilterProcessor(ctx, p))
-		}
-		for _, p := range state.Config.Processors.ParseJsonProcessor {
-			config.Processors = append(config.Processors, expandParseJsonProcessor(ctx, p))
-		}
-		for _, p := range state.Config.Processors.AddFieldsProcessor {
-			config.Processors = append(config.Processors, expandAddFieldsProcessor(ctx, p))
-		}
-		for _, p := range state.Config.Processors.RenameFieldsProcessor {
-			config.Processors = append(config.Processors, expandRenameFieldsProcessor(ctx, p))
-		}
-		for _, p := range state.Config.Processors.RemoveFieldsProcessor {
-			config.Processors = append(config.Processors, expandRemoveFieldsProcessor(ctx, p))
-		}
-		for _, p := range state.Config.Processors.QuotaProcessor {
-			config.Processors = append(config.Processors, expandQuotaProcessor(ctx, p))
-		}
-		for _, p := range state.Config.Processors.DedupeProcessor {
-			config.Processors = append(config.Processors, expandDedupeProcessor(ctx, p))
-		}
-		for _, p := range state.Config.Processors.ReduceProcessor {
-			config.Processors = append(config.Processors, expandReduceProcessor(ctx, p))
-		}
-		for _, p := range state.Config.Processors.ThrottleProcessor {
-			config.Processors = append(config.Processors, expandThrottleProcessor(ctx, p))
-		}
-		for _, p := range state.Config.Processors.AddEnvVarsProcessor {
-			config.Processors = append(config.Processors, expandAddEnvVarsProcessor(ctx, p))
-		}
-		for _, p := range state.Config.Processors.EnrichmentTableProcessor {
-			config.Processors = append(config.Processors, expandEnrichmentTableProcessor(ctx, p))
-		}
-		for _, p := range state.Config.Processors.OcsfMapperProcessor {
-			config.Processors = append(config.Processors, expandOcsfMapperProcessor(ctx, p))
-		}
+	for _, p := range state.Config.Processors.FilterProcessor {
+		config.Processors = append(config.Processors, expandFilterProcessor(ctx, p))
+	}
+	for _, p := range state.Config.Processors.ParseJsonProcessor {
+		config.Processors = append(config.Processors, expandParseJsonProcessor(ctx, p))
+	}
+	for _, p := range state.Config.Processors.AddFieldsProcessor {
+		config.Processors = append(config.Processors, expandAddFieldsProcessor(ctx, p))
+	}
+	for _, p := range state.Config.Processors.RenameFieldsProcessor {
+		config.Processors = append(config.Processors, expandRenameFieldsProcessor(ctx, p))
+	}
+	for _, p := range state.Config.Processors.RemoveFieldsProcessor {
+		config.Processors = append(config.Processors, expandRemoveFieldsProcessor(ctx, p))
+	}
+	for _, p := range state.Config.Processors.QuotaProcessor {
+		config.Processors = append(config.Processors, expandQuotaProcessor(ctx, p))
+	}
+	for _, p := range state.Config.Processors.DedupeProcessor {
+		config.Processors = append(config.Processors, expandDedupeProcessor(ctx, p))
+	}
+	for _, p := range state.Config.Processors.ReduceProcessor {
+		config.Processors = append(config.Processors, expandReduceProcessor(ctx, p))
+	}
+	for _, p := range state.Config.Processors.ThrottleProcessor {
+		config.Processors = append(config.Processors, expandThrottleProcessor(ctx, p))
+	}
+	for _, p := range state.Config.Processors.AddEnvVarsProcessor {
+		config.Processors = append(config.Processors, expandAddEnvVarsProcessor(ctx, p))
+	}
+	for _, p := range state.Config.Processors.EnrichmentTableProcessor {
+		config.Processors = append(config.Processors, expandEnrichmentTableProcessor(ctx, p))
+	}
+	for _, p := range state.Config.Processors.OcsfMapperProcessor {
+		config.Processors = append(config.Processors, expandOcsfMapperProcessor(ctx, p))
 	}
 	for _, p := range state.Config.Processors.ParseGrokProcessor {
 		config.Processors = append(config.Processors, expandParseGrokProcessor(ctx, p))
@@ -2462,9 +2449,7 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 	state.Name = types.StringValue(attrs.GetName())
 
 	cfg := attrs.GetConfig()
-	outCfg := configModel{
-		Processors: &processorsModel{},
-	}
+	outCfg := configModel{}
 
 	for _, src := range cfg.GetSources() {
 
@@ -4173,15 +4158,11 @@ func flattenAmazonDataFirehoseSource(src *datadogV2.ObservabilityPipelineAmazonD
 	}
 
 	if src.Auth != nil {
-		auth := awsAuthModel{}
-		if v, ok := src.GetAuthOk(); ok {
-			auth = awsAuthModel{
-				AssumeRole:  types.StringPointerValue(v.AssumeRole),
-				ExternalId:  types.StringPointerValue(v.ExternalId),
-				SessionName: types.StringPointerValue(v.SessionName),
-			}
+		out.Auth = &awsAuthModel{
+			AssumeRole:  types.StringPointerValue(src.Auth.AssumeRole.Get()),
+			ExternalId:  types.StringPointerValue(src.Auth.ExternalId.Get()),
+			SessionName: types.StringPointerValue(src.Auth.SessionName.Get()),
 		}
-		out.Auth = &auth
 	}
 
 	if src.Tls != nil {
