@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"description":"test description","handle":"handle-31996","icon_url":"test url","name":"","requirements":[{"controls":[{"name":"control1","rules_id":["def-000-be9"]}],"name":"requirement1"}],"version":"version-30568"},"type":"custom_framework"}}
+            {"data":{"attributes":{"description":"test description","handle":"handle-36194","icon_url":"test url","name":"","requirements":[{"controls":[{"name":"control1","rules_id":["def-000-be9"]}],"name":"requirement1"}],"version":"version-70326"},"type":"custom_framework"}}
         form: {}
         headers:
             Accept:
@@ -36,7 +36,7 @@ interactions:
                 - application/vnd.api+json
         status: 400 Bad Request
         code: 400
-        duration: 88.458458ms
+        duration: 173.665708ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -49,7 +49,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"description":"test description","handle":"handle-31996","icon_url":"test url","name":"new-framework-terraform","requirements":[{"controls":[{"name":"control1","rules_id":["invalid-rule-id"]}],"name":"requirement1"}],"version":"version-30568"},"type":"custom_framework"}}
+            {"data":{"attributes":{"description":"test description","handle":"handle-36194","icon_url":"test url","name":"new-framework-terraform","requirements":[{"controls":[{"name":"control1","rules_id":["invalid-rule-id"]}],"name":"requirement1"}],"version":"version-70326"},"type":"custom_framework"}}
         form: {}
         headers:
             Accept:
@@ -72,7 +72,7 @@ interactions:
                 - application/vnd.api+json
         status: 400 Bad Request
         code: 400
-        duration: 216.985459ms
+        duration: 190.480667ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -85,7 +85,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"description":"test description","handle":"handle-31996","icon_url":"test url","name":"new-framework-terraform","requirements":[],"version":"version-30568"},"type":"custom_framework"}}
+            {"data":{"attributes":{"description":"test description","handle":"handle-36194","icon_url":"test url","name":"new-framework-terraform","requirements":[],"version":"version-70326"},"type":"custom_framework"}}
         form: {}
         headers:
             Accept:
@@ -108,4 +108,4 @@ interactions:
                 - application/vnd.api+json
         status: 400 Bad Request
         code: 400
-        duration: 51.733334ms
+        duration: 40.119125ms
