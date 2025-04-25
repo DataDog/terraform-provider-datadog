@@ -294,6 +294,13 @@ type destinationsModel struct {
 	GoogleChronicleDestination    []*googleChronicleDestinationModel   `tfsdk:"google_chronicle"`
 	NewRelicDestination           []*newRelicDestinationModel          `tfsdk:"new_relic"`
 	SentinelOneDestination        []*sentinelOneDestinationModel       `tfsdk:"sentinel_one"`
+	OpenSearchDestination         []*opensearchDestinationModel        `tfsdk:"opensearch"`
+}
+
+type opensearchDestinationModel struct {
+	Id        types.String `tfsdk:"id"`
+	Inputs    types.List   `tfsdk:"inputs"`
+	BulkIndex types.String `tfsdk:"bulk_index"`
 }
 
 type sentinelOneDestinationModel struct {
@@ -2017,6 +2024,26 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 									},
 								},
 							},
+							"opensearch": schema.ListNestedBlock{
+								Description: "The `opensearch` destination writes logs to an OpenSearch cluster.",
+								NestedObject: schema.NestedBlockObject{
+									Attributes: map[string]schema.Attribute{
+										"id": schema.StringAttribute{
+											Required:    true,
+											Description: "The unique identifier for this component.",
+										},
+										"inputs": schema.ListAttribute{
+											Required:    true,
+											ElementType: types.StringType,
+											Description: "A list of component IDs whose output is used as input.",
+										},
+										"bulk_index": schema.StringAttribute{
+											Optional:    true,
+											Description: "The index or datastream to write logs to.",
+										},
+									},
+								},
+							},
 							"azure_storage": schema.ListNestedBlock{
 								Description: "The `azure_storage` destination forwards logs to an Azure Blob Storage container.",
 								NestedObject: schema.NestedBlockObject{
@@ -2435,6 +2462,9 @@ func expandPipeline(ctx context.Context, state *observabilityPipelineModel) (*da
 	for _, d := range state.Config.Destinations.SentinelOneDestination {
 		config.Destinations = append(config.Destinations, expandSentinelOneDestination(ctx, d))
 	}
+	for _, d := range state.Config.Destinations.OpenSearchDestination {
+		config.Destinations = append(config.Destinations, expandOpenSearchDestination(ctx, d))
+	}
 
 	attrs.SetConfig(*config)
 	data.SetAttributes(*attrs)
@@ -2601,6 +2631,9 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 		}
 		if m := flattenMicrosoftSentinelDestination(ctx, d.MicrosoftSentinelDestination); m != nil {
 			outCfg.Destinations.MicrosoftSentinelDestination = append(outCfg.Destinations.MicrosoftSentinelDestination, m)
+		}
+		if d := flattenOpenSearchDestination(ctx, d.ObservabilityPipelineOpenSearchDestination); d != nil {
+			outCfg.Destinations.OpenSearchDestination = append(outCfg.Destinations.OpenSearchDestination, d)
 		}
 	}
 
@@ -4743,5 +4776,36 @@ func flattenOcsfMapperProcessor(ctx context.Context, src *datadogV2.Observabilit
 		Include: types.StringValue(src.Include),
 		Inputs:  inputs,
 		Mapping: mappings,
+	}
+}
+
+func expandOpenSearchDestination(ctx context.Context, src *opensearchDestinationModel) datadogV2.ObservabilityPipelineConfigDestinationItem {
+	dest := datadogV2.NewObservabilityPipelineOpenSearchDestinationWithDefaults()
+	dest.SetId(src.Id.ValueString())
+
+	var inputs []string
+	src.Inputs.ElementsAs(ctx, &inputs, false)
+	dest.SetInputs(inputs)
+
+	if !src.BulkIndex.IsNull() {
+		dest.SetBulkIndex(src.BulkIndex.ValueString())
+	}
+
+	return datadogV2.ObservabilityPipelineConfigDestinationItem{
+		ObservabilityPipelineOpenSearchDestination: dest,
+	}
+}
+
+func flattenOpenSearchDestination(ctx context.Context, src *datadogV2.ObservabilityPipelineOpenSearchDestination) *opensearchDestinationModel {
+	if src == nil {
+		return nil
+	}
+
+	inputs, _ := types.ListValueFrom(ctx, types.StringType, src.Inputs)
+
+	return &opensearchDestinationModel{
+		Id:        types.StringValue(src.GetId()),
+		Inputs:    inputs,
+		BulkIndex: types.StringValue(src.GetBulkIndex()),
 	}
 }

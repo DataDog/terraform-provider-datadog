@@ -2657,3 +2657,46 @@ resource "datadog_observability_pipeline" "ocsf" {
 		},
 	})
 }
+
+func TestAccDatadogObservabilityPipeline_opensearchDestination(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.opensearch"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "opensearch" {
+  name = "opensearch pipeline"
+
+  config {
+    sources {
+      datadog_agent {
+        id = "source-1"
+      }
+    }
+
+    processors {}
+
+    destinations {
+      opensearch {
+        id         = "opensearch-dest-1"
+        inputs     = ["source-1"]
+        bulk_index = "logs-datastream"
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.opensearch.0.id", "opensearch-dest-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.opensearch.0.bulk_index", "logs-datastream"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.opensearch.0.inputs.0", "source-1"),
+				),
+			},
+		},
+	})
+}
