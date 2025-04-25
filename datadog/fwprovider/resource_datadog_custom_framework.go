@@ -175,6 +175,50 @@ func (r *customFrameworkResource) Update(ctx context.Context, request resource.U
 	response.Diagnostics.Append(diags...)
 }
 
+func setControl(name string, rulesID []attr.Value) types.Object {
+	return types.ObjectValueMust(
+		map[string]attr.Type{
+			"name":     types.StringType,
+			"rules_id": types.SetType{ElemType: types.StringType},
+		},
+		map[string]attr.Value{
+			"name":     types.StringValue(name),
+			"rules_id": types.SetValueMust(types.StringType, rulesID),
+		},
+	)
+}
+
+func setRequirement(name string, controls []attr.Value) types.Object {
+	return types.ObjectValueMust(
+		map[string]attr.Type{
+			"name": types.StringType,
+			"controls": types.SetType{ElemType: types.ObjectType{AttrTypes: map[string]attr.Type{
+				"name":     types.StringType,
+				"rules_id": types.SetType{ElemType: types.StringType},
+			}}},
+		},
+		map[string]attr.Value{
+			"name": types.StringValue(name),
+			"controls": types.SetValueMust(types.ObjectType{AttrTypes: map[string]attr.Type{
+				"name":     types.StringType,
+				"rules_id": types.SetType{ElemType: types.StringType},
+			}}, controls),
+		},
+	)
+}
+
+func setRequirements(requirements []attr.Value) types.Set {
+	return types.SetValueMust(
+		types.ObjectType{AttrTypes: map[string]attr.Type{
+			"name": types.StringType,
+			"controls": types.SetType{ElemType: types.ObjectType{AttrTypes: map[string]attr.Type{
+				"name":     types.StringType,
+				"rules_id": types.SetType{ElemType: types.StringType},
+			}}},
+		}},
+		requirements,
+	)
+}
 func readStateFromDatabase(data datadogV2.RetrieveCustomFrameworkResponse, handle string, version string) customFrameworkModel {
 	// Set the state
 	var state customFrameworkModel
@@ -187,52 +231,19 @@ func readStateFromDatabase(data datadogV2.RetrieveCustomFrameworkResponse, handl
 
 	// Convert requirements to set
 	requirements := make([]attr.Value, len(data.GetData().Attributes.Requirements))
-	for i, req := range data.GetData().Attributes.Requirements {
+	for i, requirement := range data.GetData().Attributes.Requirements {
 		// Convert controls to set
-		controls := make([]attr.Value, len(req.Controls))
-		for j, ctrl := range req.Controls {
-			rulesID := make([]attr.Value, len(ctrl.RulesId))
-			for k, ruleID := range ctrl.RulesId {
+		controls := make([]attr.Value, len(requirement.Controls))
+		for j, control := range requirement.Controls {
+			rulesID := make([]attr.Value, len(control.RulesId))
+			for k, ruleID := range control.RulesId {
 				rulesID[k] = types.StringValue(ruleID)
 			}
-			controls[j] = types.ObjectValueMust(
-				map[string]attr.Type{
-					"name":     types.StringType,
-					"rules_id": types.SetType{ElemType: types.StringType},
-				},
-				map[string]attr.Value{
-					"name":     types.StringValue(ctrl.Name),
-					"rules_id": types.SetValueMust(types.StringType, rulesID),
-				},
-			)
+			controls[j] = setControl(control.Name, rulesID)
 		}
-		requirements[i] = types.ObjectValueMust(
-			map[string]attr.Type{
-				"name": types.StringType,
-				"controls": types.SetType{ElemType: types.ObjectType{AttrTypes: map[string]attr.Type{
-					"name":     types.StringType,
-					"rules_id": types.SetType{ElemType: types.StringType},
-				}}},
-			},
-			map[string]attr.Value{
-				"name": types.StringValue(req.Name),
-				"controls": types.SetValueMust(types.ObjectType{AttrTypes: map[string]attr.Type{
-					"name":     types.StringType,
-					"rules_id": types.SetType{ElemType: types.StringType},
-				}}, controls),
-			},
-		)
+		requirements[i] = setRequirement(requirement.Name, controls)
 	}
-	state.Requirements = types.SetValueMust(
-		types.ObjectType{AttrTypes: map[string]attr.Type{
-			"name": types.StringType,
-			"controls": types.SetType{ElemType: types.ObjectType{AttrTypes: map[string]attr.Type{
-				"name":     types.StringType,
-				"rules_id": types.SetType{ElemType: types.StringType},
-			}}},
-		}},
-		requirements,
-	)
+	state.Requirements = setRequirements(requirements)
 	return state
 }
 
