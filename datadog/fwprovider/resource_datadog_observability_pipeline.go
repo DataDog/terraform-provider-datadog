@@ -2998,21 +2998,24 @@ func flattenQuotaProcessor(ctx context.Context, src *datadogV2.ObservabilityPipe
 	}
 
 	out := &quotaProcessorModel{
-		Id:                          types.StringValue(src.Id),
-		Include:                     types.StringValue(src.Include),
-		Name:                        types.StringValue(src.Name),
-		DropEvents:                  types.BoolValue(src.DropEvents),
-		IgnoreWhenMissingPartitions: types.BoolValue(src.GetIgnoreWhenMissingPartitions()),
-		Inputs:                      inputs,
-		PartitionFields:             partitions,
+		Id:              types.StringValue(src.Id),
+		Include:         types.StringValue(src.Include),
+		Name:            types.StringValue(src.Name),
+		DropEvents:      types.BoolValue(src.DropEvents),
+		Inputs:          inputs,
+		PartitionFields: partitions,
 		Limit: quotaLimitModel{
 			Enforce: types.StringValue(string(src.Limit.Enforce)),
 			Limit:   types.Int64Value(src.Limit.Limit),
 		},
 	}
 
-	if !src.OverflowAction.isNull() {
-		out.OverflowAction = types.StringValue(string(src.OverflowAction))
+	if src.IgnoreWhenMissingPartitions != nil {
+		out.IgnoreWhenMissingPartitions = types.BoolPointerValue(src.IgnoreWhenMissingPartitions)
+	}
+
+	if src.OverflowAction != nil {
+		out.OverflowAction = types.StringValue(string(*src.OverflowAction))
 	}
 
 	for _, o := range src.Overrides {
@@ -3040,7 +3043,9 @@ func expandQuotaProcessor(ctx context.Context, src *quotaProcessorModel) datadog
 	proc.SetInclude(src.Include.ValueString())
 	proc.SetName(src.Name.ValueString())
 	proc.SetDropEvents(src.DropEvents.ValueBool())
-	proc.SetIgnoreWhenMissingPartitions(src.IgnoreWhenMissingPartitions.ValueBool())
+	if !src.IgnoreWhenMissingPartitions.IsNull() {
+		proc.SetIgnoreWhenMissingPartitions(src.IgnoreWhenMissingPartitions.ValueBool())
+	}
 
 	var inputs, partitions []string
 	src.Inputs.ElementsAs(ctx, &inputs, false)
@@ -3445,7 +3450,7 @@ func flattenGoogleCloudStorageDestination(ctx context.Context, src *datadogV2.Ob
 	return &gcsDestinationModel{
 		Id:           types.StringValue(src.GetId()),
 		Bucket:       types.StringValue(src.GetBucket()),
-		KeyPrefix:    types.StringPointerValue(src.KeyPrefix.Get()),
+		KeyPrefix:    types.StringPointerValue(src.KeyPrefix),
 		StorageClass: types.StringValue(string(src.GetStorageClass())),
 		Acl:          types.StringValue(string(src.GetAcl())),
 		Auth: gcpAuthModel{
@@ -3653,9 +3658,9 @@ func flattenAmazonS3Source(src *datadogV2.ObservabilityPipelineAmazonS3Source) *
 
 	if src.Auth != nil {
 		out.Auth = &awsAuthModel{
-			AssumeRole:  types.StringPointerValue(src.Auth.AssumeRole.Get()),
-			ExternalId:  types.StringPointerValue(src.Auth.ExternalId.Get()),
-			SessionName: types.StringPointerValue(src.Auth.SessionName.Get()),
+			AssumeRole:  types.StringPointerValue(src.Auth.AssumeRole),
+			ExternalId:  types.StringPointerValue(src.Auth.ExternalId),
+			SessionName: types.StringPointerValue(src.Auth.SessionName),
 		}
 	}
 
@@ -4274,9 +4279,9 @@ func flattenAmazonDataFirehoseSource(src *datadogV2.ObservabilityPipelineAmazonD
 
 	if src.Auth != nil {
 		out.Auth = &awsAuthModel{
-			AssumeRole:  types.StringPointerValue(src.Auth.AssumeRole.Get()),
-			ExternalId:  types.StringPointerValue(src.Auth.ExternalId.Get()),
-			SessionName: types.StringPointerValue(src.Auth.SessionName.Get()),
+			AssumeRole:  types.StringPointerValue(src.Auth.AssumeRole),
+			ExternalId:  types.StringPointerValue(src.Auth.ExternalId),
+			SessionName: types.StringPointerValue(src.Auth.SessionName),
 		}
 	}
 
@@ -4909,16 +4914,16 @@ func expandAmazonOpenSearchDestination(ctx context.Context, src *amazonOpenSearc
 			Strategy: datadogV2.ObservabilityPipelineAmazonOpenSearchDestinationAuthStrategy(src.Auth.Strategy.ValueString()),
 		}
 		if !src.Auth.AwsRegion.IsNull() {
-			auth.AwsRegion = src.Auth.AwsRegion.ValueString()
+			auth.AwsRegion = src.Auth.AwsRegion.ValueStringPointer()
 		}
 		if !src.Auth.AssumeRole.IsNull() {
-			auth.AssumeRole = src.Auth.AssumeRole.ValueString()
+			auth.AssumeRole = src.Auth.AssumeRole.ValueStringPointer()
 		}
 		if !src.Auth.ExternalId.IsNull() {
-			auth.ExternalId = src.Auth.ExternalId.ValueString()
+			auth.ExternalId = src.Auth.ExternalId.ValueStringPointer()
 		}
 		if !src.Auth.SessionName.IsNull() {
-			auth.SessionName = src.Auth.SessionName.ValueString()
+			auth.SessionName = src.Auth.SessionName.ValueStringPointer()
 		}
 		dest.SetAuth(auth)
 	}
@@ -4941,14 +4946,12 @@ func flattenAmazonOpenSearchDestination(ctx context.Context, src *datadogV2.Obse
 		BulkIndex: types.StringValue(src.GetBulkIndex()),
 	}
 
-	if src.Auth != nil {
-		model.Auth = &amazonOpenSearchAuthModel{
-			Strategy:    types.StringValue(string(src.Auth.Strategy)),
-			AwsRegion:   types.StringValue(src.Auth.AwsRegion),
-			AssumeRole:  types.StringValue(src.Auth.AssumeRole),
-			ExternalId:  types.StringValue(src.Auth.ExternalId),
-			SessionName: types.StringValue(src.Auth.SessionName),
-		}
+	model.Auth = &amazonOpenSearchAuthModel{
+		Strategy:    types.StringValue(string(src.Auth.Strategy)),
+		AwsRegion:   types.StringPointerValue(src.Auth.AwsRegion),
+		AssumeRole:  types.StringPointerValue(src.Auth.AssumeRole),
+		ExternalId:  types.StringPointerValue(src.Auth.ExternalId),
+		SessionName: types.StringPointerValue(src.Auth.SessionName),
 	}
 
 	return model
