@@ -48,6 +48,31 @@ Required:
 - `notifications` (List of String) Notification targets for each rule case.
 - `status` (String) Status of the rule case to match. Valid values are `info`, `low`, `medium`, `high`, `critical`.
 
+Optional:
+
+- `action` (Block List) Action to perform when the case triggers (see [below for nested schema](#nestedblock--case--action))
+
+<a id="nestedblock--case--action"></a>
+### Nested Schema for `case.action`
+
+Required:
+
+- `type` (String) Type of action to perform when the case triggers. Valid values are `block_ip`, `block_user`, `user_behavior`.
+
+Optional:
+
+- `options` (Block List, Max: 1) Options for the action (see [below for nested schema](#nestedblock--case--action--options))
+
+<a id="nestedblock--case--action--options"></a>
+### Nested Schema for `case.action.options`
+
+Optional:
+
+- `duration` (Number) Duration of the action in seconds.
+- `user_behavior_name` (String) Name of the risk tag applied to users triggering a `user_behavior` case action.
+
+
+
 
 <a id="nestedblock--filter"></a>
 ### Nested Schema for `filter`
