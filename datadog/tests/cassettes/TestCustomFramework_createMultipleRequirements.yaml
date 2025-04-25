@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"description":"test description","handle":"handle-11209","icon_url":"test url","name":"new-name","requirements":[{"controls":[{"name":"compliance-control","rules_id":["def-000-be9","def-000-cea"]}],"name":"compliance-requirement"},{"controls":[{"name":"security-control","rules_id":["def-000-be9","def-000-cea"]}],"name":"security-requirement"}],"version":"version-72175"},"type":"custom_framework"}}
+            {"data":{"attributes":{"description":"test description","handle":"handle-45366","icon_url":"test url","name":"new-name","requirements":[{"controls":[{"name":"compliance-control","rules_id":["def-000-be9","def-000-cea"]}],"name":"compliance-requirement"},{"controls":[{"name":"security-control","rules_id":["def-000-be9","def-000-cea"]}],"name":"security-requirement"}],"version":"version-82650"},"type":"custom_framework"}}
         form: {}
         headers:
             Accept:
@@ -30,13 +30,13 @@ interactions:
         trailer: {}
         content_length: 135
         uncompressed: false
-        body: '{"data":{"id":"handle-11209-version-72175","type":"custom_framework","attributes":{"handle":"handle-11209","version":"version-72175"}}}'
+        body: '{"data":{"id":"handle-45366-version-82650","type":"custom_framework","attributes":{"handle":"handle-45366","version":"version-82650"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 522.858166ms
+        duration: 495.194458ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -53,7 +53,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/cloud_security_management/custom_frameworks/handle-11209/version-72175
+        url: https://api.datadoghq.com/api/v2/cloud_security_management/custom_frameworks/handle-45366/version-82650
         method: GET
       response:
         proto: HTTP/1.1
@@ -61,15 +61,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 562
+        content_length: 457
         uncompressed: false
-        body: '{"data":{"id":"handle-11209-version-72175","type":"custom_framework","attributes":{"created_at":1745529933596,"created_by":"frog@datadoghq.com","description":"test description","handle":"handle-11209","icon_url":"test url","modified_at":1745529933596,"name":"new-name","org_id":321813,"requirements":[{"name":"compliance-requirement","controls":[{"name":"compliance-control","rules_id":["def-000-be9","def-000-cea"]}]},{"name":"security-requirement","controls":[{"name":"security-control","rules_id":["def-000-be9","def-000-cea"]}]}],"version":"version-72175"}}}'
+        body: '{"data":{"id":"handle-45366-version-82650","type":"custom_framework","attributes":{"description":"test description","handle":"handle-45366","icon_url":"test url","name":"new-name","requirements":[{"name":"compliance-requirement","controls":[{"name":"compliance-control","rules_id":["def-000-be9","def-000-cea"]}]},{"name":"security-requirement","controls":[{"name":"security-control","rules_id":["def-000-be9","def-000-cea"]}]}],"version":"version-82650"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 276.719833ms
+        duration: 286.395417ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -86,7 +86,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/cloud_security_management/custom_frameworks/handle-11209/version-72175
+        url: https://api.datadoghq.com/api/v2/cloud_security_management/custom_frameworks/handle-45366/version-82650
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -94,15 +94,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 313
+        content_length: 208
         uncompressed: false
-        body: '{"data":{"id":"handle-11209-version-72175","type":"custom_framework","attributes":{"created_at":1745529933596,"created_by":"frog@datadoghq.com","description":"test description","handle":"handle-11209","icon_url":"test url","modified_at":1745529933596,"name":"new-name","org_id":321813,"version":"version-72175"}}}'
+        body: '{"data":{"id":"handle-45366-version-82650","type":"custom_framework","attributes":{"description":"test description","handle":"handle-45366","icon_url":"test url","name":"new-name","version":"version-82650"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 446.025ms
+        duration: 334.513792ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -119,7 +119,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/cloud_security_management/custom_frameworks/handle-11209/version-72175
+        url: https://api.datadoghq.com/api/v2/cloud_security_management/custom_frameworks/handle-45366/version-82650
         method: GET
       response:
         proto: HTTP/1.1
@@ -135,4 +135,4 @@ interactions:
                 - application/vnd.api+json
         status: 400 Bad Request
         code: 400
-        duration: 60.071334ms
+        duration: 46.785959ms
