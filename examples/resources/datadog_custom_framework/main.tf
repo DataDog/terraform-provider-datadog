@@ -19,10 +19,17 @@ resource "datadog_custom_framework" "example" {
   icon_url    = "https://example.com/icon.png"
   description = "This is a test I created this resource through terraform"
   requirements {
+    name = "requirement2"
+    controls {
+      name     = "control2"
+      rules_id = ["def-000-cea"]
+    }
+  }
+  requirements {
     name = "requirement1"
     controls {
       name     = "changedControlName"
-      rules_id = ["def-000-cea"]
+      rules_id = ["def-000-cea", "def-000-be9"]
     }
   }
 }

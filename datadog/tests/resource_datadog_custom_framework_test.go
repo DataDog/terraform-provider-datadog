@@ -158,6 +158,10 @@ func TestCustomFramework_sameConfigNoUpdate(t *testing.T) {
 			requirements  {
 				name = "requirement2"
 				controls {
+					name = "control2.2"
+					rules_id = ["def-000-be9"]
+				}
+				controls {
 					name = "control2"
 					rules_id = ["def-000-cea"]
 				}
@@ -173,6 +177,7 @@ func TestCustomFramework_sameConfigNoUpdate(t *testing.T) {
 	`, version, handle)
 
 	// Second config with different order of requirements
+	// test switching order of requirements, controls, and rules_id
 	config2 := fmt.Sprintf(`
 		resource "datadog_custom_framework" "sample_rules" {
 			version       = "%s"
@@ -184,7 +189,7 @@ func TestCustomFramework_sameConfigNoUpdate(t *testing.T) {
 				name = "requirement3"
 				controls {
 					name = "control3"
-					rules_id = ["def-000-be9"]
+					rules_id = ["def-000-cea", "def-000-be9"]
 				}
 			}
 			requirements  {
@@ -198,7 +203,11 @@ func TestCustomFramework_sameConfigNoUpdate(t *testing.T) {
 				name = "requirement2"
 				controls {
 					name = "control2"
-					rules_id = ["def-000-be9", "def-000-cea"]
+					rules_id = ["def-000-cea"]
+				}
+				controls {
+					name = "control2.2"
+					rules_id = ["def-000-be9"]
 				}
 			}
 		}
