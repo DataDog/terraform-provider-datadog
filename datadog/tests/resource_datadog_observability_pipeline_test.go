@@ -837,7 +837,7 @@ resource "datadog_observability_pipeline" "fluentd" {
 
   config {
     sources {
-      fluent {
+      fluentd {
         id = "fluent-source-1"
         tls {
           crt_file = "/etc/ssl/certs/fluent.crt"
@@ -888,7 +888,7 @@ resource "datadog_observability_pipeline" "fluent_bit" {
 
   config {
     sources {
-      fluent {
+      fluent_bit {
         id = "fluent-source-1"
         tls {
           crt_file = "/etc/ssl/certs/fluent.crt"
