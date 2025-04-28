@@ -279,6 +279,123 @@ func TestAccDatadogSecurityMonitoringRule_ThirdParty(t *testing.T) {
 	})
 }
 
+func TestAccDatadogSecurityMonitoringRule_DefaultTags(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	sloName := uniqueEntityName(ctx, t)
+	accProvider := testAccProvider(t, accProviders)
+	resource.Test(t, resource.TestCase{
+		PreCheck: func() { testAccPreCheck(t) },
+		Steps: []resource.TestStep{
+			{ // New tags are correctly added and duplicates are kept
+				Config: testAccCheckDatadogSecurityMonitoringDuplicateTags(sloName),
+				ProviderFactories: map[string]func() (*schema.Provider, error){
+					"datadog": withDefaultTags(accProvider, map[string]interface{}{
+						"default_key": "default_value",
+					}),
+				},
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(
+						"datadog_security_monitoring_rule.acceptance_test", "tags.#", "4"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_security_monitoring_rule.acceptance_test", "tags.*", "baz"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_security_monitoring_rule.acceptance_test", "tags.*", "foo:bar"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_security_monitoring_rule.acceptance_test", "tags.*", "foo:double_bar"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_security_monitoring_rule.acceptance_test", "tags.*", "default_key:default_value"),
+				),
+			},
+			{ // Resource tags take precedence over default tags and duplicates stay
+				Config: testAccCheckDatadogSecurityMonitoringDuplicateTags(sloName),
+				ProviderFactories: map[string]func() (*schema.Provider, error){
+					"datadog": withDefaultTags(accProvider, map[string]interface{}{
+						"foo": "not_bar",
+					}),
+				},
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(
+						"datadog_security_monitoring_rule.acceptance_test", "tags.#", "3"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_security_monitoring_rule.acceptance_test", "tags.*", "baz"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_security_monitoring_rule.acceptance_test", "tags.*", "foo:bar"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_security_monitoring_rule.acceptance_test", "tags.*", "foo:double_bar"),
+				),
+			},
+			{ // Resource tags take precedence over default tags, but new tags are added
+				Config: testAccCheckDatadogSecurityMonitoringDefaultTags(sloName),
+				ProviderFactories: map[string]func() (*schema.Provider, error){
+					"datadog": withDefaultTags(accProvider, map[string]interface{}{
+						"foo":     "not_bar",
+						"new_tag": "new_value",
+					}),
+				},
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(
+						"datadog_security_monitoring_rule.acceptance_test", "tags.#", "3"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_security_monitoring_rule.acceptance_test", "tags.*", "baz"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_security_monitoring_rule.acceptance_test", "tags.*", "foo:bar"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_security_monitoring_rule.acceptance_test", "tags.*", "new_tag:new_value"),
+				),
+			},
+			{ // Tags without any value work correctly
+				Config: testAccCheckDatadogSecurityMonitoringDefaultTags(sloName),
+				ProviderFactories: map[string]func() (*schema.Provider, error){
+					"datadog": withDefaultTags(accProvider, map[string]interface{}{
+						"no_value": "",
+					}),
+				},
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(
+						"datadog_security_monitoring_rule.acceptance_test", "tags.#", "3"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_security_monitoring_rule.acceptance_test", "tags.*", "baz"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_security_monitoring_rule.acceptance_test", "tags.*", "foo:bar"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_security_monitoring_rule.acceptance_test", "tags.*", "no_value"),
+				),
+			},
+			{ // Tags with colons in the value work correctly
+				Config: testAccCheckDatadogSecurityMonitoringDefaultTags(sloName),
+				ProviderFactories: map[string]func() (*schema.Provider, error){
+					"datadog": withDefaultTags(accProvider, map[string]interface{}{
+						"repo_url": "https://github.com/repo/path",
+					}),
+				},
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(
+						"datadog_security_monitoring_rule.acceptance_test", "tags.#", "3"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_security_monitoring_rule.acceptance_test", "tags.*", "baz"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_security_monitoring_rule.acceptance_test", "tags.*", "foo:bar"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_security_monitoring_rule.acceptance_test", "tags.*", "repo_url:https://github.com/repo/path"),
+				),
+			},
+			{ // Works with monitors without a tag attribute
+				Config: testAccCheckDatadogSecurityMonitoringNoTag(sloName),
+				ProviderFactories: map[string]func() (*schema.Provider, error){
+					"datadog": withDefaultTags(accProvider, map[string]interface{}{
+						"default_key": "default_value",
+					}),
+				},
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_security_monitoring_rule.acceptance_test", "tags.*", "default_key:default_value"),
+				),
+			},
+		},
+	})
+}
+
 func testAccCheckDatadogSecurityMonitoringCreatedConfig(name string) string {
 	return testAccCheckDatadogSecurityMonitoringCreatedConfigWithId(name, "")
 }
@@ -1874,4 +1991,219 @@ func testAccCheckDatadogSecurityMonitoringUpdateCheckAppsecRule(accProvider func
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "type", "application_security"),
 	)
+}
+
+func testAccCheckDatadogSecurityMonitoringDefaultTags(name string) string {
+	return fmt.Sprintf(`
+resource "datadog_security_monitoring_rule" "acceptance_test" {
+    name = "%s"
+    message = "acceptance rule triggered"
+    enabled = false
+    validate = true
+    has_extended_title = true
+
+    query {
+        name = "first"
+        query = "does not really match much"
+        aggregation = "count"
+        group_by_fields = ["host"]
+    }
+
+    query {
+        name = "second"
+        query = "does not really match much either"
+        aggregation = "cardinality"
+        distinct_fields = ["@orgId"]
+        group_by_fields = ["host"]
+    }
+
+	query {
+		name = "third"
+        query = "does not really match much either"
+        aggregation = "sum"
+        group_by_fields = ["host"]
+        metric = "@network.bytes_read"
+    }
+
+    case {
+        name = "high case"
+        status = "high"
+        condition = "first > 3 || second > 10"
+        notifications = ["@user"]
+    }
+
+    case {
+        name = "warning case"
+        status = "medium"
+        condition = "first > 0 || second > 0"
+    }
+
+	case {
+		name = "low case"
+		status = "low"
+		condition = "third > 9000"
+	}
+
+    options {
+        evaluation_window = 300
+        keep_alive = 600
+        max_signal_duration = 900
+        decrease_criticality_based_on_env = true
+    }
+
+  	tags = ["foo:bar", "baz"]
+
+	reference_tables {
+		table_name = "table1"
+		column_name = "column1"
+		log_field_path = "@testattribute"
+		rule_query_name = "first"
+		check_presence = true
+	}
+}
+`, name)
+}
+
+func testAccCheckDatadogSecurityMonitoringDuplicateTags(name string) string {
+
+	return fmt.Sprintf(`
+resource "datadog_security_monitoring_rule" "acceptance_test" {
+    name = "%s"
+    message = "acceptance rule triggered"
+    enabled = false
+    validate = true
+    has_extended_title = true
+
+    query {
+        name = "first"
+        query = "does not really match much"
+        aggregation = "count"
+        group_by_fields = ["host"]
+    }
+
+    query {
+        name = "second"
+        query = "does not really match much either"
+        aggregation = "cardinality"
+        distinct_fields = ["@orgId"]
+        group_by_fields = ["host"]
+    }
+
+	query {
+		name = "third"
+        query = "does not really match much either"
+        aggregation = "sum"
+        group_by_fields = ["host"]
+        metric = "@network.bytes_read"
+    }
+
+    case {
+        name = "high case"
+        status = "high"
+        condition = "first > 3 || second > 10"
+        notifications = ["@user"]
+    }
+
+    case {
+        name = "warning case"
+        status = "medium"
+        condition = "first > 0 || second > 0"
+    }
+
+	case {
+		name = "low case"
+		status = "low"
+		condition = "third > 9000"
+	}
+
+    options {
+        evaluation_window = 300
+        keep_alive = 600
+        max_signal_duration = 900
+        decrease_criticality_based_on_env = true
+    }
+
+
+    tags = ["foo:bar", "baz", "foo:double_bar"]
+
+	reference_tables {
+		table_name = "table1"
+		column_name = "column1"
+		log_field_path = "@testattribute"
+		rule_query_name = "first"
+		check_presence = true
+	}
+}
+`, name)
+}
+
+func testAccCheckDatadogSecurityMonitoringNoTag(name string) string {
+
+	return fmt.Sprintf(`
+resource "datadog_security_monitoring_rule" "acceptance_test" {
+    name = "%s"
+    message = "acceptance rule triggered"
+    enabled = false
+    validate = true
+    has_extended_title = true
+
+    query {
+        name = "first"
+        query = "does not really match much"
+        aggregation = "count"
+        group_by_fields = ["host"]
+    }
+
+    query {
+        name = "second"
+        query = "does not really match much either"
+        aggregation = "cardinality"
+        distinct_fields = ["@orgId"]
+        group_by_fields = ["host"]
+    }
+
+	query {
+		name = "third"
+        query = "does not really match much either"
+        aggregation = "sum"
+        group_by_fields = ["host"]
+        metric = "@network.bytes_read"
+    }
+
+    case {
+        name = "high case"
+        status = "high"
+        condition = "first > 3 || second > 10"
+        notifications = ["@user"]
+    }
+
+    case {
+        name = "warning case"
+        status = "medium"
+        condition = "first > 0 || second > 0"
+    }
+
+	case {
+		name = "low case"
+		status = "low"
+		condition = "third > 9000"
+	}
+
+    options {
+        evaluation_window = 300
+        keep_alive = 600
+        max_signal_duration = 900
+        decrease_criticality_based_on_env = true
+    }
+
+
+	reference_tables {
+		table_name = "table1"
+		column_name = "column1"
+		log_field_path = "@testattribute"
+		rule_query_name = "first"
+		check_presence = true
+	}
+}
+`, name)
 }
