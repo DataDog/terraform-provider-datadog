@@ -53,6 +53,80 @@ resource "datadog_service_level_objective" "foo" {
 }`, uniq)
 }
 
+func testAccCheckDatadogServiceLevelObjectiveConfigDuplicateTag(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_service_level_objective" "foo" {
+  name = "%s"
+  type = "metric"
+  description = "some description about foo SLO"
+  query {
+	numerator = "sum:my.metric{type:good}.as_count()"
+	denominator = "sum:my.metric{*}.as_count()"
+  }
+
+  thresholds {
+	timeframe = "7d"
+	target = 99.5
+	warning = 99.8
+  }
+
+  thresholds {
+	timeframe = "30d"
+	target = 99
+	warning = 99.5
+  }
+
+  thresholds {
+	timeframe = "90d"
+	target = 99
+  }
+
+  timeframe = "30d"
+
+  target_threshold = 99
+
+  warning_threshold = 99.5
+
+  tags = ["foo:bar", "baz", "foo:double_bar"]
+}`, uniq)
+}
+
+func testAccCheckDatadogServiceLevelObjectiveConfigNoTag(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_service_level_objective" "foo" {
+  name = "%s"
+  type = "metric"
+  description = "some description about foo SLO"
+  query {
+	numerator = "sum:my.metric{type:good}.as_count()"
+	denominator = "sum:my.metric{*}.as_count()"
+  }
+
+  thresholds {
+	timeframe = "7d"
+	target = 99.5
+	warning = 99.8
+  }
+
+  thresholds {
+	timeframe = "30d"
+	target = 99
+	warning = 99.5
+  }
+
+  thresholds {
+	timeframe = "90d"
+	target = 99
+  }
+
+  timeframe = "30d"
+
+  target_threshold = 99
+
+  warning_threshold = 99.5
+}`, uniq)
+}
+
 func testAccCheckDatadogServiceLevelObjectiveTimeSliceConfig(uniq string) string {
 	return fmt.Sprintf(`
 resource "datadog_service_level_objective" "foo" {
@@ -365,6 +439,123 @@ func TestAccDatadogServiceLevelObjective_TimeSlice(t *testing.T) {
 						"datadog_service_level_objective.foo", "tags.*", "baz"),
 					resource.TestCheckTypeSetElemAttr(
 						"datadog_service_level_objective.foo", "tags.*", "foo:bar"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogServiceLevelObjective_DefaultTags(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	sloName := uniqueEntityName(ctx, t)
+	accProvider := testAccProvider(t, accProviders)
+	resource.Test(t, resource.TestCase{
+		PreCheck: func() { testAccPreCheck(t) },
+		Steps: []resource.TestStep{
+			{ // New tags are correctly added and duplicates are kept
+				Config: testAccCheckDatadogServiceLevelObjectiveConfigDuplicateTag(sloName),
+				ProviderFactories: map[string]func() (*schema.Provider, error){
+					"datadog": withDefaultTags(accProvider, map[string]interface{}{
+						"default_key": "default_value",
+					}),
+				},
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "tags.#", "4"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_service_level_objective.foo", "tags.*", "baz"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_service_level_objective.foo", "tags.*", "foo:bar"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_service_level_objective.foo", "tags.*", "foo:double_bar"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_service_level_objective.foo", "tags.*", "default_key:default_value"),
+				),
+			},
+			{ // Resource tags take precedence over default tags and duplicates stay
+				Config: testAccCheckDatadogServiceLevelObjectiveConfigDuplicateTag(sloName),
+				ProviderFactories: map[string]func() (*schema.Provider, error){
+					"datadog": withDefaultTags(accProvider, map[string]interface{}{
+						"foo": "not_bar",
+					}),
+				},
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "tags.#", "3"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_service_level_objective.foo", "tags.*", "baz"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_service_level_objective.foo", "tags.*", "foo:bar"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_service_level_objective.foo", "tags.*", "foo:double_bar"),
+				),
+			},
+			{ // Resource tags take precedence over default tags, but new tags are added
+				Config: testAccCheckDatadogServiceLevelObjectiveConfig(sloName),
+				ProviderFactories: map[string]func() (*schema.Provider, error){
+					"datadog": withDefaultTags(accProvider, map[string]interface{}{
+						"foo":     "not_bar",
+						"new_tag": "new_value",
+					}),
+				},
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "tags.#", "3"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_service_level_objective.foo", "tags.*", "baz"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_service_level_objective.foo", "tags.*", "foo:bar"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_service_level_objective.foo", "tags.*", "new_tag:new_value"),
+				),
+			},
+			{ // Tags without any value work correctly
+				Config: testAccCheckDatadogServiceLevelObjectiveConfig(sloName),
+				ProviderFactories: map[string]func() (*schema.Provider, error){
+					"datadog": withDefaultTags(accProvider, map[string]interface{}{
+						"no_value": "",
+					}),
+				},
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "tags.#", "3"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_service_level_objective.foo", "tags.*", "baz"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_service_level_objective.foo", "tags.*", "foo:bar"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_service_level_objective.foo", "tags.*", "no_value"),
+				),
+			},
+			{ // Tags with colons in the value work correctly
+				Config: testAccCheckDatadogServiceLevelObjectiveConfig(sloName),
+				ProviderFactories: map[string]func() (*schema.Provider, error){
+					"datadog": withDefaultTags(accProvider, map[string]interface{}{
+						"repo_url": "https://github.com/repo/path",
+					}),
+				},
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "tags.#", "3"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_service_level_objective.foo", "tags.*", "baz"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_service_level_objective.foo", "tags.*", "foo:bar"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_service_level_objective.foo", "tags.*", "repo_url:https://github.com/repo/path"),
+				),
+			},
+			{ // Works with monitors without a tag attribute
+				Config: testAccCheckDatadogServiceLevelObjectiveConfigNoTag(sloName),
+				ProviderFactories: map[string]func() (*schema.Provider, error){
+					"datadog": withDefaultTags(accProvider, map[string]interface{}{
+						"default_key": "default_value",
+					}),
+				},
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_service_level_objective.foo", "tags.*", "default_key:default_value"),
 				),
 			},
 		},
