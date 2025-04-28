@@ -413,7 +413,7 @@ func testAccCheckDatadogFrameworkDestroy(ctx context.Context, accProvider *fwpro
 		resource := s.RootModule().Resources[resourceName]
 		handle := resource.Primary.Attributes["handle"]
 		version := resource.Primary.Attributes["version"]
-		_, httpRes, err := apiInstances.GetSecurityMonitoringApiV2().RetrieveCustomFramework(ctx, handle, version)
+		_, httpRes, err := apiInstances.GetSecurityMonitoringApiV2().GetCustomFramework(ctx, handle, version)
 		if err != nil {
 			if httpRes.StatusCode == 400 {
 				return nil

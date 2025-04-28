@@ -148,7 +148,7 @@ func (r *customFrameworkResource) Read(ctx context.Context, request resource.Rea
 		return
 	}
 
-	data, _, err := r.Api.RetrieveCustomFramework(r.Auth, state.Handle.ValueString(), state.Version.ValueString())
+	data, _, err := r.Api.GetCustomFramework(r.Auth, state.Handle.ValueString(), state.Version.ValueString())
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error reading custom framework"))
 		return
@@ -219,7 +219,7 @@ func setRequirements(requirements []attr.Value) types.Set {
 		requirements,
 	)
 }
-func readStateFromDatabase(data datadogV2.RetrieveCustomFrameworkResponse, handle string, version string) customFrameworkModel {
+func readStateFromDatabase(data datadogV2.GetCustomFrameworkResponse, handle string, version string) customFrameworkModel {
 	// Set the state
 	var state customFrameworkModel
 	state.ID = types.StringValue(handle + "-" + version)
@@ -259,7 +259,7 @@ func (r *customFrameworkResource) ImportState(ctx context.Context, request resou
 	handle := request.ID[:lastHyphenIndex]
 	version := request.ID[lastHyphenIndex+1:]
 
-	data, _, err := r.Api.RetrieveCustomFramework(r.Auth, handle, version)
+	data, _, err := r.Api.GetCustomFramework(r.Auth, handle, version)
 	if err != nil {
 		response.Diagnostics.AddError("Error importing resource", err.Error())
 		return
