@@ -2,6 +2,7 @@ package test
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"testing"
 
@@ -112,59 +113,71 @@ resource "datadog_security_monitoring_rule_json" "acceptance_test" {
 }
 
 func testAccSecurityMonitoringRuleJSON(name string) string {
-	return fmt.Sprintf(`{
-		"name": "%s",
+	rule := map[string]interface{}{
+		"name":      name,
 		"isEnabled": false,
-		"type": "log_detection",
-		"message": "Test rule triggered",
-		"tags": ["test:tag"],
-		"cases": [{
-			"status": "info",
-			"notifications": ["@slack-test"],
-			"condition": "a > 0"
-		}],
-		"options": {
-			"evaluationWindow": 300,
-			"keepAlive": 600,
-			"maxSignalDuration": 900,
-			"detectionMethod": "threshold"
+		"type":      "log_detection",
+		"message":   "Test rule triggered",
+		"tags":      []string{"test:tag"},
+		"cases": []map[string]interface{}{
+			{
+				"status":        "info",
+				"notifications": []string{"@slack-test"},
+				"condition":     "a > 0",
+			},
 		},
-		"queries": [{
-			"query": "source:test",
-			"aggregation": "count",
-			"groupByFields": ["host"],
-			"distinctFields": [],
-			"name": "a",
-			"dataSource": "logs"
-		}]
-	}`, name)
+		"options": map[string]interface{}{
+			"evaluationWindow":  60,
+			"keepAlive":         60,
+			"maxSignalDuration": 60,
+			"detectionMethod":   "threshold",
+		},
+		"queries": []map[string]interface{}{
+			{
+				"query":          "source:test",
+				"aggregation":    "count",
+				"groupByFields":  []string{"host"},
+				"distinctFields": []string{},
+				"name":           "a",
+				"dataSource":     "logs",
+			},
+		},
+	}
+	b, _ := json.Marshal(rule)
+	return string(b)
 }
 
 func testAccSecurityMonitoringRuleJSONUpdated(name string) string {
-	return fmt.Sprintf(`{
-		"name": "%s - updated",
+	rule := map[string]interface{}{
+		"name":      fmt.Sprintf("%s - updated", name),
 		"isEnabled": true,
-		"type": "log_detection",
-		"message": "Test rule triggered (updated)",
-		"tags": ["test:tag", "env:test"],
-		"cases": [{
-			"status": "high",
-			"notifications": ["@slack-test"],
-			"condition": "a > 10"
-		}],
-		"options": {
-			"evaluationWindow": 600,
-			"keepAlive": 900,
-			"maxSignalDuration": 1200,
-			"detectionMethod": "threshold"
+		"type":      "log_detection",
+		"message":   "Test rule triggered (updated)",
+		"tags":      []string{"env:test", "test:tag"},
+		"cases": []map[string]interface{}{
+			{
+				"status":        "high",
+				"notifications": []string{"@slack-test"},
+				"condition":     "a > 10",
+			},
 		},
-		"queries": [{
-			"query": "source:test-updated",
-			"aggregation": "count",
-			"groupByFields": ["host", "service"],
-			"distinctFields": [],
-			"name": "a",
-			"dataSource": "logs"
-		}]
-	}`, name)
+		"options": map[string]interface{}{
+			"evaluationWindow":  60,
+			"keepAlive":         60,
+			"maxSignalDuration": 60,
+			"detectionMethod":   "threshold",
+		},
+		"queries": []map[string]interface{}{
+			{
+				"query":          "source:test-updated",
+				"aggregation":    "count",
+				"groupByFields":  []string{"host", "service"},
+				"distinctFields": []string{},
+				"name":           "a",
+				"dataSource":     "logs",
+			},
+		},
+	}
+	b, _ := json.Marshal(rule)
+	return string(b)
 }
