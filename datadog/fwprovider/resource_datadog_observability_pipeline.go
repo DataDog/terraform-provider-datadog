@@ -628,9 +628,9 @@ func (r *observabilityPipelineResource) Metadata(_ context.Context, request reso
 
 func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "Provides a Datadog Observability Pipeline resource. Observability Pipelines allows you to collect and process logs within your own infrastructure, and then route them to downstream integrations.  \n " +
-			"This resource is in **Preview**. Please reach out to Datadog support to enable it for your account.   \n\n" +
-			"_We recommend using -parallelism=1 option to apply this resource._",
+		Description: "Provides a Datadog Observability Pipeline resource. Observability Pipelines allows you to collect and process logs within your own infrastructure, and then route them to downstream integrations. " +
+			"This resource is in **Preview**. Reach out to Datadog support to enable it for your account.   \n\n" +
+			"Datadog recommends using the `-parallelism=1` option to apply this resource.",
 		Attributes: map[string]schema.Attribute{
 			"id": utils.ResourceIDAttribute(),
 			"name": schema.StringAttribute{
