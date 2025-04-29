@@ -4890,13 +4890,16 @@ func flattenOpenSearchDestination(ctx context.Context, src *datadogV2.Observabil
 		return nil
 	}
 
-	inputs, _ := types.ListValueFrom(ctx, types.StringType, src.Inputs)
-
-	return &opensearchDestinationModel{
-		Id:        types.StringValue(src.GetId()),
-		Inputs:    inputs,
-		BulkIndex: types.StringValue(src.GetBulkIndex()),
+	inputs, _ := types.ListValueFrom(ctx, types.StringType, src.GetInputs())
+	out := &opensearchDestinationModel{
+		Id:     types.StringValue(src.GetId()),
+		Inputs: inputs,
 	}
+	if v, ok := src.GetBulkIndexOk(); ok {
+		out.BulkIndex = types.StringValue(*v)
+	}
+
+	return out
 }
 
 func expandAmazonOpenSearchDestination(ctx context.Context, src *amazonOpenSearchDestinationModel) datadogV2.ObservabilityPipelineConfigDestinationItem {
@@ -4943,9 +4946,12 @@ func flattenAmazonOpenSearchDestination(ctx context.Context, src *datadogV2.Obse
 	inputs, _ := types.ListValueFrom(ctx, types.StringType, src.Inputs)
 
 	model := &amazonOpenSearchDestinationModel{
-		Id:        types.StringValue(src.GetId()),
-		Inputs:    inputs,
-		BulkIndex: types.StringValue(src.GetBulkIndex()),
+		Id:     types.StringValue(src.GetId()),
+		Inputs: inputs,
+	}
+
+	if v, ok := src.GetBulkIndexOk(); ok {
+		model.BulkIndex = types.StringValue(*v)
 	}
 
 	model.Auth = &amazonOpenSearchAuthModel{
