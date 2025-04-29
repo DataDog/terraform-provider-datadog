@@ -29,7 +29,7 @@
 2. Follow existing patterns for validation and types
 3. Document any special handling or requirements 
 
-## Example Configuration
+## Example configuration
 1. Provide a working example of the Terraform configuration using the new field
 2. Include comments explaining each part of the configuration
 3. Show both required and optional fields
