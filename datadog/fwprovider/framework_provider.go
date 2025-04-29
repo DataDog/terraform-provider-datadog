@@ -83,6 +83,7 @@ var Resources = []func() resource.Resource{
 	NewWorkflowAutomationResource,
 	NewAppBuilderAppResource,
 	NewObservabilitPipelineResource,
+	NewCustomFrameworkResource,
 }
 
 var Datasources = []func() datasource.DataSource{
