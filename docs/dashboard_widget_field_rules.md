@@ -6,7 +6,7 @@
 3. Look at similar implementations in other widgets for consistent patterns
 
 ## Implementation Steps
-1. Start Small: Make changes one at a time and review each change independently
+1. Start small: Make changes one at a time and review each change independently
 2. Follow Existing Patterns: Use the same field implementation pattern as seen in other widgets
 3. Required Components:
    - Add field to widget's schema definition function (such as `getTreemapDefinitionSchema`)
