@@ -95,7 +95,7 @@ func TestCustomFramework_delete(t *testing.T) {
 	})
 }
 
-func TestCustomFramework_createMultipleRequirements(t *testing.T) {
+func TestCustomFramework_createAndUpdateMultipleRequirements(t *testing.T) {
 	t.Parallel()
 	handle := fmt.Sprintf("handle-%d", rand.Intn(100000))
 	version := fmt.Sprintf("version-%d", rand.Intn(100000))
@@ -123,6 +123,36 @@ func TestCustomFramework_createMultipleRequirements(t *testing.T) {
 					}),
 					resource.TestCheckTypeSetElemNestedAttrs(path, "requirements.*.controls.*", map[string]string{
 						"name": "security-control",
+					}),
+					resource.TestCheckTypeSetElemAttr(path, "requirements.*.controls.*.rules_id.*", "def-000-be9"),
+					resource.TestCheckTypeSetElemAttr(path, "requirements.*.controls.*.rules_id.*", "def-000-cea"),
+				),
+			},
+			{
+				Config: testAccCheckDatadogUpdateFrameworkWithMultipleRequirements(version, handle),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(path, "handle", handle),
+					resource.TestCheckResourceAttr(path, "version", version),
+					resource.TestCheckTypeSetElemNestedAttrs(path, "requirements.*", map[string]string{
+						"name": "security-requirement",
+					}),
+					resource.TestCheckTypeSetElemNestedAttrs(path, "requirements.*", map[string]string{
+						"name": "requirement-2",
+					}),
+					resource.TestCheckTypeSetElemNestedAttrs(path, "requirements.*", map[string]string{
+						"name": "requirement",
+					}),
+					resource.TestCheckTypeSetElemNestedAttrs(path, "requirements.*.controls.*", map[string]string{
+						"name": "control",
+					}),
+					resource.TestCheckTypeSetElemNestedAttrs(path, "requirements.*.controls.*", map[string]string{
+						"name": "control",
+					}),
+					resource.TestCheckTypeSetElemNestedAttrs(path, "requirements.*.controls.*", map[string]string{
+						"name": "control-2",
+					}),
+					resource.TestCheckTypeSetElemNestedAttrs(path, "requirements.*.controls.*", map[string]string{
+						"name": "control-3",
 					}),
 					resource.TestCheckTypeSetElemAttr(path, "requirements.*.controls.*.rules_id.*", "def-000-be9"),
 					resource.TestCheckTypeSetElemAttr(path, "requirements.*.controls.*.rules_id.*", "def-000-cea"),
@@ -297,7 +327,7 @@ func TestCustomFramework_InvalidCreate(t *testing.T) {
 		CheckDestroy:             testAccCheckDatadogFrameworkDestroy(ctx, providers.frameworkProvider, path, version, handle),
 		Steps: []resource.TestStep{
 			{
-				Config:      testAccCheckDatadogCreateInvalidFramework(version, handle),
+				Config:      testAccCheckDatadogCreateInvalidFrameworkName(version, handle),
 				ExpectError: regexp.MustCompile("400 Bad Request"),
 			},
 			{
@@ -306,6 +336,18 @@ func TestCustomFramework_InvalidCreate(t *testing.T) {
 			},
 			{
 				Config:      testAccCheckDatadogCreateFrameworkNoRequirements(version, handle),
+				ExpectError: regexp.MustCompile("400 Bad Request"),
+			},
+			{
+				Config:      testAccCheckDatadogCreateFrameworkWithNoControls(version, handle),
+				ExpectError: regexp.MustCompile("400 Bad Request"),
+			},
+			{
+				Config:      testAccCheckDatadogCreateEmptyHandle(version),
+				ExpectError: regexp.MustCompile("400 Bad Request"),
+			},
+			{
+				Config:      testAccCheckDatadogCreateEmptyVersion(handle),
 				ExpectError: regexp.MustCompile("400 Bad Request"),
 			},
 		},
@@ -332,6 +374,43 @@ func testAccCheckDatadogCreateFrameworkWithMultipleRequirements(version string, 
 				controls {
 					name = "compliance-control"
 					rules_id = ["def-000-be9", "def-000-cea"]
+				}
+			}
+		}
+	`, version, handle)
+}
+
+func testAccCheckDatadogUpdateFrameworkWithMultipleRequirements(version, handle string) string {
+	return fmt.Sprintf(`
+		resource "datadog_custom_framework" "sample_rules" {
+			version       = "%s"
+			handle        = "%s"
+			name          = "new-name"
+			description   = "test description"
+			icon_url      = "test url"
+			requirements  {
+				name = "security-requirement"
+				controls {
+					name = "security-control"
+					rules_id = ["def-000-cea"]
+				}
+			}
+			requirements {
+				name = "requirement"
+				controls {
+					name = "control"
+					rules_id = ["def-000-be9"]
+				}
+			}
+			requirements {
+				name = "requirement-2"
+				controls {
+					name = "control-2"
+					rules_id = ["def-000-be9"]
+				}
+				controls {
+					name = "control-3"
+					rules_id = ["def-000-cea", "def-000-be9"]
 				}
 			}
 		}
@@ -376,6 +455,21 @@ func testAccCheckDatadogCreateFrameworkRuleIdsInvalid(version string, handle str
 	`, version, handle)
 }
 
+func testAccCheckDatadogCreateFrameworkWithNoControls(version string, handle string) string {
+	return fmt.Sprintf(`
+		resource "datadog_custom_framework" "sample_rules" {
+			version       = "%s"
+			handle        = "%s"
+			name          = "new-framework-terraform"
+			description   = "test description"
+			icon_url      = "test url"
+			requirements  {
+				name = "requirement1"
+			}
+		}
+	`, version, handle)
+}
+
 func testAccCheckDatadogCreateFrameworkNoRequirements(version string, handle string) string {
 	return fmt.Sprintf(`
 		resource "datadog_custom_framework" "sample_rules" {
@@ -388,7 +482,7 @@ func testAccCheckDatadogCreateFrameworkNoRequirements(version string, handle str
 	`, version, handle)
 }
 
-func testAccCheckDatadogCreateInvalidFramework(version string, handle string) string {
+func testAccCheckDatadogCreateInvalidFrameworkName(version string, handle string) string {
 	return fmt.Sprintf(`
 		resource "datadog_custom_framework" "sample_rules" {
 			version       = "%s"
@@ -406,6 +500,122 @@ func testAccCheckDatadogCreateInvalidFramework(version string, handle string) st
 		}
 	`, version, handle)
 }
+
+func testAccCheckDatadogCreateEmptyHandle(version string) string {
+	return fmt.Sprintf(`
+		resource "datadog_custom_framework" "sample_rules" {
+			version       = "%s"
+			handle        = ""
+			name          = "framework-name" 
+			description   = "test description"
+			icon_url      = "test url"
+			requirements  {
+				name = "requirement1"
+				controls {
+					name = "control1"
+					rules_id = ["def-000-be9"]
+				}
+			}
+		}
+	`, version)
+}
+
+func testAccCheckDatadogCreateEmptyVersion(handle string) string {
+	return fmt.Sprintf(`
+		resource "datadog_custom_framework" "sample_rules" {
+			version       = ""
+			handle        = "%s"
+			name          = "framework-name" 
+			description   = "test description"
+			icon_url      = "test url"
+			requirements  {
+				name = "requirement1"
+				controls {
+					name = "control1"
+					rules_id = ["def-000-be9"]
+				}
+			}
+		}
+	`, handle)
+}
+
+// TODO: Add validation for duplicate requirements and controls because the state model
+// converts the requirements into sets and the duplicate requirements are deleted
+
+// func testAccCheckDatadogDuplicateRequirements(version string, handle string) string {
+// 	return fmt.Sprintf(`
+// 		resource "datadog_custom_framework" "sample_rules" {
+// 			version       = "%s"
+// 			handle        = "%s"
+// 			name          = "framework-name"
+// 			description   = "test description"
+// 			icon_url      = "test url"
+// 			requirements  {
+// 				name = "requirement1"
+// 				controls {
+// 					name = "control1"
+// 					rules_id = ["def-000-be9"]
+// 				}
+// 			}
+// 			requirements  {
+// 				name = "requirement1"
+// 				controls {
+// 					name = "control1"
+// 					rules_id = ["def-000-be9"]
+// 				}
+// 			}
+// 		}
+// 	`, version, handle)
+// }
+
+// func testAccCheckDatadogDuplicateControls(version string, handle string) string {
+// 	return fmt.Sprintf(`
+// 		resource "datadog_custom_framework" "sample_rules" {
+// 			version       = "%s"
+// 			handle        = "%s"
+// 			name          = "framework-name"
+// 			description   = "test description"
+// 			icon_url      = "test url"
+// 			requirements  {
+// 				name = "requirement1"
+// 				controls {
+// 					name = "control1"
+// 					rules_id = ["def-000-be9"]
+// 				}
+// 			}
+// 			requirements  {
+// 				name = "requirement1"
+// 				controls {
+// 					name = "control1"
+// 					rules_id = ["def-000-be9"]
+// 				}
+// 				controls {
+// 					name = "control1"
+// 					rules_id = ["def-000-be9"]
+// 				}
+// 			}
+// 		}
+// 	`, version, handle)
+// }
+
+// func testAccCheckDatadogDuplicateRulesId(version string, handle string) string {
+// 	return fmt.Sprintf(`
+// 		resource "datadog_custom_framework" "sample_rules" {
+// 			version       = "%s"
+// 			handle        = "%s"
+// 			name          = "framework-name"
+// 			description   = "test description"
+// 			icon_url      = "test url"
+// 			requirements  {
+// 				name = "requirement1"
+// 				controls {
+// 					name = "control1"
+// 					rules_id = ["def-000-be9", "def-000-be9"]
+// 				}
+// 			}
+// 		}
+// 	`, version, handle)
+// }
 
 func testAccCheckDatadogFrameworkDestroy(ctx context.Context, accProvider *fwprovider.FrameworkProvider, resourceName string, version string, handle string) func(*terraform.State) error {
 	return func(s *terraform.State) error {
