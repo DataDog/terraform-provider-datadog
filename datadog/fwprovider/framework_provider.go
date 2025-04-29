@@ -52,6 +52,7 @@ var Resources = []func() resource.Resource{
 	NewIntegrationGcpResource,
 	NewIntegrationGcpStsResource,
 	NewIpAllowListResource,
+	NewMonitorNotificationRuleResource,
 	NewSecurityNotificationRuleResource,
 	NewRestrictionPolicyResource,
 	NewRumApplicationResource,
@@ -437,6 +438,12 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.GetPipeline", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.UpdatePipeline", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeletePipeline", true)
+
+	// Enable MonitorNotificationRule
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateMonitorNotificationRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetMonitorNotificationRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteMonitorNotificationRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateMonitorNotificationRule", true)
 
 	if !config.ApiUrl.IsNull() && config.ApiUrl.ValueString() != "" {
 		parsedAPIURL, parseErr := url.Parse(config.ApiUrl.ValueString())
