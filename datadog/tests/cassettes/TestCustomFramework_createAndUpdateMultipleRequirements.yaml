@@ -1,0 +1,240 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 424
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"description":"test description","handle":"handle-28834","icon_url":"test url","name":"new-name","requirements":[{"controls":[{"name":"compliance-control","rules_id":["def-000-be9","def-000-cea"]}],"name":"compliance-requirement"},{"controls":[{"name":"security-control","rules_id":["def-000-be9","def-000-cea"]}],"name":"security-requirement"}],"version":"version-72598"},"type":"custom_framework"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cloud_security_management/custom_frameworks
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 135
+        uncompressed: false
+        body: '{"data":{"id":"handle-28834-version-72598","type":"custom_framework","attributes":{"handle":"handle-28834","version":"version-72598"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 446.040166ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cloud_security_management/custom_frameworks/handle-28834/version-72598
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 457
+        uncompressed: false
+        body: '{"data":{"id":"handle-28834-version-72598","type":"custom_framework","attributes":{"description":"test description","handle":"handle-28834","icon_url":"test url","name":"new-name","requirements":[{"name":"compliance-requirement","controls":[{"name":"compliance-control","rules_id":["def-000-be9","def-000-cea"]}]},{"name":"security-requirement","controls":[{"name":"security-control","rules_id":["def-000-be9","def-000-cea"]}]}],"version":"version-72598"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 290.194833ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cloud_security_management/custom_frameworks/handle-28834/version-72598
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 457
+        uncompressed: false
+        body: '{"data":{"id":"handle-28834-version-72598","type":"custom_framework","attributes":{"description":"test description","handle":"handle-28834","icon_url":"test url","name":"new-name","requirements":[{"name":"compliance-requirement","controls":[{"name":"compliance-control","rules_id":["def-000-be9","def-000-cea"]}]},{"name":"security-requirement","controls":[{"name":"security-control","rules_id":["def-000-be9","def-000-cea"]}]}],"version":"version-72598"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 352.281792ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 522
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"description":"test description","handle":"handle-28834","icon_url":"test url","name":"new-name","requirements":[{"controls":[{"name":"control","rules_id":["def-000-be9"]}],"name":"requirement"},{"controls":[{"name":"control-2","rules_id":["def-000-be9"]},{"name":"control-3","rules_id":["def-000-be9","def-000-cea"]}],"name":"requirement-2"},{"controls":[{"name":"security-control","rules_id":["def-000-cea"]}],"name":"security-requirement"}],"version":"version-72598"},"type":"custom_framework"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cloud_security_management/custom_frameworks/handle-28834/version-72598
+        method: PUT
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 135
+        uncompressed: false
+        body: '{"data":{"id":"handle-28834-version-72598","type":"custom_framework","attributes":{"handle":"handle-28834","version":"version-72598"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 715.978459ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cloud_security_management/custom_frameworks/handle-28834/version-72598
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 555
+        uncompressed: false
+        body: '{"data":{"id":"handle-28834-version-72598","type":"custom_framework","attributes":{"description":"test description","handle":"handle-28834","icon_url":"test url","name":"new-name","requirements":[{"name":"requirement","controls":[{"name":"control","rules_id":["def-000-be9"]}]},{"name":"requirement-2","controls":[{"name":"control-3","rules_id":["def-000-be9","def-000-cea"]},{"name":"control-2","rules_id":["def-000-be9"]}]},{"name":"security-requirement","controls":[{"name":"security-control","rules_id":["def-000-cea"]}]}],"version":"version-72598"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 544.192875ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cloud_security_management/custom_frameworks/handle-28834/version-72598
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 208
+        uncompressed: false
+        body: '{"data":{"id":"handle-28834-version-72598","type":"custom_framework","attributes":{"description":"test description","handle":"handle-28834","icon_url":"test url","name":"new-name","version":"version-72598"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 386.574958ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cloud_security_management/custom_frameworks/handle-28834/version-72598
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 51
+        uncompressed: false
+        body: '{"errors":[{"status":"400","title":"Bad Request"}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 400 Bad Request
+        code: 400
+        duration: 55.230583ms
