@@ -1,211 +1,103 @@
 ---
 version: 2
 interactions:
-- request:
-    body: |
-      {
-        "name": "Example Security Rule",
-        "isEnabled": true,
-        "type": "log_detection",
-        "message": "Security rule triggered",
-        "tags": ["env:test"],
-        "queries": [
-          {
-            "query": "source:test count(*) > 100",
-            "groupByFields": [],
-            "distinctFields": [],
-            "aggregation": "count",
-            "name": "high_volume"
-          }
-        ],
-        "cases": [
-          {
-            "name": "high_volume",
-            "status": "high",
-            "condition": "a > 100",
-            "notifications": []
-          }
-        ],
-        "options": {
-          "evaluationWindow": 300,
-          "keepAlive": 3600,
-          "maxSignalDuration": 86400,
-          "detectionMethod": "threshold"
-        }
-      }
-    method: POST
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules
-  response:
-    body: |
-      {
-        "data": {
-          "id": "abc-def-ghi",
-          "type": "security_rules",
-          "attributes": {
-            "name": "Example Security Rule",
-            "isEnabled": true,
-            "type": "log_detection",
-            "message": "Security rule triggered",
-            "tags": ["env:test"],
-            "queries": [
-              {
-                "query": "source:test count(*) > 100",
-                "groupByFields": [],
-                "distinctFields": [],
-                "aggregation": "count",
-                "name": "high_volume"
-              }
-            ],
-            "cases": [
-              {
-                "name": "high_volume",
-                "status": "high",
-                "condition": "a > 100",
-                "notifications": []
-              }
-            ],
-            "options": {
-              "evaluationWindow": 300,
-              "keepAlive": 3600,
-              "maxSignalDuration": 86400,
-              "detectionMethod": "threshold"
-            }
-          }
-        }
-      }
-    status: 201
-    headers:
-      content-type:
-      - application/json
-
-- request:
-    method: GET
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/abc-def-ghi
-  response:
-    body: |
-      {
-        "data": {
-          "id": "abc-def-ghi",
-          "type": "security_rules",
-          "attributes": {
-            "name": "Example Security Rule",
-            "isEnabled": true,
-            "type": "log_detection",
-            "message": "Security rule triggered",
-            "tags": ["env:test"],
-            "queries": [
-              {
-                "query": "source:test count(*) > 100",
-                "groupByFields": [],
-                "distinctFields": [],
-                "aggregation": "count",
-                "name": "high_volume"
-              }
-            ],
-            "cases": [
-              {
-                "name": "high_volume",
-                "status": "high",
-                "condition": "a > 100",
-                "notifications": []
-              }
-            ],
-            "options": {
-              "evaluationWindow": 300,
-              "keepAlive": 3600,
-              "maxSignalDuration": 86400,
-              "detectionMethod": "threshold"
-            }
-          }
-        }
-      }
-    status: 200
-    headers:
-      content-type:
-      - application/json
-
-- request:
-    body: |
-      {
-        "name": "Updated Security Rule",
-        "isEnabled": true,
-        "type": "log_detection",
-        "message": "Updated security rule triggered",
-        "tags": ["env:test", "updated:true"],
-        "queries": [
-          {
-            "query": "source:test count(*) > 200",
-            "groupByFields": [],
-            "distinctFields": [],
-            "aggregation": "count",
-            "name": "high_volume"
-          }
-        ],
-        "cases": [
-          {
-            "name": "high_volume",
-            "status": "high",
-            "condition": "a > 200",
-            "notifications": []
-          }
-        ],
-        "options": {
-          "evaluationWindow": 300,
-          "keepAlive": 3600,
-          "maxSignalDuration": 86400,
-          "detectionMethod": "threshold"
-        }
-      }
-    method: PUT
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/abc-def-ghi
-  response:
-    body: |
-      {
-        "data": {
-          "id": "abc-def-ghi",
-          "type": "security_rules",
-          "attributes": {
-            "name": "Updated Security Rule",
-            "isEnabled": true,
-            "type": "log_detection",
-            "message": "Updated security rule triggered",
-            "tags": ["env:test", "updated:true"],
-            "queries": [
-              {
-                "query": "source:test count(*) > 200",
-                "groupByFields": [],
-                "distinctFields": [],
-                "aggregation": "count",
-                "name": "high_volume"
-              }
-            ],
-            "cases": [
-              {
-                "name": "high_volume",
-                "status": "high",
-                "condition": "a > 200",
-                "notifications": []
-              }
-            ],
-            "options": {
-              "evaluationWindow": 300,
-              "keepAlive": 3600,
-              "maxSignalDuration": 86400,
-              "detectionMethod": "threshold"
-            }
-          }
-        }
-      }
-    status: 200
-    headers:
-      content-type:
-      - application/json
-
-- request:
-    method: DELETE
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/abc-def-ghi
-  response:
-    status: 204
-    headers:
-      content-type:
-      - application/json
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 495
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"cases":[{"condition":"a \u003e 0","notifications":["@slack-test"],"status":"info"}],"isEnabled":false,"message":"Test rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRuleJSON_Basic-local-1745941386","options":{"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"name":"a","query":"source:test"}],"tags":["test:tag"],"type":"log_detection"}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 900
+        uncompressed: false
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRuleJSON_Basic-local-1745941386","createdAt":1745941387985,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"source:test","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"a","dataSource":"logs"}],"options":{"evaluationWindow":300,"detectionMethod":"threshold","maxSignalDuration":900,"keepAlive":600},"cases":[{"name":"","status":"info","notifications":["@slack-test"],"condition":"a \u003e 0"}],"message":"Test rule triggered","tags":["test:tag"],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":1,"id":"l34-kxn-09v","blocking":false,"metadata":{"entities":null,"sources":null},"creationAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"","name":""}}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 147.74725ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/l34-kxn-09v
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 124.873375ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/l34-kxn-09v
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 86
+        uncompressed: false
+        body: '{"error":{"code":"NotFound","message":"Threat detection rule not found: l34-kxn-09v"}}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 49.744583ms
