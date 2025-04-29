@@ -35,6 +35,7 @@ type csmThreatsMultiPolicyAgentRuleModel struct {
 	Enabled     types.Bool   `tfsdk:"enabled"`
 	Expression  types.String `tfsdk:"expression"`
 	ProductTags types.Set    `tfsdk:"product_tags"`
+	Actions     types.Array  `tfsdk:"actions"`
 }
 
 func NewCSMThreatsMultiPolicyAgentRuleResource() resource.Resource {
@@ -88,6 +89,11 @@ func (r *csmThreatsMultiPolicyAgentRuleResource) Schema(_ context.Context, _ res
 				ElementType: types.StringType,
 				Description: "The list of product tags associated with the rule",
 				Computed:    true,
+			},
+			"actions": schema.ListAttribute{
+				Optional:    true,
+				ElementType: types.StringType,
+				Description: "The array of actions the rule can perform if triggered",
 			},
 		},
 	}
