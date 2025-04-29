@@ -5,9 +5,11 @@ import (
 	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+	"github.com/hashicorp/terraform-plugin-framework-validators/setvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
@@ -40,7 +42,7 @@ func (r *customFrameworkResource) Metadata(_ context.Context, _ resource.Metadat
 
 func (r *customFrameworkResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "Manages custom framework rules in Datadog.",
+		Description: "Manages custom framework in Datadog.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
 				Description: "The ID of the custom framework resource.",
@@ -70,6 +72,9 @@ func (r *customFrameworkResource) Schema(_ context.Context, _ resource.SchemaReq
 		Blocks: map[string]schema.Block{
 			"requirements": schema.SetNestedBlock{
 				Description: "The requirements of the framework.",
+				Validators: []validator.Set{
+					setvalidator.SizeAtLeast(1),
+				},
 				NestedObject: schema.NestedBlockObject{
 					Attributes: map[string]schema.Attribute{
 						"name": schema.StringAttribute{
@@ -80,6 +85,9 @@ func (r *customFrameworkResource) Schema(_ context.Context, _ resource.SchemaReq
 					Blocks: map[string]schema.Block{
 						"controls": schema.SetNestedBlock{
 							Description: "The controls of the requirement.",
+							Validators: []validator.Set{
+								setvalidator.SizeAtLeast(1),
+							},
 							NestedObject: schema.NestedBlockObject{
 								Attributes: map[string]schema.Attribute{
 									"name": schema.StringAttribute{
