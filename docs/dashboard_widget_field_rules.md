@@ -5,7 +5,7 @@
 2. Review the dashboard.yml API spec to understand the field's structure and requirements
 3. Look at similar implementations in other widgets for consistent patterns
 
-## Implementation Steps
+## Implementation steps
 1. Start small: Make changes one at a time and review each change independently
 2. Follow Existing Patterns: Use the same field implementation pattern as seen in other widgets
 3. Required Components:
