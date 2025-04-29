@@ -13,7 +13,7 @@
    - Add field handling in Terraform-to-Datadog build function (e.g., `buildDatadogTreemapDefinition`)
    - Add field handling in Datadog-to-Terraform build function (e.g., `buildTerraformTreemapDefinition`)
  
-## Common Gotchas
+## Common gotchas
 1. Don't modify existing working code (e.g., title fields that are already implemented)
 2. Ensure field names in schema match the API spec
 3. Use existing helper functions when available (e.g., `getWidgetCustomLinkSchema` for custom links)
