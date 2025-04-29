@@ -7,7 +7,7 @@
 
 ## Implementation steps
 1. Start small: Make changes one at a time and review each change independently
-2. Follow Existing Patterns: Use the same field implementation pattern as seen in other widgets
+2. Follow existing patterns: Use the same field implementation pattern as seen in other widgets
 3. Required Components:
    - Add field to widget's schema definition function (such as `getTreemapDefinitionSchema`)
    - Add field handling in Terraform-to-Datadog build function (e.g., `buildDatadogTreemapDefinition`)
