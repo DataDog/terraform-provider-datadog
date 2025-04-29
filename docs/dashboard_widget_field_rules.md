@@ -1,6 +1,6 @@
 # Rules for Adding Fields to Dashboard Widgets
 
-## Before Making Changes
+## Before making changes
 1. Check if the field is already implemented in the widget's schema and build functions.
 2. Review the dashboard.yml API spec to understand the field's structure and requirements
 3. Look at similar implementations in other widgets for consistent patterns
