@@ -21,8 +21,9 @@ import (
 )
 
 var (
-	_ resource.ResourceWithConfigure   = &spansMetricResource{}
-	_ resource.ResourceWithImportState = &spansMetricResource{}
+	_ resource.ResourceWithConfigure      = &spansMetricResource{}
+	_ resource.ResourceWithImportState    = &spansMetricResource{}
+	_ resource.ResourceWithValidateConfig = &spansMetricResource{}
 )
 
 type spansMetricResource struct {
