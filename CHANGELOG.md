@@ -1,3 +1,22 @@
+## 3.61.0 (April 30, 2025)
+
+### BUGFIXES
+* [datadog_spans_metric] Fix validation with unintended side effects by @Supam in https://github.com/DataDog/terraform-provider-datadog/pull/2983
+### FEATURES
+* [synthetics_test] add escalation message parameter as a monitor option in the terraform provider as a monitor option  by @mtalec in https://github.com/DataDog/terraform-provider-datadog/pull/2979
+* [datadog_metric_tags] add `datadog_metric_tags` data source by @mdb in https://github.com/DataDog/terraform-provider-datadog/pull/2966
+* [datadog_monitor_notification_rule] Add support for Monitor Notification Rule by @shaneyuandd in https://github.com/DataDog/terraform-provider-datadog/pull/2980
+* [datadog_security_monitoring_rule] Add default tag support by @Supam in https://github.com/DataDog/terraform-provider-datadog/pull/2968
+
+## New Contributors
+* @mtalec made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2979
+* @aleks-dog made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2978
+* @mdb made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2966
+* @nguyening made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2986
+* @shaneyuandd made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2980
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.60.1...v3.61.0
+
 ## 3.60.1 (April 17, 2025)
 
 ### IMPROVEMENTS
