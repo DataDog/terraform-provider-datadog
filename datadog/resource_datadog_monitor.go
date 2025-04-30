@@ -293,6 +293,12 @@ func resourceDatadogMonitor() *schema.Resource {
 					Optional:      true,
 					Elem:          &schema.Schema{Type: schema.TypeString},
 					ConflictsWith: []string{"locked"},
+					DiffSuppressFunc: func(_, _, _ string, d *schema.ResourceData) bool {
+						// This is to differentiate the difference between [] and undefined restricted_roles.
+						// HasChange will persist old state and return false when resource argument is not defined,
+						// which allow us to persist state on resource update.
+						return !d.HasChange("restricted_roles")
+					},
 				},
 				"include_tags": {
 					Description: "A boolean indicating whether notifications from this monitor automatically insert its triggering tags into the title.",
