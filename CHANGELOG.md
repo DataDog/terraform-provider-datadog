@@ -1,3 +1,11 @@
+## 3.61.1 (April 30, 2025)
+
+### FEATURES
+* [datadog_observability_pipeline] Added the remaining Observability Pipelines components by @vladimir-dd in https://github.com/DataDog/terraform-provider-datadog/pull/2988
+
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.61.0...v3.61.1
+
 ## 3.61.0 (April 30, 2025)
 
 ### BUGFIXES
