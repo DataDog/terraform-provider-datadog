@@ -2293,8 +2293,8 @@ func (r *observabilityPipelineResource) Create(ctx context.Context, req resource
 		return
 	}
 
-	createReq := datadogV2.NewObservabilityPipelineCreateRequestWithDefaults()
-	createReq.Data = *datadogV2.NewObservabilityPipelineCreateRequestDataWithDefaults()
+	createReq := datadogV2.NewObservabilityPipelineSpecWithDefaults()
+	createReq.Data = *datadogV2.NewObservabilityPipelineSpecDataWithDefaults()
 	createReq.Data.Attributes = body.Data.Attributes
 
 	result, _, err := r.Api.CreatePipeline(r.Auth, *createReq)
