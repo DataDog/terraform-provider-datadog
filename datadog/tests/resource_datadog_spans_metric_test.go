@@ -3,6 +3,7 @@ package test
 import (
 	"context"
 	"fmt"
+	"regexp"
 	"strings"
 	"testing"
 
@@ -109,6 +110,26 @@ func TestAccSpansMetricGroupBys(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_spans_metric.testing_spans_metric", "group_by.1.tag_name", "my_resource2"),
 				),
+			},
+		},
+	})
+}
+
+func TestAccSpansMetric_ValidateConfig(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	uniq := strings.ReplaceAll(uniqueEntityName(ctx, t), "-", "_")
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogSpansMetricDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogSpansMetricTestingValidateConfig(uniq),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogSpansMetricExists(providers.frameworkProvider),
+				),
+				ExpectError: regexp.MustCompile(".*include_percentiles can only be set when aggregation_type is 'distribution'"),
 			},
 		},
 	})
@@ -227,6 +248,26 @@ func testAccCheckDatadogSpansMetricTestingCountGroupBys(uniq string) string {
 			group_by {
 				path     = "resource_name1"
 				tag_name = "MY_RESOURCE1"
+			}
+		}
+	`, uniq)
+}
+
+func testAccCheckDatadogSpansMetricTestingValidateConfig(uniq string) string {
+	return fmt.Sprintf(`
+		resource "datadog_spans_metric" "testing_spans_metric" {
+			name = "%s"
+			compute {
+				aggregation_type    = "count"
+				include_percentiles = true
+				path                = "@duration"
+			}
+			filter {
+				query = "@http.status_code:200 service:my-service"
+			}
+			group_by {
+				path     = "resource_name1"
+				tag_name = "my_resource1"
 			}
 		}
 	`, uniq)

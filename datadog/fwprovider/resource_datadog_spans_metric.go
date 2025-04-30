@@ -6,6 +6,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
+	"github.com/hashicorp/terraform-plugin-framework/path"
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -146,6 +147,26 @@ func (r *spansMetricResource) Schema(_ context.Context, _ resource.SchemaRequest
 		},
 	}
 }
+func (r *spansMetricResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
+	var data computeModel
+	resp.Diagnostics.Append(req.Config.GetAttribute(ctx, path.Root("compute"), &data)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	if data.IncludePercentiles.IsNull() || data.IncludePercentiles.IsUnknown() {
+		return
+	}
+
+	if data.AggregationType.ValueString() != "distribution" && !data.IncludePercentiles.IsUnknown() {
+		resp.Diagnostics.AddAttributeError(
+			frameworkPath.Root("compute").AtName("include_percentiles"),
+			"Invalid configuration",
+			"include_percentiles can only be set when aggregation_type is 'distribution'",
+		)
+	}
+}
 
 type includePercentilesUnknownSuppressor struct{}
 
@@ -171,27 +192,6 @@ func (m includePercentilesUnknownSuppressor) PlanModifyBool(ctx context.Context,
 
 	if !req.StateValue.IsNull() && resp.PlanValue.IsUnknown() {
 		resp.PlanValue = req.StateValue
-	}
-}
-
-func (r *spansMetricResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
-	var data spansMetricModel
-	resp.Diagnostics.Append(req.Config.Get(ctx, &data)...)
-
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
-	if data.Compute.IncludePercentiles.IsNull() || data.Compute.IncludePercentiles.IsUnknown() {
-		return
-	}
-
-	if data.Compute.AggregationType.ValueString() != "distribution" && !data.Compute.IncludePercentiles.IsUnknown() {
-		resp.Diagnostics.AddAttributeError(
-			frameworkPath.Root("compute").AtName("include_percentiles"),
-			"Invalid configuration",
-			"include_percentiles can only be set when aggregation_type is 'distribution'",
-		)
 	}
 }
 
