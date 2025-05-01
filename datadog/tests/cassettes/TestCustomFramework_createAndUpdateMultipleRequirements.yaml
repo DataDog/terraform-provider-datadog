@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 424
+        content_length: 418
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"description":"test description","handle":"handle-28834","icon_url":"test url","name":"new-name","requirements":[{"controls":[{"name":"compliance-control","rules_id":["def-000-be9","def-000-cea"]}],"name":"compliance-requirement"},{"controls":[{"name":"security-control","rules_id":["def-000-be9","def-000-cea"]}],"name":"security-requirement"}],"version":"version-72598"},"type":"custom_framework"}}
+            {"data":{"attributes":{"description":"test description","handle":"terraform-handle","icon_url":"test url","name":"new-name","requirements":[{"controls":[{"name":"compliance-control","rules_id":["def-000-be9","def-000-cea"]}],"name":"compliance-requirement"},{"controls":[{"name":"security-control","rules_id":["def-000-be9","def-000-cea"]}],"name":"security-requirement"}],"version":"1.0"},"type":"custom_framework"}}
         form: {}
         headers:
             Accept:
@@ -28,15 +28,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 135
+        content_length: 123
         uncompressed: false
-        body: '{"data":{"id":"handle-28834-version-72598","type":"custom_framework","attributes":{"handle":"handle-28834","version":"version-72598"}}}'
+        body: '{"data":{"id":"terraform-handle-1.0","type":"custom_framework","attributes":{"handle":"terraform-handle","version":"1.0"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 446.040166ms
+        duration: 433.973208ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -53,7 +53,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/cloud_security_management/custom_frameworks/handle-28834/version-72598
+        url: https://api.datadoghq.com/api/v2/cloud_security_management/custom_frameworks/terraform-handle/1.0
         method: GET
       response:
         proto: HTTP/1.1
@@ -61,15 +61,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 457
+        content_length: 445
         uncompressed: false
-        body: '{"data":{"id":"handle-28834-version-72598","type":"custom_framework","attributes":{"description":"test description","handle":"handle-28834","icon_url":"test url","name":"new-name","requirements":[{"name":"compliance-requirement","controls":[{"name":"compliance-control","rules_id":["def-000-be9","def-000-cea"]}]},{"name":"security-requirement","controls":[{"name":"security-control","rules_id":["def-000-be9","def-000-cea"]}]}],"version":"version-72598"}}}'
+        body: '{"data":{"id":"terraform-handle-1.0","type":"custom_framework","attributes":{"description":"test description","handle":"terraform-handle","icon_url":"test url","name":"new-name","requirements":[{"name":"compliance-requirement","controls":[{"name":"compliance-control","rules_id":["def-000-be9","def-000-cea"]}]},{"name":"security-requirement","controls":[{"name":"security-control","rules_id":["def-000-be9","def-000-cea"]}]}],"version":"1.0"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 290.194833ms
+        duration: 250.91925ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -86,7 +86,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/cloud_security_management/custom_frameworks/handle-28834/version-72598
+        url: https://api.datadoghq.com/api/v2/cloud_security_management/custom_frameworks/terraform-handle/1.0
         method: GET
       response:
         proto: HTTP/1.1
@@ -94,35 +94,35 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 457
+        content_length: 445
         uncompressed: false
-        body: '{"data":{"id":"handle-28834-version-72598","type":"custom_framework","attributes":{"description":"test description","handle":"handle-28834","icon_url":"test url","name":"new-name","requirements":[{"name":"compliance-requirement","controls":[{"name":"compliance-control","rules_id":["def-000-be9","def-000-cea"]}]},{"name":"security-requirement","controls":[{"name":"security-control","rules_id":["def-000-be9","def-000-cea"]}]}],"version":"version-72598"}}}'
+        body: '{"data":{"id":"terraform-handle-1.0","type":"custom_framework","attributes":{"description":"test description","handle":"terraform-handle","icon_url":"test url","name":"new-name","requirements":[{"name":"compliance-requirement","controls":[{"name":"compliance-control","rules_id":["def-000-be9","def-000-cea"]}]},{"name":"security-requirement","controls":[{"name":"security-control","rules_id":["def-000-be9","def-000-cea"]}]}],"version":"1.0"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 352.281792ms
+        duration: 270.066917ms
     - id: 3
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 522
+        content_length: 516
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"description":"test description","handle":"handle-28834","icon_url":"test url","name":"new-name","requirements":[{"controls":[{"name":"control","rules_id":["def-000-be9"]}],"name":"requirement"},{"controls":[{"name":"control-2","rules_id":["def-000-be9"]},{"name":"control-3","rules_id":["def-000-be9","def-000-cea"]}],"name":"requirement-2"},{"controls":[{"name":"security-control","rules_id":["def-000-cea"]}],"name":"security-requirement"}],"version":"version-72598"},"type":"custom_framework"}}
+            {"data":{"attributes":{"description":"test description","handle":"terraform-handle","icon_url":"test url","name":"new-name","requirements":[{"controls":[{"name":"control","rules_id":["def-000-be9"]}],"name":"requirement"},{"controls":[{"name":"control-2","rules_id":["def-000-be9"]},{"name":"control-3","rules_id":["def-000-be9","def-000-cea"]}],"name":"requirement-2"},{"controls":[{"name":"security-control","rules_id":["def-000-cea"]}],"name":"security-requirement"}],"version":"1.0"},"type":"custom_framework"}}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/cloud_security_management/custom_frameworks/handle-28834/version-72598
+        url: https://api.datadoghq.com/api/v2/cloud_security_management/custom_frameworks/terraform-handle/1.0
         method: PUT
       response:
         proto: HTTP/1.1
@@ -130,15 +130,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 135
+        content_length: 123
         uncompressed: false
-        body: '{"data":{"id":"handle-28834-version-72598","type":"custom_framework","attributes":{"handle":"handle-28834","version":"version-72598"}}}'
+        body: '{"data":{"id":"terraform-handle-1.0","type":"custom_framework","attributes":{"handle":"terraform-handle","version":"1.0"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 715.978459ms
+        duration: 675.866583ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -155,7 +155,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/cloud_security_management/custom_frameworks/handle-28834/version-72598
+        url: https://api.datadoghq.com/api/v2/cloud_security_management/custom_frameworks/terraform-handle/1.0
         method: GET
       response:
         proto: HTTP/1.1
@@ -163,15 +163,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 555
+        content_length: 543
         uncompressed: false
-        body: '{"data":{"id":"handle-28834-version-72598","type":"custom_framework","attributes":{"description":"test description","handle":"handle-28834","icon_url":"test url","name":"new-name","requirements":[{"name":"requirement","controls":[{"name":"control","rules_id":["def-000-be9"]}]},{"name":"requirement-2","controls":[{"name":"control-3","rules_id":["def-000-be9","def-000-cea"]},{"name":"control-2","rules_id":["def-000-be9"]}]},{"name":"security-requirement","controls":[{"name":"security-control","rules_id":["def-000-cea"]}]}],"version":"version-72598"}}}'
+        body: '{"data":{"id":"terraform-handle-1.0","type":"custom_framework","attributes":{"description":"test description","handle":"terraform-handle","icon_url":"test url","name":"new-name","requirements":[{"name":"requirement","controls":[{"name":"control","rules_id":["def-000-be9"]}]},{"name":"requirement-2","controls":[{"name":"control-3","rules_id":["def-000-be9","def-000-cea"]},{"name":"control-2","rules_id":["def-000-be9"]}]},{"name":"security-requirement","controls":[{"name":"security-control","rules_id":["def-000-cea"]}]}],"version":"1.0"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 544.192875ms
+        duration: 520.399125ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -188,7 +188,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/cloud_security_management/custom_frameworks/handle-28834/version-72598
+        url: https://api.datadoghq.com/api/v2/cloud_security_management/custom_frameworks/terraform-handle/1.0
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -196,15 +196,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 208
+        content_length: 196
         uncompressed: false
-        body: '{"data":{"id":"handle-28834-version-72598","type":"custom_framework","attributes":{"description":"test description","handle":"handle-28834","icon_url":"test url","name":"new-name","version":"version-72598"}}}'
+        body: '{"data":{"id":"terraform-handle-1.0","type":"custom_framework","attributes":{"description":"test description","handle":"terraform-handle","icon_url":"test url","name":"new-name","version":"1.0"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 386.574958ms
+        duration: 511.597791ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -221,7 +221,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/cloud_security_management/custom_frameworks/handle-28834/version-72598
+        url: https://api.datadoghq.com/api/v2/cloud_security_management/custom_frameworks/terraform-handle/1.0
         method: GET
       response:
         proto: HTTP/1.1
@@ -237,4 +237,4 @@ interactions:
                 - application/vnd.api+json
         status: 400 Bad Request
         code: 400
-        duration: 55.230583ms
+        duration: 72.25475ms
