@@ -67,34 +67,6 @@ func TestCustomFramework_create(t *testing.T) {
 	})
 }
 
-func TestCustomFramework_delete(t *testing.T) {
-	t.Parallel()
-	handle := fmt.Sprintf("handle-%d", rand.Intn(100000))
-	version := fmt.Sprintf("version-%d", rand.Intn(100000))
-
-	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
-	path := "datadog_custom_framework.sample_rules"
-	resource.Test(t, resource.TestCase{
-		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
-		CheckDestroy:             testAccCheckDatadogFrameworkDestroy(ctx, providers.frameworkProvider, path, version, handle),
-		Steps: []resource.TestStep{
-			{
-				Config: testAccCheckDatadogCreateFramework(version, handle),
-				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr(path, "handle", handle),
-					resource.TestCheckResourceAttr(path, "version", version),
-				),
-			},
-			{
-				ResourceName:      path,
-				ImportState:       true,
-				ImportStateVerify: true,
-			},
-		},
-	})
-}
-
 func TestCustomFramework_createAndUpdateMultipleRequirements(t *testing.T) {
 	t.Parallel()
 	handle := fmt.Sprintf("handle-%d", rand.Intn(100000))
@@ -314,6 +286,40 @@ func TestCustomFramework_sameConfigNoUpdate(t *testing.T) {
 	})
 }
 
+// Test that duplicate rule IDs are removed from the state
+// Since the state model converts the rules_id into sets, the duplicate rule IDs are removed
+// There is no way to validate the duplicate rule IDs in the config before they are removed from the state in Terraform
+// This test validates that the duplicate rule IDs are removed from the state and only one rule ID is present
+func TestCustomFramework_DuplicateRuleIds(t *testing.T) {
+	t.Parallel()
+	handle := fmt.Sprintf("handle-%d", rand.Intn(100000))
+	version := fmt.Sprintf("version-%d", rand.Intn(100000))
+
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	path := "datadog_custom_framework.sample_rules"
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogFrameworkDestroy(ctx, providers.frameworkProvider, path, version, handle),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogDuplicateRulesId(version, handle),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(path, "handle", handle),
+					resource.TestCheckResourceAttr(path, "version", version),
+					resource.TestCheckTypeSetElemNestedAttrs(path, "requirements.*.controls.*", map[string]string{
+						"name": "control1",
+					}),
+					// duplicate rule ID should be removed
+					resource.TestCheckTypeSetElemAttr(path, "requirements.*.controls.*.rules_id.*", "def-000-be9"),
+					// verify there is exactly one rule ID
+					resource.TestCheckResourceAttr(path, "requirements.0.controls.0.rules_id.#", "1"),
+				),
+			},
+		},
+	})
+}
+
 func TestCustomFramework_InvalidCreate(t *testing.T) {
 	t.Parallel()
 	handle := fmt.Sprintf("handle-%d", rand.Intn(100000))
@@ -349,6 +355,115 @@ func TestCustomFramework_InvalidCreate(t *testing.T) {
 			{
 				Config:      testAccCheckDatadogCreateEmptyVersion(handle),
 				ExpectError: regexp.MustCompile("400 Bad Request"),
+			},
+			{
+				Config:      testAccCheckDatadogDuplicateRequirements(version, handle),
+				ExpectError: regexp.MustCompile("400 Bad Request"),
+			},
+			{
+				Config:      testAccCheckDatadogDuplicateControls(version, handle),
+				ExpectError: regexp.MustCompile("400 Bad Request"),
+			},
+		},
+	})
+}
+
+func TestCustomFramework_RecreateAfterAPIDelete(t *testing.T) {
+	t.Parallel()
+	handle := "terraform-handle"
+	version := "1.0.0"
+
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	path := "datadog_custom_framework.sample_rules"
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogFrameworkDestroy(ctx, providers.frameworkProvider, path, version, handle),
+		Steps: []resource.TestStep{
+			{
+				// First create the framework
+				Config: testAccCheckDatadogCreateFramework(version, handle),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(path, "handle", handle),
+					resource.TestCheckResourceAttr(path, "version", version),
+				),
+			},
+			{
+				// Simulate framework being deleted in UI
+				Config: testAccCheckDatadogCreateFramework(version, handle),
+				Check: resource.ComposeTestCheckFunc(
+					// Delete the framework in the UI
+					func(s *terraform.State) error {
+						_, _, err := providers.frameworkProvider.DatadogApiInstances.GetSecurityMonitoringApiV2().DeleteCustomFramework(providers.frameworkProvider.Auth, handle, version)
+						return err
+					},
+				),
+				// Expect a non-empty plan since the framework was deleted
+				ExpectNonEmptyPlan: true,
+			},
+			{
+				// Update the framework -
+				// The read would be able to tell that the framework was deleted in UI so then it delete the local terraform state of the framework
+				// this should trigger a create since it was deleted in UI
+				Config: testAccCheckDatadogCreateFrameworkWithMultipleRequirements(version, handle),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(path, "handle", handle),
+					resource.TestCheckResourceAttr(path, "version", version),
+					// Verify the framework was recreated with the new requirements
+					resource.TestCheckResourceAttr(path, "requirements.#", "2"),
+				),
+				ExpectNonEmptyPlan: false,
+			},
+		},
+	})
+}
+
+func TestCustomFramework_DeleteAfterAPIDelete(t *testing.T) {
+	t.Parallel()
+	handle := "terraform-handle"
+	version := "1.0.0"
+
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	path := "datadog_custom_framework.sample_rules"
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogFrameworkDestroy(ctx, providers.frameworkProvider, path, version, handle),
+		Steps: []resource.TestStep{
+			{
+				// First create the framework in terraform
+				Config: testAccCheckDatadogCreateFramework(version, handle),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(path, "handle", handle),
+					resource.TestCheckResourceAttr(path, "version", version),
+				),
+			},
+			{
+				// Simulate framework being deleted in UI
+				Config: testAccCheckDatadogCreateFramework(version, handle),
+				Check: resource.ComposeTestCheckFunc(
+					// Delete the framework in the UI
+					func(s *terraform.State) error {
+						_, _, err := providers.frameworkProvider.DatadogApiInstances.GetSecurityMonitoringApiV2().DeleteCustomFramework(providers.frameworkProvider.Auth, handle, version)
+						return err
+					},
+				),
+				// Expect a non-empty plan since the framework was deleted
+				ExpectNonEmptyPlan: true,
+			},
+			{
+				// Try to remove the resource from terraform
+				// Since the framework was deleted in UI, terraform should just remove it from state
+				// The read in terraform will return a 400 error because the framework handle and version no longer exist
+				// This will delete the framework from terraform
+				Config: "# Empty config to simulate removing the resource",
+				Check:  resource.ComposeTestCheckFunc(
+				// No checks needed since we're removing the resource
+				),
+				// Expect no changes needed since the resource was already deleted
+				ExpectNonEmptyPlan: false,
 			},
 		},
 	})
@@ -542,80 +657,80 @@ func testAccCheckDatadogCreateEmptyVersion(handle string) string {
 // TODO: Add validation for duplicate requirements and controls because the state model
 // converts the requirements into sets and the duplicate requirements are deleted
 
-// func testAccCheckDatadogDuplicateRequirements(version string, handle string) string {
-// 	return fmt.Sprintf(`
-// 		resource "datadog_custom_framework" "sample_rules" {
-// 			version       = "%s"
-// 			handle        = "%s"
-// 			name          = "framework-name"
-// 			description   = "test description"
-// 			icon_url      = "test url"
-// 			requirements  {
-// 				name = "requirement1"
-// 				controls {
-// 					name = "control1"
-// 					rules_id = ["def-000-be9"]
-// 				}
-// 			}
-// 			requirements  {
-// 				name = "requirement1"
-// 				controls {
-// 					name = "control1"
-// 					rules_id = ["def-000-be9"]
-// 				}
-// 			}
-// 		}
-// 	`, version, handle)
-// }
+func testAccCheckDatadogDuplicateRequirements(version string, handle string) string {
+	return fmt.Sprintf(`
+		resource "datadog_custom_framework" "sample_rules" {
+			version       = "%s"
+			handle        = "%s"
+			name          = "framework-name"
+			description   = "test description"
+			icon_url      = "test url"
+			requirements  {
+				name = "requirement1"
+				controls {
+					name = "control1"
+					rules_id = ["def-000-be9"]
+				}
+			}
+			requirements  {
+				name = "requirement1"
+				controls {
+					name = "control2"
+					rules_id = ["def-000-cea"]
+				}
+			}
+		}
+	`, version, handle)
+}
 
-// func testAccCheckDatadogDuplicateControls(version string, handle string) string {
-// 	return fmt.Sprintf(`
-// 		resource "datadog_custom_framework" "sample_rules" {
-// 			version       = "%s"
-// 			handle        = "%s"
-// 			name          = "framework-name"
-// 			description   = "test description"
-// 			icon_url      = "test url"
-// 			requirements  {
-// 				name = "requirement1"
-// 				controls {
-// 					name = "control1"
-// 					rules_id = ["def-000-be9"]
-// 				}
-// 			}
-// 			requirements  {
-// 				name = "requirement1"
-// 				controls {
-// 					name = "control1"
-// 					rules_id = ["def-000-be9"]
-// 				}
-// 				controls {
-// 					name = "control1"
-// 					rules_id = ["def-000-be9"]
-// 				}
-// 			}
-// 		}
-// 	`, version, handle)
-// }
+func testAccCheckDatadogDuplicateControls(version string, handle string) string {
+	return fmt.Sprintf(`
+		resource "datadog_custom_framework" "sample_rules" {
+			version       = "%s"
+			handle        = "%s"
+			name          = "framework-name"
+			description   = "test description"
+			icon_url      = "test url"
+			requirements  {
+				name = "requirement1"
+				controls {
+					name = "control1"
+					rules_id = ["def-000-be9"]
+				}
+			}
+			requirements  {
+				name = "requirement1"
+				controls {
+					name = "control1"
+					rules_id = ["def-000-be9"]
+				}
+				controls {
+					name = "control1"
+					rules_id = ["def-000-cea"]
+				}
+			}
+		}
+	`, version, handle)
+}
 
-// func testAccCheckDatadogDuplicateRulesId(version string, handle string) string {
-// 	return fmt.Sprintf(`
-// 		resource "datadog_custom_framework" "sample_rules" {
-// 			version       = "%s"
-// 			handle        = "%s"
-// 			name          = "framework-name"
-// 			description   = "test description"
-// 			icon_url      = "test url"
-// 			requirements  {
-// 				name = "requirement1"
-// 				controls {
-// 					name = "control1"
-// 					rules_id = ["def-000-be9", "def-000-be9"]
-// 				}
-// 			}
-// 		}
-// 	`, version, handle)
-// }
+func testAccCheckDatadogDuplicateRulesId(version string, handle string) string {
+	return fmt.Sprintf(`
+		resource "datadog_custom_framework" "sample_rules" {
+			version       = "%s"
+			handle        = "%s"
+			name          = "framework-name"
+			description   = "test description"
+			icon_url      = "test url"
+			requirements  {
+				name = "requirement1"
+				controls {
+					name = "control1"
+					rules_id = ["def-000-be9", "def-000-be9"]
+				}
+			}
+		}
+	`, version, handle)
+}
 
 func testAccCheckDatadogFrameworkDestroy(ctx context.Context, accProvider *fwprovider.FrameworkProvider, resourceName string, version string, handle string) func(*terraform.State) error {
 	return func(s *terraform.State) error {

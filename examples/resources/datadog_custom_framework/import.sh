@@ -1,1 +1,0 @@
-terraform import datadog_custom_framework.example2 "new-terraform-framework-test-2"
