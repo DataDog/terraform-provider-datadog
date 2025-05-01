@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 268
+        content_length: 262
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"description":"test description","handle":"handle-54247","icon_url":"test url","name":"","requirements":[{"controls":[{"name":"control1","rules_id":["def-000-be9"]}],"name":"requirement1"}],"version":"version-43400"},"type":"custom_framework"}}
+            {"data":{"attributes":{"description":"test description","handle":"terraform-handle","icon_url":"test url","name":"","requirements":[{"controls":[{"name":"control1","rules_id":["def-000-be9"]}],"name":"requirement1"}],"version":"1.0"},"type":"custom_framework"}}
         form: {}
         headers:
             Accept:
@@ -36,20 +36,20 @@ interactions:
                 - application/vnd.api+json
         status: 400 Bad Request
         code: 400
-        duration: 99.06275ms
+        duration: 110.766958ms
     - id: 1
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 295
+        content_length: 289
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"description":"test description","handle":"handle-54247","icon_url":"test url","name":"new-framework-terraform","requirements":[{"controls":[{"name":"control1","rules_id":["invalid-rule-id"]}],"name":"requirement1"}],"version":"version-43400"},"type":"custom_framework"}}
+            {"data":{"attributes":{"description":"test description","handle":"terraform-handle","icon_url":"test url","name":"new-framework-terraform","requirements":[{"controls":[{"name":"control1","rules_id":["invalid-rule-id"]}],"name":"requirement1"}],"version":"1.0"},"type":"custom_framework"}}
         form: {}
         headers:
             Accept:
@@ -72,20 +72,20 @@ interactions:
                 - application/vnd.api+json
         status: 400 Bad Request
         code: 400
-        duration: 161.604542ms
+        duration: 179.166583ms
     - id: 2
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 208
+        content_length: 202
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"description":"test description","handle":"handle-54247","icon_url":"test url","name":"new-framework-terraform","requirements":[],"version":"version-43400"},"type":"custom_framework"}}
+            {"data":{"attributes":{"description":"test description","handle":"terraform-handle","icon_url":"test url","name":"new-framework-terraform","requirements":[],"version":"1.0"},"type":"custom_framework"}}
         form: {}
         headers:
             Accept:
@@ -108,20 +108,20 @@ interactions:
                 - application/vnd.api+json
         status: 400 Bad Request
         code: 400
-        duration: 70.558ms
+        duration: 47.237625ms
     - id: 3
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 245
+        content_length: 239
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"description":"test description","handle":"handle-54247","icon_url":"test url","name":"new-framework-terraform","requirements":[{"controls":[],"name":"requirement1"}],"version":"version-43400"},"type":"custom_framework"}}
+            {"data":{"attributes":{"description":"test description","handle":"terraform-handle","icon_url":"test url","name":"new-framework-terraform","requirements":[{"controls":[],"name":"requirement1"}],"version":"1.0"},"type":"custom_framework"}}
         form: {}
         headers:
             Accept:
@@ -144,20 +144,20 @@ interactions:
                 - application/vnd.api+json
         status: 400 Bad Request
         code: 400
-        duration: 49.768708ms
+        duration: 46.84975ms
     - id: 4
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 270
+        content_length: 260
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"description":"test description","handle":"","icon_url":"test url","name":"framework-name","requirements":[{"controls":[{"name":"control1","rules_id":["def-000-be9"]}],"name":"requirement1"}],"version":"version-43400"},"type":"custom_framework"}}
+            {"data":{"attributes":{"description":"test description","handle":"","icon_url":"test url","name":"framework-name","requirements":[{"controls":[{"name":"control1","rules_id":["def-000-be9"]}],"name":"requirement1"}],"version":"1.0"},"type":"custom_framework"}}
         form: {}
         headers:
             Accept:
@@ -180,20 +180,20 @@ interactions:
                 - application/vnd.api+json
         status: 400 Bad Request
         code: 400
-        duration: 52.803583ms
+        duration: 45.88825ms
     - id: 5
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 269
+        content_length: 273
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"description":"test description","handle":"handle-54247","icon_url":"test url","name":"framework-name","requirements":[{"controls":[{"name":"control1","rules_id":["def-000-be9"]}],"name":"requirement1"}],"version":""},"type":"custom_framework"}}
+            {"data":{"attributes":{"description":"test description","handle":"terraform-handle","icon_url":"test url","name":"framework-name","requirements":[{"controls":[{"name":"control1","rules_id":["def-000-be9"]}],"name":"requirement1"}],"version":""},"type":"custom_framework"}}
         form: {}
         headers:
             Accept:
@@ -216,4 +216,4 @@ interactions:
                 - application/vnd.api+json
         status: 400 Bad Request
         code: 400
-        duration: 50.11625ms
+        duration: 61.689667ms
