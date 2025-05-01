@@ -1,7 +1,8 @@
 terraform {
   required_providers {
     datadog = {
-      source = "DataDog/datadog"
+      source  = "DataDog/datadog"
+      version = ">= 3.45.0"
     }
   }
 }
@@ -12,7 +13,7 @@ provider "datadog" {
 }
 
 
-resource "datadog_custom_framework" "example" {
+resource "datadog_custom_framework" "example3" {
   version     = "1.0.0"
   handle      = "terraform-created-framework-handle"
   name        = "terraform-created-framework"
@@ -21,7 +22,7 @@ resource "datadog_custom_framework" "example" {
   requirements {
     name = "requirement2"
     controls {
-      name     = "control2"
+      name     = "control3"
       rules_id = ["def-000-cea"]
     }
   }
