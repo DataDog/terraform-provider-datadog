@@ -3,7 +3,6 @@ package test
 import (
 	"context"
 	"fmt"
-	"math/rand"
 	"regexp"
 	"testing"
 
@@ -14,9 +13,8 @@ import (
 )
 
 func TestCustomFramework_create(t *testing.T) {
-	t.Parallel()
-	handle := fmt.Sprintf("handle-%d", rand.Intn(100000))
-	version := fmt.Sprintf("version-%d", rand.Intn(100000))
+	handle := "terraform-handle"
+	version := "1.0"
 
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	path := "datadog_custom_framework.sample_rules"
@@ -68,9 +66,8 @@ func TestCustomFramework_create(t *testing.T) {
 }
 
 func TestCustomFramework_createAndUpdateMultipleRequirements(t *testing.T) {
-	t.Parallel()
-	handle := fmt.Sprintf("handle-%d", rand.Intn(100000))
-	version := fmt.Sprintf("version-%d", rand.Intn(100000))
+	handle := "terraform-handle"
+	version := "1.0"
 
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	path := "datadog_custom_framework.sample_rules"
@@ -135,9 +132,8 @@ func TestCustomFramework_createAndUpdateMultipleRequirements(t *testing.T) {
 }
 
 func TestCustomFramework_sameConfigNoUpdate(t *testing.T) {
-	t.Parallel()
-	handle := fmt.Sprintf("handle-%d", rand.Intn(100000))
-	version := fmt.Sprintf("version-%d", rand.Intn(100000))
+	handle := "terraform-handle"
+	version := "1.0"
 
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	path := "datadog_custom_framework.sample_rules"
@@ -291,9 +287,8 @@ func TestCustomFramework_sameConfigNoUpdate(t *testing.T) {
 // There is no way to validate the duplicate rule IDs in the config before they are removed from the state in Terraform
 // This test validates that the duplicate rule IDs are removed from the state and only one rule ID is present
 func TestCustomFramework_DuplicateRuleIds(t *testing.T) {
-	t.Parallel()
-	handle := fmt.Sprintf("handle-%d", rand.Intn(100000))
-	version := fmt.Sprintf("version-%d", rand.Intn(100000))
+	handle := "terraform-handle"
+	version := "1.0"
 
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	path := "datadog_custom_framework.sample_rules"
@@ -321,9 +316,8 @@ func TestCustomFramework_DuplicateRuleIds(t *testing.T) {
 }
 
 func TestCustomFramework_InvalidCreate(t *testing.T) {
-	t.Parallel()
-	handle := fmt.Sprintf("handle-%d", rand.Intn(100000))
-	version := fmt.Sprintf("version-%d", rand.Intn(100000))
+	handle := "terraform-handle"
+	version := "1.0"
 
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	path := "datadog_custom_framework.sample_rules"
@@ -369,9 +363,8 @@ func TestCustomFramework_InvalidCreate(t *testing.T) {
 }
 
 func TestCustomFramework_RecreateAfterAPIDelete(t *testing.T) {
-	t.Parallel()
 	handle := "terraform-handle"
-	version := "1.0.0"
+	version := "1.0"
 
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	path := "datadog_custom_framework.sample_rules"
@@ -420,9 +413,8 @@ func TestCustomFramework_RecreateAfterAPIDelete(t *testing.T) {
 }
 
 func TestCustomFramework_DeleteAfterAPIDelete(t *testing.T) {
-	t.Parallel()
 	handle := "terraform-handle"
-	version := "1.0.0"
+	version := "1.0"
 
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	path := "datadog_custom_framework.sample_rules"
@@ -653,9 +645,6 @@ func testAccCheckDatadogCreateEmptyVersion(handle string) string {
 		}
 	`, handle)
 }
-
-// TODO: Add validation for duplicate requirements and controls because the state model
-// converts the requirements into sets and the duplicate requirements are deleted
 
 func testAccCheckDatadogDuplicateRequirements(version string, handle string) string {
 	return fmt.Sprintf(`
