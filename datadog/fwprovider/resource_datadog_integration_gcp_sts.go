@@ -47,6 +47,7 @@ type integrationGcpStsModel struct {
 	IsCspmEnabled                     types.Bool                    `tfsdk:"is_cspm_enabled"`
 	IsSecurityCommandCenterEnabled    types.Bool                    `tfsdk:"is_security_command_center_enabled"`
 	IsResourceChangeCollectionEnabled types.Bool                    `tfsdk:"is_resource_change_collection_enabled"`
+	IsPerProjectQuotaEnabled          types.Bool                    `tfsdk:"is_per_project_quota_enabled"`
 	ResourceCollectionEnabled         types.Bool                    `tfsdk:"resource_collection_enabled"`
 }
 
@@ -128,6 +129,11 @@ func (r *integrationGcpStsResource) Schema(_ context.Context, _ resource.SchemaR
 			},
 			"is_resource_change_collection_enabled": schema.BoolAttribute{
 				Description: "When enabled, Datadog scans for all resource change data in your Google Cloud environment.",
+				Optional:    true,
+				Computed:    true,
+			},
+			"is_per_project_quota_enabled": schema.BoolAttribute{
+				Description: "When enabled, Datadog applies the `X-Goog-User-Project` header, attributing Google Cloud billing and quota usage to the project being monitored rather than the default service account project.",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -329,6 +335,9 @@ func (r *integrationGcpStsResource) updateState(ctx context.Context, state *inte
 	if isResourceChangeCollectionEnabled, ok := attributes.GetIsResourceChangeCollectionEnabledOk(); ok {
 		state.IsResourceChangeCollectionEnabled = types.BoolValue(*isResourceChangeCollectionEnabled)
 	}
+	if isPerProjectQuotaEnabled, ok := attributes.GetIsPerProjectQuotaEnabledOk(); ok {
+		state.IsPerProjectQuotaEnabled = types.BoolValue(*isPerProjectQuotaEnabled)
+	}
 	if resourceCollectionEnabled, ok := attributes.GetResourceCollectionEnabledOk(); ok {
 		state.ResourceCollectionEnabled = types.BoolValue(*resourceCollectionEnabled)
 	}
@@ -382,6 +391,9 @@ func (r *integrationGcpStsResource) buildIntegrationGcpStsRequestBody(ctx contex
 	}
 	if !state.ResourceCollectionEnabled.IsUnknown() {
 		attributes.SetResourceCollectionEnabled(state.ResourceCollectionEnabled.ValueBool())
+	}
+	if !state.IsPerProjectQuotaEnabled.IsUnknown() {
+		attributes.SetIsPerProjectQuotaEnabled(state.IsPerProjectQuotaEnabled.ValueBool())
 	}
 
 	return attributes, diags
