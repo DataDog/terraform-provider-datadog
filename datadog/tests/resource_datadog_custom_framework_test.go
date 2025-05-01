@@ -9,6 +9,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
 )
 
@@ -456,6 +458,78 @@ func TestCustomFramework_DeleteAfterAPIDelete(t *testing.T) {
 				),
 				// Expect no changes needed since the resource was already deleted
 				ExpectNonEmptyPlan: false,
+			},
+		},
+	})
+}
+
+func TestCustomFramework_CreateConflict(t *testing.T) {
+	handle := "terraform-handle"
+	version := "1.0"
+
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	path := "datadog_custom_framework.sample_rules"
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogFrameworkDestroy(ctx, providers.frameworkProvider, path, version, handle),
+		Steps: []resource.TestStep{
+			{
+				// First create the framework using the API directly
+				Config: "# Empty config since we're creating via API",
+				Check: resource.ComposeTestCheckFunc(
+					func(s *terraform.State) error {
+						// Create framework using API
+						api := providers.frameworkProvider.DatadogApiInstances.GetSecurityMonitoringApiV2()
+						auth := providers.frameworkProvider.Auth
+
+						// Check if framework exists and delete it if it does
+						_, httpRes, err := api.GetCustomFramework(auth, handle, version)
+						if err == nil && httpRes.StatusCode == 200 {
+							// Framework exists, delete it
+							_, _, err = api.DeleteCustomFramework(auth, handle, version)
+							if err != nil {
+								return fmt.Errorf("failed to delete existing framework: %v", err)
+							}
+						}
+
+						// Create a basic framework that matches the config we'll try to create
+						createRequest := datadogV2.NewCreateCustomFrameworkRequestWithDefaults()
+						description := "test description"
+						iconURL := "test url"
+						createRequest.SetData(datadogV2.CustomFrameworkData{
+							Type: "custom_framework",
+							Attributes: datadogV2.CustomFrameworkDataAttributes{
+								Handle:      handle,
+								Name:        "new-framework-terraform",
+								Description: &description,
+								IconUrl:     &iconURL,
+								Version:     version,
+								Requirements: []datadogV2.CustomFrameworkRequirement{
+									*datadogV2.NewCustomFrameworkRequirement(
+										[]datadogV2.CustomFrameworkControl{
+											*datadogV2.NewCustomFrameworkControl("control1", []string{"def-000-be9"}),
+										},
+										"requirement1",
+									),
+								},
+							},
+						})
+
+						// Create the framework
+						_, _, err = api.CreateCustomFramework(auth, *createRequest)
+						if err != nil {
+							return fmt.Errorf("failed to create framework: %v", err)
+						}
+						return nil
+					},
+				),
+			},
+			{
+				// Try to create the same framework through Terraform
+				Config:      testAccCheckDatadogCreateFramework(version, handle),
+				ExpectError: regexp.MustCompile("409 Conflict"),
 			},
 		},
 	})
