@@ -13,6 +13,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 )
 
 var _ resource.Resource = &customFrameworkResource{}
@@ -74,6 +75,7 @@ func (r *customFrameworkResource) Schema(_ context.Context, _ resource.SchemaReq
 				Description: "The requirements of the framework.",
 				Validators: []validator.Set{
 					setvalidator.SizeAtLeast(1),
+					validators.RequirementNameValidator(),
 				},
 				NestedObject: schema.NestedBlockObject{
 					Attributes: map[string]schema.Attribute{
@@ -87,6 +89,7 @@ func (r *customFrameworkResource) Schema(_ context.Context, _ resource.SchemaReq
 							Description: "The controls of the requirement.",
 							Validators: []validator.Set{
 								setvalidator.SizeAtLeast(1),
+								validators.ControlNameValidator(),
 							},
 							NestedObject: schema.NestedBlockObject{
 								Attributes: map[string]schema.Attribute{
@@ -157,6 +160,29 @@ func (r *customFrameworkResource) Read(ctx context.Context, request resource.Rea
 	}
 
 	data, _, err := r.Api.GetCustomFramework(r.Auth, state.Handle.ValueString(), state.Version.ValueString())
+	// If the framework does not exist, remove it from terraform state
+	// This is to avoid the provider to return an error when the framework is deleted in the UI prior
+
+	// DELETE example:
+	// 1. create the framework in terraform
+	// 2. delete the framework in the UI
+	// 3. run terraform plan
+	// 4. terraform will see that the framework does not exist so it will remove it from the state
+	// 5. no changes are calculated by terraform so nothing is updated
+
+	// UPDATE example:
+	// 1. create the framework in terraform
+	// 2. delete the framework in the UI
+	// 3. update the framework in terraform
+	// 4. run terraform plan
+	// 5. terraform will see that the framework does not exist so it will remove it from the state
+	// 6. terraform will perform a create action for the framework
+	if err != nil && err.Error() == "400 Bad Request" {
+		// Clear the state completely
+		response.State.RemoveResource(ctx)
+		return
+	}
+	// this is for any other error
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error reading custom framework"))
 		return
