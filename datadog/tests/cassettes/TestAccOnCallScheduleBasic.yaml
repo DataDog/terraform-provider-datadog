@@ -1,0 +1,245 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 148
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"email":"tf-testacconcallschedulebasic-local-1746149583@example.com"},"relationships":{"roles":{"data":[]}},"type":"users"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/users
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"users","id":"65998f2f-26f5-11f0-b0eb-ee6faf7ba39b","attributes":{"name":null,"handle":"tf-testacconcallschedulebasic-local-1746149583@example.com","created_at":"2025-05-02T01:33:06.189117+00:00","modified_at":"2025-05-02T01:33:06.189117+00:00","email":"tf-testacconcallschedulebasic-local-1746149583@example.com","icon":"https://secure.gravatar.com/avatar/2a043f844f9295500c4543607a6fa20d?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 201 Created
+        code: 201
+        duration: 1.389548958s
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 134
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":[{"relationships":{"user":{"data":{"id":"65998f2f-26f5-11f0-b0eb-ee6faf7ba39b","type":"users"}}},"type":"user_invitations"}]}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/user_invitations
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":[{"type":"user_invitations","id":"65f22894-26f5-11f0-99ce-da7ad0900002","attributes":{"uuid":"65f22894-26f5-11f0-99ce-da7ad0900002","login_method":null,"invite_type":"basic_invite","created_at":"2025-05-02T01:33:06.768976+00:00","expires_at":"2025-05-04T01:33:06.562806+00:00"},"relationships":{"user":{"data":{"type":"users","id":"65998f2f-26f5-11f0-b0eb-ee6faf7ba39b"}}}}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 201 Created
+        code: 201
+        duration: 602.641125ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 520
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"layers":[{"effective_date":"2025-01-01T00:00:00Z","end_date":"2026-01-01T00:00:00Z","interval":{"days":1,"seconds":300},"members":[{"user":{"id":"65998f2f-26f5-11f0-b0eb-ee6faf7ba39b"}},{}],"name":"Primary On-Call Layer","restrictions":[{"end_day":"monday","end_time":"17:00:00","start_day":"monday","start_time":"09:00:00"}],"rotation_start":"2025-01-01T00:00:00Z"}],"name":"tf-TestAccOnCallScheduleBasic-local-1746149583","tags":["foo:bar"],"time_zone":"America/New_York"},"type":"schedules"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/on-call/schedules?include=layers%2Clayers.members%2Clayers.members.user
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":{"id":"e018b5ff-f0cf-48eb-b080-43dda2c0a574","type":"schedules","attributes":{"name":"tf-TestAccOnCallScheduleBasic-local-1746149583","tags":["foo:bar"],"time_zone":"America/New_York"},"relationships":{"layers":{"data":[{"id":"ca77b2bd-5876-42b8-bc6e-9d3b9f4f6850","type":"layers"}]},"teams":{"data":[]}}},"included":[{"id":"ca77b2bd-5876-42b8-bc6e-9d3b9f4f6850","type":"layers","attributes":{"effective_date":"2025-05-02T01:33:07.115479859Z","end_date":"2026-01-01T00:00:00Z","interval":{"seconds":300,"days":1},"name":"Primary On-Call Layer","restrictions":[{"start_time":"09:00:00","start_day":"monday","end_time":"17:00:00","end_day":"monday"}],"rotation_start":"2025-01-01T00:00:00Z"},"relationships":{"members":{"data":[{"id":"ca77b2bd-5876-42b8-bc6e-9d3b9f4f6850-member-1","type":"members"},{"id":"ca77b2bd-5876-42b8-bc6e-9d3b9f4f6850-member-2","type":"members"}]}}},{"id":"ca77b2bd-5876-42b8-bc6e-9d3b9f4f6850-member-1","type":"members","relationships":{"user":{"data":{"id":"65998f2f-26f5-11f0-b0eb-ee6faf7ba39b","type":"users"}}}},{"id":"65998f2f-26f5-11f0-b0eb-ee6faf7ba39b","type":"users","attributes":{"email":"tf-testacconcallschedulebasic-local-1746149583@example.com","name":"","status":"pending"}}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 266.763459ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/users/65998f2f-26f5-11f0-b0eb-ee6faf7ba39b
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"users","id":"65998f2f-26f5-11f0-b0eb-ee6faf7ba39b","attributes":{"name":null,"handle":"tf-testacconcallschedulebasic-local-1746149583@example.com","created_at":"2025-05-02T01:33:06.189117+00:00","modified_at":"2025-05-02T01:33:06.189117+00:00","email":"tf-testacconcallschedulebasic-local-1746149583@example.com","icon":"https://secure.gravatar.com/avatar/2a043f844f9295500c4543607a6fa20d?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending","mfa_enabled":false},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 293.791542ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/on-call/schedules/e018b5ff-f0cf-48eb-b080-43dda2c0a574?include=layers%2Clayers.members%2Clayers.members.user
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":{"id":"e018b5ff-f0cf-48eb-b080-43dda2c0a574","type":"schedules","attributes":{"name":"tf-TestAccOnCallScheduleBasic-local-1746149583","tags":["foo:bar"],"time_zone":"America/New_York"},"relationships":{"layers":{"data":[{"id":"ca77b2bd-5876-42b8-bc6e-9d3b9f4f6850","type":"layers"}]},"teams":{"data":[]}}},"included":[{"id":"ca77b2bd-5876-42b8-bc6e-9d3b9f4f6850","type":"layers","attributes":{"effective_date":"2025-05-02T01:33:07.115479Z","end_date":"2026-01-01T00:00:00Z","interval":{"seconds":300,"days":1},"name":"Primary On-Call Layer","restrictions":[{"start_time":"09:00:00","start_day":"monday","end_time":"17:00:00","end_day":"monday"}],"rotation_start":"2025-01-01T00:00:00Z"},"relationships":{"members":{"data":[{"id":"ca77b2bd-5876-42b8-bc6e-9d3b9f4f6850-member-1","type":"members"},{"id":"ca77b2bd-5876-42b8-bc6e-9d3b9f4f6850-member-2","type":"members"}]}}},{"id":"ca77b2bd-5876-42b8-bc6e-9d3b9f4f6850-member-1","type":"members","relationships":{"user":{"data":{"id":"65998f2f-26f5-11f0-b0eb-ee6faf7ba39b","type":"users"}}}},{"id":"65998f2f-26f5-11f0-b0eb-ee6faf7ba39b","type":"users","attributes":{"email":"tf-testacconcallschedulebasic-local-1746149583@example.com","name":"","status":"pending"}}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 253.960875ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/on-call/schedules/e018b5ff-f0cf-48eb-b080-43dda2c0a574
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 258.359708ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/users/65998f2f-26f5-11f0-b0eb-ee6faf7ba39b
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 391.859958ms
