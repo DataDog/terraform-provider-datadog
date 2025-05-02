@@ -421,6 +421,8 @@ func (r *onCallScheduleResource) newState(ctx context.Context, plan *onCallSched
 	}
 
 	state.Layers = make([]*layersModel, len(data.Relationships.Layers.Data))
+	// We use the index to match the layer with the plan.Layers
+	// As we expect the server to return the layers in the same order as the plan.Layers
 	for i, layer := range data.Relationships.Layers.Data {
 		var layerExistingEffectiveDate customtypes.BackwardRFC3339Date
 		if i < len(plan.Layers) {
@@ -437,7 +439,7 @@ func newLayerModel(layer *datadogV2.Layer, membersByID map[string]*datadogV2.Sch
 	for j, member := range membersData {
 		includedMember := membersByID[member.GetId()]
 		var user *userModel
-		if includedMember.GetRelationships().User != nil {
+		if includedMember.GetRelationships().User.GetData().Id != "" {
 			user = &userModel{Id: types.StringValue(includedMember.GetRelationships().User.GetData().Id)}
 		}
 		members[j] = &membersModel{User: user}
