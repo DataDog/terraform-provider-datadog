@@ -133,7 +133,7 @@ func (r *integrationGcpStsResource) Schema(_ context.Context, _ resource.SchemaR
 				Computed:    true,
 			},
 			"is_per_project_quota_enabled": schema.BoolAttribute{
-				Description: "When enabled, Datadog applies the `X-Goog-User-Project` header, attributing Google Cloud billing and quota usage to the project being monitored rather than the default service account project.",
+				Description: "When enabled, Datadog includes the `X-Goog-User-Project` header to attribute Google Cloud billing and quota usage to the monitored project instead of the default service account project.",
 				Optional:    true,
 				Computed:    true,
 			},
