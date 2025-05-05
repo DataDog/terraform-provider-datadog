@@ -117,6 +117,7 @@ var Datasources = []func() datasource.DataSource{
 	NewDatadogSyntheticsLocationsDataSource,
 	NewWorkflowAutomationDataSource,
 	NewDatadogAppBuilderAppDataSource,
+	NewCostBudgetDataSource,
 }
 
 // FrameworkProvider struct

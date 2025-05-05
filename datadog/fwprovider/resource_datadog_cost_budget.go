@@ -41,7 +41,7 @@ type tagFilter struct {
 }
 
 func (r *costBudgetResource) Metadata(_ context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
-	resp.TypeName = "datadog_cost_budget"
+	resp.TypeName = "cost_budget"
 }
 
 func (r *costBudgetResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
@@ -49,7 +49,7 @@ func (r *costBudgetResource) Schema(_ context.Context, _ resource.SchemaRequest,
 		Description: "Provides a Datadog Cost Budget resource.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
-				Computed:    true,
+				Optional:    true,
 				Description: "The ID of the budget.",
 			},
 			"name": schema.StringAttribute{
@@ -72,10 +72,11 @@ func (r *costBudgetResource) Schema(_ context.Context, _ resource.SchemaRequest,
 				Computed:    true,
 				Description: "The sum of all budget entries' amounts.",
 			},
-			"entries": schema.ListNestedAttribute{
-				Required:    true,
+		},
+		Blocks: map[string]schema.Block{
+			"entries": schema.ListNestedBlock{
 				Description: "The entries of the budget.",
-				NestedObject: schema.NestedAttributeObject{
+				NestedObject: schema.NestedBlockObject{
 					Attributes: map[string]schema.Attribute{
 						"amount": schema.Float64Attribute{
 							Required: true,
@@ -83,9 +84,10 @@ func (r *costBudgetResource) Schema(_ context.Context, _ resource.SchemaRequest,
 						"month": schema.Int64Attribute{
 							Required: true,
 						},
-						"tag_filters": schema.ListNestedAttribute{
-							Optional: true,
-							NestedObject: schema.NestedAttributeObject{
+					},
+					Blocks: map[string]schema.Block{
+						"tag_filters": schema.ListNestedBlock{
+							NestedObject: schema.NestedBlockObject{
 								Attributes: map[string]schema.Attribute{
 									"tag_key":   schema.StringAttribute{Required: true},
 									"tag_value": schema.StringAttribute{Required: true},
@@ -97,6 +99,12 @@ func (r *costBudgetResource) Schema(_ context.Context, _ resource.SchemaRequest,
 			},
 		},
 	}
+}
+
+func (r *costBudgetResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
+	providerData := req.ProviderData.(*FrameworkProvider)
+	r.Api = providerData.DatadogApiInstances.GetCloudCostManagementApiV2()
+	r.Auth = providerData.Auth
 }
 
 // --- CRUD ---
