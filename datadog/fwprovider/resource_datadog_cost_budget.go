@@ -8,6 +8,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
 type costBudgetResource struct {
@@ -117,9 +119,9 @@ func (r *costBudgetResource) Create(ctx context.Context, req resource.CreateRequ
 	}
 
 	apiReq := buildBudgetWithEntriesFromModel(plan)
-	apiResp, _, err := r.Api.UpsertBudget(r.Auth, apiReq)
+	apiResp, response, err := r.Api.UpsertBudget(r.Auth, apiReq)
 	if err != nil {
-		resp.Diagnostics.AddError("Error creating budget", err.Error())
+		resp.Diagnostics.AddError("Error creating budget", utils.TranslateClientError(err, response, "").Error())
 		return
 	}
 
@@ -135,9 +137,9 @@ func (r *costBudgetResource) Read(ctx context.Context, req resource.ReadRequest,
 		return
 	}
 
-	apiResp, _, err := r.Api.GetBudget(r.Auth, state.ID.ValueString())
+	apiResp, response, err := r.Api.GetBudget(r.Auth, state.ID.ValueString())
 	if err != nil {
-		resp.Diagnostics.AddError("Error reading budget", err.Error())
+		resp.Diagnostics.AddError("Error reading budget", utils.TranslateClientError(err, response, "").Error())
 		return
 	}
 
@@ -154,9 +156,9 @@ func (r *costBudgetResource) Update(ctx context.Context, req resource.UpdateRequ
 	}
 
 	apiReq := buildBudgetWithEntriesFromModel(plan)
-	apiResp, _, err := r.Api.UpsertBudget(r.Auth, apiReq)
+	apiResp, response, err := r.Api.UpsertBudget(r.Auth, apiReq)
 	if err != nil {
-		resp.Diagnostics.AddError("Error updating budget", err.Error())
+		resp.Diagnostics.AddError("Error updating budget", utils.TranslateClientError(err, response, "").Error())
 		return
 	}
 

@@ -5,23 +5,21 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
+
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
-
-	"github.com/terraform-providers/terraform-provider-datadog/datadog"
 )
 
 func TestAccDatadogCostBudget_Basic(t *testing.T) {
 	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	budgetName := uniqueEntityName(ctx, t)
-	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testAccCheckDatadogCostBudgetDestroy(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogCostBudgetDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogCostBudgetBasic(budgetName),
@@ -44,14 +42,13 @@ func TestAccDatadogCostBudget_Basic(t *testing.T) {
 
 func TestAccDatadogCostBudget_WithTagFilters(t *testing.T) {
 	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	budgetName := uniqueEntityName(ctx, t)
-	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testAccCheckDatadogCostBudgetDestroy(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogCostBudgetDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogCostBudgetWithTagFilters(budgetName),
@@ -78,12 +75,11 @@ func TestAccDatadogCostBudget_WithTagFilters(t *testing.T) {
 	})
 }
 
-func testAccCheckDatadogCostBudgetDestroy(accProvider func() (*schema.Provider, error)) resource.TestCheckFunc {
+func testAccCheckDatadogCostBudgetDestroy(provider *fwprovider.FrameworkProvider) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
-		provider, _ := accProvider()
-		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		apiInstances := providerConf.DatadogApiInstances
-		auth := providerConf.Auth
+
+		apiInstances := provider.DatadogApiInstances
+		auth := provider.Auth
 
 		for _, r := range s.RootModule().Resources {
 			if r.Type != "datadog_cost_budget" {
