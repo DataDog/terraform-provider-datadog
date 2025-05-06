@@ -263,11 +263,20 @@ func prepResource(attrMap map[string]interface{}) map[string]interface{} {
 			attrMap["is_read_only"] = false
 		}
 	}
-	// handle `notify_list` order
-	if notifyList, ok := attrMap["notify_list"].([]interface{}); ok {
-		sort.SliceStable(notifyList, func(i, j int) bool {
-			return notifyList[i].(string) < notifyList[j].(string)
-		})
+
+	// Remove null template_variables and notify_list to avoid unnecessary diffs
+	if templateVars, ok := attrMap["template_variables"]; ok && templateVars == nil {
+		delete(attrMap, "template_variables")
+	}
+	if notifyList, ok := attrMap["notify_list"]; ok {
+		if notifyList == nil {
+			delete(attrMap, "notify_list")
+		} else if notifyListSlice, ok := notifyList.([]interface{}); ok {
+			// handle `notify_list` order
+			sort.SliceStable(notifyListSlice, func(i, j int) bool {
+				return notifyListSlice[i].(string) < notifyListSlice[j].(string)
+			})
+		}
 	}
 
 	return attrMap
