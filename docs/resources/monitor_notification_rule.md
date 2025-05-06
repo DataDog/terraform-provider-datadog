@@ -3,12 +3,12 @@
 page_title: "datadog_monitor_notification_rule Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Provides a Datadog MonitorNotificationRule resource.
+  Provides a Datadog MonitorNotificationRule resource. Note: This resource is in preview. Request access https://www.datadoghq.com/product-preview/monitor-notification-rules/.
 ---
 
 # datadog_monitor_notification_rule (Resource)
 
-Provides a Datadog MonitorNotificationRule resource.
+Provides a Datadog MonitorNotificationRule resource. *Note: This resource is in preview. [Request access](https://www.datadoghq.com/product-preview/monitor-notification-rules/).*
 
 ## Example Usage
 
