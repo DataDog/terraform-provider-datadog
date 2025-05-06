@@ -162,21 +162,6 @@ func (r *customFrameworkResource) Read(ctx context.Context, request resource.Rea
 	data, _, err := r.Api.GetCustomFramework(r.Auth, state.Handle.ValueString(), state.Version.ValueString())
 	// If the framework does not exist, remove it from terraform state
 	// This is to avoid the provider to return an error when the framework is deleted in the UI prior
-
-	// DELETE example:
-	// 1. create the framework in terraform
-	// 2. delete the framework in the UI
-	// 3. run terraform plan
-	// 4. terraform will see that the framework does not exist so it will remove it from the state
-	// 5. no changes are calculated by terraform so nothing is updated
-
-	// UPDATE example:
-	// 1. create the framework in terraform
-	// 2. delete the framework in the UI
-	// 3. update the framework in terraform
-	// 4. run terraform plan
-	// 5. terraform will see that the framework does not exist so it will remove it from the state
-	// 6. terraform will perform a create action for the framework
 	if err != nil && err.Error() == "400 Bad Request" {
 		// Clear the state completely
 		response.State.RemoveResource(ctx)
