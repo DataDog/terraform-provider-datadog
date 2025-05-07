@@ -42,8 +42,8 @@ func (v requirementNameValidator) ValidateSet(ctx context.Context, req validator
 		if seen[name] {
 			log.Printf("Found duplicate requirement name: %s", name)
 			resp.Diagnostics.AddError(
-				"400 Bad Request",
-				fmt.Sprintf("Requirement name '%s' is used more than once. Each requirement must have a unique name.", name),
+				"Each Requirement must have a unique name",
+				fmt.Sprintf("Requirement name '%s' is used more than once.", name),
 			)
 			return
 		}
