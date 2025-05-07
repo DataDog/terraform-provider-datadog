@@ -6,6 +6,7 @@ import (
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework-validators/setvalidator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -16,14 +17,14 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 )
 
-var _ resource.Resource = &customFrameworkResource{}
+var _ resource.Resource = &complianceCustomFrameworkResource{}
 
-type customFrameworkResource struct {
+type complianceCustomFrameworkResource struct {
 	Api  *datadogV2.SecurityMonitoringApi
 	Auth context.Context
 }
 
-type customFrameworkModel struct {
+type complianceCustomFrameworkModel struct {
 	ID           types.String `tfsdk:"id"`
 	Description  types.String `tfsdk:"description"`
 	Version      types.String `tfsdk:"version"`
@@ -33,33 +34,42 @@ type customFrameworkModel struct {
 	Requirements types.Set    `tfsdk:"requirements"` // have to define requirements as a set to be unordered
 }
 
-func NewCustomFrameworkResource() resource.Resource {
-	return &customFrameworkResource{}
+func NewComplianceCustomFrameworkResource() resource.Resource {
+	return &complianceCustomFrameworkResource{}
 }
 
-func (r *customFrameworkResource) Metadata(_ context.Context, _ resource.MetadataRequest, response *resource.MetadataResponse) {
-	response.TypeName = "custom_framework"
+func (r *complianceCustomFrameworkResource) Metadata(_ context.Context, _ resource.MetadataRequest, response *resource.MetadataResponse) {
+	response.TypeName = "compliance_custom_framework"
 }
 
-func (r *customFrameworkResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
+func (r *complianceCustomFrameworkResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "Manages custom framework in Datadog.",
+		Description: "Provides a Datadog Compliance Custom Framework resource, which is used to create and manage compliance custom frameworks.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
-				Description: "The ID of the custom framework resource.",
+				Description: "The ID of the compliance custom framework resource.",
 				Computed:    true,
 			},
 			"version": schema.StringAttribute{
 				Description: "The framework version.",
-				Required:    true,
+				Validators: []validator.String{
+					stringvalidator.LengthAtLeast(1),
+				},
+				Required: true,
 			},
 			"handle": schema.StringAttribute{
 				Description: "The framework handle.",
-				Required:    true,
+				Validators: []validator.String{
+					stringvalidator.LengthAtLeast(1),
+				},
+				Required: true,
 			},
 			"name": schema.StringAttribute{
 				Description: "The framework name.",
-				Required:    true,
+				Validators: []validator.String{
+					stringvalidator.LengthAtLeast(1),
+				},
+				Required: true,
 			},
 			"icon_url": schema.StringAttribute{
 				Description: "The URL of the icon representing the framework.",
@@ -74,7 +84,7 @@ func (r *customFrameworkResource) Schema(_ context.Context, _ resource.SchemaReq
 			"requirements": schema.SetNestedBlock{
 				Description: "The requirements of the framework.",
 				Validators: []validator.Set{
-					setvalidator.SizeAtLeast(1),
+					setvalidator.IsRequired(),
 					validators.RequirementNameValidator(),
 				},
 				NestedObject: schema.NestedBlockObject{
@@ -82,13 +92,16 @@ func (r *customFrameworkResource) Schema(_ context.Context, _ resource.SchemaReq
 						"name": schema.StringAttribute{
 							Description: "The name of the requirement.",
 							Required:    true,
+							Validators: []validator.String{
+								stringvalidator.LengthAtLeast(1),
+							},
 						},
 					},
 					Blocks: map[string]schema.Block{
 						"controls": schema.SetNestedBlock{
 							Description: "The controls of the requirement.",
 							Validators: []validator.Set{
-								setvalidator.SizeAtLeast(1),
+								setvalidator.IsRequired(),
 								validators.ControlNameValidator(),
 							},
 							NestedObject: schema.NestedBlockObject{
@@ -96,6 +109,9 @@ func (r *customFrameworkResource) Schema(_ context.Context, _ resource.SchemaReq
 									"name": schema.StringAttribute{
 										Description: "The name of the control.",
 										Required:    true,
+										Validators: []validator.String{
+											stringvalidator.LengthAtLeast(1),
+										},
 									},
 									"rules_id": schema.SetAttribute{
 										Description: "The list of rules IDs for the control.",
@@ -112,14 +128,14 @@ func (r *customFrameworkResource) Schema(_ context.Context, _ resource.SchemaReq
 	}
 }
 
-func (r *customFrameworkResource) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
+func (r *complianceCustomFrameworkResource) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
 	providerData, _ := request.ProviderData.(*FrameworkProvider)
 	r.Api = providerData.DatadogApiInstances.GetSecurityMonitoringApiV2()
 	r.Auth = providerData.Auth
 }
 
-func (r *customFrameworkResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
-	var state customFrameworkModel
+func (r *complianceCustomFrameworkResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
+	var state complianceCustomFrameworkModel
 	diags := request.Config.Get(ctx, &state)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
@@ -129,7 +145,7 @@ func (r *customFrameworkResource) Create(ctx context.Context, request resource.C
 	_, _, err := r.Api.CreateCustomFramework(r.Auth, *buildCreateFrameworkRequest(state))
 
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error creating custom framework"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error creating compliance custom framework"))
 		return
 	}
 	state.ID = types.StringValue(state.Handle.ValueString() + string('-') + state.Version.ValueString())
@@ -137,8 +153,8 @@ func (r *customFrameworkResource) Create(ctx context.Context, request resource.C
 	response.Diagnostics.Append(diags...)
 }
 
-func (r *customFrameworkResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
-	var state customFrameworkModel
+func (r *complianceCustomFrameworkResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
+	var state complianceCustomFrameworkModel
 	diags := request.State.Get(ctx, &state)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
@@ -151,8 +167,8 @@ func (r *customFrameworkResource) Delete(ctx context.Context, request resource.D
 	}
 }
 
-func (r *customFrameworkResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
-	var state customFrameworkModel
+func (r *complianceCustomFrameworkResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
+	var state complianceCustomFrameworkModel
 	diags := request.State.Get(ctx, &state)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
@@ -169,7 +185,7 @@ func (r *customFrameworkResource) Read(ctx context.Context, request resource.Rea
 	}
 	// this is for any other error
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error reading custom framework"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error reading compliance custom framework"))
 		return
 	}
 	databaseState := readStateFromDatabase(data, state.Handle.ValueString(), state.Version.ValueString())
@@ -177,8 +193,8 @@ func (r *customFrameworkResource) Read(ctx context.Context, request resource.Rea
 	response.Diagnostics.Append(diags...)
 }
 
-func (r *customFrameworkResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
-	var state customFrameworkModel
+func (r *complianceCustomFrameworkResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
+	var state complianceCustomFrameworkModel
 	diags := request.Config.Get(ctx, &state)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
@@ -187,7 +203,7 @@ func (r *customFrameworkResource) Update(ctx context.Context, request resource.U
 
 	_, _, err := r.Api.UpdateCustomFramework(r.Auth, state.Handle.ValueString(), state.Version.ValueString(), *buildUpdateFrameworkRequest(state))
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error updating custom framework"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error updating compliance custom framework"))
 		return
 	}
 	diags = response.State.Set(ctx, &state)
@@ -238,9 +254,9 @@ func setRequirements(requirements []attr.Value) types.Set {
 		requirements,
 	)
 }
-func readStateFromDatabase(data datadogV2.GetCustomFrameworkResponse, handle string, version string) customFrameworkModel {
+func readStateFromDatabase(data datadogV2.GetCustomFrameworkResponse, handle string, version string) complianceCustomFrameworkModel {
 	// Set the state
-	var state customFrameworkModel
+	var state complianceCustomFrameworkModel
 	state.ID = types.StringValue(handle + "-" + version)
 	state.Handle = types.StringValue(handle)
 	state.Version = types.StringValue(version)
@@ -267,7 +283,7 @@ func readStateFromDatabase(data datadogV2.GetCustomFrameworkResponse, handle str
 }
 
 // ImportState is used to import a resource from an existing framework so we can update it if it exists in the database and not in terraform
-func (r *customFrameworkResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
+func (r *complianceCustomFrameworkResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
 	// Split the ID into handle and version
 	// The last hyphen separates handle and version
 	lastHyphenIndex := strings.LastIndex(request.ID, "-")
@@ -306,7 +322,7 @@ func convertStateRequirementsToFrameworkRequirements(requirements types.Set) []d
 	return frameworkRequirements
 }
 
-func buildCreateFrameworkRequest(state customFrameworkModel) *datadogV2.CreateCustomFrameworkRequest {
+func buildCreateFrameworkRequest(state complianceCustomFrameworkModel) *datadogV2.CreateCustomFrameworkRequest {
 	createFrameworkRequest := datadogV2.NewCreateCustomFrameworkRequestWithDefaults()
 	description := state.Description.ValueString()
 	iconURL := state.IconURL.ValueString()
@@ -324,7 +340,7 @@ func buildCreateFrameworkRequest(state customFrameworkModel) *datadogV2.CreateCu
 	return createFrameworkRequest
 }
 
-func buildUpdateFrameworkRequest(state customFrameworkModel) *datadogV2.UpdateCustomFrameworkRequest {
+func buildUpdateFrameworkRequest(state complianceCustomFrameworkModel) *datadogV2.UpdateCustomFrameworkRequest {
 	updateFrameworkRequest := datadogV2.NewUpdateCustomFrameworkRequestWithDefaults()
 	description := state.Description.ValueString()
 	iconURL := state.IconURL.ValueString()
