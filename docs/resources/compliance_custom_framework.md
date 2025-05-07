@@ -48,12 +48,12 @@ resource "datadog_compliance_custom_framework" "example" {
 - `handle` (String) The framework handle. String length must be at least 1.
 - `name` (String) The framework name. String length must be at least 1.
 - `version` (String) The framework version. String length must be at least 1.
+- `requirements` (Block Set) The requirements of the framework. (see [below for nested schema](#nestedblock--requirements))
 
 ### Optional
 
 - `description` (String) The description of the framework.
 - `icon_url` (String) The URL of the icon representing the framework.
-- `requirements` (Block Set) The requirements of the framework. (see [below for nested schema](#nestedblock--requirements))
 
 ### Read-Only
 
@@ -65,9 +65,6 @@ resource "datadog_compliance_custom_framework" "example" {
 Required:
 
 - `name` (String) The name of the requirement. String length must be at least 1.
-
-Optional:
-
 - `controls` (Block Set) The controls of the requirement. (see [below for nested schema](#nestedblock--requirements--controls))
 
 <a id="nestedblock--requirements--controls"></a>
