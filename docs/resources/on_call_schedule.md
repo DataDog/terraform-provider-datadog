@@ -3,12 +3,12 @@
 page_title: "datadog_on_call_schedule Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Provides a Datadog OnCallSchedule resource. This can be used to create and manage Datadog on_call_schedule.
+  The datadog_on_call_schedule resource allows you to create and manage on-call schedules in Datadog.
 ---
 
 # datadog_on_call_schedule (Resource)
 
-Provides a Datadog OnCallSchedule resource. This can be used to create and manage Datadog on_call_schedule.
+The datadog_on_call_schedule resource allows you to create and manage on-call schedules in Datadog.
 
 ## Example Usage
 
@@ -69,7 +69,7 @@ resource "datadog_on_call_schedule" "test" {
 
 Required:
 
-- `effective_date` (String) The date/time when this layer should become active (in ISO 8601).
+- `effective_date` (String) The date/time when this layer should become active (in ISO 8601). If the effective date provided is in the past, the system stores the current time (`now`) as the effective date; otherwise, it stores the given future date.
 - `name` (String) The name of this layer.
 
 Optional:
