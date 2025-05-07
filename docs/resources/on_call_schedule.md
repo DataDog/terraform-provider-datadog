@@ -106,7 +106,7 @@ Optional:
 
 Optional:
 
-- `id` (String) The user's ID.
+- `id` (String) The user's ID. Can be omitted for empty members.
 
 
 

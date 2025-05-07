@@ -28,7 +28,9 @@ resource "datadog_on_call_schedule" "single_layer" {
         id = datadog_user.foo.id
       }
     }
-    members {}
+    members {
+      user {}
+    }
     name = "Primary On-Call Layer"
     restrictions {
       end_day    = "monday"

@@ -169,7 +169,7 @@ func (r *onCallScheduleResource) Schema(_ context.Context, _ resource.SchemaRequ
 											"id": schema.StringAttribute{
 												// Member can be empty, so we need it to allow optional
 												Optional:    true,
-												Description: "The user's ID.",
+												Description: "The user's ID. Can be omitted for empty members.",
 											},
 										},
 									},
@@ -438,9 +438,14 @@ func newLayerModel(layer *datadogV2.Layer, membersByID map[string]*datadogV2.Sch
 	members := make([]*membersModel, len(membersData))
 	for j, member := range membersData {
 		includedMember := membersByID[member.GetId()]
-		var user *userModel
-		if includedMember.GetRelationships().User != nil {
-			user = &userModel{Id: types.StringValue(includedMember.GetRelationships().User.GetData().Id)}
+		// Always create the user, we can't omit it/keep it nil
+		// As empty block are not working on some old terraform versions
+		// See https://github.com/hashicorp/terraform/pull/32463
+		// Therefore `members{}` is not valid terraform, we require `members.user{}` [ie user with a null id]
+		user := &userModel{Id: types.StringNull()}
+		userId := includedMember.GetRelationships().User.GetData().Id
+		if userId != "" {
+			user = &userModel{Id: types.StringValue(userId)}
 		}
 		members[j] = &membersModel{User: user}
 	}
@@ -555,15 +560,12 @@ func (r *onCallScheduleResource) buildOnCallScheduleRequestBody(ctx context.Cont
 		for _, membersTFItem := range layersTFItem.Members {
 			membersDDItem := datadogV2.NewScheduleCreateRequestDataAttributesLayersItemsMembersItems()
 
-			if membersTFItem.User != nil {
-				if membersTFItem.User.Id.IsNull() {
-					diags.AddError("user.id is required", "user.id is required")
-					return nil, diags
-				}
+			if !membersTFItem.User.Id.IsNull() {
 				membersDDItem.User = &datadogV2.ScheduleCreateRequestDataAttributesLayersItemsMembersItemsUser{
 					Id: membersTFItem.User.Id.ValueStringPointer(),
 				}
 			}
+
 			members = append(members, *membersDDItem)
 		}
 		layersDDItem.SetMembers(members)
@@ -690,15 +692,10 @@ func (r *onCallScheduleResource) buildOnCallScheduleUpdateRequestBody(
 			for _, membersTFItem := range layersTFItem.Members {
 				membersDDItem := datadogV2.NewScheduleUpdateRequestDataAttributesLayersItemsMembersItems()
 
-				if membersTFItem.User != nil {
-					if membersTFItem.User.Id.IsNull() {
-						diags.AddError("members.user.id is required", "members.user.id is required")
-						return nil, diags
-					}
+				if !membersTFItem.User.Id.IsNull() {
 					membersDDItem.User = &datadogV2.ScheduleUpdateRequestDataAttributesLayersItemsMembersItemsUser{
 						Id: membersTFItem.User.Id.ValueStringPointer(),
 					}
-
 				}
 				members = append(members, *membersDDItem)
 			}
