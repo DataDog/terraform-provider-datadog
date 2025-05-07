@@ -19,7 +19,7 @@ func TestCustomFramework_create(t *testing.T) {
 	version := "1.0"
 
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
-	path := "datadog_custom_framework.sample_rules"
+	path := "datadog_compliance_custom_framework.sample_rules"
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV5ProviderFactories: accProviders,
@@ -138,11 +138,11 @@ func TestCustomFramework_sameConfigNoUpdate(t *testing.T) {
 	version := "1.0"
 
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
-	path := "datadog_custom_framework.sample_rules"
+	path := "datadog_compliance_custom_framework.sample_rules"
 
 	// First config with one order of requirements
 	config1 := fmt.Sprintf(`
-		resource "datadog_custom_framework" "sample_rules" {
+		resource "datadog_compliance_custom_framework" "sample_rules" {
 			version       = "%s"
 			handle        = "%s"
 			name          = "new-framework-terraform"
@@ -179,7 +179,7 @@ func TestCustomFramework_sameConfigNoUpdate(t *testing.T) {
 	// Second config with different order of requirements
 	// test switching order of requirements, controls, and rules_id
 	config2 := fmt.Sprintf(`
-		resource "datadog_custom_framework" "sample_rules" {
+		resource "datadog_compliance_custom_framework" "sample_rules" {
 			version       = "%s"
 			handle        = "%s"
 			name          = "new-framework-terraform"
@@ -284,16 +284,15 @@ func TestCustomFramework_sameConfigNoUpdate(t *testing.T) {
 	})
 }
 
-// Test that duplicate rule IDs are removed from the state
-// Since the state model converts the rules_id into sets, the duplicate rule IDs are removed
 // There is no way to validate the duplicate rule IDs in the config before they are removed from the state in Terraform
+// because the state model converts the rules_id into sets, the duplicate rule IDs are removed
 // This test validates that the duplicate rule IDs are removed from the state and only one rule ID is present
 func TestCustomFramework_DuplicateRuleIds(t *testing.T) {
 	handle := "terraform-handle"
 	version := "1.0"
 
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
-	path := "datadog_custom_framework.sample_rules"
+	path := "datadog_compliance_custom_framework.sample_rules"
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV5ProviderFactories: accProviders,
@@ -307,9 +306,7 @@ func TestCustomFramework_DuplicateRuleIds(t *testing.T) {
 					resource.TestCheckTypeSetElemNestedAttrs(path, "requirements.*.controls.*", map[string]string{
 						"name": "control1",
 					}),
-					// duplicate rule ID should be removed
 					resource.TestCheckTypeSetElemAttr(path, "requirements.*.controls.*.rules_id.*", "def-000-be9"),
-					// verify there is exactly one rule ID
 					resource.TestCheckResourceAttr(path, "requirements.0.controls.0.rules_id.#", "1"),
 				),
 			},
@@ -322,7 +319,7 @@ func TestCustomFramework_InvalidCreate(t *testing.T) {
 	version := "1.0"
 
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
-	path := "datadog_custom_framework.sample_rules"
+	path := "datadog_compliance_custom_framework.sample_rules"
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV5ProviderFactories: accProviders,
@@ -330,7 +327,7 @@ func TestCustomFramework_InvalidCreate(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config:      testAccCheckDatadogCreateInvalidFrameworkName(version, handle),
-				ExpectError: regexp.MustCompile("400 Bad Request"),
+				ExpectError: regexp.MustCompile("Invalid Attribute Value Length"),
 			},
 			{
 				Config:      testAccCheckDatadogCreateFrameworkRuleIdsInvalid(version, handle),
@@ -338,27 +335,35 @@ func TestCustomFramework_InvalidCreate(t *testing.T) {
 			},
 			{
 				Config:      testAccCheckDatadogCreateFrameworkNoRequirements(version, handle),
-				ExpectError: regexp.MustCompile("400 Bad Request"),
+				ExpectError: regexp.MustCompile("Invalid Block"),
 			},
 			{
 				Config:      testAccCheckDatadogCreateFrameworkWithNoControls(version, handle),
-				ExpectError: regexp.MustCompile("400 Bad Request"),
+				ExpectError: regexp.MustCompile("Invalid Block"),
 			},
 			{
 				Config:      testAccCheckDatadogCreateEmptyHandle(version),
-				ExpectError: regexp.MustCompile("400 Bad Request"),
+				ExpectError: regexp.MustCompile("Invalid Attribute Value Length"),
 			},
 			{
 				Config:      testAccCheckDatadogCreateEmptyVersion(handle),
-				ExpectError: regexp.MustCompile("400 Bad Request"),
+				ExpectError: regexp.MustCompile("Invalid Attribute Value Length"),
 			},
 			{
 				Config:      testAccCheckDatadogDuplicateRequirements(version, handle),
-				ExpectError: regexp.MustCompile("400 Bad Request"),
+				ExpectError: regexp.MustCompile(".*Each Requirement must have a unique name.*"),
 			},
 			{
 				Config:      testAccCheckDatadogDuplicateControls(version, handle),
-				ExpectError: regexp.MustCompile("400 Bad Request"),
+				ExpectError: regexp.MustCompile(".*Each Control must have a unique name under the same requirement.*"),
+			},
+			{
+				Config:      testAccCheckDatadogEmptyRequirementName(version, handle),
+				ExpectError: regexp.MustCompile("Invalid Attribute Value Length"),
+			},
+			{
+				Config:      testAccCheckDatadogEmptyControlName(version, handle),
+				ExpectError: regexp.MustCompile("Invalid Attribute Value Length"),
 			},
 		},
 	})
@@ -369,7 +374,7 @@ func TestCustomFramework_RecreateAfterAPIDelete(t *testing.T) {
 	version := "1.0"
 
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
-	path := "datadog_custom_framework.sample_rules"
+	path := "datadog_compliance_custom_framework.sample_rules"
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
@@ -419,7 +424,7 @@ func TestCustomFramework_DeleteAfterAPIDelete(t *testing.T) {
 	version := "1.0"
 
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
-	path := "datadog_custom_framework.sample_rules"
+	path := "datadog_compliance_custom_framework.sample_rules"
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
@@ -468,7 +473,7 @@ func TestCustomFramework_CreateConflict(t *testing.T) {
 	version := "1.0"
 
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
-	path := "datadog_custom_framework.sample_rules"
+	path := "datadog_compliance_custom_framework.sample_rules"
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
@@ -537,7 +542,7 @@ func TestCustomFramework_CreateConflict(t *testing.T) {
 
 func testAccCheckDatadogCreateFrameworkWithMultipleRequirements(version string, handle string) string {
 	return fmt.Sprintf(`
-		resource "datadog_custom_framework" "sample_rules" {
+		resource "datadog_compliance_custom_framework" "sample_rules" {
 			version       = "%s"
 			handle        = "%s"
 			name          = "new-name"
@@ -563,7 +568,7 @@ func testAccCheckDatadogCreateFrameworkWithMultipleRequirements(version string, 
 
 func testAccCheckDatadogUpdateFrameworkWithMultipleRequirements(version, handle string) string {
 	return fmt.Sprintf(`
-		resource "datadog_custom_framework" "sample_rules" {
+		resource "datadog_compliance_custom_framework" "sample_rules" {
 			version       = "%s"
 			handle        = "%s"
 			name          = "new-name"
@@ -600,7 +605,7 @@ func testAccCheckDatadogUpdateFrameworkWithMultipleRequirements(version, handle 
 
 func testAccCheckDatadogCreateFramework(version string, handle string) string {
 	return fmt.Sprintf(`
-		resource "datadog_custom_framework" "sample_rules" {
+		resource "datadog_compliance_custom_framework" "sample_rules" {
 			version       = "%s"
 			handle        = "%s"
 			name          = "new-framework-terraform"
@@ -619,7 +624,7 @@ func testAccCheckDatadogCreateFramework(version string, handle string) string {
 
 func testAccCheckDatadogCreateFrameworkRuleIdsInvalid(version string, handle string) string {
 	return fmt.Sprintf(`
-		resource "datadog_custom_framework" "sample_rules" {
+		resource "datadog_compliance_custom_framework" "sample_rules" {
 			version       = "%s"
 			handle        = "%s"
 			name          = "new-framework-terraform"
@@ -638,7 +643,7 @@ func testAccCheckDatadogCreateFrameworkRuleIdsInvalid(version string, handle str
 
 func testAccCheckDatadogCreateFrameworkWithNoControls(version string, handle string) string {
 	return fmt.Sprintf(`
-		resource "datadog_custom_framework" "sample_rules" {
+		resource "datadog_compliance_custom_framework" "sample_rules" {
 			version       = "%s"
 			handle        = "%s"
 			name          = "new-framework-terraform"
@@ -653,7 +658,7 @@ func testAccCheckDatadogCreateFrameworkWithNoControls(version string, handle str
 
 func testAccCheckDatadogCreateFrameworkNoRequirements(version string, handle string) string {
 	return fmt.Sprintf(`
-		resource "datadog_custom_framework" "sample_rules" {
+		resource "datadog_compliance_custom_framework" "sample_rules" {
 			version       = "%s"
 			handle        = "%s"
 			name          = "new-framework-terraform"
@@ -665,10 +670,10 @@ func testAccCheckDatadogCreateFrameworkNoRequirements(version string, handle str
 
 func testAccCheckDatadogCreateInvalidFrameworkName(version string, handle string) string {
 	return fmt.Sprintf(`
-		resource "datadog_custom_framework" "sample_rules" {
+		resource "datadog_compliance_custom_framework" "sample_rules" {
 			version       = "%s"
 			handle        = "%s"
-			name          = ""  # Invalid empty name
+			name          = "" 
 			description   = "test description"
 			icon_url      = "test url"
 			requirements  {
@@ -682,9 +687,47 @@ func testAccCheckDatadogCreateInvalidFrameworkName(version string, handle string
 	`, version, handle)
 }
 
+func testAccCheckDatadogEmptyRequirementName(version string, handle string) string {
+	return fmt.Sprintf(`
+		resource "datadog_compliance_custom_framework" "sample_rules" {
+			version       = "%s"
+			handle        = "%s"
+			name          = "name" 
+			description   = "test description"
+			icon_url      = "test url"
+			requirements  {
+				name = ""
+				controls {
+					name = "control1"
+					rules_id = ["def-000-be9"]
+				}
+			}
+		}
+	`, version, handle)
+}
+
+func testAccCheckDatadogEmptyControlName(version string, handle string) string {
+	return fmt.Sprintf(`
+		resource "datadog_compliance_custom_framework" "sample_rules" {
+			version       = "%s"
+			handle        = "%s"
+			name          = "name" 
+			description   = "test description"
+			icon_url      = "test url"
+			requirements  {
+				name = "requirement1"
+				controls {
+					name = ""
+					rules_id = ["def-000-be9"]
+				}
+			}
+		}
+	`, version, handle)
+}
+
 func testAccCheckDatadogCreateEmptyHandle(version string) string {
 	return fmt.Sprintf(`
-		resource "datadog_custom_framework" "sample_rules" {
+		resource "datadog_compliance_custom_framework" "sample_rules" {
 			version       = "%s"
 			handle        = ""
 			name          = "framework-name" 
@@ -703,7 +746,7 @@ func testAccCheckDatadogCreateEmptyHandle(version string) string {
 
 func testAccCheckDatadogCreateEmptyVersion(handle string) string {
 	return fmt.Sprintf(`
-		resource "datadog_custom_framework" "sample_rules" {
+		resource "datadog_compliance_custom_framework" "sample_rules" {
 			version       = ""
 			handle        = "%s"
 			name          = "framework-name" 
@@ -722,7 +765,7 @@ func testAccCheckDatadogCreateEmptyVersion(handle string) string {
 
 func testAccCheckDatadogDuplicateRequirements(version string, handle string) string {
 	return fmt.Sprintf(`
-		resource "datadog_custom_framework" "sample_rules" {
+		resource "datadog_compliance_custom_framework" "sample_rules" {
 			version       = "%s"
 			handle        = "%s"
 			name          = "framework-name"
@@ -748,7 +791,7 @@ func testAccCheckDatadogDuplicateRequirements(version string, handle string) str
 
 func testAccCheckDatadogDuplicateControls(version string, handle string) string {
 	return fmt.Sprintf(`
-		resource "datadog_custom_framework" "sample_rules" {
+		resource "datadog_compliance_custom_framework" "sample_rules" {
 			version       = "%s"
 			handle        = "%s"
 			name          = "framework-name"
@@ -762,7 +805,7 @@ func testAccCheckDatadogDuplicateControls(version string, handle string) string 
 				}
 			}
 			requirements  {
-				name = "requirement1"
+				name = "requirement2"
 				controls {
 					name = "control1"
 					rules_id = ["def-000-be9"]
@@ -778,7 +821,7 @@ func testAccCheckDatadogDuplicateControls(version string, handle string) string 
 
 func testAccCheckDatadogDuplicateRulesId(version string, handle string) string {
 	return fmt.Sprintf(`
-		resource "datadog_custom_framework" "sample_rules" {
+		resource "datadog_compliance_custom_framework" "sample_rules" {
 			version       = "%s"
 			handle        = "%s"
 			name          = "framework-name"
