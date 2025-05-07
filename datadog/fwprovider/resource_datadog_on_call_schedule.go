@@ -439,7 +439,7 @@ func newLayerModel(layer *datadogV2.Layer, membersByID map[string]*datadogV2.Sch
 	for j, member := range membersData {
 		includedMember := membersByID[member.GetId()]
 		var user *userModel
-		if includedMember.GetRelationships().User.GetData().Id != "" {
+		if includedMember.GetRelationships().User != nil {
 			user = &userModel{Id: types.StringValue(includedMember.GetRelationships().User.GetData().Id)}
 		}
 		members[j] = &membersModel{User: user}

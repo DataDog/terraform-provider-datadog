@@ -18,44 +18,7 @@ import (
 //go:embed resource_datadog_on_call_schedule_test.tf
 var OnCallScheduleTest string
 
-func TestAccOnCallCreateSchedule(t *testing.T) {
-	t.Parallel()
-	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
-	userEmail := strings.ToLower(uniqueEntityName(ctx, t)) + "@example.com"
-	uniq := strings.ToLower(uniqueEntityName(ctx, t))
-	namePrefix := "team-" + uniq
-	handlePrefix := "team-" + uniq
-	effectiveDate := "2025-01-01T00:00:00Z"
-	terraformConfig := strings.NewReplacer(
-		"USER_EMAIL", userEmail,
-		"SCHEDULE_NAME", uniq,
-		"EFFECTIVE_DATE", effectiveDate,
-		"TEAM_HANDLE", handlePrefix,
-		"TEAM_NAME", namePrefix,
-	).Replace(OnCallScheduleTest)
-	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
-		CheckDestroy:             testAccCheckDatadogOnCallScheduleDestroy(providers.frameworkProvider),
-		Steps: []resource.TestStep{
-			{
-				Config: terraformConfig,
-				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogOnCallScheduleExists(providers.frameworkProvider),
-					resource.TestCheckResourceAttr(
-						"datadog_on_call_schedule.single_layer", "name", uniq),
-					resource.TestCheckResourceAttr(
-						"datadog_on_call_schedule.single_layer", "time_zone", "America/New_York"),
-					resource.TestCheckResourceAttrWith(
-						"datadog_on_call_schedule.single_layer", "layers.0.applied_effective_date", func(value string) error {
-							return testAppliedEffectiveDate(value, effectiveDate)
-						}),
-				),
-			},
-		},
-	})
-}
-
-func TestAccOnCallScheduleUpdate(t *testing.T) {
+func TestAccOnCallScheduleCreateAndUpdate(t *testing.T) {
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := strings.ToLower(uniqueEntityName(ctx, t))
@@ -87,6 +50,10 @@ func TestAccOnCallScheduleUpdate(t *testing.T) {
 				Config: createConfig("2025-01-01T00:00:00Z"),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogOnCallScheduleExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(
+						"datadog_on_call_schedule.single_layer", "name", uniq),
+					resource.TestCheckResourceAttr(
+						"datadog_on_call_schedule.single_layer", "time_zone", "America/New_York"),
 					resource.TestCheckResourceAttr(
 						"datadog_on_call_schedule.single_layer", "layers.0.effective_date", "2025-01-01T00:00:00Z"),
 					resource.TestCheckResourceAttrWith(
