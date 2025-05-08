@@ -211,7 +211,7 @@ func (r *onCallScheduleResource) Schema(_ context.Context, _ resource.SchemaRequ
 								"seconds": schema.Int64Attribute{
 									Optional:    true,
 									Computed:    true,
-									Description: "Extra seconds that may be added to extend the rotation beyond whole days.",
+									Description: "For intervals that are not expressible in whole days, this will be added to `days`.",
 									Default:     int64default.StaticInt64(int64(0)),
 								},
 							},
