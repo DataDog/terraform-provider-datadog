@@ -84,7 +84,7 @@ func (r *onCallScheduleResource) Metadata(_ context.Context, request resource.Me
 
 func (r *onCallScheduleResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "Provides a Datadog OnCallSchedule resource. This can be used to create and manage Datadog on_call_schedule.",
+		Description: "Provides a Datadog On-Call schedule resource. This can be used to create and manage Datadog On-Call schedules.",
 		Attributes: map[string]schema.Attribute{
 			"name": schema.StringAttribute{
 				Required:    true,

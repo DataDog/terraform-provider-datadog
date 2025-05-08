@@ -3,12 +3,12 @@
 page_title: "datadog_on_call_schedule Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  The datadog_on_call_schedule resource allows you to create and manage on-call schedules in Datadog.
+  Provides a Datadog On-Call schedule resource. This can be used to create and manage Datadog On-Call schedules.
 ---
 
 # datadog_on_call_schedule (Resource)
 
-The datadog_on_call_schedule resource allows you to create and manage on-call schedules in Datadog.
+Provides a Datadog On-Call schedule resource. This can be used to create and manage Datadog On-Call schedules.
 
 ## Example Usage
 
@@ -56,28 +56,28 @@ resource "datadog_on_call_schedule" "test" {
 
 ### Optional
 
-- `layers` (Block List) (see [below for nested schema](#nestedblock--layers))
+- `layer` (Block List) List of layers for the schedule. (see [below for nested schema](#nestedblock--layer))
 - `tags` (List of String) A list of tags for categorizing or filtering the schedule.
-- `teams` (Block List) A list of team ids associated with the schedule. (see [below for nested schema](#nestedblock--teams))
+- `team_ids` (List of String) A list of team ids associated with the schedule.
 
 ### Read-Only
 
 - `id` (String) The ID of this resource.
 
-<a id="nestedblock--layers"></a>
-### Nested Schema for `layers`
+<a id="nestedblock--layer"></a>
+### Nested Schema for `layer`
 
 Required:
 
-- `effective_date` (String) The date/time when this layer should become active (in ISO 8601). If the effective date provided is in the past, the system stores the current time (`now`) as the effective date; otherwise, it stores the given future date.
-- `name` (String) The name of this layer.
+- `effective_date` (String) The date/time when this layer should become active (in ISO 8601).
+- `name` (String) The name of this layer. Should be unique within the schedule.
 
 Optional:
 
 - `end_date` (String) The date/time after which this layer no longer applies (in ISO 8601).
-- `interval` (Block, Optional) (see [below for nested schema](#nestedblock--layers--interval))
-- `members` (Block List) (see [below for nested schema](#nestedblock--layers--members))
-- `restrictions` (Block List) (see [below for nested schema](#nestedblock--layers--restrictions))
+- `interval` (Block, Optional) (see [below for nested schema](#nestedblock--layer--interval))
+- `member` (Block List) List of members for the layer. (see [below for nested schema](#nestedblock--layer--member))
+- `restrictions` (Block List) List of restrictions for the layer. (see [below for nested schema](#nestedblock--layer--restrictions))
 - `rotation_start` (String) The date/time when the rotation for this layer starts (in ISO 8601).
 
 Read-Only:
@@ -85,33 +85,25 @@ Read-Only:
 - `applied_effective_date` (String) The date/time when this layer becomes active (in ISO 8601).
 - `id` (String) The ID of this layer.
 
-<a id="nestedblock--layers--interval"></a>
-### Nested Schema for `layers.interval`
+<a id="nestedblock--layer--interval"></a>
+### Nested Schema for `layer.interval`
 
 Optional:
 
 - `days` (Number) The number of full days in each rotation period.
-- `seconds` (Number) Extra seconds that may be added to extend the rotation beyond whole days. Defaults to `0`.
+- `seconds` (Number) For intervals that are not expressible in whole days, this will be added to `days`. Defaults to `0`.
 
 
-<a id="nestedblock--layers--members"></a>
-### Nested Schema for `layers.members`
-
-Optional:
-
-- `user` (Block, Optional) The user assigned to this member. Can be omitted for empty members. (see [below for nested schema](#nestedblock--layers--members--user))
-
-<a id="nestedblock--layers--members--user"></a>
-### Nested Schema for `layers.members.user`
+<a id="nestedblock--layer--member"></a>
+### Nested Schema for `layer.member`
 
 Optional:
 
-- `id` (String) The user's ID. Can be omitted for empty members.
+- `user_id` (String) The user's ID. Can be omitted for empty members.
 
 
-
-<a id="nestedblock--layers--restrictions"></a>
-### Nested Schema for `layers.restrictions`
+<a id="nestedblock--layer--restrictions"></a>
+### Nested Schema for `layer.restrictions`
 
 Optional:
 
@@ -119,15 +111,6 @@ Optional:
 - `end_time` (String) The time of day when the restriction ends (hh:mm:ss).
 - `start_day` (String) The weekday when the restriction period starts (Monday through Sunday). Valid values are `monday`, `tuesday`, `wednesday`, `thursday`, `friday`, `saturday`, `sunday`.
 - `start_time` (String) The time of day when the restriction begins (hh:mm:ss).
-
-
-
-<a id="nestedblock--teams"></a>
-### Nested Schema for `teams`
-
-Optional:
-
-- `id` (String) The ID of the team.
 
 ## Import
 
