@@ -1,0 +1,1 @@
+terraform import datadog_security_monitoring_rule_json.security_rule_json aaa-yyy-vvv 
