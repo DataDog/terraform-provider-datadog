@@ -12,10 +12,8 @@ resource "datadog_on_call_schedule" "single_layer" {
   name      = "SCHEDULE_NAME"
   tags      = ["foo:bar"]
   time_zone = "America/New_York"
-  teams {
-    id = datadog_team.foo.id
-  }
-  layers {
+  team_ids  = [datadog_team.foo.id]
+  layer {
     effective_date = "EFFECTIVE_DATE"
     end_date       = "2026-01-01T00:00:00Z"
     interval {
@@ -23,14 +21,13 @@ resource "datadog_on_call_schedule" "single_layer" {
       seconds = 300
     }
     rotation_start = "2025-01-01T00:00:00Z"
-    members {
-      user {
-        id = datadog_user.foo.id
-      }
+    member {
+      user_id = datadog_user.foo.id
     }
-    members {
-      user {}
+    member {
+      user_id = null
     }
+    member {}
     name = "Primary On-Call Layer"
     restrictions {
       end_day    = "monday"

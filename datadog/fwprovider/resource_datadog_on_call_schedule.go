@@ -33,16 +33,12 @@ type onCallScheduleResource struct {
 }
 
 type onCallScheduleModel struct {
-	ID       types.String       `tfsdk:"id"`
-	Name     types.String       `tfsdk:"name"`
-	TimeZone types.String       `tfsdk:"time_zone"`
-	Teams    []*onCallTeamModel `tfsdk:"teams"`
-	Tags     types.List         `tfsdk:"tags"`
-	Layers   []*layersModel     `tfsdk:"layers"`
-}
-
-type onCallTeamModel struct {
-	Id types.String `tfsdk:"id"`
+	ID       types.String   `tfsdk:"id"`
+	Name     types.String   `tfsdk:"name"`
+	TimeZone types.String   `tfsdk:"time_zone"`
+	Teams    types.List     `tfsdk:"team_ids"`
+	Tags     types.List     `tfsdk:"tags"`
+	Layers   []*layersModel `tfsdk:"layer"`
 }
 
 type layersModel struct {
@@ -52,15 +48,12 @@ type layersModel struct {
 	EndDate              types.String                    `tfsdk:"end_date"`
 	Name                 types.String                    `tfsdk:"name"`
 	RotationStart        types.String                    `tfsdk:"rotation_start"`
-	Members              []*membersModel                 `tfsdk:"members"`
+	Members              []*membersModel                 `tfsdk:"member"`
 	Restrictions         []*restrictionsModel            `tfsdk:"restrictions"`
 	Interval             *intervalModel                  `tfsdk:"interval"`
 }
 type membersModel struct {
-	User *userModel `tfsdk:"user"`
-}
-type userModel struct {
-	Id types.String `tfsdk:"id"`
+	UserId types.String `tfsdk:"user_id"`
 }
 
 type restrictionsModel struct {
@@ -108,21 +101,19 @@ func (r *onCallScheduleResource) Schema(_ context.Context, _ resource.SchemaRequ
 				ElementType: types.StringType,
 				Default:     listdefault.StaticValue(types.ListValueMust(types.StringType, []attr.Value{})),
 			},
+			"team_ids": schema.ListAttribute{
+				Description: "A list of team ids associated with the schedule.",
+				Optional:    true,
+				Required:    false,
+				Computed:    true,
+				ElementType: types.StringType,
+				Default:     listdefault.StaticValue(types.ListValueMust(types.StringType, []attr.Value{})),
+			},
 			"id": utils.ResourceIDAttribute(),
 		},
 		Blocks: map[string]schema.Block{
-			"teams": schema.ListNestedBlock{
-				Description: "A list of team ids associated with the schedule.",
-				NestedObject: schema.NestedBlockObject{
-					Attributes: map[string]schema.Attribute{
-						"id": schema.StringAttribute{
-							Optional:    true,
-							Description: "The ID of the team.",
-						},
-					},
-				},
-			},
-			"layers": schema.ListNestedBlock{
+			"layer": schema.ListNestedBlock{
+				Description: "List of layers for the schedule.",
 				NestedObject: schema.NestedBlockObject{
 					Attributes: map[string]schema.Attribute{
 						"id": schema.StringAttribute{
@@ -148,7 +139,7 @@ func (r *onCallScheduleResource) Schema(_ context.Context, _ resource.SchemaRequ
 						},
 						"name": schema.StringAttribute{
 							Required:    true,
-							Description: "The name of this layer.",
+							Description: "The name of this layer. Should be unique within the schedule.",
 						},
 						"rotation_start": schema.StringAttribute{
 							Optional:    true,
@@ -157,26 +148,22 @@ func (r *onCallScheduleResource) Schema(_ context.Context, _ resource.SchemaRequ
 						},
 					},
 					Blocks: map[string]schema.Block{
-						"members": schema.ListNestedBlock{
+						"member": schema.ListNestedBlock{
+							Description: "List of members for the layer.",
 							Validators: []validator.List{
 								listvalidator.SizeAtLeast(1),
 							},
 							NestedObject: schema.NestedBlockObject{
-								Blocks: map[string]schema.Block{
-									"user": schema.SingleNestedBlock{
-										Description: "The user assigned to this member. Can be omitted for empty members.",
-										Attributes: map[string]schema.Attribute{
-											"id": schema.StringAttribute{
-												// Member can be empty, so we need it to allow optional
-												Optional:    true,
-												Description: "The user's ID. Can be omitted for empty members.",
-											},
-										},
+								Attributes: map[string]schema.Attribute{
+									"user_id": schema.StringAttribute{
+										Optional:    true,
+										Description: "The user's ID. Can be omitted for empty members.",
 									},
 								},
 							},
 						},
 						"restrictions": schema.ListNestedBlock{
+							Description: "List of restrictions for the layer.",
 							NestedObject: schema.NestedBlockObject{
 								Attributes: map[string]schema.Attribute{
 									"end_day": schema.StringAttribute{
@@ -276,7 +263,7 @@ func (r *onCallScheduleResource) Create(ctx context.Context, request resource.Cr
 		Include: &include,
 	})
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving OnCallSchedule"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error creating OnCallSchedule"))
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {
@@ -335,7 +322,7 @@ func (r *onCallScheduleResource) Update(ctx context.Context, request resource.Up
 		Include: &include,
 	})
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving OnCallSchedule"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error updating OnCallSchedule"))
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {
@@ -397,10 +384,7 @@ func (r *onCallScheduleResource) newState(ctx context.Context, plan *onCallSched
 	for _, team := range data.GetRelationships().Teams.GetData() {
 		teams = append(teams, team.GetId())
 	}
-	state.Teams = make([]*onCallTeamModel, len(teams))
-	for i, team := range teams {
-		state.Teams[i] = &onCallTeamModel{Id: types.StringValue(team)}
-	}
+	state.Teams, _ = types.ListValueFrom(ctx, types.StringType, teams)
 
 	membersByID := make(map[string]*datadogV2.ScheduleMember)
 	usersByID := make(map[string]*datadogV2.ScheduleUser)
@@ -438,16 +422,12 @@ func newLayerModel(layer *datadogV2.Layer, membersByID map[string]*datadogV2.Sch
 	members := make([]*membersModel, len(membersData))
 	for j, member := range membersData {
 		includedMember := membersByID[member.GetId()]
-		// Always create the user, we can't omit it/keep it nil
-		// As empty block are not working on some old terraform versions
-		// See https://github.com/hashicorp/terraform/pull/32463
-		// Therefore `members{}` is not valid terraform, we require `members.user{}` [ie user with a null id]
-		user := &userModel{Id: types.StringNull()}
 		userId := includedMember.GetRelationships().User.GetData().Id
 		if userId != "" {
-			user = &userModel{Id: types.StringValue(userId)}
+			members[j] = &membersModel{UserId: types.StringValue(userId)}
+		} else {
+			members[j] = &membersModel{UserId: types.StringNull()}
 		}
-		members[j] = &membersModel{User: user}
 	}
 	restrictions := layer.GetAttributes().Restrictions
 	restrictionsModels := make([]*restrictionsModel, len(restrictions))
@@ -503,7 +483,10 @@ func (r *onCallScheduleResource) buildOnCallScheduleRequestBody(ctx context.Cont
 	diags := diag.Diagnostics{}
 	req := &datadogV2.ScheduleCreateRequest{}
 
-	relationships := buildCreateRelationships(state.Teams)
+	var teams []string
+	diags.Append(state.Teams.ElementsAs(ctx, &teams, false)...)
+
+	relationships := buildCreateRelationships(teams)
 
 	attributes := datadogV2.NewScheduleCreateRequestDataAttributesWithDefaults()
 
@@ -560,9 +543,14 @@ func (r *onCallScheduleResource) buildOnCallScheduleRequestBody(ctx context.Cont
 		for _, membersTFItem := range layersTFItem.Members {
 			membersDDItem := datadogV2.NewScheduleCreateRequestDataAttributesLayersItemsMembersItems()
 
-			if !membersTFItem.User.Id.IsNull() {
+			if !membersTFItem.UserId.IsNull() {
+				userId := membersTFItem.UserId.ValueString()
+				if userId == "" {
+					diags.AddError("user_id can't be empty, either set the user_id to a valid user, set the user_id to null or omit the field", "user_id can't be empty, either set the user_id to a valid user, set the user_id to null or omit the field")
+					return nil, diags
+				}
 				membersDDItem.User = &datadogV2.ScheduleCreateRequestDataAttributesLayersItemsMembersItemsUser{
-					Id: membersTFItem.User.Id.ValueStringPointer(),
+					Id: &userId,
 				}
 			}
 
@@ -623,7 +611,9 @@ func (r *onCallScheduleResource) buildOnCallScheduleUpdateRequestBody(
 	diags := diag.Diagnostics{}
 	req := &datadogV2.ScheduleUpdateRequest{}
 	attributes := datadogV2.NewScheduleUpdateRequestDataAttributesWithDefaults()
-	relationships := buildUpdateRelationships(plan.Teams)
+	var teams []string
+	diags.Append(plan.Teams.ElementsAs(ctx, &teams, false)...)
+	relationships := buildUpdateRelationships(teams)
 
 	if plan.ID.IsNull() {
 		diags.AddError("id is required", "id is required")
@@ -692,9 +682,9 @@ func (r *onCallScheduleResource) buildOnCallScheduleUpdateRequestBody(
 			for _, membersTFItem := range layersTFItem.Members {
 				membersDDItem := datadogV2.NewScheduleUpdateRequestDataAttributesLayersItemsMembersItems()
 
-				if !membersTFItem.User.Id.IsNull() {
+				if !membersTFItem.UserId.IsNull() {
 					membersDDItem.User = &datadogV2.ScheduleUpdateRequestDataAttributesLayersItemsMembersItemsUser{
-						Id: membersTFItem.User.Id.ValueStringPointer(),
+						Id: membersTFItem.UserId.ValueStringPointer(),
 					}
 				}
 				members = append(members, *membersDDItem)
@@ -752,11 +742,11 @@ func (r *onCallScheduleResource) buildOnCallScheduleUpdateRequestBody(
 	return req, diags
 }
 
-func buildCreateRelationships(plannedTeams []*onCallTeamModel) *datadogV2.ScheduleCreateRequestDataRelationships {
+func buildCreateRelationships(plannedTeams []string) *datadogV2.ScheduleCreateRequestDataRelationships {
 	var relationships *datadogV2.ScheduleCreateRequestDataRelationships
 	plannedTeamsIds := make([]string, len(plannedTeams))
 	for i, team := range plannedTeams {
-		plannedTeamsIds[i] = team.Id.ValueString()
+		plannedTeamsIds[i] = team
 	}
 
 	teamRelationships := make([]datadogV2.ScheduleCreateRequestDataRelationshipsTeamsDataItems, len(plannedTeamsIds))
@@ -776,12 +766,12 @@ func buildCreateRelationships(plannedTeams []*onCallTeamModel) *datadogV2.Schedu
 	return relationships
 }
 
-func buildUpdateRelationships(plannedTeams []*onCallTeamModel) *datadogV2.ScheduleUpdateRequestDataRelationships {
+func buildUpdateRelationships(plannedTeams []string) *datadogV2.ScheduleUpdateRequestDataRelationships {
 	var relationships *datadogV2.ScheduleUpdateRequestDataRelationships
 
 	plannedTeamsIds := make([]string, len(plannedTeams))
 	for i, team := range plannedTeams {
-		plannedTeamsIds[i] = team.Id.ValueString()
+		plannedTeamsIds[i] = team
 	}
 
 	teamRelationships := make([]datadogV2.ScheduleUpdateRequestDataRelationshipsTeamsDataItems, len(plannedTeamsIds))

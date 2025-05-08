@@ -38,7 +38,7 @@ func TestAccOnCallScheduleCreateAndUpdate(t *testing.T) {
 
 	addLayer := func(source string, layer string) string {
 		return strings.NewReplacer(
-			"layers {", layer+"layers {",
+			"layer {", layer+"layer {",
 		).Replace(source)
 	}
 
@@ -55,9 +55,9 @@ func TestAccOnCallScheduleCreateAndUpdate(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_on_call_schedule.single_layer", "time_zone", "America/New_York"),
 					resource.TestCheckResourceAttr(
-						"datadog_on_call_schedule.single_layer", "layers.0.effective_date", "2025-01-01T00:00:00Z"),
+						"datadog_on_call_schedule.single_layer", "layer.0.effective_date", "2025-01-01T00:00:00Z"),
 					resource.TestCheckResourceAttrWith(
-						"datadog_on_call_schedule.single_layer", "layers.0.applied_effective_date", func(value string) error {
+						"datadog_on_call_schedule.single_layer", "layer.0.applied_effective_date", func(value string) error {
 							return testAppliedEffectiveDate(value, "2025-01-01T00:00:00Z")
 						}),
 				),
@@ -68,9 +68,9 @@ func TestAccOnCallScheduleCreateAndUpdate(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogOnCallScheduleExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(
-						"datadog_on_call_schedule.single_layer", "layers.0.effective_date", "2025-02-01T00:00:00Z"),
+						"datadog_on_call_schedule.single_layer", "layer.0.effective_date", "2025-02-01T00:00:00Z"),
 					resource.TestCheckResourceAttrWith(
-						"datadog_on_call_schedule.single_layer", "layers.0.applied_effective_date", func(value string) error {
+						"datadog_on_call_schedule.single_layer", "layer.0.applied_effective_date", func(value string) error {
 							return testAppliedEffectiveDate(value, "2025-01-01T00:00:00Z")
 						}),
 				),
@@ -78,30 +78,27 @@ func TestAccOnCallScheduleCreateAndUpdate(t *testing.T) {
 			// Add a layer
 			{
 				Config: addLayer(createConfig("2025-02-01T00:00:00Z"), `
-					layers {
+					layer {
 						effective_date = "2026-01-01T00:00:00Z"
     					interval {
-      						days    = 2
+      						days = 2
     					}
     					rotation_start = "2026-01-01T00:00:00Z"
-    					members {
-							user {
-							}
-						}
+    					member {}
     					name = "Added Layer"
 					}
 				`),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogOnCallScheduleExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(
-						"datadog_on_call_schedule.single_layer", "layers.0.name", "Added Layer"),
+						"datadog_on_call_schedule.single_layer", "layer.0.name", "Added Layer"),
 					// Existing layer is not modified
 					resource.TestCheckResourceAttr(
-						"datadog_on_call_schedule.single_layer", "layers.1.name", "Primary On-Call Layer"),
+						"datadog_on_call_schedule.single_layer", "layer.1.name", "Primary On-Call Layer"),
 					resource.TestCheckResourceAttr(
-						"datadog_on_call_schedule.single_layer", "layers.1.effective_date", "2025-02-01T00:00:00Z"),
+						"datadog_on_call_schedule.single_layer", "layer.1.effective_date", "2025-02-01T00:00:00Z"),
 					resource.TestCheckResourceAttrWith(
-						"datadog_on_call_schedule.single_layer", "layers.1.applied_effective_date", func(value string) error {
+						"datadog_on_call_schedule.single_layer", "layer.1.applied_effective_date", func(value string) error {
 							return testAppliedEffectiveDate(value, "2025-01-01T00:00:00Z")
 						}),
 				),
