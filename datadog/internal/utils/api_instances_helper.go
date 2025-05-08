@@ -75,6 +75,7 @@ type ApiInstances struct {
 	microsoftTeamsIntegrationApiV2 *datadogV2.MicrosoftTeamsIntegrationApi
 	monitorsApiV2                  *datadogV2.MonitorsApi
 	obsPipelinesV2                 *datadogV2.ObservabilityPipelinesApi
+	onCallApiV2                    *datadogV2.OnCallApi
 	opsgenieIntegrationApiV2       *datadogV2.OpsgenieIntegrationApi
 	organizationsApiV2             *datadogV2.OrganizationsApi
 	processesApiV2                 *datadogV2.ProcessesApi
@@ -516,6 +517,13 @@ func (i *ApiInstances) GetObsPipelinesV2() *datadogV2.ObservabilityPipelinesApi 
 		i.obsPipelinesV2 = datadogV2.NewObservabilityPipelinesApi(i.HttpClient)
 	}
 	return i.obsPipelinesV2
+}
+
+func (i *ApiInstances) GetOnCallApiV2() *datadogV2.OnCallApi {
+	if i.onCallApiV2 == nil {
+		i.onCallApiV2 = datadogV2.NewOnCallApi(i.HttpClient)
+	}
+	return i.onCallApiV2
 }
 
 // GetOpsgenieIntegrationApiV2 get instance of OpsgenieIntegrationApi
