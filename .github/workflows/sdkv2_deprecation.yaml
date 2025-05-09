@@ -19,8 +19,10 @@ jobs:
         uses: tj-actions/changed-files@d6e91a2266cdb9d62096cebf1e8546899c6aa18f
         with:
           files: "datadog/*.go"
-      - uses: exercism/pr-commenter-action@085ef62d2a541a112c3ade1d24deea83665ea186
+      - run: echo "::error::All new resources must use the `terraform-plugin-framework`"
         if: steps.new-resources.outputs.added_files_count != '0'
+      - uses: exercism/pr-commenter-action@085ef62d2a541a112c3ade1d24deea83665ea186
+        if: ${{ ! github.event.pull_request.head.repo.fork && steps.new-resources.outputs.added_files_count != '0' }}
         with:
           github-token: "${{ github.token }}"
           config-file: ".github/sdkv2-warning.yml"
