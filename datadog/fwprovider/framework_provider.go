@@ -515,7 +515,7 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 		}
 		valid, ok := resp.GetValidOk()
 		if (ok && !*valid) || !ok {
-			err := errors.New(`Invalid or missing credentials provided to the Datadog CloudProvider. Please confirm your API and APP keys are valid and are for the correct region, see https://www.terraform.io/docs/providers/datadog/ for more information on providing credentials for the Datadog CloudProvider`)
+			err := errors.New(`Invalid or missing credentials provided to the Datadog Provider. Please confirm your API and APP keys are valid and are for the correct region, see https://www.terraform.io/docs/providers/datadog/ for more information on providing credentials for the Datadog CloudProvider`)
 			diags.AddError("[ERROR] Datadog Client validation error", err.Error())
 			return diags
 		}
