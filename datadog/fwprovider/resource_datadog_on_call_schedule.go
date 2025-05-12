@@ -37,7 +37,6 @@ type onCallScheduleModel struct {
 	Name     types.String   `tfsdk:"name"`
 	TimeZone types.String   `tfsdk:"time_zone"`
 	Teams    types.List     `tfsdk:"teams"`
-	Tags     types.List     `tfsdk:"tags"`
 	Layers   []*layersModel `tfsdk:"layer"`
 }
 
@@ -93,13 +92,6 @@ func (r *onCallScheduleResource) Schema(_ context.Context, _ resource.SchemaRequ
 			"time_zone": schema.StringAttribute{
 				Required:    true,
 				Description: "The time zone in which the schedule is defined.",
-			},
-			"tags": schema.ListAttribute{
-				Optional:    true,
-				Computed:    true,
-				Description: "A list of tags for categorizing or filtering the schedule.",
-				ElementType: types.StringType,
-				Default:     listdefault.StaticValue(types.ListValueMust(types.StringType, []attr.Value{})),
 			},
 			"teams": schema.ListAttribute{
 				Description: "A list of team ids associated with the schedule.",
@@ -370,8 +362,6 @@ func (r *onCallScheduleResource) newState(ctx context.Context, plan *onCallSched
 		state.TimeZone = types.StringValue(*timeZone)
 	}
 
-	state.Tags, _ = types.ListValueFrom(ctx, types.StringType, attributes.Tags)
-
 	var teams []string
 	for _, team := range data.GetRelationships().Teams.GetData() {
 		teams = append(teams, team.GetId())
@@ -486,12 +476,6 @@ func (r *onCallScheduleResource) buildOnCallScheduleRequestBody(ctx context.Cont
 	if !state.TimeZone.IsNull() {
 		attributes.SetTimeZone(state.TimeZone.ValueString())
 	}
-
-	tags := make([]string, 0)
-	if !state.Tags.IsNull() {
-		diags.Append(state.Tags.ElementsAs(ctx, &tags, false)...)
-	}
-	attributes.SetTags(tags)
 
 	var layers []datadogV2.ScheduleCreateRequestDataAttributesLayersItems
 	for _, layersTFItem := range state.Layers {
@@ -613,12 +597,6 @@ func (r *onCallScheduleResource) buildOnCallScheduleUpdateRequestBody(
 	}
 	if !plan.TimeZone.IsNull() {
 		attributes.SetTimeZone(plan.TimeZone.ValueString())
-	}
-
-	if !plan.Tags.IsNull() {
-		var tags []string
-		diags.Append(plan.Tags.ElementsAs(ctx, &tags, false)...)
-		attributes.SetTags(tags)
 	}
 
 	if plan.Layers != nil {

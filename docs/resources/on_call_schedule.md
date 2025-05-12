@@ -17,7 +17,6 @@ Provides a Datadog On-Call schedule resource. This can be used to create and man
 
 resource "datadog_on_call_schedule" "test" {
   name      = "Team A On-Call"
-  tags      = ["foo:bar"]
   time_zone = "America/New_York"
   teams     = ["00000000-aba2-0000-0000-000000000000"]
   layers {
@@ -51,7 +50,6 @@ resource "datadog_on_call_schedule" "test" {
 ### Optional
 
 - `layer` (Block List) List of layers for the schedule. (see [below for nested schema](#nestedblock--layer))
-- `tags` (List of String) A list of tags for categorizing or filtering the schedule.
 - `teams` (List of String) A list of team ids associated with the schedule.
 
 ### Read-Only

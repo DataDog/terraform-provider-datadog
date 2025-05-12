@@ -2,7 +2,6 @@
 
 resource "datadog_on_call_schedule" "test" {
   name      = "Team A On-Call"
-  tags      = ["foo:bar"]
   time_zone = "America/New_York"
   teams     = ["00000000-aba2-0000-0000-000000000000"]
   layers {
