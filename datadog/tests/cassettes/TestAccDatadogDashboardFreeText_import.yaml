@@ -1,3 +1,112 @@
----
 version: 2
-interactions: []
+interactions:
+- request:
+    body: |
+      {"description":"Created using the Datadog provider in Terraform","id":"","is_read_only":true,"layout_type":"free","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardFreeText_import-local-1682003504","widgets":[{"definition":{"color":"#eb364b","font_size":"56","text":"Free Text","text_align":"left","type":"free_text"},"layout":{"height":43,"width":32,"x":5,"y":5}}]}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/dashboard
+    method: POST
+    id: 0
+  response:
+    body: |
+      {"id":"yzf-irg-re4","title":"tf-TestAccDatadogDashboardFreeText_import-local-1682003504","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"free","url":"/dashboard/yzf-irg-re4/tf-testaccdatadogdashboardfreetextimport-local-1682003504","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"color":"#eb364b","font_size":"56","text":"Free Text","text_align":"left","type":"free_text"},"layout":{"height":43,"width":32,"x":5,"y":5},"id":4895897195407064}],"notify_list":[],"created_at":"2023-04-20T15:11:46.096940+00:00","modified_at":"2023-04-20T15:11:46.096940+00:00","template_variable_presets":[],"tags":[]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: "0ms"
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/dashboard/yzf-irg-re4
+    method: GET
+    id: 1
+  response:
+    body: |
+      {"id":"yzf-irg-re4","title":"tf-TestAccDatadogDashboardFreeText_import-local-1682003504","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"free","url":"/dashboard/yzf-irg-re4/tf-testaccdatadogdashboardfreetextimport-local-1682003504","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"color":"#eb364b","font_size":"56","text":"Free Text","text_align":"left","type":"free_text"},"layout":{"height":43,"width":32,"x":5,"y":5},"id":4895897195407064}],"notify_list":[],"created_at":"2023-04-20T15:11:46.096940+00:00","modified_at":"2023-04-20T15:11:46.096940+00:00","template_variable_presets":[],"tags":[]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: "0ms"
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/dashboard/yzf-irg-re4
+    method: GET
+    id: 2
+  response:
+    body: |
+      {"id":"yzf-irg-re4","title":"tf-TestAccDatadogDashboardFreeText_import-local-1682003504","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"free","url":"/dashboard/yzf-irg-re4/tf-testaccdatadogdashboardfreetextimport-local-1682003504","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"color":"#eb364b","font_size":"56","text":"Free Text","text_align":"left","type":"free_text"},"layout":{"height":43,"width":32,"x":5,"y":5},"id":4895897195407064}],"notify_list":[],"created_at":"2023-04-20T15:11:46.096940+00:00","modified_at":"2023-04-20T15:11:46.096940+00:00","template_variable_presets":[],"tags":[]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: "0ms"
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/dashboard/yzf-irg-re4
+    method: GET
+    id: 3
+  response:
+    body: |
+      {"id":"yzf-irg-re4","title":"tf-TestAccDatadogDashboardFreeText_import-local-1682003504","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"free","url":"/dashboard/yzf-irg-re4/tf-testaccdatadogdashboardfreetextimport-local-1682003504","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"color":"#eb364b","font_size":"56","text":"Free Text","text_align":"left","type":"free_text"},"layout":{"height":43,"width":32,"x":5,"y":5},"id":4895897195407064}],"notify_list":[],"created_at":"2023-04-20T15:11:46.096940+00:00","modified_at":"2023-04-20T15:11:46.096940+00:00","template_variable_presets":[],"tags":[]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: "0ms"
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/dashboard/yzf-irg-re4
+    method: DELETE
+    id: 4
+  response:
+    body: |
+      {"deleted_dashboard_id":"yzf-irg-re4"}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: "0ms"
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/dashboard/yzf-irg-re4
+    method: GET
+    id: 5
+  response:
+    body: '{"errors":["Dashboard with ID yzf-irg-re4 not found"]}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 404 Not Found
+    code: 404
+    duration: "0ms"

@@ -1,3 +1,186 @@
----
 version: 2
-interactions: []
+interactions:
+- request:
+    body: |
+      {"data":{"attributes":{"policy":{"tag_key":"tf-TestAccDatadogMonitorConfigPoliciesDatasource-local-1698257467-1","tag_key_required":false,"valid_tag_values":["value"]},"policy_type":"tag"},"type":"monitor-config-policy"}}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/monitor/policy
+    method: POST
+    id: 0
+  response:
+    body: |
+      {"data":{"type":"monitor-config-policy","id":"e0913b60-7361-11ee-b6cb-da7ad0900002","attributes":{"policy":{"tag_key":"tf-TestAccDatadogMonitorConfigPoliciesDatasource-local-1698257467-1","valid_tag_values":["value"],"tag_key_required":false},"policy_type":"tag"}}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: "0ms"
+- request:
+    body: |
+      {"data":{"attributes":{"policy":{"tag_key":"tf-TestAccDatadogMonitorConfigPoliciesDatasource-local-1698257467-2","tag_key_required":false,"valid_tag_values":["value"]},"policy_type":"tag"},"type":"monitor-config-policy"}}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/monitor/policy
+    method: POST
+    id: 1
+  response:
+    body: |
+      {"data":{"type":"monitor-config-policy","id":"e0a83e6e-7361-11ee-a8a6-da7ad0900002","attributes":{"policy":{"tag_key":"tf-TestAccDatadogMonitorConfigPoliciesDatasource-local-1698257467-2","tag_key_required":false,"valid_tag_values":["value"]},"policy_type":"tag"}}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: "0ms"
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/monitor/policy
+    method: GET
+    id: 2
+  response:
+    body: |
+      {"data":[{"type":"monitor-config-policy","id":"e0913b60-7361-11ee-b6cb-da7ad0900002","attributes":{"policy":{"tag_key_required":false,"valid_tag_values":["value"],"tag_key":"tf-TestAccDatadogMonitorConfigPoliciesDatasource-local-1698257467-1"},"policy_type":"tag"}},{"type":"monitor-config-policy","id":"e0a83e6e-7361-11ee-a8a6-da7ad0900002","attributes":{"policy":{"tag_key_required":false,"valid_tag_values":["value"],"tag_key":"tf-TestAccDatadogMonitorConfigPoliciesDatasource-local-1698257467-2"},"policy_type":"tag"}}]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: "0ms"
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/monitor/policy
+    method: GET
+    id: 3
+  response:
+    body: |
+      {"data":[{"type":"monitor-config-policy","id":"e0913b60-7361-11ee-b6cb-da7ad0900002","attributes":{"policy":{"valid_tag_values":["value"],"tag_key":"tf-TestAccDatadogMonitorConfigPoliciesDatasource-local-1698257467-1","tag_key_required":false},"policy_type":"tag"}},{"type":"monitor-config-policy","id":"e0a83e6e-7361-11ee-a8a6-da7ad0900002","attributes":{"policy":{"valid_tag_values":["value"],"tag_key":"tf-TestAccDatadogMonitorConfigPoliciesDatasource-local-1698257467-2","tag_key_required":false},"policy_type":"tag"}}]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: "0ms"
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/monitor/policy/e0913b60-7361-11ee-b6cb-da7ad0900002
+    method: GET
+    id: 4
+  response:
+    body: |
+      {"data":{"type":"monitor-config-policy","attributes":{"policy":{"tag_key":"tf-TestAccDatadogMonitorConfigPoliciesDatasource-local-1698257467-1","valid_tag_values":["value"],"tag_key_required":false},"policy_type":"tag"},"id":"e0913b60-7361-11ee-b6cb-da7ad0900002"}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: "0ms"
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/monitor/policy/e0a83e6e-7361-11ee-a8a6-da7ad0900002
+    method: GET
+    id: 5
+  response:
+    body: |
+      {"data":{"type":"monitor-config-policy","attributes":{"policy":{"tag_key_required":false,"valid_tag_values":["value"],"tag_key":"tf-TestAccDatadogMonitorConfigPoliciesDatasource-local-1698257467-2"},"policy_type":"tag"},"id":"e0a83e6e-7361-11ee-a8a6-da7ad0900002"}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: "0ms"
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/monitor/policy
+    method: GET
+    id: 6
+  response:
+    body: |
+      {"data":[{"type":"monitor-config-policy","id":"e0913b60-7361-11ee-b6cb-da7ad0900002","attributes":{"policy":{"valid_tag_values":["value"],"tag_key":"tf-TestAccDatadogMonitorConfigPoliciesDatasource-local-1698257467-1","tag_key_required":false},"policy_type":"tag"}},{"type":"monitor-config-policy","id":"e0a83e6e-7361-11ee-a8a6-da7ad0900002","attributes":{"policy":{"valid_tag_values":["value"],"tag_key":"tf-TestAccDatadogMonitorConfigPoliciesDatasource-local-1698257467-2","tag_key_required":false},"policy_type":"tag"}}]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: "0ms"
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/monitor/policy
+    method: GET
+    id: 7
+  response:
+    body: |
+      {"data":[{"type":"monitor-config-policy","attributes":{"policy_type":"tag","policy":{"valid_tag_values":["value"],"tag_key_required":false,"tag_key":"tf-TestAccDatadogMonitorConfigPoliciesDatasource-local-1698257467-1"}},"id":"e0913b60-7361-11ee-b6cb-da7ad0900002"},{"type":"monitor-config-policy","attributes":{"policy_type":"tag","policy":{"valid_tag_values":["value"],"tag_key_required":false,"tag_key":"tf-TestAccDatadogMonitorConfigPoliciesDatasource-local-1698257467-2"}},"id":"e0a83e6e-7361-11ee-a8a6-da7ad0900002"}]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: "0ms"
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - '*/*'
+    url: https://api.datadoghq.com/api/v2/monitor/policy/e0a83e6e-7361-11ee-a8a6-da7ad0900002
+    method: DELETE
+    id: 8
+  response:
+    body: ""
+    headers:
+      Content-Type:
+      - text/html; charset=utf-8
+    status: 204 No Content
+    code: 204
+    duration: "0ms"
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - '*/*'
+    url: https://api.datadoghq.com/api/v2/monitor/policy/e0913b60-7361-11ee-b6cb-da7ad0900002
+    method: DELETE
+    id: 9
+  response:
+    body: ""
+    headers:
+      Content-Type:
+      - text/html; charset=utf-8
+    status: 204 No Content
+    code: 204
+    duration: "0ms"

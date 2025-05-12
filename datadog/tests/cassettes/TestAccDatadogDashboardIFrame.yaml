@@ -1,3 +1,112 @@
----
 version: 2
-interactions: []
+interactions:
+- request:
+    body: |
+      {"description":"Created using the Datadog provider in Terraform","id":"","is_read_only":true,"layout_type":"free","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardIFrame-local-1682003491","widgets":[{"definition":{"type":"iframe","url":"https://en.wikipedia.org/wiki/Datadog"},"layout":{"height":43,"width":32,"x":5,"y":5}}]}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/dashboard
+    method: POST
+    id: 0
+  response:
+    body: |
+      {"id":"ygn-jir-5uj","title":"tf-TestAccDatadogDashboardIFrame-local-1682003491","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"free","url":"/dashboard/ygn-jir-5uj/tf-testaccdatadogdashboardiframe-local-1682003491","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"type":"iframe","url":"https://en.wikipedia.org/wiki/Datadog"},"layout":{"height":43,"width":32,"x":5,"y":5},"id":4521267925915103}],"notify_list":[],"created_at":"2023-04-20T15:11:32.700905+00:00","modified_at":"2023-04-20T15:11:32.700905+00:00","template_variable_presets":[],"tags":[]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: "0ms"
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/dashboard/ygn-jir-5uj
+    method: GET
+    id: 1
+  response:
+    body: |
+      {"id":"ygn-jir-5uj","title":"tf-TestAccDatadogDashboardIFrame-local-1682003491","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"free","url":"/dashboard/ygn-jir-5uj/tf-testaccdatadogdashboardiframe-local-1682003491","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"type":"iframe","url":"https://en.wikipedia.org/wiki/Datadog"},"layout":{"height":43,"width":32,"x":5,"y":5},"id":4521267925915103}],"notify_list":[],"created_at":"2023-04-20T15:11:32.700905+00:00","modified_at":"2023-04-20T15:11:32.700905+00:00","template_variable_presets":[],"tags":[]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: "0ms"
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/dashboard/ygn-jir-5uj
+    method: GET
+    id: 2
+  response:
+    body: |
+      {"id":"ygn-jir-5uj","title":"tf-TestAccDatadogDashboardIFrame-local-1682003491","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"free","url":"/dashboard/ygn-jir-5uj/tf-testaccdatadogdashboardiframe-local-1682003491","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"type":"iframe","url":"https://en.wikipedia.org/wiki/Datadog"},"layout":{"height":43,"width":32,"x":5,"y":5},"id":4521267925915103}],"notify_list":[],"created_at":"2023-04-20T15:11:32.700905+00:00","modified_at":"2023-04-20T15:11:32.700905+00:00","template_variable_presets":[],"tags":[]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: "0ms"
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/dashboard/ygn-jir-5uj
+    method: GET
+    id: 3
+  response:
+    body: |
+      {"id":"ygn-jir-5uj","title":"tf-TestAccDatadogDashboardIFrame-local-1682003491","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"free","url":"/dashboard/ygn-jir-5uj/tf-testaccdatadogdashboardiframe-local-1682003491","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"type":"iframe","url":"https://en.wikipedia.org/wiki/Datadog"},"layout":{"height":43,"width":32,"x":5,"y":5},"id":4521267925915103}],"notify_list":[],"created_at":"2023-04-20T15:11:32.700905+00:00","modified_at":"2023-04-20T15:11:32.700905+00:00","template_variable_presets":[],"tags":[]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: "0ms"
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/dashboard/ygn-jir-5uj
+    method: DELETE
+    id: 4
+  response:
+    body: |
+      {"deleted_dashboard_id":"ygn-jir-5uj"}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: "0ms"
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/dashboard/ygn-jir-5uj
+    method: GET
+    id: 5
+  response:
+    body: '{"errors":["Dashboard with ID ygn-jir-5uj not found"]}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 404 Not Found
+    code: 404
+    duration: "0ms"

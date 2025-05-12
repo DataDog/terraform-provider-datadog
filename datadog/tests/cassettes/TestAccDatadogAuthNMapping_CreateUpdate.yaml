@@ -1,3 +1,1021 @@
 ---
 version: 2
-interactions: []
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/roles?filter=Datadog+Read+Only+Role
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":[{"type":"roles","id":"94172444-be03-11e9-a77a-db1879185210","attributes":{"name":"Datadog Read Only Role","created_at":"2019-08-13T19:50:19.111007+00:00","modified_at":"2019-08-13T19:50:19.111007+00:00","user_count":7},"relationships":{"permissions":{"data":[{"type":"permissions","id":"5e605652-dd12-11e8-9e53-375565b8970e"},{"type":"permissions","id":"6f66600e-dd12-11e8-9e55-7f30fbb45e73"},{"type":"permissions","id":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2"},{"type":"permissions","id":"4441648c-d8b1-11e9-a77a-1b899a04b304"},{"type":"permissions","id":"1af86ce4-7823-11ea-93dc-d7cad1b1c6cb"},{"type":"permissions","id":"b382b982-8535-11ea-93de-2bf1bdf20798"},{"type":"permissions","id":"7314eb20-aa58-11ea-95e2-6fb6e4a451d5"},{"type":"permissions","id":"80de1ec0-aa58-11ea-95e2-aff381626d5d"},{"type":"permissions","id":"5025ee24-f923-11ea-adbc-576ea241df8d"},{"type":"permissions","id":"417ba636-2dce-11eb-84c0-6bce5b0d9de0"},{"type":"permissions","id":"43fa188e-2dce-11eb-84c0-835ad1fd6287"},{"type":"permissions","id":"4916eebe-2dce-11eb-84c0-271cb2c672e8"},{"type":"permissions","id":"edfd5e75-801f-11eb-96d8-da7ad0900002"},{"type":"permissions","id":"98b984f4-b16d-11eb-a2c6-da7ad0900002"},{"type":"permissions","id":"12efc20e-d36c-11eb-a9b8-da7ad0900002"},{"type":"permissions","id":"97971c1c-e895-11eb-b13c-da7ad0900002"},{"type":"permissions","id":"7605ef24-f376-11eb-b90b-da7ad0900002"},{"type":"permissions","id":"7605ef25-f376-11eb-b90b-da7ad0900002"},{"type":"permissions","id":"f4473c60-4792-11ec-a27b-da7ad0900002"},{"type":"permissions","id":"8e4d6b6e-5750-11ec-a9f4-da7ad0900002"},{"type":"permissions","id":"945b3bb4-5884-11ec-aa6d-da7ad0900002"},{"type":"permissions","id":"f6e917a8-8502-11ec-bf20-da7ad0900002"},{"type":"permissions","id":"f6e917a6-8502-11ec-bf20-da7ad0900002"},{"type":"permissions","id":"b6bf9ac6-9a59-11ec-8480-da7ad0900002"},{"type":"permissions","id":"f8e941cf-e746-11ec-b22d-da7ad0900002"},{"type":"permissions","id":"ee68fba8-173a-11ed-b00b-da7ad0900002"},{"type":"permissions","id":"6be119a6-1cd8-11ed-b185-da7ad0900002"},{"type":"permissions","id":"4ee674f6-55d9-11ed-b10d-da7ad0900002"},{"type":"permissions","id":"4ee5731c-55d9-11ed-b10b-da7ad0900002"},{"type":"permissions","id":"8247acc4-7a4c-11ed-958f-da7ad0900002"},{"type":"permissions","id":"6c5ad874-7aff-11ed-a5cd-da7ad0900002"},{"type":"permissions","id":"c13a2368-7d61-11ed-b5b7-da7ad0900002"},{"type":"permissions","id":"4e61a95e-de98-11ed-aa23-da7ad0900002"},{"type":"permissions","id":"a773e3d8-fff2-11ed-965c-da7ad0900002"},{"type":"permissions","id":"1377d9e4-0ec7-11ee-aebc-da7ad0900002"},{"type":"permissions","id":"de0e73c2-3d23-11ee-aa7d-da7ad0900002"},{"type":"permissions","id":"a8b4d6e8-4ea4-11ee-b482-da7ad0900002"},{"type":"permissions","id":"50c270de-69ee-11ee-9151-da7ad0900002"}]}}}],"meta":{"page":{"total_count":18,"total_filtered_count":1}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 163.548792ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/roles?filter=Datadog+Read+Only+Role
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":[{"type":"roles","id":"94172444-be03-11e9-a77a-db1879185210","attributes":{"name":"Datadog Read Only Role","created_at":"2019-08-13T19:50:19.111007+00:00","modified_at":"2019-08-13T19:50:19.111007+00:00","user_count":7},"relationships":{"permissions":{"data":[{"type":"permissions","id":"5e605652-dd12-11e8-9e53-375565b8970e"},{"type":"permissions","id":"6f66600e-dd12-11e8-9e55-7f30fbb45e73"},{"type":"permissions","id":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2"},{"type":"permissions","id":"4441648c-d8b1-11e9-a77a-1b899a04b304"},{"type":"permissions","id":"1af86ce4-7823-11ea-93dc-d7cad1b1c6cb"},{"type":"permissions","id":"b382b982-8535-11ea-93de-2bf1bdf20798"},{"type":"permissions","id":"7314eb20-aa58-11ea-95e2-6fb6e4a451d5"},{"type":"permissions","id":"80de1ec0-aa58-11ea-95e2-aff381626d5d"},{"type":"permissions","id":"5025ee24-f923-11ea-adbc-576ea241df8d"},{"type":"permissions","id":"417ba636-2dce-11eb-84c0-6bce5b0d9de0"},{"type":"permissions","id":"43fa188e-2dce-11eb-84c0-835ad1fd6287"},{"type":"permissions","id":"4916eebe-2dce-11eb-84c0-271cb2c672e8"},{"type":"permissions","id":"edfd5e75-801f-11eb-96d8-da7ad0900002"},{"type":"permissions","id":"98b984f4-b16d-11eb-a2c6-da7ad0900002"},{"type":"permissions","id":"12efc20e-d36c-11eb-a9b8-da7ad0900002"},{"type":"permissions","id":"97971c1c-e895-11eb-b13c-da7ad0900002"},{"type":"permissions","id":"7605ef24-f376-11eb-b90b-da7ad0900002"},{"type":"permissions","id":"7605ef25-f376-11eb-b90b-da7ad0900002"},{"type":"permissions","id":"f4473c60-4792-11ec-a27b-da7ad0900002"},{"type":"permissions","id":"8e4d6b6e-5750-11ec-a9f4-da7ad0900002"},{"type":"permissions","id":"945b3bb4-5884-11ec-aa6d-da7ad0900002"},{"type":"permissions","id":"f6e917a8-8502-11ec-bf20-da7ad0900002"},{"type":"permissions","id":"f6e917a6-8502-11ec-bf20-da7ad0900002"},{"type":"permissions","id":"b6bf9ac6-9a59-11ec-8480-da7ad0900002"},{"type":"permissions","id":"f8e941cf-e746-11ec-b22d-da7ad0900002"},{"type":"permissions","id":"ee68fba8-173a-11ed-b00b-da7ad0900002"},{"type":"permissions","id":"6be119a6-1cd8-11ed-b185-da7ad0900002"},{"type":"permissions","id":"4ee674f6-55d9-11ed-b10d-da7ad0900002"},{"type":"permissions","id":"4ee5731c-55d9-11ed-b10b-da7ad0900002"},{"type":"permissions","id":"8247acc4-7a4c-11ed-958f-da7ad0900002"},{"type":"permissions","id":"6c5ad874-7aff-11ed-a5cd-da7ad0900002"},{"type":"permissions","id":"c13a2368-7d61-11ed-b5b7-da7ad0900002"},{"type":"permissions","id":"4e61a95e-de98-11ed-aa23-da7ad0900002"},{"type":"permissions","id":"a773e3d8-fff2-11ed-965c-da7ad0900002"},{"type":"permissions","id":"1377d9e4-0ec7-11ee-aebc-da7ad0900002"},{"type":"permissions","id":"de0e73c2-3d23-11ee-aa7d-da7ad0900002"},{"type":"permissions","id":"a8b4d6e8-4ea4-11ee-b482-da7ad0900002"},{"type":"permissions","id":"50c270de-69ee-11ee-9151-da7ad0900002"}]}}}],"meta":{"page":{"total_count":18,"total_filtered_count":1}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 127.663125ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 197
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"attribute_key":"key_1","attribute_value":"value_1"},"relationships":{"role":{"data":{"id":"94172444-be03-11e9-a77a-db1879185210","type":"roles"}}},"type":"authn_mappings"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/authn_mappings
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"authn_mappings","id":"174b2808-fc1c-11ee-bab8-da7ad0900002","attributes":{"attribute_key":"key_1","attribute_value":"value_1","created_at":"2024-04-16T18:06:47.514708+00:00","modified_at":"2024-04-16T18:06:47.514708+00:00"},"relationships":{"role":{"data":{"type":"roles","id":"94172444-be03-11e9-a77a-db1879185210"}}}},"included":[{"type":"roles","id":"94172444-be03-11e9-a77a-db1879185210","attributes":{"name":"Datadog Read Only Role","created_at":"2019-08-13T19:50:19.111007+00:00","modified_at":"2019-08-13T19:50:19.111007+00:00"},"relationships":{"permissions":{"data":[{"type":"permissions","id":"5e605652-dd12-11e8-9e53-375565b8970e"},{"type":"permissions","id":"6f66600e-dd12-11e8-9e55-7f30fbb45e73"},{"type":"permissions","id":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2"},{"type":"permissions","id":"4441648c-d8b1-11e9-a77a-1b899a04b304"},{"type":"permissions","id":"1af86ce4-7823-11ea-93dc-d7cad1b1c6cb"},{"type":"permissions","id":"b382b982-8535-11ea-93de-2bf1bdf20798"},{"type":"permissions","id":"7314eb20-aa58-11ea-95e2-6fb6e4a451d5"},{"type":"permissions","id":"80de1ec0-aa58-11ea-95e2-aff381626d5d"},{"type":"permissions","id":"5025ee24-f923-11ea-adbc-576ea241df8d"},{"type":"permissions","id":"417ba636-2dce-11eb-84c0-6bce5b0d9de0"},{"type":"permissions","id":"43fa188e-2dce-11eb-84c0-835ad1fd6287"},{"type":"permissions","id":"4916eebe-2dce-11eb-84c0-271cb2c672e8"},{"type":"permissions","id":"edfd5e75-801f-11eb-96d8-da7ad0900002"},{"type":"permissions","id":"98b984f4-b16d-11eb-a2c6-da7ad0900002"},{"type":"permissions","id":"12efc20e-d36c-11eb-a9b8-da7ad0900002"},{"type":"permissions","id":"97971c1c-e895-11eb-b13c-da7ad0900002"},{"type":"permissions","id":"7605ef24-f376-11eb-b90b-da7ad0900002"},{"type":"permissions","id":"7605ef25-f376-11eb-b90b-da7ad0900002"},{"type":"permissions","id":"f4473c60-4792-11ec-a27b-da7ad0900002"},{"type":"permissions","id":"8e4d6b6e-5750-11ec-a9f4-da7ad0900002"},{"type":"permissions","id":"945b3bb4-5884-11ec-aa6d-da7ad0900002"},{"type":"permissions","id":"f6e917a8-8502-11ec-bf20-da7ad0900002"},{"type":"permissions","id":"f6e917a6-8502-11ec-bf20-da7ad0900002"},{"type":"permissions","id":"b6bf9ac6-9a59-11ec-8480-da7ad0900002"},{"type":"permissions","id":"f8e941cf-e746-11ec-b22d-da7ad0900002"},{"type":"permissions","id":"ee68fba8-173a-11ed-b00b-da7ad0900002"},{"type":"permissions","id":"6be119a6-1cd8-11ed-b185-da7ad0900002"},{"type":"permissions","id":"4ee674f6-55d9-11ed-b10d-da7ad0900002"},{"type":"permissions","id":"4ee5731c-55d9-11ed-b10b-da7ad0900002"},{"type":"permissions","id":"8247acc4-7a4c-11ed-958f-da7ad0900002"},{"type":"permissions","id":"6c5ad874-7aff-11ed-a5cd-da7ad0900002"},{"type":"permissions","id":"c13a2368-7d61-11ed-b5b7-da7ad0900002"},{"type":"permissions","id":"4e61a95e-de98-11ed-aa23-da7ad0900002"},{"type":"permissions","id":"a773e3d8-fff2-11ed-965c-da7ad0900002"},{"type":"permissions","id":"1377d9e4-0ec7-11ee-aebc-da7ad0900002"},{"type":"permissions","id":"de0e73c2-3d23-11ee-aa7d-da7ad0900002"},{"type":"permissions","id":"a8b4d6e8-4ea4-11ee-b482-da7ad0900002"},{"type":"permissions","id":"50c270de-69ee-11ee-9151-da7ad0900002"}]}}}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 152.96375ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/authn_mappings/174b2808-fc1c-11ee-bab8-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"authn_mappings","id":"174b2808-fc1c-11ee-bab8-da7ad0900002","attributes":{"attribute_key":"key_1","attribute_value":"value_1","created_at":"2024-04-16T18:06:47.514708+00:00","modified_at":"2024-04-16T18:06:47.514708+00:00"},"relationships":{"role":{"data":{"type":"roles","id":"94172444-be03-11e9-a77a-db1879185210"}}}},"included":[{"type":"roles","id":"94172444-be03-11e9-a77a-db1879185210","attributes":{"name":"Datadog Read Only Role","created_at":"2019-08-13T19:50:19.111007+00:00","modified_at":"2019-08-13T19:50:19.111007+00:00"},"relationships":{"permissions":{"data":[{"type":"permissions","id":"5e605652-dd12-11e8-9e53-375565b8970e"},{"type":"permissions","id":"6f66600e-dd12-11e8-9e55-7f30fbb45e73"},{"type":"permissions","id":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2"},{"type":"permissions","id":"4441648c-d8b1-11e9-a77a-1b899a04b304"},{"type":"permissions","id":"1af86ce4-7823-11ea-93dc-d7cad1b1c6cb"},{"type":"permissions","id":"b382b982-8535-11ea-93de-2bf1bdf20798"},{"type":"permissions","id":"7314eb20-aa58-11ea-95e2-6fb6e4a451d5"},{"type":"permissions","id":"80de1ec0-aa58-11ea-95e2-aff381626d5d"},{"type":"permissions","id":"5025ee24-f923-11ea-adbc-576ea241df8d"},{"type":"permissions","id":"417ba636-2dce-11eb-84c0-6bce5b0d9de0"},{"type":"permissions","id":"43fa188e-2dce-11eb-84c0-835ad1fd6287"},{"type":"permissions","id":"4916eebe-2dce-11eb-84c0-271cb2c672e8"},{"type":"permissions","id":"edfd5e75-801f-11eb-96d8-da7ad0900002"},{"type":"permissions","id":"98b984f4-b16d-11eb-a2c6-da7ad0900002"},{"type":"permissions","id":"12efc20e-d36c-11eb-a9b8-da7ad0900002"},{"type":"permissions","id":"97971c1c-e895-11eb-b13c-da7ad0900002"},{"type":"permissions","id":"7605ef24-f376-11eb-b90b-da7ad0900002"},{"type":"permissions","id":"7605ef25-f376-11eb-b90b-da7ad0900002"},{"type":"permissions","id":"f4473c60-4792-11ec-a27b-da7ad0900002"},{"type":"permissions","id":"8e4d6b6e-5750-11ec-a9f4-da7ad0900002"},{"type":"permissions","id":"945b3bb4-5884-11ec-aa6d-da7ad0900002"},{"type":"permissions","id":"f6e917a8-8502-11ec-bf20-da7ad0900002"},{"type":"permissions","id":"f6e917a6-8502-11ec-bf20-da7ad0900002"},{"type":"permissions","id":"b6bf9ac6-9a59-11ec-8480-da7ad0900002"},{"type":"permissions","id":"f8e941cf-e746-11ec-b22d-da7ad0900002"},{"type":"permissions","id":"ee68fba8-173a-11ed-b00b-da7ad0900002"},{"type":"permissions","id":"6be119a6-1cd8-11ed-b185-da7ad0900002"},{"type":"permissions","id":"4ee674f6-55d9-11ed-b10d-da7ad0900002"},{"type":"permissions","id":"4ee5731c-55d9-11ed-b10b-da7ad0900002"},{"type":"permissions","id":"8247acc4-7a4c-11ed-958f-da7ad0900002"},{"type":"permissions","id":"6c5ad874-7aff-11ed-a5cd-da7ad0900002"},{"type":"permissions","id":"c13a2368-7d61-11ed-b5b7-da7ad0900002"},{"type":"permissions","id":"4e61a95e-de98-11ed-aa23-da7ad0900002"},{"type":"permissions","id":"a773e3d8-fff2-11ed-965c-da7ad0900002"},{"type":"permissions","id":"1377d9e4-0ec7-11ee-aebc-da7ad0900002"},{"type":"permissions","id":"de0e73c2-3d23-11ee-aa7d-da7ad0900002"},{"type":"permissions","id":"a8b4d6e8-4ea4-11ee-b482-da7ad0900002"},{"type":"permissions","id":"50c270de-69ee-11ee-9151-da7ad0900002"}]}}}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 89.552833ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/authn_mappings/174b2808-fc1c-11ee-bab8-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"authn_mappings","id":"174b2808-fc1c-11ee-bab8-da7ad0900002","attributes":{"attribute_key":"key_1","attribute_value":"value_1","created_at":"2024-04-16T18:06:47.514708+00:00","modified_at":"2024-04-16T18:06:47.514708+00:00"},"relationships":{"role":{"data":{"type":"roles","id":"94172444-be03-11e9-a77a-db1879185210"}}}},"included":[{"type":"roles","id":"94172444-be03-11e9-a77a-db1879185210","attributes":{"name":"Datadog Read Only Role","created_at":"2019-08-13T19:50:19.111007+00:00","modified_at":"2019-08-13T19:50:19.111007+00:00"},"relationships":{"permissions":{"data":[{"type":"permissions","id":"5e605652-dd12-11e8-9e53-375565b8970e"},{"type":"permissions","id":"6f66600e-dd12-11e8-9e55-7f30fbb45e73"},{"type":"permissions","id":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2"},{"type":"permissions","id":"4441648c-d8b1-11e9-a77a-1b899a04b304"},{"type":"permissions","id":"1af86ce4-7823-11ea-93dc-d7cad1b1c6cb"},{"type":"permissions","id":"b382b982-8535-11ea-93de-2bf1bdf20798"},{"type":"permissions","id":"7314eb20-aa58-11ea-95e2-6fb6e4a451d5"},{"type":"permissions","id":"80de1ec0-aa58-11ea-95e2-aff381626d5d"},{"type":"permissions","id":"5025ee24-f923-11ea-adbc-576ea241df8d"},{"type":"permissions","id":"417ba636-2dce-11eb-84c0-6bce5b0d9de0"},{"type":"permissions","id":"43fa188e-2dce-11eb-84c0-835ad1fd6287"},{"type":"permissions","id":"4916eebe-2dce-11eb-84c0-271cb2c672e8"},{"type":"permissions","id":"edfd5e75-801f-11eb-96d8-da7ad0900002"},{"type":"permissions","id":"98b984f4-b16d-11eb-a2c6-da7ad0900002"},{"type":"permissions","id":"12efc20e-d36c-11eb-a9b8-da7ad0900002"},{"type":"permissions","id":"97971c1c-e895-11eb-b13c-da7ad0900002"},{"type":"permissions","id":"7605ef24-f376-11eb-b90b-da7ad0900002"},{"type":"permissions","id":"7605ef25-f376-11eb-b90b-da7ad0900002"},{"type":"permissions","id":"f4473c60-4792-11ec-a27b-da7ad0900002"},{"type":"permissions","id":"8e4d6b6e-5750-11ec-a9f4-da7ad0900002"},{"type":"permissions","id":"945b3bb4-5884-11ec-aa6d-da7ad0900002"},{"type":"permissions","id":"f6e917a8-8502-11ec-bf20-da7ad0900002"},{"type":"permissions","id":"f6e917a6-8502-11ec-bf20-da7ad0900002"},{"type":"permissions","id":"b6bf9ac6-9a59-11ec-8480-da7ad0900002"},{"type":"permissions","id":"f8e941cf-e746-11ec-b22d-da7ad0900002"},{"type":"permissions","id":"ee68fba8-173a-11ed-b00b-da7ad0900002"},{"type":"permissions","id":"6be119a6-1cd8-11ed-b185-da7ad0900002"},{"type":"permissions","id":"4ee674f6-55d9-11ed-b10d-da7ad0900002"},{"type":"permissions","id":"4ee5731c-55d9-11ed-b10b-da7ad0900002"},{"type":"permissions","id":"8247acc4-7a4c-11ed-958f-da7ad0900002"},{"type":"permissions","id":"6c5ad874-7aff-11ed-a5cd-da7ad0900002"},{"type":"permissions","id":"c13a2368-7d61-11ed-b5b7-da7ad0900002"},{"type":"permissions","id":"4e61a95e-de98-11ed-aa23-da7ad0900002"},{"type":"permissions","id":"a773e3d8-fff2-11ed-965c-da7ad0900002"},{"type":"permissions","id":"1377d9e4-0ec7-11ee-aebc-da7ad0900002"},{"type":"permissions","id":"de0e73c2-3d23-11ee-aa7d-da7ad0900002"},{"type":"permissions","id":"a8b4d6e8-4ea4-11ee-b482-da7ad0900002"},{"type":"permissions","id":"50c270de-69ee-11ee-9151-da7ad0900002"}]}}}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 98.450125ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/roles?filter=Datadog+Read+Only+Role
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":[{"type":"roles","id":"94172444-be03-11e9-a77a-db1879185210","attributes":{"name":"Datadog Read Only Role","created_at":"2019-08-13T19:50:19.111007+00:00","modified_at":"2019-08-13T19:50:19.111007+00:00","user_count":7},"relationships":{"permissions":{"data":[{"type":"permissions","id":"5e605652-dd12-11e8-9e53-375565b8970e"},{"type":"permissions","id":"6f66600e-dd12-11e8-9e55-7f30fbb45e73"},{"type":"permissions","id":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2"},{"type":"permissions","id":"4441648c-d8b1-11e9-a77a-1b899a04b304"},{"type":"permissions","id":"1af86ce4-7823-11ea-93dc-d7cad1b1c6cb"},{"type":"permissions","id":"b382b982-8535-11ea-93de-2bf1bdf20798"},{"type":"permissions","id":"7314eb20-aa58-11ea-95e2-6fb6e4a451d5"},{"type":"permissions","id":"80de1ec0-aa58-11ea-95e2-aff381626d5d"},{"type":"permissions","id":"5025ee24-f923-11ea-adbc-576ea241df8d"},{"type":"permissions","id":"417ba636-2dce-11eb-84c0-6bce5b0d9de0"},{"type":"permissions","id":"43fa188e-2dce-11eb-84c0-835ad1fd6287"},{"type":"permissions","id":"4916eebe-2dce-11eb-84c0-271cb2c672e8"},{"type":"permissions","id":"edfd5e75-801f-11eb-96d8-da7ad0900002"},{"type":"permissions","id":"98b984f4-b16d-11eb-a2c6-da7ad0900002"},{"type":"permissions","id":"12efc20e-d36c-11eb-a9b8-da7ad0900002"},{"type":"permissions","id":"97971c1c-e895-11eb-b13c-da7ad0900002"},{"type":"permissions","id":"7605ef24-f376-11eb-b90b-da7ad0900002"},{"type":"permissions","id":"7605ef25-f376-11eb-b90b-da7ad0900002"},{"type":"permissions","id":"f4473c60-4792-11ec-a27b-da7ad0900002"},{"type":"permissions","id":"8e4d6b6e-5750-11ec-a9f4-da7ad0900002"},{"type":"permissions","id":"945b3bb4-5884-11ec-aa6d-da7ad0900002"},{"type":"permissions","id":"f6e917a8-8502-11ec-bf20-da7ad0900002"},{"type":"permissions","id":"f6e917a6-8502-11ec-bf20-da7ad0900002"},{"type":"permissions","id":"b6bf9ac6-9a59-11ec-8480-da7ad0900002"},{"type":"permissions","id":"f8e941cf-e746-11ec-b22d-da7ad0900002"},{"type":"permissions","id":"ee68fba8-173a-11ed-b00b-da7ad0900002"},{"type":"permissions","id":"6be119a6-1cd8-11ed-b185-da7ad0900002"},{"type":"permissions","id":"4ee674f6-55d9-11ed-b10d-da7ad0900002"},{"type":"permissions","id":"4ee5731c-55d9-11ed-b10b-da7ad0900002"},{"type":"permissions","id":"8247acc4-7a4c-11ed-958f-da7ad0900002"},{"type":"permissions","id":"6c5ad874-7aff-11ed-a5cd-da7ad0900002"},{"type":"permissions","id":"c13a2368-7d61-11ed-b5b7-da7ad0900002"},{"type":"permissions","id":"4e61a95e-de98-11ed-aa23-da7ad0900002"},{"type":"permissions","id":"a773e3d8-fff2-11ed-965c-da7ad0900002"},{"type":"permissions","id":"1377d9e4-0ec7-11ee-aebc-da7ad0900002"},{"type":"permissions","id":"de0e73c2-3d23-11ee-aa7d-da7ad0900002"},{"type":"permissions","id":"a8b4d6e8-4ea4-11ee-b482-da7ad0900002"},{"type":"permissions","id":"50c270de-69ee-11ee-9151-da7ad0900002"}]}}}],"meta":{"page":{"total_count":18,"total_filtered_count":1}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 127.823292ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/roles?filter=Datadog+Read+Only+Role
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":[{"type":"roles","id":"94172444-be03-11e9-a77a-db1879185210","attributes":{"name":"Datadog Read Only Role","created_at":"2019-08-13T19:50:19.111007+00:00","modified_at":"2019-08-13T19:50:19.111007+00:00","user_count":7},"relationships":{"permissions":{"data":[{"type":"permissions","id":"5e605652-dd12-11e8-9e53-375565b8970e"},{"type":"permissions","id":"6f66600e-dd12-11e8-9e55-7f30fbb45e73"},{"type":"permissions","id":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2"},{"type":"permissions","id":"4441648c-d8b1-11e9-a77a-1b899a04b304"},{"type":"permissions","id":"1af86ce4-7823-11ea-93dc-d7cad1b1c6cb"},{"type":"permissions","id":"b382b982-8535-11ea-93de-2bf1bdf20798"},{"type":"permissions","id":"7314eb20-aa58-11ea-95e2-6fb6e4a451d5"},{"type":"permissions","id":"80de1ec0-aa58-11ea-95e2-aff381626d5d"},{"type":"permissions","id":"5025ee24-f923-11ea-adbc-576ea241df8d"},{"type":"permissions","id":"417ba636-2dce-11eb-84c0-6bce5b0d9de0"},{"type":"permissions","id":"43fa188e-2dce-11eb-84c0-835ad1fd6287"},{"type":"permissions","id":"4916eebe-2dce-11eb-84c0-271cb2c672e8"},{"type":"permissions","id":"edfd5e75-801f-11eb-96d8-da7ad0900002"},{"type":"permissions","id":"98b984f4-b16d-11eb-a2c6-da7ad0900002"},{"type":"permissions","id":"12efc20e-d36c-11eb-a9b8-da7ad0900002"},{"type":"permissions","id":"97971c1c-e895-11eb-b13c-da7ad0900002"},{"type":"permissions","id":"7605ef24-f376-11eb-b90b-da7ad0900002"},{"type":"permissions","id":"7605ef25-f376-11eb-b90b-da7ad0900002"},{"type":"permissions","id":"f4473c60-4792-11ec-a27b-da7ad0900002"},{"type":"permissions","id":"8e4d6b6e-5750-11ec-a9f4-da7ad0900002"},{"type":"permissions","id":"945b3bb4-5884-11ec-aa6d-da7ad0900002"},{"type":"permissions","id":"f6e917a8-8502-11ec-bf20-da7ad0900002"},{"type":"permissions","id":"f6e917a6-8502-11ec-bf20-da7ad0900002"},{"type":"permissions","id":"b6bf9ac6-9a59-11ec-8480-da7ad0900002"},{"type":"permissions","id":"f8e941cf-e746-11ec-b22d-da7ad0900002"},{"type":"permissions","id":"ee68fba8-173a-11ed-b00b-da7ad0900002"},{"type":"permissions","id":"6be119a6-1cd8-11ed-b185-da7ad0900002"},{"type":"permissions","id":"4ee674f6-55d9-11ed-b10d-da7ad0900002"},{"type":"permissions","id":"4ee5731c-55d9-11ed-b10b-da7ad0900002"},{"type":"permissions","id":"8247acc4-7a4c-11ed-958f-da7ad0900002"},{"type":"permissions","id":"6c5ad874-7aff-11ed-a5cd-da7ad0900002"},{"type":"permissions","id":"c13a2368-7d61-11ed-b5b7-da7ad0900002"},{"type":"permissions","id":"4e61a95e-de98-11ed-aa23-da7ad0900002"},{"type":"permissions","id":"a773e3d8-fff2-11ed-965c-da7ad0900002"},{"type":"permissions","id":"1377d9e4-0ec7-11ee-aebc-da7ad0900002"},{"type":"permissions","id":"de0e73c2-3d23-11ee-aa7d-da7ad0900002"},{"type":"permissions","id":"a8b4d6e8-4ea4-11ee-b482-da7ad0900002"},{"type":"permissions","id":"50c270de-69ee-11ee-9151-da7ad0900002"}]}}}],"meta":{"page":{"total_count":18,"total_filtered_count":1}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 136.350125ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/authn_mappings/174b2808-fc1c-11ee-bab8-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"authn_mappings","id":"174b2808-fc1c-11ee-bab8-da7ad0900002","attributes":{"attribute_key":"key_1","attribute_value":"value_1","created_at":"2024-04-16T18:06:47.514708+00:00","modified_at":"2024-04-16T18:06:47.514708+00:00"},"relationships":{"role":{"data":{"type":"roles","id":"94172444-be03-11e9-a77a-db1879185210"}}}},"included":[{"type":"roles","id":"94172444-be03-11e9-a77a-db1879185210","attributes":{"name":"Datadog Read Only Role","created_at":"2019-08-13T19:50:19.111007+00:00","modified_at":"2019-08-13T19:50:19.111007+00:00"},"relationships":{"permissions":{"data":[{"type":"permissions","id":"5e605652-dd12-11e8-9e53-375565b8970e"},{"type":"permissions","id":"6f66600e-dd12-11e8-9e55-7f30fbb45e73"},{"type":"permissions","id":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2"},{"type":"permissions","id":"4441648c-d8b1-11e9-a77a-1b899a04b304"},{"type":"permissions","id":"1af86ce4-7823-11ea-93dc-d7cad1b1c6cb"},{"type":"permissions","id":"b382b982-8535-11ea-93de-2bf1bdf20798"},{"type":"permissions","id":"7314eb20-aa58-11ea-95e2-6fb6e4a451d5"},{"type":"permissions","id":"80de1ec0-aa58-11ea-95e2-aff381626d5d"},{"type":"permissions","id":"5025ee24-f923-11ea-adbc-576ea241df8d"},{"type":"permissions","id":"417ba636-2dce-11eb-84c0-6bce5b0d9de0"},{"type":"permissions","id":"43fa188e-2dce-11eb-84c0-835ad1fd6287"},{"type":"permissions","id":"4916eebe-2dce-11eb-84c0-271cb2c672e8"},{"type":"permissions","id":"edfd5e75-801f-11eb-96d8-da7ad0900002"},{"type":"permissions","id":"98b984f4-b16d-11eb-a2c6-da7ad0900002"},{"type":"permissions","id":"12efc20e-d36c-11eb-a9b8-da7ad0900002"},{"type":"permissions","id":"97971c1c-e895-11eb-b13c-da7ad0900002"},{"type":"permissions","id":"7605ef24-f376-11eb-b90b-da7ad0900002"},{"type":"permissions","id":"7605ef25-f376-11eb-b90b-da7ad0900002"},{"type":"permissions","id":"f4473c60-4792-11ec-a27b-da7ad0900002"},{"type":"permissions","id":"8e4d6b6e-5750-11ec-a9f4-da7ad0900002"},{"type":"permissions","id":"945b3bb4-5884-11ec-aa6d-da7ad0900002"},{"type":"permissions","id":"f6e917a8-8502-11ec-bf20-da7ad0900002"},{"type":"permissions","id":"f6e917a6-8502-11ec-bf20-da7ad0900002"},{"type":"permissions","id":"b6bf9ac6-9a59-11ec-8480-da7ad0900002"},{"type":"permissions","id":"f8e941cf-e746-11ec-b22d-da7ad0900002"},{"type":"permissions","id":"ee68fba8-173a-11ed-b00b-da7ad0900002"},{"type":"permissions","id":"6be119a6-1cd8-11ed-b185-da7ad0900002"},{"type":"permissions","id":"4ee674f6-55d9-11ed-b10d-da7ad0900002"},{"type":"permissions","id":"4ee5731c-55d9-11ed-b10b-da7ad0900002"},{"type":"permissions","id":"8247acc4-7a4c-11ed-958f-da7ad0900002"},{"type":"permissions","id":"6c5ad874-7aff-11ed-a5cd-da7ad0900002"},{"type":"permissions","id":"c13a2368-7d61-11ed-b5b7-da7ad0900002"},{"type":"permissions","id":"4e61a95e-de98-11ed-aa23-da7ad0900002"},{"type":"permissions","id":"a773e3d8-fff2-11ed-965c-da7ad0900002"},{"type":"permissions","id":"1377d9e4-0ec7-11ee-aebc-da7ad0900002"},{"type":"permissions","id":"de0e73c2-3d23-11ee-aa7d-da7ad0900002"},{"type":"permissions","id":"a8b4d6e8-4ea4-11ee-b482-da7ad0900002"},{"type":"permissions","id":"50c270de-69ee-11ee-9151-da7ad0900002"}]}}}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 97.30925ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/roles?filter=Datadog+Read+Only+Role
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":[{"type":"roles","id":"94172444-be03-11e9-a77a-db1879185210","attributes":{"name":"Datadog Read Only Role","created_at":"2019-08-13T19:50:19.111007+00:00","modified_at":"2019-08-13T19:50:19.111007+00:00","user_count":7},"relationships":{"permissions":{"data":[{"type":"permissions","id":"5e605652-dd12-11e8-9e53-375565b8970e"},{"type":"permissions","id":"6f66600e-dd12-11e8-9e55-7f30fbb45e73"},{"type":"permissions","id":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2"},{"type":"permissions","id":"4441648c-d8b1-11e9-a77a-1b899a04b304"},{"type":"permissions","id":"1af86ce4-7823-11ea-93dc-d7cad1b1c6cb"},{"type":"permissions","id":"b382b982-8535-11ea-93de-2bf1bdf20798"},{"type":"permissions","id":"7314eb20-aa58-11ea-95e2-6fb6e4a451d5"},{"type":"permissions","id":"80de1ec0-aa58-11ea-95e2-aff381626d5d"},{"type":"permissions","id":"5025ee24-f923-11ea-adbc-576ea241df8d"},{"type":"permissions","id":"417ba636-2dce-11eb-84c0-6bce5b0d9de0"},{"type":"permissions","id":"43fa188e-2dce-11eb-84c0-835ad1fd6287"},{"type":"permissions","id":"4916eebe-2dce-11eb-84c0-271cb2c672e8"},{"type":"permissions","id":"edfd5e75-801f-11eb-96d8-da7ad0900002"},{"type":"permissions","id":"98b984f4-b16d-11eb-a2c6-da7ad0900002"},{"type":"permissions","id":"12efc20e-d36c-11eb-a9b8-da7ad0900002"},{"type":"permissions","id":"97971c1c-e895-11eb-b13c-da7ad0900002"},{"type":"permissions","id":"7605ef24-f376-11eb-b90b-da7ad0900002"},{"type":"permissions","id":"7605ef25-f376-11eb-b90b-da7ad0900002"},{"type":"permissions","id":"f4473c60-4792-11ec-a27b-da7ad0900002"},{"type":"permissions","id":"8e4d6b6e-5750-11ec-a9f4-da7ad0900002"},{"type":"permissions","id":"945b3bb4-5884-11ec-aa6d-da7ad0900002"},{"type":"permissions","id":"f6e917a8-8502-11ec-bf20-da7ad0900002"},{"type":"permissions","id":"f6e917a6-8502-11ec-bf20-da7ad0900002"},{"type":"permissions","id":"b6bf9ac6-9a59-11ec-8480-da7ad0900002"},{"type":"permissions","id":"f8e941cf-e746-11ec-b22d-da7ad0900002"},{"type":"permissions","id":"ee68fba8-173a-11ed-b00b-da7ad0900002"},{"type":"permissions","id":"6be119a6-1cd8-11ed-b185-da7ad0900002"},{"type":"permissions","id":"4ee674f6-55d9-11ed-b10d-da7ad0900002"},{"type":"permissions","id":"4ee5731c-55d9-11ed-b10b-da7ad0900002"},{"type":"permissions","id":"8247acc4-7a4c-11ed-958f-da7ad0900002"},{"type":"permissions","id":"6c5ad874-7aff-11ed-a5cd-da7ad0900002"},{"type":"permissions","id":"c13a2368-7d61-11ed-b5b7-da7ad0900002"},{"type":"permissions","id":"4e61a95e-de98-11ed-aa23-da7ad0900002"},{"type":"permissions","id":"a773e3d8-fff2-11ed-965c-da7ad0900002"},{"type":"permissions","id":"1377d9e4-0ec7-11ee-aebc-da7ad0900002"},{"type":"permissions","id":"de0e73c2-3d23-11ee-aa7d-da7ad0900002"},{"type":"permissions","id":"a8b4d6e8-4ea4-11ee-b482-da7ad0900002"},{"type":"permissions","id":"50c270de-69ee-11ee-9151-da7ad0900002"}]}}}],"meta":{"page":{"total_count":18,"total_filtered_count":1}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 143.134ms
+    - id: 9
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/roles?filter=Datadog+Standard+Role
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":[{"type":"roles","id":"94172443-be03-11e9-a77a-373332f69711","attributes":{"name":"Datadog Standard Role","created_at":"2019-08-13T19:50:19.075284+00:00","modified_at":"2019-08-13T19:50:19.075284+00:00","user_count":33},"relationships":{"permissions":{"data":[{"type":"permissions","id":"984d2f00-d3b4-11e8-a200-bb47109e9987"},{"type":"permissions","id":"5e605652-dd12-11e8-9e53-375565b8970e"},{"type":"permissions","id":"62cc036c-dd12-11e8-9e54-db9995643092"},{"type":"permissions","id":"6f66600e-dd12-11e8-9e55-7f30fbb45e73"},{"type":"permissions","id":"7d7c98ac-dd12-11e8-9e56-93700598622d"},{"type":"permissions","id":"811ac4ca-dd12-11e8-9e57-676a7f0beef9"},{"type":"permissions","id":"84aa3ae4-dd12-11e8-9e58-a373a514ccd0"},{"type":"permissions","id":"979df720-aed7-11e9-99c6-a7eb8373165a"},{"type":"permissions","id":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2"},{"type":"permissions","id":"d90f6831-d3d8-11e9-a77a-4fd230ddbc6a"},{"type":"permissions","id":"d90f6832-d3d8-11e9-a77a-bf8a2607f864"},{"type":"permissions","id":"4441648c-d8b1-11e9-a77a-1b899a04b304"},{"type":"permissions","id":"48ef71ea-d8b1-11e9-a77a-93f408470ad0"},{"type":"permissions","id":"4d87d5f8-d8b1-11e9-a77a-eb9c8350d04f"},{"type":"permissions","id":"1af86ce4-7823-11ea-93dc-d7cad1b1c6cb"},{"type":"permissions","id":"b382b982-8535-11ea-93de-2bf1bdf20798"},{"type":"permissions","id":"7314eb20-aa58-11ea-95e2-6fb6e4a451d5"},{"type":"permissions","id":"7b516476-aa58-11ea-95e2-93718cd56369"},{"type":"permissions","id":"80de1ec0-aa58-11ea-95e2-aff381626d5d"},{"type":"permissions","id":"58b412cc-ff6d-11eb-bc9c-da7ad0900002"},{"type":"permissions","id":"9ac1d8cc-e707-11ea-aa2d-73d37e989a9d"},{"type":"permissions","id":"46a301da-ec5c-11ea-aa9f-73bedeab67ee"},{"type":"permissions","id":"46a301db-ec5c-11ea-aa9f-2fe72193d60e"},{"type":"permissions","id":"46a301dd-ec5c-11ea-aa9f-97edfb345bc9"},{"type":"permissions","id":"46a301e4-ec5c-11ea-aa9f-87282b3a50cc"},{"type":"permissions","id":"07c3c146-f7f8-11ea-acf6-0bd62b9ae60e"},{"type":"permissions","id":"372896c4-f923-11ea-adbc-4fecd107156d"},{"type":"permissions","id":"4628ca54-f923-11ea-adbc-4b2b7f88c5e9"},{"type":"permissions","id":"4ada6e36-f923-11ea-adbc-0788e5c5e3cf"},{"type":"permissions","id":"5025ee24-f923-11ea-adbc-576ea241df8d"},{"type":"permissions","id":"55f4b5ec-f923-11ea-adbc-1bfa2334a755"},{"type":"permissions","id":"5c6b88e2-f923-11ea-adbc-abf57d079420"},{"type":"permissions","id":"642eebe6-f923-11ea-adbc-eb617674ea04"},{"type":"permissions","id":"6ba32d22-0e1a-11eb-ba44-bf9a5aafaa39"},{"type":"permissions","id":"fcac2ad8-2843-11eb-8315-0fe47949d625"},{"type":"permissions","id":"417ba636-2dce-11eb-84c0-6bce5b0d9de0"},{"type":"permissions","id":"43fa188e-2dce-11eb-84c0-835ad1fd6287"},{"type":"permissions","id":"4916eebe-2dce-11eb-84c0-271cb2c672e8"},{"type":"permissions","id":"5cbe5f9c-2dce-11eb-84c0-872d3e9f1076"},{"type":"permissions","id":"61765026-2dce-11eb-84c0-833e230d1b8f"},{"type":"permissions","id":"8106300a-54f7-11eb-8cbc-7781a434a67b"},{"type":"permissions","id":"edfd5e75-801f-11eb-96d8-da7ad0900002"},{"type":"permissions","id":"98b984f4-b16d-11eb-a2c6-da7ad0900002"},{"type":"permissions","id":"12efc20e-d36c-11eb-a9b8-da7ad0900002"},{"type":"permissions","id":"12efc211-d36c-11eb-a9b8-da7ad0900002"},{"type":"permissions","id":"12efc20f-d36c-11eb-a9b8-da7ad0900002"},{"type":"permissions","id":"12efc210-d36c-11eb-a9b8-da7ad0900002"},{"type":"permissions","id":"97971c1c-e895-11eb-b13c-da7ad0900002"},{"type":"permissions","id":"97971c1d-e895-11eb-b13c-da7ad0900002"},{"type":"permissions","id":"7605ef24-f376-11eb-b90b-da7ad0900002"},{"type":"permissions","id":"7605ef25-f376-11eb-b90b-da7ad0900002"},{"type":"permissions","id":"c95412b8-16c7-11ec-85c0-da7ad0900002"},{"type":"permissions","id":"c95412b9-16c7-11ec-85c0-da7ad0900002"},{"type":"permissions","id":"26c79920-1703-11ec-85d2-da7ad0900002"},{"type":"permissions","id":"f4473c60-4792-11ec-a27b-da7ad0900002"},{"type":"permissions","id":"f4473c61-4792-11ec-a27b-da7ad0900002"},{"type":"permissions","id":"8e4d6b6e-5750-11ec-a9f4-da7ad0900002"},{"type":"permissions","id":"945b3bb4-5884-11ec-aa6d-da7ad0900002"},{"type":"permissions","id":"f6e917a8-8502-11ec-bf20-da7ad0900002"},{"type":"permissions","id":"f6e917aa-8502-11ec-bf20-da7ad0900002"},{"type":"permissions","id":"f6e917a9-8502-11ec-bf20-da7ad0900002"},{"type":"permissions","id":"f6e917a6-8502-11ec-bf20-da7ad0900002"},{"type":"permissions","id":"f6e917a7-8502-11ec-bf20-da7ad0900002"},{"type":"permissions","id":"b6bf9ac6-9a59-11ec-8480-da7ad0900002"},{"type":"permissions","id":"b6bf9ac7-9a59-11ec-8480-da7ad0900002"},{"type":"permissions","id":"2108215e-b9b4-11ec-958e-da7ad0900002"},{"type":"permissions","id":"7b1f5089-c59e-11ec-aa32-da7ad0900002"},{"type":"permissions","id":"f8e941cf-e746-11ec-b22d-da7ad0900002"},{"type":"permissions","id":"f8e941d0-e746-11ec-b22d-da7ad0900002"},{"type":"permissions","id":"f8e941ce-e746-11ec-b22d-da7ad0900002"},{"type":"permissions","id":"ee68fba9-173a-11ed-b00b-da7ad0900002"},{"type":"permissions","id":"ee68fba8-173a-11ed-b00b-da7ad0900002"},{"type":"permissions","id":"6be119a6-1cd8-11ed-b185-da7ad0900002"},{"type":"permissions","id":"36e2a22e-248a-11ed-b405-da7ad0900002"},{"type":"permissions","id":"4ee674f6-55d9-11ed-b10d-da7ad0900002"},{"type":"permissions","id":"4ee7e46c-55d9-11ed-b10e-da7ad0900002"},{"type":"permissions","id":"4ee5731c-55d9-11ed-b10b-da7ad0900002"},{"type":"permissions","id":"4ee60688-55d9-11ed-b10c-da7ad0900002"},{"type":"permissions","id":"99474cc2-5a12-11ed-b547-da7ad0900002"},{"type":"permissions","id":"9948271e-5a12-11ed-b548-da7ad0900002"},{"type":"permissions","id":"8247acc4-7a4c-11ed-958f-da7ad0900002"},{"type":"permissions","id":"824851a6-7a4c-11ed-9590-da7ad0900002"},{"type":"permissions","id":"77d55a44-7a5a-11ed-8abe-da7ad0900002"},{"type":"permissions","id":"6c5ad874-7aff-11ed-a5cd-da7ad0900002"},{"type":"permissions","id":"6c5c1090-7aff-11ed-a5cf-da7ad0900002"},{"type":"permissions","id":"6c5b7428-7aff-11ed-a5ce-da7ad0900002"},{"type":"permissions","id":"6c5de654-7aff-11ed-a5d1-da7ad0900002"},{"type":"permissions","id":"c13a2368-7d61-11ed-b5b7-da7ad0900002"},{"type":"permissions","id":"ca6bfb3a-b44f-11ed-adb2-da7ad0900002"},{"type":"permissions","id":"4dc3eec6-b468-11ed-8539-da7ad0900002"},{"type":"permissions","id":"4dc4094c-b468-11ed-853a-da7ad0900002"},{"type":"permissions","id":"36bf3d0a-ccc0-11ed-9453-da7ad0900002"},{"type":"permissions","id":"f416f55e-db3f-11ed-8028-da7ad0900002"},{"type":"permissions","id":"f416b1ac-db3f-11ed-8027-da7ad0900002"},{"type":"permissions","id":"4e61a95e-de98-11ed-aa23-da7ad0900002"},{"type":"permissions","id":"4e61ea18-de98-11ed-aa24-da7ad0900002"},{"type":"permissions","id":"a4316eb8-f438-11ed-8af2-da7ad0900002"},{"type":"permissions","id":"a431bf12-f438-11ed-8af3-da7ad0900002"},{"type":"permissions","id":"8352cf04-f6ac-11ed-9ec7-da7ad0900002"},{"type":"permissions","id":"3a48350c-f9bc-11ed-b81c-da7ad0900002"},{"type":"permissions","id":"a773e3d8-fff2-11ed-965c-da7ad0900002"},{"type":"permissions","id":"a77452c8-fff2-11ed-965d-da7ad0900002"},{"type":"permissions","id":"a51b375a-ff73-11ed-8c18-da7ad0900002"},{"type":"permissions","id":"61f9891a-0070-11ee-9c3f-da7ad0900002"},{"type":"permissions","id":"1377d9e4-0ec7-11ee-aebc-da7ad0900002"},{"type":"permissions","id":"cc8cd958-11eb-11ee-ade2-da7ad0900002"},{"type":"permissions","id":"b1ad77e6-0949-11ee-b2c3-da7ad0900002"},{"type":"permissions","id":"b1adb5da-0949-11ee-b2c4-da7ad0900002"},{"type":"permissions","id":"0efeff18-1cec-11ee-992d-da7ad0900002"},{"type":"permissions","id":"785177a6-20da-11ee-bed7-da7ad0900002"},{"type":"permissions","id":"6c5c79b2-21a4-11ee-99ee-da7ad0900002"},{"type":"permissions","id":"1b8f54cc-2ca4-11ee-9e72-da7ad0900002"},{"type":"permissions","id":"de0e73c2-3d23-11ee-aa7d-da7ad0900002"},{"type":"permissions","id":"de0eb666-3d23-11ee-aa7e-da7ad0900002"},{"type":"permissions","id":"a8b4d6e8-4ea4-11ee-b482-da7ad0900002"},{"type":"permissions","id":"263eff86-6925-11ee-acc0-da7ad0900002"},{"type":"permissions","id":"50c270de-69ee-11ee-9151-da7ad0900002"},{"type":"permissions","id":"1b572396-ba15-11ee-9e19-da7ad0900002"},{"type":"permissions","id":"ca06b2b4-f5cd-11ee-9e77-da7ad0900002"}]}}}],"meta":{"page":{"total_count":18,"total_filtered_count":1}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 160.311ms
+    - id: 10
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/authn_mappings/174b2808-fc1c-11ee-bab8-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"authn_mappings","id":"174b2808-fc1c-11ee-bab8-da7ad0900002","attributes":{"attribute_key":"key_1","attribute_value":"value_1","created_at":"2024-04-16T18:06:47.514708+00:00","modified_at":"2024-04-16T18:06:47.514708+00:00"},"relationships":{"role":{"data":{"type":"roles","id":"94172444-be03-11e9-a77a-db1879185210"}}}},"included":[{"type":"roles","id":"94172444-be03-11e9-a77a-db1879185210","attributes":{"name":"Datadog Read Only Role","created_at":"2019-08-13T19:50:19.111007+00:00","modified_at":"2019-08-13T19:50:19.111007+00:00"},"relationships":{"permissions":{"data":[{"type":"permissions","id":"5e605652-dd12-11e8-9e53-375565b8970e"},{"type":"permissions","id":"6f66600e-dd12-11e8-9e55-7f30fbb45e73"},{"type":"permissions","id":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2"},{"type":"permissions","id":"4441648c-d8b1-11e9-a77a-1b899a04b304"},{"type":"permissions","id":"1af86ce4-7823-11ea-93dc-d7cad1b1c6cb"},{"type":"permissions","id":"b382b982-8535-11ea-93de-2bf1bdf20798"},{"type":"permissions","id":"7314eb20-aa58-11ea-95e2-6fb6e4a451d5"},{"type":"permissions","id":"80de1ec0-aa58-11ea-95e2-aff381626d5d"},{"type":"permissions","id":"5025ee24-f923-11ea-adbc-576ea241df8d"},{"type":"permissions","id":"417ba636-2dce-11eb-84c0-6bce5b0d9de0"},{"type":"permissions","id":"43fa188e-2dce-11eb-84c0-835ad1fd6287"},{"type":"permissions","id":"4916eebe-2dce-11eb-84c0-271cb2c672e8"},{"type":"permissions","id":"edfd5e75-801f-11eb-96d8-da7ad0900002"},{"type":"permissions","id":"98b984f4-b16d-11eb-a2c6-da7ad0900002"},{"type":"permissions","id":"12efc20e-d36c-11eb-a9b8-da7ad0900002"},{"type":"permissions","id":"97971c1c-e895-11eb-b13c-da7ad0900002"},{"type":"permissions","id":"7605ef24-f376-11eb-b90b-da7ad0900002"},{"type":"permissions","id":"7605ef25-f376-11eb-b90b-da7ad0900002"},{"type":"permissions","id":"f4473c60-4792-11ec-a27b-da7ad0900002"},{"type":"permissions","id":"8e4d6b6e-5750-11ec-a9f4-da7ad0900002"},{"type":"permissions","id":"945b3bb4-5884-11ec-aa6d-da7ad0900002"},{"type":"permissions","id":"f6e917a8-8502-11ec-bf20-da7ad0900002"},{"type":"permissions","id":"f6e917a6-8502-11ec-bf20-da7ad0900002"},{"type":"permissions","id":"b6bf9ac6-9a59-11ec-8480-da7ad0900002"},{"type":"permissions","id":"f8e941cf-e746-11ec-b22d-da7ad0900002"},{"type":"permissions","id":"ee68fba8-173a-11ed-b00b-da7ad0900002"},{"type":"permissions","id":"6be119a6-1cd8-11ed-b185-da7ad0900002"},{"type":"permissions","id":"4ee674f6-55d9-11ed-b10d-da7ad0900002"},{"type":"permissions","id":"4ee5731c-55d9-11ed-b10b-da7ad0900002"},{"type":"permissions","id":"8247acc4-7a4c-11ed-958f-da7ad0900002"},{"type":"permissions","id":"6c5ad874-7aff-11ed-a5cd-da7ad0900002"},{"type":"permissions","id":"c13a2368-7d61-11ed-b5b7-da7ad0900002"},{"type":"permissions","id":"4e61a95e-de98-11ed-aa23-da7ad0900002"},{"type":"permissions","id":"a773e3d8-fff2-11ed-965c-da7ad0900002"},{"type":"permissions","id":"1377d9e4-0ec7-11ee-aebc-da7ad0900002"},{"type":"permissions","id":"de0e73c2-3d23-11ee-aa7d-da7ad0900002"},{"type":"permissions","id":"a8b4d6e8-4ea4-11ee-b482-da7ad0900002"},{"type":"permissions","id":"50c270de-69ee-11ee-9151-da7ad0900002"}]}}}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 95.058583ms
+    - id: 11
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/roles?filter=Datadog+Standard+Role
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":[{"type":"roles","id":"94172443-be03-11e9-a77a-373332f69711","attributes":{"name":"Datadog Standard Role","created_at":"2019-08-13T19:50:19.075284+00:00","modified_at":"2019-08-13T19:50:19.075284+00:00","user_count":33},"relationships":{"permissions":{"data":[{"type":"permissions","id":"984d2f00-d3b4-11e8-a200-bb47109e9987"},{"type":"permissions","id":"5e605652-dd12-11e8-9e53-375565b8970e"},{"type":"permissions","id":"62cc036c-dd12-11e8-9e54-db9995643092"},{"type":"permissions","id":"6f66600e-dd12-11e8-9e55-7f30fbb45e73"},{"type":"permissions","id":"7d7c98ac-dd12-11e8-9e56-93700598622d"},{"type":"permissions","id":"811ac4ca-dd12-11e8-9e57-676a7f0beef9"},{"type":"permissions","id":"84aa3ae4-dd12-11e8-9e58-a373a514ccd0"},{"type":"permissions","id":"979df720-aed7-11e9-99c6-a7eb8373165a"},{"type":"permissions","id":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2"},{"type":"permissions","id":"d90f6831-d3d8-11e9-a77a-4fd230ddbc6a"},{"type":"permissions","id":"d90f6832-d3d8-11e9-a77a-bf8a2607f864"},{"type":"permissions","id":"4441648c-d8b1-11e9-a77a-1b899a04b304"},{"type":"permissions","id":"48ef71ea-d8b1-11e9-a77a-93f408470ad0"},{"type":"permissions","id":"4d87d5f8-d8b1-11e9-a77a-eb9c8350d04f"},{"type":"permissions","id":"1af86ce4-7823-11ea-93dc-d7cad1b1c6cb"},{"type":"permissions","id":"b382b982-8535-11ea-93de-2bf1bdf20798"},{"type":"permissions","id":"7314eb20-aa58-11ea-95e2-6fb6e4a451d5"},{"type":"permissions","id":"7b516476-aa58-11ea-95e2-93718cd56369"},{"type":"permissions","id":"80de1ec0-aa58-11ea-95e2-aff381626d5d"},{"type":"permissions","id":"58b412cc-ff6d-11eb-bc9c-da7ad0900002"},{"type":"permissions","id":"9ac1d8cc-e707-11ea-aa2d-73d37e989a9d"},{"type":"permissions","id":"46a301da-ec5c-11ea-aa9f-73bedeab67ee"},{"type":"permissions","id":"46a301db-ec5c-11ea-aa9f-2fe72193d60e"},{"type":"permissions","id":"46a301dd-ec5c-11ea-aa9f-97edfb345bc9"},{"type":"permissions","id":"46a301e4-ec5c-11ea-aa9f-87282b3a50cc"},{"type":"permissions","id":"07c3c146-f7f8-11ea-acf6-0bd62b9ae60e"},{"type":"permissions","id":"372896c4-f923-11ea-adbc-4fecd107156d"},{"type":"permissions","id":"4628ca54-f923-11ea-adbc-4b2b7f88c5e9"},{"type":"permissions","id":"4ada6e36-f923-11ea-adbc-0788e5c5e3cf"},{"type":"permissions","id":"5025ee24-f923-11ea-adbc-576ea241df8d"},{"type":"permissions","id":"55f4b5ec-f923-11ea-adbc-1bfa2334a755"},{"type":"permissions","id":"5c6b88e2-f923-11ea-adbc-abf57d079420"},{"type":"permissions","id":"642eebe6-f923-11ea-adbc-eb617674ea04"},{"type":"permissions","id":"6ba32d22-0e1a-11eb-ba44-bf9a5aafaa39"},{"type":"permissions","id":"fcac2ad8-2843-11eb-8315-0fe47949d625"},{"type":"permissions","id":"417ba636-2dce-11eb-84c0-6bce5b0d9de0"},{"type":"permissions","id":"43fa188e-2dce-11eb-84c0-835ad1fd6287"},{"type":"permissions","id":"4916eebe-2dce-11eb-84c0-271cb2c672e8"},{"type":"permissions","id":"5cbe5f9c-2dce-11eb-84c0-872d3e9f1076"},{"type":"permissions","id":"61765026-2dce-11eb-84c0-833e230d1b8f"},{"type":"permissions","id":"8106300a-54f7-11eb-8cbc-7781a434a67b"},{"type":"permissions","id":"edfd5e75-801f-11eb-96d8-da7ad0900002"},{"type":"permissions","id":"98b984f4-b16d-11eb-a2c6-da7ad0900002"},{"type":"permissions","id":"12efc20e-d36c-11eb-a9b8-da7ad0900002"},{"type":"permissions","id":"12efc211-d36c-11eb-a9b8-da7ad0900002"},{"type":"permissions","id":"12efc20f-d36c-11eb-a9b8-da7ad0900002"},{"type":"permissions","id":"12efc210-d36c-11eb-a9b8-da7ad0900002"},{"type":"permissions","id":"97971c1c-e895-11eb-b13c-da7ad0900002"},{"type":"permissions","id":"97971c1d-e895-11eb-b13c-da7ad0900002"},{"type":"permissions","id":"7605ef24-f376-11eb-b90b-da7ad0900002"},{"type":"permissions","id":"7605ef25-f376-11eb-b90b-da7ad0900002"},{"type":"permissions","id":"c95412b8-16c7-11ec-85c0-da7ad0900002"},{"type":"permissions","id":"c95412b9-16c7-11ec-85c0-da7ad0900002"},{"type":"permissions","id":"26c79920-1703-11ec-85d2-da7ad0900002"},{"type":"permissions","id":"f4473c60-4792-11ec-a27b-da7ad0900002"},{"type":"permissions","id":"f4473c61-4792-11ec-a27b-da7ad0900002"},{"type":"permissions","id":"8e4d6b6e-5750-11ec-a9f4-da7ad0900002"},{"type":"permissions","id":"945b3bb4-5884-11ec-aa6d-da7ad0900002"},{"type":"permissions","id":"f6e917a8-8502-11ec-bf20-da7ad0900002"},{"type":"permissions","id":"f6e917aa-8502-11ec-bf20-da7ad0900002"},{"type":"permissions","id":"f6e917a9-8502-11ec-bf20-da7ad0900002"},{"type":"permissions","id":"f6e917a6-8502-11ec-bf20-da7ad0900002"},{"type":"permissions","id":"f6e917a7-8502-11ec-bf20-da7ad0900002"},{"type":"permissions","id":"b6bf9ac6-9a59-11ec-8480-da7ad0900002"},{"type":"permissions","id":"b6bf9ac7-9a59-11ec-8480-da7ad0900002"},{"type":"permissions","id":"2108215e-b9b4-11ec-958e-da7ad0900002"},{"type":"permissions","id":"7b1f5089-c59e-11ec-aa32-da7ad0900002"},{"type":"permissions","id":"f8e941cf-e746-11ec-b22d-da7ad0900002"},{"type":"permissions","id":"f8e941d0-e746-11ec-b22d-da7ad0900002"},{"type":"permissions","id":"f8e941ce-e746-11ec-b22d-da7ad0900002"},{"type":"permissions","id":"ee68fba9-173a-11ed-b00b-da7ad0900002"},{"type":"permissions","id":"ee68fba8-173a-11ed-b00b-da7ad0900002"},{"type":"permissions","id":"6be119a6-1cd8-11ed-b185-da7ad0900002"},{"type":"permissions","id":"36e2a22e-248a-11ed-b405-da7ad0900002"},{"type":"permissions","id":"4ee674f6-55d9-11ed-b10d-da7ad0900002"},{"type":"permissions","id":"4ee7e46c-55d9-11ed-b10e-da7ad0900002"},{"type":"permissions","id":"4ee5731c-55d9-11ed-b10b-da7ad0900002"},{"type":"permissions","id":"4ee60688-55d9-11ed-b10c-da7ad0900002"},{"type":"permissions","id":"99474cc2-5a12-11ed-b547-da7ad0900002"},{"type":"permissions","id":"9948271e-5a12-11ed-b548-da7ad0900002"},{"type":"permissions","id":"8247acc4-7a4c-11ed-958f-da7ad0900002"},{"type":"permissions","id":"824851a6-7a4c-11ed-9590-da7ad0900002"},{"type":"permissions","id":"77d55a44-7a5a-11ed-8abe-da7ad0900002"},{"type":"permissions","id":"6c5ad874-7aff-11ed-a5cd-da7ad0900002"},{"type":"permissions","id":"6c5c1090-7aff-11ed-a5cf-da7ad0900002"},{"type":"permissions","id":"6c5b7428-7aff-11ed-a5ce-da7ad0900002"},{"type":"permissions","id":"6c5de654-7aff-11ed-a5d1-da7ad0900002"},{"type":"permissions","id":"c13a2368-7d61-11ed-b5b7-da7ad0900002"},{"type":"permissions","id":"ca6bfb3a-b44f-11ed-adb2-da7ad0900002"},{"type":"permissions","id":"4dc3eec6-b468-11ed-8539-da7ad0900002"},{"type":"permissions","id":"4dc4094c-b468-11ed-853a-da7ad0900002"},{"type":"permissions","id":"36bf3d0a-ccc0-11ed-9453-da7ad0900002"},{"type":"permissions","id":"f416f55e-db3f-11ed-8028-da7ad0900002"},{"type":"permissions","id":"f416b1ac-db3f-11ed-8027-da7ad0900002"},{"type":"permissions","id":"4e61a95e-de98-11ed-aa23-da7ad0900002"},{"type":"permissions","id":"4e61ea18-de98-11ed-aa24-da7ad0900002"},{"type":"permissions","id":"a4316eb8-f438-11ed-8af2-da7ad0900002"},{"type":"permissions","id":"a431bf12-f438-11ed-8af3-da7ad0900002"},{"type":"permissions","id":"8352cf04-f6ac-11ed-9ec7-da7ad0900002"},{"type":"permissions","id":"3a48350c-f9bc-11ed-b81c-da7ad0900002"},{"type":"permissions","id":"a773e3d8-fff2-11ed-965c-da7ad0900002"},{"type":"permissions","id":"a77452c8-fff2-11ed-965d-da7ad0900002"},{"type":"permissions","id":"a51b375a-ff73-11ed-8c18-da7ad0900002"},{"type":"permissions","id":"61f9891a-0070-11ee-9c3f-da7ad0900002"},{"type":"permissions","id":"1377d9e4-0ec7-11ee-aebc-da7ad0900002"},{"type":"permissions","id":"cc8cd958-11eb-11ee-ade2-da7ad0900002"},{"type":"permissions","id":"b1ad77e6-0949-11ee-b2c3-da7ad0900002"},{"type":"permissions","id":"b1adb5da-0949-11ee-b2c4-da7ad0900002"},{"type":"permissions","id":"0efeff18-1cec-11ee-992d-da7ad0900002"},{"type":"permissions","id":"785177a6-20da-11ee-bed7-da7ad0900002"},{"type":"permissions","id":"6c5c79b2-21a4-11ee-99ee-da7ad0900002"},{"type":"permissions","id":"1b8f54cc-2ca4-11ee-9e72-da7ad0900002"},{"type":"permissions","id":"de0e73c2-3d23-11ee-aa7d-da7ad0900002"},{"type":"permissions","id":"de0eb666-3d23-11ee-aa7e-da7ad0900002"},{"type":"permissions","id":"a8b4d6e8-4ea4-11ee-b482-da7ad0900002"},{"type":"permissions","id":"263eff86-6925-11ee-acc0-da7ad0900002"},{"type":"permissions","id":"50c270de-69ee-11ee-9151-da7ad0900002"},{"type":"permissions","id":"1b572396-ba15-11ee-9e19-da7ad0900002"},{"type":"permissions","id":"ca06b2b4-f5cd-11ee-9e77-da7ad0900002"}]}}}],"meta":{"page":{"total_count":18,"total_filtered_count":1}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 146.94275ms
+    - id: 12
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 241
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"attribute_key":"key_2","attribute_value":"value_2"},"id":"174b2808-fc1c-11ee-bab8-da7ad0900002","relationships":{"role":{"data":{"id":"94172443-be03-11e9-a77a-373332f69711","type":"roles"}}},"type":"authn_mappings"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/authn_mappings/174b2808-fc1c-11ee-bab8-da7ad0900002
+        method: PATCH
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"authn_mappings","id":"174b2808-fc1c-11ee-bab8-da7ad0900002","attributes":{"attribute_key":"key_2","attribute_value":"value_2","created_at":"2024-04-16T18:06:47.514708+00:00","modified_at":"2024-04-16T18:06:50.266373+00:00"},"relationships":{"role":{"data":{"type":"roles","id":"94172443-be03-11e9-a77a-373332f69711"}}}},"included":[{"type":"roles","id":"94172443-be03-11e9-a77a-373332f69711","attributes":{"name":"Datadog Standard Role","created_at":"2019-08-13T19:50:19.075284+00:00","modified_at":"2019-08-13T19:50:19.075284+00:00"},"relationships":{"permissions":{"data":[{"type":"permissions","id":"984d2f00-d3b4-11e8-a200-bb47109e9987"},{"type":"permissions","id":"5e605652-dd12-11e8-9e53-375565b8970e"},{"type":"permissions","id":"62cc036c-dd12-11e8-9e54-db9995643092"},{"type":"permissions","id":"6f66600e-dd12-11e8-9e55-7f30fbb45e73"},{"type":"permissions","id":"7d7c98ac-dd12-11e8-9e56-93700598622d"},{"type":"permissions","id":"811ac4ca-dd12-11e8-9e57-676a7f0beef9"},{"type":"permissions","id":"84aa3ae4-dd12-11e8-9e58-a373a514ccd0"},{"type":"permissions","id":"979df720-aed7-11e9-99c6-a7eb8373165a"},{"type":"permissions","id":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2"},{"type":"permissions","id":"d90f6831-d3d8-11e9-a77a-4fd230ddbc6a"},{"type":"permissions","id":"d90f6832-d3d8-11e9-a77a-bf8a2607f864"},{"type":"permissions","id":"4441648c-d8b1-11e9-a77a-1b899a04b304"},{"type":"permissions","id":"48ef71ea-d8b1-11e9-a77a-93f408470ad0"},{"type":"permissions","id":"4d87d5f8-d8b1-11e9-a77a-eb9c8350d04f"},{"type":"permissions","id":"1af86ce4-7823-11ea-93dc-d7cad1b1c6cb"},{"type":"permissions","id":"b382b982-8535-11ea-93de-2bf1bdf20798"},{"type":"permissions","id":"7314eb20-aa58-11ea-95e2-6fb6e4a451d5"},{"type":"permissions","id":"7b516476-aa58-11ea-95e2-93718cd56369"},{"type":"permissions","id":"80de1ec0-aa58-11ea-95e2-aff381626d5d"},{"type":"permissions","id":"58b412cc-ff6d-11eb-bc9c-da7ad0900002"},{"type":"permissions","id":"9ac1d8cc-e707-11ea-aa2d-73d37e989a9d"},{"type":"permissions","id":"46a301da-ec5c-11ea-aa9f-73bedeab67ee"},{"type":"permissions","id":"46a301db-ec5c-11ea-aa9f-2fe72193d60e"},{"type":"permissions","id":"46a301dd-ec5c-11ea-aa9f-97edfb345bc9"},{"type":"permissions","id":"46a301e4-ec5c-11ea-aa9f-87282b3a50cc"},{"type":"permissions","id":"07c3c146-f7f8-11ea-acf6-0bd62b9ae60e"},{"type":"permissions","id":"372896c4-f923-11ea-adbc-4fecd107156d"},{"type":"permissions","id":"4628ca54-f923-11ea-adbc-4b2b7f88c5e9"},{"type":"permissions","id":"4ada6e36-f923-11ea-adbc-0788e5c5e3cf"},{"type":"permissions","id":"5025ee24-f923-11ea-adbc-576ea241df8d"},{"type":"permissions","id":"55f4b5ec-f923-11ea-adbc-1bfa2334a755"},{"type":"permissions","id":"5c6b88e2-f923-11ea-adbc-abf57d079420"},{"type":"permissions","id":"642eebe6-f923-11ea-adbc-eb617674ea04"},{"type":"permissions","id":"6ba32d22-0e1a-11eb-ba44-bf9a5aafaa39"},{"type":"permissions","id":"fcac2ad8-2843-11eb-8315-0fe47949d625"},{"type":"permissions","id":"417ba636-2dce-11eb-84c0-6bce5b0d9de0"},{"type":"permissions","id":"43fa188e-2dce-11eb-84c0-835ad1fd6287"},{"type":"permissions","id":"4916eebe-2dce-11eb-84c0-271cb2c672e8"},{"type":"permissions","id":"5cbe5f9c-2dce-11eb-84c0-872d3e9f1076"},{"type":"permissions","id":"61765026-2dce-11eb-84c0-833e230d1b8f"},{"type":"permissions","id":"8106300a-54f7-11eb-8cbc-7781a434a67b"},{"type":"permissions","id":"edfd5e75-801f-11eb-96d8-da7ad0900002"},{"type":"permissions","id":"98b984f4-b16d-11eb-a2c6-da7ad0900002"},{"type":"permissions","id":"12efc20e-d36c-11eb-a9b8-da7ad0900002"},{"type":"permissions","id":"12efc211-d36c-11eb-a9b8-da7ad0900002"},{"type":"permissions","id":"12efc20f-d36c-11eb-a9b8-da7ad0900002"},{"type":"permissions","id":"12efc210-d36c-11eb-a9b8-da7ad0900002"},{"type":"permissions","id":"97971c1c-e895-11eb-b13c-da7ad0900002"},{"type":"permissions","id":"97971c1d-e895-11eb-b13c-da7ad0900002"},{"type":"permissions","id":"7605ef24-f376-11eb-b90b-da7ad0900002"},{"type":"permissions","id":"7605ef25-f376-11eb-b90b-da7ad0900002"},{"type":"permissions","id":"c95412b8-16c7-11ec-85c0-da7ad0900002"},{"type":"permissions","id":"c95412b9-16c7-11ec-85c0-da7ad0900002"},{"type":"permissions","id":"26c79920-1703-11ec-85d2-da7ad0900002"},{"type":"permissions","id":"f4473c60-4792-11ec-a27b-da7ad0900002"},{"type":"permissions","id":"f4473c61-4792-11ec-a27b-da7ad0900002"},{"type":"permissions","id":"8e4d6b6e-5750-11ec-a9f4-da7ad0900002"},{"type":"permissions","id":"945b3bb4-5884-11ec-aa6d-da7ad0900002"},{"type":"permissions","id":"f6e917a8-8502-11ec-bf20-da7ad0900002"},{"type":"permissions","id":"f6e917aa-8502-11ec-bf20-da7ad0900002"},{"type":"permissions","id":"f6e917a9-8502-11ec-bf20-da7ad0900002"},{"type":"permissions","id":"f6e917a6-8502-11ec-bf20-da7ad0900002"},{"type":"permissions","id":"f6e917a7-8502-11ec-bf20-da7ad0900002"},{"type":"permissions","id":"b6bf9ac6-9a59-11ec-8480-da7ad0900002"},{"type":"permissions","id":"b6bf9ac7-9a59-11ec-8480-da7ad0900002"},{"type":"permissions","id":"2108215e-b9b4-11ec-958e-da7ad0900002"},{"type":"permissions","id":"7b1f5089-c59e-11ec-aa32-da7ad0900002"},{"type":"permissions","id":"f8e941cf-e746-11ec-b22d-da7ad0900002"},{"type":"permissions","id":"f8e941d0-e746-11ec-b22d-da7ad0900002"},{"type":"permissions","id":"f8e941ce-e746-11ec-b22d-da7ad0900002"},{"type":"permissions","id":"ee68fba9-173a-11ed-b00b-da7ad0900002"},{"type":"permissions","id":"ee68fba8-173a-11ed-b00b-da7ad0900002"},{"type":"permissions","id":"6be119a6-1cd8-11ed-b185-da7ad0900002"},{"type":"permissions","id":"36e2a22e-248a-11ed-b405-da7ad0900002"},{"type":"permissions","id":"4ee674f6-55d9-11ed-b10d-da7ad0900002"},{"type":"permissions","id":"4ee7e46c-55d9-11ed-b10e-da7ad0900002"},{"type":"permissions","id":"4ee5731c-55d9-11ed-b10b-da7ad0900002"},{"type":"permissions","id":"4ee60688-55d9-11ed-b10c-da7ad0900002"},{"type":"permissions","id":"99474cc2-5a12-11ed-b547-da7ad0900002"},{"type":"permissions","id":"9948271e-5a12-11ed-b548-da7ad0900002"},{"type":"permissions","id":"8247acc4-7a4c-11ed-958f-da7ad0900002"},{"type":"permissions","id":"824851a6-7a4c-11ed-9590-da7ad0900002"},{"type":"permissions","id":"77d55a44-7a5a-11ed-8abe-da7ad0900002"},{"type":"permissions","id":"6c5ad874-7aff-11ed-a5cd-da7ad0900002"},{"type":"permissions","id":"6c5c1090-7aff-11ed-a5cf-da7ad0900002"},{"type":"permissions","id":"6c5b7428-7aff-11ed-a5ce-da7ad0900002"},{"type":"permissions","id":"6c5de654-7aff-11ed-a5d1-da7ad0900002"},{"type":"permissions","id":"c13a2368-7d61-11ed-b5b7-da7ad0900002"},{"type":"permissions","id":"ca6bfb3a-b44f-11ed-adb2-da7ad0900002"},{"type":"permissions","id":"4dc3eec6-b468-11ed-8539-da7ad0900002"},{"type":"permissions","id":"4dc4094c-b468-11ed-853a-da7ad0900002"},{"type":"permissions","id":"36bf3d0a-ccc0-11ed-9453-da7ad0900002"},{"type":"permissions","id":"f416f55e-db3f-11ed-8028-da7ad0900002"},{"type":"permissions","id":"f416b1ac-db3f-11ed-8027-da7ad0900002"},{"type":"permissions","id":"4e61a95e-de98-11ed-aa23-da7ad0900002"},{"type":"permissions","id":"4e61ea18-de98-11ed-aa24-da7ad0900002"},{"type":"permissions","id":"a4316eb8-f438-11ed-8af2-da7ad0900002"},{"type":"permissions","id":"a431bf12-f438-11ed-8af3-da7ad0900002"},{"type":"permissions","id":"8352cf04-f6ac-11ed-9ec7-da7ad0900002"},{"type":"permissions","id":"3a48350c-f9bc-11ed-b81c-da7ad0900002"},{"type":"permissions","id":"a773e3d8-fff2-11ed-965c-da7ad0900002"},{"type":"permissions","id":"a77452c8-fff2-11ed-965d-da7ad0900002"},{"type":"permissions","id":"a51b375a-ff73-11ed-8c18-da7ad0900002"},{"type":"permissions","id":"61f9891a-0070-11ee-9c3f-da7ad0900002"},{"type":"permissions","id":"1377d9e4-0ec7-11ee-aebc-da7ad0900002"},{"type":"permissions","id":"cc8cd958-11eb-11ee-ade2-da7ad0900002"},{"type":"permissions","id":"b1ad77e6-0949-11ee-b2c3-da7ad0900002"},{"type":"permissions","id":"b1adb5da-0949-11ee-b2c4-da7ad0900002"},{"type":"permissions","id":"0efeff18-1cec-11ee-992d-da7ad0900002"},{"type":"permissions","id":"785177a6-20da-11ee-bed7-da7ad0900002"},{"type":"permissions","id":"6c5c79b2-21a4-11ee-99ee-da7ad0900002"},{"type":"permissions","id":"1b8f54cc-2ca4-11ee-9e72-da7ad0900002"},{"type":"permissions","id":"de0e73c2-3d23-11ee-aa7d-da7ad0900002"},{"type":"permissions","id":"de0eb666-3d23-11ee-aa7e-da7ad0900002"},{"type":"permissions","id":"a8b4d6e8-4ea4-11ee-b482-da7ad0900002"},{"type":"permissions","id":"263eff86-6925-11ee-acc0-da7ad0900002"},{"type":"permissions","id":"50c270de-69ee-11ee-9151-da7ad0900002"},{"type":"permissions","id":"1b572396-ba15-11ee-9e19-da7ad0900002"},{"type":"permissions","id":"ca06b2b4-f5cd-11ee-9e77-da7ad0900002"}]}}}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 139.035667ms
+    - id: 13
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/authn_mappings/174b2808-fc1c-11ee-bab8-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"authn_mappings","id":"174b2808-fc1c-11ee-bab8-da7ad0900002","attributes":{"attribute_key":"key_2","attribute_value":"value_2","created_at":"2024-04-16T18:06:47.514708+00:00","modified_at":"2024-04-16T18:06:50.266373+00:00"},"relationships":{"role":{"data":{"type":"roles","id":"94172443-be03-11e9-a77a-373332f69711"}}}},"included":[{"type":"roles","id":"94172443-be03-11e9-a77a-373332f69711","attributes":{"name":"Datadog Standard Role","created_at":"2019-08-13T19:50:19.075284+00:00","modified_at":"2019-08-13T19:50:19.075284+00:00"},"relationships":{"permissions":{"data":[{"type":"permissions","id":"984d2f00-d3b4-11e8-a200-bb47109e9987"},{"type":"permissions","id":"5e605652-dd12-11e8-9e53-375565b8970e"},{"type":"permissions","id":"62cc036c-dd12-11e8-9e54-db9995643092"},{"type":"permissions","id":"6f66600e-dd12-11e8-9e55-7f30fbb45e73"},{"type":"permissions","id":"7d7c98ac-dd12-11e8-9e56-93700598622d"},{"type":"permissions","id":"811ac4ca-dd12-11e8-9e57-676a7f0beef9"},{"type":"permissions","id":"84aa3ae4-dd12-11e8-9e58-a373a514ccd0"},{"type":"permissions","id":"979df720-aed7-11e9-99c6-a7eb8373165a"},{"type":"permissions","id":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2"},{"type":"permissions","id":"d90f6831-d3d8-11e9-a77a-4fd230ddbc6a"},{"type":"permissions","id":"d90f6832-d3d8-11e9-a77a-bf8a2607f864"},{"type":"permissions","id":"4441648c-d8b1-11e9-a77a-1b899a04b304"},{"type":"permissions","id":"48ef71ea-d8b1-11e9-a77a-93f408470ad0"},{"type":"permissions","id":"4d87d5f8-d8b1-11e9-a77a-eb9c8350d04f"},{"type":"permissions","id":"1af86ce4-7823-11ea-93dc-d7cad1b1c6cb"},{"type":"permissions","id":"b382b982-8535-11ea-93de-2bf1bdf20798"},{"type":"permissions","id":"7314eb20-aa58-11ea-95e2-6fb6e4a451d5"},{"type":"permissions","id":"7b516476-aa58-11ea-95e2-93718cd56369"},{"type":"permissions","id":"80de1ec0-aa58-11ea-95e2-aff381626d5d"},{"type":"permissions","id":"58b412cc-ff6d-11eb-bc9c-da7ad0900002"},{"type":"permissions","id":"9ac1d8cc-e707-11ea-aa2d-73d37e989a9d"},{"type":"permissions","id":"46a301da-ec5c-11ea-aa9f-73bedeab67ee"},{"type":"permissions","id":"46a301db-ec5c-11ea-aa9f-2fe72193d60e"},{"type":"permissions","id":"46a301dd-ec5c-11ea-aa9f-97edfb345bc9"},{"type":"permissions","id":"46a301e4-ec5c-11ea-aa9f-87282b3a50cc"},{"type":"permissions","id":"07c3c146-f7f8-11ea-acf6-0bd62b9ae60e"},{"type":"permissions","id":"372896c4-f923-11ea-adbc-4fecd107156d"},{"type":"permissions","id":"4628ca54-f923-11ea-adbc-4b2b7f88c5e9"},{"type":"permissions","id":"4ada6e36-f923-11ea-adbc-0788e5c5e3cf"},{"type":"permissions","id":"5025ee24-f923-11ea-adbc-576ea241df8d"},{"type":"permissions","id":"55f4b5ec-f923-11ea-adbc-1bfa2334a755"},{"type":"permissions","id":"5c6b88e2-f923-11ea-adbc-abf57d079420"},{"type":"permissions","id":"642eebe6-f923-11ea-adbc-eb617674ea04"},{"type":"permissions","id":"6ba32d22-0e1a-11eb-ba44-bf9a5aafaa39"},{"type":"permissions","id":"fcac2ad8-2843-11eb-8315-0fe47949d625"},{"type":"permissions","id":"417ba636-2dce-11eb-84c0-6bce5b0d9de0"},{"type":"permissions","id":"43fa188e-2dce-11eb-84c0-835ad1fd6287"},{"type":"permissions","id":"4916eebe-2dce-11eb-84c0-271cb2c672e8"},{"type":"permissions","id":"5cbe5f9c-2dce-11eb-84c0-872d3e9f1076"},{"type":"permissions","id":"61765026-2dce-11eb-84c0-833e230d1b8f"},{"type":"permissions","id":"8106300a-54f7-11eb-8cbc-7781a434a67b"},{"type":"permissions","id":"edfd5e75-801f-11eb-96d8-da7ad0900002"},{"type":"permissions","id":"98b984f4-b16d-11eb-a2c6-da7ad0900002"},{"type":"permissions","id":"12efc20e-d36c-11eb-a9b8-da7ad0900002"},{"type":"permissions","id":"12efc211-d36c-11eb-a9b8-da7ad0900002"},{"type":"permissions","id":"12efc20f-d36c-11eb-a9b8-da7ad0900002"},{"type":"permissions","id":"12efc210-d36c-11eb-a9b8-da7ad0900002"},{"type":"permissions","id":"97971c1c-e895-11eb-b13c-da7ad0900002"},{"type":"permissions","id":"97971c1d-e895-11eb-b13c-da7ad0900002"},{"type":"permissions","id":"7605ef24-f376-11eb-b90b-da7ad0900002"},{"type":"permissions","id":"7605ef25-f376-11eb-b90b-da7ad0900002"},{"type":"permissions","id":"c95412b8-16c7-11ec-85c0-da7ad0900002"},{"type":"permissions","id":"c95412b9-16c7-11ec-85c0-da7ad0900002"},{"type":"permissions","id":"26c79920-1703-11ec-85d2-da7ad0900002"},{"type":"permissions","id":"f4473c60-4792-11ec-a27b-da7ad0900002"},{"type":"permissions","id":"f4473c61-4792-11ec-a27b-da7ad0900002"},{"type":"permissions","id":"8e4d6b6e-5750-11ec-a9f4-da7ad0900002"},{"type":"permissions","id":"945b3bb4-5884-11ec-aa6d-da7ad0900002"},{"type":"permissions","id":"f6e917a8-8502-11ec-bf20-da7ad0900002"},{"type":"permissions","id":"f6e917aa-8502-11ec-bf20-da7ad0900002"},{"type":"permissions","id":"f6e917a9-8502-11ec-bf20-da7ad0900002"},{"type":"permissions","id":"f6e917a6-8502-11ec-bf20-da7ad0900002"},{"type":"permissions","id":"f6e917a7-8502-11ec-bf20-da7ad0900002"},{"type":"permissions","id":"b6bf9ac6-9a59-11ec-8480-da7ad0900002"},{"type":"permissions","id":"b6bf9ac7-9a59-11ec-8480-da7ad0900002"},{"type":"permissions","id":"2108215e-b9b4-11ec-958e-da7ad0900002"},{"type":"permissions","id":"7b1f5089-c59e-11ec-aa32-da7ad0900002"},{"type":"permissions","id":"f8e941cf-e746-11ec-b22d-da7ad0900002"},{"type":"permissions","id":"f8e941d0-e746-11ec-b22d-da7ad0900002"},{"type":"permissions","id":"f8e941ce-e746-11ec-b22d-da7ad0900002"},{"type":"permissions","id":"ee68fba9-173a-11ed-b00b-da7ad0900002"},{"type":"permissions","id":"ee68fba8-173a-11ed-b00b-da7ad0900002"},{"type":"permissions","id":"6be119a6-1cd8-11ed-b185-da7ad0900002"},{"type":"permissions","id":"36e2a22e-248a-11ed-b405-da7ad0900002"},{"type":"permissions","id":"4ee674f6-55d9-11ed-b10d-da7ad0900002"},{"type":"permissions","id":"4ee7e46c-55d9-11ed-b10e-da7ad0900002"},{"type":"permissions","id":"4ee5731c-55d9-11ed-b10b-da7ad0900002"},{"type":"permissions","id":"4ee60688-55d9-11ed-b10c-da7ad0900002"},{"type":"permissions","id":"99474cc2-5a12-11ed-b547-da7ad0900002"},{"type":"permissions","id":"9948271e-5a12-11ed-b548-da7ad0900002"},{"type":"permissions","id":"8247acc4-7a4c-11ed-958f-da7ad0900002"},{"type":"permissions","id":"824851a6-7a4c-11ed-9590-da7ad0900002"},{"type":"permissions","id":"77d55a44-7a5a-11ed-8abe-da7ad0900002"},{"type":"permissions","id":"6c5ad874-7aff-11ed-a5cd-da7ad0900002"},{"type":"permissions","id":"6c5c1090-7aff-11ed-a5cf-da7ad0900002"},{"type":"permissions","id":"6c5b7428-7aff-11ed-a5ce-da7ad0900002"},{"type":"permissions","id":"6c5de654-7aff-11ed-a5d1-da7ad0900002"},{"type":"permissions","id":"c13a2368-7d61-11ed-b5b7-da7ad0900002"},{"type":"permissions","id":"ca6bfb3a-b44f-11ed-adb2-da7ad0900002"},{"type":"permissions","id":"4dc3eec6-b468-11ed-8539-da7ad0900002"},{"type":"permissions","id":"4dc4094c-b468-11ed-853a-da7ad0900002"},{"type":"permissions","id":"36bf3d0a-ccc0-11ed-9453-da7ad0900002"},{"type":"permissions","id":"f416f55e-db3f-11ed-8028-da7ad0900002"},{"type":"permissions","id":"f416b1ac-db3f-11ed-8027-da7ad0900002"},{"type":"permissions","id":"4e61a95e-de98-11ed-aa23-da7ad0900002"},{"type":"permissions","id":"4e61ea18-de98-11ed-aa24-da7ad0900002"},{"type":"permissions","id":"a4316eb8-f438-11ed-8af2-da7ad0900002"},{"type":"permissions","id":"a431bf12-f438-11ed-8af3-da7ad0900002"},{"type":"permissions","id":"8352cf04-f6ac-11ed-9ec7-da7ad0900002"},{"type":"permissions","id":"3a48350c-f9bc-11ed-b81c-da7ad0900002"},{"type":"permissions","id":"a773e3d8-fff2-11ed-965c-da7ad0900002"},{"type":"permissions","id":"a77452c8-fff2-11ed-965d-da7ad0900002"},{"type":"permissions","id":"a51b375a-ff73-11ed-8c18-da7ad0900002"},{"type":"permissions","id":"61f9891a-0070-11ee-9c3f-da7ad0900002"},{"type":"permissions","id":"1377d9e4-0ec7-11ee-aebc-da7ad0900002"},{"type":"permissions","id":"cc8cd958-11eb-11ee-ade2-da7ad0900002"},{"type":"permissions","id":"b1ad77e6-0949-11ee-b2c3-da7ad0900002"},{"type":"permissions","id":"b1adb5da-0949-11ee-b2c4-da7ad0900002"},{"type":"permissions","id":"0efeff18-1cec-11ee-992d-da7ad0900002"},{"type":"permissions","id":"785177a6-20da-11ee-bed7-da7ad0900002"},{"type":"permissions","id":"6c5c79b2-21a4-11ee-99ee-da7ad0900002"},{"type":"permissions","id":"1b8f54cc-2ca4-11ee-9e72-da7ad0900002"},{"type":"permissions","id":"de0e73c2-3d23-11ee-aa7d-da7ad0900002"},{"type":"permissions","id":"de0eb666-3d23-11ee-aa7e-da7ad0900002"},{"type":"permissions","id":"a8b4d6e8-4ea4-11ee-b482-da7ad0900002"},{"type":"permissions","id":"263eff86-6925-11ee-acc0-da7ad0900002"},{"type":"permissions","id":"50c270de-69ee-11ee-9151-da7ad0900002"},{"type":"permissions","id":"1b572396-ba15-11ee-9e19-da7ad0900002"},{"type":"permissions","id":"ca06b2b4-f5cd-11ee-9e77-da7ad0900002"}]}}}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 93.1345ms
+    - id: 14
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/roles?filter=Datadog+Standard+Role
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":[{"type":"roles","id":"94172443-be03-11e9-a77a-373332f69711","attributes":{"name":"Datadog Standard Role","created_at":"2019-08-13T19:50:19.075284+00:00","modified_at":"2019-08-13T19:50:19.075284+00:00","user_count":33},"relationships":{"permissions":{"data":[{"type":"permissions","id":"984d2f00-d3b4-11e8-a200-bb47109e9987"},{"type":"permissions","id":"5e605652-dd12-11e8-9e53-375565b8970e"},{"type":"permissions","id":"62cc036c-dd12-11e8-9e54-db9995643092"},{"type":"permissions","id":"6f66600e-dd12-11e8-9e55-7f30fbb45e73"},{"type":"permissions","id":"7d7c98ac-dd12-11e8-9e56-93700598622d"},{"type":"permissions","id":"811ac4ca-dd12-11e8-9e57-676a7f0beef9"},{"type":"permissions","id":"84aa3ae4-dd12-11e8-9e58-a373a514ccd0"},{"type":"permissions","id":"979df720-aed7-11e9-99c6-a7eb8373165a"},{"type":"permissions","id":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2"},{"type":"permissions","id":"d90f6831-d3d8-11e9-a77a-4fd230ddbc6a"},{"type":"permissions","id":"d90f6832-d3d8-11e9-a77a-bf8a2607f864"},{"type":"permissions","id":"4441648c-d8b1-11e9-a77a-1b899a04b304"},{"type":"permissions","id":"48ef71ea-d8b1-11e9-a77a-93f408470ad0"},{"type":"permissions","id":"4d87d5f8-d8b1-11e9-a77a-eb9c8350d04f"},{"type":"permissions","id":"1af86ce4-7823-11ea-93dc-d7cad1b1c6cb"},{"type":"permissions","id":"b382b982-8535-11ea-93de-2bf1bdf20798"},{"type":"permissions","id":"7314eb20-aa58-11ea-95e2-6fb6e4a451d5"},{"type":"permissions","id":"7b516476-aa58-11ea-95e2-93718cd56369"},{"type":"permissions","id":"80de1ec0-aa58-11ea-95e2-aff381626d5d"},{"type":"permissions","id":"58b412cc-ff6d-11eb-bc9c-da7ad0900002"},{"type":"permissions","id":"9ac1d8cc-e707-11ea-aa2d-73d37e989a9d"},{"type":"permissions","id":"46a301da-ec5c-11ea-aa9f-73bedeab67ee"},{"type":"permissions","id":"46a301db-ec5c-11ea-aa9f-2fe72193d60e"},{"type":"permissions","id":"46a301dd-ec5c-11ea-aa9f-97edfb345bc9"},{"type":"permissions","id":"46a301e4-ec5c-11ea-aa9f-87282b3a50cc"},{"type":"permissions","id":"07c3c146-f7f8-11ea-acf6-0bd62b9ae60e"},{"type":"permissions","id":"372896c4-f923-11ea-adbc-4fecd107156d"},{"type":"permissions","id":"4628ca54-f923-11ea-adbc-4b2b7f88c5e9"},{"type":"permissions","id":"4ada6e36-f923-11ea-adbc-0788e5c5e3cf"},{"type":"permissions","id":"5025ee24-f923-11ea-adbc-576ea241df8d"},{"type":"permissions","id":"55f4b5ec-f923-11ea-adbc-1bfa2334a755"},{"type":"permissions","id":"5c6b88e2-f923-11ea-adbc-abf57d079420"},{"type":"permissions","id":"642eebe6-f923-11ea-adbc-eb617674ea04"},{"type":"permissions","id":"6ba32d22-0e1a-11eb-ba44-bf9a5aafaa39"},{"type":"permissions","id":"fcac2ad8-2843-11eb-8315-0fe47949d625"},{"type":"permissions","id":"417ba636-2dce-11eb-84c0-6bce5b0d9de0"},{"type":"permissions","id":"43fa188e-2dce-11eb-84c0-835ad1fd6287"},{"type":"permissions","id":"4916eebe-2dce-11eb-84c0-271cb2c672e8"},{"type":"permissions","id":"5cbe5f9c-2dce-11eb-84c0-872d3e9f1076"},{"type":"permissions","id":"61765026-2dce-11eb-84c0-833e230d1b8f"},{"type":"permissions","id":"8106300a-54f7-11eb-8cbc-7781a434a67b"},{"type":"permissions","id":"edfd5e75-801f-11eb-96d8-da7ad0900002"},{"type":"permissions","id":"98b984f4-b16d-11eb-a2c6-da7ad0900002"},{"type":"permissions","id":"12efc20e-d36c-11eb-a9b8-da7ad0900002"},{"type":"permissions","id":"12efc211-d36c-11eb-a9b8-da7ad0900002"},{"type":"permissions","id":"12efc20f-d36c-11eb-a9b8-da7ad0900002"},{"type":"permissions","id":"12efc210-d36c-11eb-a9b8-da7ad0900002"},{"type":"permissions","id":"97971c1c-e895-11eb-b13c-da7ad0900002"},{"type":"permissions","id":"97971c1d-e895-11eb-b13c-da7ad0900002"},{"type":"permissions","id":"7605ef24-f376-11eb-b90b-da7ad0900002"},{"type":"permissions","id":"7605ef25-f376-11eb-b90b-da7ad0900002"},{"type":"permissions","id":"c95412b8-16c7-11ec-85c0-da7ad0900002"},{"type":"permissions","id":"c95412b9-16c7-11ec-85c0-da7ad0900002"},{"type":"permissions","id":"26c79920-1703-11ec-85d2-da7ad0900002"},{"type":"permissions","id":"f4473c60-4792-11ec-a27b-da7ad0900002"},{"type":"permissions","id":"f4473c61-4792-11ec-a27b-da7ad0900002"},{"type":"permissions","id":"8e4d6b6e-5750-11ec-a9f4-da7ad0900002"},{"type":"permissions","id":"945b3bb4-5884-11ec-aa6d-da7ad0900002"},{"type":"permissions","id":"f6e917a8-8502-11ec-bf20-da7ad0900002"},{"type":"permissions","id":"f6e917aa-8502-11ec-bf20-da7ad0900002"},{"type":"permissions","id":"f6e917a9-8502-11ec-bf20-da7ad0900002"},{"type":"permissions","id":"f6e917a6-8502-11ec-bf20-da7ad0900002"},{"type":"permissions","id":"f6e917a7-8502-11ec-bf20-da7ad0900002"},{"type":"permissions","id":"b6bf9ac6-9a59-11ec-8480-da7ad0900002"},{"type":"permissions","id":"b6bf9ac7-9a59-11ec-8480-da7ad0900002"},{"type":"permissions","id":"2108215e-b9b4-11ec-958e-da7ad0900002"},{"type":"permissions","id":"7b1f5089-c59e-11ec-aa32-da7ad0900002"},{"type":"permissions","id":"f8e941cf-e746-11ec-b22d-da7ad0900002"},{"type":"permissions","id":"f8e941d0-e746-11ec-b22d-da7ad0900002"},{"type":"permissions","id":"f8e941ce-e746-11ec-b22d-da7ad0900002"},{"type":"permissions","id":"ee68fba9-173a-11ed-b00b-da7ad0900002"},{"type":"permissions","id":"ee68fba8-173a-11ed-b00b-da7ad0900002"},{"type":"permissions","id":"6be119a6-1cd8-11ed-b185-da7ad0900002"},{"type":"permissions","id":"36e2a22e-248a-11ed-b405-da7ad0900002"},{"type":"permissions","id":"4ee674f6-55d9-11ed-b10d-da7ad0900002"},{"type":"permissions","id":"4ee7e46c-55d9-11ed-b10e-da7ad0900002"},{"type":"permissions","id":"4ee5731c-55d9-11ed-b10b-da7ad0900002"},{"type":"permissions","id":"4ee60688-55d9-11ed-b10c-da7ad0900002"},{"type":"permissions","id":"99474cc2-5a12-11ed-b547-da7ad0900002"},{"type":"permissions","id":"9948271e-5a12-11ed-b548-da7ad0900002"},{"type":"permissions","id":"8247acc4-7a4c-11ed-958f-da7ad0900002"},{"type":"permissions","id":"824851a6-7a4c-11ed-9590-da7ad0900002"},{"type":"permissions","id":"77d55a44-7a5a-11ed-8abe-da7ad0900002"},{"type":"permissions","id":"6c5ad874-7aff-11ed-a5cd-da7ad0900002"},{"type":"permissions","id":"6c5c1090-7aff-11ed-a5cf-da7ad0900002"},{"type":"permissions","id":"6c5b7428-7aff-11ed-a5ce-da7ad0900002"},{"type":"permissions","id":"6c5de654-7aff-11ed-a5d1-da7ad0900002"},{"type":"permissions","id":"c13a2368-7d61-11ed-b5b7-da7ad0900002"},{"type":"permissions","id":"ca6bfb3a-b44f-11ed-adb2-da7ad0900002"},{"type":"permissions","id":"4dc3eec6-b468-11ed-8539-da7ad0900002"},{"type":"permissions","id":"4dc4094c-b468-11ed-853a-da7ad0900002"},{"type":"permissions","id":"36bf3d0a-ccc0-11ed-9453-da7ad0900002"},{"type":"permissions","id":"f416f55e-db3f-11ed-8028-da7ad0900002"},{"type":"permissions","id":"f416b1ac-db3f-11ed-8027-da7ad0900002"},{"type":"permissions","id":"4e61a95e-de98-11ed-aa23-da7ad0900002"},{"type":"permissions","id":"4e61ea18-de98-11ed-aa24-da7ad0900002"},{"type":"permissions","id":"a4316eb8-f438-11ed-8af2-da7ad0900002"},{"type":"permissions","id":"a431bf12-f438-11ed-8af3-da7ad0900002"},{"type":"permissions","id":"8352cf04-f6ac-11ed-9ec7-da7ad0900002"},{"type":"permissions","id":"3a48350c-f9bc-11ed-b81c-da7ad0900002"},{"type":"permissions","id":"a773e3d8-fff2-11ed-965c-da7ad0900002"},{"type":"permissions","id":"a77452c8-fff2-11ed-965d-da7ad0900002"},{"type":"permissions","id":"a51b375a-ff73-11ed-8c18-da7ad0900002"},{"type":"permissions","id":"61f9891a-0070-11ee-9c3f-da7ad0900002"},{"type":"permissions","id":"1377d9e4-0ec7-11ee-aebc-da7ad0900002"},{"type":"permissions","id":"cc8cd958-11eb-11ee-ade2-da7ad0900002"},{"type":"permissions","id":"b1ad77e6-0949-11ee-b2c3-da7ad0900002"},{"type":"permissions","id":"b1adb5da-0949-11ee-b2c4-da7ad0900002"},{"type":"permissions","id":"0efeff18-1cec-11ee-992d-da7ad0900002"},{"type":"permissions","id":"785177a6-20da-11ee-bed7-da7ad0900002"},{"type":"permissions","id":"6c5c79b2-21a4-11ee-99ee-da7ad0900002"},{"type":"permissions","id":"1b8f54cc-2ca4-11ee-9e72-da7ad0900002"},{"type":"permissions","id":"de0e73c2-3d23-11ee-aa7d-da7ad0900002"},{"type":"permissions","id":"de0eb666-3d23-11ee-aa7e-da7ad0900002"},{"type":"permissions","id":"a8b4d6e8-4ea4-11ee-b482-da7ad0900002"},{"type":"permissions","id":"263eff86-6925-11ee-acc0-da7ad0900002"},{"type":"permissions","id":"50c270de-69ee-11ee-9151-da7ad0900002"},{"type":"permissions","id":"1b572396-ba15-11ee-9e19-da7ad0900002"},{"type":"permissions","id":"ca06b2b4-f5cd-11ee-9e77-da7ad0900002"}]}}}],"meta":{"page":{"total_count":18,"total_filtered_count":1}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 148.784125ms
+    - id: 15
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/roles?filter=Datadog+Standard+Role
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":[{"type":"roles","id":"94172443-be03-11e9-a77a-373332f69711","attributes":{"name":"Datadog Standard Role","created_at":"2019-08-13T19:50:19.075284+00:00","modified_at":"2019-08-13T19:50:19.075284+00:00","user_count":33},"relationships":{"permissions":{"data":[{"type":"permissions","id":"984d2f00-d3b4-11e8-a200-bb47109e9987"},{"type":"permissions","id":"5e605652-dd12-11e8-9e53-375565b8970e"},{"type":"permissions","id":"62cc036c-dd12-11e8-9e54-db9995643092"},{"type":"permissions","id":"6f66600e-dd12-11e8-9e55-7f30fbb45e73"},{"type":"permissions","id":"7d7c98ac-dd12-11e8-9e56-93700598622d"},{"type":"permissions","id":"811ac4ca-dd12-11e8-9e57-676a7f0beef9"},{"type":"permissions","id":"84aa3ae4-dd12-11e8-9e58-a373a514ccd0"},{"type":"permissions","id":"979df720-aed7-11e9-99c6-a7eb8373165a"},{"type":"permissions","id":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2"},{"type":"permissions","id":"d90f6831-d3d8-11e9-a77a-4fd230ddbc6a"},{"type":"permissions","id":"d90f6832-d3d8-11e9-a77a-bf8a2607f864"},{"type":"permissions","id":"4441648c-d8b1-11e9-a77a-1b899a04b304"},{"type":"permissions","id":"48ef71ea-d8b1-11e9-a77a-93f408470ad0"},{"type":"permissions","id":"4d87d5f8-d8b1-11e9-a77a-eb9c8350d04f"},{"type":"permissions","id":"1af86ce4-7823-11ea-93dc-d7cad1b1c6cb"},{"type":"permissions","id":"b382b982-8535-11ea-93de-2bf1bdf20798"},{"type":"permissions","id":"7314eb20-aa58-11ea-95e2-6fb6e4a451d5"},{"type":"permissions","id":"7b516476-aa58-11ea-95e2-93718cd56369"},{"type":"permissions","id":"80de1ec0-aa58-11ea-95e2-aff381626d5d"},{"type":"permissions","id":"58b412cc-ff6d-11eb-bc9c-da7ad0900002"},{"type":"permissions","id":"9ac1d8cc-e707-11ea-aa2d-73d37e989a9d"},{"type":"permissions","id":"46a301da-ec5c-11ea-aa9f-73bedeab67ee"},{"type":"permissions","id":"46a301db-ec5c-11ea-aa9f-2fe72193d60e"},{"type":"permissions","id":"46a301dd-ec5c-11ea-aa9f-97edfb345bc9"},{"type":"permissions","id":"46a301e4-ec5c-11ea-aa9f-87282b3a50cc"},{"type":"permissions","id":"07c3c146-f7f8-11ea-acf6-0bd62b9ae60e"},{"type":"permissions","id":"372896c4-f923-11ea-adbc-4fecd107156d"},{"type":"permissions","id":"4628ca54-f923-11ea-adbc-4b2b7f88c5e9"},{"type":"permissions","id":"4ada6e36-f923-11ea-adbc-0788e5c5e3cf"},{"type":"permissions","id":"5025ee24-f923-11ea-adbc-576ea241df8d"},{"type":"permissions","id":"55f4b5ec-f923-11ea-adbc-1bfa2334a755"},{"type":"permissions","id":"5c6b88e2-f923-11ea-adbc-abf57d079420"},{"type":"permissions","id":"642eebe6-f923-11ea-adbc-eb617674ea04"},{"type":"permissions","id":"6ba32d22-0e1a-11eb-ba44-bf9a5aafaa39"},{"type":"permissions","id":"fcac2ad8-2843-11eb-8315-0fe47949d625"},{"type":"permissions","id":"417ba636-2dce-11eb-84c0-6bce5b0d9de0"},{"type":"permissions","id":"43fa188e-2dce-11eb-84c0-835ad1fd6287"},{"type":"permissions","id":"4916eebe-2dce-11eb-84c0-271cb2c672e8"},{"type":"permissions","id":"5cbe5f9c-2dce-11eb-84c0-872d3e9f1076"},{"type":"permissions","id":"61765026-2dce-11eb-84c0-833e230d1b8f"},{"type":"permissions","id":"8106300a-54f7-11eb-8cbc-7781a434a67b"},{"type":"permissions","id":"edfd5e75-801f-11eb-96d8-da7ad0900002"},{"type":"permissions","id":"98b984f4-b16d-11eb-a2c6-da7ad0900002"},{"type":"permissions","id":"12efc20e-d36c-11eb-a9b8-da7ad0900002"},{"type":"permissions","id":"12efc211-d36c-11eb-a9b8-da7ad0900002"},{"type":"permissions","id":"12efc20f-d36c-11eb-a9b8-da7ad0900002"},{"type":"permissions","id":"12efc210-d36c-11eb-a9b8-da7ad0900002"},{"type":"permissions","id":"97971c1c-e895-11eb-b13c-da7ad0900002"},{"type":"permissions","id":"97971c1d-e895-11eb-b13c-da7ad0900002"},{"type":"permissions","id":"7605ef24-f376-11eb-b90b-da7ad0900002"},{"type":"permissions","id":"7605ef25-f376-11eb-b90b-da7ad0900002"},{"type":"permissions","id":"c95412b8-16c7-11ec-85c0-da7ad0900002"},{"type":"permissions","id":"c95412b9-16c7-11ec-85c0-da7ad0900002"},{"type":"permissions","id":"26c79920-1703-11ec-85d2-da7ad0900002"},{"type":"permissions","id":"f4473c60-4792-11ec-a27b-da7ad0900002"},{"type":"permissions","id":"f4473c61-4792-11ec-a27b-da7ad0900002"},{"type":"permissions","id":"8e4d6b6e-5750-11ec-a9f4-da7ad0900002"},{"type":"permissions","id":"945b3bb4-5884-11ec-aa6d-da7ad0900002"},{"type":"permissions","id":"f6e917a8-8502-11ec-bf20-da7ad0900002"},{"type":"permissions","id":"f6e917aa-8502-11ec-bf20-da7ad0900002"},{"type":"permissions","id":"f6e917a9-8502-11ec-bf20-da7ad0900002"},{"type":"permissions","id":"f6e917a6-8502-11ec-bf20-da7ad0900002"},{"type":"permissions","id":"f6e917a7-8502-11ec-bf20-da7ad0900002"},{"type":"permissions","id":"b6bf9ac6-9a59-11ec-8480-da7ad0900002"},{"type":"permissions","id":"b6bf9ac7-9a59-11ec-8480-da7ad0900002"},{"type":"permissions","id":"2108215e-b9b4-11ec-958e-da7ad0900002"},{"type":"permissions","id":"7b1f5089-c59e-11ec-aa32-da7ad0900002"},{"type":"permissions","id":"f8e941cf-e746-11ec-b22d-da7ad0900002"},{"type":"permissions","id":"f8e941d0-e746-11ec-b22d-da7ad0900002"},{"type":"permissions","id":"f8e941ce-e746-11ec-b22d-da7ad0900002"},{"type":"permissions","id":"ee68fba9-173a-11ed-b00b-da7ad0900002"},{"type":"permissions","id":"ee68fba8-173a-11ed-b00b-da7ad0900002"},{"type":"permissions","id":"6be119a6-1cd8-11ed-b185-da7ad0900002"},{"type":"permissions","id":"36e2a22e-248a-11ed-b405-da7ad0900002"},{"type":"permissions","id":"4ee674f6-55d9-11ed-b10d-da7ad0900002"},{"type":"permissions","id":"4ee7e46c-55d9-11ed-b10e-da7ad0900002"},{"type":"permissions","id":"4ee5731c-55d9-11ed-b10b-da7ad0900002"},{"type":"permissions","id":"4ee60688-55d9-11ed-b10c-da7ad0900002"},{"type":"permissions","id":"99474cc2-5a12-11ed-b547-da7ad0900002"},{"type":"permissions","id":"9948271e-5a12-11ed-b548-da7ad0900002"},{"type":"permissions","id":"8247acc4-7a4c-11ed-958f-da7ad0900002"},{"type":"permissions","id":"824851a6-7a4c-11ed-9590-da7ad0900002"},{"type":"permissions","id":"77d55a44-7a5a-11ed-8abe-da7ad0900002"},{"type":"permissions","id":"6c5ad874-7aff-11ed-a5cd-da7ad0900002"},{"type":"permissions","id":"6c5c1090-7aff-11ed-a5cf-da7ad0900002"},{"type":"permissions","id":"6c5b7428-7aff-11ed-a5ce-da7ad0900002"},{"type":"permissions","id":"6c5de654-7aff-11ed-a5d1-da7ad0900002"},{"type":"permissions","id":"c13a2368-7d61-11ed-b5b7-da7ad0900002"},{"type":"permissions","id":"ca6bfb3a-b44f-11ed-adb2-da7ad0900002"},{"type":"permissions","id":"4dc3eec6-b468-11ed-8539-da7ad0900002"},{"type":"permissions","id":"4dc4094c-b468-11ed-853a-da7ad0900002"},{"type":"permissions","id":"36bf3d0a-ccc0-11ed-9453-da7ad0900002"},{"type":"permissions","id":"f416f55e-db3f-11ed-8028-da7ad0900002"},{"type":"permissions","id":"f416b1ac-db3f-11ed-8027-da7ad0900002"},{"type":"permissions","id":"4e61a95e-de98-11ed-aa23-da7ad0900002"},{"type":"permissions","id":"4e61ea18-de98-11ed-aa24-da7ad0900002"},{"type":"permissions","id":"a4316eb8-f438-11ed-8af2-da7ad0900002"},{"type":"permissions","id":"a431bf12-f438-11ed-8af3-da7ad0900002"},{"type":"permissions","id":"8352cf04-f6ac-11ed-9ec7-da7ad0900002"},{"type":"permissions","id":"3a48350c-f9bc-11ed-b81c-da7ad0900002"},{"type":"permissions","id":"a773e3d8-fff2-11ed-965c-da7ad0900002"},{"type":"permissions","id":"a77452c8-fff2-11ed-965d-da7ad0900002"},{"type":"permissions","id":"a51b375a-ff73-11ed-8c18-da7ad0900002"},{"type":"permissions","id":"61f9891a-0070-11ee-9c3f-da7ad0900002"},{"type":"permissions","id":"1377d9e4-0ec7-11ee-aebc-da7ad0900002"},{"type":"permissions","id":"cc8cd958-11eb-11ee-ade2-da7ad0900002"},{"type":"permissions","id":"b1ad77e6-0949-11ee-b2c3-da7ad0900002"},{"type":"permissions","id":"b1adb5da-0949-11ee-b2c4-da7ad0900002"},{"type":"permissions","id":"0efeff18-1cec-11ee-992d-da7ad0900002"},{"type":"permissions","id":"785177a6-20da-11ee-bed7-da7ad0900002"},{"type":"permissions","id":"6c5c79b2-21a4-11ee-99ee-da7ad0900002"},{"type":"permissions","id":"1b8f54cc-2ca4-11ee-9e72-da7ad0900002"},{"type":"permissions","id":"de0e73c2-3d23-11ee-aa7d-da7ad0900002"},{"type":"permissions","id":"de0eb666-3d23-11ee-aa7e-da7ad0900002"},{"type":"permissions","id":"a8b4d6e8-4ea4-11ee-b482-da7ad0900002"},{"type":"permissions","id":"263eff86-6925-11ee-acc0-da7ad0900002"},{"type":"permissions","id":"50c270de-69ee-11ee-9151-da7ad0900002"},{"type":"permissions","id":"1b572396-ba15-11ee-9e19-da7ad0900002"},{"type":"permissions","id":"ca06b2b4-f5cd-11ee-9e77-da7ad0900002"}]}}}],"meta":{"page":{"total_count":18,"total_filtered_count":1}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 151.391875ms
+    - id: 16
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/authn_mappings/174b2808-fc1c-11ee-bab8-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"authn_mappings","id":"174b2808-fc1c-11ee-bab8-da7ad0900002","attributes":{"attribute_key":"key_2","attribute_value":"value_2","created_at":"2024-04-16T18:06:47.514708+00:00","modified_at":"2024-04-16T18:06:50.266373+00:00"},"relationships":{"role":{"data":{"type":"roles","id":"94172443-be03-11e9-a77a-373332f69711"}}}},"included":[{"type":"roles","id":"94172443-be03-11e9-a77a-373332f69711","attributes":{"name":"Datadog Standard Role","created_at":"2019-08-13T19:50:19.075284+00:00","modified_at":"2019-08-13T19:50:19.075284+00:00"},"relationships":{"permissions":{"data":[{"type":"permissions","id":"984d2f00-d3b4-11e8-a200-bb47109e9987"},{"type":"permissions","id":"5e605652-dd12-11e8-9e53-375565b8970e"},{"type":"permissions","id":"62cc036c-dd12-11e8-9e54-db9995643092"},{"type":"permissions","id":"6f66600e-dd12-11e8-9e55-7f30fbb45e73"},{"type":"permissions","id":"7d7c98ac-dd12-11e8-9e56-93700598622d"},{"type":"permissions","id":"811ac4ca-dd12-11e8-9e57-676a7f0beef9"},{"type":"permissions","id":"84aa3ae4-dd12-11e8-9e58-a373a514ccd0"},{"type":"permissions","id":"979df720-aed7-11e9-99c6-a7eb8373165a"},{"type":"permissions","id":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2"},{"type":"permissions","id":"d90f6831-d3d8-11e9-a77a-4fd230ddbc6a"},{"type":"permissions","id":"d90f6832-d3d8-11e9-a77a-bf8a2607f864"},{"type":"permissions","id":"4441648c-d8b1-11e9-a77a-1b899a04b304"},{"type":"permissions","id":"48ef71ea-d8b1-11e9-a77a-93f408470ad0"},{"type":"permissions","id":"4d87d5f8-d8b1-11e9-a77a-eb9c8350d04f"},{"type":"permissions","id":"1af86ce4-7823-11ea-93dc-d7cad1b1c6cb"},{"type":"permissions","id":"b382b982-8535-11ea-93de-2bf1bdf20798"},{"type":"permissions","id":"7314eb20-aa58-11ea-95e2-6fb6e4a451d5"},{"type":"permissions","id":"7b516476-aa58-11ea-95e2-93718cd56369"},{"type":"permissions","id":"80de1ec0-aa58-11ea-95e2-aff381626d5d"},{"type":"permissions","id":"58b412cc-ff6d-11eb-bc9c-da7ad0900002"},{"type":"permissions","id":"9ac1d8cc-e707-11ea-aa2d-73d37e989a9d"},{"type":"permissions","id":"46a301da-ec5c-11ea-aa9f-73bedeab67ee"},{"type":"permissions","id":"46a301db-ec5c-11ea-aa9f-2fe72193d60e"},{"type":"permissions","id":"46a301dd-ec5c-11ea-aa9f-97edfb345bc9"},{"type":"permissions","id":"46a301e4-ec5c-11ea-aa9f-87282b3a50cc"},{"type":"permissions","id":"07c3c146-f7f8-11ea-acf6-0bd62b9ae60e"},{"type":"permissions","id":"372896c4-f923-11ea-adbc-4fecd107156d"},{"type":"permissions","id":"4628ca54-f923-11ea-adbc-4b2b7f88c5e9"},{"type":"permissions","id":"4ada6e36-f923-11ea-adbc-0788e5c5e3cf"},{"type":"permissions","id":"5025ee24-f923-11ea-adbc-576ea241df8d"},{"type":"permissions","id":"55f4b5ec-f923-11ea-adbc-1bfa2334a755"},{"type":"permissions","id":"5c6b88e2-f923-11ea-adbc-abf57d079420"},{"type":"permissions","id":"642eebe6-f923-11ea-adbc-eb617674ea04"},{"type":"permissions","id":"6ba32d22-0e1a-11eb-ba44-bf9a5aafaa39"},{"type":"permissions","id":"fcac2ad8-2843-11eb-8315-0fe47949d625"},{"type":"permissions","id":"417ba636-2dce-11eb-84c0-6bce5b0d9de0"},{"type":"permissions","id":"43fa188e-2dce-11eb-84c0-835ad1fd6287"},{"type":"permissions","id":"4916eebe-2dce-11eb-84c0-271cb2c672e8"},{"type":"permissions","id":"5cbe5f9c-2dce-11eb-84c0-872d3e9f1076"},{"type":"permissions","id":"61765026-2dce-11eb-84c0-833e230d1b8f"},{"type":"permissions","id":"8106300a-54f7-11eb-8cbc-7781a434a67b"},{"type":"permissions","id":"edfd5e75-801f-11eb-96d8-da7ad0900002"},{"type":"permissions","id":"98b984f4-b16d-11eb-a2c6-da7ad0900002"},{"type":"permissions","id":"12efc20e-d36c-11eb-a9b8-da7ad0900002"},{"type":"permissions","id":"12efc211-d36c-11eb-a9b8-da7ad0900002"},{"type":"permissions","id":"12efc20f-d36c-11eb-a9b8-da7ad0900002"},{"type":"permissions","id":"12efc210-d36c-11eb-a9b8-da7ad0900002"},{"type":"permissions","id":"97971c1c-e895-11eb-b13c-da7ad0900002"},{"type":"permissions","id":"97971c1d-e895-11eb-b13c-da7ad0900002"},{"type":"permissions","id":"7605ef24-f376-11eb-b90b-da7ad0900002"},{"type":"permissions","id":"7605ef25-f376-11eb-b90b-da7ad0900002"},{"type":"permissions","id":"c95412b8-16c7-11ec-85c0-da7ad0900002"},{"type":"permissions","id":"c95412b9-16c7-11ec-85c0-da7ad0900002"},{"type":"permissions","id":"26c79920-1703-11ec-85d2-da7ad0900002"},{"type":"permissions","id":"f4473c60-4792-11ec-a27b-da7ad0900002"},{"type":"permissions","id":"f4473c61-4792-11ec-a27b-da7ad0900002"},{"type":"permissions","id":"8e4d6b6e-5750-11ec-a9f4-da7ad0900002"},{"type":"permissions","id":"945b3bb4-5884-11ec-aa6d-da7ad0900002"},{"type":"permissions","id":"f6e917a8-8502-11ec-bf20-da7ad0900002"},{"type":"permissions","id":"f6e917aa-8502-11ec-bf20-da7ad0900002"},{"type":"permissions","id":"f6e917a9-8502-11ec-bf20-da7ad0900002"},{"type":"permissions","id":"f6e917a6-8502-11ec-bf20-da7ad0900002"},{"type":"permissions","id":"f6e917a7-8502-11ec-bf20-da7ad0900002"},{"type":"permissions","id":"b6bf9ac6-9a59-11ec-8480-da7ad0900002"},{"type":"permissions","id":"b6bf9ac7-9a59-11ec-8480-da7ad0900002"},{"type":"permissions","id":"2108215e-b9b4-11ec-958e-da7ad0900002"},{"type":"permissions","id":"7b1f5089-c59e-11ec-aa32-da7ad0900002"},{"type":"permissions","id":"f8e941cf-e746-11ec-b22d-da7ad0900002"},{"type":"permissions","id":"f8e941d0-e746-11ec-b22d-da7ad0900002"},{"type":"permissions","id":"f8e941ce-e746-11ec-b22d-da7ad0900002"},{"type":"permissions","id":"ee68fba9-173a-11ed-b00b-da7ad0900002"},{"type":"permissions","id":"ee68fba8-173a-11ed-b00b-da7ad0900002"},{"type":"permissions","id":"6be119a6-1cd8-11ed-b185-da7ad0900002"},{"type":"permissions","id":"36e2a22e-248a-11ed-b405-da7ad0900002"},{"type":"permissions","id":"4ee674f6-55d9-11ed-b10d-da7ad0900002"},{"type":"permissions","id":"4ee7e46c-55d9-11ed-b10e-da7ad0900002"},{"type":"permissions","id":"4ee5731c-55d9-11ed-b10b-da7ad0900002"},{"type":"permissions","id":"4ee60688-55d9-11ed-b10c-da7ad0900002"},{"type":"permissions","id":"99474cc2-5a12-11ed-b547-da7ad0900002"},{"type":"permissions","id":"9948271e-5a12-11ed-b548-da7ad0900002"},{"type":"permissions","id":"8247acc4-7a4c-11ed-958f-da7ad0900002"},{"type":"permissions","id":"824851a6-7a4c-11ed-9590-da7ad0900002"},{"type":"permissions","id":"77d55a44-7a5a-11ed-8abe-da7ad0900002"},{"type":"permissions","id":"6c5ad874-7aff-11ed-a5cd-da7ad0900002"},{"type":"permissions","id":"6c5c1090-7aff-11ed-a5cf-da7ad0900002"},{"type":"permissions","id":"6c5b7428-7aff-11ed-a5ce-da7ad0900002"},{"type":"permissions","id":"6c5de654-7aff-11ed-a5d1-da7ad0900002"},{"type":"permissions","id":"c13a2368-7d61-11ed-b5b7-da7ad0900002"},{"type":"permissions","id":"ca6bfb3a-b44f-11ed-adb2-da7ad0900002"},{"type":"permissions","id":"4dc3eec6-b468-11ed-8539-da7ad0900002"},{"type":"permissions","id":"4dc4094c-b468-11ed-853a-da7ad0900002"},{"type":"permissions","id":"36bf3d0a-ccc0-11ed-9453-da7ad0900002"},{"type":"permissions","id":"f416f55e-db3f-11ed-8028-da7ad0900002"},{"type":"permissions","id":"f416b1ac-db3f-11ed-8027-da7ad0900002"},{"type":"permissions","id":"4e61a95e-de98-11ed-aa23-da7ad0900002"},{"type":"permissions","id":"4e61ea18-de98-11ed-aa24-da7ad0900002"},{"type":"permissions","id":"a4316eb8-f438-11ed-8af2-da7ad0900002"},{"type":"permissions","id":"a431bf12-f438-11ed-8af3-da7ad0900002"},{"type":"permissions","id":"8352cf04-f6ac-11ed-9ec7-da7ad0900002"},{"type":"permissions","id":"3a48350c-f9bc-11ed-b81c-da7ad0900002"},{"type":"permissions","id":"a773e3d8-fff2-11ed-965c-da7ad0900002"},{"type":"permissions","id":"a77452c8-fff2-11ed-965d-da7ad0900002"},{"type":"permissions","id":"a51b375a-ff73-11ed-8c18-da7ad0900002"},{"type":"permissions","id":"61f9891a-0070-11ee-9c3f-da7ad0900002"},{"type":"permissions","id":"1377d9e4-0ec7-11ee-aebc-da7ad0900002"},{"type":"permissions","id":"cc8cd958-11eb-11ee-ade2-da7ad0900002"},{"type":"permissions","id":"b1ad77e6-0949-11ee-b2c3-da7ad0900002"},{"type":"permissions","id":"b1adb5da-0949-11ee-b2c4-da7ad0900002"},{"type":"permissions","id":"0efeff18-1cec-11ee-992d-da7ad0900002"},{"type":"permissions","id":"785177a6-20da-11ee-bed7-da7ad0900002"},{"type":"permissions","id":"6c5c79b2-21a4-11ee-99ee-da7ad0900002"},{"type":"permissions","id":"1b8f54cc-2ca4-11ee-9e72-da7ad0900002"},{"type":"permissions","id":"de0e73c2-3d23-11ee-aa7d-da7ad0900002"},{"type":"permissions","id":"de0eb666-3d23-11ee-aa7e-da7ad0900002"},{"type":"permissions","id":"a8b4d6e8-4ea4-11ee-b482-da7ad0900002"},{"type":"permissions","id":"263eff86-6925-11ee-acc0-da7ad0900002"},{"type":"permissions","id":"50c270de-69ee-11ee-9151-da7ad0900002"},{"type":"permissions","id":"1b572396-ba15-11ee-9e19-da7ad0900002"},{"type":"permissions","id":"ca06b2b4-f5cd-11ee-9e77-da7ad0900002"}]}}}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 95.219667ms
+    - id: 17
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/roles?filter=Datadog+Standard+Role
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":[{"type":"roles","id":"94172443-be03-11e9-a77a-373332f69711","attributes":{"name":"Datadog Standard Role","created_at":"2019-08-13T19:50:19.075284+00:00","modified_at":"2019-08-13T19:50:19.075284+00:00","user_count":33},"relationships":{"permissions":{"data":[{"type":"permissions","id":"984d2f00-d3b4-11e8-a200-bb47109e9987"},{"type":"permissions","id":"5e605652-dd12-11e8-9e53-375565b8970e"},{"type":"permissions","id":"62cc036c-dd12-11e8-9e54-db9995643092"},{"type":"permissions","id":"6f66600e-dd12-11e8-9e55-7f30fbb45e73"},{"type":"permissions","id":"7d7c98ac-dd12-11e8-9e56-93700598622d"},{"type":"permissions","id":"811ac4ca-dd12-11e8-9e57-676a7f0beef9"},{"type":"permissions","id":"84aa3ae4-dd12-11e8-9e58-a373a514ccd0"},{"type":"permissions","id":"979df720-aed7-11e9-99c6-a7eb8373165a"},{"type":"permissions","id":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2"},{"type":"permissions","id":"d90f6831-d3d8-11e9-a77a-4fd230ddbc6a"},{"type":"permissions","id":"d90f6832-d3d8-11e9-a77a-bf8a2607f864"},{"type":"permissions","id":"4441648c-d8b1-11e9-a77a-1b899a04b304"},{"type":"permissions","id":"48ef71ea-d8b1-11e9-a77a-93f408470ad0"},{"type":"permissions","id":"4d87d5f8-d8b1-11e9-a77a-eb9c8350d04f"},{"type":"permissions","id":"1af86ce4-7823-11ea-93dc-d7cad1b1c6cb"},{"type":"permissions","id":"b382b982-8535-11ea-93de-2bf1bdf20798"},{"type":"permissions","id":"7314eb20-aa58-11ea-95e2-6fb6e4a451d5"},{"type":"permissions","id":"7b516476-aa58-11ea-95e2-93718cd56369"},{"type":"permissions","id":"80de1ec0-aa58-11ea-95e2-aff381626d5d"},{"type":"permissions","id":"58b412cc-ff6d-11eb-bc9c-da7ad0900002"},{"type":"permissions","id":"9ac1d8cc-e707-11ea-aa2d-73d37e989a9d"},{"type":"permissions","id":"46a301da-ec5c-11ea-aa9f-73bedeab67ee"},{"type":"permissions","id":"46a301db-ec5c-11ea-aa9f-2fe72193d60e"},{"type":"permissions","id":"46a301dd-ec5c-11ea-aa9f-97edfb345bc9"},{"type":"permissions","id":"46a301e4-ec5c-11ea-aa9f-87282b3a50cc"},{"type":"permissions","id":"07c3c146-f7f8-11ea-acf6-0bd62b9ae60e"},{"type":"permissions","id":"372896c4-f923-11ea-adbc-4fecd107156d"},{"type":"permissions","id":"4628ca54-f923-11ea-adbc-4b2b7f88c5e9"},{"type":"permissions","id":"4ada6e36-f923-11ea-adbc-0788e5c5e3cf"},{"type":"permissions","id":"5025ee24-f923-11ea-adbc-576ea241df8d"},{"type":"permissions","id":"55f4b5ec-f923-11ea-adbc-1bfa2334a755"},{"type":"permissions","id":"5c6b88e2-f923-11ea-adbc-abf57d079420"},{"type":"permissions","id":"642eebe6-f923-11ea-adbc-eb617674ea04"},{"type":"permissions","id":"6ba32d22-0e1a-11eb-ba44-bf9a5aafaa39"},{"type":"permissions","id":"fcac2ad8-2843-11eb-8315-0fe47949d625"},{"type":"permissions","id":"417ba636-2dce-11eb-84c0-6bce5b0d9de0"},{"type":"permissions","id":"43fa188e-2dce-11eb-84c0-835ad1fd6287"},{"type":"permissions","id":"4916eebe-2dce-11eb-84c0-271cb2c672e8"},{"type":"permissions","id":"5cbe5f9c-2dce-11eb-84c0-872d3e9f1076"},{"type":"permissions","id":"61765026-2dce-11eb-84c0-833e230d1b8f"},{"type":"permissions","id":"8106300a-54f7-11eb-8cbc-7781a434a67b"},{"type":"permissions","id":"edfd5e75-801f-11eb-96d8-da7ad0900002"},{"type":"permissions","id":"98b984f4-b16d-11eb-a2c6-da7ad0900002"},{"type":"permissions","id":"12efc20e-d36c-11eb-a9b8-da7ad0900002"},{"type":"permissions","id":"12efc211-d36c-11eb-a9b8-da7ad0900002"},{"type":"permissions","id":"12efc20f-d36c-11eb-a9b8-da7ad0900002"},{"type":"permissions","id":"12efc210-d36c-11eb-a9b8-da7ad0900002"},{"type":"permissions","id":"97971c1c-e895-11eb-b13c-da7ad0900002"},{"type":"permissions","id":"97971c1d-e895-11eb-b13c-da7ad0900002"},{"type":"permissions","id":"7605ef24-f376-11eb-b90b-da7ad0900002"},{"type":"permissions","id":"7605ef25-f376-11eb-b90b-da7ad0900002"},{"type":"permissions","id":"c95412b8-16c7-11ec-85c0-da7ad0900002"},{"type":"permissions","id":"c95412b9-16c7-11ec-85c0-da7ad0900002"},{"type":"permissions","id":"26c79920-1703-11ec-85d2-da7ad0900002"},{"type":"permissions","id":"f4473c60-4792-11ec-a27b-da7ad0900002"},{"type":"permissions","id":"f4473c61-4792-11ec-a27b-da7ad0900002"},{"type":"permissions","id":"8e4d6b6e-5750-11ec-a9f4-da7ad0900002"},{"type":"permissions","id":"945b3bb4-5884-11ec-aa6d-da7ad0900002"},{"type":"permissions","id":"f6e917a8-8502-11ec-bf20-da7ad0900002"},{"type":"permissions","id":"f6e917aa-8502-11ec-bf20-da7ad0900002"},{"type":"permissions","id":"f6e917a9-8502-11ec-bf20-da7ad0900002"},{"type":"permissions","id":"f6e917a6-8502-11ec-bf20-da7ad0900002"},{"type":"permissions","id":"f6e917a7-8502-11ec-bf20-da7ad0900002"},{"type":"permissions","id":"b6bf9ac6-9a59-11ec-8480-da7ad0900002"},{"type":"permissions","id":"b6bf9ac7-9a59-11ec-8480-da7ad0900002"},{"type":"permissions","id":"2108215e-b9b4-11ec-958e-da7ad0900002"},{"type":"permissions","id":"7b1f5089-c59e-11ec-aa32-da7ad0900002"},{"type":"permissions","id":"f8e941cf-e746-11ec-b22d-da7ad0900002"},{"type":"permissions","id":"f8e941d0-e746-11ec-b22d-da7ad0900002"},{"type":"permissions","id":"f8e941ce-e746-11ec-b22d-da7ad0900002"},{"type":"permissions","id":"ee68fba9-173a-11ed-b00b-da7ad0900002"},{"type":"permissions","id":"ee68fba8-173a-11ed-b00b-da7ad0900002"},{"type":"permissions","id":"6be119a6-1cd8-11ed-b185-da7ad0900002"},{"type":"permissions","id":"36e2a22e-248a-11ed-b405-da7ad0900002"},{"type":"permissions","id":"4ee674f6-55d9-11ed-b10d-da7ad0900002"},{"type":"permissions","id":"4ee7e46c-55d9-11ed-b10e-da7ad0900002"},{"type":"permissions","id":"4ee5731c-55d9-11ed-b10b-da7ad0900002"},{"type":"permissions","id":"4ee60688-55d9-11ed-b10c-da7ad0900002"},{"type":"permissions","id":"99474cc2-5a12-11ed-b547-da7ad0900002"},{"type":"permissions","id":"9948271e-5a12-11ed-b548-da7ad0900002"},{"type":"permissions","id":"8247acc4-7a4c-11ed-958f-da7ad0900002"},{"type":"permissions","id":"824851a6-7a4c-11ed-9590-da7ad0900002"},{"type":"permissions","id":"77d55a44-7a5a-11ed-8abe-da7ad0900002"},{"type":"permissions","id":"6c5ad874-7aff-11ed-a5cd-da7ad0900002"},{"type":"permissions","id":"6c5c1090-7aff-11ed-a5cf-da7ad0900002"},{"type":"permissions","id":"6c5b7428-7aff-11ed-a5ce-da7ad0900002"},{"type":"permissions","id":"6c5de654-7aff-11ed-a5d1-da7ad0900002"},{"type":"permissions","id":"c13a2368-7d61-11ed-b5b7-da7ad0900002"},{"type":"permissions","id":"ca6bfb3a-b44f-11ed-adb2-da7ad0900002"},{"type":"permissions","id":"4dc3eec6-b468-11ed-8539-da7ad0900002"},{"type":"permissions","id":"4dc4094c-b468-11ed-853a-da7ad0900002"},{"type":"permissions","id":"36bf3d0a-ccc0-11ed-9453-da7ad0900002"},{"type":"permissions","id":"f416f55e-db3f-11ed-8028-da7ad0900002"},{"type":"permissions","id":"f416b1ac-db3f-11ed-8027-da7ad0900002"},{"type":"permissions","id":"4e61a95e-de98-11ed-aa23-da7ad0900002"},{"type":"permissions","id":"4e61ea18-de98-11ed-aa24-da7ad0900002"},{"type":"permissions","id":"a4316eb8-f438-11ed-8af2-da7ad0900002"},{"type":"permissions","id":"a431bf12-f438-11ed-8af3-da7ad0900002"},{"type":"permissions","id":"8352cf04-f6ac-11ed-9ec7-da7ad0900002"},{"type":"permissions","id":"3a48350c-f9bc-11ed-b81c-da7ad0900002"},{"type":"permissions","id":"a773e3d8-fff2-11ed-965c-da7ad0900002"},{"type":"permissions","id":"a77452c8-fff2-11ed-965d-da7ad0900002"},{"type":"permissions","id":"a51b375a-ff73-11ed-8c18-da7ad0900002"},{"type":"permissions","id":"61f9891a-0070-11ee-9c3f-da7ad0900002"},{"type":"permissions","id":"1377d9e4-0ec7-11ee-aebc-da7ad0900002"},{"type":"permissions","id":"cc8cd958-11eb-11ee-ade2-da7ad0900002"},{"type":"permissions","id":"b1ad77e6-0949-11ee-b2c3-da7ad0900002"},{"type":"permissions","id":"b1adb5da-0949-11ee-b2c4-da7ad0900002"},{"type":"permissions","id":"0efeff18-1cec-11ee-992d-da7ad0900002"},{"type":"permissions","id":"785177a6-20da-11ee-bed7-da7ad0900002"},{"type":"permissions","id":"6c5c79b2-21a4-11ee-99ee-da7ad0900002"},{"type":"permissions","id":"1b8f54cc-2ca4-11ee-9e72-da7ad0900002"},{"type":"permissions","id":"de0e73c2-3d23-11ee-aa7d-da7ad0900002"},{"type":"permissions","id":"de0eb666-3d23-11ee-aa7e-da7ad0900002"},{"type":"permissions","id":"a8b4d6e8-4ea4-11ee-b482-da7ad0900002"},{"type":"permissions","id":"263eff86-6925-11ee-acc0-da7ad0900002"},{"type":"permissions","id":"50c270de-69ee-11ee-9151-da7ad0900002"},{"type":"permissions","id":"1b572396-ba15-11ee-9e19-da7ad0900002"},{"type":"permissions","id":"ca06b2b4-f5cd-11ee-9e77-da7ad0900002"}]}}}],"meta":{"page":{"total_count":18,"total_filtered_count":1}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 176.100083ms
+    - id: 18
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/authn_mappings/174b2808-fc1c-11ee-bab8-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"authn_mappings","id":"174b2808-fc1c-11ee-bab8-da7ad0900002","attributes":{"attribute_key":"key_2","attribute_value":"value_2","created_at":"2024-04-16T18:06:47.514708+00:00","modified_at":"2024-04-16T18:06:50.266373+00:00"},"relationships":{"role":{"data":{"type":"roles","id":"94172443-be03-11e9-a77a-373332f69711"}}}},"included":[{"type":"roles","id":"94172443-be03-11e9-a77a-373332f69711","attributes":{"name":"Datadog Standard Role","created_at":"2019-08-13T19:50:19.075284+00:00","modified_at":"2019-08-13T19:50:19.075284+00:00"},"relationships":{"permissions":{"data":[{"type":"permissions","id":"984d2f00-d3b4-11e8-a200-bb47109e9987"},{"type":"permissions","id":"5e605652-dd12-11e8-9e53-375565b8970e"},{"type":"permissions","id":"62cc036c-dd12-11e8-9e54-db9995643092"},{"type":"permissions","id":"6f66600e-dd12-11e8-9e55-7f30fbb45e73"},{"type":"permissions","id":"7d7c98ac-dd12-11e8-9e56-93700598622d"},{"type":"permissions","id":"811ac4ca-dd12-11e8-9e57-676a7f0beef9"},{"type":"permissions","id":"84aa3ae4-dd12-11e8-9e58-a373a514ccd0"},{"type":"permissions","id":"979df720-aed7-11e9-99c6-a7eb8373165a"},{"type":"permissions","id":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2"},{"type":"permissions","id":"d90f6831-d3d8-11e9-a77a-4fd230ddbc6a"},{"type":"permissions","id":"d90f6832-d3d8-11e9-a77a-bf8a2607f864"},{"type":"permissions","id":"4441648c-d8b1-11e9-a77a-1b899a04b304"},{"type":"permissions","id":"48ef71ea-d8b1-11e9-a77a-93f408470ad0"},{"type":"permissions","id":"4d87d5f8-d8b1-11e9-a77a-eb9c8350d04f"},{"type":"permissions","id":"1af86ce4-7823-11ea-93dc-d7cad1b1c6cb"},{"type":"permissions","id":"b382b982-8535-11ea-93de-2bf1bdf20798"},{"type":"permissions","id":"7314eb20-aa58-11ea-95e2-6fb6e4a451d5"},{"type":"permissions","id":"7b516476-aa58-11ea-95e2-93718cd56369"},{"type":"permissions","id":"80de1ec0-aa58-11ea-95e2-aff381626d5d"},{"type":"permissions","id":"58b412cc-ff6d-11eb-bc9c-da7ad0900002"},{"type":"permissions","id":"9ac1d8cc-e707-11ea-aa2d-73d37e989a9d"},{"type":"permissions","id":"46a301da-ec5c-11ea-aa9f-73bedeab67ee"},{"type":"permissions","id":"46a301db-ec5c-11ea-aa9f-2fe72193d60e"},{"type":"permissions","id":"46a301dd-ec5c-11ea-aa9f-97edfb345bc9"},{"type":"permissions","id":"46a301e4-ec5c-11ea-aa9f-87282b3a50cc"},{"type":"permissions","id":"07c3c146-f7f8-11ea-acf6-0bd62b9ae60e"},{"type":"permissions","id":"372896c4-f923-11ea-adbc-4fecd107156d"},{"type":"permissions","id":"4628ca54-f923-11ea-adbc-4b2b7f88c5e9"},{"type":"permissions","id":"4ada6e36-f923-11ea-adbc-0788e5c5e3cf"},{"type":"permissions","id":"5025ee24-f923-11ea-adbc-576ea241df8d"},{"type":"permissions","id":"55f4b5ec-f923-11ea-adbc-1bfa2334a755"},{"type":"permissions","id":"5c6b88e2-f923-11ea-adbc-abf57d079420"},{"type":"permissions","id":"642eebe6-f923-11ea-adbc-eb617674ea04"},{"type":"permissions","id":"6ba32d22-0e1a-11eb-ba44-bf9a5aafaa39"},{"type":"permissions","id":"fcac2ad8-2843-11eb-8315-0fe47949d625"},{"type":"permissions","id":"417ba636-2dce-11eb-84c0-6bce5b0d9de0"},{"type":"permissions","id":"43fa188e-2dce-11eb-84c0-835ad1fd6287"},{"type":"permissions","id":"4916eebe-2dce-11eb-84c0-271cb2c672e8"},{"type":"permissions","id":"5cbe5f9c-2dce-11eb-84c0-872d3e9f1076"},{"type":"permissions","id":"61765026-2dce-11eb-84c0-833e230d1b8f"},{"type":"permissions","id":"8106300a-54f7-11eb-8cbc-7781a434a67b"},{"type":"permissions","id":"edfd5e75-801f-11eb-96d8-da7ad0900002"},{"type":"permissions","id":"98b984f4-b16d-11eb-a2c6-da7ad0900002"},{"type":"permissions","id":"12efc20e-d36c-11eb-a9b8-da7ad0900002"},{"type":"permissions","id":"12efc211-d36c-11eb-a9b8-da7ad0900002"},{"type":"permissions","id":"12efc20f-d36c-11eb-a9b8-da7ad0900002"},{"type":"permissions","id":"12efc210-d36c-11eb-a9b8-da7ad0900002"},{"type":"permissions","id":"97971c1c-e895-11eb-b13c-da7ad0900002"},{"type":"permissions","id":"97971c1d-e895-11eb-b13c-da7ad0900002"},{"type":"permissions","id":"7605ef24-f376-11eb-b90b-da7ad0900002"},{"type":"permissions","id":"7605ef25-f376-11eb-b90b-da7ad0900002"},{"type":"permissions","id":"c95412b8-16c7-11ec-85c0-da7ad0900002"},{"type":"permissions","id":"c95412b9-16c7-11ec-85c0-da7ad0900002"},{"type":"permissions","id":"26c79920-1703-11ec-85d2-da7ad0900002"},{"type":"permissions","id":"f4473c60-4792-11ec-a27b-da7ad0900002"},{"type":"permissions","id":"f4473c61-4792-11ec-a27b-da7ad0900002"},{"type":"permissions","id":"8e4d6b6e-5750-11ec-a9f4-da7ad0900002"},{"type":"permissions","id":"945b3bb4-5884-11ec-aa6d-da7ad0900002"},{"type":"permissions","id":"f6e917a8-8502-11ec-bf20-da7ad0900002"},{"type":"permissions","id":"f6e917aa-8502-11ec-bf20-da7ad0900002"},{"type":"permissions","id":"f6e917a9-8502-11ec-bf20-da7ad0900002"},{"type":"permissions","id":"f6e917a6-8502-11ec-bf20-da7ad0900002"},{"type":"permissions","id":"f6e917a7-8502-11ec-bf20-da7ad0900002"},{"type":"permissions","id":"b6bf9ac6-9a59-11ec-8480-da7ad0900002"},{"type":"permissions","id":"b6bf9ac7-9a59-11ec-8480-da7ad0900002"},{"type":"permissions","id":"2108215e-b9b4-11ec-958e-da7ad0900002"},{"type":"permissions","id":"7b1f5089-c59e-11ec-aa32-da7ad0900002"},{"type":"permissions","id":"f8e941cf-e746-11ec-b22d-da7ad0900002"},{"type":"permissions","id":"f8e941d0-e746-11ec-b22d-da7ad0900002"},{"type":"permissions","id":"f8e941ce-e746-11ec-b22d-da7ad0900002"},{"type":"permissions","id":"ee68fba9-173a-11ed-b00b-da7ad0900002"},{"type":"permissions","id":"ee68fba8-173a-11ed-b00b-da7ad0900002"},{"type":"permissions","id":"6be119a6-1cd8-11ed-b185-da7ad0900002"},{"type":"permissions","id":"36e2a22e-248a-11ed-b405-da7ad0900002"},{"type":"permissions","id":"4ee674f6-55d9-11ed-b10d-da7ad0900002"},{"type":"permissions","id":"4ee7e46c-55d9-11ed-b10e-da7ad0900002"},{"type":"permissions","id":"4ee5731c-55d9-11ed-b10b-da7ad0900002"},{"type":"permissions","id":"4ee60688-55d9-11ed-b10c-da7ad0900002"},{"type":"permissions","id":"99474cc2-5a12-11ed-b547-da7ad0900002"},{"type":"permissions","id":"9948271e-5a12-11ed-b548-da7ad0900002"},{"type":"permissions","id":"8247acc4-7a4c-11ed-958f-da7ad0900002"},{"type":"permissions","id":"824851a6-7a4c-11ed-9590-da7ad0900002"},{"type":"permissions","id":"77d55a44-7a5a-11ed-8abe-da7ad0900002"},{"type":"permissions","id":"6c5ad874-7aff-11ed-a5cd-da7ad0900002"},{"type":"permissions","id":"6c5c1090-7aff-11ed-a5cf-da7ad0900002"},{"type":"permissions","id":"6c5b7428-7aff-11ed-a5ce-da7ad0900002"},{"type":"permissions","id":"6c5de654-7aff-11ed-a5d1-da7ad0900002"},{"type":"permissions","id":"c13a2368-7d61-11ed-b5b7-da7ad0900002"},{"type":"permissions","id":"ca6bfb3a-b44f-11ed-adb2-da7ad0900002"},{"type":"permissions","id":"4dc3eec6-b468-11ed-8539-da7ad0900002"},{"type":"permissions","id":"4dc4094c-b468-11ed-853a-da7ad0900002"},{"type":"permissions","id":"36bf3d0a-ccc0-11ed-9453-da7ad0900002"},{"type":"permissions","id":"f416f55e-db3f-11ed-8028-da7ad0900002"},{"type":"permissions","id":"f416b1ac-db3f-11ed-8027-da7ad0900002"},{"type":"permissions","id":"4e61a95e-de98-11ed-aa23-da7ad0900002"},{"type":"permissions","id":"4e61ea18-de98-11ed-aa24-da7ad0900002"},{"type":"permissions","id":"a4316eb8-f438-11ed-8af2-da7ad0900002"},{"type":"permissions","id":"a431bf12-f438-11ed-8af3-da7ad0900002"},{"type":"permissions","id":"8352cf04-f6ac-11ed-9ec7-da7ad0900002"},{"type":"permissions","id":"3a48350c-f9bc-11ed-b81c-da7ad0900002"},{"type":"permissions","id":"a773e3d8-fff2-11ed-965c-da7ad0900002"},{"type":"permissions","id":"a77452c8-fff2-11ed-965d-da7ad0900002"},{"type":"permissions","id":"a51b375a-ff73-11ed-8c18-da7ad0900002"},{"type":"permissions","id":"61f9891a-0070-11ee-9c3f-da7ad0900002"},{"type":"permissions","id":"1377d9e4-0ec7-11ee-aebc-da7ad0900002"},{"type":"permissions","id":"cc8cd958-11eb-11ee-ade2-da7ad0900002"},{"type":"permissions","id":"b1ad77e6-0949-11ee-b2c3-da7ad0900002"},{"type":"permissions","id":"b1adb5da-0949-11ee-b2c4-da7ad0900002"},{"type":"permissions","id":"0efeff18-1cec-11ee-992d-da7ad0900002"},{"type":"permissions","id":"785177a6-20da-11ee-bed7-da7ad0900002"},{"type":"permissions","id":"6c5c79b2-21a4-11ee-99ee-da7ad0900002"},{"type":"permissions","id":"1b8f54cc-2ca4-11ee-9e72-da7ad0900002"},{"type":"permissions","id":"de0e73c2-3d23-11ee-aa7d-da7ad0900002"},{"type":"permissions","id":"de0eb666-3d23-11ee-aa7e-da7ad0900002"},{"type":"permissions","id":"a8b4d6e8-4ea4-11ee-b482-da7ad0900002"},{"type":"permissions","id":"263eff86-6925-11ee-acc0-da7ad0900002"},{"type":"permissions","id":"50c270de-69ee-11ee-9151-da7ad0900002"},{"type":"permissions","id":"1b572396-ba15-11ee-9e19-da7ad0900002"},{"type":"permissions","id":"ca06b2b4-f5cd-11ee-9e77-da7ad0900002"}]}}}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 94.791333ms
+    - id: 19
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/authn_mappings/174b2808-fc1c-11ee-bab8-da7ad0900002
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Content-Type:
+                - text/html; charset=utf-8
+        status: 204 No Content
+        code: 204
+        duration: 99.694875ms
+    - id: 20
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 209
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"description":"Example team","handle":"tf-testaccdatadogauthnmapping_createupdate-local-1713290805","name":"tf-testaccdatadogauthnmapping_createupdate-local-1713290805"},"type":"team"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/team
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"team","id":"2966bb6f-540c-4bff-89c7-2642ea43f7ae","attributes":{"name":"tf-testaccdatadogauthnmapping_createupdate-local-1713290805","handle":"tf-testaccdatadogauthnmapping_createupdate-local-1713290805","summary":"Example team","description":"Example team","avatar":null,"banner":12,"visible_modules":[],"hidden_modules":[],"created_at":"2024-04-16T18:06:52.649717+00:00","modified_at":"2024-04-16T18:06:52.649722+00:00","user_count":0,"link_count":0},"relationships":{"team_links":{"links":{"related":"/api/v2/team/2966bb6f-540c-4bff-89c7-2642ea43f7ae/links"}},"user_team_permissions":{"links":{"related":"/api/v2/team/2966bb6f-540c-4bff-89c7-2642ea43f7ae/permission-settings"}}}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 201 Created
+        code: 201
+        duration: 196.502167ms
+    - id: 21
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 196
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"attribute_key":"key_1","attribute_value":"value_1"},"relationships":{"team":{"data":{"id":"2966bb6f-540c-4bff-89c7-2642ea43f7ae","type":"team"}}},"type":"authn_mappings"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/authn_mappings
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"authn_mappings","id":"1a7b09c6-fc1c-11ee-a8f5-da7ad0900002","attributes":{"attribute_key":"key_1","attribute_value":"value_1","created_at":"2024-04-16T18:06:52.861312+00:00","modified_at":"2024-04-16T18:06:52.861312+00:00"},"relationships":{"team":{"data":{"type":"team","id":"2966bb6f-540c-4bff-89c7-2642ea43f7ae"}}}},"included":[{"type":"team","id":"2966bb6f-540c-4bff-89c7-2642ea43f7ae","attributes":{"name":"tf-testaccdatadogauthnmapping_createupdate-local-1713290805","handle":"tf-testaccdatadogauthnmapping_createupdate-local-1713290805","summary":"Example team","avatar":null,"banner":12,"user_count":0,"link_count":0,"is_open_membership":true,"handles":["tf-testaccdatadogauthnmapping_createupdate-local-1713290805"]}}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 156.285125ms
+    - id: 22
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/authn_mappings/1a7b09c6-fc1c-11ee-a8f5-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"authn_mappings","id":"1a7b09c6-fc1c-11ee-a8f5-da7ad0900002","attributes":{"attribute_key":"key_1","attribute_value":"value_1","created_at":"2024-04-16T18:06:52.861312+00:00","modified_at":"2024-04-16T18:06:52.861312+00:00"},"relationships":{"team":{"data":{"type":"team","id":"2966bb6f-540c-4bff-89c7-2642ea43f7ae"}}}},"included":[{"type":"team","id":"2966bb6f-540c-4bff-89c7-2642ea43f7ae","attributes":{"name":"tf-testaccdatadogauthnmapping_createupdate-local-1713290805","handle":"tf-testaccdatadogauthnmapping_createupdate-local-1713290805","summary":"Example team","avatar":null,"banner":12,"user_count":0,"link_count":0,"is_open_membership":true,"handles":["tf-testaccdatadogauthnmapping_createupdate-local-1713290805"]}}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 115.294125ms
+    - id: 23
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/authn_mappings/1a7b09c6-fc1c-11ee-a8f5-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"authn_mappings","id":"1a7b09c6-fc1c-11ee-a8f5-da7ad0900002","attributes":{"attribute_key":"key_1","attribute_value":"value_1","created_at":"2024-04-16T18:06:52.861312+00:00","modified_at":"2024-04-16T18:06:52.861312+00:00"},"relationships":{"team":{"data":{"type":"team","id":"2966bb6f-540c-4bff-89c7-2642ea43f7ae"}}}},"included":[{"type":"team","id":"2966bb6f-540c-4bff-89c7-2642ea43f7ae","attributes":{"name":"tf-testaccdatadogauthnmapping_createupdate-local-1713290805","handle":"tf-testaccdatadogauthnmapping_createupdate-local-1713290805","summary":"Example team","avatar":null,"banner":12,"user_count":0,"link_count":0,"is_open_membership":true,"handles":["tf-testaccdatadogauthnmapping_createupdate-local-1713290805"]}}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 106.438833ms
+    - id: 24
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/team/2966bb6f-540c-4bff-89c7-2642ea43f7ae
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"team","attributes":{"description":"Example team","modified_at":"2024-04-16T18:06:52.649722+00:00","created_at":"2024-04-16T18:06:52.649717+00:00","handle":"tf-testaccdatadogauthnmapping_createupdate-local-1713290805","summary":"Example team","name":"tf-testaccdatadogauthnmapping_createupdate-local-1713290805","user_count":0,"link_count":0},"relationships":{"team_links":{"links":{"related":"/api/v2/team/2966bb6f-540c-4bff-89c7-2642ea43f7ae/links"}},"user_team_permissions":{"links":{"related":"/api/v2/team/2966bb6f-540c-4bff-89c7-2642ea43f7ae/permission-settings"}}},"id":"2966bb6f-540c-4bff-89c7-2642ea43f7ae"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 121.57375ms
+    - id: 25
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/authn_mappings/1a7b09c6-fc1c-11ee-a8f5-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"authn_mappings","id":"1a7b09c6-fc1c-11ee-a8f5-da7ad0900002","attributes":{"attribute_key":"key_1","attribute_value":"value_1","created_at":"2024-04-16T18:06:52.861312+00:00","modified_at":"2024-04-16T18:06:52.861312+00:00"},"relationships":{"team":{"data":{"type":"team","id":"2966bb6f-540c-4bff-89c7-2642ea43f7ae"}}}},"included":[{"type":"team","id":"2966bb6f-540c-4bff-89c7-2642ea43f7ae","attributes":{"name":"tf-testaccdatadogauthnmapping_createupdate-local-1713290805","handle":"tf-testaccdatadogauthnmapping_createupdate-local-1713290805","summary":"Example team","avatar":null,"banner":12,"user_count":0,"link_count":0,"is_open_membership":true,"handles":["tf-testaccdatadogauthnmapping_createupdate-local-1713290805"]}}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 116.535917ms
+    - id: 26
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/authn_mappings/1a7b09c6-fc1c-11ee-a8f5-da7ad0900002
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Content-Type:
+                - text/html; charset=utf-8
+        status: 204 No Content
+        code: 204
+        duration: 98.612333ms
+    - id: 27
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/team/2966bb6f-540c-4bff-89c7-2642ea43f7ae
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 205.228459ms
+    - id: 28
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/authn_mappings/1a7b09c6-fc1c-11ee-a8f5-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"errors":["Mapping with id 1a7b09c6-fc1c-11ee-a8f5-da7ad0900002 not found"]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 72.452792ms

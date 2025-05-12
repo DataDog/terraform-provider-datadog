@@ -1,3 +1,19 @@
----
 version: 2
-interactions: []
+interactions:
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/users?filter=doesntexist01b0bb82-2000-4113-bb6b-e34b48ef37ff%40example.com%27
+    method: GET
+    id: 0
+  response:
+    body: '{"meta":{"page":{"total_filtered_count":0,"total_count":9426}},"data":[]}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: "0ms"

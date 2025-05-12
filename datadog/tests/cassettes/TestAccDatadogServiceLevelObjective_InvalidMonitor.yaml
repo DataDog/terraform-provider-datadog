@@ -1,3 +1,19 @@
----
 version: 2
-interactions: []
+interactions:
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/monitor/2
+    method: GET
+    id: 0
+  response:
+    body: '{"errors": ["Monitor not found"]}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 404 Not Found
+    code: 404
+    duration: "0ms"

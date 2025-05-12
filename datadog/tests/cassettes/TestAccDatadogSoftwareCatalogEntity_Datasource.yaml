@@ -1,3 +1,339 @@
 ---
 version: 2
-interactions: []
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 305
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            apiVersion: v3
+            kind: service
+            metadata:
+              name: tf_TestAccDatadogSoftwareCatalogEntity_Datasource_local_1742618176
+              displayName: tf_TestAccDatadogSoftwareCatalogEntity_Datasource_local_1742618176
+              tags:
+                - tag:value
+              owner: owner.of.tf_TestAccDatadogSoftwareCatalogEntity_Datasource_local_1742618176
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/catalog/entity
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":[{"id":"302f119c-fa51-4d8c-9150-d39fd69888a3","type":"entity","attributes":{"apiVersion":"v3","displayName":"tf_TestAccDatadogSoftwareCatalogEntity_Datasource_local_1742618176","kind":"service","name":"tf_TestAccDatadogSoftwareCatalogEntity_Datasource_local_1742618176","namespace":"default","owner":"owner.of.tf_TestAccDatadogSoftwareCatalogEntity_Datasource_local_1742618176","tags":["tag:value"]},"relationships":{"schema":{"data":{"id":"302f119c-fa51-4d8c-9150-d39fd69888a3","type":"schema"}}},"meta":{"createdAt":"2025-03-22T04:36:17.405805921Z","modifiedAt":"2025-03-22T04:36:17.405805851Z","ingestionSource":"api"}}],"meta":{"count":1,"includeCount":1},"included":[{"id":"302f119c-fa51-4d8c-9150-d39fd69888a3","type":"schema","attributes":{"schema":{"apiVersion":"v3","kind":"service","metadata":{"name":"tf_TestAccDatadogSoftwareCatalogEntity_Datasource_local_1742618176","namespace":"default","displayName":"tf_TestAccDatadogSoftwareCatalogEntity_Datasource_local_1742618176","tags":["tag:value"],"owner":"owner.of.tf_TestAccDatadogSoftwareCatalogEntity_Datasource_local_1742618176","managed":{"ingestionSource":"api","createdAt":"2025-03-22T04:36:17.405805921Z","modifiedAt":"2025-03-22T04:36:17.405805851Z"}}}}}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 202 Accepted
+        code: 202
+        duration: 66.304667ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/catalog/entity?filter%5Bname%5D=tf_TestAccDatadogSoftwareCatalogEntity_Datasource_local_1742618176
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 742
+        uncompressed: false
+        body: '{"data":[{"id":"302f119c-fa51-4d8c-9150-d39fd69888a3","type":"entity","attributes":{"apiVersion":"v3","displayName":"tf_TestAccDatadogSoftwareCatalogEntity_Datasource_local_1742618176","kind":"service","name":"tf_TestAccDatadogSoftwareCatalogEntity_Datasource_local_1742618176","namespace":"default","owner":"owner.of.tf_TestAccDatadogSoftwareCatalogEntity_Datasource_local_1742618176","tags":["tag:value"]},"meta":{"createdAt":"2025-03-22T04:36:17.405805Z","modifiedAt":"2025-03-22T04:36:17.405805851Z","ingestionSource":"api"}}],"meta":{"count":1,"includeCount":0},"links":{"self":"/api/v2/catalog/entity?filter%5Bname%5D=tf_TestAccDatadogSoftwareCatalogEntity_Datasource_local_1742618176\u0026page%5Blimit%5D=100\u0026page%5Boffset%5D=0"}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 121.9175ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/catalog/entity?filter%5Bref%5D=service%3Adefault%2Ftf_TestAccDatadogSoftwareCatalogEntity_Datasource_local_1742618176&include=raw_schema
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":[{"id":"302f119c-fa51-4d8c-9150-d39fd69888a3","type":"entity","attributes":{"apiVersion":"v3","displayName":"tf_TestAccDatadogSoftwareCatalogEntity_Datasource_local_1742618176","kind":"service","name":"tf_TestAccDatadogSoftwareCatalogEntity_Datasource_local_1742618176","namespace":"default","owner":"owner.of.tf_TestAccDatadogSoftwareCatalogEntity_Datasource_local_1742618176","tags":["tag:value"]},"relationships":{"rawSchema":{"data":{"id":"302f119c-fa51-4d8c-9150-d39fd69888a3","type":"rawSchema"}}},"meta":{"createdAt":"2025-03-22T04:36:17.405805Z","modifiedAt":"2025-03-22T04:36:17.405805851Z","ingestionSource":"api"}}],"meta":{"count":1,"includeCount":1},"links":{"self":"/api/v2/catalog/entity?filter%5Bref%5D=service%3Adefault%2Ftf_TestAccDatadogSoftwareCatalogEntity_Datasource_local_1742618176\u0026include=raw_schema\u0026page%5Blimit%5D=100\u0026page%5Boffset%5D=0"},"included":[{"id":"302f119c-fa51-4d8c-9150-d39fd69888a3","type":"rawSchema","attributes":{"rawSchema":"LS0tCmFwaVZlcnNpb246IHYzCmtpbmQ6IHNlcnZpY2UKbWV0YWRhdGE6CiAgbmFtZTogdGZfVGVzdEFjY0RhdGFkb2dTb2Z0d2FyZUNhdGFsb2dFbnRpdHlfRGF0YXNvdXJjZV9sb2NhbF8xNzQyNjE4MTc2CiAgZGlzcGxheU5hbWU6IHRmX1Rlc3RBY2NEYXRhZG9nU29mdHdhcmVDYXRhbG9nRW50aXR5X0RhdGFzb3VyY2VfbG9jYWxfMTc0MjYxODE3NgogIHRhZ3M6CiAgICAtIHRhZzp2YWx1ZQogIG93bmVyOiBvd25lci5vZi50Zl9UZXN0QWNjRGF0YWRvZ1NvZnR3YXJlQ2F0YWxvZ0VudGl0eV9EYXRhc291cmNlX2xvY2FsXzE3NDI2MTgxNzYK"}}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 56.884ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/catalog/entity?filter%5Bname%5D=tf_TestAccDatadogSoftwareCatalogEntity_Datasource_local_1742618176&page%5Blimit%5D=100&page%5Boffset%5D=0
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 742
+        uncompressed: false
+        body: '{"data":[{"id":"302f119c-fa51-4d8c-9150-d39fd69888a3","type":"entity","attributes":{"apiVersion":"v3","displayName":"tf_TestAccDatadogSoftwareCatalogEntity_Datasource_local_1742618176","kind":"service","name":"tf_TestAccDatadogSoftwareCatalogEntity_Datasource_local_1742618176","namespace":"default","owner":"owner.of.tf_TestAccDatadogSoftwareCatalogEntity_Datasource_local_1742618176","tags":["tag:value"]},"meta":{"createdAt":"2025-03-22T04:36:17.405805Z","modifiedAt":"2025-03-22T04:36:17.405805851Z","ingestionSource":"api"}}],"meta":{"count":1,"includeCount":0},"links":{"self":"/api/v2/catalog/entity?filter%5Bname%5D=tf_TestAccDatadogSoftwareCatalogEntity_Datasource_local_1742618176\u0026page%5Blimit%5D=100\u0026page%5Boffset%5D=0"}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 59.121375ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/catalog/entity?filter%5Bref%5D=service%3Adefault%2Ftf_TestAccDatadogSoftwareCatalogEntity_Datasource_local_1742618176&include=raw_schema
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":[{"id":"302f119c-fa51-4d8c-9150-d39fd69888a3","type":"entity","attributes":{"apiVersion":"v3","displayName":"tf_TestAccDatadogSoftwareCatalogEntity_Datasource_local_1742618176","kind":"service","name":"tf_TestAccDatadogSoftwareCatalogEntity_Datasource_local_1742618176","namespace":"default","owner":"owner.of.tf_TestAccDatadogSoftwareCatalogEntity_Datasource_local_1742618176","tags":["tag:value"]},"relationships":{"rawSchema":{"data":{"id":"302f119c-fa51-4d8c-9150-d39fd69888a3","type":"rawSchema"}}},"meta":{"createdAt":"2025-03-22T04:36:17.405805Z","modifiedAt":"2025-03-22T04:36:17.405805851Z","ingestionSource":"api"}}],"meta":{"count":1,"includeCount":1},"links":{"self":"/api/v2/catalog/entity?filter%5Bref%5D=service%3Adefault%2Ftf_TestAccDatadogSoftwareCatalogEntity_Datasource_local_1742618176\u0026include=raw_schema\u0026page%5Blimit%5D=100\u0026page%5Boffset%5D=0"},"included":[{"id":"302f119c-fa51-4d8c-9150-d39fd69888a3","type":"rawSchema","attributes":{"rawSchema":"LS0tCmFwaVZlcnNpb246IHYzCmtpbmQ6IHNlcnZpY2UKbWV0YWRhdGE6CiAgbmFtZTogdGZfVGVzdEFjY0RhdGFkb2dTb2Z0d2FyZUNhdGFsb2dFbnRpdHlfRGF0YXNvdXJjZV9sb2NhbF8xNzQyNjE4MTc2CiAgZGlzcGxheU5hbWU6IHRmX1Rlc3RBY2NEYXRhZG9nU29mdHdhcmVDYXRhbG9nRW50aXR5X0RhdGFzb3VyY2VfbG9jYWxfMTc0MjYxODE3NgogIHRhZ3M6CiAgICAtIHRhZzp2YWx1ZQogIG93bmVyOiBvd25lci5vZi50Zl9UZXN0QWNjRGF0YWRvZ1NvZnR3YXJlQ2F0YWxvZ0VudGl0eV9EYXRhc291cmNlX2xvY2FsXzE3NDI2MTgxNzYK"}}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 85.483292ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/catalog/entity?filter%5Bname%5D=tf_TestAccDatadogSoftwareCatalogEntity_Datasource_local_1742618176&page%5Blimit%5D=100&page%5Boffset%5D=0
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 742
+        uncompressed: false
+        body: '{"data":[{"id":"302f119c-fa51-4d8c-9150-d39fd69888a3","type":"entity","attributes":{"apiVersion":"v3","displayName":"tf_TestAccDatadogSoftwareCatalogEntity_Datasource_local_1742618176","kind":"service","name":"tf_TestAccDatadogSoftwareCatalogEntity_Datasource_local_1742618176","namespace":"default","owner":"owner.of.tf_TestAccDatadogSoftwareCatalogEntity_Datasource_local_1742618176","tags":["tag:value"]},"meta":{"createdAt":"2025-03-22T04:36:17.405805Z","modifiedAt":"2025-03-22T04:36:17.405805851Z","ingestionSource":"api"}}],"meta":{"count":1,"includeCount":0},"links":{"self":"/api/v2/catalog/entity?filter%5Bname%5D=tf_TestAccDatadogSoftwareCatalogEntity_Datasource_local_1742618176\u0026page%5Blimit%5D=100\u0026page%5Boffset%5D=0"}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 51.753334ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/catalog/entity/service:default/tf_TestAccDatadogSoftwareCatalogEntity_Datasource_local_1742618176
+        method: DELETE
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 57.350667ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/catalog/entity?filter%5Bname%5D=tf_TestAccDatadogSoftwareCatalogEntity_Datasource_local_1742618176&page%5Blimit%5D=100&page%5Boffset%5D=0
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 222
+        uncompressed: false
+        body: '{"data":[],"meta":{"count":0,"includeCount":0},"links":{"self":"/api/v2/catalog/entity?filter%5Bname%5D=tf_TestAccDatadogSoftwareCatalogEntity_Datasource_local_1742618176\u0026page%5Blimit%5D=100\u0026page%5Boffset%5D=0"}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 89.039666ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/catalog/entity?filter%5Bname%5D=tf_TestAccDatadogSoftwareCatalogEntity_Datasource_local_1742618176&page%5Blimit%5D=100&page%5Boffset%5D=0
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 222
+        uncompressed: false
+        body: '{"data":[],"meta":{"count":0,"includeCount":0},"links":{"self":"/api/v2/catalog/entity?filter%5Bname%5D=tf_TestAccDatadogSoftwareCatalogEntity_Datasource_local_1742618176\u0026page%5Blimit%5D=100\u0026page%5Boffset%5D=0"}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 53.500958ms
+    - id: 9
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/catalog/entity?filter%5Bname%5D=tf_TestAccDatadogSoftwareCatalogEntity_Datasource_local_1742618176&page%5Blimit%5D=100&page%5Boffset%5D=0
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 222
+        uncompressed: false
+        body: '{"data":[],"meta":{"count":0,"includeCount":0},"links":{"self":"/api/v2/catalog/entity?filter%5Bname%5D=tf_TestAccDatadogSoftwareCatalogEntity_Datasource_local_1742618176\u0026page%5Blimit%5D=100\u0026page%5Boffset%5D=0"}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 60.090125ms

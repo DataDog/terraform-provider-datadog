@@ -1,3 +1,84 @@
----
 version: 2
-interactions: []
+interactions:
+- request:
+    body: |
+      {
+         "title": "tf-TestAccDatadogDashboardJSONNoDiff-local-1682003475",
+         "description": "",
+         "widgets": [],
+         "template_variables": [],
+         "layout_type": "ordered",
+         "notify_list": [],
+         "reflow_type": "fixed",
+         "id": "3fa-nkp-wty"
+      }
+    form: {}
+    headers:
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/dashboard
+    method: POST
+    id: 0
+  response:
+    body: |
+      {"id":"nw2-rks-35b","title":"tf-TestAccDatadogDashboardJSONNoDiff-local-1682003475","description":"","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/nw2-rks-35b/tf-testaccdatadogdashboardjsonnodiff-local-1682003475","is_read_only":false,"template_variables":[],"widgets":[],"notify_list":[],"created_at":"2023-04-20T15:11:16.381034+00:00","modified_at":"2023-04-20T15:11:16.381034+00:00","reflow_type":"fixed"}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: "0ms"
+- request:
+    body: ""
+    form: {}
+    headers:
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/dashboard/nw2-rks-35b
+    method: GET
+    id: 1
+  response:
+    body: |
+      {"id":"nw2-rks-35b","title":"tf-TestAccDatadogDashboardJSONNoDiff-local-1682003475","description":"","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/nw2-rks-35b/tf-testaccdatadogdashboardjsonnodiff-local-1682003475","is_read_only":false,"template_variables":[],"widgets":[],"notify_list":[],"created_at":"2023-04-20T15:11:16.381034+00:00","modified_at":"2023-04-20T15:11:16.381034+00:00","reflow_type":"fixed"}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: "0ms"
+- request:
+    body: ""
+    form: {}
+    headers:
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/dashboard/nw2-rks-35b
+    method: GET
+    id: 2
+  response:
+    body: |
+      {"id":"nw2-rks-35b","title":"tf-TestAccDatadogDashboardJSONNoDiff-local-1682003475","description":"","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/nw2-rks-35b/tf-testaccdatadogdashboardjsonnodiff-local-1682003475","is_read_only":false,"template_variables":[],"widgets":[],"notify_list":[],"created_at":"2023-04-20T15:11:16.381034+00:00","modified_at":"2023-04-20T15:11:16.381034+00:00","reflow_type":"fixed"}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: "0ms"
+- request:
+    body: ""
+    form: {}
+    headers:
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/dashboard/nw2-rks-35b
+    method: DELETE
+    id: 3
+  response:
+    body: |
+      {"deleted_dashboard_id":"nw2-rks-35b"}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: "0ms"
