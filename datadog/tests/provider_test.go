@@ -103,6 +103,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/data_source_datadog_user_test":                                    "users",
 	"tests/data_source_datadog_users_test":                                   "users",
 	"tests/data_source_datadog_workflow_automation_test":                     "workflow_automation",
+	"tests/data_source_datadog_cost_budget_test":                             "cost-budget",
 	"tests/import_datadog_downtime_test":                                     "downtimes",
 	"tests/import_datadog_integration_pagerduty_test":                        "integration-pagerduty",
 	"tests/import_datadog_logs_pipeline_test":                                "logs-pipelines",
@@ -267,6 +268,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_webhook_custom_variable_test":                    "webhook_custom_variable",
 	"tests/resource_datadog_webhook_test":                                    "webhook",
 	"tests/resource_datadog_workflow_automation_test":                        "workflow_automation",
+	"tests/resource_datadog_cost_budget_test":                                "cost-budget",
 }
 
 // getEndpointTagValue traverses callstack frames to find the test function that invoked this call;
