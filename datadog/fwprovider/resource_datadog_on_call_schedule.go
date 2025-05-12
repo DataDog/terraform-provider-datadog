@@ -36,7 +36,7 @@ type onCallScheduleModel struct {
 	ID       types.String   `tfsdk:"id"`
 	Name     types.String   `tfsdk:"name"`
 	TimeZone types.String   `tfsdk:"time_zone"`
-	Teams    types.List     `tfsdk:"team_ids"`
+	Teams    types.List     `tfsdk:"teams"`
 	Tags     types.List     `tfsdk:"tags"`
 	Layers   []*layersModel `tfsdk:"layer"`
 }
@@ -48,7 +48,7 @@ type layersModel struct {
 	EndDate              types.String                    `tfsdk:"end_date"`
 	Name                 types.String                    `tfsdk:"name"`
 	RotationStart        types.String                    `tfsdk:"rotation_start"`
-	MemberIds            []types.String                  `tfsdk:"member_ids"`
+	Users                []types.String                  `tfsdk:"users"`
 	Restrictions         []*restrictionsModel            `tfsdk:"restrictions"`
 	Interval             *intervalModel                  `tfsdk:"interval"`
 }
@@ -101,7 +101,7 @@ func (r *onCallScheduleResource) Schema(_ context.Context, _ resource.SchemaRequ
 				ElementType: types.StringType,
 				Default:     listdefault.StaticValue(types.ListValueMust(types.StringType, []attr.Value{})),
 			},
-			"team_ids": schema.ListAttribute{
+			"teams": schema.ListAttribute{
 				Description: "A list of team ids associated with the schedule.",
 				Optional:    true,
 				Required:    false,
@@ -146,7 +146,7 @@ func (r *onCallScheduleResource) Schema(_ context.Context, _ resource.SchemaRequ
 							Description: "The date/time when the rotation for this layer starts (in ISO 8601).",
 							Validators:  []validator.String{validators.TimeFormatValidator(time.RFC3339)},
 						},
-						"member_ids": schema.ListAttribute{
+						"users": schema.ListAttribute{
 							Required:    true,
 							Description: "List of user IDs for the layer. Can either be a valid user id or null",
 							ElementType: types.StringType,
@@ -461,7 +461,7 @@ func newLayerModel(layer *datadogV2.Layer, membersByID map[string]*datadogV2.Sch
 		EndDate:              endDateStringValue,
 		Name:                 types.StringValue(layer.Attributes.GetName()),
 		RotationStart:        types.StringValue(formatTime(layer.Attributes.GetRotationStart())),
-		MemberIds:            memberIds,
+		Users:                memberIds,
 		Restrictions:         restrictionsModels,
 		Interval:             &intervalModel{Days: types.Int32Value(int32(interval.GetDays())), Seconds: types.Int64Value(interval.GetSeconds())},
 	}
@@ -528,7 +528,7 @@ func (r *onCallScheduleResource) buildOnCallScheduleRequestBody(ctx context.Cont
 		}
 
 		var members []datadogV2.ScheduleCreateRequestDataAttributesLayersItemsMembersItems
-		for _, memberId := range layersTFItem.MemberIds {
+		for _, memberId := range layersTFItem.Users {
 			membersDDItem := datadogV2.NewScheduleCreateRequestDataAttributesLayersItemsMembersItems()
 
 			if !memberId.IsNull() {
@@ -662,7 +662,7 @@ func (r *onCallScheduleResource) buildOnCallScheduleUpdateRequestBody(
 			layersDDItem.SetRotationStart(rotationStart)
 
 			var members []datadogV2.ScheduleUpdateRequestDataAttributesLayersItemsMembersItems
-			for _, memberId := range layersTFItem.MemberIds {
+			for _, memberId := range layersTFItem.Users {
 				membersDDItem := datadogV2.NewScheduleUpdateRequestDataAttributesLayersItemsMembersItems()
 
 				if !memberId.IsNull() {
