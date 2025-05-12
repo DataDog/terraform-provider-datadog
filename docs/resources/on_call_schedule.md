@@ -64,8 +64,8 @@ resource "datadog_on_call_schedule" "test" {
 Required:
 
 - `effective_date` (String) The date/time when this layer should become active (in ISO 8601).
-- `users` (List of String) List of user IDs for the layer. Can either be a valid user id or null
 - `name` (String) The name of this layer. Should be unique within the schedule.
+- `users` (List of String) List of user IDs for the layer. Can either be a valid user id or null
 
 Optional:
 
