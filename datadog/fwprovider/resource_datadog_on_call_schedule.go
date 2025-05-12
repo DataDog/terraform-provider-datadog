@@ -732,18 +732,15 @@ func (r *onCallScheduleResource) buildOnCallScheduleUpdateRequestBody(
 
 func buildCreateRelationships(plannedTeams []string) *datadogV2.ScheduleCreateRequestDataRelationships {
 	var relationships *datadogV2.ScheduleCreateRequestDataRelationships
-	plannedTeamsIds := make([]string, len(plannedTeams))
-	for i, team := range plannedTeams {
-		plannedTeamsIds[i] = team
-	}
 
-	teamRelationships := make([]datadogV2.ScheduleCreateRequestDataRelationshipsTeamsDataItems, len(plannedTeamsIds))
+	teamRelationships := make([]datadogV2.ScheduleCreateRequestDataRelationshipsTeamsDataItems, len(plannedTeams))
 
-	for t, teamId := range plannedTeamsIds {
+	for t, teamId := range plannedTeams {
 		item := datadogV2.NewScheduleCreateRequestDataRelationshipsTeamsDataItemsWithDefaults()
 		item.SetId(teamId)
 		teamRelationships[t] = *item
 	}
+
 	if len(teamRelationships) > 0 {
 		relationships = &datadogV2.ScheduleCreateRequestDataRelationships{
 			Teams: &datadogV2.ScheduleCreateRequestDataRelationshipsTeams{
@@ -757,18 +754,14 @@ func buildCreateRelationships(plannedTeams []string) *datadogV2.ScheduleCreateRe
 func buildUpdateRelationships(plannedTeams []string) *datadogV2.ScheduleUpdateRequestDataRelationships {
 	var relationships *datadogV2.ScheduleUpdateRequestDataRelationships
 
-	plannedTeamsIds := make([]string, len(plannedTeams))
-	for i, team := range plannedTeams {
-		plannedTeamsIds[i] = team
-	}
+	teamRelationships := make([]datadogV2.ScheduleUpdateRequestDataRelationshipsTeamsDataItems, len(plannedTeams))
 
-	teamRelationships := make([]datadogV2.ScheduleUpdateRequestDataRelationshipsTeamsDataItems, len(plannedTeamsIds))
-
-	for t, teamId := range plannedTeamsIds {
+	for t, teamId := range plannedTeams {
 		item := datadogV2.NewScheduleUpdateRequestDataRelationshipsTeamsDataItemsWithDefaults()
 		item.SetId(teamId)
 		teamRelationships[t] = *item
 	}
+
 	if len(teamRelationships) > 0 {
 		relationships = &datadogV2.ScheduleUpdateRequestDataRelationships{
 			Teams: &datadogV2.ScheduleUpdateRequestDataRelationshipsTeams{
