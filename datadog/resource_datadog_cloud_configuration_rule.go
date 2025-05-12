@@ -103,7 +103,7 @@ func cloudConfigurationRuleSchema() map[string]*schema.Schema {
 			Type:        schema.TypeSet,
 			Optional:    true,
 			Computed:    true,
-			Description: "Tags of the rule, propagated to findings and signals. Defaults to empty list. Note: if default tags are present at provider level, they will be added to this resource.",
+			Description: "Tags of the rule, propagated to findings and signals. Defaults to empty list. **Note**: if default tags are present at the provider level, they will be added to this resource.",
 			Elem:        &schema.Schema{Type: schema.TypeString},
 		},
 		filterField: {
