@@ -21,14 +21,8 @@ resource "datadog_on_call_schedule" "single_layer" {
       seconds = 300
     }
     rotation_start = "2025-01-01T00:00:00Z"
-    member {
-      user_id = datadog_user.foo.id
-    }
-    member {
-      user_id = null
-    }
-    member {}
-    name = "Primary On-Call Layer"
+    member_ids     = [datadog_user.foo.id, null]
+    name           = "Primary On-Call Layer"
     restrictions {
       end_day    = "monday"
       end_time   = "17:00:00"

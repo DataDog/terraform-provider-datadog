@@ -70,13 +70,13 @@ resource "datadog_on_call_schedule" "test" {
 Required:
 
 - `effective_date` (String) The date/time when this layer should become active (in ISO 8601).
+- `member_ids` (List of String) List of user IDs for the layer. Can either be a valid user id or null
 - `name` (String) The name of this layer. Should be unique within the schedule.
 
 Optional:
 
 - `end_date` (String) The date/time after which this layer no longer applies (in ISO 8601).
 - `interval` (Block, Optional) (see [below for nested schema](#nestedblock--layer--interval))
-- `member` (Block List) List of members for the layer. (see [below for nested schema](#nestedblock--layer--member))
 - `restrictions` (Block List) List of restrictions for the layer. (see [below for nested schema](#nestedblock--layer--restrictions))
 - `rotation_start` (String) The date/time when the rotation for this layer starts (in ISO 8601).
 
@@ -92,14 +92,6 @@ Optional:
 
 - `days` (Number) The number of full days in each rotation period.
 - `seconds` (Number) For intervals that are not expressible in whole days, this will be added to `days`. Defaults to `0`.
-
-
-<a id="nestedblock--layer--member"></a>
-### Nested Schema for `layer.member`
-
-Optional:
-
-- `user_id` (String) The user's ID. Can be omitted for empty members.
 
 
 <a id="nestedblock--layer--restrictions"></a>

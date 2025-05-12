@@ -84,7 +84,7 @@ func TestAccOnCallScheduleCreateAndUpdate(t *testing.T) {
       						days = 2
     					}
     					rotation_start = "2026-01-01T00:00:00Z"
-    					member {}
+    					member_ids = [null]
     					name = "Added Layer"
 					}
 				`),

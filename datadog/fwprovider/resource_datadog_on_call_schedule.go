@@ -48,7 +48,7 @@ type layersModel struct {
 	EndDate              types.String                    `tfsdk:"end_date"`
 	Name                 types.String                    `tfsdk:"name"`
 	RotationStart        types.String                    `tfsdk:"rotation_start"`
-	Members              []*membersModel                 `tfsdk:"member"`
+	MemberIds            []types.String                  `tfsdk:"member_ids"`
 	Restrictions         []*restrictionsModel            `tfsdk:"restrictions"`
 	Interval             *intervalModel                  `tfsdk:"interval"`
 }
@@ -146,22 +146,14 @@ func (r *onCallScheduleResource) Schema(_ context.Context, _ resource.SchemaRequ
 							Description: "The date/time when the rotation for this layer starts (in ISO 8601).",
 							Validators:  []validator.String{validators.TimeFormatValidator(time.RFC3339)},
 						},
+						"member_ids": schema.ListAttribute{
+							Required:    true,
+							Description: "List of user IDs for the layer. Can either be a valid user id or null",
+							ElementType: types.StringType,
+							Validators:  []validator.List{listvalidator.SizeAtLeast(1)},
+						},
 					},
 					Blocks: map[string]schema.Block{
-						"member": schema.ListNestedBlock{
-							Description: "List of members for the layer.",
-							Validators: []validator.List{
-								listvalidator.SizeAtLeast(1),
-							},
-							NestedObject: schema.NestedBlockObject{
-								Attributes: map[string]schema.Attribute{
-									"user_id": schema.StringAttribute{
-										Optional:    true,
-										Description: "The user's ID. Can be omitted for empty members.",
-									},
-								},
-							},
-						},
 						"restrictions": schema.ListNestedBlock{
 							Description: "List of restrictions for the layer.",
 							NestedObject: schema.NestedBlockObject{
@@ -419,14 +411,14 @@ func (r *onCallScheduleResource) newState(ctx context.Context, plan *onCallSched
 
 func newLayerModel(layer *datadogV2.Layer, membersByID map[string]*datadogV2.ScheduleMember, layerExistingEffectiveDate customtypes.BackwardRFC3339Date) *layersModel {
 	membersData := layer.GetRelationships().Members.GetData()
-	members := make([]*membersModel, len(membersData))
+	memberIds := make([]types.String, len(membersData))
 	for j, member := range membersData {
 		includedMember := membersByID[member.GetId()]
 		userId := includedMember.GetRelationships().User.GetData().Id
 		if userId != "" {
-			members[j] = &membersModel{UserId: types.StringValue(userId)}
+			memberIds[j] = types.StringValue(userId)
 		} else {
-			members[j] = &membersModel{UserId: types.StringNull()}
+			memberIds[j] = types.StringNull()
 		}
 	}
 	restrictions := layer.GetAttributes().Restrictions
@@ -469,7 +461,7 @@ func newLayerModel(layer *datadogV2.Layer, membersByID map[string]*datadogV2.Sch
 		EndDate:              endDateStringValue,
 		Name:                 types.StringValue(layer.Attributes.GetName()),
 		RotationStart:        types.StringValue(formatTime(layer.Attributes.GetRotationStart())),
-		Members:              members,
+		MemberIds:            memberIds,
 		Restrictions:         restrictionsModels,
 		Interval:             &intervalModel{Days: types.Int32Value(int32(interval.GetDays())), Seconds: types.Int64Value(interval.GetSeconds())},
 	}
@@ -535,18 +527,14 @@ func (r *onCallScheduleResource) buildOnCallScheduleRequestBody(ctx context.Cont
 			layersDDItem.SetEndDate(endDate)
 		}
 
-		if layersTFItem.Members == nil {
-			diags.AddError("members is required", "members is required")
-			return nil, diags
-		}
 		var members []datadogV2.ScheduleCreateRequestDataAttributesLayersItemsMembersItems
-		for _, membersTFItem := range layersTFItem.Members {
+		for _, memberId := range layersTFItem.MemberIds {
 			membersDDItem := datadogV2.NewScheduleCreateRequestDataAttributesLayersItemsMembersItems()
 
-			if !membersTFItem.UserId.IsNull() {
-				userId := membersTFItem.UserId.ValueString()
+			if !memberId.IsNull() {
+				userId := memberId.ValueString()
 				if userId == "" {
-					diags.AddError("user_id can't be empty, either set the user_id to a valid user, set the user_id to null or omit the field", "user_id can't be empty, either set the user_id to a valid user, set the user_id to null or omit the field")
+					diags.AddError("user_id can't be empty, either set the user_id to a valid user, set the user_id to null or omit the field", "user_id can't be empty, either set the user_id to a valid user or to null")
 					return nil, diags
 				}
 				membersDDItem.User = &datadogV2.ScheduleCreateRequestDataAttributesLayersItemsMembersItemsUser{
@@ -673,18 +661,18 @@ func (r *onCallScheduleResource) buildOnCallScheduleUpdateRequestBody(
 			}
 			layersDDItem.SetRotationStart(rotationStart)
 
-			if layersTFItem.Members == nil {
-				diags.AddError("members is required", "members is required")
-				return nil, diags
-			}
-
 			var members []datadogV2.ScheduleUpdateRequestDataAttributesLayersItemsMembersItems
-			for _, membersTFItem := range layersTFItem.Members {
+			for _, memberId := range layersTFItem.MemberIds {
 				membersDDItem := datadogV2.NewScheduleUpdateRequestDataAttributesLayersItemsMembersItems()
 
-				if !membersTFItem.UserId.IsNull() {
+				if !memberId.IsNull() {
+					userId := memberId.ValueString()
+					if userId == "" {
+						diags.AddError("user_id can't be empty, either set the user_id to a valid user, set the user_id to null or omit the field", "user_id can't be empty, either set the user_id to a valid user or to null")
+						return nil, diags
+					}
 					membersDDItem.User = &datadogV2.ScheduleUpdateRequestDataAttributesLayersItemsMembersItemsUser{
-						Id: membersTFItem.UserId.ValueStringPointer(),
+						Id: &userId,
 					}
 				}
 				members = append(members, *membersDDItem)
