@@ -72,9 +72,6 @@ func (r *csmThreatsAgentRuleResource) Schema(_ context.Context, _ resource.Schem
 			"expression": schema.StringAttribute{
 				Required:    true,
 				Description: "The SECL expression of the Agent rule",
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.RequiresReplace(),
-				},
 			},
 		},
 	}
@@ -99,7 +96,7 @@ func (r *csmThreatsAgentRuleResource) Create(ctx context.Context, request resour
 		response.Diagnostics.AddError("error while parsing resource", err.Error())
 	}
 
-	res, _, err := r.api.CreateCSMThreatsAgentRule(r.auth, *agentRulePayload)
+	res, _, err := r.api.CreateCloudWorkloadSecurityAgentRule(r.auth, *agentRulePayload)
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error creating agent rule"))
 		return
@@ -121,7 +118,7 @@ func (r *csmThreatsAgentRuleResource) Read(ctx context.Context, request resource
 	}
 
 	agentRuleId := state.Id.ValueString()
-	res, httpResponse, err := r.api.GetCSMThreatsAgentRule(r.auth, agentRuleId)
+	res, httpResponse, err := r.api.GetCloudWorkloadSecurityAgentRule(r.auth, agentRuleId)
 	if err != nil {
 		if httpResponse != nil && httpResponse.StatusCode == 404 {
 			response.State.RemoveResource(ctx)
@@ -154,7 +151,7 @@ func (r *csmThreatsAgentRuleResource) Update(ctx context.Context, request resour
 		response.Diagnostics.AddError("error while parsing resource", err.Error())
 	}
 
-	res, _, err := r.api.UpdateCSMThreatsAgentRule(r.auth, state.Id.ValueString(), *agentRulePayload)
+	res, _, err := r.api.UpdateCloudWorkloadSecurityAgentRule(r.auth, state.Id.ValueString(), *agentRulePayload)
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error updating agent rule"))
 		return
@@ -180,7 +177,7 @@ func (r *csmThreatsAgentRuleResource) Delete(ctx context.Context, request resour
 
 	id := state.Id.ValueString()
 
-	httpResp, err := r.api.DeleteCSMThreatsAgentRule(r.auth, id)
+	httpResp, err := r.api.DeleteCloudWorkloadSecurityAgentRule(r.auth, id)
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == 404 {
 			return
@@ -204,11 +201,12 @@ func (r *csmThreatsAgentRuleResource) buildCreateCSMThreatsAgentRulePayload(stat
 }
 
 func (r *csmThreatsAgentRuleResource) buildUpdateCSMThreatsAgentRulePayload(state *csmThreatsAgentRuleModel) (*datadogV2.CloudWorkloadSecurityAgentRuleUpdateRequest, error) {
-	agentRuleId, _, description, enabled, _ := r.extractAgentRuleAttributesFromResource(state)
+	agentRuleId, _, description, enabled, expression := r.extractAgentRuleAttributesFromResource(state)
 
 	attributes := datadogV2.CloudWorkloadSecurityAgentRuleUpdateAttributes{}
 	attributes.Description = description
 	attributes.Enabled = &enabled
+	attributes.Expression = &expression
 
 	data := datadogV2.NewCloudWorkloadSecurityAgentRuleUpdateData(attributes, datadogV2.CLOUDWORKLOADSECURITYAGENTRULETYPE_AGENT_RULE)
 	data.Id = &agentRuleId

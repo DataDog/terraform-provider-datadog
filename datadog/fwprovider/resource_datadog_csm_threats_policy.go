@@ -270,8 +270,6 @@ func (r *csmThreatsPolicyResource) updateStateFromResponse(ctx context.Context, 
 	state.Enabled = types.BoolValue(attributes.GetEnabled())
 	state.Tags, _ = types.SetValueFrom(ctx, types.StringType, attributes.GetHostTags())
 	state.HostTagsLists, _ = types.SetValueFrom(ctx, types.ListType{
-		ElemType: types.ListType{
-			ElemType: types.StringType,
-		},
+		ElemType: types.StringType,
 	}, attributes.GetHostTagsLists())
 }
