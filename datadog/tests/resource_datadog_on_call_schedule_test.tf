@@ -10,9 +10,8 @@ resource "datadog_team" "foo" {
 
 resource "datadog_on_call_schedule" "single_layer" {
   name      = "SCHEDULE_NAME"
-  tags      = ["foo:bar"]
   time_zone = "America/New_York"
-  teams  = [datadog_team.foo.id]
+  teams     = [datadog_team.foo.id]
   layer {
     effective_date = "EFFECTIVE_DATE"
     end_date       = "2026-01-01T00:00:00Z"
