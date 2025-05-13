@@ -362,9 +362,9 @@ func (r *onCallScheduleResource) newState(ctx context.Context, plan *onCallSched
 		state.TimeZone = types.StringValue(*timeZone)
 	}
 
-	var teams []string
-	for _, team := range data.GetRelationships().Teams.GetData() {
-		teams = append(teams, team.GetId())
+	teams := make([]string, len(data.GetRelationships().Teams.GetData()))
+	for i, team := range data.GetRelationships().Teams.GetData() {
+		teams[i] = team.GetId()
 	}
 	state.Teams, _ = types.ListValueFrom(ctx, types.StringType, teams)
 
