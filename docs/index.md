@@ -52,7 +52,7 @@ provider "datadog" {
 - `api_key` (String, Sensitive) (Required unless validate is false) Datadog API key. This can also be set via the DD_API_KEY environment variable.
 - `api_url` (String) The API URL. This can also be set via the DD_HOST environment variable, and defaults to `https://api.datadoghq.com`. Note that this URL must not end with the `/api/` path. For example, `https://api.datadoghq.com/` is a correct value, while `https://api.datadoghq.com/api/` is not. And if you're working with "EU" version of Datadog, use `https://api.datadoghq.eu/`. Other Datadog region examples: `https://api.us5.datadoghq.com/`, `https://api.us3.datadoghq.com/` and `https://api.ddog-gov.com/`. See https://docs.datadoghq.com/getting_started/site/ for all available regions.
 - `app_key` (String, Sensitive) (Required unless validate is false) Datadog APP key. This can also be set via the DD_APP_KEY environment variable.
-- `default_tags` (Block List, Max: 1) [Experimental - Logs Pipelines, Monitors and Security Monitoring Rules only] Configuration block containing settings to apply default resource tags across all resources. (see [below for nested schema](#nestedblock--default_tags))
+- `default_tags` (Block List, Max: 1) [Experimental - Cloud Configuration Rules, Logs Pipelines, Monitors and Security Monitoring Rules only] Configuration block containing settings to apply default resource tags across all resources. (see [below for nested schema](#nestedblock--default_tags))
 - `http_client_retry_backoff_base` (Number) The HTTP request retry back off base. Defaults to 2.
 - `http_client_retry_backoff_multiplier` (Number) The HTTP request retry back off multiplier. Defaults to 2.
 - `http_client_retry_enabled` (String) Enables request retries on HTTP status codes 429 and 5xx. Valid values are [`true`, `false`]. Defaults to `true`.
@@ -65,4 +65,4 @@ provider "datadog" {
 
 Optional:
 
-- `tags` (Map of String) [Experimental - Logs Pipelines, Monitors and Security Monitoring Rules only] Resource tags to be applied by default across all resources.
+- `tags` (Map of String) [Experimental - Cloud Configuration Rules, Logs Pipelines, Monitors and Security Monitoring Rules only] Resource tags to be applied by default across all resources.

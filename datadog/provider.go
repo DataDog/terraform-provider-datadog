@@ -159,14 +159,14 @@ func Provider() *schema.Provider {
 				Type:        schema.TypeList,
 				Optional:    true,
 				MaxItems:    1,
-				Description: "[Experimental - Logs Pipelines, Monitors and Security Monitoring Rules only] Configuration block containing settings to apply default resource tags across all resources.",
+				Description: "[Experimental - Cloud Configuration Rules, Logs Pipelines, Monitors and Security Monitoring Rules only] Configuration block containing settings to apply default resource tags across all resources.",
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"tags": {
 							Type:        schema.TypeMap,
 							Optional:    true,
 							Elem:        &schema.Schema{Type: schema.TypeString},
-							Description: "[Experimental - Logs Pipelines, Monitors and Security Monitoring Rules only] Resource tags to be applied by default across all resources.",
+							Description: "[Experimental - Cloud Configuration Rules, Logs Pipelines, Monitors and Security Monitoring Rules only] Resource tags to be applied by default across all resources.",
 						},
 					},
 				},
@@ -451,6 +451,7 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 }
 
 // custom diff function that changes plan to take default tags into account
+// This is used for when the `tags` attribute is a set
 func tagDiff(ctx context.Context, d *schema.ResourceDiff, meta interface{}) error {
 	providerConf := meta.(*ProviderConfiguration)
 	if len(providerConf.DefaultTags) == 0 {
