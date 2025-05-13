@@ -67,6 +67,9 @@ func (r *csmThreatsPoliciesDataSource) Read(ctx context.Context, request datasou
 		policyModel.Description = types.StringValue(attributes.GetDescription())
 		policyModel.Enabled = types.BoolValue(attributes.GetEnabled())
 		policyModel.Tags, _ = types.SetValueFrom(ctx, types.StringType, attributes.GetHostTags())
+		policyModel.HostTagsLists, _ = types.SetValueFrom(ctx, types.ListType{
+			ElemType: types.StringType,
+		}, attributes.GetHostTagsLists())
 		policyIds[idx] = policy.GetId()
 		policies[idx] = policyModel
 	}
@@ -96,8 +99,13 @@ func (*csmThreatsPoliciesDataSource) Schema(_ context.Context, _ datasource.Sche
 				Description: "List of policies",
 				ElementType: types.ObjectType{
 					AttrTypes: map[string]attr.Type{
-						"id":          types.StringType,
-						"tags":        types.SetType{ElemType: types.StringType},
+						"id":   types.StringType,
+						"tags": types.SetType{ElemType: types.StringType},
+						"host_tags_lists": types.SetType{
+							ElemType: types.ListType{
+								ElemType: types.StringType,
+							},
+						},
 						"name":        types.StringType,
 						"description": types.StringType,
 						"enabled":     types.BoolType,

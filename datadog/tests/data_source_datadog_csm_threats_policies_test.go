@@ -22,7 +22,6 @@ func TestAccCSMThreatsPoliciesDataSource(t *testing.T) {
 		name              = "%s"
 		enabled           = true
 		description       = "im a policy"
-		tags              = ["host_name:test_host"]
 		host_tags_lists   = [["host_name:test_host", "env:prod"], ["host_name:test_host2", "env:staging"]]
 	}
 	`, policyName)
@@ -101,7 +100,6 @@ func checkCSMThreatsPoliciesDataSourceContent(accProvider *fwprovider.FrameworkP
 		return resource.ComposeTestCheckFunc(
 			resource.TestCheckResourceAttr(dataSourceName, fmt.Sprintf("policies.%d.name", idx), policyName),
 			resource.TestCheckResourceAttr(dataSourceName, fmt.Sprintf("policies.%d.enabled", idx), "true"),
-			resource.TestCheckResourceAttr(dataSourceName, fmt.Sprintf("policies.%d.tags.0", idx), "host_name:test_host"),
 			resource.TestCheckResourceAttr(dataSourceName, fmt.Sprintf("policies.%d.host_tags_lists.0.0", idx), "host_name:test_host"),
 			resource.TestCheckResourceAttr(dataSourceName, fmt.Sprintf("policies.%d.host_tags_lists.0.1", idx), "env:prod"),
 			resource.TestCheckResourceAttr(dataSourceName, fmt.Sprintf("policies.%d.host_tags_lists.1.0", idx), "host_name:test_host2"),

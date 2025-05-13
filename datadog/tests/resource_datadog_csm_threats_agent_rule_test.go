@@ -89,7 +89,7 @@ func testAccCheckCSMThreatsAgentRuleExists(accProvider *fwprovider.FrameworkProv
 		auth := accProvider.Auth
 		apiInstances := accProvider.DatadogApiInstances
 
-		_, _, err := apiInstances.GetCSMThreatsApiV2().GetCSMThreatsAgentRule(auth, resource.Primary.ID)
+		_, _, err := apiInstances.GetCSMThreatsApiV2().GetCloudWorkloadSecurityAgentRule(auth, resource.Primary.ID)
 		if err != nil {
 			return fmt.Errorf("received an error retrieving agent rule: %s", err)
 		}
@@ -105,7 +105,7 @@ func testAccCheckCSMThreatsAgentRuleDestroy(accProvider *fwprovider.FrameworkPro
 
 		for _, resource := range s.RootModule().Resources {
 			if resource.Type == "datadog_csm_threats_agent_rule" {
-				_, httpResponse, err := apiInstances.GetCSMThreatsApiV2().GetCSMThreatsAgentRule(auth, resource.Primary.ID)
+				_, httpResponse, err := apiInstances.GetCSMThreatsApiV2().GetCloudWorkloadSecurityAgentRule(auth, resource.Primary.ID)
 				if err == nil {
 					return errors.New("agent rule still exists")
 				}
