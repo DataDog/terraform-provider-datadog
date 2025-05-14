@@ -33,7 +33,7 @@ interactions:
                 - application/vnd.api+json
         status: 400 Bad Request
         code: 400
-        duration: 54.499584ms
+        duration: 36.967958ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -69,7 +69,7 @@ interactions:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 418.422333ms
+        duration: 358.66775ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -105,4 +105,4 @@ interactions:
                 - application/vnd.api+json
         status: 409 Conflict
         code: 409
-        duration: 174.318959ms
+        duration: 94.920583ms

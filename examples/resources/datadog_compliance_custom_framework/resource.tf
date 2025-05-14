@@ -1,8 +1,8 @@
 resource "datadog_compliance_custom_framework" "example" {
-  version     = "1"
-  handle      = "new-terraform-framework-handle"
-  name        = "new-terraform-framework"
-  icon_url    = "https://example.com/icon.png"
+  version  = "1"
+  handle   = "new-terraform-framework-handle"
+  name     = "new-terraform-framework"
+  icon_url = "https://example.com/icon.png"
   requirements {
     name = "requirement1"
     controls {
