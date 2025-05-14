@@ -295,6 +295,7 @@ func (r *complianceCustomFrameworkResource) ImportState(ctx context.Context, req
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
+// using sets for requirements in state to be unordered
 func convertStateRequirementsToFrameworkRequirements(requirements types.Set) []datadogV2.CustomFrameworkRequirement {
 	frameworkRequirements := make([]datadogV2.CustomFrameworkRequirement, len(requirements.Elements()))
 	for i, requirement := range requirements.Elements() {
