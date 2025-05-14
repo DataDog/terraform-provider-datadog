@@ -51,10 +51,6 @@ type layersModel struct {
 	Restrictions         []*restrictionsModel            `tfsdk:"restrictions"`
 	Interval             *intervalModel                  `tfsdk:"interval"`
 }
-type membersModel struct {
-	UserId types.String `tfsdk:"user_id"`
-}
-
 type restrictionsModel struct {
 	EndDay    types.String `tfsdk:"end_day"`
 	EndTime   types.String `tfsdk:"end_time"`
