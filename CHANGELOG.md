@@ -1,14 +1,10 @@
 ## 3.62.0 (May 14, 2025)
 
-### IMPROVEMENTS
-* [datadog_cloud_configuration_rule] Changed tags field type to Set by @Supam in https://github.com/DataDog/terraform-provider-datadog/pull/2997
 ### FEATURES
 * [datadog_observability_pipeline] Added the remaining Observability Pipelines components by @vladimir-dd in https://github.com/DataDog/terraform-provider-datadog/pull/2988
 * [datadog_dashboards] [datadog_powerpacks] add custom_links support to treemap widgets by @dashashifrina in https://github.com/DataDog/terraform-provider-datadog/pull/2923
 * [datadog_integration_gcp_sts] Add IsPerProjectQuotaEnabled field by @tedkahwaji in https://github.com/DataDog/terraform-provider-datadog/pull/2999
 * [datadog_security_monitoring_rule_json] Add security_monitoring_rule_json resource by @sabraham2 in https://github.com/DataDog/terraform-provider-datadog/pull/2985
-* [datadog_cloud_configuration_rule] Add default tag support by @Supam in https://github.com/DataDog/terraform-provider-datadog/pull/2969
-* [on_call_schedule] Add on-call schedule resource by @daniel-m-dd in https://github.com/DataDog/terraform-provider-datadog/pull/3000
 
 ## New Contributors
 * @sabraham2 made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2985
