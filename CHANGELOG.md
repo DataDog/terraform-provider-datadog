@@ -8,7 +8,6 @@
 * [datadog_integration_gcp_sts] Add IsPerProjectQuotaEnabled field by @tedkahwaji in https://github.com/DataDog/terraform-provider-datadog/pull/2999
 * [datadog_security_monitoring_rule_json] Add security_monitoring_rule_json resource by @sabraham2 in https://github.com/DataDog/terraform-provider-datadog/pull/2985
 * [datadog_cloud_configuration_rule] Add default tag support by @Supam in https://github.com/DataDog/terraform-provider-datadog/pull/2969
-* [on_call_schedule] Add on-call schedule resource by @daniel-m-dd in https://github.com/DataDog/terraform-provider-datadog/pull/3000
 
 ## New Contributors
 * @sabraham2 made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2985
