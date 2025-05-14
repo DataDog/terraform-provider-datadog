@@ -71,7 +71,7 @@ func (r *complianceCustomFrameworkResource) Schema(_ context.Context, _ resource
 				Required: true,
 			},
 			"icon_url": schema.StringAttribute{
-				Description: "The URL of the icon representing the framework. This can be set to empty if NA",
+				Description: "The URL of the icon representing the framework",
 				Optional:    true,
 			},
 		},
