@@ -70,7 +70,7 @@ resource "datadog_cloud_configuration_rule" "myrule" {
 - `group_by` (List of String) Defaults to empty list. This function will be deprecated soon. Use the notification rules function instead. Fields to group by when generating signals, e.g. @resource.
 - `notifications` (List of String) This function will be deprecated soon. Use the notification rules function instead. Notification targets for signals. Defaults to empty list.
 - `related_resource_types` (List of String) Related resource types to be checked by the rule. Defaults to empty list.
-- `tags` (Set of String) Tags of the rule, propagated to findings and signals. Defaults to empty list. **Note**: if default tags are present at the provider level, they will be added to this resource.
+- `tags` (List of String) Tags of the rule, propagated to findings and signals. Defaults to empty list.
 
 ### Read-Only
 

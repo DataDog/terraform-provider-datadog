@@ -349,16 +349,6 @@ func GetStringSlice(d Resource, key string) []string {
 	return []string{}
 }
 
-// GetStringSliceFromSet returns a string slice for a given schema.Set
-func GetStringSliceFromSet(set *schema.Set) []string {
-	values := set.List()
-	stringValues := make([]string, len(values))
-	for i, value := range values {
-		stringValues[i] = value.(string)
-	}
-	return stringValues
-}
-
 // GetMultiEnvVar returns first matching env var
 func GetMultiEnvVar(envVars ...string) (string, error) {
 	for _, value := range envVars {
