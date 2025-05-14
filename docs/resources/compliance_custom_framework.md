@@ -18,7 +18,6 @@ resource "datadog_compliance_custom_framework" "example" {
   handle      = "new-terraform-framework-handle"
   name        = "new-terraform-framework"
   icon_url    = "https://example.com/icon.png"
-  description = "This is a test I created this resource through terraform"
   requirements {
     name = "requirement1"
     controls {
@@ -50,10 +49,9 @@ resource "datadog_compliance_custom_framework" "example" {
 - `version` (String) The framework version. String length must be at least 1.
 - `requirements` (Block Set) The requirements of the framework. (see [below for nested schema](#nestedblock--requirements))
 
-### Optional
+### Optional 
 
-- `description` (String) The description of the framework.
-- `icon_url` (String) The URL of the icon representing the framework.
+- `icon_url` (String) The URL of the icon representing the framework. 
 
 ### Read-Only
 

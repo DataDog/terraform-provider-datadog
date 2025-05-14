@@ -26,7 +26,6 @@ type complianceCustomFrameworkResource struct {
 
 type complianceCustomFrameworkModel struct {
 	ID           types.String `tfsdk:"id"`
-	Description  types.String `tfsdk:"description"`
 	Version      types.String `tfsdk:"version"`
 	Handle       types.String `tfsdk:"handle"`
 	Name         types.String `tfsdk:"name"`
@@ -72,11 +71,7 @@ func (r *complianceCustomFrameworkResource) Schema(_ context.Context, _ resource
 				Required: true,
 			},
 			"icon_url": schema.StringAttribute{
-				Description: "The URL of the icon representing the framework.",
-				Optional:    true,
-			},
-			"description": schema.StringAttribute{
-				Description: "The description of the framework.",
+				Description: "The URL of the icon representing the framework. This can be set to empty if NA",
 				Optional:    true,
 			},
 		},
@@ -179,11 +174,9 @@ func (r *complianceCustomFrameworkResource) Read(ctx context.Context, request re
 	// If the framework does not exist, remove it from terraform state
 	// This is to avoid the provider to return an error when the framework is deleted in the UI prior
 	if err != nil && err.Error() == "400 Bad Request" {
-		// Clear the state completely
 		response.State.RemoveResource(ctx)
 		return
 	}
-	// this is for any other error
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error reading compliance custom framework"))
 		return
@@ -255,19 +248,17 @@ func setRequirements(requirements []attr.Value) types.Set {
 	)
 }
 func readStateFromDatabase(data datadogV2.GetCustomFrameworkResponse, handle string, version string) complianceCustomFrameworkModel {
-	// Set the state
 	var state complianceCustomFrameworkModel
 	state.ID = types.StringValue(handle + "-" + version)
 	state.Handle = types.StringValue(handle)
 	state.Version = types.StringValue(version)
 	state.Name = types.StringValue(data.GetData().Attributes.Name)
-	state.Description = types.StringValue(data.GetData().Attributes.Description)
-	state.IconURL = types.StringValue(data.GetData().Attributes.IconUrl)
+	if data.GetData().Attributes.IconUrl != nil {
+		state.IconURL = types.StringValue(*data.GetData().Attributes.IconUrl)
+	}
 
-	// Convert requirements to set
 	requirements := make([]attr.Value, len(data.GetData().Attributes.Requirements))
 	for i, requirement := range data.GetData().Attributes.Requirements {
-		// Convert controls to set
 		controls := make([]attr.Value, len(requirement.Controls))
 		for j, control := range requirement.Controls {
 			rulesID := make([]attr.Value, len(control.RulesId))
@@ -323,16 +314,18 @@ func convertStateRequirementsToFrameworkRequirements(requirements types.Set) []d
 }
 
 func buildCreateFrameworkRequest(state complianceCustomFrameworkModel) *datadogV2.CreateCustomFrameworkRequest {
+	var iconURL *string
+	if !state.IconURL.IsNull() && !state.IconURL.IsUnknown() {
+		iconURLStr := state.IconURL.ValueString()
+		iconURL = &iconURLStr
+	}
 	createFrameworkRequest := datadogV2.NewCreateCustomFrameworkRequestWithDefaults()
-	description := state.Description.ValueString()
-	iconURL := state.IconURL.ValueString()
 	createFrameworkRequest.SetData(datadogV2.CustomFrameworkData{
 		Type: "custom_framework",
 		Attributes: datadogV2.CustomFrameworkDataAttributes{
 			Handle:       state.Handle.ValueString(),
 			Name:         state.Name.ValueString(),
-			Description:  &description,
-			IconUrl:      &iconURL,
+			IconUrl:      iconURL,
 			Version:      state.Version.ValueString(),
 			Requirements: convertStateRequirementsToFrameworkRequirements(state.Requirements),
 		},
@@ -341,17 +334,19 @@ func buildCreateFrameworkRequest(state complianceCustomFrameworkModel) *datadogV
 }
 
 func buildUpdateFrameworkRequest(state complianceCustomFrameworkModel) *datadogV2.UpdateCustomFrameworkRequest {
+	var iconURL *string
+	if !state.IconURL.IsNull() && !state.IconURL.IsUnknown() {
+		iconURLStr := state.IconURL.ValueString()
+		iconURL = &iconURLStr
+	}
 	updateFrameworkRequest := datadogV2.NewUpdateCustomFrameworkRequestWithDefaults()
-	description := state.Description.ValueString()
-	iconURL := state.IconURL.ValueString()
 	updateFrameworkRequest.SetData(datadogV2.CustomFrameworkData{
 		Type: "custom_framework",
 		Attributes: datadogV2.CustomFrameworkDataAttributes{
 			Handle:       state.Handle.ValueString(),
 			Name:         state.Name.ValueString(),
-			Description:  &description,
-			IconUrl:      &iconURL,
 			Version:      state.Version.ValueString(),
+			IconUrl:      iconURL,
 			Requirements: convertStateRequirementsToFrameworkRequirements(state.Requirements),
 		},
 	})
