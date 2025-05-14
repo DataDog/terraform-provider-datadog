@@ -100,7 +100,7 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 					},
 				},
 				"locations": {
-					Description: "Array of locations used to run the test. Refer to [the Datadog Synthetics location data source](https://registry.terraform.io/providers/DataDog/datadog/latest/docs/data-sources/synthetics_locations) to retrieve the list of locations.",
+					Description: "Array of locations used to run the test. Refer to [the Datadog Synthetics location data source](https://registry.terraform.io/providers/DataDog/datadog/latest/docs/data-sources/synthetics_locations) to retrieve the list of locations or find the possible values listed in [this API response](https://app.datadoghq.com/api/v1/synthetics/locations?only_public=true).",
 					Type:        schema.TypeSet,
 					Required:    true,
 					Elem: &schema.Schema{
