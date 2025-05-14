@@ -98,7 +98,7 @@ func cloudConfigurationRuleSchema() map[string]*schema.Schema {
 			Elem:        &schema.Schema{Type: schema.TypeString},
 		},
 		tagsField: {
-			Type:        schema.TypeSet,
+			Type:        schema.TypeList,
 			Optional:    true,
 			Description: "Tags of the rule, propagated to findings and signals. Defaults to empty list.",
 			Elem:        &schema.Schema{Type: schema.TypeString},
@@ -158,7 +158,7 @@ func buildRuleCreatePayload(d *schema.ResourceData) *datadogV2.SecurityMonitorin
 	payload.SetOptions(buildRuleCreationOptions(d))
 	payload.SetComplianceSignalOptions(*buildComplianceSignalOptions(d))
 	payload.SetCases(*buildRuleCreationCases(d))
-	payload.SetTags(utils.GetStringSliceFromSet(d.Get(tagsField).(*schema.Set)))
+	payload.SetTags(utils.GetStringSlice(d, tagsField))
 	payload.SetType(datadogV2.CLOUDCONFIGURATIONRULETYPE_CLOUD_CONFIGURATION)
 	payload.SetFilters(buildFiltersFromResourceData(d))
 
@@ -219,7 +219,7 @@ func buildRuleUpdatePayload(d *schema.ResourceData) *datadogV2.SecurityMonitorin
 	payload.SetOptions(buildRuleUpdateOptions(d))
 	payload.SetComplianceSignalOptions(*buildComplianceSignalOptions(d))
 	payload.SetCases(*buildRuleUpdateCases(d))
-	payload.SetTags(utils.GetStringSliceFromSet(d.Get(tagsField).(*schema.Set)))
+	payload.SetTags(utils.GetStringSlice(d, tagsField))
 	payload.SetFilters(buildFiltersFromResourceData(d))
 	return &payload
 }
