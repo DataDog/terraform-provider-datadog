@@ -24,7 +24,6 @@ func (v requirementNameValidator) ValidateSet(ctx context.Context, req validator
 		return
 	}
 
-	// Get all requirement names from the configuration
 	var requirementNames []string
 	for _, requirement := range req.ConfigValue.Elements() {
 		reqObj := requirement.(types.Object)
@@ -35,7 +34,6 @@ func (v requirementNameValidator) ValidateSet(ctx context.Context, req validator
 
 	log.Printf("Found %d requirement names in config", len(requirementNames))
 
-	// Check for duplicates in the list
 	seen := make(map[string]bool)
 	for _, name := range requirementNames {
 		log.Printf("Checking requirement name: %s", name)
