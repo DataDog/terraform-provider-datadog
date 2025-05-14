@@ -3,7 +3,6 @@ resource "datadog_compliance_custom_framework" "example" {
   handle      = "new-terraform-framework-handle"
   name        = "new-terraform-framework"
   icon_url    = "https://example.com/icon.png"
-  description = "This is a test I created this resource through terraform"
   requirements {
     name = "requirement1"
     controls {
