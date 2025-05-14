@@ -14,7 +14,7 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
 )
 
-func TestCustomFramework_create(t *testing.T) {
+func TestCustomFramework_Create(t *testing.T) {
 	handle := "terraform-handle"
 	version := "1.0"
 
@@ -31,8 +31,7 @@ func TestCustomFramework_create(t *testing.T) {
 					resource.TestCheckResourceAttr(path, "handle", handle),
 					resource.TestCheckResourceAttr(path, "version", version),
 					resource.TestCheckResourceAttr(path, "name", "new-framework-terraform"),
-					resource.TestCheckResourceAttr(path, "description", "test description"),
-					resource.TestCheckResourceAttr(path, "icon_url", "test url"),
+					resource.TestCheckResourceAttr(path, "icon_url", "test-url"),
 					resource.TestCheckTypeSetElemNestedAttrs(path, "requirements.*", map[string]string{
 						"name": "requirement1",
 					}),
@@ -63,16 +62,61 @@ func TestCustomFramework_create(t *testing.T) {
 					resource.TestCheckTypeSetElemAttr(path, "requirements.*.controls.*.rules_id.*", "def-000-cea"),
 				),
 			},
+			{
+				Config: testAccCheckDatadogCreateFrameworkWithoutOptionalFields(version, handle),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(path, "handle", handle),
+					resource.TestCheckResourceAttr(path, "version", version),
+					resource.TestCheckResourceAttr(path, "name", "new-framework-terraform"),
+					resource.TestCheckTypeSetElemNestedAttrs(path, "requirements.*", map[string]string{
+						"name": "requirement1",
+					}),
+					resource.TestCheckTypeSetElemNestedAttrs(path, "requirements.*.controls.*", map[string]string{
+						"name": "control1",
+					}),
+					resource.TestCheckTypeSetElemAttr(path, "requirements.*.controls.*.rules_id.*", "def-000-be9"),
+				),
+			},
 		},
 	})
 }
 
-func TestCustomFramework_createAndUpdateMultipleRequirements(t *testing.T) {
+func TestCustomFramework_CreateWithoutIconURL(t *testing.T) {
 	handle := "terraform-handle"
 	version := "1.0"
 
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
-	path := "datadog_custom_framework.sample_rules"
+	path := "datadog_compliance_custom_framework.sample_rules"
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogFrameworkDestroy(ctx, providers.frameworkProvider, path, version, handle),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogCreateFrameworkWithoutOptionalFields(version, handle),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(path, "handle", handle),
+					resource.TestCheckResourceAttr(path, "version", version),
+					resource.TestCheckResourceAttr(path, "name", "new-framework-terraform"),
+					resource.TestCheckTypeSetElemNestedAttrs(path, "requirements.*", map[string]string{
+						"name": "requirement1",
+					}),
+					resource.TestCheckTypeSetElemNestedAttrs(path, "requirements.*.controls.*", map[string]string{
+						"name": "control1",
+					}),
+					resource.TestCheckTypeSetElemAttr(path, "requirements.*.controls.*.rules_id.*", "def-000-be9"),
+				),
+			},
+		},
+	})
+}
+
+func TestCustomFramework_CreateAndUpdateMultipleRequirements(t *testing.T) {
+	handle := "terraform-handle"
+	version := "1.0"
+
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	path := "datadog_compliance_custom_framework.sample_rules"
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV5ProviderFactories: accProviders,
@@ -133,7 +177,7 @@ func TestCustomFramework_createAndUpdateMultipleRequirements(t *testing.T) {
 	})
 }
 
-func TestCustomFramework_sameConfigNoUpdate(t *testing.T) {
+func TestCustomFramework_SameConfigNoUpdate(t *testing.T) {
 	handle := "terraform-handle"
 	version := "1.0"
 
@@ -146,7 +190,6 @@ func TestCustomFramework_sameConfigNoUpdate(t *testing.T) {
 			version       = "%s"
 			handle        = "%s"
 			name          = "new-framework-terraform"
-			description   = "test description"
 			icon_url      = "test url"
 			requirements  {
 				name = "requirement1"
@@ -183,7 +226,6 @@ func TestCustomFramework_sameConfigNoUpdate(t *testing.T) {
 			version       = "%s"
 			handle        = "%s"
 			name          = "new-framework-terraform"
-			description   = "test description"
 			icon_url      = "test url"
 			requirements  {
 				name = "requirement3"
@@ -224,7 +266,6 @@ func TestCustomFramework_sameConfigNoUpdate(t *testing.T) {
 					resource.TestCheckResourceAttr(path, "handle", handle),
 					resource.TestCheckResourceAttr(path, "version", version),
 					resource.TestCheckResourceAttr(path, "name", "new-framework-terraform"),
-					resource.TestCheckResourceAttr(path, "description", "test description"),
 					resource.TestCheckResourceAttr(path, "icon_url", "test url"),
 					resource.TestCheckTypeSetElemNestedAttrs(path, "requirements.*", map[string]string{
 						"name": "requirement1",
@@ -254,7 +295,6 @@ func TestCustomFramework_sameConfigNoUpdate(t *testing.T) {
 					resource.TestCheckResourceAttr(path, "handle", handle),
 					resource.TestCheckResourceAttr(path, "version", version),
 					resource.TestCheckResourceAttr(path, "name", "new-framework-terraform"),
-					resource.TestCheckResourceAttr(path, "description", "test description"),
 					resource.TestCheckResourceAttr(path, "icon_url", "test url"),
 					resource.TestCheckTypeSetElemNestedAttrs(path, "requirements.*", map[string]string{
 						"name": "requirement1",
@@ -501,16 +541,14 @@ func TestCustomFramework_CreateConflict(t *testing.T) {
 
 						// Create a basic framework that matches the config we'll try to create
 						createRequest := datadogV2.NewCreateCustomFrameworkRequestWithDefaults()
-						description := "test description"
 						iconURL := "test url"
 						createRequest.SetData(datadogV2.CustomFrameworkData{
 							Type: "custom_framework",
 							Attributes: datadogV2.CustomFrameworkDataAttributes{
-								Handle:      handle,
-								Name:        "new-framework-terraform",
-								Description: &description,
-								IconUrl:     &iconURL,
-								Version:     version,
+								Handle:  handle,
+								Name:    "new-framework-terraform",
+								IconUrl: &iconURL,
+								Version: version,
 								Requirements: []datadogV2.CustomFrameworkRequirement{
 									*datadogV2.NewCustomFrameworkRequirement(
 										[]datadogV2.CustomFrameworkControl{
@@ -546,7 +584,6 @@ func testAccCheckDatadogCreateFrameworkWithMultipleRequirements(version string, 
 			version       = "%s"
 			handle        = "%s"
 			name          = "new-name"
-			description   = "test description"
 			icon_url      = "test url"
 			requirements  {
 				name = "security-requirement"
@@ -572,7 +609,6 @@ func testAccCheckDatadogUpdateFrameworkWithMultipleRequirements(version, handle 
 			version       = "%s"
 			handle        = "%s"
 			name          = "new-name"
-			description   = "test description"
 			icon_url      = "test url"
 			requirements  {
 				name = "security-requirement"
@@ -609,8 +645,24 @@ func testAccCheckDatadogCreateFramework(version string, handle string) string {
 			version       = "%s"
 			handle        = "%s"
 			name          = "new-framework-terraform"
-			description   = "test description"
-			icon_url      = "test url"
+			icon_url      = "test-url"
+			requirements  {
+				name = "requirement1"
+				controls {
+					name = "control1"
+					rules_id = ["def-000-be9"]
+				}
+			}
+		}
+	`, version, handle)
+}
+
+func testAccCheckDatadogCreateFrameworkWithoutOptionalFields(version string, handle string) string {
+	return fmt.Sprintf(`
+		resource "datadog_compliance_custom_framework" "sample_rules" {
+			version       = "%s"
+			handle        = "%s"
+			name          = "new-framework-terraform"
 			requirements  {
 				name = "requirement1"
 				controls {
@@ -628,7 +680,6 @@ func testAccCheckDatadogCreateFrameworkRuleIdsInvalid(version string, handle str
 			version       = "%s"
 			handle        = "%s"
 			name          = "new-framework-terraform"
-			description   = "test description"
 			icon_url      = "test url"
 			requirements  {
 				name = "requirement1"
@@ -647,7 +698,6 @@ func testAccCheckDatadogCreateFrameworkWithNoControls(version string, handle str
 			version       = "%s"
 			handle        = "%s"
 			name          = "new-framework-terraform"
-			description   = "test description"
 			icon_url      = "test url"
 			requirements  {
 				name = "requirement1"
@@ -662,7 +712,6 @@ func testAccCheckDatadogCreateFrameworkNoRequirements(version string, handle str
 			version       = "%s"
 			handle        = "%s"
 			name          = "new-framework-terraform"
-			description   = "test description"
 			icon_url      = "test url"
 		}
 	`, version, handle)
@@ -674,7 +723,6 @@ func testAccCheckDatadogCreateInvalidFrameworkName(version string, handle string
 			version       = "%s"
 			handle        = "%s"
 			name          = "" 
-			description   = "test description"
 			icon_url      = "test url"
 			requirements  {
 				name = "requirement1"
@@ -693,7 +741,6 @@ func testAccCheckDatadogEmptyRequirementName(version string, handle string) stri
 			version       = "%s"
 			handle        = "%s"
 			name          = "name" 
-			description   = "test description"
 			icon_url      = "test url"
 			requirements  {
 				name = ""
@@ -712,7 +759,6 @@ func testAccCheckDatadogEmptyControlName(version string, handle string) string {
 			version       = "%s"
 			handle        = "%s"
 			name          = "name" 
-			description   = "test description"
 			icon_url      = "test url"
 			requirements  {
 				name = "requirement1"
@@ -731,7 +777,6 @@ func testAccCheckDatadogCreateEmptyHandle(version string) string {
 			version       = "%s"
 			handle        = ""
 			name          = "framework-name" 
-			description   = "test description"
 			icon_url      = "test url"
 			requirements  {
 				name = "requirement1"
@@ -750,7 +795,6 @@ func testAccCheckDatadogCreateEmptyVersion(handle string) string {
 			version       = ""
 			handle        = "%s"
 			name          = "framework-name" 
-			description   = "test description"
 			icon_url      = "test url"
 			requirements  {
 				name = "requirement1"
@@ -769,7 +813,6 @@ func testAccCheckDatadogDuplicateRequirements(version string, handle string) str
 			version       = "%s"
 			handle        = "%s"
 			name          = "framework-name"
-			description   = "test description"
 			icon_url      = "test url"
 			requirements  {
 				name = "requirement1"
@@ -795,7 +838,6 @@ func testAccCheckDatadogDuplicateControls(version string, handle string) string 
 			version       = "%s"
 			handle        = "%s"
 			name          = "framework-name"
-			description   = "test description"
 			icon_url      = "test url"
 			requirements  {
 				name = "requirement1"
@@ -825,7 +867,6 @@ func testAccCheckDatadogDuplicateRulesId(version string, handle string) string {
 			version       = "%s"
 			handle        = "%s"
 			name          = "framework-name"
-			description   = "test description"
 			icon_url      = "test url"
 			requirements  {
 				name = "requirement1"
@@ -841,12 +882,18 @@ func testAccCheckDatadogDuplicateRulesId(version string, handle string) string {
 func testAccCheckDatadogFrameworkDestroy(ctx context.Context, accProvider *fwprovider.FrameworkProvider, resourceName string, version string, handle string) func(*terraform.State) error {
 	return func(s *terraform.State) error {
 		apiInstances := accProvider.DatadogApiInstances
-		resource := s.RootModule().Resources[resourceName]
+		resource, ok := s.RootModule().Resources[resourceName]
+		if !ok {
+			return nil
+		}
+		if resource.Primary == nil {
+			return nil
+		}
 		handle := resource.Primary.Attributes["handle"]
 		version := resource.Primary.Attributes["version"]
 		_, httpRes, err := apiInstances.GetSecurityMonitoringApiV2().GetCustomFramework(ctx, handle, version)
 		if err != nil {
-			if httpRes.StatusCode == 400 {
+			if httpRes != nil && httpRes.StatusCode == 400 {
 				return nil
 			}
 			return err

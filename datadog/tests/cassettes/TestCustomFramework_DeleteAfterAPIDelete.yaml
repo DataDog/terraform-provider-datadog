@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 285
+        content_length: 252
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"description":"test description","handle":"terraform-handle","icon_url":"test url","name":"new-framework-terraform","requirements":[{"controls":[{"name":"control1","rules_id":["def-000-be9"]}],"name":"requirement1"}],"version":"1.0"},"type":"custom_framework"}}
+            {"data":{"attributes":{"handle":"terraform-handle","icon_url":"test-url","name":"new-framework-terraform","requirements":[{"controls":[{"name":"control1","rules_id":["def-000-be9"]}],"name":"requirement1"}],"version":"1.0"},"type":"custom_framework"}}
         form: {}
         headers:
             Accept:
@@ -36,7 +36,7 @@ interactions:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 373.761959ms
+        duration: 619.970417ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -61,15 +61,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 312
+        content_length: 279
         uncompressed: false
-        body: '{"data":{"id":"terraform-handle-1.0","type":"custom_framework","attributes":{"description":"test description","handle":"terraform-handle","icon_url":"test url","name":"new-framework-terraform","requirements":[{"name":"requirement1","controls":[{"name":"control1","rules_id":["def-000-be9"]}]}],"version":"1.0"}}}'
+        body: '{"data":{"id":"terraform-handle-1.0","type":"custom_framework","attributes":{"handle":"terraform-handle","icon_url":"test-url","name":"new-framework-terraform","requirements":[{"name":"requirement1","controls":[{"name":"control1","rules_id":["def-000-be9"]}]}],"version":"1.0"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 150.353417ms
+        duration: 239.534167ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -94,15 +94,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 312
+        content_length: 279
         uncompressed: false
-        body: '{"data":{"id":"terraform-handle-1.0","type":"custom_framework","attributes":{"description":"test description","handle":"terraform-handle","icon_url":"test url","name":"new-framework-terraform","requirements":[{"name":"requirement1","controls":[{"name":"control1","rules_id":["def-000-be9"]}]}],"version":"1.0"}}}'
+        body: '{"data":{"id":"terraform-handle-1.0","type":"custom_framework","attributes":{"handle":"terraform-handle","icon_url":"test-url","name":"new-framework-terraform","requirements":[{"name":"requirement1","controls":[{"name":"control1","rules_id":["def-000-be9"]}]}],"version":"1.0"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 286.217625ms
+        duration: 192.272833ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -127,15 +127,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 211
+        content_length: 195
         uncompressed: false
-        body: '{"data":{"id":"terraform-handle-1.0","type":"custom_framework","attributes":{"description":"test description","handle":"terraform-handle","icon_url":"test url","name":"new-framework-terraform","version":"1.0"}}}'
+        body: '{"data":{"id":"terraform-handle-1.0","type":"custom_framework","attributes":{"description":"","handle":"terraform-handle","icon_url":"test-url","name":"new-framework-terraform","version":"1.0"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 333.150375ms
+        duration: 450.136667ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -168,7 +168,7 @@ interactions:
                 - application/vnd.api+json
         status: 400 Bad Request
         code: 400
-        duration: 77.855792ms
+        duration: 46.896708ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -201,4 +201,4 @@ interactions:
                 - application/vnd.api+json
         status: 400 Bad Request
         code: 400
-        duration: 38.812542ms
+        duration: 59.534792ms

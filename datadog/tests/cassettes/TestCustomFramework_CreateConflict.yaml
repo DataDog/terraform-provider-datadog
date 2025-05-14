@@ -33,20 +33,20 @@ interactions:
                 - application/vnd.api+json
         status: 400 Bad Request
         code: 400
-        duration: 103.46125ms
+        duration: 54.499584ms
     - id: 1
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 285
+        content_length: 252
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"description":"test description","handle":"terraform-handle","icon_url":"test url","name":"new-framework-terraform","requirements":[{"controls":[{"name":"control1","rules_id":["def-000-be9"]}],"name":"requirement1"}],"version":"1.0"},"type":"custom_framework"}}
+            {"data":{"attributes":{"handle":"terraform-handle","icon_url":"test url","name":"new-framework-terraform","requirements":[{"controls":[{"name":"control1","rules_id":["def-000-be9"]}],"name":"requirement1"}],"version":"1.0"},"type":"custom_framework"}}
         form: {}
         headers:
             Accept:
@@ -69,20 +69,20 @@ interactions:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 496.842834ms
+        duration: 418.422333ms
     - id: 2
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 285
+        content_length: 252
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"description":"test description","handle":"terraform-handle","icon_url":"test url","name":"new-framework-terraform","requirements":[{"controls":[{"name":"control1","rules_id":["def-000-be9"]}],"name":"requirement1"}],"version":"1.0"},"type":"custom_framework"}}
+            {"data":{"attributes":{"handle":"terraform-handle","icon_url":"test-url","name":"new-framework-terraform","requirements":[{"controls":[{"name":"control1","rules_id":["def-000-be9"]}],"name":"requirement1"}],"version":"1.0"},"type":"custom_framework"}}
         form: {}
         headers:
             Accept:
@@ -105,4 +105,4 @@ interactions:
                 - application/vnd.api+json
         status: 409 Conflict
         code: 409
-        duration: 190.623167ms
+        duration: 174.318959ms
