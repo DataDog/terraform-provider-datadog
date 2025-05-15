@@ -28,6 +28,7 @@ Read-Only:
 
 - `description` (String)
 - `enabled` (Boolean)
+- `host_tags_lists` (Set of List of String)
 - `id` (String)
 - `name` (String)
 - `tags` (Set of String)

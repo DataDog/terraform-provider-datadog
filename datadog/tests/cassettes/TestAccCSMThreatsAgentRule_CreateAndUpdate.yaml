@@ -13,30 +13,31 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"description":"im a rule","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","name":"txrpiwrxcp"},"type":"agent_rule"}}
+            {"data":{"attributes":{"description":"im a rule","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","name":"tnduikfycu"},"type":"agent_rule"}}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/agent_rules
+        url: https://api.datadoghq.com/api/v2/security_monitoring/cloud_workload_security/agent_rules
         method: POST
       response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 419
-        uncompressed: false
-        body: '{"data":{"id":"253-34a-t2k","type":"agent_rule","attributes":{"category":"File Activity","creationDate":1710435260867,"creator":{"name":"","handle":"frog@datadoghq.com"},"defaultRule":false,"description":"im a rule","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"name":"txrpiwrxcp","updateDate":1710435260867,"updater":{"name":"","handle":"frog@datadoghq.com"}}}}'
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"81e-vez-mu5","attributes":{"version":1,"name":"tnduikfycu","description":"im a rule","expression":"open.file.name == \"etc/shadow/password\"","category":"File Activity","defaultRule":false,"enabled":true,"creationAuthorUuId":"a54eca49-cf2e-11ef-8941-5e02e132a7ae","creationDate":1747295186009,"updateAuthorUuId":"a54eca49-cf2e-11ef-8941-5e02e132a7ae","updateDate":1747295186009,"filters":["os == \"linux\""],"actions":[],"agentConstraint":"","creator":{"name":"Quentin Guillard","handle":"quentin.guillard@datadoghq.com"},"updater":{"name":"Quentin Guillard","handle":"quentin.guillard@datadoghq.com"}},"type":"agent_rule"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 622.032292ms
+        duration: 562.337ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -53,23 +54,24 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/agent_rules/253-34a-t2k
+        url: https://api.datadoghq.com/api/v2/security_monitoring/cloud_workload_security/agent_rules/81e-vez-mu5
         method: GET
       response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 419
-        uncompressed: false
-        body: '{"data":{"id":"253-34a-t2k","type":"agent_rule","attributes":{"category":"File Activity","creationDate":1710435260000,"creator":{"name":"","handle":"frog@datadoghq.com"},"defaultRule":false,"description":"im a rule","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"name":"txrpiwrxcp","updateDate":1710435260000,"updater":{"name":"","handle":"frog@datadoghq.com"}}}}'
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"81e-vez-mu5","attributes":{"version":1,"name":"tnduikfycu","description":"im a rule","expression":"open.file.name == \"etc/shadow/password\"","category":"File Activity","defaultRule":false,"enabled":true,"creationAuthorUuId":"a54eca49-cf2e-11ef-8941-5e02e132a7ae","creationDate":1747295186009,"updateAuthorUuId":"a54eca49-cf2e-11ef-8941-5e02e132a7ae","updateDate":1747295186009,"filters":["os == \"linux\""],"actions":[],"agentConstraint":"","creator":{"name":"Quentin Guillard","handle":"quentin.guillard@datadoghq.com"},"updater":{"name":"Quentin Guillard","handle":"quentin.guillard@datadoghq.com"}},"type":"agent_rule"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 204.511083ms
+        duration: 137.35725ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -86,23 +88,24 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/agent_rules/253-34a-t2k
+        url: https://api.datadoghq.com/api/v2/security_monitoring/cloud_workload_security/agent_rules/81e-vez-mu5
         method: GET
       response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 419
-        uncompressed: false
-        body: '{"data":{"id":"253-34a-t2k","type":"agent_rule","attributes":{"category":"File Activity","creationDate":1710435260000,"creator":{"name":"","handle":"frog@datadoghq.com"},"defaultRule":false,"description":"im a rule","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"name":"txrpiwrxcp","updateDate":1710435260000,"updater":{"name":"","handle":"frog@datadoghq.com"}}}}'
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"81e-vez-mu5","attributes":{"version":1,"name":"tnduikfycu","description":"im a rule","expression":"open.file.name == \"etc/shadow/password\"","category":"File Activity","defaultRule":false,"enabled":true,"creationAuthorUuId":"a54eca49-cf2e-11ef-8941-5e02e132a7ae","creationDate":1747295186009,"updateAuthorUuId":"a54eca49-cf2e-11ef-8941-5e02e132a7ae","updateDate":1747295186009,"filters":["os == \"linux\""],"actions":[],"agentConstraint":"","creator":{"name":"Quentin Guillard","handle":"quentin.guillard@datadoghq.com"},"updater":{"name":"Quentin Guillard","handle":"quentin.guillard@datadoghq.com"}},"type":"agent_rule"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 216.713042ms
+        duration: 150.026959ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -119,59 +122,61 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/agent_rules/253-34a-t2k
+        url: https://api.datadoghq.com/api/v2/security_monitoring/cloud_workload_security/agent_rules/81e-vez-mu5
         method: GET
       response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 419
-        uncompressed: false
-        body: '{"data":{"id":"253-34a-t2k","type":"agent_rule","attributes":{"category":"File Activity","creationDate":1710435260000,"creator":{"name":"","handle":"frog@datadoghq.com"},"defaultRule":false,"description":"im a rule","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"name":"txrpiwrxcp","updateDate":1710435260000,"updater":{"name":"","handle":"frog@datadoghq.com"}}}}'
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"81e-vez-mu5","attributes":{"version":1,"name":"tnduikfycu","description":"im a rule","expression":"open.file.name == \"etc/shadow/password\"","category":"File Activity","defaultRule":false,"enabled":true,"creationAuthorUuId":"a54eca49-cf2e-11ef-8941-5e02e132a7ae","creationDate":1747295186009,"updateAuthorUuId":"a54eca49-cf2e-11ef-8941-5e02e132a7ae","updateDate":1747295186009,"filters":["os == \"linux\""],"actions":[],"agentConstraint":"","creator":{"name":"Quentin Guillard","handle":"quentin.guillard@datadoghq.com"},"updater":{"name":"Quentin Guillard","handle":"quentin.guillard@datadoghq.com"}},"type":"agent_rule"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 166.602958ms
+        duration: 160.020375ms
     - id: 4
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 143
+        content_length: 200
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"description":"updated agent rule for terraform provider test","enabled":true},"id":"253-34a-t2k","type":"agent_rule"}}
+            {"data":{"attributes":{"description":"updated agent rule for terraform provider test","enabled":true,"expression":"open.file.name == \"etc/shadow/password\""},"id":"81e-vez-mu5","type":"agent_rule"}}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/agent_rules/253-34a-t2k
+        url: https://api.datadoghq.com/api/v2/security_monitoring/cloud_workload_security/agent_rules/81e-vez-mu5
         method: PATCH
       response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 456
-        uncompressed: false
-        body: '{"data":{"id":"253-34a-t2k","type":"agent_rule","attributes":{"category":"File Activity","creationDate":1710435260000,"creator":{"name":"","handle":"frog@datadoghq.com"},"defaultRule":false,"description":"updated agent rule for terraform provider test","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"name":"txrpiwrxcp","updateDate":1710435263631,"updater":{"name":"","handle":"frog@datadoghq.com"}}}}'
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"81e-vez-mu5","attributes":{"version":2,"name":"tnduikfycu","description":"updated agent rule for terraform provider test","expression":"open.file.name == \"etc/shadow/password\"","category":"File Activity","defaultRule":false,"enabled":true,"creationAuthorUuId":"a54eca49-cf2e-11ef-8941-5e02e132a7ae","creationDate":1747295186009,"updateAuthorUuId":"a54eca49-cf2e-11ef-8941-5e02e132a7ae","updateDate":1747295187832,"filters":["os == \"linux\""],"actions":[],"agentConstraint":"","creator":{"name":"Quentin Guillard","handle":"quentin.guillard@datadoghq.com"},"updater":{"name":"Quentin Guillard","handle":"quentin.guillard@datadoghq.com"}},"type":"agent_rule"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 528.792708ms
+        duration: 261.925291ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -188,23 +193,24 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/agent_rules/253-34a-t2k
+        url: https://api.datadoghq.com/api/v2/security_monitoring/cloud_workload_security/agent_rules/81e-vez-mu5
         method: GET
       response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 456
-        uncompressed: false
-        body: '{"data":{"id":"253-34a-t2k","type":"agent_rule","attributes":{"category":"File Activity","creationDate":1710435260000,"creator":{"name":"","handle":"frog@datadoghq.com"},"defaultRule":false,"description":"updated agent rule for terraform provider test","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"name":"txrpiwrxcp","updateDate":1710435263000,"updater":{"name":"","handle":"frog@datadoghq.com"}}}}'
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"81e-vez-mu5","attributes":{"version":2,"name":"tnduikfycu","description":"updated agent rule for terraform provider test","expression":"open.file.name == \"etc/shadow/password\"","category":"File Activity","defaultRule":false,"enabled":true,"creationAuthorUuId":"a54eca49-cf2e-11ef-8941-5e02e132a7ae","creationDate":1747295186009,"updateAuthorUuId":"a54eca49-cf2e-11ef-8941-5e02e132a7ae","updateDate":1747295187832,"filters":["os == \"linux\""],"actions":[],"agentConstraint":"","creator":{"name":"Quentin Guillard","handle":"quentin.guillard@datadoghq.com"},"updater":{"name":"Quentin Guillard","handle":"quentin.guillard@datadoghq.com"}},"type":"agent_rule"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 192.504541ms
+        duration: 138.883542ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -221,23 +227,24 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/agent_rules/253-34a-t2k
+        url: https://api.datadoghq.com/api/v2/security_monitoring/cloud_workload_security/agent_rules/81e-vez-mu5
         method: GET
       response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 456
-        uncompressed: false
-        body: '{"data":{"id":"253-34a-t2k","type":"agent_rule","attributes":{"category":"File Activity","creationDate":1710435260000,"creator":{"name":"","handle":"frog@datadoghq.com"},"defaultRule":false,"description":"updated agent rule for terraform provider test","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"name":"txrpiwrxcp","updateDate":1710435263000,"updater":{"name":"","handle":"frog@datadoghq.com"}}}}'
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"81e-vez-mu5","attributes":{"version":2,"name":"tnduikfycu","description":"updated agent rule for terraform provider test","expression":"open.file.name == \"etc/shadow/password\"","category":"File Activity","defaultRule":false,"enabled":true,"creationAuthorUuId":"a54eca49-cf2e-11ef-8941-5e02e132a7ae","creationDate":1747295186009,"updateAuthorUuId":"a54eca49-cf2e-11ef-8941-5e02e132a7ae","updateDate":1747295187832,"filters":["os == \"linux\""],"actions":[],"agentConstraint":"","creator":{"name":"Quentin Guillard","handle":"quentin.guillard@datadoghq.com"},"updater":{"name":"Quentin Guillard","handle":"quentin.guillard@datadoghq.com"}},"type":"agent_rule"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 229.127333ms
+        duration: 139.316583ms
     - id: 7
       request:
         proto: HTTP/1.1
@@ -254,23 +261,21 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/agent_rules/253-34a-t2k
+        url: https://api.datadoghq.com/api/v2/security_monitoring/cloud_workload_security/agent_rules/81e-vez-mu5
         method: DELETE
       response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
         transfer_encoding: []
         trailer: {}
         content_length: 0
         uncompressed: false
         body: ""
-        headers:
-            Content-Type:
-                - application/json
+        headers: {}
         status: 204 No Content
         code: 204
-        duration: 485.813209ms
+        duration: 185.686708ms
     - id: 8
       request:
         proto: HTTP/1.1
@@ -287,21 +292,21 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/agent_rules/253-34a-t2k
+        url: https://api.datadoghq.com/api/v2/security_monitoring/cloud_workload_security/agent_rules/81e-vez-mu5
         method: GET
       response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 44
-        uncompressed: false
+        content_length: -1
+        uncompressed: true
         body: |
-            {"errors":[{"title":"failed to get rule"}]}
+            {"errors":["not_found(Agent rule not found: agentRuleId=81e-vez-mu5)"]}
         headers:
             Content-Type:
                 - application/json
         status: 404 Not Found
         code: 404
-        duration: 113.42125ms
+        duration: 128.791458ms
