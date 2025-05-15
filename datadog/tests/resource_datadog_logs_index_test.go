@@ -3,7 +3,6 @@ package test
 import (
 	"context"
 	"fmt"
-	"log"
 	"strings"
 	"testing"
 	"time"
@@ -13,12 +12,6 @@ import (
 )
 
 func TestAccDatadogLogsIndex_Basic(t *testing.T) {
-	if !isReplaying() {
-		// Skip in non replaying mode, since we can't delete indexes via the public API, plus the API takes a while to be consistent
-		// If you really need to record the interactions, comment the following return statement, and run locally.
-		log.Println("Skipping logs indexes tests in non replaying mode")
-		return
-	}
 
 	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
