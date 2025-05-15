@@ -14,7 +14,7 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
 )
 
-func TestCustomFramework_Create(t *testing.T) {
+func TestCustomFramework_CreateBasic(t *testing.T) {
 	handle := "terraform-handle"
 	version := "1.0"
 
@@ -529,15 +529,15 @@ func TestCustomFramework_CreateConflict(t *testing.T) {
 						api := providers.frameworkProvider.DatadogApiInstances.GetSecurityMonitoringApiV2()
 						auth := providers.frameworkProvider.Auth
 
-						// Check if framework exists and delete it if it does
-						_, httpRes, err := api.GetCustomFramework(auth, handle, version)
-						if err == nil && httpRes.StatusCode == 200 {
-							// Framework exists, delete it
-							_, _, err = api.DeleteCustomFramework(auth, handle, version)
-							if err != nil {
-								return fmt.Errorf("failed to delete existing framework: %v", err)
-							}
-						}
+						// // Check if framework exists and delete it if it does
+						// _, httpRes, err := api.GetCustomFramework(auth, handle, version)
+						// if err == nil && httpRes.StatusCode == 200 {
+						// 	// Framework exists, delete it
+						// 	_, _, err = api.DeleteCustomFramework(auth, handle, version)
+						// 	if err != nil {
+						// 		return fmt.Errorf("failed to delete existing framework: %v", err)
+						// 	}
+						// }
 
 						// Create a basic framework that matches the config we'll try to create
 						createRequest := datadogV2.NewCreateCustomFrameworkRequestWithDefaults()
@@ -561,7 +561,7 @@ func TestCustomFramework_CreateConflict(t *testing.T) {
 						})
 
 						// Create the framework
-						_, _, err = api.CreateCustomFramework(auth, *createRequest)
+						_, _, err := api.CreateCustomFramework(auth, *createRequest)
 						if err != nil {
 							return fmt.Errorf("failed to create framework: %v", err)
 						}
@@ -573,6 +573,22 @@ func TestCustomFramework_CreateConflict(t *testing.T) {
 				// Try to create the same framework through Terraform
 				Config:      testAccCheckDatadogCreateFramework(version, handle),
 				ExpectError: regexp.MustCompile("409 Conflict"),
+			},
+			{
+				Config: "# Empty config for cleanup",
+				Check: resource.ComposeTestCheckFunc(
+					func(s *terraform.State) error {
+						api := providers.frameworkProvider.DatadogApiInstances.GetSecurityMonitoringApiV2()
+						auth := providers.frameworkProvider.Auth
+
+						// Deleting the framework previously created
+						_, _, err := api.DeleteCustomFramework(auth, handle, version)
+						if err != nil {
+							return fmt.Errorf("failed to delete framework during cleanup: %v", err)
+						}
+						return nil
+					},
+				),
 			},
 		},
 	})
