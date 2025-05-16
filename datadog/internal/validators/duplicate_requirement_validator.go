@@ -3,7 +3,6 @@ package validators
 import (
 	"context"
 	"fmt"
-	"log"
 
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -28,17 +27,12 @@ func (v requirementNameValidator) ValidateSet(ctx context.Context, req validator
 	for _, requirement := range req.ConfigValue.Elements() {
 		reqObj := requirement.(types.Object)
 		name := reqObj.Attributes()["name"].(types.String).ValueString()
-		log.Printf("Found requirement name in config: %s", name)
 		requirementNames = append(requirementNames, name)
 	}
 
-	log.Printf("Found %d requirement names in config", len(requirementNames))
-
 	seen := make(map[string]bool)
 	for _, name := range requirementNames {
-		log.Printf("Checking requirement name: %s", name)
 		if seen[name] {
-			log.Printf("Found duplicate requirement name: %s", name)
 			resp.Diagnostics.AddError(
 				"Each Requirement must have a unique name",
 				fmt.Sprintf("Requirement name '%s' is used more than once.", name),
