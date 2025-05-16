@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 289
+        content_length: 256
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"description":"test description","handle":"terraform-handle","icon_url":"test url","name":"new-framework-terraform","requirements":[{"controls":[{"name":"control1","rules_id":["invalid-rule-id"]}],"name":"requirement1"}],"version":"1.0"},"type":"custom_framework"}}
+            {"data":{"attributes":{"handle":"terraform-handle","icon_url":"test url","name":"new-framework-terraform","requirements":[{"controls":[{"name":"control1","rules_id":["invalid-rule-id"]}],"name":"requirement1"}],"version":"1.0"},"type":"custom_framework"}}
         form: {}
         headers:
             Accept:
@@ -36,4 +36,4 @@ interactions:
                 - application/vnd.api+json
         status: 400 Bad Request
         code: 400
-        duration: 317.776875ms
+        duration: 357.055791ms
