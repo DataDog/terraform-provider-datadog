@@ -18,7 +18,7 @@ resource "datadog_compliance_custom_framework" "example" {
     name = "requirement2"
     controls {
       name     = "control3"
-      rules_id = [""def-000-1im"]
+      rules_id = ["def-000-1im"]
     }
   }
 }
