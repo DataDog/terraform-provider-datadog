@@ -1,0 +1,306 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 197
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"description":"im a policy","enabled":true,"hostTagsLists":[["host_name:test_host","env:prod"],["host_name:test_host2","env:staging"]],"name":"hvamggryqu"},"type":"policy"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 472
+        uncompressed: false
+        body: '{"data":{"id":"0iw-snu-s8l","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"im a policy","disabledRulesCount":0,"enabled":true,"hostTagsLists":[["host_name:test_host","env:prod"],["host_name:test_host2","env:staging"]],"monitoringRulesCount":0,"name":"hvamggryqu","policyVersion":"1","priority":1000000034,"ruleCount":0,"updateDate":1747295239250,"updater":{"name":"Quentin Guillard","handle":"quentin.guillard@datadoghq.com"}}}}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 399.701791ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/0iw-snu-s8l
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 472
+        uncompressed: false
+        body: '{"data":{"id":"0iw-snu-s8l","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"im a policy","disabledRulesCount":0,"enabled":true,"hostTagsLists":[["host_name:test_host","env:prod"],["host_name:test_host2","env:staging"]],"monitoringRulesCount":0,"name":"hvamggryqu","policyVersion":"1","priority":1000000034,"ruleCount":0,"updateDate":1747295239250,"updater":{"name":"Quentin Guillard","handle":"quentin.guillard@datadoghq.com"}}}}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 227.794875ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/0iw-snu-s8l
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 472
+        uncompressed: false
+        body: '{"data":{"id":"0iw-snu-s8l","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"im a policy","disabledRulesCount":0,"enabled":true,"hostTagsLists":[["host_name:test_host","env:prod"],["host_name:test_host2","env:staging"]],"monitoringRulesCount":0,"name":"hvamggryqu","policyVersion":"1","priority":1000000034,"ruleCount":0,"updateDate":1747295239250,"updater":{"name":"Quentin Guillard","handle":"quentin.guillard@datadoghq.com"}}}}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 194.647ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/0iw-snu-s8l
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 472
+        uncompressed: false
+        body: '{"data":{"id":"0iw-snu-s8l","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"im a policy","disabledRulesCount":0,"enabled":true,"hostTagsLists":[["host_name:test_host","env:prod"],["host_name:test_host2","env:staging"]],"monitoringRulesCount":0,"name":"hvamggryqu","policyVersion":"1","priority":1000000034,"ruleCount":0,"updateDate":1747295239250,"updater":{"name":"Quentin Guillard","handle":"quentin.guillard@datadoghq.com"}}}}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 219.774667ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 239
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"description":"updated policy for terraform provider test","enabled":true,"hostTagsLists":[["host_name:test","env:prod"],["host_name:test_host2","env:test"]],"name":"hvamggryqu"},"id":"0iw-snu-s8l","type":"policy"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/0iw-snu-s8l
+        method: PATCH
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 495
+        uncompressed: false
+        body: '{"data":{"id":"0iw-snu-s8l","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"updated policy for terraform provider test","disabledRulesCount":0,"enabled":true,"hostTagsLists":[["host_name:test","env:prod"],["host_name:test_host2","env:test"]],"monitoringRulesCount":0,"name":"hvamggryqu","policyVersion":"2","priority":1000000034,"ruleCount":0,"updateDate":1747295241536,"updater":{"name":"Quentin Guillard","handle":"quentin.guillard@datadoghq.com"}}}}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 474.775917ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/0iw-snu-s8l
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 495
+        uncompressed: false
+        body: '{"data":{"id":"0iw-snu-s8l","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"updated policy for terraform provider test","disabledRulesCount":0,"enabled":true,"hostTagsLists":[["host_name:test","env:prod"],["host_name:test_host2","env:test"]],"monitoringRulesCount":0,"name":"hvamggryqu","policyVersion":"2","priority":1000000034,"ruleCount":0,"updateDate":1747295241536,"updater":{"name":"Quentin Guillard","handle":"quentin.guillard@datadoghq.com"}}}}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 257.143792ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/0iw-snu-s8l
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 495
+        uncompressed: false
+        body: '{"data":{"id":"0iw-snu-s8l","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"updated policy for terraform provider test","disabledRulesCount":0,"enabled":true,"hostTagsLists":[["host_name:test","env:prod"],["host_name:test_host2","env:test"]],"monitoringRulesCount":0,"name":"hvamggryqu","policyVersion":"2","priority":1000000034,"ruleCount":0,"updateDate":1747295241536,"updater":{"name":"Quentin Guillard","handle":"quentin.guillard@datadoghq.com"}}}}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 254.452ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/0iw-snu-s8l
+        method: DELETE
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Content-Type:
+                - application/json
+        status: 204 No Content
+        code: 204
+        duration: 347.087042ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/0iw-snu-s8l
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 34
+        uncompressed: false
+        body: '{"errors":[{"title":"Not Found"}]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 208.134042ms

@@ -51,7 +51,7 @@ func (r *csmThreatsAgentRulesDataSource) Read(ctx context.Context, request datas
 		return
 	}
 
-	res, _, err := r.api.ListCSMThreatsAgentRules(r.auth)
+	res, _, err := r.api.ListCloudWorkloadSecurityAgentRules(r.auth)
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error while fetching agent rules"))
 		return
