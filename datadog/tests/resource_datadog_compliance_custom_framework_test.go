@@ -177,6 +177,50 @@ func TestCustomFramework_CreateAndUpdateMultipleRequirements(t *testing.T) {
 	})
 }
 
+// these handle and version combinations would result in the same state ID however
+// terraform would still be able to tell the framework states apart since they have unique resource names (which is required by terraform)
+func TestCustomFramework_SameFrameworkID(t *testing.T) {
+	handle := "new-terraform"
+	version := "framework-1.0"
+
+	handle2 := "new"
+	version2 := "terraform-framework-1.0"
+
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	path := "datadog_compliance_custom_framework.sample_rules"
+	path2 := "datadog_compliance_custom_framework.sample_framework"
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogFrameworkDestroy(ctx, providers.frameworkProvider, path, version, handle),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogCreateFramework(version, handle),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(path, "handle", handle),
+					resource.TestCheckResourceAttr(path, "version", version),
+				),
+			},
+			{
+				Config: testAccCheckDatadogCreateSecondFramework(version2, handle2),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(path2, "handle", handle2),
+					resource.TestCheckResourceAttr(path2, "version", version2),
+				),
+			},
+			{
+				Config: testAccCheckDatadogCreateFramework(version, handle),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(path, "handle", handle),
+					resource.TestCheckResourceAttr(path, "version", version),
+				),
+				ExpectNonEmptyPlan: false,
+			},
+		},
+	})
+}
+
 func TestCustomFramework_SameConfigNoUpdate(t *testing.T) {
 	handle := "terraform-handle"
 	version := "1.0"
@@ -637,6 +681,24 @@ func testAccCheckDatadogUpdateFrameworkWithMultipleRequirements(version, handle 
 func testAccCheckDatadogCreateFramework(version string, handle string) string {
 	return fmt.Sprintf(`
 		resource "datadog_compliance_custom_framework" "sample_rules" {
+			version       = "%s"
+			handle        = "%s"
+			name          = "new-framework-terraform"
+			icon_url      = "test-url"
+			requirements  {
+				name = "requirement1"
+				controls {
+					name = "control1"
+					rules_id = ["def-000-be9"]
+				}
+			}
+		}
+	`, version, handle)
+}
+
+func testAccCheckDatadogCreateSecondFramework(version string, handle string) string {
+	return fmt.Sprintf(`
+		resource "datadog_compliance_custom_framework" "sample_framework" {
 			version       = "%s"
 			handle        = "%s"
 			name          = "new-framework-terraform"
