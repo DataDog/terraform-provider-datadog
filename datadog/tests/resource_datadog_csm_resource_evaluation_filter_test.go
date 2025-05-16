@@ -8,6 +8,7 @@ import (
 	"regexp"
 	"strconv"
 	"testing"
+	"time"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 
@@ -67,10 +68,51 @@ func TestAccResourceEvaluationFilter(t *testing.T) {
 	})
 }
 
+func TestAccResourceEvaluationFilterImport(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	accountId := "223456789"
+	resourceName := "datadog_resource_evaluation_filter.filter_test"
+	simpleTags := []string{"tag1:val1", "tag2:val2", "tag3:val3"}
+	provider := "aws"
+	//invalidProvider := "invalid"
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: fmt.Sprintf(`
+				resource "datadog_resource_evaluation_filter" "filter_test" {
+					tags = ["tag1:val1", "tag2:val2", "tag3:val3"]
+					cloud_provider = "%s"
+					id = "%s"
+				}
+				`, provider, accountId),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckResourceEvaluationFilterExists(providers.frameworkProvider, resourceName),
+					checkResourceEvaluationFilterContent(
+						resourceName,
+						accountId,
+						provider,
+						simpleTags,
+					),
+				),
+			},
+			{
+				ResourceName:      resourceName,
+				ImportState:       true,
+				ImportStateId:     fmt.Sprintf("%s:%s", provider, accountId),
+				ImportStateVerify: true,
+			},
+		},
+	})
+}
+
 func TestAccResourceEvaluationFilterInvalid(t *testing.T) {
 	_, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
-	accountId := "223456789"
+	accountId := "323456789"
 	provider := "aws"
 	invalidProvider := "invalid"
 
@@ -163,14 +205,16 @@ func testAccCheckResourceEvaluationFilterExists(accProvider *fwprovider.Framewor
 
 		auth := accProvider.Auth
 		apiInstances := accProvider.DatadogApiInstances
-		provider, err := datadogV2.NewResourceFilterProviderEnumFromValue(r.Primary.Attributes["cloud_provider"])
+		provider := r.Primary.Attributes["cloud_provider"]
 		id := r.Primary.Attributes["id"]
+		skipCache := true
 
 		params := datadogV2.GetResourceEvaluationFiltersOptionalParameters{
-			CloudProvider: provider,
+			CloudProvider: &provider,
 			AccountId:     &id,
+			SkipCache:     &skipCache,
 		}
-		_, _, err = apiInstances.GetSecurityMonitoringApiV2().GetResourceEvaluationFilters(auth, params)
+		_, _, err := apiInstances.GetSecurityMonitoringApiV2().GetResourceEvaluationFilters(auth, params)
 		if err != nil {
 			return fmt.Errorf("received an error retrieving agent rule: %s", err)
 		}
@@ -186,13 +230,16 @@ func testAccCheckResourceEvaluationFilterDestroy(accProvider *fwprovider.Framewo
 
 		for _, r := range s.RootModule().Resources {
 			if r.Type == "datadog_resource_evaluation_filter" {
-				provider, err := datadogV2.NewResourceFilterProviderEnumFromValue(r.Primary.Attributes["cloud_provider"])
+				provider := r.Primary.Attributes["cloud_provider"]
 				id := r.Primary.Attributes["id"]
+				skipCache := true
 
 				params := datadogV2.GetResourceEvaluationFiltersOptionalParameters{
-					CloudProvider: provider,
+					CloudProvider: &provider,
 					AccountId:     &id,
+					SkipCache:     &skipCache,
 				}
+				time.Sleep(1 * time.Second)
 				response, httpResponse, err := apiInstances.GetSecurityMonitoringApiV2().GetResourceEvaluationFilters(auth, params)
 
 				if err != nil {

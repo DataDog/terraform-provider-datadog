@@ -5,6 +5,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"regexp"
+	"strings"
+	"time"
+
+	"github.com/hashicorp/terraform-plugin-framework/path"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -34,6 +38,11 @@ type ResourceEvaluationFilterModel struct {
 func NewResourceEvaluationFilter() resource.Resource {
 	return &ResourceEvaluationFilter{}
 }
+
+var (
+	_ resource.ResourceWithConfigure   = &ResourceEvaluationFilter{}
+	_ resource.ResourceWithImportState = &ResourceEvaluationFilter{}
+)
 
 func (r *ResourceEvaluationFilter) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
 	providerData, _ := request.ProviderData.(*FrameworkProvider)
@@ -118,7 +127,7 @@ func (r *ResourceEvaluationFilter) Create(ctx context.Context, request resource.
 
 	attributes := resp.Data.GetAttributes()
 	r.UpdateState(ctx, &state, &attributes)
-
+	time.Sleep(1000 * time.Millisecond)
 	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
@@ -157,13 +166,16 @@ func (r *ResourceEvaluationFilter) Read(ctx context.Context, request resource.Re
 		response.Diagnostics.AddError("Missing cloud_provider", "cloud_provider is required for lookup")
 		return
 	}
-	provider, err := datadogV2.NewResourceFilterProviderEnumFromValue(state.CloudProvider.ValueString())
+	provider := state.CloudProvider.ValueString()
+	skipCache := true
 
 	params := datadogV2.GetResourceEvaluationFiltersOptionalParameters{
-		CloudProvider: provider,
+		CloudProvider: &provider,
 		AccountId:     state.ID.ValueStringPointer(),
+		SkipCache:     &skipCache,
 	}
-
+	bytes, _ := json.MarshalIndent(params, "", "  ")
+	fmt.Println("DEBUG params for read:", string(bytes))
 	resp, _, err := r.API.GetResourceEvaluationFilters(r.Auth, params)
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving ResourceEvaluationFilter"))
@@ -171,7 +183,10 @@ func (r *ResourceEvaluationFilter) Read(ctx context.Context, request resource.Re
 	}
 
 	attributes := resp.Data.GetAttributes()
+	bytes, _ = json.MarshalIndent(attributes, "", "  ")
+	fmt.Println("DEBUG attributes from API:", string(bytes))
 	r.UpdateState(ctx, &state, &attributes)
+	time.Sleep(1000 * time.Millisecond)
 
 	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
@@ -184,7 +199,9 @@ func (r *ResourceEvaluationFilter) Update(ctx context.Context, request resource.
 		return
 	}
 
+	fmt.Println("DEBUG UPDATE - creating payload")
 	body, diags := r.buildUpdateResourceEvaluationFilterRequest(ctx, &state)
+
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
 		return
@@ -201,8 +218,10 @@ func (r *ResourceEvaluationFilter) Update(ctx context.Context, request resource.
 	}
 
 	attributes := resp.Data.GetAttributes()
+	bytes, _ := json.MarshalIndent(resp.Data.GetAttributes(), "", "  ")
+	fmt.Println("UPDATEEEEEEEEE response: ", string(bytes))
 	r.UpdateState(ctx, &state, &attributes)
-
+	time.Sleep(1000 * time.Millisecond)
 	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
@@ -233,8 +252,32 @@ func (r *ResourceEvaluationFilter) Delete(ctx context.Context, request resource.
 		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
 		return
 	}
-	attributes := resp.Data.GetAttributes()
-	r.UpdateState(ctx, &state, &attributes)
+	time.Sleep(1000 * time.Millisecond)
+	bytes, _ := json.MarshalIndent(resp.Data.GetAttributes(), "", "  ")
+	fmt.Println("delete response: ", string(bytes))
+}
+
+func (r *ResourceEvaluationFilter) ImportState(
+	ctx context.Context,
+	req resource.ImportStateRequest,
+	resp *resource.ImportStateResponse,
+) {
+	// Expected import format: "cloud_provider:id" (e.g., "aws:123456789")
+	parts := strings.Split(req.ID, ":")
+	if len(parts) != 2 {
+		resp.Diagnostics.AddError(
+			"Invalid import format",
+			`Expected format: "cloud_provider:id" (e.g., "aws:123456789")`,
+		)
+		return
+	}
+
+	cloudProvider := parts[0]
+	id := parts[1]
+
+	// Set attributes into Terraform state so Read() can hydrate the full resource
+	resp.State.SetAttribute(ctx, path.Root("cloud_provider"), cloudProvider)
+	resp.State.SetAttribute(ctx, path.Root("id"), id)
 }
 
 func (r *ResourceEvaluationFilter) buildUpdateResourceEvaluationFilterRequest(ctx context.Context, state *ResourceEvaluationFilterModel) (*datadogV2.UpdateResourceEvaluationFiltersRequest, diag.Diagnostics) {
@@ -269,7 +312,7 @@ func (r *ResourceEvaluationFilter) buildUpdateResourceEvaluationFilterRequest(ct
 	data.SetAttributes(attributes)
 
 	bytes, _ := json.MarshalIndent(attributes, "", "  ")
-	fmt.Println(string(bytes))
+	fmt.Println("building update payload: ", string(bytes))
 
 	req := datadogV2.NewUpdateResourceEvaluationFiltersRequestWithDefaults()
 	req.SetData(*data)

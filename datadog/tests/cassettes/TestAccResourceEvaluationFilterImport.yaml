@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"cloud_provider":{"aws":{"123456789":["tag1:val1","tag2:val2","tag3:val3"]}}},"id":"csm_resource_filter","type":"csm_resource_filter"}}
+            {"data":{"attributes":{"cloud_provider":{"aws":{"223456789":["tag1:val1","tag2:val2","tag3:val3"]}}},"id":"csm_resource_filter","type":"csm_resource_filter"}}
         form: {}
         headers:
             Accept:
@@ -30,13 +30,13 @@ interactions:
         trailer: {}
         content_length: 204
         uncompressed: false
-        body: '{"data":{"id":"csm_resource_filter","type":"csm_resource_filter","attributes":{"cloud_provider":{"aws":{"123456789":["tag1:val1","tag2:val2","tag3:val3"]}},"uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0"}}}'
+        body: '{"data":{"id":"csm_resource_filter","type":"csm_resource_filter","attributes":{"cloud_provider":{"aws":{"223456789":["tag1:val1","tag2:val2","tag3:val3"]}},"uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 541.942292ms
+        duration: 177.469292ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -53,7 +53,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/cloud_security_management/resource_filters?account_id=123456789&cloud_provider=aws
+        url: https://api.datadoghq.com/api/v2/cloud_security_management/resource_filters?account_id=223456789&cloud_provider=aws
         method: GET
       response:
         proto: HTTP/1.1
@@ -61,15 +61,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 175
+        content_length: 118
         uncompressed: false
-        body: '{"data":{"id":"58803539-0869-496a-b6f4-6770f9238b1b","type":"csm_resource_filter","attributes":{"cloud_provider":{"aws":{"123456789":["tag1:val1","tag2:val2","tag3:val3"]}}}}}'
+        body: '{"data":{"id":"458856d4-de73-4984-aa57-e1e96211579b","type":"csm_resource_filter","attributes":{"cloud_provider":{}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 158.787208ms
+        duration: 146.258125ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -86,7 +86,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/cloud_security_management/resource_filters?account_id=123456789&cloud_provider=aws
+        url: https://api.datadoghq.com/api/v2/cloud_security_management/resource_filters?account_id=223456789&cloud_provider=aws
         method: GET
       response:
         proto: HTTP/1.1
@@ -94,15 +94,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 118
+        content_length: 175
         uncompressed: false
-        body: '{"data":{"id":"3898bc60-1e96-4a1e-99f9-d2156a49bafd","type":"csm_resource_filter","attributes":{"cloud_provider":{}}}}'
+        body: '{"data":{"id":"edc41ca0-7e95-4749-ab4b-961c17f4ce49","type":"csm_resource_filter","attributes":{"cloud_provider":{"aws":{"223456789":["tag1:val1","tag2:val2","tag3:val3"]}}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 159.110583ms
+        duration: 142.834292ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -119,7 +119,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/cloud_security_management/resource_filters?account_id=123456789&cloud_provider=aws
+        url: https://api.datadoghq.com/api/v2/cloud_security_management/resource_filters?account_id=223456789&cloud_provider=aws
         method: GET
       response:
         proto: HTTP/1.1
@@ -129,13 +129,13 @@ interactions:
         trailer: {}
         content_length: 175
         uncompressed: false
-        body: '{"data":{"id":"6f317b4f-ee80-4292-afef-9e73108ff04e","type":"csm_resource_filter","attributes":{"cloud_provider":{"aws":{"123456789":["tag1:val1","tag2:val2","tag3:val3"]}}}}}'
+        body: '{"data":{"id":"fd3dfb9d-2c37-4c9a-a1ce-036809c1c4bc","type":"csm_resource_filter","attributes":{"cloud_provider":{"aws":{"223456789":["tag1:val1","tag2:val2","tag3:val3"]}}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 159.659125ms
+        duration: 145.890792ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -148,7 +148,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"cloud_provider":{"aws":{"123456789":[]}}},"id":"csm_resource_filter","type":"csm_resource_filter"}}
+            {"data":{"attributes":{"cloud_provider":{"aws":{"223456789":[]}}},"id":"csm_resource_filter","type":"csm_resource_filter"}}
         form: {}
         headers:
             Accept:
@@ -165,43 +165,10 @@ interactions:
         trailer: {}
         content_length: 169
         uncompressed: false
-        body: '{"data":{"id":"csm_resource_filter","type":"csm_resource_filter","attributes":{"cloud_provider":{"aws":{"123456789":[]}},"uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0"}}}'
+        body: '{"data":{"id":"csm_resource_filter","type":"csm_resource_filter","attributes":{"cloud_provider":{"aws":{"223456789":[]}},"uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 179.546166ms
-    - id: 5
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 0
-        transfer_encoding: []
-        trailer: {}
-        host: api.datadoghq.com
-        remote_addr: ""
-        request_uri: ""
-        body: ""
-        form: {}
-        headers:
-            Accept:
-                - application/json
-        url: https://api.datadoghq.com/api/v2/cloud_security_management/resource_filters?account_id=123456789&cloud_provider=aws
-        method: GET
-      response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        transfer_encoding: []
-        trailer: {}
-        content_length: 118
-        uncompressed: false
-        body: '{"data":{"id":"f31f3495-67d8-423a-8d1b-33b820dc56a7","type":"csm_resource_filter","attributes":{"cloud_provider":{}}}}'
-        headers:
-            Content-Type:
-                - application/vnd.api+json
-        status: 200 OK
-        code: 200
-        duration: 152.485417ms
+        duration: 172.632ms
