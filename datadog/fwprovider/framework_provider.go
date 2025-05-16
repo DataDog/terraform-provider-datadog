@@ -85,6 +85,7 @@ var Resources = []func() resource.Resource{
 	NewAppBuilderAppResource,
 	NewObservabilitPipelineResource,
 	NewSecurityMonitoringRuleJSONResource,
+	NewComplianceCustomFrameworkResource,
 }
 
 var Datasources = []func() datasource.DataSource{
