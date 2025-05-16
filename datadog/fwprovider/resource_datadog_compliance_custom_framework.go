@@ -2,7 +2,6 @@ package fwprovider
 
 import (
 	"context"
-	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework-validators/setvalidator"
@@ -137,11 +136,18 @@ func (r *complianceCustomFrameworkResource) Create(ctx context.Context, request 
 		return
 	}
 
-	_, _, err := r.Api.CreateCustomFramework(r.Auth, *buildCreateFrameworkRequest(state))
-
+	_, httpResp, err := r.Api.CreateCustomFramework(r.Auth, *buildCreateFrameworkRequest(state))
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error creating compliance custom framework"))
-		return
+		if httpResp != nil && httpResp.StatusCode == 409 { // if framework already exists, try to update it with the new state
+			_, _, updateErr := r.Api.UpdateCustomFramework(r.Auth, state.Handle.ValueString(), state.Version.ValueString(), *buildUpdateFrameworkRequest(state))
+			if updateErr != nil {
+				response.Diagnostics.Append(utils.FrameworkErrorDiag(updateErr, "error updating existing compliance custom framework"))
+				return
+			}
+		} else {
+			response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error creating compliance custom framework"))
+			return
+		}
 	}
 	state.ID = types.StringValue(state.Handle.ValueString() + string('-') + state.Version.ValueString())
 	diags = response.State.Set(ctx, &state)
@@ -271,28 +277,6 @@ func readStateFromDatabase(data datadogV2.GetCustomFrameworkResponse, handle str
 	}
 	state.Requirements = setRequirements(requirements)
 	return state
-}
-
-// ImportState is used to import a resource from an existing framework so we can update it if it exists in the database and not in terraform
-func (r *complianceCustomFrameworkResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
-	// Split the ID into handle and version
-	// The last hyphen separates handle and version
-	lastHyphenIndex := strings.LastIndex(request.ID, "-")
-	if lastHyphenIndex == -1 {
-		response.Diagnostics.AddError("Invalid import ID", "Import ID must contain a hyphen to separate handle and version")
-		return
-	}
-	handle := request.ID[:lastHyphenIndex]
-	version := request.ID[lastHyphenIndex+1:]
-
-	data, _, err := r.Api.GetCustomFramework(r.Auth, handle, version)
-	if err != nil {
-		response.Diagnostics.AddError("Error importing resource", err.Error())
-		return
-	}
-
-	state := readStateFromDatabase(data, handle, version)
-	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
 // using sets for requirements in state to be unordered
