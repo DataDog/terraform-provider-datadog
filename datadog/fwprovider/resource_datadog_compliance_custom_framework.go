@@ -176,10 +176,12 @@ func (r *complianceCustomFrameworkResource) Read(ctx context.Context, request re
 		return
 	}
 
-	data, _, err := r.Api.GetCustomFramework(r.Auth, state.Handle.ValueString(), state.Version.ValueString())
+	data, httpResp, err := r.Api.GetCustomFramework(r.Auth, state.Handle.ValueString(), state.Version.ValueString())
 	// If the framework does not exist, remove it from terraform state
 	// This is to avoid the provider to return an error when the framework is deleted in the UI prior
-	if err != nil && err.Error() == "400 Bad Request" {
+	if err != nil && httpResp != nil && httpResp.StatusCode == 400 {
+		// 400 could only mean the framework does not exist
+		// because terraform would have already validated the framework in the create function
 		response.State.RemoveResource(ctx)
 		return
 	}
