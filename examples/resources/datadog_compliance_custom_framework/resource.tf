@@ -7,18 +7,18 @@ resource "datadog_compliance_custom_framework" "example" {
     name = "requirement1"
     controls {
       name     = "control1"
-      rules_id = ["04w-clb-3io", "0eg-j5g-xip"]
+      rules_id = ["def-000-k6h", "def-000-u48"]
     }
     controls {
       name     = "control2"
-      rules_id = ["def-000-11s"]
+      rules_id = ["def-000-k8u"]
     }
   }
   requirements {
     name = "requirement2"
     controls {
       name     = "control3"
-      rules_id = ["def-000-1im"]
+      rules_id = ["def-000-k6h"]
     }
   }
 }
