@@ -1100,6 +1100,7 @@ Optional:
 - `attribute` (String) Name of the attribute to use for an "assert attribute" step.
 - `check` (String) Check type to use for an assertion step. Valid values are `equals`, `notEquals`, `contains`, `notContains`, `startsWith`, `notStartsWith`, `greater`, `lower`, `greaterEquals`, `lowerEquals`, `matchRegex`, `between`, `isEmpty`, `notIsEmpty`.
 - `click_type` (String) Type of click to use for a "click" step.
+- `click_with_javascript` (Boolean) Whether to use `element.click()` for a `click` step. This offers a more reliable way to interact with elements but does not emulate a real user interaction.
 - `code` (String) Javascript code to use for the step.
 - `delay` (Number) Delay between each key stroke for a "type test" step.
 - `element` (String) Element to use for the step, JSON encoded string.
