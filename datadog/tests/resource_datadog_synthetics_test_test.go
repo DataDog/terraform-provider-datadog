@@ -4151,6 +4151,8 @@ func createSyntheticsBrowserTestStepNewBrowserStep(ctx context.Context, accProvi
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "browser_step.6.params.#", "1"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_step.6.params.0.click_with_javascript", "false"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "browser_step.6.params.0.element", MML),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "browser_step.7.name", "click step 2"),
@@ -4158,6 +4160,8 @@ func createSyntheticsBrowserTestStepNewBrowserStep(ctx context.Context, accProvi
 				"datadog_synthetics_test.bar", "browser_step.7.type", "click"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "browser_step.7.params.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_step.7.params.0.click_with_javascript", "true"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "browser_step.7.params.0.element", MML_2),
 			resource.TestCheckResourceAttr(
@@ -4345,6 +4349,7 @@ resource "datadog_synthetics_test" "bar" {
 		name = "click step 2"
 		type = "click"
 		params {
+			click_with_javascript = true
 			element = jsonencode({
 				"multiLocator": {
 					"ab": "/*[local-name()=\"html\"][1]/*[local-name()=\"body\"][1]/*[local-name()=\"nav\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"a\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"img\"][1]",
