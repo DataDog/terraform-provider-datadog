@@ -1268,7 +1268,7 @@ func syntheticsBrowserStepParams() schema.Schema {
 					ValidateFunc: validation.StringInSlice([]string{"contextual", "double", "primary"}, false),
 				},
 				"click_with_javascript": {
-					Description: "Whether to use `element.click()` for a `click` step. This offers a more reliable way to interact with elements but does not emulate a real user interaction.",
+					Description: "Whether to use `element.click()` for a \"click\" step. This is a more reliable way to interact with elements but does not emulate a real user interaction.",
 					Type:        schema.TypeBool,
 					Optional:    true,
 				},
