@@ -284,7 +284,7 @@ func TestCustomFramework_SameConfigNoUpdate(t *testing.T) {
 					name = "control1"
 					rules_id = ["def-000-be9"]
 				}
-			}
+				}
 			requirements  {
 				name = "requirement2"
 				controls {
@@ -611,6 +611,46 @@ func TestCustomFramework_UpdateIfFrameworkExists(t *testing.T) {
 					resource.TestCheckResourceAttr(path, "requirements.0.controls.0.name", "control1"),
 					resource.TestCheckResourceAttr(path, "requirements.0.controls.0.rules_id.#", "1"),
 					resource.TestCheckResourceAttr(path, "requirements.0.controls.0.rules_id.0", "def-000-be9"),
+				),
+			},
+		},
+	})
+}
+
+func TestCustomFramework_RecreateOnImmutableFields(t *testing.T) {
+	handle := "terraform-handle"
+	version := "1.0"
+	newHandle := "terraform-handle-new"
+	newVersion := "2.0"
+
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	path := "datadog_compliance_custom_framework.sample_rules"
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogFrameworkDestroy(ctx, providers.frameworkProvider, path, version, handle),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogCreateFramework(version, handle),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(path, "handle", handle),
+					resource.TestCheckResourceAttr(path, "version", version),
+				),
+			},
+			{
+				Config: testAccCheckDatadogCreateFramework(newVersion, newHandle),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(path, "handle", newHandle),
+					resource.TestCheckResourceAttr(path, "version", newVersion),
+					// Verify old resource is deleted
+					func(s *terraform.State) error {
+						_, httpResp, err := providers.frameworkProvider.DatadogApiInstances.GetSecurityMonitoringApiV2().GetCustomFramework(providers.frameworkProvider.Auth, handle, version)
+						if err == nil || (httpResp != nil && httpResp.StatusCode != 400) {
+							return fmt.Errorf("old framework with handle %s and version %s still exists", handle, version)
+						}
+						return nil
+					},
 				),
 			},
 		},
