@@ -2,11 +2,9 @@ package fwprovider
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"regexp"
 	"strings"
-	"time"
 
 	"github.com/hashicorp/terraform-plugin-framework/path"
 
@@ -84,10 +82,12 @@ func (r *ResourceEvaluationFilter) Schema(_ context.Context, _ resource.SchemaRe
 		Description: "Manage a single resource evaluation filter.",
 		Attributes: map[string]schema.Attribute{
 			"cloud_provider": schema.StringAttribute{
-				Required: true,
+				Required:    true,
+				Description: "The cloud provider of the resource that will be target of the filters.",
 			},
 			"id": schema.StringAttribute{
-				Required: true,
+				Required:    true,
+				Description: "The ID of the resource that will be the target of the filters. Different cloud providers target different resource ids:\n  - `aws`: account id \n  - `gcp`: project id\n  - `azure`: subscription id",
 			},
 			"tags": schema.SetAttribute{
 				Required:    true,
@@ -95,6 +95,7 @@ func (r *ResourceEvaluationFilter) Schema(_ context.Context, _ resource.SchemaRe
 				Validators: []validator.Set{
 					setvalidator.ValueStringsAre(tagFormatValidator),
 				},
+				Description: "Set of tags to filter the misconfiguration detections on. Each entry should follow the format: \"key:\":\"value\".",
 			},
 		},
 	}
@@ -127,7 +128,6 @@ func (r *ResourceEvaluationFilter) Create(ctx context.Context, request resource.
 
 	attributes := resp.Data.GetAttributes()
 	r.UpdateState(ctx, &state, &attributes)
-	time.Sleep(1000 * time.Millisecond)
 	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
@@ -174,8 +174,6 @@ func (r *ResourceEvaluationFilter) Read(ctx context.Context, request resource.Re
 		AccountId:     state.ID.ValueStringPointer(),
 		SkipCache:     &skipCache,
 	}
-	bytes, _ := json.MarshalIndent(params, "", "  ")
-	fmt.Println("DEBUG params for read:", string(bytes))
 	resp, _, err := r.API.GetResourceEvaluationFilters(r.Auth, params)
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving ResourceEvaluationFilter"))
@@ -183,10 +181,7 @@ func (r *ResourceEvaluationFilter) Read(ctx context.Context, request resource.Re
 	}
 
 	attributes := resp.Data.GetAttributes()
-	bytes, _ = json.MarshalIndent(attributes, "", "  ")
-	fmt.Println("DEBUG attributes from API:", string(bytes))
 	r.UpdateState(ctx, &state, &attributes)
-	time.Sleep(1000 * time.Millisecond)
 
 	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
@@ -218,10 +213,7 @@ func (r *ResourceEvaluationFilter) Update(ctx context.Context, request resource.
 	}
 
 	attributes := resp.Data.GetAttributes()
-	bytes, _ := json.MarshalIndent(resp.Data.GetAttributes(), "", "  ")
-	fmt.Println("UPDATEEEEEEEEE response: ", string(bytes))
 	r.UpdateState(ctx, &state, &attributes)
-	time.Sleep(1000 * time.Millisecond)
 	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
@@ -252,9 +244,6 @@ func (r *ResourceEvaluationFilter) Delete(ctx context.Context, request resource.
 		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
 		return
 	}
-	time.Sleep(1000 * time.Millisecond)
-	bytes, _ := json.MarshalIndent(resp.Data.GetAttributes(), "", "  ")
-	fmt.Println("delete response: ", string(bytes))
 }
 
 func (r *ResourceEvaluationFilter) ImportState(
@@ -310,9 +299,6 @@ func (r *ResourceEvaluationFilter) buildUpdateResourceEvaluationFilterRequest(ct
 	data.SetId(string(datadogV2.RESOURCEFILTERREQUESTTYPE_CSM_RESOURCE_FILTER))
 	data.SetType(datadogV2.RESOURCEFILTERREQUESTTYPE_CSM_RESOURCE_FILTER)
 	data.SetAttributes(attributes)
-
-	bytes, _ := json.MarshalIndent(attributes, "", "  ")
-	fmt.Println("building update payload: ", string(bytes))
 
 	req := datadogV2.NewUpdateResourceEvaluationFiltersRequestWithDefaults()
 	req.SetData(*data)

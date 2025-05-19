@@ -5,12 +5,10 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"regexp"
 	"strconv"
 	"testing"
-	"time"
-
-	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
@@ -239,7 +237,6 @@ func testAccCheckResourceEvaluationFilterDestroy(accProvider *fwprovider.Framewo
 					AccountId:     &id,
 					SkipCache:     &skipCache,
 				}
-				time.Sleep(1 * time.Second)
 				response, httpResponse, err := apiInstances.GetSecurityMonitoringApiV2().GetResourceEvaluationFilters(auth, params)
 
 				if err != nil {
