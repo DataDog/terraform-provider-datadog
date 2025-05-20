@@ -13,6 +13,7 @@ import (
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/customdiff"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
@@ -91,7 +92,7 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 		ReadContext:   resourceDatadogServiceLevelObjectiveRead,
 		UpdateContext: resourceDatadogServiceLevelObjectiveUpdate,
 		DeleteContext: resourceDatadogServiceLevelObjectiveDelete,
-		CustomizeDiff: resourceDatadogServiceLevelObjectiveCustomizeDiff,
+		CustomizeDiff: customdiff.All(resourceDatadogServiceLevelObjectiveCustomizeDiff, tagDiff),
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
@@ -116,8 +117,9 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 					// we order them explicitly in the read/create/update methods of this resource and using
 					// TypeSet makes Terraform ignore differences in order when creating a plan
 					Type:        schema.TypeSet,
-					Description: "A list of tags to associate with your service level objective. This can help you categorize and filter service level objectives in the service level objectives page of the UI. Note: it's not currently possible to filter by these tags when querying via the API",
+					Description: "A list of tags to associate with your service level objective. This can help you categorize and filter service level objectives in the service level objectives page of the UI. Note: it's not currently possible to filter by these tags when querying via the API. If default tags are present at provider level, they will be added to this resource.",
 					Optional:    true,
+					Computed:    true,
 					Elem: &schema.Schema{
 						Type: schema.TypeString,
 						StateFunc: func(val any) string {
