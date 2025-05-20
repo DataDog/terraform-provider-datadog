@@ -1,3 +1,18 @@
+## 3.63.0 (May 20, 2025)
+
+### BUGFIXES
+* [datadog_monitors] Fix `datadog_monitors` datasource not failing if no monitors found by @ecdatadog in https://github.com/DataDog/terraform-provider-datadog/pull/2808
+### IMPROVEMENTS
+* [datadog_logs_index] Add delete logs indexes support in terraform by @szakon in https://github.com/DataDog/terraform-provider-datadog/pull/2885
+### FEATURES
+* [datadog_synthetics_test] Add `click_with_javascript` for browser tests by @Drarig29 in https://github.com/DataDog/terraform-provider-datadog/pull/3013
+* [datadog_service_level_objective] Add support for default tag by @Supam in https://github.com/DataDog/terraform-provider-datadog/pull/2972
+
+## New Contributors
+* @szakon made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2885
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.62.0...v3.63.0
+
 ## 3.62.0 (May 14, 2025)
 
 ### FEATURES
