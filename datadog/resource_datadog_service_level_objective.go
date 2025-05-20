@@ -117,7 +117,7 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 					// we order them explicitly in the read/create/update methods of this resource and using
 					// TypeSet makes Terraform ignore differences in order when creating a plan
 					Type:        schema.TypeSet,
-					Description: "A list of tags to associate with your service level objective. This can help you categorize and filter service level objectives in the service level objectives page of the UI. Note: it's not currently possible to filter by these tags when querying via the API. If default tags are present at provider level, they will be added to this resource.",
+					Description: "A list of tags to associate with your service level objective. This can help you categorize and filter service level objectives in the service level objectives page of the UI. **Note**: it's not currently possible to filter by these tags when querying via the API. If default tags are present at the provider level, they will be added to this resource.",
 					Optional:    true,
 					Computed:    true,
 					Elem: &schema.Schema{
