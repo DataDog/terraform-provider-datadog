@@ -5,10 +5,11 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"regexp"
 	"strconv"
 	"testing"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
