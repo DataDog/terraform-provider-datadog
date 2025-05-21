@@ -85,6 +85,7 @@ var Resources = []func() resource.Resource{
 	NewAppBuilderAppResource,
 	NewObservabilitPipelineResource,
 	NewResourceEvaluationFilter,
+	NewSecurityMonitoringRuleJSONResource,
 }
 
 var Datasources = []func() datasource.DataSource{
@@ -223,13 +224,13 @@ func (p *FrameworkProvider) Schema(_ context.Context, _ provider.SchemaRequest, 
 				Validators: []validator.List{
 					listvalidator.SizeAtMost(1),
 				},
-				Description: "[Experimental - Logs Pipelines, Monitors and Security Monitoring Rules only] Configuration block containing settings to apply default resource tags across all resources.",
+				Description: "[Experimental - Logs Pipelines, Monitors Security Monitoring Rules, and Service Level Objectives only] Configuration block containing settings to apply default resource tags across all resources.",
 				NestedObject: schema.NestedBlockObject{
 					Attributes: map[string]schema.Attribute{
 						"tags": schema.MapAttribute{
 							ElementType: types.StringType,
 							Optional:    true,
-							Description: "[Experimental - Logs Pipelines, Monitors and Security Monitoring Rules only] Resource tags to be applied by default across all resources.",
+							Description: "[Experimental - Logs Pipelines, Monitors Security Monitoring Rules, and Service Level Objectives only] Resource tags to be applied by default across all resources.",
 						},
 					},
 				},
@@ -515,7 +516,7 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 		}
 		valid, ok := resp.GetValidOk()
 		if (ok && !*valid) || !ok {
-			err := errors.New(`Invalid or missing credentials provided to the Datadog Provider. Please confirm your API and APP keys are valid and are for the correct region, see https://www.terraform.io/docs/providers/datadog/ for more information on providing credentials for the Datadog CloudProvider`)
+			err := errors.New(`Invalid or missing credentials provided to the Datadog Provider. Please confirm your API and APP keys are valid and are for the correct region, see https://www.terraform.io/docs/providers/datadog/ for more information on providing credentials for the Datadog Provider`)
 			diags.AddError("[ERROR] Datadog Client validation error", err.Error())
 			return diags
 		}

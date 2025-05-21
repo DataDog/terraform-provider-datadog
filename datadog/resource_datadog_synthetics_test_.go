@@ -100,7 +100,7 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 					},
 				},
 				"locations": {
-					Description: "Array of locations used to run the test. Refer to [the Datadog Synthetics location data source](https://registry.terraform.io/providers/DataDog/datadog/latest/docs/data-sources/synthetics_locations) to retrieve the list of locations.",
+					Description: "Array of locations used to run the test. Refer to [the Datadog Synthetics location data source](https://registry.terraform.io/providers/DataDog/datadog/latest/docs/data-sources/synthetics_locations) to retrieve the list of locations or find the possible values listed in [this API response](https://app.datadoghq.com/api/v1/synthetics/locations?only_public=true).",
 					Type:        schema.TypeSet,
 					Required:    true,
 					Elem: &schema.Schema{
@@ -1266,6 +1266,11 @@ func syntheticsBrowserStepParams() schema.Schema {
 					Type:         schema.TypeString,
 					Optional:     true,
 					ValidateFunc: validation.StringInSlice([]string{"contextual", "double", "primary"}, false),
+				},
+				"click_with_javascript": {
+					Description: "Whether to use `element.click()` for a \"click\" step. This is a more reliable way to interact with elements but does not emulate a real user interaction.",
+					Type:        schema.TypeBool,
+					Optional:    true,
 				},
 				"code": {
 					Description: "Javascript code to use for the step.",
@@ -4774,6 +4779,12 @@ func convertStepParamsKey(key string) string {
 	case "clickType":
 		return "click_type"
 
+	case "click_with_javascript":
+		return "clickWithJavascript"
+
+	case "clickWithJavascript":
+		return "click_with_javascript"
+
 	case "playing_tab_id":
 		return "playingTabId"
 
@@ -5015,7 +5026,7 @@ func getParamsKeysForStepType(stepType datadogV1.SyntheticsStepType) []string {
 		return []string{"requests"}
 
 	case datadogV1.SYNTHETICSSTEPTYPE_CLICK:
-		return []string{"click_type", "element"}
+		return []string{"click_type", "click_with_javascript", "element"}
 
 	case datadogV1.SYNTHETICSSTEPTYPE_EXTRACT_FROM_JAVASCRIPT:
 		return []string{"code", "element", "variable"}

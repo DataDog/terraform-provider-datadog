@@ -3,6 +3,7 @@
 #
 # Visit https://goreleaser.com for documentation on how to customize this
 # behavior.
+version: 2
 before:
     hooks:
         - go mod tidy
@@ -29,7 +30,7 @@ builds:
             goarch: "386"
       binary: "{{ .ProjectName }}_v{{ .Version }}"
 archives:
-    - format: zip
+    - formats: [ 'zip' ]
       name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
 checksum:
     name_template: "{{ .ProjectName }}_{{ .Version }}_SHA256SUMS"
