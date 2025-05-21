@@ -211,6 +211,8 @@ func (r *complianceCustomFrameworkResource) Update(ctx context.Context, request 
 		return
 	}
 
+	state.ID = types.StringValue(state.Handle.ValueString() + "-" + state.Version.ValueString())
+
 	_, _, err := r.Api.UpdateCustomFramework(r.Auth, state.Handle.ValueString(), state.Version.ValueString(), *buildUpdateFrameworkRequest(state))
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error updating compliance custom framework"))
@@ -243,10 +245,6 @@ func (r *complianceCustomFrameworkResource) ModifyPlan(ctx context.Context, req 
 		return
 	}
 
-	if len(plan.Requirements) != len(state.Requirements) {
-		return
-	}
-
 	planReqMap := make(map[string]complianceCustomFrameworkRequirementsModel)
 	stateReqMap := make(map[string]complianceCustomFrameworkRequirementsModel)
 
@@ -257,58 +255,58 @@ func (r *complianceCustomFrameworkResource) ModifyPlan(ctx context.Context, req 
 		stateReqMap[req.Name.ValueString()] = req
 	}
 
-	hasChanges := false
-	for name, planReq := range planReqMap {
-		stateReq, exists := stateReqMap[name]
-		if !exists {
-			hasChanges = true
-			break
-		}
+	sortedRequirements := make([]complianceCustomFrameworkRequirementsModel, 0, len(plan.Requirements))
 
-		if len(planReq.Controls) != len(stateReq.Controls) {
-			hasChanges = true
-			break
-		}
+	for _, stateReq := range state.Requirements {
+		stateReqName := stateReq.Name.ValueString()
+		if planReq, exists := planReqMap[stateReqName]; exists {
+			planCtrlMap := make(map[string]complianceCustomFrameworkControlsModel)
+			stateCtrlMap := make(map[string]complianceCustomFrameworkControlsModel)
 
-		planCtrlMap := make(map[string]complianceCustomFrameworkControlsModel)
-		stateCtrlMap := make(map[string]complianceCustomFrameworkControlsModel)
-
-		for _, ctrl := range planReq.Controls {
-			planCtrlMap[ctrl.Name.ValueString()] = ctrl
-		}
-		for _, ctrl := range stateReq.Controls {
-			stateCtrlMap[ctrl.Name.ValueString()] = ctrl
-		}
-
-		for ctrlName, planCtrl := range planCtrlMap {
-			stateCtrl, exists := stateCtrlMap[ctrlName]
-			if !exists {
-				hasChanges = true
-				break
+			for _, ctrl := range planReq.Controls {
+				planCtrlMap[ctrl.Name.ValueString()] = ctrl
+			}
+			for _, ctrl := range stateReq.Controls {
+				stateCtrlMap[ctrl.Name.ValueString()] = ctrl
 			}
 
-			if !planCtrl.RulesID.Equal(stateCtrl.RulesID) {
-				hasChanges = true
-				break
+			sortedControls := make([]complianceCustomFrameworkControlsModel, 0, len(planReq.Controls))
+
+			for _, stateCtrl := range stateReq.Controls {
+				stateCtrlName := stateCtrl.Name.ValueString()
+				if planCtrl, exists := planCtrlMap[stateCtrlName]; exists {
+					sortedControls = append(sortedControls, planCtrl)
+					delete(planCtrlMap, stateCtrlName)
+				}
 			}
-		}
-		if hasChanges {
-			break
+
+			for _, planCtrl := range planCtrlMap {
+				sortedControls = append(sortedControls, planCtrl)
+			}
+			sortedReq := complianceCustomFrameworkRequirementsModel{
+				Name:     planReq.Name,
+				Controls: sortedControls,
+			}
+			sortedRequirements = append(sortedRequirements, sortedReq)
+			delete(planReqMap, stateReqName)
 		}
 	}
 
-	if !hasChanges {
-		newPlan := complianceCustomFrameworkModel{
-			ID:           state.ID,
-			Version:      plan.Version,
-			Handle:       plan.Handle,
-			Name:         plan.Name,
-			IconURL:      plan.IconURL,
-			Requirements: state.Requirements,
-		}
-		diags = resp.Plan.Set(ctx, &newPlan)
-		resp.Diagnostics.Append(diags...)
+	for _, planReq := range planReqMap {
+		sortedRequirements = append(sortedRequirements, planReq)
 	}
+
+	newPlan := complianceCustomFrameworkModel{
+		ID:           state.ID,
+		Version:      plan.Version,
+		Handle:       plan.Handle,
+		Name:         plan.Name,
+		IconURL:      plan.IconURL,
+		Requirements: sortedRequirements,
+	}
+
+	diags = resp.Plan.Set(ctx, &newPlan)
+	resp.Diagnostics.Append(diags...)
 }
 
 func readStateFromDatabase(data datadogV2.GetCustomFrameworkResponse, handle string, version string, currentState *complianceCustomFrameworkModel) complianceCustomFrameworkModel {
@@ -321,70 +319,84 @@ func readStateFromDatabase(data datadogV2.GetCustomFrameworkResponse, handle str
 		state.IconURL = types.StringValue(*data.GetData().Attributes.IconUrl)
 	}
 
-	reqMap := make(map[string]datadogV2.CustomFrameworkRequirement)
-	ctrlMap := make(map[string]map[string]datadogV2.CustomFrameworkControl)
+	apiReqMap := make(map[string]datadogV2.CustomFrameworkRequirement)
+	apiCtrlMap := make(map[string]map[string]datadogV2.CustomFrameworkControl)
 
 	for _, req := range data.GetData().Attributes.Requirements {
-		reqMap[req.GetName()] = req
-		ctrlMap[req.GetName()] = make(map[string]datadogV2.CustomFrameworkControl)
+		apiReqMap[req.GetName()] = req
+		apiCtrlMap[req.GetName()] = make(map[string]datadogV2.CustomFrameworkControl)
 		for _, ctrl := range req.GetControls() {
-			ctrlMap[req.GetName()][ctrl.GetName()] = ctrl
+			apiCtrlMap[req.GetName()][ctrl.GetName()] = ctrl
 		}
 	}
+
+	sortedRequirements := make([]complianceCustomFrameworkRequirementsModel, 0, len(data.GetData().Attributes.Requirements))
 
 	if currentState != nil {
-		hasChanges := false
-		stateReqMap := make(map[string]bool)
-		stateCtrlMap := make(map[string]map[string]bool)
+		for _, currentReq := range currentState.Requirements {
+			currentReqName := currentReq.Name.ValueString()
+			if apiReq, exists := apiReqMap[currentReqName]; exists {
+				sortedControls := make([]complianceCustomFrameworkControlsModel, 0, len(apiReq.GetControls()))
 
-		for _, req := range currentState.Requirements {
-			reqName := req.Name.ValueString()
-			stateReqMap[reqName] = true
-			stateCtrlMap[reqName] = make(map[string]bool)
-			for _, ctrl := range req.Controls {
-				stateCtrlMap[reqName][ctrl.Name.ValueString()] = true
-			}
-		}
+				for _, currentCtrl := range currentReq.Controls {
+					currentCtrlName := currentCtrl.Name.ValueString()
+					if apiCtrl, exists := apiCtrlMap[currentReqName][currentCtrlName]; exists {
+						rulesID := make([]attr.Value, len(apiCtrl.GetRulesId()))
+						for k, v := range apiCtrl.GetRulesId() {
+							rulesID[k] = types.StringValue(v)
+						}
 
-		for reqName := range reqMap {
-			if !stateReqMap[reqName] {
-				hasChanges = true
-				break
-			}
-			for ctrlName := range ctrlMap[reqName] {
-				if !stateCtrlMap[reqName][ctrlName] {
-					hasChanges = true
-					break
+						sortedControls = append(sortedControls, complianceCustomFrameworkControlsModel{
+							Name:    types.StringValue(apiCtrl.GetName()),
+							RulesID: types.SetValueMust(types.StringType, rulesID),
+						})
+						delete(apiCtrlMap[currentReqName], currentCtrlName)
+					}
 				}
-			}
-		}
 
-		if !hasChanges {
-			state.Requirements = currentState.Requirements
-			return state
+				for _, apiCtrl := range apiCtrlMap[currentReqName] {
+					rulesID := make([]attr.Value, len(apiCtrl.GetRulesId()))
+					for k, v := range apiCtrl.GetRulesId() {
+						rulesID[k] = types.StringValue(v)
+					}
+
+					sortedControls = append(sortedControls, complianceCustomFrameworkControlsModel{
+						Name:    types.StringValue(apiCtrl.GetName()),
+						RulesID: types.SetValueMust(types.StringType, rulesID),
+					})
+				}
+
+				sortedReq := complianceCustomFrameworkRequirementsModel{
+					Name:     types.StringValue(apiReq.GetName()),
+					Controls: sortedControls,
+				}
+				sortedRequirements = append(sortedRequirements, sortedReq)
+				delete(apiReqMap, currentReqName)
+			}
 		}
 	}
 
-	state.Requirements = make([]complianceCustomFrameworkRequirementsModel, len(data.GetData().Attributes.Requirements))
-	for i, req := range data.GetData().Attributes.Requirements {
-		state.Requirements[i] = complianceCustomFrameworkRequirementsModel{
-			Name:     types.StringValue(req.GetName()),
-			Controls: make([]complianceCustomFrameworkControlsModel, len(req.GetControls())),
-		}
-
-		for j, ctrl := range req.GetControls() {
-			rulesID := make([]attr.Value, len(ctrl.GetRulesId()))
-			for k, v := range ctrl.GetRulesId() {
+	for _, apiReq := range apiReqMap {
+		controls := make([]complianceCustomFrameworkControlsModel, len(apiReq.GetControls()))
+		for j, apiCtrl := range apiReq.GetControls() {
+			rulesID := make([]attr.Value, len(apiCtrl.GetRulesId()))
+			for k, v := range apiCtrl.GetRulesId() {
 				rulesID[k] = types.StringValue(v)
 			}
 
-			state.Requirements[i].Controls[j] = complianceCustomFrameworkControlsModel{
-				Name:    types.StringValue(ctrl.GetName()),
+			controls[j] = complianceCustomFrameworkControlsModel{
+				Name:    types.StringValue(apiCtrl.GetName()),
 				RulesID: types.SetValueMust(types.StringType, rulesID),
 			}
 		}
+
+		sortedRequirements = append(sortedRequirements, complianceCustomFrameworkRequirementsModel{
+			Name:     types.StringValue(apiReq.GetName()),
+			Controls: controls,
+		})
 	}
 
+	state.Requirements = sortedRequirements
 	return state
 }
 
