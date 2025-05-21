@@ -18,7 +18,7 @@ func (v controlNameValidator) MarkdownDescription(ctx context.Context) string {
 	return v.Description(ctx)
 }
 
-func (v controlNameValidator) ValidateSet(ctx context.Context, req validator.SetRequest, resp *validator.SetResponse) {
+func (v controlNameValidator) ValidateList(ctx context.Context, req validator.ListRequest, resp *validator.ListResponse) {
 	if req.ConfigValue.IsNull() || req.ConfigValue.IsUnknown() {
 		return
 	}
@@ -43,6 +43,6 @@ func (v controlNameValidator) ValidateSet(ctx context.Context, req validator.Set
 	}
 }
 
-func ControlNameValidator() validator.Set {
+func ControlNameValidator() validator.List {
 	return &controlNameValidator{}
 }

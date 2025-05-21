@@ -18,7 +18,7 @@ func (v requirementNameValidator) MarkdownDescription(ctx context.Context) strin
 	return v.Description(ctx)
 }
 
-func (v requirementNameValidator) ValidateSet(ctx context.Context, req validator.SetRequest, resp *validator.SetResponse) {
+func (v requirementNameValidator) ValidateList(ctx context.Context, req validator.ListRequest, resp *validator.ListResponse) {
 	if req.ConfigValue.IsNull() || req.ConfigValue.IsUnknown() {
 		return
 	}
@@ -43,6 +43,6 @@ func (v requirementNameValidator) ValidateSet(ctx context.Context, req validator
 	}
 }
 
-func RequirementNameValidator() validator.Set {
+func RequirementNameValidator() validator.List {
 	return &requirementNameValidator{}
 }
