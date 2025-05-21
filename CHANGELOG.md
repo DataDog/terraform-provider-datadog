@@ -1,3 +1,32 @@
+## 3.63.0 (May 20, 2025)
+
+### BUGFIXES
+* [datadog_monitors] Fix `datadog_monitors` datasource not failing if no monitors found by @ecdatadog in https://github.com/DataDog/terraform-provider-datadog/pull/2808
+### IMPROVEMENTS
+* [datadog_logs_index] Add delete logs indexes support in terraform by @szakon in https://github.com/DataDog/terraform-provider-datadog/pull/2885
+### FEATURES
+* [datadog_synthetics_test] Add `click_with_javascript` for browser tests by @Drarig29 in https://github.com/DataDog/terraform-provider-datadog/pull/3013
+* [datadog_service_level_objective] Add support for default tag by @Supam in https://github.com/DataDog/terraform-provider-datadog/pull/2972
+
+## New Contributors
+* @szakon made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2885
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.62.0...v3.63.0
+
+## 3.62.0 (May 14, 2025)
+
+### FEATURES
+* [datadog_observability_pipeline] Added the remaining Observability Pipelines components by @vladimir-dd in https://github.com/DataDog/terraform-provider-datadog/pull/2988
+* [datadog_dashboards] [datadog_powerpacks] add custom_links support to treemap widgets by @dashashifrina in https://github.com/DataDog/terraform-provider-datadog/pull/2923
+* [datadog_integration_gcp_sts] Add IsPerProjectQuotaEnabled field by @tedkahwaji in https://github.com/DataDog/terraform-provider-datadog/pull/2999
+* [datadog_security_monitoring_rule_json] Add security_monitoring_rule_json resource by @sabraham2 in https://github.com/DataDog/terraform-provider-datadog/pull/2985
+
+## New Contributors
+* @sabraham2 made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2985
+* @bndbsh made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3007
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.61.0...v3.62.0
+
 ## 3.61.0 (April 30, 2025)
 
 ### BUGFIXES

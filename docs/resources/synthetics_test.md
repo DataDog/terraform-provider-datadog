@@ -733,7 +733,7 @@ resource "datadog_synthetics_test" "test_grpc_health" {
 
 ### Required
 
-- `locations` (Set of String) Array of locations used to run the test. Refer to [the Datadog Synthetics location data source](https://registry.terraform.io/providers/DataDog/datadog/latest/docs/data-sources/synthetics_locations) to retrieve the list of locations.
+- `locations` (Set of String) Array of locations used to run the test. Refer to [the Datadog Synthetics location data source](https://registry.terraform.io/providers/DataDog/datadog/latest/docs/data-sources/synthetics_locations) to retrieve the list of locations or find the possible values listed in [this API response](https://app.datadoghq.com/api/v1/synthetics/locations?only_public=true).
 - `name` (String) Name of Datadog synthetics test.
 - `status` (String) Define whether you want to start (`live`) or pause (`paused`) a Synthetic test. Valid values are `live`, `paused`.
 - `type` (String) Synthetics test type. Valid values are `api`, `browser`, `mobile`.
@@ -1100,6 +1100,7 @@ Optional:
 - `attribute` (String) Name of the attribute to use for an "assert attribute" step.
 - `check` (String) Check type to use for an assertion step. Valid values are `equals`, `notEquals`, `contains`, `notContains`, `startsWith`, `notStartsWith`, `greater`, `lower`, `greaterEquals`, `lowerEquals`, `matchRegex`, `between`, `isEmpty`, `notIsEmpty`.
 - `click_type` (String) Type of click to use for a "click" step.
+- `click_with_javascript` (Boolean) Whether to use `element.click()` for a "click" step. This is a more reliable way to interact with elements but does not emulate a real user interaction.
 - `code` (String) Javascript code to use for the step.
 - `delay` (Number) Delay between each key stroke for a "type test" step.
 - `element` (String) Element to use for the step, JSON encoded string.
