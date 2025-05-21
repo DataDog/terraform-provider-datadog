@@ -277,7 +277,7 @@ func resourceDatadogMonitor() *schema.Resource {
 					Description:   "A boolean indicating whether changes to this monitor should be restricted to the creator or admins. Defaults to `false`.",
 					Type:          schema.TypeBool,
 					Optional:      true,
-					Deprecated:    "Use `datadog_restriction_policy` resource to manage monitor permission instead.",
+					Deprecated:    "Use `datadog_restriction_policy` resource to manage monitor permissions instead.",
 					ConflictsWith: []string{"restricted_roles"},
 					DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
 						// if restricted_roles is defined, ignore locked
@@ -288,11 +288,11 @@ func resourceDatadogMonitor() *schema.Resource {
 					},
 				},
 				"restricted_roles": {
-					Description:   "A list of unique role identifiers to define which roles are allowed to edit the monitor. Editing a monitor includes any updates to the monitor configuration, monitor deletion, and muting of the monitor for any amount of time. Roles unique identifiers can be pulled from the [Roles API](https://docs.datadoghq.com/api/latest/roles/#list-roles) in the `data.id` field. If this attribute is not configured, Terraform will ignore any restricted roles changes in this resource.",
+					Description:   "A list of unique role identifiers to define which roles are allowed to edit the monitor. Editing a monitor includes any updates to the monitor configuration, monitor deletion, and muting of the monitor for any amount of time. Roles unique identifiers can be pulled from the [Roles API](https://docs.datadoghq.com/api/latest/roles/#list-roles) in the `data.id` field. If `restricted_roles` is not configured, Terraform ignores any restricted roles changes in this resource.",
 					Type:          schema.TypeSet,
 					Optional:      true,
 					Computed:      true,
-					Deprecated:    "The `restricted_roles` argument is deprecated. Use `datadog_restriction_policy` resource to manage monitor permission instead.",
+					Deprecated:    "The `restricted_roles` argument is deprecated. Use `datadog_restriction_policy` resource to manage monitor permissions instead.",
 					Elem:          &schema.Schema{Type: schema.TypeString},
 					ConflictsWith: []string{"locked"},
 				},
