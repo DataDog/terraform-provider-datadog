@@ -36,7 +36,7 @@ interactions:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 541.942292ms
+        duration: 526.824125ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -53,7 +53,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/cloud_security_management/resource_filters?account_id=123456789&cloud_provider=aws
+        url: https://api.datadoghq.com/api/v2/cloud_security_management/resource_filters?account_id=123456789&cloud_provider=aws&skip_cache=true
         method: GET
       response:
         proto: HTTP/1.1
@@ -63,13 +63,13 @@ interactions:
         trailer: {}
         content_length: 175
         uncompressed: false
-        body: '{"data":{"id":"58803539-0869-496a-b6f4-6770f9238b1b","type":"csm_resource_filter","attributes":{"cloud_provider":{"aws":{"123456789":["tag1:val1","tag2:val2","tag3:val3"]}}}}}'
+        body: '{"data":{"id":"9035e680-ab17-4064-a574-816aa83a4492","type":"csm_resource_filter","attributes":{"cloud_provider":{"aws":{"123456789":["tag1:val1","tag2:val2","tag3:val3"]}}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 158.787208ms
+        duration: 157.36075ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -86,7 +86,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/cloud_security_management/resource_filters?account_id=123456789&cloud_provider=aws
+        url: https://api.datadoghq.com/api/v2/cloud_security_management/resource_filters?account_id=123456789&cloud_provider=aws&skip_cache=true
         method: GET
       response:
         proto: HTTP/1.1
@@ -94,15 +94,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 118
+        content_length: 175
         uncompressed: false
-        body: '{"data":{"id":"3898bc60-1e96-4a1e-99f9-d2156a49bafd","type":"csm_resource_filter","attributes":{"cloud_provider":{}}}}'
+        body: '{"data":{"id":"b6634a2f-8442-4ec3-8124-b910dc84ca1b","type":"csm_resource_filter","attributes":{"cloud_provider":{"aws":{"123456789":["tag1:val1","tag2:val2","tag3:val3"]}}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 159.110583ms
+        duration: 152.993ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -119,7 +119,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/cloud_security_management/resource_filters?account_id=123456789&cloud_provider=aws
+        url: https://api.datadoghq.com/api/v2/cloud_security_management/resource_filters?account_id=123456789&cloud_provider=aws&skip_cache=true
         method: GET
       response:
         proto: HTTP/1.1
@@ -129,13 +129,13 @@ interactions:
         trailer: {}
         content_length: 175
         uncompressed: false
-        body: '{"data":{"id":"6f317b4f-ee80-4292-afef-9e73108ff04e","type":"csm_resource_filter","attributes":{"cloud_provider":{"aws":{"123456789":["tag1:val1","tag2:val2","tag3:val3"]}}}}}'
+        body: '{"data":{"id":"a5fe11a0-55fc-4924-96a6-1b63aa54f35b","type":"csm_resource_filter","attributes":{"cloud_provider":{"aws":{"123456789":["tag1:val1","tag2:val2","tag3:val3"]}}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 159.659125ms
+        duration: 147.532875ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -171,7 +171,7 @@ interactions:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 179.546166ms
+        duration: 160.320375ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -188,7 +188,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/cloud_security_management/resource_filters?account_id=123456789&cloud_provider=aws
+        url: https://api.datadoghq.com/api/v2/cloud_security_management/resource_filters?account_id=123456789&cloud_provider=aws&skip_cache=true
         method: GET
       response:
         proto: HTTP/1.1
@@ -196,12 +196,12 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 118
+        content_length: 140
         uncompressed: false
-        body: '{"data":{"id":"f31f3495-67d8-423a-8d1b-33b820dc56a7","type":"csm_resource_filter","attributes":{"cloud_provider":{}}}}'
+        body: '{"data":{"id":"50d57174-7cd0-498d-a061-93b1e6f3a3fc","type":"csm_resource_filter","attributes":{"cloud_provider":{"aws":{"123456789":[]}}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 152.485417ms
+        duration: 155.017917ms

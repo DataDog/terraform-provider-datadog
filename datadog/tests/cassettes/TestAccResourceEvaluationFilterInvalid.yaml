@@ -36,4 +36,4 @@ interactions:
                 - application/vnd.api+json
         status: 400 Bad Request
         code: 400
-        duration: 150.158083ms
+        duration: 126.587083ms
