@@ -103,7 +103,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/data_source_datadog_user_test":                                    "users",
 	"tests/data_source_datadog_users_test":                                   "users",
 	"tests/data_source_datadog_workflow_automation_test":                     "workflow_automation",
-	"tests/data_source_cost_budget_test":                                     "cost-budget",
+	"tests/data_source_datadog_cost_budget_test":                             "cost-budget",
 	"tests/import_datadog_downtime_test":                                     "downtimes",
 	"tests/import_datadog_integration_pagerduty_test":                        "integration-pagerduty",
 	"tests/import_datadog_logs_pipeline_test":                                "logs-pipelines",
