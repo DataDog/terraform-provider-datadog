@@ -42,130 +42,6 @@ type complianceCustomFrameworkControlsModel struct {
 	RulesID types.Set    `tfsdk:"rules_id"`
 }
 
-// Custom plan modifier to handle list ordering consistently
-type listOrderPlanModifier struct{}
-
-func (m listOrderPlanModifier) Description(ctx context.Context) string {
-	return "Preserves the order of list elements as specified in the configuration"
-}
-
-func (m listOrderPlanModifier) MarkdownDescription(ctx context.Context) string {
-	return "Preserves the order of list elements as specified in the configuration"
-}
-
-func (m listOrderPlanModifier) PlanModifyList(ctx context.Context, req planmodifier.ListRequest, resp *planmodifier.ListResponse) {
-	// If the plan is null, we don't need to do anything
-	if req.PlanValue.IsNull() {
-		return
-	}
-
-	// If the state is null, we don't need to do anything
-	if req.StateValue.IsNull() {
-		return
-	}
-
-	// Get the config value
-	configValue := req.ConfigValue
-
-	// If the config is null, we don't need to do anything
-	if configValue.IsNull() {
-		return
-	}
-
-	// Get the state value
-	stateValue := req.StateValue
-
-	// Check if the elements are the same (ignoring order)
-	configElems := configValue.Elements()
-	stateElems := stateValue.Elements()
-
-	// If lengths are different, there's a real change
-	if len(configElems) != len(stateElems) {
-		resp.PlanValue = configValue
-		return
-	}
-
-	// Create maps to track elements by their name
-	configMap := make(map[string]attr.Value)
-	stateMap := make(map[string]attr.Value)
-
-	// Extract names from config elements
-	for _, elem := range configElems {
-		if obj, ok := elem.(types.Object); ok {
-			if name, ok := obj.Attributes()["name"]; ok {
-				if strName, ok := name.(types.String); ok {
-					configMap[strName.ValueString()] = elem
-				}
-			}
-		}
-	}
-
-	// Extract names from state elements
-	for _, elem := range stateElems {
-		if obj, ok := elem.(types.Object); ok {
-			if name, ok := obj.Attributes()["name"]; ok {
-				if strName, ok := name.(types.String); ok {
-					stateMap[strName.ValueString()] = elem
-				}
-			}
-		}
-	}
-
-	// Check if all elements exist in both maps
-	hasChanges := false
-	for name, configElem := range configMap {
-		stateElem, exists := stateMap[name]
-		if !exists {
-			hasChanges = true
-			break
-		}
-		// Compare the elements (excluding order of nested lists)
-		if !compareElements(configElem, stateElem) {
-			hasChanges = true
-			break
-		}
-	}
-
-	// If there are real changes, use the config value
-	// Otherwise, use the state value to preserve existing order
-	if hasChanges {
-		resp.PlanValue = configValue
-	} else {
-		resp.PlanValue = stateValue
-	}
-}
-
-// Helper function to compare elements while ignoring order of nested lists
-func compareElements(config, state attr.Value) bool {
-	configObj, ok1 := config.(types.Object)
-	stateObj, ok2 := state.(types.Object)
-	if !ok1 || !ok2 {
-		return config.Equal(state)
-	}
-
-	configAttrs := configObj.Attributes()
-	stateAttrs := stateObj.Attributes()
-
-	// Compare all attributes except nested lists
-	for name, configAttr := range configAttrs {
-		stateAttr, exists := stateAttrs[name]
-		if !exists {
-			return false
-		}
-
-		// Skip comparison of nested lists (they're handled by their own plan modifier)
-		if _, ok := configAttr.(types.List); ok {
-			continue
-		}
-
-		if !configAttr.Equal(stateAttr) {
-			return false
-		}
-	}
-
-	return true
-}
-
 func NewComplianceCustomFrameworkResource() resource.Resource {
 	return &complianceCustomFrameworkResource{}
 }
@@ -217,9 +93,6 @@ func (r *complianceCustomFrameworkResource) Schema(_ context.Context, _ resource
 		Blocks: map[string]schema.Block{
 			"requirements": schema.ListNestedBlock{
 				Description: "The requirements of the framework.",
-				PlanModifiers: []planmodifier.List{
-					listOrderPlanModifier{},
-				},
 				NestedObject: schema.NestedBlockObject{
 					Attributes: map[string]schema.Attribute{
 						"name": schema.StringAttribute{
@@ -233,9 +106,6 @@ func (r *complianceCustomFrameworkResource) Schema(_ context.Context, _ resource
 					Blocks: map[string]schema.Block{
 						"controls": schema.ListNestedBlock{
 							Description: "The controls of the requirement.",
-							PlanModifiers: []planmodifier.List{
-								listOrderPlanModifier{},
-							},
 							NestedObject: schema.NestedBlockObject{
 								Attributes: map[string]schema.Attribute{
 									"name": schema.StringAttribute{
@@ -351,14 +221,94 @@ func (r *complianceCustomFrameworkResource) Update(ctx context.Context, request 
 }
 
 func (r *complianceCustomFrameworkResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
-	// If the plan is null, we don't need to do anything
 	if req.Plan.Raw.IsNull() {
 		return
 	}
 
-	// Let the plan modifiers handle the ordering
-	// They will be called automatically for the requirements and controls lists
-	return
+	if req.State.Raw.IsNull() {
+		return
+	}
+
+	var plan, state complianceCustomFrameworkModel
+
+	diags := req.Plan.Get(ctx, &plan)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	diags = req.State.Get(ctx, &state)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	if len(plan.Requirements) != len(state.Requirements) {
+		return
+	}
+
+	planReqMap := make(map[string]complianceCustomFrameworkRequirementsModel)
+	stateReqMap := make(map[string]complianceCustomFrameworkRequirementsModel)
+
+	for _, req := range plan.Requirements {
+		planReqMap[req.Name.ValueString()] = req
+	}
+	for _, req := range state.Requirements {
+		stateReqMap[req.Name.ValueString()] = req
+	}
+
+	hasChanges := false
+	for name, planReq := range planReqMap {
+		stateReq, exists := stateReqMap[name]
+		if !exists {
+			hasChanges = true
+			break
+		}
+
+		if len(planReq.Controls) != len(stateReq.Controls) {
+			hasChanges = true
+			break
+		}
+
+		planCtrlMap := make(map[string]complianceCustomFrameworkControlsModel)
+		stateCtrlMap := make(map[string]complianceCustomFrameworkControlsModel)
+
+		for _, ctrl := range planReq.Controls {
+			planCtrlMap[ctrl.Name.ValueString()] = ctrl
+		}
+		for _, ctrl := range stateReq.Controls {
+			stateCtrlMap[ctrl.Name.ValueString()] = ctrl
+		}
+
+		for ctrlName, planCtrl := range planCtrlMap {
+			stateCtrl, exists := stateCtrlMap[ctrlName]
+			if !exists {
+				hasChanges = true
+				break
+			}
+
+			if !planCtrl.RulesID.Equal(stateCtrl.RulesID) {
+				hasChanges = true
+				break
+			}
+		}
+		if hasChanges {
+			break
+		}
+	}
+
+	if !hasChanges {
+		newPlan := complianceCustomFrameworkModel{
+			ID:           state.ID,
+			Version:      plan.Version,
+			Handle:       plan.Handle,
+			Name:         plan.Name,
+			IconURL:      plan.IconURL,
+			Requirements: state.Requirements,
+		}
+		diags = resp.Plan.Set(ctx, &newPlan)
+		resp.Diagnostics.Append(diags...)
+	}
 }
 
 func readStateFromDatabase(data datadogV2.GetCustomFrameworkResponse, handle string, version string, currentState *complianceCustomFrameworkModel) complianceCustomFrameworkModel {
@@ -371,11 +321,9 @@ func readStateFromDatabase(data datadogV2.GetCustomFrameworkResponse, handle str
 		state.IconURL = types.StringValue(*data.GetData().Attributes.IconUrl)
 	}
 
-	// Create maps to track requirements and controls by name
 	reqMap := make(map[string]datadogV2.CustomFrameworkRequirement)
 	ctrlMap := make(map[string]map[string]datadogV2.CustomFrameworkControl)
 
-	// Build maps of requirements and controls from API response
 	for _, req := range data.GetData().Attributes.Requirements {
 		reqMap[req.GetName()] = req
 		ctrlMap[req.GetName()] = make(map[string]datadogV2.CustomFrameworkControl)
@@ -384,14 +332,11 @@ func readStateFromDatabase(data datadogV2.GetCustomFrameworkResponse, handle str
 		}
 	}
 
-	// Check if API response has same elements as current state
 	if currentState != nil {
-		// Check if all requirements and controls match
 		hasChanges := false
 		stateReqMap := make(map[string]bool)
 		stateCtrlMap := make(map[string]map[string]bool)
 
-		// Build maps of current state requirements and controls
 		for _, req := range currentState.Requirements {
 			reqName := req.Name.ValueString()
 			stateReqMap[reqName] = true
@@ -401,7 +346,6 @@ func readStateFromDatabase(data datadogV2.GetCustomFrameworkResponse, handle str
 			}
 		}
 
-		// Check if API response matches current state
 		for reqName := range reqMap {
 			if !stateReqMap[reqName] {
 				hasChanges = true
@@ -415,14 +359,12 @@ func readStateFromDatabase(data datadogV2.GetCustomFrameworkResponse, handle str
 			}
 		}
 
-		// If no changes, use current state
 		if !hasChanges {
 			state.Requirements = currentState.Requirements
 			return state
 		}
 	}
 
-	// If there are changes or no current state, use API order
 	state.Requirements = make([]complianceCustomFrameworkRequirementsModel, len(data.GetData().Attributes.Requirements))
 	for i, req := range data.GetData().Attributes.Requirements {
 		state.Requirements[i] = complianceCustomFrameworkRequirementsModel{
