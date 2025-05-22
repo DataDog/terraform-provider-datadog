@@ -1,1 +1,0 @@
-terraform import datadog_custom_framework.example3 "terraform-created-framework-handle-1.0.0"
