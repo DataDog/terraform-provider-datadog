@@ -2,6 +2,7 @@ package fwprovider
 
 import (
 	"context"
+	"fmt"
 	"regexp"
 	"strings"
 
@@ -66,7 +67,7 @@ func toSliceString(list types.List) ([]string, diag.Diagnostics) {
 	for _, elem := range list.Elements() {
 		strVal, ok := elem.(types.String)
 		if !ok {
-			diags.AddError("Invalid element type", "Expected string in list but found a different type")
+			diags.AddError("Invalid element type creating tags list", fmt.Sprintf("Expected string in list but found %T", elem))
 			continue
 		}
 		result = append(result, strVal.ValueString())
