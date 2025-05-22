@@ -82,11 +82,11 @@ func (r *CsmResourceEvaluationFilter) Schema(_ context.Context, _ resource.Schem
 		Attributes: map[string]schema.Attribute{
 			"cloud_provider": schema.StringAttribute{
 				Required:    true,
-				Description: "The cloud provider of the filter's targeted resource",
+				Description: "The cloud provider of the filter's targeted resource.",
 			},
 			"id": schema.StringAttribute{
 				Required:    true,
-				Description: "The ID of the of the filter's targeted resource. Different cloud providers target different resource IDs\n  - `aws`: account id \n  - `gcp`: project id\n  - `azure`: subscription id",
+				Description: "The ID of the of the filter's targeted resource. Different cloud providers target different resource IDs:\n  - `aws`: account id \n  - `gcp`: project id\n  - `azure`: subscription id",
 			},
 			"tags": schema.ListAttribute{
 				Required:    true,
@@ -94,7 +94,7 @@ func (r *CsmResourceEvaluationFilter) Schema(_ context.Context, _ resource.Schem
 				Validators: []validator.List{
 					listvalidator.ValueStringsAre(tagFormatValidator),
 				},
-				Description: "List of tags to filter misconfiguration detections. Each entry should follow the format: \"key:\":\"value\".",
+				Description: "List of tags to filter misconfiguration detections. Each entry should follow the format: \"key\":\"value\".",
 			},
 		},
 	}
