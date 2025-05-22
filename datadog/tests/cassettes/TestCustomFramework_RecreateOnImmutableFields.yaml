@@ -36,7 +36,7 @@ interactions:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 414.967541ms
+        duration: 417.890125ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -69,7 +69,7 @@ interactions:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 165.35625ms
+        duration: 356.255ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -102,7 +102,7 @@ interactions:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 365.5285ms
+        duration: 177.291709ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -135,7 +135,7 @@ interactions:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 538.317542ms
+        duration: 439.09975ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -171,7 +171,7 @@ interactions:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 424.232125ms
+        duration: 430.19675ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -204,7 +204,7 @@ interactions:
                 - application/vnd.api+json
         status: 400 Bad Request
         code: 400
-        duration: 41.628875ms
+        duration: 100.05225ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -237,7 +237,7 @@ interactions:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 163.765083ms
+        duration: 168.000083ms
     - id: 7
       request:
         proto: HTTP/1.1
@@ -270,7 +270,7 @@ interactions:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 384.015ms
+        duration: 336.826417ms
     - id: 8
       request:
         proto: HTTP/1.1
@@ -303,4 +303,4 @@ interactions:
                 - application/vnd.api+json
         status: 400 Bad Request
         code: 400
-        duration: 47.263041ms
+        duration: 84.338167ms

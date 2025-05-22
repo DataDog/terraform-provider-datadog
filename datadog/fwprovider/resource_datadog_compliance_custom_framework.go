@@ -13,7 +13,9 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
+	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 )
 
 var _ resource.Resource = &complianceCustomFrameworkResource{}
@@ -23,6 +25,8 @@ type complianceCustomFrameworkResource struct {
 	Auth context.Context
 }
 
+// to handle a larger input, requirements and controls had to be lists even though order doesn't matter
+// but rules can be sets since requirements and controls are lists (the performance issue happened when all were sets)
 type complianceCustomFrameworkModel struct {
 	ID           types.String                                 `tfsdk:"id"`
 	Version      types.String                                 `tfsdk:"version"`
@@ -93,6 +97,10 @@ func (r *complianceCustomFrameworkResource) Schema(_ context.Context, _ resource
 		Blocks: map[string]schema.Block{
 			"requirements": schema.ListNestedBlock{
 				Description: "The requirements of the framework.",
+				Validators: []validator.List{
+					validators.RequirementNameValidator(),
+					listvalidator.IsRequired(),
+				},
 				NestedObject: schema.NestedBlockObject{
 					Attributes: map[string]schema.Attribute{
 						"name": schema.StringAttribute{
@@ -106,6 +114,10 @@ func (r *complianceCustomFrameworkResource) Schema(_ context.Context, _ resource
 					Blocks: map[string]schema.Block{
 						"controls": schema.ListNestedBlock{
 							Description: "The controls of the requirement.",
+							Validators: []validator.List{
+								validators.ControlNameValidator(),
+								listvalidator.IsRequired(),
+							},
 							NestedObject: schema.NestedBlockObject{
 								Attributes: map[string]schema.Attribute{
 									"name": schema.StringAttribute{
@@ -222,93 +234,6 @@ func (r *complianceCustomFrameworkResource) Update(ctx context.Context, request 
 	response.Diagnostics.Append(diags...)
 }
 
-func (r *complianceCustomFrameworkResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
-	if req.Plan.Raw.IsNull() {
-		return
-	}
-
-	if req.State.Raw.IsNull() {
-		return
-	}
-
-	var plan, state complianceCustomFrameworkModel
-
-	diags := req.Plan.Get(ctx, &plan)
-	resp.Diagnostics.Append(diags...)
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
-	diags = req.State.Get(ctx, &state)
-	resp.Diagnostics.Append(diags...)
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
-	planReqMap := make(map[string]complianceCustomFrameworkRequirementsModel)
-	stateReqMap := make(map[string]complianceCustomFrameworkRequirementsModel)
-
-	for _, req := range plan.Requirements {
-		planReqMap[req.Name.ValueString()] = req
-	}
-	for _, req := range state.Requirements {
-		stateReqMap[req.Name.ValueString()] = req
-	}
-
-	sortedRequirements := make([]complianceCustomFrameworkRequirementsModel, 0, len(plan.Requirements))
-
-	for _, stateReq := range state.Requirements {
-		stateReqName := stateReq.Name.ValueString()
-		if planReq, exists := planReqMap[stateReqName]; exists {
-			planCtrlMap := make(map[string]complianceCustomFrameworkControlsModel)
-			stateCtrlMap := make(map[string]complianceCustomFrameworkControlsModel)
-
-			for _, ctrl := range planReq.Controls {
-				planCtrlMap[ctrl.Name.ValueString()] = ctrl
-			}
-			for _, ctrl := range stateReq.Controls {
-				stateCtrlMap[ctrl.Name.ValueString()] = ctrl
-			}
-
-			sortedControls := make([]complianceCustomFrameworkControlsModel, 0, len(planReq.Controls))
-
-			for _, stateCtrl := range stateReq.Controls {
-				stateCtrlName := stateCtrl.Name.ValueString()
-				if planCtrl, exists := planCtrlMap[stateCtrlName]; exists {
-					sortedControls = append(sortedControls, planCtrl)
-					delete(planCtrlMap, stateCtrlName)
-				}
-			}
-
-			for _, planCtrl := range planCtrlMap {
-				sortedControls = append(sortedControls, planCtrl)
-			}
-			sortedReq := complianceCustomFrameworkRequirementsModel{
-				Name:     planReq.Name,
-				Controls: sortedControls,
-			}
-			sortedRequirements = append(sortedRequirements, sortedReq)
-			delete(planReqMap, stateReqName)
-		}
-	}
-
-	for _, planReq := range planReqMap {
-		sortedRequirements = append(sortedRequirements, planReq)
-	}
-
-	newPlan := complianceCustomFrameworkModel{
-		ID:           state.ID,
-		Version:      plan.Version,
-		Handle:       plan.Handle,
-		Name:         plan.Name,
-		IconURL:      plan.IconURL,
-		Requirements: sortedRequirements,
-	}
-
-	diags = resp.Plan.Set(ctx, &newPlan)
-	resp.Diagnostics.Append(diags...)
-}
-
 func readStateFromDatabase(data datadogV2.GetCustomFrameworkResponse, handle string, version string, currentState *complianceCustomFrameworkModel) complianceCustomFrameworkModel {
 	var state complianceCustomFrameworkModel
 	state.ID = types.StringValue(handle + "-" + version)
@@ -318,7 +243,9 @@ func readStateFromDatabase(data datadogV2.GetCustomFrameworkResponse, handle str
 	if data.GetData().Attributes.IconUrl != nil {
 		state.IconURL = types.StringValue(*data.GetData().Attributes.IconUrl)
 	}
-
+	// since the requirements and controls from the API response might be in a different order than the state
+	// we need to sort them to match the state so terraform can detect the changes
+	// without taking order into account
 	apiReqMap := make(map[string]datadogV2.CustomFrameworkRequirement)
 	apiCtrlMap := make(map[string]map[string]datadogV2.CustomFrameworkControl)
 

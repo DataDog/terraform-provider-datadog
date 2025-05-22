@@ -36,7 +36,7 @@ interactions:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 459.425834ms
+        duration: 620.897666ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -69,7 +69,7 @@ interactions:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 245.849583ms
+        duration: 173.264625ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -102,8 +102,41 @@ interactions:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 175.900125ms
+        duration: 242.677875ms
     - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cloud_security_management/custom_frameworks/new-terraform/framework-1.0
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 209
+        uncompressed: false
+        body: '{"data":{"id":"new-terraform-framework-1.0","type":"custom_framework","attributes":{"description":"","handle":"new-terraform","icon_url":"test-url","name":"new-framework-terraform","version":"framework-1.0"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 343.581417ms
+    - id: 4
       request:
         proto: HTTP/1.1
         proto_major: 1
@@ -138,40 +171,7 @@ interactions:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 425.030625ms
-    - id: 4
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 0
-        transfer_encoding: []
-        trailer: {}
-        host: api.datadoghq.com
-        remote_addr: ""
-        request_uri: ""
-        body: ""
-        form: {}
-        headers:
-            Accept:
-                - application/json
-        url: https://api.datadoghq.com/api/v2/cloud_security_management/custom_frameworks/new-terraform/framework-1.0
-        method: DELETE
-      response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        transfer_encoding: []
-        trailer: {}
-        content_length: 209
-        uncompressed: false
-        body: '{"data":{"id":"new-terraform-framework-1.0","type":"custom_framework","attributes":{"description":"","handle":"new-terraform","icon_url":"test-url","name":"new-framework-terraform","version":"framework-1.0"}}}'
-        headers:
-            Content-Type:
-                - application/vnd.api+json
-        status: 200 OK
-        code: 200
-        duration: 534.074291ms
+        duration: 525.991166ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -204,7 +204,7 @@ interactions:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 203.0945ms
+        duration: 214.634792ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -237,7 +237,7 @@ interactions:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 281.544583ms
+        duration: 200.667916ms
     - id: 7
       request:
         proto: HTTP/1.1
@@ -270,7 +270,7 @@ interactions:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 455.115958ms
+        duration: 331.03ms
     - id: 8
       request:
         proto: HTTP/1.1
@@ -306,7 +306,7 @@ interactions:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 494.117958ms
+        duration: 347.11125ms
     - id: 9
       request:
         proto: HTTP/1.1
@@ -339,7 +339,7 @@ interactions:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 284.34925ms
+        duration: 231.189833ms
     - id: 10
       request:
         proto: HTTP/1.1
@@ -372,7 +372,7 @@ interactions:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 316.266375ms
+        duration: 362.871458ms
     - id: 11
       request:
         proto: HTTP/1.1
@@ -405,4 +405,4 @@ interactions:
                 - application/vnd.api+json
         status: 400 Bad Request
         code: 400
-        duration: 57.598ms
+        duration: 69.891458ms

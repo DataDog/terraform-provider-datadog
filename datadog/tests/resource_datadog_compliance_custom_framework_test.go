@@ -78,20 +78,21 @@ func TestCustomFramework_CreateBasic(t *testing.T) {
 					resource.TestCheckResourceAttr(path, "icon_url", "test-url"),
 					resource.TestCheckResourceAttr(path, "requirements.0.name", "requirement1"),
 					resource.TestCheckResourceAttr(path, "requirements.0.controls.0.name", "control1"),
-					resource.TestCheckResourceAttr(path, "requirements.0.controls.0.rules_id.0", "def-000-be9"),
-				),
+					resource.TestCheckResourceAttr(path, "requirements.0.controls.0.rules_id.0", "def-000-be9")),
 			},
 			{
 				Config: testAccCheckDatadogCreateFrameworkWithMultipleRequirements(version, handle),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr(path, "handle", handle),
 					resource.TestCheckResourceAttr(path, "version", version),
-					resource.TestCheckResourceAttr(path, "requirements.0.name", "compliance-requirement"),
-					resource.TestCheckResourceAttr(path, "requirements.1.name", "security-requirement"),
-					resource.TestCheckResourceAttr(path, "requirements.0.controls.0.name", "compliance-control"),
-					resource.TestCheckResourceAttr(path, "requirements.1.controls.0.name", "security-control"),
-					resource.TestCheckResourceAttr(path, "requirements.0.controls.0.rules_id.0", "def-000-be9"),
-					resource.TestCheckResourceAttr(path, "requirements.1.controls.0.rules_id.0", "def-000-cea"),
+					resource.TestCheckResourceAttr(path, "requirements.0.name", "security-requirement"),
+					resource.TestCheckResourceAttr(path, "requirements.1.name", "compliance-requirement"),
+					resource.TestCheckResourceAttr(path, "requirements.0.controls.0.name", "security-control"),
+					resource.TestCheckResourceAttr(path, "requirements.1.controls.0.name", "compliance-control"),
+					resource.TestCheckTypeSetElemAttr(path, "requirements.0.controls.0.rules_id.*", "def-000-be9"),
+					resource.TestCheckTypeSetElemAttr(path, "requirements.0.controls.0.rules_id.*", "def-000-cea"),
+					resource.TestCheckTypeSetElemAttr(path, "requirements.1.controls.0.rules_id.*", "def-000-be9"),
+					resource.TestCheckTypeSetElemAttr(path, "requirements.1.controls.0.rules_id.*", "def-000-cea"),
 				),
 			},
 			{
@@ -151,12 +152,14 @@ func TestCustomFramework_CreateAndUpdateMultipleRequirements(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr(path, "handle", handle),
 					resource.TestCheckResourceAttr(path, "version", version),
-					resource.TestCheckResourceAttr(path, "requirements.0.name", "compliance-requirement"),
-					resource.TestCheckResourceAttr(path, "requirements.1.name", "security-requirement"),
-					resource.TestCheckResourceAttr(path, "requirements.0.controls.0.name", "compliance-control"),
-					resource.TestCheckResourceAttr(path, "requirements.1.controls.0.name", "security-control"),
-					resource.TestCheckResourceAttr(path, "requirements.0.controls.0.rules_id.0", "def-000-be9"),
-					resource.TestCheckResourceAttr(path, "requirements.1.controls.0.rules_id.0", "def-000-cea"),
+					resource.TestCheckResourceAttr(path, "requirements.0.name", "security-requirement"),
+					resource.TestCheckResourceAttr(path, "requirements.1.name", "compliance-requirement"),
+					resource.TestCheckResourceAttr(path, "requirements.0.controls.0.name", "security-control"),
+					resource.TestCheckResourceAttr(path, "requirements.1.controls.0.name", "compliance-control"),
+					resource.TestCheckTypeSetElemAttr(path, "requirements.0.controls.0.rules_id.*", "def-000-be9"),
+					resource.TestCheckTypeSetElemAttr(path, "requirements.0.controls.0.rules_id.*", "def-000-cea"),
+					resource.TestCheckTypeSetElemAttr(path, "requirements.1.controls.0.rules_id.*", "def-000-be9"),
+					resource.TestCheckTypeSetElemAttr(path, "requirements.1.controls.0.rules_id.*", "def-000-cea"),
 				),
 			},
 			{
@@ -165,14 +168,17 @@ func TestCustomFramework_CreateAndUpdateMultipleRequirements(t *testing.T) {
 					resource.TestCheckResourceAttr(path, "handle", handle),
 					resource.TestCheckResourceAttr(path, "version", version),
 					resource.TestCheckResourceAttr(path, "requirements.0.name", "security-requirement"),
-					resource.TestCheckResourceAttr(path, "requirements.1.name", "requirement-2"),
-					resource.TestCheckResourceAttr(path, "requirements.2.name", "requirement"),
-					resource.TestCheckResourceAttr(path, "requirements.0.controls.0.name", "control"),
+					resource.TestCheckResourceAttr(path, "requirements.1.name", "requirement"),
+					resource.TestCheckResourceAttr(path, "requirements.2.name", "requirement-2"),
+					resource.TestCheckResourceAttr(path, "requirements.0.controls.0.name", "security-control"),
 					resource.TestCheckResourceAttr(path, "requirements.1.controls.0.name", "control"),
 					resource.TestCheckResourceAttr(path, "requirements.2.controls.0.name", "control-2"),
 					resource.TestCheckResourceAttr(path, "requirements.2.controls.1.name", "control-3"),
-					resource.TestCheckResourceAttr(path, "requirements.0.controls.0.rules_id.0", "def-000-be9"),
-					resource.TestCheckResourceAttr(path, "requirements.1.controls.0.rules_id.0", "def-000-cea"),
+					resource.TestCheckTypeSetElemAttr(path, "requirements.0.controls.0.rules_id.*", "def-000-cea"),
+					resource.TestCheckTypeSetElemAttr(path, "requirements.1.controls.0.rules_id.*", "def-000-be9"),
+					resource.TestCheckTypeSetElemAttr(path, "requirements.2.controls.0.rules_id.*", "def-000-be9"),
+					resource.TestCheckTypeSetElemAttr(path, "requirements.2.controls.1.rules_id.*", "def-000-cea"),
+					resource.TestCheckTypeSetElemAttr(path, "requirements.2.controls.1.rules_id.*", "def-000-be9"),
 				),
 			},
 		},
@@ -286,7 +292,7 @@ func TestCustomFramework_SameConfigNoUpdate(t *testing.T) {
 					name = "control1"
 					rules_id = ["def-000-be9"]
 				}
-				}
+			}
 			requirements  {
 				name = "requirement2"
 				controls {
@@ -317,10 +323,14 @@ func TestCustomFramework_SameConfigNoUpdate(t *testing.T) {
 					resource.TestCheckResourceAttr(path, "requirements.1.name", "requirement2"),
 					resource.TestCheckResourceAttr(path, "requirements.2.name", "requirement3"),
 					resource.TestCheckResourceAttr(path, "requirements.0.controls.0.name", "control1"),
-					resource.TestCheckResourceAttr(path, "requirements.1.controls.0.name", "control2"),
+					resource.TestCheckResourceAttr(path, "requirements.1.controls.0.name", "control2.2"),
+					resource.TestCheckResourceAttr(path, "requirements.1.controls.1.name", "control2"),
 					resource.TestCheckResourceAttr(path, "requirements.2.controls.0.name", "control3"),
-					resource.TestCheckResourceAttr(path, "requirements.0.controls.0.rules_id.0", "def-000-be9"),
-					resource.TestCheckResourceAttr(path, "requirements.1.controls.0.rules_id.0", "def-000-cea"),
+					resource.TestCheckTypeSetElemAttr(path, "requirements.0.controls.0.rules_id.*", "def-000-be9"),
+					resource.TestCheckTypeSetElemAttr(path, "requirements.1.controls.0.rules_id.*", "def-000-be9"),
+					resource.TestCheckTypeSetElemAttr(path, "requirements.1.controls.1.rules_id.*", "def-000-cea"),
+					resource.TestCheckTypeSetElemAttr(path, "requirements.2.controls.0.rules_id.*", "def-000-cea"),
+					resource.TestCheckTypeSetElemAttr(path, "requirements.2.controls.0.rules_id.*", "def-000-be9"),
 				),
 			},
 			{
@@ -330,45 +340,21 @@ func TestCustomFramework_SameConfigNoUpdate(t *testing.T) {
 					resource.TestCheckResourceAttr(path, "version", version),
 					resource.TestCheckResourceAttr(path, "name", "new-framework-terraform"),
 					resource.TestCheckResourceAttr(path, "icon_url", "test url"),
-					resource.TestCheckResourceAttr(path, "requirements.0.name", "requirement1"),
-					resource.TestCheckResourceAttr(path, "requirements.1.name", "requirement2"),
-					resource.TestCheckResourceAttr(path, "requirements.2.name", "requirement3"),
-					resource.TestCheckResourceAttr(path, "requirements.0.controls.0.name", "control1"),
-					resource.TestCheckResourceAttr(path, "requirements.1.controls.0.name", "control2"),
-					resource.TestCheckResourceAttr(path, "requirements.2.controls.0.name", "control3"),
-					resource.TestCheckResourceAttr(path, "requirements.0.controls.0.rules_id.0", "def-000-be9"),
-					resource.TestCheckResourceAttr(path, "requirements.1.controls.0.rules_id.0", "def-000-cea"),
+					resource.TestCheckResourceAttr(path, "requirements.0.name", "requirement3"),
+					resource.TestCheckResourceAttr(path, "requirements.1.name", "requirement1"),
+					resource.TestCheckResourceAttr(path, "requirements.2.name", "requirement2"),
+					resource.TestCheckResourceAttr(path, "requirements.0.controls.0.name", "control3"),
+					resource.TestCheckResourceAttr(path, "requirements.1.controls.0.name", "control1"),
+					resource.TestCheckResourceAttr(path, "requirements.2.controls.0.name", "control2"),
+					resource.TestCheckResourceAttr(path, "requirements.2.controls.1.name", "control2.2"),
+					resource.TestCheckTypeSetElemAttr(path, "requirements.0.controls.0.rules_id.*", "def-000-cea"),
+					resource.TestCheckTypeSetElemAttr(path, "requirements.0.controls.0.rules_id.*", "def-000-be9"),
+					resource.TestCheckTypeSetElemAttr(path, "requirements.1.controls.0.rules_id.*", "def-000-be9"),
+					resource.TestCheckTypeSetElemAttr(path, "requirements.2.controls.0.rules_id.*", "def-000-cea"),
+					resource.TestCheckTypeSetElemAttr(path, "requirements.2.controls.1.rules_id.*", "def-000-be9"),
 				),
 				// This step should not trigger an update since only the order is different
 				ExpectNonEmptyPlan: false,
-			},
-		},
-	})
-}
-
-// There is no way to validate the duplicate rule IDs in the config before they are removed from the state in Terraform
-// because the state model converts the rules_id into sets, the duplicate rule IDs are removed
-// This test validates that the duplicate rule IDs are removed from the state and only one rule ID is present
-func TestCustomFramework_DuplicateRuleIds(t *testing.T) {
-	handle := "terraform-handle"
-	version := "1.0"
-
-	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
-	path := "datadog_compliance_custom_framework.sample_rules"
-	resource.Test(t, resource.TestCase{
-		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
-		CheckDestroy:             testAccCheckDatadogFrameworkDestroy(ctx, providers.frameworkProvider, path, version, handle),
-		Steps: []resource.TestStep{
-			{
-				Config: testAccCheckDatadogCreateFrameworkRuleIdsInvalid(version, handle),
-				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr(path, "handle", handle),
-					resource.TestCheckResourceAttr(path, "version", version),
-					resource.TestCheckResourceAttr(path, "requirements.0.controls.0.rules_id.0", "def-000-be9"),
-					resource.TestCheckResourceAttr(path, "requirements.0.controls.1.rules_id.0", "def-000-be9"),
-					resource.TestCheckResourceAttr(path, "requirements.0.controls.0.rules_id.#", "1"),
-				),
 			},
 		},
 	})
@@ -386,32 +372,52 @@ func TestCustomFramework_InvalidCreate(t *testing.T) {
 		CheckDestroy:             testAccCheckDatadogFrameworkDestroy(ctx, providers.frameworkProvider, path, version, handle),
 		Steps: []resource.TestStep{
 			{
-				Config:      testAccCheckDatadogCreateFrameworkWithNoControls(version, handle),
-				ExpectError: regexp.MustCompile("controls is required"),
+				Config:      testAccCheckDatadogCreateInvalidFrameworkName(version, handle),
+				ExpectError: regexp.MustCompile("Invalid Attribute Value Length"),
+			},
+			{
+				Config:      testAccCheckDatadogCreateFrameworkRuleIdsInvalid(version, handle),
+				ExpectError: regexp.MustCompile("400 Bad Request"),
 			},
 			{
 				Config:      testAccCheckDatadogCreateFrameworkNoRequirements(version, handle),
-				ExpectError: regexp.MustCompile("requirements is required"),
+				ExpectError: regexp.MustCompile("Invalid Block"),
 			},
 			{
-				Config:      testAccCheckDatadogCreateInvalidFrameworkName(version, handle),
-				ExpectError: regexp.MustCompile("name is required"),
-			},
-			{
-				Config:      testAccCheckDatadogEmptyRequirementName(version, handle),
-				ExpectError: regexp.MustCompile("name is required"),
-			},
-			{
-				Config:      testAccCheckDatadogEmptyControlName(version, handle),
-				ExpectError: regexp.MustCompile("name is required"),
+				Config:      testAccCheckDatadogCreateFrameworkWithNoControls(version, handle),
+				ExpectError: regexp.MustCompile("Invalid Block"),
 			},
 			{
 				Config:      testAccCheckDatadogCreateEmptyHandle(version),
-				ExpectError: regexp.MustCompile("handle is required"),
+				ExpectError: regexp.MustCompile("Invalid Attribute Value Length"),
 			},
 			{
 				Config:      testAccCheckDatadogCreateEmptyVersion(handle),
-				ExpectError: regexp.MustCompile("version is required"),
+				ExpectError: regexp.MustCompile("Invalid Attribute Value Length"),
+			},
+			{
+				Config:      testAccCheckDatadogDuplicateRequirementName(version, handle),
+				ExpectError: regexp.MustCompile(".*Each Requirement must have a unique name.*"),
+			},
+			{
+				Config:      testAccCheckDatadogDuplicateControlName(version, handle),
+				ExpectError: regexp.MustCompile(".*Each Control must have a unique name under the same requirement.*"),
+			},
+			{
+				Config:      testAccCheckDatadogDuplicateRequirement(version, handle),
+				ExpectError: regexp.MustCompile(".*Each Requirement must have a unique name.*"),
+			},
+			{
+				Config:      testAccCheckDatadogDuplicateControl(version, handle),
+				ExpectError: regexp.MustCompile(".*Each Control must have a unique name under the same requirement.*"),
+			},
+			{
+				Config:      testAccCheckDatadogEmptyRequirementName(version, handle),
+				ExpectError: regexp.MustCompile("Invalid Attribute Value Length"),
+			},
+			{
+				Config:      testAccCheckDatadogEmptyControlName(version, handle),
+				ExpectError: regexp.MustCompile("Invalid Attribute Value Length"),
 			},
 		},
 	})
@@ -551,9 +557,12 @@ func TestCustomFramework_UpdateIfFrameworkExists(t *testing.T) {
 func TestCustomFramework_RecreateOnImmutableFields(t *testing.T) {
 	handle := "terraform-handle"
 	version := "1.0"
+	newHandle := "terraform-handle-new"
+	newVersion := "2.0"
 
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	path := "datadog_compliance_custom_framework.sample_rules"
+
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV5ProviderFactories: accProviders,
@@ -564,18 +573,50 @@ func TestCustomFramework_RecreateOnImmutableFields(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr(path, "handle", handle),
 					resource.TestCheckResourceAttr(path, "version", version),
-					resource.TestCheckResourceAttr(path, "requirements.0.name", "requirement1"),
-					resource.TestCheckResourceAttr(path, "requirements.0.controls.0.name", "control1"),
-					resource.TestCheckResourceAttr(path, "requirements.0.controls.0.rules_id.0", "def-000-be9"),
 				),
 			},
 			{
-				Config:      testAccCheckDatadogCreateFramework("2.0", handle),
-				ExpectError: regexp.MustCompile("version cannot be changed"),
+				Config: testAccCheckDatadogCreateFramework(newVersion, newHandle),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(path, "handle", newHandle),
+					resource.TestCheckResourceAttr(path, "version", newVersion),
+					// Verify old resource is deleted
+					func(s *terraform.State) error {
+						_, httpResp, err := providers.frameworkProvider.DatadogApiInstances.GetSecurityMonitoringApiV2().GetCustomFramework(providers.frameworkProvider.Auth, handle, version)
+						if err == nil || (httpResp != nil && httpResp.StatusCode != 400) {
+							return fmt.Errorf("old framework with handle %s and version %s still exists", handle, version)
+						}
+						return nil
+					},
+				),
 			},
+		},
+	})
+}
+
+// There is no way to validate the duplicate rule IDs in the config before they are removed from the state in Terraform
+// because the state model converts the rules_id into sets, the duplicate rule IDs are removed
+// This test validates that the duplicate rule IDs are removed from the state and only one rule ID is present
+func TestCustomFramework_DuplicateRuleIds(t *testing.T) {
+	handle := "terraform-handle"
+	version := "1.0"
+
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	path := "datadog_compliance_custom_framework.sample_rules"
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogFrameworkDestroy(ctx, providers.frameworkProvider, path, version, handle),
+		Steps: []resource.TestStep{
 			{
-				Config:      testAccCheckDatadogCreateFramework(version, "new-handle"),
-				ExpectError: regexp.MustCompile("handle cannot be changed"),
+				Config: testAccCheckDatadogDuplicateRulesId(version, handle),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(path, "handle", handle),
+					resource.TestCheckResourceAttr(path, "version", version),
+					resource.TestCheckResourceAttr(path, "requirements.0.controls.0.name", "control1"),
+					resource.TestCheckResourceAttr(path, "requirements.0.controls.0.rules_id.0", "def-000-be9"),
+					resource.TestCheckResourceAttr(path, "requirements.0.controls.0.rules_id.#", "1"),
+				),
 			},
 		},
 	})
@@ -828,7 +869,7 @@ func testAccCheckDatadogCreateEmptyVersion(handle string) string {
 	`, handle)
 }
 
-func testAccCheckDatadogDuplicateRequirements(version string, handle string) string {
+func testAccCheckDatadogDuplicateRequirementName(version string, handle string) string {
 	return fmt.Sprintf(`
 		resource "datadog_compliance_custom_framework" "sample_rules" {
 			version       = "%s"
@@ -853,7 +894,32 @@ func testAccCheckDatadogDuplicateRequirements(version string, handle string) str
 	`, version, handle)
 }
 
-func testAccCheckDatadogDuplicateControls(version string, handle string) string {
+func testAccCheckDatadogDuplicateRequirement(version string, handle string) string {
+	return fmt.Sprintf(`
+		resource "datadog_compliance_custom_framework" "sample_rules" {
+			version       = "%s"
+			handle        = "%s"
+			name          = "framework-name"
+			icon_url      = "test url"
+			requirements  {
+				name = "requirement1"
+				controls {
+					name = "control1"
+					rules_id = ["def-000-be9"]
+				}
+			}
+			requirements  {
+				name = "requirement1"
+				controls {
+					name = "control1"
+					rules_id = ["def-000-be9"]
+				}
+			}
+		}
+	`, version, handle)
+}
+
+func testAccCheckDatadogDuplicateControlName(version string, handle string) string {
 	return fmt.Sprintf(`
 		resource "datadog_compliance_custom_framework" "sample_rules" {
 			version       = "%s"
@@ -876,6 +942,35 @@ func testAccCheckDatadogDuplicateControls(version string, handle string) string 
 				controls {
 					name = "control1"
 					rules_id = ["def-000-cea"]
+				}
+			}
+		}
+	`, version, handle)
+}
+
+func testAccCheckDatadogDuplicateControl(version string, handle string) string {
+	return fmt.Sprintf(`
+		resource "datadog_compliance_custom_framework" "sample_rules" {
+			version       = "%s"
+			handle        = "%s"
+			name          = "framework-name"
+			icon_url      = "test url"
+			requirements  {
+				name = "requirement1"
+				controls {
+					name = "control1"
+					rules_id = ["def-000-be9"]
+				}
+			}
+			requirements  {
+				name = "requirement2"
+				controls {
+					name = "control1"
+					rules_id = ["def-000-be9"]
+				}
+				controls {
+					name = "control1"
+					rules_id = ["def-000-be9"]
 				}
 			}
 		}
