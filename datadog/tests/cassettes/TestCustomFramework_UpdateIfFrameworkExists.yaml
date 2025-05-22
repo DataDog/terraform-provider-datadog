@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 250
+        content_length: 255
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"handle":"terraform-handle","icon_url":"test url","name":"new-framework-terraform","requirements":[{"controls":[{"name":"control","rules_id":["def-000-be9"]}],"name":"requirement"}],"version":"1.0"},"type":"custom_framework"}}
+            {"data":{"attributes":{"handle":"terraform-handle","icon_url":"","name":"existing-framework","requirements":[{"controls":[{"name":"existing-control","rules_id":["def-000-be9"]}],"name":"existing-requirement"}],"version":"1.0"},"type":"custom_framework"}}
         form: {}
         headers:
             Accept:
@@ -36,7 +36,7 @@ interactions:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 370.3955ms
+        duration: 432.001125ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -72,7 +72,7 @@ interactions:
                 - application/vnd.api+json
         status: 409 Conflict
         code: 409
-        duration: 80.751916ms
+        duration: 95.856042ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -108,7 +108,7 @@ interactions:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 515.457375ms
+        duration: 797.741916ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -141,7 +141,7 @@ interactions:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 209.929417ms
+        duration: 462.0445ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -174,7 +174,7 @@ interactions:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 398.002875ms
+        duration: 629.974083ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -207,4 +207,4 @@ interactions:
                 - application/vnd.api+json
         status: 400 Bad Request
         code: 400
-        duration: 73.471375ms
+        duration: 85.395041ms

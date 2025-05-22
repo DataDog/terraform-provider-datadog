@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"handle":"terraform-handle","icon_url":"test url","name":"new-name","requirements":[{"controls":[{"name":"compliance-control","rules_id":["def-000-be9","def-000-cea"]}],"name":"compliance-requirement"},{"controls":[{"name":"security-control","rules_id":["def-000-be9","def-000-cea"]}],"name":"security-requirement"}],"version":"1.0"},"type":"custom_framework"}}
+            {"data":{"attributes":{"handle":"terraform-handle","icon_url":"test url","name":"new-name","requirements":[{"controls":[{"name":"security-control","rules_id":["def-000-be9","def-000-cea"]}],"name":"security-requirement"},{"controls":[{"name":"compliance-control","rules_id":["def-000-be9","def-000-cea"]}],"name":"compliance-requirement"}],"version":"1.0"},"type":"custom_framework"}}
         form: {}
         headers:
             Accept:
@@ -36,7 +36,7 @@ interactions:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 417.707542ms
+        duration: 1.052087125s
     - id: 1
       request:
         proto: HTTP/1.1
@@ -69,7 +69,7 @@ interactions:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 358.391ms
+        duration: 911.326958ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -102,7 +102,7 @@ interactions:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 300.353917ms
+        duration: 250.824375ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -115,7 +115,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"handle":"terraform-handle","icon_url":"test url","name":"new-name","requirements":[{"controls":[{"name":"control","rules_id":["def-000-be9"]}],"name":"requirement"},{"controls":[{"name":"control-2","rules_id":["def-000-be9"]},{"name":"control-3","rules_id":["def-000-be9","def-000-cea"]}],"name":"requirement-2"},{"controls":[{"name":"security-control","rules_id":["def-000-cea"]}],"name":"security-requirement"}],"version":"1.0"},"type":"custom_framework"}}
+            {"data":{"attributes":{"handle":"terraform-handle","icon_url":"test url","name":"new-name","requirements":[{"controls":[{"name":"security-control","rules_id":["def-000-cea"]}],"name":"security-requirement"},{"controls":[{"name":"control","rules_id":["def-000-be9"]}],"name":"requirement"},{"controls":[{"name":"control-2","rules_id":["def-000-be9"]},{"name":"control-3","rules_id":["def-000-be9","def-000-cea"]}],"name":"requirement-2"}],"version":"1.0"},"type":"custom_framework"}}
         form: {}
         headers:
             Accept:
@@ -138,7 +138,7 @@ interactions:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 676.958959ms
+        duration: 874.516417ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -171,7 +171,7 @@ interactions:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 668.5285ms
+        duration: 609.843333ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -204,7 +204,7 @@ interactions:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 441.340792ms
+        duration: 492.356333ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -237,4 +237,4 @@ interactions:
                 - application/vnd.api+json
         status: 400 Bad Request
         code: 400
-        duration: 43.623958ms
+        duration: 81.528292ms
