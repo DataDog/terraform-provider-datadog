@@ -4,6 +4,7 @@
 # Add here the files to be excluded from the doc generation
 exclude_files=(
   "docs/resources/integration_aws_account.md"
+  "docs/resources/compliance_custom_framework.md"
 )
 
 # Check if manual changes were made to any excluded files and exit
