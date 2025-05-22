@@ -26,12 +26,12 @@ resource "datadog_resource_evaluation_filter" "basic_filter" {
 
 ### Required
 
-- `cloud_provider` (String) The cloud provider of the filter's targeted resource
-- `id` (String) The ID of the of the filter's targeted resource. Different cloud providers target different resource IDs
+- `cloud_provider` (String) The cloud provider of the filter's targeted resource.
+- `id` (String) The ID of the of the filter's targeted resource. Different cloud providers target different resource IDs:
   - `aws`: account id 
   - `gcp`: project id
   - `azure`: subscription id
-- `tags` (List of String) List of tags to filter misconfiguration detections. Each entry should follow the format: "key:":"value".
+- `tags` (List of String) List of tags to filter misconfiguration detections. Each entry should follow the format: "key":"value".
 
 ## Import
 
