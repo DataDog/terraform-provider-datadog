@@ -142,7 +142,7 @@ func (r *onCallScheduleResource) Schema(_ context.Context, _ resource.SchemaRequ
 						},
 					},
 					Blocks: map[string]schema.Block{
-						"restrictions": schema.ListNestedBlock{
+						"restriction": schema.ListNestedBlock{
 							Description: "List of restrictions for the layer.",
 							NestedObject: schema.NestedBlockObject{
 								Attributes: map[string]schema.Attribute{

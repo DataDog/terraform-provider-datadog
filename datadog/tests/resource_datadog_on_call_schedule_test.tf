@@ -1,3 +1,11 @@
+terraform {
+  required_providers {
+    datadog = {
+      source = "DataDog/datadog"
+    }
+  }
+}
+
 resource "datadog_user" "foo" {
   email = "USER_EMAIL"
 }
@@ -22,7 +30,7 @@ resource "datadog_on_call_schedule" "single_layer" {
     rotation_start = "2025-01-01T00:00:00Z"
     users          = [datadog_user.foo.id, null]
     name           = "Primary On-Call Layer"
-    restrictions {
+    restriction {
       end_day    = "monday"
       end_time   = "17:00:00"
       start_day  = "monday"

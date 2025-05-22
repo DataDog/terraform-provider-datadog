@@ -14,134 +14,183 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 )
 
 var (
-	_ resource.ResourceWithConfigure   = &onCallEscalationPolicyResource{}
-	_ resource.ResourceWithImportState = &onCallEscalationPolicyResource{}
+	_ resource.ResourceWithConfigure   = &onCallTeamRulesResource{}
+	_ resource.ResourceWithImportState = &onCallTeamRulesResource{}
 )
 
-type onCallEscalationPolicyResource struct {
+type onCallTeamRulesResource struct {
 	Api  *datadogV2.OnCallApi
 	Auth context.Context
 }
 
-//type EscalationPolicy struct {
-//	ID                     string                       `jsonapi:"primary,policies" json:"id"`
-//	Name                   string                       `jsonapi:"attribute" json:"name" validate:"required,min=1"`
-//	Description            string                       `jsonapi:"attribute" json:"description"`
-//	Teams                  []oncallcommon.TeamReference `jsonapi:"relationship" json:"teams"`
-//	Retries                int                          `jsonapi:"attribute" json:"retries" validate:"gte=0,lte=10"`
-//	Steps                  []EscalationPolicyStep       `jsonapi:"relationship" json:"steps" validate:"required,min=1,max=10,dive"`
-//	ResolvePageOnPolicyEnd bool                         `jsonapi:"attribute" json:"resolve_page_on_policy_end"`
+//type TeamProcessingRules struct {
+//	TeamUUID string           `jsonapi:"primary,team_routing_rules" json:"id"`
+//	Rules    []ProcessingRule `jsonapi:"relationship" json:"rules"`
 //}
 //
-//type EscalationPolicyStep struct {
-//	ID            string                    `jsonapi:"primary,steps" json:"id"`
-//	EscalateAfter schedules.DurationSeconds `jsonapi:"attribute" json:"escalate_after_seconds" validate:"gte=60,lte=3600"`
-//	Assignment    AssignmentType            `jsonapi:"attribute" json:"assignment" validate:"omitempty,oneof=default round-robin" openapi:"enum=default|round-robin"`
-//	Targets       []EscalationTarget        `jsonapi:"relationship" json:"targets" jsonschema:"EscalationTarget"`
+//type TeamProcessingRulesRequest struct {
+//	TeamUUID string                  `jsonapi:"primary,team_routing_rules" json:"id"`
+//	Rules    []ProcessingRuleRequest `jsonapi:"attribute" json:"rules"`
+//}
+//
+//type RuleTimeRestriction struct {
+//	TimeZone     string            `json:"time_zone"`
+//	Restrictions []TimeRestriction `json:"restrictions"`
+//}
+//
+//type ProcessingRule struct {
+//	ID               string                    `jsonapi:"primary,team_routing_rules" json:"id"`
+//	Query            string                    `jsonapi:"attribute" json:"query"`
+//	EscalationPolicy EscalationPolicyReference `jsonapi:"relationship" json:"policy"`
+//	Urgency          string                    `jsonapi:"attribute" json:"urgency" openapi:"enum=low|high|dynamic"`
+//	TimeRestriction  *RuleTimeRestriction      `jsonapi:"attribute" json:"time_restriction"`
+//	Actions          []ProcessingRuleAction    `jsonapi:"attribute" json:"actions"`
 //}
 
-type onCallEscalationPolicyModel struct {
-	ID                     types.String           `tfsdk:"id"`
-	Name                   types.String           `tfsdk:"name"`
-	Retries                types.Int64            `tfsdk:"retries"`
-	Teams                  types.List             `tfsdk:"teams"`
-	Steps                  []*escalationStepModel `tfsdk:"step"`
-	ResolvePageOnPolicyEnd types.Bool             `tfsdk:"resolve_page_on_policy_end"`
+type onCallTeamRulesModel struct {
+	ID    types.String     `tfsdk:"id"`
+	Rules []*teamRuleModel `tfsdk:"rule"`
 }
 
-type escalationStepModel struct {
-	Id            types.String             `tfsdk:"id"`
-	EscalateAfter types.Int64              `tfsdk:"escalate_after_seconds"`
-	Assignment    types.String             `tfsdk:"assignment"`
-	Targets       []*escalationTargetModel `tfsdk:"target"`
+type teamRuleModel struct {
+	Id               types.String           `tfsdk:"id"`
+	Query            types.String           `tfsdk:"query"`
+	Urgency          types.String           `tfsdk:"urgency"`
+	EscalationPolicy types.String           `tfsdk:"escalation_policy"`
+	Assignment       types.String           `tfsdk:"assignment"`
+	Restrictions     []*restrictionsModel   `tfsdk:"restriction"`
+	Actions          []*teamRuleActionModel `tfsdk:"action"`
 }
-type escalationTargetModel struct {
-	Schedule types.String `tfsdk:"schedule"`
-	Team     types.String `tfsdk:"team"`
-	User     types.String `tfsdk:"user"`
-}
-
-func NewOnCallEscalationPolicyResource() resource.Resource {
-	return &onCallEscalationPolicyResource{}
+type teamRuleActionModel struct {
+	Slack *slackMessageModel `tfsdk:"send_slack_message"`
+	Teams *teamsMessageModel `tfsdk:"send_teams_message"`
 }
 
-func (r *onCallEscalationPolicyResource) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
+type slackMessageModel struct {
+	Workspace types.String `tfsdk:"workspace"`
+	Channel   types.String `tfsdk:"channel"`
+}
+
+type teamsMessageModel struct {
+	Tenant  types.String `tfsdk:"tenant"`
+	Team    types.String `tfsdk:"team"`
+	Channel types.String `tfsdk:"channel"`
+}
+
+func NewOnCallTeamRulesResource() resource.Resource {
+	return &onCallTeamRulesResource{}
+}
+
+func (r *onCallTeamRulesResource) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
 	providerData, _ := request.ProviderData.(*FrameworkProvider)
 	r.Api = providerData.DatadogApiInstances.GetOnCallApiV2()
 	r.Auth = providerData.Auth
 }
 
-func (r *onCallEscalationPolicyResource) Metadata(_ context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
-	response.TypeName = "on_call_escalation_policy"
+func (r *onCallTeamRulesResource) Metadata(_ context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
+	response.TypeName = "on_call_team_rules"
 }
 
-func (r *onCallEscalationPolicyResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
+func (r *onCallTeamRulesResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
 		Description: "Provides a Datadog On-Call escalation policy resource. This can be used to create and manage Datadog On-Call escalation policies.",
 		Attributes: map[string]schema.Attribute{
-			"name": schema.StringAttribute{
-				Required:    true,
-				Description: "A human-readable name for the escalation policy.",
-			},
-			"retries": schema.Int64Attribute{
-				Optional:    true,
-				Required:    false,
-				Description: "If set, policy will be retried this many times after the final step. Must be in the range 0-10.",
-			},
-			"resolve_page_on_policy_end": schema.BoolAttribute{
-				Optional:    true,
-				Required:    false,
-				Description: "If true, pages will be automatically resolved if unacknowledged after the final step.",
-			},
-			"teams": schema.ListAttribute{
-				Description: "A list of team ids associated with the escalation policy.",
-				Optional:    true,
-				Required:    false,
-				Computed:    true,
-				ElementType: types.StringType,
-				Default:     listdefault.StaticValue(types.ListValueMust(types.StringType, []attr.Value{})),
-			},
 			"id": utils.ResourceIDAttribute(),
 		},
 		Blocks: map[string]schema.Block{
-			"step": schema.ListNestedBlock{
-				Description: "List of steps for the escalation policy.",
+			"rule": schema.ListNestedBlock{
+				Description: "List of team routing rules.",
 				NestedObject: schema.NestedBlockObject{
 					Attributes: map[string]schema.Attribute{
 						"id": schema.StringAttribute{
 							Computed:    true,
-							Description: "The ID of this step.",
+							Description: "The ID of this rule.",
 						},
-						"assignment": schema.StringAttribute{
-							Required:    true,
-							Description: "Specifies how this escalation step will assign targets. Can be `default` (page all targets at once) or `round-robin`.",
-						},
-						"escalate_after_seconds": schema.Int64Attribute{
-							Optional:    true,
+						"urgency": schema.StringAttribute{
 							Required:    false,
-							Description: "Defines how many seconds to wait before escalating to the next step.",
-							Validators:  []validator.Int64{int64validator.Between(0, 36000)},
+							Description: "Defines the query or condition that triggers this routing rule.",
+						},
+						"query": schema.StringAttribute{
+							Required:    false,
+							Description: "Defines the query or condition that triggers this routing rule.",
+						},
+						"escalation_policy": schema.StringAttribute{
+							Required:    false,
+							Description: "ID of the policy to be applied when this routing rule matches.",
 						},
 					},
 					Blocks: map[string]schema.Block{
-						"target": schema.ListNestedBlock{
-							Description: "List of targets for the step.",
+						"time_restriction": schema.SingleNestedBlock{
+							Description: "Holds time zone information and a list of time restrictions for a routing rule.",
+							Attributes: map[string]schema.Attribute{
+								"time_zone": schema.StringAttribute{
+									Required:    true,
+									Description: "Specifies the time zone applicable to the restrictions.",
+								},
+							},
+							Blocks: map[string]schema.Block{
+								"restriction": schema.ListNestedBlock{
+									Description: "List of restrictions for the rule.",
+									NestedObject: schema.NestedBlockObject{
+										Attributes: map[string]schema.Attribute{
+											"end_day": schema.StringAttribute{
+												Optional:    true,
+												Validators:  []validator.String{validators.NewEnumValidator[validator.String](datadogV2.NewLayerAttributesRestrictionsItemsEndDayFromValue)},
+												Description: "The weekday when the restriction period ends (Monday through Sunday).",
+											},
+											"end_time": schema.StringAttribute{
+												Optional:    true,
+												Description: "The time of day when the restriction ends (hh:mm:ss).",
+											},
+											"start_day": schema.StringAttribute{
+												Optional:    true,
+												Validators:  []validator.String{validators.NewEnumValidator[validator.String](datadogV2.NewLayerAttributesRestrictionsItemsStartDayFromValue)},
+												Description: "The weekday when the restriction period starts (Monday through Sunday).",
+											},
+											"start_time": schema.StringAttribute{
+												Optional:    true,
+												Description: "The time of day when the restriction begins (hh:mm:ss).",
+											},
+										},
+									},
+								},
+							},
+						},
+						"action": schema.ListNestedBlock{
+							Description: "Specifies the list of actions to perform when the routing rule is matched.",
 							NestedObject: schema.NestedBlockObject{
-								Attributes: map[string]schema.Attribute{
-									"user": schema.StringAttribute{
-										Optional:    true,
-										Description: "Targeted user ID.",
+								Blocks: map[string]schema.Block{
+									"send_slack_message": schema.SingleNestedBlock{
+										Attributes: map[string]schema.Attribute{
+											"channel": schema.StringAttribute{
+												Optional:    false,
+												Description: "Slack channel ID.",
+											},
+											"workspace": schema.StringAttribute{
+												Optional:    false,
+												Description: "Slack workspace ID.",
+											},
+										},
 									},
-									"schedule": schema.StringAttribute{
-										Optional:    true,
-										Description: "Targeted schedule ID.",
-									},
-									"team": schema.StringAttribute{
-										Optional:    true,
-										Description: "Targeted team ID.",
+									"send_teams_message": schema.SingleNestedBlock{
+										Attributes: map[string]schema.Attribute{
+											"channel": schema.StringAttribute{
+												Optional:    false,
+												Description: "Teams channel ID.",
+											},
+											"tenant": schema.StringAttribute{
+												Optional:    false,
+												Description: "Teams tenant ID.",
+											},
+											"team": schema.StringAttribute{
+												Optional:    false,
+												Description: "Teams team ID.",
+											},
+										},
 									},
 								},
 							},
@@ -153,12 +202,12 @@ func (r *onCallEscalationPolicyResource) Schema(_ context.Context, _ resource.Sc
 	}
 }
 
-func (r *onCallEscalationPolicyResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
+func (r *onCallTeamRulesResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, frameworkPath.Root("id"), request, response)
 }
 
-func (r *onCallEscalationPolicyResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
-	var state onCallEscalationPolicyModel
+func (r *onCallTeamRulesResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
+	var state onCallTeamRulesModel
 	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -166,7 +215,7 @@ func (r *onCallEscalationPolicyResource) Read(ctx context.Context, request resou
 	id := state.ID.ValueString()
 
 	include := "steps.targets"
-	resp, httpResp, err := r.Api.GetOnCallEscalationPolicy(r.Auth, id, datadogV2.GetOnCallEscalationPolicyOptionalParameters{
+	resp, httpResp, err := r.Api.GetOnCallTeamRules(r.Auth, id, datadogV2.GetOnCallTeamRulesOptionalParameters{
 		Include: &include,
 	})
 	if err != nil {
@@ -174,7 +223,7 @@ func (r *onCallEscalationPolicyResource) Read(ctx context.Context, request resou
 			response.State.RemoveResource(ctx)
 			return
 		}
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving OnCallEscalationPolicy"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving OnCallTeamRules"))
 		return
 	}
 	// TODO: restore once client is updated
@@ -189,25 +238,25 @@ func (r *onCallEscalationPolicyResource) Read(ctx context.Context, request resou
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (r *onCallEscalationPolicyResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
-	var plan onCallEscalationPolicyModel
+func (r *onCallTeamRulesResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
+	var plan onCallTeamRulesModel
 	response.Diagnostics.Append(request.Plan.Get(ctx, &plan)...)
 	if response.Diagnostics.HasError() {
 		return
 	}
 
-	body, diags := r.buildOnCallEscalationPolicyRequestBody(ctx, &plan)
+	body, diags := r.buildOnCallTeamRulesRequestBody(ctx, &plan)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
 		return
 	}
 
 	include := "steps.targets"
-	resp, _, err := r.Api.CreateOnCallEscalationPolicy(r.Auth, *body, datadogV2.CreateOnCallEscalationPolicyOptionalParameters{
+	resp, _, err := r.Api.CreateOnCallTeamRules(r.Auth, *body, datadogV2.CreateOnCallTeamRulesOptionalParameters{
 		Include: &include,
 	})
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error creating OnCallEscalationPolicy"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error creating OnCallTeamRules"))
 		return
 	}
 
@@ -216,11 +265,11 @@ func (r *onCallEscalationPolicyResource) Create(ctx context.Context, request res
 	//	response.Diagnostics.AddError("response contains unparsed object", err.Error())
 	//	return
 	//}
-	stepsById := map[string]*datadogV2.EscalationPolicyStep{}
+	stepsById := map[string]*datadogV2.TeamRulesStep{}
 
 	for _, item := range resp.GetIncluded() {
-		if item.EscalationPolicyStep != nil && item.EscalationPolicyStep.Id != nil {
-			stepsById[*item.EscalationPolicyStep.Id] = item.EscalationPolicyStep
+		if item.TeamRulesStep != nil && item.TeamRulesStep.Id != nil {
+			stepsById[*item.TeamRulesStep.Id] = item.TeamRulesStep
 		}
 	}
 
@@ -243,8 +292,8 @@ func (r *onCallEscalationPolicyResource) Create(ctx context.Context, request res
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (r *onCallEscalationPolicyResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
-	var plan onCallEscalationPolicyModel
+func (r *onCallTeamRulesResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
+	var plan onCallTeamRulesModel
 	response.Diagnostics.Append(request.Plan.Get(ctx, &plan)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -257,18 +306,18 @@ func (r *onCallEscalationPolicyResource) Update(ctx context.Context, request res
 		return
 	}
 
-	body, diags := r.buildOnCallEscalationPolicyUpdateRequestBody(ctx, &plan)
+	body, diags := r.buildOnCallTeamRulesUpdateRequestBody(ctx, &plan)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
 		return
 	}
 
 	include := "steps.targets"
-	resp, _, err := r.Api.UpdateOnCallEscalationPolicy(r.Auth, id, *body, datadogV2.UpdateOnCallEscalationPolicyOptionalParameters{
+	resp, _, err := r.Api.UpdateOnCallTeamRules(r.Auth, id, *body, datadogV2.UpdateOnCallTeamRulesOptionalParameters{
 		Include: &include,
 	})
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error updating OnCallEscalationPolicy"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error updating OnCallTeamRules"))
 		return
 	}
 	// TODO: restore once client is updated
@@ -282,8 +331,8 @@ func (r *onCallEscalationPolicyResource) Update(ctx context.Context, request res
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (r *onCallEscalationPolicyResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
-	var state onCallEscalationPolicyModel
+func (r *onCallTeamRulesResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
+	var state onCallTeamRulesModel
 	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -296,7 +345,7 @@ func (r *onCallEscalationPolicyResource) Delete(ctx context.Context, request res
 		return
 	}
 
-	httpResp, err := r.Api.DeleteOnCallEscalationPolicy(r.Auth, id)
+	httpResp, err := r.Api.DeleteOnCallTeamRules(r.Auth, id)
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == 404 {
 			return
@@ -306,8 +355,8 @@ func (r *onCallEscalationPolicyResource) Delete(ctx context.Context, request res
 	}
 }
 
-func (r *onCallEscalationPolicyResource) newState(ctx context.Context, plan *onCallEscalationPolicyModel, resp *datadogV2.EscalationPolicy) *onCallEscalationPolicyModel {
-	state := &onCallEscalationPolicyModel{}
+func (r *onCallTeamRulesResource) newState(ctx context.Context, plan *onCallTeamRulesModel, resp *datadogV2.TeamRules) *onCallTeamRulesModel {
+	state := &onCallTeamRulesModel{}
 	state.ID = types.StringValue(resp.Data.GetId())
 
 	data := resp.GetData()
@@ -333,11 +382,11 @@ func (r *onCallEscalationPolicyResource) newState(ctx context.Context, plan *onC
 	}
 	state.Teams, _ = types.ListValueFrom(ctx, types.StringType, teams)
 
-	stepsById := map[string]*datadogV2.EscalationPolicyStep{}
+	stepsById := map[string]*datadogV2.TeamRulesStep{}
 
 	for _, item := range resp.GetIncluded() {
-		if item.EscalationPolicyStep != nil && item.EscalationPolicyStep.Id != nil {
-			stepsById[*item.EscalationPolicyStep.Id] = item.EscalationPolicyStep
+		if item.TeamRulesStep != nil && item.TeamRulesStep.Id != nil {
+			stepsById[*item.TeamRulesStep.Id] = item.TeamRulesStep
 		}
 	}
 	//
@@ -355,7 +404,7 @@ func (r *onCallEscalationPolicyResource) newState(ctx context.Context, plan *onC
 }
 
 //
-//func newLayerModel(layer *datadogV2.Layer, membersByID map[string]*datadogV2.EscalationPolicyMember, layerExistingEffectiveDate customtypes.BackwardRFC3339Date) *escalationStepModel {
+//func newLayerModel(layer *datadogV2.Layer, membersByID map[string]*datadogV2.TeamRulesMember, layerExistingEffectiveDate customtypes.BackwardRFC3339Date) *escalationStepModel {
 //	membersData := layer.GetRelationships().Members.GetData()
 //	memberIds := make([]types.String, len(membersData))
 //	for j, member := range membersData {
@@ -413,32 +462,32 @@ func (r *onCallEscalationPolicyResource) newState(ctx context.Context, plan *onC
 //	}
 //}
 
-func (r *onCallEscalationPolicyResource) buildOnCallEscalationPolicyRequestBody(ctx context.Context, state *onCallEscalationPolicyModel) (*datadogV2.EscalationPolicyCreateRequest, diag.Diagnostics) {
+func (r *onCallTeamRulesResource) buildOnCallTeamRulesRequestBody(ctx context.Context, state *onCallTeamRulesModel) (*datadogV2.TeamRulesCreateRequest, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
-	req := &datadogV2.EscalationPolicyCreateRequest{}
+	req := &datadogV2.TeamRulesCreateRequest{}
 
 	var teams []string
 	diags.Append(state.Teams.ElementsAs(ctx, &teams, false)...)
 
-	var relationships *datadogV2.EscalationPolicyCreateRequestDataRelationships
+	var relationships *datadogV2.TeamRulesCreateRequestDataRelationships
 
-	teamRelationships := make([]datadogV2.EscalationPolicyCreateRequestDataRelationshipsTeamsDataItems, len(teams))
+	teamRelationships := make([]datadogV2.TeamRulesCreateRequestDataRelationshipsTeamsDataItems, len(teams))
 
 	for t, teamId := range teams {
-		item := datadogV2.NewEscalationPolicyCreateRequestDataRelationshipsTeamsDataItemsWithDefaults()
+		item := datadogV2.NewTeamRulesCreateRequestDataRelationshipsTeamsDataItemsWithDefaults()
 		item.SetId(teamId)
 		teamRelationships[t] = *item
 	}
 
 	if len(teamRelationships) > 0 {
-		relationships = &datadogV2.EscalationPolicyCreateRequestDataRelationships{
-			Teams: &datadogV2.EscalationPolicyCreateRequestDataRelationshipsTeams{
+		relationships = &datadogV2.TeamRulesCreateRequestDataRelationships{
+			Teams: &datadogV2.TeamRulesCreateRequestDataRelationshipsTeams{
 				Data: teamRelationships,
 			},
 		}
 	}
 
-	attributes := datadogV2.NewEscalationPolicyCreateRequestDataAttributesWithDefaults()
+	attributes := datadogV2.NewTeamRulesCreateRequestDataAttributesWithDefaults()
 
 	attributes.SetName(state.Name.ValueString())
 
@@ -450,9 +499,9 @@ func (r *onCallEscalationPolicyResource) buildOnCallEscalationPolicyRequestBody(
 		attributes.SetResolvePageOnPolicyEnd(state.ResolvePageOnPolicyEnd.ValueBool())
 	}
 
-	var steps []datadogV2.EscalationPolicyCreateRequestDataAttributesStepsItems
+	var steps []datadogV2.TeamRulesCreateRequestDataAttributesStepsItems
 	for _, plannedStep := range state.Steps {
-		step := datadogV2.NewEscalationPolicyCreateRequestDataAttributesStepsItemsWithDefaults()
+		step := datadogV2.NewTeamRulesCreateRequestDataAttributesStepsItemsWithDefaults()
 
 		plannedAssignment := plannedStep.Assignment.ValueString()
 		assignment := datadogV2.ESCALATIONPOLICYCREATEREQUESTDATAATTRIBUTESSTEPSITEMSASSIGNMENT_DEFAULT
@@ -473,12 +522,12 @@ func (r *onCallEscalationPolicyResource) buildOnCallEscalationPolicyRequestBody(
 			step.SetEscalateAfterSeconds(plannedStep.EscalateAfter.ValueInt64())
 		}
 
-		var targets []datadogV2.EscalationPolicyCreateRequestDataAttributesStepsItemsTargetsItems
+		var targets []datadogV2.TeamRulesCreateRequestDataAttributesStepsItemsTargetsItems
 
 		for _, plannedTarget := range plannedStep.Targets {
 			assignedFields := 0
 			if !plannedTarget.User.IsNull() {
-				targets = append(targets, datadogV2.EscalationPolicyCreateRequestDataAttributesStepsItemsTargetsItems{
+				targets = append(targets, datadogV2.TeamRulesCreateRequestDataAttributesStepsItemsTargetsItems{
 					Id:   ptrValue(plannedTarget.User.ValueString()),
 					Type: ptrValue(datadogV2.ESCALATIONPOLICYCREATEREQUESTDATAATTRIBUTESSTEPSITEMSTARGETSITEMSTYPE_USERS),
 				})
@@ -486,7 +535,7 @@ func (r *onCallEscalationPolicyResource) buildOnCallEscalationPolicyRequestBody(
 			}
 
 			if !plannedTarget.Schedule.IsNull() {
-				targets = append(targets, datadogV2.EscalationPolicyCreateRequestDataAttributesStepsItemsTargetsItems{
+				targets = append(targets, datadogV2.TeamRulesCreateRequestDataAttributesStepsItemsTargetsItems{
 					Id:   ptrValue(plannedTarget.Schedule.ValueString()),
 					Type: ptrValue(datadogV2.ESCALATIONPOLICYCREATEREQUESTDATAATTRIBUTESSTEPSITEMSTARGETSITEMSTYPE_SCHEDULES),
 				})
@@ -494,7 +543,7 @@ func (r *onCallEscalationPolicyResource) buildOnCallEscalationPolicyRequestBody(
 			}
 
 			if !plannedTarget.Team.IsNull() {
-				targets = append(targets, datadogV2.EscalationPolicyCreateRequestDataAttributesStepsItemsTargetsItems{
+				targets = append(targets, datadogV2.TeamRulesCreateRequestDataAttributesStepsItemsTargetsItems{
 					Id:   ptrValue(plannedTarget.Team.ValueString()),
 					Type: ptrValue(datadogV2.ESCALATIONPOLICYCREATEREQUESTDATAATTRIBUTESSTEPSITEMSTARGETSITEMSTYPE_TEAMS),
 				})
@@ -513,8 +562,8 @@ func (r *onCallEscalationPolicyResource) buildOnCallEscalationPolicyRequestBody(
 	}
 	attributes.SetSteps(steps)
 
-	req = datadogV2.NewEscalationPolicyCreateRequest(
-		datadogV2.EscalationPolicyCreateRequestData{
+	req = datadogV2.NewTeamRulesCreateRequest(
+		datadogV2.TeamRulesCreateRequestData{
 			Type:          datadogV2.ESCALATIONPOLICYCREATEREQUESTDATATYPE_POLICIES,
 			Attributes:    *attributes,
 			Relationships: relationships,
@@ -532,29 +581,29 @@ func ptrValue[T any](str T) *T {
 	return &str
 }
 
-func (r *onCallEscalationPolicyResource) buildOnCallEscalationPolicyUpdateRequestBody(
+func (r *onCallTeamRulesResource) buildOnCallTeamRulesUpdateRequestBody(
 	ctx context.Context,
-	plan *onCallEscalationPolicyModel,
-) (*datadogV2.EscalationPolicyUpdateRequest, diag.Diagnostics) {
+	plan *onCallTeamRulesModel,
+) (*datadogV2.TeamRulesUpdateRequest, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
-	req := &datadogV2.EscalationPolicyUpdateRequest{}
-	attributes := datadogV2.NewEscalationPolicyUpdateRequestDataAttributesWithDefaults()
+	req := &datadogV2.TeamRulesUpdateRequest{}
+	attributes := datadogV2.NewTeamRulesUpdateRequestDataAttributesWithDefaults()
 	var teams []string
 	diags.Append(plan.Teams.ElementsAs(ctx, &teams, false)...)
 
-	var relationships *datadogV2.EscalationPolicyUpdateRequestDataRelationships
+	var relationships *datadogV2.TeamRulesUpdateRequestDataRelationships
 
-	teamRelationships := make([]datadogV2.EscalationPolicyUpdateRequestDataRelationshipsTeamsDataItems, len(teams))
+	teamRelationships := make([]datadogV2.TeamRulesUpdateRequestDataRelationshipsTeamsDataItems, len(teams))
 
 	for t, teamId := range teams {
-		item := datadogV2.NewEscalationPolicyUpdateRequestDataRelationshipsTeamsDataItemsWithDefaults()
+		item := datadogV2.NewTeamRulesUpdateRequestDataRelationshipsTeamsDataItemsWithDefaults()
 		item.SetId(teamId)
 		teamRelationships[t] = *item
 	}
 
 	if len(teamRelationships) > 0 {
-		relationships = &datadogV2.EscalationPolicyUpdateRequestDataRelationships{
-			Teams: &datadogV2.EscalationPolicyUpdateRequestDataRelationshipsTeams{
+		relationships = &datadogV2.TeamRulesUpdateRequestDataRelationships{
+			Teams: &datadogV2.TeamRulesUpdateRequestDataRelationshipsTeams{
 				Data: teamRelationships,
 			},
 		}
@@ -574,9 +623,9 @@ func (r *onCallEscalationPolicyResource) buildOnCallEscalationPolicyUpdateReques
 	}
 
 	if plan.Steps != nil {
-		var steps []datadogV2.EscalationPolicyUpdateRequestDataAttributesStepsItems
+		var steps []datadogV2.TeamRulesUpdateRequestDataAttributesStepsItems
 		for _, plannedStep := range plan.Steps {
-			step := datadogV2.NewEscalationPolicyUpdateRequestDataAttributesStepsItemsWithDefaults()
+			step := datadogV2.NewTeamRulesUpdateRequestDataAttributesStepsItemsWithDefaults()
 
 			plannedAssignment := plannedStep.Assignment.ValueString()
 			assignment := datadogV2.ESCALATIONPOLICYUPDATEREQUESTDATAATTRIBUTESSTEPSITEMSASSIGNMENT_DEFAULT
@@ -597,12 +646,12 @@ func (r *onCallEscalationPolicyResource) buildOnCallEscalationPolicyUpdateReques
 				step.SetEscalateAfterSeconds(plannedStep.EscalateAfter.ValueInt64())
 			}
 
-			var targets []datadogV2.EscalationPolicyUpdateRequestDataAttributesStepsItemsTargetsItems
+			var targets []datadogV2.TeamRulesUpdateRequestDataAttributesStepsItemsTargetsItems
 
 			for _, plannedTarget := range plannedStep.Targets {
 				assignedFields := 0
 				if !plannedTarget.User.IsNull() {
-					targets = append(targets, datadogV2.EscalationPolicyUpdateRequestDataAttributesStepsItemsTargetsItems{
+					targets = append(targets, datadogV2.TeamRulesUpdateRequestDataAttributesStepsItemsTargetsItems{
 						Id:   ptrValue(plannedTarget.User.ValueString()),
 						Type: ptrValue(datadogV2.ESCALATIONPOLICYUPDATEREQUESTDATAATTRIBUTESSTEPSITEMSTARGETSITEMSTYPE_USERS),
 					})
@@ -610,7 +659,7 @@ func (r *onCallEscalationPolicyResource) buildOnCallEscalationPolicyUpdateReques
 				}
 
 				if !plannedTarget.Schedule.IsNull() {
-					targets = append(targets, datadogV2.EscalationPolicyUpdateRequestDataAttributesStepsItemsTargetsItems{
+					targets = append(targets, datadogV2.TeamRulesUpdateRequestDataAttributesStepsItemsTargetsItems{
 						Id:   ptrValue(plannedTarget.Schedule.ValueString()),
 						Type: ptrValue(datadogV2.ESCALATIONPOLICYUPDATEREQUESTDATAATTRIBUTESSTEPSITEMSTARGETSITEMSTYPE_SCHEDULES),
 					})
@@ -618,7 +667,7 @@ func (r *onCallEscalationPolicyResource) buildOnCallEscalationPolicyUpdateReques
 				}
 
 				if !plannedTarget.Team.IsNull() {
-					targets = append(targets, datadogV2.EscalationPolicyUpdateRequestDataAttributesStepsItemsTargetsItems{
+					targets = append(targets, datadogV2.TeamRulesUpdateRequestDataAttributesStepsItemsTargetsItems{
 						Id:   ptrValue(plannedTarget.Team.ValueString()),
 						Type: ptrValue(datadogV2.ESCALATIONPOLICYUPDATEREQUESTDATAATTRIBUTESSTEPSITEMSTARGETSITEMSTYPE_TEAMS),
 					})
@@ -638,8 +687,8 @@ func (r *onCallEscalationPolicyResource) buildOnCallEscalationPolicyUpdateReques
 		attributes.SetSteps(steps)
 	}
 
-	req = datadogV2.NewEscalationPolicyUpdateRequest(
-		datadogV2.EscalationPolicyUpdateRequestData{
+	req = datadogV2.NewTeamRulesUpdateRequest(
+		datadogV2.TeamRulesUpdateRequestData{
 			Id:            plan.ID.ValueString(),
 			Type:          datadogV2.ESCALATIONPOLICYUPDATEREQUESTDATATYPE_POLICIES,
 			Attributes:    *attributes,
