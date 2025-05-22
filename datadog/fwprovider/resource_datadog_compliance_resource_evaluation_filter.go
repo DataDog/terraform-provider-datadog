@@ -2,7 +2,6 @@ package fwprovider
 
 import (
 	"context"
-	"fmt"
 	"regexp"
 	"strings"
 
@@ -78,11 +77,11 @@ func toSliceString(list types.List) ([]string, diag.Diagnostics) {
 
 func (r *ComplianceResourceEvaluationFilter) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "Manage a single resource evaluation filter.",
+		Description: "Provides a Datadog ResourceEvaluationFilter resource. This can be used to create and manage a resource evaluation filter.",
 		Attributes: map[string]schema.Attribute{
 			"cloud_provider": schema.StringAttribute{
 				Required:    true,
-				Description: "The cloud provider of the filter's targeted resource.",
+				Description: "The cloud provider of the filter's targeted resource. Only `aws`, `gcp` or `azure` are considered valid cloud providers.",
 			},
 			"id": schema.StringAttribute{
 				Required:    true,
@@ -187,7 +186,6 @@ func (r *ComplianceResourceEvaluationFilter) Update(ctx context.Context, request
 		return
 	}
 
-	fmt.Println("DEBUG UPDATE - creating payload")
 	body, diags := r.buildUpdateResourceEvaluationFilterRequest(ctx, &state)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
