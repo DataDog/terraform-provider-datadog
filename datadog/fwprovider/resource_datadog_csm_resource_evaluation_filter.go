@@ -17,6 +17,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
@@ -81,11 +82,11 @@ func (r *CsmResourceEvaluationFilter) Schema(_ context.Context, _ resource.Schem
 		Attributes: map[string]schema.Attribute{
 			"cloud_provider": schema.StringAttribute{
 				Required:    true,
-				Description: "The cloud provider of the resource that will be target of the filters.",
+				Description: "The cloud provider of the filter's targeted resource",
 			},
 			"id": schema.StringAttribute{
 				Required:    true,
-				Description: "The ID of the resource that will be the target of the filters. Different cloud providers target different resource ids:\n  - `aws`: account id \n  - `gcp`: project id\n  - `azure`: subscription id",
+				Description: "The ID of the of the filter's targeted resource. Different cloud providers target different resource IDs\n  - `aws`: account id \n  - `gcp`: project id\n  - `azure`: subscription id",
 			},
 			"tags": schema.ListAttribute{
 				Required:    true,
@@ -93,7 +94,7 @@ func (r *CsmResourceEvaluationFilter) Schema(_ context.Context, _ resource.Schem
 				Validators: []validator.List{
 					listvalidator.ValueStringsAre(tagFormatValidator),
 				},
-				Description: "List of tags to filter the misconfiguration detections on. Each entry should follow the format: 'key:value'.",
+				Description: "List of tags to filter misconfiguration detections. Each entry should follow the format: \"key:\":\"value\".",
 			},
 		},
 	}

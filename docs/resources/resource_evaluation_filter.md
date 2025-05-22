@@ -26,17 +26,17 @@ resource "datadog_resource_evaluation_filter" "basic_filter" {
 
 ### Required
 
-- `cloud_provider` (String) The cloud provider of the resource that will be target of the filters.
-- `id` (String) The ID of the resource that will be the target of the filters. Different cloud providers target different resource ids:
+- `cloud_provider` (String) The cloud provider of the filter's targeted resource
+- `id` (String) The ID of the of the filter's targeted resource. Different cloud providers target different resource IDs
   - `aws`: account id 
   - `gcp`: project id
   - `azure`: subscription id
-- `tags` (Set of String) Set of tags to filter the misconfiguration detections on. Each entry should follow the format: "key:":"value".
+- `tags` (List of String) List of tags to filter misconfiguration detections. Each entry should follow the format: "key:":"value".
 
 ## Import
 
 Import is supported using the following syntax:
 
 ```shell
-terraform import datadog_resource_evaluation_filer.test_filter aws:00000000000000
+terraform import datadog_resource_evaluation_filter.test_filter aws:00000000000000
 ```
