@@ -6,6 +6,10 @@ import (
 	"regexp"
 	"strings"
 
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+
 	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -83,11 +87,16 @@ func (r *ComplianceResourceEvaluationFilter) Schema(_ context.Context, _ resourc
 			"cloud_provider": schema.StringAttribute{
 				Required:    true,
 				Description: "The cloud provider of the filter's targeted resource. Only `aws`, `gcp` or `azure` are considered valid cloud providers.",
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
 			},
 			"id": schema.StringAttribute{
 				Required:    true,
 				Description: "The ID of the of the filter's targeted resource. Different cloud providers target different resource IDs:\n  - `aws`: account id \n  - `gcp`: project id\n  - `azure`: subscription id",
-			},
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				}},
 			"tags": schema.ListAttribute{
 				Required:    true,
 				ElementType: types.StringType,

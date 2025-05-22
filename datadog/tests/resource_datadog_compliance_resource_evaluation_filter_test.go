@@ -71,6 +71,32 @@ func TestAccResourceEvaluationFilter(t *testing.T) {
 					),
 				),
 			},
+			{
+				// Changing the cloud provider, but keeping the rest should force deletion
+				Config: fmt.Sprintf(`
+				resource "datadog_compliance_resource_evaluation_filter" "filter_test" {
+					tags = ["tag3:val3", "tag1:val1", "tag2:val2"]
+					cloud_provider = "azure"
+					id = "%s"
+				}
+				`, accountId),
+				// This should trigger a diff or update because tags are now a list
+				PlanOnly:           true,
+				ExpectNonEmptyPlan: true,
+			},
+			{
+				// Changing the id, but keeping the rest should force deletion
+				Config: fmt.Sprintf(`
+				resource "datadog_compliance_resource_evaluation_filter" "filter_test" {
+					tags = ["tag3:val3", "tag1:val1", "tag2:val2"]
+					cloud_provider = "%s"
+					id = "123"
+				}
+				`, provider),
+				// This should trigger a diff or update because tags are now a list
+				PlanOnly:           true,
+				ExpectNonEmptyPlan: true,
+			},
 		},
 	})
 }
