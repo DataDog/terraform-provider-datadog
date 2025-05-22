@@ -6,23 +6,21 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/hashicorp/terraform-plugin-framework/path"
-
+	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
-	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
-
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
-
-	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
-	"github.com/hashicorp/terraform-plugin-framework-validators/setvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
+	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
-type ResourceEvaluationFilter struct {
+type CsmResourceEvaluationFilter struct {
 	API  *datadogV2.SecurityMonitoringApi
 	Auth context.Context
 }
@@ -30,25 +28,25 @@ type ResourceEvaluationFilter struct {
 type ResourceEvaluationFilterModel struct {
 	CloudProvider types.String `tfsdk:"cloud_provider"`
 	ID            types.String `tfsdk:"id"`
-	Tags          types.Set    `tfsdk:"tags"`
+	Tags          types.List   `tfsdk:"tags"`
 }
 
 func NewResourceEvaluationFilter() resource.Resource {
-	return &ResourceEvaluationFilter{}
+	return &CsmResourceEvaluationFilter{}
 }
 
 var (
-	_ resource.ResourceWithConfigure   = &ResourceEvaluationFilter{}
-	_ resource.ResourceWithImportState = &ResourceEvaluationFilter{}
+	_ resource.ResourceWithConfigure   = &CsmResourceEvaluationFilter{}
+	_ resource.ResourceWithImportState = &CsmResourceEvaluationFilter{}
 )
 
-func (r *ResourceEvaluationFilter) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
+func (r *CsmResourceEvaluationFilter) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
 	providerData, _ := request.ProviderData.(*FrameworkProvider)
 	r.API = providerData.DatadogApiInstances.GetSecurityMonitoringApiV2()
 	r.Auth = providerData.Auth
 }
 
-func (r *ResourceEvaluationFilter) Metadata(_ context.Context, _ resource.MetadataRequest, resp *resource.MetadataResponse) {
+func (r *CsmResourceEvaluationFilter) Metadata(_ context.Context, _ resource.MetadataRequest, resp *resource.MetadataResponse) {
 	resp.TypeName = "resource_evaluation_filter"
 }
 
@@ -57,18 +55,18 @@ var tagFormatValidator = stringvalidator.RegexMatches(
 	"each tag must be in the format 'key:value' (colon-separated)",
 )
 
-func toSliceString(set types.Set) ([]string, diag.Diagnostics) {
+func toSliceString(list types.List) ([]string, diag.Diagnostics) {
 	var diags diag.Diagnostics
 	result := make([]string, 0)
 
-	if set.IsNull() || set.IsUnknown() {
+	if list.IsNull() || list.IsUnknown() {
 		return result, nil
 	}
 
-	for _, elem := range set.Elements() {
+	for _, elem := range list.Elements() {
 		strVal, ok := elem.(types.String)
 		if !ok {
-			diags.AddError("Invalid element type", "Expected string in set but found a different type")
+			diags.AddError("Invalid element type", "Expected string in list but found a different type")
 			continue
 		}
 		result = append(result, strVal.ValueString())
@@ -77,7 +75,7 @@ func toSliceString(set types.Set) ([]string, diag.Diagnostics) {
 	return result, diags
 }
 
-func (r *ResourceEvaluationFilter) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
+func (r *CsmResourceEvaluationFilter) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		Description: "Manage a single resource evaluation filter.",
 		Attributes: map[string]schema.Attribute{
@@ -89,21 +87,20 @@ func (r *ResourceEvaluationFilter) Schema(_ context.Context, _ resource.SchemaRe
 				Required:    true,
 				Description: "The ID of the resource that will be the target of the filters. Different cloud providers target different resource ids:\n  - `aws`: account id \n  - `gcp`: project id\n  - `azure`: subscription id",
 			},
-			"tags": schema.SetAttribute{
+			"tags": schema.ListAttribute{
 				Required:    true,
 				ElementType: types.StringType,
-				Validators: []validator.Set{
-					setvalidator.ValueStringsAre(tagFormatValidator),
+				Validators: []validator.List{
+					listvalidator.ValueStringsAre(tagFormatValidator),
 				},
-				Description: "Set of tags to filter the misconfiguration detections on. Each entry should follow the format: \"key:\":\"value\".",
+				Description: "List of tags to filter the misconfiguration detections on. Each entry should follow the format: 'key:value'.",
 			},
 		},
 	}
 }
 
-func (r *ResourceEvaluationFilter) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
+func (r *CsmResourceEvaluationFilter) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
 	var state ResourceEvaluationFilterModel
-
 	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -116,7 +113,6 @@ func (r *ResourceEvaluationFilter) Create(ctx context.Context, request resource.
 	}
 
 	resp, _, err := r.API.UpdateResourceEvaluationFilters(r.Auth, *body)
-
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error updating resource evaluation filter"))
 		return
@@ -128,7 +124,6 @@ func (r *ResourceEvaluationFilter) Create(ctx context.Context, request resource.
 
 	attributes := resp.Data.GetAttributes()
 	r.UpdateState(ctx, &state, &attributes)
-	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
@@ -140,12 +135,10 @@ func convertStringSliceToAttrValues(s []string) []attr.Value {
 	return out
 }
 
-func (r *ResourceEvaluationFilter) UpdateState(_ context.Context, state *ResourceEvaluationFilterModel, attributes *datadogV2.ResourceFilterAttributes) {
-	// since we are handling a response after an update/read request, the cloud provider map will have at most one key
-	// and the map of each cloud provider will also have at most one key
+func (r *CsmResourceEvaluationFilter) UpdateState(_ context.Context, state *ResourceEvaluationFilterModel, attributes *datadogV2.ResourceFilterAttributes) {
 	for p, accounts := range attributes.CloudProvider {
 		for id, tagList := range accounts {
-			tags := types.SetValueMust(types.StringType, convertStringSliceToAttrValues(tagList))
+			tags := types.ListValueMust(types.StringType, convertStringSliceToAttrValues(tagList))
 			state.CloudProvider = types.StringValue(p)
 			state.ID = types.StringValue(id)
 			state.Tags = tags
@@ -155,7 +148,7 @@ func (r *ResourceEvaluationFilter) UpdateState(_ context.Context, state *Resourc
 	}
 }
 
-func (r *ResourceEvaluationFilter) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
+func (r *CsmResourceEvaluationFilter) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
 	var state ResourceEvaluationFilterModel
 	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
@@ -166,6 +159,7 @@ func (r *ResourceEvaluationFilter) Read(ctx context.Context, request resource.Re
 		response.Diagnostics.AddError("Missing cloud_provider", "cloud_provider is required for lookup")
 		return
 	}
+
 	provider := state.CloudProvider.ValueString()
 	skipCache := true
 
@@ -176,18 +170,16 @@ func (r *ResourceEvaluationFilter) Read(ctx context.Context, request resource.Re
 	}
 	resp, _, err := r.API.GetResourceEvaluationFilters(r.Auth, params)
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving ResourceEvaluationFilter"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving CsmResourceEvaluationFilter"))
 		return
 	}
 
 	attributes := resp.Data.GetAttributes()
 	r.UpdateState(ctx, &state, &attributes)
-
-	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (r *ResourceEvaluationFilter) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
+func (r *CsmResourceEvaluationFilter) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
 	var state ResourceEvaluationFilterModel
 	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
@@ -196,7 +188,6 @@ func (r *ResourceEvaluationFilter) Update(ctx context.Context, request resource.
 
 	fmt.Println("DEBUG UPDATE - creating payload")
 	body, diags := r.buildUpdateResourceEvaluationFilterRequest(ctx, &state)
-
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
 		return
@@ -204,7 +195,7 @@ func (r *ResourceEvaluationFilter) Update(ctx context.Context, request resource.
 
 	resp, _, err := r.API.UpdateResourceEvaluationFilters(r.Auth, *body)
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error updating ResourceEvaluationFilter"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error updating CsmResourceEvaluationFilter"))
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {
@@ -214,21 +205,17 @@ func (r *ResourceEvaluationFilter) Update(ctx context.Context, request resource.
 
 	attributes := resp.Data.GetAttributes()
 	r.UpdateState(ctx, &state, &attributes)
-	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (r *ResourceEvaluationFilter) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
+func (r *CsmResourceEvaluationFilter) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
 	var state ResourceEvaluationFilterModel
 	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
 	}
 
-	// empty tags
-	state.Tags = types.SetValueMust(types.StringType, []attr.Value{})
-
-	// create body as normal with empty tags
+	state.Tags = types.ListValueMust(types.StringType, []attr.Value{})
 	body, diags := r.buildUpdateResourceEvaluationFilterRequest(ctx, &state)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
@@ -237,7 +224,7 @@ func (r *ResourceEvaluationFilter) Delete(ctx context.Context, request resource.
 
 	resp, _, err := r.API.UpdateResourceEvaluationFilters(r.Auth, *body)
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error deleting ResourceEvaluationFilter"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error deleting CsmResourceEvaluationFilter"))
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {
@@ -246,12 +233,11 @@ func (r *ResourceEvaluationFilter) Delete(ctx context.Context, request resource.
 	}
 }
 
-func (r *ResourceEvaluationFilter) ImportState(
+func (r *CsmResourceEvaluationFilter) ImportState(
 	ctx context.Context,
 	req resource.ImportStateRequest,
 	resp *resource.ImportStateResponse,
 ) {
-	// Expected import format: "cloud_provider:id" (e.g., "aws:123456789")
 	parts := strings.Split(req.ID, ":")
 	if len(parts) != 2 {
 		resp.Diagnostics.AddError(
@@ -264,12 +250,11 @@ func (r *ResourceEvaluationFilter) ImportState(
 	cloudProvider := parts[0]
 	id := parts[1]
 
-	// Set attributes into Terraform state so Read() can hydrate the full resource
 	resp.State.SetAttribute(ctx, path.Root("cloud_provider"), cloudProvider)
 	resp.State.SetAttribute(ctx, path.Root("id"), id)
 }
 
-func (r *ResourceEvaluationFilter) buildUpdateResourceEvaluationFilterRequest(ctx context.Context, state *ResourceEvaluationFilterModel) (*datadogV2.UpdateResourceEvaluationFiltersRequest, diag.Diagnostics) {
+func (r *CsmResourceEvaluationFilter) buildUpdateResourceEvaluationFilterRequest(ctx context.Context, state *ResourceEvaluationFilterModel) (*datadogV2.UpdateResourceEvaluationFiltersRequest, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
 	data := datadogV2.NewUpdateResourceEvaluationFiltersRequestDataWithDefaults()
 

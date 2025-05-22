@@ -23,6 +23,7 @@ func TestAccResourceEvaluationFilter(t *testing.T) {
 	accountId := "123456789"
 	resourceName := "datadog_resource_evaluation_filter.filter_test"
 	simpleTags := []string{"tag1:val1", "tag2:val2", "tag3:val3"}
+	reorderedTags := []string{"tag3:val3", "tag2:val2", "tag1:val1"}
 	provider := "aws"
 	//invalidProvider := "invalid"
 
@@ -59,9 +60,16 @@ func TestAccResourceEvaluationFilter(t *testing.T) {
 					id = "%s"
 				}
 				`, provider, accountId),
-				// This should not trigger a diff or update because tags are now a set
-				ExpectNonEmptyPlan: false,
-				PlanOnly:           true,
+				// This should trigger a diff or update because tags are now a list
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckResourceEvaluationFilterExists(providers.frameworkProvider, resourceName),
+					checkResourceEvaluationFilterContent(
+						resourceName,
+						accountId,
+						provider,
+						reorderedTags,
+					),
+				),
 			},
 		},
 	})
