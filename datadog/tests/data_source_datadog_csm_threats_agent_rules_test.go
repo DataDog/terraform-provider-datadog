@@ -13,7 +13,7 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
 )
 
-func TestAccCSMThreatsMultiPolicyAgentRulesDataSource(t *testing.T) {
+func TestAccCSMThreatsAgentRulesDataSource(t *testing.T) {
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
@@ -30,7 +30,7 @@ func TestAccCSMThreatsMultiPolicyAgentRulesDataSource(t *testing.T) {
 	agentRuleName := uniqueAgentRuleName(ctx)
 	agentRuleConfig := fmt.Sprintf(`
 		%s
-		resource "datadog_csm_threats_multi_policy_agent_rule" "agent_rule_for_data_source_test" {
+		resource "datadog_csm_threats_agent_rule" "agent_rule_for_data_source_test" {
 			name              = "%s"
 			policy_id         = datadog_csm_threats_policy.policy_for_test.id
 			enabled           = true
@@ -39,34 +39,34 @@ func TestAccCSMThreatsMultiPolicyAgentRulesDataSource(t *testing.T) {
 			product_tags      = ["compliance_framework:PCI-DSS"]
 		}
 	`, policyConfig, agentRuleName)
-	dataSourceName := "data.datadog_csm_threats_multi_policy_agent_rules.my_data_source"
+	dataSourceName := "data.datadog_csm_threats_agent_rules.my_data_source"
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV5ProviderFactories: accProviders,
-		CheckDestroy:             testAccCheckCSMThreatsMultiPolicyAgentRuleDestroy(providers.frameworkProvider),
+		CheckDestroy:             testAccCheckCSMThreatsAgentRuleDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
 				// Create an agent rule to have at least one
 				Config: agentRuleConfig,
-				Check:  testAccCheckCSMThreatsMultiPolicyAgentRuleExists(providers.frameworkProvider, "datadog_csm_threats_multi_policy_agent_rule.agent_rule_for_data_source_test"),
+				Check:  testAccCheckCSMThreatsAgentRuleExists(providers.frameworkProvider, "datadog_csm_threats_agent_rule.agent_rule_for_data_source_test"),
 			},
 			{
 				Config: fmt.Sprintf(`
 				%s
-				data "datadog_csm_threats_multi_policy_agent_rules" "my_data_source" {
+				data "datadog_csm_threats_agent_rules" "my_data_source" {
 					policy_id = datadog_csm_threats_policy.policy_for_test.id
 				}
 				`, agentRuleConfig),
-				Check: checkCSMThreatsMultiPolicyAgentRulesDataSourceContent(providers.frameworkProvider, dataSourceName, agentRuleName),
+				Check: checkCSMThreatsAgentRulesDataSourceContent(providers.frameworkProvider, dataSourceName, agentRuleName),
 			},
 		},
 	})
 }
 
-func testAccCheckDatadogCSMThreatsMultiPolicyAgentRulesDataSourceConfig(policyName, agentRuleName string) string {
+func testAccCheckDatadogCSMThreatsAgentRulesDataSourceConfig(policyName, agentRuleName string) string {
 	return fmt.Sprintf(`
-data "datadog_csm_threats_multi_policy_agent_rules" "my_data_source" {
+data "datadog_csm_threats_agent_rules" "my_data_source" {
   policy_id = datadog_csm_threats_policy.policy.id
 }
 
@@ -77,7 +77,7 @@ resource "datadog_csm_threats_policy" "policy" {
   tags = ["host_name:test_host"]
 }
 
-resource "datadog_csm_threats_multi_policy_agent_rule" "agent_rule" {
+resource "datadog_csm_threats_agent_rule" "agent_rule" {
   name = "%s"
   description = "Test description"
   enabled = true
@@ -88,7 +88,7 @@ resource "datadog_csm_threats_multi_policy_agent_rule" "agent_rule" {
 `, policyName, agentRuleName)
 }
 
-func checkCSMThreatsMultiPolicyAgentRulesDataSourceContent(accProvider *fwprovider.FrameworkProvider, dataSourceName string, agentRuleName string) resource.TestCheckFunc {
+func checkCSMThreatsAgentRulesDataSourceContent(accProvider *fwprovider.FrameworkProvider, dataSourceName string, agentRuleName string) resource.TestCheckFunc {
 	return func(state *terraform.State) error {
 		res, ok := state.RootModule().Resources[dataSourceName]
 		if !ok {
