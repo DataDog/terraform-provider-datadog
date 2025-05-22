@@ -36,7 +36,7 @@ interactions:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 168.291708ms
+        duration: 158.263ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -63,13 +63,13 @@ interactions:
         trailer: {}
         content_length: 175
         uncompressed: false
-        body: '{"data":{"id":"55d6615a-7b8b-453f-ba78-27d2ad05ef25","type":"csm_resource_filter","attributes":{"cloud_provider":{"aws":{"223456789":["tag1:val1","tag2:val2","tag3:val3"]}}}}}'
+        body: '{"data":{"id":"feae3ec8-99c4-4a7a-97a9-51b8a9b1b0bf","type":"csm_resource_filter","attributes":{"cloud_provider":{"aws":{"223456789":["tag1:val1","tag2:val2","tag3:val3"]}}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 171.787833ms
+        duration: 147.323625ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -96,13 +96,13 @@ interactions:
         trailer: {}
         content_length: 175
         uncompressed: false
-        body: '{"data":{"id":"278ca348-e6aa-482c-bea8-09f551de96a7","type":"csm_resource_filter","attributes":{"cloud_provider":{"aws":{"223456789":["tag1:val1","tag2:val2","tag3:val3"]}}}}}'
+        body: '{"data":{"id":"c1f73230-6f37-4713-9b13-179049db6f9a","type":"csm_resource_filter","attributes":{"cloud_provider":{"aws":{"223456789":["tag1:val1","tag2:val2","tag3:val3"]}}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 157.403042ms
+        duration: 145.40975ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -129,13 +129,13 @@ interactions:
         trailer: {}
         content_length: 175
         uncompressed: false
-        body: '{"data":{"id":"0fdcb999-f497-4ed6-a578-4cbdb88664e4","type":"csm_resource_filter","attributes":{"cloud_provider":{"aws":{"223456789":["tag1:val1","tag2:val2","tag3:val3"]}}}}}'
+        body: '{"data":{"id":"5879db92-6496-4167-ad9e-ac338277964b","type":"csm_resource_filter","attributes":{"cloud_provider":{"aws":{"223456789":["tag1:val1","tag2:val2","tag3:val3"]}}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 154.992625ms
+        duration: 143.792208ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -171,4 +171,4 @@ interactions:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 169.999958ms
+        duration: 172.2335ms

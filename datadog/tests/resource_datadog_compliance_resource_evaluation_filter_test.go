@@ -21,7 +21,7 @@ func TestAccResourceEvaluationFilter(t *testing.T) {
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
 	accountId := "123456789"
-	resourceName := "datadog_resource_evaluation_filter.filter_test"
+	resourceName := "datadog_compliance_resource_evaluation_filter.filter_test"
 	simpleTags := []string{"tag1:val1", "tag2:val2", "tag3:val3"}
 	reorderedTags := []string{"tag3:val3", "tag2:val2", "tag1:val1"}
 	provider := "aws"
@@ -34,7 +34,7 @@ func TestAccResourceEvaluationFilter(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: fmt.Sprintf(`
-				resource "datadog_resource_evaluation_filter" "filter_test" {
+				resource "datadog_compliance_resource_evaluation_filter" "filter_test" {
 					tags = ["tag1:val1", "tag2:val2", "tag3:val3"]
 					cloud_provider = "%s"
 					id = "%s"
@@ -54,7 +54,7 @@ func TestAccResourceEvaluationFilter(t *testing.T) {
 			{
 				// Same tags as step 1 but reordered
 				Config: fmt.Sprintf(`
-				resource "datadog_resource_evaluation_filter" "filter_test" {
+				resource "datadog_compliance_resource_evaluation_filter" "filter_test" {
 					tags = ["tag3:val3", "tag1:val1", "tag2:val2"]
 					cloud_provider = "%s"
 					id = "%s"
@@ -79,7 +79,7 @@ func TestAccResourceEvaluationFilterImport(t *testing.T) {
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
 	accountId := "223456789"
-	resourceName := "datadog_resource_evaluation_filter.filter_test"
+	resourceName := "datadog_compliance_resource_evaluation_filter.filter_test"
 	simpleTags := []string{"tag1:val1", "tag2:val2", "tag3:val3"}
 	provider := "aws"
 	//invalidProvider := "invalid"
@@ -90,7 +90,7 @@ func TestAccResourceEvaluationFilterImport(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: fmt.Sprintf(`
-				resource "datadog_resource_evaluation_filter" "filter_test" {
+				resource "datadog_compliance_resource_evaluation_filter" "filter_test" {
 					tags = ["tag1:val1", "tag2:val2", "tag3:val3"]
 					cloud_provider = "%s"
 					id = "%s"
@@ -129,7 +129,7 @@ func TestAccResourceEvaluationFilterInvalid(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: fmt.Sprintf(`
-				resource "datadog_resource_evaluation_filter" "filter_test" {
+				resource "datadog_compliance_resource_evaluation_filter" "filter_test" {
 					tags = ["tag1:val1", "invalidTag:asdasf:InvalidTag", "tag3:val3"]
 					cloud_provider = "%s"
 					id = "%s"
@@ -140,7 +140,7 @@ func TestAccResourceEvaluationFilterInvalid(t *testing.T) {
 			},
 			{
 				Config: fmt.Sprintf(`
-				resource "datadog_resource_evaluation_filter" "filter_test" {
+				resource "datadog_compliance_resource_evaluation_filter" "filter_test" {
 					tags = ["tag1:val1", "tag3:val3"]
 					cloud_provider = "%s"
 					id = "%s"
@@ -206,8 +206,8 @@ func testAccCheckResourceEvaluationFilterExists(accProvider *fwprovider.Framewor
 			return fmt.Errorf("resource '%s' not found in the state %s", resourceName, s.RootModule().Resources)
 		}
 
-		if r.Type != "datadog_resource_evaluation_filter" {
-			return fmt.Errorf("resource %s is not of type datadog_resource_evaluation_filter, found %s instead", resourceName, r.Type)
+		if r.Type != "datadog_compliance_resource_evaluation_filter" {
+			return fmt.Errorf("resource %s is not of type datadog_compliance_resource_evaluation_filter, found %s instead", resourceName, r.Type)
 		}
 
 		auth := accProvider.Auth
@@ -236,7 +236,7 @@ func testAccCheckResourceEvaluationFilterDestroy(accProvider *fwprovider.Framewo
 		apiInstances := accProvider.DatadogApiInstances
 
 		for _, r := range s.RootModule().Resources {
-			if r.Type == "datadog_resource_evaluation_filter" {
+			if r.Type == "datadog_compliance_resource_evaluation_filter" {
 				provider := r.Primary.Attributes["cloud_provider"]
 				id := r.Primary.Attributes["id"]
 				skipCache := true

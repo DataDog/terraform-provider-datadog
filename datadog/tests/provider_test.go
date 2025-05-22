@@ -267,7 +267,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_webhook_custom_variable_test":                    "webhook_custom_variable",
 	"tests/resource_datadog_webhook_test":                                    "webhook",
 	"tests/resource_datadog_workflow_automation_test":                        "workflow_automation",
-	"tests/resource_datadog_csm_resource_evaluation_filter_test":             "resource_filters",
+	"tests/resource_datadog_compliance_resource_evaluation_filter_test":      "resource_filters",
 }
 
 // getEndpointTagValue traverses callstack frames to find the test function that invoked this call;

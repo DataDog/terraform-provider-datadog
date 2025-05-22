@@ -36,7 +36,7 @@ interactions:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 572.485416ms
+        duration: 513.520667ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -63,13 +63,13 @@ interactions:
         trailer: {}
         content_length: 175
         uncompressed: false
-        body: '{"data":{"id":"93188503-4438-4ca4-a1bb-a13c202fc9a7","type":"csm_resource_filter","attributes":{"cloud_provider":{"aws":{"123456789":["tag1:val1","tag2:val2","tag3:val3"]}}}}}'
+        body: '{"data":{"id":"a9cf4842-ed7a-4ed0-bad1-7dc7af2ea5da","type":"csm_resource_filter","attributes":{"cloud_provider":{"aws":{"123456789":["tag1:val1","tag2:val2","tag3:val3"]}}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 164.233875ms
+        duration: 153.7085ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -96,13 +96,13 @@ interactions:
         trailer: {}
         content_length: 175
         uncompressed: false
-        body: '{"data":{"id":"fb682925-c67c-4dfc-b194-5ab4ef2ae18a","type":"csm_resource_filter","attributes":{"cloud_provider":{"aws":{"123456789":["tag1:val1","tag2:val2","tag3:val3"]}}}}}'
+        body: '{"data":{"id":"4d4063eb-e529-41ff-b39a-3994c6700295","type":"csm_resource_filter","attributes":{"cloud_provider":{"aws":{"123456789":["tag1:val1","tag2:val2","tag3:val3"]}}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 155.971792ms
+        duration: 149.562875ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -129,13 +129,13 @@ interactions:
         trailer: {}
         content_length: 175
         uncompressed: false
-        body: '{"data":{"id":"0fb48cea-0d82-4232-ad95-4f2c2ac96ca5","type":"csm_resource_filter","attributes":{"cloud_provider":{"aws":{"123456789":["tag1:val1","tag2:val2","tag3:val3"]}}}}}'
+        body: '{"data":{"id":"9ee02489-0894-4c16-a714-bba19277152a","type":"csm_resource_filter","attributes":{"cloud_provider":{"aws":{"123456789":["tag1:val1","tag2:val2","tag3:val3"]}}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 167.042708ms
+        duration: 147.901583ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -171,7 +171,7 @@ interactions:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 196.586041ms
+        duration: 164.101333ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -198,13 +198,13 @@ interactions:
         trailer: {}
         content_length: 175
         uncompressed: false
-        body: '{"data":{"id":"8d765924-52f9-427c-a4a4-9e437bb5f3fd","type":"csm_resource_filter","attributes":{"cloud_provider":{"aws":{"123456789":["tag3:val3","tag1:val1","tag2:val2"]}}}}}'
+        body: '{"data":{"id":"5d5f19d5-3a69-47ca-9b96-2e8e8cc31159","type":"csm_resource_filter","attributes":{"cloud_provider":{"aws":{"123456789":["tag3:val3","tag1:val1","tag2:val2"]}}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 165.923166ms
+        duration: 133.716125ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -231,13 +231,13 @@ interactions:
         trailer: {}
         content_length: 175
         uncompressed: false
-        body: '{"data":{"id":"8c41ffaf-c39f-4240-8af5-a160057ea39a","type":"csm_resource_filter","attributes":{"cloud_provider":{"aws":{"123456789":["tag3:val3","tag1:val1","tag2:val2"]}}}}}'
+        body: '{"data":{"id":"e8190d78-8ada-448c-a6a7-31fa1ef75d29","type":"csm_resource_filter","attributes":{"cloud_provider":{"aws":{"123456789":["tag3:val3","tag1:val1","tag2:val2"]}}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 144.249166ms
+        duration: 152.102166ms
     - id: 7
       request:
         proto: HTTP/1.1
@@ -273,7 +273,7 @@ interactions:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 181.923208ms
+        duration: 166.117416ms
     - id: 8
       request:
         proto: HTTP/1.1
@@ -300,10 +300,10 @@ interactions:
         trailer: {}
         content_length: 140
         uncompressed: false
-        body: '{"data":{"id":"a2150b11-a52f-4584-8a9e-bdbe959d8b82","type":"csm_resource_filter","attributes":{"cloud_provider":{"aws":{"123456789":[]}}}}}'
+        body: '{"data":{"id":"612696d3-b877-40b7-9b58-699cd5fcba43","type":"csm_resource_filter","attributes":{"cloud_provider":{"aws":{"123456789":[]}}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 161.934583ms
+        duration: 144.21425ms

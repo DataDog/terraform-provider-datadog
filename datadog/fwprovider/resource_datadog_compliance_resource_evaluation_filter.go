@@ -21,7 +21,7 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
-type CsmResourceEvaluationFilter struct {
+type ComplianceResourceEvaluationFilter struct {
 	API  *datadogV2.SecurityMonitoringApi
 	Auth context.Context
 }
@@ -33,22 +33,22 @@ type ResourceEvaluationFilterModel struct {
 }
 
 func NewResourceEvaluationFilter() resource.Resource {
-	return &CsmResourceEvaluationFilter{}
+	return &ComplianceResourceEvaluationFilter{}
 }
 
 var (
-	_ resource.ResourceWithConfigure   = &CsmResourceEvaluationFilter{}
-	_ resource.ResourceWithImportState = &CsmResourceEvaluationFilter{}
+	_ resource.ResourceWithConfigure   = &ComplianceResourceEvaluationFilter{}
+	_ resource.ResourceWithImportState = &ComplianceResourceEvaluationFilter{}
 )
 
-func (r *CsmResourceEvaluationFilter) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
+func (r *ComplianceResourceEvaluationFilter) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
 	providerData, _ := request.ProviderData.(*FrameworkProvider)
 	r.API = providerData.DatadogApiInstances.GetSecurityMonitoringApiV2()
 	r.Auth = providerData.Auth
 }
 
-func (r *CsmResourceEvaluationFilter) Metadata(_ context.Context, _ resource.MetadataRequest, resp *resource.MetadataResponse) {
-	resp.TypeName = "resource_evaluation_filter"
+func (r *ComplianceResourceEvaluationFilter) Metadata(_ context.Context, _ resource.MetadataRequest, resp *resource.MetadataResponse) {
+	resp.TypeName = "compliance_resource_evaluation_filter"
 }
 
 var tagFormatValidator = stringvalidator.RegexMatches(
@@ -76,7 +76,7 @@ func toSliceString(list types.List) ([]string, diag.Diagnostics) {
 	return result, diags
 }
 
-func (r *CsmResourceEvaluationFilter) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
+func (r *ComplianceResourceEvaluationFilter) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		Description: "Manage a single resource evaluation filter.",
 		Attributes: map[string]schema.Attribute{
@@ -100,7 +100,7 @@ func (r *CsmResourceEvaluationFilter) Schema(_ context.Context, _ resource.Schem
 	}
 }
 
-func (r *CsmResourceEvaluationFilter) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
+func (r *ComplianceResourceEvaluationFilter) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
 	var state ResourceEvaluationFilterModel
 	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
@@ -136,7 +136,7 @@ func convertStringSliceToAttrValues(s []string) []attr.Value {
 	return out
 }
 
-func (r *CsmResourceEvaluationFilter) UpdateState(_ context.Context, state *ResourceEvaluationFilterModel, attributes *datadogV2.ResourceFilterAttributes) {
+func (r *ComplianceResourceEvaluationFilter) UpdateState(_ context.Context, state *ResourceEvaluationFilterModel, attributes *datadogV2.ResourceFilterAttributes) {
 	for p, accounts := range attributes.CloudProvider {
 		for id, tagList := range accounts {
 			tags := types.ListValueMust(types.StringType, convertStringSliceToAttrValues(tagList))
@@ -149,7 +149,7 @@ func (r *CsmResourceEvaluationFilter) UpdateState(_ context.Context, state *Reso
 	}
 }
 
-func (r *CsmResourceEvaluationFilter) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
+func (r *ComplianceResourceEvaluationFilter) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
 	var state ResourceEvaluationFilterModel
 	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
@@ -171,7 +171,7 @@ func (r *CsmResourceEvaluationFilter) Read(ctx context.Context, request resource
 	}
 	resp, _, err := r.API.GetResourceEvaluationFilters(r.Auth, params)
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving CsmResourceEvaluationFilter"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving ComplianceResourceEvaluationFilter"))
 		return
 	}
 
@@ -180,7 +180,7 @@ func (r *CsmResourceEvaluationFilter) Read(ctx context.Context, request resource
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (r *CsmResourceEvaluationFilter) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
+func (r *ComplianceResourceEvaluationFilter) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
 	var state ResourceEvaluationFilterModel
 	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
@@ -196,7 +196,7 @@ func (r *CsmResourceEvaluationFilter) Update(ctx context.Context, request resour
 
 	resp, _, err := r.API.UpdateResourceEvaluationFilters(r.Auth, *body)
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error updating CsmResourceEvaluationFilter"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error updating ComplianceResourceEvaluationFilter"))
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {
@@ -209,7 +209,7 @@ func (r *CsmResourceEvaluationFilter) Update(ctx context.Context, request resour
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (r *CsmResourceEvaluationFilter) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
+func (r *ComplianceResourceEvaluationFilter) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
 	var state ResourceEvaluationFilterModel
 	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
@@ -225,7 +225,7 @@ func (r *CsmResourceEvaluationFilter) Delete(ctx context.Context, request resour
 
 	resp, _, err := r.API.UpdateResourceEvaluationFilters(r.Auth, *body)
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error deleting CsmResourceEvaluationFilter"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error deleting ComplianceResourceEvaluationFilter"))
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {
@@ -234,7 +234,7 @@ func (r *CsmResourceEvaluationFilter) Delete(ctx context.Context, request resour
 	}
 }
 
-func (r *CsmResourceEvaluationFilter) ImportState(
+func (r *ComplianceResourceEvaluationFilter) ImportState(
 	ctx context.Context,
 	req resource.ImportStateRequest,
 	resp *resource.ImportStateResponse,
@@ -255,7 +255,7 @@ func (r *CsmResourceEvaluationFilter) ImportState(
 	resp.State.SetAttribute(ctx, path.Root("id"), id)
 }
 
-func (r *CsmResourceEvaluationFilter) buildUpdateResourceEvaluationFilterRequest(ctx context.Context, state *ResourceEvaluationFilterModel) (*datadogV2.UpdateResourceEvaluationFiltersRequest, diag.Diagnostics) {
+func (r *ComplianceResourceEvaluationFilter) buildUpdateResourceEvaluationFilterRequest(ctx context.Context, state *ResourceEvaluationFilterModel) (*datadogV2.UpdateResourceEvaluationFiltersRequest, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
 	data := datadogV2.NewUpdateResourceEvaluationFiltersRequestDataWithDefaults()
 
