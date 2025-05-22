@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+	"github.com/hashicorp/terraform-plugin-framework-validators/setvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -131,6 +132,9 @@ func (r *complianceCustomFrameworkResource) Schema(_ context.Context, _ resource
 										Description: "The set of rules IDs for the control.",
 										ElementType: types.StringType,
 										Required:    true,
+										Validators: []validator.Set{
+											setvalidator.SizeAtLeast(1),
+										},
 									},
 								},
 							},

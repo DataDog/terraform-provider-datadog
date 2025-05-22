@@ -419,6 +419,10 @@ func TestCustomFramework_InvalidCreate(t *testing.T) {
 				Config:      testAccCheckDatadogEmptyControlName(version, handle),
 				ExpectError: regexp.MustCompile("Invalid Attribute Value Length"),
 			},
+			{
+				Config:      testAccCheckDatadogCreateFrameworkWithNoRulesId(version, handle),
+				ExpectError: regexp.MustCompile("Invalid Attribute Value"),
+			},
 		},
 	})
 }
@@ -763,6 +767,24 @@ func testAccCheckDatadogCreateFrameworkWithNoControls(version string, handle str
 			icon_url      = "test url"
 			requirements  {
 				name = "requirement1"
+			}
+		}
+	`, version, handle)
+}
+
+func testAccCheckDatadogCreateFrameworkWithNoRulesId(version string, handle string) string {
+	return fmt.Sprintf(`
+		resource "datadog_compliance_custom_framework" "sample_rules" {
+			version       = "%s"
+			handle        = "%s"
+			name          = "new-framework-terraform"
+			icon_url      = "test url"
+			requirements  {
+				name = "requirement1"
+				controls {
+					name = "control1"
+					rules_id = []
+				}
 			}
 		}
 	`, version, handle)

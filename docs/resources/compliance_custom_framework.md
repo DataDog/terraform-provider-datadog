@@ -13,27 +13,32 @@ Provides a Datadog Compliance Custom Framework resource, which is used to create
 ## Example Usage
 
 ```terraform
-resource "datadog_compliance_custom_framework" "example" {
-  version     = "1"
-  handle      = "new-terraform-framework-handle"
-  name        = "new-terraform-framework"
-  icon_url    = "https://example.com/icon.png"
-  requirements {
-    name = "requirement1"
-    controls {
-      name     = "control1"
-      rules_id = ["aaa-000-ccc", "bbb-000-ddd"]
-    }
-    controls {
-      name     = "control2"
-      rules_id = ["aaa-000-lll"]
-    }
-  }
+resource "datadog_compliance_custom_framework" "framework" {
+  name    = "my-custom-framework-terraform-2"
+  version = "2.0.0"
+  handle  = "my-custom-framework-terraform-2"
+
   requirements {
     name = "requirement2"
     controls {
-      name     = "control3"
-      rules_id = ["aaa-000-zzz"]
+      name     = "control2"
+      rules_id = ["def-000-h9o", "def-000-b6i", "def-000-yed", "def-000-h5a", "def-000-aw5"]
+    }
+    controls {
+      name     = "control1"
+      rules_id = ["def-000-j9v", "def-000-465", "def-000-vq1", "def-000-4hf", "def-000-s2d", "def-000-vnl"]
+    }
+  }
+
+  requirements {
+    name = "requirement1"
+    controls {
+      name     = "control2"
+      rules_id = ["def-000-wuf", "def-000-7og"]
+    }
+    controls {
+      name     = "control5"
+      rules_id = ["def-000-mdt", "def-000-zrx", "def-000-z6k"]
     }
   }
 }
@@ -47,11 +52,12 @@ resource "datadog_compliance_custom_framework" "example" {
 - `handle` (String) The framework handle. String length must be at least 1.
 - `name` (String) The framework name. String length must be at least 1.
 - `version` (String) The framework version. String length must be at least 1.
-- `requirements` (Block Set) The requirements of the framework. (see [below for nested schema](#nestedblock--requirements))
+- `requirements` (Block List) The requirements of the framework. Length must be at least 1. (see [below for nested schema](#nestedblock--requirements))
 
-### Optional 
 
-- `icon_url` (String) The URL of the icon representing the framework. 
+### Optional
+
+- `icon_url` (String) The URL of the icon representing the framework
 
 ### Read-Only
 
@@ -63,7 +69,7 @@ resource "datadog_compliance_custom_framework" "example" {
 Required:
 
 - `name` (String) The name of the requirement. String length must be at least 1.
-- `controls` (Block Set) The controls of the requirement. (see [below for nested schema](#nestedblock--requirements--controls))
+- `controls` (Block List) The controls of the requirement. Length must be at least 1. (see [below for nested schema](#nestedblock--requirements--controls))
 
 <a id="nestedblock--requirements--controls"></a>
 ### Nested Schema for `requirements.controls`
@@ -71,12 +77,4 @@ Required:
 Required:
 
 - `name` (String) The name of the control. String length must be at least 1.
-- `rules_id` (Set of String) The list of rules IDs for the control.
-
-## Import
-
-Import is supported using the following syntax:
-
-```shell
-terraform import datadog_custom_framework.example3 "terraform-created-framework-handle-1.0.0"
-```
+- `rules_id` (Set of String) The set of rules IDs for the control. Length must be at least 1.
