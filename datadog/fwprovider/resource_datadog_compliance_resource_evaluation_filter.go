@@ -32,8 +32,10 @@ type ComplianceResourceEvaluationFilter struct {
 
 type ResourceEvaluationFilterModel struct {
 	CloudProvider types.String `tfsdk:"cloud_provider"`
-	ID            types.String `tfsdk:"id"`
+	ResourceID    types.String `tfsdk:"resource_id"`
 	Tags          types.List   `tfsdk:"tags"`
+
+	ID types.String `tfsdk:"id"`
 }
 
 func NewComplianceResourceEvaluationFilter() resource.Resource {
@@ -91,12 +93,17 @@ func (r *ComplianceResourceEvaluationFilter) Schema(_ context.Context, _ resourc
 					stringplanmodifier.RequiresReplace(),
 				},
 			},
-			"id": schema.StringAttribute{
+			"resource_id": schema.StringAttribute{
 				Required:    true,
 				Description: "The ID of the of the filter's targeted resource. Different cloud providers target different resource IDs:\n  - `aws`: account id \n  - `gcp`: project id\n  - `azure`: subscription id",
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				}},
+
+			"id": schema.StringAttribute{
+				Description: "The ID of the resource evaluation filter resource.",
+				Computed:    true,
+			},
 			"tags": schema.ListAttribute{
 				Required:    true,
 				ElementType: types.StringType,
@@ -147,10 +154,11 @@ func convertStringSliceToAttrValues(s []string) []attr.Value {
 
 func (r *ComplianceResourceEvaluationFilter) UpdateState(_ context.Context, state *ResourceEvaluationFilterModel, attributes *datadogV2.ResourceFilterAttributes) {
 	for p, accounts := range attributes.CloudProvider {
-		for id, tagList := range accounts {
+		for resource_id, tagList := range accounts {
 			tags := types.ListValueMust(types.StringType, convertStringSliceToAttrValues(tagList))
 			state.CloudProvider = types.StringValue(p)
-			state.ID = types.StringValue(id)
+			state.ID = types.StringValue(p + ":" + resource_id)
+			state.ResourceID = types.StringValue(resource_id)
 			state.Tags = tags
 			break
 		}
@@ -277,7 +285,7 @@ func (r *ComplianceResourceEvaluationFilter) buildUpdateResourceEvaluationFilter
 		diags.AddError("Missing cloud_provider", "cloud_provider is required but was null or unknown")
 		return nil, diags
 	}
-	if state.ID.IsNull() || state.ID.IsUnknown() {
+	if state.ResourceID.IsNull() || state.ResourceID.IsUnknown() {
 		diags.AddError("Missing id", "id is required but was null or unknown")
 		return nil, diags
 	}
@@ -285,7 +293,7 @@ func (r *ComplianceResourceEvaluationFilter) buildUpdateResourceEvaluationFilter
 	attributes := datadogV2.ResourceFilterAttributes{
 		CloudProvider: map[string]map[string][]string{
 			state.CloudProvider.ValueString(): {
-				state.ID.ValueString(): tagsList,
+				state.ResourceID.ValueString(): tagsList,
 			},
 		},
 	}

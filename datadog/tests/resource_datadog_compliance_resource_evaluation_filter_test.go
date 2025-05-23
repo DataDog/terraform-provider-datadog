@@ -36,7 +36,7 @@ func TestAccResourceEvaluationFilter(t *testing.T) {
 				resource "datadog_compliance_resource_evaluation_filter" "filter_test" {
 					tags = ["tag1:val1", "tag2:val2", "tag3:val3"]
 					cloud_provider = "%s"
-					id = "%s"
+					resource_id = "%s"
 				}
 				`, provider, accountId),
 				Check: resource.ComposeTestCheckFunc(
@@ -56,7 +56,7 @@ func TestAccResourceEvaluationFilter(t *testing.T) {
 				resource "datadog_compliance_resource_evaluation_filter" "filter_test" {
 					tags = ["tag3:val3", "tag1:val1", "tag2:val2"]
 					cloud_provider = "%s"
-					id = "%s"
+					resource_id = "%s"
 				}
 				`, provider, accountId),
 				// This should trigger a diff or update because tags are now a list
@@ -76,7 +76,7 @@ func TestAccResourceEvaluationFilter(t *testing.T) {
 				resource "datadog_compliance_resource_evaluation_filter" "filter_test" {
 					tags = ["tag3:val3", "tag1:val1", "tag2:val2"]
 					cloud_provider = "azure"
-					id = "%s"
+					resource_id = "%s"
 				}
 				`, accountId),
 				// This should trigger a diff or update because tags are now a list
@@ -84,12 +84,12 @@ func TestAccResourceEvaluationFilter(t *testing.T) {
 				ExpectNonEmptyPlan: true,
 			},
 			{
-				// Changing the id, but keeping the rest should force deletion
+				// Changing the resource_id, but keeping the rest should force deletion
 				Config: fmt.Sprintf(`
 				resource "datadog_compliance_resource_evaluation_filter" "filter_test" {
 					tags = ["tag3:val3", "tag1:val1", "tag2:val2"]
 					cloud_provider = "%s"
-					id = "123"
+					resource_id = "123"
 				}
 				`, provider),
 				// This should trigger a diff or update because tags are now a list
@@ -117,7 +117,7 @@ func TestAccResourceEvaluationFilterImport(t *testing.T) {
 				resource "datadog_compliance_resource_evaluation_filter" "filter_test" {
 					tags = ["tag1:val1", "tag2:val2", "tag3:val3"]
 					cloud_provider = "%s"
-					id = "%s"
+					resource_id = "%s"
 				}
 				`, provider, accountId),
 				Check: resource.ComposeTestCheckFunc(
@@ -156,7 +156,7 @@ func TestAccResourceEvaluationFilterInvalid(t *testing.T) {
 				resource "datadog_compliance_resource_evaluation_filter" "filter_test" {
 					tags = ["tag1:val1", "invalidTag:asdasf:InvalidTag", "tag3:val3"]
 					cloud_provider = "%s"
-					id = "%s"
+					resource_id = "%s"
 				}
 				`, provider, accountId),
 				ExpectError: regexp.MustCompile(`Invalid Attribute Value Match`),
@@ -167,7 +167,7 @@ func TestAccResourceEvaluationFilterInvalid(t *testing.T) {
 				resource "datadog_compliance_resource_evaluation_filter" "filter_test" {
 					tags = ["tag1:val1", "tag3:val3"]
 					cloud_provider = "%s"
-					id = "%s"
+					resource_id = "%s"
 				}
 				`, invalidProvider, accountId),
 				ExpectError: regexp.MustCompile(`Invalid cloud provider invalid`),
@@ -176,10 +176,10 @@ func TestAccResourceEvaluationFilterInvalid(t *testing.T) {
 	})
 }
 
-func checkResourceEvaluationFilterContent(resourceName string, id string, provider string, expectedTags []string) resource.TestCheckFunc {
+func checkResourceEvaluationFilterContent(resourceName string, resource_id string, provider string, expectedTags []string) resource.TestCheckFunc {
 	checks := []resource.TestCheckFunc{
 		resource.TestCheckResourceAttr(resourceName, "cloud_provider", provider),
-		resource.TestCheckResourceAttr(resourceName, "id", id),
+		resource.TestCheckResourceAttr(resourceName, "resource_id", resource_id),
 	}
 
 	checks = append(checks, resource.TestCheckFunc(func(s *terraform.State) error {
@@ -237,12 +237,12 @@ func testAccCheckResourceEvaluationFilterExists(accProvider *fwprovider.Framewor
 		auth := accProvider.Auth
 		apiInstances := accProvider.DatadogApiInstances
 		provider := r.Primary.Attributes["cloud_provider"]
-		id := r.Primary.Attributes["id"]
+		resource_id := r.Primary.Attributes["resource_id"]
 		skipCache := true
 
 		params := datadogV2.GetResourceEvaluationFiltersOptionalParameters{
 			CloudProvider: &provider,
-			AccountId:     &id,
+			AccountId:     &resource_id,
 			SkipCache:     &skipCache,
 		}
 		_, _, err := apiInstances.GetSecurityMonitoringApiV2().GetResourceEvaluationFilters(auth, params)
@@ -262,12 +262,12 @@ func testAccCheckResourceEvaluationFilterDestroy(accProvider *fwprovider.Framewo
 		for _, r := range s.RootModule().Resources {
 			if r.Type == "datadog_compliance_resource_evaluation_filter" {
 				provider := r.Primary.Attributes["cloud_provider"]
-				id := r.Primary.Attributes["id"]
+				resource_id := r.Primary.Attributes["resource_id"]
 				skipCache := true
 
 				params := datadogV2.GetResourceEvaluationFiltersOptionalParameters{
 					CloudProvider: &provider,
-					AccountId:     &id,
+					AccountId:     &resource_id,
 					SkipCache:     &skipCache,
 				}
 				response, httpResponse, err := apiInstances.GetSecurityMonitoringApiV2().GetResourceEvaluationFilters(auth, params)
@@ -276,7 +276,7 @@ func testAccCheckResourceEvaluationFilterDestroy(accProvider *fwprovider.Framewo
 					return errors.New("Error retrieving resource evaluation filter")
 				}
 
-				if len(response.Data.Attributes.CloudProvider[r.Primary.Attributes["cloud_provider"]][id]) != 0 {
+				if len(response.Data.Attributes.CloudProvider[r.Primary.Attributes["cloud_provider"]][resource_id]) != 0 {
 					bytes, _ := json.MarshalIndent(response.Data.Attributes, "", "  ")
 					fmt.Println(string(bytes))
 					return errors.New("filters were not destroyed")

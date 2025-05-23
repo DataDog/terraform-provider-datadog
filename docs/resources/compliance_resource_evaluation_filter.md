@@ -17,7 +17,7 @@ Provides a Datadog ComplianceResourceEvaluationFilter resource. This can be used
 resource "datadog_compliance_resource_evaluation_filter" "basic_filter" {
   tags           = ["tag1:val1"]
   cloud_provider = "aws"
-  id             = "000000000000"
+  resource_id    = "000000000000"
 }
 ```
 
@@ -27,11 +27,15 @@ resource "datadog_compliance_resource_evaluation_filter" "basic_filter" {
 ### Required
 
 - `cloud_provider` (String) The cloud provider of the filter's targeted resource. Only `aws`, `gcp` or `azure` are considered valid cloud providers.
-- `id` (String) The ID of the of the filter's targeted resource. Different cloud providers target different resource IDs:
+- `resource_id` (String) The ID of the of the filter's targeted resource. Different cloud providers target different resource IDs:
   - `aws`: account id 
   - `gcp`: project id
   - `azure`: subscription id
 - `tags` (List of String) List of tags to filter misconfiguration detections. Each entry should follow the format: "key":"value".
+
+### Read-Only
+
+- `id` (String) The ID of the resource evaluation filter resource.
 
 ## Import
 
