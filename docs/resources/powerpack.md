@@ -2975,7 +2975,7 @@ Required:
 <a id="nestedblock--widget--list_stream_definition--request--columns"></a>
 ### Nested Schema for `widget.list_stream_definition.request.columns`
 
-Required:
+Optional:
 
 - `field` (String) Widget column field.
 - `width` (String) Widget column width. Valid values are `auto`, `compact`, `full`.
