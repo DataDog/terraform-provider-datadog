@@ -3,17 +3,17 @@
 page_title: "datadog_compliance_resource_evaluation_filter Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Provides a Datadog ResourceEvaluationFilter resource. This can be used to create and manage a resource evaluation filter.
+  Provides a Datadog ComplianceResourceEvaluationFilter resource. This can be used to create and manage a compliance resource evaluation filter.
 ---
 
 # datadog_compliance_resource_evaluation_filter (Resource)
 
-Provides a Datadog ResourceEvaluationFilter resource. This can be used to create and manage a resource evaluation filter.
+Provides a Datadog ComplianceResourceEvaluationFilter resource. This can be used to create and manage a compliance resource evaluation filter.
 
 ## Example Usage
 
 ```terraform
-# Manage Datadog resource evaluation filters
+# Manage Datadog compliance resource evaluation filters
 resource "datadog_compliance_resource_evaluation_filter" "basic_filter" {
   tags           = ["tag1:val1"]
   cloud_provider = "aws"

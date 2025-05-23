@@ -36,7 +36,7 @@ type ResourceEvaluationFilterModel struct {
 	Tags          types.List   `tfsdk:"tags"`
 }
 
-func NewResourceEvaluationFilter() resource.Resource {
+func NewComplianceResourceEvaluationFilter() resource.Resource {
 	return &ComplianceResourceEvaluationFilter{}
 }
 
@@ -82,7 +82,7 @@ func toSliceString(list types.List) ([]string, diag.Diagnostics) {
 
 func (r *ComplianceResourceEvaluationFilter) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "Provides a Datadog ResourceEvaluationFilter resource. This can be used to create and manage a resource evaluation filter.",
+		Description: "Provides a Datadog ComplianceResourceEvaluationFilter resource. This can be used to create and manage a compliance resource evaluation filter.",
 		Attributes: map[string]schema.Attribute{
 			"cloud_provider": schema.StringAttribute{
 				Required:    true,
@@ -124,7 +124,7 @@ func (r *ComplianceResourceEvaluationFilter) Create(ctx context.Context, request
 
 	resp, _, err := r.API.UpdateResourceEvaluationFilters(r.Auth, *body)
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error updating resource evaluation filter"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error updating compliance resource evaluation filter"))
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {
