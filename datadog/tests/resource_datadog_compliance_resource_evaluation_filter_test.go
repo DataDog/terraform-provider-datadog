@@ -25,7 +25,6 @@ func TestAccResourceEvaluationFilter(t *testing.T) {
 	simpleTags := []string{"tag1:val1", "tag2:val2", "tag3:val3"}
 	reorderedTags := []string{"tag3:val3", "tag2:val2", "tag1:val1"}
 	provider := "aws"
-	//invalidProvider := "invalid"
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
@@ -108,7 +107,6 @@ func TestAccResourceEvaluationFilterImport(t *testing.T) {
 	resourceName := "datadog_compliance_resource_evaluation_filter.filter_test"
 	simpleTags := []string{"tag1:val1", "tag2:val2", "tag3:val3"}
 	provider := "aws"
-	//invalidProvider := "invalid"
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
