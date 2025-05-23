@@ -26,8 +26,10 @@ func TestAccDatadogCostBudget_Basic(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr(
 						"datadog_cost_budget.foo", "name", budgetName),
+					resource.TestCheckResourceAttrSet(
+						"datadog_cost_budget.foo", "id"),
 					resource.TestCheckResourceAttr(
-						"datadog_cost_budget.foo", "metrics_query", "sum:aws.cost.amortized{*} by {account}"),
+						"datadog_cost_budget.foo", "metrics_query", "sum:aws.cost.amortized{*}"),
 					resource.TestCheckResourceAttr(
 						"datadog_cost_budget.foo", "start_month", "202401"),
 					resource.TestCheckResourceAttr(
@@ -66,7 +68,7 @@ func TestAccDatadogCostBudget_WithTagFilters(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_cost_budget.foo", "entries.0.tag_filters.#", "1"),
 					resource.TestCheckResourceAttr(
-						"datadog_cost_budget.foo", "entries.0.tag_filters.0.tag_key", "service"),
+						"datadog_cost_budget.foo", "entries.0.tag_filters.0.tag_key", "account"),
 					resource.TestCheckResourceAttr(
 						"datadog_cost_budget.foo", "entries.0.tag_filters.0.tag_value", "ec2"),
 				),

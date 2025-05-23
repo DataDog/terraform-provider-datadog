@@ -52,6 +52,7 @@ func (r *costBudgetResource) Schema(_ context.Context, _ resource.SchemaRequest,
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
 				Optional:    true,
+				Computed:    true,
 				Description: "The ID of the budget.",
 			},
 			"name": schema.StringAttribute{
