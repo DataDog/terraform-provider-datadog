@@ -35,7 +35,7 @@ type csmThreatsMultiPolicyAgentRuleModel struct {
 	Enabled     types.Bool   `tfsdk:"enabled"`
 	Expression  types.String `tfsdk:"expression"`
 	ProductTags types.Set    `tfsdk:"product_tags"`
-	Actions     types.Array  `tfsdk:"actions"`
+	Actions     types.List   `tfsdk:"actions"`
 }
 
 func NewCSMThreatsMultiPolicyAgentRuleResource() resource.Resource {
@@ -93,7 +93,7 @@ func (r *csmThreatsMultiPolicyAgentRuleResource) Schema(_ context.Context, _ res
 			"actions": schema.ListAttribute{
 				Optional:    true,
 				ElementType: types.StringType,
-				Description: "The array of actions the rule can perform if triggered",
+				Description: "The array of action names the rule can perform if triggered. Note: Actions can only be set during creation and cannot be updated.",
 			},
 		},
 	}
@@ -219,6 +219,22 @@ func (r *csmThreatsMultiPolicyAgentRuleResource) buildCreateCSMThreatsAgentRuleP
 	attributes.PolicyId = &policyId
 	attributes.ProductTags = productTags
 
+	if !state.Actions.IsNull() && !state.Actions.IsUnknown() {
+		var actionNames []string
+		state.Actions.ElementsAs(context.Background(), &actionNames, false)
+		if len(actionNames) > 0 {
+			actions := make([]datadogV2.CloudWorkloadSecurityAgentRuleAction, len(actionNames))
+			for i, actionName := range actionNames {
+				setAction := datadogV2.NewCloudWorkloadSecurityAgentRuleActionSet()
+				setAction.SetName(actionName)
+				ruleAction := datadogV2.NewCloudWorkloadSecurityAgentRuleAction()
+				ruleAction.SetSet(*setAction)
+				actions[i] = *ruleAction
+			}
+			attributes.SetActions(actions)
+		}
+	}
+
 	data := datadogV2.NewCloudWorkloadSecurityAgentRuleCreateData(attributes, datadogV2.CLOUDWORKLOADSECURITYAGENTRULETYPE_AGENT_RULE)
 	return datadogV2.NewCloudWorkloadSecurityAgentRuleCreateRequest(*data), nil
 }
@@ -245,6 +261,7 @@ func (r *csmThreatsMultiPolicyAgentRuleResource) extractAgentRuleAttributesFromR
 	enabled := state.Enabled.ValueBool()
 	expression := state.Expression.ValueString()
 	description := state.Description.ValueStringPointer()
+
 	var productTags []string
 	if !state.ProductTags.IsNull() && !state.ProductTags.IsUnknown() {
 		for _, tag := range state.ProductTags.Elements() {
@@ -275,4 +292,16 @@ func (r *csmThreatsMultiPolicyAgentRuleResource) updateStateFromResponse(ctx con
 		state.ProductTags, _ = types.SetValueFrom(ctx, types.StringType, tags)
 	}
 
+	actions := attributes.GetActions()
+	if len(actions) > 0 {
+		actionNames := make([]string, 0, len(actions))
+		for _, action := range actions {
+			if action.Set != nil {
+				actionNames = append(actionNames, action.Set.GetName())
+			}
+		}
+		state.Actions, _ = types.ListValueFrom(ctx, types.StringType, actionNames)
+	} else {
+		state.Actions = types.ListNull(types.StringType)
+	}
 }
