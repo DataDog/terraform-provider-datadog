@@ -91,6 +91,52 @@ func TestAccCSMThreatsAgentRule_CreateAndUpdate(t *testing.T) {
 	})
 }
 
+func TestAccCSMThreatsAgentRule_CreateAndUpdateWithoutPolicyID(t *testing.T) {
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	agentRuleName := uniqueAgentRuleName(ctx)
+	resourceName := "datadog_csm_threats_agent_rule.agent_rule_without_policy"
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckCSMThreatsAgentRuleDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: fmt.Sprintf(`
+					resource "datadog_csm_threats_agent_rule" "agent_rule_without_policy" {
+						name              = "%s"
+						enabled           = true
+						description       = "initial description"
+						expression        = "open.file.name == \"etc/shadow/password\""
+						product_tags      = ["compliance_framework:HIPAA"]
+					}
+					`, agentRuleName),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckCSMThreatsAgentRuleExistsWithoutPolicyID(providers.frameworkProvider, resourceName),
+					checkCSMThreatsAgentRuleContent(resourceName, agentRuleName, "initial description", "open.file.name == \"etc/shadow/password\"", "compliance_framework:HIPAA"),
+				),
+			},
+			// update the description
+			{
+				Config: fmt.Sprintf(`
+					resource "datadog_csm_threats_agent_rule" "agent_rule_without_policy" {
+						name              = "%s"
+						enabled           = true
+						description       = "updated description"
+						expression        = "open.file.name == \"etc/shadow/password\""
+						product_tags      = ["compliance_framework:HIPAA"]
+					}
+					`, agentRuleName),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckCSMThreatsAgentRuleExistsWithoutPolicyID(providers.frameworkProvider, resourceName),
+					checkCSMThreatsAgentRuleContent(resourceName, agentRuleName, "updated description", "open.file.name == \"etc/shadow/password\"", "compliance_framework:HIPAA"),
+				),
+			},
+		},
+	})
+}
+
 func testAccCheckCSMThreatsAgentRuleExists(accProvider *fwprovider.FrameworkProvider, resourceName string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		resource, ok := s.RootModule().Resources[resourceName]
@@ -107,6 +153,29 @@ func testAccCheckCSMThreatsAgentRuleExists(accProvider *fwprovider.FrameworkProv
 
 		policyId := resource.Primary.Attributes["policy_id"]
 		_, _, err := apiInstances.GetCSMThreatsApiV2().GetCSMThreatsAgentRule(auth, resource.Primary.ID, *datadogV2.NewGetCSMThreatsAgentRuleOptionalParameters().WithPolicyId(policyId))
+		if err != nil {
+			return fmt.Errorf("received an error retrieving agent rule: %s", err)
+		}
+
+		return nil
+	}
+}
+
+func testAccCheckCSMThreatsAgentRuleExistsWithoutPolicyID(accProvider *fwprovider.FrameworkProvider, resourceName string) resource.TestCheckFunc {
+	return func(s *terraform.State) error {
+		resource, ok := s.RootModule().Resources[resourceName]
+		if !ok {
+			return fmt.Errorf("resource '%s' not found in the state", resourceName)
+		}
+
+		if resource.Type != "datadog_csm_threats_agent_rule" {
+			return fmt.Errorf("resource %s is not of type datadog_csm_threats_agent_rule", resourceName)
+		}
+
+		auth := accProvider.Auth
+		apiInstances := accProvider.DatadogApiInstances
+
+		_, _, err := apiInstances.GetCSMThreatsApiV2().GetCSMThreatsAgentRule(auth, resource.Primary.ID)
 		if err != nil {
 			return fmt.Errorf("received an error retrieving agent rule: %s", err)
 		}

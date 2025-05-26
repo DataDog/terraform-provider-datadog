@@ -64,6 +64,42 @@ func TestAccCSMThreatsAgentRulesDataSource(t *testing.T) {
 	})
 }
 
+func TestAccCSMThreatsAgentRulesDataSourceWithoutPolicyID(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	agentRuleName := uniqueAgentRuleName(ctx)
+
+	agentRuleConfig := fmt.Sprintf(`
+	resource "datadog_csm_threats_agent_rule" "agent_rule_without_policy" {
+		name              = "%s"
+		enabled           = true
+		description       = "rule without policy"
+		expression 		  = "open.file.name == \"etc/shadow/password\""
+		product_tags      = ["compliance_framework:PCI-DSS"]
+	}
+	`, agentRuleName)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckCSMThreatsAgentRuleDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: agentRuleConfig,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckCSMThreatsAgentRuleExists(providers.frameworkProvider, "datadog_csm_threats_agent_rule.agent_rule_without_policy"),
+					resource.TestCheckResourceAttr("datadog_csm_threats_agent_rule.agent_rule_without_policy", "name", agentRuleName),
+					resource.TestCheckResourceAttr("datadog_csm_threats_agent_rule.agent_rule_without_policy", "description", "rule without policy"),
+					resource.TestCheckResourceAttr("datadog_csm_threats_agent_rule.agent_rule_without_policy", "expression", "open.file.name == \"etc/shadow/password\""),
+					resource.TestCheckResourceAttr("datadog_csm_threats_agent_rule.agent_rule_without_policy", "enabled", "true"),
+					resource.TestCheckTypeSetElemAttr("datadog_csm_threats_agent_rule.agent_rule_without_policy", "product_tags.*", "compliance_framework:PCI-DSS"),
+				),
+			},
+		},
+	})
+}
+
 func testAccCheckDatadogCSMThreatsAgentRulesDataSourceConfig(policyName, agentRuleName string) string {
 	return fmt.Sprintf(`
 data "datadog_csm_threats_agent_rules" "my_data_source" {

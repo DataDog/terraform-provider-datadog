@@ -62,7 +62,7 @@ func (r *csmThreatsAgentRulesDataSource) Configure(_ context.Context, request da
 	r.auth = providerData.Auth
 }
 
-func (r *csmThreatsAgentRulesDataSource) Metadata(_ context.Context, request datasource.MetadataRequest, response *datasource.MetadataResponse) {
+func (*csmThreatsAgentRulesDataSource) Metadata(_ context.Context, _ datasource.MetadataRequest, response *datasource.MetadataResponse) {
 	response.TypeName = "csm_threats_agent_rules"
 }
 
