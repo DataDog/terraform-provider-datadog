@@ -3838,129 +3838,77 @@ func createSyntheticsBrowserTestStep(ctx context.Context, accProvider *schema.Pr
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "options_list.0.rum_settings.0.is_enabled", "true"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "assertion.0.type", "header"),
+				"datadog_synthetics_test.bar", "options_list.0.rum_settings.0.application_id", "rum-app-id"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "assertion.0.operator", "moreThan"),
+				"datadog_synthetics_test.bar", "options_list.0.rum_settings.0.client_token_id", "12345"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "assertion.0.property", "content-length"),
+				"datadog_synthetics_test.bar", "options_list.0.ci.0.execution_rule", "blocking"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "assertion.0.target", "74000"),
+				"datadog_synthetics_test.bar", "options_list.0.ignore_server_certificate_error", "true"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "assertion.1.type", "header"),
+				"datadog_synthetics_test.bar", "options_list.0.disable_csp", "true"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "assertion.1.operator", "moreThan"),
+				"datadog_synthetics_test.bar", "options_list.0.disable_cors", "true"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "assertion.1.property", "content-length"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "assertion.1.target", "74001"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "assertion.2.type", "bodyHash"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "assertion.2.operator", "md5"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "assertion.2.target", "ab1f88dc59fc43e4bc07ca52f7bf4d12"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "assertion.3.type", "body"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "assertion.3.operator", "validatesJSONPath"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "assertion.3.targetjsonpath.#", "1"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "assertion.3.targetjsonpath.0.jsonpath", "$.discountPercentage"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "assertion.3.targetjsonpath.0.operator", "lessThan"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "assertion.3.targetjsonpath.0.targetvalue", "18.48"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "assertion.4.type", "body"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "assertion.4.operator", "validatesJSONPath"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "assertion.4.targetjsonpath.#", "1"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "assertion.4.targetjsonpath.0.jsonpath", "$.discountPercentage"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "assertion.4.targetjsonpath.0.operator", "lessThan"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "assertion.4.targetjsonpath.0.targetvalue", "18.49"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "assertion.5.type", "body"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "assertion.5.operator", "validatesJSONPath"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "assertion.5.targetjsonpath.#", "1"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "assertion.5.targetjsonpath.0.jsonpath", "$.discountPercentage"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "assertion.5.targetjsonpath.0.operator", "moreThan"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "assertion.5.targetjsonpath.0.targetvalue", "8"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "assertion.6.type", "body"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "assertion.6.operator", "validatesJSONPath"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "assertion.6.targetjsonpath.#", "1"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "assertion.6.targetjsonpath.0.jsonpath", "$.discountPercentage"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "assertion.6.targetjsonpath.0.operator", "moreThan"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "assertion.6.targetjsonpath.0.targetvalue", "7"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "assertion.7.type", "body"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "assertion.7.operator", "validatesJSONPath"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "assertion.7.targetjsonpath.#", "1"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "assertion.7.targetjsonpath.0.jsonpath", "$.discountPercentage"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "assertion.7.targetjsonpath.0.operator", "contains"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "assertion.7.targetjsonpath.0.targetvalue", "10.48"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "assertion.8.type", "body"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "assertion.8.operator", "validatesJSONPath"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "assertion.8.targetjsonpath.#", "1"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "assertion.8.targetjsonpath.0.jsonpath", "$.discountPercentage"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "assertion.8.targetjsonpath.0.operator", "contains"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "assertion.8.targetjsonpath.0.targetvalue", "10.48"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "locations.#", "1"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "locations.0", "aws:eu-central-1"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "options_list.0.tick_every", "900"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "options_list.0.follow_redirects", "false"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "options_list.0.min_failure_duration", "10"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "options_list.0.min_location_failed", "1"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "options_list.0.monitor_options.0.renotify_interval", "120"),
+				"datadog_synthetics_test.bar", "options_list.0.initial_navigation_timeout", "150"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "name", testName),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "message", "Notify @pagerduty"),
+				"datadog_synthetics_test.bar", "message", "Notify @datadog.user"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "tags.#", "3"),
+				"datadog_synthetics_test.bar", "tags.#", "2"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "tags.0", "foo:bar"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "tags.1", "foo"),
+				"datadog_synthetics_test.bar", "tags.1", "baz"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "tags.2", "env:test"),
+				"datadog_synthetics_test.bar", "browser_step.#", "1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "status", "live"),
+				"datadog_synthetics_test.bar", "browser_step.0.name", "first step"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_step.0.type", "assertCurrentUrl"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_step.0.allow_failure", "true"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_step.0.always_execute", "true"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_step.0.exit_if_succeed", "true"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_step.0.is_critical", "true"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_step.0.no_screenshot", "true"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_step.0.params.0.check", "contains"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_step.0.params.0.value", "content"),
 			resource.TestCheckResourceAttrSet(
 				"datadog_synthetics_test.bar", "monitor_id"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_variable.0.type", "text"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_variable.0.name", "MY_PATTERN_VAR"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_variable.0.pattern", "{{numeric(3)}}"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_variable.0.example", "597"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_variable.1.type", "email"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_variable.1.name", "EMAIL_VAR"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_variable.2.type", "text"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_variable.2.name", "MY_SECRET"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_variable.2.secure", "true"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "config_variable.0.type", "text"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "config_variable.0.name", "VARIABLE_NAME"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "config_variable.0.pattern", "{{numeric(3)}}"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "config_variable.0.example", "123"),
 		),
 	}
 }
