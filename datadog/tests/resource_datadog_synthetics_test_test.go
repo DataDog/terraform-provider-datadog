@@ -229,6 +229,21 @@ func TestAccDatadogSyntheticsAPITest_BasicNewAssertionsOptions(t *testing.T) {
 	})
 }
 
+func TestAccDatadogSyntheticsAPITest_BasicTargetAndTargetValueCanBeNumberOrString(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	accProvider := providers.sdkV2Provider
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
+		Steps: []resource.TestStep{
+			createSyntheticsAPITestStepTargetAndTargetValueCanBeNumberOrString(ctx, accProvider, t),
+		},
+	})
+}
+
 func TestAccDatadogSyntheticsAPITest_AdvancedScheduling(t *testing.T) {
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
@@ -256,6 +271,22 @@ func TestAccDatadogSyntheticsAPITest_UpdatedNewAssertionsOptions(t *testing.T) {
 		Steps: []resource.TestStep{
 			createSyntheticsAPITestStepNewAssertionsOptions(ctx, accProvider, t),
 			updateSyntheticsAPITestStepNewAssertionsOptions(ctx, accProvider, t),
+		},
+	})
+}
+
+func TestAccDatadogSyntheticsAPITest_UpdatedTargetAndTargetValueCanBeNumberOrString(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	accProvider := providers.sdkV2Provider
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
+		Steps: []resource.TestStep{
+			createSyntheticsAPITestStepTargetAndTargetValueCanBeNumberOrString(ctx, accProvider, t),
+			updateSyntheticsAPITestStepTargetAndTargetValueCanBeNumberOrString(ctx, accProvider, t),
 		},
 	})
 }
@@ -1864,8 +1895,8 @@ resource "datadog_synthetics_test" "bar" {
         }
     }
     assertion {
-     	operator = "validatesJSONPath"
 		type     = "body"
+		operator = "validatesJSONPath"
 		targetjsonpath {
 			jsonpath    = "$.myKey"
 			operator    = "isUndefined"
@@ -1874,6 +1905,345 @@ resource "datadog_synthetics_test" "bar" {
 	assertion {
 		type = "javascript"
 		code = "const hello = 'world';"
+	}
+
+	locations = [ "aws:eu-central-1" ]
+	options_list {
+		tick_every = 60
+		follow_redirects = true
+		min_failure_duration = 0
+		min_location_failed = 1
+
+		monitor_options {
+			renotify_interval = 120
+			renotify_occurrences = 5
+			escalation_message = "test escalation message"
+		}
+	}
+
+	name = "%s"
+	message = "Notify @datadog.user"
+	tags = ["foo:bar", "baz"]
+
+	status = "paused"
+}`, globalVariableName, uniq)
+}
+
+func createSyntheticsAPITestStepTargetAndTargetValueCanBeNumberOrString(ctx context.Context, accProvider *schema.Provider, t *testing.T) resource.TestStep {
+	testName := uniqueEntityName(ctx, t)
+	globalVariableName := getUniqueVariableName(ctx, t)
+	return resource.TestStep{
+		Config: createSyntheticsAPITestConfigTargetAndTargetValueCanBeNumberOrString(testName, globalVariableName),
+		Check: resource.ComposeTestCheckFunc(
+			testSyntheticsTestExists(accProvider),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "type", "api"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "subtype", "http"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "request_definition.0.method", "GET"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "request_definition.0.url", "https://www.datadoghq.com"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.#", "14"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.0.type", "statusCode"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.0.operator", "is"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.0.target", "200"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.1.type", "body"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.1.operator", "validatesJSONSchema"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.1.targetjsonschema.0.jsonschema", "{\"type\": \"object\", \"properties\":{\"slideshow\":{\"type\":\"object\"}}}"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.2.type", "body"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.2.operator", "validatesJSONPath"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.2.targetjsonpath.0.operator", "isNot"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.2.targetjsonpath.0.targetvalue", "0"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.2.targetjsonpath.0.jsonpath", "topKey"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.3.type", "body"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.3.operator", "validatesXPath"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.3.targetxpath.0.operator", "contains"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.3.targetxpath.0.targetvalue", "12"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.3.targetxpath.0.xpath", "something"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.4.type", "body"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.4.operator", "validatesJSONPath"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.4.targetjsonpath.0.jsonpath", "$.myKey"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.4.targetjsonpath.0.operator", "isUndefined"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.5.type", "header"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.5.operator", "moreThan"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.5.property", "content-length"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.5.target", "74000"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.6.type", "header"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.6.operator", "moreThan"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.6.property", "content-length"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.6.target", "74001"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.7.type", "bodyHash"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.7.operator", "md5"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.7.target", "ab1f88dc59fc43e4bc07ca52f7bf4d12"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.8.operator", "validatesJSONPath"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.8.type", "body"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.8.targetjsonpath.0.jsonpath", "$.discountPercentage"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.8.targetjsonpath.0.operator", "lessThan"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.8.targetjsonpath.0.targetvalue", "18.48"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.9.operator", "validatesJSONPath"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.9.type", "body"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.9.targetjsonpath.0.jsonpath", "$.discountPercentage"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.9.targetjsonpath.0.operator", "lessThan"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.9.targetjsonpath.0.targetvalue", "18.49"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.10.operator", "validatesJSONPath"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.10.type", "body"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.10.targetjsonpath.0.jsonpath", "$.discountPercentage"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.10.targetjsonpath.0.operator", "moreThan"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.10.targetjsonpath.0.targetvalue", "8"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.11.operator", "validatesJSONPath"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.11.type", "body"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.11.targetjsonpath.0.jsonpath", "$.discountPercentage"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.11.targetjsonpath.0.operator", "moreThan"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.11.targetjsonpath.0.targetvalue", "7"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.12.operator", "validatesJSONPath"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.12.type", "body"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.12.targetjsonpath.0.jsonpath", "$.discountPercentage"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.12.targetjsonpath.0.operator", "contains"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.12.targetjsonpath.0.targetvalue", "10.48"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.13.operator", "validatesJSONPath"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.13.type", "body"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.13.targetjsonpath.0.jsonpath", "$.discountPercentage"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.13.targetjsonpath.0.operator", "contains"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.13.targetjsonpath.0.targetvalue", "10.48"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "locations.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "locations.0", "aws:eu-central-1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options_list.0.tick_every", "60"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options_list.0.follow_redirects", "true"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options_list.0.min_failure_duration", "0"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options_list.0.min_location_failed", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options_list.0.monitor_options.0.renotify_interval", "120"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options_list.0.monitor_options.0.renotify_occurrences", "5"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options_list.0.monitor_options.0.escalation_message", "test escalation message"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "name", testName),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "message", "Notify @datadog.user"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "tags.#", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "tags.0", "foo:bar"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "tags.1", "baz"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "status", "paused"),
+			resource.TestCheckResourceAttrSet(
+				"datadog_synthetics_test.bar", "monitor_id"),
+		),
+	}
+}
+
+func createSyntheticsAPITestConfigTargetAndTargetValueCanBeNumberOrString(uniq, globalVariableName string) string {
+	return fmt.Sprintf(`
+resource "datadog_synthetics_global_variable" "test_variable" {
+	name        = "%s"
+	description = "Description of the variable"
+	tags        = ["foo:bar", "env:test"]
+	value       = "variable-value"
+}
+
+resource "datadog_synthetics_test" "bar" {
+	type = "api"
+	subtype = "http"
+
+	request_definition {
+		method = "GET"
+		url = "https://www.datadoghq.com"
+		timeout = 30
+	}
+
+	assertion {
+		type = "statusCode"
+		operator = "is"
+		target = "200"
+	}
+
+	assertion {
+		type = "body"
+		operator = "validatesJSONSchema"
+		targetjsonschema {
+			jsonschema = "{\"type\": \"object\", \"properties\":{\"slideshow\":{\"type\":\"object\"}}}"
+		}
+	}
+
+	assertion {
+		type = "body"
+		operator = "validatesJSONPath"
+		targetjsonpath {
+			operator = "isNot"
+			targetvalue = "0"
+			jsonpath = "topKey"
+		}
+	}
+
+	assertion {
+		type = "body"
+		operator = "validatesXPath"
+		targetxpath {
+			operator = "contains"
+			targetvalue = "12"
+			xpath = "something"
+        }
+    }
+
+    assertion {
+		type     = "body"
+		operator = "validatesJSONPath"
+		targetjsonpath {
+			jsonpath    = "$.myKey"
+			operator    = "isUndefined"
+		}
+    }
+
+	assertion {
+		type     = "header"
+		operator = "moreThan"
+		property = "content-length"
+		target   = 74000
+	}
+
+	assertion {
+		type     = "header"
+		operator = "moreThan"
+		property = "content-length"
+		target   = "74001"
+	}
+
+	assertion {
+		type     = "bodyHash"
+		operator = "md5"
+		target   = "ab1f88dc59fc43e4bc07ca52f7bf4d12"
+	}
+
+	assertion {
+    operator = "validatesJSONPath"
+    type     = "body"
+		targetjsonpath {
+			jsonpath    = "$.discountPercentage"
+			operator    = "lessThan"
+			targetvalue = "18.48"
+		}
+	}
+
+	assertion {
+		operator = "validatesJSONPath"
+		type     = "body"
+		targetjsonpath {
+			jsonpath    = "$.discountPercentage"
+			operator    = "lessThan"
+			targetvalue = 18.49
+		}
+	}
+
+	assertion {
+		operator = "validatesJSONPath"
+		type     = "body"
+		targetjsonpath {
+			jsonpath    = "$.discountPercentage"
+			operator    = "moreThan"
+			targetvalue = "8"
+		}
+	}
+
+	assertion {
+		operator = "validatesJSONPath"
+		type     = "body"
+		targetjsonpath {
+			jsonpath    = "$.discountPercentage"
+			operator    = "moreThan"
+			targetvalue = 7
+		}
+	}
+
+	assertion {
+		operator = "validatesJSONPath"
+		type     = "body"
+		targetjsonpath {
+			jsonpath    = "$.discountPercentage"
+			operator    = "contains"
+			targetvalue = "10.48"
+		}
+	}
+
+	assertion {
+		operator = "validatesJSONPath"
+		type     = "body"
+		targetjsonpath {
+			jsonpath    = "$.discountPercentage"
+			operator    = "contains"
+			targetvalue = 10.48
+		}
 	}
 
 	locations = [ "aws:eu-central-1" ]
@@ -2134,6 +2504,119 @@ resource "datadog_synthetics_test" "bar" {
 		name = datadog_synthetics_global_variable.test_variable.name
 		secure = "false"
 		type = "global"
+	}
+
+	assertion {
+		type = "body"
+		operator = "validatesJSONPath"
+		targetjsonpath {
+			elementsoperator = "everyElementMatches"
+			operator = "isNot"
+			targetvalue = "0"
+			jsonpath = "topKey"
+		}
+	}
+
+	locations = [ "aws:eu-central-1" ]
+
+	options_list {
+		tick_every = 900
+		follow_redirects = false
+		min_failure_duration = 10
+		min_location_failed = 1
+
+		monitor_options {
+			renotify_interval = 120
+		}
+	}
+
+	name = "%s"
+	message = "Notify @pagerduty"
+	tags = ["foo:bar", "foo", "env:test"]
+
+	status = "live"
+}`, globalVariableName, uniq)
+}
+
+func updateSyntheticsAPITestStepTargetAndTargetValueCanBeNumberOrString(ctx context.Context, accProvider *schema.Provider, t *testing.T) resource.TestStep {
+	testName := uniqueEntityName(ctx, t) + "updated"
+	globalVariableName := getUniqueVariableName(ctx, t)
+
+	return resource.TestStep{
+		Config: updateSyntheticsAPITestConfigTargetAndTargetValueCanBeNumberOrString(testName, globalVariableName),
+		Check: resource.ComposeTestCheckFunc(
+			testSyntheticsTestExists(accProvider),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "type", "api"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "subtype", "http"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.0.type", "body"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.0.operator", "validatesJSONPath"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.0.targetjsonpath.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.0.targetjsonpath.0.jsonpath", "topKey"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.0.targetjsonpath.0.operator", "isNot"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.0.targetjsonpath.0.targetvalue", "0"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.0.targetjsonpath.0.elementsoperator", "everyElementMatches"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "locations.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "locations.0", "aws:eu-central-1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options_list.0.tick_every", "900"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options_list.0.follow_redirects", "false"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options_list.0.min_failure_duration", "10"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options_list.0.min_location_failed", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options_list.0.monitor_options.0.renotify_interval", "120"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "name", testName),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "message", "Notify @pagerduty"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "tags.#", "3"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "tags.0", "foo:bar"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "tags.1", "foo"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "tags.2", "env:test"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "status", "live"),
+			resource.TestCheckResourceAttrSet(
+				"datadog_synthetics_test.bar", "monitor_id"),
+		),
+	}
+}
+
+func updateSyntheticsAPITestConfigTargetAndTargetValueCanBeNumberOrString(uniq, globalVariableName string) string {
+	return fmt.Sprintf(`
+resource "datadog_synthetics_global_variable" "test_variable" {
+	name        = "%s"
+	description = "Description of the variable"
+	tags        = ["foo:bar", "env:test"]
+	value       = "variable-value"
+}
+
+resource "datadog_synthetics_test" "bar" {
+	type = "api"
+	subtype = "http"
+
+	request_definition {
+		method = "GET"
+		url = "https://docs.datadoghq.com"
+		timeout = 60
 	}
 
 	assertion {
@@ -3355,77 +3838,129 @@ func createSyntheticsBrowserTestStep(ctx context.Context, accProvider *schema.Pr
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "options_list.0.rum_settings.0.is_enabled", "true"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "options_list.0.rum_settings.0.application_id", "rum-app-id"),
+				"datadog_synthetics_test.bar", "assertion.0.type", "header"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "options_list.0.rum_settings.0.client_token_id", "12345"),
+				"datadog_synthetics_test.bar", "assertion.0.operator", "moreThan"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "options_list.0.ci.0.execution_rule", "blocking"),
+				"datadog_synthetics_test.bar", "assertion.0.property", "content-length"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "options_list.0.ignore_server_certificate_error", "true"),
+				"datadog_synthetics_test.bar", "assertion.0.target", "74000"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "options_list.0.disable_csp", "true"),
+				"datadog_synthetics_test.bar", "assertion.1.type", "header"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "options_list.0.disable_cors", "true"),
+				"datadog_synthetics_test.bar", "assertion.1.operator", "moreThan"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "options_list.0.initial_navigation_timeout", "150"),
+				"datadog_synthetics_test.bar", "assertion.1.property", "content-length"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.1.target", "74001"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.2.type", "bodyHash"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.2.operator", "md5"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.2.target", "ab1f88dc59fc43e4bc07ca52f7bf4d12"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.3.type", "body"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.3.operator", "validatesJSONPath"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.3.targetjsonpath.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.3.targetjsonpath.0.jsonpath", "$.discountPercentage"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.3.targetjsonpath.0.operator", "lessThan"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.3.targetjsonpath.0.targetvalue", "18.48"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.4.type", "body"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.4.operator", "validatesJSONPath"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.4.targetjsonpath.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.4.targetjsonpath.0.jsonpath", "$.discountPercentage"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.4.targetjsonpath.0.operator", "lessThan"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.4.targetjsonpath.0.targetvalue", "18.49"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.5.type", "body"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.5.operator", "validatesJSONPath"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.5.targetjsonpath.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.5.targetjsonpath.0.jsonpath", "$.discountPercentage"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.5.targetjsonpath.0.operator", "moreThan"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.5.targetjsonpath.0.targetvalue", "8"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.6.type", "body"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.6.operator", "validatesJSONPath"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.6.targetjsonpath.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.6.targetjsonpath.0.jsonpath", "$.discountPercentage"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.6.targetjsonpath.0.operator", "moreThan"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.6.targetjsonpath.0.targetvalue", "7"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.7.type", "body"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.7.operator", "validatesJSONPath"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.7.targetjsonpath.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.7.targetjsonpath.0.jsonpath", "$.discountPercentage"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.7.targetjsonpath.0.operator", "contains"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.7.targetjsonpath.0.targetvalue", "10.48"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.8.type", "body"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.8.operator", "validatesJSONPath"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.8.targetjsonpath.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.8.targetjsonpath.0.jsonpath", "$.discountPercentage"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.8.targetjsonpath.0.operator", "contains"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.8.targetjsonpath.0.targetvalue", "10.48"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "locations.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "locations.0", "aws:eu-central-1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options_list.0.tick_every", "900"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options_list.0.follow_redirects", "false"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options_list.0.min_failure_duration", "10"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options_list.0.min_location_failed", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options_list.0.monitor_options.0.renotify_interval", "120"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "name", testName),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "message", "Notify @datadog.user"),
+				"datadog_synthetics_test.bar", "message", "Notify @pagerduty"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "tags.#", "2"),
+				"datadog_synthetics_test.bar", "tags.#", "3"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "tags.0", "foo:bar"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "tags.1", "baz"),
+				"datadog_synthetics_test.bar", "tags.1", "foo"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "browser_step.#", "1"),
+				"datadog_synthetics_test.bar", "tags.2", "env:test"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "browser_step.0.name", "first step"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "browser_step.0.type", "assertCurrentUrl"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "browser_step.0.allow_failure", "true"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "browser_step.0.always_execute", "true"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "browser_step.0.exit_if_succeed", "true"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "browser_step.0.is_critical", "true"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "browser_step.0.no_screenshot", "true"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "browser_step.0.params.0.check", "contains"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "browser_step.0.params.0.value", "content"),
+				"datadog_synthetics_test.bar", "status", "live"),
 			resource.TestCheckResourceAttrSet(
 				"datadog_synthetics_test.bar", "monitor_id"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "browser_variable.0.type", "text"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "browser_variable.0.name", "MY_PATTERN_VAR"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "browser_variable.0.pattern", "{{numeric(3)}}"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "browser_variable.0.example", "597"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "browser_variable.1.type", "email"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "browser_variable.1.name", "EMAIL_VAR"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "browser_variable.2.type", "text"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "browser_variable.2.name", "MY_SECRET"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "browser_variable.2.secure", "true"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "config_variable.0.type", "text"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "config_variable.0.name", "VARIABLE_NAME"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "config_variable.0.pattern", "{{numeric(3)}}"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "config_variable.0.example", "123"),
 		),
 	}
 }
