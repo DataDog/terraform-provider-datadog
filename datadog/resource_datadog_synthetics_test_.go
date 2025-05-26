@@ -3329,8 +3329,8 @@ func buildTerraformAssertions(actualAssertions []datadogV1.SyntheticsAssertion) 
 				}
 				if v, ok := target.GetTargetValueOk(); ok {
 					val := v.GetActualInstance()
-					if vAsString, ok := val.(string); ok {
-						localTarget["targetvalue"] = vAsString
+					if vAsString, ok := val.(*string); ok {
+						localTarget["targetvalue"] = *vAsString
 					} else if vAsFloat, ok := val.(*float64); ok {
 						localTarget["targetvalue"] = strconv.FormatFloat(*vAsFloat, 'f', -1, 64)
 					} else {
