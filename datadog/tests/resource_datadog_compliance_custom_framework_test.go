@@ -495,6 +495,32 @@ func TestCustomFramework_DuplicateRuleIds(t *testing.T) {
 	})
 }
 
+func TestCustomFramework_DuplicateHandle(t *testing.T) {
+	handle := "terraform-handle"
+	version := "1.0"
+
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	path := "datadog_compliance_custom_framework.sample_rules"
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogFrameworkDestroy(ctx, providers.frameworkProvider, path, version, handle),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogCreateFramework(version, handle),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(path, "handle", handle),
+					resource.TestCheckResourceAttr(path, "version", version),
+				),
+			},
+			{
+				Config:      testAccCheckDatadogCreateSecondFramework("different-version", handle),
+				ExpectError: regexp.MustCompile("Framework with same handle already exists"),
+			},
+		},
+	})
+}
+
 func testAccCheckDatadogCreateFrameworkWithMultipleRequirements(version string, handle string) string {
 	return fmt.Sprintf(`
 		resource "datadog_compliance_custom_framework" "sample_rules" {

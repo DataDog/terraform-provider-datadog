@@ -8,30 +8,25 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
-type requirementNameValidator struct{}
+type duplicateRequirementControlValidator struct{}
 
-func (v requirementNameValidator) Description(context.Context) string {
-	return "checks for duplicate requirement names"
+func (v duplicateRequirementControlValidator) Description(context.Context) string {
+	return "checks for duplicate requirement and control names"
 }
 
-func (v requirementNameValidator) MarkdownDescription(ctx context.Context) string {
+func (v duplicateRequirementControlValidator) MarkdownDescription(ctx context.Context) string {
 	return v.Description(ctx)
 }
 
-func (v requirementNameValidator) ValidateList(ctx context.Context, req validator.ListRequest, resp *validator.ListResponse) {
+func (v duplicateRequirementControlValidator) ValidateList(ctx context.Context, req validator.ListRequest, resp *validator.ListResponse) {
 	if req.ConfigValue.IsNull() || req.ConfigValue.IsUnknown() {
 		return
 	}
 
-	var requirementNames []string
+	seen := make(map[string]bool)
 	for _, requirement := range req.ConfigValue.Elements() {
 		reqObj := requirement.(types.Object)
 		name := reqObj.Attributes()["name"].(types.String).ValueString()
-		requirementNames = append(requirementNames, name)
-	}
-
-	seen := make(map[string]bool)
-	for _, name := range requirementNames {
 		if seen[name] {
 			resp.Diagnostics.AddError(
 				"Each Requirement must have a unique name",
@@ -40,9 +35,23 @@ func (v requirementNameValidator) ValidateList(ctx context.Context, req validato
 			return
 		}
 		seen[name] = true
+		controls := reqObj.Attributes()["controls"].(types.List)
+		controlNames := make(map[string]bool)
+		for _, control := range controls.Elements() {
+			ctrlObj := control.(types.Object)
+			ctrlName := ctrlObj.Attributes()["name"].(types.String).ValueString()
+			if controlNames[ctrlName] {
+				resp.Diagnostics.AddError(
+					"Each Control must have a unique name under the same requirement",
+					fmt.Sprintf("Control name '%s' is used more than once under requirement '%s'", ctrlName, name),
+				)
+				return
+			}
+			controlNames[ctrlName] = true
+		}
 	}
 }
 
-func RequirementNameValidator() validator.List {
-	return &requirementNameValidator{}
+func DuplicateRequirementControlValidator() validator.List {
+	return &duplicateRequirementControlValidator{}
 }

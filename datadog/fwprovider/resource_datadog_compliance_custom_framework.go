@@ -99,7 +99,7 @@ func (r *complianceCustomFrameworkResource) Schema(_ context.Context, _ resource
 			"requirements": schema.ListNestedBlock{
 				Description: "The requirements of the framework.",
 				Validators: []validator.List{
-					validators.RequirementNameValidator(),
+					validators.DuplicateRequirementControlValidator(),
 					listvalidator.IsRequired(),
 				},
 				NestedObject: schema.NestedBlockObject{
@@ -116,7 +116,6 @@ func (r *complianceCustomFrameworkResource) Schema(_ context.Context, _ resource
 						"controls": schema.ListNestedBlock{
 							Description: "The controls of the requirement.",
 							Validators: []validator.List{
-								validators.ControlNameValidator(),
 								listvalidator.IsRequired(),
 							},
 							NestedObject: schema.NestedBlockObject{
@@ -164,6 +163,18 @@ func (r *complianceCustomFrameworkResource) Create(ctx context.Context, request 
 	_, httpResp, err := r.Api.CreateCustomFramework(r.Auth, *buildCreateFrameworkRequest(state))
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == 409 { // if framework already exists, try to update it with the new state
+			_, httpResp, getErr := r.Api.GetCustomFramework(r.Auth, state.Handle.ValueString(), state.Version.ValueString())
+			// if the framework with the same handle and version does not exist, throw an error because
+			// only the handle matches which has to be unique
+			if httpResp != nil && httpResp.StatusCode == 400 {
+				response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "Framework with same handle already exists. Currently there is no support for two frameworks with the same handle."))
+				return
+			}
+			if getErr != nil {
+				response.Diagnostics.Append(utils.FrameworkErrorDiag(getErr, "error getting existing compliance custom framework"))
+				return
+			}
+			// if the framework with the same handle and version exists, update it
 			_, _, updateErr := r.Api.UpdateCustomFramework(r.Auth, state.Handle.ValueString(), state.Version.ValueString(), *buildUpdateFrameworkRequest(state))
 			if updateErr != nil {
 				response.Diagnostics.Append(utils.FrameworkErrorDiag(updateErr, "error updating existing compliance custom framework"))
@@ -238,6 +249,28 @@ func (r *complianceCustomFrameworkResource) Update(ctx context.Context, request 
 	response.Diagnostics.Append(diags...)
 }
 
+func convertControlToModel(control datadogV2.CustomFrameworkControl) complianceCustomFrameworkControlsModel {
+	rulesID := make([]attr.Value, len(control.GetRulesId()))
+	for k, v := range control.GetRulesId() {
+		rulesID[k] = types.StringValue(v)
+	}
+	return complianceCustomFrameworkControlsModel{
+		Name:    types.StringValue(control.GetName()),
+		RulesID: types.SetValueMust(types.StringType, rulesID),
+	}
+}
+
+func convertRequirementToModel(req datadogV2.CustomFrameworkRequirement) complianceCustomFrameworkRequirementsModel {
+	controls := make([]complianceCustomFrameworkControlsModel, len(req.GetControls()))
+	for j, control := range req.GetControls() {
+		controls[j] = convertControlToModel(control)
+	}
+	return complianceCustomFrameworkRequirementsModel{
+		Name:     types.StringValue(req.GetName()),
+		Controls: controls,
+	}
+}
+
 func readStateFromDatabase(data datadogV2.GetCustomFrameworkResponse, handle string, version string, currentState *complianceCustomFrameworkModel) complianceCustomFrameworkModel {
 	var state complianceCustomFrameworkModel
 	state.ID = types.StringValue(handle + "-" + version)
@@ -247,20 +280,21 @@ func readStateFromDatabase(data datadogV2.GetCustomFrameworkResponse, handle str
 	if data.GetData().Attributes.IconUrl != nil {
 		state.IconURL = types.StringValue(*data.GetData().Attributes.IconUrl)
 	}
-	// since the requirements and controls from the API response might be in a different order than the state
-	// we need to sort them to match the state so terraform can detect the changes
-	// without taking order into account
+
 	apiReqMap := make(map[string]datadogV2.CustomFrameworkRequirement)
-	apiCtrlMap := make(map[string]map[string]datadogV2.CustomFrameworkControl)
+	apiControlMap := make(map[string]map[string]datadogV2.CustomFrameworkControl)
 
 	for _, req := range data.GetData().Attributes.Requirements {
 		apiReqMap[req.GetName()] = req
-		apiCtrlMap[req.GetName()] = make(map[string]datadogV2.CustomFrameworkControl)
-		for _, ctrl := range req.GetControls() {
-			apiCtrlMap[req.GetName()][ctrl.GetName()] = ctrl
+		apiControlMap[req.GetName()] = make(map[string]datadogV2.CustomFrameworkControl)
+		for _, control := range req.GetControls() {
+			apiControlMap[req.GetName()][control.GetName()] = control
 		}
 	}
 
+	// since the requirements and controls from the API response might be in a different order than the state
+	// we need to sort them to match the state so terraform can detect the changes
+	// without taking order into account
 	sortedRequirements := make([]complianceCustomFrameworkRequirementsModel, 0, len(data.GetData().Attributes.Requirements))
 
 	if currentState != nil {
@@ -269,32 +303,16 @@ func readStateFromDatabase(data datadogV2.GetCustomFrameworkResponse, handle str
 			if apiReq, exists := apiReqMap[currentReqName]; exists {
 				sortedControls := make([]complianceCustomFrameworkControlsModel, 0, len(apiReq.GetControls()))
 
-				for _, currentCtrl := range currentReq.Controls {
-					currentCtrlName := currentCtrl.Name.ValueString()
-					if apiCtrl, exists := apiCtrlMap[currentReqName][currentCtrlName]; exists {
-						rulesID := make([]attr.Value, len(apiCtrl.GetRulesId()))
-						for k, v := range apiCtrl.GetRulesId() {
-							rulesID[k] = types.StringValue(v)
-						}
-
-						sortedControls = append(sortedControls, complianceCustomFrameworkControlsModel{
-							Name:    types.StringValue(apiCtrl.GetName()),
-							RulesID: types.SetValueMust(types.StringType, rulesID),
-						})
-						delete(apiCtrlMap[currentReqName], currentCtrlName)
+				for _, currentControl := range currentReq.Controls {
+					currentControlName := currentControl.Name.ValueString()
+					if apiControl, exists := apiControlMap[currentReqName][currentControlName]; exists {
+						sortedControls = append(sortedControls, convertControlToModel(apiControl))
+						delete(apiControlMap[currentReqName], currentControlName)
 					}
 				}
 
-				for _, apiCtrl := range apiCtrlMap[currentReqName] {
-					rulesID := make([]attr.Value, len(apiCtrl.GetRulesId()))
-					for k, v := range apiCtrl.GetRulesId() {
-						rulesID[k] = types.StringValue(v)
-					}
-
-					sortedControls = append(sortedControls, complianceCustomFrameworkControlsModel{
-						Name:    types.StringValue(apiCtrl.GetName()),
-						RulesID: types.SetValueMust(types.StringType, rulesID),
-					})
+				for _, apiControl := range apiControlMap[currentReqName] {
+					sortedControls = append(sortedControls, convertControlToModel(apiControl))
 				}
 
 				sortedReq := complianceCustomFrameworkRequirementsModel{
@@ -308,23 +326,7 @@ func readStateFromDatabase(data datadogV2.GetCustomFrameworkResponse, handle str
 	}
 
 	for _, apiReq := range apiReqMap {
-		controls := make([]complianceCustomFrameworkControlsModel, len(apiReq.GetControls()))
-		for j, apiCtrl := range apiReq.GetControls() {
-			rulesID := make([]attr.Value, len(apiCtrl.GetRulesId()))
-			for k, v := range apiCtrl.GetRulesId() {
-				rulesID[k] = types.StringValue(v)
-			}
-
-			controls[j] = complianceCustomFrameworkControlsModel{
-				Name:    types.StringValue(apiCtrl.GetName()),
-				RulesID: types.SetValueMust(types.StringType, rulesID),
-			}
-		}
-
-		sortedRequirements = append(sortedRequirements, complianceCustomFrameworkRequirementsModel{
-			Name:     types.StringValue(apiReq.GetName()),
-			Controls: controls,
-		})
+		sortedRequirements = append(sortedRequirements, convertRequirementToModel(apiReq))
 	}
 
 	state.Requirements = sortedRequirements
