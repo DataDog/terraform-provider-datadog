@@ -49,9 +49,9 @@ resource "datadog_compliance_custom_framework" "framework" {
 
 ### Required
 
-- `handle` (String) The framework handle. String length must be at least 1.
+- `handle` (String) The framework handle. String length must be at least 1. This field is immutable.
 - `name` (String) The framework name. String length must be at least 1.
-- `version` (String) The framework version. String length must be at least 1.
+- `version` (String) The framework version. String length must be at least 1. This field is immutable.
 - `requirements` (Block List) The requirements of the framework. Length must be at least 1. (see [below for nested schema](#nestedblock--requirements))
 
 
