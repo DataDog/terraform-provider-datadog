@@ -3208,7 +3208,6 @@ func buildDatadogAssertions(attr []interface{}) []datadogV1.SyntheticsAssertion 
 							assertionTargetInt, _ := strconv.Atoi(v.(string))
 							assertionTargetFloat := float64(assertionTargetInt)
 							assertionTarget.SetTarget(datadogV1.SyntheticsAssertionTargetValueNumberAsSyntheticsAssertionTargetValue(&assertionTargetFloat))
-							// } else if assertionTarget.GetType() == datadogV1.SYNTHETICSASSERTIONTYPE_PACKET_LOSS_PERCENTAGE {
 						} else if isTargetOfTypeFloat(assertionTarget.GetType(), assertionTarget.GetOperator()) {
 							assertionTargetFloat, _ := strconv.ParseFloat(v.(string), 64)
 							assertionTarget.SetTarget(datadogV1.SyntheticsAssertionTargetValueNumberAsSyntheticsAssertionTargetValue(&assertionTargetFloat))
