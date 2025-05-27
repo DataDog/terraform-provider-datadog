@@ -137,6 +137,173 @@ func TestAccCSMThreatsAgentRule_CreateAndUpdateWithoutPolicyID(t *testing.T) {
 	})
 }
 
+func TestAccCSMThreatsAgentRule_CreateAndUpdateWithActions(t *testing.T) {
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	agentRuleName := uniqueAgentRuleName(ctx)
+	resourceName := "datadog_csm_threats_agent_rule.agent_rule_with_actions"
+
+	policyName := uniqueAgentRuleName(ctx)
+	policyConfig := fmt.Sprintf(`
+	resource "datadog_csm_threats_policy" "policy_for_actions_test" {
+		name              = "%s"
+		enabled           = true
+		description       = "policy for actions test"
+		tags              = ["host_name:test_host"]
+	}
+	`, policyName)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckCSMThreatsAgentRuleDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				// Create a policy to have at least one
+				Config: policyConfig,
+				Check:  testAccCheckCSMThreatsPolicyExists(providers.frameworkProvider, "datadog_csm_threats_policy.policy_for_actions_test"),
+			},
+			{
+				Config: fmt.Sprintf(`
+				%s
+				resource "datadog_csm_threats_agent_rule" "agent_rule_with_actions" {
+					name              = "%s"
+                    policy_id         = datadog_csm_threats_policy.policy_for_actions_test.id
+					enabled           = true
+					description       = "rule with actions"
+					expression 		  = "open.file.name == \"etc/shadow/password\""
+					product_tags      = ["compliance_framework:PCI-DSS"]
+					actions = [
+						{
+							set = {
+								name   = "my_action_test"
+								field  = "test_field"
+								value  = ""
+								append = false
+								scope  = ""
+								ttl    = 0
+								size   = 0
+							}
+						}
+					]
+				}
+				`, policyConfig, agentRuleName),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckCSMThreatsAgentRuleExists(providers.frameworkProvider, resourceName),
+					resource.TestCheckResourceAttr(resourceName, "name", agentRuleName),
+					resource.TestCheckResourceAttr(resourceName, "description", "rule with actions"),
+					resource.TestCheckResourceAttr(resourceName, "actions.#", "1"),
+					resource.TestCheckResourceAttr(resourceName, "actions.0.set.name", "my_action_test"),
+					resource.TestCheckResourceAttr(resourceName, "actions.0.set.field", "test_field"),
+				),
+			},
+			// Update description while keeping actions the same
+			{
+				Config: fmt.Sprintf(`
+				%s
+				resource "datadog_csm_threats_agent_rule" "agent_rule_with_actions" {
+					name              = "%s"
+                    policy_id         = datadog_csm_threats_policy.policy_for_actions_test.id
+					enabled           = true
+					description       = "updated rule with actions"
+					expression 		  = "open.file.name == \"etc/shadow/password\""
+					product_tags      = ["compliance_framework:ISO-27799"]
+					actions = [
+						{
+							set = {
+								name   = "my_action_test"
+								field  = "test_field"
+								value  = ""
+								append = false
+								scope  = ""
+								ttl    = 0
+								size   = 0
+							}
+						}
+					]
+				}
+				`, policyConfig, agentRuleName),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckCSMThreatsAgentRuleExists(providers.frameworkProvider, resourceName),
+					resource.TestCheckResourceAttr(resourceName, "name", agentRuleName),
+					resource.TestCheckResourceAttr(resourceName, "description", "updated rule with actions"),
+					resource.TestCheckResourceAttr(resourceName, "actions.#", "1"),
+					resource.TestCheckResourceAttr(resourceName, "actions.0.set.name", "my_action_test"),
+					resource.TestCheckResourceAttr(resourceName, "actions.0.set.field", "test_field"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccCSMThreatsAgentRule_CreateWithActionsWithoutValue(t *testing.T) {
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	agentRuleName := uniqueAgentRuleName(ctx)
+	resourceName := "datadog_csm_threats_agent_rule.agent_rule_without_value"
+
+	policyName := uniqueAgentRuleName(ctx)
+	policyConfig := fmt.Sprintf(`
+	resource "datadog_csm_threats_policy" "policy_for_no_value_test" {
+		name              = "%s"
+		enabled           = true
+		description       = "policy for no value test"
+		tags              = ["host_name:test_host"]
+	}
+	`, policyName)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckCSMThreatsAgentRuleDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				// Create a policy to have at least one
+				Config: policyConfig,
+				Check:  testAccCheckCSMThreatsPolicyExists(providers.frameworkProvider, "datadog_csm_threats_policy.policy_for_no_value_test"),
+			},
+			{
+				Config: fmt.Sprintf(`
+				%s
+				resource "datadog_csm_threats_agent_rule" "agent_rule_without_value" {
+					name              = "%s"
+                    policy_id         = datadog_csm_threats_policy.policy_for_no_value_test.id
+					enabled           = true
+					description       = "rule with actions without value"
+					expression 		  = "open.file.name == \"etc/shadow/password\""
+					product_tags      = ["compliance_framework:PCI-DSS"]
+					actions = [
+						{
+							set = {
+								name   = "my_action_hhrrr"
+								field  = "process.name"
+								value  = ""
+								append = true
+								scope  = "container"
+								ttl    = 60
+								size   = 10
+							}
+						}
+					]
+				}
+				`, policyConfig, agentRuleName),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckCSMThreatsAgentRuleExists(providers.frameworkProvider, resourceName),
+					resource.TestCheckResourceAttr(resourceName, "name", agentRuleName),
+					resource.TestCheckResourceAttr(resourceName, "description", "rule with actions without value"),
+					resource.TestCheckResourceAttr(resourceName, "actions.#", "1"),
+					resource.TestCheckResourceAttr(resourceName, "actions.0.set.name", "my_action_hhrrr"),
+					resource.TestCheckResourceAttr(resourceName, "actions.0.set.field", "process.name"),
+					resource.TestCheckResourceAttr(resourceName, "actions.0.set.append", "true"),
+					resource.TestCheckResourceAttr(resourceName, "actions.0.set.scope", "container"),
+					resource.TestCheckResourceAttr(resourceName, "actions.0.set.ttl", "60"),
+					resource.TestCheckResourceAttr(resourceName, "actions.0.set.size", "10"),
+				),
+			},
+		},
+	})
+}
+
 func testAccCheckCSMThreatsAgentRuleExists(accProvider *fwprovider.FrameworkProvider, resourceName string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		resource, ok := s.RootModule().Resources[resourceName]

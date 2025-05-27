@@ -6,6 +6,7 @@ import (
 	"sync"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -37,6 +38,21 @@ type csmThreatsAgentRuleModel struct {
 	Enabled     types.Bool   `tfsdk:"enabled"`
 	Expression  types.String `tfsdk:"expression"`
 	ProductTags types.Set    `tfsdk:"product_tags"`
+	Actions     types.List   `tfsdk:"actions"`
+}
+
+type agentRuleActionSetModel struct {
+	Name   types.String `tfsdk:"name"`
+	Field  types.String `tfsdk:"field"`
+	Value  types.String `tfsdk:"value"`
+	Append types.Bool   `tfsdk:"append"`
+	Size   types.Int64  `tfsdk:"size"`
+	Ttl    types.Int64  `tfsdk:"ttl"`
+	Scope  types.String `tfsdk:"scope"`
+}
+
+type agentRuleActionModel struct {
+	Set agentRuleActionSetModel `tfsdk:"set"`
 }
 
 func NewCSMThreatsAgentRuleResource() resource.Resource {
@@ -80,6 +96,21 @@ func (r *csmThreatsAgentRuleResource) Schema(_ context.Context, _ resource.Schem
 			"expression": schema.StringAttribute{
 				Required:    true,
 				Description: "The SECL expression of the Agent rule",
+			},
+			"actions": schema.ListAttribute{
+				Optional:    true,
+				Description: "The list of actions the rule can perform if triggered",
+				ElementType: types.ObjectType{AttrTypes: map[string]attr.Type{
+					"set": types.ObjectType{AttrTypes: map[string]attr.Type{
+						"name":   types.StringType,
+						"field":  types.StringType,
+						"value":  types.StringType,
+						"append": types.BoolType,
+						"size":   types.Int64Type,
+						"ttl":    types.Int64Type,
+						"scope":  types.StringType,
+					}},
+				}},
 			},
 			"product_tags": schema.SetAttribute{
 				Optional:    true,
@@ -128,7 +159,36 @@ func (r *csmThreatsAgentRuleResource) Create(ctx context.Context, request resour
 		return
 	}
 
-	r.updateStateFromResponse(ctx, &state, &res)
+	// Update essential fields from API response
+	state.Id = types.StringValue(res.Data.GetId())
+	attributes := res.Data.Attributes
+	state.Name = types.StringValue(attributes.GetName())
+	state.Enabled = types.BoolValue(attributes.GetEnabled())
+	state.Expression = types.StringValue(attributes.GetExpression())
+
+	// Handle description - preserve from plan if it was null and API returns empty
+	var planState csmThreatsAgentRuleModel
+	response.Diagnostics.Append(request.Plan.Get(ctx, &planState)...)
+	if !response.Diagnostics.HasError() {
+		description := attributes.GetDescription()
+		if description == "" && planState.Description.IsNull() {
+			state.Description = types.StringNull()
+		} else {
+			state.Description = types.StringValue(description)
+		}
+
+		// Preserve actions from the plan since API may return stale data or missing optional fields
+		state.Actions = planState.Actions
+	}
+
+	// Handle product tags
+	tags := attributes.GetProductTags()
+	if len(tags) == 0 && state.ProductTags.IsNull() {
+		state.ProductTags = types.SetNull(types.StringType)
+	} else {
+		state.ProductTags, _ = types.SetValueFrom(ctx, types.StringType, tags)
+	}
+
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
@@ -197,7 +257,35 @@ func (r *csmThreatsAgentRuleResource) Update(ctx context.Context, request resour
 		return
 	}
 
-	r.updateStateFromResponse(ctx, &state, &res)
+	// Update essential fields from API response
+	attributes := res.Data.Attributes
+	state.Name = types.StringValue(attributes.GetName())
+	state.Enabled = types.BoolValue(attributes.GetEnabled())
+	state.Expression = types.StringValue(attributes.GetExpression())
+
+	// Handle description - preserve from plan if it was null and API returns empty
+	var planState csmThreatsAgentRuleModel
+	response.Diagnostics.Append(request.Plan.Get(ctx, &planState)...)
+	if !response.Diagnostics.HasError() {
+		description := attributes.GetDescription()
+		if description == "" && planState.Description.IsNull() {
+			state.Description = types.StringNull()
+		} else {
+			state.Description = types.StringValue(description)
+		}
+
+		// Preserve actions from the plan since API may return stale data or missing optional fields
+		state.Actions = planState.Actions
+	}
+
+	// Handle product tags
+	tags := attributes.GetProductTags()
+	if len(tags) == 0 && state.ProductTags.IsNull() {
+		state.ProductTags = types.SetNull(types.StringType)
+	} else {
+		state.ProductTags, _ = types.SetValueFrom(ctx, types.StringType, tags)
+	}
+
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
@@ -242,6 +330,42 @@ func (r *csmThreatsAgentRuleResource) buildCreateCSMThreatsAgentRulePayload(stat
 	attributes.PolicyId = policyId
 	attributes.ProductTags = productTags
 
+	if !state.Actions.IsNull() && !state.Actions.IsUnknown() {
+		var actions []agentRuleActionModel
+		state.Actions.ElementsAs(context.Background(), &actions, false)
+		if len(actions) > 0 {
+			apiActions := make([]datadogV2.CloudWorkloadSecurityAgentRuleAction, len(actions))
+			for i, action := range actions {
+				setAction := datadogV2.NewCloudWorkloadSecurityAgentRuleActionSet()
+				setAction.SetName(action.Set.Name.ValueString())
+
+				// Handle optional fields - only set if not null and not empty
+				if !action.Set.Field.IsNull() && action.Set.Field.ValueString() != "" {
+					setAction.SetField(action.Set.Field.ValueString())
+				}
+				if !action.Set.Value.IsNull() && action.Set.Value.ValueString() != "" {
+					setAction.SetValue(action.Set.Value.ValueString())
+				}
+				if !action.Set.Append.IsNull() {
+					setAction.SetAppend(action.Set.Append.ValueBool())
+				}
+				if !action.Set.Size.IsNull() && action.Set.Size.ValueInt64() != 0 {
+					setAction.SetSize(action.Set.Size.ValueInt64())
+				}
+				if !action.Set.Ttl.IsNull() && action.Set.Ttl.ValueInt64() != 0 {
+					setAction.SetTtl(action.Set.Ttl.ValueInt64())
+				}
+				if !action.Set.Scope.IsNull() && action.Set.Scope.ValueString() != "" {
+					setAction.SetScope(action.Set.Scope.ValueString())
+				}
+				ruleAction := datadogV2.NewCloudWorkloadSecurityAgentRuleAction()
+				ruleAction.SetSet(*setAction)
+				apiActions[i] = *ruleAction
+			}
+			attributes.SetActions(apiActions)
+		}
+	}
+
 	data := datadogV2.NewCloudWorkloadSecurityAgentRuleCreateData(attributes, datadogV2.CLOUDWORKLOADSECURITYAGENTRULETYPE_AGENT_RULE)
 	return datadogV2.NewCloudWorkloadSecurityAgentRuleCreateRequest(*data), nil
 }
@@ -255,6 +379,44 @@ func (r *csmThreatsAgentRuleResource) buildUpdateCSMThreatsAgentRulePayload(stat
 	attributes.Enabled = &enabled
 	attributes.PolicyId = policyId
 	attributes.ProductTags = productTags
+
+	// Always process actions to ensure they are properly sent to the API
+	var actions []agentRuleActionModel
+	if !state.Actions.IsNull() && !state.Actions.IsUnknown() {
+		state.Actions.ElementsAs(context.Background(), &actions, false)
+	}
+
+	apiActions := make([]datadogV2.CloudWorkloadSecurityAgentRuleAction, len(actions))
+	for i, action := range actions {
+		setAction := datadogV2.NewCloudWorkloadSecurityAgentRuleActionSet()
+		if !action.Set.Name.IsNull() {
+			setAction.SetName(action.Set.Name.ValueString())
+		}
+
+		// Handle optional fields - only set if not null and not empty
+		if !action.Set.Field.IsNull() && action.Set.Field.ValueString() != "" {
+			setAction.SetField(action.Set.Field.ValueString())
+		}
+		if !action.Set.Value.IsNull() && action.Set.Value.ValueString() != "" {
+			setAction.SetValue(action.Set.Value.ValueString())
+		}
+		if !action.Set.Append.IsNull() {
+			setAction.SetAppend(action.Set.Append.ValueBool())
+		}
+		if !action.Set.Size.IsNull() && action.Set.Size.ValueInt64() != 0 {
+			setAction.SetSize(action.Set.Size.ValueInt64())
+		}
+		if !action.Set.Ttl.IsNull() && action.Set.Ttl.ValueInt64() != 0 {
+			setAction.SetTtl(action.Set.Ttl.ValueInt64())
+		}
+		if !action.Set.Scope.IsNull() && action.Set.Scope.ValueString() != "" {
+			setAction.SetScope(action.Set.Scope.ValueString())
+		}
+		ruleAction := datadogV2.NewCloudWorkloadSecurityAgentRuleAction()
+		ruleAction.SetSet(*setAction)
+		apiActions[i] = *ruleAction
+	}
+	attributes.Actions = apiActions
 
 	data := datadogV2.NewCloudWorkloadSecurityAgentRuleUpdateData(attributes, datadogV2.CLOUDWORKLOADSECURITYAGENTRULETYPE_AGENT_RULE)
 	data.Id = &agentRuleId
@@ -303,5 +465,90 @@ func (r *csmThreatsAgentRuleResource) updateStateFromResponse(ctx context.Contex
 		state.ProductTags = types.SetNull(types.StringType)
 	} else {
 		state.ProductTags, _ = types.SetValueFrom(ctx, types.StringType, tags)
+	}
+
+	actions := attributes.GetActions()
+	actionObjects := make([]agentRuleActionModel, 0, len(actions))
+	for _, action := range actions {
+		if action.Set != nil {
+			setModel := agentRuleActionSetModel{
+				Name: types.StringValue(action.Set.GetName()),
+			}
+
+			// Handle optional fields
+			if field, ok := action.Set.GetFieldOk(); ok && field != nil {
+				setModel.Field = types.StringValue(*field)
+			} else {
+				setModel.Field = types.StringNull()
+			}
+
+			if value, ok := action.Set.GetValueOk(); ok && value != nil {
+				setModel.Value = types.StringValue(*value)
+			} else {
+				setModel.Value = types.StringNull()
+			}
+
+			if append, ok := action.Set.GetAppendOk(); ok && append != nil {
+				setModel.Append = types.BoolValue(*append)
+			} else {
+				setModel.Append = types.BoolNull()
+			}
+
+			if size, ok := action.Set.GetSizeOk(); ok && size != nil {
+				setModel.Size = types.Int64Value(*size)
+			} else {
+				setModel.Size = types.Int64Null()
+			}
+
+			if ttl, ok := action.Set.GetTtlOk(); ok && ttl != nil {
+				setModel.Ttl = types.Int64Value(*ttl)
+			} else {
+				setModel.Ttl = types.Int64Null()
+			}
+
+			if scope, ok := action.Set.GetScopeOk(); ok && scope != nil {
+				setModel.Scope = types.StringValue(*scope)
+			} else {
+				setModel.Scope = types.StringNull()
+			}
+
+			actionObjects = append(actionObjects, agentRuleActionModel{
+				Set: setModel,
+			})
+		}
+	}
+
+	if len(actionObjects) > 0 {
+		state.Actions, _ = types.ListValueFrom(ctx, types.ObjectType{
+			AttrTypes: map[string]attr.Type{
+				"set": types.ObjectType{
+					AttrTypes: map[string]attr.Type{
+						"name":   types.StringType,
+						"field":  types.StringType,
+						"value":  types.StringType,
+						"append": types.BoolType,
+						"size":   types.Int64Type,
+						"ttl":    types.Int64Type,
+						"scope":  types.StringType,
+					},
+				},
+			},
+		}, actionObjects)
+	} else {
+		state.Actions = types.ListNull(types.ObjectType{
+			AttrTypes: map[string]attr.Type{
+				"set": types.ObjectType{
+					AttrTypes: map[string]attr.Type{
+						"name":   types.StringType,
+						"field":  types.StringType,
+						"value":  types.StringType,
+						"append": types.BoolType,
+						"size":   types.Int64Type,
+						"ttl":    types.Int64Type,
+						"scope":  types.StringType,
+					},
+				},
+			},
+		})
 	}
 }
