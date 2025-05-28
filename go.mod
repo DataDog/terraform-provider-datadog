@@ -1,7 +1,7 @@
 module github.com/terraform-providers/terraform-provider-datadog
 
 require (
-	github.com/DataDog/datadog-api-client-go/v2 v2.37.2-0.20250509210516-e6ac09cf6c2a
+	github.com/DataDog/datadog-api-client-go/v2 v2.37.2-0.20250527182111-747a5d33c9aa
 	github.com/DataDog/dd-sdk-go-testing v0.0.0-20211116174033-1cd082e322ad
 	github.com/Masterminds/semver/v3 v3.2.0
 	github.com/google/go-cmp v0.7.0
