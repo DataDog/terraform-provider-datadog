@@ -84,6 +84,9 @@ var Resources = []func() resource.Resource{
 	NewWorkflowAutomationResource,
 	NewAppBuilderAppResource,
 	NewObservabilitPipelineResource,
+	NewOnCallEscalationPolicyResource,
+	NewOnCallScheduleResource,
+	NewOnCallTeamRoutingRulesResource,
 	NewComplianceResourceEvaluationFilter,
 	NewSecurityMonitoringRuleJSONResource,
 }
