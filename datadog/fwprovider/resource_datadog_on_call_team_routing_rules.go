@@ -95,7 +95,7 @@ func (r *onCallTeamRoutingRulesResource) Schema(_ context.Context, _ resource.Sc
 						},
 						"urgency": schema.StringAttribute{
 							Optional:    true,
-							Description: "Defines the urgency for pages created via this rule. Only valid if `escalation_policy` is set. Valid options: `high`, `low`, `dynamic`.",
+							Description: "Defines the urgency for pages created via this rule. Only valid if `escalation_policy` is set.",
 							Validators:  []validator.String{stringvalidator.OneOf("high", "low", "dynamic")},
 						},
 						"query": schema.StringAttribute{
@@ -127,7 +127,7 @@ func (r *onCallTeamRoutingRulesResource) Schema(_ context.Context, _ resource.Sc
 											"end_day": schema.StringAttribute{
 												Optional:    true,
 												Validators:  []validator.String{validators.NewEnumValidator[validator.String](datadogV2.NewWeekdayFromValue)},
-												Description: "The weekday when the restriction period ends (Monday through Sunday).",
+												Description: "The weekday when the restriction period ends.",
 											},
 											"end_time": schema.StringAttribute{
 												Optional:    true,
@@ -136,7 +136,7 @@ func (r *onCallTeamRoutingRulesResource) Schema(_ context.Context, _ resource.Sc
 											"start_day": schema.StringAttribute{
 												Optional:    true,
 												Validators:  []validator.String{validators.NewEnumValidator[validator.String](datadogV2.NewWeekdayFromValue)},
-												Description: "The weekday when the restriction period starts (Monday through Sunday).",
+												Description: "The weekday when the restriction period starts.",
 											},
 											"start_time": schema.StringAttribute{
 												Optional:    true,

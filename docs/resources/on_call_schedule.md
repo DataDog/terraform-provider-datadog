@@ -88,9 +88,9 @@ Optional:
 
 Optional:
 
-- `end_day` (String) The weekday when the restriction period ends (`monday` through `sunday`). Valid values are `monday`, `tuesday`, `wednesday`, `thursday`, `friday`, `saturday`, `sunday`.
+- `end_day` (String) The weekday when the restriction period ends. Valid values are `monday`, `tuesday`, `wednesday`, `thursday`, `friday`, `saturday`, `sunday`.
 - `end_time` (String) The time of day when the restriction ends (hh:mm:ss).
-- `start_day` (String) The weekday when the restriction period starts (`monday` through `sunday`). Valid values are `monday`, `tuesday`, `wednesday`, `thursday`, `friday`, `saturday`, `sunday`.
+- `start_day` (String) The weekday when the restriction period starts. Valid values are `monday`, `tuesday`, `wednesday`, `thursday`, `friday`, `saturday`, `sunday`.
 - `start_time` (String) The time of day when the restriction begins (hh:mm:ss).
 
 ## Import

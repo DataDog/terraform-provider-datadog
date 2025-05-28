@@ -141,7 +141,7 @@ func (r *onCallScheduleResource) Schema(_ context.Context, _ resource.SchemaRequ
 									"end_day": schema.StringAttribute{
 										Optional:    true,
 										Validators:  []validator.String{validators.NewEnumValidator[validator.String](datadogV2.NewWeekdayFromValue)},
-										Description: "The weekday when the restriction period ends (`monday` through `sunday`).",
+										Description: "The weekday when the restriction period ends.",
 									},
 									"end_time": schema.StringAttribute{
 										Optional:    true,
@@ -150,7 +150,7 @@ func (r *onCallScheduleResource) Schema(_ context.Context, _ resource.SchemaRequ
 									"start_day": schema.StringAttribute{
 										Optional:    true,
 										Validators:  []validator.String{validators.NewEnumValidator[validator.String](datadogV2.NewWeekdayFromValue)},
-										Description: "The weekday when the restriction period starts (`monday` through `sunday`).",
+										Description: "The weekday when the restriction period starts.",
 									},
 									"start_time": schema.StringAttribute{
 										Optional:    true,
