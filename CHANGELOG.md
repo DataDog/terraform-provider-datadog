@@ -3,9 +3,9 @@
 ### BUGFIXES
 * [datadog_synthetics_test] Change target and targetvalue to be number or string by @teodor2312 in https://github.com/DataDog/terraform-provider-datadog/pull/3027
 ### IMPROVEMENTS
-* [resource_datadog_dashboard] List Stream Widget Request - make column fields optional by @brtu in https://github.com/DataDog/terraform-provider-datadog/pull/3026
+* [datadog_dashboard] List Stream Widget Request - make column fields optional by @brtu in https://github.com/DataDog/terraform-provider-datadog/pull/3026
 ### FEATURES
-* [on_call] Add On-Call resources by @bndbsh in https://github.com/DataDog/terraform-provider-datadog/pull/3029
+* [datadog_on_call] Add On-Call resources by @bndbsh in https://github.com/DataDog/terraform-provider-datadog/pull/3029
 
 
 **Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.63.0...v3.64.0
