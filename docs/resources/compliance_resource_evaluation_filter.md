@@ -26,11 +26,11 @@ resource "datadog_compliance_resource_evaluation_filter" "basic_filter" {
 
 ### Required
 
-- `cloud_provider` (String) The cloud provider of the filter's targeted resource. Only `aws`, `gcp` or `azure` are considered valid cloud providers.
+- `cloud_provider` (String) The cloud provider of the filter's targeted resource. Only `aws`, `gcp`, or `azure` are considered valid cloud providers.
 - `resource_id` (String) The ID of the of the filter's targeted resource. Different cloud providers target different resource IDs:
-  - `aws`: account id 
-  - `gcp`: project id
-  - `azure`: subscription id
+  - `aws`: account ID
+  - `gcp`: project ID
+  - `azure`: subscription ID
 - `tags` (List of String) List of tags to filter misconfiguration detections. Each entry should follow the format: "key":"value".
 
 ### Read-Only
