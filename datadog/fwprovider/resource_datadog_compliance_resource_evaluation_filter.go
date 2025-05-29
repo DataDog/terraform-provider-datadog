@@ -88,14 +88,14 @@ func (r *ComplianceResourceEvaluationFilter) Schema(_ context.Context, _ resourc
 		Attributes: map[string]schema.Attribute{
 			"cloud_provider": schema.StringAttribute{
 				Required:    true,
-				Description: "The cloud provider of the filter's targeted resource. Only `aws`, `gcp` or `azure` are considered valid cloud providers.",
+				Description: "The cloud provider of the filter's targeted resource. Only `aws`, `gcp`, or `azure` are considered valid cloud providers.",
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
 			},
 			"resource_id": schema.StringAttribute{
 				Required:    true,
-				Description: "The ID of the of the filter's targeted resource. Different cloud providers target different resource IDs:\n  - `aws`: account id \n  - `gcp`: project id\n  - `azure`: subscription id",
+				Description: "The ID of the of the filter's targeted resource. Different cloud providers target different resource IDs:\n  - `aws`: account ID\n  - `gcp`: project ID\n  - `azure`: subscription ID",
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				}},
