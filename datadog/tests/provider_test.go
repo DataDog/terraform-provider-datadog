@@ -233,6 +233,9 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_monitor_json_test":                               "monitors-json",
 	"tests/resource_datadog_monitor_notification_rule_test":                  "monitor-notification-rule",
 	"tests/resource_datadog_monitor_test":                                    "monitors",
+	"tests/resource_datadog_on_call_escalation_policy_test":                  "on-call",
+	"tests/resource_datadog_on_call_schedule_test":                           "on-call",
+	"tests/resource_datadog_on_call_team_routing_rules_test":                 "on-call",
 	"tests/resource_datadog_organization_settings_test":                      "organization",
 	"tests/resource_datadog_restriction_policy_test":                         "restriction-policy",
 	"tests/resource_datadog_role_test":                                       "roles",
@@ -270,6 +273,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_webhook_custom_variable_test":                    "webhook_custom_variable",
 	"tests/resource_datadog_webhook_test":                                    "webhook",
 	"tests/resource_datadog_workflow_automation_test":                        "workflow_automation",
+	"tests/resource_datadog_compliance_custom_framework_test":                "compliance_custom_framework",
 }
 
 // getEndpointTagValue traverses callstack frames to find the test function that invoked this call;
