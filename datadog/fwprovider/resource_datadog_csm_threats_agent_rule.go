@@ -144,7 +144,7 @@ func (r *csmThreatsAgentRuleResource) Create(ctx context.Context, request resour
 	csmThreatsMutex.Lock()
 	defer csmThreatsMutex.Unlock()
 
-	agentRulePayload, err := r.buildCreateCSMThreatsAgentRulePayload(&state)
+	agentRulePayload, err := r.buildCreateCSMThreatsAgentRulePayload(ctx, &state)
 	if err != nil {
 		response.Diagnostics.AddError("error while parsing resource", err.Error())
 	}
@@ -177,8 +177,97 @@ func (r *csmThreatsAgentRuleResource) Create(ctx context.Context, request resour
 			state.Description = types.StringValue(description)
 		}
 
-		// Preserve actions from the plan since API may return stale data or missing optional fields
-		state.Actions = planState.Actions
+		// Handle actions - use response from API if available, otherwise preserve from plan
+		apiActions := attributes.GetActions()
+		if len(apiActions) > 0 {
+			// Update actions from API response
+			actionObjects := make([]agentRuleActionModel, 0, len(apiActions))
+			for _, action := range apiActions {
+				if action.Set != nil {
+					setModel := agentRuleActionSetModel{
+						Name: types.StringValue(action.Set.GetName()),
+					}
+
+					// Handle optional fields
+					if field, ok := action.Set.GetFieldOk(); ok && field != nil {
+						setModel.Field = types.StringValue(*field)
+					} else {
+						setModel.Field = types.StringNull()
+					}
+
+					if value, ok := action.Set.GetValueOk(); ok && value != nil {
+						setModel.Value = types.StringValue(*value)
+					} else {
+						setModel.Value = types.StringNull()
+					}
+
+					if append, ok := action.Set.GetAppendOk(); ok && append != nil {
+						setModel.Append = types.BoolValue(*append)
+					} else {
+						setModel.Append = types.BoolNull()
+					}
+
+					if size, ok := action.Set.GetSizeOk(); ok && size != nil {
+						setModel.Size = types.Int64Value(*size)
+					} else {
+						setModel.Size = types.Int64Null()
+					}
+
+					if ttl, ok := action.Set.GetTtlOk(); ok && ttl != nil {
+						setModel.Ttl = types.Int64Value(*ttl)
+					} else {
+						setModel.Ttl = types.Int64Null()
+					}
+
+					if scope, ok := action.Set.GetScopeOk(); ok && scope != nil {
+						setModel.Scope = types.StringValue(*scope)
+					} else {
+						setModel.Scope = types.StringNull()
+					}
+
+					actionObjects = append(actionObjects, agentRuleActionModel{
+						Set: setModel,
+					})
+				}
+			}
+
+			if len(actionObjects) > 0 {
+				state.Actions, _ = types.ListValueFrom(ctx, types.ObjectType{
+					AttrTypes: map[string]attr.Type{
+						"set": types.ObjectType{
+							AttrTypes: map[string]attr.Type{
+								"name":   types.StringType,
+								"field":  types.StringType,
+								"value":  types.StringType,
+								"append": types.BoolType,
+								"size":   types.Int64Type,
+								"ttl":    types.Int64Type,
+								"scope":  types.StringType,
+							},
+						},
+					},
+				}, actionObjects)
+			} else {
+				state.Actions = types.ListNull(types.ObjectType{
+					AttrTypes: map[string]attr.Type{
+						"set": types.ObjectType{
+							AttrTypes: map[string]attr.Type{
+								"name":   types.StringType,
+								"field":  types.StringType,
+								"value":  types.StringType,
+								"append": types.BoolType,
+								"size":   types.Int64Type,
+								"ttl":    types.Int64Type,
+								"scope":  types.StringType,
+							},
+						},
+					},
+				})
+			}
+		} else {
+			// Preserve actions from the plan since API may return stale data or missing optional fields
+			state.Actions = planState.Actions
+		}
 	}
 
 	// Handle product tags
@@ -238,10 +327,22 @@ func (r *csmThreatsAgentRuleResource) Update(ctx context.Context, request resour
 		return
 	}
 
+	// Also get the current state to preserve actions if needed
+	var currentState csmThreatsAgentRuleModel
+	response.Diagnostics.Append(request.State.Get(ctx, &currentState)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	// If plan doesn't have actions but current state does, use current state actions
+	if (state.Actions.IsNull() || state.Actions.IsUnknown()) && (!currentState.Actions.IsNull() && !currentState.Actions.IsUnknown()) {
+		state.Actions = currentState.Actions
+	}
+
 	csmThreatsMutex.Lock()
 	defer csmThreatsMutex.Unlock()
 
-	agentRulePayload, err := r.buildUpdateCSMThreatsAgentRulePayload(&state)
+	agentRulePayload, err := r.buildUpdateCSMThreatsAgentRulePayload(ctx, &state)
 	if err != nil {
 		response.Diagnostics.AddError("error while parsing resource", err.Error())
 		return
@@ -273,10 +374,10 @@ func (r *csmThreatsAgentRuleResource) Update(ctx context.Context, request resour
 		} else {
 			state.Description = types.StringValue(description)
 		}
-
-		// Preserve actions from the plan since API may return stale data or missing optional fields
-		state.Actions = planState.Actions
 	}
+
+	// Always use actions from API response to ensure consistency
+	r.updateStateFromResponse(ctx, &state, &res)
 
 	// Handle product tags
 	tags := attributes.GetProductTags()
@@ -319,8 +420,8 @@ func (r *csmThreatsAgentRuleResource) Delete(ctx context.Context, request resour
 	}
 }
 
-func (r *csmThreatsAgentRuleResource) buildCreateCSMThreatsAgentRulePayload(state *csmThreatsAgentRuleModel) (*datadogV2.CloudWorkloadSecurityAgentRuleCreateRequest, error) {
-	_, policyId, name, description, enabled, expression, productTags := r.extractAgentRuleAttributesFromResource(state)
+func (r *csmThreatsAgentRuleResource) buildCreateCSMThreatsAgentRulePayload(ctx context.Context, state *csmThreatsAgentRuleModel) (*datadogV2.CloudWorkloadSecurityAgentRuleCreateRequest, error) {
+	_, policyId, name, description, enabled, expression, productTags, actions := r.extractAgentRuleAttributesFromResource(ctx, state)
 
 	attributes := datadogV2.CloudWorkloadSecurityAgentRuleCreateAttributes{}
 	attributes.Expression = expression
@@ -330,100 +431,109 @@ func (r *csmThreatsAgentRuleResource) buildCreateCSMThreatsAgentRulePayload(stat
 	attributes.PolicyId = policyId
 	attributes.ProductTags = productTags
 
-	if !state.Actions.IsNull() && !state.Actions.IsUnknown() {
-		var actions []agentRuleActionModel
-		state.Actions.ElementsAs(context.Background(), &actions, false)
-		if len(actions) > 0 {
-			apiActions := make([]datadogV2.CloudWorkloadSecurityAgentRuleAction, len(actions))
-			for i, action := range actions {
-				setAction := datadogV2.NewCloudWorkloadSecurityAgentRuleActionSet()
-				setAction.SetName(action.Set.Name.ValueString())
+	if len(actions) > 0 {
+		apiActions := make([]datadogV2.CloudWorkloadSecurityAgentRuleAction, len(actions))
+		for i, action := range actions {
+			setAction := datadogV2.NewCloudWorkloadSecurityAgentRuleActionSet()
+			setAction.SetName(action.Set.Name.ValueString())
 
-				// Handle optional fields - only set if not null and not empty
-				if !action.Set.Field.IsNull() && action.Set.Field.ValueString() != "" {
-					setAction.SetField(action.Set.Field.ValueString())
-				}
-				if !action.Set.Value.IsNull() && action.Set.Value.ValueString() != "" {
-					setAction.SetValue(action.Set.Value.ValueString())
-				}
-				if !action.Set.Append.IsNull() {
-					setAction.SetAppend(action.Set.Append.ValueBool())
-				}
-				if !action.Set.Size.IsNull() && action.Set.Size.ValueInt64() != 0 {
-					setAction.SetSize(action.Set.Size.ValueInt64())
-				}
-				if !action.Set.Ttl.IsNull() && action.Set.Ttl.ValueInt64() != 0 {
-					setAction.SetTtl(action.Set.Ttl.ValueInt64())
-				}
-				if !action.Set.Scope.IsNull() && action.Set.Scope.ValueString() != "" {
-					setAction.SetScope(action.Set.Scope.ValueString())
-				}
-				ruleAction := datadogV2.NewCloudWorkloadSecurityAgentRuleAction()
-				ruleAction.SetSet(*setAction)
-				apiActions[i] = *ruleAction
+			// Handle optional fields - only set if not null and not empty
+			if !action.Set.Field.IsNull() && action.Set.Field.ValueString() != "" {
+				setAction.SetField(action.Set.Field.ValueString())
 			}
-			attributes.SetActions(apiActions)
+			if !action.Set.Value.IsNull() && action.Set.Value.ValueString() != "" {
+				setAction.SetValue(action.Set.Value.ValueString())
+			}
+			if !action.Set.Append.IsNull() {
+				setAction.SetAppend(action.Set.Append.ValueBool())
+			}
+			if !action.Set.Size.IsNull() && action.Set.Size.ValueInt64() != 0 {
+				setAction.SetSize(action.Set.Size.ValueInt64())
+			}
+			if !action.Set.Ttl.IsNull() && action.Set.Ttl.ValueInt64() != 0 {
+				setAction.SetTtl(action.Set.Ttl.ValueInt64())
+			}
+			if !action.Set.Scope.IsNull() && action.Set.Scope.ValueString() != "" {
+				setAction.SetScope(action.Set.Scope.ValueString())
+			}
+			ruleAction := datadogV2.NewCloudWorkloadSecurityAgentRuleAction()
+			ruleAction.SetSet(*setAction)
+			apiActions[i] = *ruleAction
 		}
+		attributes.Actions = apiActions
 	}
 
 	data := datadogV2.NewCloudWorkloadSecurityAgentRuleCreateData(attributes, datadogV2.CLOUDWORKLOADSECURITYAGENTRULETYPE_AGENT_RULE)
 	return datadogV2.NewCloudWorkloadSecurityAgentRuleCreateRequest(*data), nil
 }
 
-func (r *csmThreatsAgentRuleResource) buildUpdateCSMThreatsAgentRulePayload(state *csmThreatsAgentRuleModel) (*datadogV2.CloudWorkloadSecurityAgentRuleUpdateRequest, error) {
-	agentRuleId, policyId, _, description, enabled, expression, productTags := r.extractAgentRuleAttributesFromResource(state)
+func (r *csmThreatsAgentRuleResource) buildUpdateCSMThreatsAgentRulePayload(ctx context.Context, state *csmThreatsAgentRuleModel) (*datadogV2.CloudWorkloadSecurityAgentRuleUpdateRequest, error) {
+	agentRuleId, policyId, _, description, enabled, expression, productTags, actions := r.extractAgentRuleAttributesFromResource(ctx, state)
 
-	attributes := datadogV2.CloudWorkloadSecurityAgentRuleUpdateAttributes{}
-	attributes.Expression = &expression
-	attributes.Description = description
-	attributes.Enabled = &enabled
-	attributes.PolicyId = policyId
-	attributes.ProductTags = productTags
+	// WORKAROUND: CloudWorkloadSecurityAgentRuleUpdateAttributes.Actions field is not properly serialized in JSON
+	// We use CloudWorkloadSecurityAgentRuleCreateAttributes with SetActions, then copy to update attributes
+	createAttributes := datadogV2.CloudWorkloadSecurityAgentRuleCreateAttributes{}
+	createAttributes.Expression = expression
+	createAttributes.Description = description
+	createAttributes.Enabled = &enabled
+	createAttributes.PolicyId = policyId
+	createAttributes.ProductTags = productTags
 
 	// Always process actions to ensure they are properly sent to the API
-	var actions []agentRuleActionModel
-	if !state.Actions.IsNull() && !state.Actions.IsUnknown() {
-		state.Actions.ElementsAs(context.Background(), &actions, false)
+	if len(actions) > 0 {
+		apiActions := make([]datadogV2.CloudWorkloadSecurityAgentRuleAction, len(actions))
+		for i, action := range actions {
+			setAction := datadogV2.NewCloudWorkloadSecurityAgentRuleActionSet()
+			if !action.Set.Name.IsNull() {
+				setAction.SetName(action.Set.Name.ValueString())
+			}
+
+			// Handle optional fields - only set if not null and not empty
+			if !action.Set.Field.IsNull() && action.Set.Field.ValueString() != "" {
+				setAction.SetField(action.Set.Field.ValueString())
+			}
+			if !action.Set.Value.IsNull() && action.Set.Value.ValueString() != "" {
+				setAction.SetValue(action.Set.Value.ValueString())
+			}
+			if !action.Set.Append.IsNull() {
+				setAction.SetAppend(action.Set.Append.ValueBool())
+			}
+			if !action.Set.Size.IsNull() && action.Set.Size.ValueInt64() != 0 {
+				setAction.SetSize(action.Set.Size.ValueInt64())
+			}
+			if !action.Set.Ttl.IsNull() && action.Set.Ttl.ValueInt64() != 0 {
+				setAction.SetTtl(action.Set.Ttl.ValueInt64())
+			}
+			if !action.Set.Scope.IsNull() && action.Set.Scope.ValueString() != "" {
+				setAction.SetScope(action.Set.Scope.ValueString())
+			}
+			ruleAction := datadogV2.NewCloudWorkloadSecurityAgentRuleAction()
+			ruleAction.SetSet(*setAction)
+			apiActions[i] = *ruleAction
+		}
+		createAttributes.SetActions(apiActions)
 	}
 
-	apiActions := make([]datadogV2.CloudWorkloadSecurityAgentRuleAction, len(actions))
-	for i, action := range actions {
-		setAction := datadogV2.NewCloudWorkloadSecurityAgentRuleActionSet()
-		if !action.Set.Name.IsNull() {
-			setAction.SetName(action.Set.Name.ValueString())
-		}
+	// Convert create attributes to update attributes by copying fields manually
+	updateAttributes := datadogV2.CloudWorkloadSecurityAgentRuleUpdateAttributes{}
+	updateAttributes.Expression = &expression
+	updateAttributes.Description = description
+	updateAttributes.Enabled = &enabled
+	updateAttributes.PolicyId = policyId
+	updateAttributes.ProductTags = productTags
 
-		// Handle optional fields - only set if not null and not empty
-		if !action.Set.Field.IsNull() && action.Set.Field.ValueString() != "" {
-			setAction.SetField(action.Set.Field.ValueString())
-		}
-		if !action.Set.Value.IsNull() && action.Set.Value.ValueString() != "" {
-			setAction.SetValue(action.Set.Value.ValueString())
-		}
-		if !action.Set.Append.IsNull() {
-			setAction.SetAppend(action.Set.Append.ValueBool())
-		}
-		if !action.Set.Size.IsNull() && action.Set.Size.ValueInt64() != 0 {
-			setAction.SetSize(action.Set.Size.ValueInt64())
-		}
-		if !action.Set.Ttl.IsNull() && action.Set.Ttl.ValueInt64() != 0 {
-			setAction.SetTtl(action.Set.Ttl.ValueInt64())
-		}
-		if !action.Set.Scope.IsNull() && action.Set.Scope.ValueString() != "" {
-			setAction.SetScope(action.Set.Scope.ValueString())
-		}
-		ruleAction := datadogV2.NewCloudWorkloadSecurityAgentRuleAction()
-		ruleAction.SetSet(*setAction)
-		apiActions[i] = *ruleAction
+	// Copy actions from create attributes to update attributes
+	// NOTE: This still doesn't work due to SDK serialization bug, but we keep it for when it's fixed
+	if createAttrs := createAttributes.GetActions(); len(createAttrs) > 0 {
+		updateAttributes.Actions = createAttrs
 	}
-	attributes.Actions = apiActions
 
-	data := datadogV2.NewCloudWorkloadSecurityAgentRuleUpdateData(attributes, datadogV2.CLOUDWORKLOADSECURITYAGENTRULETYPE_AGENT_RULE)
+	data := datadogV2.NewCloudWorkloadSecurityAgentRuleUpdateData(updateAttributes, datadogV2.CLOUDWORKLOADSECURITYAGENTRULETYPE_AGENT_RULE)
 	data.Id = &agentRuleId
 	return datadogV2.NewCloudWorkloadSecurityAgentRuleUpdateRequest(*data), nil
 }
 
-func (r *csmThreatsAgentRuleResource) extractAgentRuleAttributesFromResource(state *csmThreatsAgentRuleModel) (string, *string, string, *string, bool, string, []string) {
+func (r *csmThreatsAgentRuleResource) extractAgentRuleAttributesFromResource(ctx context.Context, state *csmThreatsAgentRuleModel) (string, *string, string, *string, bool, string, []string, []agentRuleActionModel) {
 	// Mandatory fields
 	id := state.Id.ValueString()
 	name := state.Name.ValueString()
@@ -442,13 +552,23 @@ func (r *csmThreatsAgentRuleResource) extractAgentRuleAttributesFromResource(sta
 		for _, tag := range state.ProductTags.Elements() {
 			tagStr, ok := tag.(types.String)
 			if !ok {
-				return "", nil, "", nil, false, "", nil
+				return "", nil, "", nil, false, "", nil, nil
 			}
 			productTags = append(productTags, tagStr.ValueString())
 		}
 	}
 
-	return id, policyId, name, description, enabled, expression, productTags
+	// Retrieve actions from state
+	var actions []agentRuleActionModel
+	if !state.Actions.IsNull() && !state.Actions.IsUnknown() {
+		err := state.Actions.ElementsAs(ctx, &actions, false)
+		if err != nil {
+			// Log error but continue
+			return "", nil, "", nil, false, "", nil, nil
+		}
+	}
+
+	return id, policyId, name, description, enabled, expression, productTags, actions
 }
 
 func (r *csmThreatsAgentRuleResource) updateStateFromResponse(ctx context.Context, state *csmThreatsAgentRuleModel, res *datadogV2.CloudWorkloadSecurityAgentRuleResponse) {
