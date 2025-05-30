@@ -1,3 +1,13 @@
+## 3.65.0 (May 30, 2025)
+
+### FEATURES
+* [datadog_compliance_custom_framework] Terraform Provider for Custom Frameworks by @nkonjeti in https://github.com/DataDog/terraform-provider-datadog/pull/2975
+
+## New Contributors
+* @nkonjeti made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2975
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.64.0...v3.65.0
+
 ## 3.64.0 (May 28, 2025)
 
 ### BUGFIXES
