@@ -24,7 +24,7 @@ Provides a Datadog Cost Budget resource.
 
 ### Optional
 
-- `entries` (Block List) The entries of the budget. (see below for [nested schema](#nestedblock--entries))
+- `entries` (Block List) The entries of the budget. (see [below for nested schema](#nestedblock--entries))
 - `id` (String) The ID of the budget.
 
 ### Read-Only
@@ -41,7 +41,7 @@ Required:
 
 Optional:
 
-- `tag_filters` (Block List) (see below for [nested schema](#nestedblock--entries--tag_filters))
+- `tag_filters` (Block List) (see [below for nested schema](#nestedblock--entries--tag_filters))
 
 <a id="nestedblock--entries--tag_filters"></a>
 ### Nested Schema for `entries.tag_filters`
