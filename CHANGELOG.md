@@ -1,3 +1,25 @@
+## 3.65.0 (May 30, 2025)
+
+### FEATURES
+* [datadog_compliance_custom_framework] Terraform Provider for Custom Frameworks by @nkonjeti in https://github.com/DataDog/terraform-provider-datadog/pull/2975
+
+## New Contributors
+* @nkonjeti made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2975
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.64.0...v3.65.0
+
+## 3.64.0 (May 28, 2025)
+
+### BUGFIXES
+* [datadog_synthetics_test] Change target and targetvalue to be number or string by @teodor2312 in https://github.com/DataDog/terraform-provider-datadog/pull/3027
+### IMPROVEMENTS
+* [datadog_dashboard] List Stream Widget Request - make column fields optional by @brtu in https://github.com/DataDog/terraform-provider-datadog/pull/3026
+### FEATURES
+* [datadog_on_call] Add On-Call resources by @bndbsh in https://github.com/DataDog/terraform-provider-datadog/pull/3029
+
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.63.0...v3.64.0
+
 ## 3.63.0 (May 20, 2025)
 
 ### BUGFIXES

@@ -89,6 +89,7 @@ var Resources = []func() resource.Resource{
 	NewOnCallTeamRoutingRulesResource,
 	NewComplianceResourceEvaluationFilter,
 	NewSecurityMonitoringRuleJSONResource,
+	NewComplianceCustomFrameworkResource,
 }
 
 var Datasources = []func() datasource.DataSource{
