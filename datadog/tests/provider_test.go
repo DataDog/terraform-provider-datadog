@@ -271,6 +271,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_webhook_custom_variable_test":                    "webhook_custom_variable",
 	"tests/resource_datadog_webhook_test":                                    "webhook",
 	"tests/resource_datadog_workflow_automation_test":                        "workflow_automation",
+	"tests/resource_datadog_compliance_custom_framework_test":                "compliance_custom_framework",
 	"tests/resource_datadog_cost_budget_test":                                "cost-budget",
 }
 
