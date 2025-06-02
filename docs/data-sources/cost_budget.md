@@ -22,7 +22,7 @@ Use this data source to retrieve information about an existing Datadog cost budg
 ### Read-Only
 
 - `end_month` (Number) The month when the budget ends (YYYYMM).
-- `entries` (Block List) The entries of the budget. (see [below for nested schema](#nestedblock--entries))
+- `entries` (Block List) The entries of the budget. (see below for [nested schema](#nestedblock--entries))
 - `metrics_query` (String) The cost query used to track against the budget.
 - `name` (String) The name of the budget.
 - `start_month` (Number) The month when the budget starts (YYYYMM).
@@ -35,7 +35,7 @@ Read-Only:
 
 - `amount` (Number)
 - `month` (Number)
-- `tag_filters` (Block List) (see [below for nested schema](#nestedblock--entries--tag_filters))
+- `tag_filters` (Block List) (see below for [nested schema](#nestedblock--entries--tag_filters))
 
 <a id="nestedblock--entries--tag_filters"></a>
 ### Nested Schema for `entries.tag_filters`
