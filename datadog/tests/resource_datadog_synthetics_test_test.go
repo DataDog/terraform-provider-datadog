@@ -693,14 +693,13 @@ func TestAccDatadogSyntheticsTestMultistepApi_AllSubtypes(t *testing.T) {
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	accProvider := providers.sdkV2Provider
-	fwProvider := providers.frameworkProvider
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV5ProviderFactories: accProviders,
 		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
-			createSyntheticsMultistepAPITestAllStepSubtypes(ctx, accProvider, fwProvider, t),
+			createSyntheticsMultistepAPITestAllStepSubtypes(ctx, accProvider, t),
 		},
 	})
 }
@@ -6037,7 +6036,7 @@ resource "datadog_synthetics_test" "file_upload" {
 `, testName, bodyType, fileBlocks)
 }
 
-func createSyntheticsMultistepAPITestAllStepSubtypes(ctx context.Context, accProvider *schema.Provider, fwProvider *fwprovider.FrameworkProvider, t *testing.T) resource.TestStep {
+func createSyntheticsMultistepAPITestAllStepSubtypes(ctx context.Context, accProvider *schema.Provider, t *testing.T) resource.TestStep {
 	testName := uniqueEntityName(ctx, t)
 
 	return resource.TestStep{
@@ -6288,7 +6287,6 @@ func createSyntheticsMultistepAPITestConfigAllStepSubtypes(testName string) stri
 				
 				request_definition {
 					allow_insecure          = false
-					certificate_domains     = []
 					follow_redirects        = false
 					http_version            = "any"
 					method                  = "GET"
