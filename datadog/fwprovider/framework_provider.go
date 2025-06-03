@@ -90,6 +90,7 @@ var Resources = []func() resource.Resource{
 	NewComplianceResourceEvaluationFilter,
 	NewSecurityMonitoringRuleJSONResource,
 	NewComplianceCustomFrameworkResource,
+	NewCostBudgetResource,
 }
 
 var Datasources = []func() datasource.DataSource{
@@ -122,6 +123,7 @@ var Datasources = []func() datasource.DataSource{
 	NewDatadogSyntheticsLocationsDataSource,
 	NewWorkflowAutomationDataSource,
 	NewDatadogAppBuilderAppDataSource,
+	NewCostBudgetDataSource,
 }
 
 // FrameworkProvider struct
