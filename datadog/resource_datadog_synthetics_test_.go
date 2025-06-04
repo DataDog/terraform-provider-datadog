@@ -100,7 +100,7 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 					},
 				},
 				"locations": {
-					Description: "Array of locations used to run the test. Refer to [the Datadog Synthetics location data source](https://registry.terraform.io/providers/DataDog/datadog/latest/docs/data-sources/synthetics_locations) to retrieve the list of locations.",
+					Description: "Array of locations used to run the test. Refer to [the Datadog Synthetics location data source](https://registry.terraform.io/providers/DataDog/datadog/latest/docs/data-sources/synthetics_locations) to retrieve the list of locations or find the possible values listed in [this API response](https://app.datadoghq.com/api/v1/synthetics/locations?only_public=true).",
 					Type:        schema.TypeSet,
 					Required:    true,
 					Elem: &schema.Schema{
@@ -1266,6 +1266,11 @@ func syntheticsBrowserStepParams() schema.Schema {
 					Type:         schema.TypeString,
 					Optional:     true,
 					ValidateFunc: validation.StringInSlice([]string{"contextual", "double", "primary"}, false),
+				},
+				"click_with_javascript": {
+					Description: "Whether to use `element.click()` for a \"click\" step. This is a more reliable way to interact with elements but does not emulate a real user interaction.",
+					Type:        schema.TypeBool,
+					Optional:    true,
 				},
 				"code": {
 					Description: "Javascript code to use for the step.",
@@ -3136,14 +3141,16 @@ func buildDatadogAssertions(attr []interface{}) []datadogV1.SyntheticsAssertion 
 								datadogV1.SYNTHETICSASSERTIONOPERATOR_LESS_THAN,
 								datadogV1.SYNTHETICSASSERTIONOPERATOR_MORE_THAN:
 								if match, _ := regexp.MatchString("{{\\s*([^{}]*?)\\s*}}", v.(string)); match {
-									subTarget.SetTargetValue(v)
+									strValue := v.(string)
+									subTarget.SetTargetValue(datadogV1.SyntheticsAssertionTargetValueStringAsSyntheticsAssertionTargetValue(&strValue))
 								} else {
 									if floatValue, err := strconv.ParseFloat(v.(string), 64); err == nil {
-										subTarget.SetTargetValue(floatValue)
+										subTarget.SetTargetValue(datadogV1.SyntheticsAssertionTargetValueNumberAsSyntheticsAssertionTargetValue(&floatValue))
 									}
 								}
 							default:
-								subTarget.SetTargetValue(v)
+								strValue := v.(string)
+								subTarget.SetTargetValue(datadogV1.SyntheticsAssertionTargetValueStringAsSyntheticsAssertionTargetValue(&strValue))
 							}
 						}
 						if v, ok := targetMap["elementsoperator"]; ok {
@@ -3176,14 +3183,16 @@ func buildDatadogAssertions(attr []interface{}) []datadogV1.SyntheticsAssertion 
 								datadogV1.SYNTHETICSASSERTIONOPERATOR_LESS_THAN,
 								datadogV1.SYNTHETICSASSERTIONOPERATOR_MORE_THAN:
 								if match, _ := regexp.MatchString("{{\\s*([^{}]*?)\\s*}}", v.(string)); match {
-									subTarget.SetTargetValue(v)
+									strValue := v.(string)
+									subTarget.SetTargetValue(datadogV1.SyntheticsAssertionTargetValueStringAsSyntheticsAssertionTargetValue(&strValue))
 								} else {
 									if floatValue, err := strconv.ParseFloat(v.(string), 64); err == nil {
-										subTarget.SetTargetValue(floatValue)
+										subTarget.SetTargetValue(datadogV1.SyntheticsAssertionTargetValueNumberAsSyntheticsAssertionTargetValue(&floatValue))
 									}
 								}
 							default:
-								subTarget.SetTargetValue(v)
+								strValue := v.(string)
+								subTarget.SetTargetValue(datadogV1.SyntheticsAssertionTargetValueStringAsSyntheticsAssertionTargetValue(&strValue))
 							}
 						}
 						assertionXPathTarget.SetTarget(*subTarget)
@@ -3202,12 +3211,14 @@ func buildDatadogAssertions(attr []interface{}) []datadogV1.SyntheticsAssertion 
 					if v, ok := assertionMap["target"]; ok {
 						if isTargetOfTypeInt(assertionTarget.GetType(), assertionTarget.GetOperator()) {
 							assertionTargetInt, _ := strconv.Atoi(v.(string))
-							assertionTarget.SetTarget(assertionTargetInt)
-						} else if assertionTarget.GetType() == datadogV1.SYNTHETICSASSERTIONTYPE_PACKET_LOSS_PERCENTAGE {
+							assertionTargetFloat := float64(assertionTargetInt)
+							assertionTarget.SetTarget(datadogV1.SyntheticsAssertionTargetValueNumberAsSyntheticsAssertionTargetValue(&assertionTargetFloat))
+						} else if isTargetOfTypeFloat(assertionTarget.GetType(), assertionTarget.GetOperator()) {
 							assertionTargetFloat, _ := strconv.ParseFloat(v.(string), 64)
-							assertionTarget.SetTarget(assertionTargetFloat)
+							assertionTarget.SetTarget(datadogV1.SyntheticsAssertionTargetValueNumberAsSyntheticsAssertionTargetValue(&assertionTargetFloat))
 						} else {
-							assertionTarget.SetTarget(v.(string))
+							strValue := v.(string)
+							assertionTarget.SetTarget(datadogV1.SyntheticsAssertionTargetValueStringAsSyntheticsAssertionTargetValue(&strValue))
 						}
 					}
 					if v, ok := assertionMap["timings_scope"].(string); ok && len(v) > 0 {
@@ -3243,7 +3254,7 @@ func buildTerraformAssertions(actualAssertions []datadogV1.SyntheticsAssertion) 
 			if assertionTarget.HasProperty() {
 				localAssertion["property"] = assertionTarget.GetProperty()
 			}
-			if target := assertionTarget.GetTarget(); target != nil {
+			if target, ok := assertionTarget.GetTargetOk(); ok {
 				localAssertion["target"] = convertToString(target)
 			}
 			if v, ok := assertionTarget.GetTypeOk(); ok {
@@ -3287,11 +3298,11 @@ func buildTerraformAssertions(actualAssertions []datadogV1.SyntheticsAssertion) 
 					localTarget["operator"] = string(*v)
 				}
 				if v, ok := target.GetTargetValueOk(); ok {
-					val := (*v).(interface{})
-					if vAsString, ok := val.(string); ok {
-						localTarget["targetvalue"] = vAsString
-					} else if vAsFloat, ok := val.(float64); ok {
-						localTarget["targetvalue"] = strconv.FormatFloat(vAsFloat, 'f', -1, 64)
+					val := v.GetActualInstance()
+					if vAsString, ok := val.(*string); ok {
+						localTarget["targetvalue"] = *vAsString
+					} else if vAsFloat, ok := val.(*float64); ok {
+						localTarget["targetvalue"] = strconv.FormatFloat(*vAsFloat, 'f', -1, 64)
 					} else {
 						return localAssertions, fmt.Errorf("unrecognized targetvalue type %v", v)
 					}
@@ -3321,11 +3332,11 @@ func buildTerraformAssertions(actualAssertions []datadogV1.SyntheticsAssertion) 
 					localTarget["operator"] = string(*v)
 				}
 				if v, ok := target.GetTargetValueOk(); ok {
-					val := (*v).(interface{})
-					if vAsString, ok := val.(string); ok {
-						localTarget["targetvalue"] = vAsString
-					} else if vAsFloat, ok := val.(float64); ok {
-						localTarget["targetvalue"] = strconv.FormatFloat(vAsFloat, 'f', -1, 64)
+					val := v.GetActualInstance()
+					if vAsString, ok := val.(*string); ok {
+						localTarget["targetvalue"] = *vAsString
+					} else if vAsFloat, ok := val.(*float64); ok {
+						localTarget["targetvalue"] = strconv.FormatFloat(*vAsFloat, 'f', -1, 64)
 					} else {
 						return localAssertions, fmt.Errorf("unrecognized targetvalue type %v", v)
 					}
@@ -3340,7 +3351,7 @@ func buildTerraformAssertions(actualAssertions []datadogV1.SyntheticsAssertion) 
 			if v, ok := assertionTarget.GetOperatorOk(); ok {
 				localAssertion["operator"] = string(*v)
 			}
-			if target := assertionTarget.GetTarget(); target != nil {
+			if target, ok := assertionTarget.GetTargetOk(); ok {
 				localAssertion["target"] = convertToString(target)
 			}
 			if v, ok := assertionTarget.GetTypeOk(); ok {
@@ -4774,6 +4785,12 @@ func convertStepParamsKey(key string) string {
 	case "clickType":
 		return "click_type"
 
+	case "click_with_javascript":
+		return "clickWithJavascript"
+
+	case "clickWithJavascript":
+		return "click_with_javascript"
+
 	case "playing_tab_id":
 		return "playingTabId"
 
@@ -4806,6 +4823,16 @@ func convertToString(i interface{}) string {
 		return strconv.FormatFloat(v, 'f', -1, 64)
 	case string:
 		return v
+	case *datadogV1.SyntheticsAssertionTargetValue:
+		instance := v.GetActualInstance()
+		if str, ok := instance.(*string); ok {
+			return *str
+		}
+		if num, ok := instance.(*float64); ok {
+			return strconv.FormatFloat(*num, 'f', -1, 64)
+		}
+		log.Printf("[WARN] unsupported target value type: %T", instance)
+		return ""
 	default:
 		// TODO: manage target for JSON body assertions
 		valStrr, err := json.Marshal(v)
@@ -5015,7 +5042,7 @@ func getParamsKeysForStepType(stepType datadogV1.SyntheticsStepType) []string {
 		return []string{"requests"}
 
 	case datadogV1.SYNTHETICSSTEPTYPE_CLICK:
-		return []string{"click_type", "element"}
+		return []string{"click_type", "click_with_javascript", "element"}
 
 	case datadogV1.SYNTHETICSSTEPTYPE_EXTRACT_FROM_JAVASCRIPT:
 		return []string{"code", "element", "variable"}
@@ -5359,6 +5386,28 @@ func isTargetOfTypeInt(assertionType datadogV1.SyntheticsAssertionType, assertio
 	if assertionType == datadogV1.SYNTHETICSASSERTIONTYPE_STATUS_CODE &&
 		(assertionOperator == datadogV1.SYNTHETICSASSERTIONOPERATOR_IS || assertionOperator == datadogV1.SYNTHETICSASSERTIONOPERATOR_IS_NOT) {
 		return true
+	}
+	return false
+}
+
+func isTargetOfTypeFloat(assertionType datadogV1.SyntheticsAssertionType, assertionOperator datadogV1.SyntheticsAssertionOperator) bool {
+	for _, floatTargetAssertionType := range []datadogV1.SyntheticsAssertionType{
+		datadogV1.SYNTHETICSASSERTIONTYPE_PACKET_LOSS_PERCENTAGE,
+	} {
+		if assertionType == floatTargetAssertionType {
+			return true
+		}
+	}
+
+	for _, operator := range []datadogV1.SyntheticsAssertionOperator{
+		datadogV1.SYNTHETICSASSERTIONOPERATOR_LESS_THAN,
+		datadogV1.SYNTHETICSASSERTIONOPERATOR_LESS_THAN_OR_EQUAL,
+		datadogV1.SYNTHETICSASSERTIONOPERATOR_MORE_THAN,
+		datadogV1.SYNTHETICSASSERTIONOPERATOR_MORE_THAN_OR_EQUAL,
+	} {
+		if assertionOperator == operator {
+			return true
+		}
 	}
 	return false
 }

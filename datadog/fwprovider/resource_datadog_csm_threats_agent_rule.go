@@ -3,6 +3,7 @@ package fwprovider
 import (
 	"context"
 	"strings"
+	"strings"
 	"sync"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
@@ -13,6 +14,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+
+	"net/http"
 
 	"net/http"
 
@@ -30,8 +33,14 @@ type csmThreatsAgentRuleResource struct {
 	auth context.Context
 }
 
+type csmThreatsAgentRuleResource struct {
+	api  *datadogV2.CSMThreatsApi
+	auth context.Context
+}
+
 type csmThreatsAgentRuleModel struct {
 	Id          types.String `tfsdk:"id"`
+	PolicyId    types.String `tfsdk:"policy_id"`
 	PolicyId    types.String `tfsdk:"policy_id"`
 	Name        types.String `tfsdk:"name"`
 	Description types.String `tfsdk:"description"`
@@ -74,6 +83,10 @@ func (r *csmThreatsAgentRuleResource) Schema(_ context.Context, _ resource.Schem
 		Description: "Provides a Datadog CSM Threats Agent Rule API resource.",
 		Attributes: map[string]schema.Attribute{
 			"id": utils.ResourceIDAttribute(),
+			"policy_id": schema.StringAttribute{
+				Optional:    true,
+				Description: "The ID of the agent policy in which the rule is saved",
+			},
 			"policy_id": schema.StringAttribute{
 				Optional:    true,
 				Description: "The ID of the agent policy in which the rule is saved",
@@ -122,6 +135,16 @@ func (r *csmThreatsAgentRuleResource) Schema(_ context.Context, _ resource.Schem
 }
 
 func (r *csmThreatsAgentRuleResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
+	result := strings.SplitN(request.ID, ":", 2)
+
+	if len(result) == 2 {
+		response.Diagnostics.Append(response.State.SetAttribute(ctx, path.Root("policy_id"), result[0])...)
+		response.Diagnostics.Append(response.State.SetAttribute(ctx, path.Root("id"), result[1])...)
+	} else if len(result) == 1 {
+		response.Diagnostics.Append(response.State.SetAttribute(ctx, path.Root("id"), result[0])...)
+	} else {
+		response.Diagnostics.AddError("unexpected import format", "expected '<policy_id>:<rule_id>' or '<rule_id>'")
+	}
 	result := strings.SplitN(request.ID, ":", 2)
 
 	if len(result) == 2 {
@@ -202,6 +225,9 @@ func (r *csmThreatsAgentRuleResource) Read(ctx context.Context, request resource
 	csmThreatsMutex.Lock()
 	defer csmThreatsMutex.Unlock()
 
+	csmThreatsMutex.Lock()
+	defer csmThreatsMutex.Unlock()
+
 	agentRuleId := state.Id.ValueString()
 
 	var res datadogV2.CloudWorkloadSecurityAgentRuleResponse
@@ -214,7 +240,19 @@ func (r *csmThreatsAgentRuleResource) Read(ctx context.Context, request resource
 		res, httpResp, err = r.api.GetCSMThreatsAgentRule(r.auth, agentRuleId)
 	}
 
+
+	var res datadogV2.CloudWorkloadSecurityAgentRuleResponse
+	var httpResp *http.Response
+	var err error
+	if !state.PolicyId.IsNull() && !state.PolicyId.IsUnknown() {
+		policyId := state.PolicyId.ValueString()
+		res, httpResp, err = r.api.GetCSMThreatsAgentRule(r.auth, agentRuleId, *datadogV2.NewGetCSMThreatsAgentRuleOptionalParameters().WithPolicyId(policyId))
+	} else {
+		res, httpResp, err = r.api.GetCSMThreatsAgentRule(r.auth, agentRuleId)
+	}
+
 	if err != nil {
+		if httpResp.StatusCode == 404 {
 		if httpResp.StatusCode == 404 {
 			response.State.RemoveResource(ctx)
 			return
@@ -244,6 +282,7 @@ func (r *csmThreatsAgentRuleResource) Update(ctx context.Context, request resour
 	agentRulePayload, err := r.buildUpdateCSMThreatsAgentRulePayload(&state)
 	if err != nil {
 		response.Diagnostics.AddError("error while parsing resource", err.Error())
+		return
 		return
 	}
 
@@ -310,7 +349,17 @@ func (r *csmThreatsAgentRuleResource) Delete(ctx context.Context, request resour
 		httpResp, err = r.api.DeleteCSMThreatsAgentRule(r.auth, id)
 	}
 
+	var httpResp *http.Response
+	var err error
+	if !state.PolicyId.IsNull() && !state.PolicyId.IsUnknown() {
+		policyId := state.PolicyId.ValueString()
+		httpResp, err = r.api.DeleteCSMThreatsAgentRule(r.auth, id, *datadogV2.NewDeleteCSMThreatsAgentRuleOptionalParameters().WithPolicyId(policyId))
+	} else {
+		httpResp, err = r.api.DeleteCSMThreatsAgentRule(r.auth, id)
+	}
+
 	if err != nil {
+		if httpResp.StatusCode == 404 {
 		if httpResp.StatusCode == 404 {
 			return
 		}
@@ -320,6 +369,7 @@ func (r *csmThreatsAgentRuleResource) Delete(ctx context.Context, request resour
 }
 
 func (r *csmThreatsAgentRuleResource) buildCreateCSMThreatsAgentRulePayload(state *csmThreatsAgentRuleModel) (*datadogV2.CloudWorkloadSecurityAgentRuleCreateRequest, error) {
+	_, policyId, name, description, enabled, expression, productTags := r.extractAgentRuleAttributesFromResource(state)
 	_, policyId, name, description, enabled, expression, productTags := r.extractAgentRuleAttributesFromResource(state)
 
 	attributes := datadogV2.CloudWorkloadSecurityAgentRuleCreateAttributes{}
@@ -372,8 +422,10 @@ func (r *csmThreatsAgentRuleResource) buildCreateCSMThreatsAgentRulePayload(stat
 
 func (r *csmThreatsAgentRuleResource) buildUpdateCSMThreatsAgentRulePayload(state *csmThreatsAgentRuleModel) (*datadogV2.CloudWorkloadSecurityAgentRuleUpdateRequest, error) {
 	agentRuleId, policyId, _, description, enabled, expression, productTags := r.extractAgentRuleAttributesFromResource(state)
+	agentRuleId, policyId, _, description, enabled, expression, productTags := r.extractAgentRuleAttributesFromResource(state)
 
 	attributes := datadogV2.CloudWorkloadSecurityAgentRuleUpdateAttributes{}
+	attributes.Expression = &expression
 	attributes.Expression = &expression
 	attributes.Description = description
 	attributes.Enabled = &enabled
@@ -424,9 +476,17 @@ func (r *csmThreatsAgentRuleResource) buildUpdateCSMThreatsAgentRulePayload(stat
 }
 
 func (r *csmThreatsAgentRuleResource) extractAgentRuleAttributesFromResource(state *csmThreatsAgentRuleModel) (string, *string, string, *string, bool, string, []string) {
+func (r *csmThreatsAgentRuleResource) extractAgentRuleAttributesFromResource(state *csmThreatsAgentRuleModel) (string, *string, string, *string, bool, string, []string) {
 	// Mandatory fields
 	id := state.Id.ValueString()
 	name := state.Name.ValueString()
+
+	// Optional fields
+	var policyId *string
+	if !state.PolicyId.IsNull() && !state.PolicyId.IsUnknown() {
+		val := state.PolicyId.ValueString()
+		policyId = &val
+	}
 
 	// Optional fields
 	var policyId *string
@@ -447,7 +507,18 @@ func (r *csmThreatsAgentRuleResource) extractAgentRuleAttributesFromResource(sta
 			productTags = append(productTags, tagStr.ValueString())
 		}
 	}
+	var productTags []string
+	if !state.ProductTags.IsNull() && !state.ProductTags.IsUnknown() {
+		for _, tag := range state.ProductTags.Elements() {
+			tagStr, ok := tag.(types.String)
+			if !ok {
+				return "", nil, "", nil, false, "", nil
+			}
+			productTags = append(productTags, tagStr.ValueString())
+		}
+	}
 
+	return id, policyId, name, description, enabled, expression, productTags
 	return id, policyId, name, description, enabled, expression, productTags
 }
 
