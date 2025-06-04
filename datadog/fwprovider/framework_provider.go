@@ -92,6 +92,9 @@ var Resources = []func() resource.Resource{
 	NewCostBudgetResource,
 	NewCSMThreatsAgentRuleResource,
 	NewCSMThreatsPolicyResource,
+	NewCSMThreatsAgentRuleResource,
+	NewCSMThreatsPolicyResource,
+	NewComplianceCustomFrameworkResource,
 }
 
 var Datasources = []func() datasource.DataSource{
