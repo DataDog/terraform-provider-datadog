@@ -88,16 +88,13 @@ var Resources = []func() resource.Resource{
 	NewOnCallTeamRoutingRulesResource,
 	NewComplianceResourceEvaluationFilter,
 	NewSecurityMonitoringRuleJSONResource,
-<<<<<<< HEAD
 	NewComplianceCustomFrameworkResource,
 	NewCostBudgetResource,
 	NewCSMThreatsAgentRuleResource,
 	NewCSMThreatsPolicyResource,
-=======
 	NewCSMThreatsAgentRuleResource,
 	NewCSMThreatsPolicyResource,
 	NewComplianceCustomFrameworkResource,
->>>>>>> e07f0fb3bacbf4683e077ac7d957060cf182b5ed
 }
 
 var Datasources = []func() datasource.DataSource{

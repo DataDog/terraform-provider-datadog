@@ -7,15 +7,12 @@ import (
 	"testing"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
-	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
 )
 
-func TestAccCSMThreatsAgentRulesDataSource(t *testing.T) {
-	t.Parallel()
 func TestAccCSMThreatsAgentRulesDataSource(t *testing.T) {
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
@@ -30,29 +27,8 @@ func TestAccCSMThreatsAgentRulesDataSource(t *testing.T) {
 	}
 	`, policyName)
 
-	policyName := uniqueAgentRuleName(ctx)
-	policyConfig := fmt.Sprintf(`
-	resource "datadog_csm_threats_policy" "policy_for_test" {
-		name              = "%s"
-		enabled           = true
-		description       = "im a policy"
-		tags              = ["host_name:test_host"]
-	}
-	`, policyName)
-
 	agentRuleName := uniqueAgentRuleName(ctx)
 	agentRuleConfig := fmt.Sprintf(`
-		%s
-		resource "datadog_csm_threats_agent_rule" "agent_rule_for_data_source_test" {
-			name              = "%s"
-			policy_id         = datadog_csm_threats_policy.policy_for_test.id
-			enabled           = true
-			description       = "im a rule"
-			expression 		  = "open.file.name == \"etc/shadow/password\""
-			product_tags      = ["compliance_framework:PCI-DSS"]
-		}
-	`, policyConfig, agentRuleName)
-	dataSourceName := "data.datadog_csm_threats_agent_rules.my_data_source"
 		%s
 		resource "datadog_csm_threats_agent_rule" "agent_rule_for_data_source_test" {
 			name              = "%s"
@@ -78,9 +54,6 @@ func TestAccCSMThreatsAgentRulesDataSource(t *testing.T) {
 			{
 				Config: fmt.Sprintf(`
 				%s
-				data "datadog_csm_threats_agent_rules" "my_data_source" {
-					policy_id = datadog_csm_threats_policy.policy_for_test.id
-				}
 				data "datadog_csm_threats_agent_rules" "my_data_source" {
 					policy_id = datadog_csm_threats_policy.policy_for_test.id
 				}
@@ -151,30 +124,6 @@ resource "datadog_csm_threats_agent_rule" "agent_rule" {
 `, policyName, agentRuleName)
 }
 
-func testAccCheckDatadogCSMThreatsAgentRulesDataSourceConfig(policyName, agentRuleName string) string {
-	return fmt.Sprintf(`
-data "datadog_csm_threats_agent_rules" "my_data_source" {
-  policy_id = datadog_csm_threats_policy.policy.id
-}
-
-resource "datadog_csm_threats_policy" "policy" {
-  name = "%s"
-  enabled = true
-  description = "Test description"
-  tags = ["host_name:test_host"]
-}
-
-resource "datadog_csm_threats_agent_rule" "agent_rule" {
-  name = "%s"
-  description = "Test description"
-  enabled = true
-  expression = "open.file.name == \"etc/shadow/password\""
-  policy_id = datadog_csm_threats_policy.policy.id
-  product_tags = ["compliance_framework:PCI-DSS"]
-}
-`, policyName, agentRuleName)
-}
-
 func checkCSMThreatsAgentRulesDataSourceContent(accProvider *fwprovider.FrameworkProvider, dataSourceName string, agentRuleName string) resource.TestCheckFunc {
 	return func(state *terraform.State) error {
 		res, ok := state.RootModule().Resources[dataSourceName]
@@ -185,8 +134,6 @@ func checkCSMThreatsAgentRulesDataSourceContent(accProvider *fwprovider.Framewor
 		auth := accProvider.Auth
 		apiInstances := accProvider.DatadogApiInstances
 
-		policyId := res.Primary.Attributes["policy_id"]
-		allAgentRulesResponse, _, err := apiInstances.GetCSMThreatsApiV2().ListCSMThreatsAgentRules(auth, *datadogV2.NewListCSMThreatsAgentRulesOptionalParameters().WithPolicyId(policyId))
 		policyId := res.Primary.Attributes["policy_id"]
 		allAgentRulesResponse, _, err := apiInstances.GetCSMThreatsApiV2().ListCSMThreatsAgentRules(auth, *datadogV2.NewListCSMThreatsAgentRulesOptionalParameters().WithPolicyId(policyId))
 		if err != nil {
