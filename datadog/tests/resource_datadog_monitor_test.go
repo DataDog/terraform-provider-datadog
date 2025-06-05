@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -856,6 +857,21 @@ func testAccCheckDatadogMonitorDestroy(accProvider func() (*schema.Provider, err
 	}
 }
 
+func testAccCheckDatadogMonitorWithRestrictionRoleDestroy(accProvider *fwprovider.FrameworkProvider) func(*terraform.State) error {
+	return func(s *terraform.State) error {
+		apiInstances := accProvider.DatadogApiInstances
+		auth := accProvider.Auth
+
+		if err := destroyMonitorHelper(auth, s, apiInstances); err != nil {
+			return err
+		}
+		if err := destroyRoleHelper(auth, s, apiInstances); err != nil {
+			return err
+		}
+		return nil
+	}
+}
+
 func testAccCheckDatadogMonitorExists(accProvider func() (*schema.Provider, error)) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
@@ -1152,31 +1168,6 @@ func TestAccDatadogMonitor_SchedulingOptionsCustomScheduleNoStart(t *testing.T) 
 			},
 		},
 	})
-}
-
-func testAccCheckDatadogMonitorWithSchedulingOptionsCustomScheduleNoStart(uniq string) string {
-	return fmt.Sprintf(`
-resource "datadog_monitor" "foo" {
-  name = "%s"
-  type = "metric alert"
-  message = "a message"
-  priority = 3
-  
-  query = "avg(last_1h):avg:system.load.5{*} > 0.5"
-
-  monitor_thresholds {
-	critical = "0.5"
-  }
-
-  scheduling_options {
-	custom_schedule {
-		recurrence {
-			rrule = "FREQ=DAILY;INTERVAL=1"
-			timezone = "America/New_York"
-		}
-	}
-  }
-}`, uniq)
 }
 
 func testAccCheckDatadogMonitorConfig(uniq string) string {
@@ -1806,6 +1797,7 @@ resource "datadog_monitor" "foo" {
   monitor_thresholds {
 	critical = "2.0"
   }
+  restricted_roles = []
 }`, uniq)
 }
 
@@ -1825,6 +1817,30 @@ func destroyMonitorHelper(ctx context.Context, s *terraform.State, apiInstances 
 				return &utils.RetryableError{Prob: fmt.Sprintf("received an error retrieving Monitor %s", err)}
 			}
 			return &utils.RetryableError{Prob: "Monitor still exists"}
+		})
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func destroyRoleHelper(ctx context.Context, s *terraform.State, apiInstances *utils.ApiInstances) error {
+	for _, r := range s.RootModule().Resources {
+		if r.Type != "datadog_role" {
+			continue
+		}
+
+		err := utils.Retry(2, 10, func() error {
+			_, httpresp, err := apiInstances.GetRolesApiV2().GetRole(ctx, r.Primary.ID)
+			if err != nil {
+				if httpresp != nil && httpresp.StatusCode == 404 {
+					return nil
+				}
+				return &utils.RetryableError{Prob: fmt.Sprintf("received an error retrieving role %s", err)}
+			}
+			return &utils.RetryableError{Prob: "Role still exists"}
 		})
 		if err != nil {
 			return err
@@ -1962,4 +1978,134 @@ func TestAccDatadogMonitor_DefaultTags(t *testing.T) {
 			},
 		},
 	})
+}
+
+func TestAccDatadogMonitor_WithRestrictionPolicy(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	uniqueName := uniqueEntityName(ctx, t)
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		PreCheck:                 func() { testAccPreCheck(t) },
+		CheckDestroy:             testAccCheckDatadogMonitorWithRestrictionRoleDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogMonitorWithRestrictionPolicy(uniqueEntityName(ctx, t)),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.bar", "name", uniqueName),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.bar", "message", "some message Notify: @hipchat-channel"),
+					resource.TestCheckResourceAttr(
+						"datadog_restriction_policy.baz", "bindings.0.principals.#", "2"),
+					verifyRestrictedRolesSize(providers.frameworkProvider, 1),
+				),
+			},
+			// A monitor resource update should not clear restricted_roles when the field is not defined
+			{
+				Config: testAccCheckDatadogMonitorWithRestrictionPolicyUpdated(uniqueEntityName(ctx, t)),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.bar", "name", uniqueName),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.bar", "message", "updated message Notify: @hipchat-channel"),
+					resource.TestCheckResourceAttr(
+						"datadog_restriction_policy.baz", "bindings.0.principals.#", "2"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.bar", "restricted_roles.#", "1"),
+					verifyRestrictedRolesSize(providers.frameworkProvider, 1),
+				),
+			},
+			// Removing restriction policy resource should wipe out restricted_roles
+			{
+				Config: testAccCheckDatadogMonitorWithRestrictionPolicyDestroyed(uniqueEntityName(ctx, t)),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.bar", "name", uniqueName),
+					verifyRestrictedRolesSize(providers.frameworkProvider, 0),
+				),
+			},
+		},
+	})
+}
+
+func testAccCheckDatadogMonitorWithRestrictionPolicy(uniqueName string) string {
+	return fmt.Sprintf(`
+		resource "datadog_role" "foo" {
+			name      = "%s"
+		}
+		resource "datadog_monitor" "bar" {
+			name = "%s"
+			type = "query alert"
+			message = "some message Notify: @hipchat-channel"
+			query = "avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2"
+
+			monitor_thresholds {
+				critical = "2.0"
+			}
+		}
+        resource "datadog_restriction_policy" "baz" {
+            resource_id = "monitor:${datadog_monitor.bar.id}"
+            bindings {
+              principals = ["org:4dee724d-00cc-11ea-a77b-570c9d03c6c5","role:${datadog_role.foo.id}"]
+              relation = "editor"
+            }
+        }`, uniqueName, uniqueName)
+}
+
+func testAccCheckDatadogMonitorWithRestrictionPolicyUpdated(uniqueName string) string {
+	return fmt.Sprintf(`
+		resource "datadog_role" "foo" {
+			name      = "%s"
+		}
+		resource "datadog_monitor" "bar" {
+			name = "%s"
+			type = "query alert"
+			message = "updated message Notify: @hipchat-channel"
+			query = "avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2"
+
+			monitor_thresholds {
+				critical = "2.0"
+			}
+		}
+        resource "datadog_restriction_policy" "baz" {
+            resource_id = "monitor:${datadog_monitor.bar.id}"
+            bindings {
+              principals = ["org:4dee724d-00cc-11ea-a77b-570c9d03c6c5","role:${datadog_role.foo.id}"]
+              relation = "editor"
+            }
+        }`, uniqueName, uniqueName)
+}
+
+func testAccCheckDatadogMonitorWithRestrictionPolicyDestroyed(uniqueName string) string {
+	return fmt.Sprintf(`
+		resource "datadog_role" "foo" {
+			name      = "%s"
+		}
+		resource "datadog_monitor" "bar" {
+			name = "%s"
+			type = "query alert"
+			message = "updated message Notify: @hipchat-channel"
+			query = "avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2"
+
+			monitor_thresholds {
+				critical = "2.0"
+			}
+		}`, uniqueName, uniqueName)
+}
+
+func verifyRestrictedRolesSize(accProvider *fwprovider.FrameworkProvider, expectedSize int) resource.TestCheckFunc {
+	return func(s *terraform.State) error {
+		apiInstances := accProvider.DatadogApiInstances
+		auth := accProvider.Auth
+		id, _ := strconv.ParseInt(s.RootModule().Resources["datadog_monitor.bar"].Primary.ID, 10, 64)
+		monitor, httpresp, err := apiInstances.GetMonitorsApiV1().GetMonitor(auth, id)
+		if err != nil {
+			return utils.TranslateClientError(err, httpresp, "error retrieving monitor")
+		}
+		if expectedSize != len(monitor.GetRestrictedRoles()) {
+			return fmt.Errorf("restricted_roles expected to be {%d} but get {%d}", expectedSize, len(monitor.GetRestrictedRoles()))
+		}
+		return nil
+	}
 }
