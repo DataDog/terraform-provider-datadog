@@ -729,7 +729,7 @@ func syntheticsTestOptionsList() *schema.Schema {
 								Optional:    true,
 							},
 							"notification_preset_name": {
-								Description: "The name of the preset for the notification for the monitor.",
+								Description:      "The name of the preset for the notification for the monitor.",
 								Type:             schema.TypeString,
 								Optional:         true,
 								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsTestOptionsMonitorOptionsNotificationPresetNameFromValue),
@@ -893,7 +893,7 @@ func syntheticsMobileTestOptionsList() *schema.Schema {
 								Optional:    true,
 							},
 							"notification_preset_name": {
-								Description: "The name of the preset for the notification for the monitor.",
+								Description:      "The name of the preset for the notification for the monitor.",
 								Type:             schema.TypeString,
 								Optional:         true,
 								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsTestOptionsMonitorOptionsNotificationPresetNameFromValue),
