@@ -728,6 +728,11 @@ func syntheticsTestOptionsList() *schema.Schema {
 								Type:        schema.TypeString,
 								Optional:    true,
 							},
+							"notification_preset_name": {
+								Type:             schema.TypeString,
+								Optional:         true,
+								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsTestOptionsMonitorOptionsNotificationPresetNameFromValue),
+							},
 						},
 					},
 				},
@@ -3882,6 +3887,9 @@ func buildDatadogTestOptions(d *schema.ResourceData) *datadogV1.SyntheticsTestOp
 			if escalationMessage, ok := monitorOptions.(map[string]interface{})["escalation_message"]; ok {
 				optionsMonitorOptions.SetEscalationMessage(escalationMessage.(string))
 			}
+			if notificationPresetName, ok := monitorOptions.(map[string]interface{})["notification_preset_name"]; ok {
+				optionsMonitorOptions.SetNotificationPresetName(datadogV1.SyntheticsTestOptionsMonitorOptionsNotificationPresetName(notificationPresetName.(string)))
+			}
 			options.SetMonitorOptions(optionsMonitorOptions)
 		}
 
@@ -4042,6 +4050,10 @@ func buildTerraformTestOptions(actualOptions datadogV1.SyntheticsTestOptions) []
 		}
 		if actualMonitorOptions.HasEscalationMessage() {
 			optionsListMonitorOptions["escalation_message"] = actualMonitorOptions.GetEscalationMessage()
+			shouldUpdate = true
+		}
+		if actualMonitorOptions.HasNotificationPresetName() {
+			optionsListMonitorOptions["notification_preset_name"] = actualMonitorOptions.GetNotificationPresetName()
 			shouldUpdate = true
 		}
 		if shouldUpdate {
@@ -4321,12 +4333,15 @@ func buildTerraformMobileTestOptions(actualOptions datadogV1.SyntheticsMobileTes
 		}
 		if actualMonitorOptions.HasEscalationMessage() {
 			optionsListMonitorOptions["escalation_message"] = actualMonitorOptions.GetEscalationMessage()
+			shouldUpdate = true
 		}
 		if actualMonitorOptions.HasRenotifyOccurrences() {
 			optionsListMonitorOptions["renotify_occurrences"] = actualMonitorOptions.GetRenotifyOccurrences()
+			shouldUpdate = true
 		}
 		if actualMonitorOptions.HasNotificationPresetName() {
 			optionsListMonitorOptions["notification_preset_name"] = actualMonitorOptions.GetNotificationPresetName()
+			shouldUpdate = true
 		}
 
 		if shouldUpdate {
