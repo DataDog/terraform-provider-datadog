@@ -1,0 +1,6 @@
+{%- import "utils/resource_test_helper.j2" as helperMacros -%}
+{%- set createOperationParams = operations[CREATE_OPERATION]["schema"]|parameters -%}
+{%- set primaryId = get_terraform_primary_id(operations) -%}
+# Create new {{ name }} resource
+
+{{ helperMacros.resourceExample(name, primaryId, createOperationParams) }}

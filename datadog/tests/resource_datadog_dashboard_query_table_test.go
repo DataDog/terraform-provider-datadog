@@ -100,7 +100,20 @@ resource "datadog_dashboard" "query_table_dashboard" {
 			    palette = "white_on_red"
 			    value = 90
 				comparator = ">="
-			  }  
+			  }
+			  number_format {
+			     unit {
+			       canonical { 
+			         unit_name = "joule" 
+			         per_unit_name = "second"
+			       }
+			     }
+			  }
+              cell_display_mode = "trend"
+              cell_display_mode_options {
+                  trend_type = "line"
+                  y_scale = "independent"
+              }
 			}
 			query {
 			  metric_query {
@@ -356,6 +369,11 @@ var datadogDashboardQueryTableFormulaAsserts = []string{
 	"widget.0.query_table_definition.0.request.0.formula.0.conditional_formats.1.palette = white_on_red",
 	"widget.0.query_table_definition.0.request.0.formula.0.conditional_formats.1.value = 90",
 	"widget.0.query_table_definition.0.request.0.formula.0.conditional_formats.1.comparator = >=",
+	"widget.0.query_table_definition.0.request.0.formula.0.number_format.0.unit.0.canonical.0.unit_name = joule",
+	"widget.0.query_table_definition.0.request.0.formula.0.number_format.0.unit.0.canonical.0.per_unit_name = second",
+	"widget.0.query_table_definition.0.request.0.formula.0.cell_display_mode = trend",
+	"widget.0.query_table_definition.0.request.0.formula.0.cell_display_mode_options.0.trend_type = line",
+	"widget.0.query_table_definition.0.request.0.formula.0.cell_display_mode_options.0.y_scale = independent",
 	"widget.0.query_table_definition.0.request.0.query.0.metric_query.0.data_source = metrics",
 	"widget.0.query_table_definition.0.request.0.query.0.metric_query.0.query = avg:system.cpu.system{*} by {datacenter}",
 	"widget.0.query_table_definition.0.request.0.query.0.metric_query.0.name = query1",

@@ -86,7 +86,10 @@ Required:
 
 Optional:
 
+- `encryption_key` (String) The AWS KMS encryption key.
+- `encryption_type` (String) The type of encryption on your archive. Valid values are `NO_OVERRIDE`, `SSE_S3`, `SSE_KMS`. Defaults to `"NO_OVERRIDE"`.
 - `path` (String) Path where the archive is stored.
+- `storage_class` (String) The AWS S3 storage class used to upload the logs. Valid values are `STANDARD`, `STANDARD_IA`, `ONEZONE_IA`, `INTELLIGENT_TIERING`, `GLACIER_IR`. Defaults to `"STANDARD"`.
 
 ## Import
 

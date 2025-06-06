@@ -145,7 +145,7 @@ func resourceDatadogRoleCustomizeDiff(ctx context.Context, diff *schema.Resource
 
 		if permAttributes.IsDefaultPermission && !defaultPermissionsOptOut.(bool) {
 			return fmt.Errorf(
-				"permission with ID %s is a restricted (default) permission and cannot be managed by terraform, remove it from your configuration",
+				"permission with ID %s is a restricted (default) permission. To include it, set `default_permissions_opt_out` to `true`. Otherwise, please remove it from your configuration.",
 				permID,
 			)
 		}

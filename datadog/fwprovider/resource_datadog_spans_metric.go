@@ -20,8 +20,9 @@ import (
 )
 
 var (
-	_ resource.ResourceWithConfigure   = &spansMetricResource{}
-	_ resource.ResourceWithImportState = &spansMetricResource{}
+	_ resource.ResourceWithConfigure      = &spansMetricResource{}
+	_ resource.ResourceWithImportState    = &spansMetricResource{}
+	_ resource.ResourceWithValidateConfig = &spansMetricResource{}
 )
 
 type spansMetricResource struct {
@@ -106,7 +107,11 @@ func (r *spansMetricResource) Schema(_ context.Context, _ resource.SchemaRequest
 					},
 					"include_percentiles": schema.BoolAttribute{
 						Optional:    true,
+						Computed:    true,
 						Description: "Toggle to include or exclude percentile aggregations for distribution metrics. Only present when the `aggregation_type` is `distribution`.",
+						PlanModifiers: []planmodifier.Bool{
+							includePercentilesUnknownSuppressor{},
+						},
 					},
 					"path": schema.StringAttribute{
 						Optional:    true,
@@ -139,6 +144,54 @@ func (r *spansMetricResource) Schema(_ context.Context, _ resource.SchemaRequest
 				},
 			},
 		},
+	}
+}
+
+type includePercentilesUnknownSuppressor struct{}
+
+func (m includePercentilesUnknownSuppressor) Description(_ context.Context) string {
+	return "Removes unknown state when change is not needed."
+}
+
+func (m includePercentilesUnknownSuppressor) MarkdownDescription(ctx context.Context) string {
+	return m.Description(ctx)
+}
+
+func (m includePercentilesUnknownSuppressor) PlanModifyBool(ctx context.Context, req planmodifier.BoolRequest, resp *planmodifier.BoolResponse) {
+	var aggregation_type string
+	diags := req.Plan.GetAttribute(
+		ctx,
+		frameworkPath.Root("compute").AtName("aggregation_type"),
+		&aggregation_type,
+	)
+	if diags.HasError() || aggregation_type != "distribution" {
+		resp.PlanValue = types.BoolNull()
+		return
+	}
+
+	if !req.StateValue.IsNull() && resp.PlanValue.IsUnknown() {
+		resp.PlanValue = req.StateValue
+	}
+}
+
+func (r *spansMetricResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
+	var data spansMetricModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &data)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	if data.Compute.IncludePercentiles.IsNull() || data.Compute.IncludePercentiles.IsUnknown() {
+		return
+	}
+
+	if data.Compute.AggregationType.ValueString() != "distribution" && !data.Compute.IncludePercentiles.IsUnknown() {
+		resp.Diagnostics.AddAttributeError(
+			frameworkPath.Root("compute").AtName("include_percentiles"),
+			"Invalid configuration",
+			"include_percentiles can only be set when aggregation_type is 'distribution'",
+		)
 	}
 }
 
@@ -189,7 +242,7 @@ func (r *spansMetricResource) Create(ctx context.Context, request resource.Creat
 
 	resp, _, err := r.Api.CreateSpansMetric(r.Auth, *body)
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving spans metric"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error creating spans metric"))
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {
@@ -219,7 +272,7 @@ func (r *spansMetricResource) Update(ctx context.Context, request resource.Updat
 
 	resp, _, err := r.Api.UpdateSpansMetric(r.Auth, id, *body)
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving spans metric"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error updating spans metric"))
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {
@@ -319,7 +372,7 @@ func (r *spansMetricResource) buildSpansMetricRequestBody(ctx context.Context, s
 	var compute datadogV2.SpansMetricCompute
 
 	compute.SetAggregationType(datadogV2.SpansMetricComputeAggregationType(state.Compute.AggregationType.ValueString()))
-	if !state.Compute.IncludePercentiles.IsNull() {
+	if !(state.Compute.IncludePercentiles.IsNull() || state.Compute.IncludePercentiles.IsUnknown()) {
 		compute.SetIncludePercentiles(state.Compute.IncludePercentiles.ValueBool())
 	}
 	if !state.Compute.Path.IsNull() {
@@ -369,7 +422,7 @@ func (r *spansMetricResource) buildSpansMetricUpdateRequestBody(ctx context.Cont
 	if state.Compute != nil {
 		var compute datadogV2.SpansMetricUpdateCompute
 
-		if !state.Compute.IncludePercentiles.IsNull() {
+		if !(state.Compute.IncludePercentiles.IsNull() || state.Compute.IncludePercentiles.IsUnknown()) {
 			compute.SetIncludePercentiles(state.Compute.IncludePercentiles.ValueBool())
 		}
 

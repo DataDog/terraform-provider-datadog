@@ -173,8 +173,10 @@ resource "datadog_logs_custom_pipeline" "sample_pipeline" {
 
 ### Optional
 
+- `description` (String)
 - `is_enabled` (Boolean)
 - `processor` (Block List) (see [below for nested schema](#nestedblock--processor))
+- `tags` (Set of String)
 
 ### Read-Only
 
@@ -204,6 +206,7 @@ Optional:
 - `pipeline` (Block List, Max: 1) (see [below for nested schema](#nestedblock--processor--pipeline))
 - `reference_table_lookup_processor` (Block List, Max: 1) Reference Table Lookup Processor. Reference Tables are in public beta. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#lookup-processor) (see [below for nested schema](#nestedblock--processor--reference_table_lookup_processor))
 - `service_remapper` (Block List, Max: 1) Service Remapper Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#service-remapper) (see [below for nested schema](#nestedblock--processor--service_remapper))
+- `span_id_remapper` (Block List, Max: 1) Span ID Remapper Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/log_configuration/processors/?tab=ui#span-remapper) (see [below for nested schema](#nestedblock--processor--span_id_remapper))
 - `status_remapper` (Block List, Max: 1) Status Remapper Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#log-status-remapper) (see [below for nested schema](#nestedblock--processor--status_remapper))
 - `string_builder_processor` (Block List, Max: 1) String Builder Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#string-builder-processor) (see [below for nested schema](#nestedblock--processor--string_builder_processor))
 - `trace_id_remapper` (Block List, Max: 1) Trace ID Remapper Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#trace-remapper) (see [below for nested schema](#nestedblock--processor--trace_id_remapper))
@@ -365,8 +368,10 @@ Required:
 
 Optional:
 
+- `description` (String)
 - `is_enabled` (Boolean)
 - `processor` (Block List) (see [below for nested schema](#nestedblock--processor--pipeline--processor))
+- `tags` (Set of String)
 
 <a id="nestedblock--processor--pipeline--filter"></a>
 ### Nested Schema for `processor.pipeline.filter`
@@ -391,6 +396,7 @@ Optional:
 - `message_remapper` (Block List, Max: 1) Message Remapper Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#log-message-remapper) (see [below for nested schema](#nestedblock--processor--pipeline--processor--message_remapper))
 - `reference_table_lookup_processor` (Block List, Max: 1) Reference Table Lookup Processor. Reference Tables are in public beta. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#lookup-processor) (see [below for nested schema](#nestedblock--processor--pipeline--processor--reference_table_lookup_processor))
 - `service_remapper` (Block List, Max: 1) Service Remapper Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#service-remapper) (see [below for nested schema](#nestedblock--processor--pipeline--processor--service_remapper))
+- `span_id_remapper` (Block List, Max: 1) Span ID Remapper Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/log_configuration/processors/?tab=ui#span-remapper) (see [below for nested schema](#nestedblock--processor--pipeline--processor--span_id_remapper))
 - `status_remapper` (Block List, Max: 1) Status Remapper Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#log-status-remapper) (see [below for nested schema](#nestedblock--processor--pipeline--processor--status_remapper))
 - `string_builder_processor` (Block List, Max: 1) String Builder Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#string-builder-processor) (see [below for nested schema](#nestedblock--processor--pipeline--processor--string_builder_processor))
 - `trace_id_remapper` (Block List, Max: 1) Trace ID Remapper Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#trace-remapper) (see [below for nested schema](#nestedblock--processor--pipeline--processor--trace_id_remapper))
@@ -570,6 +576,19 @@ Optional:
 - `name` (String) Name of the processor.
 
 
+<a id="nestedblock--processor--pipeline--processor--span_id_remapper"></a>
+### Nested Schema for `processor.pipeline.processor.span_id_remapper`
+
+Required:
+
+- `sources` (List of String) List of source attributes.
+
+Optional:
+
+- `is_enabled` (Boolean) If the processor is enabled or not.
+- `name` (String) Name of the processor.
+
+
 <a id="nestedblock--processor--pipeline--processor--status_remapper"></a>
 ### Nested Schema for `processor.pipeline.processor.status_remapper`
 
@@ -660,6 +679,19 @@ Optional:
 
 <a id="nestedblock--processor--service_remapper"></a>
 ### Nested Schema for `processor.service_remapper`
+
+Required:
+
+- `sources` (List of String) List of source attributes.
+
+Optional:
+
+- `is_enabled` (Boolean) If the processor is enabled or not.
+- `name` (String) Name of the processor.
+
+
+<a id="nestedblock--processor--span_id_remapper"></a>
+### Nested Schema for `processor.span_id_remapper`
 
 Required:
 

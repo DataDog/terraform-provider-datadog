@@ -44,6 +44,7 @@ Read-Only:
 - `case` (List of Object) (see [below for nested schema](#nestedobjatt--rules--case))
 - `enabled` (Boolean)
 - `filter` (List of Object) (see [below for nested schema](#nestedobjatt--rules--filter))
+- `group_signals_by` (List of String)
 - `has_extended_title` (Boolean)
 - `message` (String)
 - `name` (String)
@@ -60,10 +61,28 @@ Read-Only:
 
 Read-Only:
 
+- `action` (List of Object) (see [below for nested schema](#nestedobjatt--rules--case--action))
 - `condition` (String)
 - `name` (String)
 - `notifications` (List of String)
 - `status` (String)
+
+<a id="nestedobjatt--rules--case--action"></a>
+### Nested Schema for `rules.case.action`
+
+Read-Only:
+
+- `options` (List of Object) (see [below for nested schema](#nestedobjatt--rules--case--action--options))
+- `type` (String)
+
+<a id="nestedobjatt--rules--case--action--options"></a>
+### Nested Schema for `rules.case.action.options`
+
+Read-Only:
+
+- `duration` (Number)
+
+
 
 
 <a id="nestedobjatt--rules--filter"></a>
@@ -136,6 +155,7 @@ Read-Only:
 
 - `agent_rule` (List of Object) (see [below for nested schema](#nestedobjatt--rules--query--agent_rule))
 - `aggregation` (String)
+- `data_source` (String)
 - `distinct_fields` (List of String)
 - `group_by_fields` (List of String)
 - `metric` (String)

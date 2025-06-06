@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"reflect"
 	"strings"
 	"sync"
 	"time"
@@ -162,6 +163,63 @@ func CheckForUnparsed(resp interface{}) error {
 		return fmt.Errorf("object contains unparsed element: %+v", invalidPart)
 	}
 	return nil
+}
+
+// CheckForAdditionalProperties takes in a API object and returns an error if it contains an additional property
+func CheckForAdditionalProperties(resp interface{}) error {
+	if unparsed, invalidPart := ContainsAdditionalProperties(resp); unparsed {
+		return fmt.Errorf("object contains additional property: %+v", invalidPart)
+	}
+	return nil
+}
+
+// ContainsAdditionalProperties returns true if the given data contains an additional properties.
+func ContainsAdditionalProperties(i interface{}) (bool, interface{}) {
+	v := reflect.ValueOf(i)
+	switch v.Kind() {
+	case reflect.Array, reflect.Slice:
+		for i := 0; i < v.Len(); i++ {
+			if n, m := ContainsAdditionalProperties(v.Index(i).Interface()); n {
+				return n, m
+			}
+		}
+	case reflect.Map:
+		for _, k := range v.MapKeys() {
+			if n, m := ContainsAdditionalProperties(v.MapIndex(k).Interface()); n {
+				return n, m
+			}
+		}
+	case reflect.Struct:
+		if u := v.FieldByName("AdditionalProperties"); u.IsValid() && !u.IsNil() {
+			return true, u.Interface()
+		}
+		for i := 0; i < v.NumField(); i++ {
+			if fn := v.Type().Field(i).Name; string(fn[0]) == strings.ToUpper(string(fn[0])) && fn != "AdditionalProperties" {
+				if n, m := ContainsAdditionalProperties(v.Field(i).Interface()); n {
+					return n, m
+				}
+			} else if fn == "value" { // Special case for Nullables
+				if get := v.MethodByName("Get"); get.IsValid() {
+					if n, m := ContainsAdditionalProperties(get.Call([]reflect.Value{})[0].Interface()); n {
+						return n, m
+					}
+				}
+			}
+		}
+	case reflect.Interface, reflect.Ptr:
+		if !v.IsNil() {
+			return ContainsAdditionalProperties(v.Elem().Interface())
+		}
+	default:
+		if v.IsValid() {
+			if m := v.MethodByName("IsValid"); m.IsValid() {
+				if !m.Call([]reflect.Value{})[0].Bool() {
+					return true, v.Interface()
+				}
+			}
+		}
+	}
+	return false, nil
 }
 
 // TranslateClientErrorDiag returns client error as type diag.Diagnostics
@@ -437,4 +495,102 @@ func AnyToSlice[T any](raw any) []T {
 		result[i] = x.(T)
 	}
 	return result
+}
+
+// RemoveEmptyValuesInMap removes empty arrays, maps, and null values from a map.
+// This ensures we don't treat empty/null values as meaningful differences when comparing maps.
+func RemoveEmptyValuesInMap(m map[string]any) {
+	for k, v := range m {
+		switch val := v.(type) {
+		case []any:
+			if len(val) == 0 {
+				delete(m, k)
+			} else {
+				for _, item := range val {
+					if itemMap, ok := item.(map[string]any); ok {
+						RemoveEmptyValuesInMap(itemMap)
+					}
+				}
+			}
+		case map[string]any:
+			RemoveEmptyValuesInMap(val)
+			if len(val) == 0 {
+				delete(m, k)
+			}
+		case nil:
+			delete(m, k)
+		}
+	}
+}
+
+// Reference: https://github.com/hashicorp/terraform-plugin-framework-jsontypes/blob/v0.2.0/jsontypes/normalized_value.go
+// StringSemanticEquals returns true if the given JSON string value is semantically equal to the current JSON string value. When compared,
+// these JSON string values are "normalized" by marshalling them to empty Go structs. This prevents Terraform data consistency errors and
+// resource drift due to inconsequential differences in the JSON strings (whitespace, property order, etc), similar to jsontypes.Normalized,
+// but also ignores other differences such as the App's ID, which is ignored in the App Builder API.
+func AppJSONStringSemanticEquals(s1 string, s2 string) (bool, frameworkDiag.Diagnostics) {
+	var diags frameworkDiag.Diagnostics
+
+	normalizedS1, err := normalizeAppBuilderAppJSONString(s1)
+	if err != nil {
+		diags.AddError(
+			"Semantic Equality Check Error",
+			"An unexpected error occurred while performing semantic equality checks. "+
+				"Please report this to the provider developers.\n\n"+
+				"Error: "+err.Error(),
+		)
+		return false, diags
+	}
+
+	normalizedS2, err := normalizeAppBuilderAppJSONString(s2)
+	if err != nil {
+		diags.AddError(
+			"Semantic Equality Check Error",
+			"An unexpected error occurred while performing semantic equality checks. "+
+				"Please report this to the provider developers.\n\n"+
+				"Error: "+err.Error(),
+		)
+		return false, diags
+	}
+
+	return normalizedS1 == normalizedS2, diags
+}
+
+func normalizeAppBuilderAppJSONString(jsonStr string) (string, error) {
+	dec := json.NewDecoder(strings.NewReader(jsonStr))
+
+	// This ensures the JSON decoder will not parse JSON numbers into Go's float64 type; avoiding Go
+	// normalizing the JSON number representation or imposing limits on numeric range. See the unit test cases
+	// of StringSemanticEquals for examples.
+	dec.UseNumber()
+
+	var temp any
+	if err := dec.Decode(&temp); err != nil {
+		return "", err
+	}
+
+	// feature specific to AppBuilderAppStringValue:
+	// we only want to compare fields that matter to Create/Update requests when comparing JSON strings
+	if jsonMap, ok := temp.(map[string]any); ok {
+		// fields that would get excluded in this comparison would be "id", "favorite", "selfService", "tags", "connections", "deployment"
+		// these fields are included in the App JSON but don't make a difference when calling Create/Update endpoints
+		// the logic focuses on fields to keep because newer but irrelevant fields may be added to the App JSON in the future
+		fieldsToKeep := []string{"components", "description", "name", "queries", "rootInstanceName"}
+
+		newJsonMap := make(map[string]any)
+		for _, field := range fieldsToKeep {
+			if val, ok := jsonMap[field]; ok {
+				newJsonMap[field] = val
+			}
+		}
+
+		temp = newJsonMap
+	}
+
+	jsonBytes, err := json.Marshal(&temp)
+	if err != nil {
+		return "", err
+	}
+
+	return string(jsonBytes), nil
 }

@@ -44,8 +44,11 @@ type ApiInstances struct {
 	webhooksIntegrationApiV1              *datadogV1.WebhooksIntegrationApi
 
 	//V2 APIs
+	actionConnectionApiV2          *datadogV2.ActionConnectionApi
 	apiManagementAPIV2             *datadogV2.APIManagementApi
 	apmRetentionFiltersApiV2       *datadogV2.APMRetentionFiltersApi
+	appBuilderApiV2                *datadogV2.AppBuilderApi
+	applicationSecurityApiV2       *datadogV2.ApplicationSecurityApi
 	auditApiV2                     *datadogV2.AuditApi
 	authNMappingsApiV2             *datadogV2.AuthNMappingsApi
 	awsIntegrationApiV2            *datadogV2.AWSIntegrationApi
@@ -71,6 +74,7 @@ type ApiInstances struct {
 	metricsApiV2                   *datadogV2.MetricsApi
 	microsoftTeamsIntegrationApiV2 *datadogV2.MicrosoftTeamsIntegrationApi
 	monitorsApiV2                  *datadogV2.MonitorsApi
+	obsPipelinesV2                 *datadogV2.ObservabilityPipelinesApi
 	opsgenieIntegrationApiV2       *datadogV2.OpsgenieIntegrationApi
 	organizationsApiV2             *datadogV2.OrganizationsApi
 	processesApiV2                 *datadogV2.ProcessesApi
@@ -79,14 +83,17 @@ type ApiInstances struct {
 	rolesApiV2                     *datadogV2.RolesApi
 	rumApiV2                       *datadogV2.RUMApi
 	rumMetricsApiV2                *datadogV2.RumMetricsApi
+	rumRetentionFiltersApiV2       *datadogV2.RumRetentionFiltersApi
 	securityMonitoringApiV2        *datadogV2.SecurityMonitoringApi
 	sensitiveDataScannerApiV2      *datadogV2.SensitiveDataScannerApi
 	serviceAccountsApiV2           *datadogV2.ServiceAccountsApi
+	softwareCatalogApiV2           *datadogV2.SoftwareCatalogApi
 	spansMetricsApiV2              *datadogV2.SpansMetricsApi
 	syntheticsApiV2                *datadogV2.SyntheticsApi
 	teamsApiV2                     *datadogV2.TeamsApi
 	usageMeteringApiV2             *datadogV2.UsageMeteringApi
 	usersApiV2                     *datadogV2.UsersApi
+	workflowAutomationApiV2        *datadogV2.WorkflowAutomationApi
 }
 
 // GetAuthenticationApiV1 get instance of AuthenticationApi
@@ -504,6 +511,13 @@ func (i *ApiInstances) GetMonitorsApiV2() *datadogV2.MonitorsApi {
 	return i.monitorsApiV2
 }
 
+func (i *ApiInstances) GetObsPipelinesV2() *datadogV2.ObservabilityPipelinesApi {
+	if i.obsPipelinesV2 == nil {
+		i.obsPipelinesV2 = datadogV2.NewObservabilityPipelinesApi(i.HttpClient)
+	}
+	return i.obsPipelinesV2
+}
+
 // GetOpsgenieIntegrationApiV2 get instance of OpsgenieIntegrationApi
 func (i *ApiInstances) GetOpsgenieIntegrationApiV2() *datadogV2.OpsgenieIntegrationApi {
 	if i.opsgenieIntegrationApiV2 == nil {
@@ -560,6 +574,14 @@ func (i *ApiInstances) GetRumMetricsApiV2() *datadogV2.RumMetricsApi {
 	return i.rumMetricsApiV2
 }
 
+// GetRumRetentionFiltersApiV2 get instance of RumRetentionFiltersApi
+func (i *ApiInstances) GetRumRetentionFiltersApiV2() *datadogV2.RumRetentionFiltersApi {
+	if i.rumRetentionFiltersApiV2 == nil {
+		i.rumRetentionFiltersApiV2 = datadogV2.NewRumRetentionFiltersApi(i.HttpClient)
+	}
+	return i.rumRetentionFiltersApiV2
+}
+
 // GetSecurityMonitoringApiV2 get instance of SecurityMonitoringApi
 func (i *ApiInstances) GetSecurityMonitoringApiV2() *datadogV2.SecurityMonitoringApi {
 	if i.securityMonitoringApiV2 == nil {
@@ -583,6 +605,14 @@ func (i *ApiInstances) GetServiceAccountsApiV2() *datadogV2.ServiceAccountsApi {
 		i.serviceAccountsApiV2 = datadogV2.NewServiceAccountsApi(i.HttpClient)
 	}
 	return i.serviceAccountsApiV2
+}
+
+// GetSoftwareCatalogApiV2 get instance of SoftwareCatalogApi
+func (i *ApiInstances) GetSoftwareCatalogApiV2() *datadogV2.SoftwareCatalogApi {
+	if i.softwareCatalogApiV2 == nil {
+		i.softwareCatalogApiV2 = datadogV2.NewSoftwareCatalogApi(i.HttpClient)
+	}
+	return i.softwareCatalogApiV2
 }
 
 // GetUsageMeteringApiV2 get instance of UsageMeteringApi
@@ -679,4 +709,36 @@ func (i *ApiInstances) GetMicrosoftTeamsIntegrationApiV2() *datadogV2.MicrosoftT
 		i.microsoftTeamsIntegrationApiV2 = datadogV2.NewMicrosoftTeamsIntegrationApi(i.HttpClient)
 	}
 	return i.microsoftTeamsIntegrationApiV2
+}
+
+// GetWorkflowAutomationApiV2 get instance of WorkflowAutomationApi
+func (i *ApiInstances) GetWorkflowAutomationApiV2() *datadogV2.WorkflowAutomationApi {
+	if i.workflowAutomationApiV2 == nil {
+		i.workflowAutomationApiV2 = datadogV2.NewWorkflowAutomationApi(i.HttpClient)
+	}
+	return i.workflowAutomationApiV2
+}
+
+// GetApplicationSecurityApiV2 get instance of ApplicationSecurityApi
+func (i *ApiInstances) GetApplicationSecurityApiV2() *datadogV2.ApplicationSecurityApi {
+	if i.applicationSecurityApiV2 == nil {
+		i.applicationSecurityApiV2 = datadogV2.NewApplicationSecurityApi(i.HttpClient)
+	}
+	return i.applicationSecurityApiV2
+}
+
+// GetActionConnectionApiV2 get instance of ActionConnectionApi
+func (i *ApiInstances) GetActionConnectionApiV2() *datadogV2.ActionConnectionApi {
+	if i.actionConnectionApiV2 == nil {
+		i.actionConnectionApiV2 = datadogV2.NewActionConnectionApi(i.HttpClient)
+	}
+	return i.actionConnectionApiV2
+}
+
+// GetAppBuilderApiV2 get instance of AppBuilderApi
+func (i *ApiInstances) GetAppBuilderApiV2() *datadogV2.AppBuilderApi {
+	if i.appBuilderApiV2 == nil {
+		i.appBuilderApiV2 = datadogV2.NewAppBuilderApi(i.HttpClient)
+	}
+	return i.appBuilderApiV2
 }

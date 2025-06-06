@@ -175,14 +175,14 @@ func Provider() *schema.Provider {
 				Type:        schema.TypeList,
 				Optional:    true,
 				MaxItems:    1,
-				Description: "[Experimental - Monitors only] Configuration block containing settings to apply default resource tags across all resources.",
+				Description: "[Experimental - Monitors and Logs Pipelines only] Configuration block containing settings to apply default resource tags across all resources.",
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"tags": {
 							Type:        schema.TypeMap,
 							Optional:    true,
 							Elem:        &schema.Schema{Type: schema.TypeString},
-							Description: "[Experimental - Monitors only] Resource tags to be applied by default across all resources.",
+							Description: "[Experimental - Monitors and Logs Pipelines only] Resource tags to be applied by default across all resources.",
 						},
 					},
 				},
@@ -232,8 +232,6 @@ func Provider() *schema.Provider {
 			"datadog_service_definition_yaml":              resourceDatadogServiceDefinitionYAML(),
 			"datadog_slo_correction":                       resourceDatadogSloCorrection(),
 			"datadog_synthetics_test":                      resourceDatadogSyntheticsTest(),
-			"datadog_synthetics_global_variable":           resourceDatadogSyntheticsGlobalVariable(),
-			"datadog_synthetics_private_location":          resourceDatadogSyntheticsPrivateLocation(),
 			"datadog_user":                                 resourceDatadogUser(),
 		},
 
@@ -258,8 +256,6 @@ func Provider() *schema.Provider {
 			"datadog_sensitive_data_scanner_standard_pattern": dataSourceDatadogSensitiveDataScannerStandardPattern(),
 			"datadog_service_level_objective":                 dataSourceDatadogServiceLevelObjective(),
 			"datadog_service_level_objectives":                dataSourceDatadogServiceLevelObjectives(),
-			"datadog_synthetics_locations":                    dataSourceDatadogSyntheticsLocations(),
-			"datadog_synthetics_global_variable":              dataSourceDatadogSyntheticsGlobalVariable(),
 			"datadog_synthetics_test":                         dataSourceDatadogSyntheticsTest(),
 			"datadog_user":                                    dataSourceDatadogUser(),
 		},
@@ -524,11 +520,11 @@ func tagDiff(ctx context.Context, d *schema.ResourceDiff, meta interface{}) erro
 	tagSet := resourceTags.(*schema.Set)
 	for _, tag := range tagSet.List() {
 		key, value, _ := strings.Cut(tag.(string), ":")
-		old_val, ok := tags[key]
+		oldVal, ok := tags[key]
 		if !ok {
-			old_val = []string{}
+			oldVal = []string{}
 		}
-		tags[key] = append(old_val.([]string), value)
+		tags[key] = append(oldVal.([]string), value)
 	}
 	for k, v := range providerConf.DefaultTags {
 		if _, alreadyDefined := tags[k]; !alreadyDefined {

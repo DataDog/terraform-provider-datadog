@@ -23,6 +23,7 @@ resource "datadog_security_monitoring_rule" "myrule" {
     name            = "errors"
     query           = "status:error"
     aggregation     = "count"
+    data_source     = "logs"
     group_by_fields = ["host"]
   }
 
@@ -30,6 +31,7 @@ resource "datadog_security_monitoring_rule" "myrule" {
     name            = "warnings"
     query           = "status:warning"
     aggregation     = "count"
+    data_source     = "logs"
     group_by_fields = ["host"]
   }
 
@@ -62,6 +64,7 @@ resource "datadog_security_monitoring_rule" "myrule" {
 - `case` (Block List, Max: 10) Cases for generating signals. (see [below for nested schema](#nestedblock--case))
 - `enabled` (Boolean) Whether the rule is enabled. Defaults to `true`.
 - `filter` (Block List) Additional queries to filter matched events before they are processed. **Note**: This field is deprecated for log detection, signal correlation, and workload security rules. (see [below for nested schema](#nestedblock--filter))
+- `group_signals_by` (List of String) Additional grouping to perform on top of the query grouping.
 - `has_extended_title` (Boolean) Whether the notifications include the triggering group-by values in their title. Defaults to `false`.
 - `options` (Block List, Max: 1) Options on rules. (see [below for nested schema](#nestedblock--options))
 - `query` (Block List) Queries for selecting logs which are part of the rule. (see [below for nested schema](#nestedblock--query))
@@ -85,9 +88,30 @@ Required:
 
 Optional:
 
+- `action` (Block List) Action to perform when the case trigger (see [below for nested schema](#nestedblock--case--action))
 - `condition` (String) A rule case contains logical operations (`>`,`>=`, `&&`, `||`) to determine if a signal should be generated based on the event counts in the previously defined queries.
 - `name` (String) Name of the case.
 - `notifications` (List of String) Notification targets for each rule case.
+
+<a id="nestedblock--case--action"></a>
+### Nested Schema for `case.action`
+
+Required:
+
+- `type` (String) Type of action to perform when the case triggers. Valid values are `block_ip`, `block_user`, `user_behavior`.
+
+Optional:
+
+- `options` (Block List, Max: 1) Options for the action. (see [below for nested schema](#nestedblock--case--action--options))
+
+<a id="nestedblock--case--action--options"></a>
+### Nested Schema for `case.action.options`
+
+Optional:
+
+- `duration` (Number) Duration of the action in seconds.
+
+
 
 
 <a id="nestedblock--filter"></a>
@@ -106,9 +130,9 @@ Optional:
 
 - `decrease_criticality_based_on_env` (Boolean) If true, signals in non-production environments have a lower severity than what is defined by the rule case, which can reduce noise. The decrement is applied when the environment tag of the signal starts with `staging`, `test`, or `dev`. Only available when the rule type is `log_detection`. Defaults to `false`.
 - `detection_method` (String) The detection method. Valid values are `threshold`, `new_value`, `anomaly_detection`, `impossible_travel`, `hardcoded`, `third_party`, `anomaly_threshold`. Defaults to `"threshold"`.
-- `evaluation_window` (Number) A time window is specified to match when at least one of the cases matches true. This is a sliding window and evaluates in real time. Valid values are `0`, `60`, `300`, `600`, `900`, `1800`, `3600`, `7200`.
+- `evaluation_window` (Number) A time window is specified to match when at least one of the cases matches true. This is a sliding window and evaluates in real time. Valid values are `0`, `60`, `300`, `600`, `900`, `1800`, `3600`, `7200`, `10800`, `21600`, `43200`, `86400`.
 - `impossible_travel_options` (Block List, Max: 1) Options for rules using the impossible travel detection method. (see [below for nested schema](#nestedblock--options--impossible_travel_options))
-- `keep_alive` (Number) Once a signal is generated, the signal will remain “open” if a case is matched at least once within this keep alive window (in seconds). Valid values are `0`, `60`, `300`, `600`, `900`, `1800`, `3600`, `7200`, `10800`, `21600`.
+- `keep_alive` (Number) Once a signal is generated, the signal will remain “open” if a case is matched at least once within this keep alive window (in seconds). Valid values are `0`, `60`, `300`, `600`, `900`, `1800`, `3600`, `7200`, `10800`, `21600`, `43200`, `86400`.
 - `max_signal_duration` (Number) A signal will “close” regardless of the query being matched once the time exceeds the maximum duration (in seconds). This time is calculated from the first seen timestamp. Valid values are `0`, `60`, `300`, `600`, `900`, `1800`, `3600`, `7200`, `10800`, `21600`, `43200`, `86400`.
 - `new_value_options` (Block List, Max: 1) New value rules specific options. (see [below for nested schema](#nestedblock--options--new_value_options))
 - `third_party_rule_options` (Block List, Max: 1) Options for rules using the third-party detection method. (see [below for nested schema](#nestedblock--options--third_party_rule_options))
@@ -173,6 +197,7 @@ Optional:
 
 - `agent_rule` (Block List, Deprecated) **Deprecated**. It won't be applied anymore. **Deprecated.** `agent_rule` has been deprecated in favor of new Agent Rule resource. (see [below for nested schema](#nestedblock--query--agent_rule))
 - `aggregation` (String) The aggregation type. For Signal Correlation rules, it must be event_count. Valid values are `count`, `cardinality`, `sum`, `max`, `new_value`, `geo_data`, `event_count`, `none`. Defaults to `"count"`.
+- `data_source` (String) Source of events. Valid values are `logs`, `audit`, `app_sec_spans`, `spans`, `security_runtime`, `network`. Defaults to `"logs"`.
 - `distinct_fields` (List of String) Field for which the cardinality is measured. Sent as an array.
 - `group_by_fields` (List of String) Fields to group by.
 - `metric` (String, Deprecated) The target field to aggregate over when using the `sum`, `max`, or `geo_data` aggregations. **Deprecated.** Configure `metrics` instead. This attribute will be removed in the next major version of the provider.

@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 152
+        content_length: 179
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"filter":{"query":"project:sample"},"is_enabled":false,"name":"tf-testaccdatadoglogspipelinesorderdatasource-local-1734562618-sample","processors":[]}
+            {"description":"","filter":{"query":"project:sample"},"is_enabled":false,"name":"tf-testaccdatadoglogspipelinesorderdatasource-local-1740395694-sample","processors":[],"tags":[]}
         form: {}
         headers:
             Accept:
@@ -32,13 +32,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"VxfwbMFDR3iyospifjNrbA","type":"pipeline","name":"tf-testaccdatadoglogspipelinesorderdatasource-local-1734562618-sample","is_enabled":false,"is_read_only":false,"filter":{"query":"project:sample"},"processors":[]}
+            {"id":"Hsp7_9lXSgOwZ2l2wP9FpQ","type":"pipeline","name":"tf-testaccdatadoglogspipelinesorderdatasource-local-1740395694-sample","is_enabled":false,"is_read_only":false,"filter":{"query":"project:sample"},"processors":[],"tags":[],"description":""}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 478.163667ms
+        duration: 149.435042ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -67,13 +67,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"pipeline_ids":["pMhyxnUeS6ugpnLdWckGIw","7YBUZ3J_RJGDRk6b5ayIIQ","UodPu7HbQ-Gcp2K1aZBRhw","K2HR3G6PSlC_KIhceFuxig","UBNUhCTxR_Goiw7w4wEOlw","cgS5obmTSi6NgGX05lf0tg","JW6WRX6zSYO6P27n-R85vw","4I6FNy5GToqi2fKVAqNZJw","vL--Mbs7SceY84ADEYu40w","dRPabp5dQLO24WxISJq4mg","RSbXaJxLS8WSZbAV6vJnYg","r-jB58U1TI6y_vJbBX2nzA","wLD85Kf3RiGkCu35OTl9KA","C3rLxhf7RrOMi4M9rrBv6g","GJYHVcVzT6uN_0crZdRpzQ","LWIrk9TLT3Kp9hnIbWBs2w","XCYdgKpPQFKyhKexiTkbcQ","TL1aouiMTNmpCCN1iZxoSA","rTxbr2MpQsSCEtn66XmwnQ","2QGdoZWESWi6WArjxl4cxg","0mc2Xh9XTOKHDRooX8oU7Q","htXFf5DCQ_ay1IhQ9Tr4uw","VxfwbMFDR3iyospifjNrbA"]}
+            {"pipeline_ids":["NiV_xm67QWiahCk5V6mQSQ","Hsp7_9lXSgOwZ2l2wP9FpQ","mZXGPGSvTAeDmoNoC3CZkw"]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 152.609666ms
+        duration: 292.874042ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -102,13 +102,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"pipeline_ids":["pMhyxnUeS6ugpnLdWckGIw","7YBUZ3J_RJGDRk6b5ayIIQ","UodPu7HbQ-Gcp2K1aZBRhw","K2HR3G6PSlC_KIhceFuxig","UBNUhCTxR_Goiw7w4wEOlw","cgS5obmTSi6NgGX05lf0tg","JW6WRX6zSYO6P27n-R85vw","4I6FNy5GToqi2fKVAqNZJw","vL--Mbs7SceY84ADEYu40w","dRPabp5dQLO24WxISJq4mg","RSbXaJxLS8WSZbAV6vJnYg","r-jB58U1TI6y_vJbBX2nzA","wLD85Kf3RiGkCu35OTl9KA","C3rLxhf7RrOMi4M9rrBv6g","GJYHVcVzT6uN_0crZdRpzQ","LWIrk9TLT3Kp9hnIbWBs2w","XCYdgKpPQFKyhKexiTkbcQ","TL1aouiMTNmpCCN1iZxoSA","rTxbr2MpQsSCEtn66XmwnQ","2QGdoZWESWi6WArjxl4cxg","0mc2Xh9XTOKHDRooX8oU7Q","htXFf5DCQ_ay1IhQ9Tr4uw","VxfwbMFDR3iyospifjNrbA"]}
+            {"pipeline_ids":["NiV_xm67QWiahCk5V6mQSQ","Hsp7_9lXSgOwZ2l2wP9FpQ","mZXGPGSvTAeDmoNoC3CZkw","p5JC73ABQHyzBf4xJXZSzw","Zvsfoy5_Rgq-psNm0wQMKQ"]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 147.13375ms
+        duration: 122.346333ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -125,7 +125,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/logs/config/pipelines/VxfwbMFDR3iyospifjNrbA
+        url: https://api.datadoghq.com/api/v1/logs/config/pipelines/Hsp7_9lXSgOwZ2l2wP9FpQ
         method: GET
       response:
         proto: HTTP/1.1
@@ -137,13 +137,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"VxfwbMFDR3iyospifjNrbA","type":"pipeline","name":"tf-testaccdatadoglogspipelinesorderdatasource-local-1734562618-sample","is_enabled":false,"is_read_only":false,"filter":{"query":"project:sample"},"processors":[]}
+            {"id":"Hsp7_9lXSgOwZ2l2wP9FpQ","type":"pipeline","name":"tf-testaccdatadoglogspipelinesorderdatasource-local-1740395694-sample","is_enabled":false,"is_read_only":false,"filter":{"query":"project:sample"},"processors":[],"tags":[],"description":""}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 154.446959ms
+        duration: 297.86575ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -172,13 +172,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"pipeline_ids":["pMhyxnUeS6ugpnLdWckGIw","7YBUZ3J_RJGDRk6b5ayIIQ","UodPu7HbQ-Gcp2K1aZBRhw","K2HR3G6PSlC_KIhceFuxig","UBNUhCTxR_Goiw7w4wEOlw","cgS5obmTSi6NgGX05lf0tg","JW6WRX6zSYO6P27n-R85vw","4I6FNy5GToqi2fKVAqNZJw","vL--Mbs7SceY84ADEYu40w","dRPabp5dQLO24WxISJq4mg","RSbXaJxLS8WSZbAV6vJnYg","r-jB58U1TI6y_vJbBX2nzA","wLD85Kf3RiGkCu35OTl9KA","C3rLxhf7RrOMi4M9rrBv6g","GJYHVcVzT6uN_0crZdRpzQ","LWIrk9TLT3Kp9hnIbWBs2w","XCYdgKpPQFKyhKexiTkbcQ","TL1aouiMTNmpCCN1iZxoSA","rTxbr2MpQsSCEtn66XmwnQ","2QGdoZWESWi6WArjxl4cxg","0mc2Xh9XTOKHDRooX8oU7Q","htXFf5DCQ_ay1IhQ9Tr4uw","VxfwbMFDR3iyospifjNrbA"]}
+            {"pipeline_ids":["NiV_xm67QWiahCk5V6mQSQ","Hsp7_9lXSgOwZ2l2wP9FpQ","mZXGPGSvTAeDmoNoC3CZkw","p5JC73ABQHyzBf4xJXZSzw","Zvsfoy5_Rgq-psNm0wQMKQ"]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 152.737125ms
+        duration: 228.029417ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -207,13 +207,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"pipeline_ids":["pMhyxnUeS6ugpnLdWckGIw","7YBUZ3J_RJGDRk6b5ayIIQ","UodPu7HbQ-Gcp2K1aZBRhw","K2HR3G6PSlC_KIhceFuxig","UBNUhCTxR_Goiw7w4wEOlw","cgS5obmTSi6NgGX05lf0tg","JW6WRX6zSYO6P27n-R85vw","4I6FNy5GToqi2fKVAqNZJw","vL--Mbs7SceY84ADEYu40w","dRPabp5dQLO24WxISJq4mg","RSbXaJxLS8WSZbAV6vJnYg","r-jB58U1TI6y_vJbBX2nzA","wLD85Kf3RiGkCu35OTl9KA","C3rLxhf7RrOMi4M9rrBv6g","GJYHVcVzT6uN_0crZdRpzQ","LWIrk9TLT3Kp9hnIbWBs2w","XCYdgKpPQFKyhKexiTkbcQ","TL1aouiMTNmpCCN1iZxoSA","rTxbr2MpQsSCEtn66XmwnQ","2QGdoZWESWi6WArjxl4cxg","0mc2Xh9XTOKHDRooX8oU7Q","htXFf5DCQ_ay1IhQ9Tr4uw","VxfwbMFDR3iyospifjNrbA"]}
+            {"pipeline_ids":["NiV_xm67QWiahCk5V6mQSQ","Hsp7_9lXSgOwZ2l2wP9FpQ","mZXGPGSvTAeDmoNoC3CZkw","p5JC73ABQHyzBf4xJXZSzw","Zvsfoy5_Rgq-psNm0wQMKQ"]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 156.102541ms
+        duration: 160.3455ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -242,13 +242,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"pipeline_ids":["pMhyxnUeS6ugpnLdWckGIw","7YBUZ3J_RJGDRk6b5ayIIQ","UodPu7HbQ-Gcp2K1aZBRhw","K2HR3G6PSlC_KIhceFuxig","UBNUhCTxR_Goiw7w4wEOlw","cgS5obmTSi6NgGX05lf0tg","JW6WRX6zSYO6P27n-R85vw","4I6FNy5GToqi2fKVAqNZJw","vL--Mbs7SceY84ADEYu40w","dRPabp5dQLO24WxISJq4mg","RSbXaJxLS8WSZbAV6vJnYg","r-jB58U1TI6y_vJbBX2nzA","wLD85Kf3RiGkCu35OTl9KA","C3rLxhf7RrOMi4M9rrBv6g","GJYHVcVzT6uN_0crZdRpzQ","LWIrk9TLT3Kp9hnIbWBs2w","XCYdgKpPQFKyhKexiTkbcQ","TL1aouiMTNmpCCN1iZxoSA","rTxbr2MpQsSCEtn66XmwnQ","2QGdoZWESWi6WArjxl4cxg","0mc2Xh9XTOKHDRooX8oU7Q","htXFf5DCQ_ay1IhQ9Tr4uw","VxfwbMFDR3iyospifjNrbA"]}
+            {"pipeline_ids":["NiV_xm67QWiahCk5V6mQSQ","Hsp7_9lXSgOwZ2l2wP9FpQ","p5JC73ABQHyzBf4xJXZSzw","Zvsfoy5_Rgq-psNm0wQMKQ"]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 151.347917ms
+        duration: 302.133291ms
     - id: 7
       request:
         proto: HTTP/1.1
@@ -265,7 +265,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/logs/config/pipelines/VxfwbMFDR3iyospifjNrbA
+        url: https://api.datadoghq.com/api/v1/logs/config/pipelines/Hsp7_9lXSgOwZ2l2wP9FpQ
         method: GET
       response:
         proto: HTTP/1.1
@@ -277,13 +277,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"VxfwbMFDR3iyospifjNrbA","type":"pipeline","name":"tf-testaccdatadoglogspipelinesorderdatasource-local-1734562618-sample","is_enabled":false,"is_read_only":false,"filter":{"query":"project:sample"},"processors":[]}
+            {"id":"Hsp7_9lXSgOwZ2l2wP9FpQ","type":"pipeline","name":"tf-testaccdatadoglogspipelinesorderdatasource-local-1740395694-sample","is_enabled":false,"is_read_only":false,"filter":{"query":"project:sample"},"processors":[],"tags":[],"description":""}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 307.944417ms
+        duration: 302.237334ms
     - id: 8
       request:
         proto: HTTP/1.1
@@ -312,13 +312,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"pipeline_ids":["pMhyxnUeS6ugpnLdWckGIw","7YBUZ3J_RJGDRk6b5ayIIQ","UodPu7HbQ-Gcp2K1aZBRhw","K2HR3G6PSlC_KIhceFuxig","UBNUhCTxR_Goiw7w4wEOlw","cgS5obmTSi6NgGX05lf0tg","JW6WRX6zSYO6P27n-R85vw","4I6FNy5GToqi2fKVAqNZJw","vL--Mbs7SceY84ADEYu40w","dRPabp5dQLO24WxISJq4mg","RSbXaJxLS8WSZbAV6vJnYg","r-jB58U1TI6y_vJbBX2nzA","wLD85Kf3RiGkCu35OTl9KA","C3rLxhf7RrOMi4M9rrBv6g","GJYHVcVzT6uN_0crZdRpzQ","LWIrk9TLT3Kp9hnIbWBs2w","XCYdgKpPQFKyhKexiTkbcQ","TL1aouiMTNmpCCN1iZxoSA","rTxbr2MpQsSCEtn66XmwnQ","2QGdoZWESWi6WArjxl4cxg","0mc2Xh9XTOKHDRooX8oU7Q","htXFf5DCQ_ay1IhQ9Tr4uw","VxfwbMFDR3iyospifjNrbA"]}
+            {"pipeline_ids":["NiV_xm67QWiahCk5V6mQSQ","Hsp7_9lXSgOwZ2l2wP9FpQ","p5JC73ABQHyzBf4xJXZSzw","Zvsfoy5_Rgq-psNm0wQMKQ"]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 252.539125ms
+        duration: 261.250417ms
     - id: 9
       request:
         proto: HTTP/1.1
@@ -335,7 +335,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v1/logs/config/pipelines/VxfwbMFDR3iyospifjNrbA
+        url: https://api.datadoghq.com/api/v1/logs/config/pipelines/Hsp7_9lXSgOwZ2l2wP9FpQ
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -352,7 +352,7 @@ interactions:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 167.670667ms
+        duration: 200.735291ms
     - id: 10
       request:
         proto: HTTP/1.1
@@ -381,13 +381,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"pipeline_ids":["pMhyxnUeS6ugpnLdWckGIw","7YBUZ3J_RJGDRk6b5ayIIQ","UodPu7HbQ-Gcp2K1aZBRhw","K2HR3G6PSlC_KIhceFuxig","UBNUhCTxR_Goiw7w4wEOlw","cgS5obmTSi6NgGX05lf0tg","JW6WRX6zSYO6P27n-R85vw","4I6FNy5GToqi2fKVAqNZJw","vL--Mbs7SceY84ADEYu40w","dRPabp5dQLO24WxISJq4mg","RSbXaJxLS8WSZbAV6vJnYg","r-jB58U1TI6y_vJbBX2nzA","wLD85Kf3RiGkCu35OTl9KA","C3rLxhf7RrOMi4M9rrBv6g","GJYHVcVzT6uN_0crZdRpzQ","LWIrk9TLT3Kp9hnIbWBs2w","XCYdgKpPQFKyhKexiTkbcQ","TL1aouiMTNmpCCN1iZxoSA","rTxbr2MpQsSCEtn66XmwnQ","2QGdoZWESWi6WArjxl4cxg","0mc2Xh9XTOKHDRooX8oU7Q","htXFf5DCQ_ay1IhQ9Tr4uw"]}
+            {"pipeline_ids":["NiV_xm67QWiahCk5V6mQSQ","Zvsfoy5_Rgq-psNm0wQMKQ"]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 151.960459ms
+        duration: 139.508042ms
     - id: 11
       request:
         proto: HTTP/1.1
@@ -416,13 +416,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"pipeline_ids":["pMhyxnUeS6ugpnLdWckGIw","7YBUZ3J_RJGDRk6b5ayIIQ","UodPu7HbQ-Gcp2K1aZBRhw","K2HR3G6PSlC_KIhceFuxig","UBNUhCTxR_Goiw7w4wEOlw","cgS5obmTSi6NgGX05lf0tg","JW6WRX6zSYO6P27n-R85vw","4I6FNy5GToqi2fKVAqNZJw","vL--Mbs7SceY84ADEYu40w","dRPabp5dQLO24WxISJq4mg","RSbXaJxLS8WSZbAV6vJnYg","r-jB58U1TI6y_vJbBX2nzA","wLD85Kf3RiGkCu35OTl9KA","C3rLxhf7RrOMi4M9rrBv6g","GJYHVcVzT6uN_0crZdRpzQ","LWIrk9TLT3Kp9hnIbWBs2w","XCYdgKpPQFKyhKexiTkbcQ","TL1aouiMTNmpCCN1iZxoSA","rTxbr2MpQsSCEtn66XmwnQ","2QGdoZWESWi6WArjxl4cxg","0mc2Xh9XTOKHDRooX8oU7Q","htXFf5DCQ_ay1IhQ9Tr4uw"]}
+            {"pipeline_ids":["NiV_xm67QWiahCk5V6mQSQ","Zvsfoy5_Rgq-psNm0wQMKQ"]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 145.813708ms
+        duration: 145.491833ms
     - id: 12
       request:
         proto: HTTP/1.1
@@ -451,10 +451,10 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"pipeline_ids":["pMhyxnUeS6ugpnLdWckGIw","7YBUZ3J_RJGDRk6b5ayIIQ","UodPu7HbQ-Gcp2K1aZBRhw","K2HR3G6PSlC_KIhceFuxig","UBNUhCTxR_Goiw7w4wEOlw","cgS5obmTSi6NgGX05lf0tg","JW6WRX6zSYO6P27n-R85vw","4I6FNy5GToqi2fKVAqNZJw","vL--Mbs7SceY84ADEYu40w","dRPabp5dQLO24WxISJq4mg","RSbXaJxLS8WSZbAV6vJnYg","r-jB58U1TI6y_vJbBX2nzA","wLD85Kf3RiGkCu35OTl9KA","C3rLxhf7RrOMi4M9rrBv6g","GJYHVcVzT6uN_0crZdRpzQ","LWIrk9TLT3Kp9hnIbWBs2w","XCYdgKpPQFKyhKexiTkbcQ","TL1aouiMTNmpCCN1iZxoSA","rTxbr2MpQsSCEtn66XmwnQ","2QGdoZWESWi6WArjxl4cxg","0mc2Xh9XTOKHDRooX8oU7Q","htXFf5DCQ_ay1IhQ9Tr4uw"]}
+            {"pipeline_ids":["NiV_xm67QWiahCk5V6mQSQ","Zvsfoy5_Rgq-psNm0wQMKQ"]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 146.133459ms
+        duration: 242.9425ms

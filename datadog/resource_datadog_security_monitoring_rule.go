@@ -63,6 +63,36 @@ func datadogSecurityMonitoringRuleSchema(includeValidate bool) map[string]*schem
 						Required:         true,
 						Description:      "Severity of the Security Signal.",
 					},
+					"action": {
+						Type:        schema.TypeList,
+						Optional:    true,
+						Description: "Action to perform when the case trigger",
+						Elem: &schema.Resource{
+							Schema: map[string]*schema.Schema{
+								"type": {
+									Type:             schema.TypeString,
+									ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewSecurityMonitoringRuleCaseActionTypeFromValue),
+									Required:         true,
+									Description:      "Type of action to perform when the case triggers.",
+								},
+								"options": {
+									Type:        schema.TypeList,
+									Optional:    true,
+									Description: "Options for the action.",
+									MaxItems:    1,
+									Elem: &schema.Resource{
+										Schema: map[string]*schema.Schema{
+											"duration": {
+												Type:        schema.TypeInt,
+												Optional:    true,
+												Description: "Duration of the action in seconds.",
+											},
+										},
+									},
+								},
+							},
+						},
+					},
 				},
 			},
 		},
@@ -333,6 +363,13 @@ func datadogSecurityMonitoringRuleSchema(includeValidate bool) map[string]*schem
 							ValidateDiagFunc: validators.ValidateNonEmptyStrings,
 						},
 					},
+					"data_source": {
+						Type:             schema.TypeString,
+						ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewSecurityMonitoringStandardDataSourceFromValue),
+						Optional:         true,
+						Description:      "Source of events.",
+						Default:          datadogV2.SECURITYMONITORINGSTANDARDDATASOURCE_LOGS,
+					},
 					"metric": {
 						Type:        schema.TypeString,
 						Deprecated:  "Configure `metrics` instead. This attribute will be removed in the next major version of the provider.",
@@ -480,6 +517,12 @@ func datadogSecurityMonitoringRuleSchema(includeValidate bool) map[string]*schem
 					},
 				},
 			},
+		},
+		"group_signals_by": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			Description: "Additional grouping to perform on top of the query grouping.",
+			Elem:        &schema.Schema{Type: schema.TypeString},
 		},
 	}
 	if includeValidate {
@@ -685,6 +728,10 @@ func buildCreateStandardPayload(d utils.Resource) (*datadogV2.SecurityMonitoring
 		payload.SetReferenceTables(buildPayloadReferenceTables(tfReferenceTables))
 	}
 
+	if v, ok := d.GetOk("group_signals_by"); ok {
+		payload.SetGroupSignalsBy(parseStringArray(v.([]interface{})))
+	}
+
 	return &payload, nil
 }
 
@@ -710,6 +757,10 @@ func buildStandardPayload(d utils.Resource) (*datadogV2.SecurityMonitoringStanda
 	if v, ok := d.GetOk("reference_tables"); ok {
 		tfReferenceTables := v.([]interface{})
 		payload.SetReferenceTables(buildPayloadReferenceTables(tfReferenceTables))
+	}
+
+	if v, ok := d.GetOk("group_signals_by"); ok {
+		payload.SetGroupSignalsBy(parseStringArray(v.([]interface{})))
 	}
 
 	return &payload, nil
@@ -775,6 +826,9 @@ func buildCreatePayloadCases(d utils.Resource) []datadogV2.SecurityMonitoringRul
 		}
 		if v, ok := ruleCase["notifications"]; ok {
 			structRuleCase.SetNotifications(parseStringArray(v.([]interface{})))
+		}
+		if action, ok := ruleCase["action"]; ok && len(action.([]interface{})) > 0 {
+			structRuleCase.SetActions(buildPayloadCaseActions(action.([]interface{})))
 		}
 		payloadCases[idx] = *structRuleCase
 	}
@@ -1000,6 +1054,11 @@ func buildCreateStandardPayloadQueries(d utils.Resource) []datadogV2.SecurityMon
 			payloadQuery.SetDistinctFields(parseStringArray(v.([]interface{})))
 		}
 
+		if v, ok := query["data_source"]; ok {
+			dataSource := datadogV2.SecurityMonitoringStandardDataSource(v.(string))
+			payloadQuery.SetDataSource(dataSource)
+		}
+
 		if v, ok := query["metric"]; ok {
 			payloadQuery.SetMetric(v.(string))
 		}
@@ -1089,6 +1148,28 @@ func buildPayloadReferenceTables(tfReferenceTables []interface{}) []datadogV2.Se
 		payloadReferenceTables[idx] = payloadReferenceTable
 	}
 	return payloadReferenceTables
+}
+
+func buildPayloadCaseActions(tfActions []any) []datadogV2.SecurityMonitoringRuleCaseAction {
+	payloadActions := make([]datadogV2.SecurityMonitoringRuleCaseAction, len(tfActions))
+	for actionIdx, actionIf := range tfActions {
+		action := actionIf.(map[string]any)
+		actionType := datadogV2.SecurityMonitoringRuleCaseActionType(action["type"].(string))
+		payloadOptions := datadogV2.NewSecurityMonitoringRuleCaseActionOptions()
+		if tfOptionsList, ok := action["options"]; ok {
+			tfOptions := extractMapFromInterface(tfOptionsList.([]any))
+			for k, v := range tfOptions {
+				if k == "duration" {
+					payloadOptions.SetDuration(int64(v.(int)))
+				}
+			}
+		}
+		payloadActions[actionIdx] = datadogV2.SecurityMonitoringRuleCaseAction{
+			Type:    &actionType,
+			Options: payloadOptions,
+		}
+	}
+	return payloadActions
 }
 
 func resourceDatadogSecurityMonitoringRuleRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
@@ -1182,7 +1263,9 @@ func updateStandardResourceDataFromResponse(d *schema.ResourceData, ruleResponse
 		refTables := extractReferenceTables(*referenceTables)
 		d.Set("reference_tables", refTables)
 	}
-
+	if groupSignalsBy, ok := ruleResponse.GetGroupSignalsByOk(); ok {
+		d.Set("group_signals_by", groupSignalsBy)
+	}
 }
 
 func extractStandardRuleQueries(responseRuleQueries []datadogV2.SecurityMonitoringStandardRuleQuery) []map[string]interface{} {
@@ -1199,6 +1282,9 @@ func extractStandardRuleQueries(responseRuleQueries []datadogV2.SecurityMonitori
 		}
 		if groupByFields, ok := responseRuleQuery.GetGroupByFieldsOk(); ok {
 			ruleQuery["group_by_fields"] = *groupByFields
+		}
+		if dataSource, ok := responseRuleQuery.GetDataSourceOk(); ok {
+			ruleQuery["data_source"] = *dataSource
 		}
 		if metric, ok := responseRuleQuery.GetMetricOk(); ok {
 			ruleQuery["metric"] = *metric
@@ -1293,6 +1379,24 @@ func extractRuleCases(responseRulesCases []datadogV2.SecurityMonitoringRuleCase)
 			ruleCase["notifications"] = *notifications
 		}
 		ruleCase["status"] = responseRuleCase.GetStatus()
+		if actions, ok := responseRuleCase.GetActionsOk(); ok {
+			tfActions := make([]map[string]interface{}, len(*actions))
+			for idx, action := range *actions {
+				tfAction := make(map[string]interface{})
+				tfAction["type"] = action.GetType()
+				if options, ok := action.GetOptionsOk(); ok {
+					tfOptions := make(map[string]interface{})
+					if duration, ok := options.GetDurationOk(); ok {
+						tfOptions["duration"] = duration
+					}
+					if len(tfOptions) > 0 {
+						tfAction["options"] = []any{tfOptions}
+					}
+				}
+				tfActions[idx] = tfAction
+			}
+			ruleCase["action"] = tfActions
+		}
 
 		ruleCases[idx] = ruleCase
 	}
@@ -1450,6 +1554,9 @@ func buildUpdatePayload(d *schema.ResourceData) (*datadogV2.SecurityMonitoringRu
 			if v, ok := ruleCase["notifications"]; ok {
 				structRuleCase.SetNotifications(parseStringArray(v.([]interface{})))
 			}
+			if action, ok := ruleCase["action"]; ok && len(action.([]interface{})) > 0 {
+				structRuleCase.SetActions(buildPayloadCaseActions(action.([]interface{})))
+			}
 			payloadCases[idx] = structRuleCase
 		}
 		payload.SetCases(payloadCases)
@@ -1531,6 +1638,11 @@ func buildUpdateStandardRuleQuery(tfQuery interface{}) *datadogV2.SecurityMonito
 
 	if v, ok := query["distinct_fields"]; ok {
 		payloadQuery.SetDistinctFields(parseStringArray(v.([]interface{})))
+	}
+
+	if v, ok := query["data_source"]; ok {
+		dataSource := datadogV2.SecurityMonitoringStandardDataSource(v.(string))
+		payloadQuery.SetDataSource(dataSource)
 	}
 
 	if v, ok := query["metric"]; ok {
