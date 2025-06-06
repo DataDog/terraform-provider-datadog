@@ -3889,7 +3889,7 @@ func buildDatadogTestOptions(d *schema.ResourceData) *datadogV1.SyntheticsTestOp
 			if escalationMessage, ok := monitorOptions.(map[string]interface{})["escalation_message"]; ok {
 				optionsMonitorOptions.SetEscalationMessage(escalationMessage.(string))
 			}
-			if notificationPresetName, ok := monitorOptions.(map[string]interface{})["notification_preset_name"]; ok {
+			if notificationPresetName, ok := monitorOptions.(map[string]interface{})["notification_preset_name"]; ok && notificationPresetName.(string) != "" {
 				optionsMonitorOptions.SetNotificationPresetName(datadogV1.SyntheticsTestOptionsMonitorOptionsNotificationPresetName(notificationPresetName.(string)))
 			}
 			options.SetMonitorOptions(optionsMonitorOptions)
@@ -4192,7 +4192,7 @@ func buildDatadogMobileTestOptions(d *schema.ResourceData) *datadogV1.Synthetics
 			if escalationMessage, ok := monitorOptions.(map[string]interface{})["escalation_message"]; ok {
 				optionsMonitorOptions.SetEscalationMessage(escalationMessage.(string))
 			}
-			if notificationPresetName, ok := monitorOptions.(map[string]interface{})["notification_preset_name"]; ok {
+			if notificationPresetName, ok := monitorOptions.(map[string]interface{})["notification_preset_name"]; ok && notificationPresetName.(string) != "" {
 				optionsMonitorOptions.SetNotificationPresetName(datadogV1.SyntheticsTestOptionsMonitorOptionsNotificationPresetName(notificationPresetName.(string)))
 			}
 			options.SetMonitorOptions(optionsMonitorOptions)
