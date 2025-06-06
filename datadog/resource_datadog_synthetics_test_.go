@@ -728,6 +728,12 @@ func syntheticsTestOptionsList() *schema.Schema {
 								Type:        schema.TypeString,
 								Optional:    true,
 							},
+							"notification_preset_name": {
+								Description:      "The name of the preset for the notification for the monitor.",
+								Type:             schema.TypeString,
+								Optional:         true,
+								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsTestOptionsMonitorOptionsNotificationPresetNameFromValue),
+							},
 						},
 					},
 				},
@@ -887,6 +893,7 @@ func syntheticsMobileTestOptionsList() *schema.Schema {
 								Optional:    true,
 							},
 							"notification_preset_name": {
+								Description:      "The name of the preset for the notification for the monitor.",
 								Type:             schema.TypeString,
 								Optional:         true,
 								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsTestOptionsMonitorOptionsNotificationPresetNameFromValue),
@@ -3882,6 +3889,9 @@ func buildDatadogTestOptions(d *schema.ResourceData) *datadogV1.SyntheticsTestOp
 			if escalationMessage, ok := monitorOptions.(map[string]interface{})["escalation_message"]; ok {
 				optionsMonitorOptions.SetEscalationMessage(escalationMessage.(string))
 			}
+			if notificationPresetName, ok := monitorOptions.(map[string]interface{})["notification_preset_name"]; ok && notificationPresetName.(string) != "" {
+				optionsMonitorOptions.SetNotificationPresetName(datadogV1.SyntheticsTestOptionsMonitorOptionsNotificationPresetName(notificationPresetName.(string)))
+			}
 			options.SetMonitorOptions(optionsMonitorOptions)
 		}
 
@@ -4044,6 +4054,10 @@ func buildTerraformTestOptions(actualOptions datadogV1.SyntheticsTestOptions) []
 			optionsListMonitorOptions["escalation_message"] = actualMonitorOptions.GetEscalationMessage()
 			shouldUpdate = true
 		}
+		if actualMonitorOptions.HasNotificationPresetName() {
+			optionsListMonitorOptions["notification_preset_name"] = actualMonitorOptions.GetNotificationPresetName()
+			shouldUpdate = true
+		}
 		if shouldUpdate {
 			localOptionsList["monitor_options"] = []interface{}{optionsListMonitorOptions}
 		}
@@ -4178,7 +4192,7 @@ func buildDatadogMobileTestOptions(d *schema.ResourceData) *datadogV1.Synthetics
 			if escalationMessage, ok := monitorOptions.(map[string]interface{})["escalation_message"]; ok {
 				optionsMonitorOptions.SetEscalationMessage(escalationMessage.(string))
 			}
-			if notificationPresetName, ok := monitorOptions.(map[string]interface{})["notification_preset_name"]; ok {
+			if notificationPresetName, ok := monitorOptions.(map[string]interface{})["notification_preset_name"]; ok && notificationPresetName.(string) != "" {
 				optionsMonitorOptions.SetNotificationPresetName(datadogV1.SyntheticsTestOptionsMonitorOptionsNotificationPresetName(notificationPresetName.(string)))
 			}
 			options.SetMonitorOptions(optionsMonitorOptions)
@@ -4321,12 +4335,15 @@ func buildTerraformMobileTestOptions(actualOptions datadogV1.SyntheticsMobileTes
 		}
 		if actualMonitorOptions.HasEscalationMessage() {
 			optionsListMonitorOptions["escalation_message"] = actualMonitorOptions.GetEscalationMessage()
+			shouldUpdate = true
 		}
 		if actualMonitorOptions.HasRenotifyOccurrences() {
 			optionsListMonitorOptions["renotify_occurrences"] = actualMonitorOptions.GetRenotifyOccurrences()
+			shouldUpdate = true
 		}
 		if actualMonitorOptions.HasNotificationPresetName() {
 			optionsListMonitorOptions["notification_preset_name"] = actualMonitorOptions.GetNotificationPresetName()
+			shouldUpdate = true
 		}
 
 		if shouldUpdate {
