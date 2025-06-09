@@ -47,7 +47,7 @@ func TestAccOnCallScheduleCreateAndUpdate(t *testing.T) {
 		CheckDestroy:             testAccCheckDatadogOnCallScheduleDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: createConfig("2025-01-01T00:00:00Z"),
+				Config: createConfig("2025-01-01T00:00:00-08:00"),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogOnCallScheduleExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(
@@ -55,7 +55,7 @@ func TestAccOnCallScheduleCreateAndUpdate(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_on_call_schedule.single_layer", "time_zone", "America/New_York"),
 					resource.TestCheckResourceAttr(
-						"datadog_on_call_schedule.single_layer", "layer.0.effective_date", "2025-01-01T00:00:00Z"),
+						"datadog_on_call_schedule.single_layer", "layer.0.effective_date", "2025-01-01T00:00:00-08:00"),
 				),
 			},
 			// Update the effective date

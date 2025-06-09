@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+	"github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
 	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -41,10 +42,10 @@ type onCallScheduleModel struct {
 
 type layersModel struct {
 	Id            types.String         `tfsdk:"id"`
-	EffectiveDate types.String         `tfsdk:"effective_date"`
-	EndDate       types.String         `tfsdk:"end_date"`
+	EffectiveDate timetypes.RFC3339    `tfsdk:"effective_date"`
+	EndDate       timetypes.RFC3339    `tfsdk:"end_date"`
 	Name          types.String         `tfsdk:"name"`
-	RotationStart types.String         `tfsdk:"rotation_start"`
+	RotationStart timetypes.RFC3339    `tfsdk:"rotation_start"`
 	Users         []types.String       `tfsdk:"users"`
 	Restrictions  []*restrictionsModel `tfsdk:"restriction"`
 	Interval      *intervalModel       `tfsdk:"interval"`
@@ -108,11 +109,13 @@ func (r *onCallScheduleResource) Schema(_ context.Context, _ resource.SchemaRequ
 							Description: "The ID of this layer.",
 						},
 						"effective_date": schema.StringAttribute{
+							CustomType:  timetypes.RFC3339Type{},
 							Required:    true,
 							Description: "The date/time when this layer should become active (in ISO 8601).",
 							Validators:  []validator.String{validators.TimeFormatValidator(time.RFC3339)},
 						},
 						"end_date": schema.StringAttribute{
+							CustomType:  timetypes.RFC3339Type{},
 							Optional:    true,
 							Description: "The date/time after which this layer no longer applies (in ISO 8601).",
 							Validators:  []validator.String{validators.TimeFormatValidator(time.RFC3339)},
@@ -122,6 +125,7 @@ func (r *onCallScheduleResource) Schema(_ context.Context, _ resource.SchemaRequ
 							Description: "The name of this layer. Should be unique within the schedule.",
 						},
 						"rotation_start": schema.StringAttribute{
+							CustomType:  timetypes.RFC3339Type{},
 							Optional:    true,
 							Description: "The date/time when the rotation for this layer starts (in ISO 8601).",
 							Validators:  []validator.String{validators.TimeFormatValidator(time.RFC3339)},
@@ -211,10 +215,10 @@ func (r *onCallScheduleResource) Read(ctx context.Context, request resource.Read
 		return
 	}
 
-	state = *r.newState(ctx, &resp)
+	newState := *r.newState(ctx, &resp, &state)
 
 	// Save data into Terraform state
-	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+	response.Diagnostics.Append(response.State.Set(ctx, &newState)...)
 }
 
 func (r *onCallScheduleResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
@@ -243,7 +247,7 @@ func (r *onCallScheduleResource) Create(ctx context.Context, request resource.Cr
 		return
 	}
 
-	state := r.newState(ctx, &resp)
+	state := r.newState(ctx, &resp, nil)
 
 	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
@@ -301,7 +305,7 @@ func (r *onCallScheduleResource) Update(ctx context.Context, request resource.Up
 		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
 		return
 	}
-	state := r.newState(ctx, &resp)
+	state := r.newState(ctx, &resp, &previousState)
 
 	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
@@ -331,7 +335,7 @@ func (r *onCallScheduleResource) Delete(ctx context.Context, request resource.De
 	}
 }
 
-func (r *onCallScheduleResource) newState(ctx context.Context, resp *datadogV2.Schedule) *onCallScheduleModel {
+func (r *onCallScheduleResource) newState(ctx context.Context, resp *datadogV2.Schedule, currentState *onCallScheduleModel) *onCallScheduleModel {
 	state := &onCallScheduleModel{}
 	state.ID = types.StringValue(resp.Data.GetId())
 
@@ -378,12 +382,16 @@ func (r *onCallScheduleResource) newState(ctx context.Context, resp *datadogV2.S
 	// We use the index to match the layer with the plan.Layers
 	// As we expect the server to return the layers in the same order as the plan.Layers
 	for i, layer := range data.Relationships.Layers.Data {
-		state.Layers[i] = newLayerModel(layersByID[layer.GetId()], membersByID)
+		var currentLayer *layersModel
+		if currentState != nil && currentState.Layers != nil && i < len(currentState.Layers) {
+			currentLayer = currentState.Layers[i]
+		}
+		state.Layers[i] = newLayerModel(layersByID[layer.GetId()], membersByID, currentLayer)
 	}
 	return state
 }
 
-func newLayerModel(layer *datadogV2.Layer, membersByID map[string]*datadogV2.ScheduleMember) *layersModel {
+func newLayerModel(layer *datadogV2.Layer, membersByID map[string]*datadogV2.ScheduleMember, currentLayer *layersModel) *layersModel {
 	membersData := layer.GetRelationships().Members.GetData()
 	memberIds := make([]types.String, len(membersData))
 	for j, member := range membersData {
@@ -407,30 +415,55 @@ func newLayerModel(layer *datadogV2.Layer, membersByID map[string]*datadogV2.Sch
 	}
 	interval := layer.GetAttributes().Interval
 
-	var endDateStringValue types.String
-	endDate := layer.GetAttributes().EndDate
-	if endDate != nil && !endDate.IsZero() {
-		endDateStringValue = types.StringValue(formatTime(*endDate))
-	} else {
-		endDateStringValue = types.StringNull()
+	currentEndDate := timetypes.NewRFC3339Null()
+	if currentLayer != nil && !currentLayer.EndDate.IsNull() {
+		currentEndDate = currentLayer.EndDate
 	}
+	endDate := keepCurrentTimezone(currentEndDate, layer.Attributes.GetEndDate())
 
-	effectiveDate := formatTime(layer.Attributes.GetEffectiveDate())
+	currentEffectiveDate := timetypes.NewRFC3339Null()
+	if currentLayer != nil && !currentLayer.EffectiveDate.IsNull() {
+		currentEffectiveDate = currentLayer.EffectiveDate
+	}
+	effectiveDate := keepCurrentTimezone(currentEffectiveDate, layer.Attributes.GetEffectiveDate())
+
+	currentRotationStart := timetypes.NewRFC3339Null()
+	if currentLayer != nil && !currentLayer.RotationStart.IsNull() {
+		currentRotationStart = currentLayer.RotationStart
+	}
+	rotationStart := keepCurrentTimezone(currentRotationStart, layer.Attributes.GetRotationStart())
 
 	return &layersModel{
 		Id:            types.StringValue(layer.GetId()),
-		EffectiveDate: types.StringValue(effectiveDate),
-		EndDate:       endDateStringValue,
+		EffectiveDate: effectiveDate,
+		EndDate:       endDate,
 		Name:          types.StringValue(layer.Attributes.GetName()),
-		RotationStart: types.StringValue(formatTime(layer.Attributes.GetRotationStart())),
+		RotationStart: rotationStart,
 		Users:         memberIds,
 		Restrictions:  restrictionsModels,
 		Interval:      &intervalModel{Days: types.Int32Value(interval.GetDays()), Seconds: types.Int64Value(interval.GetSeconds())},
 	}
 }
 
-func formatTime(t time.Time) string {
-	return t.Format(time.RFC3339)
+// The timetypes.RFC3339 ensures that whatever the timezone returned by the server is,
+// we do not change it if the time is actually the same.
+// We still need to ensure to keep the time in the same timezone as one defined in the plan.
+func keepCurrentTimezone(currentTime timetypes.RFC3339, newTime time.Time) timetypes.RFC3339 {
+	if newTime.IsZero() {
+		return timetypes.NewRFC3339Null()
+	}
+	newTimeRfc := timetypes.NewRFC3339TimeValue(newTime)
+	if currentTime.IsNull() {
+		return newTimeRfc
+	}
+
+	currentTimeRfc, _ := currentTime.ValueRFC3339Time()
+
+	if currentTimeRfc.Unix() == newTime.Unix() {
+		return currentTime
+	}
+	return newTimeRfc
+
 }
 
 func (r *onCallScheduleResource) buildOnCallScheduleRequestBody(ctx context.Context, state *onCallScheduleModel) (*datadogV2.ScheduleCreateRequest, diag.Diagnostics) {
