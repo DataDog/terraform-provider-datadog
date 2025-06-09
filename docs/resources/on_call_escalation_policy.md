@@ -42,7 +42,7 @@ resource "datadog_on_call_escalation_policy" "policy_test" {
 
 ### Optional
 
-- `resolve_page_on_policy_end` (Boolean) If true, pages will be automatically resolved if unacknowledged after the final step.
+- `resolve_page_on_policy_end` (Boolean) If true, pages will be automatically resolved if unacknowledged after the final step. Defaults to `false`.
 - `retries` (Number) If set, policy will be retried this many times after the final step. Must be in the range 0-10. Value must be between 0 and 10. Defaults to `0`.
 - `step` (Block List) List of steps for the escalation policy. (see [below for nested schema](#nestedblock--step))
 - `teams` (List of String) A list of team ids associated with the escalation policy.
