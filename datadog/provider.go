@@ -470,7 +470,7 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 	config.HTTPClient = utils.NewHTTPClient()
 	datadogClient := datadog.NewAPIClient(config)
 	apiInstances := &utils.ApiInstances{HttpClient: datadogClient}
-	if validate {
+	if validate && cloudProviderType == "" {
 		log.Println("[INFO] Datadog client successfully initialized, now validating...")
 		resp, _, err := apiInstances.GetAuthenticationApiV1().Validate(auth)
 		if err != nil {

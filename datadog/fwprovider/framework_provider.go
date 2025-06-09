@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
+	"github.com/DataDog/datadog-api-client-go/v2/delegated_auth"
 	"github.com/hashicorp/go-cleanhttp"
 	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
@@ -132,6 +133,9 @@ type ProviderSchema struct {
 	AppKey                           types.String `tfsdk:"app_key"`
 	ApiUrl                           types.String `tfsdk:"api_url"`
 	Validate                         types.String `tfsdk:"validate"`
+	CloudProviderType                types.String `tfsdk:"cloud_provider_type"`
+	CloudProviderRegion              types.String `tfsdk:"cloud_provider_region"`
+	OrgUuid                          types.String `tfsdk:"org_uuid"`
 	HttpClientRetryEnabled           types.String `tfsdk:"http_client_retry_enabled"`
 	HttpClientRetryTimeout           types.Int64  `tfsdk:"http_client_retry_timeout"`
 	HttpClientRetryBackoffMultiplier types.Int64  `tfsdk:"http_client_retry_backoff_multiplier"`
@@ -193,6 +197,18 @@ func (p *FrameworkProvider) Schema(_ context.Context, _ provider.SchemaRequest, 
 			"validate": schema.StringAttribute{
 				Optional:    true,
 				Description: "Enables validation of the provided API key during provider initialization. Valid values are [`true`, `false`]. Default is true. When false, api_key won't be checked.",
+			},
+			"cloud_provider_type": schema.StringAttribute{
+				Optional:    true,
+				Description: "The cloud provider type. Valid values are [`aws`]. We will add support for more cloud providers in the future.",
+			},
+			"cloud_provider_region": schema.StringAttribute{
+				Optional:    true,
+				Description: "The cloud provider region specifier. Ex `us-east-1` for AWS.",
+			},
+			"org_uuid": schema.StringAttribute{
+				Optional:    true,
+				Description: "The organization UUID. Please refer to the [Datadog API documentation](https://docs.datadoghq.com/api/v1/organizations/) for more information.",
 			},
 			"http_client_retry_enabled": schema.StringAttribute{
 				Optional:    true,
@@ -278,6 +294,13 @@ func (p *FrameworkProvider) ConfigureConfigDefaults(ctx context.Context, config 
 		apiUrl, err := utils.GetMultiEnvVar(utils.APIUrlEnvVars[:]...)
 		if err == nil {
 			config.ApiUrl = types.StringValue(apiUrl)
+		}
+	}
+
+	if config.OrgUuid.IsNull() {
+		orgUUID, err := utils.GetMultiEnvVar(utils.OrgUUIDEnvVars[:]...)
+		if err == nil {
+			config.OrgUuid = types.StringValue(orgUUID)
 		}
 	}
 
@@ -380,11 +403,25 @@ func (p *FrameworkProvider) ValidateConfigValues(ctx context.Context, config *Pr
 func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureRequest, config *ProviderSchema) diag.Diagnostics {
 	diags := diag.Diagnostics{}
 	validate, _ := strconv.ParseBool(config.Validate.ValueString())
-	httpClientRetryEnabled, _ := strconv.ParseBool(config.Validate.ValueString())
+	httpClientRetryEnabled, _ := strconv.ParseBool(config.HttpClientRetryEnabled.ValueString())
 
-	if validate && (config.ApiKey.ValueString() == "" || config.AppKey.ValueString() == "") {
-		diags.AddError("api_key and app_key must be set unless validate = false", "")
-		return diags
+	cloudProviderType := config.CloudProviderType.ValueString()
+	cloudProviderRegion := config.CloudProviderRegion.ValueString()
+	orgUUID := config.OrgUuid.ValueString()
+
+	if validate {
+		if cloudProviderType == "" && (config.ApiKey.ValueString() == "" || config.AppKey.ValueString() == "") {
+			diags.AddError("api_key and app_key or orgUUID must be set unless validate = false", "")
+			return diags
+		} else if cloudProviderType != "" && orgUUID == "" {
+			diags.AddError("orgUUID must be set when using cloud provider auth unless validate = false", "")
+			return diags
+		} else if cloudProviderType != "" && cloudProviderRegion == "" {
+			if cloudProviderType == "aws" {
+				// Default to us-east-1 for AWS
+				cloudProviderRegion = "us-east-1"
+			}
+		}
 	}
 
 	// Initialize the community client
@@ -403,18 +440,42 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	p.CommunityClient.HttpClient = c
 
 	// Initialize the official Datadog V1 API client
-	auth := context.WithValue(
-		context.Background(),
-		datadog.ContextAPIKeys,
-		map[string]datadog.APIKey{
-			"apiKeyAuth": {
-				Key: config.ApiKey.ValueString(),
+	auth := context.Background()
+	if config.ApiKey.ValueString() != "" || config.AppKey.ValueString() != "" {
+		auth = context.WithValue(
+			auth,
+			datadog.ContextAPIKeys,
+			map[string]datadog.APIKey{
+				"apiKeyAuth": {
+					Key: config.ApiKey.ValueString(),
+				},
+				"appKeyAuth": {
+					Key: config.AppKey.ValueString(),
+				},
 			},
-			"appKeyAuth": {
-				Key: config.AppKey.ValueString(),
-			},
-		},
-	)
+		)
+	} else if cloudProviderType != "" {
+		switch cloudProviderType {
+		case "aws":
+			awsAuth := delegated_auth.AWSAuth{
+				AwsRegion: cloudProviderRegion,
+			}
+			auth = context.WithValue(
+				auth,
+				datadog.ContextDelegatedToken,
+				&datadog.DelegatedTokenConfig{
+					DelegatedTokenCredentials: datadog.DelegatedTokenCredentials{
+						OrgUUID: orgUUID,
+					},
+					ProviderAuth: &awsAuth,
+					Provider:     "aws",
+				},
+			)
+		default:
+			diags.AddError("cloud_provider_type must be set to a valid value unless validate = false", "")
+			return diags
+		}
+	}
 	ddClientConfig := datadog.NewConfiguration()
 	ddClientConfig.UserAgent = utils.GetUserAgentFramework(ddClientConfig.UserAgent, request.TerraformVersion)
 	ddClientConfig.Debug = logging.IsDebugOrHigher()
