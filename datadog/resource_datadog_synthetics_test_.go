@@ -1009,7 +1009,7 @@ func syntheticsTestAPIStep() *schema.Schema {
 	requestElemSchema.Schema["http_version"] = syntheticsHttpVersionOption()
 
 	return &schema.Schema{
-		Description: "Steps for multi-step api tests",
+		Description: "Steps for multistep api tests",
 		Type:        schema.TypeList,
 		Optional:    true,
 		Elem: &schema.Resource{
@@ -1020,7 +1020,7 @@ func syntheticsTestAPIStep() *schema.Schema {
 					Required:    true,
 				},
 				"subtype": {
-					Description:      "The subtype of the Synthetic multi-step API test step.",
+					Description:      "The subtype of the Synthetic multistep API test step.",
 					Type:             schema.TypeString,
 					Optional:         true,
 					Default:          "http",
