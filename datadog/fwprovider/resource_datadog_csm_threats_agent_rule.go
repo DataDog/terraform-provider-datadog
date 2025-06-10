@@ -392,47 +392,53 @@ func (r *csmThreatsAgentRuleResource) buildCreateCSMThreatsAgentRulePayload(stat
 	attributes.PolicyId = policyId
 	attributes.ProductTags = productTags
 
-	var outActions []datadogV2.CloudWorkloadSecurityAgentRuleAction
-	for _, a := range state.Actions {
-		action := datadogV2.CloudWorkloadSecurityAgentRuleAction{}
+	// Initialize empty actions array - this ensures we always send the actions field
+	outActions := make([]datadogV2.CloudWorkloadSecurityAgentRuleAction, 0)
 
-		if a.Set != nil {
-			sa := datadogV2.CloudWorkloadSecurityAgentRuleActionSet{}
+	// Only populate actions if there are any configured
+	if state.Actions != nil {
+		for _, a := range state.Actions {
+			action := datadogV2.CloudWorkloadSecurityAgentRuleAction{}
 
-			if !a.Set.Name.IsNull() && !a.Set.Name.IsUnknown() {
-				name := a.Set.Name.ValueString()
-				sa.Name = &name
+			if a.Set != nil {
+				sa := datadogV2.CloudWorkloadSecurityAgentRuleActionSet{}
+
+				if !a.Set.Name.IsNull() && !a.Set.Name.IsUnknown() {
+					name := a.Set.Name.ValueString()
+					sa.Name = &name
+				}
+				if !a.Set.Field.IsNull() && !a.Set.Field.IsUnknown() {
+					field := a.Set.Field.ValueString()
+					sa.Field = &field
+				}
+				if !a.Set.Value.IsNull() && !a.Set.Value.IsUnknown() {
+					value := a.Set.Value.ValueString()
+					sa.Value = &value
+				}
+				if !a.Set.Append.IsNull() && !a.Set.Append.IsUnknown() {
+					append := a.Set.Append.ValueBool()
+					sa.Append = &append
+				}
+				if !a.Set.Size.IsNull() && !a.Set.Size.IsUnknown() {
+					size := a.Set.Size.ValueInt64()
+					sa.Size = &size
+				}
+				if !a.Set.Ttl.IsNull() && !a.Set.Ttl.IsUnknown() {
+					ttl := a.Set.Ttl.ValueInt64()
+					sa.Ttl = &ttl
+				}
+				if !a.Set.Scope.IsNull() && !a.Set.Scope.IsUnknown() {
+					scope := a.Set.Scope.ValueString()
+					sa.Scope = &scope
+				}
+				action.Set = &sa
 			}
-			if !a.Set.Field.IsNull() && !a.Set.Field.IsUnknown() {
-				field := a.Set.Field.ValueString()
-				sa.Field = &field
-			}
-			if !a.Set.Value.IsNull() && !a.Set.Value.IsUnknown() {
-				value := a.Set.Value.ValueString()
-				sa.Value = &value
-			}
-			if !a.Set.Append.IsNull() && !a.Set.Append.IsUnknown() {
-				append := a.Set.Append.ValueBool()
-				sa.Append = &append
-			}
-			if !a.Set.Size.IsNull() && !a.Set.Size.IsUnknown() {
-				size := a.Set.Size.ValueInt64()
-				sa.Size = &size
-			}
-			if !a.Set.Ttl.IsNull() && !a.Set.Ttl.IsUnknown() {
-				ttl := a.Set.Ttl.ValueInt64()
-				sa.Ttl = &ttl
-			}
-			if !a.Set.Scope.IsNull() && !a.Set.Scope.IsUnknown() {
-				scope := a.Set.Scope.ValueString()
-				sa.Scope = &scope
-			}
-			action.Set = &sa
+
+			outActions = append(outActions, action)
 		}
-
-		outActions = append(outActions, action)
 	}
 
+	// Always set actions field - empty slice will remove all actions from API
 	attributes.Actions = outActions
 
 	data := datadogV2.NewCloudWorkloadSecurityAgentRuleCreateData(attributes, datadogV2.CLOUDWORKLOADSECURITYAGENTRULETYPE_AGENT_RULE)
@@ -449,47 +455,53 @@ func (r *csmThreatsAgentRuleResource) buildUpdateCSMThreatsAgentRulePayload(stat
 	attributes.PolicyId = policyId
 	attributes.ProductTags = productTags
 
-	var outActions []datadogV2.CloudWorkloadSecurityAgentRuleAction
-	for _, a := range state.Actions {
-		action := datadogV2.CloudWorkloadSecurityAgentRuleAction{}
+	// Initialize empty actions array - this ensures we always send the actions field
+	outActions := make([]datadogV2.CloudWorkloadSecurityAgentRuleAction, 0)
 
-		if a.Set != nil {
-			sa := datadogV2.CloudWorkloadSecurityAgentRuleActionSet{}
+	// Only populate actions if there are any configured
+	if state.Actions != nil {
+		for _, a := range state.Actions {
+			action := datadogV2.CloudWorkloadSecurityAgentRuleAction{}
 
-			if !a.Set.Name.IsNull() && !a.Set.Name.IsUnknown() {
-				name := a.Set.Name.ValueString()
-				sa.Name = &name
+			if a.Set != nil {
+				sa := datadogV2.CloudWorkloadSecurityAgentRuleActionSet{}
+
+				if !a.Set.Name.IsNull() && !a.Set.Name.IsUnknown() {
+					name := a.Set.Name.ValueString()
+					sa.Name = &name
+				}
+				if !a.Set.Field.IsNull() && !a.Set.Field.IsUnknown() {
+					field := a.Set.Field.ValueString()
+					sa.Field = &field
+				}
+				if !a.Set.Value.IsNull() && !a.Set.Value.IsUnknown() {
+					value := a.Set.Value.ValueString()
+					sa.Value = &value
+				}
+				if !a.Set.Append.IsNull() && !a.Set.Append.IsUnknown() {
+					append := a.Set.Append.ValueBool()
+					sa.Append = &append
+				}
+				if !a.Set.Size.IsNull() && !a.Set.Size.IsUnknown() {
+					size := a.Set.Size.ValueInt64()
+					sa.Size = &size
+				}
+				if !a.Set.Ttl.IsNull() && !a.Set.Ttl.IsUnknown() {
+					ttl := a.Set.Ttl.ValueInt64()
+					sa.Ttl = &ttl
+				}
+				if !a.Set.Scope.IsNull() && !a.Set.Scope.IsUnknown() {
+					scope := a.Set.Scope.ValueString()
+					sa.Scope = &scope
+				}
+				action.Set = &sa
 			}
-			if !a.Set.Field.IsNull() && !a.Set.Field.IsUnknown() {
-				field := a.Set.Field.ValueString()
-				sa.Field = &field
-			}
-			if !a.Set.Value.IsNull() && !a.Set.Value.IsUnknown() {
-				value := a.Set.Value.ValueString()
-				sa.Value = &value
-			}
-			if !a.Set.Append.IsNull() && !a.Set.Append.IsUnknown() {
-				append := a.Set.Append.ValueBool()
-				sa.Append = &append
-			}
-			if !a.Set.Size.IsNull() && !a.Set.Size.IsUnknown() {
-				size := a.Set.Size.ValueInt64()
-				sa.Size = &size
-			}
-			if !a.Set.Ttl.IsNull() && !a.Set.Ttl.IsUnknown() {
-				ttl := a.Set.Ttl.ValueInt64()
-				sa.Ttl = &ttl
-			}
-			if !a.Set.Scope.IsNull() && !a.Set.Scope.IsUnknown() {
-				scope := a.Set.Scope.ValueString()
-				sa.Scope = &scope
-			}
-			action.Set = &sa
+
+			outActions = append(outActions, action)
 		}
-
-		outActions = append(outActions, action)
 	}
 
+	// Always set actions field - empty slice will remove all actions from API
 	attributes.Actions = outActions
 
 	data := datadogV2.NewCloudWorkloadSecurityAgentRuleUpdateData(attributes, datadogV2.CLOUDWORKLOADSECURITYAGENTRULETYPE_AGENT_RULE)
