@@ -19,15 +19,10 @@ Use this data source to retrieve information about existing Agent rules.
 
 - `policy_id` (String) Listing only the rules in the policy with this field as the ID
 
-### Optional
-
-- `policy_id` (String) Listing only the rules in the policy with this field as the ID
-
 ### Read-Only
 
 - `agent_rules` (List of Object) List of Agent rules (see [below for nested schema](#nestedatt--agent_rules))
 - `agent_rules_ids` (List of String) List of IDs for the Agent rules.
-- `id` (String) The ID of the data source
 - `id` (String) The ID of the data source
 
 <a id="nestedatt--agent_rules"></a>
