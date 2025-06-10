@@ -2584,6 +2584,7 @@ func buildDatadogSyntheticsAPITest(d *schema.ResourceData) (*datadogV1.Synthetic
 	}
 
 	if _, hasMultistepApiStep := d.GetOk("api_step"); hasMultistepApiStep {
+		// Only check the most common required properties for API tests, which could be left over when migrating to a multistep API test.
 		smells := []string{"request_definition", "assertion"}
 		for _, smell := range smells {
 			if _, hasRootSmell := d.GetOk(smell); hasRootSmell {
