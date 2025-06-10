@@ -2583,9 +2583,12 @@ func buildDatadogSyntheticsAPITest(d *schema.ResourceData) (*datadogV1.Synthetic
 		syntheticsTest.SetSubtype(datadogV1.SYNTHETICSTESTDETAILSSUBTYPE_HTTP)
 	}
 
-	if _, hasRootRequestDefinition := d.GetOk("request_definition"); hasRootRequestDefinition {
-		if _, hasMultistepApiStep := d.GetOk("api_step"); hasMultistepApiStep {
-			return nil, diag.Errorf("Both `request_definition` and `api_step` are set. When migrating an API test to a multistep API test, the test `subtype` should be changed to `multi`, and most test properties should be nested in `api_step` blocks.")
+	if _, hasMultistepApiStep := d.GetOk("api_step"); hasMultistepApiStep {
+		smells := []string{"request_definition", "assertion"}
+		for _, smell := range smells {
+			if _, hasRootSmell := d.GetOk(smell); hasRootSmell {
+				return nil, diag.Errorf("Both `%s` and `api_step` are set. When migrating an API test to a multistep API test, the test `subtype` should be changed to `multi`, and most test properties should be nested in `api_step` blocks.", smell)
+			}
 		}
 	}
 
