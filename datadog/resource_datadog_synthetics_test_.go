@@ -1809,7 +1809,11 @@ func resourceDatadogSyntheticsTestCreate(ctx context.Context, d *schema.Resource
 	testType := getSyntheticsTestType(d)
 
 	if *testType == datadogV1.SYNTHETICSTESTDETAILSTYPE_API {
-		syntheticsTest := buildDatadogSyntheticsAPITest(d)
+		syntheticsTest, diags := buildDatadogSyntheticsAPITest(d)
+		if diags != nil {
+			return diags
+		}
+
 		createdSyntheticsTest, httpResponseCreate, err := apiInstances.GetSyntheticsApiV1().CreateSyntheticsAPITest(auth, *syntheticsTest)
 		if err != nil {
 			// Note that Id won't be set, so no state will be saved.
@@ -1990,7 +1994,10 @@ func resourceDatadogSyntheticsTestUpdate(ctx context.Context, d *schema.Resource
 	testType := getSyntheticsTestType(d)
 
 	if *testType == datadogV1.SYNTHETICSTESTDETAILSTYPE_API {
-		syntheticsTest := buildDatadogSyntheticsAPITest(d)
+		syntheticsTest, diags := buildDatadogSyntheticsAPITest(d)
+		if diags != nil {
+			return diags
+		}
 		updatedTest, httpResponse, err := apiInstances.GetSyntheticsApiV1().UpdateAPITest(auth, d.Id(), *syntheticsTest)
 		if err != nil {
 			// If the Update callback returns with or without an error, the full state is saved.
@@ -2566,7 +2573,7 @@ func updateSyntheticsMobileTestLocalState(d *schema.ResourceData, syntheticsTest
  * transformer functions between datadog and terraform
  */
 
-func buildDatadogSyntheticsAPITest(d *schema.ResourceData) *datadogV1.SyntheticsAPITest {
+func buildDatadogSyntheticsAPITest(d *schema.ResourceData) (*datadogV1.SyntheticsAPITest, diag.Diagnostics) {
 	syntheticsTest := datadogV1.NewSyntheticsAPITestWithDefaults()
 	syntheticsTest.SetName(d.Get("name").(string))
 
@@ -2574,6 +2581,12 @@ func buildDatadogSyntheticsAPITest(d *schema.ResourceData) *datadogV1.Synthetics
 		syntheticsTest.SetSubtype(datadogV1.SyntheticsTestDetailsSubType(attr.(string)))
 	} else {
 		syntheticsTest.SetSubtype(datadogV1.SYNTHETICSTESTDETAILSSUBTYPE_HTTP)
+	}
+
+	if _, hasRootRequestDefinition := d.GetOk("request_definition"); hasRootRequestDefinition {
+		if _, hasMultistepApiStep := d.GetOk("api_step"); hasMultistepApiStep {
+			return nil, diag.Errorf("Both `request_definition` and `api_step` are set. When migrating an API test to a multistep API test, the test `subtype` should be changed to `multi`, and most test properties should be nested in `api_step` blocks.")
+		}
 	}
 
 	request := datadogV1.SyntheticsTestRequest{}
@@ -2683,7 +2696,11 @@ func buildDatadogSyntheticsAPITest(d *schema.ResourceData) *datadogV1.Synthetics
 		config.SetVariablesFromScript(attr.(string))
 	}
 
-	if attr, ok := d.GetOk("api_step"); ok && syntheticsTest.GetSubtype() == "multi" {
+	if attr, ok := d.GetOk("api_step"); ok {
+		if syntheticsTest.GetSubtype() != "multi" {
+			return nil, diag.Errorf("`api_step` can only be set for multistep API tests. Expected test subtype: \"multi\", got \"%s\"", syntheticsTest.GetSubtype())
+		}
+
 		steps := []datadogV1.SyntheticsAPIStep{}
 
 		for i, s := range attr.([]interface{}) {
@@ -2822,7 +2839,7 @@ func buildDatadogSyntheticsAPITest(d *schema.ResourceData) *datadogV1.Synthetics
 	}
 	syntheticsTest.SetTags(tags)
 
-	return syntheticsTest
+	return syntheticsTest, nil
 }
 
 func buildDatadogSyntheticsBrowserTest(d *schema.ResourceData) *datadogV1.SyntheticsBrowserTest {
