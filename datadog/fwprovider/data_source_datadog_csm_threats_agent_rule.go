@@ -45,7 +45,7 @@ func NewCSMThreatsAgentRulesDataSource() datasource.DataSource {
 	return &csmThreatsAgentRulesDataSource{}
 }
 
-func (r *csmThreatsAgentRulesDataSource) Configure(_ context.Context, request datasource.ConfigureRequest, response *datasource.ConfigureResponse) {
+func (r *csmThreatsAgentRulesDataSource) Configure(ctx context.Context, request datasource.ConfigureRequest, response *datasource.ConfigureResponse) {
 	if request.ProviderData == nil {
 		return
 	}

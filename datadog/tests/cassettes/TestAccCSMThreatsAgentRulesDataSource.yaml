@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"description":"im a policy","enabled":true,"hostTags":["host_name:test_host"],"name":"nsszumcbjz"},"type":"policy"}}
+            {"data":{"attributes":{"description":"im a policy","enabled":true,"hostTags":["host_name:test_host"],"name":"oucpmwnlno"},"type":"policy"}}
         form: {}
         headers:
             Accept:
@@ -30,13 +30,13 @@ interactions:
         trailer: {}
         content_length: 411
         uncompressed: false
-        body: '{"data":{"id":"7us-njo-xdk","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"im a policy","disabledRulesCount":0,"enabled":true,"hostTags":["host_name:test_host"],"monitoringRulesCount":23,"name":"nsszumcbjz","policyVersion":"1","priority":1000000067,"ruleCount":23,"updateDate":1749563369723,"updater":{"name":"Sarra ZAGHBIB","handle":"sarra.zaghbib@datadoghq.com"}}}}'
+        body: '{"data":{"id":"ch2-nas-zyc","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"im a policy","disabledRulesCount":0,"enabled":true,"hostTags":["host_name:test_host"],"monitoringRulesCount":23,"name":"oucpmwnlno","policyVersion":"1","priority":1000000070,"ruleCount":23,"updateDate":1749565070910,"updater":{"name":"Sarra ZAGHBIB","handle":"sarra.zaghbib@datadoghq.com"}}}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 378.243958ms
+        duration: 392.4215ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -49,7 +49,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"actions":[{"set":{"append":false,"field":"exec.file.path","name":"test_action","scope":"process"}}],"description":"im a rule","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","name":"nsszumcbjz","policy_id":"7us-njo-xdk","product_tags":["compliance_framework:PCI-DSS"]},"type":"agent_rule"}}
+            {"data":{"attributes":{"actions":[{"set":{"append":false,"field":"exec.file.path","name":"test_action","scope":"process"}}],"description":"im a rule","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","name":"oucpmwnlno","policy_id":"ch2-nas-zyc","product_tags":["compliance_framework:PCI-DSS"]},"type":"agent_rule"}}
         form: {}
         headers:
             Accept:
@@ -66,13 +66,13 @@ interactions:
         trailer: {}
         content_length: 643
         uncompressed: false
-        body: '{"data":{"id":"rdu-bat-y3d","type":"agent_rule","attributes":{"actions":[{"set":{"name":"test_action","field":"exec.file.path","scope":"process"},"disabled":false}],"category":"File Activity","creationDate":1749563370123,"creator":{"name":"Sarra ZAGHBIB","handle":"sarra.zaghbib@datadoghq.com"},"defaultRule":false,"description":"im a rule","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"monitoring":["7us-njo-xdk"],"name":"nsszumcbjz","product_tags":["compliance_framework:PCI-DSS"],"updateDate":1749563370123,"updater":{"name":"Sarra ZAGHBIB","handle":"sarra.zaghbib@datadoghq.com"}}}}'
+        body: '{"data":{"id":"dz1-kgb-ngu","type":"agent_rule","attributes":{"actions":[{"set":{"name":"test_action","field":"exec.file.path","scope":"process"},"disabled":false}],"category":"File Activity","creationDate":1749565071321,"creator":{"name":"Sarra ZAGHBIB","handle":"sarra.zaghbib@datadoghq.com"},"defaultRule":false,"description":"im a rule","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"monitoring":["ch2-nas-zyc"],"name":"oucpmwnlno","product_tags":["compliance_framework:PCI-DSS"],"updateDate":1749565071321,"updater":{"name":"Sarra ZAGHBIB","handle":"sarra.zaghbib@datadoghq.com"}}}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 512.14225ms
+        duration: 574.961833ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -89,7 +89,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datad0g.com/api/v2/remote_config/products/cws/agent_rules/rdu-bat-y3d?policy_id=7us-njo-xdk
+        url: https://api.datad0g.com/api/v2/remote_config/products/cws/agent_rules/dz1-kgb-ngu?policy_id=ch2-nas-zyc
         method: GET
       response:
         proto: HTTP/2.0
@@ -99,13 +99,13 @@ interactions:
         trailer: {}
         content_length: 643
         uncompressed: false
-        body: '{"data":{"id":"rdu-bat-y3d","type":"agent_rule","attributes":{"actions":[{"set":{"name":"test_action","field":"exec.file.path","scope":"process"},"disabled":false}],"category":"File Activity","creationDate":1749563370123,"creator":{"name":"Sarra ZAGHBIB","handle":"sarra.zaghbib@datadoghq.com"},"defaultRule":false,"description":"im a rule","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"monitoring":["7us-njo-xdk"],"name":"nsszumcbjz","product_tags":["compliance_framework:PCI-DSS"],"updateDate":1749563370123,"updater":{"name":"Sarra ZAGHBIB","handle":"sarra.zaghbib@datadoghq.com"}}}}'
+        body: '{"data":{"id":"dz1-kgb-ngu","type":"agent_rule","attributes":{"actions":[{"set":{"name":"test_action","field":"exec.file.path","scope":"process"},"disabled":false}],"category":"File Activity","creationDate":1749565071321,"creator":{"name":"Sarra ZAGHBIB","handle":"sarra.zaghbib@datadoghq.com"},"defaultRule":false,"description":"im a rule","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"monitoring":["ch2-nas-zyc"],"name":"oucpmwnlno","product_tags":["compliance_framework:PCI-DSS"],"updateDate":1749565071321,"updater":{"name":"Sarra ZAGHBIB","handle":"sarra.zaghbib@datadoghq.com"}}}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 262.321167ms
+        duration: 296.045416ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -122,7 +122,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datad0g.com/api/v2/remote_config/products/cws/policy/7us-njo-xdk
+        url: https://api.datad0g.com/api/v2/remote_config/products/cws/policy/ch2-nas-zyc
         method: GET
       response:
         proto: HTTP/2.0
@@ -132,13 +132,13 @@ interactions:
         trailer: {}
         content_length: 409
         uncompressed: false
-        body: '{"data":{"id":"7us-njo-xdk","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"im a policy","disabledRulesCount":0,"enabled":true,"hostTags":["host_name:test_host"],"monitoringRulesCount":1,"name":"nsszumcbjz","policyVersion":"2","priority":1000000067,"ruleCount":1,"updateDate":1749563370123,"updater":{"name":"Sarra ZAGHBIB","handle":"sarra.zaghbib@datadoghq.com"}}}}'
+        body: '{"data":{"id":"ch2-nas-zyc","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"im a policy","disabledRulesCount":0,"enabled":true,"hostTags":["host_name:test_host"],"monitoringRulesCount":1,"name":"oucpmwnlno","policyVersion":"2","priority":1000000070,"ruleCount":1,"updateDate":1749565071321,"updater":{"name":"Sarra ZAGHBIB","handle":"sarra.zaghbib@datadoghq.com"}}}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 217.465625ms
+        duration: 247.516958ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -155,7 +155,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datad0g.com/api/v2/remote_config/products/cws/agent_rules/rdu-bat-y3d?policy_id=7us-njo-xdk
+        url: https://api.datad0g.com/api/v2/remote_config/products/cws/agent_rules/dz1-kgb-ngu?policy_id=ch2-nas-zyc
         method: GET
       response:
         proto: HTTP/2.0
@@ -165,13 +165,13 @@ interactions:
         trailer: {}
         content_length: 643
         uncompressed: false
-        body: '{"data":{"id":"rdu-bat-y3d","type":"agent_rule","attributes":{"actions":[{"set":{"name":"test_action","field":"exec.file.path","scope":"process"},"disabled":false}],"category":"File Activity","creationDate":1749563370123,"creator":{"name":"Sarra ZAGHBIB","handle":"sarra.zaghbib@datadoghq.com"},"defaultRule":false,"description":"im a rule","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"monitoring":["7us-njo-xdk"],"name":"nsszumcbjz","product_tags":["compliance_framework:PCI-DSS"],"updateDate":1749563370123,"updater":{"name":"Sarra ZAGHBIB","handle":"sarra.zaghbib@datadoghq.com"}}}}'
+        body: '{"data":{"id":"dz1-kgb-ngu","type":"agent_rule","attributes":{"actions":[{"set":{"name":"test_action","field":"exec.file.path","scope":"process"},"disabled":false}],"category":"File Activity","creationDate":1749565071321,"creator":{"name":"Sarra ZAGHBIB","handle":"sarra.zaghbib@datadoghq.com"},"defaultRule":false,"description":"im a rule","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"monitoring":["ch2-nas-zyc"],"name":"oucpmwnlno","product_tags":["compliance_framework:PCI-DSS"],"updateDate":1749565071321,"updater":{"name":"Sarra ZAGHBIB","handle":"sarra.zaghbib@datadoghq.com"}}}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 231.407459ms
+        duration: 251.552791ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -188,7 +188,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datad0g.com/api/v2/remote_config/products/cws/policy/7us-njo-xdk
+        url: https://api.datad0g.com/api/v2/remote_config/products/cws/policy/ch2-nas-zyc
         method: GET
       response:
         proto: HTTP/2.0
@@ -198,13 +198,13 @@ interactions:
         trailer: {}
         content_length: 409
         uncompressed: false
-        body: '{"data":{"id":"7us-njo-xdk","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"im a policy","disabledRulesCount":0,"enabled":true,"hostTags":["host_name:test_host"],"monitoringRulesCount":1,"name":"nsszumcbjz","policyVersion":"2","priority":1000000067,"ruleCount":1,"updateDate":1749563370123,"updater":{"name":"Sarra ZAGHBIB","handle":"sarra.zaghbib@datadoghq.com"}}}}'
+        body: '{"data":{"id":"ch2-nas-zyc","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"im a policy","disabledRulesCount":0,"enabled":true,"hostTags":["host_name:test_host"],"monitoringRulesCount":1,"name":"oucpmwnlno","policyVersion":"2","priority":1000000070,"ruleCount":1,"updateDate":1749565071321,"updater":{"name":"Sarra ZAGHBIB","handle":"sarra.zaghbib@datadoghq.com"}}}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 245.922ms
+        duration: 267.852542ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -221,7 +221,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datad0g.com/api/v2/remote_config/products/cws/agent_rules?policy_id=7us-njo-xdk
+        url: https://api.datad0g.com/api/v2/remote_config/products/cws/agent_rules?policy_id=ch2-nas-zyc
         method: GET
       response:
         proto: HTTP/2.0
@@ -231,13 +231,13 @@ interactions:
         trailer: {}
         content_length: 645
         uncompressed: false
-        body: '{"data":[{"id":"rdu-bat-y3d","type":"agent_rule","attributes":{"actions":[{"set":{"name":"test_action","field":"exec.file.path","scope":"process"},"disabled":false}],"category":"File Activity","creationDate":1749563370123,"creator":{"name":"Sarra ZAGHBIB","handle":"sarra.zaghbib@datadoghq.com"},"defaultRule":false,"description":"im a rule","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"monitoring":["7us-njo-xdk"],"name":"nsszumcbjz","product_tags":["compliance_framework:PCI-DSS"],"updateDate":1749563370123,"updater":{"name":"Sarra ZAGHBIB","handle":"sarra.zaghbib@datadoghq.com"}}}]}'
+        body: '{"data":[{"id":"dz1-kgb-ngu","type":"agent_rule","attributes":{"actions":[{"set":{"name":"test_action","field":"exec.file.path","scope":"process"},"disabled":false}],"category":"File Activity","creationDate":1749565071321,"creator":{"name":"Sarra ZAGHBIB","handle":"sarra.zaghbib@datadoghq.com"},"defaultRule":false,"description":"im a rule","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"monitoring":["ch2-nas-zyc"],"name":"oucpmwnlno","product_tags":["compliance_framework:PCI-DSS"],"updateDate":1749565071321,"updater":{"name":"Sarra ZAGHBIB","handle":"sarra.zaghbib@datadoghq.com"}}}]}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 195.74725ms
+        duration: 185.839459ms
     - id: 7
       request:
         proto: HTTP/1.1
@@ -254,7 +254,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datad0g.com/api/v2/remote_config/products/cws/agent_rules/rdu-bat-y3d?policy_id=7us-njo-xdk
+        url: https://api.datad0g.com/api/v2/remote_config/products/cws/agent_rules/dz1-kgb-ngu?policy_id=ch2-nas-zyc
         method: GET
       response:
         proto: HTTP/2.0
@@ -264,13 +264,13 @@ interactions:
         trailer: {}
         content_length: 643
         uncompressed: false
-        body: '{"data":{"id":"rdu-bat-y3d","type":"agent_rule","attributes":{"actions":[{"set":{"name":"test_action","field":"exec.file.path","scope":"process"},"disabled":false}],"category":"File Activity","creationDate":1749563370123,"creator":{"name":"Sarra ZAGHBIB","handle":"sarra.zaghbib@datadoghq.com"},"defaultRule":false,"description":"im a rule","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"monitoring":["7us-njo-xdk"],"name":"nsszumcbjz","product_tags":["compliance_framework:PCI-DSS"],"updateDate":1749563370123,"updater":{"name":"Sarra ZAGHBIB","handle":"sarra.zaghbib@datadoghq.com"}}}}'
+        body: '{"data":{"id":"dz1-kgb-ngu","type":"agent_rule","attributes":{"actions":[{"set":{"name":"test_action","field":"exec.file.path","scope":"process"},"disabled":false}],"category":"File Activity","creationDate":1749565071321,"creator":{"name":"Sarra ZAGHBIB","handle":"sarra.zaghbib@datadoghq.com"},"defaultRule":false,"description":"im a rule","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"monitoring":["ch2-nas-zyc"],"name":"oucpmwnlno","product_tags":["compliance_framework:PCI-DSS"],"updateDate":1749565071321,"updater":{"name":"Sarra ZAGHBIB","handle":"sarra.zaghbib@datadoghq.com"}}}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 241.055375ms
+        duration: 242.785292ms
     - id: 8
       request:
         proto: HTTP/1.1
@@ -287,7 +287,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datad0g.com/api/v2/remote_config/products/cws/agent_rules?policy_id=7us-njo-xdk
+        url: https://api.datad0g.com/api/v2/remote_config/products/cws/agent_rules?policy_id=ch2-nas-zyc
         method: GET
       response:
         proto: HTTP/2.0
@@ -297,13 +297,13 @@ interactions:
         trailer: {}
         content_length: 645
         uncompressed: false
-        body: '{"data":[{"id":"rdu-bat-y3d","type":"agent_rule","attributes":{"actions":[{"set":{"name":"test_action","field":"exec.file.path","scope":"process"},"disabled":false}],"category":"File Activity","creationDate":1749563370123,"creator":{"name":"Sarra ZAGHBIB","handle":"sarra.zaghbib@datadoghq.com"},"defaultRule":false,"description":"im a rule","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"monitoring":["7us-njo-xdk"],"name":"nsszumcbjz","product_tags":["compliance_framework:PCI-DSS"],"updateDate":1749563370123,"updater":{"name":"Sarra ZAGHBIB","handle":"sarra.zaghbib@datadoghq.com"}}}]}'
+        body: '{"data":[{"id":"dz1-kgb-ngu","type":"agent_rule","attributes":{"actions":[{"set":{"name":"test_action","field":"exec.file.path","scope":"process"},"disabled":false}],"category":"File Activity","creationDate":1749565071321,"creator":{"name":"Sarra ZAGHBIB","handle":"sarra.zaghbib@datadoghq.com"},"defaultRule":false,"description":"im a rule","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"monitoring":["ch2-nas-zyc"],"name":"oucpmwnlno","product_tags":["compliance_framework:PCI-DSS"],"updateDate":1749565071321,"updater":{"name":"Sarra ZAGHBIB","handle":"sarra.zaghbib@datadoghq.com"}}}]}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 191.417042ms
+        duration: 179.191666ms
     - id: 9
       request:
         proto: HTTP/1.1
@@ -320,7 +320,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datad0g.com/api/v2/remote_config/products/cws/agent_rules?policy_id=7us-njo-xdk
+        url: https://api.datad0g.com/api/v2/remote_config/products/cws/agent_rules?policy_id=ch2-nas-zyc
         method: GET
       response:
         proto: HTTP/2.0
@@ -330,13 +330,13 @@ interactions:
         trailer: {}
         content_length: 645
         uncompressed: false
-        body: '{"data":[{"id":"rdu-bat-y3d","type":"agent_rule","attributes":{"actions":[{"set":{"name":"test_action","field":"exec.file.path","scope":"process"},"disabled":false}],"category":"File Activity","creationDate":1749563370123,"creator":{"name":"Sarra ZAGHBIB","handle":"sarra.zaghbib@datadoghq.com"},"defaultRule":false,"description":"im a rule","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"monitoring":["7us-njo-xdk"],"name":"nsszumcbjz","product_tags":["compliance_framework:PCI-DSS"],"updateDate":1749563370123,"updater":{"name":"Sarra ZAGHBIB","handle":"sarra.zaghbib@datadoghq.com"}}}]}'
+        body: '{"data":[{"id":"dz1-kgb-ngu","type":"agent_rule","attributes":{"actions":[{"set":{"name":"test_action","field":"exec.file.path","scope":"process"},"disabled":false}],"category":"File Activity","creationDate":1749565071321,"creator":{"name":"Sarra ZAGHBIB","handle":"sarra.zaghbib@datadoghq.com"},"defaultRule":false,"description":"im a rule","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"monitoring":["ch2-nas-zyc"],"name":"oucpmwnlno","product_tags":["compliance_framework:PCI-DSS"],"updateDate":1749565071321,"updater":{"name":"Sarra ZAGHBIB","handle":"sarra.zaghbib@datadoghq.com"}}}]}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 201.482041ms
+        duration: 186.14175ms
     - id: 10
       request:
         proto: HTTP/1.1
@@ -353,7 +353,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datad0g.com/api/v2/remote_config/products/cws/policy/7us-njo-xdk
+        url: https://api.datad0g.com/api/v2/remote_config/products/cws/policy/ch2-nas-zyc
         method: GET
       response:
         proto: HTTP/2.0
@@ -363,13 +363,13 @@ interactions:
         trailer: {}
         content_length: 409
         uncompressed: false
-        body: '{"data":{"id":"7us-njo-xdk","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"im a policy","disabledRulesCount":0,"enabled":true,"hostTags":["host_name:test_host"],"monitoringRulesCount":1,"name":"nsszumcbjz","policyVersion":"2","priority":1000000067,"ruleCount":1,"updateDate":1749563370123,"updater":{"name":"Sarra ZAGHBIB","handle":"sarra.zaghbib@datadoghq.com"}}}}'
+        body: '{"data":{"id":"ch2-nas-zyc","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"im a policy","disabledRulesCount":0,"enabled":true,"hostTags":["host_name:test_host"],"monitoringRulesCount":1,"name":"oucpmwnlno","policyVersion":"2","priority":1000000070,"ruleCount":1,"updateDate":1749565071321,"updater":{"name":"Sarra ZAGHBIB","handle":"sarra.zaghbib@datadoghq.com"}}}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 220.587ms
+        duration: 198.483459ms
     - id: 11
       request:
         proto: HTTP/1.1
@@ -386,7 +386,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datad0g.com/api/v2/remote_config/products/cws/agent_rules?policy_id=7us-njo-xdk
+        url: https://api.datad0g.com/api/v2/remote_config/products/cws/agent_rules?policy_id=ch2-nas-zyc
         method: GET
       response:
         proto: HTTP/2.0
@@ -396,13 +396,13 @@ interactions:
         trailer: {}
         content_length: 645
         uncompressed: false
-        body: '{"data":[{"id":"rdu-bat-y3d","type":"agent_rule","attributes":{"actions":[{"set":{"name":"test_action","field":"exec.file.path","scope":"process"},"disabled":false}],"category":"File Activity","creationDate":1749563370123,"creator":{"name":"Sarra ZAGHBIB","handle":"sarra.zaghbib@datadoghq.com"},"defaultRule":false,"description":"im a rule","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"monitoring":["7us-njo-xdk"],"name":"nsszumcbjz","product_tags":["compliance_framework:PCI-DSS"],"updateDate":1749563370123,"updater":{"name":"Sarra ZAGHBIB","handle":"sarra.zaghbib@datadoghq.com"}}}]}'
+        body: '{"data":[{"id":"dz1-kgb-ngu","type":"agent_rule","attributes":{"actions":[{"set":{"name":"test_action","field":"exec.file.path","scope":"process"},"disabled":false}],"category":"File Activity","creationDate":1749565071321,"creator":{"name":"Sarra ZAGHBIB","handle":"sarra.zaghbib@datadoghq.com"},"defaultRule":false,"description":"im a rule","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"monitoring":["ch2-nas-zyc"],"name":"oucpmwnlno","product_tags":["compliance_framework:PCI-DSS"],"updateDate":1749565071321,"updater":{"name":"Sarra ZAGHBIB","handle":"sarra.zaghbib@datadoghq.com"}}}]}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 232.710708ms
+        duration: 196.516583ms
     - id: 12
       request:
         proto: HTTP/1.1
@@ -419,7 +419,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datad0g.com/api/v2/remote_config/products/cws/agent_rules/rdu-bat-y3d?policy_id=7us-njo-xdk
+        url: https://api.datad0g.com/api/v2/remote_config/products/cws/agent_rules/dz1-kgb-ngu?policy_id=ch2-nas-zyc
         method: GET
       response:
         proto: HTTP/2.0
@@ -429,13 +429,13 @@ interactions:
         trailer: {}
         content_length: 643
         uncompressed: false
-        body: '{"data":{"id":"rdu-bat-y3d","type":"agent_rule","attributes":{"actions":[{"set":{"name":"test_action","field":"exec.file.path","scope":"process"},"disabled":false}],"category":"File Activity","creationDate":1749563370123,"creator":{"name":"Sarra ZAGHBIB","handle":"sarra.zaghbib@datadoghq.com"},"defaultRule":false,"description":"im a rule","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"monitoring":["7us-njo-xdk"],"name":"nsszumcbjz","product_tags":["compliance_framework:PCI-DSS"],"updateDate":1749563370123,"updater":{"name":"Sarra ZAGHBIB","handle":"sarra.zaghbib@datadoghq.com"}}}}'
+        body: '{"data":{"id":"dz1-kgb-ngu","type":"agent_rule","attributes":{"actions":[{"set":{"name":"test_action","field":"exec.file.path","scope":"process"},"disabled":false}],"category":"File Activity","creationDate":1749565071321,"creator":{"name":"Sarra ZAGHBIB","handle":"sarra.zaghbib@datadoghq.com"},"defaultRule":false,"description":"im a rule","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"monitoring":["ch2-nas-zyc"],"name":"oucpmwnlno","product_tags":["compliance_framework:PCI-DSS"],"updateDate":1749565071321,"updater":{"name":"Sarra ZAGHBIB","handle":"sarra.zaghbib@datadoghq.com"}}}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 257.000625ms
+        duration: 285.934083ms
     - id: 13
       request:
         proto: HTTP/1.1
@@ -452,7 +452,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datad0g.com/api/v2/remote_config/products/cws/agent_rules/rdu-bat-y3d?policy_id=7us-njo-xdk
+        url: https://api.datad0g.com/api/v2/remote_config/products/cws/agent_rules/dz1-kgb-ngu?policy_id=ch2-nas-zyc
         method: DELETE
       response:
         proto: HTTP/2.0
@@ -468,7 +468,7 @@ interactions:
                 - application/json
         status: 204 No Content
         code: 204
-        duration: 372.396791ms
+        duration: 367.808375ms
     - id: 14
       request:
         proto: HTTP/1.1
@@ -485,7 +485,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datad0g.com/api/v2/remote_config/products/cws/policy/7us-njo-xdk
+        url: https://api.datad0g.com/api/v2/remote_config/products/cws/policy/ch2-nas-zyc
         method: DELETE
       response:
         proto: HTTP/2.0
@@ -501,7 +501,7 @@ interactions:
                 - application/json
         status: 204 No Content
         code: 204
-        duration: 430.51625ms
+        duration: 401.2295ms
     - id: 15
       request:
         proto: HTTP/1.1
@@ -518,7 +518,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datad0g.com/api/v2/remote_config/products/cws/agent_rules/rdu-bat-y3d?policy_id=7us-njo-xdk
+        url: https://api.datad0g.com/api/v2/remote_config/products/cws/agent_rules/dz1-kgb-ngu?policy_id=ch2-nas-zyc
         method: GET
       response:
         proto: HTTP/2.0
@@ -535,4 +535,4 @@ interactions:
                 - application/json
         status: 404 Not Found
         code: 404
-        duration: 189.799709ms
+        duration: 210.080416ms

@@ -7,7 +7,6 @@ import (
 	"testing"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
-
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 
@@ -30,6 +29,7 @@ func TestAccCSMThreatsAgentRule_CreateAndUpdate(t *testing.T) {
 		tags              = ["host_name:test_host"]
 	}
 	`, policyName)
+
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV5ProviderFactories: accProviders,
@@ -41,11 +41,16 @@ func TestAccCSMThreatsAgentRule_CreateAndUpdate(t *testing.T) {
 				Check:  testAccCheckCSMThreatsPolicyExists(providers.frameworkProvider, "datadog_csm_threats_policy.policy_for_test"),
 			},
 			{
+				// Create a policy to have at least one
+				Config: policyConfig,
+				Check:  testAccCheckCSMThreatsPolicyExists(providers.frameworkProvider, "datadog_csm_threats_policy.policy_for_test"),
+			},
+			{
 				Config: fmt.Sprintf(`
 				%s
 				resource "datadog_csm_threats_agent_rule" "agent_rule_test" {
 					name              = "%s"
-                    policy_id         = datadog_csm_threats_policy.policy_for_test.id
+					policy_id         = datadog_csm_threats_policy.policy_for_test.id
 					enabled           = true
 					description       = "im a rule"
 					expression 		  = "open.file.name == \"etc/shadow/password\""
@@ -58,8 +63,7 @@ func TestAccCSMThreatsAgentRule_CreateAndUpdate(t *testing.T) {
 							scope  = "process"
 						}
 					}
-				}
-				`, policyConfig, agentRuleName),
+				}`, policyConfig, agentRuleName),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckCSMThreatsAgentRuleExists(providers.frameworkProvider, resourceName),
 					checkCSMThreatsAgentRuleContent(
@@ -80,7 +84,7 @@ func TestAccCSMThreatsAgentRule_CreateAndUpdate(t *testing.T) {
 				%s
 				resource "datadog_csm_threats_agent_rule" "agent_rule_test" {
 					name              = "%s"
-                    policy_id         = datadog_csm_threats_policy.policy_for_test.id
+					policy_id         = datadog_csm_threats_policy.policy_for_test.id
 					enabled           = true
 					description       = "updated agent rule for terraform provider test"
 					expression 		  = "open.file.name == \"etc/shadow/password\""
@@ -93,8 +97,7 @@ func TestAccCSMThreatsAgentRule_CreateAndUpdate(t *testing.T) {
 							scope  = "container"
 						}
 					}
-				}
-				`, policyConfig, agentRuleName),
+				}`, policyConfig, agentRuleName),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckCSMThreatsAgentRuleExists(providers.frameworkProvider, resourceName),
 					checkCSMThreatsAgentRuleContent(

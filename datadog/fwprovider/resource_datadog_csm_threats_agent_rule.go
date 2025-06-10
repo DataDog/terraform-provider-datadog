@@ -77,7 +77,7 @@ func (r *csmThreatsAgentRuleResource) Metadata(_ context.Context, request resour
 	response.TypeName = "csm_threats_agent_rule"
 }
 
-func (r *csmThreatsAgentRuleResource) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
+func (r *csmThreatsAgentRuleResource) Configure(ctx context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
 	providerData := request.ProviderData.(*FrameworkProvider)
 	r.api = providerData.DatadogApiInstances.GetCSMThreatsApiV2()
 	r.auth = providerData.Auth
@@ -525,6 +525,7 @@ func (r *csmThreatsAgentRuleResource) extractAgentRuleAttributesFromResource(sta
 		val := state.PolicyId.ValueString()
 		policyId = &val
 	}
+
 	enabled := state.Enabled.ValueBool()
 	expression := state.Expression.ValueString()
 	description := state.Description.ValueStringPointer()
