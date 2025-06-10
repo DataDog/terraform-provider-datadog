@@ -37,6 +37,14 @@ func TestAccCSMThreatsAgentRulesDataSource(t *testing.T) {
 			description       = "im a rule"
 			expression 		  = "open.file.name == \"etc/shadow/password\""
 			product_tags      = ["compliance_framework:PCI-DSS"]
+			actions {
+				set {
+					name   = "test_action"
+					field  = "exec.file.path"
+					append = false
+					scope  = "process"
+				}
+			}
 		}
 	`, policyConfig, agentRuleName)
 	dataSourceName := "data.datadog_csm_threats_agent_rules.my_data_source"
@@ -84,6 +92,14 @@ resource "datadog_csm_threats_agent_rule" "agent_rule" {
   expression = "open.file.name == \"etc/shadow/password\""
   policy_id = datadog_csm_threats_policy.policy.id
   product_tags = ["compliance_framework:PCI-DSS"]
+  actions {
+    set {
+      name   = "test_action"
+      field  = "exec.file.path"
+      append = false
+      scope  = "process"
+    }
+  }
 }
 `, policyName, agentRuleName)
 }
@@ -148,6 +164,11 @@ func checkCSMThreatsAgentRulesDataSourceContent(accProvider *fwprovider.Framewor
 			resource.TestCheckResourceAttr(dataSourceName, fmt.Sprintf("agent_rules.%d.expression", idx), "open.file.name == \"etc/shadow/password\""),
 			resource.TestCheckResourceAttr(dataSourceName, fmt.Sprintf("agent_rules.%d.product_tags.#", idx), "1"),
 			resource.TestCheckTypeSetElemAttr(dataSourceName, fmt.Sprintf("agent_rules.%d.product_tags.*", idx), "compliance_framework:PCI-DSS"),
+			resource.TestCheckResourceAttr(dataSourceName, fmt.Sprintf("agent_rules.%d.actions.#", idx), "1"),
+			resource.TestCheckResourceAttr(dataSourceName, fmt.Sprintf("agent_rules.%d.actions.0.set.name", idx), "test_action"),
+			resource.TestCheckResourceAttr(dataSourceName, fmt.Sprintf("agent_rules.%d.actions.0.set.field", idx), "exec.file.path"),
+			resource.TestCheckResourceAttr(dataSourceName, fmt.Sprintf("agent_rules.%d.actions.0.set.append", idx), "false"),
+			resource.TestCheckResourceAttr(dataSourceName, fmt.Sprintf("agent_rules.%d.actions.0.set.scope", idx), "process"),
 		)(state)
 	}
 }

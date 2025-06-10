@@ -32,12 +32,13 @@ type csmThreatsAgentRulesDataSourceModel struct {
 }
 
 type csmThreatsAgentRuleDataSourceModel struct {
-	Id          types.String `tfsdk:"id"`
-	Name        types.String `tfsdk:"name"`
-	Description types.String `tfsdk:"description"`
-	Enabled     types.Bool   `tfsdk:"enabled"`
-	Expression  types.String `tfsdk:"expression"`
-	ProductTags types.Set    `tfsdk:"product_tags"`
+	Id          types.String  `tfsdk:"id"`
+	Name        types.String  `tfsdk:"name"`
+	Description types.String  `tfsdk:"description"`
+	Enabled     types.Bool    `tfsdk:"enabled"`
+	Expression  types.String  `tfsdk:"expression"`
+	ProductTags types.Set     `tfsdk:"product_tags"`
+	Actions     []ActionModel `tfsdk:"actions"`
 }
 
 func NewCSMThreatsAgentRulesDataSource() datasource.DataSource {
@@ -113,6 +114,58 @@ func (r *csmThreatsAgentRulesDataSource) Read(ctx context.Context, request datas
 			continue
 		}
 		agentRuleModel.ProductTags = productTags
+
+		// Handle actions
+		var actions []ActionModel
+		for _, act := range attributes.GetActions() {
+			action := ActionModel{}
+
+			if act.Set != nil {
+				setAction := &SetActionModel{}
+				s := act.Set
+
+				if s.Name != nil {
+					setAction.Name = types.StringValue(*s.Name)
+				} else {
+					setAction.Name = types.StringNull()
+				}
+				if s.Field != nil {
+					setAction.Field = types.StringValue(*s.Field)
+				} else {
+					setAction.Field = types.StringNull()
+				}
+				if s.Value != nil {
+					setAction.Value = types.StringValue(*s.Value)
+				} else {
+					setAction.Value = types.StringNull()
+				}
+				if s.Append != nil {
+					setAction.Append = types.BoolValue(*s.Append)
+				} else {
+					setAction.Append = types.BoolValue(false)
+				}
+				if s.Size != nil {
+					setAction.Size = types.Int64Value(*s.Size)
+				} else {
+					setAction.Size = types.Int64Value(0)
+				}
+				if s.Ttl != nil {
+					setAction.Ttl = types.Int64Value(*s.Ttl)
+				} else {
+					setAction.Ttl = types.Int64Value(0)
+				}
+				if s.Scope != nil {
+					setAction.Scope = types.StringValue(*s.Scope)
+				} else {
+					setAction.Scope = types.StringValue("")
+				}
+				action.Set = setAction
+			}
+
+			actions = append(actions, action)
+		}
+		agentRuleModel.Actions = actions
+
 		agentRuleIds[idx] = agentRule.GetId()
 		agentRules[idx] = agentRuleModel
 	}
@@ -157,6 +210,23 @@ func (*csmThreatsAgentRulesDataSource) Schema(_ context.Context, _ datasource.Sc
 						"enabled":      types.BoolType,
 						"expression":   types.StringType,
 						"product_tags": types.SetType{ElemType: types.StringType},
+						"actions": types.ListType{
+							ElemType: types.ObjectType{
+								AttrTypes: map[string]attr.Type{
+									"set": types.ObjectType{
+										AttrTypes: map[string]attr.Type{
+											"name":   types.StringType,
+											"value":  types.StringType,
+											"field":  types.StringType,
+											"append": types.BoolType,
+											"size":   types.Int64Type,
+											"ttl":    types.Int64Type,
+											"scope":  types.StringType,
+										},
+									},
+								},
+							},
+						},
 					},
 				},
 			},

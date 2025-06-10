@@ -9,34 +9,34 @@ interactions:
         content_length: 140
         transfer_encoding: []
         trailer: {}
-        host: api.datadoghq.com
+        host: api.datad0g.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"description":"im a policy","enabled":true,"hostTags":["host_name:test_host"],"name":"vfnkpgedpv"},"type":"policy"}}
+            {"data":{"attributes":{"description":"im a policy","enabled":true,"hostTags":["host_name:test_host"],"name":"daofzfmnkm"},"type":"policy"}}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy
+        url: https://api.datad0g.com/api/v2/remote_config/products/cws/policy
         method: POST
       response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 395
+        content_length: 411
         uncompressed: false
-        body: '{"data":{"id":"fgn-8mb-t4w","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"im a policy","disabledRulesCount":1,"enabled":true,"hostTags":["host_name:test_host"],"monitoringRulesCount":225,"name":"vfnkpgedpv","policyVersion":"1","priority":1000000013,"ruleCount":226,"updateDate":1748870650305,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
+        body: '{"data":{"id":"dpp-1ki-jzd","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"im a policy","disabledRulesCount":0,"enabled":true,"hostTags":["host_name:test_host"],"monitoringRulesCount":23,"name":"daofzfmnkm","policyVersion":"1","priority":1000000067,"ruleCount":23,"updateDate":1749563362068,"updater":{"name":"Sarra ZAGHBIB","handle":"sarra.zaghbib@datadoghq.com"}}}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 968.85225ms
+        duration: 420.854791ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -45,7 +45,7 @@ interactions:
         content_length: 0
         transfer_encoding: []
         trailer: {}
-        host: api.datadoghq.com
+        host: api.datad0g.com
         remote_addr: ""
         request_uri: ""
         body: ""
@@ -53,23 +53,23 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/fgn-8mb-t4w
+        url: https://api.datad0g.com/api/v2/remote_config/products/cws/policy/dpp-1ki-jzd
         method: GET
       response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 391
+        content_length: 409
         uncompressed: false
-        body: '{"data":{"id":"fgn-8mb-t4w","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"im a policy","disabledRulesCount":0,"enabled":true,"hostTags":["host_name:test_host"],"monitoringRulesCount":0,"name":"vfnkpgedpv","policyVersion":"1","priority":1000000013,"ruleCount":0,"updateDate":1748870650305,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
+        body: '{"data":{"id":"dpp-1ki-jzd","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"im a policy","disabledRulesCount":0,"enabled":true,"hostTags":["host_name:test_host"],"monitoringRulesCount":0,"name":"daofzfmnkm","policyVersion":"1","priority":1000000067,"ruleCount":0,"updateDate":1749563362068,"updater":{"name":"Sarra ZAGHBIB","handle":"sarra.zaghbib@datadoghq.com"}}}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 334.059917ms
+        duration: 220.583667ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -78,7 +78,7 @@ interactions:
         content_length: 0
         transfer_encoding: []
         trailer: {}
-        host: api.datadoghq.com
+        host: api.datad0g.com
         remote_addr: ""
         request_uri: ""
         body: ""
@@ -86,23 +86,23 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/fgn-8mb-t4w
+        url: https://api.datad0g.com/api/v2/remote_config/products/cws/policy/dpp-1ki-jzd
         method: GET
       response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 391
+        content_length: 409
         uncompressed: false
-        body: '{"data":{"id":"fgn-8mb-t4w","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"im a policy","disabledRulesCount":0,"enabled":true,"hostTags":["host_name:test_host"],"monitoringRulesCount":0,"name":"vfnkpgedpv","policyVersion":"1","priority":1000000013,"ruleCount":0,"updateDate":1748870650305,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
+        body: '{"data":{"id":"dpp-1ki-jzd","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"im a policy","disabledRulesCount":0,"enabled":true,"hostTags":["host_name:test_host"],"monitoringRulesCount":0,"name":"daofzfmnkm","policyVersion":"1","priority":1000000067,"ruleCount":0,"updateDate":1749563362068,"updater":{"name":"Sarra ZAGHBIB","handle":"sarra.zaghbib@datadoghq.com"}}}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 320.508625ms
+        duration: 239.846459ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -111,7 +111,7 @@ interactions:
         content_length: 0
         transfer_encoding: []
         trailer: {}
-        host: api.datadoghq.com
+        host: api.datad0g.com
         remote_addr: ""
         request_uri: ""
         body: ""
@@ -119,59 +119,59 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/fgn-8mb-t4w
+        url: https://api.datad0g.com/api/v2/remote_config/products/cws/policy/dpp-1ki-jzd
         method: GET
       response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 391
+        content_length: 409
         uncompressed: false
-        body: '{"data":{"id":"fgn-8mb-t4w","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"im a policy","disabledRulesCount":0,"enabled":true,"hostTags":["host_name:test_host"],"monitoringRulesCount":0,"name":"vfnkpgedpv","policyVersion":"1","priority":1000000013,"ruleCount":0,"updateDate":1748870650305,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
+        body: '{"data":{"id":"dpp-1ki-jzd","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"im a policy","disabledRulesCount":0,"enabled":true,"hostTags":["host_name:test_host"],"monitoringRulesCount":0,"name":"daofzfmnkm","policyVersion":"1","priority":1000000067,"ruleCount":0,"updateDate":1749563362068,"updater":{"name":"Sarra ZAGHBIB","handle":"sarra.zaghbib@datadoghq.com"}}}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 262.629833ms
+        duration: 230.05625ms
     - id: 4
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 238
+        content_length: 339
         transfer_encoding: []
         trailer: {}
-        host: api.datadoghq.com
+        host: api.datad0g.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"description":"im a rule","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","name":"vfnkpgedpv","policy_id":"fgn-8mb-t4w","product_tags":["compliance_framework:PCI-DSS"]},"type":"agent_rule"}}
+            {"data":{"attributes":{"actions":[{"set":{"append":false,"field":"exec.file.path","name":"test_action","scope":"process"}}],"description":"im a rule","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","name":"daofzfmnkm","policy_id":"dpp-1ki-jzd","product_tags":["compliance_framework:PCI-DSS"]},"type":"agent_rule"}}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/agent_rules
+        url: https://api.datad0g.com/api/v2/remote_config/products/cws/agent_rules
         method: POST
       response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 504
+        content_length: 643
         uncompressed: false
-        body: '{"data":{"id":"6ph-nop-wvc","type":"agent_rule","attributes":{"category":"File Activity","creationDate":1748870653161,"creator":{"name":"frog","handle":"frog@datadoghq.com"},"defaultRule":false,"description":"im a rule","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"monitoring":["fgn-8mb-t4w"],"name":"vfnkpgedpv","product_tags":["compliance_framework:PCI-DSS"],"updateDate":1748870653161,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
+        body: '{"data":{"id":"68g-60w-7nz","type":"agent_rule","attributes":{"actions":[{"set":{"name":"test_action","field":"exec.file.path","scope":"process"},"disabled":false}],"category":"File Activity","creationDate":1749563363975,"creator":{"name":"Sarra ZAGHBIB","handle":"sarra.zaghbib@datadoghq.com"},"defaultRule":false,"description":"im a rule","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"monitoring":["dpp-1ki-jzd"],"name":"daofzfmnkm","product_tags":["compliance_framework:PCI-DSS"],"updateDate":1749563363975,"updater":{"name":"Sarra ZAGHBIB","handle":"sarra.zaghbib@datadoghq.com"}}}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 1.241480583s
+        duration: 444.389209ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -180,7 +180,7 @@ interactions:
         content_length: 0
         transfer_encoding: []
         trailer: {}
-        host: api.datadoghq.com
+        host: api.datad0g.com
         remote_addr: ""
         request_uri: ""
         body: ""
@@ -188,23 +188,23 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/agent_rules/6ph-nop-wvc?policy_id=fgn-8mb-t4w
+        url: https://api.datad0g.com/api/v2/remote_config/products/cws/agent_rules/68g-60w-7nz?policy_id=dpp-1ki-jzd
         method: GET
       response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 504
+        content_length: 643
         uncompressed: false
-        body: '{"data":{"id":"6ph-nop-wvc","type":"agent_rule","attributes":{"category":"File Activity","creationDate":1748870653161,"creator":{"name":"frog","handle":"frog@datadoghq.com"},"defaultRule":false,"description":"im a rule","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"monitoring":["fgn-8mb-t4w"],"name":"vfnkpgedpv","product_tags":["compliance_framework:PCI-DSS"],"updateDate":1748870653161,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
+        body: '{"data":{"id":"68g-60w-7nz","type":"agent_rule","attributes":{"actions":[{"set":{"name":"test_action","field":"exec.file.path","scope":"process"},"disabled":false}],"category":"File Activity","creationDate":1749563363975,"creator":{"name":"Sarra ZAGHBIB","handle":"sarra.zaghbib@datadoghq.com"},"defaultRule":false,"description":"im a rule","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"monitoring":["dpp-1ki-jzd"],"name":"daofzfmnkm","product_tags":["compliance_framework:PCI-DSS"],"updateDate":1749563363975,"updater":{"name":"Sarra ZAGHBIB","handle":"sarra.zaghbib@datadoghq.com"}}}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 372.72725ms
+        duration: 245.334334ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -213,7 +213,7 @@ interactions:
         content_length: 0
         transfer_encoding: []
         trailer: {}
-        host: api.datadoghq.com
+        host: api.datad0g.com
         remote_addr: ""
         request_uri: ""
         body: ""
@@ -221,23 +221,23 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/fgn-8mb-t4w
+        url: https://api.datad0g.com/api/v2/remote_config/products/cws/policy/dpp-1ki-jzd
         method: GET
       response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 391
+        content_length: 409
         uncompressed: false
-        body: '{"data":{"id":"fgn-8mb-t4w","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"im a policy","disabledRulesCount":0,"enabled":true,"hostTags":["host_name:test_host"],"monitoringRulesCount":1,"name":"vfnkpgedpv","policyVersion":"2","priority":1000000013,"ruleCount":1,"updateDate":1748870653161,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
+        body: '{"data":{"id":"dpp-1ki-jzd","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"im a policy","disabledRulesCount":0,"enabled":true,"hostTags":["host_name:test_host"],"monitoringRulesCount":1,"name":"daofzfmnkm","policyVersion":"2","priority":1000000067,"ruleCount":1,"updateDate":1749563363975,"updater":{"name":"Sarra ZAGHBIB","handle":"sarra.zaghbib@datadoghq.com"}}}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 250.41ms
+        duration: 239.719292ms
     - id: 7
       request:
         proto: HTTP/1.1
@@ -246,7 +246,7 @@ interactions:
         content_length: 0
         transfer_encoding: []
         trailer: {}
-        host: api.datadoghq.com
+        host: api.datad0g.com
         remote_addr: ""
         request_uri: ""
         body: ""
@@ -254,23 +254,23 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/agent_rules/6ph-nop-wvc?policy_id=fgn-8mb-t4w
+        url: https://api.datad0g.com/api/v2/remote_config/products/cws/agent_rules/68g-60w-7nz?policy_id=dpp-1ki-jzd
         method: GET
       response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 504
+        content_length: 643
         uncompressed: false
-        body: '{"data":{"id":"6ph-nop-wvc","type":"agent_rule","attributes":{"category":"File Activity","creationDate":1748870653161,"creator":{"name":"frog","handle":"frog@datadoghq.com"},"defaultRule":false,"description":"im a rule","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"monitoring":["fgn-8mb-t4w"],"name":"vfnkpgedpv","product_tags":["compliance_framework:PCI-DSS"],"updateDate":1748870653161,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
+        body: '{"data":{"id":"68g-60w-7nz","type":"agent_rule","attributes":{"actions":[{"set":{"name":"test_action","field":"exec.file.path","scope":"process"},"disabled":false}],"category":"File Activity","creationDate":1749563363975,"creator":{"name":"Sarra ZAGHBIB","handle":"sarra.zaghbib@datadoghq.com"},"defaultRule":false,"description":"im a rule","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"monitoring":["dpp-1ki-jzd"],"name":"daofzfmnkm","product_tags":["compliance_framework:PCI-DSS"],"updateDate":1749563363975,"updater":{"name":"Sarra ZAGHBIB","handle":"sarra.zaghbib@datadoghq.com"}}}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 334.584625ms
+        duration: 262.418208ms
     - id: 8
       request:
         proto: HTTP/1.1
@@ -279,7 +279,7 @@ interactions:
         content_length: 0
         transfer_encoding: []
         trailer: {}
-        host: api.datadoghq.com
+        host: api.datad0g.com
         remote_addr: ""
         request_uri: ""
         body: ""
@@ -287,23 +287,23 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/fgn-8mb-t4w
+        url: https://api.datad0g.com/api/v2/remote_config/products/cws/policy/dpp-1ki-jzd
         method: GET
       response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 391
+        content_length: 409
         uncompressed: false
-        body: '{"data":{"id":"fgn-8mb-t4w","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"im a policy","disabledRulesCount":0,"enabled":true,"hostTags":["host_name:test_host"],"monitoringRulesCount":1,"name":"vfnkpgedpv","policyVersion":"2","priority":1000000013,"ruleCount":1,"updateDate":1748870653161,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
+        body: '{"data":{"id":"dpp-1ki-jzd","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"im a policy","disabledRulesCount":0,"enabled":true,"hostTags":["host_name:test_host"],"monitoringRulesCount":1,"name":"daofzfmnkm","policyVersion":"2","priority":1000000067,"ruleCount":1,"updateDate":1749563363975,"updater":{"name":"Sarra ZAGHBIB","handle":"sarra.zaghbib@datadoghq.com"}}}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 293.775708ms
+        duration: 249.386333ms
     - id: 9
       request:
         proto: HTTP/1.1
@@ -312,7 +312,7 @@ interactions:
         content_length: 0
         transfer_encoding: []
         trailer: {}
-        host: api.datadoghq.com
+        host: api.datad0g.com
         remote_addr: ""
         request_uri: ""
         body: ""
@@ -320,59 +320,59 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/agent_rules/6ph-nop-wvc?policy_id=fgn-8mb-t4w
+        url: https://api.datad0g.com/api/v2/remote_config/products/cws/agent_rules/68g-60w-7nz?policy_id=dpp-1ki-jzd
         method: GET
       response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 504
+        content_length: 643
         uncompressed: false
-        body: '{"data":{"id":"6ph-nop-wvc","type":"agent_rule","attributes":{"category":"File Activity","creationDate":1748870653161,"creator":{"name":"frog","handle":"frog@datadoghq.com"},"defaultRule":false,"description":"im a rule","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"monitoring":["fgn-8mb-t4w"],"name":"vfnkpgedpv","product_tags":["compliance_framework:PCI-DSS"],"updateDate":1748870653161,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
+        body: '{"data":{"id":"68g-60w-7nz","type":"agent_rule","attributes":{"actions":[{"set":{"name":"test_action","field":"exec.file.path","scope":"process"},"disabled":false}],"category":"File Activity","creationDate":1749563363975,"creator":{"name":"Sarra ZAGHBIB","handle":"sarra.zaghbib@datadoghq.com"},"defaultRule":false,"description":"im a rule","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"monitoring":["dpp-1ki-jzd"],"name":"daofzfmnkm","product_tags":["compliance_framework:PCI-DSS"],"updateDate":1749563363975,"updater":{"name":"Sarra ZAGHBIB","handle":"sarra.zaghbib@datadoghq.com"}}}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 300.936ms
+        duration: 276.748042ms
     - id: 10
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 276
+        content_length: 376
         transfer_encoding: []
         trailer: {}
-        host: api.datadoghq.com
+        host: api.datad0g.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"description":"updated agent rule for terraform provider test","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","policy_id":"fgn-8mb-t4w","product_tags":["compliance_framework:ISO-27799"]},"id":"6ph-nop-wvc","type":"agent_rule"}}
+            {"data":{"attributes":{"actions":[{"set":{"append":true,"name":"updated_action","scope":"container","value":"new_value"}}],"description":"updated agent rule for terraform provider test","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","policy_id":"dpp-1ki-jzd","product_tags":["compliance_framework:ISO-27799"]},"id":"68g-60w-7nz","type":"agent_rule"}}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/agent_rules/6ph-nop-wvc
+        url: https://api.datad0g.com/api/v2/remote_config/products/cws/agent_rules/68g-60w-7nz
         method: PATCH
       response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 543
+        content_length: 696
         uncompressed: false
-        body: '{"data":{"id":"6ph-nop-wvc","type":"agent_rule","attributes":{"category":"File Activity","creationDate":1748870653161,"creator":{"name":"frog","handle":"frog@datadoghq.com"},"defaultRule":false,"description":"updated agent rule for terraform provider test","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"monitoring":["fgn-8mb-t4w"],"name":"vfnkpgedpv","product_tags":["compliance_framework:ISO-27799"],"updateDate":1748870657423,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
+        body: '{"data":{"id":"68g-60w-7nz","type":"agent_rule","attributes":{"actions":[{"set":{"name":"updated_action","value":"new_value","append":true,"scope":"container"},"disabled":false}],"category":"File Activity","creationDate":1749563363975,"creator":{"name":"Sarra ZAGHBIB","handle":"sarra.zaghbib@datadoghq.com"},"defaultRule":false,"description":"updated agent rule for terraform provider test","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"monitoring":["dpp-1ki-jzd"],"name":"daofzfmnkm","product_tags":["compliance_framework:ISO-27799"],"updateDate":1749563366533,"updater":{"name":"Sarra ZAGHBIB","handle":"sarra.zaghbib@datadoghq.com"}}}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 512.696667ms
+        duration: 377.868917ms
     - id: 11
       request:
         proto: HTTP/1.1
@@ -381,7 +381,7 @@ interactions:
         content_length: 0
         transfer_encoding: []
         trailer: {}
-        host: api.datadoghq.com
+        host: api.datad0g.com
         remote_addr: ""
         request_uri: ""
         body: ""
@@ -389,23 +389,23 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/agent_rules/6ph-nop-wvc?policy_id=fgn-8mb-t4w
+        url: https://api.datad0g.com/api/v2/remote_config/products/cws/agent_rules/68g-60w-7nz?policy_id=dpp-1ki-jzd
         method: GET
       response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 543
+        content_length: 696
         uncompressed: false
-        body: '{"data":{"id":"6ph-nop-wvc","type":"agent_rule","attributes":{"category":"File Activity","creationDate":1748870653161,"creator":{"name":"frog","handle":"frog@datadoghq.com"},"defaultRule":false,"description":"updated agent rule for terraform provider test","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"monitoring":["fgn-8mb-t4w"],"name":"vfnkpgedpv","product_tags":["compliance_framework:ISO-27799"],"updateDate":1748870657423,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
+        body: '{"data":{"id":"68g-60w-7nz","type":"agent_rule","attributes":{"actions":[{"set":{"name":"updated_action","value":"new_value","append":true,"scope":"container"},"disabled":false}],"category":"File Activity","creationDate":1749563363975,"creator":{"name":"Sarra ZAGHBIB","handle":"sarra.zaghbib@datadoghq.com"},"defaultRule":false,"description":"updated agent rule for terraform provider test","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"monitoring":["dpp-1ki-jzd"],"name":"daofzfmnkm","product_tags":["compliance_framework:ISO-27799"],"updateDate":1749563366533,"updater":{"name":"Sarra ZAGHBIB","handle":"sarra.zaghbib@datadoghq.com"}}}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 423.847375ms
+        duration: 281.862375ms
     - id: 12
       request:
         proto: HTTP/1.1
@@ -414,7 +414,7 @@ interactions:
         content_length: 0
         transfer_encoding: []
         trailer: {}
-        host: api.datadoghq.com
+        host: api.datad0g.com
         remote_addr: ""
         request_uri: ""
         body: ""
@@ -422,23 +422,23 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/fgn-8mb-t4w
+        url: https://api.datad0g.com/api/v2/remote_config/products/cws/policy/dpp-1ki-jzd
         method: GET
       response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 391
+        content_length: 409
         uncompressed: false
-        body: '{"data":{"id":"fgn-8mb-t4w","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"im a policy","disabledRulesCount":0,"enabled":true,"hostTags":["host_name:test_host"],"monitoringRulesCount":1,"name":"vfnkpgedpv","policyVersion":"3","priority":1000000013,"ruleCount":1,"updateDate":1748870657423,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
+        body: '{"data":{"id":"dpp-1ki-jzd","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"im a policy","disabledRulesCount":0,"enabled":true,"hostTags":["host_name:test_host"],"monitoringRulesCount":1,"name":"daofzfmnkm","policyVersion":"4","priority":1000000067,"ruleCount":1,"updateDate":1749563366533,"updater":{"name":"Sarra ZAGHBIB","handle":"sarra.zaghbib@datadoghq.com"}}}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 263.650792ms
+        duration: 220.867625ms
     - id: 13
       request:
         proto: HTTP/1.1
@@ -447,7 +447,7 @@ interactions:
         content_length: 0
         transfer_encoding: []
         trailer: {}
-        host: api.datadoghq.com
+        host: api.datad0g.com
         remote_addr: ""
         request_uri: ""
         body: ""
@@ -455,23 +455,23 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/agent_rules/6ph-nop-wvc?policy_id=fgn-8mb-t4w
+        url: https://api.datad0g.com/api/v2/remote_config/products/cws/agent_rules/68g-60w-7nz?policy_id=dpp-1ki-jzd
         method: GET
       response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 543
+        content_length: 696
         uncompressed: false
-        body: '{"data":{"id":"6ph-nop-wvc","type":"agent_rule","attributes":{"category":"File Activity","creationDate":1748870653161,"creator":{"name":"frog","handle":"frog@datadoghq.com"},"defaultRule":false,"description":"updated agent rule for terraform provider test","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"monitoring":["fgn-8mb-t4w"],"name":"vfnkpgedpv","product_tags":["compliance_framework:ISO-27799"],"updateDate":1748870657423,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
+        body: '{"data":{"id":"68g-60w-7nz","type":"agent_rule","attributes":{"actions":[{"set":{"name":"updated_action","value":"new_value","append":true,"scope":"container"},"disabled":false}],"category":"File Activity","creationDate":1749563363975,"creator":{"name":"Sarra ZAGHBIB","handle":"sarra.zaghbib@datadoghq.com"},"defaultRule":false,"description":"updated agent rule for terraform provider test","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"monitoring":["dpp-1ki-jzd"],"name":"daofzfmnkm","product_tags":["compliance_framework:ISO-27799"],"updateDate":1749563366533,"updater":{"name":"Sarra ZAGHBIB","handle":"sarra.zaghbib@datadoghq.com"}}}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 259.95525ms
+        duration: 263.083666ms
     - id: 14
       request:
         proto: HTTP/1.1
@@ -480,7 +480,7 @@ interactions:
         content_length: 0
         transfer_encoding: []
         trailer: {}
-        host: api.datadoghq.com
+        host: api.datad0g.com
         remote_addr: ""
         request_uri: ""
         body: ""
@@ -488,12 +488,12 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/agent_rules/6ph-nop-wvc?policy_id=fgn-8mb-t4w
+        url: https://api.datad0g.com/api/v2/remote_config/products/cws/agent_rules/68g-60w-7nz?policy_id=dpp-1ki-jzd
         method: DELETE
       response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
         transfer_encoding: []
         trailer: {}
         content_length: 0
@@ -504,7 +504,7 @@ interactions:
                 - application/json
         status: 204 No Content
         code: 204
-        duration: 453.220792ms
+        duration: 367.648917ms
     - id: 15
       request:
         proto: HTTP/1.1
@@ -513,7 +513,7 @@ interactions:
         content_length: 0
         transfer_encoding: []
         trailer: {}
-        host: api.datadoghq.com
+        host: api.datad0g.com
         remote_addr: ""
         request_uri: ""
         body: ""
@@ -521,12 +521,12 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/fgn-8mb-t4w
+        url: https://api.datad0g.com/api/v2/remote_config/products/cws/policy/dpp-1ki-jzd
         method: DELETE
       response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
         transfer_encoding: []
         trailer: {}
         content_length: 0
@@ -537,7 +537,7 @@ interactions:
                 - application/json
         status: 204 No Content
         code: 204
-        duration: 608.84975ms
+        duration: 429.698583ms
     - id: 16
       request:
         proto: HTTP/1.1
@@ -546,7 +546,7 @@ interactions:
         content_length: 0
         transfer_encoding: []
         trailer: {}
-        host: api.datadoghq.com
+        host: api.datad0g.com
         remote_addr: ""
         request_uri: ""
         body: ""
@@ -554,12 +554,12 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/agent_rules/6ph-nop-wvc?policy_id=fgn-8mb-t4w
+        url: https://api.datad0g.com/api/v2/remote_config/products/cws/agent_rules/68g-60w-7nz?policy_id=dpp-1ki-jzd
         method: GET
       response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
         transfer_encoding: []
         trailer: {}
         content_length: 44
@@ -571,4 +571,4 @@ interactions:
                 - application/json
         status: 404 Not Found
         code: 404
-        duration: 269.2095ms
+        duration: 211.782542ms
