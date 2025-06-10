@@ -134,10 +134,12 @@ func (r *csmThreatsAgentRuleResource) Schema(_ context.Context, _ resource.Schem
 								},
 								"value": schema.StringAttribute{
 									Optional:    true,
+									Computed:    true,
 									Description: "The value to set",
 								},
 								"field": schema.StringAttribute{
 									Optional:    true,
+									Computed:    true,
 									Description: "The field to get the value from",
 								},
 								"append": schema.BoolAttribute{
@@ -147,14 +149,17 @@ func (r *csmThreatsAgentRuleResource) Schema(_ context.Context, _ resource.Schem
 								},
 								"size": schema.Int64Attribute{
 									Optional:    true,
+									Computed:    true,
 									Description: "The maximum size of the set",
 								},
 								"ttl": schema.Int64Attribute{
 									Optional:    true,
+									Computed:    true,
 									Description: "The time to live for the set in nanoseconds",
 								},
 								"scope": schema.StringAttribute{
 									Optional:    true,
+									Computed:    true,
 									Description: "The scope of the set action (process, container, cgroup, or empty)",
 								},
 							},
@@ -595,17 +600,20 @@ func (r *csmThreatsAgentRuleResource) updateStateFromResponse(ctx context.Contex
 			if s.Size != nil {
 				setAction.Size = types.Int64Value(*s.Size)
 			} else {
-				setAction.Size = types.Int64Null()
+				// Use 0 as default when API doesn't return size value
+				setAction.Size = types.Int64Value(0)
 			}
 			if s.Ttl != nil {
 				setAction.Ttl = types.Int64Value(*s.Ttl)
 			} else {
-				setAction.Ttl = types.Int64Null()
+				// Use 0 as default when API doesn't return ttl value
+				setAction.Ttl = types.Int64Value(0)
 			}
 			if s.Scope != nil {
 				setAction.Scope = types.StringValue(*s.Scope)
 			} else {
-				setAction.Scope = types.StringNull()
+				// Use empty string as default when API returns null for scope
+				setAction.Scope = types.StringValue("")
 			}
 			action.Set = setAction
 		}
