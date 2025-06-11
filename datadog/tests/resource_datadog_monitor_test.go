@@ -3,6 +3,7 @@ package test
 import (
 	"context"
 	"fmt"
+	"os"
 	"strconv"
 	"testing"
 
@@ -1981,6 +1982,7 @@ func TestAccDatadogMonitor_DefaultTags(t *testing.T) {
 }
 
 func TestAccDatadogMonitor_WithRestrictionPolicy(t *testing.T) {
+	os.Setenv("TERRAFORM_MONITOR_EXPLICIT_RESTRICTED_ROLES", "true")
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniqueName := uniqueEntityName(ctx, t)
@@ -2027,6 +2029,7 @@ func TestAccDatadogMonitor_WithRestrictionPolicy(t *testing.T) {
 			},
 		},
 	})
+	os.Unsetenv("TERRAFORM_MONITOR_EXPLICIT_RESTRICTED_ROLES")
 }
 
 func testAccCheckDatadogMonitorWithRestrictionPolicy(uniqueName string) string {
