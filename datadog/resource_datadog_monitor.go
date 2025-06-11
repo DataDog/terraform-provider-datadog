@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"sort"
 	"strconv"
 	"strings"
@@ -277,7 +278,7 @@ func resourceDatadogMonitor() *schema.Resource {
 					Description:   "A boolean indicating whether changes to this monitor should be restricted to the creator or admins. Defaults to `false`.",
 					Type:          schema.TypeBool,
 					Optional:      true,
-					Deprecated:    "Use `datadog_restriction_policy` resource to manage monitor permissions instead.",
+					Deprecated:    "Use `restricted_roles`.",
 					ConflictsWith: []string{"restricted_roles"},
 					DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
 						// if restricted_roles is defined, ignore locked
@@ -288,11 +289,10 @@ func resourceDatadogMonitor() *schema.Resource {
 					},
 				},
 				"restricted_roles": {
-					Description:   "A list of unique role identifiers to define which roles are allowed to edit the monitor. Editing a monitor includes any updates to the monitor configuration, monitor deletion, and muting of the monitor for any amount of time. Roles unique identifiers can be pulled from the [Roles API](https://docs.datadoghq.com/api/latest/roles/#list-roles) in the `data.id` field. If `restricted_roles` is not configured, Terraform ignores any restricted roles changes in this resource.",
+					Description:   "A list of unique role identifiers to define which roles are allowed to edit the monitor. Editing a monitor includes any updates to the monitor configuration, monitor deletion, and muting of the monitor for any amount of time. Roles unique identifiers can be pulled from the [Roles API](https://docs.datadoghq.com/api/latest/roles/#list-roles) in the `data.id` field.\n > **Note:** When the `TERRAFORM_MONITOR_EXPLICIT_RESTRICTED_ROLES` environment variable is set to `true`, this argument is treated as `Computed`. Terraform will automatically read the current restricted roles list from the Datadog API whenever the attribute is omitted. If `restricted_roles` is explicitly set in the configuration, that value always takes precedence over whatever is discovered during the read. This opt-in behaviour lets you migrate responsibility for monitor permissions to the `datadog_restriction_policy` resource.",
 					Type:          schema.TypeSet,
 					Optional:      true,
-					Computed:      true,
-					Deprecated:    "The `restricted_roles` argument is deprecated. Use `datadog_restriction_policy` resource to manage monitor permissions instead.",
+					Computed:      getEnv("TERRAFORM_MONITOR_EXPLICIT_RESTRICTED_ROLES", "false") == "true",
 					Elem:          &schema.Schema{Type: schema.TypeString},
 					ConflictsWith: []string{"locked"},
 				},
@@ -1429,4 +1429,11 @@ func suppressDataDogFloatIntDiff(_, old, new string, _ *schema.ResourceData) boo
 		return true
 	}
 	return false
+}
+
+func getEnv(key, fallback string) string {
+	if value, ok := os.LookupEnv(key); ok {
+		return value
+	}
+	return fallback
 }
