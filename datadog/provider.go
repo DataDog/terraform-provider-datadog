@@ -322,11 +322,6 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 			return nil, diag.FromErr(errors.New("api_key and app_key or orgUUID must be set unless validate = false"))
 		} else if cloudProviderType != "" && orgUUID == "" {
 			return nil, diag.FromErr(errors.New("orgUUID must be set when using cloud provider auth unless validate = false"))
-		} else if cloudProviderType != "" && cloudProviderRegion == "" {
-			if cloudProviderType == "aws" {
-				// Default to us-east-1 for AWS
-				cloudProviderRegion = "us-east-1"
-			}
 		}
 	}
 
@@ -470,18 +465,32 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 	config.HTTPClient = utils.NewHTTPClient()
 	datadogClient := datadog.NewAPIClient(config)
 	apiInstances := &utils.ApiInstances{HttpClient: datadogClient}
-	if validate && cloudProviderType == "" {
+	if validate {
 		log.Println("[INFO] Datadog client successfully initialized, now validating...")
-		resp, _, err := apiInstances.GetAuthenticationApiV1().Validate(auth)
-		if err != nil {
-			log.Printf("[ERROR] Datadog Client validation error: %v", err)
-			return nil, diag.FromErr(err)
-		}
-		valid, ok := resp.GetValidOk()
-		if (ok && !*valid) || !ok {
-			err := errors.New(`Invalid or missing credentials provided to the Datadog Provider. Please confirm your API and APP keys are valid and are for the correct region, see https://www.terraform.io/docs/providers/datadog/ for more information on providing credentials for the Datadog Provider`)
-			log.Printf("[ERROR] Datadog Client validation error: %v", err)
-			return nil, diag.FromErr(err)
+		if cloudProviderType != "" { // Validate the cloud auth credentials
+			delegatedConfig, err := datadogClient.GetDelegatedToken(auth)
+			if err != nil {
+				log.Printf("[ERROR] Datadog Client validation error: %v", err)
+				return nil, diag.FromErr(err)
+			}
+			if delegatedConfig.DelegatedToken == "" {
+				msg := fmt.Sprintf(`Invalid or missing credentials provided to the Datadog Provider. Please confirm your OrgUUID is correct and your cloud auth credentials for "%s" are valid and are for the correct region, see https://www.terraform.io/docs/providers/datadog/ for more information on providing credentials for the Datadog Provider`, cloudProviderType)
+				err := errors.New(msg)
+				log.Printf("[ERROR] Datadog Client validation error: %v", err)
+				return nil, diag.FromErr(err)
+			}
+		} else { // Validate the API and APP keys
+			resp, _, err := apiInstances.GetAuthenticationApiV1().Validate(auth)
+			if err != nil {
+				log.Printf("[ERROR] Datadog Client validation error: %v", err)
+				return nil, diag.FromErr(err)
+			}
+			valid, ok := resp.GetValidOk()
+			if (ok && !*valid) || !ok {
+				err := errors.New(`Invalid or missing credentials provided to the Datadog Provider. Please confirm your API and APP keys are valid and are for the correct region, see https://www.terraform.io/docs/providers/datadog/ for more information on providing credentials for the Datadog Provider`)
+				log.Printf("[ERROR] Datadog Client validation error: %v", err)
+				return nil, diag.FromErr(err)
+			}
 		}
 	} else {
 		log.Println("[INFO] Skipping key validation (validate = false)")
