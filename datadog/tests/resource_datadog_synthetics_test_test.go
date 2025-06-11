@@ -1754,6 +1754,8 @@ func createSyntheticsAPITestStepNewAssertionsOptions(ctx context.Context, accPro
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "options_list.0.monitor_options.0.escalation_message", "test escalation message"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options_list.0.monitor_options.0.notification_preset_name", "show_all"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "name", testName),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "message", "Notify @datadog.user"),
@@ -1918,6 +1920,7 @@ resource "datadog_synthetics_test" "bar" {
 			renotify_interval = 120
 			renotify_occurrences = 5
 			escalation_message = "test escalation message"
+			notification_preset_name = "show_all"
 		}
 	}
 
@@ -2086,6 +2089,8 @@ func createSyntheticsAPITestStepTargetAndTargetValueCanBeNumberOrString(ctx cont
 				"datadog_synthetics_test.bar", "options_list.0.monitor_options.0.renotify_occurrences", "5"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "options_list.0.monitor_options.0.escalation_message", "test escalation message"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options_list.0.monitor_options.0.notification_preset_name", "show_all"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "name", testName),
 			resource.TestCheckResourceAttr(
@@ -2257,6 +2262,7 @@ resource "datadog_synthetics_test" "bar" {
 			renotify_interval = 120
 			renotify_occurrences = 5
 			escalation_message = "test escalation message"
+			notification_preset_name = "show_all"
 		}
 	}
 
@@ -3830,6 +3836,8 @@ func createSyntheticsBrowserTestStep(ctx context.Context, accProvider *schema.Pr
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "options_list.0.monitor_options.0.escalation_message", "test escalation message"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options_list.0.monitor_options.0.notification_preset_name", "show_all"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "options_list.0.no_screenshot", "true"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "options_list.0.monitor_name", fmt.Sprintf(`%s-monitor`, testName)),
@@ -3970,6 +3978,7 @@ resource "datadog_synthetics_test" "bar" {
 			renotify_interval = 120
 			renotify_occurrences = 3
 			escalation_message = "test escalation message"
+			notification_preset_name = "show_all"
 		}
 		monitor_name = "%[1]s-monitor"
 		monitor_priority = 5
