@@ -56,19 +56,6 @@ type SetActionModel struct {
 	Scope  types.String `tfsdk:"scope"`
 }
 
-// Helper functions for converting values
-func stringValue(v string) *string {
-	return &v
-}
-
-func boolValue(v bool) *bool {
-	return &v
-}
-
-func int64Value(v int64) *int64 {
-	return &v
-}
-
 func NewCSMThreatsAgentRuleResource() resource.Resource {
 	return &csmThreatsAgentRuleResource{}
 }
