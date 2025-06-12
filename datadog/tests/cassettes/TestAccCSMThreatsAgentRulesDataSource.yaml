@@ -1,0 +1,538 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 140
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"description":"im a policy","enabled":true,"hostTags":["host_name:test_host"],"name":"daqhvfljdx"},"type":"policy"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 395
+        uncompressed: false
+        body: '{"data":{"id":"p2f-b7a-hph","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"im a policy","disabledRulesCount":1,"enabled":true,"hostTags":["host_name:test_host"],"monitoringRulesCount":225,"name":"daqhvfljdx","policyVersion":"1","priority":1000000013,"ruleCount":226,"updateDate":1749627374340,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 968.184958ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 339
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"actions":[{"set":{"append":false,"field":"exec.file.path","name":"test_action","scope":"process"}}],"description":"im a rule","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","name":"daqhvfljdx","policy_id":"p2f-b7a-hph","product_tags":["compliance_framework:PCI-DSS"]},"type":"agent_rule"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/agent_rules
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 607
+        uncompressed: false
+        body: '{"data":{"id":"izf-un8-z8t","type":"agent_rule","attributes":{"actions":[{"set":{"name":"test_action","field":"exec.file.path","scope":"process"},"disabled":false}],"category":"File Activity","creationDate":1749627375051,"creator":{"name":"frog","handle":"frog@datadoghq.com"},"defaultRule":false,"description":"im a rule","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"monitoring":["p2f-b7a-hph"],"name":"daqhvfljdx","product_tags":["compliance_framework:PCI-DSS"],"updateDate":1749627375051,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 706.031417ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/agent_rules/izf-un8-z8t?policy_id=p2f-b7a-hph
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 607
+        uncompressed: false
+        body: '{"data":{"id":"izf-un8-z8t","type":"agent_rule","attributes":{"actions":[{"set":{"name":"test_action","field":"exec.file.path","scope":"process"},"disabled":false}],"category":"File Activity","creationDate":1749627375051,"creator":{"name":"frog","handle":"frog@datadoghq.com"},"defaultRule":false,"description":"im a rule","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"monitoring":["p2f-b7a-hph"],"name":"daqhvfljdx","product_tags":["compliance_framework:PCI-DSS"],"updateDate":1749627375051,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 253.387042ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/p2f-b7a-hph
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 391
+        uncompressed: false
+        body: '{"data":{"id":"p2f-b7a-hph","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"im a policy","disabledRulesCount":0,"enabled":true,"hostTags":["host_name:test_host"],"monitoringRulesCount":1,"name":"daqhvfljdx","policyVersion":"2","priority":1000000013,"ruleCount":1,"updateDate":1749627375051,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 410.107083ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/agent_rules/izf-un8-z8t?policy_id=p2f-b7a-hph
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 607
+        uncompressed: false
+        body: '{"data":{"id":"izf-un8-z8t","type":"agent_rule","attributes":{"actions":[{"set":{"name":"test_action","field":"exec.file.path","scope":"process"},"disabled":false}],"category":"File Activity","creationDate":1749627375051,"creator":{"name":"frog","handle":"frog@datadoghq.com"},"defaultRule":false,"description":"im a rule","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"monitoring":["p2f-b7a-hph"],"name":"daqhvfljdx","product_tags":["compliance_framework:PCI-DSS"],"updateDate":1749627375051,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 235.174791ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/p2f-b7a-hph
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 391
+        uncompressed: false
+        body: '{"data":{"id":"p2f-b7a-hph","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"im a policy","disabledRulesCount":0,"enabled":true,"hostTags":["host_name:test_host"],"monitoringRulesCount":1,"name":"daqhvfljdx","policyVersion":"2","priority":1000000013,"ruleCount":1,"updateDate":1749627375051,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 235.599708ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/agent_rules?policy_id=p2f-b7a-hph
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 609
+        uncompressed: false
+        body: '{"data":[{"id":"izf-un8-z8t","type":"agent_rule","attributes":{"actions":[{"set":{"name":"test_action","field":"exec.file.path","scope":"process"},"disabled":false}],"category":"File Activity","creationDate":1749627375051,"creator":{"name":"frog","handle":"frog@datadoghq.com"},"defaultRule":false,"description":"im a rule","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"monitoring":["p2f-b7a-hph"],"name":"daqhvfljdx","product_tags":["compliance_framework:PCI-DSS"],"updateDate":1749627375051,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 269.909375ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/agent_rules/izf-un8-z8t?policy_id=p2f-b7a-hph
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 607
+        uncompressed: false
+        body: '{"data":{"id":"izf-un8-z8t","type":"agent_rule","attributes":{"actions":[{"set":{"name":"test_action","field":"exec.file.path","scope":"process"},"disabled":false}],"category":"File Activity","creationDate":1749627375051,"creator":{"name":"frog","handle":"frog@datadoghq.com"},"defaultRule":false,"description":"im a rule","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"monitoring":["p2f-b7a-hph"],"name":"daqhvfljdx","product_tags":["compliance_framework:PCI-DSS"],"updateDate":1749627375051,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 576.609917ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/agent_rules?policy_id=p2f-b7a-hph
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 609
+        uncompressed: false
+        body: '{"data":[{"id":"izf-un8-z8t","type":"agent_rule","attributes":{"actions":[{"set":{"name":"test_action","field":"exec.file.path","scope":"process"},"disabled":false}],"category":"File Activity","creationDate":1749627375051,"creator":{"name":"frog","handle":"frog@datadoghq.com"},"defaultRule":false,"description":"im a rule","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"monitoring":["p2f-b7a-hph"],"name":"daqhvfljdx","product_tags":["compliance_framework:PCI-DSS"],"updateDate":1749627375051,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 245.98675ms
+    - id: 9
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/agent_rules?policy_id=p2f-b7a-hph
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 609
+        uncompressed: false
+        body: '{"data":[{"id":"izf-un8-z8t","type":"agent_rule","attributes":{"actions":[{"set":{"name":"test_action","field":"exec.file.path","scope":"process"},"disabled":false}],"category":"File Activity","creationDate":1749627375051,"creator":{"name":"frog","handle":"frog@datadoghq.com"},"defaultRule":false,"description":"im a rule","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"monitoring":["p2f-b7a-hph"],"name":"daqhvfljdx","product_tags":["compliance_framework:PCI-DSS"],"updateDate":1749627375051,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 277.575083ms
+    - id: 10
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/p2f-b7a-hph
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 391
+        uncompressed: false
+        body: '{"data":{"id":"p2f-b7a-hph","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"im a policy","disabledRulesCount":0,"enabled":true,"hostTags":["host_name:test_host"],"monitoringRulesCount":1,"name":"daqhvfljdx","policyVersion":"2","priority":1000000013,"ruleCount":1,"updateDate":1749627375051,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 267.001166ms
+    - id: 11
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/agent_rules/izf-un8-z8t?policy_id=p2f-b7a-hph
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 607
+        uncompressed: false
+        body: '{"data":{"id":"izf-un8-z8t","type":"agent_rule","attributes":{"actions":[{"set":{"name":"test_action","field":"exec.file.path","scope":"process"},"disabled":false}],"category":"File Activity","creationDate":1749627375051,"creator":{"name":"frog","handle":"frog@datadoghq.com"},"defaultRule":false,"description":"im a rule","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"monitoring":["p2f-b7a-hph"],"name":"daqhvfljdx","product_tags":["compliance_framework:PCI-DSS"],"updateDate":1749627375051,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 290.505791ms
+    - id: 12
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/agent_rules?policy_id=p2f-b7a-hph
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 609
+        uncompressed: false
+        body: '{"data":[{"id":"izf-un8-z8t","type":"agent_rule","attributes":{"actions":[{"set":{"name":"test_action","field":"exec.file.path","scope":"process"},"disabled":false}],"category":"File Activity","creationDate":1749627375051,"creator":{"name":"frog","handle":"frog@datadoghq.com"},"defaultRule":false,"description":"im a rule","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"monitoring":["p2f-b7a-hph"],"name":"daqhvfljdx","product_tags":["compliance_framework:PCI-DSS"],"updateDate":1749627375051,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 320.63075ms
+    - id: 13
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/agent_rules/izf-un8-z8t?policy_id=p2f-b7a-hph
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Content-Type:
+                - application/json
+        status: 204 No Content
+        code: 204
+        duration: 634.226458ms
+    - id: 14
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/p2f-b7a-hph
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Content-Type:
+                - application/json
+        status: 204 No Content
+        code: 204
+        duration: 502.803083ms
+    - id: 15
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/agent_rules/izf-un8-z8t?policy_id=p2f-b7a-hph
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 44
+        uncompressed: false
+        body: |
+            {"errors":[{"title":"failed to get rule"}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 317.966792ms

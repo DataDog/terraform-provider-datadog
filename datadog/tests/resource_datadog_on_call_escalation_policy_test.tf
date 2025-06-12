@@ -32,10 +32,10 @@ resource "datadog_on_call_schedule" "schedule" {
 }
 
 resource "datadog_on_call_escalation_policy" "policy_test" {
-  name                        = "POLICY_NAME"
+  name                       = "POLICY_NAME"
   resolve_page_on_policy_end = true
   step {
-    assignment = "round-robin"
+    assignment             = "round-robin"
     escalate_after_seconds = 300
     target {
       team = datadog_team.policy_test.id
@@ -43,6 +43,18 @@ resource "datadog_on_call_escalation_policy" "policy_test" {
     target {
       user = datadog_user.policy_test.id
     }
+    target {
+      schedule = datadog_on_call_schedule.schedule.id
+    }
+  }
+}
+
+# This policy is used to test the defaults of the escalation policy resource.
+# ie missing fields are set to their default values.
+resource "datadog_on_call_escalation_policy" "policy_test_defaults" {
+  name = "policy_test_defaults"
+  step {
+    escalate_after_seconds = 100
     target {
       schedule = datadog_on_call_schedule.schedule.id
     }

@@ -35,7 +35,7 @@ func TestAccDatadogSyntheticsPrivateLocation_importBasic(t *testing.T) {
 				ResourceName:            "datadog_synthetics_private_location.foo",
 				ImportState:             true,
 				ImportStateVerify:       true,
-				ImportStateVerifyIgnore: []string{"config"},
+				ImportStateVerifyIgnore: []string{"config", "api_key"},
 			},
 		},
 	})
@@ -96,6 +96,8 @@ func createSyntheticsPrivateLocationStep(ctx context.Context, accProvider *fwpro
 				"datadog_synthetics_private_location.foo", "tags.0", "foo:bar"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_private_location.foo", "tags.1", "baz"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_private_location.foo", "api_key", "1234567890"),
 			resource.TestCheckResourceAttrSet(
 				"datadog_synthetics_private_location.foo", "config"),
 			resource.TestCheckResourceAttrSet(
@@ -110,6 +112,7 @@ resource "datadog_synthetics_private_location" "foo" {
 	name = "%s"
 	description = "a private location"
 	tags = ["foo:bar", "baz"]
+	api_key = "1234567890"
 }`, uniqPrivateLocation)
 }
 
@@ -131,6 +134,8 @@ func updateSyntheticsPrivateLocationStep(ctx context.Context, accProvider *fwpro
 				"datadog_synthetics_private_location.foo", "tags.1", "baz"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_private_location.foo", "tags.2", "env:test"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_private_location.foo", "api_key", "0987654321"),
 			resource.TestCheckResourceAttrSet(
 				"datadog_synthetics_private_location.foo", "config"),
 			resource.TestCheckResourceAttrSet(
@@ -145,6 +150,7 @@ resource "datadog_synthetics_private_location" "foo" {
 	name = "%s"
 	description = "an updated private location"
 	tags = ["foo:bar", "baz", "env:test"]
+	api_key = "0987654321"
 }`, uniqPrivateLocation)
 }
 

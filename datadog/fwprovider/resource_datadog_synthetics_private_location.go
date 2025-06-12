@@ -39,6 +39,7 @@ type syntheticsPrivateLocationModel struct {
 	Metadata    []syntheticsPrivateLocationMetadataModel `tfsdk:"metadata"`
 	Name        types.String                             `tfsdk:"name"`
 	Tags        types.List                               `tfsdk:"tags"`
+	ApiKey      types.String                             `tfsdk:"api_key"`
 }
 
 type syntheticsPrivateLocationMetadataModel struct {
@@ -87,6 +88,11 @@ func (r *syntheticsPrivateLocationResource) Schema(_ context.Context, _ resource
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
 				},
+			},
+			"api_key": schema.StringAttribute{
+				Description: "API key used to generate the private location configuration.",
+				Optional:    true,
+				Sensitive:   true,
 			},
 			"id": utils.ResourceIDAttribute(),
 		},
@@ -177,7 +183,26 @@ func (r *syntheticsPrivateLocationResource) Create(ctx context.Context, request 
 		)
 	}
 
-	state.Config = types.StringValue(string(conf))
+	confStr := string(conf)
+	apiKey := state.ApiKey.ValueString()
+	fmt.Println("before if api key")
+	if apiKey != "" {
+		fmt.Println("api key is not empty")
+		// Remove the closing brace, append the new field, and add the brace back
+		if len(confStr) > 1 && confStr[len(confStr)-1] == '}' {
+			fmt.Println("confStr is not empty")
+			// If config is just "{}", avoid the comma
+			if confStr == "{}" {
+				confStr = fmt.Sprintf(`{"datadogApiKey":"%s"}`, apiKey)
+				fmt.Println("confStr is empty, new value is ", confStr)
+			} else {
+				confStr = confStr[:len(confStr)-1] + fmt.Sprintf(`,"datadogApiKey":"%s"}`, apiKey)
+				fmt.Println("confStr is not empty, new value is ", confStr)
+			}
+		}
+	}
+
+	state.Config = types.StringValue(confStr)
 
 	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
