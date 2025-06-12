@@ -30,9 +30,30 @@ Use this data source to retrieve information about existing Agent rules.
 
 Read-Only:
 
+- `actions` (List of Object) (see [below for nested schema](#nestedobjatt--agent_rules--actions))
 - `description` (String)
 - `enabled` (Boolean)
 - `expression` (String)
 - `id` (String)
 - `name` (String)
 - `product_tags` (Set of String)
+
+<a id="nestedobjatt--agent_rules--actions"></a>
+### Nested Schema for `agent_rules.actions`
+
+Read-Only:
+
+- `set` (Object) (see [below for nested schema](#nestedobjatt--agent_rules--actions--set))
+
+<a id="nestedobjatt--agent_rules--actions--set"></a>
+### Nested Schema for `agent_rules.actions.set`
+
+Read-Only:
+
+- `append` (Boolean)
+- `field` (String)
+- `name` (String)
+- `scope` (String)
+- `size` (Number)
+- `ttl` (Number)
+- `value` (String)

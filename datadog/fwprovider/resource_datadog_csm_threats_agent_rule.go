@@ -2,10 +2,12 @@ package fwprovider
 
 import (
 	"context"
+	"fmt"
 	"strings"
 	"sync"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -30,13 +32,28 @@ type csmThreatsAgentRuleResource struct {
 }
 
 type csmThreatsAgentRuleModel struct {
-	Id          types.String `tfsdk:"id"`
-	PolicyId    types.String `tfsdk:"policy_id"`
-	Name        types.String `tfsdk:"name"`
-	Description types.String `tfsdk:"description"`
-	Enabled     types.Bool   `tfsdk:"enabled"`
-	Expression  types.String `tfsdk:"expression"`
-	ProductTags types.Set    `tfsdk:"product_tags"`
+	Id          types.String  `tfsdk:"id"`
+	PolicyId    types.String  `tfsdk:"policy_id"`
+	Name        types.String  `tfsdk:"name"`
+	Description types.String  `tfsdk:"description"`
+	Enabled     types.Bool    `tfsdk:"enabled"`
+	Expression  types.String  `tfsdk:"expression"`
+	ProductTags types.Set     `tfsdk:"product_tags"`
+	Actions     []ActionModel `tfsdk:"actions"`
+}
+
+type ActionModel struct {
+	Set *SetActionModel `tfsdk:"set"`
+}
+
+type SetActionModel struct {
+	Name   types.String `tfsdk:"name"`
+	Value  types.String `tfsdk:"value"`
+	Field  types.String `tfsdk:"field"`
+	Append types.Bool   `tfsdk:"append"`
+	Size   types.Int64  `tfsdk:"size"`
+	Ttl    types.Int64  `tfsdk:"ttl"`
+	Scope  types.String `tfsdk:"scope"`
 }
 
 func NewCSMThreatsAgentRuleResource() resource.Resource {
@@ -47,7 +64,7 @@ func (r *csmThreatsAgentRuleResource) Metadata(_ context.Context, request resour
 	response.TypeName = "csm_threats_agent_rule"
 }
 
-func (r *csmThreatsAgentRuleResource) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
+func (r *csmThreatsAgentRuleResource) Configure(ctx context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
 	providerData := request.ProviderData.(*FrameworkProvider)
 	r.api = providerData.DatadogApiInstances.GetCSMThreatsApiV2()
 	r.auth = providerData.Auth
@@ -90,6 +107,54 @@ func (r *csmThreatsAgentRuleResource) Schema(_ context.Context, _ resource.Schem
 				Computed:    true,
 			},
 		},
+		Blocks: map[string]schema.Block{
+			"actions": schema.ListNestedBlock{
+				Description: "The list of actions the rule can perform",
+				NestedObject: schema.NestedBlockObject{
+					Blocks: map[string]schema.Block{
+						"set": schema.SingleNestedBlock{
+							Description: "Set action configuration",
+							Attributes: map[string]schema.Attribute{
+								"name": schema.StringAttribute{
+									Required:    true,
+									Description: "The name of the set action",
+								},
+								"value": schema.StringAttribute{
+									Optional:    true,
+									Computed:    true,
+									Description: "The value to set",
+								},
+								"field": schema.StringAttribute{
+									Optional:    true,
+									Computed:    true,
+									Description: "The field to get the value from",
+								},
+								"append": schema.BoolAttribute{
+									Optional:    true,
+									Computed:    true,
+									Description: "Whether to append to the set",
+								},
+								"size": schema.Int64Attribute{
+									Optional:    true,
+									Computed:    true,
+									Description: "The maximum size of the set",
+								},
+								"ttl": schema.Int64Attribute{
+									Optional:    true,
+									Computed:    true,
+									Description: "The time to live for the set in nanoseconds",
+								},
+								"scope": schema.StringAttribute{
+									Optional:    true,
+									Computed:    true,
+									Description: "The scope of the set action (process, container, cgroup, or empty)",
+								},
+							},
+						},
+					},
+				},
+			},
+		},
 	}
 }
 
@@ -106,9 +171,76 @@ func (r *csmThreatsAgentRuleResource) ImportState(ctx context.Context, request r
 	}
 }
 
+// validateActions validates the actions list
+func (r *csmThreatsAgentRuleResource) validateActions(ctx context.Context, actions []ActionModel) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	for i, action := range actions {
+		// Check that exactly one action type is set
+		hasSet := action.Set != nil
+
+		if !hasSet {
+			diags.AddError(
+				"Missing Action Type",
+				fmt.Sprintf("Action %d: At least one action type (set) must be specified.", i),
+			)
+			continue
+		}
+
+		// Check that set name is provided and not empty
+		if action.Set.Name.IsNull() || action.Set.Name.IsUnknown() || action.Set.Name.ValueString() == "" {
+			diags.AddError(
+				"Missing Required Field",
+				fmt.Sprintf("Action %d: 'name' is required in the set action configuration.", i),
+			)
+			continue
+		}
+
+		// Check that exactly one of value, field is set
+		hasValue := !action.Set.Value.IsNull() && !action.Set.Value.IsUnknown() && action.Set.Value.ValueString() != ""
+		hasField := !action.Set.Field.IsNull() && !action.Set.Field.IsUnknown() && action.Set.Field.ValueString() != ""
+
+		if !hasValue && !hasField {
+			diags.AddError(
+				"Missing Required Field",
+				fmt.Sprintf("Action %d: One of 'value' or 'field' must be set in the set action configuration.", i),
+			)
+			continue
+		}
+
+		if hasValue && hasField {
+			diags.AddError(
+				"Invalid Configuration",
+				fmt.Sprintf("Action %d: Only one of 'value' or 'field' can be set in the set action configuration.", i),
+			)
+			continue
+		}
+
+		// Validate scope if set
+		if !action.Set.Scope.IsNull() && !action.Set.Scope.IsUnknown() {
+			scope := action.Set.Scope.ValueString()
+			if scope != "" && scope != "process" && scope != "container" && scope != "cgroup" {
+				diags.AddError(
+					"Invalid Configuration",
+					fmt.Sprintf("Action %d: 'scope' must be one of: 'process', 'container', 'cgroup', or empty.", i),
+				)
+				continue
+			}
+		}
+	}
+
+	return diags
+}
+
 func (r *csmThreatsAgentRuleResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
 	var state csmThreatsAgentRuleModel
 	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	// Validate actions
+	response.Diagnostics.Append(r.validateActions(ctx, state.Actions)...)
 	if response.Diagnostics.HasError() {
 		return
 	}
@@ -119,6 +251,7 @@ func (r *csmThreatsAgentRuleResource) Create(ctx context.Context, request resour
 	agentRulePayload, err := r.buildCreateCSMThreatsAgentRulePayload(&state)
 	if err != nil {
 		response.Diagnostics.AddError("error while parsing resource", err.Error())
+		return
 	}
 
 	res, _, err := r.api.CreateCSMThreatsAgentRule(r.auth, *agentRulePayload)
@@ -177,6 +310,12 @@ func (r *csmThreatsAgentRuleResource) Read(ctx context.Context, request resource
 func (r *csmThreatsAgentRuleResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
 	var state csmThreatsAgentRuleModel
 	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	// Validate actions
+	response.Diagnostics.Append(r.validateActions(ctx, state.Actions)...)
 	if response.Diagnostics.HasError() {
 		return
 	}
@@ -245,6 +384,55 @@ func (r *csmThreatsAgentRuleResource) buildCreateCSMThreatsAgentRulePayload(stat
 	attributes.PolicyId = policyId
 	attributes.ProductTags = productTags
 
+	// Initialize empty actions array - this ensures we always send the actions field
+	outActions := make([]datadogV2.CloudWorkloadSecurityAgentRuleAction, 0)
+
+	// Only populate actions if there are any configured
+	if state.Actions != nil {
+		for _, a := range state.Actions {
+			action := datadogV2.CloudWorkloadSecurityAgentRuleAction{}
+
+			if a.Set != nil {
+				sa := datadogV2.CloudWorkloadSecurityAgentRuleActionSet{}
+
+				if !a.Set.Name.IsNull() && !a.Set.Name.IsUnknown() {
+					name := a.Set.Name.ValueString()
+					sa.Name = &name
+				}
+				if !a.Set.Field.IsNull() && !a.Set.Field.IsUnknown() {
+					field := a.Set.Field.ValueString()
+					sa.Field = &field
+				}
+				if !a.Set.Value.IsNull() && !a.Set.Value.IsUnknown() {
+					value := a.Set.Value.ValueString()
+					sa.Value = &value
+				}
+				if !a.Set.Append.IsNull() && !a.Set.Append.IsUnknown() {
+					append := a.Set.Append.ValueBool()
+					sa.Append = &append
+				}
+				if !a.Set.Size.IsNull() && !a.Set.Size.IsUnknown() {
+					size := a.Set.Size.ValueInt64()
+					sa.Size = &size
+				}
+				if !a.Set.Ttl.IsNull() && !a.Set.Ttl.IsUnknown() {
+					ttl := a.Set.Ttl.ValueInt64()
+					sa.Ttl = &ttl
+				}
+				if !a.Set.Scope.IsNull() && !a.Set.Scope.IsUnknown() {
+					scope := a.Set.Scope.ValueString()
+					sa.Scope = &scope
+				}
+				action.Set = &sa
+			}
+
+			outActions = append(outActions, action)
+		}
+	}
+
+	// Always set actions field - empty slice will remove all actions from API
+	attributes.Actions = outActions
+
 	data := datadogV2.NewCloudWorkloadSecurityAgentRuleCreateData(attributes, datadogV2.CLOUDWORKLOADSECURITYAGENTRULETYPE_AGENT_RULE)
 	return datadogV2.NewCloudWorkloadSecurityAgentRuleCreateRequest(*data), nil
 }
@@ -258,6 +446,55 @@ func (r *csmThreatsAgentRuleResource) buildUpdateCSMThreatsAgentRulePayload(stat
 	attributes.Enabled = &enabled
 	attributes.PolicyId = policyId
 	attributes.ProductTags = productTags
+
+	// Initialize empty actions array - this ensures we always send the actions field
+	outActions := make([]datadogV2.CloudWorkloadSecurityAgentRuleAction, 0)
+
+	// Only populate actions if there are any configured
+	if state.Actions != nil {
+		for _, a := range state.Actions {
+			action := datadogV2.CloudWorkloadSecurityAgentRuleAction{}
+
+			if a.Set != nil {
+				sa := datadogV2.CloudWorkloadSecurityAgentRuleActionSet{}
+
+				if !a.Set.Name.IsNull() && !a.Set.Name.IsUnknown() {
+					name := a.Set.Name.ValueString()
+					sa.Name = &name
+				}
+				if !a.Set.Field.IsNull() && !a.Set.Field.IsUnknown() {
+					field := a.Set.Field.ValueString()
+					sa.Field = &field
+				}
+				if !a.Set.Value.IsNull() && !a.Set.Value.IsUnknown() {
+					value := a.Set.Value.ValueString()
+					sa.Value = &value
+				}
+				if !a.Set.Append.IsNull() && !a.Set.Append.IsUnknown() {
+					append := a.Set.Append.ValueBool()
+					sa.Append = &append
+				}
+				if !a.Set.Size.IsNull() && !a.Set.Size.IsUnknown() {
+					size := a.Set.Size.ValueInt64()
+					sa.Size = &size
+				}
+				if !a.Set.Ttl.IsNull() && !a.Set.Ttl.IsUnknown() {
+					ttl := a.Set.Ttl.ValueInt64()
+					sa.Ttl = &ttl
+				}
+				if !a.Set.Scope.IsNull() && !a.Set.Scope.IsUnknown() {
+					scope := a.Set.Scope.ValueString()
+					sa.Scope = &scope
+				}
+				action.Set = &sa
+			}
+
+			outActions = append(outActions, action)
+		}
+	}
+
+	// Always set actions field - empty slice will remove all actions from API
+	attributes.Actions = outActions
 
 	data := datadogV2.NewCloudWorkloadSecurityAgentRuleUpdateData(attributes, datadogV2.CLOUDWORKLOADSECURITYAGENTRULETYPE_AGENT_RULE)
 	data.Id = &agentRuleId
@@ -275,6 +512,7 @@ func (r *csmThreatsAgentRuleResource) extractAgentRuleAttributesFromResource(sta
 		val := state.PolicyId.ValueString()
 		policyId = &val
 	}
+
 	enabled := state.Enabled.ValueBool()
 	expression := state.Expression.ValueString()
 	description := state.Description.ValueStringPointer()
@@ -298,13 +536,78 @@ func (r *csmThreatsAgentRuleResource) updateStateFromResponse(ctx context.Contex
 	attributes := res.Data.Attributes
 
 	state.Name = types.StringValue(attributes.GetName())
-	state.Description = types.StringValue(attributes.GetDescription())
-	state.Enabled = types.BoolValue(attributes.GetEnabled())
-	state.Expression = types.StringValue(attributes.GetExpression())
-	tags := attributes.GetProductTags()
-	if len(tags) == 0 && state.ProductTags.IsNull() {
-		state.ProductTags = types.SetNull(types.StringType)
+	if attributes.Description != nil {
+		state.Description = types.StringValue(*attributes.Description)
 	} else {
-		state.ProductTags, _ = types.SetValueFrom(ctx, types.StringType, tags)
+		state.Description = types.StringNull()
 	}
+	if attributes.Enabled != nil {
+		state.Enabled = types.BoolValue(*attributes.Enabled)
+	} else {
+		state.Enabled = types.BoolNull()
+	}
+	state.Expression = types.StringValue(attributes.GetExpression())
+
+	tags := attributes.GetProductTags()
+	if len(tags) > 0 {
+		state.ProductTags, _ = types.SetValueFrom(ctx, types.StringType, tags)
+	} else {
+		state.ProductTags = types.SetNull(types.StringType)
+	}
+
+	var actions []ActionModel
+	for _, act := range res.Data.Attributes.GetActions() {
+		action := ActionModel{}
+
+		if act.Set != nil {
+			setAction := &SetActionModel{}
+			s := act.Set
+
+			if s.Name != nil {
+				setAction.Name = types.StringValue(*s.Name)
+			} else {
+				setAction.Name = types.StringNull()
+			}
+			if s.Field != nil {
+				setAction.Field = types.StringValue(*s.Field)
+			} else {
+				setAction.Field = types.StringNull()
+			}
+			if s.Value != nil {
+				setAction.Value = types.StringValue(*s.Value)
+			} else {
+				setAction.Value = types.StringNull()
+			}
+			// Handle append with proper default when not returned by API
+			if s.Append != nil {
+				setAction.Append = types.BoolValue(*s.Append)
+			} else {
+				// Use false as default when API doesn't return append value
+				setAction.Append = types.BoolValue(false)
+			}
+			if s.Size != nil {
+				setAction.Size = types.Int64Value(*s.Size)
+			} else {
+				// Use 0 as default when API doesn't return size value
+				setAction.Size = types.Int64Value(0)
+			}
+			if s.Ttl != nil {
+				setAction.Ttl = types.Int64Value(*s.Ttl)
+			} else {
+				// Use 0 as default when API doesn't return ttl value
+				setAction.Ttl = types.Int64Value(0)
+			}
+			if s.Scope != nil {
+				setAction.Scope = types.StringValue(*s.Scope)
+			} else {
+				// Use empty string as default when API returns null for scope
+				setAction.Scope = types.StringValue("")
+			}
+			action.Set = setAction
+		}
+
+		actions = append(actions, action)
+	}
+
+	state.Actions = actions
 }

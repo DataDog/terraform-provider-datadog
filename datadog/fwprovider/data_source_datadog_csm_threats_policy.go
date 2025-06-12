@@ -75,7 +75,7 @@ func (r *csmThreatsPoliciesDataSource) Read(ctx context.Context, request datasou
 	}
 
 	stateId := strings.Join(policyIds, "--")
-	state.Id = types.StringValue(computeDataSourceID(&stateId))
+	state.Id = types.StringValue(stateId)
 	tfAgentRuleIds, diags := types.ListValueFrom(ctx, types.StringType, policyIds)
 	response.Diagnostics.Append(diags...)
 	state.PolicyIds = tfAgentRuleIds
