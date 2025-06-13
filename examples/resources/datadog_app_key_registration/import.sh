@@ -1,0 +1,1 @@
+terraform import datadog_app_key_registration.my_app_key_registration 11111111-2222-3333-4444-555555555555
