@@ -41,6 +41,7 @@ datadog/*datadog_role*                    @DataDog/web-frameworks @DataDog/api-r
 
 # Framework resources/data-sources
 datadog/**/*datadog_action_connection*           @DataDog/web-frameworks @DataDog/api-reliability @DataDog/action-platform
+datadog/**/*datadog_app_key_registration*        @DataDog/web-frameworks @DataDog/api-reliability @DataDog/action-platform @DataDog/workflow-automation-backend
 datadog/**/*datadog_api_key*                     @DataDog/web-frameworks @DataDog/api-reliability @DataDog/credentials-management
 datadog/**/*datadog_apm_retention_filter*        @DataDog/web-frameworks @DataDog/api-reliability @DataDog/apm-trace-intake
 datadog/**/*datadog_application_key*             @DataDog/web-frameworks @DataDog/api-reliability @DataDog/credentials-management

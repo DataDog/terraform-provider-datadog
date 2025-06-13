@@ -3,12 +3,12 @@
 page_title: "datadog_workflow_automation Data Source - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  This data source retrieves the definition of an existing Datadog workflow from Workflow Automation for use in other resources.
+  This data source retrieves the definition of an existing Datadog workflow from Workflow Automation for use in other resources. This data source requires a registered application key https://registry.terraform.io/providers/DataDog/datadog/latest/docs/resources/app_key_registration.
 ---
 
 # datadog_workflow_automation (Data Source)
 
-This data source retrieves the definition of an existing Datadog workflow from Workflow Automation for use in other resources.
+This data source retrieves the definition of an existing Datadog workflow from Workflow Automation for use in other resources. This data source requires a [registered application key](https://registry.terraform.io/providers/DataDog/datadog/latest/docs/resources/app_key_registration).
 
 ## Example Usage
 

@@ -36,7 +36,7 @@ func (d *appBuilderAppDataSource) Metadata(_ context.Context, request datasource
 
 func (d *appBuilderAppDataSource) Schema(_ context.Context, request datasource.SchemaRequest, response *datasource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "This data source retrieves the definition of an existing Datadog App from App Builder for use in other resources, such as embedding Apps in Dashboards.",
+		Description: "This data source retrieves the definition of an existing Datadog App from App Builder for use in other resources, such as embedding Apps in Dashboards. This data source requires a [registered application key](https://registry.terraform.io/providers/DataDog/datadog/latest/docs/resources/app_key_registration).",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
 				Description: "ID for the App.",
