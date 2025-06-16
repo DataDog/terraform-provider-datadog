@@ -5512,7 +5512,9 @@ func isTargetOfTypeFloat(assertionType datadogV1.SyntheticsAssertionType, assert
 		datadogV1.SYNTHETICSASSERTIONOPERATOR_MORE_THAN,
 		datadogV1.SYNTHETICSASSERTIONOPERATOR_MORE_THAN_OR_EQUAL,
 	} {
-		if assertionOperator == operator {
+		if assertionOperator == operator &&
+			assertionType != datadogV1.SYNTHETICSASSERTIONTYPE_TLS_VERSION &&
+			assertionType != datadogV1.SYNTHETICSASSERTIONTYPE_MIN_TLS_VERSION {
 			return true
 		}
 	}
