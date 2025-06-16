@@ -43,7 +43,8 @@ type csmThreatsAgentRuleModel struct {
 }
 
 type ActionModel struct {
-	Set *SetActionModel `tfsdk:"set"`
+	Set  *SetActionModel  `tfsdk:"set"`
+	Hash *HashActionModel `tfsdk:"hash"`
 }
 
 type SetActionModel struct {
@@ -54,6 +55,10 @@ type SetActionModel struct {
 	Size   types.Int64  `tfsdk:"size"`
 	Ttl    types.Int64  `tfsdk:"ttl"`
 	Scope  types.String `tfsdk:"scope"`
+}
+
+type HashActionModel struct {
+	// Hash action has no configurable fields based on the example
 }
 
 func NewCSMThreatsAgentRuleResource() resource.Resource {
@@ -151,6 +156,12 @@ func (r *csmThreatsAgentRuleResource) Schema(_ context.Context, _ resource.Schem
 								},
 							},
 						},
+						"hash": schema.SingleNestedBlock{
+							Description: "Hash action configuration",
+							Attributes:  map[string]schema.Attribute{
+								// Hash action has no configurable attributes based on the example
+							},
+						},
 					},
 				},
 			},
@@ -178,55 +189,72 @@ func (r *csmThreatsAgentRuleResource) validateActions(ctx context.Context, actio
 	for i, action := range actions {
 		// Check that exactly one action type is set
 		hasSet := action.Set != nil
+		hasHash := action.Hash != nil
 
-		if !hasSet {
+		if !hasSet && !hasHash {
 			diags.AddError(
 				"Missing Action Type",
-				fmt.Sprintf("Action %d: At least one action type (set) must be specified.", i),
+				fmt.Sprintf("Action %d: At least one action type (set or hash) must be specified.", i),
 			)
 			continue
 		}
 
-		// Check that set name is provided and not empty
-		if action.Set.Name.IsNull() || action.Set.Name.IsUnknown() || action.Set.Name.ValueString() == "" {
-			diags.AddError(
-				"Missing Required Field",
-				fmt.Sprintf("Action %d: 'name' is required in the set action configuration.", i),
-			)
-			continue
-		}
-
-		// Check that exactly one of value, field is set
-		hasValue := !action.Set.Value.IsNull() && !action.Set.Value.IsUnknown() && action.Set.Value.ValueString() != ""
-		hasField := !action.Set.Field.IsNull() && !action.Set.Field.IsUnknown() && action.Set.Field.ValueString() != ""
-
-		if !hasValue && !hasField {
-			diags.AddError(
-				"Missing Required Field",
-				fmt.Sprintf("Action %d: One of 'value' or 'field' must be set in the set action configuration.", i),
-			)
-			continue
-		}
-
-		if hasValue && hasField {
+		if hasSet && hasHash {
 			diags.AddError(
 				"Invalid Configuration",
-				fmt.Sprintf("Action %d: Only one of 'value' or 'field' can be set in the set action configuration.", i),
+				fmt.Sprintf("Action %d: Only one action type (set or hash) can be specified.", i),
 			)
 			continue
 		}
 
-		// Validate scope if set
-		if !action.Set.Scope.IsNull() && !action.Set.Scope.IsUnknown() {
-			scope := action.Set.Scope.ValueString()
-			if scope != "" && scope != "process" && scope != "container" && scope != "cgroup" {
+		// Validate set action if present
+		if hasSet {
+			// Check that set name is provided and not empty
+			if action.Set.Name.IsNull() || action.Set.Name.IsUnknown() || action.Set.Name.ValueString() == "" {
 				diags.AddError(
-					"Invalid Configuration",
-					fmt.Sprintf("Action %d: 'scope' must be one of: 'process', 'container', 'cgroup', or empty.", i),
+					"Missing Required Field",
+					fmt.Sprintf("Action %d: 'name' is required in the set action configuration.", i),
 				)
 				continue
 			}
+
+			// Check that exactly one of value, field is set
+			hasValue := !action.Set.Value.IsNull() && !action.Set.Value.IsUnknown() && action.Set.Value.ValueString() != ""
+			hasField := !action.Set.Field.IsNull() && !action.Set.Field.IsUnknown() && action.Set.Field.ValueString() != ""
+
+			if !hasValue && !hasField {
+				diags.AddError(
+					"Missing Required Field",
+					fmt.Sprintf("Action %d: One of 'value' or 'field' must be set in the set action configuration.", i),
+				)
+				continue
+			}
+
+			if hasValue && hasField {
+				diags.AddError(
+					"Invalid Configuration",
+					fmt.Sprintf("Action %d: Only one of 'value' or 'field' can be set in the set action configuration.", i),
+				)
+				continue
+			}
+
+			// Validate scope if set
+			if !action.Set.Scope.IsNull() && !action.Set.Scope.IsUnknown() {
+				scope := action.Set.Scope.ValueString()
+				if scope != "" && scope != "process" && scope != "container" && scope != "cgroup" {
+					diags.AddError(
+						"Invalid Configuration",
+						fmt.Sprintf("Action %d: 'scope' must be one of: 'process', 'container', 'cgroup', or empty.", i),
+					)
+					continue
+				}
+			}
 		}
+
+		// Hash action validation (currently no specific validation needed)
+		// if hasHash {
+		//     // Add hash-specific validation here if needed in the future
+		// }
 	}
 
 	return diags
@@ -426,6 +454,11 @@ func (r *csmThreatsAgentRuleResource) buildCreateCSMThreatsAgentRulePayload(stat
 				action.Set = &sa
 			}
 
+			if a.Hash != nil {
+				ha := datadogV2.CloudWorkloadSecurityAgentRuleActionHash{}
+				action.Hash = &ha
+			}
+
 			outActions = append(outActions, action)
 		}
 	}
@@ -487,6 +520,11 @@ func (r *csmThreatsAgentRuleResource) buildUpdateCSMThreatsAgentRulePayload(stat
 					sa.Scope = &scope
 				}
 				action.Set = &sa
+			}
+
+			if a.Hash != nil {
+				ha := datadogV2.CloudWorkloadSecurityAgentRuleActionHash{}
+				action.Hash = &ha
 			}
 
 			outActions = append(outActions, action)
