@@ -44,6 +44,7 @@ func TestAccCSMThreatsAgentRulesDataSource(t *testing.T) {
 					append = false
 					scope  = "process"
 				}
+				hash {}
 			}
 		}
 	`, policyConfig, agentRuleName)
@@ -99,6 +100,7 @@ resource "datadog_csm_threats_agent_rule" "agent_rule" {
       append = false
       scope  = "process"
     }
+    hash {}
   }
 }
 `, policyName, agentRuleName)
@@ -169,6 +171,7 @@ func checkCSMThreatsAgentRulesDataSourceContent(accProvider *fwprovider.Framewor
 			resource.TestCheckResourceAttr(dataSourceName, fmt.Sprintf("agent_rules.%d.actions.0.set.field", idx), "exec.file.path"),
 			resource.TestCheckResourceAttr(dataSourceName, fmt.Sprintf("agent_rules.%d.actions.0.set.append", idx), "false"),
 			resource.TestCheckResourceAttr(dataSourceName, fmt.Sprintf("agent_rules.%d.actions.0.set.scope", idx), "process"),
+			resource.TestCheckResourceAttr(dataSourceName, fmt.Sprintf("agent_rules.%d.actions.0.hash.%%", idx), "0"),
 		)(state)
 	}
 }
