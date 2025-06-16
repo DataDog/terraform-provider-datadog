@@ -58,7 +58,7 @@ type SetActionModel struct {
 }
 
 type HashActionModel struct {
-	// Hash action has no configurable fields based on the example
+	// empty on purpose, has no attributes
 }
 
 func NewCSMThreatsAgentRuleResource() resource.Resource {
@@ -159,7 +159,7 @@ func (r *csmThreatsAgentRuleResource) Schema(_ context.Context, _ resource.Schem
 						"hash": schema.SingleNestedBlock{
 							Description: "Hash action configuration",
 							Attributes:  map[string]schema.Attribute{
-								// Hash action has no configurable attributes based on the example
+								// empty on purpose, has no attributes
 							},
 						},
 					},
@@ -183,7 +183,7 @@ func (r *csmThreatsAgentRuleResource) ImportState(ctx context.Context, request r
 }
 
 // validateActions validates the actions list
-func (r *csmThreatsAgentRuleResource) validateActions(ctx context.Context, actions []ActionModel) diag.Diagnostics {
+func (r *csmThreatsAgentRuleResource) validateActions(_ context.Context, actions []ActionModel) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	for i, action := range actions {
@@ -195,14 +195,6 @@ func (r *csmThreatsAgentRuleResource) validateActions(ctx context.Context, actio
 			diags.AddError(
 				"Missing Action Type",
 				fmt.Sprintf("Action %d: At least one action type (set or hash) must be specified.", i),
-			)
-			continue
-		}
-
-		if hasSet && hasHash {
-			diags.AddError(
-				"Invalid Configuration",
-				fmt.Sprintf("Action %d: Only one action type (set or hash) can be specified.", i),
 			)
 			continue
 		}
@@ -455,8 +447,8 @@ func (r *csmThreatsAgentRuleResource) buildCreateCSMThreatsAgentRulePayload(stat
 			}
 
 			if a.Hash != nil {
-				ha := datadogV2.CloudWorkloadSecurityAgentRuleActionHash{}
-				action.Hash = &ha
+				ha := make(map[string]interface{})
+				action.Hash = ha
 			}
 
 			outActions = append(outActions, action)
@@ -523,8 +515,8 @@ func (r *csmThreatsAgentRuleResource) buildUpdateCSMThreatsAgentRulePayload(stat
 			}
 
 			if a.Hash != nil {
-				ha := datadogV2.CloudWorkloadSecurityAgentRuleActionHash{}
-				action.Hash = &ha
+				ha := make(map[string]interface{})
+				action.Hash = ha
 			}
 
 			outActions = append(outActions, action)
@@ -642,6 +634,10 @@ func (r *csmThreatsAgentRuleResource) updateStateFromResponse(ctx context.Contex
 				setAction.Scope = types.StringValue("")
 			}
 			action.Set = setAction
+		}
+
+		if act.Hash != nil {
+			action.Hash = &HashActionModel{}
 		}
 
 		actions = append(actions, action)
