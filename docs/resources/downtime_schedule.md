@@ -42,13 +42,13 @@ resource "datadog_downtime_schedule" "downtime_schedule_example" {
 
 ### Required
 
+- `monitor_identifier` (Block) (see [below for nested schema](#nestedblock--monitor_identifier))
 - `scope` (String) The scope to which the downtime applies. Must follow the [common search syntax](https://docs.datadoghq.com/logs/explorer/search_syntax/).
 
 ### Optional
 
 - `display_timezone` (String) The timezone in which to display the downtime's start and end times in Datadog applications. This is not used as an offset for scheduling.
 - `message` (String) A message to include with notifications for this downtime. Email notifications can be sent to specific users by using the same `@username` notation as events.
-- `monitor_identifier` (Block, Optional) (see [below for nested schema](#nestedblock--monitor_identifier))
 - `mute_first_recovery_notification` (Boolean) If the first recovery notification during a downtime should be muted.
 - `notify_end_states` (Set of String) States that will trigger a monitor notification when the `notify_end_types` action occurs.
 - `notify_end_types` (Set of String) Actions that will trigger a monitor notification if the downtime is in the `notify_end_types` state.
