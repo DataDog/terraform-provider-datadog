@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 538
+        content_length: 565
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"message":"test","name":"tf-TestAccDatadogMonitor_FormulaFunction_Cost-local-1738245043","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":6},"variables":[{"aggregator":"sum","data_source":"cloud_cost","name":"query1","query":"sum:aws.cost.amortized{servicename: ec2} by {account}"}]},"priority":null,"query":"formula(\"query1\").last(\"30d\").anomaly(direction=\"both\") \u003e 6","restricted_roles":null,"tags":[],"type":"cost alert"}
+            {"draft_status":"published","message":"test","name":"tf-TestAccDatadogMonitor_FormulaFunction_Cost-local-1749222072","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":6},"variables":[{"aggregator":"sum","data_source":"cloud_cost","name":"query1","query":"sum:aws.cost.amortized{servicename: ec2} by {account}"}]},"priority":null,"query":"formula(\"query1\").last(\"30d\").anomaly(direction=\"both\") \u003e 6","restricted_roles":null,"tags":[],"type":"cost alert"}
         form: {}
         headers:
             Accept:
@@ -37,20 +37,20 @@ interactions:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 123.523375ms
+        duration: 401.433792ms
     - id: 1
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 538
+        content_length: 565
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"message":"test","name":"tf-TestAccDatadogMonitor_FormulaFunction_Cost-local-1738245043","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":6},"variables":[{"aggregator":"sum","data_source":"cloud_cost","name":"query1","query":"sum:aws.cost.amortized{servicename: ec2} by {account}"}]},"priority":null,"query":"formula(\"query1\").last(\"30d\").anomaly(direction=\"both\") \u003e 6","restricted_roles":null,"tags":[],"type":"cost alert"}
+            {"draft_status":"published","message":"test","name":"tf-TestAccDatadogMonitor_FormulaFunction_Cost-local-1749222072","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":6},"variables":[{"aggregator":"sum","data_source":"cloud_cost","name":"query1","query":"sum:aws.cost.amortized{servicename: ec2} by {account}"}]},"priority":null,"query":"formula(\"query1\").last(\"30d\").anomaly(direction=\"both\") \u003e 6","restricted_roles":null,"tags":[],"type":"cost alert"}
         form: {}
         headers:
             Accept:
@@ -74,57 +74,20 @@ interactions:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 81.448458ms
+        duration: 143.028666ms
     - id: 2
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 538
+        content_length: 542
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"message":"test","name":"tf-TestAccDatadogMonitor_FormulaFunction_Cost-local-1738245043","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":6},"variables":[{"aggregator":"sum","data_source":"cloud_cost","name":"query1","query":"sum:aws.cost.amortized{servicename: ec2} by {account}"}]},"priority":null,"query":"formula(\"query1\").last(\"30d\").anomaly(direction=\"both\") \u003e 6","restricted_roles":null,"tags":[],"type":"cost alert"}
-        form: {}
-        headers:
-            Accept:
-                - application/json
-            Content-Type:
-                - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/validate
-        method: POST
-      response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        transfer_encoding: []
-        trailer: {}
-        content_length: 3
-        uncompressed: false
-        body: |
-            {}
-        headers:
-            Content-Type:
-                - application/json
-        status: 200 OK
-        code: 200
-        duration: 75.326125ms
-    - id: 3
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 515
-        transfer_encoding: []
-        trailer: {}
-        host: api.datadoghq.com
-        remote_addr: ""
-        request_uri: ""
-        body: |
-            {"message":"test","name":"tf-TestAccDatadogMonitor_FormulaFunction_Cost-local-1738245043","options":{"include_tags":true,"new_host_delay":300,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":6},"variables":[{"aggregator":"sum","data_source":"cloud_cost","name":"query1","query":"sum:aws.cost.amortized{servicename: ec2} by {account}"}]},"priority":null,"query":"formula(\"query1\").last(\"30d\").anomaly(direction=\"both\") \u003e 6","restricted_roles":null,"tags":[],"type":"cost alert"}
+            {"draft_status":"published","message":"test","name":"tf-TestAccDatadogMonitor_FormulaFunction_Cost-local-1749222072","options":{"include_tags":true,"new_host_delay":300,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":6},"variables":[{"aggregator":"sum","data_source":"cloud_cost","name":"query1","query":"sum:aws.cost.amortized{servicename: ec2} by {account}"}]},"priority":null,"query":"formula(\"query1\").last(\"30d\").anomaly(direction=\"both\") \u003e 6","restricted_roles":null,"tags":[],"type":"cost alert"}
         form: {}
         headers:
             Accept:
@@ -143,33 +106,33 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":163691240,"org_id":321813,"type":"cost alert","name":"tf-TestAccDatadogMonitor_FormulaFunction_Cost-local-1738245043","message":"test","tags":[],"query":"formula(\"query1\").last(\"30d\").anomaly(direction=\"both\") > 6","options":{"include_tags":true,"new_host_delay":300,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":6.0},"variables":[{"aggregator":"sum","data_source":"cloud_cost","name":"query1","query":"sum:aws.cost.amortized{servicename: ec2} by {account}"}],"notify_audit":false,"silenced":{}},"multi":false,"created_at":1738245025000,"created":"2025-01-30T13:50:25.991206+00:00","modified":"2025-01-30T13:50:25.991206+00:00","deleted":null,"priority":null,"restricted_roles":null,"restriction_policy":null,"overall_state_modified":null,"overall_state":"No Data","creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com","id":1445416}}
+            {"id":174341709,"org_id":321813,"type":"cost alert","name":"tf-TestAccDatadogMonitor_FormulaFunction_Cost-local-1749222072","message":"test","tags":[],"query":"formula(\"query1\").last(\"30d\").anomaly(direction=\"both\") > 6","options":{"include_tags":true,"new_host_delay":300,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":6.0},"variables":[{"aggregator":"sum","data_source":"cloud_cost","name":"query1","query":"sum:aws.cost.amortized{servicename: ec2} by {account}"}],"notify_audit":false,"silenced":{}},"multi":false,"created_at":1749222073000,"created":"2025-06-06T15:01:13.469506+00:00","modified":"2025-06-06T15:01:13.469506+00:00","deleted":null,"priority":null,"restricted_roles":null,"restriction_policy":null,"overall_state_modified":null,"overall_state":"No Data","creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com","id":1445416}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 155.210334ms
-    - id: 4
+        duration: 367.949708ms
+    - id: 3
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 538
+        content_length: 565
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"message":"test","name":"tf-TestAccDatadogMonitor_FormulaFunction_Cost-local-1738245043","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":6},"variables":[{"aggregator":"sum","data_source":"cloud_cost","name":"query1","query":"sum:aws.cost.amortized{servicename: ec2} by {account}"}]},"priority":null,"query":"formula(\"query1\").last(\"30d\").anomaly(direction=\"both\") \u003e 6","restricted_roles":null,"tags":[],"type":"cost alert"}
+            {"draft_status":"published","message":"test","name":"tf-TestAccDatadogMonitor_FormulaFunction_Cost-local-1749222072","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":6},"variables":[{"aggregator":"sum","data_source":"cloud_cost","name":"query1","query":"sum:aws.cost.amortized{servicename: ec2} by {account}"}]},"priority":null,"query":"formula(\"query1\").last(\"30d\").anomaly(direction=\"both\") \u003e 6","restricted_roles":null,"tags":[],"type":"cost alert"}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/163691240/validate
+        url: https://api.datadoghq.com/api/v1/monitor/174341709/validate
         method: POST
       response:
         proto: HTTP/1.1
@@ -186,8 +149,8 @@ interactions:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 107.051917ms
-    - id: 5
+        duration: 245.212708ms
+    - id: 4
       request:
         proto: HTTP/1.1
         proto_major: 1
@@ -203,7 +166,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/163691240
+        url: https://api.datadoghq.com/api/v1/monitor/174341709
         method: GET
       response:
         proto: HTTP/1.1
@@ -215,88 +178,51 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":163691240,"org_id":321813,"type":"cost alert","name":"tf-TestAccDatadogMonitor_FormulaFunction_Cost-local-1738245043","message":"test","tags":[],"query":"formula(\"query1\").last(\"30d\").anomaly(direction=\"both\") > 6","options":{"include_tags":true,"new_host_delay":300,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":6.0},"variables":[{"aggregator":"sum","data_source":"cloud_cost","name":"query1","query":"sum:aws.cost.amortized{servicename: ec2} by {account}"}],"notify_audit":false,"silenced":{}},"multi":false,"created_at":1738245025000,"created":"2025-01-30T13:50:25.991206+00:00","modified":"2025-01-30T13:50:25.991206+00:00","deleted":null,"priority":null,"restricted_roles":null,"overall_state_modified":null,"overall_state":"No Data","creator":{"name":"frog","email":"frog@datadoghq.com","handle":"frog@datadoghq.com","id":1445416}}
+            {"id":174341709,"org_id":321813,"type":"cost alert","name":"tf-TestAccDatadogMonitor_FormulaFunction_Cost-local-1749222072","message":"test","tags":[],"query":"formula(\"query1\").last(\"30d\").anomaly(direction=\"both\") > 6","options":{"include_tags":true,"new_host_delay":300,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":6.0},"variables":[{"aggregator":"sum","data_source":"cloud_cost","name":"query1","query":"sum:aws.cost.amortized{servicename: ec2} by {account}"}],"notify_audit":false,"silenced":{}},"multi":false,"created_at":1749222073000,"created":"2025-06-06T15:01:13.469506+00:00","modified":"2025-06-06T15:01:13.469506+00:00","deleted":null,"priority":null,"restricted_roles":null,"overall_state_modified":null,"overall_state":"No Data","creator":{"name":"frog","email":"frog@datadoghq.com","handle":"frog@datadoghq.com","id":1445416}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 122.613291ms
+        duration: 222.965125ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 565
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"draft_status":"published","message":"test","name":"tf-TestAccDatadogMonitor_FormulaFunction_Cost-local-1749222072","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":6},"variables":[{"aggregator":"sum","data_source":"cloud_cost","name":"query1","query":"sum:aws.cost.amortized{servicename: ec2} by {account}"}]},"priority":null,"query":"formula(\"query1\").last(\"30d\").anomaly(direction=\"both\") \u003e 6","restricted_roles":null,"tags":[],"type":"cost alert"}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/monitor/174341709/validate
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 3
+        uncompressed: false
+        body: |
+            {}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 139.933833ms
     - id: 6
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 538
-        transfer_encoding: []
-        trailer: {}
-        host: api.datadoghq.com
-        remote_addr: ""
-        request_uri: ""
-        body: |
-            {"message":"test","name":"tf-TestAccDatadogMonitor_FormulaFunction_Cost-local-1738245043","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":6},"variables":[{"aggregator":"sum","data_source":"cloud_cost","name":"query1","query":"sum:aws.cost.amortized{servicename: ec2} by {account}"}]},"priority":null,"query":"formula(\"query1\").last(\"30d\").anomaly(direction=\"both\") \u003e 6","restricted_roles":null,"tags":[],"type":"cost alert"}
-        form: {}
-        headers:
-            Accept:
-                - application/json
-            Content-Type:
-                - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/163691240/validate
-        method: POST
-      response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        transfer_encoding: []
-        trailer: {}
-        content_length: 3
-        uncompressed: false
-        body: |
-            {}
-        headers:
-            Content-Type:
-                - application/json
-        status: 200 OK
-        code: 200
-        duration: 107.504458ms
-    - id: 7
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 538
-        transfer_encoding: []
-        trailer: {}
-        host: api.datadoghq.com
-        remote_addr: ""
-        request_uri: ""
-        body: |
-            {"message":"test","name":"tf-TestAccDatadogMonitor_FormulaFunction_Cost-local-1738245043","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":6},"variables":[{"aggregator":"sum","data_source":"cloud_cost","name":"query1","query":"sum:aws.cost.amortized{servicename: ec2} by {account}"}]},"priority":null,"query":"formula(\"query1\").last(\"30d\").anomaly(direction=\"both\") \u003e 6","restricted_roles":null,"tags":[],"type":"cost alert"}
-        form: {}
-        headers:
-            Accept:
-                - application/json
-            Content-Type:
-                - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/163691240/validate
-        method: POST
-      response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        transfer_encoding: []
-        trailer: {}
-        content_length: 3
-        uncompressed: false
-        body: |
-            {}
-        headers:
-            Content-Type:
-                - application/json
-        status: 200 OK
-        code: 200
-        duration: 120.110625ms
-    - id: 8
       request:
         proto: HTTP/1.1
         proto_major: 1
@@ -312,7 +238,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/163691240
+        url: https://api.datadoghq.com/api/v1/monitor/174341709
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -324,14 +250,14 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"deleted_monitor_id":163691240}
+            {"deleted_monitor_id":174341709}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 222.840667ms
-    - id: 9
+        duration: 251.159875ms
+    - id: 7
       request:
         proto: HTTP/1.1
         proto_major: 1
@@ -347,7 +273,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/163691240
+        url: https://api.datadoghq.com/api/v1/monitor/174341709
         method: GET
       response:
         proto: HTTP/1.1
@@ -364,4 +290,4 @@ interactions:
                 - application/json
         status: 404 Not Found
         code: 404
-        duration: 82.746625ms
+        duration: 306.096041ms
