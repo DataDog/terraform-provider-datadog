@@ -12,13 +12,11 @@ import (
 	"io"
 	"io/ioutil"
 	"log"
+	"maps"
 	_nethttp "net/http"
 	"regexp"
 	"strconv"
 	"strings"
-
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
 	"github.com/hashicorp/go-cty/cty"
@@ -26,6 +24,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/retry"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 )
 
 /*
@@ -185,6 +185,11 @@ func syntheticsTestRequest() *schema.Resource {
 				Type:             schema.TypeString,
 				Optional:         true,
 				ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsTestRequestBodyTypeFromValue),
+			},
+			"form": {
+				Description: "Form data to be sent when `body_type` is `multipart/form-data`.",
+				Type:        schema.TypeMap,
+				Optional:    true,
 			},
 			"timeout": {
 				Description: "Timeout in seconds for the test.",
@@ -2626,6 +2631,15 @@ func buildDatadogSyntheticsAPITest(d *schema.ResourceData) *datadogV1.Synthetics
 	if attr, ok := d.GetOk("request_definition.0.body_type"); ok {
 		request.SetBodyType(datadogV1.SyntheticsTestRequestBodyType(attr.(string)))
 	}
+	if attr, ok := d.GetOk("request_definition.0.form"); ok {
+		form := attr.(map[string]interface{})
+		if len(form) > 0 {
+			request.SetForm(make(map[string]string))
+		}
+		for k, v := range form {
+			request.GetForm()[k] = v.(string)
+		}
+	}
 	if attr, ok := d.GetOk("request_file"); ok && attr != nil && len(attr.([]interface{})) > 0 {
 		request.SetFiles(buildDatadogBodyFiles(attr.([]interface{})))
 	}
@@ -2777,6 +2791,15 @@ func buildDatadogSyntheticsAPITest(d *schema.ResourceData) *datadogV1.Synthetics
 						if v, ok := requestMap["body_type"].(string); ok && v != "" {
 							request.SetBodyType(datadogV1.SyntheticsTestRequestBodyType(v))
 						}
+						if attr, ok := requestMap["form"]; ok {
+							form := attr.(map[string]interface{})
+							if len(form) > 0 {
+								request.SetForm(make(map[string]string))
+							}
+							for k, v := range form {
+								request.GetForm()[k] = v.(string)
+							}
+						}
 
 						if attr, ok := stepMap["request_file"]; ok && attr != nil && len(attr.([]interface{})) > 0 {
 							request.SetFiles(buildDatadogBodyFiles(attr.([]interface{})))
@@ -2924,12 +2947,15 @@ func buildDatadogSyntheticsBrowserTest(d *schema.ResourceData) *datadogV1.Synthe
 	if attr, ok := d.GetOk("request_definition.0.url"); ok {
 		request.SetUrl(attr.(string))
 	}
+
+	// XXX: `body` and `body_type` are accepted by the backend, but ignored by the browser test runner
 	if attr, ok := d.GetOk("request_definition.0.body"); ok {
 		request.SetBody(attr.(string))
 	}
 	if attr, ok := d.GetOk("request_definition.0.body_type"); ok {
 		request.SetBodyType(datadogV1.SyntheticsTestRequestBodyType(attr.(string)))
 	}
+
 	if attr, ok := d.GetOk("request_definition.0.timeout"); ok {
 		request.SetTimeout(float64(attr.(int)))
 	}
@@ -4701,6 +4727,11 @@ func buildTerraformTestRequest(request datadogV1.SyntheticsTestRequest) (map[str
 	}
 	if request.HasBodyType() {
 		localRequest["body_type"] = request.GetBodyType()
+	}
+	if request.HasForm() {
+		localForm := make(map[string]string)
+		maps.Copy(localForm, request.GetForm())
+		localRequest["form"] = localForm
 	}
 	if request.HasMethod() {
 		localRequest["method"] = convertToString(request.GetMethod())

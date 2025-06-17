@@ -954,6 +954,7 @@ Optional:
 - `dns_server` (String) DNS server to use for DNS tests (`subtype = "dns"`).
 - `dns_server_port` (String) DNS server port to use for DNS tests.
 - `follow_redirects` (Boolean) Determines whether or not the API HTTP test should follow redirects.
+- `form` (Map of String) Form data to be sent when `body_type` is `multipart/form-data`.
 - `host` (String) Host name to perform the test with.
 - `http_version` (String) HTTP version to use for an HTTP request in an API test or step. Valid values are `http1`, `http2`, `any`. Defaults to `"any"`.
 - `is_message_base64_encoded` (Boolean) Whether the message is base64-encoded.
@@ -1544,6 +1545,7 @@ Optional:
 - `certificate_domains` (List of String) By default, the client certificate is applied on the domain of the starting URL for browser tests. If you want your client certificate to be applied on other domains instead, add them in `certificate_domains`.
 - `dns_server` (String) DNS server to use for DNS tests (`subtype = "dns"`).
 - `dns_server_port` (String) DNS server port to use for DNS tests.
+- `form` (Map of String) Form data to be sent when `body_type` is `multipart/form-data`.
 - `host` (String) Host name to perform the test with.
 - `http_version` (String, Deprecated) HTTP version to use for an HTTP request in an API test or step. **Deprecated.** Use `http_version` in the `options_list` field instead.
 - `is_message_base64_encoded` (Boolean) Whether the message is base64-encoded.
