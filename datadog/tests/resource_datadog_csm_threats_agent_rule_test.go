@@ -41,11 +41,6 @@ func TestAccCSMThreatsAgentRule_CreateAndUpdate(t *testing.T) {
 				Check:  testAccCheckCSMThreatsPolicyExists(providers.frameworkProvider, "datadog_csm_threats_policy.policy_for_test"),
 			},
 			{
-				// Create a policy to have at least one
-				Config: policyConfig,
-				Check:  testAccCheckCSMThreatsPolicyExists(providers.frameworkProvider, "datadog_csm_threats_policy.policy_for_test"),
-			},
-			{
 				Config: fmt.Sprintf(`
 				%s
 				resource "datadog_csm_threats_agent_rule" "agent_rule_test" {
@@ -62,6 +57,7 @@ func TestAccCSMThreatsAgentRule_CreateAndUpdate(t *testing.T) {
 							append = false
 							scope  = "process"
 						}
+						hash {}
 					}
 				}`, policyConfig, agentRuleName),
 				Check: resource.ComposeTestCheckFunc(
@@ -96,6 +92,7 @@ func TestAccCSMThreatsAgentRule_CreateAndUpdate(t *testing.T) {
 							append = true
 							scope  = "container"
 						}
+						hash {}
 					}
 				}`, policyConfig, agentRuleName),
 				Check: resource.ComposeTestCheckFunc(
@@ -173,6 +170,7 @@ func checkCSMThreatsAgentRuleContent(resourceName string, name string, descripti
 		resource.TestCheckResourceAttr(resourceName, "actions.#", "1"),
 		resource.TestCheckResourceAttr(resourceName, "actions.0.set.name", action_name),
 		resource.TestCheckResourceAttr(resourceName, "actions.0.set.scope", action_scope),
+		resource.TestCheckResourceAttr(resourceName, "actions.0.hash.%", "0"),
 		func(s *terraform.State) error {
 			r := s.RootModule().Resources[resourceName]
 			if r == nil {
