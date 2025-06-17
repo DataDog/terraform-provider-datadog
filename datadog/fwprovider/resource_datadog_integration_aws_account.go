@@ -298,6 +298,7 @@ func (r *integrationAwsAccountResource) Schema(_ context.Context, _ resource.Sch
 								Computed: true,
 								Description: "List of service IDs set to enable automatic log collection. Use " +
 									"[`datadog_integration_aws_available_logs_services` data source](https://registry.terraform.io/providers/DataDog/datadog/latest/docs/data-sources/integration_aws_available_logs_services) " +
+									"or [the AWS Logs Integration API](https://docs.datadoghq.com/api/latest/aws-logs-integration/?#get-list-of-aws-log-ready-services) " +
 									"to get allowed values. Defaults to `[]`.",
 								ElementType: types.StringType,
 								Default:     listdefault.StaticValue(types.ListValueMust(types.StringType, []attr.Value{})),
