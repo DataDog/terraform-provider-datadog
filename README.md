@@ -1,15 +1,13 @@
-# Terraform Provider
+# Datadog Terraform Provider
 
-![Gitter](https://img.shields.io/gitter/room/DataDog/hashicorp-terraform)
-
--   Website: https://www.terraform.io
--   Mailing list: [Google Groups](http://groups.google.com/group/terraform-tool)
-
-<img alt="Terraform" src="https://www.datocms-assets.com/2885/1629941242-logo-terraform-main.svg" width="600px">
+- Website: https://registry.terraform.io/providers/DataDog/datadog/latest
+- Documentation: https://registry.terraform.io/providers/DataDog/datadog/latest/docs
+- Terraform website: https://www.terraform.io
+- [Support](https://help.datadoghq.com/hc/en-us/requests/new?_gl=1*rmfzc4*_gcl_au*OTc0MzI0MjMyLjE3NDM2Nzc1MjQ.*_ga*MjI2ODYyNDMxLjE3NDY0NDMyNjU.*_ga_KN80RDFSQK*czE3NDcxMjUxMjgkbzIkZzAkdDE3NDcxMjUxMjgkajAkbDAkaDE3NDY0ODczNDk.*_fplc*dXIzUEdsS2htcE1kY0ZGZGtIYSUyQlFFVjJJRmFWaTFVYzlZUUtoSmoxMW5NNFlXbWppdzZORUhVcHJQdDFXZ2k5bHFrNEJneWV1bW1YRVNBdno5dVZFaERoZDclMkZRbUY4R0FVNm1hSUJ6UzZoUWJuOEJJY0lNZUo4WWpIdEh6dyUzRCUzRA..)
 
 ## Requirements
 
--   [Terraform](https://www.terraform.io/downloads.html) 0.12.x
+-   [Terraform](https://www.terraform.io/downloads.html) >= 0.12.x
 
 ## Building The Provider
 
