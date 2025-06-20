@@ -37,9 +37,10 @@ type logsCustomDestinationModel struct {
 	ForwardTagsRestrictionList     types.List   `tfsdk:"forward_tags_restriction_list"`
 	ForwardTagsRestrictionListType types.String `tfsdk:"forward_tags_restriction_list_type"`
 
-	HttpDestination          []HttpDestination          `tfsdk:"http_destination"`
-	SplunkDestination        []SplunkDestination        `tfsdk:"splunk_destination"`
-	ElasticsearchDestination []ElasticsearchDestination `tfsdk:"elasticsearch_destination"`
+	HttpDestination              []HttpDestination              `tfsdk:"http_destination"`
+	SplunkDestination            []SplunkDestination            `tfsdk:"splunk_destination"`
+	ElasticsearchDestination     []ElasticsearchDestination     `tfsdk:"elasticsearch_destination"`
+	MicrosoftSentinelDestination []MicrosoftSentinelDestination `tfsdk:"microsoft_sentinel_destination"`
 }
 
 type HttpDestination struct {
@@ -77,6 +78,14 @@ type ElasticsearchDestinationBasicAuth struct {
 	Password types.String `tfsdk:"password"`
 }
 
+type MicrosoftSentinelDestination struct {
+	TenantId               types.String `tfsdk:"tenant_id"`
+	ClientId               types.String `tfsdk:"client_id"`
+	DataCollectionEndpoint types.String `tfsdk:"data_collection_endpoint"`
+	DataCollectionRuleId   types.String `tfsdk:"data_collection_rule_id"`
+	StreamName             types.String `tfsdk:"stream_name"`
+}
+
 func NewLogsCustomDestinationResource() resource.Resource {
 	return &logsCustomDestinationResource{}
 }
@@ -99,6 +108,7 @@ func (d *logsCustomDestinationResource) ConfigValidators(ctx context.Context) []
 			path.MatchRoot("http_destination").AtListIndex(0).AtName("custom_header_auth"),
 			path.MatchRoot("splunk_destination"),
 			path.MatchRoot("elasticsearch_destination").AtListIndex(0).AtName("basic_auth"),
+			path.MatchRoot("microsoft_sentinel_destination"),
 		),
 	}
 }
@@ -273,6 +283,36 @@ func (r *logsCustomDestinationResource) Schema(_ context.Context, _ resource.Sch
 							Validators: []validator.List{
 								listvalidator.SizeBetween(1, 1),
 							},
+						},
+					},
+				},
+				Validators: []validator.List{
+					listvalidator.SizeAtMost(1),
+				},
+			},
+			"microsoft_sentinel_destination": schema.ListNestedBlock{
+				Description: "The Microsoft Sentinel destination.",
+				NestedObject: schema.NestedBlockObject{
+					Attributes: map[string]schema.Attribute{
+						"tenant_id": schema.StringAttribute{
+							Description: "Tenant ID from the Datadog Azure Integration.",
+							Required:    true,
+						},
+						"client_id": schema.StringAttribute{
+							Description: "Client ID from the Datadog Azure Integration.",
+							Required:    true,
+						},
+						"data_collection_endpoint": schema.StringAttribute{
+							Description: "Azure Data Collection Endpoint.",
+							Required:    true,
+						},
+						"data_collection_rule_id": schema.StringAttribute{
+							Description: " Azure Data Collection Rule ID.",
+							Required:    true,
+						},
+						"stream_name": schema.StringAttribute{
+							Description: "Azure stream name..",
+							Required:    true,
 						},
 					},
 				},
@@ -476,6 +516,32 @@ func (r *logsCustomDestinationResource) updateState(ctx context.Context, state *
 
 		// NOTE: Basic auth values are not returned by the API, keep user state.
 	}
+
+	if microsoftSentinelDestination := forwarderDestination.CustomDestinationResponseForwardDestinationMicrosoftSentinel; microsoftSentinelDestination != nil {
+		if len(state.MicrosoftSentinelDestination) != 1 {
+			state.MicrosoftSentinelDestination = []MicrosoftSentinelDestination{{}}
+		}
+
+		if tenantId, ok := microsoftSentinelDestination.GetTenantIdOk(); ok {
+			state.MicrosoftSentinelDestination[0].TenantId = types.StringValue(*tenantId)
+		}
+
+		if clientId, ok := microsoftSentinelDestination.GetClientIdOk(); ok {
+			state.MicrosoftSentinelDestination[0].ClientId = types.StringValue(*clientId)
+		}
+
+		if dataCollectionEndpoint, ok := microsoftSentinelDestination.GetDataCollectionEndpointOk(); ok {
+			state.MicrosoftSentinelDestination[0].DataCollectionEndpoint = types.StringValue(*dataCollectionEndpoint)
+		}
+
+		if dataCollectionRuleId, ok := microsoftSentinelDestination.GetDataCollectionRuleIdOk(); ok {
+			state.MicrosoftSentinelDestination[0].DataCollectionRuleId = types.StringValue(*dataCollectionRuleId)
+		}
+
+		if streamName, ok := microsoftSentinelDestination.GetStreamNameOk(); ok {
+			state.MicrosoftSentinelDestination[0].StreamName = types.StringValue(*streamName)
+		}
+	}
 }
 
 func (r *logsCustomDestinationResource) buildLogsCustomDestinationCreateRequestBody(ctx context.Context, state *logsCustomDestinationModel) (*datadogV2.CustomDestinationCreateRequest, diag.Diagnostics) {
@@ -614,6 +680,17 @@ func (r *logsCustomDestinationResource) buildLogsCustomDestinationForwarderDesti
 
 		elasticsearchOut := datadogV2.CustomDestinationForwardDestinationElasticsearchAsCustomDestinationForwardDestination(elasticsearch)
 		return &elasticsearchOut
+	}
+
+	if microsoftSentinelDestination := state.MicrosoftSentinelDestination; len(microsoftSentinelDestination) == 1 {
+		microsoftSentinel := datadogV2.NewCustomDestinationForwardDestinationMicrosoftSentinelWithDefaults()
+		microsoftSentinel.SetTenantId(microsoftSentinelDestination[0].TenantId.ValueString())
+		microsoftSentinel.SetClientId(microsoftSentinelDestination[0].ClientId.ValueString())
+		microsoftSentinel.SetDataCollectionEndpoint(microsoftSentinelDestination[0].DataCollectionEndpoint.ValueString())
+		microsoftSentinel.SetDataCollectionRuleId(microsoftSentinelDestination[0].DataCollectionRuleId.ValueString())
+		microsoftSentinel.SetStreamName(microsoftSentinelDestination[0].StreamName.ValueString())
+		microsoftSentinelOut := datadogV2.CustomDestinationForwardDestinationMicrosoftSentinelAsCustomDestinationForwardDestination(microsoftSentinel)
+		return &microsoftSentinelOut
 	}
 
 	return nil
