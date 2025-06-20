@@ -277,6 +277,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_compliance_resource_evaluation_filter_test":      "resource_filters",
 	"tests/resource_datadog_compliance_custom_framework_test":                "compliance_custom_framework",
 	"tests/resource_datadog_cost_budget_test":                                "cost-budget",
+	"tests/resource_datadog_service_scorecard_rule_test":                     "scorecard",
 }
 
 // getEndpointTagValue traverses callstack frames to find the test function that invoked this call;
