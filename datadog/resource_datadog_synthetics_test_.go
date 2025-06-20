@@ -462,7 +462,7 @@ func syntheticsTestRequestClientCertificateItem() *schema.Schema {
 				"content": {
 					Description: "Content of the certificate.",
 					Type:        schema.TypeString,
-					Required:    true,
+					Optional:    true,
 					Sensitive:   true,
 					StateFunc: func(val interface{}) string {
 						return utils.ConvertToSha256(val.(string))
@@ -3911,10 +3911,14 @@ func buildTerraformRequestCertificates(clientCertificate datadogV1.SyntheticsTes
 	// we store a hash of the value.
 	if len(oldClientCertificates) > 0 {
 		if configCertificateContent, ok := oldClientCertificates[0].(map[string]interface{})["cert"].([]interface{})[0].(map[string]interface{})["content"].(string); ok {
-			localCertificate["cert"][0]["content"] = getCertificateStateValue(configCertificateContent)
+			if configCertificateContent != "" {
+				localCertificate["cert"][0]["content"] = getCertificateStateValue(configCertificateContent)
+			}
 		}
 		if configKeyContent, ok := oldClientCertificates[0].(map[string]interface{})["key"].([]interface{})[0].(map[string]interface{})["content"].(string); ok {
-			localCertificate["key"][0]["content"] = getCertificateStateValue(configKeyContent)
+			if configKeyContent != "" {
+				localCertificate["key"][0]["content"] = getCertificateStateValue(configKeyContent)
+			}
 		}
 	}
 
