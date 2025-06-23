@@ -15,11 +15,17 @@ Provides a Datadog Security Monitoring Rule API resource for default rules. It c
 ```terraform
 resource "datadog_security_monitoring_default_rule" "adefaultrule" {
   enabled = true
-
-  # Change the notifications for the high case
+  custom_name = "My Default Rule"
+  custom_message = "My Default Message"
+  query{
+    query = "source:cloudtrail"
+    custom_query_extension = "service:web"
+  }
+  # Change the notifications for the high case and set/override a custom status as medium
   case {
     status        = "high"
     notifications = ["@me"]
+    custom_status = "medium"
   }
 }
 ```
@@ -29,7 +35,10 @@ resource "datadog_security_monitoring_default_rule" "adefaultrule" {
 
 ### Optional
 
+- `custom_name` (String) The name of this resource (it will override default name).
+- `custom_message` (String) The message of this resource (it will override default message).
 - `case` (Block List, Max: 10) Cases of the rule, this is used to update notifications. (see [below for nested schema](#nestedblock--case))
+- `queries` (Block List, Max: 10) Queries of the rule, this is used to update notifications. (see [below for nested schema](#nestedblock--query))
 - `custom_tags` (Set of String) Custom tags for generated signals.
 - `enabled` (Boolean) Enable the rule. Defaults to `true`.
 - `filter` (Block List) Additional queries to filter matched events before they are processed. (see [below for nested schema](#nestedblock--filter))
@@ -47,6 +56,18 @@ Required:
 
 - `notifications` (List of String) Notification targets for each rule case.
 - `status` (String) Status of the rule case to match. Valid values are `info`, `low`, `medium`, `high`, `critical`.
+
+Optional:
+
+- `custom_status` (String) Status of the rule case to override default status. Valid values are `info`, `low`, `medium`, `high`, `critical`.
+
+
+<a id="nestedblock--query"></a>
+### Nested Schema for `query`
+
+Optional:
+
+- `custom_query_extension` (String) Query extension to append to the logs query (by `AND` operator).
 
 
 <a id="nestedblock--filter"></a>
