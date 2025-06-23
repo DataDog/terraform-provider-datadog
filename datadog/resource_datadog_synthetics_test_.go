@@ -3596,8 +3596,12 @@ func buildTerraformBasicAuth(basicAuth *datadogV1.SyntheticsBasicAuth) map[strin
 	if basicAuth.SyntheticsBasicAuthWeb != nil {
 		basicAuthWeb := basicAuth.SyntheticsBasicAuthWeb
 
-		localAuth["username"] = basicAuthWeb.Username
-		localAuth["password"] = basicAuthWeb.Password
+		if v, ok := basicAuthWeb.GetUsernameOk(); ok {
+			localAuth["username"] = *v
+		}
+		if v, ok := basicAuthWeb.GetPasswordOk(); ok {
+			localAuth["password"] = *v
+		}
 		localAuth["type"] = "web"
 	}
 
