@@ -29,6 +29,7 @@ resource "datadog_synthetics_private_location" "private_location" {
 
 ### Optional
 
+- `api_key` (String, Sensitive) API key used to generate the private location configuration.
 - `description` (String) Description of the private location. Defaults to `""`.
 - `metadata` (Block List) The private location metadata (see [below for nested schema](#nestedblock--metadata))
 - `tags` (List of String) A list of tags to associate with your synthetics private location.

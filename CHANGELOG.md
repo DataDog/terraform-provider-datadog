@@ -1,3 +1,27 @@
+## 3.66.0 (June 17, 2025)
+
+### BUGFIXES
+* [datadog_synthetics_test] Exclude TLS version types from being converted to number by @teodor2312 in https://github.com/DataDog/terraform-provider-datadog/pull/3042
+### IMPROVEMENTS
+* [datadog_monitor] add opt-in behavior on restricted_roles by @shaneyuandd in https://github.com/DataDog/terraform-provider-datadog/pull/3017
+### FEATURES
+* [datadog_compliance_resource_evaluation_filter] Adding resource evaluation filters as a terraform resource by @Matzoc in https://github.com/DataDog/terraform-provider-datadog/pull/3004
+* [datadog_cost_budget] add support for cost budgets by @klara-kr in https://github.com/DataDog/terraform-provider-datadog/pull/3001
+* [datadog_csm_threats] supporting cws multi-policy in terraform by @homoeconomics in https://github.com/DataDog/terraform-provider-datadog/pull/2681
+* [datadog_synthetics_test] Add `notification_preset_name` monitor option for browser & api tests by @AntoineDona in https://github.com/DataDog/terraform-provider-datadog/pull/3044
+* [synthetics_test] Add private location api key field by @AntoineDona in https://github.com/DataDog/terraform-provider-datadog/pull/3053
+* [datadog_synthetics_test] Add support for all api subtypes for multistep tests by @teodor2312 in https://github.com/DataDog/terraform-provider-datadog/pull/3041
+* [datadog_synthetics_test] Add `form` for `multipart/form-data` API tests by @Drarig29 in https://github.com/DataDog/terraform-provider-datadog/pull/3048
+### NOTES
+* [Chore] Update the dependencies by @Supam in https://github.com/DataDog/terraform-provider-datadog/pull/3037
+
+## New Contributors
+* @Matzoc made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3004
+* @homoeconomics made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2681
+* @sarrazaghbib-dev made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3047
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.65.0...v3.66.0
+
 ## 3.65.0 (May 30, 2025)
 
 ### FEATURES

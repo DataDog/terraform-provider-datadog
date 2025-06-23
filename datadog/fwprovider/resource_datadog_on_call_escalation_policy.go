@@ -11,6 +11,7 @@ import (
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64default"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/listdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
@@ -83,6 +84,8 @@ func (r *onCallEscalationPolicyResource) Schema(_ context.Context, _ resource.Sc
 			"resolve_page_on_policy_end": schema.BoolAttribute{
 				Optional:    true,
 				Required:    false,
+				Computed:    true,
+				Default:     booldefault.StaticBool(false),
 				Description: "If true, pages will be automatically resolved if unacknowledged after the final step.",
 			},
 			"teams": schema.ListAttribute{

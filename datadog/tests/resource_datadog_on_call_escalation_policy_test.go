@@ -25,7 +25,7 @@ func TestAccOnCallEscalationPolicyCreateAndUpdate(t *testing.T) {
 	namePrefix := "team-" + uniq
 	handlePrefix := "team-" + uniq
 
-	createConfig := func(effectiveDate string) string {
+	createConfig := func() string {
 		return strings.NewReplacer(
 			"USER_EMAIL", userEmail,
 			"POLICY_NAME", uniq,
@@ -40,7 +40,7 @@ func TestAccOnCallEscalationPolicyCreateAndUpdate(t *testing.T) {
 		CheckDestroy:             testAccCheckDatadogOnCallEscalationPolicyDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: createConfig("2025-01-01T00:00:00Z"),
+				Config: createConfig(),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogOnCallEscalationPolicyExists(providers.frameworkProvider),
 				),

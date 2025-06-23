@@ -14,12 +14,12 @@ resource "datadog_on_call_schedule" "single_layer" {
   teams     = [datadog_team.foo.id]
   layer {
     effective_date = "EFFECTIVE_DATE"
-    end_date       = "2026-01-01T00:00:00Z"
+    end_date       = "2026-01-01T00:00:00+05:00"
     interval {
       days    = 1
       seconds = 300
     }
-    rotation_start = "2025-01-01T00:00:00Z"
+    rotation_start = "2025-01-01T00:00:00-09:00"
     users          = [datadog_user.foo.id, null]
     name           = "Primary On-Call Layer"
     restriction {
