@@ -5236,63 +5236,6 @@ func getParamsKeysForStepType(stepType datadogV1.SyntheticsStepType) []string {
 	return []string{}
 }
 
-func getParamsKeysForMobileStepType(stepType datadogV1.SyntheticsMobileStepType) []string {
-	switch stepType {
-	case datadogV1.SYNTHETICSMOBILESTEPTYPE_ASSERTELEMENTCONTENT:
-		return []string{"check", "element", "value"}
-
-	case datadogV1.SYNTHETICSMOBILESTEPTYPE_ASSERTSCREENCONTAINS:
-		return []string{"value"}
-
-	case datadogV1.SYNTHETICSMOBILESTEPTYPE_ASSERTSCREENLACKS:
-		return []string{"value"}
-
-	case datadogV1.SYNTHETICSMOBILESTEPTYPE_DOUBLETAP:
-		return []string{"element"}
-
-	case datadogV1.SYNTHETICSMOBILESTEPTYPE_EXTRACTVARIABLE:
-		return []string{"element", "variable"}
-
-	case datadogV1.SYNTHETICSMOBILESTEPTYPE_FLICK:
-		return []string{"position"}
-
-	case datadogV1.SYNTHETICSMOBILESTEPTYPE_OPENDEEPLINK:
-		return []string{"value"}
-
-	case datadogV1.SYNTHETICSMOBILESTEPTYPE_PLAYSUBTEST:
-		return []string{"subtest_public_id"}
-
-	case datadogV1.SYNTHETICSMOBILESTEPTYPE_PRESSBACK:
-		return []string{}
-
-	case datadogV1.SYNTHETICSMOBILESTEPTYPE_RESTARTAPPLICATION:
-		return []string{}
-
-	case datadogV1.SYNTHETICSMOBILESTEPTYPE_ROTATE:
-		return []string{"value"}
-
-	case datadogV1.SYNTHETICSMOBILESTEPTYPE_SCROLL:
-		return []string{"element", "x", "y"}
-
-	case datadogV1.SYNTHETICSMOBILESTEPTYPE_SCROLLTOELEMENT:
-		return []string{"element", "direction", "max_scrolls"}
-
-	case datadogV1.SYNTHETICSMOBILESTEPTYPE_TAP:
-		return []string{"element"}
-
-	case datadogV1.SYNTHETICSMOBILESTEPTYPE_TOGGLEWIFI:
-		return []string{"enabled"}
-
-	case datadogV1.SYNTHETICSMOBILESTEPTYPE_TYPETEXT:
-		return []string{"value", "element", "delay", "with_enter"}
-
-	case datadogV1.SYNTHETICSMOBILESTEPTYPE_WAIT:
-		return []string{"value"}
-	}
-
-	return []string{}
-}
-
 func buildDatadogParamsForMobileStep(stepType datadogV1.SyntheticsMobileStepType, stepParams map[string]interface{}) datadogV1.SyntheticsMobileStepParams {
 	params := datadogV1.SyntheticsMobileStepParams{}
 	switch stepType {
