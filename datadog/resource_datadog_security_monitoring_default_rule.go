@@ -534,17 +534,18 @@ func buildSecMonDefaultRuleUpdatePayload(currentState *datadogV2.SecurityMonitor
 
 		payloadFilters[idx] = structRuleFilter
 	}
-	payload.Filters = payloadFilters
 
 	// Compare filters
 	if !compareFilters(currentState.GetFilters(), payloadFilters) {
+		payload.Filters = payloadFilters
 		shouldUpdate = true
 	}
 
 	// Compare options
-	payloadOptions := buildDefaultRulePayloadOptions(d)
-	payload.Options = payloadOptions
-	if !compareOptions(currentState.GetOptions(), payloadOptions) {
+	if v, ok := d.GetOk("options"); ok {
+		tfOptionsList := v.([]interface{})
+		payloadOptions := buildPayloadOptions(tfOptionsList, d.Get("type").(string))
+		payload.SetOptions(*payloadOptions)
 		shouldUpdate = true
 	}
 
@@ -618,36 +619,9 @@ func compareFilters(currentFilters []datadogV2.SecurityMonitoringFilter, payload
 	return true
 }
 
-// Helper function to compare options
-func compareOptions(currentOptions datadogV2.SecurityMonitoringRuleOptions, payloadOptions *datadogV2.SecurityMonitoringRuleOptions) bool {
-	if payloadOptions == nil {
-		// If payload options is nil, check if current options has any non-default values
-		return currentOptions.GetDecreaseCriticalityBasedOnEnv() == false
-	}
-
-	return currentOptions.GetDecreaseCriticalityBasedOnEnv() == payloadOptions.GetDecreaseCriticalityBasedOnEnv()
-}
-
 // Helper function to compare tags
 func compareTags(currentTags []string, payloadTags []string) bool {
 	return stringSliceEquals(currentTags, payloadTags)
-}
-
-func buildDefaultRulePayloadOptions(d *schema.ResourceData) *datadogV2.SecurityMonitoringRuleOptions {
-	tfOptions := extractMapFromInterface(d.Get("options").([]interface{}))
-
-	if len(tfOptions) == 0 {
-		return nil
-	}
-
-	payloadOptions := datadogV2.NewSecurityMonitoringRuleOptions()
-	ruleType := d.Get("type").(string)
-
-	if v, ok := tfOptions["decrease_criticality_based_on_env"]; ok && ruleType == string(datadogV2.SECURITYMONITORINGRULETYPECREATE_LOG_DETECTION) {
-		payloadOptions.SetDecreaseCriticalityBasedOnEnv(v.(bool))
-	}
-
-	return payloadOptions
 }
 
 func stringSliceEquals(left []string, right []string) bool {
