@@ -917,24 +917,18 @@ Required:
 <a id="nestedblock--api_step--request_client_certificate--cert"></a>
 ### Nested Schema for `api_step.request_client_certificate.cert`
 
-Required:
-
-- `content` (String, Sensitive) Content of the certificate.
-
 Optional:
 
+- `content` (String, Sensitive) Content of the certificate.
 - `filename` (String) File name for the certificate. Defaults to `"Provided in Terraform config"`.
 
 
 <a id="nestedblock--api_step--request_client_certificate--key"></a>
 ### Nested Schema for `api_step.request_client_certificate.key`
 
-Required:
-
-- `content` (String, Sensitive) Content of the certificate.
-
 Optional:
 
+- `content` (String, Sensitive) Content of the certificate.
 - `filename` (String) File name for the certificate. Defaults to `"Provided in Terraform config"`.
 
 
@@ -1512,24 +1506,18 @@ Required:
 <a id="nestedblock--request_client_certificate--cert"></a>
 ### Nested Schema for `request_client_certificate.cert`
 
-Required:
-
-- `content` (String, Sensitive) Content of the certificate.
-
 Optional:
 
+- `content` (String, Sensitive) Content of the certificate.
 - `filename` (String) File name for the certificate. Defaults to `"Provided in Terraform config"`.
 
 
 <a id="nestedblock--request_client_certificate--key"></a>
 ### Nested Schema for `request_client_certificate.key`
 
-Required:
-
-- `content` (String, Sensitive) Content of the certificate.
-
 Optional:
 
+- `content` (String, Sensitive) Content of the certificate.
 - `filename` (String) File name for the certificate. Defaults to `"Provided in Terraform config"`.
 
 
