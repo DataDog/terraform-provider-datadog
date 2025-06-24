@@ -1828,8 +1828,7 @@ func syntheticsHttpVersionOption() *schema.Schema {
  */
 
 func resourceDatadogSyntheticsTestCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	var diags diag.Diagnostics
-
+	diags := diag.Diagnostics{}
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -2023,8 +2022,7 @@ func resourceDatadogSyntheticsTestRead(ctx context.Context, d *schema.ResourceDa
 }
 
 func resourceDatadogSyntheticsTestUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	var diags diag.Diagnostics
-
+	diags := diag.Diagnostics{}
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -2635,7 +2633,6 @@ func updateSyntheticsMobileTestLocalState(d *schema.ResourceData, syntheticsTest
 
 func buildDatadogSyntheticsAPITest(d *schema.ResourceData) (*datadogV1.SyntheticsAPITest, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
-
 	syntheticsTest := datadogV1.NewSyntheticsAPITestWithDefaults()
 	syntheticsTest.SetName(d.Get("name").(string))
 
@@ -5137,7 +5134,6 @@ func getCertificateStateValue(content string) string {
 
 func getStepParams(stepMap map[string]interface{}, d *schema.ResourceData) (map[string]interface{}, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
-
 	stepType := datadogV1.SyntheticsStepType(stepMap["type"].(string))
 
 	params := make(map[string]interface{})
