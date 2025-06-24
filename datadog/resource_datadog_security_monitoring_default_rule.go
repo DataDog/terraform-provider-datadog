@@ -647,14 +647,7 @@ func stringSliceEquals(left []string, right []string) bool {
 // Helper function to compare options
 func compareOptions(currentOptions *datadogV2.SecurityMonitoringRuleOptions, payloadOptions *datadogV2.SecurityMonitoringRuleOptions) bool {
 	// Compare decrease_criticality_based_on_env
-	if currentOptions.GetDecreaseCriticalityBasedOnEnv() != payloadOptions.GetDecreaseCriticalityBasedOnEnv() {
-		return false
-	}
-
-	// For now, we only compare the decrease_criticality_based_on_env field since that's what's supported for default rules
-	// If more fields are supported in the future, add their comparisons here
-
-	return true
+	return currentOptions.GetDecreaseCriticalityBasedOnEnv() != payloadOptions.GetDecreaseCriticalityBasedOnEnv()
 }
 
 func findRuleCaseForStatus(tfCasesRaw []interface{}, status datadogV2.SecurityMonitoringRuleSeverity) (map[string]interface{}, bool) {
