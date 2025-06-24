@@ -1311,7 +1311,7 @@ func syntheticsBrowserStepParams() schema.Schema {
 					Optional:    true,
 				},
 				"element": {
-					Description: "Element to use for the step, JSON encoded string.",
+					Description: "Element to use for the step, JSON encoded string. Refer to the examples for a usage example showing the schema.",
 					Type:        schema.TypeString,
 					Optional:    true,
 					DiffSuppressFunc: func(key, old, new string, d *schema.ResourceData) bool {
