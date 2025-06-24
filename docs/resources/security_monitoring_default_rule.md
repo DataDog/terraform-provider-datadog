@@ -17,7 +17,7 @@ resource "datadog_security_monitoring_default_rule" "adefaultrule" {
   enabled = true
   custom_name = "My Default Rule"
   custom_message = "My Default Message"
-  query{
+  query {
     query = "source:cloudtrail"
     custom_query_extension = "service:web"
   }
