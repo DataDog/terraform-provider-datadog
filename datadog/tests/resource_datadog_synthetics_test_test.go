@@ -6208,6 +6208,10 @@ func createSyntheticsMultistepAPITestAllStepSubtypes(ctx context.Context, accPro
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.test_all_api_subtypes", "api_step.4.request_definition.0.host", "troisdizaines.com"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.test_all_api_subtypes", "api_step.4.request_definition.0.dns_server", "8.8.8.8"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.test_all_api_subtypes", "api_step.4.request_definition.0.dns_server_port", "53"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.test_all_api_subtypes", "api_step.4.retry.0.count", "0"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.test_all_api_subtypes", "api_step.4.retry.0.interval", "300"),
@@ -6402,6 +6406,7 @@ func createSyntheticsMultistepAPITestConfigAllStepSubtypes(testName string) stri
 				request_definition {
 					host       = "troisdizaines.com"
 					dns_server = "8.8.8.8"
+					dns_server_port = 53
 				}
 				retry {
 					count    = 0

@@ -2659,7 +2659,16 @@ func buildDatadogSyntheticsAPITest(d *schema.ResourceData) *datadogV1.Synthetics
 		request.SetDnsServer(attr.(string))
 	}
 	if attr, ok := d.GetOk("request_definition.0.dns_server_port"); ok {
-		request.SetDnsServerPort(attr.(string))
+		if val, ok := attr.(string); ok {
+			request.SetDnsServerPort(datadogV1.SyntheticsTestRequestDNSServerPort{
+				SyntheticsTestRequestVariableDNSServerPort: &val,
+			})
+		}
+		if val, ok := attr.(int64); ok {
+			request.SetDnsServerPort(datadogV1.SyntheticsTestRequestDNSServerPort{
+				SyntheticsTestRequestNumericalDNSServerPort: &val,
+			})
+		}
 	}
 	if attr, ok := d.GetOk("request_definition.0.no_saving_response_body"); ok {
 		request.SetNoSavingResponseBody(attr.(bool))
@@ -2843,8 +2852,17 @@ func buildDatadogSyntheticsAPITest(d *schema.ResourceData) *datadogV1.Synthetics
 						if v, ok := requestMap["dns_server"].(string); ok && v != "" {
 							request.SetDnsServer(v)
 						}
-						if v, ok := requestMap["dns_server_port"].(string); ok && v != "" {
-							request.SetDnsServerPort(v)
+						if v, ok := requestMap["dns_server_port"]; ok {
+							if val, ok := v.(string); ok {
+								request.SetDnsServerPort(datadogV1.SyntheticsTestRequestDNSServerPort{
+									SyntheticsTestRequestVariableDNSServerPort: &val,
+								})
+							}
+							if val, ok := v.(int64); ok {
+								request.SetDnsServerPort(datadogV1.SyntheticsTestRequestDNSServerPort{
+									SyntheticsTestRequestNumericalDNSServerPort: &val,
+								})
+							}
 						}
 					} else if step.SyntheticsAPITestStep.GetSubtype() == "udp" {
 						request.SetHost(requestMap["host"].(string))
@@ -4765,7 +4783,12 @@ func buildTerraformTestRequest(request datadogV1.SyntheticsTestRequest) (map[str
 		localRequest["dns_server"] = convertToString(request.GetDnsServer())
 	}
 	if request.HasDnsServerPort() {
-		localRequest["dns_server_port"] = request.GetDnsServerPort()
+		port := request.GetDnsServerPort()
+		if port.SyntheticsTestRequestNumericalDNSServerPort != nil {
+			localRequest["dns_server_port"] = strconv.FormatInt(*port.SyntheticsTestRequestNumericalDNSServerPort, 10)
+		} else if port.SyntheticsTestRequestVariableDNSServerPort != nil {
+			localRequest["dns_server_port"] = *port.SyntheticsTestRequestVariableDNSServerPort
+		}
 	}
 	if request.HasNoSavingResponseBody() {
 		localRequest["no_saving_response_body"] = request.GetNoSavingResponseBody()
