@@ -303,16 +303,19 @@ func resourceDatadogSecurityMonitoringDefaultRuleRead(ctx context.Context, d *sc
 
 	d.Set("type", rule.GetType())
 
-	responseOptions := rule.GetOptions()
-	var ruleOptions []map[string]interface{}
+	// Only set options if they were configured in Terraform
+	if _, ok := d.GetOk("options"); ok {
+		responseOptions := rule.GetOptions()
+		var ruleOptions []map[string]interface{}
 
-	if *rule.Type == datadogV2.SECURITYMONITORINGRULETYPEREAD_LOG_DETECTION {
-		ruleOptions = append(ruleOptions, map[string]interface{}{
-			"decrease_criticality_based_on_env": responseOptions.GetDecreaseCriticalityBasedOnEnv(),
-		})
+		if *rule.Type == datadogV2.SECURITYMONITORINGRULETYPEREAD_LOG_DETECTION {
+			ruleOptions = append(ruleOptions, map[string]interface{}{
+				"decrease_criticality_based_on_env": responseOptions.GetDecreaseCriticalityBasedOnEnv(),
+			})
+		}
+
+		d.Set("options", &ruleOptions)
 	}
-
-	d.Set("options", &ruleOptions)
 
 	defaultTags := make(map[string]bool)
 	for _, defaultTag := range rule.GetDefaultTags() {
@@ -546,7 +549,12 @@ func buildSecMonDefaultRuleUpdatePayload(currentState *datadogV2.SecurityMonitor
 		tfOptionsList := v.([]interface{})
 		payloadOptions := buildPayloadOptions(tfOptionsList, d.Get("type").(string))
 		payload.SetOptions(*payloadOptions)
-		shouldUpdate = true
+
+		// Only update if options actually changed
+		currentOptions := currentState.GetOptions()
+		if !compareOptions(&currentOptions, payloadOptions) {
+			shouldUpdate = true
+		}
 	}
 
 	// Compare tags
@@ -633,6 +641,19 @@ func stringSliceEquals(left []string, right []string) bool {
 			return false
 		}
 	}
+	return true
+}
+
+// Helper function to compare options
+func compareOptions(currentOptions *datadogV2.SecurityMonitoringRuleOptions, payloadOptions *datadogV2.SecurityMonitoringRuleOptions) bool {
+	// Compare decrease_criticality_based_on_env
+	if currentOptions.GetDecreaseCriticalityBasedOnEnv() != payloadOptions.GetDecreaseCriticalityBasedOnEnv() {
+		return false
+	}
+
+	// For now, we only compare the decrease_criticality_based_on_env field since that's what's supported for default rules
+	// If more fields are supported in the future, add their comparisons here
+
 	return true
 }
 
