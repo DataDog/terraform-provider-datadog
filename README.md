@@ -3,7 +3,7 @@
 - Website: https://registry.terraform.io/providers/DataDog/datadog/latest
 - Documentation: https://registry.terraform.io/providers/DataDog/datadog/latest/docs
 - Terraform website: https://www.terraform.io
-- [Support](https://help.datadoghq.com/hc/en-us/requests/new?_gl=1*rmfzc4*_gcl_au*OTc0MzI0MjMyLjE3NDM2Nzc1MjQ.*_ga*MjI2ODYyNDMxLjE3NDY0NDMyNjU.*_ga_KN80RDFSQK*czE3NDcxMjUxMjgkbzIkZzAkdDE3NDcxMjUxMjgkajAkbDAkaDE3NDY0ODczNDk.*_fplc*dXIzUEdsS2htcE1kY0ZGZGtIYSUyQlFFVjJJRmFWaTFVYzlZUUtoSmoxMW5NNFlXbWppdzZORUhVcHJQdDFXZ2k5bHFrNEJneWV1bW1YRVNBdno5dVZFaERoZDclMkZRbUY4R0FVNm1hSUJ6UzZoUWJuOEJJY0lNZUo4WWpIdEh6dyUzRCUzRA..)
+- [Support](https://help.datadoghq.com/hc/en-us/requests/new)
 
 ## Requirements
 
