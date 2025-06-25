@@ -311,7 +311,7 @@ func (r *logsCustomDestinationResource) Schema(_ context.Context, _ resource.Sch
 							Required:    true,
 						},
 						"stream_name": schema.StringAttribute{
-							Description: "Azure stream name..",
+							Description: "Azure stream name.",
 							Required:    true,
 						},
 					},

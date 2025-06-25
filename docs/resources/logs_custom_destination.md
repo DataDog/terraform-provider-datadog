@@ -126,7 +126,7 @@ Required:
 - `client_id` (String) Client ID from the Datadog Azure Integration.
 - `data_collection_endpoint` (String) Azure Data Collection Endpoint.
 - `data_collection_rule_id` (String) Azure Data Collection Rule ID.
-- `stream_name` (String) Azure stream name..
+- `stream_name` (String) Azure stream name.
 - `tenant_id` (String) Tenant ID from the Datadog Azure Integration.
 
 
