@@ -55,6 +55,7 @@ type sourcesModel struct {
 	HttpClientSource         []*httpClientSourceModel         `tfsdk:"http_client"`
 	GooglePubSubSource       []*googlePubSubSourceModel       `tfsdk:"google_pubsub"`
 	LogstashSource           []*logstashSourceModel           `tfsdk:"logstash"`
+	SocketSource             []*socketSourceModel             `tfsdk:"socket"`
 }
 
 type logstashSourceModel struct {
@@ -612,6 +613,22 @@ type gcpAuthModel struct {
 	CredentialsFile types.String `tfsdk:"credentials_file"`
 }
 
+type socketSourceModel struct {
+	Id      types.String        `tfsdk:"id"`
+	Mode    types.String        `tfsdk:"mode"`
+	Framing *socketFramingModel `tfsdk:"framing"`
+	Tls     *tlsModel           `tfsdk:"tls"`
+}
+
+type socketFramingModel struct {
+	Method             types.String                          `tfsdk:"method"`
+	CharacterDelimited *socketFramingCharacterDelimitedModel `tfsdk:"character_delimited"`
+}
+
+type socketFramingCharacterDelimitedModel struct {
+	Delimiter types.String `tfsdk:"delimiter"`
+}
+
 func NewObservabilitPipelineResource() resource.Resource {
 	return &observabilityPipelineResource{}
 }
@@ -975,6 +992,56 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 										},
 									},
 									Blocks: map[string]schema.Block{
+										"tls": tlsSchema(),
+									},
+								},
+							},
+							"socket": schema.ListNestedBlock{
+								Description: "The `socket` source ingests logs over TCP or UDP.",
+								NestedObject: schema.NestedBlockObject{
+									Attributes: map[string]schema.Attribute{
+										"id": schema.StringAttribute{
+											Required:    true,
+											Description: "The unique identifier for this component.",
+										},
+										"mode": schema.StringAttribute{
+											Required:    true,
+											Description: "The protocol used to receive logs. Must be either `tcp` or `udp`.",
+											Validators: []validator.String{
+												stringvalidator.OneOf("tcp", "udp"),
+											},
+										},
+									},
+									Blocks: map[string]schema.Block{
+										"framing": schema.SingleNestedBlock{
+											Description: "Defines the framing method for incoming messages.",
+											Attributes: map[string]schema.Attribute{
+												"method": schema.StringAttribute{
+													Optional:    true, // must be optional to make the block optional
+													Description: "The framing method. One of: `newline_delimited`, `bytes`, `character_delimited`, `octet_counting`, `chunked_gelf`.",
+													Validators: []validator.String{
+														stringvalidator.OneOf(
+															"newline_delimited",
+															"bytes",
+															"character_delimited",
+															"octet_counting",
+															"chunked_gelf",
+														),
+													},
+												},
+											},
+											Blocks: map[string]schema.Block{
+												"character_delimited": schema.SingleNestedBlock{
+													Description: "Used when `method` is `character_delimited`. Specifies the delimiter character.",
+													Attributes: map[string]schema.Attribute{
+														"delimiter": schema.StringAttribute{
+															Optional:    true, // must be optional to make the block optional
+															Description: "A single ASCII character used as a delimiter.",
+														},
+													},
+												},
+											},
+										},
 										"tls": tlsSchema(),
 									},
 								},
@@ -2443,6 +2510,9 @@ func expandPipeline(ctx context.Context, state *observabilityPipelineModel) (*da
 	for _, l := range state.Config.Sources.LogstashSource {
 		config.Sources = append(config.Sources, expandLogstashSource(l))
 	}
+	for _, s := range state.Config.Sources.SocketSource {
+		config.Sources = append(config.Sources, expandSocketSource(s))
+	}
 
 	// Processors
 	for _, p := range state.Config.Processors.FilterProcessor {
@@ -2602,6 +2672,9 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 		}
 		if l := flattenLogstashSource(src.ObservabilityPipelineLogstashSource); l != nil {
 			outCfg.Sources.LogstashSource = append(outCfg.Sources.LogstashSource, l)
+		}
+		if s := flattenSocketSource(src.ObservabilityPipelineSocketSource); s != nil {
+			outCfg.Sources.SocketSource = append(outCfg.Sources.SocketSource, s)
 		}
 	}
 
@@ -4963,4 +5036,87 @@ func flattenAmazonOpenSearchDestination(ctx context.Context, src *datadogV2.Obse
 	}
 
 	return model
+}
+
+func expandSocketSource(src *socketSourceModel) datadogV2.ObservabilityPipelineConfigSourceItem {
+	s := datadogV2.NewObservabilityPipelineSocketSourceWithDefaults()
+	s.SetId(src.Id.ValueString())
+	s.SetMode(datadogV2.ObservabilityPipelineSocketSourceMode(src.Mode.ValueString()))
+
+	switch src.Framing.Method.ValueString() {
+	case "newline_delimited":
+		s.Framing = datadogV2.ObservabilityPipelineSocketSourceFraming{
+			ObservabilityPipelineSocketSourceFramingNewlineDelimited: &datadogV2.ObservabilityPipelineSocketSourceFramingNewlineDelimited{
+				Method: "newline_delimited",
+			},
+		}
+	case "bytes":
+		s.Framing = datadogV2.ObservabilityPipelineSocketSourceFraming{
+			ObservabilityPipelineSocketSourceFramingBytes: &datadogV2.ObservabilityPipelineSocketSourceFramingBytes{
+				Method: "bytes",
+			},
+		}
+	case "character_delimited":
+		s.Framing = datadogV2.ObservabilityPipelineSocketSourceFraming{
+			ObservabilityPipelineSocketSourceFramingCharacterDelimited: &datadogV2.ObservabilityPipelineSocketSourceFramingCharacterDelimited{
+				Method:    "character_delimited",
+				Delimiter: src.Framing.CharacterDelimited.Delimiter.ValueString(),
+			},
+		}
+	case "octet_counting":
+		s.Framing = datadogV2.ObservabilityPipelineSocketSourceFraming{
+			ObservabilityPipelineSocketSourceFramingOctetCounting: &datadogV2.ObservabilityPipelineSocketSourceFramingOctetCounting{
+				Method: "octet_counting",
+			},
+		}
+	case "chunked_gelf":
+		s.Framing = datadogV2.ObservabilityPipelineSocketSourceFraming{
+			ObservabilityPipelineSocketSourceFramingChunkedGelf: &datadogV2.ObservabilityPipelineSocketSourceFramingChunkedGelf{
+				Method: "chunked_gelf",
+			},
+		}
+	}
+
+	if src.Tls != nil {
+		s.Tls = expandTls(src.Tls)
+	}
+
+	return datadogV2.ObservabilityPipelineConfigSourceItem{
+		ObservabilityPipelineSocketSource: s,
+	}
+}
+
+func flattenSocketSource(src *datadogV2.ObservabilityPipelineSocketSource) *socketSourceModel {
+	if src == nil {
+		return nil
+	}
+
+	out := &socketSourceModel{
+		Id:      types.StringValue(src.GetId()),
+		Mode:    types.StringValue(string(src.GetMode())),
+		Framing: &socketFramingModel{},
+	}
+
+	if src.Tls != nil {
+		tls := flattenTls(src.Tls)
+		out.Tls = &tls
+	}
+
+	switch {
+	case src.Framing.ObservabilityPipelineSocketSourceFramingNewlineDelimited != nil:
+		out.Framing.Method = types.StringValue("newline_delimited")
+	case src.Framing.ObservabilityPipelineSocketSourceFramingBytes != nil:
+		out.Framing.Method = types.StringValue("bytes")
+	case src.Framing.ObservabilityPipelineSocketSourceFramingCharacterDelimited != nil:
+		out.Framing.Method = types.StringValue("character_delimited")
+		out.Framing.CharacterDelimited = &socketFramingCharacterDelimitedModel{
+			Delimiter: types.StringValue(src.Framing.ObservabilityPipelineSocketSourceFramingCharacterDelimited.Delimiter),
+		}
+	case src.Framing.ObservabilityPipelineSocketSourceFramingOctetCounting != nil:
+		out.Framing.Method = types.StringValue("octet_counting")
+	case src.Framing.ObservabilityPipelineSocketSourceFramingChunkedGelf != nil:
+		out.Framing.Method = types.StringValue("chunked_gelf")
+	}
+
+	return out
 }
