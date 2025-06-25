@@ -8,5 +8,13 @@ resource "datadog_sensitive_data_scanner_group" "mygroup" {
     query = "service:my-service"
   }
   is_enabled   = true
-  product_list = ["apm"]
+  product_list = ["apm", "logs"]
+  sampling {
+    product = "apm"
+    rate    = 100
+  }
+  sampling {
+    product = "logs"
+    rate    = 10
+  }
 }
