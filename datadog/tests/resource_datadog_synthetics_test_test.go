@@ -6406,7 +6406,7 @@ func createSyntheticsMultistepAPITestConfigAllStepSubtypes(testName string) stri
 				request_definition {
 					host       = "troisdizaines.com"
 					dns_server = "8.8.8.8"
-					dns_server_port = 53
+					dns_server_port = "53"
 				}
 				retry {
 					count    = 0
