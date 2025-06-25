@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
@@ -32,12 +33,12 @@ type onCallTeamRoutingRulesModel struct {
 }
 
 type teamRuleModel struct {
-	Id               types.String               `tfsdk:"id"`
-	Query            types.String               `tfsdk:"query"`
-	Urgency          types.String               `tfsdk:"urgency"`
-	EscalationPolicy types.String               `tfsdk:"escalation_policy"`
-	TimeRestrictions *teamTimeRestrictionsModel `tfsdk:"time_restrictions"`
-	Actions          []*teamRuleActionModel     `tfsdk:"action"`
+	Id               types.String                 `tfsdk:"id"`
+	Query            types.String                 `tfsdk:"query"`
+	Urgency          types.String                 `tfsdk:"urgency"`
+	EscalationPolicy types.String                 `tfsdk:"escalation_policy"`
+	TimeRestrictions []*teamTimeRestrictionsModel `tfsdk:"time_restrictions"`
+	Actions          []*teamRuleActionModel       `tfsdk:"action"`
 }
 
 type teamTimeRestrictionsModel struct {
@@ -45,8 +46,8 @@ type teamTimeRestrictionsModel struct {
 	Restrictions []*restrictionsModel `tfsdk:"restriction"`
 }
 type teamRuleActionModel struct {
-	Slack *slackMessageModel `tfsdk:"send_slack_message"`
-	Teams *teamsMessageModel `tfsdk:"send_teams_message"`
+	Slack []*slackMessageModel `tfsdk:"send_slack_message"`
+	Teams []*teamsMessageModel `tfsdk:"send_teams_message"`
 }
 
 type slackMessageModel struct {
@@ -110,37 +111,44 @@ func (r *onCallTeamRoutingRulesResource) Schema(_ context.Context, _ resource.Sc
 						},
 					},
 					Blocks: map[string]schema.Block{
-						"time_restrictions": schema.SingleNestedBlock{
+						"time_restrictions": schema.ListNestedBlock{
 							Description: "Holds time zone information and a list of time restrictions for a routing rule.",
-							Attributes: map[string]schema.Attribute{
-								"time_zone": schema.StringAttribute{
-									Required:    false,
-									Optional:    true,
-									Description: "Specifies the time zone applicable to the restrictions, e.g. `America/New_York`.",
-								},
+							Validators: []validator.List{
+								listvalidator.SizeAtMost(1),
 							},
-							Blocks: map[string]schema.Block{
-								"restriction": schema.ListNestedBlock{
-									Description: "List of restrictions for the rule.",
-									NestedObject: schema.NestedBlockObject{
-										Attributes: map[string]schema.Attribute{
-											"end_day": schema.StringAttribute{
-												Optional:    true,
-												Validators:  []validator.String{validators.NewEnumValidator[validator.String](datadogV2.NewWeekdayFromValue)},
-												Description: "The weekday when the restriction period ends.",
-											},
-											"end_time": schema.StringAttribute{
-												Optional:    true,
-												Description: "The time of day when the restriction ends (hh:mm:ss).",
-											},
-											"start_day": schema.StringAttribute{
-												Optional:    true,
-												Validators:  []validator.String{validators.NewEnumValidator[validator.String](datadogV2.NewWeekdayFromValue)},
-												Description: "The weekday when the restriction period starts.",
-											},
-											"start_time": schema.StringAttribute{
-												Optional:    true,
-												Description: "The time of day when the restriction begins (hh:mm:ss).",
+							NestedObject: schema.NestedBlockObject{
+								Attributes: map[string]schema.Attribute{
+									"time_zone": schema.StringAttribute{
+										Required:    true,
+										Description: "Specifies the time zone applicable to the restrictions, e.g. `America/New_York`.",
+									},
+								},
+								Blocks: map[string]schema.Block{
+									"restriction": schema.ListNestedBlock{
+										Description: "List of restrictions for the rule.",
+										Validators: []validator.List{
+											listvalidator.IsRequired(),
+										},
+										NestedObject: schema.NestedBlockObject{
+											Attributes: map[string]schema.Attribute{
+												"end_day": schema.StringAttribute{
+													Validators:  []validator.String{validators.NewEnumValidator[validator.String](datadogV2.NewWeekdayFromValue)},
+													Required:    true,
+													Description: "The weekday when the restriction period ends.",
+												},
+												"end_time": schema.StringAttribute{
+													Required:    true,
+													Description: "The time of day when the restriction ends (hh:mm:ss).",
+												},
+												"start_day": schema.StringAttribute{
+													Required:    true,
+													Validators:  []validator.String{validators.NewEnumValidator[validator.String](datadogV2.NewWeekdayFromValue)},
+													Description: "The weekday when the restriction period starts.",
+												},
+												"start_time": schema.StringAttribute{
+													Required:    true,
+													Description: "The time of day when the restriction begins (hh:mm:ss).",
+												},
 											},
 										},
 									},
@@ -151,31 +159,41 @@ func (r *onCallTeamRoutingRulesResource) Schema(_ context.Context, _ resource.Sc
 							Description: "Specifies the list of actions to perform when the routing rule is matched.",
 							NestedObject: schema.NestedBlockObject{
 								Blocks: map[string]schema.Block{
-									"send_slack_message": schema.SingleNestedBlock{
-										Attributes: map[string]schema.Attribute{
-											"channel": schema.StringAttribute{
-												Optional:    true,
-												Description: "Slack channel ID.",
-											},
-											"workspace": schema.StringAttribute{
-												Optional:    true,
-												Description: "Slack workspace ID.",
+									"send_slack_message": schema.ListNestedBlock{
+										Validators: []validator.List{
+											listvalidator.SizeAtMost(1),
+										},
+										NestedObject: schema.NestedBlockObject{
+											Attributes: map[string]schema.Attribute{
+												"channel": schema.StringAttribute{
+													Required:    true,
+													Description: "Slack channel ID.",
+												},
+												"workspace": schema.StringAttribute{
+													Required:    true,
+													Description: "Slack workspace ID.",
+												},
 											},
 										},
 									},
-									"send_teams_message": schema.SingleNestedBlock{
-										Attributes: map[string]schema.Attribute{
-											"channel": schema.StringAttribute{
-												Optional:    true,
-												Description: "Teams channel ID.",
-											},
-											"tenant": schema.StringAttribute{
-												Optional:    true,
-												Description: "Teams tenant ID.",
-											},
-											"team": schema.StringAttribute{
-												Optional:    true,
-												Description: "Teams team ID.",
+									"send_teams_message": schema.ListNestedBlock{
+										Validators: []validator.List{
+											listvalidator.SizeAtMost(1),
+										},
+										NestedObject: schema.NestedBlockObject{
+											Attributes: map[string]schema.Attribute{
+												"channel": schema.StringAttribute{
+													Required:    true,
+													Description: "Teams channel ID.",
+												},
+												"tenant": schema.StringAttribute{
+													Required:    true,
+													Description: "Teams tenant ID.",
+												},
+												"team": schema.StringAttribute{
+													Required:    true,
+													Description: "Teams team ID.",
+												},
 											},
 										},
 									},
@@ -334,36 +352,37 @@ func (r *onCallTeamRoutingRulesResource) stateFromResponse(resp *datadogV2.TeamR
 		if relationships.Policy != nil && relationships.Policy.Data != nil {
 			policyId = types.StringValue(fullRule.Relationships.Policy.Data.Id)
 		}
-		var stateRestrictions *teamTimeRestrictionsModel
+		var stateRestrictions []*teamTimeRestrictionsModel
 		if attributes.TimeRestriction != nil {
-			stateRestrictions = &teamTimeRestrictionsModel{
+			stateRestriction := &teamTimeRestrictionsModel{
 				TimeZone: types.StringValue(attributes.TimeRestriction.TimeZone),
 			}
 			for _, restriction := range attributes.TimeRestriction.Restrictions {
-				stateRestrictions.Restrictions = append(stateRestrictions.Restrictions, &restrictionsModel{
+				stateRestriction.Restrictions = append(stateRestriction.Restrictions, &restrictionsModel{
 					EndDay:    types.StringValue(string(restriction.GetEndDay())),
 					EndTime:   types.StringValue(restriction.GetEndTime()),
 					StartDay:  types.StringValue(string(restriction.GetStartDay())),
 					StartTime: types.StringValue(restriction.GetStartTime()),
 				})
 			}
+			stateRestrictions = append(stateRestrictions, stateRestriction)
 		}
 		stateActions := []*teamRuleActionModel{}
 		for _, action := range attributes.Actions {
 			if action.SendSlackMessageAction != nil {
 				stateActions = append(stateActions, &teamRuleActionModel{
-					Slack: &slackMessageModel{
+					Slack: []*slackMessageModel{{
 						Workspace: types.StringValue(action.SendSlackMessageAction.Workspace),
 						Channel:   types.StringValue(action.SendSlackMessageAction.Channel),
-					},
+					}},
 				})
 			} else if action.SendTeamsMessageAction != nil {
 				stateActions = append(stateActions, &teamRuleActionModel{
-					Teams: &teamsMessageModel{
+					Teams: []*teamsMessageModel{{
 						Tenant:  types.StringValue(action.SendTeamsMessageAction.Tenant),
 						Team:    types.StringValue(action.SendTeamsMessageAction.Team),
 						Channel: types.StringValue(action.SendTeamsMessageAction.Channel),
-					},
+					}},
 				})
 			}
 		}
@@ -412,27 +431,27 @@ func (r *onCallTeamRoutingRulesResource) teamRoutingRulesRequestFromModel(state 
 					"only one of `send_slack_message`, `send_teams_message` is allowed per action. Consider adding a separate `action` block.")
 				return nil, diags
 			}
-			if plannedAction.Teams != nil {
+			if len(plannedAction.Teams) == 1 {
 				action.SendTeamsMessageAction = datadogV2.NewSendTeamsMessageActionWithDefaults()
 				action.SendTeamsMessageAction.Type = datadogV2.SENDTEAMSMESSAGEACTIONTYPE_SEND_TEAMS_MESSAGE
-				action.SendTeamsMessageAction.Team = plannedAction.Teams.Team.ValueString()
-				action.SendTeamsMessageAction.Tenant = plannedAction.Teams.Tenant.ValueString()
-				action.SendTeamsMessageAction.Channel = plannedAction.Teams.Channel.ValueString()
+				action.SendTeamsMessageAction.Team = plannedAction.Teams[0].Team.ValueString()
+				action.SendTeamsMessageAction.Tenant = plannedAction.Teams[0].Tenant.ValueString()
+				action.SendTeamsMessageAction.Channel = plannedAction.Teams[0].Channel.ValueString()
 			}
-			if plannedAction.Slack != nil {
+			if len(plannedAction.Slack) == 1 {
 				action.SendSlackMessageAction = datadogV2.NewSendSlackMessageActionWithDefaults()
 				action.SendSlackMessageAction.Type = datadogV2.SENDSLACKMESSAGEACTIONTYPE_SEND_SLACK_MESSAGE
-				action.SendSlackMessageAction.Channel = plannedAction.Slack.Channel.ValueString()
-				action.SendSlackMessageAction.Workspace = plannedAction.Slack.Workspace.ValueString()
+				action.SendSlackMessageAction.Channel = plannedAction.Slack[0].Channel.ValueString()
+				action.SendSlackMessageAction.Workspace = plannedAction.Slack[0].Workspace.ValueString()
 			}
 			actions = append(actions, action)
 		}
 
 		var timeRestriction *datadogV2.TimeRestrictions
-		if plannedRule.TimeRestrictions != nil {
+		if len(plannedRule.TimeRestrictions) == 1 {
 			timeRestriction = datadogV2.NewTimeRestrictionsWithDefaults()
-			timeRestriction.TimeZone = plannedRule.TimeRestrictions.TimeZone.ValueString()
-			for _, plannedRestriction := range plannedRule.TimeRestrictions.Restrictions {
+			timeRestriction.TimeZone = plannedRule.TimeRestrictions[0].TimeZone.ValueString()
+			for _, plannedRestriction := range plannedRule.TimeRestrictions[0].Restrictions {
 				restriction := datadogV2.TimeRestriction{}
 				if !plannedRestriction.EndDay.IsNull() {
 					restriction.SetEndDay(datadogV2.Weekday(plannedRestriction.EndDay.ValueString()))

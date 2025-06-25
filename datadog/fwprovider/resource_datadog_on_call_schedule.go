@@ -48,7 +48,7 @@ type layersModel struct {
 	RotationStart timetypes.RFC3339    `tfsdk:"rotation_start"`
 	Users         []types.String       `tfsdk:"users"`
 	Restrictions  []*restrictionsModel `tfsdk:"restriction"`
-	Interval      *intervalModel       `tfsdk:"interval"`
+	Interval      []*intervalModel     `tfsdk:"interval"`
 }
 
 type restrictionsModel struct {
@@ -102,6 +102,10 @@ func (r *onCallScheduleResource) Schema(_ context.Context, _ resource.SchemaRequ
 		Blocks: map[string]schema.Block{
 			"layer": schema.ListNestedBlock{
 				Description: "List of layers for the schedule.",
+				Validators: []validator.List{
+					listvalidator.IsRequired(),
+					listvalidator.SizeAtLeast(1),
+				},
 				NestedObject: schema.NestedBlockObject{
 					Attributes: map[string]schema.Attribute{
 						"id": schema.StringAttribute{
@@ -126,7 +130,7 @@ func (r *onCallScheduleResource) Schema(_ context.Context, _ resource.SchemaRequ
 						},
 						"rotation_start": schema.StringAttribute{
 							CustomType:  timetypes.RFC3339Type{},
-							Optional:    true,
+							Required:    true,
 							Description: "The date/time when the rotation for this layer starts (in ISO 8601).",
 							Validators:  []validator.String{validators.TimeFormatValidator(time.RFC3339)},
 						},
@@ -143,39 +147,46 @@ func (r *onCallScheduleResource) Schema(_ context.Context, _ resource.SchemaRequ
 							NestedObject: schema.NestedBlockObject{
 								Attributes: map[string]schema.Attribute{
 									"end_day": schema.StringAttribute{
-										Optional:    true,
 										Validators:  []validator.String{validators.NewEnumValidator[validator.String](datadogV2.NewWeekdayFromValue)},
+										Required:    true,
 										Description: "The weekday when the restriction period ends.",
 									},
 									"end_time": schema.StringAttribute{
-										Optional:    true,
+										Required:    true,
 										Description: "The time of day when the restriction ends (hh:mm:ss).",
 									},
 									"start_day": schema.StringAttribute{
-										Optional:    true,
 										Validators:  []validator.String{validators.NewEnumValidator[validator.String](datadogV2.NewWeekdayFromValue)},
+										Required:    true,
 										Description: "The weekday when the restriction period starts.",
 									},
 									"start_time": schema.StringAttribute{
-										Optional:    true,
+										Required:    true,
 										Description: "The time of day when the restriction begins (hh:mm:ss).",
 									},
 								},
 							},
 						},
-						"interval": schema.SingleNestedBlock{
-							Attributes: map[string]schema.Attribute{
-								"days": schema.Int32Attribute{
-									Optional:    true,
-									Computed:    true,
-									Description: "The number of full days in each rotation period.",
-									Default:     int32default.StaticInt32(int32(0)),
-								},
-								"seconds": schema.Int64Attribute{
-									Optional:    true,
-									Computed:    true,
-									Description: "For intervals that are not expressible in whole days, this will be added to `days`.",
-									Default:     int64default.StaticInt64(int64(0)),
+						"interval": schema.ListNestedBlock{
+							Description: "Rotation interval for this layer.",
+							Validators: []validator.List{
+								listvalidator.IsRequired(),
+								listvalidator.SizeBetween(1, 1),
+							},
+							NestedObject: schema.NestedBlockObject{
+								Attributes: map[string]schema.Attribute{
+									"days": schema.Int32Attribute{
+										Optional:    true,
+										Computed:    true,
+										Description: "The number of full days in each rotation period.",
+										Default:     int32default.StaticInt32(int32(0)),
+									},
+									"seconds": schema.Int64Attribute{
+										Optional:    true,
+										Computed:    true,
+										Description: "For intervals that are not expressible in whole days, this will be added to `days`.",
+										Default:     int64default.StaticInt64(int64(0)),
+									},
 								},
 							},
 						},
@@ -441,7 +452,7 @@ func newLayerModel(layer *datadogV2.Layer, membersByID map[string]*datadogV2.Sch
 		RotationStart: rotationStart,
 		Users:         memberIds,
 		Restrictions:  restrictionsModels,
-		Interval:      &intervalModel{Days: types.Int32Value(interval.GetDays()), Seconds: types.Int64Value(interval.GetSeconds())},
+		Interval:      []*intervalModel{{Days: types.Int32Value(interval.GetDays()), Seconds: types.Int64Value(interval.GetSeconds())}},
 	}
 }
 
@@ -498,14 +509,16 @@ func (r *onCallScheduleResource) buildOnCallScheduleRequestBody(ctx context.Cont
 
 		layersDDItem := datadogV2.NewScheduleCreateRequestDataAttributesLayersItems(
 			effectiveDate,
-			datadogV2.LayerAttributesInterval{
-				Days:    layersTFItem.Interval.Days.ValueInt32Pointer(),
-				Seconds: layersTFItem.Interval.Seconds.ValueInt64Pointer(),
-			},
+			datadogV2.LayerAttributesInterval{},
 			[]datadogV2.ScheduleRequestDataAttributesLayersItemsMembersItems{},
 			layersTFItem.Name.ValueString(),
 			rotationStart,
 		)
+
+		if len(layersTFItem.Interval) == 1 {
+			layersDDItem.Interval.Days = layersTFItem.Interval[0].Days.ValueInt32Pointer()
+			layersDDItem.Interval.Seconds = layersTFItem.Interval[0].Seconds.ValueInt64Pointer()
+		}
 
 		if !layersTFItem.EndDate.IsNull() {
 			endDate, err := parseTime(layersTFItem.EndDate.ValueString())
@@ -687,11 +700,11 @@ func (r *onCallScheduleResource) buildOnCallScheduleUpdateRequestBody(
 			if layersTFItem.Interval != nil {
 				var interval datadogV2.LayerAttributesInterval
 
-				if !layersTFItem.Interval.Days.IsNull() {
-					interval.SetDays(layersTFItem.Interval.Days.ValueInt32())
+				if !layersTFItem.Interval[0].Days.IsNull() {
+					interval.SetDays(layersTFItem.Interval[0].Days.ValueInt32())
 				}
-				if !layersTFItem.Interval.Seconds.IsNull() {
-					interval.SetSeconds(layersTFItem.Interval.Seconds.ValueInt64())
+				if !layersTFItem.Interval[0].Seconds.IsNull() {
+					interval.SetSeconds(layersTFItem.Interval[0].Seconds.ValueInt64())
 				}
 				layersDDItem.SetInterval(interval)
 			}
