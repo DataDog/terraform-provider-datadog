@@ -493,6 +493,10 @@ func (r *onCallEscalationPolicyResource) buildOnCallEscalationPolicyUpdateReques
 		attributes.SetName(plan.Name.ValueString())
 	}
 
+	if !plan.Retries.IsNull() {
+		attributes.SetRetries(plan.Retries.ValueInt64())
+	}
+
 	if !plan.ResolvePageOnPolicyEnd.IsNull() {
 		attributes.SetResolvePageOnPolicyEnd(plan.ResolvePageOnPolicyEnd.ValueBool())
 	}
