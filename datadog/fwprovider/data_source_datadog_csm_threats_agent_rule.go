@@ -162,6 +162,10 @@ func (r *csmThreatsAgentRulesDataSource) Read(ctx context.Context, request datas
 				action.Set = setAction
 			}
 
+			if act.Hash != nil {
+				action.Hash = &HashActionModel{}
+			}
+
 			actions = append(actions, action)
 		}
 		agentRuleModel.Actions = actions
@@ -223,6 +227,9 @@ func (*csmThreatsAgentRulesDataSource) Schema(_ context.Context, _ datasource.Sc
 											"ttl":    types.Int64Type,
 											"scope":  types.StringType,
 										},
+									},
+									"hash": types.ObjectType{
+										AttrTypes: map[string]attr.Type{},
 									},
 								},
 							},
