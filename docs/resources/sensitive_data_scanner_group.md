@@ -23,11 +23,11 @@ resource "datadog_sensitive_data_scanner_group" "mygroup" {
   }
   is_enabled   = true
   product_list = ["apm", "logs"]
-  sampling {
+  samplings {
     product = "apm"
     rate    = 100
   }
-  sampling {
+  samplings {
     product = "logs"
     rate    = 10
   }
@@ -47,7 +47,7 @@ resource "datadog_sensitive_data_scanner_group" "mygroup" {
 ### Optional
 
 - `description` (String) Description of the Datadog scanning group.
-- `sampling` (Block List, Max: 4) List of sampling configurations per product type for the scanning group. (see [below for nested schema](#nestedblock--sampling))
+- `samplings` (Block List, Max: 4) List of sampling configurations per product type for the scanning group. (see [below for nested schema](#nestedblock--samplings))
 
 ### Read-Only
 
@@ -61,8 +61,8 @@ Required:
 - `query` (String) Query to filter the events.
 
 
-<a id="nestedblock--sampling"></a>
-### Nested Schema for `sampling`
+<a id="nestedblock--samplings"></a>
+### Nested Schema for `samplings`
 
 Required:
 

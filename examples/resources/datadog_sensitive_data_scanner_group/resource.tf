@@ -9,11 +9,11 @@ resource "datadog_sensitive_data_scanner_group" "mygroup" {
   }
   is_enabled   = true
   product_list = ["apm", "logs"]
-  sampling {
+  samplings {
     product = "apm"
     rate    = 100
   }
-  sampling {
+  samplings {
     product = "logs"
     rate    = 10
   }

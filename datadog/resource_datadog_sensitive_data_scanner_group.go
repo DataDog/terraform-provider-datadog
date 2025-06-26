@@ -26,7 +26,7 @@ func resourceDatadogSensitiveDataScannerGroup() *schema.Resource {
 			StateContext: schema.ImportStatePassthroughContext,
 		},
 		CustomizeDiff: func(ctx context.Context, diff *schema.ResourceDiff, meta interface{}) error {
-			if samplings, ok := diff.GetOk("sampling"); ok {
+			if samplings, ok := diff.GetOk("samplings"); ok {
 				samplingsList := samplings.([]interface{})
 				productsSeen := make(map[string]bool)
 
@@ -34,7 +34,7 @@ func resourceDatadogSensitiveDataScannerGroup() *schema.Resource {
 					samplingMap := sampling.(map[string]interface{})
 					if product, exists := samplingMap["product"].(string); exists {
 						if productsSeen[product] {
-							return fmt.Errorf("sampling[%d]: product %q appears more than once in sampling configuration", i, product)
+							return fmt.Errorf("sampling[%d]: product %q appears more than once in samplings configuration", i, product)
 						}
 						productsSeen[product] = true
 					}
@@ -90,7 +90,7 @@ func resourceDatadogSensitiveDataScannerGroup() *schema.Resource {
 						},
 					},
 				},
-				"sampling": {
+				"samplings": {
 					Description: "List of sampling configurations per product type for the scanning group.",
 					Type:        schema.TypeList,
 					Optional:    true,
@@ -202,7 +202,7 @@ func buildScanningGroupAttributes(d *schema.ResourceData) *datadogV2.SensitiveDa
 		attributes.SetProductList(nil)
 	}
 
-	if samplings, ok := d.GetOk("sampling"); ok {
+	if samplings, ok := d.GetOk("samplings"); ok {
 		ddSamplings := buildDatadogSamplings(samplings.([]interface{}))
 		attributes.SetSamplings(ddSamplings)
 	}
@@ -340,7 +340,7 @@ func updateSensitiveDataScannerGroupState(d *schema.ResourceData, groupAttribute
 		return diag.FromErr(err)
 	}
 	if samplings := groupAttributes.GetSamplings(); len(samplings) > 0 {
-		if err := d.Set("sampling", buildTerraformSamplings(samplings)); err != nil {
+		if err := d.Set("samplings", buildTerraformSamplings(samplings)); err != nil {
 			return diag.FromErr(err)
 		}
 	}
