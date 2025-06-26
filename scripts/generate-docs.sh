@@ -5,6 +5,8 @@
 exclude_files=(
   "docs/resources/integration_aws_account.md"
   "docs/resources/compliance_custom_framework.md"
+  "docs/resources/on_call_schedule.md"
+  "docs/resources/on_call_team_routing_rules.md"
 )
 
 # Check if manual changes were made to any excluded files and exit

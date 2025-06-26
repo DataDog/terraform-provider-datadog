@@ -5,6 +5,7 @@ import (
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -101,6 +102,10 @@ func (r *onCallEscalationPolicyResource) Schema(_ context.Context, _ resource.Sc
 		Blocks: map[string]schema.Block{
 			"step": schema.ListNestedBlock{
 				Description: "List of steps for the escalation policy.",
+				Validators: []validator.List{
+					listvalidator.IsRequired(),
+					listvalidator.SizeBetween(1, 10),
+				},
 				NestedObject: schema.NestedBlockObject{
 					Attributes: map[string]schema.Attribute{
 						"id": schema.StringAttribute{
@@ -124,6 +129,10 @@ func (r *onCallEscalationPolicyResource) Schema(_ context.Context, _ resource.Sc
 					Blocks: map[string]schema.Block{
 						"target": schema.ListNestedBlock{
 							Description: "List of targets for the step.",
+							Validators: []validator.List{
+								listvalidator.IsRequired(),
+								listvalidator.SizeBetween(1, 10),
+							},
 							NestedObject: schema.NestedBlockObject{
 								Attributes: map[string]schema.Attribute{
 									"user": schema.StringAttribute{
