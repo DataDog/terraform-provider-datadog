@@ -104,7 +104,7 @@ func resourceDatadogSensitiveDataScannerGroup() *schema.Resource {
 								ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewSensitiveDataScannerProductFromValue),
 							},
 							"rate": {
-								Description: "Rate at which data in product type will be scanned, as a percentage.",
+								Description: "Percentage rate at which data for the product type is scanned.",
 								Type:        schema.TypeFloat,
 								Required:    true,
 								ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {

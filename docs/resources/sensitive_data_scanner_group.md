@@ -67,7 +67,7 @@ Required:
 Required:
 
 - `product` (String) Product that the sampling rate applies to. Valid values are `logs`, `rum`, `events`, `apm`.
-- `rate` (Number) Rate at which data in product type will be scanned, as a percentage.
+- `rate` (Number) Percentage rate at which data for the product type is scanned.
 
 ## Import
 
