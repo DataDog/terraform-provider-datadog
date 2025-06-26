@@ -60,6 +60,53 @@ type teamsMessageModel struct {
 	Channel types.String `tfsdk:"channel"`
 }
 
+func (m *onCallTeamRoutingRulesModel) Validate() diag.Diagnostics {
+	diags := diag.Diagnostics{}
+
+	for i, rule := range m.Rules {
+		root := path.Root("rule").AtListIndex(i)
+
+		if rule.TimeRestrictions != nil {
+			if rule.TimeRestrictions.TimeZone.IsNull() {
+				diags.AddAttributeError(root.AtName("time_restrictions"), "missing time_zone", "time_restrictions must specify time_zone")
+			}
+			if len(rule.TimeRestrictions.Restrictions) == 0 {
+				diags.AddAttributeError(root.AtName("time_restrictions"), "missing restrictions", "time_restrictions must specify at least one restriction")
+			}
+		}
+
+		for actionIdx, action := range rule.Actions {
+			actionPath := root.AtName("action").AtListIndex(actionIdx)
+			if action.Teams == nil && action.Slack == nil {
+				diags.AddAttributeError(actionPath, "missing actions", "action must specify one of send_slack_message or send_teams_message")
+			}
+			if action.Teams != nil {
+				teamsPath := actionPath.AtName("send_teams_message")
+				if action.Teams.Team.IsNull() {
+					diags.AddAttributeError(teamsPath, "missing team", "team is required")
+				}
+				if action.Teams.Channel.IsNull() {
+					diags.AddAttributeError(teamsPath, "missing channel", "channel is required")
+				}
+				if action.Teams.Tenant.IsNull() {
+					diags.AddAttributeError(teamsPath, "missing tenant", "tenant is required")
+				}
+			}
+			if action.Slack != nil {
+				teamsPath := actionPath.AtName("send_slack_message")
+				if action.Slack.Workspace.IsNull() {
+					diags.AddAttributeError(teamsPath, "missing workspace", "workspace is required")
+				}
+				if action.Slack.Channel.IsNull() {
+					diags.AddAttributeError(teamsPath, "missing channel", "channel is required")
+				}
+			}
+		}
+	}
+
+	return diags
+}
+
 func NewOnCallTeamRoutingRulesResource() resource.Resource {
 	return &onCallTeamRoutingRulesResource{}
 }
@@ -231,6 +278,11 @@ func (r *onCallTeamRoutingRulesResource) Create(ctx context.Context, request res
 		return
 	}
 
+	response.Diagnostics.Append(plan.Validate()...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
 	body, diags := r.teamRoutingRulesRequestFromModel(&plan)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
@@ -259,6 +311,11 @@ func (r *onCallTeamRoutingRulesResource) Create(ctx context.Context, request res
 func (r *onCallTeamRoutingRulesResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
 	var plan onCallTeamRoutingRulesModel
 	response.Diagnostics.Append(request.Plan.Get(ctx, &plan)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	response.Diagnostics.Append(plan.Validate()...)
 	if response.Diagnostics.HasError() {
 		return
 	}
