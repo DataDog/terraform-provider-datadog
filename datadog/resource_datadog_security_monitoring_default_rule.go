@@ -646,6 +646,12 @@ func stringSliceEquals(left []string, right []string) bool {
 
 // Helper function to compare options
 func compareOptions(currentOptions *datadogV2.SecurityMonitoringRuleOptions, payloadOptions *datadogV2.SecurityMonitoringRuleOptions) bool {
+	if currentOptions == nil && payloadOptions == nil {
+		return true
+	}
+	if currentOptions == nil || payloadOptions == nil {
+		return false
+	}
 	// Compare decrease_criticality_based_on_env
 	return currentOptions.GetDecreaseCriticalityBasedOnEnv() == payloadOptions.GetDecreaseCriticalityBasedOnEnv()
 }
