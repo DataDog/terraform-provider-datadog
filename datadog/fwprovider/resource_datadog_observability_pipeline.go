@@ -298,6 +298,7 @@ type destinationsModel struct {
 	SentinelOneDestination        []*sentinelOneDestinationModel       `tfsdk:"sentinel_one"`
 	OpenSearchDestination         []*opensearchDestinationModel        `tfsdk:"opensearch"`
 	AmazonOpenSearchDestination   []*amazonOpenSearchDestinationModel  `tfsdk:"amazon_opensearch"`
+	SocketDestination             []*socketDestinationModel            `tfsdk:"socket"`
 }
 
 type amazonOpenSearchDestinationModel struct {
@@ -629,6 +630,15 @@ type socketFramingCharacterDelimitedModel struct {
 	Delimiter types.String `tfsdk:"delimiter"`
 }
 
+type socketDestinationModel struct {
+	Id       types.String       `tfsdk:"id"`
+	Inputs   types.List         `tfsdk:"inputs"`
+	Mode     types.String       `tfsdk:"mode"`
+	Encoding types.String       `tfsdk:"encoding"`
+	Framing  socketFramingModel `tfsdk:"framing"`
+	Tls      *tlsModel          `tfsdk:"tls"`
+}
+
 func NewObservabilitPipelineResource() resource.Resource {
 	return &observabilityPipelineResource{}
 }
@@ -791,7 +801,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 									},
 									Blocks: map[string]schema.Block{
 										"auth": schema.SingleNestedBlock{
-											Description: "AWS authentication credentials used for accessing AWS services such as S3. If omitted, the system’s default credentials are used (for example, the IAM role and environment variables).",
+											Description: "AWS authentication credentials used for accessing AWS services such as S3. If omitted, the system's default credentials are used (for example, the IAM role and environment variables).",
 											Attributes: map[string]schema.Attribute{
 												"assume_role": schema.StringAttribute{
 													Optional:    true,
@@ -897,7 +907,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 									},
 									Blocks: map[string]schema.Block{
 										"auth": schema.SingleNestedBlock{
-											Description: "AWS authentication credentials used for accessing AWS services such as S3. If omitted, the system’s default credentials are used (for example, the IAM role and environment variables).",
+											Description: "AWS authentication credentials used for accessing AWS services such as S3. If omitted, the system's default credentials are used (for example, the IAM role and environment variables).",
 											Attributes: map[string]schema.Attribute{
 												"assume_role": schema.StringAttribute{
 													Optional:    true,
@@ -2315,6 +2325,66 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 									},
 								},
 							},
+							"socket": schema.ListNestedBlock{
+								Description: "The `socket` destination sends logs over TCP or UDP to a remote server.",
+								NestedObject: schema.NestedBlockObject{
+									Attributes: map[string]schema.Attribute{
+										"id": schema.StringAttribute{
+											Required:    true,
+											Description: "The unique identifier for this destination.",
+										},
+										"inputs": schema.ListAttribute{
+											Required:    true,
+											ElementType: types.StringType,
+											Description: "A list of component IDs whose output is used as the `input` for this destination.",
+										},
+										"mode": schema.StringAttribute{
+											Required:    true,
+											Description: "The protocol used to send logs. Must be either `tcp` or `udp`.",
+											Validators: []validator.String{
+												stringvalidator.OneOf("tcp", "udp"),
+											},
+										},
+										"encoding": schema.StringAttribute{
+											Required:    true,
+											Description: "Encoding format for log events. Must be either `json` or `raw_message`.",
+											Validators: []validator.String{
+												stringvalidator.OneOf("json", "raw_message"),
+											},
+										},
+									},
+									Blocks: map[string]schema.Block{
+										"framing": schema.SingleNestedBlock{
+											Description: "Defines the framing method for outgoing messages.",
+											Attributes: map[string]schema.Attribute{
+												"method": schema.StringAttribute{
+													Required:    true,
+													Description: "The framing method. One of: `newline_delimited`, `bytes`, `character_delimited`.",
+													Validators: []validator.String{
+														stringvalidator.OneOf(
+															"newline_delimited",
+															"bytes",
+															"character_delimited",
+														),
+													},
+												},
+											},
+											Blocks: map[string]schema.Block{
+												"character_delimited": schema.SingleNestedBlock{
+													Description: "Used when `method` is `character_delimited`. Specifies the delimiter character.",
+													Attributes: map[string]schema.Attribute{
+														"delimiter": schema.StringAttribute{
+															Optional:    true,
+															Description: "A single ASCII character used as a delimiter.",
+														},
+													},
+												},
+											},
+										},
+										"tls": tlsSchema(),
+									},
+								},
+							},
 						},
 					},
 				},
@@ -2333,7 +2403,7 @@ func tlsSchema() schema.SingleNestedBlock {
 			},
 			"ca_file": schema.StringAttribute{
 				Optional:    true,
-				Description: "Path to the Certificate Authority (CA) file used to validate the server’s TLS certificate.",
+				Description: "Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.",
 			},
 			"key_file": schema.StringAttribute{
 				Optional:    true,
@@ -2607,6 +2677,9 @@ func expandPipeline(ctx context.Context, state *observabilityPipelineModel) (*da
 	for _, d := range state.Config.Destinations.AmazonOpenSearchDestination {
 		config.Destinations = append(config.Destinations, expandAmazonOpenSearchDestination(ctx, d))
 	}
+	for _, d := range state.Config.Destinations.SocketDestination {
+		config.Destinations = append(config.Destinations, expandSocketDestination(ctx, d))
+	}
 
 	attrs.SetConfig(*config)
 	data.SetAttributes(*attrs)
@@ -2783,7 +2856,9 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 		if d := flattenAmazonOpenSearchDestination(ctx, d.ObservabilityPipelineAmazonOpenSearchDestination); d != nil {
 			outCfg.Destinations.AmazonOpenSearchDestination = append(outCfg.Destinations.AmazonOpenSearchDestination, d)
 		}
-
+		if d := flattenSocketDestination(ctx, d.ObservabilityPipelineSocketDestination); d != nil {
+			outCfg.Destinations.SocketDestination = append(outCfg.Destinations.SocketDestination, d)
+		}
 	}
 
 	state.Config = &outCfg
@@ -5092,9 +5167,8 @@ func flattenSocketSource(src *datadogV2.ObservabilityPipelineSocketSource) *sock
 	}
 
 	out := &socketSourceModel{
-		Id:      types.StringValue(src.GetId()),
-		Mode:    types.StringValue(string(src.GetMode())),
-		Framing: &socketFramingModel{},
+		Id:   types.StringValue(src.GetId()),
+		Mode: types.StringValue(string(src.GetMode())),
 	}
 
 	if src.Tls != nil {
@@ -5116,6 +5190,84 @@ func flattenSocketSource(src *datadogV2.ObservabilityPipelineSocketSource) *sock
 		out.Framing.Method = types.StringValue("octet_counting")
 	case src.Framing.ObservabilityPipelineSocketSourceFramingChunkedGelf != nil:
 		out.Framing.Method = types.StringValue("chunked_gelf")
+	}
+
+	return out
+}
+
+func expandSocketDestination(ctx context.Context, src *socketDestinationModel) datadogV2.ObservabilityPipelineConfigDestinationItem {
+	s := datadogV2.NewObservabilityPipelineSocketDestinationWithDefaults()
+	s.SetId(src.Id.ValueString())
+	s.SetMode(datadogV2.ObservabilityPipelineSocketDestinationMode(src.Mode.ValueString()))
+
+	if !src.Encoding.IsNull() {
+		s.SetEncoding(datadogV2.ObservabilityPipelineSocketDestinationEncoding(src.Encoding.ValueString()))
+	}
+
+	switch src.Framing.Method.ValueString() {
+	case "newline_delimited":
+		s.Framing = datadogV2.ObservabilityPipelineSocketDestinationFraming{
+			ObservabilityPipelineSocketDestinationFramingNewlineDelimited: &datadogV2.ObservabilityPipelineSocketDestinationFramingNewlineDelimited{
+				Method: "newline_delimited",
+			},
+		}
+	case "bytes":
+		s.Framing = datadogV2.ObservabilityPipelineSocketDestinationFraming{
+			ObservabilityPipelineSocketDestinationFramingBytes: &datadogV2.ObservabilityPipelineSocketDestinationFramingBytes{
+				Method: "bytes",
+			},
+		}
+	case "character_delimited":
+		s.Framing = datadogV2.ObservabilityPipelineSocketDestinationFraming{
+			ObservabilityPipelineSocketDestinationFramingCharacterDelimited: &datadogV2.ObservabilityPipelineSocketDestinationFramingCharacterDelimited{
+				Method:    "character_delimited",
+				Delimiter: src.Framing.CharacterDelimited.Delimiter.ValueString(),
+			},
+		}
+	}
+
+	var inputs []string
+	src.Inputs.ElementsAs(ctx, &inputs, false)
+	s.SetInputs(inputs)
+
+	if src.Tls != nil {
+		s.Tls = expandTls(src.Tls)
+	}
+
+	return datadogV2.ObservabilityPipelineConfigDestinationItem{
+		ObservabilityPipelineSocketDestination: s,
+	}
+}
+
+func flattenSocketDestination(ctx context.Context, src *datadogV2.ObservabilityPipelineSocketDestination) *socketDestinationModel {
+	if src == nil {
+		return nil
+	}
+
+	inputs, _ := types.ListValueFrom(ctx, types.StringType, src.GetInputs())
+
+	out := &socketDestinationModel{
+		Id:       types.StringValue(src.GetId()),
+		Mode:     types.StringValue(string(src.GetMode())),
+		Inputs:   inputs,
+		Encoding: types.StringValue(string(src.GetEncoding())),
+	}
+
+	if src.Tls != nil {
+		tls := flattenTls(src.Tls)
+		out.Tls = &tls
+	}
+
+	switch {
+	case src.Framing.ObservabilityPipelineSocketDestinationFramingNewlineDelimited != nil:
+		out.Framing.Method = types.StringValue("newline_delimited")
+	case src.Framing.ObservabilityPipelineSocketDestinationFramingBytes != nil:
+		out.Framing.Method = types.StringValue("bytes")
+	case src.Framing.ObservabilityPipelineSocketDestinationFramingCharacterDelimited != nil:
+		out.Framing.Method = types.StringValue("character_delimited")
+		out.Framing.CharacterDelimited = &socketFramingCharacterDelimitedModel{
+			Delimiter: types.StringValue(src.Framing.ObservabilityPipelineSocketDestinationFramingCharacterDelimited.Delimiter),
+		}
 	}
 
 	return out
