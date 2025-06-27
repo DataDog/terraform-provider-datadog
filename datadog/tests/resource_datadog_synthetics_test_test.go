@@ -6616,12 +6616,6 @@ func createSyntheticsMobileTestStep(ctx context.Context, accProvider *schema.Pro
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "mobile_step.0.params.0.element.0.text_content", "Tap"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "mobile_step.0.params.0.element.0.relative_position.0.%", "2"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "mobile_step.0.params.0.element.0.relative_position.0.x", "0.07256155303030302"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "mobile_step.0.params.0.element.0.relative_position.0.y", "0.41522381756756754"),
-			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "mobile_step.0.params.0.element.0.user_locator.0.%", "2"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "mobile_step.0.params.0.element.0.user_locator.0.fail_test_on_cannot_locate", "false"),
@@ -6772,10 +6766,6 @@ resource "datadog_synthetics_test" "bar" {
 				context_type  = "native"
 				text_content  = "Tap"
 				multi_locator = {}
-				relative_position {
-					x = 0.07256155303030302
-					y = 0.41522381756756754
-				}
 				user_locator {
 					fail_test_on_cannot_locate = false
 					values {

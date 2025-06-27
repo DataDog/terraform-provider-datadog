@@ -5452,13 +5452,14 @@ func buildDatadogParamsElementForMobileStep(stepParamsElements map[string]interf
 	if stepParamsElements["element_description"].(string) != "" {
 		elements.SetElementDescription(stepParamsElements["element_description"].(string))
 	}
-	elementRelativePosition := stepParamsElements["relative_position"].([]interface{})[0].(map[string]interface{})
-	if len(elementRelativePosition) != 0 {
-		relativePosition := datadogV1.SyntheticsMobileStepParamsElementRelativePosition{}
-		relativePosition.SetX(elementRelativePosition["x"].(float64))
-		relativePosition.SetY(elementRelativePosition["y"].(float64))
-
-		elements.SetRelativePosition(relativePosition)
+	if relativePositions, ok := stepParamsElements["relative_position"].([]interface{}); ok && len(relativePositions) > 0 {
+		elementRelativePosition := stepParamsElements["relative_position"].([]interface{})[0].(map[string]interface{})
+		if len(elementRelativePosition) != 0 {
+			relativePosition := datadogV1.SyntheticsMobileStepParamsElementRelativePosition{}
+			relativePosition.SetX(elementRelativePosition["x"].(float64))
+			relativePosition.SetY(elementRelativePosition["y"].(float64))
+			elements.SetRelativePosition(relativePosition)
+		}
 	}
 	if stepParamsElements["text_content"].(string) != "" {
 		elements.SetTextContent(stepParamsElements["text_content"].(string))
