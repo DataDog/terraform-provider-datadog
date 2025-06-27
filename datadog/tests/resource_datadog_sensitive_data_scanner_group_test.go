@@ -41,6 +41,8 @@ func TestAccDatadogSensitiveDataScannerGroup_Basic(t *testing.T) {
 					resource.TestCheckResourceAttr(resource_name, "product_list.#", "1"),
 					resource.TestCheckResourceAttr(resource_name, "is_enabled", "true"),
 					resource.TestCheckResourceAttr(resource_name, "filter.0.query", "*"),
+					resource.TestCheckResourceAttr(resource_name, "samplings.0.product", "logs"),
+					resource.TestCheckResourceAttr(resource_name, "samplings.0.rate", "100"),
 				),
 			},
 			{
@@ -52,6 +54,10 @@ func TestAccDatadogSensitiveDataScannerGroup_Basic(t *testing.T) {
 					resource.TestCheckResourceAttr(resource_name, "product_list.#", "2"),
 					resource.TestCheckResourceAttr(resource_name, "is_enabled", "false"),
 					resource.TestCheckResourceAttr(resource_name, "filter.0.query", "hotel:trivago2.0"),
+					resource.TestCheckResourceAttr(resource_name, "samplings.0.product", "logs"),
+					resource.TestCheckResourceAttr(resource_name, "samplings.0.rate", "100"),
+					resource.TestCheckResourceAttr(resource_name, "samplings.1.product", "apm"),
+					resource.TestCheckResourceAttr(resource_name, "samplings.1.rate", "10"),
 				),
 			},
 		},
@@ -67,6 +73,10 @@ resource "datadog_sensitive_data_scanner_group" "sample_group" {
 	filter {
 		query = ""
 	}
+	samplings {
+		product = "logs"
+		rate    = 100
+	}
 }
 `, name)
 }
@@ -80,6 +90,14 @@ resource "datadog_sensitive_data_scanner_group" "sample_group" {
 	is_enabled     = false
 	filter {
 		query = "hotel:trivago2.0"
+	}
+	samplings {
+		product = "logs"
+		rate    = 100
+	}
+	samplings {
+		product = "apm"
+		rate    = 10
 	}
 }
 `, name)
