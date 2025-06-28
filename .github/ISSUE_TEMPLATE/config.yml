@@ -1,7 +1,7 @@
 blank_issues_enabled: true
 contact_links:
   - name: Datadog Support
-    url: https://help.datadoghq.com/hc/en-us/requests/new?_gl=1*rmfzc4*_gcl_au*OTc0MzI0MjMyLjE3NDM2Nzc1MjQ.*_ga*MjI2ODYyNDMxLjE3NDY0NDMyNjU.*_ga_KN80RDFSQK*czE3NDcxMjUxMjgkbzIkZzAkdDE3NDcxMjUxMjgkajAkbDAkaDE3NDY0ODczNDk.*_fplc*dXIzUEdsS2htcE1kY0ZGZGtIYSUyQlFFVjJJRmFWaTFVYzlZUUtoSmoxMW5NNFlXbWppdzZORUhVcHJQdDFXZ2k5bHFrNEJneWV1bW1YRVNBdno5dVZFaERoZDclMkZRbUY4R0FVNm1hSUJ6UzZoUWJuOEJJY0lNZUo4WWpIdEh6dyUzRCUzRA..
+    url: https://help.datadoghq.com/hc/en-us/requests/new
     about: Submit a ticket here for urgent issues, questions, and feature requests for the Datadog product and/or its API.
   - name: Datadog Documentation
     url: https://docs.datadoghq.com/
