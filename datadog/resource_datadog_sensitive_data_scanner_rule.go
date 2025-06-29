@@ -2,8 +2,11 @@ package datadog
 
 import (
 	"context"
+	"encoding/json"
+	"fmt"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+	"github.com/hashicorp/go-cty/cty"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
@@ -21,6 +24,11 @@ func resourceDatadogSensitiveDataScannerRule() *schema.Resource {
 		DeleteContext: resourceDatadogSensitiveDataScannerRuleDelete,
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
+		},
+		CustomizeDiff: func(ctx context.Context, diff *schema.ResourceDiff, metadata interface{}) error {
+			keys := diff.UpdatedKeys()
+			println(keys)
+			return nil
 		},
 
 		SchemaFunc: func() map[string]*schema.Schema {
@@ -68,6 +76,31 @@ func resourceDatadogSensitiveDataScannerRule() *schema.Resource {
 					Type:        schema.TypeString,
 					Optional:    true,
 					Description: "Not included if there is a relationship to a standard pattern.",
+				},
+				"pattern_test": {
+					Type:     schema.TypeList,
+					Optional: true,
+					Description: "An test cases to validate the pattern.\n" +
+						"If it fails, the Terraform plan will fail as well.\n" +
+						"Note: this is a synthetic field and is not persisted in the remote rule configuration.",
+					RequiredWith: []string{"pattern"},
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"input": {
+								Type:        schema.TypeString,
+								Required:    true,
+								Description: "An arbitrary input string to run the pattern against.",
+							},
+							"matches": {
+								Type:        schema.TypeBool,
+								Optional:    true,
+								Default:     true,
+								Description: "Whether the input string should match the pattern.",
+							},
+						},
+					},
+					// DiffSuppressFunc:
+					StateFunc: func(val any) string { return "" }, // synthetic field, don't persist it
 				},
 				"tags": {
 					Type:        schema.TypeList,
@@ -187,6 +220,10 @@ func resourceDatadogSensitiveDataScannerRuleCreate(ctx context.Context, d *schem
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
+
+	if testDiag := runPatternTests(providerConf, d); testDiag.HasError() {
+		return testDiag
+	}
 
 	sensitiveDataScannerMutex.Lock()
 	defer sensitiveDataScannerMutex.Unlock()
@@ -345,6 +382,10 @@ func resourceDatadogSensitiveDataScannerRuleUpdate(ctx context.Context, d *schem
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 
+	if testDiag := runPatternTests(providerConf, d); testDiag.HasError() {
+		return testDiag
+	}
+
 	sensitiveDataScannerMutex.Lock()
 	defer sensitiveDataScannerMutex.Unlock()
 
@@ -468,4 +509,62 @@ func findSensitiveDataScannerRuleHelper(ruleId string, response datadogV2.Sensit
 	}
 
 	return nil
+}
+
+func runPatternTests(conf *ProviderConfiguration, d *schema.ResourceData) diag.Diagnostics {
+	diags := diag.Diagnostics{}
+	pattern := d.Get("pattern").(string)
+	tests := d.Get("pattern_test").([]any)
+	for i, test := range tests {
+		test := test.(map[string]any)
+		input := test["input"].(string)
+		matches := test["matches"].(bool)
+
+		errDetail := ""
+		if doMatch, err := checkPatternMatches(conf, input, pattern); err != nil {
+			errDetail = err.Error()
+		} else if doMatch != matches {
+			matchStr := "does not match"
+			if matches {
+				matchStr = "matches"
+			}
+			errDetail = fmt.Sprintf("The pattern_test input %q %s %q", input, matchStr, pattern)
+		}
+
+		if errDetail != "" {
+			diags = append(diags, diag.Diagnostic{
+				Severity:      diag.Error,
+				Summary:       fmt.Sprintf("pattern_test %d failure", i),
+				Detail:        errDetail,
+				AttributePath: cty.GetAttrPath("pattern_test").IndexInt(i),
+			})
+		}
+	}
+	return diags
+}
+
+func checkPatternMatches(conf *ProviderConfiguration, input string, pattern string) (bool, error) {
+	// TODO: use stable API
+	payload, _, err := utils.SendRequest(
+		conf.Auth,
+		conf.DatadogApiInstances.HttpClient,
+		"GET",
+		"/api/ui/event-platform/sensitive-data-scanner/test-pattern",
+		map[string]string{"content": input, "regex": pattern},
+	)
+	if err != nil {
+		return false, fmt.Errorf("API error while checking pattern: %w", err)
+	}
+	result := struct {
+		Regex struct {
+			IsValid bool `json:"isValid"`
+		} `json:"regex"`
+		Content struct {
+			IsMatching bool `json:"isMatching"`
+		} `json:"content"`
+	}{}
+	if err = json.Unmarshal(payload, &result); err != nil {
+		return false, fmt.Errorf("parsing error while checking pattern: %w", err)
+	}
+	return result.Regex.IsValid && result.Content.IsMatching, nil
 }
