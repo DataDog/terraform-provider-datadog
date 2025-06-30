@@ -15,6 +15,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider/observability_pipeline"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
@@ -40,22 +41,22 @@ type configModel struct {
 	Destinations destinationsModel `tfsdk:"destinations"`
 }
 type sourcesModel struct {
-	DatadogAgentSource       []*datadogAgentSourceModel       `tfsdk:"datadog_agent"`
-	KafkaSource              []*kafkaSourceModel              `tfsdk:"kafka"`
-	RsyslogSource            []*rsyslogSourceModel            `tfsdk:"rsyslog"`
-	SyslogNgSource           []*syslogNgSourceModel           `tfsdk:"syslog_ng"`
-	SumoLogicSource          []*sumoLogicSourceModel          `tfsdk:"sumo_logic"`
-	FluentdSource            []*fluentdSourceModel            `tfsdk:"fluentd"`
-	FluentBitSource          []*fluentBitSourceModel          `tfsdk:"fluent_bit"`
-	HttpServerSource         []*httpServerSourceModel         `tfsdk:"http_server"`
-	AmazonS3Source           []*amazonS3SourceModel           `tfsdk:"amazon_s3"`
-	SplunkHecSource          []*splunkHecSourceModel          `tfsdk:"splunk_hec"`
-	SplunkTcpSource          []*splunkTcpSourceModel          `tfsdk:"splunk_tcp"`
-	AmazonDataFirehoseSource []*amazonDataFirehoseSourceModel `tfsdk:"amazon_data_firehose"`
-	HttpClientSource         []*httpClientSourceModel         `tfsdk:"http_client"`
-	GooglePubSubSource       []*googlePubSubSourceModel       `tfsdk:"google_pubsub"`
-	LogstashSource           []*logstashSourceModel           `tfsdk:"logstash"`
-	SocketSource             []*socketSourceModel             `tfsdk:"socket"`
+	DatadogAgentSource       []*datadogAgentSourceModel                  `tfsdk:"datadog_agent"`
+	KafkaSource              []*kafkaSourceModel                         `tfsdk:"kafka"`
+	RsyslogSource            []*rsyslogSourceModel                       `tfsdk:"rsyslog"`
+	SyslogNgSource           []*syslogNgSourceModel                      `tfsdk:"syslog_ng"`
+	SumoLogicSource          []*sumoLogicSourceModel                     `tfsdk:"sumo_logic"`
+	FluentdSource            []*fluentdSourceModel                       `tfsdk:"fluentd"`
+	FluentBitSource          []*fluentBitSourceModel                     `tfsdk:"fluent_bit"`
+	HttpServerSource         []*httpServerSourceModel                    `tfsdk:"http_server"`
+	AmazonS3Source           []*amazonS3SourceModel                      `tfsdk:"amazon_s3"`
+	SplunkHecSource          []*splunkHecSourceModel                     `tfsdk:"splunk_hec"`
+	SplunkTcpSource          []*splunkTcpSourceModel                     `tfsdk:"splunk_tcp"`
+	AmazonDataFirehoseSource []*amazonDataFirehoseSourceModel            `tfsdk:"amazon_data_firehose"`
+	HttpClientSource         []*httpClientSourceModel                    `tfsdk:"http_client"`
+	GooglePubSubSource       []*googlePubSubSourceModel                  `tfsdk:"google_pubsub"`
+	LogstashSource           []*logstashSourceModel                      `tfsdk:"logstash"`
+	SocketSource             []*observability_pipeline.SocketSourceModel `tfsdk:"socket"`
 }
 
 type logstashSourceModel struct {
@@ -284,21 +285,21 @@ type fieldValue struct {
 // Destination models
 
 type destinationsModel struct {
-	DatadogLogsDestination        []*datadogLogsDestinationModel       `tfsdk:"datadog_logs"`
-	GoogleCloudStorageDestination []*gcsDestinationModel               `tfsdk:"google_cloud_storage"`
-	SplunkHecDestination          []*splunkHecDestinationModel         `tfsdk:"splunk_hec"`
-	SumoLogicDestination          []*sumoLogicDestinationModel         `tfsdk:"sumo_logic"`
-	RsyslogDestination            []*rsyslogDestinationModel           `tfsdk:"rsyslog"`
-	SyslogNgDestination           []*syslogNgDestinationModel          `tfsdk:"syslog_ng"`
-	ElasticsearchDestination      []*elasticsearchDestinationModel     `tfsdk:"elasticsearch"`
-	AzureStorageDestination       []*azureStorageDestinationModel      `tfsdk:"azure_storage"`
-	MicrosoftSentinelDestination  []*microsoftSentinelDestinationModel `tfsdk:"microsoft_sentinel"`
-	GoogleChronicleDestination    []*googleChronicleDestinationModel   `tfsdk:"google_chronicle"`
-	NewRelicDestination           []*newRelicDestinationModel          `tfsdk:"new_relic"`
-	SentinelOneDestination        []*sentinelOneDestinationModel       `tfsdk:"sentinel_one"`
-	OpenSearchDestination         []*opensearchDestinationModel        `tfsdk:"opensearch"`
-	AmazonOpenSearchDestination   []*amazonOpenSearchDestinationModel  `tfsdk:"amazon_opensearch"`
-	SocketDestination             []*socketDestinationModel            `tfsdk:"socket"`
+	DatadogLogsDestination        []*datadogLogsDestinationModel                   `tfsdk:"datadog_logs"`
+	GoogleCloudStorageDestination []*gcsDestinationModel                           `tfsdk:"google_cloud_storage"`
+	SplunkHecDestination          []*splunkHecDestinationModel                     `tfsdk:"splunk_hec"`
+	SumoLogicDestination          []*sumoLogicDestinationModel                     `tfsdk:"sumo_logic"`
+	RsyslogDestination            []*rsyslogDestinationModel                       `tfsdk:"rsyslog"`
+	SyslogNgDestination           []*syslogNgDestinationModel                      `tfsdk:"syslog_ng"`
+	ElasticsearchDestination      []*elasticsearchDestinationModel                 `tfsdk:"elasticsearch"`
+	AzureStorageDestination       []*azureStorageDestinationModel                  `tfsdk:"azure_storage"`
+	MicrosoftSentinelDestination  []*microsoftSentinelDestinationModel             `tfsdk:"microsoft_sentinel"`
+	GoogleChronicleDestination    []*googleChronicleDestinationModel               `tfsdk:"google_chronicle"`
+	NewRelicDestination           []*newRelicDestinationModel                      `tfsdk:"new_relic"`
+	SentinelOneDestination        []*sentinelOneDestinationModel                   `tfsdk:"sentinel_one"`
+	OpenSearchDestination         []*opensearchDestinationModel                    `tfsdk:"opensearch"`
+	AmazonOpenSearchDestination   []*amazonOpenSearchDestinationModel              `tfsdk:"amazon_opensearch"`
+	SocketDestination             []*observability_pipeline.SocketDestinationModel `tfsdk:"socket"`
 }
 
 type amazonOpenSearchDestinationModel struct {
@@ -612,31 +613,6 @@ type googlePubSubSourceModel struct {
 
 type gcpAuthModel struct {
 	CredentialsFile types.String `tfsdk:"credentials_file"`
-}
-
-type socketSourceModel struct {
-	Id      types.String        `tfsdk:"id"`
-	Mode    types.String        `tfsdk:"mode"`
-	Framing *socketFramingModel `tfsdk:"framing"`
-	Tls     *tlsModel           `tfsdk:"tls"`
-}
-
-type socketFramingModel struct {
-	Method             types.String                          `tfsdk:"method"`
-	CharacterDelimited *socketFramingCharacterDelimitedModel `tfsdk:"character_delimited"`
-}
-
-type socketFramingCharacterDelimitedModel struct {
-	Delimiter types.String `tfsdk:"delimiter"`
-}
-
-type socketDestinationModel struct {
-	Id       types.String       `tfsdk:"id"`
-	Inputs   types.List         `tfsdk:"inputs"`
-	Mode     types.String       `tfsdk:"mode"`
-	Encoding types.String       `tfsdk:"encoding"`
-	Framing  socketFramingModel `tfsdk:"framing"`
-	Tls      *tlsModel          `tfsdk:"tls"`
 }
 
 func NewObservabilitPipelineResource() resource.Resource {
@@ -1006,56 +982,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 									},
 								},
 							},
-							"socket": schema.ListNestedBlock{
-								Description: "The `socket` source ingests logs over TCP or UDP.",
-								NestedObject: schema.NestedBlockObject{
-									Attributes: map[string]schema.Attribute{
-										"id": schema.StringAttribute{
-											Required:    true,
-											Description: "The unique identifier for this component.",
-										},
-										"mode": schema.StringAttribute{
-											Required:    true,
-											Description: "The protocol used to receive logs. Must be either `tcp` or `udp`.",
-											Validators: []validator.String{
-												stringvalidator.OneOf("tcp", "udp"),
-											},
-										},
-									},
-									Blocks: map[string]schema.Block{
-										"framing": schema.SingleNestedBlock{
-											Description: "Defines the framing method for incoming messages.",
-											Attributes: map[string]schema.Attribute{
-												"method": schema.StringAttribute{
-													Optional:    true, // must be optional to make the block optional
-													Description: "The framing method. One of: `newline_delimited`, `bytes`, `character_delimited`, `octet_counting`, `chunked_gelf`.",
-													Validators: []validator.String{
-														stringvalidator.OneOf(
-															"newline_delimited",
-															"bytes",
-															"character_delimited",
-															"octet_counting",
-															"chunked_gelf",
-														),
-													},
-												},
-											},
-											Blocks: map[string]schema.Block{
-												"character_delimited": schema.SingleNestedBlock{
-													Description: "Used when `method` is `character_delimited`. Specifies the delimiter character.",
-													Attributes: map[string]schema.Attribute{
-														"delimiter": schema.StringAttribute{
-															Optional:    true, // must be optional to make the block optional
-															Description: "A single ASCII character used as a delimiter.",
-														},
-													},
-												},
-											},
-										},
-										"tls": tlsSchema(),
-									},
-								},
-							},
+							"socket": observability_pipeline.SocketSourceSchema(),
 						},
 					},
 					"processors": schema.SingleNestedBlock{
@@ -2325,66 +2252,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 									},
 								},
 							},
-							"socket": schema.ListNestedBlock{
-								Description: "The `socket` destination sends logs over TCP or UDP to a remote server.",
-								NestedObject: schema.NestedBlockObject{
-									Attributes: map[string]schema.Attribute{
-										"id": schema.StringAttribute{
-											Required:    true,
-											Description: "The unique identifier for this destination.",
-										},
-										"inputs": schema.ListAttribute{
-											Required:    true,
-											ElementType: types.StringType,
-											Description: "A list of component IDs whose output is used as the `input` for this destination.",
-										},
-										"mode": schema.StringAttribute{
-											Required:    true,
-											Description: "The protocol used to send logs. Must be either `tcp` or `udp`.",
-											Validators: []validator.String{
-												stringvalidator.OneOf("tcp", "udp"),
-											},
-										},
-										"encoding": schema.StringAttribute{
-											Required:    true,
-											Description: "Encoding format for log events. Must be either `json` or `raw_message`.",
-											Validators: []validator.String{
-												stringvalidator.OneOf("json", "raw_message"),
-											},
-										},
-									},
-									Blocks: map[string]schema.Block{
-										"framing": schema.SingleNestedBlock{
-											Description: "Defines the framing method for outgoing messages.",
-											Attributes: map[string]schema.Attribute{
-												"method": schema.StringAttribute{
-													Required:    true,
-													Description: "The framing method. One of: `newline_delimited`, `bytes`, `character_delimited`.",
-													Validators: []validator.String{
-														stringvalidator.OneOf(
-															"newline_delimited",
-															"bytes",
-															"character_delimited",
-														),
-													},
-												},
-											},
-											Blocks: map[string]schema.Block{
-												"character_delimited": schema.SingleNestedBlock{
-													Description: "Used when `method` is `character_delimited`. Specifies the delimiter character.",
-													Attributes: map[string]schema.Attribute{
-														"delimiter": schema.StringAttribute{
-															Optional:    true,
-															Description: "A single ASCII character used as a delimiter.",
-														},
-													},
-												},
-											},
-										},
-										"tls": tlsSchema(),
-									},
-								},
-							},
+							"socket": observability_pipeline.SocketDestinationSchema(),
 						},
 					},
 				},
@@ -2581,7 +2449,7 @@ func expandPipeline(ctx context.Context, state *observabilityPipelineModel) (*da
 		config.Sources = append(config.Sources, expandLogstashSource(l))
 	}
 	for _, s := range state.Config.Sources.SocketSource {
-		config.Sources = append(config.Sources, expandSocketSource(s))
+		config.Sources = append(config.Sources, observability_pipeline.ExpandSocketSource(s))
 	}
 
 	// Processors
@@ -2678,7 +2546,7 @@ func expandPipeline(ctx context.Context, state *observabilityPipelineModel) (*da
 		config.Destinations = append(config.Destinations, expandAmazonOpenSearchDestination(ctx, d))
 	}
 	for _, d := range state.Config.Destinations.SocketDestination {
-		config.Destinations = append(config.Destinations, expandSocketDestination(ctx, d))
+		config.Destinations = append(config.Destinations, observability_pipeline.ExpandSocketDestination(ctx, d))
 	}
 
 	attrs.SetConfig(*config)
@@ -2746,7 +2614,7 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 		if l := flattenLogstashSource(src.ObservabilityPipelineLogstashSource); l != nil {
 			outCfg.Sources.LogstashSource = append(outCfg.Sources.LogstashSource, l)
 		}
-		if s := flattenSocketSource(src.ObservabilityPipelineSocketSource); s != nil {
+		if s := observability_pipeline.FlattenSocketSource(src.ObservabilityPipelineSocketSource); s != nil {
 			outCfg.Sources.SocketSource = append(outCfg.Sources.SocketSource, s)
 		}
 	}
@@ -2856,7 +2724,7 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 		if d := flattenAmazonOpenSearchDestination(ctx, d.ObservabilityPipelineAmazonOpenSearchDestination); d != nil {
 			outCfg.Destinations.AmazonOpenSearchDestination = append(outCfg.Destinations.AmazonOpenSearchDestination, d)
 		}
-		if d := flattenSocketDestination(ctx, d.ObservabilityPipelineSocketDestination); d != nil {
+		if d := observability_pipeline.FlattenSocketDestination(ctx, d.ObservabilityPipelineSocketDestination); d != nil {
 			outCfg.Destinations.SocketDestination = append(outCfg.Destinations.SocketDestination, d)
 		}
 	}
@@ -5111,164 +4979,4 @@ func flattenAmazonOpenSearchDestination(ctx context.Context, src *datadogV2.Obse
 	}
 
 	return model
-}
-
-func expandSocketSource(src *socketSourceModel) datadogV2.ObservabilityPipelineConfigSourceItem {
-	s := datadogV2.NewObservabilityPipelineSocketSourceWithDefaults()
-	s.SetId(src.Id.ValueString())
-	s.SetMode(datadogV2.ObservabilityPipelineSocketSourceMode(src.Mode.ValueString()))
-
-	switch src.Framing.Method.ValueString() {
-	case "newline_delimited":
-		s.Framing = datadogV2.ObservabilityPipelineSocketSourceFraming{
-			ObservabilityPipelineSocketSourceFramingNewlineDelimited: &datadogV2.ObservabilityPipelineSocketSourceFramingNewlineDelimited{
-				Method: "newline_delimited",
-			},
-		}
-	case "bytes":
-		s.Framing = datadogV2.ObservabilityPipelineSocketSourceFraming{
-			ObservabilityPipelineSocketSourceFramingBytes: &datadogV2.ObservabilityPipelineSocketSourceFramingBytes{
-				Method: "bytes",
-			},
-		}
-	case "character_delimited":
-		s.Framing = datadogV2.ObservabilityPipelineSocketSourceFraming{
-			ObservabilityPipelineSocketSourceFramingCharacterDelimited: &datadogV2.ObservabilityPipelineSocketSourceFramingCharacterDelimited{
-				Method:    "character_delimited",
-				Delimiter: src.Framing.CharacterDelimited.Delimiter.ValueString(),
-			},
-		}
-	case "octet_counting":
-		s.Framing = datadogV2.ObservabilityPipelineSocketSourceFraming{
-			ObservabilityPipelineSocketSourceFramingOctetCounting: &datadogV2.ObservabilityPipelineSocketSourceFramingOctetCounting{
-				Method: "octet_counting",
-			},
-		}
-	case "chunked_gelf":
-		s.Framing = datadogV2.ObservabilityPipelineSocketSourceFraming{
-			ObservabilityPipelineSocketSourceFramingChunkedGelf: &datadogV2.ObservabilityPipelineSocketSourceFramingChunkedGelf{
-				Method: "chunked_gelf",
-			},
-		}
-	}
-
-	if src.Tls != nil {
-		s.Tls = expandTls(src.Tls)
-	}
-
-	return datadogV2.ObservabilityPipelineConfigSourceItem{
-		ObservabilityPipelineSocketSource: s,
-	}
-}
-
-func flattenSocketSource(src *datadogV2.ObservabilityPipelineSocketSource) *socketSourceModel {
-	if src == nil {
-		return nil
-	}
-
-	out := &socketSourceModel{
-		Id:   types.StringValue(src.GetId()),
-		Mode: types.StringValue(string(src.GetMode())),
-	}
-
-	if src.Tls != nil {
-		tls := flattenTls(src.Tls)
-		out.Tls = &tls
-	}
-
-	switch {
-	case src.Framing.ObservabilityPipelineSocketSourceFramingNewlineDelimited != nil:
-		out.Framing.Method = types.StringValue("newline_delimited")
-	case src.Framing.ObservabilityPipelineSocketSourceFramingBytes != nil:
-		out.Framing.Method = types.StringValue("bytes")
-	case src.Framing.ObservabilityPipelineSocketSourceFramingCharacterDelimited != nil:
-		out.Framing.Method = types.StringValue("character_delimited")
-		out.Framing.CharacterDelimited = &socketFramingCharacterDelimitedModel{
-			Delimiter: types.StringValue(src.Framing.ObservabilityPipelineSocketSourceFramingCharacterDelimited.Delimiter),
-		}
-	case src.Framing.ObservabilityPipelineSocketSourceFramingOctetCounting != nil:
-		out.Framing.Method = types.StringValue("octet_counting")
-	case src.Framing.ObservabilityPipelineSocketSourceFramingChunkedGelf != nil:
-		out.Framing.Method = types.StringValue("chunked_gelf")
-	}
-
-	return out
-}
-
-func expandSocketDestination(ctx context.Context, src *socketDestinationModel) datadogV2.ObservabilityPipelineConfigDestinationItem {
-	s := datadogV2.NewObservabilityPipelineSocketDestinationWithDefaults()
-	s.SetId(src.Id.ValueString())
-	s.SetMode(datadogV2.ObservabilityPipelineSocketDestinationMode(src.Mode.ValueString()))
-
-	if !src.Encoding.IsNull() {
-		s.SetEncoding(datadogV2.ObservabilityPipelineSocketDestinationEncoding(src.Encoding.ValueString()))
-	}
-
-	switch src.Framing.Method.ValueString() {
-	case "newline_delimited":
-		s.Framing = datadogV2.ObservabilityPipelineSocketDestinationFraming{
-			ObservabilityPipelineSocketDestinationFramingNewlineDelimited: &datadogV2.ObservabilityPipelineSocketDestinationFramingNewlineDelimited{
-				Method: "newline_delimited",
-			},
-		}
-	case "bytes":
-		s.Framing = datadogV2.ObservabilityPipelineSocketDestinationFraming{
-			ObservabilityPipelineSocketDestinationFramingBytes: &datadogV2.ObservabilityPipelineSocketDestinationFramingBytes{
-				Method: "bytes",
-			},
-		}
-	case "character_delimited":
-		s.Framing = datadogV2.ObservabilityPipelineSocketDestinationFraming{
-			ObservabilityPipelineSocketDestinationFramingCharacterDelimited: &datadogV2.ObservabilityPipelineSocketDestinationFramingCharacterDelimited{
-				Method:    "character_delimited",
-				Delimiter: src.Framing.CharacterDelimited.Delimiter.ValueString(),
-			},
-		}
-	}
-
-	var inputs []string
-	src.Inputs.ElementsAs(ctx, &inputs, false)
-	s.SetInputs(inputs)
-
-	if src.Tls != nil {
-		s.Tls = expandTls(src.Tls)
-	}
-
-	return datadogV2.ObservabilityPipelineConfigDestinationItem{
-		ObservabilityPipelineSocketDestination: s,
-	}
-}
-
-func flattenSocketDestination(ctx context.Context, src *datadogV2.ObservabilityPipelineSocketDestination) *socketDestinationModel {
-	if src == nil {
-		return nil
-	}
-
-	inputs, _ := types.ListValueFrom(ctx, types.StringType, src.GetInputs())
-
-	out := &socketDestinationModel{
-		Id:       types.StringValue(src.GetId()),
-		Mode:     types.StringValue(string(src.GetMode())),
-		Inputs:   inputs,
-		Encoding: types.StringValue(string(src.GetEncoding())),
-	}
-
-	if src.Tls != nil {
-		tls := flattenTls(src.Tls)
-		out.Tls = &tls
-	}
-
-	switch {
-	case src.Framing.ObservabilityPipelineSocketDestinationFramingNewlineDelimited != nil:
-		out.Framing.Method = types.StringValue("newline_delimited")
-	case src.Framing.ObservabilityPipelineSocketDestinationFramingBytes != nil:
-		out.Framing.Method = types.StringValue("bytes")
-	case src.Framing.ObservabilityPipelineSocketDestinationFramingCharacterDelimited != nil:
-		out.Framing.Method = types.StringValue("character_delimited")
-		out.Framing.CharacterDelimited = &socketFramingCharacterDelimitedModel{
-			Delimiter: types.StringValue(src.Framing.ObservabilityPipelineSocketDestinationFramingCharacterDelimited.Delimiter),
-		}
-	}
-
-	return out
 }
