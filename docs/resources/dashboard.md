@@ -769,7 +769,7 @@ Optional:
 - `default` (String, Deprecated) The default value for the template variable on dashboard load. Cannot be used in conjunction with `defaults`. **Deprecated.** Use `defaults` instead.
 - `defaults` (List of String) One or many default values for template variables on load. If more than one default is specified, they will be unioned together with `OR`. Cannot be used in conjunction with `default`.
 - `prefix` (String) The tag prefix associated with the variable. Only tags with this prefix appear in the variable dropdown.
-
+- `type` (String) The type of template variable. Used to differentiate between filter and group by variables
 
 <a id="nestedblock--template_variable_preset"></a>
 ### Nested Schema for `template_variable_preset`
