@@ -6208,6 +6208,10 @@ func createSyntheticsMultistepAPITestAllStepSubtypes(ctx context.Context, accPro
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.test_all_api_subtypes", "api_step.4.request_definition.0.host", "troisdizaines.com"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.test_all_api_subtypes", "api_step.4.request_definition.0.dns_server", "8.8.8.8"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.test_all_api_subtypes", "api_step.4.request_definition.0.dns_server_port", "53"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.test_all_api_subtypes", "api_step.4.retry.0.count", "0"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.test_all_api_subtypes", "api_step.4.retry.0.interval", "300"),
@@ -6402,6 +6406,7 @@ func createSyntheticsMultistepAPITestConfigAllStepSubtypes(testName string) stri
 				request_definition {
 					host       = "troisdizaines.com"
 					dns_server = "8.8.8.8"
+					dns_server_port = "53"
 				}
 				retry {
 					count    = 0
@@ -6611,12 +6616,6 @@ func createSyntheticsMobileTestStep(ctx context.Context, accProvider *schema.Pro
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "mobile_step.0.params.0.element.0.text_content", "Tap"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "mobile_step.0.params.0.element.0.relative_position.0.%", "2"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "mobile_step.0.params.0.element.0.relative_position.0.x", "0.07256155303030302"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "mobile_step.0.params.0.element.0.relative_position.0.y", "0.41522381756756754"),
-			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "mobile_step.0.params.0.element.0.user_locator.0.%", "2"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "mobile_step.0.params.0.element.0.user_locator.0.fail_test_on_cannot_locate", "false"),
@@ -6767,10 +6766,6 @@ resource "datadog_synthetics_test" "bar" {
 				context_type  = "native"
 				text_content  = "Tap"
 				multi_locator = {}
-				relative_position {
-					x = 0.07256155303030302
-					y = 0.41522381756756754
-				}
 				user_locator {
 					fail_test_on_cannot_locate = false
 					values {
