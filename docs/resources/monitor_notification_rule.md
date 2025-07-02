@@ -51,6 +51,8 @@ Required:
 
 Import is supported using the following syntax:
 
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
+
 ```shell
 terraform import datadog_monitor_notification_rule.new_list "00e000000-0000-1234-0000-000000000000"
 ```
