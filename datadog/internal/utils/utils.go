@@ -65,6 +65,15 @@ const DDHTTPRetryBackoffBase = "DD_HTTP_CLIENT_RETRY_BACKOFF_BASE"
 // DDHTTPRetryMaxRetries name of env var for max retries
 const DDHTTPRetryMaxRetries = "DD_HTTP_CLIENT_RETRY_MAX_RETRIES"
 
+// AWSAccessKeyId name of env var for AWS Access Key Id
+const AWSAccessKeyId = "AWS_ACCESS_KEY_ID"
+
+// AWSSecretAccessKey name of env var for AWS Secret Access Key
+const AWSSecretAccessKey = "AWS_SECRET_ACCESS_KEY"
+
+// AWSSessionToken name of env var for AWS Session Token
+const AWSSessionToken = "AWS_SESSION_TOKEN"
+
 // BaseIPRangesSubdomain ip ranges subdomain
 const BaseIPRangesSubdomain = "ip-ranges"
 

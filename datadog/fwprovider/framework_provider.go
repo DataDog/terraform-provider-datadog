@@ -147,6 +147,9 @@ type ProviderSchema struct {
 	CloudProviderType                types.String `tfsdk:"cloud_provider_type"`
 	CloudProviderRegion              types.String `tfsdk:"cloud_provider_region"`
 	OrgUuid                          types.String `tfsdk:"org_uuid"`
+	AWSAccessKeyId                   types.String `tfsdk:"aws_access_key_id"`
+	AWSSecretAccessKey               types.String `tfsdk:"aws_secret_access_key"`
+	AWSSessionToken                  types.String `tfsdk:"aws_session_token"`
 	HttpClientRetryEnabled           types.String `tfsdk:"http_client_retry_enabled"`
 	HttpClientRetryTimeout           types.Int64  `tfsdk:"http_client_retry_timeout"`
 	HttpClientRetryBackoffMultiplier types.Int64  `tfsdk:"http_client_retry_backoff_multiplier"`
@@ -220,6 +223,21 @@ func (p *FrameworkProvider) Schema(_ context.Context, _ provider.SchemaRequest, 
 			"org_uuid": schema.StringAttribute{
 				Optional:    true,
 				Description: "The organization UUID. Please refer to the [Datadog API documentation](https://docs.datadoghq.com/api/v1/organizations/) for more information.",
+			},
+			"aws_access_key_id": schema.StringAttribute{
+				Optional:    true,
+				Sensitive:   true,
+				Description: "The AWS access key ID. This can also be set via the AWS_ACCESS_KEY_ID environment variable. Required when using `cloud_provider_type` set to `aws`.",
+			},
+			"aws_secret_access_key": schema.StringAttribute{
+				Optional:    true,
+				Sensitive:   true,
+				Description: "The AWS secret access key. This can also be set via the AWS_SECRET_ACCESS_KEY environment variable. Required when using `cloud_provider_type` set to `aws`.",
+			},
+			"aws_session_token": schema.StringAttribute{
+				Optional:    true,
+				Sensitive:   true,
+				Description: "The AWS session token. This can also be set via the AWS_SESSION_TOKEN environment variable. Required when using `cloud_provider_type` set to `aws` and using temporary credentials.",
 			},
 			"http_client_retry_enabled": schema.StringAttribute{
 				Optional:    true,
@@ -419,6 +437,9 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	cloudProviderType := config.CloudProviderType.ValueString()
 	cloudProviderRegion := config.CloudProviderRegion.ValueString()
 	orgUUID := config.OrgUuid.ValueString()
+	awsAccessKeyId := config.AWSAccessKeyId.ValueString()
+	awsSecretAccessKey := config.AWSSecretAccessKey.ValueString()
+	awsSessionToken := config.AWSSessionToken.ValueString()
 
 	if validate {
 		if cloudProviderType == "" && (config.ApiKey.ValueString() == "" || config.AppKey.ValueString() == "") {
@@ -473,6 +494,15 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 					OrgUUID:      orgUUID,
 					ProviderAuth: &awsAuth,
 					Provider:     "aws",
+				},
+			)
+			auth = context.WithValue(
+				auth,
+				datadog.ContextAWSVariables,
+				map[string]string{
+					datadog.AWSAccessKeyIdName:     awsAccessKeyId,
+					datadog.AWSSecretAccessKeyName: awsSecretAccessKey,
+					datadog.AWSSessionTokenName:    awsSessionToken,
 				},
 			)
 		default:

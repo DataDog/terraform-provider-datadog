@@ -292,12 +292,24 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 		apiURL, _ = utils.GetMultiEnvVar(utils.APIUrlEnvVars[:]...)
 	}
 
+	// Cloud provider auth specific variables
 	cloudProviderType := d.Get("cloud_provider_type").(string)
 	cloudProviderRegion := d.Get("cloud_provider_region").(string)
-
 	orgUUID := d.Get("org_uuid").(string)
 	if orgUUID == "" {
 		orgUUID, _ = utils.GetMultiEnvVar(utils.OrgUUIDEnvVars[:]...)
+	}
+	awsAccessKeyId := d.Get("aws_access_key_id").(string)
+	if awsAccessKeyId == "" {
+		awsAccessKeyId, _ = utils.GetMultiEnvVar(utils.AWSAccessKeyId)
+	}
+	awsSecretAccessKey := d.Get("aws_secret_access_key").(string)
+	if awsSecretAccessKey == "" {
+		awsSecretAccessKey, _ = utils.GetMultiEnvVar(utils.AWSSecretAccessKey)
+	}
+	awsSessionToken := d.Get("aws_session_token").(string)
+	if awsSessionToken == "" {
+		awsSessionToken, _ = utils.GetMultiEnvVar(utils.AWSSessionToken)
 	}
 
 	httpRetryEnabled := true
@@ -369,6 +381,15 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 					OrgUUID:      orgUUID,
 					ProviderAuth: &awsAuth,
 					Provider:     "aws",
+				},
+			)
+			auth = context.WithValue(
+				auth,
+				datadog.ContextAWSVariables,
+				map[string]string{
+					datadog.AWSAccessKeyIdName:     awsAccessKeyId,
+					datadog.AWSSecretAccessKeyName: awsSecretAccessKey,
+					datadog.AWSSessionTokenName:    awsSessionToken,
 				},
 			)
 		default:
