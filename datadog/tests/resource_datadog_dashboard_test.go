@@ -20,7 +20,6 @@ resource "datadog_dashboard" "ordered_dashboard" {
 	title         = "%s"
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "ordered"
-	is_read_only  = true
 	tags		  = ["team:foobar"]
 	widget {
 		alert_graph_definition {
@@ -424,6 +423,11 @@ resource "datadog_dashboard" "ordered_dashboard" {
 		prefix = "service_name"
 		default = "autoscaling"
 	}
+	template_variable {
+		name   = "group_by_var"
+		type = "group"
+		default = "datacenter"
+	}
 	template_variable_preset {
 		name = "preset_1"
 
@@ -456,7 +460,6 @@ resource "datadog_dashboard" "simple_dashboard" {
 	title         = "%s"
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "ordered"
-	is_read_only  = true
 	tags          = ["team:foobar"]
 	widget {
 		alert_graph_definition {
@@ -508,7 +511,6 @@ resource "datadog_dashboard" "free_dashboard" {
 	title         = "%s"
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "free"
-	is_read_only  = false
 	tags          = ["team:foobar"]
 	widget {
 		event_stream_definition {
@@ -686,7 +688,6 @@ resource "datadog_dashboard" "simple_dashboard" {
 	title         = "%s"
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "free"
-	is_read_only  = true
 	tags          = ["team:foobar"]
 	widget {
 		alert_graph_definition {
@@ -742,7 +743,6 @@ var datadogSimpleOrderedDashboardAsserts = []string{
 	// Dashboard metadata
 	"description = Created using the Datadog provider in Terraform",
 	"layout_type = ordered",
-	"is_read_only = true",
 	"widget.# = 1",
 	"tags.# = 1",
 	"tags.0 = team:foobar",
@@ -777,7 +777,6 @@ var datadogSimpleFreeDashboardAsserts = []string{
 	// Dashboard metadata
 	"description = Created using the Datadog provider in Terraform",
 	"layout_type = free",
-	"is_read_only = true",
 	"widget.# = 1",
 	"tags.# = 1",
 	"tags.0 = team:foobar",
@@ -816,7 +815,6 @@ var datadogOrderedDashboardAsserts = []string{
 	// Dashboard metadata
 	"description = Created using the Datadog provider in Terraform",
 	"layout_type = ordered",
-	"is_read_only = true",
 	"tags.# = 1",
 	"tags.0 = team:foobar",
 	"widget.# = 16",
@@ -1081,7 +1079,6 @@ var datadogFreeDashboardAsserts = []string{
 	// Dashboard metadata
 	"description = Created using the Datadog provider in Terraform",
 	"layout_type = free",
-	"is_read_only = false",
 	"tags.# = 1",
 	"tags.0 = team:foobar",
 	"widget.# = 8",
@@ -1421,7 +1418,6 @@ resource "datadog_dashboard" "rbac_dashboard" {
 }
 
 var datadogOpenDashboardAsserts = []string{
-	"is_read_only = false",
 	"restricted_roles.# = 0",
 }
 
@@ -1436,13 +1432,10 @@ resource "datadog_dashboard" "rbac_dashboard" {
 			content = "note text"
 		}
 	}
-	is_read_only     = true
 }`, uniqueDashboardName)
 }
 
-var datadogAdminDashboardAsserts = []string{
-	"is_read_only = true",
-}
+var datadogAdminDashboardAsserts = []string{}
 
 func datadogRbacDashboardConfig(uniqueDashboardName string, uniqueRoleName string) string {
 	return fmt.Sprintf(`
@@ -1778,7 +1771,6 @@ resource "datadog_dashboard" "ordered_dashboard" {
   title        = "%s"
   description  = "Created using the Datadog provider in Terraform"
   layout_type  = "ordered"
-  is_read_only = true
   notify_list  = [datadog_user.one.email, datadog_user.two.email, datadog_user.three.email]
   
   depends_on = [
@@ -1822,7 +1814,6 @@ resource "datadog_dashboard" "ordered_dashboard" {
   title        = "%s"
   description  = "Created using the Datadog provider in Terraform"
   layout_type  = "ordered"
-  is_read_only = true
 
   template_variable {
     name    = "var_1"
@@ -1834,6 +1825,12 @@ resource "datadog_dashboard" "ordered_dashboard" {
     name    = "var_2"
     prefix  = "service_name"
     defaults = ["autoscaling", "two"]
+  }
+
+  template_variable {
+    name    = "var_3"
+	type    = "group"
+    defaults = ["datacenter", "env"]
   }
 
   template_variable_preset {
@@ -1882,6 +1879,11 @@ var datadogDashboardTemplateVariablesConfigAsserts = []string{
 	"template_variable.1.defaults.# = 2",
 	"template_variable.1.defaults.0 = autoscaling",
 	"template_variable.1.defaults.1 = two",
+	"template_variable.2.name = var_3",
+	"template_variable.2.type = group",
+	"template_variable.2.defaults.# = 2",
+	"template_variable.2.defaults.0 = datacenter",
+	"template_variable.2.defaults.1 = env",
 	"template_variable_preset.0.template_variable.# = 1",
 	"template_variable_preset.0.name = preset_1",
 	"template_variable_preset.0.template_variable.0.name = var_1",

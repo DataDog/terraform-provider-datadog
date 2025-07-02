@@ -478,6 +478,11 @@ func getTemplateVariableSchema() map[string]*schema.Schema {
 			Elem:        &schema.Schema{Type: schema.TypeString},
 			Description: "The list of values that the template variable drop-down is be limited to",
 		},
+		"type": {
+			Type:        schema.TypeString,
+			Optional:    true,
+			Description: "The type of template variable. Used to differentiate between filter and group by variables",
+		},
 	}
 }
 
@@ -554,6 +559,9 @@ func buildDatadogTemplateVariables(terraformTemplateVariables *[]interface{}) *[
 			}
 			datadogTemplateVariable.SetAvailableValues(availableValues)
 		}
+		if v, ok := terraformTemplateVariable["type"].(string); ok && len(v) != 0 {
+			datadogTemplateVariable.SetType(v)
+		}
 		datadogTemplateVariables[i] = datadogTemplateVariable
 	}
 	return &datadogTemplateVariables
@@ -582,6 +590,9 @@ func buildTerraformTemplateVariables(datadogTemplateVariables *[]datadogV1.Dashb
 				availableValues[i] = availableValue
 			}
 			terraformTemplateVariable["available_values"] = availableValues
+		}
+		if v, ok := templateVariable.GetTypeOk(); ok {
+			terraformTemplateVariable["type"] = *v
 		}
 		terraformTemplateVariables[i] = terraformTemplateVariable
 	}
