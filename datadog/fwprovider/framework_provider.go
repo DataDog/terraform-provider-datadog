@@ -10,7 +10,6 @@ import (
 	"time"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
-	"github.com/DataDog/datadog-api-client-go/v2/delegated_auth"
 	"github.com/hashicorp/go-cleanhttp"
 	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
@@ -464,16 +463,14 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	} else if cloudProviderType != "" {
 		switch cloudProviderType {
 		case "aws":
-			awsAuth := delegated_auth.AWSAuth{
+			awsAuth := datadog.AWSAuth{
 				AwsRegion: cloudProviderRegion,
 			}
 			auth = context.WithValue(
 				auth,
 				datadog.ContextDelegatedToken,
 				&datadog.DelegatedTokenConfig{
-					DelegatedTokenCredentials: datadog.DelegatedTokenCredentials{
-						OrgUUID: orgUUID,
-					},
+					OrgUUID:      orgUUID,
 					ProviderAuth: &awsAuth,
 					Provider:     "aws",
 				},
