@@ -1157,7 +1157,7 @@ Optional:
 
 Optional:
 
-- `type` (String) Type of the pattern to use for the step.
+- `type` (String) Type of pattern to use for the step.
 - `value` (String) Pattern to use for the step.
 
 
