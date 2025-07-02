@@ -424,6 +424,11 @@ resource "datadog_dashboard" "ordered_dashboard" {
 		prefix = "service_name"
 		default = "autoscaling"
 	}
+	template_variable {
+		name   = "group_by_var"
+		type = "group"
+		default = "datacenter"
+	}
 	template_variable_preset {
 		name = "preset_1"
 
@@ -1836,6 +1841,12 @@ resource "datadog_dashboard" "ordered_dashboard" {
     defaults = ["autoscaling", "two"]
   }
 
+  template_variable {
+    name    = "var_3"
+	type    = "group"
+    defaults = ["datacenter", "env"]
+  }
+
   template_variable_preset {
     name = "preset_1"
     template_variable {
@@ -1882,6 +1893,10 @@ var datadogDashboardTemplateVariablesConfigAsserts = []string{
 	"template_variable.1.defaults.# = 2",
 	"template_variable.1.defaults.0 = autoscaling",
 	"template_variable.1.defaults.1 = two",
+	"template_variable.2.name = var_3",
+	"template_variable.2.defaults.# = 2",
+	"template_variable.2.defaults.0 = datacenter",
+	"template_variable.2.defaults.1 = env",
 	"template_variable_preset.0.template_variable.# = 1",
 	"template_variable_preset.0.name = preset_1",
 	"template_variable_preset.0.template_variable.0.name = var_1",
