@@ -36,6 +36,8 @@ resource "datadog_logs_archive_order" "sample_archive_order" {
 
 Import is supported using the following syntax:
 
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
+
 ```shell
 # There must be at most one datadog_logs_archive_order resource. You can import the datadog_logs_archive_order or create an archive order.
 terraform import <datadog_logs_archive_order.name> archiveOrderID

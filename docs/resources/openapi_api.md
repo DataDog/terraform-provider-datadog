@@ -35,6 +35,8 @@ resource "datadog_openapi_api" "my-api" {
 
 Import is supported using the following syntax:
 
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
+
 ```shell
 terraform import datadog_openapi_api.new_list "90646597-5fdb-4a17-a240-647003f8c028"
 ```

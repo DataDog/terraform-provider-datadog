@@ -118,7 +118,7 @@ func (r *onCallEscalationPolicyResource) Schema(_ context.Context, _ resource.Sc
 							Computed:    true,
 							Default:     stringdefault.StaticString("default"),
 							Description: "Specifies how this escalation step will assign targets. Can be `default` (page all targets at once) or `round-robin`.",
-							Validators:  []validator.String{stringvalidator.OneOf("assignment", "round-robin")},
+							Validators:  []validator.String{stringvalidator.OneOf("default", "round-robin")},
 						},
 						"escalate_after_seconds": schema.Int64Attribute{
 							Required:    true,

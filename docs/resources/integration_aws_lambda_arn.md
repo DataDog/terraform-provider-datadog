@@ -48,6 +48,8 @@ resource "datadog_integration_aws_lambda_arn" "main_collector" {
 
 Import is supported using the following syntax:
 
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
+
 ```shell
 # Amazon Web Services Lambda ARN integrations can be imported using their account_id and lambda_arn separated with a space (` `).
 terraform import datadog_integration_aws_lambda_arn.test "1234567890 arn:aws:lambda:us-east-1:1234567890:function:datadog-forwarder-Forwarder"

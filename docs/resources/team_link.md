@@ -49,6 +49,8 @@ resource "datadog_team_link" "foo" {
 
 Import is supported using the following syntax:
 
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
+
 ```shell
 terraform import datadog_team_link.new_list "${team_id}:${resource_id}"
 ```
