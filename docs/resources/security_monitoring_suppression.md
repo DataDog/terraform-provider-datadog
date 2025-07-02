@@ -50,6 +50,8 @@ resource "datadog_security_monitoring_suppression" "my_suppression" {
 
 Import is supported using the following syntax:
 
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
+
 ```shell
 # Security monitoring suppressions can be imported using ID, for example:
 terraform import datadog_security_monitoring_suppression.my_suppression m0o-hto-lkb
