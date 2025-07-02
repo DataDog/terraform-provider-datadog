@@ -52,6 +52,7 @@ resource "datadog_integration_gcp_sts" "foo" {
 - `cloud_run_revision_filters` (Set of String) Tags to filter which Cloud Run revisions are imported into Datadog. Only revisions that meet specified criteria are monitored.
 - `host_filters` (Set of String) Your Host Filters.
 - `is_cspm_enabled` (Boolean) Whether Datadog collects cloud security posture management resources from your GCP project. If enabled, requires `resource_collection_enabled` to also be enabled.
+- `is_per_project_quota_enabled` (Boolean) When enabled, Datadog includes the `X-Goog-User-Project` header to attribute Google Cloud billing and quota usage to the monitored project instead of the default service account project.
 - `is_resource_change_collection_enabled` (Boolean) When enabled, Datadog scans for all resource change data in your Google Cloud environment.
 - `is_security_command_center_enabled` (Boolean) When enabled, Datadog will attempt to collect Security Command Center Findings. Note: This requires additional permissions on the service account. Defaults to `false`.
 - `metric_namespace_configs` (Set of Object) Configuration for a GCP metric namespace. (see [below for nested schema](#nestedatt--metric_namespace_configs))
@@ -73,6 +74,8 @@ Optional:
 ## Import
 
 Import is supported using the following syntax:
+
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
 
 ```shell
 terraform import datadog_integration_gcp_sts.foo "9c303af3-b963-45e0-8c8f-469b9e1a213f"

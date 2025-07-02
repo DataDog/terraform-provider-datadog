@@ -26,21 +26,54 @@ resource "datadog_csm_threats_agent_rule" "my_agent_rule" {
 
 ### Required
 
-- `enabled` (Boolean) Indicates Whether the Agent rule is enabled.
 - `expression` (String) The SECL expression of the Agent rule
 - `name` (String) The name of the Agent rule.
 
 ### Optional
 
-- `description` (String) A description for the Agent rule. Defaults to `""`.
+- `actions` (Block List) The list of actions the rule can perform (see [below for nested schema](#nestedblock--actions))
+- `description` (String) A description for the Agent rule.
+- `enabled` (Boolean) Indicates whether the Agent rule is enabled. Must not be used without policy_id.
+- `policy_id` (String) The ID of the agent policy in which the rule is saved
+- `product_tags` (Set of String) The list of product tags associated with the rule
 
 ### Read-Only
 
 - `id` (String) The ID of this resource.
 
+<a id="nestedblock--actions"></a>
+### Nested Schema for `actions`
+
+Optional:
+
+- `hash` (Block, Optional) Hash action configuration (see [below for nested schema](#nestedblock--actions--hash))
+- `set` (Block, Optional) Set action configuration (see [below for nested schema](#nestedblock--actions--set))
+
+<a id="nestedblock--actions--hash"></a>
+### Nested Schema for `actions.hash`
+
+
+<a id="nestedblock--actions--set"></a>
+### Nested Schema for `actions.set`
+
+Required:
+
+- `name` (String) The name of the set action
+
+Optional:
+
+- `append` (Boolean) Whether to append to the set
+- `field` (String) The field to get the value from
+- `scope` (String) The scope of the set action (process, container, cgroup, or empty)
+- `size` (Number) The maximum size of the set
+- `ttl` (Number) The time to live for the set in nanoseconds
+- `value` (String) The value to set
+
 ## Import
 
 Import is supported using the following syntax:
+
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
 
 ```shell
 # CSM Agent Rules can be imported using ID. For example:

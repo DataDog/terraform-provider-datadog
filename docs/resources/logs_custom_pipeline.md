@@ -777,6 +777,8 @@ Optional:
 
 Import is supported using the following syntax:
 
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
+
 ```shell
 # To find the pipeline ID, click the "edit" button in the UI to open the pipeline details.
 # The pipeline ID is the last part of the URL.

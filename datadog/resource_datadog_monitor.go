@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"sort"
 	"strconv"
 	"strings"
@@ -288,9 +289,10 @@ func resourceDatadogMonitor() *schema.Resource {
 					},
 				},
 				"restricted_roles": {
-					Description:   "A list of unique role identifiers to define which roles are allowed to edit the monitor. Editing a monitor includes any updates to the monitor configuration, monitor deletion, and muting of the monitor for any amount of time. Roles unique identifiers can be pulled from the [Roles API](https://docs.datadoghq.com/api/latest/roles/#list-roles) in the `data.id` field.",
+					Description:   "A list of unique role identifiers to define which roles are allowed to edit the monitor. Editing a monitor includes any updates to the monitor configuration, monitor deletion, and muting of the monitor for any amount of time. Roles unique identifiers can be pulled from the [Roles API](https://docs.datadoghq.com/api/latest/roles/#list-roles) in the `data.id` field.\n > **Note:** When the `TERRAFORM_MONITOR_EXPLICIT_RESTRICTED_ROLES` environment variable is set to `true`, this argument is treated as `Computed`. Terraform will automatically read the current restricted roles list from the Datadog API whenever the attribute is omitted. If `restricted_roles` is explicitly set in the configuration, that value always takes precedence over whatever is discovered during the read. This opt-in behaviour lets you migrate responsibility for monitor permissions to the `datadog_restriction_policy` resource.",
 					Type:          schema.TypeSet,
 					Optional:      true,
+					Computed:      getEnv("TERRAFORM_MONITOR_EXPLICIT_RESTRICTED_ROLES", "false") == "true",
 					Elem:          &schema.Schema{Type: schema.TypeString},
 					ConflictsWith: []string{"locked"},
 				},
@@ -1427,4 +1429,11 @@ func suppressDataDogFloatIntDiff(_, old, new string, _ *schema.ResourceData) boo
 		return true
 	}
 	return false
+}
+
+func getEnv(key, fallback string) string {
+	if value, ok := os.LookupEnv(key); ok {
+		return value
+	}
+	return fallback
 }

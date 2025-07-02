@@ -71,7 +71,8 @@ resource "datadog_synthetics_test" "test_api" {
       interval = 300
     }
     monitor_options {
-      renotify_interval = 120
+      renotify_interval  = 120
+      escalation_message = "test escalation message"
     }
   }
 }
@@ -391,13 +392,42 @@ resource "datadog_synthetics_test" "test_browser" {
         size    = 11            // Size of the file in bytes
         content = "Hello world" // Content of the file
       }])
-      element = "*[@id='simple-file-upload']"
       element_user_locator {
         value {
           type  = "css"
           value = "#simple-file-upload"
         }
       }
+      element = jsonencode({
+        "userLocator" : {
+          "failTestOnCannotLocate" : true,
+          "values" : [
+            {
+              "type" : "css",
+              "value" : "#simple-file-upload"
+            }
+          ]
+        }
+      })
+    }
+  }
+
+  browser_step {
+    name = "Test sending http requests"
+    type = "assertRequests"
+    params {
+      requests = jsonencode(
+        {
+          count = {
+            type = "equals" // "equals", "greater", "greaterEquals", "lower", 
+            // "lowerEquals", "notEquals", "between"
+            value = 1
+            // min   = 1      // only used for "between"
+            // max   = 1      // only used for "between"
+          }
+          url = "https://www.example.org"
+        }
+      )
     }
   }
 

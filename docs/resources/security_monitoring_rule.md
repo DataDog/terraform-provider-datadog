@@ -70,7 +70,7 @@ resource "datadog_security_monitoring_rule" "myrule" {
 - `query` (Block List) Queries for selecting logs which are part of the rule. (see [below for nested schema](#nestedblock--query))
 - `reference_tables` (Block List) Reference tables for filtering query results. (see [below for nested schema](#nestedblock--reference_tables))
 - `signal_query` (Block List) Queries for selecting logs which are part of the rule. (see [below for nested schema](#nestedblock--signal_query))
-- `tags` (Set of String) Tags for generated signals.
+- `tags` (Set of String) Tags for generated signals. Note: if default tags are present at provider level, they will be added to this resource.
 - `third_party_case` (Block List, Max: 10) Cases for generating signals for third-party rules. Only required and accepted for third-party rules (see [below for nested schema](#nestedblock--third_party_case))
 - `type` (String) The rule type. Valid values are `application_security`, `log_detection`, `workload_security`, `signal_correlation`. Defaults to `"log_detection"`.
 - `validate` (Boolean) Whether or not to validate the Rule.
@@ -197,7 +197,7 @@ Optional:
 
 - `agent_rule` (Block List, Deprecated) **Deprecated**. It won't be applied anymore. **Deprecated.** `agent_rule` has been deprecated in favor of new Agent Rule resource. (see [below for nested schema](#nestedblock--query--agent_rule))
 - `aggregation` (String) The aggregation type. For Signal Correlation rules, it must be event_count. Valid values are `count`, `cardinality`, `sum`, `max`, `new_value`, `geo_data`, `event_count`, `none`. Defaults to `"count"`.
-- `data_source` (String) Source of events. Valid values are `logs`, `audit`, `app_sec_spans`, `spans`, `security_runtime`, `network`. Defaults to `"logs"`.
+- `data_source` (String) Source of events. Valid values are `logs`, `audit`, `app_sec_spans`, `spans`, `security_runtime`, `network`, `events`. Defaults to `"logs"`.
 - `distinct_fields` (List of String) Field for which the cardinality is measured. Sent as an array.
 - `group_by_fields` (List of String) Fields to group by.
 - `metric` (String, Deprecated) The target field to aggregate over when using the `sum`, `max`, or `geo_data` aggregations. **Deprecated.** Configure `metrics` instead. This attribute will be removed in the next major version of the provider.
@@ -258,6 +258,8 @@ Optional:
 ## Import
 
 Import is supported using the following syntax:
+
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
 
 ```shell
 # Security monitoring rules can be imported using ID, e.g.

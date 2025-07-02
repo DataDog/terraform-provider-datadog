@@ -33,11 +33,12 @@ resource "datadog_apm_retention_filter" "foo" {
 - `enabled` (Boolean) the status of the retention filter.
 - `filter_type` (String) The type of the retention filter, currently only spans-processing-sampling is available. Valid values are `spans-sampling-processor`.
 - `name` (String) The name of the retention filter.
-- `rate` (String) Sample rate to apply to spans going through this retention filter as a string, a value of 1.0 keeps all spans matching the query. Value must be between 0.00 and 1.00.
+- `rate` (String) Sample rate to apply to spans going through this retention filter as a string; a value of 1.0 keeps all spans matching the query. Value must be between 0.00 and 1.00.
 
 ### Optional
 
 - `filter` (Block, Optional) The spans filter. Spans matching this filter will be indexed and stored. (see [below for nested schema](#nestedblock--filter))
+- `trace_rate` (String) Sample rate to apply to traces with spans going through this retention filter as a string; a value of 1.0 keeps all traces matching the query. Value must be between 0.00 and 1.00.
 
 ### Read-Only
 
@@ -53,6 +54,8 @@ Optional:
 ## Import
 
 Import is supported using the following syntax:
+
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
 
 ```shell
 # Import existing APM retention filter 

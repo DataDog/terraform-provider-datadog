@@ -124,7 +124,7 @@ resource "datadog_service_level_objective" "time_slice_slo" {
 - `monitor_ids` (Set of Number) A static set of monitor IDs to use as part of the SLO
 - `query` (Block List, Max: 1) The metric query of good / total events (see [below for nested schema](#nestedblock--query))
 - `sli_specification` (Block List, Max: 1) A map of SLI specifications to use as part of the SLO. (see [below for nested schema](#nestedblock--sli_specification))
-- `tags` (Set of String) A list of tags to associate with your service level objective. This can help you categorize and filter service level objectives in the service level objectives page of the UI. Note: it's not currently possible to filter by these tags when querying via the API
+- `tags` (Set of String) A list of tags to associate with your service level objective. This can help you categorize and filter service level objectives in the service level objectives page of the UI. **Note**: it's not currently possible to filter by these tags when querying via the API. If default tags are present at the provider level, they will be added to this resource.
 - `target_threshold` (Number) The objective's target in `(0,100)`. This must match the corresponding thresholds of the primary time frame.
 - `timeframe` (String) The primary time frame for the objective. The mapping from these types to the types found in the Datadog Web UI can be found in the Datadog API documentation page. Valid values are `7d`, `30d`, `90d`, `custom`.
 - `validate` (Boolean) Whether or not to validate the SLO. It checks if monitors added to a monitor SLO already exist.
@@ -219,6 +219,8 @@ Optional:
 ## Import
 
 Import is supported using the following syntax:
+
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
 
 ```shell
 # Service Level Objectives can be imported using their string ID, e.g.

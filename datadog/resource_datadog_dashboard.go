@@ -5879,12 +5879,12 @@ func getListStreamRequestSchema() map[string]*schema.Schema {
 						Description:      "Widget column width.",
 						Type:             schema.TypeString,
 						ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewListStreamColumnWidthFromValue),
-						Required:         true,
+						Optional:         true,
 					},
 					"field": {
 						Description: "Widget column field.",
 						Type:        schema.TypeString,
-						Required:    true,
+						Optional:    true,
 					},
 				},
 			},
@@ -9144,6 +9144,14 @@ func getTreemapDefinitionSchema() map[string]*schema.Schema {
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
+		"custom_links": {
+			Description: "A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below.",
+			Type:        schema.TypeList,
+			Optional:    true,
+			Elem: &schema.Resource{
+				Schema: getWidgetCustomLinkSchema(),
+			},
+		},
 	}
 }
 
@@ -9163,6 +9171,10 @@ func buildDatadogTreemapDefinition(terraformDefinition map[string]interface{}) *
 
 	if v, ok := terraformDefinition["title"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetTitle(v)
+	}
+
+	if v, ok := terraformDefinition["custom_links"].([]interface{}); ok && len(v) > 0 {
+		datadogDefinition.SetCustomLinks(*buildDatadogWidgetCustomLinks(&v))
 	}
 
 	return datadogDefinition
@@ -9234,6 +9246,10 @@ func buildTerraformTreemapDefinition(datadogDefinition *datadogV1.TreeMapWidgetD
 
 	if v, ok := datadogDefinition.GetTitleOk(); ok {
 		terraformDefinition["title"] = *v
+	}
+
+	if v, ok := datadogDefinition.GetCustomLinksOk(); ok {
+		terraformDefinition["custom_links"] = buildTerraformWidgetCustomLinks(v)
 	}
 
 	return terraformDefinition

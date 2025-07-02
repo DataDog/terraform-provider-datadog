@@ -2975,7 +2975,7 @@ Required:
 <a id="nestedblock--widget--list_stream_definition--request--columns"></a>
 ### Nested Schema for `widget.list_stream_definition.request.columns`
 
-Required:
+Optional:
 
 - `field` (String) Widget column field.
 - `width` (String) Widget column width. Valid values are `auto`, `compact`, `full`.
@@ -7849,8 +7849,20 @@ Optional:
 
 Optional:
 
+- `custom_links` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--treemap_definition--custom_links))
 - `request` (Block List) Nested block describing the request to use when displaying the widget. (see [below for nested schema](#nestedblock--widget--treemap_definition--request))
 - `title` (String) The title of the widget.
+
+<a id="nestedblock--widget--treemap_definition--custom_links"></a>
+### Nested Schema for `widget.treemap_definition.custom_links`
+
+Optional:
+
+- `is_hidden` (Boolean) The flag for toggling context menu link visibility.
+- `label` (String) The label for the custom link URL.
+- `link` (String) The URL of the custom link.
+- `override_label` (String) The label ID that refers to a context menu link item. When `override_label` is provided, the client request omits the label field.
+
 
 <a id="nestedblock--widget--treemap_definition--request"></a>
 ### Nested Schema for `widget.treemap_definition.request`
@@ -8171,6 +8183,8 @@ Optional:
 ## Import
 
 Import is supported using the following syntax:
+
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
 
 ```shell
 terraform import datadog_powerpack.foo 11111111-2222-3333-4444-555555555555

@@ -7,6 +7,7 @@ body:
       value: |
         Hi there,
         Thank you for opening an feature request. To expedite the process, we suggest submitting a ticket at `https://help.datadoghq.com/` as well.
+        If you're a paying customer, you can open a ticket at [Datadog Support](https://help.datadoghq.com/hc/en-us/requests/new).
   - type: textarea
     id: affected-resources
     attributes:

@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"compute":{"aggregation_type":"count"},"filter":{"query":"@http.status_code:200 service:my-service"},"group_by":[{"path":"resource_name1","tag_name":"my_resource1"},{"path":"resource_name2","tag_name":"my_resource2"}]},"id":"\"tf_TestAccSpansMetricGroupBys_local_1738580200\"","type":"spans_metrics"}}
+            {"data":{"attributes":{"compute":{"aggregation_type":"count"},"filter":{"query":"@http.status_code:200 service:my-service"},"group_by":[{"path":"resource_name1","tag_name":"my_resource1"},{"path":"resource_name2","tag_name":"my_resource2"}]},"id":"\"tf_TestAccSpansMetricGroupBys_local_1745933717\"","type":"spans_metrics"}}
         form: {}
         headers:
             Accept:
@@ -23,21 +23,22 @@ interactions:
         url: https://api.datadoghq.com/api/v2/apm/config/metrics
         method: POST
       response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        transfer_encoding: []
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
         trailer: {}
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"id":"tf_TestAccSpansMetricGroupBys_local_1738580200","attributes":{"filter":{"query":"@http.status_code:200 service:my-service"},"group_by":[{"path":"resource_name1","tag_name":"my_resource1"},{"path":"resource_name2","tag_name":"my_resource2"}],"compute":{"aggregation_type":"count"}},"type":"spans_metrics"}}
+            {"data":{"id":"tf_TestAccSpansMetricGroupBys_local_1745933717","attributes":{"filter":{"query":"@http.status_code:200 service:my-service"},"group_by":[{"path":"resource_name1","tag_name":"my_resource1"},{"path":"resource_name2","tag_name":"my_resource2"}],"compute":{"aggregation_type":"count"}},"type":"spans_metrics"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 327.505458ms
+        duration: 770.2015ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -54,24 +55,25 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/apm/config/metrics/tf_TestAccSpansMetricGroupBys_local_1738580200
+        url: https://api.datadoghq.com/api/v2/apm/config/metrics/tf_TestAccSpansMetricGroupBys_local_1745933717
         method: GET
       response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        transfer_encoding: []
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
         trailer: {}
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"id":"tf_TestAccSpansMetricGroupBys_local_1738580200","attributes":{"filter":{"query":"@http.status_code:200 service:my-service"},"group_by":[{"path":"resource_name1","tag_name":"my_resource1"},{"path":"resource_name2","tag_name":"my_resource2"}],"compute":{"aggregation_type":"count"}},"type":"spans_metrics"}}
+            {"data":{"id":"tf_TestAccSpansMetricGroupBys_local_1745933717","attributes":{"filter":{"query":"@http.status_code:200 service:my-service"},"group_by":[{"path":"resource_name1","tag_name":"my_resource1"},{"path":"resource_name2","tag_name":"my_resource2"}],"compute":{"aggregation_type":"count"}},"type":"spans_metrics"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 123.98175ms
+        duration: 135.782375ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -88,12 +90,12 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/apm/config/metrics/tf_TestAccSpansMetricGroupBys_local_1738580200
+        url: https://api.datadoghq.com/api/v2/apm/config/metrics/tf_TestAccSpansMetricGroupBys_local_1745933717
         method: DELETE
       response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
         transfer_encoding: []
         trailer: {}
         content_length: 0
@@ -104,4 +106,4 @@ interactions:
                 - text/html; charset=utf-8
         status: 204 No Content
         code: 204
-        duration: 147.452334ms
+        duration: 243.786792ms

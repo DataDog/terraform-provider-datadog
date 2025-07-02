@@ -3,12 +3,12 @@
 page_title: "datadog_app_builder_app Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Provides a Datadog App resource for creating and managing Datadog Apps from App Builder using the JSON definition.
+  Provides a Datadog App resource for creating and managing Datadog Apps from App Builder using the JSON definition. To easily export an App for use with Terraform, use the export button in the Datadog App Builder UI.
 ---
 
 # datadog_app_builder_app (Resource)
 
-Provides a Datadog App resource for creating and managing Datadog Apps from App Builder using the JSON definition.
+Provides a Datadog App resource for creating and managing Datadog Apps from App Builder using the JSON definition. To easily export an App for use with Terraform, use the export button in the Datadog App Builder UI.
 
 ## Example Usage
 
@@ -172,6 +172,8 @@ resource "datadog_app_builder_app" "example_app_escaped_interpolated" {
 ## Import
 
 Import is supported using the following syntax:
+
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
 
 ```shell
 terraform import datadog_app_builder_app.my_app 11111111-2222-3333-4444-555555555555

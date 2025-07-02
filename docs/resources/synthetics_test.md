@@ -112,7 +112,8 @@ resource "datadog_synthetics_test" "test_api" {
       interval = 300
     }
     monitor_options {
-      renotify_interval = 120
+      renotify_interval  = 120
+      escalation_message = "test escalation message"
     }
   }
 }
@@ -432,13 +433,42 @@ resource "datadog_synthetics_test" "test_browser" {
         size    = 11            // Size of the file in bytes
         content = "Hello world" // Content of the file
       }])
-      element = "*[@id='simple-file-upload']"
       element_user_locator {
         value {
           type  = "css"
           value = "#simple-file-upload"
         }
       }
+      element = jsonencode({
+        "userLocator" : {
+          "failTestOnCannotLocate" : true,
+          "values" : [
+            {
+              "type" : "css",
+              "value" : "#simple-file-upload"
+            }
+          ]
+        }
+      })
+    }
+  }
+
+  browser_step {
+    name = "Test sending http requests"
+    type = "assertRequests"
+    params {
+      requests = jsonencode(
+        {
+          count = {
+            type = "equals" // "equals", "greater", "greaterEquals", "lower", 
+            // "lowerEquals", "notEquals", "between"
+            value = 1
+            // min   = 1      // only used for "between"
+            // max   = 1      // only used for "between"
+          }
+          url = "https://www.example.org"
+        }
+      )
     }
   }
 
@@ -713,7 +743,7 @@ resource "datadog_synthetics_test" "test_grpc_health" {
 
 ### Required
 
-- `locations` (Set of String) Array of locations used to run the test. Refer to [the Datadog Synthetics location data source](https://registry.terraform.io/providers/DataDog/datadog/latest/docs/data-sources/synthetics_locations) to retrieve the list of locations.
+- `locations` (Set of String) Array of locations used to run the test. Refer to [the Datadog Synthetics location data source](https://registry.terraform.io/providers/DataDog/datadog/latest/docs/data-sources/synthetics_locations) to retrieve the list of locations or find the possible values listed in [this API response](https://app.datadoghq.com/api/v1/synthetics/locations?only_public=true).
 - `name` (String) Name of Datadog synthetics test.
 - `status` (String) Define whether you want to start (`live`) or pause (`paused`) a Synthetic test. Valid values are `live`, `paused`.
 - `type` (String) Synthetics test type. Valid values are `api`, `browser`, `mobile`.
@@ -774,7 +804,7 @@ Optional:
 - `request_proxy` (Block List, Max: 1) The proxy to perform the test. (see [below for nested schema](#nestedblock--api_step--request_proxy))
 - `request_query` (Map of String) Query arguments name and value map.
 - `retry` (Block List, Max: 1) (see [below for nested schema](#nestedblock--api_step--retry))
-- `subtype` (String) The subtype of the Synthetic multi-step API test step. Valid values are `http`, `grpc`, `wait`. Defaults to `"http"`.
+- `subtype` (String) The subtype of the Synthetic multi-step API test step. Valid values are `http`, `grpc`, `ssl`, `dns`, `tcp`, `udp`, `icmp`, `websocket`, `wait`. Defaults to `"http"`.
 - `value` (Number) The time to wait in seconds. Minimum value: 0. Maximum value: 180.
 
 <a id="nestedblock--api_step--assertion"></a>
@@ -782,14 +812,14 @@ Optional:
 
 Required:
 
-- `type` (String) Type of assertion. **Note** Only some combinations of `type` and `operator` are valid (please refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test)). Valid values are `body`, `header`, `statusCode`, `certificate`, `responseTime`, `property`, `recordEvery`, `recordSome`, `tlsVersion`, `minTlsVersion`, `latency`, `packetLossPercentage`, `packetsReceived`, `networkHop`, `receivedMessage`, `grpcHealthcheckStatus`, `grpcMetadata`, `grpcProto`, `connection`, `bodyHash`, `javascript`.
+- `type` (String) Type of assertion. **Note:** Only some combinations of `type` and `operator` are valid. Refer to `config.assertions` in the [Datadog API reference](https://docs.datadoghq.com/api/latest/synthetics/#create-an-api-test). Valid values are `body`, `header`, `statusCode`, `certificate`, `responseTime`, `property`, `recordEvery`, `recordSome`, `tlsVersion`, `minTlsVersion`, `latency`, `packetLossPercentage`, `packetsReceived`, `networkHop`, `receivedMessage`, `grpcHealthcheckStatus`, `grpcMetadata`, `grpcProto`, `connection`, `bodyHash`, `javascript`.
 
 Optional:
 
 - `code` (String) If assertion type is `javascript`, this is the JavaScript code that performs the assertions.
-- `operator` (String) Assertion operator. **Note** Only some combinations of `type` and `operator` are valid (please refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test)).
+- `operator` (String) Assertion operator. **Note:** Only some combinations of `type` and `operator` are valid. Refer to `config.assertions` in the [Datadog API reference](https://docs.datadoghq.com/api/latest/synthetics/#create-an-api-test).
 - `property` (String) If assertion type is `header`, this is the header name.
-- `target` (String) Expected value. Depends on the assertion type, refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test) for details.
+- `target` (String) Expected value. **Note:** Depends on the assertion type. Refer to `config.assertions` in the [Datadog API reference](https://docs.datadoghq.com/api/latest/synthetics/#create-an-api-test).
 - `targetjsonpath` (Block List, Max: 1) Expected structure if `operator` is `validatesJSONPath`. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--api_step--assertion--targetjsonpath))
 - `targetjsonschema` (Block List, Max: 1) Expected structure if `operator` is `validatesJSONSchema`. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--api_step--assertion--targetjsonschema))
 - `targetxpath` (Block List, Max: 1) Expected structure if `operator` is `validatesXPath`. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--api_step--assertion--targetxpath))
@@ -897,24 +927,18 @@ Required:
 <a id="nestedblock--api_step--request_client_certificate--cert"></a>
 ### Nested Schema for `api_step.request_client_certificate.cert`
 
-Required:
-
-- `content` (String, Sensitive) Content of the certificate.
-
 Optional:
 
+- `content` (String, Sensitive) Content of the certificate.
 - `filename` (String) File name for the certificate. Defaults to `"Provided in Terraform config"`.
 
 
 <a id="nestedblock--api_step--request_client_certificate--key"></a>
 ### Nested Schema for `api_step.request_client_certificate.key`
 
-Required:
-
-- `content` (String, Sensitive) Content of the certificate.
-
 Optional:
 
+- `content` (String, Sensitive) Content of the certificate.
 - `filename` (String) File name for the certificate. Defaults to `"Provided in Terraform config"`.
 
 
@@ -924,16 +948,20 @@ Optional:
 
 Optional:
 
+- `accept_self_signed` (Boolean) For SSL test, whether or not the test should allow self signed certificates.
 - `allow_insecure` (Boolean) Allows loading insecure content for a request in an API test or in a multistep API test step.
 - `body` (String) The request body.
 - `body_type` (String) Type of the request body. Valid values are `text/plain`, `application/json`, `text/xml`, `text/html`, `application/x-www-form-urlencoded`, `graphql`, `application/octet-stream`, `multipart/form-data`.
 - `call_type` (String) The type of gRPC call to perform. Valid values are `healthcheck`, `unary`.
 - `certificate_domains` (List of String) By default, the client certificate is applied on the domain of the starting URL for browser tests. If you want your client certificate to be applied on other domains instead, add them in `certificate_domains`.
+- `check_certificate_revocation` (Boolean) For SSL test, whether or not the test should fail on revoked certificate in stapled OCSP.
 - `dns_server` (String) DNS server to use for DNS tests (`subtype = "dns"`).
 - `dns_server_port` (String) DNS server port to use for DNS tests.
 - `follow_redirects` (Boolean) Determines whether or not the API HTTP test should follow redirects.
+- `form` (Map of String) Form data to be sent when `body_type` is `multipart/form-data`.
 - `host` (String) Host name to perform the test with.
 - `http_version` (String) HTTP version to use for an HTTP request in an API test or step. Valid values are `http1`, `http2`, `any`. Defaults to `"any"`.
+- `is_message_base64_encoded` (Boolean) Whether the message is base64-encoded.
 - `message` (String) For UDP and websocket tests, message to send with the request.
 - `method` (String) Either the HTTP method/verb to use or a gRPC method available on the service set in the `service` field. Required if `subtype` is `HTTP` or if `subtype` is `grpc` and `callType` is `unary`.
 - `no_saving_response_body` (Boolean) Determines whether or not to save the response body.
@@ -995,14 +1023,14 @@ Optional:
 
 Required:
 
-- `type` (String) Type of assertion. **Note** Only some combinations of `type` and `operator` are valid (please refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test)). Valid values are `body`, `header`, `statusCode`, `certificate`, `responseTime`, `property`, `recordEvery`, `recordSome`, `tlsVersion`, `minTlsVersion`, `latency`, `packetLossPercentage`, `packetsReceived`, `networkHop`, `receivedMessage`, `grpcHealthcheckStatus`, `grpcMetadata`, `grpcProto`, `connection`, `bodyHash`, `javascript`.
+- `type` (String) Type of assertion. **Note:** Only some combinations of `type` and `operator` are valid. Refer to `config.assertions` in the [Datadog API reference](https://docs.datadoghq.com/api/latest/synthetics/#create-an-api-test). Valid values are `body`, `header`, `statusCode`, `certificate`, `responseTime`, `property`, `recordEvery`, `recordSome`, `tlsVersion`, `minTlsVersion`, `latency`, `packetLossPercentage`, `packetsReceived`, `networkHop`, `receivedMessage`, `grpcHealthcheckStatus`, `grpcMetadata`, `grpcProto`, `connection`, `bodyHash`, `javascript`.
 
 Optional:
 
 - `code` (String) If assertion type is `javascript`, this is the JavaScript code that performs the assertions.
-- `operator` (String) Assertion operator. **Note** Only some combinations of `type` and `operator` are valid (please refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test)).
+- `operator` (String) Assertion operator. **Note:** Only some combinations of `type` and `operator` are valid. Refer to `config.assertions` in the [Datadog API reference](https://docs.datadoghq.com/api/latest/synthetics/#create-an-api-test).
 - `property` (String) If assertion type is `header`, this is the header name.
-- `target` (String) Expected value. Depends on the assertion type, refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test) for details.
+- `target` (String) Expected value. **Note:** Depends on the assertion type. Refer to `config.assertions` in the [Datadog API reference](https://docs.datadoghq.com/api/latest/synthetics/#create-an-api-test).
 - `targetjsonpath` (Block List, Max: 1) Expected structure if `operator` is `validatesJSONPath`. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--assertion--targetjsonpath))
 - `targetjsonschema` (Block List, Max: 1) Expected structure if `operator` is `validatesJSONSchema`. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--assertion--targetjsonschema))
 - `targetxpath` (Block List, Max: 1) Expected structure if `operator` is `validatesXPath`. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--assertion--targetxpath))
@@ -1080,9 +1108,10 @@ Optional:
 - `attribute` (String) Name of the attribute to use for an "assert attribute" step.
 - `check` (String) Check type to use for an assertion step. Valid values are `equals`, `notEquals`, `contains`, `notContains`, `startsWith`, `notStartsWith`, `greater`, `lower`, `greaterEquals`, `lowerEquals`, `matchRegex`, `between`, `isEmpty`, `notIsEmpty`.
 - `click_type` (String) Type of click to use for a "click" step.
+- `click_with_javascript` (Boolean) Whether to use `element.click()` for a "click" step. This is a more reliable way to interact with elements but does not emulate a real user interaction.
 - `code` (String) Javascript code to use for the step.
 - `delay` (Number) Delay between each key stroke for a "type test" step.
-- `element` (String) Element to use for the step, JSON encoded string.
+- `element` (String) Element to use for the step, JSON encoded string. Refer to the examples for a usage example showing the schema.
 - `element_user_locator` (Block List, Max: 1) Custom user selector to use for the step. (see [below for nested schema](#nestedblock--browser_step--params--element_user_locator))
 - `email` (String) Details of the email for an "assert email" step, JSON encoded string.
 - `file` (String) JSON encoded string used for an "assert download" step. Refer to the examples for a usage example showing the schema.
@@ -1090,6 +1119,7 @@ Optional:
 - `modifiers` (List of String) Modifier to use for a "press key" step.
 - `playing_tab_id` (String) ID of the tab to play the subtest.
 - `request` (String) Request for an API step.
+- `requests` (String) Details of the requests for an "assert request" step, JSON encoded string. Refer to the examples for a usage example showing the schema.
 - `subtest_public_id` (String) ID of the Synthetics test to use as subtest.
 - `value` (String) Value of the step.
 - `variable` (Block List, Max: 1) Details of the variable to extract. (see [below for nested schema](#nestedblock--browser_step--params--variable))
@@ -1172,7 +1202,7 @@ Required:
 
 - `device_ids` (List of String)
 - `mobile_application` (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--mobile_options_list--mobile_application))
-- `tick_every` (Number) How often the test should run (in seconds).
+- `tick_every` (Number) How often the test should run (in seconds). Valid range is `300-604800` for mobile tests.
 
 Optional:
 
@@ -1223,8 +1253,8 @@ Required:
 
 Optional:
 
-- `escalation_message` (String)
-- `notification_preset_name` (String) Valid values are `show_all`, `hide_all`, `hide_query`, `hide_handles`.
+- `escalation_message` (String) A message to include with a re-notification.
+- `notification_preset_name` (String) The name of the preset for the notification for the monitor. Valid values are `show_all`, `hide_all`, `hide_query`, `hide_handles`.
 - `renotify_interval` (Number) Specify a renotification frequency in minutes. Values available by default are `0`, `10`, `20`, `30`, `40`, `50`, `60`, `90`, `120`, `180`, `240`, `300`, `360`, `720`, `1440`. Defaults to `0`.
 - `renotify_occurrences` (Number) The number of times a monitor renotifies. It can only be set if `renotify_interval` is set.
 
@@ -1365,7 +1395,7 @@ Optional:
 
 Required:
 
-- `tick_every` (Number) How often the test should run (in seconds).
+- `tick_every` (Number) How often the test should run (in seconds). Valid range is `30-604800` for API tests and `60-604800` for browser tests.
 
 Optional:
 
@@ -1403,6 +1433,8 @@ Optional:
 
 Optional:
 
+- `escalation_message` (String) A message to include with a re-notification.
+- `notification_preset_name` (String) The name of the preset for the notification for the monitor. Valid values are `show_all`, `hide_all`, `hide_query`, `hide_handles`.
 - `renotify_interval` (Number) Specify a renotification frequency in minutes. Values available by default are `0`, `10`, `20`, `30`, `40`, `50`, `60`, `90`, `120`, `180`, `240`, `300`, `360`, `720`, `1440`. Defaults to `0`.
 - `renotify_occurrences` (Number) The number of times a monitor renotifies. It can only be set if `renotify_interval` is set.
 
@@ -1484,24 +1516,18 @@ Required:
 <a id="nestedblock--request_client_certificate--cert"></a>
 ### Nested Schema for `request_client_certificate.cert`
 
-Required:
-
-- `content` (String, Sensitive) Content of the certificate.
-
 Optional:
 
+- `content` (String, Sensitive) Content of the certificate.
 - `filename` (String) File name for the certificate. Defaults to `"Provided in Terraform config"`.
 
 
 <a id="nestedblock--request_client_certificate--key"></a>
 ### Nested Schema for `request_client_certificate.key`
 
-Required:
-
-- `content` (String, Sensitive) Content of the certificate.
-
 Optional:
 
+- `content` (String, Sensitive) Content of the certificate.
 - `filename` (String) File name for the certificate. Defaults to `"Provided in Terraform config"`.
 
 
@@ -1517,8 +1543,10 @@ Optional:
 - `certificate_domains` (List of String) By default, the client certificate is applied on the domain of the starting URL for browser tests. If you want your client certificate to be applied on other domains instead, add them in `certificate_domains`.
 - `dns_server` (String) DNS server to use for DNS tests (`subtype = "dns"`).
 - `dns_server_port` (String) DNS server port to use for DNS tests.
+- `form` (Map of String) Form data to be sent when `body_type` is `multipart/form-data`.
 - `host` (String) Host name to perform the test with.
 - `http_version` (String, Deprecated) HTTP version to use for an HTTP request in an API test or step. **Deprecated.** Use `http_version` in the `options_list` field instead.
+- `is_message_base64_encoded` (Boolean) Whether the message is base64-encoded.
 - `message` (String) For UDP and websocket tests, message to send with the request.
 - `method` (String) Either the HTTP method/verb to use or a gRPC method available on the service set in the `service` field. Required if `subtype` is `HTTP` or if `subtype` is `grpc` and `callType` is `unary`.
 - `no_saving_response_body` (Boolean) Determines whether or not to save the response body.

@@ -8,6 +8,7 @@ body:
         Hi there,
         Thank you for opening an issue. Please note that we try to keep the issue tracker reserved for bug reports and feature requests. 
         For general usage questions, please see: https://www.terraform.io/community.html.
+        If you're a paying customer, you can open a ticket at [Datadog Support](https://help.datadoghq.com/hc/en-us/requests/new).
   - type: input
     id: terraform-version
     attributes:

@@ -53,6 +53,7 @@ var Resources = []func() resource.Resource{
 	NewIntegrationGcpResource,
 	NewIntegrationGcpStsResource,
 	NewIpAllowListResource,
+	NewMonitorNotificationRuleResource,
 	NewSecurityNotificationRuleResource,
 	NewRestrictionPolicyResource,
 	NewRumApplicationResource,
@@ -71,7 +72,6 @@ var Resources = []func() resource.Resource{
 	NewTeamResource,
 	NewUserRoleResource,
 	NewSecurityMonitoringSuppressionResource,
-	NewCSMThreatsAgentRuleResource,
 	NewServiceAccountResource,
 	NewWebhookResource,
 	NewWebhookCustomVariableResource,
@@ -84,6 +84,15 @@ var Resources = []func() resource.Resource{
 	NewWorkflowAutomationResource,
 	NewAppBuilderAppResource,
 	NewObservabilitPipelineResource,
+	NewOnCallEscalationPolicyResource,
+	NewOnCallScheduleResource,
+	NewOnCallTeamRoutingRulesResource,
+	NewComplianceResourceEvaluationFilter,
+	NewSecurityMonitoringRuleJSONResource,
+	NewComplianceCustomFrameworkResource,
+	NewCostBudgetResource,
+	NewCSMThreatsAgentRuleResource,
+	NewCSMThreatsPolicyResource,
 }
 
 var Datasources = []func() datasource.DataSource{
@@ -94,6 +103,7 @@ var Datasources = []func() datasource.DataSource{
 	NewDatadogApmRetentionFiltersOrderDataSource,
 	NewDatadogDashboardListDataSource,
 	NewDatadogIntegrationAWSNamespaceRulesDatasource,
+	NewDatadogMetricTagsDataSource,
 	NewDatadogPowerpackDataSource,
 	NewDatadogServiceAccountDatasource,
 	NewDatadogSoftwareCatalogDataSource,
@@ -107,7 +117,6 @@ var Datasources = []func() datasource.DataSource{
 	NewDatadogUsersDataSource,
 	NewDatadogRoleUsersDataSource,
 	NewSecurityMonitoringSuppressionDataSource,
-	NewCSMThreatsAgentRulesDataSource,
 	NewLogsPipelinesOrderDataSource,
 	NewDatadogTeamsDataSource,
 	NewDatadogActionConnectionDataSource,
@@ -115,6 +124,9 @@ var Datasources = []func() datasource.DataSource{
 	NewDatadogSyntheticsLocationsDataSource,
 	NewWorkflowAutomationDataSource,
 	NewDatadogAppBuilderAppDataSource,
+	NewCostBudgetDataSource,
+	NewCSMThreatsAgentRulesDataSource,
+	NewCSMThreatsPoliciesDataSource,
 }
 
 // FrameworkProvider struct
@@ -236,13 +248,13 @@ func (p *FrameworkProvider) Schema(_ context.Context, _ provider.SchemaRequest, 
 				Validators: []validator.List{
 					listvalidator.SizeAtMost(1),
 				},
-				Description: "[Experimental - Monitors and Logs Pipelines only] Configuration block containing settings to apply default resource tags across all resources.",
+				Description: "[Experimental - Logs Pipelines, Monitors Security Monitoring Rules, and Service Level Objectives only] Configuration block containing settings to apply default resource tags across all resources.",
 				NestedObject: schema.NestedBlockObject{
 					Attributes: map[string]schema.Attribute{
 						"tags": schema.MapAttribute{
 							ElementType: types.StringType,
 							Optional:    true,
-							Description: "[Experimental - Monitors and Logs Pipelines only] Resource tags to be applied by default across all resources.",
+							Description: "[Experimental - Logs Pipelines, Monitors Security Monitoring Rules, and Service Level Objectives only] Resource tags to be applied by default across all resources.",
 						},
 					},
 				},
@@ -492,6 +504,12 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.GetPipeline", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.UpdatePipeline", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeletePipeline", true)
+
+	// Enable MonitorNotificationRule
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateMonitorNotificationRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetMonitorNotificationRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteMonitorNotificationRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateMonitorNotificationRule", true)
 
 	if !config.ApiUrl.IsNull() && config.ApiUrl.ValueString() != "" {
 		parsedAPIURL, parseErr := url.Parse(config.ApiUrl.ValueString())

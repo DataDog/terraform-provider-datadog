@@ -61,6 +61,47 @@ func testAccCheckDatadogApmRetentionFilterDestroy(accProvider *fwprovider.Framew
 	}
 }
 
+func TestAccApmRetentionFilterWithTraceRate(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	uniq := uniqueEntityName(ctx, t)
+	query := "error_code:456 service:my-other-service"
+	rate := "0.1"
+	traceRate := "0.5"
+	updatedQuery := "error_code:456"
+	updatedRate := "1"
+	updatedTraceRate := "0.8"
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogApmRetentionFilterDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: buildApmRetentionFilterResourceWithTraceRateConfig(uniq, query, rate, traceRate),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogApmRetentionFilterExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr("datadog_apm_retention_filter.test-trace", "name", uniq),
+					resource.TestCheckResourceAttr("datadog_apm_retention_filter.test-trace", "filter.query", query),
+					resource.TestCheckResourceAttr("datadog_apm_retention_filter.test-trace", "rate", rate),
+					resource.TestCheckResourceAttr("datadog_apm_retention_filter.test-trace", "trace_rate", traceRate),
+					resource.TestCheckResourceAttr("datadog_apm_retention_filter.testtwo-trace", "name", uniq+" - second"),
+					resource.TestCheckResourceAttr("datadog_apm_retention_filter.testtwo-trace", "enabled", "false"),
+				),
+			},
+			{
+				Config: buildApmRetentionFilterResourceWithTraceRateConfig(uniq, updatedQuery, updatedRate, updatedTraceRate),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogApmRetentionFilterExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr("datadog_apm_retention_filter.test-trace", "name", uniq),
+					resource.TestCheckResourceAttr("datadog_apm_retention_filter.test-trace", "filter.query", updatedQuery),
+					resource.TestCheckResourceAttr("datadog_apm_retention_filter.test-trace", "rate", updatedRate),
+					resource.TestCheckResourceAttr("datadog_apm_retention_filter.test-trace", "trace_rate", updatedTraceRate),
+				),
+			},
+		},
+	})
+}
+
 func ApmRetentionFilterDestroyHelper(auth context.Context, s *terraform.State, apiInstances *utils.ApiInstances) error {
 	for _, r := range s.RootModule().Resources {
 		if r.Type != "datadog_apm_retention_filter" {
@@ -137,4 +178,30 @@ func buildApmRetentionFilterResourceConfig(name, query string, rate string) stri
 		}
 	`, name, rate, query)
 	return t
+}
+
+func buildApmRetentionFilterResourceWithTraceRateConfig(name, query string, rate string, traceRate string) string {
+	return fmt.Sprintf(`
+		resource "datadog_apm_retention_filter" "test-trace" {
+			name = "%[1]s"
+			rate = "%[2]s"
+			trace_rate = "%[3]s"
+			filter {
+				query = "%[4]s"
+			}
+			filter_type = "spans-sampling-processor"
+			enabled = true
+		}
+
+		resource "datadog_apm_retention_filter" "testtwo-trace" {
+			name = "%[1]s - second"
+			rate = "%[2]s"
+			trace_rate = "%[3]s"
+			filter {
+				query = "%[4]s"
+			}
+			filter_type = "spans-sampling-processor"
+			enabled = false
+		}
+	`, name, rate, traceRate, query)
 }

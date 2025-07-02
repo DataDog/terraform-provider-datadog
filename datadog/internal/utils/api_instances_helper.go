@@ -75,6 +75,7 @@ type ApiInstances struct {
 	microsoftTeamsIntegrationApiV2 *datadogV2.MicrosoftTeamsIntegrationApi
 	monitorsApiV2                  *datadogV2.MonitorsApi
 	obsPipelinesV2                 *datadogV2.ObservabilityPipelinesApi
+	onCallApiV2                    *datadogV2.OnCallApi
 	opsgenieIntegrationApiV2       *datadogV2.OpsgenieIntegrationApi
 	organizationsApiV2             *datadogV2.OrganizationsApi
 	processesApiV2                 *datadogV2.ProcessesApi
@@ -94,6 +95,7 @@ type ApiInstances struct {
 	usageMeteringApiV2             *datadogV2.UsageMeteringApi
 	usersApiV2                     *datadogV2.UsersApi
 	workflowAutomationApiV2        *datadogV2.WorkflowAutomationApi
+	ccmApiV2                       *datadogV2.CloudCostManagementApi
 }
 
 // GetAuthenticationApiV1 get instance of AuthenticationApi
@@ -518,6 +520,13 @@ func (i *ApiInstances) GetObsPipelinesV2() *datadogV2.ObservabilityPipelinesApi 
 	return i.obsPipelinesV2
 }
 
+func (i *ApiInstances) GetOnCallApiV2() *datadogV2.OnCallApi {
+	if i.onCallApiV2 == nil {
+		i.onCallApiV2 = datadogV2.NewOnCallApi(i.HttpClient)
+	}
+	return i.onCallApiV2
+}
+
 // GetOpsgenieIntegrationApiV2 get instance of OpsgenieIntegrationApi
 func (i *ApiInstances) GetOpsgenieIntegrationApiV2() *datadogV2.OpsgenieIntegrationApi {
 	if i.opsgenieIntegrationApiV2 == nil {
@@ -741,4 +750,12 @@ func (i *ApiInstances) GetAppBuilderApiV2() *datadogV2.AppBuilderApi {
 		i.appBuilderApiV2 = datadogV2.NewAppBuilderApi(i.HttpClient)
 	}
 	return i.appBuilderApiV2
+}
+
+// GetCloudCostManagementApiV2 get instance of CloudCostManagementApi
+func (i *ApiInstances) GetCloudCostManagementApiV2() *datadogV2.CloudCostManagementApi {
+	if i.ccmApiV2 == nil {
+		i.ccmApiV2 = datadogV2.NewCloudCostManagementApi(i.HttpClient)
+	}
+	return i.ccmApiV2
 }
