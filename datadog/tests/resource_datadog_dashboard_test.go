@@ -1894,6 +1894,7 @@ var datadogDashboardTemplateVariablesConfigAsserts = []string{
 	"template_variable.1.defaults.0 = autoscaling",
 	"template_variable.1.defaults.1 = two",
 	"template_variable.2.name = var_3",
+	"template_variable.2.type = group",
 	"template_variable.2.defaults.# = 2",
 	"template_variable.2.defaults.0 = datacenter",
 	"template_variable.2.defaults.1 = env",
