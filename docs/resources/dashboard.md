@@ -771,6 +771,7 @@ Optional:
 - `prefix` (String) The tag prefix associated with the variable. Only tags with this prefix appear in the variable dropdown.
 - `type` (String) The type of template variable. Used to differentiate between filter and group by variables
 
+
 <a id="nestedblock--template_variable_preset"></a>
 ### Nested Schema for `template_variable_preset`
 
