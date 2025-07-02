@@ -144,6 +144,12 @@ type ProviderSchema struct {
 	AppKey                           types.String `tfsdk:"app_key"`
 	ApiUrl                           types.String `tfsdk:"api_url"`
 	Validate                         types.String `tfsdk:"validate"`
+	CloudProviderType                types.String `tfsdk:"cloud_provider_type"`
+	CloudProviderRegion              types.String `tfsdk:"cloud_provider_region"`
+	OrgUuid                          types.String `tfsdk:"org_uuid"`
+	AWSAccessKeyId                   types.String `tfsdk:"aws_access_key_id"`
+	AWSSecretAccessKey               types.String `tfsdk:"aws_secret_access_key"`
+	AWSSessionToken                  types.String `tfsdk:"aws_session_token"`
 	HttpClientRetryEnabled           types.String `tfsdk:"http_client_retry_enabled"`
 	HttpClientRetryTimeout           types.Int64  `tfsdk:"http_client_retry_timeout"`
 	HttpClientRetryBackoffMultiplier types.Int64  `tfsdk:"http_client_retry_backoff_multiplier"`
@@ -205,6 +211,33 @@ func (p *FrameworkProvider) Schema(_ context.Context, _ provider.SchemaRequest, 
 			"validate": schema.StringAttribute{
 				Optional:    true,
 				Description: "Enables validation of the provided API key during provider initialization. Valid values are [`true`, `false`]. Default is true. When false, api_key won't be checked.",
+			},
+			"cloud_provider_type": schema.StringAttribute{
+				Optional:    true,
+				Description: "The cloud provider type. Valid values are [`aws`]. We will add support for more cloud providers in the future.",
+			},
+			"cloud_provider_region": schema.StringAttribute{
+				Optional:    true,
+				Description: "The cloud provider region specifier. Ex `us-east-1` for AWS.",
+			},
+			"org_uuid": schema.StringAttribute{
+				Optional:    true,
+				Description: "The organization UUID. Please refer to the [Datadog API documentation](https://docs.datadoghq.com/api/v1/organizations/) for more information.",
+			},
+			"aws_access_key_id": schema.StringAttribute{
+				Optional:    true,
+				Sensitive:   true,
+				Description: "The AWS access key ID. This can also be set via the AWS_ACCESS_KEY_ID environment variable. Required when using `cloud_provider_type` set to `aws`.",
+			},
+			"aws_secret_access_key": schema.StringAttribute{
+				Optional:    true,
+				Sensitive:   true,
+				Description: "The AWS secret access key. This can also be set via the AWS_SECRET_ACCESS_KEY environment variable. Required when using `cloud_provider_type` set to `aws`.",
+			},
+			"aws_session_token": schema.StringAttribute{
+				Optional:    true,
+				Sensitive:   true,
+				Description: "The AWS session token. This can also be set via the AWS_SESSION_TOKEN environment variable. Required when using `cloud_provider_type` set to `aws` and using temporary credentials.",
 			},
 			"http_client_retry_enabled": schema.StringAttribute{
 				Optional:    true,
@@ -290,6 +323,13 @@ func (p *FrameworkProvider) ConfigureConfigDefaults(ctx context.Context, config 
 		apiUrl, err := utils.GetMultiEnvVar(utils.APIUrlEnvVars[:]...)
 		if err == nil {
 			config.ApiUrl = types.StringValue(apiUrl)
+		}
+	}
+
+	if config.OrgUuid.IsNull() {
+		orgUUID, err := utils.GetMultiEnvVar(utils.OrgUUIDEnvVars[:]...)
+		if err == nil {
+			config.OrgUuid = types.StringValue(orgUUID)
 		}
 	}
 
@@ -392,11 +432,23 @@ func (p *FrameworkProvider) ValidateConfigValues(ctx context.Context, config *Pr
 func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureRequest, config *ProviderSchema) diag.Diagnostics {
 	diags := diag.Diagnostics{}
 	validate, _ := strconv.ParseBool(config.Validate.ValueString())
-	httpClientRetryEnabled, _ := strconv.ParseBool(config.Validate.ValueString())
+	httpClientRetryEnabled, _ := strconv.ParseBool(config.HttpClientRetryEnabled.ValueString())
 
-	if validate && (config.ApiKey.ValueString() == "" || config.AppKey.ValueString() == "") {
-		diags.AddError("api_key and app_key must be set unless validate = false", "")
-		return diags
+	cloudProviderType := config.CloudProviderType.ValueString()
+	cloudProviderRegion := config.CloudProviderRegion.ValueString()
+	orgUUID := config.OrgUuid.ValueString()
+	awsAccessKeyId := config.AWSAccessKeyId.ValueString()
+	awsSecretAccessKey := config.AWSSecretAccessKey.ValueString()
+	awsSessionToken := config.AWSSessionToken.ValueString()
+
+	if validate {
+		if cloudProviderType == "" && (config.ApiKey.ValueString() == "" || config.AppKey.ValueString() == "") {
+			diags.AddError("api_key and app_key or orgUUID must be set unless validate = false", "")
+			return diags
+		} else if cloudProviderType != "" && orgUUID == "" {
+			diags.AddError("orgUUID must be set when using cloud provider auth unless validate = false", "")
+			return diags
+		}
 	}
 
 	// Initialize the community client
@@ -415,18 +467,49 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	p.CommunityClient.HttpClient = c
 
 	// Initialize the official Datadog V1 API client
-	auth := context.WithValue(
-		context.Background(),
-		datadog.ContextAPIKeys,
-		map[string]datadog.APIKey{
-			"apiKeyAuth": {
-				Key: config.ApiKey.ValueString(),
+	auth := context.Background()
+	if config.ApiKey.ValueString() != "" || config.AppKey.ValueString() != "" {
+		auth = context.WithValue(
+			auth,
+			datadog.ContextAPIKeys,
+			map[string]datadog.APIKey{
+				"apiKeyAuth": {
+					Key: config.ApiKey.ValueString(),
+				},
+				"appKeyAuth": {
+					Key: config.AppKey.ValueString(),
+				},
 			},
-			"appKeyAuth": {
-				Key: config.AppKey.ValueString(),
-			},
-		},
-	)
+		)
+	} else if cloudProviderType != "" {
+		switch cloudProviderType {
+		case "aws":
+			awsAuth := datadog.AWSAuth{
+				AwsRegion: cloudProviderRegion,
+			}
+			auth = context.WithValue(
+				auth,
+				datadog.ContextDelegatedToken,
+				&datadog.DelegatedTokenConfig{
+					OrgUUID:      orgUUID,
+					ProviderAuth: &awsAuth,
+					Provider:     "aws",
+				},
+			)
+			auth = context.WithValue(
+				auth,
+				datadog.ContextAWSVariables,
+				map[string]string{
+					datadog.AWSAccessKeyIdName:     awsAccessKeyId,
+					datadog.AWSSecretAccessKeyName: awsSecretAccessKey,
+					datadog.AWSSessionTokenName:    awsSessionToken,
+				},
+			)
+		default:
+			diags.AddError("cloud_provider_type must be set to a valid value unless validate = false", "")
+			return diags
+		}
+	}
 	ddClientConfig := datadog.NewConfiguration()
 	ddClientConfig.UserAgent = utils.GetUserAgentFramework(ddClientConfig.UserAgent, request.TerraformVersion)
 	ddClientConfig.Debug = logging.IsDebugOrHigher()
@@ -517,16 +600,30 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	/*  Commented out due to duplicate validation in SDK provider - remove after Framework migration is complete.
 	if validate {
 		log.Println("[INFO] Datadog client successfully initialized, now validating...")
-		resp, _, err := p.DatadogApiInstances.GetAuthenticationApiV1().Validate(auth)
-		if err != nil {
-			diags.AddError("[ERROR] Datadog Client validation error", err.Error())
-			return diags
-		}
-		valid, ok := resp.GetValidOk()
-		if (ok && !*valid) || !ok {
-			err := errors.New(`Invalid or missing credentials provided to the Datadog Provider. Please confirm your API and APP keys are valid and are for the correct region, see https://www.terraform.io/docs/providers/datadog/ for more information on providing credentials for the Datadog Provider`)
-			diags.AddError("[ERROR] Datadog Client validation error", err.Error())
-			return diags
+		if cloudProviderType != "" { // Validate the cloud auth credentials
+			delegatedConfig, err := datadogClient.GetDelegatedToken(auth)
+			if err != nil {
+				diags.AddError("[ERROR] Datadog Client validation error: %v", err.Error())
+				return diags
+			}
+			if delegatedConfig.DelegatedToken == "" {
+				msg := fmt.Sprintf(`Invalid or missing credentials provided to the Datadog Provider. Please confirm your OrgUUID is correct and your cloud auth credentials for "%s" are valid and are for the correct region, see https://www.terraform.io/docs/providers/datadog/ for more information on providing credentials for the Datadog Provider`, cloudProviderType)
+				err := errors.New(msg)
+				diags.AddError("[ERROR] Datadog Client validation error: %v", err.Error())
+				return diags
+			}
+		} else { // Validate the API and APP keys
+			resp, _, err := p.DatadogApiInstances.GetAuthenticationApiV1().Validate(auth)
+			if err != nil {
+				diags.AddError("[ERROR] Datadog Client validation error", err.Error())
+				return diags
+			}
+			valid, ok := resp.GetValidOk()
+			if (ok && !*valid) || !ok {
+				err := errors.New(`Invalid or missing credentials provided to the Datadog Provider. Please confirm your API and APP keys are valid and are for the correct region, see https://www.terraform.io/docs/providers/datadog/ for more information on providing credentials for the Datadog Provider`)
+				diags.AddError("[ERROR] Datadog Client validation error", err.Error())
+				return diags
+			}
 		}
 	} else {
 		log.Println("[INFO] Skipping key validation (validate = false)")
