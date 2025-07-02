@@ -47,6 +47,8 @@ resource "datadog_user_role" "new_user_with_monitor_writer_role" {
 
 Import is supported using the following syntax:
 
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
+
 ```shell
 # This resource is imported using user_id and role_id seperated by `:`.
 

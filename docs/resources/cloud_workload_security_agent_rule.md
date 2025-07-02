@@ -42,6 +42,8 @@ resource "datadog_cloud_workload_security_agent_rule" "my_agent_rule" {
 
 Import is supported using the following syntax:
 
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
+
 ```shell
 # Cloud Workload Security Agent rules can be imported using ID, e.g.
 terraform import datadog_cloud_workload_security_agent_rule.my_agent_rule m0o-hto-lkb

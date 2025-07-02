@@ -43,6 +43,8 @@ resource "datadog_service_account_application_key" "foo" {
 
 Import is supported using the following syntax:
 
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
+
 ```shell
 # Importing a service account's application key cannot import the value of the key.
 terraform import datadog_service_account_application_key.this "<service_account_id>:<application_key_id>"

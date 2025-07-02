@@ -50,6 +50,8 @@ Optional:
 
 Import is supported using the following syntax:
 
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
+
 ```shell
 # Synthetics private locations can be imported using their string ID, e.g.
 terraform import datadog_synthetics_private_location.bar pl:private-location-name-abcdef123456

@@ -48,6 +48,7 @@ resource "datadog_logs_custom_destination" "sample_destination" {
 				are forwarded.
 				`BLOCK_LIST` works the opposite way. It does not forward the tags matching the ones on the list. Valid values are `ALLOW_LIST`, `BLOCK_LIST`.
 - `http_destination` (Block List) The HTTP destination. (see [below for nested schema](#nestedblock--http_destination))
+- `microsoft_sentinel_destination` (Block List) The Microsoft Sentinel destination. (see [below for nested schema](#nestedblock--microsoft_sentinel_destination))
 - `query` (String) The custom destination query filter. Logs matching this query are forwarded to the destination.
 - `splunk_destination` (Block List) The Splunk HTTP Event Collector (HEC) destination. (see [below for nested schema](#nestedblock--splunk_destination))
 
@@ -117,6 +118,18 @@ Required:
 
 
 
+<a id="nestedblock--microsoft_sentinel_destination"></a>
+### Nested Schema for `microsoft_sentinel_destination`
+
+Required:
+
+- `client_id` (String) Client ID from the Datadog Azure Integration.
+- `data_collection_endpoint` (String) Azure Data Collection Endpoint.
+- `data_collection_rule_id` (String) Azure Data Collection Rule ID.
+- `stream_name` (String) Azure stream name.
+- `tenant_id` (String) Tenant ID from the Datadog Azure Integration.
+
+
 <a id="nestedblock--splunk_destination"></a>
 ### Nested Schema for `splunk_destination`
 
@@ -128,6 +141,8 @@ Required:
 ## Import
 
 Import is supported using the following syntax:
+
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
 
 ```shell
 # Custom destinations can be imported using the destination ID. Caution: auth credentials can not be imported.
