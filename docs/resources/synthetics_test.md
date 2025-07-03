@@ -1157,7 +1157,7 @@ Optional:
 
 Optional:
 
-- `type` (String) Type of pattern to use for the step.
+- `type` (String) Type of pattern to use for the step. Valid values are `regex`, `x_path`.
 - `value` (String) Pattern to use for the step.
 
 
