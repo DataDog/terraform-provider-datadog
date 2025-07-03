@@ -1083,7 +1083,7 @@ Required:
 
 - `name` (String) Name of the step.
 - `params` (Block List, Min: 1, Max: 1) Parameters for the step. (see [below for nested schema](#nestedblock--browser_step--params))
-- `type` (String) Type of the step. Valid values are `assertCurrentUrl`, `assertElementAttribute`, `assertElementContent`, `assertElementPresent`, `assertEmail`, `assertFileDownload`, `assertFromJavascript`, `assertPageContains`, `assertPageLacks`, `assertRequests`, `click`, `extractFromJavascript`, `extractVariable`, `goToEmailLink`, `goToUrl`, `goToUrlAndMeasureTti`, `hover`, `playSubTest`, `pressKey`, `refresh`, `runApiTest`, `scroll`, `selectOption`, `typeText`, `uploadFiles`, `wait`.
+- `type` (String) Type of the step. Valid values are `assertCurrentUrl`, `assertElementAttribute`, `assertElementContent`, `assertElementPresent`, `assertEmail`, `assertFileDownload`, `assertFromJavascript`, `assertPageContains`, `assertPageLacks`, `assertRequests`, `click`, `extractFromJavascript`, `extractFromEmailBody`, `extractVariable`, `goToEmailLink`, `goToUrl`, `goToUrlAndMeasureTti`, `hover`, `playSubTest`, `pressKey`, `refresh`, `runApiTest`, `scroll`, `selectOption`, `typeText`, `uploadFiles`, `wait`.
 
 Optional:
 
@@ -1117,6 +1117,7 @@ Optional:
 - `file` (String) JSON encoded string used for an "assert download" step. Refer to the examples for a usage example showing the schema.
 - `files` (String) Details of the files for an "upload files" step, JSON encoded string. Refer to the examples for a usage example showing the schema.
 - `modifiers` (List of String) Modifier to use for a "press key" step.
+- `pattern` (Block List, Max: 1) Pattern to use for an "extractFromEmailBody" step. (see [below for nested schema](#nestedblock--browser_step--params--pattern))
 - `playing_tab_id` (String) ID of the tab to play the subtest.
 - `request` (String) Request for an API step.
 - `requests` (String) Details of the requests for an "assert request" step, JSON encoded string. Refer to the examples for a usage example showing the schema.
@@ -1149,6 +1150,15 @@ Optional:
 
 - `type` (String) Defaults to `"css"`.
 
+
+
+<a id="nestedblock--browser_step--params--pattern"></a>
+### Nested Schema for `browser_step.params.pattern`
+
+Optional:
+
+- `type` (String) Type of pattern to use for the step. Valid values are `regex`, `x_path`.
+- `value` (String) Pattern to use for the step.
 
 
 <a id="nestedblock--browser_step--params--variable"></a>

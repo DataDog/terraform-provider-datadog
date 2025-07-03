@@ -24,6 +24,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/retry"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
+
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 )
@@ -1399,6 +1400,26 @@ func syntheticsBrowserStepParams() schema.Schema {
 					Type:        schema.TypeString,
 					Optional:    true,
 				},
+				"pattern": {
+					Description: `Pattern to use for an "extractFromEmailBody" step.`,
+					Type:        schema.TypeList,
+					MaxItems:    1,
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"value": {
+								Description: "Pattern to use for the step.",
+								Type:        schema.TypeString,
+								Optional:    true,
+							},
+							"type": {
+								Description: "Type of pattern to use for the step. Valid values are `regex`, `x_path`.",
+								Type:        schema.TypeString,
+								Optional:    true,
+							},
+						},
+					},
+					Optional: true,
+				},
 				"request": {
 					Description: "Request for an API step.",
 					Type:        schema.TypeString,
@@ -2191,6 +2212,7 @@ func updateSyntheticsBrowserTestLocalState(d *schema.ResourceData, syntheticsTes
 
 	for stepIndex, step := range steps {
 		localStep := make(map[string]interface{})
+
 		localStep["name"] = step.GetName()
 		localStep["public_id"] = step.GetPublicId()
 		localStep["type"] = string(step.GetType())
@@ -4923,8 +4945,9 @@ func convertStepParamsValueForConfig(stepType interface{}, key string, value int
 
 		return value
 
-	case "variable":
+	case "pattern", "variable":
 		return value.([]interface{})[0]
+
 	}
 
 	return value
@@ -4939,7 +4962,7 @@ func convertStepParamsValueForState(key string, value interface{}) interface{} {
 	case "playing_tab_id", "value":
 		return convertToString(value)
 
-	case "variable":
+	case "pattern", "variable":
 		return []interface{}{value}
 	}
 
@@ -5212,6 +5235,9 @@ func getParamsKeysForStepType(stepType datadogV1.SyntheticsStepType) []string {
 
 	case datadogV1.SYNTHETICSSTEPTYPE_CLICK:
 		return []string{"click_type", "click_with_javascript", "element"}
+
+	case datadogV1.SYNTHETICSSTEPTYPE_EXTRACT_FROM_EMAIL_BODY:
+		return []string{"pattern", "variable"}
 
 	case datadogV1.SYNTHETICSSTEPTYPE_EXTRACT_FROM_JAVASCRIPT:
 		return []string{"code", "element", "variable"}
