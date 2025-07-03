@@ -1412,7 +1412,7 @@ func syntheticsBrowserStepParams() schema.Schema {
 								Optional:    true,
 							},
 							"type": {
-								Description: "Type of pattern to use for the step.",
+								Description: "Type of pattern to use for the step. Valid values are `regex`, `x_path`.",
 								Type:        schema.TypeString,
 								Optional:    true,
 							},
