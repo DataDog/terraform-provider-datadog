@@ -111,6 +111,24 @@ func Provider() *schema.Provider {
 				Optional:    true,
 				Description: "The organization UUID. Please refer to the [Datadog API documentation](https://docs.datadoghq.com/api/v1/organizations/) for more information.",
 			},
+			"aws_access_key_id": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Sensitive:   true,
+				Description: "The AWS access key ID. This can also be set via the AWS_ACCESS_KEY_ID environment variable. Required when using `cloud_provider_type` set to `aws`.",
+			},
+			"aws_secret_access_key": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Sensitive:   true,
+				Description: "The AWS secret access key. This can also be set via the AWS_SECRET_ACCESS_KEY environment variable. Required when using `cloud_provider_type` set to `aws`.",
+			},
+			"aws_session_token": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Sensitive:   true,
+				Description: "The AWS session token. This can also be set via the AWS_SESSION_TOKEN environment variable. Required when using `cloud_provider_type` set to `aws` and using temporary credentials.",
+			},
 			"http_client_retry_enabled": {
 				Type:         schema.TypeString,
 				Optional:     true,
@@ -369,20 +387,14 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 			},
 		)
 	} else if cloudProviderType != "" {
+		// Allows for delegated token authentication
+		auth = context.WithValue(
+			auth,
+			datadog.ContextDelegatedToken,
+			&datadog.DelegatedTokenCredentials{},
+		)
 		switch cloudProviderType {
 		case "aws":
-			awsAuth := datadog.AWSAuth{
-				AwsRegion: cloudProviderRegion,
-			}
-			auth = context.WithValue(
-				auth,
-				datadog.ContextDelegatedToken,
-				&datadog.DelegatedTokenConfig{
-					OrgUUID:      orgUUID,
-					ProviderAuth: &awsAuth,
-					Provider:     "aws",
-				},
-			)
 			auth = context.WithValue(
 				auth,
 				datadog.ContextAWSVariables,
@@ -481,6 +493,17 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 	}
 
 	config.HTTPClient = utils.NewHTTPClient()
+	switch cloudProviderType {
+	case "aws":
+		config.DelegatedTokenConfig = &datadog.DelegatedTokenConfig{
+			OrgUUID: orgUUID,
+			ProviderAuth: &datadog.AWSAuth{
+				AwsRegion: cloudProviderRegion,
+			},
+			Provider: "aws",
+		}
+	}
+
 	datadogClient := datadog.NewAPIClient(config)
 	apiInstances := &utils.ApiInstances{HttpClient: datadogClient}
 	if validate {

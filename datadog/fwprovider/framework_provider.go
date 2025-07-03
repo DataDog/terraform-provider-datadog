@@ -332,6 +332,24 @@ func (p *FrameworkProvider) ConfigureConfigDefaults(ctx context.Context, config 
 			config.OrgUuid = types.StringValue(orgUUID)
 		}
 	}
+	if config.AWSAccessKeyId.IsNull() {
+		awsAccessKeyId, err := utils.GetMultiEnvVar(utils.AWSAccessKeyId)
+		if err == nil {
+			config.AWSAccessKeyId = types.StringValue(awsAccessKeyId)
+		}
+	}
+	if config.AWSSecretAccessKey.IsNull() {
+		awsSecretAccessKey, err := utils.GetMultiEnvVar(utils.AWSSecretAccessKey)
+		if err == nil {
+			config.AWSSecretAccessKey = types.StringValue(awsSecretAccessKey)
+		}
+	}
+	if config.AWSSessionToken.IsNull() {
+		awsSessionToken, err := utils.GetMultiEnvVar(utils.AWSSessionToken)
+		if err == nil {
+			config.AWSSessionToken = types.StringValue(awsSessionToken)
+		}
+	}
 
 	if config.HttpClientRetryEnabled.IsNull() {
 		retryEnabled, err := utils.GetMultiEnvVar(utils.DDHTTPRetryEnabled)
@@ -482,20 +500,14 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 			},
 		)
 	} else if cloudProviderType != "" {
+		// Allows for delegated token authentication
+		auth = context.WithValue(
+			auth,
+			datadog.ContextDelegatedToken,
+			&datadog.DelegatedTokenCredentials{},
+		)
 		switch cloudProviderType {
 		case "aws":
-			awsAuth := datadog.AWSAuth{
-				AwsRegion: cloudProviderRegion,
-			}
-			auth = context.WithValue(
-				auth,
-				datadog.ContextDelegatedToken,
-				&datadog.DelegatedTokenConfig{
-					OrgUUID:      orgUUID,
-					ProviderAuth: &awsAuth,
-					Provider:     "aws",
-				},
-			)
 			auth = context.WithValue(
 				auth,
 				datadog.ContextAWSVariables,
@@ -592,6 +604,16 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	}
 
 	ddClientConfig.HTTPClient = utils.NewHTTPClient()
+	switch cloudProviderType {
+	case "aws":
+		ddClientConfig.DelegatedTokenConfig = &datadog.DelegatedTokenConfig{
+			OrgUUID: orgUUID,
+			ProviderAuth: &datadog.AWSAuth{
+				AwsRegion: cloudProviderRegion,
+			},
+			Provider: "aws",
+		}
+	}
 	datadogClient := datadog.NewAPIClient(ddClientConfig)
 
 	p.DatadogApiInstances = &utils.ApiInstances{HttpClient: datadogClient}
