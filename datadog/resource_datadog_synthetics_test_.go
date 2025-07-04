@@ -1279,6 +1279,11 @@ func syntheticsBrowserStepParams() schema.Schema {
 		Required:    true,
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
+				"append_to_content": {
+					Description: `Select this option to append value to existing text input content. By default, content is cleared before text input.`,
+					Type:        schema.TypeBool,
+					Optional:    true,
+				},
 				"attribute": {
 					Description: `Name of the attribute to use for an "assert attribute" step.`,
 					Type:        schema.TypeString,
@@ -4971,6 +4976,12 @@ func convertStepParamsValueForState(key string, value interface{}) interface{} {
 
 func convertStepParamsKey(key string) string {
 	switch key {
+	case "appendToContent":
+		return "append_to_content"
+
+	case "append_to_content":
+		return "appendToContent"
+
 	case "click_type":
 		return "clickType"
 
@@ -5273,7 +5284,7 @@ func getParamsKeysForStepType(stepType datadogV1.SyntheticsStepType) []string {
 		return []string{"element", "value"}
 
 	case datadogV1.SYNTHETICSSTEPTYPE_TYPE_TEXT:
-		return []string{"delay", "element", "value"}
+		return []string{"append_to_content", "delay", "element", "value"}
 
 	case datadogV1.SYNTHETICSSTEPTYPE_UPLOAD_FILES:
 		return []string{"element", "files", "with_click"}
