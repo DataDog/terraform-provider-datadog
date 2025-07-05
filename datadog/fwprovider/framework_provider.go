@@ -102,6 +102,7 @@ var Datasources = []func() datasource.DataSource{
 	NewDatadogApmRetentionFiltersOrderDataSource,
 	NewDatadogDashboardListDataSource,
 	NewDatadogIntegrationAWSNamespaceRulesDatasource,
+	NewDatadogMetricMetadataDataSource,
 	NewDatadogMetricTagsDataSource,
 	NewDatadogPowerpackDataSource,
 	NewDatadogServiceAccountDatasource,
