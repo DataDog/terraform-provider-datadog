@@ -1,7 +1,7 @@
 module github.com/terraform-providers/terraform-provider-datadog
 
 require (
-	github.com/DataDog/datadog-api-client-go/v2 v2.38.1-0.20250604101231-6fdfe721a9f5
+	github.com/DataDog/datadog-api-client-go/v2 v2.42.1-0.20250702122721-ef0a8858c939
 	github.com/DataDog/dd-sdk-go-testing v0.0.0-20211116174033-1cd082e322ad
 	github.com/Masterminds/semver/v3 v3.3.1
 	github.com/google/go-cmp v0.7.0
@@ -39,7 +39,7 @@ require (
 	github.com/armon/go-radix v1.0.0 // indirect
 	github.com/bgentry/speakeasy v0.1.0 // indirect
 	github.com/cenkalti/backoff v2.2.1+incompatible // indirect
-	github.com/cloudflare/circl v1.6.0 // indirect
+	github.com/cloudflare/circl v1.6.1 // indirect
 	github.com/fatih/color v1.18.0 // indirect
 	github.com/goccy/go-json v0.10.5 // indirect
 	github.com/golang/protobuf v1.5.4 // indirect
@@ -103,5 +103,10 @@ require (
 )
 
 go 1.23.0
+<<<<<<< HEAD
 
 replace github.com/DataDog/datadog-api-client-go/v2 => ../datadog-api-client-go
+||||||| 81f01c45
+go 1.23.0
+=======
+>>>>>>> master

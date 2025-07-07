@@ -40,6 +40,8 @@ resource "datadog_integration_pagerduty_service_object" "testing_bar" {
 
 Import is supported using the following syntax:
 
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
+
 ```shell
 # Pagerduty service object can be imported using the service_name, while the service_key should be passed by setting the environment variable SERVICE_KEY
 SERVICE_KEY=${service_key} terraform import datadog_integration_pagerduty_service_object.foo ${service_name}

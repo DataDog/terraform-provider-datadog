@@ -194,6 +194,10 @@ resource "datadog_sensitive_data_scanner_group" "sample_group" {
 	filter {
 		query = "*"
 	}
+	samplings {
+		product = "logs"
+		rate    = 100
+	}
 }
 
 resource "datadog_sensitive_data_scanner_rule" "sample_rule" {
@@ -216,6 +220,10 @@ resource "datadog_sensitive_data_scanner_group" "sample_group" {
 	product_list = ["logs"]
 	filter {
 		query = "*"
+	}
+	samplings {
+		product = "logs"
+		rate    = 100
 	}
 }
 
@@ -249,6 +257,10 @@ resource "datadog_sensitive_data_scanner_group" "sample_group" {
 	product_list = ["logs"]
 	filter {
 		query = "*"
+	}
+	samplings {
+		product = "logs"
+		rate    = 100
 	}
 }
 
@@ -292,6 +304,10 @@ resource "datadog_sensitive_data_scanner_group" "sample_group" {
 	filter {
 		query = "*"
 	}
+	samplings {
+		product = "logs"
+		rate    = 100
+	}
 }
 
 resource "datadog_sensitive_data_scanner_group" "new_group" {
@@ -323,6 +339,10 @@ resource "datadog_sensitive_data_scanner_group" "sample_group" {
 	product_list = ["logs"]
 	filter {
 		query = "*"
+	}
+	samplings {
+		product = "logs"
+		rate    = 100
 	}
 }
 

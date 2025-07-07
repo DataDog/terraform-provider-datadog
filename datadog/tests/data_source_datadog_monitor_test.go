@@ -101,7 +101,7 @@ func checkRestrictedRolesAttr(accProvider func() (*schema.Provider, error), uniq
 	return resource.ComposeTestCheckFunc(
 		testAccCheckDatadogMonitorExists(accProvider),
 		resource.TestCheckResourceAttr(
-			"datadog_monitor.foo", "restricted_roles.#", "1"),
+			"data.datadog_monitor.foo", "restricted_roles.#", "1"),
 	)
 }
 
@@ -138,6 +138,7 @@ resource "datadog_monitor" "foo" {
   include_tags = true
   require_full_window = true
   tags = ["test_datasource_monitor:%s", "baz"]
+  restricted_roles = []
 }`, uniq, uniq, uniq)
 }
 

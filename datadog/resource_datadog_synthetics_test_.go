@@ -12,13 +12,11 @@ import (
 	"io"
 	"io/ioutil"
 	"log"
+	"maps"
 	_nethttp "net/http"
 	"regexp"
 	"strconv"
 	"strings"
-
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
 	"github.com/hashicorp/go-cty/cty"
@@ -26,6 +24,9 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/retry"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
+
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 )
 
 /*
@@ -186,6 +187,11 @@ func syntheticsTestRequest() *schema.Resource {
 				Optional:         true,
 				ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsTestRequestBodyTypeFromValue),
 			},
+			"form": {
+				Description: "Form data to be sent when `body_type` is `multipart/form-data`.",
+				Type:        schema.TypeMap,
+				Optional:    true,
+			},
 			"timeout": {
 				Description: "Timeout in seconds for the test.",
 				Type:        schema.TypeInt,
@@ -276,6 +282,12 @@ func syntheticsTestRequest() *schema.Resource {
 				Description: "HTTP version to use for an HTTP request in an API test or step.",
 				Deprecated:  "Use `http_version` in the `options_list` field instead.",
 				Type:        schema.TypeString,
+				Optional:    true,
+			},
+
+			"is_message_base64_encoded": {
+				Description: "Whether the message is base64-encoded.",
+				Type:        schema.TypeBool,
 				Optional:    true,
 			},
 		},
@@ -451,7 +463,7 @@ func syntheticsTestRequestClientCertificateItem() *schema.Schema {
 				"content": {
 					Description: "Content of the certificate.",
 					Type:        schema.TypeString,
-					Required:    true,
+					Optional:    true,
 					Sensitive:   true,
 					StateFunc: func(val interface{}) string {
 						return utils.ConvertToSha256(val.(string))
@@ -484,13 +496,13 @@ func syntheticsAPIAssertion() *schema.Schema {
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
 				"type": {
-					Description:      "Type of assertion. **Note** Only some combinations of `type` and `operator` are valid (please refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test)).",
+					Description:      "Type of assertion. **Note:** Only some combinations of `type` and `operator` are valid. Refer to `config.assertions` in the [Datadog API reference](https://docs.datadoghq.com/api/latest/synthetics/#create-an-api-test).",
 					Type:             schema.TypeString,
 					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsAssertionTypeFromValue, datadogV1.NewSyntheticsAssertionBodyHashTypeFromValue, datadogV1.NewSyntheticsAssertionJavascriptTypeFromValue),
 					Required:         true,
 				},
 				"operator": {
-					Description:  "Assertion operator. **Note** Only some combinations of `type` and `operator` are valid (please refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test)).",
+					Description:  "Assertion operator. **Note:** Only some combinations of `type` and `operator` are valid. Refer to `config.assertions` in the [Datadog API reference](https://docs.datadoghq.com/api/latest/synthetics/#create-an-api-test).",
 					Type:         schema.TypeString,
 					Optional:     true,
 					ValidateFunc: validateSyntheticsAssertionOperator,
@@ -501,7 +513,7 @@ func syntheticsAPIAssertion() *schema.Schema {
 					Optional:    true,
 				},
 				"target": {
-					Description: "Expected value. Depends on the assertion type, refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test) for details.",
+					Description: "Expected value. **Note:** Depends on the assertion type. Refer to `config.assertions` in the [Datadog API reference](https://docs.datadoghq.com/api/latest/synthetics/#create-an-api-test).",
 					Type:        schema.TypeString,
 					Optional:    true,
 				},
@@ -622,6 +634,22 @@ func syntheticsTestOptionsRetry() *schema.Schema {
 	}
 }
 
+func syntheticsTestCheckCertificateRevocation() *schema.Schema {
+	return &schema.Schema{
+		Description: "For SSL test, whether or not the test should fail on revoked certificate in stapled OCSP.",
+		Type:        schema.TypeBool,
+		Optional:    true,
+	}
+}
+
+func syntheticsTestAcceptSelfSigned() *schema.Schema {
+	return &schema.Schema{
+		Description: "For SSL test, whether or not the test should allow self signed certificates.",
+		Type:        schema.TypeBool,
+		Optional:    true,
+	}
+}
+
 func syntheticsTestAdvancedSchedulingTimeframes() *schema.Schema {
 	return &schema.Schema{
 		Description: "Array containing objects describing the scheduling pattern to apply to each day.",
@@ -684,12 +712,8 @@ func syntheticsTestOptionsList() *schema.Schema {
 					Required:     true,
 					ValidateFunc: validation.IntBetween(30, 604800),
 				},
-				"scheduling": syntheticsTestAdvancedScheduling(),
-				"accept_self_signed": {
-					Description: "For SSL test, whether or not the test should allow self signed certificates.",
-					Type:        schema.TypeBool,
-					Optional:    true,
-				},
+				"scheduling":         syntheticsTestAdvancedScheduling(),
+				"accept_self_signed": syntheticsTestAcceptSelfSigned(),
 				"min_location_failed": {
 					Description: "Minimum number of locations in failure required to trigger an alert.",
 					Type:        schema.TypeInt,
@@ -755,11 +779,7 @@ func syntheticsTestOptionsList() *schema.Schema {
 					Type:        schema.TypeBool,
 					Optional:    true,
 				},
-				"check_certificate_revocation": {
-					Description: "For SSL test, whether or not the test should fail on revoked certificate in stapled OCSP.",
-					Type:        schema.TypeBool,
-					Optional:    true,
-				},
+				"check_certificate_revocation": syntheticsTestCheckCertificateRevocation(),
 				"ci": {
 					Description: "CI/CD options for a Synthetic test.",
 					Type:        schema.TypeList,
@@ -1013,6 +1033,8 @@ func syntheticsTestAPIStep() *schema.Schema {
 	// In test `options_list` for single API tests, but in `api_step.request_definition` for API steps.
 	requestElemSchema.Schema["allow_insecure"] = syntheticsAllowInsecureOption()
 	requestElemSchema.Schema["follow_redirects"] = syntheticsFollowRedirectsOption()
+	requestElemSchema.Schema["accept_self_signed"] = syntheticsTestAcceptSelfSigned()
+	requestElemSchema.Schema["check_certificate_revocation"] = syntheticsTestCheckCertificateRevocation()
 	requestElemSchema.Schema["http_version"] = syntheticsHttpVersionOption()
 
 	return &schema.Schema{
@@ -1290,7 +1312,7 @@ func syntheticsBrowserStepParams() schema.Schema {
 					Optional:    true,
 				},
 				"element": {
-					Description: "Element to use for the step, JSON encoded string.",
+					Description: "Element to use for the step, JSON encoded string. Refer to the examples for a usage example showing the schema.",
 					Type:        schema.TypeString,
 					Optional:    true,
 					DiffSuppressFunc: func(key, old, new string, d *schema.ResourceData) bool {
@@ -1377,6 +1399,26 @@ func syntheticsBrowserStepParams() schema.Schema {
 					Description: "ID of the tab to play the subtest.",
 					Type:        schema.TypeString,
 					Optional:    true,
+				},
+				"pattern": {
+					Description: `Pattern to use for an "extractFromEmailBody" step.`,
+					Type:        schema.TypeList,
+					MaxItems:    1,
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"value": {
+								Description: "Pattern to use for the step.",
+								Type:        schema.TypeString,
+								Optional:    true,
+							},
+							"type": {
+								Description: "Type of pattern to use for the step. Valid values are `regex`, `x_path`.",
+								Type:        schema.TypeString,
+								Optional:    true,
+							},
+						},
+					},
+					Optional: true,
 				},
 				"request": {
 					Description: "Request for an API step.",
@@ -2170,6 +2212,7 @@ func updateSyntheticsBrowserTestLocalState(d *schema.ResourceData, syntheticsTes
 
 	for stepIndex, step := range steps {
 		localStep := make(map[string]interface{})
+
 		localStep["name"] = step.GetName()
 		localStep["public_id"] = step.GetPublicId()
 		localStep["type"] = string(step.GetType())
@@ -2389,7 +2432,13 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 				}
 				localRequest["allow_insecure"] = stepRequest.GetAllowInsecure()
 				localRequest["follow_redirects"] = stepRequest.GetFollowRedirects()
-				if step.SyntheticsAPITestStep.GetSubtype() == "grpc" {
+				if step.SyntheticsAPITestStep.GetSubtype() == "grpc" ||
+					step.SyntheticsAPITestStep.GetSubtype() == "ssl" ||
+					step.SyntheticsAPITestStep.GetSubtype() == "dns" ||
+					step.SyntheticsAPITestStep.GetSubtype() == "websocket" ||
+					step.SyntheticsAPITestStep.GetSubtype() == "tcp" ||
+					step.SyntheticsAPITestStep.GetSubtype() == "udp" ||
+					step.SyntheticsAPITestStep.GetSubtype() == "icmp" {
 					// the schema defines a default value of `http_version` for any kind of step,
 					// but it's not supported for `grpc` - so we save `any` in the local state to avoid diffs
 					localRequest["http_version"] = datadogV1.SYNTHETICSTESTOPTIONSHTTPVERSION_ANY
@@ -2604,6 +2653,15 @@ func buildDatadogSyntheticsAPITest(d *schema.ResourceData) *datadogV1.Synthetics
 	if attr, ok := d.GetOk("request_definition.0.body_type"); ok {
 		request.SetBodyType(datadogV1.SyntheticsTestRequestBodyType(attr.(string)))
 	}
+	if attr, ok := d.GetOk("request_definition.0.form"); ok {
+		form := attr.(map[string]interface{})
+		if len(form) > 0 {
+			request.SetForm(make(map[string]string))
+		}
+		for k, v := range form {
+			request.GetForm()[k] = v.(string)
+		}
+	}
 	if attr, ok := d.GetOk("request_file"); ok && attr != nil && len(attr.([]interface{})) > 0 {
 		request.SetFiles(buildDatadogBodyFiles(attr.([]interface{})))
 	}
@@ -2623,7 +2681,16 @@ func buildDatadogSyntheticsAPITest(d *schema.ResourceData) *datadogV1.Synthetics
 		request.SetDnsServer(attr.(string))
 	}
 	if attr, ok := d.GetOk("request_definition.0.dns_server_port"); ok {
-		request.SetDnsServerPort(attr.(string))
+		if val, ok := attr.(string); ok {
+			request.SetDnsServerPort(datadogV1.SyntheticsTestRequestDNSServerPort{
+				SyntheticsTestRequestVariableDNSServerPort: &val,
+			})
+		}
+		if val, ok := attr.(int64); ok {
+			request.SetDnsServerPort(datadogV1.SyntheticsTestRequestDNSServerPort{
+				SyntheticsTestRequestNumericalDNSServerPort: &val,
+			})
+		}
 	}
 	if attr, ok := d.GetOk("request_definition.0.no_saving_response_body"); ok {
 		request.SetNoSavingResponseBody(attr.(bool))
@@ -2699,7 +2766,7 @@ func buildDatadogSyntheticsAPITest(d *schema.ResourceData) *datadogV1.Synthetics
 
 			stepSubtype := stepMap["subtype"].(string)
 
-			if stepSubtype == "" || stepSubtype == "http" || stepSubtype == "grpc" {
+			if stepSubtype == "" || isApiSubtype(datadogV1.SyntheticsAPITestStepSubtype(stepSubtype)) {
 				step.SyntheticsAPITestStep = datadogV1.NewSyntheticsAPITestStepWithDefaults()
 				step.SyntheticsAPITestStep.SetName(stepMap["name"].(string))
 				step.SyntheticsAPITestStep.SetSubtype(datadogV1.SyntheticsAPITestStepSubtype(stepMap["subtype"].(string)))
@@ -2714,12 +2781,12 @@ func buildDatadogSyntheticsAPITest(d *schema.ResourceData) *datadogV1.Synthetics
 				requests := stepMap["request_definition"].([]interface{})
 				if len(requests) > 0 && requests[0] != nil {
 					requestMap := requests[0].(map[string]interface{})
-					method := requestMap["method"].(string)
-					request.SetMethod(method)
 					request.SetTimeout(float64(requestMap["timeout"].(int)))
 					request.SetAllowInsecure(requestMap["allow_insecure"].(bool))
 					if step.SyntheticsAPITestStep.GetSubtype() == "grpc" {
 						request.SetHost(requestMap["host"].(string))
+						method := requestMap["method"].(string)
+						request.SetMethod(method)
 						port := requestMap["port"].(string)
 						request.SetPort(datadogV1.SyntheticsTestRequestPort{
 							SyntheticsTestRequestVariablePort: &port,
@@ -2734,6 +2801,8 @@ func buildDatadogSyntheticsAPITest(d *schema.ResourceData) *datadogV1.Synthetics
 						}
 					} else if step.SyntheticsAPITestStep.GetSubtype() == "http" {
 						request.SetUrl(requestMap["url"].(string))
+						method := requestMap["method"].(string)
+						request.SetMethod(method)
 						httpVersion, httpVersionOk := requestMap["http_version"].(string)
 						if httpVersionOk && httpVersion != "" {
 							request.SetHttpVersion(datadogV1.SyntheticsTestOptionsHTTPVersion(httpVersion))
@@ -2753,9 +2822,87 @@ func buildDatadogSyntheticsAPITest(d *schema.ResourceData) *datadogV1.Synthetics
 						if v, ok := requestMap["body_type"].(string); ok && v != "" {
 							request.SetBodyType(datadogV1.SyntheticsTestRequestBodyType(v))
 						}
+						if attr, ok := requestMap["form"]; ok {
+							form := attr.(map[string]interface{})
+							if len(form) > 0 {
+								request.SetForm(make(map[string]string))
+							}
+							for k, v := range form {
+								request.GetForm()[k] = v.(string)
+							}
+						}
 
 						if attr, ok := stepMap["request_file"]; ok && attr != nil && len(attr.([]interface{})) > 0 {
 							request.SetFiles(buildDatadogBodyFiles(attr.([]interface{})))
+						}
+					} else if step.SyntheticsAPITestStep.GetSubtype() == "ssl" {
+						request.SetHost(requestMap["host"].(string))
+						port := requestMap["port"].(string)
+						request.SetPort(datadogV1.SyntheticsTestRequestPort{
+							SyntheticsTestRequestVariablePort: &port,
+						})
+						if v, ok := requestMap["servername"].(string); ok && v != "" {
+							request.SetServername(v)
+						}
+						if v, ok := requestMap["accept_self_signed"].(bool); ok {
+							request.SetAllowInsecure(v)
+						}
+						// here
+						if v, ok := requestMap["check_certificate_revocation"].(bool); ok {
+							request.SetCheckCertificateRevocation(v)
+						}
+					} else if step.SyntheticsAPITestStep.GetSubtype() == "tcp" {
+						request.SetHost(requestMap["host"].(string))
+						port := requestMap["port"].(string)
+						request.SetPort(datadogV1.SyntheticsTestRequestPort{
+							SyntheticsTestRequestVariablePort: &port,
+						})
+						if v, ok := requestMap["should_track_hops"].(bool); ok {
+							request.SetShouldTrackHops(v)
+						}
+					} else if step.SyntheticsAPITestStep.GetSubtype() == "websocket" {
+						request.SetUrl(requestMap["url"].(string))
+						if v, ok := requestMap["message"].(string); ok && v != "" {
+							request.SetMessage(v)
+						}
+						// here
+						if v, ok := requestMap["is_message_base64_encoded"].(bool); ok {
+							request.SetIsMessageBase64Encoded(v)
+						}
+					} else if step.SyntheticsAPITestStep.GetSubtype() == "dns" {
+						request.SetHost(requestMap["host"].(string))
+						if v, ok := requestMap["dns_server"].(string); ok && v != "" {
+							request.SetDnsServer(v)
+						}
+						if v, ok := requestMap["dns_server_port"]; ok {
+							if val, ok := v.(string); ok {
+								request.SetDnsServerPort(datadogV1.SyntheticsTestRequestDNSServerPort{
+									SyntheticsTestRequestVariableDNSServerPort: &val,
+								})
+							}
+							if val, ok := v.(int64); ok {
+								request.SetDnsServerPort(datadogV1.SyntheticsTestRequestDNSServerPort{
+									SyntheticsTestRequestNumericalDNSServerPort: &val,
+								})
+							}
+						}
+					} else if step.SyntheticsAPITestStep.GetSubtype() == "udp" {
+						request.SetHost(requestMap["host"].(string))
+						if v, ok := requestMap["port"].(string); ok && v != "" {
+							request.SetPort(datadogV1.SyntheticsTestRequestPort{
+								SyntheticsTestRequestVariablePort: &v,
+							})
+						}
+						if v, ok := requestMap["message"].(string); ok && v != "" {
+							request.SetMessage(v)
+						}
+					} else if step.SyntheticsAPITestStep.GetSubtype() == "icmp" {
+						request.SetHost(requestMap["host"].(string))
+						if v, ok := requestMap["number_of_packets"].(int); ok {
+							request.SetNumberOfPackets(int32(v))
+						}
+						if v, ok := requestMap["should_track_hops"].(bool); ok {
+							request.SetShouldTrackHops(v)
 						}
 					}
 				}
@@ -2840,12 +2987,15 @@ func buildDatadogSyntheticsBrowserTest(d *schema.ResourceData) *datadogV1.Synthe
 	if attr, ok := d.GetOk("request_definition.0.url"); ok {
 		request.SetUrl(attr.(string))
 	}
+
+	// XXX: `body` and `body_type` are accepted by the backend, but ignored by the browser test runner
 	if attr, ok := d.GetOk("request_definition.0.body"); ok {
 		request.SetBody(attr.(string))
 	}
 	if attr, ok := d.GetOk("request_definition.0.body_type"); ok {
 		request.SetBodyType(datadogV1.SyntheticsTestRequestBodyType(attr.(string)))
 	}
+
 	if attr, ok := d.GetOk("request_definition.0.timeout"); ok {
 		request.SetTimeout(float64(attr.(int)))
 	}
@@ -3486,8 +3636,12 @@ func buildTerraformBasicAuth(basicAuth *datadogV1.SyntheticsBasicAuth) map[strin
 	if basicAuth.SyntheticsBasicAuthWeb != nil {
 		basicAuthWeb := basicAuth.SyntheticsBasicAuthWeb
 
-		localAuth["username"] = basicAuthWeb.Username
-		localAuth["password"] = basicAuthWeb.Password
+		if v, ok := basicAuthWeb.GetUsernameOk(); ok {
+			localAuth["username"] = *v
+		}
+		if v, ok := basicAuthWeb.GetPasswordOk(); ok {
+			localAuth["password"] = *v
+		}
 		localAuth["type"] = "web"
 	}
 
@@ -3801,10 +3955,14 @@ func buildTerraformRequestCertificates(clientCertificate datadogV1.SyntheticsTes
 	// we store a hash of the value.
 	if len(oldClientCertificates) > 0 {
 		if configCertificateContent, ok := oldClientCertificates[0].(map[string]interface{})["cert"].([]interface{})[0].(map[string]interface{})["content"].(string); ok {
-			localCertificate["cert"][0]["content"] = getCertificateStateValue(configCertificateContent)
+			if configCertificateContent != "" {
+				localCertificate["cert"][0]["content"] = getCertificateStateValue(configCertificateContent)
+			}
 		}
 		if configKeyContent, ok := oldClientCertificates[0].(map[string]interface{})["key"].([]interface{})[0].(map[string]interface{})["content"].(string); ok {
-			localCertificate["key"][0]["content"] = getCertificateStateValue(configKeyContent)
+			if configKeyContent != "" {
+				localCertificate["key"][0]["content"] = getCertificateStateValue(configKeyContent)
+			}
 		}
 	}
 
@@ -4618,6 +4776,11 @@ func buildTerraformTestRequest(request datadogV1.SyntheticsTestRequest) (map[str
 	if request.HasBodyType() {
 		localRequest["body_type"] = request.GetBodyType()
 	}
+	if request.HasForm() {
+		localForm := make(map[string]string)
+		maps.Copy(localForm, request.GetForm())
+		localRequest["form"] = localForm
+	}
 	if request.HasMethod() {
 		localRequest["method"] = convertToString(request.GetMethod())
 	}
@@ -4642,7 +4805,12 @@ func buildTerraformTestRequest(request datadogV1.SyntheticsTestRequest) (map[str
 		localRequest["dns_server"] = convertToString(request.GetDnsServer())
 	}
 	if request.HasDnsServerPort() {
-		localRequest["dns_server_port"] = request.GetDnsServerPort()
+		port := request.GetDnsServerPort()
+		if port.SyntheticsTestRequestNumericalDNSServerPort != nil {
+			localRequest["dns_server_port"] = strconv.FormatInt(*port.SyntheticsTestRequestNumericalDNSServerPort, 10)
+		} else if port.SyntheticsTestRequestVariableDNSServerPort != nil {
+			localRequest["dns_server_port"] = *port.SyntheticsTestRequestVariableDNSServerPort
+		}
 	}
 	if request.HasNoSavingResponseBody() {
 		localRequest["no_saving_response_body"] = request.GetNoSavingResponseBody()
@@ -4673,6 +4841,12 @@ func buildTerraformTestRequest(request datadogV1.SyntheticsTestRequest) (map[str
 	}
 	if request.HasHttpVersion() {
 		localRequest["http_version"] = request.GetHttpVersion()
+	}
+	if request.HasCheckCertificateRevocation() {
+		localRequest["check_certificate_revocation"] = request.GetCheckCertificateRevocation()
+	}
+	if request.HasIsMessageBase64Encoded() {
+		localRequest["is_message_base64_encoded"] = request.GetIsMessageBase64Encoded()
 	}
 	var err error
 	if request.HasCompressedJsonDescriptor() {
@@ -4771,8 +4945,9 @@ func convertStepParamsValueForConfig(stepType interface{}, key string, value int
 
 		return value
 
-	case "variable":
+	case "pattern", "variable":
 		return value.([]interface{})[0]
+
 	}
 
 	return value
@@ -4787,7 +4962,7 @@ func convertStepParamsValueForState(key string, value interface{}) interface{} {
 	case "playing_tab_id", "value":
 		return convertToString(value)
 
-	case "variable":
+	case "pattern", "variable":
 		return []interface{}{value}
 	}
 
@@ -5061,6 +5236,9 @@ func getParamsKeysForStepType(stepType datadogV1.SyntheticsStepType) []string {
 	case datadogV1.SYNTHETICSSTEPTYPE_CLICK:
 		return []string{"click_type", "click_with_javascript", "element"}
 
+	case datadogV1.SYNTHETICSSTEPTYPE_EXTRACT_FROM_EMAIL_BODY:
+		return []string{"pattern", "variable"}
+
 	case datadogV1.SYNTHETICSSTEPTYPE_EXTRACT_FROM_JAVASCRIPT:
 		return []string{"code", "element", "variable"}
 
@@ -5101,63 +5279,6 @@ func getParamsKeysForStepType(stepType datadogV1.SyntheticsStepType) []string {
 		return []string{"element", "files", "with_click"}
 
 	case datadogV1.SYNTHETICSSTEPTYPE_WAIT:
-		return []string{"value"}
-	}
-
-	return []string{}
-}
-
-func getParamsKeysForMobileStepType(stepType datadogV1.SyntheticsMobileStepType) []string {
-	switch stepType {
-	case datadogV1.SYNTHETICSMOBILESTEPTYPE_ASSERTELEMENTCONTENT:
-		return []string{"check", "element", "value"}
-
-	case datadogV1.SYNTHETICSMOBILESTEPTYPE_ASSERTSCREENCONTAINS:
-		return []string{"value"}
-
-	case datadogV1.SYNTHETICSMOBILESTEPTYPE_ASSERTSCREENLACKS:
-		return []string{"value"}
-
-	case datadogV1.SYNTHETICSMOBILESTEPTYPE_DOUBLETAP:
-		return []string{"element"}
-
-	case datadogV1.SYNTHETICSMOBILESTEPTYPE_EXTRACTVARIABLE:
-		return []string{"element", "variable"}
-
-	case datadogV1.SYNTHETICSMOBILESTEPTYPE_FLICK:
-		return []string{"position"}
-
-	case datadogV1.SYNTHETICSMOBILESTEPTYPE_OPENDEEPLINK:
-		return []string{"value"}
-
-	case datadogV1.SYNTHETICSMOBILESTEPTYPE_PLAYSUBTEST:
-		return []string{"subtest_public_id"}
-
-	case datadogV1.SYNTHETICSMOBILESTEPTYPE_PRESSBACK:
-		return []string{}
-
-	case datadogV1.SYNTHETICSMOBILESTEPTYPE_RESTARTAPPLICATION:
-		return []string{}
-
-	case datadogV1.SYNTHETICSMOBILESTEPTYPE_ROTATE:
-		return []string{"value"}
-
-	case datadogV1.SYNTHETICSMOBILESTEPTYPE_SCROLL:
-		return []string{"element", "x", "y"}
-
-	case datadogV1.SYNTHETICSMOBILESTEPTYPE_SCROLLTOELEMENT:
-		return []string{"element", "direction", "max_scrolls"}
-
-	case datadogV1.SYNTHETICSMOBILESTEPTYPE_TAP:
-		return []string{"element"}
-
-	case datadogV1.SYNTHETICSMOBILESTEPTYPE_TOGGLEWIFI:
-		return []string{"enabled"}
-
-	case datadogV1.SYNTHETICSMOBILESTEPTYPE_TYPETEXT:
-		return []string{"value", "element", "delay", "with_enter"}
-
-	case datadogV1.SYNTHETICSMOBILESTEPTYPE_WAIT:
 		return []string{"value"}
 	}
 
@@ -5357,13 +5478,14 @@ func buildDatadogParamsElementForMobileStep(stepParamsElements map[string]interf
 	if stepParamsElements["element_description"].(string) != "" {
 		elements.SetElementDescription(stepParamsElements["element_description"].(string))
 	}
-	elementRelativePosition := stepParamsElements["relative_position"].([]interface{})[0].(map[string]interface{})
-	if len(elementRelativePosition) != 0 {
-		relativePosition := datadogV1.SyntheticsMobileStepParamsElementRelativePosition{}
-		relativePosition.SetX(elementRelativePosition["x"].(float64))
-		relativePosition.SetY(elementRelativePosition["y"].(float64))
-
-		elements.SetRelativePosition(relativePosition)
+	if relativePositions, ok := stepParamsElements["relative_position"].([]interface{}); ok && len(relativePositions) > 0 {
+		elementRelativePosition := stepParamsElements["relative_position"].([]interface{})[0].(map[string]interface{})
+		if len(elementRelativePosition) != 0 {
+			relativePosition := datadogV1.SyntheticsMobileStepParamsElementRelativePosition{}
+			relativePosition.SetX(elementRelativePosition["x"].(float64))
+			relativePosition.SetY(elementRelativePosition["y"].(float64))
+			elements.SetRelativePosition(relativePosition)
+		}
 	}
 	if stepParamsElements["text_content"].(string) != "" {
 		elements.SetTextContent(stepParamsElements["text_content"].(string))
@@ -5429,6 +5551,17 @@ func isTargetOfTypeFloat(assertionType datadogV1.SyntheticsAssertionType, assert
 		}
 	}
 	return false
+}
+
+func isApiSubtype(subtype datadogV1.SyntheticsAPITestStepSubtype) bool {
+	return subtype == datadogV1.SYNTHETICSAPITESTSTEPSUBTYPE_HTTP ||
+		subtype == datadogV1.SYNTHETICSAPITESTSTEPSUBTYPE_GRPC ||
+		subtype == datadogV1.SYNTHETICSAPITESTSTEPSUBTYPE_SSL ||
+		subtype == datadogV1.SYNTHETICSAPITESTSTEPSUBTYPE_DNS ||
+		subtype == datadogV1.SYNTHETICSAPITESTSTEPSUBTYPE_TCP ||
+		subtype == datadogV1.SYNTHETICSAPITESTSTEPSUBTYPE_UDP ||
+		subtype == datadogV1.SYNTHETICSAPITESTSTEPSUBTYPE_ICMP ||
+		subtype == datadogV1.SYNTHETICSAPITESTSTEPSUBTYPE_WEBSOCKET
 }
 
 func validateSyntheticsAssertionOperator(val interface{}, key string) (warns []string, errs []error) {

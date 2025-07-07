@@ -75,6 +75,8 @@ resource "datadog_slo_correction" "example_slo_correction_with_recurrence" {
 
 Import is supported using the following syntax:
 
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
+
 ```shell
 terraform import datadog_slo_correction.testing_slo_correction 11111111-3fee-11eb-8a13-77cd9f15119e
 ```

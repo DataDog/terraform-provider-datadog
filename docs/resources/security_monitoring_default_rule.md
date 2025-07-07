@@ -69,6 +69,8 @@ Optional:
 
 Import is supported using the following syntax:
 
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
+
 ```shell
 # Default rules need to be imported using their ID before applying.
 resource "datadog_security_monitoring_default_rule" "adefaultrule" {
