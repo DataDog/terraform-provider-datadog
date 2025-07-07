@@ -103,10 +103,3 @@ require (
 )
 
 go 1.23.0
-<<<<<<< HEAD
-
-replace github.com/DataDog/datadog-api-client-go/v2 => ../datadog-api-client-go
-||||||| 81f01c45
-go 1.23.0
-=======
->>>>>>> master

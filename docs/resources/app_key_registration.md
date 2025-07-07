@@ -29,6 +29,8 @@ resource "datadog_app_key_registration" "app_key_registration" {
 
 Import is supported using the following syntax:
 
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
+
 ```shell
 terraform import datadog_app_key_registration.my_app_key_registration 11111111-2222-3333-4444-555555555555
 ```

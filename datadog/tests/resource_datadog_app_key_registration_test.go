@@ -8,10 +8,9 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
-var testAppKeyRegistrationID = "2"
+var testAppKeyRegistrationID = "14852f74-9cc7-4a4c-94c5-0f97cb33f810"
 
 func TestAccDatadogAppKeyRegistrationResource(t *testing.T) {
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
@@ -26,7 +25,7 @@ func TestAccDatadogAppKeyRegistrationResource(t *testing.T) {
 			{
 				Config: testAppKeyRegistrationResourceConfig(testAppKeyRegistrationID),
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogAppKeyRegistrationExists(providers.frameworkProvider, resourceName),
+					testAccCheckDatadogAppKeyRegistrationExists(providers.frameworkProvider, testAppKeyRegistrationID),
 					resource.TestCheckResourceAttr(resourceName, "id", testAppKeyRegistrationID),
 				),
 			},
@@ -46,18 +45,11 @@ func testAccCheckDatadogAppKeyRegistrationExists(accProvider *fwprovider.Framewo
 		apiInstances := accProvider.DatadogApiInstances
 		auth := accProvider.Auth
 
-		if err := datadogAppKeyRegistrationExistsHelper(auth, s, apiInstances, id); err != nil {
-			return err
+		if _, _, err := apiInstances.GetActionConnectionApiV2().GetAppKeyRegistration(auth, id); err != nil {
+			return fmt.Errorf("received an error retrieving app key registration: %s", err)
 		}
 		return nil
 	}
-}
-
-func datadogAppKeyRegistrationExistsHelper(ctx context.Context, s *terraform.State, apiInstances *utils.ApiInstances, id string) error {
-	if _, _, err := apiInstances.GetActionConnectionApiV2().GetAppKeyRegistration(ctx, id); err != nil {
-		return fmt.Errorf("received an error retrieving app key registration: %s", err)
-	}
-	return nil
 }
 
 func testAccCheckDatadogAppKeyRegistrationDestroy(accProvider *fwprovider.FrameworkProvider, resourceName string) func(*terraform.State) error {
