@@ -604,7 +604,7 @@ func (r *logsCustomDestinationResource) updateState(ctx context.Context, state *
 			state.MicrosoftSentinelDestination[0].StreamName = types.StringValue(*streamName)
 		}
 	}
-
+  
 	if googleSecurityOperationsDestination := forwarderDestination.CustomDestinationResponseForwardDestinationGoogleSecurityOperations; googleSecurityOperationsDestination != nil {
 		if len(state.GoogleSecurityOperationsDestination) != 1 {
 			state.GoogleSecurityOperationsDestination = []GoogleSecurityOperationsDestination{{}}

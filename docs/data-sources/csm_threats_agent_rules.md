@@ -43,7 +43,15 @@ Read-Only:
 
 Read-Only:
 
+- `hash` (Object) (see [below for nested schema](#nestedobjatt--agent_rules--actions--hash))
 - `set` (Object) (see [below for nested schema](#nestedobjatt--agent_rules--actions--set))
+
+<a id="nestedobjatt--agent_rules--actions--hash"></a>
+### Nested Schema for `agent_rules.actions.hash`
+
+Read-Only:
+
+
 
 <a id="nestedobjatt--agent_rules--actions--set"></a>
 ### Nested Schema for `agent_rules.actions.set`

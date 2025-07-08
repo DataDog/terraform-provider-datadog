@@ -392,13 +392,23 @@ resource "datadog_synthetics_test" "test_browser" {
         size    = 11            // Size of the file in bytes
         content = "Hello world" // Content of the file
       }])
-      element = "*[@id='simple-file-upload']"
       element_user_locator {
         value {
           type  = "css"
           value = "#simple-file-upload"
         }
       }
+      element = jsonencode({
+        "userLocator" : {
+          "failTestOnCannotLocate" : true,
+          "values" : [
+            {
+              "type" : "css",
+              "value" : "#simple-file-upload"
+            }
+          ]
+        }
+      })
     }
   }
 

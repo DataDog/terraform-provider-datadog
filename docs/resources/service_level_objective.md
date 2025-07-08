@@ -220,6 +220,8 @@ Optional:
 
 Import is supported using the following syntax:
 
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
+
 ```shell
 # Service Level Objectives can be imported using their string ID, e.g.
 terraform import datadog_service_level_objective.baz 12345678901234567890123456789012

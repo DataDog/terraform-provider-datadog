@@ -60,7 +60,7 @@ Required:
 
 Optional:
 
-- `assignment` (String) Specifies how this escalation step will assign targets. Can be `default` (page all targets at once) or `round-robin`. Valid values are `assignment`, `round-robin`. Defaults to `"default"`.
+- `assignment` (String) Specifies how this escalation step will assign targets. Can be `default` (page all targets at once) or `round-robin`. Valid values are `default`, `round-robin`. Defaults to `"default"`.
 - `target` (Block List) List of targets for the step. (see [below for nested schema](#nestedblock--step--target))
 
 Read-Only:
@@ -79,6 +79,8 @@ Optional:
 ## Import
 
 Import is supported using the following syntax:
+
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
 
 ```shell
 # Import an existing on_call_schedule
