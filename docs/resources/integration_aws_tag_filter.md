@@ -41,6 +41,8 @@ resource "datadog_integration_aws_tag_filter" "foo" {
 
 Import is supported using the following syntax:
 
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
+
 ```shell
 # Amazon Web Services log filter resource can be imported using their account ID and namespace separated with a colon (:).
 terraform import datadog_integration_aws_tag_filter.foo ${account_id}:${namespace}

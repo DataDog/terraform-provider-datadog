@@ -259,6 +259,8 @@ Optional:
 
 Import is supported using the following syntax:
 
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
+
 ```shell
 # Security monitoring rules can be imported using ID, e.g.
 terraform import datadog_security_monitoring_rule.my_rule m0o-hto-lkb

@@ -42,6 +42,8 @@ resource "datadog_integration_confluent_account" "foo" {
 
 Import is supported using the following syntax:
 
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
+
 ```shell
 # Confluent account ID can be retrieved using the ListConfluentAccounts endpoint
 # https://docs.datadoghq.com/api/latest/confluent-cloud/#list-confluent-accounts

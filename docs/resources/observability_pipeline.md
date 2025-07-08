@@ -1333,6 +1333,8 @@ Optional:
 
 Import is supported using the following syntax:
 
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
+
 ```shell
 terraform import datadog_observability_pipeline.example_pipeline 8beabbc4-1f4d-11f0-942b-da7ad0900001
 ```
