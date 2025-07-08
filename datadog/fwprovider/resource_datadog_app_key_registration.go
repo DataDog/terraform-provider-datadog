@@ -136,7 +136,7 @@ func (r *appKeyRegistrationResource) Read(ctx context.Context, request resource.
 }
 
 func (r *appKeyRegistrationResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
-	// No-op: Changes to the only field `id` require replacement, so Update will never be called.
+	response.Diagnostics.AddError("Update should not be called", "Updating this resource should replace it.")
 }
 
 func (r *appKeyRegistrationResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
