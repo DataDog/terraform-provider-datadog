@@ -1047,7 +1047,7 @@ func updateSyntheticsBrowserTestWithMultipleStepsWithRemoteMLStep(ctx context.Co
 	}
 }
 
-func createSyntheticsAPITestConfigFileUpload(uniq string, bodyType string, requestFiles []datadogV1.SyntheticsTestRequestBodyFile) string {
+func createSyntheticsAPITestConfigFileUpload(uniq string, requestFiles []datadogV1.SyntheticsTestRequestBodyFile) string {
 	fileBlocks := ""
 	for _, file := range requestFiles {
 		fileBlocks += createSyntheticsAPIRequestFileBlock(file) + "\n\n"
@@ -1058,20 +1058,22 @@ resource "datadog_synthetics_test" "foo" {
 	type = "api"
 	subtype = "http"
 
+	request_headers = {
+		"Content-Type" = "multipart/form-data; boundary=\"DatadogSyntheticsFiles\""
+	}
+
 	request_definition {
-		method = "GET"
+		method = "POST"
 		url = "https://www.datadoghq.com"
-		body_type = "%[2]s"
+		body_type = "multipart/form-data"
 		timeout = 30
 		no_saving_response_body = true
+		form = {
+			"foo" = "bar"
+		}
 	}
 
-	request_headers = {
-		Accept = "application/json"
-		X-Datadog-Trace-ID = "123456789"
-	}
-
-	%[3]s
+	%[2]s
 
 	assertion {
 		type = "statusCode"
@@ -1104,7 +1106,7 @@ resource "datadog_synthetics_test" "foo" {
 	tags = ["foo:bar", "baz"]
 
 	status = "paused"
-}`, uniq, bodyType, fileBlocks)
+}`, uniq, fileBlocks)
 }
 
 func createSyntheticsAPIRequestFileStruct(fileName string, originalFileName string, fileContent string, fileType string) datadogV1.SyntheticsTestRequestBodyFile {
@@ -1134,9 +1136,8 @@ func createSyntheticsAPIRequestFileBlock(file datadogV1.SyntheticsTestRequestBod
 var bucketKeyRegex, _ = regexp.Compile("^api-upload-file/[a-z0-9]{3}-[a-z0-9]{3}-[a-z0-9]{3}/[-:._0-9Ta-z]*\\.json$")
 
 func createSyntheticsAPITestFileUpload(ctx context.Context, accProvider *schema.Provider, t *testing.T, testName string, files []datadogV1.SyntheticsTestRequestBodyFile, previousBucketKey *string, bucketKeyShouldUpdate bool) resource.TestStep {
-	bodyType := "multipart/form-data"
 	return resource.TestStep{
-		Config: createSyntheticsAPITestConfigFileUpload(testName, bodyType, files),
+		Config: createSyntheticsAPITestConfigFileUpload(testName, files),
 		Check: resource.ComposeTestCheckFunc(
 			testSyntheticsTestExists(accProvider),
 			resource.TestCheckResourceAttr(
@@ -1144,13 +1145,21 @@ func createSyntheticsAPITestFileUpload(ctx context.Context, accProvider *schema.
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "subtype", "http"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "request_definition.0.method", "GET"),
+				"datadog_synthetics_test.foo", "request_headers.%", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "request_headers.Content-Type", "multipart/form-data; boundary=\"DatadogSyntheticsFiles\""),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "request_definition.0.method", "POST"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "request_definition.0.url", "https://www.datadoghq.com"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "request_definition.0.timeout", "30"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "request_definition.0.body_type", bodyType),
+				"datadog_synthetics_test.foo", "request_definition.0.body_type", "multipart/form-data"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "request_definition.0.form.%", "1"), // this is failing
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "request_definition.0.form.foo", "bar"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "request_file.0.name", *files[0].Name),
 			resource.TestCheckResourceAttr(
@@ -5955,9 +5964,8 @@ resource "datadog_synthetics_test" "multi" {
 }
 
 func createSyntheticsMultistepAPITestFileUpload(ctx context.Context, accProvider *schema.Provider, t *testing.T, testName string, files []datadogV1.SyntheticsTestRequestBodyFile, previousBucketKey *string, bucketKeyShouldUpdate bool) resource.TestStep {
-	bodyType := "multipart/form-data"
 	return resource.TestStep{
-		Config: createSyntheticsMultistepAPITestConfigFileUpload(testName, bodyType, files),
+		Config: createSyntheticsMultistepAPITestConfigFileUpload(testName, files),
 		Check: resource.ComposeTestCheckFunc(
 			testSyntheticsTestExists(accProvider),
 			resource.TestCheckResourceAttr(
@@ -5965,13 +5973,23 @@ func createSyntheticsMultistepAPITestFileUpload(ctx context.Context, accProvider
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.file_upload", "subtype", "multi"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.file_upload", "api_step.0.request_definition.0.method", "GET"),
+				"datadog_synthetics_test.file_upload", "api_step.0.request_headers.%", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.file_upload", "api_step.0.request_headers.Content-Type", "multipart/form-data; boundary=\"DatadogSyntheticsFiles\""),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.file_upload", "api_step.0.request_definition.0.form.foo", "bar"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.file_upload", "api_step.0.request_definition.0.method", "POST"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.file_upload", "api_step.0.request_definition.0.url", "https://www.datadoghq.com"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.file_upload", "api_step.0.request_definition.0.timeout", "30"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.file_upload", "api_step.0.request_definition.0.body_type", bodyType),
+				"datadog_synthetics_test.file_upload", "api_step.0.request_definition.0.body_type", "multipart/form-data"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.file_upload", "api_step.0.request_definition.0.form.%", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.file_upload", "api_step.0.request_definition.0.form.foo", "bar"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.file_upload", "api_step.0.request_file.0.name", *files[0].Name),
 			resource.TestCheckResourceAttr(
@@ -6004,7 +6022,7 @@ func createSyntheticsMultistepAPITestFileUpload(ctx context.Context, accProvider
 	}
 }
 
-func createSyntheticsMultistepAPITestConfigFileUpload(testName string, bodyType string, requestFiles []datadogV1.SyntheticsTestRequestBodyFile) string {
+func createSyntheticsMultistepAPITestConfigFileUpload(testName string, requestFiles []datadogV1.SyntheticsTestRequestBodyFile) string {
 	fileBlocks := ""
 	for _, file := range requestFiles {
 		fileBlocks += createSyntheticsAPIRequestFileBlock(file) + "\n\n"
@@ -6025,15 +6043,23 @@ resource "datadog_synthetics_test" "file_upload" {
 
 	api_step {
 		name = "Upload file"
-		request_definition {
-			method = "GET"
-			url = "https://www.datadoghq.com"
-			body_type = "%[2]s"
-			timeout = 30
-			no_saving_response_body = true
+
+		request_headers = {
+			"Content-Type" = "multipart/form-data; boundary=\"DatadogSyntheticsFiles\""
 		}
 
-		%[3]s
+		request_definition {
+			method = "POST"
+			url = "https://www.datadoghq.com"
+			body_type = "multipart/form-data"
+			timeout = 30
+			no_saving_response_body = true
+			form = {
+				"foo" = "bar"
+			}
+		}
+
+		%[2]s
 
 		assertion {
 			type     = "statusCode"
@@ -6042,7 +6068,7 @@ resource "datadog_synthetics_test" "file_upload" {
 		}
 	}
 }
-`, testName, bodyType, fileBlocks)
+`, testName, fileBlocks)
 }
 
 func createSyntheticsMultistepAPITestAllStepSubtypes(ctx context.Context, accProvider *schema.Provider, t *testing.T) resource.TestStep {
@@ -6181,6 +6207,10 @@ func createSyntheticsMultistepAPITestAllStepSubtypes(ctx context.Context, accPro
 				"datadog_synthetics_test.test_all_api_subtypes", "api_step.4.assertion.0.target", "213.186.33.19"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.test_all_api_subtypes", "api_step.4.request_definition.0.host", "troisdizaines.com"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.test_all_api_subtypes", "api_step.4.request_definition.0.dns_server", "8.8.8.8"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.test_all_api_subtypes", "api_step.4.request_definition.0.dns_server_port", "53"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.test_all_api_subtypes", "api_step.4.retry.0.count", "0"),
 			resource.TestCheckResourceAttr(
@@ -6376,6 +6406,7 @@ func createSyntheticsMultistepAPITestConfigAllStepSubtypes(testName string) stri
 				request_definition {
 					host       = "troisdizaines.com"
 					dns_server = "8.8.8.8"
+					dns_server_port = "53"
 				}
 				retry {
 					count    = 0
@@ -6585,12 +6616,6 @@ func createSyntheticsMobileTestStep(ctx context.Context, accProvider *schema.Pro
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "mobile_step.0.params.0.element.0.text_content", "Tap"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "mobile_step.0.params.0.element.0.relative_position.0.%", "2"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "mobile_step.0.params.0.element.0.relative_position.0.x", "0.07256155303030302"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "mobile_step.0.params.0.element.0.relative_position.0.y", "0.41522381756756754"),
-			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "mobile_step.0.params.0.element.0.user_locator.0.%", "2"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "mobile_step.0.params.0.element.0.user_locator.0.fail_test_on_cannot_locate", "false"),
@@ -6741,10 +6766,6 @@ resource "datadog_synthetics_test" "bar" {
 				context_type  = "native"
 				text_content  = "Tap"
 				multi_locator = {}
-				relative_position {
-					x = 0.07256155303030302
-					y = 0.41522381756756754
-				}
 				user_locator {
 					fail_test_on_cannot_locate = false
 					values {

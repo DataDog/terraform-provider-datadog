@@ -60,7 +60,7 @@ Optional:
 - `action` (Block List) Specifies the list of actions to perform when the routing rule is matched. (see [below for nested schema](#nestedblock--rule--action))
 - `escalation_policy` (String) ID of the policy to be applied when this routing rule matches.
 - `query` (String) Defines the query or condition that triggers this routing rule. Defaults to `""`.
-- `time_restrictions` (Block, Optional) Holds time zone information and a list of time restrictions for a routing rule. (see [below for nested schema](#nestedblock--rule--time_restrictions))
+- `time_restrictions` (Block List) Holds time zone information and a list of time restrictions for a routing rule. (see [below for nested schema](#nestedblock--rule--time_restrictions))
 - `urgency` (String) Defines the urgency for pages created via this rule. Only valid if `escalation_policy` is set. Valid values are `high`, `low`, `dynamic`.
 
 Read-Only:
@@ -72,13 +72,13 @@ Read-Only:
 
 Optional:
 
-- `send_slack_message` (Block, Optional) (see [below for nested schema](#nestedblock--rule--action--send_slack_message))
-- `send_teams_message` (Block, Optional) (see [below for nested schema](#nestedblock--rule--action--send_teams_message))
+- `send_slack_message` (Block List) (see [below for nested schema](#nestedblock--rule--action--send_slack_message))
+- `send_teams_message` (Block List) (see [below for nested schema](#nestedblock--rule--action--send_teams_message))
 
 <a id="nestedblock--rule--action--send_slack_message"></a>
 ### Nested Schema for `rule.action.send_slack_message`
 
-Optional:
+Required:
 
 - `channel` (String) Slack channel ID.
 - `workspace` (String) Slack workspace ID.
@@ -87,7 +87,7 @@ Optional:
 <a id="nestedblock--rule--action--send_teams_message"></a>
 ### Nested Schema for `rule.action.send_teams_message`
 
-Optional:
+Required:
 
 - `channel` (String) Teams channel ID.
 - `team` (String) Teams team ID.
@@ -98,15 +98,15 @@ Optional:
 <a id="nestedblock--rule--time_restrictions"></a>
 ### Nested Schema for `rule.time_restrictions`
 
-Optional:
+Required:
 
-- `restriction` (Block List) List of restrictions for the rule. (see [below for nested schema](#nestedblock--rule--time_restrictions--restriction))
 - `time_zone` (String) Specifies the time zone applicable to the restrictions, e.g. `America/New_York`.
+- `restriction` (Block List) List of restrictions for the rule. (see [below for nested schema](#nestedblock--rule--time_restrictions--restriction))
 
 <a id="nestedblock--rule--time_restrictions--restriction"></a>
 ### Nested Schema for `rule.time_restrictions.restriction`
 
-Optional:
+Required:
 
 - `end_day` (String) The weekday when the restriction period ends. Valid values are `monday`, `tuesday`, `wednesday`, `thursday`, `friday`, `saturday`, `sunday`.
 - `end_time` (String) The time of day when the restriction ends (hh:mm:ss).
