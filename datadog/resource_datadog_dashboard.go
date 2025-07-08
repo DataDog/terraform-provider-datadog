@@ -95,7 +95,7 @@ func resourceDatadogDashboard() *schema.Resource {
 					Elem:          &schema.Schema{Type: schema.TypeString},
 					ConflictsWith: []string{"is_read_only"},
 					Description:   "**Deprecated** UUIDs of roles whose associated users are authorized to edit the dashboard.",
-					Deprecated:    "This attribute is deprecated and will be removed in a future major version release. Please use the `datadog_restriction_policy` resource to manage authorization (https://docs.datadoghq.com/dashboards/guide/how-to-use-terraform-to-restrict-dashboard-edit/#restricting-a-dashboard-using-a-restriction-policy)",
+					Deprecated:    "This attribute is deprecated and will be removed in a future major version release. Instead, use the `datadog_restriction_policy` resource to [manage authorization](https://docs.datadoghq.com/dashboards/guide/how-to-use-terraform-to-restrict-dashboard-edit/#restricting-a-dashboard-using-a-restriction-policy).",
 				},
 				"template_variable": {
 					Type:        schema.TypeList,
@@ -137,7 +137,7 @@ func resourceDatadogDashboard() *schema.Resource {
 					Default:       false,
 					ConflictsWith: []string{"restricted_roles"},
 					Description:   "**Deprecated** Whether this dashboard is read-only.",
-					Deprecated:    "This attribute is deprecated and will be removed in a future major version release. Please use the `datadog_restriction_policy` resource to manage authorization (https://docs.datadoghq.com/dashboards/guide/how-to-use-terraform-to-restrict-dashboard-edit/#restricting-a-dashboard-using-a-restriction-policy)",
+					Deprecated:    "This attribute is deprecated and will be removed in a future major version release. Instead, use the `datadog_restriction_policy` resource to [manage authorization](https://docs.datadoghq.com/dashboards/guide/how-to-use-terraform-to-restrict-dashboard-edit/#restricting-a-dashboard-using-a-restriction-policy).",
 				},
 				"tags": {
 					Type:        schema.TypeList,
@@ -691,7 +691,7 @@ func buildTerraformTemplateVariablePresets(datadogTemplateVariablePresets *[]dat
 	// Allocate final resting place for tf/hash version
 	terraformTemplateVariablePresets := make([]map[string]interface{}, len(*datadogTemplateVariablePresets))
 
-	//iterate over preset objects
+	// iterate over preset objects
 	for i, templateVariablePreset := range *datadogTemplateVariablePresets {
 		// Allocate for this preset group, a map of string key to obj (string for name, array for preset values
 		terraformTemplateVariablePreset := make(map[string]interface{})
@@ -1198,6 +1198,7 @@ func getSplitGraphSourceWidgetSchema() map[string]*schema.Schema {
 		},
 	}
 }
+
 func buildDatadogWidgets(terraformWidgets *[]interface{}) (*[]datadogV1.Widget, error) {
 	datadogWidgets := make([]datadogV1.Widget, len(*terraformWidgets))
 	for i, terraformWidget := range *terraformWidgets {
@@ -1478,7 +1479,6 @@ func buildDatadogSourceWidgetDefinition(terraformWidget map[string]interface{}) 
 
 // Helper to build a list of Terraform widgets from a list of Datadog widgets
 func buildTerraformWidgets(datadogWidgets *[]datadogV1.Widget, d *schema.ResourceData) (*[]map[string]interface{}, error) {
-
 	terraformWidgets := make([]map[string]interface{}, len(*datadogWidgets))
 	for i, datadogWidget := range *datadogWidgets {
 		terraformWidget, err := buildTerraformWidget(&datadogWidget)
@@ -2030,6 +2030,7 @@ func getChangeDefinitionSchema() map[string]*schema.Schema {
 		},
 	}
 }
+
 func buildDatadogChangeDefinition(terraformDefinition map[string]interface{}) *datadogV1.ChangeWidgetDefinition {
 	datadogDefinition := datadogV1.NewChangeWidgetDefinitionWithDefaults()
 	// Required params
@@ -2055,6 +2056,7 @@ func buildDatadogChangeDefinition(terraformDefinition map[string]interface{}) *d
 	}
 	return datadogDefinition
 }
+
 func buildTerraformChangeDefinition(datadogDefinition *datadogV1.ChangeWidgetDefinition) map[string]interface{} {
 	terraformDefinition := map[string]interface{}{}
 	// Required params
@@ -2128,6 +2130,7 @@ func getChangeRequestSchema() map[string]*schema.Schema {
 		},
 	}
 }
+
 func buildDatadogChangeRequests(terraformRequests *[]interface{}) *[]datadogV1.ChangeWidgetRequest {
 	datadogRequests := make([]datadogV1.ChangeWidgetRequest, len(*terraformRequests))
 	for i, request := range *terraformRequests {
@@ -2209,6 +2212,7 @@ func buildDatadogChangeRequests(terraformRequests *[]interface{}) *[]datadogV1.C
 	}
 	return &datadogRequests
 }
+
 func buildTerraformChangeRequests(datadogChangeRequests *[]datadogV1.ChangeWidgetRequest) *[]map[string]interface{} {
 	terraformRequests := make([]map[string]interface{}, len(*datadogChangeRequests))
 	for i, datadogRequest := range *datadogChangeRequests {
@@ -2323,6 +2327,7 @@ func getDistributionDefinitionSchema() map[string]*schema.Schema {
 		},
 	}
 }
+
 func buildDatadogDistributionDefinition(terraformDefinition map[string]interface{}) *datadogV1.DistributionWidgetDefinition {
 	datadogDefinition := datadogV1.NewDistributionWidgetDefinitionWithDefaults()
 	// Required params
@@ -2361,6 +2366,7 @@ func buildDatadogDistributionDefinition(terraformDefinition map[string]interface
 	}
 	return datadogDefinition
 }
+
 func buildTerraformDistributionDefinition(datadogDefinition *datadogV1.DistributionWidgetDefinition) map[string]interface{} {
 	terraformDefinition := map[string]interface{}{}
 	// Required params
@@ -2383,7 +2389,6 @@ func buildTerraformDistributionDefinition(datadogDefinition *datadogV1.Distribut
 		terraformDefinition["title_align"] = *v
 	}
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
-
 		terraformDefinition["live_span"] = v.WidgetLegacyLiveSpan.GetLiveSpan()
 	}
 	if v, ok := datadogDefinition.GetXaxisOk(); ok {
@@ -2419,6 +2424,7 @@ func getDistributionRequestSchema() map[string]*schema.Schema {
 		},
 	}
 }
+
 func buildDatadogDistributionRequests(terraformRequests *[]interface{}) *[]datadogV1.DistributionWidgetRequest {
 	datadogRequests := make([]datadogV1.DistributionWidgetRequest, len(*terraformRequests))
 	for i, r := range *terraformRequests {
@@ -2459,6 +2465,7 @@ func buildDatadogDistributionRequests(terraformRequests *[]interface{}) *[]datad
 	}
 	return &datadogRequests
 }
+
 func buildTerraformDistributionRequests(datadogDistributionRequests *[]datadogV1.DistributionWidgetRequest) *[]map[string]interface{} {
 	terraformRequests := make([]map[string]interface{}, len(*datadogDistributionRequests))
 	for i, datadogRequest := range *datadogDistributionRequests {
@@ -2665,7 +2672,6 @@ func buildTerraformEventTimelineDefinition(datadogDefinition *datadogV1.EventTim
 		terraformDefinition["title_align"] = *v
 	}
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
-
 		terraformDefinition["live_span"] = v.WidgetLegacyLiveSpan.GetLiveSpan()
 	}
 	if v, ok := datadogDefinition.GetTagsExecutionOk(); ok {
@@ -2939,6 +2945,7 @@ func getHeatmapDefinitionSchema() map[string]*schema.Schema {
 		},
 	}
 }
+
 func buildDatadogHeatmapDefinition(terraformDefinition map[string]interface{}) *datadogV1.HeatMapWidgetDefinition {
 	datadogDefinition := datadogV1.NewHeatMapWidgetDefinitionWithDefaults()
 	// Required params
@@ -2978,6 +2985,7 @@ func buildDatadogHeatmapDefinition(terraformDefinition map[string]interface{}) *
 	}
 	return datadogDefinition
 }
+
 func buildTerraformHeatmapDefinition(datadogDefinition *datadogV1.HeatMapWidgetDefinition) map[string]interface{} {
 	terraformDefinition := map[string]interface{}{}
 	// Required params
@@ -3007,7 +3015,6 @@ func buildTerraformHeatmapDefinition(datadogDefinition *datadogV1.HeatMapWidgetD
 	}
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
 		terraformDefinition["live_span"] = v.WidgetLegacyLiveSpan.GetLiveSpan()
-
 	}
 	if v, ok := datadogDefinition.GetCustomLinksOk(); ok {
 		terraformDefinition["custom_link"] = buildTerraformWidgetCustomLinks(v)
@@ -3039,6 +3046,7 @@ func getHeatmapRequestSchema() map[string]*schema.Schema {
 		},
 	}
 }
+
 func buildDatadogHeatmapRequests(terraformRequests *[]interface{}) *[]datadogV1.HeatMapWidgetRequest {
 	datadogRequests := make([]datadogV1.HeatMapWidgetRequest, len(*terraformRequests))
 	for i, r := range *terraformRequests {
@@ -3101,6 +3109,7 @@ func buildDatadogHeatmapRequests(terraformRequests *[]interface{}) *[]datadogV1.
 	}
 	return &datadogRequests
 }
+
 func buildTerraformHeatmapRequests(datadogHeatmapRequests *[]datadogV1.HeatMapWidgetRequest) *[]map[string]interface{} {
 	terraformRequests := make([]map[string]interface{}, len(*datadogHeatmapRequests))
 	for i, datadogRequest := range *datadogHeatmapRequests {
@@ -3254,8 +3263,8 @@ func getHostmapDefinitionSchema() map[string]*schema.Schema {
 		},
 	}
 }
-func buildDatadogHostmapDefinition(terraformDefinition map[string]interface{}) *datadogV1.HostMapWidgetDefinition {
 
+func buildDatadogHostmapDefinition(terraformDefinition map[string]interface{}) *datadogV1.HostMapWidgetDefinition {
 	// Required params
 	datadogDefinition := datadogV1.NewHostMapWidgetDefinitionWithDefaults()
 	if v, ok := terraformDefinition["request"].([]interface{}); ok && len(v) > 0 && v[0] != nil {
@@ -3315,6 +3324,7 @@ func buildDatadogHostmapDefinition(terraformDefinition map[string]interface{}) *
 	}
 	return datadogDefinition
 }
+
 func buildTerraformHostmapDefinition(datadogDefinition *datadogV1.HostMapWidgetDefinition) map[string]interface{} {
 	terraformDefinition := map[string]interface{}{}
 	// Required params
@@ -3384,8 +3394,8 @@ func getHostmapRequestSchema() map[string]*schema.Schema {
 		"security_query": getApmLogNetworkRumSecurityAuditQuerySchema(),
 	}
 }
-func buildDatadogHostmapRequest(terraformRequest map[string]interface{}) *datadogV1.HostMapRequest {
 
+func buildDatadogHostmapRequest(terraformRequest map[string]interface{}) *datadogV1.HostMapRequest {
 	datadogHostmapRequest := &datadogV1.HostMapRequest{}
 	if v, ok := terraformRequest["q"].(string); ok && len(v) != 0 {
 		datadogHostmapRequest.SetQ(v)
@@ -3408,6 +3418,7 @@ func buildDatadogHostmapRequest(terraformRequest map[string]interface{}) *datado
 
 	return datadogHostmapRequest
 }
+
 func buildTerraformHostmapRequest(datadogHostmapRequest *datadogV1.HostMapRequest) *map[string]interface{} {
 	terraformRequest := map[string]interface{}{}
 	if v, ok := datadogHostmapRequest.GetQOk(); ok {
@@ -4112,6 +4123,7 @@ func getQueryValueDefinitionSchema() map[string]*schema.Schema {
 		},
 	}
 }
+
 func buildDatadogQueryValueDefinition(terraformDefinition map[string]interface{}) *datadogV1.QueryValueWidgetDefinition {
 	datadogDefinition := datadogV1.NewQueryValueWidgetDefinitionWithDefaults()
 	// Required params
@@ -4168,7 +4180,6 @@ func buildTerraformTimeseriesBackground(datadogTimeseriesBackground *datadogV1.T
 
 	terraformTimeseriesBackgroundArray := []map[string]interface{}{terraformTimeseriesBackground}
 	return terraformTimeseriesBackgroundArray
-
 }
 
 func buildTerraformQueryValueDefinition(datadogDefinition *datadogV1.QueryValueWidgetDefinition) map[string]interface{} {
@@ -4260,6 +4271,7 @@ func getQueryValueRequestSchema() map[string]*schema.Schema {
 		},
 	}
 }
+
 func buildDatadogQueryValueRequests(terraformRequests *[]interface{}) *[]datadogV1.QueryValueWidgetRequest {
 	datadogRequests := make([]datadogV1.QueryValueWidgetRequest, len(*terraformRequests))
 	for i, r := range *terraformRequests {
@@ -4331,6 +4343,7 @@ func buildDatadogQueryValueRequests(terraformRequests *[]interface{}) *[]datadog
 	}
 	return &datadogRequests
 }
+
 func buildTerraformQueryValueRequests(datadogQueryValueRequests *[]datadogV1.QueryValueWidgetRequest) *[]map[string]interface{} {
 	terraformRequests := make([]map[string]interface{}, len(*datadogQueryValueRequests))
 	for i, datadogRequest := range *datadogQueryValueRequests {
@@ -4420,6 +4433,7 @@ func getQueryTableDefinitionSchema() map[string]*schema.Schema {
 		},
 	}
 }
+
 func buildDatadogQueryTableDefinition(terraformDefinition map[string]interface{}) *datadogV1.TableWidgetDefinition {
 	datadogDefinition := datadogV1.NewTableWidgetDefinitionWithDefaults()
 	// Required params
@@ -4448,6 +4462,7 @@ func buildDatadogQueryTableDefinition(terraformDefinition map[string]interface{}
 	}
 	return datadogDefinition
 }
+
 func buildTerraformQueryTableDefinition(datadogDefinition *datadogV1.TableWidgetDefinition) map[string]interface{} {
 	terraformDefinition := map[string]interface{}{}
 	// Required params
@@ -4582,6 +4597,7 @@ func getQueryTableRequestSchema() map[string]*schema.Schema {
 		},
 	}
 }
+
 func buildDatadogQueryTableRequests(terraformRequests *[]interface{}) *[]datadogV1.TableWidgetRequest {
 	datadogRequests := make([]datadogV1.TableWidgetRequest, len(*terraformRequests))
 	for i, r := range *terraformRequests {
@@ -4655,7 +4671,6 @@ func buildDatadogQueryTableRequests(terraformRequests *[]interface{}) *[]datadog
 		}
 		if v, ok := terraformRequest["alias"].(string); ok && len(v) != 0 {
 			datadogQueryTableRequest.SetAlias(v)
-
 		}
 		if v, ok := terraformRequest["limit"].(int); ok && v != 0 {
 			datadogQueryTableRequest.SetLimit(int64(v))
@@ -4687,6 +4702,7 @@ func buildDatadogQueryTableRequests(terraformRequests *[]interface{}) *[]datadog
 	}
 	return &datadogRequests
 }
+
 func buildTerraformQueryTableRequests(datadogQueryTableRequests *[]datadogV1.TableWidgetRequest) *[]map[string]interface{} {
 	terraformRequests := make([]map[string]interface{}, len(*datadogQueryTableRequests))
 	for i, datadogRequest := range *datadogQueryTableRequests {
@@ -4798,6 +4814,7 @@ func buildDatadogQueryTableTextFormat(terraformQueryTableTextFormat *[]interface
 	}
 	return &datadogQueryTableTextFormat
 }
+
 func buildTerraformQueryTableTextFormat(datadogQueryTableTextFormat *[]datadogV1.TableWidgetTextFormatRule) *[]map[string]interface{} {
 	terraformQueryTableTextFormat := make([]map[string]interface{}, len(*datadogQueryTableTextFormat))
 	for i, datadogQueryTableTextFormatRule := range *datadogQueryTableTextFormat {
@@ -4836,6 +4853,7 @@ func buildTerraformQueryTableTextFormat(datadogQueryTableTextFormat *[]datadogV1
 	}
 	return &terraformQueryTableTextFormat
 }
+
 func getTableWidgetTextFormatMatchSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"type": {
@@ -4851,6 +4869,7 @@ func getTableWidgetTextFormatMatchSchema() map[string]*schema.Schema {
 		},
 	}
 }
+
 func getTableWidgetTextFormatReplaceSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"type": {
@@ -4963,6 +4982,7 @@ func getScatterplotDefinitionSchema() map[string]*schema.Schema {
 		},
 	}
 }
+
 func buildDatadogScatterplotDefinition(terraformDefinition map[string]interface{}) *datadogV1.ScatterPlotWidgetDefinition {
 	datadogDefinition := datadogV1.NewScatterPlotWidgetDefinitionWithDefaults()
 	// Required params
@@ -5023,6 +5043,7 @@ func buildDatadogScatterplotDefinition(terraformDefinition map[string]interface{
 	}
 	return datadogDefinition
 }
+
 func buildTerraformScatterplotDefinition(datadogDefinition *datadogV1.ScatterPlotWidgetDefinition) map[string]interface{} {
 	terraformDefinition := map[string]interface{}{}
 	// Required params
@@ -5140,7 +5161,6 @@ func buildDatadogScatterplotTableRequest(terraformRequest map[string]interface{}
 }
 
 func buildDatadogScatterplotRequest(terraformRequest map[string]interface{}) *datadogV1.ScatterPlotRequest {
-
 	datadogScatterplotRequest := datadogV1.NewScatterPlotRequest()
 	if v, ok := terraformRequest["q"].(string); ok && len(v) != 0 {
 		datadogScatterplotRequest.SetQ(v)
@@ -5251,6 +5271,7 @@ func getServiceMapDefinitionSchema() map[string]*schema.Schema {
 		},
 	}
 }
+
 func buildDatadogServiceMapDefinition(terraformDefinition map[string]interface{}) *datadogV1.ServiceMapWidgetDefinition {
 	datadogDefinition := datadogV1.NewServiceMapWidgetDefinitionWithDefaults()
 
@@ -5278,6 +5299,7 @@ func buildDatadogServiceMapDefinition(terraformDefinition map[string]interface{}
 	}
 	return datadogDefinition
 }
+
 func buildTerraformServiceMapDefinition(datadogDefinition *datadogV1.ServiceMapWidgetDefinition) map[string]interface{} {
 	terraformDefinition := map[string]interface{}{}
 
@@ -5404,6 +5426,7 @@ func buildDatadogTopologyMapDefinition(terraformDefinition map[string]interface{
 	}
 	return datadogDefinition
 }
+
 func buildDatadogTopologyRequests(terraformRequests *[]interface{}) *[]datadogV1.TopologyRequest {
 	datadogRequests := make([]datadogV1.TopologyRequest, len(*terraformRequests))
 	for i, request := range *terraformRequests {
@@ -5425,6 +5448,7 @@ func buildDatadogTopologyRequests(terraformRequests *[]interface{}) *[]datadogV1
 	}
 	return &datadogRequests
 }
+
 func buildDatadogTopologyQuery(terraformQuery map[string]interface{}) *datadogV1.TopologyQuery {
 	datadogQuery := datadogV1.NewTopologyQuery()
 	// Required params
@@ -5461,6 +5485,7 @@ func buildTerraformTopologyMapDefinition(datadogDefinition *datadogV1.TopologyMa
 	}
 	return terraformDefinition
 }
+
 func buildTerraformTopologyRequests(datadogTopologyRequests *[]datadogV1.TopologyRequest) *[]map[string]interface{} {
 	terraformRequests := make([]map[string]interface{}, len(*datadogTopologyRequests))
 	for i, datadogRequest := range *datadogTopologyRequests {
@@ -5476,6 +5501,7 @@ func buildTerraformTopologyRequests(datadogTopologyRequests *[]datadogV1.Topolog
 	}
 	return &terraformRequests
 }
+
 func buildTerraformTopologyQuery(datadogQuery *datadogV1.TopologyQuery) map[string]interface{} {
 	terraformQuery := map[string]interface{}{}
 
@@ -7996,6 +8022,7 @@ func buildDatadogTimeseriesRequests(terraformRequests *[]interface{}) *[]datadog
 	}
 	return &datadogRequests
 }
+
 func buildTerraformTimeseriesRequests(datadogTimeseriesRequests *[]datadogV1.TimeseriesWidgetRequest) *[]map[string]interface{} {
 	terraformRequests := make([]map[string]interface{}, len(*datadogTimeseriesRequests))
 	for i, datadogRequest := range *datadogTimeseriesRequests {
@@ -8112,6 +8139,7 @@ func getToplistDefinitionSchema() map[string]*schema.Schema {
 		},
 	}
 }
+
 func buildDatadogToplistDefinition(terraformDefinition map[string]interface{}) *datadogV1.ToplistWidgetDefinition {
 	datadogDefinition := datadogV1.NewToplistWidgetDefinitionWithDefaults()
 	// Required params
@@ -8235,6 +8263,7 @@ func getToplistRequestSchema() map[string]*schema.Schema {
 		},
 	}
 }
+
 func buildDatadogToplistRequests(terraformRequests *[]interface{}) *[]datadogV1.ToplistWidgetRequest {
 	datadogRequests := make([]datadogV1.ToplistWidgetRequest, len(*terraformRequests))
 	for i, r := range *terraformRequests {
@@ -8306,6 +8335,7 @@ func buildDatadogToplistRequests(terraformRequests *[]interface{}) *[]datadogV1.
 	}
 	return &datadogRequests
 }
+
 func buildTerraformToplistRequests(datadogToplistRequests *[]datadogV1.ToplistWidgetRequest) *[]map[string]interface{} {
 	terraformRequests := make([]map[string]interface{}, len(*datadogToplistRequests))
 	for i, datadogRequest := range *datadogToplistRequests {
@@ -8629,6 +8659,7 @@ func getSplitDimensionSchema() *schema.Schema {
 		},
 	}
 }
+
 func getSplitSortSchema() *schema.Schema {
 	return &schema.Schema{
 		Description: "Controls the order in which graphs appear in the split.",
@@ -8672,6 +8703,7 @@ func getSplitSortComputeSchema() *schema.Schema {
 		},
 	}
 }
+
 func getStaticSplitsSchema() *schema.Schema {
 	return &schema.Schema{
 		Description: "The property by which the graph splits",
@@ -8710,7 +8742,7 @@ func getSplitVectorSchema() *schema.Schema {
 func buildDatadogSplitGraphDefinition(terraformDefinition map[string]interface{}) (*datadogV1.SplitGraphWidgetDefinition, error) {
 	datadogDefinition := datadogV1.NewSplitGraphWidgetDefinitionWithDefaults()
 	// Required params
-	//size,source_widget,split_config, type
+	// size,source_widget,split_config, type
 	if size, ok := terraformDefinition["size"].(string); ok && size != "" {
 		datadogDefinition.SetSize(datadogV1.SplitGraphVizSize(size))
 	}
@@ -8731,7 +8763,7 @@ func buildDatadogSplitGraphDefinition(terraformDefinition map[string]interface{}
 		datadogDefinition.SetSplitConfig(*buildDatadogSplitConfig(terraformSplitConfig[0].(map[string]interface{})))
 	}
 
-	//optional params
+	// optional params
 	if yAxes, ok := terraformDefinition["has_uniform_y_axes"].(bool); ok {
 		datadogDefinition.SetHasUniformYAxes(yAxes)
 	}
@@ -8751,7 +8783,7 @@ func buildDatadogSplitGraphDefinition(terraformDefinition map[string]interface{}
 func buildDatadogPowerpackDefinition(terraformDefinition map[string]interface{}) (*datadogV1.PowerpackWidgetDefinition, error) {
 	datadogDefinition := datadogV1.NewPowerpackWidgetDefinitionWithDefaults()
 	// Required params
-	//type, powerpack_id
+	// type, powerpack_id
 
 	powerpack_type, _ := datadogV1.NewPowerpackWidgetDefinitionTypeFromValue("powerpack")
 	datadogDefinition.SetType(*powerpack_type)
@@ -8843,10 +8875,10 @@ func buildDatadogSplitSort(terraformSplitSort map[string]interface{}) *datadogV1
 // Build static splits for backend  format from static splits
 func buildDatadogStaticSplits(terraformStaticSplits []interface{}) *[][]datadogV1.SplitVectorEntryItem {
 	datadogStaticSplits := make([][]datadogV1.SplitVectorEntryItem, len(terraformStaticSplits))
-	//going over each static split
+	// going over each static split
 	for i, terraformStaticSplit := range terraformStaticSplits {
 		terraformStaticSplitMap := terraformStaticSplit.(map[string]interface{})
-		//building inner array for static split from terraform split vector list.
+		// building inner array for static split from terraform split vector list.
 		for _, splitVector := range terraformStaticSplitMap["split_vector"].([]interface{}) {
 			datadogSplitVectorMap := splitVector.(map[string]interface{})
 
@@ -9076,6 +9108,7 @@ func buildDatadogRunWorkflowDefinition(terraformDefinition map[string]interface{
 	}
 	return datadogDefinition
 }
+
 func buildDatadogRunWorkflowInputs(terraformInputs *[]interface{}) *[]datadogV1.RunWorkflowWidgetInput {
 	datadogRunWorkflowInputs := make([]datadogV1.RunWorkflowWidgetInput, len(*terraformInputs))
 	for i, terraformInput := range *terraformInputs {
@@ -9114,6 +9147,7 @@ func buildTerraformRunWorkflowDefinition(datadogDefinition *datadogV1.RunWorkflo
 	}
 	return terraformDefinition
 }
+
 func buildTerraformRunWorkflowInputs(datadogInputs *[]datadogV1.RunWorkflowWidgetInput) *[]map[string]interface{} {
 	terraformRunWorkflowInputs := make([]map[string]interface{}, len(*datadogInputs))
 	for i, input := range *datadogInputs {
@@ -9458,6 +9492,7 @@ func getWidgetConditionalFormatSchema() map[string]*schema.Schema {
 		},
 	}
 }
+
 func buildDatadogWidgetConditionalFormat(terraformWidgetConditionalFormat *[]interface{}) *[]datadogV1.WidgetConditionalFormat {
 	datadogWidgetConditionalFormat := make([]datadogV1.WidgetConditionalFormat, len(*terraformWidgetConditionalFormat))
 	for i, conditionalFormat := range *terraformWidgetConditionalFormat {
@@ -9489,6 +9524,7 @@ func buildDatadogWidgetConditionalFormat(terraformWidgetConditionalFormat *[]int
 	}
 	return &datadogWidgetConditionalFormat
 }
+
 func buildTerraformWidgetConditionalFormat(datadogWidgetConditionalFormat *[]datadogV1.WidgetConditionalFormat) *[]map[string]interface{} {
 	terraformWidgetConditionalFormat := make([]map[string]interface{}, len(*datadogWidgetConditionalFormat))
 	for i, datadogConditionalFormat := range *datadogWidgetConditionalFormat {
@@ -9626,6 +9662,7 @@ func buildDatadogWidgetCustomLinks(terraformWidgetCustomLinks *[]interface{}) *[
 	}
 	return &datadogWidgetCustomLinks
 }
+
 func buildTerraformWidgetCustomLinks(datadogWidgetCustomLinks *[]datadogV1.WidgetCustomLink) *[]map[string]interface{} {
 	terraformWidgetCustomLinks := make([]map[string]interface{}, len(*datadogWidgetCustomLinks))
 	for i, customLink := range *datadogWidgetCustomLinks {
@@ -9664,6 +9701,7 @@ func getWidgetEventSchema() map[string]*schema.Schema {
 		},
 	}
 }
+
 func buildDatadogWidgetEvents(terraformWidgetEvents *[]interface{}) *[]datadogV1.WidgetEvent {
 	datadogWidgetEvents := make([]datadogV1.WidgetEvent, len(*terraformWidgetEvents))
 	for i, event := range *terraformWidgetEvents {
@@ -9677,6 +9715,7 @@ func buildDatadogWidgetEvents(terraformWidgetEvents *[]interface{}) *[]datadogV1
 
 	return &datadogWidgetEvents
 }
+
 func buildTerraformWidgetEvents(datadogWidgetEvents *[]datadogV1.WidgetEvent) *[]map[string]string {
 	terraformWidgetEvents := make([]map[string]string, len(*datadogWidgetEvents))
 	for i, datadogWidget := range *datadogWidgetEvents {
@@ -9723,6 +9762,7 @@ func getWidgetMarkerSchema() map[string]*schema.Schema {
 		},
 	}
 }
+
 func buildDatadogWidgetMarkers(terraformWidgetMarkers *[]interface{}) *[]datadogV1.WidgetMarker {
 	datadogWidgetMarkers := make([]datadogV1.WidgetMarker, len(*terraformWidgetMarkers))
 	for i, marker := range *terraformWidgetMarkers {
@@ -9740,6 +9780,7 @@ func buildDatadogWidgetMarkers(terraformWidgetMarkers *[]interface{}) *[]datadog
 	}
 	return &datadogWidgetMarkers
 }
+
 func buildTerraformWidgetMarkers(datadogWidgetMarkers *[]datadogV1.WidgetMarker) *[]map[string]string {
 	terraformWidgetMarkers := make([]map[string]string, len(*datadogWidgetMarkers))
 	for i, datadogMarker := range *datadogWidgetMarkers {
@@ -10417,6 +10458,7 @@ func getProcessQuerySchema() *schema.Schema {
 		},
 	}
 }
+
 func buildDatadogProcessQuery(terraformQuery map[string]interface{}) *datadogV1.ProcessQueryDefinition {
 	datadogQuery := datadogV1.NewProcessQueryDefinitionWithDefaults()
 	if v, ok := terraformQuery["metric"].(string); ok && len(v) != 0 {
@@ -10539,7 +10581,6 @@ func getApmStatsQuerySchema() *schema.Schema {
 }
 
 func buildDatadogApmStatsQueryColumn(terraformColumn map[string]interface{}) *datadogV1.ApmStatsQueryColumnType {
-
 	datadogColumn := datadogV1.NewApmStatsQueryColumnTypeWithDefaults()
 
 	if value, ok := terraformColumn["name"].(string); ok && len(value) != 0 {
@@ -10852,6 +10893,7 @@ func getWidgetRequestStyle() map[string]*schema.Schema {
 		},
 	}
 }
+
 func buildDatadogWidgetStyle(terraformStyle map[string]interface{}) *datadogV1.WidgetStyle {
 	datadogStyle := &datadogV1.WidgetStyle{}
 	if v, ok := terraformStyle["palette"].(string); ok && len(v) != 0 {
@@ -10860,6 +10902,7 @@ func buildDatadogWidgetStyle(terraformStyle map[string]interface{}) *datadogV1.W
 
 	return datadogStyle
 }
+
 func buildTerraformWidgetStyle(datadogStyle datadogV1.WidgetStyle) map[string]interface{} {
 	terraformStyle := map[string]interface{}{}
 	if v, ok := datadogStyle.GetPaletteOk(); ok {
@@ -10884,6 +10927,7 @@ func buildDatadogWidgetRequestStyle(terraformStyle map[string]interface{}) *data
 
 	return datadogStyle
 }
+
 func buildTerraformWidgetRequestStyle(datadogStyle datadogV1.WidgetRequestStyle) map[string]interface{} {
 	terraformStyle := map[string]interface{}{}
 	if v, ok := datadogStyle.GetPaletteOk(); ok {
@@ -10958,6 +11002,7 @@ func buildDatadogHostmapRequestStyle(terraformStyle map[string]interface{}) *dat
 
 	return datadogStyle
 }
+
 func buildTerraformHostmapRequestStyle(datadogStyle *datadogV1.HostMapWidgetDefinitionStyle) map[string]interface{} {
 	terraformStyle := map[string]interface{}{}
 	if datadogStyle.Palette != nil {
@@ -10991,7 +11036,7 @@ func validateTimeseriesWidgetLegendSize(val interface{}, key string) (warns []st
 // Number format Formula
 func getNumberFormatFormulaSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
-		"unit": &schema.Schema{
+		"unit": {
 			Description: "Unit of the number format. ",
 			Type:        schema.TypeList,
 			MinItems:    1,
@@ -10999,7 +11044,7 @@ func getNumberFormatFormulaSchema() map[string]*schema.Schema {
 			Required:    true,
 			Elem: &schema.Resource{
 				Schema: map[string]*schema.Schema{
-					"canonical": &schema.Schema{
+					"canonical": {
 						Description: "Canonical Units",
 						Type:        schema.TypeList,
 						MinItems:    0,
@@ -11007,12 +11052,12 @@ func getNumberFormatFormulaSchema() map[string]*schema.Schema {
 						Optional:    true,
 						Elem: &schema.Resource{
 							Schema: map[string]*schema.Schema{
-								"per_unit_name": &schema.Schema{
+								"per_unit_name": {
 									Description: "per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'",
 									Type:        schema.TypeString,
 									Optional:    true,
 								},
-								"unit_name": &schema.Schema{
+								"unit_name": {
 									Description: "Unit name. It should be in singular form ('megabyte' and not 'megabytes')",
 									Type:        schema.TypeString,
 									Required:    true,
@@ -11020,7 +11065,7 @@ func getNumberFormatFormulaSchema() map[string]*schema.Schema {
 							},
 						},
 					},
-					"custom": &schema.Schema{
+					"custom": {
 						Description: "Use custom (non canonical metrics)",
 						Type:        schema.TypeList,
 						MinItems:    0,
@@ -11028,7 +11073,7 @@ func getNumberFormatFormulaSchema() map[string]*schema.Schema {
 						Optional:    true,
 						Elem: &schema.Resource{
 							Schema: map[string]*schema.Schema{
-								"label": &schema.Schema{
+								"label": {
 									Description: "Unit label",
 									Type:        schema.TypeString,
 									Required:    true,
@@ -11039,7 +11084,7 @@ func getNumberFormatFormulaSchema() map[string]*schema.Schema {
 				},
 			},
 		},
-		"unit_scale": &schema.Schema{
+		"unit_scale": {
 			Description: "",
 			Type:        schema.TypeList,
 			MinItems:    0,
@@ -11047,7 +11092,7 @@ func getNumberFormatFormulaSchema() map[string]*schema.Schema {
 			Optional:    true,
 			Elem: &schema.Resource{
 				Schema: map[string]*schema.Schema{
-					"unit_name": &schema.Schema{
+					"unit_name": {
 						Description: "",
 						Type:        schema.TypeString,
 						Required:    true,
@@ -11100,8 +11145,10 @@ func buildTerraformNumberFormatFormulaSchema(datadogStyle datadogV1.WidgetNumber
 		}
 		if v.NumberFormatUnitCanonical != nil {
 			unit["canonical"] = []map[string]interface{}{
-				{"per_unit_name": v.NumberFormatUnitCanonical.PerUnitName,
-					"unit_name": v.NumberFormatUnitCanonical.UnitName},
+				{
+					"per_unit_name": v.NumberFormatUnitCanonical.PerUnitName,
+					"unit_name":     v.NumberFormatUnitCanonical.UnitName,
+				},
 			}
 		}
 		m["unit"] = []map[string]interface{}{unit}
