@@ -4,11 +4,11 @@
 * [datadog_synthetics_test] Fix basic auth by @AntoineDona in https://github.com/DataDog/terraform-provider-datadog/pull/3062
 * [datadog_synthetics_test] Make request client certificate content optional by @AntoineDona in https://github.com/DataDog/terraform-provider-datadog/pull/3063
 * [datadog_synthetics_test] Support `dns_server_port` as string or number by @teodor2312 in https://github.com/DataDog/terraform-provider-datadog/pull/3070
+* [datadog_synthetics_test] Fix provider crash due to absent 'relative_position' in config by @Alexis-Jacob-datadog in https://github.com/DataDog/terraform-provider-datadog/pull/3067
+* [datadog_synthetics_test] update api client to ensure the `message` field is set for mobile tests by @zach-b in https://github.com/DataDog/terraform-provider-datadog/pull/3082
+* [datadog_on_call] update validation and documentation by @bndbsh in https://github.com/DataDog/terraform-provider-datadog/pull/3077
 * [datadog_on_call_escalation_policy] correctly set retries on update by @bndbsh in https://github.com/DataDog/terraform-provider-datadog/pull/3078
-* [on_call] update validation and documentation by @bndbsh in https://github.com/DataDog/terraform-provider-datadog/pull/3077
-* [synthetics_test] Fix provider crash due to absent 'relative_position' in config by @Alexis-Jacob-datadog in https://github.com/DataDog/terraform-provider-datadog/pull/3067
-* [synthetics_test] update api client to ensure the `message` field is set for mobile tests by @zach-b in https://github.com/DataDog/terraform-provider-datadog/pull/3082
-* [on_call_escalation_policy] fix validation for assignment by @bndbsh in https://github.com/DataDog/terraform-provider-datadog/pull/3085
+* [datadog_on_call_escalation_policy] fix validation for assignment by @bndbsh in https://github.com/DataDog/terraform-provider-datadog/pull/3085
 ### FEATURES
 * [datadog_logs_custom_destination] Support Microsoft Sentinel Custom Destinations by @mgrunenberger in https://github.com/DataDog/terraform-provider-datadog/pull/3061
 * [datadog_sensitive_data_scanner_group] Handle sampling rate in scanning group by @isabella-garza-datadog in https://github.com/DataDog/terraform-provider-datadog/pull/3076
