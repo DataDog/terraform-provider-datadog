@@ -4137,7 +4137,7 @@ func updateSyntheticsBrowserTestStep(ctx context.Context, accProvider *schema.Pr
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "tags.1", "buz"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "browser_step.#", "2"),
+				"datadog_synthetics_test.bar", "browser_step.#", "3"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "browser_step.0.name", "first step updated"),
 			resource.TestCheckResourceAttr(
@@ -4152,6 +4152,10 @@ func updateSyntheticsBrowserTestStep(ctx context.Context, accProvider *schema.Pr
 				"datadog_synthetics_test.bar", "browser_step.1.type", "pressKey"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "browser_step.1.params.0.value", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_step.2.type", "typeText"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_step.2.params.0.append_to_content", "false"),
 			resource.TestCheckResourceAttrSet(
 				"datadog_synthetics_test.bar", "monitor_id"),
 			resource.TestCheckResourceAttr(
@@ -4229,6 +4233,26 @@ resource "datadog_synthetics_test" "bar" {
 	        value = "1"
 	    }
 	}
+
+  	browser_step {
+    	name    = "Type text on input"
+		type    = "typeText"
+
+		params {
+			append_to_content     = false
+			element               = jsonencode(
+				{"multiLocator": {
+						"ab": "/*[local-name()=\"html\"][1]/*[local-name()=\"body\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"div\"][2]/*[local-name()=\"div\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"form\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"input\"][1]",
+						"at": "",
+						"cl": ""
+						"clt": "",
+						"co": "",
+						"ro": ""
+					}
+				})
+			value                 = "input"
+		}
+  }
 
 	browser_variable {
 		type = "text"
