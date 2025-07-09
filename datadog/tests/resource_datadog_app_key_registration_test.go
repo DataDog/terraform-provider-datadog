@@ -10,7 +10,7 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
 )
 
-var testAppKeyRegistrationID = "14852f74-9cc7-4a4c-94c5-0f97cb33f810"
+var testAppKeyRegistrationID = "22222222-2222-2222-2222-222222222222"
 
 func TestAccDatadogAppKeyRegistrationResource(t *testing.T) {
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
