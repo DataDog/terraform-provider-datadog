@@ -1105,7 +1105,7 @@ Read-Only:
 
 Optional:
 
-- `append_to_content` (Boolean) Select this option to append value to existing text input content. By default, content is cleared before text input.
+- `append_to_content` (Boolean) Whether to append the `value` to existing text input content for a "typeText" step. By default, content is cleared before text input.
 - `attribute` (String) Name of the attribute to use for an "assert attribute" step.
 - `check` (String) Check type to use for an assertion step. Valid values are `equals`, `notEquals`, `contains`, `notContains`, `startsWith`, `notStartsWith`, `greater`, `lower`, `greaterEquals`, `lowerEquals`, `matchRegex`, `between`, `isEmpty`, `notIsEmpty`.
 - `click_type` (String) Type of click to use for a "click" step.

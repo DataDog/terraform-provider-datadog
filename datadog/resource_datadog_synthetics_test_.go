@@ -1280,7 +1280,7 @@ func syntheticsBrowserStepParams() schema.Schema {
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
 				"append_to_content": {
-					Description: `Select this option to append value to existing text input content. By default, content is cleared before text input.`,
+					Description: "Whether to append the `value` to existing text input content for a \"typeText\" step. By default, content is cleared before text input.",
 					Type:        schema.TypeBool,
 					Optional:    true,
 				},
