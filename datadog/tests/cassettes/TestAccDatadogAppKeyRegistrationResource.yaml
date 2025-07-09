@@ -17,7 +17,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/actions/app_key_registrations/14852f74-9cc7-4a4c-94c5-0f97cb33f810
+        url: https://api.datadoghq.com/api/v2/actions/app_key_registrations/22222222-2222-2222-2222-222222222222
         method: PUT
       response:
         proto: HTTP/1.1
@@ -27,7 +27,7 @@ interactions:
         trailer: {}
         content_length: 84
         uncompressed: false
-        body: '{"data":{"id":"14852f74-9cc7-4a4c-94c5-0f97cb33f810","type":"app_key_registration"}}'
+        body: '{"data":{"id":"22222222-2222-2222-2222-222222222222","type":"app_key_registration"}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
@@ -50,7 +50,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/actions/app_key_registrations/14852f74-9cc7-4a4c-94c5-0f97cb33f810
+        url: https://api.datadoghq.com/api/v2/actions/app_key_registrations/22222222-2222-2222-2222-222222222222
         method: GET
       response:
         proto: HTTP/1.1
@@ -60,7 +60,7 @@ interactions:
         trailer: {}
         content_length: 84
         uncompressed: false
-        body: '{"data":{"id":"14852f74-9cc7-4a4c-94c5-0f97cb33f810","type":"app_key_registration"}}'
+        body: '{"data":{"id":"22222222-2222-2222-2222-222222222222","type":"app_key_registration"}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
@@ -83,7 +83,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/actions/app_key_registrations/14852f74-9cc7-4a4c-94c5-0f97cb33f810
+        url: https://api.datadoghq.com/api/v2/actions/app_key_registrations/22222222-2222-2222-2222-222222222222
         method: GET
       response:
         proto: HTTP/1.1
@@ -93,7 +93,7 @@ interactions:
         trailer: {}
         content_length: 84
         uncompressed: false
-        body: '{"data":{"id":"14852f74-9cc7-4a4c-94c5-0f97cb33f810","type":"app_key_registration"}}'
+        body: '{"data":{"id":"22222222-2222-2222-2222-222222222222","type":"app_key_registration"}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
@@ -116,7 +116,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/actions/app_key_registrations/14852f74-9cc7-4a4c-94c5-0f97cb33f810
+        url: https://api.datadoghq.com/api/v2/actions/app_key_registrations/22222222-2222-2222-2222-222222222222
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -147,7 +147,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/actions/app_key_registrations/14852f74-9cc7-4a4c-94c5-0f97cb33f810
+        url: https://api.datadoghq.com/api/v2/actions/app_key_registrations/22222222-2222-2222-2222-222222222222
         method: GET
       response:
         proto: HTTP/1.1
