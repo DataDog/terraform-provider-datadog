@@ -92,6 +92,7 @@ var Resources = []func() resource.Resource{
 	NewCostBudgetResource,
 	NewCSMThreatsAgentRuleResource,
 	NewCSMThreatsPolicyResource,
+	NewScorecardRuleResource,
 }
 
 var Datasources = []func() datasource.DataSource{
@@ -454,6 +455,12 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.GetMonitorNotificationRule", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteMonitorNotificationRule", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateMonitorNotificationRule", true)
+
+	// Enable ServiceScorecards
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateScorecardRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateScorecardRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.ListScorecardRules", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteScorecardRule", true)
 
 	if !config.ApiUrl.IsNull() && config.ApiUrl.ValueString() != "" {
 		parsedAPIURL, parseErr := url.Parse(config.ApiUrl.ValueString())
