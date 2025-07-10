@@ -3,7 +3,7 @@
 page_title: "datadog_observability_pipeline Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Provides a Datadog Observability Pipeline resource. Observability Pipelines allows you to collect and process logs within your own infrastructure, and then route them to downstream integrations. This resource is in Preview. Reach out to Datadog support to enable it for your account.
+  Provides a Datadog Observability Pipeline resource. Observability Pipelines allows you to collect and process logs within your own infrastructure, and then route them to downstream integrations. This resource is in Preview. Fill out this [form](https://www.datadoghq.com/product-preview/observability-pipelines-api-and-terraform-support/) to request access.
   Datadog recommends using the -parallelism=1 option to apply this resource.
 ---
 
