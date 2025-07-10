@@ -1063,6 +1063,7 @@ func syntheticsTestAPIStep() *schema.Schema {
 				"extracted_value": {
 					Description: "Values to parse and save as variables from the response.",
 					Type:        schema.TypeList,
+					MaxItems:    10,
 					Optional:    true,
 					Elem: &schema.Resource{
 						Schema: map[string]*schema.Schema{

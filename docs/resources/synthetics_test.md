@@ -792,7 +792,7 @@ Optional:
 - `allow_failure` (Boolean) Determines whether or not to continue with test if this step fails.
 - `assertion` (Block List) Assertions used for the test. Multiple `assertion` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--api_step--assertion))
 - `exit_if_succeed` (Boolean) Determines whether or not to exit the test if the step succeeds.
-- `extracted_value` (Block List) Values to parse and save as variables from the response. (see [below for nested schema](#nestedblock--api_step--extracted_value))
+- `extracted_value` (Block List, Max: 10) Values to parse and save as variables from the response. (see [below for nested schema](#nestedblock--api_step--extracted_value))
 - `extracted_values_from_script` (String) Generate variables using JavaScript.
 - `is_critical` (Boolean) Determines whether or not to consider the entire test as failed if this step fails. Can be used only if `allow_failure` is `true`.
 - `request_basicauth` (Block List, Max: 1) The HTTP basic authentication credentials. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--api_step--request_basicauth))
