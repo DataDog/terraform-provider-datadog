@@ -101,22 +101,23 @@ type tlsModel struct {
 // Processor models
 
 type processorsModel struct {
-	FilterProcessor               []*filterProcessorModel               `tfsdk:"filter"`
-	ParseJsonProcessor            []*parseJsonProcessorModel            `tfsdk:"parse_json"`
-	AddFieldsProcessor            []*addFieldsProcessor                 `tfsdk:"add_fields"`
-	RenameFieldsProcessor         []*renameFieldsProcessorModel         `tfsdk:"rename_fields"`
-	RemoveFieldsProcessor         []*removeFieldsProcessorModel         `tfsdk:"remove_fields"`
-	QuotaProcessor                []*quotaProcessorModel                `tfsdk:"quota"`
-	GenerateMetricsProcessor      []*generateMetricsProcessorModel      `tfsdk:"generate_datadog_metrics"`
-	ParseGrokProcessor            []*parseGrokProcessorModel            `tfsdk:"parse_grok"`
-	SampleProcessor               []*sampleProcessorModel               `tfsdk:"sample"`
-	SensitiveDataScannerProcessor []*sensitiveDataScannerProcessorModel `tfsdk:"sensitive_data_scanner"`
-	DedupeProcessor               []*dedupeProcessorModel               `tfsdk:"dedupe"`
-	ReduceProcessor               []*reduceProcessorModel               `tfsdk:"reduce"`
-	ThrottleProcessor             []*throttleProcessorModel             `tfsdk:"throttle"`
-	AddEnvVarsProcessor           []*addEnvVarsProcessorModel           `tfsdk:"add_env_vars"`
-	EnrichmentTableProcessor      []*enrichmentTableProcessorModel      `tfsdk:"enrichment_table"`
-	OcsfMapperProcessor           []*ocsfMapperProcessorModel           `tfsdk:"ocsf_mapper"`
+	FilterProcessor               []*filterProcessorModel                          `tfsdk:"filter"`
+	ParseJsonProcessor            []*parseJsonProcessorModel                       `tfsdk:"parse_json"`
+	AddFieldsProcessor            []*addFieldsProcessor                            `tfsdk:"add_fields"`
+	RenameFieldsProcessor         []*renameFieldsProcessorModel                    `tfsdk:"rename_fields"`
+	RemoveFieldsProcessor         []*removeFieldsProcessorModel                    `tfsdk:"remove_fields"`
+	QuotaProcessor                []*quotaProcessorModel                           `tfsdk:"quota"`
+	GenerateMetricsProcessor      []*generateMetricsProcessorModel                 `tfsdk:"generate_datadog_metrics"`
+	ParseGrokProcessor            []*parseGrokProcessorModel                       `tfsdk:"parse_grok"`
+	SampleProcessor               []*sampleProcessorModel                          `tfsdk:"sample"`
+	SensitiveDataScannerProcessor []*sensitiveDataScannerProcessorModel            `tfsdk:"sensitive_data_scanner"`
+	DedupeProcessor               []*dedupeProcessorModel                          `tfsdk:"dedupe"`
+	ReduceProcessor               []*reduceProcessorModel                          `tfsdk:"reduce"`
+	ThrottleProcessor             []*throttleProcessorModel                        `tfsdk:"throttle"`
+	AddEnvVarsProcessor           []*addEnvVarsProcessorModel                      `tfsdk:"add_env_vars"`
+	EnrichmentTableProcessor      []*enrichmentTableProcessorModel                 `tfsdk:"enrichment_table"`
+	OcsfMapperProcessor           []*ocsfMapperProcessorModel                      `tfsdk:"ocsf_mapper"`
+	RemapVrlProcessor             []*observability_pipeline.RemapVrlProcessorModel `tfsdk:"remap_vrl"`
 }
 
 type ocsfMapperProcessorModel struct {
@@ -124,6 +125,21 @@ type ocsfMapperProcessorModel struct {
 	Include types.String       `tfsdk:"include"`
 	Inputs  types.List         `tfsdk:"inputs"`
 	Mapping []ocsfMappingModel `tfsdk:"mapping"`
+}
+
+type remapVrlProcessorModel struct {
+	Id      types.String                  `tfsdk:"id"`
+	Include types.String                  `tfsdk:"include"`
+	Inputs  types.List                    `tfsdk:"inputs"`
+	Remaps  []remapVrlProcessorRemapModel `tfsdk:"remaps"`
+}
+
+type remapVrlProcessorRemapModel struct {
+	Include     types.String `tfsdk:"include"`
+	Name        types.String `tfsdk:"name"`
+	Enabled     types.Bool   `tfsdk:"enabled"`
+	Source      types.String `tfsdk:"source"`
+	DropOnError types.Bool   `tfsdk:"drop_on_error"`
 }
 
 type ocsfMappingModel struct {
@@ -774,7 +790,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 									},
 									Blocks: map[string]schema.Block{
 										"auth": schema.SingleNestedBlock{
-											Description: "AWS authentication credentials used for accessing AWS services such as S3. If omitted, the system’s default credentials are used (for example, the IAM role and environment variables).",
+											Description: "AWS authentication credentials used for accessing AWS services such as S3. If omitted, the system's default credentials are used (for example, the IAM role and environment variables).",
 											Attributes: map[string]schema.Attribute{
 												"assume_role": schema.StringAttribute{
 													Optional:    true,
@@ -880,7 +896,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 									},
 									Blocks: map[string]schema.Block{
 										"auth": schema.SingleNestedBlock{
-											Description: "AWS authentication credentials used for accessing AWS services such as S3. If omitted, the system’s default credentials are used (for example, the IAM role and environment variables).",
+											Description: "AWS authentication credentials used for accessing AWS services such as S3. If omitted, the system's default credentials are used (for example, the IAM role and environment variables).",
 											Attributes: map[string]schema.Attribute{
 												"assume_role": schema.StringAttribute{
 													Optional:    true,
@@ -1817,6 +1833,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 									},
 								},
 							},
+							"remap_vrl": observability_pipeline.RemapVrlProcessorSchema(),
 						},
 					},
 					"destinations": schema.SingleNestedBlock{
@@ -2266,7 +2283,7 @@ func tlsSchema() schema.SingleNestedBlock {
 			},
 			"ca_file": schema.StringAttribute{
 				Optional:    true,
-				Description: "Path to the Certificate Authority (CA) file used to validate the server’s TLS certificate.",
+				Description: "Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.",
 			},
 			"key_file": schema.StringAttribute{
 				Optional:    true,
@@ -2481,6 +2498,9 @@ func expandPipeline(ctx context.Context, state *observabilityPipelineModel) (*da
 	for _, p := range state.Config.Processors.OcsfMapperProcessor {
 		config.Processors = append(config.Processors, expandOcsfMapperProcessor(ctx, p))
 	}
+	for _, p := range state.Config.Processors.RemapVrlProcessor {
+		config.Processors = append(config.Processors, observability_pipeline.ExpandRemapVrlProcessor(ctx, p))
+	}
 	for _, p := range state.Config.Processors.ParseGrokProcessor {
 		config.Processors = append(config.Processors, expandParseGrokProcessor(ctx, p))
 	}
@@ -2661,6 +2681,9 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 		}
 		if f := flattenOcsfMapperProcessor(ctx, p.ObservabilityPipelineOcsfMapperProcessor); f != nil {
 			outCfg.Processors.OcsfMapperProcessor = append(outCfg.Processors.OcsfMapperProcessor, f)
+		}
+		if f := observability_pipeline.FlattenRemapVrlProcessor(ctx, p.ObservabilityPipelineRemapVrlProcessor); f != nil {
+			outCfg.Processors.RemapVrlProcessor = append(outCfg.Processors.RemapVrlProcessor, f)
 		}
 	}
 
