@@ -139,6 +139,45 @@ resource "datadog_logs_custom_pipeline" "my_pipeline_test" {
 			sources = [ "dd.span_id" ]
 		}
     }
+    processor {
+        array_processor {
+            name = "array append operation"
+            is_enabled = true
+            operation {
+                append {
+                    source = "network.client.ip"
+                    target = "sourceIps"
+                    preserve_source = true
+                }
+            }
+        }
+    }
+    processor {
+        array_processor {
+            name = "array length operation"
+            is_enabled = true
+            operation {
+                length {
+                    source = "tags"
+                    target = "tagCount"
+                }
+            }
+        }
+    }
+    processor {
+        array_processor {
+            name = "array select operation"
+            is_enabled = true
+            operation {
+                select {
+                    source = "httpRequest.headers"
+                    target = "referrer"
+                    filter = "name:Referrer"
+                    value_to_extract = "value"
+                }
+            }
+        }
+    }
 
 }`, uniq)
 }
@@ -271,6 +310,31 @@ resource "datadog_logs_custom_pipeline" "my_pipeline_test" {
 			is_enabled = true
 			sources = [ "dd.span_id" ]
 		}
+    }
+    processor {
+        array_processor {
+            name = "array append operation updated"
+            is_enabled = false
+            operation {
+                append {
+                    source = "network.server.ip"
+                    target = "destinationIps"
+                    preserve_source = true
+                }
+            }
+        }
+    }
+    processor {
+        array_processor {
+            name = "array length operation updated"
+            is_enabled = true
+            operation {
+                length {
+                    source = "headers"
+                    target = "headerCount"
+                }
+            }
+        }
     }
 }`, uniq)
 }

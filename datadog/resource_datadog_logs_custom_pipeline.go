@@ -19,6 +19,7 @@ var logCustomPipelineMutex = sync.Mutex{}
 
 const (
 	tfArithmeticProcessor           = "arithmetic_processor"
+	tfArrayProcessor                = "array_processor"
 	tfAttributeRemapperProcessor    = "attribute_remapper"
 	tfCategoryProcessor             = "category_processor"
 	tfDateRemapperProcessor         = "date_remapper"
@@ -41,6 +42,7 @@ const (
 
 var tfProcessorTypes = map[string]string{
 	tfArithmeticProcessor:           string(datadogV1.LOGSARITHMETICPROCESSORTYPE_ARITHMETIC_PROCESSOR),
+	tfArrayProcessor:                string(datadogV1.LOGSARRAYPROCESSORTYPE_ARRAY_PROCESSOR),
 	tfAttributeRemapperProcessor:    string(datadogV1.LOGSATTRIBUTEREMAPPERTYPE_ATTRIBUTE_REMAPPER),
 	tfCategoryProcessor:             string(datadogV1.LOGSCATEGORYPROCESSORTYPE_CATEGORY_PROCESSOR),
 	tfDateRemapperProcessor:         string(datadogV1.LOGSDATEREMAPPERTYPE_DATE_REMAPPER),
@@ -61,6 +63,7 @@ var tfProcessorTypes = map[string]string{
 
 var tfProcessors = map[string]*schema.Schema{
 	tfArithmeticProcessor:           arithmeticProcessor,
+	tfArrayProcessor:                arrayProcessor,
 	tfAttributeRemapperProcessor:    attributeRemapper,
 	tfCategoryProcessor:             categoryProcessor,
 	tfDateRemapperProcessor:         dateRemapper,
@@ -80,6 +83,7 @@ var tfProcessors = map[string]*schema.Schema{
 
 var ddProcessorTypes = map[string]string{
 	string(datadogV1.LOGSARITHMETICPROCESSORTYPE_ARITHMETIC_PROCESSOR):        tfArithmeticProcessor,
+	string(datadogV1.LOGSARRAYPROCESSORTYPE_ARRAY_PROCESSOR):                  tfArrayProcessor,
 	string(datadogV1.LOGSATTRIBUTEREMAPPERTYPE_ATTRIBUTE_REMAPPER):            tfAttributeRemapperProcessor,
 	string(datadogV1.LOGSCATEGORYPROCESSORTYPE_CATEGORY_PROCESSOR):            tfCategoryProcessor,
 	string(datadogV1.LOGSDATEREMAPPERTYPE_DATE_REMAPPER):                      tfDateRemapperProcessor,
@@ -129,6 +133,113 @@ var arithmeticProcessor = &schema.Schema{
 				Description: "If true, it replaces all missing attributes of expression by 0, false skips the operation if an attribute is missing.",
 				Type:        schema.TypeBool,
 				Optional:    true,
+			},
+		},
+	},
+}
+
+var arrayProcessor = &schema.Schema{
+	Type:        schema.TypeList,
+	MaxItems:    1,
+	Description: "Array Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#array-processor)",
+	Optional:    true,
+	Elem: &schema.Resource{
+		Schema: map[string]*schema.Schema{
+			"name": {
+				Description: "Your pipeline name.",
+				Type:        schema.TypeString,
+				Optional:    true,
+			},
+			"is_enabled": {
+				Description: "Boolean value to enable your pipeline.",
+				Type:        schema.TypeBool,
+				Optional:    true,
+			},
+			"operation": {
+				Description: "Operation to perform on the array.",
+				Type:        schema.TypeList,
+				Required:    true,
+				MaxItems:    1,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"append": {
+							Description: "Operation that appends a value to a target array attribute.",
+							Type:        schema.TypeList,
+							Optional:    true,
+							MaxItems:    1,
+							Elem: &schema.Resource{
+								Schema: map[string]*schema.Schema{
+									"source": {
+										Description: "Attribute path containing the value to append.",
+										Type:        schema.TypeString,
+										Required:    true,
+									},
+									"target": {
+										Description: "Attribute path of the array to append to.",
+										Type:        schema.TypeString,
+										Required:    true,
+									},
+									"preserve_source": {
+										Description: "Remove or preserve the remapped source element.",
+										Type:        schema.TypeBool,
+										Optional:    true,
+										Default:     true,
+									},
+								},
+							},
+						},
+						"length": {
+							Description: "Operation that computes the length of a source array and stores the result in the target attribute.",
+							Type:        schema.TypeList,
+							Optional:    true,
+							MaxItems:    1,
+							Elem: &schema.Resource{
+								Schema: map[string]*schema.Schema{
+									"source": {
+										Description: "Attribute path of the array to measure.",
+										Type:        schema.TypeString,
+										Required:    true,
+									},
+									"target": {
+										Description: "Attribute that receives the computed length.",
+										Type:        schema.TypeString,
+										Required:    true,
+									},
+								},
+							},
+						},
+						"select": {
+							Description: "Operation that finds an object in a source array using a filter, and then extracts a specific value into the target attribute.",
+							Type:        schema.TypeList,
+							Optional:    true,
+							MaxItems:    1,
+							Elem: &schema.Resource{
+								Schema: map[string]*schema.Schema{
+									"source": {
+										Description: "Attribute path of the array to search into.",
+										Type:        schema.TypeString,
+										Required:    true,
+									},
+									"target": {
+										Description: "Attribute that receives the extracted value.",
+										Type:        schema.TypeString,
+										Required:    true,
+									},
+									"filter": {
+										Description: "Filter condition expressed as key:value used to find the matching element.",
+										Type:        schema.TypeString,
+										Required:    true,
+									},
+									"value_to_extract": {
+										Description: "Key of the value to extract from the matching element.",
+										Type:        schema.TypeString,
+										Required:    true,
+									},
+								},
+							},
+						},
+					},
+				},
 			},
 		},
 	},
@@ -530,6 +641,9 @@ func buildTerraformProcessor(ddProcessor datadogV1.LogsProcessor) (map[string]in
 	if ddProcessor.LogsArithmeticProcessor != nil {
 		tfProcessor = buildTerraformArithmeticProcessor(ddProcessor.LogsArithmeticProcessor)
 		processorType = string(datadogV1.LOGSARITHMETICPROCESSORTYPE_ARITHMETIC_PROCESSOR)
+	} else if ddProcessor.LogsArrayProcessor != nil {
+		tfProcessor = buildTerraformArrayProcessor(ddProcessor.LogsArrayProcessor)
+		processorType = string(datadogV1.LOGSARRAYPROCESSORTYPE_ARRAY_PROCESSOR)
 	} else if ddProcessor.LogsAttributeRemapper != nil {
 		tfProcessor = buildTerraformAttributeRemapper(ddProcessor.LogsAttributeRemapper)
 		processorType = string(datadogV1.LOGSATTRIBUTEREMAPPERTYPE_ATTRIBUTE_REMAPPER)
@@ -770,6 +884,44 @@ func buildTerraformArithmeticProcessor(ddArithmetic *datadogV1.LogsArithmeticPro
 	}
 }
 
+func buildTerraformArrayProcessor(ddArray *datadogV1.LogsArrayProcessor) map[string]interface{} {
+	tfProcessor := map[string]interface{}{
+		"name":       ddArray.GetName(),
+		"is_enabled": ddArray.GetIsEnabled(),
+	}
+
+	// Handle the operation field
+	operation := ddArray.GetOperation()
+	tfOperation := make(map[string]interface{})
+	operationList := []map[string]interface{}{tfOperation}
+
+	if appendOp := operation.LogsArrayProcessorOperationAppend; appendOp != nil {
+		tfAppend := map[string]interface{}{
+			"source":          appendOp.GetSource(),
+			"target":          appendOp.GetTarget(),
+			"preserve_source": appendOp.GetPreserveSource(),
+		}
+		tfOperation["append"] = []map[string]interface{}{tfAppend}
+	} else if lengthOp := operation.LogsArrayProcessorOperationLength; lengthOp != nil {
+		tfLength := map[string]interface{}{
+			"source": lengthOp.GetSource(),
+			"target": lengthOp.GetTarget(),
+		}
+		tfOperation["length"] = []map[string]interface{}{tfLength}
+	} else if selectOp := operation.LogsArrayProcessorOperationSelect; selectOp != nil {
+		tfSelect := map[string]interface{}{
+			"source":           selectOp.GetSource(),
+			"target":           selectOp.GetTarget(),
+			"filter":           selectOp.GetFilter(),
+			"value_to_extract": selectOp.GetValueToExtract(),
+		}
+		tfOperation["select"] = []map[string]interface{}{tfSelect}
+	}
+
+	tfProcessor["operation"] = operationList
+	return tfProcessor
+}
+
 func buildTerraformSpanRemapper(ddSpanRemapper *datadogV1.LogsSpanRemapper) map[string]interface{} {
 	return map[string]interface{}{
 		"sources":    ddSpanRemapper.GetSources(),
@@ -835,6 +987,12 @@ func buildDatadogProcessor(ddProcessorType string, tfProcessor map[string]interf
 	switch ddProcessorType {
 	case string(datadogV1.LOGSARITHMETICPROCESSORTYPE_ARITHMETIC_PROCESSOR):
 		ddProcessor = datadogV1.LogsArithmeticProcessorAsLogsProcessor(buildDatadogArithmeticProcessor(tfProcessor))
+	case string(datadogV1.LOGSARRAYPROCESSORTYPE_ARRAY_PROCESSOR):
+		ddArrayProcessor, err := buildDatadogArrayProcessor(tfProcessor)
+		if err != nil {
+			return &ddProcessor, err
+		}
+		ddProcessor = datadogV1.LogsArrayProcessorAsLogsProcessor(ddArrayProcessor)
 	case string(datadogV1.LOGSATTRIBUTEREMAPPERTYPE_ATTRIBUTE_REMAPPER):
 		ddProcessor = datadogV1.LogsAttributeRemapperAsLogsProcessor(buildDatadogAttributeRemapper(tfProcessor))
 	case string(datadogV1.LOGSCATEGORYPROCESSORTYPE_CATEGORY_PROCESSOR):
@@ -1231,6 +1389,83 @@ func buildDatadogArithmeticProcessor(tfProcessor map[string]interface{}) *datado
 		ddArithmetic.SetIsEnabled(tfIsEnabled)
 	}
 	return ddArithmetic
+}
+
+func buildDatadogArrayProcessor(tfProcessor map[string]interface{}) (*datadogV1.LogsArrayProcessor, error) {
+	ddArray := datadogV1.NewLogsArrayProcessorWithDefaults()
+	ddArray.SetType(datadogV1.LOGSARRAYPROCESSORTYPE_ARRAY_PROCESSOR)
+
+	if tfName, exists := tfProcessor["name"].(string); exists {
+		ddArray.SetName(tfName)
+	}
+	if tfIsEnabled, exists := tfProcessor["is_enabled"].(bool); exists {
+		ddArray.SetIsEnabled(tfIsEnabled)
+	}
+
+	// Handle operation field
+	if tfOperations, exists := tfProcessor["operation"].([]interface{}); exists && len(tfOperations) > 0 {
+		tfOperation := tfOperations[0].(map[string]interface{})
+		operation := datadogV1.LogsArrayProcessorOperation{}
+
+		// Check for append operation
+		if tfAppends, exists := tfOperation["append"].([]interface{}); exists && len(tfAppends) > 0 {
+			tfAppend := tfAppends[0].(map[string]interface{})
+			appendOp := datadogV1.NewLogsArrayProcessorOperationAppendWithDefaults()
+			appendOp.SetType(datadogV1.LOGSARRAYPROCESSOROPERATIONAPPENDTYPE_APPEND)
+
+			if source, exists := tfAppend["source"].(string); exists {
+				appendOp.SetSource(source)
+			}
+			if target, exists := tfAppend["target"].(string); exists {
+				appendOp.SetTarget(target)
+			}
+			if preserveSource, exists := tfAppend["preserve_source"].(bool); exists {
+				appendOp.SetPreserveSource(preserveSource)
+			}
+
+			operation.LogsArrayProcessorOperationAppend = appendOp
+		} else if tfLengths, exists := tfOperation["length"].([]interface{}); exists && len(tfLengths) > 0 {
+			// Check for length operation
+			tfLength := tfLengths[0].(map[string]interface{})
+			lengthOp := datadogV1.NewLogsArrayProcessorOperationLengthWithDefaults()
+			lengthOp.SetType(datadogV1.LOGSARRAYPROCESSOROPERATIONLENGTHTYPE_LENGTH)
+
+			if source, exists := tfLength["source"].(string); exists {
+				lengthOp.SetSource(source)
+			}
+			if target, exists := tfLength["target"].(string); exists {
+				lengthOp.SetTarget(target)
+			}
+
+			operation.LogsArrayProcessorOperationLength = lengthOp
+		} else if tfSelects, exists := tfOperation["select"].([]interface{}); exists && len(tfSelects) > 0 {
+			// Check for select operation
+			tfSelect := tfSelects[0].(map[string]interface{})
+			selectOp := datadogV1.NewLogsArrayProcessorOperationSelectWithDefaults()
+			selectOp.SetType(datadogV1.LOGSARRAYPROCESSOROPERATIONSELECTTYPE_SELECT)
+
+			if source, exists := tfSelect["source"].(string); exists {
+				selectOp.SetSource(source)
+			}
+			if target, exists := tfSelect["target"].(string); exists {
+				selectOp.SetTarget(target)
+			}
+			if filter, exists := tfSelect["filter"].(string); exists {
+				selectOp.SetFilter(filter)
+			}
+			if valueToExtract, exists := tfSelect["value_to_extract"].(string); exists {
+				selectOp.SetValueToExtract(valueToExtract)
+			}
+
+			operation.LogsArrayProcessorOperationSelect = selectOp
+		} else {
+			return nil, fmt.Errorf("array processor must have exactly one operation type: append, length, or select")
+		}
+
+		ddArray.SetOperation(operation)
+	}
+
+	return ddArray, nil
 }
 
 func buildDatadogDateRemapperProcessor(tfProcessor map[string]interface{}) *datadogV1.LogsDateRemapper {
