@@ -173,6 +173,7 @@ func (r *DowntimeScheduleResource) Schema(_ context.Context, _ resource.SchemaRe
 									Optional:    true,
 									Computed:    true,
 									Description: "ISO-8601 Datetime to start the downtime. Must not include a UTC offset. If not provided, the downtime starts the moment it is created.",
+									Validators:  []validator.String{validators.TimeFormatValidator("2006-01-02T15:04:05")},
 								},
 							},
 						},
