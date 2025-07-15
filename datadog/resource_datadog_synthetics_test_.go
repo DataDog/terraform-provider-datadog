@@ -10,7 +10,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"log"
 	"maps"
 	_nethttp "net/http"
 	"regexp"
@@ -23,6 +22,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/retry"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
+
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 )
@@ -1277,6 +1277,11 @@ func syntheticsBrowserStepParams() schema.Schema {
 		Required:    true,
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
+				"append_to_content": {
+					Description: "Whether to append the `value` to existing text input content for a \"typeText\" step. By default, content is cleared before text input.",
+					Type:        schema.TypeBool,
+					Optional:    true,
+				},
 				"attribute": {
 					Description: `Name of the attribute to use for an "assert attribute" step.`,
 					Type:        schema.TypeString,
@@ -1397,6 +1402,26 @@ func syntheticsBrowserStepParams() schema.Schema {
 					Description: "ID of the tab to play the subtest.",
 					Type:        schema.TypeString,
 					Optional:    true,
+				},
+				"pattern": {
+					Description: `Pattern to use for an "extractFromEmailBody" step.`,
+					Type:        schema.TypeList,
+					MaxItems:    1,
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"value": {
+								Description: "Pattern to use for the step.",
+								Type:        schema.TypeString,
+								Optional:    true,
+							},
+							"type": {
+								Description: "Type of pattern to use for the step. Valid values are `regex`, `x_path`.",
+								Type:        schema.TypeString,
+								Optional:    true,
+							},
+						},
+					},
+					Optional: true,
 				},
 				"request": {
 					Description: "Request for an API step.",
@@ -1829,6 +1854,7 @@ func syntheticsHttpVersionOption() *schema.Schema {
  */
 
 func resourceDatadogSyntheticsTestCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+	diags := diag.Diagnostics{}
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -1836,14 +1862,19 @@ func resourceDatadogSyntheticsTestCreate(ctx context.Context, d *schema.Resource
 	testType := getSyntheticsTestType(d)
 
 	if *testType == datadogV1.SYNTHETICSTESTDETAILSTYPE_API {
-		syntheticsTest := buildDatadogSyntheticsAPITest(d)
+		syntheticsTest, buildDiags := buildDatadogSyntheticsAPITest(d)
+		diags = append(diags, buildDiags...)
+		if diags.HasError() {
+			return diags
+		}
+
 		createdSyntheticsTest, httpResponseCreate, err := apiInstances.GetSyntheticsApiV1().CreateSyntheticsAPITest(auth, *syntheticsTest)
 		if err != nil {
 			// Note that Id won't be set, so no state will be saved.
-			return utils.TranslateClientErrorDiag(err, httpResponseCreate, "error creating synthetics API test")
+			return append(diags, utils.TranslateClientErrorDiag(err, httpResponseCreate, "error creating synthetics API test")...)
 		}
 		if err := utils.CheckForUnparsed(createdSyntheticsTest); err != nil {
-			return diag.FromErr(err)
+			return append(diags, diag.FromErr(err)...)
 		}
 
 		var getSyntheticsApiTestResponse datadogV1.SyntheticsAPITest
@@ -1864,21 +1895,28 @@ func resourceDatadogSyntheticsTestCreate(ctx context.Context, d *schema.Resource
 			return nil
 		})
 		if err != nil {
-			return diag.FromErr(err)
+			return append(diags, diag.FromErr(err)...)
 		}
 
 		d.SetId(getSyntheticsApiTestResponse.GetPublicId())
 
-		return updateSyntheticsAPITestLocalState(d, &getSyntheticsApiTestResponse, false)
+		updateDiags := updateSyntheticsAPITestLocalState(d, &getSyntheticsApiTestResponse, false)
+		return append(diags, updateDiags...)
+
 	} else if *testType == datadogV1.SYNTHETICSTESTDETAILSTYPE_BROWSER {
-		syntheticsTest := buildDatadogSyntheticsBrowserTest(d)
+		syntheticsTest, buildDiags := buildDatadogSyntheticsBrowserTest(d)
+		diags = append(diags, buildDiags...)
+		if diags.HasError() {
+			return diags
+		}
+
 		createdSyntheticsTest, httpResponse, err := apiInstances.GetSyntheticsApiV1().CreateSyntheticsBrowserTest(auth, *syntheticsTest)
 		if err != nil {
 			// Note that Id won't be set, so no state will be saved.
-			return utils.TranslateClientErrorDiag(err, httpResponse, "error creating synthetics browser test")
+			return append(diags, utils.TranslateClientErrorDiag(err, httpResponse, "error creating synthetics browser test")...)
 		}
 		if err := utils.CheckForUnparsed(createdSyntheticsTest); err != nil {
-			return diag.FromErr(err)
+			return append(diags, diag.FromErr(err)...)
 		}
 
 		var getSyntheticsBrowserTestResponse datadogV1.SyntheticsBrowserTest
@@ -1899,21 +1937,22 @@ func resourceDatadogSyntheticsTestCreate(ctx context.Context, d *schema.Resource
 			return nil
 		})
 		if err != nil {
-			return diag.FromErr(err)
+			return append(diags, diag.FromErr(err)...)
 		}
 
 		d.SetId(getSyntheticsBrowserTestResponse.GetPublicId())
 
-		return updateSyntheticsBrowserTestLocalState(d, &getSyntheticsBrowserTestResponse)
+		updateDiags := updateSyntheticsBrowserTestLocalState(d, &getSyntheticsBrowserTestResponse)
+		return append(diags, updateDiags...)
 	} else if *testType == datadogV1.SYNTHETICSTESTDETAILSTYPE_MOBILE {
 		syntheticsTest := buildDatadogSyntheticsMobileTest(d)
 		createdSyntheticsTest, httpResponse, err := apiInstances.GetSyntheticsApiV1().CreateSyntheticsMobileTest(auth, *syntheticsTest)
 		if err != nil {
 			// Note that Id won't be set, so no state will be saved.
-			return utils.TranslateClientErrorDiag(err, httpResponse, "error creating synthetics mobile test")
+			return append(diags, utils.TranslateClientErrorDiag(err, httpResponse, "error creating synthetics mobile test")...)
 		}
 		if err := utils.CheckForUnparsed(createdSyntheticsTest); err != nil {
-			return diag.FromErr(err)
+			return append(diags, diag.FromErr(err)...)
 		}
 
 		var getSyntheticsMobileTestResponse datadogV1.SyntheticsMobileTest
@@ -1934,16 +1973,16 @@ func resourceDatadogSyntheticsTestCreate(ctx context.Context, d *schema.Resource
 			return nil
 		})
 		if err != nil {
-			return diag.FromErr(err)
+			return append(diags, diag.FromErr(err)...)
 		}
 
 		d.SetId(getSyntheticsMobileTestResponse.GetPublicId())
 
-		return updateSyntheticsMobileTestLocalState(d, &getSyntheticsMobileTestResponse)
-
+		updateDiags := updateSyntheticsMobileTestLocalState(d, &getSyntheticsMobileTestResponse)
+		return append(diags, updateDiags...)
 	}
 
-	return diag.Errorf("unrecognized synthetics test type %v", testType)
+	return append(diags, diag.Errorf("unrecognized synthetics test type %v", testType)...)
 }
 
 func resourceDatadogSyntheticsTestRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
@@ -2010,6 +2049,7 @@ func resourceDatadogSyntheticsTestRead(ctx context.Context, d *schema.ResourceDa
 }
 
 func resourceDatadogSyntheticsTestUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+	diags := diag.Diagnostics{}
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -2017,42 +2057,58 @@ func resourceDatadogSyntheticsTestUpdate(ctx context.Context, d *schema.Resource
 	testType := getSyntheticsTestType(d)
 
 	if *testType == datadogV1.SYNTHETICSTESTDETAILSTYPE_API {
-		syntheticsTest := buildDatadogSyntheticsAPITest(d)
+		syntheticsTest, buildDiags := buildDatadogSyntheticsAPITest(d)
+		diags = append(diags, buildDiags...)
+		if diags.HasError() {
+			return diags
+		}
+
 		updatedTest, httpResponse, err := apiInstances.GetSyntheticsApiV1().UpdateAPITest(auth, d.Id(), *syntheticsTest)
 		if err != nil {
 			// If the Update callback returns with or without an error, the full state is saved.
-			return utils.TranslateClientErrorDiag(err, httpResponse, "error updating synthetics API test")
+			return append(diags, utils.TranslateClientErrorDiag(err, httpResponse, "error updating synthetics API test")...)
 		}
 		if err := utils.CheckForUnparsed(updatedTest); err != nil {
-			return diag.FromErr(err)
+			return append(diags, diag.FromErr(err)...)
 		}
-		return updateSyntheticsAPITestLocalState(d, &updatedTest, false)
+
+		updateDiags := updateSyntheticsAPITestLocalState(d, &updatedTest, false)
+		return append(diags, updateDiags...)
+
 	} else if *testType == datadogV1.SYNTHETICSTESTDETAILSTYPE_BROWSER {
-		syntheticsTest := buildDatadogSyntheticsBrowserTest(d)
+		syntheticsTest, buildDiags := buildDatadogSyntheticsBrowserTest(d)
+		diags = append(diags, buildDiags...)
+		if diags.HasError() {
+			return diags
+		}
+
 		updatedTest, httpResponse, err := apiInstances.GetSyntheticsApiV1().UpdateBrowserTest(auth, d.Id(), *syntheticsTest)
 		if err != nil {
 			// If the Update callback returns with or without an error, the full state is saved.
-			return utils.TranslateClientErrorDiag(err, httpResponse, "error updating synthetics browser test")
+			return append(diags, utils.TranslateClientErrorDiag(err, httpResponse, "error updating synthetics browser test")...)
 		}
 		if err := utils.CheckForUnparsed(updatedTest); err != nil {
-			return diag.FromErr(err)
+			return append(diags, diag.FromErr(err)...)
 		}
-		return updateSyntheticsBrowserTestLocalState(d, &updatedTest)
+
+		updateDiags := updateSyntheticsBrowserTestLocalState(d, &updatedTest)
+		return append(diags, updateDiags...)
 	} else if *testType == datadogV1.SYNTHETICSTESTDETAILSTYPE_MOBILE {
 		syntheticsTest := buildDatadogSyntheticsMobileTest(d)
 		updatedTest, httpResponse, err := apiInstances.GetSyntheticsApiV1().UpdateMobileTest(auth, d.Id(), *syntheticsTest)
 		if err != nil {
 			// If the Update callback returns with or without an error, the full state is saved.
-			return utils.TranslateClientErrorDiag(err, httpResponse, "error updating synthetics browser test")
+			return append(diags, utils.TranslateClientErrorDiag(err, httpResponse, "error updating synthetics mobile test")...)
 		}
 		if err := utils.CheckForUnparsed(updatedTest); err != nil {
-			return diag.FromErr(err)
+			return append(diags, diag.FromErr(err)...)
 		}
 
-		return updateSyntheticsMobileTestLocalState(d, &updatedTest)
+		updateDiags := updateSyntheticsMobileTestLocalState(d, &updatedTest)
+		return append(diags, updateDiags...)
 	}
 
-	return diag.Errorf("unrecognized synthetics test type %v", testType)
+	return append(diags, diag.Errorf("unrecognized synthetics test type %v", testType)...)
 }
 
 func resourceDatadogSyntheticsTestDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
@@ -2082,7 +2138,7 @@ func updateSyntheticsBrowserTestLocalState(d *schema.ResourceData, syntheticsTes
 	config := syntheticsTest.GetConfig()
 	actualRequest := config.GetRequest()
 	localRequest, diags := buildTerraformTestRequest(actualRequest)
-	if diags != nil {
+	if diags.HasError() {
 		return diags
 	}
 
@@ -2190,6 +2246,7 @@ func updateSyntheticsBrowserTestLocalState(d *schema.ResourceData, syntheticsTes
 
 	for stepIndex, step := range steps {
 		localStep := make(map[string]interface{})
+
 		localStep["name"] = step.GetName()
 		localStep["public_id"] = step.GetPublicId()
 		localStep["type"] = string(step.GetType())
@@ -2242,13 +2299,18 @@ func updateSyntheticsBrowserTestLocalState(d *schema.ResourceData, syntheticsTes
 				files := d.Get(fmt.Sprintf("browser_step.%d.params.0.files", stepIndex))
 				localParams["files"] = files
 			} else {
-				localParams[convertStepParamsKey(key)] = convertStepParamsValueForState(convertStepParamsKey(key), value)
+				convertedValue, convertDiags := convertStepParamsValueForState(convertStepParamsKey(key), value)
+				diags = append(diags, convertDiags...)
+
+				localParams[convertStepParamsKey(key)] = convertedValue
 			}
 		}
 
 		// If received an element from the backend, extract the user locator part to update the local state
 		if elementParams, ok := paramsMap["element"]; ok {
-			serializedElementParams := convertStepParamsValueForState("element", elementParams)
+			serializedElementParams, convertDiags := convertStepParamsValueForState("element", elementParams)
+			diags = append(diags, convertDiags...)
+
 			var stepElement interface{}
 			utils.GetMetadataFromJSON([]byte(serializedElementParams.(string)), &stepElement)
 			if elementUserLocator, ok := stepElement.(map[string]interface{})["userLocator"]; ok {
@@ -2307,7 +2369,7 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 	config := syntheticsTest.GetConfig()
 	actualRequest := config.GetRequest()
 	localRequest, diags := buildTerraformTestRequest(actualRequest)
-	if diags != nil {
+	if diags.HasError() {
 		return diags
 	}
 
@@ -2365,10 +2427,9 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 	}
 
 	actualAssertions := config.GetAssertions()
-	localAssertions, err := buildTerraformAssertions(actualAssertions)
-
-	if err != nil {
-		return diag.FromErr(err)
+	localAssertions, diags := buildTerraformAssertions(actualAssertions)
+	if diags.HasError() {
+		return diags
 	}
 
 	if err := d.Set("assertion", localAssertions); err != nil {
@@ -2395,16 +2456,16 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 				localStep["name"] = step.SyntheticsAPITestStep.GetName()
 				localStep["subtype"] = step.SyntheticsAPITestStep.GetSubtype()
 
-				localAssertions, err := buildTerraformAssertions(step.SyntheticsAPITestStep.GetAssertions())
-				if err != nil {
-					return diag.FromErr(err)
+				localAssertions, diags := buildTerraformAssertions(step.SyntheticsAPITestStep.GetAssertions())
+				if diags.HasError() {
+					return diags
 				}
 				localStep["assertion"] = localAssertions
 				localStep["extracted_value"] = buildTerraformExtractedValues(step.SyntheticsAPITestStep.GetExtractedValues())
 
 				stepRequest := step.SyntheticsAPITestStep.GetRequest()
 				localRequest, diags := buildTerraformTestRequest(stepRequest)
-				if diags != nil {
+				if diags.HasError() {
 					return diags
 				}
 				localRequest["allow_insecure"] = stepRequest.GetAllowInsecure()
@@ -2599,7 +2660,8 @@ func updateSyntheticsMobileTestLocalState(d *schema.ResourceData, syntheticsTest
  * transformer functions between datadog and terraform
  */
 
-func buildDatadogSyntheticsAPITest(d *schema.ResourceData) *datadogV1.SyntheticsAPITest {
+func buildDatadogSyntheticsAPITest(d *schema.ResourceData) (*datadogV1.SyntheticsAPITest, diag.Diagnostics) {
+	diags := diag.Diagnostics{}
 	syntheticsTest := datadogV1.NewSyntheticsAPITestWithDefaults()
 	syntheticsTest.SetName(d.Get("name").(string))
 
@@ -2622,7 +2684,10 @@ func buildDatadogSyntheticsAPITest(d *schema.ResourceData) *datadogV1.Synthetics
 	httpVersion, httpVersionOk := d.GetOk("options_list.0.http_version")
 	if bodyOk && body != "" {
 		if methodOk && (method == "GET" || method == "HEAD" || method == "DELETE") && (!httpVersionOk || httpVersion != "http1") {
-			log.Printf("[WARN] body is not valid for %s requests. It'll be ignored.", method)
+			diags = append(diags, diag.Diagnostic{
+				Severity: diag.Warning,
+				Summary:  fmt.Sprintf("`request_definition.body` is not valid for %s requests. It will be ignored.", method),
+			})
 		} else {
 			request.SetBody(body.(string))
 		}
@@ -2713,17 +2778,20 @@ func buildDatadogSyntheticsAPITest(d *schema.ResourceData) *datadogV1.Synthetics
 		}
 	}
 
-	request = *completeSyntheticsTestRequest(request, d.Get("request_headers").(map[string]interface{}), d.Get("request_query").(map[string]interface{}), d.Get("request_basicauth").([]interface{}), d.Get("request_proxy").([]interface{}), d.Get("request_metadata").(map[string]interface{}))
+	requestPtr, requestDiags := completeSyntheticsTestRequest(request, d.Get("request_headers").(map[string]interface{}), d.Get("request_query").(map[string]interface{}), d.Get("request_basicauth").([]interface{}), d.Get("request_proxy").([]interface{}), d.Get("request_metadata").(map[string]interface{}))
+	diags = append(diags, requestDiags...)
 
 	config := datadogV1.NewSyntheticsAPITestConfigWithDefaults()
 
 	if syntheticsTest.GetSubtype() != "multi" {
-		config.SetRequest(request)
+		config.SetRequest(*requestPtr)
 	}
 
 	config.Assertions = []datadogV1.SyntheticsAssertion{}
 	if attr, ok := d.GetOk("assertion"); ok && attr != nil {
-		assertions := buildDatadogAssertions(attr.([]interface{}))
+		assertions, assertionDiags := buildDatadogAssertions(attr.([]interface{}))
+		diags = append(diags, assertionDiags...)
+
 		config.Assertions = assertions
 	}
 
@@ -2751,8 +2819,10 @@ func buildDatadogSyntheticsAPITest(d *schema.ResourceData) *datadogV1.Synthetics
 				extractedValues := buildDatadogExtractedValues(stepMap["extracted_value"].([]interface{}))
 				step.SyntheticsAPITestStep.SetExtractedValues(extractedValues)
 
-				assertions := stepMap["assertion"].([]interface{})
-				step.SyntheticsAPITestStep.SetAssertions(buildDatadogAssertions(assertions))
+				assertions, assertionDiags := buildDatadogAssertions(stepMap["assertion"].([]interface{}))
+				diags = append(diags, assertionDiags...)
+
+				step.SyntheticsAPITestStep.SetAssertions(assertions)
 
 				request := datadogV1.SyntheticsTestRequest{}
 				requests := stepMap["request_definition"].([]interface{})
@@ -2788,7 +2858,10 @@ func buildDatadogSyntheticsAPITest(d *schema.ResourceData) *datadogV1.Synthetics
 						body := requestMap["body"].(string)
 						if body != "" {
 							if (method == "GET" || method == "HEAD" || method == "DELETE") && httpVersion != "http1" {
-								log.Printf("[WARN] body is not valid for %s requests. It'll be ignored.", method)
+								diags = append(diags, diag.Diagnostic{
+									Severity: diag.Warning,
+									Summary:  fmt.Sprintf("`request_definition.body` is not valid for %s requests. It will be ignored.", method),
+								})
 							} else {
 								request.SetBody(body)
 							}
@@ -2895,9 +2968,10 @@ func buildDatadogSyntheticsAPITest(d *schema.ResourceData) *datadogV1.Synthetics
 					}
 				}
 
-				request = *completeSyntheticsTestRequest(request, stepMap["request_headers"].(map[string]interface{}), stepMap["request_query"].(map[string]interface{}), stepMap["request_basicauth"].([]interface{}), stepMap["request_proxy"].([]interface{}), stepMap["request_metadata"].(map[string]interface{}))
+				requestPtr, requestDiags := completeSyntheticsTestRequest(request, stepMap["request_headers"].(map[string]interface{}), stepMap["request_query"].(map[string]interface{}), stepMap["request_basicauth"].([]interface{}), stepMap["request_proxy"].([]interface{}), stepMap["request_metadata"].(map[string]interface{}))
+				diags = append(diags, requestDiags...)
 
-				step.SyntheticsAPITestStep.SetRequest(request)
+				step.SyntheticsAPITestStep.SetRequest(*requestPtr)
 
 				step.SyntheticsAPITestStep.SetAllowFailure(stepMap["allow_failure"].(bool))
 				step.SyntheticsAPITestStep.SetExitIfSucceed(stepMap["exit_if_succeed"].(bool))
@@ -2953,11 +3027,13 @@ func buildDatadogSyntheticsAPITest(d *schema.ResourceData) *datadogV1.Synthetics
 	}
 	syntheticsTest.SetTags(tags)
 
-	return syntheticsTest
+	return syntheticsTest, diags
 }
 
-func buildDatadogSyntheticsBrowserTest(d *schema.ResourceData) *datadogV1.SyntheticsBrowserTest {
+func buildDatadogSyntheticsBrowserTest(d *schema.ResourceData) (*datadogV1.SyntheticsBrowserTest, diag.Diagnostics) {
+	diags := diag.Diagnostics{}
 	request := datadogV1.SyntheticsTestRequest{}
+
 	if attr, ok := d.GetOk("request_definition.0.method"); ok {
 		request.SetMethod(attr.(string))
 	}
@@ -3112,16 +3188,17 @@ func buildDatadogSyntheticsBrowserTest(d *schema.ResourceData) *datadogV1.Synthe
 			step.SetTimeout(int64(stepMap["timeout"].(int)))
 			step.SetNoScreenshot(stepMap["no_screenshot"].(bool))
 
-			params := getStepParams(stepMap, d)
-			step.SetParams(params)
+			params, stepParamsDiags := getStepParams(stepMap, d)
+			diags = append(diags, stepParamsDiags...)
 
+			step.SetParams(params)
 			steps = append(steps, step)
 		}
 
 		syntheticsTest.SetSteps(steps)
 	}
 
-	return syntheticsTest
+	return syntheticsTest, diags
 }
 
 func buildDatadogSyntheticsMobileTest(d *schema.ResourceData) *datadogV1.SyntheticsMobileTest {
@@ -3212,7 +3289,8 @@ func buildDatadogSyntheticsMobileTest(d *schema.ResourceData) *datadogV1.Synthet
 	return syntheticsTest
 }
 
-func buildDatadogAssertions(attr []interface{}) []datadogV1.SyntheticsAssertion {
+func buildDatadogAssertions(attr []interface{}) ([]datadogV1.SyntheticsAssertion, diag.Diagnostics) {
+	diags := diag.Diagnostics{}
 	assertions := make([]datadogV1.SyntheticsAssertion, 0)
 
 	for _, assertion := range attr {
@@ -3242,13 +3320,19 @@ func buildDatadogAssertions(attr []interface{}) []datadogV1.SyntheticsAssertion 
 							if metaSchema, err := datadogV1.NewSyntheticsAssertionJSONSchemaMetaSchemaFromValue(v.(string)); err == nil {
 								subTarget.SetMetaSchema(*metaSchema)
 							} else {
-								log.Printf("[ERROR] Error converting json schema meta schema: %v", err)
+								diags = append(diags, diag.Diagnostic{
+									Severity: diag.Error,
+									Summary:  fmt.Sprintf("Error converting JSON schema assertion `metaschema`: %v", err),
+								})
 							}
 						}
 						assertionJSONSchemaTarget.SetTarget(*subTarget)
 					}
 					if _, ok := assertionMap["target"]; ok {
-						log.Printf("[WARN] target shouldn't be specified for validateJSONSchema operator, only targetJSONSchema")
+						diags = append(diags, diag.Diagnostic{
+							Severity: diag.Warning,
+							Summary:  "`assertion.target` is not valid for `validatesJSONSchema` operator. It will be ignored, use `assertion.targetjsonschema` instead.",
+						})
 					}
 					assertions = append(assertions, datadogV1.SyntheticsAssertionJSONSchemaTargetAsSyntheticsAssertion(assertionJSONSchemaTarget))
 				} else if assertionOperator == string(datadogV1.SYNTHETICSASSERTIONJSONPATHOPERATOR_VALIDATES_JSON_PATH) {
@@ -3293,7 +3377,10 @@ func buildDatadogAssertions(attr []interface{}) []datadogV1.SyntheticsAssertion 
 						assertionJSONPathTarget.SetTarget(*subTarget)
 					}
 					if _, ok := assertionMap["target"]; ok {
-						log.Printf("[WARN] target shouldn't be specified for validatesJSONPath operator, only targetjsonpath")
+						diags = append(diags, diag.Diagnostic{
+							Severity: diag.Warning,
+							Summary:  "`assertion.target` is not valid for `validatesJSONPath` operator. It will be ignored, use `assertion.targetjsonpath` instead.",
+						})
 					}
 					assertions = append(assertions, datadogV1.SyntheticsAssertionJSONPathTargetAsSyntheticsAssertion(assertionJSONPathTarget))
 				} else if assertionOperator == string(datadogV1.SYNTHETICSASSERTIONXPATHOPERATOR_VALIDATES_X_PATH) {
@@ -3332,7 +3419,10 @@ func buildDatadogAssertions(attr []interface{}) []datadogV1.SyntheticsAssertion 
 						assertionXPathTarget.SetTarget(*subTarget)
 					}
 					if _, ok := assertionMap["target"]; ok {
-						log.Printf("[WARN] target shouldn't be specified for validateXPath operator, only targetxpath")
+						diags = append(diags, diag.Diagnostic{
+							Severity: diag.Warning,
+							Summary:  "`assertion.target` is not valid for `validatesXPath` operator. It will be ignored, use `assertion.targetxpath` instead.",
+						})
 					}
 					assertions = append(assertions, datadogV1.SyntheticsAssertionXPathTargetAsSyntheticsAssertion(assertionXPathTarget))
 				} else {
@@ -3359,13 +3449,22 @@ func buildDatadogAssertions(attr []interface{}) []datadogV1.SyntheticsAssertion 
 						assertionTarget.SetTimingsScope(datadogV1.SyntheticsAssertionTimingsScope(v))
 					}
 					if v, ok := assertionMap["targetjsonschema"].([]interface{}); ok && len(v) > 0 {
-						log.Printf("[WARN] targetjsonschema shouldn't be specified for non-validatesJSONSchema operator, only target")
+						diags = append(diags, diag.Diagnostic{
+							Severity: diag.Warning,
+							Summary:  fmt.Sprintf("`assertion.targetjsonschema` is not valid for `%s` operator. It will be ignored, use `assertion.target` instead.", assertionOperator),
+						})
 					}
 					if v, ok := assertionMap["targetjsonpath"].([]interface{}); ok && len(v) > 0 {
-						log.Printf("[WARN] targetjsonpath shouldn't be specified for non-validatesJSONPath operator, only target")
+						diags = append(diags, diag.Diagnostic{
+							Severity: diag.Warning,
+							Summary:  fmt.Sprintf("`assertion.targetjsonpath` is not valid for `%s` operator. It will be ignored, use `assertion.target` instead.", assertionOperator),
+						})
 					}
 					if v, ok := assertionMap["targetxpath"].([]interface{}); ok && len(v) > 0 {
-						log.Printf("[WARN] targetxpath shouldn't be specified for non-validatesXPath operator, only target")
+						diags = append(diags, diag.Diagnostic{
+							Severity: diag.Warning,
+							Summary:  fmt.Sprintf("`assertion.targetxpath` is not valid for `%s` operator. It will be ignored, use `assertion.target` instead.", assertionOperator),
+						})
 					}
 					assertions = append(assertions, datadogV1.SyntheticsAssertionTargetAsSyntheticsAssertion(assertionTarget))
 				}
@@ -3373,11 +3472,13 @@ func buildDatadogAssertions(attr []interface{}) []datadogV1.SyntheticsAssertion 
 		}
 	}
 
-	return assertions
+	return assertions, diags
 }
 
-func buildTerraformAssertions(actualAssertions []datadogV1.SyntheticsAssertion) (localAssertions []map[string]interface{}, err error) {
-	localAssertions = make([]map[string]interface{}, len(actualAssertions))
+func buildTerraformAssertions(actualAssertions []datadogV1.SyntheticsAssertion) ([]map[string]interface{}, diag.Diagnostics) {
+	diags := diag.Diagnostics{}
+	localAssertions := make([]map[string]interface{}, len(actualAssertions))
+
 	for i, assertion := range actualAssertions {
 		localAssertion := make(map[string]interface{})
 		if assertion.SyntheticsAssertionTarget != nil {
@@ -3389,7 +3490,10 @@ func buildTerraformAssertions(actualAssertions []datadogV1.SyntheticsAssertion) 
 				localAssertion["property"] = assertionTarget.GetProperty()
 			}
 			if target, ok := assertionTarget.GetTargetOk(); ok {
-				localAssertion["target"] = convertToString(target)
+				convertedTarget, convertDiags := convertToString(target)
+				diags = append(diags, convertDiags...)
+
+				localAssertion["target"] = convertedTarget
 			}
 			if v, ok := assertionTarget.GetTypeOk(); ok {
 				localAssertion["type"] = string(*v)
@@ -3438,7 +3542,11 @@ func buildTerraformAssertions(actualAssertions []datadogV1.SyntheticsAssertion) 
 					} else if vAsFloat, ok := val.(*float64); ok {
 						localTarget["targetvalue"] = strconv.FormatFloat(*vAsFloat, 'f', -1, 64)
 					} else {
-						return localAssertions, fmt.Errorf("unrecognized targetvalue type %v", v)
+						diags = append(diags, diag.Diagnostic{
+							Severity: diag.Error,
+							Summary:  fmt.Sprintf("Unrecognized `targetvalue` type: %v", v),
+						})
+						return localAssertions, diags
 					}
 				}
 				if v, ok := target.GetElementsOperatorOk(); ok {
@@ -3472,7 +3580,11 @@ func buildTerraformAssertions(actualAssertions []datadogV1.SyntheticsAssertion) 
 					} else if vAsFloat, ok := val.(*float64); ok {
 						localTarget["targetvalue"] = strconv.FormatFloat(*vAsFloat, 'f', -1, 64)
 					} else {
-						return localAssertions, fmt.Errorf("unrecognized targetvalue type %v", v)
+						diags = append(diags, diag.Diagnostic{
+							Severity: diag.Error,
+							Summary:  fmt.Sprintf("Unrecognized `targetvalue` type: %v", v),
+						})
+						return localAssertions, diags
 					}
 				}
 				localAssertion["targetxpath"] = []map[string]string{localTarget}
@@ -3486,7 +3598,10 @@ func buildTerraformAssertions(actualAssertions []datadogV1.SyntheticsAssertion) 
 				localAssertion["operator"] = string(*v)
 			}
 			if target, ok := assertionTarget.GetTargetOk(); ok {
-				localAssertion["target"] = convertToString(target)
+				convertedTarget, convertDiags := convertToString(target)
+				diags = append(diags, convertDiags...)
+
+				localAssertion["target"] = convertedTarget
 			}
 			if v, ok := assertionTarget.GetTypeOk(); ok {
 				localAssertion["type"] = string(*v)
@@ -3505,15 +3620,17 @@ func buildTerraformAssertions(actualAssertions []datadogV1.SyntheticsAssertion) 
 		localAssertions[i] = localAssertion
 	}
 
-	return localAssertions, nil
+	return localAssertions, diags
 }
 
-func buildDatadogBasicAuth(requestBasicAuth map[string]interface{}) datadogV1.SyntheticsBasicAuth {
+func buildDatadogBasicAuth(requestBasicAuth map[string]interface{}) (datadogV1.SyntheticsBasicAuth, diag.Diagnostics) {
+	diags := diag.Diagnostics{}
+
 	if requestBasicAuth["type"] == "web" && requestBasicAuth["username"] != "" {
 		basicAuth := datadogV1.NewSyntheticsBasicAuthWebWithDefaults()
 		basicAuth.SetPassword(requestBasicAuth["password"].(string))
 		basicAuth.SetUsername(requestBasicAuth["username"].(string))
-		return datadogV1.SyntheticsBasicAuthWebAsSyntheticsBasicAuth(basicAuth)
+		return datadogV1.SyntheticsBasicAuthWebAsSyntheticsBasicAuth(basicAuth), diags
 	}
 
 	if requestBasicAuth["type"] == "sigv4" && requestBasicAuth["access_key"] != "" && requestBasicAuth["secret_key"] != "" {
@@ -3523,7 +3640,7 @@ func buildDatadogBasicAuth(requestBasicAuth map[string]interface{}) datadogV1.Sy
 		basicAuth.SetServiceName(requestBasicAuth["service_name"].(string))
 		basicAuth.SetSessionToken(requestBasicAuth["session_token"].(string))
 
-		return datadogV1.SyntheticsBasicAuthSigv4AsSyntheticsBasicAuth(basicAuth)
+		return datadogV1.SyntheticsBasicAuthSigv4AsSyntheticsBasicAuth(basicAuth), diags
 	}
 
 	if requestBasicAuth["type"] == "ntlm" {
@@ -3534,7 +3651,7 @@ func buildDatadogBasicAuth(requestBasicAuth map[string]interface{}) datadogV1.Sy
 		basicAuth.SetDomain(requestBasicAuth["domain"].(string))
 		basicAuth.SetWorkstation(requestBasicAuth["workstation"].(string))
 
-		return datadogV1.SyntheticsBasicAuthNTLMAsSyntheticsBasicAuth(basicAuth)
+		return datadogV1.SyntheticsBasicAuthNTLMAsSyntheticsBasicAuth(basicAuth), diags
 	}
 
 	if requestBasicAuth["type"] == "oauth-client" {
@@ -3562,7 +3679,7 @@ func buildDatadogBasicAuth(requestBasicAuth map[string]interface{}) datadogV1.Sy
 			basicAuth.SetScope(v)
 		}
 
-		return datadogV1.SyntheticsBasicAuthOauthClientAsSyntheticsBasicAuth(basicAuth)
+		return datadogV1.SyntheticsBasicAuthOauthClientAsSyntheticsBasicAuth(basicAuth), diags
 	}
 
 	if requestBasicAuth["type"] == "oauth-rop" {
@@ -3591,7 +3708,7 @@ func buildDatadogBasicAuth(requestBasicAuth map[string]interface{}) datadogV1.Sy
 		basicAuth.SetClientId(requestBasicAuth["client_id"].(string))
 		basicAuth.SetClientSecret(requestBasicAuth["client_secret"].(string))
 
-		return datadogV1.SyntheticsBasicAuthOauthROPAsSyntheticsBasicAuth(basicAuth)
+		return datadogV1.SyntheticsBasicAuthOauthROPAsSyntheticsBasicAuth(basicAuth), diags
 	}
 
 	if requestBasicAuth["type"] == "digest" {
@@ -3600,11 +3717,14 @@ func buildDatadogBasicAuth(requestBasicAuth map[string]interface{}) datadogV1.Sy
 			datadogV1.SYNTHETICSBASICAUTHDIGESTTYPE_DIGEST,
 			requestBasicAuth["username"].(string),
 		)
-		return datadogV1.SyntheticsBasicAuthDigestAsSyntheticsBasicAuth(basicAuth)
+		return datadogV1.SyntheticsBasicAuthDigestAsSyntheticsBasicAuth(basicAuth), diags
 	}
 
-	log.Printf("[WARN] unrecognized basic auth type %s", requestBasicAuth["type"].(string))
-	return datadogV1.SyntheticsBasicAuth{}
+	diags = append(diags, diag.Diagnostic{
+		Severity: diag.Warning,
+		Summary:  fmt.Sprintf("Unrecognized `request_basicauth.type`: %s", requestBasicAuth["type"].(string)),
+	})
+	return datadogV1.SyntheticsBasicAuth{}, diags
 }
 
 func buildTerraformBasicAuth(basicAuth *datadogV1.SyntheticsBasicAuth) map[string]string {
@@ -4767,7 +4887,9 @@ func buildTerraformMobileTestSteps(steps []datadogV1.SyntheticsMobileStep) []map
 	return localSteps
 }
 
-func completeSyntheticsTestRequest(request datadogV1.SyntheticsTestRequest, requestHeaders map[string]interface{}, requestQuery map[string]interface{}, requestBasicAuths []interface{}, requestProxies []interface{}, requestMetadata map[string]interface{}) *datadogV1.SyntheticsTestRequest {
+func completeSyntheticsTestRequest(request datadogV1.SyntheticsTestRequest, requestHeaders map[string]interface{}, requestQuery map[string]interface{}, requestBasicAuths []interface{}, requestProxies []interface{}, requestMetadata map[string]interface{}) (*datadogV1.SyntheticsTestRequest, diag.Diagnostics) {
+	diags := diag.Diagnostics{}
+
 	if len(requestHeaders) > 0 {
 		headers := make(map[string]string, len(requestHeaders))
 
@@ -4784,7 +4906,10 @@ func completeSyntheticsTestRequest(request datadogV1.SyntheticsTestRequest, requ
 
 	if len(requestBasicAuths) > 0 {
 		if requestBasicAuth, ok := requestBasicAuths[0].(map[string]interface{}); ok {
-			request.SetBasicAuth(buildDatadogBasicAuth(requestBasicAuth))
+			basicAuth, basicAuthDiags := buildDatadogBasicAuth(requestBasicAuth)
+			diags = append(diags, basicAuthDiags...)
+
+			request.SetBasicAuth(basicAuth)
 		}
 	}
 
@@ -4804,11 +4929,13 @@ func completeSyntheticsTestRequest(request datadogV1.SyntheticsTestRequest, requ
 		request.SetMetadata(metadata)
 	}
 
-	return &request
+	return &request, diags
 }
 
 func buildTerraformTestRequest(request datadogV1.SyntheticsTestRequest) (map[string]interface{}, diag.Diagnostics) {
+	diags := diag.Diagnostics{}
 	localRequest := make(map[string]interface{})
+
 	if request.HasBody() {
 		localRequest["body"] = request.GetBody()
 	}
@@ -4821,7 +4948,10 @@ func buildTerraformTestRequest(request datadogV1.SyntheticsTestRequest) (map[str
 		localRequest["form"] = localForm
 	}
 	if request.HasMethod() {
-		localRequest["method"] = convertToString(request.GetMethod())
+		convertedMethod, convertDiags := convertToString(request.GetMethod())
+		diags = append(diags, convertDiags...)
+
+		localRequest["method"] = convertedMethod
 	}
 	if request.HasTimeout() {
 		localRequest["timeout"] = request.GetTimeout()
@@ -4841,7 +4971,10 @@ func buildTerraformTestRequest(request datadogV1.SyntheticsTestRequest) (map[str
 		}
 	}
 	if request.HasDnsServer() {
-		localRequest["dns_server"] = convertToString(request.GetDnsServer())
+		convertedDnsServer, convertDiags := convertToString(request.GetDnsServer())
+		diags = append(diags, convertDiags...)
+
+		localRequest["dns_server"] = convertedDnsServer
 	}
 	if request.HasDnsServerPort() {
 		port := request.GetDnsServerPort()
@@ -4887,22 +5020,32 @@ func buildTerraformTestRequest(request datadogV1.SyntheticsTestRequest) (map[str
 	if request.HasIsMessageBase64Encoded() {
 		localRequest["is_message_base64_encoded"] = request.GetIsMessageBase64Encoded()
 	}
-	var err error
+
 	if request.HasCompressedJsonDescriptor() {
-		localRequest["proto_json_descriptor"], err = decompressAndDecodeValue(request.GetCompressedJsonDescriptor(), false)
+		var value, err = decompressAndDecodeValue(request.GetCompressedJsonDescriptor(), false)
 		if err != nil {
-			return nil, diag.FromErr(err)
+			diags = append(diags, diag.Diagnostic{
+				Severity: diag.Error,
+				Summary:  fmt.Sprintf("Error decompressing JSON descriptor: %v", err),
+			})
+			return nil, diags
 		}
+		localRequest["proto_json_descriptor"] = value
 	}
 
 	if request.HasCompressedProtoFile() {
-		localRequest["plain_proto_file"], err = decompressAndDecodeValue(request.GetCompressedProtoFile(), true)
+		var value, err = decompressAndDecodeValue(request.GetCompressedProtoFile(), true)
 		if err != nil {
-			return nil, diag.FromErr(err)
+			diags = append(diags, diag.Diagnostic{
+				Severity: diag.Error,
+				Summary:  fmt.Sprintf("Error decompressing proto file: %v", err),
+			})
+			return nil, diags
 		}
+		localRequest["plain_proto_file"] = value
 	}
 
-	return localRequest, nil
+	return localRequest, diags
 }
 
 func buildDatadogTestRequestProxy(requestProxy map[string]interface{}) datadogV1.SyntheticsTestRequestProxy {
@@ -4963,52 +5106,76 @@ func decompressAndDecodeValue(value string, acceptBase64Only bool) (string, erro
 	return string(compressedProtoFile), nil
 }
 
-func convertStepParamsValueForConfig(stepType interface{}, key string, value interface{}) interface{} {
+func convertStepParamsValueForConfig(stepType interface{}, key string, value interface{}) (interface{}, diag.Diagnostics) {
+	diags := diag.Diagnostics{}
+
 	switch key {
 	case "element", "email", "file", "files", "request", "requests":
 		var result interface{}
 		if err := utils.GetMetadataFromJSON([]byte(value.(string)), &result); err != nil {
-			log.Printf("[ERROR] Error converting step param %s: %v", key, err)
+			diags = append(diags, diag.Diagnostic{
+				Severity: diag.Error,
+				Summary:  fmt.Sprintf("Error converting step param %s: %v", key, err),
+			})
 		}
-		return result
+		return result, diags
 
 	case "playing_tab_id":
 		result, _ := strconv.Atoi(value.(string))
-		return result
+		return result, diags
 
 	case "value":
 		if stepType == datadogV1.SYNTHETICSSTEPTYPE_WAIT {
 			result, _ := strconv.Atoi(value.(string))
-			return result
+			return result, diags
 		}
 
-		return value
+		return value, diags
 
-	case "variable":
-		return value.([]interface{})[0]
+	case "pattern", "variable":
+		return value.([]interface{})[0], diags
+
 	}
 
-	return value
+	return value, diags
 }
 
-func convertStepParamsValueForState(key string, value interface{}) interface{} {
+func convertStepParamsValueForState(key string, value interface{}) (interface{}, diag.Diagnostics) {
+	diags := diag.Diagnostics{}
+
 	switch key {
 	case "element", "email", "file", "files", "request", "requests":
-		result, _ := json.Marshal(value)
-		return string(result)
+		result, err := json.Marshal(value)
+		if err != nil {
+			diags = append(diags, diag.Diagnostic{
+				Severity: diag.Error,
+				Summary:  fmt.Sprintf("Error marshalling step param %s: %v", key, err),
+			})
+		}
+
+		return string(result), diags
 
 	case "playing_tab_id", "value":
-		return convertToString(value)
+		convertedValue, convertDiags := convertToString(value)
+		diags = append(diags, convertDiags...)
 
-	case "variable":
-		return []interface{}{value}
+		return convertedValue, diags
+
+	case "pattern", "variable":
+		return []interface{}{value}, diags
 	}
 
-	return value
+	return value, diags
 }
 
 func convertStepParamsKey(key string) string {
 	switch key {
+	case "appendToContent":
+		return "append_to_content"
+
+	case "append_to_content":
+		return "appendToContent"
+
 	case "click_type":
 		return "clickType"
 
@@ -5043,33 +5210,38 @@ func convertStepParamsKey(key string) string {
 	return key
 }
 
-func convertToString(i interface{}) string {
+func convertToString(i interface{}) (string, diag.Diagnostics) {
+	diags := diag.Diagnostics{}
+
 	switch v := i.(type) {
 	case bool:
-		return strconv.FormatBool(v)
+		return strconv.FormatBool(v), diags
 	case int:
-		return strconv.Itoa(v)
+		return strconv.Itoa(v), diags
 	case float64:
-		return strconv.FormatFloat(v, 'f', -1, 64)
+		return strconv.FormatFloat(v, 'f', -1, 64), diags
 	case string:
-		return v
+		return v, diags
 	case *datadogV1.SyntheticsAssertionTargetValue:
 		instance := v.GetActualInstance()
 		if str, ok := instance.(*string); ok {
-			return *str
+			return *str, diags
 		}
 		if num, ok := instance.(*float64); ok {
-			return strconv.FormatFloat(*num, 'f', -1, 64)
+			return strconv.FormatFloat(*num, 'f', -1, 64), diags
 		}
-		log.Printf("[WARN] unsupported target value type: %T", instance)
-		return ""
+		diags = append(diags, diag.Diagnostic{
+			Severity: diag.Warning,
+			Summary:  fmt.Sprintf("Unsupported target value type: %T", instance),
+		})
+		return "", diags
 	default:
 		// TODO: manage target for JSON body assertions
-		valStrr, err := json.Marshal(v)
+		valStr, err := json.Marshal(v)
 		if err == nil {
-			return string(valStrr)
+			return string(valStr), diags
 		}
-		return ""
+		return "", diags
 	}
 }
 
@@ -5085,7 +5257,8 @@ func getCertificateStateValue(content string) string {
 	return utils.ConvertToSha256(content)
 }
 
-func getStepParams(stepMap map[string]interface{}, d *schema.ResourceData) map[string]interface{} {
+func getStepParams(stepMap map[string]interface{}, d *schema.ResourceData) (map[string]interface{}, diag.Diagnostics) {
+	diags := diag.Diagnostics{}
 	stepType := datadogV1.SyntheticsStepType(stepMap["type"].(string))
 
 	params := make(map[string]interface{})
@@ -5095,7 +5268,9 @@ func getStepParams(stepMap map[string]interface{}, d *schema.ResourceData) map[s
 	includeElement := false
 	for _, key := range stepTypeParams {
 		if stepMap, ok := stepParams.(map[string]interface{}); ok && stepMap[key] != "" {
-			convertedValue := convertStepParamsValueForConfig(stepType, key, stepMap[key])
+			convertedValue, convertDiags := convertStepParamsValueForConfig(stepType, key, stepMap[key])
+			diags = append(diags, convertDiags...)
+
 			params[convertStepParamsKey(key)] = convertedValue
 		}
 
@@ -5236,7 +5411,7 @@ func getStepParams(stepMap map[string]interface{}, d *schema.ResourceData) map[s
 		params["element"] = stepElement
 	}
 
-	return params
+	return params, diags
 }
 
 func getParamsKeysForStepType(stepType datadogV1.SyntheticsStepType) []string {
@@ -5274,6 +5449,9 @@ func getParamsKeysForStepType(stepType datadogV1.SyntheticsStepType) []string {
 	case datadogV1.SYNTHETICSSTEPTYPE_CLICK:
 		return []string{"click_type", "click_with_javascript", "element"}
 
+	case datadogV1.SYNTHETICSSTEPTYPE_EXTRACT_FROM_EMAIL_BODY:
+		return []string{"pattern", "variable"}
+
 	case datadogV1.SYNTHETICSSTEPTYPE_EXTRACT_FROM_JAVASCRIPT:
 		return []string{"code", "element", "variable"}
 
@@ -5308,7 +5486,7 @@ func getParamsKeysForStepType(stepType datadogV1.SyntheticsStepType) []string {
 		return []string{"element", "value"}
 
 	case datadogV1.SYNTHETICSSTEPTYPE_TYPE_TEXT:
-		return []string{"delay", "element", "value"}
+		return []string{"append_to_content", "delay", "element", "value"}
 
 	case datadogV1.SYNTHETICSSTEPTYPE_UPLOAD_FILES:
 		return []string{"element", "files", "with_click"}

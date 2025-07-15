@@ -3,12 +3,12 @@
 page_title: "datadog_workflow_automation Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Enables the creation and management of Datadog workflows using Workflow Automation. To easily export a workflow for use with Terraform, click the export button in the Datadog Workflow Automation UI cog menu. This resource requires scoped application keys for authentication.
+  Enables the creation and management of Datadog workflows using Workflow Automation. To easily export a workflow for use with Terraform, use the export button in the Datadog Workflow Automation UI. This resource requires a registered application key https://registry.terraform.io/providers/DataDog/datadog/latest/docs/resources/app_key_registration.
 ---
 
 # datadog_workflow_automation (Resource)
 
-Enables the creation and management of Datadog workflows using Workflow Automation. To easily export a workflow for use with Terraform, click the export button in the Datadog Workflow Automation UI cog menu. This resource requires scoped application keys for authentication.
+Enables the creation and management of Datadog workflows using Workflow Automation. To easily export a workflow for use with Terraform, use the export button in the Datadog Workflow Automation UI. This resource requires a [registered application key](https://registry.terraform.io/providers/DataDog/datadog/latest/docs/resources/app_key_registration).
 
 ## Example Usage
 
@@ -83,6 +83,8 @@ resource "datadog_workflow_automation" "workflow" {
 ## Import
 
 Import is supported using the following syntax:
+
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
 
 ```shell
 terraform import datadog_workflow_automation.my_workflow 11111111-2222-3333-4444-555555555555

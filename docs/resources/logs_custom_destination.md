@@ -142,6 +142,8 @@ Required:
 
 Import is supported using the following syntax:
 
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
+
 ```shell
 # Custom destinations can be imported using the destination ID. Caution: auth credentials can not be imported.
 terraform import datadog_logs_custom_destination.sample_destination "destination-id"

@@ -47,6 +47,8 @@ resource "datadog_authn_mapping" "dev_ro_role_mapping" {
 
 Import is supported using the following syntax:
 
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
+
 ```shell
 # AuthN mappings can be imported using their ID, e.g.
 terraform import datadog_authn_mapping.dev_ro_mapping 000000-0000-0000-0000-000000000000
