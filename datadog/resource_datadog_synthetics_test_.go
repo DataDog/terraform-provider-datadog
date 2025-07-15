@@ -10,7 +10,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"log"
 	"maps"
 	_nethttp "net/http"
@@ -1870,7 +1869,7 @@ func resourceDatadogSyntheticsTestCreate(ctx context.Context, d *schema.Resource
 
 		d.SetId(getSyntheticsApiTestResponse.GetPublicId())
 
-		return updateSyntheticsAPITestLocalState(d, &getSyntheticsApiTestResponse)
+		return updateSyntheticsAPITestLocalState(d, &getSyntheticsApiTestResponse, false)
 	} else if *testType == datadogV1.SYNTHETICSTESTDETAILSTYPE_BROWSER {
 		syntheticsTest := buildDatadogSyntheticsBrowserTest(d)
 		createdSyntheticsTest, httpResponse, err := apiInstances.GetSyntheticsApiV1().CreateSyntheticsBrowserTest(auth, *syntheticsTest)
@@ -2007,7 +2006,7 @@ func resourceDatadogSyntheticsTestRead(ctx context.Context, d *schema.ResourceDa
 	if err := utils.CheckForUnparsed(syntheticsAPITest); err != nil {
 		return diag.FromErr(err)
 	}
-	return updateSyntheticsAPITestLocalState(d, &syntheticsAPITest)
+	return updateSyntheticsAPITestLocalState(d, &syntheticsAPITest, true)
 }
 
 func resourceDatadogSyntheticsTestUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
@@ -2027,7 +2026,7 @@ func resourceDatadogSyntheticsTestUpdate(ctx context.Context, d *schema.Resource
 		if err := utils.CheckForUnparsed(updatedTest); err != nil {
 			return diag.FromErr(err)
 		}
-		return updateSyntheticsAPITestLocalState(d, &updatedTest)
+		return updateSyntheticsAPITestLocalState(d, &updatedTest, false)
 	} else if *testType == datadogV1.SYNTHETICSTESTDETAILSTYPE_BROWSER {
 		syntheticsTest := buildDatadogSyntheticsBrowserTest(d)
 		updatedTest, httpResponse, err := apiInstances.GetSyntheticsApiV1().UpdateBrowserTest(auth, d.Id(), *syntheticsTest)
@@ -2295,7 +2294,7 @@ func updateSyntheticsBrowserTestLocalState(d *schema.ResourceData, syntheticsTes
 	return nil
 }
 
-func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *datadogV1.SyntheticsAPITest) diag.Diagnostics {
+func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *datadogV1.SyntheticsAPITest, isReadOperation bool) diag.Diagnostics {
 	if err := d.Set("type", syntheticsTest.GetType()); err != nil {
 		return diag.FromErr(err)
 	}
@@ -2359,7 +2358,7 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 			oldLocalFiles[i] = oldLocalFile
 		}
 
-		localFiles := buildTerraformBodyFiles(files, oldLocalFiles)
+		localFiles := buildTerraformBodyFiles(files, oldLocalFiles, isReadOperation)
 		if err := d.Set("request_file", localFiles); err != nil {
 			return diag.FromErr(err)
 		}
@@ -2451,7 +2450,7 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 						oldLocalFiles[j] = oldLocalFile
 					}
 
-					localFiles := buildTerraformBodyFiles(files, oldLocalFiles)
+					localFiles := buildTerraformBodyFiles(files, oldLocalFiles, isReadOperation)
 					localStep["request_file"] = localFiles
 				}
 
@@ -3739,7 +3738,7 @@ func buildDatadogBodyFiles(attr []interface{}) []datadogV1.SyntheticsTestRequest
 	return files
 }
 
-func buildTerraformBodyFiles(actualBodyFiles *[]datadogV1.SyntheticsTestRequestBodyFile, oldLocalBodyFiles []map[string]interface{}) (localBodyFiles []map[string]interface{}) {
+func buildTerraformBodyFiles(actualBodyFiles *[]datadogV1.SyntheticsTestRequestBodyFile, oldLocalBodyFiles []map[string]interface{}, isReadOperation bool) (localBodyFiles []map[string]interface{}) {
 	localBodyFiles = make([]map[string]interface{}, len(*actualBodyFiles))
 	for i, file := range *actualBodyFiles {
 		localFile := make(map[string]interface{})
@@ -3747,14 +3746,76 @@ func buildTerraformBodyFiles(actualBodyFiles *[]datadogV1.SyntheticsTestRequestB
 			// The file content is kept from the existing localFile from the state,
 			// as the response from the backend contains the bucket key rather than the content.
 			localFile = oldLocalBodyFiles[i]
-		}
-		localFile["name"] = file.GetName()
-		localFile["original_file_name"] = file.GetOriginalFileName()
-		localFile["type"] = file.GetType()
-		localFile["size"] = file.GetSize()
 
-		if bucket_key, ok := file.GetBucketKeyOk(); ok {
-			localFile["bucket_key"] = bucket_key
+			// UI Change Detection Logic:
+			// This logic should ONLY apply during Read operations, not during Update/Create
+			// When users upload files via Datadog UI, the API returns new metadata (name, size, type)
+			// but Terraform still has the old content in state. This creates inconsistent state
+			// (old content + new metadata) causing unwanted diffs.
+			//
+			// Solution: Detect UI changes during Read and preserve config values instead of API values
+			if isReadOperation {
+				oldContent, hasOldContent := oldLocalBodyFiles[i]["content"].(string)
+				oldName, hasOldName := oldLocalBodyFiles[i]["name"].(string)
+				oldSize, hasOldSize := oldLocalBodyFiles[i]["size"].(int)
+				oldType, hasOldType := oldLocalBodyFiles[i]["type"].(string)
+
+				newName := file.GetName()
+				newSize := int(file.GetSize())
+				newType := file.GetType()
+
+				// Check if any metadata field changed between state and API response
+				metadataChanged := (hasOldName && oldName != newName) ||
+					(hasOldSize && oldSize != newSize) ||
+					(hasOldType && oldType != newType)
+
+				// If we have content in state AND metadata changed, this indicates a UI change
+				// Preserve config values to maintain consistency and avoid phantom diffs
+				if hasOldContent && oldContent != "" && metadataChanged {
+					log.Printf("[DEBUG] UI file change detected for file %d: metadata changed (name: %s->%s, size: %d->%d, type: %s->%s) but content exists in state. Preserving config values to avoid unwanted diffs.",
+						i, oldName, newName, oldSize, newSize, oldType, newType)
+
+					// Keep ALL config values from state (name, size, type, original_file_name, content)
+					// Only update bucket_key since it's computed and must point to the new file
+					if bucket_key, ok := file.GetBucketKeyOk(); ok {
+						localFile["bucket_key"] = bucket_key
+					}
+					// Note: We deliberately don't update name, original_file_name, type, size
+					// to preserve the config values and prevent Terraform from detecting diffs
+				} else {
+					// Normal case during Read: content changed in config or first-time read
+					// Update all fields with API values
+					localFile["name"] = file.GetName()
+					localFile["original_file_name"] = file.GetOriginalFileName()
+					localFile["type"] = file.GetType()
+					localFile["size"] = file.GetSize()
+
+					if bucket_key, ok := file.GetBucketKeyOk(); ok {
+						localFile["bucket_key"] = bucket_key
+					}
+				}
+			} else {
+				// During Update/Create: always use API values (user changed Terraform config)
+				// This ensures that Terraform config changes are properly applied
+				localFile["name"] = file.GetName()
+				localFile["original_file_name"] = file.GetOriginalFileName()
+				localFile["type"] = file.GetType()
+				localFile["size"] = file.GetSize()
+
+				if bucket_key, ok := file.GetBucketKeyOk(); ok {
+					localFile["bucket_key"] = bucket_key
+				}
+			}
+		} else {
+			// No previous state (new file or import), use API values
+			localFile["name"] = file.GetName()
+			localFile["original_file_name"] = file.GetOriginalFileName()
+			localFile["type"] = file.GetType()
+			localFile["size"] = file.GetSize()
+
+			if bucket_key, ok := file.GetBucketKeyOk(); ok {
+				localFile["bucket_key"] = bucket_key
+			}
 		}
 		localBodyFiles[i] = localFile
 	}
@@ -4883,7 +4944,7 @@ func compressAndEncodeValue(value string) string {
 func decompressAndDecodeValue(value string, acceptBase64Only bool) (string, error) {
 	decodedValue, _ := b64.StdEncoding.DecodeString(value)
 	decodedBytes := bytes.NewReader(decodedValue)
-	b, err := ioutil.ReadAll(decodedBytes)
+	b, err := io.ReadAll(decodedBytes)
 	if err != nil {
 		return "", err
 	}
