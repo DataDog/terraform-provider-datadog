@@ -3,12 +3,12 @@
 page_title: "datadog_app_builder_app Data Source - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  This data source retrieves the definition of an existing Datadog App from App Builder for use in other resources, such as embedding Apps in Dashboards.
+  This data source retrieves the definition of an existing Datadog App from App Builder for use in other resources, such as embedding Apps in Dashboards. This data source requires a registered application key https://registry.terraform.io/providers/DataDog/datadog/latest/docs/resources/app_key_registration.
 ---
 
 # datadog_app_builder_app (Data Source)
 
-This data source retrieves the definition of an existing Datadog App from App Builder for use in other resources, such as embedding Apps in Dashboards.
+This data source retrieves the definition of an existing Datadog App from App Builder for use in other resources, such as embedding Apps in Dashboards. This data source requires a [registered application key](https://registry.terraform.io/providers/DataDog/datadog/latest/docs/resources/app_key_registration).
 
 ## Example Usage
 

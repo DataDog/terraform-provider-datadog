@@ -39,6 +39,8 @@ resource "datadog_rum_application" "rum_application" {
 
 Import is supported using the following syntax:
 
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
+
 ```shell
 terraform import datadog_rum_application.rum_application a1b2c3d4-a1b2-a1b2-a1b2-a1b2c3d4e5f6
 ```

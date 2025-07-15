@@ -64,7 +64,7 @@ func (r *MonitorNotificationRuleResource) Metadata(_ context.Context, request re
 
 func (r *MonitorNotificationRuleResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "Provides a Datadog MonitorNotificationRule resource. *Note: This resource is in Preview. [Request access](https://www.datadoghq.com/product-preview/monitor-notification-rules/).*",
+		Description: "Provides a Datadog MonitorNotificationRule resource.",
 		Attributes: map[string]schema.Attribute{
 			"id": utils.ResourceIDAttribute(),
 			"name": schema.StringAttribute{

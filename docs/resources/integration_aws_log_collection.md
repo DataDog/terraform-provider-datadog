@@ -39,6 +39,8 @@ resource "datadog_integration_aws_log_collection" "main" {
 
 Import is supported using the following syntax:
 
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
+
 ```shell
 # Amazon Web Services log collection integrations can be imported using the `account ID`.
 terraform import datadog_integration_aws_log_collection.test 1234567890

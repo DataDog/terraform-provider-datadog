@@ -34,6 +34,8 @@ resource "datadog_synthetics_concurrency_cap" "this" {
 
 Import is supported using the following syntax:
 
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
+
 ```shell
 # The Synthetics concurrency cap can be imported. <name> can be whatever you specify in your code. Datadog does not store the name on the server.
 terraform import datadog_synthetics_concurrency_cap.this <name>

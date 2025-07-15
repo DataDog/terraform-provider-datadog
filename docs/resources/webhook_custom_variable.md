@@ -39,6 +39,8 @@ resource "datadog_webhook_custom_variable" "foo" {
 
 Import is supported using the following syntax:
 
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
+
 ```shell
 terraform import datadog_webhook_custom_variable.foo EXAMPLE_VARIABLE
 ```
