@@ -13,10 +13,9 @@ import (
 
 // CustomProcessorProcessorModel represents the Terraform model for remap VRL processor configuration
 type CustomProcessorProcessorModel struct {
-	Id      types.String                         `tfsdk:"id"`
-	Include types.String                         `tfsdk:"include"`
-	Inputs  types.List                           `tfsdk:"inputs"`
-	Remaps  []CustomProcessorProcessorRemapModel `tfsdk:"remaps"`
+	Id     types.String                         `tfsdk:"id"`
+	Inputs types.List                           `tfsdk:"inputs"`
+	Remaps []CustomProcessorProcessorRemapModel `tfsdk:"remaps"`
 }
 
 // CustomProcessorProcessorRemapModel represents a single VRL remap rule
@@ -32,7 +31,6 @@ type CustomProcessorProcessorRemapModel struct {
 func ExpandCustomProcessorProcessor(ctx context.Context, src *CustomProcessorProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
 	proc := datadogV2.NewObservabilityPipelineCustomProcessorProcessorWithDefaults()
 	proc.SetId(src.Id.ValueString())
-	proc.SetInclude(src.Include.ValueString())
 
 	var inputs []string
 	src.Inputs.ElementsAs(ctx, &inputs, false)
@@ -87,10 +85,9 @@ func FlattenCustomProcessorProcessor(ctx context.Context, src *datadogV2.Observa
 	}
 
 	return &CustomProcessorProcessorModel{
-		Id:      types.StringValue(src.GetId()),
-		Include: types.StringValue(src.GetInclude()),
-		Inputs:  inputs,
-		Remaps:  remaps,
+		Id:     types.StringValue(src.GetId()),
+		Inputs: inputs,
+		Remaps: remaps,
 	}
 }
 
@@ -103,10 +100,6 @@ func CustomProcessorProcessorSchema() schema.ListNestedBlock {
 				"id": schema.StringAttribute{
 					Required:    true,
 					Description: "The unique identifier for this processor.",
-				},
-				"include": schema.StringAttribute{
-					Required:    true,
-					Description: "A Datadog search query used to determine which logs this processor targets. This field should always be set to `*` for the custom_processor processor.",
 				},
 				"inputs": schema.ListAttribute{
 					Required:    true,

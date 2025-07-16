@@ -3090,9 +3090,8 @@ resource "datadog_observability_pipeline" "custom_processor" {
 
     processors {
       custom_processor {
-        id      = "remap-processor-1"
-        include = "*"
-        inputs  = ["source-1"]
+        id     = "remap-processor-1"
+        inputs = ["source-1"]
 
         remaps {
           include     = "service:web"
@@ -3124,7 +3123,6 @@ resource "datadog_observability_pipeline" "custom_processor" {
 					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(resourceName, "name", "remap-vrl-pipeline"),
 					resource.TestCheckResourceAttr(resourceName, "config.processors.custom_processor.0.id", "remap-processor-1"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.custom_processor.0.include", "*"),
 					resource.TestCheckResourceAttr(resourceName, "config.processors.custom_processor.0.inputs.0", "source-1"),
 					resource.TestCheckResourceAttr(resourceName, "config.processors.custom_processor.0.remaps.0.include", "service:web"),
 					resource.TestCheckResourceAttr(resourceName, "config.processors.custom_processor.0.remaps.0.name", "Parse JSON from message"),

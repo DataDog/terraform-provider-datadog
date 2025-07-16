@@ -129,21 +129,6 @@ type ocsfMapperProcessorModel struct {
 	Mapping []ocsfMappingModel `tfsdk:"mapping"`
 }
 
-type customProcessorProcessorModel struct {
-	Id      types.String                         `tfsdk:"id"`
-	Include types.String                         `tfsdk:"include"`
-	Inputs  types.List                           `tfsdk:"inputs"`
-	Remaps  []customProcessorProcessorRemapModel `tfsdk:"remaps"`
-}
-
-type customProcessorProcessorRemapModel struct {
-	Include     types.String `tfsdk:"include"`
-	Name        types.String `tfsdk:"name"`
-	Enabled     types.Bool   `tfsdk:"enabled"`
-	Source      types.String `tfsdk:"source"`
-	DropOnError types.Bool   `tfsdk:"drop_on_error"`
-}
-
 type ocsfMappingModel struct {
 	Include        types.String `tfsdk:"include"`
 	LibraryMapping types.String `tfsdk:"library_mapping"`
