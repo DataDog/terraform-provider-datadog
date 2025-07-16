@@ -15,7 +15,7 @@ Provides a Datadog CSM Threats policy API resource.
 ```terraform
 resource "datadog_csm_threats_policy" "my_policy" {
   name            = "my_policy"
-  description     = "my policy"
+  description     = "My policy"
   enabled         = true
   host_tags_lists = [["env:prod", "team:backend"], ["env:prod", "team:frontend"]]
 }
@@ -46,6 +46,6 @@ Import is supported using the following syntax:
 The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
 
 ```shell
-# CSM Policies can be imported using ID. For example:
+# CSM Policies can be imported using IDs. For example:
 terraform import datadog_csm_threats_policy.my_policy jm4-lwh-8cs
 ```
