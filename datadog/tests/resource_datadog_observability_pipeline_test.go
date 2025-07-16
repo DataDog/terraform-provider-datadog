@@ -3067,7 +3067,7 @@ resource "datadog_observability_pipeline" "socket_dest" {
 	})
 }
 
-func TestAccDatadogObservabilityPipeline_remapVrlProcessor(t *testing.T) {
+func TestAccDatadogObservabilityPipeline_customProcessorProcessor(t *testing.T) {
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
 	resourceName := "datadog_observability_pipeline.custom_processor"

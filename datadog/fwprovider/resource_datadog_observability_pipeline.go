@@ -103,23 +103,23 @@ type tlsModel struct {
 // Processor models
 
 type processorsModel struct {
-	FilterProcessor               []*filterProcessorModel                          `tfsdk:"filter"`
-	ParseJsonProcessor            []*parseJsonProcessorModel                       `tfsdk:"parse_json"`
-	AddFieldsProcessor            []*addFieldsProcessor                            `tfsdk:"add_fields"`
-	RenameFieldsProcessor         []*renameFieldsProcessorModel                    `tfsdk:"rename_fields"`
-	RemoveFieldsProcessor         []*removeFieldsProcessorModel                    `tfsdk:"remove_fields"`
-	QuotaProcessor                []*quotaProcessorModel                           `tfsdk:"quota"`
-	GenerateMetricsProcessor      []*generateMetricsProcessorModel                 `tfsdk:"generate_datadog_metrics"`
-	ParseGrokProcessor            []*parseGrokProcessorModel                       `tfsdk:"parse_grok"`
-	SampleProcessor               []*sampleProcessorModel                          `tfsdk:"sample"`
-	SensitiveDataScannerProcessor []*sensitiveDataScannerProcessorModel            `tfsdk:"sensitive_data_scanner"`
-	DedupeProcessor               []*dedupeProcessorModel                          `tfsdk:"dedupe"`
-	ReduceProcessor               []*reduceProcessorModel                          `tfsdk:"reduce"`
-	ThrottleProcessor             []*throttleProcessorModel                        `tfsdk:"throttle"`
-	AddEnvVarsProcessor           []*addEnvVarsProcessorModel                      `tfsdk:"add_env_vars"`
-	EnrichmentTableProcessor      []*enrichmentTableProcessorModel                 `tfsdk:"enrichment_table"`
-	OcsfMapperProcessor           []*ocsfMapperProcessorModel                      `tfsdk:"ocsf_mapper"`
-	RemapVrlProcessor             []*observability_pipeline.RemapVrlProcessorModel `tfsdk:"custom_processor"`
+	FilterProcessor               []*filterProcessorModel                                 `tfsdk:"filter"`
+	ParseJsonProcessor            []*parseJsonProcessorModel                              `tfsdk:"parse_json"`
+	AddFieldsProcessor            []*addFieldsProcessor                                   `tfsdk:"add_fields"`
+	RenameFieldsProcessor         []*renameFieldsProcessorModel                           `tfsdk:"rename_fields"`
+	RemoveFieldsProcessor         []*removeFieldsProcessorModel                           `tfsdk:"remove_fields"`
+	QuotaProcessor                []*quotaProcessorModel                                  `tfsdk:"quota"`
+	GenerateMetricsProcessor      []*generateMetricsProcessorModel                        `tfsdk:"generate_datadog_metrics"`
+	ParseGrokProcessor            []*parseGrokProcessorModel                              `tfsdk:"parse_grok"`
+	SampleProcessor               []*sampleProcessorModel                                 `tfsdk:"sample"`
+	SensitiveDataScannerProcessor []*sensitiveDataScannerProcessorModel                   `tfsdk:"sensitive_data_scanner"`
+	DedupeProcessor               []*dedupeProcessorModel                                 `tfsdk:"dedupe"`
+	ReduceProcessor               []*reduceProcessorModel                                 `tfsdk:"reduce"`
+	ThrottleProcessor             []*throttleProcessorModel                               `tfsdk:"throttle"`
+	AddEnvVarsProcessor           []*addEnvVarsProcessorModel                             `tfsdk:"add_env_vars"`
+	EnrichmentTableProcessor      []*enrichmentTableProcessorModel                        `tfsdk:"enrichment_table"`
+	OcsfMapperProcessor           []*ocsfMapperProcessorModel                             `tfsdk:"ocsf_mapper"`
+	CustomProcessorProcessor      []*observability_pipeline.CustomProcessorProcessorModel `tfsdk:"custom_processor"`
 }
 
 type ocsfMapperProcessorModel struct {
@@ -129,14 +129,14 @@ type ocsfMapperProcessorModel struct {
 	Mapping []ocsfMappingModel `tfsdk:"mapping"`
 }
 
-type remapVrlProcessorModel struct {
-	Id      types.String                  `tfsdk:"id"`
-	Include types.String                  `tfsdk:"include"`
-	Inputs  types.List                    `tfsdk:"inputs"`
-	Remaps  []remapVrlProcessorRemapModel `tfsdk:"remaps"`
+type customProcessorProcessorModel struct {
+	Id      types.String                         `tfsdk:"id"`
+	Include types.String                         `tfsdk:"include"`
+	Inputs  types.List                           `tfsdk:"inputs"`
+	Remaps  []customProcessorProcessorRemapModel `tfsdk:"remaps"`
 }
 
-type remapVrlProcessorRemapModel struct {
+type customProcessorProcessorRemapModel struct {
 	Include     types.String `tfsdk:"include"`
 	Name        types.String `tfsdk:"name"`
 	Enabled     types.Bool   `tfsdk:"enabled"`
@@ -1837,7 +1837,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 									},
 								},
 							},
-							"custom_processor": observability_pipeline.RemapVrlProcessorSchema(),
+							"custom_processor": observability_pipeline.CustomProcessorProcessorSchema(),
 						},
 					},
 					"destinations": schema.SingleNestedBlock{
@@ -2506,8 +2506,8 @@ func expandPipeline(ctx context.Context, state *observabilityPipelineModel) (*da
 	for _, p := range state.Config.Processors.OcsfMapperProcessor {
 		config.Processors = append(config.Processors, expandOcsfMapperProcessor(ctx, p))
 	}
-	for _, p := range state.Config.Processors.RemapVrlProcessor {
-		config.Processors = append(config.Processors, observability_pipeline.ExpandRemapVrlProcessor(ctx, p))
+	for _, p := range state.Config.Processors.CustomProcessorProcessor {
+		config.Processors = append(config.Processors, observability_pipeline.ExpandCustomProcessorProcessor(ctx, p))
 	}
 	for _, p := range state.Config.Processors.ParseGrokProcessor {
 		config.Processors = append(config.Processors, expandParseGrokProcessor(ctx, p))
@@ -2696,8 +2696,8 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 		if f := flattenOcsfMapperProcessor(ctx, p.ObservabilityPipelineOcsfMapperProcessor); f != nil {
 			outCfg.Processors.OcsfMapperProcessor = append(outCfg.Processors.OcsfMapperProcessor, f)
 		}
-		if f := observability_pipeline.FlattenRemapVrlProcessor(ctx, p.ObservabilityPipelineRemapVrlProcessor); f != nil {
-			outCfg.Processors.RemapVrlProcessor = append(outCfg.Processors.RemapVrlProcessor, f)
+		if f := observability_pipeline.FlattenCustomProcessorProcessor(ctx, p.ObservabilityPipelineCustomProcessorProcessor); f != nil {
+			outCfg.Processors.CustomProcessorProcessor = append(outCfg.Processors.CustomProcessorProcessor, f)
 		}
 	}
 
