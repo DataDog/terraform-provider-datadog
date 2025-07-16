@@ -3104,9 +3104,7 @@ resource "datadog_observability_pipeline" "custom_processor" {
         remaps {
           include     = "env:prod"
           name        = "Add timestamp"
-          enabled     = true
           source      = ".timestamp = now()"
-          drop_on_error = true
         }
       }
     }
@@ -3131,9 +3129,7 @@ resource "datadog_observability_pipeline" "custom_processor" {
 					resource.TestCheckResourceAttr(resourceName, "config.processors.custom_processor.0.remaps.0.drop_on_error", "false"),
 					resource.TestCheckResourceAttr(resourceName, "config.processors.custom_processor.0.remaps.1.include", "env:prod"),
 					resource.TestCheckResourceAttr(resourceName, "config.processors.custom_processor.0.remaps.1.name", "Add timestamp"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.custom_processor.0.remaps.1.enabled", "true"),
 					resource.TestCheckResourceAttr(resourceName, "config.processors.custom_processor.0.remaps.1.source", ".timestamp = now()"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.custom_processor.0.remaps.1.drop_on_error", "true"),
 					resource.TestCheckResourceAttr(resourceName, "config.destinations.datadog_logs.0.id", "destination-1"),
 					resource.TestCheckResourceAttr(resourceName, "config.destinations.datadog_logs.0.inputs.0", "remap-processor-1"),
 				),
