@@ -10,7 +10,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"log"
 	"maps"
 	_nethttp "net/http"
 	"regexp"
@@ -3859,87 +3858,59 @@ func buildDatadogBodyFiles(attr []interface{}) []datadogV1.SyntheticsTestRequest
 	return files
 }
 
+func isUiFileChangeDetected(file datadogV1.SyntheticsTestRequestBodyFile, oldLocalFile map[string]interface{}) bool {
+	// Helper function to check if the file has been modified in the UI
+	oldContent, hasOldContent := oldLocalFile["content"].(string)
+	oldName, hasOldName := oldLocalFile["name"].(string)
+	oldSize, hasOldSize := oldLocalFile["size"].(int)
+	oldType, hasOldType := oldLocalFile["type"].(string)
+
+	newName := file.GetName()
+	newSize := int(file.GetSize())
+	newType := file.GetType()
+
+	// Check if any metadata field changed between state and API response
+	metadataChanged := (hasOldName && oldName != newName) ||
+		(hasOldSize && oldSize != newSize) ||
+		(hasOldType && oldType != newType)
+
+	// UI change = content exists in state AND metadata changed
+	return hasOldContent && oldContent != "" && metadataChanged
+}
+
 func buildTerraformBodyFiles(actualBodyFiles *[]datadogV1.SyntheticsTestRequestBodyFile, oldLocalBodyFiles []map[string]interface{}, isReadOperation bool) (localBodyFiles []map[string]interface{}) {
 	localBodyFiles = make([]map[string]interface{}, len(*actualBodyFiles))
+
 	for i, file := range *actualBodyFiles {
 		localFile := make(map[string]interface{})
+
 		if i < len(oldLocalBodyFiles) && oldLocalBodyFiles[i] != nil {
-			// The file content is kept from the existing localFile from the state,
-			// as the response from the backend contains the bucket key rather than the content.
 			localFile = oldLocalBodyFiles[i]
 
-			// UI Change Detection Logic:
-			// This logic should ONLY apply during Read operations, not during Update/Create
-			// When users upload files via Datadog UI, the API returns new metadata (name, size, type)
-			// but Terraform still has the old content in state. This creates inconsistent state
-			// (old content + new metadata) causing unwanted diffs.
-			//
-			// Solution: Detect UI changes during Read and preserve config values instead of API values
-			if isReadOperation {
-				oldContent, hasOldContent := oldLocalBodyFiles[i]["content"].(string)
-				oldName, hasOldName := oldLocalBodyFiles[i]["name"].(string)
-				oldSize, hasOldSize := oldLocalBodyFiles[i]["size"].(int)
-				oldType, hasOldType := oldLocalBodyFiles[i]["type"].(string)
-
-				newName := file.GetName()
-				newSize := int(file.GetSize())
-				newType := file.GetType()
-
-				// Check if any metadata field changed between state and API response
-				metadataChanged := (hasOldName && oldName != newName) ||
-					(hasOldSize && oldSize != newSize) ||
-					(hasOldType && oldType != newType)
-
-				// If we have content in state AND metadata changed, this indicates a UI change
-				// Preserve config values to maintain consistency and avoid phantom diffs
-				if hasOldContent && oldContent != "" && metadataChanged {
-					log.Printf("[DEBUG] UI file change detected for file %d: metadata changed (name: %s->%s, size: %d->%d, type: %s->%s) but content exists in state. Preserving config values to avoid unwanted diffs.",
-						i, oldName, newName, oldSize, newSize, oldType, newType)
-
-					// Keep ALL config values from state (name, size, type, original_file_name, content)
-					// Only update bucket_key since it's computed and must point to the new file
-					if bucket_key, ok := file.GetBucketKeyOk(); ok {
-						localFile["bucket_key"] = bucket_key
-					}
-					// Note: We deliberately don't update name, original_file_name, type, size
-					// to preserve the config values and prevent Terraform from detecting diffs
-				} else {
-					// Normal case during Read: content changed in config or first-time read
-					// Update all fields with API values
-					localFile["name"] = file.GetName()
-					localFile["original_file_name"] = file.GetOriginalFileName()
-					localFile["type"] = file.GetType()
-					localFile["size"] = file.GetSize()
-
-					if bucket_key, ok := file.GetBucketKeyOk(); ok {
-						localFile["bucket_key"] = bucket_key
-					}
-				}
-			} else {
-				// During Update/Create: always use API values (user changed Terraform config)
-				// This ensures that Terraform config changes are properly applied
-				localFile["name"] = file.GetName()
-				localFile["original_file_name"] = file.GetOriginalFileName()
-				localFile["type"] = file.GetType()
-				localFile["size"] = file.GetSize()
-
+			if isReadOperation && isUiFileChangeDetected(file, oldLocalBodyFiles[i]) {
+				// UI change detected - preserve config values, only update bucket_key
 				if bucket_key, ok := file.GetBucketKeyOk(); ok {
 					localFile["bucket_key"] = bucket_key
 				}
-			}
-		} else {
-			// No previous state (new file or import), use API values
-			localFile["name"] = file.GetName()
-			localFile["original_file_name"] = file.GetOriginalFileName()
-			localFile["type"] = file.GetType()
-			localFile["size"] = file.GetSize()
-
-			if bucket_key, ok := file.GetBucketKeyOk(); ok {
-				localFile["bucket_key"] = bucket_key
+				localBodyFiles[i] = localFile
+				continue
 			}
 		}
+
+		// Common case - update with API values
+		// Used for: Normal Read, Update/Create, and Import scenarios
+		localFile["name"] = file.GetName()
+		localFile["original_file_name"] = file.GetOriginalFileName()
+		localFile["type"] = file.GetType()
+		localFile["size"] = file.GetSize()
+
+		if bucket_key, ok := file.GetBucketKeyOk(); ok {
+			localFile["bucket_key"] = bucket_key
+		}
+
 		localBodyFiles[i] = localFile
 	}
+
 	return localBodyFiles
 }
 
