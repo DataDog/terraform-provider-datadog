@@ -238,8 +238,8 @@ Required:
 
 Optional:
 
-- `is_enabled` (Boolean) Boolean value to enable your pipeline.
-- `name` (String) Your pipeline name.
+- `is_enabled` (Boolean) Boolean value to enable your processor.
+- `name` (String) Your processor name.
 
 <a id="nestedblock--processor--array_processor--operation"></a>
 ### Nested Schema for `processor.array_processor.operation`
@@ -247,8 +247,8 @@ Optional:
 Optional:
 
 - `append` (Block List, Max: 1) Operation that appends a value to a target array attribute. (see [below for nested schema](#nestedblock--processor--array_processor--operation--append))
-- `length` (Block List, Max: 1) Operation that computes the length of a source array and stores the result in the target attribute. (see [below for nested schema](#nestedblock--processor--array_processor--operation--length))
-- `select` (Block List, Max: 1) Operation that finds an object in a source array using a filter, and then extracts a specific value into the target attribute. (see [below for nested schema](#nestedblock--processor--array_processor--operation--select))
+- `length` (Block List, Max: 1) Operation that computes the length of a source array and stores the result in a target attribute. (see [below for nested schema](#nestedblock--processor--array_processor--operation--length))
+- `select` (Block List, Max: 1) Operation that finds an object in a source array using a filter, and then extracts a value from that found object and puts that value into the target attribute. (see [below for nested schema](#nestedblock--processor--array_processor--operation--select))
 
 <a id="nestedblock--processor--array_processor--operation--append"></a>
 ### Nested Schema for `processor.array_processor.operation.append`
@@ -268,7 +268,7 @@ Optional:
 
 Required:
 
-- `source` (String) Attribute path of the array to measure.
+- `source` (String) Attribute path of the array to compute the length of.
 - `target` (String) Attribute that receives the computed length.
 
 
@@ -277,10 +277,10 @@ Required:
 
 Required:
 
-- `filter` (String) Filter condition expressed as key:value used to find the matching element.
+- `filter` (String) Filter expression (e.g. key1:value1 OR key2:value2) used to find the matching element.
 - `source` (String) Attribute path of the array to search into.
 - `target` (String) Attribute that receives the extracted value.
-- `value_to_extract` (String) Key of the value to extract from the matching element.
+- `value_to_extract` (String) Attribute key from the matching object that should be extracted.
 
 
 
@@ -485,8 +485,8 @@ Required:
 
 Optional:
 
-- `is_enabled` (Boolean) Boolean value to enable your pipeline.
-- `name` (String) Your pipeline name.
+- `is_enabled` (Boolean) Boolean value to enable your processor.
+- `name` (String) Your processor name.
 
 <a id="nestedblock--processor--pipeline--processor--array_processor--operation"></a>
 ### Nested Schema for `processor.pipeline.processor.array_processor.operation`
@@ -494,8 +494,8 @@ Optional:
 Optional:
 
 - `append` (Block List, Max: 1) Operation that appends a value to a target array attribute. (see [below for nested schema](#nestedblock--processor--pipeline--processor--array_processor--operation--append))
-- `length` (Block List, Max: 1) Operation that computes the length of a source array and stores the result in the target attribute. (see [below for nested schema](#nestedblock--processor--pipeline--processor--array_processor--operation--length))
-- `select` (Block List, Max: 1) Operation that finds an object in a source array using a filter, and then extracts a specific value into the target attribute. (see [below for nested schema](#nestedblock--processor--pipeline--processor--array_processor--operation--select))
+- `length` (Block List, Max: 1) Operation that computes the length of a source array and stores the result in a target attribute. (see [below for nested schema](#nestedblock--processor--pipeline--processor--array_processor--operation--length))
+- `select` (Block List, Max: 1) Operation that finds an object in a source array using a filter, and then extracts a value from that found object and puts that value into the target attribute. (see [below for nested schema](#nestedblock--processor--pipeline--processor--array_processor--operation--select))
 
 <a id="nestedblock--processor--pipeline--processor--array_processor--operation--append"></a>
 ### Nested Schema for `processor.pipeline.processor.array_processor.operation.append`
@@ -515,7 +515,7 @@ Optional:
 
 Required:
 
-- `source` (String) Attribute path of the array to measure.
+- `source` (String) Attribute path of the array to compute the length of.
 - `target` (String) Attribute that receives the computed length.
 
 
@@ -524,10 +524,10 @@ Required:
 
 Required:
 
-- `filter` (String) Filter condition expressed as key:value used to find the matching element.
+- `filter` (String) Filter expression (e.g. key1:value1 OR key2:value2) used to find the matching element.
 - `source` (String) Attribute path of the array to search into.
 - `target` (String) Attribute that receives the extracted value.
-- `value_to_extract` (String) Key of the value to extract from the matching element.
+- `value_to_extract` (String) Attribute key from the matching object that should be extracted.
 
 
 
