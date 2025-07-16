@@ -1036,7 +1036,7 @@ func syntheticsTestAPIStep() *schema.Schema {
 	requestElemSchema.Schema["http_version"] = syntheticsHttpVersionOption()
 
 	return &schema.Schema{
-		Description: "Steps for multi-step api tests",
+		Description: "Steps for multistep api tests",
 		Type:        schema.TypeList,
 		Optional:    true,
 		Elem: &schema.Resource{
@@ -1047,7 +1047,7 @@ func syntheticsTestAPIStep() *schema.Schema {
 					Required:    true,
 				},
 				"subtype": {
-					Description:      "The subtype of the Synthetic multi-step API test step.",
+					Description:      "The subtype of the Synthetic multistep API test step.",
 					Type:             schema.TypeString,
 					Optional:         true,
 					Default:          "http",
@@ -2662,6 +2662,43 @@ func buildDatadogSyntheticsAPITest(d *schema.ResourceData) (*datadogV1.Synthetic
 	diags := diag.Diagnostics{}
 	syntheticsTest := datadogV1.NewSyntheticsAPITestWithDefaults()
 	syntheticsTest.SetName(d.Get("name").(string))
+
+	hasRootProperties := false
+
+	if _, hasMultistepApiStep := d.GetOk("api_step"); hasMultistepApiStep {
+		// Only check the most common required properties for API tests, which could be left over when migrating to a multistep API test.
+		// Keeping those would produce backend validation errors unexpected by the user, so we fail loudly with a helpful error message.
+		requiredProperties := []string{"request_definition", "assertion"}
+		for _, requiredProperty := range requiredProperties {
+			if _, hasRootProperty := d.GetOk(requiredProperty); hasRootProperty {
+				hasRootProperties = true
+				diags = append(diags, diag.Diagnostic{
+					Severity: diag.Warning,
+					Summary:  fmt.Sprintf("Both the root property `%s` and `api_step` are set. When migrating an API test to a multistep API test, most test properties should be nested in `api_step` blocks.", requiredProperty),
+				})
+			}
+		}
+
+		// When subtype isn't `multi`, we ignore the `api_step` blocks so they are not sent to the backend.
+		subtypeStr := d.Get("subtype").(string)
+		if subtypeStr != "multi" {
+			if hasRootProperties {
+				// When root properties are set, the backend does not return a validation error.
+				// To avoid breaking changes, we simply warn the user that the `api_step` blocks are ignored.
+				diags = append(diags, diag.Diagnostic{
+					Severity: diag.Warning,
+					Summary:  fmt.Sprintf("`api_step` blocks can only be set for multistep API tests. They will be ignored because test subtype is \"%s\" (expected \"multi\")", subtypeStr),
+				})
+			} else {
+				// When no root properties are set, the backend returns a validation error, so we fail loudly with a helpful error message.
+				diags = append(diags, diag.Diagnostic{
+					Severity: diag.Error,
+					Summary:  fmt.Sprintf("`api_step` blocks can only be set for multistep API tests. Expected test subtype: \"multi\", got \"%s\"", subtypeStr),
+				})
+				return nil, diags
+			}
+		}
+	}
 
 	if attr, ok := d.GetOk("subtype"); ok {
 		syntheticsTest.SetSubtype(datadogV1.SyntheticsTestDetailsSubType(attr.(string)))
