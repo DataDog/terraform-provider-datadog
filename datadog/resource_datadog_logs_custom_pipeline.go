@@ -146,12 +146,12 @@ var arrayProcessor = &schema.Schema{
 	Elem: &schema.Resource{
 		Schema: map[string]*schema.Schema{
 			"name": {
-				Description: "Your pipeline name.",
+				Description: "Your processor name.",
 				Type:        schema.TypeString,
 				Optional:    true,
 			},
 			"is_enabled": {
-				Description: "Boolean value to enable your pipeline.",
+				Description: "Boolean value to enable your processor.",
 				Type:        schema.TypeBool,
 				Optional:    true,
 			},
@@ -189,14 +189,14 @@ var arrayProcessor = &schema.Schema{
 							},
 						},
 						"length": {
-							Description: "Operation that computes the length of a source array and stores the result in the target attribute.",
+							Description: "Operation that computes the length of a source array and stores the result in a target attribute.",
 							Type:        schema.TypeList,
 							Optional:    true,
 							MaxItems:    1,
 							Elem: &schema.Resource{
 								Schema: map[string]*schema.Schema{
 									"source": {
-										Description: "Attribute path of the array to measure.",
+										Description: "Attribute path of the array to compute the length of.",
 										Type:        schema.TypeString,
 										Required:    true,
 									},
@@ -209,7 +209,7 @@ var arrayProcessor = &schema.Schema{
 							},
 						},
 						"select": {
-							Description: "Operation that finds an object in a source array using a filter, and then extracts a specific value into the target attribute.",
+							Description: "Operation that finds an object in a source array using a filter, and then extracts a value from that found object and puts that value into the target attribute.",
 							Type:        schema.TypeList,
 							Optional:    true,
 							MaxItems:    1,
@@ -226,12 +226,12 @@ var arrayProcessor = &schema.Schema{
 										Required:    true,
 									},
 									"filter": {
-										Description: "Filter condition expressed as key:value used to find the matching element.",
+										Description: "Filter expression (e.g. key1:value1 OR key2:value2) used to find the matching element.",
 										Type:        schema.TypeString,
 										Required:    true,
 									},
 									"value_to_extract": {
-										Description: "Key of the value to extract from the matching element.",
+										Description: "Attribute key from the matching object that should be extracted.",
 										Type:        schema.TypeString,
 										Required:    true,
 									},

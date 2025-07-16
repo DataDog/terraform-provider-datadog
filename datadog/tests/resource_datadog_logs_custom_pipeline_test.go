@@ -336,6 +336,20 @@ resource "datadog_logs_custom_pipeline" "my_pipeline_test" {
             }
         }
     }
+    processor {
+        array_processor {
+            name = "array select operation updated"
+            is_enabled = true
+            operation {
+                select {
+                    source = "httpResponse.headers"
+                    target = "contentType"
+                    filter = "name:Content-Type"
+                    value_to_extract = "value"
+                }
+            }
+        }
+    }
 }`, uniq)
 }
 
