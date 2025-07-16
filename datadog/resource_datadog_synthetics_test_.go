@@ -634,7 +634,15 @@ func syntheticsTestOptionsRetry() *schema.Schema {
 
 func syntheticsTestCheckCertificateRevocation() *schema.Schema {
 	return &schema.Schema{
-		Description: "For SSL test, whether or not the test should fail on revoked certificate in stapled OCSP.",
+		Description: "For SSL tests, whether or not the test should fail on revoked certificate in stapled OCSP.",
+		Type:        schema.TypeBool,
+		Optional:    true,
+	}
+}
+
+func syntheticsTestDisableAiaIntermediateFetching() *schema.Schema {
+	return &schema.Schema{
+		Description: "For SSL tests, whether or not the test should disable fetching intermediate certificates from AIA",
 		Type:        schema.TypeBool,
 		Optional:    true,
 	}
@@ -642,7 +650,7 @@ func syntheticsTestCheckCertificateRevocation() *schema.Schema {
 
 func syntheticsTestAcceptSelfSigned() *schema.Schema {
 	return &schema.Schema{
-		Description: "For SSL test, whether or not the test should allow self signed certificates.",
+		Description: "For SSL tests, whether or not the test should allow self signed certificates.",
 		Type:        schema.TypeBool,
 		Optional:    true,
 	}
@@ -777,7 +785,8 @@ func syntheticsTestOptionsList() *schema.Schema {
 					Type:        schema.TypeBool,
 					Optional:    true,
 				},
-				"check_certificate_revocation": syntheticsTestCheckCertificateRevocation(),
+				"check_certificate_revocation":      syntheticsTestCheckCertificateRevocation(),
+				"disable_aia_intermediate_fetching": syntheticsTestDisableAiaIntermediateFetching(),
 				"ci": {
 					Description: "CI/CD options for a Synthetic test.",
 					Type:        schema.TypeList,
@@ -1033,6 +1042,7 @@ func syntheticsTestAPIStep() *schema.Schema {
 	requestElemSchema.Schema["follow_redirects"] = syntheticsFollowRedirectsOption()
 	requestElemSchema.Schema["accept_self_signed"] = syntheticsTestAcceptSelfSigned()
 	requestElemSchema.Schema["check_certificate_revocation"] = syntheticsTestCheckCertificateRevocation()
+	requestElemSchema.Schema["disable_aia_intermediate_fetching"] = syntheticsTestDisableAiaIntermediateFetching()
 	requestElemSchema.Schema["http_version"] = syntheticsHttpVersionOption()
 
 	return &schema.Schema{
@@ -2895,9 +2905,11 @@ func buildDatadogSyntheticsAPITest(d *schema.ResourceData) (*datadogV1.Synthetic
 						if v, ok := requestMap["accept_self_signed"].(bool); ok {
 							request.SetAllowInsecure(v)
 						}
-						// here
 						if v, ok := requestMap["check_certificate_revocation"].(bool); ok {
 							request.SetCheckCertificateRevocation(v)
+						}
+						if v, ok := requestMap["disable_aia_intermediate_fetching"].(bool); ok {
+							request.SetDisableAiaIntermediateFetching(v)
 						}
 					} else if step.SyntheticsAPITestStep.GetSubtype() == "tcp" {
 						request.SetHost(requestMap["host"].(string))
@@ -4081,6 +4093,9 @@ func buildDatadogTestOptions(d *schema.ResourceData) *datadogV1.SyntheticsTestOp
 		if attr, ok := d.GetOk("options_list.0.check_certificate_revocation"); ok {
 			options.SetCheckCertificateRevocation(attr.(bool))
 		}
+		if attr, ok := d.GetOk("options_list.0.disable_aia_intermediate_fetching"); ok {
+			options.SetDisableAiaIntermediateFetching(attr.(bool))
+		}
 		if attr, ok := d.GetOk("options_list.0.min_location_failed"); ok {
 			options.SetMinLocationFailed(int64(attr.(int)))
 		}
@@ -4256,6 +4271,9 @@ func buildTerraformTestOptions(actualOptions datadogV1.SyntheticsTestOptions) []
 	}
 	if actualOptions.HasCheckCertificateRevocation() {
 		localOptionsList["check_certificate_revocation"] = actualOptions.GetCheckCertificateRevocation()
+	}
+	if actualOptions.HasDisableAiaIntermediateFetching() {
+		localOptionsList["disable_aia_intermediate_fetching"] = actualOptions.GetDisableAiaIntermediateFetching()
 	}
 	if actualOptions.HasAllowInsecure() {
 		localOptionsList["allow_insecure"] = actualOptions.GetAllowInsecure()
@@ -4952,6 +4970,9 @@ func buildTerraformTestRequest(request datadogV1.SyntheticsTestRequest) (map[str
 	}
 	if request.HasCheckCertificateRevocation() {
 		localRequest["check_certificate_revocation"] = request.GetCheckCertificateRevocation()
+	}
+	if request.HasDisableAiaIntermediateFetching() {
+		localRequest["disable_aia_intermediate_fetching"] = request.GetDisableAiaIntermediateFetching()
 	}
 	if request.HasIsMessageBase64Encoded() {
 		localRequest["is_message_base64_encoded"] = request.GetIsMessageBase64Encoded()
