@@ -196,6 +196,7 @@ Required:
 Optional:
 
 - `arithmetic_processor` (Block List, Max: 1) Arithmetic Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#arithmetic-processor) (see [below for nested schema](#nestedblock--processor--arithmetic_processor))
+- `array_processor` (Block List, Max: 1) Array Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#array-processor) (see [below for nested schema](#nestedblock--processor--array_processor))
 - `attribute_remapper` (Block List, Max: 1) Attribute Remapper Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#remapper) (see [below for nested schema](#nestedblock--processor--attribute_remapper))
 - `category_processor` (Block List, Max: 1) Category Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#category-processor) (see [below for nested schema](#nestedblock--processor--category_processor))
 - `date_remapper` (Block List, Max: 1) Date Remapper Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#log-date-remapper) (see [below for nested schema](#nestedblock--processor--date_remapper))
@@ -226,6 +227,62 @@ Optional:
 - `is_enabled` (Boolean) Boolean value to enable your pipeline.
 - `is_replace_missing` (Boolean) If true, it replaces all missing attributes of expression by 0, false skips the operation if an attribute is missing.
 - `name` (String) Your pipeline name.
+
+
+<a id="nestedblock--processor--array_processor"></a>
+### Nested Schema for `processor.array_processor`
+
+Required:
+
+- `operation` (Block List, Min: 1, Max: 1) Operation to perform on the array. (see [below for nested schema](#nestedblock--processor--array_processor--operation))
+
+Optional:
+
+- `is_enabled` (Boolean) Boolean value to enable your pipeline.
+- `name` (String) Your pipeline name.
+
+<a id="nestedblock--processor--array_processor--operation"></a>
+### Nested Schema for `processor.array_processor.operation`
+
+Optional:
+
+- `append` (Block List, Max: 1) Operation that appends a value to a target array attribute. (see [below for nested schema](#nestedblock--processor--array_processor--operation--append))
+- `length` (Block List, Max: 1) Operation that computes the length of a source array and stores the result in the target attribute. (see [below for nested schema](#nestedblock--processor--array_processor--operation--length))
+- `select` (Block List, Max: 1) Operation that finds an object in a source array using a filter, and then extracts a specific value into the target attribute. (see [below for nested schema](#nestedblock--processor--array_processor--operation--select))
+
+<a id="nestedblock--processor--array_processor--operation--append"></a>
+### Nested Schema for `processor.array_processor.operation.append`
+
+Required:
+
+- `source` (String) Attribute path containing the value to append.
+- `target` (String) Attribute path of the array to append to.
+
+Optional:
+
+- `preserve_source` (Boolean) Remove or preserve the remapped source element. Defaults to `true`.
+
+
+<a id="nestedblock--processor--array_processor--operation--length"></a>
+### Nested Schema for `processor.array_processor.operation.length`
+
+Required:
+
+- `source` (String) Attribute path of the array to measure.
+- `target` (String) Attribute that receives the computed length.
+
+
+<a id="nestedblock--processor--array_processor--operation--select"></a>
+### Nested Schema for `processor.array_processor.operation.select`
+
+Required:
+
+- `filter` (String) Filter condition expressed as key:value used to find the matching element.
+- `source` (String) Attribute path of the array to search into.
+- `target` (String) Attribute that receives the extracted value.
+- `value_to_extract` (String) Key of the value to extract from the matching element.
+
+
 
 
 <a id="nestedblock--processor--attribute_remapper"></a>
@@ -387,6 +444,7 @@ Required:
 Optional:
 
 - `arithmetic_processor` (Block List, Max: 1) Arithmetic Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#arithmetic-processor) (see [below for nested schema](#nestedblock--processor--pipeline--processor--arithmetic_processor))
+- `array_processor` (Block List, Max: 1) Array Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#array-processor) (see [below for nested schema](#nestedblock--processor--pipeline--processor--array_processor))
 - `attribute_remapper` (Block List, Max: 1) Attribute Remapper Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#remapper) (see [below for nested schema](#nestedblock--processor--pipeline--processor--attribute_remapper))
 - `category_processor` (Block List, Max: 1) Category Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#category-processor) (see [below for nested schema](#nestedblock--processor--pipeline--processor--category_processor))
 - `date_remapper` (Block List, Max: 1) Date Remapper Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#log-date-remapper) (see [below for nested schema](#nestedblock--processor--pipeline--processor--date_remapper))
@@ -416,6 +474,62 @@ Optional:
 - `is_enabled` (Boolean) Boolean value to enable your pipeline.
 - `is_replace_missing` (Boolean) If true, it replaces all missing attributes of expression by 0, false skips the operation if an attribute is missing.
 - `name` (String) Your pipeline name.
+
+
+<a id="nestedblock--processor--pipeline--processor--array_processor"></a>
+### Nested Schema for `processor.pipeline.processor.array_processor`
+
+Required:
+
+- `operation` (Block List, Min: 1, Max: 1) Operation to perform on the array. (see [below for nested schema](#nestedblock--processor--pipeline--processor--array_processor--operation))
+
+Optional:
+
+- `is_enabled` (Boolean) Boolean value to enable your pipeline.
+- `name` (String) Your pipeline name.
+
+<a id="nestedblock--processor--pipeline--processor--array_processor--operation"></a>
+### Nested Schema for `processor.pipeline.processor.array_processor.operation`
+
+Optional:
+
+- `append` (Block List, Max: 1) Operation that appends a value to a target array attribute. (see [below for nested schema](#nestedblock--processor--pipeline--processor--array_processor--operation--append))
+- `length` (Block List, Max: 1) Operation that computes the length of a source array and stores the result in the target attribute. (see [below for nested schema](#nestedblock--processor--pipeline--processor--array_processor--operation--length))
+- `select` (Block List, Max: 1) Operation that finds an object in a source array using a filter, and then extracts a specific value into the target attribute. (see [below for nested schema](#nestedblock--processor--pipeline--processor--array_processor--operation--select))
+
+<a id="nestedblock--processor--pipeline--processor--array_processor--operation--append"></a>
+### Nested Schema for `processor.pipeline.processor.array_processor.operation.append`
+
+Required:
+
+- `source` (String) Attribute path containing the value to append.
+- `target` (String) Attribute path of the array to append to.
+
+Optional:
+
+- `preserve_source` (Boolean) Remove or preserve the remapped source element. Defaults to `true`.
+
+
+<a id="nestedblock--processor--pipeline--processor--array_processor--operation--length"></a>
+### Nested Schema for `processor.pipeline.processor.array_processor.operation.length`
+
+Required:
+
+- `source` (String) Attribute path of the array to measure.
+- `target` (String) Attribute that receives the computed length.
+
+
+<a id="nestedblock--processor--pipeline--processor--array_processor--operation--select"></a>
+### Nested Schema for `processor.pipeline.processor.array_processor.operation.select`
+
+Required:
+
+- `filter` (String) Filter condition expressed as key:value used to find the matching element.
+- `source` (String) Attribute path of the array to search into.
+- `target` (String) Attribute that receives the extracted value.
+- `value_to_extract` (String) Key of the value to extract from the matching element.
+
+
 
 
 <a id="nestedblock--processor--pipeline--processor--attribute_remapper"></a>
