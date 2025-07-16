@@ -5,7 +5,6 @@ import (
 
 	datadogV2 "github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
-	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -112,7 +111,6 @@ func CustomProcessorProcessorSchema() schema.ListNestedBlock {
 					Description: "Array of VRL remap configurations. Each remap defines a transformation rule with its own filter and VRL script.",
 					Validators: []validator.List{
 						listvalidator.SizeAtLeast(1),
-						listvalidator.SizeAtMost(15),
 					},
 					NestedObject: schema.NestedBlockObject{
 						Attributes: map[string]schema.Attribute{
@@ -130,10 +128,7 @@ func CustomProcessorProcessorSchema() schema.ListNestedBlock {
 							},
 							"source": schema.StringAttribute{
 								Required:    true,
-								Description: "The VRL script source code that defines the transformation logic. Must not exceed 1000 characters and cannot contain forbidden functions.",
-								Validators: []validator.String{
-									stringvalidator.LengthAtMost(1000),
-								},
+								Description: "The VRL script source code that defines the transformation logic.",
 							},
 							"drop_on_error": schema.BoolAttribute{
 								Optional:    true,
