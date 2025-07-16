@@ -1910,8 +1910,9 @@ func resourceDatadogSyntheticsTestCreate(ctx context.Context, d *schema.Resource
 
 		d.SetId(getSyntheticsApiTestResponse.GetPublicId())
 
-		updateDiags := updateSyntheticsAPITestLocalState(d, &getSyntheticsApiTestResponse)
+		updateDiags := updateSyntheticsAPITestLocalState(d, &getSyntheticsApiTestResponse, false)
 		return append(diags, updateDiags...)
+
 	} else if *testType == datadogV1.SYNTHETICSTESTDETAILSTYPE_BROWSER {
 		syntheticsTest, buildDiags := buildDatadogSyntheticsBrowserTest(d)
 		diags = append(diags, buildDiags...)
@@ -2054,7 +2055,7 @@ func resourceDatadogSyntheticsTestRead(ctx context.Context, d *schema.ResourceDa
 	if err := utils.CheckForUnparsed(syntheticsAPITest); err != nil {
 		return diag.FromErr(err)
 	}
-	return updateSyntheticsAPITestLocalState(d, &syntheticsAPITest)
+	return updateSyntheticsAPITestLocalState(d, &syntheticsAPITest, true)
 }
 
 func resourceDatadogSyntheticsTestUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
@@ -2081,8 +2082,9 @@ func resourceDatadogSyntheticsTestUpdate(ctx context.Context, d *schema.Resource
 			return append(diags, diag.FromErr(err)...)
 		}
 
-		updateDiags := updateSyntheticsAPITestLocalState(d, &updatedTest)
+		updateDiags := updateSyntheticsAPITestLocalState(d, &updatedTest, false)
 		return append(diags, updateDiags...)
+
 	} else if *testType == datadogV1.SYNTHETICSTESTDETAILSTYPE_BROWSER {
 		syntheticsTest, buildDiags := buildDatadogSyntheticsBrowserTest(d)
 		diags = append(diags, buildDiags...)
@@ -2364,7 +2366,7 @@ func updateSyntheticsBrowserTestLocalState(d *schema.ResourceData, syntheticsTes
 	return nil
 }
 
-func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *datadogV1.SyntheticsAPITest) diag.Diagnostics {
+func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *datadogV1.SyntheticsAPITest, isReadOperation bool) diag.Diagnostics {
 	if err := d.Set("type", syntheticsTest.GetType()); err != nil {
 		return diag.FromErr(err)
 	}
@@ -2428,7 +2430,7 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 			oldLocalFiles[i] = oldLocalFile
 		}
 
-		localFiles := buildTerraformBodyFiles(files, oldLocalFiles)
+		localFiles := buildTerraformBodyFiles(files, oldLocalFiles, isReadOperation)
 		if err := d.Set("request_file", localFiles); err != nil {
 			return diag.FromErr(err)
 		}
@@ -2519,7 +2521,7 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 						oldLocalFiles[j] = oldLocalFile
 					}
 
-					localFiles := buildTerraformBodyFiles(files, oldLocalFiles)
+					localFiles := buildTerraformBodyFiles(files, oldLocalFiles, isReadOperation)
 					localStep["request_file"] = localFiles
 				}
 
@@ -3868,15 +3870,47 @@ func buildDatadogBodyFiles(attr []interface{}) []datadogV1.SyntheticsTestRequest
 	return files
 }
 
-func buildTerraformBodyFiles(actualBodyFiles *[]datadogV1.SyntheticsTestRequestBodyFile, oldLocalBodyFiles []map[string]interface{}) (localBodyFiles []map[string]interface{}) {
+func isUiFileChangeDetected(file datadogV1.SyntheticsTestRequestBodyFile, oldLocalFile map[string]interface{}) bool {
+	// Helper function to check if the file has been modified in the UI
+	oldContent, hasOldContent := oldLocalFile["content"].(string)
+	oldName, hasOldName := oldLocalFile["name"].(string)
+	oldSize, hasOldSize := oldLocalFile["size"].(int)
+	oldType, hasOldType := oldLocalFile["type"].(string)
+
+	newName := file.GetName()
+	newSize := int(file.GetSize())
+	newType := file.GetType()
+
+	// Check if any metadata field changed between state and API response
+	metadataChanged := (hasOldName && oldName != newName) ||
+		(hasOldSize && oldSize != newSize) ||
+		(hasOldType && oldType != newType)
+
+	// UI change = content exists in state AND metadata changed
+	return hasOldContent && oldContent != "" && metadataChanged
+}
+
+func buildTerraformBodyFiles(actualBodyFiles *[]datadogV1.SyntheticsTestRequestBodyFile, oldLocalBodyFiles []map[string]interface{}, isReadOperation bool) (localBodyFiles []map[string]interface{}) {
 	localBodyFiles = make([]map[string]interface{}, len(*actualBodyFiles))
+
 	for i, file := range *actualBodyFiles {
 		localFile := make(map[string]interface{})
+
 		if i < len(oldLocalBodyFiles) && oldLocalBodyFiles[i] != nil {
-			// The file content is kept from the existing localFile from the state,
-			// as the response from the backend contains the bucket key rather than the content.
 			localFile = oldLocalBodyFiles[i]
+
+			if isReadOperation && isUiFileChangeDetected(file, oldLocalBodyFiles[i]) {
+				// UI change detected - preserve config values, only update bucket_key
+				if bucket_key, ok := file.GetBucketKeyOk(); ok {
+					localFile["bucket_key"] = bucket_key
+				}
+				localBodyFiles[i] = localFile
+				continue
+			}
 		}
+
+		// Common case - update with API values
+		// Used for: Normal Read, Update/Create, and Import scenarios
 		localFile["name"] = file.GetName()
 		localFile["original_file_name"] = file.GetOriginalFileName()
 		localFile["type"] = file.GetType()
@@ -3885,8 +3919,10 @@ func buildTerraformBodyFiles(actualBodyFiles *[]datadogV1.SyntheticsTestRequestB
 		if bucket_key, ok := file.GetBucketKeyOk(); ok {
 			localFile["bucket_key"] = bucket_key
 		}
+
 		localBodyFiles[i] = localFile
 	}
+
 	return localBodyFiles
 }
 
