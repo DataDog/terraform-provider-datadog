@@ -119,7 +119,7 @@ type processorsModel struct {
 	AddEnvVarsProcessor           []*addEnvVarsProcessorModel                      `tfsdk:"add_env_vars"`
 	EnrichmentTableProcessor      []*enrichmentTableProcessorModel                 `tfsdk:"enrichment_table"`
 	OcsfMapperProcessor           []*ocsfMapperProcessorModel                      `tfsdk:"ocsf_mapper"`
-	RemapVrlProcessor             []*observability_pipeline.RemapVrlProcessorModel `tfsdk:"remap_vrl"`
+	RemapVrlProcessor             []*observability_pipeline.RemapVrlProcessorModel `tfsdk:"custom_processor"`
 }
 
 type ocsfMapperProcessorModel struct {
@@ -1837,7 +1837,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 									},
 								},
 							},
-							"remap_vrl": observability_pipeline.RemapVrlProcessorSchema(),
+							"custom_processor": observability_pipeline.RemapVrlProcessorSchema(),
 						},
 					},
 					"destinations": schema.SingleNestedBlock{

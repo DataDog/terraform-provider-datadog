@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"config":{"destinations":[{"id":"destination-1","inputs":["remap-processor-1"],"type":"datadog_logs"}],"processors":[{"id":"remap-processor-1","include":"*","inputs":["source-1"],"remaps":[{"drop_on_error":false,"enabled":true,"include":"service:web","name":"Parse JSON from message","source":". = parse_json!(string!(.message))"},{"drop_on_error":true,"enabled":true,"include":"env:prod","name":"Add timestamp","source":".timestamp = now()"}],"type":"remap_vrl"}],"sources":[{"id":"source-1","type":"datadog_agent"}]},"name":"remap-vrl-pipeline"},"type":"pipelines"}}
+            {"data":{"attributes":{"config":{"destinations":[{"id":"destination-1","inputs":["remap-processor-1"],"type":"datadog_logs"}],"processors":[{"id":"remap-processor-1","include":"*","inputs":["source-1"],"remaps":[{"drop_on_error":false,"enabled":true,"include":"service:web","name":"Parse JSON from message","source":". = parse_json!(string!(.message))"},{"drop_on_error":true,"enabled":true,"include":"env:prod","name":"Add timestamp","source":".timestamp = now()"}],"type":"custom_processor"}],"sources":[{"id":"source-1","type":"datadog_agent"}]},"name":"remap-vrl-pipeline"},"type":"pipelines"}}
         form: {}
         headers:
             Accept:
@@ -31,7 +31,7 @@ interactions:
         content_length: 636
         uncompressed: false
         body: |
-            {"data":{"id":"2b77fd0a-617a-11f0-9118-da7ad0900002","type":"pipelines","attributes":{"name":"remap-vrl-pipeline","config":{"destinations":[{"id":"destination-1","inputs":["remap-processor-1"],"type":"datadog_logs"}],"processors":[{"id":"remap-processor-1","include":"*","inputs":["source-1"],"remaps":[{"drop_on_error":false,"enabled":true,"include":"service:web","name":"Parse JSON from message","source":". = parse_json!(string!(.message))"},{"drop_on_error":true,"enabled":true,"include":"env:prod","name":"Add timestamp","source":".timestamp = now()"}],"type":"remap_vrl"}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"2b77fd0a-617a-11f0-9118-da7ad0900002","type":"pipelines","attributes":{"name":"remap-vrl-pipeline","config":{"destinations":[{"id":"destination-1","inputs":["remap-processor-1"],"type":"datadog_logs"}],"processors":[{"id":"remap-processor-1","include":"*","inputs":["source-1"],"remaps":[{"drop_on_error":false,"enabled":true,"include":"service:web","name":"Parse JSON from message","source":". = parse_json!(string!(.message))"},{"drop_on_error":true,"enabled":true,"include":"env:prod","name":"Add timestamp","source":".timestamp = now()"}],"type":"custom_processor"}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/json
@@ -65,7 +65,7 @@ interactions:
         content_length: 636
         uncompressed: false
         body: |
-            {"data":{"id":"2b77fd0a-617a-11f0-9118-da7ad0900002","type":"pipelines","attributes":{"name":"remap-vrl-pipeline","config":{"destinations":[{"id":"destination-1","inputs":["remap-processor-1"],"type":"datadog_logs"}],"processors":[{"id":"remap-processor-1","include":"*","inputs":["source-1"],"remaps":[{"drop_on_error":false,"enabled":true,"include":"service:web","name":"Parse JSON from message","source":". = parse_json!(string!(.message))"},{"drop_on_error":true,"enabled":true,"include":"env:prod","name":"Add timestamp","source":".timestamp = now()"}],"type":"remap_vrl"}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"2b77fd0a-617a-11f0-9118-da7ad0900002","type":"pipelines","attributes":{"name":"remap-vrl-pipeline","config":{"destinations":[{"id":"destination-1","inputs":["remap-processor-1"],"type":"datadog_logs"}],"processors":[{"id":"remap-processor-1","include":"*","inputs":["source-1"],"remaps":[{"drop_on_error":false,"enabled":true,"include":"service:web","name":"Parse JSON from message","source":". = parse_json!(string!(.message))"},{"drop_on_error":true,"enabled":true,"include":"env:prod","name":"Add timestamp","source":".timestamp = now()"}],"type":"custom_processor"}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/json

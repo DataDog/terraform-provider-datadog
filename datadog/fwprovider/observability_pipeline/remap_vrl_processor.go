@@ -97,7 +97,7 @@ func FlattenRemapVrlProcessor(ctx context.Context, src *datadogV2.ObservabilityP
 // RemapVrlProcessorSchema returns the schema for remap VRL processor
 func RemapVrlProcessorSchema() schema.ListNestedBlock {
 	return schema.ListNestedBlock{
-		Description: "The `remap_vrl` processor transforms events using Vector Remap Language (VRL) scripts with advanced filtering capabilities.",
+		Description: "The `custom_processor` processor transforms events using Vector Remap Language (VRL) scripts with advanced filtering capabilities.",
 		NestedObject: schema.NestedBlockObject{
 			Attributes: map[string]schema.Attribute{
 				"id": schema.StringAttribute{
@@ -106,7 +106,7 @@ func RemapVrlProcessorSchema() schema.ListNestedBlock {
 				},
 				"include": schema.StringAttribute{
 					Required:    true,
-					Description: "A Datadog search query used to determine which logs this processor targets. This field should always be set to `*` for the remap_vrl processor.",
+					Description: "A Datadog search query used to determine which logs this processor targets. This field should always be set to `*` for the custom_processor processor.",
 				},
 				"inputs": schema.ListAttribute{
 					Required:    true,
