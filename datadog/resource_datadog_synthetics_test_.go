@@ -1036,7 +1036,7 @@ func syntheticsTestAPIStep() *schema.Schema {
 	requestElemSchema.Schema["http_version"] = syntheticsHttpVersionOption()
 
 	return &schema.Schema{
-		Description: "Steps for multistep api tests",
+		Description: "Steps for multistep API tests",
 		Type:        schema.TypeList,
 		Optional:    true,
 		Elem: &schema.Resource{
@@ -1113,7 +1113,7 @@ func syntheticsTestAPIStep() *schema.Schema {
 					Description: "Generate variables using JavaScript.",
 				},
 				"request_definition": {
-					Description: "The request for the api step.",
+					Description: "The request for the API step.",
 					Type:        schema.TypeList,
 					MaxItems:    1,
 					Optional:    true,
@@ -1786,7 +1786,7 @@ func syntheticsConfigVariable() *schema.Schema {
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
 				"example": {
-					Description: "Example for the variable. This value is not returned by the api when `secure = true`. Avoid drift by only making updates to this value from within Terraform.",
+					Description: "Example for the variable. This value is not returned by the API when `secure = true`. Avoid drift by only making updates to this value from within Terraform.",
 					Type:        schema.TypeString,
 					Optional:    true,
 				},
@@ -1797,7 +1797,7 @@ func syntheticsConfigVariable() *schema.Schema {
 					ValidateFunc: validation.StringMatch(regexp.MustCompile(`^[A-Z][A-Z0-9_]+[A-Z0-9]$`), "must be all uppercase with underscores"),
 				},
 				"pattern": {
-					Description: "Pattern of the variable. This value is not returned by the api when `secure = true`. Avoid drift by only making updates to this value from within Terraform.",
+					Description: "Pattern of the variable. This value is not returned by the API when `secure = true`. Avoid drift by only making updates to this value from within Terraform.",
 					Type:        schema.TypeString,
 					Optional:    true,
 				},
@@ -1883,7 +1883,7 @@ func resourceDatadogSyntheticsTestCreate(ctx context.Context, d *schema.Resource
 			getSyntheticsApiTestResponse, httpResponseGet, err = apiInstances.GetSyntheticsApiV1().GetAPITest(auth, createdSyntheticsTest.GetPublicId())
 			if err != nil {
 				if httpResponseGet != nil && httpResponseGet.StatusCode == 404 {
-					return retry.RetryableError(fmt.Errorf("synthetics api test not created yet"))
+					return retry.RetryableError(fmt.Errorf("synthetics API test not created yet"))
 				}
 
 				return retry.NonRetryableError(err)
