@@ -26,7 +26,6 @@ func dataSourceDatadogDashboard() *schema.Resource {
 					Required:     true,
 					ValidateFunc: validation.StringIsNotEmpty,
 				},
-				// Computed values
 				"title": {
 					Description: "The name of the dashboard.",
 					Type:        schema.TypeString,
