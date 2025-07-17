@@ -3066,3 +3066,74 @@ resource "datadog_observability_pipeline" "socket_dest" {
 		},
 	})
 }
+
+func TestAccDatadogObservabilityPipeline_customProcessorProcessor(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.custom_processor"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "custom_processor" {
+  name = "remap-vrl-pipeline"
+
+  config {
+    sources {
+      datadog_agent {
+        id = "source-1"
+      }
+    }
+
+    processors {
+      custom_processor {
+        id     = "remap-processor-1"
+        inputs = ["source-1"]
+
+        remaps {
+          include     = "service:web"
+          name        = "Parse JSON from message"
+          enabled     = true
+          source      = ". = parse_json!(string!(.message))"
+          drop_on_error = false
+        }
+
+        remaps {
+          include     = "env:prod"
+          name        = "Add timestamp"
+          source      = ".timestamp = now()"
+        }
+      }
+    }
+
+    destinations {
+      datadog_logs {
+        id     = "destination-1"
+        inputs = ["remap-processor-1"]
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "remap-vrl-pipeline"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.custom_processor.0.id", "remap-processor-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.custom_processor.0.inputs.0", "source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.custom_processor.0.remaps.0.include", "service:web"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.custom_processor.0.remaps.0.name", "Parse JSON from message"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.custom_processor.0.remaps.0.enabled", "true"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.custom_processor.0.remaps.0.source", ". = parse_json!(string!(.message))"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.custom_processor.0.remaps.0.drop_on_error", "false"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.custom_processor.0.remaps.1.include", "env:prod"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.custom_processor.0.remaps.1.name", "Add timestamp"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.custom_processor.0.remaps.1.source", ".timestamp = now()"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.datadog_logs.0.id", "destination-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.datadog_logs.0.inputs.0", "remap-processor-1"),
+				),
+			},
+		},
+	})
+}
