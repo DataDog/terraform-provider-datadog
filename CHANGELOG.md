@@ -1,3 +1,20 @@
+## 3.68.0 (July 18, 2025)
+
+### BUGFIXES
+* [synthetics_test] Fix file upload issue in the terraform provider by @mtalec in https://github.com/DataDog/terraform-provider-datadog/pull/3118
+### IMPROVEMENTS
+* [datadog_synthetics_test] Rewrite all `log.Printf` into `diags` by @Drarig29 in https://github.com/DataDog/terraform-provider-datadog/pull/3066
+* [datadog_logs_pipelines] Updates Datadog Go API client to v2.43.0 by @LorisFriedel in https://github.com/DataDog/terraform-provider-datadog/pull/3119
+* [datadog_logs_pipelines] Add support for Logs Array Processor in Logs Pipelines by @LorisFriedel in https://github.com/DataDog/terraform-provider-datadog/pull/3120
+### FEATURES
+* [app_key_registration] Add App Key Registration Resource  by @GabeWM in https://github.com/DataDog/terraform-provider-datadog/pull/3054
+* [datadog_synthetics_test] Add `disableAiaIntermediateFetching` option by @AntoineDona in https://github.com/DataDog/terraform-provider-datadog/pull/3121
+
+## New Contributors
+* @iGranDav made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3110
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.67.0...v3.68.0
+
 ## 3.67.0 (July 9, 2025)
 
 ### BUGFIXES
