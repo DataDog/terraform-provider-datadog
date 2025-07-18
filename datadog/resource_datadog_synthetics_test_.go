@@ -1046,7 +1046,7 @@ func syntheticsTestAPIStep() *schema.Schema {
 	requestElemSchema.Schema["http_version"] = syntheticsHttpVersionOption()
 
 	return &schema.Schema{
-		Description: "Steps for multi-step api tests",
+		Description: "Steps for multistep API tests",
 		Type:        schema.TypeList,
 		Optional:    true,
 		Elem: &schema.Resource{
@@ -1057,7 +1057,7 @@ func syntheticsTestAPIStep() *schema.Schema {
 					Required:    true,
 				},
 				"subtype": {
-					Description:      "The subtype of the Synthetic multi-step API test step.",
+					Description:      "The subtype of the Synthetic multistep API test step.",
 					Type:             schema.TypeString,
 					Optional:         true,
 					Default:          "http",
@@ -1123,7 +1123,7 @@ func syntheticsTestAPIStep() *schema.Schema {
 					Description: "Generate variables using JavaScript.",
 				},
 				"request_definition": {
-					Description: "The request for the api step.",
+					Description: "The request for the API step.",
 					Type:        schema.TypeList,
 					MaxItems:    1,
 					Optional:    true,
@@ -1796,7 +1796,7 @@ func syntheticsConfigVariable() *schema.Schema {
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
 				"example": {
-					Description: "Example for the variable. This value is not returned by the api when `secure = true`. Avoid drift by only making updates to this value from within Terraform.",
+					Description: "Example for the variable. This value is not returned by the API when `secure = true`. Avoid drift by only making updates to this value from within Terraform.",
 					Type:        schema.TypeString,
 					Optional:    true,
 				},
@@ -1807,7 +1807,7 @@ func syntheticsConfigVariable() *schema.Schema {
 					ValidateFunc: validation.StringMatch(regexp.MustCompile(`^[A-Z][A-Z0-9_]+[A-Z0-9]$`), "must be all uppercase with underscores"),
 				},
 				"pattern": {
-					Description: "Pattern of the variable. This value is not returned by the api when `secure = true`. Avoid drift by only making updates to this value from within Terraform.",
+					Description: "Pattern of the variable. This value is not returned by the API when `secure = true`. Avoid drift by only making updates to this value from within Terraform.",
 					Type:        schema.TypeString,
 					Optional:    true,
 				},
@@ -1893,7 +1893,7 @@ func resourceDatadogSyntheticsTestCreate(ctx context.Context, d *schema.Resource
 			getSyntheticsApiTestResponse, httpResponseGet, err = apiInstances.GetSyntheticsApiV1().GetAPITest(auth, createdSyntheticsTest.GetPublicId())
 			if err != nil {
 				if httpResponseGet != nil && httpResponseGet.StatusCode == 404 {
-					return retry.RetryableError(fmt.Errorf("synthetics api test not created yet"))
+					return retry.RetryableError(fmt.Errorf("synthetics API test not created yet"))
 				}
 
 				return retry.NonRetryableError(err)
@@ -2674,6 +2674,43 @@ func buildDatadogSyntheticsAPITest(d *schema.ResourceData) (*datadogV1.Synthetic
 	diags := diag.Diagnostics{}
 	syntheticsTest := datadogV1.NewSyntheticsAPITestWithDefaults()
 	syntheticsTest.SetName(d.Get("name").(string))
+
+	hasRootProperties := false
+
+	if _, hasMultistepApiStep := d.GetOk("api_step"); hasMultistepApiStep {
+		// Only check the most common required properties for API tests, which could be left over at the root when migrating to a multistep API test.
+		// Keeping those would produce backend validation errors unexpected by the user, so we fail loudly with a helpful error message.
+		requiredProperties := []string{"request_definition", "assertion"}
+		for _, requiredProperty := range requiredProperties {
+			if _, hasRootProperty := d.GetOk(requiredProperty); hasRootProperty {
+				hasRootProperties = true
+				diags = append(diags, diag.Diagnostic{
+					Severity: diag.Warning,
+					Summary:  fmt.Sprintf("Both the root property `%s` and `api_step` are set. When migrating an API test to a multistep API test, most test properties should be nested in `api_step` blocks.", requiredProperty),
+				})
+			}
+		}
+
+		// When subtype isn't `multi`, we ignore the `api_step` blocks so they are not sent to the backend.
+		subtypeStr := d.Get("subtype").(string)
+		if subtypeStr != "multi" {
+			if hasRootProperties {
+				// When root properties are set, the backend would not return a validation error.
+				// To avoid breaking changes, we simply warn the user that the `api_step` blocks are ignored.
+				diags = append(diags, diag.Diagnostic{
+					Severity: diag.Warning,
+					Summary:  fmt.Sprintf("`api_step` blocks can only be set for multistep API tests. They will be ignored because test subtype is \"%s\" (expected \"multi\")", subtypeStr),
+				})
+			} else {
+				// When no root properties are set, the backend would return a validation error, so we fail loudly with a helpful error message.
+				diags = append(diags, diag.Diagnostic{
+					Severity: diag.Error,
+					Summary:  fmt.Sprintf("`api_step` blocks can only be set for multistep API tests. Expected test subtype: \"multi\", got \"%s\"", subtypeStr),
+				})
+				return nil, diags
+			}
+		}
+	}
 
 	if attr, ok := d.GetOk("subtype"); ok {
 		syntheticsTest.SetSubtype(datadogV1.SyntheticsTestDetailsSubType(attr.(string)))
