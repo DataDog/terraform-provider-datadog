@@ -23,6 +23,7 @@ const (
 	tfAttributeRemapperProcessor    = "attribute_remapper"
 	tfCategoryProcessor             = "category_processor"
 	tfDateRemapperProcessor         = "date_remapper"
+	tfDecoderProcessor              = "decoder processor"
 	tfGeoIPParserProcessor          = "geo_ip_parser"
 	tfGrokParserProcessor           = "grok_parser"
 	tfLookupProcessor               = "lookup_processor"
@@ -46,6 +47,7 @@ var tfProcessorTypes = map[string]string{
 	tfAttributeRemapperProcessor:    string(datadogV1.LOGSATTRIBUTEREMAPPERTYPE_ATTRIBUTE_REMAPPER),
 	tfCategoryProcessor:             string(datadogV1.LOGSCATEGORYPROCESSORTYPE_CATEGORY_PROCESSOR),
 	tfDateRemapperProcessor:         string(datadogV1.LOGSDATEREMAPPERTYPE_DATE_REMAPPER),
+	tfDecoderProcessor:              string(datadogV1.LOGSDECODERPROCESSORTYPE_DECODER_PROCESSOR),
 	tfGeoIPParserProcessor:          string(datadogV1.LOGSGEOIPPARSERTYPE_GEO_IP_PARSER),
 	tfGrokParserProcessor:           string(datadogV1.LOGSGROKPARSERTYPE_GROK_PARSER),
 	tfLookupProcessor:               string(datadogV1.LOGSLOOKUPPROCESSORTYPE_LOOKUP_PROCESSOR),
@@ -67,6 +69,7 @@ var tfProcessors = map[string]*schema.Schema{
 	tfAttributeRemapperProcessor:    attributeRemapper,
 	tfCategoryProcessor:             categoryProcessor,
 	tfDateRemapperProcessor:         dateRemapper,
+	tfDecoderProcessor:              decoderProcessor,
 	tfGeoIPParserProcessor:          geoIPParser,
 	tfGrokParserProcessor:           grokParser,
 	tfLookupProcessor:               lookupProcessor,
@@ -87,6 +90,7 @@ var ddProcessorTypes = map[string]string{
 	string(datadogV1.LOGSATTRIBUTEREMAPPERTYPE_ATTRIBUTE_REMAPPER):            tfAttributeRemapperProcessor,
 	string(datadogV1.LOGSCATEGORYPROCESSORTYPE_CATEGORY_PROCESSOR):            tfCategoryProcessor,
 	string(datadogV1.LOGSDATEREMAPPERTYPE_DATE_REMAPPER):                      tfDateRemapperProcessor,
+	string(datadogV1.LOGSDECODERPROCESSORTYPE_DECODER_PROCESSOR):              tfDecoderProcessor,
 	string(datadogV1.LOGSGEOIPPARSERTYPE_GEO_IP_PARSER):                       tfGeoIPParserProcessor,
 	string(datadogV1.LOGSGROKPARSERTYPE_GROK_PARSER):                          tfGrokParserProcessor,
 	string(datadogV1.LOGSLOOKUPPROCESSORTYPE_LOOKUP_PROCESSOR):                tfLookupProcessor,
@@ -302,6 +306,23 @@ var dateRemapper = &schema.Schema{
 	Optional:    true,
 	Elem: &schema.Resource{
 		Schema: sourceRemapper,
+	},
+}
+
+var decoderProcessor = &schema.Schema{
+	Type:        schema.TypeList,
+	MaxItems:    1,
+	Description: "Decoder Processor. More information can be found in the [official docs](...)",
+	Optional:    true,
+	Elem: &schema.Resource{
+		Schema: map[string]*schema.Schema{
+			"name":                    {Description: "Name of the processor.", Type: schema.TypeString, Optional: true},
+			"is_enabled":              {Description: "If the processor is enabled or not.", Type: schema.TypeBool, Optional: true},
+			"source":                  {Description: "Encoded message", Type: schema.TypeString, Required: true},
+			"target":                  {Description: "Decoded message", Type: schema.TypeString, Required: true},
+			"binary_to_text_encoding": {Description: "Encoding type: base64 or base16", Type: schema.TypeString, Required: true},
+			"input_representation":    {Description: "Input representation: utf-8 or integer", Type: schema.TypeString, Required: true},
+		},
 	},
 }
 
@@ -653,6 +674,9 @@ func buildTerraformProcessor(ddProcessor datadogV1.LogsProcessor) (map[string]in
 	} else if ddProcessor.LogsDateRemapper != nil {
 		tfProcessor = buildTerraformDateRemapper(ddProcessor.LogsDateRemapper)
 		processorType = string(datadogV1.LOGSDATEREMAPPERTYPE_DATE_REMAPPER)
+	} else if ddProcessor.LogsDecoderProcessor != nil {
+		tfProcessor = buildTerraformDecoderProcessor(ddProcessor.LogsDecoderProcessor)
+		processorType = string(datadogV1.LOGSDECODERPROCESSORTYPE_DECODER_PROCESSOR)
 	} else if ddProcessor.LogsMessageRemapper != nil {
 		tfProcessor = buildTerraformMessageRemapper(ddProcessor.LogsMessageRemapper)
 		processorType = string(datadogV1.LOGSMESSAGEREMAPPERTYPE_MESSAGE_REMAPPER)
@@ -922,6 +946,15 @@ func buildTerraformArrayProcessor(ddArray *datadogV1.LogsArrayProcessor) map[str
 	return tfProcessor
 }
 
+func buildTerraformDecoderProcessor(ddDecoder *datadogV1.LogsProcessor) map[string]interface{} {
+	return map[string]interface{}{
+		"source":                  ddDecoder.GetSource(),
+		"target":                  ddDecoder.GetTarget(),
+		"binary_to_text_encoding": ddDecoder.GetBinaryToTextEncoding(),
+		"input_representation":    ddDecoder.GetInputRepresentation(),
+	}
+}
+
 func buildTerraformSpanRemapper(ddSpanRemapper *datadogV1.LogsSpanRemapper) map[string]interface{} {
 	return map[string]interface{}{
 		"sources":    ddSpanRemapper.GetSources(),
@@ -999,6 +1032,8 @@ func buildDatadogProcessor(ddProcessorType string, tfProcessor map[string]interf
 		ddProcessor = datadogV1.LogsCategoryProcessorAsLogsProcessor(buildDatadogCategoryProcessor(tfProcessor))
 	case string(datadogV1.LOGSDATEREMAPPERTYPE_DATE_REMAPPER):
 		ddProcessor = datadogV1.LogsDateRemapperAsLogsProcessor(buildDatadogDateRemapperProcessor(tfProcessor))
+	case string(datadogV1.LOGSDECODERPROCESSORTYPE_DECODER_PROCESSOR):
+		ddProcessor = datadogV1.LogsDecoderProcessor(buildDatadogDecoderProcessor(tfProcessor))
 	case string(datadogV1.LOGSMESSAGEREMAPPERTYPE_MESSAGE_REMAPPER):
 		ddProcessor = datadogV1.LogsMessageRemapperAsLogsProcessor(buildDatadogMessageRemapper(tfProcessor))
 	case string(datadogV1.LOGSSERVICEREMAPPERTYPE_SERVICE_REMAPPER):
@@ -1466,6 +1501,23 @@ func buildDatadogArrayProcessor(tfProcessor map[string]interface{}) (*datadogV1.
 	}
 
 	return ddArray, nil
+}
+
+func buildDatadogDecoderProcessor(tfProcessor map[string]interface{}) *datadogV1.LogsDecoderProcessor {
+	ddDecoder := datadogV1.NewLogsDecoderProcessorWithDefaults()
+	if tfTarget, exists := tfProcessor["target"].(string); exists {
+		ddDecoder.SetTarget(tfTarget)
+	}
+	if tfSource, exists := tfProcessor["source"].(string); exists {
+		ddDecoder.SetSource(tfSource)
+	}
+	if tfBinaryToTextEncoding, exists := tfProcessor["binary_to_text_encoding"].(string); exists {
+		ddDecoder.SetBinaryToTextEncoding(tfBinaryToTextEncoding)
+	}
+	if tfInputRepresentation, exists := tfProcessor["input_representation"].(string); exists {
+		ddDecoder.SetInputRepresentation(tfInputRepresentation)
+	}
+	return ddDecoder
 }
 
 func buildDatadogDateRemapperProcessor(tfProcessor map[string]interface{}) *datadogV1.LogsDateRemapper {
