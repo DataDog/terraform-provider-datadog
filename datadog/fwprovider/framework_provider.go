@@ -215,30 +215,30 @@ func (p *FrameworkProvider) Schema(_ context.Context, _ provider.SchemaRequest, 
 			},
 			"cloud_provider_type": schema.StringAttribute{
 				Optional:    true,
-				Description: "The cloud provider type. Valid values are [`aws`]. We will add support for more cloud providers in the future.",
+				Description: "The cloud provider type. Valid values are [`aws`].",
 			},
 			"cloud_provider_region": schema.StringAttribute{
 				Optional:    true,
-				Description: "The cloud provider region specifier. Ex `us-east-1` for AWS.",
+				Description: "The cloud provider region specifier. For example, `us-east-1` for AWS.",
 			},
 			"org_uuid": schema.StringAttribute{
 				Optional:    true,
-				Description: "The organization UUID. Please refer to the [Datadog API documentation](https://docs.datadoghq.com/api/v1/organizations/) for more information.",
+				Description: "The organization UUID. See the [Datadog API documentation](https://docs.datadoghq.com/api/v1/organizations/) for more information.",
 			},
 			"aws_access_key_id": schema.StringAttribute{
 				Optional:    true,
 				Sensitive:   true,
-				Description: "The AWS access key ID. This can also be set via the AWS_ACCESS_KEY_ID environment variable. Required when using `cloud_provider_type` set to `aws`.",
+				Description: "The AWS access key ID. This can also be set using the `AWS_ACCESS_KEY_ID` environment variable. Required when using `cloud_provider_type` set to `aws`.",
 			},
 			"aws_secret_access_key": schema.StringAttribute{
 				Optional:    true,
 				Sensitive:   true,
-				Description: "The AWS secret access key. This can also be set via the AWS_SECRET_ACCESS_KEY environment variable. Required when using `cloud_provider_type` set to `aws`.",
+				Description: "The AWS secret access key. This can also be set using the `AWS_SECRET_ACCESS_KEY` environment variable. Required when using `cloud_provider_type` set to `aws`.",
 			},
 			"aws_session_token": schema.StringAttribute{
 				Optional:    true,
 				Sensitive:   true,
-				Description: "The AWS session token. This can also be set via the AWS_SESSION_TOKEN environment variable. Required when using `cloud_provider_type` set to `aws` and using temporary credentials.",
+				Description: "The AWS session token. This can also be set using the `AWS_SESSION_TOKEN` environment variable. Required when using `cloud_provider_type` set to `aws` and using temporary credentials.",
 			},
 			"http_client_retry_enabled": schema.StringAttribute{
 				Optional:    true,
