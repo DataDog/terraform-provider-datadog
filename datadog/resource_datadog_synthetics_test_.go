@@ -38,6 +38,7 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 		ReadContext:   resourceDatadogSyntheticsTestRead,
 		UpdateContext: resourceDatadogSyntheticsTestUpdate,
 		DeleteContext: resourceDatadogSyntheticsTestDelete,
+		CustomizeDiff: resourceDatadogSyntheticsTestCustomizeDiff,
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
@@ -237,7 +238,7 @@ func syntheticsTestRequest() *schema.Resource {
 				Optional:    true,
 			},
 			"message": {
-				Description: "For UDP and websocket tests, message to send with the request.",
+				Description: "For gRPC, UDP and websocket tests, message to send with the request.",
 				Type:        schema.TypeString,
 				Optional:    true,
 			},
@@ -1862,6 +1863,26 @@ func syntheticsHttpVersionOption() *schema.Schema {
 /*
  * CRUD functions
  */
+
+func resourceDatadogSyntheticsTestCustomizeDiff(ctx context.Context, diff *schema.ResourceDiff, meta interface{}) error {
+	// Validate gRPC message requirements during planning
+	subtype, subtypeOk := diff.GetOk("subtype")
+	if !subtypeOk || subtype.(string) != "grpc" {
+		return nil // Not a gRPC test, no validation needed
+	}
+
+	callType, callTypeOk := diff.GetOk("request_definition.0.call_type")
+	if !callTypeOk || callType.(string) != "unary" {
+		return nil // Not a unary call, no validation needed (healthcheck?)
+	}
+
+	message, messageOk := diff.GetOk("request_definition.0.message")
+	if !messageOk || message.(string) == "" {
+		return fmt.Errorf("message is required for gRPC unary calls. When subtype is 'grpc' and call_type is 'unary', the message field must be provided with valid JSON content")
+	}
+
+	return nil
+}
 
 func resourceDatadogSyntheticsTestCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	diags := diag.Diagnostics{}
