@@ -17,7 +17,7 @@ import (
 
 func resourceDatadogSecurityMonitoringRule() *schema.Resource {
 	return &schema.Resource{
-		Description:   "Provides a Datadog Security Monitoring Rule API resource. This can be used to create and manage Datadog security monitoring rules. To change settings for a default rule use `datadog_security_default_rule` instead.",
+		Description:   "Provides a Datadog Security Monitoring Rule API resource. This can be used to create and manage Datadog security monitoring rules. To change settings for a default rule, use `datadog_security_monitoring_default_rule` instead.",
 		CreateContext: resourceDatadogSecurityMonitoringRuleCreate,
 		ReadContext:   resourceDatadogSecurityMonitoringRuleRead,
 		UpdateContext: resourceDatadogSecurityMonitoringRuleUpdate,
@@ -1663,6 +1663,11 @@ func buildUpdateStandardRuleQuery(tfQuery interface{}) *datadogV2.SecurityMonito
 
 	queryQuery := query["query"].(string)
 	payloadQuery.SetQuery(queryQuery)
+
+	if v, ok := query["custom_query_extension"]; ok {
+		queryExtension := v.(string)
+		payloadQuery.SetCustomQueryExtension(queryExtension)
+	}
 
 	standardRuleQuery := datadogV2.SecurityMonitoringStandardRuleQueryAsSecurityMonitoringRuleQuery(&payloadQuery)
 	return &standardRuleQuery

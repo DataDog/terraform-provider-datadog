@@ -47,7 +47,7 @@ func (d *workflowAutomationDatasource) Metadata(_ context.Context, request datas
 
 func (d *workflowAutomationDatasource) Schema(_ context.Context, request datasource.SchemaRequest, response *datasource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "This data source retrieves the definition of an existing Datadog workflow from Workflow Automation for use in other resources.",
+		Description: "This data source retrieves the definition of an existing Datadog workflow from Workflow Automation for use in other resources. This data source requires a [registered application key](https://registry.terraform.io/providers/DataDog/datadog/latest/docs/resources/app_key_registration).",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
 				Description: "ID of the workflow.",
