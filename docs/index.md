@@ -52,12 +52,18 @@ provider "datadog" {
 - `api_key` (String, Sensitive) (Required unless validate is false) Datadog API key. This can also be set via the DD_API_KEY environment variable.
 - `api_url` (String) The API URL. This can also be set via the DD_HOST environment variable, and defaults to `https://api.datadoghq.com`. Note that this URL must not end with the `/api/` path. For example, `https://api.datadoghq.com/` is a correct value, while `https://api.datadoghq.com/api/` is not. And if you're working with "EU" version of Datadog, use `https://api.datadoghq.eu/`. Other Datadog region examples: `https://api.us5.datadoghq.com/`, `https://api.us3.datadoghq.com/` and `https://api.ddog-gov.com/`. See https://docs.datadoghq.com/getting_started/site/ for all available regions.
 - `app_key` (String, Sensitive) (Required unless validate is false) Datadog APP key. This can also be set via the DD_APP_KEY environment variable.
+- `aws_access_key_id` (String, Sensitive) The AWS access key ID. This can also be set via the AWS_ACCESS_KEY_ID environment variable. Required when using `cloud_provider_type` set to `aws`.
+- `aws_secret_access_key` (String, Sensitive) The AWS secret access key. This can also be set via the AWS_SECRET_ACCESS_KEY environment variable. Required when using `cloud_provider_type` set to `aws`.
+- `aws_session_token` (String, Sensitive) The AWS session token. This can also be set via the AWS_SESSION_TOKEN environment variable. Required when using `cloud_provider_type` set to `aws` and using temporary credentials.
+- `cloud_provider_region` (String) The cloud provider region specifier. Ex `us-east-1` for AWS.
+- `cloud_provider_type` (String) The cloud provider type. Valid values are [`aws`]. We will add support for more cloud providers in the future.
 - `default_tags` (Block List, Max: 1) [Experimental - Logs Pipelines, Monitors Security Monitoring Rules, and Service Level Objectives only] Configuration block containing settings to apply default resource tags across all resources. (see [below for nested schema](#nestedblock--default_tags))
 - `http_client_retry_backoff_base` (Number) The HTTP request retry back off base. Defaults to 2.
 - `http_client_retry_backoff_multiplier` (Number) The HTTP request retry back off multiplier. Defaults to 2.
 - `http_client_retry_enabled` (String) Enables request retries on HTTP status codes 429 and 5xx. Valid values are [`true`, `false`]. Defaults to `true`.
 - `http_client_retry_max_retries` (Number) The HTTP request maximum retry number. Defaults to 3.
 - `http_client_retry_timeout` (Number) The HTTP request retry timeout period. Defaults to 60 seconds.
+- `org_uuid` (String) The organization UUID. Please refer to the [Datadog API documentation](https://docs.datadoghq.com/api/v1/organizations/) for more information.
 - `validate` (String) Enables validation of the provided API key during provider initialization. Valid values are [`true`, `false`]. Default is true. When false, api_key won't be checked.
 
 <a id="nestedblock--default_tags"></a>
