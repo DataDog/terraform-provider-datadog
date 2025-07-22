@@ -247,6 +247,10 @@ func Provider() *schema.Provider {
 		ConfigureContextFunc: providerConfigure,
 	}
 
+	if utils.UseMonitorFrameworkProvider() {
+		delete(utils.DatadogProvider.ResourcesMap, "datadog_monitor")
+	}
+
 	return utils.DatadogProvider
 }
 
