@@ -24,7 +24,7 @@ resource "datadog_apm_retention_filter" "foo" {
   enabled     = false
 }
 
-# Create APM reention filter order
+# Create APM retention filter order
 resource "datadog_apm_retention_filter_order" "bar" {
   filter_ids = [datadog_apm_retention_filter.foo.id]
 }
