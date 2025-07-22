@@ -963,7 +963,7 @@ Optional:
 - `host` (String) Host name to perform the test with.
 - `http_version` (String) HTTP version to use for an HTTP request in an API test or step. Valid values are `http1`, `http2`, `any`. Defaults to `"any"`.
 - `is_message_base64_encoded` (Boolean) Whether the message is base64-encoded.
-- `message` (String) For UDP and websocket tests, message to send with the request.
+- `message` (String) For gRPC, UDP and websocket tests, message to send with the request.
 - `method` (String) Either the HTTP method/verb to use or a gRPC method available on the service set in the `service` field. Required if `subtype` is `HTTP` or if `subtype` is `grpc` and `callType` is `unary`.
 - `no_saving_response_body` (Boolean) Determines whether or not to save the response body.
 - `number_of_packets` (Number) Number of pings to use per test for ICMP tests (`subtype = "icmp"`) between 0 and 10.
@@ -1560,7 +1560,7 @@ Optional:
 - `host` (String) Host name to perform the test with.
 - `http_version` (String, Deprecated) HTTP version to use for an HTTP request in an API test or step. **Deprecated.** Use `http_version` in the `options_list` field instead.
 - `is_message_base64_encoded` (Boolean) Whether the message is base64-encoded.
-- `message` (String) For UDP and websocket tests, message to send with the request.
+- `message` (String) For gRPC, UDP and websocket tests, message to send with the request.
 - `method` (String) Either the HTTP method/verb to use or a gRPC method available on the service set in the `service` field. Required if `subtype` is `HTTP` or if `subtype` is `grpc` and `callType` is `unary`.
 - `no_saving_response_body` (Boolean) Determines whether or not to save the response body.
 - `number_of_packets` (Number) Number of pings to use per test for ICMP tests (`subtype = "icmp"`) between 0 and 10.
