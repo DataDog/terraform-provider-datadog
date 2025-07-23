@@ -2970,3 +2970,274 @@ resource "datadog_observability_pipeline" "quota" {
 		},
 	})
 }
+
+func TestAccDatadogObservabilityPipeline_socketSource(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.socket"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "socket" {
+  name = "socket-pipeline"
+
+  config {
+    sources {
+      socket {
+        id   = "socket-source-1"
+        mode = "tcp"
+
+        framing {
+          method = "newline_delimited"
+        }
+
+        tls {
+          crt_file = "/etc/ssl/certs/socket.crt"
+          ca_file  = "/etc/ssl/certs/ca.crt"
+          key_file = "/etc/ssl/private/socket.key"
+        }
+      }
+    }
+
+    processors {}
+
+    destinations {
+      datadog_logs {
+        id     = "destination-1"
+        inputs = ["socket-source-1"]
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "socket-pipeline"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.socket.0.id", "socket-source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.socket.0.mode", "tcp"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.socket.0.framing.method", "newline_delimited"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.socket.0.tls.crt_file", "/etc/ssl/certs/socket.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.socket.0.tls.ca_file", "/etc/ssl/certs/ca.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.socket.0.tls.key_file", "/etc/ssl/private/socket.key"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.datadog_logs.0.inputs.0", "socket-source-1"),
+				),
+			},
+			{
+				Config: `
+resource "datadog_observability_pipeline" "socket" {
+  name = "socket-pipeline-udp"
+
+  config {
+    sources {
+      socket {
+        id   = "socket-source-2"
+        mode = "udp"
+
+        framing {
+          method = "character_delimited"
+          character_delimited {
+            delimiter = "|"
+          }
+        }
+      }
+    }
+
+    processors {}
+
+    destinations {
+      datadog_logs {
+        id     = "destination-1"
+        inputs = ["socket-source-2"]
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "socket-pipeline-udp"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.socket.0.id", "socket-source-2"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.socket.0.mode", "udp"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.socket.0.framing.method", "character_delimited"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.socket.0.framing.character_delimited.delimiter", "|"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.datadog_logs.0.inputs.0", "socket-source-2"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogObservabilityPipeline_socketDestination(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.socket_dest"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "socket_dest" {
+  name = "socket-destination-pipeline"
+
+  config {
+    sources {
+      datadog_agent {
+        id = "source-1"
+      }
+    }
+
+    processors {}
+
+    destinations {
+      socket {
+        id       = "socket-dest-1"
+        inputs   = ["source-1"]
+        mode     = "tcp"
+        encoding = "json"
+
+        framing {
+          method = "newline_delimited"
+        }
+
+        tls {
+          crt_file = "/etc/ssl/certs/socket.crt"
+          ca_file  = "/etc/ssl/certs/ca.crt"
+          key_file = "/etc/ssl/private/socket.key"
+        }
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "socket-destination-pipeline"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.socket.0.id", "socket-dest-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.socket.0.inputs.0", "source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.socket.0.mode", "tcp"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.socket.0.encoding", "json"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.socket.0.framing.method", "newline_delimited"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.socket.0.tls.crt_file", "/etc/ssl/certs/socket.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.socket.0.tls.ca_file", "/etc/ssl/certs/ca.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.socket.0.tls.key_file", "/etc/ssl/private/socket.key"),
+				),
+			},
+			{
+				Config: `
+resource "datadog_observability_pipeline" "socket_dest" {
+  name = "socket-destination-pipeline-udp"
+
+  config {
+    sources {
+      datadog_agent {
+        id = "source-1"
+      }
+    }
+
+    processors {}
+
+    destinations {
+      socket {
+        id       = "socket-dest-2"
+        inputs   = ["source-1"]
+        mode     = "udp"
+        encoding = "raw_message"
+
+        framing {
+          method = "character_delimited"
+          character_delimited {
+            delimiter = "|"
+          }
+        }
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "socket-destination-pipeline-udp"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.socket.0.id", "socket-dest-2"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.socket.0.inputs.0", "source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.socket.0.mode", "udp"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.socket.0.encoding", "raw_message"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.socket.0.framing.method", "character_delimited"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.socket.0.framing.character_delimited.delimiter", "|"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogObservabilityPipeline_customProcessorProcessor(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.custom_processor"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "custom_processor" {
+  name = "remap-vrl-pipeline"
+
+  config {
+    sources {
+      datadog_agent {
+        id = "source-1"
+      }
+    }
+
+    processors {
+      custom_processor {
+        id     = "remap-processor-1"
+        inputs = ["source-1"]
+
+        remaps {
+          include     = "service:web"
+          name        = "Parse JSON from message"
+          enabled     = true
+          source      = ". = parse_json!(string!(.message))"
+          drop_on_error = false
+        }
+
+        remaps {
+          include     = "env:prod"
+          name        = "Add timestamp"
+          source      = ".timestamp = now()"
+        }
+      }
+    }
+
+    destinations {
+      datadog_logs {
+        id     = "destination-1"
+        inputs = ["remap-processor-1"]
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "remap-vrl-pipeline"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.custom_processor.0.id", "remap-processor-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.custom_processor.0.inputs.0", "source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.custom_processor.0.remaps.0.include", "service:web"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.custom_processor.0.remaps.0.name", "Parse JSON from message"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.custom_processor.0.remaps.0.enabled", "true"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.custom_processor.0.remaps.0.source", ". = parse_json!(string!(.message))"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.custom_processor.0.remaps.0.drop_on_error", "false"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.custom_processor.0.remaps.1.include", "env:prod"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.custom_processor.0.remaps.1.name", "Add timestamp"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.custom_processor.0.remaps.1.source", ".timestamp = now()"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.datadog_logs.0.id", "destination-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.datadog_logs.0.inputs.0", "remap-processor-1"),
+				),
+			},
+		},
+	})
+}
