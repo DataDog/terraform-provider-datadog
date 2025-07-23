@@ -1828,12 +1828,12 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 								},
 							},
 							"datadog_tags": schema.ListNestedBlock{
-								Description: "The `datadog_tags` processor adds or removes Datadog tags based on the specified rules.",
+								Description: "The `datadog_tags` processor includes or excludes specific Datadog tags in your logs.",
 								NestedObject: schema.NestedBlockObject{
 									Attributes: map[string]schema.Attribute{
 										"id": schema.StringAttribute{
 											Required:    true,
-											Description: "The unique identifier for this processor.",
+											Description: "The unique ID of the processor.",
 										},
 										"include": schema.StringAttribute{
 											Required:    true,
@@ -1842,20 +1842,20 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 										"inputs": schema.ListAttribute{
 											Required:    true,
 											ElementType: types.StringType,
-											Description: "A list of component IDs whose output is used as the input for this processor.",
+											Description: "The inputs for the processor.",
 										},
 										"mode": schema.StringAttribute{
 											Required:    true,
-											Description: "The mode of operation for the Datadog tags processor.",
+											Description: "The processing mode.",
 										},
 										"action": schema.StringAttribute{
 											Required:    true,
-											Description: "The action to take when a match is found.",
+											Description: "The action to take on tags with matching keys.",
 										},
 										"keys": schema.ListAttribute{
 											Required:    true,
 											ElementType: types.StringType,
-											Description: "A list of Datadog tags to add or remove.",
+											Description: "A list of tag keys.",
 										},
 									},
 								},
