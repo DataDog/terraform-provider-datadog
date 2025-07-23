@@ -117,6 +117,7 @@ type processorsModel struct {
 	AddEnvVarsProcessor           []*addEnvVarsProcessorModel           `tfsdk:"add_env_vars"`
 	EnrichmentTableProcessor      []*enrichmentTableProcessorModel      `tfsdk:"enrichment_table"`
 	OcsfMapperProcessor           []*ocsfMapperProcessorModel           `tfsdk:"ocsf_mapper"`
+	DatadogTagsProcessor          []*datadogTagsProcessorModel          `tfsdk:"datadog_tags"`
 }
 
 type ocsfMapperProcessorModel struct {
@@ -612,6 +613,15 @@ type gcpAuthModel struct {
 	CredentialsFile types.String `tfsdk:"credentials_file"`
 }
 
+type datadogTagsProcessorModel struct {
+	Id      types.String   `tfsdk:"id"`
+	Include types.String   `tfsdk:"include"`
+	Inputs  types.List     `tfsdk:"inputs"`
+	Mode    types.String   `tfsdk:"mode"`
+	Action  types.String   `tfsdk:"action"`
+	Keys    []types.String `tfsdk:"keys"`
+}
+
 func NewObservabilitPipelineResource() resource.Resource {
 	return &observabilityPipelineResource{}
 }
@@ -774,7 +784,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 									},
 									Blocks: map[string]schema.Block{
 										"auth": schema.SingleNestedBlock{
-											Description: "AWS authentication credentials used for accessing AWS services such as S3. If omitted, the system’s default credentials are used (for example, the IAM role and environment variables).",
+											Description: "AWS authentication credentials used for accessing AWS services such as S3. If omitted, the system's default credentials are used (for example, the IAM role and environment variables).",
 											Attributes: map[string]schema.Attribute{
 												"assume_role": schema.StringAttribute{
 													Optional:    true,
@@ -880,7 +890,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 									},
 									Blocks: map[string]schema.Block{
 										"auth": schema.SingleNestedBlock{
-											Description: "AWS authentication credentials used for accessing AWS services such as S3. If omitted, the system’s default credentials are used (for example, the IAM role and environment variables).",
+											Description: "AWS authentication credentials used for accessing AWS services such as S3. If omitted, the system's default credentials are used (for example, the IAM role and environment variables).",
 											Attributes: map[string]schema.Attribute{
 												"assume_role": schema.StringAttribute{
 													Optional:    true,
@@ -1817,6 +1827,39 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 									},
 								},
 							},
+							"datadog_tags": schema.ListNestedBlock{
+								Description: "The `datadog_tags` processor adds or removes Datadog tags based on the specified rules.",
+								NestedObject: schema.NestedBlockObject{
+									Attributes: map[string]schema.Attribute{
+										"id": schema.StringAttribute{
+											Required:    true,
+											Description: "The unique identifier for this processor.",
+										},
+										"include": schema.StringAttribute{
+											Required:    true,
+											Description: "A Datadog search query used to determine which logs this processor targets.",
+										},
+										"inputs": schema.ListAttribute{
+											Required:    true,
+											ElementType: types.StringType,
+											Description: "A list of component IDs whose output is used as the input for this processor.",
+										},
+										"mode": schema.StringAttribute{
+											Required:    true,
+											Description: "The mode of operation for the Datadog tags processor.",
+										},
+										"action": schema.StringAttribute{
+											Required:    true,
+											Description: "The action to take when a match is found.",
+										},
+										"keys": schema.ListAttribute{
+											Required:    true,
+											ElementType: types.StringType,
+											Description: "A list of Datadog tags to add or remove.",
+										},
+									},
+								},
+							},
 						},
 					},
 					"destinations": schema.SingleNestedBlock{
@@ -2266,7 +2309,7 @@ func tlsSchema() schema.SingleNestedBlock {
 			},
 			"ca_file": schema.StringAttribute{
 				Optional:    true,
-				Description: "Path to the Certificate Authority (CA) file used to validate the server’s TLS certificate.",
+				Description: "Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.",
 			},
 			"key_file": schema.StringAttribute{
 				Optional:    true,
@@ -2493,6 +2536,9 @@ func expandPipeline(ctx context.Context, state *observabilityPipelineModel) (*da
 	for _, p := range state.Config.Processors.SensitiveDataScannerProcessor {
 		config.Processors = append(config.Processors, expandSensitiveDataScannerProcessor(ctx, p))
 	}
+	for _, p := range state.Config.Processors.DatadogTagsProcessor {
+		config.Processors = append(config.Processors, expandDatadogTagsProcessor(ctx, p))
+	}
 
 	// Destinations
 	for _, d := range state.Config.Destinations.DatadogLogsDestination {
@@ -2661,6 +2707,9 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 		}
 		if f := flattenOcsfMapperProcessor(ctx, p.ObservabilityPipelineOcsfMapperProcessor); f != nil {
 			outCfg.Processors.OcsfMapperProcessor = append(outCfg.Processors.OcsfMapperProcessor, f)
+		}
+		if f := flattenDatadogTagsProcessor(ctx, p.ObservabilityPipelineDatadogTagsProcessor); f != nil {
+			outCfg.Processors.DatadogTagsProcessor = append(outCfg.Processors.DatadogTagsProcessor, f)
 		}
 	}
 
@@ -4963,4 +5012,49 @@ func flattenAmazonOpenSearchDestination(ctx context.Context, src *datadogV2.Obse
 	}
 
 	return model
+}
+
+func expandDatadogTagsProcessor(ctx context.Context, src *datadogTagsProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
+	proc := datadogV2.NewObservabilityPipelineDatadogTagsProcessorWithDefaults()
+	proc.SetId(src.Id.ValueString())
+	proc.SetInclude(src.Include.ValueString())
+
+	var inputs []string
+	src.Inputs.ElementsAs(ctx, &inputs, false)
+	proc.SetInputs(inputs)
+
+	proc.SetMode(datadogV2.ObservabilityPipelineDatadogTagsProcessorMode(src.Mode.ValueString()))
+	proc.SetAction(datadogV2.ObservabilityPipelineDatadogTagsProcessorAction(src.Action.ValueString()))
+
+	var keys []string
+	for _, k := range src.Keys {
+		keys = append(keys, k.ValueString())
+	}
+	proc.SetKeys(keys)
+
+	return datadogV2.ObservabilityPipelineConfigProcessorItem{
+		ObservabilityPipelineDatadogTagsProcessor: proc,
+	}
+}
+
+func flattenDatadogTagsProcessor(ctx context.Context, src *datadogV2.ObservabilityPipelineDatadogTagsProcessor) *datadogTagsProcessorModel {
+	if src == nil {
+		return nil
+	}
+
+	inputs, _ := types.ListValueFrom(ctx, types.StringType, src.Inputs)
+
+	var keys []types.String
+	for _, k := range src.Keys {
+		keys = append(keys, types.StringValue(k))
+	}
+
+	return &datadogTagsProcessorModel{
+		Id:      types.StringValue(src.Id),
+		Include: types.StringValue(src.Include),
+		Inputs:  inputs,
+		Mode:    types.StringValue(string(src.Mode)),
+		Action:  types.StringValue(string(src.Action)),
+		Keys:    keys,
+	}
 }
