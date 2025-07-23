@@ -78,6 +78,8 @@ resource "datadog_integration_aws_external_id" "foo" {}
 
 Import is supported using the following syntax:
 
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
+
 ```shell
 # Amazon Web Services external IDs can be imported using the ID value.
 terraform import datadog_integration_aws_external_id.foo ${id}

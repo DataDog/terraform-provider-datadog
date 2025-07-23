@@ -2716,6 +2716,8 @@ func createSyntheticsSSLTestStep(ctx context.Context, accProvider *schema.Provid
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.ssl", "options_list.0.check_certificate_revocation", "true"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.ssl", "options_list.0.disable_aia_intermediate_fetching", "true"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.ssl", "name", testName),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.ssl", "message", "Notify @datadog.user"),
@@ -2752,6 +2754,7 @@ resource "datadog_synthetics_test" "ssl" {
 		tick_every = 60
 		accept_self_signed = true
 		check_certificate_revocation = true
+		disable_aia_intermediate_fetching = true
 	}
 
 	name = "%s"
@@ -2869,6 +2872,8 @@ func updateSyntheticsSSLTestStep(ctx context.Context, accProvider *schema.Provid
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.ssl", "options_list.0.check_certificate_revocation", "false"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.ssl", "options_list.0.disable_aia_intermediate_fetching", "false"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.ssl", "name", testName),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.ssl", "message", "Notify @pagerduty"),
@@ -2911,6 +2916,7 @@ resource "datadog_synthetics_test" "ssl" {
 		tick_every = 60
 		accept_self_signed = false
 		check_certificate_revocation = false
+		disable_aia_intermediate_fetching = false
 	}
 
 	name = "%s"
@@ -4137,7 +4143,7 @@ func updateSyntheticsBrowserTestStep(ctx context.Context, accProvider *schema.Pr
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "tags.1", "buz"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "browser_step.#", "2"),
+				"datadog_synthetics_test.bar", "browser_step.#", "3"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "browser_step.0.name", "first step updated"),
 			resource.TestCheckResourceAttr(
@@ -4152,6 +4158,10 @@ func updateSyntheticsBrowserTestStep(ctx context.Context, accProvider *schema.Pr
 				"datadog_synthetics_test.bar", "browser_step.1.type", "pressKey"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "browser_step.1.params.0.value", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_step.2.type", "typeText"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_step.2.params.0.append_to_content", "false"),
 			resource.TestCheckResourceAttrSet(
 				"datadog_synthetics_test.bar", "monitor_id"),
 			resource.TestCheckResourceAttr(
@@ -4229,6 +4239,26 @@ resource "datadog_synthetics_test" "bar" {
 	        value = "1"
 	    }
 	}
+
+  	browser_step {
+    	name    = "Type text on input"
+		type    = "typeText"
+
+		params {
+			append_to_content     = false
+			element               = jsonencode(
+				{"multiLocator": {
+						"ab": "/*[local-name()=\"html\"][1]/*[local-name()=\"body\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"div\"][2]/*[local-name()=\"div\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"form\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"input\"][1]",
+						"at": "",
+						"cl": ""
+						"clt": "",
+						"co": "",
+						"ro": ""
+					}
+				})
+			value                 = "input"
+		}
+  }
 
 	browser_variable {
 		type = "text"
@@ -6185,6 +6215,8 @@ func createSyntheticsMultistepAPITestAllStepSubtypes(ctx context.Context, accPro
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.test_all_api_subtypes", "api_step.3.request_definition.0.check_certificate_revocation", "true"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.test_all_api_subtypes", "api_step.3.request_definition.0.disable_aia_intermediate_fetching", "true"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.test_all_api_subtypes", "api_step.3.retry.0.count", "0"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.test_all_api_subtypes", "api_step.3.retry.0.interval", "300"),
@@ -6384,6 +6416,7 @@ func createSyntheticsMultistepAPITestConfigAllStepSubtypes(testName string) stri
 					host                         = "example.org"
 					port                         = 443
 					check_certificate_revocation = true
+					disable_aia_intermediate_fetching = true
 				}
 				retry {
 					count    = 0
