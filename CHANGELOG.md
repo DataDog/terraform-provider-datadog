@@ -1,3 +1,16 @@
+## 3.69.0 (July 23, 2025)
+
+### BUGFIXES
+* [synthetics_test] Make gRPC `message` required by @mtalec in https://github.com/DataDog/terraform-provider-datadog/pull/3126
+### IMPROVEMENTS
+* [datadog_downtime_schedule] Validate recurrence start by @gmeligio in https://github.com/DataDog/terraform-provider-datadog/pull/3096
+* [datadog_synthetics_test] Add QoL feedback when converting multistep API test by @Drarig29 in https://github.com/DataDog/terraform-provider-datadog/pull/3049
+
+## New Contributors
+* @gmeligio made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3096
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.68.0...v3.69.0
+
 ## 3.68.0 (July 18, 2025)
 
 ### BUGFIXES
