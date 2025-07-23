@@ -103,24 +103,24 @@ type tlsModel struct {
 // Processor models
 
 type processorsModel struct {
-	FilterProcessor               []*filterProcessorModel                                 `tfsdk:"filter"`
-	ParseJsonProcessor            []*parseJsonProcessorModel                              `tfsdk:"parse_json"`
-	AddFieldsProcessor            []*addFieldsProcessor                                   `tfsdk:"add_fields"`
-	RenameFieldsProcessor         []*renameFieldsProcessorModel                           `tfsdk:"rename_fields"`
-	RemoveFieldsProcessor         []*removeFieldsProcessorModel                           `tfsdk:"remove_fields"`
-	QuotaProcessor                []*quotaProcessorModel                                  `tfsdk:"quota"`
-	GenerateMetricsProcessor      []*generateMetricsProcessorModel                        `tfsdk:"generate_datadog_metrics"`
-	ParseGrokProcessor            []*parseGrokProcessorModel                              `tfsdk:"parse_grok"`
-	SampleProcessor               []*sampleProcessorModel                                 `tfsdk:"sample"`
-	SensitiveDataScannerProcessor []*sensitiveDataScannerProcessorModel                   `tfsdk:"sensitive_data_scanner"`
-	DedupeProcessor               []*dedupeProcessorModel                                 `tfsdk:"dedupe"`
-	ReduceProcessor               []*reduceProcessorModel                                 `tfsdk:"reduce"`
-	ThrottleProcessor             []*throttleProcessorModel                               `tfsdk:"throttle"`
-	AddEnvVarsProcessor           []*addEnvVarsProcessorModel                             `tfsdk:"add_env_vars"`
-	EnrichmentTableProcessor      []*enrichmentTableProcessorModel                        `tfsdk:"enrichment_table"`
-	OcsfMapperProcessor           []*ocsfMapperProcessorModel                             `tfsdk:"ocsf_mapper"`
-	DatadogTagsProcessor          []*datadogTagsProcessorModel                            `tfsdk:"datadog_tags"`
-	CustomProcessorProcessor      []*observability_pipeline.CustomProcessorProcessorModel `tfsdk:"custom_processor"`
+	FilterProcessor               []*filterProcessorModel                        `tfsdk:"filter"`
+	ParseJsonProcessor            []*parseJsonProcessorModel                     `tfsdk:"parse_json"`
+	AddFieldsProcessor            []*addFieldsProcessor                          `tfsdk:"add_fields"`
+	RenameFieldsProcessor         []*renameFieldsProcessorModel                  `tfsdk:"rename_fields"`
+	RemoveFieldsProcessor         []*removeFieldsProcessorModel                  `tfsdk:"remove_fields"`
+	QuotaProcessor                []*quotaProcessorModel                         `tfsdk:"quota"`
+	GenerateMetricsProcessor      []*generateMetricsProcessorModel               `tfsdk:"generate_datadog_metrics"`
+	ParseGrokProcessor            []*parseGrokProcessorModel                     `tfsdk:"parse_grok"`
+	SampleProcessor               []*sampleProcessorModel                        `tfsdk:"sample"`
+	SensitiveDataScannerProcessor []*sensitiveDataScannerProcessorModel          `tfsdk:"sensitive_data_scanner"`
+	DedupeProcessor               []*dedupeProcessorModel                        `tfsdk:"dedupe"`
+	ReduceProcessor               []*reduceProcessorModel                        `tfsdk:"reduce"`
+	ThrottleProcessor             []*throttleProcessorModel                      `tfsdk:"throttle"`
+	AddEnvVarsProcessor           []*addEnvVarsProcessorModel                    `tfsdk:"add_env_vars"`
+	EnrichmentTableProcessor      []*enrichmentTableProcessorModel               `tfsdk:"enrichment_table"`
+	OcsfMapperProcessor           []*ocsfMapperProcessorModel                    `tfsdk:"ocsf_mapper"`
+	DatadogTagsProcessor          []*datadogTagsProcessorModel                   `tfsdk:"datadog_tags"`
+	CustomProcessor               []*observability_pipeline.CustomProcessorModel `tfsdk:"custom_processor"`
 }
 
 type ocsfMapperProcessorModel struct {
@@ -1865,7 +1865,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 									},
 								},
 							},
-							"custom_processor": observability_pipeline.CustomProcessorProcessorSchema(),
+							"custom_processor": observability_pipeline.CustomProcessorSchema(),
 						},
 					},
 					"destinations": schema.SingleNestedBlock{
@@ -2534,8 +2534,8 @@ func expandPipeline(ctx context.Context, state *observabilityPipelineModel) (*da
 	for _, p := range state.Config.Processors.OcsfMapperProcessor {
 		config.Processors = append(config.Processors, expandOcsfMapperProcessor(ctx, p))
 	}
-	for _, p := range state.Config.Processors.CustomProcessorProcessor {
-		config.Processors = append(config.Processors, observability_pipeline.ExpandCustomProcessorProcessor(ctx, p))
+	for _, p := range state.Config.Processors.CustomProcessor {
+		config.Processors = append(config.Processors, observability_pipeline.ExpandCustomProcessor(ctx, p))
 	}
 	for _, p := range state.Config.Processors.ParseGrokProcessor {
 		config.Processors = append(config.Processors, expandParseGrokProcessor(ctx, p))
@@ -2730,8 +2730,8 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 		if f := flattenDatadogTagsProcessor(ctx, p.ObservabilityPipelineDatadogTagsProcessor); f != nil {
 			outCfg.Processors.DatadogTagsProcessor = append(outCfg.Processors.DatadogTagsProcessor, f)
 		}
-		if f := observability_pipeline.FlattenCustomProcessorProcessor(ctx, p.ObservabilityPipelineCustomProcessor); f != nil {
-			outCfg.Processors.CustomProcessorProcessor = append(outCfg.Processors.CustomProcessorProcessor, f)
+		if f := observability_pipeline.FlattenCustomProcessor(ctx, p.ObservabilityPipelineCustomProcessor); f != nil {
+			outCfg.Processors.CustomProcessor = append(outCfg.Processors.CustomProcessor, f)
 		}
 	}
 
