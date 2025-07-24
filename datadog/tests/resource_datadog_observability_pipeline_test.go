@@ -2816,36 +2816,7 @@ func TestAccDatadogObservabilityPipeline_datadogTagsProcessor(t *testing.T) {
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccObservabilityPipelineDatadogTagsProcessorConfig(),
-				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
-					resource.TestCheckResourceAttr(resourceName, "name", "datadog tags processor test"),
-					resource.TestCheckResourceAttr(resourceName, "config.sources.datadog_agent.0.id", "source-1"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.datadog_tags.0.id", "datadog-tags-processor"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.datadog_tags.0.include", "service:my-service"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.datadog_tags.0.mode", "filter"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.datadog_tags.0.action", "include"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.datadog_tags.0.keys.0", "env"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.datadog_tags.0.keys.1", "service"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.datadog_tags.0.keys.2", "version"),
-					resource.TestCheckResourceAttr(resourceName, "config.destinations.datadog_logs.0.id", "destination-1"),
-				),
-			},
-			{
-				Config: testAccObservabilityPipelineDatadogTagsProcessorUpdatedConfig(),
-				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr(resourceName, "name", "datadog tags processor test updated"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.datadog_tags.0.action", "exclude"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.datadog_tags.0.keys.0", "env"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.datadog_tags.0.keys.1", "service"),
-				),
-			},
-		},
-	})
-}
-
-func testAccObservabilityPipelineDatadogTagsProcessorConfig() string {
-	return fmt.Sprintf(`
+				Config: `
 resource "datadog_observability_pipeline" "datadog_tags" {
   name = "datadog tags processor test"
 
@@ -2874,11 +2845,23 @@ resource "datadog_observability_pipeline" "datadog_tags" {
       }
     }
   }
-}`)
-}
-
-func testAccObservabilityPipelineDatadogTagsProcessorUpdatedConfig() string {
-	return fmt.Sprintf(`
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "datadog tags processor test"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.datadog_agent.0.id", "source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.datadog_tags.0.id", "datadog-tags-processor"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.datadog_tags.0.include", "service:my-service"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.datadog_tags.0.mode", "filter"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.datadog_tags.0.action", "include"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.datadog_tags.0.keys.0", "env"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.datadog_tags.0.keys.1", "service"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.datadog_tags.0.keys.2", "version"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.datadog_logs.0.id", "destination-1"),
+				),
+			},
+			{
+				Config: `
 resource "datadog_observability_pipeline" "datadog_tags" {
   name = "datadog tags processor test updated"
 
@@ -2907,7 +2890,16 @@ resource "datadog_observability_pipeline" "datadog_tags" {
       }
     }
   }
-}`)
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(resourceName, "name", "datadog tags processor test updated"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.datadog_tags.0.action", "exclude"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.datadog_tags.0.keys.0", "env"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.datadog_tags.0.keys.1", "service"),
+				),
+			},
+		},
+	})
 }
 
 func TestAccDatadogObservabilityPipeline_quotaProcessor_overflowAction(t *testing.T) {
