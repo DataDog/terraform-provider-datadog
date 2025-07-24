@@ -10,15 +10,15 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
-// CustomProcessorProcessorModel represents the Terraform model for remap VRL processor configuration
-type CustomProcessorProcessorModel struct {
-	Id     types.String                         `tfsdk:"id"`
-	Inputs types.List                           `tfsdk:"inputs"`
-	Remaps []CustomProcessorProcessorRemapModel `tfsdk:"remaps"`
+// CustomProcessorModel represents the Terraform model for remap VRL processor configuration
+type CustomProcessorModel struct {
+	Id     types.String                `tfsdk:"id"`
+	Inputs types.List                  `tfsdk:"inputs"`
+	Remaps []CustomProcessorRemapModel `tfsdk:"remaps"`
 }
 
-// CustomProcessorProcessorRemapModel represents a single VRL remap rule
-type CustomProcessorProcessorRemapModel struct {
+// CustomProcessorRemapModel represents a single VRL remap rule
+type CustomProcessorRemapModel struct {
 	Include     types.String `tfsdk:"include"`
 	Name        types.String `tfsdk:"name"`
 	Enabled     types.Bool   `tfsdk:"enabled"`
@@ -26,18 +26,18 @@ type CustomProcessorProcessorRemapModel struct {
 	DropOnError types.Bool   `tfsdk:"drop_on_error"`
 }
 
-// ExpandCustomProcessorProcessor converts the Terraform model to the Datadog API model
-func ExpandCustomProcessorProcessor(ctx context.Context, src *CustomProcessorProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
-	proc := datadogV2.NewObservabilityPipelineCustomProcessorProcessorWithDefaults()
+// ExpandCustomProcessor converts the Terraform model to the Datadog API model
+func ExpandCustomProcessor(ctx context.Context, src *CustomProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
+	proc := datadogV2.NewObservabilityPipelineCustomProcessorWithDefaults()
 	proc.SetId(src.Id.ValueString())
 
 	var inputs []string
 	src.Inputs.ElementsAs(ctx, &inputs, false)
 	proc.SetInputs(inputs)
 
-	var remaps []datadogV2.ObservabilityPipelineCustomProcessorProcessorRemap
+	var remaps []datadogV2.ObservabilityPipelineCustomProcessorRemap
 	for _, remap := range src.Remaps {
-		apiRemap := datadogV2.ObservabilityPipelineCustomProcessorProcessorRemap{
+		apiRemap := datadogV2.ObservabilityPipelineCustomProcessorRemap{
 			Include: remap.Include.ValueString(),
 			Name:    remap.Name.ValueString(),
 			Source:  remap.Source.ValueString(),
@@ -55,21 +55,21 @@ func ExpandCustomProcessorProcessor(ctx context.Context, src *CustomProcessorPro
 	proc.SetRemaps(remaps)
 
 	return datadogV2.ObservabilityPipelineConfigProcessorItem{
-		ObservabilityPipelineCustomProcessorProcessor: proc,
+		ObservabilityPipelineCustomProcessor: proc,
 	}
 }
 
-// FlattenCustomProcessorProcessor converts the Datadog API model to the Terraform model
-func FlattenCustomProcessorProcessor(ctx context.Context, src *datadogV2.ObservabilityPipelineCustomProcessorProcessor) *CustomProcessorProcessorModel {
+// FlattenCustomProcessor converts the Datadog API model to the Terraform model
+func FlattenCustomProcessor(ctx context.Context, src *datadogV2.ObservabilityPipelineCustomProcessor) *CustomProcessorModel {
 	if src == nil {
 		return nil
 	}
 
 	inputs, _ := types.ListValueFrom(ctx, types.StringType, src.GetInputs())
 
-	var remaps []CustomProcessorProcessorRemapModel
+	var remaps []CustomProcessorRemapModel
 	for _, remap := range src.GetRemaps() {
-		remapModel := CustomProcessorProcessorRemapModel{
+		remapModel := CustomProcessorRemapModel{
 			Include: types.StringValue(remap.GetInclude()),
 			Name:    types.StringValue(remap.GetName()),
 			Source:  types.StringValue(remap.GetSource()),
@@ -83,15 +83,15 @@ func FlattenCustomProcessorProcessor(ctx context.Context, src *datadogV2.Observa
 		remaps = append(remaps, remapModel)
 	}
 
-	return &CustomProcessorProcessorModel{
+	return &CustomProcessorModel{
 		Id:     types.StringValue(src.GetId()),
 		Inputs: inputs,
 		Remaps: remaps,
 	}
 }
 
-// CustomProcessorProcessorSchema returns the schema for remap VRL processor
-func CustomProcessorProcessorSchema() schema.ListNestedBlock {
+// CustomProcessorSchema returns the schema for remap VRL processor
+func CustomProcessorSchema() schema.ListNestedBlock {
 	return schema.ListNestedBlock{
 		Description: "The `custom_processor` processor transforms events using Vector Remap Language (VRL) scripts with advanced filtering capabilities.",
 		NestedObject: schema.NestedBlockObject{

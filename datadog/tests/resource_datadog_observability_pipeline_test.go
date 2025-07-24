@@ -2806,6 +2806,102 @@ resource "datadog_observability_pipeline" "amazon_opensearch_basic" {
 	})
 }
 
+func TestAccDatadogObservabilityPipeline_datadogTagsProcessor(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.datadog_tags"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "datadog_tags" {
+  name = "datadog tags processor test"
+
+  config {
+    sources {
+      datadog_agent {
+        id = "source-1"
+      }
+    }
+
+    processors {
+      datadog_tags {
+        id      = "datadog-tags-processor"
+        include = "service:my-service"
+        mode    = "filter"
+        action  = "include"
+        keys    = ["env", "service", "version"]
+        inputs  = ["source-1"]
+      }
+    }
+
+    destinations {
+      datadog_logs {
+        id     = "destination-1"
+        inputs = ["datadog-tags-processor"]
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "datadog tags processor test"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.datadog_agent.0.id", "source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.datadog_tags.0.id", "datadog-tags-processor"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.datadog_tags.0.include", "service:my-service"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.datadog_tags.0.mode", "filter"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.datadog_tags.0.action", "include"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.datadog_tags.0.keys.0", "env"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.datadog_tags.0.keys.1", "service"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.datadog_tags.0.keys.2", "version"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.datadog_logs.0.id", "destination-1"),
+				),
+			},
+			{
+				Config: `
+resource "datadog_observability_pipeline" "datadog_tags" {
+  name = "datadog tags processor test updated"
+
+  config {
+    sources {
+      datadog_agent {
+        id = "source-1"
+      }
+    }
+
+    processors {
+      datadog_tags {
+        id      = "datadog-tags-processor"
+        include = "service:my-service"
+        mode    = "filter"
+        action  = "exclude"
+        keys    = ["env", "service"]
+        inputs  = ["source-1"]
+      }
+    }
+
+    destinations {
+      datadog_logs {
+        id     = "destination-1"
+        inputs = ["datadog-tags-processor"]
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(resourceName, "name", "datadog tags processor test updated"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.datadog_tags.0.action", "exclude"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.datadog_tags.0.keys.0", "env"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.datadog_tags.0.keys.1", "service"),
+				),
+			},
+		},
+	})
+}
+
 func TestAccDatadogObservabilityPipeline_quotaProcessor_overflowAction(t *testing.T) {
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
@@ -3067,7 +3163,7 @@ resource "datadog_observability_pipeline" "socket_dest" {
 	})
 }
 
-func TestAccDatadogObservabilityPipeline_customProcessorProcessor(t *testing.T) {
+func TestAccDatadogObservabilityPipeline_customProcessor(t *testing.T) {
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
 	resourceName := "datadog_observability_pipeline.custom_processor"
