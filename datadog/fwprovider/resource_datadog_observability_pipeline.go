@@ -103,24 +103,24 @@ type tlsModel struct {
 // Processor models
 
 type processorsModel struct {
-	FilterProcessor               []*filterProcessorModel                        `tfsdk:"filter"`
-	ParseJsonProcessor            []*parseJsonProcessorModel                     `tfsdk:"parse_json"`
-	AddFieldsProcessor            []*addFieldsProcessor                          `tfsdk:"add_fields"`
-	RenameFieldsProcessor         []*renameFieldsProcessorModel                  `tfsdk:"rename_fields"`
-	RemoveFieldsProcessor         []*removeFieldsProcessorModel                  `tfsdk:"remove_fields"`
-	QuotaProcessor                []*quotaProcessorModel                         `tfsdk:"quota"`
-	GenerateMetricsProcessor      []*generateMetricsProcessorModel               `tfsdk:"generate_datadog_metrics"`
-	ParseGrokProcessor            []*parseGrokProcessorModel                     `tfsdk:"parse_grok"`
-	SampleProcessor               []*sampleProcessorModel                        `tfsdk:"sample"`
-	SensitiveDataScannerProcessor []*sensitiveDataScannerProcessorModel          `tfsdk:"sensitive_data_scanner"`
-	DedupeProcessor               []*dedupeProcessorModel                        `tfsdk:"dedupe"`
-	ReduceProcessor               []*reduceProcessorModel                        `tfsdk:"reduce"`
-	ThrottleProcessor             []*throttleProcessorModel                      `tfsdk:"throttle"`
-	AddEnvVarsProcessor           []*addEnvVarsProcessorModel                    `tfsdk:"add_env_vars"`
-	EnrichmentTableProcessor      []*enrichmentTableProcessorModel               `tfsdk:"enrichment_table"`
-	OcsfMapperProcessor           []*ocsfMapperProcessorModel                    `tfsdk:"ocsf_mapper"`
-	DatadogTagsProcessor          []*datadogTagsProcessorModel                   `tfsdk:"datadog_tags"`
-	CustomProcessor               []*observability_pipeline.CustomProcessorModel `tfsdk:"custom_processor"`
+	FilterProcessor               []*filterProcessorModel                             `tfsdk:"filter"`
+	ParseJsonProcessor            []*parseJsonProcessorModel                          `tfsdk:"parse_json"`
+	AddFieldsProcessor            []*addFieldsProcessor                               `tfsdk:"add_fields"`
+	RenameFieldsProcessor         []*renameFieldsProcessorModel                       `tfsdk:"rename_fields"`
+	RemoveFieldsProcessor         []*removeFieldsProcessorModel                       `tfsdk:"remove_fields"`
+	QuotaProcessor                []*quotaProcessorModel                              `tfsdk:"quota"`
+	GenerateMetricsProcessor      []*generateMetricsProcessorModel                    `tfsdk:"generate_datadog_metrics"`
+	ParseGrokProcessor            []*parseGrokProcessorModel                          `tfsdk:"parse_grok"`
+	SampleProcessor               []*sampleProcessorModel                             `tfsdk:"sample"`
+	SensitiveDataScannerProcessor []*sensitiveDataScannerProcessorModel               `tfsdk:"sensitive_data_scanner"`
+	DedupeProcessor               []*dedupeProcessorModel                             `tfsdk:"dedupe"`
+	ReduceProcessor               []*reduceProcessorModel                             `tfsdk:"reduce"`
+	ThrottleProcessor             []*throttleProcessorModel                           `tfsdk:"throttle"`
+	AddEnvVarsProcessor           []*addEnvVarsProcessorModel                         `tfsdk:"add_env_vars"`
+	EnrichmentTableProcessor      []*enrichmentTableProcessorModel                    `tfsdk:"enrichment_table"`
+	OcsfMapperProcessor           []*ocsfMapperProcessorModel                         `tfsdk:"ocsf_mapper"`
+	DatadogTagsProcessor          []*observability_pipeline.DatadogTagsProcessorModel `tfsdk:"datadog_tags"`
+	CustomProcessor               []*observability_pipeline.CustomProcessorModel      `tfsdk:"custom_processor"`
 }
 
 type ocsfMapperProcessorModel struct {
@@ -615,15 +615,6 @@ type googlePubSubSourceModel struct {
 
 type gcpAuthModel struct {
 	CredentialsFile types.String `tfsdk:"credentials_file"`
-}
-
-type datadogTagsProcessorModel struct {
-	Id      types.String   `tfsdk:"id"`
-	Include types.String   `tfsdk:"include"`
-	Inputs  types.List     `tfsdk:"inputs"`
-	Mode    types.String   `tfsdk:"mode"`
-	Action  types.String   `tfsdk:"action"`
-	Keys    []types.String `tfsdk:"keys"`
 }
 
 func NewObservabilitPipelineResource() resource.Resource {
@@ -1832,39 +1823,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 									},
 								},
 							},
-							"datadog_tags": schema.ListNestedBlock{
-								Description: "The `datadog_tags` processor includes or excludes specific Datadog tags in your logs.",
-								NestedObject: schema.NestedBlockObject{
-									Attributes: map[string]schema.Attribute{
-										"id": schema.StringAttribute{
-											Required:    true,
-											Description: "The unique ID of the processor.",
-										},
-										"include": schema.StringAttribute{
-											Required:    true,
-											Description: "A Datadog search query used to determine which logs this processor targets.",
-										},
-										"inputs": schema.ListAttribute{
-											Required:    true,
-											ElementType: types.StringType,
-											Description: "The inputs for the processor.",
-										},
-										"mode": schema.StringAttribute{
-											Required:    true,
-											Description: "The processing mode.",
-										},
-										"action": schema.StringAttribute{
-											Required:    true,
-											Description: "The action to take on tags with matching keys.",
-										},
-										"keys": schema.ListAttribute{
-											Required:    true,
-											ElementType: types.StringType,
-											Description: "A list of tag keys.",
-										},
-									},
-								},
-							},
+							"datadog_tags":     observability_pipeline.DatadogTagsProcessorSchema(),
 							"custom_processor": observability_pipeline.CustomProcessorSchema(),
 						},
 					},
@@ -5038,47 +4997,10 @@ func flattenAmazonOpenSearchDestination(ctx context.Context, src *datadogV2.Obse
 	return model
 }
 
-func expandDatadogTagsProcessor(ctx context.Context, src *datadogTagsProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
-	proc := datadogV2.NewObservabilityPipelineDatadogTagsProcessorWithDefaults()
-	proc.SetId(src.Id.ValueString())
-	proc.SetInclude(src.Include.ValueString())
-
-	var inputs []string
-	src.Inputs.ElementsAs(ctx, &inputs, false)
-	proc.SetInputs(inputs)
-
-	proc.SetMode(datadogV2.ObservabilityPipelineDatadogTagsProcessorMode(src.Mode.ValueString()))
-	proc.SetAction(datadogV2.ObservabilityPipelineDatadogTagsProcessorAction(src.Action.ValueString()))
-
-	var keys []string
-	for _, k := range src.Keys {
-		keys = append(keys, k.ValueString())
-	}
-	proc.SetKeys(keys)
-
-	return datadogV2.ObservabilityPipelineConfigProcessorItem{
-		ObservabilityPipelineDatadogTagsProcessor: proc,
-	}
+func expandDatadogTagsProcessor(ctx context.Context, src *observability_pipeline.DatadogTagsProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
+	return observability_pipeline.ExpandDatadogTagsProcessor(ctx, src)
 }
 
-func flattenDatadogTagsProcessor(ctx context.Context, src *datadogV2.ObservabilityPipelineDatadogTagsProcessor) *datadogTagsProcessorModel {
-	if src == nil {
-		return nil
-	}
-
-	inputs, _ := types.ListValueFrom(ctx, types.StringType, src.Inputs)
-
-	var keys []types.String
-	for _, k := range src.Keys {
-		keys = append(keys, types.StringValue(k))
-	}
-
-	return &datadogTagsProcessorModel{
-		Id:      types.StringValue(src.Id),
-		Include: types.StringValue(src.Include),
-		Inputs:  inputs,
-		Mode:    types.StringValue(string(src.Mode)),
-		Action:  types.StringValue(string(src.Action)),
-		Keys:    keys,
-	}
+func flattenDatadogTagsProcessor(ctx context.Context, src *datadogV2.ObservabilityPipelineDatadogTagsProcessor) *observability_pipeline.DatadogTagsProcessorModel {
+	return observability_pipeline.FlattenDatadogTagsProcessor(ctx, src)
 }
