@@ -202,7 +202,6 @@ func resourceDatadogMonitor() *schema.Resource {
 					Description: "**Deprecated**. See `new_group_delay`. Time (in seconds) to allow a host to boot and applications to fully start before starting the evaluation of monitor results. Should be a non-negative integer. This value is ignored for simple monitors and monitors not grouped by host. The only case when this should be used is to override the default and set `new_host_delay` to zero for monitors grouped by host.",
 					Type:        schema.TypeInt,
 					Optional:    true,
-					Default:     300,
 					Deprecated:  "Use `new_group_delay` except when setting `new_host_delay` to zero.",
 				},
 				"evaluation_delay": {
@@ -699,12 +698,25 @@ func buildMonitorStruct(d utils.Resource) (*datadogV1.Monitor, *datadogV1.Monito
 	if attr, ok := d.GetOk("group_retention_duration"); ok {
 		o.SetGroupRetentionDuration(attr.(string))
 	}
+	// Handle the relationship between new_group_delay and new_host_delay
+	// new_group_delay overrides new_host_delay when set to a nonzero value
 	if attr, ok := d.GetOk("new_group_delay"); ok {
-		o.SetNewGroupDelay(int64(attr.(int)))
+		groupDelay := int64(attr.(int))
+		o.SetNewGroupDelay(groupDelay)
+		// Only set new_host_delay if new_group_delay is zero (not overriding)
+		if groupDelay == 0 {
+			if hostDelayValue, ok := d.GetOk("new_host_delay"); ok {
+				o.SetNewHostDelay(int64(hostDelayValue.(int)))
+			}
+			// Don't apply default here - let the API handle it
+		}
+	} else {
+		// new_group_delay is not set, so use new_host_delay if provided
+		if hostDelayValue, ok := d.GetOk("new_host_delay"); ok {
+			o.SetNewHostDelay(int64(hostDelayValue.(int)))
+		}
+		// Don't apply default here - let the API handle it
 	}
-	// Don't check with GetOk, doesn't work with 0 (we can't do the same for
-	// new_group_delay because it would always override new_host_delay).
-	o.SetNewHostDelay(int64(d.Get("new_host_delay").(int)))
 	if attr, ok := d.GetOk("evaluation_delay"); ok {
 		o.SetEvaluationDelay(int64(attr.(int)))
 	}
@@ -1062,9 +1074,23 @@ func updateMonitorState(d *schema.ResourceData, meta interface{}, m *datadogV1.M
 	if err := d.Set("new_group_delay", m.Options.GetNewGroupDelay()); err != nil {
 		return diag.FromErr(err)
 	}
-	if v, ok := m.Options.GetNewHostDelayOk(); ok && v != nil {
-		if err := d.Set("new_host_delay", *v); err != nil {
-			return diag.FromErr(err)
+	// Handle new_host_delay based on whether new_group_delay is overriding it
+	groupDelay := m.Options.GetNewGroupDelay()
+
+	// If new_group_delay is nonzero, it overrides new_host_delay - don't set new_host_delay in state
+	// If new_group_delay is 0 or unset, set new_host_delay in state if API returned it
+	if groupDelay == 0 {
+		if v, ok := m.Options.GetNewHostDelayOk(); ok && v != nil {
+			// Only set new_host_delay in state if:
+			// 1. The user has configured it (it exists in the config), OR
+			// 2. It has a non-default value (not 300)
+			// This prevents drift when the API returns the default value for unconfigured monitors
+			_, userConfiguredHostDelay := d.GetOk("new_host_delay")
+			if userConfiguredHostDelay || *v != 300 {
+				if err := d.Set("new_host_delay", *v); err != nil {
+					return diag.FromErr(err)
+				}
+			}
 		}
 	}
 	if err := d.Set("evaluation_delay", m.Options.GetEvaluationDelay()); err != nil {

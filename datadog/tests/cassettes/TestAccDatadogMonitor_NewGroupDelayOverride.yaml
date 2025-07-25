@@ -1,0 +1,328 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 463
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"draft_status":"published","message":"Monitor with only new_group_delay set","name":"tf-TestAccDatadogMonitor_NewGroupDelayOverride-local-1753429722","options":{"include_tags":true,"new_group_delay":60,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":1}},"priority":null,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:test,host:test} by {host} \u003e 1","restricted_roles":null,"tags":[],"type":"query alert"}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/monitor/validate
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 3
+        uncompressed: false
+        body: |
+            {}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 686.14875ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 463
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"draft_status":"published","message":"Monitor with only new_group_delay set","name":"tf-TestAccDatadogMonitor_NewGroupDelayOverride-local-1753429722","options":{"include_tags":true,"new_group_delay":60,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":1}},"priority":null,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:test,host:test} by {host} \u003e 1","restricted_roles":null,"tags":[],"type":"query alert"}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/monitor/validate
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 3
+        uncompressed: false
+        body: |
+            {}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 220.389208ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 440
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"draft_status":"published","message":"Monitor with only new_group_delay set","name":"tf-TestAccDatadogMonitor_NewGroupDelayOverride-local-1753429722","options":{"include_tags":true,"new_group_delay":60,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":1}},"priority":null,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:test,host:test} by {host} \u003e 1","restricted_roles":null,"tags":[],"type":"query alert"}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/monitor
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":178920118,"org_id":1262413,"type":"query alert","name":"tf-TestAccDatadogMonitor_NewGroupDelayOverride-local-1753429722","message":"Monitor with only new_group_delay set","tags":[],"query":"avg(last_1h):avg:aws.ec2.cpu{environment:test,host:test} by {host} > 1","options":{"include_tags":true,"new_group_delay":60,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":1.0},"notify_audit":false,"silenced":{}},"multi":true,"created_at":1753429725000,"created":"2025-07-25T07:48:45.159378+00:00","modified":"2025-07-25T07:48:45.159378+00:00","deleted":null,"priority":null,"restricted_roles":null,"restriction_policy":null,"overall_state_modified":null,"overall_state":"No Data","creator":{"name":"Francesco Pighi","handle":"francesco.pighi@datadoghq.com","email":"francesco.pighi@datadoghq.com","id":20717070}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 988.037042ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/monitor/178920118
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":178920118,"org_id":1262413,"type":"query alert","name":"tf-TestAccDatadogMonitor_NewGroupDelayOverride-local-1753429722","message":"Monitor with only new_group_delay set","tags":[],"query":"avg(last_1h):avg:aws.ec2.cpu{environment:test,host:test} by {host} > 1","options":{"include_tags":true,"new_group_delay":60,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":1.0},"notify_audit":false,"silenced":{}},"multi":true,"created_at":1753429725000,"created":"2025-07-25T07:48:45.159378+00:00","modified":"2025-07-25T07:48:45.159378+00:00","deleted":null,"priority":null,"restricted_roles":null,"overall_state_modified":null,"overall_state":"No Data","creator":{"name":"Francesco Pighi","email":"francesco.pighi@datadoghq.com","handle":"francesco.pighi@datadoghq.com","id":20717070}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 261.428833ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 463
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"draft_status":"published","message":"Monitor with only new_group_delay set","name":"tf-TestAccDatadogMonitor_NewGroupDelayOverride-local-1753429722","options":{"include_tags":true,"new_group_delay":60,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":1}},"priority":null,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:test,host:test} by {host} \u003e 1","restricted_roles":null,"tags":[],"type":"query alert"}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/monitor/178920118/validate
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 3
+        uncompressed: false
+        body: |
+            {}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 222.085916ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/monitor/178920118
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":178920118,"org_id":1262413,"type":"query alert","name":"tf-TestAccDatadogMonitor_NewGroupDelayOverride-local-1753429722","message":"Monitor with only new_group_delay set","tags":[],"query":"avg(last_1h):avg:aws.ec2.cpu{environment:test,host:test} by {host} > 1","options":{"include_tags":true,"new_group_delay":60,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":1.0},"notify_audit":false,"silenced":{}},"multi":true,"created_at":1753429725000,"created":"2025-07-25T07:48:45.159378+00:00","modified":"2025-07-25T07:48:45.159378+00:00","deleted":null,"priority":null,"restricted_roles":null,"overall_state_modified":null,"overall_state":"No Data","creator":{"name":"Francesco Pighi","email":"francesco.pighi@datadoghq.com","handle":"francesco.pighi@datadoghq.com","id":20717070}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 257.62375ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 463
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"draft_status":"published","message":"Monitor with only new_group_delay set","name":"tf-TestAccDatadogMonitor_NewGroupDelayOverride-local-1753429722","options":{"include_tags":true,"new_group_delay":60,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":1}},"priority":null,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:test,host:test} by {host} \u003e 1","restricted_roles":null,"tags":[],"type":"query alert"}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/monitor/178920118/validate
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 3
+        uncompressed: false
+        body: |
+            {}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 211.519208ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/monitor/178920118
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"deleted_monitor_id":178920118}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 972.4275ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/monitor/178920118
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"errors":["Monitor not found"]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 211.984375ms

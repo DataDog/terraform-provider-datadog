@@ -223,8 +223,9 @@ func TestAccDatadogMonitor_Updated(t *testing.T) {
 						"datadog_monitor.foo", "notify_no_data", "false"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "new_group_delay", "500"),
-					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "new_host_delay", "300"),
+					// new_host_delay should not be set when new_group_delay overrides it
+					resource.TestCheckNoResourceAttr(
+						"datadog_monitor.foo", "new_host_delay"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "evaluation_delay", "700"),
 					resource.TestCheckResourceAttr(
@@ -371,8 +372,9 @@ func TestAccDatadogMonitor_UpdatedToRemoveTags(t *testing.T) {
 						"datadog_monitor.foo", "notify_no_data", "false"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "new_group_delay", "500"),
-					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "new_host_delay", "300"),
+					// new_host_delay should not be set when new_group_delay overrides it
+					resource.TestCheckNoResourceAttr(
+						"datadog_monitor.foo", "new_host_delay"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "evaluation_delay", "700"),
 					resource.TestCheckResourceAttr(
@@ -2095,6 +2097,52 @@ func testAccCheckDatadogMonitorWithRestrictionPolicyDestroyed(uniqueName string)
 				critical = "2.0"
 			}
 		}`, uniqueName, uniqueName)
+}
+
+// TestAccDatadogMonitor_NewGroupDelayOverride tests that when new_group_delay is set,
+// new_host_delay should not appear in the state even though it has a default value.
+// This is a regression test for GitHub issue #1533.
+func TestAccDatadogMonitor_NewGroupDelayOverride(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	monitorName := uniqueEntityName(ctx, t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogMonitorDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogMonitorConfigNewGroupDelayOnly(monitorName),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogMonitorExists(accProvider),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "new_group_delay", "60"),
+					// Regression test: new_host_delay should NOT be set in state
+					// when only new_group_delay is specified
+					resource.TestCheckNoResourceAttr(
+						"datadog_monitor.foo", "new_host_delay"),
+				),
+			},
+		},
+	})
+}
+
+func testAccCheckDatadogMonitorConfigNewGroupDelayOnly(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_monitor" "foo" {
+  name = "%s"
+  type = "query alert"
+  message = "Monitor with only new_group_delay set"
+  query = "avg(last_1h):avg:aws.ec2.cpu{environment:test,host:test} by {host} > 1"
+
+  new_group_delay = 60
+  
+  monitor_thresholds {
+    critical = "1.0"
+  }
+}`, uniq)
 }
 
 func verifyRestrictedRolesSize(accProvider *fwprovider.FrameworkProvider, expectedSize int) resource.TestCheckFunc {
