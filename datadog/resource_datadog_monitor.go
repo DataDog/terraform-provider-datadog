@@ -708,14 +708,27 @@ func buildMonitorStruct(d utils.Resource) (*datadogV1.Monitor, *datadogV1.Monito
 	if attr, ok := d.GetOk("evaluation_delay"); ok {
 		o.SetEvaluationDelay(int64(attr.(int)))
 	}
+	// Handle on_missing_data field: When this field is omitted from HCL configuration,
+	// the Datadog UI exports monitors without this field, but Terraform interprets
+	// the missing field incorrectly. To fix the discrepancy between UI exports and
+	// Terraform imports, we automatically set on_missing_data="default" when not
+	// explicitly provided. This ensures consistent behavior across UI and Terraform.
 	attr, onMissingDataOk := d.GetOk("on_missing_data")
+	onMissingDataSet := onMissingDataOk
 	if onMissingDataOk {
 		o.SetOnMissingData(datadogV1.OnMissingDataOption(attr.(string)))
+	} else {
+		o.SetOnMissingData(datadogV1.OnMissingDataOption("default"))
+		onMissingDataSet = true
 	}
 	// no_data_timeframe cannot be combined with on_missing_data. This provider
 	// defaults no_data_timeframe to 10, so we need this extra logic to exclude
 	// no_data_timeframe from the monitor definition when on_missing_data is set.
-	if attr, ok := d.GetOk("no_data_timeframe"); ok && !onMissingDataOk && !hasCustomSchedule {
+	//Since we now always set on_missing_data (either explicitly or automatically),
+	// we must prevent no_data_timeframe from being set to avoid API validation errors.
+	// The onMissingDataSet variable tracks whether on_missing_data is effectively set
+	// (either by user input or our automatic default logic above).
+	if attr, ok := d.GetOk("no_data_timeframe"); ok && !onMissingDataSet && !hasCustomSchedule {
 		o.SetNoDataTimeframe(int64(attr.(int)))
 	}
 	if attr, ok := d.GetOk("renotify_interval"); ok {
