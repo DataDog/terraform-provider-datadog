@@ -39,6 +39,7 @@ var Resources = []func() resource.Resource{
 	NewIntegrationAwsAccountResource,
 	NewCatalogEntityResource,
 	NewDashboardListResource,
+	NewDatasetResource,
 	NewDomainAllowlistResource,
 	NewDowntimeScheduleResource,
 	NewIntegrationAzureResource,
