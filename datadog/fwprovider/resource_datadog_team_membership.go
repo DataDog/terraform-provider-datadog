@@ -105,10 +105,14 @@ func (r *teamMembershipResource) Read(ctx context.Context, request resource.Read
 
 	var userTeams []datadogV2.UserTeam
 	for {
-		resp, _, err := r.Api.GetTeamMemberships(r.Auth, teamId, *datadogV2.NewGetTeamMembershipsOptionalParameters().
+		resp, httpResp, err := r.Api.GetTeamMemberships(r.Auth, teamId, *datadogV2.NewGetTeamMembershipsOptionalParameters().
 			WithPageSize(pageSize).
 			WithPageNumber(pageNumber))
 		if err != nil {
+			if httpResp != nil && httpResp.StatusCode == 404 {
+				response.State.RemoveResource(ctx)
+				return
+			}
 			response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving TeamMembership"))
 			return
 		}
