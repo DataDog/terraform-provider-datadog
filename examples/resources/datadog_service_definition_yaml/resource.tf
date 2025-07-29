@@ -15,13 +15,13 @@ description: shopping cart service responsible for managing shopping carts
 tier: high
 lifecycle: production
 application: e-commerce
-languages: 
+languages:
   - go
   - python
-type: web 
+type: web
 ci-pipeline-fingerprints:
-  - fp1 
-  - fp2 
+  - fp1
+  - fp2
 links:
   - name: shopping-cart runbook
     type: runbook
@@ -42,7 +42,7 @@ tags:
   - business-unit:retail
   - cost-center:engineering
 integrations:
-  pagerduty: 
+  pagerduty:
     service-url: https://www.pagerduty.com/service-directory/Pshopping-cart
 extensions:
   mycompany.com/shopping-cart:

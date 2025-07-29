@@ -189,7 +189,7 @@ links:
 tags:
   - my:tag
   - service:tag
-team: my-team  
+team: my-team
 EOF
 }`, uniq)
 }
@@ -257,7 +257,7 @@ integrations:
 links:
   - name: Architecture
     type: doc
-    provider: Gigoogle drivetHub
+    provider: Google Drive
     url: https://my-runbook
   - name: Runbook
     type: runbook
