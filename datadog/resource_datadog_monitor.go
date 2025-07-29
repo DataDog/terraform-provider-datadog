@@ -708,35 +708,30 @@ func buildMonitorStruct(d utils.Resource) (*datadogV1.Monitor, *datadogV1.Monito
 	if attr, ok := d.GetOk("evaluation_delay"); ok {
 		o.SetEvaluationDelay(int64(attr.(int)))
 	}
-	// Handle on_missing_data field: When this field is omitted from HCL configuration,
-	// the Datadog UI exports monitors without this field, but Terraform interprets
-	// the missing field incorrectly. To fix the discrepancy between UI exports and
-	// Terraform imports, we automatically set on_missing_data="default" when not
-	// explicitly provided and there is not a no_data_timeframe. This ensures consistent behavior across UI and Terraform.
+
 	attr, onMissingDataOk := d.GetOk("on_missing_data")
-	noDataTimeframe, noDataTimeframeOk := d.GetOk("no_data_timeframe")
+	noDataTfAttr, noDataTfSet := d.GetOk("no_data_timeframe")
+	notifyNoData := d.Get("notify_no_data").(bool)
 
 	if onMissingDataOk {
+		// user explicitly set on_missing_data
 		o.SetOnMissingData(datadogV1.OnMissingDataOption(attr.(string)))
-	} else if !noDataTimeframeOk {
-		o.SetOnMissingData(datadogV1.OnMissingDataOption("default"))
-		// Set onMissingDataOk to true to prevent no_data_timeframe from being set below
-		onMissingDataOk = true
+
+	} else if noDataTfSet && !hasCustomSchedule {
+		// user gave a no_data_timeframe but not on_missing_data
+		changed := false
+		if diff, ok := d.(interface{ HasChange(string) bool }); ok {
+			changed = diff.HasChange("no_data_timeframe")
+		}
+		if changed || notifyNoData {
+			o.SetNoDataTimeframe(int64(noDataTfAttr.(int)))
+		}
+
+	} else if !notifyNoData {
+		// none of the related settings were supplied, force API default
+		o.SetOnMissingData(datadogV1.ONMISSINGDATAOPTION_DEFAULT)
 	}
 
-	// no_data_timeframe cannot be combined with on_missing_data. This provider
-	// defaults no_data_timeframe to 10, so we need this extra logic to exclude
-	// no_data_timeframe from the monitor definition when on_missing_data is set.
-	// Only set no_data_timeframe when:
-	// 1. User explicitly set it.
-	// 2. on_missing_data is not being used (!onMissingDataOk)
-	// 3. No custom schedule is set (!hasCustomSchedule - API restriction)
-	// This preserves backward compatibility for users who still use no_data_timeframe
-	// while preventing API conflicts between the two fields and conflicts with the UI.
-
-	if noDataTimeframeOk && !onMissingDataOk && !hasCustomSchedule {
-		o.SetNoDataTimeframe(int64(noDataTimeframe.(int)))
-	}
 	if attr, ok := d.GetOk("renotify_interval"); ok {
 		o.SetRenotifyInterval(int64(attr.(int)))
 	}
