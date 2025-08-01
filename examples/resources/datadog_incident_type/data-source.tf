@@ -15,9 +15,9 @@ resource "datadog_monitor" "example" {
   name    = "Security Monitor"
   type    = "metric alert"
   message = "Security alert - incident type: ${data.datadog_incident_type.security.name}"
-  
+
   query = "avg(last_5m):avg:system.cpu.user{*} > 0.9"
-  
+
   # Reference the incident type ID
   tags = ["incident_type:${data.datadog_incident_type.security.id}"]
 }
