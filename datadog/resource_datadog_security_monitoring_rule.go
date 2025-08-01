@@ -1661,8 +1661,10 @@ func buildUpdateStandardRuleQuery(tfQuery interface{}) *datadogV2.SecurityMonito
 		payloadQuery.SetName(name)
 	}
 
-	queryQuery := query["query"].(string)
-	payloadQuery.SetQuery(queryQuery)
+	if v, ok := query["query"]; ok {
+		queryQuery := v.(string)
+		payloadQuery.SetQuery(queryQuery)
+	}
 
 	if v, ok := query["custom_query_extension"]; ok {
 		queryExtension := v.(string)
