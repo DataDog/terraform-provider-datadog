@@ -366,11 +366,12 @@ type grokRuleModel struct {
 }
 
 type sampleProcessorModel struct {
-	Id         types.String  `tfsdk:"id"`
-	Include    types.String  `tfsdk:"include"`
-	Inputs     types.List    `tfsdk:"inputs"`
-	Rate       types.Int64   `tfsdk:"rate"`
-	Percentage types.Float64 `tfsdk:"percentage"`
+	Id         types.String   `tfsdk:"id"`
+	Include    types.String   `tfsdk:"include"`
+	Inputs     types.List     `tfsdk:"inputs"`
+	Rate       types.Int64    `tfsdk:"rate"`
+	Percentage types.Float64  `tfsdk:"percentage"`
+	GroupBy    []types.String `tfsdk:"group_by"`
 }
 
 type fluentdSourceModel struct {
@@ -1531,6 +1532,11 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 										"percentage": schema.Float64Attribute{
 											Optional:    true,
 											Description: "The percentage of logs to sample.",
+										},
+										"group_by": schema.ListAttribute{
+											Optional:    true,
+											ElementType: types.StringType,
+											Description: "Optional list of fields to group events by. Each group will be sampled independently",
 										},
 									},
 								},
@@ -3234,6 +3240,13 @@ func expandSampleProcessor(ctx context.Context, p *sampleProcessorModel) datadog
 	if !p.Percentage.IsNull() {
 		proc.SetPercentage(p.Percentage.ValueFloat64())
 	}
+	var groupBy []string
+	for _, g := range p.GroupBy {
+		groupBy = append(groupBy, g.ValueString())
+	}
+	if len(groupBy) > 0 {
+		proc.SetGroupBy(groupBy)
+	}
 
 	return datadogV2.ObservabilityPipelineConfigProcessorItem{
 		ObservabilityPipelineSampleProcessor: proc,
@@ -3263,6 +3276,10 @@ func flattenSampleProcessor(ctx context.Context, proc *datadogV2.ObservabilityPi
 		out.Percentage = types.Float64Value(*pct)
 	} else {
 		out.Percentage = types.Float64Null()
+	}
+
+	for _, g := range proc.GroupBy {
+		out.GroupBy = append(out.GroupBy, types.StringValue(g))
 	}
 
 	return out

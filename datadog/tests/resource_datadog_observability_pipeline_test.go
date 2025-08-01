@@ -795,7 +795,8 @@ resource "datadog_observability_pipeline" "sample" {
         include = "*"
         inputs  = ["sample-1"]
         percentage    = 4.99
-      }	
+        group_by = ["env", "service"]
+      }
     }
 
     destinations {
@@ -815,6 +816,8 @@ resource "datadog_observability_pipeline" "sample" {
 					resource.TestCheckResourceAttr(resourceName, "config.processors.sample.1.id", "sample-2"),
 					resource.TestCheckResourceAttr(resourceName, "config.processors.sample.1.include", "*"),
 					resource.TestCheckResourceAttr(resourceName, "config.processors.sample.1.percentage", "4.99"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.sample.1.group_by.0", "env"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.sample.1.group_by.1", "service"),
 				),
 			},
 		},
