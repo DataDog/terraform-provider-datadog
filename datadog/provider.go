@@ -99,7 +99,7 @@ func Provider() *schema.Provider {
 			"cloud_provider_type": {
 				Type:        schema.TypeString,
 				Optional:    true,
-				Description: "Specifies the cloud provider used for cloud provider-based authentication, enabling keyless access without API or app keys. Currently, only aws is supported. This is a preview feature. If you'd like to enable it for your organization, please contact support at support@datadoghq.com.",
+				Description: "Specifies the cloud provider used for cloud provider-based authentication, enabling keyless access without API or app keys. Currently, only [aws] is supported. This is a preview feature. If you'd like to enable it for your organization, please contact support at support@datadoghq.com.",
 			},
 			"cloud_provider_region": {
 				Type:        schema.TypeString,
