@@ -132,7 +132,6 @@ func testAccCheckDatadogIncidentTypeDestroy(accProvider *fwprovider.FrameworkPro
 		auth := accProvider.Auth
 
 		resource := s.RootModule().Resources[resourceName]
-		fmt.Println("resource", resource.Primary.ID)
 		_, httpResp, err := apiInstances.GetIncidentsApiV2().GetIncidentType(auth, resource.Primary.ID)
 		if err != nil {
 			if httpResp != nil && httpResp.StatusCode == 404 {
@@ -141,8 +140,6 @@ func testAccCheckDatadogIncidentTypeDestroy(accProvider *fwprovider.FrameworkPro
 			return err
 		}
 
-		// Incident types cannot be deleted via API, so we don't fail the test if they still exist
-		// The test framework handles cleanup automatically
 		return nil
 	}
 }

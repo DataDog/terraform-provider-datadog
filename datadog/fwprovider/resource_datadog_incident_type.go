@@ -201,10 +201,7 @@ func (r *incidentTypeResource) Delete(ctx context.Context, request resource.Dele
 
 	httpResp, err := r.Api.DeleteIncidentType(r.Auth, state.ID.ValueString())
 	if err != nil {
-		// Check if the error is due to delete operation not being supported
 		if httpResp != nil && httpResp.StatusCode == 404 {
-			// Delete operation returned 404, which means the endpoint doesn't exist
-			// This is expected for incident types as they may not support deletion
 			return
 		}
 		response.Diagnostics.AddError(
@@ -213,8 +210,6 @@ func (r *incidentTypeResource) Delete(ctx context.Context, request resource.Dele
 		)
 		return
 	}
-	// Note: The DELETE API returns 204 success but doesn't actually delete the resource
-	// This appears to be a limitation of the Datadog incident types API
 }
 
 func (r *incidentTypeResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
