@@ -302,6 +302,7 @@ type destinationsModel struct {
 	OpenSearchDestination         []*opensearchDestinationModel                    `tfsdk:"opensearch"`
 	AmazonOpenSearchDestination   []*amazonOpenSearchDestinationModel              `tfsdk:"amazon_opensearch"`
 	SocketDestination             []*observability_pipeline.SocketDestinationModel `tfsdk:"socket"`
+	AmazonS3Destination           []*amazonS3DestinationModel                      `tfsdk:"amazon_s3"`
 }
 
 type amazonOpenSearchDestinationModel struct {
@@ -309,6 +310,16 @@ type amazonOpenSearchDestinationModel struct {
 	Inputs    types.List                 `tfsdk:"inputs"`
 	BulkIndex types.String               `tfsdk:"bulk_index"`
 	Auth      *amazonOpenSearchAuthModel `tfsdk:"auth"`
+}
+
+type amazonS3DestinationModel struct {
+	Id           types.String  `tfsdk:"id"`
+	Inputs       types.List    `tfsdk:"inputs"`
+	Bucket       types.String  `tfsdk:"bucket"`
+	Region       types.String  `tfsdk:"region"`
+	KeyPrefix    types.String  `tfsdk:"key_prefix"`
+	StorageClass types.String  `tfsdk:"storage_class"`
+	Auth         *awsAuthModel `tfsdk:"auth"`
 }
 
 type amazonOpenSearchAuthModel struct {
@@ -2257,6 +2268,60 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 								},
 							},
 							"socket": observability_pipeline.SocketDestinationSchema(),
+							"amazon_s3": schema.ListNestedBlock{
+								Description: "The `amazon_s3` destination sends your logs in Datadog-rehydratable format to an Amazon S3 bucket for archiving.",
+								NestedObject: schema.NestedBlockObject{
+									Attributes: map[string]schema.Attribute{
+										"id": schema.StringAttribute{
+											Required:    true,
+											Description: "Unique identifier for the destination component.",
+										},
+										"inputs": schema.ListAttribute{
+											Required:    true,
+											ElementType: types.StringType,
+											Description: "A list of component IDs whose output is used as the `input` for this component.",
+										},
+										"bucket": schema.StringAttribute{
+											Required:    true,
+											Description: "S3 bucket name.",
+										},
+										"region": schema.StringAttribute{
+											Required:    true,
+											Description: "AWS region of the S3 bucket.",
+										},
+										"key_prefix": schema.StringAttribute{
+											Required:    true,
+											Description: "Prefix for object keys.",
+										},
+										"storage_class": schema.StringAttribute{
+											Required:    true,
+											Description: "S3 storage class.",
+											Validators: []validator.String{
+												stringvalidator.OneOf("STANDARD", "REDUCED_REDUNDANCY", "INTELLIGENT_TIERING", "STANDARD_IA", "EXPRESS_ONEZONE", "ONEZONE_IA", "GLACIER", "GLACIER_IR", "DEEP_ARCHIVE"),
+											},
+										},
+									},
+									Blocks: map[string]schema.Block{
+										"auth": schema.SingleNestedBlock{
+											Description: "AWS authentication credentials used for accessing AWS services such as S3. If omitted, the system's default credentials are used (for example, the IAM role and environment variables).",
+											Attributes: map[string]schema.Attribute{
+												"assume_role": schema.StringAttribute{
+													Optional:    true,
+													Description: "The Amazon Resource Name (ARN) of the role to assume.",
+												},
+												"external_id": schema.StringAttribute{
+													Optional:    true,
+													Description: "A unique identifier for cross-account role assumption.",
+												},
+												"session_name": schema.StringAttribute{
+													Optional:    true,
+													Description: "A session identifier used for logging and tracing the assumed role session.",
+												},
+											},
+										},
+									},
+								},
+							},
 						},
 					},
 				},
@@ -2558,6 +2623,9 @@ func expandPipeline(ctx context.Context, state *observabilityPipelineModel) (*da
 	for _, d := range state.Config.Destinations.SocketDestination {
 		config.Destinations = append(config.Destinations, observability_pipeline.ExpandSocketDestination(ctx, d))
 	}
+	for _, d := range state.Config.Destinations.AmazonS3Destination {
+		config.Destinations = append(config.Destinations, expandAmazonS3Destination(ctx, d))
+	}
 
 	attrs.SetConfig(*config)
 	data.SetAttributes(*attrs)
@@ -2743,6 +2811,10 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 		if d := observability_pipeline.FlattenSocketDestination(ctx, d.ObservabilityPipelineSocketDestination); d != nil {
 			outCfg.Destinations.SocketDestination = append(outCfg.Destinations.SocketDestination, d)
 		}
+		if d := flattenAmazonS3Destination(ctx, d.ObservabilityPipelineAmazonS3Destination); d != nil {
+			outCfg.Destinations.AmazonS3Destination = append(outCfg.Destinations.AmazonS3Destination, d)
+		}
+
 	}
 
 	state.Config = &outCfg
@@ -5003,4 +5075,70 @@ func expandDatadogTagsProcessor(ctx context.Context, src *observability_pipeline
 
 func flattenDatadogTagsProcessor(ctx context.Context, src *datadogV2.ObservabilityPipelineDatadogTagsProcessor) *observability_pipeline.DatadogTagsProcessorModel {
 	return observability_pipeline.FlattenDatadogTagsProcessor(ctx, src)
+}
+
+func expandAmazonS3Destination(ctx context.Context, src *amazonS3DestinationModel) datadogV2.ObservabilityPipelineConfigDestinationItem {
+	dest := datadogV2.NewObservabilityPipelineAmazonS3DestinationWithDefaults()
+	dest.SetId(src.Id.ValueString())
+
+	var inputs []string
+	src.Inputs.ElementsAs(ctx, &inputs, false)
+	dest.SetInputs(inputs)
+
+	dest.SetBucket(src.Bucket.ValueString())
+	dest.SetRegion(src.Region.ValueString())
+
+	if !src.KeyPrefix.IsNull() {
+		dest.SetKeyPrefix(src.KeyPrefix.ValueString())
+	}
+
+	dest.SetStorageClass(datadogV2.ObservabilityPipelineAmazonS3DestinationStorageClass(src.StorageClass.ValueString()))
+
+	if src.Auth != nil {
+		auth := datadogV2.ObservabilityPipelineAwsAuth{}
+		if !src.Auth.AssumeRole.IsNull() {
+			auth.AssumeRole = src.Auth.AssumeRole.ValueStringPointer()
+		}
+		if !src.Auth.ExternalId.IsNull() {
+			auth.ExternalId = src.Auth.ExternalId.ValueStringPointer()
+		}
+		if !src.Auth.SessionName.IsNull() {
+			auth.SessionName = src.Auth.SessionName.ValueStringPointer()
+		}
+		dest.SetAuth(auth)
+	}
+
+	return datadogV2.ObservabilityPipelineConfigDestinationItem{
+		ObservabilityPipelineAmazonS3Destination: dest,
+	}
+}
+
+func flattenAmazonS3Destination(ctx context.Context, src *datadogV2.ObservabilityPipelineAmazonS3Destination) *amazonS3DestinationModel {
+	if src == nil {
+		return nil
+	}
+
+	inputs, _ := types.ListValueFrom(ctx, types.StringType, src.GetInputs())
+
+	model := &amazonS3DestinationModel{
+		Id:           types.StringValue(src.GetId()),
+		Inputs:       inputs,
+		Bucket:       types.StringValue(src.GetBucket()),
+		Region:       types.StringValue(src.GetRegion()),
+		StorageClass: types.StringValue(string(src.GetStorageClass())),
+	}
+
+	if v, ok := src.GetKeyPrefixOk(); ok {
+		model.KeyPrefix = types.StringValue(*v)
+	}
+
+	if auth, ok := src.GetAuthOk(); ok {
+		model.Auth = &awsAuthModel{
+			AssumeRole:  types.StringPointerValue(auth.AssumeRole),
+			ExternalId:  types.StringPointerValue(auth.ExternalId),
+			SessionName: types.StringPointerValue(auth.SessionName),
+		}
+	}
+
+	return model
 }
