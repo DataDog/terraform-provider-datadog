@@ -30,7 +30,7 @@ resource "datadog_incident_type" "example" {
 
 ### Optional
 
-- `description` (String) Description of the incident type. Must be at most 512 characters.
+- `description` (String) Description of the incident type. The description can have a maximum of 512 characters.
 - `is_default` (Boolean) Whether this incident type is the default type.
 
 ### Read-Only

@@ -60,7 +60,7 @@ func (r *incidentTypeResource) Schema(_ context.Context, _ resource.SchemaReques
 				Required:    true,
 			},
 			"description": schema.StringAttribute{
-				Description: "Description of the incident type. Must be at most 512 characters.",
+				Description: "Description of the incident type. The description can have a maximum of 512 characters.",
 				Optional:    true,
 				Computed:    true,
 			},
