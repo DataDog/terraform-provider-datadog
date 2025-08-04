@@ -31,7 +31,7 @@ func TestAccDatadogDataset_Basic(t *testing.T) {
 				Config: testAccCheckDatadogDataset(datasetName, product),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogDatasetExists(providers.frameworkProvider),
-					resource.TestCheckTypeSetElemAttr("datadog_dataset.foo", "created_at", "ISO 8601 time format"),
+					resource.TestCheckTypeSetElemAttr("datadog_dataset.foo", "created_at", "2025-01-01T00:00:00-08:00"),
 				),
 			},
 		},

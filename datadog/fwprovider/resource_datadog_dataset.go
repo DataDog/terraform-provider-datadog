@@ -5,10 +5,9 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/hashicorp/terraform-plugin-framework/attr"
-
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
+	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -35,7 +34,7 @@ type DatasetModel struct {
 	Name           types.String           `tfsdk:"name"`
 	Principals     types.Set              `tfsdk:"principals"`
 	ProductFilters []*ProductFiltersModel `tfsdk:"product_filters"`
-	CreatedAt      types.String           `tfsdk:"created_at"`
+	CreatedAt      timetypes.RFC3339      `tfsdk:"created_at"`
 	CreatedBy      types.String           `tfsdk:"created_by"`
 }
 
@@ -151,7 +150,7 @@ func (r *DatasetResource) Create(ctx context.Context, request resource.CreateReq
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error creating dataset"))
 		return
 	}
-	if err := utils.CheckForUnparsed(resp); err != nil {
+	if err = utils.CheckForUnparsed(resp); err != nil {
 		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
 		return
 	}
@@ -160,8 +159,33 @@ func (r *DatasetResource) Create(ctx context.Context, request resource.CreateReq
 	response.Diagnostics.Append(response.State.Set(ctx, &data)...)
 }
 
-// TODO once available in golang client SDK
 func (r *DatasetResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
+	var data DatasetModel
+	response.Diagnostics.Append(request.Plan.Get(ctx, &data)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	datasetId := data.ID.ValueString()
+	body, diags := r.buildUpdateDatasetRequestBody(ctx, &data)
+	response.Diagnostics.Append(diags...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	resp, _, err := r.API.UpdateDataset(ctx, datasetId, *body)
+	if err != nil {
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error updating dataset"))
+		return
+	}
+
+	if err = utils.CheckForUnparsed(resp); err != nil {
+		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
+		return
+	}
+
+	r.updateState(ctx, &data, &resp)
+	response.Diagnostics.Append(response.State.Set(ctx, &data)...)
 }
 
 func (r *DatasetResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
@@ -179,6 +203,7 @@ func (r *DatasetResource) Delete(ctx context.Context, request resource.DeleteReq
 		}
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error deleting dataset"))
 	}
+
 }
 
 func (r *DatasetResource) updateState(ctx context.Context, state *DatasetModel, response *datadogV2.DatasetResponseSingle) {
@@ -208,9 +233,9 @@ func (r *DatasetResource) updateState(ctx context.Context, state *DatasetModel, 
 	}
 
 	if createdAt, ok := attributes.GetCreatedAtOk(); ok && !createdAt.IsZero() {
-		state.CreatedAt = types.StringValue(timetypes.NewRFC3339TimeValue(*createdAt).ValueString())
+		state.CreatedAt = timetypes.NewRFC3339TimeValue(*createdAt)
 	} else {
-		state.CreatedAt = types.StringValue(timetypes.NewRFC3339Null().ValueString())
+		state.CreatedAt = timetypes.NewRFC3339Null()
 	}
 
 	if createdBy, ok := attributes.GetCreatedByOk(); ok {
@@ -247,8 +272,29 @@ func (r *DatasetResource) buildCreateDatasetRequestBody(ctx context.Context, dat
 	return body, diags
 }
 
-// TODO once ready
-//func (r *DatasetResource) buildDatasetUpdateRequestBody() {
-// might have to do some time parsing; rfc 3339 -> time.time
-// string -> uuid
-//}
+func (r *DatasetResource) buildUpdateDatasetRequestBody(ctx context.Context, data *DatasetModel) (*datadogV2.DatasetUpdateRequest, diag.Diagnostics) {
+	diags := diag.Diagnostics{}
+	body := datadogV2.NewDatasetUpdateRequestWithDefaults()
+	body.Data = *datadogV2.NewDatasetWithDefaults()
+	attributes := *datadogV2.NewDatasetAttributesWithDefaults()
+
+	attributes.Name = data.Name.ValueString()
+	var principals []string
+	diags.Append(data.Principals.ElementsAs(ctx, &principals, false)...)
+	attributes.Principals = principals
+	ddProductFilters := []datadogV2.FiltersPerProduct{}
+	for _, product := range data.ProductFilters {
+		productFilters := []string{}
+		diags.Append(product.Filters.ElementsAs(ctx, &productFilters, false)...)
+		ddFilter := datadogV2.FiltersPerProduct{
+			Product: product.Product.ValueString(),
+			Filters: productFilters,
+		}
+		ddProductFilters = append(ddProductFilters, ddFilter)
+	}
+
+	attributes.ProductFilters = ddProductFilters
+	body.Data.SetAttributes(attributes)
+
+	return body, diags
+}
