@@ -312,7 +312,7 @@ var dateRemapper = &schema.Schema{
 var decoderProcessor = &schema.Schema{
 	Type:        schema.TypeList,
 	MaxItems:    1,
-	Description: "Decoder Processor. More information can be found in the [official docs](...)",
+	Description: "Decoder Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/log_configuration/processors/?tab=ui#decoder-processor)",
 	Optional:    true,
 	Elem: &schema.Resource{
 		Schema: map[string]*schema.Schema{
