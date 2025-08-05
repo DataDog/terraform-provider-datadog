@@ -21,13 +21,6 @@ type AmazonS3DestinationModel struct {
 	Auth         *AwsAuthModel `tfsdk:"auth"`
 }
 
-// AwsAuthModel represents AWS authentication credentials
-type AwsAuthModel struct {
-	AssumeRole  types.String `tfsdk:"assume_role"`
-	ExternalId  types.String `tfsdk:"external_id"`
-	SessionName types.String `tfsdk:"session_name"`
-}
-
 // AmazonS3DestinationSchema returns the schema for the AmazonS3Destination
 func AmazonS3DestinationSchema() schema.ListNestedBlock {
 	return schema.ListNestedBlock{
@@ -64,23 +57,7 @@ func AmazonS3DestinationSchema() schema.ListNestedBlock {
 				},
 			},
 			Blocks: map[string]schema.Block{
-				"auth": schema.SingleNestedBlock{
-					Description: "AWS authentication credentials used for accessing AWS services such as S3. If omitted, the system's default credentials are used (for example, the IAM role and environment variables).",
-					Attributes: map[string]schema.Attribute{
-						"assume_role": schema.StringAttribute{
-							Optional:    true,
-							Description: "The Amazon Resource Name (ARN) of the role to assume.",
-						},
-						"external_id": schema.StringAttribute{
-							Optional:    true,
-							Description: "A unique identifier for cross-account role assumption.",
-						},
-						"session_name": schema.StringAttribute{
-							Optional:    true,
-							Description: "A session identifier used for logging and tracing the assumed role session.",
-						},
-					},
-				},
+				"auth": AwsAuthSchema(),
 			},
 		},
 	}
@@ -101,17 +78,10 @@ func ExpandAmazonS3Destination(ctx context.Context, src *AmazonS3DestinationMode
 	dest.SetStorageClass(datadogV2.ObservabilityPipelineAmazonS3DestinationStorageClass(src.StorageClass.ValueString()))
 
 	if src.Auth != nil {
-		auth := datadogV2.ObservabilityPipelineAwsAuth{}
-		if !src.Auth.AssumeRole.IsNull() {
-			auth.AssumeRole = src.Auth.AssumeRole.ValueStringPointer()
+		auth := ExpandAwsAuth(src.Auth)
+		if auth != nil {
+			dest.SetAuth(*auth)
 		}
-		if !src.Auth.ExternalId.IsNull() {
-			auth.ExternalId = src.Auth.ExternalId.ValueStringPointer()
-		}
-		if !src.Auth.SessionName.IsNull() {
-			auth.SessionName = src.Auth.SessionName.ValueStringPointer()
-		}
-		dest.SetAuth(auth)
 	}
 
 	return datadogV2.ObservabilityPipelineConfigDestinationItem{
@@ -137,11 +107,7 @@ func FlattenAmazonS3Destination(ctx context.Context, src *datadogV2.Observabilit
 	}
 
 	if auth, ok := src.GetAuthOk(); ok {
-		model.Auth = &AwsAuthModel{
-			AssumeRole:  types.StringPointerValue(auth.AssumeRole),
-			ExternalId:  types.StringPointerValue(auth.ExternalId),
-			SessionName: types.StringPointerValue(auth.SessionName),
-		}
+		model.Auth = FlattenAwsAuth(auth)
 	}
 
 	return model

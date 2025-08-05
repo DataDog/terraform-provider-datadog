@@ -88,10 +88,10 @@ type kafkaSourceSaslModel struct {
 }
 
 type amazonS3SourceModel struct {
-	Id     types.String  `tfsdk:"id"`     // Unique identifier for the component
-	Region types.String  `tfsdk:"region"` // AWS region where the S3 bucket resides
-	Auth   *awsAuthModel `tfsdk:"auth"`   // AWS authentication credentials
-	Tls    *tlsModel     `tfsdk:"tls"`    // TLS encryption configuration
+	Id     types.String                         `tfsdk:"id"`     // Unique identifier for the component
+	Region types.String                         `tfsdk:"region"` // AWS region where the S3 bucket resides
+	Auth   *observability_pipeline.AwsAuthModel `tfsdk:"auth"`   // AWS authentication credentials
+	Tls    *tlsModel                            `tfsdk:"tls"`    // TLS encryption configuration
 }
 
 type tlsModel struct {
@@ -585,15 +585,9 @@ type sumoLogicSourceModel struct {
 }
 
 type amazonDataFirehoseSourceModel struct {
-	Id   types.String  `tfsdk:"id"`
-	Auth *awsAuthModel `tfsdk:"auth"`
-	Tls  *tlsModel     `tfsdk:"tls"`
-}
-
-type awsAuthModel struct {
-	AssumeRole  types.String `tfsdk:"assume_role"`
-	ExternalId  types.String `tfsdk:"external_id"`
-	SessionName types.String `tfsdk:"session_name"`
+	Id   types.String                         `tfsdk:"id"`
+	Auth *observability_pipeline.AwsAuthModel `tfsdk:"auth"`
+	Tls  *tlsModel                            `tfsdk:"tls"`
 }
 
 type httpClientSourceModel struct {
@@ -3667,17 +3661,10 @@ func expandAmazonS3Source(src *amazonS3SourceModel) datadogV2.ObservabilityPipel
 	s.SetRegion(src.Region.ValueString())
 
 	if src.Auth != nil {
-		auth := datadogV2.ObservabilityPipelineAwsAuth{}
-		if !src.Auth.AssumeRole.IsNull() {
-			auth.SetAssumeRole(src.Auth.AssumeRole.ValueString())
+		auth := observability_pipeline.ExpandAwsAuth(src.Auth)
+		if auth != nil {
+			s.SetAuth(*auth)
 		}
-		if !src.Auth.ExternalId.IsNull() {
-			auth.SetExternalId(src.Auth.ExternalId.ValueString())
-		}
-		if !src.Auth.SessionName.IsNull() {
-			auth.SetSessionName(src.Auth.SessionName.ValueString())
-		}
-		s.SetAuth(auth)
 	}
 
 	if src.Tls != nil {
@@ -3699,12 +3686,8 @@ func flattenAmazonS3Source(src *datadogV2.ObservabilityPipelineAmazonS3Source) *
 		Region: types.StringValue(src.GetRegion()),
 	}
 
-	if src.Auth != nil {
-		out.Auth = &awsAuthModel{
-			AssumeRole:  types.StringPointerValue(src.Auth.AssumeRole),
-			ExternalId:  types.StringPointerValue(src.Auth.ExternalId),
-			SessionName: types.StringPointerValue(src.Auth.SessionName),
-		}
+	if auth, ok := src.GetAuthOk(); ok {
+		out.Auth = observability_pipeline.FlattenAwsAuth(auth)
 	}
 
 	if src.Tls != nil {
@@ -4289,17 +4272,10 @@ func expandAmazonDataFirehoseSource(src *amazonDataFirehoseSourceModel) datadogV
 	firehose.SetId(src.Id.ValueString())
 
 	if src.Auth != nil {
-		auth := datadogV2.ObservabilityPipelineAwsAuth{}
-		if !src.Auth.AssumeRole.IsNull() {
-			auth.SetAssumeRole(src.Auth.AssumeRole.ValueString())
+		auth := observability_pipeline.ExpandAwsAuth(src.Auth)
+		if auth != nil {
+			firehose.SetAuth(*auth)
 		}
-		if !src.Auth.ExternalId.IsNull() {
-			auth.SetExternalId(src.Auth.ExternalId.ValueString())
-		}
-		if !src.Auth.SessionName.IsNull() {
-			auth.SetSessionName(src.Auth.SessionName.ValueString())
-		}
-		firehose.SetAuth(auth)
 	}
 
 	if src.Tls != nil {
@@ -4320,12 +4296,8 @@ func flattenAmazonDataFirehoseSource(src *datadogV2.ObservabilityPipelineAmazonD
 		Id: types.StringValue(src.GetId()),
 	}
 
-	if src.Auth != nil {
-		out.Auth = &awsAuthModel{
-			AssumeRole:  types.StringPointerValue(src.Auth.AssumeRole),
-			ExternalId:  types.StringPointerValue(src.Auth.ExternalId),
-			SessionName: types.StringPointerValue(src.Auth.SessionName),
-		}
+	if auth, ok := src.GetAuthOk(); ok {
+		out.Auth = observability_pipeline.FlattenAwsAuth(auth)
 	}
 
 	if src.Tls != nil {
