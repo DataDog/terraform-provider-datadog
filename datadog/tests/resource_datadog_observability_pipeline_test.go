@@ -3266,7 +3266,7 @@ resource "datadog_observability_pipeline" "amazon_s3" {
         key_prefix   = "logs/"
         storage_class = "STANDARD"
 
-        		auth {
+        auth {
           assume_role  = "arn:aws:iam::123456789012:role/example-role"
           external_id  = "external-id-123"
           session_name = "s3-session"
