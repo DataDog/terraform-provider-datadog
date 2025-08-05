@@ -88,10 +88,10 @@ type kafkaSourceSaslModel struct {
 }
 
 type amazonS3SourceModel struct {
-	Id     types.String  `tfsdk:"id"`     // Unique identifier for the component
-	Region types.String  `tfsdk:"region"` // AWS region where the S3 bucket resides
-	Auth   *awsAuthModel `tfsdk:"auth"`   // AWS authentication credentials
-	Tls    *tlsModel     `tfsdk:"tls"`    // TLS encryption configuration
+	Id     types.String                         `tfsdk:"id"`     // Unique identifier for the component
+	Region types.String                         `tfsdk:"region"` // AWS region where the S3 bucket resides
+	Auth   *observability_pipeline.AwsAuthModel `tfsdk:"auth"`   // AWS authentication credentials
+	Tls    *tlsModel                            `tfsdk:"tls"`    // TLS encryption configuration
 }
 
 type tlsModel struct {
@@ -287,21 +287,22 @@ type fieldValue struct {
 // Destination models
 
 type destinationsModel struct {
-	DatadogLogsDestination        []*datadogLogsDestinationModel                   `tfsdk:"datadog_logs"`
-	GoogleCloudStorageDestination []*gcsDestinationModel                           `tfsdk:"google_cloud_storage"`
-	SplunkHecDestination          []*splunkHecDestinationModel                     `tfsdk:"splunk_hec"`
-	SumoLogicDestination          []*sumoLogicDestinationModel                     `tfsdk:"sumo_logic"`
-	RsyslogDestination            []*rsyslogDestinationModel                       `tfsdk:"rsyslog"`
-	SyslogNgDestination           []*syslogNgDestinationModel                      `tfsdk:"syslog_ng"`
-	ElasticsearchDestination      []*elasticsearchDestinationModel                 `tfsdk:"elasticsearch"`
-	AzureStorageDestination       []*azureStorageDestinationModel                  `tfsdk:"azure_storage"`
-	MicrosoftSentinelDestination  []*microsoftSentinelDestinationModel             `tfsdk:"microsoft_sentinel"`
-	GoogleChronicleDestination    []*googleChronicleDestinationModel               `tfsdk:"google_chronicle"`
-	NewRelicDestination           []*newRelicDestinationModel                      `tfsdk:"new_relic"`
-	SentinelOneDestination        []*sentinelOneDestinationModel                   `tfsdk:"sentinel_one"`
-	OpenSearchDestination         []*opensearchDestinationModel                    `tfsdk:"opensearch"`
-	AmazonOpenSearchDestination   []*amazonOpenSearchDestinationModel              `tfsdk:"amazon_opensearch"`
-	SocketDestination             []*observability_pipeline.SocketDestinationModel `tfsdk:"socket"`
+	DatadogLogsDestination        []*datadogLogsDestinationModel                     `tfsdk:"datadog_logs"`
+	GoogleCloudStorageDestination []*gcsDestinationModel                             `tfsdk:"google_cloud_storage"`
+	SplunkHecDestination          []*splunkHecDestinationModel                       `tfsdk:"splunk_hec"`
+	SumoLogicDestination          []*sumoLogicDestinationModel                       `tfsdk:"sumo_logic"`
+	RsyslogDestination            []*rsyslogDestinationModel                         `tfsdk:"rsyslog"`
+	SyslogNgDestination           []*syslogNgDestinationModel                        `tfsdk:"syslog_ng"`
+	ElasticsearchDestination      []*elasticsearchDestinationModel                   `tfsdk:"elasticsearch"`
+	AzureStorageDestination       []*azureStorageDestinationModel                    `tfsdk:"azure_storage"`
+	MicrosoftSentinelDestination  []*microsoftSentinelDestinationModel               `tfsdk:"microsoft_sentinel"`
+	GoogleChronicleDestination    []*googleChronicleDestinationModel                 `tfsdk:"google_chronicle"`
+	NewRelicDestination           []*newRelicDestinationModel                        `tfsdk:"new_relic"`
+	SentinelOneDestination        []*sentinelOneDestinationModel                     `tfsdk:"sentinel_one"`
+	OpenSearchDestination         []*opensearchDestinationModel                      `tfsdk:"opensearch"`
+	AmazonOpenSearchDestination   []*amazonOpenSearchDestinationModel                `tfsdk:"amazon_opensearch"`
+	SocketDestination             []*observability_pipeline.SocketDestinationModel   `tfsdk:"socket"`
+	AmazonS3Destination           []*observability_pipeline.AmazonS3DestinationModel `tfsdk:"amazon_s3"`
 }
 
 type amazonOpenSearchDestinationModel struct {
@@ -584,15 +585,9 @@ type sumoLogicSourceModel struct {
 }
 
 type amazonDataFirehoseSourceModel struct {
-	Id   types.String  `tfsdk:"id"`
-	Auth *awsAuthModel `tfsdk:"auth"`
-	Tls  *tlsModel     `tfsdk:"tls"`
-}
-
-type awsAuthModel struct {
-	AssumeRole  types.String `tfsdk:"assume_role"`
-	ExternalId  types.String `tfsdk:"external_id"`
-	SessionName types.String `tfsdk:"session_name"`
+	Id   types.String                         `tfsdk:"id"`
+	Auth *observability_pipeline.AwsAuthModel `tfsdk:"auth"`
+	Tls  *tlsModel                            `tfsdk:"tls"`
 }
 
 type httpClientSourceModel struct {
@@ -2256,7 +2251,8 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 									},
 								},
 							},
-							"socket": observability_pipeline.SocketDestinationSchema(),
+							"socket":    observability_pipeline.SocketDestinationSchema(),
+							"amazon_s3": observability_pipeline.AmazonS3DestinationSchema(),
 						},
 					},
 				},
@@ -2558,6 +2554,9 @@ func expandPipeline(ctx context.Context, state *observabilityPipelineModel) (*da
 	for _, d := range state.Config.Destinations.SocketDestination {
 		config.Destinations = append(config.Destinations, observability_pipeline.ExpandSocketDestination(ctx, d))
 	}
+	for _, d := range state.Config.Destinations.AmazonS3Destination {
+		config.Destinations = append(config.Destinations, observability_pipeline.ExpandAmazonS3Destination(ctx, d))
+	}
 
 	attrs.SetConfig(*config)
 	data.SetAttributes(*attrs)
@@ -2743,6 +2742,10 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 		if d := observability_pipeline.FlattenSocketDestination(ctx, d.ObservabilityPipelineSocketDestination); d != nil {
 			outCfg.Destinations.SocketDestination = append(outCfg.Destinations.SocketDestination, d)
 		}
+		if d := observability_pipeline.FlattenAmazonS3Destination(ctx, d.ObservabilityPipelineAmazonS3Destination); d != nil {
+			outCfg.Destinations.AmazonS3Destination = append(outCfg.Destinations.AmazonS3Destination, d)
+		}
+
 	}
 
 	state.Config = &outCfg
@@ -3658,17 +3661,10 @@ func expandAmazonS3Source(src *amazonS3SourceModel) datadogV2.ObservabilityPipel
 	s.SetRegion(src.Region.ValueString())
 
 	if src.Auth != nil {
-		auth := datadogV2.ObservabilityPipelineAwsAuth{}
-		if !src.Auth.AssumeRole.IsNull() {
-			auth.SetAssumeRole(src.Auth.AssumeRole.ValueString())
+		auth := observability_pipeline.ExpandAwsAuth(src.Auth)
+		if auth != nil {
+			s.SetAuth(*auth)
 		}
-		if !src.Auth.ExternalId.IsNull() {
-			auth.SetExternalId(src.Auth.ExternalId.ValueString())
-		}
-		if !src.Auth.SessionName.IsNull() {
-			auth.SetSessionName(src.Auth.SessionName.ValueString())
-		}
-		s.SetAuth(auth)
 	}
 
 	if src.Tls != nil {
@@ -3690,12 +3686,8 @@ func flattenAmazonS3Source(src *datadogV2.ObservabilityPipelineAmazonS3Source) *
 		Region: types.StringValue(src.GetRegion()),
 	}
 
-	if src.Auth != nil {
-		out.Auth = &awsAuthModel{
-			AssumeRole:  types.StringPointerValue(src.Auth.AssumeRole),
-			ExternalId:  types.StringPointerValue(src.Auth.ExternalId),
-			SessionName: types.StringPointerValue(src.Auth.SessionName),
-		}
+	if auth, ok := src.GetAuthOk(); ok {
+		out.Auth = observability_pipeline.FlattenAwsAuth(auth)
 	}
 
 	if src.Tls != nil {
@@ -4280,17 +4272,10 @@ func expandAmazonDataFirehoseSource(src *amazonDataFirehoseSourceModel) datadogV
 	firehose.SetId(src.Id.ValueString())
 
 	if src.Auth != nil {
-		auth := datadogV2.ObservabilityPipelineAwsAuth{}
-		if !src.Auth.AssumeRole.IsNull() {
-			auth.SetAssumeRole(src.Auth.AssumeRole.ValueString())
+		auth := observability_pipeline.ExpandAwsAuth(src.Auth)
+		if auth != nil {
+			firehose.SetAuth(*auth)
 		}
-		if !src.Auth.ExternalId.IsNull() {
-			auth.SetExternalId(src.Auth.ExternalId.ValueString())
-		}
-		if !src.Auth.SessionName.IsNull() {
-			auth.SetSessionName(src.Auth.SessionName.ValueString())
-		}
-		firehose.SetAuth(auth)
 	}
 
 	if src.Tls != nil {
@@ -4311,12 +4296,8 @@ func flattenAmazonDataFirehoseSource(src *datadogV2.ObservabilityPipelineAmazonD
 		Id: types.StringValue(src.GetId()),
 	}
 
-	if src.Auth != nil {
-		out.Auth = &awsAuthModel{
-			AssumeRole:  types.StringPointerValue(src.Auth.AssumeRole),
-			ExternalId:  types.StringPointerValue(src.Auth.ExternalId),
-			SessionName: types.StringPointerValue(src.Auth.SessionName),
-		}
+	if auth, ok := src.GetAuthOk(); ok {
+		out.Auth = observability_pipeline.FlattenAwsAuth(auth)
 	}
 
 	if src.Tls != nil {
