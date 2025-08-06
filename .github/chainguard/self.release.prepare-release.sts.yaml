@@ -1,0 +1,13 @@
+issuer: https://token.actions.githubusercontent.com
+
+subject: repo:DataDog/terraform-provider-datadog:ref:refs/heads/master
+
+claim_pattern:
+  event_name: workflow_dispatch
+  job_workflow_ref: DataDog/terraform-provider-datadog/\.github/workflows/prepare_release\.yml@.*
+  ref: refs/heads/master
+  ref_protected: "true"
+
+permissions:
+  contents: write
+  pull_requests: write
