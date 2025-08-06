@@ -2806,102 +2806,6 @@ resource "datadog_observability_pipeline" "amazon_opensearch_basic" {
 	})
 }
 
-func TestAccDatadogObservabilityPipeline_datadogTagsProcessor(t *testing.T) {
-	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
-
-	resourceName := "datadog_observability_pipeline.datadog_tags"
-
-	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
-		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
-		Steps: []resource.TestStep{
-			{
-				Config: `
-resource "datadog_observability_pipeline" "datadog_tags" {
-  name = "datadog tags processor test"
-
-  config {
-    sources {
-      datadog_agent {
-        id = "source-1"
-      }
-    }
-
-    processors {
-      datadog_tags {
-        id      = "datadog-tags-processor"
-        include = "service:my-service"
-        mode    = "filter"
-        action  = "include"
-        keys    = ["env", "service", "version"]
-        inputs  = ["source-1"]
-      }
-    }
-
-    destinations {
-      datadog_logs {
-        id     = "destination-1"
-        inputs = ["datadog-tags-processor"]
-      }
-    }
-  }
-}`,
-				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
-					resource.TestCheckResourceAttr(resourceName, "name", "datadog tags processor test"),
-					resource.TestCheckResourceAttr(resourceName, "config.sources.datadog_agent.0.id", "source-1"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.datadog_tags.0.id", "datadog-tags-processor"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.datadog_tags.0.include", "service:my-service"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.datadog_tags.0.mode", "filter"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.datadog_tags.0.action", "include"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.datadog_tags.0.keys.0", "env"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.datadog_tags.0.keys.1", "service"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.datadog_tags.0.keys.2", "version"),
-					resource.TestCheckResourceAttr(resourceName, "config.destinations.datadog_logs.0.id", "destination-1"),
-				),
-			},
-			{
-				Config: `
-resource "datadog_observability_pipeline" "datadog_tags" {
-  name = "datadog tags processor test updated"
-
-  config {
-    sources {
-      datadog_agent {
-        id = "source-1"
-      }
-    }
-
-    processors {
-      datadog_tags {
-        id      = "datadog-tags-processor"
-        include = "service:my-service"
-        mode    = "filter"
-        action  = "exclude"
-        keys    = ["env", "service"]
-        inputs  = ["source-1"]
-      }
-    }
-
-    destinations {
-      datadog_logs {
-        id     = "destination-1"
-        inputs = ["datadog-tags-processor"]
-      }
-    }
-  }
-}`,
-				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr(resourceName, "name", "datadog tags processor test updated"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.datadog_tags.0.action", "exclude"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.datadog_tags.0.keys.0", "env"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.datadog_tags.0.keys.1", "service"),
-				),
-			},
-		},
-	})
-}
-
 func TestAccDatadogObservabilityPipeline_quotaProcessor_overflowAction(t *testing.T) {
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
@@ -2963,10 +2867,9 @@ resource "datadog_observability_pipeline" "quota" {
 	})
 }
 
-func TestAccDatadogObservabilityPipeline_socketSource(t *testing.T) {
+func TestAccDatadogObservabilityPipeline_crowdstrikeNextGenSiemDestination_full(t *testing.T) {
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
-
-	resourceName := "datadog_observability_pipeline.socket"
+	resourceName := "datadog_observability_pipeline.crowdstrike_full"
 
 	resource.Test(t, resource.TestCase{
 		ProtoV5ProviderFactories: accProviders,
@@ -2974,97 +2877,57 @@ func TestAccDatadogObservabilityPipeline_socketSource(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: `
-resource "datadog_observability_pipeline" "socket" {
-  name = "socket-pipeline"
+resource "datadog_observability_pipeline" "crowdstrike_full" {
+  name = "crowdstrike full pipeline"
 
   config {
     sources {
-      socket {
-        id   = "socket-source-1"
-        mode = "tcp"
+      datadog_agent {
+        id = "source-1"
+      }
+    }
 
-        framing {
-          method = "newline_delimited"
+    processors {}
+
+    destinations {
+      crowdstrike_next_gen_siem {
+        id          = "crowdstrike-dest-1"
+        inputs      = ["source-1"]
+        encoding    = "json"
+        compression {
+          algorithm = "gzip"
+          level     = 6
         }
-
         tls {
-          crt_file = "/etc/ssl/certs/socket.crt"
-          ca_file  = "/etc/ssl/certs/ca.crt"
-          key_file = "/etc/ssl/private/socket.key"
+          crt_file = "/etc/certs/crowdstrike.crt"
+          ca_file  = "/etc/certs/ca.crt"
+          key_file = "/etc/certs/crowdstrike.key"
         }
       }
     }
-
-    processors {}
-
-    destinations {
-      datadog_logs {
-        id     = "destination-1"
-        inputs = ["socket-source-1"]
-      }
-    }
   }
-}`,
+}
+`,
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
-					resource.TestCheckResourceAttr(resourceName, "name", "socket-pipeline"),
-					resource.TestCheckResourceAttr(resourceName, "config.sources.socket.0.id", "socket-source-1"),
-					resource.TestCheckResourceAttr(resourceName, "config.sources.socket.0.mode", "tcp"),
-					resource.TestCheckResourceAttr(resourceName, "config.sources.socket.0.framing.method", "newline_delimited"),
-					resource.TestCheckResourceAttr(resourceName, "config.sources.socket.0.tls.crt_file", "/etc/ssl/certs/socket.crt"),
-					resource.TestCheckResourceAttr(resourceName, "config.sources.socket.0.tls.ca_file", "/etc/ssl/certs/ca.crt"),
-					resource.TestCheckResourceAttr(resourceName, "config.sources.socket.0.tls.key_file", "/etc/ssl/private/socket.key"),
-					resource.TestCheckResourceAttr(resourceName, "config.destinations.datadog_logs.0.inputs.0", "socket-source-1"),
-				),
-			},
-			{
-				Config: `
-resource "datadog_observability_pipeline" "socket" {
-  name = "socket-pipeline-udp"
-
-  config {
-    sources {
-      socket {
-        id   = "socket-source-2"
-        mode = "udp"
-
-        framing {
-          method = "character_delimited"
-          character_delimited {
-            delimiter = "|"
-          }
-        }
-      }
-    }
-
-    processors {}
-
-    destinations {
-      datadog_logs {
-        id     = "destination-1"
-        inputs = ["socket-source-2"]
-      }
-    }
-  }
-}`,
-				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
-					resource.TestCheckResourceAttr(resourceName, "name", "socket-pipeline-udp"),
-					resource.TestCheckResourceAttr(resourceName, "config.sources.socket.0.id", "socket-source-2"),
-					resource.TestCheckResourceAttr(resourceName, "config.sources.socket.0.mode", "udp"),
-					resource.TestCheckResourceAttr(resourceName, "config.sources.socket.0.framing.method", "character_delimited"),
-					resource.TestCheckResourceAttr(resourceName, "config.sources.socket.0.framing.character_delimited.delimiter", "|"),
-					resource.TestCheckResourceAttr(resourceName, "config.destinations.datadog_logs.0.inputs.0", "socket-source-2"),
+					resource.TestCheckResourceAttr(resourceName, "name", "crowdstrike full pipeline"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.crowdstrike_next_gen_siem.0.id", "crowdstrike-dest-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.crowdstrike_next_gen_siem.0.inputs.0", "source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.crowdstrike_next_gen_siem.0.encoding", "json"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.crowdstrike_next_gen_siem.0.compression.0.algorithm", "gzip"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.crowdstrike_next_gen_siem.0.compression.0.level", "6"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.crowdstrike_next_gen_siem.0.tls.crt_file", "/etc/certs/crowdstrike.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.crowdstrike_next_gen_siem.0.tls.ca_file", "/etc/certs/ca.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.crowdstrike_next_gen_siem.0.tls.key_file", "/etc/certs/crowdstrike.key"),
 				),
 			},
 		},
 	})
 }
 
-func TestAccDatadogObservabilityPipeline_socketDestination(t *testing.T) {
+func TestAccDatadogObservabilityPipeline_crowdstrikeNextGenSiemDestination_minimal(t *testing.T) {
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
-
-	resourceName := "datadog_observability_pipeline.socket_dest"
+	resourceName := "datadog_observability_pipeline.crowdstrike_minimal"
 
 	resource.Test(t, resource.TestCase{
 		ProtoV5ProviderFactories: accProviders,
@@ -3072,8 +2935,8 @@ func TestAccDatadogObservabilityPipeline_socketDestination(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: `
-resource "datadog_observability_pipeline" "socket_dest" {
-  name = "socket-destination-pipeline"
+resource "datadog_observability_pipeline" "crowdstrike_minimal" {
+  name = "crowdstrike minimal pipeline"
 
   config {
     sources {
@@ -3085,149 +2948,25 @@ resource "datadog_observability_pipeline" "socket_dest" {
     processors {}
 
     destinations {
-      socket {
-        id       = "socket-dest-1"
-        inputs   = ["source-1"]
-        mode     = "tcp"
-        encoding = "json"
-
-        framing {
-          method = "newline_delimited"
-        }
-
-        tls {
-          crt_file = "/etc/ssl/certs/socket.crt"
-          ca_file  = "/etc/ssl/certs/ca.crt"
-          key_file = "/etc/ssl/private/socket.key"
+      crowdstrike_next_gen_siem {
+        id          = "crowdstrike-dest-2"
+        inputs      = ["source-1"]
+        encoding    = "raw_message"
+        compression {
+          algorithm = "zlib"
         }
       }
     }
   }
-}`,
-				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
-					resource.TestCheckResourceAttr(resourceName, "name", "socket-destination-pipeline"),
-					resource.TestCheckResourceAttr(resourceName, "config.destinations.socket.0.id", "socket-dest-1"),
-					resource.TestCheckResourceAttr(resourceName, "config.destinations.socket.0.inputs.0", "source-1"),
-					resource.TestCheckResourceAttr(resourceName, "config.destinations.socket.0.mode", "tcp"),
-					resource.TestCheckResourceAttr(resourceName, "config.destinations.socket.0.encoding", "json"),
-					resource.TestCheckResourceAttr(resourceName, "config.destinations.socket.0.framing.method", "newline_delimited"),
-					resource.TestCheckResourceAttr(resourceName, "config.destinations.socket.0.tls.crt_file", "/etc/ssl/certs/socket.crt"),
-					resource.TestCheckResourceAttr(resourceName, "config.destinations.socket.0.tls.ca_file", "/etc/ssl/certs/ca.crt"),
-					resource.TestCheckResourceAttr(resourceName, "config.destinations.socket.0.tls.key_file", "/etc/ssl/private/socket.key"),
-				),
-			},
-			{
-				Config: `
-resource "datadog_observability_pipeline" "socket_dest" {
-  name = "socket-destination-pipeline-udp"
-
-  config {
-    sources {
-      datadog_agent {
-        id = "source-1"
-      }
-    }
-
-    processors {}
-
-    destinations {
-      socket {
-        id       = "socket-dest-2"
-        inputs   = ["source-1"]
-        mode     = "udp"
-        encoding = "raw_message"
-
-        framing {
-          method = "character_delimited"
-          character_delimited {
-            delimiter = "|"
-          }
-        }
-      }
-    }
-  }
-}`,
-				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
-					resource.TestCheckResourceAttr(resourceName, "name", "socket-destination-pipeline-udp"),
-					resource.TestCheckResourceAttr(resourceName, "config.destinations.socket.0.id", "socket-dest-2"),
-					resource.TestCheckResourceAttr(resourceName, "config.destinations.socket.0.inputs.0", "source-1"),
-					resource.TestCheckResourceAttr(resourceName, "config.destinations.socket.0.mode", "udp"),
-					resource.TestCheckResourceAttr(resourceName, "config.destinations.socket.0.encoding", "raw_message"),
-					resource.TestCheckResourceAttr(resourceName, "config.destinations.socket.0.framing.method", "character_delimited"),
-					resource.TestCheckResourceAttr(resourceName, "config.destinations.socket.0.framing.character_delimited.delimiter", "|"),
-				),
-			},
-		},
-	})
 }
-
-func TestAccDatadogObservabilityPipeline_customProcessor(t *testing.T) {
-	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
-
-	resourceName := "datadog_observability_pipeline.custom_processor"
-
-	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
-		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
-		Steps: []resource.TestStep{
-			{
-				Config: `
-resource "datadog_observability_pipeline" "custom_processor" {
-  name = "remap-vrl-pipeline"
-
-  config {
-    sources {
-      datadog_agent {
-        id = "source-1"
-      }
-    }
-
-    processors {
-      custom_processor {
-        id     = "remap-processor-1"
-        inputs = ["source-1"]
-
-        remaps {
-          include     = "service:web"
-          name        = "Parse JSON from message"
-          enabled     = true
-          source      = ". = parse_json!(string!(.message))"
-          drop_on_error = false
-        }
-
-        remaps {
-          include     = "env:prod"
-          name        = "Add timestamp"
-          source      = ".timestamp = now()"
-        }
-      }
-    }
-
-    destinations {
-      datadog_logs {
-        id     = "destination-1"
-        inputs = ["remap-processor-1"]
-      }
-    }
-  }
-}`,
+`,
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
-					resource.TestCheckResourceAttr(resourceName, "name", "remap-vrl-pipeline"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.custom_processor.0.id", "remap-processor-1"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.custom_processor.0.inputs.0", "source-1"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.custom_processor.0.remaps.0.include", "service:web"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.custom_processor.0.remaps.0.name", "Parse JSON from message"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.custom_processor.0.remaps.0.enabled", "true"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.custom_processor.0.remaps.0.source", ". = parse_json!(string!(.message))"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.custom_processor.0.remaps.0.drop_on_error", "false"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.custom_processor.0.remaps.1.include", "env:prod"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.custom_processor.0.remaps.1.name", "Add timestamp"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.custom_processor.0.remaps.1.source", ".timestamp = now()"),
-					resource.TestCheckResourceAttr(resourceName, "config.destinations.datadog_logs.0.id", "destination-1"),
-					resource.TestCheckResourceAttr(resourceName, "config.destinations.datadog_logs.0.inputs.0", "remap-processor-1"),
+					resource.TestCheckResourceAttr(resourceName, "name", "crowdstrike minimal pipeline"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.crowdstrike_next_gen_siem.0.id", "crowdstrike-dest-2"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.crowdstrike_next_gen_siem.0.inputs.0", "source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.crowdstrike_next_gen_siem.0.encoding", "raw_message"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.crowdstrike_next_gen_siem.0.compression.0.algorithm", "zlib"),
 				),
 			},
 		},

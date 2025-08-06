@@ -103,24 +103,22 @@ type tlsModel struct {
 // Processor models
 
 type processorsModel struct {
-	FilterProcessor               []*filterProcessorModel                             `tfsdk:"filter"`
-	ParseJsonProcessor            []*parseJsonProcessorModel                          `tfsdk:"parse_json"`
-	AddFieldsProcessor            []*addFieldsProcessor                               `tfsdk:"add_fields"`
-	RenameFieldsProcessor         []*renameFieldsProcessorModel                       `tfsdk:"rename_fields"`
-	RemoveFieldsProcessor         []*removeFieldsProcessorModel                       `tfsdk:"remove_fields"`
-	QuotaProcessor                []*quotaProcessorModel                              `tfsdk:"quota"`
-	GenerateMetricsProcessor      []*generateMetricsProcessorModel                    `tfsdk:"generate_datadog_metrics"`
-	ParseGrokProcessor            []*parseGrokProcessorModel                          `tfsdk:"parse_grok"`
-	SampleProcessor               []*sampleProcessorModel                             `tfsdk:"sample"`
-	SensitiveDataScannerProcessor []*sensitiveDataScannerProcessorModel               `tfsdk:"sensitive_data_scanner"`
-	DedupeProcessor               []*dedupeProcessorModel                             `tfsdk:"dedupe"`
-	ReduceProcessor               []*reduceProcessorModel                             `tfsdk:"reduce"`
-	ThrottleProcessor             []*throttleProcessorModel                           `tfsdk:"throttle"`
-	AddEnvVarsProcessor           []*addEnvVarsProcessorModel                         `tfsdk:"add_env_vars"`
-	EnrichmentTableProcessor      []*enrichmentTableProcessorModel                    `tfsdk:"enrichment_table"`
-	OcsfMapperProcessor           []*ocsfMapperProcessorModel                         `tfsdk:"ocsf_mapper"`
-	DatadogTagsProcessor          []*observability_pipeline.DatadogTagsProcessorModel `tfsdk:"datadog_tags"`
-	CustomProcessor               []*observability_pipeline.CustomProcessorModel      `tfsdk:"custom_processor"`
+	FilterProcessor               []*filterProcessorModel               `tfsdk:"filter"`
+	ParseJsonProcessor            []*parseJsonProcessorModel            `tfsdk:"parse_json"`
+	AddFieldsProcessor            []*addFieldsProcessor                 `tfsdk:"add_fields"`
+	RenameFieldsProcessor         []*renameFieldsProcessorModel         `tfsdk:"rename_fields"`
+	RemoveFieldsProcessor         []*removeFieldsProcessorModel         `tfsdk:"remove_fields"`
+	QuotaProcessor                []*quotaProcessorModel                `tfsdk:"quota"`
+	GenerateMetricsProcessor      []*generateMetricsProcessorModel      `tfsdk:"generate_datadog_metrics"`
+	ParseGrokProcessor            []*parseGrokProcessorModel            `tfsdk:"parse_grok"`
+	SampleProcessor               []*sampleProcessorModel               `tfsdk:"sample"`
+	SensitiveDataScannerProcessor []*sensitiveDataScannerProcessorModel `tfsdk:"sensitive_data_scanner"`
+	DedupeProcessor               []*dedupeProcessorModel               `tfsdk:"dedupe"`
+	ReduceProcessor               []*reduceProcessorModel               `tfsdk:"reduce"`
+	ThrottleProcessor             []*throttleProcessorModel             `tfsdk:"throttle"`
+	AddEnvVarsProcessor           []*addEnvVarsProcessorModel           `tfsdk:"add_env_vars"`
+	EnrichmentTableProcessor      []*enrichmentTableProcessorModel      `tfsdk:"enrichment_table"`
+	OcsfMapperProcessor           []*ocsfMapperProcessorModel           `tfsdk:"ocsf_mapper"`
 }
 
 type ocsfMapperProcessorModel struct {
@@ -287,22 +285,23 @@ type fieldValue struct {
 // Destination models
 
 type destinationsModel struct {
-	DatadogLogsDestination        []*datadogLogsDestinationModel                     `tfsdk:"datadog_logs"`
-	GoogleCloudStorageDestination []*gcsDestinationModel                             `tfsdk:"google_cloud_storage"`
-	SplunkHecDestination          []*splunkHecDestinationModel                       `tfsdk:"splunk_hec"`
-	SumoLogicDestination          []*sumoLogicDestinationModel                       `tfsdk:"sumo_logic"`
-	RsyslogDestination            []*rsyslogDestinationModel                         `tfsdk:"rsyslog"`
-	SyslogNgDestination           []*syslogNgDestinationModel                        `tfsdk:"syslog_ng"`
-	ElasticsearchDestination      []*elasticsearchDestinationModel                   `tfsdk:"elasticsearch"`
-	AzureStorageDestination       []*azureStorageDestinationModel                    `tfsdk:"azure_storage"`
-	MicrosoftSentinelDestination  []*microsoftSentinelDestinationModel               `tfsdk:"microsoft_sentinel"`
-	GoogleChronicleDestination    []*googleChronicleDestinationModel                 `tfsdk:"google_chronicle"`
-	NewRelicDestination           []*newRelicDestinationModel                        `tfsdk:"new_relic"`
-	SentinelOneDestination        []*sentinelOneDestinationModel                     `tfsdk:"sentinel_one"`
-	OpenSearchDestination         []*opensearchDestinationModel                      `tfsdk:"opensearch"`
-	AmazonOpenSearchDestination   []*amazonOpenSearchDestinationModel                `tfsdk:"amazon_opensearch"`
-	SocketDestination             []*observability_pipeline.SocketDestinationModel   `tfsdk:"socket"`
-	AmazonS3Destination           []*observability_pipeline.AmazonS3DestinationModel `tfsdk:"amazon_s3"`
+	DatadogLogsDestination            []*datadogLogsDestinationModel                                   `tfsdk:"datadog_logs"`
+	GoogleCloudStorageDestination     []*gcsDestinationModel                                           `tfsdk:"google_cloud_storage"`
+	SplunkHecDestination              []*splunkHecDestinationModel                                     `tfsdk:"splunk_hec"`
+	SumoLogicDestination              []*sumoLogicDestinationModel                                     `tfsdk:"sumo_logic"`
+	RsyslogDestination                []*rsyslogDestinationModel                                       `tfsdk:"rsyslog"`
+	SyslogNgDestination               []*syslogNgDestinationModel                                      `tfsdk:"syslog_ng"`
+	ElasticsearchDestination          []*elasticsearchDestinationModel                                 `tfsdk:"elasticsearch"`
+	AzureStorageDestination           []*azureStorageDestinationModel                                  `tfsdk:"azure_storage"`
+	MicrosoftSentinelDestination      []*microsoftSentinelDestinationModel                             `tfsdk:"microsoft_sentinel"`
+	GoogleChronicleDestination        []*googleChronicleDestinationModel                               `tfsdk:"google_chronicle"`
+	NewRelicDestination               []*newRelicDestinationModel                                      `tfsdk:"new_relic"`
+	SentinelOneDestination            []*sentinelOneDestinationModel                                   `tfsdk:"sentinel_one"`
+	OpenSearchDestination             []*opensearchDestinationModel                                    `tfsdk:"opensearch"`
+	AmazonOpenSearchDestination       []*amazonOpenSearchDestinationModel                              `tfsdk:"amazon_opensearch"`
+	SocketDestination                 []*observability_pipeline.SocketDestinationModel                 `tfsdk:"socket"`
+	AmazonS3Destination               []*observability_pipeline.AmazonS3DestinationModel               `tfsdk:"amazon_s3"`
+	CrowdStrikeNextGenSiemDestination []*observability_pipeline.CrowdStrikeNextGenSiemDestinationModel `tfsdk:"crowdstrike_next_gen_siem"`
 }
 
 type amazonOpenSearchDestinationModel struct {
@@ -1818,8 +1817,6 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 									},
 								},
 							},
-							"datadog_tags":     observability_pipeline.DatadogTagsProcessorSchema(),
-							"custom_processor": observability_pipeline.CustomProcessorSchema(),
 						},
 					},
 					"destinations": schema.SingleNestedBlock{
@@ -2251,8 +2248,9 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 									},
 								},
 							},
-							"socket":    observability_pipeline.SocketDestinationSchema(),
-							"amazon_s3": observability_pipeline.AmazonS3DestinationSchema(),
+							"socket":                    observability_pipeline.SocketDestinationSchema(),
+							"amazon_s3":                 observability_pipeline.AmazonS3DestinationSchema(),
+							"crowdstrike_next_gen_siem": observability_pipeline.CrowdStrikeNextGenSiemDestinationSchema(),
 						},
 					},
 				},
@@ -2489,9 +2487,6 @@ func expandPipeline(ctx context.Context, state *observabilityPipelineModel) (*da
 	for _, p := range state.Config.Processors.OcsfMapperProcessor {
 		config.Processors = append(config.Processors, expandOcsfMapperProcessor(ctx, p))
 	}
-	for _, p := range state.Config.Processors.CustomProcessor {
-		config.Processors = append(config.Processors, observability_pipeline.ExpandCustomProcessor(ctx, p))
-	}
 	for _, p := range state.Config.Processors.ParseGrokProcessor {
 		config.Processors = append(config.Processors, expandParseGrokProcessor(ctx, p))
 	}
@@ -2503,9 +2498,6 @@ func expandPipeline(ctx context.Context, state *observabilityPipelineModel) (*da
 	}
 	for _, p := range state.Config.Processors.SensitiveDataScannerProcessor {
 		config.Processors = append(config.Processors, expandSensitiveDataScannerProcessor(ctx, p))
-	}
-	for _, p := range state.Config.Processors.DatadogTagsProcessor {
-		config.Processors = append(config.Processors, expandDatadogTagsProcessor(ctx, p))
 	}
 
 	// Destinations
@@ -2556,6 +2548,9 @@ func expandPipeline(ctx context.Context, state *observabilityPipelineModel) (*da
 	}
 	for _, d := range state.Config.Destinations.AmazonS3Destination {
 		config.Destinations = append(config.Destinations, observability_pipeline.ExpandAmazonS3Destination(ctx, d))
+	}
+	for _, d := range state.Config.Destinations.CrowdStrikeNextGenSiemDestination {
+		config.Destinations = append(config.Destinations, observability_pipeline.ExpandCrowdStrikeNextGenSiemDestination(ctx, d))
 	}
 
 	attrs.SetConfig(*config)
@@ -2685,12 +2680,6 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 		if f := flattenOcsfMapperProcessor(ctx, p.ObservabilityPipelineOcsfMapperProcessor); f != nil {
 			outCfg.Processors.OcsfMapperProcessor = append(outCfg.Processors.OcsfMapperProcessor, f)
 		}
-		if f := flattenDatadogTagsProcessor(ctx, p.ObservabilityPipelineDatadogTagsProcessor); f != nil {
-			outCfg.Processors.DatadogTagsProcessor = append(outCfg.Processors.DatadogTagsProcessor, f)
-		}
-		if f := observability_pipeline.FlattenCustomProcessor(ctx, p.ObservabilityPipelineCustomProcessor); f != nil {
-			outCfg.Processors.CustomProcessor = append(outCfg.Processors.CustomProcessor, f)
-		}
 	}
 
 	for _, d := range cfg.GetDestinations() {
@@ -2739,8 +2728,8 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 		if d := flattenAmazonOpenSearchDestination(ctx, d.ObservabilityPipelineAmazonOpenSearchDestination); d != nil {
 			outCfg.Destinations.AmazonOpenSearchDestination = append(outCfg.Destinations.AmazonOpenSearchDestination, d)
 		}
-		if d := observability_pipeline.FlattenSocketDestination(ctx, d.ObservabilityPipelineSocketDestination); d != nil {
-			outCfg.Destinations.SocketDestination = append(outCfg.Destinations.SocketDestination, d)
+		if d := observability_pipeline.FlattenCrowdStrikeNextGenSiemDestination(ctx, d.ObservabilityPipelineCrowdStrikeNextGenSiemDestination); d != nil {
+			outCfg.Destinations.CrowdStrikeNextGenSiemDestination = append(outCfg.Destinations.CrowdStrikeNextGenSiemDestination, d)
 		}
 		if d := observability_pipeline.FlattenAmazonS3Destination(ctx, d.ObservabilityPipelineAmazonS3Destination); d != nil {
 			outCfg.Destinations.AmazonS3Destination = append(outCfg.Destinations.AmazonS3Destination, d)
@@ -4976,12 +4965,4 @@ func flattenAmazonOpenSearchDestination(ctx context.Context, src *datadogV2.Obse
 	}
 
 	return model
-}
-
-func expandDatadogTagsProcessor(ctx context.Context, src *observability_pipeline.DatadogTagsProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
-	return observability_pipeline.ExpandDatadogTagsProcessor(ctx, src)
-}
-
-func flattenDatadogTagsProcessor(ctx context.Context, src *datadogV2.ObservabilityPipelineDatadogTagsProcessor) *observability_pipeline.DatadogTagsProcessorModel {
-	return observability_pipeline.FlattenDatadogTagsProcessor(ctx, src)
 }
