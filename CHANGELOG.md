@@ -1,3 +1,19 @@
+## 3.70.0 (August 6, 2025)
+
+### BUGFIXES
+* [datadog_team_membership] Correct handling of 404 when reading team memberships by @heavi5ide in https://github.com/DataDog/terraform-provider-datadog/pull/3140
+### FEATURES
+* [authentication] Add ability for terraform-provider to use AWS cloud-based authentication by @wynbennett in https://github.com/DataDog/terraform-provider-datadog/pull/3051
+* [datadog_incident_type] Add resouce and data source by @codhah92 in https://github.com/DataDog/terraform-provider-datadog/pull/3147
+
+## New Contributors
+* @larrys made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3127
+* @heavi5ide made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3140
+* @wynbennett made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3051
+* @codhah92 made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3147
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.69.0...v3.70.0
+
 ## 3.69.0 (July 23, 2025)
 
 ### BUGFIXES
