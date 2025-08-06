@@ -14,7 +14,7 @@ import (
 func TestAccDatadogIncidentType_Basic(t *testing.T) {
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
-	incidentTypeName := fmt.Sprintf("test-incident-type-%d", clockFromContext(ctx).Now().Unix())
+	incidentTypeName := fmt.Sprintf("test-it-basic-%d", clockFromContext(ctx).Now().Unix())
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
@@ -42,7 +42,7 @@ func TestAccDatadogIncidentType_Basic(t *testing.T) {
 func TestAccDatadogIncidentType_Updated(t *testing.T) {
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
-	incidentTypeName := fmt.Sprintf("test-incident-type-%d", clockFromContext(ctx).Now().Unix())
+	incidentTypeName := fmt.Sprintf("test-it-updated-%d", clockFromContext(ctx).Now().Unix())
 	incidentTypeNameUpdated := incidentTypeName + "-updated"
 
 	resource.Test(t, resource.TestCase{
@@ -77,7 +77,7 @@ func TestAccDatadogIncidentType_Updated(t *testing.T) {
 func TestAccDatadogIncidentType_Import(t *testing.T) {
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
-	incidentTypeName := fmt.Sprintf("test-incident-type-%d", clockFromContext(ctx).Now().Unix())
+	incidentTypeName := fmt.Sprintf("test-it-import-%d", clockFromContext(ctx).Now().Unix())
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },

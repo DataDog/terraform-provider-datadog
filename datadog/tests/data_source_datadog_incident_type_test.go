@@ -14,7 +14,7 @@ import (
 func TestAccDatadogIncidentTypeDataSource_Basic(t *testing.T) {
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
-	incidentTypeName := fmt.Sprintf("test-incident-type-%d", clockFromContext(ctx).Now().Unix())
+	incidentTypeName := fmt.Sprintf("test-it-ds-%d", clockFromContext(ctx).Now().Unix())
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
