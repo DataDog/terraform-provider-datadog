@@ -93,6 +93,7 @@ var Resources = []func() resource.Resource{
 	NewCSMThreatsAgentRuleResource,
 	NewCSMThreatsPolicyResource,
 	NewAppKeyRegistrationResource,
+	NewIncidentTypeResource,
 }
 
 var Datasources = []func() datasource.DataSource{
@@ -127,6 +128,7 @@ var Datasources = []func() datasource.DataSource{
 	NewCostBudgetDataSource,
 	NewCSMThreatsAgentRulesDataSource,
 	NewCSMThreatsPoliciesDataSource,
+	NewIncidentTypeDataSource,
 }
 
 // FrameworkProvider struct
@@ -550,6 +552,12 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.GetMonitorNotificationRule", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteMonitorNotificationRule", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateMonitorNotificationRule", true)
+
+	// Enable IncidentType
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateIncidentType", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetIncidentType", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateIncidentType", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteIncidentType", true)
 
 	if !config.ApiUrl.IsNull() && config.ApiUrl.ValueString() != "" {
 		parsedAPIURL, parseErr := url.Parse(config.ApiUrl.ValueString())
