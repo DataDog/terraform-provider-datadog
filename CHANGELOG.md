@@ -1,3 +1,10 @@
+## 3.71.0 (August 7, 2025)
+
+## New Contributors
+* @ikraemer-dd made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3152
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.70.0...v3.71.0
+
 ## 3.70.0 (August 6, 2025)
 
 ### BUGFIXES
