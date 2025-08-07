@@ -1,10 +1,6 @@
 #!/usr/bin/env bash
 # Generate the documentation using tfplugindocs and remove changes to files that shouldn't change
 
-# Used in long pages that can't be rendered by the registry so we can link
-# to the latest version of the full documentation on github
-VERSION=$(git describe --tags --abbrev=0)
-
 # Add here the files to be excluded from the doc generation
 exclude_files=(
   "docs/resources/integration_aws_account.md"
@@ -21,27 +17,7 @@ if [ "${#exclude_files[@]}" -ne 0 ] && [ "$(git status --porcelain "${exclude_fi
   exit 1
 fi
 
-# FIRST PASS: full dump, *no* overrides
-rm -rf docs_full
-tfplugindocs generate \
-  --provider-dir . \
-  --rendered-website-dir docs_full \
-  --website-source-dir blank_templates
-
-# SECOND PASS: real site, *with* your stub‐templates
-rm -rf docs
-tfplugindocs generate \
-  --provider-dir . \
-  --rendered-website-dir docs \
-  --website-source-dir templates
-
-# Extract the full dashboard page
-mkdir -p docs/resources
-cp docs_full/resources/dashboard.md docs/resources/dashboard_full.md
-cp docs_full/dashboard_widget_field_rules.md docs/dashboard_widget_field_rules.md
-
-# Cleanup
-rm -rf docs_full
+tfplugindocs
 
 # Remove the changes to files we don't autogenerate
 git checkout HEAD -- "${exclude_files[@]}"
