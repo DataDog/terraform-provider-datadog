@@ -287,23 +287,24 @@ type fieldValue struct {
 // Destination models
 
 type destinationsModel struct {
-	DatadogLogsDestination        []*datadogLogsDestinationModel                               `tfsdk:"datadog_logs"`
-	GoogleCloudStorageDestination []*gcsDestinationModel                                       `tfsdk:"google_cloud_storage"`
-	SplunkHecDestination          []*splunkHecDestinationModel                                 `tfsdk:"splunk_hec"`
-	SumoLogicDestination          []*sumoLogicDestinationModel                                 `tfsdk:"sumo_logic"`
-	RsyslogDestination            []*rsyslogDestinationModel                                   `tfsdk:"rsyslog"`
-	SyslogNgDestination           []*syslogNgDestinationModel                                  `tfsdk:"syslog_ng"`
-	ElasticsearchDestination      []*elasticsearchDestinationModel                             `tfsdk:"elasticsearch"`
-	AzureStorageDestination       []*azureStorageDestinationModel                              `tfsdk:"azure_storage"`
-	MicrosoftSentinelDestination  []*microsoftSentinelDestinationModel                         `tfsdk:"microsoft_sentinel"`
-	GoogleChronicleDestination    []*googleChronicleDestinationModel                           `tfsdk:"google_chronicle"`
-	NewRelicDestination           []*newRelicDestinationModel                                  `tfsdk:"new_relic"`
-	SentinelOneDestination        []*sentinelOneDestinationModel                               `tfsdk:"sentinel_one"`
-	OpenSearchDestination         []*opensearchDestinationModel                                `tfsdk:"opensearch"`
-	AmazonOpenSearchDestination   []*amazonOpenSearchDestinationModel                          `tfsdk:"amazon_opensearch"`
-	SocketDestination             []*observability_pipeline.SocketDestinationModel             `tfsdk:"socket"`
-	AmazonS3Destination           []*observability_pipeline.AmazonS3DestinationModel           `tfsdk:"amazon_s3"`
-	AmazonSecurityLakeDestination []*observability_pipeline.AmazonSecurityLakeDestinationModel `tfsdk:"amazon_security_lake"`
+	DatadogLogsDestination            []*datadogLogsDestinationModel                                   `tfsdk:"datadog_logs"`
+	GoogleCloudStorageDestination     []*gcsDestinationModel                                           `tfsdk:"google_cloud_storage"`
+	SplunkHecDestination              []*splunkHecDestinationModel                                     `tfsdk:"splunk_hec"`
+	SumoLogicDestination              []*sumoLogicDestinationModel                                     `tfsdk:"sumo_logic"`
+	RsyslogDestination                []*rsyslogDestinationModel                                       `tfsdk:"rsyslog"`
+	SyslogNgDestination               []*syslogNgDestinationModel                                      `tfsdk:"syslog_ng"`
+	ElasticsearchDestination          []*elasticsearchDestinationModel                                 `tfsdk:"elasticsearch"`
+	AzureStorageDestination           []*azureStorageDestinationModel                                  `tfsdk:"azure_storage"`
+	MicrosoftSentinelDestination      []*microsoftSentinelDestinationModel                             `tfsdk:"microsoft_sentinel"`
+	GoogleChronicleDestination        []*googleChronicleDestinationModel                               `tfsdk:"google_chronicle"`
+	NewRelicDestination               []*newRelicDestinationModel                                      `tfsdk:"new_relic"`
+	SentinelOneDestination            []*sentinelOneDestinationModel                                   `tfsdk:"sentinel_one"`
+	OpenSearchDestination             []*opensearchDestinationModel                                    `tfsdk:"opensearch"`
+	AmazonOpenSearchDestination       []*amazonOpenSearchDestinationModel                              `tfsdk:"amazon_opensearch"`
+	SocketDestination                 []*observability_pipeline.SocketDestinationModel                 `tfsdk:"socket"`
+	AmazonS3Destination               []*observability_pipeline.AmazonS3DestinationModel               `tfsdk:"amazon_s3"`
+	AmazonSecurityLakeDestination     []*observability_pipeline.AmazonSecurityLakeDestinationModel     `tfsdk:"amazon_security_lake"`
+	CrowdStrikeNextGenSiemDestination []*observability_pipeline.CrowdStrikeNextGenSiemDestinationModel `tfsdk:"crowdstrike_next_gen_siem"`
 }
 
 type amazonOpenSearchDestinationModel struct {
@@ -2262,9 +2263,10 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 									},
 								},
 							},
-							"socket":               observability_pipeline.SocketDestinationSchema(),
-							"amazon_s3":            observability_pipeline.AmazonS3DestinationSchema(),
-							"amazon_security_lake": observability_pipeline.AmazonSecurityLakeDestinationSchema(),
+							"socket":                    observability_pipeline.SocketDestinationSchema(),
+							"amazon_s3":                 observability_pipeline.AmazonS3DestinationSchema(),
+							"amazon_security_lake":      observability_pipeline.AmazonSecurityLakeDestinationSchema(),
+							"crowdstrike_next_gen_siem": observability_pipeline.CrowdStrikeNextGenSiemDestinationSchema(),
 						},
 					},
 				},
@@ -2572,6 +2574,9 @@ func expandPipeline(ctx context.Context, state *observabilityPipelineModel) (*da
 	for _, d := range state.Config.Destinations.AmazonSecurityLakeDestination {
 		config.Destinations = append(config.Destinations, observability_pipeline.ExpandObservabilityPipelinesAmazonSecurityLakeDestination(ctx, d))
 	}
+	for _, d := range state.Config.Destinations.CrowdStrikeNextGenSiemDestination {
+		config.Destinations = append(config.Destinations, observability_pipeline.ExpandCrowdStrikeNextGenSiemDestination(ctx, d))
+	}
 
 	attrs.SetConfig(*config)
 	data.SetAttributes(*attrs)
@@ -2762,6 +2767,9 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 		}
 		if d := observability_pipeline.FlattenObservabilityPipelinesAmazonSecurityLakeDestination(ctx, d.ObservabilityPipelineAmazonSecurityLakeDestination); d != nil {
 			outCfg.Destinations.AmazonSecurityLakeDestination = append(outCfg.Destinations.AmazonSecurityLakeDestination, d)
+		}
+		if d := observability_pipeline.FlattenCrowdStrikeNextGenSiemDestination(ctx, d.ObservabilityPipelineCrowdStrikeNextGenSiemDestination); d != nil {
+			outCfg.Destinations.CrowdStrikeNextGenSiemDestination = append(outCfg.Destinations.CrowdStrikeNextGenSiemDestination, d)
 		}
 
 	}

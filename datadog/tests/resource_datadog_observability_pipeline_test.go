@@ -3403,3 +3403,97 @@ resource "datadog_observability_pipeline" "amazon_security_lake_dest" {
 		},
 	})
 }
+
+func TestAccDatadogObservabilityPipeline_crowdstrikeNextGenSiemDestination(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	resourceName := "datadog_observability_pipeline.crowdstrike_next_gen_siem_dest"
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "crowdstrike_next_gen_siem_dest" {
+  name = "crowdstrike-next-gen-siem-destination-pipeline"
+
+  config {
+    sources {
+      datadog_agent {
+        id = "source-1"
+      }
+    }
+
+    processors {}
+
+    destinations {
+      crowdstrike_next_gen_siem {
+        id       = "crowdstrike-dest-1"
+        inputs   = ["source-1"]
+        encoding = "json"
+        compression {
+          algorithm = "gzip"
+          level     = 6
+        }
+        tls {
+          crt_file = "/path/to/cert.crt"
+          ca_file  = "/path/to/ca.crt"
+          key_file = "/path/to/key.key"
+        }
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.crowdstrike_next_gen_siem.0.id", "crowdstrike-dest-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.crowdstrike_next_gen_siem.0.inputs.0", "source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.crowdstrike_next_gen_siem.0.encoding", "json"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.crowdstrike_next_gen_siem.0.compression.algorithm", "gzip"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.crowdstrike_next_gen_siem.0.compression.level", "6"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.crowdstrike_next_gen_siem.0.tls.crt_file", "/path/to/cert.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.crowdstrike_next_gen_siem.0.tls.ca_file", "/path/to/ca.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.crowdstrike_next_gen_siem.0.tls.key_file", "/path/to/key.key"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogObservabilityPipeline_crowdstrikeNextGenSiemDestination_basic(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	resourceName := "datadog_observability_pipeline.crowdstrike_next_gen_siem_dest_basic"
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "crowdstrike_next_gen_siem_dest_basic" {
+  name = "crowdstrike-next-gen-siem-destination-pipeline-basic"
+
+  config {
+    sources {
+      datadog_agent {
+        id = "source-1"
+      }
+    }
+
+    processors {}
+
+    destinations {
+      crowdstrike_next_gen_siem {
+        id       = "crowdstrike-dest-basic-1"
+        inputs   = ["source-1"]
+        encoding = "raw_message"
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.crowdstrike_next_gen_siem.0.id", "crowdstrike-dest-basic-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.crowdstrike_next_gen_siem.0.inputs.0", "source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.crowdstrike_next_gen_siem.0.encoding", "raw_message"),
+				),
+			},
+		},
+	})
+}
