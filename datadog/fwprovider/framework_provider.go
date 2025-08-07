@@ -174,6 +174,11 @@ func (p *FrameworkProvider) Resources(_ context.Context) []func() resource.Resou
 		wrappedResources = append(wrappedResources, func() resource.Resource { return NewFrameworkResourceWrapper(&r) })
 	}
 
+	if utils.UseMonitorFrameworkProvider() {
+		monitorResource := NewMonitorResource()
+		wrappedResources = append(wrappedResources, func() resource.Resource { return NewFrameworkResourceWrapper(&monitorResource) })
+	}
+
 	return wrappedResources
 }
 
