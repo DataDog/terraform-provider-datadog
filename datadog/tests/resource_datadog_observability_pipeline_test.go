@@ -3343,3 +3343,63 @@ resource "datadog_observability_pipeline" "amazon_s3_basic" {
 		},
 	})
 }
+
+func TestAccDatadogObservabilityPipeline_AmazonSecurityLakeDestination(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	resourceName := "datadog_observability_pipeline.amazon_security_lake_dest"
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "amazon_security_lake_dest" {
+  name = "amazon-security-lake-destination-pipeline"
+
+  config {
+    sources {
+      datadog_agent {
+        id = "source-1"
+      }
+    }
+
+    processors {}
+
+    destinations {
+			amazon_security_lake {
+				id                 = "security-lake-dest-1"
+				inputs             = ["source-1"]
+				bucket             = "my-security-lake-bucket"
+				region             = "us-east-1"
+				custom_source_name = "my-custom-source"
+				tls {
+					crt_file = "/path/to/cert.crt"
+					ca_file  = "/path/to/ca.crt"
+					key_file = "/path/to/key.key"
+				}
+				auth {
+					assume_role  = "arn:aws:iam::123456789012:role/SecurityLakeRole"
+					external_id  = "external-id"
+					session_name = "session-name"
+				}
+			}
+		}
+  }
+}
+`,
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.amazon_security_lake.0.id", "security-lake-dest-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.amazon_security_lake.0.bucket", "my-security-lake-bucket"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.amazon_security_lake.0.region", "us-east-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.amazon_security_lake.0.custom_source_name", "my-custom-source"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.amazon_security_lake.0.tls.crt_file", "/path/to/cert.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.amazon_security_lake.0.tls.ca_file", "/path/to/ca.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.amazon_security_lake.0.tls.key_file", "/path/to/key.key"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.amazon_security_lake.0.auth.assume_role", "arn:aws:iam::123456789012:role/SecurityLakeRole"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.amazon_security_lake.0.auth.external_id", "external-id"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.amazon_security_lake.0.auth.session_name", "session-name"),
+				),
+			},
+		},
+	})
+}
