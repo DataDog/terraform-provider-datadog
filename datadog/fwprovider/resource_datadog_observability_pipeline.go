@@ -35,9 +35,9 @@ type observabilityPipelineModel struct {
 }
 
 type configModel struct {
-	Sources      sourcesModel      `tfsdk:"sources"`
-	Processors   processorsModel   `tfsdk:"processors"`
-	Destinations destinationsModel `tfsdk:"destinations"`
+	Sources      *sourcesModel      `tfsdk:"sources"`
+	Processors   *processorsModel   `tfsdk:"processors"`
+	Destinations *destinationsModel `tfsdk:"destinations"`
 }
 type sourcesModel struct {
 	DatadogAgentSource       []*datadogAgentSourceModel       `tfsdk:"datadog_agent"`
@@ -2398,150 +2398,168 @@ func expandPipeline(ctx context.Context, state *observabilityPipelineModel) (*da
 	config := datadogV2.NewObservabilityPipelineConfigWithDefaults()
 
 	// Sources
-	for _, s := range state.Config.Sources.DatadogAgentSource {
-		config.Sources = append(config.Sources, expandDatadogAgentSource(s))
-	}
-	for _, k := range state.Config.Sources.KafkaSource {
-		config.Sources = append(config.Sources, expandKafkaSource(k))
-	}
-	for _, f := range state.Config.Sources.FluentdSource {
-		config.Sources = append(config.Sources, expandFluentdSource(f))
-	}
-	for _, f := range state.Config.Sources.FluentBitSource {
-		config.Sources = append(config.Sources, expandFluentBitSource(f))
-	}
-	for _, s := range state.Config.Sources.HttpServerSource {
-		config.Sources = append(config.Sources, expandHttpServerSource(s))
-	}
-	for _, s := range state.Config.Sources.SplunkHecSource {
-		config.Sources = append(config.Sources, expandSplunkHecSource(s))
-	}
-	for _, s := range state.Config.Sources.SplunkTcpSource {
-		config.Sources = append(config.Sources, expandSplunkTcpSource(s))
-	}
-	for _, s := range state.Config.Sources.AmazonS3Source {
-		config.Sources = append(config.Sources, expandAmazonS3Source(s))
-	}
-	for _, s := range state.Config.Sources.RsyslogSource {
-		config.Sources = append(config.Sources, expandRsyslogSource(s))
-	}
-	for _, s := range state.Config.Sources.SyslogNgSource {
-		config.Sources = append(config.Sources, expandSyslogNgSource(s))
-	}
-	for _, s := range state.Config.Sources.SumoLogicSource {
-		config.Sources = append(config.Sources, expandSumoLogicSource(s))
-	}
-	for _, a := range state.Config.Sources.AmazonDataFirehoseSource {
-		config.Sources = append(config.Sources, expandAmazonDataFirehoseSource(a))
-	}
-	for _, h := range state.Config.Sources.HttpClientSource {
-		config.Sources = append(config.Sources, expandHttpClientSource(h))
-	}
-	for _, g := range state.Config.Sources.GooglePubSubSource {
-		config.Sources = append(config.Sources, expandGooglePubSubSource(g))
-	}
-	for _, l := range state.Config.Sources.LogstashSource {
-		config.Sources = append(config.Sources, expandLogstashSource(l))
+	if state.Config.Sources != nil {
+		expandPipelineSources(config, state.Config.Sources)
 	}
 
 	// Processors
-	for _, p := range state.Config.Processors.FilterProcessor {
-		config.Processors = append(config.Processors, expandFilterProcessor(ctx, p))
-	}
-	for _, p := range state.Config.Processors.ParseJsonProcessor {
-		config.Processors = append(config.Processors, expandParseJsonProcessor(ctx, p))
-	}
-	for _, p := range state.Config.Processors.AddFieldsProcessor {
-		config.Processors = append(config.Processors, expandAddFieldsProcessor(ctx, p))
-	}
-	for _, p := range state.Config.Processors.RenameFieldsProcessor {
-		config.Processors = append(config.Processors, expandRenameFieldsProcessor(ctx, p))
-	}
-	for _, p := range state.Config.Processors.RemoveFieldsProcessor {
-		config.Processors = append(config.Processors, expandRemoveFieldsProcessor(ctx, p))
-	}
-	for _, p := range state.Config.Processors.QuotaProcessor {
-		config.Processors = append(config.Processors, expandQuotaProcessor(ctx, p))
-	}
-	for _, p := range state.Config.Processors.DedupeProcessor {
-		config.Processors = append(config.Processors, expandDedupeProcessor(ctx, p))
-	}
-	for _, p := range state.Config.Processors.ReduceProcessor {
-		config.Processors = append(config.Processors, expandReduceProcessor(ctx, p))
-	}
-	for _, p := range state.Config.Processors.ThrottleProcessor {
-		config.Processors = append(config.Processors, expandThrottleProcessor(ctx, p))
-	}
-	for _, p := range state.Config.Processors.AddEnvVarsProcessor {
-		config.Processors = append(config.Processors, expandAddEnvVarsProcessor(ctx, p))
-	}
-	for _, p := range state.Config.Processors.EnrichmentTableProcessor {
-		config.Processors = append(config.Processors, expandEnrichmentTableProcessor(ctx, p))
-	}
-	for _, p := range state.Config.Processors.OcsfMapperProcessor {
-		config.Processors = append(config.Processors, expandOcsfMapperProcessor(ctx, p))
-	}
-	for _, p := range state.Config.Processors.ParseGrokProcessor {
-		config.Processors = append(config.Processors, expandParseGrokProcessor(ctx, p))
-	}
-	for _, p := range state.Config.Processors.SampleProcessor {
-		config.Processors = append(config.Processors, expandSampleProcessor(ctx, p))
-	}
-	for _, p := range state.Config.Processors.GenerateMetricsProcessor {
-		config.Processors = append(config.Processors, expandGenerateMetricsProcessor(ctx, p))
-	}
-	for _, p := range state.Config.Processors.SensitiveDataScannerProcessor {
-		config.Processors = append(config.Processors, expandSensitiveDataScannerProcessor(ctx, p))
+	if state.Config.Processors != nil {
+		expandPipelineProcessors(ctx, config, state.Config.Processors)
 	}
 
 	// Destinations
-	for _, d := range state.Config.Destinations.DatadogLogsDestination {
-		config.Destinations = append(config.Destinations, expandDatadogLogsDestination(ctx, d))
-	}
-	for _, d := range state.Config.Destinations.SplunkHecDestination {
-		config.Destinations = append(config.Destinations, expandSplunkHecDestination(ctx, d))
-	}
-	for _, d := range state.Config.Destinations.GoogleCloudStorageDestination {
-		config.Destinations = append(config.Destinations, expandGoogleCloudStorageDestination(ctx, d))
-	}
-	for _, d := range state.Config.Destinations.SumoLogicDestination {
-		config.Destinations = append(config.Destinations, expandSumoLogicDestination(ctx, d))
-	}
-	for _, d := range state.Config.Destinations.RsyslogDestination {
-		config.Destinations = append(config.Destinations, expandRsyslogDestination(ctx, d))
-	}
-	for _, d := range state.Config.Destinations.SyslogNgDestination {
-		config.Destinations = append(config.Destinations, expandSyslogNgDestination(ctx, d))
-	}
-	for _, d := range state.Config.Destinations.ElasticsearchDestination {
-		config.Destinations = append(config.Destinations, expandElasticsearchDestination(ctx, d))
-	}
-	for _, d := range state.Config.Destinations.AzureStorageDestination {
-		config.Destinations = append(config.Destinations, expandAzureStorageDestination(ctx, d))
-	}
-	for _, d := range state.Config.Destinations.MicrosoftSentinelDestination {
-		config.Destinations = append(config.Destinations, expandMicrosoftSentinelDestination(ctx, d))
-	}
-	for _, d := range state.Config.Destinations.GoogleChronicleDestination {
-		config.Destinations = append(config.Destinations, expandGoogleChronicleDestination(ctx, d))
-	}
-	for _, d := range state.Config.Destinations.NewRelicDestination {
-		config.Destinations = append(config.Destinations, expandNewRelicDestination(ctx, d))
-	}
-	for _, d := range state.Config.Destinations.SentinelOneDestination {
-		config.Destinations = append(config.Destinations, expandSentinelOneDestination(ctx, d))
-	}
-	for _, d := range state.Config.Destinations.OpenSearchDestination {
-		config.Destinations = append(config.Destinations, expandOpenSearchDestination(ctx, d))
-	}
-	for _, d := range state.Config.Destinations.AmazonOpenSearchDestination {
-		config.Destinations = append(config.Destinations, expandAmazonOpenSearchDestination(ctx, d))
+	if state.Config.Destinations != nil {
+		expandPipelineDestinations(ctx, config, state.Config.Destinations)
 	}
 
 	attrs.SetConfig(*config)
 	data.SetAttributes(*attrs)
 	req.SetData(*data)
 	return req, diags
+}
+
+func expandPipelineSources(config *datadogV2.ObservabilityPipelineConfig, sources *sourcesModel) {
+	for _, s := range sources.DatadogAgentSource {
+		config.Sources = append(config.Sources, expandDatadogAgentSource(s))
+	}
+	for _, k := range sources.KafkaSource {
+		config.Sources = append(config.Sources, expandKafkaSource(k))
+	}
+	for _, f := range sources.FluentdSource {
+		config.Sources = append(config.Sources, expandFluentdSource(f))
+	}
+	for _, f := range sources.FluentBitSource {
+		config.Sources = append(config.Sources, expandFluentBitSource(f))
+	}
+	for _, s := range sources.HttpServerSource {
+		config.Sources = append(config.Sources, expandHttpServerSource(s))
+	}
+	for _, s := range sources.SplunkHecSource {
+		config.Sources = append(config.Sources, expandSplunkHecSource(s))
+	}
+	for _, s := range sources.SplunkTcpSource {
+		config.Sources = append(config.Sources, expandSplunkTcpSource(s))
+	}
+	for _, s := range sources.AmazonS3Source {
+		config.Sources = append(config.Sources, expandAmazonS3Source(s))
+	}
+	for _, s := range sources.RsyslogSource {
+		config.Sources = append(config.Sources, expandRsyslogSource(s))
+	}
+	for _, s := range sources.SyslogNgSource {
+		config.Sources = append(config.Sources, expandSyslogNgSource(s))
+	}
+	for _, s := range sources.SumoLogicSource {
+		config.Sources = append(config.Sources, expandSumoLogicSource(s))
+	}
+	for _, a := range sources.AmazonDataFirehoseSource {
+		config.Sources = append(config.Sources, expandAmazonDataFirehoseSource(a))
+	}
+	for _, h := range sources.HttpClientSource {
+		config.Sources = append(config.Sources, expandHttpClientSource(h))
+	}
+	for _, g := range sources.GooglePubSubSource {
+		config.Sources = append(config.Sources, expandGooglePubSubSource(g))
+	}
+	for _, l := range sources.LogstashSource {
+		config.Sources = append(config.Sources, expandLogstashSource(l))
+	}
+}
+
+func expandPipelineProcessors(ctx context.Context, config *datadogV2.ObservabilityPipelineConfig, processors *processorsModel) {
+	for _, p := range processors.FilterProcessor {
+		config.Processors = append(config.Processors, expandFilterProcessor(ctx, p))
+	}
+	for _, p := range processors.ParseJsonProcessor {
+		config.Processors = append(config.Processors, expandParseJsonProcessor(ctx, p))
+	}
+	for _, p := range processors.AddFieldsProcessor {
+		config.Processors = append(config.Processors, expandAddFieldsProcessor(ctx, p))
+	}
+	for _, p := range processors.RenameFieldsProcessor {
+		config.Processors = append(config.Processors, expandRenameFieldsProcessor(ctx, p))
+	}
+	for _, p := range processors.RemoveFieldsProcessor {
+		config.Processors = append(config.Processors, expandRemoveFieldsProcessor(ctx, p))
+	}
+	for _, p := range processors.QuotaProcessor {
+		config.Processors = append(config.Processors, expandQuotaProcessor(ctx, p))
+	}
+	for _, p := range processors.DedupeProcessor {
+		config.Processors = append(config.Processors, expandDedupeProcessor(ctx, p))
+	}
+	for _, p := range processors.ReduceProcessor {
+		config.Processors = append(config.Processors, expandReduceProcessor(ctx, p))
+	}
+	for _, p := range processors.ThrottleProcessor {
+		config.Processors = append(config.Processors, expandThrottleProcessor(ctx, p))
+	}
+	for _, p := range processors.AddEnvVarsProcessor {
+		config.Processors = append(config.Processors, expandAddEnvVarsProcessor(ctx, p))
+	}
+	for _, p := range processors.EnrichmentTableProcessor {
+		config.Processors = append(config.Processors, expandEnrichmentTableProcessor(ctx, p))
+	}
+	for _, p := range processors.OcsfMapperProcessor {
+		config.Processors = append(config.Processors, expandOcsfMapperProcessor(ctx, p))
+	}
+	for _, p := range processors.ParseGrokProcessor {
+		config.Processors = append(config.Processors, expandParseGrokProcessor(ctx, p))
+	}
+	for _, p := range processors.SampleProcessor {
+		config.Processors = append(config.Processors, expandSampleProcessor(ctx, p))
+	}
+	for _, p := range processors.GenerateMetricsProcessor {
+		config.Processors = append(config.Processors, expandGenerateMetricsProcessor(ctx, p))
+	}
+	for _, p := range processors.SensitiveDataScannerProcessor {
+		config.Processors = append(config.Processors, expandSensitiveDataScannerProcessor(ctx, p))
+	}
+}
+
+func expandPipelineDestinations(ctx context.Context, config *datadogV2.ObservabilityPipelineConfig, destinations *destinationsModel) {
+	for _, d := range destinations.DatadogLogsDestination {
+		config.Destinations = append(config.Destinations, expandDatadogLogsDestination(ctx, d))
+	}
+	for _, d := range destinations.SplunkHecDestination {
+		config.Destinations = append(config.Destinations, expandSplunkHecDestination(ctx, d))
+	}
+	for _, d := range destinations.GoogleCloudStorageDestination {
+		config.Destinations = append(config.Destinations, expandGoogleCloudStorageDestination(ctx, d))
+	}
+	for _, d := range destinations.SumoLogicDestination {
+		config.Destinations = append(config.Destinations, expandSumoLogicDestination(ctx, d))
+	}
+	for _, d := range destinations.RsyslogDestination {
+		config.Destinations = append(config.Destinations, expandRsyslogDestination(ctx, d))
+	}
+	for _, d := range destinations.SyslogNgDestination {
+		config.Destinations = append(config.Destinations, expandSyslogNgDestination(ctx, d))
+	}
+	for _, d := range destinations.ElasticsearchDestination {
+		config.Destinations = append(config.Destinations, expandElasticsearchDestination(ctx, d))
+	}
+	for _, d := range destinations.AzureStorageDestination {
+		config.Destinations = append(config.Destinations, expandAzureStorageDestination(ctx, d))
+	}
+	for _, d := range destinations.MicrosoftSentinelDestination {
+		config.Destinations = append(config.Destinations, expandMicrosoftSentinelDestination(ctx, d))
+	}
+	for _, d := range destinations.GoogleChronicleDestination {
+		config.Destinations = append(config.Destinations, expandGoogleChronicleDestination(ctx, d))
+	}
+	for _, d := range destinations.NewRelicDestination {
+		config.Destinations = append(config.Destinations, expandNewRelicDestination(ctx, d))
+	}
+	for _, d := range destinations.SentinelOneDestination {
+		config.Destinations = append(config.Destinations, expandSentinelOneDestination(ctx, d))
+	}
+	for _, d := range destinations.OpenSearchDestination {
+		config.Destinations = append(config.Destinations, expandOpenSearchDestination(ctx, d))
+	}
+	for _, d := range destinations.AmazonOpenSearchDestination {
+		config.Destinations = append(config.Destinations, expandAmazonOpenSearchDestination(ctx, d))
+	}
 }
 
 // --- Flattening - converting API model to TF state ---
