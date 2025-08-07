@@ -605,23 +605,17 @@ func buildSecMonDefaultRuleUpdatePayload(currentState *datadogV2.SecurityMonitor
 		shouldUpdate = true
 	}
 
-	// Handle options - preserve existing options when not specified in config
-	currentOptions := currentState.GetOptions()
-	var payloadOptions *datadogV2.SecurityMonitoringRuleOptions
-
+	// Compare options
 	if v, ok := d.GetOk("options"); ok {
-		// Options specified in Terraform config
 		tfOptionsList := v.([]interface{})
-		payloadOptions = buildPayloadOptions(tfOptionsList, d.Get("type").(string))
+		payloadOptions := buildPayloadOptions(tfOptionsList, d.Get("type").(string))
 		payload.SetOptions(*payloadOptions)
 
 		// Only update if options actually changed
+		currentOptions := currentState.GetOptions()
 		if !compareOptions(&currentOptions, payloadOptions) {
 			shouldUpdate = true
 		}
-	} else {
-		// No options specified in config, preserve existing options by not setting them in payload
-		// This ensures the API call doesn't change the existing options
 	}
 
 	// Compare tags
