@@ -24,21 +24,18 @@ fi
 # FIRST PASS: full dump, *no* overrides
 rm -rf docs_full
 tfplugindocs generate \
-  --provider-dir . \
   --rendered-website-dir docs_full \
   --website-source-dir blank_templates
 
 # SECOND PASS: real site, *with* your stub‐templates
 rm -rf docs
 tfplugindocs generate \
-  --provider-dir . \
   --rendered-website-dir docs \
   --website-source-dir templates
 
 # Extract the full dashboard page
 mkdir -p docs/resources
 cp docs_full/resources/dashboard.md docs/resources/dashboard_full.md
-cp docs_full/dashboard_widget_field_rules.md docs/dashboard_widget_field_rules.md
 
 # Cleanup
 rm -rf docs_full
