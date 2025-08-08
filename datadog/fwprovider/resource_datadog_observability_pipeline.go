@@ -2,6 +2,9 @@ package fwprovider
 
 import (
 	"context"
+	"encoding/json"
+	"log"
+	"os"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
 
@@ -2315,6 +2318,12 @@ func (r *observabilityPipelineResource) Create(ctx context.Context, req resource
 	createReq := datadogV2.NewObservabilityPipelineSpecWithDefaults()
 	createReq.Data = *datadogV2.NewObservabilityPipelineSpecDataWithDefaults()
 	createReq.Data.Attributes = body.Data.Attributes
+
+	// Used for debugging purposes in the TF tests to display the payload sent to the Public API
+	if os.Getenv("TF_LOG") == "DEBUG" {
+		reqBytes, _ := json.MarshalIndent(createReq, "", "  ")
+		log.Printf("[DEBUG] Creating pipeline with request: %s", string(reqBytes))
+	}
 
 	result, _, err := r.Api.CreatePipeline(r.Auth, *createReq)
 	if err != nil {
