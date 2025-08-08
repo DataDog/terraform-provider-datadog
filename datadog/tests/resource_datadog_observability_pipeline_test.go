@@ -3200,7 +3200,9 @@ resource "datadog_observability_pipeline" "custom_processor" {
         remaps {
           include     = "env:prod"
           name        = "Add timestamp"
+          enabled     = true
           source      = ".timestamp = now()"
+          drop_on_error = true
         }
       }
     }
