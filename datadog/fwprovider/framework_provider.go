@@ -31,6 +31,7 @@ import (
 var _ provider.Provider = &FrameworkProvider{}
 
 var Resources = []func() resource.Resource{
+	NewAgentlessScanningAwsScanOptionsResource,
 	NewOpenapiApiResource,
 	NewAPIKeyResource,
 	NewApplicationKeyResource,
