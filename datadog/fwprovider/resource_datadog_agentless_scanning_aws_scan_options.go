@@ -43,7 +43,7 @@ func (r *agentlessScanningAwsScanOptionsResource) Configure(_ context.Context, r
 }
 
 func (r *agentlessScanningAwsScanOptionsResource) Metadata(_ context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
-	response.TypeName = "datadog_agentless_scanning_aws_scan_options"
+	response.TypeName = "agentless_scanning_aws_scan_options"
 }
 
 func (r *agentlessScanningAwsScanOptionsResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
