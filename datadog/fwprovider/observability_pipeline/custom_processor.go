@@ -37,20 +37,13 @@ func ExpandCustomProcessor(ctx context.Context, src *CustomProcessorModel) datad
 
 	var remaps []datadogV2.ObservabilityPipelineCustomProcessorRemap
 	for _, remap := range src.Remaps {
-		apiRemap := datadogV2.ObservabilityPipelineCustomProcessorRemap{
-			Include: remap.Include.ValueString(),
-			Name:    remap.Name.ValueString(),
-			Source:  remap.Source.ValueString(),
-		}
-		if !remap.Enabled.IsNull() {
-			enabled := remap.Enabled.ValueBool()
-			apiRemap.Enabled = &enabled
-		}
-		if !remap.DropOnError.IsNull() {
-			dropOnError := remap.DropOnError.ValueBool()
-			apiRemap.DropOnError = &dropOnError
-		}
-		remaps = append(remaps, apiRemap)
+		remaps = append(remaps, datadogV2.ObservabilityPipelineCustomProcessorRemap{
+			Include:     remap.Include.ValueString(),
+			Name:        remap.Name.ValueString(),
+			Source:      remap.Source.ValueString(),
+			Enabled:     remap.Enabled.ValueBool(),
+			DropOnError: remap.DropOnError.ValueBool(),
+		})
 	}
 	proc.SetRemaps(remaps)
 
@@ -69,18 +62,13 @@ func FlattenCustomProcessor(ctx context.Context, src *datadogV2.ObservabilityPip
 
 	var remaps []CustomProcessorRemapModel
 	for _, remap := range src.GetRemaps() {
-		remapModel := CustomProcessorRemapModel{
-			Include: types.StringValue(remap.GetInclude()),
-			Name:    types.StringValue(remap.GetName()),
-			Source:  types.StringValue(remap.GetSource()),
-		}
-		if remap.Enabled != nil {
-			remapModel.Enabled = types.BoolValue(remap.GetEnabled())
-		}
-		if remap.DropOnError != nil {
-			remapModel.DropOnError = types.BoolValue(remap.GetDropOnError())
-		}
-		remaps = append(remaps, remapModel)
+		remaps = append(remaps, CustomProcessorRemapModel{
+			Include:     types.StringValue(remap.GetInclude()),
+			Name:        types.StringValue(remap.GetName()),
+			Source:      types.StringValue(remap.GetSource()),
+			Enabled:     types.BoolValue(remap.GetEnabled()),
+			DropOnError: types.BoolValue(remap.GetDropOnError()),
+		})
 	}
 
 	return &CustomProcessorModel{
@@ -123,7 +111,7 @@ func CustomProcessorSchema() schema.ListNestedBlock {
 								Description: "A descriptive name for this remap rule.",
 							},
 							"enabled": schema.BoolAttribute{
-								Optional:    true,
+								Required:    true,
 								Description: "Whether this remap rule is enabled.",
 							},
 							"source": schema.StringAttribute{
@@ -131,7 +119,7 @@ func CustomProcessorSchema() schema.ListNestedBlock {
 								Description: "The VRL script source code that defines the transformation logic.",
 							},
 							"drop_on_error": schema.BoolAttribute{
-								Optional:    true,
+								Required:    true,
 								Description: "Whether to drop events that cause errors during transformation.",
 							},
 						},
