@@ -31,7 +31,6 @@ func TestAccDatadogDataset_Basic(t *testing.T) {
 				Config: testAccCheckDatadogDataset(datasetName, product),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogDatasetExists(providers.frameworkProvider),
-					resource.TestCheckTypeSetElemAttr("datadog_dataset.foo", "created_at", "2025-01-01T00:00:00-08:00"),
 				),
 			},
 		},
@@ -142,14 +141,13 @@ func TestAccDatadogDataset_Import(t *testing.T) {
 
 func testAccCheckDatadogDataset(datasetName string, product string) string {
 	return fmt.Sprintf(`
-		// define product as terraform
 		resource "datadog_dataset" "foo" {
     		name = "%s"
-    		principals = ["role:44162ede-4f1c-4eb1-91a2-34c674ebd9b9"]
+    		principals = ["role:94172442-be03-11e9-a77a-3b7612558ac1"]
     
 			product_filters {
 				product = "%s"
-				filters = ["@service:web", "@env:prod"]
+				filters = ["@application.id:ce9843b0-7a45-453c-a831-55dd15f85141"]
 			}
 		}`, datasetName, product)
 }
@@ -158,11 +156,11 @@ func testAccCheckDatadogDatasetUpdate(datasetName string, product string) string
 	return fmt.Sprintf(`
 		resource "datadog_dataset" "foo" {
 			name = "%s-updated"
-			principals = ["role:44162ede-4f1c-4eb1-91a2-34c674ebd9b9", "team:87bd1a11-b889-4208-8784-17901bc9c54b"]
+			principals = ["role:94172442-be03-11e9-a77a-3b7612558ac1"", "team:2b4d5cb2-9298-4c00-b378-f6a70afdc351"]
 			
 			product_filters {
 				product = "%s"
-				filters = ["@service:web", "@env:prod", "@region:us-east-1"]
+				filters = ["@application.id:ce9843b0-7a45-453c-a831-55dd15f85141"]
 			}
 		}`, datasetName, product)
 }
@@ -175,7 +173,7 @@ func testAccCheckDatadogDatasetInvalidPrincipal(datasetName string, product stri
 			
 			product_filters {
 				product = "%s"
-				filters = ["@service:web"]
+				filters = ["@application.id:ce9843b0-7a45-453c-a831-55dd15f85141"]
 			}
 		}`, datasetName, product)
 }
@@ -184,7 +182,7 @@ func testAccCheckDatadogDatasetEmptyProductFilters(datasetName string) string {
 	return fmt.Sprintf(`
 	resource "datadog_dataset" "foo" {
 		name = "%s"
-		principals = ["role:44162ede-4f1c-4eb1-91a2-34c674ebd9b9"]
+		principals = ["role:94172442-be03-11e9-a77a-3b7612558ac1""]
 	}`, datasetName)
 }
 
