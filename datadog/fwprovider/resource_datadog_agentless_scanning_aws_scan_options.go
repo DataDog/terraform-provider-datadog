@@ -2,6 +2,7 @@ package fwprovider
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -151,6 +152,7 @@ func (r *agentlessScanningAwsScanOptionsResource) Update(ctx context.Context, re
 
 	body := datadogV2.AwsScanOptionsUpdateRequest{
 		Data: datadogV2.AwsScanOptionsUpdateData{
+			Id:   state.ID.ValueString(),
 			Type: datadogV2.AWSSCANOPTIONSTYPE_AWS_SCAN_OPTIONS,
 			Attributes: datadogV2.AwsScanOptionsUpdateAttributes{
 				Lambda:           boolPtr(state.Lambda.ValueBool()),
@@ -161,9 +163,13 @@ func (r *agentlessScanningAwsScanOptionsResource) Update(ctx context.Context, re
 		},
 	}
 
-	_, err := r.Api.UpdateAwsScanOptions(r.Auth, accountID, body)
+	res, err := r.Api.UpdateAwsScanOptions(r.Auth, accountID, body)
 	if err != nil {
-		response.Diagnostics.AddError("Error updating AWS scan options", err.Error())
+		errorMsg := "Error updating AWS scan options"
+		if res != nil {
+			errorMsg += fmt.Sprintf(". API response: %s", res.Body)
+		}
+		response.Diagnostics.AddError(errorMsg, err.Error())
 		return
 	}
 
