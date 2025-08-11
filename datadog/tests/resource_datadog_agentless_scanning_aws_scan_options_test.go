@@ -6,17 +6,15 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/terraform-providers/terraform-provider-datadog/datadog"
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
-
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
+
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
 )
 
 func TestAccDatadogAgentlessScanningAwsScanOptions_Basic(t *testing.T) {
 	t.Parallel()
-	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	accountID := "123456789012" // Test AWS account ID
 
 	resource.Test(t, resource.TestCase{
@@ -41,8 +39,8 @@ func TestAccDatadogAgentlessScanningAwsScanOptions_Basic(t *testing.T) {
 
 func TestAccDatadogAgentlessScanningAwsScanOptions_Update(t *testing.T) {
 	t.Parallel()
-	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
-	accountID := uniqueEntityName(ctx, t) // Generate unique test account ID
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	accountID := "123456789012" // Test AWS account ID
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
@@ -52,7 +50,7 @@ func TestAccDatadogAgentlessScanningAwsScanOptions_Update(t *testing.T) {
 			{
 				Config: testAccCheckDatadogAgentlessScanningAwsScanOptionsConfig(accountID, true, false, true, true),
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogAgentlessScanningAwsScanOptionsExists(accProvider),
+					testAccCheckDatadogAgentlessScanningAwsScanOptionsExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr("datadog_agentless_scanning_aws_scan_options.test", "lambda", "true"),
 					resource.TestCheckResourceAttr("datadog_agentless_scanning_aws_scan_options.test", "sensitive_data", "false"),
 				),
@@ -60,7 +58,7 @@ func TestAccDatadogAgentlessScanningAwsScanOptions_Update(t *testing.T) {
 			{
 				Config: testAccCheckDatadogAgentlessScanningAwsScanOptionsConfig(accountID, false, true, false, false),
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogAgentlessScanningAwsScanOptionsExists(accProvider),
+					testAccCheckDatadogAgentlessScanningAwsScanOptionsExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr("datadog_agentless_scanning_aws_scan_options.test", "lambda", "false"),
 					resource.TestCheckResourceAttr("datadog_agentless_scanning_aws_scan_options.test", "sensitive_data", "true"),
 					resource.TestCheckResourceAttr("datadog_agentless_scanning_aws_scan_options.test", "vuln_containers_os", "false"),
@@ -73,14 +71,13 @@ func TestAccDatadogAgentlessScanningAwsScanOptions_Update(t *testing.T) {
 
 func TestAccDatadogAgentlessScanningAwsScanOptions_Import(t *testing.T) {
 	t.Parallel()
-	ctx, providers := testAccFrameworkProviders(context.Background(), t)
-	accProvider := testAccFrameworkProvider(t, providers)
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	accountID := "123456789012" // Test AWS account ID
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: providers,
-		CheckDestroy:      testAccCheckDatadogAgentlessScanningAwsScanOptionsDestroy(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogAgentlessScanningAwsScanOptionsDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogAgentlessScanningAwsScanOptionsConfig(accountID, true, false, true, true),
@@ -105,11 +102,10 @@ resource "datadog_agentless_scanning_aws_scan_options" "test" {
 }`, accountID, strconv.FormatBool(lambda), strconv.FormatBool(sensitiveData), strconv.FormatBool(vulnContainers), strconv.FormatBool(vulnHost))
 }
 
-func testAccCheckDatadogAgentlessScanningAwsScanOptionsExists(accProvider func() *fwprovider.FrameworkProvider) resource.TestCheckFunc {
+func testAccCheckDatadogAgentlessScanningAwsScanOptionsExists(accProvider *fwprovider.FrameworkProvider) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
-		provider := accProvider()
-		apiInstances := provider.DatadogApiInstances
-		auth := provider.Auth
+		apiInstances := accProvider.DatadogApiInstances
+		auth := accProvider.Auth
 
 		for _, r := range s.RootModule().Resources {
 			if r.Type != "datadog_agentless_scanning_aws_scan_options" {
@@ -140,11 +136,10 @@ func testAccCheckDatadogAgentlessScanningAwsScanOptionsExists(accProvider func()
 	}
 }
 
-func testAccCheckDatadogAgentlessScanningAwsScanOptionsDestroy(accProvider func() *fwprovider.FrameworkProvider) resource.TestCheckFunc {
+func testAccCheckDatadogAgentlessScanningAwsScanOptionsDestroy(accProvider *fwprovider.FrameworkProvider) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
-		provider := accProvider()
-		apiInstances := provider.DatadogApiInstances
-		auth := provider.Auth
+		apiInstances := accProvider.DatadogApiInstances
+		auth := accProvider.Auth
 
 		for _, r := range s.RootModule().Resources {
 			if r.Type != "datadog_agentless_scanning_aws_scan_options" {
