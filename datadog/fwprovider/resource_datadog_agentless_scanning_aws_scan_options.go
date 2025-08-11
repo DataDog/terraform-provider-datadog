@@ -6,6 +6,7 @@ import (
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
+	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -205,21 +206,7 @@ func (r *agentlessScanningAwsScanOptionsResource) Delete(ctx context.Context, re
 }
 
 func (r *agentlessScanningAwsScanOptionsResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
-	var state agentlessScanningAwsScanOptionsResourceModel
-	state.ID = types.StringValue(request.ID)
-
-	// Read the current state from the API
-	readReq := resource.ReadRequest{State: response.State}
-	readResp := resource.ReadResponse{State: response.State, Diagnostics: diag.Diagnostics{}}
-
-	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
-	if response.Diagnostics.HasError() {
-		return
-	}
-
-	r.Read(ctx, readReq, &readResp)
-	response.Diagnostics.Append(readResp.Diagnostics...)
-	response.State = readResp.State
+	resource.ImportStatePassthroughID(ctx, path.Root("id"), request, response)
 }
 
 func (r *agentlessScanningAwsScanOptionsResource) updateStateFromResponse(state *agentlessScanningAwsScanOptionsResourceModel, resp datadogV2.AwsScanOptionsResponse) {
