@@ -41,6 +41,7 @@ datadog/*datadog_role*                     @DataDog/api-reliability @DataDog/tea
 
 # Framework resources/data-sources
 datadog/**/*datadog_action_connection*           @DataDog/api-reliability @DataDog/action-platform
+datadog/**/*datadog_agentless*                   @DataDog/api-reliability @DataDog/k9-agentless
 datadog/**/*datadog_app_key_registration*        @DataDog/api-reliability @DataDog/action-platform @DataDog/workflow-automation-backend
 datadog/**/*datadog_api_key*                     @DataDog/api-reliability @DataDog/credentials-management
 datadog/**/*datadog_apm_retention_filter*        @DataDog/api-reliability @DataDog/apm-trace-intake
