@@ -10,6 +10,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
 var (
@@ -28,6 +30,7 @@ type agentlessScanningAwsScanOptionsResource struct {
 
 type agentlessScanningAwsScanOptionsResourceModel struct {
 	ID               types.String `tfsdk:"id"`
+	AwsAccountId     types.String `tfsdk:"aws_account_id"`
 	Lambda           types.Bool   `tfsdk:"lambda"`
 	SensitiveData    types.Bool   `tfsdk:"sensitive_data"`
 	VulnContainersOs types.Bool   `tfsdk:"vuln_containers_os"`
@@ -52,10 +55,12 @@ func (r *agentlessScanningAwsScanOptionsResource) Schema(_ context.Context, _ re
 	response.Schema = schema.Schema{
 		Description: "Provides a Datadog Agentless Scanning AWS scan options resource. This can be used to activate and configure Agentless scan options for an AWS account.",
 		Attributes: map[string]schema.Attribute{
-			"id": schema.StringAttribute{
+			"aws_account_id": schema.StringAttribute{
 				Description: "The AWS Account ID for which agentless scanning is configured.",
 				Required:    true,
 			},
+			// Resource ID
+			"id": utils.ResourceIDAttribute(),
 			"lambda": schema.BoolAttribute{
 				Description: "Indicates if scanning of Lambda functions is enabled.",
 				Required:    true,
@@ -85,7 +90,7 @@ func (r *agentlessScanningAwsScanOptionsResource) Create(ctx context.Context, re
 
 	body := datadogV2.AwsScanOptionsCreateRequest{
 		Data: datadogV2.AwsScanOptionsCreateData{
-			Id:   state.ID.ValueString(),
+			Id:   state.AwsAccountId.ValueString(),
 			Type: datadogV2.AWSSCANOPTIONSTYPE_AWS_SCAN_OPTIONS,
 			Attributes: datadogV2.AwsScanOptionsCreateAttributes{
 				Lambda:           state.Lambda.ValueBool(),
@@ -103,6 +108,8 @@ func (r *agentlessScanningAwsScanOptionsResource) Create(ctx context.Context, re
 	}
 
 	r.updateStateFromResponse(&state, awsScanOptionsResponse)
+	// Set the Terraform resource ID to the AWS account ID
+	state.ID = types.StringValue(state.AwsAccountId.ValueString())
 
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
@@ -114,7 +121,7 @@ func (r *agentlessScanningAwsScanOptionsResource) Read(ctx context.Context, requ
 		return
 	}
 
-	accountID := state.ID.ValueString()
+	accountID := state.AwsAccountId.ValueString()
 
 	// List all AWS scan options and find the one matching our account ID
 	awsScanOptionsListResponse, _, err := r.Api.ListAwsScanOptions(r.Auth)
@@ -138,6 +145,8 @@ func (r *agentlessScanningAwsScanOptionsResource) Read(ctx context.Context, requ
 	}
 
 	r.updateStateFromScanOptionsData(&state, *foundScanOptions)
+	// Set the Terraform resource ID to the AWS account ID
+	state.ID = types.StringValue(state.AwsAccountId.ValueString())
 
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
@@ -149,11 +158,11 @@ func (r *agentlessScanningAwsScanOptionsResource) Update(ctx context.Context, re
 		return
 	}
 
-	accountID := state.ID.ValueString()
+	accountID := state.AwsAccountId.ValueString()
 
 	body := datadogV2.AwsScanOptionsUpdateRequest{
 		Data: datadogV2.AwsScanOptionsUpdateData{
-			Id:   state.ID.ValueString(),
+			Id:   state.AwsAccountId.ValueString(),
 			Type: datadogV2.AWSSCANOPTIONSTYPE_AWS_SCAN_OPTIONS,
 			Attributes: datadogV2.AwsScanOptionsUpdateAttributes{
 				Lambda:           boolPtr(state.Lambda.ValueBool()),
@@ -196,7 +205,7 @@ func (r *agentlessScanningAwsScanOptionsResource) Delete(ctx context.Context, re
 		return
 	}
 
-	accountID := state.ID.ValueString()
+	accountID := state.AwsAccountId.ValueString()
 
 	_, err := r.Api.DeleteAwsScanOptions(r.Auth, accountID)
 	if err != nil {
@@ -206,7 +215,10 @@ func (r *agentlessScanningAwsScanOptionsResource) Delete(ctx context.Context, re
 }
 
 func (r *agentlessScanningAwsScanOptionsResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
+	// Import the AWS account ID as both the Terraform resource ID and the aws_account_id attribute
 	resource.ImportStatePassthroughID(ctx, path.Root("id"), request, response)
+	// Also set the aws_account_id to the same value
+	response.Diagnostics.Append(response.State.SetAttribute(ctx, path.Root("aws_account_id"), request.ID)...)
 }
 
 func (r *agentlessScanningAwsScanOptionsResource) updateStateFromResponse(state *agentlessScanningAwsScanOptionsResourceModel, resp datadogV2.AwsScanOptionsResponse) {
@@ -215,7 +227,7 @@ func (r *agentlessScanningAwsScanOptionsResource) updateStateFromResponse(state 
 }
 
 func (r *agentlessScanningAwsScanOptionsResource) updateStateFromScanOptionsData(state *agentlessScanningAwsScanOptionsResourceModel, data datadogV2.AwsScanOptionsData) {
-	state.ID = types.StringValue(data.GetId())
+	state.AwsAccountId = types.StringValue(data.GetId())
 
 	attributes := data.GetAttributes()
 	state.Lambda = types.BoolValue(attributes.GetLambda())

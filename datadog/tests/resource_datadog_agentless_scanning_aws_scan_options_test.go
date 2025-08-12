@@ -26,7 +26,7 @@ func TestAccDatadogAgentlessScanningAwsScanOptions_Basic(t *testing.T) {
 				Config: testAccCheckDatadogAgentlessScanningAwsScanOptionsConfig(accountID, true, false, true, true),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogAgentlessScanningAwsScanOptionsExists(providers.frameworkProvider),
-					resource.TestCheckResourceAttr("datadog_agentless_scanning_aws_scan_options.test", "id", accountID),
+					resource.TestCheckResourceAttr("datadog_agentless_scanning_aws_scan_options.test", "aws_account_id", accountID),
 					resource.TestCheckResourceAttr("datadog_agentless_scanning_aws_scan_options.test", "lambda", "true"),
 					resource.TestCheckResourceAttr("datadog_agentless_scanning_aws_scan_options.test", "sensitive_data", "false"),
 					resource.TestCheckResourceAttr("datadog_agentless_scanning_aws_scan_options.test", "vuln_containers_os", "true"),
@@ -94,7 +94,7 @@ func TestAccDatadogAgentlessScanningAwsScanOptions_Import(t *testing.T) {
 func testAccCheckDatadogAgentlessScanningAwsScanOptionsConfig(accountID string, lambda, sensitiveData, vulnContainers, vulnHost bool) string {
 	return fmt.Sprintf(`
 resource "datadog_agentless_scanning_aws_scan_options" "test" {
-  id                 = "%s"
+  aws_account_id     = "%s"
   lambda             = %s
   sensitive_data     = %s
   vuln_containers_os = %s

@@ -36,7 +36,7 @@ interactions:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 573.088625ms
+        duration: 602.902041ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -69,7 +69,7 @@ interactions:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 161.906875ms
+        duration: 160.019416ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -102,7 +102,7 @@ interactions:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 153.237333ms
+        duration: 157.071458ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -135,7 +135,7 @@ interactions:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 157.492375ms
+        duration: 153.162833ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -169,7 +169,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 186.150416ms
+        duration: 169.091334ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -202,7 +202,7 @@ interactions:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 157.909291ms
+        duration: 164.793542ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -235,7 +235,7 @@ interactions:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 148.229333ms
+        duration: 151.535459ms
     - id: 7
       request:
         proto: HTTP/1.1
@@ -268,7 +268,7 @@ interactions:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 142.057666ms
+        duration: 152.774708ms
     - id: 8
       request:
         proto: HTTP/1.1
@@ -301,7 +301,7 @@ interactions:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 167.304584ms
+        duration: 155.713167ms
     - id: 9
       request:
         proto: HTTP/1.1
@@ -334,4 +334,4 @@ interactions:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 148.770375ms
+        duration: 154.913709ms
