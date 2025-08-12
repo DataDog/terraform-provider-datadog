@@ -15,7 +15,7 @@ Provides a Datadog Agentless Scanning AWS scan options resource. This can be use
 ```terraform
 # Configure agentless scanning for an AWS account
 resource "datadog_agentless_scanning_aws_scan_options" "example" {
-  id                 = "123456789012" # AWS Account ID
+  aws_account_id     = "123456789012" # AWS Account ID
   lambda             = true
   sensitive_data     = false
   vuln_containers_os = true
@@ -28,11 +28,15 @@ resource "datadog_agentless_scanning_aws_scan_options" "example" {
 
 ### Required
 
-- `id` (String) The AWS Account ID for which agentless scanning is configured.
+- `aws_account_id` (String) The AWS Account ID for which agentless scanning is configured.
 - `lambda` (Boolean) Indicates if scanning of Lambda functions is enabled.
 - `sensitive_data` (Boolean) Indicates if scanning for sensitive data is enabled.
 - `vuln_containers_os` (Boolean) Indicates if scanning for vulnerabilities in containers is enabled.
 - `vuln_host_os` (Boolean) Indicates if scanning for vulnerabilities in hosts is enabled.
+
+### Read-Only
+
+- `id` (String) The ID of this resource.
 
 ## Import
 
