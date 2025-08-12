@@ -3,7 +3,7 @@
 ### BUGFIXES
 * [datadog_metric_tags] chore: correct `datadogMetricTagsDataSource` interface check by @mdb in https://github.com/DataDog/terraform-provider-datadog/pull/3098
 ### IMPROVEMENTS
-* [SEC_22455] Add support for decoder processor by @pavel-kim-dd in https://github.com/DataDog/terraform-provider-datadog/pull/3125
+* [datadog_log_custom_pipeline] Add support for decoder processor by @pavel-kim-dd in https://github.com/DataDog/terraform-provider-datadog/pull/3125
 ### FEATURES
 * [datadog_security_notification_rule] Add Host and IaC security notification rule types by @ltaloc in https://github.com/DataDog/terraform-provider-datadog/pull/3158
 * [datadog_metric_metadata] feat: add `datadog_metric_metadata` data source by @mdb in https://github.com/DataDog/terraform-provider-datadog/pull/3100
