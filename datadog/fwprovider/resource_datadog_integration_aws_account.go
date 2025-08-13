@@ -37,6 +37,8 @@ var (
 	authConfigRolePath     = authConfigPath.AtName("aws_auth_config_role")
 	xrayServicesConfigPath = path.MatchRoot("traces_config").AtName("xray_services")
 	lambdaForwarderPath    = path.MatchRoot("logs_config").AtName("lambda_forwarder")
+	logSourceConfigPath    = lambdaForwarderPath.AtName("log_source_config")
+	logTagFiltersPath      = logSourceConfigPath.AtName("tag_filters")
 	resourcesConfigPath    = path.MatchRoot("resources_config")
 )
 
@@ -83,20 +85,30 @@ type logsConfigModel struct {
 }
 
 type lambdaForwarderModel struct {
-	Lambdas types.List `tfsdk:"lambdas"`
-	Sources types.List `tfsdk:"sources"`
+	Lambdas         types.List            `tfsdk:"lambdas"`
+	Sources         types.List            `tfsdk:"sources"`
+	LogSourceConfig *logSourceConfigModel `tfsdk:"log_source_config"`
+}
+
+type logSourceConfigModel struct {
+	TagFilters []*logsTagFiltersModel `tfsdk:"tag_filters"`
+}
+
+type logsTagFiltersModel struct {
+	Source types.String `tfsdk:"source"`
+	Tags   types.List   `tfsdk:"tags"`
 }
 
 type metricsConfigModel struct {
-	AutomuteEnabled         types.Bool             `tfsdk:"automute_enabled"`
-	CollectCloudwatchAlarms types.Bool             `tfsdk:"collect_cloudwatch_alarms"`
-	CollectCustomMetrics    types.Bool             `tfsdk:"collect_custom_metrics"`
-	Enabled                 types.Bool             `tfsdk:"enabled"`
-	TagFilters              []*tagFiltersModel     `tfsdk:"tag_filters"`
-	NamespaceFilters        *namespaceFiltersModel `tfsdk:"namespace_filters"`
+	AutomuteEnabled         types.Bool                `tfsdk:"automute_enabled"`
+	CollectCloudwatchAlarms types.Bool                `tfsdk:"collect_cloudwatch_alarms"`
+	CollectCustomMetrics    types.Bool                `tfsdk:"collect_custom_metrics"`
+	Enabled                 types.Bool                `tfsdk:"enabled"`
+	TagFilters              []*metricsTagFiltersModel `tfsdk:"tag_filters"`
+	NamespaceFilters        *namespaceFiltersModel    `tfsdk:"namespace_filters"`
 }
 
-type tagFiltersModel struct {
+type metricsTagFiltersModel struct {
 	Namespace types.String `tfsdk:"namespace"`
 	Tags      types.List   `tfsdk:"tags"`
 }
@@ -162,6 +174,9 @@ func (r *integrationAwsAccountResource) ConfigValidators(ctx context.Context) []
 		),
 		resourcevalidator.ExactlyOneOf(
 			lambdaForwarderPath,
+		),
+		resourcevalidator.ExactlyOneOf(
+			logSourceConfigPath,
 		),
 		resourcevalidator.ExactlyOneOf(
 			namespaceFiltersPath,
@@ -302,6 +317,32 @@ func (r *integrationAwsAccountResource) Schema(_ context.Context, _ resource.Sch
 									"to get allowed values. Defaults to `[]`.",
 								ElementType: types.StringType,
 								Default:     listdefault.StaticValue(types.ListValueMust(types.StringType, []attr.Value{})),
+							},
+						},
+						Blocks: map[string]schema.Block{
+							"log_source_config": schema.SingleNestedBlock{
+								Description: "Configure log source collection for your Datadog Forwarder Lambda functions. The `log_source_config` block is required within, but may be empty to use defaults.",
+								Attributes:  map[string]schema.Attribute{},
+								Blocks: map[string]schema.Block{
+									"tag_filters": schema.ListNestedBlock{
+										Description: "AWS Logs Collection tag filters list.",
+										NestedObject: schema.NestedBlockObject{
+											Attributes: map[string]schema.Attribute{
+												"source": schema.StringAttribute{
+													Required:    true,
+													Description: "The AWS service for which the tag filters defined in `tags` will be applied.",
+												},
+												"tags": schema.ListAttribute{
+													Optional:    true,
+													Computed:    true,
+													Description: "The AWS resource tags to filter on for the service specified by `source`. Defaults to `[]`.",
+													ElementType: types.StringType,
+													Default:     listdefault.StaticValue(types.ListValueMust(types.StringType, []attr.Value{})),
+												},
+											},
+										},
+									},
+								},
 							},
 						},
 					},
@@ -565,9 +606,11 @@ func buildStateLogsConfig(ctx context.Context, attributes datadogV2.AWSAccountRe
 
 	logsConfigTf := logsConfigModel{}
 	lambdaForwarderTf := lambdaForwarderModel{}
+	logSourceConfigTf := logSourceConfigModel{}
+	logSourceConfigTf.TagFilters = []*logsTagFiltersModel{}
 
 	if lambdaForwarder, ok := logsConfig.GetLambdaForwarderOk(); ok {
-		if lambdaForwarder != nil && (lambdaForwarder.HasLambdas() || lambdaForwarder.HasSources()) {
+		if lambdaForwarder != nil && (lambdaForwarder.HasLambdas() || lambdaForwarder.HasSources() || lambdaForwarder.HasLogSourceConfig()) {
 			lambdas := lambdaForwarder.GetLambdas()
 			var d diag.Diagnostics
 			lambdaForwarderTf.Lambdas, d = types.ListValueFrom(ctx, types.StringType, lambdas)
@@ -576,6 +619,27 @@ func buildStateLogsConfig(ctx context.Context, attributes datadogV2.AWSAccountRe
 			sources := lambdaForwarder.GetSources()
 			lambdaForwarderTf.Sources, d = types.ListValueFrom(ctx, types.StringType, sources)
 			diags.Append(d...)
+
+			// Always set log_source_config as it's required by schema
+			lambdaForwarderTf.LogSourceConfig = &logSourceConfigTf
+
+			if logSourceConfig, ok := lambdaForwarder.GetLogSourceConfigOk(); ok {
+
+				if tagFilters, ok := logSourceConfig.GetTagFiltersOk(); ok && len(*tagFilters) > 0 {
+					for _, tagFiltersDd := range *tagFilters {
+						tagFiltersTfItem := logsTagFiltersModel{}
+						if source, ok := tagFiltersDd.GetSourceOk(); ok {
+							tagFiltersTfItem.Source = types.StringValue(*source)
+						}
+						if tags, ok := tagFiltersDd.GetTagsOk(); ok {
+							tagsTf, d := types.ListValueFrom(ctx, types.StringType, *tags)
+							tagFiltersTfItem.Tags = tagsTf
+							diags.Append(d...)
+						}
+						logSourceConfigTf.TagFilters = append(logSourceConfigTf.TagFilters, &tagFiltersTfItem)
+					}
+				}
+			}
 
 			logsConfigTf.LambdaForwarder = &lambdaForwarderTf
 		}
@@ -605,7 +669,7 @@ func buildStateAwsRegions(ctx context.Context, attributes datadogV2.AWSAccountRe
 func buildStateMetricsConfig(ctx context.Context, attributes datadogV2.AWSAccountResponseAttributes, diags diag.Diagnostics) *metricsConfigModel {
 	metricsConfig := attributes.GetMetricsConfig()
 	metricsConfigTf := metricsConfigModel{}
-	metricsConfigTf.TagFilters = []*tagFiltersModel{}
+	metricsConfigTf.TagFilters = []*metricsTagFiltersModel{}
 	metricsConfigTf.NamespaceFilters = &namespaceFiltersModel{}
 	if automuteEnabled, ok := metricsConfig.GetAutomuteEnabledOk(); ok {
 		metricsConfigTf.AutomuteEnabled = types.BoolValue(*automuteEnabled)
@@ -622,7 +686,7 @@ func buildStateMetricsConfig(ctx context.Context, attributes datadogV2.AWSAccoun
 
 	if tagFilters, ok := metricsConfig.GetTagFiltersOk(); ok && len(*tagFilters) > 0 {
 		for _, tagFiltersDd := range *tagFilters {
-			tagFiltersTfItem := tagFiltersModel{}
+			tagFiltersTfItem := metricsTagFiltersModel{}
 			if namespace, ok := tagFiltersDd.GetNamespaceOk(); ok {
 				tagFiltersTfItem.Namespace = types.StringValue(*namespace)
 			}
@@ -803,6 +867,25 @@ func buildRequestLogsConfig(ctx context.Context, state *integrationAwsAccountMod
 
 	lambdaForwarder.SetLambdas(lambdas)
 	lambdaForwarder.SetSources(sources)
+
+	tagFilters := []datadogV2.AWSLogSourceTagFilter{}
+	for _, tagFiltersTFItem := range state.LogsConfig.LambdaForwarder.LogSourceConfig.TagFilters {
+		tagFiltersDDItem := datadogV2.NewAWSLogSourceTagFilterWithDefaults()
+
+		if !tagFiltersTFItem.Source.IsNull() {
+			tagFiltersDDItem.SetSource(tagFiltersTFItem.Source.ValueString())
+		}
+
+		if !tagFiltersTFItem.Tags.IsNull() {
+			tags := []string{}
+			diags.Append(tagFiltersTFItem.Tags.ElementsAs(ctx, &tags, false)...)
+			tagFiltersDDItem.SetTags(tags)
+		}
+
+		tagFilters = append(tagFilters, *tagFiltersDDItem)
+	}
+	lambdaForwarder.SetLogSourceConfig(datadogV2.AWSLambdaForwarderConfigLogSourceConfig{TagFilters: tagFilters})
+
 	logsConfig.LambdaForwarder = &lambdaForwarder
 	return logsConfig
 }

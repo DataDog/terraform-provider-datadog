@@ -37,6 +37,8 @@ func TestAccIntegrationAwsAccount_RoleBased(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_integration_aws_account.foo", "logs_config.lambda_forwarder.lambdas.#", "0"),
 					resource.TestCheckResourceAttr(
+						"datadog_integration_aws_account.foo", "logs_config.lambda_forwarder.log_source_config.tag_filters.#", "0"),
+					resource.TestCheckResourceAttr(
 						"datadog_integration_aws_account.foo", "metrics_config.automute_enabled", "true"),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_aws_account.foo", "metrics_config.collect_cloudwatch_alarms", "false"),
@@ -72,6 +74,14 @@ func TestAccIntegrationAwsAccount_RoleBased(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_integration_aws_account.foo", "logs_config.lambda_forwarder.lambdas.0", "arn:aws:lambda:us-east-1:123456789123:function:test-fn"),
 					resource.TestCheckResourceAttr(
+						"datadog_integration_aws_account.foo", "logs_config.lambda_forwarder.log_source_config.tag_filters.#", "1"),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_aws_account.foo", "logs_config.lambda_forwarder.log_source_config.tag_filters.0.source", "s3"),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_aws_account.foo", "logs_config.lambda_forwarder.log_source_config.tag_filters.0.tags.0", "tag1"),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_aws_account.foo", "logs_config.lambda_forwarder.log_source_config.tag_filters.0.tags.1", "tag2"),
+					resource.TestCheckResourceAttr(
 						"datadog_integration_aws_account.foo", "metrics_config.automute_enabled", "false"),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_aws_account.foo", "metrics_config.collect_cloudwatch_alarms", "true"),
@@ -106,7 +116,9 @@ resource "datadog_integration_aws_account" "foo" {
         }
     }
     logs_config {
-        lambda_forwarder {}
+        lambda_forwarder {
+            log_source_config {}
+        }
     }
     metrics_config {
         namespace_filters {}
@@ -136,6 +148,12 @@ resource "datadog_integration_aws_account" "foo" {
       lambda_forwarder {
         sources = ["s3"]
         lambdas = ["arn:aws:lambda:us-east-1:123456789123:function:test-fn"]
+		log_source_config {
+			tag_filters {
+				source = "s3"
+				tags = ["tag1", "tag2"]
+			}
+		}
       }
     }
     metrics_config {
@@ -216,7 +234,9 @@ resource "datadog_integration_aws_account" "foo" {
       }
     }
     logs_config {
-        lambda_forwarder {}
+        lambda_forwarder {
+            log_source_config {}
+        }
     }
     metrics_config {
         namespace_filters {}
@@ -242,7 +262,9 @@ resource "datadog_integration_aws_account" "foo" {
       }
     }
     logs_config {
-        lambda_forwarder {}
+        lambda_forwarder {
+            log_source_config {}
+        }
     }
     metrics_config {
         namespace_filters {}
