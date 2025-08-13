@@ -118,14 +118,14 @@ func SocketDestinationSchema() schema.ListNestedBlock {
 				},
 				"mode": schema.StringAttribute{
 					Required:    true,
-					Description: "The protocol used to send logs. Must be either `tcp` or `udp`.",
+					Description: "The protocol used to send logs.",
 					Validators: []validator.String{
 						stringvalidator.OneOf("tcp", "udp"),
 					},
 				},
 				"encoding": schema.StringAttribute{
 					Required:    true,
-					Description: "Encoding format for log events. Must be either `json` or `raw_message`.",
+					Description: "Encoding format for log events.",
 					Validators: []validator.String{
 						stringvalidator.OneOf("json", "raw_message"),
 					},
@@ -137,7 +137,7 @@ func SocketDestinationSchema() schema.ListNestedBlock {
 					Attributes: map[string]schema.Attribute{
 						"method": schema.StringAttribute{
 							Required:    true,
-							Description: "The framing method. One of: `newline_delimited`, `bytes`, `character_delimited`.",
+							Description: "The framing method.",
 							Validators: []validator.String{
 								stringvalidator.OneOf(
 									"newline_delimited",

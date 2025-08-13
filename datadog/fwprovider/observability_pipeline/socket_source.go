@@ -112,7 +112,7 @@ func SocketSourceSchema() schema.ListNestedBlock {
 				},
 				"mode": schema.StringAttribute{
 					Required:    true,
-					Description: "The protocol used to receive logs. Must be either `tcp` or `udp`.",
+					Description: "The protocol used to receive logs.",
 					Validators: []validator.String{
 						stringvalidator.OneOf("tcp", "udp"),
 					},
@@ -124,7 +124,7 @@ func SocketSourceSchema() schema.ListNestedBlock {
 					Attributes: map[string]schema.Attribute{
 						"method": schema.StringAttribute{
 							Optional:    true, // must be optional to make the block optional
-							Description: "The framing method. One of: `newline_delimited`, `bytes`, `character_delimited`, `octet_counting`, `chunked_gelf`.",
+							Description: "The framing method.",
 							Validators: []validator.String{
 								stringvalidator.OneOf(
 									"newline_delimited",
