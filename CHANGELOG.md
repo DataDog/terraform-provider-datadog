@@ -1,4 +1,4 @@
-## v3.71.0 (August 12, 2025)
+## 3.71.0 (August 12, 2025)
 
 ### BUGFIXES
 * [datadog_metric_tags] chore: correct `datadogMetricTagsDataSource` interface check by @mdb in https://github.com/DataDog/terraform-provider-datadog/pull/3098
@@ -15,7 +15,7 @@
 * @pavel-kim-dd made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3125
 * @k3nz0 made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3164
 
-**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.70.0...vv3.71.0
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.70.0...v3.71.0
 
 ## 3.70.0 (August 6, 2025)
 
