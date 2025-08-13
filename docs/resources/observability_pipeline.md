@@ -241,7 +241,7 @@ Optional:
 
 Required:
 
-- `encoding` (String) Encoding format for log events. Valid values are `json`, `raw_message`.
+- `encoding` (String) Encoding format for log events. Valid values are `json` or `raw_message`.
 - `id` (String) Unique identifier for the destination component.
 - `inputs` (List of String) A list of component IDs whose output is used as the `input` for this component.
 
@@ -427,10 +427,10 @@ Required:
 
 Required:
 
-- `encoding` (String) Encoding format for log events. Must be either `json` or `raw_message`. Valid values are `json`, `raw_message`.
+- `encoding` (String) Encoding format for log events. Valid values are `json` or `raw_message`.
 - `id` (String) The unique identifier for this destination.
 - `inputs` (List of String) A list of component IDs whose output is used as the `input` for this destination.
-- `mode` (String) The protocol used to send logs. Must be either `tcp` or `udp`. Valid values are `tcp`, `udp`.
+- `mode` (String) The protocol used to send logs. Valid values are `tcp` or `udp`.
 
 Optional:
 
@@ -442,7 +442,7 @@ Optional:
 
 Required:
 
-- `method` (String) The framing method. One of: `newline_delimited`, `bytes`, `character_delimited`. Valid values are `newline_delimited`, `bytes`, `character_delimited`.
+- `method` (String) The framing method. Valid values are `newline_delimited`, `bytes`, or `character_delimited`.
 
 Optional:
 
@@ -1451,7 +1451,7 @@ Optional:
 Required:
 
 - `id` (String) The unique identifier for this component.
-- `mode` (String) The protocol used to receive logs. Must be either `tcp` or `udp`. Valid values are `tcp`, `udp`.
+- `mode` (String) The protocol used to receive logs. Valid values are `tcp` or `udp`.
 
 Optional:
 
@@ -1464,7 +1464,7 @@ Optional:
 Optional:
 
 - `character_delimited` (Block, Optional) Used when `method` is `character_delimited`. Specifies the delimiter character. (see [below for nested schema](#nestedblock--config--sources--socket--framing--character_delimited))
-- `method` (String) The framing method. One of: `newline_delimited`, `bytes`, `character_delimited`, `octet_counting`, `chunked_gelf`. Valid values are `newline_delimited`, `bytes`, `character_delimited`, `octet_counting`, `chunked_gelf`.
+- `method` (String) The framing method. Valid values are `newline_delimited`, `bytes`, `character_delimited`, `octet_counting`, or `chunked_gelf`.
 
 <a id="nestedblock--config--sources--socket--framing--character_delimited"></a>
 ### Nested Schema for `config.sources.socket.framing.character_delimited`
