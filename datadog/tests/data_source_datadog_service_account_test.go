@@ -117,3 +117,39 @@ func testAccDatasourceServiceAccountNotFoundError(uniq string) string {
 		filter = "does_not_exist_%s"
 	}`, uniq)
 }
+
+func TestAccDatadogServiceAccountDatasourcePagination(t *testing.T) {
+	t.Parallel()
+	ctx, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	uniqueHash := fmt.Sprintf("%x", sha256.Sum256([]byte(uniqueEntityName(ctx, t))))
+	namePrefix := fmt.Sprintf("tf-TestAccServiceAccountPagination-%s", uniqueHash[:16])
+	emailSuffix := strings.ToLower(uniqueEntityName(ctx, t)) + "@example.com"
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: testAccDatasourceServiceAccountPaginationConfig(emailSuffix, namePrefix),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr("data.datadog_service_account.foo", "email", fmt.Sprintf("20-%s", emailSuffix)),
+					resource.TestCheckResourceAttr("data.datadog_service_account.foo", "name", fmt.Sprintf("%s-20", namePrefix)),
+				),
+			},
+		},
+	})
+}
+
+func testAccDatasourceServiceAccountPaginationConfig(emailSuffix, namePrefix string) string {
+	return fmt.Sprintf(`
+	resource "datadog_service_account" "test" {
+		count = 20
+		email = "${count.index + 1}-%[1]s"
+		name  = "%[2]s-${count.index + 1}"
+	}
+
+	data "datadog_service_account" "foo" {
+		filter = "%[2]s-20"
+		depends_on = [datadog_service_account.test]
+	}`, emailSuffix, namePrefix)
+}
