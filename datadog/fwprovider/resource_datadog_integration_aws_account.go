@@ -36,10 +36,9 @@ var (
 	authConfigKeysPath     = authConfigPath.AtName("aws_auth_config_keys")
 	authConfigRolePath     = authConfigPath.AtName("aws_auth_config_role")
 	xrayServicesConfigPath = path.MatchRoot("traces_config").AtName("xray_services")
-	lambdaForwarderPath    = path.MatchRoot("logs_config").AtName("lambda_forwarder")
-	logSourceConfigPath    = lambdaForwarderPath.AtName("log_source_config")
-	logTagFiltersPath      = logSourceConfigPath.AtName("tag_filters")
 	resourcesConfigPath    = path.MatchRoot("resources_config")
+	logsConfigPath         = path.MatchRoot("logs_config")
+	lambdaForwarderPath    = logsConfigPath.AtName("lambda_forwarder")
 )
 
 type integrationAwsAccountResource struct {
@@ -173,10 +172,10 @@ func (r *integrationAwsAccountResource) ConfigValidators(ctx context.Context) []
 			authConfigKeysPath.AtName("secret_access_key"),
 		),
 		resourcevalidator.ExactlyOneOf(
-			lambdaForwarderPath,
+			logsConfigPath,
 		),
 		resourcevalidator.ExactlyOneOf(
-			logSourceConfigPath,
+			lambdaForwarderPath,
 		),
 		resourcevalidator.ExactlyOneOf(
 			namespaceFiltersPath,
@@ -296,7 +295,7 @@ func (r *integrationAwsAccountResource) Schema(_ context.Context, _ resource.Sch
 				},
 			},
 			"logs_config": schema.SingleNestedBlock{
-				Description: "Configure log autosubscription for your Datadog Forwarder Lambda functions. The `lambda_fowarder` block is required within, but may be empty to use defaults.",
+				Description: "Configure log autosubscription for your Datadog Forwarder Lambda functions. The `lambda_forwarder` block is required within, but may be empty to use defaults.",
 				Attributes:  map[string]schema.Attribute{},
 				Blocks: map[string]schema.Block{
 					"lambda_forwarder": schema.SingleNestedBlock{
@@ -321,7 +320,7 @@ func (r *integrationAwsAccountResource) Schema(_ context.Context, _ resource.Sch
 						},
 						Blocks: map[string]schema.Block{
 							"log_source_config": schema.SingleNestedBlock{
-								Description: "Configure log source collection for your Datadog Forwarder Lambda functions. The `log_source_config` block is required within, but may be empty to use defaults.",
+								Description: "Configure log source collection for your Datadog Forwarder Lambda functions.",
 								Attributes:  map[string]schema.Attribute{},
 								Blocks: map[string]schema.Block{
 									"tag_filters": schema.ListNestedBlock{
@@ -601,16 +600,14 @@ func buildStateAuthConfig(attributes datadogV2.AWSAccountResponseAttributes, sec
 	return &authConfigTf
 }
 
-func buildStateLogsConfig(ctx context.Context, attributes datadogV2.AWSAccountResponseAttributes, diags diag.Diagnostics) *logsConfigModel {
+func buildStateLogsConfig(ctx context.Context, attributes datadogV2.AWSAccountResponseAttributes, currentState *integrationAwsAccountModel, diags diag.Diagnostics) *logsConfigModel {
 	logsConfig := attributes.GetLogsConfig()
 
 	logsConfigTf := logsConfigModel{}
 	lambdaForwarderTf := lambdaForwarderModel{}
-	logSourceConfigTf := logSourceConfigModel{}
-	logSourceConfigTf.TagFilters = []*logsTagFiltersModel{}
 
 	if lambdaForwarder, ok := logsConfig.GetLambdaForwarderOk(); ok {
-		if lambdaForwarder != nil && (lambdaForwarder.HasLambdas() || lambdaForwarder.HasSources() || lambdaForwarder.HasLogSourceConfig()) {
+		if lambdaForwarder != nil {
 			lambdas := lambdaForwarder.GetLambdas()
 			var d diag.Diagnostics
 			lambdaForwarderTf.Lambdas, d = types.ListValueFrom(ctx, types.StringType, lambdas)
@@ -620,12 +617,19 @@ func buildStateLogsConfig(ctx context.Context, attributes datadogV2.AWSAccountRe
 			lambdaForwarderTf.Sources, d = types.ListValueFrom(ctx, types.StringType, sources)
 			diags.Append(d...)
 
-			// Always set log_source_config as it's required by schema
-			lambdaForwarderTf.LogSourceConfig = &logSourceConfigTf
+			// Check if user configured log_source_config
+			userConfiguredLogSourceConfig := currentState != nil &&
+				currentState.LogsConfig != nil &&
+				currentState.LogsConfig.LambdaForwarder != nil &&
+				currentState.LogsConfig.LambdaForwarder.LogSourceConfig != nil
 
 			if logSourceConfig, ok := lambdaForwarder.GetLogSourceConfigOk(); ok {
+				hasTagFilters := false
+				logSourceConfigTf := logSourceConfigModel{}
+				logSourceConfigTf.TagFilters = []*logsTagFiltersModel{}
 
 				if tagFilters, ok := logSourceConfig.GetTagFiltersOk(); ok && len(*tagFilters) > 0 {
+					hasTagFilters = true
 					for _, tagFiltersDd := range *tagFilters {
 						tagFiltersTfItem := logsTagFiltersModel{}
 						if source, ok := tagFiltersDd.GetSourceOk(); ok {
@@ -638,6 +642,12 @@ func buildStateLogsConfig(ctx context.Context, attributes datadogV2.AWSAccountRe
 						}
 						logSourceConfigTf.TagFilters = append(logSourceConfigTf.TagFilters, &tagFiltersTfItem)
 					}
+				}
+
+				// Include log_source_config in state only if user configured it or there are actual filters
+				// This makes log_source_config optional in the schema
+				if userConfiguredLogSourceConfig || hasTagFilters {
+					lambdaForwarderTf.LogSourceConfig = &logSourceConfigTf
 				}
 			}
 
@@ -775,7 +785,7 @@ func (r *integrationAwsAccountResource) updateState(ctx context.Context, state *
 	state.AwsRegions = buildStateAwsRegions(ctx, attributes, diags)
 	state.AuthConfig = buildStateAuthConfig(attributes, secretAccessKey)
 	state.AccountTags = buildStateAccountTags(ctx, attributes)
-	state.LogsConfig = buildStateLogsConfig(ctx, attributes, diags)
+	state.LogsConfig = buildStateLogsConfig(ctx, attributes, state, diags)
 	state.MetricsConfig = buildStateMetricsConfig(ctx, attributes, diags)
 	state.ResourcesConfig = buildStateResourcesConfig(attributes)
 	state.TracesConfig = buildStateTracesConfig(ctx, attributes, diags)
@@ -856,6 +866,8 @@ func buildRequestLogsConfig(ctx context.Context, state *integrationAwsAccountMod
 	lambdaForwarder := datadogV2.AWSLambdaForwarderConfig{}
 	lambdas := []string{}
 	sources := []string{}
+	tagFilters := []datadogV2.AWSLogSourceTagFilter{}
+
 	if state.LogsConfig != nil && state.LogsConfig.LambdaForwarder != nil {
 		if !state.LogsConfig.LambdaForwarder.Lambdas.IsNull() {
 			diags.Append(state.LogsConfig.LambdaForwarder.Lambdas.ElementsAs(ctx, &lambdas, false)...)
@@ -863,27 +875,29 @@ func buildRequestLogsConfig(ctx context.Context, state *integrationAwsAccountMod
 		if !state.LogsConfig.LambdaForwarder.Sources.IsNull() {
 			diags.Append(state.LogsConfig.LambdaForwarder.Sources.ElementsAs(ctx, &sources, false)...)
 		}
+		if state.LogsConfig.LambdaForwarder.LogSourceConfig != nil {
+			for _, tagFiltersTFItem := range state.LogsConfig.LambdaForwarder.LogSourceConfig.TagFilters {
+				tagFiltersDDItem := datadogV2.NewAWSLogSourceTagFilterWithDefaults()
+
+				if !tagFiltersTFItem.Source.IsNull() {
+					tagFiltersDDItem.SetSource(tagFiltersTFItem.Source.ValueString())
+				}
+
+				if !tagFiltersTFItem.Tags.IsNull() {
+					tags := []string{}
+					diags.Append(tagFiltersTFItem.Tags.ElementsAs(ctx, &tags, false)...)
+					tagFiltersDDItem.SetTags(tags)
+				}
+
+				tagFilters = append(tagFilters, *tagFiltersDDItem)
+			}
+		}
+		// If LogSourceConfig is nil, tagFilters remains empty slice, which clears the configuration
 	}
 
 	lambdaForwarder.SetLambdas(lambdas)
 	lambdaForwarder.SetSources(sources)
-
-	tagFilters := []datadogV2.AWSLogSourceTagFilter{}
-	for _, tagFiltersTFItem := range state.LogsConfig.LambdaForwarder.LogSourceConfig.TagFilters {
-		tagFiltersDDItem := datadogV2.NewAWSLogSourceTagFilterWithDefaults()
-
-		if !tagFiltersTFItem.Source.IsNull() {
-			tagFiltersDDItem.SetSource(tagFiltersTFItem.Source.ValueString())
-		}
-
-		if !tagFiltersTFItem.Tags.IsNull() {
-			tags := []string{}
-			diags.Append(tagFiltersTFItem.Tags.ElementsAs(ctx, &tags, false)...)
-			tagFiltersDDItem.SetTags(tags)
-		}
-
-		tagFilters = append(tagFilters, *tagFiltersDDItem)
-	}
+	// Always set LogSourceConfig - empty tagFilters array will clear any existing filters
 	lambdaForwarder.SetLogSourceConfig(datadogV2.AWSLambdaForwarderConfigLogSourceConfig{TagFilters: tagFilters})
 
 	logsConfig.LambdaForwarder = &lambdaForwarder
