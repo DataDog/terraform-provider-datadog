@@ -2963,10 +2963,10 @@ resource "datadog_observability_pipeline" "quota" {
 	})
 }
 
-func TestAccDatadogObservabilityPipeline_socketSource(t *testing.T) {
+func TestAccDatadogObservabilityPipeline_socketSource_tcp(t *testing.T) {
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
-	resourceName := "datadog_observability_pipeline.socket"
+	resourceName := "datadog_observability_pipeline.socket_tcp"
 
 	resource.Test(t, resource.TestCase{
 		ProtoV5ProviderFactories: accProviders,
@@ -2974,7 +2974,7 @@ func TestAccDatadogObservabilityPipeline_socketSource(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: `
-resource "datadog_observability_pipeline" "socket" {
+resource "datadog_observability_pipeline" "socket_tcp" {
   name = "socket-pipeline"
 
   config {
@@ -3017,9 +3017,22 @@ resource "datadog_observability_pipeline" "socket" {
 					resource.TestCheckResourceAttr(resourceName, "config.destinations.datadog_logs.0.inputs.0", "socket-source-1"),
 				),
 			},
+		},
+	})
+}
+
+func TestAccDatadogObservabilityPipeline_socketSource_udp(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.socket_udp"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
 			{
 				Config: `
-resource "datadog_observability_pipeline" "socket" {
+resource "datadog_observability_pipeline" "socket_udp" {
   name = "socket-pipeline-udp"
 
   config {
