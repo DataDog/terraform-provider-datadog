@@ -3074,6 +3074,61 @@ resource "datadog_observability_pipeline" "socket_udp" {
 	})
 }
 
+func TestAccDatadogObservabilityPipeline_socketDestination_basic(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.socket_dest_basic"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "socket_dest_basic" {
+  name = "socket-destination-pipeline-udp"
+
+  config {
+    sources {
+      datadog_agent {
+        id = "source-1"
+      }
+    }
+
+    processors {}
+
+    destinations {
+      socket {
+        id       = "socket-dest-2"
+        inputs   = ["source-1"]
+        mode     = "udp"
+        encoding = "raw_message"
+
+        framing {
+          method = "character_delimited"
+          character_delimited {
+            delimiter = "|"
+          }
+        }
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "socket-destination-pipeline-udp"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.socket.0.id", "socket-dest-2"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.socket.0.inputs.0", "source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.socket.0.mode", "udp"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.socket.0.encoding", "raw_message"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.socket.0.framing.method", "character_delimited"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.socket.0.framing.character_delimited.delimiter", "|"),
+				),
+			},
+		},
+	})
+}
+
 func TestAccDatadogObservabilityPipeline_socketDestination(t *testing.T) {
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
@@ -3128,48 +3183,6 @@ resource "datadog_observability_pipeline" "socket_dest" {
 					resource.TestCheckResourceAttr(resourceName, "config.destinations.socket.0.tls.crt_file", "/etc/ssl/certs/socket.crt"),
 					resource.TestCheckResourceAttr(resourceName, "config.destinations.socket.0.tls.ca_file", "/etc/ssl/certs/ca.crt"),
 					resource.TestCheckResourceAttr(resourceName, "config.destinations.socket.0.tls.key_file", "/etc/ssl/private/socket.key"),
-				),
-			},
-			{
-				Config: `
-resource "datadog_observability_pipeline" "socket_dest" {
-  name = "socket-destination-pipeline-udp"
-
-  config {
-    sources {
-      datadog_agent {
-        id = "source-1"
-      }
-    }
-
-    processors {}
-
-    destinations {
-      socket {
-        id       = "socket-dest-2"
-        inputs   = ["source-1"]
-        mode     = "udp"
-        encoding = "raw_message"
-
-        framing {
-          method = "character_delimited"
-          character_delimited {
-            delimiter = "|"
-          }
-        }
-      }
-    }
-  }
-}`,
-				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
-					resource.TestCheckResourceAttr(resourceName, "name", "socket-destination-pipeline-udp"),
-					resource.TestCheckResourceAttr(resourceName, "config.destinations.socket.0.id", "socket-dest-2"),
-					resource.TestCheckResourceAttr(resourceName, "config.destinations.socket.0.inputs.0", "source-1"),
-					resource.TestCheckResourceAttr(resourceName, "config.destinations.socket.0.mode", "udp"),
-					resource.TestCheckResourceAttr(resourceName, "config.destinations.socket.0.encoding", "raw_message"),
-					resource.TestCheckResourceAttr(resourceName, "config.destinations.socket.0.framing.method", "character_delimited"),
-					resource.TestCheckResourceAttr(resourceName, "config.destinations.socket.0.framing.character_delimited.delimiter", "|"),
 				),
 			},
 		},
