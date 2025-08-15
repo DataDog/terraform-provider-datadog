@@ -186,10 +186,7 @@ Optional:
 Required:
 
 - `source` (String) The AWS service for which the tag filters defined in `tags` will be applied.
-
-Optional:
-
-- `tags` (List of String) The AWS resource tags to filter on for the service specified by `source`. Defaults to `[]`.
+- `tags` (List of String) The AWS resource tags to filter on for the service specified by `source`.
 
 
 <a id="nestedblock--metrics_config"></a>

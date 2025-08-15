@@ -30,15 +30,17 @@ var (
 )
 
 var (
-	namespaceFiltersPath   = path.MatchRoot("metrics_config").AtName("namespace_filters")
-	awsRegionsPath         = path.MatchRoot("aws_regions")
-	authConfigPath         = path.MatchRoot("auth_config")
-	authConfigKeysPath     = authConfigPath.AtName("aws_auth_config_keys")
-	authConfigRolePath     = authConfigPath.AtName("aws_auth_config_role")
-	xrayServicesConfigPath = path.MatchRoot("traces_config").AtName("xray_services")
-	resourcesConfigPath    = path.MatchRoot("resources_config")
-	logsConfigPath         = path.MatchRoot("logs_config")
-	lambdaForwarderPath    = logsConfigPath.AtName("lambda_forwarder")
+	namespaceFiltersPath          = path.MatchRoot("metrics_config").AtName("namespace_filters")
+	awsRegionsPath                = path.MatchRoot("aws_regions")
+	authConfigPath                = path.MatchRoot("auth_config")
+	authConfigKeysPath            = authConfigPath.AtName("aws_auth_config_keys")
+	authConfigRolePath            = authConfigPath.AtName("aws_auth_config_role")
+	xrayServicesConfigPath        = path.MatchRoot("traces_config").AtName("xray_services")
+	resourcesConfigPath           = path.MatchRoot("resources_config")
+	logsConfigPath                = path.MatchRoot("logs_config")
+	lambdaForwarderPath           = logsConfigPath.AtName("lambda_forwarder")
+	logSourceConfigPath           = lambdaForwarderPath.AtName("log_source_config")
+	logSourceConfigTagFiltersPath = logSourceConfigPath.AtName("tag_filters")
 )
 
 type integrationAwsAccountResource struct {
@@ -177,6 +179,11 @@ func (r *integrationAwsAccountResource) ConfigValidators(ctx context.Context) []
 		resourcevalidator.ExactlyOneOf(
 			lambdaForwarderPath,
 		),
+		resourcevalidator.RequiredTogether(
+			logSourceConfigTagFiltersPath,
+			logSourceConfigTagFiltersPath.AtAnyListIndex().AtName("source"),
+			logSourceConfigTagFiltersPath.AtAnyListIndex().AtName("tags"),
+		),
 		resourcevalidator.ExactlyOneOf(
 			namespaceFiltersPath,
 		),
@@ -204,6 +211,37 @@ func (r *integrationAwsAccountResource) ModifyPlan(ctx context.Context, request 
 	fwutils.RemoveDefaultIfConflictingSet(ctx, request, response, awsRegionsPath.AtName("include_all"), awsRegionsPath.AtName("include_only"))
 	// Remove `traces_config.xray_services.include_only` default if `include_all` is set.
 	fwutils.RemoveDefaultIfConflictingSet(ctx, request, response, xrayServicesConfigPath.AtName("include_only"), xrayServicesConfigPath.AtName("include_all"))
+
+	// Handle log_source_config optional behavior
+	r.modifyPlanLogSourceConfig(ctx, request, response)
+}
+
+func (r *integrationAwsAccountResource) modifyPlanLogSourceConfig(ctx context.Context, request resource.ModifyPlanRequest, response *resource.ModifyPlanResponse) {
+	logSourceConfigPath := path.Root("logs_config").AtName("lambda_forwarder").AtName("log_source_config")
+
+	var configLogSourceConfig types.Object
+	diags := request.Config.GetAttribute(ctx, logSourceConfigPath, &configLogSourceConfig)
+	response.Diagnostics.Append(diags...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	var plannedLogSourceConfig types.Object
+	diags = request.Plan.GetAttribute(ctx, logSourceConfigPath, &plannedLogSourceConfig)
+	response.Diagnostics.Append(diags...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	if configLogSourceConfig.IsNull() && !plannedLogSourceConfig.IsNull() {
+		// set plan value to null to match the config
+		response.Diagnostics.Append(response.Plan.SetAttribute(ctx, logSourceConfigPath, types.ObjectNull(map[string]attr.Type{
+			"tag_filters": types.ListType{ElemType: types.ObjectType{AttrTypes: map[string]attr.Type{
+				"source": types.StringType,
+				"tags":   types.ListType{ElemType: types.StringType},
+			}}},
+		}))...)
+	}
 }
 
 func (r *integrationAwsAccountResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
@@ -332,11 +370,9 @@ func (r *integrationAwsAccountResource) Schema(_ context.Context, _ resource.Sch
 													Description: "The AWS service for which the tag filters defined in `tags` will be applied.",
 												},
 												"tags": schema.ListAttribute{
-													Optional:    true,
-													Computed:    true,
-													Description: "The AWS resource tags to filter on for the service specified by `source`. Defaults to `[]`.",
+													Required:    true,
+													Description: "The AWS resource tags to filter on for the service specified by `source`.",
 													ElementType: types.StringType,
-													Default:     listdefault.StaticValue(types.ListValueMust(types.StringType, []attr.Value{})),
 												},
 											},
 										},
@@ -617,19 +653,16 @@ func buildStateLogsConfig(ctx context.Context, attributes datadogV2.AWSAccountRe
 			lambdaForwarderTf.Sources, d = types.ListValueFrom(ctx, types.StringType, sources)
 			diags.Append(d...)
 
-			// Check if user configured log_source_config
 			userConfiguredLogSourceConfig := currentState != nil &&
 				currentState.LogsConfig != nil &&
 				currentState.LogsConfig.LambdaForwarder != nil &&
 				currentState.LogsConfig.LambdaForwarder.LogSourceConfig != nil
 
 			if logSourceConfig, ok := lambdaForwarder.GetLogSourceConfigOk(); ok {
-				hasTagFilters := false
-				logSourceConfigTf := logSourceConfigModel{}
-				logSourceConfigTf.TagFilters = []*logsTagFiltersModel{}
-
 				if tagFilters, ok := logSourceConfig.GetTagFiltersOk(); ok && len(*tagFilters) > 0 {
-					hasTagFilters = true
+					logSourceConfigTf := logSourceConfigModel{}
+					logSourceConfigTf.TagFilters = []*logsTagFiltersModel{}
+
 					for _, tagFiltersDd := range *tagFilters {
 						tagFiltersTfItem := logsTagFiltersModel{}
 						if source, ok := tagFiltersDd.GetSourceOk(); ok {
@@ -639,16 +672,20 @@ func buildStateLogsConfig(ctx context.Context, attributes datadogV2.AWSAccountRe
 							tagsTf, d := types.ListValueFrom(ctx, types.StringType, *tags)
 							tagFiltersTfItem.Tags = tagsTf
 							diags.Append(d...)
+						} else {
+							tagFiltersTfItem.Tags, _ = types.ListValueFrom(ctx, types.StringType, []string{})
 						}
 						logSourceConfigTf.TagFilters = append(logSourceConfigTf.TagFilters, &tagFiltersTfItem)
 					}
-				}
 
-				// Include log_source_config in state only if user configured it or there are actual filters
-				// This makes log_source_config optional in the schema
-				if userConfiguredLogSourceConfig || hasTagFilters {
+					lambdaForwarderTf.LogSourceConfig = &logSourceConfigTf
+				} else if userConfiguredLogSourceConfig {
+					// User configured log_source_config {} but API returned no tag_filters - preserve empty config
+					logSourceConfigTf := logSourceConfigModel{}
+					logSourceConfigTf.TagFilters = []*logsTagFiltersModel{}
 					lambdaForwarderTf.LogSourceConfig = &logSourceConfigTf
 				}
+				// If tagFilters is empty and user didn't configure log_source_config, don't create it (remains nil in state)
 			}
 
 			logsConfigTf.LambdaForwarder = &lambdaForwarderTf
@@ -883,21 +920,17 @@ func buildRequestLogsConfig(ctx context.Context, state *integrationAwsAccountMod
 					tagFiltersDDItem.SetSource(tagFiltersTFItem.Source.ValueString())
 				}
 
-				if !tagFiltersTFItem.Tags.IsNull() {
-					tags := []string{}
-					diags.Append(tagFiltersTFItem.Tags.ElementsAs(ctx, &tags, false)...)
-					tagFiltersDDItem.SetTags(tags)
-				}
+				tags := []string{}
+				diags.Append(tagFiltersTFItem.Tags.ElementsAs(ctx, &tags, false)...)
+				tagFiltersDDItem.SetTags(tags)
 
 				tagFilters = append(tagFilters, *tagFiltersDDItem)
 			}
 		}
-		// If LogSourceConfig is nil, tagFilters remains empty slice, which clears the configuration
 	}
 
 	lambdaForwarder.SetLambdas(lambdas)
 	lambdaForwarder.SetSources(sources)
-	// Always set LogSourceConfig - empty tagFilters array will clear any existing filters
 	lambdaForwarder.SetLogSourceConfig(datadogV2.AWSLambdaForwarderConfigLogSourceConfig{TagFilters: tagFilters})
 
 	logsConfig.LambdaForwarder = &lambdaForwarder
