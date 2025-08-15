@@ -53,7 +53,7 @@ func (r *DatasetResource) Configure(_ context.Context, request resource.Configur
 	r.Auth = providerData.Auth
 }
 
-func (r *DatasetResource) Metadata(_ context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
+func (r *DatasetResource) Metadata(_ context.Context, _ resource.MetadataRequest, response *resource.MetadataResponse) {
 	response.TypeName = "dataset"
 }
 
@@ -145,7 +145,7 @@ func (r *DatasetResource) Create(ctx context.Context, request resource.CreateReq
 		return
 	}
 
-	resp, _, err := r.API.CreateDataset(ctx, *body)
+	resp, _, err := r.API.CreateDataset(r.Auth, *body)
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error creating dataset"))
 		return
@@ -173,7 +173,7 @@ func (r *DatasetResource) Update(ctx context.Context, request resource.UpdateReq
 		return
 	}
 
-	resp, _, err := r.API.UpdateDataset(ctx, datasetId, *body)
+	resp, _, err := r.API.UpdateDataset(r.Auth, datasetId, *body)
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error updating dataset"))
 		return
@@ -196,7 +196,7 @@ func (r *DatasetResource) Delete(ctx context.Context, request resource.DeleteReq
 	}
 
 	id := data.ID.ValueString()
-	httpResp, err := r.API.DeleteDataset(ctx, id)
+	httpResp, err := r.API.DeleteDataset(r.Auth, id)
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == http.StatusNotFound {
 			return
@@ -248,8 +248,9 @@ func (r *DatasetResource) updateState(ctx context.Context, state *DatasetModel, 
 func (r *DatasetResource) buildCreateDatasetRequestBody(ctx context.Context, data *DatasetModel) (*datadogV2.DatasetCreateRequest, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
 	body := datadogV2.NewDatasetCreateRequestWithDefaults()
-	body.Data = *datadogV2.NewDatasetWithDefaults()
 	attributes := *datadogV2.NewDatasetAttributesWithDefaults()
+	// TODO update with NewDatasetRequestWithDefaults from API spec change
+	body.Data = *datadogV2.NewDataset(attributes, "dataset")
 
 	attributes.Name = data.Name.ValueString()
 	var principals []string
@@ -275,8 +276,9 @@ func (r *DatasetResource) buildCreateDatasetRequestBody(ctx context.Context, dat
 func (r *DatasetResource) buildUpdateDatasetRequestBody(ctx context.Context, data *DatasetModel) (*datadogV2.DatasetUpdateRequest, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
 	body := datadogV2.NewDatasetUpdateRequestWithDefaults()
-	body.Data = *datadogV2.NewDatasetWithDefaults()
 	attributes := *datadogV2.NewDatasetAttributesWithDefaults()
+	// TODO update with NewDatasetRequestWithDefaults from API spec change
+	body.Data = *datadogV2.NewDataset(attributes, "dataset")
 
 	attributes.Name = data.Name.ValueString()
 	var principals []string

@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 257
+        content_length: 241
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"name":"tf-TestAccDatadogDataset_Basic-local-1754941072","principals":["role:94172442-be03-11e9-a77a-3b7612558ac1"],"product_filters":[{"filters":["@application.id:ce9843b0-7a45-453c-a831-55dd15f85141"],"product":"rum"}]},"type":""}}
+            {"data":{"attributes":{"name":"tf-test-Basic-1755283614","principals":["role:94172442-be03-11e9-a77a-3b7612558ac1"],"product_filters":[{"filters":["@application.id:ce9843b0-7a45-453c-a831-55dd15f85141"],"product":"rum"}]},"type":"dataset"}}
         form: {}
         headers:
             Accept:
@@ -26,14 +26,119 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        transfer_encoding: []
+        transfer_encoding:
+            - chunked
         trailer: {}
-        content_length: 27
-        uncompressed: false
-        body: '{"errors":["Unauthorized"]}'
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"dataset","id":"e2fea376-619c-45a5-9f46-34121271c6a8","attributes":{"name":"tf-test-Basic-1755283614","product_filters":[{"product":"rum","filters":["@application.id:ce9843b0-7a45-453c-a831-55dd15f85141"]}],"principals":["role:94172442-be03-11e9-a77a-3b7612558ac1"]}}}
         headers:
             Content-Type:
                 - application/json
-        status: 401 Unauthorized
-        code: 401
-        duration: 103.4935ms
+        status: 200 OK
+        code: 200
+        duration: 171.513417ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/datasets/e2fea376-619c-45a5-9f46-34121271c6a8
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"dataset","id":"e2fea376-619c-45a5-9f46-34121271c6a8","attributes":{"name":"tf-test-Basic-1755283614","product_filters":[{"product":"rum","filters":["@application.id:ce9843b0-7a45-453c-a831-55dd15f85141"]}],"principals":["role:94172442-be03-11e9-a77a-3b7612558ac1"]}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 84.163167ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/datasets/e2fea376-619c-45a5-9f46-34121271c6a8
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"dataset","id":"e2fea376-619c-45a5-9f46-34121271c6a8","attributes":{"name":"tf-test-Basic-1755283614","product_filters":[{"product":"rum","filters":["@application.id:ce9843b0-7a45-453c-a831-55dd15f85141"]}],"principals":["role:94172442-be03-11e9-a77a-3b7612558ac1"]}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 88.09325ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/datasets/e2fea376-619c-45a5-9f46-34121271c6a8
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Content-Type:
+                - application/json
+        status: 204 No Content
+        code: 204
+        duration: 115.673042ms

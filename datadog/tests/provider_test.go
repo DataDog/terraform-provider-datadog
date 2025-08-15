@@ -492,6 +492,12 @@ func uniqueAWSAccessKeyID(ctx context.Context, t *testing.T) string {
 	return result[:16]
 }
 
+// uniqueDatasetName generates a unique string that is under the 40 characters dataset name limit
+func uniqueDatasetName(ctx context.Context, t *testing.T) string {
+	result := fmt.Sprintf("tf-test-%s-%d", strings.TrimPrefix(SecurePath(t.Name()), "TestAccDatadogDataset_"), clockFromContext(ctx).Now().Unix())
+	return result
+}
+
 func removeURLSecrets(u *url.URL) *url.URL {
 	query := u.Query()
 	query.Del("api_key")

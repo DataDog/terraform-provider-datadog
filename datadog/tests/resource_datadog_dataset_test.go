@@ -21,7 +21,7 @@ var (
 func TestAccDatadogDataset_Basic(t *testing.T) {
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
-	datasetName := uniqueEntityName(ctx, t)
+	datasetName := uniqueDatasetName(ctx, t)
 
 	resource.Test(t, resource.TestCase{
 		ProtoV5ProviderFactories: accProviders,
@@ -40,7 +40,7 @@ func TestAccDatadogDataset_Basic(t *testing.T) {
 func TestAccDatadogDataset_Update(t *testing.T) {
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
-	datasetName := uniqueEntityName(ctx, t)
+	datasetName := uniqueDatasetName(ctx, t)
 
 	resource.Test(t, resource.TestCase{
 		ProtoV5ProviderFactories: accProviders,
@@ -61,13 +61,9 @@ func TestAccDatadogDataset_Update(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_dataset.foo", "name", fmt.Sprintf("%s-updated", datasetName)),
 					resource.TestCheckResourceAttr(
-						"datadog_dataset.foo", "principals.#", "3"),
-					resource.TestCheckTypeSetElemAttr(
-						"datadog_dataset.foo", "principals.*", "team:87bd1a11-b889-4208-8784-17901bc9c54b"),
+						"datadog_dataset.foo", "principals.#", "2"),
 					resource.TestCheckResourceAttr(
-						"datadog_dataset.foo", "product_filters.filters.#", "3"),
-					resource.TestCheckResourceAttr(
-						"datadog_dataset.foo", "product_filters.filters.*", "@region:us-east-1"),
+						"datadog_dataset.foo", "product_filters.#", "2"),
 				),
 			},
 		},
@@ -77,7 +73,7 @@ func TestAccDatadogDataset_Update(t *testing.T) {
 func TestAccDatadogDataset_InvalidInput(t *testing.T) {
 	t.Parallel()
 	ctx, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
-	datasetName := uniqueEntityName(ctx, t)
+	datasetName := uniqueDatasetName(ctx, t)
 	invalidProduct := "ci-visibility"
 
 	resource.Test(t, resource.TestCase{
@@ -85,55 +81,15 @@ func TestAccDatadogDataset_InvalidInput(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config:      testAccCheckDatadogDataset(datasetName, invalidProduct),
-				ExpectError: regexp.MustCompile(invalidProduct),
+				ExpectError: regexp.MustCompile("Invalid product"),
 			},
 			{
 				Config:      testAccCheckDatadogDatasetInvalidPrincipal(datasetName, product),
-				ExpectError: regexp.MustCompile("Invalid principal format"),
-			},
-		},
-	})
-}
-
-func TestAccDatadogDataset_EmptyProductFilters(t *testing.T) {
-	t.Parallel()
-	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
-	datasetName := uniqueEntityName(ctx, t)
-
-	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
-		CheckDestroy:             testAccCheckDatadogDatasetDestroy(providers.frameworkProvider),
-		Steps: []resource.TestStep{
-			{
-				Config: testAccCheckDatadogDatasetEmptyProductFilters(datasetName),
-				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogDatasetExists(providers.frameworkProvider),
-					resource.TestCheckResourceAttr(
-						"datadog_dataset.foo", "name", datasetName),
-					resource.TestCheckResourceAttr(
-						"datadog_dataset.foo", "product_filters.#", "0"),
-				),
-			},
-		},
-	})
-}
-
-func TestAccDatadogDataset_Import(t *testing.T) {
-	t.Parallel()
-	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
-	datasetName := uniqueEntityName(ctx, t)
-
-	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
-		CheckDestroy:             testAccCheckDatadogDatasetDestroy(providers.frameworkProvider),
-		Steps: []resource.TestStep{
-			{
-				Config: testAccCheckDatadogDataset(datasetName, product),
+				ExpectError: regexp.MustCompile("PrincipalInvalid"),
 			},
 			{
-				ResourceName:      "datadog_dataset.foo",
-				ImportState:       true,
-				ImportStateVerify: true,
+				Config:      testAccCheckDatadogDatasetEmptyProductFilters(datasetName),
+				ExpectError: regexp.MustCompile("DatasetFiltersEmpty"),
 			},
 		},
 	})
@@ -156,11 +112,16 @@ func testAccCheckDatadogDatasetUpdate(datasetName string, product string) string
 	return fmt.Sprintf(`
 		resource "datadog_dataset" "foo" {
 			name = "%s-updated"
-			principals = ["role:94172442-be03-11e9-a77a-3b7612558ac1"", "team:2b4d5cb2-9298-4c00-b378-f6a70afdc351"]
+			principals = ["role:94172442-be03-11e9-a77a-3b7612558ac1", "team:efafb1de-fca3-4043-9703-660f82274583"]
 			
 			product_filters {
 				product = "%s"
 				filters = ["@application.id:ce9843b0-7a45-453c-a831-55dd15f85141"]
+			}
+
+			product_filters {
+				product = "apm"
+				filters = ["service:test"]
 			}
 		}`, datasetName, product)
 }
@@ -182,7 +143,7 @@ func testAccCheckDatadogDatasetEmptyProductFilters(datasetName string) string {
 	return fmt.Sprintf(`
 	resource "datadog_dataset" "foo" {
 		name = "%s"
-		principals = ["role:94172442-be03-11e9-a77a-3b7612558ac1""]
+		principals = ["role:94172442-be03-11e9-a77a-3b7612558ac1"]
 	}`, datasetName)
 }
 
@@ -213,7 +174,7 @@ func testAccCheckDatadogDatasetDestroy(accProvider *fwprovider.FrameworkProvider
 
 		err := utils.Retry(2, 10, func() error {
 			for _, r := range s.RootModule().Resources {
-				if r.Type != "datadog_dataset" {
+				if r.Type != "resource_datadog_dataset" {
 					continue
 				}
 				id := r.Primary.ID

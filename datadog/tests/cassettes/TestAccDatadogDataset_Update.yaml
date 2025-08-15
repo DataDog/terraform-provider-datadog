@@ -1,3 +1,287 @@
 ---
 version: 2
-interactions: []
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 242
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"name":"tf-test-Update-1755283641","principals":["role:94172442-be03-11e9-a77a-3b7612558ac1"],"product_filters":[{"filters":["@application.id:ce9843b0-7a45-453c-a831-55dd15f85141"],"product":"rum"}]},"type":"dataset"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/datasets
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"dataset","id":"3708edff-856d-4f94-a66f-e1460754a1d0","attributes":{"name":"tf-test-Update-1755283641","product_filters":[{"product":"rum","filters":["@application.id:ce9843b0-7a45-453c-a831-55dd15f85141"]}],"principals":["role:94172442-be03-11e9-a77a-3b7612558ac1"]}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 144.454584ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/datasets/3708edff-856d-4f94-a66f-e1460754a1d0
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"dataset","id":"3708edff-856d-4f94-a66f-e1460754a1d0","attributes":{"name":"tf-test-Update-1755283641","product_filters":[{"product":"rum","filters":["@application.id:ce9843b0-7a45-453c-a831-55dd15f85141"]}],"principals":["role:94172442-be03-11e9-a77a-3b7612558ac1"]}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 76.996916ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/datasets/3708edff-856d-4f94-a66f-e1460754a1d0
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"dataset","id":"3708edff-856d-4f94-a66f-e1460754a1d0","attributes":{"name":"tf-test-Update-1755283641","product_filters":[{"product":"rum","filters":["@application.id:ce9843b0-7a45-453c-a831-55dd15f85141"]}],"principals":["role:94172442-be03-11e9-a77a-3b7612558ac1"]}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 162.209333ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/datasets/3708edff-856d-4f94-a66f-e1460754a1d0
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"dataset","id":"3708edff-856d-4f94-a66f-e1460754a1d0","attributes":{"name":"tf-test-Update-1755283641","product_filters":[{"product":"rum","filters":["@application.id:ce9843b0-7a45-453c-a831-55dd15f85141"]}],"principals":["role:94172442-be03-11e9-a77a-3b7612558ac1"]}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 68.23975ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 339
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"name":"tf-test-Update-1755283641-updated","principals":["role:94172442-be03-11e9-a77a-3b7612558ac1","team:efafb1de-fca3-4043-9703-660f82274583"],"product_filters":[{"filters":["@application.id:ce9843b0-7a45-453c-a831-55dd15f85141"],"product":"rum"},{"filters":["service:test"],"product":"apm"}]},"type":"dataset"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/datasets/3708edff-856d-4f94-a66f-e1460754a1d0
+        method: PUT
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"dataset","id":"3708edff-856d-4f94-a66f-e1460754a1d0","attributes":{"name":"tf-test-Update-1755283641-updated","product_filters":[{"product":"apm","filters":["service:test"]},{"product":"rum","filters":["@application.id:ce9843b0-7a45-453c-a831-55dd15f85141"]}],"principals":["role:94172442-be03-11e9-a77a-3b7612558ac1","team:efafb1de-fca3-4043-9703-660f82274583"]}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 129.927167ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/datasets/3708edff-856d-4f94-a66f-e1460754a1d0
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"dataset","id":"3708edff-856d-4f94-a66f-e1460754a1d0","attributes":{"name":"tf-test-Update-1755283641-updated","product_filters":[{"product":"apm","filters":["service:test"]},{"product":"rum","filters":["@application.id:ce9843b0-7a45-453c-a831-55dd15f85141"]}],"principals":["role:94172442-be03-11e9-a77a-3b7612558ac1","team:efafb1de-fca3-4043-9703-660f82274583"]}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 88.14475ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/datasets/3708edff-856d-4f94-a66f-e1460754a1d0
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"dataset","id":"3708edff-856d-4f94-a66f-e1460754a1d0","attributes":{"name":"tf-test-Update-1755283641-updated","product_filters":[{"product":"apm","filters":["service:test"]},{"product":"rum","filters":["@application.id:ce9843b0-7a45-453c-a831-55dd15f85141"]}],"principals":["role:94172442-be03-11e9-a77a-3b7612558ac1","team:efafb1de-fca3-4043-9703-660f82274583"]}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 89.505417ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/datasets/3708edff-856d-4f94-a66f-e1460754a1d0
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Content-Type:
+                - application/json
+        status: 204 No Content
+        code: 204
+        duration: 97.405792ms
