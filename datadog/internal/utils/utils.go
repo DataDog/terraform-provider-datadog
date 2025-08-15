@@ -603,3 +603,14 @@ func normalizeAppBuilderAppJSONString(jsonStr string) (string, error) {
 
 	return string(jsonBytes), nil
 }
+
+func UseMonitorFrameworkProvider() bool {
+	return getEnv("TERRAFORM_MONITOR_FRAMEWORK_PROVIDER", "false") == "true"
+}
+
+func getEnv(key, fallback string) string {
+	if value, ok := os.LookupEnv(key); ok {
+		return value
+	}
+	return fallback
+}
