@@ -13,7 +13,7 @@ Provides a Datadog Dataset resource. This can be used to create and manage Datad
 ## Example Usage
 
 ```terraform
-# Create new restriction_policy resource
+# Create new dataset resource
 
 
 resource "datadog_dataset" "foo" {
@@ -60,5 +60,5 @@ Import is supported using the following syntax:
 The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
 
 ```shell
-terraform import datadog_dataset.new_list "<dataset_id>"
+terraform import datadog_dataset.foo "<dataset_id>"
 ```
