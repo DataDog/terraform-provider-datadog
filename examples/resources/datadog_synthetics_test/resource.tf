@@ -449,8 +449,8 @@ resource "datadog_synthetics_test" "test_browser" {
             url    = "https://example.com"
           }
         },
-        options  = {},
-        subtype  = "http"
+        options = {},
+        subtype = "http"
       })
     }
   }
