@@ -74,7 +74,6 @@ func (d *awsIntegrationIAMPermissionsDataSource) Read(ctx context.Context, req d
 }
 
 func (d *awsIntegrationIAMPermissionsDataSource) updateState(state *awsIntegrationIAMPermissionsDataSourceModel, resp *datadogV2.AWSIntegrationIamPermissionsResponse) {
-	// Get the permissions from the API response
 	permissions := resp.Data.Attributes.Permissions
 	state.IAMPermissions, _ = types.ListValueFrom(context.Background(), types.StringType, permissions)
 }

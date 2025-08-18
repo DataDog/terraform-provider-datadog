@@ -45,9 +45,6 @@ func checkDatadogIntegrationAWSIAMPermissionsCount(accProvider *fwprovider.Frame
 
 		resourceAttributes := state.RootModule().Resources["data.datadog_integration_aws_iam_permissions.foo"].Primary.Attributes
 		iamPermissionsCount, _ := strconv.Atoi(resourceAttributes["iam_permissions.#"])
-
-		// Get the permissions from the API response
-		// The response should contain the IAM permissions as a list of strings
 		permissionsDd := iamPermissions.Data.Attributes.Permissions
 
 		if iamPermissionsCount != len(permissionsDd) {
