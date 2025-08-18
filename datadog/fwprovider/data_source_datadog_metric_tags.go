@@ -14,7 +14,7 @@ import (
 )
 
 var (
-	_ datasource.DataSource = &datadogUsersDataSource{}
+	_ datasource.DataSource = &datadogMetricTagsDataSource{}
 )
 
 type datadogMetricTagsModel struct {

@@ -76,6 +76,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/data_source_datadog_logs_pipelines_test":                          "logs-pipelines",
 	"tests/data_source_datadog_monitor_config_policies_test":                 "monitor-config-policies",
 	"tests/data_source_datadog_monitor_config_policy_test":                   "monitor-config-policies",
+	"tests/data_source_datadog_metric_metadata_test":                         "metrics",
 	"tests/data_source_datadog_metric_tags_test":                             "metrics",
 	"tests/data_source_datadog_monitor_test":                                 "monitors",
 	"tests/data_source_datadog_monitors_test":                                "monitors",
@@ -124,6 +125,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_cloud_configuration_rule_test":                   "security-monitoring",
 	"tests/resource_datadog_cloud_workload_security_agent_rule_test":         "cloud_workload_security",
 	"tests/resource_datadog_action_connection_test":                          "action_connection",
+	"tests/resource_datadog_agentless_scanning_aws_scan_options_test":        "agentless-scanning",
 	"tests/resource_datadog_csm_threats_agent_rule_test":                     "cloud-workload-security",
 	"tests/resource_datadog_csm_threats_policy_test":                         "cloud-workload-security",
 	"tests/resource_datadog_dashboard_alert_graph_test":                      "dashboards",
@@ -279,6 +281,8 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_compliance_custom_framework_test":                "compliance_custom_framework",
 	"tests/resource_datadog_cost_budget_test":                                "cost-budget",
 	"tests/resource_datadog_app_key_registration_test":                       "app_key_registration",
+	"tests/resource_datadog_incident_type_test":                              "incidents",
+	"tests/data_source_datadog_incident_type_test":                           "incidents",
 }
 
 // getEndpointTagValue traverses callstack frames to find the test function that invoked this call;

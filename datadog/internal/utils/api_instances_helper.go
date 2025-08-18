@@ -45,6 +45,7 @@ type ApiInstances struct {
 
 	//V2 APIs
 	actionConnectionApiV2          *datadogV2.ActionConnectionApi
+	agentlessScanningApiV2         *datadogV2.AgentlessScanningApi
 	apiManagementAPIV2             *datadogV2.APIManagementApi
 	apmRetentionFiltersApiV2       *datadogV2.APMRetentionFiltersApi
 	appBuilderApiV2                *datadogV2.AppBuilderApi
@@ -759,6 +760,14 @@ func (i *ApiInstances) GetAppBuilderApiV2() *datadogV2.AppBuilderApi {
 		i.appBuilderApiV2 = datadogV2.NewAppBuilderApi(i.HttpClient)
 	}
 	return i.appBuilderApiV2
+}
+
+// GetAgentlessScanningApiV2 get instance of AgentlessScanningApi
+func (i *ApiInstances) GetAgentlessScanningApiV2() *datadogV2.AgentlessScanningApi {
+	if i.agentlessScanningApiV2 == nil {
+		i.agentlessScanningApiV2 = datadogV2.NewAgentlessScanningApi(i.HttpClient)
+	}
+	return i.agentlessScanningApiV2
 }
 
 // GetCloudCostManagementApiV2 get instance of CloudCostManagementApi

@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"net/http"
 	"sort"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
@@ -90,8 +91,14 @@ func (d *workflowAutomationDatasource) Read(ctx context.Context, request datasou
 		return
 	}
 
-	readResp, err := readWorkflow(d.Auth, d.Api, state.ID.ValueString())
+	readResp, err, httpStatusCode := readWorkflow(d.Auth, d.Api, state.ID.ValueString())
 	if err != nil {
+		if httpStatusCode == http.StatusNotFound {
+			// If the workflow is not found, we log a warning and remove the resource from state. This may be due to changes in the UI.
+			response.Diagnostics.AddWarning("The workflow with ID '"+state.ID.ValueString()+"' is not found. It may have been deleted outside of Terraform.", err.Error())
+			response.State.RemoveResource(ctx)
+			return
+		}
 		response.Diagnostics.AddError("Could not read workflow", err.Error())
 		return
 	}

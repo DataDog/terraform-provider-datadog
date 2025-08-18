@@ -86,12 +86,13 @@ func resourceDatadogSecurityMonitoringDefaultRule() *schema.Resource {
 								Type:             schema.TypeString,
 								ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewSecurityMonitoringRuleQueryAggregationFromValue),
 								Optional:         true,
+								Computed:         true,
 								Description:      "The aggregation type. For Signal Correlation rules, it must be event_count.",
-								Default:          datadogV2.SECURITYMONITORINGRULEQUERYAGGREGATION_COUNT,
 							},
 							"distinct_fields": {
 								Type:        schema.TypeList,
 								Optional:    true,
+								Computed:    true,
 								Description: "Field for which the cardinality is measured. Sent as an array.",
 								Elem: &schema.Schema{
 									Type:             schema.TypeString,
@@ -101,6 +102,7 @@ func resourceDatadogSecurityMonitoringDefaultRule() *schema.Resource {
 							"group_by_fields": {
 								Type:        schema.TypeList,
 								Optional:    true,
+								Computed:    true,
 								Description: "Fields to group by.",
 								Elem: &schema.Schema{
 									Type:             schema.TypeString,
@@ -111,13 +113,14 @@ func resourceDatadogSecurityMonitoringDefaultRule() *schema.Resource {
 								Type:             schema.TypeString,
 								ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewSecurityMonitoringStandardDataSourceFromValue),
 								Optional:         true,
+								Computed:         true,
 								Description:      "Source of events.",
-								Default:          datadogV2.SECURITYMONITORINGSTANDARDDATASOURCE_LOGS,
 							},
 							"metric": {
 								Type:        schema.TypeString,
 								Deprecated:  "Configure `metrics` instead. This attribute will be removed in the next major version of the provider.",
 								Optional:    true,
+								Computed:    true,
 								Description: "The target field to aggregate over when using the `sum`, `max`, or `geo_data` aggregations.",
 							},
 							"metrics": {
@@ -130,16 +133,19 @@ func resourceDatadogSecurityMonitoringDefaultRule() *schema.Resource {
 							"name": {
 								Type:        schema.TypeString,
 								Optional:    true,
+								Computed:    true,
 								Description: "Name of the query. Not compatible with `new_value` aggregations.",
 							},
 							"query": {
 								Type:        schema.TypeString,
-								Required:    true,
+								Optional:    true,
+								Computed:    true,
 								Description: "Query to run on logs.",
 							},
 							"custom_query_extension": {
 								Type:        schema.TypeString,
 								Optional:    true,
+								Computed:    true,
 								Description: "Query extension to append to the logs query.",
 							},
 						},
@@ -189,6 +195,7 @@ func resourceDatadogSecurityMonitoringDefaultRule() *schema.Resource {
 				"options": {
 					Type:        schema.TypeList,
 					Optional:    true,
+					Computed:    true,
 					MaxItems:    1,
 					Description: "Options on default rules. Note that only a subset of fields can be updated on default rule options.",
 					Elem: &schema.Resource{
@@ -196,7 +203,7 @@ func resourceDatadogSecurityMonitoringDefaultRule() *schema.Resource {
 							"decrease_criticality_based_on_env": {
 								Type:        schema.TypeBool,
 								Optional:    true,
-								Default:     false,
+								Computed:    true,
 								Description: "If true, signals in non-production environments have a lower severity than what is defined by the rule case, which can reduce noise. The decrement is applied when the environment tag of the signal starts with `staging`, `test`, or `dev`. Only available when the rule type is `log_detection`.",
 							},
 						},
@@ -303,6 +310,7 @@ func resourceDatadogSecurityMonitoringDefaultRuleRead(ctx context.Context, d *sc
 
 	d.Set("type", rule.GetType())
 
+	// Always read and set options in state to reflect current API state
 	responseOptions := rule.GetOptions()
 	var ruleOptions []map[string]interface{}
 
@@ -313,6 +321,57 @@ func resourceDatadogSecurityMonitoringDefaultRuleRead(ctx context.Context, d *sc
 	}
 
 	d.Set("options", &ruleOptions)
+
+	// Set query fields from API response - these are computed fields that show current state
+	if v, ok := d.GetOk("query"); ok {
+		tfQueries := v.([]interface{})
+		responseQueries := rule.GetQueries()
+		stateQueries := make([]map[string]interface{}, len(tfQueries))
+
+		for idx, tfQuery := range tfQueries {
+			tfQueryMap := tfQuery.(map[string]interface{})
+			stateQuery := make(map[string]interface{})
+
+			// Copy the configuration values first
+			for key, value := range tfQueryMap {
+				stateQuery[key] = value
+			}
+
+			// Then populate computed values from API response
+			if idx < len(responseQueries) {
+				responseQuery := responseQueries[idx]
+
+				if agg, ok := responseQuery.GetAggregationOk(); ok {
+					stateQuery["aggregation"] = string(*agg)
+				}
+				if gbf, ok := responseQuery.GetGroupByFieldsOk(); ok {
+					stateQuery["group_by_fields"] = *gbf
+				}
+				if df, ok := responseQuery.GetDistinctFieldsOk(); ok {
+					stateQuery["distinct_fields"] = *df
+				}
+				if ds, ok := responseQuery.GetDataSourceOk(); ok {
+					stateQuery["data_source"] = string(*ds)
+				}
+				if m, ok := responseQuery.GetMetricsOk(); ok {
+					stateQuery["metrics"] = *m
+				}
+				if n, ok := responseQuery.GetNameOk(); ok {
+					stateQuery["name"] = *n
+				}
+				if q, ok := responseQuery.GetQueryOk(); ok {
+					stateQuery["query"] = *q
+				}
+				if cqe, ok := responseQuery.GetCustomQueryExtensionOk(); ok {
+					stateQuery["custom_query_extension"] = *cqe
+				}
+			}
+
+			stateQueries[idx] = stateQuery
+		}
+
+		d.Set("query", stateQueries)
+	}
 
 	defaultTags := make(map[string]bool)
 	for _, defaultTag := range rule.GetDefaultTags() {
@@ -462,7 +521,12 @@ func buildSecMonDefaultRuleUpdatePayload(currentState *datadogV2.SecurityMonitor
 			tfQueries := v.([]interface{})
 			payloadQueries := make([]datadogV2.SecurityMonitoringRuleQuery, len(tfQueries))
 			for idx, tfQuery := range tfQueries {
-				payloadQueries[idx] = *buildUpdateStandardRuleQuery(tfQuery)
+				// For default rules, merge with existing query to preserve unspecified fields
+				var existingQuery *datadogV2.SecurityMonitoringStandardRuleQuery
+				if idx < len(currentState.GetQueries()) {
+					existingQuery = &currentState.GetQueries()[idx]
+				}
+				payloadQueries[idx] = *buildUpdateDefaultRuleQuery(tfQuery, existingQuery)
 			}
 			payload.SetQueries(payloadQueries)
 
@@ -668,4 +732,123 @@ func findRuleCaseForStatus(tfCasesRaw []interface{}, status datadogV2.SecurityMo
 func resourceDatadogSecurityMonitoringDefaultRuleDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	// no-op
 	return nil
+}
+
+// buildUpdateDefaultRuleQuery merges Terraform configuration with existing query state
+// to preserve fields that are not specified in the Terraform config
+func buildUpdateDefaultRuleQuery(tfQuery interface{}, existingQuery *datadogV2.SecurityMonitoringStandardRuleQuery) *datadogV2.SecurityMonitoringRuleQuery {
+	query := tfQuery.(map[string]interface{})
+	payloadQuery := datadogV2.SecurityMonitoringStandardRuleQuery{}
+
+	// Start with existing values if available
+	if existingQuery != nil {
+		// Preserve existing aggregation if not specified in TF config
+		if _, ok := query["aggregation"]; !ok {
+			if aggregation, exists := existingQuery.GetAggregationOk(); exists {
+				payloadQuery.SetAggregation(*aggregation)
+			}
+		}
+
+		// Preserve existing group_by_fields if not specified in TF config
+		if _, ok := query["group_by_fields"]; !ok {
+			if groupByFields, exists := existingQuery.GetGroupByFieldsOk(); exists {
+				payloadQuery.SetGroupByFields(*groupByFields)
+			}
+		}
+
+		// Preserve existing distinct_fields if not specified in TF config
+		if _, ok := query["distinct_fields"]; !ok {
+			if distinctFields, exists := existingQuery.GetDistinctFieldsOk(); exists {
+				payloadQuery.SetDistinctFields(*distinctFields)
+			}
+		}
+
+		// Preserve existing data_source if not specified in TF config
+		if _, ok := query["data_source"]; !ok {
+			if dataSource, exists := existingQuery.GetDataSourceOk(); exists {
+				payloadQuery.SetDataSource(*dataSource)
+			}
+		}
+
+		// Preserve existing metric if not specified in TF config
+		if _, ok := query["metric"]; !ok {
+			if metric, exists := existingQuery.GetMetricOk(); exists {
+				payloadQuery.SetMetric(*metric)
+			}
+		}
+
+		// Preserve existing metrics if not specified in TF config
+		if _, ok := query["metrics"]; !ok {
+			if metrics, exists := existingQuery.GetMetricsOk(); exists {
+				payloadQuery.SetMetrics(*metrics)
+			}
+		}
+
+		// Preserve existing name if not specified in TF config
+		if _, ok := query["name"]; !ok {
+			if name, exists := existingQuery.GetNameOk(); exists {
+				payloadQuery.SetName(*name)
+			}
+		}
+
+		// Preserve existing query if not specified in TF config
+		if _, ok := query["query"]; !ok {
+			if existingQueryStr, exists := existingQuery.GetQueryOk(); exists {
+				payloadQuery.SetQuery(*existingQueryStr)
+			}
+		}
+
+		// Preserve existing custom_query_extension if not specified in TF config
+		if _, ok := query["custom_query_extension"]; !ok {
+			if customQueryExtension, exists := existingQuery.GetCustomQueryExtensionOk(); exists {
+				payloadQuery.SetCustomQueryExtension(*customQueryExtension)
+			}
+		}
+	}
+
+	// Override with values from Terraform config
+	if v, ok := query["aggregation"]; ok {
+		aggregation := datadogV2.SecurityMonitoringRuleQueryAggregation(v.(string))
+		payloadQuery.SetAggregation(aggregation)
+	}
+
+	if v, ok := query["group_by_fields"]; ok {
+		payloadQuery.SetGroupByFields(parseStringArray(v.([]interface{})))
+	}
+
+	if v, ok := query["distinct_fields"]; ok {
+		payloadQuery.SetDistinctFields(parseStringArray(v.([]interface{})))
+	}
+
+	if v, ok := query["data_source"]; ok {
+		dataSource := datadogV2.SecurityMonitoringStandardDataSource(v.(string))
+		payloadQuery.SetDataSource(dataSource)
+	}
+
+	if v, ok := query["metric"]; ok {
+		metric := v.(string)
+		payloadQuery.SetMetric(metric)
+	}
+
+	if v, ok := query["metrics"]; ok {
+		payloadQuery.SetMetrics(parseStringArray(v.([]interface{})))
+	}
+
+	if v, ok := query["name"]; ok {
+		name := v.(string)
+		payloadQuery.SetName(name)
+	}
+
+	if v, ok := query["query"]; ok {
+		queryQuery := v.(string)
+		payloadQuery.SetQuery(queryQuery)
+	}
+
+	if v, ok := query["custom_query_extension"]; ok {
+		queryExtension := v.(string)
+		payloadQuery.SetCustomQueryExtension(queryExtension)
+	}
+
+	standardRuleQuery := datadogV2.SecurityMonitoringStandardRuleQueryAsSecurityMonitoringRuleQuery(&payloadQuery)
+	return &standardRuleQuery
 }

@@ -1,3 +1,38 @@
+## v3.71.0 (August 13, 2025)
+
+### BUGFIXES
+* [datadog_metric_tags] chore: correct `datadogMetricTagsDataSource` interface check by @mdb in https://github.com/DataDog/terraform-provider-datadog/pull/3098
+### IMPROVEMENTS
+* [datadog_log_custom_pipeline] Add support for decoder processor by @pavel-kim-dd in https://github.com/DataDog/terraform-provider-datadog/pull/3125
+### FEATURES
+* [datadog_security_notification_rule] Add Host and IaC security notification rule types by @ltaloc in https://github.com/DataDog/terraform-provider-datadog/pull/3158
+* [datadog_metric_metadata] feat: add `datadog_metric_metadata` data source by @mdb in https://github.com/DataDog/terraform-provider-datadog/pull/3100
+* [datadog_agentless_scanning_aws_scan_options] Add Terraform provider for AWS scan options by @k3nz0 in https://github.com/DataDog/terraform-provider-datadog/pull/3164
+
+## New Contributors
+* @ikraemer-dd made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3152
+* @ltaloc made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3158
+* @pavel-kim-dd made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3125
+* @k3nz0 made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3164
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.70.0...v3.71.0
+
+## 3.70.0 (August 6, 2025)
+
+### BUGFIXES
+* [datadog_team_membership] Correct handling of 404 when reading team memberships by @heavi5ide in https://github.com/DataDog/terraform-provider-datadog/pull/3140
+### FEATURES
+* [authentication] Add ability for terraform-provider to use AWS cloud-based authentication by @wynbennett in https://github.com/DataDog/terraform-provider-datadog/pull/3051
+* [datadog_incident_type] Add resouce and data source by @codhah92 in https://github.com/DataDog/terraform-provider-datadog/pull/3147
+
+## New Contributors
+* @larrys made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3127
+* @heavi5ide made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3140
+* @wynbennett made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3051
+* @codhah92 made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3147
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.69.0...v3.70.0
+
 ## 3.69.0 (July 23, 2025)
 
 ### BUGFIXES
