@@ -44,6 +44,10 @@ func buildFrameworkDatadogClient(ctx context.Context, httpClient *http.Client) *
 	config.SetUnstableOperationEnabled("v2.DeleteAWSAccount", true)
 	config.SetUnstableOperationEnabled("v2.GetAWSAccount", true)
 	config.SetUnstableOperationEnabled("v2.CreateNewAWSExternalID", true)
+	config.SetUnstableOperationEnabled("v2.GetDataset", true)
+	config.SetUnstableOperationEnabled("v2.CreateDataset", true)
+	config.SetUnstableOperationEnabled("v2.UpdateDataset", true)
+	config.SetUnstableOperationEnabled("v2.DeleteDataset", true)
 
 	// Enable Observability Pipelines
 	config.SetUnstableOperationEnabled("v2.CreatePipeline", true)

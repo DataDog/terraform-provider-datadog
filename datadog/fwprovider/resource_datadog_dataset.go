@@ -247,10 +247,8 @@ func (r *DatasetResource) updateState(ctx context.Context, state *DatasetModel, 
 
 func (r *DatasetResource) buildCreateDatasetRequestBody(ctx context.Context, data *DatasetModel) (*datadogV2.DatasetCreateRequest, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
-	body := datadogV2.NewDatasetCreateRequestWithDefaults()
-	attributes := *datadogV2.NewDatasetAttributesWithDefaults()
-	// TODO update with NewDatasetRequestWithDefaults from API spec change
-	body.Data = *datadogV2.NewDataset(attributes, "dataset")
+	body := datadogV2.NewDatasetRequestWithDefaults()
+	attributes := *datadogV2.NewDatasetAttributesRequestWithDefaults()
 
 	attributes.Name = data.Name.ValueString()
 	var principals []string
@@ -268,17 +266,16 @@ func (r *DatasetResource) buildCreateDatasetRequestBody(ctx context.Context, dat
 	}
 
 	attributes.ProductFilters = ddProductFilters
-	body.Data.SetAttributes(attributes)
+	body.SetAttributes(attributes)
+	req := datadogV2.NewDatasetCreateRequest(*body)
 
-	return body, diags
+	return req, diags
 }
 
 func (r *DatasetResource) buildUpdateDatasetRequestBody(ctx context.Context, data *DatasetModel) (*datadogV2.DatasetUpdateRequest, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
-	body := datadogV2.NewDatasetUpdateRequestWithDefaults()
-	attributes := *datadogV2.NewDatasetAttributesWithDefaults()
-	// TODO update with NewDatasetRequestWithDefaults from API spec change
-	body.Data = *datadogV2.NewDataset(attributes, "dataset")
+	body := datadogV2.NewDatasetRequestWithDefaults()
+	attributes := *datadogV2.NewDatasetAttributesRequestWithDefaults()
 
 	attributes.Name = data.Name.ValueString()
 	var principals []string
@@ -294,9 +291,10 @@ func (r *DatasetResource) buildUpdateDatasetRequestBody(ctx context.Context, dat
 		}
 		ddProductFilters = append(ddProductFilters, ddFilter)
 	}
-
 	attributes.ProductFilters = ddProductFilters
-	body.Data.SetAttributes(attributes)
 
-	return body, diags
+	body.SetAttributes(attributes)
+	req := datadogV2.NewDatasetUpdateRequest(*body)
+
+	return req, diags
 }

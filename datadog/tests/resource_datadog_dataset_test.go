@@ -112,7 +112,7 @@ func testAccCheckDatadogDatasetUpdate(datasetName string, product string) string
 	return fmt.Sprintf(`
 		resource "datadog_dataset" "foo" {
 			name = "%s-updated"
-			principals = ["role:94172442-be03-11e9-a77a-3b7612558ac1", "team:efafb1de-fca3-4043-9703-660f82274583"]
+			principals = ["role:94172442-be03-11e9-a77a-3b7612558ac1", "team:4ca6f4c0-88e4-4d42-b7bd-dea73da5c59e"]
 			
 			product_filters {
 				product = "%s"

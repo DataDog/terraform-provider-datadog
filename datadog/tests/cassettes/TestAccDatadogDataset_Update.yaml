@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"name":"tf-test-Update-1755283641","principals":["role:94172442-be03-11e9-a77a-3b7612558ac1"],"product_filters":[{"filters":["@application.id:ce9843b0-7a45-453c-a831-55dd15f85141"],"product":"rum"}]},"type":"dataset"}}
+            {"data":{"attributes":{"name":"tf-test-Update-1755531063","principals":["role:94172442-be03-11e9-a77a-3b7612558ac1"],"product_filters":[{"filters":["@application.id:ce9843b0-7a45-453c-a831-55dd15f85141"],"product":"rum"}]},"type":"dataset"}}
         form: {}
         headers:
             Accept:
@@ -32,13 +32,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"type":"dataset","id":"3708edff-856d-4f94-a66f-e1460754a1d0","attributes":{"name":"tf-test-Update-1755283641","product_filters":[{"product":"rum","filters":["@application.id:ce9843b0-7a45-453c-a831-55dd15f85141"]}],"principals":["role:94172442-be03-11e9-a77a-3b7612558ac1"]}}}
+            {"data":{"type":"dataset","id":"80353e89-6392-4832-a1bf-e011905ceaca","attributes":{"name":"tf-test-Update-1755531063","product_filters":[{"product":"rum","filters":["@application.id:ce9843b0-7a45-453c-a831-55dd15f85141"]}],"principals":["role:94172442-be03-11e9-a77a-3b7612558ac1"]}}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 144.454584ms
+        duration: 155.849084ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -55,7 +55,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/datasets/3708edff-856d-4f94-a66f-e1460754a1d0
+        url: https://api.datadoghq.com/api/v2/datasets/80353e89-6392-4832-a1bf-e011905ceaca
         method: GET
       response:
         proto: HTTP/1.1
@@ -67,13 +67,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"type":"dataset","id":"3708edff-856d-4f94-a66f-e1460754a1d0","attributes":{"name":"tf-test-Update-1755283641","product_filters":[{"product":"rum","filters":["@application.id:ce9843b0-7a45-453c-a831-55dd15f85141"]}],"principals":["role:94172442-be03-11e9-a77a-3b7612558ac1"]}}}
+            {"data":{"type":"dataset","id":"80353e89-6392-4832-a1bf-e011905ceaca","attributes":{"name":"tf-test-Update-1755531063","product_filters":[{"product":"rum","filters":["@application.id:ce9843b0-7a45-453c-a831-55dd15f85141"]}],"principals":["role:94172442-be03-11e9-a77a-3b7612558ac1"]}}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 76.996916ms
+        duration: 79.055292ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -90,7 +90,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/datasets/3708edff-856d-4f94-a66f-e1460754a1d0
+        url: https://api.datadoghq.com/api/v2/datasets/80353e89-6392-4832-a1bf-e011905ceaca
         method: GET
       response:
         proto: HTTP/1.1
@@ -102,13 +102,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"type":"dataset","id":"3708edff-856d-4f94-a66f-e1460754a1d0","attributes":{"name":"tf-test-Update-1755283641","product_filters":[{"product":"rum","filters":["@application.id:ce9843b0-7a45-453c-a831-55dd15f85141"]}],"principals":["role:94172442-be03-11e9-a77a-3b7612558ac1"]}}}
+            {"data":{"type":"dataset","id":"80353e89-6392-4832-a1bf-e011905ceaca","attributes":{"name":"tf-test-Update-1755531063","product_filters":[{"product":"rum","filters":["@application.id:ce9843b0-7a45-453c-a831-55dd15f85141"]}],"principals":["role:94172442-be03-11e9-a77a-3b7612558ac1"]}}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 162.209333ms
+        duration: 92.759958ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -125,7 +125,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/datasets/3708edff-856d-4f94-a66f-e1460754a1d0
+        url: https://api.datadoghq.com/api/v2/datasets/80353e89-6392-4832-a1bf-e011905ceaca
         method: GET
       response:
         proto: HTTP/1.1
@@ -137,13 +137,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"type":"dataset","id":"3708edff-856d-4f94-a66f-e1460754a1d0","attributes":{"name":"tf-test-Update-1755283641","product_filters":[{"product":"rum","filters":["@application.id:ce9843b0-7a45-453c-a831-55dd15f85141"]}],"principals":["role:94172442-be03-11e9-a77a-3b7612558ac1"]}}}
+            {"data":{"type":"dataset","id":"80353e89-6392-4832-a1bf-e011905ceaca","attributes":{"name":"tf-test-Update-1755531063","product_filters":[{"product":"rum","filters":["@application.id:ce9843b0-7a45-453c-a831-55dd15f85141"]}],"principals":["role:94172442-be03-11e9-a77a-3b7612558ac1"]}}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 68.23975ms
+        duration: 93.53675ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -156,14 +156,14 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"name":"tf-test-Update-1755283641-updated","principals":["role:94172442-be03-11e9-a77a-3b7612558ac1","team:efafb1de-fca3-4043-9703-660f82274583"],"product_filters":[{"filters":["@application.id:ce9843b0-7a45-453c-a831-55dd15f85141"],"product":"rum"},{"filters":["service:test"],"product":"apm"}]},"type":"dataset"}}
+            {"data":{"attributes":{"name":"tf-test-Update-1755531063-updated","principals":["role:94172442-be03-11e9-a77a-3b7612558ac1","team:4ca6f4c0-88e4-4d42-b7bd-dea73da5c59e"],"product_filters":[{"filters":["@application.id:ce9843b0-7a45-453c-a831-55dd15f85141"],"product":"rum"},{"filters":["service:test"],"product":"apm"}]},"type":"dataset"}}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/datasets/3708edff-856d-4f94-a66f-e1460754a1d0
+        url: https://api.datadoghq.com/api/v2/datasets/80353e89-6392-4832-a1bf-e011905ceaca
         method: PUT
       response:
         proto: HTTP/1.1
@@ -175,13 +175,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"type":"dataset","id":"3708edff-856d-4f94-a66f-e1460754a1d0","attributes":{"name":"tf-test-Update-1755283641-updated","product_filters":[{"product":"apm","filters":["service:test"]},{"product":"rum","filters":["@application.id:ce9843b0-7a45-453c-a831-55dd15f85141"]}],"principals":["role:94172442-be03-11e9-a77a-3b7612558ac1","team:efafb1de-fca3-4043-9703-660f82274583"]}}}
+            {"data":{"type":"dataset","id":"80353e89-6392-4832-a1bf-e011905ceaca","attributes":{"name":"tf-test-Update-1755531063-updated","product_filters":[{"product":"apm","filters":["service:test"]},{"product":"rum","filters":["@application.id:ce9843b0-7a45-453c-a831-55dd15f85141"]}],"principals":["role:94172442-be03-11e9-a77a-3b7612558ac1","team:4ca6f4c0-88e4-4d42-b7bd-dea73da5c59e"]}}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 129.927167ms
+        duration: 165.750083ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -198,7 +198,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/datasets/3708edff-856d-4f94-a66f-e1460754a1d0
+        url: https://api.datadoghq.com/api/v2/datasets/80353e89-6392-4832-a1bf-e011905ceaca
         method: GET
       response:
         proto: HTTP/1.1
@@ -210,13 +210,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"type":"dataset","id":"3708edff-856d-4f94-a66f-e1460754a1d0","attributes":{"name":"tf-test-Update-1755283641-updated","product_filters":[{"product":"apm","filters":["service:test"]},{"product":"rum","filters":["@application.id:ce9843b0-7a45-453c-a831-55dd15f85141"]}],"principals":["role:94172442-be03-11e9-a77a-3b7612558ac1","team:efafb1de-fca3-4043-9703-660f82274583"]}}}
+            {"data":{"type":"dataset","id":"80353e89-6392-4832-a1bf-e011905ceaca","attributes":{"name":"tf-test-Update-1755531063-updated","product_filters":[{"product":"apm","filters":["service:test"]},{"product":"rum","filters":["@application.id:ce9843b0-7a45-453c-a831-55dd15f85141"]}],"principals":["role:94172442-be03-11e9-a77a-3b7612558ac1","team:4ca6f4c0-88e4-4d42-b7bd-dea73da5c59e"]}}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 88.14475ms
+        duration: 105.537209ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -233,7 +233,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/datasets/3708edff-856d-4f94-a66f-e1460754a1d0
+        url: https://api.datadoghq.com/api/v2/datasets/80353e89-6392-4832-a1bf-e011905ceaca
         method: GET
       response:
         proto: HTTP/1.1
@@ -245,13 +245,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"type":"dataset","id":"3708edff-856d-4f94-a66f-e1460754a1d0","attributes":{"name":"tf-test-Update-1755283641-updated","product_filters":[{"product":"apm","filters":["service:test"]},{"product":"rum","filters":["@application.id:ce9843b0-7a45-453c-a831-55dd15f85141"]}],"principals":["role:94172442-be03-11e9-a77a-3b7612558ac1","team:efafb1de-fca3-4043-9703-660f82274583"]}}}
+            {"data":{"type":"dataset","id":"80353e89-6392-4832-a1bf-e011905ceaca","attributes":{"name":"tf-test-Update-1755531063-updated","product_filters":[{"product":"apm","filters":["service:test"]},{"product":"rum","filters":["@application.id:ce9843b0-7a45-453c-a831-55dd15f85141"]}],"principals":["role:94172442-be03-11e9-a77a-3b7612558ac1","team:4ca6f4c0-88e4-4d42-b7bd-dea73da5c59e"]}}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 89.505417ms
+        duration: 86.1695ms
     - id: 7
       request:
         proto: HTTP/1.1
@@ -268,7 +268,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/datasets/3708edff-856d-4f94-a66f-e1460754a1d0
+        url: https://api.datadoghq.com/api/v2/datasets/80353e89-6392-4832-a1bf-e011905ceaca
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -284,4 +284,4 @@ interactions:
                 - application/json
         status: 204 No Content
         code: 204
-        duration: 97.405792ms
+        duration: 90.514125ms
