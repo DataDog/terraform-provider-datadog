@@ -167,6 +167,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_dashboard_topology_map_test":                     "dashboards",
 	"tests/resource_datadog_dashboard_trace_service_test":                    "dashboards",
 	"tests/resource_datadog_dashboard_treemap_test":                          "dashboards",
+	"tests/resource_datadog_dataset_test":                                    "dataset",
 	"tests/resource_datadog_domain_allowlist_test":                           "domain-allowlist",
 	"tests/resource_datadog_security_notification_rule_test":                 "security_notification_rule",
 	"tests/resource_datadog_observability_pipeline_test":                     "observability-pipelines",
@@ -494,6 +495,12 @@ func uniqueAWSAccessKeyID(ctx context.Context, t *testing.T) string {
 		result = fmt.Sprintf("%s%s", result, strconv.Itoa(int(r)))
 	}
 	return result[:16]
+}
+
+// uniqueDatasetName generates a unique string that is under the 40 characters dataset name limit
+func uniqueDatasetName(ctx context.Context, t *testing.T) string {
+	result := fmt.Sprintf("tf-test-%s-%d", strings.TrimPrefix(SecurePath(t.Name()), "TestAccDatadogDataset_"), clockFromContext(ctx).Now().Unix())
+	return result
 }
 
 func removeURLSecrets(u *url.URL) *url.URL {
