@@ -481,7 +481,6 @@ resource "datadog_dashboard_json" "dashboard_json" {
       }
    ],
    "layout_type":"ordered",
-   "is_read_only":true,
    "notify_list":[
 
    ],
@@ -525,6 +524,8 @@ EOF
 ## Import
 
 Import is supported using the following syntax:
+
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
 
 ```shell
 terraform import datadog_dashboard_json.my_service_dashboard sv7-gyh-kas

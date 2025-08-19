@@ -58,7 +58,7 @@ func (r *workflowAutomationResource) Metadata(_ context.Context, request resourc
 
 func (r *workflowAutomationResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "Enables the creation and management of Datadog workflows using Workflow Automation. To easily export a workflow for use with Terraform, click the export button in the Datadog Workflow Automation UI cog menu. This resource requires scoped application keys for authentication.",
+		Description: "Enables the creation and management of Datadog workflows using Workflow Automation. To easily export a workflow for use with Terraform, use the export button in the Datadog Workflow Automation UI. This resource requires a [registered application key](https://registry.terraform.io/providers/DataDog/datadog/latest/docs/resources/app_key_registration).",
 		Attributes: map[string]schema.Attribute{
 			"id": utils.ResourceIDAttribute(),
 			"name": schema.StringAttribute{
@@ -146,8 +146,15 @@ func (r *workflowAutomationResource) Read(ctx context.Context, request resource.
 		return
 	}
 
-	readResp, err := readWorkflow(r.Auth, r.Api, state.ID.ValueString())
+	readResp, err, httpStatusCode := readWorkflow(r.Auth, r.Api, state.ID.ValueString())
 	if err != nil {
+		if httpStatusCode == http.StatusNotFound {
+			// If the workflow is not found, we log a warning and remove the resource from state. This may be due to changes in the UI.
+			response.Diagnostics.AddWarning("The workflow with ID '"+state.ID.ValueString()+"' is not found. It may have been deleted outside of Terraform.", err.Error())
+			response.State.RemoveResource(ctx)
+			return
+		}
+
 		response.Diagnostics.AddError("Could not read workflow", err.Error())
 		return
 	}
@@ -317,22 +324,22 @@ func apiResponseToWorkflowAutomationResourceModel(workflow *datadogV2.GetWorkflo
 }
 
 // Read logic is shared between data source and resource
-func readWorkflow(authCtx context.Context, api *datadogV2.WorkflowAutomationApi, id string) (*datadogV2.GetWorkflowResponse, error) {
+func readWorkflow(authCtx context.Context, api *datadogV2.WorkflowAutomationApi, id string) (*datadogV2.GetWorkflowResponse, error, int) {
 	workflow, httpResponse, err := api.GetWorkflow(authCtx, id)
 	if err != nil {
 		if httpResponse != nil {
 			body, err := io.ReadAll(httpResponse.Body)
 			if err != nil {
-				return nil, fmt.Errorf("could not read error response")
+				return nil, fmt.Errorf("could not read error response"), httpResponse.StatusCode
 			}
-			return nil, fmt.Errorf("%s", body)
+			return nil, fmt.Errorf("%s", body), httpResponse.StatusCode
 		}
-		return nil, err
+		return nil, err, httpResponse.StatusCode
 	}
 
 	if _, ok := workflow.GetDataOk(); !ok {
-		return nil, fmt.Errorf("workflow not found")
+		return nil, fmt.Errorf("workflow not found"), httpResponse.StatusCode
 	}
 
-	return &workflow, nil
+	return &workflow, nil, httpResponse.StatusCode
 }

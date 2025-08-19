@@ -51,6 +51,8 @@ resource "datadog_team_membership" "foo" {
 
 Import is supported using the following syntax:
 
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
+
 ```shell
 # This resource is imported using team_id and user_id seperated by `:`.
 

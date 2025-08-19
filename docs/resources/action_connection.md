@@ -3,12 +3,12 @@
 page_title: "datadog_action_connection Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  A connection that can be used in Actions, including in the Workflow Automation and App Builder products.
+  A connection that can be used in Actions, including in the Workflow Automation and App Builder products. This resource requires a registered application key https://registry.terraform.io/providers/DataDog/datadog/latest/docs/resources/app_key_registration.
 ---
 
 # datadog_action_connection (Resource)
 
-A connection that can be used in Actions, including in the Workflow Automation and App Builder products.
+A connection that can be used in Actions, including in the Workflow Automation and App Builder products. This resource requires a [registered application key](https://registry.terraform.io/providers/DataDog/datadog/latest/docs/resources/app_key_registration).
 
 ## Example Usage
 
@@ -180,6 +180,8 @@ Optional:
 ## Import
 
 Import is supported using the following syntax:
+
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
 
 ```shell
 terraform import datadog_action_connection.my_connection 11111111-2222-3333-4444-555555555555

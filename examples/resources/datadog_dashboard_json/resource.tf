@@ -466,7 +466,6 @@ resource "datadog_dashboard_json" "dashboard_json" {
       }
    ],
    "layout_type":"ordered",
-   "is_read_only":true,
    "notify_list":[
 
    ],

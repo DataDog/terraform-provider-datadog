@@ -2,6 +2,9 @@ package fwprovider
 
 import (
 	"context"
+	"encoding/json"
+	"log"
+	"os"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
 
@@ -15,6 +18,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider/observability_pipeline"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
@@ -40,21 +44,22 @@ type configModel struct {
 	Destinations destinationsModel `tfsdk:"destinations"`
 }
 type sourcesModel struct {
-	DatadogAgentSource       []*datadogAgentSourceModel       `tfsdk:"datadog_agent"`
-	KafkaSource              []*kafkaSourceModel              `tfsdk:"kafka"`
-	RsyslogSource            []*rsyslogSourceModel            `tfsdk:"rsyslog"`
-	SyslogNgSource           []*syslogNgSourceModel           `tfsdk:"syslog_ng"`
-	SumoLogicSource          []*sumoLogicSourceModel          `tfsdk:"sumo_logic"`
-	FluentdSource            []*fluentdSourceModel            `tfsdk:"fluentd"`
-	FluentBitSource          []*fluentBitSourceModel          `tfsdk:"fluent_bit"`
-	HttpServerSource         []*httpServerSourceModel         `tfsdk:"http_server"`
-	AmazonS3Source           []*amazonS3SourceModel           `tfsdk:"amazon_s3"`
-	SplunkHecSource          []*splunkHecSourceModel          `tfsdk:"splunk_hec"`
-	SplunkTcpSource          []*splunkTcpSourceModel          `tfsdk:"splunk_tcp"`
-	AmazonDataFirehoseSource []*amazonDataFirehoseSourceModel `tfsdk:"amazon_data_firehose"`
-	HttpClientSource         []*httpClientSourceModel         `tfsdk:"http_client"`
-	GooglePubSubSource       []*googlePubSubSourceModel       `tfsdk:"google_pubsub"`
-	LogstashSource           []*logstashSourceModel           `tfsdk:"logstash"`
+	DatadogAgentSource       []*datadogAgentSourceModel                  `tfsdk:"datadog_agent"`
+	KafkaSource              []*kafkaSourceModel                         `tfsdk:"kafka"`
+	RsyslogSource            []*rsyslogSourceModel                       `tfsdk:"rsyslog"`
+	SyslogNgSource           []*syslogNgSourceModel                      `tfsdk:"syslog_ng"`
+	SumoLogicSource          []*sumoLogicSourceModel                     `tfsdk:"sumo_logic"`
+	FluentdSource            []*fluentdSourceModel                       `tfsdk:"fluentd"`
+	FluentBitSource          []*fluentBitSourceModel                     `tfsdk:"fluent_bit"`
+	HttpServerSource         []*httpServerSourceModel                    `tfsdk:"http_server"`
+	AmazonS3Source           []*amazonS3SourceModel                      `tfsdk:"amazon_s3"`
+	SplunkHecSource          []*splunkHecSourceModel                     `tfsdk:"splunk_hec"`
+	SplunkTcpSource          []*splunkTcpSourceModel                     `tfsdk:"splunk_tcp"`
+	AmazonDataFirehoseSource []*amazonDataFirehoseSourceModel            `tfsdk:"amazon_data_firehose"`
+	HttpClientSource         []*httpClientSourceModel                    `tfsdk:"http_client"`
+	GooglePubSubSource       []*googlePubSubSourceModel                  `tfsdk:"google_pubsub"`
+	LogstashSource           []*logstashSourceModel                      `tfsdk:"logstash"`
+	SocketSource             []*observability_pipeline.SocketSourceModel `tfsdk:"socket"`
 }
 
 type logstashSourceModel struct {
@@ -86,10 +91,10 @@ type kafkaSourceSaslModel struct {
 }
 
 type amazonS3SourceModel struct {
-	Id     types.String  `tfsdk:"id"`     // Unique identifier for the component
-	Region types.String  `tfsdk:"region"` // AWS region where the S3 bucket resides
-	Auth   *awsAuthModel `tfsdk:"auth"`   // AWS authentication credentials
-	Tls    *tlsModel     `tfsdk:"tls"`    // TLS encryption configuration
+	Id     types.String                         `tfsdk:"id"`     // Unique identifier for the component
+	Region types.String                         `tfsdk:"region"` // AWS region where the S3 bucket resides
+	Auth   *observability_pipeline.AwsAuthModel `tfsdk:"auth"`   // AWS authentication credentials
+	Tls    *tlsModel                            `tfsdk:"tls"`    // TLS encryption configuration
 }
 
 type tlsModel struct {
@@ -101,22 +106,24 @@ type tlsModel struct {
 // Processor models
 
 type processorsModel struct {
-	FilterProcessor               []*filterProcessorModel               `tfsdk:"filter"`
-	ParseJsonProcessor            []*parseJsonProcessorModel            `tfsdk:"parse_json"`
-	AddFieldsProcessor            []*addFieldsProcessor                 `tfsdk:"add_fields"`
-	RenameFieldsProcessor         []*renameFieldsProcessorModel         `tfsdk:"rename_fields"`
-	RemoveFieldsProcessor         []*removeFieldsProcessorModel         `tfsdk:"remove_fields"`
-	QuotaProcessor                []*quotaProcessorModel                `tfsdk:"quota"`
-	GenerateMetricsProcessor      []*generateMetricsProcessorModel      `tfsdk:"generate_datadog_metrics"`
-	ParseGrokProcessor            []*parseGrokProcessorModel            `tfsdk:"parse_grok"`
-	SampleProcessor               []*sampleProcessorModel               `tfsdk:"sample"`
-	SensitiveDataScannerProcessor []*sensitiveDataScannerProcessorModel `tfsdk:"sensitive_data_scanner"`
-	DedupeProcessor               []*dedupeProcessorModel               `tfsdk:"dedupe"`
-	ReduceProcessor               []*reduceProcessorModel               `tfsdk:"reduce"`
-	ThrottleProcessor             []*throttleProcessorModel             `tfsdk:"throttle"`
-	AddEnvVarsProcessor           []*addEnvVarsProcessorModel           `tfsdk:"add_env_vars"`
-	EnrichmentTableProcessor      []*enrichmentTableProcessorModel      `tfsdk:"enrichment_table"`
-	OcsfMapperProcessor           []*ocsfMapperProcessorModel           `tfsdk:"ocsf_mapper"`
+	FilterProcessor               []*filterProcessorModel                             `tfsdk:"filter"`
+	ParseJsonProcessor            []*parseJsonProcessorModel                          `tfsdk:"parse_json"`
+	AddFieldsProcessor            []*addFieldsProcessor                               `tfsdk:"add_fields"`
+	RenameFieldsProcessor         []*renameFieldsProcessorModel                       `tfsdk:"rename_fields"`
+	RemoveFieldsProcessor         []*removeFieldsProcessorModel                       `tfsdk:"remove_fields"`
+	QuotaProcessor                []*quotaProcessorModel                              `tfsdk:"quota"`
+	GenerateMetricsProcessor      []*generateMetricsProcessorModel                    `tfsdk:"generate_datadog_metrics"`
+	ParseGrokProcessor            []*parseGrokProcessorModel                          `tfsdk:"parse_grok"`
+	SampleProcessor               []*sampleProcessorModel                             `tfsdk:"sample"`
+	SensitiveDataScannerProcessor []*sensitiveDataScannerProcessorModel               `tfsdk:"sensitive_data_scanner"`
+	DedupeProcessor               []*dedupeProcessorModel                             `tfsdk:"dedupe"`
+	ReduceProcessor               []*reduceProcessorModel                             `tfsdk:"reduce"`
+	ThrottleProcessor             []*throttleProcessorModel                           `tfsdk:"throttle"`
+	AddEnvVarsProcessor           []*addEnvVarsProcessorModel                         `tfsdk:"add_env_vars"`
+	EnrichmentTableProcessor      []*enrichmentTableProcessorModel                    `tfsdk:"enrichment_table"`
+	OcsfMapperProcessor           []*ocsfMapperProcessorModel                         `tfsdk:"ocsf_mapper"`
+	DatadogTagsProcessor          []*observability_pipeline.DatadogTagsProcessorModel `tfsdk:"datadog_tags"`
+	CustomProcessor               []*observability_pipeline.CustomProcessorModel      `tfsdk:"custom_processor"`
 }
 
 type ocsfMapperProcessorModel struct {
@@ -283,20 +290,24 @@ type fieldValue struct {
 // Destination models
 
 type destinationsModel struct {
-	DatadogLogsDestination        []*datadogLogsDestinationModel       `tfsdk:"datadog_logs"`
-	GoogleCloudStorageDestination []*gcsDestinationModel               `tfsdk:"google_cloud_storage"`
-	SplunkHecDestination          []*splunkHecDestinationModel         `tfsdk:"splunk_hec"`
-	SumoLogicDestination          []*sumoLogicDestinationModel         `tfsdk:"sumo_logic"`
-	RsyslogDestination            []*rsyslogDestinationModel           `tfsdk:"rsyslog"`
-	SyslogNgDestination           []*syslogNgDestinationModel          `tfsdk:"syslog_ng"`
-	ElasticsearchDestination      []*elasticsearchDestinationModel     `tfsdk:"elasticsearch"`
-	AzureStorageDestination       []*azureStorageDestinationModel      `tfsdk:"azure_storage"`
-	MicrosoftSentinelDestination  []*microsoftSentinelDestinationModel `tfsdk:"microsoft_sentinel"`
-	GoogleChronicleDestination    []*googleChronicleDestinationModel   `tfsdk:"google_chronicle"`
-	NewRelicDestination           []*newRelicDestinationModel          `tfsdk:"new_relic"`
-	SentinelOneDestination        []*sentinelOneDestinationModel       `tfsdk:"sentinel_one"`
-	OpenSearchDestination         []*opensearchDestinationModel        `tfsdk:"opensearch"`
-	AmazonOpenSearchDestination   []*amazonOpenSearchDestinationModel  `tfsdk:"amazon_opensearch"`
+	DatadogLogsDestination            []*datadogLogsDestinationModel                                   `tfsdk:"datadog_logs"`
+	GoogleCloudStorageDestination     []*gcsDestinationModel                                           `tfsdk:"google_cloud_storage"`
+	SplunkHecDestination              []*splunkHecDestinationModel                                     `tfsdk:"splunk_hec"`
+	SumoLogicDestination              []*sumoLogicDestinationModel                                     `tfsdk:"sumo_logic"`
+	RsyslogDestination                []*rsyslogDestinationModel                                       `tfsdk:"rsyslog"`
+	SyslogNgDestination               []*syslogNgDestinationModel                                      `tfsdk:"syslog_ng"`
+	ElasticsearchDestination          []*elasticsearchDestinationModel                                 `tfsdk:"elasticsearch"`
+	AzureStorageDestination           []*azureStorageDestinationModel                                  `tfsdk:"azure_storage"`
+	MicrosoftSentinelDestination      []*microsoftSentinelDestinationModel                             `tfsdk:"microsoft_sentinel"`
+	GoogleChronicleDestination        []*googleChronicleDestinationModel                               `tfsdk:"google_chronicle"`
+	NewRelicDestination               []*newRelicDestinationModel                                      `tfsdk:"new_relic"`
+	SentinelOneDestination            []*sentinelOneDestinationModel                                   `tfsdk:"sentinel_one"`
+	OpenSearchDestination             []*opensearchDestinationModel                                    `tfsdk:"opensearch"`
+	AmazonOpenSearchDestination       []*amazonOpenSearchDestinationModel                              `tfsdk:"amazon_opensearch"`
+	SocketDestination                 []*observability_pipeline.SocketDestinationModel                 `tfsdk:"socket"`
+	AmazonS3Destination               []*observability_pipeline.AmazonS3DestinationModel               `tfsdk:"amazon_s3"`
+	AmazonSecurityLakeDestination     []*observability_pipeline.AmazonSecurityLakeDestinationModel     `tfsdk:"amazon_security_lake"`
+	CrowdStrikeNextGenSiemDestination []*observability_pipeline.CrowdStrikeNextGenSiemDestinationModel `tfsdk:"crowdstrike_next_gen_siem"`
 }
 
 type amazonOpenSearchDestinationModel struct {
@@ -579,15 +590,9 @@ type sumoLogicSourceModel struct {
 }
 
 type amazonDataFirehoseSourceModel struct {
-	Id   types.String  `tfsdk:"id"`
-	Auth *awsAuthModel `tfsdk:"auth"`
-	Tls  *tlsModel     `tfsdk:"tls"`
-}
-
-type awsAuthModel struct {
-	AssumeRole  types.String `tfsdk:"assume_role"`
-	ExternalId  types.String `tfsdk:"external_id"`
-	SessionName types.String `tfsdk:"session_name"`
+	Id   types.String                         `tfsdk:"id"`
+	Auth *observability_pipeline.AwsAuthModel `tfsdk:"auth"`
+	Tls  *tlsModel                            `tfsdk:"tls"`
 }
 
 type httpClientSourceModel struct {
@@ -610,6 +615,16 @@ type googlePubSubSourceModel struct {
 
 type gcpAuthModel struct {
 	CredentialsFile types.String `tfsdk:"credentials_file"`
+}
+
+type amazonSecurityLakeDestinationModel struct {
+	Id               types.String                         `tfsdk:"id"`
+	Inputs           types.List                           `tfsdk:"inputs"`
+	Bucket           types.String                         `tfsdk:"bucket"`
+	Region           types.String                         `tfsdk:"region"`
+	CustomSourceName types.String                         `tfsdk:"custom_source_name"`
+	Tls              *tlsModel                            `tfsdk:"tls"`
+	Auth             *observability_pipeline.AwsAuthModel `tfsdk:"auth"`
 }
 
 func NewObservabilitPipelineResource() resource.Resource {
@@ -774,7 +789,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 									},
 									Blocks: map[string]schema.Block{
 										"auth": schema.SingleNestedBlock{
-											Description: "AWS authentication credentials used for accessing AWS services such as S3. If omitted, the system’s default credentials are used (for example, the IAM role and environment variables).",
+											Description: "AWS authentication credentials used for accessing AWS services such as S3. If omitted, the system's default credentials are used (for example, the IAM role and environment variables).",
 											Attributes: map[string]schema.Attribute{
 												"assume_role": schema.StringAttribute{
 													Optional:    true,
@@ -880,7 +895,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 									},
 									Blocks: map[string]schema.Block{
 										"auth": schema.SingleNestedBlock{
-											Description: "AWS authentication credentials used for accessing AWS services such as S3. If omitted, the system’s default credentials are used (for example, the IAM role and environment variables).",
+											Description: "AWS authentication credentials used for accessing AWS services such as S3. If omitted, the system's default credentials are used (for example, the IAM role and environment variables).",
 											Attributes: map[string]schema.Attribute{
 												"assume_role": schema.StringAttribute{
 													Optional:    true,
@@ -979,6 +994,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 									},
 								},
 							},
+							"socket": observability_pipeline.SocketSourceSchema(),
 						},
 					},
 					"processors": schema.SingleNestedBlock{
@@ -1817,6 +1833,8 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 									},
 								},
 							},
+							"datadog_tags":     observability_pipeline.DatadogTagsProcessorSchema(),
+							"custom_processor": observability_pipeline.CustomProcessorSchema(),
 						},
 					},
 					"destinations": schema.SingleNestedBlock{
@@ -2248,6 +2266,10 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 									},
 								},
 							},
+							"socket":                    observability_pipeline.SocketDestinationSchema(),
+							"amazon_s3":                 observability_pipeline.AmazonS3DestinationSchema(),
+							"amazon_security_lake":      observability_pipeline.AmazonSecurityLakeDestinationSchema(),
+							"crowdstrike_next_gen_siem": observability_pipeline.CrowdStrikeNextGenSiemDestinationSchema(),
 						},
 					},
 				},
@@ -2266,7 +2288,7 @@ func tlsSchema() schema.SingleNestedBlock {
 			},
 			"ca_file": schema.StringAttribute{
 				Optional:    true,
-				Description: "Path to the Certificate Authority (CA) file used to validate the server’s TLS certificate.",
+				Description: "Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.",
 			},
 			"key_file": schema.StringAttribute{
 				Optional:    true,
@@ -2296,6 +2318,12 @@ func (r *observabilityPipelineResource) Create(ctx context.Context, req resource
 	createReq := datadogV2.NewObservabilityPipelineSpecWithDefaults()
 	createReq.Data = *datadogV2.NewObservabilityPipelineSpecDataWithDefaults()
 	createReq.Data.Attributes = body.Data.Attributes
+
+	// Used for debugging purposes in the TF tests to display the payload sent to the Public API
+	if os.Getenv("TF_LOG") == "DEBUG" {
+		reqBytes, _ := json.MarshalIndent(createReq, "", "  ")
+		log.Printf("[DEBUG] Creating pipeline with request: %s", string(reqBytes))
+	}
 
 	result, _, err := r.Api.CreatePipeline(r.Auth, *createReq)
 	if err != nil {
@@ -2443,6 +2471,9 @@ func expandPipeline(ctx context.Context, state *observabilityPipelineModel) (*da
 	for _, l := range state.Config.Sources.LogstashSource {
 		config.Sources = append(config.Sources, expandLogstashSource(l))
 	}
+	for _, s := range state.Config.Sources.SocketSource {
+		config.Sources = append(config.Sources, observability_pipeline.ExpandSocketSource(s))
+	}
 
 	// Processors
 	for _, p := range state.Config.Processors.FilterProcessor {
@@ -2481,6 +2512,9 @@ func expandPipeline(ctx context.Context, state *observabilityPipelineModel) (*da
 	for _, p := range state.Config.Processors.OcsfMapperProcessor {
 		config.Processors = append(config.Processors, expandOcsfMapperProcessor(ctx, p))
 	}
+	for _, p := range state.Config.Processors.CustomProcessor {
+		config.Processors = append(config.Processors, observability_pipeline.ExpandCustomProcessor(ctx, p))
+	}
 	for _, p := range state.Config.Processors.ParseGrokProcessor {
 		config.Processors = append(config.Processors, expandParseGrokProcessor(ctx, p))
 	}
@@ -2492,6 +2526,9 @@ func expandPipeline(ctx context.Context, state *observabilityPipelineModel) (*da
 	}
 	for _, p := range state.Config.Processors.SensitiveDataScannerProcessor {
 		config.Processors = append(config.Processors, expandSensitiveDataScannerProcessor(ctx, p))
+	}
+	for _, p := range state.Config.Processors.DatadogTagsProcessor {
+		config.Processors = append(config.Processors, expandDatadogTagsProcessor(ctx, p))
 	}
 
 	// Destinations
@@ -2536,6 +2573,18 @@ func expandPipeline(ctx context.Context, state *observabilityPipelineModel) (*da
 	}
 	for _, d := range state.Config.Destinations.AmazonOpenSearchDestination {
 		config.Destinations = append(config.Destinations, expandAmazonOpenSearchDestination(ctx, d))
+	}
+	for _, d := range state.Config.Destinations.SocketDestination {
+		config.Destinations = append(config.Destinations, observability_pipeline.ExpandSocketDestination(ctx, d))
+	}
+	for _, d := range state.Config.Destinations.AmazonS3Destination {
+		config.Destinations = append(config.Destinations, observability_pipeline.ExpandAmazonS3Destination(ctx, d))
+	}
+	for _, d := range state.Config.Destinations.AmazonSecurityLakeDestination {
+		config.Destinations = append(config.Destinations, observability_pipeline.ExpandObservabilityPipelinesAmazonSecurityLakeDestination(ctx, d))
+	}
+	for _, d := range state.Config.Destinations.CrowdStrikeNextGenSiemDestination {
+		config.Destinations = append(config.Destinations, observability_pipeline.ExpandCrowdStrikeNextGenSiemDestination(ctx, d))
 	}
 
 	attrs.SetConfig(*config)
@@ -2603,6 +2652,9 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 		if l := flattenLogstashSource(src.ObservabilityPipelineLogstashSource); l != nil {
 			outCfg.Sources.LogstashSource = append(outCfg.Sources.LogstashSource, l)
 		}
+		if s := observability_pipeline.FlattenSocketSource(src.ObservabilityPipelineSocketSource); s != nil {
+			outCfg.Sources.SocketSource = append(outCfg.Sources.SocketSource, s)
+		}
 	}
 
 	for _, p := range cfg.GetProcessors() {
@@ -2662,6 +2714,12 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 		if f := flattenOcsfMapperProcessor(ctx, p.ObservabilityPipelineOcsfMapperProcessor); f != nil {
 			outCfg.Processors.OcsfMapperProcessor = append(outCfg.Processors.OcsfMapperProcessor, f)
 		}
+		if f := flattenDatadogTagsProcessor(ctx, p.ObservabilityPipelineDatadogTagsProcessor); f != nil {
+			outCfg.Processors.DatadogTagsProcessor = append(outCfg.Processors.DatadogTagsProcessor, f)
+		}
+		if f := observability_pipeline.FlattenCustomProcessor(ctx, p.ObservabilityPipelineCustomProcessor); f != nil {
+			outCfg.Processors.CustomProcessor = append(outCfg.Processors.CustomProcessor, f)
+		}
 	}
 
 	for _, d := range cfg.GetDestinations() {
@@ -2709,6 +2767,18 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 		}
 		if d := flattenAmazonOpenSearchDestination(ctx, d.ObservabilityPipelineAmazonOpenSearchDestination); d != nil {
 			outCfg.Destinations.AmazonOpenSearchDestination = append(outCfg.Destinations.AmazonOpenSearchDestination, d)
+		}
+		if d := observability_pipeline.FlattenSocketDestination(ctx, d.ObservabilityPipelineSocketDestination); d != nil {
+			outCfg.Destinations.SocketDestination = append(outCfg.Destinations.SocketDestination, d)
+		}
+		if d := observability_pipeline.FlattenAmazonS3Destination(ctx, d.ObservabilityPipelineAmazonS3Destination); d != nil {
+			outCfg.Destinations.AmazonS3Destination = append(outCfg.Destinations.AmazonS3Destination, d)
+		}
+		if d := observability_pipeline.FlattenObservabilityPipelinesAmazonSecurityLakeDestination(ctx, d.ObservabilityPipelineAmazonSecurityLakeDestination); d != nil {
+			outCfg.Destinations.AmazonSecurityLakeDestination = append(outCfg.Destinations.AmazonSecurityLakeDestination, d)
+		}
+		if d := observability_pipeline.FlattenCrowdStrikeNextGenSiemDestination(ctx, d.ObservabilityPipelineCrowdStrikeNextGenSiemDestination); d != nil {
+			outCfg.Destinations.CrowdStrikeNextGenSiemDestination = append(outCfg.Destinations.CrowdStrikeNextGenSiemDestination, d)
 		}
 
 	}
@@ -3626,17 +3696,10 @@ func expandAmazonS3Source(src *amazonS3SourceModel) datadogV2.ObservabilityPipel
 	s.SetRegion(src.Region.ValueString())
 
 	if src.Auth != nil {
-		auth := datadogV2.ObservabilityPipelineAwsAuth{}
-		if !src.Auth.AssumeRole.IsNull() {
-			auth.SetAssumeRole(src.Auth.AssumeRole.ValueString())
+		auth := observability_pipeline.ExpandAwsAuth(src.Auth)
+		if auth != nil {
+			s.SetAuth(*auth)
 		}
-		if !src.Auth.ExternalId.IsNull() {
-			auth.SetExternalId(src.Auth.ExternalId.ValueString())
-		}
-		if !src.Auth.SessionName.IsNull() {
-			auth.SetSessionName(src.Auth.SessionName.ValueString())
-		}
-		s.SetAuth(auth)
 	}
 
 	if src.Tls != nil {
@@ -3658,12 +3721,8 @@ func flattenAmazonS3Source(src *datadogV2.ObservabilityPipelineAmazonS3Source) *
 		Region: types.StringValue(src.GetRegion()),
 	}
 
-	if src.Auth != nil {
-		out.Auth = &awsAuthModel{
-			AssumeRole:  types.StringPointerValue(src.Auth.AssumeRole),
-			ExternalId:  types.StringPointerValue(src.Auth.ExternalId),
-			SessionName: types.StringPointerValue(src.Auth.SessionName),
-		}
+	if auth, ok := src.GetAuthOk(); ok {
+		out.Auth = observability_pipeline.FlattenAwsAuth(auth)
 	}
 
 	if src.Tls != nil {
@@ -4248,17 +4307,10 @@ func expandAmazonDataFirehoseSource(src *amazonDataFirehoseSourceModel) datadogV
 	firehose.SetId(src.Id.ValueString())
 
 	if src.Auth != nil {
-		auth := datadogV2.ObservabilityPipelineAwsAuth{}
-		if !src.Auth.AssumeRole.IsNull() {
-			auth.SetAssumeRole(src.Auth.AssumeRole.ValueString())
+		auth := observability_pipeline.ExpandAwsAuth(src.Auth)
+		if auth != nil {
+			firehose.SetAuth(*auth)
 		}
-		if !src.Auth.ExternalId.IsNull() {
-			auth.SetExternalId(src.Auth.ExternalId.ValueString())
-		}
-		if !src.Auth.SessionName.IsNull() {
-			auth.SetSessionName(src.Auth.SessionName.ValueString())
-		}
-		firehose.SetAuth(auth)
 	}
 
 	if src.Tls != nil {
@@ -4279,12 +4331,8 @@ func flattenAmazonDataFirehoseSource(src *datadogV2.ObservabilityPipelineAmazonD
 		Id: types.StringValue(src.GetId()),
 	}
 
-	if src.Auth != nil {
-		out.Auth = &awsAuthModel{
-			AssumeRole:  types.StringPointerValue(src.Auth.AssumeRole),
-			ExternalId:  types.StringPointerValue(src.Auth.ExternalId),
-			SessionName: types.StringPointerValue(src.Auth.SessionName),
-		}
+	if auth, ok := src.GetAuthOk(); ok {
+		out.Auth = observability_pipeline.FlattenAwsAuth(auth)
 	}
 
 	if src.Tls != nil {
@@ -4963,4 +5011,41 @@ func flattenAmazonOpenSearchDestination(ctx context.Context, src *datadogV2.Obse
 	}
 
 	return model
+}
+
+func expandDatadogTagsProcessor(ctx context.Context, src *observability_pipeline.DatadogTagsProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
+	return observability_pipeline.ExpandDatadogTagsProcessor(ctx, src)
+}
+
+func flattenDatadogTagsProcessor(ctx context.Context, src *datadogV2.ObservabilityPipelineDatadogTagsProcessor) *observability_pipeline.DatadogTagsProcessorModel {
+	return observability_pipeline.FlattenDatadogTagsProcessor(ctx, src)
+}
+
+func expandObservabilityPipelinesAmazonSecurityLakeDestination(ctx context.Context, src *amazonSecurityLakeDestinationModel) datadogV2.ObservabilityPipelineConfigDestinationItem {
+	dest := datadogV2.NewObservabilityPipelineAmazonSecurityLakeDestinationWithDefaults()
+	dest.SetId(src.Id.ValueString())
+
+	var inputs []string
+	src.Inputs.ElementsAs(ctx, &inputs, false)
+	dest.SetInputs(inputs)
+
+	if !src.Bucket.IsNull() {
+		dest.SetBucket(src.Bucket.ValueString())
+	}
+	if !src.Region.IsNull() {
+		dest.SetRegion(src.Region.ValueString())
+	}
+	if !src.CustomSourceName.IsNull() {
+		dest.SetCustomSourceName(src.CustomSourceName.ValueString())
+	}
+	if src.Tls != nil {
+		dest.Tls = expandTls(src.Tls)
+	}
+	if src.Auth != nil {
+		dest.Auth = observability_pipeline.ExpandAwsAuth(src.Auth)
+	}
+
+	return datadogV2.ObservabilityPipelineConfigDestinationItem{
+		ObservabilityPipelineAmazonSecurityLakeDestination: dest,
+	}
 }

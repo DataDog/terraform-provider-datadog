@@ -3,12 +3,12 @@
 page_title: "datadog_action_connection Data Source - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  A connection that can be used in Actions, including in the Workflow Automation and App Builder products.
+  A connection that can be used in Actions, including in the Workflow Automation and App Builder products. This data source requires a registered application key https://registry.terraform.io/providers/DataDog/datadog/latest/docs/resources/app_key_registration.
 ---
 
 # datadog_action_connection (Data Source)
 
-A connection that can be used in Actions, including in the Workflow Automation and App Builder products.
+A connection that can be used in Actions, including in the Workflow Automation and App Builder products. This data source requires a [registered application key](https://registry.terraform.io/providers/DataDog/datadog/latest/docs/resources/app_key_registration).
 
 ## Example Usage
 

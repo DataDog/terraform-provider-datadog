@@ -63,6 +63,12 @@ func buildFrameworkDatadogClient(ctx context.Context, httpClient *http.Client) *
 	config.SetUnstableOperationEnabled("v2.ListScorecardRules", true)
 	config.SetUnstableOperationEnabled("v2.DeleteScorecardRule", true)
 
+  // Enable IncidentType
+	config.SetUnstableOperationEnabled("v2.CreateIncidentType", true)
+	config.SetUnstableOperationEnabled("v2.GetIncidentType", true)
+	config.SetUnstableOperationEnabled("v2.UpdateIncidentType", true)
+	config.SetUnstableOperationEnabled("v2.DeleteIncidentType", true)
+
 	if ctx.Value("http_retry_enable") == true {
 		config.RetryConfiguration.EnableRetry = true
 	}
