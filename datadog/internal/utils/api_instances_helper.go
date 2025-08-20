@@ -58,6 +58,7 @@ type ApiInstances struct {
 	csmThreatsApiV2                *datadogV2.CSMThreatsApi
 	confluentCloudApiV2            *datadogV2.ConfluentCloudApi
 	dashboardListsApiV2            *datadogV2.DashboardListsApi
+	datasetsApiV2                  *datadogV2.DatasetsApi
 	domainAllowlistApiV2           *datadogV2.DomainAllowlistApi
 	downtimesApiV2                 *datadogV2.DowntimesApi
 	eventsApiV2                    *datadogV2.EventsApi
@@ -161,6 +162,14 @@ func (i *ApiInstances) GetDashboardsApiV1() *datadogV1.DashboardsApi {
 		i.dashboardsApiV1 = datadogV1.NewDashboardsApi(i.HttpClient)
 	}
 	return i.dashboardsApiV1
+}
+
+// GetDatasetApiV2 get instance of DatasetsApi
+func (i *ApiInstances) GetDatasetsApiV2() *datadogV2.DatasetsApi {
+	if i.datasetsApiV2 == nil {
+		i.datasetsApiV2 = datadogV2.NewDatasetsApi(i.HttpClient)
+	}
+	return i.datasetsApiV2
 }
 
 // GetDowntimesApiV1 get instance of DowntimesApi

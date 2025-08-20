@@ -40,6 +40,7 @@ var Resources = []func() resource.Resource{
 	NewIntegrationAwsAccountResource,
 	NewCatalogEntityResource,
 	NewDashboardListResource,
+	NewDatasetResource,
 	NewDomainAllowlistResource,
 	NewDowntimeScheduleResource,
 	NewIntegrationAzureResource,
@@ -101,6 +102,7 @@ var Datasources = []func() datasource.DataSource{
 	NewAPIKeyDataSource,
 	NewApplicationKeyDataSource,
 	NewAwsAvailableNamespacesDataSource,
+	NewAwsIntegrationIAMPermissionsDataSource,
 	NewAwsLogsServicesDataSource,
 	NewDatadogApmRetentionFiltersOrderDataSource,
 	NewDatadogDashboardListDataSource,
@@ -542,6 +544,10 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteAWSAccount", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.GetAWSAccount", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.CreateNewAWSExternalID", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetDataset", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateDataset", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateDataset", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteDataset", true)
 
 	// Enable Observability Pipelines
 	ddClientConfig.SetUnstableOperationEnabled("v2.CreatePipeline", true)
