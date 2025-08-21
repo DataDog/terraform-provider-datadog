@@ -489,6 +489,7 @@ resource "datadog_observability_pipeline" "quota" {
         drop_events = true
         ignore_when_missing_partitions = true
         partition_fields = ["host", "env"]
+		too_many_buckets_action = "drop"
 
         limit {
           enforce = "events"
@@ -543,6 +544,10 @@ resource "datadog_observability_pipeline" "quota" {
 					resource.TestCheckResourceAttr(resourceName, "config.processors.quota.0.drop_events", "true"),
 					resource.TestCheckResourceAttr(resourceName, "config.processors.quota.0.limit.enforce", "events"),
 					resource.TestCheckResourceAttr(resourceName, "config.processors.quota.0.limit.limit", "1000"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.quota.0.ignore_when_missing_partitions", "true"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.quota.0.partition_fields.0", "host"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.quota.0.partition_fields.1", "env"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.quota.0.too_many_buckets_action", "drop"),
 					resource.TestCheckResourceAttr(resourceName, "config.processors.quota.0.overrides.0.field.0.name", "env"),
 					resource.TestCheckResourceAttr(resourceName, "config.processors.quota.0.overrides.0.field.0.value", "prod"),
 					resource.TestCheckResourceAttr(resourceName, "config.processors.quota.0.overrides.0.field.1.name", "host"),
@@ -2835,7 +2840,6 @@ resource "datadog_observability_pipeline" "quota" {
         id      = "quota-1"
         include = "*"
         name    = "MyQuota"
-        drop_events = false
         inputs  = ["source-1"]
 
         overflow_action = "drop"
