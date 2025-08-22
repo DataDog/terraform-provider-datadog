@@ -68,6 +68,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/data_source_datadog_integration_aws_available_logs_services_test": "integration-aws",
 	"tests/data_source_datadog_integration_aws_available_namespaces_test":    "integration-aws",
 	"tests/data_source_datadog_integration_aws_namespace_rules_test":         "integration-aws",
+	"tests/data_source_datadog_integration_aws_iam_permissions_test":         "integration-aws",
 	"tests/data_source_datadog_ip_ranges_test":                               "ip-ranges",
 	"tests/data_source_datadog_logs_archives_order_test":                     "logs-archive",
 	"tests/data_source_datadog_logs_indexes_order_test":                      "logs-index",
@@ -76,6 +77,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/data_source_datadog_logs_pipelines_test":                          "logs-pipelines",
 	"tests/data_source_datadog_monitor_config_policies_test":                 "monitor-config-policies",
 	"tests/data_source_datadog_monitor_config_policy_test":                   "monitor-config-policies",
+	"tests/data_source_datadog_metric_active_tags_and_aggregations_test":     "metrics",
 	"tests/data_source_datadog_metric_metadata_test":                         "metrics",
 	"tests/data_source_datadog_metric_tags_test":                             "metrics",
 	"tests/data_source_datadog_monitor_test":                                 "monitors",
@@ -125,6 +127,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_cloud_configuration_rule_test":                   "security-monitoring",
 	"tests/resource_datadog_cloud_workload_security_agent_rule_test":         "cloud_workload_security",
 	"tests/resource_datadog_action_connection_test":                          "action_connection",
+	"tests/resource_datadog_agentless_scanning_aws_scan_options_test":        "agentless-scanning",
 	"tests/resource_datadog_csm_threats_agent_rule_test":                     "cloud-workload-security",
 	"tests/resource_datadog_csm_threats_policy_test":                         "cloud-workload-security",
 	"tests/resource_datadog_dashboard_alert_graph_test":                      "dashboards",
@@ -165,6 +168,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_dashboard_topology_map_test":                     "dashboards",
 	"tests/resource_datadog_dashboard_trace_service_test":                    "dashboards",
 	"tests/resource_datadog_dashboard_treemap_test":                          "dashboards",
+	"tests/resource_datadog_dataset_test":                                    "dataset",
 	"tests/resource_datadog_domain_allowlist_test":                           "domain-allowlist",
 	"tests/resource_datadog_security_notification_rule_test":                 "security_notification_rule",
 	"tests/resource_datadog_observability_pipeline_test":                     "observability-pipelines",
@@ -492,6 +496,12 @@ func uniqueAWSAccessKeyID(ctx context.Context, t *testing.T) string {
 		result = fmt.Sprintf("%s%s", result, strconv.Itoa(int(r)))
 	}
 	return result[:16]
+}
+
+// uniqueDatasetName generates a unique string that is under the 40 characters dataset name limit
+func uniqueDatasetName(ctx context.Context, t *testing.T) string {
+	result := fmt.Sprintf("tf-test-%s-%d", strings.TrimPrefix(SecurePath(t.Name()), "TestAccDatadogDataset_"), clockFromContext(ctx).Now().Unix())
+	return result
 }
 
 func removeURLSecrets(u *url.URL) *url.URL {

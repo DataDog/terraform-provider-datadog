@@ -178,6 +178,16 @@ resource "datadog_logs_custom_pipeline" "my_pipeline_test" {
             }
         }
     }
+    processor {
+        decoder_processor {
+            name = "decoder operation"
+            is_enabled = true
+            source = "encoded_message"
+            target = "decoded_messsage"
+            binary_to_text_encoding = "base64"
+            input_representation = "utf_8"
+        }
+    }
 
 }`, uniq)
 }
@@ -350,6 +360,17 @@ resource "datadog_logs_custom_pipeline" "my_pipeline_test" {
             }
         }
     }
+    processor {
+        decoder_processor {
+            name = "decoder operation updated"
+            is_enabled = false
+            source = "hex_encoded_data"
+            target = "decoded_messsage"
+            binary_to_text_encoding = "base16"
+            input_representation = "integer"
+        }
+    }
+
 }`, uniq)
 }
 

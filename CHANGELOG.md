@@ -1,3 +1,36 @@
+## 3.72.0 (August 20, 2025)
+
+### BUGFIXES
+* [workflow_automation] Clean up state if workflow not found by @GabeWM in https://github.com/DataDog/terraform-provider-datadog/pull/3171
+### FEATURES
+* [datadog_observability_pipeline] Add v 2.6.0 components, plus Amazon S3 and Crowdstrike destinations by @tessneau in https://github.com/DataDog/terraform-provider-datadog/pull/3166
+* [datadog_integration_aws_iam_permissions] Add new data source for AWS Integration required IAM permissions by @raymondeah in https://github.com/DataDog/terraform-provider-datadog/pull/3178
+* [dataset] Dataset terraform resource by @kisharne in https://github.com/DataDog/terraform-provider-datadog/pull/3138
+
+## New Contributors
+* @kisharne made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3138
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.71.0...v3.72.0
+
+## v3.71.0 (August 13, 2025)
+
+### BUGFIXES
+* [datadog_metric_tags] chore: correct `datadogMetricTagsDataSource` interface check by @mdb in https://github.com/DataDog/terraform-provider-datadog/pull/3098
+### IMPROVEMENTS
+* [datadog_log_custom_pipeline] Add support for decoder processor by @pavel-kim-dd in https://github.com/DataDog/terraform-provider-datadog/pull/3125
+### FEATURES
+* [datadog_security_notification_rule] Add Host and IaC security notification rule types by @ltaloc in https://github.com/DataDog/terraform-provider-datadog/pull/3158
+* [datadog_metric_metadata] feat: add `datadog_metric_metadata` data source by @mdb in https://github.com/DataDog/terraform-provider-datadog/pull/3100
+* [datadog_agentless_scanning_aws_scan_options] Add Terraform provider for AWS scan options by @k3nz0 in https://github.com/DataDog/terraform-provider-datadog/pull/3164
+
+## New Contributors
+* @ikraemer-dd made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3152
+* @ltaloc made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3158
+* @pavel-kim-dd made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3125
+* @k3nz0 made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3164
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.70.0...v3.71.0
+
 ## 3.70.0 (August 6, 2025)
 
 ### BUGFIXES

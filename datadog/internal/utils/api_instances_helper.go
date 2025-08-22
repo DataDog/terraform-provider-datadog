@@ -45,6 +45,7 @@ type ApiInstances struct {
 
 	//V2 APIs
 	actionConnectionApiV2          *datadogV2.ActionConnectionApi
+	agentlessScanningApiV2         *datadogV2.AgentlessScanningApi
 	apiManagementAPIV2             *datadogV2.APIManagementApi
 	apmRetentionFiltersApiV2       *datadogV2.APMRetentionFiltersApi
 	appBuilderApiV2                *datadogV2.AppBuilderApi
@@ -57,6 +58,7 @@ type ApiInstances struct {
 	csmThreatsApiV2                *datadogV2.CSMThreatsApi
 	confluentCloudApiV2            *datadogV2.ConfluentCloudApi
 	dashboardListsApiV2            *datadogV2.DashboardListsApi
+	datasetsApiV2                  *datadogV2.DatasetsApi
 	domainAllowlistApiV2           *datadogV2.DomainAllowlistApi
 	downtimesApiV2                 *datadogV2.DowntimesApi
 	eventsApiV2                    *datadogV2.EventsApi
@@ -160,6 +162,14 @@ func (i *ApiInstances) GetDashboardsApiV1() *datadogV1.DashboardsApi {
 		i.dashboardsApiV1 = datadogV1.NewDashboardsApi(i.HttpClient)
 	}
 	return i.dashboardsApiV1
+}
+
+// GetDatasetApiV2 get instance of DatasetsApi
+func (i *ApiInstances) GetDatasetsApiV2() *datadogV2.DatasetsApi {
+	if i.datasetsApiV2 == nil {
+		i.datasetsApiV2 = datadogV2.NewDatasetsApi(i.HttpClient)
+	}
+	return i.datasetsApiV2
 }
 
 // GetDowntimesApiV1 get instance of DowntimesApi
@@ -750,6 +760,14 @@ func (i *ApiInstances) GetAppBuilderApiV2() *datadogV2.AppBuilderApi {
 		i.appBuilderApiV2 = datadogV2.NewAppBuilderApi(i.HttpClient)
 	}
 	return i.appBuilderApiV2
+}
+
+// GetAgentlessScanningApiV2 get instance of AgentlessScanningApi
+func (i *ApiInstances) GetAgentlessScanningApiV2() *datadogV2.AgentlessScanningApi {
+	if i.agentlessScanningApiV2 == nil {
+		i.agentlessScanningApiV2 = datadogV2.NewAgentlessScanningApi(i.HttpClient)
+	}
+	return i.agentlessScanningApiV2
 }
 
 // GetCloudCostManagementApiV2 get instance of CloudCostManagementApi
