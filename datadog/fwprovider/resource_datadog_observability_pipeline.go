@@ -261,6 +261,7 @@ type quotaProcessorModel struct {
 	Limit                       quotaLimitModel      `tfsdk:"limit"`
 	PartitionFields             []types.String       `tfsdk:"partition_fields"`
 	IgnoreWhenMissingPartitions types.Bool           `tfsdk:"ignore_when_missing_partitions"`
+	TooManyBucketsAction        types.String         `tfsdk:"too_many_buckets_action"`
 	Overrides                   []quotaOverrideModel `tfsdk:"overrides"`
 	OverflowAction              types.String         `tfsdk:"overflow_action"`
 }
@@ -1162,7 +1163,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 											Description: "The name of the quota.",
 										},
 										"drop_events": schema.BoolAttribute{
-											Required:    true,
+											Optional:    true,
 											Description: "Whether to drop events exceeding the limit.",
 										},
 										"ignore_when_missing_partitions": schema.BoolAttribute{
@@ -1173,6 +1174,10 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 											Optional:    true,
 											ElementType: types.StringType,
 											Description: "List of partition fields.",
+										},
+										"too_many_buckets_action": schema.StringAttribute{
+											Optional:    true,
+											Description: "The action to take when too many quota buckets are created: `drop`, `no_action`, or `overflow_routing`.",
 										},
 										"overflow_action": schema.StringAttribute{
 											Optional:    true,
@@ -1492,11 +1497,11 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 														NestedObject: schema.NestedBlockObject{
 															Attributes: map[string]schema.Attribute{
 																"name": schema.StringAttribute{
-																	Required:    true,
+																	Optional:    true,
 																	Description: "The name of the helper Grok rule.",
 																},
 																"rule": schema.StringAttribute{
-																	Required:    true,
+																	Optional:    true,
 																	Description: "The definition of the helper Grok rule.",
 																},
 															},
@@ -3009,7 +3014,6 @@ func flattenQuotaProcessor(ctx context.Context, src *datadogV2.ObservabilityPipe
 		Id:              types.StringValue(src.Id),
 		Include:         types.StringValue(src.Include),
 		Name:            types.StringValue(src.Name),
-		DropEvents:      types.BoolValue(src.DropEvents),
 		Inputs:          inputs,
 		PartitionFields: partitions,
 		Limit: quotaLimitModel{
@@ -3018,8 +3022,16 @@ func flattenQuotaProcessor(ctx context.Context, src *datadogV2.ObservabilityPipe
 		},
 	}
 
+	if src.DropEvents != nil {
+		out.DropEvents = types.BoolPointerValue(src.DropEvents)
+	}
+
 	if src.IgnoreWhenMissingPartitions != nil {
 		out.IgnoreWhenMissingPartitions = types.BoolPointerValue(src.IgnoreWhenMissingPartitions)
+	}
+
+	if src.TooManyBucketsAction != nil {
+		out.TooManyBucketsAction = types.StringValue(string(*src.TooManyBucketsAction))
 	}
 
 	if src.OverflowAction != nil {
@@ -3050,9 +3062,15 @@ func expandQuotaProcessor(ctx context.Context, src *quotaProcessorModel) datadog
 	proc.SetId(src.Id.ValueString())
 	proc.SetInclude(src.Include.ValueString())
 	proc.SetName(src.Name.ValueString())
-	proc.SetDropEvents(src.DropEvents.ValueBool())
+
+	if !src.DropEvents.IsNull() {
+		proc.SetDropEvents(src.DropEvents.ValueBool())
+	}
 	if !src.IgnoreWhenMissingPartitions.IsNull() {
 		proc.SetIgnoreWhenMissingPartitions(src.IgnoreWhenMissingPartitions.ValueBool())
+	}
+	if !src.TooManyBucketsAction.IsNull() {
+		proc.SetTooManyBucketsAction(datadogV2.ObservabilityPipelineQuotaProcessorOverflowAction(src.TooManyBucketsAction.ValueString()))
 	}
 
 	var inputs, partitions []string
