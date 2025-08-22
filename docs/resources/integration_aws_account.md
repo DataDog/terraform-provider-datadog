@@ -55,7 +55,7 @@ resource "datadog_integration_aws_account" "foo" {
     collect_custom_metrics    = true
     enabled                   = true
     namespace_filters {
-      exclude_only = ["AWS/SQS", "AWS/ElasticMapReduce"]
+      exclude_only = ["AWS/SQS", "AWS/ElasticMapReduce", "AWS/Usage]
     }
     tag_filters {
       namespace = "AWS/EC2"
@@ -209,7 +209,7 @@ Optional:
 
 Optional:
 
-- `exclude_only` (List of String) Exclude only these namespaces from metrics collection. Use [`datadog_integration_aws_available_namespaces` data source](https://registry.terraform.io/providers/DataDog/datadog/latest/docs/data-sources/integration_aws_available_namespaces) to get allowed values. Defaults to `["AWS/SQS", "AWS/ElasticMapReduce"]`. `AWS/SQS` and `AWS/ElasticMapReduce` are excluded by default to reduce your AWS CloudWatch costs from `GetMetricData` API calls.
+- `exclude_only` (List of String) Exclude only these namespaces from metrics collection. Use [`datadog_integration_aws_available_namespaces` data source](https://registry.terraform.io/providers/DataDog/datadog/latest/docs/data-sources/integration_aws_available_namespaces) to get allowed values. Defaults to `["AWS/SQS", "AWS/ElasticMapReduce", "AWS/Usage"]`. `AWS/SQS`, `AWS/ElasticMapReduce`, and `AWS/Usage` are excluded by default to reduce your AWS CloudWatch costs from `GetMetricData` API calls.
 - `include_only` (List of String) Include only these namespaces for metrics collection. Use [`datadog_integration_aws_available_namespaces` data source](https://registry.terraform.io/providers/DataDog/datadog/latest/docs/data-sources/integration_aws_available_namespaces) to get allowed values.
 
 

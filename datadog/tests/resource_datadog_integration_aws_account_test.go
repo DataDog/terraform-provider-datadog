@@ -60,6 +60,8 @@ func TestAccIntegrationAwsAccount_RoleBased(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_integration_aws_account.foo", "metrics_config.namespace_filters.exclude_only.1", "AWS/ElasticMapReduce"),
 					resource.TestCheckResourceAttr(
+						"datadog_integration_aws_account.foo", "metrics_config.namespace_filters.exclude_only.2", "AWS/Usage"),
+					resource.TestCheckResourceAttr(
 						"datadog_integration_aws_account.foo", "resources_config.cloud_security_posture_management_collection", "false"),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_aws_account.foo", "resources_config.extended_collection", "true"),
