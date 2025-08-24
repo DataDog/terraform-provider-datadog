@@ -1,9 +1,12 @@
 package test
 
 import (
+	"bytes"
 	"context"
 	"fmt"
+	"regexp"
 	"testing"
+	"text/template"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 
@@ -181,6 +184,73 @@ func TestAccSensitiveDataScannerRuleWithStandardPattern(t *testing.T) {
 						resource_name_2, "name", uniq2),
 					testAccCheckDatadogSensitiveDataScannerRuleRecommendedKeywords(accProvider, resource_name_2, &value_true),
 				),
+			},
+		}})
+}
+
+func TestAccSensitiveDataScannerRuleWithTests(t *testing.T) {
+	if isRecording() || isReplaying() {
+		t.Skip("This test doesn't support recording or replaying")
+	}
+
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	name := uniqueEntityName(ctx, t)
+
+	cfg := func(ruleCfg string) string {
+		var output bytes.Buffer
+		_ = template.Must(template.New("config").Parse(`
+			resource datadog_sensitive_data_scanner_group {{ .Name }} {
+				name = "{{ .Name }}"
+				is_enabled = false
+				product_list = ["logs"]
+				filter {
+					query = "*"
+				}
+			}
+			resource datadog_sensitive_data_scanner_rule {{ .Name }} {
+				name = "{{ .Name }}"
+				group_id = datadog_sensitive_data_scanner_group.{{ .Name }}.id
+				{{ .RuleCfg }}
+			}
+		`)).Execute(&output, map[string]string{"Name": name, "RuleCfg": ruleCfg})
+		return output.String()
+	}
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: cfg(`
+					pattern = "needle"
+					pattern_test {
+						input = "Find the needle in the haystack"
+					}
+				`),
+			},
+			{
+				Config: cfg(`
+					pattern = "needle"
+					pattern_test {
+						input = "oops no pattern"
+					}
+				`),
+				ExpectError: regexp.MustCompile(`The pattern_test input "oops no pattern" does not match "needle"`),
+			},
+			{
+				Config: cfg(`
+					pattern = "my_secret_token[=:]\w+"
+					pattern_test {
+						input = "my_secret_token=aaaaaaaaaaa"
+					}
+					pattern_test {
+						input = "my_secret_token:bbbbbbbbbb"
+					}
+					pattern_test {
+						input = "my_secret_token_hash=ccccccccc"
+						matches = false
+					}
+				`),
 			},
 		}})
 }
