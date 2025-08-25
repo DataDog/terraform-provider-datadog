@@ -14,8 +14,10 @@ Provides a Datadog RUM application resource. This can be used to create and mana
 
 ```terraform
 resource "datadog_rum_application" "rum_application" {
-  name = "my-application"
-  type = "browser"
+  name                              = "my-application"
+  type                              = "browser"
+  rum_event_processing_state        = "ALL"
+  product_analytics_retention_state = "NONE"
 }
 ```
 
@@ -28,6 +30,8 @@ resource "datadog_rum_application" "rum_application" {
 
 ### Optional
 
+- `product_analytics_retention_state` (String) Controls the retention policy for Product Analytics data derived from RUM events. Valid values are `MAX`, `NONE`. Defaults to `"NONE"`.
+- `rum_event_processing_state` (String) Configures which RUM events are processed and stored for the application. Valid values are `ALL`, `ERROR_FOCUSED_MODE`, `NONE`. Defaults to `"ALL"`.
 - `type` (String) Type of the RUM application. Supported values are `browser`, `ios`, `android`, `react-native`, `flutter`. Defaults to `"browser"`.
 
 ### Read-Only

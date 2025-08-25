@@ -45,6 +45,42 @@ func TestAccDatadogRUMApplication_Basic(t *testing.T) {
 	})
 }
 
+func TestAccDatadogRUMApplication_ProductScales(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	appName := uniqueEntityName(ctx, t)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogRUMApplicationDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogRUMApplicationProductScalesConfig(appName, "ERROR_FOCUSED_MODE", "MAX"),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogRUMApplicationExists(providers.frameworkProvider, "datadog_rum_application.product_scales_app"),
+					resource.TestCheckResourceAttr(
+						"datadog_rum_application.product_scales_app", "name", appName),
+					resource.TestCheckResourceAttr(
+						"datadog_rum_application.product_scales_app", "rum_event_processing_state", "ERROR_FOCUSED_MODE"),
+					resource.TestCheckResourceAttr(
+						"datadog_rum_application.product_scales_app", "product_analytics_retention_state", "MAX"),
+				),
+			},
+			{
+				Config: testAccCheckDatadogRUMApplicationProductScalesConfig(appName, "ALL", "NONE"),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogRUMApplicationExists(providers.frameworkProvider, "datadog_rum_application.product_scales_app"),
+					resource.TestCheckResourceAttr(
+						"datadog_rum_application.product_scales_app", "rum_event_processing_state", "ALL"),
+					resource.TestCheckResourceAttr(
+						"datadog_rum_application.product_scales_app", "product_analytics_retention_state", "NONE"),
+				),
+			},
+		},
+	})
+}
+
 func testAccCheckDatadogRUMApplicationConfig(uniq string) string {
 	return fmt.Sprintf(`
   resource "datadog_rum_application" "some_app" {
@@ -52,6 +88,17 @@ func testAccCheckDatadogRUMApplicationConfig(uniq string) string {
     type = "browser"
   }
     `, uniq)
+}
+
+func testAccCheckDatadogRUMApplicationProductScalesConfig(uniq string, rumEventState string, analyticsRetentionState string) string {
+	return fmt.Sprintf(`
+  resource "datadog_rum_application" "product_scales_app" {
+    name                              = "%s"
+    type                              = "browser"
+    rum_event_processing_state        = "%s"
+    product_analytics_retention_state = "%s"
+  }
+    `, uniq, rumEventState, analyticsRetentionState)
 }
 
 func testAccCheckDatadogRUMApplicationExists(accProvider *fwprovider.FrameworkProvider, resourceName string) resource.TestCheckFunc {

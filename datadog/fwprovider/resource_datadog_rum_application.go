@@ -4,11 +4,13 @@ import (
 	"context"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
@@ -25,10 +27,12 @@ type rumApplicationResource struct {
 }
 
 type rumApplicationModel struct {
-	ID          types.String `tfsdk:"id"`
-	Name        types.String `tfsdk:"name"`
-	Type        types.String `tfsdk:"type"`
-	ClientToken types.String `tfsdk:"client_token"`
+	ID                             types.String `tfsdk:"id"`
+	Name                           types.String `tfsdk:"name"`
+	Type                           types.String `tfsdk:"type"`
+	ClientToken                    types.String `tfsdk:"client_token"`
+	RumEventProcessingState        types.String `tfsdk:"rum_event_processing_state"`
+	ProductAnalyticsRetentionState types.String `tfsdk:"product_analytics_retention_state"`
 }
 
 func NewRumApplicationResource() resource.Resource {
@@ -62,6 +66,24 @@ func (r *rumApplicationResource) Schema(_ context.Context, _ resource.SchemaRequ
 			"client_token": schema.StringAttribute{
 				Computed:    true,
 				Description: "The client token.",
+			},
+			"rum_event_processing_state": schema.StringAttribute{
+				Optional:    true,
+				Computed:    true,
+				Default:     stringdefault.StaticString("ALL"),
+				Description: "Configures which RUM events are processed and stored for the application.",
+				Validators: []validator.String{
+					stringvalidator.OneOf("ALL", "ERROR_FOCUSED_MODE", "NONE"),
+				},
+			},
+			"product_analytics_retention_state": schema.StringAttribute{
+				Optional:    true,
+				Computed:    true,
+				Default:     stringdefault.StaticString("NONE"),
+				Description: "Controls the retention policy for Product Analytics data derived from RUM events.",
+				Validators: []validator.String{
+					stringvalidator.OneOf("MAX", "NONE"),
+				},
 			},
 			"id": utils.ResourceIDAttribute(),
 		},
@@ -194,6 +216,20 @@ func (r *rumApplicationResource) updateState(ctx context.Context, state *rumAppl
 	if typeVar, ok := attributes.GetTypeOk(); ok {
 		state.Type = types.StringValue(*typeVar)
 	}
+
+	// Extract Product Scales fields from nested structure
+	if productScales, ok := attributes.GetProductScalesOk(); ok {
+		if rumEventProcessingScale, ok := productScales.GetRumEventProcessingScaleOk(); ok {
+			if scaleState, ok := rumEventProcessingScale.GetStateOk(); ok {
+				state.RumEventProcessingState = types.StringValue(string(*scaleState))
+			}
+		}
+		if productAnalyticsRetentionScale, ok := productScales.GetProductAnalyticsRetentionScaleOk(); ok {
+			if scaleState, ok := productAnalyticsRetentionScale.GetStateOk(); ok {
+				state.ProductAnalyticsRetentionState = types.StringValue(string(*scaleState))
+			}
+		}
+	}
 }
 
 func (r *rumApplicationResource) buildRumApplicationRequestBody(ctx context.Context, state *rumApplicationModel) (*datadogV2.RUMApplicationCreateRequest, diag.Diagnostics) {
@@ -203,6 +239,17 @@ func (r *rumApplicationResource) buildRumApplicationRequestBody(ctx context.Cont
 	attributes.SetName(state.Name.ValueString())
 	if !state.Type.IsNull() {
 		attributes.SetType(state.Type.ValueString())
+	}
+
+	// Add Product Scales fields if they are set
+	if !state.RumEventProcessingState.IsNull() {
+		rumEventProcessingState := datadogV2.RUMEventProcessingState(state.RumEventProcessingState.ValueString())
+		attributes.SetRumEventProcessingState(rumEventProcessingState)
+	}
+
+	if !state.ProductAnalyticsRetentionState.IsNull() {
+		productAnalyticsRetentionState := datadogV2.RUMProductAnalyticsRetentionState(state.ProductAnalyticsRetentionState.ValueString())
+		attributes.SetProductAnalyticsRetentionState(productAnalyticsRetentionState)
 	}
 
 	req := datadogV2.NewRUMApplicationCreateRequestWithDefaults()
@@ -219,6 +266,17 @@ func (r *rumApplicationResource) buildRumApplicationUpdateRequestBody(ctx contex
 	attributes.SetName(state.Name.ValueString())
 	if !state.Type.IsNull() {
 		attributes.SetType(state.Type.ValueString())
+	}
+
+	// Add Product Scales fields if they are set
+	if !state.RumEventProcessingState.IsNull() {
+		rumEventProcessingState := datadogV2.RUMEventProcessingState(state.RumEventProcessingState.ValueString())
+		attributes.SetRumEventProcessingState(rumEventProcessingState)
+	}
+
+	if !state.ProductAnalyticsRetentionState.IsNull() {
+		productAnalyticsRetentionState := datadogV2.RUMProductAnalyticsRetentionState(state.ProductAnalyticsRetentionState.ValueString())
+		attributes.SetProductAnalyticsRetentionState(productAnalyticsRetentionState)
 	}
 
 	req := datadogV2.NewRUMApplicationUpdateRequestWithDefaults()
