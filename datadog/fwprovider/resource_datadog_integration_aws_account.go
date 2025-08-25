@@ -30,14 +30,17 @@ var (
 )
 
 var (
-	namespaceFiltersPath   = path.MatchRoot("metrics_config").AtName("namespace_filters")
-	awsRegionsPath         = path.MatchRoot("aws_regions")
-	authConfigPath         = path.MatchRoot("auth_config")
-	authConfigKeysPath     = authConfigPath.AtName("aws_auth_config_keys")
-	authConfigRolePath     = authConfigPath.AtName("aws_auth_config_role")
-	xrayServicesConfigPath = path.MatchRoot("traces_config").AtName("xray_services")
-	lambdaForwarderPath    = path.MatchRoot("logs_config").AtName("lambda_forwarder")
-	resourcesConfigPath    = path.MatchRoot("resources_config")
+	namespaceFiltersPath          = path.MatchRoot("metrics_config").AtName("namespace_filters")
+	awsRegionsPath                = path.MatchRoot("aws_regions")
+	authConfigPath                = path.MatchRoot("auth_config")
+	authConfigKeysPath            = authConfigPath.AtName("aws_auth_config_keys")
+	authConfigRolePath            = authConfigPath.AtName("aws_auth_config_role")
+	xrayServicesConfigPath        = path.MatchRoot("traces_config").AtName("xray_services")
+	resourcesConfigPath           = path.MatchRoot("resources_config")
+	logsConfigPath                = path.MatchRoot("logs_config")
+	lambdaForwarderPath           = logsConfigPath.AtName("lambda_forwarder")
+	logSourceConfigPath           = lambdaForwarderPath.AtName("log_source_config")
+	logSourceConfigTagFiltersPath = logSourceConfigPath.AtName("tag_filters")
 )
 
 type integrationAwsAccountResource struct {
@@ -83,20 +86,30 @@ type logsConfigModel struct {
 }
 
 type lambdaForwarderModel struct {
-	Lambdas types.List `tfsdk:"lambdas"`
-	Sources types.List `tfsdk:"sources"`
+	Lambdas         types.List            `tfsdk:"lambdas"`
+	Sources         types.List            `tfsdk:"sources"`
+	LogSourceConfig *logSourceConfigModel `tfsdk:"log_source_config"`
+}
+
+type logSourceConfigModel struct {
+	TagFilters []*logsTagFiltersModel `tfsdk:"tag_filters"`
+}
+
+type logsTagFiltersModel struct {
+	Source types.String `tfsdk:"source"`
+	Tags   types.List   `tfsdk:"tags"`
 }
 
 type metricsConfigModel struct {
-	AutomuteEnabled         types.Bool             `tfsdk:"automute_enabled"`
-	CollectCloudwatchAlarms types.Bool             `tfsdk:"collect_cloudwatch_alarms"`
-	CollectCustomMetrics    types.Bool             `tfsdk:"collect_custom_metrics"`
-	Enabled                 types.Bool             `tfsdk:"enabled"`
-	TagFilters              []*tagFiltersModel     `tfsdk:"tag_filters"`
-	NamespaceFilters        *namespaceFiltersModel `tfsdk:"namespace_filters"`
+	AutomuteEnabled         types.Bool                `tfsdk:"automute_enabled"`
+	CollectCloudwatchAlarms types.Bool                `tfsdk:"collect_cloudwatch_alarms"`
+	CollectCustomMetrics    types.Bool                `tfsdk:"collect_custom_metrics"`
+	Enabled                 types.Bool                `tfsdk:"enabled"`
+	TagFilters              []*metricsTagFiltersModel `tfsdk:"tag_filters"`
+	NamespaceFilters        *namespaceFiltersModel    `tfsdk:"namespace_filters"`
 }
 
-type tagFiltersModel struct {
+type metricsTagFiltersModel struct {
 	Namespace types.String `tfsdk:"namespace"`
 	Tags      types.List   `tfsdk:"tags"`
 }
@@ -161,7 +174,15 @@ func (r *integrationAwsAccountResource) ConfigValidators(ctx context.Context) []
 			authConfigKeysPath.AtName("secret_access_key"),
 		),
 		resourcevalidator.ExactlyOneOf(
+			logsConfigPath,
+		),
+		resourcevalidator.ExactlyOneOf(
 			lambdaForwarderPath,
+		),
+		resourcevalidator.RequiredTogether(
+			logSourceConfigTagFiltersPath,
+			logSourceConfigTagFiltersPath.AtAnyListIndex().AtName("source"),
+			logSourceConfigTagFiltersPath.AtAnyListIndex().AtName("tags"),
 		),
 		resourcevalidator.ExactlyOneOf(
 			namespaceFiltersPath,
@@ -190,6 +211,37 @@ func (r *integrationAwsAccountResource) ModifyPlan(ctx context.Context, request 
 	fwutils.RemoveDefaultIfConflictingSet(ctx, request, response, awsRegionsPath.AtName("include_all"), awsRegionsPath.AtName("include_only"))
 	// Remove `traces_config.xray_services.include_only` default if `include_all` is set.
 	fwutils.RemoveDefaultIfConflictingSet(ctx, request, response, xrayServicesConfigPath.AtName("include_only"), xrayServicesConfigPath.AtName("include_all"))
+
+	// Handle log_source_config optional behavior
+	r.modifyPlanLogSourceConfig(ctx, request, response)
+}
+
+func (r *integrationAwsAccountResource) modifyPlanLogSourceConfig(ctx context.Context, request resource.ModifyPlanRequest, response *resource.ModifyPlanResponse) {
+	logSourceConfigPath := path.Root("logs_config").AtName("lambda_forwarder").AtName("log_source_config")
+
+	var configLogSourceConfig types.Object
+	diags := request.Config.GetAttribute(ctx, logSourceConfigPath, &configLogSourceConfig)
+	response.Diagnostics.Append(diags...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	var plannedLogSourceConfig types.Object
+	diags = request.Plan.GetAttribute(ctx, logSourceConfigPath, &plannedLogSourceConfig)
+	response.Diagnostics.Append(diags...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	if configLogSourceConfig.IsNull() && !plannedLogSourceConfig.IsNull() {
+		// set plan value to null to match the config
+		response.Diagnostics.Append(response.Plan.SetAttribute(ctx, logSourceConfigPath, types.ObjectNull(map[string]attr.Type{
+			"tag_filters": types.ListType{ElemType: types.ObjectType{AttrTypes: map[string]attr.Type{
+				"source": types.StringType,
+				"tags":   types.ListType{ElemType: types.StringType},
+			}}},
+		}))...)
+	}
 }
 
 func (r *integrationAwsAccountResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
@@ -281,7 +333,7 @@ func (r *integrationAwsAccountResource) Schema(_ context.Context, _ resource.Sch
 				},
 			},
 			"logs_config": schema.SingleNestedBlock{
-				Description: "Configure log autosubscription for your Datadog Forwarder Lambda functions. The `lambda_fowarder` block is required within, but may be empty to use defaults.",
+				Description: "Configure log autosubscription for your Datadog Forwarder Lambda functions. The `lambda_forwarder` block is required within, but may be empty to use defaults.",
 				Attributes:  map[string]schema.Attribute{},
 				Blocks: map[string]schema.Block{
 					"lambda_forwarder": schema.SingleNestedBlock{
@@ -302,6 +354,30 @@ func (r *integrationAwsAccountResource) Schema(_ context.Context, _ resource.Sch
 									"to get allowed values. Defaults to `[]`.",
 								ElementType: types.StringType,
 								Default:     listdefault.StaticValue(types.ListValueMust(types.StringType, []attr.Value{})),
+							},
+						},
+						Blocks: map[string]schema.Block{
+							"log_source_config": schema.SingleNestedBlock{
+								Description: "Configure log source collection for your Datadog Forwarder Lambda functions.",
+								Attributes:  map[string]schema.Attribute{},
+								Blocks: map[string]schema.Block{
+									"tag_filters": schema.ListNestedBlock{
+										Description: "AWS Logs Collection tag filters list.",
+										NestedObject: schema.NestedBlockObject{
+											Attributes: map[string]schema.Attribute{
+												"source": schema.StringAttribute{
+													Required:    true,
+													Description: "The AWS service for which the tag filters defined in `tags` will be applied.",
+												},
+												"tags": schema.ListAttribute{
+													Required:    true,
+													Description: "The AWS resource tags to filter on for the service specified by `source`.",
+													ElementType: types.StringType,
+												},
+											},
+										},
+									},
+								},
 							},
 						},
 					},
@@ -367,14 +443,15 @@ func (r *integrationAwsAccountResource) Schema(_ context.Context, _ resource.Sch
 								Computed: true,
 								Description: "Exclude only these namespaces from metrics collection. Use " +
 									"[`datadog_integration_aws_available_namespaces` data source](https://registry.terraform.io/providers/DataDog/datadog/latest/docs/data-sources/integration_aws_available_namespaces) " +
-									"to get allowed values. Defaults to `[\"AWS/SQS\", \"AWS/ElasticMapReduce\"]`. " +
-									"`AWS/SQS` and `AWS/ElasticMapReduce` are excluded by default to reduce your AWS " +
+									"to get allowed values. Defaults to `[\"AWS/SQS\", \"AWS/ElasticMapReduce\", \"AWS/Usage\"]`. " +
+									"`AWS/SQS`, `AWS/ElasticMapReduce`, and `AWS/Usage` are excluded by default to reduce your AWS " +
 									"CloudWatch costs from `GetMetricData` API calls.",
 								ElementType: types.StringType,
 								Default: listdefault.StaticValue(types.ListValueMust(
 									types.StringType, []attr.Value{
 										types.StringValue("AWS/SQS"),
 										types.StringValue("AWS/ElasticMapReduce"),
+										types.StringValue("AWS/Usage"),
 									}),
 								),
 							},
@@ -560,14 +637,14 @@ func buildStateAuthConfig(attributes datadogV2.AWSAccountResponseAttributes, sec
 	return &authConfigTf
 }
 
-func buildStateLogsConfig(ctx context.Context, attributes datadogV2.AWSAccountResponseAttributes, diags diag.Diagnostics) *logsConfigModel {
+func buildStateLogsConfig(ctx context.Context, attributes datadogV2.AWSAccountResponseAttributes, currentState *integrationAwsAccountModel, diags diag.Diagnostics) *logsConfigModel {
 	logsConfig := attributes.GetLogsConfig()
 
 	logsConfigTf := logsConfigModel{}
 	lambdaForwarderTf := lambdaForwarderModel{}
 
 	if lambdaForwarder, ok := logsConfig.GetLambdaForwarderOk(); ok {
-		if lambdaForwarder != nil && (lambdaForwarder.HasLambdas() || lambdaForwarder.HasSources()) {
+		if lambdaForwarder != nil {
 			lambdas := lambdaForwarder.GetLambdas()
 			var d diag.Diagnostics
 			lambdaForwarderTf.Lambdas, d = types.ListValueFrom(ctx, types.StringType, lambdas)
@@ -576,6 +653,41 @@ func buildStateLogsConfig(ctx context.Context, attributes datadogV2.AWSAccountRe
 			sources := lambdaForwarder.GetSources()
 			lambdaForwarderTf.Sources, d = types.ListValueFrom(ctx, types.StringType, sources)
 			diags.Append(d...)
+
+			userConfiguredLogSourceConfig := currentState != nil &&
+				currentState.LogsConfig != nil &&
+				currentState.LogsConfig.LambdaForwarder != nil &&
+				currentState.LogsConfig.LambdaForwarder.LogSourceConfig != nil
+
+			if logSourceConfig, ok := lambdaForwarder.GetLogSourceConfigOk(); ok {
+				if tagFilters, ok := logSourceConfig.GetTagFiltersOk(); ok && len(*tagFilters) > 0 {
+					logSourceConfigTf := logSourceConfigModel{}
+					logSourceConfigTf.TagFilters = []*logsTagFiltersModel{}
+
+					for _, tagFiltersDd := range *tagFilters {
+						tagFiltersTfItem := logsTagFiltersModel{}
+						if source, ok := tagFiltersDd.GetSourceOk(); ok {
+							tagFiltersTfItem.Source = types.StringValue(*source)
+						}
+						if tags, ok := tagFiltersDd.GetTagsOk(); ok {
+							tagsTf, d := types.ListValueFrom(ctx, types.StringType, *tags)
+							tagFiltersTfItem.Tags = tagsTf
+							diags.Append(d...)
+						} else {
+							tagFiltersTfItem.Tags, _ = types.ListValueFrom(ctx, types.StringType, []string{})
+						}
+						logSourceConfigTf.TagFilters = append(logSourceConfigTf.TagFilters, &tagFiltersTfItem)
+					}
+
+					lambdaForwarderTf.LogSourceConfig = &logSourceConfigTf
+				} else if userConfiguredLogSourceConfig {
+					// User configured log_source_config {} but API returned no tag_filters - preserve empty config
+					logSourceConfigTf := logSourceConfigModel{}
+					logSourceConfigTf.TagFilters = []*logsTagFiltersModel{}
+					lambdaForwarderTf.LogSourceConfig = &logSourceConfigTf
+				}
+				// If tagFilters is empty and user didn't configure log_source_config, don't create it (remains nil in state)
+			}
 
 			logsConfigTf.LambdaForwarder = &lambdaForwarderTf
 		}
@@ -605,7 +717,7 @@ func buildStateAwsRegions(ctx context.Context, attributes datadogV2.AWSAccountRe
 func buildStateMetricsConfig(ctx context.Context, attributes datadogV2.AWSAccountResponseAttributes, diags diag.Diagnostics) *metricsConfigModel {
 	metricsConfig := attributes.GetMetricsConfig()
 	metricsConfigTf := metricsConfigModel{}
-	metricsConfigTf.TagFilters = []*tagFiltersModel{}
+	metricsConfigTf.TagFilters = []*metricsTagFiltersModel{}
 	metricsConfigTf.NamespaceFilters = &namespaceFiltersModel{}
 	if automuteEnabled, ok := metricsConfig.GetAutomuteEnabledOk(); ok {
 		metricsConfigTf.AutomuteEnabled = types.BoolValue(*automuteEnabled)
@@ -622,7 +734,7 @@ func buildStateMetricsConfig(ctx context.Context, attributes datadogV2.AWSAccoun
 
 	if tagFilters, ok := metricsConfig.GetTagFiltersOk(); ok && len(*tagFilters) > 0 {
 		for _, tagFiltersDd := range *tagFilters {
-			tagFiltersTfItem := tagFiltersModel{}
+			tagFiltersTfItem := metricsTagFiltersModel{}
 			if namespace, ok := tagFiltersDd.GetNamespaceOk(); ok {
 				tagFiltersTfItem.Namespace = types.StringValue(*namespace)
 			}
@@ -711,7 +823,7 @@ func (r *integrationAwsAccountResource) updateState(ctx context.Context, state *
 	state.AwsRegions = buildStateAwsRegions(ctx, attributes, diags)
 	state.AuthConfig = buildStateAuthConfig(attributes, secretAccessKey)
 	state.AccountTags = buildStateAccountTags(ctx, attributes)
-	state.LogsConfig = buildStateLogsConfig(ctx, attributes, diags)
+	state.LogsConfig = buildStateLogsConfig(ctx, attributes, state, diags)
 	state.MetricsConfig = buildStateMetricsConfig(ctx, attributes, diags)
 	state.ResourcesConfig = buildStateResourcesConfig(attributes)
 	state.TracesConfig = buildStateTracesConfig(ctx, attributes, diags)
@@ -792,6 +904,8 @@ func buildRequestLogsConfig(ctx context.Context, state *integrationAwsAccountMod
 	lambdaForwarder := datadogV2.AWSLambdaForwarderConfig{}
 	lambdas := []string{}
 	sources := []string{}
+	tagFilters := []datadogV2.AWSLogSourceTagFilter{}
+
 	if state.LogsConfig != nil && state.LogsConfig.LambdaForwarder != nil {
 		if !state.LogsConfig.LambdaForwarder.Lambdas.IsNull() {
 			diags.Append(state.LogsConfig.LambdaForwarder.Lambdas.ElementsAs(ctx, &lambdas, false)...)
@@ -799,10 +913,27 @@ func buildRequestLogsConfig(ctx context.Context, state *integrationAwsAccountMod
 		if !state.LogsConfig.LambdaForwarder.Sources.IsNull() {
 			diags.Append(state.LogsConfig.LambdaForwarder.Sources.ElementsAs(ctx, &sources, false)...)
 		}
+		if state.LogsConfig.LambdaForwarder.LogSourceConfig != nil {
+			for _, tagFiltersTFItem := range state.LogsConfig.LambdaForwarder.LogSourceConfig.TagFilters {
+				tagFiltersDDItem := datadogV2.NewAWSLogSourceTagFilterWithDefaults()
+
+				if !tagFiltersTFItem.Source.IsNull() {
+					tagFiltersDDItem.SetSource(tagFiltersTFItem.Source.ValueString())
+				}
+
+				tags := []string{}
+				diags.Append(tagFiltersTFItem.Tags.ElementsAs(ctx, &tags, false)...)
+				tagFiltersDDItem.SetTags(tags)
+
+				tagFilters = append(tagFilters, *tagFiltersDDItem)
+			}
+		}
 	}
 
 	lambdaForwarder.SetLambdas(lambdas)
 	lambdaForwarder.SetSources(sources)
+	lambdaForwarder.SetLogSourceConfig(datadogV2.AWSLambdaForwarderConfigLogSourceConfig{TagFilters: tagFilters})
+
 	logsConfig.LambdaForwarder = &lambdaForwarder
 	return logsConfig
 }

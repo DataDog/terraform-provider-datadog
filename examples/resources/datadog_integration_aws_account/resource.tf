@@ -17,6 +17,12 @@ resource "datadog_integration_aws_account" "foo" {
     lambda_forwarder {
       lambdas = ["arn:aws:lambda:us-east-1:123456789012:function:my-lambda"]
       sources = ["s3"]
+      log_source_config {
+        tag_filters {
+          source = "s3"
+          tags   = ["env:prod", "team:backend"]
+        }
+      }
     }
   }
   metrics_config {
@@ -25,7 +31,7 @@ resource "datadog_integration_aws_account" "foo" {
     collect_custom_metrics    = true
     enabled                   = true
     namespace_filters {
-      exclude_only = ["AWS/SQS", "AWS/ElasticMapReduce"]
+      exclude_only = ["AWS/SQS", "AWS/ElasticMapReduce", "AWS/Usage"]
     }
     tag_filters {
       namespace = "AWS/EC2"
