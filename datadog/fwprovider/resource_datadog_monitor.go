@@ -6,11 +6,9 @@ import (
 	"log"
 	"net/http"
 	"regexp"
-	"sort"
 	"strconv"
 	"strings"
 
-	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/int32validator"
@@ -909,10 +907,10 @@ func (r *monitorResource) buildMonitorStruct(ctx context.Context, state *monitor
 		m.SetPriorityNil()
 		u.SetPriorityNil()
 	}
-	r.setOptStringList(state.Tags, m.SetTags, ctx)
-	r.setOptStringList(state.Tags, u.SetTags, ctx)
-	r.setOptStringList(state.RestrictedRoles, m.SetRestrictedRoles, ctx)
-	r.setOptStringList(state.RestrictedRoles, u.SetRestrictedRoles, ctx)
+	utils.SetOptStringList(state.Tags, m.SetTags, ctx, diags)
+	utils.SetOptStringList(state.Tags, u.SetTags, ctx, diags)
+	utils.SetOptStringList(state.RestrictedRoles, m.SetRestrictedRoles, ctx, diags)
+	utils.SetOptStringList(state.RestrictedRoles, u.SetRestrictedRoles, ctx, diags)
 
 	monitorOptions := datadogV1.MonitorOptions{}
 	if !state.EscalationMessage.IsNull() {
@@ -934,23 +932,23 @@ func (r *monitorResource) buildMonitorStruct(ctx context.Context, state *monitor
 	if !state.NotificationPresetName.IsNull() {
 		monitorOptions.SetNotificationPresetName(datadogV1.MonitorOptionsNotificationPresets(state.NotificationPresetName.ValueString()))
 	}
-	r.setOptBool(state.RequireFullWindow, monitorOptions.SetRequireFullWindow)
-	r.setOptInt64(state.NoDataTimeframe, monitorOptions.SetNoDataTimeframe)
-	r.setOptStringList(state.NotifyBy, monitorOptions.SetNotifyBy, ctx)
-	r.setOptBool(state.NotifyNoData, monitorOptions.SetNotifyNoData)
-	r.setOptString(state.GroupRetentionDuration, monitorOptions.SetGroupRetentionDuration)
-	r.setOptInt64(state.NewGroupDelay, monitorOptions.SetNewGroupDelay)
-	r.setOptInt64(state.NewHostDelay, monitorOptions.SetNewHostDelay)
-	r.setOptInt64(state.EvaluationDelay, monitorOptions.SetEvaluationDelay)
-	r.setOptInt64(state.RenotifyInterval, monitorOptions.SetRenotifyInterval)
-	r.setOptInt64(state.RenotifyOccurrences, monitorOptions.SetRenotifyOccurrences)
-	r.setOptBool(state.NotifyAudit, monitorOptions.SetNotifyAudit)
-	r.setOptInt64(state.TimeoutH, monitorOptions.SetTimeoutH)
-	r.setOptBool(state.IncludeTags, monitorOptions.SetIncludeTags)
-	r.setOptBool(state.GroupbySimpleMonitor, monitorOptions.SetGroupbySimpleMonitor)
-	r.setOptBool(state.EnableLogsSample, monitorOptions.SetEnableLogsSample)
-	r.setOptBool(state.EnableSamples, monitorOptions.SetEnableSamples)
-	r.setOptBool(state.Locked, monitorOptions.SetLocked)
+	utils.SetOptBool(state.RequireFullWindow, monitorOptions.SetRequireFullWindow)
+	utils.SetOptInt64(state.NoDataTimeframe, monitorOptions.SetNoDataTimeframe)
+	utils.SetOptStringList(state.NotifyBy, monitorOptions.SetNotifyBy, ctx, diags)
+	utils.SetOptBool(state.NotifyNoData, monitorOptions.SetNotifyNoData)
+	utils.SetOptString(state.GroupRetentionDuration, monitorOptions.SetGroupRetentionDuration)
+	utils.SetOptInt64(state.NewGroupDelay, monitorOptions.SetNewGroupDelay)
+	utils.SetOptInt64(state.NewHostDelay, monitorOptions.SetNewHostDelay)
+	utils.SetOptInt64(state.EvaluationDelay, monitorOptions.SetEvaluationDelay)
+	utils.SetOptInt64(state.RenotifyInterval, monitorOptions.SetRenotifyInterval)
+	utils.SetOptInt64(state.RenotifyOccurrences, monitorOptions.SetRenotifyOccurrences)
+	utils.SetOptBool(state.NotifyAudit, monitorOptions.SetNotifyAudit)
+	utils.SetOptInt64(state.TimeoutH, monitorOptions.SetTimeoutH)
+	utils.SetOptBool(state.IncludeTags, monitorOptions.SetIncludeTags)
+	utils.SetOptBool(state.GroupbySimpleMonitor, monitorOptions.SetGroupbySimpleMonitor)
+	utils.SetOptBool(state.EnableLogsSample, monitorOptions.SetEnableLogsSample)
+	utils.SetOptBool(state.EnableSamples, monitorOptions.SetEnableSamples)
+	utils.SetOptBool(state.Locked, monitorOptions.SetLocked)
 
 	if state.MonitorThresholds != nil {
 		thresholdObj := state.MonitorThresholds[0]
@@ -978,8 +976,8 @@ func (r *monitorResource) buildMonitorStruct(ctx context.Context, state *monitor
 	if state.MonitorThresholdWindows != nil {
 		thresholdWindow := state.MonitorThresholdWindows[0]
 		thresholdWindowOptions := datadogV1.MonitorThresholdWindowOptions{}
-		r.setOptString(thresholdWindow.RecoveryWindow, thresholdWindowOptions.SetRecoveryWindow)
-		r.setOptString(thresholdWindow.TriggerWindow, thresholdWindowOptions.SetTriggerWindow)
+		utils.SetOptString(thresholdWindow.RecoveryWindow, thresholdWindowOptions.SetRecoveryWindow)
+		utils.SetOptString(thresholdWindow.TriggerWindow, thresholdWindowOptions.SetTriggerWindow)
 		monitorOptions.SetThresholdWindows(thresholdWindowOptions)
 	}
 	if schedulingOptionStruct := r.buildSchedulingOptionsStruct(ctx, state.SchedulingOptions); schedulingOptionStruct != nil {
@@ -1003,9 +1001,9 @@ func (r *monitorResource) buildSchedulingOptionsStruct(ctx context.Context, sche
 	if evalWindows := schedulingOption.EvaluationWindow; len(evalWindows) > 0 {
 		evaluationWindowReq := datadogV1.MonitorOptionsSchedulingOptionsEvaluationWindow{}
 		evalWindow := evalWindows[0]
-		r.setOptString(evalWindow.DayStarts, evaluationWindowReq.SetDayStarts)
-		r.setOptInt32(evalWindow.HourStarts, evaluationWindowReq.SetHourStarts)
-		r.setOptInt32(evalWindow.MonthStarts, evaluationWindowReq.SetMonthStarts)
+		utils.SetOptString(evalWindow.DayStarts, evaluationWindowReq.SetDayStarts)
+		utils.SetOptInt32(evalWindow.HourStarts, evaluationWindowReq.SetHourStarts)
+		utils.SetOptInt32(evalWindow.MonthStarts, evaluationWindowReq.SetMonthStarts)
 		schedulingOptionsReq.SetEvaluationWindow(evaluationWindowReq)
 	}
 	if customSchedules := schedulingOption.CustomSchedule; len(customSchedules) > 0 {
@@ -1014,9 +1012,9 @@ func (r *monitorResource) buildSchedulingOptionsStruct(ctx context.Context, sche
 		customSchedule := customSchedules[0]
 		for _, recurrence := range customSchedule.Recurrence {
 			recurrenceReq := datadogV1.MonitorOptionsCustomScheduleRecurrence{}
-			r.setOptString(recurrence.Rrule, recurrenceReq.SetRrule)
-			r.setOptString(recurrence.Start, recurrenceReq.SetStart)
-			r.setOptString(recurrence.Timezone, recurrenceReq.SetTimezone)
+			utils.SetOptString(recurrence.Rrule, recurrenceReq.SetRrule)
+			utils.SetOptString(recurrence.Start, recurrenceReq.SetStart)
+			utils.SetOptString(recurrence.Timezone, recurrenceReq.SetTimezone)
 			recurrencesReq = append(recurrencesReq, recurrenceReq)
 		}
 		customWindowReq.SetRecurrences(recurrencesReq)
@@ -1031,73 +1029,91 @@ func (r *monitorResource) buildVariablesStruct(ctx context.Context, variables []
 	}
 	variablesReq := []datadogV1.MonitorFormulaAndFunctionQueryDefinition{}
 	// we always have zero or one `variables`
-	for _, variable := range variables {
-		if eventQs := variable.EventQuery; len(eventQs) > 0 {
-			for _, eventQ := range eventQs {
-				variableReq := datadogV1.MonitorFormulaAndFunctionQueryDefinition{}
-				eventQueryReq := datadogV1.MonitorFormulaAndFunctionEventQueryDefinition{}
-				r.setOptString(eventQ.Name, eventQueryReq.SetName)
-				r.setOptStringList(eventQ.Indexes, eventQueryReq.SetIndexes, ctx)
-				if !eventQ.DataSource.IsNull() {
-					eventQueryReq.SetDataSource(datadogV1.MonitorFormulaAndFunctionEventsDataSource(eventQ.DataSource.ValueString()))
-				}
-				if search := eventQ.Search; search != nil {
-					searchReq := datadogV1.MonitorFormulaAndFunctionEventQueryDefinitionSearch{}
-					r.setOptString(search[0].Query, searchReq.SetQuery)
-					eventQueryReq.SetSearch(searchReq)
-				}
-				if computes := eventQ.Compute; len(computes) > 0 {
-					computeReq := datadogV1.MonitorFormulaAndFunctionEventQueryDefinitionCompute{}
-					compute := computes[0]
-					r.setOptInt64(compute.Interval, computeReq.SetInterval)
-					r.setOptString(compute.Metric, computeReq.SetMetric)
-					if !compute.Aggregation.IsNull() {
-						computeReq.SetAggregation(datadogV1.MonitorFormulaAndFunctionEventAggregation(compute.Aggregation.ValueString()))
-					}
-					eventQueryReq.SetCompute(computeReq)
-				}
-				if groupBys := eventQ.GroupBy; len(groupBys) > 0 {
-					groupBysReq := []datadogV1.MonitorFormulaAndFunctionEventQueryGroupBy{}
-					for _, groupBy := range groupBys {
-						groupByReq := datadogV1.MonitorFormulaAndFunctionEventQueryGroupBy{}
-						r.setOptString(groupBy.Facet, groupByReq.SetFacet)
-						r.setOptInt64(groupBy.Limit, groupByReq.SetLimit)
-						if sortList := groupBy.Sort; len(sortList) > 0 {
-							sortReq := datadogV1.MonitorFormulaAndFunctionEventQueryGroupBySort{}
-							sort := sortList[0]
-							r.setOptString(sort.Metric, sortReq.SetMetric)
-							if !sort.Aggregation.IsNull() {
-								sortReq.SetAggregation(datadogV1.MonitorFormulaAndFunctionEventAggregation(sort.Aggregation.ValueString()))
-							}
-							if !sort.Order.IsNull() {
-								sortReq.SetOrder(datadogV1.QuerySortOrder(sort.Order.ValueString()))
-							}
-							groupByReq.SetSort(sortReq)
-						}
-						groupBysReq = append(groupBysReq, groupByReq)
-					}
-					eventQueryReq.SetGroupBy(groupBysReq)
-				}
-				variableReq.MonitorFormulaAndFunctionEventQueryDefinition = &eventQueryReq
-				variablesReq = append(variablesReq, variableReq)
-			}
+	variable := variables[0]
+	if eventQReq := r.buildEventQueryStruct(ctx, variable.EventQuery); len(eventQReq) > 0 {
+		variablesReq = append(variablesReq, eventQReq...)
+	}
+	if cloudCostReq := r.buildCloudCostQueryStruct(ctx, variable.CloudCostQuery); len(cloudCostReq) > 0 {
+		variablesReq = append(variablesReq, cloudCostReq...)
+	}
+	return variablesReq
+}
+
+func (r *monitorResource) buildEventQueryStruct(ctx context.Context, eventQs []EventQuery) []datadogV1.MonitorFormulaAndFunctionQueryDefinition {
+	if eventQs == nil || len(eventQs) == 0 {
+		return nil
+	}
+	diags := diag.Diagnostics{}
+	variablesReq := []datadogV1.MonitorFormulaAndFunctionQueryDefinition{}
+	for _, eventQ := range eventQs {
+		variableReq := datadogV1.MonitorFormulaAndFunctionQueryDefinition{}
+		eventQueryReq := datadogV1.MonitorFormulaAndFunctionEventQueryDefinition{}
+		utils.SetOptString(eventQ.Name, eventQueryReq.SetName)
+		utils.SetOptStringList(eventQ.Indexes, eventQueryReq.SetIndexes, ctx, diags)
+		if !eventQ.DataSource.IsNull() {
+			eventQueryReq.SetDataSource(datadogV1.MonitorFormulaAndFunctionEventsDataSource(eventQ.DataSource.ValueString()))
 		}
-		if cloudCostQs := variable.CloudCostQuery; len(cloudCostQs) > 0 {
-			for _, cloudCostQ := range cloudCostQs {
-				variableReq := datadogV1.MonitorFormulaAndFunctionQueryDefinition{}
-				cloudCostQueryReq := datadogV1.MonitorFormulaAndFunctionCostQueryDefinition{}
-				r.setOptString(cloudCostQ.Query, cloudCostQueryReq.SetQuery)
-				r.setOptString(cloudCostQ.Name, cloudCostQueryReq.SetName)
-				if !cloudCostQ.DataSource.IsNull() {
-					cloudCostQueryReq.SetDataSource(datadogV1.MonitorFormulaAndFunctionCostDataSource(cloudCostQ.DataSource.ValueString()))
-				}
-				if !cloudCostQ.Aggregator.IsNull() {
-					cloudCostQueryReq.SetAggregator(datadogV1.MonitorFormulaAndFunctionCostAggregator(cloudCostQ.Aggregator.ValueString()))
-				}
-				variableReq.MonitorFormulaAndFunctionCostQueryDefinition = &cloudCostQueryReq
-				variablesReq = append(variablesReq, variableReq)
-			}
+		if search := eventQ.Search; search != nil {
+			searchReq := datadogV1.MonitorFormulaAndFunctionEventQueryDefinitionSearch{}
+			utils.SetOptString(search[0].Query, searchReq.SetQuery)
+			eventQueryReq.SetSearch(searchReq)
 		}
+		if computes := eventQ.Compute; len(computes) > 0 {
+			computeReq := datadogV1.MonitorFormulaAndFunctionEventQueryDefinitionCompute{}
+			compute := computes[0]
+			utils.SetOptInt64(compute.Interval, computeReq.SetInterval)
+			utils.SetOptString(compute.Metric, computeReq.SetMetric)
+			if !compute.Aggregation.IsNull() {
+				computeReq.SetAggregation(datadogV1.MonitorFormulaAndFunctionEventAggregation(compute.Aggregation.ValueString()))
+			}
+			eventQueryReq.SetCompute(computeReq)
+		}
+		if groupBys := eventQ.GroupBy; len(groupBys) > 0 {
+			groupBysReq := []datadogV1.MonitorFormulaAndFunctionEventQueryGroupBy{}
+			for _, groupBy := range groupBys {
+				groupByReq := datadogV1.MonitorFormulaAndFunctionEventQueryGroupBy{}
+				utils.SetOptString(groupBy.Facet, groupByReq.SetFacet)
+				utils.SetOptInt64(groupBy.Limit, groupByReq.SetLimit)
+				if sortList := groupBy.Sort; len(sortList) > 0 {
+					sortReq := datadogV1.MonitorFormulaAndFunctionEventQueryGroupBySort{}
+					sort := sortList[0]
+					utils.SetOptString(sort.Metric, sortReq.SetMetric)
+					if !sort.Aggregation.IsNull() {
+						sortReq.SetAggregation(datadogV1.MonitorFormulaAndFunctionEventAggregation(sort.Aggregation.ValueString()))
+					}
+					if !sort.Order.IsNull() {
+						sortReq.SetOrder(datadogV1.QuerySortOrder(sort.Order.ValueString()))
+					}
+					groupByReq.SetSort(sortReq)
+				}
+				groupBysReq = append(groupBysReq, groupByReq)
+			}
+			eventQueryReq.SetGroupBy(groupBysReq)
+		}
+		variableReq.MonitorFormulaAndFunctionEventQueryDefinition = &eventQueryReq
+		variablesReq = append(variablesReq, variableReq)
+	}
+	return variablesReq
+}
+
+func (r *monitorResource) buildCloudCostQueryStruct(ctx context.Context, cloudCostQs []CloudCostQuery) []datadogV1.MonitorFormulaAndFunctionQueryDefinition {
+	if cloudCostQs == nil || len(cloudCostQs) == 0 {
+		return nil
+	}
+	variablesReq := []datadogV1.MonitorFormulaAndFunctionQueryDefinition{}
+	for _, cloudCostQ := range cloudCostQs {
+		variableReq := datadogV1.MonitorFormulaAndFunctionQueryDefinition{}
+		cloudCostQueryReq := datadogV1.MonitorFormulaAndFunctionCostQueryDefinition{}
+		utils.SetOptString(cloudCostQ.Query, cloudCostQueryReq.SetQuery)
+		utils.SetOptString(cloudCostQ.Name, cloudCostQueryReq.SetName)
+		if !cloudCostQ.DataSource.IsNull() {
+			cloudCostQueryReq.SetDataSource(datadogV1.MonitorFormulaAndFunctionCostDataSource(cloudCostQ.DataSource.ValueString()))
+		}
+		if !cloudCostQ.Aggregator.IsNull() {
+			cloudCostQueryReq.SetAggregator(datadogV1.MonitorFormulaAndFunctionCostAggregator(cloudCostQ.Aggregator.ValueString()))
+		}
+		variableReq.MonitorFormulaAndFunctionCostQueryDefinition = &cloudCostQueryReq
+		variablesReq = append(variablesReq, variableReq)
 	}
 	return variablesReq
 }
@@ -1106,7 +1122,7 @@ func (r *monitorResource) updateState(ctx context.Context, state *monitorResourc
 	if id, ok := m.GetIdOk(); ok && id != nil {
 		state.ID = types.StringValue(strconv.FormatInt(*id, 10))
 	}
-	state.Name = r.toTerraformStr(m.GetNameOk())
+	state.Name = utils.ToTerraformStr(m.GetNameOk())
 
 	if message, ok := m.GetMessageOk(); ok && message != nil {
 		state.Message = customtypes.TrimSpaceStringValue{
@@ -1129,8 +1145,8 @@ func (r *monitorResource) updateState(ctx context.Context, state *monitorResourc
 	if priority, ok := m.GetPriorityOk(); ok && priority != nil {
 		state.Priority = types.StringValue(strconv.FormatInt(*priority, 10))
 	}
-	state.Tags = r.toTerraformSetString(ctx, m.GetTagsOk)
-	state.RestrictedRoles = r.toTerraformSetString(ctx, m.GetRestrictedRolesOk)
+	state.Tags = utils.ToTerraformSetString(ctx, m.GetTagsOk)
+	state.RestrictedRoles = utils.ToTerraformSetString(ctx, m.GetRestrictedRolesOk)
 
 	if escalationMessage, ok := m.Options.GetEscalationMessageOk(); ok && escalationMessage != nil {
 		state.EscalationMessage = customtypes.TrimSpaceStringValue{
@@ -1147,129 +1163,154 @@ func (r *monitorResource) updateState(ctx context.Context, state *monitorResourc
 		state.NotificationPresetName = types.StringValue(string(*notificationPresetName))
 	}
 
-	state.RequireFullWindow = r.toTerraformBool(m.Options.GetRequireFullWindowOk())
-	state.NoDataTimeframe = r.toTerraformInt64(m.Options.GetNoDataTimeframeOk())
-	state.NotifyNoData = r.toTerraformBool(m.Options.GetNotifyNoDataOk())
-	state.GroupRetentionDuration = r.toTerraformStr(m.Options.GetGroupRetentionDurationOk())
-	state.NewGroupDelay = r.toTerraformInt64(m.Options.GetNewGroupDelayOk())
-	state.NewHostDelay = r.toTerraformInt64(m.Options.GetNewHostDelayOk())
-	state.EvaluationDelay = r.toTerraformInt64(m.Options.GetEvaluationDelayOk())
-	state.RenotifyInterval = r.toTerraformInt64(m.Options.GetRenotifyIntervalOk())
-	state.RenotifyOccurrences = r.toTerraformInt64(m.Options.GetRenotifyOccurrencesOk())
-	state.NotifyAudit = r.toTerraformBool(m.Options.GetNotifyAuditOk())
-	state.TimeoutH = r.toTerraformInt64(m.Options.GetTimeoutHOk())
-	state.IncludeTags = r.toTerraformBool(m.Options.GetIncludeTagsOk())
-	state.GroupbySimpleMonitor = r.toTerraformBool(m.Options.GetGroupbySimpleMonitorOk())
-	state.NotifyBy = r.toTerraformSetString(ctx, m.Options.GetNotifyByOk)
-	state.EnableLogsSample = r.toTerraformBool(m.Options.GetEnableLogsSampleOk())
-	state.Locked = r.toTerraformBool(m.Options.GetLockedOk())
+	state.RequireFullWindow = utils.ToTerraformBool(m.Options.GetRequireFullWindowOk())
+	state.NoDataTimeframe = utils.ToTerraformInt64(m.Options.GetNoDataTimeframeOk())
+	state.NotifyNoData = utils.ToTerraformBool(m.Options.GetNotifyNoDataOk())
+	state.GroupRetentionDuration = utils.ToTerraformStr(m.Options.GetGroupRetentionDurationOk())
+	state.NewGroupDelay = utils.ToTerraformInt64(m.Options.GetNewGroupDelayOk())
+	state.NewHostDelay = utils.ToTerraformInt64(m.Options.GetNewHostDelayOk())
+	state.EvaluationDelay = utils.ToTerraformInt64(m.Options.GetEvaluationDelayOk())
+	state.RenotifyInterval = utils.ToTerraformInt64(m.Options.GetRenotifyIntervalOk())
+	state.RenotifyOccurrences = utils.ToTerraformInt64(m.Options.GetRenotifyOccurrencesOk())
+	state.NotifyAudit = utils.ToTerraformBool(m.Options.GetNotifyAuditOk())
+	state.TimeoutH = utils.ToTerraformInt64(m.Options.GetTimeoutHOk())
+	state.IncludeTags = utils.ToTerraformBool(m.Options.GetIncludeTagsOk())
+	state.GroupbySimpleMonitor = utils.ToTerraformBool(m.Options.GetGroupbySimpleMonitorOk())
+	state.NotifyBy = utils.ToTerraformSetString(ctx, m.Options.GetNotifyByOk)
+	state.EnableLogsSample = utils.ToTerraformBool(m.Options.GetEnableLogsSampleOk())
+	state.Locked = utils.ToTerraformBool(m.Options.GetLockedOk())
 
 	if monitorThresholds, ok := m.Options.GetThresholdsOk(); ok && monitorThresholds != nil {
 		state.MonitorThresholds = []MonitorThreshold{{
-			Ok:               r.toTerraformStr(monitorThresholds.GetOkOk()),
-			Unknown:          r.toTerraformStr(monitorThresholds.GetUnknownOk()),
-			Warning:          r.toTerraformStr(monitorThresholds.GetWarningOk()),
-			WarningRecovery:  r.toTerraformStr(monitorThresholds.GetWarningRecoveryOk()),
-			Critical:         r.toTerraformStr(monitorThresholds.GetCriticalOk()),
-			CriticalRecovery: r.toTerraformStr(monitorThresholds.GetCriticalRecoveryOk()),
+			Ok:               utils.ToTerraformStr(monitorThresholds.GetOkOk()),
+			Unknown:          utils.ToTerraformStr(monitorThresholds.GetUnknownOk()),
+			Warning:          utils.ToTerraformStr(monitorThresholds.GetWarningOk()),
+			WarningRecovery:  utils.ToTerraformStr(monitorThresholds.GetWarningRecoveryOk()),
+			Critical:         utils.ToTerraformStr(monitorThresholds.GetCriticalOk()),
+			CriticalRecovery: utils.ToTerraformStr(monitorThresholds.GetCriticalRecoveryOk()),
 		}}
 	}
 	if thresholdWindow, ok := m.Options.GetThresholdWindowsOk(); ok && thresholdWindow != nil {
 		state.MonitorThresholdWindows = []MonitorThresholdWindow{{
-			RecoveryWindow: r.toTerraformStr(thresholdWindow.GetRecoveryWindowOk()),
-			TriggerWindow:  r.toTerraformStr(thresholdWindow.GetTriggerWindowOk()),
+			RecoveryWindow: utils.ToTerraformStr(thresholdWindow.GetRecoveryWindowOk()),
+			TriggerWindow:  utils.ToTerraformStr(thresholdWindow.GetTriggerWindowOk()),
 		}}
 	}
-	if schedulingOptions, ok := m.Options.GetSchedulingOptionsOk(); ok && schedulingOptions != nil {
-		schedulingOptionState := SchedulingOption{}
-		if evalWindow, ok := schedulingOptions.GetEvaluationWindowOk(); ok && evalWindow != nil &&
-			(evalWindow.DayStarts != nil || evalWindow.MonthStarts != nil || evalWindow.HourStarts != nil) {
-			schedulingOptionState.EvaluationWindow = []EvaluationWindow{{
-				DayStarts:   r.toTerraformStr(evalWindow.GetDayStartsOk()),
-				MonthStarts: r.toTerraformInt32(evalWindow.GetMonthStartsOk()),
-				HourStarts:  r.toTerraformInt32(evalWindow.GetHourStartsOk()),
-			}}
-		}
-		if customSchedule, ok := schedulingOptions.GetCustomScheduleOk(); ok && customSchedule != nil && customSchedule.GetRecurrences() != nil &&
-			(customSchedule.GetRecurrences()[0].Rrule != nil || customSchedule.GetRecurrences()[0].Start != nil || customSchedule.GetRecurrences()[0].Timezone != nil) {
-			recurrence := customSchedule.GetRecurrences()[0]
-			schedulingOptionState.CustomSchedule = []CustomSchedule{{
-				Recurrence: []Recurrence{{
-					Rrule:    r.toTerraformStr(recurrence.GetRruleOk()),
-					Start:    r.toTerraformStr(recurrence.GetStartOk()),
-					Timezone: r.toTerraformStr(recurrence.GetTimezoneOk()),
-				}},
-			}}
-		}
-		state.SchedulingOptions = []SchedulingOption{schedulingOptionState}
-	}
+	r.updateSchedulingOptionState(state, m.Options)
+	r.updateVariablesState(ctx, state, m.Options)
+}
 
-	if variables, ok := m.Options.GetVariablesOk(); ok && variables != nil {
-		eventQueryStates := []EventQuery{}
-		CloudCostQueryStates := []CloudCostQuery{}
-		for _, v := range *variables {
-			if eventQ := v.MonitorFormulaAndFunctionEventQueryDefinition; eventQ != nil {
-				eventQueryState := EventQuery{
-					Name: r.toTerraformStr(eventQ.GetNameOk()),
-				}
-				if dataSource, ok := eventQ.GetDataSourceOk(); ok && dataSource != nil {
-					eventQueryState.DataSource = types.StringValue(string(*dataSource))
-				}
-				if indexes, ok := eventQ.GetIndexesOk(); ok && indexes != nil {
-					eventQueryState.Indexes, _ = types.ListValueFrom(ctx, types.StringType, indexes)
-				}
-				if search, ok := eventQ.GetSearchOk(); ok && search != nil {
-					eventQueryState.Search = []Search{{
-						Query: types.StringValue(search.Query),
-					}}
-				}
-				if compute, ok := eventQ.GetComputeOk(); ok && compute != nil {
-					eventQueryState.Compute = []Compute{{
-						Aggregation: types.StringValue(string(compute.Aggregation)),
-						Interval:    r.toTerraformInt64(compute.GetIntervalOk()),
-						Metric:      r.toTerraformStr(compute.GetMetricOk()),
-					}}
-				}
-				if groupBys, ok := eventQ.GetGroupByOk(); ok && groupBys != nil {
-					groupBysState := []GroupBy{}
-					for _, groupBy := range *groupBys {
-						groupByState := GroupBy{
-							Facet: r.toTerraformStr(groupBy.GetFacetOk()),
-							Limit: r.toTerraformInt64(groupBy.GetLimitOk()),
-						}
-						if sort, ok := groupBy.GetSortOk(); ok && sort != nil {
-							sortState := Sort{
-								Aggregation: types.StringValue(string(sort.Aggregation)),
-								Metric:      r.toTerraformStr(sort.GetMetricOk()),
-							}
-							if order, ok := sort.GetOrderOk(); ok && order != nil {
-								sortState.Order = types.StringValue(string(*sort.Order))
-							}
-							groupByState.Sort = []Sort{sortState}
-						}
-						groupBysState = append(groupBysState, groupByState)
-					}
-					eventQueryState.GroupBy = groupBysState
-				}
-				eventQueryStates = append(eventQueryStates, eventQueryState)
-			}
-			if costQ := v.MonitorFormulaAndFunctionCostQueryDefinition; costQ != nil {
-				cloudCostQueryState := CloudCostQuery{
-					DataSource: types.StringValue(string(costQ.DataSource)),
-					Query:      r.toTerraformStr(costQ.GetQueryOk()),
-					Name:       r.toTerraformStr(costQ.GetNameOk()),
-				}
-				if aggregator, ok := costQ.GetAggregatorOk(); ok && aggregator != nil {
-					cloudCostQueryState.Aggregator = types.StringValue(string(*costQ.Aggregator))
-				}
-				CloudCostQueryStates = append(CloudCostQueryStates, cloudCostQueryState)
-			}
-		}
-		state.Variables = []Variable{{
-			EventQuery:     eventQueryStates,
-			CloudCostQuery: CloudCostQueryStates,
+func (r *monitorResource) updateSchedulingOptionState(state *monitorResourceModel, mOptions *datadogV1.MonitorOptions) {
+	schedulingOptions, ok := mOptions.GetSchedulingOptionsOk()
+	if !ok || schedulingOptions == nil {
+		return
+	}
+	schedulingOptionState := SchedulingOption{}
+	if evalWindow, ok := schedulingOptions.GetEvaluationWindowOk(); ok && evalWindow != nil &&
+		(evalWindow.DayStarts != nil || evalWindow.MonthStarts != nil || evalWindow.HourStarts != nil) {
+		schedulingOptionState.EvaluationWindow = []EvaluationWindow{{
+			DayStarts:   utils.ToTerraformStr(evalWindow.GetDayStartsOk()),
+			MonthStarts: utils.ToTerraformInt32(evalWindow.GetMonthStartsOk()),
+			HourStarts:  utils.ToTerraformInt32(evalWindow.GetHourStartsOk()),
 		}}
 	}
+	if customSchedule, ok := schedulingOptions.GetCustomScheduleOk(); ok && customSchedule != nil && customSchedule.GetRecurrences() != nil &&
+		(customSchedule.GetRecurrences()[0].Rrule != nil || customSchedule.GetRecurrences()[0].Start != nil || customSchedule.GetRecurrences()[0].Timezone != nil) {
+		recurrence := customSchedule.GetRecurrences()[0]
+		schedulingOptionState.CustomSchedule = []CustomSchedule{{
+			Recurrence: []Recurrence{{
+				Rrule:    utils.ToTerraformStr(recurrence.GetRruleOk()),
+				Start:    utils.ToTerraformStr(recurrence.GetStartOk()),
+				Timezone: utils.ToTerraformStr(recurrence.GetTimezoneOk()),
+			}},
+		}}
+	}
+	state.SchedulingOptions = []SchedulingOption{schedulingOptionState}
+}
+
+func (r *monitorResource) updateVariablesState(ctx context.Context, state *monitorResourceModel, mOptions *datadogV1.MonitorOptions) {
+	variables, ok := mOptions.GetVariablesOk()
+	if !ok || variables == nil || len(*variables) == 0 {
+		return
+	}
+	eventQueryStates := []EventQuery{}
+	CloudCostQueryStates := []CloudCostQuery{}
+	for _, v := range *variables {
+		if eventQState := r.buildEventQueryState(ctx, v.MonitorFormulaAndFunctionEventQueryDefinition); eventQState != nil {
+			eventQueryStates = append(eventQueryStates, *eventQState)
+		}
+		if costQState := r.buildCloudCostQueryState(v.MonitorFormulaAndFunctionCostQueryDefinition); costQState != nil {
+			CloudCostQueryStates = append(CloudCostQueryStates, *costQState)
+		}
+	}
+	state.Variables = []Variable{{
+		EventQuery:     eventQueryStates,
+		CloudCostQuery: CloudCostQueryStates,
+	}}
+}
+
+func (r *monitorResource) buildEventQueryState(ctx context.Context, eventQ *datadogV1.MonitorFormulaAndFunctionEventQueryDefinition) *EventQuery {
+	if eventQ == nil {
+		return nil
+	}
+	eventQueryState := EventQuery{
+		Name: utils.ToTerraformStr(eventQ.GetNameOk()),
+	}
+	if dataSource, ok := eventQ.GetDataSourceOk(); ok && dataSource != nil {
+		eventQueryState.DataSource = types.StringValue(string(*dataSource))
+	}
+	if indexes, ok := eventQ.GetIndexesOk(); ok && indexes != nil {
+		eventQueryState.Indexes, _ = types.ListValueFrom(ctx, types.StringType, indexes)
+	}
+	if search, ok := eventQ.GetSearchOk(); ok && search != nil {
+		eventQueryState.Search = []Search{{
+			Query: types.StringValue(search.Query),
+		}}
+	}
+	if compute, ok := eventQ.GetComputeOk(); ok && compute != nil {
+		eventQueryState.Compute = []Compute{{
+			Aggregation: types.StringValue(string(compute.Aggregation)),
+			Interval:    utils.ToTerraformInt64(compute.GetIntervalOk()),
+			Metric:      utils.ToTerraformStr(compute.GetMetricOk()),
+		}}
+	}
+	if groupBys, ok := eventQ.GetGroupByOk(); ok && groupBys != nil {
+		groupBysState := []GroupBy{}
+		for _, groupBy := range *groupBys {
+			groupByState := GroupBy{
+				Facet: utils.ToTerraformStr(groupBy.GetFacetOk()),
+				Limit: utils.ToTerraformInt64(groupBy.GetLimitOk()),
+			}
+			if sort, ok := groupBy.GetSortOk(); ok && sort != nil {
+				sortState := Sort{
+					Aggregation: types.StringValue(string(sort.Aggregation)),
+					Metric:      utils.ToTerraformStr(sort.GetMetricOk()),
+				}
+				if order, ok := sort.GetOrderOk(); ok && order != nil {
+					sortState.Order = types.StringValue(string(*sort.Order))
+				}
+				groupByState.Sort = []Sort{sortState}
+			}
+			groupBysState = append(groupBysState, groupByState)
+		}
+		eventQueryState.GroupBy = groupBysState
+	}
+	return &eventQueryState
+}
+
+func (r *monitorResource) buildCloudCostQueryState(cloudCostQ *datadogV1.MonitorFormulaAndFunctionCostQueryDefinition) *CloudCostQuery {
+	if cloudCostQ == nil {
+		return nil
+	}
+	cloudCostQueryState := CloudCostQuery{
+		DataSource: types.StringValue(string(cloudCostQ.DataSource)),
+		Query:      utils.ToTerraformStr(cloudCostQ.GetQueryOk()),
+		Name:       utils.ToTerraformStr(cloudCostQ.GetNameOk()),
+	}
+	if aggregator, ok := cloudCostQ.GetAggregatorOk(); ok && aggregator != nil {
+		cloudCostQueryState.Aggregator = types.StringValue(string(*cloudCostQ.Aggregator))
+	}
+	return &cloudCostQueryState
 }
 
 func (r *monitorResource) getMonitorId(state *monitorResourceModel, diags diag.Diagnostics) (*int64, error) {
@@ -1291,7 +1332,7 @@ func (r *monitorResource) getAllowRenotifyStatus() []string {
 }
 
 func (r *monitorResource) getAllowOnMissingData() []string {
-	return enumStrings((*datadogV1.MonitorOptionsNotificationPresets)(nil).GetAllowedValues())
+	return enumStrings((*datadogV1.OnMissingDataOption)(nil).GetAllowedValues())
 }
 
 func (r *monitorResource) getAllowMonitorOptionsNotificationPresets() []string {
@@ -1338,100 +1379,4 @@ func (r *monitorResource) parseFloat(v types.String) *float64 {
 		return nil
 	}
 	return &result
-}
-
-func (r *monitorResource) toTerraformStr(v any, ok bool) types.String {
-	if !ok || v == nil {
-		return types.StringNull()
-	}
-	switch t := v.(type) {
-	case *int32:
-		return types.StringValue(strconv.FormatInt(int64(*t), 10))
-	case *float64:
-		return types.StringValue(strconv.FormatFloat(*t, 'f', -1, 64))
-	case *datadog.NullableFloat64:
-		if !t.IsSet() || t.Get() == nil {
-			return types.StringNull()
-		}
-		return r.toTerraformStr(t.Get(), true)
-	case *datadog.NullableString:
-		if !t.IsSet() || t.Get() == nil {
-			return types.StringNull()
-		}
-		return r.toTerraformStr(t.Get(), true)
-	case *string:
-		return types.StringValue(*t)
-	}
-	return types.StringNull()
-}
-
-func (r *monitorResource) toTerraformBool(v *bool, ok bool) types.Bool {
-	if ok && v != nil {
-		return types.BoolValue(*v)
-	}
-	return types.BoolNull()
-}
-
-func (r *monitorResource) toTerraformInt32(v *int32, ok bool) types.Int32 {
-	if ok && v != nil {
-		return types.Int32Value(*v)
-	}
-	return types.Int32Null()
-}
-
-func (r *monitorResource) toTerraformInt64(v *int64, ok bool) types.Int64 {
-	if ok && v != nil {
-		return types.Int64Value(*v)
-	}
-	return types.Int64Null()
-}
-
-func (r *monitorResource) toTerraformSetString(ctx context.Context, get func() (*[]string, bool)) types.Set {
-	if v, ok := get(); ok && v != nil {
-		result, _ := types.SetValueFrom(ctx, types.StringType, v)
-		return result
-	}
-	return types.SetNull(types.StringType)
-}
-
-func (r *monitorResource) setOptString(s types.String, set func(string)) {
-	if !s.IsNull() && !s.IsUnknown() {
-		set(s.ValueString())
-	}
-}
-
-func (r *monitorResource) setOptInt32(i types.Int32, set func(int32)) {
-	if !i.IsNull() && !i.IsUnknown() {
-		set(i.ValueInt32())
-	}
-}
-
-func (r *monitorResource) setOptInt64(i types.Int64, set func(int64)) {
-	if !i.IsNull() && !i.IsUnknown() {
-		set(i.ValueInt64())
-	}
-}
-
-func (r *monitorResource) setOptBool(b types.Bool, set func(bool)) {
-	if !b.IsNull() && !b.IsUnknown() {
-		set(b.ValueBool())
-	}
-}
-
-func (r *monitorResource) setOptStringList(typeCollection any, set func([]string), ctx context.Context) {
-	var strList []string
-	diags := diag.Diagnostics{}
-	switch t := typeCollection.(type) {
-	case types.Set:
-		if !t.IsNull() && !t.IsUnknown() {
-			diags.Append(t.ElementsAs(ctx, &strList, false)...)
-			sort.Strings(strList)
-			set(strList)
-		}
-	case types.List:
-		if !t.IsNull() && !t.IsUnknown() {
-			diags.Append(t.ElementsAs(ctx, &strList, false)...)
-			set(strList)
-		}
-	}
 }
