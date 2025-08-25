@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 282
+        content_length: 366
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"draft_status":"published","message":"Monitor triggered. Notify: @hipchat-channel","name":"tf-TestAccMonitor_Fwprovider_Update-local-1754598126","options":{},"priority":null,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} \u003e 4","type":"metric alert"}
+            {"draft_status":"published","message":"Monitor triggered. Notify: @hipchat-channel","name":"tf-TestAccMonitor_Fwprovider_Update-local-1755793077","options":{"include_tags":true,"new_host_delay":300,"notify_audit":false,"notify_no_data":false},"priority":null,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} \u003e 4","type":"metric alert"}
         form: {}
         headers:
             Accept:
@@ -37,20 +37,20 @@ interactions:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 100.371917ms
+        duration: 111.462792ms
     - id: 1
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 282
+        content_length: 366
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"draft_status":"published","message":"Monitor triggered. Notify: @hipchat-channel","name":"tf-TestAccMonitor_Fwprovider_Update-local-1754598126","options":{},"priority":null,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} \u003e 4","type":"metric alert"}
+            {"draft_status":"published","message":"Monitor triggered. Notify: @hipchat-channel","name":"tf-TestAccMonitor_Fwprovider_Update-local-1755793077","options":{"include_tags":true,"new_host_delay":300,"notify_audit":false,"notify_no_data":false},"priority":null,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} \u003e 4","type":"metric alert"}
         form: {}
         headers:
             Accept:
@@ -74,20 +74,20 @@ interactions:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 50.683209ms
+        duration: 72.528666ms
     - id: 2
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 282
+        content_length: 366
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"draft_status":"published","message":"Monitor triggered. Notify: @hipchat-channel","name":"tf-TestAccMonitor_Fwprovider_Update-local-1754598126","options":{},"priority":null,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} \u003e 4","type":"metric alert"}
+            {"draft_status":"published","message":"Monitor triggered. Notify: @hipchat-channel","name":"tf-TestAccMonitor_Fwprovider_Update-local-1755793077","options":{"include_tags":true,"new_host_delay":300,"notify_audit":false,"notify_no_data":false},"priority":null,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} \u003e 4","type":"metric alert"}
         form: {}
         headers:
             Accept:
@@ -106,33 +106,33 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":180238629,"org_id":321813,"type":"metric alert","name":"tf-TestAccMonitor_Fwprovider_Update-local-1754598126","message":"Monitor triggered. Notify: @hipchat-channel","tags":[],"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 4","options":{"notify_no_data":false,"notify_audit":false,"new_host_delay":300,"include_tags":true,"silenced":{}},"multi":true,"created_at":1754598127000,"created":"2025-08-07T20:22:07.449306+00:00","modified":"2025-08-07T20:22:07.449306+00:00","deleted":null,"priority":null,"restricted_roles":null,"restriction_policy":null,"overall_state_modified":null,"overall_state":"No Data","creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com","id":1445416}}
+            {"id":182356518,"org_id":321813,"type":"metric alert","name":"tf-TestAccMonitor_Fwprovider_Update-local-1755793077","message":"Monitor triggered. Notify: @hipchat-channel","tags":[],"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 4","options":{"include_tags":true,"new_host_delay":300,"notify_audit":false,"notify_no_data":false,"silenced":{}},"multi":true,"created_at":1755793078000,"created":"2025-08-21T16:17:58.327772+00:00","modified":"2025-08-21T16:17:58.327772+00:00","deleted":null,"priority":null,"restricted_roles":null,"restriction_policy":null,"overall_state_modified":null,"overall_state":"No Data","creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com","id":1445416}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 1.059175125s
+        duration: 1.232560958s
     - id: 3
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 292
+        content_length: 376
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"draft_status":"published","message":"Monitor triggered. Notify: @hipchat-channel","name":"tf-TestAccMonitor_Fwprovider_Update-local-1754598126","options":{},"priority":null,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} \u003e 4","tags":[],"type":"metric alert"}
+            {"draft_status":"published","message":"Monitor triggered. Notify: @hipchat-channel","name":"tf-TestAccMonitor_Fwprovider_Update-local-1755793077","options":{"include_tags":true,"new_host_delay":300,"notify_audit":false,"notify_no_data":false},"priority":null,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} \u003e 4","tags":[],"type":"metric alert"}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/180238629/validate
+        url: https://api.datadoghq.com/api/v1/monitor/182356518/validate
         method: POST
       response:
         proto: HTTP/1.1
@@ -149,7 +149,7 @@ interactions:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 80.900791ms
+        duration: 135.562875ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -166,7 +166,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/180238629
+        url: https://api.datadoghq.com/api/v1/monitor/182356518
         method: GET
       response:
         proto: HTTP/1.1
@@ -178,33 +178,33 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":180238629,"org_id":321813,"type":"metric alert","name":"tf-TestAccMonitor_Fwprovider_Update-local-1754598126","message":"Monitor triggered. Notify: @hipchat-channel","tags":[],"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 4","options":{"notify_no_data":false,"notify_audit":false,"new_host_delay":300,"include_tags":true,"silenced":{}},"multi":true,"created_at":1754598127000,"created":"2025-08-07T20:22:07.449306+00:00","modified":"2025-08-07T20:22:07.449306+00:00","deleted":null,"priority":null,"restricted_roles":null,"overall_state_modified":null,"overall_state":"No Data","creator":{"name":"frog","email":"frog@datadoghq.com","handle":"frog@datadoghq.com","id":1445416}}
+            {"id":182356518,"org_id":321813,"type":"metric alert","name":"tf-TestAccMonitor_Fwprovider_Update-local-1755793077","message":"Monitor triggered. Notify: @hipchat-channel","tags":[],"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 4","options":{"include_tags":true,"new_host_delay":300,"notify_audit":false,"notify_no_data":false,"silenced":{}},"multi":true,"created_at":1755793078000,"created":"2025-08-21T16:17:58.327772+00:00","modified":"2025-08-21T16:17:58.327772+00:00","deleted":null,"priority":null,"restricted_roles":null,"overall_state_modified":"2025-08-21T16:17:59+00:00","overall_state":"No Data","creator":{"name":"frog","email":"frog@datadoghq.com","handle":"frog@datadoghq.com","id":1445416}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 109.74175ms
+        duration: 177.531792ms
     - id: 5
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 292
+        content_length: 376
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"draft_status":"published","message":"Monitor triggered. Notify: @hipchat-channel","name":"tf-TestAccMonitor_Fwprovider_Update-local-1754598126","options":{},"priority":null,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} \u003e 4","tags":[],"type":"metric alert"}
+            {"draft_status":"published","message":"Monitor triggered. Notify: @hipchat-channel","name":"tf-TestAccMonitor_Fwprovider_Update-local-1755793077","options":{"include_tags":true,"new_host_delay":300,"notify_audit":false,"notify_no_data":false},"priority":null,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} \u003e 4","tags":[],"type":"metric alert"}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/180238629/validate
+        url: https://api.datadoghq.com/api/v1/monitor/182356518/validate
         method: POST
       response:
         proto: HTTP/1.1
@@ -221,7 +221,7 @@ interactions:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 79.637458ms
+        duration: 77.346583ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -238,7 +238,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/180238629
+        url: https://api.datadoghq.com/api/v1/monitor/182356518
         method: GET
       response:
         proto: HTTP/1.1
@@ -250,33 +250,33 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":180238629,"org_id":321813,"type":"metric alert","name":"tf-TestAccMonitor_Fwprovider_Update-local-1754598126","message":"Monitor triggered. Notify: @hipchat-channel","tags":[],"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 4","options":{"notify_no_data":false,"notify_audit":false,"new_host_delay":300,"include_tags":true,"silenced":{}},"multi":true,"created_at":1754598127000,"created":"2025-08-07T20:22:07.449306+00:00","modified":"2025-08-07T20:22:07.449306+00:00","deleted":null,"priority":null,"restricted_roles":null,"overall_state_modified":null,"overall_state":"No Data","creator":{"name":"frog","email":"frog@datadoghq.com","handle":"frog@datadoghq.com","id":1445416}}
+            {"id":182356518,"org_id":321813,"type":"metric alert","name":"tf-TestAccMonitor_Fwprovider_Update-local-1755793077","message":"Monitor triggered. Notify: @hipchat-channel","tags":[],"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 4","options":{"include_tags":true,"new_host_delay":300,"notify_audit":false,"notify_no_data":false,"silenced":{}},"multi":true,"created_at":1755793078000,"created":"2025-08-21T16:17:58.327772+00:00","modified":"2025-08-21T16:17:58.327772+00:00","deleted":null,"priority":null,"restricted_roles":null,"overall_state_modified":"2025-08-21T16:17:59+00:00","overall_state":"No Data","creator":{"name":"frog","email":"frog@datadoghq.com","handle":"frog@datadoghq.com","id":1445416}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 111.641833ms
+        duration: 121.715917ms
     - id: 7
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 254
+        content_length: 338
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"draft_status":"published","message":"updated message","name":"tf-TestAccMonitor_Fwprovider_Update-local-1754598126","options":{},"priority":null,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} \u003e 4","type":"metric alert"}
+            {"draft_status":"published","message":"updated message","name":"tf-TestAccMonitor_Fwprovider_Update-local-1755793077","options":{"include_tags":true,"new_host_delay":300,"notify_audit":false,"notify_no_data":false},"priority":null,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} \u003e 4","type":"metric alert"}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/180238629/validate
+        url: https://api.datadoghq.com/api/v1/monitor/182356518/validate
         method: POST
       response:
         proto: HTTP/1.1
@@ -293,27 +293,27 @@ interactions:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 70.641417ms
+        duration: 195.5485ms
     - id: 8
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 254
+        content_length: 338
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"draft_status":"published","message":"updated message","name":"tf-TestAccMonitor_Fwprovider_Update-local-1754598126","options":{},"priority":null,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} \u003e 4","type":"metric alert"}
+            {"draft_status":"published","message":"updated message","name":"tf-TestAccMonitor_Fwprovider_Update-local-1755793077","options":{"include_tags":true,"new_host_delay":300,"notify_audit":false,"notify_no_data":false},"priority":null,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} \u003e 4","type":"metric alert"}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/180238629/validate
+        url: https://api.datadoghq.com/api/v1/monitor/182356518/validate
         method: POST
       response:
         proto: HTTP/1.1
@@ -330,27 +330,27 @@ interactions:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 104.434542ms
+        duration: 66.568334ms
     - id: 9
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 254
+        content_length: 338
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"draft_status":"published","message":"updated message","name":"tf-TestAccMonitor_Fwprovider_Update-local-1754598126","options":{},"priority":null,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} \u003e 4","type":"metric alert"}
+            {"draft_status":"published","message":"updated message","name":"tf-TestAccMonitor_Fwprovider_Update-local-1755793077","options":{"include_tags":true,"new_host_delay":300,"notify_audit":false,"notify_no_data":false},"priority":null,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} \u003e 4","type":"metric alert"}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/180238629
+        url: https://api.datadoghq.com/api/v1/monitor/182356518
         method: PUT
       response:
         proto: HTTP/1.1
@@ -362,33 +362,33 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":180238629,"org_id":321813,"type":"metric alert","name":"tf-TestAccMonitor_Fwprovider_Update-local-1754598126","message":"updated message","tags":[],"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 4","options":{"notify_no_data":false,"notify_audit":false,"new_host_delay":300,"include_tags":true,"silenced":{}},"multi":true,"created_at":1754598127000,"created":"2025-08-07T20:22:07.449306+00:00","modified":"2025-08-07T20:22:09.850772+00:00","deleted":null,"priority":null,"restricted_roles":null,"restriction_policy":null,"overall_state_modified":null,"overall_state":"No Data"}
+            {"id":182356518,"org_id":321813,"type":"metric alert","name":"tf-TestAccMonitor_Fwprovider_Update-local-1755793077","message":"updated message","tags":[],"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 4","options":{"include_tags":true,"new_host_delay":300,"notify_audit":false,"notify_no_data":false,"silenced":{}},"multi":true,"created_at":1755793078000,"created":"2025-08-21T16:17:58.327772+00:00","modified":"2025-08-21T16:18:01.237428+00:00","deleted":null,"priority":null,"restricted_roles":null,"restriction_policy":null,"overall_state_modified":null,"overall_state":"No Data"}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 1.0231775s
+        duration: 1.330260916s
     - id: 10
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 264
+        content_length: 348
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"draft_status":"published","message":"updated message","name":"tf-TestAccMonitor_Fwprovider_Update-local-1754598126","options":{},"priority":null,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} \u003e 4","tags":[],"type":"metric alert"}
+            {"draft_status":"published","message":"updated message","name":"tf-TestAccMonitor_Fwprovider_Update-local-1755793077","options":{"include_tags":true,"new_host_delay":300,"notify_audit":false,"notify_no_data":false},"priority":null,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} \u003e 4","tags":[],"type":"metric alert"}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/180238629/validate
+        url: https://api.datadoghq.com/api/v1/monitor/182356518/validate
         method: POST
       response:
         proto: HTTP/1.1
@@ -405,7 +405,7 @@ interactions:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 83.99975ms
+        duration: 72.033417ms
     - id: 11
       request:
         proto: HTTP/1.1
@@ -422,7 +422,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/180238629
+        url: https://api.datadoghq.com/api/v1/monitor/182356518
         method: GET
       response:
         proto: HTTP/1.1
@@ -434,33 +434,33 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":180238629,"org_id":321813,"type":"metric alert","name":"tf-TestAccMonitor_Fwprovider_Update-local-1754598126","message":"updated message","tags":[],"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 4","options":{"notify_no_data":false,"notify_audit":false,"new_host_delay":300,"include_tags":true,"silenced":{}},"multi":true,"created_at":1754598127000,"created":"2025-08-07T20:22:07.449306+00:00","modified":"2025-08-07T20:22:09.850772+00:00","deleted":null,"priority":null,"restricted_roles":null,"overall_state_modified":null,"overall_state":"No Data","creator":{"name":"frog","email":"frog@datadoghq.com","handle":"frog@datadoghq.com","id":1445416}}
+            {"id":182356518,"org_id":321813,"type":"metric alert","name":"tf-TestAccMonitor_Fwprovider_Update-local-1755793077","message":"updated message","tags":[],"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 4","options":{"include_tags":true,"new_host_delay":300,"notify_audit":false,"notify_no_data":false,"silenced":{}},"multi":true,"created_at":1755793078000,"created":"2025-08-21T16:17:58.327772+00:00","modified":"2025-08-21T16:18:01.237428+00:00","deleted":null,"priority":null,"restricted_roles":null,"overall_state_modified":"2025-08-21T16:17:59+00:00","overall_state":"No Data","creator":{"name":"frog","email":"frog@datadoghq.com","handle":"frog@datadoghq.com","id":1445416}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 96.616292ms
+        duration: 117.314959ms
     - id: 12
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 264
+        content_length: 348
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"draft_status":"published","message":"updated message","name":"tf-TestAccMonitor_Fwprovider_Update-local-1754598126","options":{},"priority":null,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} \u003e 4","tags":[],"type":"metric alert"}
+            {"draft_status":"published","message":"updated message","name":"tf-TestAccMonitor_Fwprovider_Update-local-1755793077","options":{"include_tags":true,"new_host_delay":300,"notify_audit":false,"notify_no_data":false},"priority":null,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} \u003e 4","tags":[],"type":"metric alert"}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/180238629/validate
+        url: https://api.datadoghq.com/api/v1/monitor/182356518/validate
         method: POST
       response:
         proto: HTTP/1.1
@@ -477,7 +477,7 @@ interactions:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 117.082542ms
+        duration: 70.4465ms
     - id: 13
       request:
         proto: HTTP/1.1
@@ -494,7 +494,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/180238629
+        url: https://api.datadoghq.com/api/v1/monitor/182356518
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -506,10 +506,10 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"deleted_monitor_id":180238629}
+            {"deleted_monitor_id":182356518}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 953.20925ms
+        duration: 1.265073916s
