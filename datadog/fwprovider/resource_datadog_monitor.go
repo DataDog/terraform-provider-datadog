@@ -927,12 +927,13 @@ func (r *monitorResource) buildMonitorStruct(ctx context.Context, state *monitor
 	}
 	utils.SetOptStringList(state.EffectiveTags, m.SetTags, ctx)
 	utils.SetOptStringList(state.EffectiveTags, u.SetTags, ctx)
-	if !state.RestrictedRoles.IsNull() && !state.RestrictedRoles.IsUnknown() && len(state.RestrictedRoles.Elements()) == 0 {
+	utils.SetOptStringList(state.RestrictedRoles, m.SetRestrictedRoles, ctx)
+	utils.SetOptStringList(state.RestrictedRoles, u.SetRestrictedRoles, ctx)
+	// This handles an edge case where an empty array produce a 400 error,
+	// so converting it to nil in the request.
+	if restrictedRoles, ok := m.GetRestrictedRolesOk(); ok && len(*restrictedRoles) == 0 {
 		m.SetRestrictedRolesNil()
 		u.SetRestrictedRolesNil()
-	} else {
-		utils.SetOptStringList(state.RestrictedRoles, m.SetRestrictedRoles, ctx)
-		utils.SetOptStringList(state.RestrictedRoles, u.SetRestrictedRoles, ctx)
 	}
 
 	monitorOptions := datadogV1.MonitorOptions{}
