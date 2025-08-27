@@ -129,7 +129,7 @@ func resourceDatadogSensitiveDataScannerRule() *schema.Resource {
 							"should_save_match": {
 								Type:        schema.TypeBool,
 								Optional:    true,
-								Description: "Whether or not to save the match. Only valid for type 'replacement_string'.",
+								Description: "Only valid when type == `replacement_string`. When enabled, matches can be unmasked in logs by users with ‘Data Scanner Unmask’ permission. As a security best practice, avoid masking for highly-sensitive, long-lived data.",
 							},
 							"type": {
 								Type:             schema.TypeString,
