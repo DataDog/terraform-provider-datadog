@@ -131,6 +131,7 @@ Optional:
 
 - `number_of_chars` (Number) Required if type == 'partial_replacement_from_beginning' or 'partial_replacement_from_end'. It must be > 0.
 - `replacement_string` (String) Required if type == 'replacement_string'.
+- `should_save_match` (Boolean) Whether or not to save the match. Only valid for type 'replacement_string'.
 
 ## Import
 
