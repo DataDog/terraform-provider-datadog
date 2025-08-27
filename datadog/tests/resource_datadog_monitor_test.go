@@ -1678,6 +1678,7 @@ resource "datadog_monitor" "bar" {
   	type = "composite"
   	message = "test"
 	query = "${datadog_monitor.foo.id} || ${datadog_synthetics_test.foo.monitor_id}"
+	validate = false
 }`, uniq, uniq, uniq)
 }
 
