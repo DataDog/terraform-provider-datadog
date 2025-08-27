@@ -454,8 +454,9 @@ func updateSensitiveDataScannerRuleState(d *schema.ResourceData, ruleAttributes 
 			textReplacement["replacement_string"] = replacementString
 		}
 		if tR.AdditionalProperties != nil {
+			// `should_save_match` should be supported starting in `datadog-api-client-go` v2.45
+			// Additional properties is used until then.
 			if shouldSaveMatch, ok := tR.AdditionalProperties["should_save_match"]; ok {
-				// Only surface when type is replacement_string
 				if replacementType, ok := tR.GetTypeOk(); ok && *replacementType == datadogV2.SENSITIVEDATASCANNERTEXTREPLACEMENTTYPE_REPLACEMENT_STRING {
 					textReplacement["should_save_match"] = shouldSaveMatch
 				}
