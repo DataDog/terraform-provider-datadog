@@ -11,14 +11,14 @@ import (
 )
 
 // Ensure the implementation satisfies the expected interfaces
-var _ basetypes.StringTypable = MonitorTypeType{}
+var _ basetypes.StringTypable = FloatStringType{}
 
-type MonitorTypeType struct {
+type FloatStringType struct {
 	basetypes.StringType
 }
 
-func (t MonitorTypeType) Equal(o attr.Type) bool {
-	other, ok := o.(MonitorTypeType)
+func (t FloatStringType) Equal(o attr.Type) bool {
+	other, ok := o.(FloatStringType)
 
 	if !ok {
 		return false
@@ -27,19 +27,19 @@ func (t MonitorTypeType) Equal(o attr.Type) bool {
 	return t.StringType.Equal(other.StringType)
 }
 
-func (t MonitorTypeType) String() string {
-	return "MonitorTypeType"
+func (t FloatStringType) String() string {
+	return "FloatStringType"
 }
 
-func (t MonitorTypeType) ValueFromString(ctx context.Context, in basetypes.StringValue) (basetypes.StringValuable, diag.Diagnostics) {
-	value := MonitorTypeValue{
+func (t FloatStringType) ValueFromString(ctx context.Context, in basetypes.StringValue) (basetypes.StringValuable, diag.Diagnostics) {
+	value := FloatStringValue{
 		StringValue: in,
 	}
 
 	return value, nil
 }
 
-func (t MonitorTypeType) ValueFromTerraform(ctx context.Context, in tftypes.Value) (attr.Value, error) {
+func (t FloatStringType) ValueFromTerraform(ctx context.Context, in tftypes.Value) (attr.Value, error) {
 	attrValue, err := t.StringType.ValueFromTerraform(ctx, in)
 
 	if err != nil {
@@ -61,7 +61,7 @@ func (t MonitorTypeType) ValueFromTerraform(ctx context.Context, in tftypes.Valu
 	return stringValuable, nil
 }
 
-func (t MonitorTypeType) ValueType(ctx context.Context) attr.Value {
+func (t FloatStringType) ValueType(ctx context.Context) attr.Value {
 
-	return MonitorTypeValue{}
+	return FloatStringValue{}
 }

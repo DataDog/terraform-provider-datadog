@@ -3,7 +3,6 @@ package customtypes
 import (
 	"context"
 	"fmt"
-	"log"
 
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -24,12 +23,6 @@ func (v MonitorTypeValue) Equal(o attr.Value) bool {
 	if !ok {
 		return false
 	}
-
-	newValue, _ := o.(MonitorTypeValue)
-
-	log.Printf("[DEBUG] Equal newVal=%#v", newValue.ValueString())
-	log.Printf("[DEBUG] Equal oldVal=%#v", v.ValueString())
-
 	return v.StringValue.Equal(other.StringValue)
 }
 

@@ -16,6 +16,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework-validators/resourcevalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/setvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
+	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -59,6 +60,7 @@ type monitorResourceModel struct {
 	Query                   customtypes.TrimSpaceStringValue `tfsdk:"query"`
 	Priority                types.String                     `tfsdk:"priority"`
 	Tags                    types.Set                        `tfsdk:"tags"`
+	EffectiveTags           types.Set                        `tfsdk:"effective_tags"`
 	NotifyNoData            types.Bool                       `tfsdk:"notify_no_data"`
 	OnMissingData           types.String                     `tfsdk:"on_missing_data"`
 	GroupRetentionDuration  types.String                     `tfsdk:"group_retention_duration"`
@@ -89,12 +91,12 @@ type monitorResourceModel struct {
 }
 
 type MonitorThreshold struct {
-	Ok               types.String `tfsdk:"ok"`
-	Unknown          types.String `tfsdk:"unknown"`
-	Warning          types.String `tfsdk:"warning"`
-	WarningRecovery  types.String `tfsdk:"warning_recovery"`
-	Critical         types.String `tfsdk:"critical"`
-	CriticalRecovery types.String `tfsdk:"critical_recovery"`
+	Ok               customtypes.FloatStringValue `tfsdk:"ok"`
+	Unknown          customtypes.FloatStringValue `tfsdk:"unknown"`
+	Warning          customtypes.FloatStringValue `tfsdk:"warning"`
+	WarningRecovery  customtypes.FloatStringValue `tfsdk:"warning_recovery"`
+	Critical         customtypes.FloatStringValue `tfsdk:"critical"`
+	CriticalRecovery customtypes.FloatStringValue `tfsdk:"critical_recovery"`
 }
 
 type MonitorThresholdWindow struct {
@@ -167,8 +169,9 @@ type CloudCostQuery struct {
 }
 
 type monitorResource struct {
-	Api  *datadogV1.MonitorsApi
-	Auth context.Context
+	Api         *datadogV1.MonitorsApi
+	Auth        context.Context
+	DefaultTags map[string]string
 }
 
 func NewMonitorResource() resource.Resource {
@@ -225,6 +228,7 @@ func (r *monitorResource) Configure(_ context.Context, request resource.Configur
 	providerData, _ := request.ProviderData.(*FrameworkProvider)
 	r.Api = providerData.DatadogApiInstances.GetMonitorsApiV1()
 	r.Auth = providerData.Auth
+	r.DefaultTags = providerData.DefaultTags
 }
 
 func (r *monitorResource) Metadata(_ context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
@@ -400,10 +404,11 @@ func (r *monitorResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 				Optional:    true,
 			},
 			"restricted_roles": schema.SetAttribute{
-				Description: "A list of unique role identifiers to define which roles are allowed to edit the monitor. Editing a monitor includes any updates to the monitor configuration, monitor deletion, and muting of the monitor for any amount of time. Roles unique identifiers can be pulled from the [Roles API](https://docs.datadoghq.com/api/latest/roles/#list-roles) in the `data.id` field.\n > **Note:** When the `TERRAFORM_MONITOR_EXPLICIT_RESTRICTED_ROLES` environment variable is set to `true`, this argument is treated as `Computed`. Terraform will automatically read the current restricted roles list from the Datadog API whenever the attribute is omitted. If `restricted_roles` is explicitly set in the configuration, that value always takes precedence over whatever is discovered during the read. This opt-in behaviour lets you migrate responsibility for monitor permissions to the `datadog_restriction_policy` resource.",
-				Optional:    true,
-				Computed:    true,
-				ElementType: types.StringType,
+				Description:        "A list of unique role identifiers to define which roles are allowed to edit the monitor. Editing a monitor includes any updates to the monitor configuration, monitor deletion, and muting of the monitor for any amount of time. Roles unique identifiers can be pulled from the [Roles API](https://docs.datadoghq.com/api/latest/roles/#list-roles) in the `data.id` field.\n",
+				DeprecationMessage: "Use `datadog_restriction_policy` resource to manage permission",
+				Optional:           true,
+				Computed:           true,
+				ElementType:        types.StringType,
 				PlanModifiers: []planmodifier.Set{
 					setplanmodifier.UseStateForUnknown(),
 				},
@@ -414,6 +419,10 @@ func (r *monitorResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 				// we order them explicitly in the read/create/update methods of this resource and using
 				// TypeSet makes Terraform ignore differences in order when creating a plan
 				Optional:    true,
+				ElementType: types.StringType,
+			},
+			"effective_tags": schema.SetAttribute{
+				Description: "A list of tags to associate with your monitor, including those inherited from the provider's `default_tags` configuration. This can help you categorize and filter monitors in the manage monitors page of the UI.",
 				Computed:    true,
 				ElementType: types.StringType,
 			},
@@ -439,42 +448,48 @@ func (r *monitorResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 							Validators: []validator.String{
 								stringFloatValidator,
 							},
-							Optional: true,
+							Optional:   true,
+							CustomType: customtypes.FloatStringType{},
 						},
 						"warning": schema.StringAttribute{
 							Description: "The monitor `WARNING` threshold. Must be a number.",
 							Validators: []validator.String{
 								stringFloatValidator,
 							},
-							Optional: true,
+							Optional:   true,
+							CustomType: customtypes.FloatStringType{},
 						},
 						"critical": schema.StringAttribute{
 							Description: "The monitor `CRITICAL` threshold. Must be a number.",
 							Validators: []validator.String{
 								stringFloatValidator,
 							},
-							Optional: true,
+							Optional:   true,
+							CustomType: customtypes.FloatStringType{},
 						},
 						"unknown": schema.StringAttribute{
 							Description: "The monitor `UNKNOWN` threshold. Only supported in monitor type `service check`. Must be a number.",
 							Validators: []validator.String{
 								stringFloatValidator,
 							},
-							Optional: true,
+							Optional:   true,
+							CustomType: customtypes.FloatStringType{},
 						},
 						"warning_recovery": schema.StringAttribute{
 							Description: "The monitor `WARNING` recovery threshold. Must be a number.",
 							Validators: []validator.String{
 								stringFloatValidator,
 							},
-							Optional: true,
+							Optional:   true,
+							CustomType: customtypes.FloatStringType{},
 						},
 						"critical_recovery": schema.StringAttribute{
 							Description: "The monitor `CRITICAL` recovery threshold. Must be a number.",
 							Validators: []validator.String{
 								stringFloatValidator,
 							},
-							Optional: true,
+							Optional:   true,
+							CustomType: customtypes.FloatStringType{},
 						},
 					},
 				},
@@ -724,8 +739,7 @@ func (r *monitorResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 }
 
 func (r *monitorResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-	// To be implemented
-	// resource.ImportStatePassthroughID(ctx, frameworkPath.Root("id"), req, resp)
+	resource.ImportStatePassthroughID(ctx, frameworkPath.Root("id"), req, resp)
 }
 
 func (r *monitorResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
@@ -735,8 +749,8 @@ func (r *monitorResource) Read(ctx context.Context, request resource.ReadRequest
 		return
 	}
 
-	id, idErr := r.getMonitorId(&state, response.Diagnostics)
-	if idErr != nil {
+	id, diags := r.getMonitorId(&state)
+	if diags.HasError() {
 		return
 	}
 	resp, httpResp, err := r.Api.GetMonitor(r.Auth, *id)
@@ -785,8 +799,8 @@ func (r *monitorResource) Update(ctx context.Context, request resource.UpdateReq
 		return
 	}
 
-	id, idErr := r.getMonitorId(&state, response.Diagnostics)
-	if idErr != nil {
+	id, diags := r.getMonitorId(&state)
+	if diags.HasError() {
 		return
 	}
 	_, updateRequestBody, diags := r.buildMonitorStruct(ctx, &state)
@@ -813,8 +827,8 @@ func (r *monitorResource) Delete(ctx context.Context, request resource.DeleteReq
 		return
 	}
 
-	id, idErr := r.getMonitorId(&state, response.Diagnostics)
-	if idErr != nil {
+	id, diags := r.getMonitorId(&state)
+	if diags.HasError() {
 		return
 	}
 	var httpResp *http.Response
@@ -852,7 +866,11 @@ func (r *monitorResource) ModifyPlan(ctx context.Context, req resource.ModifyPla
 		// Explicitly skip validation
 		return
 	}
-
+	combinedTags, diags := utils.CombineTags(ctx, plan.Tags, r.DefaultTags)
+	if diags.HasError() {
+		return
+	}
+	resp.Diagnostics.Append(resp.Plan.SetAttribute(ctx, frameworkPath.Root("effective_tags"), combinedTags)...)
 	m, _, diags := r.buildMonitorStruct(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
@@ -864,8 +882,8 @@ func (r *monitorResource) ModifyPlan(ctx context.Context, req resource.ModifyPla
 	var err error
 	log.Printf("[DEBUG] monitor/validate m=%#v", m)
 	if !isCreation {
-		id, idErr := r.getMonitorId(&state, resp.Diagnostics)
-		if idErr != nil {
+		id, diags := r.getMonitorId(&state)
+		if diags.HasError() {
 			return
 		}
 		_, httpresp, err = r.Api.ValidateExistingMonitor(r.Auth, *id, *m)
@@ -907,10 +925,16 @@ func (r *monitorResource) buildMonitorStruct(ctx context.Context, state *monitor
 		m.SetPriorityNil()
 		u.SetPriorityNil()
 	}
-	utils.SetOptStringList(state.Tags, m.SetTags, ctx, diags)
-	utils.SetOptStringList(state.Tags, u.SetTags, ctx, diags)
-	utils.SetOptStringList(state.RestrictedRoles, m.SetRestrictedRoles, ctx, diags)
-	utils.SetOptStringList(state.RestrictedRoles, u.SetRestrictedRoles, ctx, diags)
+	utils.SetOptStringList(state.EffectiveTags, m.SetTags, ctx)
+	utils.SetOptStringList(state.EffectiveTags, u.SetTags, ctx)
+	utils.SetOptStringList(state.RestrictedRoles, m.SetRestrictedRoles, ctx)
+	utils.SetOptStringList(state.RestrictedRoles, u.SetRestrictedRoles, ctx)
+	// This handles an edge case where an empty array produce a 400 error,
+	// so converting it to nil in the request.
+	if restrictedRoles, ok := m.GetRestrictedRolesOk(); ok && len(*restrictedRoles) == 0 {
+		m.SetRestrictedRolesNil()
+		u.SetRestrictedRolesNil()
+	}
 
 	monitorOptions := datadogV1.MonitorOptions{}
 	if !state.EscalationMessage.IsNull() {
@@ -934,7 +958,7 @@ func (r *monitorResource) buildMonitorStruct(ctx context.Context, state *monitor
 	}
 	utils.SetOptBool(state.RequireFullWindow, monitorOptions.SetRequireFullWindow)
 	utils.SetOptInt64(state.NoDataTimeframe, monitorOptions.SetNoDataTimeframe)
-	utils.SetOptStringList(state.NotifyBy, monitorOptions.SetNotifyBy, ctx, diags)
+	utils.SetOptStringList(state.NotifyBy, monitorOptions.SetNotifyBy, ctx)
 	utils.SetOptBool(state.NotifyNoData, monitorOptions.SetNotifyNoData)
 	utils.SetOptString(state.GroupRetentionDuration, monitorOptions.SetGroupRetentionDuration)
 	utils.SetOptInt64(state.NewGroupDelay, monitorOptions.SetNewGroupDelay)
@@ -1007,7 +1031,6 @@ func (r *monitorResource) buildSchedulingOptionsStruct(ctx context.Context, sche
 		schedulingOptionsReq.SetEvaluationWindow(evaluationWindowReq)
 	}
 	if customSchedules := schedulingOption.CustomSchedule; len(customSchedules) > 0 {
-		customWindowReq := datadogV1.MonitorOptionsCustomSchedule{}
 		recurrencesReq := []datadogV1.MonitorOptionsCustomScheduleRecurrence{}
 		customSchedule := customSchedules[0]
 		for _, recurrence := range customSchedule.Recurrence {
@@ -1017,8 +1040,12 @@ func (r *monitorResource) buildSchedulingOptionsStruct(ctx context.Context, sche
 			utils.SetOptString(recurrence.Timezone, recurrenceReq.SetTimezone)
 			recurrencesReq = append(recurrencesReq, recurrenceReq)
 		}
-		customWindowReq.SetRecurrences(recurrencesReq)
-		schedulingOptionsReq.SetCustomSchedule(customWindowReq)
+		schedulingOptionsReq.SetCustomSchedule(datadogV1.MonitorOptionsCustomSchedule{
+			Recurrences: recurrencesReq,
+		})
+	}
+	if schedulingOptionsReq.EvaluationWindow == nil && schedulingOptionsReq.CustomSchedule == nil {
+		return nil
 	}
 	return &schedulingOptionsReq
 }
@@ -1033,7 +1060,7 @@ func (r *monitorResource) buildVariablesStruct(ctx context.Context, variables []
 	if eventQReq := r.buildEventQueryStruct(ctx, variable.EventQuery); len(eventQReq) > 0 {
 		variablesReq = append(variablesReq, eventQReq...)
 	}
-	if cloudCostReq := r.buildCloudCostQueryStruct(ctx, variable.CloudCostQuery); len(cloudCostReq) > 0 {
+	if cloudCostReq := r.buildCloudCostQueryStruct(variable.CloudCostQuery); len(cloudCostReq) > 0 {
 		variablesReq = append(variablesReq, cloudCostReq...)
 	}
 	return variablesReq
@@ -1043,13 +1070,12 @@ func (r *monitorResource) buildEventQueryStruct(ctx context.Context, eventQs []E
 	if eventQs == nil || len(eventQs) == 0 {
 		return nil
 	}
-	diags := diag.Diagnostics{}
 	variablesReq := []datadogV1.MonitorFormulaAndFunctionQueryDefinition{}
 	for _, eventQ := range eventQs {
 		variableReq := datadogV1.MonitorFormulaAndFunctionQueryDefinition{}
 		eventQueryReq := datadogV1.MonitorFormulaAndFunctionEventQueryDefinition{}
 		utils.SetOptString(eventQ.Name, eventQueryReq.SetName)
-		utils.SetOptStringList(eventQ.Indexes, eventQueryReq.SetIndexes, ctx, diags)
+		utils.SetOptStringList(eventQ.Indexes, eventQueryReq.SetIndexes, ctx)
 		if !eventQ.DataSource.IsNull() {
 			eventQueryReq.SetDataSource(datadogV1.MonitorFormulaAndFunctionEventsDataSource(eventQ.DataSource.ValueString()))
 		}
@@ -1096,7 +1122,7 @@ func (r *monitorResource) buildEventQueryStruct(ctx context.Context, eventQs []E
 	return variablesReq
 }
 
-func (r *monitorResource) buildCloudCostQueryStruct(ctx context.Context, cloudCostQs []CloudCostQuery) []datadogV1.MonitorFormulaAndFunctionQueryDefinition {
+func (r *monitorResource) buildCloudCostQueryStruct(cloudCostQs []CloudCostQuery) []datadogV1.MonitorFormulaAndFunctionQueryDefinition {
 	if cloudCostQs == nil || len(cloudCostQs) == 0 {
 		return nil
 	}
@@ -1145,8 +1171,12 @@ func (r *monitorResource) updateState(ctx context.Context, state *monitorResourc
 	if priority, ok := m.GetPriorityOk(); ok && priority != nil {
 		state.Priority = types.StringValue(strconv.FormatInt(*priority, 10))
 	}
-	state.Tags = utils.ToTerraformSetString(ctx, m.GetTagsOk)
-	state.RestrictedRoles = utils.ToTerraformSetString(ctx, m.GetRestrictedRolesOk)
+	state.EffectiveTags = utils.ToTerraformSetString(ctx, m.GetTagsOk)
+	if restrictedRoles, ok := m.GetRestrictedRolesOk(); ok && restrictedRoles == nil {
+		state.RestrictedRoles = types.SetValueMust(types.StringType, []attr.Value{})
+	} else {
+		state.RestrictedRoles = utils.ToTerraformSetString(ctx, m.GetRestrictedRolesOk)
+	}
 
 	if escalationMessage, ok := m.Options.GetEscalationMessageOk(); ok && escalationMessage != nil {
 		state.EscalationMessage = customtypes.TrimSpaceStringValue{
@@ -1182,12 +1212,12 @@ func (r *monitorResource) updateState(ctx context.Context, state *monitorResourc
 
 	if monitorThresholds, ok := m.Options.GetThresholdsOk(); ok && monitorThresholds != nil {
 		state.MonitorThresholds = []MonitorThreshold{{
-			Ok:               utils.ToTerraformStr(monitorThresholds.GetOkOk()),
-			Unknown:          utils.ToTerraformStr(monitorThresholds.GetUnknownOk()),
-			Warning:          utils.ToTerraformStr(monitorThresholds.GetWarningOk()),
-			WarningRecovery:  utils.ToTerraformStr(monitorThresholds.GetWarningRecoveryOk()),
-			Critical:         utils.ToTerraformStr(monitorThresholds.GetCriticalOk()),
-			CriticalRecovery: utils.ToTerraformStr(monitorThresholds.GetCriticalRecoveryOk()),
+			Ok:               r.buildFloatStringValue(utils.ToTerraformStr(monitorThresholds.GetOkOk())),
+			Unknown:          r.buildFloatStringValue(utils.ToTerraformStr(monitorThresholds.GetUnknownOk())),
+			Warning:          r.buildFloatStringValue(utils.ToTerraformStr(monitorThresholds.GetWarningOk())),
+			WarningRecovery:  r.buildFloatStringValue(utils.ToTerraformStr(monitorThresholds.GetWarningRecoveryOk())),
+			Critical:         r.buildFloatStringValue(utils.ToTerraformStr(monitorThresholds.GetCriticalOk())),
+			CriticalRecovery: r.buildFloatStringValue(utils.ToTerraformStr(monitorThresholds.GetCriticalRecoveryOk())),
 		}}
 	}
 	if thresholdWindow, ok := m.Options.GetThresholdWindowsOk(); ok && thresholdWindow != nil {
@@ -1313,14 +1343,15 @@ func (r *monitorResource) buildCloudCostQueryState(cloudCostQ *datadogV1.Monitor
 	return &cloudCostQueryState
 }
 
-func (r *monitorResource) getMonitorId(state *monitorResourceModel, diags diag.Diagnostics) (*int64, error) {
+func (r *monitorResource) getMonitorId(state *monitorResourceModel) (*int64, diag.Diagnostics) {
+	diags := diag.Diagnostics{}
 	stateId := state.ID.ValueString()
 	id, err := strconv.ParseInt(stateId, 10, 64)
 	if err != nil {
 		diags.Append(utils.FrameworkErrorDiag(err, "error on monitor id"))
-		return nil, err
+		return nil, diags
 	}
-	return &id, nil
+	return &id, diags
 }
 
 func (r *monitorResource) getAllowTypes() []string {
@@ -1370,7 +1401,7 @@ func (r *monitorResource) parseInt(v types.String) *int64 {
 	return &result
 }
 
-func (r *monitorResource) parseFloat(v types.String) *float64 {
+func (r *monitorResource) parseFloat(v customtypes.FloatStringValue) *float64 {
 	if v.IsNull() || v.IsUnknown() {
 		return nil
 	}
@@ -1379,4 +1410,10 @@ func (r *monitorResource) parseFloat(v types.String) *float64 {
 		return nil
 	}
 	return &result
+}
+
+func (r *monitorResource) buildFloatStringValue(v types.String) customtypes.FloatStringValue {
+	return customtypes.FloatStringValue{
+		StringValue: v,
+	}
 }
