@@ -160,8 +160,10 @@ func resourceDatadogSensitiveDataScannerRuleCustomizeDiff(_ context.Context, dif
 	// Only allow should_save_match when type == "replacement_string"
 	if typeValRaw, ok := diff.GetOk("text_replacement.0.type"); ok {
 		typeVal := typeValRaw.(string)
-		if _, present := diff.GetOkExists("text_replacement.0.should_save_match"); present && typeVal != "replacement_string" {
-			return fmt.Errorf("text_replacement.should_save_match can only be set when text_replacement.type is 'replacement_string'")
+		if shouldSaveMatchVal, present := diff.GetOk("text_replacement.0.should_save_match"); present && typeVal != "replacement_string" {
+			if shouldSaveMatch, ok := shouldSaveMatchVal.(bool); ok && shouldSaveMatch {
+				return fmt.Errorf("text_replacement.should_save_match can only be set when text_replacement.type is 'replacement_string'")
+			}
 		}
 	}
 	return nil
