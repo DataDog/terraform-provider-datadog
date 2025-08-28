@@ -69,7 +69,7 @@ jobs:
           - "0.14.11"
           - "0.15.5"
           - "1.1.2"
-          - "1.5.3"
+          - "1.13.1"
         platform: [ubuntu-latest]
 
     runs-on: ${{ matrix.platform }}
@@ -109,7 +109,7 @@ jobs:
           cache: true
       - uses: opentofu/setup-opentofu@592200bd4b9bbf4772ace78f887668b1aee8f716 # v1.0.5
         with:
-          tofu_version: 1.6.3
+          tofu_version: 1.10.5
           tofu_wrapper: false        
       - name: Set Terraform env vars
         run: |
