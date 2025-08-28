@@ -131,6 +131,7 @@ Optional:
 
 - `number_of_chars` (Number) Required if type == 'partial_replacement_from_beginning' or 'partial_replacement_from_end'. It must be > 0.
 - `replacement_string` (String) Required if type == 'replacement_string'.
+- `should_save_match` (Boolean) Only valid when type == `replacement_string`. When enabled, matches can be unmasked in logs by users with ‘Data Scanner Unmask’ permission. As a security best practice, avoid masking for highly-sensitive, long-lived data.
 
 ## Import
 
