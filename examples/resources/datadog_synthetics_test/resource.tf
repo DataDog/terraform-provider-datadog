@@ -392,13 +392,23 @@ resource "datadog_synthetics_test" "test_browser" {
         size    = 11            // Size of the file in bytes
         content = "Hello world" // Content of the file
       }])
-      element = "*[@id='simple-file-upload']"
       element_user_locator {
         value {
           type  = "css"
           value = "#simple-file-upload"
         }
       }
+      element = jsonencode({
+        "userLocator" : {
+          "failTestOnCannotLocate" : true,
+          "values" : [
+            {
+              "type" : "css",
+              "value" : "#simple-file-upload"
+            }
+          ]
+        }
+      })
     }
   }
 
@@ -418,6 +428,30 @@ resource "datadog_synthetics_test" "test_browser" {
           url = "https://www.example.org"
         }
       )
+    }
+  }
+
+  browser_step {
+    name = "Run api test"
+    type = "runApiTest"
+    params {
+      request = jsonencode({
+        config = {
+          assertions = [
+            {
+              type     = "statusCode",
+              operator = "is",
+              target   = 200
+            }
+          ],
+          request = {
+            method = "GET",
+            url    = "https://example.com"
+          }
+        },
+        options = {},
+        subtype = "http"
+      })
     }
   }
 

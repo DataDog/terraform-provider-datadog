@@ -14,10 +14,21 @@ Provides a Datadog CSM Threats Agent Rule API resource.
 
 ```terraform
 resource "datadog_csm_threats_agent_rule" "my_agent_rule" {
-  name        = "my_agent_rule"
-  enabled     = true
-  description = "im a rule"
-  expression  = "open.file.name == \"etc/shadow/password\""
+  name         = "my_agent_rule"
+  enabled      = true
+  description  = "This is a rule"
+  expression   = "open.file.name == \"etc/shadow/password\""
+  policy_id    = "jm4-lwh-8cs"
+  product_tags = ["compliance_framework:PCI-DSS"]
+  actions {
+    set {
+      name   = "updated_security_actions"
+      field  = "exec.file.path"
+      append = false
+      scope  = "process"
+    }
+    hash {}
+  }
 }
 ```
 
@@ -46,7 +57,12 @@ resource "datadog_csm_threats_agent_rule" "my_agent_rule" {
 
 Optional:
 
+- `hash` (Block, Optional) Hash action configuration (see [below for nested schema](#nestedblock--actions--hash))
 - `set` (Block, Optional) Set action configuration (see [below for nested schema](#nestedblock--actions--set))
+
+<a id="nestedblock--actions--hash"></a>
+### Nested Schema for `actions.hash`
+
 
 <a id="nestedblock--actions--set"></a>
 ### Nested Schema for `actions.set`
@@ -68,7 +84,11 @@ Optional:
 
 Import is supported using the following syntax:
 
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
+
 ```shell
 # CSM Agent Rules can be imported using ID. For example:
 terraform import datadog_csm_threats_agent_rule.my_agent_rule m0o-hto-lkb
+# CSM Agent Rules can also be imported using the policy ID and the rule ID. For example:
+terraform import datadog_csm_threats_agent_rule.my_agent_rule jm4-lwh-8cs:m0o-hto-lkb
 ```

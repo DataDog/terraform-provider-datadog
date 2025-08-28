@@ -2,6 +2,7 @@ package datadog
 
 import (
 	"context"
+	"fmt"
 	"sync"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
@@ -23,6 +24,23 @@ func resourceDatadogSensitiveDataScannerGroup() *schema.Resource {
 		DeleteContext: resourceDatadogSensitiveDataScannerGroupDelete,
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
+		},
+		CustomizeDiff: func(ctx context.Context, diff *schema.ResourceDiff, meta interface{}) error {
+			if samplings, ok := diff.GetOk("samplings"); ok {
+				samplingsList := samplings.([]interface{})
+				productsSeen := make(map[string]bool)
+
+				for i, sampling := range samplingsList {
+					samplingMap := sampling.(map[string]interface{})
+					if product, exists := samplingMap["product"].(string); exists {
+						if productsSeen[product] {
+							return fmt.Errorf("sampling[%d]: product %q appears more than once in samplings configuration", i, product)
+						}
+						productsSeen[product] = true
+					}
+				}
+			}
+			return nil
 		},
 		SchemaFunc: func() map[string]*schema.Schema {
 			return map[string]*schema.Schema{
@@ -72,6 +90,34 @@ func resourceDatadogSensitiveDataScannerGroup() *schema.Resource {
 						},
 					},
 				},
+				"samplings": {
+					Description: "List of sampling configurations per product type for the scanning group.",
+					Type:        schema.TypeList,
+					Optional:    true,
+					MaxItems:    4,
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"product": {
+								Description:      "Product that the sampling rate applies to.",
+								Type:             schema.TypeString,
+								Required:         true,
+								ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewSensitiveDataScannerProductFromValue),
+							},
+							"rate": {
+								Description: "Percentage rate at which data for the product type is scanned.",
+								Type:        schema.TypeFloat,
+								Required:    true,
+								ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+									v := val.(float64)
+									if v < 0.0 || v > 100.0 {
+										errs = append(errs, fmt.Errorf("%q must be between 0.0 and 100.0, got: %f", key, v))
+									}
+									return
+								},
+							},
+						},
+					},
+				},
 			}
 		},
 	}
@@ -90,6 +136,41 @@ func buildDatadogGroupFilter(tfFilter map[string]interface{}) *datadogV2.Sensiti
 		ddFilter.SetQuery(tfQuery)
 	}
 	return ddFilter
+}
+
+func buildTerraformSamplings(ddSamplings []datadogV2.SensitiveDataScannerSamplings) []interface{} {
+	tfSamplings := make([]interface{}, len(ddSamplings))
+	for i, sampling := range ddSamplings {
+		tfSampling := map[string]interface{}{
+			"product": string(sampling.GetProduct()),
+			"rate":    sampling.GetRate(),
+		}
+		tfSamplings[i] = tfSampling
+	}
+
+	return tfSamplings
+}
+
+func buildDatadogSamplings(tfSamplings []interface{}) []datadogV2.SensitiveDataScannerSamplings {
+	ddSamplings := make([]datadogV2.SensitiveDataScannerSamplings, 0)
+
+	for _, tfSampling := range tfSamplings {
+		samplingMap := tfSampling.(map[string]interface{})
+		ddSampling := datadogV2.NewSensitiveDataScannerSamplingsWithDefaults()
+
+		if product, ok := samplingMap["product"].(string); ok {
+			sensitiveDataScannerProduct, _ := datadogV2.NewSensitiveDataScannerProductFromValue(product)
+			ddSampling.SetProduct(*sensitiveDataScannerProduct)
+		}
+
+		if rate, ok := samplingMap["rate"].(float64); ok {
+			ddSampling.SetRate(rate)
+		}
+
+		ddSamplings = append(ddSamplings, *ddSampling)
+	}
+
+	return ddSamplings
 }
 
 func buildScanningGroupAttributes(d *schema.ResourceData) *datadogV2.SensitiveDataScannerGroupAttributes {
@@ -119,6 +200,11 @@ func buildScanningGroupAttributes(d *schema.ResourceData) *datadogV2.SensitiveDa
 		attributes.SetProductList(productList)
 	} else {
 		attributes.SetProductList(nil)
+	}
+
+	if samplings, ok := d.GetOk("samplings"); ok {
+		ddSamplings := buildDatadogSamplings(samplings.([]interface{}))
+		attributes.SetSamplings(ddSamplings)
 	}
 
 	return attributes
@@ -252,6 +338,11 @@ func updateSensitiveDataScannerGroupState(d *schema.ResourceData, groupAttribute
 	}
 	if err := d.Set("filter", buildTerraformGroupFilter(groupAttributes.GetFilter())); err != nil {
 		return diag.FromErr(err)
+	}
+	if samplings := groupAttributes.GetSamplings(); len(samplings) > 0 {
+		if err := d.Set("samplings", buildTerraformSamplings(samplings)); err != nil {
+			return diag.FromErr(err)
+		}
 	}
 	return nil
 }

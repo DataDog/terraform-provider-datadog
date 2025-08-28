@@ -67,6 +67,30 @@ func NewOnCallScheduleResource() resource.Resource {
 	return &onCallScheduleResource{}
 }
 
+func (m *onCallScheduleModel) Validate() diag.Diagnostics {
+	diags := diag.Diagnostics{}
+
+	for i, layer := range m.Layers {
+		root := frameworkPath.Root("layer").AtListIndex(i)
+
+		if layer.Interval == nil {
+			diags.AddAttributeError(root.AtName("interval"), "missing interval", "schedules must specify an interval")
+		} else {
+			if layer.Interval.Seconds.IsNull() && layer.Interval.Days.IsNull() {
+				diags.AddAttributeError(root.AtName("interval"), "missing interval", "interval must specify at least one of `days` or `seconds`")
+			}
+			if layer.Interval.Days.ValueInt32() < 0 {
+				diags.AddAttributeError(root.AtName("interval").AtName("days"), "invalid value", "days must be a positive integer")
+			}
+			if layer.Interval.Seconds.ValueInt64() < 0 {
+				diags.AddAttributeError(root.AtName("interval").AtName("seconds"), "invalid value", "seconds must be a positive integer")
+			}
+		}
+	}
+
+	return diags
+}
+
 func (r *onCallScheduleResource) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
 	providerData, _ := request.ProviderData.(*FrameworkProvider)
 	r.Api = providerData.DatadogApiInstances.GetOnCallApiV2()
@@ -102,6 +126,10 @@ func (r *onCallScheduleResource) Schema(_ context.Context, _ resource.SchemaRequ
 		Blocks: map[string]schema.Block{
 			"layer": schema.ListNestedBlock{
 				Description: "List of layers for the schedule.",
+				Validators: []validator.List{
+					listvalidator.IsRequired(),
+					listvalidator.SizeAtLeast(1),
+				},
 				NestedObject: schema.NestedBlockObject{
 					Attributes: map[string]schema.Attribute{
 						"id": schema.StringAttribute{
@@ -126,7 +154,7 @@ func (r *onCallScheduleResource) Schema(_ context.Context, _ resource.SchemaRequ
 						},
 						"rotation_start": schema.StringAttribute{
 							CustomType:  timetypes.RFC3339Type{},
-							Optional:    true,
+							Required:    true,
 							Description: "The date/time when the rotation for this layer starts (in ISO 8601).",
 							Validators:  []validator.String{validators.TimeFormatValidator(time.RFC3339)},
 						},
@@ -143,21 +171,21 @@ func (r *onCallScheduleResource) Schema(_ context.Context, _ resource.SchemaRequ
 							NestedObject: schema.NestedBlockObject{
 								Attributes: map[string]schema.Attribute{
 									"end_day": schema.StringAttribute{
-										Optional:    true,
 										Validators:  []validator.String{validators.NewEnumValidator[validator.String](datadogV2.NewWeekdayFromValue)},
+										Required:    true,
 										Description: "The weekday when the restriction period ends.",
 									},
 									"end_time": schema.StringAttribute{
-										Optional:    true,
+										Required:    true,
 										Description: "The time of day when the restriction ends (hh:mm:ss).",
 									},
 									"start_day": schema.StringAttribute{
-										Optional:    true,
 										Validators:  []validator.String{validators.NewEnumValidator[validator.String](datadogV2.NewWeekdayFromValue)},
+										Required:    true,
 										Description: "The weekday when the restriction period starts.",
 									},
 									"start_time": schema.StringAttribute{
-										Optional:    true,
+										Required:    true,
 										Description: "The time of day when the restriction begins (hh:mm:ss).",
 									},
 								},
@@ -228,6 +256,11 @@ func (r *onCallScheduleResource) Create(ctx context.Context, request resource.Cr
 		return
 	}
 
+	response.Diagnostics.Append(plan.Validate()...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
 	body, diags := r.buildOnCallScheduleRequestBody(ctx, &plan)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
@@ -256,6 +289,11 @@ func (r *onCallScheduleResource) Create(ctx context.Context, request resource.Cr
 func (r *onCallScheduleResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
 	var plan onCallScheduleModel
 	response.Diagnostics.Append(request.Plan.Get(ctx, &plan)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	response.Diagnostics.Append(plan.Validate()...)
 	if response.Diagnostics.HasError() {
 		return
 	}
@@ -498,14 +536,16 @@ func (r *onCallScheduleResource) buildOnCallScheduleRequestBody(ctx context.Cont
 
 		layersDDItem := datadogV2.NewScheduleCreateRequestDataAttributesLayersItems(
 			effectiveDate,
-			datadogV2.LayerAttributesInterval{
-				Days:    layersTFItem.Interval.Days.ValueInt32Pointer(),
-				Seconds: layersTFItem.Interval.Seconds.ValueInt64Pointer(),
-			},
+			datadogV2.LayerAttributesInterval{},
 			[]datadogV2.ScheduleRequestDataAttributesLayersItemsMembersItems{},
 			layersTFItem.Name.ValueString(),
 			rotationStart,
 		)
+
+		if layersTFItem.Interval != nil {
+			layersDDItem.Interval.Days = layersTFItem.Interval.Days.ValueInt32Pointer()
+			layersDDItem.Interval.Seconds = layersTFItem.Interval.Seconds.ValueInt64Pointer()
+		}
 
 		if !layersTFItem.EndDate.IsNull() {
 			endDate, err := parseTime(layersTFItem.EndDate.ValueString())

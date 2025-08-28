@@ -41,6 +41,8 @@ resource "datadog_logs_index_order" "sample_index_order" {
 
 Import is supported using the following syntax:
 
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
+
 ```shell
 # The Datadog Terraform Provider does not support the creation and deletion of index orders. There must be at most one `datadog_logs_index_order` resource
 # `<name>` can be whatever you specify in your code. Datadog does not store the name on the server.

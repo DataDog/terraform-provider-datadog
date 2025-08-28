@@ -42,12 +42,12 @@ resource "datadog_on_call_schedule" "test" {
 
 ### Required
 
+- `layer` (Block List) List of layers for the schedule. (see [below for nested schema](#nestedblock--layer))
 - `name` (String) A human-readable name for the new schedule.
 - `time_zone` (String) The time zone in which the schedule is defined.
 
 ### Optional
 
-- `layer` (Block List) List of layers for the schedule. (see [below for nested schema](#nestedblock--layer))
 - `teams` (List of String) A list of team ids associated with the schedule.
 
 ### Read-Only
@@ -60,15 +60,15 @@ resource "datadog_on_call_schedule" "test" {
 Required:
 
 - `effective_date` (String) The date/time when this layer should become active (in ISO 8601).
+- `interval` (Block List) Rotation interval for this layer. (see [below for nested schema](#nestedblock--layer--interval))
 - `name` (String) The name of this layer. Should be unique within the schedule.
+- `rotation_start` (String) The date/time when the rotation for this layer starts (in ISO 8601).
 - `users` (List of String) List of user IDs for the layer. Can either be a valid user id or null
 
 Optional:
 
 - `end_date` (String) The date/time after which this layer no longer applies (in ISO 8601).
-- `interval` (Block, Optional) (see [below for nested schema](#nestedblock--layer--interval))
 - `restriction` (Block List) List of restrictions for the layer. (see [below for nested schema](#nestedblock--layer--restriction))
-- `rotation_start` (String) The date/time when the rotation for this layer starts (in ISO 8601).
 
 Read-Only:
 
@@ -86,7 +86,7 @@ Optional:
 <a id="nestedblock--layer--restriction"></a>
 ### Nested Schema for `layer.restriction`
 
-Optional:
+Required:
 
 - `end_day` (String) The weekday when the restriction period ends. Valid values are `monday`, `tuesday`, `wednesday`, `thursday`, `friday`, `saturday`, `sunday`.
 - `end_time` (String) The time of day when the restriction ends (hh:mm:ss).
@@ -96,6 +96,8 @@ Optional:
 ## Import
 
 Import is supported using the following syntax:
+
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
 
 ```shell
 # Import an existing on_call_schedule
