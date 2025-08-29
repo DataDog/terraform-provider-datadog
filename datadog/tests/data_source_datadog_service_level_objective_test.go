@@ -52,6 +52,9 @@ func checkServiceLevelObjectiveDatasourceAttrs(accProvider func() (*schema.Provi
 		resource.TestCheckResourceAttr("data.datadog_service_level_objective.foo", "timeframe", "7d"),
 		resource.TestCheckResourceAttr("data.datadog_service_level_objective.foo", "query.0.numerator", fmt.Sprintf("sum:%s{type:good}.as_count()", uniq)),
 		resource.TestCheckResourceAttr("data.datadog_service_level_objective.foo", "query.0.denominator", "sum:my.metric{*}.as_count()"),
+		resource.TestCheckResourceAttr("data.datadog_service_level_objective.foo", "tags.#", "2"),
+		resource.TestCheckTypeSetElemAttr("data.datadog_service_level_objective.foo", "tags.*", uniq),
+		resource.TestCheckTypeSetElemAttr("data.datadog_service_level_objective.foo", "tags.*", fmt.Sprintf("foo:%s", uniq)),
 	)
 }
 
