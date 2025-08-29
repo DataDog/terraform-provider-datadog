@@ -1,8 +1,10 @@
 package datadog
 
 import (
+	"bytes"
 	"context"
 	"fmt"
+	"io"
 	"time"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
@@ -47,6 +49,21 @@ func resourceDatadogOrganizationSettings() *schema.Resource {
 					Description: "Description of the organization.",
 					Type:        schema.TypeString,
 					Computed:    true,
+				},
+				"saml_configurations": {
+					Description: "SAML Configurations",
+					Type:        schema.TypeList,
+					Optional:    true,
+					MaxItems:    1,
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"idp_metadata": {
+								Type:        schema.TypeString,
+								Required:    true,
+								Description: "The content of metadata XML file.",
+							},
+						},
+					},
 				},
 				"security_contacts": {
 					Type:        schema.TypeList,
@@ -271,6 +288,26 @@ func buildDatadogOrganizationUpdateV1Struct(d *schema.ResourceData) *datadogV1.O
 	return org
 }
 
+func buildSamlConfigurationsStruct(d *schema.ResourceData) *datadogV2.SamlConfigurations {
+	samlConfigurations := datadogV2.NewSamlConfigurations()
+	// SAML configurations
+	if v, ok := d.GetOk("saml_configurations"); ok {
+		if samlConfigurationsSetList := v.([]interface{}); len(samlConfigurationsSetList) > 0 {
+			samlConfigurationsSet := samlConfigurationsSetList[0].(map[string]interface{})
+
+			// idp_metadata
+			if v, ok := samlConfigurationsSet["idp_metadata"]; ok {
+				fileContent := v.(string)
+				optionalParams := datadogV2.NewUploadIdPMetadataOptionalParameters()
+				var fileReader io.Reader = bytes.NewReader([]byte(fileContent))
+				optionalParams.IdpFile = &fileReader
+				samlConfigurations.SetIdpMetadata(optionalParams)
+			}
+		}
+	}
+	return samlConfigurations
+}
+
 func resourceDatadogOrganizationSettingsCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	// note: we don't actually create a new organization, we just import the org associated with the current API/APP keys
 	providerConf := meta.(*ProviderConfiguration)
@@ -317,6 +354,11 @@ func resourceDatadogOrganizationSettingsUpdate(ctx context.Context, d *schema.Re
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
+
+	samlResp, err := apiInstances.GetOrganizationsApiV2().UploadIdPMetadata(auth, *buildSamlConfigurationsStruct(d).IdpMetadata)
+	if err != nil {
+		return utils.TranslateClientErrorDiag(err, samlResp, "error uploading saml")
+	}
 
 	resp, httpResponse, err := apiInstances.GetOrganizationsApiV1().UpdateOrg(auth, d.Id(), *buildDatadogOrganizationUpdateV1Struct(d))
 	if err != nil {
