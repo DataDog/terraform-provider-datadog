@@ -2782,10 +2782,16 @@ func buildDatadogSyntheticsAPITest(d *schema.ResourceData) (*datadogV1.Synthetic
 		request.SetHost(attr.(string))
 	}
 	if attr, ok := d.GetOk("request_definition.0.port"); ok {
-		port := attr.(string)
-		request.SetPort(datadogV1.SyntheticsTestRequestPort{
-			SyntheticsTestRequestVariablePort: &port,
-		})
+		if val, ok := attr.(int64); ok {
+			request.SetPort(datadogV1.SyntheticsTestRequestPort{
+				SyntheticsTestRequestNumericalPort: &val,
+			})
+		}
+		if val, ok := attr.(string); ok {
+			request.SetPort(datadogV1.SyntheticsTestRequestPort{
+				SyntheticsTestRequestVariablePort: &val,
+			})
+		}
 	}
 	if attr, ok := d.GetOk("request_definition.0.dns_server"); ok {
 		request.SetDnsServer(attr.(string))
@@ -2902,10 +2908,16 @@ func buildDatadogSyntheticsAPITest(d *schema.ResourceData) (*datadogV1.Synthetic
 						request.SetHost(requestMap["host"].(string))
 						method := requestMap["method"].(string)
 						request.SetMethod(method)
-						port := requestMap["port"].(string)
-						request.SetPort(datadogV1.SyntheticsTestRequestPort{
-							SyntheticsTestRequestVariablePort: &port,
-						})
+						port := requestMap["port"]
+						if val, ok := port.(int64); ok {
+							request.SetPort(datadogV1.SyntheticsTestRequestPort{
+								SyntheticsTestRequestNumericalPort: &val,
+							})
+						} else if val, ok := port.(string); ok {
+							request.SetPort(datadogV1.SyntheticsTestRequestPort{
+								SyntheticsTestRequestVariablePort: &val,
+							})
+						}
 						request.SetService(requestMap["service"].(string))
 						request.SetMessage(requestMap["message"].(string))
 						if v, ok := requestMap["call_type"].(string); ok && v != "" {
@@ -2955,10 +2967,16 @@ func buildDatadogSyntheticsAPITest(d *schema.ResourceData) (*datadogV1.Synthetic
 						}
 					} else if step.SyntheticsAPITestStep.GetSubtype() == "ssl" {
 						request.SetHost(requestMap["host"].(string))
-						port := requestMap["port"].(string)
-						request.SetPort(datadogV1.SyntheticsTestRequestPort{
-							SyntheticsTestRequestVariablePort: &port,
-						})
+						port := requestMap["port"]
+						if val, ok := port.(int64); ok {
+							request.SetPort(datadogV1.SyntheticsTestRequestPort{
+								SyntheticsTestRequestNumericalPort: &val,
+							})
+						} else if val, ok := port.(string); ok {
+							request.SetPort(datadogV1.SyntheticsTestRequestPort{
+								SyntheticsTestRequestVariablePort: &val,
+							})
+						}
 						if v, ok := requestMap["servername"].(string); ok && v != "" {
 							request.SetServername(v)
 						}
@@ -2973,10 +2991,16 @@ func buildDatadogSyntheticsAPITest(d *schema.ResourceData) (*datadogV1.Synthetic
 						}
 					} else if step.SyntheticsAPITestStep.GetSubtype() == "tcp" {
 						request.SetHost(requestMap["host"].(string))
-						port := requestMap["port"].(string)
-						request.SetPort(datadogV1.SyntheticsTestRequestPort{
-							SyntheticsTestRequestVariablePort: &port,
-						})
+						port := requestMap["port"]
+						if val, ok := port.(int64); ok {
+							request.SetPort(datadogV1.SyntheticsTestRequestPort{
+								SyntheticsTestRequestNumericalPort: &val,
+							})
+						} else if val, ok := port.(string); ok {
+							request.SetPort(datadogV1.SyntheticsTestRequestPort{
+								SyntheticsTestRequestVariablePort: &val,
+							})
+						}
 						if v, ok := requestMap["should_track_hops"].(bool); ok {
 							request.SetShouldTrackHops(v)
 						}
@@ -3008,10 +3032,16 @@ func buildDatadogSyntheticsAPITest(d *schema.ResourceData) (*datadogV1.Synthetic
 						}
 					} else if step.SyntheticsAPITestStep.GetSubtype() == "udp" {
 						request.SetHost(requestMap["host"].(string))
-						if v, ok := requestMap["port"].(string); ok && v != "" {
-							request.SetPort(datadogV1.SyntheticsTestRequestPort{
-								SyntheticsTestRequestVariablePort: &v,
-							})
+						if v, ok := requestMap["port"]; ok {
+							if val, ok := v.(int64); ok {
+								request.SetPort(datadogV1.SyntheticsTestRequestPort{
+									SyntheticsTestRequestNumericalPort: &val,
+								})
+							} else if val, ok := v.(string); ok {
+								request.SetPort(datadogV1.SyntheticsTestRequestPort{
+									SyntheticsTestRequestVariablePort: &val,
+								})
+							}
 						}
 						if v, ok := requestMap["message"].(string); ok && v != "" {
 							request.SetMessage(v)
