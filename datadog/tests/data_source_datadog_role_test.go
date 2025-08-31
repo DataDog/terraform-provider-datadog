@@ -19,7 +19,10 @@ func TestAccDatadogRoleDatasource(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDatasourceRoleConfig(),
-				Check:  resource.TestCheckResourceAttr("data.datadog_role.foo", "name", "Datadog Standard Role"),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr("data.datadog_role.foo", "name", "Datadog Standard Role"),
+					resource.TestCheckResourceAttrSet("data.datadog_role.foo", "permissions.#"),
+				),
 			},
 		},
 	})
@@ -44,7 +47,10 @@ func TestAccDatadogRoleDatasourceExactMatch(t *testing.T) {
 			},
 			{
 				Config: testAccDatasourceRoleExactMatchConfig(rolename),
-				Check:  resource.TestCheckResourceAttr("data.datadog_role.exact_match", "name", rolename+" main"),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr("data.datadog_role.exact_match", "name", rolename+" main"),
+					resource.TestCheckResourceAttrSet("data.datadog_role.exact_match", "permissions.#"),
+				),
 			},
 		},
 	})
