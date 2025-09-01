@@ -2782,17 +2782,9 @@ func buildDatadogSyntheticsAPITest(d *schema.ResourceData) (*datadogV1.Synthetic
 		request.SetHost(attr.(string))
 	}
 	if attr, ok := d.GetOk("request_definition.0.port"); ok {
-		if val, ok := attr.(int64); ok {
-			request.SetPort(datadogV1.SyntheticsTestRequestPort{
-				SyntheticsTestRequestNumericalPort: &val,
-			})
-		}
-		if val, ok := attr.(string); ok {
-			request.SetPort(datadogV1.SyntheticsTestRequestPort{
-				SyntheticsTestRequestVariablePort: &val,
-			})
-		}
+		setSyntheticsTestRequestPort(&request, attr)
 	}
+
 	if attr, ok := d.GetOk("request_definition.0.dns_server"); ok {
 		request.SetDnsServer(attr.(string))
 	}
@@ -2908,16 +2900,7 @@ func buildDatadogSyntheticsAPITest(d *schema.ResourceData) (*datadogV1.Synthetic
 						request.SetHost(requestMap["host"].(string))
 						method := requestMap["method"].(string)
 						request.SetMethod(method)
-						port := requestMap["port"]
-						if val, ok := port.(int64); ok {
-							request.SetPort(datadogV1.SyntheticsTestRequestPort{
-								SyntheticsTestRequestNumericalPort: &val,
-							})
-						} else if val, ok := port.(string); ok {
-							request.SetPort(datadogV1.SyntheticsTestRequestPort{
-								SyntheticsTestRequestVariablePort: &val,
-							})
-						}
+						setSyntheticsTestRequestPort(&request, requestMap["port"])
 						request.SetService(requestMap["service"].(string))
 						request.SetMessage(requestMap["message"].(string))
 						if v, ok := requestMap["call_type"].(string); ok && v != "" {
@@ -2967,16 +2950,7 @@ func buildDatadogSyntheticsAPITest(d *schema.ResourceData) (*datadogV1.Synthetic
 						}
 					} else if step.SyntheticsAPITestStep.GetSubtype() == "ssl" {
 						request.SetHost(requestMap["host"].(string))
-						port := requestMap["port"]
-						if val, ok := port.(int64); ok {
-							request.SetPort(datadogV1.SyntheticsTestRequestPort{
-								SyntheticsTestRequestNumericalPort: &val,
-							})
-						} else if val, ok := port.(string); ok {
-							request.SetPort(datadogV1.SyntheticsTestRequestPort{
-								SyntheticsTestRequestVariablePort: &val,
-							})
-						}
+						setSyntheticsTestRequestPort(&request, requestMap["port"])
 						if v, ok := requestMap["servername"].(string); ok && v != "" {
 							request.SetServername(v)
 						}
@@ -2991,16 +2965,7 @@ func buildDatadogSyntheticsAPITest(d *schema.ResourceData) (*datadogV1.Synthetic
 						}
 					} else if step.SyntheticsAPITestStep.GetSubtype() == "tcp" {
 						request.SetHost(requestMap["host"].(string))
-						port := requestMap["port"]
-						if val, ok := port.(int64); ok {
-							request.SetPort(datadogV1.SyntheticsTestRequestPort{
-								SyntheticsTestRequestNumericalPort: &val,
-							})
-						} else if val, ok := port.(string); ok {
-							request.SetPort(datadogV1.SyntheticsTestRequestPort{
-								SyntheticsTestRequestVariablePort: &val,
-							})
-						}
+						setSyntheticsTestRequestPort(&request, requestMap["port"])
 						if v, ok := requestMap["should_track_hops"].(bool); ok {
 							request.SetShouldTrackHops(v)
 						}
@@ -3033,15 +2998,7 @@ func buildDatadogSyntheticsAPITest(d *schema.ResourceData) (*datadogV1.Synthetic
 					} else if step.SyntheticsAPITestStep.GetSubtype() == "udp" {
 						request.SetHost(requestMap["host"].(string))
 						if v, ok := requestMap["port"]; ok {
-							if val, ok := v.(int64); ok {
-								request.SetPort(datadogV1.SyntheticsTestRequestPort{
-									SyntheticsTestRequestNumericalPort: &val,
-								})
-							} else if val, ok := v.(string); ok {
-								request.SetPort(datadogV1.SyntheticsTestRequestPort{
-									SyntheticsTestRequestVariablePort: &val,
-								})
-							}
+							setSyntheticsTestRequestPort(&request, v)
 						}
 						if v, ok := requestMap["message"].(string); ok && v != "" {
 							request.SetMessage(v)
@@ -5918,4 +5875,18 @@ func getCertAndKeyFromMap(certAndKey map[string]interface{}) (map[string]interfa
 	clientKey := clientKeys[0].(map[string]interface{})
 
 	return clientCert, clientKey
+}
+
+// Sets the port on a SyntheticsTestRequest, supporting both int64 and string types.
+func setSyntheticsTestRequestPort(request *datadogV1.SyntheticsTestRequest, value interface{}) {
+	switch val := value.(type) {
+	case int64:
+		request.SetPort(datadogV1.SyntheticsTestRequestPort{
+			SyntheticsTestRequestNumericalPort: &val,
+		})
+	case string:
+		request.SetPort(datadogV1.SyntheticsTestRequestPort{
+			SyntheticsTestRequestVariablePort: &val,
+		})
+	}
 }
