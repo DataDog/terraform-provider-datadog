@@ -6414,7 +6414,7 @@ func createSyntheticsMultistepAPITestConfigAllStepSubtypes(testName string) stri
 
 				request_definition {
 					host                         = "example.org"
-					port                         = 443
+					port                         = "443"
 					check_certificate_revocation = true
 					disable_aia_intermediate_fetching = true
 				}
