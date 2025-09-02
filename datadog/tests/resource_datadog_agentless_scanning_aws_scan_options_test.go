@@ -50,7 +50,7 @@ func TestAccDatadogAgentlessScanningAwsScanOptions_InvalidAccountID(t *testing.T
 		Steps: []resource.TestStep{
 			{
 				Config:      testAccCheckDatadogAgentlessScanningAwsScanOptionsConfig(accountID, true, false, true, true),
-				ExpectError: regexp.MustCompile("must be an AWS Account ID"),
+				ExpectError: regexp.MustCompile("must be a valid AWS account ID"),
 			},
 		},
 	})

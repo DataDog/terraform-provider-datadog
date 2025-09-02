@@ -61,12 +61,12 @@ func (r *agentlessScanningAwsScanOptionsResource) Schema(_ context.Context, _ re
 			// Resource ID
 			"id": utils.ResourceIDAttribute(),
 			"aws_account_id": schema.StringAttribute{
-				Description: "The AWS Account ID for which agentless scanning is configured.",
+				Description: "The AWS account ID for which agentless scanning is configured.",
 				Required:    true,
 				Validators: []validator.String{
 					stringvalidator.RegexMatches(
 						regexp.MustCompile(`^[0-9]{12}$`),
-						"must be an AWS account ID",
+						"must be a valid AWS account ID",
 					),
 				},
 			},
