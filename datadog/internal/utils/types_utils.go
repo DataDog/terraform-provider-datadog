@@ -6,7 +6,6 @@ import (
 	"strconv"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
-	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
@@ -88,18 +87,18 @@ func SetOptBool(b types.Bool, set func(bool)) {
 	}
 }
 
-func SetOptStringList(typeCollection any, set func([]string), ctx context.Context, diags diag.Diagnostics) {
+func SetOptStringList(typeCollection any, set func([]string), ctx context.Context) {
 	var strList []string
 	switch t := typeCollection.(type) {
 	case types.Set:
 		if !t.IsNull() && !t.IsUnknown() {
-			diags.Append(t.ElementsAs(ctx, &strList, false)...)
+			t.ElementsAs(ctx, &strList, false)
 			sort.Strings(strList)
 			set(strList)
 		}
 	case types.List:
 		if !t.IsNull() && !t.IsUnknown() {
-			diags.Append(t.ElementsAs(ctx, &strList, false)...)
+			t.ElementsAs(ctx, &strList, false)
 			set(strList)
 		}
 	}

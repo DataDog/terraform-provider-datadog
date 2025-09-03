@@ -165,3 +165,12 @@ func initHttpClient(ctx context.Context, t *testing.T) (context.Context, *http.C
 
 	return ctx, httpClient
 }
+
+func withDefaultTagsFw(ctx context.Context, providers *compositeProviderStruct, defaultTags map[string]string) func() (tfprotov5.ProviderServer, error) {
+	return func() (tfprotov5.ProviderServer, error) {
+		providers.frameworkProvider.DefaultTags = defaultTags
+		muxServer, err := tf5muxserver.NewMuxServer(ctx,
+			providerserver.NewProtocol5(providers.frameworkProvider), providers.sdkV2Provider.GRPCProvider)
+		return muxServer, err
+	}
+}
