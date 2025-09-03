@@ -1,3 +1,25 @@
+## 3.73.0 (September 3, 2025)
+
+### BUGFIXES
+* [datadog_service_account] Add pagination support for datadog_service_account data by @shuheiktgw in https://github.com/DataDog/terraform-provider-datadog/pull/3172
+### IMPROVEMENTS
+* [resource_datadog_synthetics_test_] Make port in synthetic tests support both int and string by @HantingZhang2 in https://github.com/DataDog/terraform-provider-datadog/pull/3194
+### FEATURES
+* [datadog_integration_aws_account] Add support for log_source_config by @ktmq in https://github.com/DataDog/terraform-provider-datadog/pull/3173
+* [datadog_metric_active_tags_and_aggregations] add `datadog_metric_active_tags_and_aggregations` data source by @mdb in https://github.com/DataDog/terraform-provider-datadog/pull/3103
+* [datadog_integration_aws_account] Disable AWS/Usage metric collection by default by @joaquinrios in https://github.com/DataDog/terraform-provider-datadog/pull/3156
+* [datadog_rum_application] Add Product Scales support by @jasonscottdatadog in https://github.com/DataDog/terraform-provider-datadog/pull/3185
+* [datadog_sensitive_data_scanner_group] Add support for SDS `should_save_match` by @fuchsnj in https://github.com/DataDog/terraform-provider-datadog/pull/3189
+
+## New Contributors
+* @joaquinrios made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3156
+* @tquidetdd made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3182
+* @jasonscottdatadog made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3185
+* @fuchsnj made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3189
+* @diogocp made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3200
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.72.0...v3.73.0
+
 ## 3.72.0 (August 20, 2025)
 
 ### BUGFIXES
