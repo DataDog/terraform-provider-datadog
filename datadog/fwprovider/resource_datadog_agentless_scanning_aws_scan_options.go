@@ -3,12 +3,15 @@ package fwprovider
 import (
 	"context"
 	"fmt"
+	"regexp"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
@@ -55,12 +58,18 @@ func (r *agentlessScanningAwsScanOptionsResource) Schema(_ context.Context, _ re
 	response.Schema = schema.Schema{
 		Description: "Provides a Datadog Agentless Scanning AWS scan options resource. This can be used to activate and configure Agentless scan options for an AWS account.",
 		Attributes: map[string]schema.Attribute{
-			"aws_account_id": schema.StringAttribute{
-				Description: "The AWS Account ID for which agentless scanning is configured.",
-				Required:    true,
-			},
 			// Resource ID
 			"id": utils.ResourceIDAttribute(),
+			"aws_account_id": schema.StringAttribute{
+				Description: "The AWS account ID for which agentless scanning is configured.",
+				Required:    true,
+				Validators: []validator.String{
+					stringvalidator.RegexMatches(
+						regexp.MustCompile(`^[0-9]{12}$`),
+						"must be a valid AWS account ID",
+					),
+				},
+			},
 			"lambda": schema.BoolAttribute{
 				Description: "Indicates if scanning of Lambda functions is enabled.",
 				Required:    true,
