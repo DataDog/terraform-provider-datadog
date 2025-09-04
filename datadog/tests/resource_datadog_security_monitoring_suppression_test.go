@@ -32,6 +32,7 @@ func TestAccSecurityMonitoringSuppression_CreateAndUpdateWithoutDates(t *testing
 					enabled           = true
 					rule_query        = "severity:low source:cloudtrail"
 					suppression_query = "env:staging"
+					validate          = false
 				}
 				`, suppressionName),
 				Check: resource.ComposeTestCheckFunc(
@@ -54,6 +55,7 @@ func TestAccSecurityMonitoringSuppression_CreateAndUpdateWithoutDates(t *testing
 					enabled           = true
 					rule_query        = "severity:low source:(cloudtrail OR azure)"
 					suppression_query = "env:staging"
+					validate          = false
 				}
 				`, suppressionName),
 				Check: resource.ComposeTestCheckFunc(
@@ -84,6 +86,7 @@ func TestAccSecurityMonitoringSuppression_CreateThenAddAndRemoveStartDate(t *tes
 		enabled           = true
 		rule_query        = "severity:low source:cloudtrail"
 		suppression_query = "env:staging"
+		validate          = false
 	}
 	`, suppressionName)
 
@@ -96,6 +99,7 @@ func TestAccSecurityMonitoringSuppression_CreateThenAddAndRemoveStartDate(t *tes
 			rule_query        = "severity:low source:cloudtrail"
 			suppression_query = "env:staging"
 			start_date   = "%s"
+			validate          = false
 		}
 		`, suppressionName, startDate)
 	}
@@ -195,6 +199,7 @@ func TestAccSecurityMonitoringSuppression_CreateThenAddAndRemoveExpirationDate(t
 		enabled           = true
 		rule_query        = "severity:low source:cloudtrail"
 		suppression_query = "env:staging"
+		validate          = false
 	}
 	`, suppressionName)
 
@@ -207,6 +212,7 @@ func TestAccSecurityMonitoringSuppression_CreateThenAddAndRemoveExpirationDate(t
 			rule_query        = "severity:low source:cloudtrail"
 			suppression_query = "env:staging"
 			expiration_date   = "%s"
+			validate          = false
 		}
 		`, suppressionName, expirationDate)
 	}
@@ -308,6 +314,7 @@ func TestAccSecurityMonitoringSuppression_CreateAndUpdateDataExclusionQuery(t *t
 		enabled           = true
 		rule_query        = "severity:low source:cloudtrail"
 		suppression_query = "%s"
+		validate          = false
 	}
 	`, suppressionName, suppressionQuery)
 
@@ -318,6 +325,7 @@ func TestAccSecurityMonitoringSuppression_CreateAndUpdateDataExclusionQuery(t *t
 		enabled                = true
 		rule_query             = "severity:low source:cloudtrail"
 		data_exclusion_query   = "%s"
+		validate          = false
 	}
 	`, suppressionName, dataExclusionQuery)
 
@@ -329,6 +337,7 @@ func TestAccSecurityMonitoringSuppression_CreateAndUpdateDataExclusionQuery(t *t
 		rule_query             = "severity:low source:cloudtrail"
 		suppression_query      = "%s"
 		data_exclusion_query   = "%s"
+		validate          = false
 	}
 	`, suppressionName, suppressionQuery, dataExclusionQuery)
 
@@ -502,4 +511,60 @@ func testAccCheckSecurityMonitoringSuppressionDestroy(accProvider *fwprovider.Fr
 
 		return nil
 	}
+}
+
+// Test validation enabled during plan (existing test cassette shows validation endpoint call)
+func TestAccSecurityMonitoringSuppression_ValidationEnabled(t *testing.T) {
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	suppressionName := uniqueEntityName(ctx, t)
+	resourceName := "datadog_security_monitoring_suppression.suppression_validation_test"
+
+	configWithValidationAndStartDate := func(expirationDate string) string {
+		return fmt.Sprintf(`
+		resource "datadog_security_monitoring_suppression" "suppression_validation_test" {
+			name              = "%s"
+			description       = "suppression for validation test"
+			enabled           = true
+			rule_query        = "severity:low source:cloudtrail"
+			suppression_query = "env:staging"
+			start_date        = "%s"
+			validate          = true
+		}
+		`, suppressionName, expirationDate)
+	}
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckSecurityMonitoringSuppressionDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: configWithValidationAndStartDate("2099-01-22T15:30:00+01:00"),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckSecurityMonitoringSuppressionExists(providers.frameworkProvider, resourceName),
+					resource.TestCheckResourceAttr(resourceName, "name", suppressionName),
+					resource.TestCheckResourceAttr(resourceName, "description", "suppression for validation test"),
+					resource.TestCheckResourceAttr(resourceName, "enabled", "true"),
+					resource.TestCheckResourceAttr(resourceName, "rule_query", "severity:low source:cloudtrail"),
+					resource.TestCheckResourceAttr(resourceName, "suppression_query", "env:staging"),
+					resource.TestCheckResourceAttr(resourceName, "validate", "true"),
+					resource.TestCheckResourceAttr(resourceName, "start_date", "2099-01-22T15:30:00+01:00"),
+				),
+			},
+			// Update the date is not an issue
+			{
+				Config: configWithValidationAndStartDate("2101-01-22T15:30:00+01:00"),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckSecurityMonitoringSuppressionExists(providers.frameworkProvider, resourceName),
+					resource.TestCheckResourceAttr(resourceName, "name", suppressionName),
+					resource.TestCheckResourceAttr(resourceName, "description", "suppression for validation test"),
+					resource.TestCheckResourceAttr(resourceName, "enabled", "true"),
+					resource.TestCheckResourceAttr(resourceName, "rule_query", "severity:low source:cloudtrail"),
+					resource.TestCheckResourceAttr(resourceName, "suppression_query", "env:staging"),
+					resource.TestCheckResourceAttr(resourceName, "validate", "true"),
+					resource.TestCheckResourceAttr(resourceName, "start_date", "2101-01-22T15:30:00+01:00"),
+				),
+			},
+		},
+	})
 }
