@@ -3,7 +3,7 @@
 ### BUGFIXES
 * [datadog_service_account] Add pagination support for datadog_service_account data by @shuheiktgw in https://github.com/DataDog/terraform-provider-datadog/pull/3172
 ### IMPROVEMENTS
-* [resource_datadog_synthetics_test_] Make port in synthetic tests support both int and string by @HantingZhang2 in https://github.com/DataDog/terraform-provider-datadog/pull/3194
+* [datadog_synthetics_test] Make port in synthetic tests support both int and string by @HantingZhang2 in https://github.com/DataDog/terraform-provider-datadog/pull/3194
 ### FEATURES
 * [datadog_integration_aws_account] Add support for log_source_config by @ktmq in https://github.com/DataDog/terraform-provider-datadog/pull/3173
 * [datadog_metric_active_tags_and_aggregations] add `datadog_metric_active_tags_and_aggregations` data source by @mdb in https://github.com/DataDog/terraform-provider-datadog/pull/3103
