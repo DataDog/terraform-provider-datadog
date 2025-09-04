@@ -36,19 +36,19 @@ type MetricNamespaceConfigModel struct {
 }
 
 type integrationGcpStsModel struct {
-	ID                                types.String                  `tfsdk:"id"`
-	AccountTags                       types.Set                     `tfsdk:"account_tags"`
-	Automute                          types.Bool                    `tfsdk:"automute"`
-	ClientEmail                       types.String                  `tfsdk:"client_email"`
-	DelegateAccountEmail              types.String                  `tfsdk:"delegate_account_email"`
-	HostFilters                       types.Set                     `tfsdk:"host_filters"`
-	CloudRunRevisionFilters           types.Set                     `tfsdk:"cloud_run_revision_filters"`
-	MetricNamespaceConfigs            []*MetricNamespaceConfigModel `tfsdk:"metric_namespace_configs"`
-	IsCspmEnabled                     types.Bool                    `tfsdk:"is_cspm_enabled"`
-	IsSecurityCommandCenterEnabled    types.Bool                    `tfsdk:"is_security_command_center_enabled"`
-	IsResourceChangeCollectionEnabled types.Bool                    `tfsdk:"is_resource_change_collection_enabled"`
-	IsPerProjectQuotaEnabled          types.Bool                    `tfsdk:"is_per_project_quota_enabled"`
-	ResourceCollectionEnabled         types.Bool                    `tfsdk:"resource_collection_enabled"`
+	ID                                types.String `tfsdk:"id"`
+	AccountTags                       types.Set    `tfsdk:"account_tags"`
+	Automute                          types.Bool   `tfsdk:"automute"`
+	ClientEmail                       types.String `tfsdk:"client_email"`
+	DelegateAccountEmail              types.String `tfsdk:"delegate_account_email"`
+	HostFilters                       types.Set    `tfsdk:"host_filters"`
+	CloudRunRevisionFilters           types.Set    `tfsdk:"cloud_run_revision_filters"`
+	MetricNamespaceConfigs            types.Set    `tfsdk:"metric_namespace_configs"`
+	IsCspmEnabled                     types.Bool   `tfsdk:"is_cspm_enabled"`
+	IsSecurityCommandCenterEnabled    types.Bool   `tfsdk:"is_security_command_center_enabled"`
+	IsResourceChangeCollectionEnabled types.Bool   `tfsdk:"is_resource_change_collection_enabled"`
+	IsPerProjectQuotaEnabled          types.Bool   `tfsdk:"is_per_project_quota_enabled"`
+	ResourceCollectionEnabled         types.Bool   `tfsdk:"resource_collection_enabled"`
 }
 
 func NewIntegrationGcpStsResource() resource.Resource {
@@ -317,13 +317,24 @@ func (r *integrationGcpStsResource) updateState(ctx context.Context, state *inte
 	if runFilters, ok := attributes.GetCloudRunRevisionFiltersOk(); ok && len(*runFilters) > 0 {
 		state.CloudRunRevisionFilters, _ = types.SetValueFrom(ctx, types.StringType, *runFilters)
 	}
-	if namespaceConfigs, ok := attributes.GetMetricNamespaceConfigsOk(); ok && len(*namespaceConfigs) > 0 {
-		state.MetricNamespaceConfigs = make([]*MetricNamespaceConfigModel, len(*namespaceConfigs))
-		for i, namespaceConfig := range *namespaceConfigs {
-			state.MetricNamespaceConfigs[i] = &MetricNamespaceConfigModel{
-				ID:       types.StringValue(namespaceConfig.GetId()),
-				Disabled: types.BoolValue(namespaceConfig.GetDisabled()),
+	// Only set metric namespace configs in state if they were originally provided by the user
+	// This prevents the "unexpected new value" error when the API returns default configs
+	// that weren't specified in the user's configuration
+	if !state.MetricNamespaceConfigs.IsNull() {
+		if namespaceConfigs, ok := attributes.GetMetricNamespaceConfigsOk(); ok && len(*namespaceConfigs) > 0 {
+			configModels := make([]MetricNamespaceConfigModel, len(*namespaceConfigs))
+			for i, namespaceConfig := range *namespaceConfigs {
+				configModels[i] = MetricNamespaceConfigModel{
+					ID:       types.StringValue(namespaceConfig.GetId()),
+					Disabled: types.BoolValue(namespaceConfig.GetDisabled()),
+				}
 			}
+			state.MetricNamespaceConfigs, _ = types.SetValueFrom(ctx, types.ObjectType{
+				AttrTypes: map[string]attr.Type{
+					"id":       types.StringType,
+					"disabled": types.BoolType,
+				},
+			}, configModels)
 		}
 	}
 	if isCspmEnabled, ok := attributes.GetIsCspmEnabledOk(); ok {
@@ -373,8 +384,10 @@ func (r *integrationGcpStsResource) buildIntegrationGcpStsRequestBody(ctx contex
 	attributes.SetCloudRunRevisionFilters(runFilters)
 
 	namespaceConfigs := make([]datadogV2.GCPMetricNamespaceConfig, 0)
-	if len(state.MetricNamespaceConfigs) > 0 {
-		for _, namespaceConfig := range state.MetricNamespaceConfigs {
+	if !state.MetricNamespaceConfigs.IsNull() && !state.MetricNamespaceConfigs.IsUnknown() {
+		var configModels []MetricNamespaceConfigModel
+		diags.Append(state.MetricNamespaceConfigs.ElementsAs(ctx, &configModels, false)...)
+		for _, namespaceConfig := range configModels {
 			namespaceConfigs = append(namespaceConfigs, datadogV2.GCPMetricNamespaceConfig{
 				Id:       namespaceConfig.ID.ValueStringPointer(),
 				Disabled: namespaceConfig.Disabled.ValueBoolPointer(),
