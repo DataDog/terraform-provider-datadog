@@ -403,7 +403,7 @@ func datadogSecurityMonitoringRuleSchema(includeValidate bool) map[string]*schem
 					"indexes": {
 						Type:        schema.TypeList,
 						Optional:    true,
-						Description: "List of indexes to run the query on, if the data source is `logs`. Currently, it only supports one element. Only used for scheduled rules - in other words, when the `scheduling_options` field is also defined.",
+						Description: "List of indexes to run the query on when the data source is `logs`. Supports only one element. Used only for scheduled rules (in other words, when `scheduling_options` is defined).",
 						Elem:        &schema.Schema{Type: schema.TypeString},
 					},
 				},
@@ -542,7 +542,7 @@ func datadogSecurityMonitoringRuleSchema(includeValidate bool) map[string]*schem
 		"calculated_field": {
 			Type:        schema.TypeList,
 			Optional:    true,
-			Description: "Calculated fields. Only allowed for scheduled rules - in other words, when the `scheduling_options` field is also defined.",
+			Description: "One or more calculated fields. Available only for scheduled rules (in other words, when `scheduling_options` is defined).",
 			Elem: &schema.Resource{
 				Schema: map[string]*schema.Schema{
 					"name": {
@@ -565,7 +565,7 @@ func datadogSecurityMonitoringRuleSchema(includeValidate bool) map[string]*schem
 			Type:        schema.TypeList,
 			Optional:    true,
 			MaxItems:    1,
-			Description: "Options for scheduled rules. When this field is present, the rule runs based on the schedule. When absent, it runs real-time on ingested logs.",
+			Description: "Options for scheduled rules. When this field is present, the rule runs based on the schedule. When absent, it runs in real time on ingested logs.",
 			Elem: &schema.Resource{
 				Schema: map[string]*schema.Schema{
 					"rrule": {
