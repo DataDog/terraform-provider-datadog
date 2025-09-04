@@ -61,7 +61,7 @@ resource "datadog_security_monitoring_rule" "myrule" {
 
 ### Optional
 
-- `calculated_field` (Block List) Calculated fields. Only allowed for scheduled rules - in other words, when the `scheduling_options` field is also defined. (see [below for nested schema](#nestedblock--calculated_field))
+- `calculated_field` (Block List) One or more calculated fields. Available only for scheduled rules (in other words, when `scheduling_options` is defined). (see [below for nested schema](#nestedblock--calculated_field))
 - `case` (Block List, Max: 10) Cases for generating signals. (see [below for nested schema](#nestedblock--case))
 - `enabled` (Boolean) Whether the rule is enabled. Defaults to `true`.
 - `filter` (Block List) Additional queries to filter matched events before they are processed. **Note**: This field is deprecated for log detection, signal correlation, and workload security rules. (see [below for nested schema](#nestedblock--filter))
@@ -70,7 +70,7 @@ resource "datadog_security_monitoring_rule" "myrule" {
 - `options` (Block List, Max: 1) Options on rules. (see [below for nested schema](#nestedblock--options))
 - `query` (Block List) Queries for selecting logs which are part of the rule. (see [below for nested schema](#nestedblock--query))
 - `reference_tables` (Block List) Reference tables for filtering query results. (see [below for nested schema](#nestedblock--reference_tables))
-- `scheduling_options` (Block List, Max: 1) Options for scheduled rules. When this field is present, the rule runs based on the schedule. When absent, it runs real-time on ingested logs. (see [below for nested schema](#nestedblock--scheduling_options))
+- `scheduling_options` (Block List, Max: 1) Options for scheduled rules. When this field is present, the rule runs based on the schedule. When absent, it runs in real time on ingested logs. (see [below for nested schema](#nestedblock--scheduling_options))
 - `signal_query` (Block List) Queries for selecting logs which are part of the rule. (see [below for nested schema](#nestedblock--signal_query))
 - `tags` (Set of String) Tags for generated signals. Note: if default tags are present at provider level, they will be added to this resource.
 - `third_party_case` (Block List, Max: 10) Cases for generating signals for third-party rules. Only required and accepted for third-party rules (see [below for nested schema](#nestedblock--third_party_case))
@@ -211,7 +211,7 @@ Optional:
 - `data_source` (String) Source of events. Valid values are `logs`, `audit`, `app_sec_spans`, `spans`, `security_runtime`, `network`, `events`. Defaults to `"logs"`.
 - `distinct_fields` (List of String) Field for which the cardinality is measured. Sent as an array.
 - `group_by_fields` (List of String) Fields to group by.
-- `indexes` (List of String) List of indexes to run the query on, if the data source is `logs`. Currently, it only supports one element. Only used for scheduled rules - in other words, when the `scheduling_options` field is also defined.
+- `indexes` (List of String) List of indexes to run the query on when the data source is `logs`. Supports only one element. Used only for scheduled rules (in other words, when `scheduling_options` is defined).
 - `metric` (String, Deprecated) The target field to aggregate over when using the `sum`, `max`, or `geo_data` aggregations. **Deprecated.** Configure `metrics` instead. This attribute will be removed in the next major version of the provider.
 - `metrics` (List of String) Group of target fields to aggregate over when using the `sum`, `max`, `geo_data`, or `new_value` aggregations. The `sum`, `max`, and `geo_data` aggregations only accept one value in this list, whereas the `new_value` aggregation accepts up to five values.
 - `name` (String) Name of the query. Not compatible with `new_value` aggregations.
