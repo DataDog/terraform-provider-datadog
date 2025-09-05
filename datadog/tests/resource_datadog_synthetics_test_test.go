@@ -5472,6 +5472,8 @@ func createSyntheticsMultistepAPITest(ctx context.Context, provider *schema.Prov
 				"datadog_synthetics_test.multi", "status", "paused"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.#", "7"),
+			resource.TestCheckResourceAttrSet(
+				"datadog_synthetics_test.multi", "api_step.0.id"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.0.name", "First api step"),
 			resource.TestCheckResourceAttr(
@@ -5592,6 +5594,8 @@ func createSyntheticsMultistepAPITest(ctx context.Context, provider *schema.Prov
 				"datadog_synthetics_test.multi", "api_step.0.retry.0.interval", "1000"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.0.extracted_values_from_script", "dd.variable.set('BODY', dd.response.body);"),
+			resource.TestCheckResourceAttrSet(
+				"datadog_synthetics_test.multi", "api_step.1.id"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.1.name", "Second api step"),
 			resource.TestCheckResourceAttr(
@@ -5610,6 +5614,8 @@ func createSyntheticsMultistepAPITest(ctx context.Context, provider *schema.Prov
 				"datadog_synthetics_test.multi", "api_step.1.request_basicauth.0.token_api_authentication", "header"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.1.request_basicauth.0.access_token_url", "https://token.datadoghq.com"),
+			resource.TestCheckResourceAttrSet(
+				"datadog_synthetics_test.multi", "api_step.2.id"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.2.name", "Third api step"),
 			resource.TestCheckResourceAttr(
@@ -5634,6 +5640,8 @@ func createSyntheticsMultistepAPITest(ctx context.Context, provider *schema.Prov
 				"datadog_synthetics_test.multi", "api_step.2.request_basicauth.0.username", "username"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.2.request_basicauth.0.password", "password"),
+			resource.TestCheckResourceAttrSet(
+				"datadog_synthetics_test.multi", "api_step.3.id"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.3.name", "Fourth api step"),
 			resource.TestCheckResourceAttr(
@@ -5644,6 +5652,8 @@ func createSyntheticsMultistepAPITest(ctx context.Context, provider *schema.Prov
 				"datadog_synthetics_test.multi", "api_step.3.request_basicauth.0.username", "username"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.3.request_basicauth.0.password", "password"),
+			resource.TestCheckResourceAttrSet(
+				"datadog_synthetics_test.multi", "api_step.4.id"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.4.name", "gRPC health check step"),
 			resource.TestCheckResourceAttr(
@@ -5668,6 +5678,8 @@ func createSyntheticsMultistepAPITest(ctx context.Context, provider *schema.Prov
 				"datadog_synthetics_test.multi", "api_step.4.assertion.0.operator", "is"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.4.assertion.0.target", "1"),
+			resource.TestCheckResourceAttrSet(
+				"datadog_synthetics_test.multi", "api_step.5.id"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.5.name", "gRPC behavior check step"),
 			resource.TestCheckResourceAttr(
@@ -5724,6 +5736,8 @@ func createSyntheticsMultistepAPITest(ctx context.Context, provider *schema.Prov
 				"datadog_synthetics_test.multi", "api_step.5.extracted_value.1.parser.#", "1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.5.extracted_value.1.parser.0.type", "raw"),
+			resource.TestCheckResourceAttrSet(
+				"datadog_synthetics_test.multi", "api_step.6.id"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.6.name", "Wait step"),
 			resource.TestCheckResourceAttr(

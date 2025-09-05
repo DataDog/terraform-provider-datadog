@@ -831,6 +831,10 @@ Optional:
 - `subtype` (String) The subtype of the Synthetic multistep API test step. Valid values are `http`, `grpc`, `ssl`, `dns`, `tcp`, `udp`, `icmp`, `websocket`, `wait`. Defaults to `"http"`.
 - `value` (Number) The time to wait in seconds. Minimum value: 0. Maximum value: 180.
 
+Read-Only:
+
+- `id` (String) ID of the step.
+
 <a id="nestedblock--api_step--assertion"></a>
 ### Nested Schema for `api_step.assertion`
 

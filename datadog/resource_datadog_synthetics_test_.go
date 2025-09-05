@@ -1052,6 +1052,11 @@ func syntheticsTestAPIStep() *schema.Schema {
 		Optional:    true,
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
+				"id": {
+					Type:        schema.TypeString,
+					Description: "ID of the step.",
+					Computed:    true,
+				},
 				"name": {
 					Description: "The name of the step.",
 					Type:        schema.TypeString,
@@ -2484,6 +2489,7 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 			localStep := make(map[string]interface{})
 
 			if step.SyntheticsAPITestStep != nil {
+				localStep["id"] = step.SyntheticsAPITestStep.GetId()
 				localStep["name"] = step.SyntheticsAPITestStep.GetName()
 				localStep["subtype"] = step.SyntheticsAPITestStep.GetSubtype()
 
@@ -2562,6 +2568,7 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 					localStep["retry"] = []map[string]interface{}{localRetry}
 				}
 			} else if step.SyntheticsAPIWaitStep != nil {
+				localStep["id"] = step.SyntheticsAPIWaitStep.GetId()
 				localStep["name"] = step.SyntheticsAPIWaitStep.GetName()
 				localStep["subtype"] = step.SyntheticsAPIWaitStep.GetSubtype()
 				localStep["value"] = step.SyntheticsAPIWaitStep.GetValue()
@@ -2880,6 +2887,9 @@ func buildDatadogSyntheticsAPITest(d *schema.ResourceData) (*datadogV1.Synthetic
 			if stepSubtype == "" || isApiSubtype(datadogV1.SyntheticsAPITestStepSubtype(stepSubtype)) {
 				step.SyntheticsAPITestStep = datadogV1.NewSyntheticsAPITestStepWithDefaults()
 				step.SyntheticsAPITestStep.SetName(stepMap["name"].(string))
+				if len(stepMap["id"].(string)) > 0 {
+					step.SyntheticsAPITestStep.SetId(stepMap["id"].(string))
+				}
 				step.SyntheticsAPITestStep.SetSubtype(datadogV1.SyntheticsAPITestStepSubtype(stepMap["subtype"].(string)))
 
 				extractedValues := buildDatadogExtractedValues(stepMap["extracted_value"].([]interface{}))
