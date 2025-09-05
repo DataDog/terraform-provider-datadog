@@ -3,6 +3,7 @@ package test
 import (
 	"context"
 	"fmt"
+	"regexp"
 	"strconv"
 	"testing"
 
@@ -32,6 +33,24 @@ func TestAccDatadogAgentlessScanningAwsScanOptions_Basic(t *testing.T) {
 					resource.TestCheckResourceAttr("datadog_agentless_scanning_aws_scan_options.test", "vuln_containers_os", "true"),
 					resource.TestCheckResourceAttr("datadog_agentless_scanning_aws_scan_options.test", "vuln_host_os", "true"),
 				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogAgentlessScanningAwsScanOptions_InvalidAccountID(t *testing.T) {
+	t.Parallel()
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	accountID := "1nvalidaccid"
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogAgentlessScanningAwsScanOptionsDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config:      testAccCheckDatadogAgentlessScanningAwsScanOptionsConfig(accountID, true, false, true, true),
+				ExpectError: regexp.MustCompile("must be a valid AWS account ID"),
 			},
 		},
 	})
