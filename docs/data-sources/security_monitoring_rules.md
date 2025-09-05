@@ -158,6 +158,7 @@ Read-Only:
 - `data_source` (String)
 - `distinct_fields` (List of String)
 - `group_by_fields` (List of String)
+- `has_optional_group_by_fields` (Boolean)
 - `metric` (String)
 - `metrics` (List of String)
 - `name` (String)

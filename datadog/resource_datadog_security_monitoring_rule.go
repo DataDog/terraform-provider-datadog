@@ -364,6 +364,12 @@ func datadogSecurityMonitoringRuleSchema(includeValidate bool) map[string]*schem
 							ValidateDiagFunc: validators.ValidateNonEmptyStrings,
 						},
 					},
+					"has_optional_group_by_fields": {
+						Type:        schema.TypeBool,
+						Optional:    true,
+						Default:     false,
+						Description: "When false, events without a group-by value are ignored by the rule. When true, events with missing group-by fields are processed with `N/A`, replacing the missing values.",
+					},
 					"data_source": {
 						Type:             schema.TypeString,
 						ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewSecurityMonitoringStandardDataSourceFromValue),
@@ -1052,6 +1058,10 @@ func buildCreateStandardPayloadQueries(d utils.Resource) []datadogV2.SecurityMon
 			payloadQuery.SetGroupByFields(parseStringArray(v.([]interface{})))
 		}
 
+		if v, ok := query["has_optional_group_by_fields"]; ok {
+			payloadQuery.SetHasOptionalGroupByFields(v.(bool))
+		}
+
 		if v, ok := query["distinct_fields"]; ok {
 			payloadQuery.SetDistinctFields(parseStringArray(v.([]interface{})))
 		}
@@ -1284,6 +1294,9 @@ func extractStandardRuleQueries(responseRuleQueries []datadogV2.SecurityMonitori
 		}
 		if groupByFields, ok := responseRuleQuery.GetGroupByFieldsOk(); ok {
 			ruleQuery["group_by_fields"] = *groupByFields
+		}
+		if hasGbf, ok := responseRuleQuery.GetHasOptionalGroupByFieldsOk(); ok {
+			ruleQuery["has_optional_group_by_fields"] = *hasGbf
 		}
 		if dataSource, ok := responseRuleQuery.GetDataSourceOk(); ok {
 			ruleQuery["data_source"] = *dataSource
@@ -1636,6 +1649,10 @@ func buildUpdateStandardRuleQuery(tfQuery interface{}) *datadogV2.SecurityMonito
 
 	if v, ok := query["group_by_fields"]; ok {
 		payloadQuery.SetGroupByFields(parseStringArray(v.([]interface{})))
+	}
+
+	if v, ok := query["has_optional_group_by_fields"]; ok {
+		payloadQuery.SetHasOptionalGroupByFields(v.(bool))
 	}
 
 	if v, ok := query["distinct_fields"]; ok {
