@@ -109,6 +109,12 @@ func resourceDatadogSecurityMonitoringDefaultRule() *schema.Resource {
 									ValidateDiagFunc: validators.ValidateNonEmptyStrings,
 								},
 							},
+							"has_optional_group_by_fields": {
+								Type:        schema.TypeBool,
+								Optional:    true,
+								Computed:    true,
+								Description: "When false, events without a group-by value are ignored by the rule. When true, events with missing group-by fields are processed with `N/A`, replacing the missing values.",
+							},
 							"data_source": {
 								Type:             schema.TypeString,
 								ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewSecurityMonitoringStandardDataSourceFromValue),
@@ -346,6 +352,9 @@ func resourceDatadogSecurityMonitoringDefaultRuleRead(ctx context.Context, d *sc
 				}
 				if gbf, ok := responseQuery.GetGroupByFieldsOk(); ok {
 					stateQuery["group_by_fields"] = *gbf
+				}
+				if hasGbf, ok := responseQuery.GetHasOptionalGroupByFieldsOk(); ok {
+					stateQuery["has_optional_group_by_fields"] = *hasGbf
 				}
 				if df, ok := responseQuery.GetDistinctFieldsOk(); ok {
 					stateQuery["distinct_fields"] = *df
@@ -756,6 +765,12 @@ func buildUpdateDefaultRuleQuery(tfQuery interface{}, existingQuery *datadogV2.S
 			}
 		}
 
+		if _, ok := query["has_optional_group_by_fields"]; !ok {
+			if hasGbf, exists := existingQuery.GetHasOptionalGroupByFieldsOk(); exists {
+				payloadQuery.SetHasOptionalGroupByFields(*hasGbf)
+			}
+		}
+
 		// Preserve existing distinct_fields if not specified in TF config
 		if _, ok := query["distinct_fields"]; !ok {
 			if distinctFields, exists := existingQuery.GetDistinctFieldsOk(); exists {
@@ -814,6 +829,10 @@ func buildUpdateDefaultRuleQuery(tfQuery interface{}, existingQuery *datadogV2.S
 
 	if v, ok := query["group_by_fields"]; ok {
 		payloadQuery.SetGroupByFields(parseStringArray(v.([]interface{})))
+	}
+
+	if v, ok := query["has_optional_group_by_fields"]; ok {
+		payloadQuery.SetHasOptionalGroupByFields(v.(bool))
 	}
 
 	if v, ok := query["distinct_fields"]; ok {

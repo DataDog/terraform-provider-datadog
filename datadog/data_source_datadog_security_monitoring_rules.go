@@ -222,6 +222,9 @@ func buildSecurityMonitoringTfStandardRule(rule *datadogV2.SecurityMonitoringSta
 		if dataSource, ok := query.GetDataSourceOk(); ok {
 			tfQuery["data_source"] = string(*dataSource)
 		}
+		if hasOptionalGroupByFields, ok := query.GetHasOptionalGroupByFieldsOk(); ok {
+			tfQuery["has_optional_group_by_fields"] = *hasOptionalGroupByFields
+		}
 		if distinctFields, ok := query.GetDistinctFieldsOk(); ok {
 			tfQuery["distinct_fields"] = *distinctFields
 		}

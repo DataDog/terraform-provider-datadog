@@ -419,6 +419,7 @@ resource "datadog_security_monitoring_rule" "acceptance_test%s" {
         aggregation = "count"
         data_source = "logs"
         group_by_fields = ["host"]
+		has_optional_group_by_fields = false
     }
 
     query {
@@ -428,6 +429,7 @@ resource "datadog_security_monitoring_rule" "acceptance_test%s" {
         data_source = "logs"	
         distinct_fields = ["@orgId"]
         group_by_fields = ["host"]
+		has_optional_group_by_fields = false
     }
 
 	query {
@@ -437,6 +439,7 @@ resource "datadog_security_monitoring_rule" "acceptance_test%s" {
         data_source = "logs"
         group_by_fields = ["host"]
         metric = "@network.bytes_read"
+		has_optional_group_by_fields = false
     }
 
     case {
@@ -508,6 +511,8 @@ func testAccCheckDatadogSecurityMonitorCreatedCheckWithId(accProvider func() (*s
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "query.0.group_by_fields.0", "host"),
 		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.0.has_optional_group_by_fields.0", "false"),
+		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "query.1.name", "second"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "query.1.query", "does not really match much either"),
@@ -520,6 +525,8 @@ func testAccCheckDatadogSecurityMonitorCreatedCheckWithId(accProvider func() (*s
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "query.1.group_by_fields.0", "host"),
 		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.1.has_optional_group_by_fields.0", "false"),
+		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "query.2.name", "third"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "query.2.query", "does not really match much either"),
@@ -529,6 +536,8 @@ func testAccCheckDatadogSecurityMonitorCreatedCheckWithId(accProvider func() (*s
 			tfSecurityRuleName, "query.2.data_source", "logs"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "query.2.group_by_fields.0", "host"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.2.has_optional_group_by_fields.0", "false"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "query.2.metric", "@network.bytes_read"),
 		resource.TestCheckResourceAttr(
@@ -591,6 +600,7 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
         data_source = "logs"
         metric = "@value"
         group_by_fields = ["host"]
+		has_optional_group_by_fields = false
     }
 
     case {
@@ -629,6 +639,7 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
 		group_by_fields = ["@userIdentity.assumed_role"]
         name = ""
         query = "source:source_here"
+		has_optional_group_by_fields = false
     }
 
     case {
@@ -668,6 +679,8 @@ func testAccCheckDatadogSecurityMonitorCreatedCheckNewValueRule(accProvider func
 			tfSecurityRuleName, "query.0.aggregation", "new_value"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "query.0.data_source", "logs"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.0.has_optional_group_by_fields.0", "false"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "query.0.group_by_fields.0", "host"),
 		resource.TestCheckResourceAttr(
@@ -712,6 +725,7 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
         data_source = "logs"
         metric = "@usr.handle"
         group_by_fields = ["@usr.handle"]
+		has_optional_group_by_fields = false
     }
 
     case {
@@ -752,6 +766,8 @@ func testAccCheckDatadogSecurityMonitorCreatedCheckImpossibleTravelRule(accProvi
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "query.0.data_source", "logs"),
 		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.0.has_optional_group_by_fields.0", "false"),
+		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "query.0.group_by_fields.0", "@usr.handle"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "case.0.name", ""),
@@ -788,6 +804,7 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
         data_source = "logs"
         metric = "@usr.handle"
         group_by_fields = ["@usr.handle"]
+		has_optional_group_by_fields = false
     }
 
     case {
@@ -827,6 +844,8 @@ func testAccCheckDatadogSecurityMonitorUpdatedCheckImpossibleTravelRule(accProvi
 			tfSecurityRuleName, "query.0.aggregation", "geo_data"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "query.0.data_source", "logs"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.0.has_optional_group_by_fields.0", "false"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "query.0.group_by_fields.0", "@usr.handle"),
 		resource.TestCheckResourceAttr(
@@ -868,6 +887,7 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
 		aggregation = "count"
 		data_source = "security_runtime"
 		group_by_fields = ["host"]
+		has_optional_group_by_fields = false
 	}
 
 	case {
@@ -904,6 +924,7 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
 		aggregation = "count"
 		data_source = "logs"
 		group_by_fields = ["host"]
+		has_optional_group_by_fields = false
 	}
 
 	case {
@@ -943,6 +964,8 @@ func testAccCheckDatadogSecurityMonitoringCreatedCheckCwsRule(accProvider func()
 			tfSecurityRuleName, "query.0.aggregation", "count"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "query.0.data_source", "security_runtime"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.0.has_optional_group_by_fields.0", "false"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "query.0.group_by_fields.0", "host"),
 		resource.TestCheckResourceAttr(
@@ -984,6 +1007,7 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
         data_source = "logs"
         distinct_fields = ["@orgId"]
         group_by_fields = ["service"]
+		has_optional_group_by_fields = false
     }
 
     case {
@@ -1037,6 +1061,8 @@ func testAccCheckDatadogSecurityMonitoringUpdateCheck(accProvider func() (*schem
 			tfSecurityRuleName, "query.0.aggregation", "cardinality"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "query.0.data_source", "logs"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.0.has_optional_group_by_fields.0", "false"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "query.0.distinct_fields.0", "@orgId"),
 		resource.TestCheckResourceAttr(
@@ -1095,6 +1121,7 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
         data_source = "logs"
         group_by_fields = ["service"]
         metric = "@network.bytes_read"
+		has_optional_group_by_fields = false
     }
 
     case {
@@ -1136,6 +1163,8 @@ func testAccCheckDatadogSecurityMonitoringUpdateCheckNewValueRule(accProvider fu
 			tfSecurityRuleName, "query.0.aggregation", "new_value"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "query.0.data_source", "logs"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.0.has_optional_group_by_fields.0", "false"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "query.0.group_by_fields.0", "service"),
 		resource.TestCheckResourceAttr(
@@ -1181,6 +1210,7 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
         aggregation = "count"
         data_source = "security_runtime"
         group_by_fields = ["service"]
+		has_optional_group_by_fields = false
     }
 
     case {
@@ -1222,6 +1252,8 @@ func testAccCheckDatadogSecurityMonitoringUpdateCheckCwsRule(accProvider func() 
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "query.0.data_source", "security_runtime"),
 		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.0.has_optional_group_by_fields.0", "false"),
+		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "query.0.group_by_fields.0", "service"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "case.0.name", "high case (updated)"),
@@ -1262,6 +1294,7 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
         data_source = "logs"
         distinct_fields = ["@orgId"]
         group_by_fields = ["service"]
+		has_optional_group_by_fields = false
     }
 
     case {
@@ -1571,6 +1604,7 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
         aggregation = "count"
         data_source = "logs"
         group_by_fields = ["host"]
+		has_optional_group_by_fields = false
     }
 
     case {
@@ -1600,6 +1634,8 @@ func testAccCheckDatadogSecurityMonitorCreatedRequiredCheck(accProvider func() (
 			tfSecurityRuleName, "query.0.aggregation", "count"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "query.0.data_source", "logs"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.0.has_optional_group_by_fields.0", "false"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "query.0.group_by_fields.0", "host"),
 		resource.TestCheckResourceAttr(
@@ -1809,6 +1845,7 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
 		aggregation = "count"
 		data_source = "app_sec_spans"
 		group_by_fields = ["service", "env"]
+		has_optional_group_by_fields = false
 	}
 
 	case {
@@ -1860,6 +1897,8 @@ func testAccCheckDatadogSecurityMonitoringCreatedCheckAppsecRule(accProvider fun
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "query.0.data_source", "app_sec_spans"),
 		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.0.has_optional_group_by_fields.0", "false"),
+		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "query.0.group_by_fields.0", "service"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "query.0.group_by_fields.1", "env"),
@@ -1908,6 +1947,7 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
 		aggregation = "count"
 		data_source = "app_sec_spans"
 		group_by_fields = ["service", "env"]
+		has_optional_group_by_fields = false
 	}
 
 	case {
@@ -1958,6 +1998,8 @@ func testAccCheckDatadogSecurityMonitoringUpdateCheckAppsecRule(accProvider func
 			tfSecurityRuleName, "query.0.aggregation", "count"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "query.0.data_source", "app_sec_spans"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.0.has_optional_group_by_fields.0", "false"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "query.0.group_by_fields.0", "service"),
 		resource.TestCheckResourceAttr(
