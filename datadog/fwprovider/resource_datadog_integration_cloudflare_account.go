@@ -4,12 +4,15 @@ import (
 	"context"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+
+	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
@@ -26,11 +29,23 @@ type integrationCloudflareAccountResource struct {
 }
 
 type integrationCloudflareAccountModel struct {
-	ID        types.String `tfsdk:"id"`
-	ApiKey    types.String `tfsdk:"api_key"`
-	Email     types.String `tfsdk:"email"`
-	Name      types.String `tfsdk:"name"`
-	Resources types.Set    `tfsdk:"resources"`
+	ID              types.String `tfsdk:"id"`
+	ApiKey          types.String `tfsdk:"api_key"`
+	ApiKeyWo        types.String `tfsdk:"api_key_wo"`
+	ApiKeyWoVersion types.String `tfsdk:"api_key_wo_version"`
+	Email           types.String `tfsdk:"email"`
+	Name            types.String `tfsdk:"name"`
+	Resources       types.Set    `tfsdk:"resources"`
+}
+
+// Write-only secret configuration for Cloudflare API key
+var cloudflareApiKeyConfig = utils.WriteOnlySecretConfig{
+	OriginalAttr:         "api_key",
+	WriteOnlyAttr:        "api_key_wo",
+	TriggerAttr:          "api_key_wo_version",
+	OriginalDescription:  "The API key (or token) for the Cloudflare account.",
+	WriteOnlyDescription: "Write-only API key (or token) for the Cloudflare account.",
+	TriggerDescription:   "Version associated with api_key_wo. Changing this triggers an update. Can be any string (e.g., '1', 'v2.1', '2024-Q1').",
 }
 
 func NewIntegrationCloudflareAccountResource() resource.Resource {
@@ -48,33 +63,39 @@ func (r *integrationCloudflareAccountResource) Metadata(_ context.Context, reque
 }
 
 func (r *integrationCloudflareAccountResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
-	response.Schema = schema.Schema{
-		Description: "Provides a Datadog IntegrationCloudflareAccount resource. This can be used to create and manage Datadog integration_cloudflare_account.",
-		Attributes: map[string]schema.Attribute{
-			"api_key": schema.StringAttribute{
-				Required:    true,
-				Description: "The API key (or token) for the Cloudflare account.",
-				Sensitive:   true,
-			},
-			"email": schema.StringAttribute{
-				Optional:    true,
-				Description: "The email associated with the Cloudflare account. If an API key is provided (and not a token), this field is also required.",
-			},
-			"name": schema.StringAttribute{
-				Required:    true,
-				Description: "The name of the Cloudflare account.",
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.RequiresReplace(),
-				},
-			},
-			"id": utils.ResourceIDAttribute(),
-			"resources": schema.SetAttribute{
-				ElementType: types.StringType,
-				Optional:    true,
-				Computed:    true,
-				Description: "An allowlist of resources to pull metrics for. Includes `web`, `dns`, `lb` (load balancer), and `worker`).",
+	// Generate write-only secret attributes using helper
+	writeOnlyAttrs := utils.CreateWriteOnlySecretAttributes(cloudflareApiKeyConfig)
+
+	// Combine with other resource-specific attributes
+	allAttributes := map[string]schema.Attribute{
+		"email": schema.StringAttribute{
+			Optional:    true,
+			Description: "The email associated with the Cloudflare account. If an API key is provided (and not a token), this field is also required.",
+		},
+		"name": schema.StringAttribute{
+			Required:    true,
+			Description: "The name of the Cloudflare account.",
+			PlanModifiers: []planmodifier.String{
+				stringplanmodifier.RequiresReplace(),
 			},
 		},
+		"id": utils.ResourceIDAttribute(),
+		"resources": schema.SetAttribute{
+			ElementType: types.StringType,
+			Optional:    true,
+			Computed:    true,
+			Description: "An allowlist of resources to pull metrics for. Includes `web`, `dns`, `lb` (load balancer), and `worker`).",
+		},
+	}
+
+	// Merge write-only attributes with resource-specific ones
+	for key, attr := range writeOnlyAttrs {
+		allAttributes[key] = attr
+	}
+
+	response.Schema = schema.Schema{
+		Description: "Provides a Datadog IntegrationCloudflareAccount resource. This can be used to create and manage Datadog integration_cloudflare_account.",
+		Attributes:  allAttributes,
 	}
 }
 
@@ -117,7 +138,7 @@ func (r *integrationCloudflareAccountResource) Create(ctx context.Context, reque
 		return
 	}
 
-	body, diags := r.buildIntegrationCloudflareAccountRequestBody(ctx, &state)
+	body, diags := r.buildIntegrationCloudflareAccountRequestBody(ctx, &state, &request.Config)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
 		return
@@ -139,15 +160,21 @@ func (r *integrationCloudflareAccountResource) Create(ctx context.Context, reque
 }
 
 func (r *integrationCloudflareAccountResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
-	var state integrationCloudflareAccountModel
-	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
+	var plan integrationCloudflareAccountModel
+	response.Diagnostics.Append(request.Plan.Get(ctx, &plan)...)
 	if response.Diagnostics.HasError() {
 		return
 	}
 
-	id := state.ID.ValueString()
+	var prior integrationCloudflareAccountModel
+	response.Diagnostics.Append(request.State.Get(ctx, &prior)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
 
-	body, diags := r.buildIntegrationCloudflareAccountUpdateRequestBody(ctx, &state)
+	id := plan.ID.ValueString()
+
+	body, diags := r.buildIntegrationCloudflareAccountUpdateRequestBody(ctx, &plan, &prior, &request.Config, &request)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
 		return
@@ -162,10 +189,10 @@ func (r *integrationCloudflareAccountResource) Update(ctx context.Context, reque
 		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
 		return
 	}
-	r.updateState(ctx, &state, &resp)
+	r.updateState(ctx, &plan, &resp)
 
 	// Save data into Terraform state
-	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+	response.Diagnostics.Append(response.State.Set(ctx, &plan)...)
 }
 
 func (r *integrationCloudflareAccountResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
@@ -206,11 +233,20 @@ func (r *integrationCloudflareAccountResource) updateState(ctx context.Context, 
 	}
 }
 
-func (r *integrationCloudflareAccountResource) buildIntegrationCloudflareAccountRequestBody(ctx context.Context, state *integrationCloudflareAccountModel) (*datadogV2.CloudflareAccountCreateRequest, diag.Diagnostics) {
+func (r *integrationCloudflareAccountResource) buildIntegrationCloudflareAccountRequestBody(ctx context.Context, state *integrationCloudflareAccountModel, config *tfsdk.Config) (*datadogV2.CloudflareAccountCreateRequest, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
 	attributes := datadogV2.NewCloudflareAccountCreateRequestAttributesWithDefaults()
 
-	attributes.SetApiKey(state.ApiKey.ValueString())
+	// Use helper to get secret for creation
+	handler := utils.WriteOnlySecretHandler{Config: cloudflareApiKeyConfig}
+	secret, useWriteOnly, secretDiags := handler.GetSecretForCreate(ctx, state, config)
+	diags.Append(secretDiags...)
+
+	if useWriteOnly {
+		attributes.SetApiKey(secret)
+	} else if !state.ApiKey.IsNull() && !state.ApiKey.IsUnknown() {
+		attributes.SetApiKey(state.ApiKey.ValueString())
+	}
 	if !state.Email.IsNull() {
 		attributes.SetEmail(state.Email.ValueString())
 	}
@@ -229,18 +265,29 @@ func (r *integrationCloudflareAccountResource) buildIntegrationCloudflareAccount
 	return req, diags
 }
 
-func (r *integrationCloudflareAccountResource) buildIntegrationCloudflareAccountUpdateRequestBody(ctx context.Context, state *integrationCloudflareAccountModel) (*datadogV2.CloudflareAccountUpdateRequest, diag.Diagnostics) {
+func (r *integrationCloudflareAccountResource) buildIntegrationCloudflareAccountUpdateRequestBody(ctx context.Context, plan *integrationCloudflareAccountModel, prior *integrationCloudflareAccountModel, config *tfsdk.Config, request *resource.UpdateRequest) (*datadogV2.CloudflareAccountUpdateRequest, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
 	attributes := datadogV2.NewCloudflareAccountUpdateRequestAttributesWithDefaults()
 
-	attributes.SetApiKey(state.ApiKey.ValueString())
-	if !state.Email.IsNull() {
-		attributes.SetEmail(state.Email.ValueString())
+	// Use helper to determine if secret should be updated
+	handler := utils.WriteOnlySecretHandler{Config: cloudflareApiKeyConfig}
+	secret, shouldUpdate, secretDiags := handler.GetSecretForUpdate(ctx, config, request)
+	diags.Append(secretDiags...)
+
+	if shouldUpdate {
+		attributes.SetApiKey(secret)
+	} else if !plan.ApiKey.IsNull() && !plan.ApiKey.IsUnknown() {
+		// Plaintext mode: always update
+		attributes.SetApiKey(plan.ApiKey.ValueString())
 	}
 
-	if !state.Resources.IsNull() && !state.Resources.IsUnknown() {
+	if !plan.Email.IsNull() {
+		attributes.SetEmail(plan.Email.ValueString())
+	}
+
+	if !plan.Resources.IsNull() && !plan.Resources.IsUnknown() {
 		var resources []string
-		diags.Append(state.Resources.ElementsAs(ctx, &resources, false)...)
+		diags.Append(plan.Resources.ElementsAs(ctx, &resources, false)...)
 		attributes.SetResources(resources)
 	}
 
