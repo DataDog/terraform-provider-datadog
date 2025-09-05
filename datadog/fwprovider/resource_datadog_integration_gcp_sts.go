@@ -6,6 +6,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/setdefault"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -108,6 +109,7 @@ func (r *integrationGcpStsResource) Schema(_ context.Context, _ resource.SchemaR
 			},
 			"metric_namespace_configs": schema.SetAttribute{
 				Optional:    true,
+				Computed:    true,
 				Description: "Configuration for a GCP metric namespace.",
 				ElementType: types.ObjectType{
 					AttrTypes: map[string]attr.Type{
@@ -115,6 +117,20 @@ func (r *integrationGcpStsResource) Schema(_ context.Context, _ resource.SchemaR
 						"disabled": types.BoolType,
 					},
 				},
+				Default: setdefault.StaticValue(types.SetValueMust(types.ObjectType{
+					AttrTypes: map[string]attr.Type{
+						"id":       types.StringType,
+						"disabled": types.BoolType,
+					},
+				}, []attr.Value{
+					types.ObjectValueMust(map[string]attr.Type{
+						"id":       types.StringType,
+						"disabled": types.BoolType,
+					}, map[string]attr.Value{
+						"id":       types.StringValue("prometheus"),
+						"disabled": types.BoolValue(true),
+					}),
+				})),
 			},
 			"is_cspm_enabled": schema.BoolAttribute{
 				Optional:    true,
