@@ -55,7 +55,7 @@ resource "datadog_integration_aws_account" "foo" {
     collect_custom_metrics    = true
     enabled                   = true
     namespace_filters {
-      exclude_only = ["AWS/SQS", "AWS/ElasticMapReduce", "AWS/Usage]
+      exclude_only = ["AWS/SQS", "AWS/ElasticMapReduce", "AWS/Usage"]
     }
     tag_filters {
       namespace = "AWS/EC2"
