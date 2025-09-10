@@ -3,12 +3,12 @@
 page_title: "datadog_csm_threats_policy Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Provides a Datadog CSM Threats policy API resource.
+  Provides a Datadog Workload Protection (CSM Threats) policy API resource.
 ---
 
 # datadog_csm_threats_policy (Resource)
 
-Provides a Datadog CSM Threats policy API resource.
+Provides a Datadog Workload Protection (CSM Threats) policy API resource.
 
 ## Example Usage
 
