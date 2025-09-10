@@ -49,13 +49,14 @@ resource "datadog_integration_gcp_sts" "foo" {
 
 - `account_tags` (Set of String) Tags to be associated with GCP metrics and service checks from your account.
 - `automute` (Boolean) Silence monitors for expected GCE instance shutdowns.
-- `cloud_run_revision_filters` (Set of String) Tags to filter which Cloud Run revisions are imported into Datadog. Only revisions that meet specified criteria are monitored.
-- `host_filters` (Set of String) Your Host Filters.
+- `cloud_run_revision_filters` (Set of String, Deprecated) List of filters to limit the Cloud Run revisions that are pulled into Datadog by using tags. Only Cloud Run revision resources that apply to specified filters are imported into Datadog.
+- `host_filters` (Set of String, Deprecated) List of filters to limit the VM instances that are pulled into Datadog by using tags. Only VM instance resources that apply to specified filters are imported into Datadog.
 - `is_cspm_enabled` (Boolean) Whether Datadog collects cloud security posture management resources from your GCP project. If enabled, requires `resource_collection_enabled` to also be enabled.
 - `is_per_project_quota_enabled` (Boolean) When enabled, Datadog includes the `X-Goog-User-Project` header to attribute Google Cloud billing and quota usage to the monitored project instead of the default service account project.
 - `is_resource_change_collection_enabled` (Boolean) When enabled, Datadog scans for all resource change data in your Google Cloud environment.
 - `is_security_command_center_enabled` (Boolean) When enabled, Datadog will attempt to collect Security Command Center Findings. Note: This requires additional permissions on the service account. Defaults to `false`.
-- `metric_namespace_configs` (Set of Object) Configuration for a GCP metric namespace. (see [below for nested schema](#nestedatt--metric_namespace_configs))
+- `metric_namespace_configs` (Set of Object) Configurations for GCP metric namespaces. (see [below for nested schema](#nestedatt--metric_namespace_configs))
+- `monitored_resource_configs` (Set of Object) Configurations for GCP monitored resources. Only monitored resources that apply to specified filters are imported into Datadog. (see [below for nested schema](#nestedatt--monitored_resource_configs))
 - `resource_collection_enabled` (Boolean) When enabled, Datadog scans for all resources in your GCP environment.
 
 ### Read-Only
@@ -70,6 +71,15 @@ Optional:
 
 - `disabled` (Boolean)
 - `id` (String)
+
+
+<a id="nestedatt--monitored_resource_configs"></a>
+### Nested Schema for `monitored_resource_configs`
+
+Optional:
+
+- `filters` (Set of String)
+- `type` (String)
 
 ## Import
 

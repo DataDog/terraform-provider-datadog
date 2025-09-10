@@ -4,14 +4,13 @@ import (
 	"context"
 	"sync"
 
-	"github.com/hashicorp/terraform-plugin-framework/attr"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
-
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -35,20 +34,35 @@ type MetricNamespaceConfigModel struct {
 	Disabled types.Bool   `tfsdk:"disabled"`
 }
 
+var MonitoredResourceConfigSpec = types.ObjectType{
+	AttrTypes: map[string]attr.Type{
+		"type": types.StringType,
+		"filters": types.SetType{
+			ElemType: types.StringType,
+		},
+	},
+}
+
+type MonitoredResourceConfigModel struct {
+	Type    types.String `tfsdk:"type"`
+	Filters types.Set    `tfsdk:"filters"`
+}
+
 type integrationGcpStsModel struct {
 	ID                                types.String                  `tfsdk:"id"`
 	AccountTags                       types.Set                     `tfsdk:"account_tags"`
 	Automute                          types.Bool                    `tfsdk:"automute"`
 	ClientEmail                       types.String                  `tfsdk:"client_email"`
 	DelegateAccountEmail              types.String                  `tfsdk:"delegate_account_email"`
-	HostFilters                       types.Set                     `tfsdk:"host_filters"`
-	CloudRunRevisionFilters           types.Set                     `tfsdk:"cloud_run_revision_filters"`
-	MetricNamespaceConfigs            []*MetricNamespaceConfigModel `tfsdk:"metric_namespace_configs"`
+	HostFilters                       types.Set                     `tfsdk:"host_filters"`               // DEPRECATED: use MonitoredResourceConfigs["gce_instance"]
+	CloudRunRevisionFilters           types.Set                     `tfsdk:"cloud_run_revision_filters"` // DEPRECATED: use MonitoredResourceConfigs["cloud_run_revision"]
 	IsCspmEnabled                     types.Bool                    `tfsdk:"is_cspm_enabled"`
 	IsSecurityCommandCenterEnabled    types.Bool                    `tfsdk:"is_security_command_center_enabled"`
 	IsResourceChangeCollectionEnabled types.Bool                    `tfsdk:"is_resource_change_collection_enabled"`
 	IsPerProjectQuotaEnabled          types.Bool                    `tfsdk:"is_per_project_quota_enabled"`
 	ResourceCollectionEnabled         types.Bool                    `tfsdk:"resource_collection_enabled"`
+	MetricNamespaceConfigs            []*MetricNamespaceConfigModel `tfsdk:"metric_namespace_configs"`
+	MonitoredResourceConfigs          types.Set                     `tfsdk:"monitored_resource_configs"`
 }
 
 func NewIntegrationGcpStsResource() resource.Resource {
@@ -72,6 +86,7 @@ func (r *integrationGcpStsResource) Schema(_ context.Context, _ resource.SchemaR
 		// https://github.com/DataDog/terraform-provider-datadog/pull/2424#issuecomment-2150871460
 		Description: "Provides a Datadog Integration GCP Sts resource. This can be used to create and manage Datadog - Google Cloud Platform integration.",
 		Attributes: map[string]schema.Attribute{
+			"id": utils.ResourceIDAttribute(),
 			"account_tags": schema.SetAttribute{
 				Optional:    true,
 				Description: "Tags to be associated with GCP metrics and service checks from your account.",
@@ -97,24 +112,18 @@ func (r *integrationGcpStsResource) Schema(_ context.Context, _ resource.SchemaR
 				},
 			},
 			"host_filters": schema.SetAttribute{
-				Optional:    true,
-				Description: "Your Host Filters.",
-				ElementType: types.StringType,
+				Optional:           true,
+				Computed:           true,
+				Description:        "List of filters to limit the VM instances that are pulled into Datadog by using tags. Only VM instance resources that apply to specified filters are imported into Datadog.",
+				ElementType:        types.StringType,
+				DeprecationMessage: "**Note:** This field is deprecated. Instead, use `monitored_resource_configs` with `type=gce_instance`",
 			},
 			"cloud_run_revision_filters": schema.SetAttribute{
-				Optional:    true,
-				Description: "Tags to filter which Cloud Run revisions are imported into Datadog. Only revisions that meet specified criteria are monitored.",
-				ElementType: types.StringType,
-			},
-			"metric_namespace_configs": schema.SetAttribute{
-				Optional:    true,
-				Description: "Configuration for a GCP metric namespace.",
-				ElementType: types.ObjectType{
-					AttrTypes: map[string]attr.Type{
-						"id":       types.StringType,
-						"disabled": types.BoolType,
-					},
-				},
+				Optional:           true,
+				Computed:           true,
+				Description:        "List of filters to limit the Cloud Run revisions that are pulled into Datadog by using tags. Only Cloud Run revision resources that apply to specified filters are imported into Datadog.",
+				ElementType:        types.StringType,
+				DeprecationMessage: "**Note:** This field is deprecated. Instead, use `monitored_resource_configs` with `type=cloud_run_revision`",
 			},
 			"is_cspm_enabled": schema.BoolAttribute{
 				Optional:    true,
@@ -141,7 +150,23 @@ func (r *integrationGcpStsResource) Schema(_ context.Context, _ resource.SchemaR
 				Description: "When enabled, Datadog scans for all resources in your GCP environment.",
 				Optional:    true,
 				Computed:    true,
-			}, "id": utils.ResourceIDAttribute(),
+			},
+			"metric_namespace_configs": schema.SetAttribute{
+				Optional:    true,
+				Description: "Configurations for GCP metric namespaces.",
+				ElementType: types.ObjectType{
+					AttrTypes: map[string]attr.Type{
+						"id":       types.StringType,
+						"disabled": types.BoolType,
+					},
+				},
+			},
+			"monitored_resource_configs": schema.SetAttribute{
+				Optional:    true,
+				Computed:    true,
+				Description: "Configurations for GCP monitored resources. Only monitored resources that apply to specified filters are imported into Datadog.",
+				ElementType: MonitoredResourceConfigSpec,
+			},
 		},
 	}
 }
@@ -302,29 +327,11 @@ func (r *integrationGcpStsResource) updateState(ctx context.Context, state *inte
 	state.ID = types.StringValue(resp.GetId())
 
 	attributes := resp.GetAttributes()
-	if accountTags, ok := attributes.GetAccountTagsOk(); ok && len(*accountTags) > 0 {
-		state.AccountTags, _ = types.SetValueFrom(ctx, types.StringType, *accountTags)
-	}
 	if automute, ok := attributes.GetAutomuteOk(); ok {
 		state.Automute = types.BoolValue(*automute)
 	}
 	if clientEmail, ok := attributes.GetClientEmailOk(); ok {
 		state.ClientEmail = types.StringValue(*clientEmail)
-	}
-	if hostFilters, ok := attributes.GetHostFiltersOk(); ok && len(*hostFilters) > 0 {
-		state.HostFilters, _ = types.SetValueFrom(ctx, types.StringType, *hostFilters)
-	}
-	if runFilters, ok := attributes.GetCloudRunRevisionFiltersOk(); ok && len(*runFilters) > 0 {
-		state.CloudRunRevisionFilters, _ = types.SetValueFrom(ctx, types.StringType, *runFilters)
-	}
-	if namespaceConfigs, ok := attributes.GetMetricNamespaceConfigsOk(); ok && len(*namespaceConfigs) > 0 {
-		state.MetricNamespaceConfigs = make([]*MetricNamespaceConfigModel, len(*namespaceConfigs))
-		for i, namespaceConfig := range *namespaceConfigs {
-			state.MetricNamespaceConfigs[i] = &MetricNamespaceConfigModel{
-				ID:       types.StringValue(namespaceConfig.GetId()),
-				Disabled: types.BoolValue(namespaceConfig.GetDisabled()),
-			}
-		}
 	}
 	if isCspmEnabled, ok := attributes.GetIsCspmEnabledOk(); ok {
 		state.IsCspmEnabled = types.BoolValue(*isCspmEnabled)
@@ -341,17 +348,36 @@ func (r *integrationGcpStsResource) updateState(ctx context.Context, state *inte
 	if resourceCollectionEnabled, ok := attributes.GetResourceCollectionEnabledOk(); ok {
 		state.ResourceCollectionEnabled = types.BoolValue(*resourceCollectionEnabled)
 	}
+
+	if accountTags := attributes.GetAccountTags(); len(accountTags) > 0 {
+		state.AccountTags, _ = types.SetValueFrom(ctx, types.StringType, accountTags)
+	}
+
+	if mncs := attributes.GetMetricNamespaceConfigs(); len(mncs) > 0 {
+		state.MetricNamespaceConfigs = make([]*MetricNamespaceConfigModel, 0, len(mncs))
+		for _, mnc := range mncs {
+			state.MetricNamespaceConfigs = append(state.MetricNamespaceConfigs, &MetricNamespaceConfigModel{
+				ID:       types.StringValue(mnc.GetId()),
+				Disabled: types.BoolValue(mnc.GetDisabled()),
+			})
+		}
+	}
+
+	state.HostFilters, _ = types.SetValueFrom(ctx, types.StringType, attributes.GetHostFilters())
+	state.CloudRunRevisionFilters, _ = types.SetValueFrom(ctx, types.StringType, attributes.GetCloudRunRevisionFilters())
+	mrcs := make([]*MonitoredResourceConfigModel, 0)
+	for _, mrc := range attributes.GetMonitoredResourceConfigs() {
+		var mdl MonitoredResourceConfigModel
+		mdl.Type = types.StringValue(string(mrc.GetType()))
+		mdl.Filters, _ = types.SetValueFrom(ctx, types.StringType, mrc.GetFilters())
+		mrcs = append(mrcs, &mdl)
+	}
+	state.MonitoredResourceConfigs, _ = types.SetValueFrom(ctx, MonitoredResourceConfigSpec, mrcs)
 }
 
 func (r *integrationGcpStsResource) buildIntegrationGcpStsRequestBody(ctx context.Context, state *integrationGcpStsModel) (datadogV2.GCPSTSServiceAccountAttributes, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
 	attributes := datadogV2.GCPSTSServiceAccountAttributes{}
-
-	accountTags := make([]string, 0)
-	if !state.AccountTags.IsNull() {
-		diags.Append(state.AccountTags.ElementsAs(ctx, &accountTags, false)...)
-	}
-	attributes.SetAccountTags(accountTags)
 
 	if !state.Automute.IsNull() {
 		attributes.SetAutomute(state.Automute.ValueBool())
@@ -359,30 +385,6 @@ func (r *integrationGcpStsResource) buildIntegrationGcpStsRequestBody(ctx contex
 	if !state.IsCspmEnabled.IsNull() {
 		attributes.SetIsCspmEnabled(state.IsCspmEnabled.ValueBool())
 	}
-
-	hostFilters := make([]string, 0)
-	if !state.HostFilters.IsNull() {
-		diags.Append(state.HostFilters.ElementsAs(ctx, &hostFilters, false)...)
-	}
-	attributes.SetHostFilters(hostFilters)
-
-	runFilters := make([]string, 0)
-	if !state.CloudRunRevisionFilters.IsNull() {
-		diags.Append(state.CloudRunRevisionFilters.ElementsAs(ctx, &runFilters, false)...)
-	}
-	attributes.SetCloudRunRevisionFilters(runFilters)
-
-	namespaceConfigs := make([]datadogV2.GCPMetricNamespaceConfig, 0)
-	if len(state.MetricNamespaceConfigs) > 0 {
-		for _, namespaceConfig := range state.MetricNamespaceConfigs {
-			namespaceConfigs = append(namespaceConfigs, datadogV2.GCPMetricNamespaceConfig{
-				Id:       namespaceConfig.ID.ValueStringPointer(),
-				Disabled: namespaceConfig.Disabled.ValueBoolPointer(),
-			})
-		}
-	}
-	attributes.SetMetricNamespaceConfigs(namespaceConfigs)
-
 	if !state.IsSecurityCommandCenterEnabled.IsUnknown() {
 		attributes.SetIsSecurityCommandCenterEnabled(state.IsSecurityCommandCenterEnabled.ValueBool())
 	}
@@ -396,5 +398,44 @@ func (r *integrationGcpStsResource) buildIntegrationGcpStsRequestBody(ctx contex
 		attributes.SetIsPerProjectQuotaEnabled(state.IsPerProjectQuotaEnabled.ValueBool())
 	}
 
+	attributes.SetAccountTags(tfCollectionToSlice[string](ctx, diags, state.AccountTags))
+
+	mncs := make([]datadogV2.GCPMetricNamespaceConfig, 0)
+	for _, mnc := range state.MetricNamespaceConfigs {
+		mncs = append(mncs, datadogV2.GCPMetricNamespaceConfig{
+			Id:       mnc.ID.ValueStringPointer(),
+			Disabled: mnc.Disabled.ValueBoolPointer(),
+		})
+	}
+	attributes.SetMetricNamespaceConfigs(mncs)
+
+	attributes.SetHostFilters(tfCollectionToSlice[string](ctx, diags, state.HostFilters))
+	attributes.SetCloudRunRevisionFilters(tfCollectionToSlice[string](ctx, diags, state.CloudRunRevisionFilters))
+	mrcs := make([]datadogV2.GCPMonitoredResourceConfig, 0)
+	for _, mrc := range tfCollectionToSlice[*MonitoredResourceConfigModel](ctx, diags, state.MonitoredResourceConfigs) {
+		mrcs = append(mrcs, datadogV2.GCPMonitoredResourceConfig{
+			Type:    ptrTo(datadogV2.GCPMonitoredResourceConfigType(mrc.Type.ValueString())),
+			Filters: tfCollectionToSlice[string](ctx, diags, mrc.Filters),
+		})
+	}
+	attributes.SetMonitoredResourceConfigs(mrcs)
+
 	return attributes, diags
+}
+
+func tfCollectionToSlice[T any](ctx context.Context, diags diag.Diagnostics, col tfCollection) []T {
+	slice := make([]T, 0)
+	if !col.IsNull() {
+		diags.Append(col.ElementsAs(ctx, &slice, false)...)
+	}
+	return slice
+}
+
+func ptrTo[T any](item T) *T {
+	return &item
+}
+
+type tfCollection interface {
+	IsNull() bool
+	ElementsAs(ctx context.Context, target interface{}, allowUnhandled bool) diag.Diagnostics
 }
