@@ -1632,6 +1632,9 @@ func buildUpdatePayload(d *schema.ResourceData) (*datadogV2.SecurityMonitoringRu
 		if v, ok := d.GetOk("reference_tables"); ok {
 			tfReferenceTables := v.([]interface{})
 			payload.SetReferenceTables(buildPayloadReferenceTables(tfReferenceTables))
+		} else if d.HasChange("reference_tables") {
+			// Only send empty list if reference_tables was removed in config
+			payload.SetReferenceTables(make([]datadogV2.SecurityMonitoringReferenceTable, 0))
 		}
 	}
 
