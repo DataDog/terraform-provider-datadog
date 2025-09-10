@@ -24,7 +24,7 @@ data "datadog_incident_notification_template" "example" {
 ### Optional
 
 - `id` (String) The ID of the incident notification template.
-- `name` (String) The name of the notification template to search for.
+- `name` (String) The name of the notification template.
 
 ### Read-Only
 

@@ -49,7 +49,7 @@ func (d *incidentNotificationTemplateDataSource) Schema(_ context.Context, _ dat
 				Computed:    true,
 			},
 			"name": schema.StringAttribute{
-				Description: "The name of the notification template to search for.",
+				Description: "The name of the notification template.",
 				Optional:    true,
 				Computed:    true,
 			},
