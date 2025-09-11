@@ -97,6 +97,7 @@ var Resources = []func() resource.Resource{
 	NewAppKeyRegistrationResource,
 	NewIncidentTypeResource,
 	NewIncidentNotificationTemplateResource,
+	NewIncidentNotificationRuleResource,
 }
 
 var Datasources = []func() datasource.DataSource{
@@ -136,6 +137,7 @@ var Datasources = []func() datasource.DataSource{
 	NewCSMThreatsPoliciesDataSource,
 	NewIncidentTypeDataSource,
 	NewIncidentNotificationTemplateDataSource,
+	NewIncidentNotificationRuleDataSource,
 }
 
 // FrameworkProvider struct

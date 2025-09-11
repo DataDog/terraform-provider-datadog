@@ -74,6 +74,13 @@ func buildFrameworkDatadogClient(ctx context.Context, httpClient *http.Client) *
 	config.SetUnstableOperationEnabled("v2.DeleteIncidentNotificationTemplate", true)
 	config.SetUnstableOperationEnabled("v2.ListIncidentNotificationTemplates", true)
 
+	// Enable IncidentNotificationRule
+	config.SetUnstableOperationEnabled("v2.CreateIncidentNotificationRule", true)
+	config.SetUnstableOperationEnabled("v2.GetIncidentNotificationRule", true)
+	config.SetUnstableOperationEnabled("v2.UpdateIncidentNotificationRule", true)
+	config.SetUnstableOperationEnabled("v2.DeleteIncidentNotificationRule", true)
+	config.SetUnstableOperationEnabled("v2.ListIncidentNotificationRules", true)
+
 	if ctx.Value("http_retry_enable") == true {
 		config.RetryConfiguration.EnableRetry = true
 	}
