@@ -2822,6 +2822,9 @@ func buildDatadogSyntheticsAPITest(d *schema.ResourceData) (*datadogV1.Synthetic
 	if attr, ok := d.GetOk("request_definition.0.message"); ok {
 		request.SetMessage(attr.(string))
 	}
+	if attr, ok := d.GetOk("request_definition.0.is_message_base64_encoded"); ok {
+		request.SetIsMessageBase64Encoded(attr.(bool))
+	}
 	if attr, ok := d.GetOk("request_definition.0.call_type"); ok {
 		request.SetCallType(datadogV1.SyntheticsTestCallType(attr.(string)))
 	}
