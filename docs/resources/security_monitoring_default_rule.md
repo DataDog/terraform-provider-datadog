@@ -72,7 +72,7 @@ Optional:
 
 Optional:
 
-- `flaggedIPType` (String) Used with the case action of type 'flag_ip'. Indicates whether the IP should me marked as FLAGGED or SUSPICIOUS. Valid values are `SUSPICIOUS`, `FLAGGED`.
+- `flagged_ip_type` (String) Used with the case action of type 'flag_ip'. Indicates whether the IP should me marked as FLAGGED or SUSPICIOUS. Valid values are `SUSPICIOUS`, `FLAGGED`.
 
 
 
