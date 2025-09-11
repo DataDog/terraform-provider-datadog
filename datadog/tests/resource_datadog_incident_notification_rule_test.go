@@ -234,4 +234,3 @@ func incidentNotificationRuleDestroyHelper(ctx context.Context, s *terraform.Sta
 	}
 	return nil
 }
-

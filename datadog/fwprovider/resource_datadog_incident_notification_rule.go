@@ -6,6 +6,7 @@ import (
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/google/uuid"
+	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -14,7 +15,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
-	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
@@ -353,7 +353,7 @@ func (r *incidentNotificationRuleResource) Update(ctx context.Context, request r
 	// Build update attributes
 	enabled := plan.Enabled.ValueBool()
 	trigger := plan.Trigger.ValueString()
-	
+
 	attributes := &datadogV2.IncidentNotificationRuleCreateAttributes{
 		Conditions: conditions,
 		Enabled:    &enabled,
