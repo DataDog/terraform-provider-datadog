@@ -44,6 +44,38 @@ func TestAccIntegrationCloudflareAccountBasic(t *testing.T) {
 	})
 }
 
+func TestAccIntegrationCloudflareAccountWriteOnly(t *testing.T) {
+	t.Parallel()
+	if !isReplaying() {
+		t.Skip("This test is replay only")
+	}
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	uniq := uniqueEntityName(ctx, t)
+
+	// Cloudflare-specific config generator for write-only tests
+	configGenerator := func(secret, version, uniq string) string {
+		return fmt.Sprintf(`
+resource "datadog_integration_cloudflare_account" "foo" {
+    api_key_wo = "%s"
+    api_key_wo_version = "%s"
+    name = "%s"
+    resources = ["web"]
+}`, secret, version, uniq)
+	}
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogIntegrationCloudflareAccountDestroy(providers.frameworkProvider),
+		Steps: WriteOnlyBasicTestSteps(
+			configGenerator,
+			"datadog_integration_cloudflare_account.foo",
+			"api_key_wo",
+			"api_key_wo_version",
+			uniq,
+		),
+	})
+}
+
 func testAccCheckDatadogIntegrationCloudflareAccount(uniq string) string {
 	return fmt.Sprintf(`
 resource "datadog_integration_cloudflare_account" "foo" {
