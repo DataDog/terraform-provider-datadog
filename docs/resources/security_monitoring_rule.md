@@ -110,7 +110,7 @@ Optional:
 Optional:
 
 - `duration` (Number) Duration of the action in seconds.
-- `flagged_ip_type` (String) Used with the case action of type `flag_ip`. Indicates whether the IP should me marked as `FLAGGED` or `SUSPICIOUS`.
+- `flagged_ip_type` (String) Used with the case action of type 'flag_ip'. Indicates whether the IP should me marked as FLAGGED or SUSPICIOUS. Valid values are `SUSPICIOUS`, `FLAGGED`.
 
 
 
@@ -249,7 +249,7 @@ Optional:
 
 Required:
 
-- `status` (String) Severity of the Security Signal. Valid values are `info`, `low`, `medium`, `high`, `critical`.
+- `status` (String) Severity of the Security Signal. Valid values are `SUSPICIOUS`, `FLAGGED`.
 
 Optional:
 
