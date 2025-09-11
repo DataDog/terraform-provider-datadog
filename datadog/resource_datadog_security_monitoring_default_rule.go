@@ -71,7 +71,7 @@ func resourceDatadogSecurityMonitoringDefaultRule() *schema.Resource {
 											MaxItems:    1,
 											Elem: &schema.Resource{
 												Schema: map[string]*schema.Schema{
-													"flaggedIPType": {
+													"flagged_ip_type": {
 														Type:             schema.TypeString,
 														ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewSecurityMonitoringRuleCaseActionOptionsFlaggedIPTypeFromValue),
 														Optional:         true,
@@ -343,7 +343,7 @@ func resourceDatadogSecurityMonitoringDefaultRuleRead(ctx context.Context, d *sc
 				options := action.GetOptions()
 				optionsMap := map[string]interface{}{}
 				if options.HasFlaggedIpType() {
-					optionsMap["flaggedIPType"] = options.GetFlaggedIpType()
+					optionsMap["flagged_ip_type"] = options.GetFlaggedIpType()
 				}
 				if len(optionsMap) > 0 {
 					actionMap["options"] = []map[string]interface{}{optionsMap}
@@ -825,7 +825,7 @@ func actionsEqual(tfActions []map[string]interface{}, ruleCaseActions []datadogV
 						return false
 					}
 				}
-				if flaggedIPType, ok := options["flaggedIPType"]; ok {
+				if flaggedIPType, ok := options["flagged_ip_type"]; ok {
 					if flaggedIPType != ruleOptions.GetFlaggedIpType() {
 						return false
 					}
@@ -847,7 +847,7 @@ func buildDefaultRulePayloadOptionsCaseActions(tfActions []map[string]interface{
 				if duration, ok := options["duration"].(int); ok {
 					actionOptions.SetDuration(int64(duration))
 				}
-				if flaggedIPType, ok := options["flaggedIPType"].(string); ok {
+				if flaggedIPType, ok := options["flagged_ip_type"].(string); ok {
 					actionOptions.SetFlaggedIpType(datadogV2.SecurityMonitoringRuleCaseActionOptionsFlaggedIPType(flaggedIPType))
 				}
 				action.SetOptions(*actionOptions)
