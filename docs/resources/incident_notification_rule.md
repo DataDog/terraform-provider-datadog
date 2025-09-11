@@ -79,11 +79,11 @@ resource "datadog_incident_notification_rule" "example" {
 
 ### Optional
 
-- `conditions` (Block List) The conditions that trigger this notification rule. (see [below for nested schema](#nestedblock--conditions))
+- `conditions` (Block List) The conditions that trigger this notification rule. At least one condition is required. (see [below for nested schema](#nestedblock--conditions))
 - `enabled` (Boolean) Whether the notification rule is enabled. Defaults to `false`.
 - `notification_template` (String) The ID of the notification template to use for this rule.
 - `renotify_on` (List of String) List of incident fields that trigger re-notification when changed. Valid values are: status, severity, customer_impact, title, description, detected, root_cause, services, state.
-- `visibility` (String) The visibility of the notification rule. Valid values are: organization, private.
+- `visibility` (String) The visibility of the notification rule. Valid values are: all, organization, private. Defaults to organization.
 
 ### Read-Only
 
@@ -96,7 +96,7 @@ resource "datadog_incident_notification_rule" "example" {
 
 Required:
 
-- `field` (String) The incident field to evaluate. Valid values are: severity, customer_impact, status, title, description, detected, root_cause, services, state, priority.
+- `field` (String) The incident field to evaluate. Common values include: state, severity, services, teams. Custom fields are also supported.
 - `values` (List of String) The value(s) to compare against. Multiple values are ORed together.
 
 ## Import

@@ -13,6 +13,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/listplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
@@ -86,7 +88,7 @@ func (r *incidentNotificationRuleResource) Schema(_ context.Context, _ resource.
 				Required:    true,
 			},
 			"visibility": schema.StringAttribute{
-				Description: "The visibility of the notification rule. Valid values are: organization, private.",
+				Description: "The visibility of the notification rule. Valid values are: all, organization, private. Defaults to organization.",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -112,14 +114,18 @@ func (r *incidentNotificationRuleResource) Schema(_ context.Context, _ resource.
 		},
 		Blocks: map[string]schema.Block{
 			"conditions": schema.ListNestedBlock{
-				Description: "The conditions that trigger this notification rule.",
+				Description: "The conditions that trigger this notification rule. At least one condition is required.",
 				PlanModifiers: []planmodifier.List{
 					listplanmodifier.RequiresReplace(),
+					listplanmodifier.UseStateForUnknown(),
+				},
+				Validators: []validator.List{
+					listvalidator.SizeAtLeast(1),
 				},
 				NestedObject: schema.NestedBlockObject{
 					Attributes: map[string]schema.Attribute{
 						"field": schema.StringAttribute{
-							Description: "The incident field to evaluate. Valid values are: severity, customer_impact, status, title, description, detected, root_cause, services, state, priority.",
+							Description: "The incident field to evaluate. Common values include: state, severity, services, teams. Custom fields are also supported.",
 							Required:    true,
 						},
 						"values": schema.ListAttribute{

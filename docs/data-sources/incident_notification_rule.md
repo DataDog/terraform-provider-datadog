@@ -36,12 +36,12 @@ data "datadog_incident_notification_rule" "example" {
 - `notification_template` (String) The ID of the notification template used by this rule.
 - `renotify_on` (List of String) List of incident fields that trigger re-notification when changed.
 - `trigger` (String) The trigger event for this notification rule.
-- `visibility` (String) The visibility of the notification rule.
+- `visibility` (String) The visibility of the notification rule. Valid values are: all, organization, private.
 
 <a id="nestedblock--conditions"></a>
 ### Nested Schema for `conditions`
 
 Read-Only:
 
-- `field` (String) The incident field to evaluate.
+- `field` (String) The incident field to evaluate. Common values include: state, severity, services, teams. Custom fields are also supported.
 - `values` (List of String) The value(s) to compare against.

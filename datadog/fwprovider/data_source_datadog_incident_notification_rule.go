@@ -68,7 +68,7 @@ func (d *incidentNotificationRuleDataSource) Schema(_ context.Context, _ datasou
 				Computed:    true,
 			},
 			"visibility": schema.StringAttribute{
-				Description: "The visibility of the notification rule.",
+				Description: "The visibility of the notification rule. Valid values are: all, organization, private.",
 				Computed:    true,
 			},
 			"incident_type": schema.StringAttribute{
@@ -94,7 +94,7 @@ func (d *incidentNotificationRuleDataSource) Schema(_ context.Context, _ datasou
 				NestedObject: schema.NestedBlockObject{
 					Attributes: map[string]schema.Attribute{
 						"field": schema.StringAttribute{
-							Description: "The incident field to evaluate.",
+							Description: "The incident field to evaluate. Common values include: state, severity, services, teams. Custom fields are also supported.",
 							Computed:    true,
 						},
 						"values": schema.ListAttribute{
