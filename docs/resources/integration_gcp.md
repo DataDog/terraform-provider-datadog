@@ -58,16 +58,25 @@ resource "datadog_integration_gcp" "awesome_gcp_project_integration" {
 ### Optional
 
 - `automute` (Boolean) Silence monitors for expected GCE instance shutdowns. Defaults to `false`.
-- `cloud_run_revision_filters` (Set of String) Tags to filter which Cloud Run revisions are imported into Datadog. Only revisions that meet specified criteria are monitored.
+- `cloud_run_revision_filters` (Set of String, Deprecated) List of filters to limit the Cloud Run revisions that are pulled into Datadog by using tags. Only Cloud Run revision resources that apply to specified filters are imported into Datadog.
 - `cspm_resource_collection_enabled` (Boolean) Whether Datadog collects cloud security posture management resources from your GCP project. If enabled, requires `resource_collection_enabled` to also be enabled. Defaults to `false`.
-- `host_filters` (String) Limit the GCE instances that are pulled into Datadog by using tags. Only hosts that match one of the defined tags are imported into Datadog. Defaults to `""`.
+- `host_filters` (String, Deprecated) List of filters to limit the VM instances that are pulled into Datadog by using tags. Only VM instance resources that apply to specified filters are imported into Datadog. Defaults to `""`.
 - `is_resource_change_collection_enabled` (Boolean) When enabled, Datadog scans for all resource change data in your Google Cloud environment.
 - `is_security_command_center_enabled` (Boolean) When enabled, Datadog will attempt to collect Security Command Center Findings. Note: This requires additional permissions on the service account. Defaults to `false`.
+- `monitored_resource_configs` (Set of Object) Configurations for GCP monitored resources. Only monitored resources that apply to specified filters are imported into Datadog. (see [below for nested schema](#nestedatt--monitored_resource_configs))
 - `resource_collection_enabled` (Boolean) When enabled, Datadog scans for all resources in your GCP environment.
 
 ### Read-Only
 
 - `id` (String) The ID of this resource.
+
+<a id="nestedatt--monitored_resource_configs"></a>
+### Nested Schema for `monitored_resource_configs`
+
+Optional:
+
+- `filters` (Set of String)
+- `type` (String)
 
 ## Import
 
