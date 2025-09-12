@@ -147,6 +147,7 @@ type FrameworkProvider struct {
 	CommunityClient     *datadogCommunity.Client
 	DatadogApiInstances *utils.ApiInstances
 	Auth                context.Context
+	StoreSensitiveState bool
 
 	ConfigureCallbackFunc func(p *FrameworkProvider, request *provider.ConfigureRequest, config *ProviderSchema) diag.Diagnostics
 	Now                   func() time.Time
@@ -170,6 +171,7 @@ type ProviderSchema struct {
 	HttpClientRetryBackoffBase       types.Int64  `tfsdk:"http_client_retry_backoff_base"`
 	HttpClientRetryMaxRetries        types.Int64  `tfsdk:"http_client_retry_max_retries"`
 	DefaultTags                      types.List   `tfsdk:"default_tags"`
+	StoreSensitiveState              types.String `tfsdk:"store_sensitive_state"`
 }
 
 func New() provider.Provider {
@@ -284,6 +286,10 @@ func (p *FrameworkProvider) Schema(_ context.Context, _ provider.SchemaRequest, 
 			"http_client_retry_max_retries": schema.Int64Attribute{
 				Optional:    true,
 				Description: "The HTTP request maximum retry number. Defaults to 3.",
+			},
+			"store_sensitive_state": schema.StringAttribute{
+				Optional:    true,
+				Description: "Whether to expose API key values in Terraform state. Valid values are [`true`, `false`]. Defaults to `true` for backwards compatibility. When false, API key resources will not include the key value, requiring the use of ephemeral datadog_api_key resources instead.",
 			},
 		},
 		Blocks: map[string]schema.Block{
@@ -425,6 +431,9 @@ func (p *FrameworkProvider) ConfigureConfigDefaults(ctx context.Context, config 
 	if config.HttpClientRetryEnabled.IsNull() {
 		config.HttpClientRetryEnabled = types.StringValue("true")
 	}
+	if config.StoreSensitiveState.IsNull() {
+		config.StoreSensitiveState = types.StringValue("true")
+	}
 
 	// Run validations on the provider config after defaults and values from
 	// env var has been set.
@@ -478,6 +487,8 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	diags := diag.Diagnostics{}
 	validate, _ := strconv.ParseBool(config.Validate.ValueString())
 	httpClientRetryEnabled, _ := strconv.ParseBool(config.HttpClientRetryEnabled.ValueString())
+	storeSensitiveState, _ := strconv.ParseBool(config.StoreSensitiveState.ValueString())
+	p.StoreSensitiveState = storeSensitiveState
 
 	cloudProviderType := config.CloudProviderType.ValueString()
 	cloudProviderRegion := config.CloudProviderRegion.ValueString()
