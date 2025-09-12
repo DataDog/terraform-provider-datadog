@@ -3455,6 +3455,8 @@ func createSyntheticsWebsocketTestStep(ctx context.Context, accProvider *schema.
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.websocket", "request_definition.0.message", "message"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.websocket", "request_definition.0.is_message_base64_encoded", "true"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.websocket", "assertion.#", "2"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.websocket", "assertion.0.type", "responseTime"),
@@ -3501,6 +3503,7 @@ resource "datadog_synthetics_test" "websocket" {
 	request_definition {
 		url = "wss://www.datadoghq.com"
 		message = "message"
+		is_message_base64_encoded = true
 	}
 
 	assertion {
