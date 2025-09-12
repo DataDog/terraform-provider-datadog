@@ -30,6 +30,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/customtypes"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/fwutils"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
@@ -866,7 +867,7 @@ func (r *monitorResource) ModifyPlan(ctx context.Context, req resource.ModifyPla
 		// Explicitly skip validation
 		return
 	}
-	combinedTags, diags := utils.CombineTags(ctx, plan.Tags, r.DefaultTags)
+	combinedTags, diags := fwutils.CombineTags(ctx, plan.Tags, r.DefaultTags)
 	if diags.HasError() {
 		return
 	}
@@ -925,10 +926,10 @@ func (r *monitorResource) buildMonitorStruct(ctx context.Context, state *monitor
 		m.SetPriorityNil()
 		u.SetPriorityNil()
 	}
-	utils.SetOptStringList(state.EffectiveTags, m.SetTags, ctx)
-	utils.SetOptStringList(state.EffectiveTags, u.SetTags, ctx)
-	utils.SetOptStringList(state.RestrictedRoles, m.SetRestrictedRoles, ctx)
-	utils.SetOptStringList(state.RestrictedRoles, u.SetRestrictedRoles, ctx)
+	fwutils.SetOptStringList(state.EffectiveTags, m.SetTags, ctx)
+	fwutils.SetOptStringList(state.EffectiveTags, u.SetTags, ctx)
+	fwutils.SetOptStringList(state.RestrictedRoles, m.SetRestrictedRoles, ctx)
+	fwutils.SetOptStringList(state.RestrictedRoles, u.SetRestrictedRoles, ctx)
 	// This handles an edge case where an empty array produce a 400 error,
 	// so converting it to nil in the request.
 	if restrictedRoles, ok := m.GetRestrictedRolesOk(); ok && len(*restrictedRoles) == 0 {
@@ -956,23 +957,23 @@ func (r *monitorResource) buildMonitorStruct(ctx context.Context, state *monitor
 	if !state.NotificationPresetName.IsNull() {
 		monitorOptions.SetNotificationPresetName(datadogV1.MonitorOptionsNotificationPresets(state.NotificationPresetName.ValueString()))
 	}
-	utils.SetOptBool(state.RequireFullWindow, monitorOptions.SetRequireFullWindow)
-	utils.SetOptInt64(state.NoDataTimeframe, monitorOptions.SetNoDataTimeframe)
-	utils.SetOptStringList(state.NotifyBy, monitorOptions.SetNotifyBy, ctx)
-	utils.SetOptBool(state.NotifyNoData, monitorOptions.SetNotifyNoData)
-	utils.SetOptString(state.GroupRetentionDuration, monitorOptions.SetGroupRetentionDuration)
-	utils.SetOptInt64(state.NewGroupDelay, monitorOptions.SetNewGroupDelay)
-	utils.SetOptInt64(state.NewHostDelay, monitorOptions.SetNewHostDelay)
-	utils.SetOptInt64(state.EvaluationDelay, monitorOptions.SetEvaluationDelay)
-	utils.SetOptInt64(state.RenotifyInterval, monitorOptions.SetRenotifyInterval)
-	utils.SetOptInt64(state.RenotifyOccurrences, monitorOptions.SetRenotifyOccurrences)
-	utils.SetOptBool(state.NotifyAudit, monitorOptions.SetNotifyAudit)
-	utils.SetOptInt64(state.TimeoutH, monitorOptions.SetTimeoutH)
-	utils.SetOptBool(state.IncludeTags, monitorOptions.SetIncludeTags)
-	utils.SetOptBool(state.GroupbySimpleMonitor, monitorOptions.SetGroupbySimpleMonitor)
-	utils.SetOptBool(state.EnableLogsSample, monitorOptions.SetEnableLogsSample)
-	utils.SetOptBool(state.EnableSamples, monitorOptions.SetEnableSamples)
-	utils.SetOptBool(state.Locked, monitorOptions.SetLocked)
+	fwutils.SetOptBool(state.RequireFullWindow, monitorOptions.SetRequireFullWindow)
+	fwutils.SetOptInt64(state.NoDataTimeframe, monitorOptions.SetNoDataTimeframe)
+	fwutils.SetOptStringList(state.NotifyBy, monitorOptions.SetNotifyBy, ctx)
+	fwutils.SetOptBool(state.NotifyNoData, monitorOptions.SetNotifyNoData)
+	fwutils.SetOptString(state.GroupRetentionDuration, monitorOptions.SetGroupRetentionDuration)
+	fwutils.SetOptInt64(state.NewGroupDelay, monitorOptions.SetNewGroupDelay)
+	fwutils.SetOptInt64(state.NewHostDelay, monitorOptions.SetNewHostDelay)
+	fwutils.SetOptInt64(state.EvaluationDelay, monitorOptions.SetEvaluationDelay)
+	fwutils.SetOptInt64(state.RenotifyInterval, monitorOptions.SetRenotifyInterval)
+	fwutils.SetOptInt64(state.RenotifyOccurrences, monitorOptions.SetRenotifyOccurrences)
+	fwutils.SetOptBool(state.NotifyAudit, monitorOptions.SetNotifyAudit)
+	fwutils.SetOptInt64(state.TimeoutH, monitorOptions.SetTimeoutH)
+	fwutils.SetOptBool(state.IncludeTags, monitorOptions.SetIncludeTags)
+	fwutils.SetOptBool(state.GroupbySimpleMonitor, monitorOptions.SetGroupbySimpleMonitor)
+	fwutils.SetOptBool(state.EnableLogsSample, monitorOptions.SetEnableLogsSample)
+	fwutils.SetOptBool(state.EnableSamples, monitorOptions.SetEnableSamples)
+	fwutils.SetOptBool(state.Locked, monitorOptions.SetLocked)
 
 	if state.MonitorThresholds != nil {
 		thresholdObj := state.MonitorThresholds[0]
@@ -1000,8 +1001,8 @@ func (r *monitorResource) buildMonitorStruct(ctx context.Context, state *monitor
 	if state.MonitorThresholdWindows != nil {
 		thresholdWindow := state.MonitorThresholdWindows[0]
 		thresholdWindowOptions := datadogV1.MonitorThresholdWindowOptions{}
-		utils.SetOptString(thresholdWindow.RecoveryWindow, thresholdWindowOptions.SetRecoveryWindow)
-		utils.SetOptString(thresholdWindow.TriggerWindow, thresholdWindowOptions.SetTriggerWindow)
+		fwutils.SetOptString(thresholdWindow.RecoveryWindow, thresholdWindowOptions.SetRecoveryWindow)
+		fwutils.SetOptString(thresholdWindow.TriggerWindow, thresholdWindowOptions.SetTriggerWindow)
 		monitorOptions.SetThresholdWindows(thresholdWindowOptions)
 	}
 	if schedulingOptionStruct := r.buildSchedulingOptionsStruct(ctx, state.SchedulingOptions); schedulingOptionStruct != nil {
@@ -1025,9 +1026,9 @@ func (r *monitorResource) buildSchedulingOptionsStruct(ctx context.Context, sche
 	if evalWindows := schedulingOption.EvaluationWindow; len(evalWindows) > 0 {
 		evaluationWindowReq := datadogV1.MonitorOptionsSchedulingOptionsEvaluationWindow{}
 		evalWindow := evalWindows[0]
-		utils.SetOptString(evalWindow.DayStarts, evaluationWindowReq.SetDayStarts)
-		utils.SetOptInt32(evalWindow.HourStarts, evaluationWindowReq.SetHourStarts)
-		utils.SetOptInt32(evalWindow.MonthStarts, evaluationWindowReq.SetMonthStarts)
+		fwutils.SetOptString(evalWindow.DayStarts, evaluationWindowReq.SetDayStarts)
+		fwutils.SetOptInt32(evalWindow.HourStarts, evaluationWindowReq.SetHourStarts)
+		fwutils.SetOptInt32(evalWindow.MonthStarts, evaluationWindowReq.SetMonthStarts)
 		schedulingOptionsReq.SetEvaluationWindow(evaluationWindowReq)
 	}
 	if customSchedules := schedulingOption.CustomSchedule; len(customSchedules) > 0 {
@@ -1035,9 +1036,9 @@ func (r *monitorResource) buildSchedulingOptionsStruct(ctx context.Context, sche
 		customSchedule := customSchedules[0]
 		for _, recurrence := range customSchedule.Recurrence {
 			recurrenceReq := datadogV1.MonitorOptionsCustomScheduleRecurrence{}
-			utils.SetOptString(recurrence.Rrule, recurrenceReq.SetRrule)
-			utils.SetOptString(recurrence.Start, recurrenceReq.SetStart)
-			utils.SetOptString(recurrence.Timezone, recurrenceReq.SetTimezone)
+			fwutils.SetOptString(recurrence.Rrule, recurrenceReq.SetRrule)
+			fwutils.SetOptString(recurrence.Start, recurrenceReq.SetStart)
+			fwutils.SetOptString(recurrence.Timezone, recurrenceReq.SetTimezone)
 			recurrencesReq = append(recurrencesReq, recurrenceReq)
 		}
 		schedulingOptionsReq.SetCustomSchedule(datadogV1.MonitorOptionsCustomSchedule{
@@ -1074,21 +1075,21 @@ func (r *monitorResource) buildEventQueryStruct(ctx context.Context, eventQs []E
 	for _, eventQ := range eventQs {
 		variableReq := datadogV1.MonitorFormulaAndFunctionQueryDefinition{}
 		eventQueryReq := datadogV1.MonitorFormulaAndFunctionEventQueryDefinition{}
-		utils.SetOptString(eventQ.Name, eventQueryReq.SetName)
-		utils.SetOptStringList(eventQ.Indexes, eventQueryReq.SetIndexes, ctx)
+		fwutils.SetOptString(eventQ.Name, eventQueryReq.SetName)
+		fwutils.SetOptStringList(eventQ.Indexes, eventQueryReq.SetIndexes, ctx)
 		if !eventQ.DataSource.IsNull() {
 			eventQueryReq.SetDataSource(datadogV1.MonitorFormulaAndFunctionEventsDataSource(eventQ.DataSource.ValueString()))
 		}
 		if search := eventQ.Search; search != nil {
 			searchReq := datadogV1.MonitorFormulaAndFunctionEventQueryDefinitionSearch{}
-			utils.SetOptString(search[0].Query, searchReq.SetQuery)
+			fwutils.SetOptString(search[0].Query, searchReq.SetQuery)
 			eventQueryReq.SetSearch(searchReq)
 		}
 		if computes := eventQ.Compute; len(computes) > 0 {
 			computeReq := datadogV1.MonitorFormulaAndFunctionEventQueryDefinitionCompute{}
 			compute := computes[0]
-			utils.SetOptInt64(compute.Interval, computeReq.SetInterval)
-			utils.SetOptString(compute.Metric, computeReq.SetMetric)
+			fwutils.SetOptInt64(compute.Interval, computeReq.SetInterval)
+			fwutils.SetOptString(compute.Metric, computeReq.SetMetric)
 			if !compute.Aggregation.IsNull() {
 				computeReq.SetAggregation(datadogV1.MonitorFormulaAndFunctionEventAggregation(compute.Aggregation.ValueString()))
 			}
@@ -1098,12 +1099,12 @@ func (r *monitorResource) buildEventQueryStruct(ctx context.Context, eventQs []E
 			groupBysReq := []datadogV1.MonitorFormulaAndFunctionEventQueryGroupBy{}
 			for _, groupBy := range groupBys {
 				groupByReq := datadogV1.MonitorFormulaAndFunctionEventQueryGroupBy{}
-				utils.SetOptString(groupBy.Facet, groupByReq.SetFacet)
-				utils.SetOptInt64(groupBy.Limit, groupByReq.SetLimit)
+				fwutils.SetOptString(groupBy.Facet, groupByReq.SetFacet)
+				fwutils.SetOptInt64(groupBy.Limit, groupByReq.SetLimit)
 				if sortList := groupBy.Sort; len(sortList) > 0 {
 					sortReq := datadogV1.MonitorFormulaAndFunctionEventQueryGroupBySort{}
 					sort := sortList[0]
-					utils.SetOptString(sort.Metric, sortReq.SetMetric)
+					fwutils.SetOptString(sort.Metric, sortReq.SetMetric)
 					if !sort.Aggregation.IsNull() {
 						sortReq.SetAggregation(datadogV1.MonitorFormulaAndFunctionEventAggregation(sort.Aggregation.ValueString()))
 					}
@@ -1130,8 +1131,8 @@ func (r *monitorResource) buildCloudCostQueryStruct(cloudCostQs []CloudCostQuery
 	for _, cloudCostQ := range cloudCostQs {
 		variableReq := datadogV1.MonitorFormulaAndFunctionQueryDefinition{}
 		cloudCostQueryReq := datadogV1.MonitorFormulaAndFunctionCostQueryDefinition{}
-		utils.SetOptString(cloudCostQ.Query, cloudCostQueryReq.SetQuery)
-		utils.SetOptString(cloudCostQ.Name, cloudCostQueryReq.SetName)
+		fwutils.SetOptString(cloudCostQ.Query, cloudCostQueryReq.SetQuery)
+		fwutils.SetOptString(cloudCostQ.Name, cloudCostQueryReq.SetName)
 		if !cloudCostQ.DataSource.IsNull() {
 			cloudCostQueryReq.SetDataSource(datadogV1.MonitorFormulaAndFunctionCostDataSource(cloudCostQ.DataSource.ValueString()))
 		}
@@ -1148,7 +1149,7 @@ func (r *monitorResource) updateState(ctx context.Context, state *monitorResourc
 	if id, ok := m.GetIdOk(); ok && id != nil {
 		state.ID = types.StringValue(strconv.FormatInt(*id, 10))
 	}
-	state.Name = utils.ToTerraformStr(m.GetNameOk())
+	state.Name = fwutils.ToTerraformStr(m.GetNameOk())
 
 	if message, ok := m.GetMessageOk(); ok && message != nil {
 		state.Message = customtypes.TrimSpaceStringValue{
@@ -1171,11 +1172,11 @@ func (r *monitorResource) updateState(ctx context.Context, state *monitorResourc
 	if priority, ok := m.GetPriorityOk(); ok && priority != nil {
 		state.Priority = types.StringValue(strconv.FormatInt(*priority, 10))
 	}
-	state.EffectiveTags = utils.ToTerraformSetString(ctx, m.GetTagsOk)
+	state.EffectiveTags = fwutils.ToTerraformSetString(ctx, m.GetTagsOk)
 	if restrictedRoles, ok := m.GetRestrictedRolesOk(); ok && restrictedRoles == nil {
 		state.RestrictedRoles = types.SetValueMust(types.StringType, []attr.Value{})
 	} else {
-		state.RestrictedRoles = utils.ToTerraformSetString(ctx, m.GetRestrictedRolesOk)
+		state.RestrictedRoles = fwutils.ToTerraformSetString(ctx, m.GetRestrictedRolesOk)
 	}
 
 	if escalationMessage, ok := m.Options.GetEscalationMessageOk(); ok && escalationMessage != nil {
@@ -1193,37 +1194,37 @@ func (r *monitorResource) updateState(ctx context.Context, state *monitorResourc
 		state.NotificationPresetName = types.StringValue(string(*notificationPresetName))
 	}
 
-	state.RequireFullWindow = utils.ToTerraformBool(m.Options.GetRequireFullWindowOk())
-	state.NoDataTimeframe = utils.ToTerraformInt64(m.Options.GetNoDataTimeframeOk())
-	state.NotifyNoData = utils.ToTerraformBool(m.Options.GetNotifyNoDataOk())
-	state.GroupRetentionDuration = utils.ToTerraformStr(m.Options.GetGroupRetentionDurationOk())
-	state.NewGroupDelay = utils.ToTerraformInt64(m.Options.GetNewGroupDelayOk())
-	state.NewHostDelay = utils.ToTerraformInt64(m.Options.GetNewHostDelayOk())
-	state.EvaluationDelay = utils.ToTerraformInt64(m.Options.GetEvaluationDelayOk())
-	state.RenotifyInterval = utils.ToTerraformInt64(m.Options.GetRenotifyIntervalOk())
-	state.RenotifyOccurrences = utils.ToTerraformInt64(m.Options.GetRenotifyOccurrencesOk())
-	state.NotifyAudit = utils.ToTerraformBool(m.Options.GetNotifyAuditOk())
-	state.TimeoutH = utils.ToTerraformInt64(m.Options.GetTimeoutHOk())
-	state.IncludeTags = utils.ToTerraformBool(m.Options.GetIncludeTagsOk())
-	state.GroupbySimpleMonitor = utils.ToTerraformBool(m.Options.GetGroupbySimpleMonitorOk())
-	state.NotifyBy = utils.ToTerraformSetString(ctx, m.Options.GetNotifyByOk)
-	state.EnableLogsSample = utils.ToTerraformBool(m.Options.GetEnableLogsSampleOk())
-	state.Locked = utils.ToTerraformBool(m.Options.GetLockedOk())
+	state.RequireFullWindow = fwutils.ToTerraformBool(m.Options.GetRequireFullWindowOk())
+	state.NoDataTimeframe = fwutils.ToTerraformInt64(m.Options.GetNoDataTimeframeOk())
+	state.NotifyNoData = fwutils.ToTerraformBool(m.Options.GetNotifyNoDataOk())
+	state.GroupRetentionDuration = fwutils.ToTerraformStr(m.Options.GetGroupRetentionDurationOk())
+	state.NewGroupDelay = fwutils.ToTerraformInt64(m.Options.GetNewGroupDelayOk())
+	state.NewHostDelay = fwutils.ToTerraformInt64(m.Options.GetNewHostDelayOk())
+	state.EvaluationDelay = fwutils.ToTerraformInt64(m.Options.GetEvaluationDelayOk())
+	state.RenotifyInterval = fwutils.ToTerraformInt64(m.Options.GetRenotifyIntervalOk())
+	state.RenotifyOccurrences = fwutils.ToTerraformInt64(m.Options.GetRenotifyOccurrencesOk())
+	state.NotifyAudit = fwutils.ToTerraformBool(m.Options.GetNotifyAuditOk())
+	state.TimeoutH = fwutils.ToTerraformInt64(m.Options.GetTimeoutHOk())
+	state.IncludeTags = fwutils.ToTerraformBool(m.Options.GetIncludeTagsOk())
+	state.GroupbySimpleMonitor = fwutils.ToTerraformBool(m.Options.GetGroupbySimpleMonitorOk())
+	state.NotifyBy = fwutils.ToTerraformSetString(ctx, m.Options.GetNotifyByOk)
+	state.EnableLogsSample = fwutils.ToTerraformBool(m.Options.GetEnableLogsSampleOk())
+	state.Locked = fwutils.ToTerraformBool(m.Options.GetLockedOk())
 
 	if monitorThresholds, ok := m.Options.GetThresholdsOk(); ok && monitorThresholds != nil {
 		state.MonitorThresholds = []MonitorThreshold{{
-			Ok:               r.buildFloatStringValue(utils.ToTerraformStr(monitorThresholds.GetOkOk())),
-			Unknown:          r.buildFloatStringValue(utils.ToTerraformStr(monitorThresholds.GetUnknownOk())),
-			Warning:          r.buildFloatStringValue(utils.ToTerraformStr(monitorThresholds.GetWarningOk())),
-			WarningRecovery:  r.buildFloatStringValue(utils.ToTerraformStr(monitorThresholds.GetWarningRecoveryOk())),
-			Critical:         r.buildFloatStringValue(utils.ToTerraformStr(monitorThresholds.GetCriticalOk())),
-			CriticalRecovery: r.buildFloatStringValue(utils.ToTerraformStr(monitorThresholds.GetCriticalRecoveryOk())),
+			Ok:               r.buildFloatStringValue(fwutils.ToTerraformStr(monitorThresholds.GetOkOk())),
+			Unknown:          r.buildFloatStringValue(fwutils.ToTerraformStr(monitorThresholds.GetUnknownOk())),
+			Warning:          r.buildFloatStringValue(fwutils.ToTerraformStr(monitorThresholds.GetWarningOk())),
+			WarningRecovery:  r.buildFloatStringValue(fwutils.ToTerraformStr(monitorThresholds.GetWarningRecoveryOk())),
+			Critical:         r.buildFloatStringValue(fwutils.ToTerraformStr(monitorThresholds.GetCriticalOk())),
+			CriticalRecovery: r.buildFloatStringValue(fwutils.ToTerraformStr(monitorThresholds.GetCriticalRecoveryOk())),
 		}}
 	}
 	if thresholdWindow, ok := m.Options.GetThresholdWindowsOk(); ok && thresholdWindow != nil {
 		state.MonitorThresholdWindows = []MonitorThresholdWindow{{
-			RecoveryWindow: utils.ToTerraformStr(thresholdWindow.GetRecoveryWindowOk()),
-			TriggerWindow:  utils.ToTerraformStr(thresholdWindow.GetTriggerWindowOk()),
+			RecoveryWindow: fwutils.ToTerraformStr(thresholdWindow.GetRecoveryWindowOk()),
+			TriggerWindow:  fwutils.ToTerraformStr(thresholdWindow.GetTriggerWindowOk()),
 		}}
 	}
 	r.updateSchedulingOptionState(state, m.Options)
@@ -1239,9 +1240,9 @@ func (r *monitorResource) updateSchedulingOptionState(state *monitorResourceMode
 	if evalWindow, ok := schedulingOptions.GetEvaluationWindowOk(); ok && evalWindow != nil &&
 		(evalWindow.DayStarts != nil || evalWindow.MonthStarts != nil || evalWindow.HourStarts != nil) {
 		schedulingOptionState.EvaluationWindow = []EvaluationWindow{{
-			DayStarts:   utils.ToTerraformStr(evalWindow.GetDayStartsOk()),
-			MonthStarts: utils.ToTerraformInt32(evalWindow.GetMonthStartsOk()),
-			HourStarts:  utils.ToTerraformInt32(evalWindow.GetHourStartsOk()),
+			DayStarts:   fwutils.ToTerraformStr(evalWindow.GetDayStartsOk()),
+			MonthStarts: fwutils.ToTerraformInt32(evalWindow.GetMonthStartsOk()),
+			HourStarts:  fwutils.ToTerraformInt32(evalWindow.GetHourStartsOk()),
 		}}
 	}
 	if customSchedule, ok := schedulingOptions.GetCustomScheduleOk(); ok && customSchedule != nil && customSchedule.GetRecurrences() != nil &&
@@ -1249,9 +1250,9 @@ func (r *monitorResource) updateSchedulingOptionState(state *monitorResourceMode
 		recurrence := customSchedule.GetRecurrences()[0]
 		schedulingOptionState.CustomSchedule = []CustomSchedule{{
 			Recurrence: []Recurrence{{
-				Rrule:    utils.ToTerraformStr(recurrence.GetRruleOk()),
-				Start:    utils.ToTerraformStr(recurrence.GetStartOk()),
-				Timezone: utils.ToTerraformStr(recurrence.GetTimezoneOk()),
+				Rrule:    fwutils.ToTerraformStr(recurrence.GetRruleOk()),
+				Start:    fwutils.ToTerraformStr(recurrence.GetStartOk()),
+				Timezone: fwutils.ToTerraformStr(recurrence.GetTimezoneOk()),
 			}},
 		}}
 	}
@@ -1284,7 +1285,7 @@ func (r *monitorResource) buildEventQueryState(ctx context.Context, eventQ *data
 		return nil
 	}
 	eventQueryState := EventQuery{
-		Name: utils.ToTerraformStr(eventQ.GetNameOk()),
+		Name: fwutils.ToTerraformStr(eventQ.GetNameOk()),
 	}
 	if dataSource, ok := eventQ.GetDataSourceOk(); ok && dataSource != nil {
 		eventQueryState.DataSource = types.StringValue(string(*dataSource))
@@ -1300,21 +1301,21 @@ func (r *monitorResource) buildEventQueryState(ctx context.Context, eventQ *data
 	if compute, ok := eventQ.GetComputeOk(); ok && compute != nil {
 		eventQueryState.Compute = []Compute{{
 			Aggregation: types.StringValue(string(compute.Aggregation)),
-			Interval:    utils.ToTerraformInt64(compute.GetIntervalOk()),
-			Metric:      utils.ToTerraformStr(compute.GetMetricOk()),
+			Interval:    fwutils.ToTerraformInt64(compute.GetIntervalOk()),
+			Metric:      fwutils.ToTerraformStr(compute.GetMetricOk()),
 		}}
 	}
 	if groupBys, ok := eventQ.GetGroupByOk(); ok && groupBys != nil {
 		groupBysState := []GroupBy{}
 		for _, groupBy := range *groupBys {
 			groupByState := GroupBy{
-				Facet: utils.ToTerraformStr(groupBy.GetFacetOk()),
-				Limit: utils.ToTerraformInt64(groupBy.GetLimitOk()),
+				Facet: fwutils.ToTerraformStr(groupBy.GetFacetOk()),
+				Limit: fwutils.ToTerraformInt64(groupBy.GetLimitOk()),
 			}
 			if sort, ok := groupBy.GetSortOk(); ok && sort != nil {
 				sortState := Sort{
 					Aggregation: types.StringValue(string(sort.Aggregation)),
-					Metric:      utils.ToTerraformStr(sort.GetMetricOk()),
+					Metric:      fwutils.ToTerraformStr(sort.GetMetricOk()),
 				}
 				if order, ok := sort.GetOrderOk(); ok && order != nil {
 					sortState.Order = types.StringValue(string(*sort.Order))
@@ -1334,8 +1335,8 @@ func (r *monitorResource) buildCloudCostQueryState(cloudCostQ *datadogV1.Monitor
 	}
 	cloudCostQueryState := CloudCostQuery{
 		DataSource: types.StringValue(string(cloudCostQ.DataSource)),
-		Query:      utils.ToTerraformStr(cloudCostQ.GetQueryOk()),
-		Name:       utils.ToTerraformStr(cloudCostQ.GetNameOk()),
+		Query:      fwutils.ToTerraformStr(cloudCostQ.GetQueryOk()),
+		Name:       fwutils.ToTerraformStr(cloudCostQ.GetNameOk()),
 	}
 	if aggregator, ok := cloudCostQ.GetAggregatorOk(); ok && aggregator != nil {
 		cloudCostQueryState.Aggregator = types.StringValue(string(*cloudCostQ.Aggregator))
