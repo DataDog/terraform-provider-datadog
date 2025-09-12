@@ -52,8 +52,29 @@ Required:
 
 Optional:
 
+- `action` (Block List) Action to perform when the case triggers (see [below for nested schema](#nestedblock--case--action))
 - `custom_status` (String) Status of the rule case to override. Valid values are `info`, `low`, `medium`, `high`, `critical`.
 - `notifications` (List of String) Notification targets for each rule case.
+
+<a id="nestedblock--case--action"></a>
+### Nested Schema for `case.action`
+
+Required:
+
+- `type` (String) Type of action to perform when the case triggers. Valid values are `block_ip`, `block_user`, `user_behavior`, `flag_ip`.
+
+Optional:
+
+- `options` (Block List, Max: 1) Options for the action (see [below for nested schema](#nestedblock--case--action--options))
+
+<a id="nestedblock--case--action--options"></a>
+### Nested Schema for `case.action.options`
+
+Optional:
+
+- `flagged_ip_type` (String) Used with the case action of type 'flag_ip'. Indicates whether the IP should me marked as FLAGGED or SUSPICIOUS. Valid values are `SUSPICIOUS`, `FLAGGED`.
+
+
 
 
 <a id="nestedblock--filter"></a>

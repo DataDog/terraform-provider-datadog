@@ -1978,6 +1978,12 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
 		action {
 			type = "block_user"
 		}
+        action {
+			type = "flag_ip"
+			options {
+				flagged_ip_type = "FLAGGED"
+			}
+		}
 	}
 
 	options {
@@ -2032,6 +2038,10 @@ func testAccCheckDatadogSecurityMonitoringCreatedCheckAppsecRule(accProvider fun
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "case.0.action.1.type", "block_user"),
 		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "case.0.action.2.type", "flag_ip"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "case.0.action.2.options.0.flagged_ip_type", "FLAGGED"),
+		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "options.0.detection_method", "threshold"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "options.0.evaluation_window", "300"),
@@ -2079,6 +2089,12 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
 		}
 		action {
 			type = "block_user"
+		}
+        action {
+			type = "flag_ip"
+			options {
+				flagged_ip_type = "FLAGGED"
+			}
 		}
 	}
 
@@ -2133,6 +2149,10 @@ func testAccCheckDatadogSecurityMonitoringUpdateCheckAppsecRule(accProvider func
 			tfSecurityRuleName, "case.0.action.0.options.0.duration", "7200"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "case.0.action.1.type", "block_user"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "case.0.action.2.type", "flag_ip"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "case.0.action.2.options.0.flagged_ip_type", "FLAGGED"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "options.0.detection_method", "threshold"),
 		resource.TestCheckResourceAttr(
