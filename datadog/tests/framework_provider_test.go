@@ -61,7 +61,13 @@ func buildFrameworkDatadogClient(ctx context.Context, httpClient *http.Client) *
 	config.SetUnstableOperationEnabled("v2.DeleteMonitorNotificationRule", true)
 	config.SetUnstableOperationEnabled("v2.UpdateMonitorNotificationRule", true)
 
-	// Enable IncidentType
+	// Enable ServiceScorecards
+	config.SetUnstableOperationEnabled("v2.CreateScorecardRule", true)
+	config.SetUnstableOperationEnabled("v2.UpdateScorecardRule", true)
+	config.SetUnstableOperationEnabled("v2.ListScorecardRules", true)
+	config.SetUnstableOperationEnabled("v2.DeleteScorecardRule", true)
+
+  // Enable IncidentType
 	config.SetUnstableOperationEnabled("v2.CreateIncidentType", true)
 	config.SetUnstableOperationEnabled("v2.GetIncidentType", true)
 	config.SetUnstableOperationEnabled("v2.UpdateIncidentType", true)
