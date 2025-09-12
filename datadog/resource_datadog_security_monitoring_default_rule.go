@@ -820,11 +820,6 @@ func actionsEqual(tfActions []map[string]interface{}, ruleCaseActions []datadogV
 		if optionsList, ok := tfActions[i]["options"].([]interface{}); ok && len(optionsList) > 0 {
 			if options, ok := optionsList[0].(map[string]interface{}); ok {
 				ruleOptions := ruleCaseActions[i].GetOptions()
-				if duration, ok := options["duration"].(int); ok {
-					if int64(duration) != ruleOptions.GetDuration() {
-						return false
-					}
-				}
 				if flaggedIPType, ok := options["flagged_ip_type"]; ok {
 					if flaggedIPType != ruleOptions.GetFlaggedIpType() {
 						return false
@@ -844,9 +839,6 @@ func buildDefaultRulePayloadOptionsCaseActions(tfActions []map[string]interface{
 		if optionsList, ok := tfAction["options"].([]interface{}); ok && len(optionsList) > 0 {
 			if options, ok := optionsList[0].(map[string]interface{}); ok {
 				actionOptions := datadogV2.NewSecurityMonitoringRuleCaseActionOptions()
-				if duration, ok := options["duration"].(int); ok {
-					actionOptions.SetDuration(int64(duration))
-				}
 				if flaggedIPType, ok := options["flagged_ip_type"].(string); ok {
 					actionOptions.SetFlaggedIpType(datadogV2.SecurityMonitoringRuleCaseActionOptionsFlaggedIPType(flaggedIPType))
 				}
