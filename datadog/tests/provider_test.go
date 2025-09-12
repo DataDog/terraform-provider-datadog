@@ -236,6 +236,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_metric_metadata_test":                            "metrics",
 	"tests/resource_datadog_metric_tag_configuration_test":                   "metrics",
 	"tests/resource_datadog_monitor_config_policy_test":                      "monitor-config-policies",
+	"tests/resource_datadog_monitor_fwprovider_test":                         "monitors",
 	"tests/resource_datadog_monitor_json_test":                               "monitors-json",
 	"tests/resource_datadog_monitor_notification_rule_test":                  "monitor-notification-rule",
 	"tests/resource_datadog_monitor_test":                                    "monitors",

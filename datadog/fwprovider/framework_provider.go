@@ -148,6 +148,7 @@ type FrameworkProvider struct {
 
 	ConfigureCallbackFunc func(p *FrameworkProvider, request *provider.ConfigureRequest, config *ProviderSchema) diag.Diagnostics
 	Now                   func() time.Time
+	DefaultTags           map[string]string
 }
 
 // ProviderSchema struct
@@ -167,7 +168,11 @@ type ProviderSchema struct {
 	HttpClientRetryBackoffMultiplier types.Int64  `tfsdk:"http_client_retry_backoff_multiplier"`
 	HttpClientRetryBackoffBase       types.Int64  `tfsdk:"http_client_retry_backoff_base"`
 	HttpClientRetryMaxRetries        types.Int64  `tfsdk:"http_client_retry_max_retries"`
-	DefaultTags                      types.List   `tfsdk:"default_tags"`
+	DefaultTags                      []DefaultTag `tfsdk:"default_tags"`
+}
+
+type DefaultTag struct {
+	Tags types.Map `tfsdk:"tags"`
 }
 
 func New() provider.Provider {
@@ -181,6 +186,11 @@ func (p *FrameworkProvider) Resources(_ context.Context) []func() resource.Resou
 	for _, f := range Resources {
 		r := f()
 		wrappedResources = append(wrappedResources, func() resource.Resource { return NewFrameworkResourceWrapper(&r) })
+	}
+
+	if utils.UseMonitorFrameworkProvider() {
+		monitorResource := NewMonitorResource()
+		wrappedResources = append(wrappedResources, func() resource.Resource { return NewFrameworkResourceWrapper(&monitorResource) })
 	}
 
 	return wrappedResources
@@ -655,6 +665,12 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	p.DatadogApiInstances = &utils.ApiInstances{HttpClient: datadogClient}
 	p.Auth = auth
 
+	var defaultTags map[string]string
+	if len(config.DefaultTags) > 0 && !config.DefaultTags[0].Tags.IsNull() {
+		tagBlock := config.DefaultTags[0]
+		diags.Append(tagBlock.Tags.ElementsAs(auth, &defaultTags, false)...)
+	}
+	p.DefaultTags = defaultTags
 	/*  Commented out due to duplicate validation in SDK provider - remove after Framework migration is complete.
 	if validate {
 		log.Println("[INFO] Datadog client successfully initialized, now validating...")
