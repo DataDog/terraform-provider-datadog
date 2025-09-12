@@ -129,15 +129,21 @@ func (r *teamMembershipResource) Read(ctx context.Context, request resource.Read
 		pageNumber++
 	}
 
+	var foundUserTeam *datadogV2.UserTeam
 	for _, userTeam := range userTeams {
 		// we use team_id:user_id format for importing.
 		// Hence, we need to check wether resource id or user id matches config.
 		if userTeam.GetId() == state.ID.ValueString() || state.UserId.ValueString() == userTeam.Relationships.User.Data.GetId() {
-			r.updateStateFromTeamResponse(ctx, &state, &userTeam)
+			foundUserTeam = &userTeam
 			break
 		}
 	}
+	if foundUserTeam == nil {
+		response.State.RemoveResource(ctx)
+		return
+	}
 
+	r.updateStateFromTeamResponse(ctx, &state, foundUserTeam)
 	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
