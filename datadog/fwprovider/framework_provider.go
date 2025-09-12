@@ -16,6 +16,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
+	"github.com/hashicorp/terraform-plugin-framework/ephemeral"
 	"github.com/hashicorp/terraform-plugin-framework/provider"
 	"github.com/hashicorp/terraform-plugin-framework/provider/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -29,6 +30,7 @@ import (
 )
 
 var _ provider.Provider = &FrameworkProvider{}
+var _ provider.ProviderWithEphemeralResources = &FrameworkProvider{}
 
 var Resources = []func() resource.Resource{
 	NewAgentlessScanningAwsScanOptionsResource,
@@ -96,6 +98,10 @@ var Resources = []func() resource.Resource{
 	NewCSMThreatsPolicyResource,
 	NewAppKeyRegistrationResource,
 	NewIncidentTypeResource,
+}
+
+var EphemeralResources = []func() ephemeral.EphemeralResource{
+	NewEphemeralAPIKeyResource,
 }
 
 var Datasources = []func() datasource.DataSource{
@@ -190,6 +196,18 @@ func (p *FrameworkProvider) DataSources(_ context.Context) []func() datasource.D
 	}
 
 	return wrappedDatasources
+}
+
+func (p *FrameworkProvider) EphemeralResources(_ context.Context) []func() ephemeral.EphemeralResource {
+	var wrappedResources []func() ephemeral.EphemeralResource
+	for _, f := range EphemeralResources {
+		r := f()
+		wrappedResources = append(wrappedResources, func() ephemeral.EphemeralResource {
+			return NewFrameworkEphemeralResourceWrapper(&r)
+		})
+	}
+
+	return wrappedResources
 }
 
 func (p *FrameworkProvider) Metadata(_ context.Context, _ provider.MetadataRequest, response *provider.MetadataResponse) {
@@ -305,9 +323,10 @@ func (p *FrameworkProvider) Configure(ctx context.Context, request provider.Conf
 		return
 	}
 
-	// Make config available for data sources and resources
+	// Make config available for data sources, resources, and ephemeral resources
 	response.DataSourceData = p
 	response.ResourceData = p
+	response.EphemeralResourceData = p
 }
 
 func (p *FrameworkProvider) ConfigureConfigDefaults(ctx context.Context, config *ProviderSchema) diag.Diagnostics {
