@@ -204,6 +204,12 @@ func Provider() *schema.Provider {
 					},
 				},
 			},
+			"store_sensitive_state": {
+				Type:         schema.TypeString,
+				Optional:     true,
+				Description:  "Whether to expose API key values in Terraform state. Valid values are [`true`, `false`]. Defaults to `true` for backwards compatibility. When false, API key resources will not include the key value, requiring the use of ephemeral datadog_api_key resources instead.",
+				ValidateFunc: validation.StringInSlice([]string{"true", "false"}, true),
+			},
 		},
 
 		// NEW RESOURCES ARE NOT ALLOWED TO BE ADDED HERE
@@ -290,6 +296,7 @@ type ProviderConfiguration struct {
 	DatadogApiInstances *utils.ApiInstances
 	Auth                context.Context
 	DefaultTags         map[string]interface{}
+	StoreSensitiveState bool
 
 	Now func() time.Time
 }
@@ -344,6 +351,11 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 	validate := true
 	if v := d.Get("validate").(string); v != "" {
 		validate, _ = strconv.ParseBool(v)
+	}
+
+	storeSensitiveState := true
+	if v := d.Get("store_sensitive_state").(string); v != "" {
+		storeSensitiveState, _ = strconv.ParseBool(v)
 	}
 
 	if validate {
@@ -542,6 +554,7 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 		CommunityClient:     communityClient,
 		DatadogApiInstances: apiInstances,
 		Auth:                auth,
+		StoreSensitiveState: storeSensitiveState,
 
 		Now: time.Now,
 	}
