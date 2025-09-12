@@ -129,7 +129,7 @@ func datadogSecurityMonitoringRuleSchema(includeValidate bool) map[string]*schem
 					},
 					"status": {
 						Type:             schema.TypeString,
-						ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewSecurityMonitoringRuleCaseActionOptionsFlaggedIPTypeFromValue),
+						ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewSecurityMonitoringRuleSeverityFromValue),
 						Required:         true,
 						Description:      "Severity of the Security Signal.",
 					},
