@@ -97,6 +97,7 @@ var Resources = []func() resource.Resource{
 	NewAppKeyRegistrationResource,
 	NewIncidentTypeResource,
 	NewIncidentNotificationTemplateResource,
+	NewIncidentNotificationRuleResource,
 }
 
 var Datasources = []func() datasource.DataSource{
@@ -136,6 +137,7 @@ var Datasources = []func() datasource.DataSource{
 	NewCSMThreatsPoliciesDataSource,
 	NewIncidentTypeDataSource,
 	NewIncidentNotificationTemplateDataSource,
+	NewIncidentNotificationRuleDataSource,
 }
 
 // FrameworkProvider struct
@@ -576,6 +578,13 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateIncidentNotificationTemplate", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteIncidentNotificationTemplate", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.ListIncidentNotificationTemplates", true)
+
+	// Enable IncidentNotificationRule
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateIncidentNotificationRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetIncidentNotificationRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateIncidentNotificationRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteIncidentNotificationRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.ListIncidentNotificationRules", true)
 
 	if !config.ApiUrl.IsNull() && config.ApiUrl.ValueString() != "" {
 		parsedAPIURL, parseErr := url.Parse(config.ApiUrl.ValueString())
