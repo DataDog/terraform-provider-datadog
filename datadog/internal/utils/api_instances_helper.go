@@ -80,6 +80,7 @@ type ApiInstances struct {
 	onCallApiV2                    *datadogV2.OnCallApi
 	opsgenieIntegrationApiV2       *datadogV2.OpsgenieIntegrationApi
 	organizationsApiV2             *datadogV2.OrganizationsApi
+	orgConnectionsApiV2            *datadogV2.OrgConnectionsApi
 	processesApiV2                 *datadogV2.ProcessesApi
 	powerpackApiV2                 *datadogV2.PowerpackApi
 	restrictionPolicyApiV2         *datadogV2.RestrictionPoliciesApi
@@ -274,6 +275,14 @@ func (i *ApiInstances) GetOrganizationsApiV1() *datadogV1.OrganizationsApi {
 		i.organizationsApiV1 = datadogV1.NewOrganizationsApi(i.HttpClient)
 	}
 	return i.organizationsApiV1
+}
+
+// GetOrgConnectionsApiV2 get instance of OrgConnectionsAPI
+func (i *ApiInstances) GetOrgConnectionsApiV2() *datadogV2.OrgConnectionsApi {
+	if i.orgConnectionsApiV2 == nil {
+		i.orgConnectionsApiV2 = datadogV2.NewOrgConnectionsApi(i.HttpClient)
+	}
+	return i.orgConnectionsApiV2
 }
 
 // GetPagerDutyIntegrationApiV1 get instance of PagerDutyIntegrationApi
