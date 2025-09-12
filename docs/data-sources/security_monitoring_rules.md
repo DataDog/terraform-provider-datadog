@@ -81,6 +81,7 @@ Read-Only:
 Read-Only:
 
 - `duration` (Number)
+- `flagged_ip_type` (String)
 
 
 
