@@ -2,10 +2,12 @@ package fwprovider
 
 import (
 	"context"
+	"net/http"
 	"regexp"
 	"time"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+	"github.com/google/uuid"
 	"github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
 	"github.com/hashicorp/terraform-plugin-framework-validators/setvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
@@ -82,7 +84,7 @@ func (r *OrgConnectionResource) Schema(_ context.Context, _ resource.SchemaReque
 				},
 			},
 
-			// === Computed fields from response ===
+			// Computed fields from response 
 			"id": utils.ResourceIDAttribute(),
 
 			"created_at": schema.StringAttribute{
@@ -118,6 +120,36 @@ func (r *OrgConnectionResource) ImportState(ctx context.Context, request resourc
 }
 
 func (r *OrgConnectionResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
+	var data OrgConnectionModel
+	response.Diagnostics.Append(request.State.Get(ctx, &data)...)
+
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	// TODO add sink org as a query parameter
+	//sinkOrgID := data.SinkOrgID
+	resp, httpResp, err := r.API.ListOrgConnections(r.Auth)
+	if err != nil {
+		if httpResp != nil && httpResp.StatusCode == http.StatusNotFound {
+			response.State.RemoveResource(ctx)
+			return
+		}
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving org connections"))
+		return
+	}
+
+	if len(resp.GetData()) == 0 {
+		response.State.RemoveResource(ctx)
+		return
+	}
+
+	if err := utils.CheckForUnparsed(resp); err != nil {
+		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
+		return
+	}
+
+	r.updateState(ctx, &data, &resp.GetData()[0])
 }
 
 func (r *OrgConnectionResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
@@ -128,11 +160,28 @@ func (r *OrgConnectionResource) Update(ctx context.Context, request resource.Upd
 }
 
 func (r *OrgConnectionResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
+	var data OrgConnectionModel
+	response.Diagnostics.Append(request.State.Get(ctx, &data)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	id, err := uuid.Parse(data.ID.ValueString())
+	if err != nil {
+		return
+	}
+
+	httpResp, err := r.API.DeleteOrgConnections(r.Auth, id)
+	if err != nil {
+		if httpResp != nil && httpResp.StatusCode == http.StatusNotFound {
+			return
+		}
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error deleting org connection"))
+	}
 }
 
-func (r *OrgConnectionResource) updateState(ctx context.Context, state *OrgConnectionModel, response *datadogV2.OrgConnectionResponse) {
-	state.ID = types.StringValue(response.Data.GetId().String())
-	orgConnectionData := response.GetData()
+func (r *OrgConnectionResource) updateState(ctx context.Context, state *OrgConnectionModel, orgConnectionData *datadogV2.OrgConnection) {
+	state.ID = types.StringValue(orgConnectionData.GetId().String())
 	orgConnectionAttributes := orgConnectionData.GetAttributes()
 
 	// Update State from Attributes of Response
