@@ -21,7 +21,6 @@ var (
 )
 
 func TestAccDatadogOrgConnection_Basic(t *testing.T) {
-	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	_ = ctx
 
@@ -56,7 +55,6 @@ func TestAccDatadogOrgConnection_Basic(t *testing.T) {
 }
 
 func TestAccDatadogOrgConnection_Update(t *testing.T) {
-	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	_ = ctx
 
@@ -91,7 +89,6 @@ func TestAccDatadogOrgConnection_Update(t *testing.T) {
 }
 
 func TestAccDatadogOrgConnection_InvalidInput(t *testing.T) {
-	t.Parallel()
 	ctx, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	_ = ctx
 

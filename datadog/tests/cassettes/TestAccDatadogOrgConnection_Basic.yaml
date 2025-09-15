@@ -1,3 +1,180 @@
 ---
 version: 2
-interactions: []
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 186
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"connection_types":["logs"]},"relationships":{"sink_org":{"data":{"id":"83999dcd-7f97-11f0-8de1-1ecf66f1aa85","name":"","type":"orgs"}}},"type":"org_connection"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/org_connections
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"org_connection","id":"0bd04f4b-0dde-49fc-a2fe-d4c97843632c","attributes":{"created_at":"2025-09-15T19:05:45.806433+00:00","connection_types":["logs"]},"relationships":{"source_org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5","name":"DD Integration Tests (321813)"}},"sink_org":{"data":{"type":"orgs","id":"83999dcd-7f97-11f0-8de1-1ecf66f1aa85","name":"Cross-Org BDD Test Org"}},"created_by":{"data":{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","name":"frog"}}}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 156.57ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/org_connections?sink_org_id=83999dcd-7f97-11f0-8de1-1ecf66f1aa85
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":[{"type":"org_connection","id":"0bd04f4b-0dde-49fc-a2fe-d4c97843632c","attributes":{"created_at":"2025-09-15T19:05:45.806433+00:00","connection_types":["logs"]},"relationships":{"source_org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5","name":"DD Integration Tests (321813)"}},"sink_org":{"data":{"type":"orgs","id":"83999dcd-7f97-11f0-8de1-1ecf66f1aa85","name":"Cross-Org BDD Test Org"}},"created_by":{"data":{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","name":"frog"}}}}],"included":[{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5","attributes":{"public_id":"fasjyydbcgwwc2uc","name":"DD Integration Tests (321813)","description":null,"sharing":"all_private","url":null,"disabled":false,"created_at":"2019-08-13T19:50:19.001015+00:00","modified_at":"2022-03-21T13:04:08.711734+00:00"}},{"type":"orgs","id":"83999dcd-7f97-11f0-8de1-1ecf66f1aa85","attributes":{"public_id":"83999dcd-7f97-11f0-8de1-1ecf66f1aa85","name":"Cross-Org BDD Test Org","description":null,"sharing":"all_private","url":null,"disabled":false,"created_at":"2025-08-22T20:35:17.315307+00:00","modified_at":null}},{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","attributes":{"name":"frog","handle":"frog@datadoghq.com","created_at":"2019-10-02T08:15:39.795051+00:00","modified_at":"2025-08-29T13:19:45.978541+00:00","email":"frog@datadoghq.com","icon":"https://secure.gravatar.com/avatar/28a16dfe36e73b60c1d55872cb0f1172?s=48&d=retro","title":null,"verified":true,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Active"}}],"meta":{"page":{"total_count":1,"total_filtered_count":1}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 87.830542ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/org_connections?sink_org_id=83999dcd-7f97-11f0-8de1-1ecf66f1aa85
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":[{"type":"org_connection","id":"0bd04f4b-0dde-49fc-a2fe-d4c97843632c","attributes":{"created_at":"2025-09-15T19:05:45.806433+00:00","connection_types":["logs"]},"relationships":{"source_org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5","name":"DD Integration Tests (321813)"}},"sink_org":{"data":{"type":"orgs","id":"83999dcd-7f97-11f0-8de1-1ecf66f1aa85","name":"Cross-Org BDD Test Org"}},"created_by":{"data":{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","name":"frog"}}}}],"included":[{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5","attributes":{"public_id":"fasjyydbcgwwc2uc","name":"DD Integration Tests (321813)","description":null,"sharing":"all_private","url":null,"disabled":false,"created_at":"2019-08-13T19:50:19.001015+00:00","modified_at":"2022-03-21T13:04:08.711734+00:00"}},{"type":"orgs","id":"83999dcd-7f97-11f0-8de1-1ecf66f1aa85","attributes":{"public_id":"83999dcd-7f97-11f0-8de1-1ecf66f1aa85","name":"Cross-Org BDD Test Org","description":null,"sharing":"all_private","url":null,"disabled":false,"created_at":"2025-08-22T20:35:17.315307+00:00","modified_at":null}},{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","attributes":{"name":"frog","handle":"frog@datadoghq.com","created_at":"2019-10-02T08:15:39.795051+00:00","modified_at":"2025-08-29T13:19:45.978541+00:00","email":"frog@datadoghq.com","icon":"https://secure.gravatar.com/avatar/28a16dfe36e73b60c1d55872cb0f1172?s=48&d=retro","title":null,"verified":true,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Active"}}],"meta":{"page":{"total_count":1,"total_filtered_count":1}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 90.214084ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/org_connections/0bd04f4b-0dde-49fc-a2fe-d4c97843632c
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 3
+        uncompressed: false
+        body: |
+            {}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 88.055ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/org_connections?sink_org_id=83999dcd-7f97-11f0-8de1-1ecf66f1aa85
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":[],"meta":{"page":{"total_count":0,"total_filtered_count":0}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 81.637959ms
