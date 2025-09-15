@@ -2,6 +2,7 @@ package fwprovider
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"regexp"
 	"time"
@@ -84,7 +85,7 @@ func (r *OrgConnectionResource) Schema(_ context.Context, _ resource.SchemaReque
 				},
 			},
 
-			// Computed fields from response 
+			// Computed fields from response
 			"id": utils.ResourceIDAttribute(),
 
 			"created_at": schema.StringAttribute{
@@ -127,9 +128,9 @@ func (r *OrgConnectionResource) Read(ctx context.Context, request resource.ReadR
 		return
 	}
 
-	// TODO add sink org as a query parameter
-	//sinkOrgID := data.SinkOrgID
-	resp, httpResp, err := r.API.ListOrgConnections(r.Auth)
+	queryParams := datadogV2.ListOrgConnectionsOptionalParameters{}
+	queryParams.WithSinkOrgId(data.SinkOrgID.String())
+	resp, httpResp, err := r.API.ListOrgConnections(r.Auth, queryParams)
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == http.StatusNotFound {
 			response.State.RemoveResource(ctx)
@@ -153,10 +154,63 @@ func (r *OrgConnectionResource) Read(ctx context.Context, request resource.ReadR
 }
 
 func (r *OrgConnectionResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
+	var data OrgConnectionModel
+	response.Diagnostics.Append(request.Plan.Get(ctx, &data)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	body, diags := r.buildCreateRequestBody(ctx, &data)
+	response.Diagnostics.Append(diags...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	resp, _, err := r.API.CreateOrgConnections(r.Auth, *body)
+	if err != nil {
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error creating org connection"))
+		return
+	}
+	if err = utils.CheckForUnparsed(resp); err != nil {
+		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
+		return
+	}
+
+	r.updateState(ctx, &data, &resp.Data)
+	response.Diagnostics.Append(response.State.Set(ctx, &data)...)
 }
 
 func (r *OrgConnectionResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
+	var data OrgConnectionModel
+	response.Diagnostics.Append(request.Plan.Get(ctx, &data)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
 
+	connectionID, err := uuid.Parse(data.ID.String())
+	if err != nil {
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "connection ID must be a valid UUID"))
+		return
+	}
+	body, diags := r.buildUpdateRequestBody(ctx, &data)
+	response.Diagnostics.Append(diags...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	resp, _, err := r.API.UpdateOrgConnections(r.Auth, connectionID, *body)
+	if err != nil {
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error updating org connection"))
+		return
+	}
+
+	if err = utils.CheckForUnparsed(resp); err != nil {
+		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
+		return
+	}
+
+	r.updateState(ctx, &data, &resp.Data)
+	response.Diagnostics.Append(response.State.Set(ctx, &data)...)
 }
 
 func (r *OrgConnectionResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
@@ -226,9 +280,76 @@ func (r *OrgConnectionResource) updateState(ctx context.Context, state *OrgConne
 }
 
 func (r *OrgConnectionResource) buildCreateRequestBody(ctx context.Context, data *OrgConnectionModel) (*datadogV2.OrgConnectionCreateRequest, diag.Diagnostics) {
-	return nil, nil
+	diags := diag.Diagnostics{}
+	body := datadogV2.NewOrgConnectionCreateWithDefaults()
+
+	connectionTypes := []datadogV2.OrgConnectionTypeEnum{}
+	for _, val := range data.ConnectionTypes.Elements() {
+		strVal := val.(types.String)
+		enumVal, err := datadogV2.NewOrgConnectionTypeEnumFromValue(strVal.String())
+		if err != nil {
+			diags.AddError(
+				fmt.Sprintf("invalid value found for connection_types: %s", strVal),
+				"`connection_types` is invalid; provide a valid value.",
+			)
+			return nil, diags
+		}
+		connectionTypes = append(connectionTypes, *enumVal)
+	}
+
+	attributes := datadogV2.OrgConnectionCreateAttributes{
+		ConnectionTypes: connectionTypes,
+	}
+
+	relationships := datadogV2.OrgConnectionCreateRelationships{
+		SinkOrg: datadogV2.OrgConnectionOrgRelationship{
+			Data: &datadogV2.OrgConnectionOrgRelationshipData{
+				Id:   data.SinkOrgID.ValueStringPointer(),
+				Name: data.SinkOrgName.ValueStringPointer(),
+			},
+		},
+	}
+
+	body.SetAttributes(attributes)
+	body.SetRelationships(relationships)
+	body.SetType(datadogV2.ORGCONNECTIONTYPE_ORG_CONNECTION)
+	req := datadogV2.NewOrgConnectionCreateRequest(*body)
+	return req, diags
 }
 
 func (r *OrgConnectionResource) buildUpdateRequestBody(ctx context.Context, data *OrgConnectionModel) (*datadogV2.OrgConnectionUpdateRequest, diag.Diagnostics) {
-	return nil, nil
+	diags := diag.Diagnostics{}
+	body := datadogV2.NewOrgConnectionUpdateWithDefaults()
+
+	connectionTypes := []datadogV2.OrgConnectionTypeEnum{}
+	for _, val := range data.ConnectionTypes.Elements() {
+		strVal := val.(types.String)
+		enumVal, err := datadogV2.NewOrgConnectionTypeEnumFromValue(strVal.String())
+		if err != nil {
+			diags.AddError(
+				fmt.Sprintf("invalid value found for connection_types: %s", strVal),
+				"`connection_types` is invalid; provide a valid value.",
+			)
+			return nil, diags
+		}
+		connectionTypes = append(connectionTypes, *enumVal)
+	}
+
+	attributes := datadogV2.OrgConnectionUpdateAttributes{
+		ConnectionTypes: connectionTypes,
+	}
+
+	connectionID, err := uuid.Parse(data.ID.String())
+	if err != nil {
+		diags.AddError(
+			fmt.Sprintf("invalid value found for connection_id: %s", data.ID),
+			"`connection_id` is invalid; provide a valid uuid value.",
+		)
+		return nil, diags
+	}
+	body.SetId(connectionID)
+	body.SetAttributes(attributes)
+	body.SetType(datadogV2.ORGCONNECTIONTYPE_ORG_CONNECTION)
+	req := datadogV2.NewOrgConnectionUpdateRequest(*body)
+	return req, diags
 }
