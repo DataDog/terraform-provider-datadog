@@ -19,7 +19,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 )
@@ -50,13 +49,13 @@ func NewOrgConnectionResource() resource.Resource {
 }
 
 func (r *OrgConnectionResource) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
-	providerData := request.ProviderData.(*fwprovider.FrameworkProvider)
+	providerData := request.ProviderData.(*FrameworkProvider)
 	r.API = providerData.DatadogApiInstances.GetOrgConnectionsApiV2()
 	r.Auth = providerData.Auth
 }
 
 func (r *OrgConnectionResource) Metadata(_ context.Context, _ resource.MetadataRequest, response *resource.MetadataResponse) {
-	response.TypeName = "org_connections"
+	response.TypeName = "org_connection"
 }
 
 func (r *OrgConnectionResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
@@ -95,7 +94,7 @@ func (r *OrgConnectionResource) Schema(_ context.Context, _ resource.SchemaReque
 				Validators:  []validator.String{validators.TimeFormatValidator(time.RFC3339)},
 			},
 
-			"created_by_id": schema.StringAttribute{
+			"created_by": schema.StringAttribute{
 				Description: "Creator user ID (UUID).",
 				Computed:    true,
 			},
