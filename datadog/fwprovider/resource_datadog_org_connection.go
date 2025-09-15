@@ -17,6 +17,8 @@ import (
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
@@ -81,6 +83,9 @@ func (r *OrgConnectionResource) Schema(_ context.Context, _ resource.SchemaReque
 						regexp.MustCompile(`^[0-9a-fA-F-]{36}$`),
 						"must be a valid UUID",
 					),
+				},
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
 				},
 			},
 
