@@ -128,7 +128,7 @@ func (r *OrgConnectionResource) Read(ctx context.Context, request resource.ReadR
 	}
 
 	queryParams := datadogV2.ListOrgConnectionsOptionalParameters{}
-	queryParams.WithSinkOrgId(data.SinkOrgID.String())
+	queryParams.WithSinkOrgId(data.SinkOrgID.ValueString())
 	resp, httpResp, err := r.API.ListOrgConnections(r.Auth, queryParams)
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == http.StatusNotFound {
@@ -186,7 +186,7 @@ func (r *OrgConnectionResource) Update(ctx context.Context, request resource.Upd
 		return
 	}
 
-	connectionID, err := uuid.Parse(data.ID.String())
+	connectionID, err := uuid.Parse(data.ID.ValueString())
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "connection ID must be a valid UUID"))
 		return
@@ -285,7 +285,7 @@ func (r *OrgConnectionResource) buildCreateRequestBody(ctx context.Context, data
 	connectionTypes := []datadogV2.OrgConnectionTypeEnum{}
 	for _, val := range data.ConnectionTypes.Elements() {
 		strVal := val.(types.String)
-		enumVal, err := datadogV2.NewOrgConnectionTypeEnumFromValue(strVal.String())
+		enumVal, err := datadogV2.NewOrgConnectionTypeEnumFromValue(strVal.ValueString())
 		if err != nil {
 			diags.AddError(
 				fmt.Sprintf("invalid value found for connection_types: %s", strVal),
@@ -300,11 +300,13 @@ func (r *OrgConnectionResource) buildCreateRequestBody(ctx context.Context, data
 		ConnectionTypes: connectionTypes,
 	}
 
+	relationshipType := datadogV2.ORGCONNECTIONORGRELATIONSHIPDATATYPE_ORGS
 	relationships := datadogV2.OrgConnectionCreateRelationships{
 		SinkOrg: datadogV2.OrgConnectionOrgRelationship{
 			Data: &datadogV2.OrgConnectionOrgRelationshipData{
 				Id:   data.SinkOrgID.ValueStringPointer(),
 				Name: data.SinkOrgName.ValueStringPointer(),
+				Type: &relationshipType,
 			},
 		},
 	}
@@ -323,7 +325,7 @@ func (r *OrgConnectionResource) buildUpdateRequestBody(ctx context.Context, data
 	connectionTypes := []datadogV2.OrgConnectionTypeEnum{}
 	for _, val := range data.ConnectionTypes.Elements() {
 		strVal := val.(types.String)
-		enumVal, err := datadogV2.NewOrgConnectionTypeEnumFromValue(strVal.String())
+		enumVal, err := datadogV2.NewOrgConnectionTypeEnumFromValue(strVal.ValueString())
 		if err != nil {
 			diags.AddError(
 				fmt.Sprintf("invalid value found for connection_types: %s", strVal),
@@ -338,7 +340,7 @@ func (r *OrgConnectionResource) buildUpdateRequestBody(ctx context.Context, data
 		ConnectionTypes: connectionTypes,
 	}
 
-	connectionID, err := uuid.Parse(data.ID.String())
+	connectionID, err := uuid.Parse(data.ID.ValueString())
 	if err != nil {
 		diags.AddError(
 			fmt.Sprintf("invalid value found for connection_id: %s", data.ID),

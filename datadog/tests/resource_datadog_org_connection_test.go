@@ -16,8 +16,8 @@ import (
 )
 
 var (
-	// Sample UUID for testing (sink org)
-	sinkOrgID = "01234567-8901-2345-6789-012345678901"
+	// Cross-Org BDD Test Org (1534490)
+	sinkOrgID = "83999dcd-7f97-11f0-8de1-1ecf66f1aa85"
 )
 
 func TestAccDatadogOrgConnection_Basic(t *testing.T) {
