@@ -42,7 +42,7 @@ Resources to define `resource_type` :
 
 Restrictions :
 * Dashboards : support is in private beta. Reach out to your Datadog contact or support to enable this.
-* Monitors : Management of restriction policy through terraform is currently not available
+* Monitors : Management of restriction policy through terraform is available in Preview. To request access, reach out to [Datadog Support](https://docs.datadoghq.com/help).
 
 ### Optional
 
