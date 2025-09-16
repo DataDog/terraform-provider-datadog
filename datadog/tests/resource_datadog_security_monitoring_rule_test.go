@@ -419,6 +419,29 @@ func TestAccDatadogSecurityMonitoringRule_DefaultTags(t *testing.T) {
 	})
 }
 
+func TestAccDatadogSecurityMonitoringRule_ScheduledRule(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	ruleName := uniqueEntityName(ctx, t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogSecurityMonitoringRuleDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccDatadogSecurityMonitoringScheduledRuleConfig(ruleName),
+				Check:  testAccDatadogSecurityMonitoringScheduledRuleCheck(accProvider, ruleName),
+			},
+			{
+				Config: testAccDatadogSecurityMonitoringScheduledRuleUpdateConfig(ruleName),
+				Check:  testAccDatadogSecurityMonitoringScheduledRuleUpdateCheck(accProvider, ruleName),
+			},
+		},
+	})
+}
+
 func testAccCheckDatadogSecurityMonitoringCreatedConfig(name string) string {
 	return testAccCheckDatadogSecurityMonitoringCreatedConfigWithId(name, "")
 }
@@ -2365,4 +2388,314 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
 	}
 }
 `, name)
+}
+
+func testAccDatadogSecurityMonitoringScheduledRuleConfig(name string) string {
+	return fmt.Sprintf(`
+		resource "datadog_security_monitoring_rule" "acceptance_test" {
+			name = "%s"
+			message = "acceptance rule triggered by scheduled rule"
+			enabled = false
+			validate = true
+			has_extended_title = true
+
+			query {
+				name = "first"
+				query = "does not really match much"
+				aggregation = "count"
+				data_source = "logs"
+				group_by_fields = ["host"]
+				indexes = ["cloud-siem-index"]
+			}
+
+			query {
+				name = "second"
+				query = "does not really match much either"
+				aggregation = "cardinality"
+				data_source = "logs"	
+				distinct_fields = ["@orgId"]
+				group_by_fields = ["host"]
+				indexes = ["cloud-siem-index"]
+			}
+
+			query {
+				name = "third"
+				query = "does not really match much either"
+				aggregation = "sum"
+				data_source = "logs"
+				group_by_fields = ["host"]
+				metric = "@network.bytes_read"
+				indexes = ["cloud-siem-index"]
+			}
+
+			case {
+				name = "high case"
+				status = "high"
+				condition = "first > 3 || second > 10"
+				notifications = ["@user"]
+			}
+
+			case {
+				name = "warning case"
+				status = "medium"
+				condition = "first > 0 || second > 0"
+			}
+
+			case {
+				name = "low case"
+				status = "low"
+				condition = "third > 9000"
+			}
+
+			options {
+				evaluation_window = 300
+				keep_alive = 600
+				max_signal_duration = 900
+				decrease_criticality_based_on_env = true
+			}
+
+			tags = ["i:tomato", "u:tomato"]
+
+			reference_tables {
+				table_name = "table1"
+				column_name = "column1"
+				log_field_path = "@testattribute"
+				rule_query_name = "first"
+				check_presence = true
+			}
+
+			calculated_field {
+				name = "calc_field"
+				expression = "lower(@log.nested.field)"
+			}
+
+			scheduling_options {
+				rrule = "FREQ=MINUTELY;INTERVAL=40"
+				start = "2025-08-15T12:00:00"
+				timezone = "Europe/Paris"
+			}
+		}
+	`, name)
+}
+
+func checkSecurityMonitoringScheduledRuleCommonPart(ruleName string) resource.TestCheckFunc {
+	return resource.ComposeTestCheckFunc(
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "name", ruleName),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "message", "acceptance rule triggered by scheduled rule"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "enabled", "false"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "has_extended_title", "true"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.0.name", "first"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.0.query", "does not really match much"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.0.aggregation", "count"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.0.data_source", "logs"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.0.group_by_fields.0", "host"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.0.indexes.0", "cloud-siem-index"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.0.indexes.#", "1"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.1.name", "second"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.1.query", "does not really match much either"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.1.aggregation", "cardinality"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.1.data_source", "logs"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.1.distinct_fields.0", "@orgId"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.1.group_by_fields.0", "host"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.1.indexes.0", "cloud-siem-index"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.1.indexes.#", "1"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.2.name", "third"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.2.query", "does not really match much either"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.2.aggregation", "sum"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.2.data_source", "logs"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.2.group_by_fields.0", "host"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.2.metric", "@network.bytes_read"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.2.indexes.0", "cloud-siem-index"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.2.indexes.#", "1"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "case.0.name", "high case"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "case.0.status", "high"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "case.0.condition", "first > 3 || second > 10"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "case.0.notifications.0", "@user"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "case.1.name", "warning case"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "case.1.status", "medium"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "case.1.condition", "first > 0 || second > 0"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "case.2.name", "low case"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "case.2.status", "low"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "case.2.condition", "third > 9000"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.evaluation_window", "300"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.keep_alive", "600"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.max_signal_duration", "900"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.decrease_criticality_based_on_env", "true"),
+		resource.TestCheckTypeSetElemAttr(
+			tfSecurityRuleName, "tags.*", "i:tomato"),
+		resource.TestCheckTypeSetElemAttr(
+			tfSecurityRuleName, "tags.*", "u:tomato"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "reference_tables.0.table_name", "table1"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "reference_tables.0.column_name", "column1"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "reference_tables.0.log_field_path", "@testattribute"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "reference_tables.0.rule_query_name", "first"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "reference_tables.0.check_presence", "true"),
+	)
+}
+
+func checkSecurityMonitoringSchedulingOptions(resourceName, rrule, start, timezone string) resource.TestCheckFunc {
+	return resource.ComposeTestCheckFunc(
+		resource.TestCheckResourceAttr(
+			resourceName, "scheduling_options.0.rrule", rrule),
+		resource.TestCheckResourceAttr(
+			resourceName, "scheduling_options.0.start", start),
+		resource.TestCheckResourceAttr(
+			resourceName, "scheduling_options.0.timezone", timezone),
+	)
+}
+
+func checkSecurityMonitoringCalculatedField(resourceName string, index int, name string, expression string) resource.TestCheckFunc {
+	return resource.ComposeTestCheckFunc(
+		resource.TestCheckResourceAttr(
+			resourceName, fmt.Sprintf("calculated_field.%d.name", index), name),
+		resource.TestCheckResourceAttr(
+			resourceName, fmt.Sprintf("calculated_field.%d.expression", index), expression),
+	)
+}
+
+func testAccDatadogSecurityMonitoringScheduledRuleCheck(accProvider func() (*schema.Provider, error), ruleName string) resource.TestCheckFunc {
+	return resource.ComposeTestCheckFunc(
+		testAccCheckDatadogSecurityMonitoringRuleExists(accProvider, tfSecurityRuleName),
+		checkSecurityMonitoringScheduledRuleCommonPart(ruleName),
+		checkSecurityMonitoringSchedulingOptions(tfSecurityRuleName, "FREQ=MINUTELY;INTERVAL=40", "2025-08-15T12:00:00", "Europe/Paris"),
+		checkSecurityMonitoringCalculatedField(tfSecurityRuleName, 0, "calc_field", "lower(@log.nested.field)"),
+	)
+}
+
+func testAccDatadogSecurityMonitoringScheduledRuleUpdateConfig(name string) string {
+	return fmt.Sprintf(`
+		resource "datadog_security_monitoring_rule" "acceptance_test" {
+			name = "%s"
+			message = "acceptance rule triggered by scheduled rule"
+			enabled = false
+			validate = true
+			has_extended_title = true
+
+			query {
+				name = "first"
+				query = "does not really match much"
+				aggregation = "count"
+				data_source = "logs"
+				group_by_fields = ["host"]
+				indexes = ["cloud-siem-index"]
+			}
+
+			query {
+				name = "second"
+				query = "does not really match much either"
+				aggregation = "cardinality"
+				data_source = "logs"	
+				distinct_fields = ["@orgId"]
+				group_by_fields = ["host"]
+				indexes = ["cloud-siem-index"]
+			}
+
+			query {
+				name = "third"
+				query = "does not really match much either"
+				aggregation = "sum"
+				data_source = "logs"
+				group_by_fields = ["host"]
+				metric = "@network.bytes_read"
+				indexes = ["cloud-siem-index"]
+			}
+
+			case {
+				name = "high case"
+				status = "high"
+				condition = "first > 3 || second > 10"
+				notifications = ["@user"]
+			}
+
+			case {
+				name = "warning case"
+				status = "medium"
+				condition = "first > 0 || second > 0"
+			}
+
+			case {
+				name = "low case"
+				status = "low"
+				condition = "third > 9000"
+			}
+
+			options {
+				evaluation_window = 300
+				keep_alive = 600
+				max_signal_duration = 900
+				decrease_criticality_based_on_env = true
+			}
+
+			tags = ["i:tomato", "u:tomato"]
+
+			reference_tables {
+				table_name = "table1"
+				column_name = "column1"
+				log_field_path = "@testattribute"
+				rule_query_name = "first"
+				check_presence = true
+			}
+
+			scheduling_options {
+				rrule = "FREQ=HOURLY;INTERVAL=2"
+				start = "2025-08-15T14:00:00"
+				timezone = "Europe/Paris"
+			}
+		}
+	`, name)
+}
+
+func testAccDatadogSecurityMonitoringScheduledRuleUpdateCheck(accProvider func() (*schema.Provider, error), ruleName string) resource.TestCheckFunc {
+	return resource.ComposeTestCheckFunc(
+		testAccCheckDatadogSecurityMonitoringRuleExists(accProvider, tfSecurityRuleName),
+		checkSecurityMonitoringScheduledRuleCommonPart(ruleName),
+		checkSecurityMonitoringSchedulingOptions(tfSecurityRuleName, "FREQ=HOURLY;INTERVAL=2", "2025-08-15T14:00:00", "Europe/Paris"),
+		resource.TestCheckResourceAttr(tfSecurityRuleName, "calculated_field.#", "0"),
+	)
 }
