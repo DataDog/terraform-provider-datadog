@@ -63,8 +63,7 @@ func (r *OrgConnectionResource) Metadata(_ context.Context, _ resource.MetadataR
 
 func (r *OrgConnectionResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "Provides a Datadog Org Connection resource. Org Connections make data from a source org available in the sink org for selected connection data types (e.g., logs or metrics). Org Connections can only be created from a source org to a specified sink org",
-
+		Description: "Provides a Datadog Org Connection resource. Org Connections make data from a source org available in the destination org for selected connection data types (e.g., logs or metrics). Org Connections can only be created from a source org to a specified destination org",
 		Attributes: map[string]schema.Attribute{
 			"connection_types": schema.SetAttribute{
 				Description: "Set of connection types to enable for this connection (e.g., metrics, logs).",
