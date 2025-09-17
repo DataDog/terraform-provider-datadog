@@ -107,6 +107,9 @@ func TestAccDatadogOrgConnection_InvalidInput(t *testing.T) {
 				Config:      testAccCheckDatadogOrgConnectionEmptyStringInConnectionTypes(sinkOrgID),
 				ExpectError: regexp.MustCompile(`Attribute connection_types\[.*\] string length must be at least 1`),
 			},
+			{
+				Config:      testAccCheckDatadogOrgConnection(sinkOrgID, []string{"invalid"}),
+				ExpectError: regexp.MustCompile("`connection_types` is invalid; provide a valid value.")},
 		},
 	})
 }
