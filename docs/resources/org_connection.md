@@ -3,12 +3,12 @@
 page_title: "datadog_org_connection Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Provides a Datadog Org Connection resource. Org Connections make data from a source org available in the destination org for selected connection data types (e.g., logs or metrics). Org Connections can only be created from a source org to a specified destination org
+  Provides a Datadog Org Connection resource. Org Connections make data from a source org available in the destination org for selected connection data types (for example, logs or metrics). Org Connections can only be created from a source org to a specified destination org
 ---
 
 # datadog_org_connection (Resource)
 
-Provides a Datadog Org Connection resource. Org Connections make data from a source org available in the destination org for selected connection data types (e.g., logs or metrics). Org Connections can only be created from a source org to a specified destination org
+Provides a Datadog Org Connection resource. Org Connections make data from a source org available in the destination org for selected connection data types (for example, logs or metrics). Org Connections can only be created from a source org to a specified destination org
 
 ## Example Usage
 
@@ -29,7 +29,7 @@ resource "datadog_org_connection" "foo" {
 
 ### Required
 
-- `connection_types` (Set of String) Set of connection types to enable for this connection (e.g., metrics, logs).
+- `connection_types` (Set of String) Set of connection types to enable for this connection (., metrics, logs).
 - `sink_org_id` (String) UUID of the sink (destination) organization. Must be a valid UUID.
 
 ### Read-Only
