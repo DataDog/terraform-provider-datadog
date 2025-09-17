@@ -6,12 +6,12 @@
 * [datadog_team_membership] Remove resource from state if not found by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/3228
 ### IMPROVEMENTS
 * [datadog_security_monitoring_suppression] Add Suppressions Validation during TF Plan by @clementgbcn in https://github.com/DataDog/terraform-provider-datadog/pull/3203
-* [synthetics_test] Keep Synthetics multistep test steps id in state by @romainberger in https://github.com/DataDog/terraform-provider-datadog/pull/3204
+* [datadog_synthetics_test] Keep Synthetics multistep test steps id in state by @romainberger in https://github.com/DataDog/terraform-provider-datadog/pull/3204
 ### FEATURES
 * [datadog_incident_notification_template] Add datadog_incident_notification_template resource and datasource by @codhah92 in https://github.com/DataDog/terraform-provider-datadog/pull/3218
 * [datadog_incident_notification_rule] Add incident notification rule tf resource & data source by @codhah92 in https://github.com/DataDog/terraform-provider-datadog/pull/3224
 * [datadog_monitor] Migrate datadog_monitor to plugin framework by @shaneyuandd in https://github.com/DataDog/terraform-provider-datadog/pull/3161
-* [datadog_integration_gcp][datadog_integration_gcp_sts] Add monitored_resource_configs to v1 and v2 terraform modules by @ash-ddog in https://github.com/DataDog/terraform-provider-datadog/pull/3219
+* [datadog_integration_gcp] [datadog_integration_gcp_sts] Add monitored_resource_configs to v1 and v2 terraform modules by @ash-ddog in https://github.com/DataDog/terraform-provider-datadog/pull/3219
 * [datadog_security_monitoring_rule] Support Cloud SIEM scheduled rules by @pietrodll in https://github.com/DataDog/terraform-provider-datadog/pull/3181
 
 ## New Contributors
