@@ -1581,7 +1581,7 @@ func syntheticsMobileStepParams() schema.Schema {
 					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsCheckTypeFromValue),
 				},
 				"element": {
-					Description: "Element to use for the step, JSON encoded string.",
+					Description: "Element to use for the step",
 					Type:        schema.TypeList,
 					MaxItems:    1,
 					Optional:    true,
