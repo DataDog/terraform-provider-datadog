@@ -283,22 +283,43 @@ func (r *OrgConnectionResource) updateState(ctx context.Context, state *OrgConne
 	}
 }
 
+func (r *OrgConnectionResource) buildUpdateRequestBody(ctx context.Context, data *OrgConnectionModel) (*datadogV2.OrgConnectionUpdateRequest, diag.Diagnostics) {
+	diags := diag.Diagnostics{}
+	body := datadogV2.NewOrgConnectionUpdateWithDefaults()
+
+	connectionTypes, convertDiags := r.convertConnectionTypesToEnums(data.ConnectionTypes)
+	diags.Append(convertDiags...)
+	if diags.HasError() {
+		return nil, diags
+	}
+
+	attributes := datadogV2.OrgConnectionUpdateAttributes{
+		ConnectionTypes: connectionTypes,
+	}
+
+	connectionID, err := uuid.Parse(data.ID.ValueString())
+	if err != nil {
+		diags.AddError(
+			fmt.Sprintf("invalid value found for connection_id: %s", data.ID),
+			"`connection_id` is invalid; provide a valid uuid value.",
+		)
+		return nil, diags
+	}
+	body.SetId(connectionID)
+	body.SetAttributes(attributes)
+	body.SetType(datadogV2.ORGCONNECTIONTYPE_ORG_CONNECTION)
+	req := datadogV2.NewOrgConnectionUpdateRequest(*body)
+	return req, diags
+}
+
 func (r *OrgConnectionResource) buildCreateRequestBody(ctx context.Context, data *OrgConnectionModel) (*datadogV2.OrgConnectionCreateRequest, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
 	body := datadogV2.NewOrgConnectionCreateWithDefaults()
 
-	connectionTypes := []datadogV2.OrgConnectionTypeEnum{}
-	for _, val := range data.ConnectionTypes.Elements() {
-		strVal := val.(types.String)
-		enumVal, err := datadogV2.NewOrgConnectionTypeEnumFromValue(strVal.ValueString())
-		if err != nil {
-			diags.AddError(
-				fmt.Sprintf("invalid value found for connection_types: %s", strVal),
-				"`connection_types` is invalid; provide a valid value.",
-			)
-			return nil, diags
-		}
-		connectionTypes = append(connectionTypes, *enumVal)
+	connectionTypes, convertDiags := r.convertConnectionTypesToEnums(data.ConnectionTypes)
+	diags.Append(convertDiags...)
+	if diags.HasError() {
+		return nil, diags
 	}
 
 	attributes := datadogV2.OrgConnectionCreateAttributes{
@@ -323,12 +344,11 @@ func (r *OrgConnectionResource) buildCreateRequestBody(ctx context.Context, data
 	return req, diags
 }
 
-func (r *OrgConnectionResource) buildUpdateRequestBody(ctx context.Context, data *OrgConnectionModel) (*datadogV2.OrgConnectionUpdateRequest, diag.Diagnostics) {
+func (r *OrgConnectionResource) convertConnectionTypesToEnums(connectionTypesSet types.Set) ([]datadogV2.OrgConnectionTypeEnum, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
-	body := datadogV2.NewOrgConnectionUpdateWithDefaults()
-
 	connectionTypes := []datadogV2.OrgConnectionTypeEnum{}
-	for _, val := range data.ConnectionTypes.Elements() {
+
+	for _, val := range connectionTypesSet.Elements() {
 		strVal := val.(types.String)
 		enumVal, err := datadogV2.NewOrgConnectionTypeEnumFromValue(strVal.ValueString())
 		if err != nil {
@@ -336,26 +356,10 @@ func (r *OrgConnectionResource) buildUpdateRequestBody(ctx context.Context, data
 				fmt.Sprintf("invalid value found for connection_types: %s", strVal),
 				"`connection_types` is invalid; provide a valid value.",
 			)
-			return nil, diags
+			continue
 		}
 		connectionTypes = append(connectionTypes, *enumVal)
 	}
 
-	attributes := datadogV2.OrgConnectionUpdateAttributes{
-		ConnectionTypes: connectionTypes,
-	}
-
-	connectionID, err := uuid.Parse(data.ID.ValueString())
-	if err != nil {
-		diags.AddError(
-			fmt.Sprintf("invalid value found for connection_id: %s", data.ID),
-			"`connection_id` is invalid; provide a valid uuid value.",
-		)
-		return nil, diags
-	}
-	body.SetId(connectionID)
-	body.SetAttributes(attributes)
-	body.SetType(datadogV2.ORGCONNECTIONTYPE_ORG_CONNECTION)
-	req := datadogV2.NewOrgConnectionUpdateRequest(*body)
-	return req, diags
+	return connectionTypes, diags
 }
