@@ -1,0 +1,595 @@
+package fwprovider
+
+import (
+	"context"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
+	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
+	"github.com/hashicorp/terraform-plugin-framework/resource"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
+	"github.com/hashicorp/terraform-plugin-framework/types"
+
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+)
+
+type tagPipelineRulesetResource struct {
+	Api  *datadogV2.CloudCostManagementApi
+	Auth context.Context
+}
+
+func NewTagPipelineRulesetResource() resource.Resource {
+	return &tagPipelineRulesetResource{}
+}
+
+type tagPipelineRulesetModel struct {
+	ID       types.String `tfsdk:"id"`
+	Name     types.String `tfsdk:"name"`
+	Enabled  types.Bool   `tfsdk:"enabled"`
+	Position types.Int64  `tfsdk:"position"`
+	Version  types.Int64  `tfsdk:"version"`
+	Rules    []ruleItem   `tfsdk:"rules"`
+}
+
+type ruleItem struct {
+	Enabled        types.Bool       `tfsdk:"enabled"`
+	Name           types.String     `tfsdk:"name"`
+	Mapping        []ruleMapping    `tfsdk:"mapping"`
+	Query          []ruleQuery      `tfsdk:"query"`
+	ReferenceTable []referenceTable `tfsdk:"reference_table"`
+}
+
+type ruleMapping struct {
+	DestinationKey types.String   `tfsdk:"destination_key"`
+	IfNotExists    types.Bool     `tfsdk:"if_not_exists"`
+	SourceKeys     []types.String `tfsdk:"source_keys"`
+}
+
+type ruleQuery struct {
+	Addition    []queryAddition `tfsdk:"addition"`
+	IfNotExists types.Bool      `tfsdk:"if_not_exists"`
+	Query       types.String    `tfsdk:"query"`
+}
+
+type queryAddition struct {
+	Key   types.String `tfsdk:"key"`
+	Value types.String `tfsdk:"value"`
+}
+
+type referenceTable struct {
+	CaseInsensitivity types.Bool                `tfsdk:"case_insensitivity"`
+	FieldPairs        []referenceTableFieldPair `tfsdk:"field_pairs"`
+	IfNotExists       types.Bool                `tfsdk:"if_not_exists"`
+	SourceKeys        []types.String            `tfsdk:"source_keys"`
+	TableName         types.String              `tfsdk:"table_name"`
+}
+
+type referenceTableFieldPair struct {
+	InputColumn types.String `tfsdk:"input_column"`
+	OutputKey   types.String `tfsdk:"output_key"`
+}
+
+func (r *tagPipelineRulesetResource) Metadata(_ context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+	resp.TypeName = "tag_pipeline_ruleset"
+}
+
+func (r *tagPipelineRulesetResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
+	resp.Schema = schema.Schema{
+		Description: "Provides a Datadog Tag Pipeline Ruleset resource.",
+		Attributes: map[string]schema.Attribute{
+			"id": schema.StringAttribute{
+				Optional:    true,
+				Computed:    true,
+				Description: "The ID of the ruleset.",
+			},
+			"name": schema.StringAttribute{
+				Required:    true,
+				Description: "The name of the ruleset.",
+			},
+			"enabled": schema.BoolAttribute{
+				Optional:    true,
+				Computed:    true,
+				Description: "Whether the ruleset is enabled.",
+			},
+			"position": schema.Int64Attribute{
+				Computed:    true,
+				Description: "The position of the ruleset in the pipeline.",
+			},
+			"version": schema.Int64Attribute{
+				Computed:    true,
+				Description: "The version of the ruleset.",
+			},
+		},
+		Blocks: map[string]schema.Block{
+			"rules": schema.ListNestedBlock{
+				Description: "The rules in the ruleset.",
+				NestedObject: schema.NestedBlockObject{
+					Attributes: map[string]schema.Attribute{
+						"enabled": schema.BoolAttribute{
+							Required:    true,
+							Description: "Whether the rule is enabled.",
+						},
+						"name": schema.StringAttribute{
+							Required:    true,
+							Description: "The name of the rule.",
+						},
+					},
+					Blocks: map[string]schema.Block{
+						"mapping": schema.ListNestedBlock{
+							Description: "The mapping configuration for the rule.",
+							Validators: []validator.List{
+								listvalidator.SizeAtMost(1),
+							},
+							NestedObject: schema.NestedBlockObject{
+								Attributes: map[string]schema.Attribute{
+									"destination_key": schema.StringAttribute{
+										Required:    true,
+										Description: "The destination key for the mapping.",
+									},
+									"if_not_exists": schema.BoolAttribute{
+										Optional:    true,
+										Description: "Whether to apply the mapping only if the destination key doesn't exist.",
+									},
+									"source_keys": schema.ListAttribute{
+										ElementType: types.StringType,
+										Required:    true,
+										Description: "The source keys for the mapping.",
+									},
+								},
+							},
+						},
+						"query": schema.ListNestedBlock{
+							Description: "The query configuration for the rule.",
+							Validators: []validator.List{
+								listvalidator.SizeAtMost(1),
+							},
+							NestedObject: schema.NestedBlockObject{
+								Attributes: map[string]schema.Attribute{
+									"if_not_exists": schema.BoolAttribute{
+										Optional:    true,
+										Description: "Whether to apply the query only if the key doesn't exist.",
+									},
+									"query": schema.StringAttribute{
+										Required:    true,
+										Description: "The query string.",
+									},
+								},
+								Blocks: map[string]schema.Block{
+									"addition": schema.ListNestedBlock{
+										Description: "The addition configuration for the query.",
+										Validators: []validator.List{
+											listvalidator.SizeAtMost(1),
+										},
+										NestedObject: schema.NestedBlockObject{
+											Attributes: map[string]schema.Attribute{
+												"key": schema.StringAttribute{
+													Required:    true,
+													Description: "The key to add.",
+												},
+												"value": schema.StringAttribute{
+													Required:    true,
+													Description: "The value to add.",
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+						"reference_table": schema.ListNestedBlock{
+							Description: "The reference table configuration for the rule.",
+							Validators: []validator.List{
+								listvalidator.SizeAtMost(1),
+							},
+							NestedObject: schema.NestedBlockObject{
+								Attributes: map[string]schema.Attribute{
+									"case_insensitivity": schema.BoolAttribute{
+										Optional:    true,
+										Description: "Whether the reference table lookup is case insensitive.",
+									},
+									"if_not_exists": schema.BoolAttribute{
+										Optional:    true,
+										Description: "Whether to apply the reference table only if the key doesn't exist.",
+									},
+									"source_keys": schema.ListAttribute{
+										ElementType: types.StringType,
+										Required:    true,
+										Description: "The source keys for the reference table lookup.",
+									},
+									"table_name": schema.StringAttribute{
+										Required:    true,
+										Description: "The name of the reference table.",
+									},
+								},
+								Blocks: map[string]schema.Block{
+									"field_pairs": schema.ListNestedBlock{
+										Description: "The field pairs for the reference table.",
+										NestedObject: schema.NestedBlockObject{
+											Attributes: map[string]schema.Attribute{
+												"input_column": schema.StringAttribute{
+													Required:    true,
+													Description: "The input column name.",
+												},
+												"output_key": schema.StringAttribute{
+													Required:    true,
+													Description: "The output key name.",
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+}
+
+func (r *tagPipelineRulesetResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
+	providerData := req.ProviderData.(*FrameworkProvider)
+	r.Api = providerData.DatadogApiInstances.GetCloudCostManagementApiV2()
+	r.Auth = providerData.Auth
+}
+
+// --- CRUD ---
+
+func (r *tagPipelineRulesetResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+	var plan tagPipelineRulesetModel
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	apiReq := buildCreateRulesetRequestFromModel(plan)
+	apiResp, response, err := r.Api.CreateRuleset(r.Auth, apiReq)
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating ruleset", utils.TranslateClientError(err, response, "").Error())
+		return
+	}
+
+	setModelFromRulesetResp(&plan, apiResp)
+
+	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
+}
+
+func (r *tagPipelineRulesetResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
+	var state tagPipelineRulesetModel
+	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	apiResp, response, err := r.Api.GetRuleset(r.Auth, state.ID.ValueString())
+	if err != nil {
+		resp.Diagnostics.AddError("Error reading ruleset", utils.TranslateClientError(err, response, "").Error())
+		return
+	}
+
+	setModelFromRulesetResp(&state, apiResp)
+
+	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+}
+
+func (r *tagPipelineRulesetResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+	var plan tagPipelineRulesetModel
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	apiReq := buildUpdateRulesetRequestFromModel(plan)
+	apiResp, response, err := r.Api.UpdateRuleset(r.Auth, plan.ID.ValueString(), apiReq)
+	if err != nil {
+		resp.Diagnostics.AddError("Error updating ruleset", utils.TranslateClientError(err, response, "").Error())
+		return
+	}
+
+	setModelFromRulesetResp(&plan, apiResp)
+
+	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
+}
+
+func (r *tagPipelineRulesetResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+	var state tagPipelineRulesetModel
+	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	_, err := r.Api.DeleteRuleset(r.Auth, state.ID.ValueString())
+	if err != nil {
+		resp.Diagnostics.AddError("Error deleting ruleset", err.Error())
+		return
+	}
+}
+
+func (r *tagPipelineRulesetResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+	resource.ImportStatePassthroughID(ctx, frameworkPath.Root("id"), req, resp)
+}
+
+// --- Helper functions to map between model and API types ---
+
+func buildCreateRulesetRequestFromModel(plan tagPipelineRulesetModel) datadogV2.CreateRulesetRequest {
+	// Convert rules
+	var rules []datadogV2.CreateRulesetRequestDataAttributesRulesItems
+	for _, r := range plan.Rules {
+		rule := datadogV2.CreateRulesetRequestDataAttributesRulesItems{
+			Enabled: r.Enabled.ValueBool(),
+			Name:    r.Name.ValueString(),
+		}
+
+		// Set mapping if provided
+		if len(r.Mapping) > 0 {
+			mappingItem := r.Mapping[0]
+			sourceKeys := make([]string, len(mappingItem.SourceKeys))
+			for i, sk := range mappingItem.SourceKeys {
+				sourceKeys[i] = sk.ValueString()
+			}
+			mapping := datadogV2.CreateRulesetRequestDataAttributesRulesItemsMapping{
+				DestinationKey: mappingItem.DestinationKey.ValueString(),
+				IfNotExists:    mappingItem.IfNotExists.ValueBool(),
+				SourceKeys:     sourceKeys,
+			}
+			rule.Mapping = *datadogV2.NewNullableCreateRulesetRequestDataAttributesRulesItemsMapping(&mapping)
+		} else {
+			rule.Mapping = *datadogV2.NewNullableCreateRulesetRequestDataAttributesRulesItemsMapping(nil)
+		}
+
+		// Set query if provided
+		if len(r.Query) > 0 {
+			queryItem := r.Query[0]
+			query := datadogV2.CreateRulesetRequestDataAttributesRulesItemsQuery{
+				IfNotExists: queryItem.IfNotExists.ValueBool(),
+				Query:       queryItem.Query.ValueString(),
+			}
+			if len(queryItem.Addition) > 0 {
+				additionItem := queryItem.Addition[0]
+				addition := datadogV2.CreateRulesetRequestDataAttributesRulesItemsQueryAddition{
+					Key:   additionItem.Key.ValueString(),
+					Value: additionItem.Value.ValueString(),
+				}
+				query.Addition = *datadogV2.NewNullableCreateRulesetRequestDataAttributesRulesItemsQueryAddition(&addition)
+			}
+			rule.Query = *datadogV2.NewNullableCreateRulesetRequestDataAttributesRulesItemsQuery(&query)
+		} else {
+			rule.Query = *datadogV2.NewNullableCreateRulesetRequestDataAttributesRulesItemsQuery(nil)
+		}
+
+		// Set reference table if provided
+		if len(r.ReferenceTable) > 0 {
+			refTableItem := r.ReferenceTable[0]
+			var fieldPairs []datadogV2.CreateRulesetRequestDataAttributesRulesItemsReferenceTableFieldPairsItems
+			for _, fp := range refTableItem.FieldPairs {
+				fieldPairs = append(fieldPairs, datadogV2.CreateRulesetRequestDataAttributesRulesItemsReferenceTableFieldPairsItems{
+					InputColumn: fp.InputColumn.ValueString(),
+					OutputKey:   fp.OutputKey.ValueString(),
+				})
+			}
+			sourceKeys := make([]string, len(refTableItem.SourceKeys))
+			for i, sk := range refTableItem.SourceKeys {
+				sourceKeys[i] = sk.ValueString()
+			}
+			refTable := datadogV2.CreateRulesetRequestDataAttributesRulesItemsReferenceTable{
+				CaseInsensitivity: refTableItem.CaseInsensitivity.ValueBoolPointer(),
+				FieldPairs:        fieldPairs,
+				IfNotExists:       refTableItem.IfNotExists.ValueBoolPointer(),
+				SourceKeys:        sourceKeys,
+				TableName:         refTableItem.TableName.ValueString(),
+			}
+			rule.ReferenceTable = *datadogV2.NewNullableCreateRulesetRequestDataAttributesRulesItemsReferenceTable(&refTable)
+		} else {
+			rule.ReferenceTable = *datadogV2.NewNullableCreateRulesetRequestDataAttributesRulesItemsReferenceTable(nil)
+		}
+
+		rules = append(rules, rule)
+	}
+
+	// Build attributes
+	attributes := datadogV2.CreateRulesetRequestDataAttributes{
+		Rules: rules,
+	}
+	if !plan.Enabled.IsNull() {
+		attributes.Enabled = plan.Enabled.ValueBoolPointer()
+	}
+
+	// Build data
+	data := datadogV2.CreateRulesetRequestData{
+		Attributes: &attributes,
+		Type:       datadogV2.CREATERULESETREQUESTDATATYPE_CREATE_RULESET,
+	}
+
+	// Build and return the top-level object
+	return datadogV2.CreateRulesetRequest{
+		Data: &data,
+	}
+}
+
+func buildUpdateRulesetRequestFromModel(plan tagPipelineRulesetModel) datadogV2.UpdateRulesetRequest {
+	// Convert rules
+	var rules []datadogV2.UpdateRulesetRequestDataAttributesRulesItems
+	for _, r := range plan.Rules {
+		rule := datadogV2.UpdateRulesetRequestDataAttributesRulesItems{
+			Enabled: r.Enabled.ValueBool(),
+			Name:    r.Name.ValueString(),
+		}
+
+		// Set mapping if provided
+		if len(r.Mapping) > 0 {
+			mappingItem := r.Mapping[0]
+			sourceKeys := make([]string, len(mappingItem.SourceKeys))
+			for i, sk := range mappingItem.SourceKeys {
+				sourceKeys[i] = sk.ValueString()
+			}
+			mapping := datadogV2.UpdateRulesetRequestDataAttributesRulesItemsMapping{
+				DestinationKey: mappingItem.DestinationKey.ValueString(),
+				IfNotExists:    mappingItem.IfNotExists.ValueBool(),
+				SourceKeys:     sourceKeys,
+			}
+			rule.Mapping = *datadogV2.NewNullableUpdateRulesetRequestDataAttributesRulesItemsMapping(&mapping)
+		} else {
+			rule.Mapping = *datadogV2.NewNullableUpdateRulesetRequestDataAttributesRulesItemsMapping(nil)
+		}
+
+		// Set query if provided
+		if len(r.Query) > 0 {
+			queryItem := r.Query[0]
+			query := datadogV2.UpdateRulesetRequestDataAttributesRulesItemsQuery{
+				IfNotExists: queryItem.IfNotExists.ValueBool(),
+				Query:       queryItem.Query.ValueString(),
+			}
+			if len(queryItem.Addition) > 0 {
+				additionItem := queryItem.Addition[0]
+				addition := datadogV2.UpdateRulesetRequestDataAttributesRulesItemsQueryAddition{
+					Key:   additionItem.Key.ValueString(),
+					Value: additionItem.Value.ValueString(),
+				}
+				query.Addition = *datadogV2.NewNullableUpdateRulesetRequestDataAttributesRulesItemsQueryAddition(&addition)
+			}
+			rule.Query = *datadogV2.NewNullableUpdateRulesetRequestDataAttributesRulesItemsQuery(&query)
+		} else {
+			rule.Query = *datadogV2.NewNullableUpdateRulesetRequestDataAttributesRulesItemsQuery(nil)
+		}
+
+		// Set reference table if provided
+		if len(r.ReferenceTable) > 0 {
+			refTableItem := r.ReferenceTable[0]
+			var fieldPairs []datadogV2.UpdateRulesetRequestDataAttributesRulesItemsReferenceTableFieldPairsItems
+			for _, fp := range refTableItem.FieldPairs {
+				fieldPairs = append(fieldPairs, datadogV2.UpdateRulesetRequestDataAttributesRulesItemsReferenceTableFieldPairsItems{
+					InputColumn: fp.InputColumn.ValueString(),
+					OutputKey:   fp.OutputKey.ValueString(),
+				})
+			}
+			sourceKeys := make([]string, len(refTableItem.SourceKeys))
+			for i, sk := range refTableItem.SourceKeys {
+				sourceKeys[i] = sk.ValueString()
+			}
+			refTable := datadogV2.UpdateRulesetRequestDataAttributesRulesItemsReferenceTable{
+				CaseInsensitivity: refTableItem.CaseInsensitivity.ValueBoolPointer(),
+				FieldPairs:        fieldPairs,
+				IfNotExists:       refTableItem.IfNotExists.ValueBoolPointer(),
+				SourceKeys:        sourceKeys,
+				TableName:         refTableItem.TableName.ValueString(),
+			}
+			rule.ReferenceTable = *datadogV2.NewNullableUpdateRulesetRequestDataAttributesRulesItemsReferenceTable(&refTable)
+		} else {
+			rule.ReferenceTable = *datadogV2.NewNullableUpdateRulesetRequestDataAttributesRulesItemsReferenceTable(nil)
+		}
+
+		rules = append(rules, rule)
+	}
+
+	// Build attributes
+	attributes := datadogV2.UpdateRulesetRequestDataAttributes{
+		Enabled:     plan.Enabled.ValueBool(),
+		LastVersion: plan.Version.ValueInt64Pointer(),
+		Rules:       rules,
+	}
+
+	// Build data
+	data := datadogV2.UpdateRulesetRequestData{
+		Attributes: &attributes,
+		Type:       datadogV2.UPDATERULESETREQUESTDATATYPE_UPDATE_RULESET,
+	}
+
+	// Build and return the top-level object
+	return datadogV2.UpdateRulesetRequest{
+		Data: &data,
+	}
+}
+
+func setModelFromRulesetResp(model *tagPipelineRulesetModel, apiResp datadogV2.RulesetResp) {
+	if apiResp.Data == nil || apiResp.Data.Attributes == nil {
+		return
+	}
+	data := apiResp.Data
+	attr := data.Attributes
+
+	// Set top-level fields
+	if data.Id != nil {
+		model.ID = types.StringValue(*data.Id)
+	}
+	if attr.Name != "" {
+		model.Name = types.StringValue(attr.Name)
+	}
+	model.Enabled = types.BoolValue(attr.Enabled)
+	model.Position = types.Int64Value(int64(attr.Position))
+	model.Version = types.Int64Value(attr.Version)
+
+	// Set rules
+	var rules []ruleItem
+	for _, apiRule := range attr.Rules {
+		rule := ruleItem{
+			Enabled: types.BoolValue(apiRule.Enabled),
+			Name:    types.StringValue(apiRule.Name),
+		}
+
+		// Set mapping if present
+		if apiRule.Mapping.IsSet() {
+			mappingVal := apiRule.Mapping.Get()
+			if mappingVal != nil {
+				sourceKeys := make([]types.String, len(mappingVal.SourceKeys))
+				for i, sk := range mappingVal.SourceKeys {
+					sourceKeys[i] = types.StringValue(sk)
+				}
+				rule.Mapping = []ruleMapping{{
+					DestinationKey: types.StringValue(mappingVal.DestinationKey),
+					IfNotExists:    types.BoolValue(mappingVal.IfNotExists),
+					SourceKeys:     sourceKeys,
+				}}
+			}
+		}
+
+		// Set query if present
+		if apiRule.Query.IsSet() {
+			queryVal := apiRule.Query.Get()
+			if queryVal != nil {
+				query := ruleQuery{
+					IfNotExists: types.BoolValue(queryVal.IfNotExists),
+					Query:       types.StringValue(queryVal.Query),
+				}
+				if queryVal.Addition.IsSet() {
+					additionVal := queryVal.Addition.Get()
+					if additionVal != nil {
+						query.Addition = []queryAddition{{
+							Key:   types.StringValue(additionVal.Key),
+							Value: types.StringValue(additionVal.Value),
+						}}
+					}
+				}
+				rule.Query = []ruleQuery{query}
+			}
+		}
+
+		// Set reference table if present
+		if apiRule.ReferenceTable.IsSet() {
+			refTableVal := apiRule.ReferenceTable.Get()
+			if refTableVal != nil {
+				var fieldPairs []referenceTableFieldPair
+				for _, fp := range refTableVal.FieldPairs {
+					fieldPairs = append(fieldPairs, referenceTableFieldPair{
+						InputColumn: types.StringValue(fp.InputColumn),
+						OutputKey:   types.StringValue(fp.OutputKey),
+					})
+				}
+				sourceKeys := make([]types.String, len(refTableVal.SourceKeys))
+				for i, sk := range refTableVal.SourceKeys {
+					sourceKeys[i] = types.StringValue(sk)
+				}
+				rule.ReferenceTable = []referenceTable{{
+					CaseInsensitivity: types.BoolPointerValue(refTableVal.CaseInsensitivity),
+					FieldPairs:        fieldPairs,
+					IfNotExists:       types.BoolPointerValue(refTableVal.IfNotExists),
+					SourceKeys:        sourceKeys,
+					TableName:         types.StringValue(refTableVal.TableName),
+				}}
+			}
+		}
+
+		rules = append(rules, rule)
+	}
+	model.Rules = rules
+}
