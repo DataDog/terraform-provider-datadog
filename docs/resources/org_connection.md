@@ -3,12 +3,12 @@
 page_title: "datadog_org_connection Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Provides a Datadog Org Connection resource. Org Connections make data from a source org available in the sink org for selected connection data types (e.g., logs or metrics). Org Connections can only be created from a source org to a specified sink org
+  Provides a Datadog Org Connection resource. Org Connections make data from a source org available in the destination org for selected connection data types (e.g., logs or metrics). Org Connections can only be created from a source org to a specified destination org
 ---
 
 # datadog_org_connection (Resource)
 
-Provides a Datadog Org Connection resource. Org Connections make data from a source org available in the sink org for selected connection data types (e.g., logs or metrics). Org Connections can only be created from a source org to a specified sink org
+Provides a Datadog Org Connection resource. Org Connections make data from a source org available in the destination org for selected connection data types (e.g., logs or metrics). Org Connections can only be created from a source org to a specified destination org
 
 ## Example Usage
 
