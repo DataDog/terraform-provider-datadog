@@ -1133,6 +1133,7 @@ Optional:
 - `http_server` (Block List) The `http_server` source collects logs over HTTP POST from external services. (see [below for nested schema](#nestedblock--config--sources--http_server))
 - `kafka` (Block List) The `kafka` source ingests data from Apache Kafka topics. (see [below for nested schema](#nestedblock--config--sources--kafka))
 - `logstash` (Block List) The `logstash` source ingests logs from a Logstash forwarder. (see [below for nested schema](#nestedblock--config--sources--logstash))
+- `opentelemetry` (Block List) The `opentelemetry` source receives OpenTelemetry data through gRPC or HTTP. (see [below for nested schema](#nestedblock--config--sources--opentelemetry))
 - `rsyslog` (Block List) The `rsyslog` source listens for logs over TCP or UDP from an `rsyslog` server using the syslog protocol. (see [below for nested schema](#nestedblock--config--sources--rsyslog))
 - `socket` (Block List) The `socket` source ingests logs over TCP or UDP. (see [below for nested schema](#nestedblock--config--sources--socket))
 - `splunk_hec` (Block List) The `splunk_hec` source implements the Splunk HTTP Event Collector (HEC) API. (see [below for nested schema](#nestedblock--config--sources--splunk_hec))
@@ -1413,6 +1414,28 @@ Optional:
 
 <a id="nestedblock--config--sources--logstash--tls"></a>
 ### Nested Schema for `config.sources.logstash.tls`
+
+Optional:
+
+- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
+- `crt_file` (String) Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.
+- `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
+
+
+
+<a id="nestedblock--config--sources--opentelemetry"></a>
+### Nested Schema for `config.sources.opentelemetry`
+
+Required:
+
+- `id` (String) The unique identifier for this component. Used to reference this component in other parts of the pipeline (e.g., as input to downstream components).
+
+Optional:
+
+- `tls` (Block, Optional) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--sources--opentelemetry--tls))
+
+<a id="nestedblock--config--sources--opentelemetry--tls"></a>
+### Nested Schema for `config.sources.opentelemetry.tls`
 
 Optional:
 
