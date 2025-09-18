@@ -69,6 +69,11 @@ func (d *tagPipelineRulesetDataSource) Schema(_ context.Context, _ datasource.Sc
 							Description: "The name of the rule.",
 							Computed:    true,
 						},
+						"metadata": schema.MapAttribute{
+							ElementType: types.StringType,
+							Computed:    true,
+							Description: "Rule metadata key-value pairs.",
+						},
 					},
 					Blocks: map[string]schema.Block{
 						"mapping": schema.SingleNestedBlock{
@@ -92,6 +97,10 @@ func (d *tagPipelineRulesetDataSource) Schema(_ context.Context, _ datasource.Sc
 						"query": schema.SingleNestedBlock{
 							Description: "The query configuration for the rule.",
 							Attributes: map[string]schema.Attribute{
+								"case_insensitivity": schema.BoolAttribute{
+									Description: "Whether the query matching is case insensitive.",
+									Computed:    true,
+								},
 								"if_not_exists": schema.BoolAttribute{
 									Description: "Whether to apply the query only if the key doesn't exist.",
 									Computed:    true,
@@ -195,11 +204,19 @@ func setDataSourceModelFromRulesetResp(model *tagPipelineRulesetDataSourceModel,
 	attr := data.Attributes
 
 	// Set top-level fields
-	if data.Id != nil {
+	if data.Id != nil && *data.Id != "" {
 		model.ID = types.StringValue(*data.Id)
+	} else {
+		model.ID = types.StringValue("")
 	}
+	// The ruleset name comes from attributes.name, not from data.Id
 	if attr.Name != "" {
 		model.Name = types.StringValue(attr.Name)
+	} else {
+		// Fallback: if attributes.name is empty, try using the data.Id (original name)
+		if data.Id != nil {
+			model.Name = types.StringValue(*data.Id)
+		}
 	}
 	model.Enabled = types.BoolValue(attr.Enabled)
 	model.Position = types.Int64Value(int64(attr.Position))
@@ -213,6 +230,24 @@ func setDataSourceModelFromRulesetResp(model *tagPipelineRulesetDataSourceModel,
 			Name:    types.StringValue(apiRule.Name),
 		}
 
+		// Set metadata if present
+		if len(apiRule.Metadata) > 0 {
+			metadata := make(map[string]types.String)
+			for k, v := range apiRule.Metadata {
+				metadata[k] = types.StringValue(v)
+			}
+			mapValue, diags := types.MapValueFrom(context.Background(), types.StringType, metadata)
+			if diags.HasError() {
+				// Handle error - for now just set null
+				rule.Metadata = types.MapNull(types.StringType)
+			} else {
+				rule.Metadata = mapValue
+			}
+		} else {
+			// Set empty map
+			rule.Metadata = types.MapNull(types.StringType)
+		}
+
 		// Set mapping if present
 		if apiRule.Mapping.IsSet() {
 			mappingVal := apiRule.Mapping.Get()
@@ -221,11 +256,11 @@ func setDataSourceModelFromRulesetResp(model *tagPipelineRulesetDataSourceModel,
 				for i, sk := range mappingVal.SourceKeys {
 					sourceKeys[i] = types.StringValue(sk)
 				}
-				rule.Mapping = []ruleMapping{{
+				rule.Mapping = &ruleMapping{
 					DestinationKey: types.StringValue(mappingVal.DestinationKey),
 					IfNotExists:    types.BoolValue(mappingVal.IfNotExists),
 					SourceKeys:     sourceKeys,
-				}}
+				}
 			}
 		}
 
@@ -233,20 +268,21 @@ func setDataSourceModelFromRulesetResp(model *tagPipelineRulesetDataSourceModel,
 		if apiRule.Query.IsSet() {
 			queryVal := apiRule.Query.Get()
 			if queryVal != nil {
-				query := ruleQuery{
-					IfNotExists: types.BoolValue(queryVal.IfNotExists),
-					Query:       types.StringValue(queryVal.Query),
+				query := &ruleQuery{
+					CaseInsensitivity: types.BoolPointerValue(queryVal.CaseInsensitivity),
+					IfNotExists:       types.BoolValue(queryVal.IfNotExists),
+					Query:             types.StringValue(queryVal.Query),
 				}
 				if queryVal.Addition.IsSet() {
 					additionVal := queryVal.Addition.Get()
 					if additionVal != nil {
-						query.Addition = []queryAddition{{
+						query.Addition = &queryAddition{
 							Key:   types.StringValue(additionVal.Key),
 							Value: types.StringValue(additionVal.Value),
-						}}
+						}
 					}
 				}
-				rule.Query = []ruleQuery{query}
+				rule.Query = query
 			}
 		}
 
@@ -265,13 +301,13 @@ func setDataSourceModelFromRulesetResp(model *tagPipelineRulesetDataSourceModel,
 				for i, sk := range refTableVal.SourceKeys {
 					sourceKeys[i] = types.StringValue(sk)
 				}
-				rule.ReferenceTable = []referenceTable{{
+				rule.ReferenceTable = &referenceTable{
 					CaseInsensitivity: types.BoolPointerValue(refTableVal.CaseInsensitivity),
 					FieldPairs:        fieldPairs,
 					IfNotExists:       types.BoolPointerValue(refTableVal.IfNotExists),
 					SourceKeys:        sourceKeys,
 					TableName:         types.StringValue(refTableVal.TableName),
-				}}
+				}
 			}
 		}
 
