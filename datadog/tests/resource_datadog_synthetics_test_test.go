@@ -4264,6 +4264,10 @@ func updateSyntheticsBrowserTestStep(ctx context.Context, accProvider *schema.Pr
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "browser_step.1.params.0.value", "1"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_step.1.params.0.modifiers.0", "Meta"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_step.1.params.0.modifiers.1", "Control"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "browser_step.2.type", "typeText"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "browser_step.2.params.0.append_to_content", "false"),
@@ -4342,6 +4346,7 @@ resource "datadog_synthetics_test" "bar" {
 
 	    params {
 	        value = "1"
+	        modifiers = ["Meta", "Control"]
 	    }
 	}
 
