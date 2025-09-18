@@ -1354,7 +1354,7 @@ Optional:
 - `check` (String) Check type to use for an assertion step. Valid values are `equals`, `notEquals`, `contains`, `notContains`, `startsWith`, `notStartsWith`, `greater`, `lower`, `greaterEquals`, `lowerEquals`, `matchRegex`, `between`, `isEmpty`, `notIsEmpty`.
 - `delay` (Number) Delay between each key stroke for a "type test" step.
 - `direction` (String) Valid values are `up`, `down`, `left`, `right`.
-- `element` (Block List, Max: 1) Element to use for the step, JSON encoded string. (see [below for nested schema](#nestedblock--mobile_step--params--element))
+- `element` (Block List, Max: 1) Element to use for the step (see [below for nested schema](#nestedblock--mobile_step--params--element))
 - `enable` (Boolean)
 - `max_scrolls` (Number)
 - `positions` (Block List) (see [below for nested schema](#nestedblock--mobile_step--params--positions))
