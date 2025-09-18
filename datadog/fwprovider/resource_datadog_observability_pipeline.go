@@ -292,6 +292,7 @@ type fieldValue struct {
 type destinationsModel struct {
 	DatadogLogsDestination            []*datadogLogsDestinationModel                                   `tfsdk:"datadog_logs"`
 	GoogleCloudStorageDestination     []*gcsDestinationModel                                           `tfsdk:"google_cloud_storage"`
+	GooglePubSubDestination           []*googlePubSubDestinationModel                                  `tfsdk:"google_pubsub"`
 	SplunkHecDestination              []*splunkHecDestinationModel                                     `tfsdk:"splunk_hec"`
 	SumoLogicDestination              []*sumoLogicDestinationModel                                     `tfsdk:"sumo_logic"`
 	RsyslogDestination                []*rsyslogDestinationModel                                       `tfsdk:"rsyslog"`
@@ -350,6 +351,16 @@ type googleChronicleDestinationModel struct {
 	CustomerId types.String  `tfsdk:"customer_id"`
 	Encoding   types.String  `tfsdk:"encoding"`
 	LogType    types.String  `tfsdk:"log_type"`
+}
+
+type googlePubSubDestinationModel struct {
+	Id       types.String  `tfsdk:"id"`
+	Inputs   types.List    `tfsdk:"inputs"`
+	Project  types.String  `tfsdk:"project"`
+	Topic    types.String  `tfsdk:"topic"`
+	Auth     *gcpAuthModel `tfsdk:"auth"`
+	Encoding types.String  `tfsdk:"encoding"`
+	Tls      *tlsModel     `tfsdk:"tls"`
 }
 
 type datadogLogsDestinationModel struct {
@@ -1914,6 +1925,46 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 									},
 								},
 							},
+							"google_pubsub": schema.ListNestedBlock{
+								Description: "The `google_pubsub` destination publishes logs to a Google Cloud Pub/Sub topic.",
+								NestedObject: schema.NestedBlockObject{
+									Attributes: map[string]schema.Attribute{
+										"id": schema.StringAttribute{
+											Required:    true,
+											Description: "The unique identifier for this component.",
+										},
+										"inputs": schema.ListAttribute{
+											Required:    true,
+											ElementType: types.StringType,
+											Description: "A list of component IDs whose output is used as the `input` for this component.",
+										},
+										"project": schema.StringAttribute{
+											Required:    true,
+											Description: "The GCP project ID that owns the Pub/Sub topic.",
+										},
+										"topic": schema.StringAttribute{
+											Required:    true,
+											Description: "The Pub/Sub topic name to publish logs to.",
+										},
+										"encoding": schema.StringAttribute{
+											Optional:    true,
+											Description: "Encoding format for log events. Valid values: `json`, `raw_message`.",
+										},
+									},
+									Blocks: map[string]schema.Block{
+										"auth": schema.SingleNestedBlock{
+											Description: "GCP credentials used to authenticate with Google Cloud Pub/Sub.",
+											Attributes: map[string]schema.Attribute{
+												"credentials_file": schema.StringAttribute{
+													Optional:    true,
+													Description: "Path to the GCP service account key file.",
+												},
+											},
+										},
+										"tls": tlsSchema(),
+									},
+								},
+							},
 							"splunk_hec": schema.ListNestedBlock{
 								Description: "The `splunk_hec` destination forwards logs to Splunk using the HTTP Event Collector (HEC).",
 								NestedObject: schema.NestedBlockObject{
@@ -2541,6 +2592,9 @@ func expandPipeline(ctx context.Context, state *observabilityPipelineModel) (*da
 	for _, d := range state.Config.Destinations.GoogleCloudStorageDestination {
 		config.Destinations = append(config.Destinations, expandGoogleCloudStorageDestination(ctx, d))
 	}
+	for _, d := range state.Config.Destinations.GooglePubSubDestination {
+		config.Destinations = append(config.Destinations, expandGooglePubSubDestination(ctx, d))
+	}
 	for _, d := range state.Config.Destinations.SumoLogicDestination {
 		config.Destinations = append(config.Destinations, expandSumoLogicDestination(ctx, d))
 	}
@@ -2742,6 +2796,10 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 
 		if gcs := flattenGoogleCloudStorageDestination(ctx, d.ObservabilityPipelineGoogleCloudStorageDestination); gcs != nil {
 			outCfg.Destinations.GoogleCloudStorageDestination = append(outCfg.Destinations.GoogleCloudStorageDestination, gcs)
+		}
+
+		if pubsub := flattenGooglePubSubDestination(ctx, d.ObservabilityPipelineGooglePubSubDestination); pubsub != nil {
+			outCfg.Destinations.GooglePubSubDestination = append(outCfg.Destinations.GooglePubSubDestination, pubsub)
 		}
 
 		if s := flattenSumoLogicDestination(ctx, d.ObservabilityPipelineSumoLogicDestination); s != nil {
@@ -3531,6 +3589,67 @@ func flattenGoogleCloudStorageDestination(ctx context.Context, src *datadogV2.Ob
 		Metadata: metadata,
 		Inputs:   inputs,
 	}
+}
+
+func expandGooglePubSubDestination(ctx context.Context, d *googlePubSubDestinationModel) datadogV2.ObservabilityPipelineConfigDestinationItem {
+	dest := datadogV2.NewObservabilityPipelineGooglePubSubDestinationWithDefaults()
+	dest.SetId(d.Id.ValueString())
+	dest.SetProject(d.Project.ValueString())
+	dest.SetTopic(d.Topic.ValueString())
+
+	if !d.Encoding.IsNull() {
+		dest.SetEncoding(datadogV2.ObservabilityPipelineGooglePubSubDestinationEncoding(d.Encoding.ValueString()))
+	}
+
+	if d.Auth != nil {
+		auth := datadogV2.ObservabilityPipelineGcpAuth{}
+		auth.SetCredentialsFile(d.Auth.CredentialsFile.ValueString())
+		dest.SetAuth(auth)
+	}
+
+	if d.Tls != nil {
+		dest.Tls = expandTls(d.Tls)
+	}
+
+	var inputs []string
+	d.Inputs.ElementsAs(ctx, &inputs, false)
+	dest.SetInputs(inputs)
+
+	return datadogV2.ObservabilityPipelineConfigDestinationItem{
+		ObservabilityPipelineGooglePubSubDestination: dest,
+	}
+}
+
+func flattenGooglePubSubDestination(ctx context.Context, src *datadogV2.ObservabilityPipelineGooglePubSubDestination) *googlePubSubDestinationModel {
+	if src == nil {
+		return nil
+	}
+
+	inputs, _ := types.ListValueFrom(ctx, types.StringType, src.GetInputs())
+
+	out := &googlePubSubDestinationModel{
+		Id:      types.StringValue(src.GetId()),
+		Project: types.StringValue(src.GetProject()),
+		Topic:   types.StringValue(src.GetTopic()),
+		Inputs:  inputs,
+	}
+
+	if encoding, ok := src.GetEncodingOk(); ok {
+		out.Encoding = types.StringValue(string(*encoding))
+	}
+
+	if auth, ok := src.GetAuthOk(); ok {
+		out.Auth = &gcpAuthModel{
+			CredentialsFile: types.StringValue(auth.CredentialsFile),
+		}
+	}
+
+	if src.Tls != nil {
+		tls := flattenTls(src.Tls)
+		out.Tls = &tls
+	}
+
+	return out
 }
 
 func expandSplunkTcpSource(src *splunkTcpSourceModel) datadogV2.ObservabilityPipelineConfigSourceItem {
