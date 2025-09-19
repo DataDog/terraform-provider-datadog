@@ -35,18 +35,18 @@ type syntheticsGlobalVariableResource struct {
 }
 
 type syntheticsGlobalVariableModel struct {
-	Id               types.String                                    `tfsdk:"id"`
-	Name             types.String                                    `tfsdk:"name"`
-	Description      types.String                                    `tfsdk:"description"`
-	Tags             types.List                                      `tfsdk:"tags"`
-	Value            types.String                                    `tfsdk:"value"`
-	Secure           types.Bool                                      `tfsdk:"secure"`
-	ParseTestId      types.String                                    `tfsdk:"parse_test_id"`
-	ParseTestOptions []syntheticsGlobalVariableParseTestOptionsModel `tfsdk:"parse_test_options"`
-	Options          []syntheticsGlobalVariableOptionsModel          `tfsdk:"options"`
-	RestrictedRoles  types.Set                                       `tfsdk:"restricted_roles"`
-	IsTotp           types.Bool                                      `tfsdk:"is_totp"`
-	IsFido           types.Bool                                      `tfsdk:"is_fido"`
+	Id               types.String `tfsdk:"id"`
+	Name             types.String `tfsdk:"name"`
+	Description      types.String `tfsdk:"description"`
+	Tags             types.List   `tfsdk:"tags"`
+	Value            types.String `tfsdk:"value"`
+	Secure           types.Bool   `tfsdk:"secure"`
+	ParseTestId      types.String `tfsdk:"parse_test_id"`
+	ParseTestOptions types.List   `tfsdk:"parse_test_options"`
+	Options          types.List   `tfsdk:"options"`
+	RestrictedRoles  types.Set    `tfsdk:"restricted_roles"`
+	IsTotp           types.Bool   `tfsdk:"is_totp"`
+	IsFido           types.Bool   `tfsdk:"is_fido"`
 }
 
 type syntheticsGlobalVariableParseTestOptionsModel struct {
@@ -55,17 +55,48 @@ type syntheticsGlobalVariableParseTestOptionsModel struct {
 	Parser            []syntheticsGlobalVariableParserModel `tfsdk:"parser"`
 	LocalVariableName types.String                          `tfsdk:"local_variable_name"`
 }
+
+func (syntheticsGlobalVariableParseTestOptionsModel) AttributeTypes(ctx context.Context) map[string]attr.Type {
+	return map[string]attr.Type{
+		"field":               types.StringType,
+		"type":                types.StringType,
+		"parser":              types.ListType{ElemType: types.ObjectType{AttrTypes: syntheticsGlobalVariableParserModel{}.AttributeTypes(ctx)}},
+		"local_variable_name": types.StringType,
+	}
+}
+
 type syntheticsGlobalVariableParserModel struct {
 	Type  types.String `tfsdk:"type"`
 	Value types.String `tfsdk:"value"`
 }
 
+func (syntheticsGlobalVariableParserModel) AttributeTypes(ctx context.Context) map[string]attr.Type {
+	return map[string]attr.Type{
+		"type":  types.StringType,
+		"value": types.StringType,
+	}
+}
+
 type syntheticsGlobalVariableOptionsModel struct {
 	TotpParameters []syntheticsGlobalVariableTotpParametersModel `tfsdk:"totp_parameters"`
 }
+
+func (syntheticsGlobalVariableOptionsModel) AttributeTypes(ctx context.Context) map[string]attr.Type {
+	return map[string]attr.Type{
+		"totp_parameters": types.ListType{ElemType: types.ObjectType{AttrTypes: syntheticsGlobalVariableTotpParametersModel{}.AttributeTypes(ctx)}},
+	}
+}
+
 type syntheticsGlobalVariableTotpParametersModel struct {
 	Digits          types.Int64 `tfsdk:"digits"`
 	RefreshInterval types.Int64 `tfsdk:"refresh_interval"`
+}
+
+func (syntheticsGlobalVariableTotpParametersModel) AttributeTypes(ctx context.Context) map[string]attr.Type {
+	return map[string]attr.Type{
+		"digits":           types.Int64Type,
+		"refresh_interval": types.Int64Type,
+	}
 }
 
 func NewSyntheticsGlobalVariableResource() resource.Resource {
@@ -356,7 +387,7 @@ func (r *syntheticsGlobalVariableResource) updateState(ctx context.Context, stat
 			state.Secure = types.BoolValue(*secure)
 		}
 		if options, ok := value.GetOptionsOk(); ok {
-
+			var optionsList []syntheticsGlobalVariableOptionsModel
 			localVariableOptions := syntheticsGlobalVariableOptionsModel{}
 			if totpParameters, ok := options.GetTotpParametersOk(); ok {
 				localTotpParameters := syntheticsGlobalVariableTotpParametersModel{}
@@ -364,7 +395,8 @@ func (r *syntheticsGlobalVariableResource) updateState(ctx context.Context, stat
 				localTotpParameters.RefreshInterval = types.Int64Value(int64(totpParameters.GetRefreshInterval()))
 				localVariableOptions.TotpParameters = []syntheticsGlobalVariableTotpParametersModel{localTotpParameters}
 			}
-			state.Options = []syntheticsGlobalVariableOptionsModel{localVariableOptions}
+			optionsList = append(optionsList, localVariableOptions)
+			state.Options, _ = types.ListValueFrom(ctx, types.ObjectType{AttrTypes: syntheticsGlobalVariableOptionsModel{}.AttributeTypes(ctx)}, optionsList)
 		}
 	}
 
@@ -376,6 +408,7 @@ func (r *syntheticsGlobalVariableResource) updateState(ctx context.Context, stat
 		state.ParseTestId = types.StringValue(*parseTestId)
 
 		if parseTestOptions, ok := resp.GetParseTestOptionsOk(); ok {
+			var parseTestOptionsList []syntheticsGlobalVariableParseTestOptionsModel
 			localParseTestOptions := syntheticsGlobalVariableParseTestOptionsModel{}
 			localParseTestOptions.Type = types.StringValue(string(parseTestOptions.GetType()))
 			if field, ok := parseTestOptions.GetFieldOk(); ok {
@@ -393,7 +426,8 @@ func (r *syntheticsGlobalVariableResource) updateState(ctx context.Context, stat
 				localParseTestOptions.LocalVariableName = types.StringValue(*localVariableName)
 			}
 
-			state.ParseTestOptions = []syntheticsGlobalVariableParseTestOptionsModel{localParseTestOptions}
+			parseTestOptionsList = append(parseTestOptionsList, localParseTestOptions)
+			state.ParseTestOptions, _ = types.ListValueFrom(ctx, types.ObjectType{AttrTypes: syntheticsGlobalVariableParseTestOptionsModel{}.AttributeTypes(ctx)}, parseTestOptionsList)
 		}
 	}
 }
@@ -432,32 +466,40 @@ func (r *syntheticsGlobalVariableResource) buildSyntheticsGlobalVariableRequestB
 	}
 
 	if !state.ParseTestId.IsNull() {
-		if len(state.ParseTestOptions) > 0 {
+		if !state.ParseTestOptions.IsNull() && len(state.ParseTestOptions.Elements()) > 0 {
 			syntheticsGlobalVariableRequest.SetParseTestPublicId(state.ParseTestId.ValueString())
 
-			var parseTestOptions datadogV1.SyntheticsGlobalVariableParseTestOptions
-			if !state.ParseTestOptions[0].Field.IsNull() {
-				parseTestOptions.SetField(state.ParseTestOptions[0].Field.ValueString())
-			}
-			if !state.ParseTestOptions[0].LocalVariableName.IsNull() {
-				parseTestOptions.SetLocalVariableName(state.ParseTestOptions[0].LocalVariableName.ValueString())
-			}
-			if !state.ParseTestOptions[0].Type.IsNull() {
-				parseTestOptions.SetType(datadogV1.SyntheticsGlobalVariableParseTestOptionsType(state.ParseTestOptions[0].Type.ValueString()))
+			var parseTestOptionsList []syntheticsGlobalVariableParseTestOptionsModel
+			diags.Append(state.ParseTestOptions.ElementsAs(ctx, &parseTestOptionsList, false)...)
+			if diags.HasError() {
+				return nil, diags
 			}
 
-			if len(state.ParseTestOptions[0].Parser) > 0 {
-				var parser datadogV1.SyntheticsVariableParser
+			if len(parseTestOptionsList) > 0 {
+				var parseTestOptions datadogV1.SyntheticsGlobalVariableParseTestOptions
+				if !parseTestOptionsList[0].Field.IsNull() {
+					parseTestOptions.SetField(parseTestOptionsList[0].Field.ValueString())
+				}
+				if !parseTestOptionsList[0].LocalVariableName.IsNull() {
+					parseTestOptions.SetLocalVariableName(parseTestOptionsList[0].LocalVariableName.ValueString())
+				}
+				if !parseTestOptionsList[0].Type.IsNull() {
+					parseTestOptions.SetType(datadogV1.SyntheticsGlobalVariableParseTestOptionsType(parseTestOptionsList[0].Type.ValueString()))
+				}
 
-				if !state.ParseTestOptions[0].Parser[0].Type.IsNull() {
-					parser.SetType(datadogV1.SyntheticsGlobalVariableParserType(state.ParseTestOptions[0].Parser[0].Type.ValueString()))
+				if len(parseTestOptionsList[0].Parser) > 0 {
+					var parser datadogV1.SyntheticsVariableParser
+
+					if !parseTestOptionsList[0].Parser[0].Type.IsNull() {
+						parser.SetType(datadogV1.SyntheticsGlobalVariableParserType(parseTestOptionsList[0].Parser[0].Type.ValueString()))
+					}
+					if !parseTestOptionsList[0].Parser[0].Value.IsNull() {
+						parser.SetValue(parseTestOptionsList[0].Parser[0].Value.ValueString())
+					}
+					parseTestOptions.Parser = &parser
 				}
-				if !state.ParseTestOptions[0].Parser[0].Value.IsNull() {
-					parser.SetValue(state.ParseTestOptions[0].Parser[0].Value.ValueString())
-				}
-				parseTestOptions.Parser = &parser
+				syntheticsGlobalVariableRequest.ParseTestOptions = &parseTestOptions
 			}
-			syntheticsGlobalVariableRequest.ParseTestOptions = &parseTestOptions
 		}
 	}
 
@@ -469,21 +511,29 @@ func (r *syntheticsGlobalVariableResource) buildSyntheticsGlobalVariableRequestB
 			value.SetSecure(state.Secure.ValueBool())
 		}
 
-		if len(state.Options) > 0 {
-			var options datadogV1.SyntheticsGlobalVariableOptions
-
-			if len(state.Options[0].TotpParameters) > 0 {
-				var totpParameters datadogV1.SyntheticsGlobalVariableTOTPParameters
-
-				if !state.Options[0].TotpParameters[0].Digits.IsNull() {
-					totpParameters.SetDigits(int32(state.Options[0].TotpParameters[0].Digits.ValueInt64()))
-				}
-				if !state.Options[0].TotpParameters[0].RefreshInterval.IsNull() {
-					totpParameters.SetRefreshInterval(int32(state.Options[0].TotpParameters[0].RefreshInterval.ValueInt64()))
-				}
-				options.TotpParameters = &totpParameters
+		if !state.Options.IsNull() && len(state.Options.Elements()) > 0 {
+			var optionsList []syntheticsGlobalVariableOptionsModel
+			diags.Append(state.Options.ElementsAs(ctx, &optionsList, false)...)
+			if diags.HasError() {
+				return nil, diags
 			}
-			value.Options = &options
+
+			if len(optionsList) > 0 {
+				var options datadogV1.SyntheticsGlobalVariableOptions
+
+				if len(optionsList[0].TotpParameters) > 0 {
+					var totpParameters datadogV1.SyntheticsGlobalVariableTOTPParameters
+
+					if !optionsList[0].TotpParameters[0].Digits.IsNull() {
+						totpParameters.SetDigits(int32(optionsList[0].TotpParameters[0].Digits.ValueInt64()))
+					}
+					if !optionsList[0].TotpParameters[0].RefreshInterval.IsNull() {
+						totpParameters.SetRefreshInterval(int32(optionsList[0].TotpParameters[0].RefreshInterval.ValueInt64()))
+					}
+					options.TotpParameters = &totpParameters
+				}
+				value.Options = &options
+			}
 		}
 		syntheticsGlobalVariableRequest.Value = &value
 	}
