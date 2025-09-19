@@ -88,6 +88,12 @@ func datadogSecurityMonitoringRuleSchema(includeValidate bool) map[string]*schem
 												Optional:    true,
 												Description: "Duration of the action in seconds.",
 											},
+											"flagged_ip_type": {
+												Type:             schema.TypeString,
+												ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewSecurityMonitoringRuleCaseActionOptionsFlaggedIPTypeFromValue),
+												Optional:         true,
+												Description:      "Used with the case action of type 'flag_ip'. Indicates whether the IP should me marked as FLAGGED or SUSPICIOUS.",
+											},
 										},
 									},
 								},
@@ -1270,6 +1276,9 @@ func buildPayloadCaseActions(tfActions []any) []datadogV2.SecurityMonitoringRule
 			for k, v := range tfOptions {
 				if k == "duration" {
 					payloadOptions.SetDuration(int64(v.(int)))
+				} else if k == "flagged_ip_type" {
+					flaggedIPTypeFromValue := datadogV2.SecurityMonitoringRuleCaseActionOptionsFlaggedIPType(v.(string))
+					payloadOptions.SetFlaggedIpType(flaggedIPTypeFromValue)
 				}
 			}
 		}
@@ -1511,6 +1520,9 @@ func extractRuleCases(responseRulesCases []datadogV2.SecurityMonitoringRuleCase)
 					tfOptions := make(map[string]interface{})
 					if duration, ok := options.GetDurationOk(); ok {
 						tfOptions["duration"] = duration
+					}
+					if flaggedIPType, ok := options.GetFlaggedIpTypeOk(); ok {
+						tfOptions["flagged_ip_type"] = flaggedIPType
 					}
 					if len(tfOptions) > 0 {
 						tfAction["options"] = []any{tfOptions}
