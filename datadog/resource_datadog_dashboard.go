@@ -11106,8 +11106,7 @@ func buildTerraformNumberFormatFormulaSchema(datadogStyle datadogV1.WidgetNumber
 		m["unit"] = []map[string]interface{}{unit}
 	}
 	if v, ok := datadogStyle.GetUnitScaleOk(); ok {
-		unitScale := map[string]interface{}{}
-		unitScale["unit_name"] = []map[string]interface{}{{"unit_name": v.UnitName}}
+		unitScale := map[string]interface{}{"unit_name": v.UnitName}
 		m["unit_scale"] = []map[string]interface{}{unitScale}
 	}
 	return []map[string]interface{}{m}
