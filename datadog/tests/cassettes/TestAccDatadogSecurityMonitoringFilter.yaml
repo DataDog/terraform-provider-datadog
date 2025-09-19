@@ -1,169 +1,322 @@
+---
 version: 2
 interactions:
-- request:
-    body: |
-      {"data":{"attributes":{"exclusion_filters":[{"name":"first","query":"does not really match much"},{"name":"second","query":"neither does it"}],"filtered_data_type":"logs","is_enabled":true,"name":"tf-TestAccDatadogSecurityMonitoringFilter-local-1665663120","query":"first query - tf-TestAccDatadogSecurityMonitoringFilter-local-1665663120"},"type":"security_filters"}}
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/security_filters
-    method: POST
-    id: 0
-  response:
-    body: |
-      {"data":{"attributes":{"is_enabled":true,"name":"tf-TestAccDatadogSecurityMonitoringFilter-local-1665663120","filtered_data_type":"logs","exclusion_filters":[{"query":"does not really match much","name":"first"},{"query":"neither does it","name":"second"}],"version":1,"query":"first query - tf-TestAccDatadogSecurityMonitoringFilter-local-1665663120","is_builtin":false},"type":"security_filters","id":"zfq-8b1-bv4"}}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/security_filters/zfq-8b1-bv4
-    method: GET
-    id: 1
-  response:
-    body: |
-      {"data":{"attributes":{"is_enabled":true,"name":"tf-TestAccDatadogSecurityMonitoringFilter-local-1665663120","filtered_data_type":"logs","exclusion_filters":[{"query":"does not really match much","name":"first"},{"query":"neither does it","name":"second"}],"version":1,"query":"first query - tf-TestAccDatadogSecurityMonitoringFilter-local-1665663120","is_builtin":false},"type":"security_filters","id":"zfq-8b1-bv4"}}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/security_filters/zfq-8b1-bv4
-    method: GET
-    id: 2
-  response:
-    body: |
-      {"data":{"attributes":{"is_enabled":true,"name":"tf-TestAccDatadogSecurityMonitoringFilter-local-1665663120","filtered_data_type":"logs","exclusion_filters":[{"query":"does not really match much","name":"first"},{"query":"neither does it","name":"second"}],"version":1,"query":"first query - tf-TestAccDatadogSecurityMonitoringFilter-local-1665663120","is_builtin":false},"type":"security_filters","id":"zfq-8b1-bv4"}}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/security_filters/zfq-8b1-bv4
-    method: GET
-    id: 3
-  response:
-    body: |
-      {"data":{"attributes":{"is_enabled":true,"name":"tf-TestAccDatadogSecurityMonitoringFilter-local-1665663120","filtered_data_type":"logs","exclusion_filters":[{"query":"does not really match much","name":"first"},{"query":"neither does it","name":"second"}],"version":1,"query":"first query - tf-TestAccDatadogSecurityMonitoringFilter-local-1665663120","is_builtin":false},"type":"security_filters","id":"zfq-8b1-bv4"}}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: |
-      {"data":{"attributes":{"exclusion_filters":[{"name":"first","query":"does not really match much"},{"name":"third","query":"I am new"}],"filtered_data_type":"logs","is_enabled":false,"name":"tf-TestAccDatadogSecurityMonitoringFilter-local-1665663120","query":"new query - tf-TestAccDatadogSecurityMonitoringFilter-local-1665663120","version":1},"type":"security_filters"}}
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/security_filters/zfq-8b1-bv4
-    method: PATCH
-    id: 4
-  response:
-    body: |
-      {"data":{"attributes":{"is_enabled":false,"name":"tf-TestAccDatadogSecurityMonitoringFilter-local-1665663120","filtered_data_type":"logs","exclusion_filters":[{"query":"does not really match much","name":"first"},{"query":"I am new","name":"third"}],"version":2,"query":"new query - tf-TestAccDatadogSecurityMonitoringFilter-local-1665663120","is_builtin":false},"type":"security_filters","id":"zfq-8b1-bv4"}}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/security_filters/zfq-8b1-bv4
-    method: GET
-    id: 5
-  response:
-    body: |
-      {"data":{"attributes":{"is_enabled":false,"name":"tf-TestAccDatadogSecurityMonitoringFilter-local-1665663120","filtered_data_type":"logs","exclusion_filters":[{"query":"does not really match much","name":"first"},{"query":"I am new","name":"third"}],"version":2,"query":"new query - tf-TestAccDatadogSecurityMonitoringFilter-local-1665663120","is_builtin":false},"type":"security_filters","id":"zfq-8b1-bv4"}}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/security_filters/zfq-8b1-bv4
-    method: GET
-    id: 6
-  response:
-    body: |
-      {"data":{"attributes":{"is_enabled":false,"name":"tf-TestAccDatadogSecurityMonitoringFilter-local-1665663120","filtered_data_type":"logs","exclusion_filters":[{"query":"does not really match much","name":"first"},{"query":"I am new","name":"third"}],"version":2,"query":"new query - tf-TestAccDatadogSecurityMonitoringFilter-local-1665663120","is_builtin":false},"type":"security_filters","id":"zfq-8b1-bv4"}}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - '*/*'
-    url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/security_filters/zfq-8b1-bv4
-    method: DELETE
-    id: 7
-  response:
-    body: ""
-    headers:
-      Content-Type:
-      - text/html; charset=utf-8
-    status: 204 No Content
-    code: 204
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/security_filters/zfq-8b1-bv4
-    method: GET
-    id: 8
-  response:
-    body: |
-      {"errors":["not_found(Security filter with id 'zfq-8b1-bv4' not found)"]}
-    headers:
-      Content-Type:
-      - application/json
-    status: 404 Not Found
-    code: 404
-    duration: "0ms"
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 369
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"exclusion_filters":[{"name":"first","query":"does not really match much"},{"name":"second","query":"neither does it"}],"filtered_data_type":"logs","is_enabled":true,"name":"tf-TestAccDatadogSecurityMonitoringFilter-local-1758293437","query":"first query - tf-TestAccDatadogSecurityMonitoringFilter-local-1758293437"},"type":"security_filters"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/security_filters
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"nmv-r73-6pm","attributes":{"version":1,"name":"tf-TestAccDatadogSecurityMonitoringFilter-local-1758293437","query":"first query - tf-TestAccDatadogSecurityMonitoringFilter-local-1758293437","is_enabled":true,"exclusion_filters":[{"name":"first","query":"does not really match much"},{"name":"second","query":"neither does it"}],"filtered_data_type":"logs","is_builtin":false},"type":"security_filters"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 196.096583ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/security_filters/nmv-r73-6pm
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"nmv-r73-6pm","attributes":{"version":1,"name":"tf-TestAccDatadogSecurityMonitoringFilter-local-1758293437","query":"first query - tf-TestAccDatadogSecurityMonitoringFilter-local-1758293437","is_enabled":true,"exclusion_filters":[{"name":"first","query":"does not really match much"},{"name":"second","query":"neither does it"}],"filtered_data_type":"logs","is_builtin":false},"type":"security_filters"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 153.885375ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/security_filters/nmv-r73-6pm
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"nmv-r73-6pm","attributes":{"version":1,"name":"tf-TestAccDatadogSecurityMonitoringFilter-local-1758293437","query":"first query - tf-TestAccDatadogSecurityMonitoringFilter-local-1758293437","is_enabled":true,"exclusion_filters":[{"name":"first","query":"does not really match much"},{"name":"second","query":"neither does it"}],"filtered_data_type":"logs","is_builtin":false},"type":"security_filters"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 150.107833ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/security_filters/nmv-r73-6pm
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"nmv-r73-6pm","attributes":{"version":1,"name":"tf-TestAccDatadogSecurityMonitoringFilter-local-1758293437","query":"first query - tf-TestAccDatadogSecurityMonitoringFilter-local-1758293437","is_enabled":true,"exclusion_filters":[{"name":"first","query":"does not really match much"},{"name":"second","query":"neither does it"}],"filtered_data_type":"logs","is_builtin":false},"type":"security_filters"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 182.092583ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 372
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"exclusion_filters":[{"name":"first","query":"does not really match much"},{"name":"third","query":"I am new"}],"filtered_data_type":"logs","is_enabled":false,"name":"tf-TestAccDatadogSecurityMonitoringFilter-local-1758293437","query":"new query - tf-TestAccDatadogSecurityMonitoringFilter-local-1758293437","version":1},"type":"security_filters"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/security_filters/nmv-r73-6pm
+        method: PATCH
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"nmv-r73-6pm","attributes":{"version":2,"name":"tf-TestAccDatadogSecurityMonitoringFilter-local-1758293437","query":"new query - tf-TestAccDatadogSecurityMonitoringFilter-local-1758293437","is_enabled":false,"exclusion_filters":[{"name":"first","query":"does not really match much"},{"name":"third","query":"I am new"}],"filtered_data_type":"logs","is_builtin":false},"type":"security_filters"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 215.166125ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/security_filters/nmv-r73-6pm
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"nmv-r73-6pm","attributes":{"version":2,"name":"tf-TestAccDatadogSecurityMonitoringFilter-local-1758293437","query":"new query - tf-TestAccDatadogSecurityMonitoringFilter-local-1758293437","is_enabled":false,"exclusion_filters":[{"name":"first","query":"does not really match much"},{"name":"third","query":"I am new"}],"filtered_data_type":"logs","is_builtin":false},"type":"security_filters"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 149.400958ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/security_filters/nmv-r73-6pm
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"nmv-r73-6pm","attributes":{"version":2,"name":"tf-TestAccDatadogSecurityMonitoringFilter-local-1758293437","query":"new query - tf-TestAccDatadogSecurityMonitoringFilter-local-1758293437","is_enabled":false,"exclusion_filters":[{"name":"first","query":"does not really match much"},{"name":"third","query":"I am new"}],"filtered_data_type":"logs","is_builtin":false},"type":"security_filters"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 152.076ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/security_filters/nmv-r73-6pm
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Content-Type:
+                - text/html; charset=utf-8
+        status: 204 No Content
+        code: 204
+        duration: 204.161791ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/security_filters/nmv-r73-6pm
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"errors":["not_found(Security filter with id 'nmv-r73-6pm' not found)"]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 231.855084ms
