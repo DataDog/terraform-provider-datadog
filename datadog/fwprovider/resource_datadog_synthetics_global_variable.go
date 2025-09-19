@@ -79,25 +79,6 @@ type syntheticsGlobalVariableModel struct {
 	IsFido           types.Bool   `tfsdk:"is_fido"`
 }
 
-type syntheticsGlobalVariableParseTestOptionsModel struct {
-	Field             types.String                          `tfsdk:"field"`
-	Type              types.String                          `tfsdk:"type"`
-	Parser            []syntheticsGlobalVariableParserModel `tfsdk:"parser"`
-	LocalVariableName types.String                          `tfsdk:"local_variable_name"`
-}
-type syntheticsGlobalVariableParserModel struct {
-	Type  types.String `tfsdk:"type"`
-	Value types.String `tfsdk:"value"`
-}
-
-type syntheticsGlobalVariableOptionsModel struct {
-	TotpParameters []syntheticsGlobalVariableTotpParametersModel `tfsdk:"totp_parameters"`
-}
-type syntheticsGlobalVariableTotpParametersModel struct {
-	Digits          types.Int64 `tfsdk:"digits"`
-	RefreshInterval types.Int64 `tfsdk:"refresh_interval"`
-}
-
 func NewSyntheticsGlobalVariableResource() resource.Resource {
 	return &syntheticsGlobalVariableResource{}
 }
@@ -307,7 +288,7 @@ func convertParseTestOptions(ctx context.Context, opts types.List) ([]datadogV1.
 				parserObj := parserElements[0].(types.Object)
 				parserAttrs := parserObj.Attributes()
 
-				parser := datadogV1.NewSyntheticsGlobalVariableParserWithDefaults()
+				parser := datadogV1.NewSyntheticsVariableParserWithDefaults()
 
 				if pType, ok := parserAttrs["type"].(types.String); ok && !pType.IsNull() && !pType.IsUnknown() {
 					parser.SetType(datadogV1.SyntheticsGlobalVariableParserType(pType.ValueString()))
@@ -379,7 +360,7 @@ func convertApiParseTestOptions(ctx context.Context, opts *[]datadogV1.Synthetic
 		}
 
 		if localVarName, ok := opt.GetLocalVariableNameOk(); ok {
-			attrs["local_variable_name"] = types.StringValue(localVarName)
+			attrs["local_variable_name"] = types.StringValue(*localVarName)
 		}
 
 		obj, d := types.ObjectValue(parseTestOptionsAttrType.AttrTypes, attrs)
@@ -524,7 +505,7 @@ func (r *syntheticsGlobalVariableResource) Read(ctx context.Context, request res
 		return
 	}
 
-	r.updateState(ctx, &state, &resp)
+	response.Diagnostics.Append(r.updateState(ctx, &state, &resp)...)
 
 	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
@@ -552,7 +533,7 @@ func (r *syntheticsGlobalVariableResource) Create(ctx context.Context, request r
 		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
 		return
 	}
-	r.updateState(ctx, &state, &resp)
+	response.Diagnostics.Append(r.updateState(ctx, &state, &resp)...)
 
 	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
@@ -582,7 +563,7 @@ func (r *syntheticsGlobalVariableResource) Update(ctx context.Context, request r
 		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
 		return
 	}
-	r.updateState(ctx, &state, &resp)
+	response.Diagnostics.Append(r.updateState(ctx, &state, &resp)...)
 
 	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
@@ -609,7 +590,8 @@ func (r *syntheticsGlobalVariableResource) Delete(ctx context.Context, request r
 	}
 }
 
-func (r *syntheticsGlobalVariableResource) updateState(ctx context.Context, state *syntheticsGlobalVariableModel, resp *datadogV1.SyntheticsGlobalVariable) {
+func (r *syntheticsGlobalVariableResource) updateState(ctx context.Context, state *syntheticsGlobalVariableModel, resp *datadogV1.SyntheticsGlobalVariable) diag.Diagnostics {
+	var diags diag.Diagnostics
 	state.Id = types.StringValue(resp.GetId())
 
 	state.Name = types.StringValue(resp.GetName())
@@ -628,7 +610,11 @@ func (r *syntheticsGlobalVariableResource) updateState(ctx context.Context, stat
 			state.Secure = types.BoolValue(*secure)
 		}
 		if options, ok := value.GetOptionsOk(); ok {
-			state.Options, _ = convertApiOptions(ctx, options)
+			opts, convertDiags := convertApiOptions(ctx, options)
+			diags.Append(convertDiags...)
+			if !convertDiags.HasError() {
+				state.Options = opts
+			}
 		}
 	}
 
@@ -640,9 +626,14 @@ func (r *syntheticsGlobalVariableResource) updateState(ctx context.Context, stat
 		state.ParseTestId = types.StringValue(*parseTestId)
 
 		if parseTestOptions, ok := resp.GetParseTestOptionsOk(); ok {
-			state.ParseTestOptions, _ = convertApiParseTestOptions(ctx, &[]datadogV1.SyntheticsGlobalVariableParseTestOptions{*parseTestOptions})
+			opts, convertDiags := convertApiParseTestOptions(ctx, &[]datadogV1.SyntheticsGlobalVariableParseTestOptions{*parseTestOptions})
+			diags.Append(convertDiags...)
+			if !convertDiags.HasError() {
+				state.ParseTestOptions = opts
+			}
 		}
 	}
+	return diags
 }
 
 func (r *syntheticsGlobalVariableResource) buildSyntheticsGlobalVariableRequestBody(ctx context.Context, state *syntheticsGlobalVariableModel) (*datadogV1.SyntheticsGlobalVariableRequest, diag.Diagnostics) {
@@ -682,11 +673,11 @@ func (r *syntheticsGlobalVariableResource) buildSyntheticsGlobalVariableRequestB
 		syntheticsGlobalVariableRequest.SetParseTestPublicId(state.ParseTestId.ValueString())
 
 		if !state.ParseTestOptions.IsNull() && !state.ParseTestOptions.IsUnknown() {
-			parseTestOptions, diags := convertParseTestOptions(ctx, state.ParseTestOptions)
+			parseTestOptions, convertDiags := convertParseTestOptions(ctx, state.ParseTestOptions)
+			diags.Append(convertDiags...)
 			if len(parseTestOptions) > 0 {
 				syntheticsGlobalVariableRequest.ParseTestOptions = &parseTestOptions[0]
 			}
-			diags.Append(diags...)
 		}
 	}
 
@@ -699,8 +690,8 @@ func (r *syntheticsGlobalVariableResource) buildSyntheticsGlobalVariableRequestB
 		}
 
 		if !state.Options.IsNull() && !state.Options.IsUnknown() {
-			options, diags := convertOptions(ctx, state.Options)
-			diags.Append(diags...)
+			options, convertDiags := convertOptions(ctx, state.Options)
+			diags.Append(convertDiags...)
 			if options != nil {
 				value.SetOptions(*options)
 			}
