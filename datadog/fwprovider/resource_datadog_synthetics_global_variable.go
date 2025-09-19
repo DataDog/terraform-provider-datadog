@@ -307,7 +307,7 @@ func convertParseTestOptions(ctx context.Context, opts types.List) ([]datadogV1.
 				parserObj := parserElements[0].(types.Object)
 				parserAttrs := parserObj.Attributes()
 
-				parser := datadogV1.NewSyntheticsGlobalVariableParserWithDefaults()
+				parser := &datadogV1.SyntheticsVariableParser{}
 
 				if pType, ok := parserAttrs["type"].(types.String); ok && !pType.IsNull() && !pType.IsUnknown() {
 					parser.SetType(datadogV1.SyntheticsGlobalVariableParserType(pType.ValueString()))
@@ -379,7 +379,7 @@ func convertApiParseTestOptions(ctx context.Context, opts *[]datadogV1.Synthetic
 		}
 
 		if localVarName, ok := opt.GetLocalVariableNameOk(); ok {
-			attrs["local_variable_name"] = types.StringValue(localVarName)
+			attrs["local_variable_name"] = types.StringValue(*localVarName)
 		}
 
 		obj, d := types.ObjectValue(parseTestOptionsAttrType.AttrTypes, attrs)
@@ -397,7 +397,7 @@ func convertApiParseTestOptions(ctx context.Context, opts *[]datadogV1.Synthetic
 // convertOptions converts Terraform List to API type
 func convertOptions(ctx context.Context, opts types.List) (*datadogV1.SyntheticsGlobalVariableOptions, diag.Diagnostics) {
 	var diags diag.Diagnostics
-	if opts.IsNull() || opts.IsUnknown() || opts.IsFullyNull() || opts.IsFullyUnknown() {
+	if opts.IsNull() || opts.IsUnknown() {
 		return nil, diags
 	}
 
