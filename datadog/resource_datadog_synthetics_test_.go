@@ -1411,7 +1411,7 @@ func syntheticsBrowserStepParams() schema.Schema {
 					Optional:    true,
 					Elem: &schema.Schema{
 						Type:         schema.TypeString,
-						ValidateFunc: validation.StringInSlice([]string{"Alt", "Control", "meta", "Shift"}, false),
+						ValidateFunc: validation.StringInSlice([]string{"Alt", "Control", "Meta", "Shift"}, false),
 					},
 				},
 				"playing_tab_id": {
