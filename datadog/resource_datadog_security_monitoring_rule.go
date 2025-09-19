@@ -303,6 +303,67 @@ func datadogSecurityMonitoringRuleSchema(includeValidate bool) map[string]*schem
 						},
 					},
 
+					"sequence_detection_options": {
+						Type:        schema.TypeList,
+						Optional:    true,
+						MaxItems:    1,
+						Description: "Options for rules using the sequence detection method.",
+						Elem: &schema.Resource{
+							Schema: map[string]*schema.Schema{
+								"steps": {
+									Type:        schema.TypeList,
+									Optional:    true,
+									Description: "Sequence steps.",
+									Elem: &schema.Resource{
+										Schema: map[string]*schema.Schema{
+											"name": {
+												Type:        schema.TypeString,
+												Required:    true,
+												Description: "Unique name of the step.",
+											},
+											"condition": {
+												Type:        schema.TypeString,
+												Required:    true,
+												Description: "Condition for the step to match.",
+											},
+											"evaluation_window": {
+												Type:             schema.TypeInt,
+												Optional:         true,
+												ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewSecurityMonitoringRuleEvaluationWindowFromValue),
+												Description:      "Evaluation window for the step.",
+											},
+										},
+									},
+								},
+								"step_transitions": {
+									Type:        schema.TypeList,
+									Optional:    true,
+									Description: "Edges of the step graph.",
+									Elem: &schema.Resource{
+										Schema: map[string]*schema.Schema{
+											"parent": {
+												Type:        schema.TypeString,
+												Required:    true,
+												Description: "Parent step name.",
+											},
+											"child": {
+												Type:        schema.TypeString,
+												Required:    true,
+												Description: "Child step name.",
+											},
+											"evaluation_window": {
+												Type:             schema.TypeInt,
+												Optional:         true,
+												ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewSecurityMonitoringRuleEvaluationWindowFromValue),
+												Description:      "Maximum time allowed to transition from parent to child.",
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+
 					"decrease_criticality_based_on_env": {
 						Type:        schema.TypeBool,
 						Optional:    true,
@@ -1009,6 +1070,13 @@ func buildPayloadOptions(tfOptionsList []interface{}, ruleType string) *datadogV
 		}
 	}
 
+	if v, ok := tfOptions["sequence_detection_options"]; ok {
+		tfSequenceDetectionOptionsList := v.([]interface{})
+		if payloadSequenceDetectionOptions, ok := buildPayloadSequenceDetectionOptions(tfSequenceDetectionOptionsList); ok {
+			payloadOptions.SequenceDetectionOptions = payloadSequenceDetectionOptions
+		}
+	}
+
 	return payloadOptions
 }
 
@@ -1097,6 +1165,63 @@ func buildPayloadThirdPartyRuleOptions(tfOptionsList []interface{}) (*datadogV2.
 	}
 
 	return payload, hasPayload
+}
+
+func buildPayloadSequenceDetectionOptions(tfOptionsList []interface{}) (*datadogV2.SecurityMonitoringRuleSequenceDetectionOptions, bool) {
+	options := datadogV2.NewSecurityMonitoringRuleSequenceDetectionOptions()
+	hasPayload := false
+
+	tfOptions := extractMapFromInterface(tfOptionsList)
+
+	if v, ok := tfOptions["steps"]; ok {
+		tfSteps := v.([]interface{})
+		if len(tfSteps) > 0 {
+			hasPayload = true
+		}
+		payloadSteps := make([]datadogV2.SecurityMonitoringRuleSequenceDetectionStep, len(tfSteps))
+		for idx, stepIf := range tfSteps {
+			stepMap := stepIf.(map[string]interface{})
+			step := datadogV2.SecurityMonitoringRuleSequenceDetectionStep{}
+			if v, ok := stepMap["name"]; ok {
+				step.SetName(v.(string))
+			}
+			if v, ok := stepMap["condition"]; ok {
+				step.SetCondition(v.(string))
+			}
+			if v, ok := stepMap["evaluation_window"]; ok {
+				ew := datadogV2.SecurityMonitoringRuleEvaluationWindow(v.(int))
+				step.SetEvaluationWindow(ew)
+			}
+			payloadSteps[idx] = step
+		}
+		options.SetSteps(payloadSteps)
+	}
+
+	if v, ok := tfOptions["step_transitions"]; ok {
+		tfTransitions := v.([]interface{})
+		if len(tfTransitions) > 0 {
+			hasPayload = true
+		}
+		payloadTransitions := make([]datadogV2.SecurityMonitoringRuleSequenceDetectionStepTransition, len(tfTransitions))
+		for idx, trIf := range tfTransitions {
+			trMap := trIf.(map[string]interface{})
+			transition := datadogV2.SecurityMonitoringRuleSequenceDetectionStepTransition{}
+			if v, ok := trMap["parent"]; ok {
+				transition.SetParent(v.(string))
+			}
+			if v, ok := trMap["child"]; ok {
+				transition.SetChild(v.(string))
+			}
+			if v, ok := trMap["evaluation_window"]; ok {
+				ew := datadogV2.SecurityMonitoringRuleEvaluationWindow(v.(int))
+				transition.SetEvaluationWindow(ew)
+			}
+			payloadTransitions[idx] = transition
+		}
+		options.SetStepTransitions(payloadTransitions)
+	}
+
+	return options, hasPayload
 }
 
 func buildRootQueryPayload(rootQuery map[string]interface{}) *datadogV2.SecurityMonitoringThirdPartyRootQuery {
@@ -1580,6 +1705,48 @@ func extractTfOptions(options datadogV2.SecurityMonitoringRuleOptions) map[strin
 		tfThirdPartyOptions["root_query"] = tfRootQueries
 
 		tfOptions["third_party_rule_options"] = []map[string]interface{}{tfThirdPartyOptions}
+	}
+	if seqOptions, ok := options.GetSequenceDetectionOptionsOk(); ok {
+		tfSeqOptions := make(map[string]interface{})
+		steps := seqOptions.GetSteps()
+		tfSteps := make([]map[string]interface{}, len(steps))
+		for idx, step := range steps {
+			stepMap := make(map[string]interface{})
+			if name, ok := step.GetNameOk(); ok {
+				stepMap["name"] = *name
+			}
+			if cond, ok := step.GetConditionOk(); ok {
+				stepMap["condition"] = *cond
+			}
+			if ew, ok := step.GetEvaluationWindowOk(); ok {
+				stepMap["evaluation_window"] = *ew
+			}
+			tfSteps[idx] = stepMap
+		}
+		if len(tfSteps) > 0 {
+			tfSeqOptions["steps"] = tfSteps
+		}
+		transitions := seqOptions.GetStepTransitions()
+		tfTransitions := make([]map[string]interface{}, len(transitions))
+		for idx, tr := range transitions {
+			trMap := make(map[string]interface{})
+			if parent, ok := tr.GetParentOk(); ok {
+				trMap["parent"] = *parent
+			}
+			if child, ok := tr.GetChildOk(); ok {
+				trMap["child"] = *child
+			}
+			if ew, ok := tr.GetEvaluationWindowOk(); ok {
+				trMap["evaluation_window"] = *ew
+			}
+			tfTransitions[idx] = trMap
+		}
+		if len(tfTransitions) > 0 {
+			tfSeqOptions["step_transitions"] = tfTransitions
+		}
+		if len(tfSeqOptions) > 0 {
+			tfOptions["sequence_detection_options"] = []map[string]interface{}{tfSeqOptions}
+		}
 	}
 	return tfOptions
 }
