@@ -64,6 +64,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/data_source_datadog_dashboard_list_test":                          "dashboard-lists",
 	"tests/data_source_datadog_dashboard_test":                               "dashboard",
 	"tests/data_source_datadog_hosts_test":                                   "hosts",
+	"tests/data_source_datadog_integration_aws_account_uuid_test":            "integration-aws",
 	"tests/data_source_datadog_integration_aws_logs_services_test":           "integration-aws",
 	"tests/data_source_datadog_integration_aws_available_logs_services_test": "integration-aws",
 	"tests/data_source_datadog_integration_aws_available_namespaces_test":    "integration-aws",
