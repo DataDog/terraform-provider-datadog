@@ -56,13 +56,33 @@ type syntheticsGlobalVariableParseTestOptionsModel struct {
 	LocalVariableName types.String                          `tfsdk:"local_variable_name"`
 }
 
-func (syntheticsGlobalVariableParseTestOptionsModel) AttributeTypes(ctx context.Context) map[string]attr.Type {
-	return map[string]attr.Type{
+var syntheticsGlobalVariableParserAttrType = types.ObjectType{
+	AttrTypes: map[string]attr.Type{
+		"type":  types.StringType,
+		"value": types.StringType,
+	},
+}
+
+var syntheticsGlobalVariableParseTestOptionsAttrType = types.ObjectType{
+	AttrTypes: map[string]attr.Type{
 		"field":               types.StringType,
 		"type":                types.StringType,
-		"parser":              types.ListType{ElemType: types.ObjectType{AttrTypes: syntheticsGlobalVariableParserModel{}.AttributeTypes(ctx)}},
+		"parser":              types.ListType{ElemType: syntheticsGlobalVariableParserAttrType},
 		"local_variable_name": types.StringType,
-	}
+	},
+}
+
+var syntheticsGlobalVariableTotpParametersAttrType = types.ObjectType{
+	AttrTypes: map[string]attr.Type{
+		"digits":           types.Int64Type,
+		"refresh_interval": types.Int64Type,
+	},
+}
+
+var syntheticsGlobalVariableOptionsAttrType = types.ObjectType{
+	AttrTypes: map[string]attr.Type{
+		"totp_parameters": types.ListType{ElemType: syntheticsGlobalVariableTotpParametersAttrType},
+	},
 }
 
 type syntheticsGlobalVariableParserModel struct {
@@ -70,33 +90,13 @@ type syntheticsGlobalVariableParserModel struct {
 	Value types.String `tfsdk:"value"`
 }
 
-func (syntheticsGlobalVariableParserModel) AttributeTypes(ctx context.Context) map[string]attr.Type {
-	return map[string]attr.Type{
-		"type":  types.StringType,
-		"value": types.StringType,
-	}
-}
-
 type syntheticsGlobalVariableOptionsModel struct {
 	TotpParameters []syntheticsGlobalVariableTotpParametersModel `tfsdk:"totp_parameters"`
-}
-
-func (syntheticsGlobalVariableOptionsModel) AttributeTypes(ctx context.Context) map[string]attr.Type {
-	return map[string]attr.Type{
-		"totp_parameters": types.ListType{ElemType: types.ObjectType{AttrTypes: syntheticsGlobalVariableTotpParametersModel{}.AttributeTypes(ctx)}},
-	}
 }
 
 type syntheticsGlobalVariableTotpParametersModel struct {
 	Digits          types.Int64 `tfsdk:"digits"`
 	RefreshInterval types.Int64 `tfsdk:"refresh_interval"`
-}
-
-func (syntheticsGlobalVariableTotpParametersModel) AttributeTypes(ctx context.Context) map[string]attr.Type {
-	return map[string]attr.Type{
-		"digits":           types.Int64Type,
-		"refresh_interval": types.Int64Type,
-	}
 }
 
 func NewSyntheticsGlobalVariableResource() resource.Resource {
@@ -396,7 +396,7 @@ func (r *syntheticsGlobalVariableResource) updateState(ctx context.Context, stat
 				localVariableOptions.TotpParameters = []syntheticsGlobalVariableTotpParametersModel{localTotpParameters}
 			}
 			optionsList = append(optionsList, localVariableOptions)
-			state.Options, _ = types.ListValueFrom(ctx, types.ObjectType{AttrTypes: syntheticsGlobalVariableOptionsModel{}.AttributeTypes(ctx)}, optionsList)
+			state.Options, _ = types.ListValueFrom(ctx, syntheticsGlobalVariableOptionsAttrType, optionsList)
 		}
 	}
 
@@ -427,7 +427,7 @@ func (r *syntheticsGlobalVariableResource) updateState(ctx context.Context, stat
 			}
 
 			parseTestOptionsList = append(parseTestOptionsList, localParseTestOptions)
-			state.ParseTestOptions, _ = types.ListValueFrom(ctx, types.ObjectType{AttrTypes: syntheticsGlobalVariableParseTestOptionsModel{}.AttributeTypes(ctx)}, parseTestOptionsList)
+			state.ParseTestOptions, _ = types.ListValueFrom(ctx, syntheticsGlobalVariableParseTestOptionsAttrType, parseTestOptionsList)
 		}
 	}
 }
