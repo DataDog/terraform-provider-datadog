@@ -34,7 +34,6 @@ type syntheticsGlobalVariableResource struct {
 	Auth context.Context
 }
 
-
 type syntheticsGlobalVariableModel struct {
 	Id               types.String `tfsdk:"id"`
 	Name             types.String `tfsdk:"name"`
@@ -258,7 +257,6 @@ func (r *syntheticsGlobalVariableResource) Schema(_ context.Context, _ resource.
 func (r *syntheticsGlobalVariableResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, frameworkPath.Root("id"), request, response)
 }
-
 
 func (r *syntheticsGlobalVariableResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
 	var state syntheticsGlobalVariableModel
