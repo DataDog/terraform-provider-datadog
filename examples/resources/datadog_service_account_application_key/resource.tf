@@ -9,13 +9,6 @@ resource "datadog_service_account_application_key" "unrestricted_key" {
   # scopes unset - inherits all service account permissions
 }
 
-# Create new service_account_application_key resource with Actions API access (Preview)
-resource "datadog_service_account_application_key" "actions_enabled" {
-  service_account_id        = "00000000-0000-1234-0000-000000000000"
-  name                      = "Application key for managing dashboards with Actions API"
-  enable_actions_api_access = true
-}
-
 # Create a scoped Service Account Application Key for monitor management
 resource "datadog_service_account_application_key" "monitor_management_key" {
   service_account_id = "00000000-0000-1234-0000-000000000000"
@@ -24,4 +17,11 @@ resource "datadog_service_account_application_key" "monitor_management_key" {
     data.datadog_permissions.dd_perms.permissions.monitors_read,
     data.datadog_permissions.dd_perms.permissions.monitors_write
   ]
+}
+
+# Create new service_account_application_key resource with Actions API access (Preview)
+resource "datadog_service_account_application_key" "actions_enabled" {
+  service_account_id        = "00000000-0000-1234-0000-000000000000"
+  name                      = "Application key for managing dashboards with Actions API"
+  enable_actions_api_access = true
 }
