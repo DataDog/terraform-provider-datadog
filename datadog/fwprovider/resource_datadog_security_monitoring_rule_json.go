@@ -61,28 +61,26 @@ func (r *securityMonitoringRuleJSONResource) ImportState(ctx context.Context, re
 }
 
 // Helper to recursively filter API response to only user-supplied fields
-func filterToUserFields(user interface{}, api interface{}) interface{} {
+func filterToUserFields(user any, api any) any {
 	switch userVal := user.(type) {
-	case map[string]interface{}:
-		apiMap, ok := api.(map[string]interface{})
+	case map[string]any:
+		apiMap, ok := api.(map[string]any)
 		if !ok {
 			return user
 		}
-		filtered := make(map[string]interface{})
+		filtered := make(map[string]any)
 		for k, v := range userVal {
 			if apiV, ok := apiMap[k]; ok {
 				filtered[k] = filterToUserFields(v, apiV)
-			} else {
-				filtered[k] = v
 			}
 		}
 		return filtered
-	case []interface{}:
-		apiArr, ok := api.([]interface{})
+	case []any:
+		apiArr, ok := api.([]any)
 		if !ok {
 			return user
 		}
-		filteredArr := make([]interface{}, len(userVal))
+		filteredArr := make([]any, len(userVal))
 		for i := range userVal {
 			if i < len(apiArr) {
 				filteredArr[i] = filterToUserFields(userVal[i], apiArr[i])
@@ -167,13 +165,13 @@ func (r *securityMonitoringRuleJSONResource) Read(ctx context.Context, request r
 		return
 	}
 
-	var userRule map[string]interface{}
+	var userRule map[string]any
 	if err := json.Unmarshal([]byte(state.JSON.ValueString()), &userRule); err != nil {
 		response.Diagnostics.AddError("Failed to parse state JSON", err.Error())
 		return
 	}
 
-	var apiRule map[string]interface{}
+	var apiRule map[string]any
 	var jsonBytes []byte
 	if res.SecurityMonitoringStandardRuleResponse != nil {
 		jsonBytes, err = json.Marshal(res.SecurityMonitoringStandardRuleResponse)
