@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"description":"Test incident type for notification rule","is_default":false,"name":"test-ds-id-1757611915-it"},"type":"incident_types"}}
+            {"data":{"attributes":{"description":"Test incident type for notification rule","is_default":false,"name":"test-ds-id-1758619472-it"},"type":"incident_types"}}
         form: {}
         headers:
             Accept:
@@ -30,13 +30,13 @@ interactions:
         trailer: {}
         content_length: 738
         uncompressed: false
-        body: '{"data":{"id":"186324af-688c-4ffa-9a1d-e7d0abd752ca","type":"incident_types","attributes":{"createdAt":"2025-09-11T17:31:58.020176458Z","createdBy":"3ad549bf-eba0-11e9-a77a-0705486660d0","description":"Test incident type for notification rule","is_default":false,"lastModifiedBy":"3ad549bf-eba0-11e9-a77a-0705486660d0","modifiedAt":"2025-09-11T17:31:58.020176557Z","name":"test-ds-id-1757611915-it","prefix":"IR"},"relationships":{"created_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"google_meet_configuration":{"data":null},"last_modified_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"microsoft_teams_configuration":{"data":null},"zoom_configuration":{"data":null}}}}'
+        body: '{"data":{"id":"c0491436-16d3-499b-877f-b5a95b9deff9","type":"incident_types","attributes":{"createdAt":"2025-09-23T09:24:37.069938367Z","createdBy":"3ad549bf-eba0-11e9-a77a-0705486660d0","description":"Test incident type for notification rule","is_default":false,"lastModifiedBy":"3ad549bf-eba0-11e9-a77a-0705486660d0","modifiedAt":"2025-09-23T09:24:37.069938441Z","name":"test-ds-id-1758619472-it","prefix":"IR"},"relationships":{"created_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"google_meet_configuration":{"data":null},"last_modified_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"microsoft_teams_configuration":{"data":null},"zoom_configuration":{"data":null}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 163.428333ms
+        duration: 437.796375ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -49,7 +49,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"conditions":[{"field":"severity","values":["SEV-1","SEV-2"]}],"enabled":true,"handles":["@team-email@company.com","@slack-channel"],"renotify_on":["status","severity"],"trigger":"incident_created_trigger"},"relationships":{"incident_type":{"data":{"id":"186324af-688c-4ffa-9a1d-e7d0abd752ca","type":"incident_types"}}},"type":"incident_notification_rules"}}
+            {"data":{"attributes":{"conditions":[{"field":"severity","values":["SEV-1","SEV-2"]}],"enabled":true,"handles":["@team-email@company.com","@slack-channel"],"renotify_on":["status","severity"],"trigger":"incident_created_trigger"},"relationships":{"incident_type":{"data":{"id":"c0491436-16d3-499b-877f-b5a95b9deff9","type":"incident_types"}}},"type":"incident_notification_rules"}}
         form: {}
         headers:
             Accept:
@@ -66,13 +66,13 @@ interactions:
         trailer: {}
         content_length: 722
         uncompressed: false
-        body: '{"data":{"id":"de8feed7-a0da-4282-ac9e-b8a6f334f2d0","type":"incident_notification_rules","attributes":{"conditions":[{"field":"severity","values":["SEV-1","SEV-2"]}],"created":"2025-09-11T17:31:58.428519699Z","enabled":true,"handles":["@team-email@company.com","@slack-channel"],"modified":"2025-09-11T17:31:58.428519699Z","renotify_on":["status","severity"],"trigger":"incident_created_trigger","visibility":"organization"},"relationships":{"created_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"incident_type":{"data":{"id":"186324af-688c-4ffa-9a1d-e7d0abd752ca","type":"incident_types"}},"last_modified_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}}}}}'
+        body: '{"data":{"id":"1eed20df-ed99-467d-be96-4f744109527f","type":"incident_notification_rules","attributes":{"conditions":[{"field":"severity","values":["SEV-1","SEV-2"]}],"created":"2025-09-23T09:24:37.471015765Z","enabled":true,"handles":["@team-email@company.com","@slack-channel"],"modified":"2025-09-23T09:24:37.471015765Z","renotify_on":["status","severity"],"trigger":"incident_created_trigger","visibility":"organization"},"relationships":{"created_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"incident_type":{"data":{"id":"c0491436-16d3-499b-877f-b5a95b9deff9","type":"incident_types"}},"last_modified_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 92.557416ms
+        duration: 182.692958ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -89,7 +89,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/incidents/config/notification-rules/de8feed7-a0da-4282-ac9e-b8a6f334f2d0
+        url: https://api.datadoghq.com/api/v2/incidents/config/notification-rules/1eed20df-ed99-467d-be96-4f744109527f
         method: GET
       response:
         proto: HTTP/1.1
@@ -99,13 +99,13 @@ interactions:
         trailer: {}
         content_length: 716
         uncompressed: false
-        body: '{"data":{"id":"de8feed7-a0da-4282-ac9e-b8a6f334f2d0","type":"incident_notification_rules","attributes":{"conditions":[{"field":"severity","values":["SEV-1","SEV-2"]}],"created":"2025-09-11T17:31:58.428519Z","enabled":true,"handles":["@team-email@company.com","@slack-channel"],"modified":"2025-09-11T17:31:58.428519Z","renotify_on":["status","severity"],"trigger":"incident_created_trigger","visibility":"organization"},"relationships":{"created_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"incident_type":{"data":{"id":"186324af-688c-4ffa-9a1d-e7d0abd752ca","type":"incident_types"}},"last_modified_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}}}}}'
+        body: '{"data":{"id":"1eed20df-ed99-467d-be96-4f744109527f","type":"incident_notification_rules","attributes":{"conditions":[{"field":"severity","values":["SEV-1","SEV-2"]}],"created":"2025-09-23T09:24:37.471015Z","enabled":true,"handles":["@team-email@company.com","@slack-channel"],"modified":"2025-09-23T09:24:37.471015Z","renotify_on":["status","severity"],"trigger":"incident_created_trigger","visibility":"organization"},"relationships":{"created_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"incident_type":{"data":{"id":"c0491436-16d3-499b-877f-b5a95b9deff9","type":"incident_types"}},"last_modified_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 90.081625ms
+        duration: 155.632583ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -122,7 +122,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/incidents/config/notification-rules/de8feed7-a0da-4282-ac9e-b8a6f334f2d0
+        url: https://api.datadoghq.com/api/v2/incidents/config/notification-rules/1eed20df-ed99-467d-be96-4f744109527f
         method: GET
       response:
         proto: HTTP/1.1
@@ -132,13 +132,13 @@ interactions:
         trailer: {}
         content_length: 716
         uncompressed: false
-        body: '{"data":{"id":"de8feed7-a0da-4282-ac9e-b8a6f334f2d0","type":"incident_notification_rules","attributes":{"conditions":[{"field":"severity","values":["SEV-1","SEV-2"]}],"created":"2025-09-11T17:31:58.428519Z","enabled":true,"handles":["@team-email@company.com","@slack-channel"],"modified":"2025-09-11T17:31:58.428519Z","renotify_on":["status","severity"],"trigger":"incident_created_trigger","visibility":"organization"},"relationships":{"created_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"incident_type":{"data":{"id":"186324af-688c-4ffa-9a1d-e7d0abd752ca","type":"incident_types"}},"last_modified_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}}}}}'
+        body: '{"data":{"id":"1eed20df-ed99-467d-be96-4f744109527f","type":"incident_notification_rules","attributes":{"conditions":[{"field":"severity","values":["SEV-1","SEV-2"]}],"created":"2025-09-23T09:24:37.471015Z","enabled":true,"handles":["@team-email@company.com","@slack-channel"],"modified":"2025-09-23T09:24:37.471015Z","renotify_on":["status","severity"],"trigger":"incident_created_trigger","visibility":"organization"},"relationships":{"created_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"incident_type":{"data":{"id":"c0491436-16d3-499b-877f-b5a95b9deff9","type":"incident_types"}},"last_modified_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 69.464291ms
+        duration: 452.502208ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -155,7 +155,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/incidents/config/types/186324af-688c-4ffa-9a1d-e7d0abd752ca
+        url: https://api.datadoghq.com/api/v2/incidents/config/types/c0491436-16d3-499b-877f-b5a95b9deff9
         method: GET
       response:
         proto: HTTP/1.1
@@ -165,13 +165,13 @@ interactions:
         trailer: {}
         content_length: 732
         uncompressed: false
-        body: '{"data":{"id":"186324af-688c-4ffa-9a1d-e7d0abd752ca","type":"incident_types","attributes":{"createdAt":"2025-09-11T17:31:58.020176Z","createdBy":"3ad549bf-eba0-11e9-a77a-0705486660d0","description":"Test incident type for notification rule","is_default":false,"lastModifiedBy":"3ad549bf-eba0-11e9-a77a-0705486660d0","modifiedAt":"2025-09-11T17:31:58.020176Z","name":"test-ds-id-1757611915-it","prefix":"IR"},"relationships":{"created_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"google_meet_configuration":{"data":null},"last_modified_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"microsoft_teams_configuration":{"data":null},"zoom_configuration":{"data":null}}}}'
+        body: '{"data":{"id":"c0491436-16d3-499b-877f-b5a95b9deff9","type":"incident_types","attributes":{"createdAt":"2025-09-23T09:24:37.069938Z","createdBy":"3ad549bf-eba0-11e9-a77a-0705486660d0","description":"Test incident type for notification rule","is_default":false,"lastModifiedBy":"3ad549bf-eba0-11e9-a77a-0705486660d0","modifiedAt":"2025-09-23T09:24:37.069938Z","name":"test-ds-id-1758619472-it","prefix":"IR"},"relationships":{"created_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"google_meet_configuration":{"data":null},"last_modified_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"microsoft_teams_configuration":{"data":null},"zoom_configuration":{"data":null}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 53.579125ms
+        duration: 246.176667ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -188,7 +188,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/incidents/config/notification-rules/de8feed7-a0da-4282-ac9e-b8a6f334f2d0
+        url: https://api.datadoghq.com/api/v2/incidents/config/notification-rules/1eed20df-ed99-467d-be96-4f744109527f
         method: GET
       response:
         proto: HTTP/1.1
@@ -198,13 +198,13 @@ interactions:
         trailer: {}
         content_length: 716
         uncompressed: false
-        body: '{"data":{"id":"de8feed7-a0da-4282-ac9e-b8a6f334f2d0","type":"incident_notification_rules","attributes":{"conditions":[{"field":"severity","values":["SEV-1","SEV-2"]}],"created":"2025-09-11T17:31:58.428519Z","enabled":true,"handles":["@team-email@company.com","@slack-channel"],"modified":"2025-09-11T17:31:58.428519Z","renotify_on":["status","severity"],"trigger":"incident_created_trigger","visibility":"organization"},"relationships":{"created_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"incident_type":{"data":{"id":"186324af-688c-4ffa-9a1d-e7d0abd752ca","type":"incident_types"}},"last_modified_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}}}}}'
+        body: '{"data":{"id":"1eed20df-ed99-467d-be96-4f744109527f","type":"incident_notification_rules","attributes":{"conditions":[{"field":"severity","values":["SEV-1","SEV-2"]}],"created":"2025-09-23T09:24:37.471015Z","enabled":true,"handles":["@team-email@company.com","@slack-channel"],"modified":"2025-09-23T09:24:37.471015Z","renotify_on":["status","severity"],"trigger":"incident_created_trigger","visibility":"organization"},"relationships":{"created_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"incident_type":{"data":{"id":"c0491436-16d3-499b-877f-b5a95b9deff9","type":"incident_types"}},"last_modified_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 61.742083ms
+        duration: 259.537042ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -221,7 +221,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/incidents/config/notification-rules/de8feed7-a0da-4282-ac9e-b8a6f334f2d0
+        url: https://api.datadoghq.com/api/v2/incidents/config/notification-rules/1eed20df-ed99-467d-be96-4f744109527f
         method: GET
       response:
         proto: HTTP/1.1
@@ -231,13 +231,13 @@ interactions:
         trailer: {}
         content_length: 716
         uncompressed: false
-        body: '{"data":{"id":"de8feed7-a0da-4282-ac9e-b8a6f334f2d0","type":"incident_notification_rules","attributes":{"conditions":[{"field":"severity","values":["SEV-1","SEV-2"]}],"created":"2025-09-11T17:31:58.428519Z","enabled":true,"handles":["@team-email@company.com","@slack-channel"],"modified":"2025-09-11T17:31:58.428519Z","renotify_on":["status","severity"],"trigger":"incident_created_trigger","visibility":"organization"},"relationships":{"created_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"incident_type":{"data":{"id":"186324af-688c-4ffa-9a1d-e7d0abd752ca","type":"incident_types"}},"last_modified_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}}}}}'
+        body: '{"data":{"id":"1eed20df-ed99-467d-be96-4f744109527f","type":"incident_notification_rules","attributes":{"conditions":[{"field":"severity","values":["SEV-1","SEV-2"]}],"created":"2025-09-23T09:24:37.471015Z","enabled":true,"handles":["@team-email@company.com","@slack-channel"],"modified":"2025-09-23T09:24:37.471015Z","renotify_on":["status","severity"],"trigger":"incident_created_trigger","visibility":"organization"},"relationships":{"created_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"incident_type":{"data":{"id":"c0491436-16d3-499b-877f-b5a95b9deff9","type":"incident_types"}},"last_modified_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 61.934042ms
+        duration: 152.407083ms
     - id: 7
       request:
         proto: HTTP/1.1
@@ -254,7 +254,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/incidents/config/notification-rules/de8feed7-a0da-4282-ac9e-b8a6f334f2d0
+        url: https://api.datadoghq.com/api/v2/incidents/config/notification-rules/1eed20df-ed99-467d-be96-4f744109527f
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -268,7 +268,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 40.279292ms
+        duration: 205.409666ms
     - id: 8
       request:
         proto: HTTP/1.1
@@ -285,7 +285,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/incidents/config/types/186324af-688c-4ffa-9a1d-e7d0abd752ca
+        url: https://api.datadoghq.com/api/v2/incidents/config/types/c0491436-16d3-499b-877f-b5a95b9deff9
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -299,4 +299,4 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 45.202833ms
+        duration: 254.685125ms

@@ -26,19 +26,17 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        transfer_encoding:
-            - chunked
+        transfer_encoding: []
         trailer: {}
-        content_length: -1
-        uncompressed: true
-        body: |
-            {"data":{"type":"ip_allowlist","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5","attributes":{"enabled":false,"entries":[{"data":{"type":"ip_allowlist_entry","attributes":{"modified_at":"2024-10-25T19:43:33.526427+00:00","note":"entry 2","cidr_block":"1.2.3.4/32","created_at":"2024-10-25T19:43:33.526427+00:00"},"id":"38618ef5-612c-483f-a9bd-66c9b1a2ba4f"}},{"data":{"type":"ip_allowlist_entry","attributes":{"modified_at":"2024-10-25T19:43:33.520125+00:00","note":"entry 1","cidr_block":"127.0.0.1/32","created_at":"2024-10-25T18:21:54.808757+00:00"},"id":"ba299ba7-d04f-47a4-9169-aaf806b4ddfd"}},{"data":{"type":"ip_allowlist_entry","attributes":{"modified_at":"2024-10-25T19:43:33.526427+00:00","note":"ipv6 entry","cidr_block":"::/0","created_at":"2024-10-25T19:43:33.526427+00:00"},"id":"00d6a501-e325-43ff-8237-711eaf553aff"}}]}}}
+        content_length: 802
+        uncompressed: false
+        body: '{"data":{"id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5","type":"ip_allowlist","attributes":{"enabled":false,"entries":[{"data":{"id":"cd183d8f-89ad-43df-8002-78ebfd892fd6","type":"ip_allowlist_entry","attributes":{"cidr_block":"1.2.3.4/32","note":"entry 2","created_at":"2025-09-23T09:11:04.818889Z","modified_at":"2025-09-23T09:11:04.818889Z"}}},{"data":{"id":"f4f25d3a-237a-4b6f-8198-7ea5d114c01b","type":"ip_allowlist_entry","attributes":{"cidr_block":"127.0.0.1/32","note":"entry 1","created_at":"2025-09-23T00:43:10.817032Z","modified_at":"2025-09-23T09:11:04.818889Z"}}},{"data":{"id":"41ee7e66-e659-4406-91b6-3711050cc548","type":"ip_allowlist_entry","attributes":{"cidr_block":"::/0","note":"ipv6 entry","created_at":"2025-09-23T09:11:04.818889Z","modified_at":"2025-09-23T09:11:04.818889Z"}}}]}}}'
         headers:
             Content-Type:
-                - application/json
+                - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 186.327917ms
+        duration: 168.211667ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -61,19 +59,17 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        transfer_encoding:
-            - chunked
+        transfer_encoding: []
         trailer: {}
-        content_length: -1
-        uncompressed: true
-        body: |
-            {"data":{"type":"ip_allowlist","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5","attributes":{"enabled":false,"entries":[{"data":{"type":"ip_allowlist_entry","attributes":{"note":"entry 2","modified_at":"2024-10-25T19:43:33.526427+00:00","created_at":"2024-10-25T19:43:33.526427+00:00","cidr_block":"1.2.3.4/32"},"id":"38618ef5-612c-483f-a9bd-66c9b1a2ba4f"}},{"data":{"type":"ip_allowlist_entry","attributes":{"note":"entry 1","modified_at":"2024-10-25T19:43:33.520125+00:00","created_at":"2024-10-25T18:21:54.808757+00:00","cidr_block":"127.0.0.1/32"},"id":"ba299ba7-d04f-47a4-9169-aaf806b4ddfd"}},{"data":{"type":"ip_allowlist_entry","attributes":{"note":"ipv6 entry","modified_at":"2024-10-25T19:43:33.526427+00:00","created_at":"2024-10-25T19:43:33.526427+00:00","cidr_block":"::/0"},"id":"00d6a501-e325-43ff-8237-711eaf553aff"}}]}}}
+        content_length: 802
+        uncompressed: false
+        body: '{"data":{"id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5","type":"ip_allowlist","attributes":{"enabled":false,"entries":[{"data":{"id":"cd183d8f-89ad-43df-8002-78ebfd892fd6","type":"ip_allowlist_entry","attributes":{"cidr_block":"1.2.3.4/32","note":"entry 2","created_at":"2025-09-23T09:11:04.818889Z","modified_at":"2025-09-23T09:11:04.818889Z"}}},{"data":{"id":"f4f25d3a-237a-4b6f-8198-7ea5d114c01b","type":"ip_allowlist_entry","attributes":{"cidr_block":"127.0.0.1/32","note":"entry 1","created_at":"2025-09-23T00:43:10.817032Z","modified_at":"2025-09-23T09:11:04.818889Z"}}},{"data":{"id":"41ee7e66-e659-4406-91b6-3711050cc548","type":"ip_allowlist_entry","attributes":{"cidr_block":"::/0","note":"ipv6 entry","created_at":"2025-09-23T09:11:04.818889Z","modified_at":"2025-09-23T09:11:04.818889Z"}}}]}}}'
         headers:
             Content-Type:
-                - application/json
+                - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 69.188375ms
+        duration: 127.840209ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -96,19 +92,17 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        transfer_encoding:
-            - chunked
+        transfer_encoding: []
         trailer: {}
-        content_length: -1
-        uncompressed: true
-        body: |
-            {"data":{"type":"ip_allowlist","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5","attributes":{"enabled":false,"entries":[{"data":{"type":"ip_allowlist_entry","attributes":{"created_at":"2024-10-25T19:43:33.526427+00:00","note":"entry 2","cidr_block":"1.2.3.4/32","modified_at":"2024-10-25T19:43:33.526427+00:00"},"id":"38618ef5-612c-483f-a9bd-66c9b1a2ba4f"}},{"data":{"type":"ip_allowlist_entry","attributes":{"created_at":"2024-10-25T18:21:54.808757+00:00","note":"entry 1","cidr_block":"127.0.0.1/32","modified_at":"2024-10-25T19:43:33.520125+00:00"},"id":"ba299ba7-d04f-47a4-9169-aaf806b4ddfd"}},{"data":{"type":"ip_allowlist_entry","attributes":{"created_at":"2024-10-25T19:43:33.526427+00:00","note":"ipv6 entry","cidr_block":"::/0","modified_at":"2024-10-25T19:43:33.526427+00:00"},"id":"00d6a501-e325-43ff-8237-711eaf553aff"}}]}}}
+        content_length: 802
+        uncompressed: false
+        body: '{"data":{"id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5","type":"ip_allowlist","attributes":{"enabled":false,"entries":[{"data":{"id":"cd183d8f-89ad-43df-8002-78ebfd892fd6","type":"ip_allowlist_entry","attributes":{"cidr_block":"1.2.3.4/32","note":"entry 2","created_at":"2025-09-23T09:11:04.818889Z","modified_at":"2025-09-23T09:11:04.818889Z"}}},{"data":{"id":"f4f25d3a-237a-4b6f-8198-7ea5d114c01b","type":"ip_allowlist_entry","attributes":{"cidr_block":"127.0.0.1/32","note":"entry 1","created_at":"2025-09-23T00:43:10.817032Z","modified_at":"2025-09-23T09:11:04.818889Z"}}},{"data":{"id":"41ee7e66-e659-4406-91b6-3711050cc548","type":"ip_allowlist_entry","attributes":{"cidr_block":"::/0","note":"ipv6 entry","created_at":"2025-09-23T09:11:04.818889Z","modified_at":"2025-09-23T09:11:04.818889Z"}}}]}}}'
         headers:
             Content-Type:
-                - application/json
+                - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 80.319417ms
+        duration: 128.522583ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -134,19 +128,17 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        transfer_encoding:
-            - chunked
+        transfer_encoding: []
         trailer: {}
-        content_length: -1
-        uncompressed: true
-        body: |
-            {"data":{"type":"ip_allowlist","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5","attributes":{"enabled":true,"entries":[{"data":{"type":"ip_allowlist_entry","id":"00d6a501-e325-43ff-8237-711eaf553aff","attributes":{"created_at":"2024-10-25T19:43:33.526427+00:00","cidr_block":"::/0","note":"ipv6 entry","modified_at":"2024-10-25T19:43:33.526427+00:00"}}},{"data":{"type":"ip_allowlist_entry","id":"03d6f5b7-7bc7-4a66-88e9-b4cb5fa4d3b9","attributes":{"created_at":"2024-10-25T19:43:35.396923+00:00","cidr_block":"0.0.0.0/0","note":"all","modified_at":"2024-10-25T19:43:35.396923+00:00"}}},{"data":{"type":"ip_allowlist_entry","id":"38618ef5-612c-483f-a9bd-66c9b1a2ba4f","attributes":{"created_at":"2024-10-25T19:43:33.526427+00:00","cidr_block":"1.2.3.4/32","note":"fake entry","modified_at":"2024-10-25T19:43:35.392749+00:00"}}}]}}}
+        content_length: 797
+        uncompressed: false
+        body: '{"data":{"id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5","type":"ip_allowlist","attributes":{"enabled":true,"entries":[{"data":{"id":"79b0465c-771c-4fb2-8446-885950c033a5","type":"ip_allowlist_entry","attributes":{"cidr_block":"0.0.0.0/0","note":"all","created_at":"2025-09-23T09:11:06.443273Z","modified_at":"2025-09-23T09:11:06.443273Z"}}},{"data":{"id":"cd183d8f-89ad-43df-8002-78ebfd892fd6","type":"ip_allowlist_entry","attributes":{"cidr_block":"1.2.3.4/32","note":"fake entry","created_at":"2025-09-23T09:11:04.818889Z","modified_at":"2025-09-23T09:11:06.443273Z"}}},{"data":{"id":"41ee7e66-e659-4406-91b6-3711050cc548","type":"ip_allowlist_entry","attributes":{"cidr_block":"::/0","note":"ipv6 entry","created_at":"2025-09-23T09:11:04.818889Z","modified_at":"2025-09-23T09:11:06.443273Z"}}}]}}}'
         headers:
             Content-Type:
-                - application/json
+                - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 145.487875ms
+        duration: 147.721625ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -169,19 +161,17 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        transfer_encoding:
-            - chunked
+        transfer_encoding: []
         trailer: {}
-        content_length: -1
-        uncompressed: true
-        body: |
-            {"data":{"type":"ip_allowlist","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5","attributes":{"enabled":true,"entries":[{"data":{"type":"ip_allowlist_entry","id":"03d6f5b7-7bc7-4a66-88e9-b4cb5fa4d3b9","attributes":{"note":"all","cidr_block":"0.0.0.0/0","created_at":"2024-10-25T19:43:35.396923+00:00","modified_at":"2024-10-25T19:43:35.396923+00:00"}}},{"data":{"type":"ip_allowlist_entry","id":"38618ef5-612c-483f-a9bd-66c9b1a2ba4f","attributes":{"note":"fake entry","cidr_block":"1.2.3.4/32","created_at":"2024-10-25T19:43:33.526427+00:00","modified_at":"2024-10-25T19:43:35.392749+00:00"}}},{"data":{"type":"ip_allowlist_entry","id":"00d6a501-e325-43ff-8237-711eaf553aff","attributes":{"note":"ipv6 entry","cidr_block":"::/0","created_at":"2024-10-25T19:43:33.526427+00:00","modified_at":"2024-10-25T19:43:33.526427+00:00"}}}]}}}
+        content_length: 797
+        uncompressed: false
+        body: '{"data":{"id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5","type":"ip_allowlist","attributes":{"enabled":true,"entries":[{"data":{"id":"79b0465c-771c-4fb2-8446-885950c033a5","type":"ip_allowlist_entry","attributes":{"cidr_block":"0.0.0.0/0","note":"all","created_at":"2025-09-23T09:11:06.443273Z","modified_at":"2025-09-23T09:11:06.443273Z"}}},{"data":{"id":"cd183d8f-89ad-43df-8002-78ebfd892fd6","type":"ip_allowlist_entry","attributes":{"cidr_block":"1.2.3.4/32","note":"fake entry","created_at":"2025-09-23T09:11:04.818889Z","modified_at":"2025-09-23T09:11:06.443273Z"}}},{"data":{"id":"41ee7e66-e659-4406-91b6-3711050cc548","type":"ip_allowlist_entry","attributes":{"cidr_block":"::/0","note":"ipv6 entry","created_at":"2025-09-23T09:11:04.818889Z","modified_at":"2025-09-23T09:11:06.443273Z"}}}]}}}'
         headers:
             Content-Type:
-                - application/json
+                - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 82.391958ms
+        duration: 137.728ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -207,19 +197,17 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        transfer_encoding:
-            - chunked
+        transfer_encoding: []
         trailer: {}
-        content_length: -1
-        uncompressed: true
-        body: |
-            {"data":{"type":"ip_allowlist","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5","attributes":{"enabled":false,"entries":[]}}}
+        content_length: 120
+        uncompressed: false
+        body: '{"data":{"id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5","type":"ip_allowlist","attributes":{"enabled":false,"entries":[]}}}'
         headers:
             Content-Type:
-                - application/json
+                - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 107.109125ms
+        duration: 141.818292ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -242,16 +230,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        transfer_encoding:
-            - chunked
+        transfer_encoding: []
         trailer: {}
-        content_length: -1
-        uncompressed: true
-        body: |
-            {"data":{"type":"ip_allowlist","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5","attributes":{"enabled":false,"entries":[]}}}
+        content_length: 120
+        uncompressed: false
+        body: '{"data":{"id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5","type":"ip_allowlist","attributes":{"enabled":false,"entries":[]}}}'
         headers:
             Content-Type:
-                - application/json
+                - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 66.355916ms
+        duration: 129.402875ms

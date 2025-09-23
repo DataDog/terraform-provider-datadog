@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"email":"tf-testaccdatadogusersdatasourcefilter-local-17048377890@example.com","name":"user 0"},"relationships":{"roles":{"data":[]}},"type":"users"}}
+            {"data":{"attributes":{"email":"tf-testaccdatadogusersdatasourcefilter-local-17586192942@example.com","name":"user 2"},"relationships":{"roles":{"data":[]}},"type":"users"}}
         form: {}
         headers:
             Accept:
@@ -32,13 +32,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"type":"users","id":"e0dfbdd9-af3a-11ee-b8ef-6ad29c6b09a1","attributes":{"name":"user 0","handle":"tf-testaccdatadogusersdatasourcefilter-local-17048377890@example.com","created_at":"2024-01-09T22:03:11.078784+00:00","modified_at":"2024-01-09T22:03:11.078784+00:00","email":"tf-testaccdatadogusersdatasourcefilter-local-17048377890@example.com","icon":"https://secure.gravatar.com/avatar/293743ed40fba1a309b3e03948f89746?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}
+            {"data":{"type":"users","id":"b4310ce1-985e-11f0-b850-c65509ea6aa9","attributes":{"name":"user 2","handle":"tf-testaccdatadogusersdatasourcefilter-local-17586192942@example.com","created_at":"2025-09-23T09:21:36.594687+00:00","modified_at":"2025-09-23T09:21:36.594687+00:00","email":"tf-testaccdatadogusersdatasourcefilter-local-17586192942@example.com","icon":"https://secure.gravatar.com/avatar/0b48eb8c81c03941192bdacbaa66ff3e?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}
         headers:
             Content-Type:
                 - application/json
         status: 201 Created
         code: 201
-        duration: 660.882292ms
+        duration: 915.879792ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -51,7 +51,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"email":"tf-testaccdatadogusersdatasourcefilter-local-17048377892@example.com","name":"user 2"},"relationships":{"roles":{"data":[]}},"type":"users"}}
+            {"data":{"attributes":{"email":"tf-testaccdatadogusersdatasourcefilter-local-17586192940@example.com","name":"user 0"},"relationships":{"roles":{"data":[]}},"type":"users"}}
         form: {}
         headers:
             Accept:
@@ -70,13 +70,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"type":"users","id":"e0dadcc5-af3a-11ee-9759-02911c157043","attributes":{"name":"user 2","handle":"tf-testaccdatadogusersdatasourcefilter-local-17048377892@example.com","created_at":"2024-01-09T22:03:11.046806+00:00","modified_at":"2024-01-09T22:03:11.046806+00:00","email":"tf-testaccdatadogusersdatasourcefilter-local-17048377892@example.com","icon":"https://secure.gravatar.com/avatar/7c23af344be01813fedeb6ab63d4005c?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}
+            {"data":{"type":"users","id":"b431b9e4-985e-11f0-b817-72d874262dfd","attributes":{"name":"user 0","handle":"tf-testaccdatadogusersdatasourcefilter-local-17586192940@example.com","created_at":"2025-09-23T09:21:36.599113+00:00","modified_at":"2025-09-23T09:21:36.599113+00:00","email":"tf-testaccdatadogusersdatasourcefilter-local-17586192940@example.com","icon":"https://secure.gravatar.com/avatar/29ee5f23d50376964d25a3f1a6884125?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}
         headers:
             Content-Type:
                 - application/json
         status: 201 Created
         code: 201
-        duration: 660.93875ms
+        duration: 918.724625ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -89,7 +89,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"email":"tf-testaccdatadogusersdatasourcefilter-local-17048377891@example.com","name":"user 1"},"relationships":{"roles":{"data":[]}},"type":"users"}}
+            {"data":{"attributes":{"email":"tf-testaccdatadogusersdatasourcefilter-local-17586192941@example.com","name":"user 1"},"relationships":{"roles":{"data":[]}},"type":"users"}}
         form: {}
         headers:
             Accept:
@@ -108,13 +108,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"type":"users","id":"e0dadb67-af3a-11ee-ace7-46b66802922f","attributes":{"name":"user 1","handle":"tf-testaccdatadogusersdatasourcefilter-local-17048377891@example.com","created_at":"2024-01-09T22:03:11.046772+00:00","modified_at":"2024-01-09T22:03:11.046772+00:00","email":"tf-testaccdatadogusersdatasourcefilter-local-17048377891@example.com","icon":"https://secure.gravatar.com/avatar/1e0863c9390aa68b2bf8150ced210e0e?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}
+            {"data":{"type":"users","id":"b4330454-985e-11f0-9236-3a9645c0fdcf","attributes":{"name":"user 1","handle":"tf-testaccdatadogusersdatasourcefilter-local-17586192941@example.com","created_at":"2025-09-23T09:21:36.607574+00:00","modified_at":"2025-09-23T09:21:36.607574+00:00","email":"tf-testaccdatadogusersdatasourcefilter-local-17586192941@example.com","icon":"https://secure.gravatar.com/avatar/5983f691bed9ff6e008e49815646faf4?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}
         headers:
             Content-Type:
                 - application/json
         status: 201 Created
         code: 201
-        duration: 660.858542ms
+        duration: 921.90425ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -127,7 +127,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":[{"relationships":{"user":{"data":{"id":"e0dadcc5-af3a-11ee-9759-02911c157043","type":"users"}}},"type":"user_invitations"}]}
+            {"data":[{"relationships":{"user":{"data":{"id":"b4330454-985e-11f0-9236-3a9645c0fdcf","type":"users"}}},"type":"user_invitations"}]}
         form: {}
         headers:
             Accept:
@@ -146,13 +146,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":[{"type":"user_invitations","id":"e11e399c-af3a-11ee-a655-da7ad0900002","attributes":{"uuid":"e11e399c-af3a-11ee-a655-da7ad0900002","login_method":null,"invite_type":"basic_invite","created_at":"2024-01-09T22:03:11.487917+00:00","expires_at":"2024-01-11T22:03:11.369674+00:00"},"relationships":{"user":{"data":{"type":"users","id":"e0dadcc5-af3a-11ee-9759-02911c157043"}}}}]}
+            {"data":[{"type":"user_invitations","id":"b47bf4ba-985e-11f0-b94d-da7ad0900002","attributes":{"uuid":"b47bf4ba-985e-11f0-b94d-da7ad0900002","login_method":null,"invite_type":"basic_invite","created_at":"2025-09-23T09:21:37.085184+00:00","expires_at":"2025-09-25T09:21:36.857972+00:00"},"relationships":{"user":{"data":{"type":"users","id":"b4330454-985e-11f0-9236-3a9645c0fdcf"}}}}]}
         headers:
             Content-Type:
                 - application/json
         status: 201 Created
         code: 201
-        duration: 407.57375ms
+        duration: 487.161834ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -165,7 +165,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":[{"relationships":{"user":{"data":{"id":"e0dadb67-af3a-11ee-ace7-46b66802922f","type":"users"}}},"type":"user_invitations"}]}
+            {"data":[{"relationships":{"user":{"data":{"id":"b4310ce1-985e-11f0-b850-c65509ea6aa9","type":"users"}}},"type":"user_invitations"}]}
         form: {}
         headers:
             Accept:
@@ -184,13 +184,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":[{"type":"user_invitations","id":"e1198dde-af3a-11ee-9269-da7ad0900002","attributes":{"uuid":"e1198dde-af3a-11ee-9269-da7ad0900002","login_method":null,"invite_type":"basic_invite","created_at":"2024-01-09T22:03:11.457297+00:00","expires_at":"2024-01-11T22:03:11.302711+00:00"},"relationships":{"user":{"data":{"type":"users","id":"e0dadb67-af3a-11ee-ace7-46b66802922f"}}}}]}
+            {"data":[{"type":"user_invitations","id":"b4b136e8-985e-11f0-bade-da7ad0900002","attributes":{"uuid":"b4b136e8-985e-11f0-bade-da7ad0900002","login_method":null,"invite_type":"basic_invite","created_at":"2025-09-23T09:21:37.434209+00:00","expires_at":"2025-09-25T09:21:36.876367+00:00"},"relationships":{"user":{"data":{"type":"users","id":"b4310ce1-985e-11f0-b850-c65509ea6aa9"}}}}]}
         headers:
             Content-Type:
                 - application/json
         status: 201 Created
         code: 201
-        duration: 408.071708ms
+        duration: 841.981083ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -203,7 +203,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":[{"relationships":{"user":{"data":{"id":"e0dfbdd9-af3a-11ee-b8ef-6ad29c6b09a1","type":"users"}}},"type":"user_invitations"}]}
+            {"data":[{"relationships":{"user":{"data":{"id":"b431b9e4-985e-11f0-b817-72d874262dfd","type":"users"}}},"type":"user_invitations"}]}
         form: {}
         headers:
             Accept:
@@ -222,13 +222,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":[{"type":"user_invitations","id":"e13f195a-af3a-11ee-baf6-da7ad0900002","attributes":{"uuid":"e13f195a-af3a-11ee-baf6-da7ad0900002","login_method":null,"invite_type":"basic_invite","created_at":"2024-01-09T22:03:11.703351+00:00","expires_at":"2024-01-11T22:03:11.524146+00:00"},"relationships":{"user":{"data":{"type":"users","id":"e0dfbdd9-af3a-11ee-b8ef-6ad29c6b09a1"}}}}]}
+            {"data":[{"type":"user_invitations","id":"b4d09c68-985e-11f0-9ebb-da7ad0900002","attributes":{"uuid":"b4d09c68-985e-11f0-9ebb-da7ad0900002","login_method":null,"invite_type":"basic_invite","created_at":"2025-09-23T09:21:37.639465+00:00","expires_at":"2025-09-25T09:21:36.831037+00:00"},"relationships":{"user":{"data":{"type":"users","id":"b431b9e4-985e-11f0-b817-72d874262dfd"}}}}]}
         headers:
             Content-Type:
                 - application/json
         status: 201 Created
         code: 201
-        duration: 563.321417ms
+        duration: 1.036913333s
     - id: 6
       request:
         proto: HTTP/1.1
@@ -245,7 +245,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/users?filter=tf-testaccdatadogusersdatasourcefilter-local-17048377890%40example.com&page%5Bnumber%5D=0&page%5Bsize%5D=100
+        url: https://api.datadoghq.com/api/v2/users?filter=tf-testaccdatadogusersdatasourcefilter-local-17586192940%40example.com&page%5Bnumber%5D=0&page%5Bsize%5D=100
         method: GET
       response:
         proto: HTTP/1.1
@@ -257,13 +257,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":[{"type":"users","id":"e0dfbdd9-af3a-11ee-b8ef-6ad29c6b09a1","attributes":{"name":"user 0","handle":"tf-testaccdatadogusersdatasourcefilter-local-17048377890@example.com","created_at":"2024-01-09T22:03:11.078784+00:00","modified_at":"2024-01-09T22:03:11.078784+00:00","email":"tf-testaccdatadogusersdatasourcefilter-local-17048377890@example.com","icon":"https://secure.gravatar.com/avatar/293743ed40fba1a309b3e03948f89746?s=48&d=retro","title":"","verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending","mfa_enabled":false},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}],"meta":{"page":{"total_count":251410,"total_filtered_count":1,"max_page_size":1000}}}
+            {"data":[{"type":"users","id":"b431b9e4-985e-11f0-b817-72d874262dfd","attributes":{"name":"user 0","handle":"tf-testaccdatadogusersdatasourcefilter-local-17586192940@example.com","created_at":"2025-09-23T09:21:36.599113+00:00","modified_at":"2025-09-23T09:21:36.599113+00:00","email":"tf-testaccdatadogusersdatasourcefilter-local-17586192940@example.com","icon":"https://secure.gravatar.com/avatar/29ee5f23d50376964d25a3f1a6884125?s=48&d=retro","title":"","verified":false,"service_account":false,"disabled":false,"allowed_login_methods":["google_oidc","standard"],"status":"Pending","mfa_enabled":false},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}],"meta":{"page":{"total_count":170828,"total_filtered_count":1,"max_page_size":1000}}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 1.779733875s
+        duration: 241.217292ms
     - id: 7
       request:
         proto: HTTP/1.1
@@ -280,7 +280,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/users?filter=tf-testaccdatadogusersdatasourcefilter-local-17048377890%40example.com&page%5Bnumber%5D=0&page%5Bsize%5D=100
+        url: https://api.datadoghq.com/api/v2/users?filter=tf-testaccdatadogusersdatasourcefilter-local-17586192940%40example.com&page%5Bnumber%5D=0&page%5Bsize%5D=100
         method: GET
       response:
         proto: HTTP/1.1
@@ -292,13 +292,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":[{"type":"users","id":"e0dfbdd9-af3a-11ee-b8ef-6ad29c6b09a1","attributes":{"name":"user 0","handle":"tf-testaccdatadogusersdatasourcefilter-local-17048377890@example.com","created_at":"2024-01-09T22:03:11.078784+00:00","modified_at":"2024-01-09T22:03:11.078784+00:00","email":"tf-testaccdatadogusersdatasourcefilter-local-17048377890@example.com","icon":"https://secure.gravatar.com/avatar/293743ed40fba1a309b3e03948f89746?s=48&d=retro","title":"","verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending","mfa_enabled":false},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}],"meta":{"page":{"total_count":251410,"total_filtered_count":1,"max_page_size":1000}}}
+            {"data":[{"type":"users","id":"b431b9e4-985e-11f0-b817-72d874262dfd","attributes":{"name":"user 0","handle":"tf-testaccdatadogusersdatasourcefilter-local-17586192940@example.com","created_at":"2025-09-23T09:21:36.599113+00:00","modified_at":"2025-09-23T09:21:36.599113+00:00","email":"tf-testaccdatadogusersdatasourcefilter-local-17586192940@example.com","icon":"https://secure.gravatar.com/avatar/29ee5f23d50376964d25a3f1a6884125?s=48&d=retro","title":"","verified":false,"service_account":false,"disabled":false,"allowed_login_methods":["google_oidc","standard"],"status":"Pending","mfa_enabled":false},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}],"meta":{"page":{"total_count":170828,"total_filtered_count":1,"max_page_size":1000}}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 1.839044s
+        duration: 240.489959ms
     - id: 8
       request:
         proto: HTTP/1.1
@@ -315,7 +315,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/users/e0dadb67-af3a-11ee-ace7-46b66802922f
+        url: https://api.datadoghq.com/api/v2/users/b4330454-985e-11f0-9236-3a9645c0fdcf
         method: GET
       response:
         proto: HTTP/1.1
@@ -327,13 +327,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"type":"users","id":"e0dadb67-af3a-11ee-ace7-46b66802922f","attributes":{"name":"user 1","handle":"tf-testaccdatadogusersdatasourcefilter-local-17048377891@example.com","created_at":"2024-01-09T22:03:11.046772+00:00","modified_at":"2024-01-09T22:03:11.046772+00:00","email":"tf-testaccdatadogusersdatasourcefilter-local-17048377891@example.com","icon":"https://secure.gravatar.com/avatar/1e0863c9390aa68b2bf8150ced210e0e?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending","mfa_enabled":false},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}
+            {"data":{"type":"users","id":"b4330454-985e-11f0-9236-3a9645c0fdcf","attributes":{"name":"user 1","handle":"tf-testaccdatadogusersdatasourcefilter-local-17586192941@example.com","created_at":"2025-09-23T09:21:36.607574+00:00","modified_at":"2025-09-23T09:21:36.607574+00:00","email":"tf-testaccdatadogusersdatasourcefilter-local-17586192941@example.com","icon":"https://secure.gravatar.com/avatar/5983f691bed9ff6e008e49815646faf4?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending","mfa_enabled":false},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 85.704958ms
+        duration: 399.9335ms
     - id: 9
       request:
         proto: HTTP/1.1
@@ -350,7 +350,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/users/e0dfbdd9-af3a-11ee-b8ef-6ad29c6b09a1
+        url: https://api.datadoghq.com/api/v2/users/b431b9e4-985e-11f0-b817-72d874262dfd
         method: GET
       response:
         proto: HTTP/1.1
@@ -362,13 +362,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"type":"users","id":"e0dfbdd9-af3a-11ee-b8ef-6ad29c6b09a1","attributes":{"name":"user 0","handle":"tf-testaccdatadogusersdatasourcefilter-local-17048377890@example.com","created_at":"2024-01-09T22:03:11.078784+00:00","modified_at":"2024-01-09T22:03:11.078784+00:00","email":"tf-testaccdatadogusersdatasourcefilter-local-17048377890@example.com","icon":"https://secure.gravatar.com/avatar/293743ed40fba1a309b3e03948f89746?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending","mfa_enabled":false},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}
+            {"data":{"type":"users","id":"b431b9e4-985e-11f0-b817-72d874262dfd","attributes":{"name":"user 0","handle":"tf-testaccdatadogusersdatasourcefilter-local-17586192940@example.com","created_at":"2025-09-23T09:21:36.599113+00:00","modified_at":"2025-09-23T09:21:36.599113+00:00","email":"tf-testaccdatadogusersdatasourcefilter-local-17586192940@example.com","icon":"https://secure.gravatar.com/avatar/29ee5f23d50376964d25a3f1a6884125?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending","mfa_enabled":false},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 92.854167ms
+        duration: 404.390125ms
     - id: 10
       request:
         proto: HTTP/1.1
@@ -385,7 +385,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/users/e0dadcc5-af3a-11ee-9759-02911c157043
+        url: https://api.datadoghq.com/api/v2/users/b4310ce1-985e-11f0-b850-c65509ea6aa9
         method: GET
       response:
         proto: HTTP/1.1
@@ -397,13 +397,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"type":"users","id":"e0dadcc5-af3a-11ee-9759-02911c157043","attributes":{"name":"user 2","handle":"tf-testaccdatadogusersdatasourcefilter-local-17048377892@example.com","created_at":"2024-01-09T22:03:11.046806+00:00","modified_at":"2024-01-09T22:03:11.046806+00:00","email":"tf-testaccdatadogusersdatasourcefilter-local-17048377892@example.com","icon":"https://secure.gravatar.com/avatar/7c23af344be01813fedeb6ab63d4005c?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending","mfa_enabled":false},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}
+            {"data":{"type":"users","id":"b4310ce1-985e-11f0-b850-c65509ea6aa9","attributes":{"name":"user 2","handle":"tf-testaccdatadogusersdatasourcefilter-local-17586192942@example.com","created_at":"2025-09-23T09:21:36.594687+00:00","modified_at":"2025-09-23T09:21:36.594687+00:00","email":"tf-testaccdatadogusersdatasourcefilter-local-17586192942@example.com","icon":"https://secure.gravatar.com/avatar/0b48eb8c81c03941192bdacbaa66ff3e?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending","mfa_enabled":false},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 131.426333ms
+        duration: 419.431791ms
     - id: 11
       request:
         proto: HTTP/1.1
@@ -420,7 +420,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/users?filter=tf-testaccdatadogusersdatasourcefilter-local-17048377890%40example.com&page%5Bnumber%5D=0&page%5Bsize%5D=100
+        url: https://api.datadoghq.com/api/v2/users?filter=tf-testaccdatadogusersdatasourcefilter-local-17586192940%40example.com&page%5Bnumber%5D=0&page%5Bsize%5D=100
         method: GET
       response:
         proto: HTTP/1.1
@@ -432,13 +432,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":[{"type":"users","id":"e0dfbdd9-af3a-11ee-b8ef-6ad29c6b09a1","attributes":{"name":"user 0","handle":"tf-testaccdatadogusersdatasourcefilter-local-17048377890@example.com","created_at":"2024-01-09T22:03:11.078784+00:00","modified_at":"2024-01-09T22:03:11.078784+00:00","email":"tf-testaccdatadogusersdatasourcefilter-local-17048377890@example.com","icon":"https://secure.gravatar.com/avatar/293743ed40fba1a309b3e03948f89746?s=48&d=retro","title":"","verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending","mfa_enabled":false},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}],"meta":{"page":{"total_count":251410,"total_filtered_count":1,"max_page_size":1000}}}
+            {"data":[{"type":"users","id":"b431b9e4-985e-11f0-b817-72d874262dfd","attributes":{"name":"user 0","handle":"tf-testaccdatadogusersdatasourcefilter-local-17586192940@example.com","created_at":"2025-09-23T09:21:36.599113+00:00","modified_at":"2025-09-23T09:21:36.599113+00:00","email":"tf-testaccdatadogusersdatasourcefilter-local-17586192940@example.com","icon":"https://secure.gravatar.com/avatar/29ee5f23d50376964d25a3f1a6884125?s=48&d=retro","title":"","verified":false,"service_account":false,"disabled":false,"allowed_login_methods":["google_oidc","standard"],"status":"Pending","mfa_enabled":false},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}],"meta":{"page":{"total_count":170830,"total_filtered_count":1,"max_page_size":1000}}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 1.78062875s
+        duration: 267.11575ms
     - id: 12
       request:
         proto: HTTP/1.1
@@ -455,7 +455,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/users?filter=tf-testaccdatadogusersdatasourcefilter-local-17048377890%40example.com&page%5Bnumber%5D=0&page%5Bsize%5D=100
+        url: https://api.datadoghq.com/api/v2/users/b431b9e4-985e-11f0-b817-72d874262dfd
         method: GET
       response:
         proto: HTTP/1.1
@@ -467,13 +467,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":[{"type":"users","id":"e0dfbdd9-af3a-11ee-b8ef-6ad29c6b09a1","attributes":{"name":"user 0","handle":"tf-testaccdatadogusersdatasourcefilter-local-17048377890@example.com","created_at":"2024-01-09T22:03:11.078784+00:00","modified_at":"2024-01-09T22:03:11.078784+00:00","email":"tf-testaccdatadogusersdatasourcefilter-local-17048377890@example.com","icon":"https://secure.gravatar.com/avatar/293743ed40fba1a309b3e03948f89746?s=48&d=retro","title":"","verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending","mfa_enabled":false},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}],"meta":{"page":{"total_count":251410,"total_filtered_count":1,"max_page_size":1000}}}
+            {"data":{"type":"users","id":"b431b9e4-985e-11f0-b817-72d874262dfd","attributes":{"name":"user 0","handle":"tf-testaccdatadogusersdatasourcefilter-local-17586192940@example.com","created_at":"2025-09-23T09:21:36.599113+00:00","modified_at":"2025-09-23T09:21:36.599113+00:00","email":"tf-testaccdatadogusersdatasourcefilter-local-17586192940@example.com","icon":"https://secure.gravatar.com/avatar/29ee5f23d50376964d25a3f1a6884125?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending","mfa_enabled":false},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 1.81202175s
+        duration: 174.696584ms
     - id: 13
       request:
         proto: HTTP/1.1
@@ -490,7 +490,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/users/e0dfbdd9-af3a-11ee-b8ef-6ad29c6b09a1
+        url: https://api.datadoghq.com/api/v2/users/b4330454-985e-11f0-9236-3a9645c0fdcf
         method: GET
       response:
         proto: HTTP/1.1
@@ -502,13 +502,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"type":"users","id":"e0dfbdd9-af3a-11ee-b8ef-6ad29c6b09a1","attributes":{"name":"user 0","handle":"tf-testaccdatadogusersdatasourcefilter-local-17048377890@example.com","created_at":"2024-01-09T22:03:11.078784+00:00","modified_at":"2024-01-09T22:03:11.078784+00:00","email":"tf-testaccdatadogusersdatasourcefilter-local-17048377890@example.com","icon":"https://secure.gravatar.com/avatar/293743ed40fba1a309b3e03948f89746?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending","mfa_enabled":false},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}
+            {"data":{"type":"users","id":"b4330454-985e-11f0-9236-3a9645c0fdcf","attributes":{"name":"user 1","handle":"tf-testaccdatadogusersdatasourcefilter-local-17586192941@example.com","created_at":"2025-09-23T09:21:36.607574+00:00","modified_at":"2025-09-23T09:21:36.607574+00:00","email":"tf-testaccdatadogusersdatasourcefilter-local-17586192941@example.com","icon":"https://secure.gravatar.com/avatar/5983f691bed9ff6e008e49815646faf4?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending","mfa_enabled":false},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 79.15175ms
+        duration: 202.419375ms
     - id: 14
       request:
         proto: HTTP/1.1
@@ -525,7 +525,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/users/e0dadb67-af3a-11ee-ace7-46b66802922f
+        url: https://api.datadoghq.com/api/v2/users/b4310ce1-985e-11f0-b850-c65509ea6aa9
         method: GET
       response:
         proto: HTTP/1.1
@@ -537,13 +537,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"type":"users","id":"e0dadb67-af3a-11ee-ace7-46b66802922f","attributes":{"name":"user 1","handle":"tf-testaccdatadogusersdatasourcefilter-local-17048377891@example.com","created_at":"2024-01-09T22:03:11.046772+00:00","modified_at":"2024-01-09T22:03:11.046772+00:00","email":"tf-testaccdatadogusersdatasourcefilter-local-17048377891@example.com","icon":"https://secure.gravatar.com/avatar/1e0863c9390aa68b2bf8150ced210e0e?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending","mfa_enabled":false},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}
+            {"data":{"type":"users","id":"b4310ce1-985e-11f0-b850-c65509ea6aa9","attributes":{"name":"user 2","handle":"tf-testaccdatadogusersdatasourcefilter-local-17586192942@example.com","created_at":"2025-09-23T09:21:36.594687+00:00","modified_at":"2025-09-23T09:21:36.594687+00:00","email":"tf-testaccdatadogusersdatasourcefilter-local-17586192942@example.com","icon":"https://secure.gravatar.com/avatar/0b48eb8c81c03941192bdacbaa66ff3e?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending","mfa_enabled":false},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 94.571708ms
+        duration: 215.595833ms
     - id: 15
       request:
         proto: HTTP/1.1
@@ -560,7 +560,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/users/e0dadcc5-af3a-11ee-9759-02911c157043
+        url: https://api.datadoghq.com/api/v2/users?filter=tf-testaccdatadogusersdatasourcefilter-local-17586192940%40example.com&page%5Bnumber%5D=0&page%5Bsize%5D=100
         method: GET
       response:
         proto: HTTP/1.1
@@ -572,13 +572,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"type":"users","id":"e0dadcc5-af3a-11ee-9759-02911c157043","attributes":{"name":"user 2","handle":"tf-testaccdatadogusersdatasourcefilter-local-17048377892@example.com","created_at":"2024-01-09T22:03:11.046806+00:00","modified_at":"2024-01-09T22:03:11.046806+00:00","email":"tf-testaccdatadogusersdatasourcefilter-local-17048377892@example.com","icon":"https://secure.gravatar.com/avatar/7c23af344be01813fedeb6ab63d4005c?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending","mfa_enabled":false},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}
+            {"data":[{"type":"users","id":"b431b9e4-985e-11f0-b817-72d874262dfd","attributes":{"name":"user 0","handle":"tf-testaccdatadogusersdatasourcefilter-local-17586192940@example.com","created_at":"2025-09-23T09:21:36.599113+00:00","modified_at":"2025-09-23T09:21:36.599113+00:00","email":"tf-testaccdatadogusersdatasourcefilter-local-17586192940@example.com","icon":"https://secure.gravatar.com/avatar/29ee5f23d50376964d25a3f1a6884125?s=48&d=retro","title":"","verified":false,"service_account":false,"disabled":false,"allowed_login_methods":["google_oidc","standard"],"status":"Pending","mfa_enabled":false},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}],"meta":{"page":{"total_count":170830,"total_filtered_count":1,"max_page_size":1000}}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 147.389167ms
+        duration: 416.090375ms
     - id: 16
       request:
         proto: HTTP/1.1
@@ -595,7 +595,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/users?filter=tf-testaccdatadogusersdatasourcefilter-local-17048377890%40example.com&page%5Bnumber%5D=0&page%5Bsize%5D=100
+        url: https://api.datadoghq.com/api/v2/users?filter=tf-testaccdatadogusersdatasourcefilter-local-17586192940%40example.com&page%5Bnumber%5D=0&page%5Bsize%5D=100
         method: GET
       response:
         proto: HTTP/1.1
@@ -607,13 +607,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":[{"type":"users","id":"e0dfbdd9-af3a-11ee-b8ef-6ad29c6b09a1","attributes":{"name":"user 0","handle":"tf-testaccdatadogusersdatasourcefilter-local-17048377890@example.com","created_at":"2024-01-09T22:03:11.078784+00:00","modified_at":"2024-01-09T22:03:11.078784+00:00","email":"tf-testaccdatadogusersdatasourcefilter-local-17048377890@example.com","icon":"https://secure.gravatar.com/avatar/293743ed40fba1a309b3e03948f89746?s=48&d=retro","title":"","verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending","mfa_enabled":false},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}],"meta":{"page":{"total_count":251410,"total_filtered_count":1,"max_page_size":1000}}}
+            {"data":[{"type":"users","id":"b431b9e4-985e-11f0-b817-72d874262dfd","attributes":{"name":"user 0","handle":"tf-testaccdatadogusersdatasourcefilter-local-17586192940@example.com","created_at":"2025-09-23T09:21:36.599113+00:00","modified_at":"2025-09-23T09:21:36.599113+00:00","email":"tf-testaccdatadogusersdatasourcefilter-local-17586192940@example.com","icon":"https://secure.gravatar.com/avatar/29ee5f23d50376964d25a3f1a6884125?s=48&d=retro","title":"","verified":false,"service_account":false,"disabled":false,"allowed_login_methods":["google_oidc","standard"],"status":"Pending","mfa_enabled":false},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}],"meta":{"page":{"total_count":170830,"total_filtered_count":1,"max_page_size":1000}}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 1.782661916s
+        duration: 264.384084ms
     - id: 17
       request:
         proto: HTTP/1.1
@@ -630,7 +630,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/users?filter=tf-testaccdatadogusersdatasourcefilter-local-17048377890%40example.com&page%5Bnumber%5D=0&page%5Bsize%5D=100
+        url: https://api.datadoghq.com/api/v2/users/b431b9e4-985e-11f0-b817-72d874262dfd
         method: GET
       response:
         proto: HTTP/1.1
@@ -642,13 +642,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":[{"type":"users","id":"e0dfbdd9-af3a-11ee-b8ef-6ad29c6b09a1","attributes":{"name":"user 0","handle":"tf-testaccdatadogusersdatasourcefilter-local-17048377890@example.com","created_at":"2024-01-09T22:03:11.078784+00:00","modified_at":"2024-01-09T22:03:11.078784+00:00","email":"tf-testaccdatadogusersdatasourcefilter-local-17048377890@example.com","icon":"https://secure.gravatar.com/avatar/293743ed40fba1a309b3e03948f89746?s=48&d=retro","title":"","verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending","mfa_enabled":false},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}],"meta":{"page":{"total_count":251410,"total_filtered_count":1,"max_page_size":1000}}}
+            {"data":{"type":"users","id":"b431b9e4-985e-11f0-b817-72d874262dfd","attributes":{"name":"user 0","handle":"tf-testaccdatadogusersdatasourcefilter-local-17586192940@example.com","created_at":"2025-09-23T09:21:36.599113+00:00","modified_at":"2025-09-23T09:21:36.599113+00:00","email":"tf-testaccdatadogusersdatasourcefilter-local-17586192940@example.com","icon":"https://secure.gravatar.com/avatar/29ee5f23d50376964d25a3f1a6884125?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending","mfa_enabled":false},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 1.785605125s
+        duration: 192.269917ms
     - id: 18
       request:
         proto: HTTP/1.1
@@ -665,7 +665,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/users?filter=tf-testaccdatadogusersdatasourcefilter-local-17048377890%40example.com&page%5Bnumber%5D=0&page%5Bsize%5D=100
+        url: https://api.datadoghq.com/api/v2/users/b4310ce1-985e-11f0-b850-c65509ea6aa9
         method: GET
       response:
         proto: HTTP/1.1
@@ -677,13 +677,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":[{"type":"users","id":"e0dfbdd9-af3a-11ee-b8ef-6ad29c6b09a1","attributes":{"name":"user 0","handle":"tf-testaccdatadogusersdatasourcefilter-local-17048377890@example.com","created_at":"2024-01-09T22:03:11.078784+00:00","modified_at":"2024-01-09T22:03:11.078784+00:00","email":"tf-testaccdatadogusersdatasourcefilter-local-17048377890@example.com","icon":"https://secure.gravatar.com/avatar/293743ed40fba1a309b3e03948f89746?s=48&d=retro","title":"","verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending","mfa_enabled":false},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}],"meta":{"page":{"total_count":251410,"total_filtered_count":1,"max_page_size":1000}}}
+            {"data":{"type":"users","id":"b4310ce1-985e-11f0-b850-c65509ea6aa9","attributes":{"name":"user 2","handle":"tf-testaccdatadogusersdatasourcefilter-local-17586192942@example.com","created_at":"2025-09-23T09:21:36.594687+00:00","modified_at":"2025-09-23T09:21:36.594687+00:00","email":"tf-testaccdatadogusersdatasourcefilter-local-17586192942@example.com","icon":"https://secure.gravatar.com/avatar/0b48eb8c81c03941192bdacbaa66ff3e?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending","mfa_enabled":false},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 1.811906125s
+        duration: 191.371625ms
     - id: 19
       request:
         proto: HTTP/1.1
@@ -700,7 +700,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/users/e0dadb67-af3a-11ee-ace7-46b66802922f
+        url: https://api.datadoghq.com/api/v2/users/b4330454-985e-11f0-9236-3a9645c0fdcf
         method: GET
       response:
         proto: HTTP/1.1
@@ -712,13 +712,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"type":"users","id":"e0dadb67-af3a-11ee-ace7-46b66802922f","attributes":{"name":"user 1","handle":"tf-testaccdatadogusersdatasourcefilter-local-17048377891@example.com","created_at":"2024-01-09T22:03:11.046772+00:00","modified_at":"2024-01-09T22:03:11.046772+00:00","email":"tf-testaccdatadogusersdatasourcefilter-local-17048377891@example.com","icon":"https://secure.gravatar.com/avatar/1e0863c9390aa68b2bf8150ced210e0e?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending","mfa_enabled":false},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}
+            {"data":{"type":"users","id":"b4330454-985e-11f0-9236-3a9645c0fdcf","attributes":{"name":"user 1","handle":"tf-testaccdatadogusersdatasourcefilter-local-17586192941@example.com","created_at":"2025-09-23T09:21:36.607574+00:00","modified_at":"2025-09-23T09:21:36.607574+00:00","email":"tf-testaccdatadogusersdatasourcefilter-local-17586192941@example.com","icon":"https://secure.gravatar.com/avatar/5983f691bed9ff6e008e49815646faf4?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending","mfa_enabled":false},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 88.938417ms
+        duration: 375.082083ms
     - id: 20
       request:
         proto: HTTP/1.1
@@ -735,7 +735,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/users/e0dadcc5-af3a-11ee-9759-02911c157043
+        url: https://api.datadoghq.com/api/v2/users?filter=tf-testaccdatadogusersdatasourcefilter-local-17586192940%40example.com&page%5Bnumber%5D=0&page%5Bsize%5D=100
         method: GET
       response:
         proto: HTTP/1.1
@@ -747,13 +747,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"type":"users","id":"e0dadcc5-af3a-11ee-9759-02911c157043","attributes":{"name":"user 2","handle":"tf-testaccdatadogusersdatasourcefilter-local-17048377892@example.com","created_at":"2024-01-09T22:03:11.046806+00:00","modified_at":"2024-01-09T22:03:11.046806+00:00","email":"tf-testaccdatadogusersdatasourcefilter-local-17048377892@example.com","icon":"https://secure.gravatar.com/avatar/7c23af344be01813fedeb6ab63d4005c?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending","mfa_enabled":false},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}
+            {"data":[{"type":"users","id":"b431b9e4-985e-11f0-b817-72d874262dfd","attributes":{"name":"user 0","handle":"tf-testaccdatadogusersdatasourcefilter-local-17586192940@example.com","created_at":"2025-09-23T09:21:36.599113+00:00","modified_at":"2025-09-23T09:21:36.599113+00:00","email":"tf-testaccdatadogusersdatasourcefilter-local-17586192940@example.com","icon":"https://secure.gravatar.com/avatar/29ee5f23d50376964d25a3f1a6884125?s=48&d=retro","title":"","verified":false,"service_account":false,"disabled":false,"allowed_login_methods":["google_oidc","standard"],"status":"Pending","mfa_enabled":false},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}],"meta":{"page":{"total_count":170830,"total_filtered_count":1,"max_page_size":1000}}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 91.464917ms
+        duration: 269.88225ms
     - id: 21
       request:
         proto: HTTP/1.1
@@ -769,26 +769,22 @@ interactions:
         form: {}
         headers:
             Accept:
-                - application/json
-        url: https://api.datadoghq.com/api/v2/users/e0dfbdd9-af3a-11ee-b8ef-6ad29c6b09a1
-        method: GET
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/users/b4330454-985e-11f0-9236-3a9645c0fdcf
+        method: DELETE
       response:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        transfer_encoding:
-            - chunked
+        transfer_encoding: []
         trailer: {}
-        content_length: -1
-        uncompressed: true
-        body: |
-            {"data":{"type":"users","id":"e0dfbdd9-af3a-11ee-b8ef-6ad29c6b09a1","attributes":{"name":"user 0","handle":"tf-testaccdatadogusersdatasourcefilter-local-17048377890@example.com","created_at":"2024-01-09T22:03:11.078784+00:00","modified_at":"2024-01-09T22:03:11.078784+00:00","email":"tf-testaccdatadogusersdatasourcefilter-local-17048377890@example.com","icon":"https://secure.gravatar.com/avatar/293743ed40fba1a309b3e03948f89746?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending","mfa_enabled":false},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}
-        headers:
-            Content-Type:
-                - application/json
-        status: 200 OK
-        code: 200
-        duration: 123.182375ms
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 487.228625ms
     - id: 22
       request:
         proto: HTTP/1.1
@@ -804,26 +800,22 @@ interactions:
         form: {}
         headers:
             Accept:
-                - application/json
-        url: https://api.datadoghq.com/api/v2/users?filter=tf-testaccdatadogusersdatasourcefilter-local-17048377890%40example.com&page%5Bnumber%5D=0&page%5Bsize%5D=100
-        method: GET
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/users/b431b9e4-985e-11f0-b817-72d874262dfd
+        method: DELETE
       response:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        transfer_encoding:
-            - chunked
+        transfer_encoding: []
         trailer: {}
-        content_length: -1
-        uncompressed: true
-        body: |
-            {"data":[{"type":"users","id":"e0dfbdd9-af3a-11ee-b8ef-6ad29c6b09a1","attributes":{"name":"user 0","handle":"tf-testaccdatadogusersdatasourcefilter-local-17048377890@example.com","created_at":"2024-01-09T22:03:11.078784+00:00","modified_at":"2024-01-09T22:03:11.078784+00:00","email":"tf-testaccdatadogusersdatasourcefilter-local-17048377890@example.com","icon":"https://secure.gravatar.com/avatar/293743ed40fba1a309b3e03948f89746?s=48&d=retro","title":"","verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending","mfa_enabled":false},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}],"meta":{"page":{"total_count":251410,"total_filtered_count":1,"max_page_size":1000}}}
-        headers:
-            Content-Type:
-                - application/json
-        status: 200 OK
-        code: 200
-        duration: 1.745128791s
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 507.989834ms
     - id: 23
       request:
         proto: HTTP/1.1
@@ -839,43 +831,8 @@ interactions:
         form: {}
         headers:
             Accept:
-                - application/json
-        url: https://api.datadoghq.com/api/v2/users?filter=tf-testaccdatadogusersdatasourcefilter-local-17048377890%40example.com&page%5Bnumber%5D=0&page%5Bsize%5D=100
-        method: GET
-      response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        transfer_encoding:
-            - chunked
-        trailer: {}
-        content_length: -1
-        uncompressed: true
-        body: |
-            {"data":[{"type":"users","id":"e0dfbdd9-af3a-11ee-b8ef-6ad29c6b09a1","attributes":{"name":"user 0","handle":"tf-testaccdatadogusersdatasourcefilter-local-17048377890@example.com","created_at":"2024-01-09T22:03:11.078784+00:00","modified_at":"2024-01-09T22:03:11.078784+00:00","email":"tf-testaccdatadogusersdatasourcefilter-local-17048377890@example.com","icon":"https://secure.gravatar.com/avatar/293743ed40fba1a309b3e03948f89746?s=48&d=retro","title":"","verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending","mfa_enabled":false},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}],"meta":{"page":{"total_count":251410,"total_filtered_count":1,"max_page_size":1000}}}
-        headers:
-            Content-Type:
-                - application/json
-        status: 200 OK
-        code: 200
-        duration: 1.770440459s
-    - id: 24
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 0
-        transfer_encoding: []
-        trailer: {}
-        host: api.datadoghq.com
-        remote_addr: ""
-        request_uri: ""
-        body: ""
-        form: {}
-        headers:
-            Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/users/e0dfbdd9-af3a-11ee-b8ef-6ad29c6b09a1
+        url: https://api.datadoghq.com/api/v2/users/b4310ce1-985e-11f0-b850-c65509ea6aa9
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -889,66 +846,4 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 205.682958ms
-    - id: 25
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 0
-        transfer_encoding: []
-        trailer: {}
-        host: api.datadoghq.com
-        remote_addr: ""
-        request_uri: ""
-        body: ""
-        form: {}
-        headers:
-            Accept:
-                - '*/*'
-        url: https://api.datadoghq.com/api/v2/users/e0dadb67-af3a-11ee-ace7-46b66802922f
-        method: DELETE
-      response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        transfer_encoding: []
-        trailer: {}
-        content_length: 0
-        uncompressed: false
-        body: ""
-        headers: {}
-        status: 204 No Content
-        code: 204
-        duration: 250.464792ms
-    - id: 26
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 0
-        transfer_encoding: []
-        trailer: {}
-        host: api.datadoghq.com
-        remote_addr: ""
-        request_uri: ""
-        body: ""
-        form: {}
-        headers:
-            Accept:
-                - '*/*'
-        url: https://api.datadoghq.com/api/v2/users/e0dadcc5-af3a-11ee-9759-02911c157043
-        method: DELETE
-      response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        transfer_encoding: []
-        trailer: {}
-        content_length: 0
-        uncompressed: false
-        body: ""
-        headers: {}
-        status: 204 No Content
-        code: 204
-        duration: 298.727792ms
+        duration: 769.468916ms

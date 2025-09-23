@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":[{"notifications":[],"status":"low"}],"complianceSignalOptions":{"userActivationStatus":false,"userGroupByFields":[]},"filters":[],"isEnabled":false,"message":"Acceptance test TF rule","name":"tf-TestAccDatadogCloudConfigurationRule_MandatoryFieldsOnly-local-1729669178","options":{"complianceRuleOptions":{"complexRule":false,"regoRule":{"policy":"package datadog\n\nimport data.datadog.output as dd_output\n\nimport future.keywords.contains\nimport future.keywords.if\nimport future.keywords.in\n\nmilliseconds_in_a_day := ((1000 * 60) * 60) * 24\n\neval(iam_service_account_key) = \"skip\" if {\n\tiam_service_account_key.disabled\n} else = \"pass\" if {\n\t(iam_service_account_key.resource_seen_at / milliseconds_in_a_day) - (iam_service_account_key.valid_after_time / milliseconds_in_a_day) \u003c= 90\n} else = \"fail\"\n\n# This part remains unchanged for all rules\nresults contains result if {\n\tsome resource in input.resources[input.main_resource_type]\n\tresult := dd_output.format(resource, eval(resource))\n}\n","resourceTypes":["gcp_compute_instance"]},"resourceType":"gcp_compute_instance"}},"tags":[],"type":"cloud_configuration"}
+            {"cases":[{"notifications":[],"status":"low"}],"complianceSignalOptions":{"userActivationStatus":false,"userGroupByFields":[]},"filters":[],"isEnabled":false,"message":"Acceptance test TF rule","name":"tf-TestAccDatadogCloudConfigurationRule_MandatoryFieldsOnly-local-1758619300","options":{"complianceRuleOptions":{"complexRule":false,"regoRule":{"policy":"package datadog\n\nimport data.datadog.output as dd_output\n\nimport future.keywords.contains\nimport future.keywords.if\nimport future.keywords.in\n\nmilliseconds_in_a_day := ((1000 * 60) * 60) * 24\n\neval(iam_service_account_key) = \"skip\" if {\n\tiam_service_account_key.disabled\n} else = \"pass\" if {\n\t(iam_service_account_key.resource_seen_at / milliseconds_in_a_day) - (iam_service_account_key.valid_after_time / milliseconds_in_a_day) \u003c= 90\n} else = \"fail\"\n\n# This part remains unchanged for all rules\nresults contains result if {\n\tsome resource in input.resources[input.main_resource_type]\n\tresult := dd_output.format(resource, eval(resource))\n}\n","resourceTypes":["gcp_compute_instance"]},"resourceType":"gcp_compute_instance"}},"tags":[],"type":"cloud_configuration"}
         form: {}
         headers:
             Accept:
@@ -26,19 +26,17 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        transfer_encoding:
-            - chunked
+        transfer_encoding: []
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: |
-            {"id":"j1z-7wu-izr","version":1,"name":"tf-TestAccDatadogCloudConfigurationRule_MandatoryFieldsOnly-local-1729669178","createdAt":1729669180687,"creationAuthorId":1445416,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"resource_type:gcp_compute_instance","groupByFields":["resource_type","resource_id"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"a"}],"options":{"keepAlive":21600,"maxSignalDuration":86400,"detectionMethod":"threshold","evaluationWindow":7200,"complianceRuleOptions":{"resourceType":"gcp_compute_instance","regoRule":{"policy":"package datadog\n\nimport data.datadog.output as dd_output\n\nimport future.keywords.contains\nimport future.keywords.if\nimport future.keywords.in\n\nmilliseconds_in_a_day := ((1000 * 60) * 60) * 24\n\neval(iam_service_account_key) = \"skip\" if {\n\tiam_service_account_key.disabled\n} else = \"pass\" if {\n\t(iam_service_account_key.resource_seen_at / milliseconds_in_a_day) - (iam_service_account_key.valid_after_time / milliseconds_in_a_day) <= 90\n} else = \"fail\"\n\n# This part remains unchanged for all rules\nresults contains result if {\n\tsome resource in input.resources[input.main_resource_type]\n\tresult := dd_output.format(resource, eval(resource))\n}\n","resourceTypes":["gcp_compute_instance"]},"complexRule":false}},"complianceSignalOptions":{"defaultActivationStatus":null,"defaultGroupByFields":null,"userActivationStatus":false,"userGroupByFields":[]},"cases":[{"name":"","status":"low","notifications":[],"condition":"a > 0"}],"message":"Acceptance test TF rule","tags":[],"hasExtendedTitle":true,"type":"cloud_configuration","filters":[]}
+        body: '{"name":"tf-TestAccDatadogCloudConfigurationRule_MandatoryFieldsOnly-local-1758619300","createdAt":1758619302321,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"resource_type:gcp_compute_instance","groupByFields":["resource_type","resource_id"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"a"}],"options":{"evaluationWindow":7200,"detectionMethod":"threshold","maxSignalDuration":86400,"keepAlive":21600,"complianceRuleOptions":{"resourceType":"gcp_compute_instance","regoRule":{"policy":"package datadog\n\nimport data.datadog.output as dd_output\n\nimport future.keywords.contains\nimport future.keywords.if\nimport future.keywords.in\n\nmilliseconds_in_a_day := ((1000 * 60) * 60) * 24\n\neval(iam_service_account_key) = \"skip\" if {\n\tiam_service_account_key.disabled\n} else = \"pass\" if {\n\t(iam_service_account_key.resource_seen_at / milliseconds_in_a_day) - (iam_service_account_key.valid_after_time / milliseconds_in_a_day) \u003c= 90\n} else = \"fail\"\n\n# This part remains unchanged for all rules\nresults contains result if {\n\tsome resource in input.resources[input.main_resource_type]\n\tresult := dd_output.format(resource, eval(resource))\n}\n","resourceTypes":["gcp_compute_instance"]}}},"cases":[{"name":"","status":"low","notifications":[],"condition":"a \u003e 0"}],"message":"Acceptance test TF rule","tags":[],"hasExtendedTitle":true,"type":"cloud_configuration","filters":[],"version":1,"id":"oia-igb-k10","blocking":false,"complianceSignalOptions":{"defaultActivationStatus":null,"defaultGroupByFields":null,"userActivationStatus":false,"userGroupByFields":[]},"metadata":{"entities":null,"sources":null},"creationAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"","name":""},"findingType":"misconfiguration"}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 205.3915ms
+        duration: 208.434083ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -55,25 +53,23 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/j1z-7wu-izr
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/oia-igb-k10
         method: GET
       response:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        transfer_encoding:
-            - chunked
+        transfer_encoding: []
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: |
-            {"id":"j1z-7wu-izr","version":1,"name":"tf-TestAccDatadogCloudConfigurationRule_MandatoryFieldsOnly-local-1729669178","createdAt":1729669180687,"creationAuthorId":1445416,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"resource_type:gcp_compute_instance","groupByFields":["resource_type","resource_id"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"a"}],"options":{"keepAlive":21600,"maxSignalDuration":86400,"detectionMethod":"threshold","evaluationWindow":7200,"complianceRuleOptions":{"resourceType":"gcp_compute_instance","regoRule":{"policy":"package datadog\n\nimport data.datadog.output as dd_output\n\nimport future.keywords.contains\nimport future.keywords.if\nimport future.keywords.in\n\nmilliseconds_in_a_day := ((1000 * 60) * 60) * 24\n\neval(iam_service_account_key) = \"skip\" if {\n\tiam_service_account_key.disabled\n} else = \"pass\" if {\n\t(iam_service_account_key.resource_seen_at / milliseconds_in_a_day) - (iam_service_account_key.valid_after_time / milliseconds_in_a_day) <= 90\n} else = \"fail\"\n\n# This part remains unchanged for all rules\nresults contains result if {\n\tsome resource in input.resources[input.main_resource_type]\n\tresult := dd_output.format(resource, eval(resource))\n}\n","resourceTypes":["gcp_compute_instance"]},"complexRule":false}},"complianceSignalOptions":{"defaultActivationStatus":null,"defaultGroupByFields":null,"userActivationStatus":false,"userGroupByFields":[]},"cases":[{"name":"","status":"low","notifications":[],"condition":"a > 0"}],"message":"Acceptance test TF rule","tags":[],"hasExtendedTitle":true,"type":"cloud_configuration","filters":[]}
+        body: '{"name":"tf-TestAccDatadogCloudConfigurationRule_MandatoryFieldsOnly-local-1758619300","createdAt":1758619302321,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"resource_type:gcp_compute_instance","groupByFields":["resource_type","resource_id"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"a"}],"options":{"evaluationWindow":7200,"detectionMethod":"threshold","maxSignalDuration":86400,"keepAlive":21600,"complianceRuleOptions":{"resourceType":"gcp_compute_instance","regoRule":{"policy":"package datadog\n\nimport data.datadog.output as dd_output\n\nimport future.keywords.contains\nimport future.keywords.if\nimport future.keywords.in\n\nmilliseconds_in_a_day := ((1000 * 60) * 60) * 24\n\neval(iam_service_account_key) = \"skip\" if {\n\tiam_service_account_key.disabled\n} else = \"pass\" if {\n\t(iam_service_account_key.resource_seen_at / milliseconds_in_a_day) - (iam_service_account_key.valid_after_time / milliseconds_in_a_day) \u003c= 90\n} else = \"fail\"\n\n# This part remains unchanged for all rules\nresults contains result if {\n\tsome resource in input.resources[input.main_resource_type]\n\tresult := dd_output.format(resource, eval(resource))\n}\n","resourceTypes":["gcp_compute_instance"]}}},"cases":[{"name":"","status":"low","notifications":[],"condition":"a \u003e 0"}],"message":"Acceptance test TF rule","tags":[],"hasExtendedTitle":true,"type":"cloud_configuration","filters":[],"version":1,"id":"oia-igb-k10","blocking":false,"complianceSignalOptions":{"defaultActivationStatus":null,"defaultGroupByFields":null,"userActivationStatus":false,"userGroupByFields":[]},"metadata":{"entities":null,"sources":null},"creationAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"","name":""},"findingType":"misconfiguration"}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 245.053416ms
+        duration: 146.083166ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -90,25 +86,23 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/j1z-7wu-izr
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/oia-igb-k10
         method: GET
       response:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        transfer_encoding:
-            - chunked
+        transfer_encoding: []
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: |
-            {"id":"j1z-7wu-izr","version":1,"name":"tf-TestAccDatadogCloudConfigurationRule_MandatoryFieldsOnly-local-1729669178","createdAt":1729669180687,"creationAuthorId":1445416,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"resource_type:gcp_compute_instance","groupByFields":["resource_type","resource_id"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"a"}],"options":{"keepAlive":21600,"maxSignalDuration":86400,"detectionMethod":"threshold","evaluationWindow":7200,"complianceRuleOptions":{"resourceType":"gcp_compute_instance","regoRule":{"policy":"package datadog\n\nimport data.datadog.output as dd_output\n\nimport future.keywords.contains\nimport future.keywords.if\nimport future.keywords.in\n\nmilliseconds_in_a_day := ((1000 * 60) * 60) * 24\n\neval(iam_service_account_key) = \"skip\" if {\n\tiam_service_account_key.disabled\n} else = \"pass\" if {\n\t(iam_service_account_key.resource_seen_at / milliseconds_in_a_day) - (iam_service_account_key.valid_after_time / milliseconds_in_a_day) <= 90\n} else = \"fail\"\n\n# This part remains unchanged for all rules\nresults contains result if {\n\tsome resource in input.resources[input.main_resource_type]\n\tresult := dd_output.format(resource, eval(resource))\n}\n","resourceTypes":["gcp_compute_instance"]},"complexRule":false}},"complianceSignalOptions":{"defaultActivationStatus":null,"defaultGroupByFields":null,"userActivationStatus":false,"userGroupByFields":[]},"cases":[{"name":"","status":"low","notifications":[],"condition":"a > 0"}],"message":"Acceptance test TF rule","tags":[],"hasExtendedTitle":true,"type":"cloud_configuration","filters":[]}
+        body: '{"name":"tf-TestAccDatadogCloudConfigurationRule_MandatoryFieldsOnly-local-1758619300","createdAt":1758619302321,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"resource_type:gcp_compute_instance","groupByFields":["resource_type","resource_id"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"a"}],"options":{"evaluationWindow":7200,"detectionMethod":"threshold","maxSignalDuration":86400,"keepAlive":21600,"complianceRuleOptions":{"resourceType":"gcp_compute_instance","regoRule":{"policy":"package datadog\n\nimport data.datadog.output as dd_output\n\nimport future.keywords.contains\nimport future.keywords.if\nimport future.keywords.in\n\nmilliseconds_in_a_day := ((1000 * 60) * 60) * 24\n\neval(iam_service_account_key) = \"skip\" if {\n\tiam_service_account_key.disabled\n} else = \"pass\" if {\n\t(iam_service_account_key.resource_seen_at / milliseconds_in_a_day) - (iam_service_account_key.valid_after_time / milliseconds_in_a_day) \u003c= 90\n} else = \"fail\"\n\n# This part remains unchanged for all rules\nresults contains result if {\n\tsome resource in input.resources[input.main_resource_type]\n\tresult := dd_output.format(resource, eval(resource))\n}\n","resourceTypes":["gcp_compute_instance"]}}},"cases":[{"name":"","status":"low","notifications":[],"condition":"a \u003e 0"}],"message":"Acceptance test TF rule","tags":[],"hasExtendedTitle":true,"type":"cloud_configuration","filters":[],"version":1,"id":"oia-igb-k10","blocking":false,"complianceSignalOptions":{"defaultActivationStatus":null,"defaultGroupByFields":null,"userActivationStatus":false,"userGroupByFields":[]},"metadata":{"entities":null,"sources":null},"creationAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"","name":""},"findingType":"misconfiguration"}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 147.9535ms
+        duration: 260.939875ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -125,7 +119,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/j1z-7wu-izr
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/oia-igb-k10
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -139,7 +133,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 283.73075ms
+        duration: 274.015125ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -156,22 +150,20 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/j1z-7wu-izr
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/oia-igb-k10
         method: GET
       response:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        transfer_encoding:
-            - chunked
+        transfer_encoding: []
         trailer: {}
-        content_length: -1
-        uncompressed: true
-        body: |
-            {"errors":["Threat detection rule not found: j1z-7wu-izr"]}
+        content_length: 86
+        uncompressed: false
+        body: '{"error":{"code":"NotFound","message":"Threat detection rule not found: oia-igb-k10"}}'
         headers:
             Content-Type:
                 - application/json
         status: 404 Not Found
         code: 404
-        duration: 157.903209ms
+        duration: 138.373ms

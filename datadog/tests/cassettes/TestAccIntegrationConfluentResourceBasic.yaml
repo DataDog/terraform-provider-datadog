@@ -1,207 +1,393 @@
+---
 version: 2
 interactions:
-- request:
-    body: |
-      {"data":{"attributes":{"api_key":"tf-TestAccIntegrationConfluentResourceBasic-local-1689861062","api_secret":"test-api-secret-123"},"type":"confluent-cloud-accounts"}}
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/integrations/confluent-cloud/accounts
-    method: POST
-    id: 0
-  response:
-    body: |
-      {"data":{"type":"confluent-cloud-accounts","attributes":{"tags":[],"api_key":"tf-TestAccIntegrationConfluentResourceBasic-local-1689861062","resources":[]},"id":"d89d7d5298d6197a1ae380de17721b26"}}
-    headers:
-      Content-Type:
-      - application/json
-    status: 201 Created
-    code: 201
-    duration: "0ms"
-- request:
-    body: |
-      {"data":{"attributes":{"enable_custom_metrics":false,"resource_type":"kafka","tags":["mytag","mytag2:myvalue"]},"id":"12345678910","type":"confluent-cloud-resources"}}
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/integrations/confluent-cloud/accounts/d89d7d5298d6197a1ae380de17721b26/resources
-    method: POST
-    id: 1
-  response:
-    body: |
-      {"data":{"type":"confluent-cloud-resources","attributes":{"enable_custom_metrics":false,"resource_type":"kafka","tags":["mytag","mytag2:myvalue"]},"id":"12345678910"}}
-    headers:
-      Content-Type:
-      - application/json
-    status: 201 Created
-    code: 201
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/integrations/confluent-cloud/accounts/d89d7d5298d6197a1ae380de17721b26
-    method: GET
-    id: 2
-  response:
-    body: |
-      {"data":{"type":"confluent-cloud-accounts","attributes":{"tags":[],"resources":[{"enable_custom_metrics":false,"id":"12345678910","tags":["mytag","mytag2:myvalue"],"resource_type":"kafka"}],"api_key":"tf-TestAccIntegrationConfluentResourceBasic-local-1689861062"},"id":"d89d7d5298d6197a1ae380de17721b26"}}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/integrations/confluent-cloud/accounts/d89d7d5298d6197a1ae380de17721b26/resources/12345678910
-    method: GET
-    id: 3
-  response:
-    body: |
-      {"data":{"type":"confluent-cloud-resources","id":"12345678910","attributes":{"tags":["mytag","mytag2:myvalue"],"resource_type":"kafka","enable_custom_metrics":false}}}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/integrations/confluent-cloud/accounts/d89d7d5298d6197a1ae380de17721b26
-    method: GET
-    id: 4
-  response:
-    body: |
-      {"data":{"type":"confluent-cloud-accounts","id":"d89d7d5298d6197a1ae380de17721b26","attributes":{"api_key":"tf-TestAccIntegrationConfluentResourceBasic-local-1689861062","resources":[{"id":"12345678910","enable_custom_metrics":false,"resource_type":"kafka","tags":["mytag","mytag2:myvalue"]}],"tags":[]}}}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/integrations/confluent-cloud/accounts/d89d7d5298d6197a1ae380de17721b26/resources/12345678910
-    method: GET
-    id: 5
-  response:
-    body: |
-      {"data":{"type":"confluent-cloud-resources","attributes":{"tags":["mytag","mytag2:myvalue"],"enable_custom_metrics":false,"resource_type":"kafka"},"id":"12345678910"}}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: |
-      {"data":{"attributes":{"enable_custom_metrics":true,"resource_type":"connector","tags":["mytag"]},"id":"12345678910","type":"confluent-cloud-resources"}}
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/integrations/confluent-cloud/accounts/d89d7d5298d6197a1ae380de17721b26/resources/12345678910
-    method: PATCH
-    id: 6
-  response:
-    body: |
-      {"data":{"type":"confluent-cloud-resources","attributes":{"tags":["mytag"],"resource_type":"connector","enable_custom_metrics":true},"id":"12345678910"}}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/integrations/confluent-cloud/accounts/d89d7d5298d6197a1ae380de17721b26
-    method: GET
-    id: 7
-  response:
-    body: |
-      {"data":{"type":"confluent-cloud-accounts","attributes":{"tags":[],"api_key":"tf-TestAccIntegrationConfluentResourceBasic-local-1689861062","resources":[{"resource_type":"connector","tags":["mytag"],"id":"12345678910","enable_custom_metrics":true}]},"id":"d89d7d5298d6197a1ae380de17721b26"}}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/integrations/confluent-cloud/accounts/d89d7d5298d6197a1ae380de17721b26/resources/12345678910
-    method: GET
-    id: 8
-  response:
-    body: |
-      {"data":{"type":"confluent-cloud-resources","attributes":{"tags":["mytag"],"enable_custom_metrics":true,"resource_type":"connector"},"id":"12345678910"}}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - '*/*'
-    url: https://api.datadoghq.com/api/v2/integrations/confluent-cloud/accounts/d89d7d5298d6197a1ae380de17721b26/resources/12345678910
-    method: DELETE
-    id: 9
-  response:
-    body: ""
-    headers:
-      Content-Type:
-      - text/html; charset=utf-8
-    status: 204 No Content
-    code: 204
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - '*/*'
-    url: https://api.datadoghq.com/api/v2/integrations/confluent-cloud/accounts/d89d7d5298d6197a1ae380de17721b26
-    method: DELETE
-    id: 10
-  response:
-    body: ""
-    headers:
-      Content-Type:
-      - text/html; charset=utf-8
-    status: 204 No Content
-    code: 204
-    duration: "0ms"
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 168
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"api_key":"tf-TestAccIntegrationConfluentResourceBasic-local-1758619112","api_secret":"test-api-secret-123"},"type":"confluent-cloud-accounts"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/integrations/confluent-cloud/accounts
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"confluent-cloud-accounts","attributes":{"api_key":"tf-TestAccIntegrationConfluentResourceBasic-local-1758619112","resources":[],"tags":[]},"id":"405ef0d5e1041b199a535fd50dfff157"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 201 Created
+        code: 201
+        duration: 639.2745ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 168
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"enable_custom_metrics":false,"resource_type":"kafka","tags":["mytag","mytag2:myvalue"]},"id":"12345678910","type":"confluent-cloud-resources"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/integrations/confluent-cloud/accounts/405ef0d5e1041b199a535fd50dfff157/resources
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"confluent-cloud-resources","id":"12345678910","attributes":{"tags":["mytag","mytag2:myvalue"],"enable_custom_metrics":false,"resource_type":"kafka"}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 201 Created
+        code: 201
+        duration: 557.612167ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/integrations/confluent-cloud/accounts/405ef0d5e1041b199a535fd50dfff157
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"confluent-cloud-accounts","attributes":{"api_key":"tf-TestAccIntegrationConfluentResourceBasic-local-1758619112","tags":[],"resources":[{"id":"12345678910","enable_custom_metrics":false,"resource_type":"kafka","tags":["mytag","mytag2:myvalue"]}]},"id":"405ef0d5e1041b199a535fd50dfff157"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 178.602916ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/integrations/confluent-cloud/accounts/405ef0d5e1041b199a535fd50dfff157/resources/12345678910
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"confluent-cloud-resources","attributes":{"resource_type":"kafka","enable_custom_metrics":false,"tags":["mytag","mytag2:myvalue"]},"id":"12345678910"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 164.395042ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/integrations/confluent-cloud/accounts/405ef0d5e1041b199a535fd50dfff157
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"confluent-cloud-accounts","attributes":{"api_key":"tf-TestAccIntegrationConfluentResourceBasic-local-1758619112","resources":[{"resource_type":"kafka","id":"12345678910","tags":["mytag","mytag2:myvalue"],"enable_custom_metrics":false}],"tags":[]},"id":"405ef0d5e1041b199a535fd50dfff157"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 172.085125ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/integrations/confluent-cloud/accounts/405ef0d5e1041b199a535fd50dfff157/resources/12345678910
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"confluent-cloud-resources","attributes":{"tags":["mytag","mytag2:myvalue"],"resource_type":"kafka","enable_custom_metrics":false},"id":"12345678910"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 290.538584ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 154
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"enable_custom_metrics":true,"resource_type":"connector","tags":["mytag"]},"id":"12345678910","type":"confluent-cloud-resources"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/integrations/confluent-cloud/accounts/405ef0d5e1041b199a535fd50dfff157/resources/12345678910
+        method: PATCH
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"confluent-cloud-resources","attributes":{"enable_custom_metrics":true,"resource_type":"connector","tags":["mytag"]},"id":"12345678910"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 405.373417ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/integrations/confluent-cloud/accounts/405ef0d5e1041b199a535fd50dfff157
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"confluent-cloud-accounts","attributes":{"api_key":"tf-TestAccIntegrationConfluentResourceBasic-local-1758619112","resources":[{"id":"12345678910","enable_custom_metrics":true,"tags":["mytag"],"resource_type":"connector"}],"tags":[]},"id":"405ef0d5e1041b199a535fd50dfff157"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 171.435791ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/integrations/confluent-cloud/accounts/405ef0d5e1041b199a535fd50dfff157/resources/12345678910
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"confluent-cloud-resources","attributes":{"resource_type":"connector","tags":["mytag"],"enable_custom_metrics":true},"id":"12345678910"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 324.009292ms
+    - id: 9
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/integrations/confluent-cloud/accounts/405ef0d5e1041b199a535fd50dfff157/resources/12345678910
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Content-Type:
+                - text/html; charset=utf-8
+        status: 204 No Content
+        code: 204
+        duration: 407.293083ms
+    - id: 10
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/integrations/confluent-cloud/accounts/405ef0d5e1041b199a535fd50dfff157
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Content-Type:
+                - text/html; charset=utf-8
+        status: 204 No Content
+        code: 204
+        duration: 413.421417ms

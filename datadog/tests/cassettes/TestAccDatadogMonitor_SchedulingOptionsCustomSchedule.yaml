@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"draft_status":"published","message":"a message","name":"tf-TestAccDatadogMonitor_SchedulingOptionsCustomSchedule-local-1749222075","options":{"include_tags":true,"new_host_delay":300,"require_full_window":false,"scheduling_options":{"custom_schedule":{"recurrences":[{"rrule":"FREQ=DAILY;INTERVAL=1","start":"2023-11-10T12:31:00","timezone":"America/New_York"}]}},"thresholds":{"critical":0.5}},"priority":3,"query":"avg(last_1h):avg:system.load.5{*} \u003e 0.5","restricted_roles":null,"tags":[],"type":"metric alert"}
+            {"draft_status":"published","message":"a message","name":"tf-TestAccDatadogMonitor_SchedulingOptionsCustomSchedule-local-1758619078","options":{"include_tags":true,"new_host_delay":300,"require_full_window":false,"scheduling_options":{"custom_schedule":{"recurrences":[{"rrule":"FREQ=DAILY;INTERVAL=1","start":"2023-11-10T12:31:00","timezone":"America/New_York"}]}},"thresholds":{"critical":0.5}},"priority":3,"query":"avg(last_1h):avg:system.load.5{*} \u003e 0.5","restricted_roles":null,"tags":[],"type":"metric alert"}
         form: {}
         headers:
             Accept:
@@ -37,7 +37,7 @@ interactions:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 168.608916ms
+        duration: 266.628042ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -50,7 +50,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"draft_status":"published","message":"a message","name":"tf-TestAccDatadogMonitor_SchedulingOptionsCustomSchedule-local-1749222075","options":{"include_tags":true,"new_host_delay":300,"require_full_window":false,"scheduling_options":{"custom_schedule":{"recurrences":[{"rrule":"FREQ=DAILY;INTERVAL=1","start":"2023-11-10T12:31:00","timezone":"America/New_York"}]}},"thresholds":{"critical":0.5}},"priority":3,"query":"avg(last_1h):avg:system.load.5{*} \u003e 0.5","restricted_roles":null,"tags":[],"type":"metric alert"}
+            {"draft_status":"published","message":"a message","name":"tf-TestAccDatadogMonitor_SchedulingOptionsCustomSchedule-local-1758619078","options":{"include_tags":true,"new_host_delay":300,"require_full_window":false,"scheduling_options":{"custom_schedule":{"recurrences":[{"rrule":"FREQ=DAILY;INTERVAL=1","start":"2023-11-10T12:31:00","timezone":"America/New_York"}]}},"thresholds":{"critical":0.5}},"priority":3,"query":"avg(last_1h):avg:system.load.5{*} \u003e 0.5","restricted_roles":null,"tags":[],"type":"metric alert"}
         form: {}
         headers:
             Accept:
@@ -74,7 +74,7 @@ interactions:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 154.948084ms
+        duration: 175.251875ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -87,7 +87,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"draft_status":"published","message":"a message","name":"tf-TestAccDatadogMonitor_SchedulingOptionsCustomSchedule-local-1749222075","options":{"include_tags":true,"new_host_delay":300,"require_full_window":false,"scheduling_options":{"custom_schedule":{"recurrences":[{"rrule":"FREQ=DAILY;INTERVAL=1","start":"2023-11-10T12:31:00","timezone":"America/New_York"}]}},"thresholds":{"critical":0.5}},"priority":3,"query":"avg(last_1h):avg:system.load.5{*} \u003e 0.5","restricted_roles":null,"tags":[],"type":"metric alert"}
+            {"draft_status":"published","message":"a message","name":"tf-TestAccDatadogMonitor_SchedulingOptionsCustomSchedule-local-1758619078","options":{"include_tags":true,"new_host_delay":300,"require_full_window":false,"scheduling_options":{"custom_schedule":{"recurrences":[{"rrule":"FREQ=DAILY;INTERVAL=1","start":"2023-11-10T12:31:00","timezone":"America/New_York"}]}},"thresholds":{"critical":0.5}},"priority":3,"query":"avg(last_1h):avg:system.load.5{*} \u003e 0.5","restricted_roles":null,"tags":[],"type":"metric alert"}
         form: {}
         headers:
             Accept:
@@ -106,13 +106,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":174341724,"org_id":321813,"type":"metric alert","name":"tf-TestAccDatadogMonitor_SchedulingOptionsCustomSchedule-local-1749222075","message":"a message","tags":[],"query":"avg(last_1h):avg:system.load.5{*} > 0.5","options":{"include_tags":true,"new_host_delay":300,"require_full_window":false,"scheduling_options":{"custom_schedule":{"recurrences":[{"rrule":"FREQ=DAILY;INTERVAL=1","start":"2023-11-10T12:31:00","timezone":"America/New_York"}]}},"thresholds":{"critical":0.5},"notify_audit":false,"silenced":{}},"multi":false,"created_at":1749222077000,"created":"2025-06-06T15:01:17.139496+00:00","modified":"2025-06-06T15:01:17.139496+00:00","deleted":null,"priority":3,"restricted_roles":null,"restriction_policy":null,"overall_state_modified":null,"overall_state":"No Data","creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com","id":1445416}}
+            {"id":217467711,"org_id":321813,"type":"metric alert","name":"tf-TestAccDatadogMonitor_SchedulingOptionsCustomSchedule-local-1758619078","message":"a message","tags":[],"query":"avg(last_1h):avg:system.load.5{*} > 0.5","options":{"include_tags":true,"new_host_delay":300,"require_full_window":false,"scheduling_options":{"custom_schedule":{"recurrences":[{"rrule":"FREQ=DAILY;INTERVAL=1","start":"2023-11-10T12:31:00","timezone":"America/New_York"}]}},"thresholds":{"critical":0.5},"notify_audit":false,"silenced":{}},"multi":false,"created_at":1758619080000,"created":"2025-09-23T09:18:00.604328+00:00","modified":"2025-09-23T09:18:00.604328+00:00","deleted":null,"priority":3,"restricted_roles":null,"restriction_policy":null,"overall_state_modified":null,"overall_state":"No Data","creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com","id":1445416}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 280.11675ms
+        duration: 264.455875ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -129,7 +129,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/174341724
+        url: https://api.datadoghq.com/api/v1/monitor/217467711
         method: GET
       response:
         proto: HTTP/1.1
@@ -141,13 +141,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":174341724,"org_id":321813,"type":"metric alert","name":"tf-TestAccDatadogMonitor_SchedulingOptionsCustomSchedule-local-1749222075","message":"a message","tags":[],"query":"avg(last_1h):avg:system.load.5{*} > 0.5","options":{"include_tags":true,"new_host_delay":300,"require_full_window":false,"scheduling_options":{"custom_schedule":{"recurrences":[{"rrule":"FREQ=DAILY;INTERVAL=1","start":"2023-11-10T12:31:00","timezone":"America/New_York"}]}},"thresholds":{"critical":0.5},"notify_audit":false,"silenced":{}},"multi":false,"created_at":1749222077000,"created":"2025-06-06T15:01:17.139496+00:00","modified":"2025-06-06T15:01:17.139496+00:00","deleted":null,"priority":3,"restricted_roles":null,"overall_state_modified":null,"overall_state":"No Data","creator":{"name":"frog","email":"frog@datadoghq.com","handle":"frog@datadoghq.com","id":1445416}}
+            {"id":217467711,"org_id":321813,"type":"metric alert","name":"tf-TestAccDatadogMonitor_SchedulingOptionsCustomSchedule-local-1758619078","message":"a message","tags":[],"query":"avg(last_1h):avg:system.load.5{*} > 0.5","options":{"include_tags":true,"new_host_delay":300,"require_full_window":false,"scheduling_options":{"custom_schedule":{"recurrences":[{"rrule":"FREQ=DAILY;INTERVAL=1","start":"2023-11-10T12:31:00","timezone":"America/New_York"}]}},"thresholds":{"critical":0.5},"notify_audit":false,"silenced":{}},"multi":false,"created_at":1758619080000,"created":"2025-09-23T09:18:00.604328+00:00","modified":"2025-09-23T09:18:00.604328+00:00","deleted":null,"priority":3,"restricted_roles":null,"overall_state_modified":null,"overall_state":"No Data","creator":{"name":"frog","email":"frog@datadoghq.com","handle":"frog@datadoghq.com","id":1445416}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 305.53425ms
+        duration: 199.260417ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -160,14 +160,14 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"draft_status":"published","message":"a message","name":"tf-TestAccDatadogMonitor_SchedulingOptionsCustomSchedule-local-1749222075","options":{"include_tags":true,"new_host_delay":300,"require_full_window":false,"scheduling_options":{"custom_schedule":{"recurrences":[{"rrule":"FREQ=DAILY;INTERVAL=1","start":"2023-11-10T12:31:00","timezone":"America/New_York"}]}},"thresholds":{"critical":0.5}},"priority":3,"query":"avg(last_1h):avg:system.load.5{*} \u003e 0.5","restricted_roles":null,"tags":[],"type":"metric alert"}
+            {"draft_status":"published","message":"a message","name":"tf-TestAccDatadogMonitor_SchedulingOptionsCustomSchedule-local-1758619078","options":{"include_tags":true,"new_host_delay":300,"require_full_window":false,"scheduling_options":{"custom_schedule":{"recurrences":[{"rrule":"FREQ=DAILY;INTERVAL=1","start":"2023-11-10T12:31:00","timezone":"America/New_York"}]}},"thresholds":{"critical":0.5}},"priority":3,"query":"avg(last_1h):avg:system.load.5{*} \u003e 0.5","restricted_roles":null,"tags":[],"type":"metric alert"}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/174341724/validate
+        url: https://api.datadoghq.com/api/v1/monitor/217467711/validate
         method: POST
       response:
         proto: HTTP/1.1
@@ -184,7 +184,7 @@ interactions:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 149.228459ms
+        duration: 185.915792ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -201,7 +201,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/174341724
+        url: https://api.datadoghq.com/api/v1/monitor/217467711
         method: GET
       response:
         proto: HTTP/1.1
@@ -213,13 +213,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":174341724,"org_id":321813,"type":"metric alert","name":"tf-TestAccDatadogMonitor_SchedulingOptionsCustomSchedule-local-1749222075","message":"a message","tags":[],"query":"avg(last_1h):avg:system.load.5{*} > 0.5","options":{"include_tags":true,"new_host_delay":300,"require_full_window":false,"scheduling_options":{"custom_schedule":{"recurrences":[{"rrule":"FREQ=DAILY;INTERVAL=1","start":"2023-11-10T12:31:00","timezone":"America/New_York"}]}},"thresholds":{"critical":0.5},"notify_audit":false,"silenced":{}},"multi":false,"created_at":1749222077000,"created":"2025-06-06T15:01:17.139496+00:00","modified":"2025-06-06T15:01:17.139496+00:00","deleted":null,"priority":3,"restricted_roles":null,"overall_state_modified":null,"overall_state":"No Data","creator":{"name":"frog","email":"frog@datadoghq.com","handle":"frog@datadoghq.com","id":1445416}}
+            {"id":217467711,"org_id":321813,"type":"metric alert","name":"tf-TestAccDatadogMonitor_SchedulingOptionsCustomSchedule-local-1758619078","message":"a message","tags":[],"query":"avg(last_1h):avg:system.load.5{*} > 0.5","options":{"include_tags":true,"new_host_delay":300,"require_full_window":false,"scheduling_options":{"custom_schedule":{"recurrences":[{"rrule":"FREQ=DAILY;INTERVAL=1","start":"2023-11-10T12:31:00","timezone":"America/New_York"}]}},"thresholds":{"critical":0.5},"notify_audit":false,"silenced":{}},"multi":false,"created_at":1758619080000,"created":"2025-09-23T09:18:00.604328+00:00","modified":"2025-09-23T09:18:00.604328+00:00","deleted":null,"priority":3,"restricted_roles":null,"overall_state_modified":null,"overall_state":"No Data","creator":{"name":"frog","email":"frog@datadoghq.com","handle":"frog@datadoghq.com","id":1445416}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 1.828864375s
+        duration: 289.690375ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -232,14 +232,14 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"draft_status":"published","message":"a message","name":"tf-TestAccDatadogMonitor_SchedulingOptionsCustomSchedule-local-1749222075","options":{"include_tags":true,"new_host_delay":300,"require_full_window":false,"scheduling_options":{"custom_schedule":{"recurrences":[{"rrule":"FREQ=DAILY;INTERVAL=1","start":"2023-11-10T12:31:00","timezone":"America/New_York"}]}},"thresholds":{"critical":0.5}},"priority":3,"query":"avg(last_1h):avg:system.load.5{*} \u003e 0.5","restricted_roles":null,"tags":[],"type":"metric alert"}
+            {"draft_status":"published","message":"a message","name":"tf-TestAccDatadogMonitor_SchedulingOptionsCustomSchedule-local-1758619078","options":{"include_tags":true,"new_host_delay":300,"require_full_window":false,"scheduling_options":{"custom_schedule":{"recurrences":[{"rrule":"FREQ=DAILY;INTERVAL=1","start":"2023-11-10T12:31:00","timezone":"America/New_York"}]}},"thresholds":{"critical":0.5}},"priority":3,"query":"avg(last_1h):avg:system.load.5{*} \u003e 0.5","restricted_roles":null,"tags":[],"type":"metric alert"}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/174341724/validate
+        url: https://api.datadoghq.com/api/v1/monitor/217467711/validate
         method: POST
       response:
         proto: HTTP/1.1
@@ -256,7 +256,7 @@ interactions:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 221.32825ms
+        duration: 174.460583ms
     - id: 7
       request:
         proto: HTTP/1.1
@@ -273,7 +273,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/174341724
+        url: https://api.datadoghq.com/api/v1/monitor/217467711
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -285,13 +285,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"deleted_monitor_id":174341724}
+            {"deleted_monitor_id":217467711}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 417.7175ms
+        duration: 396.973416ms
     - id: 8
       request:
         proto: HTTP/1.1
@@ -308,7 +308,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/174341724
+        url: https://api.datadoghq.com/api/v1/monitor/217467711
         method: GET
       response:
         proto: HTTP/1.1
@@ -325,4 +325,4 @@ interactions:
                 - application/json
         status: 404 Not Found
         code: 404
-        duration: 135.681833ms
+        duration: 164.239334ms

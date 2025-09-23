@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"config":{"initialApplicationArguments":{"test_process_argument":"test1","test_process_argument_too":"test2"},"variables":[{"example":"123","name":"VARIABLE_NAME","pattern":"{{numeric(3)}}","secure":false,"type":"text"}]},"message":"Notify @datadog.user","name":"tf-TestAccDatadogSyntheticsMobileTest_Basic-local-1750697655","options":{"ci":{"executionRule":"blocking"},"defaultStepTimeout":10,"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16","synthetics:mobile:device:apple_iphone_14_pro_ios_16"],"disableAutoAcceptAlert":true,"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"monitor_name":"tf-TestAccDatadogSyntheticsMobileTest_Basic-local-1750697655-monitor","monitor_options":{"escalation_message":"test escalation message","notification_preset_name":"show_all","renotify_interval":10,"renotify_occurrences":3},"monitor_priority":5,"noScreenshot":true,"retry":{"count":0,"interval":300},"scheduling":{"timeframes":[{"day":5,"from":"07:00","to":"16:00"},{"day":7,"from":"07:00","to":"16:00"}],"timezone":"UTC"},"tick_every":43200},"status":"paused","steps":[{"allowFailure":false,"hasNewStepElement":false,"isCritical":true,"name":"Tap on StaticText \"Tap\"","noScreenshot":false,"params":{"element":{"context":"NATIVE_APP","contextType":"native","elementDescription":"\u003cXCUIElementTypeStaticText value=\"Tap\" name=\"Tap\" label=\"Tap\"\u003e","textContent":"Tap","userLocator":{"failTestOnCannotLocate":false,"values":[{"type":"id","value":"some_id"}]},"viewName":"StaticText"}},"timeout":100,"type":"tap"},{"allowFailure":false,"hasNewStepElement":false,"isCritical":true,"name":"Test View \"Tap\" content","noScreenshot":false,"params":{"check":"contains","element":{"context":"NATIVE_APP","contextType":"native","elementDescription":"\u003cXCUIElementTypeOther name=\"Tap\" label=\"Tap\"\u003e","relativePosition":{"x":0.27660448306074764,"y":0.6841517857142857},"textContent":"Tap","userLocator":{"failTestOnCannotLocate":false,"values":[{"type":"id","value":"some_id"}]},"viewName":"View"},"value":"Tap"},"timeout":100,"type":"assertElementContent"}],"tags":["foo:bar","baz"],"type":"mobile"}
+            {"config":{"initialApplicationArguments":{"test_process_argument":"test1","test_process_argument_too":"test2"},"variables":[{"example":"123","name":"VARIABLE_NAME","pattern":"{{numeric(3)}}","secure":false,"type":"text"}]},"message":"Notify @datadog.user","name":"tf-TestAccDatadogSyntheticsMobileTest_Basic-local-1758619200","options":{"ci":{"executionRule":"blocking"},"defaultStepTimeout":10,"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16","synthetics:mobile:device:apple_iphone_14_pro_ios_16"],"disableAutoAcceptAlert":true,"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"monitor_name":"tf-TestAccDatadogSyntheticsMobileTest_Basic-local-1758619200-monitor","monitor_options":{"escalation_message":"test escalation message","notification_preset_name":"show_all","renotify_interval":10,"renotify_occurrences":3},"monitor_priority":5,"noScreenshot":true,"retry":{"count":0,"interval":300},"scheduling":{"timeframes":[{"day":5,"from":"07:00","to":"16:00"},{"day":7,"from":"07:00","to":"16:00"}],"timezone":"UTC"},"tick_every":43200},"status":"paused","steps":[{"allowFailure":false,"hasNewStepElement":false,"isCritical":true,"name":"Tap on StaticText \"Tap\"","noScreenshot":false,"params":{"element":{"context":"NATIVE_APP","contextType":"native","elementDescription":"\u003cXCUIElementTypeStaticText value=\"Tap\" name=\"Tap\" label=\"Tap\"\u003e","textContent":"Tap","userLocator":{"failTestOnCannotLocate":false,"values":[{"type":"id","value":"some_id"}]},"viewName":"StaticText"}},"timeout":100,"type":"tap"},{"allowFailure":false,"hasNewStepElement":false,"isCritical":true,"name":"Test View \"Tap\" content","noScreenshot":false,"params":{"check":"contains","element":{"context":"NATIVE_APP","contextType":"native","elementDescription":"\u003cXCUIElementTypeOther name=\"Tap\" label=\"Tap\"\u003e","relativePosition":{"x":0.27660448306074764,"y":0.6841517857142857},"textContent":"Tap","userLocator":{"failTestOnCannotLocate":false,"values":[{"type":"id","value":"some_id"}]},"viewName":"View"},"value":"Tap"},"timeout":100,"type":"assertElementContent"}],"tags":["foo:bar","baz"],"type":"mobile"}
         form: {}
         headers:
             Accept:
@@ -32,13 +32,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"wn4-ycj-gm8","name":"tf-TestAccDatadogSyntheticsMobileTest_Basic-local-1750697655","status":"paused","type":"mobile","tags":["foo:bar","baz"],"created_at":"2025-06-23T16:54:18.043816+00:00","modified_at":"2025-06-23T16:54:18.043816+00:00","config":{"initialApplicationArguments":{"test_process_argument":"test1","test_process_argument_too":"test2"},"variables":[{"example":"123","name":"VARIABLE_NAME","pattern":"{{numeric(3)}}","secure":false,"type":"text"}]},"message":"Notify @datadog.user","options":{"ci":{"executionRule":"blocking"},"defaultStepTimeout":10,"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16","synthetics:mobile:device:apple_iphone_14_pro_ios_16"],"disableAutoAcceptAlert":true,"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"monitor_name":"tf-TestAccDatadogSyntheticsMobileTest_Basic-local-1750697655-monitor","monitor_options":{"escalation_message":"test escalation message","notification_preset_name":"show_all","renotify_interval":10,"renotify_occurrences":3,"on_missing_data":"show_no_data","notify_audit":false,"new_host_delay":300,"include_tags":true},"monitor_priority":5,"noScreenshot":true,"retry":{"count":0,"interval":300},"scheduling":{"timeframes":[{"day":5,"from":"07:00","to":"16:00"},{"day":7,"from":"07:00","to":"16:00"}],"timezone":"UTC"},"tick_every":43200},"locations":["aws:us-west-2"],"created_by":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"deleted_at":null,"monitor_id":175808524,"org_id":321813,"modified_by":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"creation_source":"terraform","steps":[{"name":"Tap on StaticText \"Tap\"","params":{"element":{"context":"NATIVE_APP","contextType":"native","elementDescription":"<XCUIElementTypeStaticText value=\"Tap\" name=\"Tap\" label=\"Tap\">","textContent":"Tap","userLocator":{"failTestOnCannotLocate":false,"values":[{"type":"id","value":"some_id"}]},"viewName":"StaticText"}},"timeout":100,"type":"tap","public_id":"mr5-p7a-dc8","allowFailure":false,"isCritical":true,"noScreenshot":false},{"name":"Test View \"Tap\" content","params":{"check":"contains","element":{"context":"NATIVE_APP","contextType":"native","elementDescription":"<XCUIElementTypeOther name=\"Tap\" label=\"Tap\">","relativePosition":{"x":0.27660448306074764,"y":0.6841517857142857},"textContent":"Tap","userLocator":{"failTestOnCannotLocate":false,"values":[{"type":"id","value":"some_id"}]},"viewName":"View"},"value":"Tap"},"timeout":100,"type":"assertElementContent","public_id":"3c5-bk8-j35","allowFailure":false,"isCritical":true,"noScreenshot":false}],"stepCount":{"assertions":1,"subtests":0,"total":2}}
+            {"public_id":"gqg-gtp-kit","name":"tf-TestAccDatadogSyntheticsMobileTest_Basic-local-1758619200","status":"paused","type":"mobile","tags":["foo:bar","baz"],"created_at":"2025-09-23T09:20:01.154741+00:00","modified_at":"2025-09-23T09:20:01.154741+00:00","config":{"initialApplicationArguments":{"test_process_argument":"test1","test_process_argument_too":"test2"},"variables":[{"example":"123","name":"VARIABLE_NAME","pattern":"{{numeric(3)}}","secure":false,"type":"text"}]},"message":"Notify @datadog.user","options":{"ci":{"executionRule":"blocking"},"defaultStepTimeout":10,"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16","synthetics:mobile:device:apple_iphone_14_pro_ios_16"],"disableAutoAcceptAlert":true,"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"monitor_name":"tf-TestAccDatadogSyntheticsMobileTest_Basic-local-1758619200-monitor","monitor_options":{"escalation_message":"test escalation message","notification_preset_name":"show_all","renotify_interval":10,"renotify_occurrences":3,"on_missing_data":"show_no_data","notify_audit":false,"new_host_delay":300,"include_tags":true},"monitor_priority":5,"noScreenshot":true,"retry":{"count":0,"interval":300},"scheduling":{"timeframes":[{"day":5,"from":"07:00","to":"16:00"},{"day":7,"from":"07:00","to":"16:00"}],"timezone":"UTC"},"tick_every":43200},"locations":["aws:us-west-2"],"created_by":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"deleted_at":null,"monitor_id":217468826,"org_id":321813,"modified_by":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"creation_source":"terraform","steps":[{"name":"Tap on StaticText \"Tap\"","params":{"element":{"context":"NATIVE_APP","contextType":"native","elementDescription":"<XCUIElementTypeStaticText value=\"Tap\" name=\"Tap\" label=\"Tap\">","textContent":"Tap","userLocator":{"failTestOnCannotLocate":false,"values":[{"type":"id","value":"some_id"}]},"viewName":"StaticText"}},"timeout":100,"type":"tap","public_id":"uxv-vuz-ff4","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":true,"noScreenshot":false},{"name":"Test View \"Tap\" content","params":{"check":"contains","element":{"context":"NATIVE_APP","contextType":"native","elementDescription":"<XCUIElementTypeOther name=\"Tap\" label=\"Tap\">","relativePosition":{"x":0.27660448306074764,"y":0.6841517857142857},"textContent":"Tap","userLocator":{"failTestOnCannotLocate":false,"values":[{"type":"id","value":"some_id"}]},"viewName":"View"},"value":"Tap"},"timeout":100,"type":"assertElementContent","public_id":"vii-zvn-2rr","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":true,"noScreenshot":false}],"stepCount":{"assertions":1,"subtests":0,"total":2}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 813.33875ms
+        duration: 681.249208ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -55,7 +55,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/mobile/wn4-ycj-gm8
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/mobile/gqg-gtp-kit
         method: GET
       response:
         proto: HTTP/1.1
@@ -67,13 +67,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"wn4-ycj-gm8","name":"tf-TestAccDatadogSyntheticsMobileTest_Basic-local-1750697655","status":"paused","type":"mobile","tags":["foo:bar","baz"],"created_at":"2025-06-23T16:54:18.043816+00:00","modified_at":"2025-06-23T16:54:18.043816+00:00","config":{"initialApplicationArguments":{"test_process_argument":"test1","test_process_argument_too":"test2"},"variables":[{"example":"123","name":"VARIABLE_NAME","pattern":"{{numeric(3)}}","secure":false,"type":"text"}]},"message":"Notify @datadog.user","options":{"ci":{"executionRule":"blocking"},"defaultStepTimeout":10,"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16","synthetics:mobile:device:apple_iphone_14_pro_ios_16"],"disableAutoAcceptAlert":true,"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"monitor_name":"tf-TestAccDatadogSyntheticsMobileTest_Basic-local-1750697655-monitor","monitor_options":{"escalation_message":"test escalation message","notification_preset_name":"show_all","renotify_interval":10,"renotify_occurrences":3,"on_missing_data":"show_no_data","notify_audit":false,"new_host_delay":300,"include_tags":true},"monitor_priority":5,"noScreenshot":true,"retry":{"count":0,"interval":300},"scheduling":{"timeframes":[{"day":5,"from":"07:00","to":"16:00"},{"day":7,"from":"07:00","to":"16:00"}],"timezone":"UTC"},"tick_every":43200},"locations":["aws:us-west-2"],"monitor_id":175808524,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[{"name":"Tap on StaticText \"Tap\"","params":{"element":{"context":"NATIVE_APP","contextType":"native","elementDescription":"<XCUIElementTypeStaticText value=\"Tap\" name=\"Tap\" label=\"Tap\">","textContent":"Tap","userLocator":{"failTestOnCannotLocate":false,"values":[{"type":"id","value":"some_id"}]},"viewName":"StaticText"}},"public_id":"mr5-p7a-dc8","timeout":100,"type":"tap","allowFailure":false,"isCritical":true,"noScreenshot":false},{"name":"Test View \"Tap\" content","params":{"check":"contains","element":{"context":"NATIVE_APP","contextType":"native","elementDescription":"<XCUIElementTypeOther name=\"Tap\" label=\"Tap\">","relativePosition":{"x":0.27660448306074764,"y":0.6841517857142857},"textContent":"Tap","userLocator":{"failTestOnCannotLocate":false,"values":[{"type":"id","value":"some_id"}]},"viewName":"View"},"value":"Tap"},"public_id":"3c5-bk8-j35","timeout":100,"type":"assertElementContent","allowFailure":false,"isCritical":true,"noScreenshot":false}]}
+            {"public_id":"gqg-gtp-kit","name":"tf-TestAccDatadogSyntheticsMobileTest_Basic-local-1758619200","status":"paused","type":"mobile","tags":["foo:bar","baz"],"created_at":"2025-09-23T09:20:01.154741+00:00","modified_at":"2025-09-23T09:20:01.154741+00:00","config":{"initialApplicationArguments":{"test_process_argument":"test1","test_process_argument_too":"test2"},"variables":[{"example":"123","name":"VARIABLE_NAME","pattern":"{{numeric(3)}}","secure":false,"type":"text"}]},"message":"Notify @datadog.user","options":{"ci":{"executionRule":"blocking"},"defaultStepTimeout":10,"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16","synthetics:mobile:device:apple_iphone_14_pro_ios_16"],"disableAutoAcceptAlert":true,"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"monitor_name":"tf-TestAccDatadogSyntheticsMobileTest_Basic-local-1758619200-monitor","monitor_options":{"escalation_message":"test escalation message","notification_preset_name":"show_all","renotify_interval":10,"renotify_occurrences":3,"on_missing_data":"show_no_data","notify_audit":false,"new_host_delay":300,"include_tags":true},"monitor_priority":5,"noScreenshot":true,"retry":{"count":0,"interval":300},"scheduling":{"timeframes":[{"day":5,"from":"07:00","to":"16:00"},{"day":7,"from":"07:00","to":"16:00"}],"timezone":"UTC"},"tick_every":43200},"locations":["aws:us-west-2"],"monitor_id":217468826,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[{"name":"Tap on StaticText \"Tap\"","params":{"element":{"context":"NATIVE_APP","contextType":"native","elementDescription":"<XCUIElementTypeStaticText value=\"Tap\" name=\"Tap\" label=\"Tap\">","textContent":"Tap","userLocator":{"failTestOnCannotLocate":false,"values":[{"type":"id","value":"some_id"}]},"viewName":"StaticText"}},"public_id":"uxv-vuz-ff4","timeout":100,"type":"tap","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":true,"noScreenshot":false},{"name":"Test View \"Tap\" content","params":{"check":"contains","element":{"context":"NATIVE_APP","contextType":"native","elementDescription":"<XCUIElementTypeOther name=\"Tap\" label=\"Tap\">","relativePosition":{"x":0.27660448306074764,"y":0.6841517857142857},"textContent":"Tap","userLocator":{"failTestOnCannotLocate":false,"values":[{"type":"id","value":"some_id"}]},"viewName":"View"},"value":"Tap"},"public_id":"vii-zvn-2rr","timeout":100,"type":"assertElementContent","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":true,"noScreenshot":false}]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 218.193708ms
+        duration: 386.339792ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -90,7 +90,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/wn4-ycj-gm8
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/gqg-gtp-kit
         method: GET
       response:
         proto: HTTP/1.1
@@ -102,13 +102,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"wn4-ycj-gm8","name":"tf-TestAccDatadogSyntheticsMobileTest_Basic-local-1750697655","status":"paused","type":"mobile","tags":["foo:bar","baz"],"created_at":"2025-06-23T16:54:18.043816+00:00","modified_at":"2025-06-23T16:54:18.043816+00:00","config":{"initialApplicationArguments":{"test_process_argument":"test1","test_process_argument_too":"test2"},"variables":[{"example":"123","name":"VARIABLE_NAME","pattern":"{{numeric(3)}}","secure":false,"type":"text"}]},"message":"Notify @datadog.user","options":{"ci":{"executionRule":"blocking"},"defaultStepTimeout":10,"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16","synthetics:mobile:device:apple_iphone_14_pro_ios_16"],"disableAutoAcceptAlert":true,"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"monitor_name":"tf-TestAccDatadogSyntheticsMobileTest_Basic-local-1750697655-monitor","monitor_options":{"escalation_message":"test escalation message","notification_preset_name":"show_all","renotify_interval":10,"renotify_occurrences":3,"on_missing_data":"show_no_data","notify_audit":false,"new_host_delay":300,"include_tags":true},"monitor_priority":5,"noScreenshot":true,"retry":{"count":0,"interval":300},"scheduling":{"timeframes":[{"day":5,"from":"07:00","to":"16:00"},{"day":7,"from":"07:00","to":"16:00"}],"timezone":"UTC"},"tick_every":43200},"locations":["aws:us-west-2"],"monitor_id":175808524,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"public_id":"gqg-gtp-kit","name":"tf-TestAccDatadogSyntheticsMobileTest_Basic-local-1758619200","status":"paused","type":"mobile","tags":["foo:bar","baz"],"created_at":"2025-09-23T09:20:01.154741+00:00","modified_at":"2025-09-23T09:20:01.154741+00:00","config":{"initialApplicationArguments":{"test_process_argument":"test1","test_process_argument_too":"test2"},"variables":[{"example":"123","name":"VARIABLE_NAME","pattern":"{{numeric(3)}}","secure":false,"type":"text"}]},"message":"Notify @datadog.user","options":{"ci":{"executionRule":"blocking"},"defaultStepTimeout":10,"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16","synthetics:mobile:device:apple_iphone_14_pro_ios_16"],"disableAutoAcceptAlert":true,"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"monitor_name":"tf-TestAccDatadogSyntheticsMobileTest_Basic-local-1758619200-monitor","monitor_options":{"escalation_message":"test escalation message","notification_preset_name":"show_all","renotify_interval":10,"renotify_occurrences":3,"on_missing_data":"show_no_data","notify_audit":false,"new_host_delay":300,"include_tags":true},"monitor_priority":5,"noScreenshot":true,"retry":{"count":0,"interval":300},"scheduling":{"timeframes":[{"day":5,"from":"07:00","to":"16:00"},{"day":7,"from":"07:00","to":"16:00"}],"timezone":"UTC"},"tick_every":43200},"locations":["aws:us-west-2"],"monitor_id":217468826,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 225.499042ms
+        duration: 294.065416ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -125,7 +125,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/wn4-ycj-gm8
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/gqg-gtp-kit
         method: GET
       response:
         proto: HTTP/1.1
@@ -137,13 +137,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"wn4-ycj-gm8","name":"tf-TestAccDatadogSyntheticsMobileTest_Basic-local-1750697655","status":"paused","type":"mobile","tags":["foo:bar","baz"],"created_at":"2025-06-23T16:54:18.043816+00:00","modified_at":"2025-06-23T16:54:18.043816+00:00","config":{"initialApplicationArguments":{"test_process_argument":"test1","test_process_argument_too":"test2"},"variables":[{"example":"123","name":"VARIABLE_NAME","pattern":"{{numeric(3)}}","secure":false,"type":"text"}]},"message":"Notify @datadog.user","options":{"ci":{"executionRule":"blocking"},"defaultStepTimeout":10,"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16","synthetics:mobile:device:apple_iphone_14_pro_ios_16"],"disableAutoAcceptAlert":true,"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"monitor_name":"tf-TestAccDatadogSyntheticsMobileTest_Basic-local-1750697655-monitor","monitor_options":{"escalation_message":"test escalation message","notification_preset_name":"show_all","renotify_interval":10,"renotify_occurrences":3,"on_missing_data":"show_no_data","notify_audit":false,"new_host_delay":300,"include_tags":true},"monitor_priority":5,"noScreenshot":true,"retry":{"count":0,"interval":300},"scheduling":{"timeframes":[{"day":5,"from":"07:00","to":"16:00"},{"day":7,"from":"07:00","to":"16:00"}],"timezone":"UTC"},"tick_every":43200},"locations":["aws:us-west-2"],"monitor_id":175808524,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"public_id":"gqg-gtp-kit","name":"tf-TestAccDatadogSyntheticsMobileTest_Basic-local-1758619200","status":"paused","type":"mobile","tags":["foo:bar","baz"],"created_at":"2025-09-23T09:20:01.154741+00:00","modified_at":"2025-09-23T09:20:01.154741+00:00","config":{"initialApplicationArguments":{"test_process_argument":"test1","test_process_argument_too":"test2"},"variables":[{"example":"123","name":"VARIABLE_NAME","pattern":"{{numeric(3)}}","secure":false,"type":"text"}]},"message":"Notify @datadog.user","options":{"ci":{"executionRule":"blocking"},"defaultStepTimeout":10,"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16","synthetics:mobile:device:apple_iphone_14_pro_ios_16"],"disableAutoAcceptAlert":true,"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"monitor_name":"tf-TestAccDatadogSyntheticsMobileTest_Basic-local-1758619200-monitor","monitor_options":{"escalation_message":"test escalation message","notification_preset_name":"show_all","renotify_interval":10,"renotify_occurrences":3,"on_missing_data":"show_no_data","notify_audit":false,"new_host_delay":300,"include_tags":true},"monitor_priority":5,"noScreenshot":true,"retry":{"count":0,"interval":300},"scheduling":{"timeframes":[{"day":5,"from":"07:00","to":"16:00"},{"day":7,"from":"07:00","to":"16:00"}],"timezone":"UTC"},"tick_every":43200},"locations":["aws:us-west-2"],"monitor_id":217468826,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 236.891334ms
+        duration: 450.401333ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -160,7 +160,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/mobile/wn4-ycj-gm8
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/mobile/gqg-gtp-kit
         method: GET
       response:
         proto: HTTP/1.1
@@ -172,13 +172,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"wn4-ycj-gm8","name":"tf-TestAccDatadogSyntheticsMobileTest_Basic-local-1750697655","status":"paused","type":"mobile","tags":["foo:bar","baz"],"created_at":"2025-06-23T16:54:18.043816+00:00","modified_at":"2025-06-23T16:54:18.043816+00:00","config":{"initialApplicationArguments":{"test_process_argument":"test1","test_process_argument_too":"test2"},"variables":[{"example":"123","name":"VARIABLE_NAME","pattern":"{{numeric(3)}}","secure":false,"type":"text"}]},"message":"Notify @datadog.user","options":{"ci":{"executionRule":"blocking"},"defaultStepTimeout":10,"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16","synthetics:mobile:device:apple_iphone_14_pro_ios_16"],"disableAutoAcceptAlert":true,"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"monitor_name":"tf-TestAccDatadogSyntheticsMobileTest_Basic-local-1750697655-monitor","monitor_options":{"escalation_message":"test escalation message","notification_preset_name":"show_all","renotify_interval":10,"renotify_occurrences":3,"on_missing_data":"show_no_data","notify_audit":false,"new_host_delay":300,"include_tags":true},"monitor_priority":5,"noScreenshot":true,"retry":{"count":0,"interval":300},"scheduling":{"timeframes":[{"day":5,"from":"07:00","to":"16:00"},{"day":7,"from":"07:00","to":"16:00"}],"timezone":"UTC"},"tick_every":43200},"locations":["aws:us-west-2"],"monitor_id":175808524,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[{"name":"Tap on StaticText \"Tap\"","params":{"element":{"context":"NATIVE_APP","contextType":"native","elementDescription":"<XCUIElementTypeStaticText value=\"Tap\" name=\"Tap\" label=\"Tap\">","textContent":"Tap","userLocator":{"failTestOnCannotLocate":false,"values":[{"type":"id","value":"some_id"}]},"viewName":"StaticText"}},"public_id":"mr5-p7a-dc8","timeout":100,"type":"tap","allowFailure":false,"isCritical":true,"noScreenshot":false},{"name":"Test View \"Tap\" content","params":{"check":"contains","element":{"context":"NATIVE_APP","contextType":"native","elementDescription":"<XCUIElementTypeOther name=\"Tap\" label=\"Tap\">","relativePosition":{"x":0.27660448306074764,"y":0.6841517857142857},"textContent":"Tap","userLocator":{"failTestOnCannotLocate":false,"values":[{"type":"id","value":"some_id"}]},"viewName":"View"},"value":"Tap"},"public_id":"3c5-bk8-j35","timeout":100,"type":"assertElementContent","allowFailure":false,"isCritical":true,"noScreenshot":false}]}
+            {"public_id":"gqg-gtp-kit","name":"tf-TestAccDatadogSyntheticsMobileTest_Basic-local-1758619200","status":"paused","type":"mobile","tags":["foo:bar","baz"],"created_at":"2025-09-23T09:20:01.154741+00:00","modified_at":"2025-09-23T09:20:01.154741+00:00","config":{"initialApplicationArguments":{"test_process_argument":"test1","test_process_argument_too":"test2"},"variables":[{"example":"123","name":"VARIABLE_NAME","pattern":"{{numeric(3)}}","secure":false,"type":"text"}]},"message":"Notify @datadog.user","options":{"ci":{"executionRule":"blocking"},"defaultStepTimeout":10,"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16","synthetics:mobile:device:apple_iphone_14_pro_ios_16"],"disableAutoAcceptAlert":true,"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"monitor_name":"tf-TestAccDatadogSyntheticsMobileTest_Basic-local-1758619200-monitor","monitor_options":{"escalation_message":"test escalation message","notification_preset_name":"show_all","renotify_interval":10,"renotify_occurrences":3,"on_missing_data":"show_no_data","notify_audit":false,"new_host_delay":300,"include_tags":true},"monitor_priority":5,"noScreenshot":true,"retry":{"count":0,"interval":300},"scheduling":{"timeframes":[{"day":5,"from":"07:00","to":"16:00"},{"day":7,"from":"07:00","to":"16:00"}],"timezone":"UTC"},"tick_every":43200},"locations":["aws:us-west-2"],"monitor_id":217468826,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[{"name":"Tap on StaticText \"Tap\"","params":{"element":{"context":"NATIVE_APP","contextType":"native","elementDescription":"<XCUIElementTypeStaticText value=\"Tap\" name=\"Tap\" label=\"Tap\">","textContent":"Tap","userLocator":{"failTestOnCannotLocate":false,"values":[{"type":"id","value":"some_id"}]},"viewName":"StaticText"}},"public_id":"uxv-vuz-ff4","timeout":100,"type":"tap","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":true,"noScreenshot":false},{"name":"Test View \"Tap\" content","params":{"check":"contains","element":{"context":"NATIVE_APP","contextType":"native","elementDescription":"<XCUIElementTypeOther name=\"Tap\" label=\"Tap\">","relativePosition":{"x":0.27660448306074764,"y":0.6841517857142857},"textContent":"Tap","userLocator":{"failTestOnCannotLocate":false,"values":[{"type":"id","value":"some_id"}]},"viewName":"View"},"value":"Tap"},"public_id":"vii-zvn-2rr","timeout":100,"type":"assertElementContent","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":true,"noScreenshot":false}]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 231.853084ms
+        duration: 237.165958ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -191,7 +191,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"public_ids":["wn4-ycj-gm8"]}
+            {"public_ids":["gqg-gtp-kit"]}
         form: {}
         headers:
             Accept:
@@ -210,13 +210,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"deleted_tests":[{"public_id":"wn4-ycj-gm8","deleted_at":"2025-06-23T16:54:20.437221+00:00"}]}
+            {"deleted_tests":[{"public_id":"gqg-gtp-kit","deleted_at":"2025-09-23T09:20:05.536373+00:00"}]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 807.406125ms
+        duration: 1.813838041s
     - id: 6
       request:
         proto: HTTP/1.1
@@ -233,7 +233,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/wn4-ycj-gm8
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/gqg-gtp-kit
         method: GET
       response:
         proto: HTTP/1.1
@@ -250,4 +250,4 @@ interactions:
                 - application/json
         status: 404 Not Found
         code: 404
-        duration: 128.914167ms
+        duration: 157.238541ms

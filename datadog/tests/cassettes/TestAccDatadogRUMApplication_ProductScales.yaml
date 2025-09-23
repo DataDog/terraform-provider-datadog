@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"name":"tf-TestAccDatadogRUMApplication_ProductScales-local-1756146547","product_analytics_retention_state":"MAX","rum_event_processing_state":"ERROR_FOCUSED_MODE","type":"browser"},"type":"rum_application_create"}}
+            {"data":{"attributes":{"name":"tf-TestAccDatadogRUMApplication_ProductScales-local-1758619218","product_analytics_retention_state":"MAX","rum_event_processing_state":"ERROR_FOCUSED_MODE","type":"browser"},"type":"rum_application_create"}}
         form: {}
         headers:
             Accept:
@@ -32,13 +32,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"type":"rum_application","attributes":{"tags":[],"name":"tf-TestAccDatadogRUMApplication_ProductScales-local-1756146547","product_scales":{"rum_event_processing_scale":{"state":"ERROR_FOCUSED_MODE","last_modified_at":1756146548967},"product_analytics_retention_scale":{"state":"MAX","last_modified_at":1756146548967}},"is_active":false,"created_by_handle":"frog@datadoghq.com","updated_by_handle":"frog@datadoghq.com","product_analytics_replay_sample_rate":100,"created_at":1756146548967,"updated_at":1756146548967,"application_id":"1ea7f54b-0fc5-4ed8-a9b5-e6d027fd7c5d","org_id":321813,"type":"browser","hash":"pub55dd56eee29d738a75c6488eace4b436","client_token":"pub55dd56eee29d738a75c6488eace4b436"},"id":"1ea7f54b-0fc5-4ed8-a9b5-e6d027fd7c5d"}}
+            {"data":{"type":"rum_application","attributes":{"updated_at":1758619219993,"client_token":"pubb5ea1f4101d90598bf152278698e74c6","created_by_handle":"frog@datadoghq.com","product_scales":{"rum_event_processing_scale":{"state":"ERROR_FOCUSED_MODE","last_modified_at":1758619219993},"product_analytics_retention_scale":{"state":"MAX","last_modified_at":1758619219993}},"application_id":"847a19a3-720c-4673-bee2-104e1c94a4c2","updated_by_handle":"frog@datadoghq.com","ootb_metrics_installed":false,"hash":"pubb5ea1f4101d90598bf152278698e74c6","short_name":"tf_testaccdatadogrumapplication__487","name":"tf-TestAccDatadogRUMApplication_ProductScales-local-1758619218","tags":[],"type":"browser","is_active":false,"created_at":1758619219993,"product_analytics_preview_disabled":true,"org_id":321813,"api_key_id":652581,"product_analytics_replay_sample_rate":100},"id":"847a19a3-720c-4673-bee2-104e1c94a4c2"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 402.036708ms
+        duration: 2.119163333s
     - id: 1
       request:
         proto: HTTP/1.1
@@ -55,7 +55,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/rum/applications/1ea7f54b-0fc5-4ed8-a9b5-e6d027fd7c5d
+        url: https://api.datadoghq.com/api/v2/rum/applications/847a19a3-720c-4673-bee2-104e1c94a4c2
         method: GET
       response:
         proto: HTTP/1.1
@@ -67,13 +67,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"type":"rum_application","attributes":{"org_id":321813,"is_active":false,"name":"tf-TestAccDatadogRUMApplication_ProductScales-local-1756146547","updated_at":1756146548967,"product_scales":{"rum_event_processing_scale":{"last_modified_at":1756146548967,"state":"ERROR_FOCUSED_MODE"},"product_analytics_retention_scale":{"last_modified_at":1756146548967,"state":"MAX"}},"application_id":"1ea7f54b-0fc5-4ed8-a9b5-e6d027fd7c5d","hash":"pub55dd56eee29d738a75c6488eace4b436","updated_by_handle":"frog@datadoghq.com","created_by_handle":"frog@datadoghq.com","product_analytics_replay_sample_rate":100,"created_at":1756146548967,"client_token":"pub55dd56eee29d738a75c6488eace4b436","type":"browser","tags":[]},"id":"1ea7f54b-0fc5-4ed8-a9b5-e6d027fd7c5d"}}
+            {"data":{"type":"rum_application","attributes":{"type":"browser","product_scales":{"product_analytics_retention_scale":{"state":"MAX","last_modified_at":1758619219993},"rum_event_processing_scale":{"state":"ERROR_FOCUSED_MODE","last_modified_at":1758619219993}},"product_analytics_replay_sample_rate":100,"name":"tf-TestAccDatadogRUMApplication_ProductScales-local-1758619218","product_analytics_preview_disabled":true,"tags":[],"updated_by_handle":"frog@datadoghq.com","created_by_handle":"frog@datadoghq.com","short_name":"tf_testaccdatadogrumapplication__487","api_key_id":652581,"created_at":1758619219993,"application_id":"847a19a3-720c-4673-bee2-104e1c94a4c2","client_token":"pubb5ea1f4101d90598bf152278698e74c6","is_active":false,"hash":"pubb5ea1f4101d90598bf152278698e74c6","org_id":321813,"updated_at":1758619219993,"ootb_metrics_installed":false},"id":"847a19a3-720c-4673-bee2-104e1c94a4c2"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 104.703334ms
+        duration: 198.081583ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -90,7 +90,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/rum/applications/1ea7f54b-0fc5-4ed8-a9b5-e6d027fd7c5d
+        url: https://api.datadoghq.com/api/v2/rum/applications/847a19a3-720c-4673-bee2-104e1c94a4c2
         method: GET
       response:
         proto: HTTP/1.1
@@ -102,13 +102,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"type":"rum_application","attributes":{"product_scales":{"rum_event_processing_scale":{"last_modified_at":1756146548967,"state":"ERROR_FOCUSED_MODE"},"product_analytics_retention_scale":{"last_modified_at":1756146548967,"state":"MAX"}},"org_id":321813,"hash":"pub55dd56eee29d738a75c6488eace4b436","client_token":"pub55dd56eee29d738a75c6488eace4b436","created_by_handle":"frog@datadoghq.com","created_at":1756146548967,"is_active":false,"tags":[],"name":"tf-TestAccDatadogRUMApplication_ProductScales-local-1756146547","updated_by_handle":"frog@datadoghq.com","application_id":"1ea7f54b-0fc5-4ed8-a9b5-e6d027fd7c5d","type":"browser","updated_at":1756146548967,"product_analytics_replay_sample_rate":100},"id":"1ea7f54b-0fc5-4ed8-a9b5-e6d027fd7c5d"}}
+            {"data":{"type":"rum_application","attributes":{"org_id":321813,"product_scales":{"product_analytics_retention_scale":{"state":"MAX","last_modified_at":1758619219993},"rum_event_processing_scale":{"state":"ERROR_FOCUSED_MODE","last_modified_at":1758619219993}},"client_token":"pubb5ea1f4101d90598bf152278698e74c6","hash":"pubb5ea1f4101d90598bf152278698e74c6","name":"tf-TestAccDatadogRUMApplication_ProductScales-local-1758619218","is_active":false,"created_by_handle":"frog@datadoghq.com","type":"browser","short_name":"tf_testaccdatadogrumapplication__487","created_at":1758619219993,"updated_at":1758619219993,"ootb_metrics_installed":false,"product_analytics_replay_sample_rate":100,"application_id":"847a19a3-720c-4673-bee2-104e1c94a4c2","updated_by_handle":"frog@datadoghq.com","api_key_id":652581,"tags":[],"product_analytics_preview_disabled":true},"id":"847a19a3-720c-4673-bee2-104e1c94a4c2"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 243.865667ms
+        duration: 235.480917ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -125,7 +125,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/rum/applications/1ea7f54b-0fc5-4ed8-a9b5-e6d027fd7c5d
+        url: https://api.datadoghq.com/api/v2/rum/applications/847a19a3-720c-4673-bee2-104e1c94a4c2
         method: GET
       response:
         proto: HTTP/1.1
@@ -137,13 +137,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"type":"rum_application","attributes":{"product_analytics_replay_sample_rate":100,"hash":"pub55dd56eee29d738a75c6488eace4b436","is_active":false,"created_by_handle":"frog@datadoghq.com","product_scales":{"rum_event_processing_scale":{"last_modified_at":1756146548967,"state":"ERROR_FOCUSED_MODE"},"product_analytics_retention_scale":{"last_modified_at":1756146548967,"state":"MAX"}},"updated_at":1756146548967,"name":"tf-TestAccDatadogRUMApplication_ProductScales-local-1756146547","org_id":321813,"tags":[],"application_id":"1ea7f54b-0fc5-4ed8-a9b5-e6d027fd7c5d","type":"browser","client_token":"pub55dd56eee29d738a75c6488eace4b436","updated_by_handle":"frog@datadoghq.com","created_at":1756146548967},"id":"1ea7f54b-0fc5-4ed8-a9b5-e6d027fd7c5d"}}
+            {"data":{"type":"rum_application","attributes":{"created_by_handle":"frog@datadoghq.com","updated_by_handle":"frog@datadoghq.com","application_id":"847a19a3-720c-4673-bee2-104e1c94a4c2","tags":[],"type":"browser","created_at":1758619219993,"is_active":false,"client_token":"pubb5ea1f4101d90598bf152278698e74c6","org_id":321813,"updated_at":1758619219993,"short_name":"tf_testaccdatadogrumapplication__487","name":"tf-TestAccDatadogRUMApplication_ProductScales-local-1758619218","product_analytics_replay_sample_rate":100,"hash":"pubb5ea1f4101d90598bf152278698e74c6","product_scales":{"rum_event_processing_scale":{"last_modified_at":1758619219993,"state":"ERROR_FOCUSED_MODE"},"product_analytics_retention_scale":{"last_modified_at":1758619219993,"state":"MAX"}},"product_analytics_preview_disabled":true,"api_key_id":652581,"ootb_metrics_installed":false},"id":"847a19a3-720c-4673-bee2-104e1c94a4c2"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 121.847625ms
+        duration: 245.126375ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -156,14 +156,14 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"name":"tf-TestAccDatadogRUMApplication_ProductScales-local-1756146547","product_analytics_retention_state":"NONE","rum_event_processing_state":"ALL","type":"browser"},"id":"1ea7f54b-0fc5-4ed8-a9b5-e6d027fd7c5d","type":"rum_application_update"}}
+            {"data":{"attributes":{"name":"tf-TestAccDatadogRUMApplication_ProductScales-local-1758619218","product_analytics_retention_state":"NONE","rum_event_processing_state":"ALL","type":"browser"},"id":"847a19a3-720c-4673-bee2-104e1c94a4c2","type":"rum_application_update"}}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/rum/applications/1ea7f54b-0fc5-4ed8-a9b5-e6d027fd7c5d
+        url: https://api.datadoghq.com/api/v2/rum/applications/847a19a3-720c-4673-bee2-104e1c94a4c2
         method: PATCH
       response:
         proto: HTTP/1.1
@@ -175,13 +175,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"type":"rum_application","attributes":{"updated_at":1756146550435,"type":"browser","org_id":321813,"tags":[],"client_token":"pub55dd56eee29d738a75c6488eace4b436","product_analytics_replay_sample_rate":100,"created_by_handle":"frog@datadoghq.com","name":"tf-TestAccDatadogRUMApplication_ProductScales-local-1756146547","created_at":1756146548967,"application_id":"1ea7f54b-0fc5-4ed8-a9b5-e6d027fd7c5d","updated_by_handle":"frog@datadoghq.com","hash":"pub55dd56eee29d738a75c6488eace4b436","product_scales":{"rum_event_processing_scale":{"state":"ALL","last_modified_at":1756146550435},"product_analytics_retention_scale":{"state":"NONE","last_modified_at":1756146550435}},"is_active":false},"id":"1ea7f54b-0fc5-4ed8-a9b5-e6d027fd7c5d"}}
+            {"data":{"type":"rum_application","attributes":{"tags":[],"is_active":false,"api_key_id":652581,"created_by_handle":"frog@datadoghq.com","product_scales":{"rum_event_processing_scale":{"state":"ALL","last_modified_at":1758619223019},"product_analytics_retention_scale":{"state":"NONE","last_modified_at":1758619223019}},"name":"tf-TestAccDatadogRUMApplication_ProductScales-local-1758619218","org_id":321813,"short_name":"tf_testaccdatadogrumapplication__487","product_analytics_replay_sample_rate":100,"product_analytics_preview_disabled":true,"updated_at":1758619223019,"type":"browser","application_id":"847a19a3-720c-4673-bee2-104e1c94a4c2","ootb_metrics_installed":false,"created_at":1758619219993,"updated_by_handle":"frog@datadoghq.com","hash":"pubb5ea1f4101d90598bf152278698e74c6","client_token":"pubb5ea1f4101d90598bf152278698e74c6"},"id":"847a19a3-720c-4673-bee2-104e1c94a4c2"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 339.9775ms
+        duration: 284.575333ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -198,7 +198,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/rum/applications/1ea7f54b-0fc5-4ed8-a9b5-e6d027fd7c5d
+        url: https://api.datadoghq.com/api/v2/rum/applications/847a19a3-720c-4673-bee2-104e1c94a4c2
         method: GET
       response:
         proto: HTTP/1.1
@@ -210,13 +210,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"type":"rum_application","attributes":{"client_token":"pub55dd56eee29d738a75c6488eace4b436","application_id":"1ea7f54b-0fc5-4ed8-a9b5-e6d027fd7c5d","updated_at":1756146550435,"product_analytics_replay_sample_rate":100,"created_at":1756146548967,"type":"browser","is_active":false,"tags":[],"name":"tf-TestAccDatadogRUMApplication_ProductScales-local-1756146547","created_by_handle":"frog@datadoghq.com","hash":"pub55dd56eee29d738a75c6488eace4b436","org_id":321813,"product_scales":{"product_analytics_retention_scale":{"state":"NONE","last_modified_at":1756146550435},"rum_event_processing_scale":{"state":"ALL","last_modified_at":1756146550435}},"updated_by_handle":"frog@datadoghq.com"},"id":"1ea7f54b-0fc5-4ed8-a9b5-e6d027fd7c5d"}}
+            {"data":{"type":"rum_application","attributes":{"tags":[],"product_scales":{"product_analytics_retention_scale":{"last_modified_at":1758619223019,"state":"NONE"},"rum_event_processing_scale":{"last_modified_at":1758619223019,"state":"ALL"}},"name":"tf-TestAccDatadogRUMApplication_ProductScales-local-1758619218","application_id":"847a19a3-720c-4673-bee2-104e1c94a4c2","created_at":1758619219993,"api_key_id":652581,"updated_at":1758619223019,"ootb_metrics_installed":false,"is_active":false,"created_by_handle":"frog@datadoghq.com","hash":"pubb5ea1f4101d90598bf152278698e74c6","type":"browser","org_id":321813,"client_token":"pubb5ea1f4101d90598bf152278698e74c6","product_analytics_preview_disabled":true,"short_name":"tf_testaccdatadogrumapplication__487","updated_by_handle":"frog@datadoghq.com","product_analytics_replay_sample_rate":100},"id":"847a19a3-720c-4673-bee2-104e1c94a4c2"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 130.973333ms
+        duration: 288.335791ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -233,7 +233,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/rum/applications/1ea7f54b-0fc5-4ed8-a9b5-e6d027fd7c5d
+        url: https://api.datadoghq.com/api/v2/rum/applications/847a19a3-720c-4673-bee2-104e1c94a4c2
         method: GET
       response:
         proto: HTTP/1.1
@@ -245,13 +245,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"type":"rum_application","attributes":{"name":"tf-TestAccDatadogRUMApplication_ProductScales-local-1756146547","created_at":1756146548967,"client_token":"pub55dd56eee29d738a75c6488eace4b436","application_id":"1ea7f54b-0fc5-4ed8-a9b5-e6d027fd7c5d","is_active":false,"updated_by_handle":"frog@datadoghq.com","org_id":321813,"type":"browser","product_scales":{"rum_event_processing_scale":{"last_modified_at":1756146550435,"state":"ALL"},"product_analytics_retention_scale":{"last_modified_at":1756146550435,"state":"NONE"}},"hash":"pub55dd56eee29d738a75c6488eace4b436","product_analytics_replay_sample_rate":100,"updated_at":1756146550435,"tags":[],"created_by_handle":"frog@datadoghq.com"},"id":"1ea7f54b-0fc5-4ed8-a9b5-e6d027fd7c5d"}}
+            {"data":{"type":"rum_application","attributes":{"api_key_id":652581,"created_by_handle":"frog@datadoghq.com","name":"tf-TestAccDatadogRUMApplication_ProductScales-local-1758619218","updated_at":1758619223019,"hash":"pubb5ea1f4101d90598bf152278698e74c6","client_token":"pubb5ea1f4101d90598bf152278698e74c6","application_id":"847a19a3-720c-4673-bee2-104e1c94a4c2","short_name":"tf_testaccdatadogrumapplication__487","product_scales":{"product_analytics_retention_scale":{"last_modified_at":1758619223019,"state":"NONE"},"rum_event_processing_scale":{"last_modified_at":1758619223019,"state":"ALL"}},"ootb_metrics_installed":false,"is_active":false,"updated_by_handle":"frog@datadoghq.com","product_analytics_preview_disabled":true,"created_at":1758619219993,"type":"browser","product_analytics_replay_sample_rate":100,"tags":[],"org_id":321813},"id":"847a19a3-720c-4673-bee2-104e1c94a4c2"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 111.945917ms
+        duration: 180.926709ms
     - id: 7
       request:
         proto: HTTP/1.1
@@ -268,7 +268,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/rum/applications/1ea7f54b-0fc5-4ed8-a9b5-e6d027fd7c5d
+        url: https://api.datadoghq.com/api/v2/rum/applications/847a19a3-720c-4673-bee2-104e1c94a4c2
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -282,7 +282,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 231.187333ms
+        duration: 397.370167ms
     - id: 8
       request:
         proto: HTTP/1.1
@@ -311,10 +311,10 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":[{"type":"rum_application","attributes":{"updated_at":1753109253427,"name":"S8-integration-tests","created_by_handle":"frog@datadoghq.com","org_id":321813,"tags":[],"is_active":true,"product_scales":{"product_analytics_retention_scale":{"last_modified_at":1646148352095,"state":"NONE"},"rum_event_processing_scale":{"last_modified_at":1646148352095,"state":"ALL"}},"created_at":1646148352095,"product_analytics_replay_sample_rate":100,"updated_by_handle":"Datadog","application_id":"6ae18142-192f-4582-9633-95121c2a01d7","type":"browser"},"id":"6ae18142-192f-4582-9633-95121c2a01d7"},{"type":"rum_application","attributes":{"updated_at":1753109253438,"name":"Synthetic Tests Default Application","created_by_handle":"frog@datadoghq.com","org_id":321813,"tags":[],"is_active":true,"product_scales":{"product_analytics_retention_scale":{"last_modified_at":1648568515456,"state":"NONE"},"rum_event_processing_scale":{"last_modified_at":1648568515456,"state":"ALL"}},"created_at":1648568515456,"product_analytics_replay_sample_rate":100,"updated_by_handle":"Datadog","application_id":"ce9843b0-7a45-453c-a831-55dd15f85141","type":"browser"},"id":"ce9843b0-7a45-453c-a831-55dd15f85141"},{"type":"rum_application","attributes":{"updated_at":1753109253448,"name":"awoooooooo","created_by_handle":"frog@datadoghq.com","org_id":321813,"tags":[],"is_active":false,"product_scales":{"product_analytics_retention_scale":{"last_modified_at":1670608490405,"state":"NONE"},"rum_event_processing_scale":{"last_modified_at":1670608490405,"state":"ALL"}},"created_at":1670608490405,"product_analytics_replay_sample_rate":100,"updated_by_handle":"Datadog","application_id":"88e86bcc-6d0a-4a3c-942f-55314a6f03bd","type":"browser"},"id":"88e86bcc-6d0a-4a3c-942f-55314a6f03bd"},{"type":"rum_application","attributes":{"updated_at":1753109253459,"name":"%s2","created_by_handle":"anika.maskara@datadoghq.com","org_id":321813,"tags":[],"is_active":false,"product_scales":{"product_analytics_retention_scale":{"last_modified_at":1721327950211,"state":"NONE"},"rum_event_processing_scale":{"last_modified_at":1721327950211,"state":"ALL"}},"created_at":1721327950211,"product_analytics_replay_sample_rate":100,"updated_by_handle":"Datadog","application_id":"aaf8455b-23c6-4ec8-9bd8-9bc45fe90aa5","type":"browser"},"id":"aaf8455b-23c6-4ec8-9bd8-9bc45fe90aa5"},{"type":"rum_application","attributes":{"updated_at":1753109253472,"name":"my-rum-application-test","created_by_handle":"frog@datadoghq.com","org_id":321813,"tags":[],"is_active":false,"product_scales":{"product_analytics_retention_scale":{"last_modified_at":1743185866075,"state":"NONE"},"rum_event_processing_scale":{"last_modified_at":1743185866075,"state":"ALL"}},"created_at":1743185866075,"product_analytics_replay_sample_rate":100,"updated_by_handle":"Datadog","application_id":"414e5c84-a376-43ec-b3d7-35049deea225","type":"browser"},"id":"414e5c84-a376-43ec-b3d7-35049deea225"},{"type":"rum_application","attributes":{"updated_at":1753109253483,"name":"updated_name_for_my_existing_rum_application","created_by_handle":"frog@datadoghq.com","org_id":321813,"tags":[],"is_active":false,"product_scales":{"product_analytics_retention_scale":{"last_modified_at":1750736321451,"state":"NONE"},"rum_event_processing_scale":{"last_modified_at":1750736321451,"state":"ALL"}},"created_at":1750736321451,"product_analytics_replay_sample_rate":100,"updated_by_handle":"Datadog","application_id":"47e19fb5-6c6a-4bd1-aee8-25f6709833e0","type":"browser"},"id":"47e19fb5-6c6a-4bd1-aee8-25f6709833e0"},{"type":"rum_application","attributes":{"updated_at":1755519831419,"name":"tf-TestAccDatadogRUMApplicationDatasourceErrorMultiple-local-1755519829","created_by_handle":"9919ec9b-ebc7-49ee-8dc8-03626e717cca","org_id":321813,"tags":[],"is_active":false,"product_scales":{"product_analytics_retention_scale":{"last_modified_at":1755519831419,"state":"NONE"},"rum_event_processing_scale":{"last_modified_at":1755519831419,"state":"ALL"}},"created_at":1755519831419,"product_analytics_replay_sample_rate":100,"updated_by_handle":"9919ec9b-ebc7-49ee-8dc8-03626e717cca","application_id":"e75f227f-a40f-49df-bd2c-e1997b1da53a","type":"android"},"id":"e75f227f-a40f-49df-bd2c-e1997b1da53a"},{"type":"rum_application","attributes":{"updated_at":1755692544888,"name":"tf-TestAccDatadogRUMApplicationDatasourceErrorMultiple-local-1755692541","created_by_handle":"9919ec9b-ebc7-49ee-8dc8-03626e717cca","org_id":321813,"tags":[],"is_active":false,"product_scales":{"product_analytics_retention_scale":{"last_modified_at":1755692544888,"state":"NONE"},"rum_event_processing_scale":{"last_modified_at":1755692544888,"state":"ALL"}},"created_at":1755692544888,"product_analytics_replay_sample_rate":100,"updated_by_handle":"9919ec9b-ebc7-49ee-8dc8-03626e717cca","application_id":"de661f14-ffe9-43f0-b10b-e1807eecf568","type":"android"},"id":"de661f14-ffe9-43f0-b10b-e1807eecf568"},{"type":"rum_application","attributes":{"updated_at":1755692544890,"name":"tf-TestAccDatadogRUMApplicationDatasourceErrorMultiple-local-1755692541","created_by_handle":"9919ec9b-ebc7-49ee-8dc8-03626e717cca","org_id":321813,"tags":[],"is_active":false,"product_scales":{"product_analytics_retention_scale":{"last_modified_at":1755692544890,"state":"NONE"},"rum_event_processing_scale":{"last_modified_at":1755692544890,"state":"ALL"}},"created_at":1755692544890,"product_analytics_replay_sample_rate":100,"updated_by_handle":"9919ec9b-ebc7-49ee-8dc8-03626e717cca","application_id":"65ce1ced-40bd-44b9-a0dd-2dc8ead40fef","type":"browser"},"id":"65ce1ced-40bd-44b9-a0dd-2dc8ead40fef"},{"type":"rum_application","attributes":{"updated_at":1755862712075,"name":"test-rum-e2a7f52524896c06_1755862709","created_by_handle":"frog@datadoghq.com","org_id":321813,"tags":[],"is_active":false,"product_scales":{"product_analytics_retention_scale":{"last_modified_at":1755862712075,"state":"NONE"},"rum_event_processing_scale":{"last_modified_at":1755862712075,"state":"ALL"}},"created_at":1755862712075,"product_analytics_replay_sample_rate":100,"updated_by_handle":"frog@datadoghq.com","application_id":"45574106-9dda-4715-943c-f7c52889b0a1","type":"ios"},"id":"45574106-9dda-4715-943c-f7c52889b0a1"},{"type":"rum_application","attributes":{"updated_at":1756121921616,"name":"test-rum-f8296b8ee5998d77_1756121919","created_by_handle":"frog@datadoghq.com","org_id":321813,"tags":[],"is_active":false,"product_scales":{"product_analytics_retention_scale":{"last_modified_at":1756121921616,"state":"NONE"},"rum_event_processing_scale":{"last_modified_at":1756121921616,"state":"ALL"}},"created_at":1756121921616,"product_analytics_replay_sample_rate":100,"updated_by_handle":"frog@datadoghq.com","application_id":"88d523aa-f135-41b4-a9a9-5547bd662dd0","type":"ios"},"id":"88d523aa-f135-41b4-a9a9-5547bd662dd0"}]}
+            {"data":[{"type":"rum_application","attributes":{"api_key_id":79920,"short_name":"s8_integration_tests","ootb_metrics_installed":true,"created_by_handle":"frog@datadoghq.com","product_analytics_replay_sample_rate":100,"product_scales":{"rum_event_processing_scale":{"state":"ALL","last_modified_at":1646148352095},"product_analytics_retention_scale":{"state":"NONE","last_modified_at":1646148352095}},"application_id":"6ae18142-192f-4582-9633-95121c2a01d7","name":"S8-integration-tests","type":"browser","updated_by_handle":"Datadog","created_at":1646148352095,"updated_at":1758117898920,"org_id":321813,"is_active":true,"tags":[]},"id":"6ae18142-192f-4582-9633-95121c2a01d7"},{"type":"rum_application","attributes":{"api_key_id":82597,"short_name":"synthetic_tests_default_applicat","ootb_metrics_installed":true,"created_by_handle":"frog@datadoghq.com","product_analytics_replay_sample_rate":100,"product_scales":{"rum_event_processing_scale":{"state":"ALL","last_modified_at":1648568515456},"product_analytics_retention_scale":{"state":"NONE","last_modified_at":1648568515456}},"application_id":"ce9843b0-7a45-453c-a831-55dd15f85141","name":"Synthetic Tests Default Application","type":"browser","updated_by_handle":"Datadog","created_at":1648568515456,"updated_at":1758117898930,"org_id":321813,"is_active":true,"tags":[]},"id":"ce9843b0-7a45-453c-a831-55dd15f85141"},{"type":"rum_application","attributes":{"api_key_id":121939,"short_name":"awoooooooo","ootb_metrics_installed":true,"created_by_handle":"frog@datadoghq.com","product_analytics_replay_sample_rate":100,"product_scales":{"rum_event_processing_scale":{"state":"ALL","last_modified_at":1670608490405},"product_analytics_retention_scale":{"state":"NONE","last_modified_at":1670608490405}},"application_id":"88e86bcc-6d0a-4a3c-942f-55314a6f03bd","name":"awoooooooo","type":"browser","updated_by_handle":"Datadog","created_at":1670608490405,"updated_at":1758117898940,"org_id":321813,"is_active":false,"tags":[]},"id":"88e86bcc-6d0a-4a3c-942f-55314a6f03bd"},{"type":"rum_application","attributes":{"api_key_id":289111,"short_name":"s2","ootb_metrics_installed":true,"created_by_handle":"anika.maskara@datadoghq.com","product_analytics_replay_sample_rate":100,"product_scales":{"rum_event_processing_scale":{"state":"ALL","last_modified_at":1721327950211},"product_analytics_retention_scale":{"state":"NONE","last_modified_at":1721327950211}},"application_id":"aaf8455b-23c6-4ec8-9bd8-9bc45fe90aa5","name":"%s2","type":"browser","updated_by_handle":"Datadog","created_at":1721327950211,"updated_at":1758117898951,"org_id":321813,"is_active":false,"tags":[]},"id":"aaf8455b-23c6-4ec8-9bd8-9bc45fe90aa5"},{"type":"rum_application","attributes":{"api_key_id":391619,"short_name":"my_rum_application_test_10","ootb_metrics_installed":true,"created_by_handle":"frog@datadoghq.com","product_analytics_replay_sample_rate":100,"product_scales":{"rum_event_processing_scale":{"state":"ALL","last_modified_at":1743185866075},"product_analytics_retention_scale":{"state":"NONE","last_modified_at":1743185866075}},"application_id":"414e5c84-a376-43ec-b3d7-35049deea225","name":"my-rum-application-test","type":"browser","updated_by_handle":"Datadog","created_at":1743185866075,"updated_at":1758117898962,"org_id":321813,"is_active":false,"tags":[]},"id":"414e5c84-a376-43ec-b3d7-35049deea225"},{"type":"rum_application","attributes":{"api_key_id":494724,"short_name":"test_rum_f0773756afef952b_175073","ootb_metrics_installed":true,"created_by_handle":"frog@datadoghq.com","product_analytics_replay_sample_rate":100,"product_scales":{"rum_event_processing_scale":{"state":"ALL","last_modified_at":1750736321451},"product_analytics_retention_scale":{"state":"NONE","last_modified_at":1750736321451}},"application_id":"47e19fb5-6c6a-4bd1-aee8-25f6709833e0","name":"updated_name_for_my_existing_rum_application","type":"browser","updated_by_handle":"Datadog","created_at":1750736321451,"updated_at":1758117898971,"org_id":321813,"is_active":false,"tags":[]},"id":"47e19fb5-6c6a-4bd1-aee8-25f6709833e0"},{"type":"rum_application","attributes":{"api_key_id":589143,"short_name":"tf_testaccdatadogrumapplicationd_2113","ootb_metrics_installed":true,"created_by_handle":"9919ec9b-ebc7-49ee-8dc8-03626e717cca","product_analytics_replay_sample_rate":100,"product_scales":{"rum_event_processing_scale":{"state":"ALL","last_modified_at":1755519831419},"product_analytics_retention_scale":{"state":"NONE","last_modified_at":1755519831419}},"application_id":"e75f227f-a40f-49df-bd2c-e1997b1da53a","name":"tf-TestAccDatadogRUMApplicationDatasourceErrorMultiple-local-1755519829","type":"android","updated_by_handle":"Datadog","created_at":1755519831419,"updated_at":1758117898982,"org_id":321813,"is_active":false,"tags":[]},"id":"e75f227f-a40f-49df-bd2c-e1997b1da53a"},{"type":"rum_application","attributes":{"api_key_id":590297,"short_name":"tf_testaccdatadogrumapplicationd_2135","ootb_metrics_installed":true,"created_by_handle":"9919ec9b-ebc7-49ee-8dc8-03626e717cca","product_analytics_replay_sample_rate":100,"product_scales":{"rum_event_processing_scale":{"state":"ALL","last_modified_at":1755692544888},"product_analytics_retention_scale":{"state":"NONE","last_modified_at":1755692544888}},"application_id":"de661f14-ffe9-43f0-b10b-e1807eecf568","name":"tf-TestAccDatadogRUMApplicationDatasourceErrorMultiple-local-1755692541","type":"android","updated_by_handle":"Datadog","created_at":1755692544888,"updated_at":1758117898992,"org_id":321813,"is_active":false,"tags":[]},"id":"de661f14-ffe9-43f0-b10b-e1807eecf568"},{"type":"rum_application","attributes":{"api_key_id":590296,"short_name":"tf_testaccdatadogrumapplicationd_2134","ootb_metrics_installed":true,"created_by_handle":"9919ec9b-ebc7-49ee-8dc8-03626e717cca","product_analytics_replay_sample_rate":100,"product_scales":{"rum_event_processing_scale":{"state":"ALL","last_modified_at":1755692544890},"product_analytics_retention_scale":{"state":"NONE","last_modified_at":1755692544890}},"application_id":"65ce1ced-40bd-44b9-a0dd-2dc8ead40fef","name":"tf-TestAccDatadogRUMApplicationDatasourceErrorMultiple-local-1755692541","type":"browser","updated_by_handle":"Datadog","created_at":1755692544890,"updated_at":1758117899003,"org_id":321813,"is_active":false,"tags":[]},"id":"65ce1ced-40bd-44b9-a0dd-2dc8ead40fef"},{"type":"rum_application","attributes":{"api_key_id":593255,"short_name":"test_rum_e2a7f52524896c06_175586","ootb_metrics_installed":true,"created_by_handle":"frog@datadoghq.com","product_analytics_replay_sample_rate":100,"product_scales":{"rum_event_processing_scale":{"state":"ALL","last_modified_at":1755862712075},"product_analytics_retention_scale":{"state":"NONE","last_modified_at":1755862712075}},"application_id":"45574106-9dda-4715-943c-f7c52889b0a1","name":"test-rum-e2a7f52524896c06_1755862709","type":"ios","updated_by_handle":"Datadog","created_at":1755862712075,"updated_at":1758117899013,"org_id":321813,"is_active":false,"tags":[]},"id":"45574106-9dda-4715-943c-f7c52889b0a1"},{"type":"rum_application","attributes":{"api_key_id":598405,"short_name":"test_rum_f8296b8ee5998d77_175612","ootb_metrics_installed":true,"created_by_handle":"frog@datadoghq.com","product_analytics_replay_sample_rate":100,"product_scales":{"rum_event_processing_scale":{"state":"ALL","last_modified_at":1756121921616},"product_analytics_retention_scale":{"state":"NONE","last_modified_at":1756121921616}},"application_id":"88d523aa-f135-41b4-a9a9-5547bd662dd0","name":"test-rum-f8296b8ee5998d77_1756121919","type":"ios","updated_by_handle":"Datadog","created_at":1756121921616,"updated_at":1758117899021,"org_id":321813,"is_active":false,"tags":[]},"id":"88d523aa-f135-41b4-a9a9-5547bd662dd0"},{"type":"rum_application","attributes":{"api_key_id":603080,"short_name":"test_rum_f8296b8ee5998d77_175632","ootb_metrics_installed":true,"created_by_handle":"frog@datadoghq.com","product_analytics_replay_sample_rate":100,"product_scales":{"rum_event_processing_scale":{"state":"ALL","last_modified_at":1756323521718},"product_analytics_retention_scale":{"state":"NONE","last_modified_at":1756323521718}},"application_id":"8b34d763-b231-4b9e-84c7-4706c2723e98","name":"test-rum-f8296b8ee5998d77_1756323519","type":"ios","updated_by_handle":"Datadog","created_at":1756323521718,"updated_at":1758117899029,"org_id":321813,"is_active":false,"tags":[]},"id":"8b34d763-b231-4b9e-84c7-4706c2723e98"},{"type":"rum_application","attributes":{"api_key_id":613361,"short_name":"test_rum_e2a7f52524896c06_175681","ootb_metrics_installed":true,"created_by_handle":"frog@datadoghq.com","product_analytics_replay_sample_rate":100,"product_scales":{"rum_event_processing_scale":{"state":"ALL","last_modified_at":1756814123054},"product_analytics_retention_scale":{"state":"NONE","last_modified_at":1756814123054}},"application_id":"c2725e19-0dcb-42dd-92e1-cd49ad02bec2","name":"test-rum-e2a7f52524896c06_1756814120","type":"ios","updated_by_handle":"Datadog","created_at":1756814123054,"updated_at":1758117899039,"org_id":321813,"is_active":false,"tags":[]},"id":"c2725e19-0dcb-42dd-92e1-cd49ad02bec2"},{"type":"rum_application","attributes":{"api_key_id":624376,"short_name":"test_rum_d6879f8f324e8195_175733","ootb_metrics_installed":true,"created_by_handle":"frog@datadoghq.com","product_analytics_replay_sample_rate":100,"product_scales":{"rum_event_processing_scale":{"state":"ALL","last_modified_at":1757332523365},"product_analytics_retention_scale":{"state":"NONE","last_modified_at":1757332523365}},"application_id":"e36d02fa-29a1-451e-84fc-26fd60762da5","name":"test-rum-d6879f8f324e8195_1757332521","type":"ios","updated_by_handle":"Datadog","created_at":1757332523365,"updated_at":1758117899049,"org_id":321813,"is_active":false,"tags":[]},"id":"e36d02fa-29a1-451e-84fc-26fd60762da5"},{"type":"rum_application","attributes":{"api_key_id":630319,"short_name":"test_rum_18a2b563af32ec40_175759","ootb_metrics_installed":true,"created_by_handle":"frog@datadoghq.com","product_analytics_replay_sample_rate":100,"product_scales":{"rum_event_processing_scale":{"state":"ALL","last_modified_at":1757590734364},"product_analytics_retention_scale":{"state":"NONE","last_modified_at":1757590734364}},"application_id":"c2a1208e-1e0c-4b12-ad40-d0b9b4fd05b7","name":"test-rum-18a2b563af32ec40_1757590732","type":"ios","updated_by_handle":"Datadog","created_at":1757590734364,"updated_at":1758117899061,"org_id":321813,"is_active":false,"tags":[]},"id":"c2a1208e-1e0c-4b12-ad40-d0b9b4fd05b7"},{"type":"rum_application","attributes":{"api_key_id":636243,"short_name":"test_rum_e2a7f52524896c06_175787","ootb_metrics_installed":true,"created_by_handle":"frog@datadoghq.com","product_analytics_replay_sample_rate":100,"product_scales":{"rum_event_processing_scale":{"state":"ALL","last_modified_at":1757879722938},"product_analytics_retention_scale":{"state":"NONE","last_modified_at":1757879722938}},"application_id":"b2f37fd7-fc16-442c-b1df-01fab88a9cf3","name":"test-rum-e2a7f52524896c06_1757879720","type":"ios","updated_by_handle":"Datadog","created_at":1757879722938,"updated_at":1758117899073,"org_id":321813,"is_active":false,"tags":[]},"id":"b2f37fd7-fc16-442c-b1df-01fab88a9cf3"},{"type":"rum_application","attributes":{"api_key_id":639566,"short_name":"test_rum_f8296b8ee5998d77_175802","ootb_metrics_installed":true,"created_by_handle":"frog@datadoghq.com","product_analytics_replay_sample_rate":100,"product_scales":{"rum_event_processing_scale":{"state":"ALL","last_modified_at":1758022721705},"product_analytics_retention_scale":{"state":"NONE","last_modified_at":1758022721705}},"application_id":"506af0a2-196d-412c-a2c7-1fe9f5da63f9","name":"test-rum-f8296b8ee5998d77_1758022719","type":"ios","updated_by_handle":"Datadog","created_at":1758022721705,"updated_at":1758117899084,"org_id":321813,"is_active":false,"tags":[]},"id":"506af0a2-196d-412c-a2c7-1fe9f5da63f9"}]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 237.380875ms
+        duration: 302.131875ms

@@ -27,10 +27,10 @@ interactions:
         trailer: {}
         content_length: 135
         uncompressed: false
-        body: '{"data":{"id":"c359eed4feb642c9a38c79b3da552929","type":"external_id","attributes":{"external_id":"c359eed4feb642c9a38c79b3da552929"}}}'
+        body: '{"data":{"id":"726ae1fc3ddb4afaacedff21fa4abdb6","type":"external_id","attributes":{"external_id":"726ae1fc3ddb4afaacedff21fa4abdb6"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 160.563916ms
+        duration: 540.259833ms

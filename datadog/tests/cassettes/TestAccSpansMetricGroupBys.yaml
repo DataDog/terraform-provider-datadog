@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"compute":{"aggregation_type":"count"},"filter":{"query":"@http.status_code:200 service:my-service"},"group_by":[{"path":"resource_name1","tag_name":"my_resource1"},{"path":"resource_name2","tag_name":"my_resource2"}]},"id":"\"tf_TestAccSpansMetricGroupBys_local_1745933717\"","type":"spans_metrics"}}
+            {"data":{"attributes":{"compute":{"aggregation_type":"count"},"filter":{"query":"@http.status_code:200 service:my-service"},"group_by":[{"path":"resource_name1","tag_name":"my_resource1"},{"path":"resource_name2","tag_name":"my_resource2"}]},"id":"\"tf_TestAccSpansMetricGroupBys_local_1758619209\"","type":"spans_metrics"}}
         form: {}
         headers:
             Accept:
@@ -32,13 +32,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"id":"tf_TestAccSpansMetricGroupBys_local_1745933717","attributes":{"filter":{"query":"@http.status_code:200 service:my-service"},"group_by":[{"path":"resource_name1","tag_name":"my_resource1"},{"path":"resource_name2","tag_name":"my_resource2"}],"compute":{"aggregation_type":"count"}},"type":"spans_metrics"}}
+            {"data":{"id":"tf_TestAccSpansMetricGroupBys_local_1758619209","attributes":{"filter":{"query":"@http.status_code:200 service:my-service"},"group_by":[{"path":"resource_name1","tag_name":"my_resource1"},{"path":"resource_name2","tag_name":"my_resource2"}],"compute":{"aggregation_type":"count"}},"type":"spans_metrics"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 770.2015ms
+        duration: 764.946791ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -55,7 +55,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/apm/config/metrics/tf_TestAccSpansMetricGroupBys_local_1745933717
+        url: https://api.datadoghq.com/api/v2/apm/config/metrics/tf_TestAccSpansMetricGroupBys_local_1758619209
         method: GET
       response:
         proto: HTTP/1.1
@@ -67,13 +67,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"id":"tf_TestAccSpansMetricGroupBys_local_1745933717","attributes":{"filter":{"query":"@http.status_code:200 service:my-service"},"group_by":[{"path":"resource_name1","tag_name":"my_resource1"},{"path":"resource_name2","tag_name":"my_resource2"}],"compute":{"aggregation_type":"count"}},"type":"spans_metrics"}}
+            {"data":{"id":"tf_TestAccSpansMetricGroupBys_local_1758619209","attributes":{"filter":{"query":"@http.status_code:200 service:my-service"},"group_by":[{"path":"resource_name1","tag_name":"my_resource1"},{"path":"resource_name2","tag_name":"my_resource2"}],"compute":{"aggregation_type":"count"}},"type":"spans_metrics"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 135.782375ms
+        duration: 152.542042ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -90,7 +90,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/apm/config/metrics/tf_TestAccSpansMetricGroupBys_local_1745933717
+        url: https://api.datadoghq.com/api/v2/apm/config/metrics/tf_TestAccSpansMetricGroupBys_local_1758619209
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -106,4 +106,4 @@ interactions:
                 - text/html; charset=utf-8
         status: 204 No Content
         code: 204
-        duration: 243.786792ms
+        duration: 184.503375ms

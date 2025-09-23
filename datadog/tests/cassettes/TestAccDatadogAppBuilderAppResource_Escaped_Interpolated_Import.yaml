@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"components":[{"events":[],"name":"grid0","properties":{"children":[]},"type":"grid"}],"connections":[{"id":"11111111-2222-3333-4444-555555555555","name":"A connection that will be overridden"}],"deployment":{"app_version_id":"00000000-0000-0000-0000-000000000000","id":"11111111-1111-1111-1111-111111111111"},"description":"Created using the Datadog provider in Terraform. Variable interpolation.","favorite":false,"id":"11111111-2222-3333-4444-555555555555","name":"tf-TestAccDatadogAppBuilderAppResource_Escaped_Interpolated_Import-local-1743024950","queries":[{"id":"11111111-1111-1111-1111-111111111111","name":"listTeams0","properties":{"onlyTriggerManually":false,"outputs":"${((outputs) =\u003e {// Use 'outputs' to reference the query's unformatted output.\n\n// TODO: Apply transformations to the raw query output\n\nreturn outputs.data.map(item =\u003e item.attributes.name);})(self.rawOutputs)}","spec":{"connectionId":"11111111-2222-3333-4444-555555555555","fqn":"com.datadoghq.dd.teams.listTeams","inputs":{}}},"type":"action"}],"rootInstanceName":"grid0","selfService":false,"tags":[]},"type":"appDefinitions"}}
+            {"data":{"attributes":{"components":[{"events":[],"name":"grid0","properties":{"children":[]},"type":"grid"}],"connections":[{"id":"11111111-2222-3333-4444-555555555555","name":"A connection that will be overridden"}],"deployment":{"app_version_id":"00000000-0000-0000-0000-000000000000","id":"11111111-1111-1111-1111-111111111111"},"description":"Created using the Datadog provider in Terraform. Variable interpolation.","favorite":false,"id":"11111111-2222-3333-4444-555555555555","name":"tf-TestAccDatadogAppBuilderAppResource_Escaped_Interpolated_Import-local-1758619312","queries":[{"id":"11111111-1111-1111-1111-111111111111","name":"listTeams0","properties":{"onlyTriggerManually":false,"outputs":"${((outputs) =\u003e {// Use 'outputs' to reference the query's unformatted output.\n\n// TODO: Apply transformations to the raw query output\n\nreturn outputs.data.map(item =\u003e item.attributes.name);})(self.rawOutputs)}","spec":{"connectionId":"11111111-2222-3333-4444-555555555555","fqn":"com.datadoghq.dd.teams.listTeams","inputs":{}}},"type":"action"}],"rootInstanceName":"grid0","selfService":false,"tags":[]},"type":"appDefinitions"}}
         form: {}
         headers:
             Accept:
@@ -30,13 +30,13 @@ interactions:
         trailer: {}
         content_length: 78
         uncompressed: false
-        body: '{"data":{"id":"a09dc905-e917-48cc-b1d2-da2cbaa46560","type":"appDefinitions"}}'
+        body: '{"data":{"id":"fffd434f-c5b2-4816-9c84-8d0b39930618","type":"appDefinitions"}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 626.862125ms
+        duration: 244.2545ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -53,7 +53,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/app-builder/apps/a09dc905-e917-48cc-b1d2-da2cbaa46560/deployment
+        url: https://api.datadoghq.com/api/v2/app-builder/apps/fffd434f-c5b2-4816-9c84-8d0b39930618/deployment
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -63,13 +63,13 @@ interactions:
         trailer: {}
         content_length: 299
         uncompressed: false
-        body: '{"data":{"id":"36bffe12-19b5-41ef-a3f5-a6cf3c74c655","type":"deployment","attributes":{"app_version_id":"00000000-0000-0000-0000-000000000000"},"meta":{"created_at":"2025-03-26T21:35:54.188353Z","user_id":1445416,"user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","user_name":"frog@datadoghq.com"}}}'
+        body: '{"data":{"id":"e4e029a2-9274-4511-b3b0-47fa4d9a3dfe","type":"deployment","attributes":{"app_version_id":"00000000-0000-0000-0000-000000000000"},"meta":{"created_at":"2025-09-23T09:21:56.341596Z","user_id":1445416,"user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","user_name":"frog@datadoghq.com"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 221.992166ms
+        duration: 362.25325ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -86,7 +86,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/app-builder/apps/a09dc905-e917-48cc-b1d2-da2cbaa46560
+        url: https://api.datadoghq.com/api/v2/app-builder/apps/fffd434f-c5b2-4816-9c84-8d0b39930618
         method: GET
       response:
         proto: HTTP/1.1
@@ -96,13 +96,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"data":{"id":"a09dc905-e917-48cc-b1d2-da2cbaa46560","type":"appDefinitions","attributes":{"components":[{"events":[],"name":"grid0","properties":{"children":[]},"type":"grid"}],"description":"Created using the Datadog provider in Terraform. Variable interpolation.","favorite":false,"name":"tf-TestAccDatadogAppBuilderAppResource_Escaped_Interpolated_Import-local-1743024950","queries":[{"id":"11111111-1111-1111-1111-111111111111","name":"listTeams0","type":"action","properties":{"onlyTriggerManually":false,"outputs":"${((outputs) =\u003e {// Use ''outputs'' to reference the query''s unformatted output.\n\n// TODO: Apply transformations to the raw query output\n\nreturn outputs.data.map(item =\u003e item.attributes.name);})(self.rawOutputs)}","spec":{"connectionId":"11111111-2222-3333-4444-555555555555","fqn":"com.datadoghq.dd.teams.listTeams","inputs":{}}}}],"rootInstanceName":"grid0","selfService":false,"tags":[]},"relationships":{"deployment":{"data":{"id":"36bffe12-19b5-41ef-a3f5-a6cf3c74c655","type":"deployment"},"meta":{"created_at":"2025-03-26T21:35:54.188353Z","user_id":1445416,"user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","user_name":"frog@datadoghq.com"}}},"meta":{"org_id":321813,"user_id":1445416,"user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","user_name":"frog@datadoghq.com","version":1,"updated_since_deployment":false,"created_at":"2025-03-26T21:35:53.971959Z","updated_at":"2025-03-26T21:35:53.971959Z","deleted_at":"0001-01-01T00:00:00Z"}},"included":[{"id":"36bffe12-19b5-41ef-a3f5-a6cf3c74c655","type":"deployment","attributes":{"app_version_id":"00000000-0000-0000-0000-000000000000"},"meta":{"created_at":"2025-03-26T21:35:54.188353Z","user_id":1445416,"user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","user_name":"frog@datadoghq.com"}}]}'
+        body: '{"data":{"id":"fffd434f-c5b2-4816-9c84-8d0b39930618","type":"appDefinitions","attributes":{"components":[{"events":[],"name":"grid0","properties":{"children":[]},"type":"grid"}],"description":"Created using the Datadog provider in Terraform. Variable interpolation.","favorite":false,"name":"tf-TestAccDatadogAppBuilderAppResource_Escaped_Interpolated_Import-local-1758619312","queries":[{"id":"11111111-1111-1111-1111-111111111111","name":"listTeams0","type":"action","properties":{"onlyTriggerManually":false,"outputs":"${((outputs) =\u003e {// Use ''outputs'' to reference the query''s unformatted output.\n\n// TODO: Apply transformations to the raw query output\n\nreturn outputs.data.map(item =\u003e item.attributes.name);})(self.rawOutputs)}","spec":{"connectionId":"11111111-2222-3333-4444-555555555555","fqn":"com.datadoghq.dd.teams.listTeams","inputs":{}}}}],"rootInstanceName":"grid0","selfService":false,"tags":[]},"relationships":{"deployment":{"data":{"id":"e4e029a2-9274-4511-b3b0-47fa4d9a3dfe","type":"deployment"},"meta":{"created_at":"2025-09-23T09:21:56.341596Z","user_id":1445416,"user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","user_name":""}}},"meta":{"org_id":321813,"user_id":1445416,"user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","user_name":"frog@datadoghq.com","version":1,"version_id":"efb69b39-7b4c-4c30-b01d-ef236278d8f6","updated_since_deployment":false,"created_at":"2025-09-23T09:21:56.067757Z","updated_at":"2025-09-23T09:21:56.067757Z","deleted_at":"0001-01-01T00:00:00Z","run_as_user":"3ad549bf-eba0-11e9-a77a-0705486660d0"}},"included":[{"id":"e4e029a2-9274-4511-b3b0-47fa4d9a3dfe","type":"deployment","attributes":{"app_version_id":"00000000-0000-0000-0000-000000000000"},"meta":{"created_at":"2025-09-23T09:21:56.341596Z","user_id":1445416,"user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","user_name":""}}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 176.13ms
+        duration: 203.921083ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -119,7 +119,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/app-builder/apps/a09dc905-e917-48cc-b1d2-da2cbaa46560
+        url: https://api.datadoghq.com/api/v2/app-builder/apps/fffd434f-c5b2-4816-9c84-8d0b39930618
         method: GET
       response:
         proto: HTTP/1.1
@@ -129,13 +129,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"data":{"id":"a09dc905-e917-48cc-b1d2-da2cbaa46560","type":"appDefinitions","attributes":{"components":[{"events":[],"name":"grid0","properties":{"children":[]},"type":"grid"}],"description":"Created using the Datadog provider in Terraform. Variable interpolation.","favorite":false,"name":"tf-TestAccDatadogAppBuilderAppResource_Escaped_Interpolated_Import-local-1743024950","queries":[{"id":"11111111-1111-1111-1111-111111111111","name":"listTeams0","type":"action","properties":{"onlyTriggerManually":false,"outputs":"${((outputs) =\u003e {// Use ''outputs'' to reference the query''s unformatted output.\n\n// TODO: Apply transformations to the raw query output\n\nreturn outputs.data.map(item =\u003e item.attributes.name);})(self.rawOutputs)}","spec":{"connectionId":"11111111-2222-3333-4444-555555555555","fqn":"com.datadoghq.dd.teams.listTeams","inputs":{}}}}],"rootInstanceName":"grid0","selfService":false,"tags":[]},"relationships":{"deployment":{"data":{"id":"36bffe12-19b5-41ef-a3f5-a6cf3c74c655","type":"deployment"},"meta":{"created_at":"2025-03-26T21:35:54.188353Z","user_id":1445416,"user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","user_name":"frog@datadoghq.com"}}},"meta":{"org_id":321813,"user_id":1445416,"user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","user_name":"frog@datadoghq.com","version":1,"updated_since_deployment":false,"created_at":"2025-03-26T21:35:53.971959Z","updated_at":"2025-03-26T21:35:53.971959Z","deleted_at":"0001-01-01T00:00:00Z"}},"included":[{"id":"36bffe12-19b5-41ef-a3f5-a6cf3c74c655","type":"deployment","attributes":{"app_version_id":"00000000-0000-0000-0000-000000000000"},"meta":{"created_at":"2025-03-26T21:35:54.188353Z","user_id":1445416,"user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","user_name":"frog@datadoghq.com"}}]}'
+        body: '{"data":{"id":"fffd434f-c5b2-4816-9c84-8d0b39930618","type":"appDefinitions","attributes":{"components":[{"events":[],"name":"grid0","properties":{"children":[]},"type":"grid"}],"description":"Created using the Datadog provider in Terraform. Variable interpolation.","favorite":false,"name":"tf-TestAccDatadogAppBuilderAppResource_Escaped_Interpolated_Import-local-1758619312","queries":[{"id":"11111111-1111-1111-1111-111111111111","name":"listTeams0","type":"action","properties":{"onlyTriggerManually":false,"outputs":"${((outputs) =\u003e {// Use ''outputs'' to reference the query''s unformatted output.\n\n// TODO: Apply transformations to the raw query output\n\nreturn outputs.data.map(item =\u003e item.attributes.name);})(self.rawOutputs)}","spec":{"connectionId":"11111111-2222-3333-4444-555555555555","fqn":"com.datadoghq.dd.teams.listTeams","inputs":{}}}}],"rootInstanceName":"grid0","selfService":false,"tags":[]},"relationships":{"deployment":{"data":{"id":"e4e029a2-9274-4511-b3b0-47fa4d9a3dfe","type":"deployment"},"meta":{"created_at":"2025-09-23T09:21:56.341596Z","user_id":1445416,"user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","user_name":""}}},"meta":{"org_id":321813,"user_id":1445416,"user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","user_name":"frog@datadoghq.com","version":1,"version_id":"efb69b39-7b4c-4c30-b01d-ef236278d8f6","updated_since_deployment":false,"created_at":"2025-09-23T09:21:56.067757Z","updated_at":"2025-09-23T09:21:56.067757Z","deleted_at":"0001-01-01T00:00:00Z","run_as_user":"3ad549bf-eba0-11e9-a77a-0705486660d0"}},"included":[{"id":"e4e029a2-9274-4511-b3b0-47fa4d9a3dfe","type":"deployment","attributes":{"app_version_id":"00000000-0000-0000-0000-000000000000"},"meta":{"created_at":"2025-09-23T09:21:56.341596Z","user_id":1445416,"user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","user_name":""}}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 97.829417ms
+        duration: 191.082209ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -152,7 +152,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/app-builder/apps/a09dc905-e917-48cc-b1d2-da2cbaa46560
+        url: https://api.datadoghq.com/api/v2/app-builder/apps/fffd434f-c5b2-4816-9c84-8d0b39930618
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -162,13 +162,13 @@ interactions:
         trailer: {}
         content_length: 78
         uncompressed: false
-        body: '{"data":{"id":"a09dc905-e917-48cc-b1d2-da2cbaa46560","type":"appDefinitions"}}'
+        body: '{"data":{"id":"fffd434f-c5b2-4816-9c84-8d0b39930618","type":"appDefinitions"}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 184.435041ms
+        duration: 423.954708ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -185,7 +185,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/app-builder/apps/a09dc905-e917-48cc-b1d2-da2cbaa46560
+        url: https://api.datadoghq.com/api/v2/app-builder/apps/fffd434f-c5b2-4816-9c84-8d0b39930618
         method: GET
       response:
         proto: HTTP/1.1
@@ -193,12 +193,12 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 38
+        content_length: 167
         uncompressed: false
-        body: '{"errors":[{"title":"app not found"}]}'
+        body: '{"errors":[{"status":"404","id":"6c488271-1f39-4023-9088-4b49b7f92b9b","title":"app not found","detail":"app with id fffd434f-c5b2-4816-9c84-8d0b39930618 not found"}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 404 Not Found
         code: 404
-        duration: 96.721167ms
+        duration: 141.943292ms

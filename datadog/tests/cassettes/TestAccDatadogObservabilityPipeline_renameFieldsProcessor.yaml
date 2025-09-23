@@ -31,13 +31,13 @@ interactions:
         content_length: 444
         uncompressed: false
         body: |
-            {"data":{"id":"ac098302-24e0-11f0-b6da-da7ad0900002","type":"pipelines","attributes":{"name":"rename-fields-pipeline","config":{"destinations":[{"id":"destination-1","inputs":["rename-1"],"type":"datadog_logs"}],"processors":[{"fields":[{"destination":"new.field","preserve_source":true,"source":"old.field"}],"id":"rename-1","include":"*","inputs":["source-1"],"type":"rename_fields"}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"9f108a24-985d-11f0-84ce-da7ad0900002","type":"pipelines","attributes":{"name":"rename-fields-pipeline","config":{"destinations":[{"id":"destination-1","inputs":["rename-1"],"type":"datadog_logs"}],"processors":[{"fields":[{"destination":"new.field","preserve_source":true,"source":"old.field"}],"id":"rename-1","include":"*","inputs":["source-1"],"type":"rename_fields"}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/json
         status: 201 Created
         code: 201
-        duration: 601.5125ms
+        duration: 471.579166ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -54,7 +54,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/ac098302-24e0-11f0-b6da-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/9f108a24-985d-11f0-84ce-da7ad0900002
         method: GET
       response:
         proto: HTTP/1.1
@@ -65,13 +65,13 @@ interactions:
         content_length: 444
         uncompressed: false
         body: |
-            {"data":{"id":"ac098302-24e0-11f0-b6da-da7ad0900002","type":"pipelines","attributes":{"name":"rename-fields-pipeline","config":{"destinations":[{"id":"destination-1","inputs":["rename-1"],"type":"datadog_logs"}],"processors":[{"fields":[{"destination":"new.field","preserve_source":true,"source":"old.field"}],"id":"rename-1","include":"*","inputs":["source-1"],"type":"rename_fields"}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"9f108a24-985d-11f0-84ce-da7ad0900002","type":"pipelines","attributes":{"name":"rename-fields-pipeline","config":{"destinations":[{"id":"destination-1","inputs":["rename-1"],"type":"datadog_logs"}],"processors":[{"fields":[{"destination":"new.field","preserve_source":true,"source":"old.field"}],"id":"rename-1","include":"*","inputs":["source-1"],"type":"rename_fields"}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 266.62325ms
+        duration: 271.261834ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -88,7 +88,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/ac098302-24e0-11f0-b6da-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/9f108a24-985d-11f0-84ce-da7ad0900002
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -104,4 +104,4 @@ interactions:
                 - application/json
         status: 204 No Content
         code: 204
-        duration: 373.426375ms
+        duration: 412.043792ms

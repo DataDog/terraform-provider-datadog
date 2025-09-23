@@ -31,13 +31,13 @@ interactions:
         content_length: 540
         uncompressed: false
         body: |
-            {"data":{"id":"e771ac30-24e0-11f0-92e0-da7ad0900002","type":"pipelines","attributes":{"name":"dedupe pipeline","config":{"destinations":[{"id":"destination-1","inputs":["dedupe-ignore"],"type":"datadog_logs"}],"processors":[{"fields":["log.message","log.tags"],"id":"dedupe-match","include":"*","inputs":["source-1"],"mode":"match","type":"dedupe"},{"fields":["log.source","log.context"],"id":"dedupe-ignore","include":"*","inputs":["dedupe-match"],"mode":"ignore","type":"dedupe"}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"da9bebf6-985d-11f0-b34e-da7ad0900002","type":"pipelines","attributes":{"name":"dedupe pipeline","config":{"destinations":[{"id":"destination-1","inputs":["dedupe-ignore"],"type":"datadog_logs"}],"processors":[{"fields":["log.message","log.tags"],"id":"dedupe-match","include":"*","inputs":["source-1"],"mode":"match","type":"dedupe"},{"fields":["log.source","log.context"],"id":"dedupe-ignore","include":"*","inputs":["dedupe-match"],"mode":"ignore","type":"dedupe"}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/json
         status: 201 Created
         code: 201
-        duration: 633.1005ms
+        duration: 678.045459ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -54,7 +54,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/e771ac30-24e0-11f0-92e0-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/da9bebf6-985d-11f0-b34e-da7ad0900002
         method: GET
       response:
         proto: HTTP/1.1
@@ -65,13 +65,13 @@ interactions:
         content_length: 540
         uncompressed: false
         body: |
-            {"data":{"id":"e771ac30-24e0-11f0-92e0-da7ad0900002","type":"pipelines","attributes":{"name":"dedupe pipeline","config":{"destinations":[{"id":"destination-1","inputs":["dedupe-ignore"],"type":"datadog_logs"}],"processors":[{"fields":["log.message","log.tags"],"id":"dedupe-match","include":"*","inputs":["source-1"],"mode":"match","type":"dedupe"},{"fields":["log.source","log.context"],"id":"dedupe-ignore","include":"*","inputs":["dedupe-match"],"mode":"ignore","type":"dedupe"}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"da9bebf6-985d-11f0-b34e-da7ad0900002","type":"pipelines","attributes":{"name":"dedupe pipeline","config":{"destinations":[{"id":"destination-1","inputs":["dedupe-ignore"],"type":"datadog_logs"}],"processors":[{"fields":["log.message","log.tags"],"id":"dedupe-match","include":"*","inputs":["source-1"],"mode":"match","type":"dedupe"},{"fields":["log.source","log.context"],"id":"dedupe-ignore","include":"*","inputs":["dedupe-match"],"mode":"ignore","type":"dedupe"}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 282.627083ms
+        duration: 255.128083ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -88,7 +88,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/e771ac30-24e0-11f0-92e0-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/da9bebf6-985d-11f0-b34e-da7ad0900002
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -104,4 +104,4 @@ interactions:
                 - application/json
         status: 204 No Content
         code: 204
-        duration: 604.233ms
+        duration: 459.445792ms

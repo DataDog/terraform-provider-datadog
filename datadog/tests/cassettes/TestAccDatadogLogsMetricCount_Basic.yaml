@@ -1,169 +1,322 @@
+---
 version: 2
 interactions:
-- request:
-    body: |
-      {"data":{"attributes":{"compute":{"aggregation_type":"count"},"filter":{"query":"@ident:ha-proxy"},"group_by":[{"path":"@env","tag_name":"env"},{"path":"@http_status_code","tag_name":"http_status_code"}]},"id":"tf_TestAccDatadogLogsMetricCount_Basic_local_1682695275","type":"logs_metrics"}}
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/logs/config/metrics
-    method: POST
-    id: 0
-  response:
-    body: |
-      {"data":{"id":"tf_TestAccDatadogLogsMetricCount_Basic_local_1682695275","attributes":{"filter":{"query":"@ident:ha-proxy"},"group_by":[{"path":"@env","tag_name":"env"},{"path":"@http_status_code","tag_name":"http_status_code"}],"compute":{"aggregation_type":"count"}},"type":"logs_metrics"}}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/logs/config/metrics/tf_TestAccDatadogLogsMetricCount_Basic_local_1682695275
-    method: GET
-    id: 1
-  response:
-    body: |
-      {"data":{"id":"tf_TestAccDatadogLogsMetricCount_Basic_local_1682695275","attributes":{"filter":{"query":"@ident:ha-proxy"},"group_by":[{"path":"@env","tag_name":"env"},{"path":"@http_status_code","tag_name":"http_status_code"}],"compute":{"aggregation_type":"count"}},"type":"logs_metrics"}}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/logs/config/metrics/tf_TestAccDatadogLogsMetricCount_Basic_local_1682695275
-    method: GET
-    id: 2
-  response:
-    body: |
-      {"data":{"id":"tf_TestAccDatadogLogsMetricCount_Basic_local_1682695275","attributes":{"filter":{"query":"@ident:ha-proxy"},"group_by":[{"path":"@env","tag_name":"env"},{"path":"@http_status_code","tag_name":"http_status_code"}],"compute":{"aggregation_type":"count"}},"type":"logs_metrics"}}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/logs/config/metrics/tf_TestAccDatadogLogsMetricCount_Basic_local_1682695275
-    method: GET
-    id: 3
-  response:
-    body: |
-      {"data":{"id":"tf_TestAccDatadogLogsMetricCount_Basic_local_1682695275","attributes":{"filter":{"query":"@ident:ha-proxy"},"group_by":[{"path":"@env","tag_name":"env"},{"path":"@http_status_code","tag_name":"http_status_code"}],"compute":{"aggregation_type":"count"}},"type":"logs_metrics"}}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: |
-      {"data":{"attributes":{"compute":{},"filter":{"query":"@ident:ha-proxy"},"group_by":[{"path":"@http_status_code","tag_name":"http_status_code"},{"path":"@env","tag_name":"env_updated"}]},"type":"logs_metrics"}}
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/logs/config/metrics/tf_TestAccDatadogLogsMetricCount_Basic_local_1682695275
-    method: PATCH
-    id: 4
-  response:
-    body: |
-      {"data":{"id":"tf_TestAccDatadogLogsMetricCount_Basic_local_1682695275","attributes":{"filter":{"query":"@ident:ha-proxy"},"group_by":[{"path":"@env","tag_name":"env_updated"},{"path":"@http_status_code","tag_name":"http_status_code"}],"compute":{"aggregation_type":"count"}},"type":"logs_metrics"}}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/logs/config/metrics/tf_TestAccDatadogLogsMetricCount_Basic_local_1682695275
-    method: GET
-    id: 5
-  response:
-    body: |
-      {"data":{"id":"tf_TestAccDatadogLogsMetricCount_Basic_local_1682695275","attributes":{"filter":{"query":"@ident:ha-proxy"},"group_by":[{"path":"@env","tag_name":"env_updated"},{"path":"@http_status_code","tag_name":"http_status_code"}],"compute":{"aggregation_type":"count"}},"type":"logs_metrics"}}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/logs/config/metrics/tf_TestAccDatadogLogsMetricCount_Basic_local_1682695275
-    method: GET
-    id: 6
-  response:
-    body: |
-      {"data":{"id":"tf_TestAccDatadogLogsMetricCount_Basic_local_1682695275","attributes":{"filter":{"query":"@ident:ha-proxy"},"group_by":[{"path":"@env","tag_name":"env_updated"},{"path":"@http_status_code","tag_name":"http_status_code"}],"compute":{"aggregation_type":"count"}},"type":"logs_metrics"}}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - '*/*'
-    url: https://api.datadoghq.com/api/v2/logs/config/metrics/tf_TestAccDatadogLogsMetricCount_Basic_local_1682695275
-    method: DELETE
-    id: 7
-  response:
-    body: ""
-    headers:
-      Content-Type:
-      - text/html; charset=utf-8
-    status: 204 No Content
-    code: 204
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/logs/config/metrics/tf_TestAccDatadogLogsMetricCount_Basic_local_1682695275
-    method: GET
-    id: 8
-  response:
-    body: |
-      {"errors":["not_found(Metric with name 'tf_TestAccDatadogLogsMetricCount_Basic_local_1682695275' not found)"]}
-    headers:
-      Content-Type:
-      - application/json
-    status: 404 Not Found
-    code: 404
-    duration: "0ms"
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 292
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"compute":{"aggregation_type":"count"},"filter":{"query":"@ident:ha-proxy"},"group_by":[{"path":"@env","tag_name":"env"},{"path":"@http_status_code","tag_name":"http_status_code"}]},"id":"tf_TestAccDatadogLogsMetricCount_Basic_local_1758619102","type":"logs_metrics"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/logs/config/metrics
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"tf_TestAccDatadogLogsMetricCount_Basic_local_1758619102","attributes":{"filter":{"query":"@ident:ha-proxy"},"group_by":[{"path":"@env","tag_name":"env"},{"path":"@http_status_code","tag_name":"http_status_code"}],"compute":{"aggregation_type":"count"}},"type":"logs_metrics"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 371.586458ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/logs/config/metrics/tf_TestAccDatadogLogsMetricCount_Basic_local_1758619102
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"tf_TestAccDatadogLogsMetricCount_Basic_local_1758619102","attributes":{"filter":{"query":"@ident:ha-proxy"},"group_by":[{"path":"@env","tag_name":"env"},{"path":"@http_status_code","tag_name":"http_status_code"}],"compute":{"aggregation_type":"count"}},"type":"logs_metrics"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 183.411292ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/logs/config/metrics/tf_TestAccDatadogLogsMetricCount_Basic_local_1758619102
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"tf_TestAccDatadogLogsMetricCount_Basic_local_1758619102","attributes":{"filter":{"query":"@ident:ha-proxy"},"group_by":[{"path":"@env","tag_name":"env"},{"path":"@http_status_code","tag_name":"http_status_code"}],"compute":{"aggregation_type":"count"}},"type":"logs_metrics"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 204.325958ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/logs/config/metrics/tf_TestAccDatadogLogsMetricCount_Basic_local_1758619102
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"tf_TestAccDatadogLogsMetricCount_Basic_local_1758619102","attributes":{"filter":{"query":"@ident:ha-proxy"},"group_by":[{"path":"@env","tag_name":"env"},{"path":"@http_status_code","tag_name":"http_status_code"}],"compute":{"aggregation_type":"count"}},"type":"logs_metrics"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 166.341584ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 211
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"compute":{},"filter":{"query":"@ident:ha-proxy"},"group_by":[{"path":"@http_status_code","tag_name":"http_status_code"},{"path":"@env","tag_name":"env_updated"}]},"type":"logs_metrics"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/logs/config/metrics/tf_TestAccDatadogLogsMetricCount_Basic_local_1758619102
+        method: PATCH
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"tf_TestAccDatadogLogsMetricCount_Basic_local_1758619102","attributes":{"filter":{"query":"@ident:ha-proxy"},"group_by":[{"path":"@env","tag_name":"env_updated"},{"path":"@http_status_code","tag_name":"http_status_code"}],"compute":{"aggregation_type":"count"}},"type":"logs_metrics"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 411.298584ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/logs/config/metrics/tf_TestAccDatadogLogsMetricCount_Basic_local_1758619102
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"tf_TestAccDatadogLogsMetricCount_Basic_local_1758619102","attributes":{"filter":{"query":"@ident:ha-proxy"},"group_by":[{"path":"@env","tag_name":"env_updated"},{"path":"@http_status_code","tag_name":"http_status_code"}],"compute":{"aggregation_type":"count"}},"type":"logs_metrics"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 155.429583ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/logs/config/metrics/tf_TestAccDatadogLogsMetricCount_Basic_local_1758619102
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"tf_TestAccDatadogLogsMetricCount_Basic_local_1758619102","attributes":{"filter":{"query":"@ident:ha-proxy"},"group_by":[{"path":"@env","tag_name":"env_updated"},{"path":"@http_status_code","tag_name":"http_status_code"}],"compute":{"aggregation_type":"count"}},"type":"logs_metrics"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 475.05ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/logs/config/metrics/tf_TestAccDatadogLogsMetricCount_Basic_local_1758619102
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Content-Type:
+                - text/html; charset=utf-8
+        status: 204 No Content
+        code: 204
+        duration: 166.322042ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/logs/config/metrics/tf_TestAccDatadogLogsMetricCount_Basic_local_1758619102
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"errors":["not_found(Metric with name 'tf_TestAccDatadogLogsMetricCount_Basic_local_1758619102' not found)"]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 284.883458ms

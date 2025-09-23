@@ -1,76 +1,144 @@
+---
 version: 2
 interactions:
-- request:
-    body: |
-      {"data":{"attributes":{"description":"Created using the Datadog provider in Terraform","group_widget":{"definition":{"layout_type":"ordered","title":"tf-TestAccDatadogPowerpackAlertValue-local-1701197208","type":"group","widgets":[{"definition":{"alert_id":"895605","type":"alert_value"}},{"definition":{"alert_id":"895606","precision":1,"text_align":"center","title":"Widget Title","title_align":"center","title_size":"16","type":"alert_value","unit":"b"}}]}},"name":"tf-TestAccDatadogPowerpackAlertValue-local-1701197208","tags":["tag:foo1"],"template_variables":[{"defaults":["defaults"],"name":"datacenter"}]},"type":"powerpack"}}
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/powerpacks
-    method: POST
-    id: 0
-  response:
-    body: |
-      {"data":{"type":"powerpack","id":"7dac8a68-8e1e-11ee-b166-da7ad0900002","attributes":{"name":"tf-TestAccDatadogPowerpackAlertValue-local-1701197208","description":"Created using the Datadog provider in Terraform","group_widget":{"definition":{"layout_type":"ordered","title":"tf-TestAccDatadogPowerpackAlertValue-local-1701197208","type":"group","widgets":[{"definition":{"alert_id":"895605","type":"alert_value"},"id":7419552623562708},{"definition":{"alert_id":"895606","precision":1,"text_align":"center","title":"Widget Title","title_align":"center","title_size":"16","type":"alert_value","unit":"b"},"id":999346344499964}]},"layout":{"width":12,"height":1,"x":0,"y":0}},"template_variables":[{"defaults":["defaults"],"name":"datacenter"}],"tags":["tag:foo1"]},"relationships":{"author":{"data":{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0"}}}},"included":[{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","attributes":{"name":null,"email":"frog@datadoghq.com"}}]}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/powerpacks/7dac8a68-8e1e-11ee-b166-da7ad0900002
-    method: GET
-    id: 1
-  response:
-    body: |
-      {"data":{"type":"powerpack","id":"7dac8a68-8e1e-11ee-b166-da7ad0900002","attributes":{"name":"tf-TestAccDatadogPowerpackAlertValue-local-1701197208","description":"Created using the Datadog provider in Terraform","group_widget":{"definition":{"layout_type":"ordered","title":"tf-TestAccDatadogPowerpackAlertValue-local-1701197208","type":"group","widgets":[{"definition":{"alert_id":"895605","type":"alert_value"},"id":7419552623562708},{"definition":{"alert_id":"895606","precision":1,"text_align":"center","title":"Widget Title","title_align":"center","title_size":"16","type":"alert_value","unit":"b"},"id":999346344499964}]},"layout":{"width":12,"height":1,"x":0,"y":0}},"template_variables":[{"defaults":["defaults"],"name":"datacenter"}],"tags":["tag:foo1"]},"relationships":{"author":{"data":{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0"}}}},"included":[{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","attributes":{"name":null,"email":"frog@datadoghq.com"}}]}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/powerpacks/7dac8a68-8e1e-11ee-b166-da7ad0900002
-    method: GET
-    id: 2
-  response:
-    body: |
-      {"data":{"type":"powerpack","id":"7dac8a68-8e1e-11ee-b166-da7ad0900002","attributes":{"name":"tf-TestAccDatadogPowerpackAlertValue-local-1701197208","description":"Created using the Datadog provider in Terraform","group_widget":{"definition":{"layout_type":"ordered","title":"tf-TestAccDatadogPowerpackAlertValue-local-1701197208","type":"group","widgets":[{"definition":{"alert_id":"895605","type":"alert_value"},"id":7419552623562708},{"definition":{"alert_id":"895606","precision":1,"text_align":"center","title":"Widget Title","title_align":"center","title_size":"16","type":"alert_value","unit":"b"},"id":999346344499964}]},"layout":{"width":12,"height":1,"x":0,"y":0}},"template_variables":[{"defaults":["defaults"],"name":"datacenter"}],"tags":["tag:foo1"]},"relationships":{"author":{"data":{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0"}}}},"included":[{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","attributes":{"name":null,"email":"frog@datadoghq.com"}}]}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - '*/*'
-    url: https://api.datadoghq.com/api/v2/powerpacks/7dac8a68-8e1e-11ee-b166-da7ad0900002
-    method: DELETE
-    id: 3
-  response:
-    body: ""
-    headers:
-      Content-Type:
-      - text/html; charset=utf-8
-    status: 204 No Content
-    code: 204
-    duration: "0ms"
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 635
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"description":"Created using the Datadog provider in Terraform","group_widget":{"definition":{"layout_type":"ordered","title":"tf-TestAccDatadogPowerpackAlertValue-local-1758619073","type":"group","widgets":[{"definition":{"alert_id":"895605","type":"alert_value"}},{"definition":{"alert_id":"895606","precision":1,"text_align":"center","title":"Widget Title","title_align":"center","title_size":"16","type":"alert_value","unit":"b"}}]}},"name":"tf-TestAccDatadogPowerpackAlertValue-local-1758619073","tags":["tag:foo1"],"template_variables":[{"defaults":["defaults"],"name":"datacenter"}]},"type":"powerpack"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/powerpacks
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"powerpack","id":"2fe274d6-985e-11f0-adf1-da7ad0900002","attributes":{"name":"tf-TestAccDatadogPowerpackAlertValue-local-1758619073","description":"Created using the Datadog provider in Terraform","group_widget":{"definition":{"layout_type":"ordered","title":"tf-TestAccDatadogPowerpackAlertValue-local-1758619073","type":"group","widgets":[{"definition":{"alert_id":"895605","type":"alert_value"},"id":6737243105889512},{"definition":{"alert_id":"895606","precision":1,"text_align":"center","title":"Widget Title","title_align":"center","title_size":"16","type":"alert_value","unit":"b"},"id":8661475312905735}]},"layout":{"width":12,"height":1,"x":0,"y":0}},"template_variables":[{"defaults":["defaults"],"name":"datacenter"}],"tags":["tag:foo1"]},"relationships":{"author":{"data":{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0"}}}},"included":[{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","attributes":{"name":"frog","email":"frog@datadoghq.com"}}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 204.858459ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/powerpacks/2fe274d6-985e-11f0-adf1-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"powerpack","id":"2fe274d6-985e-11f0-adf1-da7ad0900002","attributes":{"name":"tf-TestAccDatadogPowerpackAlertValue-local-1758619073","description":"Created using the Datadog provider in Terraform","group_widget":{"definition":{"layout_type":"ordered","title":"tf-TestAccDatadogPowerpackAlertValue-local-1758619073","type":"group","widgets":[{"definition":{"alert_id":"895605","type":"alert_value"},"id":6737243105889512},{"definition":{"alert_id":"895606","precision":1,"text_align":"center","title":"Widget Title","title_align":"center","title_size":"16","type":"alert_value","unit":"b"},"id":8661475312905735}]},"layout":{"width":12,"height":1,"x":0,"y":0}},"template_variables":[{"defaults":["defaults"],"name":"datacenter"}],"tags":["tag:foo1"]},"relationships":{"author":{"data":{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0"}}}},"included":[{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","attributes":{"name":"frog","email":"frog@datadoghq.com"}}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 149.057ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/powerpacks/2fe274d6-985e-11f0-adf1-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"powerpack","id":"2fe274d6-985e-11f0-adf1-da7ad0900002","attributes":{"name":"tf-TestAccDatadogPowerpackAlertValue-local-1758619073","description":"Created using the Datadog provider in Terraform","group_widget":{"definition":{"layout_type":"ordered","title":"tf-TestAccDatadogPowerpackAlertValue-local-1758619073","type":"group","widgets":[{"definition":{"alert_id":"895605","type":"alert_value"},"id":6737243105889512},{"definition":{"alert_id":"895606","precision":1,"text_align":"center","title":"Widget Title","title_align":"center","title_size":"16","type":"alert_value","unit":"b"},"id":8661475312905735}]},"layout":{"width":12,"height":1,"x":0,"y":0}},"template_variables":[{"defaults":["defaults"],"name":"datacenter"}],"tags":["tag:foo1"]},"relationships":{"author":{"data":{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0"}}}},"included":[{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","attributes":{"name":"frog","email":"frog@datadoghq.com"}}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 307.745708ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/powerpacks/2fe274d6-985e-11f0-adf1-da7ad0900002
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Content-Type:
+                - text/html; charset=utf-8
+        status: 204 No Content
+        code: 204
+        duration: 215.656709ms

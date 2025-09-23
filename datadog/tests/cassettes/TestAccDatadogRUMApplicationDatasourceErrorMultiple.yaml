@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"name":"tf-TestAccDatadogRUMApplicationDatasourceErrorMultiple-local-1756173087","type":"android"},"type":"rum_application_create"}}
+            {"data":{"attributes":{"name":"tf-TestAccDatadogRUMApplicationDatasourceErrorMultiple-local-1758619413","type":"android"},"type":"rum_application_create"}}
         form: {}
         headers:
             Accept:
@@ -31,14 +31,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: |
-            {"data":{"type":"rum_application","attributes":{"created_by_handle":"frog@datadoghq.com","org_id":321813,"name":"tf-TestAccDatadogRUMApplicationDatasourceErrorMultiple-local-1756173087","product_analytics_replay_sample_rate":100,"created_at":1756173088817,"updated_by_handle":"frog@datadoghq.com","updated_at":1756173088817,"type":"android","tags":[],"client_token":"pub30628c9d85487436f1a796cd92a76596","product_scales":{"rum_event_processing_scale":{"state":"ALL","last_modified_at":1756173088817},"product_analytics_retention_scale":{"state":"NONE","last_modified_at":1756173088817}},"application_id":"83bfe81d-eabe-4f7f-a0a4-d8697953ccc8","hash":"pub30628c9d85487436f1a796cd92a76596","is_active":false},"id":"83bfe81d-eabe-4f7f-a0a4-d8697953ccc8"}}
+        body: '{"errors":["This endpoint has encountered an internal server error"]}'
         headers:
             Content-Type:
                 - application/json
-        status: 200 OK
-        code: 200
-        duration: 1.25651s
+        status: 500 Internal Server Error
+        code: 500
+        duration: 2.250256625s
     - id: 1
       request:
         proto: HTTP/1.1
@@ -51,7 +50,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"name":"tf-TestAccDatadogRUMApplicationDatasourceErrorMultiple-local-1756173087","type":"browser"},"type":"rum_application_create"}}
+            {"data":{"attributes":{"name":"tf-TestAccDatadogRUMApplicationDatasourceErrorMultiple-local-1758619413","type":"browser"},"type":"rum_application_create"}}
         form: {}
         headers:
             Accept:
@@ -69,108 +68,10 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: |
-            {"data":{"type":"rum_application","attributes":{"name":"tf-TestAccDatadogRUMApplicationDatasourceErrorMultiple-local-1756173087","type":"browser","is_active":false,"product_analytics_replay_sample_rate":100,"created_at":1756173089034,"updated_at":1756173089034,"client_token":"pub9e842288405b231c05992a1e07bfba61","hash":"pub9e842288405b231c05992a1e07bfba61","application_id":"ee8c7ce4-0519-45a5-8906-6f7bbc5580c2","updated_by_handle":"frog@datadoghq.com","product_scales":{"product_analytics_retention_scale":{"last_modified_at":1756173089034,"state":"NONE"},"rum_event_processing_scale":{"last_modified_at":1756173089034,"state":"ALL"}},"tags":[],"org_id":321813,"created_by_handle":"frog@datadoghq.com"},"id":"ee8c7ce4-0519-45a5-8906-6f7bbc5580c2"}}
+        body: '{"errors":["This endpoint has encountered an internal server error"]}'
         headers:
             Content-Type:
                 - application/json
-        status: 200 OK
-        code: 200
-        duration: 1.389849792s
-    - id: 2
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 0
-        transfer_encoding: []
-        trailer: {}
-        host: api.datadoghq.com
-        remote_addr: ""
-        request_uri: ""
-        body: ""
-        form: {}
-        headers:
-            Accept:
-                - application/json
-        url: https://api.datadoghq.com/api/v2/rum/applications
-        method: GET
-      response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        transfer_encoding:
-            - chunked
-        trailer: {}
-        content_length: -1
-        uncompressed: true
-        body: |
-            {"data":[{"type":"rum_application","attributes":{"product_scales":{"product_analytics_retention_scale":{"state":"NONE","last_modified_at":1646148352095},"rum_event_processing_scale":{"state":"ALL","last_modified_at":1646148352095}},"is_active":true,"org_id":321813,"name":"S8-integration-tests","product_analytics_replay_sample_rate":100,"updated_by_handle":"Datadog","application_id":"6ae18142-192f-4582-9633-95121c2a01d7","tags":[],"updated_at":1753109253427,"created_at":1646148352095,"type":"browser","created_by_handle":"frog@datadoghq.com"},"id":"6ae18142-192f-4582-9633-95121c2a01d7"},{"type":"rum_application","attributes":{"product_scales":{"product_analytics_retention_scale":{"state":"NONE","last_modified_at":1648568515456},"rum_event_processing_scale":{"state":"ALL","last_modified_at":1648568515456}},"is_active":true,"org_id":321813,"name":"Synthetic Tests Default Application","product_analytics_replay_sample_rate":100,"updated_by_handle":"Datadog","application_id":"ce9843b0-7a45-453c-a831-55dd15f85141","tags":[],"updated_at":1753109253438,"created_at":1648568515456,"type":"browser","created_by_handle":"frog@datadoghq.com"},"id":"ce9843b0-7a45-453c-a831-55dd15f85141"},{"type":"rum_application","attributes":{"product_scales":{"product_analytics_retention_scale":{"state":"NONE","last_modified_at":1670608490405},"rum_event_processing_scale":{"state":"ALL","last_modified_at":1670608490405}},"is_active":false,"org_id":321813,"name":"awoooooooo","product_analytics_replay_sample_rate":100,"updated_by_handle":"Datadog","application_id":"88e86bcc-6d0a-4a3c-942f-55314a6f03bd","tags":[],"updated_at":1753109253448,"created_at":1670608490405,"type":"browser","created_by_handle":"frog@datadoghq.com"},"id":"88e86bcc-6d0a-4a3c-942f-55314a6f03bd"},{"type":"rum_application","attributes":{"product_scales":{"product_analytics_retention_scale":{"state":"NONE","last_modified_at":1721327950211},"rum_event_processing_scale":{"state":"ALL","last_modified_at":1721327950211}},"is_active":false,"org_id":321813,"name":"%s2","product_analytics_replay_sample_rate":100,"updated_by_handle":"Datadog","application_id":"aaf8455b-23c6-4ec8-9bd8-9bc45fe90aa5","tags":[],"updated_at":1753109253459,"created_at":1721327950211,"type":"browser","created_by_handle":"anika.maskara@datadoghq.com"},"id":"aaf8455b-23c6-4ec8-9bd8-9bc45fe90aa5"},{"type":"rum_application","attributes":{"product_scales":{"product_analytics_retention_scale":{"state":"NONE","last_modified_at":1743185866075},"rum_event_processing_scale":{"state":"ALL","last_modified_at":1743185866075}},"is_active":false,"org_id":321813,"name":"my-rum-application-test","product_analytics_replay_sample_rate":100,"updated_by_handle":"Datadog","application_id":"414e5c84-a376-43ec-b3d7-35049deea225","tags":[],"updated_at":1753109253472,"created_at":1743185866075,"type":"browser","created_by_handle":"frog@datadoghq.com"},"id":"414e5c84-a376-43ec-b3d7-35049deea225"},{"type":"rum_application","attributes":{"product_scales":{"product_analytics_retention_scale":{"state":"NONE","last_modified_at":1750736321451},"rum_event_processing_scale":{"state":"ALL","last_modified_at":1750736321451}},"is_active":false,"org_id":321813,"name":"updated_name_for_my_existing_rum_application","product_analytics_replay_sample_rate":100,"updated_by_handle":"Datadog","application_id":"47e19fb5-6c6a-4bd1-aee8-25f6709833e0","tags":[],"updated_at":1753109253483,"created_at":1750736321451,"type":"browser","created_by_handle":"frog@datadoghq.com"},"id":"47e19fb5-6c6a-4bd1-aee8-25f6709833e0"},{"type":"rum_application","attributes":{"product_scales":{"product_analytics_retention_scale":{"state":"NONE","last_modified_at":1755519831419},"rum_event_processing_scale":{"state":"ALL","last_modified_at":1755519831419}},"is_active":false,"org_id":321813,"name":"tf-TestAccDatadogRUMApplicationDatasourceErrorMultiple-local-1755519829","product_analytics_replay_sample_rate":100,"updated_by_handle":"9919ec9b-ebc7-49ee-8dc8-03626e717cca","application_id":"e75f227f-a40f-49df-bd2c-e1997b1da53a","tags":[],"updated_at":1755519831419,"created_at":1755519831419,"type":"android","created_by_handle":"9919ec9b-ebc7-49ee-8dc8-03626e717cca"},"id":"e75f227f-a40f-49df-bd2c-e1997b1da53a"},{"type":"rum_application","attributes":{"product_scales":{"product_analytics_retention_scale":{"state":"NONE","last_modified_at":1755692544888},"rum_event_processing_scale":{"state":"ALL","last_modified_at":1755692544888}},"is_active":false,"org_id":321813,"name":"tf-TestAccDatadogRUMApplicationDatasourceErrorMultiple-local-1755692541","product_analytics_replay_sample_rate":100,"updated_by_handle":"9919ec9b-ebc7-49ee-8dc8-03626e717cca","application_id":"de661f14-ffe9-43f0-b10b-e1807eecf568","tags":[],"updated_at":1755692544888,"created_at":1755692544888,"type":"android","created_by_handle":"9919ec9b-ebc7-49ee-8dc8-03626e717cca"},"id":"de661f14-ffe9-43f0-b10b-e1807eecf568"},{"type":"rum_application","attributes":{"product_scales":{"product_analytics_retention_scale":{"state":"NONE","last_modified_at":1755692544890},"rum_event_processing_scale":{"state":"ALL","last_modified_at":1755692544890}},"is_active":false,"org_id":321813,"name":"tf-TestAccDatadogRUMApplicationDatasourceErrorMultiple-local-1755692541","product_analytics_replay_sample_rate":100,"updated_by_handle":"9919ec9b-ebc7-49ee-8dc8-03626e717cca","application_id":"65ce1ced-40bd-44b9-a0dd-2dc8ead40fef","tags":[],"updated_at":1755692544890,"created_at":1755692544890,"type":"browser","created_by_handle":"9919ec9b-ebc7-49ee-8dc8-03626e717cca"},"id":"65ce1ced-40bd-44b9-a0dd-2dc8ead40fef"},{"type":"rum_application","attributes":{"product_scales":{"product_analytics_retention_scale":{"state":"NONE","last_modified_at":1755862712075},"rum_event_processing_scale":{"state":"ALL","last_modified_at":1755862712075}},"is_active":false,"org_id":321813,"name":"test-rum-e2a7f52524896c06_1755862709","product_analytics_replay_sample_rate":100,"updated_by_handle":"frog@datadoghq.com","application_id":"45574106-9dda-4715-943c-f7c52889b0a1","tags":[],"updated_at":1755862712075,"created_at":1755862712075,"type":"ios","created_by_handle":"frog@datadoghq.com"},"id":"45574106-9dda-4715-943c-f7c52889b0a1"},{"type":"rum_application","attributes":{"product_scales":{"product_analytics_retention_scale":{"state":"NONE","last_modified_at":1756121921616},"rum_event_processing_scale":{"state":"ALL","last_modified_at":1756121921616}},"is_active":false,"org_id":321813,"name":"test-rum-f8296b8ee5998d77_1756121919","product_analytics_replay_sample_rate":100,"updated_by_handle":"frog@datadoghq.com","application_id":"88d523aa-f135-41b4-a9a9-5547bd662dd0","tags":[],"updated_at":1756121921616,"created_at":1756121921616,"type":"ios","created_by_handle":"frog@datadoghq.com"},"id":"88d523aa-f135-41b4-a9a9-5547bd662dd0"},{"type":"rum_application","attributes":{"product_scales":{"product_analytics_retention_scale":{"state":"NONE","last_modified_at":1756173088817},"rum_event_processing_scale":{"state":"ALL","last_modified_at":1756173088817}},"is_active":false,"org_id":321813,"name":"tf-TestAccDatadogRUMApplicationDatasourceErrorMultiple-local-1756173087","product_analytics_replay_sample_rate":100,"updated_by_handle":"frog@datadoghq.com","application_id":"83bfe81d-eabe-4f7f-a0a4-d8697953ccc8","tags":[],"updated_at":1756173088817,"created_at":1756173088817,"type":"android","created_by_handle":"frog@datadoghq.com"},"id":"83bfe81d-eabe-4f7f-a0a4-d8697953ccc8"},{"type":"rum_application","attributes":{"product_scales":{"product_analytics_retention_scale":{"state":"NONE","last_modified_at":1756173088831},"rum_event_processing_scale":{"state":"ALL","last_modified_at":1756173088831}},"is_active":false,"org_id":321813,"name":"tf-TestAccDatadogRUMApplicationDatasourceNameFilter-local-1756173087","product_analytics_replay_sample_rate":100,"updated_by_handle":"frog@datadoghq.com","application_id":"1164310a-4ba5-4232-98b3-4764a0ee7879","tags":[],"updated_at":1756173088831,"created_at":1756173088831,"type":"browser","created_by_handle":"frog@datadoghq.com"},"id":"1164310a-4ba5-4232-98b3-4764a0ee7879"},{"type":"rum_application","attributes":{"product_scales":{"product_analytics_retention_scale":{"state":"NONE","last_modified_at":1756173088847},"rum_event_processing_scale":{"state":"ALL","last_modified_at":1756173088847}},"is_active":false,"org_id":321813,"name":"tf-TestAccDatadogRUMApplicationDatasourceIDFilter-local-1756173087","product_analytics_replay_sample_rate":100,"updated_by_handle":"frog@datadoghq.com","application_id":"7cb65459-1d70-4ddc-9eb0-60c1539f8482","tags":[],"updated_at":1756173088847,"created_at":1756173088847,"type":"browser","created_by_handle":"frog@datadoghq.com"},"id":"7cb65459-1d70-4ddc-9eb0-60c1539f8482"},{"type":"rum_application","attributes":{"product_scales":{"product_analytics_retention_scale":{"state":"NONE","last_modified_at":1756173089017},"rum_event_processing_scale":{"state":"ALL","last_modified_at":1756173089017}},"is_active":false,"org_id":321813,"name":"tf-TestAccDatadogRUMApplicationDatasourceNameFilter-local-1756173087-extra","product_analytics_replay_sample_rate":100,"updated_by_handle":"frog@datadoghq.com","application_id":"a99d9d35-cef0-453a-b79e-5feb1a478b52","tags":[],"updated_at":1756173089017,"created_at":1756173089017,"type":"android","created_by_handle":"frog@datadoghq.com"},"id":"a99d9d35-cef0-453a-b79e-5feb1a478b52"},{"type":"rum_application","attributes":{"product_scales":{"product_analytics_retention_scale":{"state":"NONE","last_modified_at":1756173089032},"rum_event_processing_scale":{"state":"ALL","last_modified_at":1756173089032}},"is_active":false,"org_id":321813,"name":"tf-TestAccDatadogRUMApplicationDatasourceIDFilter-local-1756173087","product_analytics_replay_sample_rate":100,"updated_by_handle":"frog@datadoghq.com","application_id":"bde6fb31-e811-44ab-9be1-80f6c0f03ae0","tags":[],"updated_at":1756173089032,"created_at":1756173089032,"type":"android","created_by_handle":"frog@datadoghq.com"},"id":"bde6fb31-e811-44ab-9be1-80f6c0f03ae0"},{"type":"rum_application","attributes":{"product_scales":{"product_analytics_retention_scale":{"state":"NONE","last_modified_at":1756173089034},"rum_event_processing_scale":{"state":"ALL","last_modified_at":1756173089034}},"is_active":false,"org_id":321813,"name":"tf-TestAccDatadogRUMApplicationDatasourceErrorMultiple-local-1756173087","product_analytics_replay_sample_rate":100,"updated_by_handle":"frog@datadoghq.com","application_id":"ee8c7ce4-0519-45a5-8906-6f7bbc5580c2","tags":[],"updated_at":1756173089034,"created_at":1756173089034,"type":"browser","created_by_handle":"frog@datadoghq.com"},"id":"ee8c7ce4-0519-45a5-8906-6f7bbc5580c2"}]}
-        headers:
-            Content-Type:
-                - application/json
-        status: 200 OK
-        code: 200
-        duration: 263.527042ms
-    - id: 3
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 0
-        transfer_encoding: []
-        trailer: {}
-        host: api.datadoghq.com
-        remote_addr: ""
-        request_uri: ""
-        body: ""
-        form: {}
-        headers:
-            Accept:
-                - '*/*'
-        url: https://api.datadoghq.com/api/v2/rum/applications/ee8c7ce4-0519-45a5-8906-6f7bbc5580c2
-        method: DELETE
-      response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        transfer_encoding: []
-        trailer: {}
-        content_length: 0
-        uncompressed: false
-        body: ""
-        headers: {}
-        status: 204 No Content
-        code: 204
-        duration: 245.790875ms
-    - id: 4
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 0
-        transfer_encoding: []
-        trailer: {}
-        host: api.datadoghq.com
-        remote_addr: ""
-        request_uri: ""
-        body: ""
-        form: {}
-        headers:
-            Accept:
-                - '*/*'
-        url: https://api.datadoghq.com/api/v2/rum/applications/83bfe81d-eabe-4f7f-a0a4-d8697953ccc8
-        method: DELETE
-      response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        transfer_encoding: []
-        trailer: {}
-        content_length: 0
-        uncompressed: false
-        body: ""
-        headers: {}
-        status: 204 No Content
-        code: 204
-        duration: 260.756208ms
+        status: 500 Internal Server Error
+        code: 500
+        duration: 2.470555167s

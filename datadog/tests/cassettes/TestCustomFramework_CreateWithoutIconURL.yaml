@@ -36,7 +36,7 @@ interactions:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 506.19625ms
+        duration: 226.233916ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -69,7 +69,7 @@ interactions:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 276.140542ms
+        duration: 207.878958ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -102,7 +102,7 @@ interactions:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 750.406292ms
+        duration: 147.989584ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -135,4 +135,4 @@ interactions:
                 - application/vnd.api+json
         status: 400 Bad Request
         code: 400
-        duration: 70.235625ms
+        duration: 122.311042ms

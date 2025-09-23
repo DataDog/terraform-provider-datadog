@@ -1,264 +1,415 @@
+---
 version: 2
 interactions:
-- request:
-    body: |
-      schema-version: v2
-      dd-service: tf-testaccdatadogservicedefinition_basic-local-1662675958
-      team: E Commerce
-      contacts:
-        - name: Support Email
-          type: email
-          contact: team@shopping.com
-        - name: Support Slack
-          type: slack
-          contact: 'https://www.slack.com/archives/shopping-cart'
-      repos:
-        - name: shopping-cart source code
-          provider: github
-          url: 'http://github/shopping-cart'
-      docs:
-        - name: shopping-cart architecture
-          provider: gdoc
-          url: 'https://google.drive/shopping-cart-architecture'
-        - name: shopping-cart service Wiki
-          provider: wiki
-          url: 'https://wiki/shopping-cart'
-      links:
-        - name: shopping-cart runbook
-          type: runbook
-          url: 'https://runbook/shopping-cart'
-      tags:
-        - 'business-unit:retail'
-        - 'cost-center:engineering'
-      integrations:
-        pagerduty: 'https://www.pagerduty.com/service-directory/Pshopping-cart'
-      extensions:
-        datadoghq.com/shopping-cart:
-          customField: customValue
-    form: {}
-    headers:
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/services/definitions
-    method: POST
-    id: 0
-  response:
-    body: |
-      {"data":[{"attributes":{"meta":{"ingested-schema-version":"v2","ingestion-source":"api","last-modified-time":"2022-09-08T22:26:00.111382917Z","github-html-url":"","warnings":[]},"schema":{"links":[{"url":"https://runbook/shopping-cart","type":"runbook","name":"shopping-cart runbook"}],"contacts":[{"contact":"team@shopping.com","type":"email","name":"Support Email"},{"contact":"https://www.slack.com/archives/shopping-cart","type":"slack","name":"Support Slack"}],"docs":[{"url":"https://google.drive/shopping-cart-architecture","name":"shopping-cart architecture","provider":"gdoc"},{"url":"https://wiki/shopping-cart","name":"shopping-cart service Wiki","provider":"wiki"}],"repos":[{"url":"http://github/shopping-cart","name":"shopping-cart source code","provider":"github"}],"tags":["business-unit:retail","cost-center:engineering"],"dd-team":"e-commerce","integrations":{"pagerduty":"https://www.pagerduty.com/service-directory/Pshopping-cart"},"schema-version":"v2","team":"E Commerce","extensions":{"datadoghq.com/shopping-cart":{"customField":"customValue"}},"dd-service":"tf-testaccdatadogservicedefinition_basic-local-1662675958"}},"type":"service-definition"}]}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/services/definitions/tf-testaccdatadogservicedefinition_basic-local-1662675958
-    method: GET
-    id: 1
-  response:
-    body: |
-      {"data":{"attributes":{"meta":{"ingested-schema-version":"v2","ingestion-source":"api","last-modified-time":"2022-09-08T22:26:00Z","github-html-url":"","warnings":[]},"schema":{"links":[{"url":"https://runbook/shopping-cart","type":"runbook","name":"shopping-cart runbook"}],"contacts":[{"contact":"https://www.slack.com/archives/shopping-cart","type":"slack","name":"Support Slack"},{"contact":"team@shopping.com","type":"email","name":"Support Email"}],"docs":[{"url":"https://google.drive/shopping-cart-architecture","name":"shopping-cart architecture","provider":"gdoc"},{"url":"https://wiki/shopping-cart","name":"shopping-cart service Wiki","provider":"wiki"}],"repos":[{"url":"http://github/shopping-cart","name":"shopping-cart source code","provider":"github"}],"tags":["cost-center:engineering","business-unit:retail"],"dd-team":"e-commerce","integrations":{"pagerduty":"https://www.pagerduty.com/service-directory/Pshopping-cart"},"schema-version":"v2","team":"E Commerce","extensions":{"datadoghq.com/shopping-cart":{"customField":"customValue"}},"dd-service":"tf-testaccdatadogservicedefinition_basic-local-1662675958"}},"type":"service-definition","id":"ba868c413589b5a581519c2a1a5b39fb"}}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/services/definitions/tf-testaccdatadogservicedefinition_basic-local-1662675958
-    method: GET
-    id: 2
-  response:
-    body: |
-      {"data":{"attributes":{"meta":{"ingested-schema-version":"v2","ingestion-source":"api","last-modified-time":"2022-09-08T22:26:00Z","github-html-url":"","warnings":[]},"schema":{"links":[{"url":"https://runbook/shopping-cart","type":"runbook","name":"shopping-cart runbook"}],"contacts":[{"contact":"https://www.slack.com/archives/shopping-cart","type":"slack","name":"Support Slack"},{"contact":"team@shopping.com","type":"email","name":"Support Email"}],"docs":[{"url":"https://google.drive/shopping-cart-architecture","name":"shopping-cart architecture","provider":"gdoc"},{"url":"https://wiki/shopping-cart","name":"shopping-cart service Wiki","provider":"wiki"}],"repos":[{"url":"http://github/shopping-cart","name":"shopping-cart source code","provider":"github"}],"tags":["business-unit:retail","cost-center:engineering"],"dd-team":"e-commerce","integrations":{"pagerduty":"https://www.pagerduty.com/service-directory/Pshopping-cart"},"schema-version":"v2","team":"E Commerce","extensions":{"datadoghq.com/shopping-cart":{"customField":"customValue"}},"dd-service":"tf-testaccdatadogservicedefinition_basic-local-1662675958"}},"type":"service-definition","id":"ba868c413589b5a581519c2a1a5b39fb"}}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/services/definitions/tf-testaccdatadogservicedefinition_basic-local-1662675958
-    method: GET
-    id: 3
-  response:
-    body: |
-      {"data":{"attributes":{"meta":{"ingested-schema-version":"v2","ingestion-source":"api","last-modified-time":"2022-09-08T22:26:00Z","github-html-url":"","warnings":[]},"schema":{"links":[{"url":"https://runbook/shopping-cart","type":"runbook","name":"shopping-cart runbook"}],"contacts":[{"contact":"https://www.slack.com/archives/shopping-cart","type":"slack","name":"Support Slack"},{"contact":"team@shopping.com","type":"email","name":"Support Email"}],"docs":[{"url":"https://google.drive/shopping-cart-architecture","name":"shopping-cart architecture","provider":"gdoc"},{"url":"https://wiki/shopping-cart","name":"shopping-cart service Wiki","provider":"wiki"}],"repos":[{"url":"http://github/shopping-cart","name":"shopping-cart source code","provider":"github"}],"tags":["business-unit:retail","cost-center:engineering"],"dd-team":"e-commerce","integrations":{"pagerduty":"https://www.pagerduty.com/service-directory/Pshopping-cart"},"schema-version":"v2","team":"E Commerce","extensions":{"datadoghq.com/shopping-cart":{"customField":"customValue"}},"dd-service":"tf-testaccdatadogservicedefinition_basic-local-1662675958"}},"type":"service-definition","id":"ba868c413589b5a581519c2a1a5b39fb"}}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/services/definitions/tf-testaccdatadogservicedefinition_basic-local-1662675958
-    method: DELETE
-    id: 4
-  response:
-    body: ""
-    headers:
-      Content-Type:
-      - text/html; charset=utf-8
-    status: 204 No Content
-    code: 204
-    duration: "0ms"
-- request:
-    body: |
-      schema-version: v2
-      dd-service: tf-testaccdatadogservicedefinition_basic-local-1662675958-updated
-      team: E Commerce
-      contacts:
-        - name: Support Email
-          type: email
-          contact: team@shopping.com
-        - name: Support Slack
-          type: slack
-          contact: 'https://www.slack.com/archives/shopping-cart'
-      repos:
-        - name: shopping-cart source code
-          provider: github
-          url: 'http://github/shopping-cart'
-      docs:
-        - name: shopping-cart architecture
-          provider: gdoc
-          url: 'https://google.drive/shopping-cart-architecture'
-        - name: shopping-cart service Wiki
-          provider: wiki
-          url: 'https://wiki/shopping-cart'
-      links:
-        - name: shopping-cart runbook
-          type: runbook
-          url: 'https://runbook/shopping-cart'
-      tags:
-        - 'business-unit:retail'
-        - 'cost-center:engineering'
-      integrations:
-        pagerduty: 'https://www.pagerduty.com/service-directory/Pshopping-cart'
-      extensions:
-        datadoghq.com/shopping-cart:
-          customField: customValue
-    form: {}
-    headers:
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/services/definitions
-    method: POST
-    id: 5
-  response:
-    body: |
-      {"data":[{"attributes":{"meta":{"ingested-schema-version":"v2","ingestion-source":"api","last-modified-time":"2022-09-08T22:26:02.701727748Z","github-html-url":"","warnings":[]},"schema":{"links":[{"url":"https://runbook/shopping-cart","type":"runbook","name":"shopping-cart runbook"}],"contacts":[{"contact":"team@shopping.com","type":"email","name":"Support Email"},{"contact":"https://www.slack.com/archives/shopping-cart","type":"slack","name":"Support Slack"}],"docs":[{"url":"https://google.drive/shopping-cart-architecture","name":"shopping-cart architecture","provider":"gdoc"},{"url":"https://wiki/shopping-cart","name":"shopping-cart service Wiki","provider":"wiki"}],"repos":[{"url":"http://github/shopping-cart","name":"shopping-cart source code","provider":"github"}],"tags":["business-unit:retail","cost-center:engineering"],"dd-team":"e-commerce","integrations":{"pagerduty":"https://www.pagerduty.com/service-directory/Pshopping-cart"},"schema-version":"v2","team":"E Commerce","extensions":{"datadoghq.com/shopping-cart":{"customField":"customValue"}},"dd-service":"tf-testaccdatadogservicedefinition_basic-local-1662675958-updated"}},"type":"service-definition"}]}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/services/definitions/tf-testaccdatadogservicedefinition_basic-local-1662675958-updated
-    method: GET
-    id: 6
-  response:
-    body: |
-      {"errors":["Not Found"],"error_details":[{}]}
-    headers:
-      Content-Type:
-      - application/json
-    status: 404 Not Found
-    code: 404
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/services/definitions/tf-testaccdatadogservicedefinition_basic-local-1662675958-updated
-    method: GET
-    id: 7
-  response:
-    body: |
-      {"data":{"attributes":{"meta":{"ingested-schema-version":"v2","ingestion-source":"api","last-modified-time":"2022-09-08T22:26:02Z","github-html-url":"","warnings":[]},"schema":{"links":[{"url":"https://runbook/shopping-cart","type":"runbook","name":"shopping-cart runbook"}],"contacts":[{"contact":"https://www.slack.com/archives/shopping-cart","type":"slack","name":"Support Slack"},{"contact":"team@shopping.com","type":"email","name":"Support Email"}],"docs":[{"url":"https://google.drive/shopping-cart-architecture","name":"shopping-cart architecture","provider":"gdoc"},{"url":"https://wiki/shopping-cart","name":"shopping-cart service Wiki","provider":"wiki"}],"repos":[{"url":"http://github/shopping-cart","name":"shopping-cart source code","provider":"github"}],"tags":["cost-center:engineering","business-unit:retail"],"dd-team":"e-commerce","integrations":{"pagerduty":"https://www.pagerduty.com/service-directory/Pshopping-cart"},"schema-version":"v2","team":"E Commerce","extensions":{"datadoghq.com/shopping-cart":{"customField":"customValue"}},"dd-service":"tf-testaccdatadogservicedefinition_basic-local-1662675958-updated"}},"type":"service-definition","id":"dcc6ba494e7446715ea93e769e5af859"}}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/services/definitions/tf-testaccdatadogservicedefinition_basic-local-1662675958-updated
-    method: GET
-    id: 8
-  response:
-    body: |
-      {"data":{"attributes":{"meta":{"ingested-schema-version":"v2","ingestion-source":"api","last-modified-time":"2022-09-08T22:26:02Z","github-html-url":"","warnings":[]},"schema":{"links":[{"url":"https://runbook/shopping-cart","type":"runbook","name":"shopping-cart runbook"}],"contacts":[{"contact":"https://www.slack.com/archives/shopping-cart","type":"slack","name":"Support Slack"},{"contact":"team@shopping.com","type":"email","name":"Support Email"}],"docs":[{"url":"https://google.drive/shopping-cart-architecture","name":"shopping-cart architecture","provider":"gdoc"},{"url":"https://wiki/shopping-cart","name":"shopping-cart service Wiki","provider":"wiki"}],"repos":[{"url":"http://github/shopping-cart","name":"shopping-cart source code","provider":"github"}],"tags":["cost-center:engineering","business-unit:retail"],"dd-team":"e-commerce","integrations":{"pagerduty":"https://www.pagerduty.com/service-directory/Pshopping-cart"},"schema-version":"v2","team":"E Commerce","extensions":{"datadoghq.com/shopping-cart":{"customField":"customValue"}},"dd-service":"tf-testaccdatadogservicedefinition_basic-local-1662675958-updated"}},"type":"service-definition","id":"dcc6ba494e7446715ea93e769e5af859"}}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/services/definitions/tf-testaccdatadogservicedefinition_basic-local-1662675958-updated
-    method: DELETE
-    id: 9
-  response:
-    body: ""
-    headers:
-      Content-Type:
-      - text/html; charset=utf-8
-    status: 204 No Content
-    code: 204
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/services/definitions/tf-testaccdatadogservicedefinition_basic-local-1662675958-updated
-    method: GET
-    id: 10
-  response:
-    body: |
-      {"errors":["Not Found"],"error_details":[{}]}
-    headers:
-      Content-Type:
-      - application/json
-    status: 404 Not Found
-    code: 404
-    duration: "0ms"
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 926
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            schema-version: v2
+            dd-service: tf-testaccdatadogservicedefinition_basic-local-1758619198
+            team: E Commerce
+            contacts:
+              - name: Support Email
+                type: email
+                contact: team@shopping.com
+              - name: Support Slack
+                type: slack
+                contact: 'https://www.slack.com/archives/shopping-cart'
+            repos:
+              - name: shopping-cart source code
+                provider: github
+                url: 'http://github/shopping-cart'
+            docs:
+              - name: shopping-cart architecture
+                provider: gdoc
+                url: 'https://google.drive/shopping-cart-architecture'
+              - name: shopping-cart service Wiki
+                provider: wiki
+                url: 'https://wiki/shopping-cart'
+            links:
+              - name: shopping-cart runbook
+                type: runbook
+                url: 'https://runbook/shopping-cart'
+            tags:
+              - 'business-unit:retail'
+              - 'cost-center:engineering'
+            integrations:
+              pagerduty: 'https://www.pagerduty.com/service-directory/Pshopping-cart'
+            extensions:
+              datadoghq.com/shopping-cart:
+                customField: customValue
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/services/definitions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":[{"type":"service-definition","attributes":{"meta":{"last-modified-time":"2025-09-23T09:19:59.75330195Z","github-html-url":"","ingestion-source":"api","origin":"dd_terraform","origin-detail":"","warnings":[],"ingested-schema-version":"v2"},"schema":{"schema-version":"v2","dd-service":"tf-testaccdatadogservicedefinition_basic-local-1758619198","team":"E Commerce","contacts":[{"name":"Support Email","type":"email","contact":"team@shopping.com"},{"name":"Support Slack","type":"slack","contact":"https://www.slack.com/archives/shopping-cart"}],"links":[{"name":"shopping-cart runbook","type":"runbook","url":"https://runbook/shopping-cart"}],"repos":[{"name":"shopping-cart source code","provider":"github","url":"http://github/shopping-cart"}],"docs":[{"name":"shopping-cart architecture","provider":"gdoc","url":"https://google.drive/shopping-cart-architecture"},{"name":"shopping-cart service Wiki","provider":"wiki","url":"https://wiki/shopping-cart"}],"tags":["business-unit:retail","cost-center:engineering"],"integrations":{"pagerduty":"https://www.pagerduty.com/service-directory/Pshopping-cart"},"extensions":{"datadoghq.com/shopping-cart":{"customField":"customValue"}}}}}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 391.907625ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/services/definitions/tf-testaccdatadogservicedefinition_basic-local-1758619198
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"service-definition","id":"651edbfb-d337-4614-939f-bdad7b9e2ba7","attributes":{"meta":{"last-modified-time":"2025-09-23T09:19:59.75330195Z","github-html-url":"","ingestion-source":"api","origin":"dd_terraform","origin-detail":"","warnings":[],"ingested-schema-version":"v2"},"schema":{"schema-version":"v2","dd-service":"tf-testaccdatadogservicedefinition_basic-local-1758619198","team":"E Commerce","contacts":[{"name":"Support Email","type":"email","contact":"team@shopping.com"},{"name":"Support Slack","type":"slack","contact":"https://www.slack.com/archives/shopping-cart"}],"links":[{"name":"shopping-cart runbook","type":"runbook","url":"https://runbook/shopping-cart"}],"repos":[{"name":"shopping-cart source code","provider":"github","url":"http://github/shopping-cart"}],"docs":[{"name":"shopping-cart architecture","provider":"gdoc","url":"https://google.drive/shopping-cart-architecture"},{"name":"shopping-cart service Wiki","provider":"wiki","url":"https://wiki/shopping-cart"}],"tags":["business-unit:retail","cost-center:engineering"],"integrations":{"pagerduty":"https://www.pagerduty.com/service-directory/Pshopping-cart"},"extensions":{"datadoghq.com/shopping-cart":{"customField":"customValue"}}}}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 148.993625ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/services/definitions/tf-testaccdatadogservicedefinition_basic-local-1758619198
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"service-definition","id":"651edbfb-d337-4614-939f-bdad7b9e2ba7","attributes":{"meta":{"last-modified-time":"2025-09-23T09:19:59.75330195Z","github-html-url":"","ingestion-source":"api","origin":"dd_terraform","origin-detail":"","warnings":[],"ingested-schema-version":"v2"},"schema":{"schema-version":"v2","dd-service":"tf-testaccdatadogservicedefinition_basic-local-1758619198","team":"E Commerce","contacts":[{"name":"Support Email","type":"email","contact":"team@shopping.com"},{"name":"Support Slack","type":"slack","contact":"https://www.slack.com/archives/shopping-cart"}],"links":[{"name":"shopping-cart runbook","type":"runbook","url":"https://runbook/shopping-cart"}],"repos":[{"name":"shopping-cart source code","provider":"github","url":"http://github/shopping-cart"}],"docs":[{"name":"shopping-cart architecture","provider":"gdoc","url":"https://google.drive/shopping-cart-architecture"},{"name":"shopping-cart service Wiki","provider":"wiki","url":"https://wiki/shopping-cart"}],"tags":["business-unit:retail","cost-center:engineering"],"integrations":{"pagerduty":"https://www.pagerduty.com/service-directory/Pshopping-cart"},"extensions":{"datadoghq.com/shopping-cart":{"customField":"customValue"}}}}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 155.901125ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/services/definitions/tf-testaccdatadogservicedefinition_basic-local-1758619198
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"service-definition","id":"651edbfb-d337-4614-939f-bdad7b9e2ba7","attributes":{"meta":{"last-modified-time":"2025-09-23T09:19:59.75330195Z","github-html-url":"","ingestion-source":"api","origin":"dd_terraform","origin-detail":"","warnings":[],"ingested-schema-version":"v2"},"schema":{"schema-version":"v2","dd-service":"tf-testaccdatadogservicedefinition_basic-local-1758619198","team":"E Commerce","contacts":[{"name":"Support Email","type":"email","contact":"team@shopping.com"},{"name":"Support Slack","type":"slack","contact":"https://www.slack.com/archives/shopping-cart"}],"links":[{"name":"shopping-cart runbook","type":"runbook","url":"https://runbook/shopping-cart"}],"repos":[{"name":"shopping-cart source code","provider":"github","url":"http://github/shopping-cart"}],"docs":[{"name":"shopping-cart architecture","provider":"gdoc","url":"https://google.drive/shopping-cart-architecture"},{"name":"shopping-cart service Wiki","provider":"wiki","url":"https://wiki/shopping-cart"}],"tags":["business-unit:retail","cost-center:engineering"],"integrations":{"pagerduty":"https://www.pagerduty.com/service-directory/Pshopping-cart"},"extensions":{"datadoghq.com/shopping-cart":{"customField":"customValue"}}}}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 363.748ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/services/definitions/tf-testaccdatadogservicedefinition_basic-local-1758619198
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Content-Type:
+                - text/html; charset=utf-8
+        status: 204 No Content
+        code: 204
+        duration: 156.792041ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 934
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            schema-version: v2
+            dd-service: tf-testaccdatadogservicedefinition_basic-local-1758619198-updated
+            team: E Commerce
+            contacts:
+              - name: Support Email
+                type: email
+                contact: team@shopping.com
+              - name: Support Slack
+                type: slack
+                contact: 'https://www.slack.com/archives/shopping-cart'
+            repos:
+              - name: shopping-cart source code
+                provider: github
+                url: 'http://github/shopping-cart'
+            docs:
+              - name: shopping-cart architecture
+                provider: gdoc
+                url: 'https://google.drive/shopping-cart-architecture'
+              - name: shopping-cart service Wiki
+                provider: wiki
+                url: 'https://wiki/shopping-cart'
+            links:
+              - name: shopping-cart runbook
+                type: runbook
+                url: 'https://runbook/shopping-cart'
+            tags:
+              - 'business-unit:retail'
+              - 'cost-center:engineering'
+            integrations:
+              pagerduty: 'https://www.pagerduty.com/service-directory/Pshopping-cart'
+            extensions:
+              datadoghq.com/shopping-cart:
+                customField: customValue
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/services/definitions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":[{"type":"service-definition","attributes":{"meta":{"last-modified-time":"2025-09-23T09:20:01.762043595Z","github-html-url":"","ingestion-source":"api","origin":"dd_terraform","origin-detail":"","warnings":[],"ingested-schema-version":"v2"},"schema":{"schema-version":"v2","dd-service":"tf-testaccdatadogservicedefinition_basic-local-1758619198-updated","team":"E Commerce","contacts":[{"name":"Support Email","type":"email","contact":"team@shopping.com"},{"name":"Support Slack","type":"slack","contact":"https://www.slack.com/archives/shopping-cart"}],"links":[{"name":"shopping-cart runbook","type":"runbook","url":"https://runbook/shopping-cart"}],"repos":[{"name":"shopping-cart source code","provider":"github","url":"http://github/shopping-cart"}],"docs":[{"name":"shopping-cart architecture","provider":"gdoc","url":"https://google.drive/shopping-cart-architecture"},{"name":"shopping-cart service Wiki","provider":"wiki","url":"https://wiki/shopping-cart"}],"tags":["business-unit:retail","cost-center:engineering"],"integrations":{"pagerduty":"https://www.pagerduty.com/service-directory/Pshopping-cart"},"extensions":{"datadoghq.com/shopping-cart":{"customField":"customValue"}}}}}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 140.934334ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/services/definitions/tf-testaccdatadogservicedefinition_basic-local-1758619198-updated
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"service-definition","id":"0f54108b-3c14-4819-bf92-ed08c4a896cf","attributes":{"meta":{"last-modified-time":"2025-09-23T09:20:01.762043595Z","github-html-url":"","ingestion-source":"api","origin":"dd_terraform","origin-detail":"","warnings":[],"ingested-schema-version":"v2"},"schema":{"schema-version":"v2","dd-service":"tf-testaccdatadogservicedefinition_basic-local-1758619198-updated","team":"E Commerce","contacts":[{"name":"Support Email","type":"email","contact":"team@shopping.com"},{"name":"Support Slack","type":"slack","contact":"https://www.slack.com/archives/shopping-cart"}],"links":[{"name":"shopping-cart runbook","type":"runbook","url":"https://runbook/shopping-cart"}],"repos":[{"name":"shopping-cart source code","provider":"github","url":"http://github/shopping-cart"}],"docs":[{"name":"shopping-cart architecture","provider":"gdoc","url":"https://google.drive/shopping-cart-architecture"},{"name":"shopping-cart service Wiki","provider":"wiki","url":"https://wiki/shopping-cart"}],"tags":["business-unit:retail","cost-center:engineering"],"integrations":{"pagerduty":"https://www.pagerduty.com/service-directory/Pshopping-cart"},"extensions":{"datadoghq.com/shopping-cart":{"customField":"customValue"}}}}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 147.62925ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/services/definitions/tf-testaccdatadogservicedefinition_basic-local-1758619198-updated
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"service-definition","id":"0f54108b-3c14-4819-bf92-ed08c4a896cf","attributes":{"meta":{"last-modified-time":"2025-09-23T09:20:01.762043595Z","github-html-url":"","ingestion-source":"api","origin":"dd_terraform","origin-detail":"","warnings":[],"ingested-schema-version":"v2"},"schema":{"schema-version":"v2","dd-service":"tf-testaccdatadogservicedefinition_basic-local-1758619198-updated","team":"E Commerce","contacts":[{"name":"Support Email","type":"email","contact":"team@shopping.com"},{"name":"Support Slack","type":"slack","contact":"https://www.slack.com/archives/shopping-cart"}],"links":[{"name":"shopping-cart runbook","type":"runbook","url":"https://runbook/shopping-cart"}],"repos":[{"name":"shopping-cart source code","provider":"github","url":"http://github/shopping-cart"}],"docs":[{"name":"shopping-cart architecture","provider":"gdoc","url":"https://google.drive/shopping-cart-architecture"},{"name":"shopping-cart service Wiki","provider":"wiki","url":"https://wiki/shopping-cart"}],"tags":["business-unit:retail","cost-center:engineering"],"integrations":{"pagerduty":"https://www.pagerduty.com/service-directory/Pshopping-cart"},"extensions":{"datadoghq.com/shopping-cart":{"customField":"customValue"}}}}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 158.8525ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/services/definitions/tf-testaccdatadogservicedefinition_basic-local-1758619198-updated
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Content-Type:
+                - text/html; charset=utf-8
+        status: 204 No Content
+        code: 204
+        duration: 163.593333ms
+    - id: 9
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/services/definitions/tf-testaccdatadogservicedefinition_basic-local-1758619198-updated
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"service-definition","id":"0f54108b-3c14-4819-bf92-ed08c4a896cf","attributes":{"meta":{"last-modified-time":"2025-09-23T09:20:01.762043595Z","github-html-url":"","ingestion-source":"api","origin":"dd_terraform","origin-detail":"","warnings":[],"ingested-schema-version":"v2"},"schema":{"schema-version":"v2","dd-service":"tf-testaccdatadogservicedefinition_basic-local-1758619198-updated","team":"E Commerce","contacts":[{"name":"Support Email","type":"email","contact":"team@shopping.com"},{"name":"Support Slack","type":"slack","contact":"https://www.slack.com/archives/shopping-cart"}],"links":[{"name":"shopping-cart runbook","type":"runbook","url":"https://runbook/shopping-cart"}],"repos":[{"name":"shopping-cart source code","provider":"github","url":"http://github/shopping-cart"}],"docs":[{"name":"shopping-cart architecture","provider":"gdoc","url":"https://google.drive/shopping-cart-architecture"},{"name":"shopping-cart service Wiki","provider":"wiki","url":"https://wiki/shopping-cart"}],"tags":["business-unit:retail","cost-center:engineering"],"integrations":{"pagerduty":"https://www.pagerduty.com/service-directory/Pshopping-cart"},"extensions":{"datadoghq.com/shopping-cart":{"customField":"customValue"}}}}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 168.255666ms

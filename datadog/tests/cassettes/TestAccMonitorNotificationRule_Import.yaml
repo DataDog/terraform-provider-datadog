@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"filter":{"tags":["env:tf-TestAccMonitorNotificationRule_Import-local-1745267094","host:abc"]},"name":"A notification rule name","recipients":["jira-bar","slack-foo"]},"type":"monitor-notification-rule"}}
+            {"data":{"attributes":{"filter":{"tags":["env:tf-TestAccMonitorNotificationRule_Import-local-1758619092","host:abc"]},"name":"A notification rule name","recipients":["jira-bar","slack-foo"]},"type":"monitor-notification-rule"}}
         form: {}
         headers:
             Accept:
@@ -32,13 +32,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"type":"monitor-notification-rule","attributes":{"recipients":["jira-bar","slack-foo"],"filter":{"tags":["env:tf-TestAccMonitorNotificationRule_Import-local-1745267094","host:abc"]},"created_at":"2025-04-21T20:24:55.452918+00:00","name":"A notification rule name","modified_at":"1970-01-01T00:00:00+00:00"},"id":"dff61907-261c-4bdb-a898-93eb1d2afa93","relationships":{"created_by":{"data":{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0"}}}},"included":[{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","attributes":{"name":"frog","handle":"frog@datadoghq.com","created_at":"2019-10-02T08:15:39.795051+00:00","modified_at":"2025-04-07T20:19:46.118466+00:00","email":"frog@datadoghq.com","icon":"https://secure.gravatar.com/avatar/28a16dfe36e73b60c1d55872cb0f1172?s=48&d=retro","title":null,"verified":true,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Active"}}]}
+            {"data":{"type":"monitor-notification-rule","attributes":{"filter":{"tags":["env:tf-TestAccMonitorNotificationRule_Import-local-1758619092","host:abc"]},"created_at":"2025-09-23T09:18:13.312535+00:00","modified_at":"1970-01-01T00:00:00+00:00","recipients":["jira-bar","slack-foo"],"name":"A notification rule name"},"relationships":{"created_by":{"data":{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0"}}},"id":"1080320d-1cbd-4386-900d-f4e2e5ba3ff1"},"included":[{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","attributes":{"name":"frog","handle":"frog@datadoghq.com","created_at":"2019-10-02T08:15:39.795051+00:00","modified_at":"2025-09-17T20:56:07.513404+00:00","email":"frog@datadoghq.com","icon":"https://secure.gravatar.com/avatar/28a16dfe36e73b60c1d55872cb0f1172?s=48&d=retro","title":null,"verified":true,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Active"}}]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 232.224375ms
+        duration: 191.704083ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -55,7 +55,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/monitor/notification_rule/dff61907-261c-4bdb-a898-93eb1d2afa93
+        url: https://api.datadoghq.com/api/v2/monitor/notification_rule/1080320d-1cbd-4386-900d-f4e2e5ba3ff1
         method: GET
       response:
         proto: HTTP/1.1
@@ -67,13 +67,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"type":"monitor-notification-rule","attributes":{"recipients":["jira-bar","slack-foo"],"created_at":"2025-04-21T20:24:55.452919+00:00","filter":{"tags":["env:tf-TestAccMonitorNotificationRule_Import-local-1745267094","host:abc"]},"modified_at":"2025-04-21T20:24:55.490589+00:00","name":"A notification rule name"},"id":"dff61907-261c-4bdb-a898-93eb1d2afa93"}}
+            {"data":{"type":"monitor-notification-rule","attributes":{"recipients":["jira-bar","slack-foo"],"filter":{"tags":["env:tf-TestAccMonitorNotificationRule_Import-local-1758619092","host:abc"]},"name":"A notification rule name","modified_at":"1970-01-01T00:00:00+00:00","created_at":"2025-09-23T09:18:13.312535+00:00"},"id":"1080320d-1cbd-4386-900d-f4e2e5ba3ff1"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 152.000625ms
+        duration: 148.278334ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -90,7 +90,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/monitor/notification_rule/dff61907-261c-4bdb-a898-93eb1d2afa93
+        url: https://api.datadoghq.com/api/v2/monitor/notification_rule/1080320d-1cbd-4386-900d-f4e2e5ba3ff1
         method: GET
       response:
         proto: HTTP/1.1
@@ -102,13 +102,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"type":"monitor-notification-rule","id":"dff61907-261c-4bdb-a898-93eb1d2afa93","attributes":{"filter":{"tags":["env:tf-TestAccMonitorNotificationRule_Import-local-1745267094","host:abc"]},"recipients":["jira-bar","slack-foo"],"modified_at":"2025-04-21T20:24:55.490589+00:00","name":"A notification rule name","created_at":"2025-04-21T20:24:55.452919+00:00"}}}
+            {"data":{"type":"monitor-notification-rule","id":"1080320d-1cbd-4386-900d-f4e2e5ba3ff1","attributes":{"modified_at":"1970-01-01T00:00:00+00:00","name":"A notification rule name","created_at":"2025-09-23T09:18:13.312535+00:00","filter":{"tags":["env:tf-TestAccMonitorNotificationRule_Import-local-1758619092","host:abc"]},"recipients":["jira-bar","slack-foo"]}}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 104.193709ms
+        duration: 283.654541ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -125,7 +125,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/monitor/notification_rule/dff61907-261c-4bdb-a898-93eb1d2afa93
+        url: https://api.datadoghq.com/api/v2/monitor/notification_rule/1080320d-1cbd-4386-900d-f4e2e5ba3ff1
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -141,4 +141,4 @@ interactions:
                 - text/html; charset=utf-8
         status: 204 No Content
         code: 204
-        duration: 115.729042ms
+        duration: 293.052542ms

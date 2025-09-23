@@ -36,7 +36,7 @@ interactions:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 519.797292ms
+        duration: 248.760666ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -69,7 +69,7 @@ interactions:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 379.494375ms
+        duration: 200.543292ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -102,7 +102,7 @@ interactions:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 338.217417ms
+        duration: 161.617708ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -135,7 +135,7 @@ interactions:
                 - application/vnd.api+json
         status: 400 Bad Request
         code: 400
-        duration: 101.837333ms
+        duration: 130.441042ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -171,7 +171,7 @@ interactions:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 370.99ms
+        duration: 230.423333ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -204,7 +204,7 @@ interactions:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 189.421584ms
+        duration: 211.876375ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -237,7 +237,7 @@ interactions:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 656.383917ms
+        duration: 152.06ms
     - id: 7
       request:
         proto: HTTP/1.1
@@ -270,4 +270,4 @@ interactions:
                 - application/vnd.api+json
         status: 400 Bad Request
         code: 400
-        duration: 99.99025ms
+        duration: 123.946875ms

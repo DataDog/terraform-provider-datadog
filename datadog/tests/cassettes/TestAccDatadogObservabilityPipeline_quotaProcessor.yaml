@@ -31,13 +31,13 @@ interactions:
         content_length: 745
         uncompressed: false
         body: |
-            {"data":{"id":"b091469e-24e0-11f0-bd50-da7ad0900002","type":"pipelines","attributes":{"name":"quota-pipeline","config":{"destinations":[{"id":"destination-1","inputs":["quota-1"],"type":"datadog_logs"}],"processors":[{"drop_events":true,"id":"quota-1","ignore_when_missing_partitions":true,"include":"*","inputs":["source-1"],"limit":{"enforce":"events","limit":1000},"name":"limitByHostAndEnv","overrides":[{"fields":[{"name":"env","value":"prod"},{"name":"host","value":"*"}],"limit":{"enforce":"events","limit":500}},{"fields":[{"name":"env","value":"*"},{"name":"host","value":"localhost"}],"limit":{"enforce":"bytes","limit":300}}],"partition_fields":["host","env"],"type":"quota"}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"a2d52be2-985d-11f0-84d0-da7ad0900002","type":"pipelines","attributes":{"name":"quota-pipeline","config":{"destinations":[{"id":"destination-1","inputs":["quota-1"],"type":"datadog_logs"}],"processors":[{"drop_events":true,"id":"quota-1","ignore_when_missing_partitions":true,"include":"*","inputs":["source-1"],"limit":{"enforce":"events","limit":1000},"name":"limitByHostAndEnv","overrides":[{"fields":[{"name":"env","value":"prod"},{"name":"host","value":"*"}],"limit":{"enforce":"events","limit":500}},{"fields":[{"name":"env","value":"*"},{"name":"host","value":"localhost"}],"limit":{"enforce":"bytes","limit":300}}],"partition_fields":["host","env"],"type":"quota"}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/json
         status: 201 Created
         code: 201
-        duration: 1.380268s
+        duration: 442.681916ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -54,7 +54,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/b091469e-24e0-11f0-bd50-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/a2d52be2-985d-11f0-84d0-da7ad0900002
         method: GET
       response:
         proto: HTTP/1.1
@@ -65,13 +65,13 @@ interactions:
         content_length: 745
         uncompressed: false
         body: |
-            {"data":{"id":"b091469e-24e0-11f0-bd50-da7ad0900002","type":"pipelines","attributes":{"name":"quota-pipeline","config":{"destinations":[{"id":"destination-1","inputs":["quota-1"],"type":"datadog_logs"}],"processors":[{"drop_events":true,"id":"quota-1","ignore_when_missing_partitions":true,"include":"*","inputs":["source-1"],"limit":{"enforce":"events","limit":1000},"name":"limitByHostAndEnv","overrides":[{"fields":[{"name":"env","value":"prod"},{"name":"host","value":"*"}],"limit":{"enforce":"events","limit":500}},{"fields":[{"name":"env","value":"*"},{"name":"host","value":"localhost"}],"limit":{"enforce":"bytes","limit":300}}],"partition_fields":["host","env"],"type":"quota"}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"a2d52be2-985d-11f0-84d0-da7ad0900002","type":"pipelines","attributes":{"name":"quota-pipeline","config":{"destinations":[{"id":"destination-1","inputs":["quota-1"],"type":"datadog_logs"}],"processors":[{"drop_events":true,"id":"quota-1","ignore_when_missing_partitions":true,"include":"*","inputs":["source-1"],"limit":{"enforce":"events","limit":1000},"name":"limitByHostAndEnv","overrides":[{"fields":[{"name":"env","value":"prod"},{"name":"host","value":"*"}],"limit":{"enforce":"events","limit":500}},{"fields":[{"name":"env","value":"*"},{"name":"host","value":"localhost"}],"limit":{"enforce":"bytes","limit":300}}],"partition_fields":["host","env"],"type":"quota"}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 267.935708ms
+        duration: 278.381083ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -88,7 +88,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/b091469e-24e0-11f0-bd50-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/a2d52be2-985d-11f0-84d0-da7ad0900002
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -104,4 +104,4 @@ interactions:
                 - application/json
         status: 204 No Content
         code: 204
-        duration: 449.320833ms
+        duration: 496.140542ms

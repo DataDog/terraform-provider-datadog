@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"enabled":false,"forward_tags":true,"forward_tags_restriction_list":["a"],"forward_tags_restriction_list_type":"ALLOW_LIST","forwarder_destination":{"auth":{"password":"test-pass","type":"basic","username":"test-user"},"endpoint":"https://example.org","type":"http"},"name":"tf-TestAccDatadogLogsCustomDestination_forwarder_types-local-1725634580","query":"non-existent-query"},"type":"custom_destination"}}
+            {"data":{"attributes":{"enabled":false,"forward_tags":true,"forward_tags_restriction_list":["a"],"forward_tags_restriction_list_type":"ALLOW_LIST","forwarder_destination":{"auth":{"password":"test-pass","type":"basic","username":"test-user"},"endpoint":"https://example.org","type":"http"},"name":"tf-TestAccDatadogLogsCustomDestination_forwarder_types-local-1758619102","query":"non-existent-query"},"type":"custom_destination"}}
         form: {}
         headers:
             Accept:
@@ -32,13 +32,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"id":"7676ef53-93d1-4c72-849c-086e9b2163e7","attributes":{"name":"tf-TestAccDatadogLogsCustomDestination_forwarder_types-local-1725634580","query":"non-existent-query","enabled":false,"forwarder_destination":{"endpoint":"https://example.org","auth":{"type":"basic"},"type":"http"},"forward_tags_restriction_list_type":"ALLOW_LIST","forward_tags_restriction_list":["a"],"forward_tags":true},"type":"custom_destination"}}
+            {"data":{"id":"7ef448f5-56bc-40ee-9eba-60f1996aef27","attributes":{"name":"tf-TestAccDatadogLogsCustomDestination_forwarder_types-local-1758619102","query":"non-existent-query","enabled":false,"forwarder_destination":{"endpoint":"https://example.org","auth":{"type":"basic"},"type":"http"},"forward_tags_restriction_list_type":"ALLOW_LIST","forward_tags_restriction_list":["a"],"forward_tags":true},"type":"custom_destination"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 568.667667ms
+        duration: 306.862875ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -55,7 +55,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/logs/config/custom-destinations/7676ef53-93d1-4c72-849c-086e9b2163e7
+        url: https://api.datadoghq.com/api/v2/logs/config/custom-destinations/7ef448f5-56bc-40ee-9eba-60f1996aef27
         method: GET
       response:
         proto: HTTP/1.1
@@ -67,13 +67,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"id":"7676ef53-93d1-4c72-849c-086e9b2163e7","attributes":{"name":"tf-TestAccDatadogLogsCustomDestination_forwarder_types-local-1725634580","query":"non-existent-query","enabled":false,"forwarder_destination":{"endpoint":"https://example.org","auth":{"type":"basic"},"type":"http"},"forward_tags_restriction_list_type":"ALLOW_LIST","forward_tags_restriction_list":["a"],"forward_tags":true},"type":"custom_destination"}}
+            {"data":{"id":"7ef448f5-56bc-40ee-9eba-60f1996aef27","attributes":{"name":"tf-TestAccDatadogLogsCustomDestination_forwarder_types-local-1758619102","query":"non-existent-query","enabled":false,"forwarder_destination":{"endpoint":"https://example.org","auth":{"type":"basic"},"type":"http"},"forward_tags_restriction_list_type":"ALLOW_LIST","forward_tags_restriction_list":["a"],"forward_tags":true},"type":"custom_destination"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 196.623625ms
+        duration: 171.290041ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -90,7 +90,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/logs/config/custom-destinations/7676ef53-93d1-4c72-849c-086e9b2163e7
+        url: https://api.datadoghq.com/api/v2/logs/config/custom-destinations/7ef448f5-56bc-40ee-9eba-60f1996aef27
         method: GET
       response:
         proto: HTTP/1.1
@@ -102,13 +102,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"id":"7676ef53-93d1-4c72-849c-086e9b2163e7","attributes":{"name":"tf-TestAccDatadogLogsCustomDestination_forwarder_types-local-1725634580","query":"non-existent-query","enabled":false,"forwarder_destination":{"endpoint":"https://example.org","auth":{"type":"basic"},"type":"http"},"forward_tags_restriction_list_type":"ALLOW_LIST","forward_tags_restriction_list":["a"],"forward_tags":true},"type":"custom_destination"}}
+            {"data":{"id":"7ef448f5-56bc-40ee-9eba-60f1996aef27","attributes":{"name":"tf-TestAccDatadogLogsCustomDestination_forwarder_types-local-1758619102","query":"non-existent-query","enabled":false,"forwarder_destination":{"endpoint":"https://example.org","auth":{"type":"basic"},"type":"http"},"forward_tags_restriction_list_type":"ALLOW_LIST","forward_tags_restriction_list":["a"],"forward_tags":true},"type":"custom_destination"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 145.030292ms
+        duration: 221.028958ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -121,14 +121,14 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"enabled":true,"forward_tags":false,"forward_tags_restriction_list":["a","b"],"forward_tags_restriction_list_type":"BLOCK_LIST","forwarder_destination":{"auth":{"header_name":"test-header-name","header_value":"test-header-value","type":"custom_header"},"endpoint":"https://example.org","type":"http"},"name":"tf-TestAccDatadogLogsCustomDestination_forwarder_types-local-1725634580-updated","query":"updated-non-existent-query"},"id":"7676ef53-93d1-4c72-849c-086e9b2163e7","type":"custom_destination"}}
+            {"data":{"attributes":{"enabled":true,"forward_tags":false,"forward_tags_restriction_list":["a","b"],"forward_tags_restriction_list_type":"BLOCK_LIST","forwarder_destination":{"auth":{"header_name":"test-header-name","header_value":"test-header-value","type":"custom_header"},"endpoint":"https://example.org","type":"http"},"name":"tf-TestAccDatadogLogsCustomDestination_forwarder_types-local-1758619102-updated","query":"updated-non-existent-query"},"id":"7ef448f5-56bc-40ee-9eba-60f1996aef27","type":"custom_destination"}}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/logs/config/custom-destinations/7676ef53-93d1-4c72-849c-086e9b2163e7
+        url: https://api.datadoghq.com/api/v2/logs/config/custom-destinations/7ef448f5-56bc-40ee-9eba-60f1996aef27
         method: PATCH
       response:
         proto: HTTP/1.1
@@ -140,13 +140,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"id":"7676ef53-93d1-4c72-849c-086e9b2163e7","attributes":{"name":"tf-TestAccDatadogLogsCustomDestination_forwarder_types-local-1725634580-updated","query":"updated-non-existent-query","enabled":true,"forwarder_destination":{"endpoint":"https://example.org","auth":{"header_name":"test-header-name","type":"custom_header"},"type":"http"},"forward_tags_restriction_list_type":"BLOCK_LIST","forward_tags_restriction_list":["a","b"],"forward_tags":false},"type":"custom_destination"}}
+            {"data":{"id":"7ef448f5-56bc-40ee-9eba-60f1996aef27","attributes":{"name":"tf-TestAccDatadogLogsCustomDestination_forwarder_types-local-1758619102-updated","query":"updated-non-existent-query","enabled":true,"forwarder_destination":{"endpoint":"https://example.org","auth":{"header_name":"test-header-name","type":"custom_header"},"type":"http"},"forward_tags_restriction_list_type":"BLOCK_LIST","forward_tags_restriction_list":["a","b"],"forward_tags":false},"type":"custom_destination"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 234.670667ms
+        duration: 277.623125ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -163,7 +163,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/logs/config/custom-destinations/7676ef53-93d1-4c72-849c-086e9b2163e7
+        url: https://api.datadoghq.com/api/v2/logs/config/custom-destinations/7ef448f5-56bc-40ee-9eba-60f1996aef27
         method: GET
       response:
         proto: HTTP/1.1
@@ -175,13 +175,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"id":"7676ef53-93d1-4c72-849c-086e9b2163e7","attributes":{"name":"tf-TestAccDatadogLogsCustomDestination_forwarder_types-local-1725634580-updated","query":"updated-non-existent-query","enabled":true,"forwarder_destination":{"endpoint":"https://example.org","auth":{"header_name":"test-header-name","type":"custom_header"},"type":"http"},"forward_tags_restriction_list_type":"BLOCK_LIST","forward_tags_restriction_list":["a","b"],"forward_tags":false},"type":"custom_destination"}}
+            {"data":{"id":"7ef448f5-56bc-40ee-9eba-60f1996aef27","attributes":{"name":"tf-TestAccDatadogLogsCustomDestination_forwarder_types-local-1758619102-updated","query":"updated-non-existent-query","enabled":true,"forwarder_destination":{"endpoint":"https://example.org","auth":{"header_name":"test-header-name","type":"custom_header"},"type":"http"},"forward_tags_restriction_list_type":"BLOCK_LIST","forward_tags_restriction_list":["a","b"],"forward_tags":false},"type":"custom_destination"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 144.224917ms
+        duration: 162.654125ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -198,7 +198,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/logs/config/custom-destinations/7676ef53-93d1-4c72-849c-086e9b2163e7
+        url: https://api.datadoghq.com/api/v2/logs/config/custom-destinations/7ef448f5-56bc-40ee-9eba-60f1996aef27
         method: GET
       response:
         proto: HTTP/1.1
@@ -210,13 +210,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"id":"7676ef53-93d1-4c72-849c-086e9b2163e7","attributes":{"name":"tf-TestAccDatadogLogsCustomDestination_forwarder_types-local-1725634580-updated","query":"updated-non-existent-query","enabled":true,"forwarder_destination":{"endpoint":"https://example.org","auth":{"header_name":"test-header-name","type":"custom_header"},"type":"http"},"forward_tags_restriction_list_type":"BLOCK_LIST","forward_tags_restriction_list":["a","b"],"forward_tags":false},"type":"custom_destination"}}
+            {"data":{"id":"7ef448f5-56bc-40ee-9eba-60f1996aef27","attributes":{"name":"tf-TestAccDatadogLogsCustomDestination_forwarder_types-local-1758619102-updated","query":"updated-non-existent-query","enabled":true,"forwarder_destination":{"endpoint":"https://example.org","auth":{"header_name":"test-header-name","type":"custom_header"},"type":"http"},"forward_tags_restriction_list_type":"BLOCK_LIST","forward_tags_restriction_list":["a","b"],"forward_tags":false},"type":"custom_destination"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 158.6835ms
+        duration: 323.221875ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -229,14 +229,14 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"enabled":true,"forward_tags":false,"forward_tags_restriction_list":["a","b"],"forward_tags_restriction_list_type":"BLOCK_LIST","forwarder_destination":{"access_token":"test-token","endpoint":"https://example.org","type":"splunk_hec"},"name":"tf-TestAccDatadogLogsCustomDestination_forwarder_types-local-1725634580-updated","query":"updated-non-existent-query"},"id":"7676ef53-93d1-4c72-849c-086e9b2163e7","type":"custom_destination"}}
+            {"data":{"attributes":{"enabled":true,"forward_tags":false,"forward_tags_restriction_list":["a","b"],"forward_tags_restriction_list_type":"BLOCK_LIST","forwarder_destination":{"access_token":"test-token","endpoint":"https://example.org","type":"splunk_hec"},"name":"tf-TestAccDatadogLogsCustomDestination_forwarder_types-local-1758619102-updated","query":"updated-non-existent-query"},"id":"7ef448f5-56bc-40ee-9eba-60f1996aef27","type":"custom_destination"}}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/logs/config/custom-destinations/7676ef53-93d1-4c72-849c-086e9b2163e7
+        url: https://api.datadoghq.com/api/v2/logs/config/custom-destinations/7ef448f5-56bc-40ee-9eba-60f1996aef27
         method: PATCH
       response:
         proto: HTTP/1.1
@@ -248,13 +248,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"id":"7676ef53-93d1-4c72-849c-086e9b2163e7","attributes":{"name":"tf-TestAccDatadogLogsCustomDestination_forwarder_types-local-1725634580-updated","query":"updated-non-existent-query","enabled":true,"forwarder_destination":{"endpoint":"https://example.org","type":"splunk_hec"},"forward_tags_restriction_list_type":"BLOCK_LIST","forward_tags_restriction_list":["a","b"],"forward_tags":false},"type":"custom_destination"}}
+            {"data":{"id":"7ef448f5-56bc-40ee-9eba-60f1996aef27","attributes":{"name":"tf-TestAccDatadogLogsCustomDestination_forwarder_types-local-1758619102-updated","query":"updated-non-existent-query","enabled":true,"forwarder_destination":{"endpoint":"https://example.org","type":"splunk_hec"},"forward_tags_restriction_list_type":"BLOCK_LIST","forward_tags_restriction_list":["a","b"],"forward_tags":false},"type":"custom_destination"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 219.324667ms
+        duration: 332.205709ms
     - id: 7
       request:
         proto: HTTP/1.1
@@ -271,7 +271,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/logs/config/custom-destinations/7676ef53-93d1-4c72-849c-086e9b2163e7
+        url: https://api.datadoghq.com/api/v2/logs/config/custom-destinations/7ef448f5-56bc-40ee-9eba-60f1996aef27
         method: GET
       response:
         proto: HTTP/1.1
@@ -283,13 +283,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"id":"7676ef53-93d1-4c72-849c-086e9b2163e7","attributes":{"name":"tf-TestAccDatadogLogsCustomDestination_forwarder_types-local-1725634580-updated","query":"updated-non-existent-query","enabled":true,"forwarder_destination":{"endpoint":"https://example.org","type":"splunk_hec"},"forward_tags_restriction_list_type":"BLOCK_LIST","forward_tags_restriction_list":["a","b"],"forward_tags":false},"type":"custom_destination"}}
+            {"data":{"id":"7ef448f5-56bc-40ee-9eba-60f1996aef27","attributes":{"name":"tf-TestAccDatadogLogsCustomDestination_forwarder_types-local-1758619102-updated","query":"updated-non-existent-query","enabled":true,"forwarder_destination":{"endpoint":"https://example.org","type":"splunk_hec"},"forward_tags_restriction_list_type":"BLOCK_LIST","forward_tags_restriction_list":["a","b"],"forward_tags":false},"type":"custom_destination"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 218.045958ms
+        duration: 176.760125ms
     - id: 8
       request:
         proto: HTTP/1.1
@@ -306,7 +306,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/logs/config/custom-destinations/7676ef53-93d1-4c72-849c-086e9b2163e7
+        url: https://api.datadoghq.com/api/v2/logs/config/custom-destinations/7ef448f5-56bc-40ee-9eba-60f1996aef27
         method: GET
       response:
         proto: HTTP/1.1
@@ -318,13 +318,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"id":"7676ef53-93d1-4c72-849c-086e9b2163e7","attributes":{"name":"tf-TestAccDatadogLogsCustomDestination_forwarder_types-local-1725634580-updated","query":"updated-non-existent-query","enabled":true,"forwarder_destination":{"endpoint":"https://example.org","type":"splunk_hec"},"forward_tags_restriction_list_type":"BLOCK_LIST","forward_tags_restriction_list":["a","b"],"forward_tags":false},"type":"custom_destination"}}
+            {"data":{"id":"7ef448f5-56bc-40ee-9eba-60f1996aef27","attributes":{"name":"tf-TestAccDatadogLogsCustomDestination_forwarder_types-local-1758619102-updated","query":"updated-non-existent-query","enabled":true,"forwarder_destination":{"endpoint":"https://example.org","type":"splunk_hec"},"forward_tags_restriction_list_type":"BLOCK_LIST","forward_tags_restriction_list":["a","b"],"forward_tags":false},"type":"custom_destination"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 149.678333ms
+        duration: 240.001ms
     - id: 9
       request:
         proto: HTTP/1.1
@@ -337,14 +337,14 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"enabled":true,"forward_tags":false,"forward_tags_restriction_list":["a","b"],"forward_tags_restriction_list_type":"BLOCK_LIST","forwarder_destination":{"auth":{"password":"test-pass","username":"test-user"},"endpoint":"https://example.org","index_name":"test-index","index_rotation":"yyyy-'W'ww","type":"elasticsearch"},"name":"tf-TestAccDatadogLogsCustomDestination_forwarder_types-local-1725634580-updated","query":"updated-non-existent-query"},"id":"7676ef53-93d1-4c72-849c-086e9b2163e7","type":"custom_destination"}}
+            {"data":{"attributes":{"enabled":true,"forward_tags":false,"forward_tags_restriction_list":["a","b"],"forward_tags_restriction_list_type":"BLOCK_LIST","forwarder_destination":{"auth":{"password":"test-pass","username":"test-user"},"endpoint":"https://example.org","index_name":"test-index","index_rotation":"yyyy-'W'ww","type":"elasticsearch"},"name":"tf-TestAccDatadogLogsCustomDestination_forwarder_types-local-1758619102-updated","query":"updated-non-existent-query"},"id":"7ef448f5-56bc-40ee-9eba-60f1996aef27","type":"custom_destination"}}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/logs/config/custom-destinations/7676ef53-93d1-4c72-849c-086e9b2163e7
+        url: https://api.datadoghq.com/api/v2/logs/config/custom-destinations/7ef448f5-56bc-40ee-9eba-60f1996aef27
         method: PATCH
       response:
         proto: HTTP/1.1
@@ -356,13 +356,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"id":"7676ef53-93d1-4c72-849c-086e9b2163e7","attributes":{"name":"tf-TestAccDatadogLogsCustomDestination_forwarder_types-local-1725634580-updated","query":"updated-non-existent-query","enabled":true,"forwarder_destination":{"index_name":"test-index","index_rotation":"yyyy-'W'ww","endpoint":"https://example.org","auth":{},"type":"elasticsearch"},"forward_tags_restriction_list_type":"BLOCK_LIST","forward_tags_restriction_list":["a","b"],"forward_tags":false},"type":"custom_destination"}}
+            {"data":{"id":"7ef448f5-56bc-40ee-9eba-60f1996aef27","attributes":{"name":"tf-TestAccDatadogLogsCustomDestination_forwarder_types-local-1758619102-updated","query":"updated-non-existent-query","enabled":true,"forwarder_destination":{"index_name":"test-index","index_rotation":"yyyy-'W'ww","endpoint":"https://example.org","auth":{},"type":"elasticsearch"},"forward_tags_restriction_list_type":"BLOCK_LIST","forward_tags_restriction_list":["a","b"],"forward_tags":false},"type":"custom_destination"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 284.723209ms
+        duration: 510.462875ms
     - id: 10
       request:
         proto: HTTP/1.1
@@ -379,7 +379,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/logs/config/custom-destinations/7676ef53-93d1-4c72-849c-086e9b2163e7
+        url: https://api.datadoghq.com/api/v2/logs/config/custom-destinations/7ef448f5-56bc-40ee-9eba-60f1996aef27
         method: GET
       response:
         proto: HTTP/1.1
@@ -391,13 +391,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"id":"7676ef53-93d1-4c72-849c-086e9b2163e7","attributes":{"name":"tf-TestAccDatadogLogsCustomDestination_forwarder_types-local-1725634580-updated","query":"updated-non-existent-query","enabled":true,"forwarder_destination":{"index_name":"test-index","index_rotation":"yyyy-'W'ww","endpoint":"https://example.org","auth":{},"type":"elasticsearch"},"forward_tags_restriction_list_type":"BLOCK_LIST","forward_tags_restriction_list":["a","b"],"forward_tags":false},"type":"custom_destination"}}
+            {"data":{"id":"7ef448f5-56bc-40ee-9eba-60f1996aef27","attributes":{"name":"tf-TestAccDatadogLogsCustomDestination_forwarder_types-local-1758619102-updated","query":"updated-non-existent-query","enabled":true,"forwarder_destination":{"index_name":"test-index","index_rotation":"yyyy-'W'ww","endpoint":"https://example.org","auth":{},"type":"elasticsearch"},"forward_tags_restriction_list_type":"BLOCK_LIST","forward_tags_restriction_list":["a","b"],"forward_tags":false},"type":"custom_destination"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 205.807375ms
+        duration: 245.108625ms
     - id: 11
       request:
         proto: HTTP/1.1
@@ -414,7 +414,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/logs/config/custom-destinations/7676ef53-93d1-4c72-849c-086e9b2163e7
+        url: https://api.datadoghq.com/api/v2/logs/config/custom-destinations/7ef448f5-56bc-40ee-9eba-60f1996aef27
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -430,4 +430,4 @@ interactions:
                 - text/html; charset=utf-8
         status: 204 No Content
         code: 204
-        duration: 185.109959ms
+        duration: 533.57875ms

@@ -31,13 +31,13 @@ interactions:
         content_length: 599
         uncompressed: false
         body: |
-            {"data":{"id":"e97a884e-24e0-11f0-b6f4-da7ad0900002","type":"pipelines","attributes":{"name":"reduce pipeline","config":{"destinations":[{"id":"destination-1","inputs":["reduce-1"],"type":"datadog_logs"}],"processors":[{"group_by":["log.user.id","log.device.id"],"id":"reduce-1","include":"env:prod","inputs":["source-1"],"merge_strategies":[{"path":"log.user.roles","strategy":"flat_unique"},{"path":"log.error.messages","strategy":"concat"},{"path":"log.count","strategy":"sum"},{"path":"log.status","strategy":"retain"}],"type":"reduce"}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"dc969d7a-985d-11f0-84ec-da7ad0900002","type":"pipelines","attributes":{"name":"reduce pipeline","config":{"destinations":[{"id":"destination-1","inputs":["reduce-1"],"type":"datadog_logs"}],"processors":[{"group_by":["log.user.id","log.device.id"],"id":"reduce-1","include":"env:prod","inputs":["source-1"],"merge_strategies":[{"path":"log.user.roles","strategy":"flat_unique"},{"path":"log.error.messages","strategy":"concat"},{"path":"log.count","strategy":"sum"},{"path":"log.status","strategy":"retain"}],"type":"reduce"}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/json
         status: 201 Created
         code: 201
-        duration: 681.815166ms
+        duration: 549.611667ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -54,7 +54,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/e97a884e-24e0-11f0-b6f4-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/dc969d7a-985d-11f0-84ec-da7ad0900002
         method: GET
       response:
         proto: HTTP/1.1
@@ -65,13 +65,13 @@ interactions:
         content_length: 599
         uncompressed: false
         body: |
-            {"data":{"id":"e97a884e-24e0-11f0-b6f4-da7ad0900002","type":"pipelines","attributes":{"name":"reduce pipeline","config":{"destinations":[{"id":"destination-1","inputs":["reduce-1"],"type":"datadog_logs"}],"processors":[{"group_by":["log.user.id","log.device.id"],"id":"reduce-1","include":"env:prod","inputs":["source-1"],"merge_strategies":[{"path":"log.user.roles","strategy":"flat_unique"},{"path":"log.error.messages","strategy":"concat"},{"path":"log.count","strategy":"sum"},{"path":"log.status","strategy":"retain"}],"type":"reduce"}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"dc969d7a-985d-11f0-84ec-da7ad0900002","type":"pipelines","attributes":{"name":"reduce pipeline","config":{"destinations":[{"id":"destination-1","inputs":["reduce-1"],"type":"datadog_logs"}],"processors":[{"group_by":["log.user.id","log.device.id"],"id":"reduce-1","include":"env:prod","inputs":["source-1"],"merge_strategies":[{"path":"log.user.roles","strategy":"flat_unique"},{"path":"log.error.messages","strategy":"concat"},{"path":"log.count","strategy":"sum"},{"path":"log.status","strategy":"retain"}],"type":"reduce"}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 264.449833ms
+        duration: 224.727709ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -88,7 +88,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/e97a884e-24e0-11f0-b6f4-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/dc969d7a-985d-11f0-84ec-da7ad0900002
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -104,4 +104,4 @@ interactions:
                 - application/json
         status: 204 No Content
         code: 204
-        duration: 538.085792ms
+        duration: 470.846666ms

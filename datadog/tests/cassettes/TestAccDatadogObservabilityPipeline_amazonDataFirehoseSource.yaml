@@ -31,13 +31,13 @@ interactions:
         content_length: 482
         uncompressed: false
         body: |
-            {"data":{"id":"dfaf1d16-24e0-11f0-be83-da7ad0900002","type":"pipelines","attributes":{"name":"firehose pipeline","config":{"destinations":[{"id":"destination-1","inputs":["firehose-source-1"],"type":"datadog_logs"}],"processors":[],"sources":[{"auth":{"assume_role":"arn:aws:iam::123456789012:role/ExampleRole","external_id":"external-id-123","session_name":"firehose-session"},"id":"firehose-source-1","tls":{"crt_file":"/path/to/firehose.crt"},"type":"amazon_data_firehose"}]}}}}
+            {"data":{"id":"d2f4b482-985d-11f0-84e6-da7ad0900002","type":"pipelines","attributes":{"name":"firehose pipeline","config":{"destinations":[{"id":"destination-1","inputs":["firehose-source-1"],"type":"datadog_logs"}],"processors":[],"sources":[{"auth":{"assume_role":"arn:aws:iam::123456789012:role/ExampleRole","external_id":"external-id-123","session_name":"firehose-session"},"id":"firehose-source-1","tls":{"crt_file":"/path/to/firehose.crt"},"type":"amazon_data_firehose"}]}}}}
         headers:
             Content-Type:
                 - application/json
         status: 201 Created
         code: 201
-        duration: 624.845667ms
+        duration: 522.285917ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -54,7 +54,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/dfaf1d16-24e0-11f0-be83-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/d2f4b482-985d-11f0-84e6-da7ad0900002
         method: GET
       response:
         proto: HTTP/1.1
@@ -65,13 +65,13 @@ interactions:
         content_length: 482
         uncompressed: false
         body: |
-            {"data":{"id":"dfaf1d16-24e0-11f0-be83-da7ad0900002","type":"pipelines","attributes":{"name":"firehose pipeline","config":{"destinations":[{"id":"destination-1","inputs":["firehose-source-1"],"type":"datadog_logs"}],"processors":[],"sources":[{"auth":{"assume_role":"arn:aws:iam::123456789012:role/ExampleRole","external_id":"external-id-123","session_name":"firehose-session"},"id":"firehose-source-1","tls":{"crt_file":"/path/to/firehose.crt"},"type":"amazon_data_firehose"}]}}}}
+            {"data":{"id":"d2f4b482-985d-11f0-84e6-da7ad0900002","type":"pipelines","attributes":{"name":"firehose pipeline","config":{"destinations":[{"id":"destination-1","inputs":["firehose-source-1"],"type":"datadog_logs"}],"processors":[],"sources":[{"auth":{"assume_role":"arn:aws:iam::123456789012:role/ExampleRole","external_id":"external-id-123","session_name":"firehose-session"},"id":"firehose-source-1","tls":{"crt_file":"/path/to/firehose.crt"},"type":"amazon_data_firehose"}]}}}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 247.243416ms
+        duration: 252.139417ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -88,7 +88,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/dfaf1d16-24e0-11f0-be83-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/d2f4b482-985d-11f0-84e6-da7ad0900002
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -104,4 +104,4 @@ interactions:
                 - application/json
         status: 204 No Content
         code: 204
-        duration: 413.633ms
+        duration: 389.875916ms

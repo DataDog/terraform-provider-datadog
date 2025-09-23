@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"exclusion_filters":[],"filter":{"query":"project:sample"},"name":"tf-testaccdatadoglogsindexesorderdatasource-local-1747136321-sample"}
+            {"exclusion_filters":[],"filter":{"query":"project:sample"},"name":"tf-testaccdatadoglogsindexesorderdatasource-local-1758619447-sample"}
         form: {}
         headers:
             Accept:
@@ -32,13 +32,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"name":"tf-testaccdatadoglogsindexesorderdatasource-local-1747136321-sample","filter":{"query":"project:sample"},"num_retention_days":15,"daily_limit":null,"is_rate_limited":false,"daily_limit_reset":null,"daily_limit_warning_threshold_percentage":null,"exclusion_filters":[],"num_flex_logs_retention_days":0}
+            {"name":"tf-testaccdatadoglogsindexesorderdatasource-local-1758619447-sample","filter":{"query":"project:sample"},"num_retention_days":15,"daily_limit":null,"is_rate_limited":false,"daily_limit_reset":null,"daily_limit_warning_threshold_percentage":null,"exclusion_filters":[],"num_flex_logs_retention_days":0}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 479.687791ms
+        duration: 330.276208ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -67,13 +67,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"index_names":["main","test-index","test-index-2","tf-testaccdatadoglogsindex-basic-local-1627305201","name","nonexistent","tf-testaccdatadoglogsindex-basic-local-1725992495","tf-testaccdatadoglogsindex-basic-local-1747135595","tf-testaccdatadoglogsindex-basic-local-1747135595-flex","tf-testaccdatadoglogsindex-basic-local-1747135727","tf-testaccdatadoglogsindex-basic-local-1747135727-flex","tf-testaccdatadoglogsindex-basic-local-1747135842","tf-testaccdatadoglogsindex-basic-local-1747135842-flex","tf-testaccdatadoglogsindex-basic-local-1747136037","tf-testaccdatadoglogsindex-basic-local-1747136037-flex","tf-testaccdatadoglogsindexesorderdatasource-local-1747136121-sample","tf-testaccdatadoglogsindex-basic-local-1747136121","tf-testaccdatadoglogsindex-basic-local-1747136121-flex"]}
+            {"index_names":["main","test-index","test-index-2","tf-testaccdatadoglogsindex-basic-local-1627305201","name","nonexistent","tf-testaccdatadoglogsindex-basic-local-1725992495","tf-testaccdatadoglogsindex-basic-local-1754932644","tf-testaccdatadoglogsindexesorderdatasource-local-1757636869-sample"]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 140.579208ms
+        duration: 681.158958ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -102,13 +102,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"index_names":["main","test-index","test-index-2","tf-testaccdatadoglogsindex-basic-local-1627305201","name","nonexistent","tf-testaccdatadoglogsindex-basic-local-1725992495","tf-testaccdatadoglogsindex-basic-local-1747135595","tf-testaccdatadoglogsindex-basic-local-1747135595-flex","tf-testaccdatadoglogsindex-basic-local-1747135727","tf-testaccdatadoglogsindex-basic-local-1747135727-flex","tf-testaccdatadoglogsindex-basic-local-1747135842","tf-testaccdatadoglogsindex-basic-local-1747135842-flex","tf-testaccdatadoglogsindex-basic-local-1747136037","tf-testaccdatadoglogsindex-basic-local-1747136037-flex","tf-testaccdatadoglogsindexesorderdatasource-local-1747136121-sample","tf-testaccdatadoglogsindex-basic-local-1747136121","tf-testaccdatadoglogsindex-basic-local-1747136121-flex"]}
+            {"index_names":["main","test-index","test-index-2","tf-testaccdatadoglogsindex-basic-local-1627305201","name","nonexistent","tf-testaccdatadoglogsindex-basic-local-1725992495","tf-testaccdatadoglogsindex-basic-local-1754932644","tf-testaccdatadoglogsindexesorderdatasource-local-1757636869-sample","tf-testaccdatadoglogsindexesorderdatasource-local-1758619447-sample"]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 136.958625ms
+        duration: 679.3225ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -125,7 +125,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/logs/config/indexes/tf-testaccdatadoglogsindexesorderdatasource-local-1747136321-sample
+        url: https://api.datadoghq.com/api/v1/logs/config/indexes/tf-testaccdatadoglogsindexesorderdatasource-local-1758619447-sample
         method: GET
       response:
         proto: HTTP/1.1
@@ -137,13 +137,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"name":"tf-testaccdatadoglogsindexesorderdatasource-local-1747136321-sample","filter":{"query":"project:sample"},"num_retention_days":15,"daily_limit":null,"is_rate_limited":false,"daily_limit_reset":null,"daily_limit_warning_threshold_percentage":null,"exclusion_filters":[],"num_flex_logs_retention_days":0}
+            {"name":"tf-testaccdatadoglogsindexesorderdatasource-local-1758619447-sample","filter":{"query":"project:sample"},"num_retention_days":15,"daily_limit":null,"is_rate_limited":false,"daily_limit_reset":null,"daily_limit_warning_threshold_percentage":null,"exclusion_filters":[],"num_flex_logs_retention_days":0}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 466.613084ms
+        duration: 755.478291ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -172,14 +172,49 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"index_names":["main","test-index","test-index-2","tf-testaccdatadoglogsindex-basic-local-1627305201","name","nonexistent","tf-testaccdatadoglogsindex-basic-local-1725992495","tf-testaccdatadoglogsindex-basic-local-1747135595","tf-testaccdatadoglogsindex-basic-local-1747135595-flex","tf-testaccdatadoglogsindex-basic-local-1747135727","tf-testaccdatadoglogsindex-basic-local-1747135727-flex","tf-testaccdatadoglogsindex-basic-local-1747135842","tf-testaccdatadoglogsindex-basic-local-1747135842-flex","tf-testaccdatadoglogsindex-basic-local-1747136037","tf-testaccdatadoglogsindex-basic-local-1747136037-flex","tf-testaccdatadoglogsindexesorderdatasource-local-1747136121-sample","tf-testaccdatadoglogsindex-basic-local-1747136121","tf-testaccdatadoglogsindex-basic-local-1747136121-flex","tf-testaccdatadoglogsindexesorderdatasource-local-1747136321-sample"]}
+            {"index_names":["main","test-index","test-index-2","tf-testaccdatadoglogsindex-basic-local-1627305201","name","nonexistent","tf-testaccdatadoglogsindex-basic-local-1725992495","tf-testaccdatadoglogsindex-basic-local-1754932644","tf-testaccdatadoglogsindexesorderdatasource-local-1757636869-sample","tf-testaccdatadoglogsindexesorderdatasource-local-1758619447-sample"]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 481.380833ms
+        duration: 239.841542ms
     - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/logs/config/indexes/tf-testaccdatadoglogsindexesorderdatasource-local-1758619447-sample
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"name":"tf-testaccdatadoglogsindexesorderdatasource-local-1758619447-sample","filter":{"query":"project:sample"},"num_retention_days":15,"daily_limit":null,"is_rate_limited":false,"daily_limit_reset":null,"daily_limit_warning_threshold_percentage":null,"exclusion_filters":[],"num_flex_logs_retention_days":0}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 336.251083ms
+    - id: 6
       request:
         proto: HTTP/1.1
         proto_major: 1
@@ -207,48 +242,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"index_names":["main","test-index","test-index-2","tf-testaccdatadoglogsindex-basic-local-1627305201","name","nonexistent","tf-testaccdatadoglogsindex-basic-local-1725992495","tf-testaccdatadoglogsindex-basic-local-1747135595","tf-testaccdatadoglogsindex-basic-local-1747135595-flex","tf-testaccdatadoglogsindex-basic-local-1747135727","tf-testaccdatadoglogsindex-basic-local-1747135727-flex","tf-testaccdatadoglogsindex-basic-local-1747135842","tf-testaccdatadoglogsindex-basic-local-1747135842-flex","tf-testaccdatadoglogsindex-basic-local-1747136037","tf-testaccdatadoglogsindex-basic-local-1747136037-flex","tf-testaccdatadoglogsindexesorderdatasource-local-1747136121-sample","tf-testaccdatadoglogsindex-basic-local-1747136121","tf-testaccdatadoglogsindex-basic-local-1747136121-flex","tf-testaccdatadoglogsindexesorderdatasource-local-1747136321-sample"]}
+            {"index_names":["main","test-index","test-index-2","tf-testaccdatadoglogsindex-basic-local-1627305201","name","nonexistent","tf-testaccdatadoglogsindex-basic-local-1725992495","tf-testaccdatadoglogsindex-basic-local-1754932644","tf-testaccdatadoglogsindexesorderdatasource-local-1757636869-sample","tf-testaccdatadoglogsindexesorderdatasource-local-1758619447-sample"]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 135.668333ms
-    - id: 6
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 0
-        transfer_encoding: []
-        trailer: {}
-        host: api.datadoghq.com
-        remote_addr: ""
-        request_uri: ""
-        body: ""
-        form: {}
-        headers:
-            Accept:
-                - application/json
-        url: https://api.datadoghq.com/api/v1/logs/config/indexes/tf-testaccdatadoglogsindexesorderdatasource-local-1747136321-sample
-        method: GET
-      response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        transfer_encoding:
-            - chunked
-        trailer: {}
-        content_length: -1
-        uncompressed: true
-        body: |
-            {"name":"tf-testaccdatadoglogsindexesorderdatasource-local-1747136321-sample","filter":{"query":"project:sample"},"num_retention_days":15,"daily_limit":null,"is_rate_limited":false,"daily_limit_reset":null,"daily_limit_warning_threshold_percentage":null,"exclusion_filters":[],"num_flex_logs_retention_days":0}
-        headers:
-            Content-Type:
-                - application/json
-        status: 200 OK
-        code: 200
-        duration: 323.852834ms
+        duration: 341.046958ms
     - id: 7
       request:
         proto: HTTP/1.1
@@ -265,7 +265,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v1/logs/config/indexes/tf-testaccdatadoglogsindexesorderdatasource-local-1747136321-sample
+        url: https://api.datadoghq.com/api/v1/logs/config/indexes/tf-testaccdatadoglogsindexesorderdatasource-local-1758619447-sample
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -281,7 +281,7 @@ interactions:
                 - text/html; charset=utf-8
         status: 202 Accepted
         code: 202
-        duration: 189.52275ms
+        duration: 183.025208ms
     - id: 8
       request:
         proto: HTTP/1.1
@@ -310,13 +310,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"index_names":["main","test-index","test-index-2","tf-testaccdatadoglogsindex-basic-local-1627305201","name","nonexistent","tf-testaccdatadoglogsindex-basic-local-1725992495","tf-testaccdatadoglogsindex-basic-local-1747135595","tf-testaccdatadoglogsindex-basic-local-1747135595-flex","tf-testaccdatadoglogsindex-basic-local-1747135727","tf-testaccdatadoglogsindex-basic-local-1747135727-flex","tf-testaccdatadoglogsindex-basic-local-1747135842","tf-testaccdatadoglogsindex-basic-local-1747135842-flex","tf-testaccdatadoglogsindex-basic-local-1747136037","tf-testaccdatadoglogsindex-basic-local-1747136037-flex","tf-testaccdatadoglogsindexesorderdatasource-local-1747136121-sample","tf-testaccdatadoglogsindex-basic-local-1747136121","tf-testaccdatadoglogsindex-basic-local-1747136121-flex","tf-testaccdatadoglogsindexesorderdatasource-local-1747136321-sample"]}
+            {"index_names":["main","test-index","test-index-2","tf-testaccdatadoglogsindex-basic-local-1627305201","name","nonexistent","tf-testaccdatadoglogsindex-basic-local-1725992495","tf-testaccdatadoglogsindex-basic-local-1754932644","tf-testaccdatadoglogsindexesorderdatasource-local-1757636869-sample"]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 473.142625ms
+        duration: 723.307917ms
     - id: 9
       request:
         proto: HTTP/1.1
@@ -345,10 +345,10 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"index_names":["main","test-index","test-index-2","tf-testaccdatadoglogsindex-basic-local-1627305201","name","nonexistent","tf-testaccdatadoglogsindex-basic-local-1725992495","tf-testaccdatadoglogsindex-basic-local-1747135595","tf-testaccdatadoglogsindex-basic-local-1747135595-flex","tf-testaccdatadoglogsindex-basic-local-1747135727","tf-testaccdatadoglogsindex-basic-local-1747135727-flex","tf-testaccdatadoglogsindex-basic-local-1747135842","tf-testaccdatadoglogsindex-basic-local-1747135842-flex","tf-testaccdatadoglogsindex-basic-local-1747136037","tf-testaccdatadoglogsindex-basic-local-1747136037-flex","tf-testaccdatadoglogsindexesorderdatasource-local-1747136121-sample","tf-testaccdatadoglogsindex-basic-local-1747136121","tf-testaccdatadoglogsindex-basic-local-1747136121-flex","tf-testaccdatadoglogsindexesorderdatasource-local-1747136321-sample"]}
+            {"index_names":["main","test-index","test-index-2","tf-testaccdatadoglogsindex-basic-local-1627305201","name","nonexistent","tf-testaccdatadoglogsindex-basic-local-1725992495","tf-testaccdatadoglogsindex-basic-local-1754932644","tf-testaccdatadoglogsindexesorderdatasource-local-1757636869-sample"]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 458.358958ms
+        duration: 741.136958ms

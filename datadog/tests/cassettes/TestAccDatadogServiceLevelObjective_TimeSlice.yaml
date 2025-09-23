@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"description":"some description about foo SLO","name":"tf-TestAccDatadogServiceLevelObjective_TimeSlice-local-1744897514","sli_specification":{"time_slice":{"comparator":"\u003e","query":{"formulas":[{"formula":"(query1-query2)/query1"}],"queries":[{"data_source":"metrics","name":"query1","query":"sum:trace.grpc.server.hits{service:monitor-history-reader}"},{"data_source":"metrics","name":"query2","query":"sum:trace.grpc.server.errors{service:monitor-history-reader}"}]},"query_interval_seconds":300,"threshold":0.99}},"tags":["foo:bar","baz"],"target_threshold":99,"thresholds":[{"target":99,"timeframe":"7d","warning":99.5}],"timeframe":"7d","type":"time_slice","warning_threshold":99.5}
+            {"description":"some description about foo SLO","name":"tf-TestAccDatadogServiceLevelObjective_TimeSlice-local-1758619218","sli_specification":{"time_slice":{"comparator":"\u003e","query":{"formulas":[{"formula":"(query1-query2)/query1"}],"queries":[{"data_source":"metrics","name":"query1","query":"sum:trace.grpc.server.hits{service:monitor-history-reader}"},{"data_source":"metrics","name":"query2","query":"sum:trace.grpc.server.errors{service:monitor-history-reader}"}]},"query_interval_seconds":300,"threshold":0.99}},"tags":["foo:bar","baz"],"target_threshold":99,"thresholds":[{"target":99,"timeframe":"7d","warning":99.5}],"timeframe":"7d","type":"time_slice","warning_threshold":99.5}
         form: {}
         headers:
             Accept:
@@ -32,13 +32,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":[{"id":"ba9f0d1f4563500ab3d779053f761331","name":"tf-TestAccDatadogServiceLevelObjective_TimeSlice-local-1744897514","tags":["baz","foo:bar"],"monitor_tags":[],"thresholds":[{"timeframe":"7d","target":99.0,"target_display":"99.","warning":99.5,"warning_display":"99.5"}],"type":"time_slice","type_id":2,"description":"some description about foo SLO","timeframe":"7d","warning_threshold":99.5,"target_threshold":99,"creator":{"name":"Thibault Viennot","handle":"thibault.viennot@datadoghq.com","email":"thibault.viennot@datadoghq.com"},"created_at":1744897515,"modified_at":1744897515,"sli_specification":{"time_slice":{"comparator":">","query":{"formulas":[{"formula":"(query1-query2)/query1"}],"queries":[{"data_source":"metrics","name":"query1","query":"sum:trace.grpc.server.hits{service:monitor-history-reader}"},{"data_source":"metrics","name":"query2","query":"sum:trace.grpc.server.errors{service:monitor-history-reader}"}]},"query_interval_seconds":300,"threshold":0.99}}}],"error":null}
+            {"data":[{"id":"29006a55f46a5186aa46ec305ec6e298","name":"tf-TestAccDatadogServiceLevelObjective_TimeSlice-local-1758619218","tags":["foo:bar","baz"],"monitor_tags":[],"thresholds":[{"timeframe":"7d","target":99.0,"target_display":"99.","warning":99.5,"warning_display":"99.5"}],"type":"time_slice","type_id":2,"description":"some description about foo SLO","timeframe":"7d","warning_threshold":99.5,"target_threshold":99,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"created_at":1758619218,"modified_at":1758619218,"sli_specification":{"time_slice":{"comparator":">","query":{"formulas":[{"formula":"(query1-query2)/query1"}],"queries":[{"data_source":"metrics","name":"query1","query":"sum:trace.grpc.server.hits{service:monitor-history-reader}"},{"data_source":"metrics","name":"query2","query":"sum:trace.grpc.server.errors{service:monitor-history-reader}"}]},"query_interval_seconds":300,"threshold":0.99}}}],"error":null}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 521.044292ms
+        duration: 217.996083ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -55,7 +55,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/slo/ba9f0d1f4563500ab3d779053f761331
+        url: https://api.datadoghq.com/api/v1/slo/29006a55f46a5186aa46ec305ec6e298
         method: GET
       response:
         proto: HTTP/1.1
@@ -67,13 +67,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"id":"ba9f0d1f4563500ab3d779053f761331","name":"tf-TestAccDatadogServiceLevelObjective_TimeSlice-local-1744897514","tags":["foo:bar","baz"],"monitor_tags":[],"thresholds":[{"timeframe":"7d","target":99.0,"target_display":"99.","warning":99.5,"warning_display":"99.5"}],"type":"time_slice","type_id":2,"description":"some description about foo SLO","timeframe":"7d","warning_threshold":99.5,"target_threshold":99.0,"creator":{"name":"Thibault Viennot","handle":"thibault.viennot@datadoghq.com","email":"thibault.viennot@datadoghq.com"},"created_at":1744897515,"modified_at":1744897515,"sli_specification":{"time_slice":{"comparator":">","query":{"formulas":[{"formula":"(query1-query2)/query1"}],"queries":[{"data_source":"metrics","name":"query1","query":"sum:trace.grpc.server.hits{service:monitor-history-reader}"},{"data_source":"metrics","name":"query2","query":"sum:trace.grpc.server.errors{service:monitor-history-reader}"}]},"query_interval_seconds":300,"threshold":0.99}}},"error":null}
+            {"data":{"id":"29006a55f46a5186aa46ec305ec6e298","name":"tf-TestAccDatadogServiceLevelObjective_TimeSlice-local-1758619218","tags":["foo:bar","baz"],"monitor_tags":[],"thresholds":[{"timeframe":"7d","target":99.0,"target_display":"99.","warning":99.5,"warning_display":"99.5"}],"type":"time_slice","type_id":2,"description":"some description about foo SLO","timeframe":"7d","warning_threshold":99.5,"target_threshold":99.0,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"created_at":1758619218,"modified_at":1758619218,"sli_specification":{"time_slice":{"comparator":">","query":{"formulas":[{"formula":"(query1-query2)/query1"}],"queries":[{"data_source":"metrics","name":"query1","query":"sum:trace.grpc.server.hits{service:monitor-history-reader}"},{"data_source":"metrics","name":"query2","query":"sum:trace.grpc.server.errors{service:monitor-history-reader}"}]},"query_interval_seconds":300,"threshold":0.99}}},"error":null}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 156.475208ms
+        duration: 159.414708ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -90,7 +90,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/slo/ba9f0d1f4563500ab3d779053f761331
+        url: https://api.datadoghq.com/api/v1/slo/29006a55f46a5186aa46ec305ec6e298
         method: GET
       response:
         proto: HTTP/1.1
@@ -102,13 +102,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"id":"ba9f0d1f4563500ab3d779053f761331","name":"tf-TestAccDatadogServiceLevelObjective_TimeSlice-local-1744897514","tags":["foo:bar","baz"],"monitor_tags":[],"thresholds":[{"timeframe":"7d","target":99.0,"target_display":"99.","warning":99.5,"warning_display":"99.5"}],"type":"time_slice","type_id":2,"description":"some description about foo SLO","timeframe":"7d","warning_threshold":99.5,"target_threshold":99.0,"creator":{"name":"Thibault Viennot","handle":"thibault.viennot@datadoghq.com","email":"thibault.viennot@datadoghq.com"},"created_at":1744897515,"modified_at":1744897515,"sli_specification":{"time_slice":{"comparator":">","query":{"formulas":[{"formula":"(query1-query2)/query1"}],"queries":[{"data_source":"metrics","name":"query1","query":"sum:trace.grpc.server.hits{service:monitor-history-reader}"},{"data_source":"metrics","name":"query2","query":"sum:trace.grpc.server.errors{service:monitor-history-reader}"}]},"query_interval_seconds":300,"threshold":0.99}}},"error":null}
+            {"data":{"id":"29006a55f46a5186aa46ec305ec6e298","name":"tf-TestAccDatadogServiceLevelObjective_TimeSlice-local-1758619218","tags":["foo:bar","baz"],"monitor_tags":[],"thresholds":[{"timeframe":"7d","target":99.0,"target_display":"99.","warning":99.5,"warning_display":"99.5"}],"type":"time_slice","type_id":2,"description":"some description about foo SLO","timeframe":"7d","warning_threshold":99.5,"target_threshold":99.0,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"created_at":1758619218,"modified_at":1758619218,"sli_specification":{"time_slice":{"comparator":">","query":{"formulas":[{"formula":"(query1-query2)/query1"}],"queries":[{"data_source":"metrics","name":"query1","query":"sum:trace.grpc.server.hits{service:monitor-history-reader}"},{"data_source":"metrics","name":"query2","query":"sum:trace.grpc.server.errors{service:monitor-history-reader}"}]},"query_interval_seconds":300,"threshold":0.99}}},"error":null}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 154.511417ms
+        duration: 300.179667ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -125,7 +125,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/slo/ba9f0d1f4563500ab3d779053f761331
+        url: https://api.datadoghq.com/api/v1/slo/29006a55f46a5186aa46ec305ec6e298
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -137,13 +137,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":["ba9f0d1f4563500ab3d779053f761331"],"error":null}
+            {"data":["29006a55f46a5186aa46ec305ec6e298"],"error":null}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 279.504667ms
+        duration: 265.211375ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -160,7 +160,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/slo/ba9f0d1f4563500ab3d779053f761331
+        url: https://api.datadoghq.com/api/v1/slo/29006a55f46a5186aa46ec305ec6e298
         method: GET
       response:
         proto: HTTP/1.1
@@ -171,10 +171,10 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"errors":["SLO not found: ba9f0d1f4563500ab3d779053f761331 not found"]}'
+        body: '{"errors":["SLO not found: 29006a55f46a5186aa46ec305ec6e298 not found"]}'
         headers:
             Content-Type:
                 - application/json
         status: 404 Not Found
         code: 404
-        duration: 285.591459ms
+        duration: 165.910417ms

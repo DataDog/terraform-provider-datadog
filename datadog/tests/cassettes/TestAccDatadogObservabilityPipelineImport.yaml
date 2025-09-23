@@ -31,13 +31,13 @@ interactions:
         content_length: 384
         uncompressed: false
         body: |
-            {"data":{"id":"0151f524-24e1-11f0-b6fe-da7ad0900002","type":"pipelines","attributes":{"name":"test pipeline","config":{"destinations":[{"id":"destination-1","inputs":["parser-1"],"type":"datadog_logs"}],"processors":[{"field":"message","id":"parser-1","include":"service:my-service","inputs":["source-1"],"type":"parse_json"}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"339eff72-985e-11f0-9f15-da7ad0900002","type":"pipelines","attributes":{"name":"test pipeline","config":{"destinations":[{"id":"destination-1","inputs":["parser-1"],"type":"datadog_logs"}],"processors":[{"field":"message","id":"parser-1","include":"service:my-service","inputs":["source-1"],"type":"parse_json"}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/json
         status: 201 Created
         code: 201
-        duration: 449.757125ms
+        duration: 677.905583ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -54,7 +54,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/0151f524-24e1-11f0-b6fe-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/339eff72-985e-11f0-9f15-da7ad0900002
         method: GET
       response:
         proto: HTTP/1.1
@@ -65,13 +65,13 @@ interactions:
         content_length: 384
         uncompressed: false
         body: |
-            {"data":{"id":"0151f524-24e1-11f0-b6fe-da7ad0900002","type":"pipelines","attributes":{"name":"test pipeline","config":{"destinations":[{"id":"destination-1","inputs":["parser-1"],"type":"datadog_logs"}],"processors":[{"field":"message","id":"parser-1","include":"service:my-service","inputs":["source-1"],"type":"parse_json"}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"339eff72-985e-11f0-9f15-da7ad0900002","type":"pipelines","attributes":{"name":"test pipeline","config":{"destinations":[{"id":"destination-1","inputs":["parser-1"],"type":"datadog_logs"}],"processors":[{"field":"message","id":"parser-1","include":"service:my-service","inputs":["source-1"],"type":"parse_json"}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 347.490375ms
+        duration: 379.909791ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -88,7 +88,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/0151f524-24e1-11f0-b6fe-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/339eff72-985e-11f0-9f15-da7ad0900002
         method: GET
       response:
         proto: HTTP/1.1
@@ -99,13 +99,13 @@ interactions:
         content_length: 384
         uncompressed: false
         body: |
-            {"data":{"id":"0151f524-24e1-11f0-b6fe-da7ad0900002","type":"pipelines","attributes":{"name":"test pipeline","config":{"destinations":[{"id":"destination-1","inputs":["parser-1"],"type":"datadog_logs"}],"processors":[{"field":"message","id":"parser-1","include":"service:my-service","inputs":["source-1"],"type":"parse_json"}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"339eff72-985e-11f0-9f15-da7ad0900002","type":"pipelines","attributes":{"name":"test pipeline","config":{"destinations":[{"id":"destination-1","inputs":["parser-1"],"type":"datadog_logs"}],"processors":[{"field":"message","id":"parser-1","include":"service:my-service","inputs":["source-1"],"type":"parse_json"}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 255.03975ms
+        duration: 413.6325ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -122,7 +122,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/0151f524-24e1-11f0-b6fe-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/339eff72-985e-11f0-9f15-da7ad0900002
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -138,4 +138,4 @@ interactions:
                 - application/json
         status: 204 No Content
         code: 204
-        duration: 472.850458ms
+        duration: 484.507875ms

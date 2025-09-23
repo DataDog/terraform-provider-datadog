@@ -31,13 +31,13 @@ interactions:
         content_length: 431
         uncompressed: false
         body: |
-            {"data":{"id":"f1690c06-24e0-11f0-92e2-da7ad0900002","type":"pipelines","attributes":{"name":"chronicle pipeline","config":{"destinations":[{"auth":{"credentials_file":"/secrets/gcp.json"},"customer_id":"3fa85f64-5717-4562-b3fc-2c963f66afa6","encoding":"json","id":"chronicle-dest-1","inputs":["source-1"],"log_type":"nginx_logs","type":"google_chronicle"}],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"e4b29cd4-985d-11f0-84f2-da7ad0900002","type":"pipelines","attributes":{"name":"chronicle pipeline","config":{"destinations":[{"auth":{"credentials_file":"/secrets/gcp.json"},"customer_id":"3fa85f64-5717-4562-b3fc-2c963f66afa6","encoding":"json","id":"chronicle-dest-1","inputs":["source-1"],"log_type":"nginx_logs","type":"google_chronicle"}],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/json
         status: 201 Created
         code: 201
-        duration: 666.372958ms
+        duration: 510.234083ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -54,7 +54,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/f1690c06-24e0-11f0-92e2-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/e4b29cd4-985d-11f0-84f2-da7ad0900002
         method: GET
       response:
         proto: HTTP/1.1
@@ -65,13 +65,13 @@ interactions:
         content_length: 431
         uncompressed: false
         body: |
-            {"data":{"id":"f1690c06-24e0-11f0-92e2-da7ad0900002","type":"pipelines","attributes":{"name":"chronicle pipeline","config":{"destinations":[{"auth":{"credentials_file":"/secrets/gcp.json"},"customer_id":"3fa85f64-5717-4562-b3fc-2c963f66afa6","encoding":"json","id":"chronicle-dest-1","inputs":["source-1"],"log_type":"nginx_logs","type":"google_chronicle"}],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"e4b29cd4-985d-11f0-84f2-da7ad0900002","type":"pipelines","attributes":{"name":"chronicle pipeline","config":{"destinations":[{"auth":{"credentials_file":"/secrets/gcp.json"},"customer_id":"3fa85f64-5717-4562-b3fc-2c963f66afa6","encoding":"json","id":"chronicle-dest-1","inputs":["source-1"],"log_type":"nginx_logs","type":"google_chronicle"}],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 326.566625ms
+        duration: 253.6285ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -88,7 +88,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/f1690c06-24e0-11f0-92e2-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/e4b29cd4-985d-11f0-84f2-da7ad0900002
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -104,4 +104,4 @@ interactions:
                 - application/json
         status: 204 No Content
         code: 204
-        duration: 457.401125ms
+        duration: 433.562708ms

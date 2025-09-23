@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"account_tags":["tag:tf-TestAccIntegrationAwsAccountKeyBased-local-1755885747"],"auth_config":{"access_key_id":"AKIA101525699545","secret_access_key":"wJalrXUtnFEMItf-TestAccIntegrationAwsAccountKeyBased-local-1755885747"},"aws_account_id":"101525699545","aws_partition":"aws","aws_regions":{"include_all":true},"logs_config":{"lambda_forwarder":{"lambdas":[],"log_source_config":{"tag_filters":[]},"sources":[]}},"metrics_config":{"automute_enabled":true,"collect_cloudwatch_alarms":false,"collect_custom_metrics":false,"enabled":true,"namespace_filters":{"exclude_only":["AWS/SQS","AWS/ElasticMapReduce","AWS/Usage"]},"tag_filters":[]},"resources_config":{"cloud_security_posture_management_collection":false,"extended_collection":true},"traces_config":{"xray_services":{"include_only":[]}}},"type":"account"}}
+            {"data":{"attributes":{"account_tags":["tag:tf-TestAccIntegrationAwsAccountKeyBased-local-1758619164"],"auth_config":{"access_key_id":"AKIA555299984998","secret_access_key":"wJalrXUtnFEMItf-TestAccIntegrationAwsAccountKeyBased-local-1758619164"},"aws_account_id":"555299984998","aws_partition":"aws","aws_regions":{"include_all":true},"logs_config":{"lambda_forwarder":{"lambdas":[],"log_source_config":{"tag_filters":[]},"sources":[]}},"metrics_config":{"automute_enabled":true,"collect_cloudwatch_alarms":false,"collect_custom_metrics":false,"enabled":true,"namespace_filters":{"exclude_only":["AWS/SQS","AWS/ElasticMapReduce","AWS/Usage"]},"tag_filters":[]},"resources_config":{"cloud_security_posture_management_collection":false,"extended_collection":true},"traces_config":{"xray_services":{"include_only":[]}}},"type":"account"}}
         form: {}
         headers:
             Accept:
@@ -28,15 +28,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 878
+        content_length: 880
         uncompressed: false
-        body: '{"data":{"id":"ddd87a6e-0499-4518-b2cc-66c3d62e22f3","type":"account","attributes":{"account_tags":["tag:tf-TestAccIntegrationAwsAccountKeyBased-local-1755885747"],"auth_config":{"access_key_id":"AKIA101525699545"},"aws_account_id":"101525699545","aws_partition":"aws","aws_regions":{"include_all":true},"created_at":"2025-08-22T18:02:28.65971517Z","logs_config":{"lambda_forwarder":{"lambdas":[],"sources":[],"log_source_config":{"tag_filters":[]}}},"metrics_config":{"enabled":true,"automute_enabled":true,"collect_custom_metrics":false,"collect_cloudwatch_alarms":false,"tag_filters":[],"namespace_filters":{"exclude_only":["AWS/SQS","AWS/ElasticMapReduce","AWS/Usage"]}},"modified_at":"2025-08-22T18:02:28.65971517Z","resources_config":{"cloud_security_posture_management_collection":false,"extended_collection":true},"traces_config":{"xray_services":{"include_only":[]}}}}}'
+        body: '{"data":{"id":"02b58c50-6115-4767-9c71-12371078a073","type":"account","attributes":{"account_tags":["tag:tf-TestAccIntegrationAwsAccountKeyBased-local-1758619164"],"auth_config":{"access_key_id":"AKIA555299984998"},"aws_account_id":"555299984998","aws_partition":"aws","aws_regions":{"include_all":true},"created_at":"2025-09-23T09:19:25.516449524Z","logs_config":{"lambda_forwarder":{"lambdas":[],"sources":[],"log_source_config":{"tag_filters":[]}}},"metrics_config":{"enabled":true,"automute_enabled":true,"collect_custom_metrics":false,"collect_cloudwatch_alarms":false,"tag_filters":[],"namespace_filters":{"exclude_only":["AWS/SQS","AWS/ElasticMapReduce","AWS/Usage"]}},"modified_at":"2025-09-23T09:19:25.516449524Z","resources_config":{"cloud_security_posture_management_collection":false,"extended_collection":true},"traces_config":{"xray_services":{"include_only":[]}}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 139.689ms
+        duration: 178.539334ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -53,7 +53,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/integration/aws/accounts/%22ddd87a6e-0499-4518-b2cc-66c3d62e22f3%22
+        url: https://api.datadoghq.com/api/v2/integration/aws/accounts/%2202b58c50-6115-4767-9c71-12371078a073%22
         method: GET
       response:
         proto: HTTP/1.1
@@ -63,13 +63,13 @@ interactions:
         trailer: {}
         content_length: 874
         uncompressed: false
-        body: '{"data":{"id":"ddd87a6e-0499-4518-b2cc-66c3d62e22f3","type":"account","attributes":{"account_tags":["tag:tf-TestAccIntegrationAwsAccountKeyBased-local-1755885747"],"auth_config":{"access_key_id":"AKIA101525699545"},"aws_account_id":"101525699545","aws_partition":"aws","aws_regions":{"include_all":true},"created_at":"2025-08-22T18:02:28.659715Z","logs_config":{"lambda_forwarder":{"lambdas":[],"sources":[],"log_source_config":{"tag_filters":[]}}},"metrics_config":{"enabled":true,"automute_enabled":true,"collect_custom_metrics":false,"collect_cloudwatch_alarms":false,"tag_filters":[],"namespace_filters":{"exclude_only":["AWS/SQS","AWS/ElasticMapReduce","AWS/Usage"]}},"modified_at":"2025-08-22T18:02:28.659715Z","resources_config":{"cloud_security_posture_management_collection":false,"extended_collection":true},"traces_config":{"xray_services":{"include_only":[]}}}}}'
+        body: '{"data":{"id":"02b58c50-6115-4767-9c71-12371078a073","type":"account","attributes":{"account_tags":["tag:tf-TestAccIntegrationAwsAccountKeyBased-local-1758619164"],"auth_config":{"access_key_id":"AKIA555299984998"},"aws_account_id":"555299984998","aws_partition":"aws","aws_regions":{"include_all":true},"created_at":"2025-09-23T09:19:25.516449Z","logs_config":{"lambda_forwarder":{"lambdas":[],"sources":[],"log_source_config":{"tag_filters":[]}}},"metrics_config":{"enabled":true,"automute_enabled":true,"collect_custom_metrics":false,"collect_cloudwatch_alarms":false,"tag_filters":[],"namespace_filters":{"exclude_only":["AWS/SQS","AWS/ElasticMapReduce","AWS/Usage"]}},"modified_at":"2025-09-23T09:19:25.516449Z","resources_config":{"cloud_security_posture_management_collection":false,"extended_collection":true},"traces_config":{"xray_services":{"include_only":[]}}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 172.954208ms
+        duration: 502.448042ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -86,7 +86,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/integration/aws/accounts/%22ddd87a6e-0499-4518-b2cc-66c3d62e22f3%22
+        url: https://api.datadoghq.com/api/v2/integration/aws/accounts/%2202b58c50-6115-4767-9c71-12371078a073%22
         method: GET
       response:
         proto: HTTP/1.1
@@ -96,13 +96,13 @@ interactions:
         trailer: {}
         content_length: 874
         uncompressed: false
-        body: '{"data":{"id":"ddd87a6e-0499-4518-b2cc-66c3d62e22f3","type":"account","attributes":{"account_tags":["tag:tf-TestAccIntegrationAwsAccountKeyBased-local-1755885747"],"auth_config":{"access_key_id":"AKIA101525699545"},"aws_account_id":"101525699545","aws_partition":"aws","aws_regions":{"include_all":true},"created_at":"2025-08-22T18:02:28.659715Z","logs_config":{"lambda_forwarder":{"lambdas":[],"sources":[],"log_source_config":{"tag_filters":[]}}},"metrics_config":{"enabled":true,"automute_enabled":true,"collect_custom_metrics":false,"collect_cloudwatch_alarms":false,"tag_filters":[],"namespace_filters":{"exclude_only":["AWS/SQS","AWS/ElasticMapReduce","AWS/Usage"]}},"modified_at":"2025-08-22T18:02:28.659715Z","resources_config":{"cloud_security_posture_management_collection":false,"extended_collection":true},"traces_config":{"xray_services":{"include_only":[]}}}}}'
+        body: '{"data":{"id":"02b58c50-6115-4767-9c71-12371078a073","type":"account","attributes":{"account_tags":["tag:tf-TestAccIntegrationAwsAccountKeyBased-local-1758619164"],"auth_config":{"access_key_id":"AKIA555299984998"},"aws_account_id":"555299984998","aws_partition":"aws","aws_regions":{"include_all":true},"created_at":"2025-09-23T09:19:25.516449Z","logs_config":{"lambda_forwarder":{"lambdas":[],"sources":[],"log_source_config":{"tag_filters":[]}}},"metrics_config":{"enabled":true,"automute_enabled":true,"collect_custom_metrics":false,"collect_cloudwatch_alarms":false,"tag_filters":[],"namespace_filters":{"exclude_only":["AWS/SQS","AWS/ElasticMapReduce","AWS/Usage"]}},"modified_at":"2025-09-23T09:19:25.516449Z","resources_config":{"cloud_security_posture_management_collection":false,"extended_collection":true},"traces_config":{"xray_services":{"include_only":[]}}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 147.632792ms
+        duration: 242.994083ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -115,14 +115,14 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"account_tags":["tag:tf-TestAccIntegrationAwsAccountKeyBased-local-1755885747"],"auth_config":{"access_key_id":"AKIA101525699545NEW","secret_access_key":"wJalrXUtnFEMItf-TestAccIntegrationAwsAccountKeyBased-local-1755885747NEW"},"aws_account_id":"101525699545","aws_partition":"aws","aws_regions":{"include_all":true},"logs_config":{"lambda_forwarder":{"lambdas":[],"log_source_config":{"tag_filters":[]},"sources":[]}},"metrics_config":{"automute_enabled":true,"collect_cloudwatch_alarms":false,"collect_custom_metrics":false,"enabled":true,"namespace_filters":{"exclude_only":["AWS/SQS","AWS/ElasticMapReduce","AWS/Usage"]},"tag_filters":[]},"resources_config":{"cloud_security_posture_management_collection":false,"extended_collection":true},"traces_config":{"xray_services":{"include_only":[]}}},"type":"account"}}
+            {"data":{"attributes":{"account_tags":["tag:tf-TestAccIntegrationAwsAccountKeyBased-local-1758619164"],"auth_config":{"access_key_id":"AKIA555299984998NEW","secret_access_key":"wJalrXUtnFEMItf-TestAccIntegrationAwsAccountKeyBased-local-1758619164NEW"},"aws_account_id":"555299984998","aws_partition":"aws","aws_regions":{"include_all":true},"logs_config":{"lambda_forwarder":{"lambdas":[],"log_source_config":{"tag_filters":[]},"sources":[]}},"metrics_config":{"automute_enabled":true,"collect_cloudwatch_alarms":false,"collect_custom_metrics":false,"enabled":true,"namespace_filters":{"exclude_only":["AWS/SQS","AWS/ElasticMapReduce","AWS/Usage"]},"tag_filters":[]},"resources_config":{"cloud_security_posture_management_collection":false,"extended_collection":true},"traces_config":{"xray_services":{"include_only":[]}}},"type":"account"}}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/integration/aws/accounts/%22ddd87a6e-0499-4518-b2cc-66c3d62e22f3%22
+        url: https://api.datadoghq.com/api/v2/integration/aws/accounts/%2202b58c50-6115-4767-9c71-12371078a073%22
         method: PATCH
       response:
         proto: HTTP/1.1
@@ -132,13 +132,13 @@ interactions:
         trailer: {}
         content_length: 880
         uncompressed: false
-        body: '{"data":{"id":"ddd87a6e-0499-4518-b2cc-66c3d62e22f3","type":"account","attributes":{"account_tags":["tag:tf-TestAccIntegrationAwsAccountKeyBased-local-1755885747"],"auth_config":{"access_key_id":"AKIA101525699545NEW"},"aws_account_id":"101525699545","aws_partition":"aws","aws_regions":{"include_all":true},"created_at":"2025-08-22T18:02:28.659715Z","logs_config":{"lambda_forwarder":{"lambdas":[],"sources":[],"log_source_config":{"tag_filters":[]}}},"metrics_config":{"enabled":true,"automute_enabled":true,"collect_custom_metrics":false,"collect_cloudwatch_alarms":false,"tag_filters":[],"namespace_filters":{"exclude_only":["AWS/SQS","AWS/ElasticMapReduce","AWS/Usage"]}},"modified_at":"2025-08-22T18:02:30.143986805Z","resources_config":{"cloud_security_posture_management_collection":false,"extended_collection":true},"traces_config":{"xray_services":{"include_only":[]}}}}}'
+        body: '{"data":{"id":"02b58c50-6115-4767-9c71-12371078a073","type":"account","attributes":{"account_tags":["tag:tf-TestAccIntegrationAwsAccountKeyBased-local-1758619164"],"auth_config":{"access_key_id":"AKIA555299984998NEW"},"aws_account_id":"555299984998","aws_partition":"aws","aws_regions":{"include_all":true},"created_at":"2025-09-23T09:19:25.516449Z","logs_config":{"lambda_forwarder":{"lambdas":[],"sources":[],"log_source_config":{"tag_filters":[]}}},"metrics_config":{"enabled":true,"automute_enabled":true,"collect_custom_metrics":false,"collect_cloudwatch_alarms":false,"tag_filters":[],"namespace_filters":{"exclude_only":["AWS/SQS","AWS/ElasticMapReduce","AWS/Usage"]}},"modified_at":"2025-09-23T09:19:27.633754518Z","resources_config":{"cloud_security_posture_management_collection":false,"extended_collection":true},"traces_config":{"xray_services":{"include_only":[]}}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 449.221417ms
+        duration: 325.618333ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -155,7 +155,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/integration/aws/accounts/%22ddd87a6e-0499-4518-b2cc-66c3d62e22f3%22
+        url: https://api.datadoghq.com/api/v2/integration/aws/accounts/%2202b58c50-6115-4767-9c71-12371078a073%22
         method: GET
       response:
         proto: HTTP/1.1
@@ -165,13 +165,13 @@ interactions:
         trailer: {}
         content_length: 877
         uncompressed: false
-        body: '{"data":{"id":"ddd87a6e-0499-4518-b2cc-66c3d62e22f3","type":"account","attributes":{"account_tags":["tag:tf-TestAccIntegrationAwsAccountKeyBased-local-1755885747"],"auth_config":{"access_key_id":"AKIA101525699545NEW"},"aws_account_id":"101525699545","aws_partition":"aws","aws_regions":{"include_all":true},"created_at":"2025-08-22T18:02:28.659715Z","logs_config":{"lambda_forwarder":{"lambdas":[],"sources":[],"log_source_config":{"tag_filters":[]}}},"metrics_config":{"enabled":true,"automute_enabled":true,"collect_custom_metrics":false,"collect_cloudwatch_alarms":false,"tag_filters":[],"namespace_filters":{"exclude_only":["AWS/SQS","AWS/ElasticMapReduce","AWS/Usage"]}},"modified_at":"2025-08-22T18:02:30.143986Z","resources_config":{"cloud_security_posture_management_collection":false,"extended_collection":true},"traces_config":{"xray_services":{"include_only":[]}}}}}'
+        body: '{"data":{"id":"02b58c50-6115-4767-9c71-12371078a073","type":"account","attributes":{"account_tags":["tag:tf-TestAccIntegrationAwsAccountKeyBased-local-1758619164"],"auth_config":{"access_key_id":"AKIA555299984998NEW"},"aws_account_id":"555299984998","aws_partition":"aws","aws_regions":{"include_all":true},"created_at":"2025-09-23T09:19:25.516449Z","logs_config":{"lambda_forwarder":{"lambdas":[],"sources":[],"log_source_config":{"tag_filters":[]}}},"metrics_config":{"enabled":true,"automute_enabled":true,"collect_custom_metrics":false,"collect_cloudwatch_alarms":false,"tag_filters":[],"namespace_filters":{"exclude_only":["AWS/SQS","AWS/ElasticMapReduce","AWS/Usage"]}},"modified_at":"2025-09-23T09:19:27.633754Z","resources_config":{"cloud_security_posture_management_collection":false,"extended_collection":true},"traces_config":{"xray_services":{"include_only":[]}}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 124.148375ms
+        duration: 255.564375ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -188,7 +188,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/integration/aws/accounts/%22ddd87a6e-0499-4518-b2cc-66c3d62e22f3%22
+        url: https://api.datadoghq.com/api/v2/integration/aws/accounts/%2202b58c50-6115-4767-9c71-12371078a073%22
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -202,4 +202,4 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 251.398375ms
+        duration: 845.586ms

@@ -1,161 +1,308 @@
+---
 version: 2
 interactions:
-- request:
-    body: |
-      {"data":{"attributes":{"description":"an agent rule","enabled":true,"expression":"exec.file.name == \"java\"","name":"tf_TestAccDatadogCloudWorkloadSecurityAgentRule_local_1647036483"},"type":"agent_rule"}}
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/cloud_workload_security/agent_rules
-    method: POST
-    id: 0
-  response:
-    body: '{"data":{"attributes":{"category":"Process Activity","name":"tf_TestAccDatadogCloudWorkloadSecurityAgentRule_local_1647036483","creator":{"handle":"frog@datadoghq.com","name":null},"description":"an agent rule","enabled":true,"defaultRule":false,"version":1,"updater":{"handle":"frog@datadoghq.com","name":null},"updateDate":1647036484614,"creationDate":1647036484614,"expression":"exec.file.name == \"java\""},"type":"agent_rule","id":"mfz-hni-gvr"}}'
-    headers:
-      Content-Type:
-      - application/json;charset=utf-8
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/cloud_workload_security/agent_rules/mfz-hni-gvr
-    method: GET
-    id: 1
-  response:
-    body: '{"data":{"attributes":{"category":"Process Activity","name":"tf_TestAccDatadogCloudWorkloadSecurityAgentRule_local_1647036483","creator":{"handle":"frog@datadoghq.com","name":null},"description":"an agent rule","enabled":true,"defaultRule":false,"version":1,"updater":{"handle":"frog@datadoghq.com","name":null},"updateDate":1647036484614,"creationDate":1647036484614,"expression":"exec.file.name == \"java\""},"type":"agent_rule","id":"mfz-hni-gvr"}}'
-    headers:
-      Content-Type:
-      - application/json;charset=utf-8
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/cloud_workload_security/agent_rules/mfz-hni-gvr
-    method: GET
-    id: 2
-  response:
-    body: '{"data":{"attributes":{"category":"Process Activity","name":"tf_TestAccDatadogCloudWorkloadSecurityAgentRule_local_1647036483","creator":{"handle":"frog@datadoghq.com","name":null},"description":"an agent rule","enabled":true,"defaultRule":false,"version":1,"updater":{"handle":"frog@datadoghq.com","name":null},"updateDate":1647036484614,"creationDate":1647036484614,"expression":"exec.file.name == \"java\""},"type":"agent_rule","id":"mfz-hni-gvr"}}'
-    headers:
-      Content-Type:
-      - application/json;charset=utf-8
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/cloud_workload_security/agent_rules/mfz-hni-gvr
-    method: GET
-    id: 3
-  response:
-    body: '{"data":{"attributes":{"category":"Process Activity","name":"tf_TestAccDatadogCloudWorkloadSecurityAgentRule_local_1647036483","creator":{"handle":"frog@datadoghq.com","name":null},"description":"an agent rule","enabled":true,"defaultRule":false,"version":1,"updater":{"handle":"frog@datadoghq.com","name":null},"updateDate":1647036484614,"creationDate":1647036484614,"expression":"exec.file.name == \"java\""},"type":"agent_rule","id":"mfz-hni-gvr"}}'
-    headers:
-      Content-Type:
-      - application/json;charset=utf-8
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: |
-      {"data":{"attributes":{"description":"a new agent rule","enabled":false,"expression":"exec.file.name == \"go\""},"type":"agent_rule"}}
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/cloud_workload_security/agent_rules/mfz-hni-gvr
-    method: PATCH
-    id: 4
-  response:
-    body: '{"data":{"attributes":{"category":"Process Activity","name":"tf_TestAccDatadogCloudWorkloadSecurityAgentRule_local_1647036483","creator":{"handle":"frog@datadoghq.com","name":null},"description":"a new agent rule","enabled":false,"defaultRule":false,"version":2,"updater":{"handle":"frog@datadoghq.com","name":null},"updateDate":1647036486760,"creationDate":1647036484614,"expression":"exec.file.name == \"go\""},"type":"agent_rule","id":"mfz-hni-gvr"}}'
-    headers:
-      Content-Type:
-      - application/json;charset=utf-8
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/cloud_workload_security/agent_rules/mfz-hni-gvr
-    method: GET
-    id: 5
-  response:
-    body: '{"data":{"attributes":{"category":"Process Activity","name":"tf_TestAccDatadogCloudWorkloadSecurityAgentRule_local_1647036483","creator":{"handle":"frog@datadoghq.com","name":null},"description":"a new agent rule","enabled":false,"defaultRule":false,"version":2,"updater":{"handle":"frog@datadoghq.com","name":null},"updateDate":1647036486760,"creationDate":1647036484614,"expression":"exec.file.name == \"go\""},"type":"agent_rule","id":"mfz-hni-gvr"}}'
-    headers:
-      Content-Type:
-      - application/json;charset=utf-8
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/cloud_workload_security/agent_rules/mfz-hni-gvr
-    method: GET
-    id: 6
-  response:
-    body: '{"data":{"attributes":{"category":"Process Activity","name":"tf_TestAccDatadogCloudWorkloadSecurityAgentRule_local_1647036483","creator":{"handle":"frog@datadoghq.com","name":null},"description":"a new agent rule","enabled":false,"defaultRule":false,"version":2,"updater":{"handle":"frog@datadoghq.com","name":null},"updateDate":1647036486760,"creationDate":1647036484614,"expression":"exec.file.name == \"go\""},"type":"agent_rule","id":"mfz-hni-gvr"}}'
-    headers:
-      Content-Type:
-      - application/json;charset=utf-8
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/cloud_workload_security/agent_rules/mfz-hni-gvr
-    method: DELETE
-    id: 7
-  response:
-    body: ""
-    headers:
-      Content-Type:
-      - application/json;charset=utf-8
-    status: 204 No Content
-    code: 204
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/cloud_workload_security/agent_rules/mfz-hni-gvr
-    method: GET
-    id: 8
-  response:
-    body: '{"errors":["not_found(Agent rule not found: agentRuleId=mfz-hni-gvr)"]}'
-    headers:
-      Content-Type:
-      - application/json
-    status: 404 Not Found
-    code: 404
-    duration: "0ms"
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 207
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"description":"an agent rule","enabled":true,"expression":"exec.file.name == \"java\"","name":"tf_TestAccDatadogCloudWorkloadSecurityAgentRule_local_1758619289"},"type":"agent_rule"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/cloud_workload_security/agent_rules
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"ais-aj1-cu0","attributes":{"version":1,"name":"tf_TestAccDatadogCloudWorkloadSecurityAgentRule_local_1758619289","description":"an agent rule","expression":"exec.file.name == \"java\"","category":"Process Activity","defaultRule":false,"enabled":true,"creationAuthorUuId":"3ad549bf-eba0-11e9-a77a-0705486660d0","creationDate":1758619290437,"updateAuthorUuId":"3ad549bf-eba0-11e9-a77a-0705486660d0","updateDate":1758619290437,"filters":["os == \"linux\""],"actions":[],"agentConstraint":"","creator":{"name":"frog","handle":"frog@datadoghq.com"},"updater":{"name":"frog","handle":"frog@datadoghq.com"}},"type":"agent_rule"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 317.468208ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/cloud_workload_security/agent_rules/ais-aj1-cu0
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 637
+        uncompressed: false
+        body: '{"data":{"id":"ais-aj1-cu0","type":"agent_rule","attributes":{"actions":[],"agentConstraint":"","category":"Process Activity","creationAuthorUuId":"3ad549bf-eba0-11e9-a77a-0705486660d0","creationDate":1758619290437,"creator":{"name":"frog","handle":"frog@datadoghq.com"},"defaultRule":false,"description":"an agent rule","enabled":true,"expression":"exec.file.name == \"java\"","filters":["os == \"linux\""],"name":"tf_TestAccDatadogCloudWorkloadSecurityAgentRule_local_1758619289","updateAuthorUuId":"3ad549bf-eba0-11e9-a77a-0705486660d0","updateDate":1758619290437,"updater":{"name":"frog","handle":"frog@datadoghq.com"},"version":1}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 186.940041ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/cloud_workload_security/agent_rules/ais-aj1-cu0
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 637
+        uncompressed: false
+        body: '{"data":{"id":"ais-aj1-cu0","type":"agent_rule","attributes":{"actions":[],"agentConstraint":"","category":"Process Activity","creationAuthorUuId":"3ad549bf-eba0-11e9-a77a-0705486660d0","creationDate":1758619290437,"creator":{"name":"frog","handle":"frog@datadoghq.com"},"defaultRule":false,"description":"an agent rule","enabled":true,"expression":"exec.file.name == \"java\"","filters":["os == \"linux\""],"name":"tf_TestAccDatadogCloudWorkloadSecurityAgentRule_local_1758619289","updateAuthorUuId":"3ad549bf-eba0-11e9-a77a-0705486660d0","updateDate":1758619290437,"updater":{"name":"frog","handle":"frog@datadoghq.com"},"version":1}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 177.104542ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/cloud_workload_security/agent_rules/ais-aj1-cu0
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 637
+        uncompressed: false
+        body: '{"data":{"id":"ais-aj1-cu0","type":"agent_rule","attributes":{"actions":[],"agentConstraint":"","category":"Process Activity","creationAuthorUuId":"3ad549bf-eba0-11e9-a77a-0705486660d0","creationDate":1758619290437,"creator":{"name":"frog","handle":"frog@datadoghq.com"},"defaultRule":false,"description":"an agent rule","enabled":true,"expression":"exec.file.name == \"java\"","filters":["os == \"linux\""],"name":"tf_TestAccDatadogCloudWorkloadSecurityAgentRule_local_1758619289","updateAuthorUuId":"3ad549bf-eba0-11e9-a77a-0705486660d0","updateDate":1758619290437,"updater":{"name":"frog","handle":"frog@datadoghq.com"},"version":1}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 141.119ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 135
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"description":"a new agent rule","enabled":false,"expression":"exec.file.name == \"go\""},"type":"agent_rule"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/cloud_workload_security/agent_rules/ais-aj1-cu0
+        method: PATCH
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"ais-aj1-cu0","attributes":{"version":2,"name":"tf_TestAccDatadogCloudWorkloadSecurityAgentRule_local_1758619289","description":"a new agent rule","expression":"exec.file.name == \"go\"","category":"Process Activity","defaultRule":false,"enabled":false,"creationAuthorUuId":"3ad549bf-eba0-11e9-a77a-0705486660d0","creationDate":1758619290437,"updateAuthorUuId":"3ad549bf-eba0-11e9-a77a-0705486660d0","updateDate":1758619292882,"filters":["os == \"linux\""],"actions":[],"agentConstraint":"","creator":{"name":"frog","handle":"frog@datadoghq.com"},"updater":{"name":"frog","handle":"frog@datadoghq.com"}},"type":"agent_rule"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 263.130209ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/cloud_workload_security/agent_rules/ais-aj1-cu0
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 639
+        uncompressed: false
+        body: '{"data":{"id":"ais-aj1-cu0","type":"agent_rule","attributes":{"actions":[],"agentConstraint":"","category":"Process Activity","creationAuthorUuId":"3ad549bf-eba0-11e9-a77a-0705486660d0","creationDate":1758619290437,"creator":{"name":"frog","handle":"frog@datadoghq.com"},"defaultRule":false,"description":"a new agent rule","enabled":false,"expression":"exec.file.name == \"go\"","filters":["os == \"linux\""],"name":"tf_TestAccDatadogCloudWorkloadSecurityAgentRule_local_1758619289","updateAuthorUuId":"3ad549bf-eba0-11e9-a77a-0705486660d0","updateDate":1758619292882,"updater":{"name":"frog","handle":"frog@datadoghq.com"},"version":2}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 231.352083ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/cloud_workload_security/agent_rules/ais-aj1-cu0
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 639
+        uncompressed: false
+        body: '{"data":{"id":"ais-aj1-cu0","type":"agent_rule","attributes":{"actions":[],"agentConstraint":"","category":"Process Activity","creationAuthorUuId":"3ad549bf-eba0-11e9-a77a-0705486660d0","creationDate":1758619290437,"creator":{"name":"frog","handle":"frog@datadoghq.com"},"defaultRule":false,"description":"a new agent rule","enabled":false,"expression":"exec.file.name == \"go\"","filters":["os == \"linux\""],"name":"tf_TestAccDatadogCloudWorkloadSecurityAgentRule_local_1758619289","updateAuthorUuId":"3ad549bf-eba0-11e9-a77a-0705486660d0","updateDate":1758619292882,"updater":{"name":"frog","handle":"frog@datadoghq.com"},"version":2}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 349.1815ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/security_monitoring/cloud_workload_security/agent_rules/ais-aj1-cu0
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 173.018125ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/cloud_workload_security/agent_rules/ais-aj1-cu0
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 71
+        uncompressed: false
+        body: '{"errors":["not_found(Agent rule not found: agentRuleId=ais-aj1-cu0)"]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 156.937542ms

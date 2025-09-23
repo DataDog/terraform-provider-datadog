@@ -375,7 +375,7 @@ interactions:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 169.362292ms
+        duration: 150.258792ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -408,7 +408,7 @@ interactions:
                 - text/html; charset=utf-8
         status: 204 No Content
         code: 204
-        duration: 482.458666ms
+        duration: 206.8385ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -783,7 +783,7 @@ interactions:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 30.644084ms
+        duration: 5.19775ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -1158,7 +1158,7 @@ interactions:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 8.159417ms
+        duration: 4.113167ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -1171,7 +1171,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"display":{"message":true,"mute_buttons":true,"notified":true,"snapshot":true,"tags":true},"name":"#tfTestAccDatadogIntegrationSlackChannelImportlocal1743753018"}
+            {"display":{"message":true,"mute_buttons":true,"notified":true,"snapshot":true,"tags":true},"name":"#tfTestAccDatadogIntegrationSlackChannelImportlocal1758618660"}
         form: {}
         headers:
             Accept:
@@ -1190,13 +1190,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"name":"#tfTestAccDatadogIntegrationSlackChannelImportlocal1743753018","display":{"message":true,"snapshot":true,"tags":true,"notified":true,"mute_buttons":true}}
+            {"name":"#tfTestAccDatadogIntegrationSlackChannelImportlocal1758618660","display":{"message":true,"snapshot":true,"tags":true,"notified":true,"mute_buttons":true}}
         headers:
             Content-Type:
                 - application/json
         status: 201 Created
         code: 201
-        duration: 217.310458ms
+        duration: 201.087542ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -1213,7 +1213,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/integration/slack/configuration/accounts/test_account/channels/%23tfTestAccDatadogIntegrationSlackChannelImportlocal1743753018
+        url: https://api.datadoghq.com/api/v1/integration/slack/configuration/accounts/test_account/channels/%23tfTestAccDatadogIntegrationSlackChannelImportlocal1758618660
         method: GET
       response:
         proto: HTTP/1.1
@@ -1225,13 +1225,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"name":"#tfTestAccDatadogIntegrationSlackChannelImportlocal1743753018","display":{"message":true,"snapshot":true,"tags":true,"notified":true,"mute_buttons":true}}
+            {"name":"#tfTestAccDatadogIntegrationSlackChannelImportlocal1758618660","display":{"message":true,"snapshot":true,"tags":true,"notified":true,"mute_buttons":true}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 136.958625ms
+        duration: 149.559084ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -1248,7 +1248,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/integration/slack/configuration/accounts/test_account/channels/%23tfTestAccDatadogIntegrationSlackChannelImportlocal1743753018
+        url: https://api.datadoghq.com/api/v1/integration/slack/configuration/accounts/test_account/channels/%23tfTestAccDatadogIntegrationSlackChannelImportlocal1758618660
         method: GET
       response:
         proto: HTTP/1.1
@@ -1260,13 +1260,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"name":"#tfTestAccDatadogIntegrationSlackChannelImportlocal1743753018","display":{"message":true,"snapshot":true,"tags":true,"notified":true,"mute_buttons":true}}
+            {"name":"#tfTestAccDatadogIntegrationSlackChannelImportlocal1758618660","display":{"message":true,"snapshot":true,"tags":true,"notified":true,"mute_buttons":true}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 147.344875ms
+        duration: 149.254541ms
     - id: 7
       request:
         proto: HTTP/1.1
@@ -1283,7 +1283,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v1/integration/slack/configuration/accounts/test_account/channels/%23tfTestAccDatadogIntegrationSlackChannelImportlocal1743753018
+        url: https://api.datadoghq.com/api/v1/integration/slack/configuration/accounts/test_account/channels/%23tfTestAccDatadogIntegrationSlackChannelImportlocal1758618660
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -1299,4 +1299,4 @@ interactions:
                 - text/html; charset=utf-8
         status: 204 No Content
         code: 204
-        duration: 190.389583ms
+        duration: 188.245ms

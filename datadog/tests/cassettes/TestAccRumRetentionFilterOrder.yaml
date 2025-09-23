@@ -25,15 +25,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 597
+        content_length: 859
         uncompressed: false
-        body: '{"data":[{"id":"default_replays","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"Sessions with replays","query":"@session.has_replay:true","sample_rate":100},"meta":{"source":"default"}},{"id":"default_sessions","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"Sessions","query":"","sample_rate":100},"meta":{"source":"default"}},{"id":"default_errors","type":"retention_filters","attributes":{"enabled":true,"event_type":"error","name":"Sessions with errors","query":"","sample_rate":100},"meta":{"source":"default"}}]}'
+        body: '{"data":[{"id":"default_replays","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"Sessions with forced replays","query":"@session.has_forced_replay:true","sample_rate":100},"meta":{"source":"default","updated_at":1744729305268,"updated_by_handle":"Datadog","edition_mode":"limited"}},{"id":"default_sessions","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"Sessions","query":"","sample_rate":100},"meta":{"source":"default","updated_at":1743017137532,"updated_by_handle":"Datadog","edition_mode":"complete"}},{"id":"default_errors","type":"retention_filters","attributes":{"enabled":true,"event_type":"error","name":"Sessions with errors","query":"","sample_rate":100},"meta":{"source":"default","updated_at":1743017137532,"updated_by_handle":"Datadog","edition_mode":"complete"}}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 137.827166ms
+        duration: 141.002875ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -69,7 +69,7 @@ interactions:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 54.066833ms
+        duration: 342.633958ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -94,15 +94,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 597
+        content_length: 859
         uncompressed: false
-        body: '{"data":[{"id":"default_replays","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"Sessions with replays","query":"@session.has_replay:true","sample_rate":100},"meta":{"source":"default"}},{"id":"default_sessions","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"Sessions","query":"","sample_rate":100},"meta":{"source":"default"}},{"id":"default_errors","type":"retention_filters","attributes":{"enabled":true,"event_type":"error","name":"Sessions with errors","query":"","sample_rate":100},"meta":{"source":"default"}}]}'
+        body: '{"data":[{"id":"default_replays","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"Sessions with forced replays","query":"@session.has_forced_replay:true","sample_rate":100},"meta":{"source":"default","updated_at":1744729305268,"updated_by_handle":"Datadog","edition_mode":"limited"}},{"id":"default_sessions","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"Sessions","query":"","sample_rate":100},"meta":{"source":"default","updated_at":1743017137532,"updated_by_handle":"Datadog","edition_mode":"complete"}},{"id":"default_errors","type":"retention_filters","attributes":{"enabled":true,"event_type":"error","name":"Sessions with errors","query":"","sample_rate":100},"meta":{"source":"default","updated_at":1743017137532,"updated_by_handle":"Datadog","edition_mode":"complete"}}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 49.880375ms
+        duration: 133.780042ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -127,15 +127,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 597
+        content_length: 859
         uncompressed: false
-        body: '{"data":[{"id":"default_replays","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"Sessions with replays","query":"@session.has_replay:true","sample_rate":100},"meta":{"source":"default"}},{"id":"default_sessions","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"Sessions","query":"","sample_rate":100},"meta":{"source":"default"}},{"id":"default_errors","type":"retention_filters","attributes":{"enabled":true,"event_type":"error","name":"Sessions with errors","query":"","sample_rate":100},"meta":{"source":"default"}}]}'
+        body: '{"data":[{"id":"default_replays","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"Sessions with forced replays","query":"@session.has_forced_replay:true","sample_rate":100},"meta":{"source":"default","updated_at":1744729305268,"updated_by_handle":"Datadog","edition_mode":"limited"}},{"id":"default_sessions","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"Sessions","query":"","sample_rate":100},"meta":{"source":"default","updated_at":1743017137532,"updated_by_handle":"Datadog","edition_mode":"complete"}},{"id":"default_errors","type":"retention_filters","attributes":{"enabled":true,"event_type":"error","name":"Sessions with errors","query":"","sample_rate":100},"meta":{"source":"default","updated_at":1743017137532,"updated_by_handle":"Datadog","edition_mode":"complete"}}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 55.345375ms
+        duration: 135.968542ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -160,15 +160,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 597
+        content_length: 859
         uncompressed: false
-        body: '{"data":[{"id":"default_replays","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"Sessions with replays","query":"@session.has_replay:true","sample_rate":100},"meta":{"source":"default"}},{"id":"default_sessions","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"Sessions","query":"","sample_rate":100},"meta":{"source":"default"}},{"id":"default_errors","type":"retention_filters","attributes":{"enabled":true,"event_type":"error","name":"Sessions with errors","query":"","sample_rate":100},"meta":{"source":"default"}}]}'
+        body: '{"data":[{"id":"default_replays","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"Sessions with forced replays","query":"@session.has_forced_replay:true","sample_rate":100},"meta":{"source":"default","updated_at":1744729305268,"updated_by_handle":"Datadog","edition_mode":"limited"}},{"id":"default_sessions","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"Sessions","query":"","sample_rate":100},"meta":{"source":"default","updated_at":1743017137532,"updated_by_handle":"Datadog","edition_mode":"complete"}},{"id":"default_errors","type":"retention_filters","attributes":{"enabled":true,"event_type":"error","name":"Sessions with errors","query":"","sample_rate":100},"meta":{"source":"default","updated_at":1743017137532,"updated_by_handle":"Datadog","edition_mode":"complete"}}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 51.004458ms
+        duration: 141.99775ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -193,15 +193,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 597
+        content_length: 859
         uncompressed: false
-        body: '{"data":[{"id":"default_replays","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"Sessions with replays","query":"@session.has_replay:true","sample_rate":100},"meta":{"source":"default"}},{"id":"default_sessions","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"Sessions","query":"","sample_rate":100},"meta":{"source":"default"}},{"id":"default_errors","type":"retention_filters","attributes":{"enabled":true,"event_type":"error","name":"Sessions with errors","query":"","sample_rate":100},"meta":{"source":"default"}}]}'
+        body: '{"data":[{"id":"default_replays","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"Sessions with forced replays","query":"@session.has_forced_replay:true","sample_rate":100},"meta":{"source":"default","updated_at":1744729305268,"updated_by_handle":"Datadog","edition_mode":"limited"}},{"id":"default_sessions","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"Sessions","query":"","sample_rate":100},"meta":{"source":"default","updated_at":1743017137532,"updated_by_handle":"Datadog","edition_mode":"complete"}},{"id":"default_errors","type":"retention_filters","attributes":{"enabled":true,"event_type":"error","name":"Sessions with errors","query":"","sample_rate":100},"meta":{"source":"default","updated_at":1743017137532,"updated_by_handle":"Datadog","edition_mode":"complete"}}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 56.318584ms
+        duration: 131.885208ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -226,15 +226,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 597
+        content_length: 859
         uncompressed: false
-        body: '{"data":[{"id":"default_replays","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"Sessions with replays","query":"@session.has_replay:true","sample_rate":100},"meta":{"source":"default"}},{"id":"default_sessions","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"Sessions","query":"","sample_rate":100},"meta":{"source":"default"}},{"id":"default_errors","type":"retention_filters","attributes":{"enabled":true,"event_type":"error","name":"Sessions with errors","query":"","sample_rate":100},"meta":{"source":"default"}}]}'
+        body: '{"data":[{"id":"default_replays","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"Sessions with forced replays","query":"@session.has_forced_replay:true","sample_rate":100},"meta":{"source":"default","updated_at":1744729305268,"updated_by_handle":"Datadog","edition_mode":"limited"}},{"id":"default_sessions","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"Sessions","query":"","sample_rate":100},"meta":{"source":"default","updated_at":1743017137532,"updated_by_handle":"Datadog","edition_mode":"complete"}},{"id":"default_errors","type":"retention_filters","attributes":{"enabled":true,"event_type":"error","name":"Sessions with errors","query":"","sample_rate":100},"meta":{"source":"default","updated_at":1743017137532,"updated_by_handle":"Datadog","edition_mode":"complete"}}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 46.488458ms
+        duration: 137.949125ms
     - id: 7
       request:
         proto: HTTP/1.1
@@ -259,12 +259,12 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 597
+        content_length: 859
         uncompressed: false
-        body: '{"data":[{"id":"default_replays","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"Sessions with replays","query":"@session.has_replay:true","sample_rate":100},"meta":{"source":"default"}},{"id":"default_sessions","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"Sessions","query":"","sample_rate":100},"meta":{"source":"default"}},{"id":"default_errors","type":"retention_filters","attributes":{"enabled":true,"event_type":"error","name":"Sessions with errors","query":"","sample_rate":100},"meta":{"source":"default"}}]}'
+        body: '{"data":[{"id":"default_replays","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"Sessions with forced replays","query":"@session.has_forced_replay:true","sample_rate":100},"meta":{"source":"default","updated_at":1744729305268,"updated_by_handle":"Datadog","edition_mode":"limited"}},{"id":"default_sessions","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"Sessions","query":"","sample_rate":100},"meta":{"source":"default","updated_at":1743017137532,"updated_by_handle":"Datadog","edition_mode":"complete"}},{"id":"default_errors","type":"retention_filters","attributes":{"enabled":true,"event_type":"error","name":"Sessions with errors","query":"","sample_rate":100},"meta":{"source":"default","updated_at":1743017137532,"updated_by_handle":"Datadog","edition_mode":"complete"}}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 48.526083ms
+        duration: 275.125708ms

@@ -1,84 +1,148 @@
+---
 version: 2
 interactions:
-- request:
-    body: |
-      {
-         "title": "tf-TestAccDatadogDashboardJSONNoDiff-local-1682003475",
-         "description": "",
-         "widgets": [],
-         "template_variables": [],
-         "layout_type": "ordered",
-         "notify_list": [],
-         "reflow_type": "fixed",
-         "id": "3fa-nkp-wty"
-      }
-    form: {}
-    headers:
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard
-    method: POST
-    id: 0
-  response:
-    body: |
-      {"id":"nw2-rks-35b","title":"tf-TestAccDatadogDashboardJSONNoDiff-local-1682003475","description":"","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/nw2-rks-35b/tf-testaccdatadogdashboardjsonnodiff-local-1682003475","is_read_only":false,"template_variables":[],"widgets":[],"notify_list":[],"created_at":"2023-04-20T15:11:16.381034+00:00","modified_at":"2023-04-20T15:11:16.381034+00:00","reflow_type":"fixed"}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/nw2-rks-35b
-    method: GET
-    id: 1
-  response:
-    body: |
-      {"id":"nw2-rks-35b","title":"tf-TestAccDatadogDashboardJSONNoDiff-local-1682003475","description":"","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/nw2-rks-35b/tf-testaccdatadogdashboardjsonnodiff-local-1682003475","is_read_only":false,"template_variables":[],"widgets":[],"notify_list":[],"created_at":"2023-04-20T15:11:16.381034+00:00","modified_at":"2023-04-20T15:11:16.381034+00:00","reflow_type":"fixed"}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/nw2-rks-35b
-    method: GET
-    id: 2
-  response:
-    body: |
-      {"id":"nw2-rks-35b","title":"tf-TestAccDatadogDashboardJSONNoDiff-local-1682003475","description":"","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/nw2-rks-35b/tf-testaccdatadogdashboardjsonnodiff-local-1682003475","is_read_only":false,"template_variables":[],"widgets":[],"notify_list":[],"created_at":"2023-04-20T15:11:16.381034+00:00","modified_at":"2023-04-20T15:11:16.381034+00:00","reflow_type":"fixed"}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/nw2-rks-35b
-    method: DELETE
-    id: 3
-  response:
-    body: |
-      {"deleted_dashboard_id":"nw2-rks-35b"}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 243
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {
+               "title": "tf-TestAccDatadogDashboardJSONNoDiff-local-1758619323",
+               "description": "",
+               "widgets": [],
+               "template_variables": [],
+               "layout_type": "ordered",
+               "notify_list": [],
+               "reflow_type": "fixed",
+               "id": "3fa-nkp-wty"
+            }
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"f7x-cdc-zf4","title":"tf-TestAccDatadogDashboardJSONNoDiff-local-1758619323","description":"","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/f7x-cdc-zf4/tf-testaccdatadogdashboardjsonnodiff-local-1758619323","template_variables":[],"widgets":[],"notify_list":[],"created_at":"2025-09-23T09:22:06.441146+00:00","modified_at":"2025-09-23T09:22:06.441146+00:00","reflow_type":"fixed"}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 436.917792ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/f7x-cdc-zf4
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 441
+        uncompressed: false
+        body: '{"id":"f7x-cdc-zf4","title":"tf-TestAccDatadogDashboardJSONNoDiff-local-1758619323","description":"","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/f7x-cdc-zf4/tf-testaccdatadogdashboardjsonnodiff-local-1758619323","template_variables":[],"widgets":[],"notify_list":[],"created_at":"2025-09-23T09:22:06.441146+00:00","modified_at":"2025-09-23T09:22:06.441146+00:00","reflow_type":"fixed"}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 211.91825ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/f7x-cdc-zf4
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 441
+        uncompressed: false
+        body: '{"id":"f7x-cdc-zf4","title":"tf-TestAccDatadogDashboardJSONNoDiff-local-1758619323","description":"","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/f7x-cdc-zf4/tf-testaccdatadogdashboardjsonnodiff-local-1758619323","template_variables":[],"widgets":[],"notify_list":[],"created_at":"2025-09-23T09:22:06.441146+00:00","modified_at":"2025-09-23T09:22:06.441146+00:00","reflow_type":"fixed"}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 195.110041ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/f7x-cdc-zf4
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"deleted_dashboard_id":"f7x-cdc-zf4"}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 268.392708ms
