@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
@@ -45,23 +47,19 @@ func checkDatadogIntegrationAWSExternalIDDataSource(accProvider *fwprovider.Fram
 		auth := accProvider.Auth
 
 		// List accounts and find the one for 123456789012
-		accountsResp, _, err := api.ListAWSAccounts(auth)
+		optionalParams := datadogV2.NewListAWSAccountsOptionalParameters().WithAwsAccountId("123456789012")
+		accountsResp, _, err := api.ListAWSAccounts(auth, *optionalParams)
 		if err != nil {
 			return err
 		}
 
 		expectedExternalID := ""
-		for _, item := range accountsResp.Data {
-			attrs := item.GetAttributes()
-			if attrs.GetAwsAccountId() != "123456789012" {
-				continue
-			}
+		if len(accountsResp.Data) > 0 {
+			attrs := accountsResp.Data[0].GetAttributes()
 			authConfig, ok := attrs.GetAuthConfigOk()
-			if !ok || authConfig.AWSAuthConfigRole == nil {
-				continue
+			if ok && authConfig.AWSAuthConfigRole != nil {
+				expectedExternalID = authConfig.AWSAuthConfigRole.GetExternalId()
 			}
-			expectedExternalID = authConfig.AWSAuthConfigRole.GetExternalId()
-			break
 		}
 
 		if expectedExternalID == "" {

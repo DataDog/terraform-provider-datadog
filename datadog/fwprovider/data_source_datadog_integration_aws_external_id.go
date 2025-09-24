@@ -27,7 +27,6 @@ type awsIntegrationExternalIDDataSourceModel struct {
 	ID           types.String `tfsdk:"id"`
 	AwsAccountId types.String `tfsdk:"aws_account_id"`
 	ExternalId   types.String `tfsdk:"external_id"`
-	AwsPartition types.String `tfsdk:"aws_partition"`
 }
 
 type awsIntegrationExternalIDDataSource struct {
@@ -62,13 +61,6 @@ func (d *awsIntegrationExternalIDDataSource) Schema(_ context.Context, _ datasou
 				Description: "The external ID associated with the AWS integration.",
 				Computed:    true,
 			},
-			"aws_partition": schema.StringAttribute{
-				Description: "Optional AWS account partition to disambiguate when multiple integrations exist for the same account ID.",
-				Optional:    true,
-				Validators: []validator.String{
-					stringvalidator.OneOf("aws", "aws-cn", "aws-us-gov"),
-				},
-			},
 		},
 	}
 }
@@ -82,8 +74,9 @@ func (d *awsIntegrationExternalIDDataSource) Read(ctx context.Context, req datas
 
 	awsAccountId := state.AwsAccountId.ValueString()
 
-	// Retrieve AWS account integrations and filter to the requested account ID (and partition, if provided)
-	accountsResp, httpResp, err := d.Api.ListAWSAccounts(d.Auth)
+	// Retrieve AWS account integration for the specific account ID
+	optionalParams := datadogV2.NewListAWSAccountsOptionalParameters().WithAwsAccountId(awsAccountId)
+	accountsResp, httpResp, err := d.Api.ListAWSAccounts(d.Auth, *optionalParams)
 	if err != nil {
 		resp.Diagnostics.Append(utils.FrameworkErrorDiag(utils.TranslateClientError(err, httpResp, "error querying AWS Account Integrations"), ""))
 		return
@@ -93,45 +86,25 @@ func (d *awsIntegrationExternalIDDataSource) Read(ctx context.Context, req datas
 		return
 	}
 
-	// Filter by aws_account_id and optional partition
-	var matches []datadogV2.AWSAccountResponseData
-	for _, item := range accountsResp.GetData() {
-		attrs := item.GetAttributes()
-		if attrs.GetAwsAccountId() != awsAccountId {
-			continue
-		}
-		if !state.AwsPartition.IsNull() && state.AwsPartition.ValueString() != "" {
-			if string(attrs.GetAwsPartition()) != state.AwsPartition.ValueString() {
-				continue
-			}
-		}
-		matches = append(matches, item)
-	}
-
-	if len(matches) == 0 {
-		if !state.AwsPartition.IsNull() && state.AwsPartition.ValueString() != "" {
-			resp.Diagnostics.AddError(
-				"AWS Integration not found",
-				fmt.Sprintf("No AWS integration found for account ID %s in partition %s", awsAccountId, state.AwsPartition.ValueString()),
-			)
-		} else {
-			resp.Diagnostics.AddError(
-				"AWS Integration not found",
-				fmt.Sprintf("No AWS integration found for account ID: %s", awsAccountId),
-			)
-		}
+	// Check if we got exactly one account back
+	accounts := accountsResp.GetData()
+	if len(accounts) == 0 {
+		resp.Diagnostics.AddError(
+			"AWS Integration not found",
+			fmt.Sprintf("No AWS integration found for account ID: %s", awsAccountId),
+		)
 		return
 	}
-	if len(matches) > 1 && (state.AwsPartition.IsNull() || state.AwsPartition.ValueString() == "") {
+	if len(accounts) > 1 {
 		resp.Diagnostics.AddError(
 			"Multiple AWS Integrations found",
-			fmt.Sprintf("Multiple integrations found for account ID %s; specify aws_partition to disambiguate", awsAccountId),
+			fmt.Sprintf("Unexpected: Multiple integrations found for account ID %s", awsAccountId),
 		)
 		return
 	}
 
-	// At this point, select the first (or only) match
-	target := matches[0]
+	// Get the single account
+	target := accounts[0]
 	attributes := target.GetAttributes()
 	authConfig, ok := attributes.GetAuthConfigOk()
 	if !ok {
