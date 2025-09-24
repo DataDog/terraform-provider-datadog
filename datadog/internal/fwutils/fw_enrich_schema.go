@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	datasourceSchema "github.com/hashicorp/terraform-plugin-framework/datasource/schema"
+	ephemeralSchema "github.com/hashicorp/terraform-plugin-framework/ephemeral/schema"
 	resourceSchema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 )
@@ -114,6 +115,58 @@ func enrichDatasourceDescription(r any) datasourceSchema.Attribute {
 		return v
 	default:
 		return r.(datasourceSchema.Attribute)
+	}
+}
+
+// =============================================================================
+// EPHEMERAL SCHEMA ENRICHMENT FUNCTIONS
+// =============================================================================
+
+func EnrichFrameworkEphemeralResourceSchema(s *ephemeralSchema.Schema) {
+	for i, attr := range s.Attributes {
+		s.Attributes[i] = enrichEphemeralDescription(attr)
+	}
+	enrichEphemeralMapBlocks(s.Blocks)
+}
+
+func enrichEphemeralMapBlocks(blocks map[string]ephemeralSchema.Block) {
+	for _, block := range blocks {
+		switch v := block.(type) {
+		case ephemeralSchema.ListNestedBlock:
+			for i, attr := range v.NestedObject.Attributes {
+				v.NestedObject.Attributes[i] = enrichEphemeralDescription(attr)
+			}
+			enrichEphemeralMapBlocks(v.NestedObject.Blocks)
+		case ephemeralSchema.SingleNestedBlock:
+			for i, attr := range v.Attributes {
+				v.Attributes[i] = enrichEphemeralDescription(attr)
+			}
+			enrichEphemeralMapBlocks(v.Blocks)
+		case ephemeralSchema.SetNestedBlock:
+			for i, attr := range v.NestedObject.Attributes {
+				v.NestedObject.Attributes[i] = enrichEphemeralDescription(attr)
+			}
+			enrichEphemeralMapBlocks(v.NestedObject.Blocks)
+		}
+	}
+}
+
+func enrichEphemeralDescription(r any) ephemeralSchema.Attribute {
+	switch v := r.(type) {
+	case ephemeralSchema.StringAttribute:
+		buildEnrichedSchemaDescription(reflect.ValueOf(&v))
+		return v
+	case ephemeralSchema.Int64Attribute:
+		buildEnrichedSchemaDescription(reflect.ValueOf(&v))
+		return v
+	case ephemeralSchema.Float64Attribute:
+		buildEnrichedSchemaDescription(reflect.ValueOf(&v))
+		return v
+	case ephemeralSchema.BoolAttribute:
+		buildEnrichedSchemaDescription(reflect.ValueOf(&v))
+		return v
+	default:
+		return r.(ephemeralSchema.Attribute)
 	}
 }
 
