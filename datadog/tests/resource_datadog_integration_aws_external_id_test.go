@@ -20,6 +20,7 @@ func TestAccIntegrationAwsExternalIDBasic(t *testing.T) {
 			{
 				Config: testAccCheckDatadogIntegrationAwsExternalID(),
 				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttrSet("datadog_integration_aws_external_id.foo", "id"),
 					testAccCheckDatadogIntegrationAwsExternalID_Create(providers.frameworkProvider),
 				),
 			},

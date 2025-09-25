@@ -67,6 +67,20 @@ func buildFrameworkDatadogClient(ctx context.Context, httpClient *http.Client) *
 	config.SetUnstableOperationEnabled("v2.UpdateIncidentType", true)
 	config.SetUnstableOperationEnabled("v2.DeleteIncidentType", true)
 
+	// Enable IncidentNotificationTemplate
+	config.SetUnstableOperationEnabled("v2.CreateIncidentNotificationTemplate", true)
+	config.SetUnstableOperationEnabled("v2.GetIncidentNotificationTemplate", true)
+	config.SetUnstableOperationEnabled("v2.UpdateIncidentNotificationTemplate", true)
+	config.SetUnstableOperationEnabled("v2.DeleteIncidentNotificationTemplate", true)
+	config.SetUnstableOperationEnabled("v2.ListIncidentNotificationTemplates", true)
+
+	// Enable IncidentNotificationRule
+	config.SetUnstableOperationEnabled("v2.CreateIncidentNotificationRule", true)
+	config.SetUnstableOperationEnabled("v2.GetIncidentNotificationRule", true)
+	config.SetUnstableOperationEnabled("v2.UpdateIncidentNotificationRule", true)
+	config.SetUnstableOperationEnabled("v2.DeleteIncidentNotificationRule", true)
+	config.SetUnstableOperationEnabled("v2.ListIncidentNotificationRules", true)
+
 	if ctx.Value("http_retry_enable") == true {
 		config.RetryConfiguration.EnableRetry = true
 	}
@@ -168,4 +182,13 @@ func initHttpClient(ctx context.Context, t *testing.T) (context.Context, *http.C
 	})
 
 	return ctx, httpClient
+}
+
+func withDefaultTagsFw(ctx context.Context, providers *compositeProviderStruct, defaultTags map[string]string) func() (tfprotov5.ProviderServer, error) {
+	return func() (tfprotov5.ProviderServer, error) {
+		providers.frameworkProvider.DefaultTags = defaultTags
+		muxServer, err := tf5muxserver.NewMuxServer(ctx,
+			providerserver.NewProtocol5(providers.frameworkProvider), providers.sdkV2Provider.GRPCProvider)
+		return muxServer, err
+	}
 }

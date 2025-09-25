@@ -831,6 +831,10 @@ Optional:
 - `subtype` (String) The subtype of the Synthetic multistep API test step. Valid values are `http`, `grpc`, `ssl`, `dns`, `tcp`, `udp`, `icmp`, `websocket`, `wait`. Defaults to `"http"`.
 - `value` (Number) The time to wait in seconds. Minimum value: 0. Maximum value: 180.
 
+Read-Only:
+
+- `id` (String) ID of the step.
+
 <a id="nestedblock--api_step--assertion"></a>
 ### Nested Schema for `api_step.assertion`
 
@@ -1350,7 +1354,7 @@ Optional:
 - `check` (String) Check type to use for an assertion step. Valid values are `equals`, `notEquals`, `contains`, `notContains`, `startsWith`, `notStartsWith`, `greater`, `lower`, `greaterEquals`, `lowerEquals`, `matchRegex`, `between`, `isEmpty`, `notIsEmpty`.
 - `delay` (Number) Delay between each key stroke for a "type test" step.
 - `direction` (String) Valid values are `up`, `down`, `left`, `right`.
-- `element` (Block List, Max: 1) Element to use for the step, JSON encoded string. (see [below for nested schema](#nestedblock--mobile_step--params--element))
+- `element` (Block List, Max: 1) Element to use for the step (see [below for nested schema](#nestedblock--mobile_step--params--element))
 - `enable` (Boolean)
 - `max_scrolls` (Number)
 - `positions` (Block List) (see [below for nested schema](#nestedblock--mobile_step--params--positions))

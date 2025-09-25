@@ -1,3 +1,48 @@
+## 3.74.0 (September 17, 2025)
+
+### BUGFIXES
+* [datadog_security_monitoring_rule] Handle empty vs null for security monitoring reference table deletion by @paul-hf in https://github.com/DataDog/terraform-provider-datadog/pull/3192
+* [datadog_metric_tags] fix: data source incorrect metric name by @bharling in https://github.com/DataDog/terraform-provider-datadog/pull/3220
+* [datadog_team_membership] Remove resource from state if not found by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/3228
+### IMPROVEMENTS
+* [datadog_security_monitoring_suppression] Add Suppressions Validation during TF Plan by @clementgbcn in https://github.com/DataDog/terraform-provider-datadog/pull/3203
+* [datadog_synthetics_test] Keep Synthetics multistep test steps id in state by @romainberger in https://github.com/DataDog/terraform-provider-datadog/pull/3204
+### FEATURES
+* [datadog_incident_notification_template] Add datadog_incident_notification_template resource and datasource by @codhah92 in https://github.com/DataDog/terraform-provider-datadog/pull/3218
+* [datadog_incident_notification_rule] Add incident notification rule tf resource & data source by @codhah92 in https://github.com/DataDog/terraform-provider-datadog/pull/3224
+* [datadog_monitor] Migrate datadog_monitor to plugin framework by @shaneyuandd in https://github.com/DataDog/terraform-provider-datadog/pull/3161
+* [datadog_integration_gcp] [datadog_integration_gcp_sts] Add monitored_resource_configs to v1 and v2 terraform modules by @ash-ddog in https://github.com/DataDog/terraform-provider-datadog/pull/3219
+* [datadog_security_monitoring_rule] Support Cloud SIEM scheduled rules by @pietrodll in https://github.com/DataDog/terraform-provider-datadog/pull/3181
+
+## New Contributors
+* @Datadog-MartinG made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3208
+* @ash-ddog made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3219
+* @Matt-Cam made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3217
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.73.0...v3.74.0
+
+## 3.73.0 (September 3, 2025)
+
+### BUGFIXES
+* [datadog_service_account] Add pagination support for datadog_service_account data by @shuheiktgw in https://github.com/DataDog/terraform-provider-datadog/pull/3172
+### IMPROVEMENTS
+* [datadog_synthetics_test] Make port in synthetic tests support both int and string by @HantingZhang2 in https://github.com/DataDog/terraform-provider-datadog/pull/3194
+### FEATURES
+* [datadog_integration_aws_account] Add support for log_source_config by @ktmq in https://github.com/DataDog/terraform-provider-datadog/pull/3173
+* [datadog_metric_active_tags_and_aggregations] add `datadog_metric_active_tags_and_aggregations` data source by @mdb in https://github.com/DataDog/terraform-provider-datadog/pull/3103
+* [datadog_integration_aws_account] Disable AWS/Usage metric collection by default by @joaquinrios in https://github.com/DataDog/terraform-provider-datadog/pull/3156
+* [datadog_rum_application] Add Product Scales support by @jasonscottdatadog in https://github.com/DataDog/terraform-provider-datadog/pull/3185
+* [datadog_sensitive_data_scanner_group] Add support for SDS `should_save_match` by @fuchsnj in https://github.com/DataDog/terraform-provider-datadog/pull/3189
+
+## New Contributors
+* @joaquinrios made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3156
+* @tquidetdd made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3182
+* @jasonscottdatadog made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3185
+* @fuchsnj made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3189
+* @diogocp made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3200
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.72.0...v3.73.0
+
 ## 3.72.0 (August 20, 2025)
 
 ### BUGFIXES

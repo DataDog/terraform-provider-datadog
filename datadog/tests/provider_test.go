@@ -67,6 +67,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/data_source_datadog_integration_aws_logs_services_test":           "integration-aws",
 	"tests/data_source_datadog_integration_aws_available_logs_services_test": "integration-aws",
 	"tests/data_source_datadog_integration_aws_available_namespaces_test":    "integration-aws",
+	"tests/data_source_datadog_integration_aws_external_id_test":             "integration-aws",
 	"tests/data_source_datadog_integration_aws_namespace_rules_test":         "integration-aws",
 	"tests/data_source_datadog_integration_aws_iam_permissions_test":         "integration-aws",
 	"tests/data_source_datadog_ip_ranges_test":                               "ip-ranges",
@@ -236,6 +237,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_metric_metadata_test":                            "metrics",
 	"tests/resource_datadog_metric_tag_configuration_test":                   "metrics",
 	"tests/resource_datadog_monitor_config_policy_test":                      "monitor-config-policies",
+	"tests/resource_datadog_monitor_fwprovider_test":                         "monitors",
 	"tests/resource_datadog_monitor_json_test":                               "monitors-json",
 	"tests/resource_datadog_monitor_notification_rule_test":                  "monitor-notification-rule",
 	"tests/resource_datadog_monitor_test":                                    "monitors",
@@ -243,6 +245,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_on_call_schedule_test":                           "on-call",
 	"tests/resource_datadog_on_call_team_routing_rules_test":                 "on-call",
 	"tests/resource_datadog_organization_settings_test":                      "organization",
+	"tests/resource_datadog_org_connection_test":                             "org_connection",
 	"tests/resource_datadog_restriction_policy_test":                         "restriction-policy",
 	"tests/resource_datadog_role_test":                                       "roles",
 	"tests/resource_datadog_rum_application_test":                            "rum-application",
@@ -285,6 +288,10 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_app_key_registration_test":                       "app_key_registration",
 	"tests/resource_datadog_incident_type_test":                              "incidents",
 	"tests/data_source_datadog_incident_type_test":                           "incidents",
+	"tests/resource_datadog_incident_notification_template_test":             "incidents",
+	"tests/data_source_datadog_incident_notification_template_test":          "incidents",
+	"tests/resource_datadog_incident_notification_rule_test":                 "incidents",
+	"tests/data_source_datadog_incident_notification_rule_test":              "incidents",
 }
 
 // getEndpointTagValue traverses callstack frames to find the test function that invoked this call;

@@ -4,13 +4,13 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
+	"reflect"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
@@ -61,26 +61,26 @@ func (r *securityMonitoringRuleJSONResource) ImportState(ctx context.Context, re
 }
 
 // Helper to recursively filter API response to only user-supplied fields
-func filterToUserFields(user interface{}, api interface{}) interface{} {
+func filterToUserFields(user any, api any) any {
 	switch userVal := user.(type) {
-	case map[string]interface{}:
-		apiMap, ok := api.(map[string]interface{})
+	case map[string]any:
+		apiMap, ok := api.(map[string]any)
 		if !ok {
 			return user
 		}
-		filtered := make(map[string]interface{})
+		filtered := make(map[string]any)
 		for k, v := range userVal {
 			if apiV, ok := apiMap[k]; ok {
 				filtered[k] = filterToUserFields(v, apiV)
 			}
 		}
 		return filtered
-	case []interface{}:
-		apiArr, ok := api.([]interface{})
+	case []any:
+		apiArr, ok := api.([]any)
 		if !ok {
 			return user
 		}
-		filteredArr := make([]interface{}, len(userVal))
+		filteredArr := make([]any, len(userVal))
 		for i := range userVal {
 			if i < len(apiArr) {
 				filteredArr[i] = filterToUserFields(userVal[i], apiArr[i])
@@ -95,15 +95,15 @@ func filterToUserFields(user interface{}, api interface{}) interface{} {
 }
 
 func (r *securityMonitoringRuleJSONResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
-	var state securityMonitoringRuleJSONModel
-	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
+	var plan securityMonitoringRuleJSONModel
+	response.Diagnostics.Append(request.Plan.Get(ctx, &plan)...)
 	if response.Diagnostics.HasError() {
 		return
 	}
 
-	// Parse user JSON into a map
-	var userRule map[string]interface{}
-	if err := json.Unmarshal([]byte(state.JSON.ValueString()), &userRule); err != nil {
+	// Build payload from the PLANNED JSON
+	var userRule map[string]any
+	if err := json.Unmarshal([]byte(plan.JSON.ValueString()), &userRule); err != nil {
 		response.Diagnostics.AddError("Failed to parse JSON", err.Error())
 		return
 	}
@@ -130,33 +130,7 @@ func (r *securityMonitoringRuleJSONResource) Create(ctx context.Context, request
 		return
 	}
 
-	var apiRule map[string]interface{}
-	if res.SecurityMonitoringStandardRuleResponse != nil {
-		jsonBytes, err = json.Marshal(res.SecurityMonitoringStandardRuleResponse)
-	} else if res.SecurityMonitoringSignalRuleResponse != nil {
-		jsonBytes, err = json.Marshal(res.SecurityMonitoringSignalRuleResponse)
-	} else {
-		response.Diagnostics.AddError("Invalid response", "Response did not contain a rule")
-		return
-	}
-	if err != nil {
-		response.Diagnostics.AddError("Failed to marshal response", err.Error())
-		return
-	}
-
-	if err := json.Unmarshal(jsonBytes, &apiRule); err != nil {
-		response.Diagnostics.AddError("Failed to parse response", err.Error())
-		return
-	}
-
-	// Filter API response to only user-supplied fields
-	filtered := filterToUserFields(userRule, apiRule)
-	jsonBytes, err = json.Marshal(filtered)
-	if err != nil {
-		response.Diagnostics.AddError("Failed to marshal filtered response", err.Error())
-		return
-	}
-	state.JSON = types.StringValue(string(jsonBytes))
+	var state securityMonitoringRuleJSONModel
 	if res.SecurityMonitoringStandardRuleResponse != nil {
 		state.ID = types.StringValue(res.SecurityMonitoringStandardRuleResponse.GetId())
 	} else if res.SecurityMonitoringSignalRuleResponse != nil {
@@ -165,6 +139,8 @@ func (r *securityMonitoringRuleJSONResource) Create(ctx context.Context, request
 		response.Diagnostics.AddError("Invalid response", "Response did not contain an ID")
 		return
 	}
+
+	state.JSON = plan.JSON
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
@@ -189,13 +165,13 @@ func (r *securityMonitoringRuleJSONResource) Read(ctx context.Context, request r
 		return
 	}
 
-	var userRule map[string]interface{}
+	var userRule map[string]any
 	if err := json.Unmarshal([]byte(state.JSON.ValueString()), &userRule); err != nil {
 		response.Diagnostics.AddError("Failed to parse state JSON", err.Error())
 		return
 	}
 
-	var apiRule map[string]interface{}
+	var apiRule map[string]any
 	var jsonBytes []byte
 	if res.SecurityMonitoringStandardRuleResponse != nil {
 		jsonBytes, err = json.Marshal(res.SecurityMonitoringStandardRuleResponse)
@@ -215,25 +191,34 @@ func (r *securityMonitoringRuleJSONResource) Read(ctx context.Context, request r
 		return
 	}
 
+	// Prevent spurious plan updates when Datadog adds new default fields.
+	// Filter the API object to user-defined fields and compare semantically.
 	filtered := filterToUserFields(userRule, apiRule)
-	jsonBytes, err = json.Marshal(filtered)
-	if err != nil {
-		response.Diagnostics.AddError("Failed to marshal filtered response", err.Error())
-		return
+	if !reflect.DeepEqual(filtered, userRule) {
+		jsonBytes, err = json.Marshal(filtered)
+		if err != nil {
+			response.Diagnostics.AddError("Failed to marshal filtered response", err.Error())
+			return
+		}
+		state.JSON = types.StringValue(string(jsonBytes))
 	}
-	state.JSON = types.StringValue(string(jsonBytes))
+
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
 func (r *securityMonitoringRuleJSONResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
-	var state securityMonitoringRuleJSONModel
-	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
+	var plan securityMonitoringRuleJSONModel
+	var prior securityMonitoringRuleJSONModel
+	response.Diagnostics.Append(request.Plan.Get(ctx, &plan)...)
+	response.Diagnostics.Append(request.State.Get(ctx, &prior)...)
 	if response.Diagnostics.HasError() {
 		return
 	}
 
-	var userRule map[string]interface{}
-	if err := json.Unmarshal([]byte(state.JSON.ValueString()), &userRule); err != nil {
+	id := prior.ID.ValueString()
+
+	var userRule map[string]any
+	if err := json.Unmarshal([]byte(plan.JSON.ValueString()), &userRule); err != nil {
 		response.Diagnostics.AddError("Failed to parse JSON", err.Error())
 		return
 	}
@@ -249,7 +234,7 @@ func (r *securityMonitoringRuleJSONResource) Update(ctx context.Context, request
 		return
 	}
 
-	res, httpResp, err := r.Api.UpdateSecurityMonitoringRule(r.Auth, state.ID.ValueString(), payload)
+	res, httpResp, err := r.Api.UpdateSecurityMonitoringRule(r.Auth, id, payload)
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(utils.TranslateClientError(err, httpResp, "error updating security monitoring rule"), ""))
 		return
@@ -259,33 +244,8 @@ func (r *securityMonitoringRuleJSONResource) Update(ctx context.Context, request
 		return
 	}
 
-	var apiRule map[string]interface{}
-	if res.SecurityMonitoringStandardRuleResponse != nil {
-		jsonBytes, err = json.Marshal(res.SecurityMonitoringStandardRuleResponse)
-	} else if res.SecurityMonitoringSignalRuleResponse != nil {
-		jsonBytes, err = json.Marshal(res.SecurityMonitoringSignalRuleResponse)
-	} else {
-		response.Diagnostics.AddError("Invalid response", "Response did not contain a rule")
-		return
-	}
-	if err != nil {
-		response.Diagnostics.AddError("Failed to marshal response", err.Error())
-		return
-	}
-
-	if err := json.Unmarshal(jsonBytes, &apiRule); err != nil {
-		response.Diagnostics.AddError("Failed to parse response", err.Error())
-		return
-	}
-
-	filtered := filterToUserFields(userRule, apiRule)
-	jsonBytes, err = json.Marshal(filtered)
-	if err != nil {
-		response.Diagnostics.AddError("Failed to marshal filtered response", err.Error())
-		return
-	}
-	state.JSON = types.StringValue(string(jsonBytes))
-	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+	plan.ID = types.StringValue(id)
+	response.Diagnostics.Append(response.State.Set(ctx, &plan)...)
 }
 
 func (r *securityMonitoringRuleJSONResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {

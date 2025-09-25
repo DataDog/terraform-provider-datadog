@@ -1052,6 +1052,11 @@ func syntheticsTestAPIStep() *schema.Schema {
 		Optional:    true,
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
+				"id": {
+					Type:        schema.TypeString,
+					Description: "ID of the step.",
+					Computed:    true,
+				},
 				"name": {
 					Description: "The name of the step.",
 					Type:        schema.TypeString,
@@ -1406,7 +1411,7 @@ func syntheticsBrowserStepParams() schema.Schema {
 					Optional:    true,
 					Elem: &schema.Schema{
 						Type:         schema.TypeString,
-						ValidateFunc: validation.StringInSlice([]string{"Alt", "Control", "meta", "Shift"}, false),
+						ValidateFunc: validation.StringInSlice([]string{"Alt", "Control", "Meta", "Shift"}, false),
 					},
 				},
 				"playing_tab_id": {
@@ -1576,7 +1581,7 @@ func syntheticsMobileStepParams() schema.Schema {
 					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsCheckTypeFromValue),
 				},
 				"element": {
-					Description: "Element to use for the step, JSON encoded string.",
+					Description: "Element to use for the step",
 					Type:        schema.TypeList,
 					MaxItems:    1,
 					Optional:    true,
@@ -2484,6 +2489,7 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 			localStep := make(map[string]interface{})
 
 			if step.SyntheticsAPITestStep != nil {
+				localStep["id"] = step.SyntheticsAPITestStep.GetId()
 				localStep["name"] = step.SyntheticsAPITestStep.GetName()
 				localStep["subtype"] = step.SyntheticsAPITestStep.GetSubtype()
 
@@ -2562,6 +2568,7 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 					localStep["retry"] = []map[string]interface{}{localRetry}
 				}
 			} else if step.SyntheticsAPIWaitStep != nil {
+				localStep["id"] = step.SyntheticsAPIWaitStep.GetId()
 				localStep["name"] = step.SyntheticsAPIWaitStep.GetName()
 				localStep["subtype"] = step.SyntheticsAPIWaitStep.GetSubtype()
 				localStep["value"] = step.SyntheticsAPIWaitStep.GetValue()
@@ -2782,11 +2789,9 @@ func buildDatadogSyntheticsAPITest(d *schema.ResourceData) (*datadogV1.Synthetic
 		request.SetHost(attr.(string))
 	}
 	if attr, ok := d.GetOk("request_definition.0.port"); ok {
-		port := attr.(string)
-		request.SetPort(datadogV1.SyntheticsTestRequestPort{
-			SyntheticsTestRequestVariablePort: &port,
-		})
+		setSyntheticsTestRequestPort(&request, attr)
 	}
+
 	if attr, ok := d.GetOk("request_definition.0.dns_server"); ok {
 		request.SetDnsServer(attr.(string))
 	}
@@ -2816,6 +2821,9 @@ func buildDatadogSyntheticsAPITest(d *schema.ResourceData) (*datadogV1.Synthetic
 	}
 	if attr, ok := d.GetOk("request_definition.0.message"); ok {
 		request.SetMessage(attr.(string))
+	}
+	if attr, ok := d.GetOk("request_definition.0.is_message_base64_encoded"); ok {
+		request.SetIsMessageBase64Encoded(attr.(bool))
 	}
 	if attr, ok := d.GetOk("request_definition.0.call_type"); ok {
 		request.SetCallType(datadogV1.SyntheticsTestCallType(attr.(string)))
@@ -2882,6 +2890,9 @@ func buildDatadogSyntheticsAPITest(d *schema.ResourceData) (*datadogV1.Synthetic
 			if stepSubtype == "" || isApiSubtype(datadogV1.SyntheticsAPITestStepSubtype(stepSubtype)) {
 				step.SyntheticsAPITestStep = datadogV1.NewSyntheticsAPITestStepWithDefaults()
 				step.SyntheticsAPITestStep.SetName(stepMap["name"].(string))
+				if len(stepMap["id"].(string)) > 0 {
+					step.SyntheticsAPITestStep.SetId(stepMap["id"].(string))
+				}
 				step.SyntheticsAPITestStep.SetSubtype(datadogV1.SyntheticsAPITestStepSubtype(stepMap["subtype"].(string)))
 
 				extractedValues := buildDatadogExtractedValues(stepMap["extracted_value"].([]interface{}))
@@ -2902,10 +2913,7 @@ func buildDatadogSyntheticsAPITest(d *schema.ResourceData) (*datadogV1.Synthetic
 						request.SetHost(requestMap["host"].(string))
 						method := requestMap["method"].(string)
 						request.SetMethod(method)
-						port := requestMap["port"].(string)
-						request.SetPort(datadogV1.SyntheticsTestRequestPort{
-							SyntheticsTestRequestVariablePort: &port,
-						})
+						setSyntheticsTestRequestPort(&request, requestMap["port"])
 						request.SetService(requestMap["service"].(string))
 						request.SetMessage(requestMap["message"].(string))
 						if v, ok := requestMap["call_type"].(string); ok && v != "" {
@@ -2955,10 +2963,7 @@ func buildDatadogSyntheticsAPITest(d *schema.ResourceData) (*datadogV1.Synthetic
 						}
 					} else if step.SyntheticsAPITestStep.GetSubtype() == "ssl" {
 						request.SetHost(requestMap["host"].(string))
-						port := requestMap["port"].(string)
-						request.SetPort(datadogV1.SyntheticsTestRequestPort{
-							SyntheticsTestRequestVariablePort: &port,
-						})
+						setSyntheticsTestRequestPort(&request, requestMap["port"])
 						if v, ok := requestMap["servername"].(string); ok && v != "" {
 							request.SetServername(v)
 						}
@@ -2973,10 +2978,7 @@ func buildDatadogSyntheticsAPITest(d *schema.ResourceData) (*datadogV1.Synthetic
 						}
 					} else if step.SyntheticsAPITestStep.GetSubtype() == "tcp" {
 						request.SetHost(requestMap["host"].(string))
-						port := requestMap["port"].(string)
-						request.SetPort(datadogV1.SyntheticsTestRequestPort{
-							SyntheticsTestRequestVariablePort: &port,
-						})
+						setSyntheticsTestRequestPort(&request, requestMap["port"])
 						if v, ok := requestMap["should_track_hops"].(bool); ok {
 							request.SetShouldTrackHops(v)
 						}
@@ -3008,10 +3010,8 @@ func buildDatadogSyntheticsAPITest(d *schema.ResourceData) (*datadogV1.Synthetic
 						}
 					} else if step.SyntheticsAPITestStep.GetSubtype() == "udp" {
 						request.SetHost(requestMap["host"].(string))
-						if v, ok := requestMap["port"].(string); ok && v != "" {
-							request.SetPort(datadogV1.SyntheticsTestRequestPort{
-								SyntheticsTestRequestVariablePort: &v,
-							})
+						if v, ok := requestMap["port"]; ok {
+							setSyntheticsTestRequestPort(&request, v)
 						}
 						if v, ok := requestMap["message"].(string); ok && v != "" {
 							request.SetMessage(v)
@@ -5888,4 +5888,18 @@ func getCertAndKeyFromMap(certAndKey map[string]interface{}) (map[string]interfa
 	clientKey := clientKeys[0].(map[string]interface{})
 
 	return clientCert, clientKey
+}
+
+// Sets the port on a SyntheticsTestRequest, supporting both int64 and string types.
+func setSyntheticsTestRequestPort(request *datadogV1.SyntheticsTestRequest, value interface{}) {
+	switch val := value.(type) {
+	case int64:
+		request.SetPort(datadogV1.SyntheticsTestRequestPort{
+			SyntheticsTestRequestNumericalPort: &val,
+		})
+	case string:
+		request.SetPort(datadogV1.SyntheticsTestRequestPort{
+			SyntheticsTestRequestVariablePort: &val,
+		})
+	}
 }

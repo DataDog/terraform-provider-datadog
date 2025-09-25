@@ -470,6 +470,21 @@ func TestAccDatadogSyntheticsWebsocketTest_Basic(t *testing.T) {
 	})
 }
 
+func TestAccDatadogSyntheticsWebsocketTest_Base64Message(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	accProvider := providers.sdkV2Provider
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
+		Steps: []resource.TestStep{
+			createSyntheticsWebsocketBase64TestStep(ctx, accProvider, t),
+		},
+	})
+}
+
 func TestAccDatadogSyntheticsGRPCTest_Basic(t *testing.T) {
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
@@ -3527,6 +3542,96 @@ resource "datadog_synthetics_test" "websocket" {
 }`, uniq)
 }
 
+func createSyntheticsWebsocketBase64TestStep(ctx context.Context, accProvider *schema.Provider, t *testing.T) resource.TestStep {
+	testName := uniqueEntityName(ctx, t)
+	return resource.TestStep{
+		Config: createSyntheticsWebsocketBase64TestConfig(testName),
+		Check: resource.ComposeTestCheckFunc(
+			testSyntheticsTestExists(accProvider),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.websocket", "type", "api"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.websocket", "subtype", "websocket"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.websocket", "request_definition.0.url", "wss://www.datadoghq.com"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.websocket", "request_definition.0.message", "message"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.websocket", "request_definition.0.is_message_base64_encoded", "true"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.websocket", "assertion.#", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.websocket", "assertion.0.type", "responseTime"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.websocket", "assertion.0.operator", "lessThan"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.websocket", "assertion.0.target", "2000"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.websocket", "assertion.1.type", "receivedMessage"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.websocket", "assertion.1.operator", "is"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.websocket", "assertion.1.target", "message"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.websocket", "locations.#", "1"),
+			resource.TestCheckTypeSetElemAttr(
+				"datadog_synthetics_test.websocket", "locations.*", "aws:eu-central-1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.websocket", "options_list.0.tick_every", "60"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.websocket", "name", testName),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.websocket", "message", "Notify @datadog.user"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.websocket", "tags.#", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.websocket", "tags.0", "foo:bar"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.websocket", "tags.1", "baz"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.websocket", "status", "paused"),
+			resource.TestCheckResourceAttrSet(
+				"datadog_synthetics_test.websocket", "monitor_id"),
+		),
+	}
+}
+
+func createSyntheticsWebsocketBase64TestConfig(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_synthetics_test" "websocket" {
+	type = "api"
+	subtype = "websocket"
+
+	request_definition {
+		url = "wss://www.datadoghq.com"
+		message = "message"
+		is_message_base64_encoded = true
+	}
+
+	assertion {
+		type = "responseTime"
+		operator = "lessThan"
+		target = "2000"
+	}
+	assertion {
+		type = "receivedMessage"
+		operator = "is"
+		target = "message"
+	}
+
+	locations = [ "aws:eu-central-1" ]
+	options_list {
+		tick_every = 60
+	}
+
+	name = "%s"
+	message = "Notify @datadog.user"
+	tags = ["foo:bar", "baz"]
+
+	status = "paused"
+}`, uniq)
+}
+
 var compressedProtoFile = `syntax = "proto3";
 
 option java_multiple_files = true;
@@ -4159,6 +4264,10 @@ func updateSyntheticsBrowserTestStep(ctx context.Context, accProvider *schema.Pr
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "browser_step.1.params.0.value", "1"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_step.1.params.0.modifiers.0", "Meta"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_step.1.params.0.modifiers.1", "Control"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "browser_step.2.type", "typeText"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "browser_step.2.params.0.append_to_content", "false"),
@@ -4237,6 +4346,7 @@ resource "datadog_synthetics_test" "bar" {
 
 	    params {
 	        value = "1"
+	        modifiers = ["Meta", "Control"]
 	    }
 	}
 
@@ -5472,6 +5582,8 @@ func createSyntheticsMultistepAPITest(ctx context.Context, provider *schema.Prov
 				"datadog_synthetics_test.multi", "status", "paused"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.#", "7"),
+			resource.TestCheckResourceAttrSet(
+				"datadog_synthetics_test.multi", "api_step.0.id"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.0.name", "First api step"),
 			resource.TestCheckResourceAttr(
@@ -5592,6 +5704,8 @@ func createSyntheticsMultistepAPITest(ctx context.Context, provider *schema.Prov
 				"datadog_synthetics_test.multi", "api_step.0.retry.0.interval", "1000"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.0.extracted_values_from_script", "dd.variable.set('BODY', dd.response.body);"),
+			resource.TestCheckResourceAttrSet(
+				"datadog_synthetics_test.multi", "api_step.1.id"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.1.name", "Second api step"),
 			resource.TestCheckResourceAttr(
@@ -5610,6 +5724,8 @@ func createSyntheticsMultistepAPITest(ctx context.Context, provider *schema.Prov
 				"datadog_synthetics_test.multi", "api_step.1.request_basicauth.0.token_api_authentication", "header"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.1.request_basicauth.0.access_token_url", "https://token.datadoghq.com"),
+			resource.TestCheckResourceAttrSet(
+				"datadog_synthetics_test.multi", "api_step.2.id"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.2.name", "Third api step"),
 			resource.TestCheckResourceAttr(
@@ -5634,6 +5750,8 @@ func createSyntheticsMultistepAPITest(ctx context.Context, provider *schema.Prov
 				"datadog_synthetics_test.multi", "api_step.2.request_basicauth.0.username", "username"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.2.request_basicauth.0.password", "password"),
+			resource.TestCheckResourceAttrSet(
+				"datadog_synthetics_test.multi", "api_step.3.id"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.3.name", "Fourth api step"),
 			resource.TestCheckResourceAttr(
@@ -5644,6 +5762,8 @@ func createSyntheticsMultistepAPITest(ctx context.Context, provider *schema.Prov
 				"datadog_synthetics_test.multi", "api_step.3.request_basicauth.0.username", "username"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.3.request_basicauth.0.password", "password"),
+			resource.TestCheckResourceAttrSet(
+				"datadog_synthetics_test.multi", "api_step.4.id"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.4.name", "gRPC health check step"),
 			resource.TestCheckResourceAttr(
@@ -5668,6 +5788,8 @@ func createSyntheticsMultistepAPITest(ctx context.Context, provider *schema.Prov
 				"datadog_synthetics_test.multi", "api_step.4.assertion.0.operator", "is"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.4.assertion.0.target", "1"),
+			resource.TestCheckResourceAttrSet(
+				"datadog_synthetics_test.multi", "api_step.5.id"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.5.name", "gRPC behavior check step"),
 			resource.TestCheckResourceAttr(
@@ -5724,6 +5846,8 @@ func createSyntheticsMultistepAPITest(ctx context.Context, provider *schema.Prov
 				"datadog_synthetics_test.multi", "api_step.5.extracted_value.1.parser.#", "1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.5.extracted_value.1.parser.0.type", "raw"),
+			resource.TestCheckResourceAttrSet(
+				"datadog_synthetics_test.multi", "api_step.6.id"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.6.name", "Wait step"),
 			resource.TestCheckResourceAttr(
@@ -6414,7 +6538,7 @@ func createSyntheticsMultistepAPITestConfigAllStepSubtypes(testName string) stri
 
 				request_definition {
 					host                         = "example.org"
-					port                         = 443
+					port                         = "443"
 					check_certificate_revocation = true
 					disable_aia_intermediate_fetching = true
 				}

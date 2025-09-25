@@ -77,7 +77,7 @@ func (r *csmThreatsAgentRuleResource) Configure(ctx context.Context, request res
 
 func (r *csmThreatsAgentRuleResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "Provides a Datadog CSM Threats Agent Rule API resource.",
+		Description: "Provides a Datadog Workload Protection (CSM Threats) Agent Rule API resource.",
 		Attributes: map[string]schema.Attribute{
 			"id": utils.ResourceIDAttribute(),
 			"policy_id": schema.StringAttribute{
