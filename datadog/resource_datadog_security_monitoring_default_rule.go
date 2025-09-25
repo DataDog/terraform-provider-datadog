@@ -52,6 +52,37 @@ func resourceDatadogSecurityMonitoringDefaultRule() *schema.Resource {
 								Description: "Notification targets for each rule case.",
 								Elem:        &schema.Schema{Type: schema.TypeString},
 							},
+							"action": {
+								Type:        schema.TypeList,
+								Optional:    true,
+								Description: "Action to perform when the case triggers",
+								Elem: &schema.Resource{
+									Schema: map[string]*schema.Schema{
+										"type": {
+											Type:             schema.TypeString,
+											ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewSecurityMonitoringRuleCaseActionTypeFromValue),
+											Required:         true,
+											Description:      "Type of action to perform when the case triggers.",
+										},
+										"options": {
+											Type:        schema.TypeList,
+											Optional:    true,
+											Description: "Options for the action",
+											MaxItems:    1,
+											Elem: &schema.Resource{
+												Schema: map[string]*schema.Schema{
+													"flagged_ip_type": {
+														Type:             schema.TypeString,
+														ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewSecurityMonitoringRuleCaseActionOptionsFlaggedIPTypeFromValue),
+														Optional:         true,
+														Description:      "Used with the case action of type 'flag_ip'. Indicates whether the IP should me marked as FLAGGED or SUSPICIOUS.",
+													},
+												},
+											},
+										},
+									},
+								},
+							},
 						},
 					},
 				},
@@ -282,7 +313,7 @@ func resourceDatadogSecurityMonitoringDefaultRuleRead(ctx context.Context, d *sc
 
 	if v, ok := d.GetOk("case"); ok {
 		tfCasesRaw := v.([]interface{})
-		readNotifications := make([][]string, len(tfCasesRaw))
+		tfCases := make([]map[string]interface{}, len(tfCasesRaw))
 		for i, tfCaseRaw := range tfCasesRaw {
 			tfCase := tfCaseRaw.(map[string]interface{})
 			var ruleCase *datadogV2.SecurityMonitoringRuleCase
@@ -296,12 +327,38 @@ func resourceDatadogSecurityMonitoringDefaultRuleRead(ctx context.Context, d *sc
 			if ruleCase == nil {
 				return diag.FromErr(errors.New("error: no rule case with status " + string(tfStatus)))
 			}
-			readNotifications[i] = ruleCase.GetNotifications()
+
+			caseMap := map[string]interface{}{
+				"status":        tfStatus,
+				"notifications": ruleCase.GetNotifications(),
+			}
+
+			tfActions := make([]map[string]interface{}, len(ruleCase.GetActions()))
+			for j, action := range ruleCase.GetActions() {
+
+				actionMap := map[string]interface{}{
+					"type": string(action.GetType()),
+				}
+
+				options := action.GetOptions()
+				optionsMap := map[string]interface{}{}
+				if options.HasFlaggedIpType() {
+					optionsMap["flagged_ip_type"] = options.GetFlaggedIpType()
+				}
+				if len(optionsMap) > 0 {
+					actionMap["options"] = []map[string]interface{}{optionsMap}
+				}
+				tfActions[j] = actionMap
+			}
+
+			if len(tfActions) > 0 {
+				caseMap["action"] = tfActions
+			}
+			tfCases[i] = caseMap
 		}
 
-		for i, notification := range readNotifications {
-			d.Set(fmt.Sprintf("case.%d.notifications", i), notification)
-		}
+		d.Set("case", tfCases)
+
 	}
 
 	ruleFilters := make([]map[string]interface{}, len(rule.GetFilters()))
@@ -478,6 +535,7 @@ func buildSecMonDefaultRuleUpdatePayload(currentState *datadogV2.SecurityMonitor
 			Notifications: currentState.GetCases()[i].Notifications,
 			Status:        currentState.GetCases()[i].Status,
 			CustomStatus:  currentState.GetCases()[i].CustomStatus,
+			Actions:       currentState.GetCases()[i].Actions,
 		}
 
 		if tfCase, ok := findRuleCaseForStatus(tfCasesRaw, ruleCase.GetStatus()); ok {
@@ -497,6 +555,18 @@ func buildSecMonDefaultRuleUpdatePayload(currentState *datadogV2.SecurityMonitor
 				shouldUpdate = true
 				updatedRuleCase[i].Notifications = tfNotifications
 			}
+
+			tfActionsRaw := tfCase["action"].([]interface{})
+			tfActions := make([]map[string]interface{}, len(tfActionsRaw))
+			for actionIdx, v := range tfActionsRaw {
+				tfActions[actionIdx] = v.(map[string]interface{})
+			}
+
+			if !actionsEqual(tfActions, ruleCase.GetActions()) {
+				modifiedCases++
+				updatedRuleCase[i].Actions = buildDefaultRulePayloadOptionsCaseActions(tfActions)
+			}
+
 			// Compare rule case custom status
 			tfCustomStatusRaw := tfCase["custom_status"].(string)
 			if tfCustomStatusRaw != "" {
@@ -736,6 +806,48 @@ func findRuleCaseForStatus(tfCasesRaw []interface{}, status datadogV2.SecurityMo
 	}
 
 	return nil, false
+}
+
+func actionsEqual(tfActions []map[string]interface{}, ruleCaseActions []datadogV2.SecurityMonitoringRuleCaseAction) bool {
+	if len(tfActions) != len(ruleCaseActions) {
+		return false
+	}
+	// compare actions type and options, order is important
+	for i := range tfActions {
+		if tfActions[i]["type"] != ruleCaseActions[i].GetType() {
+			return false
+		}
+		if optionsList, ok := tfActions[i]["options"].([]interface{}); ok && len(optionsList) > 0 {
+			if options, ok := optionsList[0].(map[string]interface{}); ok {
+				ruleOptions := ruleCaseActions[i].GetOptions()
+				if flaggedIPType, ok := options["flagged_ip_type"]; ok {
+					if flaggedIPType != ruleOptions.GetFlaggedIpType() {
+						return false
+					}
+				}
+			}
+		}
+	}
+	return true
+}
+
+func buildDefaultRulePayloadOptionsCaseActions(tfActions []map[string]interface{}) []datadogV2.SecurityMonitoringRuleCaseAction {
+	actions := make([]datadogV2.SecurityMonitoringRuleCaseAction, len(tfActions))
+	for i, tfAction := range tfActions {
+		action := datadogV2.NewSecurityMonitoringRuleCaseAction()
+		action.SetType(datadogV2.SecurityMonitoringRuleCaseActionType(tfAction["type"].(string)))
+		if optionsList, ok := tfAction["options"].([]interface{}); ok && len(optionsList) > 0 {
+			if options, ok := optionsList[0].(map[string]interface{}); ok {
+				actionOptions := datadogV2.NewSecurityMonitoringRuleCaseActionOptions()
+				if flaggedIPType, ok := options["flagged_ip_type"].(string); ok {
+					actionOptions.SetFlaggedIpType(datadogV2.SecurityMonitoringRuleCaseActionOptionsFlaggedIPType(flaggedIPType))
+				}
+				action.SetOptions(*actionOptions)
+			}
+		}
+		actions[i] = *action
+	}
+	return actions
 }
 
 func resourceDatadogSecurityMonitoringDefaultRuleDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {

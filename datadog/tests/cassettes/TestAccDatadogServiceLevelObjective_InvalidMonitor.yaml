@@ -34,4 +34,4 @@ interactions:
                 - application/json
         status: 404 Not Found
         code: 404
-        duration: 435.024375ms
+        duration: 164.868708ms

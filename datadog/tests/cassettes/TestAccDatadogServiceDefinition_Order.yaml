@@ -1,112 +1,197 @@
+---
 version: 2
 interactions:
-- request:
-    body: |
-      schema-version: v2
-      dd-service: tf-testaccdatadogservicedefinition_order-local-1682529311
-      contacts:
-        - name: AA
-          type: slack
-          contact: AAA
-        - name: BB
-          type: email
-          contact: BBB@example.com
-        - name: AA
-          type: email
-          contact: AAA@example.com
-        - name: BB
-          type: email
-          contact: AAA@example.com
-        - name: AA
-          type: email
-          contact: BBB@example.com
-      tags:
-        - 'bbb'
-        - 'aaa'
-    form: {}
-    headers:
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/services/definitions
-    method: POST
-    id: 0
-  response:
-    body: |
-      {"data":[{"type":"service-definition","attributes":{"meta":{"last-modified-time":"2023-04-26T17:15:13.215753744Z","github-html-url":"","ingestion-source":"api","origin":"dd_terraform","origin-detail":"","warnings":[{"keyword-location":"/properties/contacts/items/$ref/allOf/1/then/properties/contact/pattern","instance-location":"/contacts/0/contact","message":"does not match pattern 'https://[a-zA-Z0-9_\\\\-]+.slack\\\\.com/archives/[a-zA-Z0-9_\\\\-]+'"}],"ingested-schema-version":"v2"},"schema":{"schema-version":"v2","dd-service":"tf-testaccdatadogservicedefinition_order-local-1682529311","team":"","contacts":[{"name":"AA","type":"slack","contact":"AAA"},{"name":"BB","type":"email","contact":"BBB@example.com"},{"name":"AA","type":"email","contact":"AAA@example.com"},{"name":"BB","type":"email","contact":"AAA@example.com"},{"name":"AA","type":"email","contact":"BBB@example.com"}],"links":[],"repos":[],"docs":[],"tags":["aaa","bbb"],"integrations":{},"extensions":{}}}}]}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/services/definitions/tf-testaccdatadogservicedefinition_order-local-1682529311
-    method: GET
-    id: 1
-  response:
-    body: |
-      {"data":{"type":"service-definition","id":"1d78c0d8134b6fe2d97acc7e295936fb","attributes":{"meta":{"last-modified-time":"2023-04-26T17:15:13Z","github-html-url":"","ingestion-source":"api","origin":"dd_terraform","origin-detail":"","warnings":[{"keyword-location":"/properties/contacts/items/$ref/allOf/1/then/properties/contact/pattern","instance-location":"/contacts/0/contact","message":"does not match pattern 'https://[a-zA-Z0-9_\\\\-]+.slack\\\\.com/archives/[a-zA-Z0-9_\\\\-]+'"}],"ingested-schema-version":"v2"},"schema":{"schema-version":"v2","dd-service":"tf-testaccdatadogservicedefinition_order-local-1682529311","team":"","contacts":[{"name":"AA","type":"slack","contact":"AAA"},{"name":"AA","type":"email","contact":"AAA@example.com"},{"name":"BB","type":"email","contact":"AAA@example.com"},{"name":"AA","type":"email","contact":"BBB@example.com"},{"name":"BB","type":"email","contact":"BBB@example.com"}],"links":[],"repos":[],"docs":[],"tags":["aaa","bbb"],"integrations":{},"extensions":{}}}}}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/services/definitions/tf-testaccdatadogservicedefinition_order-local-1682529311
-    method: GET
-    id: 2
-  response:
-    body: |
-      {"data":{"type":"service-definition","id":"1d78c0d8134b6fe2d97acc7e295936fb","attributes":{"meta":{"last-modified-time":"2023-04-26T17:15:13Z","github-html-url":"","ingestion-source":"api","origin":"dd_terraform","origin-detail":"","warnings":[{"keyword-location":"/properties/contacts/items/$ref/allOf/1/then/properties/contact/pattern","instance-location":"/contacts/0/contact","message":"does not match pattern 'https://[a-zA-Z0-9_\\\\-]+.slack\\\\.com/archives/[a-zA-Z0-9_\\\\-]+'"}],"ingested-schema-version":"v2"},"schema":{"schema-version":"v2","dd-service":"tf-testaccdatadogservicedefinition_order-local-1682529311","team":"","contacts":[{"name":"AA","type":"slack","contact":"AAA"},{"name":"AA","type":"email","contact":"AAA@example.com"},{"name":"BB","type":"email","contact":"AAA@example.com"},{"name":"AA","type":"email","contact":"BBB@example.com"},{"name":"BB","type":"email","contact":"BBB@example.com"}],"links":[],"repos":[],"docs":[],"tags":["aaa","bbb"],"integrations":{},"extensions":{}}}}}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/services/definitions/tf-testaccdatadogservicedefinition_order-local-1682529311
-    method: DELETE
-    id: 3
-  response:
-    body: ""
-    headers:
-      Content-Type:
-      - text/html; charset=utf-8
-    status: 204 No Content
-    code: 204
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/services/definitions/tf-testaccdatadogservicedefinition_order-local-1682529311
-    method: GET
-    id: 4
-  response:
-    body: |
-      {"data":{"type":"service-definition","id":"1d78c0d8134b6fe2d97acc7e295936fb","attributes":{"meta":{"last-modified-time":"2023-04-26T17:15:13Z","github-html-url":"","ingestion-source":"api","origin":"dd_terraform","origin-detail":"","warnings":[{"keyword-location":"/properties/contacts/items/$ref/allOf/1/then/properties/contact/pattern","instance-location":"/contacts/0/contact","message":"does not match pattern 'https://[a-zA-Z0-9_\\\\-]+.slack\\\\.com/archives/[a-zA-Z0-9_\\\\-]+'"}],"ingested-schema-version":"v2"},"schema":{"schema-version":"v2","dd-service":"tf-testaccdatadogservicedefinition_order-local-1682529311","team":"","contacts":[{"name":"AA","type":"slack","contact":"AAA"},{"name":"AA","type":"email","contact":"AAA@example.com"},{"name":"BB","type":"email","contact":"AAA@example.com"},{"name":"AA","type":"email","contact":"BBB@example.com"},{"name":"BB","type":"email","contact":"BBB@example.com"}],"links":[],"repos":[],"docs":[],"tags":["aaa","bbb"],"integrations":{},"extensions":{}}}}}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 403
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            schema-version: v2
+            dd-service: tf-testaccdatadogservicedefinition_order-local-1758619224
+            contacts:
+              - name: AA
+                type: slack
+                contact: AAA
+              - name: BB
+                type: email
+                contact: BBB@example.com
+              - name: AA
+                type: email
+                contact: AAA@example.com
+              - name: BB
+                type: email
+                contact: AAA@example.com
+              - name: AA
+                type: email
+                contact: BBB@example.com
+            tags:
+              - 'bbb'
+              - 'aaa'
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/services/definitions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":[{"type":"service-definition","attributes":{"meta":{"last-modified-time":"2025-09-23T09:20:24.861709296Z","github-html-url":"","ingestion-source":"api","origin":"dd_terraform","origin-detail":"","warnings":[{"keyword-location":"/properties/contacts/items/$ref/allOf/1/then/properties/contact/pattern","instance-location":"/contacts/0/contact","message":"does not match pattern '^https://.+'"}],"ingested-schema-version":"v2"},"schema":{"schema-version":"v2","dd-service":"tf-testaccdatadogservicedefinition_order-local-1758619224","team":"","contacts":[{"name":"AA","type":"slack","contact":"AAA"},{"name":"BB","type":"email","contact":"BBB@example.com"},{"name":"AA","type":"email","contact":"AAA@example.com"},{"name":"BB","type":"email","contact":"AAA@example.com"},{"name":"AA","type":"email","contact":"BBB@example.com"}],"links":[],"repos":[],"docs":[],"tags":["aaa","bbb"],"integrations":{},"extensions":{}}}}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 150.583375ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/services/definitions/tf-testaccdatadogservicedefinition_order-local-1758619224
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"service-definition","id":"14bae86e-6efc-45bc-92a5-9b24734023ce","attributes":{"meta":{"last-modified-time":"2025-09-23T09:20:24.861709296Z","github-html-url":"","ingestion-source":"api","origin":"dd_terraform","origin-detail":"","warnings":[{"keyword-location":"/properties/contacts/items/$ref/allOf/1/then/properties/contact/pattern","instance-location":"/contacts/0/contact","message":"does not match pattern '^https://.+'"}],"ingested-schema-version":"v2"},"schema":{"schema-version":"v2","dd-service":"tf-testaccdatadogservicedefinition_order-local-1758619224","team":"","contacts":[{"name":"AA","type":"slack","contact":"AAA"},{"name":"BB","type":"email","contact":"BBB@example.com"},{"name":"AA","type":"email","contact":"AAA@example.com"},{"name":"BB","type":"email","contact":"AAA@example.com"},{"name":"AA","type":"email","contact":"BBB@example.com"}],"links":[],"repos":[],"docs":[],"tags":["aaa","bbb"],"integrations":{},"extensions":{}}}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 323.381667ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/services/definitions/tf-testaccdatadogservicedefinition_order-local-1758619224
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"service-definition","id":"14bae86e-6efc-45bc-92a5-9b24734023ce","attributes":{"meta":{"last-modified-time":"2025-09-23T09:20:24.861709296Z","github-html-url":"","ingestion-source":"api","origin":"dd_terraform","origin-detail":"","warnings":[{"keyword-location":"/properties/contacts/items/$ref/allOf/1/then/properties/contact/pattern","instance-location":"/contacts/0/contact","message":"does not match pattern '^https://.+'"}],"ingested-schema-version":"v2"},"schema":{"schema-version":"v2","dd-service":"tf-testaccdatadogservicedefinition_order-local-1758619224","team":"","contacts":[{"name":"AA","type":"slack","contact":"AAA"},{"name":"BB","type":"email","contact":"BBB@example.com"},{"name":"AA","type":"email","contact":"AAA@example.com"},{"name":"BB","type":"email","contact":"AAA@example.com"},{"name":"AA","type":"email","contact":"BBB@example.com"}],"links":[],"repos":[],"docs":[],"tags":["aaa","bbb"],"integrations":{},"extensions":{}}}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 375.55425ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/services/definitions/tf-testaccdatadogservicedefinition_order-local-1758619224
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Content-Type:
+                - text/html; charset=utf-8
+        status: 204 No Content
+        code: 204
+        duration: 396.824459ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/services/definitions/tf-testaccdatadogservicedefinition_order-local-1758619224
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"errors":["404 Not Found: Not Found"],"error_details":[{}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 186.359667ms

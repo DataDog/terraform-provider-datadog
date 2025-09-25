@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"enabled":true,"event_type":"session","name":"tf-TestAccRumRetentionFilterImport-local-1743019515","query":"","sample_rate":25},"meta":{"source":"terraform"},"type":"retention_filters"}}
+            {"data":{"attributes":{"enabled":true,"event_type":"session","name":"tf-TestAccRumRetentionFilterImport-local-1758619175","query":"","sample_rate":25},"meta":{"source":"terraform"},"type":"retention_filters"}}
         form: {}
         headers:
             Accept:
@@ -28,15 +28,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 253
+        content_length: 347
         uncompressed: false
-        body: '{"data":{"id":"644604ac-b8da-4833-82af-264d609a33c5","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"tf-TestAccRumRetentionFilterImport-local-1743019515","query":"","sample_rate":25},"meta":{"source":"terraform"}}}'
+        body: '{"data":{"id":"ad11cdbc-694d-4f72-9d94-a1fc5c6cafcc","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"tf-TestAccRumRetentionFilterImport-local-1758619175","query":"","sample_rate":25},"meta":{"source":"terraform","updated_at":1758619176812,"updated_by_handle":"frog@datadoghq.com","edition_mode":"complete"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 94.691292ms
+        duration: 417.082792ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -53,7 +53,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/rum/applications/9ff07c10-11f9-402c-a9d4-9eca42ef4a64/retention_filters/644604ac-b8da-4833-82af-264d609a33c5
+        url: https://api.datadoghq.com/api/v2/rum/applications/9ff07c10-11f9-402c-a9d4-9eca42ef4a64/retention_filters/ad11cdbc-694d-4f72-9d94-a1fc5c6cafcc
         method: GET
       response:
         proto: HTTP/1.1
@@ -61,15 +61,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 253
+        content_length: 347
         uncompressed: false
-        body: '{"data":{"id":"644604ac-b8da-4833-82af-264d609a33c5","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"tf-TestAccRumRetentionFilterImport-local-1743019515","query":"","sample_rate":25},"meta":{"source":"terraform"}}}'
+        body: '{"data":{"id":"ad11cdbc-694d-4f72-9d94-a1fc5c6cafcc","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"tf-TestAccRumRetentionFilterImport-local-1758619175","query":"","sample_rate":25},"meta":{"source":"terraform","updated_at":1758619176812,"updated_by_handle":"frog@datadoghq.com","edition_mode":"complete"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 52.841709ms
+        duration: 138.301167ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -86,7 +86,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/rum/applications/9ff07c10-11f9-402c-a9d4-9eca42ef4a64/retention_filters/644604ac-b8da-4833-82af-264d609a33c5
+        url: https://api.datadoghq.com/api/v2/rum/applications/9ff07c10-11f9-402c-a9d4-9eca42ef4a64/retention_filters/ad11cdbc-694d-4f72-9d94-a1fc5c6cafcc
         method: GET
       response:
         proto: HTTP/1.1
@@ -94,15 +94,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 253
+        content_length: 347
         uncompressed: false
-        body: '{"data":{"id":"644604ac-b8da-4833-82af-264d609a33c5","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"tf-TestAccRumRetentionFilterImport-local-1743019515","query":"","sample_rate":25},"meta":{"source":"terraform"}}}'
+        body: '{"data":{"id":"ad11cdbc-694d-4f72-9d94-a1fc5c6cafcc","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"tf-TestAccRumRetentionFilterImport-local-1758619175","query":"","sample_rate":25},"meta":{"source":"terraform","updated_at":1758619176812,"updated_by_handle":"frog@datadoghq.com","edition_mode":"complete"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 52.348083ms
+        duration: 145.364625ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -119,7 +119,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/rum/applications/9ff07c10-11f9-402c-a9d4-9eca42ef4a64/retention_filters/644604ac-b8da-4833-82af-264d609a33c5
+        url: https://api.datadoghq.com/api/v2/rum/applications/9ff07c10-11f9-402c-a9d4-9eca42ef4a64/retention_filters/ad11cdbc-694d-4f72-9d94-a1fc5c6cafcc
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -133,7 +133,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 57.236291ms
+        duration: 157.166583ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -150,7 +150,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/rum/applications/9ff07c10-11f9-402c-a9d4-9eca42ef4a64/retention_filters/644604ac-b8da-4833-82af-264d609a33c5
+        url: https://api.datadoghq.com/api/v2/rum/applications/9ff07c10-11f9-402c-a9d4-9eca42ef4a64/retention_filters/ad11cdbc-694d-4f72-9d94-a1fc5c6cafcc
         method: GET
       response:
         proto: HTTP/1.1
@@ -166,4 +166,4 @@ interactions:
                 - application/vnd.api+json
         status: 404 Not Found
         code: 404
-        duration: 54.366584ms
+        duration: 270.776167ms

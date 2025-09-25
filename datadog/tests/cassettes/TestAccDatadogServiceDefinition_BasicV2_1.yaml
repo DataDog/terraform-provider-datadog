@@ -1,127 +1,176 @@
+---
 version: 2
 interactions:
-- request:
-    body: "schema-version: v2.1\ndd-service: tf-testaccdatadogservicedefinition_basicv2_1-local-1680208250\ncontacts:\n  - contact: contact@datadoghq.com\n    name: Team Email\n    type: email\nextensions:\n  myorgextension: extensionvalue\nintegrations:\n  opsgenie:\n    region: US\n    service-url: https://my-org.opsgenie.com/service/123e4567-e89b-12d3-a456-426614174000\n  pagerduty:\n    service-url: https://my-org.pagerduty.com/service-directory/PMyService\nlinks:\n  - name: Architecture\n    type: doc\n    provider: Gigoogle drivetHub\n    url: https://my-runbook\n  - name: Runbook\n    type: runbook\n    url: https://my-runbook\n  - name: Source Code\n    type: repo\n    provider: GitHub\n    url: https://github.com/DataDog/schema\ntags:\n  - my:tag\n  - service:tag\nteam: my-team  \n"
-    form: {}
-    headers:
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/services/definitions
-    method: POST
-    id: 0
-  response:
-    body: |
-      {"data":[{"type":"service-definition","attributes":{"meta":{"last-modified-time":"2023-03-30T20:30:51.936340188Z","github-html-url":"","ingestion-source":"api","origin":"dd_terraform","origin-detail":"","warnings":[],"ingested-schema-version":"v2.1"},"schema":{"schema-version":"v2.1","dd-service":"tf-testaccdatadogservicedefinition_basicv2_1-local-1680208250","team":"my-team","contacts":[{"name":"Team Email","type":"email","contact":"contact@datadoghq.com"}],"links":[{"name":"Architecture","type":"doc","provider":"Gigoogle drivetHub","url":"https://my-runbook"},{"name":"Runbook","type":"runbook","url":"https://my-runbook"},{"name":"Source Code","type":"repo","provider":"GitHub","url":"https://github.com/DataDog/schema"}],"tags":["my:tag","service:tag"],"integrations":{"pagerduty":{"service-url":"https://my-org.pagerduty.com/service-directory/PMyService"},"opsgenie":{"service-url":"https://my-org.opsgenie.com/service/123e4567-e89b-12d3-a456-426614174000","region":"US"}},"extensions":{"myorgextension":"extensionvalue"}}}}]}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/services/definitions/tf-testaccdatadogservicedefinition_basicv2_1-local-1680208250
-    method: GET
-    id: 1
-  response:
-    body: |
-      {"errors":["Not Found"],"error_details":[{}]}
-    headers:
-      Content-Type:
-      - application/json
-    status: 404 Not Found
-    code: 404
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/services/definitions/tf-testaccdatadogservicedefinition_basicv2_1-local-1680208250
-    method: GET
-    id: 2
-  response:
-    body: |
-      {"errors":["Not Found"],"error_details":[{}]}
-    headers:
-      Content-Type:
-      - application/json
-    status: 404 Not Found
-    code: 404
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/services/definitions/tf-testaccdatadogservicedefinition_basicv2_1-local-1680208250
-    method: GET
-    id: 3
-  response:
-    body: |
-      {"data":{"type":"service-definition","id":"bf58dca788d085b104148c71c095dd8b","attributes":{"meta":{"last-modified-time":"2023-03-30T20:30:51Z","github-html-url":"","ingestion-source":"api","origin":"dd_terraform","origin-detail":"","warnings":[],"ingested-schema-version":"v2.1"},"schema":{"schema-version":"v2.1","dd-service":"tf-testaccdatadogservicedefinition_basicv2_1-local-1680208250","team":"my-team","contacts":[{"name":"Team Email","type":"email","contact":"contact@datadoghq.com"}],"links":[{"name":"Architecture","type":"doc","provider":"Gigoogle drivetHub","url":"https://my-runbook"},{"name":"Runbook","type":"runbook","url":"https://my-runbook"},{"name":"Source Code","type":"repo","provider":"GitHub","url":"https://github.com/DataDog/schema"}],"tags":["my:tag","service:tag"],"integrations":{"pagerduty":{"service-url":"https://my-org.pagerduty.com/service-directory/PMyService"},"opsgenie":{"service-url":"https://my-org.opsgenie.com/service/123e4567-e89b-12d3-a456-426614174000","region":"US"}},"extensions":{"myorgextension":"extensionvalue"}}}}}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/services/definitions/tf-testaccdatadogservicedefinition_basicv2_1-local-1680208250
-    method: GET
-    id: 4
-  response:
-    body: |
-      {"data":{"type":"service-definition","id":"bf58dca788d085b104148c71c095dd8b","attributes":{"meta":{"last-modified-time":"2023-03-30T20:30:51Z","github-html-url":"","ingestion-source":"api","origin":"dd_terraform","origin-detail":"","warnings":[],"ingested-schema-version":"v2.1"},"schema":{"schema-version":"v2.1","dd-service":"tf-testaccdatadogservicedefinition_basicv2_1-local-1680208250","team":"my-team","contacts":[{"name":"Team Email","type":"email","contact":"contact@datadoghq.com"}],"links":[{"name":"Architecture","type":"doc","provider":"Gigoogle drivetHub","url":"https://my-runbook"},{"name":"Runbook","type":"runbook","url":"https://my-runbook"},{"name":"Source Code","type":"repo","provider":"GitHub","url":"https://github.com/DataDog/schema"}],"tags":["my:tag","service:tag"],"integrations":{"pagerduty":{"service-url":"https://my-org.pagerduty.com/service-directory/PMyService"},"opsgenie":{"service-url":"https://my-org.opsgenie.com/service/123e4567-e89b-12d3-a456-426614174000","region":"US"}},"extensions":{"myorgextension":"extensionvalue"}}}}}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/services/definitions/tf-testaccdatadogservicedefinition_basicv2_1-local-1680208250
-    method: DELETE
-    id: 5
-  response:
-    body: ""
-    headers:
-      Content-Type:
-      - text/html; charset=utf-8
-    status: 204 No Content
-    code: 204
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/services/definitions/tf-testaccdatadogservicedefinition_basicv2_1-local-1680208250
-    method: GET
-    id: 6
-  response:
-    body: |
-      {"data":{"type":"service-definition","id":"bf58dca788d085b104148c71c095dd8b","attributes":{"meta":{"last-modified-time":"2023-03-30T20:30:51Z","github-html-url":"","ingestion-source":"api","origin":"dd_terraform","origin-detail":"","warnings":[],"ingested-schema-version":"v2.1"},"schema":{"schema-version":"v2.1","dd-service":"tf-testaccdatadogservicedefinition_basicv2_1-local-1680208250","team":"my-team","contacts":[{"name":"Team Email","type":"email","contact":"contact@datadoghq.com"}],"links":[{"name":"Architecture","type":"doc","provider":"Gigoogle drivetHub","url":"https://my-runbook"},{"name":"Runbook","type":"runbook","url":"https://my-runbook"},{"name":"Source Code","type":"repo","provider":"GitHub","url":"https://github.com/DataDog/schema"}],"tags":["my:tag","service:tag"],"integrations":{"pagerduty":{"service-url":"https://my-org.pagerduty.com/service-directory/PMyService"},"opsgenie":{"service-url":"https://my-org.opsgenie.com/service/123e4567-e89b-12d3-a456-426614174000","region":"US"}},"extensions":{"myorgextension":"extensionvalue"}}}}}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 760
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: "schema-version: v2.1\ndd-service: tf-testaccdatadogservicedefinition_basicv2_1-local-1758619232\ncontacts:\n  - contact: contact@datadoghq.com\n    name: Team Email\n    type: email\nextensions:\n  myorgextension: extensionvalue\nintegrations:\n  opsgenie:\n    region: US\n    service-url: https://my-org.opsgenie.com/service/123e4567-e89b-12d3-a456-426614174000\n  pagerduty:\n    service-url: https://my-org.pagerduty.com/service-directory/PMyService\nlinks:\n  - name: Architecture\n    type: doc\n    provider: Gigoogle drivetHub\n    url: https://my-runbook\n  - name: Runbook\n    type: runbook\n    url: https://my-runbook\n  - name: Source Code\n    type: repo\n    provider: GitHub\n    url: https://github.com/DataDog/schema\ntags:\n  - my:tag\n  - service:tag\nteam: my-team  \n"
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/services/definitions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":[{"type":"service-definition","attributes":{"meta":{"last-modified-time":"2025-09-23T09:20:33.247986895Z","github-html-url":"","ingestion-source":"api","origin":"dd_terraform","origin-detail":"","warnings":[],"ingested-schema-version":"v2.1"},"schema":{"schema-version":"v2.1","dd-service":"tf-testaccdatadogservicedefinition_basicv2_1-local-1758619232","team":"my-team","contacts":[{"name":"Team Email","type":"email","contact":"contact@datadoghq.com"}],"links":[{"name":"Architecture","type":"doc","provider":"Gigoogle drivetHub","url":"https://my-runbook"},{"name":"Runbook","type":"runbook","url":"https://my-runbook"},{"name":"Source Code","type":"repo","provider":"GitHub","url":"https://github.com/DataDog/schema"}],"tags":["my:tag","service:tag"],"integrations":{"pagerduty":{"service-url":"https://my-org.pagerduty.com/service-directory/PMyService"},"opsgenie":{"service-url":"https://my-org.opsgenie.com/service/123e4567-e89b-12d3-a456-426614174000","region":"US"}},"extensions":{"myorgextension":"extensionvalue"}}}}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 138.968459ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/services/definitions/tf-testaccdatadogservicedefinition_basicv2_1-local-1758619232
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"service-definition","id":"7cc47d69-ca0a-40da-8122-496ffb767275","attributes":{"meta":{"last-modified-time":"2025-09-23T09:20:33.247986895Z","github-html-url":"","ingestion-source":"api","origin":"dd_terraform","origin-detail":"","warnings":[],"ingested-schema-version":"v2.1"},"schema":{"schema-version":"v2.1","dd-service":"tf-testaccdatadogservicedefinition_basicv2_1-local-1758619232","team":"my-team","contacts":[{"name":"Team Email","type":"email","contact":"contact@datadoghq.com"}],"links":[{"name":"Architecture","type":"doc","provider":"Gigoogle drivetHub","url":"https://my-runbook"},{"name":"Runbook","type":"runbook","url":"https://my-runbook"},{"name":"Source Code","type":"repo","provider":"GitHub","url":"https://github.com/DataDog/schema"}],"tags":["my:tag","service:tag"],"integrations":{"pagerduty":{"service-url":"https://my-org.pagerduty.com/service-directory/PMyService"},"opsgenie":{"service-url":"https://my-org.opsgenie.com/service/123e4567-e89b-12d3-a456-426614174000","region":"US"}},"extensions":{"myorgextension":"extensionvalue"}}}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 145.431916ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/services/definitions/tf-testaccdatadogservicedefinition_basicv2_1-local-1758619232
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"service-definition","id":"7cc47d69-ca0a-40da-8122-496ffb767275","attributes":{"meta":{"last-modified-time":"2025-09-23T09:20:33.247986895Z","github-html-url":"","ingestion-source":"api","origin":"dd_terraform","origin-detail":"","warnings":[],"ingested-schema-version":"v2.1"},"schema":{"schema-version":"v2.1","dd-service":"tf-testaccdatadogservicedefinition_basicv2_1-local-1758619232","team":"my-team","contacts":[{"name":"Team Email","type":"email","contact":"contact@datadoghq.com"}],"links":[{"name":"Architecture","type":"doc","provider":"Gigoogle drivetHub","url":"https://my-runbook"},{"name":"Runbook","type":"runbook","url":"https://my-runbook"},{"name":"Source Code","type":"repo","provider":"GitHub","url":"https://github.com/DataDog/schema"}],"tags":["my:tag","service:tag"],"integrations":{"pagerduty":{"service-url":"https://my-org.pagerduty.com/service-directory/PMyService"},"opsgenie":{"service-url":"https://my-org.opsgenie.com/service/123e4567-e89b-12d3-a456-426614174000","region":"US"}},"extensions":{"myorgextension":"extensionvalue"}}}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 194.5475ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/services/definitions/tf-testaccdatadogservicedefinition_basicv2_1-local-1758619232
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Content-Type:
+                - text/html; charset=utf-8
+        status: 204 No Content
+        code: 204
+        duration: 147.292375ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/services/definitions/tf-testaccdatadogservicedefinition_basicv2_1-local-1758619232
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"errors":["404 Not Found: Not Found"],"error_details":[{}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 150.929708ms

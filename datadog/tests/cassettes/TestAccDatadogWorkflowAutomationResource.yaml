@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"description":"My description.","name":"tf-TestAccDatadogWorkflowAutomationResource-local-1741620155","published":false,"spec":{"steps":[],"triggers":[{"startStepNames":[],"workflowTrigger":{}}]},"tags":["foo:bar","service:foo","team:bar"],"webhookSecret":""},"type":"workflows"}}
+            {"data":{"attributes":{"description":"My description.","name":"tf-TestAccDatadogWorkflowAutomationResource-local-1758619061","published":false,"spec":{"steps":[],"triggers":[{"startStepNames":[],"workflowTrigger":{}}]},"tags":["foo:bar","service:foo","team:bar"],"webhookSecret":""},"type":"workflows"}}
         form: {}
         headers:
             Accept:
@@ -28,15 +28,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 588
+        content_length: 604
         uncompressed: false
-        body: '{"data":{"id":"16d286b6-5b59-42df-a619-cbc46908cdd2","type":"workflows","attributes":{"createdAt":"2025-03-10T15:22:38.097932Z","description":"My description.","name":"tf-TestAccDatadogWorkflowAutomationResource-local-1741620155","published":false,"spec":{"triggers":[{"startStepNames":[],"workflowTrigger":{}}],"steps":[]},"tags":["foo:bar","service:foo","team:bar"],"updatedAt":"2025-03-10T15:22:38.097932Z"},"relationships":{"creator":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"owner":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}}}}}'
+        body: '{"data":{"id":"dbe15dda-fdd8-4043-96a6-e9cbc18c1c6b","type":"workflows","attributes":{"createdAt":"2025-09-23T09:17:42.115219Z","description":"My description.","name":"tf-TestAccDatadogWorkflowAutomationResource-local-1758619061","published":false,"spec":{"triggers":[{"startStepNames":[],"workflowTrigger":{}}],"steps":[]},"systemTags":[],"tags":["foo:bar","service:foo","team:bar"],"updatedAt":"2025-09-23T09:17:42.115219Z"},"relationships":{"creator":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"owner":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 169.691125ms
+        duration: 160.955375ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -53,7 +53,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/workflows/16d286b6-5b59-42df-a619-cbc46908cdd2
+        url: https://api.datadoghq.com/api/v2/workflows/dbe15dda-fdd8-4043-96a6-e9cbc18c1c6b
         method: GET
       response:
         proto: HTTP/1.1
@@ -61,15 +61,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 588
+        content_length: 604
         uncompressed: false
-        body: '{"data":{"id":"16d286b6-5b59-42df-a619-cbc46908cdd2","type":"workflows","attributes":{"createdAt":"2025-03-10T15:22:38.097932Z","description":"My description.","name":"tf-TestAccDatadogWorkflowAutomationResource-local-1741620155","published":false,"spec":{"triggers":[{"startStepNames":[],"workflowTrigger":{}}],"steps":[]},"tags":["foo:bar","service:foo","team:bar"],"updatedAt":"2025-03-10T15:22:38.097932Z"},"relationships":{"creator":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"owner":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}}}}}'
+        body: '{"data":{"id":"dbe15dda-fdd8-4043-96a6-e9cbc18c1c6b","type":"workflows","attributes":{"createdAt":"2025-09-23T09:17:42.115219Z","description":"My description.","name":"tf-TestAccDatadogWorkflowAutomationResource-local-1758619061","published":false,"spec":{"triggers":[{"startStepNames":[],"workflowTrigger":{}}],"steps":[]},"systemTags":[],"tags":["foo:bar","service:foo","team:bar"],"updatedAt":"2025-09-23T09:17:42.115219Z"},"relationships":{"creator":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"owner":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 71.651042ms
+        duration: 161.798333ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -86,7 +86,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/workflows/16d286b6-5b59-42df-a619-cbc46908cdd2
+        url: https://api.datadoghq.com/api/v2/workflows/dbe15dda-fdd8-4043-96a6-e9cbc18c1c6b
         method: GET
       response:
         proto: HTTP/1.1
@@ -94,15 +94,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 588
+        content_length: 604
         uncompressed: false
-        body: '{"data":{"id":"16d286b6-5b59-42df-a619-cbc46908cdd2","type":"workflows","attributes":{"createdAt":"2025-03-10T15:22:38.097932Z","description":"My description.","name":"tf-TestAccDatadogWorkflowAutomationResource-local-1741620155","published":false,"spec":{"triggers":[{"startStepNames":[],"workflowTrigger":{}}],"steps":[]},"tags":["foo:bar","service:foo","team:bar"],"updatedAt":"2025-03-10T15:22:38.097932Z"},"relationships":{"creator":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"owner":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}}}}}'
+        body: '{"data":{"id":"dbe15dda-fdd8-4043-96a6-e9cbc18c1c6b","type":"workflows","attributes":{"createdAt":"2025-09-23T09:17:42.115219Z","description":"My description.","name":"tf-TestAccDatadogWorkflowAutomationResource-local-1758619061","published":false,"spec":{"triggers":[{"startStepNames":[],"workflowTrigger":{}}],"steps":[]},"systemTags":[],"tags":["foo:bar","service:foo","team:bar"],"updatedAt":"2025-09-23T09:17:42.115219Z"},"relationships":{"creator":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"owner":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 83.788417ms
+        duration: 165.073417ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -119,7 +119,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/workflows/16d286b6-5b59-42df-a619-cbc46908cdd2
+        url: https://api.datadoghq.com/api/v2/workflows/dbe15dda-fdd8-4043-96a6-e9cbc18c1c6b
         method: GET
       response:
         proto: HTTP/1.1
@@ -127,15 +127,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 588
+        content_length: 604
         uncompressed: false
-        body: '{"data":{"id":"16d286b6-5b59-42df-a619-cbc46908cdd2","type":"workflows","attributes":{"createdAt":"2025-03-10T15:22:38.097932Z","description":"My description.","name":"tf-TestAccDatadogWorkflowAutomationResource-local-1741620155","published":false,"spec":{"triggers":[{"startStepNames":[],"workflowTrigger":{}}],"steps":[]},"tags":["foo:bar","service:foo","team:bar"],"updatedAt":"2025-03-10T15:22:38.097932Z"},"relationships":{"creator":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"owner":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}}}}}'
+        body: '{"data":{"id":"dbe15dda-fdd8-4043-96a6-e9cbc18c1c6b","type":"workflows","attributes":{"createdAt":"2025-09-23T09:17:42.115219Z","description":"My description.","name":"tf-TestAccDatadogWorkflowAutomationResource-local-1758619061","published":false,"spec":{"triggers":[{"startStepNames":[],"workflowTrigger":{}}],"steps":[]},"systemTags":[],"tags":["foo:bar","service:foo","team:bar"],"updatedAt":"2025-09-23T09:17:42.115219Z"},"relationships":{"creator":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"owner":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 87.282833ms
+        duration: 171.302375ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -152,7 +152,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/workflows/16d286b6-5b59-42df-a619-cbc46908cdd2
+        url: https://api.datadoghq.com/api/v2/workflows/dbe15dda-fdd8-4043-96a6-e9cbc18c1c6b
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -166,4 +166,4 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 94.392208ms
+        duration: 171.382959ms

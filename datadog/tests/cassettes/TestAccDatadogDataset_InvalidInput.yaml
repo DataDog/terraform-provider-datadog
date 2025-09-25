@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"name":"tf-test-InvalidInput-1755283626","principals":["role:94172442-be03-11e9-a77a-3b7612558ac1"],"product_filters":[{"filters":["@application.id:ce9843b0-7a45-453c-a831-55dd15f85141"],"product":"ci-visibility"}]},"type":"dataset"}}
+            {"data":{"attributes":{"name":"tf-test-InvalidInput-1758619345","principals":["role:94172442-be03-11e9-a77a-3b7612558ac1"],"product_filters":[{"filters":["@application.id:ce9843b0-7a45-453c-a831-55dd15f85141"],"product":"ci-visibility"}]},"type":"dataset"}}
         form: {}
         headers:
             Accept:
@@ -37,7 +37,7 @@ interactions:
                 - application/json
         status: 400 Bad Request
         code: 400
-        duration: 146.397042ms
+        duration: 272.158416ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -50,7 +50,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"name":"tf-test-InvalidInput-1755283626","principals":["foo:invalid-principal-format"],"product_filters":[{"filters":["@application.id:ce9843b0-7a45-453c-a831-55dd15f85141"],"product":"rum"}]},"type":"dataset"}}
+            {"data":{"attributes":{"name":"tf-test-InvalidInput-1758619345","principals":["foo:invalid-principal-format"],"product_filters":[{"filters":["@application.id:ce9843b0-7a45-453c-a831-55dd15f85141"],"product":"rum"}]},"type":"dataset"}}
         form: {}
         headers:
             Accept:
@@ -69,48 +69,10 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"errors":["Invalid request: [PrincipalInvalid] \"foo:invalid-principal-format\" is not a valid principal: [PrincipalTypeNotSupported] principal type \"foo\" is not supported"]}
+            {"errors":["Invalid request: [DatasetFilterInUse] the filter \"@application.id:ce9843b0-7a45-453c-a831-55dd15f85141\" is already used in a different \"rum\" dataset"]}
         headers:
             Content-Type:
                 - application/json
         status: 400 Bad Request
         code: 400
-        duration: 117.925ms
-    - id: 2
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 164
-        transfer_encoding: []
-        trailer: {}
-        host: api.datadoghq.com
-        remote_addr: ""
-        request_uri: ""
-        body: |
-            {"data":{"attributes":{"name":"tf-test-InvalidInput-1755283626","principals":["role:94172442-be03-11e9-a77a-3b7612558ac1"],"product_filters":[]},"type":"dataset"}}
-        form: {}
-        headers:
-            Accept:
-                - application/json
-            Content-Type:
-                - application/json
-        url: https://api.datadoghq.com/api/v2/datasets
-        method: POST
-      response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        transfer_encoding:
-            - chunked
-        trailer: {}
-        content_length: -1
-        uncompressed: true
-        body: |
-            {"errors":["Invalid request: [DatasetFiltersEmpty] request must have product filters"]}
-        headers:
-            Content-Type:
-                - application/json
-        status: 400 Bad Request
-        code: 400
-        duration: 91.276666ms
+        duration: 181.697083ms

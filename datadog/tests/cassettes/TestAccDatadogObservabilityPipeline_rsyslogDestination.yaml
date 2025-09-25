@@ -31,13 +31,13 @@ interactions:
         content_length: 349
         uncompressed: false
         body: |
-            {"data":{"id":"d15cdf46-24e0-11f0-b6ee-da7ad0900002","type":"pipelines","attributes":{"name":"rsyslog-dest-pipeline","config":{"destinations":[{"id":"rsyslog-destination-1","inputs":["source-1"],"keepalive":60000,"tls":{"crt_file":"/etc/certs/rsyslog.crt"},"type":"rsyslog"}],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"c50431d6-985d-11f0-b344-da7ad0900002","type":"pipelines","attributes":{"name":"rsyslog-dest-pipeline","config":{"destinations":[{"id":"rsyslog-destination-1","inputs":["source-1"],"keepalive":60000,"tls":{"crt_file":"/etc/certs/rsyslog.crt"},"type":"rsyslog"}],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/json
         status: 201 Created
         code: 201
-        duration: 562.678417ms
+        duration: 481.60575ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -54,7 +54,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/d15cdf46-24e0-11f0-b6ee-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/c50431d6-985d-11f0-b344-da7ad0900002
         method: GET
       response:
         proto: HTTP/1.1
@@ -65,13 +65,13 @@ interactions:
         content_length: 349
         uncompressed: false
         body: |
-            {"data":{"id":"d15cdf46-24e0-11f0-b6ee-da7ad0900002","type":"pipelines","attributes":{"name":"rsyslog-dest-pipeline","config":{"destinations":[{"id":"rsyslog-destination-1","inputs":["source-1"],"keepalive":60000,"tls":{"crt_file":"/etc/certs/rsyslog.crt"},"type":"rsyslog"}],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"c50431d6-985d-11f0-b344-da7ad0900002","type":"pipelines","attributes":{"name":"rsyslog-dest-pipeline","config":{"destinations":[{"id":"rsyslog-destination-1","inputs":["source-1"],"keepalive":60000,"tls":{"crt_file":"/etc/certs/rsyslog.crt"},"type":"rsyslog"}],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 288.805375ms
+        duration: 237.172542ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -88,7 +88,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/d15cdf46-24e0-11f0-b6ee-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/c50431d6-985d-11f0-b344-da7ad0900002
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -104,4 +104,4 @@ interactions:
                 - application/json
         status: 204 No Content
         code: 204
-        duration: 528.808833ms
+        duration: 393.325791ms

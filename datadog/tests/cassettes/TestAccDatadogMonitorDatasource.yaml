@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"draft_status":"published","message":"some message Notify: @hipchat-channel","name":"tf_TestAccDatadogMonitorDatasource_local_1749222067","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10},"priority":null,"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1749222067} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') \u003e= 1","restricted_roles":null,"tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1749222067"],"type":"query alert"}
+            {"draft_status":"published","message":"some message Notify: @hipchat-channel","name":"tf_TestAccDatadogMonitorDatasource_local_1758619456","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10},"priority":null,"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1758619456} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') \u003e= 1","restricted_roles":null,"tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1758619456"],"type":"query alert"}
         form: {}
         headers:
             Accept:
@@ -37,7 +37,7 @@ interactions:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 418.535084ms
+        duration: 200.878625ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -50,7 +50,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"draft_status":"published","message":"some message Notify: @hipchat-channel","name":"tf_TestAccDatadogMonitorDatasource_local_1749222067","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10},"priority":null,"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1749222067} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') \u003e= 1","restricted_roles":null,"tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1749222067"],"type":"query alert"}
+            {"draft_status":"published","message":"some message Notify: @hipchat-channel","name":"tf_TestAccDatadogMonitorDatasource_local_1758619456","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10},"priority":null,"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1758619456} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') \u003e= 1","restricted_roles":null,"tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1758619456"],"type":"query alert"}
         form: {}
         headers:
             Accept:
@@ -74,7 +74,7 @@ interactions:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 238.713041ms
+        duration: 176.711583ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -87,7 +87,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"draft_status":"published","message":"some message Notify: @hipchat-channel","name":"tf_TestAccDatadogMonitorDatasource_local_1749222067","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10},"priority":null,"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1749222067} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') \u003e= 1","restricted_roles":null,"tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1749222067"],"type":"query alert"}
+            {"draft_status":"published","message":"some message Notify: @hipchat-channel","name":"tf_TestAccDatadogMonitorDatasource_local_1758619456","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10},"priority":null,"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1758619456} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') \u003e= 1","restricted_roles":null,"tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1758619456"],"type":"query alert"}
         form: {}
         headers:
             Accept:
@@ -106,13 +106,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":174341675,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorDatasource_local_1749222067","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1749222067"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1749222067} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1749222069000,"created":"2025-06-06T15:01:09.691471+00:00","modified":"2025-06-06T15:01:09.691471+00:00","deleted":null,"priority":null,"restricted_roles":null,"restriction_policy":null,"overall_state_modified":null,"overall_state":"No Data","creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com","id":1445416}}
+            {"id":217470365,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorDatasource_local_1758619456","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1758619456"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1758619456} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1758619459000,"created":"2025-09-23T09:24:19.214001+00:00","modified":"2025-09-23T09:24:19.214001+00:00","deleted":null,"priority":null,"restricted_roles":null,"restriction_policy":null,"overall_state_modified":null,"overall_state":"No Data","creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com","id":1445416}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 1.249709334s
+        duration: 997.594125ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -129,7 +129,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor?name=tf_TestAccDatadogMonitorDatasource_local_1749222067
+        url: https://api.datadoghq.com/api/v1/monitor?name=tf_TestAccDatadogMonitorDatasource_local_1758619456
         method: GET
       response:
         proto: HTTP/1.1
@@ -141,13 +141,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            [{"id":174341675,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorDatasource_local_1749222067","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1749222067"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1749222067} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1749222069000,"created":"2025-06-06T15:01:09.691471+00:00","modified":"2025-06-06T15:01:09.691471+00:00","deleted":null,"priority":null,"restricted_roles":null,"overall_state_modified":null,"overall_state":"No Data","creator":{"name":"frog","email":"frog@datadoghq.com","handle":"frog@datadoghq.com","id":1445416},"matching_downtimes":[]}]
+            [{"id":217470365,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorDatasource_local_1758619456","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1758619456"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1758619456} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1758619459000,"created":"2025-09-23T09:24:19.214001+00:00","modified":"2025-09-23T09:24:19.214001+00:00","deleted":null,"priority":null,"restricted_roles":null,"overall_state_modified":null,"overall_state":"No Data","creator":{"name":"frog","email":"frog@datadoghq.com","handle":"frog@datadoghq.com","id":1445416},"matching_downtimes":[]}]
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 233.278291ms
+        duration: 227.910625ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -164,7 +164,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/174341675
+        url: https://api.datadoghq.com/api/v1/monitor/217470365
         method: GET
       response:
         proto: HTTP/1.1
@@ -176,13 +176,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":174341675,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorDatasource_local_1749222067","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1749222067"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1749222067} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1749222069000,"created":"2025-06-06T15:01:09.691471+00:00","modified":"2025-06-06T15:01:09.691471+00:00","deleted":null,"priority":null,"restricted_roles":null,"overall_state_modified":null,"overall_state":"No Data","creator":{"name":"frog","email":"frog@datadoghq.com","handle":"frog@datadoghq.com","id":1445416}}
+            {"id":217470365,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorDatasource_local_1758619456","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1758619456"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1758619456} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1758619459000,"created":"2025-09-23T09:24:19.214001+00:00","modified":"2025-09-23T09:24:19.214001+00:00","deleted":null,"priority":null,"restricted_roles":null,"overall_state_modified":null,"overall_state":"No Data","creator":{"name":"frog","email":"frog@datadoghq.com","handle":"frog@datadoghq.com","id":1445416}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 199.968416ms
+        duration: 291.268542ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -199,7 +199,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/174341675
+        url: https://api.datadoghq.com/api/v1/monitor/217470365
         method: GET
       response:
         proto: HTTP/1.1
@@ -211,13 +211,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":174341675,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorDatasource_local_1749222067","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1749222067"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1749222067} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1749222069000,"created":"2025-06-06T15:01:09.691471+00:00","modified":"2025-06-06T15:01:09.691471+00:00","deleted":null,"priority":null,"restricted_roles":null,"overall_state_modified":null,"overall_state":"No Data","creator":{"name":"frog","email":"frog@datadoghq.com","handle":"frog@datadoghq.com","id":1445416}}
+            {"id":217470365,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorDatasource_local_1758619456","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1758619456"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1758619456} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1758619459000,"created":"2025-09-23T09:24:19.214001+00:00","modified":"2025-09-23T09:24:19.214001+00:00","deleted":null,"priority":null,"restricted_roles":null,"overall_state_modified":null,"overall_state":"No Data","creator":{"name":"frog","email":"frog@datadoghq.com","handle":"frog@datadoghq.com","id":1445416}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 295.610375ms
+        duration: 206.263125ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -230,14 +230,14 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"draft_status":"published","message":"some message Notify: @hipchat-channel","name":"tf_TestAccDatadogMonitorDatasource_local_1749222067","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10},"priority":null,"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1749222067} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') \u003e= 1","restricted_roles":null,"tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1749222067"],"type":"query alert"}
+            {"draft_status":"published","message":"some message Notify: @hipchat-channel","name":"tf_TestAccDatadogMonitorDatasource_local_1758619456","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10},"priority":null,"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1758619456} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') \u003e= 1","restricted_roles":null,"tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1758619456"],"type":"query alert"}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/174341675/validate
+        url: https://api.datadoghq.com/api/v1/monitor/217470365/validate
         method: POST
       response:
         proto: HTTP/1.1
@@ -254,7 +254,7 @@ interactions:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 163.922208ms
+        duration: 179.218833ms
     - id: 7
       request:
         proto: HTTP/1.1
@@ -271,7 +271,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor?name=tf_TestAccDatadogMonitorDatasource_local_1749222067
+        url: https://api.datadoghq.com/api/v1/monitor?name=tf_TestAccDatadogMonitorDatasource_local_1758619456
         method: GET
       response:
         proto: HTTP/1.1
@@ -283,13 +283,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            [{"id":174341675,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorDatasource_local_1749222067","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1749222067"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1749222067} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1749222069000,"created":"2025-06-06T15:01:09.691471+00:00","modified":"2025-06-06T15:01:09.691471+00:00","deleted":null,"priority":null,"restricted_roles":null,"overall_state_modified":null,"overall_state":"No Data","creator":{"name":"frog","email":"frog@datadoghq.com","handle":"frog@datadoghq.com","id":1445416},"matching_downtimes":[]}]
+            [{"id":217470365,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorDatasource_local_1758619456","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1758619456"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1758619456} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1758619459000,"created":"2025-09-23T09:24:19.214001+00:00","modified":"2025-09-23T09:24:19.214001+00:00","deleted":null,"priority":null,"restricted_roles":null,"overall_state_modified":null,"overall_state":"No Data","creator":{"name":"frog","email":"frog@datadoghq.com","handle":"frog@datadoghq.com","id":1445416},"matching_downtimes":[]}]
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 171.52425ms
+        duration: 217.734834ms
     - id: 8
       request:
         proto: HTTP/1.1
@@ -306,7 +306,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/174341675
+        url: https://api.datadoghq.com/api/v1/monitor/217470365
         method: GET
       response:
         proto: HTTP/1.1
@@ -318,13 +318,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":174341675,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorDatasource_local_1749222067","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1749222067"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1749222067} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1749222069000,"created":"2025-06-06T15:01:09.691471+00:00","modified":"2025-06-06T15:01:09.691471+00:00","deleted":null,"priority":null,"restricted_roles":null,"overall_state_modified":null,"overall_state":"No Data","creator":{"name":"frog","email":"frog@datadoghq.com","handle":"frog@datadoghq.com","id":1445416}}
+            {"id":217470365,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorDatasource_local_1758619456","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1758619456"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1758619456} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1758619459000,"created":"2025-09-23T09:24:19.214001+00:00","modified":"2025-09-23T09:24:19.214001+00:00","deleted":null,"priority":null,"restricted_roles":null,"overall_state_modified":null,"overall_state":"No Data","creator":{"name":"frog","email":"frog@datadoghq.com","handle":"frog@datadoghq.com","id":1445416}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 181.478792ms
+        duration: 221.022917ms
     - id: 9
       request:
         proto: HTTP/1.1
@@ -337,14 +337,14 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"draft_status":"published","message":"some message Notify: @hipchat-channel","name":"tf_TestAccDatadogMonitorDatasource_local_1749222067","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10},"priority":null,"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1749222067} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') \u003e= 1","restricted_roles":null,"tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1749222067"],"type":"query alert"}
+            {"draft_status":"published","message":"some message Notify: @hipchat-channel","name":"tf_TestAccDatadogMonitorDatasource_local_1758619456","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10},"priority":null,"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1758619456} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') \u003e= 1","restricted_roles":null,"tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1758619456"],"type":"query alert"}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/174341675/validate
+        url: https://api.datadoghq.com/api/v1/monitor/217470365/validate
         method: POST
       response:
         proto: HTTP/1.1
@@ -361,7 +361,7 @@ interactions:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 297.305042ms
+        duration: 362.027833ms
     - id: 10
       request:
         proto: HTTP/1.1
@@ -378,7 +378,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor?name=tf_TestAccDatadogMonitorDatasource_local_1749222067
+        url: https://api.datadoghq.com/api/v1/monitor?name=tf_TestAccDatadogMonitorDatasource_local_1758619456
         method: GET
       response:
         proto: HTTP/1.1
@@ -390,13 +390,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            [{"id":174341675,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorDatasource_local_1749222067","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1749222067"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1749222067} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1749222069000,"created":"2025-06-06T15:01:09.691471+00:00","modified":"2025-06-06T15:01:09.691471+00:00","deleted":null,"priority":null,"restricted_roles":null,"overall_state_modified":null,"overall_state":"No Data","creator":{"name":"frog","email":"frog@datadoghq.com","handle":"frog@datadoghq.com","id":1445416},"matching_downtimes":[]}]
+            [{"id":217470365,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorDatasource_local_1758619456","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1758619456"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1758619456} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1758619459000,"created":"2025-09-23T09:24:19.214001+00:00","modified":"2025-09-23T09:24:19.214001+00:00","deleted":null,"priority":null,"restricted_roles":null,"overall_state_modified":null,"overall_state":"No Data","creator":{"name":"frog","email":"frog@datadoghq.com","handle":"frog@datadoghq.com","id":1445416},"matching_downtimes":[]}]
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 170.833166ms
+        duration: 216.9205ms
     - id: 11
       request:
         proto: HTTP/1.1
@@ -413,7 +413,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/174341675
+        url: https://api.datadoghq.com/api/v1/monitor/217470365
         method: GET
       response:
         proto: HTTP/1.1
@@ -425,13 +425,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":174341675,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorDatasource_local_1749222067","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1749222067"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1749222067} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1749222069000,"created":"2025-06-06T15:01:09.691471+00:00","modified":"2025-06-06T15:01:09.691471+00:00","deleted":null,"priority":null,"restricted_roles":null,"overall_state_modified":null,"overall_state":"No Data","creator":{"name":"frog","email":"frog@datadoghq.com","handle":"frog@datadoghq.com","id":1445416}}
+            {"id":217470365,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorDatasource_local_1758619456","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1758619456"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1758619456} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1758619459000,"created":"2025-09-23T09:24:19.214001+00:00","modified":"2025-09-23T09:24:19.214001+00:00","deleted":null,"priority":null,"restricted_roles":null,"overall_state_modified":null,"overall_state":"No Data","creator":{"name":"frog","email":"frog@datadoghq.com","handle":"frog@datadoghq.com","id":1445416}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 290.333792ms
+        duration: 201.889042ms
     - id: 12
       request:
         proto: HTTP/1.1
@@ -444,14 +444,14 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"draft_status":"published","message":"some message Notify: @hipchat-channel","name":"tf_TestAccDatadogMonitorDatasource_local_1749222067","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10},"priority":null,"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1749222067} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') \u003e= 1","restricted_roles":null,"tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1749222067"],"type":"query alert"}
+            {"draft_status":"published","message":"some message Notify: @hipchat-channel","name":"tf_TestAccDatadogMonitorDatasource_local_1758619456","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10},"priority":null,"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1758619456} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') \u003e= 1","restricted_roles":null,"tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1758619456"],"type":"query alert"}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/174341675/validate
+        url: https://api.datadoghq.com/api/v1/monitor/217470365/validate
         method: POST
       response:
         proto: HTTP/1.1
@@ -468,7 +468,7 @@ interactions:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 162.964041ms
+        duration: 317.7295ms
     - id: 13
       request:
         proto: HTTP/1.1
@@ -481,7 +481,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"name":"tf_TestAccDatadogMonitorDatasource_local_1749222067"},"relationships":{},"type":"roles"}}
+            {"data":{"attributes":{"name":"tf_TestAccDatadogMonitorDatasource_local_1758619456"},"relationships":{},"type":"roles"}}
         form: {}
         headers:
             Accept:
@@ -498,13 +498,13 @@ interactions:
         trailer: {}
         content_length: 975
         uncompressed: false
-        body: '{"data":{"id":"17163eaa-42e7-11f0-a32b-da7ad0900002","type":"roles","attributes":{"created_at":"2025-06-06T15:01:14.072743Z","modified_at":"2025-06-06T15:01:14.069481Z","name":"tf_TestAccDatadogMonitorDatasource_local_1749222067","team_count":0,"user_count":0},"relationships":{"permissions":{"data":[{"id":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2","type":"permissions"},{"id":"4441648c-d8b1-11e9-a77a-1b899a04b304","type":"permissions"},{"id":"417ba636-2dce-11eb-84c0-6bce5b0d9de0","type":"permissions"},{"id":"12efc20e-d36c-11eb-a9b8-da7ad0900002","type":"permissions"},{"id":"7605ef24-f376-11eb-b90b-da7ad0900002","type":"permissions"},{"id":"b6bf9ac6-9a59-11ec-8480-da7ad0900002","type":"permissions"},{"id":"f8e941cf-e746-11ec-b22d-da7ad0900002","type":"permissions"},{"id":"6c5ad874-7aff-11ed-a5cd-da7ad0900002","type":"permissions"},{"id":"a8b4d6e8-4ea4-11ee-b482-da7ad0900002","type":"permissions"},{"id":"50c270de-69ee-11ee-9151-da7ad0900002","type":"permissions"}]}}}}'
+        body: '{"data":{"id":"1aa28f06-985f-11f0-b93f-da7ad0900002","type":"roles","attributes":{"created_at":"2025-09-23T09:24:28.463842Z","modified_at":"2025-09-23T09:24:28.465909Z","name":"tf_TestAccDatadogMonitorDatasource_local_1758619456","team_count":0,"user_count":0},"relationships":{"permissions":{"data":[{"id":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2","type":"permissions"},{"id":"4441648c-d8b1-11e9-a77a-1b899a04b304","type":"permissions"},{"id":"417ba636-2dce-11eb-84c0-6bce5b0d9de0","type":"permissions"},{"id":"12efc20e-d36c-11eb-a9b8-da7ad0900002","type":"permissions"},{"id":"7605ef24-f376-11eb-b90b-da7ad0900002","type":"permissions"},{"id":"b6bf9ac6-9a59-11ec-8480-da7ad0900002","type":"permissions"},{"id":"f8e941cf-e746-11ec-b22d-da7ad0900002","type":"permissions"},{"id":"6c5ad874-7aff-11ed-a5cd-da7ad0900002","type":"permissions"},{"id":"a8b4d6e8-4ea4-11ee-b482-da7ad0900002","type":"permissions"},{"id":"50c270de-69ee-11ee-9151-da7ad0900002","type":"permissions"}]}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 134.487083ms
+        duration: 253.660875ms
     - id: 14
       request:
         proto: HTTP/1.1
@@ -521,7 +521,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/roles/17163eaa-42e7-11f0-a32b-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/roles/1aa28f06-985f-11f0-b93f-da7ad0900002
         method: GET
       response:
         proto: HTTP/1.1
@@ -531,13 +531,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"data":{"id":"17163eaa-42e7-11f0-a32b-da7ad0900002","type":"roles","attributes":{"created_at":"2025-06-06T15:01:14.072743Z","created_by_handle":"frog@datadoghq.com","modified_at":"2025-06-06T15:01:14.069481Z","modified_by_handle":"frog@datadoghq.com","name":"tf_TestAccDatadogMonitorDatasource_local_1749222067","team_count":0,"user_count":0},"relationships":{"permissions":{"data":[{"id":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2","type":"permissions"},{"id":"4441648c-d8b1-11e9-a77a-1b899a04b304","type":"permissions"},{"id":"417ba636-2dce-11eb-84c0-6bce5b0d9de0","type":"permissions"},{"id":"12efc20e-d36c-11eb-a9b8-da7ad0900002","type":"permissions"},{"id":"7605ef24-f376-11eb-b90b-da7ad0900002","type":"permissions"},{"id":"b6bf9ac6-9a59-11ec-8480-da7ad0900002","type":"permissions"},{"id":"f8e941cf-e746-11ec-b22d-da7ad0900002","type":"permissions"},{"id":"6c5ad874-7aff-11ed-a5cd-da7ad0900002","type":"permissions"},{"id":"a8b4d6e8-4ea4-11ee-b482-da7ad0900002","type":"permissions"},{"id":"50c270de-69ee-11ee-9151-da7ad0900002","type":"permissions"}]}}}}'
+        body: '{"data":{"id":"1aa28f06-985f-11f0-b93f-da7ad0900002","type":"roles","attributes":{"created_at":"2025-09-23T09:24:28.463842Z","created_by_handle":"frog@datadoghq.com","modified_at":"2025-09-23T09:24:28.465909Z","modified_by_handle":"frog@datadoghq.com","name":"tf_TestAccDatadogMonitorDatasource_local_1758619456","team_count":0,"user_count":0},"relationships":{"permissions":{"data":[{"id":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2","type":"permissions"},{"id":"4441648c-d8b1-11e9-a77a-1b899a04b304","type":"permissions"},{"id":"417ba636-2dce-11eb-84c0-6bce5b0d9de0","type":"permissions"},{"id":"12efc20e-d36c-11eb-a9b8-da7ad0900002","type":"permissions"},{"id":"7605ef24-f376-11eb-b90b-da7ad0900002","type":"permissions"},{"id":"b6bf9ac6-9a59-11ec-8480-da7ad0900002","type":"permissions"},{"id":"f8e941cf-e746-11ec-b22d-da7ad0900002","type":"permissions"},{"id":"6c5ad874-7aff-11ed-a5cd-da7ad0900002","type":"permissions"},{"id":"a8b4d6e8-4ea4-11ee-b482-da7ad0900002","type":"permissions"},{"id":"50c270de-69ee-11ee-9151-da7ad0900002","type":"permissions"}]}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 142.112ms
+        duration: 274.6335ms
     - id: 15
       request:
         proto: HTTP/1.1
@@ -550,14 +550,14 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"draft_status":"published","message":"some message Notify: @hipchat-channel","name":"tf_TestAccDatadogMonitorDatasource_local_1749222067","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10},"priority":null,"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1749222067} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') \u003e= 1","restricted_roles":["17163eaa-42e7-11f0-a32b-da7ad0900002"],"tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1749222067"],"type":"query alert"}
+            {"draft_status":"published","message":"some message Notify: @hipchat-channel","name":"tf_TestAccDatadogMonitorDatasource_local_1758619456","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10},"priority":null,"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1758619456} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') \u003e= 1","restricted_roles":["1aa28f06-985f-11f0-b93f-da7ad0900002"],"tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1758619456"],"type":"query alert"}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/174341675/validate
+        url: https://api.datadoghq.com/api/v1/monitor/217470365/validate
         method: POST
       response:
         proto: HTTP/1.1
@@ -574,7 +574,7 @@ interactions:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 169.282625ms
+        duration: 205.430334ms
     - id: 16
       request:
         proto: HTTP/1.1
@@ -587,14 +587,14 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"draft_status":"published","id":174341675,"message":"some message Notify: @hipchat-channel","name":"tf_TestAccDatadogMonitorDatasource_local_1749222067","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10},"priority":null,"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1749222067} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') \u003e= 1","restricted_roles":["17163eaa-42e7-11f0-a32b-da7ad0900002"],"tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1749222067"],"type":"query alert"}
+            {"draft_status":"published","id":217470365,"message":"some message Notify: @hipchat-channel","name":"tf_TestAccDatadogMonitorDatasource_local_1758619456","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10},"priority":null,"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1758619456} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') \u003e= 1","restricted_roles":["1aa28f06-985f-11f0-b93f-da7ad0900002"],"tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1758619456"],"type":"query alert"}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/174341675
+        url: https://api.datadoghq.com/api/v1/monitor/217470365
         method: PUT
       response:
         proto: HTTP/1.1
@@ -606,13 +606,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":174341675,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorDatasource_local_1749222067","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1749222067"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1749222067} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1749222069000,"created":"2025-06-06T15:01:09.691471+00:00","modified":"2025-06-06T15:01:14.644718+00:00","deleted":null,"priority":null,"restricted_roles":["17163eaa-42e7-11f0-a32b-da7ad0900002"],"restriction_policy":null,"overall_state_modified":null,"overall_state":"No Data"}
+            {"id":217470365,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorDatasource_local_1758619456","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1758619456"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1758619456} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1758619459000,"created":"2025-09-23T09:24:19.214001+00:00","modified":"2025-09-23T09:24:29.317225+00:00","deleted":null,"priority":null,"restricted_roles":["1aa28f06-985f-11f0-b93f-da7ad0900002"],"restriction_policy":null,"overall_state_modified":null,"overall_state":"No Data"}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 291.565334ms
+        duration: 1.156872958s
     - id: 17
       request:
         proto: HTTP/1.1
@@ -629,7 +629,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor?name=tf_TestAccDatadogMonitorDatasource_local_1749222067
+        url: https://api.datadoghq.com/api/v1/monitor?name=tf_TestAccDatadogMonitorDatasource_local_1758619456
         method: GET
       response:
         proto: HTTP/1.1
@@ -641,13 +641,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            [{"id":174341675,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorDatasource_local_1749222067","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1749222067"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1749222067} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1749222069000,"created":"2025-06-06T15:01:09.691471+00:00","modified":"2025-06-06T15:01:14.644718+00:00","deleted":null,"priority":null,"restricted_roles":["17163eaa-42e7-11f0-a32b-da7ad0900002"],"overall_state_modified":"2025-06-06T15:01:14+00:00","overall_state":"OK","creator":{"name":"frog","email":"frog@datadoghq.com","handle":"frog@datadoghq.com","id":1445416},"matching_downtimes":[]}]
+            [{"id":217470365,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorDatasource_local_1758619456","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1758619456"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1758619456} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1758619459000,"created":"2025-09-23T09:24:19.214001+00:00","modified":"2025-09-23T09:24:29.317225+00:00","deleted":null,"priority":null,"restricted_roles":["1aa28f06-985f-11f0-b93f-da7ad0900002"],"overall_state_modified":"2025-09-23T09:24:28+00:00","overall_state":"OK","creator":{"name":"frog","email":"frog@datadoghq.com","handle":"frog@datadoghq.com","id":1445416},"matching_downtimes":[]}]
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 204.339625ms
+        duration: 268.389417ms
     - id: 18
       request:
         proto: HTTP/1.1
@@ -664,7 +664,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/174341675
+        url: https://api.datadoghq.com/api/v1/monitor/217470365
         method: GET
       response:
         proto: HTTP/1.1
@@ -676,13 +676,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":174341675,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorDatasource_local_1749222067","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1749222067"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1749222067} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1749222069000,"created":"2025-06-06T15:01:09.691471+00:00","modified":"2025-06-06T15:01:14.644718+00:00","deleted":null,"priority":null,"restricted_roles":["17163eaa-42e7-11f0-a32b-da7ad0900002"],"overall_state_modified":"2025-06-06T15:01:14+00:00","overall_state":"OK","creator":{"name":"frog","email":"frog@datadoghq.com","handle":"frog@datadoghq.com","id":1445416}}
+            {"id":217470365,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorDatasource_local_1758619456","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1758619456"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1758619456} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1758619459000,"created":"2025-09-23T09:24:19.214001+00:00","modified":"2025-09-23T09:24:29.317225+00:00","deleted":null,"priority":null,"restricted_roles":["1aa28f06-985f-11f0-b93f-da7ad0900002"],"overall_state_modified":"2025-09-23T09:24:28+00:00","overall_state":"OK","creator":{"name":"frog","email":"frog@datadoghq.com","handle":"frog@datadoghq.com","id":1445416}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 167.109291ms
+        duration: 341.184333ms
     - id: 19
       request:
         proto: HTTP/1.1
@@ -699,7 +699,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/174341675
+        url: https://api.datadoghq.com/api/v1/monitor/217470365
         method: GET
       response:
         proto: HTTP/1.1
@@ -711,13 +711,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":174341675,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorDatasource_local_1749222067","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1749222067"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1749222067} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1749222069000,"created":"2025-06-06T15:01:09.691471+00:00","modified":"2025-06-06T15:01:14.644718+00:00","deleted":null,"priority":null,"restricted_roles":["17163eaa-42e7-11f0-a32b-da7ad0900002"],"overall_state_modified":"2025-06-06T15:01:14+00:00","overall_state":"OK","creator":{"name":"frog","email":"frog@datadoghq.com","handle":"frog@datadoghq.com","id":1445416}}
+            {"id":217470365,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorDatasource_local_1758619456","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1758619456"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1758619456} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1758619459000,"created":"2025-09-23T09:24:19.214001+00:00","modified":"2025-09-23T09:24:29.317225+00:00","deleted":null,"priority":null,"restricted_roles":["1aa28f06-985f-11f0-b93f-da7ad0900002"],"overall_state_modified":"2025-09-23T09:24:28+00:00","overall_state":"OK","creator":{"name":"frog","email":"frog@datadoghq.com","handle":"frog@datadoghq.com","id":1445416}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 178.112541ms
+        duration: 469.06725ms
     - id: 20
       request:
         proto: HTTP/1.1
@@ -730,14 +730,14 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"draft_status":"published","message":"some message Notify: @hipchat-channel","name":"tf_TestAccDatadogMonitorDatasource_local_1749222067","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10},"priority":null,"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1749222067} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') \u003e= 1","restricted_roles":["17163eaa-42e7-11f0-a32b-da7ad0900002"],"tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1749222067"],"type":"query alert"}
+            {"draft_status":"published","message":"some message Notify: @hipchat-channel","name":"tf_TestAccDatadogMonitorDatasource_local_1758619456","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10},"priority":null,"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1758619456} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') \u003e= 1","restricted_roles":["1aa28f06-985f-11f0-b93f-da7ad0900002"],"tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1758619456"],"type":"query alert"}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/174341675/validate
+        url: https://api.datadoghq.com/api/v1/monitor/217470365/validate
         method: POST
       response:
         proto: HTTP/1.1
@@ -754,7 +754,7 @@ interactions:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 202.352541ms
+        duration: 191.949667ms
     - id: 21
       request:
         proto: HTTP/1.1
@@ -771,7 +771,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor?name=tf_TestAccDatadogMonitorDatasource_local_1749222067
+        url: https://api.datadoghq.com/api/v1/monitor?name=tf_TestAccDatadogMonitorDatasource_local_1758619456
         method: GET
       response:
         proto: HTTP/1.1
@@ -783,13 +783,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            [{"id":174341675,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorDatasource_local_1749222067","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1749222067"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1749222067} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1749222069000,"created":"2025-06-06T15:01:09.691471+00:00","modified":"2025-06-06T15:01:14.644718+00:00","deleted":null,"priority":null,"restricted_roles":["17163eaa-42e7-11f0-a32b-da7ad0900002"],"overall_state_modified":"2025-06-06T15:01:14+00:00","overall_state":"OK","creator":{"name":"frog","email":"frog@datadoghq.com","handle":"frog@datadoghq.com","id":1445416},"matching_downtimes":[]}]
+            [{"id":217470365,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorDatasource_local_1758619456","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1758619456"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1758619456} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1758619459000,"created":"2025-09-23T09:24:19.214001+00:00","modified":"2025-09-23T09:24:29.317225+00:00","deleted":null,"priority":null,"restricted_roles":["1aa28f06-985f-11f0-b93f-da7ad0900002"],"overall_state_modified":"2025-09-23T09:24:28+00:00","overall_state":"OK","creator":{"name":"frog","email":"frog@datadoghq.com","handle":"frog@datadoghq.com","id":1445416},"matching_downtimes":[]}]
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 256.871792ms
+        duration: 322.434708ms
     - id: 22
       request:
         proto: HTTP/1.1
@@ -806,7 +806,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/roles/17163eaa-42e7-11f0-a32b-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/roles/1aa28f06-985f-11f0-b93f-da7ad0900002
         method: GET
       response:
         proto: HTTP/1.1
@@ -816,13 +816,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"data":{"id":"17163eaa-42e7-11f0-a32b-da7ad0900002","type":"roles","attributes":{"created_at":"2025-06-06T15:01:14.072743Z","created_by_handle":"frog@datadoghq.com","modified_at":"2025-06-06T15:01:14.069481Z","modified_by_handle":"frog@datadoghq.com","name":"tf_TestAccDatadogMonitorDatasource_local_1749222067","team_count":0,"user_count":0},"relationships":{"permissions":{"data":[{"id":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2","type":"permissions"},{"id":"4441648c-d8b1-11e9-a77a-1b899a04b304","type":"permissions"},{"id":"417ba636-2dce-11eb-84c0-6bce5b0d9de0","type":"permissions"},{"id":"12efc20e-d36c-11eb-a9b8-da7ad0900002","type":"permissions"},{"id":"7605ef24-f376-11eb-b90b-da7ad0900002","type":"permissions"},{"id":"b6bf9ac6-9a59-11ec-8480-da7ad0900002","type":"permissions"},{"id":"f8e941cf-e746-11ec-b22d-da7ad0900002","type":"permissions"},{"id":"6c5ad874-7aff-11ed-a5cd-da7ad0900002","type":"permissions"},{"id":"a8b4d6e8-4ea4-11ee-b482-da7ad0900002","type":"permissions"},{"id":"50c270de-69ee-11ee-9151-da7ad0900002","type":"permissions"}]}}}}'
+        body: '{"data":{"id":"1aa28f06-985f-11f0-b93f-da7ad0900002","type":"roles","attributes":{"created_at":"2025-09-23T09:24:28.463842Z","created_by_handle":"frog@datadoghq.com","modified_at":"2025-09-23T09:24:28.465909Z","modified_by_handle":"frog@datadoghq.com","name":"tf_TestAccDatadogMonitorDatasource_local_1758619456","team_count":0,"user_count":0},"relationships":{"permissions":{"data":[{"id":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2","type":"permissions"},{"id":"4441648c-d8b1-11e9-a77a-1b899a04b304","type":"permissions"},{"id":"417ba636-2dce-11eb-84c0-6bce5b0d9de0","type":"permissions"},{"id":"12efc20e-d36c-11eb-a9b8-da7ad0900002","type":"permissions"},{"id":"7605ef24-f376-11eb-b90b-da7ad0900002","type":"permissions"},{"id":"b6bf9ac6-9a59-11ec-8480-da7ad0900002","type":"permissions"},{"id":"f8e941cf-e746-11ec-b22d-da7ad0900002","type":"permissions"},{"id":"6c5ad874-7aff-11ed-a5cd-da7ad0900002","type":"permissions"},{"id":"a8b4d6e8-4ea4-11ee-b482-da7ad0900002","type":"permissions"},{"id":"50c270de-69ee-11ee-9151-da7ad0900002","type":"permissions"}]}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 189.372041ms
+        duration: 352.807458ms
     - id: 23
       request:
         proto: HTTP/1.1
@@ -839,7 +839,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/174341675
+        url: https://api.datadoghq.com/api/v1/monitor/217470365
         method: GET
       response:
         proto: HTTP/1.1
@@ -851,13 +851,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":174341675,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorDatasource_local_1749222067","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1749222067"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1749222067} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1749222069000,"created":"2025-06-06T15:01:09.691471+00:00","modified":"2025-06-06T15:01:14.644718+00:00","deleted":null,"priority":null,"restricted_roles":["17163eaa-42e7-11f0-a32b-da7ad0900002"],"overall_state_modified":"2025-06-06T15:01:14+00:00","overall_state":"OK","creator":{"name":"frog","email":"frog@datadoghq.com","handle":"frog@datadoghq.com","id":1445416}}
+            {"id":217470365,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorDatasource_local_1758619456","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1758619456"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1758619456} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1758619459000,"created":"2025-09-23T09:24:19.214001+00:00","modified":"2025-09-23T09:24:29.317225+00:00","deleted":null,"priority":null,"restricted_roles":["1aa28f06-985f-11f0-b93f-da7ad0900002"],"overall_state_modified":"2025-09-23T09:24:28+00:00","overall_state":"OK","creator":{"name":"frog","email":"frog@datadoghq.com","handle":"frog@datadoghq.com","id":1445416}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 332.65275ms
+        duration: 254.597167ms
     - id: 24
       request:
         proto: HTTP/1.1
@@ -870,14 +870,14 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"draft_status":"published","message":"some message Notify: @hipchat-channel","name":"tf_TestAccDatadogMonitorDatasource_local_1749222067","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10},"priority":null,"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1749222067} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') \u003e= 1","restricted_roles":["17163eaa-42e7-11f0-a32b-da7ad0900002"],"tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1749222067"],"type":"query alert"}
+            {"draft_status":"published","message":"some message Notify: @hipchat-channel","name":"tf_TestAccDatadogMonitorDatasource_local_1758619456","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10},"priority":null,"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1758619456} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') \u003e= 1","restricted_roles":["1aa28f06-985f-11f0-b93f-da7ad0900002"],"tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1758619456"],"type":"query alert"}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/174341675/validate
+        url: https://api.datadoghq.com/api/v1/monitor/217470365/validate
         method: POST
       response:
         proto: HTTP/1.1
@@ -894,7 +894,7 @@ interactions:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 219.15625ms
+        duration: 204.373708ms
     - id: 25
       request:
         proto: HTTP/1.1
@@ -911,7 +911,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor?name=tf_TestAccDatadogMonitorDatasource_local_1749222067
+        url: https://api.datadoghq.com/api/v1/monitor?name=tf_TestAccDatadogMonitorDatasource_local_1758619456
         method: GET
       response:
         proto: HTTP/1.1
@@ -923,13 +923,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            [{"id":174341675,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorDatasource_local_1749222067","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1749222067"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1749222067} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1749222069000,"created":"2025-06-06T15:01:09.691471+00:00","modified":"2025-06-06T15:01:14.644718+00:00","deleted":null,"priority":null,"restricted_roles":["17163eaa-42e7-11f0-a32b-da7ad0900002"],"overall_state_modified":"2025-06-06T15:01:14+00:00","overall_state":"OK","creator":{"name":"frog","email":"frog@datadoghq.com","handle":"frog@datadoghq.com","id":1445416},"matching_downtimes":[]}]
+            [{"id":217470365,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorDatasource_local_1758619456","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1758619456"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1758619456} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1758619459000,"created":"2025-09-23T09:24:19.214001+00:00","modified":"2025-09-23T09:24:29.317225+00:00","deleted":null,"priority":null,"restricted_roles":["1aa28f06-985f-11f0-b93f-da7ad0900002"],"overall_state_modified":"2025-09-23T09:24:28+00:00","overall_state":"OK","creator":{"name":"frog","email":"frog@datadoghq.com","handle":"frog@datadoghq.com","id":1445416},"matching_downtimes":[]}]
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 165.1135ms
+        duration: 271.443708ms
     - id: 26
       request:
         proto: HTTP/1.1
@@ -946,7 +946,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/roles/17163eaa-42e7-11f0-a32b-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/roles/1aa28f06-985f-11f0-b93f-da7ad0900002
         method: GET
       response:
         proto: HTTP/1.1
@@ -956,13 +956,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"data":{"id":"17163eaa-42e7-11f0-a32b-da7ad0900002","type":"roles","attributes":{"created_at":"2025-06-06T15:01:14.072743Z","created_by_handle":"frog@datadoghq.com","modified_at":"2025-06-06T15:01:14.069481Z","modified_by_handle":"frog@datadoghq.com","name":"tf_TestAccDatadogMonitorDatasource_local_1749222067","team_count":0,"user_count":0},"relationships":{"permissions":{"data":[{"id":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2","type":"permissions"},{"id":"4441648c-d8b1-11e9-a77a-1b899a04b304","type":"permissions"},{"id":"417ba636-2dce-11eb-84c0-6bce5b0d9de0","type":"permissions"},{"id":"12efc20e-d36c-11eb-a9b8-da7ad0900002","type":"permissions"},{"id":"7605ef24-f376-11eb-b90b-da7ad0900002","type":"permissions"},{"id":"b6bf9ac6-9a59-11ec-8480-da7ad0900002","type":"permissions"},{"id":"f8e941cf-e746-11ec-b22d-da7ad0900002","type":"permissions"},{"id":"6c5ad874-7aff-11ed-a5cd-da7ad0900002","type":"permissions"},{"id":"a8b4d6e8-4ea4-11ee-b482-da7ad0900002","type":"permissions"},{"id":"50c270de-69ee-11ee-9151-da7ad0900002","type":"permissions"}]}}}}'
+        body: '{"data":{"id":"1aa28f06-985f-11f0-b93f-da7ad0900002","type":"roles","attributes":{"created_at":"2025-09-23T09:24:28.463842Z","created_by_handle":"frog@datadoghq.com","modified_at":"2025-09-23T09:24:28.465909Z","modified_by_handle":"frog@datadoghq.com","name":"tf_TestAccDatadogMonitorDatasource_local_1758619456","team_count":0,"user_count":0},"relationships":{"permissions":{"data":[{"id":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2","type":"permissions"},{"id":"4441648c-d8b1-11e9-a77a-1b899a04b304","type":"permissions"},{"id":"417ba636-2dce-11eb-84c0-6bce5b0d9de0","type":"permissions"},{"id":"12efc20e-d36c-11eb-a9b8-da7ad0900002","type":"permissions"},{"id":"7605ef24-f376-11eb-b90b-da7ad0900002","type":"permissions"},{"id":"b6bf9ac6-9a59-11ec-8480-da7ad0900002","type":"permissions"},{"id":"f8e941cf-e746-11ec-b22d-da7ad0900002","type":"permissions"},{"id":"6c5ad874-7aff-11ed-a5cd-da7ad0900002","type":"permissions"},{"id":"a8b4d6e8-4ea4-11ee-b482-da7ad0900002","type":"permissions"},{"id":"50c270de-69ee-11ee-9151-da7ad0900002","type":"permissions"}]}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 230.707042ms
+        duration: 365.761167ms
     - id: 27
       request:
         proto: HTTP/1.1
@@ -979,7 +979,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/174341675
+        url: https://api.datadoghq.com/api/v1/monitor/217470365
         method: GET
       response:
         proto: HTTP/1.1
@@ -991,13 +991,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":174341675,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorDatasource_local_1749222067","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1749222067"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1749222067} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1749222069000,"created":"2025-06-06T15:01:09.691471+00:00","modified":"2025-06-06T15:01:14.644718+00:00","deleted":null,"priority":null,"restricted_roles":["17163eaa-42e7-11f0-a32b-da7ad0900002"],"overall_state_modified":"2025-06-06T15:01:14+00:00","overall_state":"OK","creator":{"name":"frog","email":"frog@datadoghq.com","handle":"frog@datadoghq.com","id":1445416}}
+            {"id":217470365,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorDatasource_local_1758619456","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1758619456"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1758619456} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1758619459000,"created":"2025-09-23T09:24:19.214001+00:00","modified":"2025-09-23T09:24:29.317225+00:00","deleted":null,"priority":null,"restricted_roles":["1aa28f06-985f-11f0-b93f-da7ad0900002"],"overall_state_modified":"2025-09-23T09:24:28+00:00","overall_state":"OK","creator":{"name":"frog","email":"frog@datadoghq.com","handle":"frog@datadoghq.com","id":1445416}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 292.751958ms
+        duration: 438.104875ms
     - id: 28
       request:
         proto: HTTP/1.1
@@ -1010,14 +1010,14 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"draft_status":"published","message":"some message Notify: @hipchat-channel","name":"tf_TestAccDatadogMonitorDatasource_local_1749222067","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10},"priority":null,"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1749222067} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') \u003e= 1","restricted_roles":null,"tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1749222067"],"type":"query alert"}
+            {"draft_status":"published","message":"some message Notify: @hipchat-channel","name":"tf_TestAccDatadogMonitorDatasource_local_1758619456","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10},"priority":null,"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1758619456} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') \u003e= 1","restricted_roles":null,"tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1758619456"],"type":"query alert"}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/174341675/validate
+        url: https://api.datadoghq.com/api/v1/monitor/217470365/validate
         method: POST
       response:
         proto: HTTP/1.1
@@ -1034,7 +1034,7 @@ interactions:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 156.39525ms
+        duration: 177.998958ms
     - id: 29
       request:
         proto: HTTP/1.1
@@ -1051,7 +1051,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/roles/17163eaa-42e7-11f0-a32b-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/roles/1aa28f06-985f-11f0-b93f-da7ad0900002
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -1065,7 +1065,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 260.684667ms
+        duration: 144.776041ms
     - id: 30
       request:
         proto: HTTP/1.1
@@ -1078,14 +1078,14 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"draft_status":"published","message":"some message Notify: @hipchat-channel","name":"tf_TestAccDatadogMonitorDatasource_local_1749222067","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10},"priority":null,"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1749222067} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') \u003e= 1","restricted_roles":null,"tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1749222067"],"type":"query alert"}
+            {"draft_status":"published","message":"some message Notify: @hipchat-channel","name":"tf_TestAccDatadogMonitorDatasource_local_1758619456","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10},"priority":null,"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1758619456} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') \u003e= 1","restricted_roles":null,"tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1758619456"],"type":"query alert"}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/174341675/validate
+        url: https://api.datadoghq.com/api/v1/monitor/217470365/validate
         method: POST
       response:
         proto: HTTP/1.1
@@ -1102,7 +1102,7 @@ interactions:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 155.917459ms
+        duration: 184.078791ms
     - id: 31
       request:
         proto: HTTP/1.1
@@ -1115,14 +1115,14 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"draft_status":"published","id":174341675,"message":"some message Notify: @hipchat-channel","name":"tf_TestAccDatadogMonitorDatasource_local_1749222067","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10},"priority":null,"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1749222067} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') \u003e= 1","restricted_roles":null,"tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1749222067"],"type":"query alert"}
+            {"draft_status":"published","id":217470365,"message":"some message Notify: @hipchat-channel","name":"tf_TestAccDatadogMonitorDatasource_local_1758619456","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10},"priority":null,"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1758619456} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') \u003e= 1","restricted_roles":null,"tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1758619456"],"type":"query alert"}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/174341675
+        url: https://api.datadoghq.com/api/v1/monitor/217470365
         method: PUT
       response:
         proto: HTTP/1.1
@@ -1134,13 +1134,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":174341675,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorDatasource_local_1749222067","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1749222067"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1749222067} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1749222069000,"created":"2025-06-06T15:01:09.691471+00:00","modified":"2025-06-06T15:01:18.873345+00:00","deleted":null,"priority":null,"restricted_roles":null,"restriction_policy":null,"overall_state_modified":null,"overall_state":"No Data"}
+            {"id":217470365,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorDatasource_local_1758619456","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1758619456"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1758619456} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1758619459000,"created":"2025-09-23T09:24:19.214001+00:00","modified":"2025-09-23T09:24:44.119686+00:00","deleted":null,"priority":null,"restricted_roles":null,"restriction_policy":null,"overall_state_modified":null,"overall_state":"No Data"}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 931.747333ms
+        duration: 1.158141208s
     - id: 32
       request:
         proto: HTTP/1.1
@@ -1157,7 +1157,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor?tags=test_datasource_monitor_scope%3Atf_TestAccDatadogMonitorDatasource_local_1749222067
+        url: https://api.datadoghq.com/api/v1/monitor?tags=test_datasource_monitor_scope%3Atf_TestAccDatadogMonitorDatasource_local_1758619456
         method: GET
       response:
         proto: HTTP/1.1
@@ -1169,13 +1169,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            [{"id":174341675,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorDatasource_local_1749222067","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1749222067"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1749222067} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1749222069000,"created":"2025-06-06T15:01:09.691471+00:00","modified":"2025-06-06T15:01:18.873345+00:00","deleted":null,"priority":null,"restricted_roles":null,"overall_state_modified":"2025-06-06T15:01:14+00:00","overall_state":"OK","creator":{"name":"frog","email":"frog@datadoghq.com","handle":"frog@datadoghq.com","id":1445416},"matching_downtimes":[]}]
+            [{"id":217470365,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorDatasource_local_1758619456","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1758619456"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1758619456} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1758619459000,"created":"2025-09-23T09:24:19.214001+00:00","modified":"2025-09-23T09:24:44.119686+00:00","deleted":null,"priority":null,"restricted_roles":null,"overall_state_modified":"2025-09-23T09:24:28+00:00","overall_state":"OK","creator":{"name":"frog","email":"frog@datadoghq.com","handle":"frog@datadoghq.com","id":1445416},"matching_downtimes":[]}]
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 328.859917ms
+        duration: 3.511346541s
     - id: 33
       request:
         proto: HTTP/1.1
@@ -1192,7 +1192,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/174341675
+        url: https://api.datadoghq.com/api/v1/monitor/217470365
         method: GET
       response:
         proto: HTTP/1.1
@@ -1204,13 +1204,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":174341675,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorDatasource_local_1749222067","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1749222067"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1749222067} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1749222069000,"created":"2025-06-06T15:01:09.691471+00:00","modified":"2025-06-06T15:01:18.873345+00:00","deleted":null,"priority":null,"restricted_roles":null,"overall_state_modified":"2025-06-06T15:01:14+00:00","overall_state":"OK","creator":{"name":"frog","email":"frog@datadoghq.com","handle":"frog@datadoghq.com","id":1445416}}
+            {"id":217470365,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorDatasource_local_1758619456","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1758619456"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1758619456} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1758619459000,"created":"2025-09-23T09:24:19.214001+00:00","modified":"2025-09-23T09:24:44.119686+00:00","deleted":null,"priority":null,"restricted_roles":null,"overall_state_modified":"2025-09-23T09:24:28+00:00","overall_state":"OK","creator":{"name":"frog","email":"frog@datadoghq.com","handle":"frog@datadoghq.com","id":1445416}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 261.846ms
+        duration: 194.249375ms
     - id: 34
       request:
         proto: HTTP/1.1
@@ -1227,7 +1227,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/174341675
+        url: https://api.datadoghq.com/api/v1/monitor/217470365
         method: GET
       response:
         proto: HTTP/1.1
@@ -1239,13 +1239,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":174341675,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorDatasource_local_1749222067","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1749222067"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1749222067} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1749222069000,"created":"2025-06-06T15:01:09.691471+00:00","modified":"2025-06-06T15:01:18.873345+00:00","deleted":null,"priority":null,"restricted_roles":null,"overall_state_modified":"2025-06-06T15:01:14+00:00","overall_state":"OK","creator":{"name":"frog","email":"frog@datadoghq.com","handle":"frog@datadoghq.com","id":1445416}}
+            {"id":217470365,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorDatasource_local_1758619456","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1758619456"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1758619456} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1758619459000,"created":"2025-09-23T09:24:19.214001+00:00","modified":"2025-09-23T09:24:44.119686+00:00","deleted":null,"priority":null,"restricted_roles":null,"overall_state_modified":"2025-09-23T09:24:28+00:00","overall_state":"OK","creator":{"name":"frog","email":"frog@datadoghq.com","handle":"frog@datadoghq.com","id":1445416}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 176.871291ms
+        duration: 292.797417ms
     - id: 35
       request:
         proto: HTTP/1.1
@@ -1258,14 +1258,14 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"draft_status":"published","message":"some message Notify: @hipchat-channel","name":"tf_TestAccDatadogMonitorDatasource_local_1749222067","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10},"priority":null,"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1749222067} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') \u003e= 1","restricted_roles":null,"tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1749222067"],"type":"query alert"}
+            {"draft_status":"published","message":"some message Notify: @hipchat-channel","name":"tf_TestAccDatadogMonitorDatasource_local_1758619456","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10},"priority":null,"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1758619456} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') \u003e= 1","restricted_roles":null,"tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1758619456"],"type":"query alert"}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/174341675/validate
+        url: https://api.datadoghq.com/api/v1/monitor/217470365/validate
         method: POST
       response:
         proto: HTTP/1.1
@@ -1282,7 +1282,7 @@ interactions:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 148.611583ms
+        duration: 178.284667ms
     - id: 36
       request:
         proto: HTTP/1.1
@@ -1299,7 +1299,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor?tags=test_datasource_monitor_scope%3Atf_TestAccDatadogMonitorDatasource_local_1749222067
+        url: https://api.datadoghq.com/api/v1/monitor?tags=test_datasource_monitor_scope%3Atf_TestAccDatadogMonitorDatasource_local_1758619456
         method: GET
       response:
         proto: HTTP/1.1
@@ -1311,13 +1311,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            [{"id":174341675,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorDatasource_local_1749222067","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1749222067"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1749222067} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1749222069000,"created":"2025-06-06T15:01:09.691471+00:00","modified":"2025-06-06T15:01:18.873345+00:00","deleted":null,"priority":null,"restricted_roles":null,"overall_state_modified":"2025-06-06T15:01:14+00:00","overall_state":"OK","creator":{"name":"frog","email":"frog@datadoghq.com","handle":"frog@datadoghq.com","id":1445416},"matching_downtimes":[]}]
+            [{"id":217470365,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorDatasource_local_1758619456","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1758619456"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1758619456} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1758619459000,"created":"2025-09-23T09:24:19.214001+00:00","modified":"2025-09-23T09:24:44.119686+00:00","deleted":null,"priority":null,"restricted_roles":null,"overall_state_modified":"2025-09-23T09:24:28+00:00","overall_state":"OK","creator":{"name":"frog","email":"frog@datadoghq.com","handle":"frog@datadoghq.com","id":1445416},"matching_downtimes":[]}]
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 466.094417ms
+        duration: 1.536494333s
     - id: 37
       request:
         proto: HTTP/1.1
@@ -1334,7 +1334,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/174341675
+        url: https://api.datadoghq.com/api/v1/monitor/217470365
         method: GET
       response:
         proto: HTTP/1.1
@@ -1346,13 +1346,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":174341675,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorDatasource_local_1749222067","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1749222067"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1749222067} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1749222069000,"created":"2025-06-06T15:01:09.691471+00:00","modified":"2025-06-06T15:01:18.873345+00:00","deleted":null,"priority":null,"restricted_roles":null,"overall_state_modified":"2025-06-06T15:01:14+00:00","overall_state":"OK","creator":{"name":"frog","email":"frog@datadoghq.com","handle":"frog@datadoghq.com","id":1445416}}
+            {"id":217470365,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorDatasource_local_1758619456","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1758619456"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1758619456} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1758619459000,"created":"2025-09-23T09:24:19.214001+00:00","modified":"2025-09-23T09:24:44.119686+00:00","deleted":null,"priority":null,"restricted_roles":null,"overall_state_modified":"2025-09-23T09:24:28+00:00","overall_state":"OK","creator":{"name":"frog","email":"frog@datadoghq.com","handle":"frog@datadoghq.com","id":1445416}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 165.208042ms
+        duration: 293.060334ms
     - id: 38
       request:
         proto: HTTP/1.1
@@ -1365,14 +1365,14 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"draft_status":"published","message":"some message Notify: @hipchat-channel","name":"tf_TestAccDatadogMonitorDatasource_local_1749222067","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10},"priority":null,"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1749222067} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') \u003e= 1","restricted_roles":null,"tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1749222067"],"type":"query alert"}
+            {"draft_status":"published","message":"some message Notify: @hipchat-channel","name":"tf_TestAccDatadogMonitorDatasource_local_1758619456","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10},"priority":null,"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1758619456} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') \u003e= 1","restricted_roles":null,"tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1758619456"],"type":"query alert"}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/174341675/validate
+        url: https://api.datadoghq.com/api/v1/monitor/217470365/validate
         method: POST
       response:
         proto: HTTP/1.1
@@ -1389,7 +1389,7 @@ interactions:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 179.538209ms
+        duration: 174.821458ms
     - id: 39
       request:
         proto: HTTP/1.1
@@ -1406,7 +1406,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor?tags=test_datasource_monitor_scope%3Atf_TestAccDatadogMonitorDatasource_local_1749222067
+        url: https://api.datadoghq.com/api/v1/monitor?tags=test_datasource_monitor_scope%3Atf_TestAccDatadogMonitorDatasource_local_1758619456
         method: GET
       response:
         proto: HTTP/1.1
@@ -1418,13 +1418,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            [{"id":174341675,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorDatasource_local_1749222067","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1749222067"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1749222067} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1749222069000,"created":"2025-06-06T15:01:09.691471+00:00","modified":"2025-06-06T15:01:18.873345+00:00","deleted":null,"priority":null,"restricted_roles":null,"overall_state_modified":"2025-06-06T15:01:14+00:00","overall_state":"OK","creator":{"name":"frog","email":"frog@datadoghq.com","handle":"frog@datadoghq.com","id":1445416},"matching_downtimes":[]}]
+            [{"id":217470365,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorDatasource_local_1758619456","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1758619456"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1758619456} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1758619459000,"created":"2025-09-23T09:24:19.214001+00:00","modified":"2025-09-23T09:24:44.119686+00:00","deleted":null,"priority":null,"restricted_roles":null,"overall_state_modified":"2025-09-23T09:24:28+00:00","overall_state":"OK","creator":{"name":"frog","email":"frog@datadoghq.com","handle":"frog@datadoghq.com","id":1445416},"matching_downtimes":[]}]
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 336.857417ms
+        duration: 1.538376833s
     - id: 40
       request:
         proto: HTTP/1.1
@@ -1441,7 +1441,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/174341675
+        url: https://api.datadoghq.com/api/v1/monitor/217470365
         method: GET
       response:
         proto: HTTP/1.1
@@ -1453,13 +1453,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":174341675,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorDatasource_local_1749222067","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1749222067"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1749222067} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1749222069000,"created":"2025-06-06T15:01:09.691471+00:00","modified":"2025-06-06T15:01:18.873345+00:00","deleted":null,"priority":null,"restricted_roles":null,"overall_state_modified":"2025-06-06T15:01:14+00:00","overall_state":"OK","creator":{"name":"frog","email":"frog@datadoghq.com","handle":"frog@datadoghq.com","id":1445416}}
+            {"id":217470365,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorDatasource_local_1758619456","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1758619456"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1758619456} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1758619459000,"created":"2025-09-23T09:24:19.214001+00:00","modified":"2025-09-23T09:24:44.119686+00:00","deleted":null,"priority":null,"restricted_roles":null,"overall_state_modified":"2025-09-23T09:24:28+00:00","overall_state":"OK","creator":{"name":"frog","email":"frog@datadoghq.com","handle":"frog@datadoghq.com","id":1445416}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 360.208375ms
+        duration: 186.964542ms
     - id: 41
       request:
         proto: HTTP/1.1
@@ -1472,14 +1472,14 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"draft_status":"published","message":"some message Notify: @hipchat-channel","name":"tf_TestAccDatadogMonitorDatasource_local_1749222067","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10},"priority":null,"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1749222067} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') \u003e= 1","restricted_roles":null,"tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1749222067"],"type":"query alert"}
+            {"draft_status":"published","message":"some message Notify: @hipchat-channel","name":"tf_TestAccDatadogMonitorDatasource_local_1758619456","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10},"priority":null,"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1758619456} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') \u003e= 1","restricted_roles":null,"tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1758619456"],"type":"query alert"}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/174341675/validate
+        url: https://api.datadoghq.com/api/v1/monitor/217470365/validate
         method: POST
       response:
         proto: HTTP/1.1
@@ -1496,7 +1496,7 @@ interactions:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 164.195959ms
+        duration: 178.927125ms
     - id: 42
       request:
         proto: HTTP/1.1
@@ -1513,7 +1513,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor?monitor_tags=test_datasource_monitor%3Atf_TestAccDatadogMonitorDatasource_local_1749222067
+        url: https://api.datadoghq.com/api/v1/monitor?monitor_tags=test_datasource_monitor%3Atf_TestAccDatadogMonitorDatasource_local_1758619456
         method: GET
       response:
         proto: HTTP/1.1
@@ -1525,13 +1525,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            [{"id":174341675,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorDatasource_local_1749222067","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1749222067"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1749222067} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1749222069000,"created":"2025-06-06T15:01:09.691471+00:00","modified":"2025-06-06T15:01:18.873345+00:00","deleted":null,"priority":null,"restricted_roles":null,"overall_state_modified":"2025-06-06T15:01:14+00:00","overall_state":"OK","creator":{"name":"frog","email":"frog@datadoghq.com","handle":"frog@datadoghq.com","id":1445416},"matching_downtimes":[]}]
+            [{"id":217470365,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorDatasource_local_1758619456","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1758619456"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1758619456} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1758619459000,"created":"2025-09-23T09:24:19.214001+00:00","modified":"2025-09-23T09:24:44.119686+00:00","deleted":null,"priority":null,"restricted_roles":null,"overall_state_modified":"2025-09-23T09:24:28+00:00","overall_state":"OK","creator":{"name":"frog","email":"frog@datadoghq.com","handle":"frog@datadoghq.com","id":1445416},"matching_downtimes":[]}]
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 197.376583ms
+        duration: 184.760709ms
     - id: 43
       request:
         proto: HTTP/1.1
@@ -1548,7 +1548,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/174341675
+        url: https://api.datadoghq.com/api/v1/monitor/217470365
         method: GET
       response:
         proto: HTTP/1.1
@@ -1560,13 +1560,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":174341675,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorDatasource_local_1749222067","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1749222067"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1749222067} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1749222069000,"created":"2025-06-06T15:01:09.691471+00:00","modified":"2025-06-06T15:01:18.873345+00:00","deleted":null,"priority":null,"restricted_roles":null,"overall_state_modified":"2025-06-06T15:01:14+00:00","overall_state":"OK","creator":{"name":"frog","email":"frog@datadoghq.com","handle":"frog@datadoghq.com","id":1445416}}
+            {"id":217470365,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorDatasource_local_1758619456","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1758619456"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1758619456} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1758619459000,"created":"2025-09-23T09:24:19.214001+00:00","modified":"2025-09-23T09:24:44.119686+00:00","deleted":null,"priority":null,"restricted_roles":null,"overall_state_modified":"2025-09-23T09:24:28+00:00","overall_state":"OK","creator":{"name":"frog","email":"frog@datadoghq.com","handle":"frog@datadoghq.com","id":1445416}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 168.639625ms
+        duration: 234.486875ms
     - id: 44
       request:
         proto: HTTP/1.1
@@ -1583,7 +1583,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/174341675
+        url: https://api.datadoghq.com/api/v1/monitor/217470365
         method: GET
       response:
         proto: HTTP/1.1
@@ -1595,13 +1595,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":174341675,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorDatasource_local_1749222067","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1749222067"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1749222067} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1749222069000,"created":"2025-06-06T15:01:09.691471+00:00","modified":"2025-06-06T15:01:18.873345+00:00","deleted":null,"priority":null,"restricted_roles":null,"overall_state_modified":"2025-06-06T15:01:14+00:00","overall_state":"OK","creator":{"name":"frog","email":"frog@datadoghq.com","handle":"frog@datadoghq.com","id":1445416}}
+            {"id":217470365,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorDatasource_local_1758619456","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1758619456"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1758619456} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1758619459000,"created":"2025-09-23T09:24:19.214001+00:00","modified":"2025-09-23T09:24:44.119686+00:00","deleted":null,"priority":null,"restricted_roles":null,"overall_state_modified":"2025-09-23T09:24:28+00:00","overall_state":"OK","creator":{"name":"frog","email":"frog@datadoghq.com","handle":"frog@datadoghq.com","id":1445416}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 199.230875ms
+        duration: 186.032791ms
     - id: 45
       request:
         proto: HTTP/1.1
@@ -1614,14 +1614,14 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"draft_status":"published","message":"some message Notify: @hipchat-channel","name":"tf_TestAccDatadogMonitorDatasource_local_1749222067","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10},"priority":null,"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1749222067} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') \u003e= 1","restricted_roles":null,"tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1749222067"],"type":"query alert"}
+            {"draft_status":"published","message":"some message Notify: @hipchat-channel","name":"tf_TestAccDatadogMonitorDatasource_local_1758619456","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10},"priority":null,"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1758619456} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') \u003e= 1","restricted_roles":null,"tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1758619456"],"type":"query alert"}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/174341675/validate
+        url: https://api.datadoghq.com/api/v1/monitor/217470365/validate
         method: POST
       response:
         proto: HTTP/1.1
@@ -1638,7 +1638,7 @@ interactions:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 148.83975ms
+        duration: 307.997584ms
     - id: 46
       request:
         proto: HTTP/1.1
@@ -1655,7 +1655,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor?monitor_tags=test_datasource_monitor%3Atf_TestAccDatadogMonitorDatasource_local_1749222067
+        url: https://api.datadoghq.com/api/v1/monitor?monitor_tags=test_datasource_monitor%3Atf_TestAccDatadogMonitorDatasource_local_1758619456
         method: GET
       response:
         proto: HTTP/1.1
@@ -1667,13 +1667,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            [{"id":174341675,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorDatasource_local_1749222067","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1749222067"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1749222067} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1749222069000,"created":"2025-06-06T15:01:09.691471+00:00","modified":"2025-06-06T15:01:18.873345+00:00","deleted":null,"priority":null,"restricted_roles":null,"overall_state_modified":"2025-06-06T15:01:14+00:00","overall_state":"OK","creator":{"name":"frog","email":"frog@datadoghq.com","handle":"frog@datadoghq.com","id":1445416},"matching_downtimes":[]}]
+            [{"id":217470365,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorDatasource_local_1758619456","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1758619456"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1758619456} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1758619459000,"created":"2025-09-23T09:24:19.214001+00:00","modified":"2025-09-23T09:24:44.119686+00:00","deleted":null,"priority":null,"restricted_roles":null,"overall_state_modified":"2025-09-23T09:24:28+00:00","overall_state":"OK","creator":{"name":"frog","email":"frog@datadoghq.com","handle":"frog@datadoghq.com","id":1445416},"matching_downtimes":[]}]
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 173.882584ms
+        duration: 197.42825ms
     - id: 47
       request:
         proto: HTTP/1.1
@@ -1690,7 +1690,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/174341675
+        url: https://api.datadoghq.com/api/v1/monitor/217470365
         method: GET
       response:
         proto: HTTP/1.1
@@ -1702,13 +1702,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":174341675,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorDatasource_local_1749222067","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1749222067"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1749222067} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1749222069000,"created":"2025-06-06T15:01:09.691471+00:00","modified":"2025-06-06T15:01:18.873345+00:00","deleted":null,"priority":null,"restricted_roles":null,"overall_state_modified":"2025-06-06T15:01:14+00:00","overall_state":"OK","creator":{"name":"frog","email":"frog@datadoghq.com","handle":"frog@datadoghq.com","id":1445416}}
+            {"id":217470365,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorDatasource_local_1758619456","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1758619456"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1758619456} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1758619459000,"created":"2025-09-23T09:24:19.214001+00:00","modified":"2025-09-23T09:24:44.119686+00:00","deleted":null,"priority":null,"restricted_roles":null,"overall_state_modified":"2025-09-23T09:24:28+00:00","overall_state":"OK","creator":{"name":"frog","email":"frog@datadoghq.com","handle":"frog@datadoghq.com","id":1445416}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 1.163433542s
+        duration: 300.377875ms
     - id: 48
       request:
         proto: HTTP/1.1
@@ -1721,14 +1721,14 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"draft_status":"published","message":"some message Notify: @hipchat-channel","name":"tf_TestAccDatadogMonitorDatasource_local_1749222067","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10},"priority":null,"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1749222067} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') \u003e= 1","restricted_roles":null,"tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1749222067"],"type":"query alert"}
+            {"draft_status":"published","message":"some message Notify: @hipchat-channel","name":"tf_TestAccDatadogMonitorDatasource_local_1758619456","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10},"priority":null,"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1758619456} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') \u003e= 1","restricted_roles":null,"tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1758619456"],"type":"query alert"}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/174341675/validate
+        url: https://api.datadoghq.com/api/v1/monitor/217470365/validate
         method: POST
       response:
         proto: HTTP/1.1
@@ -1745,7 +1745,7 @@ interactions:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 156.463625ms
+        duration: 250.020042ms
     - id: 49
       request:
         proto: HTTP/1.1
@@ -1762,7 +1762,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor?monitor_tags=test_datasource_monitor%3Atf_TestAccDatadogMonitorDatasource_local_1749222067
+        url: https://api.datadoghq.com/api/v1/monitor?monitor_tags=test_datasource_monitor%3Atf_TestAccDatadogMonitorDatasource_local_1758619456
         method: GET
       response:
         proto: HTTP/1.1
@@ -1774,13 +1774,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            [{"id":174341675,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorDatasource_local_1749222067","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1749222067"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1749222067} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1749222069000,"created":"2025-06-06T15:01:09.691471+00:00","modified":"2025-06-06T15:01:18.873345+00:00","deleted":null,"priority":null,"restricted_roles":null,"overall_state_modified":"2025-06-06T15:01:14+00:00","overall_state":"OK","creator":{"name":"frog","email":"frog@datadoghq.com","handle":"frog@datadoghq.com","id":1445416},"matching_downtimes":[]}]
+            [{"id":217470365,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorDatasource_local_1758619456","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorDatasource_local_1758619456"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorDatasource_local_1758619456} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1758619459000,"created":"2025-09-23T09:24:19.214001+00:00","modified":"2025-09-23T09:24:44.119686+00:00","deleted":null,"priority":null,"restricted_roles":null,"overall_state_modified":"2025-09-23T09:24:28+00:00","overall_state":"OK","creator":{"name":"frog","email":"frog@datadoghq.com","handle":"frog@datadoghq.com","id":1445416},"matching_downtimes":[]}]
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 179.164375ms
+        duration: 345.546917ms
     - id: 50
       request:
         proto: HTTP/1.1
@@ -1797,7 +1797,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/174341675
+        url: https://api.datadoghq.com/api/v1/monitor/217470365
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -1809,13 +1809,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"deleted_monitor_id":174341675}
+            {"deleted_monitor_id":217470365}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 1.016653708s
+        duration: 1.574740167s
     - id: 51
       request:
         proto: HTTP/1.1
@@ -1832,7 +1832,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/174341675
+        url: https://api.datadoghq.com/api/v1/monitor/217470365
         method: GET
       response:
         proto: HTTP/1.1
@@ -1849,7 +1849,7 @@ interactions:
                 - application/json
         status: 404 Not Found
         code: 404
-        duration: 168.436875ms
+        duration: 165.107208ms
     - id: 52
       request:
         proto: HTTP/1.1
@@ -1866,7 +1866,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/174341675
+        url: https://api.datadoghq.com/api/v1/monitor/217470365
         method: GET
       response:
         proto: HTTP/1.1
@@ -1883,4 +1883,4 @@ interactions:
                 - application/json
         status: 404 Not Found
         code: 404
-        duration: 155.257209ms
+        duration: 238.650375ms

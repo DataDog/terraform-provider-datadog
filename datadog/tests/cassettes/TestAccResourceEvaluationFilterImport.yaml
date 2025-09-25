@@ -36,7 +36,7 @@ interactions:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 171.682583ms
+        duration: 147.746ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -63,13 +63,13 @@ interactions:
         trailer: {}
         content_length: 175
         uncompressed: false
-        body: '{"data":{"id":"d72ba91c-4cd9-43fc-b355-cf87ada10dcf","type":"csm_resource_filter","attributes":{"cloud_provider":{"aws":{"223456789":["tag1:val1","tag2:val2","tag3:val3"]}}}}}'
+        body: '{"data":{"id":"af4cf63c-a22f-45a0-a157-1af4ef09965b","type":"csm_resource_filter","attributes":{"cloud_provider":{"aws":{"223456789":["tag1:val1","tag2:val2","tag3:val3"]}}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 156.120416ms
+        duration: 146.808583ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -96,13 +96,13 @@ interactions:
         trailer: {}
         content_length: 118
         uncompressed: false
-        body: '{"data":{"id":"5abf133b-fcad-41d5-9083-a12fd52f3aad","type":"csm_resource_filter","attributes":{"cloud_provider":{}}}}'
+        body: '{"data":{"id":"2ba2ec2f-ceec-4a72-8b06-2443bc61cc50","type":"csm_resource_filter","attributes":{"cloud_provider":{}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 171.840125ms
+        duration: 126.923583ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -129,13 +129,13 @@ interactions:
         trailer: {}
         content_length: 175
         uncompressed: false
-        body: '{"data":{"id":"e29a9ce4-0895-4c7a-b278-ef815f0b9f19","type":"csm_resource_filter","attributes":{"cloud_provider":{"aws":{"223456789":["tag1:val1","tag2:val2","tag3:val3"]}}}}}'
+        body: '{"data":{"id":"a1852e09-8e88-4de4-92d9-1407d26db61f","type":"csm_resource_filter","attributes":{"cloud_provider":{"aws":{"223456789":["tag1:val1","tag2:val2","tag3:val3"]}}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 147.27675ms
+        duration: 140.462708ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -171,4 +171,4 @@ interactions:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 165.622917ms
+        duration: 138.941583ms

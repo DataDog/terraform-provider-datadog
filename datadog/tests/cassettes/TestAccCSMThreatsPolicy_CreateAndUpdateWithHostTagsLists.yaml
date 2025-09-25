@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"description":"im a policy","enabled":true,"hostTagsLists":[["host_name:test_host","env:prod"],["host_name:test_host2","env:staging"]],"name":"cdosilpwxl"},"type":"policy"}}
+            {"data":{"attributes":{"description":"im a policy","enabled":true,"hostTagsLists":[["host_name:test_host","env:prod"],["host_name:test_host2","env:staging"]],"name":"sffloqbxqb"},"type":"policy"}}
         form: {}
         headers:
             Accept:
@@ -28,15 +28,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 452
+        content_length: 426
         uncompressed: false
-        body: '{"data":{"id":"kkg-54l-qhi","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"im a policy","disabledRulesCount":1,"enabled":true,"hostTagsLists":[["host_name:test_host","env:prod"],["host_name:test_host2","env:staging"]],"monitoringRulesCount":225,"name":"cdosilpwxl","policyVersion":"1","priority":1000000011,"ruleCount":226,"updateDate":1747903164941,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
+        body: '{"data":{"id":"lov-bmi-orl","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"im a policy","disabledRulesCount":1,"enabled":true,"hostTagsLists":[["host_name:test_host","env:prod"],["host_name:test_host2","env:staging"]],"monitoringRulesCount":7,"name":"sffloqbxqb","policyVersion":"1","ruleCount":8,"updateDate":1758618645108,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 688.514958ms
+        duration: 492.26175ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -53,7 +53,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/kkg-54l-qhi
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/lov-bmi-orl
         method: GET
       response:
         proto: HTTP/1.1
@@ -61,15 +61,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 452
+        content_length: 426
         uncompressed: false
-        body: '{"data":{"id":"kkg-54l-qhi","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"im a policy","disabledRulesCount":1,"enabled":true,"hostTagsLists":[["host_name:test_host","env:prod"],["host_name:test_host2","env:staging"]],"monitoringRulesCount":225,"name":"cdosilpwxl","policyVersion":"1","priority":1000000011,"ruleCount":226,"updateDate":1747903164941,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
+        body: '{"data":{"id":"lov-bmi-orl","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"im a policy","disabledRulesCount":0,"enabled":true,"hostTagsLists":[["host_name:test_host","env:prod"],["host_name:test_host2","env:staging"]],"monitoringRulesCount":0,"name":"sffloqbxqb","policyVersion":"1","ruleCount":0,"updateDate":1758618645108,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 241.787209ms
+        duration: 285.14775ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -86,7 +86,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/kkg-54l-qhi
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/lov-bmi-orl
         method: GET
       response:
         proto: HTTP/1.1
@@ -94,15 +94,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 452
+        content_length: 426
         uncompressed: false
-        body: '{"data":{"id":"kkg-54l-qhi","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"im a policy","disabledRulesCount":1,"enabled":true,"hostTagsLists":[["host_name:test_host","env:prod"],["host_name:test_host2","env:staging"]],"monitoringRulesCount":225,"name":"cdosilpwxl","policyVersion":"1","priority":1000000011,"ruleCount":226,"updateDate":1747903164941,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
+        body: '{"data":{"id":"lov-bmi-orl","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"im a policy","disabledRulesCount":0,"enabled":true,"hostTagsLists":[["host_name:test_host","env:prod"],["host_name:test_host2","env:staging"]],"monitoringRulesCount":0,"name":"sffloqbxqb","policyVersion":"1","ruleCount":0,"updateDate":1758618645108,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 266.160792ms
+        duration: 218.654083ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -119,7 +119,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/kkg-54l-qhi
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/lov-bmi-orl
         method: GET
       response:
         proto: HTTP/1.1
@@ -127,15 +127,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 452
+        content_length: 426
         uncompressed: false
-        body: '{"data":{"id":"kkg-54l-qhi","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"im a policy","disabledRulesCount":1,"enabled":true,"hostTagsLists":[["host_name:test_host","env:prod"],["host_name:test_host2","env:staging"]],"monitoringRulesCount":225,"name":"cdosilpwxl","policyVersion":"1","priority":1000000011,"ruleCount":226,"updateDate":1747903164941,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
+        body: '{"data":{"id":"lov-bmi-orl","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"im a policy","disabledRulesCount":0,"enabled":true,"hostTagsLists":[["host_name:test_host","env:prod"],["host_name:test_host2","env:staging"]],"monitoringRulesCount":0,"name":"sffloqbxqb","policyVersion":"1","ruleCount":0,"updateDate":1758618645108,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 203.106666ms
+        duration: 244.394166ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -148,14 +148,14 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"description":"updated policy for terraform provider test","enabled":true,"hostTagsLists":[["host_name:test","env:prod"],["host_name:test_host2","env:test"]],"name":"cdosilpwxl"},"id":"kkg-54l-qhi","type":"policy"}}
+            {"data":{"attributes":{"description":"updated policy for terraform provider test","enabled":true,"hostTagsLists":[["host_name:test","env:prod"],["host_name:test_host2","env:test"]],"name":"sffloqbxqb"},"id":"lov-bmi-orl","type":"policy"}}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/kkg-54l-qhi
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/lov-bmi-orl
         method: PATCH
       response:
         proto: HTTP/1.1
@@ -163,15 +163,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 475
+        content_length: 449
         uncompressed: false
-        body: '{"data":{"id":"kkg-54l-qhi","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"updated policy for terraform provider test","disabledRulesCount":1,"enabled":true,"hostTagsLists":[["host_name:test","env:prod"],["host_name:test_host2","env:test"]],"monitoringRulesCount":225,"name":"cdosilpwxl","policyVersion":"2","priority":1000000011,"ruleCount":226,"updateDate":1747903167422,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
+        body: '{"data":{"id":"lov-bmi-orl","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"updated policy for terraform provider test","disabledRulesCount":0,"enabled":true,"hostTagsLists":[["host_name:test","env:prod"],["host_name:test_host2","env:test"]],"monitoringRulesCount":0,"name":"sffloqbxqb","policyVersion":"2","ruleCount":0,"updateDate":1758618647616,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 653.258417ms
+        duration: 860.00425ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -188,7 +188,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/kkg-54l-qhi
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/lov-bmi-orl
         method: GET
       response:
         proto: HTTP/1.1
@@ -196,15 +196,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 475
+        content_length: 449
         uncompressed: false
-        body: '{"data":{"id":"kkg-54l-qhi","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"updated policy for terraform provider test","disabledRulesCount":1,"enabled":true,"hostTagsLists":[["host_name:test","env:prod"],["host_name:test_host2","env:test"]],"monitoringRulesCount":225,"name":"cdosilpwxl","policyVersion":"2","priority":1000000011,"ruleCount":226,"updateDate":1747903167422,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
+        body: '{"data":{"id":"lov-bmi-orl","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"updated policy for terraform provider test","disabledRulesCount":0,"enabled":true,"hostTagsLists":[["host_name:test","env:prod"],["host_name:test_host2","env:test"]],"monitoringRulesCount":0,"name":"sffloqbxqb","policyVersion":"2","ruleCount":0,"updateDate":1758618647616,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 261.73675ms
+        duration: 301.051167ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -221,7 +221,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/kkg-54l-qhi
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/lov-bmi-orl
         method: GET
       response:
         proto: HTTP/1.1
@@ -229,15 +229,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 475
+        content_length: 449
         uncompressed: false
-        body: '{"data":{"id":"kkg-54l-qhi","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"updated policy for terraform provider test","disabledRulesCount":1,"enabled":true,"hostTagsLists":[["host_name:test","env:prod"],["host_name:test_host2","env:test"]],"monitoringRulesCount":225,"name":"cdosilpwxl","policyVersion":"2","priority":1000000011,"ruleCount":226,"updateDate":1747903167422,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
+        body: '{"data":{"id":"lov-bmi-orl","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"updated policy for terraform provider test","disabledRulesCount":0,"enabled":true,"hostTagsLists":[["host_name:test","env:prod"],["host_name:test_host2","env:test"]],"monitoringRulesCount":0,"name":"sffloqbxqb","policyVersion":"2","ruleCount":0,"updateDate":1758618647616,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 222.797125ms
+        duration: 235.211042ms
     - id: 7
       request:
         proto: HTTP/1.1
@@ -254,7 +254,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/kkg-54l-qhi
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/lov-bmi-orl
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -270,7 +270,7 @@ interactions:
                 - application/json
         status: 204 No Content
         code: 204
-        duration: 426.242166ms
+        duration: 941.949833ms
     - id: 8
       request:
         proto: HTTP/1.1
@@ -287,7 +287,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/kkg-54l-qhi
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/lov-bmi-orl
         method: GET
       response:
         proto: HTTP/1.1
@@ -303,4 +303,4 @@ interactions:
                 - application/json
         status: 404 Not Found
         code: 404
-        duration: 212.18875ms
+        duration: 323.6355ms

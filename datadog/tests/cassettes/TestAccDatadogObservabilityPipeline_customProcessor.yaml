@@ -31,13 +31,13 @@ interactions:
         content_length: 643
         uncompressed: false
         body: |
-            {"data":{"id":"2c47de4c-7496-11f0-9102-da7ad0900002","type":"pipelines","attributes":{"name":"remap-vrl-pipeline","config":{"destinations":[{"id":"destination-1","inputs":["remap-processor-1"],"type":"datadog_logs"}],"processors":[{"id":"remap-processor-1","include":"*","inputs":["source-1"],"remaps":[{"drop_on_error":false,"enabled":true,"include":"service:web","name":"Parse JSON from message","source":". = parse_json!(string!(.message))"},{"drop_on_error":true,"enabled":true,"include":"env:prod","name":"Add timestamp","source":".timestamp = now()"}],"type":"custom_processor"}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"fde5b8bc-985d-11f0-b360-da7ad0900002","type":"pipelines","attributes":{"name":"remap-vrl-pipeline","config":{"destinations":[{"id":"destination-1","inputs":["remap-processor-1"],"type":"datadog_logs"}],"processors":[{"id":"remap-processor-1","include":"*","inputs":["source-1"],"remaps":[{"drop_on_error":false,"enabled":true,"include":"service:web","name":"Parse JSON from message","source":". = parse_json!(string!(.message))"},{"drop_on_error":true,"enabled":true,"include":"env:prod","name":"Add timestamp","source":".timestamp = now()"}],"type":"custom_processor"}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/json
         status: 201 Created
         code: 201
-        duration: 549.060333ms
+        duration: 417.325167ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -54,7 +54,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/2c47de4c-7496-11f0-9102-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/fde5b8bc-985d-11f0-b360-da7ad0900002
         method: GET
       response:
         proto: HTTP/1.1
@@ -65,13 +65,13 @@ interactions:
         content_length: 643
         uncompressed: false
         body: |
-            {"data":{"id":"2c47de4c-7496-11f0-9102-da7ad0900002","type":"pipelines","attributes":{"name":"remap-vrl-pipeline","config":{"destinations":[{"id":"destination-1","inputs":["remap-processor-1"],"type":"datadog_logs"}],"processors":[{"id":"remap-processor-1","include":"*","inputs":["source-1"],"remaps":[{"drop_on_error":false,"enabled":true,"include":"service:web","name":"Parse JSON from message","source":". = parse_json!(string!(.message))"},{"drop_on_error":true,"enabled":true,"include":"env:prod","name":"Add timestamp","source":".timestamp = now()"}],"type":"custom_processor"}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"fde5b8bc-985d-11f0-b360-da7ad0900002","type":"pipelines","attributes":{"name":"remap-vrl-pipeline","config":{"destinations":[{"id":"destination-1","inputs":["remap-processor-1"],"type":"datadog_logs"}],"processors":[{"id":"remap-processor-1","include":"*","inputs":["source-1"],"remaps":[{"drop_on_error":false,"enabled":true,"include":"service:web","name":"Parse JSON from message","source":". = parse_json!(string!(.message))"},{"drop_on_error":true,"enabled":true,"include":"env:prod","name":"Add timestamp","source":".timestamp = now()"}],"type":"custom_processor"}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 178.026375ms
+        duration: 254.515458ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -88,7 +88,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/2c47de4c-7496-11f0-9102-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/fde5b8bc-985d-11f0-b360-da7ad0900002
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -104,4 +104,4 @@ interactions:
                 - application/json
         status: 204 No Content
         code: 204
-        duration: 492.437625ms
+        duration: 666.06875ms

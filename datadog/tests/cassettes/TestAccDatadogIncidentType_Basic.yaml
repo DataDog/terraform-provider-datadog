@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"description":"Test incident type","is_default":false,"name":"test-it-basic-1754489599"},"type":"incident_types"}}
+            {"data":{"attributes":{"description":"Test incident type","is_default":false,"name":"test-it-basic-1758619063"},"type":"incident_types"}}
         form: {}
         headers:
             Accept:
@@ -30,13 +30,13 @@ interactions:
         trailer: {}
         content_length: 716
         uncompressed: false
-        body: '{"data":{"id":"19b8bc2b-4a04-49e6-9c2e-571893d72424","type":"incident_types","attributes":{"createdAt":"2025-08-06T14:13:21.294530078Z","createdBy":"3ad549bf-eba0-11e9-a77a-0705486660d0","description":"Test incident type","is_default":false,"lastModifiedBy":"3ad549bf-eba0-11e9-a77a-0705486660d0","modifiedAt":"2025-08-06T14:13:21.294530168Z","name":"test-it-basic-1754489599","prefix":"IR"},"relationships":{"created_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"google_meet_configuration":{"data":null},"last_modified_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"microsoft_teams_configuration":{"data":null},"zoom_configuration":{"data":null}}}}'
+        body: '{"data":{"id":"c362a062-0d83-49b6-93d3-9083107fbe5e","type":"incident_types","attributes":{"createdAt":"2025-09-23T09:17:45.437477144Z","createdBy":"3ad549bf-eba0-11e9-a77a-0705486660d0","description":"Test incident type","is_default":false,"lastModifiedBy":"3ad549bf-eba0-11e9-a77a-0705486660d0","modifiedAt":"2025-09-23T09:17:45.437477234Z","name":"test-it-basic-1758619063","prefix":"IR"},"relationships":{"created_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"google_meet_configuration":{"data":null},"last_modified_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"microsoft_teams_configuration":{"data":null},"zoom_configuration":{"data":null}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 182.381583ms
+        duration: 442.662ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -53,7 +53,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/incidents/config/types/19b8bc2b-4a04-49e6-9c2e-571893d72424
+        url: https://api.datadoghq.com/api/v2/incidents/config/types/c362a062-0d83-49b6-93d3-9083107fbe5e
         method: GET
       response:
         proto: HTTP/1.1
@@ -61,15 +61,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 708
+        content_length: 710
         uncompressed: false
-        body: '{"data":{"id":"19b8bc2b-4a04-49e6-9c2e-571893d72424","type":"incident_types","attributes":{"createdAt":"2025-08-06T14:13:21.29453Z","createdBy":"3ad549bf-eba0-11e9-a77a-0705486660d0","description":"Test incident type","is_default":false,"lastModifiedBy":"3ad549bf-eba0-11e9-a77a-0705486660d0","modifiedAt":"2025-08-06T14:13:21.29453Z","name":"test-it-basic-1754489599","prefix":"IR"},"relationships":{"created_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"google_meet_configuration":{"data":null},"last_modified_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"microsoft_teams_configuration":{"data":null},"zoom_configuration":{"data":null}}}}'
+        body: '{"data":{"id":"c362a062-0d83-49b6-93d3-9083107fbe5e","type":"incident_types","attributes":{"createdAt":"2025-09-23T09:17:45.437477Z","createdBy":"3ad549bf-eba0-11e9-a77a-0705486660d0","description":"Test incident type","is_default":false,"lastModifiedBy":"3ad549bf-eba0-11e9-a77a-0705486660d0","modifiedAt":"2025-09-23T09:17:45.437477Z","name":"test-it-basic-1758619063","prefix":"IR"},"relationships":{"created_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"google_meet_configuration":{"data":null},"last_modified_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"microsoft_teams_configuration":{"data":null},"zoom_configuration":{"data":null}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 67.13725ms
+        duration: 147.5225ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -86,7 +86,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/incidents/config/types/19b8bc2b-4a04-49e6-9c2e-571893d72424
+        url: https://api.datadoghq.com/api/v2/incidents/config/types/c362a062-0d83-49b6-93d3-9083107fbe5e
         method: GET
       response:
         proto: HTTP/1.1
@@ -94,15 +94,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 708
+        content_length: 710
         uncompressed: false
-        body: '{"data":{"id":"19b8bc2b-4a04-49e6-9c2e-571893d72424","type":"incident_types","attributes":{"createdAt":"2025-08-06T14:13:21.29453Z","createdBy":"3ad549bf-eba0-11e9-a77a-0705486660d0","description":"Test incident type","is_default":false,"lastModifiedBy":"3ad549bf-eba0-11e9-a77a-0705486660d0","modifiedAt":"2025-08-06T14:13:21.29453Z","name":"test-it-basic-1754489599","prefix":"IR"},"relationships":{"created_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"google_meet_configuration":{"data":null},"last_modified_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"microsoft_teams_configuration":{"data":null},"zoom_configuration":{"data":null}}}}'
+        body: '{"data":{"id":"c362a062-0d83-49b6-93d3-9083107fbe5e","type":"incident_types","attributes":{"createdAt":"2025-09-23T09:17:45.437477Z","createdBy":"3ad549bf-eba0-11e9-a77a-0705486660d0","description":"Test incident type","is_default":false,"lastModifiedBy":"3ad549bf-eba0-11e9-a77a-0705486660d0","modifiedAt":"2025-09-23T09:17:45.437477Z","name":"test-it-basic-1758619063","prefix":"IR"},"relationships":{"created_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"google_meet_configuration":{"data":null},"last_modified_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"microsoft_teams_configuration":{"data":null},"zoom_configuration":{"data":null}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 54.590125ms
+        duration: 300.3295ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -119,7 +119,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/incidents/config/types/19b8bc2b-4a04-49e6-9c2e-571893d72424
+        url: https://api.datadoghq.com/api/v2/incidents/config/types/c362a062-0d83-49b6-93d3-9083107fbe5e
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -133,7 +133,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 54.623209ms
+        duration: 147.614791ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -150,7 +150,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/incidents/config/types/19b8bc2b-4a04-49e6-9c2e-571893d72424
+        url: https://api.datadoghq.com/api/v2/incidents/config/types/c362a062-0d83-49b6-93d3-9083107fbe5e
         method: GET
       response:
         proto: HTTP/1.1
@@ -158,12 +158,12 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 708
+        content_length: 710
         uncompressed: false
-        body: '{"data":{"id":"19b8bc2b-4a04-49e6-9c2e-571893d72424","type":"incident_types","attributes":{"createdAt":"2025-08-06T14:13:21.29453Z","createdBy":"3ad549bf-eba0-11e9-a77a-0705486660d0","description":"Test incident type","is_default":false,"lastModifiedBy":"3ad549bf-eba0-11e9-a77a-0705486660d0","modifiedAt":"2025-08-06T14:13:21.29453Z","name":"test-it-basic-1754489599","prefix":"IR"},"relationships":{"created_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"google_meet_configuration":{"data":null},"last_modified_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"microsoft_teams_configuration":{"data":null},"zoom_configuration":{"data":null}}}}'
+        body: '{"data":{"id":"c362a062-0d83-49b6-93d3-9083107fbe5e","type":"incident_types","attributes":{"createdAt":"2025-09-23T09:17:45.437477Z","createdBy":"3ad549bf-eba0-11e9-a77a-0705486660d0","description":"Test incident type","is_default":false,"lastModifiedBy":"3ad549bf-eba0-11e9-a77a-0705486660d0","modifiedAt":"2025-09-23T09:17:45.437477Z","name":"test-it-basic-1758619063","prefix":"IR"},"relationships":{"created_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"google_meet_configuration":{"data":null},"last_modified_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"microsoft_teams_configuration":{"data":null},"zoom_configuration":{"data":null}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 106.432208ms
+        duration: 370.311916ms

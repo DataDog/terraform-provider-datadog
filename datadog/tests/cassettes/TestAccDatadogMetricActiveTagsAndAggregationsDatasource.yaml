@@ -29,80 +29,10 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"type":"actively_queried_configurations","id":"\"foo.bar\"","attributes":{"active_tags":["environment","version"],"active_aggregations":[{"space":"avg","time":"sum"}]}}}
+            {"data":{"type":"actively_queried_configurations","id":"\"foo.bar\"","attributes":{"active_tags":[],"active_aggregations":[]}}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 152.505917ms
-    - id: 1
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 0
-        transfer_encoding: []
-        trailer: {}
-        host: api.datadoghq.com
-        remote_addr: ""
-        request_uri: ""
-        body: ""
-        form: {}
-        headers:
-            Accept:
-                - application/json
-        url: https://api.datadoghq.com/api/v2/metrics/%22foo.bar%22/active-configurations
-        method: GET
-      response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        transfer_encoding:
-            - chunked
-        trailer: {}
-        content_length: -1
-        uncompressed: true
-        body: |
-            {"data":{"type":"actively_queried_configurations","id":"\"foo.bar\"","attributes":{"active_tags":["environment","version"],"active_aggregations":[{"space":"avg","time":"sum"}]}}}
-        headers:
-            Content-Type:
-                - application/json
-        status: 200 OK
-        code: 200
-        duration: 82.395792ms
-    - id: 2
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 0
-        transfer_encoding: []
-        trailer: {}
-        host: api.datadoghq.com
-        remote_addr: ""
-        request_uri: ""
-        body: ""
-        form: {}
-        headers:
-            Accept:
-                - application/json
-        url: https://api.datadoghq.com/api/v2/metrics/%22foo.bar%22/active-configurations
-        method: GET
-      response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        transfer_encoding:
-            - chunked
-        trailer: {}
-        content_length: -1
-        uncompressed: true
-        body: |
-            {"data":{"type":"actively_queried_configurations","id":"\"foo.bar\"","attributes":{"active_tags":["environment","version"],"active_aggregations":[{"space":"avg","time":"sum"}]}}}
-        headers:
-            Content-Type:
-                - application/json
-        status: 200 OK
-        code: 200
-        duration: 80.275208ms
+        duration: 302.846208ms

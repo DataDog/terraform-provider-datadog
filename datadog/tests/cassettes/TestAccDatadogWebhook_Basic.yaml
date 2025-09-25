@@ -6,44 +6,6 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 126
-        transfer_encoding: []
-        trailer: {}
-        host: api.datadoghq.com
-        remote_addr: ""
-        request_uri: ""
-        body: |
-            {"custom_headers":"{\"test\":\"test\"}","name":"tf-TestAccDatadogWebhook_Basic-local-17419480142","url":"http://example.com"}
-        form: {}
-        headers:
-            Accept:
-                - application/json
-            Content-Type:
-                - application/json
-        url: https://api.datadoghq.com/api/v1/integration/webhooks/configuration/webhooks
-        method: POST
-      response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        transfer_encoding:
-            - chunked
-        trailer: {}
-        content_length: -1
-        uncompressed: true
-        body: |
-            {"name":"tf-TestAccDatadogWebhook_Basic-local-17419480142","payload":"{\"body\": \"$EVENT_MSG\", \"last_updated\": \"$LAST_UPDATED\", \"event_type\": \"$EVENT_TYPE\", \"title\": \"$EVENT_TITLE\", \"date\": \"$DATE\", \"org\": {\"id\": \"$ORG_ID\", \"name\": \"$ORG_NAME\"}, \"id\": \"$ID\"}","custom_headers":"{\"test\":\"test\"}","encode_as":"json","url":"http://example.com","auth_method_id":null}
-        headers:
-            Content-Type:
-                - application/json
-        status: 201 Created
-        code: 201
-        duration: 3.049747584s
-    - id: 1
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
         content_length: 144
         transfer_encoding: []
         trailer: {}
@@ -51,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"custom_headers":"{\"test\":\"test\"}","encode_as":"json","name":"tf-TestAccDatadogWebhook_Basic-local-1741948014","url":"http://example.com"}
+            {"custom_headers":"{\"test\":\"test\"}","encode_as":"json","name":"tf-TestAccDatadogWebhook_Basic-local-1758619245","url":"http://example.com"}
         form: {}
         headers:
             Accept:
@@ -70,13 +32,51 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"name":"tf-TestAccDatadogWebhook_Basic-local-1741948014","payload":"{\"body\": \"$EVENT_MSG\", \"last_updated\": \"$LAST_UPDATED\", \"event_type\": \"$EVENT_TYPE\", \"title\": \"$EVENT_TITLE\", \"date\": \"$DATE\", \"org\": {\"id\": \"$ORG_ID\", \"name\": \"$ORG_NAME\"}, \"id\": \"$ID\"}","custom_headers":"{\"test\":\"test\"}","encode_as":"json","url":"http://example.com","auth_method_id":null}
+            {"name":"tf-TestAccDatadogWebhook_Basic-local-1758619245","payload":"{\"body\": \"$EVENT_MSG\", \"last_updated\": \"$LAST_UPDATED\", \"event_type\": \"$EVENT_TYPE\", \"title\": \"$EVENT_TITLE\", \"date\": \"$DATE\", \"org\": {\"id\": \"$ORG_ID\", \"name\": \"$ORG_NAME\"}, \"id\": \"$ID\"}","custom_headers":"{\"test\":\"test\"}","encode_as":"json","url":"http://example.com","auth_method_id":null}
         headers:
             Content-Type:
                 - application/json
         status: 201 Created
         code: 201
-        duration: 2.251959875s
+        duration: 4.842829s
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 126
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"custom_headers":"{\"test\":\"test\"}","name":"tf-TestAccDatadogWebhook_Basic-local-17586192452","url":"http://example.com"}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/integration/webhooks/configuration/webhooks
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"name":"tf-TestAccDatadogWebhook_Basic-local-17586192452","payload":"{\"body\": \"$EVENT_MSG\", \"last_updated\": \"$LAST_UPDATED\", \"event_type\": \"$EVENT_TYPE\", \"title\": \"$EVENT_TITLE\", \"date\": \"$DATE\", \"org\": {\"id\": \"$ORG_ID\", \"name\": \"$ORG_NAME\"}, \"id\": \"$ID\"}","custom_headers":"{\"test\":\"test\"}","encode_as":"json","url":"http://example.com","auth_method_id":null}
+        headers:
+            Content-Type:
+                - application/json
+        status: 201 Created
+        code: 201
+        duration: 3.46163825s
     - id: 2
       request:
         proto: HTTP/1.1
@@ -93,7 +93,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/integration/webhooks/configuration/webhooks/tf-TestAccDatadogWebhook_Basic-local-1741948014
+        url: https://api.datadoghq.com/api/v1/integration/webhooks/configuration/webhooks/tf-TestAccDatadogWebhook_Basic-local-1758619245
         method: GET
       response:
         proto: HTTP/1.1
@@ -105,13 +105,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"name":"tf-TestAccDatadogWebhook_Basic-local-1741948014","payload":"{\"body\": \"$EVENT_MSG\", \"last_updated\": \"$LAST_UPDATED\", \"event_type\": \"$EVENT_TYPE\", \"title\": \"$EVENT_TITLE\", \"date\": \"$DATE\", \"org\": {\"id\": \"$ORG_ID\", \"name\": \"$ORG_NAME\"}, \"id\": \"$ID\"}","custom_headers":"{\"test\":\"test\"}","encode_as":"json","url":"http://example.com","auth_method_id":null}
+            {"name":"tf-TestAccDatadogWebhook_Basic-local-1758619245","payload":"{\"body\": \"$EVENT_MSG\", \"last_updated\": \"$LAST_UPDATED\", \"event_type\": \"$EVENT_TYPE\", \"title\": \"$EVENT_TITLE\", \"date\": \"$DATE\", \"org\": {\"id\": \"$ORG_ID\", \"name\": \"$ORG_NAME\"}, \"id\": \"$ID\"}","custom_headers":"{\"test\":\"test\"}","encode_as":"json","url":"http://example.com","auth_method_id":null}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 166.902417ms
+        duration: 203.782042ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -128,7 +128,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/integration/webhooks/configuration/webhooks/tf-TestAccDatadogWebhook_Basic-local-17419480142
+        url: https://api.datadoghq.com/api/v1/integration/webhooks/configuration/webhooks/tf-TestAccDatadogWebhook_Basic-local-17586192452
         method: GET
       response:
         proto: HTTP/1.1
@@ -140,13 +140,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"name":"tf-TestAccDatadogWebhook_Basic-local-17419480142","payload":"{\"body\": \"$EVENT_MSG\", \"last_updated\": \"$LAST_UPDATED\", \"event_type\": \"$EVENT_TYPE\", \"title\": \"$EVENT_TITLE\", \"date\": \"$DATE\", \"org\": {\"id\": \"$ORG_ID\", \"name\": \"$ORG_NAME\"}, \"id\": \"$ID\"}","custom_headers":"{\"test\":\"test\"}","encode_as":"json","url":"http://example.com","auth_method_id":null}
+            {"name":"tf-TestAccDatadogWebhook_Basic-local-17586192452","payload":"{\"body\": \"$EVENT_MSG\", \"last_updated\": \"$LAST_UPDATED\", \"event_type\": \"$EVENT_TYPE\", \"title\": \"$EVENT_TITLE\", \"date\": \"$DATE\", \"org\": {\"id\": \"$ORG_ID\", \"name\": \"$ORG_NAME\"}, \"id\": \"$ID\"}","custom_headers":"{\"test\":\"test\"}","encode_as":"json","url":"http://example.com","auth_method_id":null}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 160.7845ms
+        duration: 183.114958ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -163,7 +163,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/integration/webhooks/configuration/webhooks/tf-TestAccDatadogWebhook_Basic-local-1741948014
+        url: https://api.datadoghq.com/api/v1/integration/webhooks/configuration/webhooks/tf-TestAccDatadogWebhook_Basic-local-17586192452
         method: GET
       response:
         proto: HTTP/1.1
@@ -175,13 +175,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"name":"tf-TestAccDatadogWebhook_Basic-local-1741948014","payload":"{\"body\": \"$EVENT_MSG\", \"last_updated\": \"$LAST_UPDATED\", \"event_type\": \"$EVENT_TYPE\", \"title\": \"$EVENT_TITLE\", \"date\": \"$DATE\", \"org\": {\"id\": \"$ORG_ID\", \"name\": \"$ORG_NAME\"}, \"id\": \"$ID\"}","custom_headers":"{\"test\":\"test\"}","encode_as":"json","url":"http://example.com","auth_method_id":null}
+            {"name":"tf-TestAccDatadogWebhook_Basic-local-17586192452","payload":"{\"body\": \"$EVENT_MSG\", \"last_updated\": \"$LAST_UPDATED\", \"event_type\": \"$EVENT_TYPE\", \"title\": \"$EVENT_TITLE\", \"date\": \"$DATE\", \"org\": {\"id\": \"$ORG_ID\", \"name\": \"$ORG_NAME\"}, \"id\": \"$ID\"}","custom_headers":"{\"test\":\"test\"}","encode_as":"json","url":"http://example.com","auth_method_id":null}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 152.41425ms
+        duration: 183.232584ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -198,7 +198,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/integration/webhooks/configuration/webhooks/tf-TestAccDatadogWebhook_Basic-local-17419480142
+        url: https://api.datadoghq.com/api/v1/integration/webhooks/configuration/webhooks/tf-TestAccDatadogWebhook_Basic-local-1758619245
         method: GET
       response:
         proto: HTTP/1.1
@@ -210,13 +210,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"name":"tf-TestAccDatadogWebhook_Basic-local-17419480142","payload":"{\"body\": \"$EVENT_MSG\", \"last_updated\": \"$LAST_UPDATED\", \"event_type\": \"$EVENT_TYPE\", \"title\": \"$EVENT_TITLE\", \"date\": \"$DATE\", \"org\": {\"id\": \"$ORG_ID\", \"name\": \"$ORG_NAME\"}, \"id\": \"$ID\"}","custom_headers":"{\"test\":\"test\"}","encode_as":"json","url":"http://example.com","auth_method_id":null}
+            {"name":"tf-TestAccDatadogWebhook_Basic-local-1758619245","payload":"{\"body\": \"$EVENT_MSG\", \"last_updated\": \"$LAST_UPDATED\", \"event_type\": \"$EVENT_TYPE\", \"title\": \"$EVENT_TITLE\", \"date\": \"$DATE\", \"org\": {\"id\": \"$ORG_ID\", \"name\": \"$ORG_NAME\"}, \"id\": \"$ID\"}","custom_headers":"{\"test\":\"test\"}","encode_as":"json","url":"http://example.com","auth_method_id":null}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 318.341667ms
+        duration: 201.711833ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -233,7 +233,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/integration/webhooks/configuration/webhooks/tf-TestAccDatadogWebhook_Basic-local-17419480142
+        url: https://api.datadoghq.com/api/v1/integration/webhooks/configuration/webhooks/tf-TestAccDatadogWebhook_Basic-local-17586192452
         method: GET
       response:
         proto: HTTP/1.1
@@ -245,13 +245,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"name":"tf-TestAccDatadogWebhook_Basic-local-17419480142","payload":"{\"body\": \"$EVENT_MSG\", \"last_updated\": \"$LAST_UPDATED\", \"event_type\": \"$EVENT_TYPE\", \"title\": \"$EVENT_TITLE\", \"date\": \"$DATE\", \"org\": {\"id\": \"$ORG_ID\", \"name\": \"$ORG_NAME\"}, \"id\": \"$ID\"}","custom_headers":"{\"test\":\"test\"}","encode_as":"json","url":"http://example.com","auth_method_id":null}
+            {"name":"tf-TestAccDatadogWebhook_Basic-local-17586192452","payload":"{\"body\": \"$EVENT_MSG\", \"last_updated\": \"$LAST_UPDATED\", \"event_type\": \"$EVENT_TYPE\", \"title\": \"$EVENT_TITLE\", \"date\": \"$DATE\", \"org\": {\"id\": \"$ORG_ID\", \"name\": \"$ORG_NAME\"}, \"id\": \"$ID\"}","custom_headers":"{\"test\":\"test\"}","encode_as":"json","url":"http://example.com","auth_method_id":null}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 160.018667ms
+        duration: 212.65325ms
     - id: 7
       request:
         proto: HTTP/1.1
@@ -268,7 +268,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/integration/webhooks/configuration/webhooks/tf-TestAccDatadogWebhook_Basic-local-1741948014
+        url: https://api.datadoghq.com/api/v1/integration/webhooks/configuration/webhooks/tf-TestAccDatadogWebhook_Basic-local-1758619245
         method: GET
       response:
         proto: HTTP/1.1
@@ -280,13 +280,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"name":"tf-TestAccDatadogWebhook_Basic-local-1741948014","payload":"{\"body\": \"$EVENT_MSG\", \"last_updated\": \"$LAST_UPDATED\", \"event_type\": \"$EVENT_TYPE\", \"title\": \"$EVENT_TITLE\", \"date\": \"$DATE\", \"org\": {\"id\": \"$ORG_ID\", \"name\": \"$ORG_NAME\"}, \"id\": \"$ID\"}","custom_headers":"{\"test\":\"test\"}","encode_as":"json","url":"http://example.com","auth_method_id":null}
+            {"name":"tf-TestAccDatadogWebhook_Basic-local-1758619245","payload":"{\"body\": \"$EVENT_MSG\", \"last_updated\": \"$LAST_UPDATED\", \"event_type\": \"$EVENT_TYPE\", \"title\": \"$EVENT_TITLE\", \"date\": \"$DATE\", \"org\": {\"id\": \"$ORG_ID\", \"name\": \"$ORG_NAME\"}, \"id\": \"$ID\"}","custom_headers":"{\"test\":\"test\"}","encode_as":"json","url":"http://example.com","auth_method_id":null}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 160.080125ms
+        duration: 238.4375ms
     - id: 8
       request:
         proto: HTTP/1.1
@@ -299,14 +299,14 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"custom_headers":"{\"test\":\"test-updated\"}","encode_as":"json","name":"tf-TestAccDatadogWebhook_Basic-local-1741948014UPDATED","payload":"{\"custom\":\"payload\"}","url":"http://example.com/updated"}
+            {"custom_headers":"{\"test\":\"test-updated\"}","encode_as":"json","name":"tf-TestAccDatadogWebhook_Basic-local-1758619245UPDATED","payload":"{\"custom\":\"payload\"}","url":"http://example.com/updated"}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/integration/webhooks/configuration/webhooks/tf-TestAccDatadogWebhook_Basic-local-1741948014
+        url: https://api.datadoghq.com/api/v1/integration/webhooks/configuration/webhooks/tf-TestAccDatadogWebhook_Basic-local-1758619245
         method: PUT
       response:
         proto: HTTP/1.1
@@ -318,13 +318,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"name":"tf-TestAccDatadogWebhook_Basic-local-1741948014UPDATED","payload":"{\"custom\":\"payload\"}","custom_headers":"{\"test\":\"test-updated\"}","encode_as":"json","url":"http://example.com/updated","auth_method_id":null}
+            {"name":"tf-TestAccDatadogWebhook_Basic-local-1758619245UPDATED","payload":"{\"custom\":\"payload\"}","custom_headers":"{\"test\":\"test-updated\"}","encode_as":"json","url":"http://example.com/updated","auth_method_id":null}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 2.822795667s
+        duration: 2.844855125s
     - id: 9
       request:
         proto: HTTP/1.1
@@ -337,14 +337,14 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"custom_headers":"{\"test\":\"test-updated\"}","name":"tf-TestAccDatadogWebhook_Basic-local-17419480142UPDATED","payload":"{\"custom\":\"payload\"}","url":"http://example.com/updated"}
+            {"custom_headers":"{\"test\":\"test-updated\"}","name":"tf-TestAccDatadogWebhook_Basic-local-17586192452UPDATED","payload":"{\"custom\":\"payload\"}","url":"http://example.com/updated"}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/integration/webhooks/configuration/webhooks/tf-TestAccDatadogWebhook_Basic-local-17419480142
+        url: https://api.datadoghq.com/api/v1/integration/webhooks/configuration/webhooks/tf-TestAccDatadogWebhook_Basic-local-17586192452
         method: PUT
       response:
         proto: HTTP/1.1
@@ -356,13 +356,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"name":"tf-TestAccDatadogWebhook_Basic-local-17419480142UPDATED","payload":"{\"custom\":\"payload\"}","custom_headers":"{\"test\":\"test-updated\"}","encode_as":"json","url":"http://example.com/updated","auth_method_id":null}
+            {"name":"tf-TestAccDatadogWebhook_Basic-local-17586192452UPDATED","payload":"{\"custom\":\"payload\"}","custom_headers":"{\"test\":\"test-updated\"}","encode_as":"json","url":"http://example.com/updated","auth_method_id":null}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 2.109952666s
+        duration: 3.132781458s
     - id: 10
       request:
         proto: HTTP/1.1
@@ -379,7 +379,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/integration/webhooks/configuration/webhooks/tf-TestAccDatadogWebhook_Basic-local-1741948014UPDATED
+        url: https://api.datadoghq.com/api/v1/integration/webhooks/configuration/webhooks/tf-TestAccDatadogWebhook_Basic-local-1758619245UPDATED
         method: GET
       response:
         proto: HTTP/1.1
@@ -391,13 +391,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"name":"tf-TestAccDatadogWebhook_Basic-local-1741948014UPDATED","payload":"{\"custom\":\"payload\"}","custom_headers":"{\"test\":\"test-updated\"}","encode_as":"json","url":"http://example.com/updated","auth_method_id":null}
+            {"name":"tf-TestAccDatadogWebhook_Basic-local-1758619245UPDATED","payload":"{\"custom\":\"payload\"}","custom_headers":"{\"test\":\"test-updated\"}","encode_as":"json","url":"http://example.com/updated","auth_method_id":null}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 202.784833ms
+        duration: 228.210958ms
     - id: 11
       request:
         proto: HTTP/1.1
@@ -414,7 +414,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/integration/webhooks/configuration/webhooks/tf-TestAccDatadogWebhook_Basic-local-17419480142UPDATED
+        url: https://api.datadoghq.com/api/v1/integration/webhooks/configuration/webhooks/tf-TestAccDatadogWebhook_Basic-local-17586192452UPDATED
         method: GET
       response:
         proto: HTTP/1.1
@@ -426,13 +426,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"name":"tf-TestAccDatadogWebhook_Basic-local-17419480142UPDATED","payload":"{\"custom\":\"payload\"}","custom_headers":"{\"test\":\"test-updated\"}","encode_as":"json","url":"http://example.com/updated","auth_method_id":null}
+            {"name":"tf-TestAccDatadogWebhook_Basic-local-17586192452UPDATED","payload":"{\"custom\":\"payload\"}","custom_headers":"{\"test\":\"test-updated\"}","encode_as":"json","url":"http://example.com/updated","auth_method_id":null}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 165.685ms
+        duration: 308.58175ms
     - id: 12
       request:
         proto: HTTP/1.1
@@ -449,7 +449,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/integration/webhooks/configuration/webhooks/tf-TestAccDatadogWebhook_Basic-local-1741948014UPDATED
+        url: https://api.datadoghq.com/api/v1/integration/webhooks/configuration/webhooks/tf-TestAccDatadogWebhook_Basic-local-17586192452UPDATED
         method: GET
       response:
         proto: HTTP/1.1
@@ -461,13 +461,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"name":"tf-TestAccDatadogWebhook_Basic-local-1741948014UPDATED","payload":"{\"custom\":\"payload\"}","custom_headers":"{\"test\":\"test-updated\"}","encode_as":"json","url":"http://example.com/updated","auth_method_id":null}
+            {"name":"tf-TestAccDatadogWebhook_Basic-local-17586192452UPDATED","payload":"{\"custom\":\"payload\"}","custom_headers":"{\"test\":\"test-updated\"}","encode_as":"json","url":"http://example.com/updated","auth_method_id":null}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 177.432958ms
+        duration: 162.268417ms
     - id: 13
       request:
         proto: HTTP/1.1
@@ -484,7 +484,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/integration/webhooks/configuration/webhooks/tf-TestAccDatadogWebhook_Basic-local-17419480142UPDATED
+        url: https://api.datadoghq.com/api/v1/integration/webhooks/configuration/webhooks/tf-TestAccDatadogWebhook_Basic-local-1758619245UPDATED
         method: GET
       response:
         proto: HTTP/1.1
@@ -496,13 +496,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"name":"tf-TestAccDatadogWebhook_Basic-local-17419480142UPDATED","payload":"{\"custom\":\"payload\"}","custom_headers":"{\"test\":\"test-updated\"}","encode_as":"json","url":"http://example.com/updated","auth_method_id":null}
+            {"name":"tf-TestAccDatadogWebhook_Basic-local-1758619245UPDATED","payload":"{\"custom\":\"payload\"}","custom_headers":"{\"test\":\"test-updated\"}","encode_as":"json","url":"http://example.com/updated","auth_method_id":null}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 186.347458ms
+        duration: 194.071375ms
     - id: 14
       request:
         proto: HTTP/1.1
@@ -519,7 +519,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v1/integration/webhooks/configuration/webhooks/tf-TestAccDatadogWebhook_Basic-local-17419480142UPDATED
+        url: https://api.datadoghq.com/api/v1/integration/webhooks/configuration/webhooks/tf-TestAccDatadogWebhook_Basic-local-1758619245UPDATED
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -536,7 +536,7 @@ interactions:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 2.475098667s
+        duration: 2.840560375s
     - id: 15
       request:
         proto: HTTP/1.1
@@ -553,7 +553,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v1/integration/webhooks/configuration/webhooks/tf-TestAccDatadogWebhook_Basic-local-1741948014UPDATED
+        url: https://api.datadoghq.com/api/v1/integration/webhooks/configuration/webhooks/tf-TestAccDatadogWebhook_Basic-local-17586192452UPDATED
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -570,7 +570,7 @@ interactions:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 2.339699167s
+        duration: 3.429881375s
     - id: 16
       request:
         proto: HTTP/1.1
@@ -587,7 +587,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/integration/webhooks/configuration/webhooks/tf-TestAccDatadogWebhook_Basic-local-1741948014UPDATED
+        url: https://api.datadoghq.com/api/v1/integration/webhooks/configuration/webhooks/tf-TestAccDatadogWebhook_Basic-local-1758619245UPDATED
         method: GET
       response:
         proto: HTTP/1.1
@@ -604,7 +604,7 @@ interactions:
                 - application/json
         status: 404 Not Found
         code: 404
-        duration: 147.730459ms
+        duration: 156.120083ms
     - id: 17
       request:
         proto: HTTP/1.1
@@ -621,7 +621,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/integration/webhooks/configuration/webhooks/tf-TestAccDatadogWebhook_Basic-local-17419480142UPDATED
+        url: https://api.datadoghq.com/api/v1/integration/webhooks/configuration/webhooks/tf-TestAccDatadogWebhook_Basic-local-17586192452UPDATED
         method: GET
       response:
         proto: HTTP/1.1
@@ -638,4 +638,4 @@ interactions:
                 - application/json
         status: 404 Not Found
         code: 404
-        duration: 151.383833ms
+        duration: 160.226375ms

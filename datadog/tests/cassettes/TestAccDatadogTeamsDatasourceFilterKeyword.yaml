@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"description":"Team description","handle":"team-tf-testaccdatadogteamsdatasourcefilterkeyword-local-173927031901","name":"team-tf-testaccdatadogteamsdatasourcefilterkeyword-local-173927031901"},"type":"team"}}
+            {"data":{"attributes":{"description":"Team description","handle":"team-tf-testaccdatadogteamsdatasourcefilterkeyword-local-175861937901","name":"team-tf-testaccdatadogteamsdatasourcefilterkeyword-local-175861937901"},"type":"team"}}
         form: {}
         headers:
             Accept:
@@ -32,13 +32,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"type":"team","id":"352b8453-16c8-4654-b1a4-77c9e62c4ff1","attributes":{"name":"team-tf-testaccdatadogteamsdatasourcefilterkeyword-local-173927031901","handle":"team-tf-testaccdatadogteamsdatasourcefilterkeyword-local-173927031901","summary":"Team description","description":"Team description","avatar":null,"banner":6,"visible_modules":[],"hidden_modules":[],"created_at":"2025-02-11T10:38:41.319962+00:00","modified_at":"2025-02-11T10:38:41.319968+00:00","user_count":0,"link_count":0,"is_managed":false},"relationships":{"team_links":{"links":{"related":"/api/v2/team/352b8453-16c8-4654-b1a4-77c9e62c4ff1/links"}},"user_team_permissions":{"links":{"related":"/api/v2/team/352b8453-16c8-4654-b1a4-77c9e62c4ff1/permission-settings"}}}}}
+            {"data":{"type":"team","id":"c63b1e80-cf11-4f4f-9930-25e2fc14da07","attributes":{"name":"team-tf-testaccdatadogteamsdatasourcefilterkeyword-local-175861937901","handle":"team-tf-testaccdatadogteamsdatasourcefilterkeyword-local-175861937901","summary":"Team description","description":"Team description","avatar":null,"banner":12,"visible_modules":[],"hidden_modules":[],"created_at":"2025-09-23T09:23:03.220773+00:00","modified_at":"2025-09-23T09:23:03.220797+00:00","user_count":0,"link_count":0,"is_managed":false},"relationships":{"team_links":{"links":{"related":"/api/v2/team/c63b1e80-cf11-4f4f-9930-25e2fc14da07/links"}},"user_team_permissions":{"links":{"related":"/api/v2/team/c63b1e80-cf11-4f4f-9930-25e2fc14da07/permission-settings"}}}}}
         headers:
             Content-Type:
                 - application/json
         status: 201 Created
         code: 201
-        duration: 547.280041ms
+        duration: 319.688083ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -51,7 +51,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"description":"Team description","handle":"team-tf-testaccdatadogteamsdatasourcefilterkeyword-local-17392703191","name":"team-tf-testaccdatadogteamsdatasourcefilterkeyword-local-17392703191"},"type":"team"}}
+            {"data":{"attributes":{"description":"Team description","handle":"team-tf-testaccdatadogteamsdatasourcefilterkeyword-local-17586193791","name":"team-tf-testaccdatadogteamsdatasourcefilterkeyword-local-17586193791"},"type":"team"}}
         form: {}
         headers:
             Accept:
@@ -70,13 +70,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"type":"team","id":"8d207983-b41b-4a71-9bb8-403d01ab3c3d","attributes":{"name":"team-tf-testaccdatadogteamsdatasourcefilterkeyword-local-17392703191","handle":"team-tf-testaccdatadogteamsdatasourcefilterkeyword-local-17392703191","summary":"Team description","description":"Team description","avatar":null,"banner":15,"visible_modules":[],"hidden_modules":[],"created_at":"2025-02-11T10:38:41.318726+00:00","modified_at":"2025-02-11T10:38:41.318731+00:00","user_count":0,"link_count":0,"is_managed":false},"relationships":{"team_links":{"links":{"related":"/api/v2/team/8d207983-b41b-4a71-9bb8-403d01ab3c3d/links"}},"user_team_permissions":{"links":{"related":"/api/v2/team/8d207983-b41b-4a71-9bb8-403d01ab3c3d/permission-settings"}}}}}
+            {"data":{"type":"team","id":"a6103c1e-3c3c-456c-aa81-4596518f9f13","attributes":{"name":"team-tf-testaccdatadogteamsdatasourcefilterkeyword-local-17586193791","handle":"team-tf-testaccdatadogteamsdatasourcefilterkeyword-local-17586193791","summary":"Team description","description":"Team description","avatar":null,"banner":5,"visible_modules":[],"hidden_modules":[],"created_at":"2025-09-23T09:23:03.221920+00:00","modified_at":"2025-09-23T09:23:03.221929+00:00","user_count":0,"link_count":0,"is_managed":false},"relationships":{"team_links":{"links":{"related":"/api/v2/team/a6103c1e-3c3c-456c-aa81-4596518f9f13/links"}},"user_team_permissions":{"links":{"related":"/api/v2/team/a6103c1e-3c3c-456c-aa81-4596518f9f13/permission-settings"}}}}}
         headers:
             Content-Type:
                 - application/json
         status: 201 Created
         code: 201
-        duration: 560.043375ms
+        duration: 548.156833ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -93,25 +93,23 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/team?filter%5Bkeyword%5D=team-tf-testaccdatadogteamsdatasourcefilterkeyword-local-17392703190&page%5Bnumber%5D=0&page%5Bsize%5D=10&sort=name
+        url: https://api.datadoghq.com/api/v2/team?filter%5Bkeyword%5D=team-tf-testaccdatadogteamsdatasourcefilterkeyword-local-17586193790&page%5Bnumber%5D=0&page%5Bsize%5D=10&sort=name
         method: GET
       response:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        transfer_encoding:
-            - chunked
+        transfer_encoding: []
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: |
-            {"data":[{"type":"team","attributes":{"summary":"Team description","user_count":0,"created_at":"2025-02-11T10:38:41.319962+00:00","description":"Team description","handle":"team-tf-testaccdatadogteamsdatasourcefilterkeyword-local-173927031901","modified_at":"2025-02-11T10:38:41.319968+00:00","link_count":0,"name":"team-tf-testaccdatadogteamsdatasourcefilterkeyword-local-173927031901","is_managed":false},"relationships":{"team_links":{"links":{"related":"/api/v2/team/352b8453-16c8-4654-b1a4-77c9e62c4ff1/links"}},"user_team_permissions":{"links":{"related":"/api/v2/team/352b8453-16c8-4654-b1a4-77c9e62c4ff1/permission-settings"}}},"id":"352b8453-16c8-4654-b1a4-77c9e62c4ff1"}],"meta":{"pagination":{"number":0,"first_number":0,"prev_number":0,"next_number":1,"last_number":0,"size":10,"type":"number_size","total":1}},"links":{"self":"https://api.datadoghq.com/api/v2/team?filter[keyword]=team-tf-testaccdatadogteamsdatasourcefilterkeyword-local-17392703190&page[number]=0&page[size]=10&sort=name","last":null,"next":"https://api.datadoghq.com/api/v2/team?filter[keyword]=team-tf-testaccdatadogteamsdatasourcefilterkeyword-local-17392703190&sort=name&page[number]=1&page[size]=10","prev":null,"first":"https://api.datadoghq.com/api/v2/team?filter[keyword]=team-tf-testaccdatadogteamsdatasourcefilterkeyword-local-17392703190&sort=name&page[number]=0&page[size]=10"}}
+        body: '{"data":[{"id":"c63b1e80-cf11-4f4f-9930-25e2fc14da07","type":"team","attributes":{"created_at":"2025-09-23T09:23:03.220773+00:00","description":"Team description","handle":"team-tf-testaccdatadogteamsdatasourcefilterkeyword-local-175861937901","is_managed":false,"link_count":0,"modified_at":"2025-09-23T09:23:03.220797+00:00","name":"team-tf-testaccdatadogteamsdatasourcefilterkeyword-local-175861937901","summary":"Team description","user_count":0},"relationships":{"team_links":{"data":[],"links":{"related":"/api/v2/team/c63b1e80-cf11-4f4f-9930-25e2fc14da07/links"}},"user_team_permissions":{"data":null,"links":{"related":"/api/v2/team/c63b1e80-cf11-4f4f-9930-25e2fc14da07/permission-settings"}}}}],"meta":{"pagination":{"type":"number_size","number":0,"size":10,"total":1,"first_number":0,"prev_number":null,"next_number":null,"last_number":0}},"links":{"self":"https://api.datadoghq.com/api/v2/team?filter%5Bkeyword%5D=team-tf-testaccdatadogteamsdatasourcefilterkeyword-local-17586193790\u0026page%5Bnumber%5D=0\u0026page%5Bsize%5D=10\u0026sort=name","first":"https://api.datadoghq.com/api/v2/team?filter[keyword]=team-tf-testaccdatadogteamsdatasourcefilterkeyword-local-17586193790\u0026page[number]=0\u0026page[size]=10\u0026sort=name","last":"https://api.datadoghq.com/api/v2/team?filter[keyword]=team-tf-testaccdatadogteamsdatasourcefilterkeyword-local-17586193790\u0026page[number]=0\u0026page[size]=10\u0026sort=name"}}'
         headers:
             Content-Type:
-                - application/json
+                - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 339.71825ms
+        duration: 184.505208ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -128,25 +126,23 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/team?filter%5Bkeyword%5D=team-tf-testaccdatadogteamsdatasourcefilterkeyword-local-17392703190&page%5Bnumber%5D=0&page%5Bsize%5D=10&sort=name
+        url: https://api.datadoghq.com/api/v2/team?filter%5Bkeyword%5D=team-tf-testaccdatadogteamsdatasourcefilterkeyword-local-17586193790&page%5Bnumber%5D=0&page%5Bsize%5D=10&sort=name
         method: GET
       response:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        transfer_encoding:
-            - chunked
+        transfer_encoding: []
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: |
-            {"data":[{"type":"team","attributes":{"link_count":0,"name":"team-tf-testaccdatadogteamsdatasourcefilterkeyword-local-173927031901","is_managed":false,"description":"Team description","handle":"team-tf-testaccdatadogteamsdatasourcefilterkeyword-local-173927031901","summary":"Team description","user_count":0,"modified_at":"2025-02-11T10:38:41.319968+00:00","created_at":"2025-02-11T10:38:41.319962+00:00"},"id":"352b8453-16c8-4654-b1a4-77c9e62c4ff1","relationships":{"user_team_permissions":{"links":{"related":"/api/v2/team/352b8453-16c8-4654-b1a4-77c9e62c4ff1/permission-settings"}},"team_links":{"links":{"related":"/api/v2/team/352b8453-16c8-4654-b1a4-77c9e62c4ff1/links"}}}}],"meta":{"pagination":{"number":0,"first_number":0,"prev_number":0,"next_number":1,"last_number":0,"size":10,"type":"number_size","total":1}},"links":{"self":"https://api.datadoghq.com/api/v2/team?filter[keyword]=team-tf-testaccdatadogteamsdatasourcefilterkeyword-local-17392703190&page[number]=0&page[size]=10&sort=name","last":null,"next":"https://api.datadoghq.com/api/v2/team?filter[keyword]=team-tf-testaccdatadogteamsdatasourcefilterkeyword-local-17392703190&sort=name&page[number]=1&page[size]=10","prev":null,"first":"https://api.datadoghq.com/api/v2/team?filter[keyword]=team-tf-testaccdatadogteamsdatasourcefilterkeyword-local-17392703190&sort=name&page[number]=0&page[size]=10"}}
+        body: '{"data":[{"id":"c63b1e80-cf11-4f4f-9930-25e2fc14da07","type":"team","attributes":{"created_at":"2025-09-23T09:23:03.220773+00:00","description":"Team description","handle":"team-tf-testaccdatadogteamsdatasourcefilterkeyword-local-175861937901","is_managed":false,"link_count":0,"modified_at":"2025-09-23T09:23:03.220797+00:00","name":"team-tf-testaccdatadogteamsdatasourcefilterkeyword-local-175861937901","summary":"Team description","user_count":0},"relationships":{"team_links":{"data":[],"links":{"related":"/api/v2/team/c63b1e80-cf11-4f4f-9930-25e2fc14da07/links"}},"user_team_permissions":{"data":null,"links":{"related":"/api/v2/team/c63b1e80-cf11-4f4f-9930-25e2fc14da07/permission-settings"}}}}],"meta":{"pagination":{"type":"number_size","number":0,"size":10,"total":1,"first_number":0,"prev_number":null,"next_number":null,"last_number":0}},"links":{"self":"https://api.datadoghq.com/api/v2/team?filter%5Bkeyword%5D=team-tf-testaccdatadogteamsdatasourcefilterkeyword-local-17586193790\u0026page%5Bnumber%5D=0\u0026page%5Bsize%5D=10\u0026sort=name","first":"https://api.datadoghq.com/api/v2/team?filter[keyword]=team-tf-testaccdatadogteamsdatasourcefilterkeyword-local-17586193790\u0026page[number]=0\u0026page[size]=10\u0026sort=name","last":"https://api.datadoghq.com/api/v2/team?filter[keyword]=team-tf-testaccdatadogteamsdatasourcefilterkeyword-local-17586193790\u0026page[number]=0\u0026page[size]=10\u0026sort=name"}}'
         headers:
             Content-Type:
-                - application/json
+                - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 315.812542ms
+        duration: 184.376542ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -163,25 +159,23 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/team/352b8453-16c8-4654-b1a4-77c9e62c4ff1
+        url: https://api.datadoghq.com/api/v2/team/a6103c1e-3c3c-456c-aa81-4596518f9f13
         method: GET
       response:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        transfer_encoding:
-            - chunked
+        transfer_encoding: []
         trailer: {}
-        content_length: -1
-        uncompressed: true
-        body: |
-            {"data":{"type":"team","attributes":{"user_count":0,"name":"team-tf-testaccdatadogteamsdatasourcefilterkeyword-local-173927031901","summary":"Team description","description":"Team description","modified_at":"2025-02-11T10:38:41.319968+00:00","handle":"team-tf-testaccdatadogteamsdatasourcefilterkeyword-local-173927031901","is_managed":false,"created_at":"2025-02-11T10:38:41.319962+00:00","link_count":0},"relationships":{"team_links":{"links":{"related":"/api/v2/team/352b8453-16c8-4654-b1a4-77c9e62c4ff1/links"}},"user_team_permissions":{"links":{"related":"/api/v2/team/352b8453-16c8-4654-b1a4-77c9e62c4ff1/permission-settings"}}},"id":"352b8453-16c8-4654-b1a4-77c9e62c4ff1"}}
+        content_length: 700
+        uncompressed: false
+        body: '{"data":{"id":"a6103c1e-3c3c-456c-aa81-4596518f9f13","type":"team","attributes":{"created_at":"2025-09-23T09:23:03.221920+00:00","description":"Team description","handle":"team-tf-testaccdatadogteamsdatasourcefilterkeyword-local-17586193791","is_managed":false,"link_count":0,"modified_at":"2025-09-23T09:23:03.221929+00:00","name":"team-tf-testaccdatadogteamsdatasourcefilterkeyword-local-17586193791","summary":"Team description","user_count":0},"relationships":{"team_links":{"data":[],"links":{"related":"/api/v2/team/a6103c1e-3c3c-456c-aa81-4596518f9f13/links"}},"user_team_permissions":{"data":null,"links":{"related":"/api/v2/team/a6103c1e-3c3c-456c-aa81-4596518f9f13/permission-settings"}}}}}'
         headers:
             Content-Type:
-                - application/json
+                - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 172.024083ms
+        duration: 140.922917ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -198,25 +192,23 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/team/8d207983-b41b-4a71-9bb8-403d01ab3c3d
+        url: https://api.datadoghq.com/api/v2/team/c63b1e80-cf11-4f4f-9930-25e2fc14da07
         method: GET
       response:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        transfer_encoding:
-            - chunked
+        transfer_encoding: []
         trailer: {}
-        content_length: -1
-        uncompressed: true
-        body: |
-            {"data":{"type":"team","attributes":{"description":"Team description","summary":"Team description","created_at":"2025-02-11T10:38:41.318726+00:00","name":"team-tf-testaccdatadogteamsdatasourcefilterkeyword-local-17392703191","handle":"team-tf-testaccdatadogteamsdatasourcefilterkeyword-local-17392703191","user_count":0,"modified_at":"2025-02-11T10:38:41.318731+00:00","link_count":0,"is_managed":false},"id":"8d207983-b41b-4a71-9bb8-403d01ab3c3d","relationships":{"team_links":{"links":{"related":"/api/v2/team/8d207983-b41b-4a71-9bb8-403d01ab3c3d/links"}},"user_team_permissions":{"links":{"related":"/api/v2/team/8d207983-b41b-4a71-9bb8-403d01ab3c3d/permission-settings"}}}}}
+        content_length: 702
+        uncompressed: false
+        body: '{"data":{"id":"c63b1e80-cf11-4f4f-9930-25e2fc14da07","type":"team","attributes":{"created_at":"2025-09-23T09:23:03.220773+00:00","description":"Team description","handle":"team-tf-testaccdatadogteamsdatasourcefilterkeyword-local-175861937901","is_managed":false,"link_count":0,"modified_at":"2025-09-23T09:23:03.220797+00:00","name":"team-tf-testaccdatadogteamsdatasourcefilterkeyword-local-175861937901","summary":"Team description","user_count":0},"relationships":{"team_links":{"data":[],"links":{"related":"/api/v2/team/c63b1e80-cf11-4f4f-9930-25e2fc14da07/links"}},"user_team_permissions":{"data":null,"links":{"related":"/api/v2/team/c63b1e80-cf11-4f4f-9930-25e2fc14da07/permission-settings"}}}}}'
         headers:
             Content-Type:
-                - application/json
+                - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 176.12075ms
+        duration: 212.989667ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -233,25 +225,23 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/team?filter%5Bkeyword%5D=team-tf-testaccdatadogteamsdatasourcefilterkeyword-local-17392703190&page%5Bnumber%5D=0&page%5Bsize%5D=10&sort=name
+        url: https://api.datadoghq.com/api/v2/team?filter%5Bkeyword%5D=team-tf-testaccdatadogteamsdatasourcefilterkeyword-local-17586193790&page%5Bnumber%5D=0&page%5Bsize%5D=10&sort=name
         method: GET
       response:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        transfer_encoding:
-            - chunked
+        transfer_encoding: []
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: |
-            {"data":[{"type":"team","relationships":{"user_team_permissions":{"links":{"related":"/api/v2/team/352b8453-16c8-4654-b1a4-77c9e62c4ff1/permission-settings"}},"team_links":{"links":{"related":"/api/v2/team/352b8453-16c8-4654-b1a4-77c9e62c4ff1/links"}}},"id":"352b8453-16c8-4654-b1a4-77c9e62c4ff1","attributes":{"link_count":0,"summary":"Team description","modified_at":"2025-02-11T10:38:41.319968+00:00","handle":"team-tf-testaccdatadogteamsdatasourcefilterkeyword-local-173927031901","created_at":"2025-02-11T10:38:41.319962+00:00","name":"team-tf-testaccdatadogteamsdatasourcefilterkeyword-local-173927031901","is_managed":false,"description":"Team description","user_count":0}}],"meta":{"pagination":{"number":0,"first_number":0,"prev_number":0,"next_number":1,"last_number":0,"size":10,"type":"number_size","total":1}},"links":{"self":"https://api.datadoghq.com/api/v2/team?filter[keyword]=team-tf-testaccdatadogteamsdatasourcefilterkeyword-local-17392703190&page[number]=0&page[size]=10&sort=name","last":null,"next":"https://api.datadoghq.com/api/v2/team?filter[keyword]=team-tf-testaccdatadogteamsdatasourcefilterkeyword-local-17392703190&sort=name&page[number]=1&page[size]=10","prev":null,"first":"https://api.datadoghq.com/api/v2/team?filter[keyword]=team-tf-testaccdatadogteamsdatasourcefilterkeyword-local-17392703190&sort=name&page[number]=0&page[size]=10"}}
+        body: '{"data":[{"id":"c63b1e80-cf11-4f4f-9930-25e2fc14da07","type":"team","attributes":{"created_at":"2025-09-23T09:23:03.220773+00:00","description":"Team description","handle":"team-tf-testaccdatadogteamsdatasourcefilterkeyword-local-175861937901","is_managed":false,"link_count":0,"modified_at":"2025-09-23T09:23:03.220797+00:00","name":"team-tf-testaccdatadogteamsdatasourcefilterkeyword-local-175861937901","summary":"Team description","user_count":0},"relationships":{"team_links":{"data":[],"links":{"related":"/api/v2/team/c63b1e80-cf11-4f4f-9930-25e2fc14da07/links"}},"user_team_permissions":{"data":null,"links":{"related":"/api/v2/team/c63b1e80-cf11-4f4f-9930-25e2fc14da07/permission-settings"}}}}],"meta":{"pagination":{"type":"number_size","number":0,"size":10,"total":1,"first_number":0,"prev_number":null,"next_number":null,"last_number":0}},"links":{"self":"https://api.datadoghq.com/api/v2/team?filter%5Bkeyword%5D=team-tf-testaccdatadogteamsdatasourcefilterkeyword-local-17586193790\u0026page%5Bnumber%5D=0\u0026page%5Bsize%5D=10\u0026sort=name","first":"https://api.datadoghq.com/api/v2/team?filter[keyword]=team-tf-testaccdatadogteamsdatasourcefilterkeyword-local-17586193790\u0026page[number]=0\u0026page[size]=10\u0026sort=name","last":"https://api.datadoghq.com/api/v2/team?filter[keyword]=team-tf-testaccdatadogteamsdatasourcefilterkeyword-local-17586193790\u0026page[number]=0\u0026page[size]=10\u0026sort=name"}}'
         headers:
             Content-Type:
-                - application/json
+                - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 327.360084ms
+        duration: 166.789541ms
     - id: 7
       request:
         proto: HTTP/1.1
@@ -267,26 +257,22 @@ interactions:
         form: {}
         headers:
             Accept:
-                - application/json
-        url: https://api.datadoghq.com/api/v2/team?filter%5Bkeyword%5D=team-tf-testaccdatadogteamsdatasourcefilterkeyword-local-17392703190&page%5Bnumber%5D=0&page%5Bsize%5D=10&sort=name
-        method: GET
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/team/a6103c1e-3c3c-456c-aa81-4596518f9f13
+        method: DELETE
       response:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        transfer_encoding:
-            - chunked
+        transfer_encoding: []
         trailer: {}
-        content_length: -1
-        uncompressed: true
-        body: |
-            {"data":[{"type":"team","attributes":{"created_at":"2025-02-11T10:38:41.319962+00:00","summary":"Team description","name":"team-tf-testaccdatadogteamsdatasourcefilterkeyword-local-173927031901","description":"Team description","link_count":0,"is_managed":false,"handle":"team-tf-testaccdatadogteamsdatasourcefilterkeyword-local-173927031901","user_count":0,"modified_at":"2025-02-11T10:38:41.319968+00:00"},"relationships":{"user_team_permissions":{"links":{"related":"/api/v2/team/352b8453-16c8-4654-b1a4-77c9e62c4ff1/permission-settings"}},"team_links":{"links":{"related":"/api/v2/team/352b8453-16c8-4654-b1a4-77c9e62c4ff1/links"}}},"id":"352b8453-16c8-4654-b1a4-77c9e62c4ff1"}],"meta":{"pagination":{"number":0,"first_number":0,"prev_number":0,"next_number":1,"last_number":0,"size":10,"type":"number_size","total":1}},"links":{"self":"https://api.datadoghq.com/api/v2/team?filter[keyword]=team-tf-testaccdatadogteamsdatasourcefilterkeyword-local-17392703190&page[number]=0&page[size]=10&sort=name","last":null,"next":"https://api.datadoghq.com/api/v2/team?filter[keyword]=team-tf-testaccdatadogteamsdatasourcefilterkeyword-local-17392703190&sort=name&page[number]=1&page[size]=10","prev":null,"first":"https://api.datadoghq.com/api/v2/team?filter[keyword]=team-tf-testaccdatadogteamsdatasourcefilterkeyword-local-17392703190&sort=name&page[number]=0&page[size]=10"}}
-        headers:
-            Content-Type:
-                - application/json
-        status: 200 OK
-        code: 200
-        duration: 289.873416ms
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 268.152834ms
     - id: 8
       request:
         proto: HTTP/1.1
@@ -303,7 +289,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/team/8d207983-b41b-4a71-9bb8-403d01ab3c3d
+        url: https://api.datadoghq.com/api/v2/team/c63b1e80-cf11-4f4f-9930-25e2fc14da07
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -317,35 +303,4 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 257.457084ms
-    - id: 9
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 0
-        transfer_encoding: []
-        trailer: {}
-        host: api.datadoghq.com
-        remote_addr: ""
-        request_uri: ""
-        body: ""
-        form: {}
-        headers:
-            Accept:
-                - '*/*'
-        url: https://api.datadoghq.com/api/v2/team/352b8453-16c8-4654-b1a4-77c9e62c4ff1
-        method: DELETE
-      response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        transfer_encoding: []
-        trailer: {}
-        content_length: 0
-        uncompressed: false
-        body: ""
-        headers: {}
-        status: 204 No Content
-        code: 204
-        duration: 263.654542ms
+        duration: 268.363875ms

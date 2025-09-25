@@ -25,15 +25,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 230
+        content_length: 430
         uncompressed: false
-        body: '{"data":{"id":"logs_services","type":"logs_services","attributes":{"logs_services":["apigw-access-logs","apigw-execution-logs","cloudfront","cloudtrail","elb","elbv2","lambda","lambda-edge","redshift","s3","ssm","states","waf"]}}}'
+        body: '{"data":{"id":"logs_services","type":"logs_services","attributes":{"logs_services":["apigw-access-logs","apigw-execution-logs","appsync","batch","cloudfront","cloudtrail","codebuild","dms","docdb","ecs","eks","eks-container-insights","elb","elbv2","lambda","lambda-edge","mwaa","network-firewall","pcs","rds","redshift","redshift-serverless","route53","route53-resolver","s3","ssm","states","verified-access","vpc","vpn","waf"]}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 99.083875ms
+        duration: 134.336875ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -58,15 +58,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 230
+        content_length: 430
         uncompressed: false
-        body: '{"data":{"id":"logs_services","type":"logs_services","attributes":{"logs_services":["apigw-access-logs","apigw-execution-logs","cloudfront","cloudtrail","elb","elbv2","lambda","lambda-edge","redshift","s3","ssm","states","waf"]}}}'
+        body: '{"data":{"id":"logs_services","type":"logs_services","attributes":{"logs_services":["apigw-access-logs","apigw-execution-logs","appsync","batch","cloudfront","cloudtrail","codebuild","dms","docdb","ecs","eks","eks-container-insights","elb","elbv2","lambda","lambda-edge","mwaa","network-firewall","pcs","rds","redshift","redshift-serverless","route53","route53-resolver","s3","ssm","states","verified-access","vpc","vpn","waf"]}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 45.143167ms
+        duration: 134.141458ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -91,15 +91,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 230
+        content_length: 430
         uncompressed: false
-        body: '{"data":{"id":"logs_services","type":"logs_services","attributes":{"logs_services":["apigw-access-logs","apigw-execution-logs","cloudfront","cloudtrail","elb","elbv2","lambda","lambda-edge","redshift","s3","ssm","states","waf"]}}}'
+        body: '{"data":{"id":"logs_services","type":"logs_services","attributes":{"logs_services":["apigw-access-logs","apigw-execution-logs","appsync","batch","cloudfront","cloudtrail","codebuild","dms","docdb","ecs","eks","eks-container-insights","elb","elbv2","lambda","lambda-edge","mwaa","network-firewall","pcs","rds","redshift","redshift-serverless","route53","route53-resolver","s3","ssm","states","verified-access","vpc","vpn","waf"]}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 47.93675ms
+        duration: 127.378041ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -124,78 +124,12 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 230
+        content_length: 430
         uncompressed: false
-        body: '{"data":{"id":"logs_services","type":"logs_services","attributes":{"logs_services":["apigw-access-logs","apigw-execution-logs","cloudfront","cloudtrail","elb","elbv2","lambda","lambda-edge","redshift","s3","ssm","states","waf"]}}}'
+        body: '{"data":{"id":"logs_services","type":"logs_services","attributes":{"logs_services":["apigw-access-logs","apigw-execution-logs","appsync","batch","cloudfront","cloudtrail","codebuild","dms","docdb","ecs","eks","eks-container-insights","elb","elbv2","lambda","lambda-edge","mwaa","network-firewall","pcs","rds","redshift","redshift-serverless","route53","route53-resolver","s3","ssm","states","verified-access","vpc","vpn","waf"]}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 34.44625ms
-    - id: 4
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 0
-        transfer_encoding: []
-        trailer: {}
-        host: api.datadoghq.com
-        remote_addr: ""
-        request_uri: ""
-        body: ""
-        form: {}
-        headers:
-            Accept:
-                - application/json
-        url: https://api.datadoghq.com/api/v2/integration/aws/logs/services
-        method: GET
-      response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        transfer_encoding: []
-        trailer: {}
-        content_length: 230
-        uncompressed: false
-        body: '{"data":{"id":"logs_services","type":"logs_services","attributes":{"logs_services":["apigw-access-logs","apigw-execution-logs","cloudfront","cloudtrail","elb","elbv2","lambda","lambda-edge","redshift","s3","ssm","states","waf"]}}}'
-        headers:
-            Content-Type:
-                - application/vnd.api+json
-        status: 200 OK
-        code: 200
-        duration: 47.271459ms
-    - id: 5
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 0
-        transfer_encoding: []
-        trailer: {}
-        host: api.datadoghq.com
-        remote_addr: ""
-        request_uri: ""
-        body: ""
-        form: {}
-        headers:
-            Accept:
-                - application/json
-        url: https://api.datadoghq.com/api/v2/integration/aws/logs/services
-        method: GET
-      response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        transfer_encoding: []
-        trailer: {}
-        content_length: 230
-        uncompressed: false
-        body: '{"data":{"id":"logs_services","type":"logs_services","attributes":{"logs_services":["apigw-access-logs","apigw-execution-logs","cloudfront","cloudtrail","elb","elbv2","lambda","lambda-edge","redshift","s3","ssm","states","waf"]}}}'
-        headers:
-            Content-Type:
-                - application/vnd.api+json
-        status: 200 OK
-        code: 200
-        duration: 30.739ms
+        duration: 121.503625ms

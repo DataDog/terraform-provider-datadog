@@ -36,7 +36,7 @@ interactions:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 543.328667ms
+        duration: 145.529ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -63,13 +63,13 @@ interactions:
         trailer: {}
         content_length: 175
         uncompressed: false
-        body: '{"data":{"id":"ba924b8e-47a9-4298-9442-c135f2458001","type":"csm_resource_filter","attributes":{"cloud_provider":{"aws":{"123456789":["tag1:val1","tag2:val2","tag3:val3"]}}}}}'
+        body: '{"data":{"id":"0dff2f0d-c1ac-4698-a1fa-288046204fc7","type":"csm_resource_filter","attributes":{"cloud_provider":{"aws":{"123456789":["tag1:val1","tag2:val2","tag3:val3"]}}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 148.422125ms
+        duration: 140.914584ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -96,13 +96,13 @@ interactions:
         trailer: {}
         content_length: 118
         uncompressed: false
-        body: '{"data":{"id":"4dec75dc-a185-41cb-9c63-961acc0b9a17","type":"csm_resource_filter","attributes":{"cloud_provider":{}}}}'
+        body: '{"data":{"id":"11f89274-857e-45d9-b529-ea61da67cfde","type":"csm_resource_filter","attributes":{"cloud_provider":{}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 152.391ms
+        duration: 141.599125ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -129,13 +129,13 @@ interactions:
         trailer: {}
         content_length: 118
         uncompressed: false
-        body: '{"data":{"id":"d8a6efc3-2f82-4f85-a472-a5d486d4ab24","type":"csm_resource_filter","attributes":{"cloud_provider":{}}}}'
+        body: '{"data":{"id":"f9e12854-6156-4100-a417-7caa33ecd38c","type":"csm_resource_filter","attributes":{"cloud_provider":{}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 156.569792ms
+        duration: 137.833083ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -171,7 +171,7 @@ interactions:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 181.320667ms
+        duration: 149.314125ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -198,13 +198,13 @@ interactions:
         trailer: {}
         content_length: 175
         uncompressed: false
-        body: '{"data":{"id":"e145e073-af7a-4801-b6d7-6322a1e6cfcc","type":"csm_resource_filter","attributes":{"cloud_provider":{"aws":{"123456789":["tag3:val3","tag1:val1","tag2:val2"]}}}}}'
+        body: '{"data":{"id":"00306e87-a82d-44ea-be1a-da36daa64c5e","type":"csm_resource_filter","attributes":{"cloud_provider":{"aws":{"123456789":["tag3:val3","tag1:val1","tag2:val2"]}}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 154.499042ms
+        duration: 146.762625ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -231,13 +231,13 @@ interactions:
         trailer: {}
         content_length: 118
         uncompressed: false
-        body: '{"data":{"id":"45c24892-da45-450d-b6a1-25bd182d3252","type":"csm_resource_filter","attributes":{"cloud_provider":{}}}}'
+        body: '{"data":{"id":"3bc0c557-15eb-4ea4-8ebc-cdcd7894763c","type":"csm_resource_filter","attributes":{"cloud_provider":{}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 170.1615ms
+        duration: 129.562417ms
     - id: 7
       request:
         proto: HTTP/1.1
@@ -264,13 +264,13 @@ interactions:
         trailer: {}
         content_length: 118
         uncompressed: false
-        body: '{"data":{"id":"47933969-f06c-4277-9750-b9fe11f7c96e","type":"csm_resource_filter","attributes":{"cloud_provider":{}}}}'
+        body: '{"data":{"id":"1314df0f-9b00-4011-a94b-3ee4a8621e3a","type":"csm_resource_filter","attributes":{"cloud_provider":{}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 159.799416ms
+        duration: 130.939375ms
     - id: 8
       request:
         proto: HTTP/1.1
@@ -297,13 +297,13 @@ interactions:
         trailer: {}
         content_length: 118
         uncompressed: false
-        body: '{"data":{"id":"c0ece007-0c13-41fb-b40c-2819f132f2c0","type":"csm_resource_filter","attributes":{"cloud_provider":{}}}}'
+        body: '{"data":{"id":"00bf13f4-e8ec-4f04-adfe-18d1bc07fcb4","type":"csm_resource_filter","attributes":{"cloud_provider":{}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 162.793375ms
+        duration: 141.207458ms
     - id: 9
       request:
         proto: HTTP/1.1
@@ -339,7 +339,7 @@ interactions:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 164.185625ms
+        duration: 174.40825ms
     - id: 10
       request:
         proto: HTTP/1.1
@@ -366,10 +366,10 @@ interactions:
         trailer: {}
         content_length: 140
         uncompressed: false
-        body: '{"data":{"id":"fb9c5b25-45bb-44c8-8048-cd80f8956af8","type":"csm_resource_filter","attributes":{"cloud_provider":{"aws":{"123456789":[]}}}}}'
+        body: '{"data":{"id":"ec1e3959-d0f1-474b-8716-fc73f8ee007d","type":"csm_resource_filter","attributes":{"cloud_provider":{"aws":{"123456789":[]}}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 159.222792ms
+        duration: 132.615042ms

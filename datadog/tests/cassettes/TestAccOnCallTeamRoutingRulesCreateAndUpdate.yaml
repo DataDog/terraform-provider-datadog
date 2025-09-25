@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"description":"Description","handle":"team-tf-testacconcallteamroutingrulescreateandupdate-local-1748428443","name":"team-tf-testacconcallteamroutingrulescreateandupdate-local-1748428443"},"type":"team"}}
+            {"data":{"attributes":{"description":"Description","handle":"team-tf-testacconcallteamroutingrulescreateandupdate-local-1758619074","name":"team-tf-testacconcallteamroutingrulescreateandupdate-local-1758619074"},"type":"team"}}
         form: {}
         headers:
             Accept:
@@ -32,13 +32,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"type":"team","id":"ec891e2c-68da-4bbf-abff-a76217f8db2c","attributes":{"name":"team-tf-testacconcallteamroutingrulescreateandupdate-local-1748428443","handle":"team-tf-testacconcallteamroutingrulescreateandupdate-local-1748428443","summary":"Description","description":"Description","avatar":null,"banner":7,"visible_modules":[],"hidden_modules":[],"created_at":"2025-05-28T10:34:07.396327+00:00","modified_at":"2025-05-28T10:34:07.396336+00:00","user_count":0,"link_count":0,"is_managed":false},"relationships":{"team_links":{"links":{"related":"/api/v2/team/ec891e2c-68da-4bbf-abff-a76217f8db2c/links"}},"user_team_permissions":{"links":{"related":"/api/v2/team/ec891e2c-68da-4bbf-abff-a76217f8db2c/permission-settings"}}}}}
+            {"data":{"type":"team","id":"e568bc71-55c4-4e91-9d4c-2f8dcc3306a8","attributes":{"name":"team-tf-testacconcallteamroutingrulescreateandupdate-local-1758619074","handle":"team-tf-testacconcallteamroutingrulescreateandupdate-local-1758619074","summary":"Description","description":"Description","avatar":null,"banner":1,"visible_modules":[],"hidden_modules":[],"created_at":"2025-09-23T09:17:56.767444+00:00","modified_at":"2025-09-23T09:17:56.767453+00:00","user_count":0,"link_count":0,"is_managed":false},"relationships":{"team_links":{"links":{"related":"/api/v2/team/e568bc71-55c4-4e91-9d4c-2f8dcc3306a8/links"}},"user_team_permissions":{"links":{"related":"/api/v2/team/e568bc71-55c4-4e91-9d4c-2f8dcc3306a8/permission-settings"}}}}}
         headers:
             Content-Type:
                 - application/json
         status: 201 Created
         code: 201
-        duration: 539.326834ms
+        duration: 620.514666ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -51,7 +51,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"email":"tf-testacconcallteamroutingrulescreateandupdate-local-1748428443@example.com"},"relationships":{"roles":{"data":[]}},"type":"users"}}
+            {"data":{"attributes":{"email":"tf-testacconcallteamroutingrulescreateandupdate-local-1758619074@example.com"},"relationships":{"roles":{"data":[]}},"type":"users"}}
         form: {}
         headers:
             Accept:
@@ -70,13 +70,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"type":"users","id":"48fe6aec-3baf-11f0-97ed-2aeaad0563c4","attributes":{"name":null,"handle":"tf-testacconcallteamroutingrulescreateandupdate-local-1748428443@example.com","created_at":"2025-05-28T10:34:07.843436+00:00","modified_at":"2025-05-28T10:34:07.843436+00:00","email":"tf-testacconcallteamroutingrulescreateandupdate-local-1748428443@example.com","icon":"https://secure.gravatar.com/avatar/ce8fecc6f0564af628be6b33445aa775?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}
+            {"data":{"type":"users","id":"3166b693-985e-11f0-9651-7220f0448ba8","attributes":{"name":null,"handle":"tf-testacconcallteamroutingrulescreateandupdate-local-1758619074@example.com","created_at":"2025-09-23T09:17:57.164842+00:00","modified_at":"2025-09-23T09:17:57.164842+00:00","email":"tf-testacconcallteamroutingrulescreateandupdate-local-1758619074@example.com","icon":"https://secure.gravatar.com/avatar/f05674c7c67f267719a77ec58a794c31?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}
         headers:
             Content-Type:
                 - application/json
         status: 201 Created
         code: 201
-        duration: 920.14875ms
+        duration: 903.678334ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -89,7 +89,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":[{"relationships":{"user":{"data":{"id":"48fe6aec-3baf-11f0-97ed-2aeaad0563c4","type":"users"}}},"type":"user_invitations"}]}
+            {"data":[{"relationships":{"user":{"data":{"id":"3166b693-985e-11f0-9651-7220f0448ba8","type":"users"}}},"type":"user_invitations"}]}
         form: {}
         headers:
             Accept:
@@ -108,13 +108,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":[{"type":"user_invitations","id":"494bcca8-3baf-11f0-9330-da7ad0900002","attributes":{"uuid":"494bcca8-3baf-11f0-9330-da7ad0900002","login_method":null,"invite_type":"basic_invite","created_at":"2025-05-28T10:34:08.350187+00:00","expires_at":"2025-05-30T10:34:08.113045+00:00"},"relationships":{"user":{"data":{"type":"users","id":"48fe6aec-3baf-11f0-97ed-2aeaad0563c4"}}}}]}
+            {"data":[{"type":"user_invitations","id":"31fb6c00-985e-11f0-b9d8-da7ad0900002","attributes":{"uuid":"31fb6c00-985e-11f0-b9d8-da7ad0900002","login_method":null,"invite_type":"basic_invite","created_at":"2025-09-23T09:17:58.138963+00:00","expires_at":"2025-09-25T09:17:57.578700+00:00"},"relationships":{"user":{"data":{"type":"users","id":"3166b693-985e-11f0-9651-7220f0448ba8"}}}}]}
         headers:
             Content-Type:
                 - application/json
         status: 201 Created
         code: 201
-        duration: 519.449167ms
+        duration: 1.08556775s
     - id: 3
       request:
         proto: HTTP/1.1
@@ -127,7 +127,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"layers":[{"effective_date":"2025-01-01T00:00:00Z","interval":{"days":1,"seconds":300},"members":[{"user":{"id":"48fe6aec-3baf-11f0-97ed-2aeaad0563c4"}},{}],"name":"Primary On-Call Layer","restrictions":[{"end_day":"monday","end_time":"17:00:00","start_day":"monday","start_time":"09:00:00"}],"rotation_start":"2025-01-01T00:00:00Z"}],"name":"Escalation Policy Test Schedule tf-testacconcallteamroutingrulescreateandupdate-local-1748428443","time_zone":"America/New_York"},"relationships":{"teams":{"data":[{"id":"ec891e2c-68da-4bbf-abff-a76217f8db2c","type":"teams"}]}},"type":"schedules"}}
+            {"data":{"attributes":{"layers":[{"effective_date":"2025-01-01T00:00:00Z","interval":{"days":1,"seconds":300},"members":[{"user":{"id":"3166b693-985e-11f0-9651-7220f0448ba8"}},{}],"name":"Primary On-Call Layer","restrictions":[{"end_day":"monday","end_time":"17:00:00","start_day":"monday","start_time":"09:00:00"}],"rotation_start":"2025-01-01T00:00:00Z"}],"name":"Escalation Policy Test Schedule tf-testacconcallteamroutingrulescreateandupdate-local-1758619074","time_zone":"America/New_York"},"relationships":{"teams":{"data":[{"id":"e568bc71-55c4-4e91-9d4c-2f8dcc3306a8","type":"teams"}]}},"type":"schedules"}}
         form: {}
         headers:
             Accept:
@@ -144,13 +144,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"data":{"id":"cb1cb495-9f20-42b4-8ff1-d55e04d49b87","type":"schedules","attributes":{"name":"Escalation Policy Test Schedule tf-testacconcallteamroutingrulescreateandupdate-local-1748428443","time_zone":"America/New_York"},"relationships":{"layers":{"data":[{"id":"6a2bc46f-3ac1-4733-b592-388cd98f619d","type":"layers"}]},"teams":{"data":[{"id":"ec891e2c-68da-4bbf-abff-a76217f8db2c","type":"teams"}]}}},"included":[{"id":"6a2bc46f-3ac1-4733-b592-388cd98f619d","type":"layers","attributes":{"effective_date":"2025-01-01T00:00:00Z","interval":{"seconds":300,"days":1},"name":"Primary On-Call Layer","restrictions":[{"start_time":"09:00:00","start_day":"monday","end_time":"17:00:00","end_day":"monday"}],"rotation_start":"2025-01-01T00:00:00Z"},"relationships":{"members":{"data":[{"id":"6a2bc46f-3ac1-4733-b592-388cd98f619d-member-1","type":"members"},{"id":"6a2bc46f-3ac1-4733-b592-388cd98f619d-member-2","type":"members"}]}}},{"id":"6a2bc46f-3ac1-4733-b592-388cd98f619d-member-1","type":"members","relationships":{"user":{"data":{"id":"48fe6aec-3baf-11f0-97ed-2aeaad0563c4","type":"users"}}}},{"id":"48fe6aec-3baf-11f0-97ed-2aeaad0563c4","type":"users","attributes":{"email":"tf-testacconcallteamroutingrulescreateandupdate-local-1748428443@example.com","name":"","status":"pending"}}]}'
+        body: '{"data":{"id":"5822c826-01b0-46a1-a46e-7e3d4de46e23","type":"schedules","attributes":{"name":"Escalation Policy Test Schedule tf-testacconcallteamroutingrulescreateandupdate-local-1758619074","time_zone":"America/New_York"},"relationships":{"layers":{"data":[{"id":"41a7570c-93b9-4579-8b0c-fd8ed690d44e","type":"layers"}]},"teams":{"data":[{"id":"e568bc71-55c4-4e91-9d4c-2f8dcc3306a8","type":"teams"}]}}},"included":[{"id":"41a7570c-93b9-4579-8b0c-fd8ed690d44e","type":"layers","attributes":{"effective_date":"2025-01-01T00:00:00Z","interval":{"seconds":300,"days":1},"name":"Primary On-Call Layer","restrictions":[{"start_time":"09:00:00","start_day":"monday","end_time":"17:00:00","end_day":"monday"}],"rotation_start":"2025-01-01T00:00:00Z"},"relationships":{"members":{"data":[{"id":"41a7570c-93b9-4579-8b0c-fd8ed690d44e-member-1","type":"members"},{"id":"41a7570c-93b9-4579-8b0c-fd8ed690d44e-member-2","type":"members"}]}}},{"id":"41a7570c-93b9-4579-8b0c-fd8ed690d44e-member-1","type":"members","relationships":{"user":{"data":{"id":"3166b693-985e-11f0-9651-7220f0448ba8","type":"users"}}}},{"id":"3166b693-985e-11f0-9651-7220f0448ba8","type":"users","attributes":{"email":"tf-testacconcallteamroutingrulescreateandupdate-local-1758619074@example.com","name":"","status":"pending"}}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 178.173ms
+        duration: 160.749791ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -163,7 +163,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"name":"tf-testacconcallteamroutingrulescreateandupdate-local-1748428443","resolve_page_on_policy_end":true,"retries":3,"steps":[{"assignment":"round-robin","escalate_after_seconds":300,"targets":[{"id":"ec891e2c-68da-4bbf-abff-a76217f8db2c","type":"teams"},{"id":"48fe6aec-3baf-11f0-97ed-2aeaad0563c4","type":"users"},{"id":"cb1cb495-9f20-42b4-8ff1-d55e04d49b87","type":"schedules"}]}]},"type":"policies"}}
+            {"data":{"attributes":{"name":"tf-testacconcallteamroutingrulescreateandupdate-local-1758619074","resolve_page_on_policy_end":true,"retries":3,"steps":[{"assignment":"round-robin","escalate_after_seconds":300,"targets":[{"id":"e568bc71-55c4-4e91-9d4c-2f8dcc3306a8","type":"teams"},{"id":"3166b693-985e-11f0-9651-7220f0448ba8","type":"users"},{"id":"5822c826-01b0-46a1-a46e-7e3d4de46e23","type":"schedules"}]}]},"type":"policies"}}
         form: {}
         headers:
             Accept:
@@ -180,13 +180,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"data":{"id":"e83c95ea-bf0a-4d2a-8fb6-fdadf48ec172","type":"policies","attributes":{"name":"tf-testacconcallteamroutingrulescreateandupdate-local-1748428443","resolve_page_on_policy_end":true,"retries":3},"relationships":{"steps":{"data":[{"id":"037ae3e8-4937-4a8b-9b0e-654222aaf192","type":"steps"}]},"teams":{"data":[]}}},"included":[{"id":"037ae3e8-4937-4a8b-9b0e-654222aaf192","type":"steps","attributes":{"assignment":"round-robin","escalate_after_seconds":300},"relationships":{"targets":{"data":[{"id":"ec891e2c-68da-4bbf-abff-a76217f8db2c","type":"teams"},{"id":"48fe6aec-3baf-11f0-97ed-2aeaad0563c4","type":"users"},{"id":"cb1cb495-9f20-42b4-8ff1-d55e04d49b87","type":"schedules"}]}}},{"id":"ec891e2c-68da-4bbf-abff-a76217f8db2c","type":"teams","attributes":{"avatar":"","description":"Description","handle":"team-tf-testacconcallteamroutingrulescreateandupdate-local-1748428443","name":"team-tf-testacconcallteamroutingrulescreateandupdate-local-1748428443"}},{"id":"48fe6aec-3baf-11f0-97ed-2aeaad0563c4","type":"users","attributes":{"email":"tf-testacconcallteamroutingrulescreateandupdate-local-1748428443@example.com","name":"","status":"pending"}},{"id":"cb1cb495-9f20-42b4-8ff1-d55e04d49b87","type":"schedules","attributes":{"name":"Escalation Policy Test Schedule tf-testacconcallteamroutingrulescreateandupdate-local-1748428443","time_zone":"America/New_York"},"relationships":{"layers":{"data":[{"id":"6a2bc46f-3ac1-4733-b592-388cd98f619d","type":"layers"}]},"teams":{"data":[{"id":"ec891e2c-68da-4bbf-abff-a76217f8db2c","type":"teams"}]}}}]}'
+        body: '{"data":{"id":"4d29346d-4137-46fe-9a11-15a9da6063f1","type":"policies","attributes":{"name":"tf-testacconcallteamroutingrulescreateandupdate-local-1758619074","resolve_page_on_policy_end":true,"retries":3},"relationships":{"steps":{"data":[{"id":"3c8e456b-c039-49f3-bc86-3f90895f9c90","type":"steps"}]},"teams":{"data":[]}}},"included":[{"id":"3c8e456b-c039-49f3-bc86-3f90895f9c90","type":"steps","attributes":{"assignment":"round-robin","escalate_after_seconds":300},"relationships":{"targets":{"data":[{"id":"e568bc71-55c4-4e91-9d4c-2f8dcc3306a8","type":"teams"},{"id":"3166b693-985e-11f0-9651-7220f0448ba8","type":"users"},{"id":"5822c826-01b0-46a1-a46e-7e3d4de46e23","type":"schedules"}]}}},{"id":"e568bc71-55c4-4e91-9d4c-2f8dcc3306a8","type":"teams","attributes":{"avatar":"","description":"Description","handle":"team-tf-testacconcallteamroutingrulescreateandupdate-local-1758619074","name":"team-tf-testacconcallteamroutingrulescreateandupdate-local-1758619074"}},{"id":"3166b693-985e-11f0-9651-7220f0448ba8","type":"users","attributes":{"email":"tf-testacconcallteamroutingrulescreateandupdate-local-1758619074@example.com","name":"","status":"pending"}},{"id":"5822c826-01b0-46a1-a46e-7e3d4de46e23","type":"schedules","attributes":{"name":"Escalation Policy Test Schedule tf-testacconcallteamroutingrulescreateandupdate-local-1758619074","time_zone":"America/New_York"},"relationships":{"layers":{"data":[{"id":"41a7570c-93b9-4579-8b0c-fd8ed690d44e","type":"layers"}]},"teams":{"data":[{"id":"e568bc71-55c4-4e91-9d4c-2f8dcc3306a8","type":"teams"}]}}}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 188.307833ms
+        duration: 186.012584ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -199,14 +199,14 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"rules":[{"actions":[{"channel":"channel","type":"send_slack_message","workspace":"workspace"}],"query":"tags.service:test","time_restriction":{"restrictions":[{"end_day":"monday","end_time":"17:00:00","start_day":"monday","start_time":"09:00:00"}],"time_zone":"America/New_York"}},{"actions":[],"policy_id":"e83c95ea-bf0a-4d2a-8fb6-fdadf48ec172","query":"","urgency":"dynamic"}]},"id":"ec891e2c-68da-4bbf-abff-a76217f8db2c","type":"team_routing_rules"}}
+            {"data":{"attributes":{"rules":[{"actions":[{"channel":"channel","type":"send_slack_message","workspace":"workspace"}],"query":"tags.service:test","time_restriction":{"restrictions":[{"end_day":"monday","end_time":"17:00:00","start_day":"monday","start_time":"09:00:00"}],"time_zone":"America/New_York"}},{"actions":[],"policy_id":"4d29346d-4137-46fe-9a11-15a9da6063f1","query":"","urgency":"dynamic"}]},"id":"e568bc71-55c4-4e91-9d4c-2f8dcc3306a8","type":"team_routing_rules"}}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/on-call/teams/ec891e2c-68da-4bbf-abff-a76217f8db2c/routing-rules?include=rules
+        url: https://api.datadoghq.com/api/v2/on-call/teams/e568bc71-55c4-4e91-9d4c-2f8dcc3306a8/routing-rules?include=rules
         method: PUT
       response:
         proto: HTTP/1.1
@@ -216,13 +216,13 @@ interactions:
         trailer: {}
         content_length: 974
         uncompressed: false
-        body: '{"data":{"id":"ec891e2c-68da-4bbf-abff-a76217f8db2c","type":"team_routing_rules","relationships":{"rules":{"data":[{"id":"virtual-ec891e2c-68da-4bbf-abff-a76217f8db2c-rule-0","type":"team_routing_rules"},{"id":"virtual-ec891e2c-68da-4bbf-abff-a76217f8db2c-rule-1","type":"team_routing_rules"}]}}},"included":[{"id":"virtual-ec891e2c-68da-4bbf-abff-a76217f8db2c-rule-0","type":"team_routing_rules","attributes":{"actions":[{"type":"send_slack_message","channel":"channel","workspace":"workspace"}],"query":"tags.service:test","time_restriction":{"time_zone":"America/New_York","restrictions":[{"start_time":"09:00:00","start_day":"monday","end_time":"17:00:00","end_day":"monday"}]}},"relationships":{"policy":{"data":null}}},{"id":"virtual-ec891e2c-68da-4bbf-abff-a76217f8db2c-rule-1","type":"team_routing_rules","attributes":{"actions":[],"query":"","urgency":"dynamic"},"relationships":{"policy":{"data":{"id":"e83c95ea-bf0a-4d2a-8fb6-fdadf48ec172","type":"policies"}}}}]}'
+        body: '{"data":{"id":"e568bc71-55c4-4e91-9d4c-2f8dcc3306a8","type":"team_routing_rules","relationships":{"rules":{"data":[{"id":"virtual-e568bc71-55c4-4e91-9d4c-2f8dcc3306a8-rule-0","type":"team_routing_rules"},{"id":"virtual-e568bc71-55c4-4e91-9d4c-2f8dcc3306a8-rule-1","type":"team_routing_rules"}]}}},"included":[{"id":"virtual-e568bc71-55c4-4e91-9d4c-2f8dcc3306a8-rule-0","type":"team_routing_rules","attributes":{"actions":[{"type":"send_slack_message","channel":"channel","workspace":"workspace"}],"query":"tags.service:test","time_restriction":{"time_zone":"America/New_York","restrictions":[{"start_time":"09:00:00","start_day":"monday","end_time":"17:00:00","end_day":"monday"}]}},"relationships":{"policy":{"data":null}}},{"id":"virtual-e568bc71-55c4-4e91-9d4c-2f8dcc3306a8-rule-1","type":"team_routing_rules","attributes":{"actions":[],"query":"","urgency":"dynamic"},"relationships":{"policy":{"data":{"id":"4d29346d-4137-46fe-9a11-15a9da6063f1","type":"policies"}}}}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 170.73975ms
+        duration: 204.192334ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -239,25 +239,23 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/users/48fe6aec-3baf-11f0-97ed-2aeaad0563c4
+        url: https://api.datadoghq.com/api/v2/team/e568bc71-55c4-4e91-9d4c-2f8dcc3306a8
         method: GET
       response:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        transfer_encoding:
-            - chunked
+        transfer_encoding: []
         trailer: {}
-        content_length: -1
-        uncompressed: true
-        body: |
-            {"data":{"type":"users","id":"48fe6aec-3baf-11f0-97ed-2aeaad0563c4","attributes":{"name":null,"handle":"tf-testacconcallteamroutingrulescreateandupdate-local-1748428443@example.com","created_at":"2025-05-28T10:34:07.843436+00:00","modified_at":"2025-05-28T10:34:07.843436+00:00","email":"tf-testacconcallteamroutingrulescreateandupdate-local-1748428443@example.com","icon":"https://secure.gravatar.com/avatar/ce8fecc6f0564af628be6b33445aa775?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending","mfa_enabled":false},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}
+        content_length: 692
+        uncompressed: false
+        body: '{"data":{"id":"e568bc71-55c4-4e91-9d4c-2f8dcc3306a8","type":"team","attributes":{"created_at":"2025-09-23T09:17:56.767444+00:00","description":"Description","handle":"team-tf-testacconcallteamroutingrulescreateandupdate-local-1758619074","is_managed":false,"link_count":0,"modified_at":"2025-09-23T09:17:56.767453+00:00","name":"team-tf-testacconcallteamroutingrulescreateandupdate-local-1758619074","summary":"Description","user_count":0},"relationships":{"team_links":{"data":[],"links":{"related":"/api/v2/team/e568bc71-55c4-4e91-9d4c-2f8dcc3306a8/links"}},"user_team_permissions":{"data":null,"links":{"related":"/api/v2/team/e568bc71-55c4-4e91-9d4c-2f8dcc3306a8/permission-settings"}}}}}'
         headers:
             Content-Type:
-                - application/json
+                - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 170.336666ms
+        duration: 145.400583ms
     - id: 7
       request:
         proto: HTTP/1.1
@@ -274,23 +272,25 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/team/ec891e2c-68da-4bbf-abff-a76217f8db2c
+        url: https://api.datadoghq.com/api/v2/users/3166b693-985e-11f0-9651-7220f0448ba8
         method: GET
       response:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        transfer_encoding: []
+        transfer_encoding:
+            - chunked
         trailer: {}
-        content_length: 692
-        uncompressed: false
-        body: '{"data":{"id":"ec891e2c-68da-4bbf-abff-a76217f8db2c","type":"team","attributes":{"created_at":"2025-05-28T10:34:07.396327+00:00","description":"Description","handle":"team-tf-testacconcallteamroutingrulescreateandupdate-local-1748428443","is_managed":false,"link_count":0,"modified_at":"2025-05-28T10:34:07.396336+00:00","name":"team-tf-testacconcallteamroutingrulescreateandupdate-local-1748428443","summary":"Description","user_count":0},"relationships":{"team_links":{"data":[],"links":{"related":"/api/v2/team/ec891e2c-68da-4bbf-abff-a76217f8db2c/links"}},"user_team_permissions":{"data":null,"links":{"related":"/api/v2/team/ec891e2c-68da-4bbf-abff-a76217f8db2c/permission-settings"}}}}}'
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"users","id":"3166b693-985e-11f0-9651-7220f0448ba8","attributes":{"name":null,"handle":"tf-testacconcallteamroutingrulescreateandupdate-local-1758619074@example.com","created_at":"2025-09-23T09:17:57.164842+00:00","modified_at":"2025-09-23T09:17:57.164842+00:00","email":"tf-testacconcallteamroutingrulescreateandupdate-local-1758619074@example.com","icon":"https://secure.gravatar.com/avatar/f05674c7c67f267719a77ec58a794c31?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending","mfa_enabled":false},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}
         headers:
             Content-Type:
-                - application/vnd.api+json
+                - application/json
         status: 200 OK
         code: 200
-        duration: 180.408583ms
+        duration: 174.994208ms
     - id: 8
       request:
         proto: HTTP/1.1
@@ -307,7 +307,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/on-call/schedules/cb1cb495-9f20-42b4-8ff1-d55e04d49b87?include=layers%2Clayers.members.user
+        url: https://api.datadoghq.com/api/v2/on-call/schedules/5822c826-01b0-46a1-a46e-7e3d4de46e23?include=layers%2Clayers.members.user
         method: GET
       response:
         proto: HTTP/1.1
@@ -317,13 +317,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"data":{"id":"cb1cb495-9f20-42b4-8ff1-d55e04d49b87","type":"schedules","attributes":{"name":"Escalation Policy Test Schedule tf-testacconcallteamroutingrulescreateandupdate-local-1748428443","time_zone":"America/New_York"},"relationships":{"layers":{"data":[{"id":"6a2bc46f-3ac1-4733-b592-388cd98f619d","type":"layers"}]},"teams":{"data":[{"id":"ec891e2c-68da-4bbf-abff-a76217f8db2c","type":"teams"}]}}},"included":[{"id":"6a2bc46f-3ac1-4733-b592-388cd98f619d","type":"layers","attributes":{"effective_date":"2025-01-01T00:00:00Z","interval":{"seconds":300,"days":1},"name":"Primary On-Call Layer","restrictions":[{"start_time":"09:00:00","start_day":"monday","end_time":"17:00:00","end_day":"monday"}],"rotation_start":"2025-01-01T00:00:00Z"},"relationships":{"members":{"data":[{"id":"6a2bc46f-3ac1-4733-b592-388cd98f619d-member-1","type":"members"},{"id":"6a2bc46f-3ac1-4733-b592-388cd98f619d-member-2","type":"members"}]}}},{"id":"6a2bc46f-3ac1-4733-b592-388cd98f619d-member-1","type":"members","relationships":{"user":{"data":{"id":"48fe6aec-3baf-11f0-97ed-2aeaad0563c4","type":"users"}}}},{"id":"48fe6aec-3baf-11f0-97ed-2aeaad0563c4","type":"users","attributes":{"email":"tf-testacconcallteamroutingrulescreateandupdate-local-1748428443@example.com","name":"","status":"pending"}}]}'
+        body: '{"data":{"id":"5822c826-01b0-46a1-a46e-7e3d4de46e23","type":"schedules","attributes":{"name":"Escalation Policy Test Schedule tf-testacconcallteamroutingrulescreateandupdate-local-1758619074","time_zone":"America/New_York"},"relationships":{"layers":{"data":[{"id":"41a7570c-93b9-4579-8b0c-fd8ed690d44e","type":"layers"}]},"teams":{"data":[{"id":"e568bc71-55c4-4e91-9d4c-2f8dcc3306a8","type":"teams"}]}}},"included":[{"id":"41a7570c-93b9-4579-8b0c-fd8ed690d44e","type":"layers","attributes":{"effective_date":"2025-01-01T00:00:00Z","interval":{"seconds":300,"days":1},"name":"Primary On-Call Layer","restrictions":[{"start_time":"09:00:00","start_day":"monday","end_time":"17:00:00","end_day":"monday"}],"rotation_start":"2025-01-01T00:00:00Z"},"relationships":{"members":{"data":[{"id":"41a7570c-93b9-4579-8b0c-fd8ed690d44e-member-1","type":"members"},{"id":"41a7570c-93b9-4579-8b0c-fd8ed690d44e-member-2","type":"members"}]}}},{"id":"41a7570c-93b9-4579-8b0c-fd8ed690d44e-member-1","type":"members","relationships":{"user":{"data":{"id":"3166b693-985e-11f0-9651-7220f0448ba8","type":"users"}}}},{"id":"3166b693-985e-11f0-9651-7220f0448ba8","type":"users","attributes":{"email":"tf-testacconcallteamroutingrulescreateandupdate-local-1758619074@example.com","name":"","status":"pending"}}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 141.625542ms
+        duration: 145.226458ms
     - id: 9
       request:
         proto: HTTP/1.1
@@ -340,7 +340,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/on-call/escalation-policies/e83c95ea-bf0a-4d2a-8fb6-fdadf48ec172?include=steps.targets
+        url: https://api.datadoghq.com/api/v2/on-call/escalation-policies/4d29346d-4137-46fe-9a11-15a9da6063f1?include=steps.targets
         method: GET
       response:
         proto: HTTP/1.1
@@ -350,13 +350,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"data":{"id":"e83c95ea-bf0a-4d2a-8fb6-fdadf48ec172","type":"policies","attributes":{"name":"tf-testacconcallteamroutingrulescreateandupdate-local-1748428443","resolve_page_on_policy_end":true,"retries":3},"relationships":{"steps":{"data":[{"id":"037ae3e8-4937-4a8b-9b0e-654222aaf192","type":"steps"}]},"teams":{"data":[]}}},"included":[{"id":"037ae3e8-4937-4a8b-9b0e-654222aaf192","type":"steps","attributes":{"assignment":"round-robin","escalate_after_seconds":300},"relationships":{"targets":{"data":[{"id":"ec891e2c-68da-4bbf-abff-a76217f8db2c","type":"teams"},{"id":"48fe6aec-3baf-11f0-97ed-2aeaad0563c4","type":"users"},{"id":"cb1cb495-9f20-42b4-8ff1-d55e04d49b87","type":"schedules"}]}}},{"id":"ec891e2c-68da-4bbf-abff-a76217f8db2c","type":"teams","attributes":{"avatar":"","description":"Description","handle":"team-tf-testacconcallteamroutingrulescreateandupdate-local-1748428443","name":"team-tf-testacconcallteamroutingrulescreateandupdate-local-1748428443"}},{"id":"48fe6aec-3baf-11f0-97ed-2aeaad0563c4","type":"users","attributes":{"email":"tf-testacconcallteamroutingrulescreateandupdate-local-1748428443@example.com","name":"","status":"pending"}},{"id":"cb1cb495-9f20-42b4-8ff1-d55e04d49b87","type":"schedules","attributes":{"name":"Escalation Policy Test Schedule tf-testacconcallteamroutingrulescreateandupdate-local-1748428443","time_zone":"America/New_York"},"relationships":{"layers":{"data":[{"id":"6a2bc46f-3ac1-4733-b592-388cd98f619d","type":"layers"}]},"teams":{"data":[{"id":"ec891e2c-68da-4bbf-abff-a76217f8db2c","type":"teams"}]}}}]}'
+        body: '{"data":{"id":"4d29346d-4137-46fe-9a11-15a9da6063f1","type":"policies","attributes":{"name":"tf-testacconcallteamroutingrulescreateandupdate-local-1758619074","resolve_page_on_policy_end":true,"retries":3},"relationships":{"steps":{"data":[{"id":"3c8e456b-c039-49f3-bc86-3f90895f9c90","type":"steps"}]},"teams":{"data":[]}}},"included":[{"id":"3c8e456b-c039-49f3-bc86-3f90895f9c90","type":"steps","attributes":{"assignment":"round-robin","escalate_after_seconds":300},"relationships":{"targets":{"data":[{"id":"e568bc71-55c4-4e91-9d4c-2f8dcc3306a8","type":"teams"},{"id":"3166b693-985e-11f0-9651-7220f0448ba8","type":"users"},{"id":"5822c826-01b0-46a1-a46e-7e3d4de46e23","type":"schedules"}]}}},{"id":"e568bc71-55c4-4e91-9d4c-2f8dcc3306a8","type":"teams","attributes":{"avatar":"","description":"Description","handle":"team-tf-testacconcallteamroutingrulescreateandupdate-local-1758619074","name":"team-tf-testacconcallteamroutingrulescreateandupdate-local-1758619074"}},{"id":"3166b693-985e-11f0-9651-7220f0448ba8","type":"users","attributes":{"email":"tf-testacconcallteamroutingrulescreateandupdate-local-1758619074@example.com","name":"","status":"pending"}},{"id":"5822c826-01b0-46a1-a46e-7e3d4de46e23","type":"schedules","attributes":{"name":"Escalation Policy Test Schedule tf-testacconcallteamroutingrulescreateandupdate-local-1758619074","time_zone":"America/New_York"},"relationships":{"layers":{"data":[{"id":"41a7570c-93b9-4579-8b0c-fd8ed690d44e","type":"layers"}]},"teams":{"data":[{"id":"e568bc71-55c4-4e91-9d4c-2f8dcc3306a8","type":"teams"}]}}}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 153.928458ms
+        duration: 157.862542ms
     - id: 10
       request:
         proto: HTTP/1.1
@@ -373,7 +373,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/on-call/teams/ec891e2c-68da-4bbf-abff-a76217f8db2c/routing-rules?include=rules
+        url: https://api.datadoghq.com/api/v2/on-call/teams/e568bc71-55c4-4e91-9d4c-2f8dcc3306a8/routing-rules?include=rules
         method: GET
       response:
         proto: HTTP/1.1
@@ -383,13 +383,13 @@ interactions:
         trailer: {}
         content_length: 974
         uncompressed: false
-        body: '{"data":{"id":"ec891e2c-68da-4bbf-abff-a76217f8db2c","type":"team_routing_rules","relationships":{"rules":{"data":[{"id":"virtual-ec891e2c-68da-4bbf-abff-a76217f8db2c-rule-0","type":"team_routing_rules"},{"id":"virtual-ec891e2c-68da-4bbf-abff-a76217f8db2c-rule-1","type":"team_routing_rules"}]}}},"included":[{"id":"virtual-ec891e2c-68da-4bbf-abff-a76217f8db2c-rule-0","type":"team_routing_rules","attributes":{"actions":[{"type":"send_slack_message","channel":"channel","workspace":"workspace"}],"query":"tags.service:test","time_restriction":{"time_zone":"America/New_York","restrictions":[{"start_time":"09:00:00","start_day":"monday","end_time":"17:00:00","end_day":"monday"}]}},"relationships":{"policy":{"data":null}}},{"id":"virtual-ec891e2c-68da-4bbf-abff-a76217f8db2c-rule-1","type":"team_routing_rules","attributes":{"actions":[],"query":"","urgency":"dynamic"},"relationships":{"policy":{"data":{"id":"e83c95ea-bf0a-4d2a-8fb6-fdadf48ec172","type":"policies"}}}}]}'
+        body: '{"data":{"id":"e568bc71-55c4-4e91-9d4c-2f8dcc3306a8","type":"team_routing_rules","relationships":{"rules":{"data":[{"id":"virtual-e568bc71-55c4-4e91-9d4c-2f8dcc3306a8-rule-0","type":"team_routing_rules"},{"id":"virtual-e568bc71-55c4-4e91-9d4c-2f8dcc3306a8-rule-1","type":"team_routing_rules"}]}}},"included":[{"id":"virtual-e568bc71-55c4-4e91-9d4c-2f8dcc3306a8-rule-0","type":"team_routing_rules","attributes":{"actions":[{"type":"send_slack_message","channel":"channel","workspace":"workspace"}],"query":"tags.service:test","time_restriction":{"time_zone":"America/New_York","restrictions":[{"start_time":"09:00:00","start_day":"monday","end_time":"17:00:00","end_day":"monday"}]}},"relationships":{"policy":{"data":null}}},{"id":"virtual-e568bc71-55c4-4e91-9d4c-2f8dcc3306a8-rule-1","type":"team_routing_rules","attributes":{"actions":[],"query":"","urgency":"dynamic"},"relationships":{"policy":{"data":{"id":"4d29346d-4137-46fe-9a11-15a9da6063f1","type":"policies"}}}}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 134.470375ms
+        duration: 135.878708ms
     - id: 11
       request:
         proto: HTTP/1.1
@@ -402,14 +402,14 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"id":"ec891e2c-68da-4bbf-abff-a76217f8db2c","type":"team_routing_rules"}}
+            {"data":{"id":"e568bc71-55c4-4e91-9d4c-2f8dcc3306a8","type":"team_routing_rules"}}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/on-call/teams/ec891e2c-68da-4bbf-abff-a76217f8db2c/routing-rules
+        url: https://api.datadoghq.com/api/v2/on-call/teams/e568bc71-55c4-4e91-9d4c-2f8dcc3306a8/routing-rules
         method: PUT
       response:
         proto: HTTP/1.1
@@ -419,13 +419,13 @@ interactions:
         trailer: {}
         content_length: 120
         uncompressed: false
-        body: '{"data":{"id":"ec891e2c-68da-4bbf-abff-a76217f8db2c","type":"team_routing_rules","relationships":{"rules":{"data":[]}}}}'
+        body: '{"data":{"id":"e568bc71-55c4-4e91-9d4c-2f8dcc3306a8","type":"team_routing_rules","relationships":{"rules":{"data":[]}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 151.255625ms
+        duration: 162.365916ms
     - id: 12
       request:
         proto: HTTP/1.1
@@ -442,7 +442,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/on-call/escalation-policies/e83c95ea-bf0a-4d2a-8fb6-fdadf48ec172
+        url: https://api.datadoghq.com/api/v2/on-call/escalation-policies/4d29346d-4137-46fe-9a11-15a9da6063f1
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -456,7 +456,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 140.323958ms
+        duration: 198.372333ms
     - id: 13
       request:
         proto: HTTP/1.1
@@ -473,7 +473,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/on-call/schedules/cb1cb495-9f20-42b4-8ff1-d55e04d49b87
+        url: https://api.datadoghq.com/api/v2/on-call/schedules/5822c826-01b0-46a1-a46e-7e3d4de46e23
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -487,7 +487,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 152.652667ms
+        duration: 160.000458ms
     - id: 14
       request:
         proto: HTTP/1.1
@@ -504,7 +504,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/team/ec891e2c-68da-4bbf-abff-a76217f8db2c
+        url: https://api.datadoghq.com/api/v2/team/e568bc71-55c4-4e91-9d4c-2f8dcc3306a8
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -518,7 +518,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 234.817125ms
+        duration: 281.184625ms
     - id: 15
       request:
         proto: HTTP/1.1
@@ -535,7 +535,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/users/48fe6aec-3baf-11f0-97ed-2aeaad0563c4
+        url: https://api.datadoghq.com/api/v2/users/3166b693-985e-11f0-9651-7220f0448ba8
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -549,4 +549,4 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 284.459583ms
+        duration: 367.75925ms

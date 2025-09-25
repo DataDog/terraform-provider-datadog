@@ -36,7 +36,7 @@ interactions:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 262.048625ms
+        duration: 214.0815ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -72,7 +72,7 @@ interactions:
                 - application/vnd.api+json
         status: 409 Conflict
         code: 409
-        duration: 63.423875ms
+        duration: 142.858125ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -105,7 +105,7 @@ interactions:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 165.03725ms
+        duration: 192.427209ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -141,7 +141,7 @@ interactions:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 394.019625ms
+        duration: 238.006041ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -174,7 +174,7 @@ interactions:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 171.630875ms
+        duration: 204.496959ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -207,7 +207,7 @@ interactions:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 377.870958ms
+        duration: 146.171625ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -232,12 +232,12 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 51
+        content_length: 135
         uncompressed: false
-        body: '{"errors":[{"status":"400","title":"Bad Request"}]}'
+        body: '{"errors":[{"status":"400","title":"Bad Request","detail":"invalid_argument(Cannot find framework ''terraform-handle'' version ''1.0'')"}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 400 Bad Request
         code: 400
-        duration: 61.166708ms
+        duration: 127.652708ms

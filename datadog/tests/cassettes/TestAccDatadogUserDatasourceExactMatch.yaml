@@ -1,178 +1,180 @@
+---
 version: 2
 interactions:
-- request:
-    body: |
-      {"data":{"attributes":{"email":"tf-testaccdatadoguserdatasourceexactmatch-local-1628262005@example.com"},"relationships":{"roles":{"data":[]}},"type":"users"}}
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/users
-    method: POST
-    id: 0
-  response:
-    body: '{"data":{"type":"users","id":"fcf99d16-f6c6-11eb-ba1e-da7ad0900002","attributes":{"name":null,"handle":"tf-testaccdatadoguserdatasourceexactmatch-local-1628262005@example.com","created_at":"2021-08-06T15:00:07.309187+00:00","modified_at":"2021-08-06T15:00:07.625846+00:00","email":"tf-testaccdatadoguserdatasourceexactmatch-local-1628262005@example.com","icon":"https://secure.gravatar.com/avatar/ce576e51a796656de7c44a9a4cbc2310?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}'
-    headers:
-      Content-Type:
-      - application/json
-    status: 201 Created
-    code: 201
-    duration: "0ms"
-- request:
-    body: |
-      {"data":[{"relationships":{"user":{"data":{"id":"fcf99d16-f6c6-11eb-ba1e-da7ad0900002","type":"users"}}},"type":"user_invitations"}]}
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/user_invitations
-    method: POST
-    id: 1
-  response:
-    body: '{"data":[{"type":"user_invitations","id":"fd69a39a-f6c6-11eb-ba1e-da7ad0900002","attributes":{"uuid":"fd69a39a-f6c6-11eb-ba1e-da7ad0900002","login_method":null,"invite_type":"basic_invite","created_at":"2021-08-06T15:00:08.044378+00:00","expires_at":"2021-08-08T15:00:07.843631+00:00"},"relationships":{"user":{"data":{"type":"users","id":"fcf99d16-f6c6-11eb-ba1e-da7ad0900002"}}}}]}'
-    headers:
-      Content-Type:
-      - application/json
-    status: 201 Created
-    code: 201
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/users?filter=tf-testaccdatadoguserdatasourceexactmatch-local-1628262005%40example.com
-    method: GET
-    id: 2
-  response:
-    body: '{"meta":{"page":{"total_filtered_count":1,"total_count":9427}},"data":[{"type":"users","id":"fcf99d16-f6c6-11eb-ba1e-da7ad0900002","attributes":{"name":null,"handle":"tf-testaccdatadoguserdatasourceexactmatch-local-1628262005@example.com","created_at":"2021-08-06T15:00:07.309187+00:00","modified_at":"2021-08-06T15:00:07.625846+00:00","email":"tf-testaccdatadoguserdatasourceexactmatch-local-1628262005@example.com","icon":"https://secure.gravatar.com/avatar/ce576e51a796656de7c44a9a4cbc2310?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}]}'
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/users?filter=tf-testaccdatadoguserdatasourceexactmatch-local-1628262005%40example.com
-    method: GET
-    id: 3
-  response:
-    body: '{"meta":{"page":{"total_filtered_count":1,"total_count":9427}},"data":[{"type":"users","id":"fcf99d16-f6c6-11eb-ba1e-da7ad0900002","attributes":{"name":null,"handle":"tf-testaccdatadoguserdatasourceexactmatch-local-1628262005@example.com","created_at":"2021-08-06T15:00:07.309187+00:00","modified_at":"2021-08-06T15:00:07.625846+00:00","email":"tf-testaccdatadoguserdatasourceexactmatch-local-1628262005@example.com","icon":"https://secure.gravatar.com/avatar/ce576e51a796656de7c44a9a4cbc2310?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}]}'
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/users/fcf99d16-f6c6-11eb-ba1e-da7ad0900002
-    method: GET
-    id: 4
-  response:
-    body: '{"data":{"type":"users","id":"fcf99d16-f6c6-11eb-ba1e-da7ad0900002","attributes":{"name":null,"handle":"tf-testaccdatadoguserdatasourceexactmatch-local-1628262005@example.com","created_at":"2021-08-06T15:00:07.309187+00:00","modified_at":"2021-08-06T15:00:07.625846+00:00","email":"tf-testaccdatadoguserdatasourceexactmatch-local-1628262005@example.com","icon":"https://secure.gravatar.com/avatar/ce576e51a796656de7c44a9a4cbc2310?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}'
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/users?filter=tf-testaccdatadoguserdatasourceexactmatch-local-1628262005%40example.com
-    method: GET
-    id: 5
-  response:
-    body: '{"meta":{"page":{"total_filtered_count":1,"total_count":9427}},"data":[{"type":"users","id":"fcf99d16-f6c6-11eb-ba1e-da7ad0900002","attributes":{"name":null,"handle":"tf-testaccdatadoguserdatasourceexactmatch-local-1628262005@example.com","created_at":"2021-08-06T15:00:07.309187+00:00","modified_at":"2021-08-06T15:00:07.625846+00:00","email":"tf-testaccdatadoguserdatasourceexactmatch-local-1628262005@example.com","icon":"https://secure.gravatar.com/avatar/ce576e51a796656de7c44a9a4cbc2310?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}]}'
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/users?filter=tf-testaccdatadoguserdatasourceexactmatch-local-1628262005%40example.com
-    method: GET
-    id: 6
-  response:
-    body: '{"meta":{"page":{"total_filtered_count":1,"total_count":9427}},"data":[{"type":"users","id":"fcf99d16-f6c6-11eb-ba1e-da7ad0900002","attributes":{"name":null,"handle":"tf-testaccdatadoguserdatasourceexactmatch-local-1628262005@example.com","created_at":"2021-08-06T15:00:07.309187+00:00","modified_at":"2021-08-06T15:00:07.625846+00:00","email":"tf-testaccdatadoguserdatasourceexactmatch-local-1628262005@example.com","icon":"https://secure.gravatar.com/avatar/ce576e51a796656de7c44a9a4cbc2310?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}]}'
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/users/fcf99d16-f6c6-11eb-ba1e-da7ad0900002
-    method: DELETE
-    id: 7
-  response:
-    body: ""
-    headers:
-      Content-Type:
-      - application/json
-    status: 204 No Content
-    code: 204
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/users/fcf99d16-f6c6-11eb-ba1e-da7ad0900002
-    method: GET
-    id: 8
-  response:
-    body: '{"data":{"type":"users","id":"fcf99d16-f6c6-11eb-ba1e-da7ad0900002","attributes":{"name":null,"handle":"tf-testaccdatadoguserdatasourceexactmatch-local-1628262005@example.com","created_at":"2021-08-06T15:00:07.309187+00:00","modified_at":"2021-08-06T15:00:27.366341+00:00","email":"tf-testaccdatadoguserdatasourceexactmatch-local-1628262005@example.com","icon":"https://secure.gravatar.com/avatar/ce576e51a796656de7c44a9a4cbc2310?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":true,"allowed_login_methods":[],"status":"Disabled"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}'
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/users/fcf99d16-f6c6-11eb-ba1e-da7ad0900002
-    method: GET
-    id: 9
-  response:
-    body: '{"data":{"type":"users","id":"fcf99d16-f6c6-11eb-ba1e-da7ad0900002","attributes":{"name":null,"handle":"tf-testaccdatadoguserdatasourceexactmatch-local-1628262005@example.com","created_at":"2021-08-06T15:00:07.309187+00:00","modified_at":"2021-08-06T15:00:27.366341+00:00","email":"tf-testaccdatadoguserdatasourceexactmatch-local-1628262005@example.com","icon":"https://secure.gravatar.com/avatar/ce576e51a796656de7c44a9a4cbc2310?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":true,"allowed_login_methods":[],"status":"Disabled"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}'
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 160
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"email":"tf-testaccdatadoguserdatasourceexactmatch-local-1758619261@example.com"},"relationships":{"roles":{"data":[]}},"type":"users"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/users
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"users","id":"9fff593c-985e-11f0-9651-7220f0448ba8","attributes":{"name":null,"handle":"tf-testaccdatadoguserdatasourceexactmatch-local-1758619261@example.com","created_at":"2025-09-23T09:21:02.714544+00:00","modified_at":"2025-09-23T09:21:02.714544+00:00","email":"tf-testaccdatadoguserdatasourceexactmatch-local-1758619261@example.com","icon":"https://secure.gravatar.com/avatar/a644a0f0e8b9801019d8449ccc1dbe1a?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 201 Created
+        code: 201
+        duration: 923.591ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 134
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":[{"relationships":{"user":{"data":{"id":"9fff593c-985e-11f0-9651-7220f0448ba8","type":"users"}}},"type":"user_invitations"}]}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/user_invitations
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":[{"type":"user_invitations","id":"a069b354-985e-11f0-9281-da7ad0900002","attributes":{"uuid":"a069b354-985e-11f0-9281-da7ad0900002","login_method":null,"invite_type":"basic_invite","created_at":"2025-09-23T09:21:03.411096+00:00","expires_at":"2025-09-25T09:21:03.068001+00:00"},"relationships":{"user":{"data":{"type":"users","id":"9fff593c-985e-11f0-9651-7220f0448ba8"}}}}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 201 Created
+        code: 201
+        duration: 735.210459ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/users?filter=tf-testaccdatadoguserdatasourceexactmatch-local-1758619261%40example.com
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":[],"meta":{"page":{"total_count":170815,"total_filtered_count":0,"max_page_size":1000}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 201.67225ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/users/9fff593c-985e-11f0-9651-7220f0448ba8
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 373.769666ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/users/9fff593c-985e-11f0-9651-7220f0448ba8
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"users","id":"9fff593c-985e-11f0-9651-7220f0448ba8","attributes":{"name":null,"handle":"tf-testaccdatadoguserdatasourceexactmatch-local-1758619261@example.com","created_at":"2025-09-23T09:21:02.714544+00:00","modified_at":"2025-09-23T09:21:04.302871+00:00","email":"tf-testaccdatadoguserdatasourceexactmatch-local-1758619261@example.com","icon":"https://secure.gravatar.com/avatar/a644a0f0e8b9801019d8449ccc1dbe1a?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":true,"allowed_login_methods":[],"status":"Disabled","mfa_enabled":false},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 172.612417ms

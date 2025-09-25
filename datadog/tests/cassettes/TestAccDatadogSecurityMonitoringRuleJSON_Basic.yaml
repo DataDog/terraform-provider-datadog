@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":[{"condition":"a \u003e 0","notifications":["@slack-test"],"status":"info"}],"isEnabled":false,"message":"Test rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRuleJSON_Basic-local-1757946791","options":{"detectionMethod":"threshold","evaluationWindow":60,"keepAlive":60,"maxSignalDuration":60},"queries":[{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"name":"a","query":"source:test"}],"tags":["test:tag"],"type":"log_detection"}
+            {"cases":[{"condition":"a \u003e 0","notifications":["@slack-test"],"status":"info"}],"isEnabled":false,"message":"Test rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRuleJSON_Basic-local-1758619063","options":{"detectionMethod":"threshold","evaluationWindow":60,"keepAlive":60,"maxSignalDuration":60},"queries":[{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"name":"a","query":"source:test"}],"tags":["test:tag"],"type":"log_detection"}
         form: {}
         headers:
             Accept:
@@ -30,13 +30,13 @@ interactions:
         trailer: {}
         content_length: 897
         uncompressed: false
-        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRuleJSON_Basic-local-1757946791","createdAt":1757946793158,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"source:test","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"a","dataSource":"logs"}],"options":{"evaluationWindow":60,"detectionMethod":"threshold","maxSignalDuration":60,"keepAlive":60},"cases":[{"name":"","status":"info","notifications":["@slack-test"],"condition":"a \u003e 0"}],"message":"Test rule triggered","tags":["test:tag"],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":1,"id":"hsq-lte-cmu","blocking":false,"metadata":{"entities":null,"sources":null},"creationAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"","name":""}}'
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRuleJSON_Basic-local-1758619063","createdAt":1758619065218,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"source:test","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"a","dataSource":"logs"}],"options":{"evaluationWindow":60,"detectionMethod":"threshold","maxSignalDuration":60,"keepAlive":60},"cases":[{"name":"","status":"info","notifications":["@slack-test"],"condition":"a \u003e 0"}],"message":"Test rule triggered","tags":["test:tag"],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":1,"id":"9ok-jfi-xvz","blocking":false,"metadata":{"entities":null,"sources":null},"creationAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"","name":""}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 323.774917ms
+        duration: 147.020667ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -53,7 +53,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/hsq-lte-cmu
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/9ok-jfi-xvz
         method: GET
       response:
         proto: HTTP/1.1
@@ -63,13 +63,13 @@ interactions:
         trailer: {}
         content_length: 897
         uncompressed: false
-        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRuleJSON_Basic-local-1757946791","createdAt":1757946793158,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"source:test","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"a","dataSource":"logs"}],"options":{"evaluationWindow":60,"detectionMethod":"threshold","maxSignalDuration":60,"keepAlive":60},"cases":[{"name":"","status":"info","notifications":["@slack-test"],"condition":"a \u003e 0"}],"message":"Test rule triggered","tags":["test:tag"],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":1,"id":"hsq-lte-cmu","blocking":false,"metadata":{"entities":null,"sources":null},"creationAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"","name":""}}'
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRuleJSON_Basic-local-1758619063","createdAt":1758619065218,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"source:test","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"a","dataSource":"logs"}],"options":{"evaluationWindow":60,"detectionMethod":"threshold","maxSignalDuration":60,"keepAlive":60},"cases":[{"name":"","status":"info","notifications":["@slack-test"],"condition":"a \u003e 0"}],"message":"Test rule triggered","tags":["test:tag"],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":1,"id":"9ok-jfi-xvz","blocking":false,"metadata":{"entities":null,"sources":null},"creationAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"","name":""}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 146.464042ms
+        duration: 334.075417ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -86,7 +86,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/hsq-lte-cmu
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/9ok-jfi-xvz
         method: GET
       response:
         proto: HTTP/1.1
@@ -96,13 +96,13 @@ interactions:
         trailer: {}
         content_length: 897
         uncompressed: false
-        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRuleJSON_Basic-local-1757946791","createdAt":1757946793158,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"source:test","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"a","dataSource":"logs"}],"options":{"evaluationWindow":60,"detectionMethod":"threshold","maxSignalDuration":60,"keepAlive":60},"cases":[{"name":"","status":"info","notifications":["@slack-test"],"condition":"a \u003e 0"}],"message":"Test rule triggered","tags":["test:tag"],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":1,"id":"hsq-lte-cmu","blocking":false,"metadata":{"entities":null,"sources":null},"creationAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"","name":""}}'
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRuleJSON_Basic-local-1758619063","createdAt":1758619065218,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"source:test","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"a","dataSource":"logs"}],"options":{"evaluationWindow":60,"detectionMethod":"threshold","maxSignalDuration":60,"keepAlive":60},"cases":[{"name":"","status":"info","notifications":["@slack-test"],"condition":"a \u003e 0"}],"message":"Test rule triggered","tags":["test:tag"],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":1,"id":"9ok-jfi-xvz","blocking":false,"metadata":{"entities":null,"sources":null},"creationAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"","name":""}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 130.476083ms
+        duration: 228.473334ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -119,7 +119,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/hsq-lte-cmu
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/9ok-jfi-xvz
         method: GET
       response:
         proto: HTTP/1.1
@@ -129,13 +129,13 @@ interactions:
         trailer: {}
         content_length: 897
         uncompressed: false
-        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRuleJSON_Basic-local-1757946791","createdAt":1757946793158,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"source:test","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"a","dataSource":"logs"}],"options":{"evaluationWindow":60,"detectionMethod":"threshold","maxSignalDuration":60,"keepAlive":60},"cases":[{"name":"","status":"info","notifications":["@slack-test"],"condition":"a \u003e 0"}],"message":"Test rule triggered","tags":["test:tag"],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":1,"id":"hsq-lte-cmu","blocking":false,"metadata":{"entities":null,"sources":null},"creationAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"","name":""}}'
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRuleJSON_Basic-local-1758619063","createdAt":1758619065218,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"source:test","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"a","dataSource":"logs"}],"options":{"evaluationWindow":60,"detectionMethod":"threshold","maxSignalDuration":60,"keepAlive":60},"cases":[{"name":"","status":"info","notifications":["@slack-test"],"condition":"a \u003e 0"}],"message":"Test rule triggered","tags":["test:tag"],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":1,"id":"9ok-jfi-xvz","blocking":false,"metadata":{"entities":null,"sources":null},"creationAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"","name":""}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 125.417792ms
+        duration: 184.191417ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -148,14 +148,14 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":[{"condition":"a \u003e 10","notifications":["@slack-test"],"status":"high"}],"isEnabled":true,"message":"Test rule triggered (updated)","name":"tf-TestAccDatadogSecurityMonitoringRuleJSON_Basic-local-1757946791 - updated","options":{"detectionMethod":"threshold","evaluationWindow":60,"keepAlive":60,"maxSignalDuration":60},"queries":[{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host","service"],"name":"a","query":"source:test-updated"}],"tags":["env:test","test:tag"],"type":"log_detection"}
+            {"cases":[{"condition":"a \u003e 10","notifications":["@slack-test"],"status":"high"}],"isEnabled":true,"message":"Test rule triggered (updated)","name":"tf-TestAccDatadogSecurityMonitoringRuleJSON_Basic-local-1758619063 - updated","options":{"detectionMethod":"threshold","evaluationWindow":60,"keepAlive":60,"maxSignalDuration":60},"queries":[{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host","service"],"name":"a","query":"source:test-updated"}],"tags":["env:test","test:tag"],"type":"log_detection"}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/hsq-lte-cmu
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/9ok-jfi-xvz
         method: PUT
       response:
         proto: HTTP/1.1
@@ -165,13 +165,13 @@ interactions:
         trailer: {}
         content_length: 889
         uncompressed: false
-        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRuleJSON_Basic-local-1757946791 - updated","isEnabled":true,"queries":[{"query":"source:test-updated","groupByFields":["host","service"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"a","dataSource":"logs"}],"options":{"evaluationWindow":60,"detectionMethod":"threshold","maxSignalDuration":60,"keepAlive":60},"cases":[{"name":"","status":"high","notifications":["@slack-test"],"condition":"a \u003e 10"}],"message":"Test rule triggered (updated)","tags":["env:test","test:tag"],"hasExtendedTitle":false,"type":"log_detection","filters":[],"id":"hsq-lte-cmu","version":2,"createdAt":1757946793158,"creationAuthorId":1445416,"updateAuthorId":1445416,"updatedAt":1757946795396,"isDefault":false,"blocking":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"metadata":{"entities":null,"sources":null}}'
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRuleJSON_Basic-local-1758619063 - updated","isEnabled":true,"queries":[{"query":"source:test-updated","groupByFields":["host","service"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"a","dataSource":"logs"}],"options":{"evaluationWindow":60,"detectionMethod":"threshold","maxSignalDuration":60,"keepAlive":60},"cases":[{"name":"","status":"high","notifications":["@slack-test"],"condition":"a \u003e 10"}],"message":"Test rule triggered (updated)","tags":["env:test","test:tag"],"hasExtendedTitle":false,"type":"log_detection","filters":[],"id":"9ok-jfi-xvz","version":2,"createdAt":1758619065218,"creationAuthorId":1445416,"updateAuthorId":1445416,"updatedAt":1758619068000,"isDefault":false,"blocking":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"metadata":{"entities":null,"sources":null}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 393.1575ms
+        duration: 283.235125ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -188,7 +188,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/hsq-lte-cmu
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/9ok-jfi-xvz
         method: GET
       response:
         proto: HTTP/1.1
@@ -198,13 +198,13 @@ interactions:
         trailer: {}
         content_length: 1019
         uncompressed: false
-        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRuleJSON_Basic-local-1757946791 - updated","createdAt":1757946793158,"isDefault":false,"isPartner":false,"isEnabled":true,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"source:test-updated","groupByFields":["host","service"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"a","dataSource":"logs"}],"options":{"evaluationWindow":60,"detectionMethod":"threshold","maxSignalDuration":60,"keepAlive":60},"cases":[{"name":"","status":"high","notifications":["@slack-test"],"condition":"a \u003e 10"}],"message":"Test rule triggered (updated)","tags":["env:test","test:tag"],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":2,"id":"hsq-lte-cmu","updatedAt":1757946795396,"blocking":false,"metadata":{"entities":null,"sources":null},"creationAuthorId":1445416,"updateAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"frog@datadoghq.com","name":"frog"}}'
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRuleJSON_Basic-local-1758619063 - updated","createdAt":1758619065218,"isDefault":false,"isPartner":false,"isEnabled":true,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"source:test-updated","groupByFields":["host","service"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"a","dataSource":"logs"}],"options":{"evaluationWindow":60,"detectionMethod":"threshold","maxSignalDuration":60,"keepAlive":60},"cases":[{"name":"","status":"high","notifications":["@slack-test"],"condition":"a \u003e 10"}],"message":"Test rule triggered (updated)","tags":["env:test","test:tag"],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":2,"id":"9ok-jfi-xvz","updatedAt":1758619068000,"blocking":false,"metadata":{"entities":null,"sources":null},"creationAuthorId":1445416,"updateAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"frog@datadoghq.com","name":"frog"}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 128.51925ms
+        duration: 155.868959ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -221,7 +221,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/hsq-lte-cmu
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/9ok-jfi-xvz
         method: GET
       response:
         proto: HTTP/1.1
@@ -231,13 +231,13 @@ interactions:
         trailer: {}
         content_length: 1019
         uncompressed: false
-        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRuleJSON_Basic-local-1757946791 - updated","createdAt":1757946793158,"isDefault":false,"isPartner":false,"isEnabled":true,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"source:test-updated","groupByFields":["host","service"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"a","dataSource":"logs"}],"options":{"evaluationWindow":60,"detectionMethod":"threshold","maxSignalDuration":60,"keepAlive":60},"cases":[{"name":"","status":"high","notifications":["@slack-test"],"condition":"a \u003e 10"}],"message":"Test rule triggered (updated)","tags":["env:test","test:tag"],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":2,"id":"hsq-lte-cmu","updatedAt":1757946795396,"blocking":false,"metadata":{"entities":null,"sources":null},"creationAuthorId":1445416,"updateAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"frog@datadoghq.com","name":"frog"}}'
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRuleJSON_Basic-local-1758619063 - updated","createdAt":1758619065218,"isDefault":false,"isPartner":false,"isEnabled":true,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"source:test-updated","groupByFields":["host","service"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"a","dataSource":"logs"}],"options":{"evaluationWindow":60,"detectionMethod":"threshold","maxSignalDuration":60,"keepAlive":60},"cases":[{"name":"","status":"high","notifications":["@slack-test"],"condition":"a \u003e 10"}],"message":"Test rule triggered (updated)","tags":["env:test","test:tag"],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":2,"id":"9ok-jfi-xvz","updatedAt":1758619068000,"blocking":false,"metadata":{"entities":null,"sources":null},"creationAuthorId":1445416,"updateAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"frog@datadoghq.com","name":"frog"}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 124.575208ms
+        duration: 200.41675ms
     - id: 7
       request:
         proto: HTTP/1.1
@@ -254,7 +254,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/hsq-lte-cmu
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/9ok-jfi-xvz
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -268,7 +268,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 217.021709ms
+        duration: 227.366916ms
     - id: 8
       request:
         proto: HTTP/1.1
@@ -285,7 +285,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/hsq-lte-cmu
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/9ok-jfi-xvz
         method: GET
       response:
         proto: HTTP/1.1
@@ -295,10 +295,10 @@ interactions:
         trailer: {}
         content_length: 86
         uncompressed: false
-        body: '{"error":{"code":"NotFound","message":"Threat detection rule not found: hsq-lte-cmu"}}'
+        body: '{"error":{"code":"NotFound","message":"Threat detection rule not found: 9ok-jfi-xvz"}}'
         headers:
             Content-Type:
                 - application/json
         status: 404 Not Found
         code: 404
-        duration: 416.027042ms
+        duration: 150.627209ms

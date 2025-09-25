@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"policy":{"tag_key":"tf-TestAccDatadogMonitorConfigPoliciesDatasource-local-1749222063-1","tag_key_required":false,"valid_tag_values":["value"]},"policy_type":"tag"},"type":"monitor-config-policy"}}
+            {"data":{"attributes":{"policy":{"tag_key":"tf-TestAccDatadogMonitorConfigPoliciesDatasource-local-1758618559-1","tag_key_required":false,"valid_tag_values":["value"]},"policy_type":"tag"},"type":"monitor-config-policy"}}
         form: {}
         headers:
             Accept:
@@ -32,13 +32,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"type":"monitor-config-policy","attributes":{"policy":{"tag_key":"tf-TestAccDatadogMonitorConfigPoliciesDatasource-local-1749222063-1","valid_tag_values":["value"],"tag_key_required":false},"policy_type":"tag"},"id":"feb7fd62-35b1-43f0-bfc7-e735745c9736"}}
+            {"data":{"type":"monitor-config-policy","id":"d08176e5-b17e-46c9-920f-3d2e34c4329b","attributes":{"policy_type":"tag","policy":{"valid_tag_values":["value"],"tag_key_required":false,"tag_key":"tf-TestAccDatadogMonitorConfigPoliciesDatasource-local-1758618559-1"}}}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 497.699708ms
+        duration: 174.656333ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -51,7 +51,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"policy":{"tag_key":"tf-TestAccDatadogMonitorConfigPoliciesDatasource-local-1749222063-2","tag_key_required":false,"valid_tag_values":["value"]},"policy_type":"tag"},"type":"monitor-config-policy"}}
+            {"data":{"attributes":{"policy":{"tag_key":"tf-TestAccDatadogMonitorConfigPoliciesDatasource-local-1758618559-2","tag_key_required":false,"valid_tag_values":["value"]},"policy_type":"tag"},"type":"monitor-config-policy"}}
         form: {}
         headers:
             Accept:
@@ -70,13 +70,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"type":"monitor-config-policy","attributes":{"policy":{"tag_key_required":false,"tag_key":"tf-TestAccDatadogMonitorConfigPoliciesDatasource-local-1749222063-2","valid_tag_values":["value"]},"policy_type":"tag"},"id":"278c91e3-5461-486e-bc27-e9405ea5a28a"}}
+            {"data":{"type":"monitor-config-policy","attributes":{"policy":{"tag_key":"tf-TestAccDatadogMonitorConfigPoliciesDatasource-local-1758618559-2","tag_key_required":false,"valid_tag_values":["value"]},"policy_type":"tag"},"id":"1813e817-b12f-481a-b1bd-30296679caa4"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 198.236167ms
+        duration: 179.405917ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -105,13 +105,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":[{"type":"monitor-config-policy","attributes":{"policy":{"tag_key_required":false,"tag_key":"tagKey","valid_tag_values":["value"]},"policy_type":"tag"},"id":"2817dfb9-d616-4a75-8a6b-c34f20493b76"},{"type":"monitor-config-policy","attributes":{"policy":{"tag_key_required":false,"tag_key":"tf-TestAccDatadogMonitorConfigPoliciesDatasource-local-1749222063-1","valid_tag_values":["value"]},"policy_type":"tag"},"id":"feb7fd62-35b1-43f0-bfc7-e735745c9736"},{"type":"monitor-config-policy","attributes":{"policy":{"tag_key_required":false,"tag_key":"tf-TestAccDatadogMonitorConfigPoliciesDatasource-local-1749222063-2","valid_tag_values":["value"]},"policy_type":"tag"},"id":"278c91e3-5461-486e-bc27-e9405ea5a28a"}]}
+            {"data":[{"type":"monitor-config-policy","attributes":{"policy":{"valid_tag_values":["value"],"tag_key_required":false,"tag_key":"tagKey"},"policy_type":"tag"},"id":"2817dfb9-d616-4a75-8a6b-c34f20493b76"},{"type":"monitor-config-policy","attributes":{"policy":{"valid_tag_values":["value"],"tag_key_required":false,"tag_key":"tf-TestAccDatadogMonitorConfigPoliciesDatasource-local-1758618559-1"},"policy_type":"tag"},"id":"d08176e5-b17e-46c9-920f-3d2e34c4329b"},{"type":"monitor-config-policy","attributes":{"policy":{"valid_tag_values":["value"],"tag_key_required":false,"tag_key":"tf-TestAccDatadogMonitorConfigPoliciesDatasource-local-1758618559-2"},"policy_type":"tag"},"id":"1813e817-b12f-481a-b1bd-30296679caa4"}]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 140.648125ms
+        duration: 142.313834ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -140,13 +140,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":[{"type":"monitor-config-policy","attributes":{"policy":{"valid_tag_values":["value"],"tag_key":"tagKey","tag_key_required":false},"policy_type":"tag"},"id":"2817dfb9-d616-4a75-8a6b-c34f20493b76"},{"type":"monitor-config-policy","attributes":{"policy":{"valid_tag_values":["value"],"tag_key":"tf-TestAccDatadogMonitorConfigPoliciesDatasource-local-1749222063-1","tag_key_required":false},"policy_type":"tag"},"id":"feb7fd62-35b1-43f0-bfc7-e735745c9736"},{"type":"monitor-config-policy","attributes":{"policy":{"valid_tag_values":["value"],"tag_key":"tf-TestAccDatadogMonitorConfigPoliciesDatasource-local-1749222063-2","tag_key_required":false},"policy_type":"tag"},"id":"278c91e3-5461-486e-bc27-e9405ea5a28a"}]}
+            {"data":[{"type":"monitor-config-policy","id":"2817dfb9-d616-4a75-8a6b-c34f20493b76","attributes":{"policy_type":"tag","policy":{"tag_key":"tagKey","valid_tag_values":["value"],"tag_key_required":false}}},{"type":"monitor-config-policy","id":"d08176e5-b17e-46c9-920f-3d2e34c4329b","attributes":{"policy_type":"tag","policy":{"tag_key":"tf-TestAccDatadogMonitorConfigPoliciesDatasource-local-1758618559-1","valid_tag_values":["value"],"tag_key_required":false}}},{"type":"monitor-config-policy","id":"1813e817-b12f-481a-b1bd-30296679caa4","attributes":{"policy_type":"tag","policy":{"tag_key":"tf-TestAccDatadogMonitorConfigPoliciesDatasource-local-1758618559-2","valid_tag_values":["value"],"tag_key_required":false}}}]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 142.324583ms
+        duration: 152.041125ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -163,7 +163,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/monitor/policy/feb7fd62-35b1-43f0-bfc7-e735745c9736
+        url: https://api.datadoghq.com/api/v2/monitor/policy/d08176e5-b17e-46c9-920f-3d2e34c4329b
         method: GET
       response:
         proto: HTTP/1.1
@@ -175,13 +175,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"type":"monitor-config-policy","attributes":{"policy":{"tag_key_required":false,"tag_key":"tf-TestAccDatadogMonitorConfigPoliciesDatasource-local-1749222063-1","valid_tag_values":["value"]},"policy_type":"tag"},"id":"feb7fd62-35b1-43f0-bfc7-e735745c9736"}}
+            {"data":{"type":"monitor-config-policy","attributes":{"policy_type":"tag","policy":{"valid_tag_values":["value"],"tag_key_required":false,"tag_key":"tf-TestAccDatadogMonitorConfigPoliciesDatasource-local-1758618559-1"}},"id":"d08176e5-b17e-46c9-920f-3d2e34c4329b"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 156.315625ms
+        duration: 144.777875ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -198,7 +198,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/monitor/policy/278c91e3-5461-486e-bc27-e9405ea5a28a
+        url: https://api.datadoghq.com/api/v2/monitor/policy/1813e817-b12f-481a-b1bd-30296679caa4
         method: GET
       response:
         proto: HTTP/1.1
@@ -210,13 +210,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"type":"monitor-config-policy","attributes":{"policy":{"tag_key":"tf-TestAccDatadogMonitorConfigPoliciesDatasource-local-1749222063-2","tag_key_required":false,"valid_tag_values":["value"]},"policy_type":"tag"},"id":"278c91e3-5461-486e-bc27-e9405ea5a28a"}}
+            {"data":{"type":"monitor-config-policy","id":"1813e817-b12f-481a-b1bd-30296679caa4","attributes":{"policy_type":"tag","policy":{"tag_key_required":false,"valid_tag_values":["value"],"tag_key":"tf-TestAccDatadogMonitorConfigPoliciesDatasource-local-1758618559-2"}}}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 147.8315ms
+        duration: 162.0355ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -245,13 +245,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":[{"type":"monitor-config-policy","attributes":{"policy":{"tag_key":"tagKey","tag_key_required":false,"valid_tag_values":["value"]},"policy_type":"tag"},"id":"2817dfb9-d616-4a75-8a6b-c34f20493b76"},{"type":"monitor-config-policy","attributes":{"policy":{"tag_key":"tf-TestAccDatadogMonitorConfigPoliciesDatasource-local-1749222063-1","tag_key_required":false,"valid_tag_values":["value"]},"policy_type":"tag"},"id":"feb7fd62-35b1-43f0-bfc7-e735745c9736"},{"type":"monitor-config-policy","attributes":{"policy":{"tag_key":"tf-TestAccDatadogMonitorConfigPoliciesDatasource-local-1749222063-2","tag_key_required":false,"valid_tag_values":["value"]},"policy_type":"tag"},"id":"278c91e3-5461-486e-bc27-e9405ea5a28a"}]}
+            {"data":[{"type":"monitor-config-policy","attributes":{"policy_type":"tag","policy":{"valid_tag_values":["value"],"tag_key_required":false,"tag_key":"tagKey"}},"id":"2817dfb9-d616-4a75-8a6b-c34f20493b76"},{"type":"monitor-config-policy","attributes":{"policy_type":"tag","policy":{"valid_tag_values":["value"],"tag_key_required":false,"tag_key":"tf-TestAccDatadogMonitorConfigPoliciesDatasource-local-1758618559-1"}},"id":"d08176e5-b17e-46c9-920f-3d2e34c4329b"},{"type":"monitor-config-policy","attributes":{"policy_type":"tag","policy":{"valid_tag_values":["value"],"tag_key_required":false,"tag_key":"tf-TestAccDatadogMonitorConfigPoliciesDatasource-local-1758618559-2"}},"id":"1813e817-b12f-481a-b1bd-30296679caa4"}]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 142.15025ms
+        duration: 146.448459ms
     - id: 7
       request:
         proto: HTTP/1.1
@@ -268,7 +268,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/monitor/policy/278c91e3-5461-486e-bc27-e9405ea5a28a
+        url: https://api.datadoghq.com/api/v2/monitor/policy/1813e817-b12f-481a-b1bd-30296679caa4
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -284,7 +284,7 @@ interactions:
                 - text/html; charset=utf-8
         status: 204 No Content
         code: 204
-        duration: 164.930084ms
+        duration: 181.386666ms
     - id: 8
       request:
         proto: HTTP/1.1
@@ -301,7 +301,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/monitor/policy/feb7fd62-35b1-43f0-bfc7-e735745c9736
+        url: https://api.datadoghq.com/api/v2/monitor/policy/d08176e5-b17e-46c9-920f-3d2e34c4329b
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -317,4 +317,4 @@ interactions:
                 - text/html; charset=utf-8
         status: 204 No Content
         code: 204
-        duration: 171.788ms
+        duration: 180.333166ms

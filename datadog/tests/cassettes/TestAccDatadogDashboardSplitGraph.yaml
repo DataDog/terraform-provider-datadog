@@ -1,112 +1,207 @@
+---
 version: 2
 interactions:
-- request:
-    body: |
-      {"description":"Created using the Datadog provider in Terraform","id":"","layout_type":"ordered","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardSplitGraph-local-1697038067","widgets":[{"definition":{"has_uniform_y_axes":false,"size":"md","source_widget_definition":{"requests":[{"display_type":"line","on_right_yaxis":false,"queries":[{"data_source":"metrics","name":"my_query_1","query":"avg:system.cpu.user{*}"}],"response_format":"timeseries","style":{"line_type":"solid","line_width":"thin","palette":"dog_classic"}}],"show_legend":false,"title":"system.cpu.user","title_align":"left","title_size":"16","type":"timeseries"},"split_config":{"limit":24,"sort":{"order":"asc"},"split_dimensions":[{"one_graph_per":"service"}]},"time":{"live_span":"5m"},"title":"Terraform Split Graph Widget","type":"split_group"}}]}
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard
-    method: POST
-    id: 0
-  response:
-    body: |
-      {"id":"q4h-5rz-zsu","title":"tf-TestAccDatadogDashboardSplitGraph-local-1697038067","description":"Created using the Datadog provider in Terraform","author_handle":"adilzhan.alimbetov@datadoghq.com","author_name":"Adilzhan Alimbetov","layout_type":"ordered","url":"/dashboard/q4h-5rz-zsu/tf-testaccdatadogdashboardsplitgraph-local-1697038067","is_read_only":false,"template_variables":[],"widgets":[{"definition":{"has_uniform_y_axes":false,"size":"md","source_widget_definition":{"requests":[{"display_type":"line","on_right_yaxis":false,"queries":[{"data_source":"metrics","name":"my_query_1","query":"avg:system.cpu.user{*}"}],"response_format":"timeseries","style":{"line_type":"solid","line_width":"thin","palette":"dog_classic"}}],"show_legend":false,"title":"system.cpu.user","title_align":"left","title_size":"16","type":"timeseries"},"split_config":{"limit":24,"sort":{"order":"asc"},"split_dimensions":[{"one_graph_per":"service"}]},"time":{"live_span":"5m"},"title":"Terraform Split Graph Widget","type":"split_group"},"id":8123463418023743}],"notify_list":[],"created_at":"2023-10-11T15:27:52.116805+00:00","modified_at":"2023-10-11T15:27:52.116805+00:00","template_variable_presets":[],"tags":[]}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/q4h-5rz-zsu
-    method: GET
-    id: 1
-  response:
-    body: |
-      {"id":"q4h-5rz-zsu","title":"tf-TestAccDatadogDashboardSplitGraph-local-1697038067","description":"Created using the Datadog provider in Terraform","author_handle":"adilzhan.alimbetov@datadoghq.com","author_name":"Adilzhan Alimbetov","layout_type":"ordered","url":"/dashboard/q4h-5rz-zsu/tf-testaccdatadogdashboardsplitgraph-local-1697038067","is_read_only":false,"template_variables":[],"widgets":[{"definition":{"has_uniform_y_axes":false,"size":"md","source_widget_definition":{"requests":[{"display_type":"line","on_right_yaxis":false,"queries":[{"data_source":"metrics","name":"my_query_1","query":"avg:system.cpu.user{*}"}],"response_format":"timeseries","style":{"line_type":"solid","line_width":"thin","palette":"dog_classic"}}],"show_legend":false,"title":"system.cpu.user","title_align":"left","title_size":"16","type":"timeseries"},"split_config":{"limit":24,"sort":{"order":"asc"},"split_dimensions":[{"one_graph_per":"service"}]},"time":{"live_span":"5m"},"title":"Terraform Split Graph Widget","type":"split_group"},"id":8123463418023743}],"notify_list":[],"created_at":"2023-10-11T15:27:52.116805+00:00","modified_at":"2023-10-11T15:27:52.116805+00:00","template_variable_presets":[],"tags":[]}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/q4h-5rz-zsu
-    method: GET
-    id: 2
-  response:
-    body: |
-      {"id":"q4h-5rz-zsu","title":"tf-TestAccDatadogDashboardSplitGraph-local-1697038067","description":"Created using the Datadog provider in Terraform","author_handle":"adilzhan.alimbetov@datadoghq.com","author_name":"Adilzhan Alimbetov","layout_type":"ordered","url":"/dashboard/q4h-5rz-zsu/tf-testaccdatadogdashboardsplitgraph-local-1697038067","is_read_only":false,"template_variables":[],"widgets":[{"definition":{"has_uniform_y_axes":false,"size":"md","source_widget_definition":{"requests":[{"display_type":"line","on_right_yaxis":false,"queries":[{"data_source":"metrics","name":"my_query_1","query":"avg:system.cpu.user{*}"}],"response_format":"timeseries","style":{"line_type":"solid","line_width":"thin","palette":"dog_classic"}}],"show_legend":false,"title":"system.cpu.user","title_align":"left","title_size":"16","type":"timeseries"},"split_config":{"limit":24,"sort":{"order":"asc"},"split_dimensions":[{"one_graph_per":"service"}]},"time":{"live_span":"5m"},"title":"Terraform Split Graph Widget","type":"split_group"},"id":8123463418023743}],"notify_list":[],"created_at":"2023-10-11T15:27:52.116805+00:00","modified_at":"2023-10-11T15:27:52.116805+00:00","template_variable_presets":[],"tags":[]}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/q4h-5rz-zsu
-    method: GET
-    id: 3
-  response:
-    body: |
-      {"id":"q4h-5rz-zsu","title":"tf-TestAccDatadogDashboardSplitGraph-local-1697038067","description":"Created using the Datadog provider in Terraform","author_handle":"adilzhan.alimbetov@datadoghq.com","author_name":"Adilzhan Alimbetov","layout_type":"ordered","url":"/dashboard/q4h-5rz-zsu/tf-testaccdatadogdashboardsplitgraph-local-1697038067","is_read_only":false,"template_variables":[],"widgets":[{"definition":{"has_uniform_y_axes":false,"size":"md","source_widget_definition":{"requests":[{"display_type":"line","on_right_yaxis":false,"queries":[{"data_source":"metrics","name":"my_query_1","query":"avg:system.cpu.user{*}"}],"response_format":"timeseries","style":{"line_type":"solid","line_width":"thin","palette":"dog_classic"}}],"show_legend":false,"title":"system.cpu.user","title_align":"left","title_size":"16","type":"timeseries"},"split_config":{"limit":24,"sort":{"order":"asc"},"split_dimensions":[{"one_graph_per":"service"}]},"time":{"live_span":"5m"},"title":"Terraform Split Graph Widget","type":"split_group"},"id":8123463418023743}],"notify_list":[],"created_at":"2023-10-11T15:27:52.116805+00:00","modified_at":"2023-10-11T15:27:52.116805+00:00","template_variable_presets":[],"tags":[]}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/q4h-5rz-zsu
-    method: DELETE
-    id: 4
-  response:
-    body: |
-      {"deleted_dashboard_id":"q4h-5rz-zsu"}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/q4h-5rz-zsu
-    method: GET
-    id: 5
-  response:
-    body: '{"errors":["Dashboard with ID q4h-5rz-zsu not found"]}'
-    headers:
-      Content-Type:
-      - application/json
-    status: 404 Not Found
-    code: 404
-    duration: "0ms"
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 888
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"description":"Created using the Datadog provider in Terraform","id":"","layout_type":"ordered","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardSplitGraph-local-1758619277","widgets":[{"definition":{"has_uniform_y_axes":false,"size":"md","source_widget_definition":{"requests":[{"display_type":"line","on_right_yaxis":false,"queries":[{"data_source":"metrics","name":"my_query_1","query":"avg:system.cpu.user{*}"}],"response_format":"timeseries","style":{"line_type":"solid","line_width":"thin","palette":"dog_classic"}}],"show_legend":false,"title":"system.cpu.user","title_align":"left","title_size":"16","type":"timeseries"},"split_config":{"limit":24,"sort":{"order":"asc"},"split_dimensions":[{"one_graph_per":"service"}]},"time":{"live_span":"5m"},"title":"Terraform Split Graph Widget","type":"split_group"}}]}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"6ir-mv7-u4m","title":"tf-TestAccDatadogDashboardSplitGraph-local-1758619277","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/6ir-mv7-u4m/tf-testaccdatadogdashboardsplitgraph-local-1758619277","template_variables":[],"widgets":[{"definition":{"has_uniform_y_axes":false,"size":"md","source_widget_definition":{"requests":[{"display_type":"line","on_right_yaxis":false,"queries":[{"data_source":"metrics","name":"my_query_1","query":"avg:system.cpu.user{*}"}],"response_format":"timeseries","style":{"line_type":"solid","line_width":"thin","palette":"dog_classic"}}],"show_legend":false,"title":"system.cpu.user","title_align":"left","title_size":"16","type":"timeseries"},"split_config":{"limit":24,"sort":{"order":"asc"},"split_dimensions":[{"one_graph_per":"service"}]},"time":{"live_span":"5m"},"title":"Terraform Split Graph Widget","type":"split_group"},"id":8827803249966339}],"notify_list":[],"created_at":"2025-09-23T09:21:19.672744+00:00","modified_at":"2025-09-23T09:21:19.672744+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 225.740834ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/6ir-mv7-u4m
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"6ir-mv7-u4m","title":"tf-TestAccDatadogDashboardSplitGraph-local-1758619277","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/6ir-mv7-u4m/tf-testaccdatadogdashboardsplitgraph-local-1758619277","template_variables":[],"widgets":[{"definition":{"has_uniform_y_axes":false,"size":"md","source_widget_definition":{"requests":[{"display_type":"line","on_right_yaxis":false,"queries":[{"data_source":"metrics","name":"my_query_1","query":"avg:system.cpu.user{*}"}],"response_format":"timeseries","style":{"line_type":"solid","line_width":"thin","palette":"dog_classic"}}],"show_legend":false,"title":"system.cpu.user","title_align":"left","title_size":"16","type":"timeseries"},"split_config":{"limit":24,"sort":{"order":"asc"},"split_dimensions":[{"one_graph_per":"service"}]},"time":{"live_span":"5m"},"title":"Terraform Split Graph Widget","type":"split_group"},"id":8827803249966339}],"notify_list":[],"created_at":"2025-09-23T09:21:19.672744+00:00","modified_at":"2025-09-23T09:21:19.672744+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 241.876584ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/6ir-mv7-u4m
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"6ir-mv7-u4m","title":"tf-TestAccDatadogDashboardSplitGraph-local-1758619277","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/6ir-mv7-u4m/tf-testaccdatadogdashboardsplitgraph-local-1758619277","template_variables":[],"widgets":[{"definition":{"has_uniform_y_axes":false,"size":"md","source_widget_definition":{"requests":[{"display_type":"line","on_right_yaxis":false,"queries":[{"data_source":"metrics","name":"my_query_1","query":"avg:system.cpu.user{*}"}],"response_format":"timeseries","style":{"line_type":"solid","line_width":"thin","palette":"dog_classic"}}],"show_legend":false,"title":"system.cpu.user","title_align":"left","title_size":"16","type":"timeseries"},"split_config":{"limit":24,"sort":{"order":"asc"},"split_dimensions":[{"one_graph_per":"service"}]},"time":{"live_span":"5m"},"title":"Terraform Split Graph Widget","type":"split_group"},"id":8827803249966339}],"notify_list":[],"created_at":"2025-09-23T09:21:19.672744+00:00","modified_at":"2025-09-23T09:21:19.672744+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 190.3415ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/6ir-mv7-u4m
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"6ir-mv7-u4m","title":"tf-TestAccDatadogDashboardSplitGraph-local-1758619277","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/6ir-mv7-u4m/tf-testaccdatadogdashboardsplitgraph-local-1758619277","template_variables":[],"widgets":[{"definition":{"has_uniform_y_axes":false,"size":"md","source_widget_definition":{"requests":[{"display_type":"line","on_right_yaxis":false,"queries":[{"data_source":"metrics","name":"my_query_1","query":"avg:system.cpu.user{*}"}],"response_format":"timeseries","style":{"line_type":"solid","line_width":"thin","palette":"dog_classic"}}],"show_legend":false,"title":"system.cpu.user","title_align":"left","title_size":"16","type":"timeseries"},"split_config":{"limit":24,"sort":{"order":"asc"},"split_dimensions":[{"one_graph_per":"service"}]},"time":{"live_span":"5m"},"title":"Terraform Split Graph Widget","type":"split_group"},"id":8827803249966339}],"notify_list":[],"created_at":"2025-09-23T09:21:19.672744+00:00","modified_at":"2025-09-23T09:21:19.672744+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 309.858375ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/6ir-mv7-u4m
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"deleted_dashboard_id":"6ir-mv7-u4m"}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 229.523125ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/6ir-mv7-u4m
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 54
+        uncompressed: false
+        body: '{"errors":["Dashboard with ID 6ir-mv7-u4m not found"]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 295.990791ms

@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"description":"Created using the Datadog provider in Terraform","id":"","layout_type":"ordered","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardRbac_createOpen-local-1740563709","widgets":[{"definition":{"content":"note text","has_padding":true,"show_tick":false,"type":"note"}}]}
+            {"description":"Created using the Datadog provider in Terraform","id":"","layout_type":"ordered","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardRbac_createOpen-local-1758619442","widgets":[{"definition":{"content":"note text","has_padding":true,"show_tick":false,"type":"note"}}]}
         form: {}
         headers:
             Accept:
@@ -31,14 +31,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: |
-            {"id":"e6t-3ad-3y8","title":"tf-TestAccDatadogDashboardRbac_createOpen-local-1740563709","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/e6t-3ad-3y8/tf-testaccdatadogdashboardrbaccreateopen-local-1740563709","is_read_only":false,"template_variables":[],"widgets":[{"definition":{"content":"note text","has_padding":true,"show_tick":false,"type":"note"},"id":7342337628128255}],"notify_list":[],"created_at":"2025-02-26T09:55:12.415941+00:00","modified_at":"2025-02-26T09:55:12.415941+00:00","template_variable_presets":[],"tags":[]}
+        body: '{"id":"vkk-432-y2x","title":"tf-TestAccDatadogDashboardRbac_createOpen-local-1758619442","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/vkk-432-y2x/tf-testaccdatadogdashboardrbaccreateopen-local-1758619442","template_variables":[],"widgets":[{"definition":{"content":"note text","has_padding":true,"show_tick":false,"type":"note"},"id":2766232092517909}],"notify_list":[],"created_at":"2025-09-23T09:24:09.257551+00:00","modified_at":"2025-09-23T09:24:09.257551+00:00","template_variable_presets":[],"tags":[]}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 605.668583ms
+        duration: 221.995792ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -55,25 +54,23 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/dashboard/e6t-3ad-3y8
+        url: https://api.datadoghq.com/api/v1/dashboard/vkk-432-y2x
         method: GET
       response:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        transfer_encoding:
-            - chunked
+        transfer_encoding: []
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: |
-            {"id":"e6t-3ad-3y8","title":"tf-TestAccDatadogDashboardRbac_createOpen-local-1740563709","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/e6t-3ad-3y8/tf-testaccdatadogdashboardrbaccreateopen-local-1740563709","is_read_only":false,"template_variables":[],"widgets":[{"definition":{"content":"note text","has_padding":true,"show_tick":false,"type":"note"},"id":7342337628128255}],"notify_list":[],"created_at":"2025-02-26T09:55:12.415941+00:00","modified_at":"2025-02-26T09:55:12.415941+00:00","template_variable_presets":[],"tags":[]}
+        body: '{"id":"vkk-432-y2x","title":"tf-TestAccDatadogDashboardRbac_createOpen-local-1758619442","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/vkk-432-y2x/tf-testaccdatadogdashboardrbaccreateopen-local-1758619442","template_variables":[],"widgets":[{"definition":{"content":"note text","has_padding":true,"show_tick":false,"type":"note"},"id":2766232092517909}],"notify_list":[],"created_at":"2025-09-23T09:24:09.257551+00:00","modified_at":"2025-09-23T09:24:09.257551+00:00","template_variable_presets":[],"tags":[]}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 167.973291ms
+        duration: 178.925958ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -90,25 +87,23 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/dashboard/e6t-3ad-3y8
+        url: https://api.datadoghq.com/api/v1/dashboard/vkk-432-y2x
         method: GET
       response:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        transfer_encoding:
-            - chunked
+        transfer_encoding: []
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: |
-            {"id":"e6t-3ad-3y8","title":"tf-TestAccDatadogDashboardRbac_createOpen-local-1740563709","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/e6t-3ad-3y8/tf-testaccdatadogdashboardrbaccreateopen-local-1740563709","is_read_only":false,"template_variables":[],"widgets":[{"definition":{"content":"note text","has_padding":true,"show_tick":false,"type":"note"},"id":7342337628128255}],"notify_list":[],"created_at":"2025-02-26T09:55:12.415941+00:00","modified_at":"2025-02-26T09:55:12.415941+00:00","template_variable_presets":[],"tags":[]}
+        body: '{"id":"vkk-432-y2x","title":"tf-TestAccDatadogDashboardRbac_createOpen-local-1758619442","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/vkk-432-y2x/tf-testaccdatadogdashboardrbaccreateopen-local-1758619442","template_variables":[],"widgets":[{"definition":{"content":"note text","has_padding":true,"show_tick":false,"type":"note"},"id":2766232092517909}],"notify_list":[],"created_at":"2025-09-23T09:24:09.257551+00:00","modified_at":"2025-09-23T09:24:09.257551+00:00","template_variable_presets":[],"tags":[]}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 163.567625ms
+        duration: 193.89925ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -125,25 +120,23 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/dashboard/e6t-3ad-3y8
+        url: https://api.datadoghq.com/api/v1/dashboard/vkk-432-y2x
         method: GET
       response:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        transfer_encoding:
-            - chunked
+        transfer_encoding: []
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: |
-            {"id":"e6t-3ad-3y8","title":"tf-TestAccDatadogDashboardRbac_createOpen-local-1740563709","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/e6t-3ad-3y8/tf-testaccdatadogdashboardrbaccreateopen-local-1740563709","is_read_only":false,"template_variables":[],"widgets":[{"definition":{"content":"note text","has_padding":true,"show_tick":false,"type":"note"},"id":7342337628128255}],"notify_list":[],"created_at":"2025-02-26T09:55:12.415941+00:00","modified_at":"2025-02-26T09:55:12.415941+00:00","template_variable_presets":[],"tags":[]}
+        body: '{"id":"vkk-432-y2x","title":"tf-TestAccDatadogDashboardRbac_createOpen-local-1758619442","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/vkk-432-y2x/tf-testaccdatadogdashboardrbaccreateopen-local-1758619442","template_variables":[],"widgets":[{"definition":{"content":"note text","has_padding":true,"show_tick":false,"type":"note"},"id":2766232092517909}],"notify_list":[],"created_at":"2025-09-23T09:24:09.257551+00:00","modified_at":"2025-09-23T09:24:09.257551+00:00","template_variable_presets":[],"tags":[]}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 178.695417ms
+        duration: 191.181125ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -160,7 +153,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/dashboard/e6t-3ad-3y8
+        url: https://api.datadoghq.com/api/v1/dashboard/vkk-432-y2x
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -172,10 +165,10 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"deleted_dashboard_id":"e6t-3ad-3y8"}
+            {"deleted_dashboard_id":"vkk-432-y2x"}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 217.549542ms
+        duration: 449.887667ms

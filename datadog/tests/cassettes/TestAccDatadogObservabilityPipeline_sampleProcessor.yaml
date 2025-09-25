@@ -28,80 +28,13 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 445
+        content_length: 35
         uncompressed: false
         body: |
-            {"data":{"id":"b8697030-24e0-11f0-bd52-da7ad0900002","type":"pipelines","attributes":{"name":"sample-pipeline","config":{"destinations":[{"id":"destination-1","inputs":["sample-2"],"type":"datadog_logs"}],"processors":[{"id":"sample-1","include":"*","inputs":["source-1"],"rate":10,"type":"sample"},{"id":"sample-2","include":"*","inputs":["sample-1"],"percentage":4.99,"type":"sample"}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"errors":[{"title":"Not Found"}]}
         headers:
             Content-Type:
                 - application/json
-        status: 201 Created
-        code: 201
-        duration: 578.427125ms
-    - id: 1
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 0
-        transfer_encoding: []
-        trailer: {}
-        host: api.datadoghq.com
-        remote_addr: ""
-        request_uri: ""
-        body: ""
-        form: {}
-        headers:
-            Accept:
-                - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/b8697030-24e0-11f0-bd52-da7ad0900002
-        method: GET
-      response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        transfer_encoding: []
-        trailer: {}
-        content_length: 445
-        uncompressed: false
-        body: |
-            {"data":{"id":"b8697030-24e0-11f0-bd52-da7ad0900002","type":"pipelines","attributes":{"name":"sample-pipeline","config":{"destinations":[{"id":"destination-1","inputs":["sample-2"],"type":"datadog_logs"}],"processors":[{"id":"sample-1","include":"*","inputs":["source-1"],"rate":10,"type":"sample"},{"id":"sample-2","include":"*","inputs":["sample-1"],"percentage":4.99,"type":"sample"}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
-        headers:
-            Content-Type:
-                - application/json
-        status: 200 OK
-        code: 200
-        duration: 327.034458ms
-    - id: 2
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 0
-        transfer_encoding: []
-        trailer: {}
-        host: api.datadoghq.com
-        remote_addr: ""
-        request_uri: ""
-        body: ""
-        form: {}
-        headers:
-            Accept:
-                - '*/*'
-        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/b8697030-24e0-11f0-bd52-da7ad0900002
-        method: DELETE
-      response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        transfer_encoding: []
-        trailer: {}
-        content_length: 0
-        uncompressed: false
-        body: ""
-        headers:
-            Content-Type:
-                - application/json
-        status: 204 No Content
-        code: 204
-        duration: 467.591709ms
+        status: 404 Not Found
+        code: 404
+        duration: 433.363625ms

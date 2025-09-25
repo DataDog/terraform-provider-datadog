@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"name":"tf-test-Basic-1755529910","principals":["role:94172442-be03-11e9-a77a-3b7612558ac1"],"product_filters":[{"filters":["@application.id:ce9843b0-7a45-453c-a831-55dd15f85141"],"product":"rum"}]},"type":"dataset"}}
+            {"data":{"attributes":{"name":"tf-test-Basic-1758619352","principals":["role:94172442-be03-11e9-a77a-3b7612558ac1"],"product_filters":[{"filters":["@application.id:ce9843b0-7a45-453c-a831-55dd15f85141"],"product":"rum"}]},"type":"dataset"}}
         form: {}
         headers:
             Accept:
@@ -32,113 +32,10 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"type":"dataset","id":"ec4c22f7-f926-4318-a1f9-62d47911641e","attributes":{"name":"tf-test-Basic-1755529910","product_filters":[{"product":"rum","filters":["@application.id:ce9843b0-7a45-453c-a831-55dd15f85141"]}],"principals":["role:94172442-be03-11e9-a77a-3b7612558ac1"]}}}
+            {"errors":["Invalid request: [DatasetFilterInUse] the filter \"@application.id:ce9843b0-7a45-453c-a831-55dd15f85141\" is already used in a different \"rum\" dataset"]}
         headers:
             Content-Type:
                 - application/json
-        status: 200 OK
-        code: 200
-        duration: 144.792875ms
-    - id: 1
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 0
-        transfer_encoding: []
-        trailer: {}
-        host: api.datadoghq.com
-        remote_addr: ""
-        request_uri: ""
-        body: ""
-        form: {}
-        headers:
-            Accept:
-                - application/json
-        url: https://api.datadoghq.com/api/v2/datasets/ec4c22f7-f926-4318-a1f9-62d47911641e
-        method: GET
-      response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        transfer_encoding:
-            - chunked
-        trailer: {}
-        content_length: -1
-        uncompressed: true
-        body: |
-            {"data":{"type":"dataset","id":"ec4c22f7-f926-4318-a1f9-62d47911641e","attributes":{"name":"tf-test-Basic-1755529910","product_filters":[{"product":"rum","filters":["@application.id:ce9843b0-7a45-453c-a831-55dd15f85141"]}],"principals":["role:94172442-be03-11e9-a77a-3b7612558ac1"]}}}
-        headers:
-            Content-Type:
-                - application/json
-        status: 200 OK
-        code: 200
-        duration: 91.167208ms
-    - id: 2
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 0
-        transfer_encoding: []
-        trailer: {}
-        host: api.datadoghq.com
-        remote_addr: ""
-        request_uri: ""
-        body: ""
-        form: {}
-        headers:
-            Accept:
-                - application/json
-        url: https://api.datadoghq.com/api/v2/datasets/ec4c22f7-f926-4318-a1f9-62d47911641e
-        method: GET
-      response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        transfer_encoding:
-            - chunked
-        trailer: {}
-        content_length: -1
-        uncompressed: true
-        body: |
-            {"data":{"type":"dataset","id":"ec4c22f7-f926-4318-a1f9-62d47911641e","attributes":{"name":"tf-test-Basic-1755529910","product_filters":[{"product":"rum","filters":["@application.id:ce9843b0-7a45-453c-a831-55dd15f85141"]}],"principals":["role:94172442-be03-11e9-a77a-3b7612558ac1"]}}}
-        headers:
-            Content-Type:
-                - application/json
-        status: 200 OK
-        code: 200
-        duration: 102.648042ms
-    - id: 3
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 0
-        transfer_encoding: []
-        trailer: {}
-        host: api.datadoghq.com
-        remote_addr: ""
-        request_uri: ""
-        body: ""
-        form: {}
-        headers:
-            Accept:
-                - '*/*'
-        url: https://api.datadoghq.com/api/v2/datasets/ec4c22f7-f926-4318-a1f9-62d47911641e
-        method: DELETE
-      response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        transfer_encoding: []
-        trailer: {}
-        content_length: 0
-        uncompressed: false
-        body: ""
-        headers:
-            Content-Type:
-                - application/json
-        status: 204 No Content
-        code: 204
-        duration: 147.402458ms
+        status: 400 Bad Request
+        code: 400
+        duration: 219.160458ms

@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"draft_status":"published","message":"test","name":"tf-TestAccDatadogMonitor_NoThresholdWindows-local-1749222067","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"thresholds":{"critical":1,"critical_recovery":0.5,"ok":0,"warning":0.5,"warning_recovery":0.25},"timeout_h":1},"priority":null,"query":"avg(last_1h):anomalies(avg:system.cpu.system{name:cassandra}, 'basic', 2, direction='above') \u003e= 1","restricted_roles":null,"tags":[],"type":"query alert"}
+            {"draft_status":"published","message":"test","name":"tf-TestAccDatadogMonitor_NoThresholdWindows-local-1758619185","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"thresholds":{"critical":1,"critical_recovery":0.5,"ok":0,"warning":0.5,"warning_recovery":0.25},"timeout_h":1},"priority":null,"query":"avg(last_1h):anomalies(avg:system.cpu.system{name:cassandra}, 'basic', 2, direction='above') \u003e= 1","restricted_roles":null,"tags":[],"type":"query alert"}
         form: {}
         headers:
             Accept:
@@ -37,7 +37,7 @@ interactions:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 403.207125ms
+        duration: 320.929833ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -50,7 +50,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"draft_status":"published","message":"test","name":"tf-TestAccDatadogMonitor_NoThresholdWindows-local-1749222067","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"thresholds":{"critical":1,"critical_recovery":0.5,"ok":0,"warning":0.5,"warning_recovery":0.25},"timeout_h":1},"priority":null,"query":"avg(last_1h):anomalies(avg:system.cpu.system{name:cassandra}, 'basic', 2, direction='above') \u003e= 1","restricted_roles":null,"tags":[],"type":"query alert"}
+            {"draft_status":"published","message":"test","name":"tf-TestAccDatadogMonitor_NoThresholdWindows-local-1758619185","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"thresholds":{"critical":1,"critical_recovery":0.5,"ok":0,"warning":0.5,"warning_recovery":0.25},"timeout_h":1},"priority":null,"query":"avg(last_1h):anomalies(avg:system.cpu.system{name:cassandra}, 'basic', 2, direction='above') \u003e= 1","restricted_roles":null,"tags":[],"type":"query alert"}
         form: {}
         headers:
             Accept:
@@ -74,7 +74,7 @@ interactions:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 274.974292ms
+        duration: 151.268333ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -87,7 +87,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"draft_status":"published","message":"test","name":"tf-TestAccDatadogMonitor_NoThresholdWindows-local-1749222067","options":{"include_tags":true,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"thresholds":{"critical":1,"critical_recovery":0.5,"warning":0.5,"warning_recovery":0.25},"timeout_h":1},"priority":null,"query":"avg(last_1h):anomalies(avg:system.cpu.system{name:cassandra}, 'basic', 2, direction='above') \u003e= 1","restricted_roles":null,"tags":[],"type":"query alert"}
+            {"draft_status":"published","message":"test","name":"tf-TestAccDatadogMonitor_NoThresholdWindows-local-1758619185","options":{"include_tags":true,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"thresholds":{"critical":1,"critical_recovery":0.5,"warning":0.5,"warning_recovery":0.25},"timeout_h":1},"priority":null,"query":"avg(last_1h):anomalies(avg:system.cpu.system{name:cassandra}, 'basic', 2, direction='above') \u003e= 1","restricted_roles":null,"tags":[],"type":"query alert"}
         form: {}
         headers:
             Accept:
@@ -106,13 +106,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":174341673,"org_id":321813,"type":"query alert","name":"tf-TestAccDatadogMonitor_NoThresholdWindows-local-1749222067","message":"test","tags":[],"query":"avg(last_1h):anomalies(avg:system.cpu.system{name:cassandra}, 'basic', 2, direction='above') >= 1","options":{"include_tags":true,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"thresholds":{"critical":1.0,"critical_recovery":0.5,"warning":0.5,"warning_recovery":0.25},"timeout_h":1,"notify_audit":false,"silenced":{}},"multi":false,"created_at":1749222069000,"created":"2025-06-06T15:01:09.650661+00:00","modified":"2025-06-06T15:01:09.650661+00:00","deleted":null,"priority":null,"restricted_roles":null,"restriction_policy":null,"overall_state_modified":null,"overall_state":"No Data","creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com","id":1445416}}
+            {"id":217468707,"org_id":321813,"type":"query alert","name":"tf-TestAccDatadogMonitor_NoThresholdWindows-local-1758619185","message":"test","tags":[],"query":"avg(last_1h):anomalies(avg:system.cpu.system{name:cassandra}, 'basic', 2, direction='above') >= 1","options":{"include_tags":true,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"thresholds":{"critical":1.0,"critical_recovery":0.5,"warning":0.5,"warning_recovery":0.25},"timeout_h":1,"notify_audit":false,"silenced":{}},"multi":false,"created_at":1758619186000,"created":"2025-09-23T09:19:46.456003+00:00","modified":"2025-09-23T09:19:46.456003+00:00","deleted":null,"priority":null,"restricted_roles":null,"restriction_policy":null,"overall_state_modified":null,"overall_state":"No Data","creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com","id":1445416}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 432.96525ms
+        duration: 292.492709ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -129,7 +129,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/174341673
+        url: https://api.datadoghq.com/api/v1/monitor/217468707
         method: GET
       response:
         proto: HTTP/1.1
@@ -141,13 +141,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":174341673,"org_id":321813,"type":"query alert","name":"tf-TestAccDatadogMonitor_NoThresholdWindows-local-1749222067","message":"test","tags":[],"query":"avg(last_1h):anomalies(avg:system.cpu.system{name:cassandra}, 'basic', 2, direction='above') >= 1","options":{"include_tags":true,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"thresholds":{"critical":1.0,"critical_recovery":0.5,"warning":0.5,"warning_recovery":0.25},"timeout_h":1,"notify_audit":false,"silenced":{}},"multi":false,"created_at":1749222069000,"created":"2025-06-06T15:01:09.650661+00:00","modified":"2025-06-06T15:01:09.650661+00:00","deleted":null,"priority":null,"restricted_roles":null,"overall_state_modified":null,"overall_state":"No Data","creator":{"name":"frog","email":"frog@datadoghq.com","handle":"frog@datadoghq.com","id":1445416}}
+            {"id":217468707,"org_id":321813,"type":"query alert","name":"tf-TestAccDatadogMonitor_NoThresholdWindows-local-1758619185","message":"test","tags":[],"query":"avg(last_1h):anomalies(avg:system.cpu.system{name:cassandra}, 'basic', 2, direction='above') >= 1","options":{"include_tags":true,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"thresholds":{"critical":1.0,"critical_recovery":0.5,"warning":0.5,"warning_recovery":0.25},"timeout_h":1,"notify_audit":false,"silenced":{}},"multi":false,"created_at":1758619186000,"created":"2025-09-23T09:19:46.456003+00:00","modified":"2025-09-23T09:19:46.456003+00:00","deleted":null,"priority":null,"restricted_roles":null,"overall_state_modified":null,"overall_state":"No Data","creator":{"name":"frog","email":"frog@datadoghq.com","handle":"frog@datadoghq.com","id":1445416}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 337.473583ms
+        duration: 191.393458ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -160,14 +160,14 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"draft_status":"published","message":"test","name":"tf-TestAccDatadogMonitor_NoThresholdWindows-local-1749222067","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"thresholds":{"critical":1,"critical_recovery":0.5,"ok":0,"warning":0.5,"warning_recovery":0.25},"timeout_h":1},"priority":null,"query":"avg(last_1h):anomalies(avg:system.cpu.system{name:cassandra}, 'basic', 2, direction='above') \u003e= 1","restricted_roles":null,"tags":[],"type":"query alert"}
+            {"draft_status":"published","message":"test","name":"tf-TestAccDatadogMonitor_NoThresholdWindows-local-1758619185","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"thresholds":{"critical":1,"critical_recovery":0.5,"ok":0,"warning":0.5,"warning_recovery":0.25},"timeout_h":1},"priority":null,"query":"avg(last_1h):anomalies(avg:system.cpu.system{name:cassandra}, 'basic', 2, direction='above') \u003e= 1","restricted_roles":null,"tags":[],"type":"query alert"}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/174341673/validate
+        url: https://api.datadoghq.com/api/v1/monitor/217468707/validate
         method: POST
       response:
         proto: HTTP/1.1
@@ -184,7 +184,7 @@ interactions:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 148.107875ms
+        duration: 184.39275ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -201,7 +201,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/174341673
+        url: https://api.datadoghq.com/api/v1/monitor/217468707
         method: GET
       response:
         proto: HTTP/1.1
@@ -213,13 +213,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":174341673,"org_id":321813,"type":"query alert","name":"tf-TestAccDatadogMonitor_NoThresholdWindows-local-1749222067","message":"test","tags":[],"query":"avg(last_1h):anomalies(avg:system.cpu.system{name:cassandra}, 'basic', 2, direction='above') >= 1","options":{"include_tags":true,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"thresholds":{"critical":1.0,"critical_recovery":0.5,"warning":0.5,"warning_recovery":0.25},"timeout_h":1,"notify_audit":false,"silenced":{}},"multi":false,"created_at":1749222069000,"created":"2025-06-06T15:01:09.650661+00:00","modified":"2025-06-06T15:01:09.650661+00:00","deleted":null,"priority":null,"restricted_roles":null,"overall_state_modified":null,"overall_state":"No Data","creator":{"name":"frog","email":"frog@datadoghq.com","handle":"frog@datadoghq.com","id":1445416}}
+            {"id":217468707,"org_id":321813,"type":"query alert","name":"tf-TestAccDatadogMonitor_NoThresholdWindows-local-1758619185","message":"test","tags":[],"query":"avg(last_1h):anomalies(avg:system.cpu.system{name:cassandra}, 'basic', 2, direction='above') >= 1","options":{"include_tags":true,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"thresholds":{"critical":1.0,"critical_recovery":0.5,"warning":0.5,"warning_recovery":0.25},"timeout_h":1,"notify_audit":false,"silenced":{}},"multi":false,"created_at":1758619186000,"created":"2025-09-23T09:19:46.456003+00:00","modified":"2025-09-23T09:19:46.456003+00:00","deleted":null,"priority":null,"restricted_roles":null,"overall_state_modified":null,"overall_state":"No Data","creator":{"name":"frog","email":"frog@datadoghq.com","handle":"frog@datadoghq.com","id":1445416}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 207.571708ms
+        duration: 201.967541ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -232,14 +232,14 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"draft_status":"published","message":"test","name":"tf-TestAccDatadogMonitor_NoThresholdWindows-local-1749222067","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"thresholds":{"critical":1,"critical_recovery":0.5,"ok":0,"warning":0.5,"warning_recovery":0.25},"timeout_h":1},"priority":null,"query":"avg(last_1h):anomalies(avg:system.cpu.system{name:cassandra}, 'basic', 2, direction='above') \u003e= 1","restricted_roles":null,"tags":[],"type":"query alert"}
+            {"draft_status":"published","message":"test","name":"tf-TestAccDatadogMonitor_NoThresholdWindows-local-1758619185","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"thresholds":{"critical":1,"critical_recovery":0.5,"ok":0,"warning":0.5,"warning_recovery":0.25},"timeout_h":1},"priority":null,"query":"avg(last_1h):anomalies(avg:system.cpu.system{name:cassandra}, 'basic', 2, direction='above') \u003e= 1","restricted_roles":null,"tags":[],"type":"query alert"}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/174341673/validate
+        url: https://api.datadoghq.com/api/v1/monitor/217468707/validate
         method: POST
       response:
         proto: HTTP/1.1
@@ -256,7 +256,7 @@ interactions:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 175.202958ms
+        duration: 167.284208ms
     - id: 7
       request:
         proto: HTTP/1.1
@@ -273,7 +273,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/174341673
+        url: https://api.datadoghq.com/api/v1/monitor/217468707
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -285,13 +285,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"deleted_monitor_id":174341673}
+            {"deleted_monitor_id":217468707}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 306.061708ms
+        duration: 367.409125ms
     - id: 8
       request:
         proto: HTTP/1.1
@@ -308,7 +308,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/174341673
+        url: https://api.datadoghq.com/api/v1/monitor/217468707
         method: GET
       response:
         proto: HTTP/1.1
@@ -325,4 +325,4 @@ interactions:
                 - application/json
         status: 404 Not Found
         code: 404
-        duration: 141.12875ms
+        duration: 179.349083ms

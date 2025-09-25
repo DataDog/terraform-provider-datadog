@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"description":"Test incident type for notification template","is_default":false,"name":"test-tpl-basic-1757516920-it"},"type":"incident_types"}}
+            {"data":{"attributes":{"description":"Test incident type for notification template","is_default":false,"name":"test-tpl-basic-1758619286-it"},"type":"incident_types"}}
         form: {}
         headers:
             Accept:
@@ -30,13 +30,13 @@ interactions:
         trailer: {}
         content_length: 746
         uncompressed: false
-        body: '{"data":{"id":"2f289dcb-3937-476c-9e98-238386ef07cf","type":"incident_types","attributes":{"createdAt":"2025-09-10T15:08:43.127352946Z","createdBy":"3ad549bf-eba0-11e9-a77a-0705486660d0","description":"Test incident type for notification template","is_default":false,"lastModifiedBy":"3ad549bf-eba0-11e9-a77a-0705486660d0","modifiedAt":"2025-09-10T15:08:43.127353036Z","name":"test-tpl-basic-1757516920-it","prefix":"IR"},"relationships":{"created_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"google_meet_configuration":{"data":null},"last_modified_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"microsoft_teams_configuration":{"data":null},"zoom_configuration":{"data":null}}}}'
+        body: '{"data":{"id":"d307b8a1-9835-4ba4-af5d-98f4906dcd3a","type":"incident_types","attributes":{"createdAt":"2025-09-23T09:21:27.155523833Z","createdBy":"3ad549bf-eba0-11e9-a77a-0705486660d0","description":"Test incident type for notification template","is_default":false,"lastModifiedBy":"3ad549bf-eba0-11e9-a77a-0705486660d0","modifiedAt":"2025-09-23T09:21:27.155523915Z","name":"test-tpl-basic-1758619286-it","prefix":"IR"},"relationships":{"created_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"google_meet_configuration":{"data":null},"last_modified_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"microsoft_teams_configuration":{"data":null},"zoom_configuration":{"data":null}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 209.441459ms
+        duration: 253.276375ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -49,7 +49,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"category":"alert","content":"An incident has been declared.\n\nTitle: test-tpl-basic-1757516920\nSeverity: SEV-2\nAffected Services: web-service, database-service\nStatus: active\n\nPlease join the incident channel for updates.","name":"test-tpl-basic-1757516920","subject":"SEV-2 Incident: test-tpl-basic-1757516920"},"relationships":{"incident_type":{"data":{"id":"2f289dcb-3937-476c-9e98-238386ef07cf","type":"incident_types"}}},"type":"notification_templates"}}
+            {"data":{"attributes":{"category":"alert","content":"An incident has been declared.\n\nTitle: test-tpl-basic-1758619286\nSeverity: SEV-2\nAffected Services: web-service, database-service\nStatus: active\n\nPlease join the incident channel for updates.","name":"test-tpl-basic-1758619286","subject":"SEV-2 Incident: test-tpl-basic-1758619286"},"relationships":{"incident_type":{"data":{"id":"d307b8a1-9835-4ba4-af5d-98f4906dcd3a","type":"incident_types"}}},"type":"notification_templates"}}
         form: {}
         headers:
             Accept:
@@ -66,13 +66,13 @@ interactions:
         trailer: {}
         content_length: 796
         uncompressed: false
-        body: '{"data":{"id":"30c437ed-adeb-4fd8-b563-52df3f88ead8","type":"notification_templates","attributes":{"category":"alert","content":"An incident has been declared.\n\nTitle: test-tpl-basic-1757516920\nSeverity: SEV-2\nAffected Services: web-service, database-service\nStatus: active\n\nPlease join the incident channel for updates.","created":"2025-09-10T15:08:43.536352Z","modified":"2025-09-10T15:08:43.536352Z","name":"test-tpl-basic-1757516920","subject":"SEV-2 Incident: test-tpl-basic-1757516920"},"relationships":{"created_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"incident_type":{"data":{"id":"2f289dcb-3937-476c-9e98-238386ef07cf","type":"incident_types"}},"last_modified_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}}}}}'
+        body: '{"data":{"id":"ce1cd744-0a13-4cd0-b05c-c46d7a688dc2","type":"notification_templates","attributes":{"category":"alert","content":"An incident has been declared.\n\nTitle: test-tpl-basic-1758619286\nSeverity: SEV-2\nAffected Services: web-service, database-service\nStatus: active\n\nPlease join the incident channel for updates.","created":"2025-09-23T09:21:27.426784Z","modified":"2025-09-23T09:21:27.426784Z","name":"test-tpl-basic-1758619286","subject":"SEV-2 Incident: test-tpl-basic-1758619286"},"relationships":{"created_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"incident_type":{"data":{"id":"d307b8a1-9835-4ba4-af5d-98f4906dcd3a","type":"incident_types"}},"last_modified_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 60.020666ms
+        duration: 140.060583ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -89,7 +89,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/incidents/config/notification-templates/30c437ed-adeb-4fd8-b563-52df3f88ead8
+        url: https://api.datadoghq.com/api/v2/incidents/config/notification-templates/ce1cd744-0a13-4cd0-b05c-c46d7a688dc2
         method: GET
       response:
         proto: HTTP/1.1
@@ -99,13 +99,13 @@ interactions:
         trailer: {}
         content_length: 796
         uncompressed: false
-        body: '{"data":{"id":"30c437ed-adeb-4fd8-b563-52df3f88ead8","type":"notification_templates","attributes":{"category":"alert","content":"An incident has been declared.\n\nTitle: test-tpl-basic-1757516920\nSeverity: SEV-2\nAffected Services: web-service, database-service\nStatus: active\n\nPlease join the incident channel for updates.","created":"2025-09-10T15:08:43.536352Z","modified":"2025-09-10T15:08:43.536352Z","name":"test-tpl-basic-1757516920","subject":"SEV-2 Incident: test-tpl-basic-1757516920"},"relationships":{"created_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"incident_type":{"data":{"id":"2f289dcb-3937-476c-9e98-238386ef07cf","type":"incident_types"}},"last_modified_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}}}}}'
+        body: '{"data":{"id":"ce1cd744-0a13-4cd0-b05c-c46d7a688dc2","type":"notification_templates","attributes":{"category":"alert","content":"An incident has been declared.\n\nTitle: test-tpl-basic-1758619286\nSeverity: SEV-2\nAffected Services: web-service, database-service\nStatus: active\n\nPlease join the incident channel for updates.","created":"2025-09-23T09:21:27.426784Z","modified":"2025-09-23T09:21:27.426784Z","name":"test-tpl-basic-1758619286","subject":"SEV-2 Incident: test-tpl-basic-1758619286"},"relationships":{"created_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"incident_type":{"data":{"id":"d307b8a1-9835-4ba4-af5d-98f4906dcd3a","type":"incident_types"}},"last_modified_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 39.234667ms
+        duration: 136.513333ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -122,7 +122,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/incidents/config/types/2f289dcb-3937-476c-9e98-238386ef07cf
+        url: https://api.datadoghq.com/api/v2/incidents/config/types/d307b8a1-9835-4ba4-af5d-98f4906dcd3a
         method: GET
       response:
         proto: HTTP/1.1
@@ -132,13 +132,13 @@ interactions:
         trailer: {}
         content_length: 740
         uncompressed: false
-        body: '{"data":{"id":"2f289dcb-3937-476c-9e98-238386ef07cf","type":"incident_types","attributes":{"createdAt":"2025-09-10T15:08:43.127352Z","createdBy":"3ad549bf-eba0-11e9-a77a-0705486660d0","description":"Test incident type for notification template","is_default":false,"lastModifiedBy":"3ad549bf-eba0-11e9-a77a-0705486660d0","modifiedAt":"2025-09-10T15:08:43.127353Z","name":"test-tpl-basic-1757516920-it","prefix":"IR"},"relationships":{"created_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"google_meet_configuration":{"data":null},"last_modified_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"microsoft_teams_configuration":{"data":null},"zoom_configuration":{"data":null}}}}'
+        body: '{"data":{"id":"d307b8a1-9835-4ba4-af5d-98f4906dcd3a","type":"incident_types","attributes":{"createdAt":"2025-09-23T09:21:27.155523Z","createdBy":"3ad549bf-eba0-11e9-a77a-0705486660d0","description":"Test incident type for notification template","is_default":false,"lastModifiedBy":"3ad549bf-eba0-11e9-a77a-0705486660d0","modifiedAt":"2025-09-23T09:21:27.155523Z","name":"test-tpl-basic-1758619286-it","prefix":"IR"},"relationships":{"created_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"google_meet_configuration":{"data":null},"last_modified_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"microsoft_teams_configuration":{"data":null},"zoom_configuration":{"data":null}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 97.154209ms
+        duration: 326.90475ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -155,7 +155,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/incidents/config/notification-templates/30c437ed-adeb-4fd8-b563-52df3f88ead8
+        url: https://api.datadoghq.com/api/v2/incidents/config/notification-templates/ce1cd744-0a13-4cd0-b05c-c46d7a688dc2
         method: GET
       response:
         proto: HTTP/1.1
@@ -165,13 +165,13 @@ interactions:
         trailer: {}
         content_length: 796
         uncompressed: false
-        body: '{"data":{"id":"30c437ed-adeb-4fd8-b563-52df3f88ead8","type":"notification_templates","attributes":{"category":"alert","content":"An incident has been declared.\n\nTitle: test-tpl-basic-1757516920\nSeverity: SEV-2\nAffected Services: web-service, database-service\nStatus: active\n\nPlease join the incident channel for updates.","created":"2025-09-10T15:08:43.536352Z","modified":"2025-09-10T15:08:43.536352Z","name":"test-tpl-basic-1757516920","subject":"SEV-2 Incident: test-tpl-basic-1757516920"},"relationships":{"created_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"incident_type":{"data":{"id":"2f289dcb-3937-476c-9e98-238386ef07cf","type":"incident_types"}},"last_modified_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}}}}}'
+        body: '{"data":{"id":"ce1cd744-0a13-4cd0-b05c-c46d7a688dc2","type":"notification_templates","attributes":{"category":"alert","content":"An incident has been declared.\n\nTitle: test-tpl-basic-1758619286\nSeverity: SEV-2\nAffected Services: web-service, database-service\nStatus: active\n\nPlease join the incident channel for updates.","created":"2025-09-23T09:21:27.426784Z","modified":"2025-09-23T09:21:27.426784Z","name":"test-tpl-basic-1758619286","subject":"SEV-2 Incident: test-tpl-basic-1758619286"},"relationships":{"created_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"incident_type":{"data":{"id":"d307b8a1-9835-4ba4-af5d-98f4906dcd3a","type":"incident_types"}},"last_modified_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 39.593292ms
+        duration: 293.022667ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -188,7 +188,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/incidents/config/notification-templates/30c437ed-adeb-4fd8-b563-52df3f88ead8
+        url: https://api.datadoghq.com/api/v2/incidents/config/notification-templates/ce1cd744-0a13-4cd0-b05c-c46d7a688dc2
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -202,7 +202,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 34.368209ms
+        duration: 452.671ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -219,7 +219,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/incidents/config/types/2f289dcb-3937-476c-9e98-238386ef07cf
+        url: https://api.datadoghq.com/api/v2/incidents/config/types/d307b8a1-9835-4ba4-af5d-98f4906dcd3a
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -233,7 +233,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 67.834083ms
+        duration: 208.967958ms
     - id: 7
       request:
         proto: HTTP/1.1
@@ -250,7 +250,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/incidents/config/notification-templates/30c437ed-adeb-4fd8-b563-52df3f88ead8
+        url: https://api.datadoghq.com/api/v2/incidents/config/notification-templates/ce1cd744-0a13-4cd0-b05c-c46d7a688dc2
         method: GET
       response:
         proto: HTTP/1.1
@@ -266,4 +266,4 @@ interactions:
                 - application/vnd.api+json
         status: 404 Not Found
         code: 404
-        duration: 51.028166ms
+        duration: 134.465416ms
