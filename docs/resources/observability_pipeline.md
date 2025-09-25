@@ -119,6 +119,7 @@ Optional:
 - `elasticsearch` (Block List) The `elasticsearch` destination writes logs to an Elasticsearch cluster. (see [below for nested schema](#nestedblock--config--destinations--elasticsearch))
 - `google_chronicle` (Block List) The `google_chronicle` destination sends logs to Google Chronicle. (see [below for nested schema](#nestedblock--config--destinations--google_chronicle))
 - `google_cloud_storage` (Block List) The `google_cloud_storage` destination stores logs in a Google Cloud Storage (GCS) bucket. (see [below for nested schema](#nestedblock--config--destinations--google_cloud_storage))
+- `google_pubsub` (Block List) The `google_pubsub` destination publishes logs to a Google Cloud Pub/Sub topic. (see [below for nested schema](#nestedblock--config--destinations--google_pubsub))
 - `microsoft_sentinel` (Block List) The `microsoft_sentinel` destination forwards logs to Microsoft Sentinel. (see [below for nested schema](#nestedblock--config--destinations--microsoft_sentinel))
 - `new_relic` (Block List) The `new_relic` destination sends logs to the New Relic platform. (see [below for nested schema](#nestedblock--config--destinations--new_relic))
 - `opensearch` (Block List) The `opensearch` destination writes logs to an OpenSearch cluster. (see [below for nested schema](#nestedblock--config--destinations--opensearch))
@@ -349,6 +350,41 @@ Required:
 
 - `name` (String) The metadata key.
 - `value` (String) The metadata value.
+
+
+
+<a id="nestedblock--config--destinations--google_pubsub"></a>
+### Nested Schema for `config.destinations.google_pubsub`
+
+Required:
+
+- `id` (String) The unique identifier for this component.
+- `inputs` (List of String) A list of component IDs whose output is used as the `input` for this component.
+- `project` (String) The GCP project ID that owns the Pub/Sub topic.
+- `topic` (String) The Pub/Sub topic name to publish logs to.
+
+Optional:
+
+- `auth` (Block, Optional) GCP credentials used to authenticate with Google Cloud Pub/Sub. (see [below for nested schema](#nestedblock--config--destinations--google_pubsub--auth))
+- `encoding` (String) Encoding format for log events. Valid values: `json`, `raw_message`.
+- `tls` (Block, Optional) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--destinations--google_pubsub--tls))
+
+<a id="nestedblock--config--destinations--google_pubsub--auth"></a>
+### Nested Schema for `config.destinations.google_pubsub.auth`
+
+Optional:
+
+- `credentials_file` (String) Path to the GCP service account key file.
+
+
+<a id="nestedblock--config--destinations--google_pubsub--tls"></a>
+### Nested Schema for `config.destinations.google_pubsub.tls`
+
+Optional:
+
+- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
+- `crt_file` (String) Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.
+- `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
 
 
 

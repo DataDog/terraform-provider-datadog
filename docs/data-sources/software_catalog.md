@@ -27,7 +27,7 @@ data "datadog_software_catalog" "test" {}
 - `filter_name` (String) Filter entities by name.
 - `filter_owner` (String) Filter entities by owner.
 - `filter_ref` (String) Filter entities by reference.
-- `filter_relation_type` (String) Filter entities by relation type.
+- `filter_relation_type` (String) Filter entities by relation type. Valid values are `RelationTypeOwns`, `RelationTypeOwnedBy`, `RelationTypeDependsOn`, `RelationTypeDependencyOf`, `RelationTypePartsOf`, `RelationTypeHasPart`, `RelationTypeOtherOwns`, `RelationTypeOtherOwnedBy`, `RelationTypeImplementedBy`, `RelationTypeImplements`.
 
 ### Read-Only
 
