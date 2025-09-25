@@ -64,6 +64,7 @@ provider "datadog" {
 - `http_client_retry_max_retries` (Number) The HTTP request maximum retry number. Defaults to 3.
 - `http_client_retry_timeout` (Number) The HTTP request retry timeout period. Defaults to 60 seconds.
 - `org_uuid` (String) The organization UUID; used for cloud-provider-based authentication. See the [Datadog API documentation](https://docs.datadoghq.com/api/v1/organizations/) for more information.
+- `store_sensitive_state` (String) Whether to expose API key values in Terraform state. Valid values are [`true`, `false`]. Defaults to `true` for backwards compatibility. When false, API key resources will not include the key value, requiring the use of ephemeral datadog_api_key resources instead.
 - `validate` (String) Enables validation of the provided API key during provider initialization. Valid values are [`true`, `false`]. Default is true. When false, api_key won't be checked.
 
 <a id="nestedblock--default_tags"></a>
