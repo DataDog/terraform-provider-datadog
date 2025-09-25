@@ -54,7 +54,7 @@ func (d *awsIntegrationExternalIDDataSource) Schema(_ context.Context, _ datasou
 				Description: "The AWS account ID of the integration to retrieve the external ID from.",
 				Required:    true,
 				Validators: []validator.String{
-					stringvalidator.RegexMatches(regexp.MustCompile(`^[0-9]{12}$`), "invalid aws_account_id"),
+					stringvalidator.RegexMatches(regexp.MustCompile(`^[0-9]{12}$`), "Must be a valid 12 digits AWS account ID"),
 				},
 			},
 			"external_id": schema.StringAttribute{

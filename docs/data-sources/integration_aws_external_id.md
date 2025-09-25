@@ -24,7 +24,7 @@ data "datadog_integration_aws_external_id" "example" {
 
 ### Required
 
-- `aws_account_id` (String) The AWS account ID of the integration to retrieve the external ID from.
+- `aws_account_id` (String) The AWS account ID of the integration to retrieve the external ID from. Must be a valid 12 digits AWS account ID.
 
 ### Read-Only
 
