@@ -33,6 +33,7 @@ type rumApplicationModel struct {
 	ClientToken                    types.String `tfsdk:"client_token"`
 	RumEventProcessingState        types.String `tfsdk:"rum_event_processing_state"`
 	ProductAnalyticsRetentionState types.String `tfsdk:"product_analytics_retention_state"`
+	ApiKeyID                       types.Int32  `tfsdk:"api_key_id"`
 }
 
 func NewRumApplicationResource() resource.Resource {
@@ -84,6 +85,10 @@ func (r *rumApplicationResource) Schema(_ context.Context, _ resource.SchemaRequ
 				},
 			},
 			"id": utils.ResourceIDAttribute(),
+			"api_key_id": schema.Int32Attribute{
+				Computed:    true,
+				Description: "ID of the API key associated with the application.",
+			},
 		},
 	}
 }
@@ -205,6 +210,10 @@ func (r *rumApplicationResource) updateState(ctx context.Context, state *rumAppl
 
 	if clientToken, ok := attributes.GetClientTokenOk(); ok {
 		state.ClientToken = types.StringValue(*clientToken)
+	}
+
+	if apiKeyID, ok := attributes.GetApiKeyIdOk(); ok {
+		state.ApiKeyID = types.Int32Value(*apiKeyID)
 	}
 
 	if name, ok := attributes.GetNameOk(); ok {

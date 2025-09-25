@@ -31,6 +31,8 @@ func TestAccDatadogRUMApplication_Basic(t *testing.T) {
 						"datadog_rum_application.some_app", "name", appName),
 					resource.TestCheckResourceAttr(
 						"datadog_rum_application.some_app", "type", "browser"),
+					resource.TestCheckResourceAttrSet(
+						"datadog_rum_application.some_app", "api_key_id"),
 				),
 			},
 			{
@@ -39,6 +41,8 @@ func TestAccDatadogRUMApplication_Basic(t *testing.T) {
 					testAccCheckDatadogRUMApplicationExists(providers.frameworkProvider, "datadog_rum_application.some_app"),
 					resource.TestCheckResourceAttr(
 						"datadog_rum_application.some_app", "name", appNameUpdated),
+					resource.TestCheckResourceAttrSet(
+						"datadog_rum_application.some_app", "api_key_id"),
 				),
 			},
 		},
