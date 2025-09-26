@@ -3,12 +3,12 @@
 page_title: "datadog_api_key Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Provides a Datadog API Key resource. This can be used to create and manage Datadog API Keys. Import functionality for this resource is deprecated and will be removed in a future release with prior notice. Securely store your API keys using a secret management system or use this resource to create and manage new API keys.
+  Provides a Datadog API Key resource. This can be used to create and manage Datadog API Keys. Import functionality for this resource is deprecated and will be removed in a future release with prior notice. For enhanced security when store_sensitive_state = false, use the ephemeral datadog_api_key resource to access key values without storing them in state.
 ---
 
 # datadog_api_key (Resource)
 
-Provides a Datadog API Key resource. This can be used to create and manage Datadog API Keys. Import functionality for this resource is deprecated and will be removed in a future release with prior notice. Securely store your API keys using a secret management system or use this resource to create and manage new API keys.
+Provides a Datadog API Key resource. This can be used to create and manage Datadog API Keys. Import functionality for this resource is deprecated and will be removed in a future release with prior notice. For enhanced security when `store_sensitive_state = false`, use the ephemeral `datadog_api_key` resource to access key values without storing them in state.
 
 ## Example Usage
 
@@ -33,7 +33,7 @@ resource "datadog_api_key" "foo" {
 ### Read-Only
 
 - `id` (String) The ID of this resource.
-- `key` (String, Sensitive) The value of the API Key.
+- `key` (String, Sensitive) The value of the API Key. This field is only populated when the provider's `store_sensitive_state` is set to `true` (default). When `store_sensitive_state` is `false`, use the ephemeral `datadog_api_key` resource to access the key value without storing it in state.
 
 ## Import
 
