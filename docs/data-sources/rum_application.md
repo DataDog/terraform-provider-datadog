@@ -23,6 +23,7 @@ Use this data source to retrieve a Datadog RUM Application.
 
 ### Read-Only
 
+- `api_key_id` (Number) ID of the API key associated with the application.
 - `client_token` (String) The client token.
 - `name` (String) Name of the RUM application.
 - `type` (String) Type of the RUM application. Supported values are `browser`, `ios`, `android`, `react-native`, `flutter`.
