@@ -31,7 +31,6 @@ type RumApplicationDataSourceModel struct {
 	Name        types.String `tfsdk:"name"`
 	Type        types.String `tfsdk:"type"`
 	ClientToken types.String `tfsdk:"client_token"`
-	ApiKeyID    types.Int32  `tfsdk:"api_key_id"`
 }
 
 type RumApplicationDataSource struct {
@@ -92,10 +91,6 @@ func (d *RumApplicationDataSource) Schema(_ context.Context, _ datasource.Schema
 			"client_token": schema.StringAttribute{
 				Computed:    true,
 				Description: "The client token.",
-			},
-			"api_key_id": schema.Int32Attribute{
-				Computed:    true,
-				Description: "ID of the API key associated with the application.",
 			},
 		},
 	}
@@ -170,10 +165,6 @@ func (d *RumApplicationDataSource) updateState(ctx context.Context, state *RumAp
 
 	if clientToken, ok := attributes.GetClientTokenOk(); ok {
 		state.ClientToken = types.StringValue(*clientToken)
-	}
-
-	if apiKeyID, ok := attributes.GetApiKeyIdOk(); ok {
-		state.ApiKeyID = types.Int32Value(*apiKeyID)
 	}
 
 	if name, ok := attributes.GetNameOk(); ok {

@@ -36,7 +36,6 @@ resource "datadog_rum_application" "rum_application" {
 
 ### Read-Only
 
-- `api_key_id` (Number) ID of the API key associated with the application.
 - `client_token` (String) The client token.
 - `id` (String) The ID of this resource.
 
