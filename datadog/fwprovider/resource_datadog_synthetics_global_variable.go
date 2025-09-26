@@ -34,19 +34,49 @@ type syntheticsGlobalVariableResource struct {
 	Auth context.Context
 }
 
+// Nested attribute types for synthetics global variables
+var parseTestOptionsAttrType = types.ObjectType{
+	AttrTypes: map[string]attr.Type{
+		"field":               types.StringType,
+		"type":                types.StringType,
+		"local_variable_name": types.StringType,
+		"parser": types.ListType{
+			ElemType: types.ObjectType{
+				AttrTypes: map[string]attr.Type{
+					"type":  types.StringType,
+					"value": types.StringType,
+				},
+			},
+		},
+	},
+}
+
+var optionsAttrType = types.ObjectType{
+	AttrTypes: map[string]attr.Type{
+		"totp_parameters": types.ListType{
+			ElemType: types.ObjectType{
+				AttrTypes: map[string]attr.Type{
+					"digits":           types.Int64Type,
+					"refresh_interval": types.Int64Type,
+				},
+			},
+		},
+	},
+}
+
 type syntheticsGlobalVariableModel struct {
-	Id               types.String                                    `tfsdk:"id"`
-	Name             types.String                                    `tfsdk:"name"`
-	Description      types.String                                    `tfsdk:"description"`
-	Tags             types.List                                      `tfsdk:"tags"`
-	Value            types.String                                    `tfsdk:"value"`
-	Secure           types.Bool                                      `tfsdk:"secure"`
-	ParseTestId      types.String                                    `tfsdk:"parse_test_id"`
-	ParseTestOptions []syntheticsGlobalVariableParseTestOptionsModel `tfsdk:"parse_test_options"`
-	Options          []syntheticsGlobalVariableOptionsModel          `tfsdk:"options"`
-	RestrictedRoles  types.Set                                       `tfsdk:"restricted_roles"`
-	IsTotp           types.Bool                                      `tfsdk:"is_totp"`
-	IsFido           types.Bool                                      `tfsdk:"is_fido"`
+	Id               types.String `tfsdk:"id"`
+	Name             types.String `tfsdk:"name"`
+	Description      types.String `tfsdk:"description"`
+	Tags             types.List   `tfsdk:"tags"`
+	Value            types.String `tfsdk:"value"`
+	Secure           types.Bool   `tfsdk:"secure"`
+	ParseTestId      types.String `tfsdk:"parse_test_id"`
+	ParseTestOptions types.List   `tfsdk:"parse_test_options"`
+	Options          types.List   `tfsdk:"options"`
+	RestrictedRoles  types.Set    `tfsdk:"restricted_roles"`
+	IsTotp           types.Bool   `tfsdk:"is_totp"`
+	IsFido           types.Bool   `tfsdk:"is_fido"`
 }
 
 type syntheticsGlobalVariableParseTestOptionsModel struct {
@@ -229,6 +259,248 @@ func (r *syntheticsGlobalVariableResource) ImportState(ctx context.Context, requ
 	resource.ImportStatePassthroughID(ctx, frameworkPath.Root("id"), request, response)
 }
 
+// convertParseTestOptions converts Terraform List to API type
+func convertParseTestOptions(ctx context.Context, opts types.List) ([]datadogV1.SyntheticsGlobalVariableParseTestOptions, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	if opts.IsNull() || opts.IsUnknown() {
+		return nil, diags
+	}
+
+	var elements []attr.Value
+	diags = opts.ElementsAs(ctx, &elements, false)
+	if diags.HasError() {
+		return nil, diags
+	}
+
+	var apiOptions []datadogV1.SyntheticsGlobalVariableParseTestOptions
+	for _, element := range elements {
+		obj := element.(types.Object)
+		attrs := obj.Attributes()
+
+		parseTestOption := datadogV1.NewSyntheticsGlobalVariableParseTestOptionsWithDefaults()
+
+		// Get field
+		if field, ok := attrs["field"].(types.String); ok && !field.IsNull() && !field.IsUnknown() {
+			parseTestOption.SetField(field.ValueString())
+		}
+
+		// Get type
+		if t, ok := attrs["type"].(types.String); ok && !t.IsNull() && !t.IsUnknown() {
+			parseTestOption.SetType(datadogV1.SyntheticsGlobalVariableParseTestOptionsType(t.ValueString()))
+		}
+
+		// Get local_variable_name
+		if localVarName, ok := attrs["local_variable_name"].(types.String); ok && !localVarName.IsNull() && !localVarName.IsUnknown() {
+			parseTestOption.SetLocalVariableName(localVarName.ValueString())
+		}
+
+		// Get parser
+		if parserList, ok := attrs["parser"].(types.List); ok && !parserList.IsNull() && !parserList.IsUnknown() {
+			var parserElements []attr.Value
+			d := parserList.ElementsAs(ctx, &parserElements, false)
+			diags.Append(d...)
+			if diags.HasError() {
+				return nil, diags
+			}
+
+			if len(parserElements) > 0 {
+				parserObj := parserElements[0].(types.Object)
+				parserAttrs := parserObj.Attributes()
+
+				parser := datadogV1.NewSyntheticsGlobalVariableParserWithDefaults()
+
+				if pType, ok := parserAttrs["type"].(types.String); ok && !pType.IsNull() && !pType.IsUnknown() {
+					parser.SetType(datadogV1.SyntheticsGlobalVariableParserType(pType.ValueString()))
+				}
+
+				if pValue, ok := parserAttrs["value"].(types.String); ok && !pValue.IsNull() && !pValue.IsUnknown() {
+					parser.SetValue(pValue.ValueString())
+				}
+
+				parseTestOption.SetParser(*parser)
+			}
+		}
+
+		apiOptions = append(apiOptions, *parseTestOption)
+	}
+	return apiOptions, diags
+}
+
+// convertApiParseTestOptions converts API type to Terraform List
+func convertApiParseTestOptions(ctx context.Context, opts *[]datadogV1.SyntheticsGlobalVariableParseTestOptions) (types.List, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	if opts == nil || len(*opts) == 0 {
+		return types.ListNull(parseTestOptionsAttrType), diags
+	}
+
+	var elements []attr.Value
+	for _, opt := range *opts {
+		// Create parser object
+		var parserAttrs map[string]attr.Value
+		if parser, ok := opt.GetParserOk(); ok {
+			parserAttrs = map[string]attr.Value{
+				"type":  types.StringValue(string(parser.GetType())),
+				"value": types.StringValue(parser.GetValue()),
+			}
+		} else {
+			parserAttrs = map[string]attr.Value{
+				"type":  types.StringNull(),
+				"value": types.StringNull(),
+			}
+		}
+
+		parserObj, d := types.ObjectValue(
+			map[string]attr.Type{
+				"type":  types.StringType,
+				"value": types.StringType,
+			},
+			parserAttrs,
+		)
+		diags.Append(d...)
+
+		// Create parser list (since parser is a list in the schema)
+		parserList, d := types.ListValue(
+			types.ObjectType{
+				AttrTypes: map[string]attr.Type{
+					"type":  types.StringType,
+					"value": types.StringType,
+				},
+			},
+			[]attr.Value{parserObj},
+		)
+		diags.Append(d...)
+
+		// Create main attributes
+		attrs := map[string]attr.Value{
+			"field":               types.StringValue(opt.GetField()),
+			"type":                types.StringValue(string(opt.GetType())),
+			"local_variable_name": types.StringNull(),
+			"parser":              parserList,
+		}
+
+		if localVarName, ok := opt.GetLocalVariableNameOk(); ok {
+			attrs["local_variable_name"] = types.StringValue(localVarName)
+		}
+
+		obj, d := types.ObjectValue(parseTestOptionsAttrType.AttrTypes, attrs)
+		diags.Append(d...)
+		elements = append(elements, obj)
+	}
+
+	if diags.HasError() {
+		return types.ListUnknown(parseTestOptionsAttrType), diags
+	}
+
+	return types.ListValueMust(parseTestOptionsAttrType, elements), diags
+}
+
+// convertOptions converts Terraform List to API type
+func convertOptions(ctx context.Context, opts types.List) (*datadogV1.SyntheticsGlobalVariableOptions, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	if opts.IsNull() || opts.IsUnknown() || opts.IsFullyNull() || opts.IsFullyUnknown() {
+		return nil, diags
+	}
+
+	var elements []attr.Value
+	diags = opts.ElementsAs(ctx, &elements, false)
+	if diags.HasError() {
+		return nil, diags
+	}
+
+	if len(elements) == 0 {
+		return nil, diags
+	}
+
+	obj := elements[0].(types.Object)
+	attrs := obj.Attributes()
+
+	options := datadogV1.NewSyntheticsGlobalVariableOptionsWithDefaults()
+
+	// Handle totp_parameters
+	if totpParamsList, ok := attrs["totp_parameters"].(types.List); ok && !totpParamsList.IsNull() && !totpParamsList.IsUnknown() {
+		var totpParamsElements []attr.Value
+		d := totpParamsList.ElementsAs(ctx, &totpParamsElements, false)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+
+		if len(totpParamsElements) > 0 {
+			totpParamsObj := totpParamsElements[0].(types.Object)
+			totpParamsAttrs := totpParamsObj.Attributes()
+
+			totpParams := datadogV1.NewSyntheticsGlobalVariableTOTPParametersWithDefaults()
+
+			if digits, ok := totpParamsAttrs["digits"].(types.Int64); ok && !digits.IsNull() && !digits.IsUnknown() {
+				totpParams.SetDigits(int32(digits.ValueInt64()))
+			}
+
+			if refreshInterval, ok := totpParamsAttrs["refresh_interval"].(types.Int64); ok && !refreshInterval.IsNull() && !refreshInterval.IsUnknown() {
+				totpParams.SetRefreshInterval(int32(refreshInterval.ValueInt64()))
+			}
+
+			options.SetTotpParameters(*totpParams)
+		}
+	}
+
+	return options, diags
+}
+
+// convertApiOptions converts API type to Terraform List
+func convertApiOptions(ctx context.Context, opts *datadogV1.SyntheticsGlobalVariableOptions) (types.List, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	if opts == nil {
+		return types.ListNull(optionsAttrType), diags
+	}
+
+	var elements []attr.Value
+
+	// Handle totp_parameters
+	var totpParamsElements []attr.Value
+	if totpParams, ok := opts.GetTotpParametersOk(); ok {
+		totpParamsAttrs := map[string]attr.Value{
+			"digits":           types.Int64Value(int64(totpParams.GetDigits())),
+			"refresh_interval": types.Int64Value(int64(totpParams.GetRefreshInterval())),
+		}
+
+		totpParamsObj, d := types.ObjectValue(
+			map[string]attr.Type{
+				"digits":           types.Int64Type,
+				"refresh_interval": types.Int64Type,
+			},
+			totpParamsAttrs,
+		)
+		diags.Append(d...)
+		totpParamsElements = []attr.Value{totpParamsObj}
+	}
+
+	totpParamsList, d := types.ListValue(
+		types.ObjectType{
+			AttrTypes: map[string]attr.Type{
+				"digits":           types.Int64Type,
+				"refresh_interval": types.Int64Type,
+			},
+		},
+		totpParamsElements,
+	)
+	diags.Append(d...)
+
+	// Create main attributes
+	attrs := map[string]attr.Value{
+		"totp_parameters": totpParamsList,
+	}
+
+	obj, d := types.ObjectValue(optionsAttrType.AttrTypes, attrs)
+	diags.Append(d...)
+	elements = append(elements, obj)
+
+	if diags.HasError() {
+		return types.ListUnknown(optionsAttrType), diags
+	}
+
+	return types.ListValueMust(optionsAttrType, elements), diags
+}
+
 func (r *syntheticsGlobalVariableResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
 	var state syntheticsGlobalVariableModel
 	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
@@ -356,15 +628,7 @@ func (r *syntheticsGlobalVariableResource) updateState(ctx context.Context, stat
 			state.Secure = types.BoolValue(*secure)
 		}
 		if options, ok := value.GetOptionsOk(); ok {
-
-			localVariableOptions := syntheticsGlobalVariableOptionsModel{}
-			if totpParameters, ok := options.GetTotpParametersOk(); ok {
-				localTotpParameters := syntheticsGlobalVariableTotpParametersModel{}
-				localTotpParameters.Digits = types.Int64Value(int64(totpParameters.GetDigits()))
-				localTotpParameters.RefreshInterval = types.Int64Value(int64(totpParameters.GetRefreshInterval()))
-				localVariableOptions.TotpParameters = []syntheticsGlobalVariableTotpParametersModel{localTotpParameters}
-			}
-			state.Options = []syntheticsGlobalVariableOptionsModel{localVariableOptions}
+			state.Options, _ = convertApiOptions(ctx, options)
 		}
 	}
 
@@ -376,24 +640,7 @@ func (r *syntheticsGlobalVariableResource) updateState(ctx context.Context, stat
 		state.ParseTestId = types.StringValue(*parseTestId)
 
 		if parseTestOptions, ok := resp.GetParseTestOptionsOk(); ok {
-			localParseTestOptions := syntheticsGlobalVariableParseTestOptionsModel{}
-			localParseTestOptions.Type = types.StringValue(string(parseTestOptions.GetType()))
-			if field, ok := parseTestOptions.GetFieldOk(); ok {
-				localParseTestOptions.Field = types.StringValue(*field)
-			}
-			if parser, ok := parseTestOptions.GetParserOk(); ok {
-				localParser := syntheticsGlobalVariableParserModel{}
-				localParser.Type = types.StringValue(string(parser.GetType()))
-				if value, ok := parser.GetValueOk(); ok {
-					localParser.Value = types.StringValue(*value)
-				}
-				localParseTestOptions.Parser = []syntheticsGlobalVariableParserModel{localParser}
-			}
-			if localVariableName, ok := parseTestOptions.GetLocalVariableNameOk(); ok {
-				localParseTestOptions.LocalVariableName = types.StringValue(*localVariableName)
-			}
-
-			state.ParseTestOptions = []syntheticsGlobalVariableParseTestOptionsModel{localParseTestOptions}
+			state.ParseTestOptions, _ = convertApiParseTestOptions(ctx, &[]datadogV1.SyntheticsGlobalVariableParseTestOptions{*parseTestOptions})
 		}
 	}
 }
@@ -432,32 +679,14 @@ func (r *syntheticsGlobalVariableResource) buildSyntheticsGlobalVariableRequestB
 	}
 
 	if !state.ParseTestId.IsNull() {
-		if len(state.ParseTestOptions) > 0 {
-			syntheticsGlobalVariableRequest.SetParseTestPublicId(state.ParseTestId.ValueString())
+		syntheticsGlobalVariableRequest.SetParseTestPublicId(state.ParseTestId.ValueString())
 
-			var parseTestOptions datadogV1.SyntheticsGlobalVariableParseTestOptions
-			if !state.ParseTestOptions[0].Field.IsNull() {
-				parseTestOptions.SetField(state.ParseTestOptions[0].Field.ValueString())
+		if !state.ParseTestOptions.IsNull() && !state.ParseTestOptions.IsUnknown() {
+			parseTestOptions, diags := convertParseTestOptions(ctx, state.ParseTestOptions)
+			if len(parseTestOptions) > 0 {
+				syntheticsGlobalVariableRequest.ParseTestOptions = &parseTestOptions[0]
 			}
-			if !state.ParseTestOptions[0].LocalVariableName.IsNull() {
-				parseTestOptions.SetLocalVariableName(state.ParseTestOptions[0].LocalVariableName.ValueString())
-			}
-			if !state.ParseTestOptions[0].Type.IsNull() {
-				parseTestOptions.SetType(datadogV1.SyntheticsGlobalVariableParseTestOptionsType(state.ParseTestOptions[0].Type.ValueString()))
-			}
-
-			if len(state.ParseTestOptions[0].Parser) > 0 {
-				var parser datadogV1.SyntheticsVariableParser
-
-				if !state.ParseTestOptions[0].Parser[0].Type.IsNull() {
-					parser.SetType(datadogV1.SyntheticsGlobalVariableParserType(state.ParseTestOptions[0].Parser[0].Type.ValueString()))
-				}
-				if !state.ParseTestOptions[0].Parser[0].Value.IsNull() {
-					parser.SetValue(state.ParseTestOptions[0].Parser[0].Value.ValueString())
-				}
-				parseTestOptions.Parser = &parser
-			}
-			syntheticsGlobalVariableRequest.ParseTestOptions = &parseTestOptions
+			diags.Append(diags...)
 		}
 	}
 
@@ -469,23 +698,14 @@ func (r *syntheticsGlobalVariableResource) buildSyntheticsGlobalVariableRequestB
 			value.SetSecure(state.Secure.ValueBool())
 		}
 
-		if len(state.Options) > 0 {
-			var options datadogV1.SyntheticsGlobalVariableOptions
-
-			if len(state.Options[0].TotpParameters) > 0 {
-				var totpParameters datadogV1.SyntheticsGlobalVariableTOTPParameters
-
-				if !state.Options[0].TotpParameters[0].Digits.IsNull() {
-					totpParameters.SetDigits(int32(state.Options[0].TotpParameters[0].Digits.ValueInt64()))
-				}
-				if !state.Options[0].TotpParameters[0].RefreshInterval.IsNull() {
-					totpParameters.SetRefreshInterval(int32(state.Options[0].TotpParameters[0].RefreshInterval.ValueInt64()))
-				}
-				options.TotpParameters = &totpParameters
+		if !state.Options.IsNull() && !state.Options.IsUnknown() {
+			options, diags := convertOptions(ctx, state.Options)
+			diags.Append(diags...)
+			if options != nil {
+				value.SetOptions(*options)
 			}
-			value.Options = &options
 		}
-		syntheticsGlobalVariableRequest.Value = &value
+		syntheticsGlobalVariableRequest.SetValue(value)
 	}
 
 	return syntheticsGlobalVariableRequest, diags
