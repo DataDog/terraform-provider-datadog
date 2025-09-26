@@ -195,6 +195,20 @@ func TestAccDatadogSyntheticsGlobalVariableFromTest_LocalVariable(t *testing.T) 
 	})
 }
 
+func TestAccDatadogSyntheticsGlobalVariable_DynamicBlocks(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testSyntheticsGlobalVariableResourceIsDestroyed(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			createSyntheticsGlobalVariableDynamicBlocksStep(ctx, providers.frameworkProvider, t),
+		},
+	})
+}
+
 func createSyntheticsGlobalVariableStep(ctx context.Context, accProvider *fwprovider.FrameworkProvider, t *testing.T) resource.TestStep {
 	variableName := getUniqueVariableName(ctx, t)
 	return resource.TestStep{
@@ -692,6 +706,112 @@ func testSyntheticsGlobalVariableResourceExists(accProvider *fwprovider.Framewor
 		}
 		return nil
 	}
+}
+
+func createSyntheticsGlobalVariableDynamicBlocksStep(ctx context.Context, accProvider *fwprovider.FrameworkProvider, t *testing.T) resource.TestStep {
+	variableName := getUniqueVariableName(ctx, t)
+	return resource.TestStep{
+		Config: createSyntheticsGlobalVariableDynamicBlocksConfig(variableName),
+		Check: resource.ComposeTestCheckFunc(
+			testSyntheticsGlobalVariableResourceExists(accProvider),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_global_variable.foo", "name", variableName),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_global_variable.foo", "description", "a global variable with dynamic blocks"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_global_variable.foo", "tags.#", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_global_variable.foo", "tags.0", "foo:bar"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_global_variable.foo", "tags.1", "baz"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_global_variable.foo", "value", ""),
+			resource.TestCheckResourceAttrSet(
+				"datadog_synthetics_global_variable.foo", "parse_test_id"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_global_variable.foo", "parse_test_options.0.type", "http_header"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_global_variable.foo", "parse_test_options.0.field", "content-type"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_global_variable.foo", "parse_test_options.0.parser.0.type", "regex"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_global_variable.foo", "parse_test_options.0.parser.0.value", ".*"),
+		),
+	}
+}
+
+func createSyntheticsGlobalVariableDynamicBlocksConfig(uniq string) string {
+	return fmt.Sprintf(`
+locals {
+  parse_options = [{
+    type  = "http_header"
+    field = "content-type"
+    parser = [{
+      type  = "regex"
+      value = ".*"
+    }]
+  }]
+}
+
+resource "datadog_synthetics_test" "bar" {
+	type = "api"
+	subtype = "http"
+
+	request_definition {
+		method = "GET"
+		url = "https://www.datadoghq.com"
+		timeout = 30
+	}
+
+	assertion {
+		type = "header"
+		property = "content-type"
+		operator = "contains"
+		target = "application/json"
+	}
+
+	locations = [ "aws:eu-central-1" ]
+
+	options_list {
+		tick_every = 60
+		follow_redirects = true
+		min_failure_duration = 0
+		min_location_failed = 1
+
+		monitor_options {
+			renotify_interval = 120
+		}
+	}
+
+	name = "%[1]s"
+	message = ""
+	tags = []
+
+	status = "paused"
+}
+
+resource "datadog_synthetics_global_variable" "foo" {
+	name = "%[1]s"
+	description = "a global variable with dynamic blocks"
+	tags = ["foo:bar", "baz"]
+	value = ""
+	parse_test_id = datadog_synthetics_test.bar.id
+
+	dynamic "parse_test_options" {
+		for_each = local.parse_options
+		content {
+			type  = parse_test_options.value.type
+			field = parse_test_options.value.field
+			dynamic "parser" {
+				for_each = parse_test_options.value.parser
+				content {
+					type  = parser.value.type
+					value = parser.value.value
+				}
+			}
+		}
+	}
+}`, uniq)
 }
 
 func testSyntheticsGlobalVariableResourceIsDestroyed(accProvider *fwprovider.FrameworkProvider) resource.TestCheckFunc {
