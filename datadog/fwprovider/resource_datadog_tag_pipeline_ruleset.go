@@ -489,6 +489,16 @@ func (r *tagPipelineRulesetResource) Update(ctx context.Context, req resource.Up
 
 	setModelFromRulesetResp(&plan, apiResp)
 
+	// Ensure all computed fields are properly set after update
+	// If position is still unknown/null, do a fresh read to get the latest state
+	if plan.Position.IsNull() || plan.Position.IsUnknown() {
+		readResp, _, readErr := r.Api.GetRuleset(r.Auth, rulesetId)
+		if readErr == nil {
+			setModelFromRulesetResp(&plan, readResp)
+		}
+		// If read fails, we'll continue with what we have from the update response
+	}
+
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 }
 
@@ -597,9 +607,18 @@ func buildCreateRulesetRequestFromModel(plan tagPipelineRulesetModel) datadogV2.
 	}
 
 	// Build attributes
-	attributes := datadogV2.CreateRulesetRequestDataAttributes{
-		Rules: rules,
+	attributes := datadogV2.CreateRulesetRequestDataAttributes{}
+
+	// Always set rules, but use nil for empty rulesets to properly represent absence
+	// This allows rulesets with no rules to be created without causing API errors
+	if len(rules) > 0 {
+		attributes.Rules = rules
+	} else {
+		// For empty rulesets, set an empty array explicitly using make
+		// The API requires the rules field to be present, even if empty
+		attributes.Rules = make([]datadogV2.CreateRulesetRequestDataAttributesRulesItems, 0)
 	}
+
 	if !plan.Enabled.IsNull() {
 		attributes.Enabled = plan.Enabled.ValueBoolPointer()
 	}
@@ -706,7 +725,16 @@ func buildUpdateRulesetRequestFromModel(plan tagPipelineRulesetModel) datadogV2.
 	attributes := datadogV2.UpdateRulesetRequestDataAttributes{
 		Enabled:     plan.Enabled.ValueBool(),
 		LastVersion: plan.Version.ValueInt64Pointer(),
-		Rules:       rules,
+	}
+
+	// Always include the rules field - use empty array for rulesets with no rules
+	// The API accepts empty arrays: []
+	if len(rules) > 0 {
+		attributes.Rules = rules
+	} else {
+		// For empty rulesets, set an empty array explicitly using make
+		// The API requires the rules field to be present, even if empty
+		attributes.Rules = make([]datadogV2.UpdateRulesetRequestDataAttributesRulesItems, 0)
 	}
 
 	// Add name via AdditionalProperties since it's not in the explicit struct fields
@@ -752,6 +780,7 @@ func setModelFromRulesetResp(model *tagPipelineRulesetModel, apiResp datadogV2.R
 		}
 	}
 	model.Enabled = types.BoolValue(attr.Enabled)
+	// Always set position, even if it's 0 - this prevents "unknown value" errors
 	model.Position = types.Int64Value(int64(attr.Position))
 	model.Version = types.Int64Value(attr.Version)
 

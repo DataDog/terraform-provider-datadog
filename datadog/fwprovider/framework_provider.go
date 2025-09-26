@@ -93,6 +93,7 @@ var Resources = []func() resource.Resource{
 	NewComplianceCustomFrameworkResource,
 	NewCostBudgetResource,
 	NewTagPipelineRulesetResource,
+	NewTagPipelineRulesetOrderResource,
 	NewCSMThreatsAgentRuleResource,
 	NewCSMThreatsPolicyResource,
 	NewAppKeyRegistrationResource,
