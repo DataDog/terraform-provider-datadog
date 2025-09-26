@@ -26,15 +26,17 @@ func NewApplicationKeyResource() resource.Resource {
 }
 
 type applicationKeyResourceModel struct {
-	ID     types.String `tfsdk:"id"`
-	Name   types.String `tfsdk:"name"`
-	Key    types.String `tfsdk:"key"`
-	Scopes types.Set    `tfsdk:"scopes"`
+	ID                     types.String `tfsdk:"id"`
+	Name                   types.String `tfsdk:"name"`
+	Key                    types.String `tfsdk:"key"`
+	Scopes                 types.Set    `tfsdk:"scopes"`
+	EnableActionsApiAccess types.Bool   `tfsdk:"enable_actions_api_access"`
 }
 
 type applicationKeyResource struct {
-	Api  *datadogV2.KeyManagementApi
-	Auth context.Context
+	Api       *datadogV2.KeyManagementApi
+	ActionApi *datadogV2.ActionConnectionApi
+	Auth      context.Context
 }
 
 func (r *applicationKeyResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
@@ -69,6 +71,10 @@ func (r *applicationKeyResource) Schema(_ context.Context, _ resource.SchemaRequ
 					setvalidator.SizeAtLeast(1),
 				},
 			},
+			"enable_actions_api_access": schema.BoolAttribute{
+				Description: "(Preview) Enable Actions API access for this application key. When true, the key will be automatically registered for use with Action Connection, App Builder, and Workflow Automation. Defaults to `false`.",
+				Optional:    true,
+			},
 			"id": utils.ResourceIDAttribute(),
 		},
 	}
@@ -77,6 +83,7 @@ func (r *applicationKeyResource) Schema(_ context.Context, _ resource.SchemaRequ
 func (r *applicationKeyResource) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
 	providerData := request.ProviderData.(*FrameworkProvider)
 	r.Api = providerData.DatadogApiInstances.GetKeyManagementApiV2()
+	r.ActionApi = providerData.DatadogApiInstances.GetActionConnectionApiV2()
 	r.Auth = providerData.Auth
 }
 
@@ -99,6 +106,14 @@ func (r *applicationKeyResource) Create(ctx context.Context, request resource.Cr
 	applicationKeyData := resp.GetData()
 	state.ID = types.StringValue(applicationKeyData.GetId())
 	r.updateState(ctx, &state, &applicationKeyData)
+
+	// Handle Actions API access registration if enabled
+	if !state.EnableActionsApiAccess.IsNull() && state.EnableActionsApiAccess.ValueBool() {
+		if err := r.registerForActionsApi(state.ID.ValueString()); err != nil {
+			response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error registering application key for Actions API access"))
+			return
+		}
+	}
 
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 
@@ -124,17 +139,23 @@ func (r *applicationKeyResource) Read(ctx context.Context, request resource.Read
 	applicationKeyData := resp.GetData()
 	r.updateState(ctx, &state, &applicationKeyData)
 
+	// Check Actions API registration status
+	isRegistered := r.isRegisteredForActionsApi(state.ID.ValueString())
+	state.EnableActionsApiAccess = types.BoolValue(isRegistered)
+
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
 func (r *applicationKeyResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
 	var state applicationKeyResourceModel
-	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
+	var plan applicationKeyResourceModel
+	response.Diagnostics.Append(request.Plan.Get(ctx, &plan)...)
+	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
 	}
 
-	resp, _, err := r.Api.UpdateCurrentUserApplicationKey(r.Auth, state.ID.ValueString(), *r.buildDatadogApplicationKeyUpdateV2Struct(&state))
+	resp, _, err := r.Api.UpdateCurrentUserApplicationKey(r.Auth, state.ID.ValueString(), *r.buildDatadogApplicationKeyUpdateV2Struct(&plan))
 
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error updating application key"))
@@ -142,10 +163,28 @@ func (r *applicationKeyResource) Update(ctx context.Context, request resource.Up
 	}
 
 	applicationKeyData := resp.GetData()
-	state.ID = types.StringValue(applicationKeyData.GetId())
-	r.updateState(ctx, &state, &applicationKeyData)
+	plan.ID = types.StringValue(applicationKeyData.GetId())
+	r.updateState(ctx, &plan, &applicationKeyData)
 
-	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+	// Handle Actions API access changes
+	oldEnabled := !state.EnableActionsApiAccess.IsNull() && state.EnableActionsApiAccess.ValueBool()
+	newEnabled := !plan.EnableActionsApiAccess.IsNull() && plan.EnableActionsApiAccess.ValueBool()
+
+	if oldEnabled != newEnabled {
+		if newEnabled {
+			if err := r.registerForActionsApi(plan.ID.ValueString()); err != nil {
+				response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error registering application key for Actions API access"))
+				return
+			}
+		} else {
+			if err := r.unregisterFromActionsApi(plan.ID.ValueString()); err != nil {
+				response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error unregistering application key from Actions API access"))
+				return
+			}
+		}
+	}
+
+	response.Diagnostics.Append(response.State.Set(ctx, &plan)...)
 }
 
 func (r *applicationKeyResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
@@ -153,6 +192,14 @@ func (r *applicationKeyResource) Delete(ctx context.Context, request resource.De
 	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
+	}
+
+	// Unregister from Actions API if registered
+	if !state.EnableActionsApiAccess.IsNull() && state.EnableActionsApiAccess.ValueBool() {
+		if err := r.unregisterFromActionsApi(state.ID.ValueString()); err != nil {
+			// Log warning but don't fail deletion
+			response.Diagnostics.AddWarning("Failed to unregister from Actions API", err.Error())
+		}
 	}
 
 	if _, err := r.Api.DeleteCurrentUserApplicationKey(r.Auth, state.ID.ValueString()); err != nil {
@@ -197,4 +244,22 @@ func getScopesFromStateAttribute(scopes types.Set) []string {
 		scopesList = append(scopesList, scope.(types.String).ValueString())
 	}
 	return scopesList
+}
+
+// registerForActionsApi registers the application key for Actions API access
+func (r *applicationKeyResource) registerForActionsApi(keyId string) error {
+	_, _, err := r.ActionApi.RegisterAppKey(r.Auth, keyId)
+	return err
+}
+
+// unregisterFromActionsApi unregisters the application key from Actions API access
+func (r *applicationKeyResource) unregisterFromActionsApi(keyId string) error {
+	_, err := r.ActionApi.UnregisterAppKey(r.Auth, keyId)
+	return err
+}
+
+// isRegisteredForActionsApi checks if the application key is registered for Actions API access
+func (r *applicationKeyResource) isRegisteredForActionsApi(keyId string) bool {
+	_, _, err := r.ActionApi.GetAppKeyRegistration(r.Auth, keyId)
+	return err == nil
 }
