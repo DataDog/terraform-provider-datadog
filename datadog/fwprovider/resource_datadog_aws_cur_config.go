@@ -60,7 +60,7 @@ func (r *awsCurConfigResource) Schema(_ context.Context, _ resource.SchemaReques
 		Attributes: map[string]schema.Attribute{
 			"account_id": schema.StringAttribute{
 				Required:    true,
-				Description: "The AWS account ID of your billing/payer account. For AWS Organizations, this is typically the master payer account ID.",
+				Description: "The AWS account ID of your billing/payer account. For AWS Organizations, this is typically the management account ID.",
 			},
 			"bucket_name": schema.StringAttribute{
 				Required:    true,
