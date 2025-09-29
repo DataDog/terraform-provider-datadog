@@ -34,6 +34,7 @@ Read-Only:
 
 - `enabled` (Boolean) Whether the rule is enabled.
 - `mapping` (Block, Read-only) The mapping configuration for the rule. (see [below for nested schema](#nestedblock--rules--mapping))
+- `metadata` (Map of String) Rule metadata key-value pairs.
 - `name` (String) The name of the rule.
 - `query` (Block, Read-only) The query configuration for the rule. (see [below for nested schema](#nestedblock--rules--query))
 - `reference_table` (Block, Read-only) The reference table configuration for the rule. (see [below for nested schema](#nestedblock--rules--reference_table))
@@ -54,6 +55,7 @@ Read-Only:
 Read-Only:
 
 - `addition` (Block, Read-only) The addition configuration for the query. (see [below for nested schema](#nestedblock--rules--query--addition))
+- `case_insensitivity` (Boolean) Whether the query matching is case insensitive.
 - `if_not_exists` (Boolean) Whether to apply the query only if the key doesn't exist.
 - `query` (String) The query string.
 
