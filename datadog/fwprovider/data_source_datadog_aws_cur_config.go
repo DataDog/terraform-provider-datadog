@@ -57,55 +57,55 @@ func (d *datadogAwsCurConfigDataSource) Metadata(_ context.Context, request data
 
 func (d *datadogAwsCurConfigDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, response *datasource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "Use this data source to retrieve information about a specific Datadog AWS CUR (Cost and Usage Report) configuration.",
+		Description: "Use this data source to retrieve information about a specific Datadog AWS CUR (Cost and Usage Report) configuration. This allows you to fetch details about an existing Cloud Cost Management configuration for AWS billing data access.",
 		Attributes: map[string]schema.Attribute{
 			// Datasource ID
 			"id": utils.ResourceIDAttribute(),
 			// Query Parameters
 			"cloud_account_id": schema.Int64Attribute{
 				Required:    true,
-				Description: "The cloud account ID of the AWS CUR config to retrieve.",
+				Description: "The Datadog cloud account ID for the AWS CUR configuration you want to retrieve information about.",
 			},
 			// Computed values
 			"account_id": schema.StringAttribute{
 				Computed:    true,
-				Description: "The `attributes` `account_id`.",
+				Description: "The AWS account ID associated with this CUR configuration.",
 			},
 			"bucket_name": schema.StringAttribute{
 				Computed:    true,
-				Description: "The `attributes` `bucket_name`.",
+				Description: "The S3 bucket name where Cost and Usage Report files are stored.",
 			},
 			"bucket_region": schema.StringAttribute{
 				Computed:    true,
-				Description: "The `attributes` `bucket_region`.",
+				Description: "The AWS region where the S3 bucket is located.",
 			},
 			"created_at": schema.StringAttribute{
 				Computed:    true,
-				Description: "The `attributes` `created_at`.",
+				Description: "The timestamp when the CUR configuration was created.",
 			},
 			"report_name": schema.StringAttribute{
 				Computed:    true,
-				Description: "The `attributes` `report_name`.",
+				Description: "The name of the AWS Cost and Usage Report.",
 			},
 			"report_prefix": schema.StringAttribute{
 				Computed:    true,
-				Description: "The `attributes` `report_prefix`.",
+				Description: "The S3 key prefix where CUR files are stored within the bucket.",
 			},
 			"status": schema.StringAttribute{
 				Computed:    true,
-				Description: "The `attributes` `status`.",
+				Description: "The current status of the CUR configuration (e.g., active, archived).",
 			},
 			"status_updated_at": schema.StringAttribute{
 				Computed:    true,
-				Description: "The `attributes` `status_updated_at`.",
+				Description: "The timestamp when the CUR configuration status was last updated.",
 			},
 			"updated_at": schema.StringAttribute{
 				Computed:    true,
-				Description: "The `attributes` `updated_at`.",
+				Description: "The timestamp when the CUR configuration was last updated.",
 			},
 			"error_messages": schema.ListAttribute{
 				Computed:    true,
-				Description: "The `attributes` `error_messages`.",
+				Description: "List of error messages if the CUR configuration encountered any issues.",
 				ElementType: types.StringType,
 			},
 		},
@@ -115,16 +115,16 @@ func (d *datadogAwsCurConfigDataSource) Schema(_ context.Context, _ datasource.S
 				Attributes: map[string]schema.Attribute{
 					"include_new_accounts": schema.BoolAttribute{
 						Computed:    true,
-						Description: "The `account_filters` `include_new_accounts`.",
+						Description: "Whether new member accounts are automatically included in cost analysis.",
 					},
 					"excluded_accounts": schema.ListAttribute{
 						Computed:    true,
-						Description: "The `account_filters` `excluded_accounts`.",
+						Description: "List of AWS account IDs excluded from cost analysis.",
 						ElementType: types.StringType,
 					},
 					"included_accounts": schema.ListAttribute{
 						Computed:    true,
-						Description: "The `account_filters` `included_accounts`.",
+						Description: "List of AWS account IDs included in cost analysis.",
 						ElementType: types.StringType,
 					},
 				},

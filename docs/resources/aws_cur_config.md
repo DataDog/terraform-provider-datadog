@@ -3,12 +3,12 @@
 page_title: "datadog_aws_cur_config Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Provides a Datadog AwsCurConfig resource. This can be used to create and manage Datadog aws_cur_config.
+  Provides a Datadog AWS CUR (Cost and Usage Report) configuration resource. This enables Datadog Cloud Cost Management to access your AWS billing data by configuring the connection to your AWS Cost and Usage Report. Prerequisites: An active Datadog AWS integration, existing AWS Cost and Usage Report, and proper S3 bucket permissions.
 ---
 
 # datadog_aws_cur_config (Resource)
 
-Provides a Datadog AwsCurConfig resource. This can be used to create and manage Datadog aws_cur_config.
+Provides a Datadog AWS CUR (Cost and Usage Report) configuration resource. This enables Datadog Cloud Cost Management to access your AWS billing data by configuring the connection to your AWS Cost and Usage Report. **Prerequisites**: An active Datadog AWS integration, existing AWS Cost and Usage Report, and proper S3 bucket permissions.
 
 ## Example Usage
 
@@ -35,15 +35,15 @@ resource "datadog_aws_cur_config" "foo" {
 
 ### Required
 
-- `account_id` (String) The AWS account ID.
-- `bucket_name` (String) The AWS bucket name used to store the Cost and Usage Report.
-- `report_name` (String) The name of the Cost and Usage Report.
-- `report_prefix` (String) The report prefix used for the Cost and Usage Report.
+- `account_id` (String) The AWS account ID of your billing/payer account. For AWS Organizations, this is typically the master payer account ID.
+- `bucket_name` (String) The S3 bucket name where your AWS Cost and Usage Report files are stored. This bucket must have appropriate IAM permissions for Datadog access and should be in the same AWS account as the CUR report.
+- `report_name` (String) The exact name of your AWS Cost and Usage Report as configured in AWS Billing preferences. This must match the report name exactly as it appears in your AWS billing settings.
+- `report_prefix` (String) The S3 key prefix where your Cost and Usage Report files are stored within the bucket (e.g., 'cur-reports/', 'billing/cur/').
 
 ### Optional
 
 - `account_filters` (Block, Optional) (see [below for nested schema](#nestedblock--account_filters))
-- `bucket_region` (String) The region the bucket is located in.
+- `bucket_region` (String) The AWS region where the S3 bucket containing your Cost and Usage Report is located (e.g., us-east-1, eu-west-1).
 
 ### Read-Only
 
@@ -54,9 +54,9 @@ resource "datadog_aws_cur_config" "foo" {
 
 Optional:
 
-- `excluded_accounts` (List of String) The AWS account IDs to be excluded from your billing dataset. This field is used when `include_new_accounts` is `true`.
-- `include_new_accounts` (Boolean) Whether or not to automatically include new member accounts by default in your billing dataset.
-- `included_accounts` (List of String) The AWS account IDs to be included in your billing dataset. This field is used when `include_new_accounts` is `false`.
+- `excluded_accounts` (List of String) List of AWS account IDs to exclude from cost analysis. Only used when `include_new_accounts` is `true`. Cannot be used together with `included_accounts`.
+- `include_new_accounts` (Boolean) Whether to automatically include new member accounts in your cost analysis. When `true`, use `excluded_accounts` to specify accounts to exclude. When `false`, use `included_accounts` to specify only the accounts to include.
+- `included_accounts` (List of String) List of AWS account IDs to include in cost analysis. Only used when `include_new_accounts` is `false`. Cannot be used together with `excluded_accounts`.
 
 ## Import
 

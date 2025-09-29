@@ -56,27 +56,27 @@ func (r *awsCurConfigResource) Metadata(_ context.Context, request resource.Meta
 
 func (r *awsCurConfigResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "Provides a Datadog AwsCurConfig resource. This can be used to create and manage Datadog aws_cur_config.",
+		Description: "Provides a Datadog AWS CUR (Cost and Usage Report) configuration resource. This enables Datadog Cloud Cost Management to access your AWS billing data by configuring the connection to your AWS Cost and Usage Report. **Prerequisites**: An active Datadog AWS integration, existing AWS Cost and Usage Report, and proper S3 bucket permissions.",
 		Attributes: map[string]schema.Attribute{
 			"account_id": schema.StringAttribute{
 				Required:    true,
-				Description: "The AWS account ID.",
+				Description: "The AWS account ID of your billing/payer account. For AWS Organizations, this is typically the master payer account ID.",
 			},
 			"bucket_name": schema.StringAttribute{
 				Required:    true,
-				Description: "The AWS bucket name used to store the Cost and Usage Report.",
+				Description: "The S3 bucket name where your AWS Cost and Usage Report files are stored. This bucket must have appropriate IAM permissions for Datadog access and should be in the same AWS account as the CUR report.",
 			},
 			"bucket_region": schema.StringAttribute{
 				Optional:    true,
-				Description: "The region the bucket is located in.",
+				Description: "The AWS region where the S3 bucket containing your Cost and Usage Report is located (e.g., us-east-1, eu-west-1).",
 			},
 			"report_name": schema.StringAttribute{
 				Required:    true,
-				Description: "The name of the Cost and Usage Report.",
+				Description: "The exact name of your AWS Cost and Usage Report as configured in AWS Billing preferences. This must match the report name exactly as it appears in your AWS billing settings.",
 			},
 			"report_prefix": schema.StringAttribute{
 				Required:    true,
-				Description: "The report prefix used for the Cost and Usage Report.",
+				Description: "The S3 key prefix where your Cost and Usage Report files are stored within the bucket (e.g., 'cur-reports/', 'billing/cur/').",
 			},
 			"id": utils.ResourceIDAttribute(),
 		},
@@ -85,16 +85,16 @@ func (r *awsCurConfigResource) Schema(_ context.Context, _ resource.SchemaReques
 				Attributes: map[string]schema.Attribute{
 					"include_new_accounts": schema.BoolAttribute{
 						Optional:    true,
-						Description: "Whether or not to automatically include new member accounts by default in your billing dataset.",
+						Description: "Whether to automatically include new member accounts in your cost analysis. When `true`, use `excluded_accounts` to specify accounts to exclude. When `false`, use `included_accounts` to specify only the accounts to include.",
 					},
 					"excluded_accounts": schema.ListAttribute{
 						Optional:    true,
-						Description: "The AWS account IDs to be excluded from your billing dataset. This field is used when `include_new_accounts` is `true`.",
+						Description: "List of AWS account IDs to exclude from cost analysis. Only used when `include_new_accounts` is `true`. Cannot be used together with `included_accounts`.",
 						ElementType: types.StringType,
 					},
 					"included_accounts": schema.ListAttribute{
 						Optional:    true,
-						Description: "The AWS account IDs to be included in your billing dataset. This field is used when `include_new_accounts` is `false`.",
+						Description: "List of AWS account IDs to include in cost analysis. Only used when `include_new_accounts` is `false`. Cannot be used together with `excluded_accounts`.",
 						ElementType: types.StringType,
 					},
 				},
