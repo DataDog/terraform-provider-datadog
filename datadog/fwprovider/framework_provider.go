@@ -99,6 +99,7 @@ var Resources = []func() resource.Resource{
 	NewIncidentTypeResource,
 	NewIncidentNotificationTemplateResource,
 	NewIncidentNotificationRuleResource,
+	NewAwsCurConfigResource,
 }
 
 var Datasources = []func() datasource.DataSource{
@@ -139,6 +140,7 @@ var Datasources = []func() datasource.DataSource{
 	NewIncidentTypeDataSource,
 	NewIncidentNotificationTemplateDataSource,
 	NewIncidentNotificationRuleDataSource,
+	NewDatadogAwsCurConfigDataSource,
 }
 
 // FrameworkProvider struct
@@ -596,6 +598,12 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateIncidentNotificationRule", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteIncidentNotificationRule", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.ListIncidentNotificationRules", true)
+
+	// Enable AWS CUR Config
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateCostAWSCURConfig", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.ListCostAWSCURConfigs", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateCostAWSCURConfig", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteCostAWSCURConfig", true)
 
 	if !config.ApiUrl.IsNull() && config.ApiUrl.ValueString() != "" {
 		parsedAPIURL, parseErr := url.Parse(config.ApiUrl.ValueString())
