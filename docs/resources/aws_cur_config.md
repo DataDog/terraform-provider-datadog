@@ -35,7 +35,7 @@ resource "datadog_aws_cur_config" "foo" {
 
 ### Required
 
-- `account_id` (String) The AWS account ID of your billing/payer account. For AWS Organizations, this is typically the master payer account ID.
+- `account_id` (String) The AWS account ID of your billing/payer account. For AWS Organizations, this is typically the management account ID.
 - `bucket_name` (String) The S3 bucket name where your AWS Cost and Usage Report files are stored. This bucket must have appropriate IAM permissions for Datadog access and should be in the same AWS account as the CUR report.
 - `report_name` (String) The exact name of your AWS Cost and Usage Report as configured in AWS Billing preferences. This must match the report name exactly as it appears in your AWS billing settings.
 - `report_prefix` (String) The S3 key prefix where your Cost and Usage Report files are stored within the bucket (e.g., 'cur-reports/', 'billing/cur/').
