@@ -8,8 +8,7 @@ resource "datadog_aws_cur_config" "foo" {
   report_prefix = "dd-report-prefix"
 
   account_filters {
+    include_new_accounts = true
     excluded_accounts    = ["123456789123", "123456789143"]
-    include_new_accounts = True
-    included_accounts    = ["123456789123", "123456789143"]
   }
 }
