@@ -24,7 +24,7 @@ Use this data source to retrieve information about an existing Datadog tag pipel
 - `enabled` (Boolean) Whether the ruleset is enabled.
 - `name` (String) The name of the ruleset.
 - `position` (Number) The position of the ruleset in the pipeline.
-- `rules` (Block List) The rules in the ruleset. See [below for nested schema](#nestedblock--rules).
+- `rules` (Block List) The rules in the ruleset. (see [below for nested schema](#nestedblock--rules))
 - `version` (Number) The version of the ruleset.
 
 <a id="nestedblock--rules"></a>
@@ -33,11 +33,11 @@ Use this data source to retrieve information about an existing Datadog tag pipel
 Read-Only:
 
 - `enabled` (Boolean) Whether the rule is enabled.
-- `mapping` (Block, Read-only) The mapping configuration for the rule. See [below for nested schema](#nestedblock--rules--mapping).
+- `mapping` (Block, Read-only) The mapping configuration for the rule. (see [below for nested schema](#nestedblock--rules--mapping))
 - `metadata` (Map of String) Rule metadata key-value pairs.
 - `name` (String) The name of the rule.
-- `query` (Block, Read-only) The query configuration for the rule. See [below for nested schema](#nestedblock--rules--query).
-- `reference_table` (Block, Read-only) The reference table configuration for the rule. See [below for nested schema](#nestedblock--rules--reference_table).
+- `query` (Block, Read-only) The query configuration for the rule. (see [below for nested schema](#nestedblock--rules--query))
+- `reference_table` (Block, Read-only) The reference table configuration for the rule. (see [below for nested schema](#nestedblock--rules--reference_table))
 
 <a id="nestedblock--rules--mapping"></a>
 ### Nested Schema for `rules.mapping`
@@ -54,7 +54,7 @@ Read-Only:
 
 Read-Only:
 
-- `addition` (Block, Read-only) The addition configuration for the query. See [below for nested schema](#nestedblock--rules--query--addition).
+- `addition` (Block, Read-only) The addition configuration for the query. (see [below for nested schema](#nestedblock--rules--query--addition))
 - `case_insensitivity` (Boolean) Whether the query matching is case insensitive.
 - `if_not_exists` (Boolean) Whether to apply the query only if the key doesn't exist.
 - `query` (String) The query string.
@@ -75,7 +75,7 @@ Read-Only:
 Read-Only:
 
 - `case_insensitivity` (Boolean) Whether the reference table lookup is case insensitive.
-- `field_pairs` (Block List) The field pairs for the reference table. See [below for nested schema](#nestedblock--rules--reference_table--field_pairs).
+- `field_pairs` (Block List) The field pairs for the reference table. (see [below for nested schema](#nestedblock--rules--reference_table--field_pairs))
 - `if_not_exists` (Boolean) Whether to apply the reference table only if the key doesn't exist.
 - `source_keys` (List of String) The source keys for the reference table lookup.
 - `table_name` (String) The name of the reference table.

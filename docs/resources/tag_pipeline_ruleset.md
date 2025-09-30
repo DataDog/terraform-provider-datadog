@@ -78,7 +78,7 @@ resource "datadog_tag_pipeline_ruleset" "example" {
 ### Optional
 
 - `enabled` (Boolean) Whether the ruleset is enabled.
-- `rules` (Block List) The rules in the ruleset. See [below for nested schema](#nestedblock--rules).
+- `rules` (Block List) The rules in the ruleset. (see [below for nested schema](#nestedblock--rules))
 
 ### Read-Only
 
@@ -96,9 +96,9 @@ Required:
 
 Optional:
 
-- `mapping` (Block, Optional) The mapping configuration for the rule. See [below for nested schema](#nestedblock--rules--mapping).
-- `query` (Block, Optional) The query configuration for the rule. See [below for nested schema](#nestedblock--rules--query).
-- `reference_table` (Block, Optional) The reference table configuration for the rule. See [below for nested schema](#nestedblock--rules--reference_table).
+- `mapping` (Block, Optional) The mapping configuration for the rule. (see [below for nested schema](#nestedblock--rules--mapping))
+- `query` (Block, Optional) The query configuration for the rule. (see [below for nested schema](#nestedblock--rules--query))
+- `reference_table` (Block, Optional) The reference table configuration for the rule. (see [below for nested schema](#nestedblock--rules--reference_table))
 
 Read-Only:
 
@@ -119,7 +119,7 @@ Optional:
 
 Optional:
 
-- `addition` (Block, Optional) The addition configuration for the query. See [below for nested schema](#nestedblock--rules--query--addition).
+- `addition` (Block, Optional) The addition configuration for the query. (see [below for nested schema](#nestedblock--rules--query--addition))
 - `case_insensitivity` (Boolean) Whether the query matching is case insensitive.
 - `if_not_exists` (Boolean) Whether to apply the query only if the key doesn't exist.
 - `query` (String) The query string.
@@ -140,7 +140,7 @@ Optional:
 Optional:
 
 - `case_insensitivity` (Boolean) Whether the reference table lookup is case insensitive.
-- `field_pairs` (Block List) The field pairs for the reference table. See [below for nested schema](#nestedblock--rules--reference_table--field_pairs).
+- `field_pairs` (Block List) The field pairs for the reference table. (see [below for nested schema](#nestedblock--rules--reference_table--field_pairs))
 - `if_not_exists` (Boolean) Whether to apply the reference table only if the key doesn't exist.
 - `source_keys` (List of String) The source keys for the reference table lookup.
 - `table_name` (String) The name of the reference table.
