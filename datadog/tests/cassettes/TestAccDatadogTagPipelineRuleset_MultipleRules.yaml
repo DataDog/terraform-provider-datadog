@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"enabled":true,"rules":[{"enabled":true,"mapping":{"destination_key":"env","if_not_exists":true,"source_keys":["environment"]},"name":"mapping-rule","query":null,"reference_table":null},{"enabled":true,"mapping":null,"name":"query-rule","query":{"addition":{"key":"tier","value":"frontend"},"case_insensitivity":false,"if_not_exists":false,"query":"service:web"},"reference_table":null},{"enabled":true,"mapping":null,"name":"ref-table-rule","query":null,"reference_table":{"case_insensitivity":false,"field_pairs":[{"input_column":"application","output_key":"app_name"}],"if_not_exists":false,"source_keys":["app"],"table_name":"lookup_table"}}]},"id":"tf-test-multi-ruleset-tf-TestAccDatadogTagPipelineRuleset_MultipleRules-local-1758197761","type":"create_ruleset"}}
+            {"data":{"attributes":{"enabled":true,"rules":[{"enabled":true,"mapping":{"destination_key":"env","if_not_exists":true,"source_keys":["environment"]},"name":"mapping-rule","query":null,"reference_table":null},{"enabled":true,"mapping":null,"name":"query-rule","query":{"addition":{"key":"tier","value":"frontend"},"case_insensitivity":false,"if_not_exists":false,"query":"service:web"},"reference_table":null},{"enabled":true,"mapping":null,"name":"ref-table-rule","query":null,"reference_table":{"case_insensitivity":false,"field_pairs":[{"input_column":"application","output_key":"app_name"}],"if_not_exists":false,"source_keys":["app"],"table_name":"lookup_table"}}]},"id":"tf-test-multi-ruleset-tf-TestAccDatadogTagPipelineRuleset_MultipleRules-local-1759254156","type":"create_ruleset"}}
         form: {}
         headers:
             Accept:
@@ -30,13 +30,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"data":{"id":"f34b5501-ba83-4cce-a5f5-292a6c299e08","type":"ruleset","attributes":{"created":{"seconds":1758197763,"nanos":350489000},"enabled":true,"last_modified_user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","modified":{"seconds":1758197763,"nanos":350489000},"name":"tf-test-multi-ruleset-tf-TestAccDatadogTagPipelineRuleset_MultipleRules-local-1758197761","position":9,"rules":[{"name":"mapping-rule","enabled":true,"query":null,"mapping":{"source_keys":["environment"],"destination_key":"env","if_not_exists":true},"reference_table":null,"metadata":null},{"name":"query-rule","enabled":true,"query":{"query":"service:web","addition":{"key":"tier","value":"frontend"},"if_not_exists":false,"case_insensitivity":false},"mapping":null,"reference_table":null,"metadata":null},{"name":"ref-table-rule","enabled":true,"query":null,"mapping":null,"reference_table":{"table_name":"lookup_table","source_keys":["app"],"field_pairs":[{"input_column":"application","output_key":"app_name"}],"case_insensitivity":false,"if_not_exists":false},"metadata":null}],"version":3604078}}}'
+        body: '{"data":{"id":"fc8f7314-5e83-4260-8e22-3613d92e044a","type":"ruleset","attributes":{"created":{"seconds":1759254158,"nanos":252596000},"enabled":true,"last_modified_user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","modified":{"seconds":1759254158,"nanos":252596000},"name":"tf-test-multi-ruleset-tf-TestAccDatadogTagPipelineRuleset_MultipleRules-local-1759254156","position":8,"rules":[{"name":"mapping-rule","enabled":true,"query":null,"mapping":{"source_keys":["environment"],"destination_key":"env","if_not_exists":true},"reference_table":null,"metadata":null},{"name":"query-rule","enabled":true,"query":{"query":"service:web","addition":{"key":"tier","value":"frontend"},"if_not_exists":false,"case_insensitivity":false},"mapping":null,"reference_table":null,"metadata":null},{"name":"ref-table-rule","enabled":true,"query":null,"mapping":null,"reference_table":{"table_name":"lookup_table","source_keys":["app"],"field_pairs":[{"input_column":"application","output_key":"app_name"}],"case_insensitivity":false,"if_not_exists":false},"metadata":null}],"version":3608136}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 318.9225ms
+        duration: 293.24ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -53,7 +53,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/tags/enrichment/f34b5501-ba83-4cce-a5f5-292a6c299e08
+        url: https://api.datadoghq.com/api/v2/tags/enrichment/fc8f7314-5e83-4260-8e22-3613d92e044a
         method: GET
       response:
         proto: HTTP/1.1
@@ -63,13 +63,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"data":{"id":"f34b5501-ba83-4cce-a5f5-292a6c299e08","type":"ruleset","attributes":{"created":{"seconds":1758197763,"nanos":350489000},"enabled":true,"last_modified_user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","modified":{"seconds":1758197763,"nanos":350489000},"name":"tf-test-multi-ruleset-tf-TestAccDatadogTagPipelineRuleset_MultipleRules-local-1758197761","position":9,"rules":[{"name":"mapping-rule","enabled":true,"query":null,"mapping":{"source_keys":["environment"],"destination_key":"env","if_not_exists":true},"reference_table":null,"metadata":null},{"name":"query-rule","enabled":true,"query":{"query":"service:web","addition":{"key":"tier","value":"frontend"},"if_not_exists":false,"case_insensitivity":false},"mapping":null,"reference_table":null,"metadata":null},{"name":"ref-table-rule","enabled":true,"query":null,"mapping":null,"reference_table":{"table_name":"lookup_table","source_keys":["app"],"field_pairs":[{"input_column":"application","output_key":"app_name"}],"case_insensitivity":false,"if_not_exists":false},"metadata":null}],"version":3604078}}}'
+        body: '{"data":{"id":"fc8f7314-5e83-4260-8e22-3613d92e044a","type":"ruleset","attributes":{"created":{"seconds":1759254158,"nanos":252596000},"enabled":true,"last_modified_user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","modified":{"seconds":1759254158,"nanos":252596000},"name":"tf-test-multi-ruleset-tf-TestAccDatadogTagPipelineRuleset_MultipleRules-local-1759254156","position":8,"processing_status":"error","rules":[{"name":"mapping-rule","enabled":true,"query":null,"mapping":{"source_keys":["environment"],"destination_key":"env","if_not_exists":true},"reference_table":null,"metadata":null},{"name":"query-rule","enabled":true,"query":{"query":"service:web","addition":{"key":"tier","value":"frontend"},"if_not_exists":false,"case_insensitivity":false},"mapping":null,"reference_table":null,"metadata":null},{"name":"ref-table-rule","enabled":true,"query":null,"mapping":null,"reference_table":{"table_name":"lookup_table","source_keys":["app"],"field_pairs":[{"input_column":"application","output_key":"app_name"}],"case_insensitivity":false,"if_not_exists":false},"metadata":null}],"version":3608136}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 52.2495ms
+        duration: 142.213292ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -86,7 +86,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/tags/enrichment/f34b5501-ba83-4cce-a5f5-292a6c299e08
+        url: https://api.datadoghq.com/api/v2/tags/enrichment/fc8f7314-5e83-4260-8e22-3613d92e044a
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -100,7 +100,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 85.216875ms
+        duration: 60.921334ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -117,7 +117,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/tags/enrichment/f34b5501-ba83-4cce-a5f5-292a6c299e08
+        url: https://api.datadoghq.com/api/v2/tags/enrichment/fc8f7314-5e83-4260-8e22-3613d92e044a
         method: GET
       response:
         proto: HTTP/1.1
@@ -127,10 +127,10 @@ interactions:
         trailer: {}
         content_length: 115
         uncompressed: false
-        body: '{"errors":[{"status":"404","title":"Not Found","detail":"ruleset f34b5501-ba83-4cce-a5f5-292a6c299e08 not found"}]}'
+        body: '{"errors":[{"status":"404","title":"Not Found","detail":"ruleset fc8f7314-5e83-4260-8e22-3613d92e044a not found"}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 404 Not Found
         code: 404
-        duration: 53.837042ms
+        duration: 43.263458ms

@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"enabled":true,"rules":[{"enabled":true,"mapping":null,"name":"single-rule","query":{"addition":{"key":"env","value":"test"},"case_insensitivity":false,"if_not_exists":false,"query":"service:single"},"reference_table":null}]},"id":"tf-test-order-single-tf-TestAccDatadogTagPipelineRulesetOrder_SingleRuleset-local-1758897823","type":"create_ruleset"}}
+            {"data":{"attributes":{"enabled":true,"rules":[{"enabled":true,"mapping":null,"name":"single-rule","query":{"addition":{"key":"env","value":"test"},"case_insensitivity":false,"if_not_exists":false,"query":"service:single"},"reference_table":null}]},"id":"tf-test-order-single-tf-TestAccDatadogTagPipelineRulesetOrder_SingleRuleset-local-1759254126","type":"create_ruleset"}}
         form: {}
         headers:
             Accept:
@@ -30,13 +30,13 @@ interactions:
         trailer: {}
         content_length: 628
         uncompressed: false
-        body: '{"data":{"id":"1d4b3414-26e7-4a00-a23b-dab2c3dffb4b","type":"ruleset","attributes":{"created":{"seconds":1758897823,"nanos":497513000},"enabled":true,"last_modified_user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","modified":{"seconds":1758897823,"nanos":497513000},"name":"tf-test-order-single-tf-TestAccDatadogTagPipelineRulesetOrder_SingleRuleset-local-1758897823","position":2,"rules":[{"name":"single-rule","enabled":true,"query":{"query":"service:single","addition":{"key":"env","value":"test"},"if_not_exists":false,"case_insensitivity":false},"mapping":null,"reference_table":null,"metadata":null}],"version":3606785}}}'
+        body: '{"data":{"id":"9200dacc-5b24-4267-a7d7-e673b1b0f7db","type":"ruleset","attributes":{"created":{"seconds":1759254126,"nanos":726055000},"enabled":true,"last_modified_user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","modified":{"seconds":1759254126,"nanos":726055000},"name":"tf-test-order-single-tf-TestAccDatadogTagPipelineRulesetOrder_SingleRuleset-local-1759254126","position":2,"rules":[{"name":"single-rule","enabled":true,"query":{"query":"service:single","addition":{"key":"env","value":"test"},"if_not_exists":false,"case_insensitivity":false},"mapping":null,"reference_table":null,"metadata":null}],"version":3608129}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 60.611875ms
+        duration: 70.02625ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -63,13 +63,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"data":[{"id":"1b680ec0-8e29-4b79-bb01-45f0c645a789","type":"ruleset","attributes":{"created":{"seconds":1758041403,"nanos":117388000},"enabled":true,"last_modified_user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","modified":{"seconds":1758041403,"nanos":117388000},"name":"New Ruleset","position":1,"rules":[{"name":"Add Cost Center Tag","enabled":true,"query":{"query":"account_id:\"123456789\" AND service:\"web-api\"","addition":{"key":"cost_center","value":"engineering"},"if_not_exists":true,"case_insensitivity":false},"mapping":null,"reference_table":null,"metadata":null}],"version":3603412}},{"id":"1d4b3414-26e7-4a00-a23b-dab2c3dffb4b","type":"ruleset","attributes":{"created":{"seconds":1758897823,"nanos":497513000},"enabled":true,"last_modified_user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","modified":{"seconds":1758897823,"nanos":497513000},"name":"tf-test-order-single-tf-TestAccDatadogTagPipelineRulesetOrder_SingleRuleset-local-1758897823","position":2,"rules":[{"name":"single-rule","enabled":true,"query":{"query":"service:single","addition":{"key":"env","value":"test"},"if_not_exists":false,"case_insensitivity":false},"mapping":null,"reference_table":null,"metadata":null}],"version":3606785}}]}'
+        body: '{"data":[{"id":"1b680ec0-8e29-4b79-bb01-45f0c645a789","type":"ruleset","attributes":{"created":{"seconds":1758041403,"nanos":117388000},"enabled":true,"last_modified_user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","modified":{"seconds":1758041403,"nanos":117388000},"name":"New Ruleset","position":1,"processing_status":"error","rules":[{"name":"Add Cost Center Tag","enabled":true,"query":{"query":"account_id:\"123456789\" AND service:\"web-api\"","addition":{"key":"cost_center","value":"engineering"},"if_not_exists":true,"case_insensitivity":false},"mapping":null,"reference_table":null,"metadata":null}],"version":3603412}},{"id":"9200dacc-5b24-4267-a7d7-e673b1b0f7db","type":"ruleset","attributes":{"created":{"seconds":1759254126,"nanos":726055000},"enabled":true,"last_modified_user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","modified":{"seconds":1759254126,"nanos":726055000},"name":"tf-test-order-single-tf-TestAccDatadogTagPipelineRulesetOrder_SingleRuleset-local-1759254126","position":2,"processing_status":"error","rules":[{"name":"single-rule","enabled":true,"query":{"query":"service:single","addition":{"key":"env","value":"test"},"if_not_exists":false,"case_insensitivity":false},"mapping":null,"reference_table":null,"metadata":null}],"version":3608129}}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 44.804ms
+        duration: 108.31325ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -82,7 +82,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":[{"id":"1d4b3414-26e7-4a00-a23b-dab2c3dffb4b","type":"ruleset"},{"id":"1b680ec0-8e29-4b79-bb01-45f0c645a789","type":"ruleset"}]}
+            {"data":[{"id":"9200dacc-5b24-4267-a7d7-e673b1b0f7db","type":"ruleset"},{"id":"1b680ec0-8e29-4b79-bb01-45f0c645a789","type":"ruleset"}]}
         form: {}
         headers:
             Accept:
@@ -103,7 +103,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 41.465875ms
+        duration: 50.656125ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -120,7 +120,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/tags/enrichment/1d4b3414-26e7-4a00-a23b-dab2c3dffb4b
+        url: https://api.datadoghq.com/api/v2/tags/enrichment/9200dacc-5b24-4267-a7d7-e673b1b0f7db
         method: GET
       response:
         proto: HTTP/1.1
@@ -128,15 +128,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 628
+        content_length: 656
         uncompressed: false
-        body: '{"data":{"id":"1d4b3414-26e7-4a00-a23b-dab2c3dffb4b","type":"ruleset","attributes":{"created":{"seconds":1758897823,"nanos":497513000},"enabled":true,"last_modified_user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","modified":{"seconds":1758897823,"nanos":497513000},"name":"tf-test-order-single-tf-TestAccDatadogTagPipelineRulesetOrder_SingleRuleset-local-1758897823","position":1,"rules":[{"name":"single-rule","enabled":true,"query":{"query":"service:single","addition":{"key":"env","value":"test"},"if_not_exists":false,"case_insensitivity":false},"mapping":null,"reference_table":null,"metadata":null}],"version":3606785}}}'
+        body: '{"data":{"id":"9200dacc-5b24-4267-a7d7-e673b1b0f7db","type":"ruleset","attributes":{"created":{"seconds":1759254126,"nanos":726055000},"enabled":true,"last_modified_user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","modified":{"seconds":1759254126,"nanos":726055000},"name":"tf-test-order-single-tf-TestAccDatadogTagPipelineRulesetOrder_SingleRuleset-local-1759254126","position":1,"processing_status":"error","rules":[{"name":"single-rule","enabled":true,"query":{"query":"service:single","addition":{"key":"env","value":"test"},"if_not_exists":false,"case_insensitivity":false},"mapping":null,"reference_table":null,"metadata":null}],"version":3608129}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 38.020667ms
+        duration: 105.585917ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -163,13 +163,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"data":[{"id":"1d4b3414-26e7-4a00-a23b-dab2c3dffb4b","type":"ruleset","attributes":{"created":{"seconds":1758897823,"nanos":497513000},"enabled":true,"last_modified_user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","modified":{"seconds":1758897823,"nanos":497513000},"name":"tf-test-order-single-tf-TestAccDatadogTagPipelineRulesetOrder_SingleRuleset-local-1758897823","position":1,"rules":[{"name":"single-rule","enabled":true,"query":{"query":"service:single","addition":{"key":"env","value":"test"},"if_not_exists":false,"case_insensitivity":false},"mapping":null,"reference_table":null,"metadata":null}],"version":3606785}},{"id":"1b680ec0-8e29-4b79-bb01-45f0c645a789","type":"ruleset","attributes":{"created":{"seconds":1758041403,"nanos":117388000},"enabled":true,"last_modified_user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","modified":{"seconds":1758041403,"nanos":117388000},"name":"New Ruleset","position":2,"rules":[{"name":"Add Cost Center Tag","enabled":true,"query":{"query":"account_id:\"123456789\" AND service:\"web-api\"","addition":{"key":"cost_center","value":"engineering"},"if_not_exists":true,"case_insensitivity":false},"mapping":null,"reference_table":null,"metadata":null}],"version":3603412}}]}'
+        body: '{"data":[{"id":"9200dacc-5b24-4267-a7d7-e673b1b0f7db","type":"ruleset","attributes":{"created":{"seconds":1759254126,"nanos":726055000},"enabled":true,"last_modified_user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","modified":{"seconds":1759254126,"nanos":726055000},"name":"tf-test-order-single-tf-TestAccDatadogTagPipelineRulesetOrder_SingleRuleset-local-1759254126","position":1,"processing_status":"error","rules":[{"name":"single-rule","enabled":true,"query":{"query":"service:single","addition":{"key":"env","value":"test"},"if_not_exists":false,"case_insensitivity":false},"mapping":null,"reference_table":null,"metadata":null}],"version":3608129}},{"id":"1b680ec0-8e29-4b79-bb01-45f0c645a789","type":"ruleset","attributes":{"created":{"seconds":1758041403,"nanos":117388000},"enabled":true,"last_modified_user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","modified":{"seconds":1758041403,"nanos":117388000},"name":"New Ruleset","position":2,"processing_status":"error","rules":[{"name":"Add Cost Center Tag","enabled":true,"query":{"query":"account_id:\"123456789\" AND service:\"web-api\"","addition":{"key":"cost_center","value":"engineering"},"if_not_exists":true,"case_insensitivity":false},"mapping":null,"reference_table":null,"metadata":null}],"version":3603412}}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 53.797291ms
+        duration: 98.848542ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -186,7 +186,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/tags/enrichment/1d4b3414-26e7-4a00-a23b-dab2c3dffb4b
+        url: https://api.datadoghq.com/api/v2/tags/enrichment/9200dacc-5b24-4267-a7d7-e673b1b0f7db
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -200,4 +200,4 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 52.876333ms
+        duration: 51.235167ms

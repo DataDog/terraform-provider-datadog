@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"enabled":true,"rules":[{"enabled":true,"mapping":null,"name":"test-rule","query":{"addition":{"key":"env","value":"test"},"case_insensitivity":false,"if_not_exists":false,"query":"service:test"},"reference_table":null}]},"id":"tf-test-tag-ruleset-tf-TestAccDatadogTagPipelineRuleset_Basic-local-1758197761","type":"create_ruleset"}}
+            {"data":{"attributes":{"enabled":true,"rules":[{"enabled":true,"mapping":null,"name":"test-rule","query":{"addition":{"key":"env","value":"test"},"case_insensitivity":false,"if_not_exists":false,"query":"service:test"},"reference_table":null}]},"id":"tf-test-tag-ruleset-tf-TestAccDatadogTagPipelineRuleset_Basic-local-1759254156","type":"create_ruleset"}}
         form: {}
         headers:
             Accept:
@@ -30,13 +30,13 @@ interactions:
         trailer: {}
         content_length: 610
         uncompressed: false
-        body: '{"data":{"id":"b7cb3d95-b21d-4456-bf80-61afb73218a5","type":"ruleset","attributes":{"created":{"seconds":1758197763,"nanos":342775000},"enabled":true,"last_modified_user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","modified":{"seconds":1758197763,"nanos":342775000},"name":"tf-test-tag-ruleset-tf-TestAccDatadogTagPipelineRuleset_Basic-local-1758197761","position":6,"rules":[{"name":"test-rule","enabled":true,"query":{"query":"service:test","addition":{"key":"env","value":"test"},"if_not_exists":false,"case_insensitivity":false},"mapping":null,"reference_table":null,"metadata":null}],"version":3604075}}}'
+        body: '{"data":{"id":"28a7515e-c97d-4a68-b420-090ae261f6d5","type":"ruleset","attributes":{"created":{"seconds":1759254158,"nanos":213885000},"enabled":true,"last_modified_user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","modified":{"seconds":1759254158,"nanos":213885000},"name":"tf-test-tag-ruleset-tf-TestAccDatadogTagPipelineRuleset_Basic-local-1759254156","position":2,"rules":[{"name":"test-rule","enabled":true,"query":{"query":"service:test","addition":{"key":"env","value":"test"},"if_not_exists":false,"case_insensitivity":false},"mapping":null,"reference_table":null,"metadata":null}],"version":3608130}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 245.1685ms
+        duration: 126.889375ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -53,7 +53,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/tags/enrichment/b7cb3d95-b21d-4456-bf80-61afb73218a5
+        url: https://api.datadoghq.com/api/v2/tags/enrichment/28a7515e-c97d-4a68-b420-090ae261f6d5
         method: GET
       response:
         proto: HTTP/1.1
@@ -61,15 +61,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 610
+        content_length: 638
         uncompressed: false
-        body: '{"data":{"id":"b7cb3d95-b21d-4456-bf80-61afb73218a5","type":"ruleset","attributes":{"created":{"seconds":1758197763,"nanos":342775000},"enabled":true,"last_modified_user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","modified":{"seconds":1758197763,"nanos":342775000},"name":"tf-test-tag-ruleset-tf-TestAccDatadogTagPipelineRuleset_Basic-local-1758197761","position":6,"rules":[{"name":"test-rule","enabled":true,"query":{"query":"service:test","addition":{"key":"env","value":"test"},"if_not_exists":false,"case_insensitivity":false},"mapping":null,"reference_table":null,"metadata":null}],"version":3604075}}}'
+        body: '{"data":{"id":"28a7515e-c97d-4a68-b420-090ae261f6d5","type":"ruleset","attributes":{"created":{"seconds":1759254158,"nanos":213885000},"enabled":true,"last_modified_user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","modified":{"seconds":1759254158,"nanos":213885000},"name":"tf-test-tag-ruleset-tf-TestAccDatadogTagPipelineRuleset_Basic-local-1759254156","position":2,"processing_status":"error","rules":[{"name":"test-rule","enabled":true,"query":{"query":"service:test","addition":{"key":"env","value":"test"},"if_not_exists":false,"case_insensitivity":false},"mapping":null,"reference_table":null,"metadata":null}],"version":3608130}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 64.683375ms
+        duration: 108.449333ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -86,7 +86,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/tags/enrichment/b7cb3d95-b21d-4456-bf80-61afb73218a5
+        url: https://api.datadoghq.com/api/v2/tags/enrichment/28a7515e-c97d-4a68-b420-090ae261f6d5
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -100,7 +100,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 82.236584ms
+        duration: 74.377709ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -117,7 +117,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/tags/enrichment/b7cb3d95-b21d-4456-bf80-61afb73218a5
+        url: https://api.datadoghq.com/api/v2/tags/enrichment/28a7515e-c97d-4a68-b420-090ae261f6d5
         method: GET
       response:
         proto: HTTP/1.1
@@ -127,10 +127,10 @@ interactions:
         trailer: {}
         content_length: 115
         uncompressed: false
-        body: '{"errors":[{"status":"404","title":"Not Found","detail":"ruleset b7cb3d95-b21d-4456-bf80-61afb73218a5 not found"}]}'
+        body: '{"errors":[{"status":"404","title":"Not Found","detail":"ruleset 28a7515e-c97d-4a68-b420-090ae261f6d5 not found"}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 404 Not Found
         code: 404
-        duration: 51.886625ms
+        duration: 115.6745ms
