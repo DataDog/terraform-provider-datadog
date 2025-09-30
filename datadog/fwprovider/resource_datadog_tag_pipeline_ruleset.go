@@ -368,11 +368,31 @@ func (r *tagPipelineRulesetResource) Read(ctx context.Context, req resource.Read
 
 func (r *tagPipelineRulesetResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 	var plan tagPipelineRulesetModel
+	var config tagPipelineRulesetModel
 	var state tagPipelineRulesetModel
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
+	resp.Diagnostics.Append(req.Config.Get(ctx, &config)...)
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
 		return
+	}
+
+	// Fix for Terraform CLI issue #32460: Ensure plan matches config for nested blocks
+	// When rule types change (e.g., query -> mapping), the plan may retain old block values
+	// We need to explicitly null out blocks that aren't in the config
+	for i := range plan.Rules {
+		if i < len(config.Rules) {
+			// Only keep the rule type that's actually in the config
+			if config.Rules[i].Mapping == nil {
+				plan.Rules[i].Mapping = nil
+			}
+			if config.Rules[i].Query == nil {
+				plan.Rules[i].Query = nil
+			}
+			if config.Rules[i].ReferenceTable == nil {
+				plan.Rules[i].ReferenceTable = nil
+			}
+		}
 	}
 
 	// Use the ID and version from the current state, not the plan (needed for the update API)
