@@ -790,6 +790,10 @@ func setModelFromRulesetResp(model *tagPipelineRulesetModel, apiResp datadogV2.R
 		rule := ruleItem{
 			Enabled: types.BoolValue(apiRule.Enabled),
 			Name:    types.StringValue(apiRule.Name),
+			// Initialize all rule type fields to nil to ensure clean state
+			Mapping:        nil,
+			Query:          nil,
+			ReferenceTable: nil,
 		}
 
 		// Set metadata if present
@@ -810,7 +814,7 @@ func setModelFromRulesetResp(model *tagPipelineRulesetModel, apiResp datadogV2.R
 			rule.Metadata = types.MapNull(types.StringType)
 		}
 
-		// Set mapping if present
+		// Set mapping if present (and ensure others are nil)
 		if apiRule.Mapping.IsSet() {
 			mappingVal := apiRule.Mapping.Get()
 			if mappingVal != nil {
@@ -826,7 +830,7 @@ func setModelFromRulesetResp(model *tagPipelineRulesetModel, apiResp datadogV2.R
 			}
 		}
 
-		// Set query if present
+		// Set query if present (and ensure others are nil)
 		if apiRule.Query.IsSet() {
 			queryVal := apiRule.Query.Get()
 			if queryVal != nil {
@@ -848,7 +852,7 @@ func setModelFromRulesetResp(model *tagPipelineRulesetModel, apiResp datadogV2.R
 			}
 		}
 
-		// Set reference table if present
+		// Set reference table if present (and ensure others are nil)
 		if apiRule.ReferenceTable.IsSet() {
 			refTableVal := apiRule.ReferenceTable.Get()
 			if refTableVal != nil {
