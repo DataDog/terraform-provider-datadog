@@ -17,7 +17,7 @@ Use this data source to retrieve a Datadog Synthetics global variable (to be use
 
 ### Required
 
-- `name` (String) The synthetics global variable name to search for. Must only match one global variable.
+- `name` (String) The synthetics global variable name to search for. Must only match one global variable. Must be all uppercase with underscores.
 
 ### Read-Only
 

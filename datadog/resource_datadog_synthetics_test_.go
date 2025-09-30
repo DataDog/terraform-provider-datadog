@@ -1411,7 +1411,7 @@ func syntheticsBrowserStepParams() schema.Schema {
 					Optional:    true,
 					Elem: &schema.Schema{
 						Type:         schema.TypeString,
-						ValidateFunc: validation.StringInSlice([]string{"Alt", "Control", "meta", "Shift"}, false),
+						ValidateFunc: validation.StringInSlice([]string{"Alt", "Control", "Meta", "Shift"}, false),
 					},
 				},
 				"playing_tab_id": {
@@ -1581,7 +1581,7 @@ func syntheticsMobileStepParams() schema.Schema {
 					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsCheckTypeFromValue),
 				},
 				"element": {
-					Description: "Element to use for the step, JSON encoded string.",
+					Description: "Element to use for the step",
 					Type:        schema.TypeList,
 					MaxItems:    1,
 					Optional:    true,
@@ -2821,6 +2821,9 @@ func buildDatadogSyntheticsAPITest(d *schema.ResourceData) (*datadogV1.Synthetic
 	}
 	if attr, ok := d.GetOk("request_definition.0.message"); ok {
 		request.SetMessage(attr.(string))
+	}
+	if attr, ok := d.GetOk("request_definition.0.is_message_base64_encoded"); ok {
+		request.SetIsMessageBase64Encoded(attr.(bool))
 	}
 	if attr, ok := d.GetOk("request_definition.0.call_type"); ok {
 		request.SetCallType(datadogV1.SyntheticsTestCallType(attr.(string)))

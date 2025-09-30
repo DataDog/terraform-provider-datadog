@@ -88,6 +88,7 @@ var Resources = []func() resource.Resource{
 	NewOnCallEscalationPolicyResource,
 	NewOnCallScheduleResource,
 	NewOnCallTeamRoutingRulesResource,
+	NewOrgConnectionResource,
 	NewComplianceResourceEvaluationFilter,
 	NewSecurityMonitoringRuleJSONResource,
 	NewComplianceCustomFrameworkResource,
@@ -106,6 +107,7 @@ var Datasources = []func() datasource.DataSource{
 	NewAPIKeyDataSource,
 	NewApplicationKeyDataSource,
 	NewAwsAvailableNamespacesDataSource,
+	NewAwsIntegrationExternalIDDataSource,
 	NewAwsIntegrationIAMPermissionsDataSource,
 	NewAwsLogsServicesDataSource,
 	NewDatadogApmRetentionFiltersOrderDataSource,
@@ -871,6 +873,7 @@ func (r *FrameworkDatasourceWrapper) Metadata(ctx context.Context, req datasourc
 
 func (r *FrameworkDatasourceWrapper) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	(*r.innerDatasource).Schema(ctx, req, resp)
+	fwutils.EnrichFrameworkDatasourceSchema(&resp.Schema)
 }
 
 func (r *FrameworkDatasourceWrapper) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
