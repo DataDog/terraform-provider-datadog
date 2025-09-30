@@ -341,9 +341,11 @@ func (r *tagPipelineRulesetResource) Create(ctx context.Context, req resource.Cr
 		return
 	}
 
-	setModelFromRulesetResp(&plan, apiResp)
+	// Create a fresh model from the API response to ensure clean state
+	var newState tagPipelineRulesetModel
+	setModelFromRulesetResp(&newState, apiResp)
 
-	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &newState)...)
 }
 
 func (r *tagPipelineRulesetResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -487,19 +489,21 @@ func (r *tagPipelineRulesetResource) Update(ctx context.Context, req resource.Up
 		return
 	}
 
-	setModelFromRulesetResp(&plan, apiResp)
+	// Create a fresh model from the API response to avoid carrying over old state
+	var newState tagPipelineRulesetModel
+	setModelFromRulesetResp(&newState, apiResp)
 
 	// Ensure all computed fields are properly set after update
 	// If position is still unknown/null, do a fresh read to get the latest state
-	if plan.Position.IsNull() || plan.Position.IsUnknown() {
+	if newState.Position.IsNull() || newState.Position.IsUnknown() {
 		readResp, _, readErr := r.Api.GetRuleset(r.Auth, rulesetId)
 		if readErr == nil {
-			setModelFromRulesetResp(&plan, readResp)
+			setModelFromRulesetResp(&newState, readResp)
 		}
 		// If read fails, we'll continue with what we have from the update response
 	}
 
-	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &newState)...)
 }
 
 func (r *tagPipelineRulesetResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
