@@ -165,7 +165,7 @@ def tf_sort_params_by_type(parameters):
             # If the schema is a JSON API schema, get the attributes schema
             schema = openapi.json_api_attributes_schema(schema)
 
-        for attr, s in schema.get(["properties"], {}).items():
+        for attr, s in schema.get("properties", {}).items():
             required = attr in schema.get("required", [])
             s["required"] = required
 

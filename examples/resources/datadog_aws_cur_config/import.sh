@@ -1,0 +1,1 @@
+terraform import datadog_aws_cur_config.aws_cur_report <cloud_account_id>
