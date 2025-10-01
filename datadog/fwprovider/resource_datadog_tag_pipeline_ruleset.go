@@ -377,24 +377,6 @@ func (r *tagPipelineRulesetResource) Update(ctx context.Context, req resource.Up
 		return
 	}
 
-	// Fix for Terraform CLI issue #32460: Ensure plan matches config for nested blocks
-	// When rule types change (e.g., query -> mapping), the plan may retain old block values
-	// We need to explicitly null out blocks that aren't in the config
-	for i := range plan.Rules {
-		if i < len(config.Rules) {
-			// Only keep the rule type that's actually in the config
-			if config.Rules[i].Mapping == nil {
-				plan.Rules[i].Mapping = nil
-			}
-			if config.Rules[i].Query == nil {
-				plan.Rules[i].Query = nil
-			}
-			if config.Rules[i].ReferenceTable == nil {
-				plan.Rules[i].ReferenceTable = nil
-			}
-		}
-	}
-
 	// Use the ID and version from the current state, not the plan (needed for the update API)
 	plan.ID = state.ID
 	plan.Version = state.Version
@@ -509,18 +491,39 @@ func (r *tagPipelineRulesetResource) Update(ctx context.Context, req resource.Up
 		return
 	}
 
-	// Create a fresh model from the API response to avoid carrying over old state
+	// Fix for Terraform CLI issue #32460:
+	// Build a fresh state from API response, then selectively apply config constraints
 	var newState tagPipelineRulesetModel
 	setModelFromRulesetResp(&newState, apiResp)
 
 	// Ensure all computed fields are properly set after update
-	// If position is still unknown/null, do a fresh read to get the latest state
 	if newState.Position.IsNull() || newState.Position.IsUnknown() {
 		readResp, _, readErr := r.Api.GetRuleset(r.Auth, rulesetId)
 		if readErr == nil {
 			setModelFromRulesetResp(&newState, readResp)
 		}
-		// If read fails, we'll continue with what we have from the update response
+	}
+
+	// The key fix: For each rule, ensure that rule type blocks match the config
+	// If config doesn't have a block type, explicitly null it in the new state
+	// This prevents "planned for existence but config wants absence" errors
+	for i := range newState.Rules {
+		if i < len(config.Rules) {
+			configRule := config.Rules[i]
+			stateRule := &newState.Rules[i]
+			
+			// If a block type is not in the config, remove it from state
+			// even if the API response might have included it
+			if configRule.Mapping == nil {
+				stateRule.Mapping = nil
+			}
+			if configRule.Query == nil {
+				stateRule.Query = nil
+			}
+			if configRule.ReferenceTable == nil {
+				stateRule.ReferenceTable = nil
+			}
+		}
 	}
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &newState)...)
