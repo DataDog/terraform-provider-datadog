@@ -511,7 +511,7 @@ func (r *tagPipelineRulesetResource) Update(ctx context.Context, req resource.Up
 		if i < len(config.Rules) {
 			configRule := config.Rules[i]
 			stateRule := &newState.Rules[i]
-			
+
 			// If a block type is not in the config, remove it from state
 			// even if the API response might have included it
 			if configRule.Mapping == nil {
