@@ -1,13 +1,13 @@
 ## 3.75.0 (October 1, 2025)
 
 ### BUGFIXES
-* [resource_datadog_synthetics_test] Fix typo in browser test steps press key modifiers validation by @zach-b in https://github.com/DataDog/terraform-provider-datadog/pull/3234
+* [datadog_synthetics_test] Fix typo in browser test steps press key modifiers validation by @zach-b in https://github.com/DataDog/terraform-provider-datadog/pull/3234
 * [datadog_security_monitoring_rule] Defer JSON filtering to Read to fix “inconsistent result after apply” by @Datadog-MartinG in https://github.com/DataDog/terraform-provider-datadog/pull/3212
-* [SyntheticsGlobalVariableResource] Fix dynamic block parsing by @Matt-Cam in https://github.com/DataDog/terraform-provider-datadog/pull/3251
+* [datadog_synthetics_global_variable] Fix dynamic block parsing by @Matt-Cam in https://github.com/DataDog/terraform-provider-datadog/pull/3251
 ### IMPROVEMENTS
 * [datadog_rum_application] Expose RUM application API key ID by @romainberger in https://github.com/DataDog/terraform-provider-datadog/pull/3250
 ### FEATURES
-* [org_connection] Terraform Resource for Org Connection  by @abe-lin-dd in https://github.com/DataDog/terraform-provider-datadog/pull/3229
+* [datadog_org_connection] Terraform Resource for Org Connection  by @abe-lin-dd in https://github.com/DataDog/terraform-provider-datadog/pull/3229
 * [datadog_observability_pipeline] add Google PubSub destination by @gwenaskell in https://github.com/DataDog/terraform-provider-datadog/pull/3235
 * [datadog_integration_aws_external_id] Add data source to retrieve AWS external ID of an AWS integration by @LorisFriedel in https://github.com/DataDog/terraform-provider-datadog/pull/3247
 * [datadog_aws_cur_config] Add support for Cloud Cost AWS CUR Config resource and datasource by @alextmeyer in https://github.com/DataDog/terraform-provider-datadog/pull/3252
