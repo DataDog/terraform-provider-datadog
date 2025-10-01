@@ -867,6 +867,14 @@ func syntheticsTestOptionsList() *schema.Schema {
 					Type:        schema.TypeInt,
 					Optional:    true,
 				},
+                "blocked_request_patterns": {
+                    Description: "Blocked URL patterns. Requests made to URLs matching any of the patterns listed here will be blocked.",
+                    Type:        schema.TypeList,
+                    Optional:    true,
+                    Elem: &schema.Schema{
+                        Type: schema.TypeString,
+                    },
+                },
 				"http_version": syntheticsHttpVersionOption(),
 			},
 		},
@@ -4340,6 +4348,10 @@ func buildDatadogTestOptions(d *schema.ResourceData) *datadogV1.SyntheticsTestOp
 			options.SetInitialNavigationTimeout(int64(initialNavigationTimeout.(int)))
 		}
 
+        if blockedRequestPatterns, ok := d.GetOk("options_list.0.blocked_request_patterns"); ok {
+            options.SetBlockedRequestPatterns(blockedRequestPatterns.([]string))
+        }
+
 		if attr, ok := d.GetOk("device_ids"); ok {
 			var deviceIds []string
 			for _, s := range attr.([]interface{}) {
@@ -4483,6 +4495,9 @@ func buildTerraformTestOptions(actualOptions datadogV1.SyntheticsTestOptions) []
 	if actualOptions.HasInitialNavigationTimeout() {
 		localOptionsList["initial_navigation_timeout"] = actualOptions.GetInitialNavigationTimeout()
 	}
+    if actualOptions.HasBlockedRequestPatterns() {
+        localOptionsList["blockedRequestPatterns"] = actualOptions.GetBlockedRequestPatterns()
+    }
 
 	localOptionsLists := make([]map[string]interface{}, 1)
 	localOptionsLists[0] = localOptionsList
