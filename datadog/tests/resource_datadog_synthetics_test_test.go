@@ -198,6 +198,25 @@ func TestAccDatadogSyntheticsAPITest_Basic(t *testing.T) {
 	})
 }
 
+func TestAccDatadogSyntheticsAPITest_EmptyLocations(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	testName := uniqueEntityName(ctx, t)
+	accProvider := providers.sdkV2Provider
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config:      createSyntheticsAPITestConfigEmptyLocations(testName),
+				ExpectError: regexp.MustCompile(`locations must not be empty for synthetics API and browser tests`),
+			},
+		},
+	})
+}
+
 func TestAccDatadogSyntheticsAPITest_Updated(t *testing.T) {
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
@@ -512,6 +531,25 @@ func TestAccDatadogSyntheticsBrowserTest_Basic(t *testing.T) {
 		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsBrowserTestStep(ctx, accProvider, t),
+		},
+	})
+}
+
+func TestAccDatadogSyntheticsBrowserTest_EmptyLocations(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	testName := uniqueEntityName(ctx, t)
+	accProvider := providers.sdkV2Provider
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config:      createSyntheticsBrowserTestConfigEmptyLocations(testName),
+				ExpectError: regexp.MustCompile(`locations must not be empty for synthetics API and browser tests`),
+			},
 		},
 	})
 }
@@ -7404,4 +7442,92 @@ func editSyntheticsTestMML(provider *schema.Provider, stepElements []string) res
 
 		return nil
 	}
+}
+
+func createSyntheticsBrowserTestConfigEmptyLocations(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_synthetics_test" "bar" {
+	type = "browser"
+
+	request_definition {
+		method = "GET"
+		url = "https://www.datadoghq.com"
+		timeout = 30
+		certificate_domains = ["https://datadoghq.com"]
+	}
+
+	locations = []
+
+	options_list {
+		tick_every = 900
+		min_failure_duration = 0
+		min_location_failed = 1
+
+		retry {
+			count = 2
+			interval = 300
+		}
+
+		monitor_options {
+			renotify_interval = 120
+		}
+		monitor_name = "%s-monitor"
+		monitor_priority = 5
+	}
+
+	name = "%s"
+	message = "Notify @datadog.user"
+	tags = ["foo:bar", "baz"]
+
+	status = "paused"
+
+	browser_step {
+	    name = "first step"
+	    type = "assertCurrentUrl"
+	    params {
+	        check = "contains"
+	        value = "content"
+	    }
+	}
+}`, uniq, uniq)
+}
+
+func createSyntheticsAPITestConfigEmptyLocations(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_synthetics_test" "foo" {
+	type = "api"
+	subtype = "http"
+
+	request_definition {
+		method = "GET"
+		url = "https://www.datadoghq.com"
+		body_type = "text/plain"
+	}
+
+	assertion {
+		type = "statusCode"
+		operator = "is"
+		target = "200"
+	}
+
+	locations = []
+
+	options_list {
+		tick_every = 60
+		min_failure_duration = 0
+		min_location_failed = 1
+
+		retry {
+			count = 1
+		}
+		monitor_name = "%s-monitor"
+		monitor_priority = 5
+	}
+
+	name = "%s"
+	message = "Notify @datadog.user"
+	tags = ["foo:bar", "baz"]
+
+	status = "paused"
+}`, uniq, uniq)
 }

@@ -1870,6 +1870,16 @@ func syntheticsHttpVersionOption() *schema.Schema {
  */
 
 func resourceDatadogSyntheticsTestCustomizeDiff(ctx context.Context, diff *schema.ResourceDiff, meta interface{}) error {
+	// validate locations are not empty for API and browser tests
+	type_, typeOk := diff.GetOk("type")
+	if typeOk && (type_.(string) == string(datadogV1.SYNTHETICSTESTDETAILSTYPE_API) || type_.(string) == string(datadogV1.SYNTHETICSTESTDETAILSTYPE_BROWSER)) {
+		if locations := diff.Get("locations"); locations != nil {
+			if locations.(*schema.Set).Len() == 0 {
+				return fmt.Errorf("locations must not be empty for synthetics API and browser tests")
+			}
+		}
+	}
+
 	// Validate gRPC message requirements during planning
 	subtype, subtypeOk := diff.GetOk("subtype")
 	if !subtypeOk || subtype.(string) != "grpc" {
