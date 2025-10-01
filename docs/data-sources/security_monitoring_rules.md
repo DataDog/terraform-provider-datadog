@@ -117,6 +117,7 @@ Read-Only:
 - `keep_alive` (Number)
 - `max_signal_duration` (Number)
 - `new_value_options` (List of Object) (see [below for nested schema](#nestedobjatt--rules--options--new_value_options))
+- `sequence_detection_options` (List of Object) (see [below for nested schema](#nestedobjatt--rules--options--sequence_detection_options))
 - `third_party_rule_options` (List of Object) (see [below for nested schema](#nestedobjatt--rules--options--third_party_rule_options))
 
 <a id="nestedobjatt--rules--options--impossible_travel_options"></a>
@@ -136,6 +137,35 @@ Read-Only:
 - `learning_duration` (Number)
 - `learning_method` (String)
 - `learning_threshold` (Number)
+
+
+<a id="nestedobjatt--rules--options--sequence_detection_options"></a>
+### Nested Schema for `rules.options.sequence_detection_options`
+
+Read-Only:
+
+- `step_transitions` (List of Object) (see [below for nested schema](#nestedobjatt--rules--options--sequence_detection_options--step_transitions))
+- `steps` (List of Object) (see [below for nested schema](#nestedobjatt--rules--options--sequence_detection_options--steps))
+
+<a id="nestedobjatt--rules--options--sequence_detection_options--step_transitions"></a>
+### Nested Schema for `rules.options.sequence_detection_options.step_transitions`
+
+Read-Only:
+
+- `child` (String)
+- `evaluation_window` (Number)
+- `parent` (String)
+
+
+<a id="nestedobjatt--rules--options--sequence_detection_options--steps"></a>
+### Nested Schema for `rules.options.sequence_detection_options.steps`
+
+Read-Only:
+
+- `condition` (String)
+- `evaluation_window` (Number)
+- `name` (String)
+
 
 
 <a id="nestedobjatt--rules--options--third_party_rule_options"></a>
