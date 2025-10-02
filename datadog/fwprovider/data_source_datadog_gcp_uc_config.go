@@ -107,7 +107,7 @@ func (d *datadogGcpUcConfigDataSource) Schema(_ context.Context, _ datasource.Sc
 			},
 			"status": schema.StringAttribute{
 				Computed:    true,
-				Description: "The current status of the GCP Usage Cost configuration (e.g., active, archived).",
+				Description: "The current status of the GCP Usage Cost configuration (for example, active, error, or archived).",
 			},
 			"status_updated_at": schema.StringAttribute{
 				Computed:    true,
