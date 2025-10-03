@@ -40,12 +40,12 @@ func (r *tagPipelineRulesetOrderResource) Configure(_ context.Context, request r
 }
 
 func (r *tagPipelineRulesetOrderResource) Metadata(_ context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
-	response.TypeName = "tag_pipeline_ruleset_order"
+	response.TypeName = "tag_pipeline_rulesets"
 }
 
 func (r *tagPipelineRulesetOrderResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "Provides a Datadog Tag Pipeline Ruleset Order API resource. This can be used to manage the order of Datadog Tag Pipeline Rulesets.",
+		Description: "Provides a Datadog Tag Pipeline Ruleset Order resource that can be used to manage the order of Tag Pipeline Rulesets.",
 		Attributes: map[string]schema.Attribute{
 			"ruleset_ids": schema.ListAttribute{
 				Description: "The list of Tag Pipeline Ruleset IDs, in order. Rulesets are executed in the order specified in this list.",
@@ -90,26 +90,39 @@ func (r *tagPipelineRulesetOrderResource) Read(ctx context.Context, request reso
 		rulesets = *respData
 	}
 
-	// Sort rulesets by position and extract IDs
-	tfList := make([]string, len(rulesets))
+	// Create a slice of structs to sort by position
+	type rulesetWithPosition struct {
+		id       string
+		position int32
+	}
+
+	rulesetPositions := make([]rulesetWithPosition, 0, len(rulesets))
 	for _, ruleset := range rulesets {
-		if rulesetAttrs, ok := ruleset.GetAttributesOk(); ok {
-			// Find the correct position for this ruleset
-			position := int(rulesetAttrs.GetPosition())
-			if position < len(tfList) {
-				if rulesetID, ok := ruleset.GetIdOk(); ok {
-					tfList[position] = *rulesetID
-				}
+		if rulesetID, ok := ruleset.GetIdOk(); ok {
+			position := int32(0)
+			if rulesetAttrs, ok := ruleset.GetAttributesOk(); ok {
+				position = rulesetAttrs.GetPosition()
+			}
+			rulesetPositions = append(rulesetPositions, rulesetWithPosition{
+				id:       *rulesetID,
+				position: position,
+			})
+		}
+	}
+
+	// Sort by position
+	for i := 0; i < len(rulesetPositions); i++ {
+		for j := i + 1; j < len(rulesetPositions); j++ {
+			if rulesetPositions[i].position > rulesetPositions[j].position {
+				rulesetPositions[i], rulesetPositions[j] = rulesetPositions[j], rulesetPositions[i]
 			}
 		}
 	}
 
-	// Remove any empty slots and create a clean ordered list
-	orderedList := make([]string, 0, len(tfList))
-	for _, id := range tfList {
-		if id != "" {
-			orderedList = append(orderedList, id)
-		}
+	// Extract ordered IDs
+	orderedList := make([]string, 0, len(rulesetPositions))
+	for _, rp := range rulesetPositions {
+		orderedList = append(orderedList, rp.id)
 	}
 
 	state.RulesetIDs, _ = types.ListValueFrom(ctx, types.StringType, orderedList)
@@ -152,12 +165,12 @@ func (r *tagPipelineRulesetOrderResource) updateOrder(state *tagPipelineRulesetO
 		desiredRulesetIDs = append(desiredRulesetIDs, rulesetID)
 	}
 
-	// The tag pipeline API requires ALL existing rulesets to be included in the reorder call
-	// So we always use the comprehensive approach
+	// Strict validation: only allow reordering if ALL existing rulesets are managed by Terraform
+	// This ensures complete infrastructure control and prevents configuration drift
 	r.updateOrderWithAllRulesets(state, diag, desiredRulesetIDs)
 }
 
-// Fallback method that includes all existing rulesets
+// Validates that all existing rulesets are managed by Terraform before reordering
 func (r *tagPipelineRulesetOrderResource) updateOrderWithAllRulesets(state *tagPipelineRulesetOrderModel, diag *diag.Diagnostics, desiredOrder []string) {
 	// Get all existing rulesets
 	resp, httpResponse, err := r.Api.ListRulesets(r.Auth)
@@ -187,53 +200,38 @@ func (r *tagPipelineRulesetOrderResource) updateOrderWithAllRulesets(state *tagP
 		}
 	}
 
-	// Create a slice of structs to sort by current position
-	type rulesetWithPosition struct {
-		id       string
-		position int32
-	}
-
-	rulesetPositions := make([]rulesetWithPosition, 0, len(existingRulesets))
-	for _, ruleset := range existingRulesets {
-		if rulesetID, ok := ruleset.GetIdOk(); ok {
-			position := int32(0)
-			if rulesetAttrs, ok := ruleset.GetAttributesOk(); ok {
-				position = rulesetAttrs.GetPosition()
-			}
-			rulesetPositions = append(rulesetPositions, rulesetWithPosition{
-				id:       *rulesetID,
-				position: position,
-			})
+	// Strict validation: Check if there are unmanaged rulesets
+	if len(existingRulesets) != len(desiredOrder) {
+		// Find unmanaged rulesets
+		unmanagedRulesets := make([]string, 0)
+		desiredIDsSet := make(map[string]bool)
+		for _, id := range desiredOrder {
+			desiredIDsSet[id] = true
 		}
-	}
 
-	// Sort by position to get current order
-	for i := 0; i < len(rulesetPositions); i++ {
-		for j := i + 1; j < len(rulesetPositions); j++ {
-			if rulesetPositions[i].position > rulesetPositions[j].position {
-				rulesetPositions[i], rulesetPositions[j] = rulesetPositions[j], rulesetPositions[i]
+		for _, ruleset := range existingRulesets {
+			if rulesetID, ok := ruleset.GetIdOk(); ok {
+				if !desiredIDsSet[*rulesetID] {
+					unmanagedRulesets = append(unmanagedRulesets, *rulesetID)
+				}
 			}
 		}
+
+		diag.AddError(
+			"Unmanaged rulesets detected",
+			fmt.Sprintf("Found %d rulesets in Datadog that are not managed by this Terraform configuration: %v. "+
+				"All rulesets must be managed by Terraform. Please either:\n"+
+				"1. Import existing rulesets using 'terraform import datadog_tag_pipeline_ruleset.<name> <ruleset_id>'\n"+
+				"2. Add the missing rulesets to your Terraform configuration\n"+
+				"3. Delete unmanaged rulesets from Datadog if they're no longer needed\n\n"+
+				"This ensures complete infrastructure control and prevents configuration drift.",
+				len(unmanagedRulesets), unmanagedRulesets),
+		)
+		return
 	}
 
-	// Create final order: desired order first, then remaining rulesets
-	finalOrder := make([]string, 0, len(rulesetPositions))
-	desiredIDsMap := make(map[string]bool)
+	finalOrder := desiredOrder
 
-	// Add desired rulesets in specified order
-	for _, id := range desiredOrder {
-		finalOrder = append(finalOrder, id)
-		desiredIDsMap[id] = true
-	}
-
-	// Add remaining rulesets in their current order
-	for _, rp := range rulesetPositions {
-		if !desiredIDsMap[rp.id] {
-			finalOrder = append(finalOrder, rp.id)
-		}
-	}
-
-	// Convert to API format
 	rulesetData := make([]datadogV2.ReorderRulesetResourceData, len(finalOrder))
 	for i, rulesetID := range finalOrder {
 		rulesetData[i] = datadogV2.ReorderRulesetResourceData{
@@ -242,12 +240,10 @@ func (r *tagPipelineRulesetOrderResource) updateOrderWithAllRulesets(state *tagP
 		}
 	}
 
-	// Create the reorder request
 	reorderRequest := datadogV2.ReorderRulesetResourceArray{
 		Data: rulesetData,
 	}
 
-	// Call the reorder API
 	httpResponse, err = r.Api.ReorderRulesets(r.Auth, reorderRequest)
 	if err != nil {
 		diag.Append(utils.FrameworkErrorDiag(err, fmt.Sprintf("error reordering tag pipeline rulesets with all rulesets: %v", httpResponse)))

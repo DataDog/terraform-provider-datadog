@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -269,98 +270,7 @@ func (r *tagPipelineRulesetResource) Create(ctx context.Context, req resource.Cr
 	}
 
 	// Validate rules configuration
-	for i, rule := range plan.Rules {
-		// Count how many rule types are defined
-		ruleTypeCount := 0
-		if rule.Mapping != nil {
-			ruleTypeCount++
-		}
-		if rule.Query != nil {
-			ruleTypeCount++
-		}
-		if rule.ReferenceTable != nil {
-			ruleTypeCount++
-		}
-
-		// Exactly one rule type must be defined
-		if ruleTypeCount == 0 {
-			resp.Diagnostics.AddError(
-				"Missing rule configuration",
-				fmt.Sprintf("rules[%d] must define exactly one of: mapping, query, or reference_table", i),
-			)
-			continue
-		}
-		if ruleTypeCount > 1 {
-			resp.Diagnostics.AddError(
-				"Multiple rule configurations",
-				fmt.Sprintf("rules[%d] can only define one of: mapping, query, or reference_table", i),
-			)
-			continue
-		}
-
-		// Validate mapping block
-		if rule.Mapping != nil {
-			if rule.Mapping.DestinationKey.IsNull() || rule.Mapping.DestinationKey.ValueString() == "" {
-				resp.Diagnostics.AddError(
-					"Missing required attribute",
-					fmt.Sprintf("rules[%d].mapping.destination_key is required when mapping block is used", i),
-				)
-			}
-			if len(rule.Mapping.SourceKeys) == 0 {
-				resp.Diagnostics.AddError(
-					"Missing required attribute",
-					fmt.Sprintf("rules[%d].mapping.source_keys is required when mapping block is used", i),
-				)
-			}
-		}
-
-		// Validate query block
-		if rule.Query != nil {
-			if rule.Query.Query.IsNull() || rule.Query.Query.ValueString() == "" {
-				resp.Diagnostics.AddError(
-					"Missing required attribute",
-					fmt.Sprintf("rules[%d].query.query is required when query block is used", i),
-				)
-			}
-			// Addition block is required for query rules
-			if rule.Query.Addition == nil {
-				resp.Diagnostics.AddError(
-					"Missing required attribute",
-					fmt.Sprintf("rules[%d].query.addition block is required when query block is used", i),
-				)
-			} else {
-				if rule.Query.Addition.Key.IsNull() || rule.Query.Addition.Key.ValueString() == "" {
-					resp.Diagnostics.AddError(
-						"Missing required attribute",
-						fmt.Sprintf("rules[%d].query.addition.key is required when addition block is used", i),
-					)
-				}
-				if rule.Query.Addition.Value.IsNull() || rule.Query.Addition.Value.ValueString() == "" {
-					resp.Diagnostics.AddError(
-						"Missing required attribute",
-						fmt.Sprintf("rules[%d].query.addition.value is required when addition block is used", i),
-					)
-				}
-			}
-		}
-
-		// Validate reference_table block
-		if rule.ReferenceTable != nil {
-			if rule.ReferenceTable.TableName.IsNull() || rule.ReferenceTable.TableName.ValueString() == "" {
-				resp.Diagnostics.AddError(
-					"Missing required attribute",
-					fmt.Sprintf("rules[%d].reference_table.table_name is required when reference_table block is used", i),
-				)
-			}
-			if len(rule.ReferenceTable.SourceKeys) == 0 {
-				resp.Diagnostics.AddError(
-					"Missing required attribute",
-					fmt.Sprintf("rules[%d].reference_table.source_keys is required when reference_table block is used", i),
-				)
-			}
-		}
-	}
-
+	validateRules(plan.Rules, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -413,98 +323,7 @@ func (r *tagPipelineRulesetResource) Update(ctx context.Context, req resource.Up
 	plan.Version = state.Version
 
 	// Validate rules configuration
-	for i, rule := range plan.Rules {
-		// Count how many rule types are defined
-		ruleTypeCount := 0
-		if rule.Mapping != nil {
-			ruleTypeCount++
-		}
-		if rule.Query != nil {
-			ruleTypeCount++
-		}
-		if rule.ReferenceTable != nil {
-			ruleTypeCount++
-		}
-
-		// Exactly one rule type must be defined
-		if ruleTypeCount == 0 {
-			resp.Diagnostics.AddError(
-				"Missing rule configuration",
-				fmt.Sprintf("rules[%d] must define exactly one of: mapping, query, or reference_table", i),
-			)
-			continue
-		}
-		if ruleTypeCount > 1 {
-			resp.Diagnostics.AddError(
-				"Multiple rule configurations",
-				fmt.Sprintf("rules[%d] can only define one of: mapping, query, or reference_table", i),
-			)
-			continue
-		}
-
-		// Validate mapping block
-		if rule.Mapping != nil {
-			if rule.Mapping.DestinationKey.IsNull() || rule.Mapping.DestinationKey.ValueString() == "" {
-				resp.Diagnostics.AddError(
-					"Missing required attribute",
-					fmt.Sprintf("rules[%d].mapping.destination_key is required when mapping block is used", i),
-				)
-			}
-			if len(rule.Mapping.SourceKeys) == 0 {
-				resp.Diagnostics.AddError(
-					"Missing required attribute",
-					fmt.Sprintf("rules[%d].mapping.source_keys is required when mapping block is used", i),
-				)
-			}
-		}
-
-		// Validate query block
-		if rule.Query != nil {
-			if rule.Query.Query.IsNull() || rule.Query.Query.ValueString() == "" {
-				resp.Diagnostics.AddError(
-					"Missing required attribute",
-					fmt.Sprintf("rules[%d].query.query is required when query block is used", i),
-				)
-			}
-			// Addition block is required for query rules
-			if rule.Query.Addition == nil {
-				resp.Diagnostics.AddError(
-					"Missing required attribute",
-					fmt.Sprintf("rules[%d].query.addition block is required when query block is used", i),
-				)
-			} else {
-				if rule.Query.Addition.Key.IsNull() || rule.Query.Addition.Key.ValueString() == "" {
-					resp.Diagnostics.AddError(
-						"Missing required attribute",
-						fmt.Sprintf("rules[%d].query.addition.key is required when addition block is used", i),
-					)
-				}
-				if rule.Query.Addition.Value.IsNull() || rule.Query.Addition.Value.ValueString() == "" {
-					resp.Diagnostics.AddError(
-						"Missing required attribute",
-						fmt.Sprintf("rules[%d].query.addition.value is required when addition block is used", i),
-					)
-				}
-			}
-		}
-
-		// Validate reference_table block
-		if rule.ReferenceTable != nil {
-			if rule.ReferenceTable.TableName.IsNull() || rule.ReferenceTable.TableName.ValueString() == "" {
-				resp.Diagnostics.AddError(
-					"Missing required attribute",
-					fmt.Sprintf("rules[%d].reference_table.table_name is required when reference_table block is used", i),
-				)
-			}
-			if len(rule.ReferenceTable.SourceKeys) == 0 {
-				resp.Diagnostics.AddError(
-					"Missing required attribute",
-					fmt.Sprintf("rules[%d].reference_table.source_keys is required when reference_table block is used", i),
-				)
-			}
-		}
-	}
-
+	validateRules(plan.Rules, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -522,41 +341,8 @@ func (r *tagPipelineRulesetResource) Update(ctx context.Context, req resource.Up
 		return
 	}
 
-	// Fix for Terraform CLI issue #32460:
-	// Build a fresh state from API response, then selectively apply config constraints
 	var newState tagPipelineRulesetModel
 	setModelFromRulesetResp(&newState, apiResp)
-
-	// Ensure all computed fields are properly set after update
-	if newState.Position.IsNull() || newState.Position.IsUnknown() {
-		readResp, _, readErr := r.Api.GetRuleset(r.Auth, rulesetId)
-		if readErr == nil {
-			setModelFromRulesetResp(&newState, readResp)
-		}
-	}
-
-	// The key fix: For each rule, ensure that rule type blocks match the config
-	// If config doesn't have a block type, explicitly null it in the new state
-	// This prevents "planned for existence but config wants absence" errors
-	for i := range newState.Rules {
-		if i < len(config.Rules) {
-			configRule := config.Rules[i]
-			stateRule := &newState.Rules[i]
-
-			// If a block type is not in the config, remove it from state
-			// even if the API response might have included it
-			if configRule.Mapping == nil {
-				stateRule.Mapping = nil
-			}
-			if configRule.Query == nil {
-				stateRule.Query = nil
-			}
-			if configRule.ReferenceTable == nil {
-				stateRule.ReferenceTable = nil
-			}
-		}
-	}
-
 	resp.Diagnostics.Append(resp.State.Set(ctx, &newState)...)
 }
 
@@ -580,6 +366,124 @@ func (r *tagPipelineRulesetResource) ImportState(ctx context.Context, req resour
 
 // --- Helper functions to map between model and API types ---
 
+// convertMetadataToMap converts types.Map metadata to map[string]string
+func convertMetadataToMap(metadata types.Map) map[string]string {
+	if metadata.IsNull() || metadata.IsUnknown() {
+		return nil
+	}
+	result := make(map[string]string)
+	for k, v := range metadata.Elements() {
+		if strVal, ok := v.(types.String); ok {
+			result[k] = strVal.ValueString()
+		}
+	}
+	return result
+}
+
+// convertSourceKeys converts []types.String to []string
+func convertSourceKeys(sourceKeys []types.String) []string {
+	result := make([]string, len(sourceKeys))
+	for i, sk := range sourceKeys {
+		result[i] = sk.ValueString()
+	}
+	return result
+}
+
+// validateRules validates the rules configuration and adds diagnostics errors if validation fails.
+func validateRules(rules []ruleItem, diagnostics *diag.Diagnostics) {
+	for i, rule := range rules {
+		// Count how many rule types are defined
+		ruleTypeCount := 0
+		if rule.Mapping != nil {
+			ruleTypeCount++
+		}
+		if rule.Query != nil {
+			ruleTypeCount++
+		}
+		if rule.ReferenceTable != nil {
+			ruleTypeCount++
+		}
+
+		// Exactly one rule type must be defined
+		if ruleTypeCount == 0 {
+			diagnostics.AddError(
+				"Missing rule configuration",
+				fmt.Sprintf("rules[%d] must define exactly one of: mapping, query, or reference_table", i),
+			)
+			continue
+		}
+		if ruleTypeCount > 1 {
+			diagnostics.AddError(
+				"Multiple rule configurations",
+				fmt.Sprintf("rules[%d] can only define one of: mapping, query, or reference_table", i),
+			)
+			continue
+		}
+
+		// Validate mapping block
+		if rule.Mapping != nil {
+			if rule.Mapping.DestinationKey.IsNull() || rule.Mapping.DestinationKey.ValueString() == "" {
+				diagnostics.AddError(
+					"Missing required attribute",
+					fmt.Sprintf("rules[%d].mapping.destination_key is required when mapping block is used", i),
+				)
+			}
+			if len(rule.Mapping.SourceKeys) == 0 {
+				diagnostics.AddError(
+					"Missing required attribute",
+					fmt.Sprintf("rules[%d].mapping.source_keys is required when mapping block is used", i),
+				)
+			}
+		}
+
+		// Validate query block
+		if rule.Query != nil {
+			if rule.Query.Query.IsNull() || rule.Query.Query.ValueString() == "" {
+				diagnostics.AddError(
+					"Missing required attribute",
+					fmt.Sprintf("rules[%d].query.query is required when query block is used", i),
+				)
+			}
+			// Addition block is required for query rules
+			if rule.Query.Addition == nil {
+				diagnostics.AddError(
+					"Missing required attribute",
+					fmt.Sprintf("rules[%d].query.addition block is required when query block is used", i),
+				)
+			} else {
+				if rule.Query.Addition.Key.IsNull() || rule.Query.Addition.Key.ValueString() == "" {
+					diagnostics.AddError(
+						"Missing required attribute",
+						fmt.Sprintf("rules[%d].query.addition.key is required when addition block is used", i),
+					)
+				}
+				if rule.Query.Addition.Value.IsNull() || rule.Query.Addition.Value.ValueString() == "" {
+					diagnostics.AddError(
+						"Missing required attribute",
+						fmt.Sprintf("rules[%d].query.addition.value is required when addition block is used", i),
+					)
+				}
+			}
+		}
+
+		// Validate reference_table block
+		if rule.ReferenceTable != nil {
+			if rule.ReferenceTable.TableName.IsNull() || rule.ReferenceTable.TableName.ValueString() == "" {
+				diagnostics.AddError(
+					"Missing required attribute",
+					fmt.Sprintf("rules[%d].reference_table.table_name is required when reference_table block is used", i),
+				)
+			}
+			if len(rule.ReferenceTable.SourceKeys) == 0 {
+				diagnostics.AddError(
+					"Missing required attribute",
+					fmt.Sprintf("rules[%d].reference_table.source_keys is required when reference_table block is used", i),
+				)
+			}
+		}
+	}
+}
+
 func buildCreateRulesetRequestFromModel(plan tagPipelineRulesetModel) datadogV2.CreateRulesetRequest {
 	// Convert rules
 	var rules []datadogV2.CreateRulesetRequestDataAttributesRulesItems
@@ -590,26 +494,16 @@ func buildCreateRulesetRequestFromModel(plan tagPipelineRulesetModel) datadogV2.
 		}
 
 		// Set metadata if provided
-		if !r.Metadata.IsNull() && !r.Metadata.IsUnknown() {
-			metadata := make(map[string]string)
-			for k, v := range r.Metadata.Elements() {
-				if strVal, ok := v.(types.String); ok {
-					metadata[k] = strVal.ValueString()
-				}
-			}
+		if metadata := convertMetadataToMap(r.Metadata); metadata != nil {
 			rule.Metadata = metadata
 		}
 
 		// Set mapping if provided
 		if r.Mapping != nil {
-			sourceKeys := make([]string, len(r.Mapping.SourceKeys))
-			for i, sk := range r.Mapping.SourceKeys {
-				sourceKeys[i] = sk.ValueString()
-			}
 			mapping := datadogV2.CreateRulesetRequestDataAttributesRulesItemsMapping{
 				DestinationKey: r.Mapping.DestinationKey.ValueString(),
 				IfNotExists:    r.Mapping.IfNotExists.ValueBool(),
-				SourceKeys:     sourceKeys,
+				SourceKeys:     convertSourceKeys(r.Mapping.SourceKeys),
 			}
 			rule.Mapping = *datadogV2.NewNullableCreateRulesetRequestDataAttributesRulesItemsMapping(&mapping)
 		} else {
@@ -645,15 +539,11 @@ func buildCreateRulesetRequestFromModel(plan tagPipelineRulesetModel) datadogV2.
 					OutputKey:   fp.OutputKey.ValueString(),
 				})
 			}
-			sourceKeys := make([]string, len(r.ReferenceTable.SourceKeys))
-			for i, sk := range r.ReferenceTable.SourceKeys {
-				sourceKeys[i] = sk.ValueString()
-			}
 			refTable := datadogV2.CreateRulesetRequestDataAttributesRulesItemsReferenceTable{
 				CaseInsensitivity: r.ReferenceTable.CaseInsensitivity.ValueBoolPointer(),
 				FieldPairs:        fieldPairs,
 				IfNotExists:       r.ReferenceTable.IfNotExists.ValueBoolPointer(),
-				SourceKeys:        sourceKeys,
+				SourceKeys:        convertSourceKeys(r.ReferenceTable.SourceKeys),
 				TableName:         r.ReferenceTable.TableName.ValueString(),
 			}
 			rule.ReferenceTable = *datadogV2.NewNullableCreateRulesetRequestDataAttributesRulesItemsReferenceTable(&refTable)
@@ -705,26 +595,16 @@ func buildUpdateRulesetRequestFromModel(plan tagPipelineRulesetModel) datadogV2.
 		}
 
 		// Set metadata if provided
-		if !r.Metadata.IsNull() && !r.Metadata.IsUnknown() {
-			metadata := make(map[string]string)
-			for k, v := range r.Metadata.Elements() {
-				if strVal, ok := v.(types.String); ok {
-					metadata[k] = strVal.ValueString()
-				}
-			}
+		if metadata := convertMetadataToMap(r.Metadata); metadata != nil {
 			rule.Metadata = metadata
 		}
 
 		// Set mapping if provided
 		if r.Mapping != nil {
-			sourceKeys := make([]string, len(r.Mapping.SourceKeys))
-			for i, sk := range r.Mapping.SourceKeys {
-				sourceKeys[i] = sk.ValueString()
-			}
 			mapping := datadogV2.UpdateRulesetRequestDataAttributesRulesItemsMapping{
 				DestinationKey: r.Mapping.DestinationKey.ValueString(),
 				IfNotExists:    r.Mapping.IfNotExists.ValueBool(),
-				SourceKeys:     sourceKeys,
+				SourceKeys:     convertSourceKeys(r.Mapping.SourceKeys),
 			}
 			rule.Mapping = *datadogV2.NewNullableUpdateRulesetRequestDataAttributesRulesItemsMapping(&mapping)
 		} else {
@@ -760,15 +640,11 @@ func buildUpdateRulesetRequestFromModel(plan tagPipelineRulesetModel) datadogV2.
 					OutputKey:   fp.OutputKey.ValueString(),
 				})
 			}
-			sourceKeys := make([]string, len(r.ReferenceTable.SourceKeys))
-			for i, sk := range r.ReferenceTable.SourceKeys {
-				sourceKeys[i] = sk.ValueString()
-			}
 			refTable := datadogV2.UpdateRulesetRequestDataAttributesRulesItemsReferenceTable{
 				CaseInsensitivity: r.ReferenceTable.CaseInsensitivity.ValueBoolPointer(),
 				FieldPairs:        fieldPairs,
 				IfNotExists:       r.ReferenceTable.IfNotExists.ValueBoolPointer(),
-				SourceKeys:        sourceKeys,
+				SourceKeys:        convertSourceKeys(r.ReferenceTable.SourceKeys),
 				TableName:         r.ReferenceTable.TableName.ValueString(),
 			}
 			rule.ReferenceTable = *datadogV2.NewNullableUpdateRulesetRequestDataAttributesRulesItemsReferenceTable(&refTable)
