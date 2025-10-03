@@ -130,7 +130,6 @@ func (r *tagPipelineRulesetResource) Schema(_ context.Context, _ resource.Schema
 								},
 								"if_not_exists": schema.BoolAttribute{
 									Optional:    true,
-									Computed:    true,
 									Description: "Whether to apply the mapping only if the destination key doesn't exist.",
 								},
 								"source_keys": schema.ListAttribute{
@@ -145,12 +144,10 @@ func (r *tagPipelineRulesetResource) Schema(_ context.Context, _ resource.Schema
 							Attributes: map[string]schema.Attribute{
 								"case_insensitivity": schema.BoolAttribute{
 									Optional:    true,
-									Computed:    true,
 									Description: "Whether the query matching is case insensitive.",
 								},
 								"if_not_exists": schema.BoolAttribute{
 									Optional:    true,
-									Computed:    true,
 									Description: "Whether to apply the query only if the key doesn't exist.",
 								},
 								"query": schema.StringAttribute{
@@ -179,12 +176,10 @@ func (r *tagPipelineRulesetResource) Schema(_ context.Context, _ resource.Schema
 							Attributes: map[string]schema.Attribute{
 								"case_insensitivity": schema.BoolAttribute{
 									Optional:    true,
-									Computed:    true,
 									Description: "Whether the reference table lookup is case insensitive.",
 								},
 								"if_not_exists": schema.BoolAttribute{
 									Optional:    true,
-									Computed:    true,
 									Description: "Whether to apply the reference table only if the key doesn't exist.",
 								},
 								"source_keys": schema.ListAttribute{
