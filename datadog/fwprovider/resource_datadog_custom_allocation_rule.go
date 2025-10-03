@@ -11,6 +11,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
@@ -94,6 +95,112 @@ type evaluateGroupedByFiltersModel struct {
 type basedOnTimeseriesModel struct {
 }
 
+// filterValueListValidator validates each filter in a list
+type filterValueListValidator struct{}
+
+func (v filterValueListValidator) Description(ctx context.Context) string {
+	return "Ensures that 'values' is used with 'in'/'not in' operators and 'value' is used with all other operators"
+}
+
+func (v filterValueListValidator) MarkdownDescription(ctx context.Context) string {
+	return "Ensures that `values` is used with `in`/`not in` operators and `value` is used with all other operators"
+}
+
+func (v filterValueListValidator) ValidateList(ctx context.Context, req validator.ListRequest, resp *validator.ListResponse) {
+	if req.ConfigValue.IsNull() || req.ConfigValue.IsUnknown() {
+		return
+	}
+
+	// Get list elements as a slice of Objects
+	elements := req.ConfigValue.Elements()
+
+	// Validate each element
+	for idx, element := range elements {
+		objVal, ok := element.(types.Object)
+		if !ok || objVal.IsNull() || objVal.IsUnknown() {
+			continue
+		}
+
+		attrs := objVal.Attributes()
+
+		// Extract condition, value, and values
+		conditionAttr, hasCondition := attrs["condition"]
+		valueAttr, hasValue := attrs["value"]
+		valuesAttr, hasValues := attrs["values"]
+
+		if !hasCondition {
+			continue
+		}
+
+		condition, ok := conditionAttr.(types.String)
+		if !ok || condition.IsNull() || condition.IsUnknown() {
+			continue
+		}
+
+		conditionStr := condition.ValueString()
+
+		// Check if value is set
+		valueSet := false
+		if hasValue {
+			if v, ok := valueAttr.(types.String); ok && !v.IsNull() && !v.IsUnknown() {
+				valueSet = true
+			}
+		}
+
+		// Check if values is set
+		valuesSet := false
+		if hasValues {
+			if v, ok := valuesAttr.(types.List); ok && !v.IsNull() && !v.IsUnknown() {
+				valuesSet = true
+			}
+		}
+
+		// Validate based on condition
+		multiValueOperators := []string{"in", "not in"}
+		isMultiValueOp := false
+		for _, op := range multiValueOperators {
+			if conditionStr == op {
+				isMultiValueOp = true
+				break
+			}
+		}
+
+		if isMultiValueOp {
+			// For 'in' and 'not in', values must be set and value must not be set
+			if !valuesSet {
+				resp.Diagnostics.AddAttributeError(
+					req.Path.AtListIndex(idx),
+					"Invalid Filter Configuration",
+					"When condition is 'in' or 'not in', the 'values' field must be set (not 'value')",
+				)
+			}
+			if valueSet {
+				resp.Diagnostics.AddAttributeError(
+					req.Path.AtListIndex(idx),
+					"Invalid Filter Configuration",
+					"When condition is 'in' or 'not in', only 'values' should be set (not both 'value' and 'values')",
+				)
+			}
+		} else {
+			// For all other operators, value must be set and values must not be set
+			if !valueSet {
+				resp.Diagnostics.AddAttributeError(
+					req.Path.AtListIndex(idx),
+					"Invalid Filter Configuration",
+					"When condition is not 'in' or 'not in', the 'value' field must be set (not 'values')",
+				)
+			}
+			if valuesSet {
+				resp.Diagnostics.AddAttributeError(
+					req.Path.AtListIndex(idx),
+					"Invalid Filter Configuration",
+					"When condition is not 'in' or 'not in', only 'value' should be set (not both 'value' and 'values')",
+				)
+			}
+		}
+	}
+}
+
 func NewDatadogCustomAllocationRuleResource() resource.Resource {
 	return &datadogCustomAllocationRuleResource{}
 }
@@ -160,6 +267,9 @@ func (r *datadogCustomAllocationRuleResource) Schema(_ context.Context, _ resour
 		},
 		Blocks: map[string]schema.Block{
 			"costs_to_allocate": schema.ListNestedBlock{
+				Validators: []validator.List{
+					filterValueListValidator{},
+				},
 				NestedObject: schema.NestedBlockObject{
 					Attributes: map[string]schema.Attribute{
 						"condition": schema.StringAttribute{
@@ -172,11 +282,11 @@ func (r *datadogCustomAllocationRuleResource) Schema(_ context.Context, _ resour
 						},
 						"value": schema.StringAttribute{
 							Optional:    true,
-							Description: "The `items` `value`.",
+							Description: "The `items` `value`. Use this for single-value conditions (not 'in'/'not in').",
 						},
 						"values": schema.ListAttribute{
 							Optional:    true,
-							Description: "The `items` `values`.",
+							Description: "The `items` `values`. Use this for multi-value conditions ('in'/'not in').",
 							ElementType: types.StringType,
 						},
 					},
@@ -231,6 +341,9 @@ func (r *datadogCustomAllocationRuleResource) Schema(_ context.Context, _ resour
 						},
 					},
 					"allocated_by_filters": schema.ListNestedBlock{
+						Validators: []validator.List{
+							filterValueListValidator{},
+						},
 						NestedObject: schema.NestedBlockObject{
 							Attributes: map[string]schema.Attribute{
 								"condition": schema.StringAttribute{
@@ -254,6 +367,9 @@ func (r *datadogCustomAllocationRuleResource) Schema(_ context.Context, _ resour
 						},
 					},
 					"based_on_costs": schema.ListNestedBlock{
+						Validators: []validator.List{
+							filterValueListValidator{},
+						},
 						NestedObject: schema.NestedBlockObject{
 							Attributes: map[string]schema.Attribute{
 								"condition": schema.StringAttribute{
@@ -277,6 +393,9 @@ func (r *datadogCustomAllocationRuleResource) Schema(_ context.Context, _ resour
 						},
 					},
 					"evaluate_grouped_by_filters": schema.ListNestedBlock{
+						Validators: []validator.List{
+							filterValueListValidator{},
+						},
 						NestedObject: schema.NestedBlockObject{
 							Attributes: map[string]schema.Attribute{
 								"condition": schema.StringAttribute{
