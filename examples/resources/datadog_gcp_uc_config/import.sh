@@ -1,0 +1,1 @@
+terraform import datadog_gcp_uc_config.example <cloud_account_id>
