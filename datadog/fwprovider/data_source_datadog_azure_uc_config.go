@@ -2,10 +2,12 @@ package fwprovider
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
@@ -145,13 +147,17 @@ func (d *datadogAzureUcConfigDataSource) Read(ctx context.Context, request datas
 		return
 	}
 
-	d.updateState(ctx, &state, &ddResp)
+	response.Diagnostics.Append(d.updateState(ctx, &state, &ddResp)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
 
 	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (d *datadogAzureUcConfigDataSource) updateState(ctx context.Context, state *datadogAzureUcConfigDataSourceModel, ucConfigPair *datadogV2.UCConfigPair) {
+func (d *datadogAzureUcConfigDataSource) updateState(ctx context.Context, state *datadogAzureUcConfigDataSourceModel, ucConfigPair *datadogV2.UCConfigPair) diag.Diagnostics {
+	var diags diag.Diagnostics
 	if data, ok := ucConfigPair.GetDataOk(); ok {
 		if id, ok := data.GetIdOk(); ok {
 			state.ID = types.StringValue(*id)
@@ -172,21 +178,29 @@ func (d *datadogAzureUcConfigDataSource) updateState(ctx context.Context, state 
 				// Separate configs by dataset_type and populate respective blocks
 				for _, configData := range configs {
 					datasetType := configData.GetDatasetType()
-					if datasetType == "actual" {
+					switch datasetType {
+					case "actual":
 						state.ActualBillConfig = &actualBillConfigModel{}
 						state.ActualBillConfig.ExportName = types.StringValue(configData.GetExportName())
 						state.ActualBillConfig.ExportPath = types.StringValue(configData.GetExportPath())
 						state.ActualBillConfig.StorageAccount = types.StringValue(configData.GetStorageAccount())
 						state.ActualBillConfig.StorageContainer = types.StringValue(configData.GetStorageContainer())
-					} else if datasetType == "amortized" {
+					case "amortized":
 						state.AmortizedBillConfig = &amortizedBillConfigModel{}
 						state.AmortizedBillConfig.ExportName = types.StringValue(configData.GetExportName())
 						state.AmortizedBillConfig.ExportPath = types.StringValue(configData.GetExportPath())
 						state.AmortizedBillConfig.StorageAccount = types.StringValue(configData.GetStorageAccount())
 						state.AmortizedBillConfig.StorageContainer = types.StringValue(configData.GetStorageContainer())
+					default:
+						diags.AddError(
+							"Unexpected dataset type",
+							fmt.Sprintf("Received unexpected dataset type '%s'. Expected 'actual' or 'amortized'.", datasetType),
+						)
+						return diags
 					}
 				}
 			}
 		}
 	}
+	return diags
 }
