@@ -13,6 +13,12 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
+var (
+	_ resource.ResourceWithConfigure   = &tagPipelineRulesetResource{}
+	_ resource.ResourceWithImportState = &tagPipelineRulesetResource{}
+	_ resource.ResourceWithModifyPlan  = &tagPipelineRulesetResource{}
+)
+
 type tagPipelineRulesetResource struct {
 	Api  *datadogV2.CloudCostManagementApi
 	Auth context.Context
@@ -221,6 +227,36 @@ func (r *tagPipelineRulesetResource) Configure(_ context.Context, req resource.C
 	providerData := req.ProviderData.(*FrameworkProvider)
 	r.Api = providerData.DatadogApiInstances.GetCloudCostManagementApiV2()
 	r.Auth = providerData.Auth
+}
+
+func (r *tagPipelineRulesetResource) ModifyPlan(ctx context.Context, request resource.ModifyPlanRequest, response *resource.ModifyPlanResponse) {
+	if request.State.Raw.IsNull() {
+		return
+	}
+	if request.Plan.Raw.IsNull() {
+		return
+	}
+
+	var config, plan tagPipelineRulesetModel
+	response.Diagnostics.Append(request.Config.Get(ctx, &config)...)
+	response.Diagnostics.Append(request.Plan.Get(ctx, &plan)...)
+
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	for index := range plan.Rules {
+		if config.Rules[index].Mapping == nil {
+			plan.Rules[index].Mapping = nil
+		}
+		if config.Rules[index].Query == nil {
+			plan.Rules[index].Query = nil
+		}
+		if config.Rules[index].ReferenceTable == nil {
+			plan.Rules[index].ReferenceTable = nil
+		}
+	}
+	response.Diagnostics.Append(response.Plan.Set(ctx, &plan)...)
 }
 
 // --- CRUD ---
