@@ -101,6 +101,8 @@ var Resources = []func() resource.Resource{
 	NewIncidentNotificationRuleResource,
 	NewAwsCurConfigResource,
 	NewGcpUcConfigResource,
+	NewDatadogCustomAllocationRuleResource,
+	NewCustomAllocationRuleOrderResource,
 }
 
 var Datasources = []func() datasource.DataSource{
@@ -144,6 +146,7 @@ var Datasources = []func() datasource.DataSource{
 	NewIncidentNotificationRuleDataSource,
 	NewDatadogAwsCurConfigDataSource,
 	NewDatadogGcpUcConfigDataSource,
+	NewDatadogCustomAllocationRuleDataSource,
 }
 
 // FrameworkProvider struct
