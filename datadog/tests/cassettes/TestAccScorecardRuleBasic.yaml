@@ -1,0 +1,205 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 255
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"description":"Acceptance test rule","enabled":true,"level":2,"name":"tf-testaccscorecardrulebasic-local-1751355963","owner":"terraform","scope_query":"env:prod team:platform","scorecard_name":"terraform_scorecard"},"type":"rule"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/scorecard/rules
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 581
+        uncompressed: false
+        body: '{"data":{"id":"pm0e2g8p1wsmgflh","type":"rule","attributes":{"category":"terraform_scorecard","created_at":"2025-07-01T07:46:06.30930645Z","custom":true,"description":"Acceptance test rule","enabled":true,"level":2,"modified_at":"2025-07-01T07:46:06.30930645Z","name":"tf-testaccscorecardrulebasic-local-1751355963","owner":"terraform","scope_query":"env:prod team:platform","scorecard_name":"terraform_scorecard"},"relationships":{"scope":{"data":{"id":"5600279c-60f3-5784-8aca-d2f2a25ba022","type":"entity-scope"}},"scorecard":{"data":{"id":"QUEQlS7ULLJv","type":"scorecard"}}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 505.900375ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/scorecard/rules?filter%5Brule%5D%5Bid%5D=pm0e2g8p1wsmgflh
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 715
+        uncompressed: false
+        body: '{"data":[{"id":"pm0e2g8p1wsmgflh","type":"rule","attributes":{"category":"terraform_scorecard","created_at":"2025-07-01T07:46:06.309306Z","custom":true,"description":"Acceptance test rule","enabled":true,"level":2,"modified_at":"2025-07-01T07:46:06.309306Z","name":"tf-testaccscorecardrulebasic-local-1751355963","owner":"terraform","scope_query":"env:prod team:platform","scorecard_name":"terraform_scorecard"},"relationships":{"scope":{"data":{"id":"5600279c-60f3-5784-8aca-d2f2a25ba022","type":"entity-scope"}},"scorecard":{"data":{"id":"QUEQlS7ULLJv","type":"scorecard"}}}}],"links":{"next":"/api/v2/scorecard/rules?filter%5Brule%5D%5Bid%5D=pm0e2g8p1wsmgflh\u0026page%5Blimit%5D=100\u0026page%5Boffset%5D=100"}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 116.884666ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/scorecard/rules?filter%5Brule%5D%5Bid%5D=pm0e2g8p1wsmgflh
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 715
+        uncompressed: false
+        body: '{"data":[{"id":"pm0e2g8p1wsmgflh","type":"rule","attributes":{"category":"terraform_scorecard","created_at":"2025-07-01T07:46:06.309306Z","custom":true,"description":"Acceptance test rule","enabled":true,"level":2,"modified_at":"2025-07-01T07:46:06.309306Z","name":"tf-testaccscorecardrulebasic-local-1751355963","owner":"terraform","scope_query":"env:prod team:platform","scorecard_name":"terraform_scorecard"},"relationships":{"scope":{"data":{"id":"5600279c-60f3-5784-8aca-d2f2a25ba022","type":"entity-scope"}},"scorecard":{"data":{"id":"QUEQlS7ULLJv","type":"scorecard"}}}}],"links":{"next":"/api/v2/scorecard/rules?filter%5Brule%5D%5Bid%5D=pm0e2g8p1wsmgflh\u0026page%5Blimit%5D=100\u0026page%5Boffset%5D=100"}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 112.091042ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 260
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"description":"Updated description","enabled":true,"level":1,"name":"tf-testaccscorecardrulebasic-local-1751355963","owner":"terraform","scope_query":"env:staging team:development","scorecard_name":"terraform_scorecard"},"type":"rule"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/scorecard/rules/pm0e2g8p1wsmgflh
+        method: PUT
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 582
+        uncompressed: false
+        body: '{"data":{"id":"pm0e2g8p1wsmgflh","type":"rule","attributes":{"category":"terraform_scorecard","created_at":"2025-07-01T07:46:06.309306Z","custom":true,"description":"Updated description","enabled":true,"level":1,"modified_at":"2025-07-01T07:46:08.572996Z","name":"tf-testaccscorecardrulebasic-local-1751355963","owner":"terraform","scope_query":"env:staging team:development","scorecard_name":"terraform_scorecard"},"relationships":{"scope":{"data":{"id":"4d304ff6-f64f-553f-b60c-e53aa0c84677","type":"entity-scope"}},"scorecard":{"data":{"id":"QUEQlS7ULLJv","type":"scorecard"}}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 138.517958ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/scorecard/rules?filter%5Brule%5D%5Bid%5D=pm0e2g8p1wsmgflh
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 720
+        uncompressed: false
+        body: '{"data":[{"id":"pm0e2g8p1wsmgflh","type":"rule","attributes":{"category":"terraform_scorecard","created_at":"2025-07-01T07:46:06.309306Z","custom":true,"description":"Updated description","enabled":true,"level":1,"modified_at":"2025-07-01T07:46:08.572996Z","name":"tf-testaccscorecardrulebasic-local-1751355963","owner":"terraform","scope_query":"env:staging team:development","scorecard_name":"terraform_scorecard"},"relationships":{"scope":{"data":{"id":"4d304ff6-f64f-553f-b60c-e53aa0c84677","type":"entity-scope"}},"scorecard":{"data":{"id":"QUEQlS7ULLJv","type":"scorecard"}}}}],"links":{"next":"/api/v2/scorecard/rules?filter%5Brule%5D%5Bid%5D=pm0e2g8p1wsmgflh\u0026page%5Blimit%5D=100\u0026page%5Boffset%5D=100"}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 112.100333ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/scorecard/rules/pm0e2g8p1wsmgflh
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 489.7135ms

@@ -95,6 +95,7 @@ var Resources = []func() resource.Resource{
 	NewCostBudgetResource,
 	NewCSMThreatsAgentRuleResource,
 	NewCSMThreatsPolicyResource,
+	NewScorecardRuleResource,
 	NewAppKeyRegistrationResource,
 	NewIncidentTypeResource,
 	NewIncidentNotificationTemplateResource,
@@ -584,7 +585,13 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteMonitorNotificationRule", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateMonitorNotificationRule", true)
 
-	// Enable IncidentType
+	// Enable ServiceScorecards
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateScorecardRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateScorecardRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.ListScorecardRules", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteScorecardRule", true)
+
+  // Enable IncidentType
 	ddClientConfig.SetUnstableOperationEnabled("v2.CreateIncidentType", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.GetIncidentType", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateIncidentType", true)

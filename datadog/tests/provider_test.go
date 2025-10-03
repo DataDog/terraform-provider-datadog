@@ -285,6 +285,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_compliance_resource_evaluation_filter_test":      "resource_filters",
 	"tests/resource_datadog_compliance_custom_framework_test":                "compliance_custom_framework",
 	"tests/resource_datadog_cost_budget_test":                                "cost-budget",
+	"tests/resource_datadog_service_scorecard_rule_test":                     "scorecard",
 	"tests/resource_datadog_app_key_registration_test":                       "app_key_registration",
 	"tests/resource_datadog_aws_cur_config_test":                             "cost-management",
 	"tests/resource_datadog_gcp_uc_config_test":                              "cost-management",
