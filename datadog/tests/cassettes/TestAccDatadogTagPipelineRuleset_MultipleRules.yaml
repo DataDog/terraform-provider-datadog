@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 793
+        content_length: 766
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"enabled":true,"rules":[{"enabled":true,"mapping":{"destination_key":"env","if_not_exists":true,"source_keys":["environment"]},"name":"mapping-rule","query":null,"reference_table":null},{"enabled":true,"mapping":null,"name":"query-rule","query":{"addition":{"key":"tier","value":"frontend"},"case_insensitivity":false,"if_not_exists":false,"query":"service:web"},"reference_table":null},{"enabled":true,"mapping":null,"name":"ref-table-rule","query":null,"reference_table":{"case_insensitivity":false,"field_pairs":[{"input_column":"application","output_key":"app_name"}],"if_not_exists":false,"source_keys":["app"],"table_name":"lookup_table"}}]},"id":"tf-test-multi-ruleset-tf-TestAccDatadogTagPipelineRuleset_MultipleRules-local-1759254156","type":"create_ruleset"}}
+            {"data":{"attributes":{"enabled":true,"rules":[{"enabled":true,"mapping":{"destination_key":"env","if_not_exists":true,"source_keys":["environment"]},"name":"mapping-rule","query":null,"reference_table":null},{"enabled":true,"mapping":null,"name":"query-rule","query":{"addition":{"key":"tier","value":"frontend"},"if_not_exists":false,"query":"service:web"},"reference_table":null},{"enabled":true,"mapping":null,"name":"ref-table-rule","query":null,"reference_table":{"case_insensitivity":false,"field_pairs":[{"input_column":"application","output_key":"app_name"}],"if_not_exists":false,"source_keys":["app"],"table_name":"lookup_table"}}]},"id":"tf-test-multi-ruleset-tf-TestAccDatadogTagPipelineRuleset_MultipleRules-local-1759525272","type":"create_ruleset"}}
         form: {}
         headers:
             Accept:
@@ -30,13 +30,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"data":{"id":"fc8f7314-5e83-4260-8e22-3613d92e044a","type":"ruleset","attributes":{"created":{"seconds":1759254158,"nanos":252596000},"enabled":true,"last_modified_user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","modified":{"seconds":1759254158,"nanos":252596000},"name":"tf-test-multi-ruleset-tf-TestAccDatadogTagPipelineRuleset_MultipleRules-local-1759254156","position":8,"rules":[{"name":"mapping-rule","enabled":true,"query":null,"mapping":{"source_keys":["environment"],"destination_key":"env","if_not_exists":true},"reference_table":null,"metadata":null},{"name":"query-rule","enabled":true,"query":{"query":"service:web","addition":{"key":"tier","value":"frontend"},"if_not_exists":false,"case_insensitivity":false},"mapping":null,"reference_table":null,"metadata":null},{"name":"ref-table-rule","enabled":true,"query":null,"mapping":null,"reference_table":{"table_name":"lookup_table","source_keys":["app"],"field_pairs":[{"input_column":"application","output_key":"app_name"}],"case_insensitivity":false,"if_not_exists":false},"metadata":null}],"version":3608136}}}'
+        body: '{"data":{"id":"1a60c0d8-0750-49bf-8cce-a420fb7ae5b5","type":"ruleset","attributes":{"created":{"seconds":1759525273,"nanos":602541000},"enabled":true,"last_modified_user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","modified":{"seconds":1759525273,"nanos":602541000},"name":"tf-test-multi-ruleset-tf-TestAccDatadogTagPipelineRuleset_MultipleRules-local-1759525272","position":2,"rules":[{"name":"mapping-rule","enabled":true,"query":null,"mapping":{"source_keys":["environment"],"destination_key":"env","if_not_exists":true},"reference_table":null,"metadata":null},{"name":"query-rule","enabled":true,"query":{"query":"service:web","addition":{"key":"tier","value":"frontend"},"if_not_exists":false,"case_insensitivity":false},"mapping":null,"reference_table":null,"metadata":null},{"name":"ref-table-rule","enabled":true,"query":null,"mapping":null,"reference_table":{"table_name":"lookup_table","source_keys":["app"],"field_pairs":[{"input_column":"application","output_key":"app_name"}],"case_insensitivity":false,"if_not_exists":false},"metadata":null}],"version":3609238}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 293.24ms
+        duration: 113.390667ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -52,24 +52,22 @@ interactions:
         form: {}
         headers:
             Accept:
-                - application/json
-        url: https://api.datadoghq.com/api/v2/tags/enrichment/fc8f7314-5e83-4260-8e22-3613d92e044a
-        method: GET
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/tags/enrichment/1a60c0d8-0750-49bf-8cce-a420fb7ae5b5
+        method: DELETE
       response:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: -1
-        uncompressed: true
-        body: '{"data":{"id":"fc8f7314-5e83-4260-8e22-3613d92e044a","type":"ruleset","attributes":{"created":{"seconds":1759254158,"nanos":252596000},"enabled":true,"last_modified_user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","modified":{"seconds":1759254158,"nanos":252596000},"name":"tf-test-multi-ruleset-tf-TestAccDatadogTagPipelineRuleset_MultipleRules-local-1759254156","position":8,"processing_status":"error","rules":[{"name":"mapping-rule","enabled":true,"query":null,"mapping":{"source_keys":["environment"],"destination_key":"env","if_not_exists":true},"reference_table":null,"metadata":null},{"name":"query-rule","enabled":true,"query":{"query":"service:web","addition":{"key":"tier","value":"frontend"},"if_not_exists":false,"case_insensitivity":false},"mapping":null,"reference_table":null,"metadata":null},{"name":"ref-table-rule","enabled":true,"query":null,"mapping":null,"reference_table":{"table_name":"lookup_table","source_keys":["app"],"field_pairs":[{"input_column":"application","output_key":"app_name"}],"case_insensitivity":false,"if_not_exists":false},"metadata":null}],"version":3608136}}}'
-        headers:
-            Content-Type:
-                - application/vnd.api+json
-        status: 200 OK
-        code: 200
-        duration: 142.213292ms
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 59.182042ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -85,39 +83,8 @@ interactions:
         form: {}
         headers:
             Accept:
-                - '*/*'
-        url: https://api.datadoghq.com/api/v2/tags/enrichment/fc8f7314-5e83-4260-8e22-3613d92e044a
-        method: DELETE
-      response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        transfer_encoding: []
-        trailer: {}
-        content_length: 0
-        uncompressed: false
-        body: ""
-        headers: {}
-        status: 204 No Content
-        code: 204
-        duration: 60.921334ms
-    - id: 3
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 0
-        transfer_encoding: []
-        trailer: {}
-        host: api.datadoghq.com
-        remote_addr: ""
-        request_uri: ""
-        body: ""
-        form: {}
-        headers:
-            Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/tags/enrichment/fc8f7314-5e83-4260-8e22-3613d92e044a
+        url: https://api.datadoghq.com/api/v2/tags/enrichment/1a60c0d8-0750-49bf-8cce-a420fb7ae5b5
         method: GET
       response:
         proto: HTTP/1.1
@@ -127,10 +94,10 @@ interactions:
         trailer: {}
         content_length: 115
         uncompressed: false
-        body: '{"errors":[{"status":"404","title":"Not Found","detail":"ruleset fc8f7314-5e83-4260-8e22-3613d92e044a not found"}]}'
+        body: '{"errors":[{"status":"404","title":"Not Found","detail":"ruleset 1a60c0d8-0750-49bf-8cce-a420fb7ae5b5 not found"}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 404 Not Found
         code: 404
-        duration: 43.263458ms
+        duration: 64.648958ms

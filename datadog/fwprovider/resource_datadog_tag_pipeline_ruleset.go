@@ -137,6 +137,7 @@ func (r *tagPipelineRulesetResource) Schema(_ context.Context, _ resource.Schema
 								},
 								"if_not_exists": schema.BoolAttribute{
 									Optional:    true,
+									Computed:    true,
 									Description: "Whether to apply the mapping only if the destination key doesn't exist.",
 								},
 								"source_keys": schema.ListAttribute{
@@ -151,10 +152,12 @@ func (r *tagPipelineRulesetResource) Schema(_ context.Context, _ resource.Schema
 							Attributes: map[string]schema.Attribute{
 								"case_insensitivity": schema.BoolAttribute{
 									Optional:    true,
+									Computed:    true,
 									Description: "Whether the query matching is case insensitive.",
 								},
 								"if_not_exists": schema.BoolAttribute{
 									Optional:    true,
+									Computed:    true,
 									Description: "Whether to apply the query only if the key doesn't exist.",
 								},
 								"query": schema.StringAttribute{
@@ -183,10 +186,12 @@ func (r *tagPipelineRulesetResource) Schema(_ context.Context, _ resource.Schema
 							Attributes: map[string]schema.Attribute{
 								"case_insensitivity": schema.BoolAttribute{
 									Optional:    true,
+									Computed:    true,
 									Description: "Whether the reference table lookup is case insensitive.",
 								},
 								"if_not_exists": schema.BoolAttribute{
 									Optional:    true,
+									Computed:    true,
 									Description: "Whether to apply the reference table only if the key doesn't exist.",
 								},
 								"source_keys": schema.ListAttribute{
@@ -502,7 +507,7 @@ func buildCreateRulesetRequestFromModel(plan tagPipelineRulesetModel) datadogV2.
 		if r.Mapping != nil {
 			mapping := datadogV2.CreateRulesetRequestDataAttributesRulesItemsMapping{
 				DestinationKey: r.Mapping.DestinationKey.ValueString(),
-				IfNotExists:    r.Mapping.IfNotExists.ValueBool(),
+				IfNotExists:    !r.Mapping.IfNotExists.IsNull() && r.Mapping.IfNotExists.ValueBool(),
 				SourceKeys:     convertSourceKeys(r.Mapping.SourceKeys),
 			}
 			rule.Mapping = *datadogV2.NewNullableCreateRulesetRequestDataAttributesRulesItemsMapping(&mapping)
@@ -513,9 +518,15 @@ func buildCreateRulesetRequestFromModel(plan tagPipelineRulesetModel) datadogV2.
 		// Set query if provided
 		if r.Query != nil {
 			query := datadogV2.CreateRulesetRequestDataAttributesRulesItemsQuery{
-				CaseInsensitivity: r.Query.CaseInsensitivity.ValueBoolPointer(),
-				IfNotExists:       r.Query.IfNotExists.ValueBool(),
-				Query:             r.Query.Query.ValueString(),
+				CaseInsensitivity: func() *bool {
+					if !r.Query.CaseInsensitivity.IsNull() {
+						val := r.Query.CaseInsensitivity.ValueBool()
+						return &val
+					}
+					return nil
+				}(),
+				IfNotExists: !r.Query.IfNotExists.IsNull() && r.Query.IfNotExists.ValueBool(),
+				Query:       r.Query.Query.ValueString(),
 			}
 			// Addition is required for query rules
 			if r.Query.Addition != nil {
@@ -540,11 +551,23 @@ func buildCreateRulesetRequestFromModel(plan tagPipelineRulesetModel) datadogV2.
 				})
 			}
 			refTable := datadogV2.CreateRulesetRequestDataAttributesRulesItemsReferenceTable{
-				CaseInsensitivity: r.ReferenceTable.CaseInsensitivity.ValueBoolPointer(),
-				FieldPairs:        fieldPairs,
-				IfNotExists:       r.ReferenceTable.IfNotExists.ValueBoolPointer(),
-				SourceKeys:        convertSourceKeys(r.ReferenceTable.SourceKeys),
-				TableName:         r.ReferenceTable.TableName.ValueString(),
+				CaseInsensitivity: func() *bool {
+					if !r.ReferenceTable.CaseInsensitivity.IsNull() {
+						val := r.ReferenceTable.CaseInsensitivity.ValueBool()
+						return &val
+					}
+					return nil
+				}(),
+				FieldPairs: fieldPairs,
+				IfNotExists: func() *bool {
+					if !r.ReferenceTable.IfNotExists.IsNull() {
+						val := r.ReferenceTable.IfNotExists.ValueBool()
+						return &val
+					}
+					return nil
+				}(),
+				SourceKeys: convertSourceKeys(r.ReferenceTable.SourceKeys),
+				TableName:  r.ReferenceTable.TableName.ValueString(),
 			}
 			rule.ReferenceTable = *datadogV2.NewNullableCreateRulesetRequestDataAttributesRulesItemsReferenceTable(&refTable)
 		} else {
@@ -603,7 +626,7 @@ func buildUpdateRulesetRequestFromModel(plan tagPipelineRulesetModel) datadogV2.
 		if r.Mapping != nil {
 			mapping := datadogV2.UpdateRulesetRequestDataAttributesRulesItemsMapping{
 				DestinationKey: r.Mapping.DestinationKey.ValueString(),
-				IfNotExists:    r.Mapping.IfNotExists.ValueBool(),
+				IfNotExists:    !r.Mapping.IfNotExists.IsNull() && r.Mapping.IfNotExists.ValueBool(),
 				SourceKeys:     convertSourceKeys(r.Mapping.SourceKeys),
 			}
 			rule.Mapping = *datadogV2.NewNullableUpdateRulesetRequestDataAttributesRulesItemsMapping(&mapping)
@@ -614,9 +637,15 @@ func buildUpdateRulesetRequestFromModel(plan tagPipelineRulesetModel) datadogV2.
 		// Set query if provided
 		if r.Query != nil {
 			query := datadogV2.UpdateRulesetRequestDataAttributesRulesItemsQuery{
-				CaseInsensitivity: r.Query.CaseInsensitivity.ValueBoolPointer(),
-				IfNotExists:       r.Query.IfNotExists.ValueBool(),
-				Query:             r.Query.Query.ValueString(),
+				CaseInsensitivity: func() *bool {
+					if !r.Query.CaseInsensitivity.IsNull() {
+						val := r.Query.CaseInsensitivity.ValueBool()
+						return &val
+					}
+					return nil
+				}(),
+				IfNotExists: !r.Query.IfNotExists.IsNull() && r.Query.IfNotExists.ValueBool(),
+				Query:       r.Query.Query.ValueString(),
 			}
 			// Addition is required for query rules
 			if r.Query.Addition != nil {
@@ -641,11 +670,23 @@ func buildUpdateRulesetRequestFromModel(plan tagPipelineRulesetModel) datadogV2.
 				})
 			}
 			refTable := datadogV2.UpdateRulesetRequestDataAttributesRulesItemsReferenceTable{
-				CaseInsensitivity: r.ReferenceTable.CaseInsensitivity.ValueBoolPointer(),
-				FieldPairs:        fieldPairs,
-				IfNotExists:       r.ReferenceTable.IfNotExists.ValueBoolPointer(),
-				SourceKeys:        convertSourceKeys(r.ReferenceTable.SourceKeys),
-				TableName:         r.ReferenceTable.TableName.ValueString(),
+				CaseInsensitivity: func() *bool {
+					if !r.ReferenceTable.CaseInsensitivity.IsNull() {
+						val := r.ReferenceTable.CaseInsensitivity.ValueBool()
+						return &val
+					}
+					return nil
+				}(),
+				FieldPairs: fieldPairs,
+				IfNotExists: func() *bool {
+					if !r.ReferenceTable.IfNotExists.IsNull() {
+						val := r.ReferenceTable.IfNotExists.ValueBool()
+						return &val
+					}
+					return nil
+				}(),
+				SourceKeys: convertSourceKeys(r.ReferenceTable.SourceKeys),
+				TableName:  r.ReferenceTable.TableName.ValueString(),
 			}
 			rule.ReferenceTable = *datadogV2.NewNullableUpdateRulesetRequestDataAttributesRulesItemsReferenceTable(&refTable)
 		} else {
@@ -769,9 +810,14 @@ func setModelFromRulesetResp(model *tagPipelineRulesetModel, apiResp datadogV2.R
 			queryVal := apiRule.Query.Get()
 			if queryVal != nil {
 				query := &ruleQuery{
-					CaseInsensitivity: types.BoolPointerValue(queryVal.CaseInsensitivity),
-					IfNotExists:       types.BoolValue(queryVal.IfNotExists),
-					Query:             types.StringValue(queryVal.Query),
+					CaseInsensitivity: func() types.Bool {
+						if queryVal.CaseInsensitivity != nil {
+							return types.BoolValue(*queryVal.CaseInsensitivity)
+						}
+						return types.BoolNull()
+					}(),
+					IfNotExists: types.BoolValue(queryVal.IfNotExists),
+					Query:       types.StringValue(queryVal.Query),
 				}
 				if queryVal.Addition.IsSet() {
 					additionVal := queryVal.Addition.Get()
@@ -802,11 +848,21 @@ func setModelFromRulesetResp(model *tagPipelineRulesetModel, apiResp datadogV2.R
 					sourceKeys[i] = types.StringValue(sk)
 				}
 				rule.ReferenceTable = &referenceTable{
-					CaseInsensitivity: types.BoolPointerValue(refTableVal.CaseInsensitivity),
-					FieldPairs:        fieldPairs,
-					IfNotExists:       types.BoolPointerValue(refTableVal.IfNotExists),
-					SourceKeys:        sourceKeys,
-					TableName:         types.StringValue(refTableVal.TableName),
+					CaseInsensitivity: func() types.Bool {
+						if refTableVal.CaseInsensitivity != nil {
+							return types.BoolValue(*refTableVal.CaseInsensitivity)
+						}
+						return types.BoolNull()
+					}(),
+					FieldPairs: fieldPairs,
+					IfNotExists: func() types.Bool {
+						if refTableVal.IfNotExists != nil {
+							return types.BoolValue(*refTableVal.IfNotExists)
+						}
+						return types.BoolNull()
+					}(),
+					SourceKeys: sourceKeys,
+					TableName:  types.StringValue(refTableVal.TableName),
 				}
 			}
 		}

@@ -287,7 +287,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_cost_budget_test":                                "cost-budget",
 	"tests/resource_datadog_tag_pipeline_ruleset_test":                       "tag-pipeline",
 	"tests/data_source_datadog_tag_pipeline_ruleset_test":                    "tag-pipeline",
-	"tests/resource_datadog_tag_pipeline_ruleset_order_test":                 "tag-pipeline",
+	"tests/resource_datadog_tag_pipeline_rulesets_test":                      "tag-pipeline",
 	"tests/resource_datadog_app_key_registration_test":                       "app_key_registration",
 	"tests/resource_datadog_incident_type_test":                              "incidents",
 	"tests/data_source_datadog_incident_type_test":                           "incidents",

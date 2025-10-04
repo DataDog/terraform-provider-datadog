@@ -269,9 +269,14 @@ func setDataSourceModelFromRulesetResp(model *tagPipelineRulesetDataSourceModel,
 			queryVal := apiRule.Query.Get()
 			if queryVal != nil {
 				query := &ruleQuery{
-					CaseInsensitivity: types.BoolPointerValue(queryVal.CaseInsensitivity),
-					IfNotExists:       types.BoolValue(queryVal.IfNotExists),
-					Query:             types.StringValue(queryVal.Query),
+					CaseInsensitivity: func() types.Bool {
+						if queryVal.CaseInsensitivity != nil {
+							return types.BoolValue(*queryVal.CaseInsensitivity)
+						}
+						return types.BoolNull()
+					}(),
+					IfNotExists: types.BoolValue(queryVal.IfNotExists),
+					Query:       types.StringValue(queryVal.Query),
 				}
 				if queryVal.Addition.IsSet() {
 					additionVal := queryVal.Addition.Get()
@@ -302,11 +307,21 @@ func setDataSourceModelFromRulesetResp(model *tagPipelineRulesetDataSourceModel,
 					sourceKeys[i] = types.StringValue(sk)
 				}
 				rule.ReferenceTable = &referenceTable{
-					CaseInsensitivity: types.BoolPointerValue(refTableVal.CaseInsensitivity),
-					FieldPairs:        fieldPairs,
-					IfNotExists:       types.BoolPointerValue(refTableVal.IfNotExists),
-					SourceKeys:        sourceKeys,
-					TableName:         types.StringValue(refTableVal.TableName),
+					CaseInsensitivity: func() types.Bool {
+						if refTableVal.CaseInsensitivity != nil {
+							return types.BoolValue(*refTableVal.CaseInsensitivity)
+						}
+						return types.BoolNull()
+					}(),
+					FieldPairs: fieldPairs,
+					IfNotExists: func() types.Bool {
+						if refTableVal.IfNotExists != nil {
+							return types.BoolValue(*refTableVal.IfNotExists)
+						}
+						return types.BoolNull()
+					}(),
+					SourceKeys: sourceKeys,
+					TableName:  types.StringValue(refTableVal.TableName),
 				}
 			}
 		}

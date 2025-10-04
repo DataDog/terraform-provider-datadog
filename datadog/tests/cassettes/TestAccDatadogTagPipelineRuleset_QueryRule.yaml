@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"enabled":true,"rules":[{"enabled":true,"mapping":null,"name":"query-rule","query":{"addition":{"key":"team","value":"backend"},"case_insensitivity":true,"if_not_exists":false,"query":"source:app AND env:prod"},"reference_table":null}]},"id":"tf-test-query-ruleset-tf-TestAccDatadogTagPipelineRuleset_QueryRule-local-1759254156","type":"create_ruleset"}}
+            {"data":{"attributes":{"enabled":true,"rules":[{"enabled":true,"mapping":null,"name":"query-rule","query":{"addition":{"key":"team","value":"backend"},"case_insensitivity":true,"if_not_exists":false,"query":"source:app AND env:prod"},"reference_table":null}]},"id":"tf-test-query-ruleset-tf-TestAccDatadogTagPipelineRuleset_QueryRule-local-1759525242","type":"create_ruleset"}}
         form: {}
         headers:
             Accept:
@@ -30,13 +30,13 @@ interactions:
         trailer: {}
         content_length: 631
         uncompressed: false
-        body: '{"data":{"id":"310aeffc-129c-4b7f-aaeb-aa9979960f54","type":"ruleset","attributes":{"created":{"seconds":1759254158,"nanos":221135000},"enabled":true,"last_modified_user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","modified":{"seconds":1759254158,"nanos":221135000},"name":"tf-test-query-ruleset-tf-TestAccDatadogTagPipelineRuleset_QueryRule-local-1759254156","position":4,"rules":[{"name":"query-rule","enabled":true,"query":{"query":"source:app AND env:prod","addition":{"key":"team","value":"backend"},"if_not_exists":false,"case_insensitivity":true},"mapping":null,"reference_table":null,"metadata":null}],"version":3608132}}}'
+        body: '{"data":{"id":"7c9c8095-08d6-4dbe-a04e-e57da3a77340","type":"ruleset","attributes":{"created":{"seconds":1759525245,"nanos":424517000},"enabled":true,"last_modified_user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","modified":{"seconds":1759525245,"nanos":424517000},"name":"tf-test-query-ruleset-tf-TestAccDatadogTagPipelineRuleset_QueryRule-local-1759525242","position":2,"rules":[{"name":"query-rule","enabled":true,"query":{"query":"source:app AND env:prod","addition":{"key":"team","value":"backend"},"if_not_exists":false,"case_insensitivity":true},"mapping":null,"reference_table":null,"metadata":null}],"version":3609226}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 169.329125ms
+        duration: 173.523375ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -53,7 +53,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/tags/enrichment/310aeffc-129c-4b7f-aaeb-aa9979960f54
+        url: https://api.datadoghq.com/api/v2/tags/enrichment/7c9c8095-08d6-4dbe-a04e-e57da3a77340
         method: GET
       response:
         proto: HTTP/1.1
@@ -63,13 +63,13 @@ interactions:
         trailer: {}
         content_length: 659
         uncompressed: false
-        body: '{"data":{"id":"310aeffc-129c-4b7f-aaeb-aa9979960f54","type":"ruleset","attributes":{"created":{"seconds":1759254158,"nanos":221135000},"enabled":true,"last_modified_user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","modified":{"seconds":1759254158,"nanos":221135000},"name":"tf-test-query-ruleset-tf-TestAccDatadogTagPipelineRuleset_QueryRule-local-1759254156","position":4,"processing_status":"error","rules":[{"name":"query-rule","enabled":true,"query":{"query":"source:app AND env:prod","addition":{"key":"team","value":"backend"},"if_not_exists":false,"case_insensitivity":true},"mapping":null,"reference_table":null,"metadata":null}],"version":3608132}}}'
+        body: '{"data":{"id":"7c9c8095-08d6-4dbe-a04e-e57da3a77340","type":"ruleset","attributes":{"created":{"seconds":1759525245,"nanos":424517000},"enabled":true,"last_modified_user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","modified":{"seconds":1759525245,"nanos":424517000},"name":"tf-test-query-ruleset-tf-TestAccDatadogTagPipelineRuleset_QueryRule-local-1759525242","position":2,"processing_status":"error","rules":[{"name":"query-rule","enabled":true,"query":{"query":"source:app AND env:prod","addition":{"key":"team","value":"backend"},"if_not_exists":false,"case_insensitivity":true},"mapping":null,"reference_table":null,"metadata":null}],"version":3609226}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 161.828583ms
+        duration: 157.206209ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -86,7 +86,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/tags/enrichment/310aeffc-129c-4b7f-aaeb-aa9979960f54
+        url: https://api.datadoghq.com/api/v2/tags/enrichment/7c9c8095-08d6-4dbe-a04e-e57da3a77340
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -100,7 +100,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 92.284291ms
+        duration: 62.387542ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -117,7 +117,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/tags/enrichment/310aeffc-129c-4b7f-aaeb-aa9979960f54
+        url: https://api.datadoghq.com/api/v2/tags/enrichment/7c9c8095-08d6-4dbe-a04e-e57da3a77340
         method: GET
       response:
         proto: HTTP/1.1
@@ -127,10 +127,10 @@ interactions:
         trailer: {}
         content_length: 115
         uncompressed: false
-        body: '{"errors":[{"status":"404","title":"Not Found","detail":"ruleset 310aeffc-129c-4b7f-aaeb-aa9979960f54 not found"}]}'
+        body: '{"errors":[{"status":"404","title":"Not Found","detail":"ruleset 7c9c8095-08d6-4dbe-a04e-e57da3a77340 not found"}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 404 Not Found
         code: 404
-        duration: 54.464958ms
+        duration: 39.701792ms

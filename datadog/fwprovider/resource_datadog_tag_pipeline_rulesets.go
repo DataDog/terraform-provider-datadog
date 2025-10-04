@@ -15,35 +15,35 @@ import (
 )
 
 var (
-	_ resource.ResourceWithConfigure   = &tagPipelineRulesetOrderResource{}
-	_ resource.ResourceWithImportState = &tagPipelineRulesetOrderResource{}
+	_ resource.ResourceWithConfigure   = &tagPipelineRulesetsResource{}
+	_ resource.ResourceWithImportState = &tagPipelineRulesetsResource{}
 )
 
-func NewTagPipelineRulesetOrderResource() resource.Resource {
-	return &tagPipelineRulesetOrderResource{}
+func NewTagPipelineRulesetsResource() resource.Resource {
+	return &tagPipelineRulesetsResource{}
 }
 
-type tagPipelineRulesetOrderModel struct {
+type tagPipelineRulesetsModel struct {
 	ID         types.String `tfsdk:"id"`
 	RulesetIDs types.List   `tfsdk:"ruleset_ids"`
 }
 
-type tagPipelineRulesetOrderResource struct {
+type tagPipelineRulesetsResource struct {
 	Api  *datadogV2.CloudCostManagementApi
 	Auth context.Context
 }
 
-func (r *tagPipelineRulesetOrderResource) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
+func (r *tagPipelineRulesetsResource) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
 	providerData := request.ProviderData.(*FrameworkProvider)
 	r.Api = providerData.DatadogApiInstances.GetCloudCostManagementApiV2()
 	r.Auth = providerData.Auth
 }
 
-func (r *tagPipelineRulesetOrderResource) Metadata(_ context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
+func (r *tagPipelineRulesetsResource) Metadata(_ context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
 	response.TypeName = "tag_pipeline_rulesets"
 }
 
-func (r *tagPipelineRulesetOrderResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
+func (r *tagPipelineRulesetsResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
 		Description: "Provides a Datadog Tag Pipeline Ruleset Order resource that can be used to manage the order of Tag Pipeline Rulesets.",
 		Attributes: map[string]schema.Attribute{
@@ -58,8 +58,8 @@ func (r *tagPipelineRulesetOrderResource) Schema(_ context.Context, _ resource.S
 	}
 }
 
-func (r *tagPipelineRulesetOrderResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
-	var state tagPipelineRulesetOrderModel
+func (r *tagPipelineRulesetsResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
+	var state tagPipelineRulesetsModel
 	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -71,8 +71,8 @@ func (r *tagPipelineRulesetOrderResource) Create(ctx context.Context, request re
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (r *tagPipelineRulesetOrderResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
-	var state tagPipelineRulesetOrderModel
+func (r *tagPipelineRulesetsResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
+	var state tagPipelineRulesetsModel
 	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -132,8 +132,8 @@ func (r *tagPipelineRulesetOrderResource) Read(ctx context.Context, request reso
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (r *tagPipelineRulesetOrderResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
-	var state tagPipelineRulesetOrderModel
+func (r *tagPipelineRulesetsResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
+	var state tagPipelineRulesetsModel
 	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -145,16 +145,16 @@ func (r *tagPipelineRulesetOrderResource) Update(ctx context.Context, request re
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (r *tagPipelineRulesetOrderResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
+func (r *tagPipelineRulesetsResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
 	// No-op: Deleting the order resource doesn't change the actual order of rulesets
 	// This follows the same pattern as other order resources in the provider
 }
 
-func (r *tagPipelineRulesetOrderResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
+func (r *tagPipelineRulesetsResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, frameworkPath.Root("id"), request, response)
 }
 
-func (r *tagPipelineRulesetOrderResource) updateOrder(state *tagPipelineRulesetOrderModel, diag *diag.Diagnostics) {
+func (r *tagPipelineRulesetsResource) updateOrder(state *tagPipelineRulesetsModel, diag *diag.Diagnostics) {
 	// Set the ID immediately to prevent "unknown value" errors
 	state.ID = types.StringValue("order")
 
@@ -171,7 +171,7 @@ func (r *tagPipelineRulesetOrderResource) updateOrder(state *tagPipelineRulesetO
 }
 
 // Validates that all existing rulesets are managed by Terraform before reordering
-func (r *tagPipelineRulesetOrderResource) updateOrderWithAllRulesets(state *tagPipelineRulesetOrderModel, diag *diag.Diagnostics, desiredOrder []string) {
+func (r *tagPipelineRulesetsResource) updateOrderWithAllRulesets(state *tagPipelineRulesetsModel, diag *diag.Diagnostics, desiredOrder []string) {
 	// Get all existing rulesets
 	resp, httpResponse, err := r.Api.ListRulesets(r.Auth)
 	if err != nil {
@@ -200,14 +200,16 @@ func (r *tagPipelineRulesetOrderResource) updateOrderWithAllRulesets(state *tagP
 		}
 	}
 
+	// Create a map of desired IDs for checking unmanaged rulesets
+	desiredIDsSet := make(map[string]bool)
+	for _, id := range desiredOrder {
+		desiredIDsSet[id] = true
+	}
+
 	// Strict validation: Check if there are unmanaged rulesets
 	if len(existingRulesets) != len(desiredOrder) {
 		// Find unmanaged rulesets
 		unmanagedRulesets := make([]string, 0)
-		desiredIDsSet := make(map[string]bool)
-		for _, id := range desiredOrder {
-			desiredIDsSet[id] = true
-		}
 
 		for _, ruleset := range existingRulesets {
 			if rulesetID, ok := ruleset.GetIdOk(); ok {
@@ -230,7 +232,47 @@ func (r *tagPipelineRulesetOrderResource) updateOrderWithAllRulesets(state *tagP
 		return
 	}
 
-	finalOrder := desiredOrder
+	// Create a slice of structs to sort by current position
+	type rulesetWithPosition struct {
+		id       string
+		position int32
+	}
+
+	rulesetPositions := make([]rulesetWithPosition, 0, len(existingRulesets))
+	for _, ruleset := range existingRulesets {
+		if rulesetID, ok := ruleset.GetIdOk(); ok {
+			position := int32(0)
+			if rulesetAttrs, ok := ruleset.GetAttributesOk(); ok {
+				position = rulesetAttrs.GetPosition()
+			}
+			rulesetPositions = append(rulesetPositions, rulesetWithPosition{
+				id:       *rulesetID,
+				position: position,
+			})
+		}
+	}
+
+	// Sort by position to get current order
+	for i := 0; i < len(rulesetPositions); i++ {
+		for j := i + 1; j < len(rulesetPositions); j++ {
+			if rulesetPositions[i].position > rulesetPositions[j].position {
+				rulesetPositions[i], rulesetPositions[j] = rulesetPositions[j], rulesetPositions[i]
+			}
+		}
+	}
+
+	// Create final order: desired order first, then remaining rulesets in their current order
+	finalOrder := make([]string, 0, len(rulesetPositions))
+
+	// Add desired rulesets in specified order
+	finalOrder = append(finalOrder, desiredOrder...)
+
+	// Add remaining rulesets in their current order
+	for _, rp := range rulesetPositions {
+		if !desiredIDsSet[rp.id] {
+			finalOrder = append(finalOrder, rp.id)
+		}
+	}
 
 	rulesetData := make([]datadogV2.ReorderRulesetResourceData, len(finalOrder))
 	for i, rulesetID := range finalOrder {
