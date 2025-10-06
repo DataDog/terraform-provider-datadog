@@ -101,6 +101,7 @@ var Resources = []func() resource.Resource{
 	NewIncidentNotificationRuleResource,
 	NewAwsCurConfigResource,
 	NewGcpUcConfigResource,
+	NewAzureUcConfigResource,
 }
 
 var Datasources = []func() datasource.DataSource{
@@ -109,6 +110,7 @@ var Datasources = []func() datasource.DataSource{
 	NewAwsAvailableNamespacesDataSource,
 	NewAwsIntegrationExternalIDDataSource,
 	NewAwsIntegrationIAMPermissionsDataSource,
+	NewAwsIntegrationIAMPermissionsStandardDataSource,
 	NewAwsIntegrationIAMPermissionsResourceCollectionDataSource,
 	NewAwsLogsServicesDataSource,
 	NewDatadogApmRetentionFiltersOrderDataSource,
@@ -145,6 +147,7 @@ var Datasources = []func() datasource.DataSource{
 	NewIncidentNotificationRuleDataSource,
 	NewDatadogAwsCurConfigDataSource,
 	NewDatadogGcpUcConfigDataSource,
+	NewDatadogAzureUcConfigDataSource,
 }
 
 // FrameworkProvider struct
