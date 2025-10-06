@@ -112,6 +112,29 @@ func TestAccDatadogSecurityMonitoringRule_ImpossibleTravelRule(t *testing.T) {
 	})
 }
 
+func TestAccDatadogSecurityMonitoringRule_SequenceDetection(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	ruleName := uniqueEntityName(ctx, t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogSecurityMonitoringRuleDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogSecurityMonitoringCreatedConfigSequenceDetection(ruleName),
+				Check:  testAccCheckDatadogSecurityMonitorCreatedCheckSequenceDetection(accProvider, ruleName),
+			},
+			{
+				Config: testAccCheckDatadogSecurityMonitoringUpdatedConfigSequenceDetection(ruleName),
+				Check:  testAccCheckDatadogSecurityMonitoringUpdateCheckSequenceDetection(accProvider, ruleName),
+			},
+		},
+	})
+}
+
 func TestAccDatadogSecurityMonitoringRule_CreateInvalidRule(t *testing.T) {
 	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
@@ -829,6 +852,207 @@ func testAccCheckDatadogSecurityMonitorCreatedCheckImpossibleTravelRule(accProvi
 			tfSecurityRuleName, "options.0.detection_method", "impossible_travel"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "options.0.impossible_travel_options.0.baseline_user_locations", "true"),
+		resource.TestCheckTypeSetElemAttr(
+			tfSecurityRuleName, "tags.*", "i:tomato"),
+		resource.TestCheckTypeSetElemAttr(
+			tfSecurityRuleName, "tags.*", "u:tomato"),
+	)
+}
+
+func testAccCheckDatadogSecurityMonitoringCreatedConfigSequenceDetection(name string) string {
+	return fmt.Sprintf(`
+resource "datadog_security_monitoring_rule" "acceptance_test" {
+    name = "%s"
+    message = "sequence detection rule triggered"
+    enabled = false
+    validate = true
+
+    query {
+        name = "a"
+        query = "service:logs-rule-reducer source:sequence-detection-a"
+        aggregation = "count"
+        data_source = "logs"
+        group_by_fields = ["host"]
+        has_optional_group_by_fields = false
+    }
+
+    query {
+        name = "b"
+        query = "service:logs-rule-reducer source:sequence-detection-b"
+        aggregation = "count"
+        data_source = "logs"
+        group_by_fields = ["host"]
+        has_optional_group_by_fields = false
+    }
+
+    case {
+        name = ""
+        status = "info"
+        condition = "step_b > 0"
+        notifications = []
+    }
+
+    options {
+        detection_method = "sequence_detection"
+        keep_alive = 300
+        max_signal_duration = 600
+        sequence_detection_options {
+            steps {
+                name = "step_a"
+                condition = "a > 0"
+                evaluation_window = 60
+            }
+            steps {
+                name = "step_b"
+                condition = "b > 0"
+                evaluation_window = 60
+            }
+            step_transitions {
+                parent = "step_a"
+                child = "step_b"
+                evaluation_window = 900
+            }
+        }
+    }
+
+    tags = ["i:tomato", "u:tomato"]
+}
+`, name)
+}
+
+func testAccCheckDatadogSecurityMonitorCreatedCheckSequenceDetection(accProvider func() (*schema.Provider, error), ruleName string) resource.TestCheckFunc {
+	return resource.ComposeTestCheckFunc(
+		testAccCheckDatadogSecurityMonitoringRuleExists(accProvider, tfSecurityRuleName),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "name", ruleName),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "message", "sequence detection rule triggered"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "enabled", "false"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.detection_method", "sequence_detection"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.keep_alive", "300"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.max_signal_duration", "600"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.sequence_detection_options.0.steps.0.name", "step_a"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.sequence_detection_options.0.steps.0.condition", "a > 0"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.sequence_detection_options.0.steps.0.evaluation_window", "60"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.sequence_detection_options.0.steps.1.name", "step_b"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.sequence_detection_options.0.steps.1.condition", "b > 0"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.sequence_detection_options.0.steps.1.evaluation_window", "60"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.sequence_detection_options.0.step_transitions.0.parent", "step_a"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.sequence_detection_options.0.step_transitions.0.child", "step_b"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.sequence_detection_options.0.step_transitions.0.evaluation_window", "900"),
+		resource.TestCheckTypeSetElemAttr(
+			tfSecurityRuleName, "tags.*", "i:tomato"),
+		resource.TestCheckTypeSetElemAttr(
+			tfSecurityRuleName, "tags.*", "u:tomato"),
+	)
+}
+
+func testAccCheckDatadogSecurityMonitoringUpdatedConfigSequenceDetection(name string) string {
+	return fmt.Sprintf(`
+resource "datadog_security_monitoring_rule" "acceptance_test" {
+    name = "%s"
+    message = "sequence detection rule triggered (updated)"
+    enabled = false
+
+    query {
+        name = "a"
+        query = "service:logs-rule-reducer source:sequence-detection-a"
+        aggregation = "count"
+        data_source = "logs"
+        group_by_fields = ["host"]
+        has_optional_group_by_fields = false
+    }
+
+    query {
+        name = "b"
+        query = "service:logs-rule-reducer source:sequence-detection-b"
+        aggregation = "count"
+        data_source = "logs"
+        group_by_fields = ["host"]
+        has_optional_group_by_fields = false
+    }
+
+    case {
+        name = "info case"
+        status = "info"
+        condition = "step_b > 0"
+        notifications = []
+    }
+
+    options {
+        detection_method = "sequence_detection"
+        keep_alive = 300
+        max_signal_duration = 600
+        sequence_detection_options {
+            steps {
+                name = "step_a"
+                condition = "a > 0"
+                evaluation_window = 300
+            }
+            steps {
+                name = "step_b"
+                condition = "b > 0"
+                evaluation_window = 300
+            }
+            step_transitions {
+                parent = "step_a"
+                child = "step_b"
+                evaluation_window = 1800
+            }
+        }
+    }
+
+    tags = ["i:tomato", "u:tomato"]
+}
+`, name)
+}
+
+func testAccCheckDatadogSecurityMonitoringUpdateCheckSequenceDetection(accProvider func() (*schema.Provider, error), ruleName string) resource.TestCheckFunc {
+	return resource.ComposeTestCheckFunc(
+		testAccCheckDatadogSecurityMonitoringRuleExists(accProvider, tfSecurityRuleName),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "name", ruleName),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "message", "sequence detection rule triggered (updated)"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "enabled", "false"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.detection_method", "sequence_detection"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.keep_alive", "300"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.max_signal_duration", "600"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.sequence_detection_options.0.steps.0.name", "step_a"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.sequence_detection_options.0.steps.0.condition", "a > 0"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.sequence_detection_options.0.steps.0.evaluation_window", "300"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.sequence_detection_options.0.steps.1.name", "step_b"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.sequence_detection_options.0.steps.1.condition", "b > 0"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.sequence_detection_options.0.steps.1.evaluation_window", "300"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.sequence_detection_options.0.step_transitions.0.parent", "step_a"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.sequence_detection_options.0.step_transitions.0.child", "step_b"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.sequence_detection_options.0.step_transitions.0.evaluation_window", "1800"),
 		resource.TestCheckTypeSetElemAttr(
 			tfSecurityRuleName, "tags.*", "i:tomato"),
 		resource.TestCheckTypeSetElemAttr(

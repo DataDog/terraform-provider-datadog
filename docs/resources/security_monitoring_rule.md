@@ -146,6 +146,7 @@ Optional:
 - `keep_alive` (Number) Once a signal is generated, the signal will remain “open” if a case is matched at least once within this keep alive window (in seconds). Valid values are `0`, `60`, `300`, `600`, `900`, `1800`, `3600`, `7200`, `10800`, `21600`, `43200`, `86400`.
 - `max_signal_duration` (Number) A signal will “close” regardless of the query being matched once the time exceeds the maximum duration (in seconds). This time is calculated from the first seen timestamp. Valid values are `0`, `60`, `300`, `600`, `900`, `1800`, `3600`, `7200`, `10800`, `21600`, `43200`, `86400`.
 - `new_value_options` (Block List, Max: 1) New value rules specific options. (see [below for nested schema](#nestedblock--options--new_value_options))
+- `sequence_detection_options` (Block List, Max: 1) Options for rules using the sequence detection method. (see [below for nested schema](#nestedblock--options--sequence_detection_options))
 - `third_party_rule_options` (Block List, Max: 1) Options for rules using the third-party detection method. (see [below for nested schema](#nestedblock--options--third_party_rule_options))
 
 <a id="nestedblock--options--impossible_travel_options"></a>
@@ -168,6 +169,41 @@ Optional:
 - `learning_duration` (Number) The duration in days during which values are learned, and after which signals will be generated for values that weren't learned. If set to 0, a signal will be generated for all new values after the first value is learned. Valid values are `0`, `1`, `7`. Defaults to `1`.
 - `learning_method` (String) The learning method used to determine when signals should be generated for values that weren't learned. Valid values are `duration`, `threshold`. Defaults to `"duration"`.
 - `learning_threshold` (Number) A number of occurrences after which signals are generated for values that weren't learned. Valid values are `0`, `1`. Defaults to `0`.
+
+
+<a id="nestedblock--options--sequence_detection_options"></a>
+### Nested Schema for `options.sequence_detection_options`
+
+Optional:
+
+- `step_transitions` (Block List) Edges of the step graph. (see [below for nested schema](#nestedblock--options--sequence_detection_options--step_transitions))
+- `steps` (Block List) Sequence steps. (see [below for nested schema](#nestedblock--options--sequence_detection_options--steps))
+
+<a id="nestedblock--options--sequence_detection_options--step_transitions"></a>
+### Nested Schema for `options.sequence_detection_options.step_transitions`
+
+Required:
+
+- `child` (String) Child step name.
+- `parent` (String) Parent step name.
+
+Optional:
+
+- `evaluation_window` (Number) Maximum time allowed to transition from parent to child. Valid values are `0`, `60`, `300`, `600`, `900`, `1800`, `3600`, `7200`, `10800`, `21600`, `43200`, `86400`.
+
+
+<a id="nestedblock--options--sequence_detection_options--steps"></a>
+### Nested Schema for `options.sequence_detection_options.steps`
+
+Required:
+
+- `condition` (String) Condition for the step to match.
+- `name` (String) Unique name of the step.
+
+Optional:
+
+- `evaluation_window` (Number) Evaluation window for the step. Valid values are `0`, `60`, `300`, `600`, `900`, `1800`, `3600`, `7200`, `10800`, `21600`, `43200`, `86400`.
+
 
 
 <a id="nestedblock--options--third_party_rule_options"></a>
