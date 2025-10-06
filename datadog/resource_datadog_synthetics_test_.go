@@ -1858,7 +1858,6 @@ func syntheticsFollowRedirectsOption() *schema.Schema {
 func syntheticsHttpVersionOption() *schema.Schema {
 	return &schema.Schema{
 		Description:      "HTTP version to use for an HTTP request in an API test or step.",
-		Default:          datadogV1.SYNTHETICSTESTOPTIONSHTTPVERSION_ANY,
 		Type:             schema.TypeString,
 		Optional:         true,
 		ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsTestOptionsHTTPVersionFromValue),
@@ -4182,14 +4181,19 @@ func buildTerraformRequestCertificates(clientCertificate datadogV1.SyntheticsTes
 
 func buildDatadogTestOptions(d *schema.ResourceData) *datadogV1.SyntheticsTestOptions {
 	options := datadogV1.NewSyntheticsTestOptions()
+	testType := getSyntheticsTestType(d)
 
 	if attr, ok := d.GetOk("options_list"); ok && attr != nil {
 		// common browser and API tests options
 		if attr, ok := d.GetOk("options_list.0.tick_every"); ok {
 			options.SetTickEvery(int64(attr.(int)))
 		}
-		if attr, ok := d.GetOk("options_list.0.http_version"); ok {
-			options.SetHttpVersion(datadogV1.SyntheticsTestOptionsHTTPVersion(attr.(string)))
+		if *testType == datadogV1.SYNTHETICSTESTDETAILSTYPE_API {
+			if attr, ok := d.GetOk("options_list.0.http_version"); ok {
+				options.SetHttpVersion(datadogV1.SyntheticsTestOptionsHTTPVersion(attr.(string)))
+			} else {
+				options.SetHttpVersion(datadogV1.SYNTHETICSTESTOPTIONSHTTPVERSION_ANY)
+			}
 		}
 		if attr, ok := d.GetOk("options_list.0.accept_self_signed"); ok {
 			options.SetAcceptSelfSigned(attr.(bool))
