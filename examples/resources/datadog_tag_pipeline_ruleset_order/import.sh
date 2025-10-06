@@ -1,1 +1,0 @@
-terraform import datadog_tag_pipeline_ruleset_order.my_ruleset_order order
