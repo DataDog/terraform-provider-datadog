@@ -43,7 +43,7 @@ func checkDatadogIntegrationAWSIAMPermissionsResourceCollectionCount(accProvider
 			return err
 		}
 
-		resourceAttributes := state.RootModule().Resources["data.datadog_integration_aws_iam_permissions_ResourceCollection.foo"].Primary.Attributes
+		resourceAttributes := state.RootModule().Resources["data.datadog_integration_aws_iam_permissions_resource_collection.foo"].Primary.Attributes
 		iamPermissionsCount, _ := strconv.Atoi(resourceAttributes["iam_permissions.#"])
 		permissionsDd := iamPermissions.Data.Attributes.Permissions
 
