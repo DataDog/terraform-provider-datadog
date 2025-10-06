@@ -135,7 +135,7 @@ func (r *actionConnectionResource) Metadata(_ context.Context, request resource.
 
 func (r *actionConnectionResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "A connection that can be used in Actions, including in the Workflow Automation and App Builder products.",
+		Description: "A connection that can be used in Actions, including in the Workflow Automation and App Builder products. This resource requires a [registered application key](https://registry.terraform.io/providers/DataDog/datadog/latest/docs/resources/app_key_registration).",
 		Attributes: map[string]schema.Attribute{
 			"id": utils.ResourceIDAttribute(),
 			"name": schema.StringAttribute{

@@ -20,7 +20,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  TERRAFORM_VERSION: "1.5.3"
+  TERRAFORM_VERSION: "1.13.1"
 
 jobs:
   integration_tests:

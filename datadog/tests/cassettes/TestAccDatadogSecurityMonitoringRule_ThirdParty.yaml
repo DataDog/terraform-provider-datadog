@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":null,"hasExtendedTitle":false,"isEnabled":true,"message":"third party rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_ThirdParty-local-1745938832","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"third_party","evaluationWindow":0,"keepAlive":0,"maxSignalDuration":900,"thirdPartyRuleOptions":{"defaultNotifications":[],"defaultStatus":"info","rootQueries":[{"groupByFields":["instance-id"],"query":"source:guardduty @data.resourceType:*EC2*"},{"groupByFields":[],"query":"source:guardduty"}],"signalTitleTemplate":""}},"queries":null,"thirdPartyCases":[{"name":"High severity alert","notifications":["@slack-channel"],"query":"@alert.severity:[5 TO 10]","status":"high"},{"name":"Low severity alert","notifications":[],"query":"@alert.severity:[1 TO 4]","status":"low"}],"type":"log_detection"}
+            {"cases":null,"hasExtendedTitle":false,"isEnabled":true,"message":"third party rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_ThirdParty-local-1757946791","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"third_party","evaluationWindow":0,"keepAlive":0,"maxSignalDuration":900,"thirdPartyRuleOptions":{"defaultNotifications":[],"defaultStatus":"info","rootQueries":[{"groupByFields":["instance-id"],"query":"source:guardduty @data.resourceType:*EC2*"},{"groupByFields":[],"query":"source:guardduty"}],"signalTitleTemplate":""}},"queries":null,"thirdPartyCases":[{"name":"High severity alert","notifications":["@slack-channel"],"query":"@alert.severity:[5 TO 10]","status":"high"},{"name":"Low severity alert","notifications":[],"query":"@alert.severity:[1 TO 4]","status":"low"}],"type":"log_detection"}
         form: {}
         headers:
             Accept:
@@ -34,7 +34,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 397.228666ms
+        duration: 368.162458ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -47,7 +47,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":null,"hasExtendedTitle":false,"isEnabled":true,"message":"third party rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_ThirdParty-local-1745938832","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"third_party","evaluationWindow":0,"keepAlive":0,"maxSignalDuration":900,"thirdPartyRuleOptions":{"defaultNotifications":[],"defaultStatus":"info","rootQueries":[{"groupByFields":["instance-id"],"query":"source:guardduty @data.resourceType:*EC2*"},{"groupByFields":[],"query":"source:guardduty"}],"signalTitleTemplate":""}},"queries":null,"thirdPartyCases":[{"name":"High severity alert","notifications":["@slack-channel"],"query":"@alert.severity:[5 TO 10]","status":"high"},{"name":"Low severity alert","notifications":[],"query":"@alert.severity:[1 TO 4]","status":"low"}],"type":"log_detection"}
+            {"cases":null,"hasExtendedTitle":false,"isEnabled":true,"message":"third party rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_ThirdParty-local-1757946791","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"third_party","evaluationWindow":0,"keepAlive":0,"maxSignalDuration":900,"thirdPartyRuleOptions":{"defaultNotifications":[],"defaultStatus":"info","rootQueries":[{"groupByFields":["instance-id"],"query":"source:guardduty @data.resourceType:*EC2*"},{"groupByFields":[],"query":"source:guardduty"}],"signalTitleTemplate":""}},"queries":null,"thirdPartyCases":[{"name":"High severity alert","notifications":["@slack-channel"],"query":"@alert.severity:[5 TO 10]","status":"high"},{"name":"Low severity alert","notifications":[],"query":"@alert.severity:[1 TO 4]","status":"low"}],"type":"log_detection"}
         form: {}
         headers:
             Accept:
@@ -68,7 +68,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 344.638209ms
+        duration: 888.653375ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -81,7 +81,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":null,"hasExtendedTitle":false,"isEnabled":true,"message":"third party rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_ThirdParty-local-1745938832","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"third_party","evaluationWindow":0,"keepAlive":0,"maxSignalDuration":900,"thirdPartyRuleOptions":{"defaultNotifications":[],"defaultStatus":"info","rootQueries":[{"groupByFields":["instance-id"],"query":"source:guardduty @data.resourceType:*EC2*"},{"groupByFields":[],"query":"source:guardduty"}],"signalTitleTemplate":""}},"queries":null,"thirdPartyCases":[{"name":"High severity alert","notifications":["@slack-channel"],"query":"@alert.severity:[5 TO 10]","status":"high"},{"name":"Low severity alert","notifications":[],"query":"@alert.severity:[1 TO 4]","status":"low"}],"type":"log_detection"}
+            {"cases":null,"hasExtendedTitle":false,"isEnabled":true,"message":"third party rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_ThirdParty-local-1757946791","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"third_party","evaluationWindow":0,"keepAlive":0,"maxSignalDuration":900,"thirdPartyRuleOptions":{"defaultNotifications":[],"defaultStatus":"info","rootQueries":[{"groupByFields":["instance-id"],"query":"source:guardduty @data.resourceType:*EC2*"},{"groupByFields":[],"query":"source:guardduty"}],"signalTitleTemplate":""}},"queries":null,"thirdPartyCases":[{"name":"High severity alert","notifications":["@slack-channel"],"query":"@alert.severity:[5 TO 10]","status":"high"},{"name":"Low severity alert","notifications":[],"query":"@alert.severity:[1 TO 4]","status":"low"}],"type":"log_detection"}
         form: {}
         headers:
             Accept:
@@ -98,13 +98,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_ThirdParty-local-1745938832","createdAt":1745938834660,"isDefault":false,"isPartner":false,"isEnabled":true,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"@alert.severity:[5 TO 10]","groupByFields":[],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"none","name":"","dataSource":"logs"},{"query":"@alert.severity:[1 TO 4]","groupByFields":[],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"none","name":"","dataSource":"logs"}],"options":{"evaluationWindow":0,"detectionMethod":"third_party","maxSignalDuration":900,"keepAlive":0,"thirdPartyRuleOptions":{"defaultStatus":"info","rootQueries":[{"query":"source:guardduty @data.resourceType:*EC2*","groupByFields":["instance-id"]},{"query":"source:guardduty","groupByFields":[]}],"defaultNotifications":[]},"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"High severity alert","status":"high","notifications":["@slack-channel"]},{"name":"Low severity alert","status":"low","notifications":[]}],"message":"third party rule triggered","tags":[],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":1,"id":"uyd-zma-kdc","blocking":false,"metadata":{"entities":null,"sources":null},"thirdPartyCases":[{"name":"High severity alert","status":"high","notifications":["@slack-channel"],"query":"@alert.severity:[5 TO 10]"},{"name":"Low severity alert","status":"low","notifications":[],"query":"@alert.severity:[1 TO 4]"}],"creationAuthorId":21235576,"creator":{"handle":"thibault.viennot@datadoghq.com","name":"Thibault Viennot"},"updater":{"handle":"","name":""}}'
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_ThirdParty-local-1757946791","createdAt":1757946794499,"isDefault":false,"isPartner":false,"isEnabled":true,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"@alert.severity:[5 TO 10]","groupByFields":[],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"none","name":"","dataSource":"logs"},{"query":"@alert.severity:[1 TO 4]","groupByFields":[],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"none","name":"","dataSource":"logs"}],"options":{"evaluationWindow":0,"detectionMethod":"third_party","maxSignalDuration":900,"keepAlive":0,"thirdPartyRuleOptions":{"defaultStatus":"info","rootQueries":[{"query":"source:guardduty @data.resourceType:*EC2*","groupByFields":["instance-id"]},{"query":"source:guardduty","groupByFields":[]}],"defaultNotifications":[]},"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"High severity alert","status":"high","notifications":["@slack-channel"]},{"name":"Low severity alert","status":"low","notifications":[]}],"message":"third party rule triggered","tags":[],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":1,"id":"igf-gev-jzn","blocking":false,"metadata":{"entities":null,"sources":null},"thirdPartyCases":[{"name":"High severity alert","status":"high","notifications":["@slack-channel"],"query":"@alert.severity:[5 TO 10]"},{"name":"Low severity alert","status":"low","notifications":[],"query":"@alert.severity:[1 TO 4]"}],"creationAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"","name":""}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 520.284458ms
+        duration: 142.369625ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -121,7 +121,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/uyd-zma-kdc
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/igf-gev-jzn
         method: GET
       response:
         proto: HTTP/1.1
@@ -131,13 +131,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_ThirdParty-local-1745938832","createdAt":1745938834660,"isDefault":false,"isPartner":false,"isEnabled":true,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"@alert.severity:[5 TO 10]","groupByFields":[],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"none","name":"","dataSource":"logs"},{"query":"@alert.severity:[1 TO 4]","groupByFields":[],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"none","name":"","dataSource":"logs"}],"options":{"evaluationWindow":0,"detectionMethod":"third_party","maxSignalDuration":900,"keepAlive":0,"thirdPartyRuleOptions":{"defaultStatus":"info","rootQueries":[{"query":"source:guardduty @data.resourceType:*EC2*","groupByFields":["instance-id"]},{"query":"source:guardduty","groupByFields":[]}],"defaultNotifications":[]},"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"High severity alert","status":"high","notifications":["@slack-channel"]},{"name":"Low severity alert","status":"low","notifications":[]}],"message":"third party rule triggered","tags":[],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":1,"id":"uyd-zma-kdc","blocking":false,"metadata":{"entities":null,"sources":null},"thirdPartyCases":[{"name":"High severity alert","status":"high","notifications":["@slack-channel"],"query":"@alert.severity:[5 TO 10]"},{"name":"Low severity alert","status":"low","notifications":[],"query":"@alert.severity:[1 TO 4]"}],"creationAuthorId":21235576,"creator":{"handle":"thibault.viennot@datadoghq.com","name":"Thibault Viennot"},"updater":{"handle":"","name":""}}'
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_ThirdParty-local-1757946791","createdAt":1757946794499,"isDefault":false,"isPartner":false,"isEnabled":true,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"@alert.severity:[5 TO 10]","groupByFields":[],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"none","name":"","dataSource":"logs"},{"query":"@alert.severity:[1 TO 4]","groupByFields":[],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"none","name":"","dataSource":"logs"}],"options":{"evaluationWindow":0,"detectionMethod":"third_party","maxSignalDuration":900,"keepAlive":0,"thirdPartyRuleOptions":{"defaultStatus":"info","rootQueries":[{"query":"source:guardduty @data.resourceType:*EC2*","groupByFields":["instance-id"]},{"query":"source:guardduty","groupByFields":[]}],"defaultNotifications":[]},"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"High severity alert","status":"high","notifications":["@slack-channel"]},{"name":"Low severity alert","status":"low","notifications":[]}],"message":"third party rule triggered","tags":[],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":1,"id":"igf-gev-jzn","blocking":false,"metadata":{"entities":null,"sources":null},"thirdPartyCases":[{"name":"High severity alert","status":"high","notifications":["@slack-channel"],"query":"@alert.severity:[5 TO 10]"},{"name":"Low severity alert","status":"low","notifications":[],"query":"@alert.severity:[1 TO 4]"}],"creationAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"","name":""}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 138.080875ms
+        duration: 130.76075ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -150,7 +150,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":null,"hasExtendedTitle":false,"isEnabled":true,"message":"third party rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_ThirdParty-local-1745938832","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"third_party","evaluationWindow":0,"keepAlive":0,"maxSignalDuration":900,"thirdPartyRuleOptions":{"defaultNotifications":[],"defaultStatus":"info","rootQueries":[{"groupByFields":["instance-id"],"query":"source:guardduty @data.resourceType:*EC2*"},{"groupByFields":[],"query":"source:guardduty"}],"signalTitleTemplate":""}},"queries":null,"thirdPartyCases":[{"name":"High severity alert","notifications":["@slack-channel"],"query":"@alert.severity:[5 TO 10]","status":"high"},{"name":"Low severity alert","notifications":[],"query":"@alert.severity:[1 TO 4]","status":"low"}],"type":"log_detection"}
+            {"cases":null,"hasExtendedTitle":false,"isEnabled":true,"message":"third party rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_ThirdParty-local-1757946791","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"third_party","evaluationWindow":0,"keepAlive":0,"maxSignalDuration":900,"thirdPartyRuleOptions":{"defaultNotifications":[],"defaultStatus":"info","rootQueries":[{"groupByFields":["instance-id"],"query":"source:guardduty @data.resourceType:*EC2*"},{"groupByFields":[],"query":"source:guardduty"}],"signalTitleTemplate":""}},"queries":null,"thirdPartyCases":[{"name":"High severity alert","notifications":["@slack-channel"],"query":"@alert.severity:[5 TO 10]","status":"high"},{"name":"Low severity alert","notifications":[],"query":"@alert.severity:[1 TO 4]","status":"low"}],"type":"log_detection"}
         form: {}
         headers:
             Accept:
@@ -171,7 +171,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 148.545792ms
+        duration: 333.889583ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -188,7 +188,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/uyd-zma-kdc
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/igf-gev-jzn
         method: GET
       response:
         proto: HTTP/1.1
@@ -198,13 +198,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_ThirdParty-local-1745938832","createdAt":1745938834660,"isDefault":false,"isPartner":false,"isEnabled":true,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"@alert.severity:[5 TO 10]","groupByFields":[],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"none","name":"","dataSource":"logs"},{"query":"@alert.severity:[1 TO 4]","groupByFields":[],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"none","name":"","dataSource":"logs"}],"options":{"evaluationWindow":0,"detectionMethod":"third_party","maxSignalDuration":900,"keepAlive":0,"thirdPartyRuleOptions":{"defaultStatus":"info","rootQueries":[{"query":"source:guardduty @data.resourceType:*EC2*","groupByFields":["instance-id"]},{"query":"source:guardduty","groupByFields":[]}],"defaultNotifications":[]},"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"High severity alert","status":"high","notifications":["@slack-channel"]},{"name":"Low severity alert","status":"low","notifications":[]}],"message":"third party rule triggered","tags":[],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":1,"id":"uyd-zma-kdc","blocking":false,"metadata":{"entities":null,"sources":null},"thirdPartyCases":[{"name":"High severity alert","status":"high","notifications":["@slack-channel"],"query":"@alert.severity:[5 TO 10]"},{"name":"Low severity alert","status":"low","notifications":[],"query":"@alert.severity:[1 TO 4]"}],"creationAuthorId":21235576,"creator":{"handle":"thibault.viennot@datadoghq.com","name":"Thibault Viennot"},"updater":{"handle":"","name":""}}'
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_ThirdParty-local-1757946791","createdAt":1757946794499,"isDefault":false,"isPartner":false,"isEnabled":true,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"@alert.severity:[5 TO 10]","groupByFields":[],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"none","name":"","dataSource":"logs"},{"query":"@alert.severity:[1 TO 4]","groupByFields":[],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"none","name":"","dataSource":"logs"}],"options":{"evaluationWindow":0,"detectionMethod":"third_party","maxSignalDuration":900,"keepAlive":0,"thirdPartyRuleOptions":{"defaultStatus":"info","rootQueries":[{"query":"source:guardduty @data.resourceType:*EC2*","groupByFields":["instance-id"]},{"query":"source:guardduty","groupByFields":[]}],"defaultNotifications":[]},"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"High severity alert","status":"high","notifications":["@slack-channel"]},{"name":"Low severity alert","status":"low","notifications":[]}],"message":"third party rule triggered","tags":[],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":1,"id":"igf-gev-jzn","blocking":false,"metadata":{"entities":null,"sources":null},"thirdPartyCases":[{"name":"High severity alert","status":"high","notifications":["@slack-channel"],"query":"@alert.severity:[5 TO 10]"},{"name":"Low severity alert","status":"low","notifications":[],"query":"@alert.severity:[1 TO 4]"}],"creationAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"","name":""}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 118.37375ms
+        duration: 130.159583ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -217,7 +217,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":null,"hasExtendedTitle":false,"isEnabled":true,"message":"third party rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_ThirdParty-local-1745938832","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"third_party","evaluationWindow":0,"keepAlive":0,"maxSignalDuration":900,"thirdPartyRuleOptions":{"defaultNotifications":[],"defaultStatus":"info","rootQueries":[{"groupByFields":["instance-id"],"query":"source:guardduty @data.resourceType:*EC2*"},{"groupByFields":[],"query":"source:guardduty"}],"signalTitleTemplate":""}},"queries":null,"thirdPartyCases":[{"name":"High severity alert","notifications":["@slack-channel"],"query":"@alert.severity:[5 TO 10]","status":"high"},{"name":"Low severity alert","notifications":[],"query":"@alert.severity:[1 TO 4]","status":"low"}],"type":"log_detection"}
+            {"cases":null,"hasExtendedTitle":false,"isEnabled":true,"message":"third party rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_ThirdParty-local-1757946791","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"third_party","evaluationWindow":0,"keepAlive":0,"maxSignalDuration":900,"thirdPartyRuleOptions":{"defaultNotifications":[],"defaultStatus":"info","rootQueries":[{"groupByFields":["instance-id"],"query":"source:guardduty @data.resourceType:*EC2*"},{"groupByFields":[],"query":"source:guardduty"}],"signalTitleTemplate":""}},"queries":null,"thirdPartyCases":[{"name":"High severity alert","notifications":["@slack-channel"],"query":"@alert.severity:[5 TO 10]","status":"high"},{"name":"Low severity alert","notifications":[],"query":"@alert.severity:[1 TO 4]","status":"low"}],"type":"log_detection"}
         form: {}
         headers:
             Accept:
@@ -238,7 +238,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 116.381875ms
+        duration: 121.082208ms
     - id: 7
       request:
         proto: HTTP/1.1
@@ -255,7 +255,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/uyd-zma-kdc
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/igf-gev-jzn
         method: GET
       response:
         proto: HTTP/1.1
@@ -265,13 +265,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_ThirdParty-local-1745938832","createdAt":1745938834660,"isDefault":false,"isPartner":false,"isEnabled":true,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"@alert.severity:[5 TO 10]","groupByFields":[],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"none","name":"","dataSource":"logs"},{"query":"@alert.severity:[1 TO 4]","groupByFields":[],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"none","name":"","dataSource":"logs"}],"options":{"evaluationWindow":0,"detectionMethod":"third_party","maxSignalDuration":900,"keepAlive":0,"thirdPartyRuleOptions":{"defaultStatus":"info","rootQueries":[{"query":"source:guardduty @data.resourceType:*EC2*","groupByFields":["instance-id"]},{"query":"source:guardduty","groupByFields":[]}],"defaultNotifications":[]},"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"High severity alert","status":"high","notifications":["@slack-channel"]},{"name":"Low severity alert","status":"low","notifications":[]}],"message":"third party rule triggered","tags":[],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":1,"id":"uyd-zma-kdc","blocking":false,"metadata":{"entities":null,"sources":null},"thirdPartyCases":[{"name":"High severity alert","status":"high","notifications":["@slack-channel"],"query":"@alert.severity:[5 TO 10]"},{"name":"Low severity alert","status":"low","notifications":[],"query":"@alert.severity:[1 TO 4]"}],"creationAuthorId":21235576,"creator":{"handle":"thibault.viennot@datadoghq.com","name":"Thibault Viennot"},"updater":{"handle":"","name":""}}'
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_ThirdParty-local-1757946791","createdAt":1757946794499,"isDefault":false,"isPartner":false,"isEnabled":true,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"@alert.severity:[5 TO 10]","groupByFields":[],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"none","name":"","dataSource":"logs"},{"query":"@alert.severity:[1 TO 4]","groupByFields":[],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"none","name":"","dataSource":"logs"}],"options":{"evaluationWindow":0,"detectionMethod":"third_party","maxSignalDuration":900,"keepAlive":0,"thirdPartyRuleOptions":{"defaultStatus":"info","rootQueries":[{"query":"source:guardduty @data.resourceType:*EC2*","groupByFields":["instance-id"]},{"query":"source:guardduty","groupByFields":[]}],"defaultNotifications":[]},"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"High severity alert","status":"high","notifications":["@slack-channel"]},{"name":"Low severity alert","status":"low","notifications":[]}],"message":"third party rule triggered","tags":[],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":1,"id":"igf-gev-jzn","blocking":false,"metadata":{"entities":null,"sources":null},"thirdPartyCases":[{"name":"High severity alert","status":"high","notifications":["@slack-channel"],"query":"@alert.severity:[5 TO 10]"},{"name":"Low severity alert","status":"low","notifications":[],"query":"@alert.severity:[1 TO 4]"}],"creationAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"","name":""}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 150.946125ms
+        duration: 140.385916ms
     - id: 8
       request:
         proto: HTTP/1.1
@@ -284,7 +284,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":null,"hasExtendedTitle":false,"isEnabled":true,"message":"third party rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_ThirdParty-local-1745938832","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"third_party","evaluationWindow":0,"keepAlive":0,"maxSignalDuration":900,"thirdPartyRuleOptions":{"defaultNotifications":[],"defaultStatus":"info","rootQueries":[{"groupByFields":["instance-id"],"query":"source:guardduty @data.resourceType:*EC2*"},{"groupByFields":["@resourceProperties.bucketId"],"query":"source:guardduty @data.resourceType:*S3*"},{"groupByFields":[],"query":"source:guardduty"}],"signalTitleTemplate":""}},"queries":null,"thirdPartyCases":[{"name":"High severity alert","notifications":["@slack-channel"],"query":"@alert.severity:[5 TO 10]","status":"high"},{"name":"Low severity alert","notifications":[],"query":"@alert.severity:[1 TO 4]","status":"low"}],"type":"log_detection"}
+            {"cases":null,"hasExtendedTitle":false,"isEnabled":true,"message":"third party rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_ThirdParty-local-1757946791","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"third_party","evaluationWindow":0,"keepAlive":0,"maxSignalDuration":900,"thirdPartyRuleOptions":{"defaultNotifications":[],"defaultStatus":"info","rootQueries":[{"groupByFields":["instance-id"],"query":"source:guardduty @data.resourceType:*EC2*"},{"groupByFields":["@resourceProperties.bucketId"],"query":"source:guardduty @data.resourceType:*S3*"},{"groupByFields":[],"query":"source:guardduty"}],"signalTitleTemplate":""}},"queries":null,"thirdPartyCases":[{"name":"High severity alert","notifications":["@slack-channel"],"query":"@alert.severity:[5 TO 10]","status":"high"},{"name":"Low severity alert","notifications":[],"query":"@alert.severity:[1 TO 4]","status":"low"}],"type":"log_detection"}
         form: {}
         headers:
             Accept:
@@ -305,7 +305,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 126.699375ms
+        duration: 130.44525ms
     - id: 9
       request:
         proto: HTTP/1.1
@@ -318,7 +318,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":null,"hasExtendedTitle":false,"isEnabled":true,"message":"third party rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_ThirdParty-local-1745938832","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"third_party","evaluationWindow":0,"keepAlive":0,"maxSignalDuration":900,"thirdPartyRuleOptions":{"defaultNotifications":[],"defaultStatus":"info","rootQueries":[{"groupByFields":["instance-id"],"query":"source:guardduty @data.resourceType:*EC2*"},{"groupByFields":["@resourceProperties.bucketId"],"query":"source:guardduty @data.resourceType:*S3*"},{"groupByFields":[],"query":"source:guardduty"}],"signalTitleTemplate":""}},"queries":null,"thirdPartyCases":[{"name":"High severity alert","notifications":["@slack-channel"],"query":"@alert.severity:[5 TO 10]","status":"high"},{"name":"Low severity alert","notifications":[],"query":"@alert.severity:[1 TO 4]","status":"low"}],"type":"log_detection"}
+            {"cases":null,"hasExtendedTitle":false,"isEnabled":true,"message":"third party rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_ThirdParty-local-1757946791","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"third_party","evaluationWindow":0,"keepAlive":0,"maxSignalDuration":900,"thirdPartyRuleOptions":{"defaultNotifications":[],"defaultStatus":"info","rootQueries":[{"groupByFields":["instance-id"],"query":"source:guardduty @data.resourceType:*EC2*"},{"groupByFields":["@resourceProperties.bucketId"],"query":"source:guardduty @data.resourceType:*S3*"},{"groupByFields":[],"query":"source:guardduty"}],"signalTitleTemplate":""}},"queries":null,"thirdPartyCases":[{"name":"High severity alert","notifications":["@slack-channel"],"query":"@alert.severity:[5 TO 10]","status":"high"},{"name":"Low severity alert","notifications":[],"query":"@alert.severity:[1 TO 4]","status":"low"}],"type":"log_detection"}
         form: {}
         headers:
             Accept:
@@ -339,27 +339,27 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 243.188792ms
+        duration: 129.447833ms
     - id: 10
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 903
+        content_length: 950
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"filters":[],"hasExtendedTitle":false,"isEnabled":true,"message":"third party rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_ThirdParty-local-1745938832","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"third_party","evaluationWindow":0,"keepAlive":0,"maxSignalDuration":900,"thirdPartyRuleOptions":{"defaultNotifications":[],"defaultStatus":"info","rootQueries":[{"groupByFields":["instance-id"],"query":"source:guardduty @data.resourceType:*EC2*"},{"groupByFields":["@resourceProperties.bucketId"],"query":"source:guardduty @data.resourceType:*S3*"},{"groupByFields":[],"query":"source:guardduty"}],"signalTitleTemplate":""}},"thirdPartyCases":[{"name":"High severity alert","notifications":["@slack-channel"],"query":"@alert.severity:[5 TO 10]","status":"high"},{"name":"Low severity alert","notifications":[],"query":"@alert.severity:[1 TO 4]","status":"low"}]}
+            {"calculatedFields":[],"filters":[],"hasExtendedTitle":false,"isEnabled":true,"message":"third party rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_ThirdParty-local-1757946791","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"third_party","evaluationWindow":0,"keepAlive":0,"maxSignalDuration":900,"thirdPartyRuleOptions":{"defaultNotifications":[],"defaultStatus":"info","rootQueries":[{"groupByFields":["instance-id"],"query":"source:guardduty @data.resourceType:*EC2*"},{"groupByFields":["@resourceProperties.bucketId"],"query":"source:guardduty @data.resourceType:*S3*"},{"groupByFields":[],"query":"source:guardduty"}],"signalTitleTemplate":""}},"schedulingOptions":null,"thirdPartyCases":[{"name":"High severity alert","notifications":["@slack-channel"],"query":"@alert.severity:[5 TO 10]","status":"high"},{"name":"Low severity alert","notifications":[],"query":"@alert.severity:[1 TO 4]","status":"low"}]}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/uyd-zma-kdc
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/igf-gev-jzn
         method: PUT
       response:
         proto: HTTP/1.1
@@ -369,13 +369,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_ThirdParty-local-1745938832","isEnabled":true,"queries":[{"query":"@alert.severity:[5 TO 10]","groupByFields":[],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"none","name":"","dataSource":"logs"},{"query":"@alert.severity:[1 TO 4]","groupByFields":[],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"none","name":"","dataSource":"logs"}],"options":{"evaluationWindow":0,"detectionMethod":"third_party","maxSignalDuration":900,"keepAlive":0,"thirdPartyRuleOptions":{"defaultStatus":"info","rootQueries":[{"query":"source:guardduty @data.resourceType:*EC2*","groupByFields":["instance-id"]},{"query":"source:guardduty @data.resourceType:*S3*","groupByFields":["@resourceProperties.bucketId"]},{"query":"source:guardduty","groupByFields":[]}],"defaultNotifications":[]},"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"High severity alert","status":"high","notifications":["@slack-channel"]},{"name":"Low severity alert","status":"low","notifications":[]}],"message":"third party rule triggered","tags":[],"hasExtendedTitle":false,"type":"log_detection","filters":[],"id":"uyd-zma-kdc","version":2,"createdAt":1745938834660,"creationAuthorId":21235576,"updateAuthorId":21235576,"updatedAt":1745938838645,"isDefault":false,"blocking":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"metadata":{"entities":null,"sources":null},"thirdPartyCases":[{"name":"High severity alert","status":"high","notifications":["@slack-channel"],"query":"@alert.severity:[5 TO 10]"},{"name":"Low severity alert","status":"low","notifications":[],"query":"@alert.severity:[1 TO 4]"}]}'
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_ThirdParty-local-1757946791","isEnabled":true,"queries":[{"query":"@alert.severity:[5 TO 10]","groupByFields":[],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"none","name":"","dataSource":"logs"},{"query":"@alert.severity:[1 TO 4]","groupByFields":[],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"none","name":"","dataSource":"logs"}],"options":{"evaluationWindow":0,"detectionMethod":"third_party","maxSignalDuration":900,"keepAlive":0,"thirdPartyRuleOptions":{"defaultStatus":"info","rootQueries":[{"query":"source:guardduty @data.resourceType:*EC2*","groupByFields":["instance-id"]},{"query":"source:guardduty @data.resourceType:*S3*","groupByFields":["@resourceProperties.bucketId"]},{"query":"source:guardduty","groupByFields":[]}],"defaultNotifications":[]},"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"High severity alert","status":"high","notifications":["@slack-channel"]},{"name":"Low severity alert","status":"low","notifications":[]}],"message":"third party rule triggered","tags":[],"hasExtendedTitle":false,"type":"log_detection","filters":[],"id":"igf-gev-jzn","version":2,"createdAt":1757946794499,"creationAuthorId":1445416,"updateAuthorId":1445416,"updatedAt":1757946797222,"isDefault":false,"blocking":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"metadata":{"entities":null,"sources":null},"thirdPartyCases":[{"name":"High severity alert","status":"high","notifications":["@slack-channel"],"query":"@alert.severity:[5 TO 10]"},{"name":"Low severity alert","status":"low","notifications":[],"query":"@alert.severity:[1 TO 4]"}]}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 1.919125125s
+        duration: 191.430375ms
     - id: 11
       request:
         proto: HTTP/1.1
@@ -392,7 +392,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/uyd-zma-kdc
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/igf-gev-jzn
         method: GET
       response:
         proto: HTTP/1.1
@@ -402,13 +402,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_ThirdParty-local-1745938832","createdAt":1745938834660,"isDefault":false,"isPartner":false,"isEnabled":true,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"@alert.severity:[5 TO 10]","groupByFields":[],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"none","name":"","dataSource":"logs"},{"query":"@alert.severity:[1 TO 4]","groupByFields":[],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"none","name":"","dataSource":"logs"}],"options":{"evaluationWindow":0,"detectionMethod":"third_party","maxSignalDuration":900,"keepAlive":0,"thirdPartyRuleOptions":{"defaultStatus":"info","rootQueries":[{"query":"source:guardduty @data.resourceType:*EC2*","groupByFields":["instance-id"]},{"query":"source:guardduty @data.resourceType:*S3*","groupByFields":["@resourceProperties.bucketId"]},{"query":"source:guardduty","groupByFields":[]}],"defaultNotifications":[]},"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"High severity alert","status":"high","notifications":["@slack-channel"]},{"name":"Low severity alert","status":"low","notifications":[]}],"message":"third party rule triggered","tags":[],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":2,"id":"uyd-zma-kdc","updatedAt":1745938838645,"blocking":false,"metadata":{"entities":null,"sources":null},"thirdPartyCases":[{"name":"High severity alert","status":"high","notifications":["@slack-channel"],"query":"@alert.severity:[5 TO 10]"},{"name":"Low severity alert","status":"low","notifications":[],"query":"@alert.severity:[1 TO 4]"}],"creationAuthorId":21235576,"updateAuthorId":21235576,"creator":{"handle":"thibault.viennot@datadoghq.com","name":"Thibault Viennot"},"updater":{"handle":"thibault.viennot@datadoghq.com","name":"Thibault Viennot"}}'
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_ThirdParty-local-1757946791","createdAt":1757946794499,"isDefault":false,"isPartner":false,"isEnabled":true,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"@alert.severity:[5 TO 10]","groupByFields":[],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"none","name":"","dataSource":"logs"},{"query":"@alert.severity:[1 TO 4]","groupByFields":[],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"none","name":"","dataSource":"logs"}],"options":{"evaluationWindow":0,"detectionMethod":"third_party","maxSignalDuration":900,"keepAlive":0,"thirdPartyRuleOptions":{"defaultStatus":"info","rootQueries":[{"query":"source:guardduty @data.resourceType:*EC2*","groupByFields":["instance-id"]},{"query":"source:guardduty @data.resourceType:*S3*","groupByFields":["@resourceProperties.bucketId"]},{"query":"source:guardduty","groupByFields":[]}],"defaultNotifications":[]},"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"High severity alert","status":"high","notifications":["@slack-channel"]},{"name":"Low severity alert","status":"low","notifications":[]}],"message":"third party rule triggered","tags":[],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":2,"id":"igf-gev-jzn","updatedAt":1757946797222,"blocking":false,"metadata":{"entities":null,"sources":null},"thirdPartyCases":[{"name":"High severity alert","status":"high","notifications":["@slack-channel"],"query":"@alert.severity:[5 TO 10]"},{"name":"Low severity alert","status":"low","notifications":[],"query":"@alert.severity:[1 TO 4]"}],"creationAuthorId":1445416,"updateAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"frog@datadoghq.com","name":"frog"}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 134.756666ms
+        duration: 122.451167ms
     - id: 12
       request:
         proto: HTTP/1.1
@@ -421,7 +421,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":null,"hasExtendedTitle":false,"isEnabled":true,"message":"third party rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_ThirdParty-local-1745938832","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"third_party","evaluationWindow":0,"keepAlive":0,"maxSignalDuration":900,"thirdPartyRuleOptions":{"defaultNotifications":[],"defaultStatus":"info","rootQueries":[{"groupByFields":["instance-id"],"query":"source:guardduty @data.resourceType:*EC2*"},{"groupByFields":["@resourceProperties.bucketId"],"query":"source:guardduty @data.resourceType:*S3*"},{"groupByFields":[],"query":"source:guardduty"}],"signalTitleTemplate":""}},"queries":null,"thirdPartyCases":[{"name":"High severity alert","notifications":["@slack-channel"],"query":"@alert.severity:[5 TO 10]","status":"high"},{"name":"Low severity alert","notifications":[],"query":"@alert.severity:[1 TO 4]","status":"low"}],"type":"log_detection"}
+            {"cases":null,"hasExtendedTitle":false,"isEnabled":true,"message":"third party rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_ThirdParty-local-1757946791","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"third_party","evaluationWindow":0,"keepAlive":0,"maxSignalDuration":900,"thirdPartyRuleOptions":{"defaultNotifications":[],"defaultStatus":"info","rootQueries":[{"groupByFields":["instance-id"],"query":"source:guardduty @data.resourceType:*EC2*"},{"groupByFields":["@resourceProperties.bucketId"],"query":"source:guardduty @data.resourceType:*S3*"},{"groupByFields":[],"query":"source:guardduty"}],"signalTitleTemplate":""}},"queries":null,"thirdPartyCases":[{"name":"High severity alert","notifications":["@slack-channel"],"query":"@alert.severity:[5 TO 10]","status":"high"},{"name":"Low severity alert","notifications":[],"query":"@alert.severity:[1 TO 4]","status":"low"}],"type":"log_detection"}
         form: {}
         headers:
             Accept:
@@ -442,7 +442,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 135.156583ms
+        duration: 126.799458ms
     - id: 13
       request:
         proto: HTTP/1.1
@@ -459,7 +459,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/uyd-zma-kdc
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/igf-gev-jzn
         method: GET
       response:
         proto: HTTP/1.1
@@ -469,13 +469,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_ThirdParty-local-1745938832","createdAt":1745938834660,"isDefault":false,"isPartner":false,"isEnabled":true,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"@alert.severity:[5 TO 10]","groupByFields":[],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"none","name":"","dataSource":"logs"},{"query":"@alert.severity:[1 TO 4]","groupByFields":[],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"none","name":"","dataSource":"logs"}],"options":{"evaluationWindow":0,"detectionMethod":"third_party","maxSignalDuration":900,"keepAlive":0,"thirdPartyRuleOptions":{"defaultStatus":"info","rootQueries":[{"query":"source:guardduty @data.resourceType:*EC2*","groupByFields":["instance-id"]},{"query":"source:guardduty @data.resourceType:*S3*","groupByFields":["@resourceProperties.bucketId"]},{"query":"source:guardduty","groupByFields":[]}],"defaultNotifications":[]},"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"High severity alert","status":"high","notifications":["@slack-channel"]},{"name":"Low severity alert","status":"low","notifications":[]}],"message":"third party rule triggered","tags":[],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":2,"id":"uyd-zma-kdc","updatedAt":1745938838645,"blocking":false,"metadata":{"entities":null,"sources":null},"thirdPartyCases":[{"name":"High severity alert","status":"high","notifications":["@slack-channel"],"query":"@alert.severity:[5 TO 10]"},{"name":"Low severity alert","status":"low","notifications":[],"query":"@alert.severity:[1 TO 4]"}],"creationAuthorId":21235576,"updateAuthorId":21235576,"creator":{"handle":"thibault.viennot@datadoghq.com","name":"Thibault Viennot"},"updater":{"handle":"thibault.viennot@datadoghq.com","name":"Thibault Viennot"}}'
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_ThirdParty-local-1757946791","createdAt":1757946794499,"isDefault":false,"isPartner":false,"isEnabled":true,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"@alert.severity:[5 TO 10]","groupByFields":[],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"none","name":"","dataSource":"logs"},{"query":"@alert.severity:[1 TO 4]","groupByFields":[],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"none","name":"","dataSource":"logs"}],"options":{"evaluationWindow":0,"detectionMethod":"third_party","maxSignalDuration":900,"keepAlive":0,"thirdPartyRuleOptions":{"defaultStatus":"info","rootQueries":[{"query":"source:guardduty @data.resourceType:*EC2*","groupByFields":["instance-id"]},{"query":"source:guardduty @data.resourceType:*S3*","groupByFields":["@resourceProperties.bucketId"]},{"query":"source:guardduty","groupByFields":[]}],"defaultNotifications":[]},"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"High severity alert","status":"high","notifications":["@slack-channel"]},{"name":"Low severity alert","status":"low","notifications":[]}],"message":"third party rule triggered","tags":[],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":2,"id":"igf-gev-jzn","updatedAt":1757946797222,"blocking":false,"metadata":{"entities":null,"sources":null},"thirdPartyCases":[{"name":"High severity alert","status":"high","notifications":["@slack-channel"],"query":"@alert.severity:[5 TO 10]"},{"name":"Low severity alert","status":"low","notifications":[],"query":"@alert.severity:[1 TO 4]"}],"creationAuthorId":1445416,"updateAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"frog@datadoghq.com","name":"frog"}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 124.7415ms
+        duration: 287.541708ms
     - id: 14
       request:
         proto: HTTP/1.1
@@ -488,7 +488,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":null,"hasExtendedTitle":false,"isEnabled":true,"message":"third party rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_ThirdParty-local-1745938832","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"third_party","evaluationWindow":0,"keepAlive":0,"maxSignalDuration":900,"thirdPartyRuleOptions":{"defaultNotifications":[],"defaultStatus":"info","rootQueries":[{"groupByFields":["instance-id"],"query":"source:guardduty @data.resourceType:*EC2*"},{"groupByFields":["@resourceProperties.bucketId"],"query":"source:guardduty @data.resourceType:*S3*"},{"groupByFields":[],"query":"source:guardduty"}],"signalTitleTemplate":""}},"queries":null,"thirdPartyCases":[{"name":"High severity alert","notifications":["@slack-channel"],"query":"@alert.severity:[5 TO 10]","status":"high"},{"name":"Low severity alert","notifications":[],"query":"@alert.severity:[1 TO 4]","status":"low"}],"type":"log_detection"}
+            {"cases":null,"hasExtendedTitle":false,"isEnabled":true,"message":"third party rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_ThirdParty-local-1757946791","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"third_party","evaluationWindow":0,"keepAlive":0,"maxSignalDuration":900,"thirdPartyRuleOptions":{"defaultNotifications":[],"defaultStatus":"info","rootQueries":[{"groupByFields":["instance-id"],"query":"source:guardduty @data.resourceType:*EC2*"},{"groupByFields":["@resourceProperties.bucketId"],"query":"source:guardduty @data.resourceType:*S3*"},{"groupByFields":[],"query":"source:guardduty"}],"signalTitleTemplate":""}},"queries":null,"thirdPartyCases":[{"name":"High severity alert","notifications":["@slack-channel"],"query":"@alert.severity:[5 TO 10]","status":"high"},{"name":"Low severity alert","notifications":[],"query":"@alert.severity:[1 TO 4]","status":"low"}],"type":"log_detection"}
         form: {}
         headers:
             Accept:
@@ -509,7 +509,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 124.19875ms
+        duration: 121.966875ms
     - id: 15
       request:
         proto: HTTP/1.1
@@ -526,7 +526,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/uyd-zma-kdc
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/igf-gev-jzn
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -540,7 +540,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 2.429925208s
+        duration: 322.141792ms
     - id: 16
       request:
         proto: HTTP/1.1
@@ -557,7 +557,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/uyd-zma-kdc
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/igf-gev-jzn
         method: GET
       response:
         proto: HTTP/1.1
@@ -567,10 +567,10 @@ interactions:
         trailer: {}
         content_length: 86
         uncompressed: false
-        body: '{"error":{"code":"NotFound","message":"Threat detection rule not found: uyd-zma-kdc"}}'
+        body: '{"error":{"code":"NotFound","message":"Threat detection rule not found: igf-gev-jzn"}}'
         headers:
             Content-Type:
                 - application/json
         status: 404 Not Found
         code: 404
-        duration: 114.515083ms
+        duration: 127.442ms

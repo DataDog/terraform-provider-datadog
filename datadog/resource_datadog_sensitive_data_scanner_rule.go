@@ -2,6 +2,7 @@ package datadog
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -19,6 +20,7 @@ func resourceDatadogSensitiveDataScannerRule() *schema.Resource {
 		CreateContext: resourceDatadogSensitiveDataScannerRuleCreate,
 		UpdateContext: resourceDatadogSensitiveDataScannerRuleUpdate,
 		DeleteContext: resourceDatadogSensitiveDataScannerRuleDelete,
+		CustomizeDiff: resourceDatadogSensitiveDataScannerRuleCustomizeDiff,
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
@@ -124,6 +126,11 @@ func resourceDatadogSensitiveDataScannerRule() *schema.Resource {
 								Optional:    true,
 								Description: "Required if type == 'replacement_string'.",
 							},
+							"should_save_match": {
+								Type:        schema.TypeBool,
+								Optional:    true,
+								Description: "Only valid when type == `replacement_string`. When enabled, matches can be unmasked in logs by users with ‘Data Scanner Unmask’ permission. As a security best practice, avoid masking for highly-sensitive, long-lived data.",
+							},
 							"type": {
 								Type:             schema.TypeString,
 								Required:         true,
@@ -143,6 +150,23 @@ func resourceDatadogSensitiveDataScannerRule() *schema.Resource {
 			}
 		},
 	}
+}
+
+func resourceDatadogSensitiveDataScannerRuleCustomizeDiff(_ context.Context, diff *schema.ResourceDiff, _ interface{}) error {
+	if _, ok := diff.GetOk("text_replacement"); !ok {
+		return nil
+	}
+
+	// Only allow should_save_match when type == "replacement_string"
+	if typeValRaw, ok := diff.GetOk("text_replacement.0.type"); ok {
+		typeVal := typeValRaw.(string)
+		if shouldSaveMatchVal, present := diff.GetOk("text_replacement.0.should_save_match"); present && typeVal != "replacement_string" {
+			if shouldSaveMatch, ok := shouldSaveMatchVal.(bool); ok && shouldSaveMatch {
+				return fmt.Errorf("text_replacement.should_save_match can only be set when text_replacement.type is 'replacement_string'")
+			}
+		}
+	}
+	return nil
 }
 
 func resourceDatadogSensitiveDataScannerRuleRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
@@ -293,6 +317,15 @@ func buildSensitiveDataScannerRuleAttributes(d *schema.ResourceData) *datadogV2.
 			textReplacement.SetReplacementString(replacementString.(string))
 		}
 
+		if shouldSaveMatch, ok := d.GetOk("text_replacement.0.should_save_match"); ok {
+			if typeVar, ok := d.GetOk("text_replacement.0.type"); ok && typeVar.(string) == "replacement_string" {
+				if textReplacement.AdditionalProperties == nil {
+					textReplacement.AdditionalProperties = map[string]interface{}{}
+				}
+				textReplacement.AdditionalProperties["should_save_match"] = shouldSaveMatch.(bool)
+			}
+		}
+
 		if typeVar, ok := d.GetOk("text_replacement.0.type"); ok {
 			typeVarItem, _ := datadogV2.NewSensitiveDataScannerTextReplacementTypeFromValue(typeVar.(string))
 			textReplacement.SetType(*typeVarItem)
@@ -421,6 +454,15 @@ func updateSensitiveDataScannerRuleState(d *schema.ResourceData, ruleAttributes 
 		}
 		if replacementString, ok := tR.GetReplacementStringOk(); ok {
 			textReplacement["replacement_string"] = replacementString
+		}
+		if tR.AdditionalProperties != nil {
+			// `should_save_match` should be supported starting in `datadog-api-client-go` v2.45
+			// Additional properties is used until then.
+			if shouldSaveMatch, ok := tR.AdditionalProperties["should_save_match"]; ok {
+				if replacementType, ok := tR.GetTypeOk(); ok && *replacementType == datadogV2.SENSITIVEDATASCANNERTEXTREPLACEMENTTYPE_REPLACEMENT_STRING {
+					textReplacement["should_save_match"] = shouldSaveMatch
+				}
+			}
 		}
 		if replacementType, ok := tR.GetTypeOk(); ok {
 			textReplacement["type"] = *replacementType

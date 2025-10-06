@@ -139,6 +139,55 @@ resource "datadog_logs_custom_pipeline" "my_pipeline_test" {
 			sources = [ "dd.span_id" ]
 		}
     }
+    processor {
+        array_processor {
+            name = "array append operation"
+            is_enabled = true
+            operation {
+                append {
+                    source = "network.client.ip"
+                    target = "sourceIps"
+                    preserve_source = true
+                }
+            }
+        }
+    }
+    processor {
+        array_processor {
+            name = "array length operation"
+            is_enabled = true
+            operation {
+                length {
+                    source = "tags"
+                    target = "tagCount"
+                }
+            }
+        }
+    }
+    processor {
+        array_processor {
+            name = "array select operation"
+            is_enabled = true
+            operation {
+                select {
+                    source = "httpRequest.headers"
+                    target = "referrer"
+                    filter = "name:Referrer"
+                    value_to_extract = "value"
+                }
+            }
+        }
+    }
+    processor {
+        decoder_processor {
+            name = "decoder operation"
+            is_enabled = true
+            source = "encoded_message"
+            target = "decoded_messsage"
+            binary_to_text_encoding = "base64"
+            input_representation = "utf_8"
+        }
+    }
 
 }`, uniq)
 }
@@ -272,6 +321,56 @@ resource "datadog_logs_custom_pipeline" "my_pipeline_test" {
 			sources = [ "dd.span_id" ]
 		}
     }
+    processor {
+        array_processor {
+            name = "array append operation updated"
+            is_enabled = false
+            operation {
+                append {
+                    source = "network.server.ip"
+                    target = "destinationIps"
+                    preserve_source = true
+                }
+            }
+        }
+    }
+    processor {
+        array_processor {
+            name = "array length operation updated"
+            is_enabled = true
+            operation {
+                length {
+                    source = "headers"
+                    target = "headerCount"
+                }
+            }
+        }
+    }
+    processor {
+        array_processor {
+            name = "array select operation updated"
+            is_enabled = true
+            operation {
+                select {
+                    source = "httpResponse.headers"
+                    target = "contentType"
+                    filter = "name:Content-Type"
+                    value_to_extract = "value"
+                }
+            }
+        }
+    }
+    processor {
+        decoder_processor {
+            name = "decoder operation updated"
+            is_enabled = false
+            source = "hex_encoded_data"
+            target = "decoded_messsage"
+            binary_to_text_encoding = "base16"
+            input_representation = "integer"
+        }
+    }
+
 }`, uniq)
 }
 

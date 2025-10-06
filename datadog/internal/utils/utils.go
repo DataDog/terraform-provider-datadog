@@ -35,11 +35,17 @@ const DDAPIKeyEnvName = "DD_API_KEY"
 // DDAPIUrlEnvName name of env var for API key
 const DDAPIUrlEnvName = "DD_HOST"
 
+// DDOrgUUIDEnvName name of env var for Org UUID
+const DDOrgUUIDEnvName = "DD_ORG_UUID"
+
 // DatadogAPPKeyEnvName name of env var for APP key
 const DatadogAPPKeyEnvName = "DATADOG_APP_KEY"
 
 // DatadogAPIKeyEnvName name of env var for API key
 const DatadogAPIKeyEnvName = "DATADOG_API_KEY"
+
+// DatadogOrgUUIDEnvName name of env var for Org UUID
+const DatadogOrgUUIDEnvName = "DATADOG_ORG_UUID"
 
 // DatadogAPIUrlEnvName name of env var for API key
 const DatadogAPIUrlEnvName = "DATADOG_HOST"
@@ -59,6 +65,15 @@ const DDHTTPRetryBackoffBase = "DD_HTTP_CLIENT_RETRY_BACKOFF_BASE"
 // DDHTTPRetryMaxRetries name of env var for max retries
 const DDHTTPRetryMaxRetries = "DD_HTTP_CLIENT_RETRY_MAX_RETRIES"
 
+// AWSAccessKeyId name of env var for AWS Access Key Id
+const AWSAccessKeyId = "AWS_ACCESS_KEY_ID"
+
+// AWSSecretAccessKey name of env var for AWS Secret Access Key
+const AWSSecretAccessKey = "AWS_SECRET_ACCESS_KEY"
+
+// AWSSessionToken name of env var for AWS Session Token
+const AWSSessionToken = "AWS_SESSION_TOKEN"
+
 // BaseIPRangesSubdomain ip ranges subdomain
 const BaseIPRangesSubdomain = "ip-ranges"
 
@@ -67,6 +82,9 @@ var APPKeyEnvVars = []string{DDAPPKeyEnvName, DatadogAPPKeyEnvName}
 
 // APIKeyEnvVars names of env var for API key
 var APIKeyEnvVars = []string{DDAPIKeyEnvName, DatadogAPIKeyEnvName}
+
+// OrgUUIDEnvVars names of env var for Org UUID
+var OrgUUIDEnvVars = []string{DDOrgUUIDEnvName, DatadogOrgUUIDEnvName}
 
 // APIUrlEnvVars names of env var for API key
 var APIUrlEnvVars = []string{DDAPIUrlEnvName, DatadogAPIUrlEnvName}
@@ -584,4 +602,15 @@ func normalizeAppBuilderAppJSONString(jsonStr string) (string, error) {
 	}
 
 	return string(jsonBytes), nil
+}
+
+func UseMonitorFrameworkProvider() bool {
+	return getEnv("TERRAFORM_MONITOR_FRAMEWORK_PROVIDER", "false") == "true"
+}
+
+func getEnv(key, fallback string) string {
+	if value, ok := os.LookupEnv(key); ok {
+		return value
+	}
+	return fallback
 }

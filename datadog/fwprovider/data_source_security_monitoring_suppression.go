@@ -18,10 +18,22 @@ var (
 	_ datasource.DataSourceWithConfigure = &datadogTeamDataSource{}
 )
 
+type securityMonitoringSuppressionDataSourceItem struct {
+	Id                 types.String `tfsdk:"id"`
+	Name               types.String `tfsdk:"name"`
+	Description        types.String `tfsdk:"description"`
+	Enabled            types.Bool   `tfsdk:"enabled"`
+	StartDate          types.String `tfsdk:"start_date"`
+	ExpirationDate     types.String `tfsdk:"expiration_date"`
+	RuleQuery          types.String `tfsdk:"rule_query"`
+	SuppressionQuery   types.String `tfsdk:"suppression_query"`
+	DataExclusionQuery types.String `tfsdk:"data_exclusion_query"`
+}
+
 type securityMonitoringSuppressionsDataSourceModel struct {
-	Id             types.String                         `tfsdk:"id"`
-	SuppressionIds types.List                           `tfsdk:"suppression_ids"`
-	Suppressions   []securityMonitoringSuppressionModel `tfsdk:"suppressions"`
+	Id             types.String                                  `tfsdk:"id"`
+	SuppressionIds types.List                                    `tfsdk:"suppression_ids"`
+	Suppressions   []securityMonitoringSuppressionDataSourceItem `tfsdk:"suppressions"`
 }
 
 type securityMonitoringSuppressionDataSource struct {
@@ -59,10 +71,10 @@ func (r *securityMonitoringSuppressionDataSource) Read(ctx context.Context, requ
 	data := res.GetData()
 
 	suppressionIds := make([]string, len(data))
-	suppressions := make([]securityMonitoringSuppressionModel, len(data))
+	suppressions := make([]securityMonitoringSuppressionDataSourceItem, len(data))
 
 	for idx, suppression := range res.GetData() {
-		var suppressionModel securityMonitoringSuppressionModel
+		var suppressionModel securityMonitoringSuppressionDataSourceItem
 		suppressionModel.Id = types.StringValue(suppression.GetId())
 		attributes := suppression.Attributes
 
@@ -71,6 +83,7 @@ func (r *securityMonitoringSuppressionDataSource) Read(ctx context.Context, requ
 		suppressionModel.Enabled = types.BoolValue(attributes.GetEnabled())
 		suppressionModel.RuleQuery = types.StringValue(attributes.GetRuleQuery())
 		suppressionModel.SuppressionQuery = types.StringValue(attributes.GetSuppressionQuery())
+		suppressionModel.DataExclusionQuery = types.StringValue(attributes.GetDataExclusionQuery())
 
 		if attributes.StartDate == nil {
 			suppressionModel.StartDate = types.StringNull()

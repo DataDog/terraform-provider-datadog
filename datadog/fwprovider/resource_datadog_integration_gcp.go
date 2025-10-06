@@ -46,12 +46,13 @@ type integrationGcpModel struct {
 	ClientEmail                       types.String `tfsdk:"client_email"`
 	ClientId                          types.String `tfsdk:"client_id"`
 	Automute                          types.Bool   `tfsdk:"automute"`
-	HostFilters                       types.String `tfsdk:"host_filters"`
-	CloudRunRevisionFilters           types.Set    `tfsdk:"cloud_run_revision_filters"`
+	HostFilters                       types.String `tfsdk:"host_filters"`               // DEPRECATED: use MonitoredResourceConfigs["gce_instance"]
+	CloudRunRevisionFilters           types.Set    `tfsdk:"cloud_run_revision_filters"` // DEPRECATED: use MonitoredResourceConfigs["cloud_run_revision"]
 	ResourceCollectionEnabled         types.Bool   `tfsdk:"resource_collection_enabled"`
 	CspmResourceCollectionEnabled     types.Bool   `tfsdk:"cspm_resource_collection_enabled"`
 	IsSecurityCommandCenterEnabled    types.Bool   `tfsdk:"is_security_command_center_enabled"`
 	IsResourceChangeCollectionEnabled types.Bool   `tfsdk:"is_resource_change_collection_enabled"`
+	MonitoredResourceConfigs          types.Set    `tfsdk:"monitored_resource_configs"`
 }
 
 func NewIntegrationGcpResource() resource.Resource {
@@ -75,6 +76,7 @@ func (r *integrationGcpResource) Schema(_ context.Context, _ resource.SchemaRequ
 		// https://github.com/DataDog/terraform-provider-datadog/pull/2424#issuecomment-2150871460
 		Description: "This resource is deprecated—use the `datadog_integration_gcp_sts` resource instead. Provides a Datadog - Google Cloud Platform integration resource. This can be used to create and manage Datadog - Google Cloud Platform integration.",
 		Attributes: map[string]schema.Attribute{
+			"id": utils.ResourceIDAttribute(),
 			"project_id": schema.StringAttribute{
 				Description: "Your Google Cloud project ID found in your JSON service account key.",
 				Required:    true,
@@ -112,15 +114,18 @@ func (r *integrationGcpResource) Schema(_ context.Context, _ resource.SchemaRequ
 				},
 			},
 			"host_filters": schema.StringAttribute{
-				Description: "Limit the GCE instances that are pulled into Datadog by using tags. Only hosts that match one of the defined tags are imported into Datadog.",
-				Optional:    true,
-				Computed:    true,
-				Default:     stringdefault.StaticString(""),
+				Optional:           true,
+				Computed:           true,
+				Description:        "List of filters to limit the VM instances that are pulled into Datadog by using tags. Only VM instance resources that apply to specified filters are imported into Datadog.",
+				Default:            stringdefault.StaticString(""),
+				DeprecationMessage: "**Note:** This field is deprecated. Instead, use `monitored_resource_configs` with `type=gce_instance`",
 			},
 			"cloud_run_revision_filters": schema.SetAttribute{
-				Description: "Tags to filter which Cloud Run revisions are imported into Datadog. Only revisions that meet specified criteria are monitored.",
-				Optional:    true,
-				ElementType: types.StringType,
+				Optional:           true,
+				Computed:           true,
+				Description:        "List of filters to limit the Cloud Run revisions that are pulled into Datadog by using tags. Only Cloud Run revision resources that apply to specified filters are imported into Datadog.",
+				ElementType:        types.StringType,
+				DeprecationMessage: "**Note:** This field is deprecated. Instead, use `monitored_resource_configs` with `type=cloud_run_revision`",
 			},
 			"automute": schema.BoolAttribute{
 				Description: "Silence monitors for expected GCE instance shutdowns.",
@@ -150,7 +155,12 @@ func (r *integrationGcpResource) Schema(_ context.Context, _ resource.SchemaRequ
 				Optional:    true,
 				Computed:    true,
 			},
-			"id": utils.ResourceIDAttribute(),
+			"monitored_resource_configs": schema.SetAttribute{
+				Optional:    true,
+				Computed:    true,
+				Description: "Configurations for GCP monitored resources. Only monitored resources that apply to specified filters are imported into Datadog.",
+				ElementType: MonitoredResourceConfigSpec,
+			},
 		},
 	}
 }
@@ -297,7 +307,6 @@ func (r *integrationGcpResource) updateState(ctx context.Context, state *integra
 
 	// Computed Values
 	state.Automute = types.BoolValue(resp.GetAutomute())
-	state.HostFilters = types.StringValue(resp.GetHostFilters())
 	state.CspmResourceCollectionEnabled = types.BoolValue(resp.GetIsCspmEnabled())
 	state.ResourceCollectionEnabled = types.BoolValue(resp.GetResourceCollectionEnabled())
 	state.IsSecurityCommandCenterEnabled = types.BoolValue(resp.GetIsSecurityCommandCenterEnabled())
@@ -313,9 +322,17 @@ func (r *integrationGcpResource) updateState(ctx context.Context, state *integra
 	if privateKeyId, ok := resp.GetPrivateKeyIdOk(); ok {
 		state.PrivateKeyId = types.StringValue(*privateKeyId)
 	}
-	if runFilters, ok := resp.GetCloudRunRevisionFiltersOk(); ok && len(*runFilters) > 0 {
-		state.CloudRunRevisionFilters, _ = types.SetValueFrom(ctx, types.StringType, *runFilters)
+
+	state.HostFilters = types.StringValue(resp.GetHostFilters())
+	state.CloudRunRevisionFilters, _ = types.SetValueFrom(ctx, types.StringType, resp.GetCloudRunRevisionFilters())
+	mrcs := make([]*MonitoredResourceConfigModel, 0)
+	for _, mrc := range resp.GetMonitoredResourceConfigs() {
+		var mdl MonitoredResourceConfigModel
+		mdl.Type = types.StringValue(string(mrc.GetType()))
+		mdl.Filters, _ = types.SetValueFrom(ctx, types.StringType, mrc.GetFilters())
+		mrcs = append(mrcs, &mdl)
 	}
+	state.MonitoredResourceConfigs, _ = types.SetValueFrom(ctx, MonitoredResourceConfigSpec, mrcs)
 }
 
 func (r *integrationGcpResource) getGCPIntegration(state integrationGcpModel) (*datadogV1.GCPAccount, error) {
@@ -337,12 +354,10 @@ func (r *integrationGcpResource) getGCPIntegration(state integrationGcpModel) (*
 }
 
 func (r *integrationGcpResource) buildIntegrationGcpRequestBodyBase(state integrationGcpModel) *datadogV1.GCPAccount {
-	body := &datadogV1.GCPAccount{
+	return &datadogV1.GCPAccount{
 		ProjectId:   state.ProjectID.ValueStringPointer(),
 		ClientEmail: state.ClientEmail.ValueStringPointer(),
 	}
-
-	return body
 }
 
 func (r *integrationGcpResource) addDefaultsToBody(body *datadogV1.GCPAccount, state integrationGcpModel) {
@@ -364,13 +379,6 @@ func (r *integrationGcpResource) addOptionalFieldsToBody(ctx context.Context, bo
 	body.SetAutomute(state.Automute.ValueBool())
 	body.SetIsCspmEnabled(state.CspmResourceCollectionEnabled.ValueBool())
 	body.SetIsSecurityCommandCenterEnabled(state.IsSecurityCommandCenterEnabled.ValueBool())
-	body.SetHostFilters(state.HostFilters.ValueString())
-
-	runFilters := make([]string, 0)
-	if !state.CloudRunRevisionFilters.IsNull() {
-		diags.Append(state.CloudRunRevisionFilters.ElementsAs(ctx, &runFilters, false)...)
-	}
-	body.SetCloudRunRevisionFilters(runFilters)
 
 	if !state.ResourceCollectionEnabled.IsUnknown() {
 		body.SetResourceCollectionEnabled(state.ResourceCollectionEnabled.ValueBool())
@@ -379,6 +387,17 @@ func (r *integrationGcpResource) addOptionalFieldsToBody(ctx context.Context, bo
 	if !state.IsResourceChangeCollectionEnabled.IsUnknown() {
 		body.SetIsResourceChangeCollectionEnabled(state.IsResourceChangeCollectionEnabled.ValueBool())
 	}
+
+	body.SetHostFilters(state.HostFilters.ValueString())
+	body.SetCloudRunRevisionFilters(tfCollectionToSlice[string](ctx, diags, state.CloudRunRevisionFilters))
+	mrcs := make([]datadogV1.GCPMonitoredResourceConfig, 0)
+	for _, mrc := range tfCollectionToSlice[*MonitoredResourceConfigModel](ctx, diags, state.MonitoredResourceConfigs) {
+		mrcs = append(mrcs, datadogV1.GCPMonitoredResourceConfig{
+			Type:    ptrTo(datadogV1.GCPMonitoredResourceConfigType(mrc.Type.ValueString())),
+			Filters: tfCollectionToSlice[string](ctx, diags, mrc.Filters),
+		})
+	}
+	body.SetMonitoredResourceConfigs(mrcs)
 
 	return diags
 }

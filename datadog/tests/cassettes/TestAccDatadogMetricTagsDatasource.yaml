@@ -17,7 +17,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/metrics/%22datadog.agent.running%22/all-tags
+        url: https://api.datadoghq.com/api/v2/metrics/datadog.agent.running/all-tags
         method: GET
       response:
         proto: HTTP/1.1
@@ -52,7 +52,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/metrics/%22datadog.agent.running%22/all-tags
+        url: https://api.datadoghq.com/api/v2/metrics/datadog.agent.running/all-tags
         method: GET
       response:
         proto: HTTP/1.1
@@ -87,7 +87,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/metrics/%22datadog.agent.running%22/all-tags
+        url: https://api.datadoghq.com/api/v2/metrics/datadog.agent.running/all-tags
         method: GET
       response:
         proto: HTTP/1.1

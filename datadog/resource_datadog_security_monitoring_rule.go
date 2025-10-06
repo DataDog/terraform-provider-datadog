@@ -17,7 +17,7 @@ import (
 
 func resourceDatadogSecurityMonitoringRule() *schema.Resource {
 	return &schema.Resource{
-		Description:   "Provides a Datadog Security Monitoring Rule API resource. This can be used to create and manage Datadog security monitoring rules. To change settings for a default rule use `datadog_security_default_rule` instead.",
+		Description:   "Provides a Datadog Security Monitoring Rule API resource. This can be used to create and manage Datadog security monitoring rules. To change settings for a default rule, use `datadog_security_monitoring_default_rule` instead.",
 		CreateContext: resourceDatadogSecurityMonitoringRuleCreate,
 		ReadContext:   resourceDatadogSecurityMonitoringRuleRead,
 		UpdateContext: resourceDatadogSecurityMonitoringRuleUpdate,
@@ -303,6 +303,67 @@ func datadogSecurityMonitoringRuleSchema(includeValidate bool) map[string]*schem
 						},
 					},
 
+					"sequence_detection_options": {
+						Type:        schema.TypeList,
+						Optional:    true,
+						MaxItems:    1,
+						Description: "Options for rules using the sequence detection method.",
+						Elem: &schema.Resource{
+							Schema: map[string]*schema.Schema{
+								"steps": {
+									Type:        schema.TypeList,
+									Optional:    true,
+									Description: "Sequence steps.",
+									Elem: &schema.Resource{
+										Schema: map[string]*schema.Schema{
+											"name": {
+												Type:        schema.TypeString,
+												Required:    true,
+												Description: "Unique name of the step.",
+											},
+											"condition": {
+												Type:        schema.TypeString,
+												Required:    true,
+												Description: "Condition for the step to match.",
+											},
+											"evaluation_window": {
+												Type:             schema.TypeInt,
+												Optional:         true,
+												ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewSecurityMonitoringRuleEvaluationWindowFromValue),
+												Description:      "Evaluation window for the step.",
+											},
+										},
+									},
+								},
+								"step_transitions": {
+									Type:        schema.TypeList,
+									Optional:    true,
+									Description: "Edges of the step graph.",
+									Elem: &schema.Resource{
+										Schema: map[string]*schema.Schema{
+											"parent": {
+												Type:        schema.TypeString,
+												Required:    true,
+												Description: "Parent step name.",
+											},
+											"child": {
+												Type:        schema.TypeString,
+												Required:    true,
+												Description: "Child step name.",
+											},
+											"evaluation_window": {
+												Type:             schema.TypeInt,
+												Optional:         true,
+												ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewSecurityMonitoringRuleEvaluationWindowFromValue),
+												Description:      "Maximum time allowed to transition from parent to child.",
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+
 					"decrease_criticality_based_on_env": {
 						Type:        schema.TypeBool,
 						Optional:    true,
@@ -364,6 +425,12 @@ func datadogSecurityMonitoringRuleSchema(includeValidate bool) map[string]*schem
 							ValidateDiagFunc: validators.ValidateNonEmptyStrings,
 						},
 					},
+					"has_optional_group_by_fields": {
+						Type:        schema.TypeBool,
+						Optional:    true,
+						Default:     false,
+						Description: "When false, events without a group-by value are ignored by the rule. When true, events with missing group-by fields are processed with `N/A`, replacing the missing values.",
+					},
 					"data_source": {
 						Type:             schema.TypeString,
 						ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewSecurityMonitoringStandardDataSourceFromValue),
@@ -393,6 +460,12 @@ func datadogSecurityMonitoringRuleSchema(includeValidate bool) map[string]*schem
 						Type:        schema.TypeString,
 						Required:    true,
 						Description: "Query to run on logs.",
+					},
+					"indexes": {
+						Type:        schema.TypeList,
+						Optional:    true,
+						Description: "List of indexes to run the query on when the data source is `logs`. Supports only one element. Used only for scheduled rules (in other words, when `scheduling_options` is defined).",
+						Elem:        &schema.Schema{Type: schema.TypeString},
 					},
 				},
 			},
@@ -525,6 +598,54 @@ func datadogSecurityMonitoringRuleSchema(includeValidate bool) map[string]*schem
 			Optional:    true,
 			Description: "Additional grouping to perform on top of the query grouping.",
 			Elem:        &schema.Schema{Type: schema.TypeString},
+		},
+
+		"calculated_field": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			Description: "One or more calculated fields. Available only for scheduled rules (in other words, when `scheduling_options` is defined).",
+			Elem: &schema.Resource{
+				Schema: map[string]*schema.Schema{
+					"name": {
+						Type:             schema.TypeString,
+						ValidateDiagFunc: validators.ValidateNonEmptyStrings,
+						Required:         true,
+						Description:      "Field name.",
+					},
+					"expression": {
+						Type:             schema.TypeString,
+						ValidateDiagFunc: validators.ValidateNonEmptyStrings,
+						Required:         true,
+						Description:      "Expression.",
+					},
+				},
+			},
+		},
+
+		"scheduling_options": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "Options for scheduled rules. When this field is present, the rule runs based on the schedule. When absent, it runs in real time on ingested logs.",
+			Elem: &schema.Resource{
+				Schema: map[string]*schema.Schema{
+					"rrule": {
+						Type:        schema.TypeString,
+						Required:    true,
+						Description: "Schedule for the rule queries, written in RRULE syntax. See [RFC](https://icalendar.org/iCalendar-RFC-5545/3-8-5-3-recurrence-rule.html) for syntax reference.",
+					},
+					"start": {
+						Type:        schema.TypeString,
+						Required:    true,
+						Description: "Start date for the schedule, in ISO 8601 format without timezone.",
+					},
+					"timezone": {
+						Type:        schema.TypeString,
+						Required:    true,
+						Description: "Time zone of the start date, in the [tz database](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) format.",
+					},
+				},
+			},
 		},
 	}
 	if includeValidate {
@@ -734,6 +855,17 @@ func buildCreateStandardPayload(d utils.Resource) (*datadogV2.SecurityMonitoring
 		payload.SetGroupSignalsBy(parseStringArray(v.([]interface{})))
 	}
 
+	if v, ok := d.GetOk("scheduling_options"); ok {
+		tfSchedulingOptionsList := v.([]any)
+		schedulingOptions := buildPayloadSchedulingOptions(tfSchedulingOptionsList)
+		payload.SetSchedulingOptions(*schedulingOptions)
+	}
+
+	if v, ok := d.GetOk("calculated_field"); ok {
+		tfCalculatedFields := v.([]any)
+		payload.SetCalculatedFields(buildPayloadCalculatedFields(tfCalculatedFields))
+	}
+
 	return &payload, nil
 }
 
@@ -867,6 +999,32 @@ func buildPayloadThirdPartyCases(d utils.Resource) []datadogV2.SecurityMonitorin
 	return payloadThirdPartyCases
 }
 
+func buildPayloadCalculatedFields(tfCalculatedFields []any) []datadogV2.CalculatedField {
+	calculatedFields := make([]datadogV2.CalculatedField, len(tfCalculatedFields))
+
+	for idx, tfCalculatedFieldUntyped := range tfCalculatedFields {
+		tfCalculatedField := tfCalculatedFieldUntyped.(map[string]any)
+
+		calculatedFields[idx] = datadogV2.CalculatedField{
+			Name:       tfCalculatedField["name"].(string),
+			Expression: tfCalculatedField["expression"].(string),
+		}
+	}
+
+	return calculatedFields
+}
+
+func buildPayloadSchedulingOptions(tfSchedulingOptionsList []any) *datadogV2.SecurityMonitoringSchedulingOptions {
+	tfSchedulingOptions := extractMapFromInterface(tfSchedulingOptionsList)
+	schedulingOptions := datadogV2.NewSecurityMonitoringSchedulingOptions()
+
+	schedulingOptions.SetRrule(tfSchedulingOptions["rrule"].(string))
+	schedulingOptions.SetStart(tfSchedulingOptions["start"].(string))
+	schedulingOptions.SetTimezone(tfSchedulingOptions["timezone"].(string))
+
+	return schedulingOptions
+}
+
 func buildPayloadOptions(tfOptionsList []interface{}, ruleType string) *datadogV2.SecurityMonitoringRuleOptions {
 	payloadOptions := datadogV2.NewSecurityMonitoringRuleOptions()
 	tfOptions := extractMapFromInterface(tfOptionsList)
@@ -909,6 +1067,13 @@ func buildPayloadOptions(tfOptionsList []interface{}, ruleType string) *datadogV
 		tfThirdPartyOptionsList := v.([]interface{})
 		if payloadThirdPartyRuleOptions, ok := buildPayloadThirdPartyRuleOptions(tfThirdPartyOptionsList); ok {
 			payloadOptions.ThirdPartyRuleOptions = payloadThirdPartyRuleOptions
+		}
+	}
+
+	if v, ok := tfOptions["sequence_detection_options"]; ok {
+		tfSequenceDetectionOptionsList := v.([]interface{})
+		if payloadSequenceDetectionOptions, ok := buildPayloadSequenceDetectionOptions(tfSequenceDetectionOptionsList); ok {
+			payloadOptions.SequenceDetectionOptions = payloadSequenceDetectionOptions
 		}
 	}
 
@@ -1002,6 +1167,63 @@ func buildPayloadThirdPartyRuleOptions(tfOptionsList []interface{}) (*datadogV2.
 	return payload, hasPayload
 }
 
+func buildPayloadSequenceDetectionOptions(tfOptionsList []interface{}) (*datadogV2.SecurityMonitoringRuleSequenceDetectionOptions, bool) {
+	options := datadogV2.NewSecurityMonitoringRuleSequenceDetectionOptions()
+	hasPayload := false
+
+	tfOptions := extractMapFromInterface(tfOptionsList)
+
+	if v, ok := tfOptions["steps"]; ok {
+		tfSteps := v.([]interface{})
+		if len(tfSteps) > 0 {
+			hasPayload = true
+		}
+		payloadSteps := make([]datadogV2.SecurityMonitoringRuleSequenceDetectionStep, len(tfSteps))
+		for idx, stepIf := range tfSteps {
+			stepMap := stepIf.(map[string]interface{})
+			step := datadogV2.SecurityMonitoringRuleSequenceDetectionStep{}
+			if v, ok := stepMap["name"]; ok {
+				step.SetName(v.(string))
+			}
+			if v, ok := stepMap["condition"]; ok {
+				step.SetCondition(v.(string))
+			}
+			if v, ok := stepMap["evaluation_window"]; ok {
+				ew := datadogV2.SecurityMonitoringRuleEvaluationWindow(v.(int))
+				step.SetEvaluationWindow(ew)
+			}
+			payloadSteps[idx] = step
+		}
+		options.SetSteps(payloadSteps)
+	}
+
+	if v, ok := tfOptions["step_transitions"]; ok {
+		tfTransitions := v.([]interface{})
+		if len(tfTransitions) > 0 {
+			hasPayload = true
+		}
+		payloadTransitions := make([]datadogV2.SecurityMonitoringRuleSequenceDetectionStepTransition, len(tfTransitions))
+		for idx, trIf := range tfTransitions {
+			trMap := trIf.(map[string]interface{})
+			transition := datadogV2.SecurityMonitoringRuleSequenceDetectionStepTransition{}
+			if v, ok := trMap["parent"]; ok {
+				transition.SetParent(v.(string))
+			}
+			if v, ok := trMap["child"]; ok {
+				transition.SetChild(v.(string))
+			}
+			if v, ok := trMap["evaluation_window"]; ok {
+				ew := datadogV2.SecurityMonitoringRuleEvaluationWindow(v.(int))
+				transition.SetEvaluationWindow(ew)
+			}
+			payloadTransitions[idx] = transition
+		}
+		options.SetStepTransitions(payloadTransitions)
+	}
+
+	return options, hasPayload
+}
+
 func buildRootQueryPayload(rootQuery map[string]interface{}) *datadogV2.SecurityMonitoringThirdPartyRootQuery {
 	payloadRootQuery := datadogV2.NewSecurityMonitoringThirdPartyRootQuery()
 
@@ -1052,6 +1274,10 @@ func buildCreateStandardPayloadQueries(d utils.Resource) []datadogV2.SecurityMon
 			payloadQuery.SetGroupByFields(parseStringArray(v.([]interface{})))
 		}
 
+		if v, ok := query["has_optional_group_by_fields"]; ok {
+			payloadQuery.SetHasOptionalGroupByFields(v.(bool))
+		}
+
 		if v, ok := query["distinct_fields"]; ok {
 			payloadQuery.SetDistinctFields(parseStringArray(v.([]interface{})))
 		}
@@ -1072,6 +1298,12 @@ func buildCreateStandardPayloadQueries(d utils.Resource) []datadogV2.SecurityMon
 		if v, ok := query["name"]; ok {
 			name := v.(string)
 			payloadQuery.SetName(name)
+		}
+
+		if v, ok := query["indexes"]; ok {
+			if indexes := parseStringArray(v.([]any)); len(indexes) > 0 {
+				payloadQuery.SetIndex(indexes[0])
+			}
 		}
 
 		payloadQuery.SetQuery(query["query"].(string))
@@ -1268,6 +1500,14 @@ func updateStandardResourceDataFromResponse(d *schema.ResourceData, ruleResponse
 	if groupSignalsBy, ok := ruleResponse.GetGroupSignalsByOk(); ok {
 		d.Set("group_signals_by", groupSignalsBy)
 	}
+
+	if calculatedFields, ok := ruleResponse.GetCalculatedFieldsOk(); ok {
+		d.Set("calculated_field", extractCalculatedFields(*calculatedFields))
+	}
+
+	if schedulingOptions, ok := ruleResponse.GetSchedulingOptionsOk(); ok {
+		d.Set("scheduling_options", []any{extractSchedulingOptions(schedulingOptions)})
+	}
 }
 
 func extractStandardRuleQueries(responseRuleQueries []datadogV2.SecurityMonitoringStandardRuleQuery) []map[string]interface{} {
@@ -1285,6 +1525,9 @@ func extractStandardRuleQueries(responseRuleQueries []datadogV2.SecurityMonitori
 		if groupByFields, ok := responseRuleQuery.GetGroupByFieldsOk(); ok {
 			ruleQuery["group_by_fields"] = *groupByFields
 		}
+		if hasGbf, ok := responseRuleQuery.GetHasOptionalGroupByFieldsOk(); ok {
+			ruleQuery["has_optional_group_by_fields"] = *hasGbf
+		}
 		if dataSource, ok := responseRuleQuery.GetDataSourceOk(); ok {
 			ruleQuery["data_source"] = *dataSource
 		}
@@ -1299,6 +1542,9 @@ func extractStandardRuleQueries(responseRuleQueries []datadogV2.SecurityMonitori
 		}
 		if query, ok := responseRuleQuery.GetQueryOk(); ok {
 			ruleQuery["query"] = *query
+		}
+		if index, ok := responseRuleQuery.GetIndexOk(); ok {
+			ruleQuery["indexes"] = []string{*index}
 		}
 
 		ruleQueries[idx] = ruleQuery
@@ -1460,6 +1706,48 @@ func extractTfOptions(options datadogV2.SecurityMonitoringRuleOptions) map[strin
 
 		tfOptions["third_party_rule_options"] = []map[string]interface{}{tfThirdPartyOptions}
 	}
+	if seqOptions, ok := options.GetSequenceDetectionOptionsOk(); ok {
+		tfSeqOptions := make(map[string]interface{})
+		steps := seqOptions.GetSteps()
+		tfSteps := make([]map[string]interface{}, len(steps))
+		for idx, step := range steps {
+			stepMap := make(map[string]interface{})
+			if name, ok := step.GetNameOk(); ok {
+				stepMap["name"] = *name
+			}
+			if cond, ok := step.GetConditionOk(); ok {
+				stepMap["condition"] = *cond
+			}
+			if ew, ok := step.GetEvaluationWindowOk(); ok {
+				stepMap["evaluation_window"] = *ew
+			}
+			tfSteps[idx] = stepMap
+		}
+		if len(tfSteps) > 0 {
+			tfSeqOptions["steps"] = tfSteps
+		}
+		transitions := seqOptions.GetStepTransitions()
+		tfTransitions := make([]map[string]interface{}, len(transitions))
+		for idx, tr := range transitions {
+			trMap := make(map[string]interface{})
+			if parent, ok := tr.GetParentOk(); ok {
+				trMap["parent"] = *parent
+			}
+			if child, ok := tr.GetChildOk(); ok {
+				trMap["child"] = *child
+			}
+			if ew, ok := tr.GetEvaluationWindowOk(); ok {
+				trMap["evaluation_window"] = *ew
+			}
+			tfTransitions[idx] = trMap
+		}
+		if len(tfTransitions) > 0 {
+			tfSeqOptions["step_transitions"] = tfTransitions
+		}
+		if len(tfSeqOptions) > 0 {
+			tfOptions["sequence_detection_options"] = []map[string]interface{}{tfSeqOptions}
+		}
+	}
 	return tfOptions
 }
 
@@ -1475,6 +1763,31 @@ func extractReferenceTables(referenceTables []datadogV2.SecurityMonitoringRefere
 		tfReferenceTables[idx] = tfReferenceTable
 	}
 	return tfReferenceTables
+}
+
+func extractSchedulingOptions(schedulingOptions *datadogV2.SecurityMonitoringSchedulingOptions) map[string]any {
+	tfSchedulingOptions := make(map[string]any)
+	tfSchedulingOptions["rrule"] = schedulingOptions.GetRrule()
+	if start, ok := schedulingOptions.GetStartOk(); ok {
+		tfSchedulingOptions["start"] = *start
+	}
+	if timezone, ok := schedulingOptions.GetTimezoneOk(); ok {
+		tfSchedulingOptions["timezone"] = *timezone
+	}
+	return tfSchedulingOptions
+}
+
+func extractCalculatedFields(calculatedFields []datadogV2.CalculatedField) []any {
+	tfCalculatedFields := make([]any, len(calculatedFields))
+
+	for idx, calculatedField := range calculatedFields {
+		tfCalculatedField := make(map[string]any)
+		tfCalculatedField["name"] = calculatedField.Name
+		tfCalculatedField["expression"] = calculatedField.Expression
+		tfCalculatedFields[idx] = tfCalculatedField
+	}
+
+	return tfCalculatedFields
 }
 
 func resourceDatadogSecurityMonitoringRuleUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
@@ -1619,6 +1932,23 @@ func buildUpdatePayload(d *schema.ResourceData) (*datadogV2.SecurityMonitoringRu
 		if v, ok := d.GetOk("reference_tables"); ok {
 			tfReferenceTables := v.([]interface{})
 			payload.SetReferenceTables(buildPayloadReferenceTables(tfReferenceTables))
+		} else if d.HasChange("reference_tables") {
+			// Only send empty list if reference_tables was removed in config
+			payload.SetReferenceTables(make([]datadogV2.SecurityMonitoringReferenceTable, 0))
+		}
+
+		if v, ok := d.GetOk("scheduling_options"); ok {
+			tfSchedulingOptions := v.([]any)
+			payload.SetSchedulingOptions(*buildPayloadSchedulingOptions(tfSchedulingOptions))
+		} else {
+			payload.SetSchedulingOptionsNil()
+		}
+
+		if v, ok := d.GetOk("calculated_fields"); ok {
+			payload.SetCalculatedFields(buildPayloadCalculatedFields(v.([]any)))
+		} else {
+			// Hack because the Go client does not serialize empty arrays to the JSON payload
+			payload.AdditionalProperties = map[string]any{"calculatedFields": []string{}}
 		}
 	}
 
@@ -1636,6 +1966,10 @@ func buildUpdateStandardRuleQuery(tfQuery interface{}) *datadogV2.SecurityMonito
 
 	if v, ok := query["group_by_fields"]; ok {
 		payloadQuery.SetGroupByFields(parseStringArray(v.([]interface{})))
+	}
+
+	if v, ok := query["has_optional_group_by_fields"]; ok {
+		payloadQuery.SetHasOptionalGroupByFields(v.(bool))
 	}
 
 	if v, ok := query["distinct_fields"]; ok {
@@ -1661,8 +1995,21 @@ func buildUpdateStandardRuleQuery(tfQuery interface{}) *datadogV2.SecurityMonito
 		payloadQuery.SetName(name)
 	}
 
-	queryQuery := query["query"].(string)
-	payloadQuery.SetQuery(queryQuery)
+	if v, ok := query["query"]; ok {
+		queryQuery := v.(string)
+		payloadQuery.SetQuery(queryQuery)
+	}
+
+	if v, ok := query["custom_query_extension"]; ok {
+		queryExtension := v.(string)
+		payloadQuery.SetCustomQueryExtension(queryExtension)
+	}
+
+	if v, ok := query["indexes"]; ok {
+		if indexes := parseStringArray(v.([]any)); len(indexes) > 0 {
+			payloadQuery.SetIndex(indexes[0])
+		}
+	}
 
 	standardRuleQuery := datadogV2.SecurityMonitoringStandardRuleQueryAsSecurityMonitoringRuleQuery(&payloadQuery)
 	return &standardRuleQuery

@@ -42,10 +42,10 @@ type datadogServiceAccountDatasource struct {
 	Auth context.Context
 }
 
-func (r *datadogServiceAccountDatasource) Configure(_ context.Context, request datasource.ConfigureRequest, response *datasource.ConfigureResponse) {
+func (d *datadogServiceAccountDatasource) Configure(_ context.Context, request datasource.ConfigureRequest, response *datasource.ConfigureResponse) {
 	providerData, _ := request.ProviderData.(*FrameworkProvider)
-	r.Api = providerData.DatadogApiInstances.GetUsersApiV2()
-	r.Auth = providerData.Auth
+	d.Api = providerData.DatadogApiInstances.GetUsersApiV2()
+	d.Auth = providerData.Auth
 }
 
 func (d *datadogServiceAccountDatasource) Metadata(_ context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
@@ -144,14 +144,17 @@ func (d *datadogServiceAccountDatasource) Read(ctx context.Context, req datasour
 			optionalParams.WithFilterStatus(state.FilterStatus.ValueString())
 		}
 
-		ddResp, _, err := d.Api.ListUsers(d.Auth, optionalParams)
-		if err != nil {
-			resp.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error listing datadog users and service accounts"))
-			return
-		}
+		resultChan, cancelFunc := d.Api.ListUsersWithPagination(d.Auth, optionalParams)
+		defer cancelFunc()
 
 		var serviceAccounts []datadogV2.User
-		for _, user := range ddResp.Data {
+		for result := range resultChan {
+			if err := result.Error; err != nil {
+				resp.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error listing datadog users and service accounts"))
+				return
+			}
+
+			user := result.Item
 			attr := user.GetAttributes()
 			if attr.GetServiceAccount() {
 				serviceAccounts = append(serviceAccounts, user)
@@ -195,7 +198,7 @@ func (d *datadogServiceAccountDatasource) Read(ctx context.Context, req datasour
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
-func (r *datadogServiceAccountDatasource) updateState(ctx context.Context, state *datadogServiceAccountDatasourceModel, userData *datadogV2.User) {
+func (d *datadogServiceAccountDatasource) updateState(ctx context.Context, state *datadogServiceAccountDatasourceModel, userData *datadogV2.User) {
 	state.ID = types.StringValue(userData.GetId())
 	attributes := userData.GetAttributes()
 	if v, ok := attributes.GetDisabledOk(); ok && v != nil {

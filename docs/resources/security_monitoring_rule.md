@@ -3,12 +3,12 @@
 page_title: "datadog_security_monitoring_rule Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Provides a Datadog Security Monitoring Rule API resource. This can be used to create and manage Datadog security monitoring rules. To change settings for a default rule use datadog_security_default_rule instead.
+  Provides a Datadog Security Monitoring Rule API resource. This can be used to create and manage Datadog security monitoring rules. To change settings for a default rule, use datadog_security_monitoring_default_rule instead.
 ---
 
 # datadog_security_monitoring_rule (Resource)
 
-Provides a Datadog Security Monitoring Rule API resource. This can be used to create and manage Datadog security monitoring rules. To change settings for a default rule use `datadog_security_default_rule` instead.
+Provides a Datadog Security Monitoring Rule API resource. This can be used to create and manage Datadog security monitoring rules. To change settings for a default rule, use `datadog_security_monitoring_default_rule` instead.
 
 ## Example Usage
 
@@ -61,6 +61,7 @@ resource "datadog_security_monitoring_rule" "myrule" {
 
 ### Optional
 
+- `calculated_field` (Block List) One or more calculated fields. Available only for scheduled rules (in other words, when `scheduling_options` is defined). (see [below for nested schema](#nestedblock--calculated_field))
 - `case` (Block List, Max: 10) Cases for generating signals. (see [below for nested schema](#nestedblock--case))
 - `enabled` (Boolean) Whether the rule is enabled. Defaults to `true`.
 - `filter` (Block List) Additional queries to filter matched events before they are processed. **Note**: This field is deprecated for log detection, signal correlation, and workload security rules. (see [below for nested schema](#nestedblock--filter))
@@ -69,6 +70,7 @@ resource "datadog_security_monitoring_rule" "myrule" {
 - `options` (Block List, Max: 1) Options on rules. (see [below for nested schema](#nestedblock--options))
 - `query` (Block List) Queries for selecting logs which are part of the rule. (see [below for nested schema](#nestedblock--query))
 - `reference_tables` (Block List) Reference tables for filtering query results. (see [below for nested schema](#nestedblock--reference_tables))
+- `scheduling_options` (Block List, Max: 1) Options for scheduled rules. When this field is present, the rule runs based on the schedule. When absent, it runs in real time on ingested logs. (see [below for nested schema](#nestedblock--scheduling_options))
 - `signal_query` (Block List) Queries for selecting logs which are part of the rule. (see [below for nested schema](#nestedblock--signal_query))
 - `tags` (Set of String) Tags for generated signals. Note: if default tags are present at provider level, they will be added to this resource.
 - `third_party_case` (Block List, Max: 10) Cases for generating signals for third-party rules. Only required and accepted for third-party rules (see [below for nested schema](#nestedblock--third_party_case))
@@ -78,6 +80,15 @@ resource "datadog_security_monitoring_rule" "myrule" {
 ### Read-Only
 
 - `id` (String) The ID of this resource.
+
+<a id="nestedblock--calculated_field"></a>
+### Nested Schema for `calculated_field`
+
+Required:
+
+- `expression` (String) Expression.
+- `name` (String) Field name.
+
 
 <a id="nestedblock--case"></a>
 ### Nested Schema for `case`
@@ -98,7 +109,7 @@ Optional:
 
 Required:
 
-- `type` (String) Type of action to perform when the case triggers. Valid values are `block_ip`, `block_user`, `user_behavior`.
+- `type` (String) Type of action to perform when the case triggers. Valid values are `block_ip`, `block_user`, `user_behavior`, `flag_ip`.
 
 Optional:
 
@@ -129,12 +140,13 @@ Required:
 Optional:
 
 - `decrease_criticality_based_on_env` (Boolean) If true, signals in non-production environments have a lower severity than what is defined by the rule case, which can reduce noise. The decrement is applied when the environment tag of the signal starts with `staging`, `test`, or `dev`. Only available when the rule type is `log_detection`. Defaults to `false`.
-- `detection_method` (String) The detection method. Valid values are `threshold`, `new_value`, `anomaly_detection`, `impossible_travel`, `hardcoded`, `third_party`, `anomaly_threshold`. Defaults to `"threshold"`.
+- `detection_method` (String) The detection method. Valid values are `threshold`, `new_value`, `anomaly_detection`, `impossible_travel`, `hardcoded`, `third_party`, `anomaly_threshold`, `sequence_detection`. Defaults to `"threshold"`.
 - `evaluation_window` (Number) A time window is specified to match when at least one of the cases matches true. This is a sliding window and evaluates in real time. Valid values are `0`, `60`, `300`, `600`, `900`, `1800`, `3600`, `7200`, `10800`, `21600`, `43200`, `86400`.
 - `impossible_travel_options` (Block List, Max: 1) Options for rules using the impossible travel detection method. (see [below for nested schema](#nestedblock--options--impossible_travel_options))
 - `keep_alive` (Number) Once a signal is generated, the signal will remain “open” if a case is matched at least once within this keep alive window (in seconds). Valid values are `0`, `60`, `300`, `600`, `900`, `1800`, `3600`, `7200`, `10800`, `21600`, `43200`, `86400`.
 - `max_signal_duration` (Number) A signal will “close” regardless of the query being matched once the time exceeds the maximum duration (in seconds). This time is calculated from the first seen timestamp. Valid values are `0`, `60`, `300`, `600`, `900`, `1800`, `3600`, `7200`, `10800`, `21600`, `43200`, `86400`.
 - `new_value_options` (Block List, Max: 1) New value rules specific options. (see [below for nested schema](#nestedblock--options--new_value_options))
+- `sequence_detection_options` (Block List, Max: 1) Options for rules using the sequence detection method. (see [below for nested schema](#nestedblock--options--sequence_detection_options))
 - `third_party_rule_options` (Block List, Max: 1) Options for rules using the third-party detection method. (see [below for nested schema](#nestedblock--options--third_party_rule_options))
 
 <a id="nestedblock--options--impossible_travel_options"></a>
@@ -157,6 +169,41 @@ Optional:
 - `learning_duration` (Number) The duration in days during which values are learned, and after which signals will be generated for values that weren't learned. If set to 0, a signal will be generated for all new values after the first value is learned. Valid values are `0`, `1`, `7`. Defaults to `1`.
 - `learning_method` (String) The learning method used to determine when signals should be generated for values that weren't learned. Valid values are `duration`, `threshold`. Defaults to `"duration"`.
 - `learning_threshold` (Number) A number of occurrences after which signals are generated for values that weren't learned. Valid values are `0`, `1`. Defaults to `0`.
+
+
+<a id="nestedblock--options--sequence_detection_options"></a>
+### Nested Schema for `options.sequence_detection_options`
+
+Optional:
+
+- `step_transitions` (Block List) Edges of the step graph. (see [below for nested schema](#nestedblock--options--sequence_detection_options--step_transitions))
+- `steps` (Block List) Sequence steps. (see [below for nested schema](#nestedblock--options--sequence_detection_options--steps))
+
+<a id="nestedblock--options--sequence_detection_options--step_transitions"></a>
+### Nested Schema for `options.sequence_detection_options.step_transitions`
+
+Required:
+
+- `child` (String) Child step name.
+- `parent` (String) Parent step name.
+
+Optional:
+
+- `evaluation_window` (Number) Maximum time allowed to transition from parent to child. Valid values are `0`, `60`, `300`, `600`, `900`, `1800`, `3600`, `7200`, `10800`, `21600`, `43200`, `86400`.
+
+
+<a id="nestedblock--options--sequence_detection_options--steps"></a>
+### Nested Schema for `options.sequence_detection_options.steps`
+
+Required:
+
+- `condition` (String) Condition for the step to match.
+- `name` (String) Unique name of the step.
+
+Optional:
+
+- `evaluation_window` (Number) Evaluation window for the step. Valid values are `0`, `60`, `300`, `600`, `900`, `1800`, `3600`, `7200`, `10800`, `21600`, `43200`, `86400`.
+
 
 
 <a id="nestedblock--options--third_party_rule_options"></a>
@@ -200,6 +247,8 @@ Optional:
 - `data_source` (String) Source of events. Valid values are `logs`, `audit`, `app_sec_spans`, `spans`, `security_runtime`, `network`, `events`. Defaults to `"logs"`.
 - `distinct_fields` (List of String) Field for which the cardinality is measured. Sent as an array.
 - `group_by_fields` (List of String) Fields to group by.
+- `has_optional_group_by_fields` (Boolean) When false, events without a group-by value are ignored by the rule. When true, events with missing group-by fields are processed with `N/A`, replacing the missing values. Defaults to `false`.
+- `indexes` (List of String) List of indexes to run the query on when the data source is `logs`. Supports only one element. Used only for scheduled rules (in other words, when `scheduling_options` is defined).
 - `metric` (String, Deprecated) The target field to aggregate over when using the `sum`, `max`, or `geo_data` aggregations. **Deprecated.** Configure `metrics` instead. This attribute will be removed in the next major version of the provider.
 - `metrics` (List of String) Group of target fields to aggregate over when using the `sum`, `max`, `geo_data`, or `new_value` aggregations. The `sum`, `max`, and `geo_data` aggregations only accept one value in this list, whereas the `new_value` aggregation accepts up to five values.
 - `name` (String) Name of the query. Not compatible with `new_value` aggregations.
@@ -224,6 +273,16 @@ Required:
 - `log_field_path` (String) The field in the log that should be matched against the reference table.
 - `rule_query_name` (String) The name of the query to filter.
 - `table_name` (String) The name of the reference table.
+
+
+<a id="nestedblock--scheduling_options"></a>
+### Nested Schema for `scheduling_options`
+
+Required:
+
+- `rrule` (String) Schedule for the rule queries, written in RRULE syntax. See [RFC](https://icalendar.org/iCalendar-RFC-5545/3-8-5-3-recurrence-rule.html) for syntax reference.
+- `start` (String) Start date for the schedule, in ISO 8601 format without timezone.
+- `timezone` (String) Time zone of the start date, in the [tz database](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) format.
 
 
 <a id="nestedblock--signal_query"></a>

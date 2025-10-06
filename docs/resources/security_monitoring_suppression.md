@@ -41,6 +41,7 @@ resource "datadog_security_monitoring_suppression" "my_suppression" {
 - `expiration_date` (String) A RFC3339 timestamp giving an expiration date for the suppression rule. After this date, it won't suppress signals anymore.
 - `start_date` (String) A RFC3339 timestamp giving a start date for the suppression rule. Before this date, it doesn't suppress signals.
 - `suppression_query` (String) The suppression query of the suppression rule. If a signal matches this query, it is suppressed and is not triggered. It uses the same syntax as the queries to search signals in the Signals Explorer.
+- `validate` (Boolean) Whether to validate the suppression rule during `terraform plan`. When set to `true`, the rule is validated against Datadog's suppression validation endpoint. Defaults to `true`.
 
 ### Read-Only
 

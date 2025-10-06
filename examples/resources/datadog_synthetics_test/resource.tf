@@ -431,6 +431,30 @@ resource "datadog_synthetics_test" "test_browser" {
     }
   }
 
+  browser_step {
+    name = "Run api test"
+    type = "runApiTest"
+    params {
+      request = jsonencode({
+        config = {
+          assertions = [
+            {
+              type     = "statusCode",
+              operator = "is",
+              target   = 200
+            }
+          ],
+          request = {
+            method = "GET",
+            url    = "https://example.com"
+          }
+        },
+        options = {},
+        subtype = "http"
+      })
+    }
+  }
+
   browser_variable {
     type    = "text"
     name    = "MY_PATTERN_VAR"

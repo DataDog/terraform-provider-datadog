@@ -6,7 +6,10 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
+	"github.com/hashicorp/terraform-plugin-testing/statecheck"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
+	"github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
@@ -17,79 +20,123 @@ func TestAccIntegrationGcpStsBasic(t *testing.T) {
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)
 
+	cloudRunRevisionFilters := knownvalue.SetExact([]knownvalue.Check{
+		knownvalue.StringExact("rev:one"),
+		knownvalue.StringExact("rev:two"),
+	})
+	hostFilters := knownvalue.SetExact([]knownvalue.Check{
+		knownvalue.StringExact("host:one"),
+	})
+	updatedHostFilters := knownvalue.SetExact([]knownvalue.Check{
+		knownvalue.StringExact("host:three"),
+	})
 	resource.Test(t, resource.TestCase{
 		ProtoV5ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogIntegrationGcpStsDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogIntegrationGcpSts(uniq),
-				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogIntegrationGcpStsExists(providers.frameworkProvider),
-					resource.TestCheckResourceAttr(
-						"datadog_integration_gcp_sts.foo", "automute", "false"),
-					resource.TestCheckResourceAttr(
-						"datadog_integration_gcp_sts.foo", "client_email", fmt.Sprintf("%s@test-project.iam.gserviceaccount.com", uniq)),
-					resource.TestCheckResourceAttr(
-						"datadog_integration_gcp_sts.foo", "is_cspm_enabled", "false"),
-					resource.TestCheckResourceAttr(
-						"datadog_integration_gcp_sts.foo", "is_security_command_center_enabled", "false"),
-					resource.TestCheckResourceAttr(
-						"datadog_integration_gcp_sts.foo", "is_resource_change_collection_enabled", "false"),
-					resource.TestCheckResourceAttr(
-						"datadog_integration_gcp_sts.foo", "is_per_project_quota_enabled", "false"),
-					resource.TestCheckResourceAttr(
-						"datadog_integration_gcp_sts.foo", "resource_collection_enabled", "false"),
-					resource.TestCheckTypeSetElemAttr(
-						"datadog_integration_gcp_sts.foo", "host_filters.*", "tag:one"),
-					resource.TestCheckResourceAttr(
-						"datadog_integration_gcp_sts.foo",
-						"metric_namespace_configs.0.id", "aiplatform",
-					),
-					resource.TestCheckResourceAttr(
-						"datadog_integration_gcp_sts.foo",
-						"metric_namespace_configs.0.disabled", "true",
-					),
-					resource.TestCheckTypeSetElemAttr(
-						"datadog_integration_gcp_sts.foo", "cloud_run_revision_filters.*", "tag:two"),
-					resource.TestCheckTypeSetElemAttr(
-						"datadog_integration_gcp_sts.foo", "cloud_run_revision_filters.*", "tag:one"),
-					resource.TestCheckTypeSetElemAttr(
-						"datadog_integration_gcp_sts.foo", "host_filters.*", "tag:two"),
-					resource.TestCheckTypeSetElemAttr(
-						"datadog_integration_gcp_sts.foo", "account_tags.*", "a:tag"),
-					resource.TestCheckTypeSetElemAttr(
-						"datadog_integration_gcp_sts.foo", "account_tags.*", "another:one"),
-					resource.TestCheckTypeSetElemAttr(
-						"datadog_integration_gcp_sts.foo", "account_tags.*", "and:another"),
-				),
+				Config: fmt.Sprintf(`
+					resource "datadog_integration_gcp_sts" "foo" {
+					  client_email                          = "%s@test-project.iam.gserviceaccount.com"
+					  automute                              = "false"
+					  is_cspm_enabled                       = "false"
+					  resource_collection_enabled           = "false"
+					  is_security_command_center_enabled    = "false"
+					  is_resource_change_collection_enabled = "false"
+					  is_per_project_quota_enabled          = "false"
+					  account_tags                          = ["acct:one", "acct:two", "acct:three"]
+					  metric_namespace_configs = [
+						{
+						  id       = "aiplatform",
+						  disabled = true
+						}
+					  ]
+					  cloud_run_revision_filters            = ["rev:one", "rev:two"]
+					  host_filters                          = ["host:one"]
+					}`, uniq),
+				Check: resource.ComposeTestCheckFunc(testAccCheckDatadogIntegrationGcpStsExists(providers.frameworkProvider)),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("client_email"), knownvalue.StringExact(fmt.Sprintf("%s@test-project.iam.gserviceaccount.com", uniq))),
+					statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("automute"), knownvalue.Bool(false)),
+					statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("is_cspm_enabled"), knownvalue.Bool(false)),
+					statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("is_security_command_center_enabled"), knownvalue.Bool(false)),
+					statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("resource_collection_enabled"), knownvalue.Bool(false)),
+					statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("is_resource_change_collection_enabled"), knownvalue.Bool(false)),
+					statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("is_per_project_quota_enabled"), knownvalue.Bool(false)),
+					statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("account_tags"), knownvalue.SetExact([]knownvalue.Check{
+						knownvalue.StringExact("acct:one"),
+						knownvalue.StringExact("acct:two"),
+						knownvalue.StringExact("acct:three"),
+					})),
+					statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("metric_namespace_configs"), knownvalue.SetExact([]knownvalue.Check{
+						knownvalue.ObjectExact(map[string]knownvalue.Check{
+							"id":       knownvalue.StringExact("aiplatform"),
+							"disabled": knownvalue.Bool(true),
+						}),
+					})),
+					statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("cloud_run_revision_filters"), cloudRunRevisionFilters),
+					statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("host_filters"), hostFilters),
+					statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("monitored_resource_configs"), knownvalue.SetExact([]knownvalue.Check{
+						knownvalue.ObjectExact(map[string]knownvalue.Check{
+							"type":    knownvalue.StringExact("cloud_run_revision"),
+							"filters": cloudRunRevisionFilters,
+						}),
+						knownvalue.ObjectExact(map[string]knownvalue.Check{
+							"type":    knownvalue.StringExact("gce_instance"),
+							"filters": hostFilters,
+						}),
+					})),
+				},
 			},
 			{
-				Config: testAccCheckDatadogIntegrationGcpStsUpdated(uniq),
-				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogIntegrationGcpStsExists(providers.frameworkProvider),
-					resource.TestCheckResourceAttr(
-						"datadog_integration_gcp_sts.foo", "automute", "true"),
-					resource.TestCheckResourceAttr(
-						"datadog_integration_gcp_sts.foo", "client_email", fmt.Sprintf("%s@test-project.iam.gserviceaccount.com", uniq)),
-					resource.TestCheckResourceAttr(
-						"datadog_integration_gcp_sts.foo", "is_cspm_enabled", "true"),
-					resource.TestCheckResourceAttr(
-						"datadog_integration_gcp_sts.foo", "is_security_command_center_enabled", "true"),
-					resource.TestCheckResourceAttr(
-						"datadog_integration_gcp_sts.foo", "is_resource_change_collection_enabled", "true"),
-					resource.TestCheckResourceAttr(
-						"datadog_integration_gcp_sts.foo", "is_per_project_quota_enabled", "true"),
-					resource.TestCheckResourceAttr(
-						"datadog_integration_gcp_sts.foo", "resource_collection_enabled", "true"),
-					resource.TestCheckNoResourceAttr(
-						"datadog_integration_gcp_sts.foo", "host_filters"),
-					resource.TestCheckNoResourceAttr(
-						"datadog_integration_gcp_sts.foo", "metric_namespace_configs"),
-					resource.TestCheckNoResourceAttr(
-						"datadog_integration_gcp_sts.foo", "cloud_run_revision_filters"),
-					resource.TestCheckNoResourceAttr(
-						"datadog_integration_gcp_sts.foo", "account_tags"),
-				),
+				Config: fmt.Sprintf(`
+					resource "datadog_integration_gcp_sts" "foo" {
+					  client_email                          = "%s@test-project.iam.gserviceaccount.com"
+					  automute                              = "true"
+					  is_cspm_enabled                       = "true"
+					  resource_collection_enabled           = "true"
+					  is_security_command_center_enabled    = "true"
+					  is_resource_change_collection_enabled = "true"
+					  is_per_project_quota_enabled          = "true"
+					  monitored_resource_configs = [
+						{
+						  type    = "cloud_function"
+						  filters = ["func:one", "func:two", "func:three"]
+						},
+						{
+						  type    = "gce_instance"
+						  filters = ["host:three"]
+						},
+					  ]
+					}`, uniq),
+				Check: resource.ComposeTestCheckFunc(testAccCheckDatadogIntegrationGcpStsExists(providers.frameworkProvider)),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("client_email"), knownvalue.StringExact(fmt.Sprintf("%s@test-project.iam.gserviceaccount.com", uniq))),
+					statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("automute"), knownvalue.Bool(true)),
+					statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("is_cspm_enabled"), knownvalue.Bool(true)),
+					statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("is_security_command_center_enabled"), knownvalue.Bool(true)),
+					statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("resource_collection_enabled"), knownvalue.Bool(true)),
+					statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("is_resource_change_collection_enabled"), knownvalue.Bool(true)),
+					statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("is_per_project_quota_enabled"), knownvalue.Bool(true)),
+					statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("account_tags"), knownvalue.Null()),
+					statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("metric_namespace_configs"), knownvalue.Null()),
+					statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("cloud_run_revision_filters"), knownvalue.SetExact(nil)),
+					statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("host_filters"), updatedHostFilters),
+					statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("monitored_resource_configs"), knownvalue.SetExact([]knownvalue.Check{
+						knownvalue.ObjectExact(map[string]knownvalue.Check{
+							"type": knownvalue.StringExact("cloud_function"),
+							"filters": knownvalue.SetExact([]knownvalue.Check{
+								knownvalue.StringExact("func:one"),
+								knownvalue.StringExact("func:two"),
+								knownvalue.StringExact("func:three"),
+							}),
+						}),
+						knownvalue.ObjectExact(map[string]knownvalue.Check{
+							"type":    knownvalue.StringExact("gce_instance"),
+							"filters": updatedHostFilters,
+						}),
+					})),
+				},
 			},
 		},
 	})
@@ -105,67 +152,28 @@ func TestAccIntegrationGcpStsDefault(t *testing.T) {
 		CheckDestroy:             testAccCheckDatadogIntegrationGcpStsDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogIntegrationGcpStsDefault(uniq),
-				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogIntegrationGcpStsExists(providers.frameworkProvider),
-					resource.TestCheckResourceAttr(
-						"datadog_integration_gcp_sts.foo", "automute", "true"),
-					resource.TestCheckResourceAttr(
-						"datadog_integration_gcp_sts.foo", "client_email", fmt.Sprintf("%s@test-project.iam.gserviceaccount.com", uniq)),
-					resource.TestCheckResourceAttr(
-						"datadog_integration_gcp_sts.foo", "is_cspm_enabled", "false"),
-					resource.TestCheckNoResourceAttr(
-						"datadog_integration_gcp_sts.foo", "host_filters"),
-					resource.TestCheckNoResourceAttr(
-						"datadog_integration_gcp_sts.foo", "metric_namespace_configs"),
-					resource.TestCheckNoResourceAttr(
-						"datadog_integration_gcp_sts.foo", "cloud_run_revision_filters"),
-				),
+				Config: fmt.Sprintf(`
+					resource "datadog_integration_gcp_sts" "foo" {
+					  client_email = "%s@test-project.iam.gserviceaccount.com"
+					}`, uniq),
+				Check: resource.ComposeTestCheckFunc(testAccCheckDatadogIntegrationGcpStsExists(providers.frameworkProvider)),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("client_email"), knownvalue.StringExact(fmt.Sprintf("%s@test-project.iam.gserviceaccount.com", uniq))),
+					statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("automute"), knownvalue.Bool(false)),
+					statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("is_cspm_enabled"), knownvalue.Bool(false)),
+					statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("is_security_command_center_enabled"), knownvalue.Bool(false)),
+					statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("resource_collection_enabled"), knownvalue.Bool(true)),
+					statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("is_resource_change_collection_enabled"), knownvalue.Bool(false)),
+					statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("is_per_project_quota_enabled"), knownvalue.Bool(false)),
+					statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("account_tags"), knownvalue.Null()),
+					statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("metric_namespace_configs"), knownvalue.Null()),
+					statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("cloud_run_revision_filters"), knownvalue.SetExact(nil)),
+					statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("host_filters"), knownvalue.SetExact(nil)),
+					statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("monitored_resource_configs"), knownvalue.SetExact(nil)),
+				},
 			},
 		},
 	})
-}
-
-func testAccCheckDatadogIntegrationGcpSts(uniq string) string {
-	return fmt.Sprintf(`
-resource "datadog_integration_gcp_sts" "foo" {
-    automute = "false"
-    client_email = "%s@test-project.iam.gserviceaccount.com"
-    host_filters = ["tag:one", "tag:two"]
-    metric_namespace_configs = [{
-      id      = "aiplatform"
-      disabled = true
-    }
-  ]
-	cloud_run_revision_filters = ["tag:one", "tag:two"]
-    is_cspm_enabled = "false"
-    resource_collection_enabled = "false"
-    is_security_command_center_enabled = "false"
-	is_resource_change_collection_enabled = "false"
-	is_per_project_quota_enabled          = "false"
-    account_tags = ["a:tag", "another:one", "and:another"]
-}`, uniq)
-}
-
-func testAccCheckDatadogIntegrationGcpStsUpdated(uniq string) string {
-	return fmt.Sprintf(`
-resource "datadog_integration_gcp_sts" "foo" {
-    automute = "true"
-    client_email = "%s@test-project.iam.gserviceaccount.com"
-    is_cspm_enabled = "true"
-    resource_collection_enabled = "true"
-    is_security_command_center_enabled = "true"
-	is_resource_change_collection_enabled = "true"
-    is_per_project_quota_enabled          = "true"
-}`, uniq)
-}
-
-func testAccCheckDatadogIntegrationGcpStsDefault(uniq string) string {
-	return fmt.Sprintf(`
-resource "datadog_integration_gcp_sts" "foo" {
-    automute = "true"
-    client_email = "%s@test-project.iam.gserviceaccount.com"
-}`, uniq)
 }
 
 func testAccCheckDatadogIntegrationGcpStsDestroy(accProvider *fwprovider.FrameworkProvider) func(*terraform.State) error {

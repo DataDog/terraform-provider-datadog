@@ -41,6 +41,7 @@ data "datadog_security_monitoring_rules" "test" {
 
 Read-Only:
 
+- `calculated_field` (List of Object) (see [below for nested schema](#nestedobjatt--rules--calculated_field))
 - `case` (List of Object) (see [below for nested schema](#nestedobjatt--rules--case))
 - `enabled` (Boolean)
 - `filter` (List of Object) (see [below for nested schema](#nestedobjatt--rules--filter))
@@ -51,10 +52,20 @@ Read-Only:
 - `options` (List of Object) (see [below for nested schema](#nestedobjatt--rules--options))
 - `query` (List of Object) (see [below for nested schema](#nestedobjatt--rules--query))
 - `reference_tables` (List of Object) (see [below for nested schema](#nestedobjatt--rules--reference_tables))
+- `scheduling_options` (List of Object) (see [below for nested schema](#nestedobjatt--rules--scheduling_options))
 - `signal_query` (List of Object) (see [below for nested schema](#nestedobjatt--rules--signal_query))
 - `tags` (Set of String)
 - `third_party_case` (List of Object) (see [below for nested schema](#nestedobjatt--rules--third_party_case))
 - `type` (String)
+
+<a id="nestedobjatt--rules--calculated_field"></a>
+### Nested Schema for `rules.calculated_field`
+
+Read-Only:
+
+- `expression` (String)
+- `name` (String)
+
 
 <a id="nestedobjatt--rules--case"></a>
 ### Nested Schema for `rules.case`
@@ -106,6 +117,7 @@ Read-Only:
 - `keep_alive` (Number)
 - `max_signal_duration` (Number)
 - `new_value_options` (List of Object) (see [below for nested schema](#nestedobjatt--rules--options--new_value_options))
+- `sequence_detection_options` (List of Object) (see [below for nested schema](#nestedobjatt--rules--options--sequence_detection_options))
 - `third_party_rule_options` (List of Object) (see [below for nested schema](#nestedobjatt--rules--options--third_party_rule_options))
 
 <a id="nestedobjatt--rules--options--impossible_travel_options"></a>
@@ -125,6 +137,35 @@ Read-Only:
 - `learning_duration` (Number)
 - `learning_method` (String)
 - `learning_threshold` (Number)
+
+
+<a id="nestedobjatt--rules--options--sequence_detection_options"></a>
+### Nested Schema for `rules.options.sequence_detection_options`
+
+Read-Only:
+
+- `step_transitions` (List of Object) (see [below for nested schema](#nestedobjatt--rules--options--sequence_detection_options--step_transitions))
+- `steps` (List of Object) (see [below for nested schema](#nestedobjatt--rules--options--sequence_detection_options--steps))
+
+<a id="nestedobjatt--rules--options--sequence_detection_options--step_transitions"></a>
+### Nested Schema for `rules.options.sequence_detection_options.step_transitions`
+
+Read-Only:
+
+- `child` (String)
+- `evaluation_window` (Number)
+- `parent` (String)
+
+
+<a id="nestedobjatt--rules--options--sequence_detection_options--steps"></a>
+### Nested Schema for `rules.options.sequence_detection_options.steps`
+
+Read-Only:
+
+- `condition` (String)
+- `evaluation_window` (Number)
+- `name` (String)
+
 
 
 <a id="nestedobjatt--rules--options--third_party_rule_options"></a>
@@ -158,6 +199,8 @@ Read-Only:
 - `data_source` (String)
 - `distinct_fields` (List of String)
 - `group_by_fields` (List of String)
+- `has_optional_group_by_fields` (Boolean)
+- `indexes` (List of String)
 - `metric` (String)
 - `metrics` (List of String)
 - `name` (String)
@@ -183,6 +226,16 @@ Read-Only:
 - `log_field_path` (String)
 - `rule_query_name` (String)
 - `table_name` (String)
+
+
+<a id="nestedobjatt--rules--scheduling_options"></a>
+### Nested Schema for `rules.scheduling_options`
+
+Read-Only:
+
+- `rrule` (String)
+- `start` (String)
+- `timezone` (String)
 
 
 <a id="nestedobjatt--rules--signal_query"></a>

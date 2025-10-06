@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"description":"","filter":{"query":""},"is_enabled":true,"name":"tf-TestAccDatadogLogsPipelineEmptyFilterQuery-local-1740395694","processors":[{"is_enabled":true,"name":"","sources":["redis.severity"],"type":"status-remapper"},{"categories":[{"filter":{"query":""},"name":"debug"}],"is_enabled":true,"name":"sample category processor","target":"foo.severity","type":"category-processor"},{"filter":{"query":""},"is_enabled":true,"name":"Nginx","type":"pipeline"}],"tags":[]}
+            {"description":"","filter":{"query":""},"is_enabled":true,"name":"tf-TestAccDatadogLogsPipelineEmptyFilterQuery-local-1752683995","processors":[{"is_enabled":true,"name":"","sources":["redis.severity"],"type":"status-remapper"},{"categories":[{"filter":{"query":""},"name":"debug"}],"is_enabled":true,"name":"sample category processor","target":"foo.severity","type":"category-processor"},{"filter":{"query":""},"is_enabled":true,"name":"Nginx","type":"pipeline"}],"tags":[]}
         form: {}
         headers:
             Accept:
@@ -32,13 +32,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"mZXGPGSvTAeDmoNoC3CZkw","type":"pipeline","name":"tf-TestAccDatadogLogsPipelineEmptyFilterQuery-local-1740395694","is_enabled":true,"is_read_only":false,"filter":{"query":""},"processors":[{"name":"","is_enabled":true,"sources":["redis.severity"],"type":"status-remapper"},{"name":"sample category processor","is_enabled":true,"categories":[{"filter":{"query":""},"name":"debug"}],"target":"foo.severity","type":"category-processor"},{"type":"pipeline","name":"Nginx","is_enabled":true,"filter":{"query":""},"processors":[]}],"tags":[],"description":""}
+            {"id":"_fk56mbpRlWch5RPJbviDw","type":"pipeline","name":"tf-TestAccDatadogLogsPipelineEmptyFilterQuery-local-1752683995","is_enabled":true,"is_read_only":false,"filter":{"query":""},"processors":[{"name":"","is_enabled":true,"sources":["redis.severity"],"type":"status-remapper"},{"name":"sample category processor","is_enabled":true,"categories":[{"filter":{"query":""},"name":"debug"}],"target":"foo.severity","type":"category-processor"},{"type":"pipeline","name":"Nginx","is_enabled":true,"filter":{"query":""},"processors":[]}],"tags":[],"description":""}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 165.507958ms
+        duration: 404.054834ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -55,7 +55,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/logs/config/pipelines/mZXGPGSvTAeDmoNoC3CZkw
+        url: https://api.datadoghq.com/api/v1/logs/config/pipelines/_fk56mbpRlWch5RPJbviDw
         method: GET
       response:
         proto: HTTP/1.1
@@ -67,13 +67,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"mZXGPGSvTAeDmoNoC3CZkw","type":"pipeline","name":"tf-TestAccDatadogLogsPipelineEmptyFilterQuery-local-1740395694","is_enabled":true,"is_read_only":false,"filter":{"query":""},"processors":[{"name":"","is_enabled":true,"sources":["redis.severity"],"type":"status-remapper"},{"name":"sample category processor","is_enabled":true,"categories":[{"filter":{"query":""},"name":"debug"}],"target":"foo.severity","type":"category-processor"},{"type":"pipeline","name":"Nginx","is_enabled":true,"filter":{"query":""},"processors":[]}],"tags":[],"description":""}
+            {"id":"_fk56mbpRlWch5RPJbviDw","type":"pipeline","name":"tf-TestAccDatadogLogsPipelineEmptyFilterQuery-local-1752683995","is_enabled":true,"is_read_only":false,"filter":{"query":""},"processors":[{"name":"","is_enabled":true,"sources":["redis.severity"],"type":"status-remapper"},{"name":"sample category processor","is_enabled":true,"categories":[{"filter":{"query":""},"name":"debug"}],"target":"foo.severity","type":"category-processor"},{"type":"pipeline","name":"Nginx","is_enabled":true,"filter":{"query":""},"processors":[]}],"tags":[],"description":""}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 232.883791ms
+        duration: 223.791166ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -90,7 +90,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/logs/config/pipelines/mZXGPGSvTAeDmoNoC3CZkw
+        url: https://api.datadoghq.com/api/v1/logs/config/pipelines/_fk56mbpRlWch5RPJbviDw
         method: GET
       response:
         proto: HTTP/1.1
@@ -102,13 +102,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"mZXGPGSvTAeDmoNoC3CZkw","type":"pipeline","name":"tf-TestAccDatadogLogsPipelineEmptyFilterQuery-local-1740395694","is_enabled":true,"is_read_only":false,"filter":{"query":""},"processors":[{"name":"","is_enabled":true,"sources":["redis.severity"],"type":"status-remapper"},{"name":"sample category processor","is_enabled":true,"categories":[{"filter":{"query":""},"name":"debug"}],"target":"foo.severity","type":"category-processor"},{"type":"pipeline","name":"Nginx","is_enabled":true,"filter":{"query":""},"processors":[]}],"tags":[],"description":""}
+            {"id":"_fk56mbpRlWch5RPJbviDw","type":"pipeline","name":"tf-TestAccDatadogLogsPipelineEmptyFilterQuery-local-1752683995","is_enabled":true,"is_read_only":false,"filter":{"query":""},"processors":[{"name":"","is_enabled":true,"sources":["redis.severity"],"type":"status-remapper"},{"name":"sample category processor","is_enabled":true,"categories":[{"filter":{"query":""},"name":"debug"}],"target":"foo.severity","type":"category-processor"},{"type":"pipeline","name":"Nginx","is_enabled":true,"filter":{"query":""},"processors":[]}],"tags":[],"description":""}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 274.350667ms
+        duration: 148.199875ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -125,7 +125,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v1/logs/config/pipelines/mZXGPGSvTAeDmoNoC3CZkw
+        url: https://api.datadoghq.com/api/v1/logs/config/pipelines/_fk56mbpRlWch5RPJbviDw
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -142,7 +142,7 @@ interactions:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 166.763458ms
+        duration: 172.2475ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -159,7 +159,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/logs/config/pipelines/mZXGPGSvTAeDmoNoC3CZkw
+        url: https://api.datadoghq.com/api/v1/logs/config/pipelines/_fk56mbpRlWch5RPJbviDw
         method: GET
       response:
         proto: HTTP/1.1
@@ -177,4 +177,4 @@ interactions:
                 - application/json
         status: 400 Bad Request
         code: 400
-        duration: 145.711666ms
+        duration: 165.033125ms

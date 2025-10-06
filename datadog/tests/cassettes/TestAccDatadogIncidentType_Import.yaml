@@ -1,0 +1,169 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 139
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"description":"Test incident type","is_default":false,"name":"test-it-import-1754489599"},"type":"incident_types"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/incidents/config/types
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 717
+        uncompressed: false
+        body: '{"data":{"id":"e79bf116-d7ac-42df-8674-1281c1a0dbb0","type":"incident_types","attributes":{"createdAt":"2025-08-06T14:13:21.287946234Z","createdBy":"3ad549bf-eba0-11e9-a77a-0705486660d0","description":"Test incident type","is_default":false,"lastModifiedBy":"3ad549bf-eba0-11e9-a77a-0705486660d0","modifiedAt":"2025-08-06T14:13:21.287946308Z","name":"test-it-import-1754489599","prefix":"IR"},"relationships":{"created_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"google_meet_configuration":{"data":null},"last_modified_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"microsoft_teams_configuration":{"data":null},"zoom_configuration":{"data":null}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 170.344167ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/incidents/config/types/e79bf116-d7ac-42df-8674-1281c1a0dbb0
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 711
+        uncompressed: false
+        body: '{"data":{"id":"e79bf116-d7ac-42df-8674-1281c1a0dbb0","type":"incident_types","attributes":{"createdAt":"2025-08-06T14:13:21.287946Z","createdBy":"3ad549bf-eba0-11e9-a77a-0705486660d0","description":"Test incident type","is_default":false,"lastModifiedBy":"3ad549bf-eba0-11e9-a77a-0705486660d0","modifiedAt":"2025-08-06T14:13:21.287946Z","name":"test-it-import-1754489599","prefix":"IR"},"relationships":{"created_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"google_meet_configuration":{"data":null},"last_modified_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"microsoft_teams_configuration":{"data":null},"zoom_configuration":{"data":null}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 54.390042ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/incidents/config/types/e79bf116-d7ac-42df-8674-1281c1a0dbb0
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 711
+        uncompressed: false
+        body: '{"data":{"id":"e79bf116-d7ac-42df-8674-1281c1a0dbb0","type":"incident_types","attributes":{"createdAt":"2025-08-06T14:13:21.287946Z","createdBy":"3ad549bf-eba0-11e9-a77a-0705486660d0","description":"Test incident type","is_default":false,"lastModifiedBy":"3ad549bf-eba0-11e9-a77a-0705486660d0","modifiedAt":"2025-08-06T14:13:21.287946Z","name":"test-it-import-1754489599","prefix":"IR"},"relationships":{"created_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"google_meet_configuration":{"data":null},"last_modified_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"microsoft_teams_configuration":{"data":null},"zoom_configuration":{"data":null}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 62.857542ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/incidents/config/types/e79bf116-d7ac-42df-8674-1281c1a0dbb0
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 51.573166ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/incidents/config/types/e79bf116-d7ac-42df-8674-1281c1a0dbb0
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 711
+        uncompressed: false
+        body: '{"data":{"id":"e79bf116-d7ac-42df-8674-1281c1a0dbb0","type":"incident_types","attributes":{"createdAt":"2025-08-06T14:13:21.287946Z","createdBy":"3ad549bf-eba0-11e9-a77a-0705486660d0","description":"Test incident type","is_default":false,"lastModifiedBy":"3ad549bf-eba0-11e9-a77a-0705486660d0","modifiedAt":"2025-08-06T14:13:21.287946Z","name":"test-it-import-1754489599","prefix":"IR"},"relationships":{"created_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"google_meet_configuration":{"data":null},"last_modified_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"microsoft_teams_configuration":{"data":null},"zoom_configuration":{"data":null}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 51.347375ms

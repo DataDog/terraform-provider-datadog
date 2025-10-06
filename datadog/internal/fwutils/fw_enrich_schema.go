@@ -6,59 +6,120 @@ import (
 	"reflect"
 	"strings"
 
-	frameworkSchema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	datasourceSchema "github.com/hashicorp/terraform-plugin-framework/datasource/schema"
+	resourceSchema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 )
 
 var stringType = reflect.TypeOf("")
 
-func EnrichFrameworkResourceSchema(s *frameworkSchema.Schema) {
+// =============================================================================
+// RESOURCE SCHEMA ENRICHMENT FUNCTIONS
+// =============================================================================
+
+func EnrichFrameworkResourceSchema(s *resourceSchema.Schema) {
 	for i, attr := range s.Attributes {
-		s.Attributes[i] = enrichDescription(attr)
+		s.Attributes[i] = enrichResourceDescription(attr)
 	}
-	enrichMapBlocks(s.Blocks)
+	enrichResourceMapBlocks(s.Blocks)
 }
 
-func enrichMapBlocks(blocks map[string]frameworkSchema.Block) {
+func enrichResourceMapBlocks(blocks map[string]resourceSchema.Block) {
 	for _, block := range blocks {
 		switch v := block.(type) {
-		case frameworkSchema.ListNestedBlock:
+		case resourceSchema.ListNestedBlock:
 			for i, attr := range v.NestedObject.Attributes {
-				v.NestedObject.Attributes[i] = enrichDescription(attr)
+				v.NestedObject.Attributes[i] = enrichResourceDescription(attr)
 			}
-			enrichMapBlocks(v.NestedObject.Blocks)
-		case frameworkSchema.SingleNestedBlock:
+			enrichResourceMapBlocks(v.NestedObject.Blocks)
+		case resourceSchema.SingleNestedBlock:
 			for i, attr := range v.Attributes {
-				v.Attributes[i] = enrichDescription(attr)
+				v.Attributes[i] = enrichResourceDescription(attr)
 			}
-			enrichMapBlocks(v.Blocks)
-		case frameworkSchema.SetNestedBlock:
+			enrichResourceMapBlocks(v.Blocks)
+		case resourceSchema.SetNestedBlock:
 			for i, attr := range v.NestedObject.Attributes {
-				v.NestedObject.Attributes[i] = enrichDescription(attr)
+				v.NestedObject.Attributes[i] = enrichResourceDescription(attr)
 			}
-			enrichMapBlocks(v.NestedObject.Blocks)
+			enrichResourceMapBlocks(v.NestedObject.Blocks)
 		}
 	}
 }
 
-func enrichDescription(r any) frameworkSchema.Attribute {
+func enrichResourceDescription(r any) resourceSchema.Attribute {
 	switch v := r.(type) {
-	case frameworkSchema.StringAttribute:
+	case resourceSchema.StringAttribute:
 		buildEnrichedSchemaDescription(reflect.ValueOf(&v))
 		return v
-	case frameworkSchema.Int64Attribute:
+	case resourceSchema.Int64Attribute:
 		buildEnrichedSchemaDescription(reflect.ValueOf(&v))
 		return v
-	case frameworkSchema.Float64Attribute:
+	case resourceSchema.Float64Attribute:
 		buildEnrichedSchemaDescription(reflect.ValueOf(&v))
 		return v
-	case frameworkSchema.BoolAttribute:
+	case resourceSchema.BoolAttribute:
 		buildEnrichedSchemaDescription(reflect.ValueOf(&v))
 		return v
 	default:
-		return r.(frameworkSchema.Attribute)
+		return r.(resourceSchema.Attribute)
 	}
 }
+
+// =============================================================================
+// DATASOURCE SCHEMA ENRICHMENT FUNCTIONS
+// =============================================================================
+
+func EnrichFrameworkDatasourceSchema(s *datasourceSchema.Schema) {
+	for i, attr := range s.Attributes {
+		s.Attributes[i] = enrichDatasourceDescription(attr)
+	}
+	enrichDatasourceMapBlocks(s.Blocks)
+}
+
+func enrichDatasourceMapBlocks(blocks map[string]datasourceSchema.Block) {
+	for _, block := range blocks {
+		switch v := block.(type) {
+		case datasourceSchema.ListNestedBlock:
+			for i, attr := range v.NestedObject.Attributes {
+				v.NestedObject.Attributes[i] = enrichDatasourceDescription(attr)
+			}
+			enrichDatasourceMapBlocks(v.NestedObject.Blocks)
+		case datasourceSchema.SingleNestedBlock:
+			for i, attr := range v.Attributes {
+				v.Attributes[i] = enrichDatasourceDescription(attr)
+			}
+			enrichDatasourceMapBlocks(v.Blocks)
+		case datasourceSchema.SetNestedBlock:
+			for i, attr := range v.NestedObject.Attributes {
+				v.NestedObject.Attributes[i] = enrichDatasourceDescription(attr)
+			}
+			enrichDatasourceMapBlocks(v.NestedObject.Blocks)
+		}
+	}
+}
+
+func enrichDatasourceDescription(r any) datasourceSchema.Attribute {
+	switch v := r.(type) {
+	case datasourceSchema.StringAttribute:
+		buildEnrichedSchemaDescription(reflect.ValueOf(&v))
+		return v
+	case datasourceSchema.Int64Attribute:
+		buildEnrichedSchemaDescription(reflect.ValueOf(&v))
+		return v
+	case datasourceSchema.Float64Attribute:
+		buildEnrichedSchemaDescription(reflect.ValueOf(&v))
+		return v
+	case datasourceSchema.BoolAttribute:
+		buildEnrichedSchemaDescription(reflect.ValueOf(&v))
+		return v
+	default:
+		return r.(datasourceSchema.Attribute)
+	}
+}
+
+// =============================================================================
+// REUSABLE CORE FUNCTIONS (TYPE-AGNOSTIC VIA REFLECTION)
+// =============================================================================
 
 func buildEnrichedSchemaDescription(rv reflect.Value) {
 	descField := rv.Elem().FieldByName("Description")

@@ -31,7 +31,7 @@ func (d *actionConnectionDatasource) Metadata(_ context.Context, request datasou
 
 func (d *actionConnectionDatasource) Schema(_ context.Context, request datasource.SchemaRequest, response *datasource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "A connection that can be used in Actions, including in the Workflow Automation and App Builder products.",
+		Description: "A connection that can be used in Actions, including in the Workflow Automation and App Builder products. This data source requires a [registered application key](https://registry.terraform.io/providers/DataDog/datadog/latest/docs/resources/app_key_registration).",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
 				Description: "ID for Connection.",

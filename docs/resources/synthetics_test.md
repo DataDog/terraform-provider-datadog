@@ -472,6 +472,30 @@ resource "datadog_synthetics_test" "test_browser" {
     }
   }
 
+  browser_step {
+    name = "Run api test"
+    type = "runApiTest"
+    params {
+      request = jsonencode({
+        config = {
+          assertions = [
+            {
+              type     = "statusCode",
+              operator = "is",
+              target   = 200
+            }
+          ],
+          request = {
+            method = "GET",
+            url    = "https://example.com"
+          }
+        },
+        options = {},
+        subtype = "http"
+      })
+    }
+  }
+
   browser_variable {
     type    = "text"
     name    = "MY_PATTERN_VAR"
@@ -750,7 +774,7 @@ resource "datadog_synthetics_test" "test_grpc_health" {
 
 ### Optional
 
-- `api_step` (Block List) Steps for multi-step api tests (see [below for nested schema](#nestedblock--api_step))
+- `api_step` (Block List) Steps for multistep API tests (see [below for nested schema](#nestedblock--api_step))
 - `assertion` (Block List) Assertions used for the test. Multiple `assertion` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--assertion))
 - `browser_step` (Block List) Steps for browser tests. (see [below for nested schema](#nestedblock--browser_step))
 - `browser_variable` (Block List) Variables used for a browser test steps. Multiple `variable` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--browser_variable))
@@ -797,15 +821,19 @@ Optional:
 - `is_critical` (Boolean) Determines whether or not to consider the entire test as failed if this step fails. Can be used only if `allow_failure` is `true`.
 - `request_basicauth` (Block List, Max: 1) The HTTP basic authentication credentials. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--api_step--request_basicauth))
 - `request_client_certificate` (Block List, Max: 1) Client certificate to use when performing the test request. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--api_step--request_client_certificate))
-- `request_definition` (Block List, Max: 1) The request for the api step. (see [below for nested schema](#nestedblock--api_step--request_definition))
+- `request_definition` (Block List, Max: 1) The request for the API step. (see [below for nested schema](#nestedblock--api_step--request_definition))
 - `request_file` (Block List) Files to be used as part of the request in the test. (see [below for nested schema](#nestedblock--api_step--request_file))
 - `request_headers` (Map of String) Header name and value map.
 - `request_metadata` (Map of String) Metadata to include when performing the gRPC request.
 - `request_proxy` (Block List, Max: 1) The proxy to perform the test. (see [below for nested schema](#nestedblock--api_step--request_proxy))
 - `request_query` (Map of String) Query arguments name and value map.
 - `retry` (Block List, Max: 1) (see [below for nested schema](#nestedblock--api_step--retry))
-- `subtype` (String) The subtype of the Synthetic multi-step API test step. Valid values are `http`, `grpc`, `ssl`, `dns`, `tcp`, `udp`, `icmp`, `websocket`, `wait`. Defaults to `"http"`.
+- `subtype` (String) The subtype of the Synthetic multistep API test step. Valid values are `http`, `grpc`, `ssl`, `dns`, `tcp`, `udp`, `icmp`, `websocket`, `wait`. Defaults to `"http"`.
 - `value` (Number) The time to wait in seconds. Minimum value: 0. Maximum value: 180.
+
+Read-Only:
+
+- `id` (String) ID of the step.
 
 <a id="nestedblock--api_step--assertion"></a>
 ### Nested Schema for `api_step.assertion`
@@ -948,13 +976,14 @@ Optional:
 
 Optional:
 
-- `accept_self_signed` (Boolean) For SSL test, whether or not the test should allow self signed certificates.
+- `accept_self_signed` (Boolean) For SSL tests, whether or not the test should allow self signed certificates.
 - `allow_insecure` (Boolean) Allows loading insecure content for a request in an API test or in a multistep API test step.
 - `body` (String) The request body.
 - `body_type` (String) Type of the request body. Valid values are `text/plain`, `application/json`, `text/xml`, `text/html`, `application/x-www-form-urlencoded`, `graphql`, `application/octet-stream`, `multipart/form-data`.
 - `call_type` (String) The type of gRPC call to perform. Valid values are `healthcheck`, `unary`.
 - `certificate_domains` (List of String) By default, the client certificate is applied on the domain of the starting URL for browser tests. If you want your client certificate to be applied on other domains instead, add them in `certificate_domains`.
-- `check_certificate_revocation` (Boolean) For SSL test, whether or not the test should fail on revoked certificate in stapled OCSP.
+- `check_certificate_revocation` (Boolean) For SSL tests, whether or not the test should fail on revoked certificate in stapled OCSP.
+- `disable_aia_intermediate_fetching` (Boolean) For SSL tests, whether or not the test should disable fetching intermediate certificates from AIA
 - `dns_server` (String) DNS server to use for DNS tests (`subtype = "dns"`).
 - `dns_server_port` (String) DNS server port to use for DNS tests.
 - `follow_redirects` (Boolean) Determines whether or not the API HTTP test should follow redirects.
@@ -962,7 +991,7 @@ Optional:
 - `host` (String) Host name to perform the test with.
 - `http_version` (String) HTTP version to use for an HTTP request in an API test or step. Valid values are `http1`, `http2`, `any`. Defaults to `"any"`.
 - `is_message_base64_encoded` (Boolean) Whether the message is base64-encoded.
-- `message` (String) For UDP and websocket tests, message to send with the request.
+- `message` (String) For gRPC, UDP and websocket tests, message to send with the request.
 - `method` (String) Either the HTTP method/verb to use or a gRPC method available on the service set in the `service` field. Required if `subtype` is `HTTP` or if `subtype` is `grpc` and `callType` is `unary`.
 - `no_saving_response_body` (Boolean) Determines whether or not to save the response body.
 - `number_of_packets` (Number) Number of pings to use per test for ICMP tests (`subtype = "icmp"`) between 0 and 10.
@@ -1105,6 +1134,7 @@ Read-Only:
 
 Optional:
 
+- `append_to_content` (Boolean) Whether to append the `value` to existing text input content for a "typeText" step. By default, content is cleared before text input.
 - `attribute` (String) Name of the attribute to use for an "assert attribute" step.
 - `check` (String) Check type to use for an assertion step. Valid values are `equals`, `notEquals`, `contains`, `notContains`, `startsWith`, `notStartsWith`, `greater`, `lower`, `greaterEquals`, `lowerEquals`, `matchRegex`, `between`, `isEmpty`, `notIsEmpty`.
 - `click_type` (String) Type of click to use for a "click" step.
@@ -1199,9 +1229,9 @@ Required:
 
 Optional:
 
-- `example` (String) Example for the variable. This value is not returned by the api when `secure = true`. Avoid drift by only making updates to this value from within Terraform.
+- `example` (String) Example for the variable. This value is not returned by the API when `secure = true`. Avoid drift by only making updates to this value from within Terraform.
 - `id` (String) When type = `global`, ID of the global variable to use.
-- `pattern` (String) Pattern of the variable. This value is not returned by the api when `secure = true`. Avoid drift by only making updates to this value from within Terraform.
+- `pattern` (String) Pattern of the variable. This value is not returned by the API when `secure = true`. Avoid drift by only making updates to this value from within Terraform.
 - `secure` (Boolean) Whether the value of this variable will be obfuscated in test results. Defaults to `false`.
 
 
@@ -1324,7 +1354,7 @@ Optional:
 - `check` (String) Check type to use for an assertion step. Valid values are `equals`, `notEquals`, `contains`, `notContains`, `startsWith`, `notStartsWith`, `greater`, `lower`, `greaterEquals`, `lowerEquals`, `matchRegex`, `between`, `isEmpty`, `notIsEmpty`.
 - `delay` (Number) Delay between each key stroke for a "type test" step.
 - `direction` (String) Valid values are `up`, `down`, `left`, `right`.
-- `element` (Block List, Max: 1) Element to use for the step, JSON encoded string. (see [below for nested schema](#nestedblock--mobile_step--params--element))
+- `element` (Block List, Max: 1) Element to use for the step (see [below for nested schema](#nestedblock--mobile_step--params--element))
 - `enable` (Boolean)
 - `max_scrolls` (Number)
 - `positions` (Block List) (see [below for nested schema](#nestedblock--mobile_step--params--positions))
@@ -1409,10 +1439,11 @@ Required:
 
 Optional:
 
-- `accept_self_signed` (Boolean) For SSL test, whether or not the test should allow self signed certificates.
+- `accept_self_signed` (Boolean) For SSL tests, whether or not the test should allow self signed certificates.
 - `allow_insecure` (Boolean) Allows loading insecure content for a request in an API test or in a multistep API test step.
-- `check_certificate_revocation` (Boolean) For SSL test, whether or not the test should fail on revoked certificate in stapled OCSP.
+- `check_certificate_revocation` (Boolean) For SSL tests, whether or not the test should fail on revoked certificate in stapled OCSP.
 - `ci` (Block List, Max: 1) CI/CD options for a Synthetic test. (see [below for nested schema](#nestedblock--options_list--ci))
+- `disable_aia_intermediate_fetching` (Boolean) For SSL tests, whether or not the test should disable fetching intermediate certificates from AIA
 - `disable_cors` (Boolean) Disable Cross-Origin Resource Sharing for browser tests.
 - `disable_csp` (Boolean) Disable Content Security Policy for browser tests.
 - `follow_redirects` (Boolean) Determines whether or not the API HTTP test should follow redirects.
@@ -1557,7 +1588,7 @@ Optional:
 - `host` (String) Host name to perform the test with.
 - `http_version` (String, Deprecated) HTTP version to use for an HTTP request in an API test or step. **Deprecated.** Use `http_version` in the `options_list` field instead.
 - `is_message_base64_encoded` (Boolean) Whether the message is base64-encoded.
-- `message` (String) For UDP and websocket tests, message to send with the request.
+- `message` (String) For gRPC, UDP and websocket tests, message to send with the request.
 - `method` (String) Either the HTTP method/verb to use or a gRPC method available on the service set in the `service` field. Required if `subtype` is `HTTP` or if `subtype` is `grpc` and `callType` is `unary`.
 - `no_saving_response_body` (Boolean) Determines whether or not to save the response body.
 - `number_of_packets` (Number) Number of pings to use per test for ICMP tests (`subtype = "icmp"`) between 0 and 10.

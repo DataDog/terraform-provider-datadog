@@ -30,10 +30,13 @@ resource "datadog_security_monitoring_default_rule" "adefaultrule" {
 ### Optional
 
 - `case` (Block List, Max: 10) Cases of the rule, this is used to update notifications. (see [below for nested schema](#nestedblock--case))
+- `custom_message` (String) Custom Message (will override default message) for generated signals.
+- `custom_name` (String) The name (will override default name) of the rule.
 - `custom_tags` (Set of String) Custom tags for generated signals.
 - `enabled` (Boolean) Enable the rule. Defaults to `true`.
 - `filter` (Block List) Additional queries to filter matched events before they are processed. (see [below for nested schema](#nestedblock--filter))
 - `options` (Block List, Max: 1) Options on default rules. Note that only a subset of fields can be updated on default rule options. (see [below for nested schema](#nestedblock--options))
+- `query` (Block List) Queries for selecting logs which are part of the rule. (see [below for nested schema](#nestedblock--query))
 
 ### Read-Only
 
@@ -45,8 +48,12 @@ resource "datadog_security_monitoring_default_rule" "adefaultrule" {
 
 Required:
 
-- `notifications` (List of String) Notification targets for each rule case.
 - `status` (String) Status of the rule case to match. Valid values are `info`, `low`, `medium`, `high`, `critical`.
+
+Optional:
+
+- `custom_status` (String) Status of the rule case to override. Valid values are `info`, `low`, `medium`, `high`, `critical`.
+- `notifications` (List of String) Notification targets for each rule case.
 
 
 <a id="nestedblock--filter"></a>
@@ -63,7 +70,33 @@ Required:
 
 Optional:
 
-- `decrease_criticality_based_on_env` (Boolean) If true, signals in non-production environments have a lower severity than what is defined by the rule case, which can reduce noise. The decrement is applied when the environment tag of the signal starts with `staging`, `test`, or `dev`. Only available when the rule type is `log_detection`. Defaults to `false`.
+- `decrease_criticality_based_on_env` (Boolean) If true, signals in non-production environments have a lower severity than what is defined by the rule case, which can reduce noise. The decrement is applied when the environment tag of the signal starts with `staging`, `test`, or `dev`. Only available when the rule type is `log_detection`.
+
+
+<a id="nestedblock--query"></a>
+### Nested Schema for `query`
+
+Optional:
+
+- `agent_rule` (Block List, Deprecated) **Deprecated**. It won't be applied anymore. **Deprecated.** `agent_rule` has been deprecated in favor of new Agent Rule resource. (see [below for nested schema](#nestedblock--query--agent_rule))
+- `aggregation` (String) The aggregation type. For Signal Correlation rules, it must be event_count. Valid values are `count`, `cardinality`, `sum`, `max`, `new_value`, `geo_data`, `event_count`, `none`.
+- `custom_query_extension` (String) Query extension to append to the logs query.
+- `data_source` (String) Source of events. Valid values are `logs`, `audit`, `app_sec_spans`, `spans`, `security_runtime`, `network`, `events`.
+- `distinct_fields` (List of String) Field for which the cardinality is measured. Sent as an array.
+- `group_by_fields` (List of String) Fields to group by.
+- `has_optional_group_by_fields` (Boolean) When false, events without a group-by value are ignored by the rule. When true, events with missing group-by fields are processed with `N/A`, replacing the missing values.
+- `metric` (String, Deprecated) The target field to aggregate over when using the `sum`, `max`, or `geo_data` aggregations. **Deprecated.** Configure `metrics` instead. This attribute will be removed in the next major version of the provider.
+- `metrics` (List of String) Group of target fields to aggregate over when using the `sum`, `max`, `geo_data`, or `new_value` aggregations. The `sum`, `max`, and `geo_data` aggregations only accept one value in this list, whereas the `new_value` aggregation accepts up to five values.
+- `name` (String) Name of the query. Not compatible with `new_value` aggregations.
+- `query` (String) Query to run on logs.
+
+<a id="nestedblock--query--agent_rule"></a>
+### Nested Schema for `query.agent_rule`
+
+Required:
+
+- `agent_rule_id` (String) **Deprecated**. It won't be applied anymore.
+- `expression` (String) **Deprecated**. It won't be applied anymore.
 
 ## Import
 

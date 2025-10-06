@@ -14,7 +14,7 @@ import (
 )
 
 var (
-	_ datasource.DataSource = &datadogUsersDataSource{}
+	_ datasource.DataSource = &datadogMetricTagsDataSource{}
 )
 
 type datadogMetricTagsModel struct {
@@ -69,7 +69,7 @@ func (d *datadogMetricTagsDataSource) Read(ctx context.Context, req datasource.R
 		return
 	}
 
-	ddResp, _, err := d.Api.ListTagsByMetricName(d.Auth, state.Metric.String())
+	ddResp, _, err := d.Api.ListTagsByMetricName(d.Auth, state.Metric.ValueString())
 	if err != nil {
 		resp.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error listing metric tags"))
 		return

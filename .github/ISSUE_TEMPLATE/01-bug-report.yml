@@ -22,7 +22,7 @@ body:
     attributes:
       label: Terraform Version
       description: Run `terraform -v` to show the version of the terraform cli.
-      placeholder: ex. v1.5.3
+      placeholder: ex. v1.13.1
     validations:
       required: true
   - type: textarea

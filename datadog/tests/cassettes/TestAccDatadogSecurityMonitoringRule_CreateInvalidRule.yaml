@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 631
+        content_length: 664
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":[{"condition":"a \u003e 0","name":"","notifications":[],"status":"high"}],"hasExtendedTitle":true,"isEnabled":true,"message":"validation failed","name":"tf-TestAccDatadogSecurityMonitoringRule_CreateInvalidRule-local-1745938832","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"threshold","evaluationWindow":1800,"keepAlive":3600,"maxSignalDuration":1800},"queries":[{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["@userIdentity.assumed_role"],"metric":"","metrics":[],"name":"","query":"source:source_here"}],"tags":["team:security","env:prod"],"type":"log_detection"}
+            {"cases":[{"condition":"a \u003e 0","name":"","notifications":[],"status":"high"}],"hasExtendedTitle":true,"isEnabled":true,"message":"validation failed","name":"tf-TestAccDatadogSecurityMonitoringRule_CreateInvalidRule-local-1757946791","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"threshold","evaluationWindow":1800,"keepAlive":3600,"maxSignalDuration":1800},"queries":[{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["@userIdentity.assumed_role"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"","query":"source:source_here"}],"tags":["team:security","env:prod"],"type":"log_detection"}
         form: {}
         headers:
             Accept:
@@ -36,4 +36,4 @@ interactions:
                 - application/json
         status: 400 Bad Request
         code: 400
-        duration: 385.698792ms
+        duration: 416.608334ms

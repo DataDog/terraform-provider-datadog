@@ -196,9 +196,11 @@ Required:
 Optional:
 
 - `arithmetic_processor` (Block List, Max: 1) Arithmetic Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#arithmetic-processor) (see [below for nested schema](#nestedblock--processor--arithmetic_processor))
+- `array_processor` (Block List, Max: 1) Array Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#array-processor) (see [below for nested schema](#nestedblock--processor--array_processor))
 - `attribute_remapper` (Block List, Max: 1) Attribute Remapper Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#remapper) (see [below for nested schema](#nestedblock--processor--attribute_remapper))
 - `category_processor` (Block List, Max: 1) Category Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#category-processor) (see [below for nested schema](#nestedblock--processor--category_processor))
 - `date_remapper` (Block List, Max: 1) Date Remapper Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#log-date-remapper) (see [below for nested schema](#nestedblock--processor--date_remapper))
+- `decoder_processor` (Block List, Max: 1) Decoder Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/log_configuration/processors/?tab=ui#decoder-processor) (see [below for nested schema](#nestedblock--processor--decoder_processor))
 - `geo_ip_parser` (Block List, Max: 1) Date GeoIP Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#geoip-parser) (see [below for nested schema](#nestedblock--processor--geo_ip_parser))
 - `grok_parser` (Block List, Max: 1) Grok Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#grok-parser) (see [below for nested schema](#nestedblock--processor--grok_parser))
 - `lookup_processor` (Block List, Max: 1) Lookup Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#lookup-processor) (see [below for nested schema](#nestedblock--processor--lookup_processor))
@@ -226,6 +228,62 @@ Optional:
 - `is_enabled` (Boolean) Boolean value to enable your pipeline.
 - `is_replace_missing` (Boolean) If true, it replaces all missing attributes of expression by 0, false skips the operation if an attribute is missing.
 - `name` (String) Your pipeline name.
+
+
+<a id="nestedblock--processor--array_processor"></a>
+### Nested Schema for `processor.array_processor`
+
+Required:
+
+- `operation` (Block List, Min: 1, Max: 1) Operation to perform on the array. (see [below for nested schema](#nestedblock--processor--array_processor--operation))
+
+Optional:
+
+- `is_enabled` (Boolean) Boolean value to enable your processor.
+- `name` (String) Your processor name.
+
+<a id="nestedblock--processor--array_processor--operation"></a>
+### Nested Schema for `processor.array_processor.operation`
+
+Optional:
+
+- `append` (Block List, Max: 1) Operation that appends a value to a target array attribute. (see [below for nested schema](#nestedblock--processor--array_processor--operation--append))
+- `length` (Block List, Max: 1) Operation that computes the length of a source array and stores the result in a target attribute. (see [below for nested schema](#nestedblock--processor--array_processor--operation--length))
+- `select` (Block List, Max: 1) Operation that finds an object in a source array using a filter, and then extracts a value from that found object and puts that value into the target attribute. (see [below for nested schema](#nestedblock--processor--array_processor--operation--select))
+
+<a id="nestedblock--processor--array_processor--operation--append"></a>
+### Nested Schema for `processor.array_processor.operation.append`
+
+Required:
+
+- `source` (String) Attribute path containing the value to append.
+- `target` (String) Attribute path of the array to append to.
+
+Optional:
+
+- `preserve_source` (Boolean) Remove or preserve the remapped source element. Defaults to `true`.
+
+
+<a id="nestedblock--processor--array_processor--operation--length"></a>
+### Nested Schema for `processor.array_processor.operation.length`
+
+Required:
+
+- `source` (String) Attribute path of the array to compute the length of.
+- `target` (String) Attribute that receives the computed length.
+
+
+<a id="nestedblock--processor--array_processor--operation--select"></a>
+### Nested Schema for `processor.array_processor.operation.select`
+
+Required:
+
+- `filter` (String) Filter expression (e.g. key1:value1 OR key2:value2) used to find the matching element.
+- `source` (String) Attribute path of the array to search into.
+- `target` (String) Attribute that receives the extracted value.
+- `value_to_extract` (String) Attribute key from the matching object that should be extracted.
+
+
 
 
 <a id="nestedblock--processor--attribute_remapper"></a>
@@ -284,6 +342,22 @@ Required:
 Required:
 
 - `sources` (List of String) List of source attributes.
+
+Optional:
+
+- `is_enabled` (Boolean) If the processor is enabled or not.
+- `name` (String) Name of the processor.
+
+
+<a id="nestedblock--processor--decoder_processor"></a>
+### Nested Schema for `processor.decoder_processor`
+
+Required:
+
+- `binary_to_text_encoding` (String) Encoding type: base64 or base16
+- `input_representation` (String) Input representation: utf-8 or integer
+- `source` (String) Encoded message
+- `target` (String) Decoded message
 
 Optional:
 
@@ -387,9 +461,11 @@ Required:
 Optional:
 
 - `arithmetic_processor` (Block List, Max: 1) Arithmetic Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#arithmetic-processor) (see [below for nested schema](#nestedblock--processor--pipeline--processor--arithmetic_processor))
+- `array_processor` (Block List, Max: 1) Array Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#array-processor) (see [below for nested schema](#nestedblock--processor--pipeline--processor--array_processor))
 - `attribute_remapper` (Block List, Max: 1) Attribute Remapper Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#remapper) (see [below for nested schema](#nestedblock--processor--pipeline--processor--attribute_remapper))
 - `category_processor` (Block List, Max: 1) Category Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#category-processor) (see [below for nested schema](#nestedblock--processor--pipeline--processor--category_processor))
 - `date_remapper` (Block List, Max: 1) Date Remapper Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#log-date-remapper) (see [below for nested schema](#nestedblock--processor--pipeline--processor--date_remapper))
+- `decoder_processor` (Block List, Max: 1) Decoder Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/log_configuration/processors/?tab=ui#decoder-processor) (see [below for nested schema](#nestedblock--processor--pipeline--processor--decoder_processor))
 - `geo_ip_parser` (Block List, Max: 1) Date GeoIP Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#geoip-parser) (see [below for nested schema](#nestedblock--processor--pipeline--processor--geo_ip_parser))
 - `grok_parser` (Block List, Max: 1) Grok Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#grok-parser) (see [below for nested schema](#nestedblock--processor--pipeline--processor--grok_parser))
 - `lookup_processor` (Block List, Max: 1) Lookup Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#lookup-processor) (see [below for nested schema](#nestedblock--processor--pipeline--processor--lookup_processor))
@@ -416,6 +492,62 @@ Optional:
 - `is_enabled` (Boolean) Boolean value to enable your pipeline.
 - `is_replace_missing` (Boolean) If true, it replaces all missing attributes of expression by 0, false skips the operation if an attribute is missing.
 - `name` (String) Your pipeline name.
+
+
+<a id="nestedblock--processor--pipeline--processor--array_processor"></a>
+### Nested Schema for `processor.pipeline.processor.array_processor`
+
+Required:
+
+- `operation` (Block List, Min: 1, Max: 1) Operation to perform on the array. (see [below for nested schema](#nestedblock--processor--pipeline--processor--array_processor--operation))
+
+Optional:
+
+- `is_enabled` (Boolean) Boolean value to enable your processor.
+- `name` (String) Your processor name.
+
+<a id="nestedblock--processor--pipeline--processor--array_processor--operation"></a>
+### Nested Schema for `processor.pipeline.processor.array_processor.operation`
+
+Optional:
+
+- `append` (Block List, Max: 1) Operation that appends a value to a target array attribute. (see [below for nested schema](#nestedblock--processor--pipeline--processor--array_processor--operation--append))
+- `length` (Block List, Max: 1) Operation that computes the length of a source array and stores the result in a target attribute. (see [below for nested schema](#nestedblock--processor--pipeline--processor--array_processor--operation--length))
+- `select` (Block List, Max: 1) Operation that finds an object in a source array using a filter, and then extracts a value from that found object and puts that value into the target attribute. (see [below for nested schema](#nestedblock--processor--pipeline--processor--array_processor--operation--select))
+
+<a id="nestedblock--processor--pipeline--processor--array_processor--operation--append"></a>
+### Nested Schema for `processor.pipeline.processor.array_processor.operation.append`
+
+Required:
+
+- `source` (String) Attribute path containing the value to append.
+- `target` (String) Attribute path of the array to append to.
+
+Optional:
+
+- `preserve_source` (Boolean) Remove or preserve the remapped source element. Defaults to `true`.
+
+
+<a id="nestedblock--processor--pipeline--processor--array_processor--operation--length"></a>
+### Nested Schema for `processor.pipeline.processor.array_processor.operation.length`
+
+Required:
+
+- `source` (String) Attribute path of the array to compute the length of.
+- `target` (String) Attribute that receives the computed length.
+
+
+<a id="nestedblock--processor--pipeline--processor--array_processor--operation--select"></a>
+### Nested Schema for `processor.pipeline.processor.array_processor.operation.select`
+
+Required:
+
+- `filter` (String) Filter expression (e.g. key1:value1 OR key2:value2) used to find the matching element.
+- `source` (String) Attribute path of the array to search into.
+- `target` (String) Attribute that receives the extracted value.
+- `value_to_extract` (String) Attribute key from the matching object that should be extracted.
+
+
 
 
 <a id="nestedblock--processor--pipeline--processor--attribute_remapper"></a>
@@ -474,6 +606,22 @@ Required:
 Required:
 
 - `sources` (List of String) List of source attributes.
+
+Optional:
+
+- `is_enabled` (Boolean) If the processor is enabled or not.
+- `name` (String) Name of the processor.
+
+
+<a id="nestedblock--processor--pipeline--processor--decoder_processor"></a>
+### Nested Schema for `processor.pipeline.processor.decoder_processor`
+
+Required:
+
+- `binary_to_text_encoding` (String) Encoding type: base64 or base16
+- `input_representation` (String) Input representation: utf-8 or integer
+- `source` (String) Encoded message
+- `target` (String) Decoded message
 
 Optional:
 

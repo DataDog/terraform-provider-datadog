@@ -1,0 +1,1 @@
+terraform import datadog_incident_type.example "12345678-1234-1234-1234-1234567890ab"

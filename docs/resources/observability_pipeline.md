@@ -111,16 +111,21 @@ Optional:
 Optional:
 
 - `amazon_opensearch` (Block List) The `amazon_opensearch` destination writes logs to Amazon OpenSearch. (see [below for nested schema](#nestedblock--config--destinations--amazon_opensearch))
+- `amazon_s3` (Block List) The `amazon_s3` destination sends your logs in Datadog-rehydratable format to an Amazon S3 bucket for archiving. (see [below for nested schema](#nestedblock--config--destinations--amazon_s3))
+- `amazon_security_lake` (Block List) The `amazon_security_lake` destination sends your logs to Amazon Security Lake. (see [below for nested schema](#nestedblock--config--destinations--amazon_security_lake))
 - `azure_storage` (Block List) The `azure_storage` destination forwards logs to an Azure Blob Storage container. (see [below for nested schema](#nestedblock--config--destinations--azure_storage))
+- `crowdstrike_next_gen_siem` (Block List) The `crowdstrike_next_gen_siem` destination forwards logs to CrowdStrike Next Gen SIEM. (see [below for nested schema](#nestedblock--config--destinations--crowdstrike_next_gen_siem))
 - `datadog_logs` (Block List) The `datadog_logs` destination forwards logs to Datadog Log Management. (see [below for nested schema](#nestedblock--config--destinations--datadog_logs))
 - `elasticsearch` (Block List) The `elasticsearch` destination writes logs to an Elasticsearch cluster. (see [below for nested schema](#nestedblock--config--destinations--elasticsearch))
 - `google_chronicle` (Block List) The `google_chronicle` destination sends logs to Google Chronicle. (see [below for nested schema](#nestedblock--config--destinations--google_chronicle))
 - `google_cloud_storage` (Block List) The `google_cloud_storage` destination stores logs in a Google Cloud Storage (GCS) bucket. (see [below for nested schema](#nestedblock--config--destinations--google_cloud_storage))
+- `google_pubsub` (Block List) The `google_pubsub` destination publishes logs to a Google Cloud Pub/Sub topic. (see [below for nested schema](#nestedblock--config--destinations--google_pubsub))
 - `microsoft_sentinel` (Block List) The `microsoft_sentinel` destination forwards logs to Microsoft Sentinel. (see [below for nested schema](#nestedblock--config--destinations--microsoft_sentinel))
 - `new_relic` (Block List) The `new_relic` destination sends logs to the New Relic platform. (see [below for nested schema](#nestedblock--config--destinations--new_relic))
 - `opensearch` (Block List) The `opensearch` destination writes logs to an OpenSearch cluster. (see [below for nested schema](#nestedblock--config--destinations--opensearch))
 - `rsyslog` (Block List) The `rsyslog` destination forwards logs to an external `rsyslog` server over TCP or UDP using the syslog protocol. (see [below for nested schema](#nestedblock--config--destinations--rsyslog))
 - `sentinel_one` (Block List) The `sentinel_one` destination sends logs to SentinelOne. (see [below for nested schema](#nestedblock--config--destinations--sentinel_one))
+- `socket` (Block List) The `socket` destination sends logs over TCP or UDP to a remote server. (see [below for nested schema](#nestedblock--config--destinations--socket))
 - `splunk_hec` (Block List) The `splunk_hec` destination forwards logs to Splunk using the HTTP Event Collector (HEC). (see [below for nested schema](#nestedblock--config--destinations--splunk_hec))
 - `sumo_logic` (Block List) The `sumo_logic` destination forwards logs to Sumo Logic. (see [below for nested schema](#nestedblock--config--destinations--sumo_logic))
 - `syslog_ng` (Block List) The `syslog_ng` destination forwards logs to an external `syslog-ng` server over TCP or UDP using the syslog protocol. (see [below for nested schema](#nestedblock--config--destinations--syslog_ng))
@@ -154,6 +159,70 @@ Optional:
 
 
 
+<a id="nestedblock--config--destinations--amazon_s3"></a>
+### Nested Schema for `config.destinations.amazon_s3`
+
+Required:
+
+- `bucket` (String) S3 bucket name.
+- `id` (String) Unique identifier for the destination component.
+- `inputs` (List of String) A list of component IDs whose output is used as the `input` for this component.
+- `key_prefix` (String) Prefix for object keys.
+- `region` (String) AWS region of the S3 bucket.
+- `storage_class` (String) S3 storage class. Valid values are `STANDARD`, `REDUCED_REDUNDANCY`, `INTELLIGENT_TIERING`, `STANDARD_IA`, `EXPRESS_ONEZONE`, `ONEZONE_IA`, `GLACIER`, `GLACIER_IR`, `DEEP_ARCHIVE`.
+
+Optional:
+
+- `auth` (Block, Optional) AWS authentication credentials used for accessing AWS services. If omitted, the system's default credentials are used (for example, the IAM role and environment variables). (see [below for nested schema](#nestedblock--config--destinations--amazon_s3--auth))
+
+<a id="nestedblock--config--destinations--amazon_s3--auth"></a>
+### Nested Schema for `config.destinations.amazon_s3.auth`
+
+Optional:
+
+- `assume_role` (String) The Amazon Resource Name (ARN) of the role to assume.
+- `external_id` (String) A unique identifier for cross-account role assumption.
+- `session_name` (String) A session identifier used for logging and tracing the assumed role session.
+
+
+
+<a id="nestedblock--config--destinations--amazon_security_lake"></a>
+### Nested Schema for `config.destinations.amazon_security_lake`
+
+Required:
+
+- `bucket` (String) Name of the Amazon S3 bucket in Security Lake (3-63 characters).
+- `custom_source_name` (String) Custom source name for the logs in Security Lake.
+- `id` (String) Unique identifier for the destination component.
+- `inputs` (List of String) A list of component IDs whose output is used as the `input` for this component.
+- `region` (String) AWS region of the Security Lake bucket.
+
+Optional:
+
+- `auth` (Block, Optional) AWS authentication credentials used for accessing AWS services. If omitted, the system's default credentials are used (for example, the IAM role and environment variables). (see [below for nested schema](#nestedblock--config--destinations--amazon_security_lake--auth))
+- `tls` (Block, Optional) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--destinations--amazon_security_lake--tls))
+
+<a id="nestedblock--config--destinations--amazon_security_lake--auth"></a>
+### Nested Schema for `config.destinations.amazon_security_lake.auth`
+
+Optional:
+
+- `assume_role` (String) The Amazon Resource Name (ARN) of the role to assume.
+- `external_id` (String) A unique identifier for cross-account role assumption.
+- `session_name` (String) A session identifier used for logging and tracing the assumed role session.
+
+
+<a id="nestedblock--config--destinations--amazon_security_lake--tls"></a>
+### Nested Schema for `config.destinations.amazon_security_lake.tls`
+
+Optional:
+
+- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
+- `crt_file` (String) Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.
+- `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
+
+
+
 <a id="nestedblock--config--destinations--azure_storage"></a>
 ### Nested Schema for `config.destinations.azure_storage`
 
@@ -166,6 +235,40 @@ Required:
 Optional:
 
 - `blob_prefix` (String) Optional prefix for blobs written to the container.
+
+
+<a id="nestedblock--config--destinations--crowdstrike_next_gen_siem"></a>
+### Nested Schema for `config.destinations.crowdstrike_next_gen_siem`
+
+Required:
+
+- `encoding` (String) Encoding format for log events. Valid values are `json`, `raw_message`.
+- `id` (String) Unique identifier for the destination component.
+- `inputs` (List of String) A list of component IDs whose output is used as the `input` for this component.
+
+Optional:
+
+- `compression` (Block, Optional) Compression configuration for log events. (see [below for nested schema](#nestedblock--config--destinations--crowdstrike_next_gen_siem--compression))
+- `tls` (Block, Optional) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--destinations--crowdstrike_next_gen_siem--tls))
+
+<a id="nestedblock--config--destinations--crowdstrike_next_gen_siem--compression"></a>
+### Nested Schema for `config.destinations.crowdstrike_next_gen_siem.compression`
+
+Optional:
+
+- `algorithm` (String) Compression algorithm for log events.
+- `level` (Number) Compression level.
+
+
+<a id="nestedblock--config--destinations--crowdstrike_next_gen_siem--tls"></a>
+### Nested Schema for `config.destinations.crowdstrike_next_gen_siem.tls`
+
+Optional:
+
+- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
+- `crt_file` (String) Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.
+- `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
+
 
 
 <a id="nestedblock--config--destinations--datadog_logs"></a>
@@ -250,6 +353,41 @@ Required:
 
 
 
+<a id="nestedblock--config--destinations--google_pubsub"></a>
+### Nested Schema for `config.destinations.google_pubsub`
+
+Required:
+
+- `id` (String) The unique identifier for this component.
+- `inputs` (List of String) A list of component IDs whose output is used as the `input` for this component.
+- `project` (String) The GCP project ID that owns the Pub/Sub topic.
+- `topic` (String) The Pub/Sub topic name to publish logs to.
+
+Optional:
+
+- `auth` (Block, Optional) GCP credentials used to authenticate with Google Cloud Pub/Sub. (see [below for nested schema](#nestedblock--config--destinations--google_pubsub--auth))
+- `encoding` (String) Encoding format for log events. Valid values: `json`, `raw_message`.
+- `tls` (Block, Optional) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--destinations--google_pubsub--tls))
+
+<a id="nestedblock--config--destinations--google_pubsub--auth"></a>
+### Nested Schema for `config.destinations.google_pubsub.auth`
+
+Optional:
+
+- `credentials_file` (String) Path to the GCP service account key file.
+
+
+<a id="nestedblock--config--destinations--google_pubsub--tls"></a>
+### Nested Schema for `config.destinations.google_pubsub.tls`
+
+Optional:
+
+- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
+- `crt_file` (String) Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.
+- `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
+
+
+
 <a id="nestedblock--config--destinations--microsoft_sentinel"></a>
 ### Nested Schema for `config.destinations.microsoft_sentinel`
 
@@ -304,7 +442,7 @@ Optional:
 
 Optional:
 
-- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server’s TLS certificate.
+- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
 - `crt_file` (String) Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.
 - `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
 
@@ -318,6 +456,52 @@ Required:
 - `id` (String) The unique identifier for this component.
 - `inputs` (List of String) A list of component IDs whose output is used as the `input` for this component.
 - `region` (String) The SentinelOne region to send logs to.
+
+
+<a id="nestedblock--config--destinations--socket"></a>
+### Nested Schema for `config.destinations.socket`
+
+Required:
+
+- `encoding` (String) Encoding format for log events. Valid values are `json`, `raw_message`.
+- `id` (String) The unique identifier for this destination.
+- `inputs` (List of String) A list of component IDs whose output is used as the `input` for this destination.
+- `mode` (String) The protocol used to send logs. Valid values are `tcp`, `udp`.
+
+Optional:
+
+- `framing` (Block, Optional) Defines the framing method for outgoing messages. (see [below for nested schema](#nestedblock--config--destinations--socket--framing))
+- `tls` (Block, Optional) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--destinations--socket--tls))
+
+<a id="nestedblock--config--destinations--socket--framing"></a>
+### Nested Schema for `config.destinations.socket.framing`
+
+Required:
+
+- `method` (String) The framing method. Valid values are `newline_delimited`, `bytes`, `character_delimited`.
+
+Optional:
+
+- `character_delimited` (Block, Optional) Used when `method` is `character_delimited`. Specifies the delimiter character. (see [below for nested schema](#nestedblock--config--destinations--socket--framing--character_delimited))
+
+<a id="nestedblock--config--destinations--socket--framing--character_delimited"></a>
+### Nested Schema for `config.destinations.socket.framing.character_delimited`
+
+Optional:
+
+- `delimiter` (String) A single ASCII character used as a delimiter.
+
+
+
+<a id="nestedblock--config--destinations--socket--tls"></a>
+### Nested Schema for `config.destinations.socket.tls`
+
+Optional:
+
+- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
+- `crt_file` (String) Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.
+- `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
+
 
 
 <a id="nestedblock--config--destinations--splunk_hec"></a>
@@ -380,7 +564,7 @@ Optional:
 
 Optional:
 
-- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server’s TLS certificate.
+- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
 - `crt_file` (String) Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.
 - `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
 
@@ -394,6 +578,8 @@ Optional:
 
 - `add_env_vars` (Block List) The `add_env_vars` processor adds environment variable values to log events. (see [below for nested schema](#nestedblock--config--processors--add_env_vars))
 - `add_fields` (Block List) The `add_fields` processor adds static key-value fields to logs. (see [below for nested schema](#nestedblock--config--processors--add_fields))
+- `custom_processor` (Block List) The `custom_processor` processor transforms events using Vector Remap Language (VRL) scripts with advanced filtering capabilities. (see [below for nested schema](#nestedblock--config--processors--custom_processor))
+- `datadog_tags` (Block List) (see [below for nested schema](#nestedblock--config--processors--datadog_tags))
 - `dedupe` (Block List) The `dedupe` processor removes duplicate fields in log events. (see [below for nested schema](#nestedblock--config--processors--dedupe))
 - `enrichment_table` (Block List) The `enrichment_table` processor enriches logs using a static CSV file or GeoIP database. (see [below for nested schema](#nestedblock--config--processors--enrichment_table))
 - `filter` (Block List) The `filter` processor allows conditional processing of logs based on a Datadog search query. Logs that match the `include` query are passed through; others are discarded. (see [below for nested schema](#nestedblock--config--processors--filter))
@@ -453,6 +639,44 @@ Required:
 - `name` (String) The field name to add.
 - `value` (String) The value to assign to the field.
 
+
+
+<a id="nestedblock--config--processors--custom_processor"></a>
+### Nested Schema for `config.processors.custom_processor`
+
+Required:
+
+- `id` (String) The unique identifier for this processor.
+- `inputs` (List of String) A list of component IDs whose output is used as the input for this processor.
+
+Optional:
+
+- `remaps` (Block List) Array of VRL remap configurations. Each remap defines a transformation rule with its own filter and VRL script. (see [below for nested schema](#nestedblock--config--processors--custom_processor--remaps))
+
+<a id="nestedblock--config--processors--custom_processor--remaps"></a>
+### Nested Schema for `config.processors.custom_processor.remaps`
+
+Required:
+
+- `drop_on_error` (Boolean) Whether to drop events that cause errors during transformation.
+- `enabled` (Boolean) Whether this remap rule is enabled.
+- `include` (String) A Datadog search query used to filter events for this specific remap rule.
+- `name` (String) A descriptive name for this remap rule.
+- `source` (String) The VRL script source code that defines the transformation logic.
+
+
+
+<a id="nestedblock--config--processors--datadog_tags"></a>
+### Nested Schema for `config.processors.datadog_tags`
+
+Required:
+
+- `action` (String) Valid values are `include`, `exclude`.
+- `id` (String)
+- `include` (String)
+- `inputs` (List of String)
+- `keys` (List of String)
+- `mode` (String) Valid values are `filter`.
 
 
 <a id="nestedblock--config--processors--dedupe"></a>
@@ -946,6 +1170,7 @@ Optional:
 - `kafka` (Block List) The `kafka` source ingests data from Apache Kafka topics. (see [below for nested schema](#nestedblock--config--sources--kafka))
 - `logstash` (Block List) The `logstash` source ingests logs from a Logstash forwarder. (see [below for nested schema](#nestedblock--config--sources--logstash))
 - `rsyslog` (Block List) The `rsyslog` source listens for logs over TCP or UDP from an `rsyslog` server using the syslog protocol. (see [below for nested schema](#nestedblock--config--sources--rsyslog))
+- `socket` (Block List) The `socket` source ingests logs over TCP or UDP. (see [below for nested schema](#nestedblock--config--sources--socket))
 - `splunk_hec` (Block List) The `splunk_hec` source implements the Splunk HTTP Event Collector (HEC) API. (see [below for nested schema](#nestedblock--config--sources--splunk_hec))
 - `splunk_tcp` (Block List) The `splunk_tcp` source receives logs from a Splunk Universal Forwarder over TCP. TLS is supported for secure transmission. (see [below for nested schema](#nestedblock--config--sources--splunk_tcp))
 - `sumo_logic` (Block List) The `sumo_logic` source receives logs from Sumo Logic collectors. (see [below for nested schema](#nestedblock--config--sources--sumo_logic))
@@ -960,7 +1185,7 @@ Required:
 
 Optional:
 
-- `auth` (Block, Optional) AWS authentication credentials used for accessing AWS services such as S3. If omitted, the system’s default credentials are used (for example, the IAM role and environment variables). (see [below for nested schema](#nestedblock--config--sources--amazon_data_firehose--auth))
+- `auth` (Block, Optional) AWS authentication credentials used for accessing AWS services such as S3. If omitted, the system's default credentials are used (for example, the IAM role and environment variables). (see [below for nested schema](#nestedblock--config--sources--amazon_data_firehose--auth))
 - `tls` (Block, Optional) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--sources--amazon_data_firehose--tls))
 
 <a id="nestedblock--config--sources--amazon_data_firehose--auth"></a>
@@ -978,7 +1203,7 @@ Optional:
 
 Optional:
 
-- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server’s TLS certificate.
+- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
 - `crt_file` (String) Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.
 - `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
 
@@ -994,7 +1219,7 @@ Required:
 
 Optional:
 
-- `auth` (Block, Optional) AWS authentication credentials used for accessing AWS services such as S3. If omitted, the system’s default credentials are used (for example, the IAM role and environment variables). (see [below for nested schema](#nestedblock--config--sources--amazon_s3--auth))
+- `auth` (Block, Optional) AWS authentication credentials used for accessing AWS services such as S3. If omitted, the system's default credentials are used (for example, the IAM role and environment variables). (see [below for nested schema](#nestedblock--config--sources--amazon_s3--auth))
 - `tls` (Block, Optional) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--sources--amazon_s3--tls))
 
 <a id="nestedblock--config--sources--amazon_s3--auth"></a>
@@ -1012,7 +1237,7 @@ Optional:
 
 Optional:
 
-- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server’s TLS certificate.
+- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
 - `crt_file` (String) Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.
 - `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
 
@@ -1034,7 +1259,7 @@ Optional:
 
 Optional:
 
-- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server’s TLS certificate.
+- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
 - `crt_file` (String) Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.
 - `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
 
@@ -1056,7 +1281,7 @@ Optional:
 
 Optional:
 
-- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server’s TLS certificate.
+- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
 - `crt_file` (String) Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.
 - `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
 
@@ -1078,7 +1303,7 @@ Optional:
 
 Optional:
 
-- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server’s TLS certificate.
+- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
 - `crt_file` (String) Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.
 - `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
 
@@ -1112,7 +1337,7 @@ Required:
 
 Optional:
 
-- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server’s TLS certificate.
+- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
 - `crt_file` (String) Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.
 - `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
 
@@ -1138,7 +1363,7 @@ Optional:
 
 Optional:
 
-- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server’s TLS certificate.
+- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
 - `crt_file` (String) Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.
 - `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
 
@@ -1162,7 +1387,7 @@ Optional:
 
 Optional:
 
-- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server’s TLS certificate.
+- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
 - `crt_file` (String) Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.
 - `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
 
@@ -1205,7 +1430,7 @@ Optional:
 
 Optional:
 
-- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server’s TLS certificate.
+- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
 - `crt_file` (String) Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.
 - `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
 
@@ -1227,7 +1452,7 @@ Optional:
 
 Optional:
 
-- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server’s TLS certificate.
+- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
 - `crt_file` (String) Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.
 - `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
 
@@ -1250,7 +1475,48 @@ Optional:
 
 Optional:
 
-- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server’s TLS certificate.
+- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
+- `crt_file` (String) Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.
+- `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
+
+
+
+<a id="nestedblock--config--sources--socket"></a>
+### Nested Schema for `config.sources.socket`
+
+Required:
+
+- `id` (String) The unique identifier for this component.
+- `mode` (String) The protocol used to receive logs. Valid values are `tcp`, `udp`.
+
+Optional:
+
+- `framing` (Block, Optional) Defines the framing method for incoming messages. (see [below for nested schema](#nestedblock--config--sources--socket--framing))
+- `tls` (Block, Optional) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--sources--socket--tls))
+
+<a id="nestedblock--config--sources--socket--framing"></a>
+### Nested Schema for `config.sources.socket.framing`
+
+Optional:
+
+- `character_delimited` (Block, Optional) Used when `method` is `character_delimited`. Specifies the delimiter character. (see [below for nested schema](#nestedblock--config--sources--socket--framing--character_delimited))
+- `method` (String) The framing method. Valid values are `newline_delimited`, `bytes`, `character_delimited`, `octet_counting`, `chunked_gelf`.
+
+<a id="nestedblock--config--sources--socket--framing--character_delimited"></a>
+### Nested Schema for `config.sources.socket.framing.character_delimited`
+
+Optional:
+
+- `delimiter` (String) A single ASCII character used as a delimiter.
+
+
+
+<a id="nestedblock--config--sources--socket--tls"></a>
+### Nested Schema for `config.sources.socket.tls`
+
+Optional:
+
+- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
 - `crt_file` (String) Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.
 - `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
 
@@ -1272,7 +1538,7 @@ Optional:
 
 Optional:
 
-- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server’s TLS certificate.
+- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
 - `crt_file` (String) Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.
 - `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
 
@@ -1294,7 +1560,7 @@ Optional:
 
 Optional:
 
-- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server’s TLS certificate.
+- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
 - `crt_file` (String) Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.
 - `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
 
@@ -1325,7 +1591,7 @@ Optional:
 
 Optional:
 
-- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server’s TLS certificate.
+- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
 - `crt_file` (String) Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.
 - `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
 

@@ -41,6 +41,12 @@ resource "datadog_integration_aws_account" "foo" {
     lambda_forwarder {
       lambdas = ["arn:aws:lambda:us-east-1:123456789012:function:my-lambda"]
       sources = ["s3"]
+      log_source_config {
+        tag_filters {
+          source = "s3"
+          tags   = ["env:prod", "team:backend"]
+        }
+      }
     }
   }
   metrics_config {
@@ -49,7 +55,7 @@ resource "datadog_integration_aws_account" "foo" {
     collect_custom_metrics    = true
     enabled                   = true
     namespace_filters {
-      exclude_only = ["AWS/SQS", "AWS/ElasticMapReduce"]
+      exclude_only = ["AWS/SQS", "AWS/ElasticMapReduce", "AWS/Usage"]
     }
     tag_filters {
       namespace = "AWS/EC2"
@@ -100,7 +106,7 @@ resource "datadog_integration_aws_account" "foo-defaults" {
 - `aws_partition` (String) AWS Account partition.
 - `auth_config` (Block) Configure how Datadog authenticates to your AWS account. Either `aws_auth_config_keys` or `aws_auth_config_role` block is required within. (see [below for nested schema](#nestedblock--auth_config))
 - `aws_regions` (Block) AWS regions to collect data from. Defaults to `include_all` if block is empty. (see [below for nested schema](#nestedblock--aws_regions))
-- `logs_config` (Block) Configure log autosubscription for your Datadog Forwarder Lambda functions. The `lambda_fowarder` block is required within, but may be empty to use defaults. (see [below for nested schema](#nestedblock--logs_config))
+- `logs_config` (Block) Configure log autosubscription for your Datadog Forwarder Lambda functions. The `lambda_forwarder` block is required within, but may be empty to use defaults. (see [below for nested schema](#nestedblock--logs_config))
 - `metrics_config` (Block) Configure metrics collection from AWS CloudWatch. The `namespace_filters` block is required within, but may be empty to use defaults. (see [below for nested schema](#nestedblock--metrics_config))
 - `resources_config` (Block) AWS resources collection config. May be empty to use defaults. (see [below for nested schema](#nestedblock--resources_config))
 - `traces_config` (Block) AWS traces collection config. The `xray_services` block is required within, but may be empty to use defaults. (see [below for nested schema](#nestedblock--traces_config))
@@ -164,7 +170,23 @@ Required:
 Optional:
 
 - `lambdas` (List of String) List of Datadog Lambda Log Forwarder ARNs in your AWS account. Defaults to `[]`.
+- `log_source_config` (Block, Optional) Configure log source collection for your Datadog Forwarder Lambda functions. (see [below for nested schema](#nestedblock--logs_config--lambda_forwarder--log_source_config))
 - `sources` (List of String) List of service IDs set to enable automatic log collection. Use [`datadog_integration_aws_available_logs_services` data source](https://registry.terraform.io/providers/DataDog/datadog/latest/docs/data-sources/integration_aws_available_logs_services) or [the AWS Logs Integration API](https://docs.datadoghq.com/api/latest/aws-logs-integration/?#get-list-of-aws-log-ready-services) to get allowed values. Defaults to `[]`.
+
+<a id="nestedblock--logs_config--lambda_forwarder--log_source_config"></a>
+### Nested Schema for `logs_config.lambda_forwarder.log_source_config`
+
+Optional:
+
+- `tag_filters` (Block List) AWS Logs Collection tag filters list. (see [below for nested schema](#nestedblock--logs_config--lambda_forwarder--log_source_config--tag_filters))
+
+<a id="nestedblock--logs_config--lambda_forwarder--log_source_config--tag_filters"></a>
+### Nested Schema for `logs_config.lambda_forwarder.log_source_config.tag_filters`
+
+Required:
+
+- `source` (String) The AWS service for which the tag filters defined in `tags` will be applied.
+- `tags` (List of String) The AWS resource tags to filter on for the service specified by `source`.
 
 
 <a id="nestedblock--metrics_config"></a>
@@ -187,7 +209,7 @@ Optional:
 
 Optional:
 
-- `exclude_only` (List of String) Exclude only these namespaces from metrics collection. Use [`datadog_integration_aws_available_namespaces` data source](https://registry.terraform.io/providers/DataDog/datadog/latest/docs/data-sources/integration_aws_available_namespaces) to get allowed values. Defaults to `["AWS/SQS", "AWS/ElasticMapReduce"]`. `AWS/SQS` and `AWS/ElasticMapReduce` are excluded by default to reduce your AWS CloudWatch costs from `GetMetricData` API calls.
+- `exclude_only` (List of String) Exclude only these namespaces from metrics collection. Use [`datadog_integration_aws_available_namespaces` data source](https://registry.terraform.io/providers/DataDog/datadog/latest/docs/data-sources/integration_aws_available_namespaces) to get allowed values. Defaults to `["AWS/SQS", "AWS/ElasticMapReduce", "AWS/Usage"]`. `AWS/SQS`, `AWS/ElasticMapReduce`, and `AWS/Usage` are excluded by default to reduce your AWS CloudWatch costs from `GetMetricData` API calls.
 - `include_only` (List of String) Include only these namespaces for metrics collection. Use [`datadog_integration_aws_available_namespaces` data source](https://registry.terraform.io/providers/DataDog/datadog/latest/docs/data-sources/integration_aws_available_namespaces) to get allowed values.
 
 
