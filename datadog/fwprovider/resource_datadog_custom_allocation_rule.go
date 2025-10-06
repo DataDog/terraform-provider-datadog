@@ -697,6 +697,8 @@ func (r *datadogCustomAllocationRuleResource) updateState(ctx context.Context, s
 				if allocatedByTagKeys, ok := strategy.GetAllocatedByTagKeysOk(); ok && len(*allocatedByTagKeys) > 0 {
 
 					strategyTf.AllocatedByTagKeys, _ = types.ListValueFrom(ctx, types.StringType, *allocatedByTagKeys)
+				} else {
+					strategyTf.AllocatedByTagKeys = types.ListNull(types.StringType)
 				}
 				if basedOnCosts, ok := strategy.GetBasedOnCostsOk(); ok && len(*basedOnCosts) > 0 {
 
@@ -759,6 +761,8 @@ func (r *datadogCustomAllocationRuleResource) updateState(ctx context.Context, s
 				if evaluateGroupedByTagKeys, ok := strategy.GetEvaluateGroupedByTagKeysOk(); ok && len(*evaluateGroupedByTagKeys) > 0 {
 
 					strategyTf.EvaluateGroupedByTagKeys, _ = types.ListValueFrom(ctx, types.StringType, *evaluateGroupedByTagKeys)
+				} else {
+					strategyTf.EvaluateGroupedByTagKeys = types.ListNull(types.StringType)
 				}
 				if granularity, ok := strategy.GetGranularityOk(); ok {
 					strategyTf.Granularity = types.StringValue(*granularity)

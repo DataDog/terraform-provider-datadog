@@ -78,7 +78,14 @@ func (r *customAllocationRuleOrderResource) Read(ctx context.Context, request re
 		return
 	}
 
-	// Get the current list of rules to read their order
+	// Get the rule IDs that are currently in state (i.e., the ones managed by this resource)
+	var configuredRuleIDs []string
+	response.Diagnostics.Append(state.RuleIDs.ElementsAs(ctx, &configuredRuleIDs, false)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	// Get the current list of rules from API to read their order
 	resp, httpResponse, err := r.Api.ListArbitraryCostRules(r.Auth)
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, fmt.Sprintf("error reading custom allocation rules. http response: %v", httpResponse)))
@@ -90,26 +97,51 @@ func (r *customAllocationRuleOrderResource) Read(ctx context.Context, request re
 		rules = *respData
 	}
 
-	// Sort rules by order_id and extract IDs
-	tfList := make([]string, len(rules))
+	// Build a map of rule ID to order_id
+	ruleOrders := make(map[string]int)
 	for _, rule := range rules {
-		if ruleAttrs, ok := rule.GetAttributesOk(); ok {
-			// Find the correct position for this rule
-			orderId := int(ruleAttrs.GetOrderId())
-			if orderId < len(tfList) {
-				if ruleID, ok := rule.GetIdOk(); ok {
-					tfList[orderId] = *ruleID
-				}
+		if ruleID, ok := rule.GetIdOk(); ok {
+			if ruleAttrs, ok := rule.GetAttributesOk(); ok {
+				ruleOrders[*ruleID] = int(ruleAttrs.GetOrderId())
 			}
 		}
 	}
 
-	// Remove any empty slots and create a clean ordered list
-	orderedList := make([]string, 0, len(tfList))
-	for _, id := range tfList {
-		if id != "" {
-			orderedList = append(orderedList, id)
+	// Verify all configured rules still exist
+	for _, id := range configuredRuleIDs {
+		if _, exists := ruleOrders[id]; !exists {
+			// Rule no longer exists in API, remove from state
+			response.State.RemoveResource(ctx)
+			return
 		}
+	}
+
+	// Sort the configured rules by their current order_id from the API
+	type ruleWithOrder struct {
+		id    string
+		order int
+	}
+	sortedRules := make([]ruleWithOrder, 0, len(configuredRuleIDs))
+	for _, id := range configuredRuleIDs {
+		sortedRules = append(sortedRules, ruleWithOrder{
+			id:    id,
+			order: ruleOrders[id],
+		})
+	}
+
+	// Sort by order
+	for i := 0; i < len(sortedRules); i++ {
+		for j := i + 1; j < len(sortedRules); j++ {
+			if sortedRules[i].order > sortedRules[j].order {
+				sortedRules[i], sortedRules[j] = sortedRules[j], sortedRules[i]
+			}
+		}
+	}
+
+	// Extract the ordered IDs
+	orderedList := make([]string, len(sortedRules))
+	for i, rule := range sortedRules {
+		orderedList[i] = rule.id
 	}
 
 	state.RuleIDs, _ = types.ListValueFrom(ctx, types.StringType, orderedList)
