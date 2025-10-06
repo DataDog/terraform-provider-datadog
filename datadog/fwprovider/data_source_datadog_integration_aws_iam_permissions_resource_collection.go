@@ -36,7 +36,7 @@ func (r *awsIntegrationIAMPermissionsResourceCollectionDataSource) Configure(_ c
 }
 
 func (d *awsIntegrationIAMPermissionsResourceCollectionDataSource) Metadata(_ context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
-	resp.TypeName = "integration_aws_iam_permissions_ResourceCollection"
+	resp.TypeName = "integration_aws_iam_permissions_resource_collection"
 }
 
 func (d *awsIntegrationIAMPermissionsResourceCollectionDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
