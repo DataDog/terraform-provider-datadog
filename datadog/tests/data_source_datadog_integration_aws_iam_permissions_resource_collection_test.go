@@ -30,7 +30,7 @@ func TestAccDatadogIntegrationAWSIAMPermissionsResourceCollectionDatasource(t *t
 }
 
 func testAccDatasourceIntegrationAWSIAMPermissionsResourceCollectionConfig() string {
-	return `data "datadog_integration_aws_iam_permissions_ResourceCollection" "foo" {}`
+	return `data "datadog_integration_aws_iam_permissions_resource_collection" "foo" {}`
 }
 
 func checkDatadogIntegrationAWSIAMPermissionsResourceCollectionCount(accProvider *fwprovider.FrameworkProvider) func(state *terraform.State) error {
