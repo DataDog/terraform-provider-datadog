@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 417
+        content_length: 397
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","url":"https://www.example.com"}},"locations":["aws:ap-northeast-1"],"message":"","name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1739872157","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900},"status":"live","subtype":"http","tags":["env:prod","foo"],"type":"api"}
+            {"config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","url":"https://www.example.com"}},"locations":["aws:ap-northeast-1"],"message":"","name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1759827908","options":{"min_location_failed":1,"tick_every":900},"status":"live","subtype":"http","tags":["env:prod","foo"],"type":"api"}
         form: {}
         headers:
             Accept:
@@ -32,13 +32,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"syq-74b-b4g","name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1739872157","status":"live","type":"api","subtype":"http","tags":["env:prod","foo"],"created_at":"2025-02-18T09:49:19.935468+00:00","modified_at":"2025-02-18T09:49:19.935468+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","url":"https://www.example.com"}},"message":"","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"created_by":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"deleted_at":null,"monitor_id":164880892,"org_id":321813,"modified_by":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"public_id":"3jz-gpi-ngw","name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1759827908","status":"live","type":"api","subtype":"http","tags":["env:prod","foo"],"created_at":"2025-10-07T09:05:11.104978+00:00","modified_at":"2025-10-07T09:05:11.104978+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","url":"https://www.example.com"}},"message":"","options":{"min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"created_by":{"name":"Frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"deleted_at":null,"monitor_id":223872019,"org_id":569509,"modified_by":{"name":"Frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"creation_source":"terraform"}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 672.92325ms
+        duration: 665.979792ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -55,7 +55,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/syq-74b-b4g
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/3jz-gpi-ngw
         method: GET
       response:
         proto: HTTP/1.1
@@ -67,13 +67,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"syq-74b-b4g","name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1739872157","status":"live","type":"api","subtype":"http","tags":["env:prod","foo"],"created_at":"2025-02-18T09:49:19.935468+00:00","modified_at":"2025-02-18T09:49:19.935468+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","url":"https://www.example.com"}},"message":"","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"monitor_id":164880892,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"public_id":"3jz-gpi-ngw","name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1759827908","status":"live","type":"api","subtype":"http","tags":["env:prod","foo"],"created_at":"2025-10-07T09:05:11.104978+00:00","modified_at":"2025-10-07T09:05:11.104978+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","url":"https://www.example.com"}},"message":"","options":{"min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"monitor_id":223872019,"creator":{"name":"Frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 148.818708ms
+        duration: 188.039458ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -90,7 +90,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/syq-74b-b4g
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/3jz-gpi-ngw
         method: GET
       response:
         proto: HTTP/1.1
@@ -102,13 +102,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"syq-74b-b4g","name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1739872157","status":"live","type":"api","subtype":"http","tags":["env:prod","foo"],"created_at":"2025-02-18T09:49:19.935468+00:00","modified_at":"2025-02-18T09:49:19.935468+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","url":"https://www.example.com"}},"message":"","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"monitor_id":164880892,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"public_id":"3jz-gpi-ngw","name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1759827908","status":"live","type":"api","subtype":"http","tags":["env:prod","foo"],"created_at":"2025-10-07T09:05:11.104978+00:00","modified_at":"2025-10-07T09:05:11.104978+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","url":"https://www.example.com"}},"message":"","options":{"min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"monitor_id":223872019,"creator":{"name":"Frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 158.376042ms
+        duration: 185.529417ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -125,7 +125,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/syq-74b-b4g
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/3jz-gpi-ngw
         method: GET
       response:
         proto: HTTP/1.1
@@ -137,13 +137,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"syq-74b-b4g","name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1739872157","status":"live","type":"api","subtype":"http","tags":["env:prod","foo"],"created_at":"2025-02-18T09:49:19.935468+00:00","modified_at":"2025-02-18T09:49:19.935468+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","url":"https://www.example.com"}},"message":"","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"monitor_id":164880892,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"public_id":"3jz-gpi-ngw","name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1759827908","status":"live","type":"api","subtype":"http","tags":["env:prod","foo"],"created_at":"2025-10-07T09:05:11.104978+00:00","modified_at":"2025-10-07T09:05:11.104978+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","url":"https://www.example.com"}},"message":"","options":{"min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"monitor_id":223872019,"creator":{"name":"Frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 161.403041ms
+        duration: 185.334417ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -160,7 +160,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/syq-74b-b4g
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/3jz-gpi-ngw
         method: GET
       response:
         proto: HTTP/1.1
@@ -172,13 +172,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"syq-74b-b4g","name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1739872157","status":"live","type":"api","subtype":"http","tags":["env:prod","foo"],"created_at":"2025-02-18T09:49:19.935468+00:00","modified_at":"2025-02-18T09:49:19.935468+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","url":"https://www.example.com"}},"message":"","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"monitor_id":164880892,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"public_id":"3jz-gpi-ngw","name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1759827908","status":"live","type":"api","subtype":"http","tags":["env:prod","foo"],"created_at":"2025-10-07T09:05:11.104978+00:00","modified_at":"2025-10-07T09:05:11.104978+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","url":"https://www.example.com"}},"message":"","options":{"min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"monitor_id":223872019,"creator":{"name":"Frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 435.094916ms
+        duration: 186.157584ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -195,7 +195,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/syq-74b-b4g
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/3jz-gpi-ngw
         method: GET
       response:
         proto: HTTP/1.1
@@ -207,13 +207,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"syq-74b-b4g","name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1739872157","status":"live","type":"api","subtype":"http","tags":["env:prod","foo"],"created_at":"2025-02-18T09:49:19.935468+00:00","modified_at":"2025-02-18T09:49:19.935468+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","url":"https://www.example.com"}},"message":"","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"monitor_id":164880892,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"public_id":"3jz-gpi-ngw","name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1759827908","status":"live","type":"api","subtype":"http","tags":["env:prod","foo"],"created_at":"2025-10-07T09:05:11.104978+00:00","modified_at":"2025-10-07T09:05:11.104978+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","url":"https://www.example.com"}},"message":"","options":{"min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"monitor_id":223872019,"creator":{"name":"Frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 181.179042ms
+        duration: 180.902667ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -230,7 +230,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/syq-74b-b4g
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/3jz-gpi-ngw
         method: GET
       response:
         proto: HTTP/1.1
@@ -242,49 +242,14 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"syq-74b-b4g","name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1739872157","status":"live","type":"api","subtype":"http","tags":["env:prod","foo"],"created_at":"2025-02-18T09:49:19.935468+00:00","modified_at":"2025-02-18T09:49:19.935468+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","url":"https://www.example.com"}},"message":"","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"monitor_id":164880892,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"public_id":"3jz-gpi-ngw","name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1759827908","status":"live","type":"api","subtype":"http","tags":["env:prod","foo"],"created_at":"2025-10-07T09:05:11.104978+00:00","modified_at":"2025-10-07T09:05:11.104978+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","url":"https://www.example.com"}},"message":"","options":{"min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"monitor_id":223872019,"creator":{"name":"Frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 183.462292ms
+        duration: 185.134167ms
     - id: 7
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 0
-        transfer_encoding: []
-        trailer: {}
-        host: api.datadoghq.com
-        remote_addr: ""
-        request_uri: ""
-        body: ""
-        form: {}
-        headers:
-            Accept:
-                - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/syq-74b-b4g
-        method: GET
-      response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        transfer_encoding:
-            - chunked
-        trailer: {}
-        content_length: -1
-        uncompressed: true
-        body: |
-            {"public_id":"syq-74b-b4g","name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1739872157","status":"live","type":"api","subtype":"http","tags":["env:prod","foo"],"created_at":"2025-02-18T09:49:19.935468+00:00","modified_at":"2025-02-18T09:49:19.935468+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","url":"https://www.example.com"}},"message":"","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"monitor_id":164880892,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
-        headers:
-            Content-Type:
-                - application/json
-        status: 200 OK
-        code: 200
-        duration: 155.739042ms
-    - id: 8
       request:
         proto: HTTP/1.1
         proto_major: 1
@@ -296,7 +261,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"public_ids":["syq-74b-b4g"]}
+            {"public_ids":["3jz-gpi-ngw"]}
         form: {}
         headers:
             Accept:
@@ -315,13 +280,47 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"deleted_tests":[{"public_id":"syq-74b-b4g","deleted_at":"2025-02-18T09:49:24.269611+00:00"}]}
+            {"deleted_tests":[{"public_id":"3jz-gpi-ngw","deleted_at":"2025-10-07T09:05:14.568919+00:00"}]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 808.106ms
+        duration: 1.45415975s
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/3jz-gpi-ngw
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"errors":["Synthetics test not found"]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 152.60525ms
     - id: 9
       request:
         proto: HTTP/1.1
@@ -338,7 +337,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/syq-74b-b4g
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/3jz-gpi-ngw
         method: GET
       response:
         proto: HTTP/1.1
@@ -355,38 +354,4 @@ interactions:
                 - application/json
         status: 404 Not Found
         code: 404
-        duration: 170.074542ms
-    - id: 10
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 0
-        transfer_encoding: []
-        trailer: {}
-        host: api.datadoghq.com
-        remote_addr: ""
-        request_uri: ""
-        body: ""
-        form: {}
-        headers:
-            Accept:
-                - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/syq-74b-b4g
-        method: GET
-      response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        transfer_encoding:
-            - chunked
-        trailer: {}
-        content_length: -1
-        uncompressed: true
-        body: '{"errors":["Synthetics test not found"]}'
-        headers:
-            Content-Type:
-                - application/json
-        status: 404 Not Found
-        code: 404
-        duration: 131.727333ms
+        duration: 129.8405ms

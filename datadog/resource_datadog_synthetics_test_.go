@@ -2516,17 +2516,6 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 				}
 				localRequest["allow_insecure"] = stepRequest.GetAllowInsecure()
 				localRequest["follow_redirects"] = stepRequest.GetFollowRedirects()
-				if step.SyntheticsAPITestStep.GetSubtype() == "grpc" ||
-					step.SyntheticsAPITestStep.GetSubtype() == "ssl" ||
-					step.SyntheticsAPITestStep.GetSubtype() == "dns" ||
-					step.SyntheticsAPITestStep.GetSubtype() == "websocket" ||
-					step.SyntheticsAPITestStep.GetSubtype() == "tcp" ||
-					step.SyntheticsAPITestStep.GetSubtype() == "udp" ||
-					step.SyntheticsAPITestStep.GetSubtype() == "icmp" {
-					// the schema defines a default value of `http_version` for any kind of step,
-					// but it's not supported for `grpc` - so we save `any` in the local state to avoid diffs
-					localRequest["http_version"] = datadogV1.SYNTHETICSTESTOPTIONSHTTPVERSION_ANY
-				}
 				localStep["request_definition"] = []map[string]interface{}{localRequest}
 				localStep["request_headers"] = stepRequest.GetHeaders()
 				localStep["request_query"] = stepRequest.GetQuery()
