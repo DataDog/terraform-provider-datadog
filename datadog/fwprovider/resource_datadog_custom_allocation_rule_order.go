@@ -3,6 +3,7 @@ package fwprovider
 import (
 	"context"
 	"fmt"
+	"sort"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -130,13 +131,9 @@ func (r *customAllocationRuleOrderResource) Read(ctx context.Context, request re
 	}
 
 	// Sort by order
-	for i := 0; i < len(sortedRules); i++ {
-		for j := i + 1; j < len(sortedRules); j++ {
-			if sortedRules[i].order > sortedRules[j].order {
-				sortedRules[i], sortedRules[j] = sortedRules[j], sortedRules[i]
-			}
-		}
-	}
+	sort.Slice(sortedRules, func(i, j int) bool {
+		return sortedRules[i].order < sortedRules[j].order
+	})
 
 	// Extract the ordered IDs
 	orderedList := make([]string, len(sortedRules))
@@ -240,13 +237,9 @@ func (r *customAllocationRuleOrderResource) updateOrderWithAllRules(state *custo
 	}
 
 	// Sort by order_id to get current order
-	for i := 0; i < len(ruleOrderIds); i++ {
-		for j := i + 1; j < len(ruleOrderIds); j++ {
-			if ruleOrderIds[i].orderId > ruleOrderIds[j].orderId {
-				ruleOrderIds[i], ruleOrderIds[j] = ruleOrderIds[j], ruleOrderIds[i]
-			}
-		}
-	}
+	sort.Slice(ruleOrderIds, func(i, j int) bool {
+		return ruleOrderIds[i].orderId < ruleOrderIds[j].orderId
+	})
 
 	// Create final order: desired order first, then remaining rules
 	finalOrder := make([]string, 0, len(ruleOrderIds))
