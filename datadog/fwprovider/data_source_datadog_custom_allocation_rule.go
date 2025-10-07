@@ -65,7 +65,7 @@ func (d *datadogCustomAllocationRuleDataSource) Schema(_ context.Context, _ data
 			// Query Parameters
 			"rule_id": schema.Int64Attribute{
 				Optional:    true,
-				Description: "UPDATE ME",
+				Description: "The ID of the custom allocation rule.",
 			},
 			// Computed values
 			"created": schema.StringAttribute{

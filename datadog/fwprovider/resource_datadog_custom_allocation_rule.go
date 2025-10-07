@@ -220,32 +220,32 @@ func (r *datadogCustomAllocationRuleResource) Schema(_ context.Context, _ resour
 		Description: "Provides a Datadog DatadogCustomAllocationRule resource. This can be used to create and manage Datadog datadog_custom_allocation_rule.",
 		Attributes: map[string]schema.Attribute{
 			"enabled": schema.BoolAttribute{
-				Optional:    true,
-				Description: "The `attributes` `enabled`.",
+				Required:    true,
+				Description: "The `attributes` `enabled`. Whether the rule is enabled.",
 			},
 			"order_id": schema.Int64Attribute{
 				Computed:    true,
-				Description: "The `attributes` `order_id`. This field is read-only and returned by the API.",
+				Description: "The `attributes` `order_id`. This field is read-only and returned by the API. Use the `datadog_custom_allocation_rule_order` resource to manage the order of rules.",
 			},
 			"rejected": schema.BoolAttribute{
 				Computed:    true,
-				Description: "The `attributes` `rejected`. This field is read-only and returned by the API after rule creation/update.",
+				Description: "The `attributes` `rejected`. This field is read-only and returned by the API after a rule was created, if it failed to apply.",
 			},
 			"created": schema.StringAttribute{
 				Computed:    true,
-				Description: "The `attributes` `created`.",
+				Description: "The `attributes` `created`. The timestamp when the rule was created.",
 			},
 			"last_modified_user_uuid": schema.StringAttribute{
 				Computed:    true,
-				Description: "The `attributes` `last_modified_user_uuid`.",
+				Description: "The `attributes` `last_modified_user_uuid`. The UUID of the user who last modified the rule.",
 			},
 			"updated": schema.StringAttribute{
 				Computed:    true,
-				Description: "The `attributes` `updated`.",
+				Description: "The `attributes` `updated`. The timestamp of the last update.",
 			},
 			"version": schema.Int64Attribute{
 				Computed:    true,
-				Description: "The `attributes` `version`.",
+				Description: "The `attributes` `version`. The rule version number of the rule. Can be used in the `datadog_custom_allocation_rule_order` resource to manage the order of rules.",
 			},
 			"rule_name": schema.StringAttribute{
 				Required:    true,
@@ -256,11 +256,11 @@ func (r *datadogCustomAllocationRuleResource) Schema(_ context.Context, _ resour
 			},
 			"type": schema.StringAttribute{
 				Required:    true,
-				Description: "The `attributes` `type`.",
+				Description: "The `attributes` `type`. The type of the rule.",
 			},
 			"providernames": schema.ListAttribute{
 				Required:    true,
-				Description: "The `attributes` `provider`.",
+				Description: "The `attributes` `provider`. The cloud providers the rule should apply to.",
 				ElementType: types.StringType,
 			},
 			"id": utils.ResourceIDAttribute(),
