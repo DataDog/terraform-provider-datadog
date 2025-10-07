@@ -103,6 +103,7 @@ var Resources = []func() resource.Resource{
 	NewGcpUcConfigResource,
 	NewDatadogCustomAllocationRuleResource,
 	NewCustomAllocationRuleOrderResource,
+	NewAzureUcConfigResource,
 }
 
 var Datasources = []func() datasource.DataSource{
@@ -111,6 +112,7 @@ var Datasources = []func() datasource.DataSource{
 	NewAwsAvailableNamespacesDataSource,
 	NewAwsIntegrationExternalIDDataSource,
 	NewAwsIntegrationIAMPermissionsDataSource,
+	NewAwsIntegrationIAMPermissionsStandardDataSource,
 	NewAwsLogsServicesDataSource,
 	NewDatadogApmRetentionFiltersOrderDataSource,
 	NewDatadogDashboardListDataSource,
@@ -147,6 +149,7 @@ var Datasources = []func() datasource.DataSource{
 	NewDatadogAwsCurConfigDataSource,
 	NewDatadogGcpUcConfigDataSource,
 	NewDatadogCustomAllocationRuleDataSource,
+	NewDatadogAzureUcConfigDataSource,
 }
 
 // FrameworkProvider struct

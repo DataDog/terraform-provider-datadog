@@ -9,6 +9,8 @@ import (
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
@@ -59,24 +61,29 @@ func (r *awsCurConfigResource) Schema(_ context.Context, _ resource.SchemaReques
 		Description: "Provides a Datadog AWS CUR (Cost and Usage Report) configuration resource. This enables Datadog Cloud Cost Management to access your AWS billing data by configuring the connection to your AWS Cost and Usage Report. **Prerequisites**: An active Datadog AWS integration, existing AWS Cost and Usage Report, and proper S3 bucket permissions.",
 		Attributes: map[string]schema.Attribute{
 			"account_id": schema.StringAttribute{
-				Required:    true,
-				Description: "The AWS account ID of your billing/payer account. For AWS Organizations, this is typically the management account ID.",
+				Required:      true,
+				Description:   "The AWS account ID of your billing/payer account. For AWS Organizations, this is typically the management account ID.",
+				PlanModifiers: []planmodifier.String{stringplanmodifier.RequiresReplace()},
 			},
 			"bucket_name": schema.StringAttribute{
-				Required:    true,
-				Description: "The S3 bucket name where your AWS Cost and Usage Report files are stored. This bucket must have appropriate IAM permissions for Datadog access and should be in the same AWS account as the CUR report.",
+				Required:      true,
+				Description:   "The S3 bucket name where your AWS Cost and Usage Report files are stored. This bucket must have appropriate IAM permissions for Datadog access and should be in the same AWS account as the CUR report.",
+				PlanModifiers: []planmodifier.String{stringplanmodifier.RequiresReplace()},
 			},
 			"bucket_region": schema.StringAttribute{
-				Optional:    true,
-				Description: "The AWS region where the S3 bucket containing your Cost and Usage Report is located (e.g., us-east-1, eu-west-1).",
+				Optional:      true,
+				Description:   "The AWS region where the S3 bucket containing your Cost and Usage Report is located (e.g., us-east-1, eu-west-1).",
+				PlanModifiers: []planmodifier.String{stringplanmodifier.RequiresReplace()},
 			},
 			"report_name": schema.StringAttribute{
-				Required:    true,
-				Description: "The exact name of your AWS Cost and Usage Report as configured in AWS Billing preferences. This must match the report name exactly as it appears in your AWS billing settings.",
+				Required:      true,
+				Description:   "The exact name of your AWS Cost and Usage Report as configured in AWS Billing preferences. This must match the report name exactly as it appears in your AWS billing settings.",
+				PlanModifiers: []planmodifier.String{stringplanmodifier.RequiresReplace()},
 			},
 			"report_prefix": schema.StringAttribute{
-				Required:    true,
-				Description: "The S3 key prefix where your Cost and Usage Report files are stored within the bucket (e.g., 'cur-reports/', 'billing/cur/').",
+				Required:      true,
+				Description:   "The S3 key prefix where your Cost and Usage Report files are stored within the bucket (e.g., 'cur-reports/', 'billing/cur/').",
+				PlanModifiers: []planmodifier.String{stringplanmodifier.RequiresReplace()},
 			},
 			"id": utils.ResourceIDAttribute(),
 		},

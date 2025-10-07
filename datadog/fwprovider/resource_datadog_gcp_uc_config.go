@@ -9,6 +9,8 @@ import (
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
@@ -53,28 +55,34 @@ func (r *gcpUcConfigResource) Schema(_ context.Context, _ resource.SchemaRequest
 		Description: "Provides a Datadog GcpUcConfig resource. This can be used to create and manage Datadog gcp_uc_config.",
 		Attributes: map[string]schema.Attribute{
 			"billing_account_id": schema.StringAttribute{
-				Required:    true,
-				Description: "The Google Cloud account ID.",
+				Required:      true,
+				Description:   "The Google Cloud account ID.",
+				PlanModifiers: []planmodifier.String{stringplanmodifier.RequiresReplace()},
 			},
 			"bucket_name": schema.StringAttribute{
-				Required:    true,
-				Description: "The Google Cloud bucket name used to store the Usage Cost export.",
+				Required:      true,
+				Description:   "The Google Cloud bucket name used to store the Usage Cost export.",
+				PlanModifiers: []planmodifier.String{stringplanmodifier.RequiresReplace()},
 			},
 			"export_dataset_name": schema.StringAttribute{
-				Required:    true,
-				Description: "The export dataset name used for the Google Cloud Usage Cost report.",
+				Required:      true,
+				Description:   "The export dataset name used for the Google Cloud Usage Cost report.",
+				PlanModifiers: []planmodifier.String{stringplanmodifier.RequiresReplace()},
 			},
 			"export_prefix": schema.StringAttribute{
-				Optional:    true,
-				Description: "The export prefix used for the Google Cloud Usage Cost report.",
+				Optional:      true,
+				Description:   "The export prefix used for the Google Cloud Usage Cost report.",
+				PlanModifiers: []planmodifier.String{stringplanmodifier.RequiresReplace()},
 			},
 			"export_project_name": schema.StringAttribute{
-				Required:    true,
-				Description: "The name of the Google Cloud Usage Cost report.",
+				Required:      true,
+				Description:   "The name of the Google Cloud Usage Cost report.",
+				PlanModifiers: []planmodifier.String{stringplanmodifier.RequiresReplace()},
 			},
 			"service_account": schema.StringAttribute{
-				Required:    true,
-				Description: "The unique Google Cloud service account email.",
+				Required:      true,
+				Description:   "The unique Google Cloud service account email.",
+				PlanModifiers: []planmodifier.String{stringplanmodifier.RequiresReplace()},
 			},
 			"id": utils.ResourceIDAttribute(),
 		},
@@ -144,35 +152,10 @@ func (r *gcpUcConfigResource) Create(ctx context.Context, request resource.Creat
 }
 
 func (r *gcpUcConfigResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
-	var state gcpUcConfigModel
-	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
-	if response.Diagnostics.HasError() {
-		return
-	}
-
-	id := state.ID.ValueString()
-
-	body, diags := r.buildGcpUcConfigUpdateRequestBody(ctx, &state)
-	response.Diagnostics.Append(diags...)
-	if response.Diagnostics.HasError() {
-		return
-	}
-
-	idInt, _ := strconv.ParseInt(id, 10, 64)
-	resp, _, err := r.Api.UpdateCostGCPUsageCostConfig(r.Auth, idInt, *body)
-	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving GcpUcConfig"))
-		return
-	}
-	if err := utils.CheckForUnparsed(resp); err != nil {
-		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
-		return
-	}
-	responseData := resp.GetData()
-	r.updateStateFromResponseData(ctx, &state, &responseData)
-
-	// Save data into Terraform state
-	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+	response.Diagnostics.AddError(
+		"Update Not Supported",
+		"GCP UC Config resources do not support updates. Changes require resource recreation.",
+	)
 }
 
 func (r *gcpUcConfigResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
@@ -245,20 +228,6 @@ func (r *gcpUcConfigResource) buildGcpUcConfigRequestBody(ctx context.Context, s
 
 	req := datadogV2.NewGCPUsageCostConfigPostRequestWithDefaults()
 	req.Data = *datadogV2.NewGCPUsageCostConfigPostDataWithDefaults()
-	req.Data.SetAttributes(*attributes)
-
-	return req, diags
-}
-
-func (r *gcpUcConfigResource) buildGcpUcConfigUpdateRequestBody(ctx context.Context, state *gcpUcConfigModel) (*datadogV2.GCPUsageCostConfigPatchRequest, diag.Diagnostics) {
-	diags := diag.Diagnostics{}
-	attributes := datadogV2.NewGCPUsageCostConfigPatchRequestAttributesWithDefaults()
-
-	// IsEnabled is not part of the resource model for creation/update in this context
-	// It's handled through separate patch operations similar to AWS
-
-	req := datadogV2.NewGCPUsageCostConfigPatchRequestWithDefaults()
-	req.Data = *datadogV2.NewGCPUsageCostConfigPatchDataWithDefaults()
 	req.Data.SetAttributes(*attributes)
 
 	return req, diags
