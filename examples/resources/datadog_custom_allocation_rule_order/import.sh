@@ -1,1 +1,0 @@
-terraform import datadog_custom_allocation_rule_order.order order

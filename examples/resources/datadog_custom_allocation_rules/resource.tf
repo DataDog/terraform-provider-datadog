@@ -59,7 +59,7 @@ resource "datadog_custom_allocation_rule" "rule_3" {
 }
 
 # Manage the order of custom allocation rules
-resource "datadog_custom_allocation_rule_order" "order" {
+resource "datadog_custom_allocation_rules" "order" {
   rule_ids = [
     datadog_custom_allocation_rule.rule_1.id,
     datadog_custom_allocation_rule.rule_2.id,

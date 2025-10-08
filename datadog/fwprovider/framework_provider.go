@@ -104,7 +104,7 @@ var Resources = []func() resource.Resource{
 	NewAwsCurConfigResource,
 	NewGcpUcConfigResource,
 	NewDatadogCustomAllocationRuleResource,
-	NewCustomAllocationRuleOrderResource,
+	NewCustomAllocationRulesResource,
 	NewAzureUcConfigResource,
 }
 

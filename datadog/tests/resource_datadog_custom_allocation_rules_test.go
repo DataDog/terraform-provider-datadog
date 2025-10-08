@@ -24,9 +24,9 @@ func TestAccDatadogCustomAllocationRuleOrder_Basic(t *testing.T) {
 			{
 				Config: testAccCheckDatadogCustomAllocationRuleOrderConfigBasic(uniq),
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogCustomAllocationRuleOrderExists("datadog_custom_allocation_rule_order.foo"),
-					resource.TestCheckResourceAttr("datadog_custom_allocation_rule_order.foo", "id", "order"),
-					resource.TestCheckResourceAttrSet("datadog_custom_allocation_rule_order.foo", "rule_ids.#"),
+					testAccCheckDatadogCustomAllocationRuleOrderExists("datadog_custom_allocation_rules.foo"),
+					resource.TestCheckResourceAttr("datadog_custom_allocation_rules.foo", "id", "order"),
+					resource.TestCheckResourceAttrSet("datadog_custom_allocation_rules.foo", "rule_ids.#"),
 					// Verify the 3 rules created by this test maintain their relative order
 					func(s *terraform.State) error {
 						ruleIDs, err := extractRuleIDsFromResources(s, []string{
@@ -58,8 +58,8 @@ func TestAccDatadogCustomAllocationRuleOrder_Update(t *testing.T) {
 			{
 				Config: testAccCheckDatadogCustomAllocationRuleOrderConfigBasic(uniq),
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogCustomAllocationRuleOrderExists("datadog_custom_allocation_rule_order.foo"),
-					resource.TestCheckResourceAttrSet("datadog_custom_allocation_rule_order.foo", "rule_ids.#"),
+					testAccCheckDatadogCustomAllocationRuleOrderExists("datadog_custom_allocation_rules.foo"),
+					resource.TestCheckResourceAttrSet("datadog_custom_allocation_rules.foo", "rule_ids.#"),
 					// Verify initial order: first, second, third
 					func(s *terraform.State) error {
 						ruleIDs, err := extractRuleIDsFromResources(s, []string{
@@ -77,8 +77,8 @@ func TestAccDatadogCustomAllocationRuleOrder_Update(t *testing.T) {
 			{
 				Config: testAccCheckDatadogCustomAllocationRuleOrderConfigReordered(uniq),
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogCustomAllocationRuleOrderExists("datadog_custom_allocation_rule_order.foo"),
-					resource.TestCheckResourceAttrSet("datadog_custom_allocation_rule_order.foo", "rule_ids.#"),
+					testAccCheckDatadogCustomAllocationRuleOrderExists("datadog_custom_allocation_rules.foo"),
+					resource.TestCheckResourceAttrSet("datadog_custom_allocation_rules.foo", "rule_ids.#"),
 					// Verify updated order: third, first, second
 					func(s *terraform.State) error {
 						ruleIDs, err := extractRuleIDsFromResources(s, []string{
@@ -110,7 +110,7 @@ func TestAccDatadogCustomAllocationRuleOrder_Import(t *testing.T) {
 			{
 				Config: testAccCheckDatadogCustomAllocationRuleOrderConfigBasic(uniq),
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogCustomAllocationRuleOrderExists("datadog_custom_allocation_rule_order.foo"),
+					testAccCheckDatadogCustomAllocationRuleOrderExists("datadog_custom_allocation_rules.foo"),
 					func(s *terraform.State) error {
 						ruleIDs, err := extractRuleIDsFromResources(s, []string{
 							"datadog_custom_allocation_rule.first",
@@ -125,7 +125,7 @@ func TestAccDatadogCustomAllocationRuleOrder_Import(t *testing.T) {
 				),
 			},
 			{
-				ResourceName:      "datadog_custom_allocation_rule_order.foo",
+				ResourceName:      "datadog_custom_allocation_rules.foo",
 				ImportState:       true,
 				ImportStateId:     "order",
 				ImportStateVerify: false, // Cannot verify exact match because state includes all rules in org
@@ -147,8 +147,8 @@ func TestAccDatadogCustomAllocationRuleOrder_SingleRule(t *testing.T) {
 			{
 				Config: testAccCheckDatadogCustomAllocationRuleOrderConfigSingle(uniq),
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogCustomAllocationRuleOrderExists("datadog_custom_allocation_rule_order.foo"),
-					resource.TestCheckResourceAttrSet("datadog_custom_allocation_rule_order.foo", "rule_ids.#"),
+					testAccCheckDatadogCustomAllocationRuleOrderExists("datadog_custom_allocation_rules.foo"),
+					resource.TestCheckResourceAttrSet("datadog_custom_allocation_rules.foo", "rule_ids.#"),
 					// Verify the single rule is present in the order
 					func(s *terraform.State) error {
 						ruleIDs, err := extractRuleIDsFromResources(s, []string{
@@ -201,7 +201,7 @@ func testAccCheckDatadogCustomAllocationRuleOrderChanged(resourceName string) re
 // in the state, ignoring any other rules that may be present
 func verifyRelativeOrder(expectedOrder []string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
-		rs, ok := s.RootModule().Resources["datadog_custom_allocation_rule_order.foo"]
+		rs, ok := s.RootModule().Resources["datadog_custom_allocation_rules.foo"]
 		if !ok {
 			return fmt.Errorf("resource not found")
 		}
@@ -338,7 +338,7 @@ resource "datadog_custom_allocation_rule" "third" {
   }
 }
 
-resource "datadog_custom_allocation_rule_order" "foo" {
+resource "datadog_custom_allocation_rules" "foo" {
   rule_ids = [
     datadog_custom_allocation_rule.first.id,
     datadog_custom_allocation_rule.second.id,
@@ -415,7 +415,7 @@ resource "datadog_custom_allocation_rule" "third" {
   }
 }
 
-resource "datadog_custom_allocation_rule_order" "foo" {
+resource "datadog_custom_allocation_rules" "foo" {
   rule_ids = [
     datadog_custom_allocation_rule.third.id,
     datadog_custom_allocation_rule.first.id,
@@ -448,7 +448,7 @@ resource "datadog_custom_allocation_rule" "single" {
   }
 }
 
-resource "datadog_custom_allocation_rule_order" "foo" {
+resource "datadog_custom_allocation_rules" "foo" {
   rule_ids = [
     datadog_custom_allocation_rule.single.id
   ]

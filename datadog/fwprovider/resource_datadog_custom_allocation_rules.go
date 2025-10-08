@@ -20,7 +20,7 @@ var (
 	_ resource.ResourceWithImportState = &customAllocationRuleOrderResource{}
 )
 
-func NewCustomAllocationRuleOrderResource() resource.Resource {
+func NewCustomAllocationRulesResource() resource.Resource {
 	return &customAllocationRuleOrderResource{}
 }
 
@@ -41,7 +41,7 @@ func (r *customAllocationRuleOrderResource) Configure(_ context.Context, request
 }
 
 func (r *customAllocationRuleOrderResource) Metadata(_ context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
-	response.TypeName = "custom_allocation_rule_order"
+	response.TypeName = "custom_allocation_rules"
 }
 
 func (r *customAllocationRuleOrderResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
