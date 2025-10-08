@@ -17,6 +17,7 @@ import (
 
 	"net/http"
 
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/customtypes"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
@@ -32,14 +33,14 @@ type csmThreatsAgentRuleResource struct {
 }
 
 type csmThreatsAgentRuleModel struct {
-	Id          types.String  `tfsdk:"id"`
-	PolicyId    types.String  `tfsdk:"policy_id"`
-	Name        types.String  `tfsdk:"name"`
-	Description types.String  `tfsdk:"description"`
-	Enabled     types.Bool    `tfsdk:"enabled"`
-	Expression  types.String  `tfsdk:"expression"`
-	ProductTags types.Set     `tfsdk:"product_tags"`
-	Actions     []ActionModel `tfsdk:"actions"`
+	Id          types.String                     `tfsdk:"id"`
+	PolicyId    types.String                     `tfsdk:"policy_id"`
+	Name        types.String                     `tfsdk:"name"`
+	Description types.String                     `tfsdk:"description"`
+	Enabled     types.Bool                       `tfsdk:"enabled"`
+	Expression  customtypes.TrimSpaceStringValue `tfsdk:"expression"`
+	ProductTags types.Set                        `tfsdk:"product_tags"`
+	Actions     []ActionModel                    `tfsdk:"actions"`
 }
 
 type ActionModel struct {
@@ -104,6 +105,7 @@ func (r *csmThreatsAgentRuleResource) Schema(_ context.Context, _ resource.Schem
 			"expression": schema.StringAttribute{
 				Required:    true,
 				Description: "The SECL expression of the Agent rule",
+				CustomType:  customtypes.TrimSpaceStringType{},
 			},
 			"product_tags": schema.SetAttribute{
 				Optional:    true,
@@ -576,7 +578,9 @@ func (r *csmThreatsAgentRuleResource) updateStateFromResponse(ctx context.Contex
 	} else {
 		state.Enabled = types.BoolNull()
 	}
-	state.Expression = types.StringValue(attributes.GetExpression())
+	state.Expression = customtypes.TrimSpaceStringValue{
+		StringValue: types.StringValue(attributes.GetExpression()),
+	}
 
 	tags := attributes.GetProductTags()
 	if len(tags) > 0 {
