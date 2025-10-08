@@ -128,7 +128,7 @@ func TestAccDatadogCustomAllocationRuleOrder_Import(t *testing.T) {
 				ResourceName:      "datadog_custom_allocation_rules.foo",
 				ImportState:       true,
 				ImportStateId:     "order",
-				ImportStateVerify: false, // Cannot verify exact match because state includes all rules in org
+				ImportStateVerify: false, // Cannot verify exact match - import reads all rules from backend
 			},
 		},
 	})
@@ -197,8 +197,7 @@ func testAccCheckDatadogCustomAllocationRuleOrderChanged(resourceName string) re
 	}
 }
 
-// verifyRelativeOrder checks that the specified rule IDs maintain their relative order
-// in the state, ignoring any other rules that may be present
+// verifyRelativeOrder checks that the specified rule IDs maintain their relative order in the state
 func verifyRelativeOrder(expectedOrder []string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		rs, ok := s.RootModule().Resources["datadog_custom_allocation_rules.foo"]

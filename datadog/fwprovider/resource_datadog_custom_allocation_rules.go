@@ -16,35 +16,35 @@ import (
 )
 
 var (
-	_ resource.ResourceWithConfigure   = &customAllocationRuleOrderResource{}
-	_ resource.ResourceWithImportState = &customAllocationRuleOrderResource{}
+	_ resource.ResourceWithConfigure   = &customAllocationRulesResource{}
+	_ resource.ResourceWithImportState = &customAllocationRulesResource{}
 )
 
 func NewCustomAllocationRulesResource() resource.Resource {
-	return &customAllocationRuleOrderResource{}
+	return &customAllocationRulesResource{}
 }
 
-type customAllocationRuleOrderModel struct {
+type customAllocationRulesModel struct {
 	ID      types.String `tfsdk:"id"`
 	RuleIDs types.List   `tfsdk:"rule_ids"`
 }
 
-type customAllocationRuleOrderResource struct {
+type customAllocationRulesResource struct {
 	Api  *datadogV2.CloudCostManagementApi
 	Auth context.Context
 }
 
-func (r *customAllocationRuleOrderResource) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
+func (r *customAllocationRulesResource) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
 	providerData := request.ProviderData.(*FrameworkProvider)
 	r.Api = providerData.DatadogApiInstances.GetCloudCostManagementApiV2()
 	r.Auth = providerData.Auth
 }
 
-func (r *customAllocationRuleOrderResource) Metadata(_ context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
+func (r *customAllocationRulesResource) Metadata(_ context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
 	response.TypeName = "custom_allocation_rules"
 }
 
-func (r *customAllocationRuleOrderResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
+func (r *customAllocationRulesResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
 		Description: "Provides a Datadog Custom Allocation Rule Order API resource. This can be used to manage the order of Datadog Custom Allocation Rules.",
 		Attributes: map[string]schema.Attribute{
@@ -59,8 +59,8 @@ func (r *customAllocationRuleOrderResource) Schema(_ context.Context, _ resource
 	}
 }
 
-func (r *customAllocationRuleOrderResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
-	var state customAllocationRuleOrderModel
+func (r *customAllocationRulesResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
+	var state customAllocationRulesModel
 	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -72,16 +72,9 @@ func (r *customAllocationRuleOrderResource) Create(ctx context.Context, request 
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (r *customAllocationRuleOrderResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
-	var state customAllocationRuleOrderModel
+func (r *customAllocationRulesResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
+	var state customAllocationRulesModel
 	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
-	if response.Diagnostics.HasError() {
-		return
-	}
-
-	// Get the rule IDs that are currently in state (i.e., the ones managed by this resource)
-	var configuredRuleIDs []string
-	response.Diagnostics.Append(state.RuleIDs.ElementsAs(ctx, &configuredRuleIDs, false)...)
 	if response.Diagnostics.HasError() {
 		return
 	}
@@ -98,58 +91,46 @@ func (r *customAllocationRuleOrderResource) Read(ctx context.Context, request re
 		rules = *respData
 	}
 
-	// Build a map of rule ID to order_id
-	ruleOrders := make(map[string]int)
+	// Create a slice of structs to sort by order_id
+	type ruleWithOrder struct {
+		id      string
+		orderId int64
+	}
+
+	ruleOrderIds := make([]ruleWithOrder, 0, len(rules))
 	for _, rule := range rules {
 		if ruleID, ok := rule.GetIdOk(); ok {
+			orderId := int64(0)
 			if ruleAttrs, ok := rule.GetAttributesOk(); ok {
-				ruleOrders[*ruleID] = int(ruleAttrs.GetOrderId())
+				orderId = ruleAttrs.GetOrderId()
 			}
+			ruleOrderIds = append(ruleOrderIds, ruleWithOrder{
+				id:      *ruleID,
+				orderId: orderId,
+			})
 		}
 	}
 
-	// Verify all configured rules still exist
-	for _, id := range configuredRuleIDs {
-		if _, exists := ruleOrders[id]; !exists {
-			// Rule no longer exists in API, remove from state
-			response.State.RemoveResource(ctx)
-			return
-		}
-	}
-
-	// Sort the configured rules by their current order_id from the API
-	type ruleWithOrder struct {
-		id    string
-		order int
-	}
-	sortedRules := make([]ruleWithOrder, 0, len(configuredRuleIDs))
-	for _, id := range configuredRuleIDs {
-		sortedRules = append(sortedRules, ruleWithOrder{
-			id:    id,
-			order: ruleOrders[id],
-		})
-	}
-
-	// Sort by order
-	sort.Slice(sortedRules, func(i, j int) bool {
-		return sortedRules[i].order < sortedRules[j].order
+	// Sort by order_id
+	sort.Slice(ruleOrderIds, func(i, j int) bool {
+		return ruleOrderIds[i].orderId < ruleOrderIds[j].orderId
 	})
 
-	// Extract the ordered IDs
-	orderedList := make([]string, len(sortedRules))
-	for i, rule := range sortedRules {
-		orderedList[i] = rule.id
+	// Extract ordered IDs
+	orderedList := make([]string, 0, len(ruleOrderIds))
+	for _, ro := range ruleOrderIds {
+		orderedList = append(orderedList, ro.id)
 	}
 
 	state.RuleIDs, _ = types.ListValueFrom(ctx, types.StringType, orderedList)
-	state.ID = types.StringValue("order") // Static ID like other order resources
+	state.ID = types.StringValue("order")
 
 	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (r *customAllocationRuleOrderResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
-	var state customAllocationRuleOrderModel
+func (r *customAllocationRulesResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
+	var state customAllocationRulesModel
 	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -161,16 +142,15 @@ func (r *customAllocationRuleOrderResource) Update(ctx context.Context, request 
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (r *customAllocationRuleOrderResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
-	// No-op: Deleting the order resource doesn't change the actual order of rules
-	// This follows the same pattern as other order resources in the provider
+func (r *customAllocationRulesResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
+	// No-op: deleting this resource only removes it from Terraform state
 }
 
-func (r *customAllocationRuleOrderResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
+func (r *customAllocationRulesResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, frameworkPath.Root("id"), request, response)
 }
 
-func (r *customAllocationRuleOrderResource) updateOrder(state *customAllocationRuleOrderModel, diag *diag.Diagnostics) {
+func (r *customAllocationRulesResource) updateOrder(state *customAllocationRulesModel, diag *diag.Diagnostics) {
 	// Set the ID immediately to prevent "unknown value" errors
 	state.ID = types.StringValue("order")
 
@@ -181,14 +161,7 @@ func (r *customAllocationRuleOrderResource) updateOrder(state *customAllocationR
 		desiredRuleIDs = append(desiredRuleIDs, ruleID)
 	}
 
-	// The custom allocation rule API requires ALL existing rules to be included in the reorder call
-	// So we always use the comprehensive approach
-	r.updateOrderWithAllRules(state, diag, desiredRuleIDs)
-}
-
-// Fallback method that includes all existing rules
-func (r *customAllocationRuleOrderResource) updateOrderWithAllRules(state *customAllocationRuleOrderModel, diag *diag.Diagnostics, desiredOrder []string) {
-	// Get all existing rules
+	// Validate that all existing rules in Datadog are managed by Terraform
 	resp, httpResponse, err := r.Api.ListArbitraryCostRules(r.Auth)
 	if err != nil {
 		diag.Append(utils.FrameworkErrorDiag(err, fmt.Sprintf("error listing custom allocation rules: %v", httpResponse)))
@@ -200,7 +173,7 @@ func (r *customAllocationRuleOrderResource) updateOrderWithAllRules(state *custo
 		existingRules = *respData
 	}
 
-	// Create a map of existing rule IDs for validation
+	// Build a map of existing rule IDs
 	existingIDs := make(map[string]bool)
 	for _, rule := range existingRules {
 		if ruleID, ok := rule.GetIdOk(); ok {
@@ -208,74 +181,55 @@ func (r *customAllocationRuleOrderResource) updateOrderWithAllRules(state *custo
 		}
 	}
 
-	// Validate desired rules exist
-	for _, ruleID := range desiredOrder {
+	// Validate that all specified rule IDs exist
+	for _, ruleID := range desiredRuleIDs {
 		if !existingIDs[ruleID] {
 			diag.AddError("Invalid rule ID", fmt.Sprintf("rule ID %s does not exist", ruleID))
 			return
 		}
 	}
 
-	// Create a slice of structs to sort by current order_id
-	type ruleWithOrderId struct {
-		id      string
-		orderId int64
-	}
+	// Ensure all rules in Datadog are included in this configuration
+	if len(desiredRuleIDs) != len(existingIDs) {
+		desiredIDsMap := make(map[string]bool)
+		for _, id := range desiredRuleIDs {
+			desiredIDsMap[id] = true
+		}
 
-	ruleOrderIds := make([]ruleWithOrderId, 0, len(existingRules))
-	for _, rule := range existingRules {
-		if ruleID, ok := rule.GetIdOk(); ok {
-			orderId := int64(0)
-			if ruleAttrs, ok := rule.GetAttributesOk(); ok {
-				orderId = ruleAttrs.GetOrderId()
+		var unmanagedRules []string
+		for id := range existingIDs {
+			if !desiredIDsMap[id] {
+				unmanagedRules = append(unmanagedRules, id)
 			}
-			ruleOrderIds = append(ruleOrderIds, ruleWithOrderId{
-				id:      *ruleID,
-				orderId: orderId,
-			})
 		}
+
+		diag.AddError(
+			"Unmanaged rules detected",
+			fmt.Sprintf("Found %d custom allocation rules in Datadog that are not managed by this Terraform configuration: %v. "+
+				"All custom allocation rules must be managed by Terraform. Please either:\n"+
+				"1. Import existing rules using 'terraform import datadog_custom_allocation_rule.<name> <rule_id>'\n"+
+				"2. Add the missing rules to your Terraform configuration\n"+
+				"3. Delete unmanaged rules from Datadog if they're no longer needed\n\n"+
+				"This ensures complete infrastructure control and prevents configuration drift.",
+				len(unmanagedRules), unmanagedRules))
+		return
 	}
 
-	// Sort by order_id to get current order
-	sort.Slice(ruleOrderIds, func(i, j int) bool {
-		return ruleOrderIds[i].orderId < ruleOrderIds[j].orderId
-	})
-
-	// Create final order: desired order first, then remaining rules
-	finalOrder := make([]string, 0, len(ruleOrderIds))
-	desiredIDsMap := make(map[string]bool)
-
-	// Add desired rules in specified order
-	for _, id := range desiredOrder {
-		finalOrder = append(finalOrder, id)
-		desiredIDsMap[id] = true
-	}
-
-	// Add remaining rules in their current order
-	for _, ro := range ruleOrderIds {
-		if !desiredIDsMap[ro.id] {
-			finalOrder = append(finalOrder, ro.id)
-		}
-	}
-
-	// Convert to API format
-	ruleData := make([]datadogV2.ReorderRuleResourceData, len(finalOrder))
-	for i, ruleID := range finalOrder {
+	// Build the reorder request with rules in the specified order
+	ruleData := make([]datadogV2.ReorderRuleResourceData, len(desiredRuleIDs))
+	for i, ruleID := range desiredRuleIDs {
 		ruleData[i] = datadogV2.ReorderRuleResourceData{
 			Id:   &ruleID,
 			Type: datadogV2.REORDERRULERESOURCEDATATYPE_ARBITRARY_RULE,
 		}
 	}
 
-	// Create the reorder request
 	reorderRequest := datadogV2.ReorderRuleResourceArray{
 		Data: ruleData,
 	}
-
-	// Call the reorder API
 	httpResponse, err = r.Api.ReorderArbitraryCostRules(r.Auth, reorderRequest)
 	if err != nil {
-		diag.Append(utils.FrameworkErrorDiag(err, fmt.Sprintf("error reordering custom allocation rules with all rules: %v", httpResponse)))
+		diag.Append(utils.FrameworkErrorDiag(err, fmt.Sprintf("error reordering custom allocation rules: %v", httpResponse)))
 		return
 	}
 }
