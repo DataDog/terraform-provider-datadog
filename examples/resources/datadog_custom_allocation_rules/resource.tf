@@ -1,6 +1,6 @@
 resource "datadog_custom_allocation_rule" "rule_1" {
   costs_to_allocate {
-    condition = "equals"
+    condition = "is"
     tag       = "aws_product"
     value     = "AmazonEC2"
   }
@@ -10,17 +10,17 @@ resource "datadog_custom_allocation_rule" "rule_1" {
   strategy {
     allocated_by_tag_keys = ["team"]
     based_on_costs {
-      condition = "equals"
+      condition = "is"
       tag       = "aws_product"
       value     = "AmazonEC2"
     }
-    method = "even_split"
+    method = "even"
   }
 }
 
 resource "datadog_custom_allocation_rule" "rule_2" {
   costs_to_allocate {
-    condition = "equals"
+    condition = "is"
     tag       = "aws_product"
     value     = "AmazonS3"
   }
@@ -30,17 +30,17 @@ resource "datadog_custom_allocation_rule" "rule_2" {
   strategy {
     allocated_by_tag_keys = ["team"]
     based_on_costs {
-      condition = "equals"
+      condition = "is"
       tag       = "aws_product"
       value     = "AmazonS3"
     }
-    method = "even_split"
+    method = "even"
   }
 }
 
 resource "datadog_custom_allocation_rule" "rule_3" {
   costs_to_allocate {
-    condition = "equals"
+    condition = "is"
     tag       = "aws_product"
     value     = "AmazonRDS"
   }
@@ -50,11 +50,11 @@ resource "datadog_custom_allocation_rule" "rule_3" {
   strategy {
     allocated_by_tag_keys = ["team"]
     based_on_costs {
-      condition = "equals"
+      condition = "is"
       tag       = "aws_product"
       value     = "AmazonRDS"
     }
-    method = "even_split"
+    method = "even"
   }
 }
 

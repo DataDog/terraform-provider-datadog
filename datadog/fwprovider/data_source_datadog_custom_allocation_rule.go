@@ -58,55 +58,55 @@ func (d *datadogCustomAllocationRuleDataSource) Metadata(_ context.Context, requ
 
 func (d *datadogCustomAllocationRuleDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, response *datasource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "Use this data source to retrieve information about an existing Datadog datadog_custom_allocation_rule.",
+		Description: "Use this data source to retrieve information about an existing custom allocation rule.",
 		Attributes: map[string]schema.Attribute{
 			// Datasource ID
 			"id": utils.ResourceIDAttribute(),
 			// Query Parameters
 			"rule_id": schema.Int64Attribute{
 				Optional:    true,
-				Description: "The ID of the custom allocation rule.",
+				Description: "The ID of the custom allocation rule to retrieve.",
 			},
 			// Computed values
 			"created": schema.StringAttribute{
 				Computed:    true,
-				Description: "The `attributes` `created`.",
+				Description: "The timestamp (in ISO 8601 format) when the rule was created.",
 			},
 			"enabled": schema.BoolAttribute{
 				Computed:    true,
-				Description: "The `attributes` `enabled`.",
+				Description: "Whether the custom allocation rule is enabled.",
 			},
 			"last_modified_user_uuid": schema.StringAttribute{
 				Computed:    true,
-				Description: "The `attributes` `last_modified_user_uuid`.",
+				Description: "The UUID of the user who last modified the rule.",
 			},
 			"order_id": schema.Int64Attribute{
 				Computed:    true,
-				Description: "The `attributes` `order_id`.",
+				Description: "The order of the rule in the list of custom allocation rules.",
 			},
 			"rejected": schema.BoolAttribute{
 				Computed:    true,
-				Description: "The `attributes` `rejected`.",
+				Description: "Whether the rule was rejected by Datadog due to runtime errors. This field can be updated well after the rule was created. If rejected this rule is treated as disabled until modified where the rejection status is reset.",
 			},
 			"rule_name": schema.StringAttribute{
 				Computed:    true,
-				Description: "The `attributes` `rule_name`.",
+				Description: "The unique name of the custom allocation rule.",
 			},
 			"type": schema.StringAttribute{
 				Computed:    true,
-				Description: "The `attributes` `type`.",
+				Description: "The type of the custom allocation rule. This is always `shared` currently.",
 			},
 			"updated": schema.StringAttribute{
 				Computed:    true,
-				Description: "The `attributes` `updated`.",
+				Description: "The timestamp (in ISO 8601 format) when the rule was last updated.",
 			},
-			"version": schema.Int64Attribute{
+			"version": schema.StringAttribute{
 				Computed:    true,
-				Description: "The `attributes` `version`.",
+				Description: "The version number of the rule.",
 			},
 			"providernames": schema.ListAttribute{
 				Computed:    true,
-				Description: "The `attributes` `provider`.",
+				Description: "List of cloud providers the rule applies to (e.g., `aws`, `azure`, `gcp`).",
 				ElementType: types.StringType,
 			},
 		},
@@ -117,19 +117,19 @@ func (d *datadogCustomAllocationRuleDataSource) Schema(_ context.Context, _ data
 					Attributes: map[string]schema.Attribute{
 						"condition": schema.StringAttribute{
 							Computed:    true,
-							Description: "The `items` `condition`.",
+							Description: "The condition used to match tags. Valid values are `=`, `!=`, `is`, `is not`, `like`, `in`, `not in`.",
 						},
 						"tag": schema.StringAttribute{
 							Computed:    true,
-							Description: "The `items` `tag`.",
+							Description: "The tag key used in the filter.",
 						},
 						"value": schema.StringAttribute{
 							Computed:    true,
-							Description: "The `items` `value`.",
+							Description: "The tag value used in the filter (for single-value conditions).",
 						},
 						"values": schema.ListAttribute{
 							Computed:    true,
-							Description: "The `items` `values`.",
+							Description: "The list of tag values used in the filter (for multi-value conditions like `in` or `not_in`).",
 							ElementType: types.StringType,
 						},
 					},
@@ -139,20 +139,20 @@ func (d *datadogCustomAllocationRuleDataSource) Schema(_ context.Context, _ data
 				Attributes: map[string]schema.Attribute{
 					"granularity": schema.StringAttribute{
 						Computed:    true,
-						Description: "The `strategy` `granularity`.",
+						Description: "The granularity level for cost allocation (`daily` or `monthly`).",
 					},
 					"method": schema.StringAttribute{
 						Computed:    true,
-						Description: "The `strategy` `method`.",
+						Description: "The allocation method. Valid values are `even`, `proportional`, `proportional_timeseries`, or `percent`.",
 					},
 					"allocated_by_tag_keys": schema.ListAttribute{
 						Computed:    true,
-						Description: "The `strategy` `allocated_by_tag_keys`.",
+						Description: "List of tag keys used to allocate costs.",
 						ElementType: types.StringType,
 					},
 					"evaluate_grouped_by_tag_keys": schema.ListAttribute{
 						Computed:    true,
-						Description: "The `strategy` `evaluate_grouped_by_tag_keys`.",
+						Description: "List of tag keys used to group costs before allocation.",
 						ElementType: types.StringType,
 					},
 				},
@@ -162,7 +162,7 @@ func (d *datadogCustomAllocationRuleDataSource) Schema(_ context.Context, _ data
 							Attributes: map[string]schema.Attribute{
 								"percentage": schema.Int64Attribute{
 									Computed:    true,
-									Description: "The `items` `percentage`. The numeric value format should be a 32bit float value.",
+									Description: "The percentage of costs allocated to this target as a decimal (e.g., 0.33 for 33%).",
 								},
 							},
 							Blocks: map[string]schema.Block{
@@ -171,11 +171,11 @@ func (d *datadogCustomAllocationRuleDataSource) Schema(_ context.Context, _ data
 										Attributes: map[string]schema.Attribute{
 											"key": schema.StringAttribute{
 												Computed:    true,
-												Description: "The `items` `key`.",
+												Description: "The tag key for cost allocation.",
 											},
 											"value": schema.StringAttribute{
 												Computed:    true,
-												Description: "The `items` `value`.",
+												Description: "The tag value used in the filter (for single-value conditions).",
 											},
 										},
 									},
@@ -188,19 +188,19 @@ func (d *datadogCustomAllocationRuleDataSource) Schema(_ context.Context, _ data
 							Attributes: map[string]schema.Attribute{
 								"condition": schema.StringAttribute{
 									Computed:    true,
-									Description: "The `items` `condition`.",
+									Description: "The condition used to match tags. Valid values are `=`, `!=`, `is`, `is not`, `like`, `in`, `not in`.",
 								},
 								"tag": schema.StringAttribute{
 									Computed:    true,
-									Description: "The `items` `tag`.",
+									Description: "The tag key used in the filter.",
 								},
 								"value": schema.StringAttribute{
 									Computed:    true,
-									Description: "The `items` `value`.",
+									Description: "The tag value used in the filter (for single-value conditions).",
 								},
 								"values": schema.ListAttribute{
 									Computed:    true,
-									Description: "The `items` `values`.",
+									Description: "The list of tag values used in the filter (for multi-value conditions like `in` or `not_in`).",
 									ElementType: types.StringType,
 								},
 							},
@@ -211,19 +211,19 @@ func (d *datadogCustomAllocationRuleDataSource) Schema(_ context.Context, _ data
 							Attributes: map[string]schema.Attribute{
 								"condition": schema.StringAttribute{
 									Computed:    true,
-									Description: "The `items` `condition`.",
+									Description: "The condition used to match tags. Valid values are `=`, `!=`, `is`, `is not`, `like`, `in`, `not in`.",
 								},
 								"tag": schema.StringAttribute{
 									Computed:    true,
-									Description: "The `items` `tag`.",
+									Description: "The tag key used in the filter.",
 								},
 								"value": schema.StringAttribute{
 									Computed:    true,
-									Description: "The `items` `value`.",
+									Description: "The tag value used in the filter (for single-value conditions).",
 								},
 								"values": schema.ListAttribute{
 									Computed:    true,
-									Description: "The `items` `values`.",
+									Description: "The list of tag values used in the filter (for multi-value conditions like `in` or `not_in`).",
 									ElementType: types.StringType,
 								},
 							},
@@ -234,19 +234,19 @@ func (d *datadogCustomAllocationRuleDataSource) Schema(_ context.Context, _ data
 							Attributes: map[string]schema.Attribute{
 								"condition": schema.StringAttribute{
 									Computed:    true,
-									Description: "The `items` `condition`.",
+									Description: "The condition used to match tags. Valid values are `=`, `!=`, `is`, `is not`, `like`, `in`, `not in`.",
 								},
 								"tag": schema.StringAttribute{
 									Computed:    true,
-									Description: "The `items` `tag`.",
+									Description: "The tag key used in the filter.",
 								},
 								"value": schema.StringAttribute{
 									Computed:    true,
-									Description: "The `items` `value`.",
+									Description: "The tag value used in the filter (for single-value conditions).",
 								},
 								"values": schema.ListAttribute{
 									Computed:    true,
-									Description: "The `items` `values`.",
+									Description: "The list of tag values used in the filter (for multi-value conditions like `in` or `not_in`).",
 									ElementType: types.StringType,
 								},
 							},

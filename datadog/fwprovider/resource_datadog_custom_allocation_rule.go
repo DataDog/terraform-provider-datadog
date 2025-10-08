@@ -32,7 +32,6 @@ type datadogCustomAllocationRuleModel struct {
 	Enabled         types.Bool              `tfsdk:"enabled"`
 	OrderId         types.Int64             `tfsdk:"order_id"`
 	RuleName        types.String            `tfsdk:"rule_name"`
-	Type            types.String            `tfsdk:"type"`
 	Provider        types.List              `tfsdk:"providernames"`
 	CostsToAllocate []*costsToAllocateModel `tfsdk:"costs_to_allocate"`
 	Strategy        *strategyModel          `tfsdk:"strategy"`
@@ -217,50 +216,46 @@ func (r *datadogCustomAllocationRuleResource) Metadata(_ context.Context, reques
 
 func (r *datadogCustomAllocationRuleResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "Provides a Datadog DatadogCustomAllocationRule resource. This can be used to create and manage Datadog datadog_custom_allocation_rule.",
+		Description: "Provides a Datadog Custom Allocation Rule resource. Custom allocation rules allow you to allocate cloud costs based on tags and filters.",
 		Attributes: map[string]schema.Attribute{
 			"enabled": schema.BoolAttribute{
 				Required:    true,
-				Description: "The `attributes` `enabled`. Whether the rule is enabled.",
+				Description: "Whether the custom allocation rule is enabled.",
 			},
 			"order_id": schema.Int64Attribute{
 				Computed:    true,
-				Description: "The `attributes` `order_id`. This field is read-only and returned by the API. Use the `datadog_custom_allocation_rule_order` resource to manage the order of rules.",
+				Description: "The order of the rule in the list of custom allocation rules. This field is read-only. Use the `datadog_custom_allocation_rules` resource to manage rule order.",
 			},
 			"rejected": schema.BoolAttribute{
 				Computed:    true,
-				Description: "The `attributes` `rejected`. This field is read-only and returned by the API after a rule was created, if it failed to apply.",
+				Description: "Whether the rule was rejected by the API during creation due to validation errors. This field is read-only.",
 			},
 			"created": schema.StringAttribute{
 				Computed:    true,
-				Description: "The `attributes` `created`. The timestamp when the rule was created.",
+				Description: "The timestamp (in ISO 8601 format) when the rule was created.",
 			},
 			"last_modified_user_uuid": schema.StringAttribute{
 				Computed:    true,
-				Description: "The `attributes` `last_modified_user_uuid`. The UUID of the user who last modified the rule.",
+				Description: "The UUID of the user who last modified the rule.",
 			},
 			"updated": schema.StringAttribute{
 				Computed:    true,
-				Description: "The `attributes` `updated`. The timestamp of the last update.",
+				Description: "The timestamp (in ISO 8601 format) when the rule was last updated.",
 			},
 			"version": schema.Int64Attribute{
 				Computed:    true,
-				Description: "The `attributes` `version`. The rule version number of the rule. Can be used in the `datadog_custom_allocation_rule_order` resource to manage the order of rules.",
+				Description: "The version number of the rule. This increments each time the rule is updated.",
 			},
 			"rule_name": schema.StringAttribute{
 				Required:    true,
-				Description: "The `attributes` `rule_name`. This field is immutable - changing it will force replacement of the resource.",
+				Description: "The name of the custom allocation rule. This field is immutable - changing it will force replacement of the resource.",
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
 			},
-			"type": schema.StringAttribute{
-				Required:    true,
-				Description: "The `attributes` `type`. The type of the rule.",
-			},
 			"providernames": schema.ListAttribute{
 				Required:    true,
-				Description: "The `attributes` `provider`. The cloud providers the rule should apply to.",
+				Description: "List of cloud providers the rule applies to. Valid values include `aws`, `azure`, and `gcp`.",
 				ElementType: types.StringType,
 			},
 			"id": utils.ResourceIDAttribute(),
@@ -274,19 +269,19 @@ func (r *datadogCustomAllocationRuleResource) Schema(_ context.Context, _ resour
 					Attributes: map[string]schema.Attribute{
 						"condition": schema.StringAttribute{
 							Optional:    true,
-							Description: "The `items` `condition`.",
+							Description: "The condition to match. Valid values are `=`, `!=`, `is`, `is not`, `like`, `in`, `not in`.",
 						},
 						"tag": schema.StringAttribute{
 							Optional:    true,
-							Description: "The `items` `tag`.",
+							Description: "The tag key to filter on (e.g., `aws_product`, `team`, `environment`).",
 						},
 						"value": schema.StringAttribute{
 							Optional:    true,
-							Description: "The `items` `value`. Use this for single-value conditions (not 'in'/'not in').",
+							Description: "The single tag value to match. Use this field for conditions like `=`, `!=`, `is`, `is not`, `like`. Do not use with `in` or `not in` conditions.",
 						},
 						"values": schema.ListAttribute{
 							Optional:    true,
-							Description: "The `items` `values`. Use this for multi-value conditions ('in'/'not in').",
+							Description: "A list of tag values to match. Use this field for `in` or `not in` conditions only. Do not use with single-value conditions.",
 							ElementType: types.StringType,
 						},
 					},
@@ -296,20 +291,20 @@ func (r *datadogCustomAllocationRuleResource) Schema(_ context.Context, _ resour
 				Attributes: map[string]schema.Attribute{
 					"granularity": schema.StringAttribute{
 						Optional:    true,
-						Description: "The `strategy` `granularity`.",
+						Description: "The granularity level for cost allocation. Valid values are `daily` or `monthly`.",
 					},
 					"method": schema.StringAttribute{
 						Optional:    true,
-						Description: "The `strategy` `method`.",
+						Description: "The allocation method. Valid values are `even`, `proportional`, `proportional_timeseries`, or `percent`.",
 					},
 					"allocated_by_tag_keys": schema.ListAttribute{
 						Optional:    true,
-						Description: "The `strategy` `allocated_by_tag_keys`.",
+						Description: "List of tag keys used to allocate costs (e.g., `[\"team\", \"project\"]`). Costs will be distributed across unique values of these tags.",
 						ElementType: types.StringType,
 					},
 					"evaluate_grouped_by_tag_keys": schema.ListAttribute{
 						Optional:    true,
-						Description: "The `strategy` `evaluate_grouped_by_tag_keys`.",
+						Description: "List of tag keys used to group costs before allocation. Costs are grouped by these tag values before applying the allocation strategy.",
 						ElementType: types.StringType,
 					},
 				},
@@ -319,7 +314,7 @@ func (r *datadogCustomAllocationRuleResource) Schema(_ context.Context, _ resour
 							Attributes: map[string]schema.Attribute{
 								"percentage": schema.Int64Attribute{
 									Optional:    true,
-									Description: "The `items` `percentage`. The numeric value format should be a 32bit float value.",
+									Description: "The percentage of costs to allocate to this target as a decimal (e.g., 0.33 for 33%). Used when `method` is `percent`.",
 								},
 							},
 							Blocks: map[string]schema.Block{
@@ -328,11 +323,11 @@ func (r *datadogCustomAllocationRuleResource) Schema(_ context.Context, _ resour
 										Attributes: map[string]schema.Attribute{
 											"key": schema.StringAttribute{
 												Optional:    true,
-												Description: "The `items` `key`.",
+												Description: "The tag key to allocate costs to (e.g., `team`, `environment`).",
 											},
 											"value": schema.StringAttribute{
 												Optional:    true,
-												Description: "The `items` `value`.",
+												Description: "The tag value to allocate costs to (e.g., `backend`, `production`).",
 											},
 										},
 									},
@@ -348,19 +343,19 @@ func (r *datadogCustomAllocationRuleResource) Schema(_ context.Context, _ resour
 							Attributes: map[string]schema.Attribute{
 								"condition": schema.StringAttribute{
 									Optional:    true,
-									Description: "The `items` `condition`.",
+									Description: "The condition to match. Valid values are `=`, `!=`, `is`, `is not`, `like`, `in`, `not in`.",
 								},
 								"tag": schema.StringAttribute{
 									Optional:    true,
-									Description: "The `items` `tag`.",
+									Description: "The tag key to filter on for allocation targets.",
 								},
 								"value": schema.StringAttribute{
 									Optional:    true,
-									Description: "The `items` `value`.",
+									Description: "The single tag value to match for allocation. Use with conditions like `=`, `!=`, `is`, `is not`, `like`.",
 								},
 								"values": schema.ListAttribute{
 									Optional:    true,
-									Description: "The `items` `values`.",
+									Description: "A list of tag values to match for allocation. Use with `in` or `not in` conditions.",
 									ElementType: types.StringType,
 								},
 							},
@@ -374,19 +369,19 @@ func (r *datadogCustomAllocationRuleResource) Schema(_ context.Context, _ resour
 							Attributes: map[string]schema.Attribute{
 								"condition": schema.StringAttribute{
 									Optional:    true,
-									Description: "The `items` `condition`.",
+									Description: "The condition to match. Valid values are `=`, `!=`, `is`, `is not`, `like`, `in`, `not in`.",
 								},
 								"tag": schema.StringAttribute{
 									Optional:    true,
-									Description: "The `items` `tag`.",
+									Description: "The tag key to use as the basis for cost allocation calculations.",
 								},
 								"value": schema.StringAttribute{
 									Optional:    true,
-									Description: "The `items` `value`.",
+									Description: "The single tag value to use for cost calculations. Use with conditions like `=`, `!=`, `is`, `is not`, `like`.",
 								},
 								"values": schema.ListAttribute{
 									Optional:    true,
-									Description: "The `items` `values`.",
+									Description: "A list of tag values to use for cost calculations. Use with `in` or `not in` conditions.",
 									ElementType: types.StringType,
 								},
 							},
@@ -400,19 +395,19 @@ func (r *datadogCustomAllocationRuleResource) Schema(_ context.Context, _ resour
 							Attributes: map[string]schema.Attribute{
 								"condition": schema.StringAttribute{
 									Optional:    true,
-									Description: "The `items` `condition`.",
+									Description: "The condition to match. Valid values are `=`, `!=`, `is`, `is not`, `like`, `in`, `not in`.",
 								},
 								"tag": schema.StringAttribute{
 									Optional:    true,
-									Description: "The `items` `tag`.",
+									Description: "The tag key to filter on when grouping costs for evaluation.",
 								},
 								"value": schema.StringAttribute{
 									Optional:    true,
-									Description: "The `items` `value`.",
+									Description: "The single tag value to match when grouping. Use with conditions like `=`, `!=`, `is`, `is not`, `like`.",
 								},
 								"values": schema.ListAttribute{
 									Optional:    true,
-									Description: "The `items` `values`.",
+									Description: "A list of tag values to match when grouping. Use with `in` or `not in` conditions.",
 									ElementType: types.StringType,
 								},
 							},
@@ -591,9 +586,7 @@ func (r *datadogCustomAllocationRuleResource) updateState(ctx context.Context, s
 				state.RuleName = types.StringValue(*ruleName)
 			}
 
-			if typeVar, ok := attributes.GetTypeOk(); ok {
-				state.Type = types.StringValue(*typeVar)
-			}
+			// Type is not stored in state - it's always "shared" and set in API requests
 
 			if updated, ok := attributes.GetUpdatedOk(); ok {
 				state.Updated = types.StringValue(updated.String())
@@ -792,9 +785,9 @@ func (r *datadogCustomAllocationRuleResource) buildDatadogCustomAllocationRuleRe
 	if !state.RuleName.IsNull() {
 		attributes.SetRuleName(state.RuleName.ValueString())
 	}
-	if !state.Type.IsNull() {
-		attributes.SetType(state.Type.ValueString())
-	}
+
+	// Type is currently always "shared" - hardcoded as it's the only valid value
+	attributes.SetType("shared")
 
 	if !state.Provider.IsNull() {
 		var provider []string

@@ -31,8 +31,6 @@ func TestAccDatadogCustomAllocationRuleBasic(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_custom_allocation_rule.foo", "rule_name", fmt.Sprintf("tf-test-rule-%s", uniq)),
 					resource.TestCheckResourceAttr(
-						"datadog_custom_allocation_rule.foo", "type", "shared"),
-					resource.TestCheckResourceAttr(
 						"datadog_custom_allocation_rule.foo", "providernames.0", "aws"),
 					resource.TestCheckResourceAttr(
 						"datadog_custom_allocation_rule.foo", "strategy.method", "even"),
@@ -144,7 +142,6 @@ resource "datadog_custom_allocation_rule" "foo" {
   enabled       = true
   providernames = ["aws"]
   rule_name     = "tf-test-rule-%s"
-  type          = "shared"
   strategy {
     allocated_by_tag_keys = ["team"]
     based_on_costs {
@@ -169,7 +166,6 @@ resource "datadog_custom_allocation_rule" "foo" {
   enabled       = false
   providernames = ["aws"]
   rule_name     = "tf-test-rule-updated-%s"
-  type          = "shared"
   strategy {
     allocated_by_tag_keys = ["team", "env"]
     based_on_costs {
@@ -199,7 +195,6 @@ resource "datadog_custom_allocation_rule" "foo" {
   enabled       = true
   providernames = ["aws"]
   rule_name     = "tf-test-rule-multiple-%s"
-  type          = "shared"
   strategy {
     allocated_by_tag_keys = ["team"]
     based_on_costs {

@@ -294,7 +294,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_gcp_uc_config_test":                               "cost-management",
 	"tests/resource_datadog_azure_uc_config_test":                             "cost-management",
 	"tests/resource_datadog_custom_allocation_rule_test":                      "cost-management",
-	"tests/resource_datadog_custom_allocation_rule_order_test":                "cost-management",
+	"tests/resource_datadog_custom_allocation_rules_test":                     "cost-management",
 	"tests/resource_datadog_incident_type_test":                               "incidents",
 	"tests/data_source_datadog_incident_type_test":                            "incidents",
 	"tests/resource_datadog_incident_notification_template_test":              "incidents",

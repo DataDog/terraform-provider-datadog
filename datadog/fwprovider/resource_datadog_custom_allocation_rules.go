@@ -49,7 +49,7 @@ func (r *customAllocationRulesResource) Schema(_ context.Context, _ resource.Sch
 		Description: "Provides a Datadog Custom Allocation Rule Order API resource. This can be used to manage the order of Datadog Custom Allocation Rules.",
 		Attributes: map[string]schema.Attribute{
 			"rule_ids": schema.ListAttribute{
-				Description: "The list of Custom Allocation Rule IDs, in order. Rules are executed in the order specified in this list.",
+				Description: "The list of Custom Allocation Rule IDs, in order. Rules are executed in the order specified in this list. Comes from the `id` field on a `datadog_custom_allocation_rule` resource.",
 				ElementType: types.StringType,
 				Required:    true,
 			},

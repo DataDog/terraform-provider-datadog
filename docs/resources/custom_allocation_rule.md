@@ -3,12 +3,12 @@
 page_title: "datadog_custom_allocation_rule Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Provides a Datadog DatadogCustomAllocationRule resource. This can be used to create and manage Datadog datadog_custom_allocation_rule.
+  Provides a Datadog Custom Allocation Rule resource. Custom allocation rules allow you to allocate cloud costs based on tags and filters.
 ---
 
 # datadog_custom_allocation_rule (Resource)
 
-Provides a Datadog DatadogCustomAllocationRule resource. This can be used to create and manage Datadog datadog_custom_allocation_rule.
+Provides a Datadog Custom Allocation Rule resource. Custom allocation rules allow you to allocate cloud costs based on tags and filters.
 
 ## Example Usage
 
@@ -24,7 +24,6 @@ resource "datadog_custom_allocation_rule" "my_allocation_rule" {
   enabled       = true
   providernames = ["aws"]
   rule_name     = "my-allocation-rule"
-  type          = "arbitrary_rule"
   strategy {
     allocated_by_tag_keys = ["team"]
     based_on_costs {
@@ -43,10 +42,9 @@ resource "datadog_custom_allocation_rule" "my_allocation_rule" {
 
 ### Required
 
-- `enabled` (Boolean) The `attributes` `enabled`. Whether the rule is enabled.
-- `providernames` (List of String) The `attributes` `provider`. The cloud providers the rule should apply to.
-- `rule_name` (String) The `attributes` `rule_name`. This field is immutable - changing it will force replacement of the resource.
-- `type` (String) The `attributes` `type`. The type of the rule.
+- `enabled` (Boolean) Whether the custom allocation rule is enabled.
+- `providernames` (List of String) List of cloud providers the rule applies to. Valid values include `aws`, `azure`, and `gcp`.
+- `rule_name` (String) The name of the custom allocation rule. This field is immutable - changing it will force replacement of the resource.
 
 ### Optional
 
@@ -55,23 +53,23 @@ resource "datadog_custom_allocation_rule" "my_allocation_rule" {
 
 ### Read-Only
 
-- `created` (String) The `attributes` `created`. The timestamp when the rule was created.
+- `created` (String) The timestamp (in ISO 8601 format) when the rule was created.
 - `id` (String) The ID of this resource.
-- `last_modified_user_uuid` (String) The `attributes` `last_modified_user_uuid`. The UUID of the user who last modified the rule.
-- `order_id` (Number) The `attributes` `order_id`. This field is read-only and returned by the API. Use the `datadog_custom_allocation_rule_order` resource to manage the order of rules.
-- `rejected` (Boolean) The `attributes` `rejected`. This field is read-only and returned by the API after a rule was created, if it failed to apply.
-- `updated` (String) The `attributes` `updated`. The timestamp of the last update.
-- `version` (Number) The `attributes` `version`. The rule version number of the rule. Can be used in the `datadog_custom_allocation_rule_order` resource to manage the order of rules.
+- `last_modified_user_uuid` (String) The UUID of the user who last modified the rule.
+- `order_id` (Number) The order of the rule in the list of custom allocation rules. This field is read-only. Use the `datadog_custom_allocation_rules` resource to manage rule order.
+- `rejected` (Boolean) Whether the rule was rejected by the API during creation due to validation errors. This field is read-only.
+- `updated` (String) The timestamp (in ISO 8601 format) when the rule was last updated.
+- `version` (Number) The version number of the rule. This increments each time the rule is updated.
 
 <a id="nestedblock--costs_to_allocate"></a>
 ### Nested Schema for `costs_to_allocate`
 
 Optional:
 
-- `condition` (String) The `items` `condition`.
-- `tag` (String) The `items` `tag`.
-- `value` (String) The `items` `value`. Use this for single-value conditions (not 'in'/'not in').
-- `values` (List of String) The `items` `values`. Use this for multi-value conditions ('in'/'not in').
+- `condition` (String) The condition to match. Valid values are `=`, `!=`, `is`, `is not`, `like`, `in`, `not in`.
+- `tag` (String) The tag key to filter on (e.g., `aws_product`, `team`, `environment`).
+- `value` (String) The single tag value to match. Use this field for conditions like `=`, `!=`, `is`, `is not`, `like`. Do not use with `in` or `not in` conditions.
+- `values` (List of String) A list of tag values to match. Use this field for `in` or `not in` conditions only. Do not use with single-value conditions.
 
 
 <a id="nestedblock--strategy"></a>
@@ -81,13 +79,13 @@ Optional:
 
 - `allocated_by` (Block List) (see [below for nested schema](#nestedblock--strategy--allocated_by))
 - `allocated_by_filters` (Block List) (see [below for nested schema](#nestedblock--strategy--allocated_by_filters))
-- `allocated_by_tag_keys` (List of String) The `strategy` `allocated_by_tag_keys`.
+- `allocated_by_tag_keys` (List of String) List of tag keys used to allocate costs (e.g., `["team", "project"]`). Costs will be distributed across unique values of these tags.
 - `based_on_costs` (Block List) (see [below for nested schema](#nestedblock--strategy--based_on_costs))
 - `based_on_timeseries` (Block, Optional) (see [below for nested schema](#nestedblock--strategy--based_on_timeseries))
 - `evaluate_grouped_by_filters` (Block List) (see [below for nested schema](#nestedblock--strategy--evaluate_grouped_by_filters))
-- `evaluate_grouped_by_tag_keys` (List of String) The `strategy` `evaluate_grouped_by_tag_keys`.
-- `granularity` (String) The `strategy` `granularity`.
-- `method` (String) The `strategy` `method`.
+- `evaluate_grouped_by_tag_keys` (List of String) List of tag keys used to group costs before allocation. Costs are grouped by these tag values before applying the allocation strategy.
+- `granularity` (String) The granularity level for cost allocation. Valid values are `daily` or `monthly`.
+- `method` (String) The allocation method. Valid values are `even`, `proportional`, `proportional_timeseries`, or `percent`.
 
 <a id="nestedblock--strategy--allocated_by"></a>
 ### Nested Schema for `strategy.allocated_by`
@@ -95,15 +93,15 @@ Optional:
 Optional:
 
 - `allocated_tags` (Block List) (see [below for nested schema](#nestedblock--strategy--allocated_by--allocated_tags))
-- `percentage` (Number) The `items` `percentage`. The numeric value format should be a 32bit float value.
+- `percentage` (Number) The percentage of costs to allocate to this target as a decimal (e.g., 0.33 for 33%). Used when `method` is `percent`.
 
 <a id="nestedblock--strategy--allocated_by--allocated_tags"></a>
 ### Nested Schema for `strategy.allocated_by.allocated_tags`
 
 Optional:
 
-- `key` (String) The `items` `key`.
-- `value` (String) The `items` `value`.
+- `key` (String) The tag key to allocate costs to (e.g., `team`, `environment`).
+- `value` (String) The tag value to allocate costs to (e.g., `backend`, `production`).
 
 
 
@@ -112,10 +110,10 @@ Optional:
 
 Optional:
 
-- `condition` (String) The `items` `condition`.
-- `tag` (String) The `items` `tag`.
-- `value` (String) The `items` `value`.
-- `values` (List of String) The `items` `values`.
+- `condition` (String) The condition to match. Valid values are `=`, `!=`, `is`, `is not`, `like`, `in`, `not in`.
+- `tag` (String) The tag key to filter on for allocation targets.
+- `value` (String) The single tag value to match for allocation. Use with conditions like `=`, `!=`, `is`, `is not`, `like`.
+- `values` (List of String) A list of tag values to match for allocation. Use with `in` or `not in` conditions.
 
 
 <a id="nestedblock--strategy--based_on_costs"></a>
@@ -123,10 +121,10 @@ Optional:
 
 Optional:
 
-- `condition` (String) The `items` `condition`.
-- `tag` (String) The `items` `tag`.
-- `value` (String) The `items` `value`.
-- `values` (List of String) The `items` `values`.
+- `condition` (String) The condition to match. Valid values are `=`, `!=`, `is`, `is not`, `like`, `in`, `not in`.
+- `tag` (String) The tag key to use as the basis for cost allocation calculations.
+- `value` (String) The single tag value to use for cost calculations. Use with conditions like `=`, `!=`, `is`, `is not`, `like`.
+- `values` (List of String) A list of tag values to use for cost calculations. Use with `in` or `not in` conditions.
 
 
 <a id="nestedblock--strategy--based_on_timeseries"></a>
@@ -138,10 +136,10 @@ Optional:
 
 Optional:
 
-- `condition` (String) The `items` `condition`.
-- `tag` (String) The `items` `tag`.
-- `value` (String) The `items` `value`.
-- `values` (List of String) The `items` `values`.
+- `condition` (String) The condition to match. Valid values are `=`, `!=`, `is`, `is not`, `like`, `in`, `not in`.
+- `tag` (String) The tag key to filter on when grouping costs for evaluation.
+- `value` (String) The single tag value to match when grouping. Use with conditions like `=`, `!=`, `is`, `is not`, `like`.
+- `values` (List of String) A list of tag values to match when grouping. Use with `in` or `not in` conditions.
 
 ## Import
 
@@ -150,5 +148,5 @@ Import is supported using the following syntax:
 The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
 
 ```shell
-terraform import datadog_custom_allocation_rule.new_list ""
+terraform import datadog_custom_allocation_rule.new_list <rule_id>
 ```

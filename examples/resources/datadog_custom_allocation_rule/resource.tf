@@ -9,7 +9,6 @@ resource "datadog_custom_allocation_rule" "my_allocation_rule" {
   enabled       = true
   providernames = ["aws"]
   rule_name     = "my-allocation-rule"
-  type          = "arbitrary_rule"
   strategy {
     allocated_by_tag_keys = ["team"]
     based_on_costs {

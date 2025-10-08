@@ -280,7 +280,6 @@ resource "datadog_custom_allocation_rule" "first" {
   enabled       = true
   providernames = ["aws"]
   rule_name     = "tf-test-order-first-%s"
-  type          = "shared"
   strategy {
     allocated_by_tag_keys = ["team"]
     based_on_costs {
@@ -302,7 +301,6 @@ resource "datadog_custom_allocation_rule" "second" {
   enabled       = true
   providernames = ["aws"]
   rule_name     = "tf-test-order-second-%s"
-  type          = "shared"
   strategy {
     allocated_by_tag_keys = ["team"]
     based_on_costs {
@@ -324,7 +322,6 @@ resource "datadog_custom_allocation_rule" "third" {
   enabled       = true
   providernames = ["aws"]
   rule_name     = "tf-test-order-third-%s"
-  type          = "shared"
   strategy {
     allocated_by_tag_keys = ["team"]
     based_on_costs {
@@ -357,7 +354,6 @@ resource "datadog_custom_allocation_rule" "first" {
   enabled       = true
   providernames = ["aws"]
   rule_name     = "tf-test-order-first-%s"
-  type          = "shared"
   strategy {
     allocated_by_tag_keys = ["team"]
     based_on_costs {
@@ -379,7 +375,6 @@ resource "datadog_custom_allocation_rule" "second" {
   enabled       = true
   providernames = ["aws"]
   rule_name     = "tf-test-order-second-%s"
-  type          = "shared"
   strategy {
     allocated_by_tag_keys = ["team"]
     based_on_costs {
@@ -401,7 +396,6 @@ resource "datadog_custom_allocation_rule" "third" {
   enabled       = true
   providernames = ["aws"]
   rule_name     = "tf-test-order-third-%s"
-  type          = "shared"
   strategy {
     allocated_by_tag_keys = ["team"]
     based_on_costs {
@@ -434,7 +428,6 @@ resource "datadog_custom_allocation_rule" "single" {
   enabled       = true
   providernames = ["aws"]
   rule_name     = "tf-test-order-single-%s"
-  type          = "shared"
   strategy {
     allocated_by_tag_keys = ["team"]
     based_on_costs {

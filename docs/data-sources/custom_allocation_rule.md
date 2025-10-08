@@ -3,12 +3,12 @@
 page_title: "datadog_custom_allocation_rule Data Source - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Use this data source to retrieve information about an existing Datadog datadog_custom_allocation_rule.
+  Use this data source to retrieve information about an existing custom allocation rule.
 ---
 
 # datadog_custom_allocation_rule (Data Source)
 
-Use this data source to retrieve information about an existing Datadog datadog_custom_allocation_rule.
+Use this data source to retrieve information about an existing custom allocation rule.
 
 
 
@@ -17,23 +17,23 @@ Use this data source to retrieve information about an existing Datadog datadog_c
 
 ### Optional
 
-- `rule_id` (Number) The ID of the custom allocation rule.
+- `rule_id` (Number) The ID of the custom allocation rule to retrieve.
 - `strategy` (Block, Optional) (see [below for nested schema](#nestedblock--strategy))
 
 ### Read-Only
 
 - `costs_to_allocate` (Block List) (see [below for nested schema](#nestedblock--costs_to_allocate))
-- `created` (String) The `attributes` `created`.
-- `enabled` (Boolean) The `attributes` `enabled`.
+- `created` (String) The timestamp (in ISO 8601 format) when the rule was created.
+- `enabled` (Boolean) Whether the custom allocation rule is enabled.
 - `id` (String) The ID of this resource.
-- `last_modified_user_uuid` (String) The `attributes` `last_modified_user_uuid`.
-- `order_id` (Number) The `attributes` `order_id`.
-- `providernames` (List of String) The `attributes` `provider`.
-- `rejected` (Boolean) The `attributes` `rejected`.
-- `rule_name` (String) The `attributes` `rule_name`.
-- `type` (String) The `attributes` `type`.
-- `updated` (String) The `attributes` `updated`.
-- `version` (Number) The `attributes` `version`.
+- `last_modified_user_uuid` (String) The UUID of the user who last modified the rule.
+- `order_id` (Number) The order of the rule in the list of custom allocation rules.
+- `providernames` (List of String) List of cloud providers the rule applies to (e.g., `aws`, `azure`, `gcp`).
+- `rejected` (Boolean) Whether the rule was rejected by Datadog due to runtime errors. This field can be updated well after the rule was created. If rejected this rule is treated as disabled until modified where the rejection status is reset.
+- `rule_name` (String) The unique name of the custom allocation rule.
+- `type` (String) The type of the custom allocation rule. This is always `shared` currently.
+- `updated` (String) The timestamp (in ISO 8601 format) when the rule was last updated.
+- `version` (String) The version number of the rule.
 
 <a id="nestedblock--strategy"></a>
 ### Nested Schema for `strategy`
@@ -46,12 +46,12 @@ Read-Only:
 
 - `allocated_by` (Block List) (see [below for nested schema](#nestedblock--strategy--allocated_by))
 - `allocated_by_filters` (Block List) (see [below for nested schema](#nestedblock--strategy--allocated_by_filters))
-- `allocated_by_tag_keys` (List of String) The `strategy` `allocated_by_tag_keys`.
+- `allocated_by_tag_keys` (List of String) List of tag keys used to allocate costs.
 - `based_on_costs` (Block List) (see [below for nested schema](#nestedblock--strategy--based_on_costs))
 - `evaluate_grouped_by_filters` (Block List) (see [below for nested schema](#nestedblock--strategy--evaluate_grouped_by_filters))
-- `evaluate_grouped_by_tag_keys` (List of String) The `strategy` `evaluate_grouped_by_tag_keys`.
-- `granularity` (String) The `strategy` `granularity`.
-- `method` (String) The `strategy` `method`.
+- `evaluate_grouped_by_tag_keys` (List of String) List of tag keys used to group costs before allocation.
+- `granularity` (String) The granularity level for cost allocation (`daily` or `monthly`).
+- `method` (String) The allocation method. Valid values are `even`, `proportional`, `proportional_timeseries`, or `percent`.
 
 <a id="nestedblock--strategy--based_on_timeseries"></a>
 ### Nested Schema for `strategy.based_on_timeseries`
@@ -63,15 +63,15 @@ Read-Only:
 Read-Only:
 
 - `allocated_tags` (Block List) (see [below for nested schema](#nestedblock--strategy--allocated_by--allocated_tags))
-- `percentage` (Number) The `items` `percentage`. The numeric value format should be a 32bit float value.
+- `percentage` (Number) The percentage of costs allocated to this target as a decimal (e.g., 0.33 for 33%).
 
 <a id="nestedblock--strategy--allocated_by--allocated_tags"></a>
 ### Nested Schema for `strategy.allocated_by.allocated_tags`
 
 Read-Only:
 
-- `key` (String) The `items` `key`.
-- `value` (String) The `items` `value`.
+- `key` (String) The tag key for cost allocation.
+- `value` (String) The tag value used in the filter (for single-value conditions).
 
 
 
@@ -80,10 +80,10 @@ Read-Only:
 
 Read-Only:
 
-- `condition` (String) The `items` `condition`.
-- `tag` (String) The `items` `tag`.
-- `value` (String) The `items` `value`.
-- `values` (List of String) The `items` `values`.
+- `condition` (String) The condition used to match tags. Valid values are `=`, `!=`, `is`, `is not`, `like`, `in`, `not in`.
+- `tag` (String) The tag key used in the filter.
+- `value` (String) The tag value used in the filter (for single-value conditions).
+- `values` (List of String) The list of tag values used in the filter (for multi-value conditions like `in` or `not_in`).
 
 
 <a id="nestedblock--strategy--based_on_costs"></a>
@@ -91,10 +91,10 @@ Read-Only:
 
 Read-Only:
 
-- `condition` (String) The `items` `condition`.
-- `tag` (String) The `items` `tag`.
-- `value` (String) The `items` `value`.
-- `values` (List of String) The `items` `values`.
+- `condition` (String) The condition used to match tags. Valid values are `=`, `!=`, `is`, `is not`, `like`, `in`, `not in`.
+- `tag` (String) The tag key used in the filter.
+- `value` (String) The tag value used in the filter (for single-value conditions).
+- `values` (List of String) The list of tag values used in the filter (for multi-value conditions like `in` or `not_in`).
 
 
 <a id="nestedblock--strategy--evaluate_grouped_by_filters"></a>
@@ -102,10 +102,10 @@ Read-Only:
 
 Read-Only:
 
-- `condition` (String) The `items` `condition`.
-- `tag` (String) The `items` `tag`.
-- `value` (String) The `items` `value`.
-- `values` (List of String) The `items` `values`.
+- `condition` (String) The condition used to match tags. Valid values are `=`, `!=`, `is`, `is not`, `like`, `in`, `not in`.
+- `tag` (String) The tag key used in the filter.
+- `value` (String) The tag value used in the filter (for single-value conditions).
+- `values` (List of String) The list of tag values used in the filter (for multi-value conditions like `in` or `not_in`).
 
 
 
@@ -114,7 +114,7 @@ Read-Only:
 
 Read-Only:
 
-- `condition` (String) The `items` `condition`.
-- `tag` (String) The `items` `tag`.
-- `value` (String) The `items` `value`.
-- `values` (List of String) The `items` `values`.
+- `condition` (String) The condition used to match tags. Valid values are `=`, `!=`, `is`, `is not`, `like`, `in`, `not in`.
+- `tag` (String) The tag key used in the filter.
+- `value` (String) The tag value used in the filter (for single-value conditions).
+- `values` (List of String) The list of tag values used in the filter (for multi-value conditions like `in` or `not_in`).
