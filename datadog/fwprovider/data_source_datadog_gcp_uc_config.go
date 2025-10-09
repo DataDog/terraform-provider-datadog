@@ -35,7 +35,6 @@ type datadogGcpUcConfigDataSourceModel struct {
 	ExportPrefix      types.String `tfsdk:"export_prefix"`
 	ExportProjectName types.String `tfsdk:"export_project_name"`
 	Months            types.Int64  `tfsdk:"months"`
-	ProjectId         types.String `tfsdk:"project_id"`
 	ServiceAccount    types.String `tfsdk:"service_account"`
 	Status            types.String `tfsdk:"status"`
 	StatusUpdatedAt   types.String `tfsdk:"status_updated_at"`
@@ -97,10 +96,6 @@ func (d *datadogGcpUcConfigDataSource) Schema(_ context.Context, _ datasource.Sc
 				Computed:    true,
 				Description: "The number of months of historical cost data available for analysis.",
 			},
-			"project_id": schema.StringAttribute{
-				Computed:    true,
-				Description: "The resolved Google Cloud Project ID for the Usage Cost export.",
-			},
 			"service_account": schema.StringAttribute{
 				Computed:    true,
 				Description: "The Google Cloud service account email that Datadog uses to access the Usage Cost export data.",
@@ -161,7 +156,6 @@ func (d *datadogGcpUcConfigDataSource) updateState(ctx context.Context, state *d
 		state.Status = types.StringValue(attributes.GetStatus())
 		state.CreatedAt = types.StringValue(attributes.GetCreatedAt())
 		state.Months = types.Int64Value(int64(attributes.GetMonths()))
-		state.ProjectId = types.StringValue(attributes.GetProjectId())
 		state.StatusUpdatedAt = types.StringValue(attributes.GetStatusUpdatedAt())
 		state.UpdatedAt = types.StringValue(attributes.GetUpdatedAt())
 		state.ErrorMessages, _ = types.ListValueFrom(ctx, types.StringType, attributes.GetErrorMessages())

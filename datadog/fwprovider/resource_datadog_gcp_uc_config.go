@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -34,6 +35,14 @@ type gcpUcConfigModel struct {
 	ExportPrefix      types.String `tfsdk:"export_prefix"`
 	ExportProjectName types.String `tfsdk:"export_project_name"`
 	ServiceAccount    types.String `tfsdk:"service_account"`
+	// Computed fields
+	CreatedAt       types.String `tfsdk:"created_at"`
+	Dataset         types.String `tfsdk:"dataset"`
+	Months          types.Int64  `tfsdk:"months"`
+	Status          types.String `tfsdk:"status"`
+	StatusUpdatedAt types.String `tfsdk:"status_updated_at"`
+	UpdatedAt       types.String `tfsdk:"updated_at"`
+	ErrorMessages   types.List   `tfsdk:"error_messages"`
 }
 
 func NewGcpUcConfigResource() resource.Resource {
@@ -85,6 +94,35 @@ func (r *gcpUcConfigResource) Schema(_ context.Context, _ resource.SchemaRequest
 				PlanModifiers: []planmodifier.String{stringplanmodifier.RequiresReplace()},
 			},
 			"id": utils.ResourceIDAttribute(),
+			"created_at": schema.StringAttribute{
+				Computed:    true,
+				Description: "The timestamp when the GCP UC configuration was created.",
+			},
+			"dataset": schema.StringAttribute{
+				Computed:    true,
+				Description: "The dataset name used for the GCP Usage Cost export.",
+			},
+			"months": schema.Int64Attribute{
+				Computed:    true,
+				Description: "The number of months of usage data to include in the export.",
+			},
+			"status": schema.StringAttribute{
+				Computed:    true,
+				Description: "The current status of the GCP UC configuration.",
+			},
+			"status_updated_at": schema.StringAttribute{
+				Computed:    true,
+				Description: "The timestamp when the configuration status was last updated.",
+			},
+			"updated_at": schema.StringAttribute{
+				Computed:    true,
+				Description: "The timestamp when the GCP UC configuration was last modified.",
+			},
+			"error_messages": schema.ListAttribute{
+				Computed:    true,
+				Description: "List of error messages if the GCP UC configuration encountered any issues during setup or data processing.",
+				ElementType: types.StringType,
+			},
 		},
 	}
 }
@@ -187,6 +225,19 @@ func (r *gcpUcConfigResource) updateStateFromResponseData(ctx context.Context, s
 		state.ExportPrefix = types.StringValue(attributes.GetExportPrefix())
 		state.ExportProjectName = types.StringValue(attributes.GetExportProjectName())
 		state.ServiceAccount = types.StringValue(attributes.GetServiceAccount())
+
+		// Set computed fields
+		state.CreatedAt = types.StringValue(attributes.GetCreatedAt())
+		state.Dataset = types.StringValue(attributes.GetDataset())
+		state.Months = types.Int64Value(int64(attributes.GetMonths()))
+		state.Status = types.StringValue(attributes.GetStatus())
+		state.StatusUpdatedAt = types.StringValue(attributes.GetStatusUpdatedAt())
+		state.UpdatedAt = types.StringValue(attributes.GetUpdatedAt())
+		if errorMessages, ok := attributes.GetErrorMessagesOk(); ok && errorMessages != nil {
+			state.ErrorMessages, _ = types.ListValueFrom(ctx, types.StringType, *errorMessages)
+		} else {
+			state.ErrorMessages = types.ListValueMust(types.StringType, []attr.Value{})
+		}
 	}
 }
 
@@ -200,6 +251,19 @@ func (r *gcpUcConfigResource) updateStateFromGcpUcConfigResponseData(ctx context
 		state.ExportPrefix = types.StringValue(attributes.GetExportPrefix())
 		state.ExportProjectName = types.StringValue(attributes.GetExportProjectName())
 		state.ServiceAccount = types.StringValue(attributes.GetServiceAccount())
+
+		// Set computed fields
+		state.CreatedAt = types.StringValue(attributes.GetCreatedAt())
+		state.Dataset = types.StringValue(attributes.GetDataset())
+		state.Months = types.Int64Value(int64(attributes.GetMonths()))
+		state.Status = types.StringValue(attributes.GetStatus())
+		state.StatusUpdatedAt = types.StringValue(attributes.GetStatusUpdatedAt())
+		state.UpdatedAt = types.StringValue(attributes.GetUpdatedAt())
+		if errorMessages, ok := attributes.GetErrorMessagesOk(); ok && errorMessages != nil {
+			state.ErrorMessages, _ = types.ListValueFrom(ctx, types.StringType, *errorMessages)
+		} else {
+			state.ErrorMessages = types.ListValueMust(types.StringType, []attr.Value{})
+		}
 	}
 }
 

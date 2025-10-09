@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -33,6 +34,12 @@ type azureUcConfigModel struct {
 	Scope               types.String              `tfsdk:"scope"`
 	ActualBillConfig    *actualBillConfigModel    `tfsdk:"actual_bill_config"`
 	AmortizedBillConfig *amortizedBillConfigModel `tfsdk:"amortized_bill_config"`
+	// Computed fields
+	Status          types.String `tfsdk:"status"`
+	CreatedAt       types.String `tfsdk:"created_at"`
+	StatusUpdatedAt types.String `tfsdk:"status_updated_at"`
+	UpdatedAt       types.String `tfsdk:"updated_at"`
+	ErrorMessages   types.List   `tfsdk:"error_messages"`
 }
 
 type actualBillConfigModel struct {
@@ -83,6 +90,28 @@ func (r *azureUcConfigResource) Schema(_ context.Context, _ resource.SchemaReque
 				PlanModifiers: []planmodifier.String{stringplanmodifier.RequiresReplace()},
 			},
 			"id": utils.ResourceIDAttribute(),
+			// Computed fields
+			"status": schema.StringAttribute{
+				Computed:    true,
+				Description: "The current status of the Azure Usage Cost configuration.",
+			},
+			"created_at": schema.StringAttribute{
+				Computed:    true,
+				Description: "The timestamp when the Azure Usage Cost configuration was created.",
+			},
+			"status_updated_at": schema.StringAttribute{
+				Computed:    true,
+				Description: "The timestamp when the configuration status was last updated.",
+			},
+			"updated_at": schema.StringAttribute{
+				Computed:    true,
+				Description: "The timestamp when the Azure Usage Cost configuration was last modified.",
+			},
+			"error_messages": schema.ListAttribute{
+				Computed:    true,
+				Description: "List of error messages if the Azure Usage Cost configuration encountered any issues during setup or data processing.",
+				ElementType: types.StringType,
+			},
 		},
 		Blocks: map[string]schema.Block{
 			"actual_bill_config": schema.SingleNestedBlock{
@@ -246,6 +275,22 @@ func (r *azureUcConfigResource) updateStateFromUCConfigPair(ctx context.Context,
 				if scope, ok := firstConfig.GetScopeOk(); ok {
 					state.Scope = types.StringValue(*scope)
 				}
+				// Populate computed fields
+				if status, ok := firstConfig.GetStatusOk(); ok {
+					state.Status = types.StringValue(*status)
+				}
+				if createdAt, ok := firstConfig.GetCreatedAtOk(); ok {
+					state.CreatedAt = types.StringValue(*createdAt)
+				}
+				if statusUpdatedAt, ok := firstConfig.GetStatusUpdatedAtOk(); ok {
+					state.StatusUpdatedAt = types.StringValue(*statusUpdatedAt)
+				}
+				if updatedAt, ok := firstConfig.GetUpdatedAtOk(); ok {
+					state.UpdatedAt = types.StringValue(*updatedAt)
+				}
+				if errorMessages, ok := firstConfig.GetErrorMessagesOk(); ok && errorMessages != nil {
+					state.ErrorMessages, _ = types.ListValueFrom(ctx, types.StringType, *errorMessages)
+				}
 
 				// Separate configs by dataset_type and populate bill config blocks
 				for _, configData := range *configs {
@@ -306,6 +351,24 @@ func (r *azureUcConfigResource) updateStateFromAzureUCConfigPairsResponse(ctx co
 			}
 			if scope, ok := firstConfig.GetScopeOk(); ok {
 				state.Scope = types.StringValue(*scope)
+			}
+			// Populate computed fields
+			if status, ok := firstConfig.GetStatusOk(); ok {
+				state.Status = types.StringValue(*status)
+			}
+			if createdAt, ok := firstConfig.GetCreatedAtOk(); ok {
+				state.CreatedAt = types.StringValue(*createdAt)
+			}
+			if statusUpdatedAt, ok := firstConfig.GetStatusUpdatedAtOk(); ok {
+				state.StatusUpdatedAt = types.StringValue(*statusUpdatedAt)
+			}
+			if updatedAt, ok := firstConfig.GetUpdatedAtOk(); ok {
+				state.UpdatedAt = types.StringValue(*updatedAt)
+			}
+			if errorMessages, ok := firstConfig.GetErrorMessagesOk(); ok && errorMessages != nil {
+				state.ErrorMessages, _ = types.ListValueFrom(ctx, types.StringType, *errorMessages)
+			} else {
+				state.ErrorMessages = types.ListValueMust(types.StringType, []attr.Value{})
 			}
 
 			// Separate configs by dataset_type and populate bill config blocks
