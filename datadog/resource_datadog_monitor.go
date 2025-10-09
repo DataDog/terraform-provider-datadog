@@ -427,6 +427,13 @@ func resourceDatadogMonitor() *schema.Resource {
 					Optional:         true,
 					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewMonitorOptionsNotificationPresetsFromValue),
 				},
+				"draft_status": {
+					Description: "Indicates whether the monitor is in a draft or published state. draft: The monitor appears as Draft and does not send notifications. published: The monitor is active and evaluates conditions and notify as configured.",
+					Type: schema.TypeString,
+					Optional: true,
+					Default: datadogV1.MONITORDRAFTSTATUS_PUBLISHED,
+					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewMonitorDraftStatusFromValue),
+				},
 			}
 		},
 	}
@@ -808,6 +815,7 @@ func buildMonitorStruct(d utils.Resource) (*datadogV1.Monitor, *datadogV1.Monito
 	m.SetName(d.Get("name").(string))
 	m.SetMessage(d.Get("message").(string))
 	m.SetOptions(o)
+	m.SetDraftStatus(d.Get("draft_status").(datadogV1.MonitorDraftStatus))
 
 	u := datadogV1.NewMonitorUpdateRequest()
 	u.SetType(monitorType)
@@ -815,6 +823,7 @@ func buildMonitorStruct(d utils.Resource) (*datadogV1.Monitor, *datadogV1.Monito
 	u.SetName(d.Get("name").(string))
 	u.SetMessage(d.Get("message").(string))
 	u.SetOptions(o)
+	u.SetDraftStatus(d.Get("draft_status").(datadogV1.MonitorDraftStatus))
 
 	if attr, ok := d.GetOk("priority"); ok {
 		x, _ := strconv.ParseInt(attr.(string), 10, 64)
