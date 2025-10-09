@@ -64,7 +64,7 @@ datadog/**/*datadog_sensitive_data_scanner*      @DataDog/api-reliability @DataD
 datadog/**/*datadog_service_account*             @DataDog/api-reliability @DataDog/team-aaa
 datadog/**/*datadog_software_catalog*            @DataDog/api-reliability @DataDog/service-catalog
 datadog/**/*datadog_spans_metric*                @DataDog/api-reliability @DataDog/apm-trace-intake
-datadog/**/*datadog_synthetics_concurrency_cap*  @DataDog/api-reliability @DataDog/synthetics-managing
+datadog/**/*datadog_synthetics*                  @DataDog/api-reliability @DataDog/synthetics-managing
 datadog/**/*datadog_team*                        @DataDog/api-reliability @DataDog/core-app
 datadog/**/*datadog_user*                        @DataDog/api-reliability @DataDog/team-aaa
 datadog/**/*datadog_webhook*                     @DataDog/api-reliability @DataDog/collaboration-integrations
