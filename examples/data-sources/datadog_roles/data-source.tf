@@ -1,3 +1,3 @@
-data "datadog_roles" "foo" {
-  filter = "Datadog"
+data "datadog_roles" "key_management_roles" {
+  filter = "API Key Manager"
 }

@@ -13,8 +13,8 @@ Use this data source to retrieve information about multiple roles for use in oth
 ## Example Usage
 
 ```terraform
-data "datadog_roles" "foo" {
-  filter = "Datadog"
+data "datadog_roles" "key_management_roles" {
+  filter = "API Key Manager"
 }
 ```
 
