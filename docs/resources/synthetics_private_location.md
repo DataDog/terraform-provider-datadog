@@ -38,6 +38,7 @@ resource "datadog_synthetics_private_location" "private_location" {
 
 - `config` (String, Sensitive) Configuration skeleton for the private location. See installation instructions of the private location on how to use this configuration.
 - `id` (String) The ID of this resource.
+- `restriction_policy_resource_id` (String) Resource ID to use when setting restrictions with a `datadog_restriction_policy` resource.
 
 <a id="nestedblock--metadata"></a>
 ### Nested Schema for `metadata`
