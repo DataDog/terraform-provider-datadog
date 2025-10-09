@@ -48,6 +48,7 @@ Email notifications can be sent to specific users by using the same `@username` 
 
 ### Optional
 
+- `draft_status` (String) Indicates whether the monitor is in a draft or published state. draft: The monitor appears as Draft and does not send notifications. published: The monitor is active and evaluates conditions and notify as configured. Valid values are `draft`, `published`. Defaults to `"published"`.
 - `enable_logs_sample` (Boolean) A boolean indicating whether or not to include a list of log values which triggered the alert. This is only used by log monitors. Defaults to `false`.
 - `enable_samples` (Boolean) Whether or not a list of samples which triggered the alert is included. This is only used by CI Test and Pipeline monitors.
 - `escalation_message` (String) A message to include with a re-notification. Supports the `@username` notification allowed elsewhere.
