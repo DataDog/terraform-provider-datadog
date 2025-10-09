@@ -62,7 +62,7 @@ type strategyModel struct {
 	BasedOnTimeseries        *basedOnTimeseriesModel          `tfsdk:"based_on_timeseries"`
 }
 type allocatedByModel struct {
-	Percentage    types.Int64           `tfsdk:"percentage"`
+	Percentage    types.Float64         `tfsdk:"percentage"`
 	AllocatedTags []*allocatedTagsModel `tfsdk:"allocated_tags"`
 }
 type allocatedTagsModel struct {
@@ -312,7 +312,7 @@ func (r *datadogCustomAllocationRuleResource) Schema(_ context.Context, _ resour
 					"allocated_by": schema.ListNestedBlock{
 						NestedObject: schema.NestedBlockObject{
 							Attributes: map[string]schema.Attribute{
-								"percentage": schema.Int64Attribute{
+								"percentage": schema.Float64Attribute{
 									Optional:    true,
 									Description: "The percentage of costs to allocate to this target as a decimal (e.g., 0.33 for 33%). Used when `method` is `percent`.",
 								},
@@ -653,7 +653,7 @@ func (r *datadogCustomAllocationRuleResource) updateState(ctx context.Context, s
 							}
 						}
 						if percentage, ok := allocatedByDd.GetPercentageOk(); ok {
-							allocatedByTf.Percentage = types.Int64Value(int64(*percentage))
+							allocatedByTf.Percentage = types.Float64Value(*percentage)
 						}
 						allocatedByTfItem = allocatedByTf
 
@@ -840,7 +840,7 @@ func (r *datadogCustomAllocationRuleResource) buildDatadogCustomAllocationRuleRe
 					}
 				}
 
-				percentage := float64(allocatedByTFItem.Percentage.ValueInt64())
+				percentage := allocatedByTFItem.Percentage.ValueFloat64()
 				allocatedByDDItem := datadogV2.NewArbitraryCostUpsertRequestDataAttributesStrategyAllocatedByItems(allocatedTags, percentage)
 				allocatedBy = append(allocatedBy, *allocatedByDDItem)
 			}

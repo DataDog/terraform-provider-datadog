@@ -160,7 +160,7 @@ func (d *datadogCustomAllocationRuleDataSource) Schema(_ context.Context, _ data
 					"allocated_by": schema.ListNestedBlock{
 						NestedObject: schema.NestedBlockObject{
 							Attributes: map[string]schema.Attribute{
-								"percentage": schema.Int64Attribute{
+								"percentage": schema.Float64Attribute{
 									Computed:    true,
 									Description: "The percentage of costs allocated to this target as a decimal (e.g., 0.33 for 33%).",
 								},
@@ -379,7 +379,7 @@ func (d *datadogCustomAllocationRuleDataSource) updateState(ctx context.Context,
 						}
 					}
 					if percentage, ok := allocatedByDd.GetPercentageOk(); ok {
-						allocatedByTf.Percentage = types.Int64Value(int64(*percentage))
+						allocatedByTf.Percentage = types.Float64Value(*percentage)
 					}
 					allocatedByTfItem = allocatedByTf
 
