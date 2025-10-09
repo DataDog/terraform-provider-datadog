@@ -25,18 +25,20 @@ var (
 )
 
 type serviceAccountApplicationKeyResource struct {
-	Api  *datadogV2.ServiceAccountsApi
-	Auth context.Context
+	Api       *datadogV2.ServiceAccountsApi
+	ActionApi *datadogV2.ActionConnectionApi
+	Auth      context.Context
 }
 
 type serviceAccountApplicationKeyModel struct {
-	ID               types.String `tfsdk:"id"`
-	ServiceAccountId types.String `tfsdk:"service_account_id"`
-	Name             types.String `tfsdk:"name"`
-	Key              types.String `tfsdk:"key"`
-	CreatedAt        types.String `tfsdk:"created_at"`
-	Last4            types.String `tfsdk:"last4"`
-	Scopes           types.Set    `tfsdk:"scopes"`
+	ID                     types.String `tfsdk:"id"`
+	ServiceAccountId       types.String `tfsdk:"service_account_id"`
+	Name                   types.String `tfsdk:"name"`
+	Key                    types.String `tfsdk:"key"`
+	CreatedAt              types.String `tfsdk:"created_at"`
+	Last4                  types.String `tfsdk:"last4"`
+	Scopes                 types.Set    `tfsdk:"scopes"`
+	EnableActionsApiAccess types.Bool   `tfsdk:"enable_actions_api_access"`
 }
 
 func NewServiceAccountApplicationKeyResource() resource.Resource {
@@ -46,6 +48,7 @@ func NewServiceAccountApplicationKeyResource() resource.Resource {
 func (r *serviceAccountApplicationKeyResource) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
 	providerData, _ := request.ProviderData.(*FrameworkProvider)
 	r.Api = providerData.DatadogApiInstances.GetServiceAccountsApiV2()
+	r.ActionApi = providerData.DatadogApiInstances.GetActionConnectionApiV2()
 	r.Auth = providerData.Auth
 }
 
@@ -75,6 +78,10 @@ func (r *serviceAccountApplicationKeyResource) Schema(_ context.Context, _ resou
 				Validators: []validator.Set{
 					setvalidator.SizeAtLeast(1),
 				},
+			},
+			"enable_actions_api_access": schema.BoolAttribute{
+				Description: "(Preview) Enable Actions API access for this service account application key. When true, the key will be automatically registered for use with Action Connection, App Builder, and Workflow Automation. Defaults to `false`.",
+				Optional:    true,
 			},
 			"key": schema.StringAttribute{
 				Computed:  true,
@@ -136,6 +143,10 @@ func (r *serviceAccountApplicationKeyResource) Read(ctx context.Context, request
 
 	r.updateStatePartialKey(ctx, &state, &resp)
 
+	// Check Actions API registration status
+	isRegistered := r.isRegisteredForActionsApi(state.ID.ValueString())
+	state.EnableActionsApiAccess = types.BoolValue(isRegistered)
+
 	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
@@ -166,22 +177,32 @@ func (r *serviceAccountApplicationKeyResource) Create(ctx context.Context, reque
 	}
 	r.updateStateFullKey(ctx, &state, &resp)
 
+	// Handle Actions API access registration if enabled
+	if !state.EnableActionsApiAccess.IsNull() && state.EnableActionsApiAccess.ValueBool() {
+		if err := r.registerForActionsApi(state.ID.ValueString()); err != nil {
+			response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error registering service account application key for Actions API access"))
+			return
+		}
+	}
+
 	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
 func (r *serviceAccountApplicationKeyResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
 	var state serviceAccountApplicationKeyModel
-	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
+	var plan serviceAccountApplicationKeyModel
+	response.Diagnostics.Append(request.Plan.Get(ctx, &plan)...)
+	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
 	}
 
-	serviceAccountId := state.ServiceAccountId.ValueString()
+	serviceAccountId := plan.ServiceAccountId.ValueString()
 
-	id := state.ID.ValueString()
+	id := plan.ID.ValueString()
 
-	body, diags := r.buildServiceAccountApplicationKeyUpdateRequestBody(ctx, &state)
+	body, diags := r.buildServiceAccountApplicationKeyUpdateRequestBody(ctx, &plan)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
 		return
@@ -196,10 +217,28 @@ func (r *serviceAccountApplicationKeyResource) Update(ctx context.Context, reque
 		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
 		return
 	}
-	r.updateStatePartialKey(ctx, &state, &resp)
+	r.updateStatePartialKey(ctx, &plan, &resp)
+
+	// Handle Actions API access changes
+	oldEnabled := !state.EnableActionsApiAccess.IsNull() && state.EnableActionsApiAccess.ValueBool()
+	newEnabled := !plan.EnableActionsApiAccess.IsNull() && plan.EnableActionsApiAccess.ValueBool()
+
+	if oldEnabled != newEnabled {
+		if newEnabled {
+			if err := r.registerForActionsApi(plan.ID.ValueString()); err != nil {
+				response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error registering service account application key for Actions API access"))
+				return
+			}
+		} else {
+			if err := r.unregisterFromActionsApi(plan.ID.ValueString()); err != nil {
+				response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error unregistering service account application key from Actions API access"))
+				return
+			}
+		}
+	}
 
 	// Save data into Terraform state
-	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+	response.Diagnostics.Append(response.State.Set(ctx, &plan)...)
 }
 
 func (r *serviceAccountApplicationKeyResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
@@ -211,6 +250,14 @@ func (r *serviceAccountApplicationKeyResource) Delete(ctx context.Context, reque
 	serviceAccountId := state.ServiceAccountId.ValueString()
 
 	id := state.ID.ValueString()
+
+	// Unregister from Actions API if registered
+	if !state.EnableActionsApiAccess.IsNull() && state.EnableActionsApiAccess.ValueBool() {
+		if err := r.unregisterFromActionsApi(state.ID.ValueString()); err != nil {
+			// Log warning but don't fail deletion
+			response.Diagnostics.AddWarning("Failed to unregister from Actions API", err.Error())
+		}
+	}
 
 	httpResp, err := r.Api.DeleteServiceAccountApplicationKey(r.Auth, serviceAccountId, id)
 	if err != nil {
@@ -306,4 +353,22 @@ func (r *serviceAccountApplicationKeyResource) buildServiceAccountApplicationKey
 	}
 
 	return req, diags
+}
+
+// registerForActionsApi registers the service account application key for Actions API access
+func (r *serviceAccountApplicationKeyResource) registerForActionsApi(keyId string) error {
+	_, _, err := r.ActionApi.RegisterAppKey(r.Auth, keyId)
+	return err
+}
+
+// unregisterFromActionsApi unregisters the service account application key from Actions API access
+func (r *serviceAccountApplicationKeyResource) unregisterFromActionsApi(keyId string) error {
+	_, err := r.ActionApi.UnregisterAppKey(r.Auth, keyId)
+	return err
+}
+
+// isRegisteredForActionsApi checks if the service account application key is registered for Actions API access
+func (r *serviceAccountApplicationKeyResource) isRegisteredForActionsApi(keyId string) bool {
+	_, _, err := r.ActionApi.GetAppKeyRegistration(r.Auth, keyId)
+	return err == nil
 }
