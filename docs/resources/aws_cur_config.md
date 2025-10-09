@@ -46,7 +46,12 @@ resource "datadog_aws_cur_config" "foo" {
 
 ### Read-Only
 
+- `created_at` (String) The timestamp when the AWS CUR configuration was created.
+- `error_messages` (List of String) List of error messages if the AWS CUR configuration encountered any issues during setup or data processing.
 - `id` (String) The ID of this resource.
+- `status` (String) The current status of the AWS CUR configuration.
+- `status_updated_at` (String) The timestamp when the configuration status was last updated.
+- `updated_at` (String) The timestamp when the AWS CUR configuration was last modified.
 
 <a id="nestedblock--account_filters"></a>
 ### Nested Schema for `account_filters`

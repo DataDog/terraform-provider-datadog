@@ -30,7 +30,6 @@ Use this data source to retrieve information about a specific Datadog GCP Usage 
 - `export_project_name` (String) The Google Cloud Project ID where the Usage Cost export is configured.
 - `id` (String) The ID of this resource.
 - `months` (Number) The number of months of historical cost data available for analysis.
-- `project_id` (String) The resolved Google Cloud Project ID for the Usage Cost export.
 - `service_account` (String) The Google Cloud service account email that Datadog uses to access the Usage Cost export data.
 - `status` (String) The current status of the GCP Usage Cost configuration (for example, active, error, or archived).
 - `status_updated_at` (String) The timestamp when the configuration status was last updated.

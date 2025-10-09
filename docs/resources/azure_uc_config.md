@@ -52,7 +52,12 @@ resource "datadog_azure_uc_config" "example" {
 
 ### Read-Only
 
+- `created_at` (String) The timestamp when the Azure Usage Cost configuration was created.
+- `error_messages` (List of String) List of error messages if the Azure Usage Cost configuration encountered any issues during setup or data processing.
 - `id` (String) The ID of this resource.
+- `status` (String) The current status of the Azure Usage Cost configuration.
+- `status_updated_at` (String) The timestamp when the configuration status was last updated.
+- `updated_at` (String) The timestamp when the Azure Usage Cost configuration was last modified.
 
 <a id="nestedblock--actual_bill_config"></a>
 ### Nested Schema for `actual_bill_config`

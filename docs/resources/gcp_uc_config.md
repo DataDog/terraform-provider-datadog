@@ -42,7 +42,14 @@ resource "datadog_gcp_uc_config" "example" {
 
 ### Read-Only
 
+- `created_at` (String) The timestamp when the GCP UC configuration was created.
+- `dataset` (String) The dataset name used for the GCP Usage Cost export.
+- `error_messages` (List of String) List of error messages if the GCP UC configuration encountered any issues during setup or data processing.
 - `id` (String) The ID of this resource.
+- `months` (Number) The number of months of usage data to include in the export.
+- `status` (String) The current status of the GCP UC configuration.
+- `status_updated_at` (String) The timestamp when the configuration status was last updated.
+- `updated_at` (String) The timestamp when the GCP UC configuration was last modified.
 
 ## Import
 
