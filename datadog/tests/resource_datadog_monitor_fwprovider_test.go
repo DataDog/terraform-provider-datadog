@@ -137,6 +137,8 @@ func TestAccMonitor_Fwprovider_Basic(t *testing.T) {
 						"datadog_monitor.foo", "tags.*", "foo:bar"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "priority", "3"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "draft_status", "published"),
 				),
 			},
 		},
@@ -319,6 +321,8 @@ func TestAccMonitor_Fwprovider_Updated(t *testing.T) {
 						"datadog_monitor.foo", "tags.*", "foo:bar"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "priority", "3"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "draft_status", "published"),
 				),
 			},
 			{
@@ -377,6 +381,8 @@ func TestAccMonitor_Fwprovider_Updated(t *testing.T) {
 						"datadog_monitor.foo", "tags.*", "quux"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "priority", "1"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "draft_status", "draft"),
 				),
 			},
 			{

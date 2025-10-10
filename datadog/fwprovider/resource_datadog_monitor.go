@@ -89,6 +89,7 @@ type monitorResourceModel struct {
 	MonitorThresholdWindows []MonitorThresholdWindow         `tfsdk:"monitor_threshold_windows"`
 	SchedulingOptions       []SchedulingOption               `tfsdk:"scheduling_options"`
 	Variables               []Variable                       `tfsdk:"variables"`
+	DraftStatus             types.String                     `tfsdk:"draft_status"`
 }
 
 type MonitorThreshold struct {
@@ -434,6 +435,13 @@ func (r *monitorResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 			"validate": schema.BoolAttribute{
 				Description: "If set to `false`, skip the validation call done during plan.",
 				Optional:    true,
+			},
+			"draft_status": schema.StringAttribute{
+				Description: "The type of the monitor. The mapping from these types to the types found in the Datadog Web UI can be found in the Datadog API [documentation page](https://docs.datadoghq.com/api/v1/monitors/#create-a-monitor). Note: The monitor type cannot be changed after a monitor is created.",
+				Optional:    true,
+				Validators: []validator.String{
+					stringvalidator.OneOf(r.getDraftStatusTypes()...),
+				},
 			},
 		},
 		Blocks: map[string]schema.Block{
@@ -909,6 +917,7 @@ func (r *monitorResource) buildMonitorStruct(ctx context.Context, state *monitor
 	query := strings.TrimSpace(state.Query.ValueString())
 
 	monitorType := datadogV1.MonitorType(state.Type.ValueString())
+
 	m := datadogV1.NewMonitor(query, monitorType)
 	m.SetName(state.Name.ValueString())
 	m.SetMessage(message)
@@ -918,6 +927,11 @@ func (r *monitorResource) buildMonitorStruct(ctx context.Context, state *monitor
 	u.SetQuery(query)
 	u.SetName(state.Name.ValueString())
 	u.SetMessage(message)
+
+	if state.DraftStatus.ValueString() != "" {
+		m.SetDraftStatus(datadogV1.MonitorDraftStatus(state.DraftStatus.ValueString()))
+		u.SetDraftStatus(datadogV1.MonitorDraftStatus(state.DraftStatus.ValueString()))
+	}
 
 	if v := r.parseInt(state.Priority); v != nil {
 		m.SetPriority(*v)
@@ -1169,6 +1183,10 @@ func (r *monitorResource) updateState(ctx context.Context, state *monitorResourc
 		}
 	}
 
+	if draftStatus, ok := m.GetDraftStatusOk(); ok && draftStatus != nil {
+		state.DraftStatus = types.StringValue(string(*draftStatus))
+	}
+
 	if priority, ok := m.GetPriorityOk(); ok && priority != nil {
 		state.Priority = types.StringValue(strconv.FormatInt(*priority, 10))
 	}
@@ -1357,6 +1375,10 @@ func (r *monitorResource) getMonitorId(state *monitorResourceModel) (*int64, dia
 
 func (r *monitorResource) getAllowTypes() []string {
 	return enumStrings((*datadogV1.MonitorType)(nil).GetAllowedValues())
+}
+
+func (r *monitorResource) getDraftStatusTypes() []string {
+	return enumStrings((*datadogV1.MonitorDraftStatus)(nil).GetAllowedValues())
 }
 
 func (r *monitorResource) getAllowRenotifyStatus() []string {
