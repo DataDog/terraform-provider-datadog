@@ -282,9 +282,12 @@ func (r *awsCurConfigResource) updateStateFromSingleConfig(ctx context.Context, 
 			state.ErrorMessages = types.ListValueMust(types.StringType, []attr.Value{})
 		}
 
-		// Set AccountFilters if present in API response and was originally specified in config
-		if accountFilters, ok := attributes.GetAccountFiltersOk(); ok && state.AccountFilters != nil {
+		// Set AccountFilters if present in API response and contains data
+		if accountFilters, ok := attributes.GetAccountFiltersOk(); ok && accountFiltersHasData(accountFilters) {
 			state.AccountFilters = mapAccountFilters(ctx, accountFilters)
+		} else if state.AccountFilters == nil {
+			// If API doesn't return account_filters or it's empty, set to nil
+			state.AccountFilters = nil
 		}
 	}
 }
@@ -310,9 +313,12 @@ func (r *awsCurConfigResource) updateStateFromResponseData(ctx context.Context, 
 			state.ErrorMessages = types.ListValueMust(types.StringType, []attr.Value{})
 		}
 
-		// Set AccountFilters if present in API response and was originally specified in config
-		if accountFilters, ok := attributes.GetAccountFiltersOk(); ok && state.AccountFilters != nil {
+		// Set AccountFilters if present in API response and contains data
+		if accountFilters, ok := attributes.GetAccountFiltersOk(); ok && accountFiltersFromResponseDataHasData(accountFilters) {
 			state.AccountFilters = mapAccountFiltersFromResponseData(ctx, accountFilters)
+		} else if state.AccountFilters == nil {
+			// If API doesn't return account_filters or it's empty, set to nil
+			state.AccountFilters = nil
 		}
 	}
 }
