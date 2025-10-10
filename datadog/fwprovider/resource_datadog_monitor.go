@@ -25,6 +25,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64default"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/setplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -439,6 +440,7 @@ func (r *monitorResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 			"draft_status": schema.StringAttribute{
 				Description: "The type of the monitor. The mapping from these types to the types found in the Datadog Web UI can be found in the Datadog API [documentation page](https://docs.datadoghq.com/api/v1/monitors/#create-a-monitor). Note: The monitor type cannot be changed after a monitor is created.",
 				Optional:    true,
+				Default:     stringdefault.StaticString(string(datadogV1.MONITORDRAFTSTATUS_PUBLISHED)),
 				Validators: []validator.String{
 					stringvalidator.OneOf(r.getDraftStatusTypes()...),
 				},

@@ -431,6 +431,7 @@ func resourceDatadogMonitor() *schema.Resource {
 					Description:      "Indicates whether the monitor is in a draft or published state. When set to `draft`, the monitor appears as Draft and does not send notifications. When set to `published`, the monitor is active, and it evaluates conditions and sends notifications as configured.",
 					Type:             schema.TypeString,
 					Optional:         true,
+					Default:          string(datadogV1.MONITORDRAFTSTATUS_PUBLISHED),
 					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewMonitorDraftStatusFromValue),
 				},
 			}
