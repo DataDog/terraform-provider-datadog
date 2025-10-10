@@ -431,7 +431,6 @@ func resourceDatadogMonitor() *schema.Resource {
 					Description:      "Indicates whether the monitor is in a draft or published state. When set to `draft`, the monitor appears as Draft and does not send notifications. When set to `published`, the monitor is active, and it evaluates conditions and sends notifications as configured.",
 					Type:             schema.TypeString,
 					Optional:         true,
-					Default:          datadogV1.MONITORDRAFTSTATUS_PUBLISHED,
 					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewMonitorDraftStatusFromValue),
 				},
 			}
@@ -815,7 +814,6 @@ func buildMonitorStruct(d utils.Resource) (*datadogV1.Monitor, *datadogV1.Monito
 	m.SetName(d.Get("name").(string))
 	m.SetMessage(d.Get("message").(string))
 	m.SetOptions(o)
-	m.SetDraftStatus(d.Get("draft_status").(datadogV1.MonitorDraftStatus))
 
 	u := datadogV1.NewMonitorUpdateRequest()
 	u.SetType(monitorType)
@@ -823,7 +821,11 @@ func buildMonitorStruct(d utils.Resource) (*datadogV1.Monitor, *datadogV1.Monito
 	u.SetName(d.Get("name").(string))
 	u.SetMessage(d.Get("message").(string))
 	u.SetOptions(o)
-	u.SetDraftStatus(d.Get("draft_status").(datadogV1.MonitorDraftStatus))
+
+	if draftStatus, ok := d.GetOk("draft_status"); ok {
+		m.SetDraftStatus(draftStatus.(datadogV1.MonitorDraftStatus))
+		u.SetDraftStatus(draftStatus.(datadogV1.MonitorDraftStatus))
+	}
 
 	if attr, ok := d.GetOk("priority"); ok {
 		x, _ := strconv.ParseInt(attr.(string), 10, 64)
@@ -1045,6 +1047,9 @@ func updateMonitorState(d *schema.ResourceData, meta interface{}, m *datadogV1.M
 		return diag.FromErr(err)
 	}
 	if err := d.Set("type", m.GetType()); err != nil {
+		return diag.FromErr(err)
+	}
+	if err := d.Set("draft_status", m.GetDraftStatus()); err != nil {
 		return diag.FromErr(err)
 	}
 

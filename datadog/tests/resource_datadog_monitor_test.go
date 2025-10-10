@@ -1207,6 +1207,7 @@ resource "datadog_monitor" "foo" {
   require_full_window = true
   tags = ["foo:bar", "baz"]
   notification_preset_name = "hide_query"
+  draft_status = "published"
 }`, uniq)
 }
 

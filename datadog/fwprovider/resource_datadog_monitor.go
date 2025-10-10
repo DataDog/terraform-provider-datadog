@@ -25,7 +25,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64default"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/setplanmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -439,12 +438,14 @@ func (r *monitorResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 			},
 			"draft_status": schema.StringAttribute{
 				Description: "The type of the monitor. The mapping from these types to the types found in the Datadog Web UI can be found in the Datadog API [documentation page](https://docs.datadoghq.com/api/v1/monitors/#create-a-monitor). Note: The monitor type cannot be changed after a monitor is created.",
-				Required:    false,
-				Computed:    true,
-				Default:     stringdefault.StaticString("published"),
+				Optional:    true,
 				Validators: []validator.String{
 					stringvalidator.OneOf(r.getDraftStatusTypes()...),
 				},
+				// DefaultFunc: func() (interface{}, error) {
+				// 	// Logic to determine default value
+				// 	return datadogV1.MONITORDRAFTSTATUS_PUBLISHED, nil
+				// },
 			},
 		},
 		Blocks: map[string]schema.Block{
@@ -920,18 +921,21 @@ func (r *monitorResource) buildMonitorStruct(ctx context.Context, state *monitor
 	query := strings.TrimSpace(state.Query.ValueString())
 
 	monitorType := datadogV1.MonitorType(state.Type.ValueString())
-	draftStatus := datadogV1.MonitorDraftStatus(state.DraftStatus.ValueString())
+
 	m := datadogV1.NewMonitor(query, monitorType)
 	m.SetName(state.Name.ValueString())
 	m.SetMessage(message)
-	m.SetDraftStatus(draftStatus)
 
 	u := datadogV1.NewMonitorUpdateRequest()
 	u.SetType(monitorType)
 	u.SetQuery(query)
 	u.SetName(state.Name.ValueString())
 	u.SetMessage(message)
-	u.SetDraftStatus(draftStatus)
+
+	if state.DraftStatus.ValueString() != "" {
+		m.SetDraftStatus(datadogV1.MonitorDraftStatus(state.DraftStatus.ValueString()))
+		u.SetDraftStatus(datadogV1.MonitorDraftStatus(state.DraftStatus.ValueString()))
+	}
 
 	if v := r.parseInt(state.Priority); v != nil {
 		m.SetPriority(*v)
@@ -1181,6 +1185,10 @@ func (r *monitorResource) updateState(ctx context.Context, state *monitorResourc
 		state.Query = customtypes.TrimSpaceStringValue{
 			StringValue: types.StringValue(*query),
 		}
+	}
+
+	if draftStatus, ok := m.GetDraftStatusOk(); ok && draftStatus != nil {
+		state.DraftStatus = types.StringValue(string(*draftStatus))
 	}
 
 	if priority, ok := m.GetPriorityOk(); ok && priority != nil {
