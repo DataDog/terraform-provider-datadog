@@ -778,13 +778,7 @@ func setModelFromRulesetResp(model *tagPipelineRulesetModel, apiResp datadogV2.R
 				model.Version = types.Int64Value(1)
 			}
 
-			// Handle rules - could be null or an empty array
-			if rulesRaw, ok := attributesRaw["rules"]; ok && rulesRaw != nil {
-				// Rules will be handled below
-				model.Rules = []ruleItem{}
-			} else {
-				model.Rules = []ruleItem{}
-			}
+			model.Rules = []ruleItem{}
 		}
 		return
 	}
