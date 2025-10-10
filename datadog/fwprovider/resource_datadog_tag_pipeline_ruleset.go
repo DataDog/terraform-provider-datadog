@@ -10,6 +10,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-log/tflog"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
@@ -301,14 +302,27 @@ func (r *tagPipelineRulesetResource) Read(ctx context.Context, req resource.Read
 		return
 	}
 
+	tflog.Debug(ctx, "GetRuleset request", map[string]interface{}{"id": state.ID.ValueString()})
 	apiResp, response, err := r.Api.GetRuleset(r.Auth, state.ID.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Error reading ruleset", utils.TranslateClientError(err, response, "").Error())
 		return
 	}
+	if apiResp.Data == nil {
+		tflog.Debug(ctx, "GetRuleset response with empty data")
+	}
+	if apiResp.Data != nil && apiResp.Data.Attributes == nil {
+		tflog.Debug(ctx, "GetRuleset response with empty Attributes", map[string]interface{}{
+			"has_unparsed_object": apiResp.Data.UnparsedObject != nil,
+		})
+	}
+	if apiResp.Data != nil && apiResp.Data.Attributes != nil {
+		attr := apiResp.Data.Attributes
+		tflog.Debug(ctx, "GetRuleset response",
+			map[string]interface{}{"name": attr.Name, "enabled": attr.Enabled, "position": attr.Position, "version": attr.Version, "rules_count": len(attr.Rules)})
+	}
 
 	setModelFromRulesetResp(&state, apiResp)
-
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -367,6 +381,35 @@ func (r *tagPipelineRulesetResource) Delete(ctx context.Context, req resource.De
 
 func (r *tagPipelineRulesetResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, frameworkPath.Root("id"), req, resp)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// For import operations, we need to ensure that computed+optional fields
+	// are properly set to avoid null values that cause plan diffs.
+	// The Terraform framework has issues with Optional+Computed fields during import.
+
+	// Get the current state after import
+	var state tagPipelineRulesetModel
+	resp.Diagnostics.Append(resp.State.Get(ctx, &state)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// Make an API call to get the actual values
+	tflog.Debug(ctx, "ImportState GetRuleset request", map[string]interface{}{"id": state.ID.ValueString()})
+	apiResp, response, err := r.Api.GetRuleset(r.Auth, state.ID.ValueString())
+	if err != nil {
+		resp.Diagnostics.AddError("Error reading ruleset during import", utils.TranslateClientError(err, response, "").Error())
+		return
+	}
+
+	// Set the model fields directly, ensuring no nulls
+	setModelFromRulesetResp(&state, apiResp)
+
+	// Update the state with our populated values
+	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
 // --- Helper functions to map between model and API types ---
@@ -732,19 +775,68 @@ func buildUpdateRulesetRequestFromModel(plan tagPipelineRulesetModel) datadogV2.
 }
 
 func setModelFromRulesetResp(model *tagPipelineRulesetModel, apiResp datadogV2.RulesetResp) {
-	if apiResp.Data == nil || apiResp.Data.Attributes == nil {
+	if apiResp.Data == nil {
 		return
 	}
-	data := apiResp.Data
-	attr := data.Attributes
 
-	// Set top-level fields
+	data := apiResp.Data
+
+	// Set ID first
 	if data.Id != nil && *data.Id != "" {
 		model.ID = types.StringValue(*data.Id)
 	} else {
-		// If API doesn't return an ID, this is an error condition
 		model.ID = types.StringValue("")
 	}
+
+	// Handle case where Attributes is nil but UnparsedObject has the data
+	// This happens when the API returns fields the generated client doesn't know about
+	if data.Attributes == nil && data.UnparsedObject != nil {
+		// Try to extract attributes from UnparsedObject
+		if attributesRaw, ok := data.UnparsedObject["attributes"].(map[string]interface{}); ok {
+			// Extract name
+			if name, ok := attributesRaw["name"].(string); ok && name != "" {
+				model.Name = types.StringValue(name)
+			} else if data.Id != nil {
+				model.Name = types.StringValue(*data.Id)
+			}
+
+			// Extract enabled
+			if enabled, ok := attributesRaw["enabled"].(bool); ok {
+				model.Enabled = types.BoolValue(enabled)
+			} else {
+				model.Enabled = types.BoolValue(true) // default
+			}
+
+			// Extract position
+			if position, ok := attributesRaw["position"].(float64); ok {
+				model.Position = types.Int64Value(int64(position))
+			} else {
+				model.Position = types.Int64Value(0)
+			}
+
+			// Extract version
+			if version, ok := attributesRaw["version"].(float64); ok {
+				model.Version = types.Int64Value(int64(version))
+			} else {
+				model.Version = types.Int64Value(1)
+			}
+
+			// Handle rules - could be null or an empty array
+			if rulesRaw, ok := attributesRaw["rules"]; ok && rulesRaw != nil {
+				// Rules will be handled below
+				model.Rules = []ruleItem{}
+			} else {
+				model.Rules = []ruleItem{}
+			}
+		}
+		return
+	}
+
+	if data.Attributes == nil {
+		return
+	}
+	attr := data.Attributes
+
 	// The ruleset name comes from attributes.name, not from data.Id
 	if attr.Name != "" {
 		model.Name = types.StringValue(attr.Name)
