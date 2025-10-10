@@ -10,7 +10,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/hashicorp/terraform-plugin-log/tflog"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
@@ -306,19 +305,6 @@ func (r *tagPipelineRulesetResource) Read(ctx context.Context, req resource.Read
 	if err != nil {
 		resp.Diagnostics.AddError("Error reading ruleset", utils.TranslateClientError(err, response, "").Error())
 		return
-	}
-	if apiResp.Data == nil {
-		tflog.Debug(ctx, "GetRuleset response with empty data")
-	}
-	if apiResp.Data != nil && apiResp.Data.Attributes == nil {
-		tflog.Debug(ctx, "GetRuleset response with empty Attributes", map[string]interface{}{
-			"has_unparsed_object": apiResp.Data.UnparsedObject != nil,
-		})
-	}
-	if apiResp.Data != nil && apiResp.Data.Attributes != nil {
-		attr := apiResp.Data.Attributes
-		tflog.Debug(ctx, "GetRuleset response",
-			map[string]interface{}{"name": attr.Name, "enabled": attr.Enabled, "position": attr.Position, "version": attr.Version, "rules_count": len(attr.Rules)})
 	}
 
 	setModelFromRulesetResp(&state, apiResp)
