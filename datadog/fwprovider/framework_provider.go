@@ -103,6 +103,8 @@ var Resources = []func() resource.Resource{
 	NewIncidentNotificationRuleResource,
 	NewAwsCurConfigResource,
 	NewGcpUcConfigResource,
+	NewDatadogCustomAllocationRuleResource,
+	NewCustomAllocationRulesResource,
 	NewAzureUcConfigResource,
 }
 
@@ -149,6 +151,7 @@ var Datasources = []func() datasource.DataSource{
 	NewIncidentNotificationRuleDataSource,
 	NewDatadogAwsCurConfigDataSource,
 	NewDatadogGcpUcConfigDataSource,
+	NewDatadogCustomAllocationRuleDataSource,
 	NewDatadogAzureUcConfigDataSource,
 }
 

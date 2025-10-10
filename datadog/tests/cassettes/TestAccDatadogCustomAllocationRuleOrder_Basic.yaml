@@ -1,0 +1,403 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 449
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"costs_to_allocate":[{"condition":"is","tag":"aws_product","value":"AmazonS3"}],"enabled":true,"provider":["aws"],"rule_name":"tf-test-order-second-tf-TestAccDatadogCustomAllocationRuleOrder_Basic-local-1759949403","strategy":{"allocated_by_tag_keys":["team"],"based_on_costs":[{"condition":"is","tag":"aws_product","value":"AmazonS3"}],"granularity":"daily","method":"even"},"type":"shared"},"type":"upsert_arbitrary_rule"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cost/arbitrary_rule
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 656
+        uncompressed: false
+        body: '{"data":{"id":"921","type":"arbitrary_rule","attributes":{"costs_to_allocate":[{"tag":"aws_product","condition":"is","value":"AmazonS3","values":null}],"created":"2025-10-08T18:50:05.372845094Z","enabled":true,"last_modified_user_uuid":"bc462b6c-b8dd-11eb-abf5-da7ad0900001","order_id":1,"provider":["aws"],"rule_name":"tf-test-order-second-tf-TestAccDatadogCustomAllocationRuleOrder_Basic-local-1759949403","strategy":{"method":"even","granularity":"daily","based_on_costs":[{"tag":"aws_product","condition":"is","value":"AmazonS3","values":null}],"allocated_by_tag_keys":["team"]},"type":"shared","updated":"2025-10-08T18:50:05.372845094Z","version":1}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 53.165625ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 450
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"costs_to_allocate":[{"condition":"is","tag":"aws_product","value":"AmazonEC2"}],"enabled":true,"provider":["aws"],"rule_name":"tf-test-order-first-tf-TestAccDatadogCustomAllocationRuleOrder_Basic-local-1759949403","strategy":{"allocated_by_tag_keys":["team"],"based_on_costs":[{"condition":"is","tag":"aws_product","value":"AmazonEC2"}],"granularity":"daily","method":"even"},"type":"shared"},"type":"upsert_arbitrary_rule"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cost/arbitrary_rule
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 657
+        uncompressed: false
+        body: '{"data":{"id":"922","type":"arbitrary_rule","attributes":{"costs_to_allocate":[{"tag":"aws_product","condition":"is","value":"AmazonEC2","values":null}],"created":"2025-10-08T18:50:05.375633303Z","enabled":true,"last_modified_user_uuid":"bc462b6c-b8dd-11eb-abf5-da7ad0900001","order_id":1,"provider":["aws"],"rule_name":"tf-test-order-first-tf-TestAccDatadogCustomAllocationRuleOrder_Basic-local-1759949403","strategy":{"method":"even","granularity":"daily","based_on_costs":[{"tag":"aws_product","condition":"is","value":"AmazonEC2","values":null}],"allocated_by_tag_keys":["team"]},"type":"shared","updated":"2025-10-08T18:50:05.375633303Z","version":1}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 53.173125ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 450
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"costs_to_allocate":[{"condition":"is","tag":"aws_product","value":"AmazonRDS"}],"enabled":true,"provider":["aws"],"rule_name":"tf-test-order-third-tf-TestAccDatadogCustomAllocationRuleOrder_Basic-local-1759949403","strategy":{"allocated_by_tag_keys":["team"],"based_on_costs":[{"condition":"is","tag":"aws_product","value":"AmazonRDS"}],"granularity":"daily","method":"even"},"type":"shared"},"type":"upsert_arbitrary_rule"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cost/arbitrary_rule
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 657
+        uncompressed: false
+        body: '{"data":{"id":"923","type":"arbitrary_rule","attributes":{"costs_to_allocate":[{"tag":"aws_product","condition":"is","value":"AmazonRDS","values":null}],"created":"2025-10-08T18:50:05.398910386Z","enabled":true,"last_modified_user_uuid":"bc462b6c-b8dd-11eb-abf5-da7ad0900001","order_id":2,"provider":["aws"],"rule_name":"tf-test-order-third-tf-TestAccDatadogCustomAllocationRuleOrder_Basic-local-1759949403","strategy":{"method":"even","granularity":"daily","based_on_costs":[{"tag":"aws_product","condition":"is","value":"AmazonRDS","values":null}],"allocated_by_tag_keys":["team"]},"type":"shared","updated":"2025-10-08T18:50:05.398910386Z","version":1}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 75.280334ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cost/arbitrary_rule
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":[{"id":"922","type":"arbitrary_rule","attributes":{"costs_to_allocate":[{"tag":"aws_product","condition":"is","value":"AmazonEC2","values":null}],"created":"2025-10-08T18:50:05.375633Z","enabled":true,"last_modified_user_uuid":"bc462b6c-b8dd-11eb-abf5-da7ad0900001","order_id":1,"processing_status":"processing","provider":["aws"],"rule_name":"tf-test-order-first-tf-TestAccDatadogCustomAllocationRuleOrder_Basic-local-1759949403","strategy":{"method":"even","granularity":"daily","based_on_costs":[{"tag":"aws_product","condition":"is","value":"AmazonEC2","values":null}],"allocated_by_tag_keys":["team"]},"type":"shared","updated":"2025-10-08T18:50:05.375633Z","version":1}},{"id":"921","type":"arbitrary_rule","attributes":{"costs_to_allocate":[{"tag":"aws_product","condition":"is","value":"AmazonS3","values":null}],"created":"2025-10-08T18:50:05.372845Z","enabled":true,"last_modified_user_uuid":"bc462b6c-b8dd-11eb-abf5-da7ad0900001","order_id":1,"processing_status":"processing","provider":["aws"],"rule_name":"tf-test-order-second-tf-TestAccDatadogCustomAllocationRuleOrder_Basic-local-1759949403","strategy":{"method":"even","granularity":"daily","based_on_costs":[{"tag":"aws_product","condition":"is","value":"AmazonS3","values":null}],"allocated_by_tag_keys":["team"]},"type":"shared","updated":"2025-10-08T18:50:05.372845Z","version":1}},{"id":"923","type":"arbitrary_rule","attributes":{"costs_to_allocate":[{"tag":"aws_product","condition":"is","value":"AmazonRDS","values":null}],"created":"2025-10-08T18:50:05.39891Z","enabled":true,"last_modified_user_uuid":"bc462b6c-b8dd-11eb-abf5-da7ad0900001","order_id":2,"processing_status":"processing","provider":["aws"],"rule_name":"tf-test-order-third-tf-TestAccDatadogCustomAllocationRuleOrder_Basic-local-1759949403","strategy":{"method":"even","granularity":"daily","based_on_costs":[{"tag":"aws_product","condition":"is","value":"AmazonRDS","values":null}],"allocated_by_tag_keys":["team"]},"type":"shared","updated":"2025-10-08T18:50:05.39891Z","version":1}}],"meta":{"total_count":3}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 726.849042ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 122
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":[{"id":"922","type":"arbitrary_rule"},{"id":"921","type":"arbitrary_rule"},{"id":"923","type":"arbitrary_rule"}]}
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cost/arbitrary_rule/reorder
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 38.550458ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cost/arbitrary_rule/923
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 683
+        uncompressed: false
+        body: '{"data":{"id":"923","type":"arbitrary_rule","attributes":{"costs_to_allocate":[{"tag":"aws_product","condition":"is","value":"AmazonRDS","values":null}],"created":"2025-10-08T18:50:05.39891Z","enabled":true,"last_modified_user_uuid":"bc462b6c-b8dd-11eb-abf5-da7ad0900001","order_id":3,"processing_status":"processing","provider":["aws"],"rule_name":"tf-test-order-third-tf-TestAccDatadogCustomAllocationRuleOrder_Basic-local-1759949403","strategy":{"method":"even","granularity":"daily","based_on_costs":[{"tag":"aws_product","condition":"is","value":"AmazonRDS","values":null}],"allocated_by_tag_keys":["team"]},"type":"shared","updated":"2025-10-08T18:50:06.177104Z","version":1}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 721.567916ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cost/arbitrary_rule/921
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 683
+        uncompressed: false
+        body: '{"data":{"id":"921","type":"arbitrary_rule","attributes":{"costs_to_allocate":[{"tag":"aws_product","condition":"is","value":"AmazonS3","values":null}],"created":"2025-10-08T18:50:05.372845Z","enabled":true,"last_modified_user_uuid":"bc462b6c-b8dd-11eb-abf5-da7ad0900001","order_id":2,"processing_status":"processing","provider":["aws"],"rule_name":"tf-test-order-second-tf-TestAccDatadogCustomAllocationRuleOrder_Basic-local-1759949403","strategy":{"method":"even","granularity":"daily","based_on_costs":[{"tag":"aws_product","condition":"is","value":"AmazonS3","values":null}],"allocated_by_tag_keys":["team"]},"type":"shared","updated":"2025-10-08T18:50:06.175221Z","version":1}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 725.339375ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cost/arbitrary_rule/922
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 684
+        uncompressed: false
+        body: '{"data":{"id":"922","type":"arbitrary_rule","attributes":{"costs_to_allocate":[{"tag":"aws_product","condition":"is","value":"AmazonEC2","values":null}],"created":"2025-10-08T18:50:05.375633Z","enabled":true,"last_modified_user_uuid":"bc462b6c-b8dd-11eb-abf5-da7ad0900001","order_id":1,"processing_status":"processing","provider":["aws"],"rule_name":"tf-test-order-first-tf-TestAccDatadogCustomAllocationRuleOrder_Basic-local-1759949403","strategy":{"method":"even","granularity":"daily","based_on_costs":[{"tag":"aws_product","condition":"is","value":"AmazonEC2","values":null}],"allocated_by_tag_keys":["team"]},"type":"shared","updated":"2025-10-08T18:50:05.375633Z","version":1}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 910.391417ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cost/arbitrary_rule
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":[{"id":"922","type":"arbitrary_rule","attributes":{"costs_to_allocate":[{"tag":"aws_product","condition":"is","value":"AmazonEC2","values":null}],"created":"2025-10-08T18:50:05.375633Z","enabled":true,"last_modified_user_uuid":"bc462b6c-b8dd-11eb-abf5-da7ad0900001","order_id":1,"processing_status":"processing","provider":["aws"],"rule_name":"tf-test-order-first-tf-TestAccDatadogCustomAllocationRuleOrder_Basic-local-1759949403","strategy":{"method":"even","granularity":"daily","based_on_costs":[{"tag":"aws_product","condition":"is","value":"AmazonEC2","values":null}],"allocated_by_tag_keys":["team"]},"type":"shared","updated":"2025-10-08T18:50:05.375633Z","version":1}},{"id":"921","type":"arbitrary_rule","attributes":{"costs_to_allocate":[{"tag":"aws_product","condition":"is","value":"AmazonS3","values":null}],"created":"2025-10-08T18:50:05.372845Z","enabled":true,"last_modified_user_uuid":"bc462b6c-b8dd-11eb-abf5-da7ad0900001","order_id":2,"processing_status":"processing","provider":["aws"],"rule_name":"tf-test-order-second-tf-TestAccDatadogCustomAllocationRuleOrder_Basic-local-1759949403","strategy":{"method":"even","granularity":"daily","based_on_costs":[{"tag":"aws_product","condition":"is","value":"AmazonS3","values":null}],"allocated_by_tag_keys":["team"]},"type":"shared","updated":"2025-10-08T18:50:06.175221Z","version":1}},{"id":"923","type":"arbitrary_rule","attributes":{"costs_to_allocate":[{"tag":"aws_product","condition":"is","value":"AmazonRDS","values":null}],"created":"2025-10-08T18:50:05.39891Z","enabled":true,"last_modified_user_uuid":"bc462b6c-b8dd-11eb-abf5-da7ad0900001","order_id":3,"processing_status":"processing","provider":["aws"],"rule_name":"tf-test-order-third-tf-TestAccDatadogCustomAllocationRuleOrder_Basic-local-1759949403","strategy":{"method":"even","granularity":"daily","based_on_costs":[{"tag":"aws_product","condition":"is","value":"AmazonRDS","values":null}],"allocated_by_tag_keys":["team"]},"type":"shared","updated":"2025-10-08T18:50:06.177104Z","version":1}}],"meta":{"total_count":3}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 684.553917ms
+    - id: 9
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/cost/arbitrary_rule/921
+        method: DELETE
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 44.5265ms
+    - id: 10
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/cost/arbitrary_rule/922
+        method: DELETE
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 44.533375ms
+    - id: 11
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/cost/arbitrary_rule/923
+        method: DELETE
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 57.781083ms
