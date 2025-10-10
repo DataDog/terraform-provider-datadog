@@ -74,3 +74,9 @@ datadog/**/*datadog_role_users*                  @DataDog/api-reliability @DataD
 datadog/**/*datadog_rum*                         @DataDog/api-reliability @DataDog/rum-backend
 datadog/**/*datadog_security*                    @DataDog/api-reliability @DataDog/k9-cloud-security-platform
 datadog/**/*datadog_app_builder_app*             @DataDog/api-reliability @DataDog/app-builder-backend
+datadog/**/*datadog_custom_allocation_rule*      @DataDog/api-reliability @DataDog/cloud-cost-management
+datadog/**/*datadog_aws_cur_config*              @DataDog/api-reliability @DataDog/cloud-cost-management
+datadog/**/*datadog_azure_uc_config*             @DataDog/api-reliability @DataDog/cloud-cost-management
+datadog/**/*datadog_gcp_uc_config*               @DataDog/api-reliability @DataDog/cloud-cost-management
+datadog/**/*datadog_cost_budget*                 @DataDog/api-reliability @DataDog/cloud-cost-management
+datadog/**/*datadog_tag_pipeline_ruleset*        @DataDog/api-reliability @DataDog/cloud-cost-management
