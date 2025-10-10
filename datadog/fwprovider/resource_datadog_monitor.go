@@ -442,10 +442,6 @@ func (r *monitorResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 				Validators: []validator.String{
 					stringvalidator.OneOf(r.getDraftStatusTypes()...),
 				},
-				// DefaultFunc: func() (interface{}, error) {
-				// 	// Logic to determine default value
-				// 	return datadogV1.MONITORDRAFTSTATUS_PUBLISHED, nil
-				// },
 			},
 		},
 		Blocks: map[string]schema.Block{

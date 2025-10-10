@@ -823,8 +823,9 @@ func buildMonitorStruct(d utils.Resource) (*datadogV1.Monitor, *datadogV1.Monito
 	u.SetOptions(o)
 
 	if draftStatus, ok := d.GetOk("draft_status"); ok {
-		m.SetDraftStatus(draftStatus.(datadogV1.MonitorDraftStatus))
-		u.SetDraftStatus(draftStatus.(datadogV1.MonitorDraftStatus))
+		ds := datadogV1.MonitorDraftStatus(draftStatus.(string))
+		m.SetDraftStatus(ds)
+		u.SetDraftStatus(ds)
 	}
 
 	if attr, ok := d.GetOk("priority"); ok {
