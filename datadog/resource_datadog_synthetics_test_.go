@@ -4349,10 +4349,10 @@ func buildDatadogTestOptions(d *schema.ResourceData) *datadogV1.SyntheticsTestOp
 		}
 
 		if blockedRequestPatterns, ok := d.GetOk("options_list.0.blocked_request_patterns"); ok {
-		    var blockedRequests []string
-		    for _, s := range blockedRequestPatterns.([]interface{}) {
-		        blockedRequests = append(blockedRequests, s.(string))
-		    }
+			var blockedRequests []string
+			for _, s := range blockedRequestPatterns.([]interface{}) {
+				blockedRequests = append(blockedRequests, s.(string))
+			}
 			options.SetBlockedRequestPatterns(blockedRequests)
 		}
 
