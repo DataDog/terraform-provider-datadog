@@ -39,9 +39,10 @@ type observabilityPipelineModel struct {
 }
 
 type configModel struct {
-	Sources      sourcesModel      `tfsdk:"sources"`
-	Processors   processorsModel   `tfsdk:"processors"`
-	Destinations destinationsModel `tfsdk:"destinations"`
+	UseLegacySearchSyntax types.Bool        `tfsdk:"use_legacy_search_syntax"`
+	Sources               sourcesModel      `tfsdk:"sources"`
+	Processors            processorsModel   `tfsdk:"processors"`
+	Destinations          destinationsModel `tfsdk:"destinations"`
 }
 type sourcesModel struct {
 	DatadogAgentSource       []*datadogAgentSourceModel                  `tfsdk:"datadog_agent"`
@@ -667,6 +668,12 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 		Blocks: map[string]schema.Block{
 			"config": schema.SingleNestedBlock{
 				Description: "Configuration for the pipeline.",
+				Attributes: map[string]schema.Attribute{
+					"use_legacy_search_syntax": schema.BoolAttribute{
+						Optional:    true,
+						Description: "Use this field to configure the pipeline's filter queries to use the deprecated search syntax.",
+					},
+				},
 				Blocks: map[string]schema.Block{
 					"sources": schema.SingleNestedBlock{
 						Description: "List of sources.",
@@ -2476,6 +2483,11 @@ func expandPipeline(ctx context.Context, state *observabilityPipelineModel) (*da
 
 	config := datadogV2.NewObservabilityPipelineConfigWithDefaults()
 
+	// Set use_legacy_search_syntax if provided
+	if !state.Config.UseLegacySearchSyntax.IsNull() {
+		config.SetUseLegacySearchSyntax(state.Config.UseLegacySearchSyntax.ValueBool())
+	}
+
 	// Sources
 	for _, s := range state.Config.Sources.DatadogAgentSource {
 		config.Sources = append(config.Sources, expandDatadogAgentSource(s))
@@ -2655,6 +2667,13 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 
 	cfg := attrs.GetConfig()
 	outCfg := configModel{}
+
+	// Handle use_legacy_search_syntax
+	if useLegacySearchSyntax, ok := cfg.GetUseLegacySearchSyntaxOk(); ok {
+		outCfg.UseLegacySearchSyntax = types.BoolValue(*useLegacySearchSyntax)
+	} else {
+		outCfg.UseLegacySearchSyntax = types.BoolNull()
+	}
 
 	for _, src := range cfg.GetSources() {
 

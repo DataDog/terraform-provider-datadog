@@ -3581,3 +3581,106 @@ resource "datadog_observability_pipeline" "pubsub_dest" {
 		},
 	})
 }
+
+func TestAccDatadogObservabilityPipeline_useLegacySearchSyntax(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.legacy_search"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccObservabilityPipelineUseLegacySearchSyntaxConfig(true),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "pipeline with legacy search"),
+					resource.TestCheckResourceAttr(resourceName, "config.use_legacy_search_syntax", "true"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.datadog_agent.0.id", "source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.filter.0.id", "filter-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.datadog_logs.0.id", "destination-1"),
+				),
+			},
+			{
+				Config: testAccObservabilityPipelineUseLegacySearchSyntaxConfig(false),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "pipeline with legacy search"),
+					resource.TestCheckResourceAttr(resourceName, "config.use_legacy_search_syntax", "false"),
+				),
+			},
+			{
+				Config: testAccObservabilityPipelineUseLegacySearchSyntaxConfigUnset(),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "pipeline with legacy search"),
+					// When unset, the attribute should not be present in state
+					resource.TestCheckNoResourceAttr(resourceName, "config.use_legacy_search_syntax"),
+				),
+			},
+		},
+	})
+}
+
+func testAccObservabilityPipelineUseLegacySearchSyntaxConfig(useLegacySearchSyntax bool) string {
+	return fmt.Sprintf(`
+resource "datadog_observability_pipeline" "legacy_search" {
+  name = "pipeline with legacy search"
+
+  config {
+    use_legacy_search_syntax = %t
+
+    sources {
+      datadog_agent {
+        id = "source-1"
+      }
+    }
+
+    processors {
+      filter {
+        id      = "filter-1"
+        include = "service:my-service"
+        inputs  = ["source-1"]
+      }
+    }
+
+    destinations {
+      datadog_logs {
+        id     = "destination-1"
+        inputs = ["filter-1"]
+      }
+    }
+  }
+}`, useLegacySearchSyntax)
+}
+
+func testAccObservabilityPipelineUseLegacySearchSyntaxConfigUnset() string {
+	return `
+resource "datadog_observability_pipeline" "legacy_search" {
+  name = "pipeline with legacy search"
+
+  config {
+    sources {
+      datadog_agent {
+        id = "source-1"
+      }
+    }
+
+    processors {
+      filter {
+        id      = "filter-1"
+        include = "service:my-service"
+        inputs  = ["source-1"]
+      }
+    }
+
+    destinations {
+      datadog_logs {
+        id     = "destination-1"
+        inputs = ["filter-1"]
+      }
+    }
+  }
+}`
+}
