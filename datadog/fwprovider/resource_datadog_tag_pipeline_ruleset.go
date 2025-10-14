@@ -732,30 +732,75 @@ func buildUpdateRulesetRequestFromModel(plan tagPipelineRulesetModel) datadogV2.
 }
 
 func setModelFromRulesetResp(model *tagPipelineRulesetModel, apiResp datadogV2.RulesetResp) {
-	if apiResp.Data == nil || apiResp.Data.Attributes == nil {
+	if apiResp.Data == nil {
 		return
 	}
 	data := apiResp.Data
+
+	// Handle case where Attributes is nil but UnparsedObject has the data
+	// This happens when the API returns fields the generated client doesn't know about (like rules:null)
+	// In this case, the entire Data object fails to unmarshal and everything goes into UnparsedObject
+	if data.Attributes == nil && data.UnparsedObject != nil {
+		// Extract ID from top-level UnparsedObject
+		if id, ok := data.UnparsedObject["id"].(string); ok && id != "" {
+			model.ID = types.StringValue(id)
+		} else {
+			model.ID = types.StringValue("")
+		}
+
+		// Try to extract attributes from UnparsedObject
+		if attributesRaw, ok := data.UnparsedObject["attributes"].(map[string]interface{}); ok {
+			// Extract name
+			if name, ok := attributesRaw["name"].(string); ok && name != "" {
+				model.Name = types.StringValue(name)
+			} else {
+				model.Name = types.StringValue("")
+			}
+
+			// Extract enabled
+			if enabled, ok := attributesRaw["enabled"].(bool); ok {
+				model.Enabled = types.BoolValue(enabled)
+			} else {
+				model.Enabled = types.BoolValue(true) // default
+			}
+
+			// Extract position
+			if position, ok := attributesRaw["position"].(float64); ok {
+				model.Position = types.Int64Value(int64(position))
+			} else {
+				model.Position = types.Int64Value(0)
+			}
+
+			// Extract version
+			if version, ok := attributesRaw["version"].(float64); ok {
+				model.Version = types.Int64Value(int64(version))
+			} else {
+				model.Version = types.Int64Value(1)
+			}
+
+			model.Rules = []ruleItem{}
+		}
+		return
+	}
+
+	if data.Attributes == nil {
+		return
+	}
 	attr := data.Attributes
 
-	// Set top-level fields
+	// Set ID from the proper field when Attributes is available
 	if data.Id != nil && *data.Id != "" {
 		model.ID = types.StringValue(*data.Id)
 	} else {
-		// If API doesn't return an ID, this is an error condition
 		model.ID = types.StringValue("")
 	}
-	// The ruleset name comes from attributes.name, not from data.Id
+
 	if attr.Name != "" {
 		model.Name = types.StringValue(attr.Name)
 	} else {
-		// Fallback: if attributes.name is empty, try using the data.Id (original name)
-		if data.Id != nil {
-			model.Name = types.StringValue(*data.Id)
-		}
+		model.Name = types.StringValue("")
 	}
 	model.Enabled = types.BoolValue(attr.Enabled)
-	// Always set position, even if it's 0 - this prevents "unknown value" errors
 	model.Position = types.Int64Value(int64(attr.Position))
 	model.Version = types.Int64Value(attr.Version)
 
