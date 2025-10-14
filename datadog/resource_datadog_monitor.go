@@ -1056,6 +1056,11 @@ func updateMonitorState(d *schema.ResourceData, meta interface{}, m *datadogV1.M
 		if err := d.Set("draft_status", *v); err != nil {
 			return diag.FromErr(err)
 		}
+	} else {
+		// Workaround to handle the api response missing the draft_status field when monitor-draft-status-api is not enabled
+		if err := d.Set("draft_status", string(datadogV1.MONITORDRAFTSTATUS_PUBLISHED)); err != nil {
+			return diag.FromErr(err)
+		}
 	}
 
 	priorityStr := ""
