@@ -1051,8 +1051,11 @@ func updateMonitorState(d *schema.ResourceData, meta interface{}, m *datadogV1.M
 	if err := d.Set("type", m.GetType()); err != nil {
 		return diag.FromErr(err)
 	}
-	if err := d.Set("draft_status", m.GetDraftStatus()); err != nil {
-		return diag.FromErr(err)
+
+	if v, ok := m.GetDraftStatusOk(); ok && v != nil {
+		if err := d.Set("draft_status", *v); err != nil {
+			return diag.FromErr(err)
+		}
 	}
 
 	priorityStr := ""

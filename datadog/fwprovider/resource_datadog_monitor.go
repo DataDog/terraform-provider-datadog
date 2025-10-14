@@ -440,6 +440,7 @@ func (r *monitorResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 			"draft_status": schema.StringAttribute{
 				Description: "The type of the monitor. The mapping from these types to the types found in the Datadog Web UI can be found in the Datadog API [documentation page](https://docs.datadoghq.com/api/v1/monitors/#create-a-monitor). Note: The monitor type cannot be changed after a monitor is created.",
 				Optional:    true,
+				Computed:    true,
 				Default:     stringdefault.StaticString(string(datadogV1.MONITORDRAFTSTATUS_PUBLISHED)),
 				Validators: []validator.String{
 					stringvalidator.OneOf(r.getDraftStatusTypes()...),
