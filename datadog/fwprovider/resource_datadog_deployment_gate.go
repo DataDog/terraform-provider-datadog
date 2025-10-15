@@ -8,6 +8,8 @@ import (
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
@@ -24,15 +26,13 @@ type deploymentGateResource struct {
 }
 
 type deploymentGateModel struct {
-	ID         types.String    `tfsdk:"id"`
-	DryRun     types.Bool      `tfsdk:"dry_run"`
-	Env        types.String    `tfsdk:"env"`
-	Identifier types.String    `tfsdk:"identifier"`
-	Service    types.String    `tfsdk:"service"`
-	CreatedAt  types.String    `tfsdk:"created_at"`
-	UpdatedAt  types.String    `tfsdk:"updated_at"`
-	CreatedBy  *createdByModel `tfsdk:"created_by"`
-	UpdatedBy  *updatedByModel `tfsdk:"updated_by"`
+	ID         types.String `tfsdk:"id"`
+	DryRun     types.Bool   `tfsdk:"dry_run"`
+	Env        types.String `tfsdk:"env"`
+	Identifier types.String `tfsdk:"identifier"`
+	Service    types.String `tfsdk:"service"`
+	CreatedAt  types.String `tfsdk:"created_at"`
+	UpdatedAt  types.String `tfsdk:"updated_at"`
 }
 
 func NewDeploymentGateResource() resource.Resource {
@@ -60,15 +60,24 @@ func (r *deploymentGateResource) Schema(_ context.Context, _ resource.SchemaRequ
 			"env": schema.StringAttribute{
 				Required:    true,
 				Description: "The `attributes` `env`.",
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
 			},
 			"identifier": schema.StringAttribute{
 				Optional:    true,
 				Computed:    true,
 				Description: "The `attributes` `identifier`.",
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
 			},
 			"service": schema.StringAttribute{
 				Required:    true,
 				Description: "The `attributes` `service`.",
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
 			},
 			"created_at": schema.StringAttribute{
 				Computed:    true,
@@ -79,42 +88,6 @@ func (r *deploymentGateResource) Schema(_ context.Context, _ resource.SchemaRequ
 				Description: "Last update timestamp of the deployment gate.",
 			},
 			"id": utils.ResourceIDAttribute(),
-		},
-		Blocks: map[string]schema.Block{
-			"created_by": schema.SingleNestedBlock{
-				Description: "User who created the deployment gate.",
-				Attributes: map[string]schema.Attribute{
-					"handle": schema.StringAttribute{
-						Computed:    true,
-						Description: "The user handle.",
-					},
-					"id": schema.StringAttribute{
-						Computed:    true,
-						Description: "The user ID.",
-					},
-					"name": schema.StringAttribute{
-						Computed:    true,
-						Description: "The user name.",
-					},
-				},
-			},
-			"updated_by": schema.SingleNestedBlock{
-				Description: "User who last updated the deployment gate.",
-				Attributes: map[string]schema.Attribute{
-					"handle": schema.StringAttribute{
-						Computed:    true,
-						Description: "The user handle.",
-					},
-					"id": schema.StringAttribute{
-						Computed:    true,
-						Description: "The user ID.",
-					},
-					"name": schema.StringAttribute{
-						Computed:    true,
-						Description: "The user name.",
-					},
-				},
-			},
 		},
 	}
 }
@@ -255,46 +228,6 @@ func (r *deploymentGateResource) updateState(ctx context.Context, state *deploym
 
 	if updatedAt, ok := attributes.GetUpdatedAtOk(); ok {
 		state.UpdatedAt = types.StringValue(updatedAt.String())
-	}
-
-	if createdBy, ok := attributes.GetCreatedByOk(); ok {
-		createdByTf := createdByModel{}
-		if handle, ok := createdBy.GetHandleOk(); ok {
-			createdByTf.Handle = types.StringValue(*handle)
-		} else {
-			createdByTf.Handle = types.StringNull()
-		}
-		if id, ok := createdBy.GetIdOk(); ok {
-			createdByTf.Id = types.StringValue(*id)
-		} else {
-			createdByTf.Id = types.StringNull()
-		}
-		if name, ok := createdBy.GetNameOk(); ok {
-			createdByTf.Name = types.StringValue(*name)
-		} else {
-			createdByTf.Name = types.StringNull()
-		}
-		state.CreatedBy = &createdByTf
-	}
-
-	if updatedBy, ok := attributes.GetUpdatedByOk(); ok {
-		updatedByTf := updatedByModel{}
-		if handle, ok := updatedBy.GetHandleOk(); ok {
-			updatedByTf.Handle = types.StringValue(*handle)
-		} else {
-			updatedByTf.Handle = types.StringNull()
-		}
-		if id, ok := updatedBy.GetIdOk(); ok {
-			updatedByTf.Id = types.StringValue(*id)
-		} else {
-			updatedByTf.Id = types.StringNull()
-		}
-		if name, ok := updatedBy.GetNameOk(); ok {
-			updatedByTf.Name = types.StringValue(*name)
-		} else {
-			updatedByTf.Name = types.StringNull()
-		}
-		state.UpdatedBy = &updatedByTf
 	}
 }
 

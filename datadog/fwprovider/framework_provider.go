@@ -616,7 +616,7 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 
 	// Enable Deployment Gates & Rules
 	ddClientConfig.SetUnstableOperationEnabled("v2.CreateDeploymentGate", true)
-	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateDeploymentGat", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateDeploymentGate", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteDeploymentGate", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.GetDeploymentGate", true)
 
