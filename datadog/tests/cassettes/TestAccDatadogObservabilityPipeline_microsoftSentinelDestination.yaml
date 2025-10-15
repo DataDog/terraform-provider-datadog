@@ -1,3 +1,107 @@
 ---
 version: 2
-interactions: []
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 391
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"config":{"destinations":[{"client_id":"a1b2c3d4-5678-90ab-cdef-1234567890ab","dcr_immutable_id":"dcr-uuid-1234","id":"sentinel-dest-1","inputs":["source-1"],"table":"CustomLogsTable","tenant_id":"abcdef12-3456-7890-abcd-ef1234567890","type":"microsoft_sentinel"}],"sources":[{"id":"source-1","type":"datadog_agent"}]},"name":"sentinel-pipeline"},"type":"pipelines"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 451
+        uncompressed: false
+        body: |
+            {"data":{"id":"d94cc39c-24e0-11f0-be81-da7ad0900002","type":"pipelines","attributes":{"name":"sentinel-pipeline","config":{"destinations":[{"client_id":"a1b2c3d4-5678-90ab-cdef-1234567890ab","dcr_immutable_id":"dcr-uuid-1234","id":"sentinel-dest-1","inputs":["source-1"],"table":"CustomLogsTable","tenant_id":"abcdef12-3456-7890-abcd-ef1234567890","type":"microsoft_sentinel"}],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 201 Created
+        code: 201
+        duration: 468.608667ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/d94cc39c-24e0-11f0-be81-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 451
+        uncompressed: false
+        body: |
+            {"data":{"id":"d94cc39c-24e0-11f0-be81-da7ad0900002","type":"pipelines","attributes":{"name":"sentinel-pipeline","config":{"destinations":[{"client_id":"a1b2c3d4-5678-90ab-cdef-1234567890ab","dcr_immutable_id":"dcr-uuid-1234","id":"sentinel-dest-1","inputs":["source-1"],"table":"CustomLogsTable","tenant_id":"abcdef12-3456-7890-abcd-ef1234567890","type":"microsoft_sentinel"}],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 286.340292ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/d94cc39c-24e0-11f0-be81-da7ad0900002
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Content-Type:
+                - application/json
+        status: 204 No Content
+        code: 204
+        duration: 595.607709ms

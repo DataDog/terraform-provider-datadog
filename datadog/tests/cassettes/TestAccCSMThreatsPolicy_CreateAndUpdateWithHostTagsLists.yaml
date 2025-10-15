@@ -1,3 +1,306 @@
 ---
 version: 2
-interactions: []
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 197
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"description":"im a policy","enabled":true,"hostTagsLists":[["host_name:test_host","env:prod"],["host_name:test_host2","env:staging"]],"name":"cdosilpwxl"},"type":"policy"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 452
+        uncompressed: false
+        body: '{"data":{"id":"kkg-54l-qhi","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"im a policy","disabledRulesCount":1,"enabled":true,"hostTagsLists":[["host_name:test_host","env:prod"],["host_name:test_host2","env:staging"]],"monitoringRulesCount":225,"name":"cdosilpwxl","policyVersion":"1","priority":1000000011,"ruleCount":226,"updateDate":1747903164941,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 688.514958ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/kkg-54l-qhi
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 452
+        uncompressed: false
+        body: '{"data":{"id":"kkg-54l-qhi","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"im a policy","disabledRulesCount":1,"enabled":true,"hostTagsLists":[["host_name:test_host","env:prod"],["host_name:test_host2","env:staging"]],"monitoringRulesCount":225,"name":"cdosilpwxl","policyVersion":"1","priority":1000000011,"ruleCount":226,"updateDate":1747903164941,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 241.787209ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/kkg-54l-qhi
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 452
+        uncompressed: false
+        body: '{"data":{"id":"kkg-54l-qhi","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"im a policy","disabledRulesCount":1,"enabled":true,"hostTagsLists":[["host_name:test_host","env:prod"],["host_name:test_host2","env:staging"]],"monitoringRulesCount":225,"name":"cdosilpwxl","policyVersion":"1","priority":1000000011,"ruleCount":226,"updateDate":1747903164941,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 266.160792ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/kkg-54l-qhi
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 452
+        uncompressed: false
+        body: '{"data":{"id":"kkg-54l-qhi","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"im a policy","disabledRulesCount":1,"enabled":true,"hostTagsLists":[["host_name:test_host","env:prod"],["host_name:test_host2","env:staging"]],"monitoringRulesCount":225,"name":"cdosilpwxl","policyVersion":"1","priority":1000000011,"ruleCount":226,"updateDate":1747903164941,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 203.106666ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 239
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"description":"updated policy for terraform provider test","enabled":true,"hostTagsLists":[["host_name:test","env:prod"],["host_name:test_host2","env:test"]],"name":"cdosilpwxl"},"id":"kkg-54l-qhi","type":"policy"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/kkg-54l-qhi
+        method: PATCH
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 475
+        uncompressed: false
+        body: '{"data":{"id":"kkg-54l-qhi","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"updated policy for terraform provider test","disabledRulesCount":1,"enabled":true,"hostTagsLists":[["host_name:test","env:prod"],["host_name:test_host2","env:test"]],"monitoringRulesCount":225,"name":"cdosilpwxl","policyVersion":"2","priority":1000000011,"ruleCount":226,"updateDate":1747903167422,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 653.258417ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/kkg-54l-qhi
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 475
+        uncompressed: false
+        body: '{"data":{"id":"kkg-54l-qhi","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"updated policy for terraform provider test","disabledRulesCount":1,"enabled":true,"hostTagsLists":[["host_name:test","env:prod"],["host_name:test_host2","env:test"]],"monitoringRulesCount":225,"name":"cdosilpwxl","policyVersion":"2","priority":1000000011,"ruleCount":226,"updateDate":1747903167422,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 261.73675ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/kkg-54l-qhi
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 475
+        uncompressed: false
+        body: '{"data":{"id":"kkg-54l-qhi","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"updated policy for terraform provider test","disabledRulesCount":1,"enabled":true,"hostTagsLists":[["host_name:test","env:prod"],["host_name:test_host2","env:test"]],"monitoringRulesCount":225,"name":"cdosilpwxl","policyVersion":"2","priority":1000000011,"ruleCount":226,"updateDate":1747903167422,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 222.797125ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/kkg-54l-qhi
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Content-Type:
+                - application/json
+        status: 204 No Content
+        code: 204
+        duration: 426.242166ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/kkg-54l-qhi
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 34
+        uncompressed: false
+        body: '{"errors":[{"title":"Not Found"}]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 212.18875ms

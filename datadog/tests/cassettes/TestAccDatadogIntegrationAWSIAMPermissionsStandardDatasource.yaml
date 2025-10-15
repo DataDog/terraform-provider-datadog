@@ -1,3 +1,135 @@
 ---
 version: 2
-interactions: []
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/integration/aws/iam_permissions/standard
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":{"id":"permissions","type":"permissions","attributes":{"permissions":["account:GetAccountInformation","airflow:GetEnvironment","airflow:ListEnvironments","apigateway:GET","appsync:ListGraphqlApis","autoscaling:Describe*","backup:List*","batch:DescribeJobDefinitions","bcm-data-exports:GetExport","bcm-data-exports:ListExports","budgets:ViewBudget","cloudfront:GetDistributionConfig","cloudfront:ListDistributions","cloudtrail:DescribeTrails","cloudtrail:GetTrail","cloudtrail:GetTrailStatus","cloudtrail:ListTrails","cloudtrail:LookupEvents","cloudwatch:Describe*","cloudwatch:Get*","cloudwatch:List*","codebuild:BatchGetProjects","codebuild:ListProjects","codedeploy:BatchGet*","codedeploy:List*","cur:DescribeReportDefinitions","directconnect:Describe*","dms:DescribeReplicationInstances","dynamodb:Describe*","dynamodb:List*","ec2:Describe*","ecs:Describe*","ecs:List*","eks:DescribeCluster","eks:ListClusters","elasticache:Describe*","elasticache:List*","elasticfilesystem:DescribeAccessPoints","elasticfilesystem:DescribeFileSystems","elasticfilesystem:DescribeTags","elasticloadbalancing:Describe*","elasticmapreduce:Describe*","elasticmapreduce:List*","es:DescribeElasticsearchDomains","es:ListDomainNames","es:ListTags","events:CreateEventBus","fsx:DescribeFileSystems","fsx:ListTagsForResource","health:DescribeAffectedEntities","health:DescribeEventDetails","health:DescribeEvents","iam:ListAccountAliases","kinesis:Describe*","kinesis:List*","lambda:List*","logs:DeleteSubscriptionFilter","logs:DescribeDeliveries","logs:DescribeDeliverySources","logs:DescribeLogGroups","logs:DescribeLogStreams","logs:DescribeSubscriptionFilters","logs:FilterLogEvents","logs:GetDeliveryDestination","logs:PutSubscriptionFilter","logs:TestMetricFilter","network-firewall:DescribeLoggingConfiguration","network-firewall:ListFirewalls","oam:ListAttachedLinks","oam:ListSinks","organizations:Describe*","organizations:List*","rds:Describe*","rds:List*","redshift-serverless:ListNamespaces","redshift:DescribeClusters","redshift:DescribeLoggingStatus","route53:List*","route53resolver:ListResolverQueryLogConfigs","s3:GetBucketLocation","s3:GetBucketLogging","s3:GetBucketNotification","s3:GetBucketTagging","s3:ListAllMyBuckets","s3:PutBucketNotification","ses:Get*","ses:List*","sns:GetSubscriptionAttributes","sns:List*","sns:Publish","sqs:ListQueues","ssm:GetServiceSetting","ssm:ListCommands","states:DescribeStateMachine","states:ListStateMachines","support:DescribeTrustedAdvisor*","support:RefreshTrustedAdvisorCheck","tag:GetResources","tag:GetTagKeys","tag:GetTagValues","timestream:DescribeEndpoints","wafv2:ListLoggingConfigurations","xray:BatchGetTraces","xray:GetTraceSummaries"]}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 60.686584ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/integration/aws/iam_permissions/standard
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":{"id":"permissions","type":"permissions","attributes":{"permissions":["account:GetAccountInformation","airflow:GetEnvironment","airflow:ListEnvironments","apigateway:GET","appsync:ListGraphqlApis","autoscaling:Describe*","backup:List*","batch:DescribeJobDefinitions","bcm-data-exports:GetExport","bcm-data-exports:ListExports","budgets:ViewBudget","cloudfront:GetDistributionConfig","cloudfront:ListDistributions","cloudtrail:DescribeTrails","cloudtrail:GetTrail","cloudtrail:GetTrailStatus","cloudtrail:ListTrails","cloudtrail:LookupEvents","cloudwatch:Describe*","cloudwatch:Get*","cloudwatch:List*","codebuild:BatchGetProjects","codebuild:ListProjects","codedeploy:BatchGet*","codedeploy:List*","cur:DescribeReportDefinitions","directconnect:Describe*","dms:DescribeReplicationInstances","dynamodb:Describe*","dynamodb:List*","ec2:Describe*","ecs:Describe*","ecs:List*","eks:DescribeCluster","eks:ListClusters","elasticache:Describe*","elasticache:List*","elasticfilesystem:DescribeAccessPoints","elasticfilesystem:DescribeFileSystems","elasticfilesystem:DescribeTags","elasticloadbalancing:Describe*","elasticmapreduce:Describe*","elasticmapreduce:List*","es:DescribeElasticsearchDomains","es:ListDomainNames","es:ListTags","events:CreateEventBus","fsx:DescribeFileSystems","fsx:ListTagsForResource","health:DescribeAffectedEntities","health:DescribeEventDetails","health:DescribeEvents","iam:ListAccountAliases","kinesis:Describe*","kinesis:List*","lambda:List*","logs:DeleteSubscriptionFilter","logs:DescribeDeliveries","logs:DescribeDeliverySources","logs:DescribeLogGroups","logs:DescribeLogStreams","logs:DescribeSubscriptionFilters","logs:FilterLogEvents","logs:GetDeliveryDestination","logs:PutSubscriptionFilter","logs:TestMetricFilter","network-firewall:DescribeLoggingConfiguration","network-firewall:ListFirewalls","oam:ListAttachedLinks","oam:ListSinks","organizations:Describe*","organizations:List*","rds:Describe*","rds:List*","redshift-serverless:ListNamespaces","redshift:DescribeClusters","redshift:DescribeLoggingStatus","route53:List*","route53resolver:ListResolverQueryLogConfigs","s3:GetBucketLocation","s3:GetBucketLogging","s3:GetBucketNotification","s3:GetBucketTagging","s3:ListAllMyBuckets","s3:PutBucketNotification","ses:Get*","ses:List*","sns:GetSubscriptionAttributes","sns:List*","sns:Publish","sqs:ListQueues","ssm:GetServiceSetting","ssm:ListCommands","states:DescribeStateMachine","states:ListStateMachines","support:DescribeTrustedAdvisor*","support:RefreshTrustedAdvisorCheck","tag:GetResources","tag:GetTagKeys","tag:GetTagValues","timestream:DescribeEndpoints","wafv2:ListLoggingConfigurations","xray:BatchGetTraces","xray:GetTraceSummaries"]}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 24.878875ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/integration/aws/iam_permissions/standard
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":{"id":"permissions","type":"permissions","attributes":{"permissions":["account:GetAccountInformation","airflow:GetEnvironment","airflow:ListEnvironments","apigateway:GET","appsync:ListGraphqlApis","autoscaling:Describe*","backup:List*","batch:DescribeJobDefinitions","bcm-data-exports:GetExport","bcm-data-exports:ListExports","budgets:ViewBudget","cloudfront:GetDistributionConfig","cloudfront:ListDistributions","cloudtrail:DescribeTrails","cloudtrail:GetTrail","cloudtrail:GetTrailStatus","cloudtrail:ListTrails","cloudtrail:LookupEvents","cloudwatch:Describe*","cloudwatch:Get*","cloudwatch:List*","codebuild:BatchGetProjects","codebuild:ListProjects","codedeploy:BatchGet*","codedeploy:List*","cur:DescribeReportDefinitions","directconnect:Describe*","dms:DescribeReplicationInstances","dynamodb:Describe*","dynamodb:List*","ec2:Describe*","ecs:Describe*","ecs:List*","eks:DescribeCluster","eks:ListClusters","elasticache:Describe*","elasticache:List*","elasticfilesystem:DescribeAccessPoints","elasticfilesystem:DescribeFileSystems","elasticfilesystem:DescribeTags","elasticloadbalancing:Describe*","elasticmapreduce:Describe*","elasticmapreduce:List*","es:DescribeElasticsearchDomains","es:ListDomainNames","es:ListTags","events:CreateEventBus","fsx:DescribeFileSystems","fsx:ListTagsForResource","health:DescribeAffectedEntities","health:DescribeEventDetails","health:DescribeEvents","iam:ListAccountAliases","kinesis:Describe*","kinesis:List*","lambda:List*","logs:DeleteSubscriptionFilter","logs:DescribeDeliveries","logs:DescribeDeliverySources","logs:DescribeLogGroups","logs:DescribeLogStreams","logs:DescribeSubscriptionFilters","logs:FilterLogEvents","logs:GetDeliveryDestination","logs:PutSubscriptionFilter","logs:TestMetricFilter","network-firewall:DescribeLoggingConfiguration","network-firewall:ListFirewalls","oam:ListAttachedLinks","oam:ListSinks","organizations:Describe*","organizations:List*","rds:Describe*","rds:List*","redshift-serverless:ListNamespaces","redshift:DescribeClusters","redshift:DescribeLoggingStatus","route53:List*","route53resolver:ListResolverQueryLogConfigs","s3:GetBucketLocation","s3:GetBucketLogging","s3:GetBucketNotification","s3:GetBucketTagging","s3:ListAllMyBuckets","s3:PutBucketNotification","ses:Get*","ses:List*","sns:GetSubscriptionAttributes","sns:List*","sns:Publish","sqs:ListQueues","ssm:GetServiceSetting","ssm:ListCommands","states:DescribeStateMachine","states:ListStateMachines","support:DescribeTrustedAdvisor*","support:RefreshTrustedAdvisorCheck","tag:GetResources","tag:GetTagKeys","tag:GetTagValues","timestream:DescribeEndpoints","wafv2:ListLoggingConfigurations","xray:BatchGetTraces","xray:GetTraceSummaries"]}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 19.322709ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/integration/aws/iam_permissions/standard
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":{"id":"permissions","type":"permissions","attributes":{"permissions":["account:GetAccountInformation","airflow:GetEnvironment","airflow:ListEnvironments","apigateway:GET","appsync:ListGraphqlApis","autoscaling:Describe*","backup:List*","batch:DescribeJobDefinitions","bcm-data-exports:GetExport","bcm-data-exports:ListExports","budgets:ViewBudget","cloudfront:GetDistributionConfig","cloudfront:ListDistributions","cloudtrail:DescribeTrails","cloudtrail:GetTrail","cloudtrail:GetTrailStatus","cloudtrail:ListTrails","cloudtrail:LookupEvents","cloudwatch:Describe*","cloudwatch:Get*","cloudwatch:List*","codebuild:BatchGetProjects","codebuild:ListProjects","codedeploy:BatchGet*","codedeploy:List*","cur:DescribeReportDefinitions","directconnect:Describe*","dms:DescribeReplicationInstances","dynamodb:Describe*","dynamodb:List*","ec2:Describe*","ecs:Describe*","ecs:List*","eks:DescribeCluster","eks:ListClusters","elasticache:Describe*","elasticache:List*","elasticfilesystem:DescribeAccessPoints","elasticfilesystem:DescribeFileSystems","elasticfilesystem:DescribeTags","elasticloadbalancing:Describe*","elasticmapreduce:Describe*","elasticmapreduce:List*","es:DescribeElasticsearchDomains","es:ListDomainNames","es:ListTags","events:CreateEventBus","fsx:DescribeFileSystems","fsx:ListTagsForResource","health:DescribeAffectedEntities","health:DescribeEventDetails","health:DescribeEvents","iam:ListAccountAliases","kinesis:Describe*","kinesis:List*","lambda:List*","logs:DeleteSubscriptionFilter","logs:DescribeDeliveries","logs:DescribeDeliverySources","logs:DescribeLogGroups","logs:DescribeLogStreams","logs:DescribeSubscriptionFilters","logs:FilterLogEvents","logs:GetDeliveryDestination","logs:PutSubscriptionFilter","logs:TestMetricFilter","network-firewall:DescribeLoggingConfiguration","network-firewall:ListFirewalls","oam:ListAttachedLinks","oam:ListSinks","organizations:Describe*","organizations:List*","rds:Describe*","rds:List*","redshift-serverless:ListNamespaces","redshift:DescribeClusters","redshift:DescribeLoggingStatus","route53:List*","route53resolver:ListResolverQueryLogConfigs","s3:GetBucketLocation","s3:GetBucketLogging","s3:GetBucketNotification","s3:GetBucketTagging","s3:ListAllMyBuckets","s3:PutBucketNotification","ses:Get*","ses:List*","sns:GetSubscriptionAttributes","sns:List*","sns:Publish","sqs:ListQueues","ssm:GetServiceSetting","ssm:ListCommands","states:DescribeStateMachine","states:ListStateMachines","support:DescribeTrustedAdvisor*","support:RefreshTrustedAdvisorCheck","tag:GetResources","tag:GetTagKeys","tag:GetTagValues","timestream:DescribeEndpoints","wafv2:ListLoggingConfigurations","xray:BatchGetTraces","xray:GetTraceSummaries"]}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 20.471375ms

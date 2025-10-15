@@ -1,3 +1,58 @@
----
 version: 2
-interactions: []
+interactions:
+- request:
+    body: |
+      {"data":{"attributes":{"api_key":"ABCDEFG123","name":"tf-TestAccIntegrationFastlyAccountBasic-local-1680643551","services":[]},"type":"fastly-accounts"}}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/integrations/fastly/accounts
+    method: POST
+    id: 0
+  response:
+    body: |
+      {"data":{"type":"fastly-accounts","id":"1f718c5697fb7f7982e4218ce1640d9a","attributes":{"name":"tf-TestAccIntegrationFastlyAccountBasic-local-1680643551","services":[]}}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 201 Created
+    code: 201
+    duration: "0ms"
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/integrations/fastly/accounts/1f718c5697fb7f7982e4218ce1640d9a
+    method: GET
+    id: 1
+  response:
+    body: |
+      {"data":{"type":"fastly-accounts","attributes":{"name":"tf-TestAccIntegrationFastlyAccountBasic-local-1680643551","services":[]},"id":"1f718c5697fb7f7982e4218ce1640d9a"}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: "0ms"
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - '*/*'
+    url: https://api.datadoghq.com/api/v2/integrations/fastly/accounts/1f718c5697fb7f7982e4218ce1640d9a
+    method: DELETE
+    id: 2
+  response:
+    body: ""
+    headers:
+      Content-Type:
+      - text/html; charset=utf-8
+    status: 204 No Content
+    code: 204
+    duration: "0ms"

@@ -1,3 +1,112 @@
----
 version: 2
-interactions: []
+interactions:
+- request:
+    body: |
+      {"description":"Created using the Datadog provider in Terraform","id":"","is_read_only":true,"layout_type":"free","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardManageStatus-local-1682003483","widgets":[{"definition":{"color_preference":"background","display_format":"countsAndList","hide_zero_counts":true,"query":"env:prod group_status:alert","show_last_triggered":true,"show_priority":false,"sort":"triggered,desc","summary_type":"combined","title_align":"center","title_size":"20","type":"manage_status"},"layout":{"height":43,"width":32,"x":5,"y":5}}]}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/dashboard
+    method: POST
+    id: 0
+  response:
+    body: |
+      {"id":"qrq-h8t-wgg","title":"tf-TestAccDatadogDashboardManageStatus-local-1682003483","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"free","url":"/dashboard/qrq-h8t-wgg/tf-testaccdatadogdashboardmanagestatus-local-1682003483","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"color_preference":"background","display_format":"countsAndList","hide_zero_counts":true,"query":"env:prod group_status:alert","show_last_triggered":true,"show_priority":false,"sort":"triggered,desc","summary_type":"combined","title_align":"center","title_size":"20","type":"manage_status"},"layout":{"height":43,"width":32,"x":5,"y":5},"id":3896701893342651}],"notify_list":[],"created_at":"2023-04-20T15:11:25.076176+00:00","modified_at":"2023-04-20T15:11:25.076176+00:00","template_variable_presets":[],"tags":[]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: "0ms"
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/dashboard/qrq-h8t-wgg
+    method: GET
+    id: 1
+  response:
+    body: |
+      {"id":"qrq-h8t-wgg","title":"tf-TestAccDatadogDashboardManageStatus-local-1682003483","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"free","url":"/dashboard/qrq-h8t-wgg/tf-testaccdatadogdashboardmanagestatus-local-1682003483","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"color_preference":"background","display_format":"countsAndList","hide_zero_counts":true,"query":"env:prod group_status:alert","show_last_triggered":true,"show_priority":false,"sort":"triggered,desc","summary_type":"combined","title_align":"center","title_size":"20","type":"manage_status"},"layout":{"height":43,"width":32,"x":5,"y":5},"id":3896701893342651}],"notify_list":[],"created_at":"2023-04-20T15:11:25.076176+00:00","modified_at":"2023-04-20T15:11:25.076176+00:00","template_variable_presets":[],"tags":[]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: "0ms"
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/dashboard/qrq-h8t-wgg
+    method: GET
+    id: 2
+  response:
+    body: |
+      {"id":"qrq-h8t-wgg","title":"tf-TestAccDatadogDashboardManageStatus-local-1682003483","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"free","url":"/dashboard/qrq-h8t-wgg/tf-testaccdatadogdashboardmanagestatus-local-1682003483","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"color_preference":"background","display_format":"countsAndList","hide_zero_counts":true,"query":"env:prod group_status:alert","show_last_triggered":true,"show_priority":false,"sort":"triggered,desc","summary_type":"combined","title_align":"center","title_size":"20","type":"manage_status"},"layout":{"height":43,"width":32,"x":5,"y":5},"id":3896701893342651}],"notify_list":[],"created_at":"2023-04-20T15:11:25.076176+00:00","modified_at":"2023-04-20T15:11:25.076176+00:00","template_variable_presets":[],"tags":[]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: "0ms"
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/dashboard/qrq-h8t-wgg
+    method: GET
+    id: 3
+  response:
+    body: |
+      {"id":"qrq-h8t-wgg","title":"tf-TestAccDatadogDashboardManageStatus-local-1682003483","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"free","url":"/dashboard/qrq-h8t-wgg/tf-testaccdatadogdashboardmanagestatus-local-1682003483","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"color_preference":"background","display_format":"countsAndList","hide_zero_counts":true,"query":"env:prod group_status:alert","show_last_triggered":true,"show_priority":false,"sort":"triggered,desc","summary_type":"combined","title_align":"center","title_size":"20","type":"manage_status"},"layout":{"height":43,"width":32,"x":5,"y":5},"id":3896701893342651}],"notify_list":[],"created_at":"2023-04-20T15:11:25.076176+00:00","modified_at":"2023-04-20T15:11:25.076176+00:00","template_variable_presets":[],"tags":[]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: "0ms"
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/dashboard/qrq-h8t-wgg
+    method: DELETE
+    id: 4
+  response:
+    body: |
+      {"deleted_dashboard_id":"qrq-h8t-wgg"}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: "0ms"
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/dashboard/qrq-h8t-wgg
+    method: GET
+    id: 5
+  response:
+    body: '{"errors":["Dashboard with ID qrq-h8t-wgg not found"]}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 404 Not Found
+    code: 404
+    duration: "0ms"

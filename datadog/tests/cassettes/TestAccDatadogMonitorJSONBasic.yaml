@@ -1,3 +1,255 @@
 ---
 version: 2
-interactions: []
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 827
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {
+                "name": "tf-TestAccDatadogMonitorJSONBasic-local-1749222067",
+                "type": "service check",
+                "query": "\"ntp.in_sync\".by(\"*\").last(2).count_by_status()",
+                "message": "Change the message triggers if any host's clock goes out of sync with the time given by NTP. The offset threshold is configured in the Agent's 'ntp.yaml' file.\n\nSee [Troubleshooting NTP Offset issues](https://docs.datadoghq.com/agent/troubleshooting/ntp for more details on cause and resolution.",
+                "tags": [],
+                "multi": true,
+                "options": {
+                    "include_tags": true,
+                    "new_host_delay": 150,
+                    "notify_audit": false,
+                    "notify_no_data": false,
+                    "thresholds": {
+                        "warning": 1,
+                        "ok": 1,
+                        "critical": 1
+                    }
+                },
+                "priority": null,
+                "classification": "custom"
+            }
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/monitor
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":174341669,"org_id":321813,"type":"service check","name":"tf-TestAccDatadogMonitorJSONBasic-local-1749222067","message":"Change the message triggers if any host's clock goes out of sync with the time given by NTP. The offset threshold is configured in the Agent's 'ntp.yaml' file.\n\nSee [Troubleshooting NTP Offset issues](https://docs.datadoghq.com/agent/troubleshooting/ntp for more details on cause and resolution.","tags":[],"query":"\"ntp.in_sync\".by(\"*\").last(2).count_by_status()","options":{"include_tags":true,"new_host_delay":150,"notify_audit":false,"notify_no_data":false,"thresholds":{"warning":1,"ok":1,"critical":1},"silenced":{}},"multi":true,"created_at":1749222068000,"created":"2025-06-06T15:01:08.838698+00:00","modified":"2025-06-06T15:01:08.838698+00:00","deleted":null,"priority":null,"restricted_roles":null,"restriction_policy":null,"overall_state_modified":null,"overall_state":"No Data","creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com","id":1445416}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 392.347125ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/monitor/174341669?with_restricted_roles=false
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":174341669,"org_id":321813,"type":"service check","name":"tf-TestAccDatadogMonitorJSONBasic-local-1749222067","message":"Change the message triggers if any host's clock goes out of sync with the time given by NTP. The offset threshold is configured in the Agent's 'ntp.yaml' file.\n\nSee [Troubleshooting NTP Offset issues](https://docs.datadoghq.com/agent/troubleshooting/ntp for more details on cause and resolution.","tags":[],"query":"\"ntp.in_sync\".by(\"*\").last(2).count_by_status()","options":{"include_tags":true,"new_host_delay":150,"notify_audit":false,"notify_no_data":false,"thresholds":{"warning":1,"ok":1,"critical":1},"silenced":{}},"multi":true,"created_at":1749222068000,"created":"2025-06-06T15:01:08.838698+00:00","modified":"2025-06-06T15:01:08.838698+00:00","deleted":null,"priority":null,"overall_state_modified":null,"overall_state":"No Data","creator":{"name":"frog","email":"frog@datadoghq.com","handle":"frog@datadoghq.com","id":1445416}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 195.241125ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/monitor/174341669?with_restricted_roles=false
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":174341669,"org_id":321813,"type":"service check","name":"tf-TestAccDatadogMonitorJSONBasic-local-1749222067","message":"Change the message triggers if any host's clock goes out of sync with the time given by NTP. The offset threshold is configured in the Agent's 'ntp.yaml' file.\n\nSee [Troubleshooting NTP Offset issues](https://docs.datadoghq.com/agent/troubleshooting/ntp for more details on cause and resolution.","tags":[],"query":"\"ntp.in_sync\".by(\"*\").last(2).count_by_status()","options":{"include_tags":true,"new_host_delay":150,"notify_audit":false,"notify_no_data":false,"thresholds":{"warning":1,"ok":1,"critical":1},"silenced":{}},"multi":true,"created_at":1749222068000,"created":"2025-06-06T15:01:08.838698+00:00","modified":"2025-06-06T15:01:08.838698+00:00","deleted":null,"priority":null,"overall_state_modified":null,"overall_state":"No Data","creator":{"name":"frog","email":"frog@datadoghq.com","handle":"frog@datadoghq.com","id":1445416}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 263.369458ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 835
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {
+                "name": "tf-TestAccDatadogMonitorJSONBasic-local-1749222067-updated",
+                "type": "service check",
+                "query": "\"ntp.in_sync\".by(\"*\").last(2).count_by_status()",
+                "message": "Change the message triggers if any host's clock goes out of sync with the time given by NTP. The offset threshold is configured in the Agent's 'ntp.yaml' file.\n\nSee [Troubleshooting NTP Offset issues](https://docs.datadoghq.com/agent/troubleshooting/ntp for more details on cause and resolution.",
+                "tags": [],
+                "multi": true,
+                "options": {
+                    "include_tags": true,
+                    "new_host_delay": 150,
+                    "notify_audit": false,
+                    "notify_no_data": false,
+                    "thresholds": {
+                        "warning": 1,
+                        "ok": 1,
+                        "critical": 1
+                    }
+                },
+                "priority": null,
+                "classification": "custom"
+            }
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/monitor/174341669
+        method: PUT
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":174341669,"org_id":321813,"type":"service check","name":"tf-TestAccDatadogMonitorJSONBasic-local-1749222067-updated","message":"Change the message triggers if any host's clock goes out of sync with the time given by NTP. The offset threshold is configured in the Agent's 'ntp.yaml' file.\n\nSee [Troubleshooting NTP Offset issues](https://docs.datadoghq.com/agent/troubleshooting/ntp for more details on cause and resolution.","tags":[],"query":"\"ntp.in_sync\".by(\"*\").last(2).count_by_status()","options":{"include_tags":true,"new_host_delay":150,"notify_audit":false,"notify_no_data":false,"thresholds":{"warning":1,"ok":1,"critical":1},"silenced":{}},"multi":true,"created_at":1749222068000,"created":"2025-06-06T15:01:08.838698+00:00","modified":"2025-06-06T15:01:10.912271+00:00","deleted":null,"priority":null,"restricted_roles":null,"restriction_policy":null,"overall_state_modified":null,"overall_state":"No Data"}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 485.084ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/monitor/174341669?with_restricted_roles=false
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":174341669,"org_id":321813,"type":"service check","name":"tf-TestAccDatadogMonitorJSONBasic-local-1749222067-updated","message":"Change the message triggers if any host's clock goes out of sync with the time given by NTP. The offset threshold is configured in the Agent's 'ntp.yaml' file.\n\nSee [Troubleshooting NTP Offset issues](https://docs.datadoghq.com/agent/troubleshooting/ntp for more details on cause and resolution.","tags":[],"query":"\"ntp.in_sync\".by(\"*\").last(2).count_by_status()","options":{"include_tags":true,"new_host_delay":150,"notify_audit":false,"notify_no_data":false,"thresholds":{"warning":1,"ok":1,"critical":1},"silenced":{}},"multi":true,"created_at":1749222068000,"created":"2025-06-06T15:01:08.838698+00:00","modified":"2025-06-06T15:01:10.912271+00:00","deleted":null,"priority":null,"overall_state_modified":null,"overall_state":"No Data","creator":{"name":"frog","email":"frog@datadoghq.com","handle":"frog@datadoghq.com","id":1445416}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 165.720458ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/monitor/174341669
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"deleted_monitor_id":174341669}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 242.043791ms

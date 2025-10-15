@@ -1,3 +1,88 @@
----
 version: 2
-interactions: []
+interactions:
+- request:
+    body: |
+      {"end":1735765200,"message":"tf-TestAccDatadogDowntime_BasicMultiScope-local-1650558281","monitor_tags":["*"],"recurrence":{"period":1,"type":"days"},"scope":["host:A","host:B"],"start":1735707600,"timezone":"UTC"}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/downtime
+    method: POST
+    id: 0
+  response:
+    body: '{"recurrence":{"until_date":null,"until_occurrences":null,"week_days":null,"type":"days","period":1},"end":1735765200,"monitor_tags":["*"],"child_id":null,"canceled":null,"monitor_id":null,"mute_first_recovery_notification":false,"created":1650558324,"org_id":321813,"modified":1650558324,"disabled":false,"start":1735707600,"creator_id":1445416,"parent_id":null,"timezone":"UTC","active":false,"scope":["host:A","host:B"],"message":"tf-TestAccDatadogDowntime_BasicMultiScope-local-1650558281","downtime_type":2,"id":1895959477,"updater_id":null}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: "0ms"
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/downtime/1895959477
+    method: GET
+    id: 1
+  response:
+    body: '{"recurrence":{"until_date":null,"until_occurrences":null,"week_days":null,"type":"days","period":1},"end":1735765200,"monitor_tags":["*"],"child_id":null,"canceled":null,"monitor_id":null,"mute_first_recovery_notification":false,"created":1650558324,"org_id":321813,"modified":1650558324,"disabled":false,"start":1735707600,"creator_id":1445416,"parent_id":null,"timezone":"UTC","active":false,"scope":["host:A","host:B"],"message":"tf-TestAccDatadogDowntime_BasicMultiScope-local-1650558281","downtime_type":2,"id":1895959477,"updater_id":null}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: "0ms"
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/downtime/1895959477
+    method: GET
+    id: 2
+  response:
+    body: '{"recurrence":{"until_date":null,"until_occurrences":null,"week_days":null,"type":"days","period":1},"end":1735765200,"monitor_tags":["*"],"child_id":null,"canceled":null,"monitor_id":null,"mute_first_recovery_notification":false,"created":1650558324,"org_id":321813,"modified":1650558324,"disabled":false,"start":1735707600,"creator_id":1445416,"parent_id":null,"timezone":"UTC","active":false,"scope":["host:A","host:B"],"message":"tf-TestAccDatadogDowntime_BasicMultiScope-local-1650558281","downtime_type":2,"id":1895959477,"updater_id":null}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: "0ms"
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - '*/*'
+    url: https://api.datadoghq.com/api/v1/downtime/1895959477
+    method: DELETE
+    id: 3
+  response:
+    body: ""
+    headers: {}
+    status: 204 No Content
+    code: 204
+    duration: "0ms"
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/downtime/1895959477
+    method: GET
+    id: 4
+  response:
+    body: '{"recurrence":{"until_date":null,"until_occurrences":null,"week_days":null,"type":"days","period":1},"end":1735765200,"monitor_tags":["*"],"child_id":null,"canceled":1650558391,"monitor_id":null,"mute_first_recovery_notification":false,"created":1650558324,"org_id":321813,"modified":1650558391,"disabled":true,"start":1735707600,"creator_id":1445416,"parent_id":null,"timezone":"UTC","active":false,"scope":["host:A","host:B"],"message":"tf-TestAccDatadogDowntime_BasicMultiScope-local-1650558281","downtime_type":2,"id":1895959477,"updater_id":1445416}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: "0ms"

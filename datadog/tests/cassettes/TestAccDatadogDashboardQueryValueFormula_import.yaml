@@ -1,3 +1,129 @@
----
 version: 2
-interactions: []
+interactions:
+- request:
+    body: |
+      {"description":"Created using the Datadog provider in Terraform","id":"","is_read_only":true,"layout_type":"ordered","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardQueryValueFormula_import-local-1682004005","widgets":[{"definition":{"autoscale":false,"precision":0,"requests":[{"formulas":[{"formula":"query1 + query2","limit":{"count":10,"order":"asc"}}],"queries":[{"aggregator":"sum","data_source":"metrics","name":"query1","query":"avg:system.cpu.system{*} by {datacenter}"},{"aggregator":"sum","data_source":"metrics","name":"query2","query":"avg:system.load.1{*} by {datacenter}"}],"response_format":"scalar"}],"type":"query_value"}},{"definition":{"autoscale":false,"precision":0,"requests":[{"formulas":[{"formula":"query1","limit":{"count":25,"order":"desc"}}],"queries":[{"compute":{"aggregation":"count"},"data_source":"rum","indexes":["*"],"name":"query1"}],"response_format":"scalar"}],"type":"query_value"}}]}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/dashboard
+    method: POST
+    id: 0
+  response:
+    body: |
+      {"id":"mq7-pc7-a49","title":"tf-TestAccDatadogDashboardQueryValueFormula_import-local-1682004005","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/mq7-pc7-a49/tf-testaccdatadogdashboardqueryvalueformulaimport-local-1682004005","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"autoscale":false,"precision":0,"requests":[{"formulas":[{"formula":"query1 + query2","limit":{"count":10,"order":"asc"}}],"queries":[{"aggregator":"sum","data_source":"metrics","name":"query1","query":"avg:system.cpu.system{*} by {datacenter}"},{"aggregator":"sum","data_source":"metrics","name":"query2","query":"avg:system.load.1{*} by {datacenter}"}],"response_format":"scalar"}],"type":"query_value"},"id":8198502784127578},{"definition":{"autoscale":false,"precision":0,"requests":[{"formulas":[{"formula":"query1","limit":{"count":25,"order":"desc"}}],"queries":[{"compute":{"aggregation":"count"},"data_source":"rum","indexes":["*"],"name":"query1"}],"response_format":"scalar"}],"type":"query_value"},"id":1167819872570761}],"notify_list":[],"created_at":"2023-04-20T15:20:07.829297+00:00","modified_at":"2023-04-20T15:20:07.829297+00:00","template_variable_presets":[],"tags":[]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: "0ms"
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/dashboard/mq7-pc7-a49
+    method: GET
+    id: 1
+  response:
+    body: '{"errors":["Dashboard with ID mq7-pc7-a49 not found"]}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 404 Not Found
+    code: 404
+    duration: "0ms"
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/dashboard/mq7-pc7-a49
+    method: GET
+    id: 2
+  response:
+    body: |
+      {"id":"mq7-pc7-a49","title":"tf-TestAccDatadogDashboardQueryValueFormula_import-local-1682004005","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/mq7-pc7-a49/tf-testaccdatadogdashboardqueryvalueformulaimport-local-1682004005","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"autoscale":false,"precision":0,"requests":[{"formulas":[{"formula":"query1 + query2","limit":{"count":10,"order":"asc"}}],"queries":[{"aggregator":"sum","data_source":"metrics","name":"query1","query":"avg:system.cpu.system{*} by {datacenter}"},{"aggregator":"sum","data_source":"metrics","name":"query2","query":"avg:system.load.1{*} by {datacenter}"}],"response_format":"scalar"}],"type":"query_value"},"id":8198502784127578},{"definition":{"autoscale":false,"precision":0,"requests":[{"formulas":[{"formula":"query1","limit":{"count":25,"order":"desc"}}],"queries":[{"compute":{"aggregation":"count"},"data_source":"rum","indexes":["*"],"name":"query1"}],"response_format":"scalar"}],"type":"query_value"},"id":1167819872570761}],"notify_list":[],"created_at":"2023-04-20T15:20:07.829297+00:00","modified_at":"2023-04-20T15:20:07.829297+00:00","template_variable_presets":[],"tags":[]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: "0ms"
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/dashboard/mq7-pc7-a49
+    method: GET
+    id: 3
+  response:
+    body: |
+      {"id":"mq7-pc7-a49","title":"tf-TestAccDatadogDashboardQueryValueFormula_import-local-1682004005","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/mq7-pc7-a49/tf-testaccdatadogdashboardqueryvalueformulaimport-local-1682004005","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"autoscale":false,"precision":0,"requests":[{"formulas":[{"formula":"query1 + query2","limit":{"count":10,"order":"asc"}}],"queries":[{"aggregator":"sum","data_source":"metrics","name":"query1","query":"avg:system.cpu.system{*} by {datacenter}"},{"aggregator":"sum","data_source":"metrics","name":"query2","query":"avg:system.load.1{*} by {datacenter}"}],"response_format":"scalar"}],"type":"query_value"},"id":8198502784127578},{"definition":{"autoscale":false,"precision":0,"requests":[{"formulas":[{"formula":"query1","limit":{"count":25,"order":"desc"}}],"queries":[{"compute":{"aggregation":"count"},"data_source":"rum","indexes":["*"],"name":"query1"}],"response_format":"scalar"}],"type":"query_value"},"id":1167819872570761}],"notify_list":[],"created_at":"2023-04-20T15:20:07.829297+00:00","modified_at":"2023-04-20T15:20:07.829297+00:00","template_variable_presets":[],"tags":[]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: "0ms"
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/dashboard/mq7-pc7-a49
+    method: GET
+    id: 4
+  response:
+    body: |
+      {"id":"mq7-pc7-a49","title":"tf-TestAccDatadogDashboardQueryValueFormula_import-local-1682004005","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/mq7-pc7-a49/tf-testaccdatadogdashboardqueryvalueformulaimport-local-1682004005","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"autoscale":false,"precision":0,"requests":[{"formulas":[{"formula":"query1 + query2","limit":{"count":10,"order":"asc"}}],"queries":[{"aggregator":"sum","data_source":"metrics","name":"query1","query":"avg:system.cpu.system{*} by {datacenter}"},{"aggregator":"sum","data_source":"metrics","name":"query2","query":"avg:system.load.1{*} by {datacenter}"}],"response_format":"scalar"}],"type":"query_value"},"id":8198502784127578},{"definition":{"autoscale":false,"precision":0,"requests":[{"formulas":[{"formula":"query1","limit":{"count":25,"order":"desc"}}],"queries":[{"compute":{"aggregation":"count"},"data_source":"rum","indexes":["*"],"name":"query1"}],"response_format":"scalar"}],"type":"query_value"},"id":1167819872570761}],"notify_list":[],"created_at":"2023-04-20T15:20:07.829297+00:00","modified_at":"2023-04-20T15:20:07.829297+00:00","template_variable_presets":[],"tags":[]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: "0ms"
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/dashboard/mq7-pc7-a49
+    method: DELETE
+    id: 5
+  response:
+    body: |
+      {"deleted_dashboard_id":"mq7-pc7-a49"}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: "0ms"
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/dashboard/mq7-pc7-a49
+    method: GET
+    id: 6
+  response:
+    body: '{"errors":["Dashboard with ID mq7-pc7-a49 not found"]}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 404 Not Found
+    code: 404
+    duration: "0ms"

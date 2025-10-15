@@ -1,3 +1,112 @@
----
 version: 2
-interactions: []
+interactions:
+- request:
+    body: |
+      {"description":"Created using the Datadog provider in Terraform","id":"","is_read_only":true,"layout_type":"ordered","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardAlertGraph-local-1682003522","widgets":[{"definition":{"alert_id":"895605","type":"alert_graph","viz_type":"timeseries"}},{"definition":{"alert_id":"895606","time":{"live_span":"1h"},"title":"Widget Title","title_align":"right","title_size":"16","type":"alert_graph","viz_type":"toplist"}}]}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/dashboard
+    method: POST
+    id: 0
+  response:
+    body: |
+      {"id":"fgz-vc3-m6d","title":"tf-TestAccDatadogDashboardAlertGraph-local-1682003522","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/fgz-vc3-m6d/tf-testaccdatadogdashboardalertgraph-local-1682003522","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"alert_id":"895605","type":"alert_graph","viz_type":"timeseries"},"id":6278462940244230},{"definition":{"alert_id":"895606","time":{"live_span":"1h"},"title":"Widget Title","title_align":"right","title_size":"16","type":"alert_graph","viz_type":"toplist"},"id":4925443550914109}],"notify_list":[],"created_at":"2023-04-20T15:12:03.827854+00:00","modified_at":"2023-04-20T15:12:03.827854+00:00","template_variable_presets":[],"tags":[]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: "0ms"
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/dashboard/fgz-vc3-m6d
+    method: GET
+    id: 1
+  response:
+    body: |
+      {"id":"fgz-vc3-m6d","title":"tf-TestAccDatadogDashboardAlertGraph-local-1682003522","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/fgz-vc3-m6d/tf-testaccdatadogdashboardalertgraph-local-1682003522","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"alert_id":"895605","type":"alert_graph","viz_type":"timeseries"},"id":6278462940244230},{"definition":{"alert_id":"895606","time":{"live_span":"1h"},"title":"Widget Title","title_align":"right","title_size":"16","type":"alert_graph","viz_type":"toplist"},"id":4925443550914109}],"notify_list":[],"created_at":"2023-04-20T15:12:03.827854+00:00","modified_at":"2023-04-20T15:12:03.827854+00:00","template_variable_presets":[],"tags":[]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: "0ms"
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/dashboard/fgz-vc3-m6d
+    method: GET
+    id: 2
+  response:
+    body: |
+      {"id":"fgz-vc3-m6d","title":"tf-TestAccDatadogDashboardAlertGraph-local-1682003522","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/fgz-vc3-m6d/tf-testaccdatadogdashboardalertgraph-local-1682003522","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"alert_id":"895605","type":"alert_graph","viz_type":"timeseries"},"id":6278462940244230},{"definition":{"alert_id":"895606","time":{"live_span":"1h"},"title":"Widget Title","title_align":"right","title_size":"16","type":"alert_graph","viz_type":"toplist"},"id":4925443550914109}],"notify_list":[],"created_at":"2023-04-20T15:12:03.827854+00:00","modified_at":"2023-04-20T15:12:03.827854+00:00","template_variable_presets":[],"tags":[]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: "0ms"
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/dashboard/fgz-vc3-m6d
+    method: GET
+    id: 3
+  response:
+    body: |
+      {"id":"fgz-vc3-m6d","title":"tf-TestAccDatadogDashboardAlertGraph-local-1682003522","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/fgz-vc3-m6d/tf-testaccdatadogdashboardalertgraph-local-1682003522","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"alert_id":"895605","type":"alert_graph","viz_type":"timeseries"},"id":6278462940244230},{"definition":{"alert_id":"895606","time":{"live_span":"1h"},"title":"Widget Title","title_align":"right","title_size":"16","type":"alert_graph","viz_type":"toplist"},"id":4925443550914109}],"notify_list":[],"created_at":"2023-04-20T15:12:03.827854+00:00","modified_at":"2023-04-20T15:12:03.827854+00:00","template_variable_presets":[],"tags":[]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: "0ms"
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/dashboard/fgz-vc3-m6d
+    method: DELETE
+    id: 4
+  response:
+    body: |
+      {"deleted_dashboard_id":"fgz-vc3-m6d"}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: "0ms"
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/dashboard/fgz-vc3-m6d
+    method: GET
+    id: 5
+  response:
+    body: '{"errors":["Dashboard with ID fgz-vc3-m6d not found"]}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 404 Not Found
+    code: 404
+    duration: "0ms"

@@ -1,3 +1,268 @@
 ---
 version: 2
-interactions: []
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 351
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"enabled":true,"rules":[{"enabled":true,"mapping":{"destination_key":"env","if_not_exists":true,"source_keys":["environment","stage"]},"name":"mapping-rule","query":null,"reference_table":null}]},"id":"tf-test-mapping-ruleset-tf-TestAccDatadogTagPipelineRulesetDataSource_MappingRule-local-1758197761","type":"create_ruleset"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/tags/enrichment
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 604
+        uncompressed: false
+        body: '{"data":{"id":"0db781eb-d357-4ef4-873f-14b089b43266","type":"ruleset","attributes":{"created":{"seconds":1758197763,"nanos":315582000},"enabled":true,"last_modified_user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","modified":{"seconds":1758197763,"nanos":315582000},"name":"tf-test-mapping-ruleset-tf-TestAccDatadogTagPipelineRulesetDataSource_MappingRule-local-1758197761","position":5,"rules":[{"name":"mapping-rule","enabled":true,"query":null,"mapping":{"source_keys":["environment","stage"],"destination_key":"env","if_not_exists":true},"reference_table":null,"metadata":null}],"version":3604074}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 209.271292ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/tags/enrichment/0db781eb-d357-4ef4-873f-14b089b43266
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 604
+        uncompressed: false
+        body: '{"data":{"id":"0db781eb-d357-4ef4-873f-14b089b43266","type":"ruleset","attributes":{"created":{"seconds":1758197763,"nanos":315582000},"enabled":true,"last_modified_user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","modified":{"seconds":1758197763,"nanos":315582000},"name":"tf-test-mapping-ruleset-tf-TestAccDatadogTagPipelineRulesetDataSource_MappingRule-local-1758197761","position":5,"rules":[{"name":"mapping-rule","enabled":true,"query":null,"mapping":{"source_keys":["environment","stage"],"destination_key":"env","if_not_exists":true},"reference_table":null,"metadata":null}],"version":3604074}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 49.012292ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/tags/enrichment/0db781eb-d357-4ef4-873f-14b089b43266
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 604
+        uncompressed: false
+        body: '{"data":{"id":"0db781eb-d357-4ef4-873f-14b089b43266","type":"ruleset","attributes":{"created":{"seconds":1758197763,"nanos":315582000},"enabled":true,"last_modified_user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","modified":{"seconds":1758197763,"nanos":315582000},"name":"tf-test-mapping-ruleset-tf-TestAccDatadogTagPipelineRulesetDataSource_MappingRule-local-1758197761","position":5,"rules":[{"name":"mapping-rule","enabled":true,"query":null,"mapping":{"source_keys":["environment","stage"],"destination_key":"env","if_not_exists":true},"reference_table":null,"metadata":null}],"version":3604074}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 54.092084ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/tags/enrichment/0db781eb-d357-4ef4-873f-14b089b43266
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 604
+        uncompressed: false
+        body: '{"data":{"id":"0db781eb-d357-4ef4-873f-14b089b43266","type":"ruleset","attributes":{"created":{"seconds":1758197763,"nanos":315582000},"enabled":true,"last_modified_user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","modified":{"seconds":1758197763,"nanos":315582000},"name":"tf-test-mapping-ruleset-tf-TestAccDatadogTagPipelineRulesetDataSource_MappingRule-local-1758197761","position":5,"rules":[{"name":"mapping-rule","enabled":true,"query":null,"mapping":{"source_keys":["environment","stage"],"destination_key":"env","if_not_exists":true},"reference_table":null,"metadata":null}],"version":3604074}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 52.381958ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/tags/enrichment/0db781eb-d357-4ef4-873f-14b089b43266
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 604
+        uncompressed: false
+        body: '{"data":{"id":"0db781eb-d357-4ef4-873f-14b089b43266","type":"ruleset","attributes":{"created":{"seconds":1758197763,"nanos":315582000},"enabled":true,"last_modified_user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","modified":{"seconds":1758197763,"nanos":315582000},"name":"tf-test-mapping-ruleset-tf-TestAccDatadogTagPipelineRulesetDataSource_MappingRule-local-1758197761","position":5,"rules":[{"name":"mapping-rule","enabled":true,"query":null,"mapping":{"source_keys":["environment","stage"],"destination_key":"env","if_not_exists":true},"reference_table":null,"metadata":null}],"version":3604074}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 59.6575ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/tags/enrichment/0db781eb-d357-4ef4-873f-14b089b43266
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 55.966958ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/tags/enrichment/0db781eb-d357-4ef4-873f-14b089b43266
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 115
+        uncompressed: false
+        body: '{"errors":[{"status":"404","title":"Not Found","detail":"ruleset 0db781eb-d357-4ef4-873f-14b089b43266 not found"}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 404 Not Found
+        code: 404
+        duration: 44.19925ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/tags/enrichment/0db781eb-d357-4ef4-873f-14b089b43266
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 115
+        uncompressed: false
+        body: '{"errors":[{"status":"404","title":"Not Found","detail":"ruleset 0db781eb-d357-4ef4-873f-14b089b43266 not found"}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 404 Not Found
+        code: 404
+        duration: 46.638791ms

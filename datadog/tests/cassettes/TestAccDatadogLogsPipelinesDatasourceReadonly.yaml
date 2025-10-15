@@ -1,3 +1,213 @@
 ---
 version: 2
-interactions: []
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/logs/config/pipelines
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            [{"id":"NiV_xm67QWiahCk5V6mQSQ","type":"pipeline","name":"Golang key=value style logging","is_enabled":true,"is_read_only":false,"filter":{"query":"service:(agent OR prometheus) image_name:(\"grafana/agent\" OR \"prom/prometheus\")"},"processors":[{"name":"Golang key/value","is_enabled":true,"source":"message","samples":["ts=2022-01-25T19:44:10.626987538Z caller=tailer.go:99 level=info component=logs logs_config=default component=tailer msg=\"position timer: exited\" path=/var/log/pods/qa_devices-background-jobs-27385663-bs677_e10ba094-2ab4-41b2-9ffd-b46618c06b91/devices-background-jobs/0.log","ts=2022-01-27T00:12:14.759138219Z caller=filetarget.go:159 level=info component=logs logs_config=default msg=\"filetarget: watcher closed, tailer stopped, positions saved\" path=\"/var/log/pods/*d9a89e52-6065-4805-843d-418a0dd96eea/devices-background-jobs/*.log\"","ts=2022-01-27T00:19:11.517593648Z caller=filetargetmanager.go:275 level=info component=logs logs_config=default msg=\"Removing target\" key=\"{app=\\\"background-jobs\\\", container=\\\"devices-background-jobs\\\", controller_uid=\\\"4ad670d7-e7c3-4ae6-92cc-5b83d1d6f958\\\", fluentd=\\\"true\\\", job=\\\"dev/background-jobs\\\", job_name=\\\"devices-background-jobs-27387378\\\", namespace=\\\"dev\\\", pod=\\\"devices-background-jobs-27387378-5b9x5\\\", service=\\\"devices\\\"}\""],"grok":{"support_rules":"","match_rules":"# How do we handle the embedded JSON in the `key` key?\nkey_value %{data::keyvalue(\"=\", \"/-:*\")}\n"},"type":"grok-parser"}],"tags":[]}]
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 174.566584ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/logs/config/pipelines
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            [{"id":"NiV_xm67QWiahCk5V6mQSQ","type":"pipeline","name":"Golang key=value style logging","is_enabled":true,"is_read_only":false,"filter":{"query":"service:(agent OR prometheus) image_name:(\"grafana/agent\" OR \"prom/prometheus\")"},"processors":[{"name":"Golang key/value","is_enabled":true,"source":"message","samples":["ts=2022-01-25T19:44:10.626987538Z caller=tailer.go:99 level=info component=logs logs_config=default component=tailer msg=\"position timer: exited\" path=/var/log/pods/qa_devices-background-jobs-27385663-bs677_e10ba094-2ab4-41b2-9ffd-b46618c06b91/devices-background-jobs/0.log","ts=2022-01-27T00:12:14.759138219Z caller=filetarget.go:159 level=info component=logs logs_config=default msg=\"filetarget: watcher closed, tailer stopped, positions saved\" path=\"/var/log/pods/*d9a89e52-6065-4805-843d-418a0dd96eea/devices-background-jobs/*.log\"","ts=2022-01-27T00:19:11.517593648Z caller=filetargetmanager.go:275 level=info component=logs logs_config=default msg=\"Removing target\" key=\"{app=\\\"background-jobs\\\", container=\\\"devices-background-jobs\\\", controller_uid=\\\"4ad670d7-e7c3-4ae6-92cc-5b83d1d6f958\\\", fluentd=\\\"true\\\", job=\\\"dev/background-jobs\\\", job_name=\\\"devices-background-jobs-27387378\\\", namespace=\\\"dev\\\", pod=\\\"devices-background-jobs-27387378-5b9x5\\\", service=\\\"devices\\\"}\""],"grok":{"support_rules":"","match_rules":"# How do we handle the embedded JSON in the `key` key?\nkey_value %{data::keyvalue(\"=\", \"/-:*\")}\n"},"type":"grok-parser"}],"tags":[]}]
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 125.99525ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/logs/config/pipelines
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            [{"id":"NiV_xm67QWiahCk5V6mQSQ","type":"pipeline","name":"Golang key=value style logging","is_enabled":true,"is_read_only":false,"filter":{"query":"service:(agent OR prometheus) image_name:(\"grafana/agent\" OR \"prom/prometheus\")"},"processors":[{"name":"Golang key/value","is_enabled":true,"source":"message","samples":["ts=2022-01-25T19:44:10.626987538Z caller=tailer.go:99 level=info component=logs logs_config=default component=tailer msg=\"position timer: exited\" path=/var/log/pods/qa_devices-background-jobs-27385663-bs677_e10ba094-2ab4-41b2-9ffd-b46618c06b91/devices-background-jobs/0.log","ts=2022-01-27T00:12:14.759138219Z caller=filetarget.go:159 level=info component=logs logs_config=default msg=\"filetarget: watcher closed, tailer stopped, positions saved\" path=\"/var/log/pods/*d9a89e52-6065-4805-843d-418a0dd96eea/devices-background-jobs/*.log\"","ts=2022-01-27T00:19:11.517593648Z caller=filetargetmanager.go:275 level=info component=logs logs_config=default msg=\"Removing target\" key=\"{app=\\\"background-jobs\\\", container=\\\"devices-background-jobs\\\", controller_uid=\\\"4ad670d7-e7c3-4ae6-92cc-5b83d1d6f958\\\", fluentd=\\\"true\\\", job=\\\"dev/background-jobs\\\", job_name=\\\"devices-background-jobs-27387378\\\", namespace=\\\"dev\\\", pod=\\\"devices-background-jobs-27387378-5b9x5\\\", service=\\\"devices\\\"}\""],"grok":{"support_rules":"","match_rules":"# How do we handle the embedded JSON in the `key` key?\nkey_value %{data::keyvalue(\"=\", \"/-:*\")}\n"},"type":"grok-parser"}],"tags":[]},{"id":"Hsp7_9lXSgOwZ2l2wP9FpQ","type":"pipeline","name":"tf-testaccdatadoglogspipelinesorderdatasource-local-1740395694-sample","is_enabled":false,"is_read_only":false,"filter":{"query":"project:sample"},"processors":[],"tags":[],"description":""},{"id":"mZXGPGSvTAeDmoNoC3CZkw","type":"pipeline","name":"tf-TestAccDatadogLogsPipelineEmptyFilterQuery-local-1740395694","is_enabled":true,"is_read_only":false,"filter":{"query":""},"processors":[{"name":"","is_enabled":true,"sources":["redis.severity"],"type":"status-remapper"},{"name":"sample category processor","is_enabled":true,"categories":[{"filter":{"query":""},"name":"debug"}],"target":"foo.severity","type":"category-processor"},{"type":"pipeline","name":"Nginx","is_enabled":true,"filter":{"query":""},"processors":[]}],"tags":[],"description":""}]
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 320.609416ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/logs/config/pipelines
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            [{"id":"NiV_xm67QWiahCk5V6mQSQ","type":"pipeline","name":"Golang key=value style logging","is_enabled":true,"is_read_only":false,"filter":{"query":"service:(agent OR prometheus) image_name:(\"grafana/agent\" OR \"prom/prometheus\")"},"processors":[{"name":"Golang key/value","is_enabled":true,"source":"message","samples":["ts=2022-01-25T19:44:10.626987538Z caller=tailer.go:99 level=info component=logs logs_config=default component=tailer msg=\"position timer: exited\" path=/var/log/pods/qa_devices-background-jobs-27385663-bs677_e10ba094-2ab4-41b2-9ffd-b46618c06b91/devices-background-jobs/0.log","ts=2022-01-27T00:12:14.759138219Z caller=filetarget.go:159 level=info component=logs logs_config=default msg=\"filetarget: watcher closed, tailer stopped, positions saved\" path=\"/var/log/pods/*d9a89e52-6065-4805-843d-418a0dd96eea/devices-background-jobs/*.log\"","ts=2022-01-27T00:19:11.517593648Z caller=filetargetmanager.go:275 level=info component=logs logs_config=default msg=\"Removing target\" key=\"{app=\\\"background-jobs\\\", container=\\\"devices-background-jobs\\\", controller_uid=\\\"4ad670d7-e7c3-4ae6-92cc-5b83d1d6f958\\\", fluentd=\\\"true\\\", job=\\\"dev/background-jobs\\\", job_name=\\\"devices-background-jobs-27387378\\\", namespace=\\\"dev\\\", pod=\\\"devices-background-jobs-27387378-5b9x5\\\", service=\\\"devices\\\"}\""],"grok":{"support_rules":"","match_rules":"# How do we handle the embedded JSON in the `key` key?\nkey_value %{data::keyvalue(\"=\", \"/-:*\")}\n"},"type":"grok-parser"}],"tags":[]},{"id":"Hsp7_9lXSgOwZ2l2wP9FpQ","type":"pipeline","name":"tf-testaccdatadoglogspipelinesorderdatasource-local-1740395694-sample","is_enabled":false,"is_read_only":false,"filter":{"query":"project:sample"},"processors":[],"tags":[],"description":""},{"id":"mZXGPGSvTAeDmoNoC3CZkw","type":"pipeline","name":"tf-TestAccDatadogLogsPipelineEmptyFilterQuery-local-1740395694","is_enabled":true,"is_read_only":false,"filter":{"query":""},"processors":[{"name":"","is_enabled":true,"sources":["redis.severity"],"type":"status-remapper"},{"name":"sample category processor","is_enabled":true,"categories":[{"filter":{"query":""},"name":"debug"}],"target":"foo.severity","type":"category-processor"},{"type":"pipeline","name":"Nginx","is_enabled":true,"filter":{"query":""},"processors":[]}],"tags":[],"description":""},{"id":"p5JC73ABQHyzBf4xJXZSzw","type":"pipeline","name":"tf-TestAccDatadogLogsPipeline_import-local-1740395694","is_enabled":true,"is_read_only":false,"filter":{"query":"source:redis"},"processors":[{"name":"Define date","is_enabled":true,"sources":["verbose"],"type":"date-remapper"},{"name":"processor from nested pipeline","is_enabled":true,"expression":"(time1-time2)*1000","target":"my_arithmetic","is_replace_missing":false,"type":"arithmetic-processor"},{"name":"Categorise severity level","is_enabled":true,"categories":[{"filter":{"query":"@severity: \"-\""},"name":"verbose"},{"filter":{"query":"@severity: \".\""},"name":"debug"}],"target":"redis.severity","type":"category-processor"},{"name":"Parsing Stack traces","is_enabled":true,"source":"message","samples":[],"grok":{"support_rules":"date_parser %{date(\"yyyy-MM-dd HH:mm:ss,SSS\"):timestamp}","match_rules":"rule %{date(\"yyyy-MM-dd HH:mm:ss,SSS\"):timestamp}"},"type":"grok-parser"},{"type":"pipeline","name":"my nested pipeline","is_enabled":true,"filter":{"query":"source:kafka"},"processors":[{"name":"Define url parser","is_enabled":true,"sources":["http_test"],"target":"http_test.details","normalize_ending_slashes":false,"type":"url-parser"},{"name":"Define user agent parser","is_enabled":true,"sources":["http_agent"],"target":"http_agent.details","is_encoded":false,"type":"user-agent-parser"}]},{"name":"geo ip parse","is_enabled":true,"sources":["ip1"],"target":"ip.address","ip_processing_behavior":"do-nothing","type":"geo-ip-parser"},{"name":"","is_enabled":false,"source":"ip1","target":"ip.address","lookup_table":["key,value"],"type":"lookup-processor"},{"name":"lookup processor with optional fields","is_enabled":true,"source":"ip2","target":"ip.address","lookup_table":["key,value"],"default_lookup":"default","type":"lookup-processor"},{"name":"reftablelookup","is_enabled":true,"source":"sourcefield","target":"targetfield","lookup_enrichment_table":"test_reference_table_do_not_delete","type":"lookup-processor"},{"name":"span_id_remapper","is_enabled":true,"sources":["dd.span_id"],"type":"span-id-remapper"}],"tags":["key1:value1","key2:value2"],"description":"Pipeline description"},{"id":"Zvsfoy5_Rgq-psNm0wQMKQ","type":"pipeline","name":"tf-TestAccDatadogLogsPipelineDefaultTags-local-1740395694","is_enabled":true,"is_read_only":false,"filter":{"query":"source:redis"},"processors":[{"name":"Define date","is_enabled":true,"sources":["verbose"],"type":"date-remapper"},{"name":"processor from nested pipeline","is_enabled":true,"expression":"(time1-time2)*1000","target":"my_arithmetic","is_replace_missing":false,"type":"arithmetic-processor"},{"name":"Categorise severity level","is_enabled":true,"categories":[{"filter":{"query":"@severity: \"-\""},"name":"verbose"},{"filter":{"query":"@severity: \".\""},"name":"debug"}],"target":"redis.severity","type":"category-processor"},{"name":"Parsing Stack traces","is_enabled":true,"source":"message","samples":[],"grok":{"support_rules":"date_parser %{date(\"yyyy-MM-dd HH:mm:ss,SSS\"):timestamp}","match_rules":"rule %{date(\"yyyy-MM-dd HH:mm:ss,SSS\"):timestamp}"},"type":"grok-parser"},{"type":"pipeline","name":"my nested pipeline","is_enabled":true,"filter":{"query":"source:kafka"},"processors":[{"name":"Define url parser","is_enabled":true,"sources":["http_test"],"target":"http_test.details","normalize_ending_slashes":false,"type":"url-parser"},{"name":"Define user agent parser","is_enabled":true,"sources":["http_agent"],"target":"http_agent.details","is_encoded":false,"type":"user-agent-parser"}]},{"name":"geo ip parse","is_enabled":true,"sources":["ip1"],"target":"ip.address","ip_processing_behavior":"do-nothing","type":"geo-ip-parser"},{"name":"","is_enabled":false,"source":"ip1","target":"ip.address","lookup_table":["key,value"],"type":"lookup-processor"},{"name":"lookup processor with optional fields","is_enabled":true,"source":"ip2","target":"ip.address","lookup_table":["key,value"],"default_lookup":"default","type":"lookup-processor"},{"name":"reftablelookup","is_enabled":true,"source":"sourcefield","target":"targetfield","lookup_enrichment_table":"test_reference_table_do_not_delete","type":"lookup-processor"},{"name":"span_id_remapper","is_enabled":true,"sources":["dd.span_id"],"type":"span-id-remapper"}],"tags":["default_key:default_value","key1:value1","key2:value2"],"description":"Pipeline description"}]
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 143.450916ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/logs/config/pipelines
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            [{"id":"NiV_xm67QWiahCk5V6mQSQ","type":"pipeline","name":"Golang key=value style logging","is_enabled":true,"is_read_only":false,"filter":{"query":"service:(agent OR prometheus) image_name:(\"grafana/agent\" OR \"prom/prometheus\")"},"processors":[{"name":"Golang key/value","is_enabled":true,"source":"message","samples":["ts=2022-01-25T19:44:10.626987538Z caller=tailer.go:99 level=info component=logs logs_config=default component=tailer msg=\"position timer: exited\" path=/var/log/pods/qa_devices-background-jobs-27385663-bs677_e10ba094-2ab4-41b2-9ffd-b46618c06b91/devices-background-jobs/0.log","ts=2022-01-27T00:12:14.759138219Z caller=filetarget.go:159 level=info component=logs logs_config=default msg=\"filetarget: watcher closed, tailer stopped, positions saved\" path=\"/var/log/pods/*d9a89e52-6065-4805-843d-418a0dd96eea/devices-background-jobs/*.log\"","ts=2022-01-27T00:19:11.517593648Z caller=filetargetmanager.go:275 level=info component=logs logs_config=default msg=\"Removing target\" key=\"{app=\\\"background-jobs\\\", container=\\\"devices-background-jobs\\\", controller_uid=\\\"4ad670d7-e7c3-4ae6-92cc-5b83d1d6f958\\\", fluentd=\\\"true\\\", job=\\\"dev/background-jobs\\\", job_name=\\\"devices-background-jobs-27387378\\\", namespace=\\\"dev\\\", pod=\\\"devices-background-jobs-27387378-5b9x5\\\", service=\\\"devices\\\"}\""],"grok":{"support_rules":"","match_rules":"# How do we handle the embedded JSON in the `key` key?\nkey_value %{data::keyvalue(\"=\", \"/-:*\")}\n"},"type":"grok-parser"}],"tags":[]},{"id":"Hsp7_9lXSgOwZ2l2wP9FpQ","type":"pipeline","name":"tf-testaccdatadoglogspipelinesorderdatasource-local-1740395694-sample","is_enabled":false,"is_read_only":false,"filter":{"query":"project:sample"},"processors":[],"tags":[],"description":""},{"id":"mZXGPGSvTAeDmoNoC3CZkw","type":"pipeline","name":"tf-TestAccDatadogLogsPipelineEmptyFilterQuery-local-1740395694","is_enabled":true,"is_read_only":false,"filter":{"query":""},"processors":[{"name":"","is_enabled":true,"sources":["redis.severity"],"type":"status-remapper"},{"name":"sample category processor","is_enabled":true,"categories":[{"filter":{"query":""},"name":"debug"}],"target":"foo.severity","type":"category-processor"},{"type":"pipeline","name":"Nginx","is_enabled":true,"filter":{"query":""},"processors":[]}],"tags":[],"description":""},{"id":"p5JC73ABQHyzBf4xJXZSzw","type":"pipeline","name":"tf-TestAccDatadogLogsPipeline_import-local-1740395694","is_enabled":true,"is_read_only":false,"filter":{"query":"source:redis"},"processors":[{"name":"Define date","is_enabled":true,"sources":["verbose"],"type":"date-remapper"},{"name":"processor from nested pipeline","is_enabled":true,"expression":"(time1-time2)*1000","target":"my_arithmetic","is_replace_missing":false,"type":"arithmetic-processor"},{"name":"Categorise severity level","is_enabled":true,"categories":[{"filter":{"query":"@severity: \"-\""},"name":"verbose"},{"filter":{"query":"@severity: \".\""},"name":"debug"}],"target":"redis.severity","type":"category-processor"},{"name":"Parsing Stack traces","is_enabled":true,"source":"message","samples":[],"grok":{"support_rules":"date_parser %{date(\"yyyy-MM-dd HH:mm:ss,SSS\"):timestamp}","match_rules":"rule %{date(\"yyyy-MM-dd HH:mm:ss,SSS\"):timestamp}"},"type":"grok-parser"},{"type":"pipeline","name":"my nested pipeline","is_enabled":true,"filter":{"query":"source:kafka"},"processors":[{"name":"Define url parser","is_enabled":true,"sources":["http_test"],"target":"http_test.details","normalize_ending_slashes":false,"type":"url-parser"},{"name":"Define user agent parser","is_enabled":true,"sources":["http_agent"],"target":"http_agent.details","is_encoded":false,"type":"user-agent-parser"}]},{"name":"geo ip parse","is_enabled":true,"sources":["ip1"],"target":"ip.address","ip_processing_behavior":"do-nothing","type":"geo-ip-parser"},{"name":"","is_enabled":false,"source":"ip1","target":"ip.address","lookup_table":["key,value"],"type":"lookup-processor"},{"name":"lookup processor with optional fields","is_enabled":true,"source":"ip2","target":"ip.address","lookup_table":["key,value"],"default_lookup":"default","type":"lookup-processor"},{"name":"reftablelookup","is_enabled":true,"source":"sourcefield","target":"targetfield","lookup_enrichment_table":"test_reference_table_do_not_delete","type":"lookup-processor"},{"name":"span_id_remapper","is_enabled":true,"sources":["dd.span_id"],"type":"span-id-remapper"}],"tags":["key1:value1","key2:value2"],"description":"Pipeline description"},{"id":"Zvsfoy5_Rgq-psNm0wQMKQ","type":"pipeline","name":"tf-TestAccDatadogLogsPipelineDefaultTags-local-1740395694","is_enabled":true,"is_read_only":false,"filter":{"query":"source:redis"},"processors":[{"name":"Define date","is_enabled":true,"sources":["verbose"],"type":"date-remapper"},{"name":"processor from nested pipeline","is_enabled":true,"expression":"(time1-time2)*1000","target":"my_arithmetic","is_replace_missing":false,"type":"arithmetic-processor"},{"name":"Categorise severity level","is_enabled":true,"categories":[{"filter":{"query":"@severity: \"-\""},"name":"verbose"},{"filter":{"query":"@severity: \".\""},"name":"debug"}],"target":"redis.severity","type":"category-processor"},{"name":"Parsing Stack traces","is_enabled":true,"source":"message","samples":[],"grok":{"support_rules":"date_parser %{date(\"yyyy-MM-dd HH:mm:ss,SSS\"):timestamp}","match_rules":"rule %{date(\"yyyy-MM-dd HH:mm:ss,SSS\"):timestamp}"},"type":"grok-parser"},{"type":"pipeline","name":"my nested pipeline","is_enabled":true,"filter":{"query":"source:kafka"},"processors":[{"name":"Define url parser","is_enabled":true,"sources":["http_test"],"target":"http_test.details","normalize_ending_slashes":false,"type":"url-parser"},{"name":"Define user agent parser","is_enabled":true,"sources":["http_agent"],"target":"http_agent.details","is_encoded":false,"type":"user-agent-parser"}]},{"name":"geo ip parse","is_enabled":true,"sources":["ip1"],"target":"ip.address","ip_processing_behavior":"do-nothing","type":"geo-ip-parser"},{"name":"","is_enabled":false,"source":"ip1","target":"ip.address","lookup_table":["key,value"],"type":"lookup-processor"},{"name":"lookup processor with optional fields","is_enabled":true,"source":"ip2","target":"ip.address","lookup_table":["key,value"],"default_lookup":"default","type":"lookup-processor"},{"name":"reftablelookup","is_enabled":true,"source":"sourcefield","target":"targetfield","lookup_enrichment_table":"test_reference_table_do_not_delete","type":"lookup-processor"},{"name":"span_id_remapper","is_enabled":true,"sources":["dd.span_id"],"type":"span-id-remapper"}],"tags":["default_key:default_value","key1:value1","key2:value2"],"description":"Pipeline description"}]
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 411.943ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/logs/config/pipelines
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            [{"id":"NiV_xm67QWiahCk5V6mQSQ","type":"pipeline","name":"Golang key=value style logging","is_enabled":true,"is_read_only":false,"filter":{"query":"service:(agent OR prometheus) image_name:(\"grafana/agent\" OR \"prom/prometheus\")"},"processors":[{"name":"Golang key/value","is_enabled":true,"source":"message","samples":["ts=2022-01-25T19:44:10.626987538Z caller=tailer.go:99 level=info component=logs logs_config=default component=tailer msg=\"position timer: exited\" path=/var/log/pods/qa_devices-background-jobs-27385663-bs677_e10ba094-2ab4-41b2-9ffd-b46618c06b91/devices-background-jobs/0.log","ts=2022-01-27T00:12:14.759138219Z caller=filetarget.go:159 level=info component=logs logs_config=default msg=\"filetarget: watcher closed, tailer stopped, positions saved\" path=\"/var/log/pods/*d9a89e52-6065-4805-843d-418a0dd96eea/devices-background-jobs/*.log\"","ts=2022-01-27T00:19:11.517593648Z caller=filetargetmanager.go:275 level=info component=logs logs_config=default msg=\"Removing target\" key=\"{app=\\\"background-jobs\\\", container=\\\"devices-background-jobs\\\", controller_uid=\\\"4ad670d7-e7c3-4ae6-92cc-5b83d1d6f958\\\", fluentd=\\\"true\\\", job=\\\"dev/background-jobs\\\", job_name=\\\"devices-background-jobs-27387378\\\", namespace=\\\"dev\\\", pod=\\\"devices-background-jobs-27387378-5b9x5\\\", service=\\\"devices\\\"}\""],"grok":{"support_rules":"","match_rules":"# How do we handle the embedded JSON in the `key` key?\nkey_value %{data::keyvalue(\"=\", \"/-:*\")}\n"},"type":"grok-parser"}],"tags":[]},{"id":"Hsp7_9lXSgOwZ2l2wP9FpQ","type":"pipeline","name":"tf-testaccdatadoglogspipelinesorderdatasource-local-1740395694-sample","is_enabled":false,"is_read_only":false,"filter":{"query":"project:sample"},"processors":[],"tags":[],"description":""},{"id":"mZXGPGSvTAeDmoNoC3CZkw","type":"pipeline","name":"tf-TestAccDatadogLogsPipelineEmptyFilterQuery-local-1740395694","is_enabled":true,"is_read_only":false,"filter":{"query":""},"processors":[{"name":"","is_enabled":true,"sources":["redis.severity"],"type":"status-remapper"},{"name":"sample category processor","is_enabled":true,"categories":[{"filter":{"query":""},"name":"debug"}],"target":"foo.severity","type":"category-processor"},{"type":"pipeline","name":"Nginx","is_enabled":true,"filter":{"query":""},"processors":[]}],"tags":[],"description":""},{"id":"p5JC73ABQHyzBf4xJXZSzw","type":"pipeline","name":"tf-TestAccDatadogLogsPipeline_import-local-1740395694","is_enabled":true,"is_read_only":false,"filter":{"query":"source:redis"},"processors":[{"name":"Define date","is_enabled":true,"sources":["verbose"],"type":"date-remapper"},{"name":"processor from nested pipeline","is_enabled":true,"expression":"(time1-time2)*1000","target":"my_arithmetic","is_replace_missing":false,"type":"arithmetic-processor"},{"name":"Categorise severity level","is_enabled":true,"categories":[{"filter":{"query":"@severity: \"-\""},"name":"verbose"},{"filter":{"query":"@severity: \".\""},"name":"debug"}],"target":"redis.severity","type":"category-processor"},{"name":"Parsing Stack traces","is_enabled":true,"source":"message","samples":[],"grok":{"support_rules":"date_parser %{date(\"yyyy-MM-dd HH:mm:ss,SSS\"):timestamp}","match_rules":"rule %{date(\"yyyy-MM-dd HH:mm:ss,SSS\"):timestamp}"},"type":"grok-parser"},{"type":"pipeline","name":"my nested pipeline","is_enabled":true,"filter":{"query":"source:kafka"},"processors":[{"name":"Define url parser","is_enabled":true,"sources":["http_test"],"target":"http_test.details","normalize_ending_slashes":false,"type":"url-parser"},{"name":"Define user agent parser","is_enabled":true,"sources":["http_agent"],"target":"http_agent.details","is_encoded":false,"type":"user-agent-parser"}]},{"name":"geo ip parse","is_enabled":true,"sources":["ip1"],"target":"ip.address","ip_processing_behavior":"do-nothing","type":"geo-ip-parser"},{"name":"","is_enabled":false,"source":"ip1","target":"ip.address","lookup_table":["key,value"],"type":"lookup-processor"},{"name":"lookup processor with optional fields","is_enabled":true,"source":"ip2","target":"ip.address","lookup_table":["key,value"],"default_lookup":"default","type":"lookup-processor"},{"name":"reftablelookup","is_enabled":true,"source":"sourcefield","target":"targetfield","lookup_enrichment_table":"test_reference_table_do_not_delete","type":"lookup-processor"},{"name":"span_id_remapper","is_enabled":true,"sources":["dd.span_id"],"type":"span-id-remapper"}],"tags":["key1:value1","key2:value2"],"description":"Pipeline description"},{"id":"Zvsfoy5_Rgq-psNm0wQMKQ","type":"pipeline","name":"tf-TestAccDatadogLogsPipelineDefaultTags-local-1740395694","is_enabled":true,"is_read_only":false,"filter":{"query":"source:redis"},"processors":[{"name":"Define date","is_enabled":true,"sources":["verbose"],"type":"date-remapper"},{"name":"processor from nested pipeline","is_enabled":true,"expression":"(time1-time2)*1000","target":"my_arithmetic","is_replace_missing":false,"type":"arithmetic-processor"},{"name":"Categorise severity level","is_enabled":true,"categories":[{"filter":{"query":"@severity: \"-\""},"name":"verbose"},{"filter":{"query":"@severity: \".\""},"name":"debug"}],"target":"redis.severity","type":"category-processor"},{"name":"Parsing Stack traces","is_enabled":true,"source":"message","samples":[],"grok":{"support_rules":"date_parser %{date(\"yyyy-MM-dd HH:mm:ss,SSS\"):timestamp}","match_rules":"rule %{date(\"yyyy-MM-dd HH:mm:ss,SSS\"):timestamp}"},"type":"grok-parser"},{"type":"pipeline","name":"my nested pipeline","is_enabled":true,"filter":{"query":"source:kafka"},"processors":[{"name":"Define url parser","is_enabled":true,"sources":["http_test"],"target":"http_test.details","normalize_ending_slashes":false,"type":"url-parser"},{"name":"Define user agent parser","is_enabled":true,"sources":["http_agent"],"target":"http_agent.details","is_encoded":false,"type":"user-agent-parser"}]},{"name":"geo ip parse","is_enabled":true,"sources":["ip1"],"target":"ip.address","ip_processing_behavior":"do-nothing","type":"geo-ip-parser"},{"name":"","is_enabled":false,"source":"ip1","target":"ip.address","lookup_table":["key,value"],"type":"lookup-processor"},{"name":"lookup processor with optional fields","is_enabled":true,"source":"ip2","target":"ip.address","lookup_table":["key,value"],"default_lookup":"default","type":"lookup-processor"},{"name":"reftablelookup","is_enabled":true,"source":"sourcefield","target":"targetfield","lookup_enrichment_table":"test_reference_table_do_not_delete","type":"lookup-processor"},{"name":"span_id_remapper","is_enabled":true,"sources":["dd.span_id"],"type":"span-id-remapper"}],"tags":["default_key:default_value","key1:value1","key2:value2"],"description":"Pipeline description"}]
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 183.465917ms

@@ -1,3 +1,306 @@
 ---
 version: 2
-interactions: []
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/integration/gcp/sts_delegate
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 237
+        uncompressed: false
+        body: '{"data":{"id":"ddgci-45108e579fe252698007@datadog-gci-sts-us1-prod.iam.gserviceaccount.com","type":"gcp_sts_delegate","attributes":{"delegate_account_email":"ddgci-45108e579fe252698007@datadog-gci-sts-us1-prod.iam.gserviceaccount.com"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 34.137542ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 590
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"account_tags":["acct:one","acct:three","acct:two"],"automute":false,"client_email":"tf-TestAccIntegrationGcpStsBasic-local-1757605251@test-project.iam.gserviceaccount.com","cloud_run_revision_filters":["rev:one","rev:two"],"host_filters":["host:one"],"is_cspm_enabled":false,"is_per_project_quota_enabled":false,"is_resource_change_collection_enabled":false,"is_security_command_center_enabled":false,"metric_namespace_configs":[{"disabled":true,"id":"aiplatform"}],"monitored_resource_configs":[],"resource_collection_enabled":false},"type":"gcp_service_account"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/integration/gcp/accounts
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 821
+        uncompressed: false
+        body: '{"data":{"id":"e17c9f57-0a83-4e09-a60c-5d429d98c492","type":"gcp_service_account","attributes":{"account_tags":["acct:one","acct:three","acct:two"],"automute":false,"client_email":"tf-TestAccIntegrationGcpStsBasic-local-1757605251@test-project.iam.gserviceaccount.com","cloud_run_revision_filters":["rev:one","rev:two"],"host_filters":["host:one"],"is_bq_datasets_monitoring_enabled":false,"is_bq_jobs_monitoring_enabled":false,"is_cspm_enabled":false,"is_per_project_quota_enabled":false,"is_resource_change_collection_enabled":false,"is_security_command_center_enabled":false,"metric_namespace_configs":[{"id":"aiplatform","disabled":true}],"monitored_resource_configs":[{"type":"cloud_run_revision","filters":["rev:one","rev:two"]},{"type":"gce_instance","filters":["host:one"]}],"resource_collection_enabled":false}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 60.8095ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/integration/gcp/accounts
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":[{"id":"809e15d2-c570-4d74-a4cb-4bd066022ccc","type":"gcp_service_account","attributes":{"account_tags":["acct:one","acct:three","acct:two"],"automute":false,"client_email":"tf-TestAccIntegrationGcpStsBasic-local-1757456063@test-project.iam.gserviceaccount.com","cloud_run_revision_filters":["rev:one","rev:two"],"host_filters":["host:one","host:two"],"is_bq_datasets_monitoring_enabled":false,"is_bq_jobs_monitoring_enabled":false,"is_cspm_enabled":false,"is_per_project_quota_enabled":false,"is_resource_change_collection_enabled":false,"is_security_command_center_enabled":false,"metric_namespace_configs":[{"id":"aiplatform","disabled":true}],"monitored_resource_configs":[{"type":"cloud_run_revision","filters":["rev:one","rev:two"]},{"type":"gce_instance","filters":["host:one","host:two"]}],"resource_collection_enabled":false},"meta":{"accessible_projects":[]}},{"id":"9ec12352-6d86-4d63-b628-5bbfa640f409","type":"gcp_service_account","attributes":{"account_tags":["acct:one","acct:three","acct:two"],"automute":false,"client_email":"tf-TestAccIntegrationGcpStsBasic-local-1757456697@test-project.iam.gserviceaccount.com","cloud_run_revision_filters":["rev:one","rev:two"],"host_filters":["host:one","host:two"],"is_bq_datasets_monitoring_enabled":false,"is_bq_jobs_monitoring_enabled":false,"is_cspm_enabled":false,"is_per_project_quota_enabled":false,"is_resource_change_collection_enabled":false,"is_security_command_center_enabled":false,"metric_namespace_configs":[{"id":"aiplatform","disabled":true}],"monitored_resource_configs":[{"type":"cloud_run_revision","filters":["rev:one","rev:two"]},{"type":"gce_instance","filters":["host:one","host:two"]}],"resource_collection_enabled":false},"meta":{"accessible_projects":[]}},{"id":"43a71309-616e-4753-b711-678c36a51348","type":"gcp_service_account","attributes":{"account_tags":["acct:one","acct:three","acct:two"],"automute":false,"client_email":"tf-TestAccIntegrationGcpStsBasic-local-1757456775@test-project.iam.gserviceaccount.com","cloud_run_revision_filters":["rev:one","rev:two"],"host_filters":["host:one","host:two"],"is_bq_datasets_monitoring_enabled":false,"is_bq_jobs_monitoring_enabled":false,"is_cspm_enabled":false,"is_per_project_quota_enabled":false,"is_resource_change_collection_enabled":false,"is_security_command_center_enabled":false,"metric_namespace_configs":[{"id":"aiplatform","disabled":true}],"monitored_resource_configs":[{"type":"cloud_run_revision","filters":["rev:one","rev:two"]},{"type":"gce_instance","filters":["host:one","host:two"]}],"resource_collection_enabled":false},"meta":{"accessible_projects":[]}},{"id":"d3f8553d-15f4-4cba-8437-313b5aaffa7a","type":"gcp_service_account","attributes":{"account_tags":[],"automute":true,"client_email":"tf-TestAccIntegrationGcpStsBasic-local-1757511671@test-project.iam.gserviceaccount.com","cloud_run_revision_filters":[],"host_filters":["host:one"],"is_bq_datasets_monitoring_enabled":false,"is_bq_jobs_monitoring_enabled":false,"is_cspm_enabled":true,"is_per_project_quota_enabled":true,"is_resource_change_collection_enabled":true,"is_security_command_center_enabled":true,"metric_namespace_configs":[],"monitored_resource_configs":[{"type":"cloud_function","filters":["func:one","func:three","func:two"]},{"type":"gce_instance","filters":["host:one"]}],"resource_collection_enabled":true},"meta":{"accessible_projects":[]}},{"id":"389b3ba0-0e23-44fb-acde-12a2be8e557e","type":"gcp_service_account","attributes":{"account_tags":[],"automute":false,"client_email":"tf-TestAccIntegrationGcpStsDefault-local-1757605251@test-project.iam.gserviceaccount.com","cloud_run_revision_filters":[],"host_filters":[],"is_bq_datasets_monitoring_enabled":false,"is_bq_jobs_monitoring_enabled":false,"is_cspm_enabled":false,"is_per_project_quota_enabled":false,"is_resource_change_collection_enabled":false,"is_security_command_center_enabled":false,"metric_namespace_configs":[],"monitored_resource_configs":[],"resource_collection_enabled":true},"meta":{"accessible_projects":[]}},{"id":"e17c9f57-0a83-4e09-a60c-5d429d98c492","type":"gcp_service_account","attributes":{"account_tags":["acct:one","acct:three","acct:two"],"automute":false,"client_email":"tf-TestAccIntegrationGcpStsBasic-local-1757605251@test-project.iam.gserviceaccount.com","cloud_run_revision_filters":["rev:one","rev:two"],"host_filters":["host:one"],"is_bq_datasets_monitoring_enabled":false,"is_bq_jobs_monitoring_enabled":false,"is_cspm_enabled":false,"is_per_project_quota_enabled":false,"is_resource_change_collection_enabled":false,"is_security_command_center_enabled":false,"metric_namespace_configs":[{"id":"aiplatform","disabled":true}],"monitored_resource_configs":[{"type":"cloud_run_revision","filters":["rev:one","rev:two"]},{"type":"gce_instance","filters":["host:one"]}],"resource_collection_enabled":false},"meta":{"accessible_projects":[]}}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 87.418542ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/integration/gcp/accounts
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":[{"id":"809e15d2-c570-4d74-a4cb-4bd066022ccc","type":"gcp_service_account","attributes":{"account_tags":["acct:one","acct:three","acct:two"],"automute":false,"client_email":"tf-TestAccIntegrationGcpStsBasic-local-1757456063@test-project.iam.gserviceaccount.com","cloud_run_revision_filters":["rev:one","rev:two"],"host_filters":["host:one","host:two"],"is_bq_datasets_monitoring_enabled":false,"is_bq_jobs_monitoring_enabled":false,"is_cspm_enabled":false,"is_per_project_quota_enabled":false,"is_resource_change_collection_enabled":false,"is_security_command_center_enabled":false,"metric_namespace_configs":[{"id":"aiplatform","disabled":true}],"monitored_resource_configs":[{"type":"cloud_run_revision","filters":["rev:one","rev:two"]},{"type":"gce_instance","filters":["host:one","host:two"]}],"resource_collection_enabled":false},"meta":{"accessible_projects":[]}},{"id":"9ec12352-6d86-4d63-b628-5bbfa640f409","type":"gcp_service_account","attributes":{"account_tags":["acct:one","acct:three","acct:two"],"automute":false,"client_email":"tf-TestAccIntegrationGcpStsBasic-local-1757456697@test-project.iam.gserviceaccount.com","cloud_run_revision_filters":["rev:one","rev:two"],"host_filters":["host:one","host:two"],"is_bq_datasets_monitoring_enabled":false,"is_bq_jobs_monitoring_enabled":false,"is_cspm_enabled":false,"is_per_project_quota_enabled":false,"is_resource_change_collection_enabled":false,"is_security_command_center_enabled":false,"metric_namespace_configs":[{"id":"aiplatform","disabled":true}],"monitored_resource_configs":[{"type":"cloud_run_revision","filters":["rev:one","rev:two"]},{"type":"gce_instance","filters":["host:one","host:two"]}],"resource_collection_enabled":false},"meta":{"accessible_projects":[]}},{"id":"43a71309-616e-4753-b711-678c36a51348","type":"gcp_service_account","attributes":{"account_tags":["acct:one","acct:three","acct:two"],"automute":false,"client_email":"tf-TestAccIntegrationGcpStsBasic-local-1757456775@test-project.iam.gserviceaccount.com","cloud_run_revision_filters":["rev:one","rev:two"],"host_filters":["host:one","host:two"],"is_bq_datasets_monitoring_enabled":false,"is_bq_jobs_monitoring_enabled":false,"is_cspm_enabled":false,"is_per_project_quota_enabled":false,"is_resource_change_collection_enabled":false,"is_security_command_center_enabled":false,"metric_namespace_configs":[{"id":"aiplatform","disabled":true}],"monitored_resource_configs":[{"type":"cloud_run_revision","filters":["rev:one","rev:two"]},{"type":"gce_instance","filters":["host:one","host:two"]}],"resource_collection_enabled":false},"meta":{"accessible_projects":[]}},{"id":"d3f8553d-15f4-4cba-8437-313b5aaffa7a","type":"gcp_service_account","attributes":{"account_tags":[],"automute":true,"client_email":"tf-TestAccIntegrationGcpStsBasic-local-1757511671@test-project.iam.gserviceaccount.com","cloud_run_revision_filters":[],"host_filters":["host:one"],"is_bq_datasets_monitoring_enabled":false,"is_bq_jobs_monitoring_enabled":false,"is_cspm_enabled":true,"is_per_project_quota_enabled":true,"is_resource_change_collection_enabled":true,"is_security_command_center_enabled":true,"metric_namespace_configs":[],"monitored_resource_configs":[{"type":"cloud_function","filters":["func:one","func:three","func:two"]},{"type":"gce_instance","filters":["host:one"]}],"resource_collection_enabled":true},"meta":{"accessible_projects":[]}},{"id":"389b3ba0-0e23-44fb-acde-12a2be8e557e","type":"gcp_service_account","attributes":{"account_tags":[],"automute":false,"client_email":"tf-TestAccIntegrationGcpStsDefault-local-1757605251@test-project.iam.gserviceaccount.com","cloud_run_revision_filters":[],"host_filters":[],"is_bq_datasets_monitoring_enabled":false,"is_bq_jobs_monitoring_enabled":false,"is_cspm_enabled":false,"is_per_project_quota_enabled":false,"is_resource_change_collection_enabled":false,"is_security_command_center_enabled":false,"metric_namespace_configs":[],"monitored_resource_configs":[],"resource_collection_enabled":true},"meta":{"accessible_projects":[]}},{"id":"e17c9f57-0a83-4e09-a60c-5d429d98c492","type":"gcp_service_account","attributes":{"account_tags":["acct:one","acct:three","acct:two"],"automute":false,"client_email":"tf-TestAccIntegrationGcpStsBasic-local-1757605251@test-project.iam.gserviceaccount.com","cloud_run_revision_filters":["rev:one","rev:two"],"host_filters":["host:one"],"is_bq_datasets_monitoring_enabled":false,"is_bq_jobs_monitoring_enabled":false,"is_cspm_enabled":false,"is_per_project_quota_enabled":false,"is_resource_change_collection_enabled":false,"is_security_command_center_enabled":false,"metric_namespace_configs":[{"id":"aiplatform","disabled":true}],"monitored_resource_configs":[{"type":"cloud_run_revision","filters":["rev:one","rev:two"]},{"type":"gce_instance","filters":["host:one"]}],"resource_collection_enabled":false},"meta":{"accessible_projects":[]}}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 49.648584ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/integration/gcp/accounts
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":[{"id":"809e15d2-c570-4d74-a4cb-4bd066022ccc","type":"gcp_service_account","attributes":{"account_tags":["acct:one","acct:three","acct:two"],"automute":false,"client_email":"tf-TestAccIntegrationGcpStsBasic-local-1757456063@test-project.iam.gserviceaccount.com","cloud_run_revision_filters":["rev:one","rev:two"],"host_filters":["host:one","host:two"],"is_bq_datasets_monitoring_enabled":false,"is_bq_jobs_monitoring_enabled":false,"is_cspm_enabled":false,"is_per_project_quota_enabled":false,"is_resource_change_collection_enabled":false,"is_security_command_center_enabled":false,"metric_namespace_configs":[{"id":"aiplatform","disabled":true}],"monitored_resource_configs":[{"type":"cloud_run_revision","filters":["rev:one","rev:two"]},{"type":"gce_instance","filters":["host:one","host:two"]}],"resource_collection_enabled":false},"meta":{"accessible_projects":[]}},{"id":"9ec12352-6d86-4d63-b628-5bbfa640f409","type":"gcp_service_account","attributes":{"account_tags":["acct:one","acct:three","acct:two"],"automute":false,"client_email":"tf-TestAccIntegrationGcpStsBasic-local-1757456697@test-project.iam.gserviceaccount.com","cloud_run_revision_filters":["rev:one","rev:two"],"host_filters":["host:one","host:two"],"is_bq_datasets_monitoring_enabled":false,"is_bq_jobs_monitoring_enabled":false,"is_cspm_enabled":false,"is_per_project_quota_enabled":false,"is_resource_change_collection_enabled":false,"is_security_command_center_enabled":false,"metric_namespace_configs":[{"id":"aiplatform","disabled":true}],"monitored_resource_configs":[{"type":"cloud_run_revision","filters":["rev:one","rev:two"]},{"type":"gce_instance","filters":["host:one","host:two"]}],"resource_collection_enabled":false},"meta":{"accessible_projects":[]}},{"id":"43a71309-616e-4753-b711-678c36a51348","type":"gcp_service_account","attributes":{"account_tags":["acct:one","acct:three","acct:two"],"automute":false,"client_email":"tf-TestAccIntegrationGcpStsBasic-local-1757456775@test-project.iam.gserviceaccount.com","cloud_run_revision_filters":["rev:one","rev:two"],"host_filters":["host:one","host:two"],"is_bq_datasets_monitoring_enabled":false,"is_bq_jobs_monitoring_enabled":false,"is_cspm_enabled":false,"is_per_project_quota_enabled":false,"is_resource_change_collection_enabled":false,"is_security_command_center_enabled":false,"metric_namespace_configs":[{"id":"aiplatform","disabled":true}],"monitored_resource_configs":[{"type":"cloud_run_revision","filters":["rev:one","rev:two"]},{"type":"gce_instance","filters":["host:one","host:two"]}],"resource_collection_enabled":false},"meta":{"accessible_projects":[]}},{"id":"d3f8553d-15f4-4cba-8437-313b5aaffa7a","type":"gcp_service_account","attributes":{"account_tags":[],"automute":true,"client_email":"tf-TestAccIntegrationGcpStsBasic-local-1757511671@test-project.iam.gserviceaccount.com","cloud_run_revision_filters":[],"host_filters":["host:one"],"is_bq_datasets_monitoring_enabled":false,"is_bq_jobs_monitoring_enabled":false,"is_cspm_enabled":true,"is_per_project_quota_enabled":true,"is_resource_change_collection_enabled":true,"is_security_command_center_enabled":true,"metric_namespace_configs":[],"monitored_resource_configs":[{"type":"cloud_function","filters":["func:one","func:three","func:two"]},{"type":"gce_instance","filters":["host:one"]}],"resource_collection_enabled":true},"meta":{"accessible_projects":[]}},{"id":"389b3ba0-0e23-44fb-acde-12a2be8e557e","type":"gcp_service_account","attributes":{"account_tags":[],"automute":false,"client_email":"tf-TestAccIntegrationGcpStsDefault-local-1757605251@test-project.iam.gserviceaccount.com","cloud_run_revision_filters":[],"host_filters":[],"is_bq_datasets_monitoring_enabled":false,"is_bq_jobs_monitoring_enabled":false,"is_cspm_enabled":false,"is_per_project_quota_enabled":false,"is_resource_change_collection_enabled":false,"is_security_command_center_enabled":false,"metric_namespace_configs":[],"monitored_resource_configs":[],"resource_collection_enabled":true},"meta":{"accessible_projects":[]}},{"id":"e17c9f57-0a83-4e09-a60c-5d429d98c492","type":"gcp_service_account","attributes":{"account_tags":["acct:one","acct:three","acct:two"],"automute":false,"client_email":"tf-TestAccIntegrationGcpStsBasic-local-1757605251@test-project.iam.gserviceaccount.com","cloud_run_revision_filters":["rev:one","rev:two"],"host_filters":["host:one"],"is_bq_datasets_monitoring_enabled":false,"is_bq_jobs_monitoring_enabled":false,"is_cspm_enabled":false,"is_per_project_quota_enabled":false,"is_resource_change_collection_enabled":false,"is_security_command_center_enabled":false,"metric_namespace_configs":[{"id":"aiplatform","disabled":true}],"monitored_resource_configs":[{"type":"cloud_run_revision","filters":["rev:one","rev:two"]},{"type":"gce_instance","filters":["host:one"]}],"resource_collection_enabled":false},"meta":{"accessible_projects":[]}}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 63.739417ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 503
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"account_tags":[],"automute":true,"cloud_run_revision_filters":[],"host_filters":[],"is_cspm_enabled":true,"is_per_project_quota_enabled":true,"is_resource_change_collection_enabled":true,"is_security_command_center_enabled":true,"metric_namespace_configs":[],"monitored_resource_configs":[{"filters":["func:one","func:three","func:two"],"type":"cloud_function"},{"filters":["host:three"],"type":"gce_instance"}],"resource_collection_enabled":true},"type":"gcp_service_account"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/integration/gcp/accounts/e17c9f57-0a83-4e09-a60c-5d429d98c492
+        method: PATCH
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 742
+        uncompressed: false
+        body: '{"data":{"id":"e17c9f57-0a83-4e09-a60c-5d429d98c492","type":"gcp_service_account","attributes":{"account_tags":[],"automute":true,"client_email":"tf-TestAccIntegrationGcpStsBasic-local-1757605251@test-project.iam.gserviceaccount.com","cloud_run_revision_filters":[],"host_filters":["host:three"],"is_bq_datasets_monitoring_enabled":false,"is_bq_jobs_monitoring_enabled":false,"is_cspm_enabled":true,"is_per_project_quota_enabled":true,"is_resource_change_collection_enabled":true,"is_security_command_center_enabled":true,"metric_namespace_configs":[],"monitored_resource_configs":[{"type":"cloud_function","filters":["func:one","func:three","func:two"]},{"type":"gce_instance","filters":["host:three"]}],"resource_collection_enabled":true}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 606.411958ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/integration/gcp/accounts
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":[{"id":"809e15d2-c570-4d74-a4cb-4bd066022ccc","type":"gcp_service_account","attributes":{"account_tags":["acct:one","acct:three","acct:two"],"automute":false,"client_email":"tf-TestAccIntegrationGcpStsBasic-local-1757456063@test-project.iam.gserviceaccount.com","cloud_run_revision_filters":["rev:one","rev:two"],"host_filters":["host:one","host:two"],"is_bq_datasets_monitoring_enabled":false,"is_bq_jobs_monitoring_enabled":false,"is_cspm_enabled":false,"is_per_project_quota_enabled":false,"is_resource_change_collection_enabled":false,"is_security_command_center_enabled":false,"metric_namespace_configs":[{"id":"aiplatform","disabled":true}],"monitored_resource_configs":[{"type":"cloud_run_revision","filters":["rev:one","rev:two"]},{"type":"gce_instance","filters":["host:one","host:two"]}],"resource_collection_enabled":false},"meta":{"accessible_projects":[]}},{"id":"9ec12352-6d86-4d63-b628-5bbfa640f409","type":"gcp_service_account","attributes":{"account_tags":["acct:one","acct:three","acct:two"],"automute":false,"client_email":"tf-TestAccIntegrationGcpStsBasic-local-1757456697@test-project.iam.gserviceaccount.com","cloud_run_revision_filters":["rev:one","rev:two"],"host_filters":["host:one","host:two"],"is_bq_datasets_monitoring_enabled":false,"is_bq_jobs_monitoring_enabled":false,"is_cspm_enabled":false,"is_per_project_quota_enabled":false,"is_resource_change_collection_enabled":false,"is_security_command_center_enabled":false,"metric_namespace_configs":[{"id":"aiplatform","disabled":true}],"monitored_resource_configs":[{"type":"cloud_run_revision","filters":["rev:one","rev:two"]},{"type":"gce_instance","filters":["host:one","host:two"]}],"resource_collection_enabled":false},"meta":{"accessible_projects":[]}},{"id":"43a71309-616e-4753-b711-678c36a51348","type":"gcp_service_account","attributes":{"account_tags":["acct:one","acct:three","acct:two"],"automute":false,"client_email":"tf-TestAccIntegrationGcpStsBasic-local-1757456775@test-project.iam.gserviceaccount.com","cloud_run_revision_filters":["rev:one","rev:two"],"host_filters":["host:one","host:two"],"is_bq_datasets_monitoring_enabled":false,"is_bq_jobs_monitoring_enabled":false,"is_cspm_enabled":false,"is_per_project_quota_enabled":false,"is_resource_change_collection_enabled":false,"is_security_command_center_enabled":false,"metric_namespace_configs":[{"id":"aiplatform","disabled":true}],"monitored_resource_configs":[{"type":"cloud_run_revision","filters":["rev:one","rev:two"]},{"type":"gce_instance","filters":["host:one","host:two"]}],"resource_collection_enabled":false},"meta":{"accessible_projects":[]}},{"id":"d3f8553d-15f4-4cba-8437-313b5aaffa7a","type":"gcp_service_account","attributes":{"account_tags":[],"automute":true,"client_email":"tf-TestAccIntegrationGcpStsBasic-local-1757511671@test-project.iam.gserviceaccount.com","cloud_run_revision_filters":[],"host_filters":["host:one"],"is_bq_datasets_monitoring_enabled":false,"is_bq_jobs_monitoring_enabled":false,"is_cspm_enabled":true,"is_per_project_quota_enabled":true,"is_resource_change_collection_enabled":true,"is_security_command_center_enabled":true,"metric_namespace_configs":[],"monitored_resource_configs":[{"type":"cloud_function","filters":["func:one","func:three","func:two"]},{"type":"gce_instance","filters":["host:one"]}],"resource_collection_enabled":true},"meta":{"accessible_projects":[]}},{"id":"e17c9f57-0a83-4e09-a60c-5d429d98c492","type":"gcp_service_account","attributes":{"account_tags":[],"automute":true,"client_email":"tf-TestAccIntegrationGcpStsBasic-local-1757605251@test-project.iam.gserviceaccount.com","cloud_run_revision_filters":[],"host_filters":["host:three"],"is_bq_datasets_monitoring_enabled":false,"is_bq_jobs_monitoring_enabled":false,"is_cspm_enabled":true,"is_per_project_quota_enabled":true,"is_resource_change_collection_enabled":true,"is_security_command_center_enabled":true,"metric_namespace_configs":[],"monitored_resource_configs":[{"type":"cloud_function","filters":["func:one","func:three","func:two"]},{"type":"gce_instance","filters":["host:three"]}],"resource_collection_enabled":true},"meta":{"accessible_projects":[]}}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 54.521458ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/integration/gcp/accounts
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":[{"id":"809e15d2-c570-4d74-a4cb-4bd066022ccc","type":"gcp_service_account","attributes":{"account_tags":["acct:one","acct:three","acct:two"],"automute":false,"client_email":"tf-TestAccIntegrationGcpStsBasic-local-1757456063@test-project.iam.gserviceaccount.com","cloud_run_revision_filters":["rev:one","rev:two"],"host_filters":["host:one","host:two"],"is_bq_datasets_monitoring_enabled":false,"is_bq_jobs_monitoring_enabled":false,"is_cspm_enabled":false,"is_per_project_quota_enabled":false,"is_resource_change_collection_enabled":false,"is_security_command_center_enabled":false,"metric_namespace_configs":[{"id":"aiplatform","disabled":true}],"monitored_resource_configs":[{"type":"cloud_run_revision","filters":["rev:one","rev:two"]},{"type":"gce_instance","filters":["host:one","host:two"]}],"resource_collection_enabled":false},"meta":{"accessible_projects":[]}},{"id":"9ec12352-6d86-4d63-b628-5bbfa640f409","type":"gcp_service_account","attributes":{"account_tags":["acct:one","acct:three","acct:two"],"automute":false,"client_email":"tf-TestAccIntegrationGcpStsBasic-local-1757456697@test-project.iam.gserviceaccount.com","cloud_run_revision_filters":["rev:one","rev:two"],"host_filters":["host:one","host:two"],"is_bq_datasets_monitoring_enabled":false,"is_bq_jobs_monitoring_enabled":false,"is_cspm_enabled":false,"is_per_project_quota_enabled":false,"is_resource_change_collection_enabled":false,"is_security_command_center_enabled":false,"metric_namespace_configs":[{"id":"aiplatform","disabled":true}],"monitored_resource_configs":[{"type":"cloud_run_revision","filters":["rev:one","rev:two"]},{"type":"gce_instance","filters":["host:one","host:two"]}],"resource_collection_enabled":false},"meta":{"accessible_projects":[]}},{"id":"43a71309-616e-4753-b711-678c36a51348","type":"gcp_service_account","attributes":{"account_tags":["acct:one","acct:three","acct:two"],"automute":false,"client_email":"tf-TestAccIntegrationGcpStsBasic-local-1757456775@test-project.iam.gserviceaccount.com","cloud_run_revision_filters":["rev:one","rev:two"],"host_filters":["host:one","host:two"],"is_bq_datasets_monitoring_enabled":false,"is_bq_jobs_monitoring_enabled":false,"is_cspm_enabled":false,"is_per_project_quota_enabled":false,"is_resource_change_collection_enabled":false,"is_security_command_center_enabled":false,"metric_namespace_configs":[{"id":"aiplatform","disabled":true}],"monitored_resource_configs":[{"type":"cloud_run_revision","filters":["rev:one","rev:two"]},{"type":"gce_instance","filters":["host:one","host:two"]}],"resource_collection_enabled":false},"meta":{"accessible_projects":[]}},{"id":"d3f8553d-15f4-4cba-8437-313b5aaffa7a","type":"gcp_service_account","attributes":{"account_tags":[],"automute":true,"client_email":"tf-TestAccIntegrationGcpStsBasic-local-1757511671@test-project.iam.gserviceaccount.com","cloud_run_revision_filters":[],"host_filters":["host:one"],"is_bq_datasets_monitoring_enabled":false,"is_bq_jobs_monitoring_enabled":false,"is_cspm_enabled":true,"is_per_project_quota_enabled":true,"is_resource_change_collection_enabled":true,"is_security_command_center_enabled":true,"metric_namespace_configs":[],"monitored_resource_configs":[{"type":"cloud_function","filters":["func:one","func:three","func:two"]},{"type":"gce_instance","filters":["host:one"]}],"resource_collection_enabled":true},"meta":{"accessible_projects":[]}},{"id":"e17c9f57-0a83-4e09-a60c-5d429d98c492","type":"gcp_service_account","attributes":{"account_tags":[],"automute":true,"client_email":"tf-TestAccIntegrationGcpStsBasic-local-1757605251@test-project.iam.gserviceaccount.com","cloud_run_revision_filters":[],"host_filters":["host:three"],"is_bq_datasets_monitoring_enabled":false,"is_bq_jobs_monitoring_enabled":false,"is_cspm_enabled":true,"is_per_project_quota_enabled":true,"is_resource_change_collection_enabled":true,"is_security_command_center_enabled":true,"metric_namespace_configs":[],"monitored_resource_configs":[{"type":"cloud_function","filters":["func:one","func:three","func:two"]},{"type":"gce_instance","filters":["host:three"]}],"resource_collection_enabled":true},"meta":{"accessible_projects":[]}}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 47.94075ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/integration/gcp/accounts/e17c9f57-0a83-4e09-a60c-5d429d98c492
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 72.870833ms

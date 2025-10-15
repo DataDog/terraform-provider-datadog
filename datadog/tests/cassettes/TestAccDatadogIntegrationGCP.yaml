@@ -1,3 +1,431 @@
 ---
 version: 2
-interactions: []
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 914
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"auth_provider_x509_cert_url":"https://www.googleapis.com/oauth2/v1/certs","auth_uri":"https://accounts.google.com/o/oauth2/auth","automute":false,"client_email":"tf-TestAccDatadogIntegrationGCP-local-1757605251@awesome-project-id.iam.gserviceaccount.com","client_id":"123456789012345678901","client_x509_cert_url":"https://www.googleapis.com/robot/v1/metadata/x509/tf-TestAccDatadogIntegrationGCP-local-1757605251@awesome-project-id.iam.gserviceaccount.com","cloud_run_revision_filters":["rev:one","rev:two"],"host_filters":"host:one","is_cspm_enabled":false,"is_security_command_center_enabled":false,"monitored_resource_configs":[],"private_key":"-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n","private_key_id":"1234567890123456789012345678901234567890","project_id":"tf-TestAccDatadogIntegrationGCP-local-1757605251","token_uri":"https://oauth2.googleapis.com/token","type":"service_account"}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/integration/gcp
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 3
+        uncompressed: false
+        body: |
+            {}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 1.113029875s
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/integration/gcp
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            [{"project_id":"","client_email":"tf-TestAccIntegrationGcpStsBasic-local-1757456063@test-project.iam.gserviceaccount.com","host_filters":"host:one,host:two","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":false,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":["rev:one","rev:two"],"monitored_resource_configs":[{"type":"cloud_run_revision","filters":["rev:one","rev:two"]},{"type":"gce_instance","filters":["host:one","host:two"]}],"errors":[]},{"project_id":"","client_email":"tf-TestAccIntegrationGcpStsBasic-local-1757456697@test-project.iam.gserviceaccount.com","host_filters":"host:one,host:two","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":false,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":["rev:one","rev:two"],"monitored_resource_configs":[{"type":"cloud_run_revision","filters":["rev:one","rev:two"]},{"type":"gce_instance","filters":["host:one","host:two"]}],"errors":[]},{"project_id":"","client_email":"tf-TestAccIntegrationGcpStsBasic-local-1757456775@test-project.iam.gserviceaccount.com","host_filters":"host:one,host:two","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":false,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":["rev:one","rev:two"],"monitored_resource_configs":[{"type":"cloud_run_revision","filters":["rev:one","rev:two"]},{"type":"gce_instance","filters":["host:one","host:two"]}],"errors":[]},{"project_id":"","client_email":"tf-TestAccIntegrationGcpStsBasic-local-1757511671@test-project.iam.gserviceaccount.com","host_filters":"host:one","automute":true,"is_cspm_enabled":true,"resource_collection_enabled":true,"is_security_command_center_enabled":true,"is_resource_change_collection_enabled":true,"cloud_run_revision_filters":[],"monitored_resource_configs":[{"type":"cloud_function","filters":["func:one","func:three","func:two"]},{"type":"gce_instance","filters":["host:one"]}],"errors":[]},{"project_id":"","client_email":"tf-TestAccIntegrationGcpStsBasic-local-1757605251@test-project.iam.gserviceaccount.com","host_filters":"host:one","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":false,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":["rev:one","rev:two"],"monitored_resource_configs":[{"type":"cloud_run_revision","filters":["rev:one","rev:two"]},{"type":"gce_instance","filters":["host:one"]}],"errors":[]},{"project_id":"","client_email":"tf-TestAccIntegrationGcpStsDefault-local-1757605251@test-project.iam.gserviceaccount.com","host_filters":"","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":true,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"monitored_resource_configs":[],"errors":[]},{"project_id":"tf-TestAccDatadogIntegrationGCP-local-1757605251","client_email":"tf-TestAccDatadogIntegrationGCP-local-1757605251@awesome-project-id.iam.gserviceaccount.com","host_filters":"host:one","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":true,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":["rev:one","rev:two"],"monitored_resource_configs":[{"type":"cloud_run_revision","filters":["rev:one","rev:two"]},{"type":"gce_instance","filters":["host:one"]}],"errors":[]}]
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 149.280792ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/integration/gcp
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            [{"project_id":"","client_email":"tf-TestAccIntegrationGcpStsBasic-local-1757456063@test-project.iam.gserviceaccount.com","host_filters":"host:one,host:two","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":false,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":["rev:one","rev:two"],"monitored_resource_configs":[{"type":"cloud_run_revision","filters":["rev:one","rev:two"]},{"type":"gce_instance","filters":["host:one","host:two"]}],"errors":[]},{"project_id":"","client_email":"tf-TestAccIntegrationGcpStsBasic-local-1757456697@test-project.iam.gserviceaccount.com","host_filters":"host:one,host:two","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":false,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":["rev:one","rev:two"],"monitored_resource_configs":[{"type":"cloud_run_revision","filters":["rev:one","rev:two"]},{"type":"gce_instance","filters":["host:one","host:two"]}],"errors":[]},{"project_id":"","client_email":"tf-TestAccIntegrationGcpStsBasic-local-1757456775@test-project.iam.gserviceaccount.com","host_filters":"host:one,host:two","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":false,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":["rev:one","rev:two"],"monitored_resource_configs":[{"type":"cloud_run_revision","filters":["rev:one","rev:two"]},{"type":"gce_instance","filters":["host:one","host:two"]}],"errors":[]},{"project_id":"","client_email":"tf-TestAccIntegrationGcpStsBasic-local-1757511671@test-project.iam.gserviceaccount.com","host_filters":"host:one","automute":true,"is_cspm_enabled":true,"resource_collection_enabled":true,"is_security_command_center_enabled":true,"is_resource_change_collection_enabled":true,"cloud_run_revision_filters":[],"monitored_resource_configs":[{"type":"cloud_function","filters":["func:one","func:three","func:two"]},{"type":"gce_instance","filters":["host:one"]}],"errors":[]},{"project_id":"","client_email":"tf-TestAccIntegrationGcpStsBasic-local-1757605251@test-project.iam.gserviceaccount.com","host_filters":"host:one","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":false,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":["rev:one","rev:two"],"monitored_resource_configs":[{"type":"cloud_run_revision","filters":["rev:one","rev:two"]},{"type":"gce_instance","filters":["host:one"]}],"errors":[]},{"project_id":"","client_email":"tf-TestAccIntegrationGcpStsDefault-local-1757605251@test-project.iam.gserviceaccount.com","host_filters":"","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":true,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"monitored_resource_configs":[],"errors":[]},{"project_id":"tf-TestAccDatadogIntegrationGCP-local-1757605251","client_email":"tf-TestAccDatadogIntegrationGCP-local-1757605251@awesome-project-id.iam.gserviceaccount.com","host_filters":"host:one","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":true,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":["rev:one","rev:two"],"monitored_resource_configs":[{"type":"cloud_run_revision","filters":["rev:one","rev:two"]},{"type":"gce_instance","filters":["host:one"]}],"errors":[]}]
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 104.93575ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/integration/gcp
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            [{"project_id":"","client_email":"tf-TestAccIntegrationGcpStsBasic-local-1757456063@test-project.iam.gserviceaccount.com","host_filters":"host:one,host:two","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":false,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":["rev:one","rev:two"],"monitored_resource_configs":[{"type":"cloud_run_revision","filters":["rev:one","rev:two"]},{"type":"gce_instance","filters":["host:one","host:two"]}],"errors":[]},{"project_id":"","client_email":"tf-TestAccIntegrationGcpStsBasic-local-1757456697@test-project.iam.gserviceaccount.com","host_filters":"host:one,host:two","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":false,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":["rev:one","rev:two"],"monitored_resource_configs":[{"type":"cloud_run_revision","filters":["rev:one","rev:two"]},{"type":"gce_instance","filters":["host:one","host:two"]}],"errors":[]},{"project_id":"","client_email":"tf-TestAccIntegrationGcpStsBasic-local-1757456775@test-project.iam.gserviceaccount.com","host_filters":"host:one,host:two","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":false,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":["rev:one","rev:two"],"monitored_resource_configs":[{"type":"cloud_run_revision","filters":["rev:one","rev:two"]},{"type":"gce_instance","filters":["host:one","host:two"]}],"errors":[]},{"project_id":"","client_email":"tf-TestAccIntegrationGcpStsBasic-local-1757511671@test-project.iam.gserviceaccount.com","host_filters":"host:one","automute":true,"is_cspm_enabled":true,"resource_collection_enabled":true,"is_security_command_center_enabled":true,"is_resource_change_collection_enabled":true,"cloud_run_revision_filters":[],"monitored_resource_configs":[{"type":"cloud_function","filters":["func:one","func:three","func:two"]},{"type":"gce_instance","filters":["host:one"]}],"errors":[]},{"project_id":"","client_email":"tf-TestAccIntegrationGcpStsBasic-local-1757605251@test-project.iam.gserviceaccount.com","host_filters":"host:one","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":false,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":["rev:one","rev:two"],"monitored_resource_configs":[{"type":"cloud_run_revision","filters":["rev:one","rev:two"]},{"type":"gce_instance","filters":["host:one"]}],"errors":[]},{"project_id":"tf-TestAccDatadogIntegrationGCP-local-1757605251","client_email":"tf-TestAccDatadogIntegrationGCP-local-1757605251@awesome-project-id.iam.gserviceaccount.com","host_filters":"host:one","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":true,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":["rev:one","rev:two"],"monitored_resource_configs":[{"type":"cloud_run_revision","filters":["rev:one","rev:two"]},{"type":"gce_instance","filters":["host:one"]}],"errors":[]}]
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 176.082875ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/integration/gcp
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            [{"project_id":"","client_email":"tf-TestAccIntegrationGcpStsBasic-local-1757456063@test-project.iam.gserviceaccount.com","host_filters":"host:one,host:two","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":false,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":["rev:one","rev:two"],"monitored_resource_configs":[{"type":"cloud_run_revision","filters":["rev:one","rev:two"]},{"type":"gce_instance","filters":["host:one","host:two"]}],"errors":[]},{"project_id":"","client_email":"tf-TestAccIntegrationGcpStsBasic-local-1757456697@test-project.iam.gserviceaccount.com","host_filters":"host:one,host:two","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":false,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":["rev:one","rev:two"],"monitored_resource_configs":[{"type":"cloud_run_revision","filters":["rev:one","rev:two"]},{"type":"gce_instance","filters":["host:one","host:two"]}],"errors":[]},{"project_id":"","client_email":"tf-TestAccIntegrationGcpStsBasic-local-1757456775@test-project.iam.gserviceaccount.com","host_filters":"host:one,host:two","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":false,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":["rev:one","rev:two"],"monitored_resource_configs":[{"type":"cloud_run_revision","filters":["rev:one","rev:two"]},{"type":"gce_instance","filters":["host:one","host:two"]}],"errors":[]},{"project_id":"","client_email":"tf-TestAccIntegrationGcpStsBasic-local-1757511671@test-project.iam.gserviceaccount.com","host_filters":"host:one","automute":true,"is_cspm_enabled":true,"resource_collection_enabled":true,"is_security_command_center_enabled":true,"is_resource_change_collection_enabled":true,"cloud_run_revision_filters":[],"monitored_resource_configs":[{"type":"cloud_function","filters":["func:one","func:three","func:two"]},{"type":"gce_instance","filters":["host:one"]}],"errors":[]},{"project_id":"","client_email":"tf-TestAccIntegrationGcpStsBasic-local-1757605251@test-project.iam.gserviceaccount.com","host_filters":"host:three","automute":true,"is_cspm_enabled":true,"resource_collection_enabled":true,"is_security_command_center_enabled":true,"is_resource_change_collection_enabled":true,"cloud_run_revision_filters":[],"monitored_resource_configs":[{"type":"cloud_function","filters":["func:one","func:three","func:two"]},{"type":"gce_instance","filters":["host:three"]}],"errors":[]},{"project_id":"tf-TestAccDatadogIntegrationGCP-local-1757605251","client_email":"tf-TestAccDatadogIntegrationGCP-local-1757605251@awesome-project-id.iam.gserviceaccount.com","host_filters":"host:one","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":true,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":["rev:one","rev:two"],"monitored_resource_configs":[{"type":"cloud_run_revision","filters":["rev:one","rev:two"]},{"type":"gce_instance","filters":["host:one"]}],"errors":[]}]
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 95.581625ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 175
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"client_email":"tf-TestAccDatadogIntegrationGCP-local-1757605251@awesome-project-id.iam.gserviceaccount.com","project_id":"tf-TestAccDatadogIntegrationGCP-local-1757605251"}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/integration/gcp
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 3
+        uncompressed: false
+        body: |
+            {}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 217.337334ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1022
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"auth_provider_x509_cert_url":"https://www.googleapis.com/oauth2/v1/certs","auth_uri":"https://accounts.google.com/o/oauth2/auth","automute":true,"client_email":"tf-TestAccDatadogIntegrationGCP-local-1757605251@awesome-project-id.iam.gserviceaccount.com","client_id":"123456789012345678901","client_x509_cert_url":"https://www.googleapis.com/robot/v1/metadata/x509/tf-TestAccDatadogIntegrationGCP-local-1757605251@awesome-project-id.iam.gserviceaccount.com","cloud_run_revision_filters":[],"host_filters":"","is_cspm_enabled":false,"is_security_command_center_enabled":false,"monitored_resource_configs":[{"filters":["func:one","func:three","func:two"],"type":"cloud_function"},{"filters":["rev:three"],"type":"cloud_run_revision"}],"private_key":"-----BEGIN PRIVATE KEY-----\n key updated \n-----END PRIVATE KEY-----\n","private_key_id":"1234567890123456789012345678901234567890","project_id":"tf-TestAccDatadogIntegrationGCP-local-1757605251","token_uri":"https://oauth2.googleapis.com/token","type":"service_account"}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/integration/gcp
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 3
+        uncompressed: false
+        body: |
+            {}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 2.857342792s
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/integration/gcp
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            [{"project_id":"","client_email":"tf-TestAccIntegrationGcpStsBasic-local-1757456063@test-project.iam.gserviceaccount.com","host_filters":"host:one,host:two","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":false,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":["rev:one","rev:two"],"monitored_resource_configs":[{"type":"cloud_run_revision","filters":["rev:one","rev:two"]},{"type":"gce_instance","filters":["host:one","host:two"]}],"errors":[]},{"project_id":"","client_email":"tf-TestAccIntegrationGcpStsBasic-local-1757456697@test-project.iam.gserviceaccount.com","host_filters":"host:one,host:two","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":false,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":["rev:one","rev:two"],"monitored_resource_configs":[{"type":"cloud_run_revision","filters":["rev:one","rev:two"]},{"type":"gce_instance","filters":["host:one","host:two"]}],"errors":[]},{"project_id":"","client_email":"tf-TestAccIntegrationGcpStsBasic-local-1757456775@test-project.iam.gserviceaccount.com","host_filters":"host:one,host:two","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":false,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":["rev:one","rev:two"],"monitored_resource_configs":[{"type":"cloud_run_revision","filters":["rev:one","rev:two"]},{"type":"gce_instance","filters":["host:one","host:two"]}],"errors":[]},{"project_id":"","client_email":"tf-TestAccIntegrationGcpStsBasic-local-1757511671@test-project.iam.gserviceaccount.com","host_filters":"host:one","automute":true,"is_cspm_enabled":true,"resource_collection_enabled":true,"is_security_command_center_enabled":true,"is_resource_change_collection_enabled":true,"cloud_run_revision_filters":[],"monitored_resource_configs":[{"type":"cloud_function","filters":["func:one","func:three","func:two"]},{"type":"gce_instance","filters":["host:one"]}],"errors":[]},{"project_id":"tf-TestAccDatadogIntegrationGCP-local-1757605251","client_email":"tf-TestAccDatadogIntegrationGCP-local-1757605251@awesome-project-id.iam.gserviceaccount.com","host_filters":"","automute":true,"is_cspm_enabled":false,"resource_collection_enabled":true,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":["rev:three"],"monitored_resource_configs":[{"type":"cloud_function","filters":["func:one","func:three","func:two"]},{"type":"cloud_run_revision","filters":["rev:three"]}],"errors":[]}]
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 108.9015ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/integration/gcp
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            [{"project_id":"","client_email":"tf-TestAccIntegrationGcpStsBasic-local-1757456063@test-project.iam.gserviceaccount.com","host_filters":"host:one,host:two","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":false,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":["rev:one","rev:two"],"monitored_resource_configs":[{"type":"cloud_run_revision","filters":["rev:one","rev:two"]},{"type":"gce_instance","filters":["host:one","host:two"]}],"errors":[]},{"project_id":"","client_email":"tf-TestAccIntegrationGcpStsBasic-local-1757456697@test-project.iam.gserviceaccount.com","host_filters":"host:one,host:two","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":false,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":["rev:one","rev:two"],"monitored_resource_configs":[{"type":"cloud_run_revision","filters":["rev:one","rev:two"]},{"type":"gce_instance","filters":["host:one","host:two"]}],"errors":[]},{"project_id":"","client_email":"tf-TestAccIntegrationGcpStsBasic-local-1757456775@test-project.iam.gserviceaccount.com","host_filters":"host:one,host:two","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":false,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":["rev:one","rev:two"],"monitored_resource_configs":[{"type":"cloud_run_revision","filters":["rev:one","rev:two"]},{"type":"gce_instance","filters":["host:one","host:two"]}],"errors":[]},{"project_id":"","client_email":"tf-TestAccIntegrationGcpStsBasic-local-1757511671@test-project.iam.gserviceaccount.com","host_filters":"host:one","automute":true,"is_cspm_enabled":true,"resource_collection_enabled":true,"is_security_command_center_enabled":true,"is_resource_change_collection_enabled":true,"cloud_run_revision_filters":[],"monitored_resource_configs":[{"type":"cloud_function","filters":["func:one","func:three","func:two"]},{"type":"gce_instance","filters":["host:one"]}],"errors":[]},{"project_id":"tf-TestAccDatadogIntegrationGCP-local-1757605251","client_email":"tf-TestAccDatadogIntegrationGCP-local-1757605251@awesome-project-id.iam.gserviceaccount.com","host_filters":"","automute":true,"is_cspm_enabled":false,"resource_collection_enabled":true,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":["rev:three"],"monitored_resource_configs":[{"type":"cloud_function","filters":["func:one","func:three","func:two"]},{"type":"cloud_run_revision","filters":["rev:three"]}],"errors":[]}]
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 119.57675ms
+    - id: 9
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/integration/gcp
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            [{"project_id":"","client_email":"tf-TestAccIntegrationGcpStsBasic-local-1757456063@test-project.iam.gserviceaccount.com","host_filters":"host:one,host:two","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":false,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":["rev:one","rev:two"],"monitored_resource_configs":[{"type":"cloud_run_revision","filters":["rev:one","rev:two"]},{"type":"gce_instance","filters":["host:one","host:two"]}],"errors":[]},{"project_id":"","client_email":"tf-TestAccIntegrationGcpStsBasic-local-1757456697@test-project.iam.gserviceaccount.com","host_filters":"host:one,host:two","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":false,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":["rev:one","rev:two"],"monitored_resource_configs":[{"type":"cloud_run_revision","filters":["rev:one","rev:two"]},{"type":"gce_instance","filters":["host:one","host:two"]}],"errors":[]},{"project_id":"","client_email":"tf-TestAccIntegrationGcpStsBasic-local-1757456775@test-project.iam.gserviceaccount.com","host_filters":"host:one,host:two","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":false,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":["rev:one","rev:two"],"monitored_resource_configs":[{"type":"cloud_run_revision","filters":["rev:one","rev:two"]},{"type":"gce_instance","filters":["host:one","host:two"]}],"errors":[]},{"project_id":"","client_email":"tf-TestAccIntegrationGcpStsBasic-local-1757511671@test-project.iam.gserviceaccount.com","host_filters":"host:one","automute":true,"is_cspm_enabled":true,"resource_collection_enabled":true,"is_security_command_center_enabled":true,"is_resource_change_collection_enabled":true,"cloud_run_revision_filters":[],"monitored_resource_configs":[{"type":"cloud_function","filters":["func:one","func:three","func:two"]},{"type":"gce_instance","filters":["host:one"]}],"errors":[]},{"project_id":"tf-TestAccDatadogIntegrationGCP-local-1757605251","client_email":"tf-TestAccDatadogIntegrationGCP-local-1757605251@awesome-project-id.iam.gserviceaccount.com","host_filters":"","automute":true,"is_cspm_enabled":false,"resource_collection_enabled":true,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":["rev:three"],"monitored_resource_configs":[{"type":"cloud_function","filters":["func:one","func:three","func:two"]},{"type":"cloud_run_revision","filters":["rev:three"]}],"errors":[]}]
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 173.581167ms
+    - id: 10
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 175
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"client_email":"tf-TestAccDatadogIntegrationGCP-local-1757605251@awesome-project-id.iam.gserviceaccount.com","project_id":"tf-TestAccDatadogIntegrationGCP-local-1757605251"}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/integration/gcp
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 3
+        uncompressed: false
+        body: |
+            {}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 162.006959ms
+    - id: 11
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/integration/gcp
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            [{"project_id":"","client_email":"tf-TestAccIntegrationGcpStsBasic-local-1757456063@test-project.iam.gserviceaccount.com","host_filters":"host:one,host:two","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":false,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":["rev:one","rev:two"],"monitored_resource_configs":[{"type":"cloud_run_revision","filters":["rev:one","rev:two"]},{"type":"gce_instance","filters":["host:one","host:two"]}],"errors":[]},{"project_id":"","client_email":"tf-TestAccIntegrationGcpStsBasic-local-1757456697@test-project.iam.gserviceaccount.com","host_filters":"host:one,host:two","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":false,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":["rev:one","rev:two"],"monitored_resource_configs":[{"type":"cloud_run_revision","filters":["rev:one","rev:two"]},{"type":"gce_instance","filters":["host:one","host:two"]}],"errors":[]},{"project_id":"","client_email":"tf-TestAccIntegrationGcpStsBasic-local-1757456775@test-project.iam.gserviceaccount.com","host_filters":"host:one,host:two","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":false,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":["rev:one","rev:two"],"monitored_resource_configs":[{"type":"cloud_run_revision","filters":["rev:one","rev:two"]},{"type":"gce_instance","filters":["host:one","host:two"]}],"errors":[]},{"project_id":"","client_email":"tf-TestAccIntegrationGcpStsBasic-local-1757511671@test-project.iam.gserviceaccount.com","host_filters":"host:one","automute":true,"is_cspm_enabled":true,"resource_collection_enabled":true,"is_security_command_center_enabled":true,"is_resource_change_collection_enabled":true,"cloud_run_revision_filters":[],"monitored_resource_configs":[{"type":"cloud_function","filters":["func:one","func:three","func:two"]},{"type":"gce_instance","filters":["host:one"]}],"errors":[]}]
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 124.845167ms

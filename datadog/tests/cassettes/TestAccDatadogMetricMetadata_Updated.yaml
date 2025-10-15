@@ -1,3 +1,144 @@
----
 version: 2
-interactions: []
+interactions:
+- request:
+    body: |
+      {"description":"some description","per_unit":"second","short_name":"short name for metric_metadata foo","statsd_interval":1,"type":"gauge","unit":"byte"}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/metrics/foo
+    method: PUT
+    id: 0
+  response:
+    body: '{"description":"some description","short_name":"short name for metric_metadata foo","integration":null,"statsd_interval":1,"per_unit":"second","type":"gauge","unit":"byte"}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: "0ms"
+- request:
+    body: '{"series":[{"metric":"foo","points":[[1615587123,1]]}]}'
+    form: {}
+    headers:
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/series
+    method: POST
+    id: 1
+  response:
+    body: '{"status": "ok"}'
+    headers:
+      Content-Type:
+      - text/json
+    status: 202 Accepted
+    code: 202
+    duration: "0ms"
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/metrics/foo
+    method: GET
+    id: 2
+  response:
+    body: '{"description":"some description","short_name":"short name for metric_metadata foo","integration":null,"statsd_interval":1,"per_unit":"second","type":"gauge","unit":"byte"}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: "0ms"
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/metrics/foo
+    method: GET
+    id: 3
+  response:
+    body: '{"description":"some description","short_name":"short name for metric_metadata foo","integration":null,"statsd_interval":1,"per_unit":"second","type":"gauge","unit":"byte"}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: "0ms"
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/metrics/foo
+    method: GET
+    id: 4
+  response:
+    body: '{"description":"some description","short_name":"short name for metric_metadata foo","integration":null,"statsd_interval":1,"per_unit":"second","type":"gauge","unit":"byte"}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: "0ms"
+- request:
+    body: |
+      {"description":"a different description","per_unit":"second","short_name":"short name for metric_metadata foo","statsd_interval":1,"type":"gauge","unit":"byte"}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/metrics/foo
+    method: PUT
+    id: 5
+  response:
+    body: '{"description":"a different description","short_name":"short name for metric_metadata foo","integration":null,"statsd_interval":1,"per_unit":"second","type":"gauge","unit":"byte"}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: "0ms"
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/metrics/foo
+    method: GET
+    id: 6
+  response:
+    body: '{"description":"a different description","short_name":"short name for metric_metadata foo","integration":null,"statsd_interval":1,"per_unit":"second","type":"gauge","unit":"byte"}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: "0ms"
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/metrics/foo
+    method: GET
+    id: 7
+  response:
+    body: '{"description":"a different description","short_name":"short name for metric_metadata foo","integration":null,"statsd_interval":1,"per_unit":"second","type":"gauge","unit":"byte"}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: "0ms"

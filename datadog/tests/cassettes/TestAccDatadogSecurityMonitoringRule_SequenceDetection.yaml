@@ -1,3 +1,440 @@
 ---
 version: 2
-interactions: []
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1171
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"cases":[{"condition":"step_b \u003e 0","name":"","notifications":[],"status":"info"}],"hasExtendedTitle":false,"isEnabled":false,"message":"sequence detection rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_SequenceDetection-local-1758311733","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"sequence_detection","evaluationWindow":0,"keepAlive":300,"maxSignalDuration":600,"sequenceDetectionOptions":{"stepTransitions":[{"child":"step_b","evaluationWindow":900,"parent":"step_a"}],"steps":[{"condition":"a \u003e 0","evaluationWindow":60,"name":"step_a"},{"condition":"b \u003e 0","evaluationWindow":60,"name":"step_b"}]}},"queries":[{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"a","query":"service:logs-rule-reducer source:sequence-detection-a"},{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"b","query":"service:logs-rule-reducer source:sequence-detection-b"}],"tags":["u:tomato","i:tomato"],"type":"log_detection"}
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/validation
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 100.437416ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1171
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"cases":[{"condition":"step_b \u003e 0","name":"","notifications":[],"status":"info"}],"hasExtendedTitle":false,"isEnabled":false,"message":"sequence detection rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_SequenceDetection-local-1758311733","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"sequence_detection","evaluationWindow":0,"keepAlive":300,"maxSignalDuration":600,"sequenceDetectionOptions":{"stepTransitions":[{"child":"step_b","evaluationWindow":900,"parent":"step_a"}],"steps":[{"condition":"a \u003e 0","evaluationWindow":60,"name":"step_a"},{"condition":"b \u003e 0","evaluationWindow":60,"name":"step_b"}]}},"queries":[{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"a","query":"service:logs-rule-reducer source:sequence-detection-a"},{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"b","query":"service:logs-rule-reducer source:sequence-detection-b"}],"tags":["u:tomato","i:tomato"],"type":"log_detection"}
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/validation
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 61.069334ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1171
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"cases":[{"condition":"step_b \u003e 0","name":"","notifications":[],"status":"info"}],"hasExtendedTitle":false,"isEnabled":false,"message":"sequence detection rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_SequenceDetection-local-1758311733","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"sequence_detection","evaluationWindow":0,"keepAlive":300,"maxSignalDuration":600,"sequenceDetectionOptions":{"stepTransitions":[{"child":"step_b","evaluationWindow":900,"parent":"step_a"}],"steps":[{"condition":"a \u003e 0","evaluationWindow":60,"name":"step_a"},{"condition":"b \u003e 0","evaluationWindow":60,"name":"step_b"}]}},"queries":[{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"a","query":"service:logs-rule-reducer source:sequence-detection-a"},{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"b","query":"service:logs-rule-reducer source:sequence-detection-b"}],"tags":["u:tomato","i:tomato"],"type":"log_detection"}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_SequenceDetection-local-1758311733","createdAt":1758311735258,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"service:logs-rule-reducer source:sequence-detection-a","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"a","dataSource":"logs"},{"query":"service:logs-rule-reducer source:sequence-detection-b","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"b","dataSource":"logs"}],"options":{"evaluationWindow":0,"detectionMethod":"sequence_detection","maxSignalDuration":600,"keepAlive":300,"sequenceDetectionOptions":{"steps":[{"name":"step_a","condition":"a \u003e 0","evaluationWindow":60},{"name":"step_b","condition":"b \u003e 0","evaluationWindow":60}],"stepTransitions":[{"parent":"step_a","child":"step_b","evaluationWindow":900}]},"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"","status":"info","notifications":[],"condition":"step_b \u003e 0"}],"message":"sequence detection rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":1,"id":"udf-gjm-inl","blocking":false,"metadata":{"entities":null,"sources":null},"creationAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"","name":""}}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 70.362875ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/udf-gjm-inl
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_SequenceDetection-local-1758311733","createdAt":1758311735258,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"service:logs-rule-reducer source:sequence-detection-a","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"a","dataSource":"logs"},{"query":"service:logs-rule-reducer source:sequence-detection-b","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"b","dataSource":"logs"}],"options":{"evaluationWindow":0,"detectionMethod":"sequence_detection","maxSignalDuration":600,"keepAlive":300,"sequenceDetectionOptions":{"steps":[{"name":"step_a","condition":"a \u003e 0","evaluationWindow":60},{"name":"step_b","condition":"b \u003e 0","evaluationWindow":60}],"stepTransitions":[{"parent":"step_a","child":"step_b","evaluationWindow":900}]},"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"","status":"info","notifications":[],"condition":"step_b \u003e 0"}],"message":"sequence detection rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":1,"id":"udf-gjm-inl","blocking":false,"metadata":{"entities":null,"sources":null},"creationAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"","name":""}}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 63.041083ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1171
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"cases":[{"condition":"step_b \u003e 0","name":"","notifications":[],"status":"info"}],"hasExtendedTitle":false,"isEnabled":false,"message":"sequence detection rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_SequenceDetection-local-1758311733","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"sequence_detection","evaluationWindow":0,"keepAlive":300,"maxSignalDuration":600,"sequenceDetectionOptions":{"stepTransitions":[{"child":"step_b","evaluationWindow":900,"parent":"step_a"}],"steps":[{"condition":"a \u003e 0","evaluationWindow":60,"name":"step_a"},{"condition":"b \u003e 0","evaluationWindow":60,"name":"step_b"}]}},"queries":[{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"a","query":"service:logs-rule-reducer source:sequence-detection-a"},{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"b","query":"service:logs-rule-reducer source:sequence-detection-b"}],"tags":["u:tomato","i:tomato"],"type":"log_detection"}
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/validation
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 60.496917ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/udf-gjm-inl
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_SequenceDetection-local-1758311733","createdAt":1758311735258,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"service:logs-rule-reducer source:sequence-detection-a","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"a","dataSource":"logs"},{"query":"service:logs-rule-reducer source:sequence-detection-b","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"b","dataSource":"logs"}],"options":{"evaluationWindow":0,"detectionMethod":"sequence_detection","maxSignalDuration":600,"keepAlive":300,"sequenceDetectionOptions":{"steps":[{"name":"step_a","condition":"a \u003e 0","evaluationWindow":60},{"name":"step_b","condition":"b \u003e 0","evaluationWindow":60}],"stepTransitions":[{"parent":"step_a","child":"step_b","evaluationWindow":900}]},"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"","status":"info","notifications":[],"condition":"step_b \u003e 0"}],"message":"sequence detection rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":1,"id":"udf-gjm-inl","blocking":false,"metadata":{"entities":null,"sources":null},"creationAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"","name":""}}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 54.175583ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1171
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"cases":[{"condition":"step_b \u003e 0","name":"","notifications":[],"status":"info"}],"hasExtendedTitle":false,"isEnabled":false,"message":"sequence detection rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_SequenceDetection-local-1758311733","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"sequence_detection","evaluationWindow":0,"keepAlive":300,"maxSignalDuration":600,"sequenceDetectionOptions":{"stepTransitions":[{"child":"step_b","evaluationWindow":900,"parent":"step_a"}],"steps":[{"condition":"a \u003e 0","evaluationWindow":60,"name":"step_a"},{"condition":"b \u003e 0","evaluationWindow":60,"name":"step_b"}]}},"queries":[{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"a","query":"service:logs-rule-reducer source:sequence-detection-a"},{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"b","query":"service:logs-rule-reducer source:sequence-detection-b"}],"tags":["u:tomato","i:tomato"],"type":"log_detection"}
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/validation
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 41.50175ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/udf-gjm-inl
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_SequenceDetection-local-1758311733","createdAt":1758311735258,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"service:logs-rule-reducer source:sequence-detection-a","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"a","dataSource":"logs"},{"query":"service:logs-rule-reducer source:sequence-detection-b","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"b","dataSource":"logs"}],"options":{"evaluationWindow":0,"detectionMethod":"sequence_detection","maxSignalDuration":600,"keepAlive":300,"sequenceDetectionOptions":{"steps":[{"name":"step_a","condition":"a \u003e 0","evaluationWindow":60},{"name":"step_b","condition":"b \u003e 0","evaluationWindow":60}],"stepTransitions":[{"parent":"step_a","child":"step_b","evaluationWindow":900}]},"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"","status":"info","notifications":[],"condition":"step_b \u003e 0"}],"message":"sequence detection rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":1,"id":"udf-gjm-inl","blocking":false,"metadata":{"entities":null,"sources":null},"creationAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"","name":""}}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 52.987959ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1230
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"calculatedFields":[],"cases":[{"condition":"step_b \u003e 0","name":"info case","notifications":[],"status":"info"}],"filters":[],"hasExtendedTitle":false,"isEnabled":false,"message":"sequence detection rule triggered (updated)","name":"tf-TestAccDatadogSecurityMonitoringRule_SequenceDetection-local-1758311733","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"sequence_detection","evaluationWindow":0,"keepAlive":300,"maxSignalDuration":600,"sequenceDetectionOptions":{"stepTransitions":[{"child":"step_b","evaluationWindow":1800,"parent":"step_a"}],"steps":[{"condition":"a \u003e 0","evaluationWindow":300,"name":"step_a"},{"condition":"b \u003e 0","evaluationWindow":300,"name":"step_b"}]}},"queries":[{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"a","query":"service:logs-rule-reducer source:sequence-detection-a"},{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"b","query":"service:logs-rule-reducer source:sequence-detection-b"}],"schedulingOptions":null,"tags":["u:tomato","i:tomato"]}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/udf-gjm-inl
+        method: PUT
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_SequenceDetection-local-1758311733","isEnabled":false,"queries":[{"query":"service:logs-rule-reducer source:sequence-detection-a","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"a","dataSource":"logs"},{"query":"service:logs-rule-reducer source:sequence-detection-b","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"b","dataSource":"logs"}],"options":{"evaluationWindow":0,"detectionMethod":"sequence_detection","maxSignalDuration":600,"keepAlive":300,"sequenceDetectionOptions":{"steps":[{"name":"step_a","condition":"a \u003e 0","evaluationWindow":300},{"name":"step_b","condition":"b \u003e 0","evaluationWindow":300}],"stepTransitions":[{"parent":"step_a","child":"step_b","evaluationWindow":1800}]},"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"info case","status":"info","notifications":[],"condition":"step_b \u003e 0"}],"message":"sequence detection rule triggered (updated)","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"log_detection","filters":[],"id":"udf-gjm-inl","version":2,"createdAt":1758311735258,"creationAuthorId":1445416,"updateAuthorId":1445416,"updatedAt":1758311737118,"isDefault":false,"blocking":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"metadata":{"entities":null,"sources":null}}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 88.928459ms
+    - id: 9
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/udf-gjm-inl
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_SequenceDetection-local-1758311733","createdAt":1758311735258,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"service:logs-rule-reducer source:sequence-detection-a","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"a","dataSource":"logs"},{"query":"service:logs-rule-reducer source:sequence-detection-b","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"b","dataSource":"logs"}],"options":{"evaluationWindow":0,"detectionMethod":"sequence_detection","maxSignalDuration":600,"keepAlive":300,"sequenceDetectionOptions":{"steps":[{"name":"step_a","condition":"a \u003e 0","evaluationWindow":300},{"name":"step_b","condition":"b \u003e 0","evaluationWindow":300}],"stepTransitions":[{"parent":"step_a","child":"step_b","evaluationWindow":1800}]},"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"info case","status":"info","notifications":[],"condition":"step_b \u003e 0"}],"message":"sequence detection rule triggered (updated)","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":2,"id":"udf-gjm-inl","updatedAt":1758311737118,"blocking":false,"metadata":{"entities":null,"sources":null},"creationAuthorId":1445416,"updateAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"frog@datadoghq.com","name":"frog"}}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 56.2505ms
+    - id: 10
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/udf-gjm-inl
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_SequenceDetection-local-1758311733","createdAt":1758311735258,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"service:logs-rule-reducer source:sequence-detection-a","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"a","dataSource":"logs"},{"query":"service:logs-rule-reducer source:sequence-detection-b","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"b","dataSource":"logs"}],"options":{"evaluationWindow":0,"detectionMethod":"sequence_detection","maxSignalDuration":600,"keepAlive":300,"sequenceDetectionOptions":{"steps":[{"name":"step_a","condition":"a \u003e 0","evaluationWindow":300},{"name":"step_b","condition":"b \u003e 0","evaluationWindow":300}],"stepTransitions":[{"parent":"step_a","child":"step_b","evaluationWindow":1800}]},"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"info case","status":"info","notifications":[],"condition":"step_b \u003e 0"}],"message":"sequence detection rule triggered (updated)","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":2,"id":"udf-gjm-inl","updatedAt":1758311737118,"blocking":false,"metadata":{"entities":null,"sources":null},"creationAuthorId":1445416,"updateAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"frog@datadoghq.com","name":"frog"}}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 51.665417ms
+    - id: 11
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/udf-gjm-inl
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 83.214208ms
+    - id: 12
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/udf-gjm-inl
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 86
+        uncompressed: false
+        body: '{"error":{"code":"NotFound","message":"Threat detection rule not found: udf-gjm-inl"}}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 51.498709ms

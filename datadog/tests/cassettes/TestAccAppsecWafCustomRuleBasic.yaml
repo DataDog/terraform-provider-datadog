@@ -1,3 +1,105 @@
 ---
 version: 2
-interactions: []
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 540
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"action":{"action":"redirect_request","parameters":{"location":"/blocking","status_code":302}},"blocking":true,"conditions":[{"operator":"match_regex","parameters":{"inputs":[{"address":"server.request.query","key_path":["test"]}],"options":{"case_sensitive":true},"regex":"test.*"}}],"enabled":true,"name":"tf-TestAccAppsecWafCustomRuleBasic-local-1741080242","path_glob":"/api/search/*","scope":[{"env":"prod","service":"billing-service"}],"tags":{"category":"attack_attempt","type":"test"}},"type":"custom_rule"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/remote_config/products/asm/waf/custom_rules
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 703
+        uncompressed: false
+        body: '{"data":{"id":"8c120936-ac27-41b9-8b69-1b951f8f3f39","type":"custom_rule","attributes":{"action":{"action":"redirect_request","parameters":{"status_code":302,"location":"/blocking"}},"blocking":true,"conditions":[{"operator":"match_regex","parameters":{"inputs":[{"address":"server.request.query","key_path":["test"]}],"regex":"test.*","options":{"case_sensitive":true}}}],"enabled":true,"metadata":{"added_at":"2025-03-04T09:24:05Z","added_by":"nicolas.vivet@datadoghq.com","added_by_name":"Nicolas Vivet"},"name":"tf-TestAccAppsecWafCustomRuleBasic-local-1741080242","path_glob":"/api/search/*","scope":[{"env":"prod","service":"billing-service"}],"tags":{"category":"attack_attempt","type":"test"}}}}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 201 Created
+        code: 201
+        duration: 1.248619166s
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/remote_config/products/asm/waf/custom_rules/8c120936-ac27-41b9-8b69-1b951f8f3f39
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 703
+        uncompressed: false
+        body: '{"data":{"id":"8c120936-ac27-41b9-8b69-1b951f8f3f39","type":"custom_rule","attributes":{"action":{"action":"redirect_request","parameters":{"status_code":302,"location":"/blocking"}},"blocking":true,"conditions":[{"operator":"match_regex","parameters":{"inputs":[{"address":"server.request.query","key_path":["test"]}],"regex":"test.*","options":{"case_sensitive":true}}}],"enabled":true,"metadata":{"added_at":"2025-03-04T09:24:05Z","added_by":"nicolas.vivet@datadoghq.com","added_by_name":"Nicolas Vivet"},"name":"tf-TestAccAppsecWafCustomRuleBasic-local-1741080242","path_glob":"/api/search/*","scope":[{"env":"prod","service":"billing-service"}],"tags":{"category":"attack_attempt","type":"test"}}}}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 219.413041ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/remote_config/products/asm/waf/custom_rules/8c120936-ac27-41b9-8b69-1b951f8f3f39
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Content-Type:
+                - application/json
+        status: 204 No Content
+        code: 204
+        duration: 598.815625ms
