@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"config":{"variables":[]},"message":"","name":"tf-TestAccDatadogSyntheticsMobileTest_NoSteps-local-1760434027","options":{"defaultStepTimeout":10,"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16","synthetics:mobile:device:apple_iphone_14_pro_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"monitor_name":"tf-TestAccDatadogSyntheticsMobileTest_NoSteps-local-1760434027-monitor","retry":{"count":0,"interval":300},"tick_every":43200},"status":"paused","steps":[],"type":"mobile"}
+            {"config":{"variables":[]},"message":"","name":"tf-TestAccDatadogSyntheticsMobileTest_NoSteps-local-1760519536","options":{"defaultStepTimeout":10,"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16","synthetics:mobile:device:apple_iphone_14_pro_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"monitor_name":"tf-TestAccDatadogSyntheticsMobileTest_NoSteps-local-1760519536-monitor","retry":{"count":0,"interval":300},"tick_every":43200},"status":"paused","steps":[],"type":"mobile"}
         form: {}
         headers:
             Accept:
@@ -32,13 +32,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"fqe-7pc-7cv","name":"tf-TestAccDatadogSyntheticsMobileTest_NoSteps-local-1760434027","status":"paused","type":"mobile","tags":[],"created_at":"2025-10-14T09:27:09.828294+00:00","modified_at":"2025-10-14T09:27:09.828294+00:00","config":{"variables":[]},"message":"","options":{"defaultStepTimeout":10,"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16","synthetics:mobile:device:apple_iphone_14_pro_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"monitor_name":"tf-TestAccDatadogSyntheticsMobileTest_NoSteps-local-1760434027-monitor","retry":{"count":0,"interval":300},"tick_every":43200},"locations":["aws:us-west-2"],"created_by":{"name":"Antonin Lenfant Kodia","handle":"antonin.lenfant@datadoghq.com","email":"antonin.lenfant@datadoghq.com"},"deleted_at":null,"monitor_id":226811063,"org_id":321813,"modified_by":{"name":"Antonin Lenfant Kodia","handle":"antonin.lenfant@datadoghq.com","email":"antonin.lenfant@datadoghq.com"},"creation_source":"terraform","stepCount":{"assertions":0,"subtests":0,"total":0}}
+            {"public_id":"m49-k3m-hft","name":"tf-TestAccDatadogSyntheticsMobileTest_NoSteps-local-1760519536","status":"paused","type":"mobile","tags":[],"created_at":"2025-10-15T09:12:18.761813+00:00","modified_at":"2025-10-15T09:12:18.761813+00:00","config":{"variables":[]},"message":"","options":{"defaultStepTimeout":10,"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16","synthetics:mobile:device:apple_iphone_14_pro_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"monitor_name":"tf-TestAccDatadogSyntheticsMobileTest_NoSteps-local-1760519536-monitor","retry":{"count":0,"interval":300},"tick_every":43200},"locations":["aws:us-west-2"],"created_by":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"deleted_at":null,"monitor_id":227521774,"org_id":321813,"modified_by":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"creation_source":"terraform","stepCount":{"assertions":0,"subtests":0,"total":0}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 670.701334ms
+        duration: 1.011734542s
     - id: 1
       request:
         proto: HTTP/1.1
@@ -55,7 +55,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/mobile/fqe-7pc-7cv
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/mobile/m49-k3m-hft
         method: GET
       response:
         proto: HTTP/1.1
@@ -67,13 +67,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"fqe-7pc-7cv","name":"tf-TestAccDatadogSyntheticsMobileTest_NoSteps-local-1760434027","status":"paused","type":"mobile","tags":[],"created_at":"2025-10-14T09:27:09.828294+00:00","modified_at":"2025-10-14T09:27:09.828294+00:00","config":{"variables":[]},"message":"","options":{"defaultStepTimeout":10,"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16","synthetics:mobile:device:apple_iphone_14_pro_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"monitor_name":"tf-TestAccDatadogSyntheticsMobileTest_NoSteps-local-1760434027-monitor","retry":{"count":0,"interval":300},"tick_every":43200},"locations":["aws:us-west-2"],"monitor_id":226811063,"creator":{"name":"Antonin Lenfant Kodia","handle":"antonin.lenfant@datadoghq.com","email":"antonin.lenfant@datadoghq.com"},"steps":[]}
+            {"public_id":"m49-k3m-hft","name":"tf-TestAccDatadogSyntheticsMobileTest_NoSteps-local-1760519536","status":"paused","type":"mobile","tags":[],"created_at":"2025-10-15T09:12:18.761813+00:00","modified_at":"2025-10-15T09:12:18.761813+00:00","config":{"variables":[]},"message":"","options":{"defaultStepTimeout":10,"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16","synthetics:mobile:device:apple_iphone_14_pro_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"monitor_name":"tf-TestAccDatadogSyntheticsMobileTest_NoSteps-local-1760519536-monitor","retry":{"count":0,"interval":300},"tick_every":43200},"locations":["aws:us-west-2"],"monitor_id":227521774,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 227.586708ms
+        duration: 294.895792ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -90,7 +90,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/fqe-7pc-7cv
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/m49-k3m-hft
         method: GET
       response:
         proto: HTTP/1.1
@@ -102,13 +102,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"fqe-7pc-7cv","name":"tf-TestAccDatadogSyntheticsMobileTest_NoSteps-local-1760434027","status":"paused","type":"mobile","tags":[],"created_at":"2025-10-14T09:27:09.828294+00:00","modified_at":"2025-10-14T09:27:09.828294+00:00","config":{"variables":[]},"message":"","options":{"defaultStepTimeout":10,"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16","synthetics:mobile:device:apple_iphone_14_pro_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"monitor_name":"tf-TestAccDatadogSyntheticsMobileTest_NoSteps-local-1760434027-monitor","retry":{"count":0,"interval":300},"tick_every":43200},"locations":["aws:us-west-2"],"monitor_id":226811063,"creator":{"name":"Antonin Lenfant Kodia","handle":"antonin.lenfant@datadoghq.com","email":"antonin.lenfant@datadoghq.com"}}
+            {"public_id":"m49-k3m-hft","name":"tf-TestAccDatadogSyntheticsMobileTest_NoSteps-local-1760519536","status":"paused","type":"mobile","tags":[],"created_at":"2025-10-15T09:12:18.761813+00:00","modified_at":"2025-10-15T09:12:18.761813+00:00","config":{"variables":[]},"message":"","options":{"defaultStepTimeout":10,"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16","synthetics:mobile:device:apple_iphone_14_pro_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"monitor_name":"tf-TestAccDatadogSyntheticsMobileTest_NoSteps-local-1760519536-monitor","retry":{"count":0,"interval":300},"tick_every":43200},"locations":["aws:us-west-2"],"monitor_id":227521774,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 252.550375ms
+        duration: 241.687458ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -125,7 +125,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/fqe-7pc-7cv
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/m49-k3m-hft
         method: GET
       response:
         proto: HTTP/1.1
@@ -137,13 +137,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"fqe-7pc-7cv","name":"tf-TestAccDatadogSyntheticsMobileTest_NoSteps-local-1760434027","status":"paused","type":"mobile","tags":[],"created_at":"2025-10-14T09:27:09.828294+00:00","modified_at":"2025-10-14T09:27:09.828294+00:00","config":{"variables":[]},"message":"","options":{"defaultStepTimeout":10,"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16","synthetics:mobile:device:apple_iphone_14_pro_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"monitor_name":"tf-TestAccDatadogSyntheticsMobileTest_NoSteps-local-1760434027-monitor","retry":{"count":0,"interval":300},"tick_every":43200},"locations":["aws:us-west-2"],"monitor_id":226811063,"creator":{"name":"Antonin Lenfant Kodia","handle":"antonin.lenfant@datadoghq.com","email":"antonin.lenfant@datadoghq.com"}}
+            {"public_id":"m49-k3m-hft","name":"tf-TestAccDatadogSyntheticsMobileTest_NoSteps-local-1760519536","status":"paused","type":"mobile","tags":[],"created_at":"2025-10-15T09:12:18.761813+00:00","modified_at":"2025-10-15T09:12:18.761813+00:00","config":{"variables":[]},"message":"","options":{"defaultStepTimeout":10,"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16","synthetics:mobile:device:apple_iphone_14_pro_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"monitor_name":"tf-TestAccDatadogSyntheticsMobileTest_NoSteps-local-1760519536-monitor","retry":{"count":0,"interval":300},"tick_every":43200},"locations":["aws:us-west-2"],"monitor_id":227521774,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 257.299709ms
+        duration: 256.547833ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -160,7 +160,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/mobile/fqe-7pc-7cv
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/mobile/m49-k3m-hft
         method: GET
       response:
         proto: HTTP/1.1
@@ -172,13 +172,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"fqe-7pc-7cv","name":"tf-TestAccDatadogSyntheticsMobileTest_NoSteps-local-1760434027","status":"paused","type":"mobile","tags":[],"created_at":"2025-10-14T09:27:09.828294+00:00","modified_at":"2025-10-14T09:27:09.828294+00:00","config":{"variables":[]},"message":"","options":{"defaultStepTimeout":10,"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16","synthetics:mobile:device:apple_iphone_14_pro_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"monitor_name":"tf-TestAccDatadogSyntheticsMobileTest_NoSteps-local-1760434027-monitor","retry":{"count":0,"interval":300},"tick_every":43200},"locations":["aws:us-west-2"],"monitor_id":226811063,"creator":{"name":"Antonin Lenfant Kodia","handle":"antonin.lenfant@datadoghq.com","email":"antonin.lenfant@datadoghq.com"},"steps":[]}
+            {"public_id":"m49-k3m-hft","name":"tf-TestAccDatadogSyntheticsMobileTest_NoSteps-local-1760519536","status":"paused","type":"mobile","tags":[],"created_at":"2025-10-15T09:12:18.761813+00:00","modified_at":"2025-10-15T09:12:18.761813+00:00","config":{"variables":[]},"message":"","options":{"defaultStepTimeout":10,"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16","synthetics:mobile:device:apple_iphone_14_pro_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"monitor_name":"tf-TestAccDatadogSyntheticsMobileTest_NoSteps-local-1760519536-monitor","retry":{"count":0,"interval":300},"tick_every":43200},"locations":["aws:us-west-2"],"monitor_id":227521774,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 257.601375ms
+        duration: 248.368458ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -191,7 +191,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"public_ids":["fqe-7pc-7cv"]}
+            {"public_ids":["m49-k3m-hft"]}
         form: {}
         headers:
             Accept:
@@ -210,13 +210,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"deleted_tests":[{"public_id":"fqe-7pc-7cv","deleted_at":"2025-10-14T09:27:12.168631+00:00"}]}
+            {"deleted_tests":[{"public_id":"m49-k3m-hft","deleted_at":"2025-10-15T09:12:21.383372+00:00"}]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 467.1495ms
+        duration: 535.273375ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -233,7 +233,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/fqe-7pc-7cv
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/m49-k3m-hft
         method: GET
       response:
         proto: HTTP/1.1
@@ -250,4 +250,4 @@ interactions:
                 - application/json
         status: 404 Not Found
         code: 404
-        duration: 160.223292ms
+        duration: 157.499458ms
