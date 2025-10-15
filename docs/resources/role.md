@@ -14,16 +14,16 @@ Provides a Datadog role resource. This can be used to create and manage Datadog 
 
 ```terraform
 # Source the permissions
-data "datadog_permissions" "bar" {}
+data "datadog_permissions" "dd_perms" {}
 
-# Create a new Datadog role
-resource "datadog_role" "foo" {
-  name = "foo"
+# Create an API Key Manager role
+resource "datadog_role" "api_key_manager" {
+  name = "API Key Manager"
   permission {
-    id = data.datadog_permissions.bar.permissions.monitors_downtime
+    id = data.datadog_permissions.dd_perms.permissions.api_keys_read
   }
   permission {
-    id = data.datadog_permissions.bar.permissions.monitors_write
+    id = data.datadog_permissions.dd_perms.permissions.api_keys_write
   }
 }
 ```

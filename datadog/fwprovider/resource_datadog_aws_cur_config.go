@@ -5,10 +5,13 @@ import (
 	"strconv"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
@@ -32,6 +35,12 @@ type awsCurConfigModel struct {
 	ReportName     types.String         `tfsdk:"report_name"`
 	ReportPrefix   types.String         `tfsdk:"report_prefix"`
 	AccountFilters *accountFiltersModel `tfsdk:"account_filters"`
+	// Computed fields
+	CreatedAt       types.String `tfsdk:"created_at"`
+	Status          types.String `tfsdk:"status"`
+	StatusUpdatedAt types.String `tfsdk:"status_updated_at"`
+	UpdatedAt       types.String `tfsdk:"updated_at"`
+	ErrorMessages   types.List   `tfsdk:"error_messages"`
 }
 
 type accountFiltersModel struct {
@@ -59,26 +68,52 @@ func (r *awsCurConfigResource) Schema(_ context.Context, _ resource.SchemaReques
 		Description: "Provides a Datadog AWS CUR (Cost and Usage Report) configuration resource. This enables Datadog Cloud Cost Management to access your AWS billing data by configuring the connection to your AWS Cost and Usage Report. **Prerequisites**: An active Datadog AWS integration, existing AWS Cost and Usage Report, and proper S3 bucket permissions.",
 		Attributes: map[string]schema.Attribute{
 			"account_id": schema.StringAttribute{
-				Required:    true,
-				Description: "The AWS account ID of your billing/payer account. For AWS Organizations, this is typically the management account ID.",
+				Required:      true,
+				Description:   "The AWS account ID of your billing/payer account. For AWS Organizations, this is typically the management account ID.",
+				PlanModifiers: []planmodifier.String{stringplanmodifier.RequiresReplace()},
 			},
 			"bucket_name": schema.StringAttribute{
-				Required:    true,
-				Description: "The S3 bucket name where your AWS Cost and Usage Report files are stored. This bucket must have appropriate IAM permissions for Datadog access and should be in the same AWS account as the CUR report.",
+				Required:      true,
+				Description:   "The S3 bucket name where your AWS Cost and Usage Report files are stored. This bucket must have appropriate IAM permissions for Datadog access and should be in the same AWS account as the CUR report.",
+				PlanModifiers: []planmodifier.String{stringplanmodifier.RequiresReplace()},
 			},
 			"bucket_region": schema.StringAttribute{
-				Optional:    true,
-				Description: "The AWS region where the S3 bucket containing your Cost and Usage Report is located (e.g., us-east-1, eu-west-1).",
+				Optional:      true,
+				Description:   "The AWS region where the S3 bucket containing your Cost and Usage Report is located (e.g., us-east-1, eu-west-1).",
+				PlanModifiers: []planmodifier.String{stringplanmodifier.RequiresReplace()},
 			},
 			"report_name": schema.StringAttribute{
-				Required:    true,
-				Description: "The exact name of your AWS Cost and Usage Report as configured in AWS Billing preferences. This must match the report name exactly as it appears in your AWS billing settings.",
+				Required:      true,
+				Description:   "The exact name of your AWS Cost and Usage Report as configured in AWS Billing preferences. This must match the report name exactly as it appears in your AWS billing settings.",
+				PlanModifiers: []planmodifier.String{stringplanmodifier.RequiresReplace()},
 			},
 			"report_prefix": schema.StringAttribute{
-				Required:    true,
-				Description: "The S3 key prefix where your Cost and Usage Report files are stored within the bucket (e.g., 'cur-reports/', 'billing/cur/').",
+				Required:      true,
+				Description:   "The S3 key prefix where your Cost and Usage Report files are stored within the bucket (e.g., 'cur-reports/', 'billing/cur/').",
+				PlanModifiers: []planmodifier.String{stringplanmodifier.RequiresReplace()},
 			},
 			"id": utils.ResourceIDAttribute(),
+			"created_at": schema.StringAttribute{
+				Computed:    true,
+				Description: "The timestamp when the AWS CUR configuration was created.",
+			},
+			"status": schema.StringAttribute{
+				Computed:    true,
+				Description: "The current status of the AWS CUR configuration.",
+			},
+			"status_updated_at": schema.StringAttribute{
+				Computed:    true,
+				Description: "The timestamp when the configuration status was last updated.",
+			},
+			"updated_at": schema.StringAttribute{
+				Computed:    true,
+				Description: "The timestamp when the AWS CUR configuration was last modified.",
+			},
+			"error_messages": schema.ListAttribute{
+				Computed:    true,
+				Description: "List of error messages if the AWS CUR configuration encountered any issues during setup or data processing.",
+				ElementType: types.StringType,
+			},
 		},
 		Blocks: map[string]schema.Block{
 			"account_filters": schema.SingleNestedBlock{
@@ -236,6 +271,17 @@ func (r *awsCurConfigResource) updateStateFromSingleConfig(ctx context.Context, 
 		state.ReportName = types.StringValue(attributes.GetReportName())
 		state.ReportPrefix = types.StringValue(attributes.GetReportPrefix())
 
+		// Set computed fields
+		state.CreatedAt = types.StringValue(attributes.GetCreatedAt())
+		state.Status = types.StringValue(attributes.GetStatus())
+		state.StatusUpdatedAt = types.StringValue(attributes.GetStatusUpdatedAt())
+		state.UpdatedAt = types.StringValue(attributes.GetUpdatedAt())
+		if errorMessages, ok := attributes.GetErrorMessagesOk(); ok && errorMessages != nil {
+			state.ErrorMessages, _ = types.ListValueFrom(ctx, types.StringType, *errorMessages)
+		} else {
+			state.ErrorMessages = types.ListValueMust(types.StringType, []attr.Value{})
+		}
+
 		// Set AccountFilters if present in API response and was originally specified in config
 		if accountFilters, ok := attributes.GetAccountFiltersOk(); ok && state.AccountFilters != nil {
 			state.AccountFilters = mapAccountFilters(ctx, accountFilters)
@@ -252,6 +298,17 @@ func (r *awsCurConfigResource) updateStateFromResponseData(ctx context.Context, 
 		state.BucketRegion = types.StringValue(attributes.GetBucketRegion())
 		state.ReportName = types.StringValue(attributes.GetReportName())
 		state.ReportPrefix = types.StringValue(attributes.GetReportPrefix())
+
+		// Set computed fields
+		state.CreatedAt = types.StringValue(attributes.GetCreatedAt())
+		state.Status = types.StringValue(attributes.GetStatus())
+		state.StatusUpdatedAt = types.StringValue(attributes.GetStatusUpdatedAt())
+		state.UpdatedAt = types.StringValue(attributes.GetUpdatedAt())
+		if errorMessages, ok := attributes.GetErrorMessagesOk(); ok && errorMessages != nil {
+			state.ErrorMessages, _ = types.ListValueFrom(ctx, types.StringType, *errorMessages)
+		} else {
+			state.ErrorMessages = types.ListValueMust(types.StringType, []attr.Value{})
+		}
 
 		// Set AccountFilters if present in API response and was originally specified in config
 		if accountFilters, ok := attributes.GetAccountFiltersOk(); ok && state.AccountFilters != nil {

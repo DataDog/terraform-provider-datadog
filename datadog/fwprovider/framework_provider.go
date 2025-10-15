@@ -93,6 +93,8 @@ var Resources = []func() resource.Resource{
 	NewSecurityMonitoringRuleJSONResource,
 	NewComplianceCustomFrameworkResource,
 	NewCostBudgetResource,
+	NewTagPipelineRulesetResource,
+	NewTagPipelineRulesetsResource,
 	NewCSMThreatsAgentRuleResource,
 	NewCSMThreatsPolicyResource,
 	NewAppKeyRegistrationResource,
@@ -100,6 +102,10 @@ var Resources = []func() resource.Resource{
 	NewIncidentNotificationTemplateResource,
 	NewIncidentNotificationRuleResource,
 	NewAwsCurConfigResource,
+	NewGcpUcConfigResource,
+	NewDatadogCustomAllocationRuleResource,
+	NewCustomAllocationRulesResource,
+	NewAzureUcConfigResource,
 }
 
 var Datasources = []func() datasource.DataSource{
@@ -108,6 +114,7 @@ var Datasources = []func() datasource.DataSource{
 	NewAwsAvailableNamespacesDataSource,
 	NewAwsIntegrationExternalIDDataSource,
 	NewAwsIntegrationIAMPermissionsDataSource,
+	NewAwsIntegrationIAMPermissionsStandardDataSource,
 	NewAwsLogsServicesDataSource,
 	NewDatadogApmRetentionFiltersOrderDataSource,
 	NewDatadogDashboardListDataSource,
@@ -136,12 +143,16 @@ var Datasources = []func() datasource.DataSource{
 	NewWorkflowAutomationDataSource,
 	NewDatadogAppBuilderAppDataSource,
 	NewCostBudgetDataSource,
+	NewTagPipelineRulesetDataSource,
 	NewCSMThreatsAgentRulesDataSource,
 	NewCSMThreatsPoliciesDataSource,
 	NewIncidentTypeDataSource,
 	NewIncidentNotificationTemplateDataSource,
 	NewIncidentNotificationRuleDataSource,
 	NewDatadogAwsCurConfigDataSource,
+	NewDatadogGcpUcConfigDataSource,
+	NewDatadogCustomAllocationRuleDataSource,
+	NewDatadogAzureUcConfigDataSource,
 }
 
 // FrameworkProvider struct
