@@ -79,7 +79,7 @@ func (r *tagPipelineRulesetsResource) Read(ctx context.Context, request resource
 	}
 
 	// Get the current list of rulesets to read their order
-	resp, httpResponse, err := r.Api.ListRulesets(r.Auth)
+	resp, httpResponse, err := r.Api.ListTagPipelinesRulesets(r.Auth)
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, fmt.Sprintf("error reading tag pipeline rulesets. http response: %v", httpResponse)))
 		return
@@ -173,7 +173,7 @@ func (r *tagPipelineRulesetsResource) updateOrder(state *tagPipelineRulesetsMode
 // Validates that all existing rulesets are managed by Terraform before reordering
 func (r *tagPipelineRulesetsResource) updateOrderWithAllRulesets(state *tagPipelineRulesetsModel, diag *diag.Diagnostics, desiredOrder []string) {
 	// Get all existing rulesets
-	resp, httpResponse, err := r.Api.ListRulesets(r.Auth)
+	resp, httpResponse, err := r.Api.ListTagPipelinesRulesets(r.Auth)
 	if err != nil {
 		diag.Append(utils.FrameworkErrorDiag(err, fmt.Sprintf("error listing tag pipeline rulesets: %v", httpResponse)))
 		return
@@ -286,7 +286,7 @@ func (r *tagPipelineRulesetsResource) updateOrderWithAllRulesets(state *tagPipel
 		Data: rulesetData,
 	}
 
-	httpResponse, err = r.Api.ReorderRulesets(r.Auth, reorderRequest)
+	httpResponse, err = r.Api.ReorderTagPipelinesRulesets(r.Auth, reorderRequest)
 	if err != nil {
 		diag.Append(utils.FrameworkErrorDiag(err, fmt.Sprintf("error reordering tag pipeline rulesets with all rulesets: %v", httpResponse)))
 		return

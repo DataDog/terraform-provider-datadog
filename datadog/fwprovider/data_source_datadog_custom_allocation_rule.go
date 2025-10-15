@@ -269,7 +269,7 @@ func (d *datadogCustomAllocationRuleDataSource) Read(ctx context.Context, reques
 	}
 
 	ruleId := state.RuleId.ValueInt64()
-	ddResp, _, err := d.Api.GetArbitraryCostRule(d.Auth, ruleId)
+	ddResp, _, err := d.Api.GetCustomAllocationRule(d.Auth, ruleId)
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error getting datadog custom allocation rule"))
 		return

@@ -80,7 +80,7 @@ func (r *customAllocationRulesResource) Read(ctx context.Context, request resour
 	}
 
 	// Get the current list of rules from API to read their order
-	resp, httpResponse, err := r.Api.ListArbitraryCostRules(r.Auth)
+	resp, httpResponse, err := r.Api.ListCustomAllocationRules(r.Auth)
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, fmt.Sprintf("error reading custom allocation rules. http response: %v", httpResponse)))
 		return
@@ -162,7 +162,7 @@ func (r *customAllocationRulesResource) updateOrder(state *customAllocationRules
 	}
 
 	// Validate that all existing rules in Datadog are managed by Terraform
-	resp, httpResponse, err := r.Api.ListArbitraryCostRules(r.Auth)
+	resp, httpResponse, err := r.Api.ListCustomAllocationRules(r.Auth)
 	if err != nil {
 		diag.Append(utils.FrameworkErrorDiag(err, fmt.Sprintf("error listing custom allocation rules: %v", httpResponse)))
 		return
@@ -227,7 +227,7 @@ func (r *customAllocationRulesResource) updateOrder(state *customAllocationRules
 	reorderRequest := datadogV2.ReorderRuleResourceArray{
 		Data: ruleData,
 	}
-	httpResponse, err = r.Api.ReorderArbitraryCostRules(r.Auth, reorderRequest)
+	httpResponse, err = r.Api.ReorderCustomAllocationRules(r.Auth, reorderRequest)
 	if err != nil {
 		diag.Append(utils.FrameworkErrorDiag(err, fmt.Sprintf("error reordering custom allocation rules: %v", httpResponse)))
 		return
