@@ -1,3 +1,25 @@
+## 3.76.0 (October 15, 2025)
+
+### BUGFIXES
+* [datadog_azure_uc_config] Add support for Cloud Cost Azure Cloud Usage Cost Config resource and data source by @alextmeyer in https://github.com/DataDog/terraform-provider-datadog/pull/3263
+* [datadog_csm_threats] Fix csm threats agent rule expression whitespace inconsistency by @QuentinGuillard in https://github.com/DataDog/terraform-provider-datadog/pull/3269
+* [datadog_tag_pipeline_ruleset] Fix an edge case when imports tag pipeline rulesets without any rules by @congx4 in https://github.com/DataDog/terraform-provider-datadog/pull/3277
+### IMPROVEMENTS
+* [datadog_synthetics_private_location] Add restriction_policy_resource_id to synthetics private locations to use with restriction policy by @romainberger in https://github.com/DataDog/terraform-provider-datadog/pull/3271
+* [datadog_azure_uc_config][datadog_aws_cur_config][datadog_gcp_uc_config] Update Cloud cost provider resources to support exposing computed fields by @alextmeyer in https://github.com/DataDog/terraform-provider-datadog/pull/3274
+### FEATURES
+* [datadog_security_monitoring_rule] Add sequence detection method to security monitoring rule resource by @paul-hf in https://github.com/DataDog/terraform-provider-datadog/pull/3239
+* [datadog_gcp_uc_config] Add support for Cloud Cost Google Cloud Usage Cost Config resource and data source by @alextmeyer in https://github.com/DataDog/terraform-provider-datadog/pull/3258
+* [datadog_integration_aws_iam_permissions_standard] Add new data source for AWS Integration standard IAM permissions by @raymondeah in https://github.com/DataDog/terraform-provider-datadog/pull/3261
+* [datadog_tag_pipeline_ruleset] terraform support for tag-pipeline by @congx4 in https://github.com/DataDog/terraform-provider-datadog/pull/3236
+* [datadog_custom_allocation_rule] Add support for CCM custom allocation rules by @elihschiff in https://github.com/DataDog/terraform-provider-datadog/pull/3262
+
+## New Contributors
+* @congx4 made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3236
+* @elihschiff made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3262
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.75.0...v3.76.0
+
 ## 3.75.0 (October 1, 2025)
 
 ### BUGFIXES
