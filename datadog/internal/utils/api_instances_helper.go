@@ -99,6 +99,7 @@ type ApiInstances struct {
 	usersApiV2                     *datadogV2.UsersApi
 	workflowAutomationApiV2        *datadogV2.WorkflowAutomationApi
 	ccmApiV2                       *datadogV2.CloudCostManagementApi
+	deploymentGatesV2              *datadogV2.DeploymentGatesApi
 }
 
 // GetAuthenticationApiV1 get instance of AuthenticationApi
@@ -785,4 +786,12 @@ func (i *ApiInstances) GetCloudCostManagementApiV2() *datadogV2.CloudCostManagem
 		i.ccmApiV2 = datadogV2.NewCloudCostManagementApi(i.HttpClient)
 	}
 	return i.ccmApiV2
+}
+
+// GetDeploymentGatesApiV2 get instance of DeploymentGatesApi
+func (i *ApiInstances) GetDeploymentGatesApiV2() *datadogV2.DeploymentGatesApi {
+	if i.deploymentGatesV2 == nil {
+		i.deploymentGatesV2 = datadogV2.NewDeploymentGatesApi(i.HttpClient)
+	}
+	return i.deploymentGatesV2
 }

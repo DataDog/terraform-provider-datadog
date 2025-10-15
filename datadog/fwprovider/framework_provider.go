@@ -93,8 +93,6 @@ var Resources = []func() resource.Resource{
 	NewSecurityMonitoringRuleJSONResource,
 	NewComplianceCustomFrameworkResource,
 	NewCostBudgetResource,
-	NewTagPipelineRulesetResource,
-	NewTagPipelineRulesetsResource,
 	NewCSMThreatsAgentRuleResource,
 	NewCSMThreatsPolicyResource,
 	NewAppKeyRegistrationResource,
@@ -103,9 +101,8 @@ var Resources = []func() resource.Resource{
 	NewIncidentNotificationRuleResource,
 	NewAwsCurConfigResource,
 	NewGcpUcConfigResource,
-	NewDatadogCustomAllocationRuleResource,
-	NewCustomAllocationRulesResource,
 	NewAzureUcConfigResource,
+	NewDeploymentGateResource,
 }
 
 var Datasources = []func() datasource.DataSource{
@@ -143,7 +140,6 @@ var Datasources = []func() datasource.DataSource{
 	NewWorkflowAutomationDataSource,
 	NewDatadogAppBuilderAppDataSource,
 	NewCostBudgetDataSource,
-	NewTagPipelineRulesetDataSource,
 	NewCSMThreatsAgentRulesDataSource,
 	NewCSMThreatsPoliciesDataSource,
 	NewIncidentTypeDataSource,
@@ -151,8 +147,8 @@ var Datasources = []func() datasource.DataSource{
 	NewIncidentNotificationRuleDataSource,
 	NewDatadogAwsCurConfigDataSource,
 	NewDatadogGcpUcConfigDataSource,
-	NewDatadogCustomAllocationRuleDataSource,
 	NewDatadogAzureUcConfigDataSource,
+	NewDatadogDeploymentGateDataSource,
 }
 
 // FrameworkProvider struct
@@ -617,6 +613,12 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.ListCostAWSCURConfigs", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateCostAWSCURConfig", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteCostAWSCURConfig", true)
+
+	// Enable Deployment Gates & Rules
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateDeploymentGate", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateDeploymentGat", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteDeploymentGate", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetDeploymentGate", true)
 
 	if !config.ApiUrl.IsNull() && config.ApiUrl.ValueString() != "" {
 		parsedAPIURL, parseErr := url.Parse(config.ApiUrl.ValueString())
