@@ -3252,9 +3252,8 @@ func buildDatadogSyntheticsBrowserTest(d *schema.ResourceData) (*datadogV1.Synth
 	}
 	syntheticsTest.SetTags(tags)
 
+	steps := []datadogV1.SyntheticsStep{}
 	if attr, ok := d.GetOk("browser_step"); ok {
-		steps := []datadogV1.SyntheticsStep{}
-
 		for _, s := range attr.([]interface{}) {
 			step := datadogV1.SyntheticsStep{}
 			stepMap := s.(map[string]interface{})
@@ -3274,9 +3273,8 @@ func buildDatadogSyntheticsBrowserTest(d *schema.ResourceData) (*datadogV1.Synth
 			step.SetParams(params)
 			steps = append(steps, step)
 		}
-
-		syntheticsTest.SetSteps(steps)
 	}
+	syntheticsTest.SetSteps(steps)
 
 	return syntheticsTest, diags
 }
@@ -3321,9 +3319,8 @@ func buildDatadogSyntheticsMobileTest(d *schema.ResourceData) *datadogV1.Synthet
 	options := buildDatadogMobileTestOptions(d)
 	syntheticsTest.SetOptions(*options)
 
+	steps := []datadogV1.SyntheticsMobileStep{}
 	if attr, ok := d.GetOk("mobile_step"); ok {
-		steps := []datadogV1.SyntheticsMobileStep{}
-
 		for _, s := range attr.([]interface{}) {
 			step := datadogV1.SyntheticsMobileStep{}
 			stepMap := s.(map[string]interface{})
@@ -3352,9 +3349,8 @@ func buildDatadogSyntheticsMobileTest(d *schema.ResourceData) *datadogV1.Synthet
 			step.SetParams(params)
 			steps = append(steps, step)
 		}
-
-		syntheticsTest.SetSteps(steps)
 	}
+	syntheticsTest.SetSteps(steps)
 
 	if attr, ok := d.GetOk("tags"); ok {
 		tags := make([]string, 0)

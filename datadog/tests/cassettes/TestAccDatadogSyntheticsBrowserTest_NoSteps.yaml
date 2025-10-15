@@ -1,0 +1,253 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 532
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"config":{"assertions":[],"configVariables":[],"request":{"method":"GET","url":"https://www.datadoghq.com"},"variables":[]},"locations":["aws:eu-central-1"],"message":"","name":"tf-TestAccDatadogSyntheticsBrowserTest_NoSteps-local-1760431775","options":{"device_ids":["laptop_large"],"httpVersion":"any","min_location_failed":1,"monitor_options":{"escalation_message":"","renotify_interval":120,"renotify_occurrences":0},"retry":{"count":2,"interval":300},"tick_every":900},"status":"paused","steps":[],"tags":[],"type":"browser"}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/browser
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"rty-tmz-m74","name":"tf-TestAccDatadogSyntheticsBrowserTest_NoSteps-local-1760431775","status":"paused","type":"browser","tags":[],"created_at":"2025-10-14T08:49:39.843864+00:00","modified_at":"2025-10-14T08:49:39.843864+00:00","config":{"assertions":[],"configVariables":[],"request":{"method":"GET","url":"https://www.datadoghq.com"},"variables":[]},"message":"","options":{"device_ids":["laptop_large"],"httpVersion":"any","min_location_failed":1,"monitor_options":{"escalation_message":"","renotify_interval":120,"renotify_occurrences":0,"on_missing_data":"show_no_data","notify_audit":false,"new_host_delay":300,"include_tags":true},"retry":{"count":2,"interval":300},"tick_every":900},"locations":["aws:eu-central-1"],"created_by":{"name":"Antonin Lenfant Kodia","handle":"antonin.lenfant@datadoghq.com","email":"antonin.lenfant@datadoghq.com"},"deleted_at":null,"monitor_id":226803218,"org_id":321813,"modified_by":{"name":"Antonin Lenfant Kodia","handle":"antonin.lenfant@datadoghq.com","email":"antonin.lenfant@datadoghq.com"},"creation_source":"terraform","stepCount":{"assertions":0,"subtests":0,"total":0}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 761.272875ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/browser/rty-tmz-m74
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"rty-tmz-m74","name":"tf-TestAccDatadogSyntheticsBrowserTest_NoSteps-local-1760431775","status":"paused","type":"browser","tags":[],"created_at":"2025-10-14T08:49:39.843864+00:00","modified_at":"2025-10-14T08:49:39.843864+00:00","config":{"assertions":[],"configVariables":[],"request":{"method":"GET","url":"https://www.datadoghq.com"},"variables":[]},"message":"","options":{"device_ids":["laptop_large"],"httpVersion":"any","min_location_failed":1,"monitor_options":{"escalation_message":"","renotify_interval":120,"renotify_occurrences":0,"on_missing_data":"show_no_data","notify_audit":false,"new_host_delay":300,"include_tags":true},"retry":{"count":2,"interval":300},"tick_every":900},"locations":["aws:eu-central-1"],"monitor_id":226803218,"creator":{"name":"Antonin Lenfant Kodia","handle":"antonin.lenfant@datadoghq.com","email":"antonin.lenfant@datadoghq.com"},"steps":[]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 232.285375ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/rty-tmz-m74
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"rty-tmz-m74","name":"tf-TestAccDatadogSyntheticsBrowserTest_NoSteps-local-1760431775","status":"paused","type":"browser","tags":[],"created_at":"2025-10-14T08:49:39.843864+00:00","modified_at":"2025-10-14T08:49:39.843864+00:00","config":{"assertions":[],"configVariables":[],"request":{"method":"GET","url":"https://www.datadoghq.com"},"variables":[]},"message":"","options":{"device_ids":["laptop_large"],"httpVersion":"any","min_location_failed":1,"monitor_options":{"escalation_message":"","renotify_interval":120,"renotify_occurrences":0,"on_missing_data":"show_no_data","notify_audit":false,"new_host_delay":300,"include_tags":true},"retry":{"count":2,"interval":300},"tick_every":900},"locations":["aws:eu-central-1"],"monitor_id":226803218,"creator":{"name":"Antonin Lenfant Kodia","handle":"antonin.lenfant@datadoghq.com","email":"antonin.lenfant@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 242.3855ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/rty-tmz-m74
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"rty-tmz-m74","name":"tf-TestAccDatadogSyntheticsBrowserTest_NoSteps-local-1760431775","status":"paused","type":"browser","tags":[],"created_at":"2025-10-14T08:49:39.843864+00:00","modified_at":"2025-10-14T08:49:39.843864+00:00","config":{"assertions":[],"configVariables":[],"request":{"method":"GET","url":"https://www.datadoghq.com"},"variables":[]},"message":"","options":{"device_ids":["laptop_large"],"httpVersion":"any","min_location_failed":1,"monitor_options":{"escalation_message":"","renotify_interval":120,"renotify_occurrences":0,"on_missing_data":"show_no_data","notify_audit":false,"new_host_delay":300,"include_tags":true},"retry":{"count":2,"interval":300},"tick_every":900},"locations":["aws:eu-central-1"],"monitor_id":226803218,"creator":{"name":"Antonin Lenfant Kodia","handle":"antonin.lenfant@datadoghq.com","email":"antonin.lenfant@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 250.689708ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/browser/rty-tmz-m74
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"rty-tmz-m74","name":"tf-TestAccDatadogSyntheticsBrowserTest_NoSteps-local-1760431775","status":"paused","type":"browser","tags":[],"created_at":"2025-10-14T08:49:39.843864+00:00","modified_at":"2025-10-14T08:49:39.843864+00:00","config":{"assertions":[],"configVariables":[],"request":{"method":"GET","url":"https://www.datadoghq.com"},"variables":[]},"message":"","options":{"device_ids":["laptop_large"],"httpVersion":"any","min_location_failed":1,"monitor_options":{"escalation_message":"","renotify_interval":120,"renotify_occurrences":0,"on_missing_data":"show_no_data","notify_audit":false,"new_host_delay":300,"include_tags":true},"retry":{"count":2,"interval":300},"tick_every":900},"locations":["aws:eu-central-1"],"monitor_id":226803218,"creator":{"name":"Antonin Lenfant Kodia","handle":"antonin.lenfant@datadoghq.com","email":"antonin.lenfant@datadoghq.com"},"steps":[]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 235.16775ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 31
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"public_ids":["rty-tmz-m74"]}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/delete
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"deleted_tests":[{"public_id":"rty-tmz-m74","deleted_at":"2025-10-14T08:49:42.175275+00:00"}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 578.988208ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/rty-tmz-m74
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"errors":["Synthetics test not found"]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 168.985959ms
