@@ -1,0 +1,1 @@
+terraform import datadog_deployment_rule.new_list ""

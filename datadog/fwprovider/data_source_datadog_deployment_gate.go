@@ -24,23 +24,23 @@ type datadogDeploymentGateDataSourceModel struct {
 	// Datasource ID
 	ID types.String `tfsdk:"id"`
 	// Computed values
-	CreatedAt  types.String    `tfsdk:"created_at"`
-	DryRun     types.Bool      `tfsdk:"dry_run"`
-	Env        types.String    `tfsdk:"env"`
-	Identifier types.String    `tfsdk:"identifier"`
-	Service    types.String    `tfsdk:"service"`
-	UpdatedAt  types.String    `tfsdk:"updated_at"`
-	CreatedBy  *createdByModel `tfsdk:"created_by"`
-	UpdatedBy  *updatedByModel `tfsdk:"updated_by"`
+	CreatedAt  types.String                  `tfsdk:"created_at"`
+	DryRun     types.Bool                    `tfsdk:"dry_run"`
+	Env        types.String                  `tfsdk:"env"`
+	Identifier types.String                  `tfsdk:"identifier"`
+	Service    types.String                  `tfsdk:"service"`
+	UpdatedAt  types.String                  `tfsdk:"updated_at"`
+	CreatedBy  *createdByDeploymentGateModel `tfsdk:"created_by"`
+	UpdatedBy  *updatedByDeploymentGateModel `tfsdk:"updated_by"`
 }
 
-type createdByModel struct {
+type createdByDeploymentGateModel struct {
 	Handle types.String `tfsdk:"handle"`
 	Id     types.String `tfsdk:"id"`
 	Name   types.String `tfsdk:"name"`
 }
 
-type updatedByModel struct {
+type updatedByDeploymentGateModel struct {
 	Handle types.String `tfsdk:"handle"`
 	Id     types.String `tfsdk:"id"`
 	Name   types.String `tfsdk:"name"`
@@ -162,22 +162,4 @@ func (d *datadogDeploymentGateDataSource) updateState(ctx context.Context, state
 	state.Identifier = types.StringValue(attributes.GetIdentifier())
 	state.Service = types.StringValue(attributes.GetService())
 	state.UpdatedAt = types.StringValue(attributes.GetUpdatedAt().String())
-
-	createdBy := attributes.GetCreatedBy()
-	if createdBy.Handle != nil && createdBy.Handle != nil && createdBy.Id != "" {
-		state.CreatedBy = &createdByModel{
-			Handle: types.StringPointerValue(createdBy.Handle),
-			Id:     types.StringValue(createdBy.Id),
-			Name:   types.StringPointerValue(createdBy.Name),
-		}
-	}
-
-	updatedBy := attributes.GetCreatedBy()
-	if updatedBy.Handle != nil && updatedBy.Handle != nil && updatedBy.Id != "" {
-		state.UpdatedBy = &updatedByModel{
-			Handle: types.StringPointerValue(createdBy.Handle),
-			Id:     types.StringValue(createdBy.Id),
-			Name:   types.StringPointerValue(createdBy.Name),
-		}
-	}
 }

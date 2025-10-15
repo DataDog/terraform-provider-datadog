@@ -103,6 +103,7 @@ var Resources = []func() resource.Resource{
 	NewGcpUcConfigResource,
 	NewAzureUcConfigResource,
 	NewDeploymentGateResource,
+	NewDeploymentRuleResource,
 }
 
 var Datasources = []func() datasource.DataSource{
@@ -149,6 +150,7 @@ var Datasources = []func() datasource.DataSource{
 	NewDatadogGcpUcConfigDataSource,
 	NewDatadogAzureUcConfigDataSource,
 	NewDatadogDeploymentGateDataSource,
+	NewDatadogDeploymentRuleDataSource,
 }
 
 // FrameworkProvider struct
@@ -619,6 +621,10 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateDeploymentGate", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteDeploymentGate", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.GetDeploymentGate", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateDeploymentRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateDeploymentRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteDeploymentRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetDeploymentRule", true)
 
 	if !config.ApiUrl.IsNull() && config.ApiUrl.ValueString() != "" {
 		parsedAPIURL, parseErr := url.Parse(config.ApiUrl.ValueString())
