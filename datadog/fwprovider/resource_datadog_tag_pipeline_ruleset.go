@@ -281,7 +281,7 @@ func (r *tagPipelineRulesetResource) Create(ctx context.Context, req resource.Cr
 	}
 
 	apiReq := buildCreateRulesetRequestFromModel(plan)
-	apiResp, response, err := r.Api.CreateRuleset(r.Auth, apiReq)
+	apiResp, response, err := r.Api.CreateTagPipelinesRuleset(r.Auth, apiReq)
 	if err != nil {
 		resp.Diagnostics.AddError("Error creating ruleset", utils.TranslateClientError(err, response, "").Error())
 		return
@@ -301,7 +301,7 @@ func (r *tagPipelineRulesetResource) Read(ctx context.Context, req resource.Read
 		return
 	}
 
-	apiResp, response, err := r.Api.GetRuleset(r.Auth, state.ID.ValueString())
+	apiResp, response, err := r.Api.GetTagPipelinesRuleset(r.Auth, state.ID.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Error reading ruleset", utils.TranslateClientError(err, response, "").Error())
 		return
@@ -340,7 +340,7 @@ func (r *tagPipelineRulesetResource) Update(ctx context.Context, req resource.Up
 	}
 
 	apiReq := buildUpdateRulesetRequestFromModel(plan)
-	apiResp, response, err := r.Api.UpdateRuleset(r.Auth, rulesetId, apiReq)
+	apiResp, response, err := r.Api.UpdateTagPipelinesRuleset(r.Auth, rulesetId, apiReq)
 	if err != nil {
 		resp.Diagnostics.AddError("Error updating ruleset", fmt.Sprintf("RulesetID: %s, Error: %s", rulesetId, utils.TranslateClientError(err, response, "").Error()))
 		return
@@ -358,7 +358,7 @@ func (r *tagPipelineRulesetResource) Delete(ctx context.Context, req resource.De
 		return
 	}
 
-	_, err := r.Api.DeleteRuleset(r.Auth, state.ID.ValueString())
+	_, err := r.Api.DeleteTagPipelinesRuleset(r.Auth, state.ID.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Error deleting ruleset", err.Error())
 		return

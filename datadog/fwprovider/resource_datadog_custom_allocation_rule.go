@@ -438,7 +438,7 @@ func (r *datadogCustomAllocationRuleResource) Read(ctx context.Context, request 
 		return
 	}
 
-	resp, httpResp, err := r.Api.GetArbitraryCostRule(r.Auth, id)
+	resp, httpResp, err := r.Api.GetCustomAllocationRule(r.Auth, id)
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == 404 {
 			response.State.RemoveResource(ctx)
@@ -471,7 +471,7 @@ func (r *datadogCustomAllocationRuleResource) Create(ctx context.Context, reques
 		return
 	}
 
-	resp, _, err := r.Api.CreateArbitraryCostRule(r.Auth, *body)
+	resp, _, err := r.Api.CreateCustomAllocationRule(r.Auth, *body)
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving DatadogCustomAllocationRule"))
 		return
@@ -515,7 +515,7 @@ func (r *datadogCustomAllocationRuleResource) Update(ctx context.Context, reques
 		return
 	}
 
-	resp, _, err := r.Api.UpdateArbitraryCostRule(r.Auth, id, *body)
+	resp, _, err := r.Api.UpdateCustomAllocationRule(r.Auth, id, *body)
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving DatadogCustomAllocationRule"))
 		return
@@ -543,7 +543,7 @@ func (r *datadogCustomAllocationRuleResource) Delete(ctx context.Context, reques
 		return
 	}
 
-	httpResp, err := r.Api.DeleteArbitraryCostRule(r.Auth, id)
+	httpResp, err := r.Api.DeleteCustomAllocationRule(r.Auth, id)
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == 404 {
 			return
