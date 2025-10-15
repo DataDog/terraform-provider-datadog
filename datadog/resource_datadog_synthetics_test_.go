@@ -4496,7 +4496,7 @@ func buildTerraformTestOptions(actualOptions datadogV1.SyntheticsTestOptions) []
 		localOptionsList["initial_navigation_timeout"] = actualOptions.GetInitialNavigationTimeout()
 	}
 	if actualOptions.HasBlockedRequestPatterns() {
-		localOptionsList["blockedRequestPatterns"] = actualOptions.GetBlockedRequestPatterns()
+		localOptionsList["blocked_request_patterns"] = actualOptions.GetBlockedRequestPatterns()
 	}
 
 	localOptionsLists := make([]map[string]interface{}, 1)
