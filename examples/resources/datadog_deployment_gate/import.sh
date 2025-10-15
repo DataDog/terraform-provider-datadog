@@ -1,0 +1,1 @@
+terraform import datadog_deployment_gate.new_list ""
