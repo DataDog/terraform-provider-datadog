@@ -3,15 +3,12 @@ package fwprovider
 import (
 	"context"
 	"strconv"
-	"time"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
@@ -228,44 +225,26 @@ func (r *datadogCustomAllocationRuleResource) Schema(_ context.Context, _ resour
 			"order_id": schema.Int64Attribute{
 				Computed:    true,
 				Description: "The order of the rule in the list of custom allocation rules. This field is read-only. Use the `datadog_custom_allocation_rules` resource to manage rule order.",
-				PlanModifiers: []planmodifier.Int64{
-					int64planmodifier.UseStateForUnknown(),
-				},
 			},
 			"rejected": schema.BoolAttribute{
 				Computed:    true,
 				Description: "Whether the rule was rejected by the API during creation due to validation errors. This field is read-only.",
-				PlanModifiers: []planmodifier.Bool{
-					boolplanmodifier.UseStateForUnknown(),
-				},
 			},
 			"created": schema.StringAttribute{
 				Computed:    true,
 				Description: "The timestamp (in ISO 8601 format) when the rule was created.",
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
-				},
 			},
 			"last_modified_user_uuid": schema.StringAttribute{
 				Computed:    true,
 				Description: "The UUID of the user who last modified the rule.",
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
-				},
 			},
 			"updated": schema.StringAttribute{
 				Computed:    true,
 				Description: "The timestamp (in ISO 8601 format) when the rule was last updated.",
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
-				},
 			},
 			"version": schema.Int64Attribute{
 				Computed:    true,
 				Description: "The version number of the rule. This increments each time the rule is updated.",
-				PlanModifiers: []planmodifier.Int64{
-					int64planmodifier.UseStateForUnknown(),
-				},
 			},
 			"rule_name": schema.StringAttribute{
 				Required:    true,
@@ -459,7 +438,7 @@ func (r *datadogCustomAllocationRuleResource) Read(ctx context.Context, request 
 		return
 	}
 
-	resp, httpResp, err := r.Api.GetArbitraryCostRule(r.Auth, id)
+	resp, httpResp, err := r.Api.GetCustomAllocationRule(r.Auth, id)
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == 404 {
 			response.State.RemoveResource(ctx)
@@ -492,7 +471,7 @@ func (r *datadogCustomAllocationRuleResource) Create(ctx context.Context, reques
 		return
 	}
 
-	resp, _, err := r.Api.CreateArbitraryCostRule(r.Auth, *body)
+	resp, _, err := r.Api.CreateCustomAllocationRule(r.Auth, *body)
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving DatadogCustomAllocationRule"))
 		return
@@ -536,7 +515,7 @@ func (r *datadogCustomAllocationRuleResource) Update(ctx context.Context, reques
 		return
 	}
 
-	resp, _, err := r.Api.UpdateArbitraryCostRule(r.Auth, id, *body)
+	resp, _, err := r.Api.UpdateCustomAllocationRule(r.Auth, id, *body)
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving DatadogCustomAllocationRule"))
 		return
@@ -564,7 +543,7 @@ func (r *datadogCustomAllocationRuleResource) Delete(ctx context.Context, reques
 		return
 	}
 
-	httpResp, err := r.Api.DeleteArbitraryCostRule(r.Auth, id)
+	httpResp, err := r.Api.DeleteCustomAllocationRule(r.Auth, id)
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == 404 {
 			return
@@ -582,8 +561,7 @@ func (r *datadogCustomAllocationRuleResource) updateState(ctx context.Context, s
 
 		if attributes, ok := data.GetAttributesOk(); ok {
 			if created, ok := attributes.GetCreatedOk(); ok {
-				// Format to match API response format (RFC3339Nano)
-				state.Created = types.StringValue(created.Format(time.RFC3339Nano))
+				state.Created = types.StringValue(created.String())
 			}
 
 			if enabled, ok := attributes.GetEnabledOk(); ok {
@@ -601,8 +579,7 @@ func (r *datadogCustomAllocationRuleResource) updateState(ctx context.Context, s
 			if rejected, ok := attributes.GetRejectedOk(); ok {
 				state.Rejected = types.BoolValue(*rejected)
 			} else {
-				// If API doesn't return rejected field, assume the rule was accepted (not rejected)
-				state.Rejected = types.BoolValue(false)
+				state.Rejected = types.BoolNull()
 			}
 
 			if ruleName, ok := attributes.GetRuleNameOk(); ok {
@@ -612,8 +589,7 @@ func (r *datadogCustomAllocationRuleResource) updateState(ctx context.Context, s
 			// Type is not stored in state - it's always "shared" and set in API requests
 
 			if updated, ok := attributes.GetUpdatedOk(); ok {
-				// Format to match API response format (RFC3339Nano)
-				state.Updated = types.StringValue(updated.Format(time.RFC3339Nano))
+				state.Updated = types.StringValue(updated.String())
 			}
 
 			if version, ok := attributes.GetVersionOk(); ok {
@@ -636,7 +612,7 @@ func (r *datadogCustomAllocationRuleResource) updateState(ctx context.Context, s
 					if tag, ok := costsToAllocateDd.GetTagOk(); ok {
 						costsToAllocateTf.Tag = types.StringValue(*tag)
 					}
-					if value, ok := costsToAllocateDd.GetValueOk(); ok && *value != "" {
+					if value, ok := costsToAllocateDd.GetValueOk(); ok {
 						costsToAllocateTf.Value = types.StringValue(*value)
 					}
 					if values, ok := costsToAllocateDd.GetValuesOk(); ok && values != nil && len(*values) > 0 {
@@ -697,7 +673,7 @@ func (r *datadogCustomAllocationRuleResource) updateState(ctx context.Context, s
 						if tag, ok := allocatedByFiltersDd.GetTagOk(); ok {
 							allocatedByFiltersTf.Tag = types.StringValue(*tag)
 						}
-						if value, ok := allocatedByFiltersDd.GetValueOk(); ok && *value != "" {
+						if value, ok := allocatedByFiltersDd.GetValueOk(); ok {
 							allocatedByFiltersTf.Value = types.StringValue(*value)
 						}
 						if values, ok := allocatedByFiltersDd.GetValuesOk(); ok && values != nil && len(*values) > 0 {
@@ -730,7 +706,7 @@ func (r *datadogCustomAllocationRuleResource) updateState(ctx context.Context, s
 						if tag, ok := basedOnCostsDd.GetTagOk(); ok {
 							basedOnCostsTf.Tag = types.StringValue(*tag)
 						}
-						if value, ok := basedOnCostsDd.GetValueOk(); ok && *value != "" {
+						if value, ok := basedOnCostsDd.GetValueOk(); ok {
 							basedOnCostsTf.Value = types.StringValue(*value)
 						}
 						if values, ok := basedOnCostsDd.GetValuesOk(); ok && values != nil && len(*values) > 0 {
@@ -761,7 +737,7 @@ func (r *datadogCustomAllocationRuleResource) updateState(ctx context.Context, s
 						if tag, ok := evaluateGroupedByFiltersDd.GetTagOk(); ok {
 							evaluateGroupedByFiltersTf.Tag = types.StringValue(*tag)
 						}
-						if value, ok := evaluateGroupedByFiltersDd.GetValueOk(); ok && *value != "" {
+						if value, ok := evaluateGroupedByFiltersDd.GetValueOk(); ok {
 							evaluateGroupedByFiltersTf.Value = types.StringValue(*value)
 						}
 						if values, ok := evaluateGroupedByFiltersDd.GetValuesOk(); ok && values != nil && len(*values) > 0 {
