@@ -233,7 +233,7 @@ func DatadogCustomAllocationRuleDestroyHelper(auth context.Context, s *terraform
 			}
 
 			ruleId, _ := strconv.ParseInt(r.Primary.ID, 10, 64)
-			_, httpResp, err := apiInstances.GetCloudCostManagementApiV2().GetArbitraryCostRule(auth, ruleId)
+			_, httpResp, err := apiInstances.GetCloudCostManagementApiV2().GetCustomAllocationRule(auth, ruleId)
 			if err != nil {
 				if httpResp != nil && httpResp.StatusCode == 404 {
 					return nil
@@ -266,7 +266,7 @@ func datadogCustomAllocationRuleExistsHelper(auth context.Context, s *terraform.
 		}
 
 		ruleId, _ := strconv.ParseInt(r.Primary.ID, 10, 64)
-		_, httpResp, err := apiInstances.GetCloudCostManagementApiV2().GetArbitraryCostRule(auth, ruleId)
+		_, httpResp, err := apiInstances.GetCloudCostManagementApiV2().GetCustomAllocationRule(auth, ruleId)
 		if err != nil {
 			return utils.TranslateClientError(err, httpResp, "error retrieving DatadogCustomAllocationRule")
 		}

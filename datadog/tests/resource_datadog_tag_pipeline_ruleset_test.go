@@ -239,7 +239,7 @@ func datadogTagPipelineRulesetDestroyHelper(ctx context.Context, auth context.Co
 		}
 		id := r.Primary.ID
 
-		_, httpResp, err := api.GetRuleset(auth, id)
+		_, httpResp, err := api.GetTagPipelinesRuleset(auth, id)
 		if err != nil {
 			if httpResp != nil && httpResp.StatusCode == 404 {
 				continue
