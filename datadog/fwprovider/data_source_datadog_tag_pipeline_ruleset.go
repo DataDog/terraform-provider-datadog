@@ -185,7 +185,7 @@ func (d *tagPipelineRulesetDataSource) Read(ctx context.Context, req datasource.
 		return
 	}
 
-	apiResp, _, err := d.Api.GetRuleset(d.Auth, state.ID.ValueString())
+	apiResp, _, err := d.Api.GetTagPipelinesRuleset(d.Auth, state.ID.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Error reading ruleset", err.Error())
 		return

@@ -135,7 +135,7 @@ func testAccCleanupOrphanedTagPipelineRulesets(t *testing.T, frameworkProvider *
 	api := apiInstances.GetCloudCostManagementApiV2()
 
 	// List all rulesets
-	resp, _, err := api.ListRulesets(auth)
+	resp, _, err := api.ListTagPipelinesRulesets(auth)
 	if err != nil {
 		// If we can't list rulesets, log warning and continue
 		t.Logf("Warning: Could not list rulesets for cleanup: %v", err)
@@ -158,7 +158,7 @@ func testAccCleanupOrphanedTagPipelineRulesets(t *testing.T, frameworkProvider *
 				name = attrs.GetName()
 			}
 			t.Logf("Deleting ruleset: %s (ID: %s)", name, *rulesetID)
-			_, err := api.DeleteRuleset(auth, *rulesetID)
+			_, err := api.DeleteTagPipelinesRuleset(auth, *rulesetID)
 			if err != nil {
 				t.Logf("Warning: Could not delete ruleset %s: %v", *rulesetID, err)
 			}
@@ -204,7 +204,7 @@ func testAccCheckDatadogTagPipelineRulesetsDestroy(ctx context.Context, framewor
 		api := apiInstances.GetCloudCostManagementApiV2()
 
 		// List all rulesets
-		resp, _, err := api.ListRulesets(auth)
+		resp, _, err := api.ListTagPipelinesRulesets(auth)
 		if err != nil {
 			// If we can't list rulesets, just log and continue
 			// The test might have already cleaned up
@@ -220,7 +220,7 @@ func testAccCheckDatadogTagPipelineRulesetsDestroy(ctx context.Context, framewor
 		// This is important because the order resource requires all rulesets to be managed
 		for _, ruleset := range rulesets {
 			if rulesetID, ok := ruleset.GetIdOk(); ok {
-				_, _ = api.DeleteRuleset(auth, *rulesetID)
+				_, _ = api.DeleteTagPipelinesRuleset(auth, *rulesetID)
 			}
 		}
 
