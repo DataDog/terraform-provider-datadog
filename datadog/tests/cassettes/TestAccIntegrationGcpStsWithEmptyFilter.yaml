@@ -1,0 +1,105 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/integration/gcp/sts_delegate
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 237
+        uncompressed: false
+        body: '{"data":{"id":"ddgci-45108e579fe252698007@datadog-gci-sts-us1-prod.iam.gserviceaccount.com","type":"gcp_sts_delegate","attributes":{"delegate_account_email":"ddgci-45108e579fe252698007@datadog-gci-sts-us1-prod.iam.gserviceaccount.com"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 96.013875ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 609
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"account_tags":["acct:one","acct:three","acct:two"],"automute":false,"client_email":"tf-TestAccIntegrationGcpStsWithEmptyFilter-local-1760642662@test-project.iam.gserviceaccount.com","cloud_run_revision_filters":[],"host_filters":[],"is_cspm_enabled":false,"is_per_project_quota_enabled":false,"is_resource_change_collection_enabled":false,"is_security_command_center_enabled":false,"metric_namespace_configs":[{"disabled":true,"id":"aiplatform"}],"monitored_resource_configs":[{"filters":[],"type":"cloud_function"}],"resource_collection_enabled":false},"type":"gcp_service_account"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/integration/gcp/accounts
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 694
+        uncompressed: false
+        body: '{"data":{"id":"0af9328c-fa80-4a7a-ad4f-5fc3035b947d","type":"gcp_service_account","attributes":{"account_tags":["acct:one","acct:three","acct:two"],"automute":false,"client_email":"tf-TestAccIntegrationGcpStsWithEmptyFilter-local-1760642662@test-project.iam.gserviceaccount.com","cloud_run_revision_filters":[],"host_filters":[],"is_bq_datasets_monitoring_enabled":false,"is_bq_jobs_monitoring_enabled":false,"is_cspm_enabled":false,"is_per_project_quota_enabled":false,"is_resource_change_collection_enabled":false,"is_security_command_center_enabled":false,"metric_namespace_configs":[{"id":"aiplatform","disabled":true}],"monitored_resource_configs":[],"resource_collection_enabled":false}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 61.419083ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/integration/gcp/accounts/0af9328c-fa80-4a7a-ad4f-5fc3035b947d
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 67.709834ms
