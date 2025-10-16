@@ -438,7 +438,7 @@ func (r *monitorResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 				Optional:    true,
 			},
 			"draft_status": schema.StringAttribute{
-				Description:      "Indicates whether the monitor is in a draft or published state. When set to `draft`, the monitor appears as Draft and does not send notifications. When set to `published`, the monitor is active, and it evaluates conditions and sends notifications as configured.",
+				Description: "Indicates whether the monitor is in a draft or published state. When set to `draft`, the monitor appears as Draft and does not send notifications. When set to `published`, the monitor is active, and it evaluates conditions and sends notifications as configured.",
 				Optional:    true,
 				Computed:    true,
 				Default:     stringdefault.StaticString(string(datadogV1.MONITORDRAFTSTATUS_PUBLISHED)),
