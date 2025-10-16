@@ -1441,6 +1441,7 @@ Optional:
 
 - `accept_self_signed` (Boolean) For SSL tests, whether or not the test should allow self signed certificates.
 - `allow_insecure` (Boolean) Allows loading insecure content for a request in an API test or in a multistep API test step.
+- `blocked_request_patterns` (List of String) Blocked URL patterns. Requests made to URLs matching any of the patterns listed here will be blocked.
 - `check_certificate_revocation` (Boolean) For SSL tests, whether or not the test should fail on revoked certificate in stapled OCSP.
 - `ci` (Block List, Max: 1) CI/CD options for a Synthetic test. (see [below for nested schema](#nestedblock--options_list--ci))
 - `disable_aia_intermediate_fetching` (Boolean) For SSL tests, whether or not the test should disable fetching intermediate certificates from AIA

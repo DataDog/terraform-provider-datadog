@@ -879,6 +879,7 @@ resource "datadog_synthetics_test" "test" {
 
 	options_list {
 		initial_navigation_timeout = 15
+		blocked_request_patterns   = ["https://example.com/*"]
 		tick_every                 = 3600
 		retry {
 			count    = 0
@@ -1032,6 +1033,7 @@ resource "datadog_synthetics_test" "test" {
 
 	options_list {
 		initial_navigation_timeout = 15
+		blocked_request_patterns   = ["https://example.com/*"]
 		tick_every                 = 3600
 		retry {
 			count    = 0
@@ -4095,6 +4097,10 @@ func createSyntheticsBrowserTestStep(ctx context.Context, accProvider *schema.Pr
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "options_list.0.initial_navigation_timeout", "150"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options_list.0.blocked_request_patterns.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options_list.0.blocked_request_patterns.0", "https://example.com/*"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "name", testName),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "message", "Notify @datadog.user"),
@@ -4234,6 +4240,7 @@ resource "datadog_synthetics_test" "bar" {
 		disable_csp = true
 		disable_cors = true
 		initial_navigation_timeout = 150
+		blocked_request_patterns   = ["https://example.com/*"]
 	}
 
 	name = "%[1]s"
@@ -4926,10 +4933,22 @@ func updateSyntheticsBrowserTestStepRumSettingsEnabled(ctx context.Context, accP
 			testSyntheticsTestExists(accProvider),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "options_list.0.rum_settings.0.is_enabled", "true"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "options_list.0.rum_settings.0.application_id", ""),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "options_list.0.rum_settings.0.client_token_id", "0"),
+			resource.TestCheckResourceAttrWith(
+				"datadog_synthetics_test.bar", "options_list.0.rum_settings.0.application_id", func(value string) error {
+					if value == "" {
+						return fmt.Errorf("expected application_id to not be empty, got empty string")
+					}
+					return nil
+				},
+			),
+			resource.TestCheckResourceAttrWith(
+				"datadog_synthetics_test.bar", "options_list.0.rum_settings.0.client_token_id", func(value string) error {
+					if value == "0" {
+						return fmt.Errorf("expected client_token_id to not be 0, got 0")
+					}
+					return nil
+				},
+			),
 		),
 	}
 }

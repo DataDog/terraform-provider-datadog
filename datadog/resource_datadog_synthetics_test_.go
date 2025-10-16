@@ -836,12 +836,14 @@ func syntheticsTestOptionsList() *schema.Schema {
 								Type:        schema.TypeString,
 								Description: "RUM application ID used to collect RUM data for the browser test.",
 								Optional:    true,
+								Computed:    true,
 							},
 							"client_token_id": {
 								Type:        schema.TypeInt,
 								Description: "RUM application API key ID used to collect RUM data for the browser test.",
 								Sensitive:   true,
 								Optional:    true,
+								Computed:    true,
 							},
 						},
 					},
@@ -866,6 +868,14 @@ func syntheticsTestOptionsList() *schema.Schema {
 					Description: "Timeout before declaring the initial step as failed (in seconds) for browser tests.",
 					Type:        schema.TypeInt,
 					Optional:    true,
+				},
+				"blocked_request_patterns": {
+					Description: "Blocked URL patterns. Requests made to URLs matching any of the patterns listed here will be blocked.",
+					Type:        schema.TypeList,
+					Optional:    true,
+					Elem: &schema.Schema{
+						Type: schema.TypeString,
+					},
 				},
 				"http_version": syntheticsHttpVersionOption(),
 			},
@@ -4336,6 +4346,14 @@ func buildDatadogTestOptions(d *schema.ResourceData) *datadogV1.SyntheticsTestOp
 			options.SetInitialNavigationTimeout(int64(initialNavigationTimeout.(int)))
 		}
 
+		if blockedRequestPatterns, ok := d.GetOk("options_list.0.blocked_request_patterns"); ok {
+			var blockedRequests []string
+			for _, s := range blockedRequestPatterns.([]interface{}) {
+				blockedRequests = append(blockedRequests, s.(string))
+			}
+			options.SetBlockedRequestPatterns(blockedRequests)
+		}
+
 		if attr, ok := d.GetOk("device_ids"); ok {
 			var deviceIds []string
 			for _, s := range attr.([]interface{}) {
@@ -4478,6 +4496,9 @@ func buildTerraformTestOptions(actualOptions datadogV1.SyntheticsTestOptions) []
 	}
 	if actualOptions.HasInitialNavigationTimeout() {
 		localOptionsList["initial_navigation_timeout"] = actualOptions.GetInitialNavigationTimeout()
+	}
+	if actualOptions.HasBlockedRequestPatterns() {
+		localOptionsList["blocked_request_patterns"] = actualOptions.GetBlockedRequestPatterns()
 	}
 
 	localOptionsLists := make([]map[string]interface{}, 1)
