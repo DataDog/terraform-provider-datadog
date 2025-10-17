@@ -37,7 +37,7 @@ resource "datadog_metric_metadata" "request_time" {
 - `short_name` (String) A short name of the metric.
 - `statsd_interval` (Number) If applicable, statsd flush interval in seconds for the metric.
 - `type` (String) Metric type such as `count`, `gauge`, or `rate`. Updating a metric of type `distribution` is not supported. If you would like to see the `distribution` type returned, contact [Datadog support](https://docs.datadoghq.com/help/).
-- `unit` (String) Primary unit of the metric such as `byte` or `operation`.
+- `unit` (String) Primary unit of the metric such as `byte` or `operation`. For a list of allowed units, refer to [Datadog metric unit documentation](https://docs.datadoghq.com/metrics/units/#unit-list).
 
 ### Read-Only
 
