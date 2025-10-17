@@ -188,6 +188,55 @@ resource "datadog_logs_custom_pipeline" "my_pipeline_test" {
             input_representation = "utf_8"
         }
     }
+    processor {
+        schema_processor {
+            name = "Map to OCSF Schema"
+            is_enabled = true
+
+            schema {
+                schema_type = "ocsf"
+                version = "1.5.0"
+                class_name = "Account Change"
+                class_uid = 3001
+                profiles = ["cloud"]
+            }
+
+            mappers {
+                type = "schema-remapper"
+                name = "Map activity fields"
+                is_enabled = true
+                sources = ["eventName"]
+                target = "ocsf.activity_name"
+                preserve_source = true
+                override_on_conflict = false
+            }
+
+            mappers {
+                type = "schema-category-mapper"
+                name = "Map to OCSF categories"
+                is_enabled = true
+
+                categories {
+                    name = "Create"
+                    id = 1
+                    filter {
+                        query = "eventName:CreateUser"
+                    }
+                    targets {
+                        attribute = "ocsf.activity_id"
+                        value = "1"
+                    }
+                }
+
+                fallback {
+                    values = {
+                        "ocsf.activity_name" = "Other"
+                        "ocsf.activity_id" = "99"
+                    }
+                }
+            }
+        }
+    }
 
 }`, uniq)
 }
@@ -370,6 +419,74 @@ resource "datadog_logs_custom_pipeline" "my_pipeline_test" {
             input_representation = "integer"
         }
     }
+    processor {
+        schema_processor {
+            name = "Map to OCSF Schema"
+            is_enabled = false
+
+            schema {
+                schema_type = "ocsf"
+                version = "1.5.0"
+                class_name = "Account Change"
+                class_uid = 3001
+                profiles = ["cloud", "host"]
+            }
+
+            mappers {
+                type = "schema-remapper"
+                name = "Map activity fields"
+                is_enabled = false
+                sources = ["action", "eventName"]
+                target = "ocsf.activity_name"
+                preserve_source = false
+                override_on_conflict = true
+            }
+
+            mappers {
+                type = "schema-category-mapper"
+                name = "Map to OCSF categories updated"
+                is_enabled = true
+
+                categories {
+                    name = "Create"
+                    id = 1
+                    filter {
+                        query = "eventName:CreateUser"
+                    }
+                    targets {
+                        attribute = "ocsf.activity_id"
+                        value = "1"
+                    }
+                    targets {
+                        sources = ["eventName"]
+                        attribute = "ocsf.activity_name"
+                    }
+                }
+
+                categories {
+                    name = "Delete"
+                    id = 3
+                    filter {
+                        query = "eventName:DeleteUser"
+                    }
+                    targets {
+                        attribute = "ocsf.activity_id"
+                        value = "3"
+                    }
+                }
+
+                fallback {
+                    values = {
+                        "ocsf.activity_name" = "Unknown"
+                        "ocsf.activity_id" = "0"
+                    }
+                    sources = {
+                        "ocsf.activity_name" = ["action", "eventType"]
+                    }
+                }
+            }
+        }
+    }
 
 }`, uniq)
 }
@@ -428,6 +545,89 @@ resource "datadog_logs_custom_pipeline" "empty_filter_query_pipeline" {
 				query = ""
 			}
 
+		}
+	}
+}`, uniq)
+}
+
+func pipelineConfigForSchemaProcessor(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_logs_custom_pipeline" "schema_processor_pipeline" {
+	name = "%s"
+	is_enabled = true
+	filter {
+		query = "source:security"
+	}
+	processor {
+		schema_processor {
+			name = "Map to OCSF Schema"
+			is_enabled = true
+
+			schema {
+				schema_type = "ocsf"
+				version = "1.5.0"
+				class_name = "Account Change"
+				class_uid = 3001
+				profiles = ["cloud", "host"]
+			}
+
+			mappers {
+				type = "schemaRemapper"
+				name = "Map activity fields"
+				is_enabled = true
+				sources = ["eventName"]
+				target = "ocsf.activity_name"
+				preserve_source = true
+				override_on_conflict = false
+			}
+
+			mappers {
+				type = "schema-category-mapper"
+				name = "Map to OCSF categories"
+				is_enabled = true
+
+				categories {
+					name = "Create"
+					id = 1
+					filter {
+						query = "eventName:CreateUser"
+					}
+					targets {
+						attribute = "ocsf.activity_id"
+						value = "1"
+					}
+					targets {
+						sources = ["eventName"]
+						attribute = "ocsf.activity_name"
+					}
+				}
+
+				categories {
+					name = "Update"
+					id = 2
+					filter {
+						query = "eventName:UpdateUser"
+					}
+					targets {
+						attribute = "ocsf.activity_id"
+						value = "2"
+					}
+					targets {
+						sources = ["eventName"]
+						attribute = "ocsf.activity_name"
+					}
+				}
+
+				fallback {
+					values = {
+						"ocsf.activity_name" = "Other"
+						"ocsf.activity_id" = "99"
+					}
+					sources = {
+						"ocsf.activity_name" = ["eventName"]
+					}
+				}
+			}
 		}
 	}
 }`, uniq)

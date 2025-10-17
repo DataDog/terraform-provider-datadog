@@ -30,6 +30,7 @@ const (
 	tfReferenceTableLookupProcessor = "reference_table_lookup_processor"
 	tfMessageRemapperProcessor      = "message_remapper"
 	tfNestedPipelineProcessor       = "pipeline"
+	tfSchemaProcessor               = "schema_processor"
 	tfServiceRemapperProcessor      = "service_remapper"
 	tfStatusRemapperProcessor       = "status_remapper"
 	tfStringBuilderProcessor        = "string_builder_processor"
@@ -54,6 +55,7 @@ var tfProcessorTypes = map[string]string{
 	tfReferenceTableLookupProcessor: ddReferenceTableLookupProcessor,
 	tfMessageRemapperProcessor:      string(datadogV1.LOGSMESSAGEREMAPPERTYPE_MESSAGE_REMAPPER),
 	tfNestedPipelineProcessor:       string(datadogV1.LOGSPIPELINEPROCESSORTYPE_PIPELINE),
+	tfSchemaProcessor:               string(datadogV1.LOGSSCHEMAPROCESSORTYPE_SCHEMA_PROCESSOR),
 	tfServiceRemapperProcessor:      string(datadogV1.LOGSSERVICEREMAPPERTYPE_SERVICE_REMAPPER),
 	tfStatusRemapperProcessor:       string(datadogV1.LOGSSTATUSREMAPPERTYPE_STATUS_REMAPPER),
 	tfStringBuilderProcessor:        string(datadogV1.LOGSSTRINGBUILDERPROCESSORTYPE_STRING_BUILDER_PROCESSOR),
@@ -75,6 +77,7 @@ var tfProcessors = map[string]*schema.Schema{
 	tfLookupProcessor:               lookupProcessor,
 	tfReferenceTableLookupProcessor: referenceTableLookupProcessor,
 	tfMessageRemapperProcessor:      messageRemapper,
+	tfSchemaProcessor:               schemaProcessor,
 	tfServiceRemapperProcessor:      serviceRemapper,
 	tfStatusRemapperProcessor:       statusRemmaper,
 	tfStringBuilderProcessor:        stringBuilderProcessor,
@@ -97,6 +100,7 @@ var ddProcessorTypes = map[string]string{
 	ddReferenceTableLookupProcessor:                                           tfReferenceTableLookupProcessor,
 	string(datadogV1.LOGSMESSAGEREMAPPERTYPE_MESSAGE_REMAPPER):                tfMessageRemapperProcessor,
 	string(datadogV1.LOGSPIPELINEPROCESSORTYPE_PIPELINE):                      tfNestedPipelineProcessor,
+	string(datadogV1.LOGSSCHEMAPROCESSORTYPE_SCHEMA_PROCESSOR):                tfSchemaProcessor,
 	string(datadogV1.LOGSSERVICEREMAPPERTYPE_SERVICE_REMAPPER):                tfServiceRemapperProcessor,
 	string(datadogV1.LOGSSTATUSREMAPPERTYPE_STATUS_REMAPPER):                  tfStatusRemapperProcessor,
 	string(datadogV1.LOGSSTRINGBUILDERPROCESSORTYPE_STRING_BUILDER_PROCESSOR): tfStringBuilderProcessor,
@@ -423,6 +427,207 @@ var messageRemapper = &schema.Schema{
 	},
 }
 
+var schemaProcessor = &schema.Schema{
+	Type:        schema.TypeList,
+	MaxItems:    1,
+	Description: "Schema Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#schema-processor)",
+	Optional:    true,
+	Elem: &schema.Resource{
+		Schema: map[string]*schema.Schema{
+			"name":       {Description: "The name of the processor.", Type: schema.TypeString, Optional: true},
+			"is_enabled": {Description: "If the processor is enabled or not.", Type: schema.TypeBool, Optional: true},
+			"mappers": {
+				Description: "Array of mappers for the schema processor.",
+				Type:        schema.TypeList,
+				Required:    true,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"schema-remapper": {
+							Description: "Mapper that transforms and maps source log fields to their correct OCSF fields.",
+							Type:        schema.TypeList,
+							Optional:    true,
+							MaxItems:    1,
+							Elem: &schema.Resource{
+								Schema: map[string]*schema.Schema{
+									"name": {
+										Description: "Name of the logs schema remapper.",
+										Type:        schema.TypeString,
+										Optional:    true,
+									},
+									"sources": {
+										Description: "Array of source attributes.",
+										Type:        schema.TypeList,
+										Required:    true,
+										Elem: &schema.Schema{
+											Type: schema.TypeString,
+										},
+									},
+									"target": {
+										Description: "Target OCSF field to map log source field to",
+										Type:        schema.TypeString,
+										Required:    true,
+									},
+									"target_format": {
+										Description:  "If the `target_type` of the remapper is `attribute`, try to cast the value to a new specific type. If the cast is not possible, the original type is kept. `string`, `integer`, or `double` are the possible types. If the `target_type` is `tag`, this parameter may not be specified.",
+										Type:         schema.TypeString,
+										Optional:     true,
+										ValidateFunc: validation.StringInSlice([]string{"auto", "string", "integer", "double"}, false),
+									},
+									"preserve_source": {
+										Description: "Remove or preserve the remapped source element.",
+										Type:        schema.TypeBool,
+										Optional:    true,
+									},
+									"override_on_conflict": {
+										Description: "Override or not the target element if already set.",
+										Type:        schema.TypeBool,
+										Optional:    true,
+									},
+								},
+							},
+						},
+						"schema-category-mapper": {
+							Type:        schema.TypeList,
+							MaxItems:    1,
+							Description: "Mapper that categorizes log events into OCSF fields using filters. Maps events into enums or sibling fields.",
+							Optional:    true,
+							Elem: &schema.Resource{
+								Schema: map[string]*schema.Schema{
+									"name": {
+										Description: "Name of the logs schema category mapper.",
+										Type:        schema.TypeString,
+										Optional:    true,
+									},
+									"categories": {
+										Description: "Array of filters to match or not a log and their corresponding `name` to assign a custom value to the log.",
+										Type:        schema.TypeList,
+										Required:    true,
+										Elem: &schema.Resource{
+											Schema: map[string]*schema.Schema{
+												"filter": {
+													Type:     schema.TypeList,
+													Required: true,
+													MaxItems: 1,
+													Elem:     getFilterSchema(),
+												},
+												"id": {
+													Description: "ID to inject into the category.",
+													Type:        schema.TypeInt,
+													Required:    true,
+												},
+												"name": {
+													Description: "Value to assign to target OCSF schema field.",
+													Type:        schema.TypeString,
+													Required:    true,
+												},
+											},
+										},
+									},
+									"targets": {
+										Description: "Name of the target attributes which value is defined by the matching category.",
+										Type:        schema.TypeList,
+										MaxItems:    1,
+										Required:    true,
+										Elem: &schema.Resource{
+											Schema: map[string]*schema.Schema{
+												"name": {
+													Description: "Name of the OCSF field to map log attributes to.",
+													Type:        schema.TypeString,
+													Required:    true,
+												},
+												"id": {
+													Description: "ID of the OCSF field to map log attributes to.",
+													Type:        schema.TypeString,
+													Required:    true,
+												},
+											},
+										},
+									},
+									"fallback": {
+										Description: "A special OCSF value that needs a field from the source log to populate the value of the name field",
+										Type:        schema.TypeList,
+										Optional:    true,
+										MaxItems:    1,
+										Elem: &schema.Resource{
+											Schema: map[string]*schema.Schema{
+												"values": {
+													Description: "Values that define when the fallback is used.",
+													Type:        schema.TypeMap,
+													Required:    true, // check on this
+													Elem: &schema.Schema{
+														Type: schema.TypeString,
+													},
+												},
+												"sources": {
+													Description: "Fallback value.",
+													Type:        schema.TypeMap,
+													Required:    true, // check on this
+													Elem: &schema.Schema{
+														Type: schema.TypeList,
+														Elem: &schema.Schema{
+															Type: schema.TypeString,
+														},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+			"schema": {
+				Description: "Configuration of the schema data to use.",
+				Type:        schema.TypeList,
+				Required:    true,
+				MaxItems:    1,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"schema_type": {
+							Description: "Type of schema to use.",
+							Type:        schema.TypeString,
+							Required:    true,
+						},
+						"version": {
+							Description: "Version of the OCSF schema to use.",
+							Type:        schema.TypeString,
+							Required:    true,
+						},
+						"class_name": {
+							Description: "Class name of the OCSF schema to use.",
+							Type:        schema.TypeString,
+							Required:    true,
+						},
+						"class_uid": {
+							Description: "Class UID of the OCSF schema to use.",
+							Type:        schema.TypeInt,
+							Required:    true,
+						},
+						"extensions": {
+							Description: "Optional list of OCSF extensions to modify the schema.",
+							Type:        schema.TypeList,
+							Optional:    true,
+							Elem: &schema.Schema{
+								Type: schema.TypeString,
+							},
+						},
+						"profiles": {
+							Description: "Optional list of OCSF profiles to modify the schema.",
+							Type:        schema.TypeList,
+							Optional:    true,
+							Elem: &schema.Schema{
+								Type: schema.TypeString,
+							},
+						},
+					},
+				},
+			},
+		},
+	},
+}
+
 var serviceRemapper = &schema.Schema{
 	Type:        schema.TypeList,
 	MaxItems:    1,
@@ -704,6 +909,9 @@ func buildTerraformProcessor(ddProcessor datadogV1.LogsProcessor) (map[string]in
 	} else if ddProcessor.LogsPipelineProcessor != nil {
 		tfProcessor, err = buildTerraformNestedPipeline(ddProcessor.LogsPipelineProcessor)
 		processorType = string(datadogV1.LOGSPIPELINEPROCESSORTYPE_PIPELINE)
+	} else if ddProcessor.LogsSchemaProcessor != nil {
+		tfProcessor = buildTerraformSchemaProcessor(ddProcessor.LogsSchemaProcessor)
+		processorType = string(datadogV1.LOGSSCHEMAPROCESSORTYPE_SCHEMA_PROCESSOR)
 	} else if ddProcessor.LogsStringBuilderProcessor != nil {
 		tfProcessor = buildTerraformStringBuilderProcessor(ddProcessor.LogsStringBuilderProcessor)
 		processorType = string(datadogV1.LOGSSTRINGBUILDERPROCESSORTYPE_STRING_BUILDER_PROCESSOR)
@@ -836,6 +1044,84 @@ func buildTerraformDateRemapper(remapper *datadogV1.LogsDateRemapper) map[string
 		"sources":    remapper.GetSources(),
 		"name":       remapper.GetName(),
 		"is_enabled": remapper.GetIsEnabled(),
+	}
+}
+
+func buildTerraformSchemaProcessor(ddSchemaProcessor *datadogV1.LogsSchemaProcessor) map[string]interface{} {
+	tfProcessor := map[string]interface{}{
+		"name":       ddSchemaProcessor.GetName(),
+		"type":       ddSchemaProcessor.GetType(),
+		"is_enabled": ddSchemaProcessor.GetIsEnabled(),
+		"schema":     buildTerraformSchemaData(ddSchemaProcessor.GetSchema()),
+	}
+
+	// Handle the mapper field
+	mappers := ddSchemaProcessor.GetMappers()
+	tfMappers := make([]map[string]interface{}, 0, len(mappers))
+
+	for i := 0; i < len(mappers); i++ {
+		tfMapper := make(map[string]interface{})
+
+		if schemaRemapper := mappers[i].LogsSchemaRemapper; schemaRemapper != nil {
+			tfMapper = map[string]interface{}{
+				"name":                 schemaRemapper.GetName(),
+				"type":                 schemaRemapper.GetType(),
+				"sources":              schemaRemapper.GetSources(),
+				"target":               schemaRemapper.GetTarget(),
+				"target_format":        schemaRemapper.GetTargetFormat(),
+				"preserve_source":      schemaRemapper.GetPreserveSource(),
+				"override_on_conflict": schemaRemapper.GetOverrideOnConflict(),
+			}
+		} else if schemaCategoryMapper := mappers[i].LogsSchemaCategoryMapper; schemaCategoryMapper != nil {
+			tfMapper = map[string]interface{}{
+				"name":       schemaCategoryMapper.GetName(),
+				"type":       schemaCategoryMapper.GetType(),
+				"categories": buildTerraformSchemaCategories(schemaCategoryMapper.GetCategories()),
+				"targets":    buildTerraformSchemaTargets(schemaCategoryMapper.GetTargets()),
+				"fallback":   buildTerraformSchemaFallback(schemaCategoryMapper.GetFallback()),
+			}
+		}
+
+		tfMappers = append(tfMappers, tfMapper)
+	}
+
+	tfProcessor["mappers"] = tfMappers
+	return tfProcessor
+}
+
+func buildTerraformSchemaData(ddSchemaData datadogV1.LogsSchemaData) map[string]interface{} {
+	return map[string]interface{}{
+		"schema_type": ddSchemaData.GetSchemaType(),
+		"version":     ddSchemaData.GetVersion(),
+		"class_name":  ddSchemaData.GetClassName(),
+		"class_uid":   ddSchemaData.GetClassUid(),
+		"profiles":    ddSchemaData.GetProfiles(),
+	}
+}
+
+func buildTerraformSchemaCategories(ddSchemaCategories []datadogV1.LogsSchemaCategoryMapperCategory) []map[string]interface{} {
+	tfCategories := make([]map[string]interface{}, len(ddSchemaCategories))
+	for i, ddSchemaCategory := range ddSchemaCategories {
+		tfCategories[i] = map[string]interface{}{
+			"name":   ddSchemaCategory.GetName(),
+			"filter": buildTerraformFilter(&ddSchemaCategory.Filter),
+			"id":     ddSchemaCategory.GetId(),
+		}
+	}
+	return tfCategories
+}
+
+func buildTerraformSchemaTargets(ddSchemaTargets datadogV1.LogsSchemaCategoryMapperTargets) map[string]interface{} {
+	return map[string]interface{}{
+		"name": ddSchemaTargets.GetName(),
+		"id":   ddSchemaTargets.GetId(),
+	}
+}
+
+func buildTerraformSchemaFallback(ddSchemaFallback datadogV1.LogsSchemaCategoryMapperFallback) map[string]interface{} {
+	return map[string]interface{}{
+		"values":  ddSchemaFallback.GetValues(),
+		"sources": ddSchemaFallback.GetSources(),
 	}
 }
 
@@ -1036,6 +1322,8 @@ func buildDatadogProcessor(ddProcessorType string, tfProcessor map[string]interf
 		ddProcessor = datadogV1.LogsDateRemapperAsLogsProcessor(buildDatadogDateRemapperProcessor(tfProcessor))
 	case string(datadogV1.LOGSDECODERPROCESSORTYPE_DECODER_PROCESSOR):
 		ddProcessor = datadogV1.LogsDecoderProcessorAsLogsProcessor(buildDatadogDecoderProcessor(tfProcessor))
+	case string(datadogV1.LOGSSCHEMAPROCESSORTYPE_SCHEMA_PROCESSOR):
+		ddProcessor = datadogV1.LogsSchemaProcessorAsLogsProcessor(buildDatadogSchemaProcessor(tfProcessor))
 	case string(datadogV1.LOGSMESSAGEREMAPPERTYPE_MESSAGE_REMAPPER):
 		ddProcessor = datadogV1.LogsMessageRemapperAsLogsProcessor(buildDatadogMessageRemapper(tfProcessor))
 	case string(datadogV1.LOGSSERVICEREMAPPERTYPE_SERVICE_REMAPPER):
@@ -1408,6 +1696,21 @@ func buildDatadogSources(tfProcessor map[string]interface{}) []string {
 	return nil
 }
 
+func buildDatadogTargets(tfMapper map[string]interface{}) *datadogV1.LogsSchemaCategoryMapperTargets {
+	if tfTargets, exists := tfMapper["targets"].(map[string]interface{}); exists {
+		ddTargets := datadogV1.NewLogsSchemaCategoryMapperTargets()
+
+		if tfName, exists := tfTargets["name"].(string); exists {
+			ddTargets.SetName(tfName)
+		}
+		if tfId, exists := tfTargets["id"].(string); exists {
+			ddTargets.SetId(tfId)
+		}
+		return ddTargets
+	}
+	return nil
+}
+
 func buildDatadogArithmeticProcessor(tfProcessor map[string]interface{}) *datadogV1.LogsArithmeticProcessor {
 	ddArithmetic := datadogV1.NewLogsArithmeticProcessorWithDefaults()
 	if tfTarget, exists := tfProcessor["target"].(string); exists {
@@ -1544,6 +1847,99 @@ func buildDatadogDateRemapperProcessor(tfProcessor map[string]interface{}) *data
 	return ddDate
 }
 
+func buildDatadogSchemaProcessor(tfProcessor map[string]interface{}) *datadogV1.LogsSchemaProcessor {
+	ddSchemaProcessor := datadogV1.NewLogsSchemaProcessorWithDefaults()
+	ddSchemaProcessor.SetType(datadogV1.LOGSSCHEMAPROCESSORTYPE_SCHEMA_PROCESSOR)
+
+	if tfName, exists := tfProcessor["name"].(string); exists {
+		ddSchemaProcessor.SetName(tfName)
+	}
+
+	if tfIsEnabled, exists := tfProcessor["is_enabled"].(bool); exists {
+		ddSchemaProcessor.SetIsEnabled(tfIsEnabled)
+	}
+
+	if tfMappers, exists := tfProcessor["mappers"].([]interface{}); exists && len(tfMappers) > 0 {
+		ddMappers := make([]datadogV1.LogsSchemaMapper, len(tfMappers))
+		for i := 0; i < len(tfMappers); i++ {
+			tfMapper := tfMappers[i].(map[string]interface{})
+			if mapperType, exists := tfMapper["type"].(string); exists {
+				if mapperType == "schema-remapper" {
+					schemaRemapper := datadogV1.NewLogsSchemaRemapperWithDefaults()
+					schemaRemapper.SetType(datadogV1.LOGSSCHEMAREMAPPERTYPE_SCHEMA_REMAPPER)
+
+					if name, exists := tfMapper["name"].(string); exists {
+						schemaRemapper.SetName(name)
+					}
+					if ddSources := buildDatadogSources(tfMapper); ddSources != nil {
+						schemaRemapper.SetSources(ddSources)
+					}
+					if target, exists := tfMapper["target"].(string); exists {
+						schemaRemapper.SetTarget(target)
+					}
+					if targetFormat, exists := tfMapper["target_format"].(string); exists && (targetFormat != "") {
+						schemaRemapper.SetTargetFormat(datadogV1.TargetFormatType(targetFormat))
+					}
+					if preserveSource, exists := tfMapper["preserve_source"].(bool); exists {
+						schemaRemapper.SetPreserveSource(preserveSource)
+					}
+					if overrideOnConflict, exists := tfMapper["override_on_conflict"].(bool); exists {
+						schemaRemapper.SetOverrideOnConflict(overrideOnConflict)
+					}
+					ddMappers[i] = datadogV1.LogsSchemaMapper{LogsSchemaRemapper: schemaRemapper}
+
+				} else if mapperType == "schema-category-mapper" {
+					schemaCategoryMapper := datadogV1.NewLogsSchemaCategoryMapperWithDefaults()
+					schemaCategoryMapper.SetType(datadogV1.LOGSSCHEMACATEGORYMAPPERTYPE_SCHEMA_CATEGORY_MAPPER)
+
+					if name, exists := tfMapper["name"].(string); exists {
+						schemaCategoryMapper.SetName(name)
+					}
+					if tfCategories, exists := tfMapper["categories"].([]interface{}); exists {
+						ddCategories := make([]datadogV1.LogsSchemaCategoryMapperCategory, len(tfCategories))
+						for i, tfC := range tfCategories {
+							tfCategory := tfC.(map[string]interface{})
+							ddCategory := datadogV1.NewLogsSchemaCategoryMapperCategoryWithDefaults()
+
+							if tfName, exists := tfCategory["name"].(string); exists {
+								ddCategory.SetName(tfName)
+							}
+							if tfFilter, exists := tfCategory["filter"].([]interface{}); exists && len(tfFilter) > 0 {
+								filter, ok := tfFilter[0].(map[string]interface{})
+								if !ok {
+									filter = make(map[string]interface{})
+								}
+								ddCategory.SetFilter(*buildDatadogFilter(filter))
+							}
+							if tfId, exists := tfCategory["id"].(int); exists {
+								ddCategory.SetId(int64(tfId))
+							}
+
+							ddCategories[i] = *ddCategory
+						}
+
+						schemaCategoryMapper.SetCategories(ddCategories)
+					}
+					if ddTargets := buildDatadogTargets(tfMapper); ddTargets != nil {
+						schemaCategoryMapper.SetTargets(*ddTargets)
+					}
+					if ddFallback := buildDatadogFallback(tfMapper); ddFallback != nil {
+						schemaCategoryMapper.SetFallback(*ddFallback)
+					}
+					ddMappers[i] = datadogV1.LogsSchemaMapper{LogsSchemaCategoryMapper: schemaCategoryMapper}
+				}
+			}
+		}
+		ddSchemaProcessor.SetMappers(ddMappers)
+	}
+
+	if tfSchema, exists := tfProcessor["schema"].(map[string]interface{}); exists {
+		ddSchemaProcessor.SetSchema(*buildDatadogSchemaData(tfSchema))
+	}
+
+	return ddSchemaProcessor
+}
+
 func buildDatadogFilter(tfFilter map[string]interface{}) *datadogV1.LogsFilter {
 	ddFilter := datadogV1.LogsFilter{}
 	var query string
@@ -1552,6 +1948,64 @@ func buildDatadogFilter(tfFilter map[string]interface{}) *datadogV1.LogsFilter {
 	}
 	ddFilter.SetQuery(query)
 	return &ddFilter
+}
+
+func buildDatadogFallback(tfFallback map[string]interface{}) *datadogV1.LogsSchemaCategoryMapperFallback {
+	ddFallback := datadogV1.NewLogsSchemaCategoryMapperFallback()
+
+	if tfValues, exists := tfFallback["values"].(map[string]interface{}); exists {
+		ddValues := make(map[string]string, len(tfValues))
+		for key, value := range tfValues {
+			if strValue, ok := value.(string); ok {
+				ddValues[key] = strValue
+			}
+		}
+		ddFallback.SetValues(ddValues)
+	}
+
+	if tfSources, exists := tfFallback["sources"].(map[string]interface{}); exists {
+		ddSources := make(map[string][]string, len(tfSources))
+		for key, value := range tfSources {
+			if valueArray, ok := value.([]interface{}); ok && len(valueArray) > 0 {
+				strArray := make([]string, len(valueArray))
+				for i, item := range valueArray {
+					if strItem, ok := item.(string); ok {
+						strArray[i] = strItem
+					}
+				}
+				ddSources[key] = strArray
+			}
+		}
+		ddFallback.SetSources(ddSources)
+	}
+	return ddFallback
+}
+
+func buildDatadogSchemaData(tfSchema map[string]interface{}) *datadogV1.LogsSchemaData {
+	ddSchemaData := datadogV1.NewLogsSchemaDataWithDefaults()
+
+	if tfSchemaType, exists := tfSchema["schema_type"].(string); exists {
+		ddSchemaData.SetSchemaType(tfSchemaType)
+	}
+	if tfVersion, exists := tfSchema["version"].(string); exists {
+		ddSchemaData.SetVersion(tfVersion)
+	}
+	if tfClassName, exists := tfSchema["class_name"].(string); exists {
+		ddSchemaData.SetClassName(tfClassName)
+	}
+	if tfClassUid, exists := tfSchema["class_uid"].(int); exists {
+		ddSchemaData.SetClassUid(int64(tfClassUid))
+	}
+	if tfProfiles, exists := tfSchema["profiles"].([]interface{}); exists {
+		ddProfiles := make([]string, len(tfProfiles))
+		for i, profile := range tfProfiles {
+			if strProf, ok := profile.(string); ok {
+				ddProfiles[i] = strProf
+			}
+		}
+		ddSchemaData.SetProfiles(ddProfiles)
+	}
+	return ddSchemaData
 }
 
 func getPipelineSchema(isNested bool) map[string]*schema.Schema {
