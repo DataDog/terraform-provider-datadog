@@ -16,6 +16,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
+	"github.com/hashicorp/terraform-plugin-framework/ephemeral"
 	"github.com/hashicorp/terraform-plugin-framework/provider"
 	"github.com/hashicorp/terraform-plugin-framework/provider/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -29,6 +30,7 @@ import (
 )
 
 var _ provider.Provider = &FrameworkProvider{}
+var _ provider.ProviderWithEphemeralResources = &FrameworkProvider{}
 
 var Resources = []func() resource.Resource{
 	NewAgentlessScanningAwsScanOptionsResource,
@@ -108,6 +110,10 @@ var Resources = []func() resource.Resource{
 	NewAzureUcConfigResource,
 }
 
+var EphemeralResources = []func() ephemeral.EphemeralResource{
+	NewEphemeralAPIKeyResource,
+}
+
 var Datasources = []func() datasource.DataSource{
 	NewAPIKeyDataSource,
 	NewApplicationKeyDataSource,
@@ -160,6 +166,7 @@ type FrameworkProvider struct {
 	CommunityClient     *datadogCommunity.Client
 	DatadogApiInstances *utils.ApiInstances
 	Auth                context.Context
+	StoreSensitiveState bool
 
 	ConfigureCallbackFunc func(p *FrameworkProvider, request *provider.ConfigureRequest, config *ProviderSchema) diag.Diagnostics
 	Now                   func() time.Time
@@ -184,6 +191,7 @@ type ProviderSchema struct {
 	HttpClientRetryBackoffBase       types.Int64  `tfsdk:"http_client_retry_backoff_base"`
 	HttpClientRetryMaxRetries        types.Int64  `tfsdk:"http_client_retry_max_retries"`
 	DefaultTags                      []DefaultTag `tfsdk:"default_tags"`
+	StoreSensitiveState              types.String `tfsdk:"store_sensitive_state"`
 }
 
 type DefaultTag struct {
@@ -219,6 +227,18 @@ func (p *FrameworkProvider) DataSources(_ context.Context) []func() datasource.D
 	}
 
 	return wrappedDatasources
+}
+
+func (p *FrameworkProvider) EphemeralResources(_ context.Context) []func() ephemeral.EphemeralResource {
+	var wrappedResources []func() ephemeral.EphemeralResource
+	for _, f := range EphemeralResources {
+		r := f()
+		wrappedResources = append(wrappedResources, func() ephemeral.EphemeralResource {
+			return NewFrameworkEphemeralResourceWrapper(&r)
+		})
+	}
+
+	return wrappedResources
 }
 
 func (p *FrameworkProvider) Metadata(_ context.Context, _ provider.MetadataRequest, response *provider.MetadataResponse) {
@@ -296,6 +316,10 @@ func (p *FrameworkProvider) Schema(_ context.Context, _ provider.SchemaRequest, 
 				Optional:    true,
 				Description: "The HTTP request maximum retry number. Defaults to 3.",
 			},
+			"store_sensitive_state": schema.StringAttribute{
+				Optional:    true,
+				Description: "Whether to expose API key values in Terraform state. Valid values are [`true`, `false`]. Defaults to `true` for backwards compatibility. When false, API key resources will not include the key value, requiring the use of ephemeral datadog_api_key resources instead.",
+			},
 		},
 		Blocks: map[string]schema.Block{
 			"default_tags": schema.ListNestedBlock{
@@ -334,9 +358,10 @@ func (p *FrameworkProvider) Configure(ctx context.Context, request provider.Conf
 		return
 	}
 
-	// Make config available for data sources and resources
+	// Make config available for data sources, resources, and ephemeral resources
 	response.DataSourceData = p
 	response.ResourceData = p
+	response.EphemeralResourceData = p
 }
 
 func (p *FrameworkProvider) ConfigureConfigDefaults(ctx context.Context, config *ProviderSchema) diag.Diagnostics {
@@ -435,6 +460,9 @@ func (p *FrameworkProvider) ConfigureConfigDefaults(ctx context.Context, config 
 	if config.HttpClientRetryEnabled.IsNull() {
 		config.HttpClientRetryEnabled = types.StringValue("true")
 	}
+	if config.StoreSensitiveState.IsNull() {
+		config.StoreSensitiveState = types.StringValue("true")
+	}
 
 	// Run validations on the provider config after defaults and values from
 	// env var has been set.
@@ -488,6 +516,8 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	diags := diag.Diagnostics{}
 	validate, _ := strconv.ParseBool(config.Validate.ValueString())
 	httpClientRetryEnabled, _ := strconv.ParseBool(config.HttpClientRetryEnabled.ValueString())
+	storeSensitiveState, _ := strconv.ParseBool(config.StoreSensitiveState.ValueString())
+	p.StoreSensitiveState = storeSensitiveState
 
 	cloudProviderType := config.CloudProviderType.ValueString()
 	cloudProviderRegion := config.CloudProviderRegion.ValueString()
