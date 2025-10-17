@@ -64,7 +64,10 @@ Read-Only:
 Read-Only:
 
 - `append` (Boolean)
+- `default_value` (String)
+- `expression` (String)
 - `field` (String)
+- `inherited` (Boolean)
 - `name` (String)
 - `scope` (String)
 - `size` (Number)

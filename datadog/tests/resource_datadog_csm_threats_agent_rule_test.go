@@ -109,6 +109,41 @@ func TestAccCSMThreatsAgentRule_CreateAndUpdate(t *testing.T) {
 					),
 				),
 			},
+			// Update actions
+			{
+				Config: fmt.Sprintf(`
+				%s
+				resource "datadog_csm_threats_agent_rule" "agent_rule_test" {
+					name              = "%s"
+					policy_id         = datadog_csm_threats_policy.policy_for_test.id
+					enabled           = true
+					description       = "updated agent rule for terraform provider test"
+					expression 		  = "open.file.name == \"etc/shadow/password\""
+					product_tags      = ["compliance_framework:ISO-27799"]
+					actions {
+						set {
+							name   = "updated_action"
+							expression  = "\"value_$${builtins.uuid4}\""
+							scope  = "container"
+							inherited = true
+							default_value = "abc"
+						}
+					}
+				}`, policyConfig, agentRuleName),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckCSMThreatsAgentRuleExists(providers.frameworkProvider, resourceName),
+					checkCSMThreatsAgentRuleContent(
+						resourceName,
+						agentRuleName,
+						"updated agent rule for terraform provider test",
+						"open.file.name == \"etc/shadow/password\"",
+						"compliance_framework:ISO-27799",
+						"updated_action",
+						"new_value",
+						"container",
+					),
+				),
+			},
 		},
 	})
 }
@@ -159,7 +194,7 @@ func testAccCheckCSMThreatsAgentRuleDestroy(accProvider *fwprovider.FrameworkPro
 	}
 }
 
-func checkCSMThreatsAgentRuleContent(resourceName string, name string, description string, expression string, product_tags string, action_name string, action_value_or_field string, action_scope string) resource.TestCheckFunc {
+func checkCSMThreatsAgentRuleContent(resourceName string, name string, description string, expression string, product_tags string, action_name string, action_value_source string, action_scope string) resource.TestCheckFunc {
 	return resource.ComposeTestCheckFunc(
 		resource.TestCheckResourceAttr(resourceName, "name", name),
 		resource.TestCheckResourceAttr(resourceName, "description", description),
@@ -180,14 +215,19 @@ func checkCSMThreatsAgentRuleContent(resourceName string, name string, descripti
 			// Check either value or field is set (but not both)
 			value := r.Primary.Attributes["actions.0.set.value"]
 			field := r.Primary.Attributes["actions.0.set.field"]
+			expression := r.Primary.Attributes["actions.0.set.expression"]
 
-			if value == action_value_or_field {
+			if value == action_value_source {
 				if field != "" {
 					return fmt.Errorf("both value and field are set")
 				}
-			} else if field == action_value_or_field {
+			} else if field == action_value_source {
 				if value != "" {
 					return fmt.Errorf("both value and field are set")
+				}
+			} else if expression == action_value_source {
+				if value != "" {
+					return fmt.Errorf("both value and expression are set")
 				}
 			} else {
 				return fmt.Errorf("neither value nor field matches expected value")
