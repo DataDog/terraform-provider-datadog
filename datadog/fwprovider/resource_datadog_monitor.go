@@ -25,6 +25,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64default"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/setplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -89,6 +90,7 @@ type monitorResourceModel struct {
 	MonitorThresholdWindows []MonitorThresholdWindow         `tfsdk:"monitor_threshold_windows"`
 	SchedulingOptions       []SchedulingOption               `tfsdk:"scheduling_options"`
 	Variables               []Variable                       `tfsdk:"variables"`
+	DraftStatus             types.String                     `tfsdk:"draft_status"`
 }
 
 type MonitorThreshold struct {
@@ -434,6 +436,15 @@ func (r *monitorResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 			"validate": schema.BoolAttribute{
 				Description: "If set to `false`, skip the validation call done during plan.",
 				Optional:    true,
+			},
+			"draft_status": schema.StringAttribute{
+				Description: "Indicates whether the monitor is in a draft or published state. When set to `draft`, the monitor appears as Draft and does not send notifications. When set to `published`, the monitor is active, and it evaluates conditions and sends notifications as configured.",
+				Optional:    true,
+				Computed:    true,
+				Default:     stringdefault.StaticString(string(datadogV1.MONITORDRAFTSTATUS_PUBLISHED)),
+				Validators: []validator.String{
+					stringvalidator.OneOf(r.getDraftStatusTypes()...),
+				},
 			},
 		},
 		Blocks: map[string]schema.Block{
@@ -909,6 +920,7 @@ func (r *monitorResource) buildMonitorStruct(ctx context.Context, state *monitor
 	query := strings.TrimSpace(state.Query.ValueString())
 
 	monitorType := datadogV1.MonitorType(state.Type.ValueString())
+
 	m := datadogV1.NewMonitor(query, monitorType)
 	m.SetName(state.Name.ValueString())
 	m.SetMessage(message)
@@ -918,6 +930,11 @@ func (r *monitorResource) buildMonitorStruct(ctx context.Context, state *monitor
 	u.SetQuery(query)
 	u.SetName(state.Name.ValueString())
 	u.SetMessage(message)
+
+	if state.DraftStatus.ValueString() != "" {
+		m.SetDraftStatus(datadogV1.MonitorDraftStatus(state.DraftStatus.ValueString()))
+		u.SetDraftStatus(datadogV1.MonitorDraftStatus(state.DraftStatus.ValueString()))
+	}
 
 	if v := r.parseInt(state.Priority); v != nil {
 		m.SetPriority(*v)
@@ -1169,6 +1186,10 @@ func (r *monitorResource) updateState(ctx context.Context, state *monitorResourc
 		}
 	}
 
+	if draftStatus, ok := m.GetDraftStatusOk(); ok && draftStatus != nil {
+		state.DraftStatus = types.StringValue(string(*draftStatus))
+	}
+
 	if priority, ok := m.GetPriorityOk(); ok && priority != nil {
 		state.Priority = types.StringValue(strconv.FormatInt(*priority, 10))
 	}
@@ -1357,6 +1378,10 @@ func (r *monitorResource) getMonitorId(state *monitorResourceModel) (*int64, dia
 
 func (r *monitorResource) getAllowTypes() []string {
 	return enumStrings((*datadogV1.MonitorType)(nil).GetAllowedValues())
+}
+
+func (r *monitorResource) getDraftStatusTypes() []string {
+	return enumStrings((*datadogV1.MonitorDraftStatus)(nil).GetAllowedValues())
 }
 
 func (r *monitorResource) getAllowRenotifyStatus() []string {
