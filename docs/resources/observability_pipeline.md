@@ -104,6 +104,7 @@ Optional:
 - `destinations` (Block, Optional) List of destinations. (see [below for nested schema](#nestedblock--config--destinations))
 - `processors` (Block, Optional) List of processors. (see [below for nested schema](#nestedblock--config--processors))
 - `sources` (Block, Optional) List of sources. (see [below for nested schema](#nestedblock--config--sources))
+- `use_legacy_search_syntax` (Boolean) Use this field to configure the pipeline's filter queries to use the deprecated search syntax.
 
 <a id="nestedblock--config--destinations"></a>
 ### Nested Schema for `config.destinations`
