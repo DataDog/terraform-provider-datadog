@@ -172,6 +172,8 @@ func (r *integrationGcpResource) ImportState(ctx context.Context, request resour
 func (r *integrationGcpResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
 	var state integrationGcpModel
 	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
+	emptyFilters := extractEmptyMRCs(ctx, response.Diagnostics, tfCollectionToSlice[*MonitoredResourceConfigModel](ctx, response.Diagnostics, state.MonitoredResourceConfigs))
+
 	if response.Diagnostics.HasError() {
 		return
 	}
@@ -188,7 +190,7 @@ func (r *integrationGcpResource) Read(ctx context.Context, request resource.Read
 	}
 
 	// Save data into Terraform state
-	r.updateState(ctx, &state, integration)
+	r.updateState(ctx, &state, integration, emptyFilters)
 
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
@@ -196,6 +198,12 @@ func (r *integrationGcpResource) Read(ctx context.Context, request resource.Read
 func (r *integrationGcpResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
 	var state integrationGcpModel
 	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	var userCfg integrationGcpModel
+	response.Diagnostics.Append(request.Config.Get(ctx, &userCfg)...)
 	if response.Diagnostics.HasError() {
 		return
 	}
@@ -228,8 +236,12 @@ func (r *integrationGcpResource) Create(ctx context.Context, request resource.Cr
 		return
 	}
 
+	emptyFilters := extractEmptyMRCs(ctx, response.Diagnostics, tfCollectionToSlice[*MonitoredResourceConfigModel](ctx, response.Diagnostics, userCfg.MonitoredResourceConfigs))
 	// Save data into Terraform state
-	r.updateState(ctx, &state, integration)
+	r.updateState(ctx, &state, integration, emptyFilters)
+	if response.Diagnostics.HasError() {
+		return
+	}
 
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
@@ -237,6 +249,13 @@ func (r *integrationGcpResource) Create(ctx context.Context, request resource.Cr
 func (r *integrationGcpResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
 	var state integrationGcpModel
 	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	var userCfg integrationGcpModel
+	response.Diagnostics.Append(request.Config.Get(ctx, &userCfg)...)
+
 	if response.Diagnostics.HasError() {
 		return
 	}
@@ -268,7 +287,12 @@ func (r *integrationGcpResource) Update(ctx context.Context, request resource.Up
 	}
 
 	// Save data into Terraform state
-	r.updateState(ctx, &state, integration)
+	emptyFilters := extractEmptyMRCs(ctx, response.Diagnostics, tfCollectionToSlice[*MonitoredResourceConfigModel](ctx, response.Diagnostics, userCfg.MonitoredResourceConfigs))
+	r.updateState(ctx, &state, integration, emptyFilters)
+
+	if response.Diagnostics.HasError() {
+		return
+	}
 
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
@@ -298,7 +322,7 @@ func (r *integrationGcpResource) Delete(ctx context.Context, request resource.De
 	}
 }
 
-func (r *integrationGcpResource) updateState(ctx context.Context, state *integrationGcpModel, resp *datadogV1.GCPAccount) {
+func (r *integrationGcpResource) updateState(ctx context.Context, state *integrationGcpModel, resp *datadogV1.GCPAccount, emptyFilters []*MonitoredResourceConfigModel) {
 	projectId := types.StringValue(resp.GetProjectId())
 	// ProjectID and ClientEmail are the only parameters required in all mutating API requests
 	state.ID = projectId
@@ -332,6 +356,10 @@ func (r *integrationGcpResource) updateState(ctx context.Context, state *integra
 		mdl.Filters, _ = types.SetValueFrom(ctx, types.StringType, mrc.GetFilters())
 		mrcs = append(mrcs, &mdl)
 	}
+	// https://datadoghq.atlassian.net/browse/GCP-2978 - Currently the API explicitly filters out empty filters, so plan != state
+	// Ideally we want to error for empty filters, but until next version update we resolve this by gracefully handling the issue:
+	// we will re-inject empty filters from the user input
+	mrcs = append(mrcs, emptyFilters...)
 	state.MonitoredResourceConfigs, _ = types.SetValueFrom(ctx, MonitoredResourceConfigSpec, mrcs)
 }
 
