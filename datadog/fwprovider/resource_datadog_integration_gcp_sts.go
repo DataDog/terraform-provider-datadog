@@ -181,6 +181,13 @@ func (r *integrationGcpStsResource) Read(ctx context.Context, request resource.R
 	if response.Diagnostics.HasError() {
 		return
 	}
+
+	empties, d := extractEmptyMRCs(ctx, state.MonitoredResourceConfigs)
+	response.Diagnostics.Append(d...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
 	resp, httpResp, err := r.Api.ListGCPSTSAccounts(r.Auth)
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == 404 {
@@ -200,6 +207,14 @@ func (r *integrationGcpStsResource) Read(ctx context.Context, request resource.R
 		if account.GetId() == state.ID.ValueString() {
 			found = true
 			r.updateState(ctx, &state, &account)
+			// Re-inject empty filters into state to preserve user config
+			merged, d2 := mergeMRCs(ctx, state.MonitoredResourceConfigs, empties)
+			response.Diagnostics.Append(d2...)
+			if response.Diagnostics.HasError() {
+				return
+			}
+			state.MonitoredResourceConfigs = merged
+
 			break
 		}
 	}
@@ -209,13 +224,18 @@ func (r *integrationGcpStsResource) Read(ctx context.Context, request resource.R
 		return
 	}
 
-	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
 func (r *integrationGcpStsResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
 	var state integrationGcpStsModel
 	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	var userCfg integrationGcpStsModel
+	response.Diagnostics.Append(request.Config.Get(ctx, &userCfg)...)
 	if response.Diagnostics.HasError() {
 		return
 	}
@@ -260,13 +280,34 @@ func (r *integrationGcpStsResource) Create(ctx context.Context, request resource
 	}
 	r.updateState(ctx, &state, resp.Data)
 
+	// The API explicitly filters out empty filters, so plan != state
+	// To resolve this we will re-inject empty filters from the user input
+	empties, d1 := extractEmptyMRCs(ctx, userCfg.MonitoredResourceConfigs)
+	response.Diagnostics.Append(d1...)
+	merged, d2 := mergeMRCs(ctx, state.MonitoredResourceConfigs, empties)
+	response.Diagnostics.Append(d2...)
+	state.MonitoredResourceConfigs = merged
+
 	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+
 }
 
 func (r *integrationGcpStsResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
 	var state integrationGcpStsModel
 	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	var userCfg integrationGcpStsModel
+	response.Diagnostics.Append(request.Config.Get(ctx, &userCfg)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	empties, d := extractEmptyMRCs(ctx, userCfg.MonitoredResourceConfigs)
+	response.Diagnostics.Append(d...)
 	if response.Diagnostics.HasError() {
 		return
 	}
@@ -297,7 +338,15 @@ func (r *integrationGcpStsResource) Update(ctx context.Context, request resource
 	}
 	r.updateState(ctx, &state, resp.Data)
 
-	// Save data into Terraform state
+	// Re-inject empty filters from the user config back into state so state matches config
+	merged, d2 := mergeMRCs(ctx, state.MonitoredResourceConfigs, empties)
+	response.Diagnostics.Append(d2...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+	state.MonitoredResourceConfigs = merged
+
+	// 6) Save state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
@@ -421,6 +470,60 @@ func (r *integrationGcpStsResource) buildIntegrationGcpStsRequestBody(ctx contex
 	attributes.SetMonitoredResourceConfigs(mrcs)
 
 	return attributes, diags
+}
+
+func extractEmptyMRCs(ctx context.Context, set types.Set) ([]MonitoredResourceConfigModel, diag.Diagnostics) {
+	diags := diag.Diagnostics{}
+	out := []MonitoredResourceConfigModel{}
+	if set.IsNull() || set.IsUnknown() {
+		return out, diags
+	}
+
+	var items []MonitoredResourceConfigModel
+	diags.Append(set.ElementsAs(ctx, &items, false)...)
+	if diags.HasError() {
+		return out, diags
+	}
+
+	for _, item := range items {
+		if item.Type.IsNull() || item.Type.IsUnknown() || item.Filters.IsNull() || item.Filters.IsUnknown() {
+			continue
+		}
+		var fs []string
+		diags.Append(item.Filters.ElementsAs(ctx, &fs, false)...)
+		if diags.HasError() {
+			return out, diags
+		}
+		if len(fs) == 0 {
+			emptyFilters, _ := types.SetValueFrom(ctx, types.StringType, []string{})
+			out = append(out, MonitoredResourceConfigModel{
+				Type:    types.StringValue(item.Type.ValueString()),
+				Filters: emptyFilters,
+			})
+		}
+	}
+	return out, diags
+}
+
+func mergeMRCs(ctx context.Context, base types.Set, toAdd []MonitoredResourceConfigModel) (types.Set, diag.Diagnostics) {
+	diags := diag.Diagnostics{}
+
+	var baseItems []MonitoredResourceConfigModel
+	if !base.IsNull() && !base.IsUnknown() {
+		diags.Append(base.ElementsAs(ctx, &baseItems, false)...)
+		if diags.HasError() {
+			return base, diags
+		}
+	}
+
+	baseItems = append(baseItems, toAdd...)
+
+	newSet, d := types.SetValueFrom(ctx, MonitoredResourceConfigSpec, baseItems)
+	diags.Append(d...)
+	if diags.HasError() {
+		return base, diags
+	}
+	return newSet, diags
 }
 
 func tfCollectionToSlice[T any](ctx context.Context, diags diag.Diagnostics, col tfCollection) []T {

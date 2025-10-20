@@ -43,9 +43,9 @@ func TestAccIntegrationGcpStsWithEmptyFilter(t *testing.T) {
 					  ]
 					  monitored_resource_configs = [
 						{
-						  type    = "cloud_function"
+						  type    = "cloud_function",
 						  filters = []
-						},
+						}
 					  ]
 					}`, uniq),
 				Check: resource.ComposeTestCheckFunc(testAccCheckDatadogIntegrationGcpStsExists(providers.frameworkProvider)),
