@@ -207,9 +207,6 @@ func (r *integrationGcpStsResource) Read(ctx context.Context, request resource.R
 		if account.GetId() == state.ID.ValueString() {
 			found = true
 			r.updateState(ctx, &state, &account, emptyFilters)
-			if response.Diagnostics.HasError() {
-				return
-			}
 			break
 		}
 	}
@@ -295,9 +292,6 @@ func (r *integrationGcpStsResource) Update(ctx context.Context, request resource
 
 	var userCfg integrationGcpStsModel
 	response.Diagnostics.Append(request.Config.Get(ctx, &userCfg)...)
-	if response.Diagnostics.HasError() {
-		return
-	}
 
 	if response.Diagnostics.HasError() {
 		return
