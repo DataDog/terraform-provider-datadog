@@ -182,8 +182,8 @@ func (r *integrationGcpStsResource) Read(ctx context.Context, request resource.R
 		return
 	}
 
-	empties, d := extractEmptyMRCs(ctx, state.MonitoredResourceConfigs)
-	response.Diagnostics.Append(d...)
+	emptyFilters := extractEmptyMRCs(ctx, response.Diagnostics, tfCollectionToSlice[*MonitoredResourceConfigModel](ctx, response.Diagnostics, state.MonitoredResourceConfigs))
+
 	if response.Diagnostics.HasError() {
 		return
 	}
@@ -206,15 +206,10 @@ func (r *integrationGcpStsResource) Read(ctx context.Context, request resource.R
 	for _, account := range resp.GetData() {
 		if account.GetId() == state.ID.ValueString() {
 			found = true
-			r.updateState(ctx, &state, &account)
-			// Re-inject empty filters into state to preserve user config
-			merged, d2 := mergeMRCs(ctx, state.MonitoredResourceConfigs, empties)
-			response.Diagnostics.Append(d2...)
+			r.updateState(ctx, &state, &account, emptyFilters)
 			if response.Diagnostics.HasError() {
 				return
 			}
-			state.MonitoredResourceConfigs = merged
-
 			break
 		}
 	}
@@ -224,6 +219,7 @@ func (r *integrationGcpStsResource) Read(ctx context.Context, request resource.R
 		return
 	}
 
+	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
@@ -278,16 +274,13 @@ func (r *integrationGcpStsResource) Create(ctx context.Context, request resource
 		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
 		return
 	}
-	r.updateState(ctx, &state, resp.Data)
 
-	// The API explicitly filters out empty filters, so plan != state
-	// To resolve this we will re-inject empty filters from the user input
-	empties, d1 := extractEmptyMRCs(ctx, userCfg.MonitoredResourceConfigs)
-	response.Diagnostics.Append(d1...)
-	merged, d2 := mergeMRCs(ctx, state.MonitoredResourceConfigs, empties)
-	response.Diagnostics.Append(d2...)
-	state.MonitoredResourceConfigs = merged
+	emptyFilters := extractEmptyMRCs(ctx, response.Diagnostics, tfCollectionToSlice[*MonitoredResourceConfigModel](ctx, response.Diagnostics, userCfg.MonitoredResourceConfigs))
+	r.updateState(ctx, &state, resp.Data, emptyFilters)
 
+	if response.Diagnostics.HasError() {
+		return
+	}
 	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 
@@ -306,8 +299,6 @@ func (r *integrationGcpStsResource) Update(ctx context.Context, request resource
 		return
 	}
 
-	empties, d := extractEmptyMRCs(ctx, userCfg.MonitoredResourceConfigs)
-	response.Diagnostics.Append(d...)
 	if response.Diagnostics.HasError() {
 		return
 	}
@@ -336,17 +327,14 @@ func (r *integrationGcpStsResource) Update(ctx context.Context, request resource
 		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
 		return
 	}
-	r.updateState(ctx, &state, resp.Data)
+	emptyFilters := extractEmptyMRCs(ctx, response.Diagnostics, tfCollectionToSlice[*MonitoredResourceConfigModel](ctx, response.Diagnostics, userCfg.MonitoredResourceConfigs))
+	r.updateState(ctx, &state, resp.Data, emptyFilters)
 
-	// Re-inject empty filters from the user config back into state so state matches config
-	merged, d2 := mergeMRCs(ctx, state.MonitoredResourceConfigs, empties)
-	response.Diagnostics.Append(d2...)
 	if response.Diagnostics.HasError() {
 		return
 	}
-	state.MonitoredResourceConfigs = merged
 
-	// 6) Save state
+	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
@@ -372,7 +360,7 @@ func (r *integrationGcpStsResource) Delete(ctx context.Context, request resource
 	}
 }
 
-func (r *integrationGcpStsResource) updateState(ctx context.Context, state *integrationGcpStsModel, resp *datadogV2.GCPSTSServiceAccount) {
+func (r *integrationGcpStsResource) updateState(ctx context.Context, state *integrationGcpStsModel, resp *datadogV2.GCPSTSServiceAccount, emptyFilters []*MonitoredResourceConfigModel) {
 	state.ID = types.StringValue(resp.GetId())
 
 	attributes := resp.GetAttributes()
@@ -421,6 +409,11 @@ func (r *integrationGcpStsResource) updateState(ctx context.Context, state *inte
 		mdl.Filters, _ = types.SetValueFrom(ctx, types.StringType, mrc.GetFilters())
 		mrcs = append(mrcs, &mdl)
 	}
+
+	// https://datadoghq.atlassian.net/browse/GCP-2978 - Currently the API explicitly filters out empty filters, so plan != state
+	// Ideally we want to error for empty filters, but until next version update we resolve this by gracefully handling the issue:
+	// we will re-inject empty filters from the user input
+	mrcs = append(mrcs, emptyFilters...)
 	state.MonitoredResourceConfigs, _ = types.SetValueFrom(ctx, MonitoredResourceConfigSpec, mrcs)
 }
 
@@ -472,58 +465,20 @@ func (r *integrationGcpStsResource) buildIntegrationGcpStsRequestBody(ctx contex
 	return attributes, diags
 }
 
-func extractEmptyMRCs(ctx context.Context, set types.Set) ([]MonitoredResourceConfigModel, diag.Diagnostics) {
-	diags := diag.Diagnostics{}
-	out := []MonitoredResourceConfigModel{}
-	if set.IsNull() || set.IsUnknown() {
-		return out, diags
+func extractEmptyMRCs(ctx context.Context, diags diag.Diagnostics, mrcs []*MonitoredResourceConfigModel) []*MonitoredResourceConfigModel {
+	var emptyMRCs []*MonitoredResourceConfigModel
+	if len(mrcs) == 0 {
+		return mrcs
 	}
 
-	var items []MonitoredResourceConfigModel
-	diags.Append(set.ElementsAs(ctx, &items, false)...)
-	if diags.HasError() {
-		return out, diags
-	}
-
-	for _, item := range items {
-		if item.Type.IsNull() || item.Type.IsUnknown() || item.Filters.IsNull() || item.Filters.IsUnknown() {
-			continue
-		}
-		var fs []string
-		diags.Append(item.Filters.ElementsAs(ctx, &fs, false)...)
-		if diags.HasError() {
-			return out, diags
-		}
-		if len(fs) == 0 {
-			emptyFilters, _ := types.SetValueFrom(ctx, types.StringType, []string{})
-			out = append(out, MonitoredResourceConfigModel{
-				Type:    types.StringValue(item.Type.ValueString()),
-				Filters: emptyFilters,
-			})
+	for _, item := range mrcs {
+		var filters []string
+		diags.Append(item.Filters.ElementsAs(ctx, &filters, false)...)
+		if len(filters) == 0 {
+			emptyMRCs = append(emptyMRCs, item)
 		}
 	}
-	return out, diags
-}
-
-func mergeMRCs(ctx context.Context, base types.Set, toAdd []MonitoredResourceConfigModel) (types.Set, diag.Diagnostics) {
-	diags := diag.Diagnostics{}
-
-	var baseItems []MonitoredResourceConfigModel
-	if !base.IsNull() && !base.IsUnknown() {
-		diags.Append(base.ElementsAs(ctx, &baseItems, false)...)
-		if diags.HasError() {
-			return base, diags
-		}
-	}
-
-	baseItems = append(baseItems, toAdd...)
-
-	newSet, d := types.SetValueFrom(ctx, MonitoredResourceConfigSpec, baseItems)
-	diags.Append(d...)
-	if diags.HasError() {
-		return base, diags
-	}
-	return newSet, diags
+	return emptyMRCs
 }
 
 func tfCollectionToSlice[T any](ctx context.Context, diags diag.Diagnostics, col tfCollection) []T {
