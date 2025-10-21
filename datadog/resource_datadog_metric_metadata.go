@@ -48,7 +48,7 @@ func resourceDatadogMetricMetadata() *schema.Resource {
 					Optional:    true,
 				},
 				"unit": {
-					Description: "Primary unit of the metric such as `byte` or `operation`.",
+					Description: "Primary unit of the metric such as `byte` or `operation`. For a list of allowed units, refer to [Datadog metric unit documentation](https://docs.datadoghq.com/metrics/units/#unit-list).",
 					Type:        schema.TypeString,
 					Optional:    true,
 				},
