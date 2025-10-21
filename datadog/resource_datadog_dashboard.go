@@ -11087,6 +11087,15 @@ func buildNumberFormatFormulaSchema(terraformStyle map[string]interface{}) *data
 			}
 		}
 	}
+	if v, ok := terraformStyle["unit_scale"].([]interface{}); ok && len(v) > 0 {
+		unitScale := v[0].(map[string]interface{})
+		if unitName, ok := unitScale["unit_name"].(string); ok && len(unitName) > 0 {
+			datadogNumber.UnitScale = *datadogV1.NewNullableNumberFormatUnitScale(&datadogV1.NumberFormatUnitScale{
+				Type:     datadogV1.NUMBERFORMATUNITSCALETYPE_CANONICAL_UNIT.Ptr(),
+				UnitName: datadog.PtrString(unitName),
+			})
+		}
+	}
 	return &datadogNumber
 }
 
