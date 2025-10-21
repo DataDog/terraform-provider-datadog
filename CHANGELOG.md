@@ -1,3 +1,21 @@
+## 3.77.0 (October 21, 2025)
+
+### BUGFIXES
+* [datadog_synthetics_test] Allow deletion of Synthetics test steps by @ALenfant in https://github.com/DataDog/terraform-provider-datadog/pull/3284
+* [datadog_custom_allocation_rule] update terraform go api-client by @congx4 in https://github.com/DataDog/terraform-provider-datadog/pull/3283
+* [datadog_aws_cur_config][datadog_custom_allocation_rule] Minor fixes to Cloud Cost resources to prevent apply needed after imports by @alextmeyer in https://github.com/DataDog/terraform-provider-datadog/pull/3287
+### FEATURES
+* [datadog_synthetics_test] Support the `blockedRequestPatterns` option for browser tests by @SKYWy in https://github.com/DataDog/terraform-provider-datadog/pull/3257
+* [datadog_monitor] Update Monitors terraform to support draft monitors by @kevinpombo-datadog in https://github.com/DataDog/terraform-provider-datadog/pull/3275
+* [scripts] Create helper script to automatically find and import any existing Datadog Cloud Cost resources into terraform by @alextmeyer in https://github.com/DataDog/terraform-provider-datadog/pull/3278
+
+## New Contributors
+* @ALenfant made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3284
+* @SKYWy made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3257
+* @kevinpombo-datadog made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3275
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.76.0...v3.77.0
+
 ## 3.76.0 (October 15, 2025)
 
 ### BUGFIXES
