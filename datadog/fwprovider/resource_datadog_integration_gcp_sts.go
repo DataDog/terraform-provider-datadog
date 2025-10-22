@@ -382,20 +382,6 @@ func (r *integrationGcpStsResource) updateState(ctx context.Context, state *inte
 	state.MonitoredResourceConfigs, _ = types.SetValueFrom(ctx, MonitoredResourceConfigSpec, mrcs)
 }
 
-func mncsContainsOnlyPrometheus(ctx context.Context, s types.Set, diags diag.Diagnostics) bool {
-	if s.IsNull() || s.IsUnknown() {
-		return false
-	}
-	var items []MetricNamespaceConfigModel
-	diags.Append(s.ElementsAs(ctx, &items, false)...)
-	if diags.HasError() || len(items) != 1 {
-		return false
-	}
-
-	return items[0].ID.ValueString() == "prometheus" &&
-		items[0].Disabled.ValueBool()
-}
-
 func (r *integrationGcpStsResource) buildIntegrationGcpStsRequestBody(ctx context.Context, state *integrationGcpStsModel, forUpdate bool) (datadogV2.GCPSTSServiceAccountAttributes, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
 	attributes := datadogV2.GCPSTSServiceAccountAttributes{}
@@ -449,6 +435,20 @@ func (r *integrationGcpStsResource) buildIntegrationGcpStsRequestBody(ctx contex
 	attributes.SetMonitoredResourceConfigs(mrcs)
 
 	return attributes, diags
+}
+
+func mncsContainsOnlyPrometheus(ctx context.Context, s types.Set, diags diag.Diagnostics) bool {
+	if s.IsNull() || s.IsUnknown() {
+		return false
+	}
+	var items []MetricNamespaceConfigModel
+	diags.Append(s.ElementsAs(ctx, &items, false)...)
+	if diags.HasError() || len(items) != 1 {
+		return false
+	}
+
+	return items[0].ID.ValueString() == "prometheus" &&
+		items[0].Disabled.ValueBool()
 }
 
 func tfCollectionToSlice[T any](ctx context.Context, diags diag.Diagnostics, col tfCollection) []T {
