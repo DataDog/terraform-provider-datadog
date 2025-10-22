@@ -7628,7 +7628,7 @@ func buildDatadogFormula(data map[string]interface{}) *datadogV1.WidgetFormula {
 		formula.SetStyle(*datadogFormulaStyle)
 	}
 	if number, ok := data["number_format"].([]interface{}); ok && len(number) != 0 {
-		datadogNumberFormat := buildNumberFormatFormulaSchema(number[0].(map[string]interface{}))
+		datadogNumberFormat := buildDatadogNumberFormatFormulaSchema(number[0].(map[string]interface{}))
 		formula.SetNumberFormat(*datadogNumberFormat)
 	}
 
@@ -11057,7 +11057,7 @@ func getNumberFormatFormulaSchema() map[string]*schema.Schema {
 	}
 }
 
-func buildNumberFormatFormulaSchema(terraformStyle map[string]interface{}) *datadogV1.WidgetNumberFormat {
+func buildDatadogNumberFormatFormulaSchema(terraformStyle map[string]interface{}) *datadogV1.WidgetNumberFormat {
 	if terraformStyle == nil || len(terraformStyle) == 0 {
 		return nil
 	}
