@@ -93,19 +93,28 @@ var Resources = []func() resource.Resource{
 	NewSecurityMonitoringRuleJSONResource,
 	NewComplianceCustomFrameworkResource,
 	NewCostBudgetResource,
+	NewTagPipelineRulesetResource,
+	NewTagPipelineRulesetsResource,
 	NewCSMThreatsAgentRuleResource,
 	NewCSMThreatsPolicyResource,
 	NewAppKeyRegistrationResource,
 	NewIncidentTypeResource,
 	NewIncidentNotificationTemplateResource,
 	NewIncidentNotificationRuleResource,
+	NewAwsCurConfigResource,
+	NewGcpUcConfigResource,
+	NewDatadogCustomAllocationRuleResource,
+	NewCustomAllocationRulesResource,
+	NewAzureUcConfigResource,
 }
 
 var Datasources = []func() datasource.DataSource{
 	NewAPIKeyDataSource,
 	NewApplicationKeyDataSource,
 	NewAwsAvailableNamespacesDataSource,
+	NewAwsIntegrationExternalIDDataSource,
 	NewAwsIntegrationIAMPermissionsDataSource,
+	NewAwsIntegrationIAMPermissionsStandardDataSource,
 	NewAwsLogsServicesDataSource,
 	NewDatadogApmRetentionFiltersOrderDataSource,
 	NewDatadogDashboardListDataSource,
@@ -134,11 +143,16 @@ var Datasources = []func() datasource.DataSource{
 	NewWorkflowAutomationDataSource,
 	NewDatadogAppBuilderAppDataSource,
 	NewCostBudgetDataSource,
+	NewTagPipelineRulesetDataSource,
 	NewCSMThreatsAgentRulesDataSource,
 	NewCSMThreatsPoliciesDataSource,
 	NewIncidentTypeDataSource,
 	NewIncidentNotificationTemplateDataSource,
 	NewIncidentNotificationRuleDataSource,
+	NewDatadogAwsCurConfigDataSource,
+	NewDatadogGcpUcConfigDataSource,
+	NewDatadogCustomAllocationRuleDataSource,
+	NewDatadogAzureUcConfigDataSource,
 }
 
 // FrameworkProvider struct
@@ -597,6 +611,12 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteIncidentNotificationRule", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.ListIncidentNotificationRules", true)
 
+	// Enable AWS CUR Config
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateCostAWSCURConfig", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.ListCostAWSCURConfigs", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateCostAWSCURConfig", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteCostAWSCURConfig", true)
+
 	if !config.ApiUrl.IsNull() && config.ApiUrl.ValueString() != "" {
 		parsedAPIURL, parseErr := url.Parse(config.ApiUrl.ValueString())
 		if parseErr != nil {
@@ -869,6 +889,7 @@ func (r *FrameworkDatasourceWrapper) Metadata(ctx context.Context, req datasourc
 
 func (r *FrameworkDatasourceWrapper) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	(*r.innerDatasource).Schema(ctx, req, resp)
+	fwutils.EnrichFrameworkDatasourceSchema(&resp.Schema)
 }
 
 func (r *FrameworkDatasourceWrapper) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {

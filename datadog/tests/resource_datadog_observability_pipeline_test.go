@@ -795,7 +795,7 @@ resource "datadog_observability_pipeline" "sample" {
         include = "*"
         inputs  = ["sample-1"]
         percentage    = 4.99
-      }	
+      }
     }
 
     destinations {
@@ -3520,6 +3520,62 @@ resource "datadog_observability_pipeline" "crowdstrike_next_gen_siem_dest_basic"
 					resource.TestCheckResourceAttr(resourceName, "config.destinations.crowdstrike_next_gen_siem.0.id", "crowdstrike-dest-basic-1"),
 					resource.TestCheckResourceAttr(resourceName, "config.destinations.crowdstrike_next_gen_siem.0.inputs.0", "source-1"),
 					resource.TestCheckResourceAttr(resourceName, "config.destinations.crowdstrike_next_gen_siem.0.encoding", "raw_message"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogObservabilityPipeline_googlePubSubDestination(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	resourceName := "datadog_observability_pipeline.pubsub_dest"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "pubsub_dest" {
+  name = "pubsub-destination-pipeline"
+
+  config {
+    sources {
+      datadog_agent {
+        id = "source-1"
+      }
+    }
+
+    processors {}
+
+    destinations {
+      google_pubsub {
+        id            = "pubsub-destination-1"
+        project       = "my-gcp-project"
+        topic         = "logs-topic"
+        encoding      = "json"
+        inputs        = ["source-1"]
+
+        auth {
+          credentials_file = "/var/secrets/gcp-creds.json"
+        }
+
+
+        tls {
+          crt_file = "/certs/pubsub.crt"
+        }
+      }
+    }
+  }
+}
+`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.google_pubsub.0.project", "my-gcp-project"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.google_pubsub.0.topic", "logs-topic"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.google_pubsub.0.encoding", "json"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.google_pubsub.0.auth.credentials_file", "/var/secrets/gcp-creds.json"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.google_pubsub.0.tls.crt_file", "/certs/pubsub.crt"),
 				),
 			},
 		},

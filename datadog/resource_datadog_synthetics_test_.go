@@ -836,12 +836,14 @@ func syntheticsTestOptionsList() *schema.Schema {
 								Type:        schema.TypeString,
 								Description: "RUM application ID used to collect RUM data for the browser test.",
 								Optional:    true,
+								Computed:    true,
 							},
 							"client_token_id": {
 								Type:        schema.TypeInt,
 								Description: "RUM application API key ID used to collect RUM data for the browser test.",
 								Sensitive:   true,
 								Optional:    true,
+								Computed:    true,
 							},
 						},
 					},
@@ -866,6 +868,14 @@ func syntheticsTestOptionsList() *schema.Schema {
 					Description: "Timeout before declaring the initial step as failed (in seconds) for browser tests.",
 					Type:        schema.TypeInt,
 					Optional:    true,
+				},
+				"blocked_request_patterns": {
+					Description: "Blocked URL patterns. Requests made to URLs matching any of the patterns listed here will be blocked.",
+					Type:        schema.TypeList,
+					Optional:    true,
+					Elem: &schema.Schema{
+						Type: schema.TypeString,
+					},
 				},
 				"http_version": syntheticsHttpVersionOption(),
 			},
@@ -1870,6 +1880,16 @@ func syntheticsHttpVersionOption() *schema.Schema {
  */
 
 func resourceDatadogSyntheticsTestCustomizeDiff(ctx context.Context, diff *schema.ResourceDiff, meta interface{}) error {
+	// validate locations are not empty for API and browser tests
+	type_, typeOk := diff.GetOk("type")
+	if typeOk && (type_.(string) == string(datadogV1.SYNTHETICSTESTDETAILSTYPE_API) || type_.(string) == string(datadogV1.SYNTHETICSTESTDETAILSTYPE_BROWSER)) {
+		if locations := diff.Get("locations"); locations != nil {
+			if locations.(*schema.Set).Len() == 0 {
+				return fmt.Errorf("locations must not be empty for synthetics API and browser tests")
+			}
+		}
+	}
+
 	// Validate gRPC message requirements during planning
 	subtype, subtypeOk := diff.GetOk("subtype")
 	if !subtypeOk || subtype.(string) != "grpc" {
@@ -3242,9 +3262,8 @@ func buildDatadogSyntheticsBrowserTest(d *schema.ResourceData) (*datadogV1.Synth
 	}
 	syntheticsTest.SetTags(tags)
 
+	steps := []datadogV1.SyntheticsStep{}
 	if attr, ok := d.GetOk("browser_step"); ok {
-		steps := []datadogV1.SyntheticsStep{}
-
 		for _, s := range attr.([]interface{}) {
 			step := datadogV1.SyntheticsStep{}
 			stepMap := s.(map[string]interface{})
@@ -3264,9 +3283,8 @@ func buildDatadogSyntheticsBrowserTest(d *schema.ResourceData) (*datadogV1.Synth
 			step.SetParams(params)
 			steps = append(steps, step)
 		}
-
-		syntheticsTest.SetSteps(steps)
 	}
+	syntheticsTest.SetSteps(steps)
 
 	return syntheticsTest, diags
 }
@@ -3311,9 +3329,8 @@ func buildDatadogSyntheticsMobileTest(d *schema.ResourceData) *datadogV1.Synthet
 	options := buildDatadogMobileTestOptions(d)
 	syntheticsTest.SetOptions(*options)
 
+	steps := []datadogV1.SyntheticsMobileStep{}
 	if attr, ok := d.GetOk("mobile_step"); ok {
-		steps := []datadogV1.SyntheticsMobileStep{}
-
 		for _, s := range attr.([]interface{}) {
 			step := datadogV1.SyntheticsMobileStep{}
 			stepMap := s.(map[string]interface{})
@@ -3342,9 +3359,8 @@ func buildDatadogSyntheticsMobileTest(d *schema.ResourceData) *datadogV1.Synthet
 			step.SetParams(params)
 			steps = append(steps, step)
 		}
-
-		syntheticsTest.SetSteps(steps)
 	}
+	syntheticsTest.SetSteps(steps)
 
 	if attr, ok := d.GetOk("tags"); ok {
 		tags := make([]string, 0)
@@ -4330,6 +4346,14 @@ func buildDatadogTestOptions(d *schema.ResourceData) *datadogV1.SyntheticsTestOp
 			options.SetInitialNavigationTimeout(int64(initialNavigationTimeout.(int)))
 		}
 
+		if blockedRequestPatterns, ok := d.GetOk("options_list.0.blocked_request_patterns"); ok {
+			var blockedRequests []string
+			for _, s := range blockedRequestPatterns.([]interface{}) {
+				blockedRequests = append(blockedRequests, s.(string))
+			}
+			options.SetBlockedRequestPatterns(blockedRequests)
+		}
+
 		if attr, ok := d.GetOk("device_ids"); ok {
 			var deviceIds []string
 			for _, s := range attr.([]interface{}) {
@@ -4472,6 +4496,9 @@ func buildTerraformTestOptions(actualOptions datadogV1.SyntheticsTestOptions) []
 	}
 	if actualOptions.HasInitialNavigationTimeout() {
 		localOptionsList["initial_navigation_timeout"] = actualOptions.GetInitialNavigationTimeout()
+	}
+	if actualOptions.HasBlockedRequestPatterns() {
+		localOptionsList["blocked_request_patterns"] = actualOptions.GetBlockedRequestPatterns()
 	}
 
 	localOptionsLists := make([]map[string]interface{}, 1)

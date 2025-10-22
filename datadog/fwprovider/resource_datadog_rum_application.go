@@ -9,6 +9,8 @@ import (
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int32planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -33,6 +35,7 @@ type rumApplicationModel struct {
 	ClientToken                    types.String `tfsdk:"client_token"`
 	RumEventProcessingState        types.String `tfsdk:"rum_event_processing_state"`
 	ProductAnalyticsRetentionState types.String `tfsdk:"product_analytics_retention_state"`
+	ApiKeyID                       types.Int32  `tfsdk:"api_key_id"`
 }
 
 func NewRumApplicationResource() resource.Resource {
@@ -84,6 +87,13 @@ func (r *rumApplicationResource) Schema(_ context.Context, _ resource.SchemaRequ
 				},
 			},
 			"id": utils.ResourceIDAttribute(),
+			"api_key_id": schema.Int32Attribute{
+				Computed:    true,
+				Description: "ID of the API key associated with the application.",
+				PlanModifiers: []planmodifier.Int32{
+					int32planmodifier.UseStateForUnknown(),
+				},
+			},
 		},
 	}
 }
@@ -205,6 +215,10 @@ func (r *rumApplicationResource) updateState(ctx context.Context, state *rumAppl
 
 	if clientToken, ok := attributes.GetClientTokenOk(); ok {
 		state.ClientToken = types.StringValue(*clientToken)
+	}
+
+	if apiKeyID, ok := attributes.GetApiKeyIdOk(); ok {
+		state.ApiKeyID = types.Int32Value(*apiKeyID)
 	}
 
 	if name, ok := attributes.GetNameOk(); ok {
