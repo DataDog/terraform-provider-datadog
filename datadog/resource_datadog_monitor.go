@@ -33,7 +33,7 @@ func resourceDatadogMonitor() *schema.Resource {
 		ReadContext:   resourceDatadogMonitorRead,
 		UpdateContext: resourceDatadogMonitorUpdate,
 		DeleteContext: resourceDatadogMonitorDelete,
-		CustomizeDiff: customdiff.All(resourceDatadogMonitorCustomizeDiff, tagDiff),
+		CustomizeDiff: customdiff.All(tagDiff, resourceDatadogMonitorCustomizeDiff),
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
