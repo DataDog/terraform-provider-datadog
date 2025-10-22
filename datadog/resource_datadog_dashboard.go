@@ -7628,7 +7628,7 @@ func buildDatadogFormula(data map[string]interface{}) *datadogV1.WidgetFormula {
 		formula.SetStyle(*datadogFormulaStyle)
 	}
 	if number, ok := data["number_format"].([]interface{}); ok && len(number) != 0 {
-		datadogNumberFormat := buildNumberFormatFormulaSchema(number[0].(map[string]interface{}))
+		datadogNumberFormat := buildDatadogNumberFormatFormulaSchema(number[0].(map[string]interface{}))
 		formula.SetNumberFormat(*datadogNumberFormat)
 	}
 
@@ -11057,7 +11057,7 @@ func getNumberFormatFormulaSchema() map[string]*schema.Schema {
 	}
 }
 
-func buildNumberFormatFormulaSchema(terraformStyle map[string]interface{}) *datadogV1.WidgetNumberFormat {
+func buildDatadogNumberFormatFormulaSchema(terraformStyle map[string]interface{}) *datadogV1.WidgetNumberFormat {
 	if terraformStyle == nil || len(terraformStyle) == 0 {
 		return nil
 	}
@@ -11087,6 +11087,15 @@ func buildNumberFormatFormulaSchema(terraformStyle map[string]interface{}) *data
 			}
 		}
 	}
+	if v, ok := terraformStyle["unit_scale"].([]interface{}); ok && len(v) > 0 {
+		unitScale := v[0].(map[string]interface{})
+		if unitName, ok := unitScale["unit_name"].(string); ok && len(unitName) > 0 {
+			datadogNumber.UnitScale = *datadogV1.NewNullableNumberFormatUnitScale(&datadogV1.NumberFormatUnitScale{
+				Type:     datadogV1.NUMBERFORMATUNITSCALETYPE_CANONICAL_UNIT.Ptr(),
+				UnitName: datadog.PtrString(unitName),
+			})
+		}
+	}
 	return &datadogNumber
 }
 
@@ -11106,8 +11115,7 @@ func buildTerraformNumberFormatFormulaSchema(datadogStyle datadogV1.WidgetNumber
 		m["unit"] = []map[string]interface{}{unit}
 	}
 	if v, ok := datadogStyle.GetUnitScaleOk(); ok {
-		unitScale := map[string]interface{}{}
-		unitScale["unit_name"] = []map[string]interface{}{{"unit_name": v.UnitName}}
+		unitScale := map[string]interface{}{"unit_name": v.UnitName}
 		m["unit_scale"] = []map[string]interface{}{unitScale}
 	}
 	return []map[string]interface{}{m}
