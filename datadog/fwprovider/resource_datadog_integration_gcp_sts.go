@@ -282,7 +282,7 @@ func (r *integrationGcpStsResource) Update(ctx context.Context, request resource
 	defer integrationGcpStsMutex.Unlock()
 
 	id := state.ID.ValueString()
-	
+
 	attributes, diags := r.buildIntegrationGcpStsRequestBody(ctx, &state, !mncsContainsOnlyPrometheus(ctx, priorState.MetricNamespaceConfigs, response.Diagnostics))
 	body := datadogV2.NewGCPSTSServiceAccountUpdateRequestWithDefaults()
 	body.Data = datadogV2.NewGCPSTSServiceAccountUpdateRequestDataWithDefaults()
@@ -432,6 +432,7 @@ func (r *integrationGcpStsResource) buildIntegrationGcpStsRequestBody(ctx contex
 	// only set this field if:
 	// it's for an Update OR
 	// the user explicitly sets the field
+	// otherwise we want to omit it so that the API server can populate defaults when applicable
 	if forUpdate || !state.MetricNamespaceConfigs.IsUnknown() {
 		attributes.SetMetricNamespaceConfigs(mncs)
 	}
