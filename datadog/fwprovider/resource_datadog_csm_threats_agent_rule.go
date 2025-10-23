@@ -236,7 +236,18 @@ func (r *csmThreatsAgentRuleResource) validateActions(_ context.Context, actions
 			hasExpression := !action.Set.Expression.IsNull() && !action.Set.Expression.IsUnknown() && action.Set.Expression.ValueString() != ""
 			hasDefaultValue := !action.Set.DefaultValue.IsNull() && !action.Set.DefaultValue.IsUnknown() && action.Set.DefaultValue.ValueString() != ""
 
-			if !hasValue && !hasField && !hasExpression {
+			var count int
+			if hasValue {
+				count++
+			}
+			if hasField {
+				count++
+			}
+			if hasExpression {
+				count++
+			}
+
+			if count == 0 {
 				diags.AddError(
 					"Missing Required Field",
 					fmt.Sprintf("Action %d: One of 'value', 'field' or 'expression' must be set in the set action configuration.", i),
@@ -244,7 +255,7 @@ func (r *csmThreatsAgentRuleResource) validateActions(_ context.Context, actions
 				continue
 			}
 
-			if hasValue && hasField && hasExpression {
+			if count > 1 {
 				diags.AddError(
 					"Invalid Configuration",
 					fmt.Sprintf("Action %d: Only one of 'value', 'field' or 'expression' can be set in the set action configuration.", i),
@@ -552,6 +563,18 @@ func (r *csmThreatsAgentRuleResource) buildUpdateCSMThreatsAgentRulePayload(stat
 				if !a.Set.Scope.IsNull() && !a.Set.Scope.IsUnknown() {
 					scope := a.Set.Scope.ValueString()
 					sa.Scope = &scope
+				}
+				if !a.Set.Expression.IsNull() && !a.Set.Expression.IsUnknown() {
+					expression := a.Set.Expression.ValueString()
+					sa.Expression = &expression
+				}
+				if !a.Set.Inherited.IsNull() && !a.Set.Inherited.IsUnknown() {
+					inherited := a.Set.Inherited.ValueBool()
+					sa.Inherited = &inherited
+				}
+				if !a.Set.DefaultValue.IsNull() && !a.Set.DefaultValue.IsUnknown() {
+					defaultValue := a.Set.DefaultValue.ValueString()
+					sa.DefaultValue = &defaultValue
 				}
 				action.Set = &sa
 			}

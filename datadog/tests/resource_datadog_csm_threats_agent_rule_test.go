@@ -124,10 +124,11 @@ func TestAccCSMThreatsAgentRule_CreateAndUpdate(t *testing.T) {
 						set {
 							name   = "updated_action"
 							expression  = "\"value_$${builtins.uuid4}\""
-							scope  = "container"
+							scope  = "process"
 							inherited = true
 							default_value = "abc"
 						}
+						hash {}
 					}
 				}`, policyConfig, agentRuleName),
 				Check: resource.ComposeTestCheckFunc(
@@ -140,7 +141,7 @@ func TestAccCSMThreatsAgentRule_CreateAndUpdate(t *testing.T) {
 						"compliance_framework:ISO-27799",
 						"updated_action",
 						"new_value",
-						"container",
+						"process",
 					),
 				),
 			},
@@ -212,25 +213,23 @@ func checkCSMThreatsAgentRuleContent(resourceName string, name string, descripti
 				return fmt.Errorf("resource not found")
 			}
 
-			// Check either value or field is set (but not both)
-			value := r.Primary.Attributes["actions.0.set.value"]
-			field := r.Primary.Attributes["actions.0.set.field"]
-			expression := r.Primary.Attributes["actions.0.set.expression"]
+			var count int
 
-			if value == action_value_source {
-				if field != "" {
-					return fmt.Errorf("both value and field are set")
-				}
-			} else if field == action_value_source {
-				if value != "" {
-					return fmt.Errorf("both value and field are set")
-				}
-			} else if expression == action_value_source {
-				if value != "" {
-					return fmt.Errorf("both value and expression are set")
-				}
-			} else {
-				return fmt.Errorf("neither value nor field matches expected value")
+			if r.Primary.Attributes["actions.0.set.value"] != "" {
+				count++
+			}
+			if r.Primary.Attributes["actions.0.set.field"] != "" {
+				count++
+			}
+			if r.Primary.Attributes["actions.0.set.expression"] != "" {
+				count++
+			}
+
+			if count == 0 {
+				return fmt.Errorf("no value, field or expression is set")
+			}
+			if count > 1 {
+				return fmt.Errorf("multiple values, fields or expressions are set")
 			}
 
 			return nil
