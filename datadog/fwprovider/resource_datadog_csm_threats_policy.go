@@ -268,8 +268,29 @@ func (r *csmThreatsPolicyResource) updateStateFromResponse(ctx context.Context, 
 	state.Name = types.StringValue(attributes.GetName())
 	state.Description = types.StringValue(attributes.GetDescription())
 	state.Enabled = types.BoolValue(attributes.GetEnabled())
-	state.Tags, _ = types.SetValueFrom(ctx, types.StringType, attributes.GetHostTags())
-	state.HostTagsLists, _ = types.SetValueFrom(ctx, types.ListType{
-		ElemType: types.StringType,
-	}, attributes.GetHostTagsLists())
+
+	// Always set both fields to avoid "unknown" values
+	// Backend converts hostTags to hostTagsLists, but we need to preserve the original format
+	hostTagsLists := attributes.GetHostTagsLists()
+
+	// If user originally configured tags (and hostTagsLists is null in current state)
+	if !state.Tags.IsNull() && state.HostTagsLists.IsNull() {
+		// Keep tags format: convert hostTagsLists back to tags
+		if len(hostTagsLists) > 0 && len(hostTagsLists[0]) > 0 {
+			state.Tags, _ = types.SetValueFrom(ctx, types.StringType, hostTagsLists[0])
+		} else {
+			state.Tags = types.SetNull(types.StringType)
+		}
+		state.HostTagsLists = types.SetNull(types.ListType{ElemType: types.StringType})
+	} else {
+		// User configured host_tags_lists or both are null
+		if len(hostTagsLists) > 0 {
+			state.HostTagsLists, _ = types.SetValueFrom(ctx, types.ListType{
+				ElemType: types.StringType,
+			}, hostTagsLists)
+		} else {
+			state.HostTagsLists = types.SetNull(types.ListType{ElemType: types.StringType})
+		}
+		state.Tags = types.SetNull(types.StringType)
+	}
 }
