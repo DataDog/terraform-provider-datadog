@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"description":"im a policy","enabled":true,"hostTags":["host_name:test_host"],"name":"qvyhcpfmcd"},"type":"policy"}}
+            {"data":{"attributes":{"description":"im a policy","enabled":true,"hostTags":["host_name:test_host"],"name":"ppmppmuvgn"},"type":"policy"}}
         form: {}
         headers:
             Accept:
@@ -28,15 +28,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 395
+        content_length: 391
         uncompressed: false
-        body: '{"data":{"id":"vxk-7ll-zuy","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"im a policy","disabledRulesCount":1,"enabled":true,"hostTags":["host_name:test_host"],"monitoringRulesCount":225,"name":"qvyhcpfmcd","policyVersion":"1","priority":1000000014,"ruleCount":226,"updateDate":1750083374889,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
+        body: '{"data":{"id":"grb-gnt-zge","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"im a policy","disabledRulesCount":1,"enabled":true,"hostTagsLists":[["host_name:test_host"]],"monitoringRulesCount":7,"name":"ppmppmuvgn","pinned":false,"policyVersion":"1","ruleCount":8,"updateDate":1761225194561,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 765.145125ms
+        duration: 671.428792ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -49,7 +49,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"actions":[{"hash":{},"set":{"append":false,"field":"exec.file.path","name":"test_action","scope":"process"}}],"description":"im a rule","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","name":"qvyhcpfmcd","policy_id":"vxk-7ll-zuy","product_tags":["compliance_framework:PCI-DSS"]},"type":"agent_rule"}}
+            {"data":{"attributes":{"actions":[{"hash":{},"set":{"append":false,"field":"exec.file.path","name":"test_action","scope":"process"}}],"description":"im a rule","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","name":"ppmppmuvgn","policy_id":"grb-gnt-zge","product_tags":["compliance_framework:PCI-DSS"]},"type":"agent_rule"}}
         form: {}
         headers:
             Accept:
@@ -64,15 +64,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 617
+        content_length: 635
         uncompressed: false
-        body: '{"data":{"id":"gt8-doz-re8","type":"agent_rule","attributes":{"actions":[{"hash":{},"set":{"name":"test_action","field":"exec.file.path","scope":"process"},"disabled":false}],"category":"File Activity","creationDate":1750083375390,"creator":{"name":"frog","handle":"frog@datadoghq.com"},"defaultRule":false,"description":"im a rule","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"monitoring":["vxk-7ll-zuy"],"name":"qvyhcpfmcd","product_tags":["compliance_framework:PCI-DSS"],"updateDate":1750083375390,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
+        body: '{"data":{"id":"e8s-abs-t69","type":"agent_rule","attributes":{"actions":[{"hash":{},"set":{"name":"test_action","field":"exec.file.path","scope":"process","inherited":false},"disabled":false}],"category":"File Activity","creationDate":1761225194994,"creator":{"name":"frog","handle":"frog@datadoghq.com"},"defaultRule":false,"description":"im a rule","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"monitoring":["grb-gnt-zge"],"name":"ppmppmuvgn","product_tags":["compliance_framework:PCI-DSS"],"updateDate":1761225194994,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 748.405333ms
+        duration: 542.796708ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -89,7 +89,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/agent_rules/gt8-doz-re8?policy_id=vxk-7ll-zuy
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/agent_rules/e8s-abs-t69?policy_id=grb-gnt-zge
         method: GET
       response:
         proto: HTTP/1.1
@@ -97,15 +97,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 617
+        content_length: 635
         uncompressed: false
-        body: '{"data":{"id":"gt8-doz-re8","type":"agent_rule","attributes":{"actions":[{"hash":{},"set":{"name":"test_action","field":"exec.file.path","scope":"process"},"disabled":false}],"category":"File Activity","creationDate":1750083375390,"creator":{"name":"frog","handle":"frog@datadoghq.com"},"defaultRule":false,"description":"im a rule","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"monitoring":["vxk-7ll-zuy"],"name":"qvyhcpfmcd","product_tags":["compliance_framework:PCI-DSS"],"updateDate":1750083375390,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
+        body: '{"data":{"id":"e8s-abs-t69","type":"agent_rule","attributes":{"actions":[{"hash":{},"set":{"name":"test_action","field":"exec.file.path","scope":"process","inherited":false},"disabled":false}],"category":"File Activity","creationDate":1761225194994,"creator":{"name":"frog","handle":"frog@datadoghq.com"},"defaultRule":false,"description":"im a rule","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"monitoring":["grb-gnt-zge"],"name":"ppmppmuvgn","product_tags":["compliance_framework:PCI-DSS"],"updateDate":1761225194994,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 355.674666ms
+        duration: 433.108042ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -122,7 +122,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/vxk-7ll-zuy
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/grb-gnt-zge
         method: GET
       response:
         proto: HTTP/1.1
@@ -132,13 +132,13 @@ interactions:
         trailer: {}
         content_length: 391
         uncompressed: false
-        body: '{"data":{"id":"vxk-7ll-zuy","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"im a policy","disabledRulesCount":0,"enabled":true,"hostTags":["host_name:test_host"],"monitoringRulesCount":1,"name":"qvyhcpfmcd","policyVersion":"2","priority":1000000014,"ruleCount":1,"updateDate":1750083375390,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
+        body: '{"data":{"id":"grb-gnt-zge","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"im a policy","disabledRulesCount":0,"enabled":true,"hostTagsLists":[["host_name:test_host"]],"monitoringRulesCount":1,"name":"ppmppmuvgn","pinned":false,"policyVersion":"2","ruleCount":1,"updateDate":1761225194994,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 231.619917ms
+        duration: 317.960958ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -155,7 +155,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/agent_rules/gt8-doz-re8?policy_id=vxk-7ll-zuy
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/agent_rules/e8s-abs-t69?policy_id=grb-gnt-zge
         method: GET
       response:
         proto: HTTP/1.1
@@ -163,15 +163,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 617
+        content_length: 635
         uncompressed: false
-        body: '{"data":{"id":"gt8-doz-re8","type":"agent_rule","attributes":{"actions":[{"hash":{},"set":{"name":"test_action","field":"exec.file.path","scope":"process"},"disabled":false}],"category":"File Activity","creationDate":1750083375390,"creator":{"name":"frog","handle":"frog@datadoghq.com"},"defaultRule":false,"description":"im a rule","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"monitoring":["vxk-7ll-zuy"],"name":"qvyhcpfmcd","product_tags":["compliance_framework:PCI-DSS"],"updateDate":1750083375390,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
+        body: '{"data":{"id":"e8s-abs-t69","type":"agent_rule","attributes":{"actions":[{"hash":{},"set":{"name":"test_action","field":"exec.file.path","scope":"process","inherited":false},"disabled":false}],"category":"File Activity","creationDate":1761225194994,"creator":{"name":"frog","handle":"frog@datadoghq.com"},"defaultRule":false,"description":"im a rule","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"monitoring":["grb-gnt-zge"],"name":"ppmppmuvgn","product_tags":["compliance_framework:PCI-DSS"],"updateDate":1761225194994,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 265.030584ms
+        duration: 396.592666ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -188,7 +188,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/vxk-7ll-zuy
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/grb-gnt-zge
         method: GET
       response:
         proto: HTTP/1.1
@@ -198,13 +198,13 @@ interactions:
         trailer: {}
         content_length: 391
         uncompressed: false
-        body: '{"data":{"id":"vxk-7ll-zuy","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"im a policy","disabledRulesCount":0,"enabled":true,"hostTags":["host_name:test_host"],"monitoringRulesCount":1,"name":"qvyhcpfmcd","policyVersion":"2","priority":1000000014,"ruleCount":1,"updateDate":1750083375390,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
+        body: '{"data":{"id":"grb-gnt-zge","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"im a policy","disabledRulesCount":0,"enabled":true,"hostTagsLists":[["host_name:test_host"]],"monitoringRulesCount":1,"name":"ppmppmuvgn","pinned":false,"policyVersion":"2","ruleCount":1,"updateDate":1761225194994,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 230.419208ms
+        duration: 346.484584ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -221,7 +221,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/agent_rules?policy_id=vxk-7ll-zuy
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/agent_rules/e8s-abs-t69?policy_id=grb-gnt-zge
         method: GET
       response:
         proto: HTTP/1.1
@@ -229,15 +229,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 619
+        content_length: 635
         uncompressed: false
-        body: '{"data":[{"id":"gt8-doz-re8","type":"agent_rule","attributes":{"actions":[{"hash":{},"set":{"name":"test_action","field":"exec.file.path","scope":"process"},"disabled":false}],"category":"File Activity","creationDate":1750083375390,"creator":{"name":"frog","handle":"frog@datadoghq.com"},"defaultRule":false,"description":"im a rule","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"monitoring":["vxk-7ll-zuy"],"name":"qvyhcpfmcd","product_tags":["compliance_framework:PCI-DSS"],"updateDate":1750083375390,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}]}'
+        body: '{"data":{"id":"e8s-abs-t69","type":"agent_rule","attributes":{"actions":[{"hash":{},"set":{"name":"test_action","field":"exec.file.path","scope":"process","inherited":false},"disabled":false}],"category":"File Activity","creationDate":1761225194994,"creator":{"name":"frog","handle":"frog@datadoghq.com"},"defaultRule":false,"description":"im a rule","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"monitoring":["grb-gnt-zge"],"name":"ppmppmuvgn","product_tags":["compliance_framework:PCI-DSS"],"updateDate":1761225194994,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 181.648333ms
+        duration: 285.289ms
     - id: 7
       request:
         proto: HTTP/1.1
@@ -254,7 +254,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/agent_rules/gt8-doz-re8?policy_id=vxk-7ll-zuy
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/agent_rules?policy_id=grb-gnt-zge
         method: GET
       response:
         proto: HTTP/1.1
@@ -262,15 +262,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 617
+        content_length: 637
         uncompressed: false
-        body: '{"data":{"id":"gt8-doz-re8","type":"agent_rule","attributes":{"actions":[{"hash":{},"set":{"name":"test_action","field":"exec.file.path","scope":"process"},"disabled":false}],"category":"File Activity","creationDate":1750083375390,"creator":{"name":"frog","handle":"frog@datadoghq.com"},"defaultRule":false,"description":"im a rule","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"monitoring":["vxk-7ll-zuy"],"name":"qvyhcpfmcd","product_tags":["compliance_framework:PCI-DSS"],"updateDate":1750083375390,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
+        body: '{"data":[{"id":"e8s-abs-t69","type":"agent_rule","attributes":{"actions":[{"hash":{},"set":{"name":"test_action","field":"exec.file.path","scope":"process","inherited":false},"disabled":false}],"category":"File Activity","creationDate":1761225194994,"creator":{"name":"frog","handle":"frog@datadoghq.com"},"defaultRule":false,"description":"im a rule","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"monitoring":["grb-gnt-zge"],"name":"ppmppmuvgn","product_tags":["compliance_framework:PCI-DSS"],"updateDate":1761225194994,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}]}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 548.346667ms
+        duration: 556.240292ms
     - id: 8
       request:
         proto: HTTP/1.1
@@ -287,7 +287,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/agent_rules?policy_id=vxk-7ll-zuy
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/agent_rules?policy_id=grb-gnt-zge
         method: GET
       response:
         proto: HTTP/1.1
@@ -295,15 +295,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 619
+        content_length: 637
         uncompressed: false
-        body: '{"data":[{"id":"gt8-doz-re8","type":"agent_rule","attributes":{"actions":[{"hash":{},"set":{"name":"test_action","field":"exec.file.path","scope":"process"},"disabled":false}],"category":"File Activity","creationDate":1750083375390,"creator":{"name":"frog","handle":"frog@datadoghq.com"},"defaultRule":false,"description":"im a rule","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"monitoring":["vxk-7ll-zuy"],"name":"qvyhcpfmcd","product_tags":["compliance_framework:PCI-DSS"],"updateDate":1750083375390,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}]}'
+        body: '{"data":[{"id":"e8s-abs-t69","type":"agent_rule","attributes":{"actions":[{"hash":{},"set":{"name":"test_action","field":"exec.file.path","scope":"process","inherited":false},"disabled":false}],"category":"File Activity","creationDate":1761225194994,"creator":{"name":"frog","handle":"frog@datadoghq.com"},"defaultRule":false,"description":"im a rule","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"monitoring":["grb-gnt-zge"],"name":"ppmppmuvgn","product_tags":["compliance_framework:PCI-DSS"],"updateDate":1761225194994,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}]}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 174.904458ms
+        duration: 238.119708ms
     - id: 9
       request:
         proto: HTTP/1.1
@@ -320,7 +320,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/agent_rules?policy_id=vxk-7ll-zuy
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/agent_rules?policy_id=grb-gnt-zge
         method: GET
       response:
         proto: HTTP/1.1
@@ -328,15 +328,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 619
+        content_length: 637
         uncompressed: false
-        body: '{"data":[{"id":"gt8-doz-re8","type":"agent_rule","attributes":{"actions":[{"hash":{},"set":{"name":"test_action","field":"exec.file.path","scope":"process"},"disabled":false}],"category":"File Activity","creationDate":1750083375390,"creator":{"name":"frog","handle":"frog@datadoghq.com"},"defaultRule":false,"description":"im a rule","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"monitoring":["vxk-7ll-zuy"],"name":"qvyhcpfmcd","product_tags":["compliance_framework:PCI-DSS"],"updateDate":1750083375390,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}]}'
+        body: '{"data":[{"id":"e8s-abs-t69","type":"agent_rule","attributes":{"actions":[{"hash":{},"set":{"name":"test_action","field":"exec.file.path","scope":"process","inherited":false},"disabled":false}],"category":"File Activity","creationDate":1761225194994,"creator":{"name":"frog","handle":"frog@datadoghq.com"},"defaultRule":false,"description":"im a rule","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"monitoring":["grb-gnt-zge"],"name":"ppmppmuvgn","product_tags":["compliance_framework:PCI-DSS"],"updateDate":1761225194994,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}]}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 179.758042ms
+        duration: 399.184541ms
     - id: 10
       request:
         proto: HTTP/1.1
@@ -353,7 +353,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/vxk-7ll-zuy
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/grb-gnt-zge
         method: GET
       response:
         proto: HTTP/1.1
@@ -363,13 +363,13 @@ interactions:
         trailer: {}
         content_length: 391
         uncompressed: false
-        body: '{"data":{"id":"vxk-7ll-zuy","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"im a policy","disabledRulesCount":0,"enabled":true,"hostTags":["host_name:test_host"],"monitoringRulesCount":1,"name":"qvyhcpfmcd","policyVersion":"2","priority":1000000014,"ruleCount":1,"updateDate":1750083375390,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
+        body: '{"data":{"id":"grb-gnt-zge","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"im a policy","disabledRulesCount":0,"enabled":true,"hostTagsLists":[["host_name:test_host"]],"monitoringRulesCount":1,"name":"ppmppmuvgn","pinned":false,"policyVersion":"2","ruleCount":1,"updateDate":1761225194994,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 272.060667ms
+        duration: 375.372291ms
     - id: 11
       request:
         proto: HTTP/1.1
@@ -386,7 +386,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/agent_rules?policy_id=vxk-7ll-zuy
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/agent_rules?policy_id=grb-gnt-zge
         method: GET
       response:
         proto: HTTP/1.1
@@ -394,15 +394,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 619
+        content_length: 637
         uncompressed: false
-        body: '{"data":[{"id":"gt8-doz-re8","type":"agent_rule","attributes":{"actions":[{"hash":{},"set":{"name":"test_action","field":"exec.file.path","scope":"process"},"disabled":false}],"category":"File Activity","creationDate":1750083375390,"creator":{"name":"frog","handle":"frog@datadoghq.com"},"defaultRule":false,"description":"im a rule","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"monitoring":["vxk-7ll-zuy"],"name":"qvyhcpfmcd","product_tags":["compliance_framework:PCI-DSS"],"updateDate":1750083375390,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}]}'
+        body: '{"data":[{"id":"e8s-abs-t69","type":"agent_rule","attributes":{"actions":[{"hash":{},"set":{"name":"test_action","field":"exec.file.path","scope":"process","inherited":false},"disabled":false}],"category":"File Activity","creationDate":1761225194994,"creator":{"name":"frog","handle":"frog@datadoghq.com"},"defaultRule":false,"description":"im a rule","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"monitoring":["grb-gnt-zge"],"name":"ppmppmuvgn","product_tags":["compliance_framework:PCI-DSS"],"updateDate":1761225194994,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}]}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 222.520417ms
+        duration: 245.646667ms
     - id: 12
       request:
         proto: HTTP/1.1
@@ -419,7 +419,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/agent_rules/gt8-doz-re8?policy_id=vxk-7ll-zuy
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/agent_rules/e8s-abs-t69?policy_id=grb-gnt-zge
         method: GET
       response:
         proto: HTTP/1.1
@@ -427,15 +427,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 617
+        content_length: 635
         uncompressed: false
-        body: '{"data":{"id":"gt8-doz-re8","type":"agent_rule","attributes":{"actions":[{"hash":{},"set":{"name":"test_action","field":"exec.file.path","scope":"process"},"disabled":false}],"category":"File Activity","creationDate":1750083375390,"creator":{"name":"frog","handle":"frog@datadoghq.com"},"defaultRule":false,"description":"im a rule","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"monitoring":["vxk-7ll-zuy"],"name":"qvyhcpfmcd","product_tags":["compliance_framework:PCI-DSS"],"updateDate":1750083375390,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
+        body: '{"data":{"id":"e8s-abs-t69","type":"agent_rule","attributes":{"actions":[{"hash":{},"set":{"name":"test_action","field":"exec.file.path","scope":"process","inherited":false},"disabled":false}],"category":"File Activity","creationDate":1761225194994,"creator":{"name":"frog","handle":"frog@datadoghq.com"},"defaultRule":false,"description":"im a rule","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"monitoring":["grb-gnt-zge"],"name":"ppmppmuvgn","product_tags":["compliance_framework:PCI-DSS"],"updateDate":1761225194994,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 351.88825ms
+        duration: 345.498834ms
     - id: 13
       request:
         proto: HTTP/1.1
@@ -452,7 +452,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/agent_rules/gt8-doz-re8?policy_id=vxk-7ll-zuy
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/agent_rules/e8s-abs-t69?policy_id=grb-gnt-zge
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -468,7 +468,7 @@ interactions:
                 - application/json
         status: 204 No Content
         code: 204
-        duration: 2.427901666s
+        duration: 679.742584ms
     - id: 14
       request:
         proto: HTTP/1.1
@@ -485,7 +485,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/vxk-7ll-zuy
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/grb-gnt-zge
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -501,7 +501,7 @@ interactions:
                 - application/json
         status: 204 No Content
         code: 204
-        duration: 441.820125ms
+        duration: 481.378125ms
     - id: 15
       request:
         proto: HTTP/1.1
@@ -518,7 +518,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/agent_rules/gt8-doz-re8?policy_id=vxk-7ll-zuy
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/agent_rules/e8s-abs-t69?policy_id=grb-gnt-zge
         method: GET
       response:
         proto: HTTP/1.1
@@ -535,4 +535,4 @@ interactions:
                 - application/json
         status: 404 Not Found
         code: 404
-        duration: 255.8905ms
+        duration: 456.906042ms
