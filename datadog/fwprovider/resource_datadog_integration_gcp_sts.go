@@ -21,6 +21,22 @@ var (
 	integrationGcpStsMutex sync.Mutex
 	_                      resource.ResourceWithConfigure   = &integrationGcpStsResource{}
 	_                      resource.ResourceWithImportState = &integrationGcpStsResource{}
+
+	MetricNamespaceConfigSpec = types.ObjectType{
+		AttrTypes: map[string]attr.Type{
+			"id":       types.StringType,
+			"disabled": types.BoolType,
+		},
+	}
+
+	MonitoredResourceConfigSpec = types.ObjectType{
+		AttrTypes: map[string]attr.Type{
+			"type": types.StringType,
+			"filters": types.SetType{
+				ElemType: types.StringType,
+			},
+		},
+	}
 )
 
 type integrationGcpStsResource struct {
@@ -32,23 +48,6 @@ type MetricNamespaceConfigModel struct {
 	ID       types.String `tfsdk:"id"`
 	Disabled types.Bool   `tfsdk:"disabled"`
 }
-
-var MetricNamespaceConfigSpec = types.ObjectType{
-	AttrTypes: map[string]attr.Type{
-		"id":       types.StringType,
-		"disabled": types.BoolType,
-	},
-}
-
-var MonitoredResourceConfigSpec = types.ObjectType{
-	AttrTypes: map[string]attr.Type{
-		"type": types.StringType,
-		"filters": types.SetType{
-			ElemType: types.StringType,
-		},
-	},
-}
-
 type MonitoredResourceConfigModel struct {
 	Type    types.String `tfsdk:"type"`
 	Filters types.Set    `tfsdk:"filters"`
@@ -239,7 +238,7 @@ func (r *integrationGcpStsResource) Create(ctx context.Context, request resource
 	delegateEmail := delegateResponse.Data.Attributes.GetDelegateAccountEmail()
 	state.DelegateAccountEmail = types.StringValue(delegateEmail)
 
-	attributes, diags := r.buildIntegrationGcpStsRequestBody(ctx, &state, false)
+	attributes, diags := r.buildIntegrationGcpStsRequestBody(ctx, &state)
 	if !state.ClientEmail.IsNull() {
 		attributes.SetClientEmail(state.ClientEmail.ValueString())
 	}
@@ -270,10 +269,7 @@ func (r *integrationGcpStsResource) Create(ctx context.Context, request resource
 func (r *integrationGcpStsResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
 	var state integrationGcpStsModel
 
-	var priorState integrationGcpStsModel
-
 	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
-	response.Diagnostics.Append(request.State.Get(ctx, &priorState)...)
 	if response.Diagnostics.HasError() {
 		return
 	}
@@ -283,7 +279,7 @@ func (r *integrationGcpStsResource) Update(ctx context.Context, request resource
 
 	id := state.ID.ValueString()
 
-	attributes, diags := r.buildIntegrationGcpStsRequestBody(ctx, &state, !mncsContainsOnlyPrometheus(ctx, priorState.MetricNamespaceConfigs, response.Diagnostics))
+	attributes, diags := r.buildIntegrationGcpStsRequestBody(ctx, &state)
 	body := datadogV2.NewGCPSTSServiceAccountUpdateRequestWithDefaults()
 	body.Data = datadogV2.NewGCPSTSServiceAccountUpdateRequestDataWithDefaults()
 	body.Data.SetAttributes(attributes)
@@ -382,7 +378,7 @@ func (r *integrationGcpStsResource) updateState(ctx context.Context, state *inte
 	state.MonitoredResourceConfigs, _ = types.SetValueFrom(ctx, MonitoredResourceConfigSpec, mrcs)
 }
 
-func (r *integrationGcpStsResource) buildIntegrationGcpStsRequestBody(ctx context.Context, state *integrationGcpStsModel, forUpdate bool) (datadogV2.GCPSTSServiceAccountAttributes, diag.Diagnostics) {
+func (r *integrationGcpStsResource) buildIntegrationGcpStsRequestBody(ctx context.Context, state *integrationGcpStsModel) (datadogV2.GCPSTSServiceAccountAttributes, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
 	attributes := datadogV2.GCPSTSServiceAccountAttributes{}
 
@@ -419,7 +415,7 @@ func (r *integrationGcpStsResource) buildIntegrationGcpStsRequestBody(ctx contex
 	// it's for an Update OR
 	// the user explicitly sets the field
 	// otherwise we want to omit it so that the API server can populate defaults when applicable
-	if forUpdate || !state.MetricNamespaceConfigs.IsUnknown() {
+	if !state.MetricNamespaceConfigs.IsUnknown() {
 		attributes.SetMetricNamespaceConfigs(mncs)
 	}
 
@@ -435,20 +431,6 @@ func (r *integrationGcpStsResource) buildIntegrationGcpStsRequestBody(ctx contex
 	attributes.SetMonitoredResourceConfigs(mrcs)
 
 	return attributes, diags
-}
-
-func mncsContainsOnlyPrometheus(ctx context.Context, s types.Set, diags diag.Diagnostics) bool {
-	if s.IsNull() || s.IsUnknown() {
-		return false
-	}
-	var items []MetricNamespaceConfigModel
-	diags.Append(s.ElementsAs(ctx, &items, false)...)
-	if diags.HasError() || len(items) != 1 {
-		return false
-	}
-
-	return items[0].ID.ValueString() == "prometheus" &&
-		items[0].Disabled.ValueBool()
 }
 
 func tfCollectionToSlice[T any](ctx context.Context, diags diag.Diagnostics, col tfCollection) []T {
