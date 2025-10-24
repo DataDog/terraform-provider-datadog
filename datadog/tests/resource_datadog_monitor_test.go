@@ -2121,3 +2121,50 @@ func verifyRestrictedRolesSize(accProvider *fwprovider.FrameworkProvider, expect
 		return nil
 	}
 }
+
+func testAccCheckDatadogMonitorWithTagConfig(uniqueName string) string {
+	return fmt.Sprintf(`
+		resource "datadog_monitor_config_policy" "foo" {
+			policy_type = "tag"
+			tag_policy {
+				tag_key          = "foo"
+				tag_key_required = true
+				valid_tag_values = ["bar"]
+			}
+		}
+		resource "datadog_monitor" "bar" {
+			name = "%s"
+			type = "query alert"
+			message = "updated message Notify: @hipchat-channel"
+			query = "avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2"
+
+			monitor_thresholds {
+				critical = "2.0"
+			}
+		}`, uniqueName)
+}
+
+func TestAccDatadogMonitor_WithTagConfig(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	accProvider := testAccProvider(t, accProviders)
+	resource.Test(t, resource.TestCase{
+		PreCheck: func() { testAccPreCheck(t) },
+		ProviderFactories: map[string]func() (*schema.Provider, error){
+			"datadog": withDefaultTags(accProvider, map[string]interface{}{
+				"foo": "bar",
+			}),
+		},
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogMonitorWithTagConfig(uniqueEntityName(ctx, t)),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.bar", "tags.#", "1"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_monitor.bar", "tags.*", "foo:bar"),
+				),
+			},
+		},
+	})
+}
