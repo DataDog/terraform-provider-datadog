@@ -411,9 +411,7 @@ func (r *integrationGcpStsResource) buildIntegrationGcpStsRequestBody(ctx contex
 		})
 	}
 
-	// only set this field if:
-	// it's for an Update OR
-	// the user explicitly sets the field
+	// only set this field if the user explicitly sets the field
 	// otherwise we want to omit it so that the API server can populate defaults when applicable
 	if !state.MetricNamespaceConfigs.IsUnknown() {
 		attributes.SetMetricNamespaceConfigs(mncs)
