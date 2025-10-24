@@ -159,6 +159,21 @@ func (r *csmThreatsAgentRulesDataSource) Read(ctx context.Context, request datas
 				} else {
 					setAction.Scope = types.StringValue("")
 				}
+				if s.Expression != nil {
+					setAction.Expression = types.StringValue(*s.Expression)
+				} else {
+					setAction.Expression = types.StringNull()
+				}
+				if s.Inherited != nil {
+					setAction.Inherited = types.BoolValue(*s.Inherited)
+				} else {
+					setAction.Inherited = types.BoolValue(false)
+				}
+				if s.DefaultValue != nil {
+					setAction.DefaultValue = types.StringValue(*s.DefaultValue)
+				} else {
+					setAction.DefaultValue = types.StringNull()
+				}
 				action.Set = setAction
 			}
 
@@ -219,13 +234,16 @@ func (*csmThreatsAgentRulesDataSource) Schema(_ context.Context, _ datasource.Sc
 								AttrTypes: map[string]attr.Type{
 									"set": types.ObjectType{
 										AttrTypes: map[string]attr.Type{
-											"name":   types.StringType,
-											"value":  types.StringType,
-											"field":  types.StringType,
-											"append": types.BoolType,
-											"size":   types.Int64Type,
-											"ttl":    types.Int64Type,
-											"scope":  types.StringType,
+											"name":          types.StringType,
+											"value":         types.StringType,
+											"field":         types.StringType,
+											"append":        types.BoolType,
+											"size":          types.Int64Type,
+											"ttl":           types.Int64Type,
+											"scope":         types.StringType,
+											"expression":    types.StringType,
+											"inherited":     types.BoolType,
+											"default_value": types.StringType,
 										},
 									},
 									"hash": types.ObjectType{

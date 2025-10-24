@@ -74,7 +74,10 @@ Required:
 Optional:
 
 - `append` (Boolean) Whether to append to the set
+- `default_value` (String) The default value to set
+- `expression` (String) The expression to use for the set action
 - `field` (String) The field to get the value from
+- `inherited` (Boolean) Whether the set action is inherited
 - `scope` (String) The scope of the set action (process, container, cgroup, or empty)
 - `size` (Number) The maximum size of the set
 - `ttl` (Number) The time to live for the set in nanoseconds
