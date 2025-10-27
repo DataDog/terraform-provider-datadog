@@ -1,5 +1,4 @@
-# Source the permissions for scoped keys
-data "datadog_permissions" "dd_perms" {}
+# See the permissions available for scoped keys at https://docs.datadoghq.com/account_management/rbac/permissions/#permissions-list
 
 # Create an unrestricted Application Key
 # This key inherits all permissions of the user that owns the key
@@ -12,7 +11,7 @@ resource "datadog_application_key" "unrestricted_key" {
 resource "datadog_application_key" "monitor_management_key" {
   name = "Monitor Management Key"
   scopes = [
-    data.datadog_permissions.dd_perms.permissions.monitors_read,
-    data.datadog_permissions.dd_perms.permissions.monitors_write
+    "monitors_read",
+    "monitors_write"
   ]
 }
