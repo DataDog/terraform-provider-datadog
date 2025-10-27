@@ -302,13 +302,13 @@ func (p *FrameworkProvider) Schema(_ context.Context, _ provider.SchemaRequest, 
 				Validators: []validator.List{
 					listvalidator.SizeAtMost(1),
 				},
-				Description: "[Experimental - Logs Pipelines, Monitors Security Monitoring Rules, and Service Level Objectives only] Configuration block containing settings to apply default resource tags across all resources.",
+				Description: "[Experimental - Logs Pipelines, Monitors, Security Monitoring Rules, and Service Level Objectives only] Configuration block containing settings to apply default resource tags across all resources.",
 				NestedObject: schema.NestedBlockObject{
 					Attributes: map[string]schema.Attribute{
 						"tags": schema.MapAttribute{
 							ElementType: types.StringType,
 							Optional:    true,
-							Description: "[Experimental - Logs Pipelines, Monitors Security Monitoring Rules, and Service Level Objectives only] Resource tags to be applied by default across all resources.",
+							Description: "[Experimental - Logs Pipelines, Monitors, Security Monitoring Rules, and Service Level Objectives only] Resource tags to be applied by default across all resources.",
 						},
 					},
 				},
