@@ -671,14 +671,17 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	}
 
 	ddClientConfig.HTTPClient = utils.NewHTTPClient()
-	switch cloudProviderType {
-	case "aws":
-		ddClientConfig.DelegatedTokenConfig = &datadog.DelegatedTokenConfig{
-			OrgUUID: orgUUID,
-			ProviderAuth: &datadog.AWSAuth{
-				AwsRegion: cloudProviderRegion,
-			},
-			Provider: "aws",
+	// Only set DelegatedTokenConfig if we're using cloud provider auth (not API keys)
+	if config.ApiKey.ValueString() == "" && config.AppKey.ValueString() == "" && cloudProviderType != "" {
+		switch cloudProviderType {
+		case "aws":
+			ddClientConfig.DelegatedTokenConfig = &datadog.DelegatedTokenConfig{
+				OrgUUID: orgUUID,
+				ProviderAuth: &datadog.AWSAuth{
+					AwsRegion: cloudProviderRegion,
+				},
+				Provider: "aws",
+			}
 		}
 	}
 	datadogClient := datadog.NewAPIClient(ddClientConfig)

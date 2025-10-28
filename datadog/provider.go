@@ -497,14 +497,17 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 	}
 
 	config.HTTPClient = utils.NewHTTPClient()
-	switch cloudProviderType {
-	case "aws":
-		config.DelegatedTokenConfig = &datadog.DelegatedTokenConfig{
-			OrgUUID: orgUUID,
-			ProviderAuth: &datadog.AWSAuth{
-				AwsRegion: cloudProviderRegion,
-			},
-			Provider: "aws",
+	// Only set DelegatedTokenConfig if we're using cloud provider auth (not API keys)
+	if apiKey == "" && appKey == "" && cloudProviderType != "" {
+		switch cloudProviderType {
+		case "aws":
+			config.DelegatedTokenConfig = &datadog.DelegatedTokenConfig{
+				OrgUUID: orgUUID,
+				ProviderAuth: &datadog.AWSAuth{
+					AwsRegion: cloudProviderRegion,
+				},
+				Provider: "aws",
+			}
 		}
 	}
 
@@ -512,7 +515,8 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 	apiInstances := &utils.ApiInstances{HttpClient: datadogClient}
 	if validate {
 		log.Println("[INFO] Datadog client successfully initialized, now validating...")
-		if cloudProviderType != "" { // Validate the cloud auth credentials
+		// Only validate cloud auth if we're actually using it (not API keys)
+		if apiKey == "" && appKey == "" && cloudProviderType != "" { // Validate the cloud auth credentials
 			delegatedConfig, err := datadogClient.GetDelegatedToken(auth)
 			if err != nil {
 				log.Printf("[ERROR] Datadog Client validation error: %v", err)
