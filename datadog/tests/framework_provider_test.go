@@ -13,9 +13,9 @@ import (
 	frameworkDiag "github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/provider"
 	"github.com/hashicorp/terraform-plugin-framework/providerserver"
+	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-go/tfprotov5"
 	"github.com/hashicorp/terraform-plugin-mux/tf5muxserver"
-	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	datadogCommunity "github.com/zorkian/go-datadog-api"
@@ -205,12 +205,12 @@ func TestFrameworkProviderConfigure_CloudAuthOnly(t *testing.T) {
 
 	p := fwprovider.New().(*fwprovider.FrameworkProvider)
 	config := &fwprovider.ProviderSchema{
-		OrgUuid:                  types.StringValue("test-org-uuid"),
-		CloudProviderType:        types.StringValue("aws"),
-		CloudProviderRegion:      types.StringValue("us-east-1"),
-		ApiUrl:                   types.StringValue("https://api.datad0g.com"),
-		Validate:                 types.StringValue("false"),
-		HttpClientRetryEnabled:   types.StringValue("false"),
+		OrgUuid:                types.StringValue("test-org-uuid"),
+		CloudProviderType:      types.StringValue("aws"),
+		CloudProviderRegion:    types.StringValue("us-east-1"),
+		ApiUrl:                 types.StringValue("https://api.datad0g.com"),
+		Validate:               types.StringValue("false"),
+		HttpClientRetryEnabled: types.StringValue("false"),
 	}
 
 	request := &provider.ConfigureRequest{}
