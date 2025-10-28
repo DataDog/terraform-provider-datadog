@@ -6056,8 +6056,21 @@ func buildDatadogListStreamRequests(terraformRequests *[]interface{}) (*[]datado
 
 		// Validate columns field
 		terraformColumns, ok := terraformRequest["columns"].([]interface{})
-		if !ok || len(terraformColumns) == 0 {
-			return nil, fmt.Errorf("list_stream_definition requires at least one column in the request.columns block")
+		if !ok {
+			return nil, fmt.Errorf("request.columns is missing")
+		}
+
+		if len(terraformColumns) == 0 {
+			return nil, fmt.Errorf("list_stream_definition requires at least one column in request.columns")
+		}
+
+		if len(terraformColumns) == 1 {
+			if terraformColumns[0] == nil {
+				return nil, fmt.Errorf("list_stream_definition requires request.columns to not be nil")
+			}
+			if m, ok := terraformColumns[0].(map[string]interface{}); !ok || m == nil || len(m) == 0 {
+				return nil, fmt.Errorf("list_stream_definition requires request.columns to be a non-empty map")
+			}
 		}
 
 		var datadogColumns []datadogV1.ListStreamColumn
