@@ -42,8 +42,6 @@ type createdByModel struct {
 }
 
 type deploymentRuleOptionsModel struct {
-	OperationName     types.String `tfsdk:"operation_name"`
-	WaitTime          types.Int64  `tfsdk:"wait_time"`
 	ExcludedResources types.List   `tfsdk:"excluded_resources"`
 	Duration          types.Int64  `tfsdk:"duration"`
 	Query             types.String `tfsdk:"query"`
@@ -107,11 +105,7 @@ func (d *datadogDeploymentRuleDataSource) Schema(_ context.Context, _ datasource
 				Blocks: map[string]schema.Block{
 					"deployment_rule_options_faulty_deployment_detection": schema.SingleNestedBlock{
 						Attributes: map[string]schema.Attribute{
-							"operation_name": schema.StringAttribute{
-								Computed:    true,
-								Description: "The operation name for faulty deployment detection.",
-							},
-							"wait_time": schema.Int64Attribute{
+							"duration": schema.Int64Attribute{
 								Computed:    true,
 								Description: "The wait time for faulty deployment detection.",
 							},
@@ -171,14 +165,13 @@ func (d *datadogDeploymentRuleDataSource) updateState(ctx context.Context, state
 	state.DryRun = types.BoolValue(attributes.GetDryRun())
 	state.GateId = types.StringValue(attributes.GetGateId())
 	state.Name = types.StringValue(attributes.GetName())
-	state.Type = types.StringValue(attributes.GetType())
+	state.Type = types.StringValue(string(attributes.GetType()))
 	state.UpdatedAt = types.StringValue(attributes.GetUpdatedAt().String())
 	if attributes.GetType() == "faulty_deployment_detection" {
 		options := attributes.GetOptions().DeploymentRuleOptionsFaultyDeploymentDetection
 		state.Options = &deploymentRuleOptionsModel{
 			ExcludedResources: stringSliceToTerraformList(options.ExcludedResources),
-			WaitTime:          types.Int64Value(options.GetWaitTime()),
-			OperationName:     types.StringValue(options.GetOperationName()),
+			Duration:          types.Int64Value(options.GetDuration()),
 		}
 	} else {
 		options := attributes.GetOptions().DeploymentRuleOptionsMonitor

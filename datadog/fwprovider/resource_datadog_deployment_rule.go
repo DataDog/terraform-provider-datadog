@@ -63,6 +63,7 @@ func (r *deploymentRuleResource) Schema(_ context.Context, _ resource.SchemaRequ
 			"dry_run": schema.BoolAttribute{
 				Optional:    true,
 				Description: "The `attributes` `dry_run`.",
+				Computed:    true,
 			},
 			"name": schema.StringAttribute{
 				Required:    true,
@@ -83,14 +84,6 @@ func (r *deploymentRuleResource) Schema(_ context.Context, _ resource.SchemaRequ
 					"duration": schema.Int64Attribute{
 						Optional:    true,
 						Description: "The duration for the rule.",
-					},
-					"operation_name": schema.StringAttribute{
-						Optional:    true,
-						Description: "The operation name for faulty deployment detection.",
-					},
-					"wait_time": schema.Int64Attribute{
-						Optional:    true,
-						Description: "The wait time for faulty deployment detection.",
 					},
 					"query": schema.StringAttribute{
 						Optional:    true,
@@ -253,15 +246,13 @@ func (r *deploymentRuleResource) updateState(ctx context.Context, state *deploym
 	}
 
 	if typeVar, ok := attributes.GetTypeOk(); ok {
-		state.Type = types.StringValue(*typeVar)
+		state.Type = types.StringValue(string(*typeVar))
 	}
 
 	// Handle options from the response
 	if options, ok := attributes.GetOptionsOk(); ok {
 		if state.Options == nil {
 			state.Options = &deploymentRuleOptionsModel{
-				OperationName:     types.StringNull(),
-				WaitTime:          types.Int64Null(),
 				ExcludedResources: types.ListNull(types.StringType),
 				Duration:          types.Int64Null(),
 				Query:             types.StringNull(),
@@ -271,11 +262,8 @@ func (r *deploymentRuleResource) updateState(ctx context.Context, state *deploym
 		// Handle options based on rule type like the data source does
 		if state.Type.ValueString() == "faulty_deployment_detection" {
 			if fddOptions := options.DeploymentRuleOptionsFaultyDeploymentDetection; fddOptions != nil {
-				if operationName, ok := fddOptions.GetOperationNameOk(); ok {
-					state.Options.OperationName = types.StringPointerValue(operationName)
-				}
-				if waitTime, ok := fddOptions.GetWaitTimeOk(); ok {
-					state.Options.WaitTime = types.Int64PointerValue(waitTime)
+				if duration, ok := fddOptions.GetDurationOk(); ok {
+					state.Options.Duration = types.Int64PointerValue(duration)
 				}
 				if excludedResources, ok := fddOptions.GetExcludedResourcesOk(); ok {
 					if excludedResources != nil && len(*excludedResources) > 0 {
@@ -317,17 +305,14 @@ func (r *deploymentRuleResource) buildDeploymentRuleRequestBody(ctx context.Cont
 
 	// Handle options based on rule type
 	if state.Options != nil {
-		options := datadogV2.CreateDeploymentRuleParamsDataAttributesOptions{}
+		options := datadogV2.DeploymentRulesOptions{}
 
 		if state.Type.ValueString() == "faulty_deployment_detection" {
 			fddOptions := state.Options
 			options.DeploymentRuleOptionsFaultyDeploymentDetection = &datadogV2.DeploymentRuleOptionsFaultyDeploymentDetection{}
 
-			if !fddOptions.OperationName.IsNull() {
-				options.DeploymentRuleOptionsFaultyDeploymentDetection.OperationName = fddOptions.OperationName.ValueStringPointer()
-			}
-			if !fddOptions.WaitTime.IsNull() {
-				options.DeploymentRuleOptionsFaultyDeploymentDetection.WaitTime = fddOptions.WaitTime.ValueInt64Pointer()
+			if !fddOptions.Duration.IsNull() {
+				options.DeploymentRuleOptionsFaultyDeploymentDetection.Duration = fddOptions.Duration.ValueInt64Pointer()
 			}
 			if !fddOptions.ExcludedResources.IsNull() {
 				var excludedResources []string
@@ -353,6 +338,7 @@ func (r *deploymentRuleResource) buildDeploymentRuleRequestBody(ctx context.Cont
 
 	req := datadogV2.NewCreateDeploymentRuleParamsWithDefaults()
 	req.Data = datadogV2.NewCreateDeploymentRuleParamsDataWithDefaults()
+	req.Data.Type = "deployment_rule"
 	req.Data.SetAttributes(*attributes)
 
 	return req, diags
@@ -371,17 +357,14 @@ func (r *deploymentRuleResource) buildDeploymentRuleUpdateRequestBody(ctx contex
 
 	// Handle options based on rule type
 	if state.Options != nil {
-		options := datadogV2.UpdateDeploymentRuleParamsDataAttributesOptions{}
+		options := datadogV2.DeploymentRulesOptions{}
 
 		if state.Type.ValueString() == "faulty_deployment_detection" {
 			fddOptions := state.Options
 			options.DeploymentRuleOptionsFaultyDeploymentDetection = &datadogV2.DeploymentRuleOptionsFaultyDeploymentDetection{}
 
-			if !fddOptions.OperationName.IsNull() {
-				options.DeploymentRuleOptionsFaultyDeploymentDetection.OperationName = fddOptions.OperationName.ValueStringPointer()
-			}
-			if !fddOptions.WaitTime.IsNull() {
-				options.DeploymentRuleOptionsFaultyDeploymentDetection.WaitTime = fddOptions.WaitTime.ValueInt64Pointer()
+			if !fddOptions.Duration.IsNull() {
+				options.DeploymentRuleOptionsFaultyDeploymentDetection.Duration = fddOptions.Duration.ValueInt64Pointer()
 			}
 			if !fddOptions.ExcludedResources.IsNull() {
 				var excludedResources []string
@@ -406,7 +389,8 @@ func (r *deploymentRuleResource) buildDeploymentRuleUpdateRequestBody(ctx contex
 	}
 
 	req := datadogV2.NewUpdateDeploymentRuleParamsWithDefaults()
-	req.Data = datadogV2.NewUpdateDeploymentRuleParamsDataWithDefaults()
+	req.Data = *datadogV2.NewUpdateDeploymentRuleParamsDataWithDefaults()
+	req.Data.Type = "deployment_rule"
 	req.Data.SetAttributes(*attributes)
 
 	return req, diags
@@ -422,24 +406,22 @@ func (r *deploymentRuleResource) validateTypeOptionsMatch(ctx context.Context, s
 	ruleType := state.Type.ValueString()
 
 	// Check for faulty_deployment_detection specific options
-	hasFddOptions := (!state.Options.OperationName.IsNull() ||
-		!state.Options.WaitTime.IsNull() ||
-		!state.Options.ExcludedResources.IsNull())
+	hasFddOptions :=
+		!state.Options.ExcludedResources.IsNull()
 
 	// Check for monitor specific options
-	hasMonitorOptions := (!state.Options.Duration.IsNull() ||
-		!state.Options.Query.IsNull())
+	hasMonitorOptions := !state.Options.Query.IsNull()
 
 	if ruleType == "faulty_deployment_detection" && hasMonitorOptions {
 		diags.AddError(
 			"Invalid options for deployment rule type",
-			"Rule type 'faulty_deployment_detection' cannot use monitor options (duration, query). "+
-				"Use faulty deployment detection options instead: operation_name, wait_time, excluded_resources.",
+			"Rule type 'faulty_deployment_detection' cannot use monitor options (query). "+
+				"Use faulty deployment detection options instead: duration, excluded_resources.",
 		)
 	} else if ruleType == "monitor" && hasFddOptions {
 		diags.AddError(
 			"Invalid options for deployment rule type",
-			"Rule type 'monitor' cannot use faulty deployment detection options (operation_name, wait_time, excluded_resources). "+
+			"Rule type 'monitor' cannot use faulty deployment detection options (excluded_resources). "+
 				"Use monitor options instead: duration, query.",
 		)
 	}

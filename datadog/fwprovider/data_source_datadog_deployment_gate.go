@@ -152,7 +152,7 @@ func (d *datadogDeploymentGateDataSource) Read(ctx context.Context, request data
 }
 
 func (d *datadogDeploymentGateDataSource) updateState(ctx context.Context, state *datadogDeploymentGateDataSourceModel, deploymentGateData *datadogV2.DeploymentGateResponse) {
-	state.ID = types.StringValue(*deploymentGateData.Data.Id)
+	state.ID = types.StringValue(deploymentGateData.Data.Id)
 
 	attributes := deploymentGateData.Data.GetAttributes()
 
