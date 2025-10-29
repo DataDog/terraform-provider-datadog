@@ -1,3 +1,19 @@
+## 3.78.0 (October 29, 2025)
+
+### BUGFIXES
+* [datadog_dashboards] Fix type error in unitScale by @brlee19 in https://github.com/DataDog/terraform-provider-datadog/pull/3238
+* [datadog_csm_threats] Fix tags field in csm_threat_policy resource by @QuentinGuillard in https://github.com/DataDog/terraform-provider-datadog/pull/3298
+* [datadog_monitor] Fix monitor validation on default tags by @shaneyuandd in https://github.com/DataDog/terraform-provider-datadog/pull/3296
+* [datadog_application_key] Update docs for application key by @wangwillson1 in https://github.com/DataDog/terraform-provider-datadog/pull/3305
+### IMPROVEMENTS
+* [datdog_csm_threats_agent_rule] add missing set action fields by @safchain in https://github.com/DataDog/terraform-provider-datadog/pull/3295
+
+## New Contributors
+* @brlee19 made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3238
+* @safchain made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3295
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.77.0...v3.78.0
+
 ## 3.77.0 (October 21, 2025)
 
 ### BUGFIXES
