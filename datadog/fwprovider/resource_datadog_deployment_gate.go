@@ -56,6 +56,7 @@ func (r *deploymentGateResource) Schema(_ context.Context, _ resource.SchemaRequ
 			"dry_run": schema.BoolAttribute{
 				Optional:    true,
 				Description: "The `attributes` `dry_run`.",
+				Computed:    true,
 			},
 			"env": schema.StringAttribute{
 				Required:    true,
@@ -249,7 +250,8 @@ func (r *deploymentGateResource) buildDeploymentGateRequestBody(ctx context.Cont
 	}
 
 	req := datadogV2.NewCreateDeploymentGateParamsWithDefaults()
-	req.Data = datadogV2.NewCreateDeploymentGateParamsDataWithDefaults()
+	req.Data = *datadogV2.NewCreateDeploymentGateParamsDataWithDefaults()
+	req.Data.Type = "deployment_gate"
 	req.Data.SetAttributes(*attributes)
 
 	return req, diags
@@ -264,7 +266,8 @@ func (r *deploymentGateResource) buildDeploymentGateUpdateRequestBody(ctx contex
 	}
 
 	req := datadogV2.NewUpdateDeploymentGateParamsWithDefaults()
-	req.Data = datadogV2.NewUpdateDeploymentGateParamsDataWithDefaults()
+	req.Data = *datadogV2.NewUpdateDeploymentGateParamsDataWithDefaults()
+	req.Data.Type = "deployment_gate"
 	req.Data.SetAttributes(*attributes)
 
 	return req, diags

@@ -26,11 +26,25 @@ func TestAccDeploymentGateBasic(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogDeploymentGateExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(
-						"datadog_deployment_gate.foo", "dry_run", "UPDATE ME"),
+						"datadog_deployment_gate.foo", "dry_run", "false"),
 					resource.TestCheckResourceAttr(
 						"datadog_deployment_gate.foo", "env", "production"),
 					resource.TestCheckResourceAttr(
-						"datadog_deployment_gate.foo", "identifier", "my-gate"),
+						"datadog_deployment_gate.foo", "identifier", uniq),
+					resource.TestCheckResourceAttr(
+						"datadog_deployment_gate.foo", "service", "my-service"),
+				),
+			},
+			{
+				Config: testAccCheckDatadogDeploymentGateUpdated(uniq),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogDeploymentGateExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(
+						"datadog_deployment_gate.foo", "dry_run", "true"),
+					resource.TestCheckResourceAttr(
+						"datadog_deployment_gate.foo", "env", "production"),
+					resource.TestCheckResourceAttr(
+						"datadog_deployment_gate.foo", "identifier", uniq),
 					resource.TestCheckResourceAttr(
 						"datadog_deployment_gate.foo", "service", "my-service"),
 				),
@@ -42,11 +56,72 @@ func TestAccDeploymentGateBasic(t *testing.T) {
 func testAccCheckDatadogDeploymentGate(uniq string) string {
 	// Update me to make use of the unique value
 	return fmt.Sprintf(`resource "datadog_deployment_gate" "foo" {
-    dry_run = "UPDATE ME"
+    dry_run = "false"
     env = "production"
-    identifier = "my-gate"
+    identifier = "%s"
     service = "my-service"
 }`, uniq)
+}
+
+func testAccCheckDatadogDeploymentGateUpdated(uniq string) string {
+	return fmt.Sprintf(`resource "datadog_deployment_gate" "foo" {
+    dry_run = "true"
+    env = "production"
+    identifier = "%s"
+    service = "my-service"
+}`, uniq)
+}
+
+func TestAccDeploymentGateForceNew(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	uniq := uniqueEntityName(ctx, t)
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogDeploymentGateDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogDeploymentGateForceNew(uniq, "production", "my-service"),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogDeploymentGateExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(
+						"datadog_deployment_gate.foo", "env", "production"),
+					resource.TestCheckResourceAttr(
+						"datadog_deployment_gate.foo", "service", "my-service"),
+				),
+			},
+			{
+				Config: testAccCheckDatadogDeploymentGateForceNew(uniq, "staging", "my-service"),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogDeploymentGateExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(
+						"datadog_deployment_gate.foo", "env", "staging"),
+					resource.TestCheckResourceAttr(
+						"datadog_deployment_gate.foo", "service", "my-service"),
+				),
+			},
+			{
+				Config: testAccCheckDatadogDeploymentGateForceNew(uniq, "staging", "updated-service"),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogDeploymentGateExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(
+						"datadog_deployment_gate.foo", "env", "staging"),
+					resource.TestCheckResourceAttr(
+						"datadog_deployment_gate.foo", "service", "updated-service"),
+				),
+			},
+		},
+	})
+}
+
+func testAccCheckDatadogDeploymentGateForceNew(uniq string, env string, service string) string {
+	return fmt.Sprintf(`resource "datadog_deployment_gate" "foo" {
+    dry_run = "false"
+    env = "%s"
+    identifier = "%s"
+    service = "%s"
+}`, env, uniq, service)
 }
 
 func testAccCheckDatadogDeploymentGateDestroy(accProvider *fwprovider.FrameworkProvider) func(*terraform.State) error {

@@ -27,11 +27,29 @@ func TestAccDeploymentRuleBasic(t *testing.T) {
 					testAccCheckDatadogDeploymentRuleExists(providers.frameworkProvider),
 
 					resource.TestCheckResourceAttr(
-						"datadog_deployment_rule.foo", "dry_run", "UPDATE ME"),
+						"datadog_deployment_rule.foo", "dry_run", "false"),
 					resource.TestCheckResourceAttr(
 						"datadog_deployment_rule.foo", "name", "My deployment rule"),
 					resource.TestCheckResourceAttr(
 						"datadog_deployment_rule.foo", "type", "faulty_deployment_detection"),
+					resource.TestCheckResourceAttr("datadog_deployment_rule.foo", "options.duration", "10"),
+					resource.TestCheckResourceAttr("datadog_deployment_rule.foo", "options.excluded_resources.0", "resource1"),
+				),
+			},
+			{
+				Config: testAccCheckDatadogDeploymentRuleUpdated(uniq),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogDeploymentRuleExists(providers.frameworkProvider),
+
+					resource.TestCheckResourceAttr(
+						"datadog_deployment_rule.foo", "dry_run", "true"),
+					resource.TestCheckResourceAttr(
+						"datadog_deployment_rule.foo", "name", "Updated deployment rule"),
+					resource.TestCheckResourceAttr(
+						"datadog_deployment_rule.foo", "type", "faulty_deployment_detection"),
+					resource.TestCheckResourceAttr("datadog_deployment_rule.foo", "options.duration", "15"),
+					resource.TestCheckResourceAttr("datadog_deployment_rule.foo", "options.excluded_resources.0", "resource2"),
+					resource.TestCheckResourceAttr("datadog_deployment_rule.foo", "options.excluded_resources.1", "resource3"),
 				),
 			},
 		},
@@ -39,12 +57,109 @@ func TestAccDeploymentRuleBasic(t *testing.T) {
 }
 
 func testAccCheckDatadogDeploymentRule(uniq string) string {
-	// Update me to make use of the unique value
-	return fmt.Sprintf(`resource "datadog_deployment_rule" "foo" {
-    gate_id = "UPDATE ME"
-    dry_run = "UPDATE ME"
+	return fmt.Sprintf(`
+resource "datadog_deployment_gate" "test_gate" {
+	service = "test-service"
+	env = "prod"
+	identifier = "%s"
+}
+
+resource "datadog_deployment_rule" "foo" {
+    gate_id = datadog_deployment_gate.test_gate.id
+    dry_run = "false"
     name = "My deployment rule"
     type = "faulty_deployment_detection"
+    options {
+        duration = 10
+        excluded_resources = ["resource1"]
+    }
+}`, uniq)
+}
+
+func TestAccDeploymentRuleTypeForceNew(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	uniq := uniqueEntityName(ctx, t)
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogDeploymentRuleDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogDeploymentRuleTypeForceNew(uniq, "faulty_deployment_detection"),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogDeploymentRuleExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(
+						"datadog_deployment_rule.foo", "type", "faulty_deployment_detection"),
+				),
+			},
+			{
+				Config: testAccCheckDatadogDeploymentRuleTypeForceNew(uniq, "monitor"),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogDeploymentRuleExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(
+						"datadog_deployment_rule.foo", "type", "monitor"),
+				),
+			},
+		},
+	})
+}
+
+func testAccCheckDatadogDeploymentRuleTypeForceNew(uniq string, ruleType string) string {
+	if ruleType == "monitor" {
+		return fmt.Sprintf(`
+resource "datadog_deployment_gate" "test_gate" {
+	service = "test-service"
+	env = "prod"
+	identifier = "%s"
+}
+
+resource "datadog_deployment_rule" "foo" {
+    gate_id = datadog_deployment_gate.test_gate.id
+    dry_run = "false"
+    name = "My deployment rule"
+    type = "monitor"
+    options {
+        query = "service:test-service"
+    }
+}`, uniq)
+	}
+	return fmt.Sprintf(`
+resource "datadog_deployment_gate" "test_gate" {
+	service = "test-service"
+	env = "prod"
+	identifier = "%s"
+}
+
+resource "datadog_deployment_rule" "foo" {
+    gate_id = datadog_deployment_gate.test_gate.id
+    dry_run = "false"
+    name = "My deployment rule"
+    type = "faulty_deployment_detection"
+    options {
+        duration = 10
+        excluded_resources = ["resource1"]
+    }
+}`, uniq)
+}
+
+func testAccCheckDatadogDeploymentRuleUpdated(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_deployment_gate" "test_gate" {
+	service = "test-service"
+	env = "prod"
+	identifier = "%s"
+}
+
+resource "datadog_deployment_rule" "foo" {
+    gate_id = datadog_deployment_gate.test_gate.id
+    dry_run = "true"
+    name = "Updated deployment rule"
+    type = "faulty_deployment_detection"
+    options {
+        duration = 15
+        excluded_resources = ["resource2", "resource3"]
+    }
 }`, uniq)
 }
 

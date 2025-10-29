@@ -85,7 +85,7 @@ func buildFrameworkDatadogClient(ctx context.Context, httpClient *http.Client) *
 
 	// Enable DeploymentGates
 	config.SetUnstableOperationEnabled("v2.CreateDeploymentGate", true)
-	config.SetUnstableOperationEnabled("v2.UpdateDeploymentGat", true)
+	config.SetUnstableOperationEnabled("v2.UpdateDeploymentGate", true)
 	config.SetUnstableOperationEnabled("v2.DeleteDeploymentGate", true)
 	config.SetUnstableOperationEnabled("v2.GetDeploymentGate", true)
 
