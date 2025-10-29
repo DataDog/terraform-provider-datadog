@@ -14,7 +14,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
@@ -22,6 +21,22 @@ var (
 	integrationGcpStsMutex sync.Mutex
 	_                      resource.ResourceWithConfigure   = &integrationGcpStsResource{}
 	_                      resource.ResourceWithImportState = &integrationGcpStsResource{}
+
+	MetricNamespaceConfigSpec = types.ObjectType{
+		AttrTypes: map[string]attr.Type{
+			"id":       types.StringType,
+			"disabled": types.BoolType,
+		},
+	}
+
+	MonitoredResourceConfigSpec = types.ObjectType{
+		AttrTypes: map[string]attr.Type{
+			"type": types.StringType,
+			"filters": types.SetType{
+				ElemType: types.StringType,
+			},
+		},
+	}
 )
 
 type integrationGcpStsResource struct {
@@ -33,36 +48,26 @@ type MetricNamespaceConfigModel struct {
 	ID       types.String `tfsdk:"id"`
 	Disabled types.Bool   `tfsdk:"disabled"`
 }
-
-var MonitoredResourceConfigSpec = types.ObjectType{
-	AttrTypes: map[string]attr.Type{
-		"type": types.StringType,
-		"filters": types.SetType{
-			ElemType: types.StringType,
-		},
-	},
-}
-
 type MonitoredResourceConfigModel struct {
 	Type    types.String `tfsdk:"type"`
 	Filters types.Set    `tfsdk:"filters"`
 }
 
 type integrationGcpStsModel struct {
-	ID                                types.String                  `tfsdk:"id"`
-	AccountTags                       types.Set                     `tfsdk:"account_tags"`
-	Automute                          types.Bool                    `tfsdk:"automute"`
-	ClientEmail                       types.String                  `tfsdk:"client_email"`
-	DelegateAccountEmail              types.String                  `tfsdk:"delegate_account_email"`
-	HostFilters                       types.Set                     `tfsdk:"host_filters"`               // DEPRECATED: use MonitoredResourceConfigs["gce_instance"]
-	CloudRunRevisionFilters           types.Set                     `tfsdk:"cloud_run_revision_filters"` // DEPRECATED: use MonitoredResourceConfigs["cloud_run_revision"]
-	IsCspmEnabled                     types.Bool                    `tfsdk:"is_cspm_enabled"`
-	IsSecurityCommandCenterEnabled    types.Bool                    `tfsdk:"is_security_command_center_enabled"`
-	IsResourceChangeCollectionEnabled types.Bool                    `tfsdk:"is_resource_change_collection_enabled"`
-	IsPerProjectQuotaEnabled          types.Bool                    `tfsdk:"is_per_project_quota_enabled"`
-	ResourceCollectionEnabled         types.Bool                    `tfsdk:"resource_collection_enabled"`
-	MetricNamespaceConfigs            []*MetricNamespaceConfigModel `tfsdk:"metric_namespace_configs"`
-	MonitoredResourceConfigs          types.Set                     `tfsdk:"monitored_resource_configs"`
+	ID                                types.String `tfsdk:"id"`
+	AccountTags                       types.Set    `tfsdk:"account_tags"`
+	Automute                          types.Bool   `tfsdk:"automute"`
+	ClientEmail                       types.String `tfsdk:"client_email"`
+	DelegateAccountEmail              types.String `tfsdk:"delegate_account_email"`
+	HostFilters                       types.Set    `tfsdk:"host_filters"`               // DEPRECATED: use MonitoredResourceConfigs["gce_instance"]
+	CloudRunRevisionFilters           types.Set    `tfsdk:"cloud_run_revision_filters"` // DEPRECATED: use MonitoredResourceConfigs["cloud_run_revision"]
+	IsCspmEnabled                     types.Bool   `tfsdk:"is_cspm_enabled"`
+	IsSecurityCommandCenterEnabled    types.Bool   `tfsdk:"is_security_command_center_enabled"`
+	IsResourceChangeCollectionEnabled types.Bool   `tfsdk:"is_resource_change_collection_enabled"`
+	IsPerProjectQuotaEnabled          types.Bool   `tfsdk:"is_per_project_quota_enabled"`
+	ResourceCollectionEnabled         types.Bool   `tfsdk:"resource_collection_enabled"`
+	MetricNamespaceConfigs            types.Set    `tfsdk:"metric_namespace_configs"`
+	MonitoredResourceConfigs          types.Set    `tfsdk:"monitored_resource_configs"`
 }
 
 func NewIntegrationGcpStsResource() resource.Resource {
@@ -152,14 +157,11 @@ func (r *integrationGcpStsResource) Schema(_ context.Context, _ resource.SchemaR
 				Computed:    true,
 			},
 			"metric_namespace_configs": schema.SetAttribute{
-				Optional:    true,
+				Optional: true,
+				// if this field is not set by the user, then we will disable prometheus by default
+				Computed:    true,
 				Description: "Configurations for GCP metric namespaces.",
-				ElementType: types.ObjectType{
-					AttrTypes: map[string]attr.Type{
-						"id":       types.StringType,
-						"disabled": types.BoolType,
-					},
-				},
+				ElementType: MetricNamespaceConfigSpec,
 			},
 			"monitored_resource_configs": schema.SetAttribute{
 				Optional:    true,
@@ -266,6 +268,7 @@ func (r *integrationGcpStsResource) Create(ctx context.Context, request resource
 
 func (r *integrationGcpStsResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
 	var state integrationGcpStsModel
+
 	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -353,15 +356,14 @@ func (r *integrationGcpStsResource) updateState(ctx context.Context, state *inte
 		state.AccountTags, _ = types.SetValueFrom(ctx, types.StringType, accountTags)
 	}
 
-	if mncs := attributes.GetMetricNamespaceConfigs(); len(mncs) > 0 {
-		state.MetricNamespaceConfigs = make([]*MetricNamespaceConfigModel, 0, len(mncs))
-		for _, mnc := range mncs {
-			state.MetricNamespaceConfigs = append(state.MetricNamespaceConfigs, &MetricNamespaceConfigModel{
-				ID:       types.StringValue(mnc.GetId()),
-				Disabled: types.BoolValue(mnc.GetDisabled()),
-			})
-		}
+	mncs := make([]*MetricNamespaceConfigModel, 0)
+	for _, mnc := range attributes.GetMetricNamespaceConfigs() {
+		mncs = append(mncs, &MetricNamespaceConfigModel{
+			ID:       types.StringValue(mnc.GetId()),
+			Disabled: types.BoolValue(mnc.GetDisabled()),
+		})
 	}
+	state.MetricNamespaceConfigs, _ = types.SetValueFrom(ctx, MetricNamespaceConfigSpec, mncs)
 
 	state.HostFilters, _ = types.SetValueFrom(ctx, types.StringType, attributes.GetHostFilters())
 	state.CloudRunRevisionFilters, _ = types.SetValueFrom(ctx, types.StringType, attributes.GetCloudRunRevisionFilters())
@@ -400,14 +402,18 @@ func (r *integrationGcpStsResource) buildIntegrationGcpStsRequestBody(ctx contex
 
 	attributes.SetAccountTags(tfCollectionToSlice[string](ctx, diags, state.AccountTags))
 
-	mncs := make([]datadogV2.GCPMetricNamespaceConfig, 0)
-	for _, mnc := range state.MetricNamespaceConfigs {
-		mncs = append(mncs, datadogV2.GCPMetricNamespaceConfig{
-			Id:       mnc.ID.ValueStringPointer(),
-			Disabled: mnc.Disabled.ValueBoolPointer(),
-		})
+	// only set this field if the user explicitly sets the field
+	// otherwise we want to omit it so that the API server can populate defaults when applicable
+	if cfgs := state.MetricNamespaceConfigs; !cfgs.IsUnknown() {
+		mncs := make([]datadogV2.GCPMetricNamespaceConfig, 0)
+		for _, mnc := range tfCollectionToSlice[*MetricNamespaceConfigModel](ctx, diags, cfgs) {
+			mncs = append(mncs, datadogV2.GCPMetricNamespaceConfig{
+				Id:       mnc.ID.ValueStringPointer(),
+				Disabled: mnc.Disabled.ValueBoolPointer(),
+			})
+		}
+		attributes.SetMetricNamespaceConfigs(mncs)
 	}
-	attributes.SetMetricNamespaceConfigs(mncs)
 
 	attributes.SetHostFilters(tfCollectionToSlice[string](ctx, diags, state.HostFilters))
 	attributes.SetCloudRunRevisionFilters(tfCollectionToSlice[string](ctx, diags, state.CloudRunRevisionFilters))
