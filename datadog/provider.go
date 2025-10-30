@@ -377,20 +377,8 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 
 	// Initialize the official Datadog V1 API client
 	auth := context.Background()
-	if apiKey != "" || appKey != "" {
-		auth = context.WithValue(
-			auth,
-			datadog.ContextAPIKeys,
-			map[string]datadog.APIKey{
-				"apiKeyAuth": {
-					Key: apiKey,
-				},
-				"appKeyAuth": {
-					Key: appKey,
-				},
-			},
-		)
-	} else if cloudProviderType != "" {
+	// Check cloud_provider_type first - explicit config takes precedence over API keys
+	if cloudProviderType != "" {
 		// Allows for delegated token authentication
 		auth = context.WithValue(
 			auth,
@@ -411,6 +399,19 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 		default:
 			return nil, diag.FromErr(errors.New("cloud_provider_type must be set to a valid value unless validate = false"))
 		}
+	} else if apiKey != "" || appKey != "" {
+		auth = context.WithValue(
+			auth,
+			datadog.ContextAPIKeys,
+			map[string]datadog.APIKey{
+				"apiKeyAuth": {
+					Key: apiKey,
+				},
+				"appKeyAuth": {
+					Key: appKey,
+				},
+			},
+		)
 	}
 
 	config := datadog.NewConfiguration()
@@ -497,8 +498,8 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 	}
 
 	config.HTTPClient = utils.NewHTTPClient()
-	// Only set DelegatedTokenConfig if we're using cloud provider auth (not API keys)
-	if apiKey == "" && appKey == "" && cloudProviderType != "" {
+	// If cloud_provider_type is set, use cloud auth (takes precedence over API keys)
+	if cloudProviderType != "" {
 		switch cloudProviderType {
 		case "aws":
 			config.DelegatedTokenConfig = &datadog.DelegatedTokenConfig{
@@ -515,8 +516,8 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 	apiInstances := &utils.ApiInstances{HttpClient: datadogClient}
 	if validate {
 		log.Println("[INFO] Datadog client successfully initialized, now validating...")
-		// Only validate cloud auth if we're actually using it (not API keys)
-		if apiKey == "" && appKey == "" && cloudProviderType != "" { // Validate the cloud auth credentials
+		// Validate cloud auth credentials if cloud_provider_type is set
+		if cloudProviderType != "" { // Validate the cloud auth credentials
 			delegatedConfig, err := datadogClient.GetDelegatedToken(auth)
 			if err != nil {
 				log.Printf("[ERROR] Datadog Client validation error: %v", err)

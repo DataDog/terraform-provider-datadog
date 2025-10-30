@@ -265,8 +265,8 @@ func TestFrameworkProviderConfigure_APIKeyOnly(t *testing.T) {
 	}
 }
 
-// TestFrameworkProviderConfigure_CloudAuthWithAPIKey tests the bug scenario:
-// When both cloud_provider_type and api_key are set, API key auth should take precedence
+// TestFrameworkProviderConfigure_CloudAuthWithAPIKey tests that cloud auth takes precedence:
+// When both cloud_provider_type and api_key are set, cloud auth should take precedence
 func TestFrameworkProviderConfigure_CloudAuthWithAPIKey(t *testing.T) {
 	// Clear environment variables
 	os.Unsetenv("DD_API_KEY")
@@ -289,7 +289,7 @@ func TestFrameworkProviderConfigure_CloudAuthWithAPIKey(t *testing.T) {
 	request := &provider.ConfigureRequest{}
 	diags := p.ConfigureCallbackFunc(p, request, config)
 
-	// Should not have errors (this was the bug - it would cause "DelegatedTokenCredentials not found in context")
+	// Should not have errors
 	if diags.HasError() {
 		t.Errorf("framework provider configure should not error when both cloud auth and API keys are set, got: %v", diags)
 	}
@@ -297,15 +297,15 @@ func TestFrameworkProviderConfigure_CloudAuthWithAPIKey(t *testing.T) {
 		t.Fatal("DatadogApiInstances should be set")
 	}
 
-	// Verify DelegatedTokenConfig is NOT set (API key auth takes precedence)
-	if p.DatadogApiInstances.HttpClient.GetConfig().DelegatedTokenConfig != nil {
-		t.Errorf("DelegatedTokenConfig should NOT be set when API keys are present (API key auth takes precedence), got: %+v",
-			p.DatadogApiInstances.HttpClient.GetConfig().DelegatedTokenConfig)
+	// Verify DelegatedTokenConfig IS set (cloud auth takes precedence over API keys)
+	if p.DatadogApiInstances.HttpClient.GetConfig().DelegatedTokenConfig == nil {
+		t.Error("DelegatedTokenConfig should be set when cloud_provider_type is explicitly configured (cloud auth takes precedence)")
 	}
 }
 
-// TestFrameworkProviderConfigure_CloudAuthWithEnvVarAPIKey tests the bug scenario with environment variables:
-// When both cloud_provider_type and DD_API_KEY/DD_APP_KEY env vars are set, API key auth should take precedence
+// TestFrameworkProviderConfigure_CloudAuthWithEnvVarAPIKey tests that explicit config takes precedence:
+// When cloud_provider_type is explicitly set in config and DD_API_KEY/DD_APP_KEY env vars are set,
+// cloud auth should take precedence (explicit config > environment variables)
 func TestFrameworkProviderConfigure_CloudAuthWithEnvVarAPIKey(t *testing.T) {
 	// Set environment variables
 	os.Setenv("DD_API_KEY", "test_api_key_from_env")
@@ -337,21 +337,20 @@ func TestFrameworkProviderConfigure_CloudAuthWithEnvVarAPIKey(t *testing.T) {
 
 	// Should not have errors
 	if diags.HasError() {
-		t.Errorf("framework provider configure should not error when cloud auth is set but env vars have API keys, got: %v", diags)
+		t.Errorf("framework provider configure should not error when cloud auth is set with env var API keys, got: %v", diags)
 	}
 	if p.DatadogApiInstances == nil {
 		t.Fatal("DatadogApiInstances should be set")
 	}
 
-	// Verify DelegatedTokenConfig is NOT set (API key from env takes precedence)
-	if p.DatadogApiInstances.HttpClient.GetConfig().DelegatedTokenConfig != nil {
-		t.Errorf("DelegatedTokenConfig should NOT be set when API keys from env vars are present, got: %+v",
-			p.DatadogApiInstances.HttpClient.GetConfig().DelegatedTokenConfig)
+	// Verify DelegatedTokenConfig IS set (explicit cloud_provider_type config takes precedence over env vars)
+	if p.DatadogApiInstances.HttpClient.GetConfig().DelegatedTokenConfig == nil {
+		t.Error("DelegatedTokenConfig should be set when cloud_provider_type is explicitly configured (takes precedence over env var API keys)")
 	}
 }
 
-// TestFrameworkProviderConfigure_CloudAuthWithOnlyAppKey tests that even with only app_key set (no api_key),
-// API key auth still takes precedence over cloud auth
+// TestFrameworkProviderConfigure_CloudAuthWithOnlyAppKey tests that cloud auth takes precedence:
+// When both cloud_provider_type and app_key are set, cloud auth should take precedence
 func TestFrameworkProviderConfigure_CloudAuthWithOnlyAppKey(t *testing.T) {
 	// Clear environment variables
 	os.Unsetenv("DD_API_KEY")
@@ -381,9 +380,8 @@ func TestFrameworkProviderConfigure_CloudAuthWithOnlyAppKey(t *testing.T) {
 		t.Fatal("DatadogApiInstances should be set")
 	}
 
-	// Verify DelegatedTokenConfig is NOT set (app_key alone triggers API key auth)
-	if p.DatadogApiInstances.HttpClient.GetConfig().DelegatedTokenConfig != nil {
-		t.Errorf("DelegatedTokenConfig should NOT be set when app_key is present (even without api_key), got: %+v",
-			p.DatadogApiInstances.HttpClient.GetConfig().DelegatedTokenConfig)
+	// Verify DelegatedTokenConfig IS set (cloud auth takes precedence)
+	if p.DatadogApiInstances.HttpClient.GetConfig().DelegatedTokenConfig == nil {
+		t.Error("DelegatedTokenConfig should be set when cloud_provider_type is explicitly configured (cloud auth takes precedence)")
 	}
 }
