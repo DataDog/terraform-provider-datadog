@@ -303,6 +303,11 @@ func (r *tagPipelineRulesetResource) Read(ctx context.Context, req resource.Read
 
 	apiResp, response, err := r.Api.GetTagPipelinesRuleset(r.Auth, state.ID.ValueString())
 	if err != nil {
+		if response != nil && response.StatusCode == 404 {
+			// Resource was deleted outside of Terraform - remove from state
+			resp.State.RemoveResource(ctx)
+			return
+		}
 		resp.Diagnostics.AddError("Error reading ruleset", utils.TranslateClientError(err, response, "").Error())
 		return
 	}
@@ -358,8 +363,12 @@ func (r *tagPipelineRulesetResource) Delete(ctx context.Context, req resource.De
 		return
 	}
 
-	_, err := r.Api.DeleteTagPipelinesRuleset(r.Auth, state.ID.ValueString())
+	httpResp, err := r.Api.DeleteTagPipelinesRuleset(r.Auth, state.ID.ValueString())
 	if err != nil {
+		if httpResp != nil && httpResp.StatusCode == 404 {
+			// Resource already deleted - this is fine
+			return
+		}
 		resp.Diagnostics.AddError("Error deleting ruleset", err.Error())
 		return
 	}
