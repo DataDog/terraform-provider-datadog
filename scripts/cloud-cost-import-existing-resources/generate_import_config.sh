@@ -27,8 +27,8 @@
 #   - AWS CUR (Cost and Usage Report) configurations
 #   - Azure Usage Cost configurations
 #   - GCP Usage Cost configurations
-#   - Custom allocation rules
-#   - Tag pipeline rulesets
+#   - Custom allocation rules (individual + ordering)
+#   - Tag pipeline rulesets (individual + ordering)
 #
 # For more information, see: scripts/cloud-cost-import-existing-resources/README.md
 
@@ -271,7 +271,16 @@ import {
 }
 "' >> "$IMPORT_TF"
 
-    RESOURCE_COUNT=$((RESOURCE_COUNT + ALLOCATION_COUNT))
+    # Also import the ordering resource that manages all rules
+    cat >> "$IMPORT_TF" <<'ALLOCATIONORDERIMPORT'
+
+import {
+  to = datadog_custom_allocation_rules.order
+  id = "order"
+}
+ALLOCATIONORDERIMPORT
+
+    RESOURCE_COUNT=$((RESOURCE_COUNT + ALLOCATION_COUNT + 1))
 fi
 
 # ============================================================================
@@ -293,7 +302,16 @@ import {
 }
 "' >> "$IMPORT_TF"
 
-    RESOURCE_COUNT=$((RESOURCE_COUNT + TAG_PIPELINE_COUNT))
+    # Also import the ordering resource that manages all rulesets
+    cat >> "$IMPORT_TF" <<'TAGPIPELINEORDERIMPORT'
+
+import {
+  to = datadog_tag_pipeline_rulesets.order
+  id = "order"
+}
+TAGPIPELINEORDERIMPORT
+
+    RESOURCE_COUNT=$((RESOURCE_COUNT + TAG_PIPELINE_COUNT + 1))
 fi
 
 # ============================================================================
