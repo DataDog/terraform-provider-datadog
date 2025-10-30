@@ -268,7 +268,11 @@ func (r *syntheticsPrivateLocationResource) updateState(ctx context.Context, sta
 	state.Description = types.StringValue(resp.GetDescription())
 	state.Name = types.StringValue(resp.GetName())
 	state.Tags, _ = types.ListValueFrom(ctx, types.StringType, resp.Tags)
-	state.RestrictionPolicyResourceId = types.StringValue(fmt.Sprintf("synthetics-private-location%s", resp.GetId()[2:]))
+	// Convert the private location ID to the format expected by restriction policies
+	// The format should be: synthetics-private-location:pl:xxx (keep the pl: prefix)
+	privateLocationId := resp.GetId()
+	restrictionPolicyId := fmt.Sprintf("synthetics-private-location:%s", privateLocationId)
+	state.RestrictionPolicyResourceId = types.StringValue(restrictionPolicyId)
 
 	if metadata, ok := resp.GetMetadataOk(); ok {
 		if restrictedRoles, ok := metadata.GetRestrictedRolesOk(); ok {

@@ -102,7 +102,7 @@ func createSyntheticsPrivateLocationStep(ctx context.Context, accProvider *fwpro
 				"datadog_synthetics_private_location.foo", "config"),
 			resource.TestCheckResourceAttrSet(
 				"datadog_synthetics_private_location.foo", "id"),
-			checkRessourceAttributeRegex("datadog_synthetics_private_location.foo", "restriction_policy_resource_id", "synthetics-private-location:.*"),
+			checkRessourceAttributeRegex("datadog_synthetics_private_location.foo", "restriction_policy_resource_id", "synthetics-private-location:pl:.*"),
 		),
 	}
 }
@@ -141,7 +141,7 @@ func updateSyntheticsPrivateLocationStep(ctx context.Context, accProvider *fwpro
 				"datadog_synthetics_private_location.foo", "config"),
 			resource.TestCheckResourceAttrSet(
 				"datadog_synthetics_private_location.foo", "id"),
-			checkRessourceAttributeRegex("datadog_synthetics_private_location.foo", "restriction_policy_resource_id", "synthetics-private-location:.*"),
+			checkRessourceAttributeRegex("datadog_synthetics_private_location.foo", "restriction_policy_resource_id", "synthetics-private-location:pl:.*"),
 		),
 	}
 }
