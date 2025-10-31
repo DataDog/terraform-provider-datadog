@@ -447,49 +447,51 @@ func apiResponseToConnectionModel(connection datadogV2.GetActionConnectionRespon
 
 	if attributes.Integration.HTTPIntegration != nil {
 		httpAttr := attributes.Integration.HTTPIntegration
-
 		tokenAuth := &httpTokenAuthConnectionModel{}
-		tokens := []*httpConnectionTokenModel{}
-		for _, token := range httpAttr.Credentials.HTTPTokenAuth.Tokens {
-			tokens = append(tokens, &httpConnectionTokenModel{
-				Type: types.StringValue(string(token.Type)),
-				Name: types.StringValue(token.Name),
-			})
-		}
-		if len(tokens) > 0 {
-			tokenAuth.Tokens = tokens
-		}
 
-		headers := []*httpConnectionHeaderModel{}
-		for _, header := range httpAttr.Credentials.HTTPTokenAuth.Headers {
-			headers = append(headers, &httpConnectionHeaderModel{
-				Name:  types.StringValue(header.Name),
-				Value: types.StringValue(header.Value),
-			})
-		}
-		if len(headers) > 0 {
-			tokenAuth.Headers = headers
-		}
+		if httpAttr.Credentials.HTTPTokenAuth != nil {
+			tokens := []*httpConnectionTokenModel{}
+			for _, token := range httpAttr.Credentials.HTTPTokenAuth.Tokens {
+				tokens = append(tokens, &httpConnectionTokenModel{
+					Type: types.StringValue(string(token.Type)),
+					Name: types.StringValue(token.Name),
+				})
+			}
+			if len(tokens) > 0 {
+				tokenAuth.Tokens = tokens
+			}
 
-		urlParams := []*httpConnectionUrlParameterModel{}
-		for _, urlParam := range httpAttr.Credentials.HTTPTokenAuth.UrlParameters {
-			urlParams = append(urlParams, &httpConnectionUrlParameterModel{
-				Name:  types.StringValue(urlParam.Name),
-				Value: types.StringValue(urlParam.Value),
-			})
-		}
-		if len(urlParams) > 0 {
-			tokenAuth.URLParameters = urlParams
-		}
+			headers := []*httpConnectionHeaderModel{}
+			for _, header := range httpAttr.Credentials.HTTPTokenAuth.Headers {
+				headers = append(headers, &httpConnectionHeaderModel{
+					Name:  types.StringValue(header.Name),
+					Value: types.StringValue(header.Value),
+				})
+			}
+			if len(headers) > 0 {
+				tokenAuth.Headers = headers
+			}
 
-		body := httpAttr.Credentials.HTTPTokenAuth.Body
-		if body != nil {
-			if body.Content == nil && body.ContentType == nil {
-				tokenAuth.Body = nil
-			} else {
-				tokenAuth.Body = &httpConnectionBodyModel{}
-				tokenAuth.Body.Content = types.StringPointerValue(body.Content)
-				tokenAuth.Body.ContentType = types.StringPointerValue(body.ContentType)
+			urlParams := []*httpConnectionUrlParameterModel{}
+			for _, urlParam := range httpAttr.Credentials.HTTPTokenAuth.UrlParameters {
+				urlParams = append(urlParams, &httpConnectionUrlParameterModel{
+					Name:  types.StringValue(urlParam.Name),
+					Value: types.StringValue(urlParam.Value),
+				})
+			}
+			if len(urlParams) > 0 {
+				tokenAuth.URLParameters = urlParams
+			}
+
+			body := httpAttr.Credentials.HTTPTokenAuth.Body
+			if body != nil {
+				if body.Content == nil && body.ContentType == nil {
+					tokenAuth.Body = nil
+				} else {
+					tokenAuth.Body = &httpConnectionBodyModel{}
+					tokenAuth.Body.Content = types.StringPointerValue(body.Content)
+					tokenAuth.Body.ContentType = types.StringPointerValue(body.ContentType)
+				}
 			}
 		}
 
