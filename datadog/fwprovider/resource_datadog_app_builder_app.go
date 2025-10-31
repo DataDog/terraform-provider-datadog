@@ -29,8 +29,8 @@ var (
 	_ resource.ResourceWithModifyPlan  = &appBuilderAppResource{}
 )
 
-var ErrDeploymentExists = "a deployment with the same app version already exists"
-var ErrAppAlreadyDisabled = "app already disabled"
+const ErrDeploymentExists = "this version of the app has already been published"
+const ErrAlreadyUnpublished = "this version of the app has already been unpublished"
 
 type appBuilderAppResource struct {
 	Api  *datadogV2.AppBuilderApi
@@ -639,7 +639,7 @@ func handleAppBuilderPublishState(ctx context.Context, diags *diag.Diagnostics, 
 				}
 
 				// if error is related to the app already being unpublished, we can ignore it
-				if strings.Contains(string(body), ErrAppAlreadyDisabled) {
+				if strings.Contains(string(body), ErrAlreadyUnpublished) {
 					return true
 				}
 				diags.AddError("error unpublishing app", string(body))

@@ -1,0 +1,1005 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 707
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"components":[{"events":[],"name":"grid0","properties":{"children":[]},"type":"grid"}],"description":"Test app for publish/unpublish","favorite":false,"name":"tf-TestAccDatadogAppBuilderAppResource_PublishUnpublish-local-1761865867","queries":[{"id":"11111111-1111-1111-1111-111111111111","name":"listTeams0","properties":{"onlyTriggerManually":false,"outputs":"${((outputs) =\u003e {return outputs.data.map(item =\u003e item.attributes.name);})(self.rawOutputs)}","spec":{"connectionId":"11111111-2222-3333-4444-555555555555","fqn":"com.datadoghq.dd.teams.listTeams","inputs":{}}},"type":"action"}],"rootInstanceName":"grid0","selfService":false,"tags":[]},"type":"appDefinitions"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/app-builder/apps
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 78
+        uncompressed: false
+        body: '{"data":{"id":"2c2be350-621d-4398-b0b5-31655df117b0","type":"appDefinitions"}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 292.317417ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/app-builder/apps/2c2be350-621d-4398-b0b5-31655df117b0/deployment
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 309
+        uncompressed: false
+        body: '{"data":{"id":"6c723a02-2420-4610-8ef6-e20762c39465","type":"deployment","attributes":{"app_version_id":"00000000-0000-0000-0000-000000000000"},"meta":{"created_at":"2025-10-30T23:11:08.596423Z","user_id":64277601,"user_uuid":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4","user_name":"tiffany.trinh@datadoghq.com"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 185.056084ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/app-builder/apps/2c2be350-621d-4398-b0b5-31655df117b0
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":{"id":"2c2be350-621d-4398-b0b5-31655df117b0","type":"appDefinitions","attributes":{"components":[{"events":[],"name":"grid0","properties":{"children":[]},"type":"grid"}],"description":"Test app for publish/unpublish","favorite":false,"name":"tf-TestAccDatadogAppBuilderAppResource_PublishUnpublish-local-1761865867","queries":[{"id":"11111111-1111-1111-1111-111111111111","name":"listTeams0","type":"action","properties":{"onlyTriggerManually":false,"outputs":"${((outputs) =\u003e {return outputs.data.map(item =\u003e item.attributes.name);})(self.rawOutputs)}","spec":{"connectionId":"11111111-2222-3333-4444-555555555555","fqn":"com.datadoghq.dd.teams.listTeams","inputs":{}}}}],"rootInstanceName":"grid0","selfService":false,"tags":[]},"relationships":{"deployment":{"data":{"id":"6c723a02-2420-4610-8ef6-e20762c39465","type":"deployment"},"meta":{"created_at":"2025-10-30T23:11:08.596423Z","user_id":64277601,"user_uuid":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4","user_name":""}}},"meta":{"org_id":321813,"user_id":64277601,"user_uuid":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4","user_name":"tiffany.trinh@datadoghq.com","version":1,"version_id":"4b701ee1-b52b-4332-8d54-2f1d46b25156","updated_since_deployment":false,"created_at":"2025-10-30T23:11:08.332786Z","updated_at":"2025-10-30T23:11:08.332786Z","deleted_at":"0001-01-01T00:00:00Z","run_as_user":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4"}},"included":[{"id":"6c723a02-2420-4610-8ef6-e20762c39465","type":"deployment","attributes":{"app_version_id":"00000000-0000-0000-0000-000000000000"},"meta":{"created_at":"2025-10-30T23:11:08.596423Z","user_id":64277601,"user_uuid":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4","user_name":""}}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 107.486583ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/app-builder/apps/2c2be350-621d-4398-b0b5-31655df117b0
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":{"id":"2c2be350-621d-4398-b0b5-31655df117b0","type":"appDefinitions","attributes":{"components":[{"events":[],"name":"grid0","properties":{"children":[]},"type":"grid"}],"description":"Test app for publish/unpublish","favorite":false,"name":"tf-TestAccDatadogAppBuilderAppResource_PublishUnpublish-local-1761865867","queries":[{"id":"11111111-1111-1111-1111-111111111111","name":"listTeams0","type":"action","properties":{"onlyTriggerManually":false,"outputs":"${((outputs) =\u003e {return outputs.data.map(item =\u003e item.attributes.name);})(self.rawOutputs)}","spec":{"connectionId":"11111111-2222-3333-4444-555555555555","fqn":"com.datadoghq.dd.teams.listTeams","inputs":{}}}}],"rootInstanceName":"grid0","selfService":false,"tags":[]},"relationships":{"deployment":{"data":{"id":"6c723a02-2420-4610-8ef6-e20762c39465","type":"deployment"},"meta":{"created_at":"2025-10-30T23:11:08.596423Z","user_id":64277601,"user_uuid":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4","user_name":""}}},"meta":{"org_id":321813,"user_id":64277601,"user_uuid":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4","user_name":"tiffany.trinh@datadoghq.com","version":1,"version_id":"4b701ee1-b52b-4332-8d54-2f1d46b25156","updated_since_deployment":false,"created_at":"2025-10-30T23:11:08.332786Z","updated_at":"2025-10-30T23:11:08.332786Z","deleted_at":"0001-01-01T00:00:00Z","run_as_user":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4"}},"included":[{"id":"6c723a02-2420-4610-8ef6-e20762c39465","type":"deployment","attributes":{"app_version_id":"00000000-0000-0000-0000-000000000000"},"meta":{"created_at":"2025-10-30T23:11:08.596423Z","user_id":64277601,"user_uuid":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4","user_name":""}}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 228.082125ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/app-builder/apps/2c2be350-621d-4398-b0b5-31655df117b0
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":{"id":"2c2be350-621d-4398-b0b5-31655df117b0","type":"appDefinitions","attributes":{"components":[{"events":[],"name":"grid0","properties":{"children":[]},"type":"grid"}],"description":"Test app for publish/unpublish","favorite":false,"name":"tf-TestAccDatadogAppBuilderAppResource_PublishUnpublish-local-1761865867","queries":[{"id":"11111111-1111-1111-1111-111111111111","name":"listTeams0","type":"action","properties":{"onlyTriggerManually":false,"outputs":"${((outputs) =\u003e {return outputs.data.map(item =\u003e item.attributes.name);})(self.rawOutputs)}","spec":{"connectionId":"11111111-2222-3333-4444-555555555555","fqn":"com.datadoghq.dd.teams.listTeams","inputs":{}}}}],"rootInstanceName":"grid0","selfService":false,"tags":[]},"relationships":{"deployment":{"data":{"id":"6c723a02-2420-4610-8ef6-e20762c39465","type":"deployment"},"meta":{"created_at":"2025-10-30T23:11:08.596423Z","user_id":64277601,"user_uuid":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4","user_name":""}}},"meta":{"org_id":321813,"user_id":64277601,"user_uuid":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4","user_name":"tiffany.trinh@datadoghq.com","version":1,"version_id":"4b701ee1-b52b-4332-8d54-2f1d46b25156","updated_since_deployment":false,"created_at":"2025-10-30T23:11:08.332786Z","updated_at":"2025-10-30T23:11:08.332786Z","deleted_at":"0001-01-01T00:00:00Z","run_as_user":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4"}},"included":[{"id":"6c723a02-2420-4610-8ef6-e20762c39465","type":"deployment","attributes":{"app_version_id":"00000000-0000-0000-0000-000000000000"},"meta":{"created_at":"2025-10-30T23:11:08.596423Z","user_id":64277601,"user_uuid":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4","user_name":""}}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 141.883917ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/app-builder/apps/2c2be350-621d-4398-b0b5-31655df117b0
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":{"id":"2c2be350-621d-4398-b0b5-31655df117b0","type":"appDefinitions","attributes":{"components":[{"events":[],"name":"grid0","properties":{"children":[]},"type":"grid"}],"description":"Test app for publish/unpublish","favorite":false,"name":"tf-TestAccDatadogAppBuilderAppResource_PublishUnpublish-local-1761865867","queries":[{"id":"11111111-1111-1111-1111-111111111111","name":"listTeams0","type":"action","properties":{"onlyTriggerManually":false,"outputs":"${((outputs) =\u003e {return outputs.data.map(item =\u003e item.attributes.name);})(self.rawOutputs)}","spec":{"connectionId":"11111111-2222-3333-4444-555555555555","fqn":"com.datadoghq.dd.teams.listTeams","inputs":{}}}}],"rootInstanceName":"grid0","selfService":false,"tags":[]},"relationships":{"deployment":{"data":{"id":"6c723a02-2420-4610-8ef6-e20762c39465","type":"deployment"},"meta":{"created_at":"2025-10-30T23:11:08.596423Z","user_id":64277601,"user_uuid":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4","user_name":""}}},"meta":{"org_id":321813,"user_id":64277601,"user_uuid":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4","user_name":"tiffany.trinh@datadoghq.com","version":1,"version_id":"4b701ee1-b52b-4332-8d54-2f1d46b25156","updated_since_deployment":false,"created_at":"2025-10-30T23:11:08.332786Z","updated_at":"2025-10-30T23:11:08.332786Z","deleted_at":"0001-01-01T00:00:00Z","run_as_user":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4"}},"included":[{"id":"6c723a02-2420-4610-8ef6-e20762c39465","type":"deployment","attributes":{"app_version_id":"00000000-0000-0000-0000-000000000000"},"meta":{"created_at":"2025-10-30T23:11:08.596423Z","user_id":64277601,"user_uuid":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4","user_name":""}}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 243.843917ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/app-builder/apps/2c2be350-621d-4398-b0b5-31655df117b0
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":{"id":"2c2be350-621d-4398-b0b5-31655df117b0","type":"appDefinitions","attributes":{"components":[{"events":[],"name":"grid0","properties":{"children":[]},"type":"grid"}],"description":"Test app for publish/unpublish","favorite":false,"name":"tf-TestAccDatadogAppBuilderAppResource_PublishUnpublish-local-1761865867","queries":[{"id":"11111111-1111-1111-1111-111111111111","name":"listTeams0","type":"action","properties":{"onlyTriggerManually":false,"outputs":"${((outputs) =\u003e {return outputs.data.map(item =\u003e item.attributes.name);})(self.rawOutputs)}","spec":{"connectionId":"11111111-2222-3333-4444-555555555555","fqn":"com.datadoghq.dd.teams.listTeams","inputs":{}}}}],"rootInstanceName":"grid0","selfService":false,"tags":[]},"relationships":{"deployment":{"data":{"id":"6c723a02-2420-4610-8ef6-e20762c39465","type":"deployment"},"meta":{"created_at":"2025-10-30T23:11:08.596423Z","user_id":64277601,"user_uuid":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4","user_name":""}}},"meta":{"org_id":321813,"user_id":64277601,"user_uuid":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4","user_name":"tiffany.trinh@datadoghq.com","version":1,"version_id":"4b701ee1-b52b-4332-8d54-2f1d46b25156","updated_since_deployment":false,"created_at":"2025-10-30T23:11:08.332786Z","updated_at":"2025-10-30T23:11:08.332786Z","deleted_at":"0001-01-01T00:00:00Z","run_as_user":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4"}},"included":[{"id":"6c723a02-2420-4610-8ef6-e20762c39465","type":"deployment","attributes":{"app_version_id":"00000000-0000-0000-0000-000000000000"},"meta":{"created_at":"2025-10-30T23:11:08.596423Z","user_id":64277601,"user_uuid":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4","user_name":""}}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 276.076041ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/app-builder/apps/2c2be350-621d-4398-b0b5-31655df117b0
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":{"id":"2c2be350-621d-4398-b0b5-31655df117b0","type":"appDefinitions","attributes":{"components":[{"events":[],"name":"grid0","properties":{"children":[]},"type":"grid"}],"description":"Test app for publish/unpublish","favorite":false,"name":"tf-TestAccDatadogAppBuilderAppResource_PublishUnpublish-local-1761865867","queries":[{"id":"11111111-1111-1111-1111-111111111111","name":"listTeams0","type":"action","properties":{"onlyTriggerManually":false,"outputs":"${((outputs) =\u003e {return outputs.data.map(item =\u003e item.attributes.name);})(self.rawOutputs)}","spec":{"connectionId":"11111111-2222-3333-4444-555555555555","fqn":"com.datadoghq.dd.teams.listTeams","inputs":{}}}}],"rootInstanceName":"grid0","selfService":false,"tags":[]},"relationships":{"deployment":{"data":{"id":"6c723a02-2420-4610-8ef6-e20762c39465","type":"deployment"},"meta":{"created_at":"2025-10-30T23:11:08.596423Z","user_id":64277601,"user_uuid":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4","user_name":""}}},"meta":{"org_id":321813,"user_id":64277601,"user_uuid":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4","user_name":"tiffany.trinh@datadoghq.com","version":1,"version_id":"4b701ee1-b52b-4332-8d54-2f1d46b25156","updated_since_deployment":false,"created_at":"2025-10-30T23:11:08.332786Z","updated_at":"2025-10-30T23:11:08.332786Z","deleted_at":"0001-01-01T00:00:00Z","run_as_user":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4"}},"included":[{"id":"6c723a02-2420-4610-8ef6-e20762c39465","type":"deployment","attributes":{"app_version_id":"00000000-0000-0000-0000-000000000000"},"meta":{"created_at":"2025-10-30T23:11:08.596423Z","user_id":64277601,"user_uuid":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4","user_name":""}}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 126.902916ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 707
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"components":[{"events":[],"name":"grid0","properties":{"children":[]},"type":"grid"}],"description":"Test app for publish/unpublish","favorite":false,"name":"tf-TestAccDatadogAppBuilderAppResource_PublishUnpublish-local-1761865867","queries":[{"id":"11111111-1111-1111-1111-111111111111","name":"listTeams0","properties":{"onlyTriggerManually":false,"outputs":"${((outputs) =\u003e {return outputs.data.map(item =\u003e item.attributes.name);})(self.rawOutputs)}","spec":{"connectionId":"11111111-2222-3333-4444-555555555555","fqn":"com.datadoghq.dd.teams.listTeams","inputs":{}}},"type":"action"}],"rootInstanceName":"grid0","selfService":false,"tags":[]},"type":"appDefinitions"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/app-builder/apps/2c2be350-621d-4398-b0b5-31655df117b0
+        method: PATCH
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":{"id":"2c2be350-621d-4398-b0b5-31655df117b0","type":"appDefinitions","attributes":{"components":[{"events":[],"name":"grid0","properties":{"children":[]},"type":"grid"}],"description":"Test app for publish/unpublish","favorite":false,"name":"tf-TestAccDatadogAppBuilderAppResource_PublishUnpublish-local-1761865867","queries":[{"id":"11111111-1111-1111-1111-111111111111","name":"listTeams0","type":"action","properties":{"onlyTriggerManually":false,"outputs":"${((outputs) =\u003e {return outputs.data.map(item =\u003e item.attributes.name);})(self.rawOutputs)}","spec":{"connectionId":"11111111-2222-3333-4444-555555555555","fqn":"com.datadoghq.dd.teams.listTeams","inputs":{}}}}],"rootInstanceName":"grid0","selfService":false,"tags":[]},"relationships":{"deployment":{"data":{"id":"6c723a02-2420-4610-8ef6-e20762c39465","type":"deployment"},"meta":{"created_at":"2025-10-30T23:11:08.596423Z","user_id":64277601,"user_uuid":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4","user_name":""}}},"meta":{"org_id":321813,"user_id":64277601,"user_uuid":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4","user_name":"tiffany.trinh@datadoghq.com","version":2,"version_id":"9890c160-5bf3-4a82-871e-51a504b1ca2f","updated_since_deployment":false,"created_at":"2025-10-30T23:11:08.332786Z","updated_at":"2025-10-30T23:11:12.974657Z","deleted_at":"0001-01-01T00:00:00Z","run_as_user":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4"}},"included":[{"id":"6c723a02-2420-4610-8ef6-e20762c39465","type":"deployment","attributes":{"app_version_id":"00000000-0000-0000-0000-000000000000"},"meta":{"created_at":"2025-10-30T23:11:08.596423Z","user_id":64277601,"user_uuid":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4","user_name":""}}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 198.518125ms
+    - id: 9
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/app-builder/apps/2c2be350-621d-4398-b0b5-31655df117b0/deployment
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 308
+        uncompressed: false
+        body: '{"data":{"id":"06cadfa5-ba2d-4aa9-b968-e0dd28b3b3b1","type":"deployment","attributes":{"app_version_id":"9890c160-5bf3-4a82-871e-51a504b1ca2f"},"meta":{"created_at":"2025-10-30T23:11:13.15978Z","user_id":64277601,"user_uuid":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4","user_name":"tiffany.trinh@datadoghq.com"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 158.531833ms
+    - id: 10
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/app-builder/apps/2c2be350-621d-4398-b0b5-31655df117b0
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":{"id":"2c2be350-621d-4398-b0b5-31655df117b0","type":"appDefinitions","attributes":{"components":[{"events":[],"name":"grid0","properties":{"children":[]},"type":"grid"}],"description":"Test app for publish/unpublish","favorite":false,"name":"tf-TestAccDatadogAppBuilderAppResource_PublishUnpublish-local-1761865867","queries":[{"id":"11111111-1111-1111-1111-111111111111","name":"listTeams0","type":"action","properties":{"onlyTriggerManually":false,"outputs":"${((outputs) =\u003e {return outputs.data.map(item =\u003e item.attributes.name);})(self.rawOutputs)}","spec":{"connectionId":"11111111-2222-3333-4444-555555555555","fqn":"com.datadoghq.dd.teams.listTeams","inputs":{}}}}],"rootInstanceName":"grid0","selfService":false,"tags":[]},"relationships":{"deployment":{"data":{"id":"06cadfa5-ba2d-4aa9-b968-e0dd28b3b3b1","type":"deployment"},"meta":{"created_at":"2025-10-30T23:11:13.15978Z","user_id":64277601,"user_uuid":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4","user_name":""}}},"meta":{"org_id":321813,"user_id":64277601,"user_uuid":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4","user_name":"tiffany.trinh@datadoghq.com","version":2,"version_id":"9890c160-5bf3-4a82-871e-51a504b1ca2f","updated_since_deployment":false,"created_at":"2025-10-30T23:11:08.332786Z","updated_at":"2025-10-30T23:11:12.974657Z","deleted_at":"0001-01-01T00:00:00Z","run_as_user":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4"}},"included":[{"id":"06cadfa5-ba2d-4aa9-b968-e0dd28b3b3b1","type":"deployment","attributes":{"app_version_id":"9890c160-5bf3-4a82-871e-51a504b1ca2f"},"meta":{"created_at":"2025-10-30T23:11:13.15978Z","user_id":64277601,"user_uuid":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4","user_name":""}}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 114.857167ms
+    - id: 11
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/app-builder/apps/2c2be350-621d-4398-b0b5-31655df117b0
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":{"id":"2c2be350-621d-4398-b0b5-31655df117b0","type":"appDefinitions","attributes":{"components":[{"events":[],"name":"grid0","properties":{"children":[]},"type":"grid"}],"description":"Test app for publish/unpublish","favorite":false,"name":"tf-TestAccDatadogAppBuilderAppResource_PublishUnpublish-local-1761865867","queries":[{"id":"11111111-1111-1111-1111-111111111111","name":"listTeams0","type":"action","properties":{"onlyTriggerManually":false,"outputs":"${((outputs) =\u003e {return outputs.data.map(item =\u003e item.attributes.name);})(self.rawOutputs)}","spec":{"connectionId":"11111111-2222-3333-4444-555555555555","fqn":"com.datadoghq.dd.teams.listTeams","inputs":{}}}}],"rootInstanceName":"grid0","selfService":false,"tags":[]},"relationships":{"deployment":{"data":{"id":"06cadfa5-ba2d-4aa9-b968-e0dd28b3b3b1","type":"deployment"},"meta":{"created_at":"2025-10-30T23:11:13.15978Z","user_id":64277601,"user_uuid":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4","user_name":""}}},"meta":{"org_id":321813,"user_id":64277601,"user_uuid":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4","user_name":"tiffany.trinh@datadoghq.com","version":2,"version_id":"9890c160-5bf3-4a82-871e-51a504b1ca2f","updated_since_deployment":false,"created_at":"2025-10-30T23:11:08.332786Z","updated_at":"2025-10-30T23:11:12.974657Z","deleted_at":"0001-01-01T00:00:00Z","run_as_user":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4"}},"included":[{"id":"06cadfa5-ba2d-4aa9-b968-e0dd28b3b3b1","type":"deployment","attributes":{"app_version_id":"9890c160-5bf3-4a82-871e-51a504b1ca2f"},"meta":{"created_at":"2025-10-30T23:11:13.15978Z","user_id":64277601,"user_uuid":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4","user_name":""}}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 117.326458ms
+    - id: 12
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/app-builder/apps/2c2be350-621d-4398-b0b5-31655df117b0
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":{"id":"2c2be350-621d-4398-b0b5-31655df117b0","type":"appDefinitions","attributes":{"components":[{"events":[],"name":"grid0","properties":{"children":[]},"type":"grid"}],"description":"Test app for publish/unpublish","favorite":false,"name":"tf-TestAccDatadogAppBuilderAppResource_PublishUnpublish-local-1761865867","queries":[{"id":"11111111-1111-1111-1111-111111111111","name":"listTeams0","type":"action","properties":{"onlyTriggerManually":false,"outputs":"${((outputs) =\u003e {return outputs.data.map(item =\u003e item.attributes.name);})(self.rawOutputs)}","spec":{"connectionId":"11111111-2222-3333-4444-555555555555","fqn":"com.datadoghq.dd.teams.listTeams","inputs":{}}}}],"rootInstanceName":"grid0","selfService":false,"tags":[]},"relationships":{"deployment":{"data":{"id":"06cadfa5-ba2d-4aa9-b968-e0dd28b3b3b1","type":"deployment"},"meta":{"created_at":"2025-10-30T23:11:13.15978Z","user_id":64277601,"user_uuid":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4","user_name":""}}},"meta":{"org_id":321813,"user_id":64277601,"user_uuid":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4","user_name":"tiffany.trinh@datadoghq.com","version":2,"version_id":"9890c160-5bf3-4a82-871e-51a504b1ca2f","updated_since_deployment":false,"created_at":"2025-10-30T23:11:08.332786Z","updated_at":"2025-10-30T23:11:12.974657Z","deleted_at":"0001-01-01T00:00:00Z","run_as_user":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4"}},"included":[{"id":"06cadfa5-ba2d-4aa9-b968-e0dd28b3b3b1","type":"deployment","attributes":{"app_version_id":"9890c160-5bf3-4a82-871e-51a504b1ca2f"},"meta":{"created_at":"2025-10-30T23:11:13.15978Z","user_id":64277601,"user_uuid":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4","user_name":""}}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 105.842583ms
+    - id: 13
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/app-builder/apps/2c2be350-621d-4398-b0b5-31655df117b0
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":{"id":"2c2be350-621d-4398-b0b5-31655df117b0","type":"appDefinitions","attributes":{"components":[{"events":[],"name":"grid0","properties":{"children":[]},"type":"grid"}],"description":"Test app for publish/unpublish","favorite":false,"name":"tf-TestAccDatadogAppBuilderAppResource_PublishUnpublish-local-1761865867","queries":[{"id":"11111111-1111-1111-1111-111111111111","name":"listTeams0","type":"action","properties":{"onlyTriggerManually":false,"outputs":"${((outputs) =\u003e {return outputs.data.map(item =\u003e item.attributes.name);})(self.rawOutputs)}","spec":{"connectionId":"11111111-2222-3333-4444-555555555555","fqn":"com.datadoghq.dd.teams.listTeams","inputs":{}}}}],"rootInstanceName":"grid0","selfService":false,"tags":[]},"relationships":{"deployment":{"data":{"id":"06cadfa5-ba2d-4aa9-b968-e0dd28b3b3b1","type":"deployment"},"meta":{"created_at":"2025-10-30T23:11:13.15978Z","user_id":64277601,"user_uuid":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4","user_name":""}}},"meta":{"org_id":321813,"user_id":64277601,"user_uuid":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4","user_name":"tiffany.trinh@datadoghq.com","version":2,"version_id":"9890c160-5bf3-4a82-871e-51a504b1ca2f","updated_since_deployment":false,"created_at":"2025-10-30T23:11:08.332786Z","updated_at":"2025-10-30T23:11:12.974657Z","deleted_at":"0001-01-01T00:00:00Z","run_as_user":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4"}},"included":[{"id":"06cadfa5-ba2d-4aa9-b968-e0dd28b3b3b1","type":"deployment","attributes":{"app_version_id":"9890c160-5bf3-4a82-871e-51a504b1ca2f"},"meta":{"created_at":"2025-10-30T23:11:13.15978Z","user_id":64277601,"user_uuid":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4","user_name":""}}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 95.0055ms
+    - id: 14
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/app-builder/apps/2c2be350-621d-4398-b0b5-31655df117b0
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":{"id":"2c2be350-621d-4398-b0b5-31655df117b0","type":"appDefinitions","attributes":{"components":[{"events":[],"name":"grid0","properties":{"children":[]},"type":"grid"}],"description":"Test app for publish/unpublish","favorite":false,"name":"tf-TestAccDatadogAppBuilderAppResource_PublishUnpublish-local-1761865867","queries":[{"id":"11111111-1111-1111-1111-111111111111","name":"listTeams0","type":"action","properties":{"onlyTriggerManually":false,"outputs":"${((outputs) =\u003e {return outputs.data.map(item =\u003e item.attributes.name);})(self.rawOutputs)}","spec":{"connectionId":"11111111-2222-3333-4444-555555555555","fqn":"com.datadoghq.dd.teams.listTeams","inputs":{}}}}],"rootInstanceName":"grid0","selfService":false,"tags":[]},"relationships":{"deployment":{"data":{"id":"06cadfa5-ba2d-4aa9-b968-e0dd28b3b3b1","type":"deployment"},"meta":{"created_at":"2025-10-30T23:11:13.15978Z","user_id":64277601,"user_uuid":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4","user_name":""}}},"meta":{"org_id":321813,"user_id":64277601,"user_uuid":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4","user_name":"tiffany.trinh@datadoghq.com","version":2,"version_id":"9890c160-5bf3-4a82-871e-51a504b1ca2f","updated_since_deployment":false,"created_at":"2025-10-30T23:11:08.332786Z","updated_at":"2025-10-30T23:11:12.974657Z","deleted_at":"0001-01-01T00:00:00Z","run_as_user":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4"}},"included":[{"id":"06cadfa5-ba2d-4aa9-b968-e0dd28b3b3b1","type":"deployment","attributes":{"app_version_id":"9890c160-5bf3-4a82-871e-51a504b1ca2f"},"meta":{"created_at":"2025-10-30T23:11:13.15978Z","user_id":64277601,"user_uuid":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4","user_name":""}}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 102.644875ms
+    - id: 15
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/app-builder/apps/2c2be350-621d-4398-b0b5-31655df117b0
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":{"id":"2c2be350-621d-4398-b0b5-31655df117b0","type":"appDefinitions","attributes":{"components":[{"events":[],"name":"grid0","properties":{"children":[]},"type":"grid"}],"description":"Test app for publish/unpublish","favorite":false,"name":"tf-TestAccDatadogAppBuilderAppResource_PublishUnpublish-local-1761865867","queries":[{"id":"11111111-1111-1111-1111-111111111111","name":"listTeams0","type":"action","properties":{"onlyTriggerManually":false,"outputs":"${((outputs) =\u003e {return outputs.data.map(item =\u003e item.attributes.name);})(self.rawOutputs)}","spec":{"connectionId":"11111111-2222-3333-4444-555555555555","fqn":"com.datadoghq.dd.teams.listTeams","inputs":{}}}}],"rootInstanceName":"grid0","selfService":false,"tags":[]},"relationships":{"deployment":{"data":{"id":"06cadfa5-ba2d-4aa9-b968-e0dd28b3b3b1","type":"deployment"},"meta":{"created_at":"2025-10-30T23:11:13.15978Z","user_id":64277601,"user_uuid":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4","user_name":""}}},"meta":{"org_id":321813,"user_id":64277601,"user_uuid":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4","user_name":"tiffany.trinh@datadoghq.com","version":2,"version_id":"9890c160-5bf3-4a82-871e-51a504b1ca2f","updated_since_deployment":false,"created_at":"2025-10-30T23:11:08.332786Z","updated_at":"2025-10-30T23:11:12.974657Z","deleted_at":"0001-01-01T00:00:00Z","run_as_user":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4"}},"included":[{"id":"06cadfa5-ba2d-4aa9-b968-e0dd28b3b3b1","type":"deployment","attributes":{"app_version_id":"9890c160-5bf3-4a82-871e-51a504b1ca2f"},"meta":{"created_at":"2025-10-30T23:11:13.15978Z","user_id":64277601,"user_uuid":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4","user_name":""}}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 99.90725ms
+    - id: 16
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 707
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"components":[{"events":[],"name":"grid0","properties":{"children":[]},"type":"grid"}],"description":"Test app for publish/unpublish","favorite":false,"name":"tf-TestAccDatadogAppBuilderAppResource_PublishUnpublish-local-1761865867","queries":[{"id":"11111111-1111-1111-1111-111111111111","name":"listTeams0","properties":{"onlyTriggerManually":false,"outputs":"${((outputs) =\u003e {return outputs.data.map(item =\u003e item.attributes.name);})(self.rawOutputs)}","spec":{"connectionId":"11111111-2222-3333-4444-555555555555","fqn":"com.datadoghq.dd.teams.listTeams","inputs":{}}},"type":"action"}],"rootInstanceName":"grid0","selfService":false,"tags":[]},"type":"appDefinitions"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/app-builder/apps/2c2be350-621d-4398-b0b5-31655df117b0
+        method: PATCH
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":{"id":"2c2be350-621d-4398-b0b5-31655df117b0","type":"appDefinitions","attributes":{"components":[{"events":[],"name":"grid0","properties":{"children":[]},"type":"grid"}],"description":"Test app for publish/unpublish","favorite":false,"name":"tf-TestAccDatadogAppBuilderAppResource_PublishUnpublish-local-1761865867","queries":[{"id":"11111111-1111-1111-1111-111111111111","name":"listTeams0","type":"action","properties":{"onlyTriggerManually":false,"outputs":"${((outputs) =\u003e {return outputs.data.map(item =\u003e item.attributes.name);})(self.rawOutputs)}","spec":{"connectionId":"11111111-2222-3333-4444-555555555555","fqn":"com.datadoghq.dd.teams.listTeams","inputs":{}}}}],"rootInstanceName":"grid0","selfService":false,"tags":[]},"relationships":{"deployment":{"data":{"id":"06cadfa5-ba2d-4aa9-b968-e0dd28b3b3b1","type":"deployment"},"meta":{"created_at":"2025-10-30T23:11:13.15978Z","user_id":64277601,"user_uuid":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4","user_name":""}}},"meta":{"org_id":321813,"user_id":64277601,"user_uuid":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4","user_name":"tiffany.trinh@datadoghq.com","version":3,"version_id":"d9ef060d-904a-4c8b-802e-e42ac3475706","updated_since_deployment":true,"created_at":"2025-10-30T23:11:08.332786Z","updated_at":"2025-10-30T23:11:16.982839Z","deleted_at":"0001-01-01T00:00:00Z","run_as_user":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4"}},"included":[{"id":"06cadfa5-ba2d-4aa9-b968-e0dd28b3b3b1","type":"deployment","attributes":{"app_version_id":"9890c160-5bf3-4a82-871e-51a504b1ca2f"},"meta":{"created_at":"2025-10-30T23:11:13.15978Z","user_id":64277601,"user_uuid":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4","user_name":""}}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 189.271792ms
+    - id: 17
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/app-builder/apps/2c2be350-621d-4398-b0b5-31655df117b0/deployment
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 309
+        uncompressed: false
+        body: '{"data":{"id":"389ee955-2605-4df3-9a78-52e8d3317554","type":"deployment","attributes":{"app_version_id":"00000000-0000-0000-0000-000000000000"},"meta":{"created_at":"2025-10-30T23:11:17.159768Z","user_id":64277601,"user_uuid":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4","user_name":"tiffany.trinh@datadoghq.com"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 166.708291ms
+    - id: 18
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/app-builder/apps/2c2be350-621d-4398-b0b5-31655df117b0
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":{"id":"2c2be350-621d-4398-b0b5-31655df117b0","type":"appDefinitions","attributes":{"components":[{"events":[],"name":"grid0","properties":{"children":[]},"type":"grid"}],"description":"Test app for publish/unpublish","favorite":false,"name":"tf-TestAccDatadogAppBuilderAppResource_PublishUnpublish-local-1761865867","queries":[{"id":"11111111-1111-1111-1111-111111111111","name":"listTeams0","type":"action","properties":{"onlyTriggerManually":false,"outputs":"${((outputs) =\u003e {return outputs.data.map(item =\u003e item.attributes.name);})(self.rawOutputs)}","spec":{"connectionId":"11111111-2222-3333-4444-555555555555","fqn":"com.datadoghq.dd.teams.listTeams","inputs":{}}}}],"rootInstanceName":"grid0","selfService":false,"tags":[]},"relationships":{"deployment":{"data":{"id":"389ee955-2605-4df3-9a78-52e8d3317554","type":"deployment"},"meta":{"created_at":"2025-10-30T23:11:17.159768Z","user_id":64277601,"user_uuid":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4","user_name":""}}},"meta":{"org_id":321813,"user_id":64277601,"user_uuid":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4","user_name":"tiffany.trinh@datadoghq.com","version":3,"version_id":"d9ef060d-904a-4c8b-802e-e42ac3475706","updated_since_deployment":false,"created_at":"2025-10-30T23:11:08.332786Z","updated_at":"2025-10-30T23:11:16.982839Z","deleted_at":"0001-01-01T00:00:00Z","run_as_user":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4"}},"included":[{"id":"389ee955-2605-4df3-9a78-52e8d3317554","type":"deployment","attributes":{"app_version_id":"00000000-0000-0000-0000-000000000000"},"meta":{"created_at":"2025-10-30T23:11:17.159768Z","user_id":64277601,"user_uuid":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4","user_name":""}}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 100.495417ms
+    - id: 19
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/app-builder/apps/2c2be350-621d-4398-b0b5-31655df117b0
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":{"id":"2c2be350-621d-4398-b0b5-31655df117b0","type":"appDefinitions","attributes":{"components":[{"events":[],"name":"grid0","properties":{"children":[]},"type":"grid"}],"description":"Test app for publish/unpublish","favorite":false,"name":"tf-TestAccDatadogAppBuilderAppResource_PublishUnpublish-local-1761865867","queries":[{"id":"11111111-1111-1111-1111-111111111111","name":"listTeams0","type":"action","properties":{"onlyTriggerManually":false,"outputs":"${((outputs) =\u003e {return outputs.data.map(item =\u003e item.attributes.name);})(self.rawOutputs)}","spec":{"connectionId":"11111111-2222-3333-4444-555555555555","fqn":"com.datadoghq.dd.teams.listTeams","inputs":{}}}}],"rootInstanceName":"grid0","selfService":false,"tags":[]},"relationships":{"deployment":{"data":{"id":"389ee955-2605-4df3-9a78-52e8d3317554","type":"deployment"},"meta":{"created_at":"2025-10-30T23:11:17.159768Z","user_id":64277601,"user_uuid":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4","user_name":""}}},"meta":{"org_id":321813,"user_id":64277601,"user_uuid":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4","user_name":"tiffany.trinh@datadoghq.com","version":3,"version_id":"d9ef060d-904a-4c8b-802e-e42ac3475706","updated_since_deployment":false,"created_at":"2025-10-30T23:11:08.332786Z","updated_at":"2025-10-30T23:11:16.982839Z","deleted_at":"0001-01-01T00:00:00Z","run_as_user":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4"}},"included":[{"id":"389ee955-2605-4df3-9a78-52e8d3317554","type":"deployment","attributes":{"app_version_id":"00000000-0000-0000-0000-000000000000"},"meta":{"created_at":"2025-10-30T23:11:17.159768Z","user_id":64277601,"user_uuid":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4","user_name":""}}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 95.872458ms
+    - id: 20
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/app-builder/apps/2c2be350-621d-4398-b0b5-31655df117b0
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":{"id":"2c2be350-621d-4398-b0b5-31655df117b0","type":"appDefinitions","attributes":{"components":[{"events":[],"name":"grid0","properties":{"children":[]},"type":"grid"}],"description":"Test app for publish/unpublish","favorite":false,"name":"tf-TestAccDatadogAppBuilderAppResource_PublishUnpublish-local-1761865867","queries":[{"id":"11111111-1111-1111-1111-111111111111","name":"listTeams0","type":"action","properties":{"onlyTriggerManually":false,"outputs":"${((outputs) =\u003e {return outputs.data.map(item =\u003e item.attributes.name);})(self.rawOutputs)}","spec":{"connectionId":"11111111-2222-3333-4444-555555555555","fqn":"com.datadoghq.dd.teams.listTeams","inputs":{}}}}],"rootInstanceName":"grid0","selfService":false,"tags":[]},"relationships":{"deployment":{"data":{"id":"389ee955-2605-4df3-9a78-52e8d3317554","type":"deployment"},"meta":{"created_at":"2025-10-30T23:11:17.159768Z","user_id":64277601,"user_uuid":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4","user_name":""}}},"meta":{"org_id":321813,"user_id":64277601,"user_uuid":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4","user_name":"tiffany.trinh@datadoghq.com","version":3,"version_id":"d9ef060d-904a-4c8b-802e-e42ac3475706","updated_since_deployment":false,"created_at":"2025-10-30T23:11:08.332786Z","updated_at":"2025-10-30T23:11:16.982839Z","deleted_at":"0001-01-01T00:00:00Z","run_as_user":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4"}},"included":[{"id":"389ee955-2605-4df3-9a78-52e8d3317554","type":"deployment","attributes":{"app_version_id":"00000000-0000-0000-0000-000000000000"},"meta":{"created_at":"2025-10-30T23:11:17.159768Z","user_id":64277601,"user_uuid":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4","user_name":""}}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 145.856042ms
+    - id: 21
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/app-builder/apps/2c2be350-621d-4398-b0b5-31655df117b0
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":{"id":"2c2be350-621d-4398-b0b5-31655df117b0","type":"appDefinitions","attributes":{"components":[{"events":[],"name":"grid0","properties":{"children":[]},"type":"grid"}],"description":"Test app for publish/unpublish","favorite":false,"name":"tf-TestAccDatadogAppBuilderAppResource_PublishUnpublish-local-1761865867","queries":[{"id":"11111111-1111-1111-1111-111111111111","name":"listTeams0","type":"action","properties":{"onlyTriggerManually":false,"outputs":"${((outputs) =\u003e {return outputs.data.map(item =\u003e item.attributes.name);})(self.rawOutputs)}","spec":{"connectionId":"11111111-2222-3333-4444-555555555555","fqn":"com.datadoghq.dd.teams.listTeams","inputs":{}}}}],"rootInstanceName":"grid0","selfService":false,"tags":[]},"relationships":{"deployment":{"data":{"id":"389ee955-2605-4df3-9a78-52e8d3317554","type":"deployment"},"meta":{"created_at":"2025-10-30T23:11:17.159768Z","user_id":64277601,"user_uuid":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4","user_name":""}}},"meta":{"org_id":321813,"user_id":64277601,"user_uuid":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4","user_name":"tiffany.trinh@datadoghq.com","version":3,"version_id":"d9ef060d-904a-4c8b-802e-e42ac3475706","updated_since_deployment":false,"created_at":"2025-10-30T23:11:08.332786Z","updated_at":"2025-10-30T23:11:16.982839Z","deleted_at":"0001-01-01T00:00:00Z","run_as_user":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4"}},"included":[{"id":"389ee955-2605-4df3-9a78-52e8d3317554","type":"deployment","attributes":{"app_version_id":"00000000-0000-0000-0000-000000000000"},"meta":{"created_at":"2025-10-30T23:11:17.159768Z","user_id":64277601,"user_uuid":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4","user_name":""}}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 95.318208ms
+    - id: 22
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/app-builder/apps/2c2be350-621d-4398-b0b5-31655df117b0
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":{"id":"2c2be350-621d-4398-b0b5-31655df117b0","type":"appDefinitions","attributes":{"components":[{"events":[],"name":"grid0","properties":{"children":[]},"type":"grid"}],"description":"Test app for publish/unpublish","favorite":false,"name":"tf-TestAccDatadogAppBuilderAppResource_PublishUnpublish-local-1761865867","queries":[{"id":"11111111-1111-1111-1111-111111111111","name":"listTeams0","type":"action","properties":{"onlyTriggerManually":false,"outputs":"${((outputs) =\u003e {return outputs.data.map(item =\u003e item.attributes.name);})(self.rawOutputs)}","spec":{"connectionId":"11111111-2222-3333-4444-555555555555","fqn":"com.datadoghq.dd.teams.listTeams","inputs":{}}}}],"rootInstanceName":"grid0","selfService":false,"tags":[]},"relationships":{"deployment":{"data":{"id":"389ee955-2605-4df3-9a78-52e8d3317554","type":"deployment"},"meta":{"created_at":"2025-10-30T23:11:17.159768Z","user_id":64277601,"user_uuid":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4","user_name":""}}},"meta":{"org_id":321813,"user_id":64277601,"user_uuid":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4","user_name":"tiffany.trinh@datadoghq.com","version":3,"version_id":"d9ef060d-904a-4c8b-802e-e42ac3475706","updated_since_deployment":false,"created_at":"2025-10-30T23:11:08.332786Z","updated_at":"2025-10-30T23:11:16.982839Z","deleted_at":"0001-01-01T00:00:00Z","run_as_user":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4"}},"included":[{"id":"389ee955-2605-4df3-9a78-52e8d3317554","type":"deployment","attributes":{"app_version_id":"00000000-0000-0000-0000-000000000000"},"meta":{"created_at":"2025-10-30T23:11:17.159768Z","user_id":64277601,"user_uuid":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4","user_name":""}}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 99.087291ms
+    - id: 23
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/app-builder/apps/2c2be350-621d-4398-b0b5-31655df117b0
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":{"id":"2c2be350-621d-4398-b0b5-31655df117b0","type":"appDefinitions","attributes":{"components":[{"events":[],"name":"grid0","properties":{"children":[]},"type":"grid"}],"description":"Test app for publish/unpublish","favorite":false,"name":"tf-TestAccDatadogAppBuilderAppResource_PublishUnpublish-local-1761865867","queries":[{"id":"11111111-1111-1111-1111-111111111111","name":"listTeams0","type":"action","properties":{"onlyTriggerManually":false,"outputs":"${((outputs) =\u003e {return outputs.data.map(item =\u003e item.attributes.name);})(self.rawOutputs)}","spec":{"connectionId":"11111111-2222-3333-4444-555555555555","fqn":"com.datadoghq.dd.teams.listTeams","inputs":{}}}}],"rootInstanceName":"grid0","selfService":false,"tags":[]},"relationships":{"deployment":{"data":{"id":"389ee955-2605-4df3-9a78-52e8d3317554","type":"deployment"},"meta":{"created_at":"2025-10-30T23:11:17.159768Z","user_id":64277601,"user_uuid":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4","user_name":""}}},"meta":{"org_id":321813,"user_id":64277601,"user_uuid":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4","user_name":"tiffany.trinh@datadoghq.com","version":3,"version_id":"d9ef060d-904a-4c8b-802e-e42ac3475706","updated_since_deployment":false,"created_at":"2025-10-30T23:11:08.332786Z","updated_at":"2025-10-30T23:11:16.982839Z","deleted_at":"0001-01-01T00:00:00Z","run_as_user":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4"}},"included":[{"id":"389ee955-2605-4df3-9a78-52e8d3317554","type":"deployment","attributes":{"app_version_id":"00000000-0000-0000-0000-000000000000"},"meta":{"created_at":"2025-10-30T23:11:17.159768Z","user_id":64277601,"user_uuid":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4","user_name":""}}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 160.558375ms
+    - id: 24
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 707
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"components":[{"events":[],"name":"grid0","properties":{"children":[]},"type":"grid"}],"description":"Test app for publish/unpublish","favorite":false,"name":"tf-TestAccDatadogAppBuilderAppResource_PublishUnpublish-local-1761865867","queries":[{"id":"11111111-1111-1111-1111-111111111111","name":"listTeams0","properties":{"onlyTriggerManually":false,"outputs":"${((outputs) =\u003e {return outputs.data.map(item =\u003e item.attributes.name);})(self.rawOutputs)}","spec":{"connectionId":"11111111-2222-3333-4444-555555555555","fqn":"com.datadoghq.dd.teams.listTeams","inputs":{}}},"type":"action"}],"rootInstanceName":"grid0","selfService":false,"tags":[]},"type":"appDefinitions"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/app-builder/apps/2c2be350-621d-4398-b0b5-31655df117b0
+        method: PATCH
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":{"id":"2c2be350-621d-4398-b0b5-31655df117b0","type":"appDefinitions","attributes":{"components":[{"events":[],"name":"grid0","properties":{"children":[]},"type":"grid"}],"description":"Test app for publish/unpublish","favorite":false,"name":"tf-TestAccDatadogAppBuilderAppResource_PublishUnpublish-local-1761865867","queries":[{"id":"11111111-1111-1111-1111-111111111111","name":"listTeams0","type":"action","properties":{"onlyTriggerManually":false,"outputs":"${((outputs) =\u003e {return outputs.data.map(item =\u003e item.attributes.name);})(self.rawOutputs)}","spec":{"connectionId":"11111111-2222-3333-4444-555555555555","fqn":"com.datadoghq.dd.teams.listTeams","inputs":{}}}}],"rootInstanceName":"grid0","selfService":false,"tags":[]},"relationships":{"deployment":{"data":{"id":"389ee955-2605-4df3-9a78-52e8d3317554","type":"deployment"},"meta":{"created_at":"2025-10-30T23:11:17.159768Z","user_id":64277601,"user_uuid":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4","user_name":""}}},"meta":{"org_id":321813,"user_id":64277601,"user_uuid":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4","user_name":"tiffany.trinh@datadoghq.com","version":4,"version_id":"37d7744d-488e-4e7e-a255-24b4db4e974e","updated_since_deployment":false,"created_at":"2025-10-30T23:11:08.332786Z","updated_at":"2025-10-30T23:11:21.092111Z","deleted_at":"0001-01-01T00:00:00Z","run_as_user":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4"}},"included":[{"id":"389ee955-2605-4df3-9a78-52e8d3317554","type":"deployment","attributes":{"app_version_id":"00000000-0000-0000-0000-000000000000"},"meta":{"created_at":"2025-10-30T23:11:17.159768Z","user_id":64277601,"user_uuid":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4","user_name":""}}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 189.72925ms
+    - id: 25
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/app-builder/apps/2c2be350-621d-4398-b0b5-31655df117b0/deployment
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 309
+        uncompressed: false
+        body: '{"data":{"id":"a7b51c32-c778-4d57-a045-f70f3f41562b","type":"deployment","attributes":{"app_version_id":"37d7744d-488e-4e7e-a255-24b4db4e974e"},"meta":{"created_at":"2025-10-30T23:11:21.272679Z","user_id":64277601,"user_uuid":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4","user_name":"tiffany.trinh@datadoghq.com"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 180.446208ms
+    - id: 26
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/app-builder/apps/2c2be350-621d-4398-b0b5-31655df117b0
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":{"id":"2c2be350-621d-4398-b0b5-31655df117b0","type":"appDefinitions","attributes":{"components":[{"events":[],"name":"grid0","properties":{"children":[]},"type":"grid"}],"description":"Test app for publish/unpublish","favorite":false,"name":"tf-TestAccDatadogAppBuilderAppResource_PublishUnpublish-local-1761865867","queries":[{"id":"11111111-1111-1111-1111-111111111111","name":"listTeams0","type":"action","properties":{"onlyTriggerManually":false,"outputs":"${((outputs) =\u003e {return outputs.data.map(item =\u003e item.attributes.name);})(self.rawOutputs)}","spec":{"connectionId":"11111111-2222-3333-4444-555555555555","fqn":"com.datadoghq.dd.teams.listTeams","inputs":{}}}}],"rootInstanceName":"grid0","selfService":false,"tags":[]},"relationships":{"deployment":{"data":{"id":"a7b51c32-c778-4d57-a045-f70f3f41562b","type":"deployment"},"meta":{"created_at":"2025-10-30T23:11:21.272679Z","user_id":64277601,"user_uuid":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4","user_name":""}}},"meta":{"org_id":321813,"user_id":64277601,"user_uuid":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4","user_name":"tiffany.trinh@datadoghq.com","version":4,"version_id":"37d7744d-488e-4e7e-a255-24b4db4e974e","updated_since_deployment":false,"created_at":"2025-10-30T23:11:08.332786Z","updated_at":"2025-10-30T23:11:21.092111Z","deleted_at":"0001-01-01T00:00:00Z","run_as_user":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4"}},"included":[{"id":"a7b51c32-c778-4d57-a045-f70f3f41562b","type":"deployment","attributes":{"app_version_id":"37d7744d-488e-4e7e-a255-24b4db4e974e"},"meta":{"created_at":"2025-10-30T23:11:21.272679Z","user_id":64277601,"user_uuid":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4","user_name":""}}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 89.617042ms
+    - id: 27
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/app-builder/apps/2c2be350-621d-4398-b0b5-31655df117b0
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":{"id":"2c2be350-621d-4398-b0b5-31655df117b0","type":"appDefinitions","attributes":{"components":[{"events":[],"name":"grid0","properties":{"children":[]},"type":"grid"}],"description":"Test app for publish/unpublish","favorite":false,"name":"tf-TestAccDatadogAppBuilderAppResource_PublishUnpublish-local-1761865867","queries":[{"id":"11111111-1111-1111-1111-111111111111","name":"listTeams0","type":"action","properties":{"onlyTriggerManually":false,"outputs":"${((outputs) =\u003e {return outputs.data.map(item =\u003e item.attributes.name);})(self.rawOutputs)}","spec":{"connectionId":"11111111-2222-3333-4444-555555555555","fqn":"com.datadoghq.dd.teams.listTeams","inputs":{}}}}],"rootInstanceName":"grid0","selfService":false,"tags":[]},"relationships":{"deployment":{"data":{"id":"a7b51c32-c778-4d57-a045-f70f3f41562b","type":"deployment"},"meta":{"created_at":"2025-10-30T23:11:21.272679Z","user_id":64277601,"user_uuid":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4","user_name":""}}},"meta":{"org_id":321813,"user_id":64277601,"user_uuid":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4","user_name":"tiffany.trinh@datadoghq.com","version":4,"version_id":"37d7744d-488e-4e7e-a255-24b4db4e974e","updated_since_deployment":false,"created_at":"2025-10-30T23:11:08.332786Z","updated_at":"2025-10-30T23:11:21.092111Z","deleted_at":"0001-01-01T00:00:00Z","run_as_user":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4"}},"included":[{"id":"a7b51c32-c778-4d57-a045-f70f3f41562b","type":"deployment","attributes":{"app_version_id":"37d7744d-488e-4e7e-a255-24b4db4e974e"},"meta":{"created_at":"2025-10-30T23:11:21.272679Z","user_id":64277601,"user_uuid":"c88f3baa-b5bf-11f0-9a63-1ed6a528d8b4","user_name":""}}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 84.259166ms
+    - id: 28
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/app-builder/apps/2c2be350-621d-4398-b0b5-31655df117b0
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 78
+        uncompressed: false
+        body: '{"data":{"id":"2c2be350-621d-4398-b0b5-31655df117b0","type":"appDefinitions"}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 170.413417ms
+    - id: 29
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/app-builder/apps/2c2be350-621d-4398-b0b5-31655df117b0
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 167
+        uncompressed: false
+        body: '{"errors":[{"status":"404","id":"8e6d0849-d41c-4b10-aa67-c14c1b940003","title":"app not found","detail":"app with id 2c2be350-621d-4398-b0b5-31655df117b0 not found"}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 404 Not Found
+        code: 404
+        duration: 45.032125ms
