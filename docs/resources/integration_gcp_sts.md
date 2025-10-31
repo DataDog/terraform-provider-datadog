@@ -70,6 +70,7 @@ resource "datadog_integration_gcp_sts" "foo" {
 Optional:
 
 - `disabled` (Boolean)
+- `filters` (Set of String)
 - `id` (String)
 
 
