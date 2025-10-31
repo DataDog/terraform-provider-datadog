@@ -188,6 +188,84 @@ resource "datadog_logs_custom_pipeline" "my_pipeline_test" {
             input_representation = "utf_8"
         }
     }
+    processor {
+        schema_processor {
+            name = "Map to OCSF Schema"
+            is_enabled = true
+
+            schema {
+                schema_type = "ocsf"
+                version = "1.5.0"
+                class_name = "Account Change"
+                class_uid = 3001
+                profiles = ["cloud"]
+            }
+
+            mappers {
+                schema_remapper {
+                    name = "Map ocsf.user to ocsf.user"
+                    sources = ["ocsf.user"]
+                    target = "ocsf.user"
+                }
+
+                schema_remapper {
+                    name = "Map ocsf.time to ocsf.time"
+                    sources = ["ocsf.time"]
+                    target = "ocsf.time"
+                }
+
+                schema_remapper {
+                    name = "Map ocsf.cloud to ocsf.cloud"
+                    sources = ["ocsf.cloud"]
+                    target = "ocsf.cloud"
+                }
+
+                schema_category_mapper {
+                    name = "Map to OCSF severity"
+
+                    targets {
+                        name = "ocsf.severity"
+                        id = "ocsf.severity_id"
+                    }
+
+                    categories {
+                        name = "Informational"
+                        id = 1
+                        filter {
+                            query = "@eventName:*"
+                        }
+                    }
+                }
+
+                schema_category_mapper {
+                    name = "Map to OCSF categories"
+
+                    targets {
+                        name = "ocsf.activity_name"
+                        id = "ocsf.activity_id"
+                    }
+
+                    categories {
+                        name = "Create"
+                        id = 1
+                        filter {
+                            query = "eventName:CreateUser"
+                        }
+                    }
+
+                    fallback {
+                        values = {
+                            "ocsf.activity_name" = "Other"
+                            "ocsf.activity_id" = "99"
+                        }
+                        sources = {
+                            "ocsf.activity_name" = "[\"eventName\"]"
+                        }
+                    }
+                }
+            }
+        }
+    }
 
 }`, uniq)
 }
@@ -368,6 +446,83 @@ resource "datadog_logs_custom_pipeline" "my_pipeline_test" {
             target = "decoded_messsage"
             binary_to_text_encoding = "base16"
             input_representation = "integer"
+        }
+    }
+processor {
+        schema_processor {
+            name = "Map to OCSF Schema updated"
+            is_enabled = true
+
+            schema {
+                schema_type = "ocsf"
+                version = "1.5.0"
+                class_name = "Authentication"
+                class_uid = 3002
+            }
+
+            mappers {
+                schema_remapper {
+                    name = "Map ocsf.user to ocsf.user"
+                    sources = ["ocsf.user"]
+                    target = "ocsf.user"
+                }
+
+                schema_remapper {
+                    name = "Map http_request to ocsf.http.request"
+                    sources = ["http_request"]
+                    target = "ocsf.http_request"
+                }
+
+                schema_remapper {
+                    name = "Map ocsf.time to ocsf.time"
+                    sources = ["ocsf.time"]
+                    target = "ocsf.time"
+                }
+
+                schema_category_mapper {
+                    name = "Map to OCSF severity"
+
+                    targets {
+                        name = "ocsf.severity"
+                        id = "ocsf.severity_id"
+                    }
+
+                    categories {
+                        name = "Informational"
+                        id = 1
+                        filter {
+                            query = "@eventName:*"
+                        }
+                    }
+                }
+
+                schema_category_mapper {
+                    name = "Map to OCSF categories"
+
+                    targets {
+                        name = "ocsf.activity_name"
+                        id = "ocsf.activity_id"
+                    }
+
+                    categories {
+                        name = "Create"
+                        id = 1
+                        filter {
+                            query = "eventName:CreateUser"
+                        }
+                    }
+
+                    fallback {
+                        values = {
+                            "ocsf.activity_name" = "Other"
+                            "ocsf.activity_id" = "99"
+                        }
+                        sources = {
+                            "ocsf.activity_name" = "[\"eventName\"]"
+                        }
+                    }
+                }
+            }
         }
     }
 
