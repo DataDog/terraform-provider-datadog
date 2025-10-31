@@ -413,6 +413,122 @@ func testLoadFromFileAppBuilderAppResourceConfig(fileName string, appName string
 	}`, fileName, appName)
 }
 
+func TestAccDatadogAppBuilderAppResource_PublishUnpublish(t *testing.T) {
+	t.Parallel()
+
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	appName := uniqueEntityName(ctx, t)
+	resourceName := "datadog_app_builder_app.test_app_publish"
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogAppBuilderAppDestroy(providers.frameworkProvider, resourceName),
+		Steps: []resource.TestStep{
+			// Create app as unpublished
+			{
+				Config: testAppBuilderAppPublishConfig(appName, false),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogAppBuilderAppExists(providers.frameworkProvider, resourceName),
+					resource.TestCheckResourceAttrSet(resourceName, "id"),
+					resource.TestMatchResourceAttr(resourceName, "app_json", regexp.MustCompile(fmt.Sprintf(`"name":"%s"`, appName))),
+					resource.TestCheckResourceAttr(resourceName, "published", "false"),
+				),
+			},
+			// Apply same config again - should handle already unpublished gracefully
+			{
+				Config: testAppBuilderAppPublishConfig(appName, false),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogAppBuilderAppExists(providers.frameworkProvider, resourceName),
+					resource.TestCheckResourceAttr(resourceName, "published", "false"),
+				),
+			},
+			// Update to publish the app
+			{
+				Config: testAppBuilderAppPublishConfig(appName, true),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogAppBuilderAppExists(providers.frameworkProvider, resourceName),
+					resource.TestCheckResourceAttr(resourceName, "published", "true"),
+				),
+			},
+			// Apply same config again - should handle already published gracefully
+			{
+				Config: testAppBuilderAppPublishConfig(appName, true),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogAppBuilderAppExists(providers.frameworkProvider, resourceName),
+					resource.TestCheckResourceAttr(resourceName, "published", "true"),
+				),
+			},
+			// Update to unpublish the app
+			{
+				Config: testAppBuilderAppPublishConfig(appName, false),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogAppBuilderAppExists(providers.frameworkProvider, resourceName),
+					resource.TestCheckResourceAttr(resourceName, "published", "false"),
+				),
+			},
+			// Apply unpublish config again to ensure idempotency
+			{
+				Config: testAppBuilderAppPublishConfig(appName, false),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogAppBuilderAppExists(providers.frameworkProvider, resourceName),
+					resource.TestCheckResourceAttr(resourceName, "published", "false"),
+				),
+			},
+			// Publish again to ensure toggle works
+			{
+				Config: testAppBuilderAppPublishConfig(appName, true),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogAppBuilderAppExists(providers.frameworkProvider, resourceName),
+					resource.TestCheckResourceAttr(resourceName, "published", "true"),
+				),
+			},
+		},
+	})
+}
+
+func testAppBuilderAppPublishConfig(name string, published bool) string {
+	return fmt.Sprintf(`
+	resource "datadog_app_builder_app" "test_app_publish" {
+		app_json = jsonencode({
+			"queries" : [
+				{
+					"id" : "11111111-1111-1111-1111-111111111111",
+					"name" : "listTeams0",
+					"type" : "action",
+					"properties" : {
+						"onlyTriggerManually" : false,
+						"outputs" : "$${((outputs) => {return outputs.data.map(item => item.attributes.name);})(self.rawOutputs)}",
+						"spec" : {
+							"fqn" : "com.datadoghq.dd.teams.listTeams",
+							"inputs" : {},
+							"connectionId" : "11111111-2222-3333-4444-555555555555"
+						}
+					}
+				}
+			],
+			"components" : [
+				{
+					"events" : [],
+					"name" : "grid0",
+					"properties" : {
+						"children" : []
+					},
+					"type" : "grid"
+				}
+			],
+			"description" : "Test app for publish/unpublish",
+			"favorite" : false,
+			"name" : "%s",
+			"rootInstanceName" : "grid0",
+			"selfService" : false,
+			"tags" : []
+		})
+		published = %t
+	}`, name, published)
+}
+
 func testAccCheckDatadogAppBuilderAppExists(accProvider *fwprovider.FrameworkProvider, n string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		apiInstances := accProvider.DatadogApiInstances
