@@ -816,6 +816,185 @@ func TestProvider_impl(t *testing.T) {
 	_ = datadog.Provider()
 }
 
+// TestProviderConfigure_CloudAuthOnly tests that cloud auth works when only cloud_provider_type is set
+func TestProviderConfigure_CloudAuthOnly(t *testing.T) {
+	// Clear environment variables
+	os.Unsetenv("DD_API_KEY")
+	os.Unsetenv("DD_APP_KEY")
+	os.Unsetenv("DATADOG_API_KEY")
+	os.Unsetenv("DATADOG_APP_KEY")
+
+	d := schema.TestResourceDataRaw(t, datadog.Provider().Schema, map[string]interface{}{
+		"org_uuid":              "test-org-uuid",
+		"cloud_provider_type":   "aws",
+		"cloud_provider_region": "us-east-1",
+		"api_url":               "https://api.datad0g.com",
+		"validate":              false, // Skip validation since we don't have real creds
+	})
+
+	p := datadog.Provider()
+	result, diags := p.ConfigureContextFunc(context.Background(), d)
+
+	// Should not have errors
+	if diags.HasError() {
+		t.Errorf("providerConfigure should not error with cloud auth only, got: %v", diags)
+	}
+	if result == nil {
+		t.Fatal("providerConfigure should return a result")
+	}
+
+	config := result.(*datadog.ProviderConfiguration)
+	// Verify DelegatedTokenConfig is set (cloud auth is enabled)
+	if config.DatadogApiInstances.HttpClient.GetConfig().DelegatedTokenConfig == nil {
+		t.Error("DelegatedTokenConfig should be set when using cloud auth only")
+	}
+}
+
+// TestProviderConfigure_APIKeyOnly tests that API key auth works when only api_key/app_key are set
+func TestProviderConfigure_APIKeyOnly(t *testing.T) {
+	// Clear environment variables
+	os.Unsetenv("DD_API_KEY")
+	os.Unsetenv("DD_APP_KEY")
+	os.Unsetenv("DATADOG_API_KEY")
+	os.Unsetenv("DATADOG_APP_KEY")
+
+	d := schema.TestResourceDataRaw(t, datadog.Provider().Schema, map[string]interface{}{
+		"api_key":  "test_api_key",
+		"app_key":  "test_app_key",
+		"api_url":  "https://api.datad0g.com",
+		"validate": false, // Skip validation since we don't have real creds
+	})
+
+	p := datadog.Provider()
+	result, diags := p.ConfigureContextFunc(context.Background(), d)
+
+	// Should not have errors
+	if diags.HasError() {
+		t.Errorf("providerConfigure should not error with API key auth only, got: %v", diags)
+	}
+	if result == nil {
+		t.Fatal("providerConfigure should return a result")
+	}
+
+	config := result.(*datadog.ProviderConfiguration)
+	// Verify DelegatedTokenConfig is NOT set (API key auth is used)
+	if config.DatadogApiInstances.HttpClient.GetConfig().DelegatedTokenConfig != nil {
+		t.Errorf("DelegatedTokenConfig should NOT be set when using API key auth, got: %+v",
+			config.DatadogApiInstances.HttpClient.GetConfig().DelegatedTokenConfig)
+	}
+}
+
+// TestProviderConfigure_CloudAuthWithAPIKey tests that cloud auth takes precedence:
+// When both cloud_provider_type and api_key are set, cloud auth should take precedence
+func TestProviderConfigure_CloudAuthWithAPIKey(t *testing.T) {
+	// Clear environment variables
+	os.Unsetenv("DD_API_KEY")
+	os.Unsetenv("DD_APP_KEY")
+	os.Unsetenv("DATADOG_API_KEY")
+	os.Unsetenv("DATADOG_APP_KEY")
+
+	d := schema.TestResourceDataRaw(t, datadog.Provider().Schema, map[string]interface{}{
+		"api_key":               "test_api_key",
+		"app_key":               "test_app_key",
+		"org_uuid":              "test-org-uuid",
+		"cloud_provider_type":   "aws",
+		"cloud_provider_region": "us-east-1",
+		"api_url":               "https://api.datad0g.com",
+		"validate":              false, // Skip validation since we don't have real creds
+	})
+
+	p := datadog.Provider()
+	result, diags := p.ConfigureContextFunc(context.Background(), d)
+
+	// Should not have errors
+	if diags.HasError() {
+		t.Errorf("providerConfigure should not error when both cloud auth and API keys are set, got: %v", diags)
+	}
+	if result == nil {
+		t.Fatal("providerConfigure should return a result")
+	}
+
+	config := result.(*datadog.ProviderConfiguration)
+	// Verify DelegatedTokenConfig IS set (cloud auth takes precedence over API keys)
+	if config.DatadogApiInstances.HttpClient.GetConfig().DelegatedTokenConfig == nil {
+		t.Error("DelegatedTokenConfig should be set when cloud_provider_type is explicitly configured (cloud auth takes precedence)")
+	}
+}
+
+// TestProviderConfigure_CloudAuthWithEnvVarAPIKey tests that explicit config takes precedence:
+// When cloud_provider_type is explicitly set in config and DD_API_KEY/DD_APP_KEY env vars are set,
+// cloud auth should take precedence (explicit config > environment variables)
+func TestProviderConfigure_CloudAuthWithEnvVarAPIKey(t *testing.T) {
+	// Set environment variables
+	os.Setenv("DD_API_KEY", "test_api_key_from_env")
+	os.Setenv("DD_APP_KEY", "test_app_key_from_env")
+	defer func() {
+		os.Unsetenv("DD_API_KEY")
+		os.Unsetenv("DD_APP_KEY")
+	}()
+
+	d := schema.TestResourceDataRaw(t, datadog.Provider().Schema, map[string]interface{}{
+		"org_uuid":              "test-org-uuid",
+		"cloud_provider_type":   "aws",
+		"cloud_provider_region": "us-east-1",
+		"api_url":               "https://api.datad0g.com",
+		"validate":              false, // Skip validation since we don't have real creds
+	})
+
+	p := datadog.Provider()
+	result, diags := p.ConfigureContextFunc(context.Background(), d)
+
+	// Should not have errors
+	if diags.HasError() {
+		t.Errorf("providerConfigure should not error when cloud auth is set with env var API keys, got: %v", diags)
+	}
+	if result == nil {
+		t.Fatal("providerConfigure should return a result")
+	}
+
+	config := result.(*datadog.ProviderConfiguration)
+	// Verify DelegatedTokenConfig IS set (explicit cloud_provider_type config takes precedence over env vars)
+	if config.DatadogApiInstances.HttpClient.GetConfig().DelegatedTokenConfig == nil {
+		t.Error("DelegatedTokenConfig should be set when cloud_provider_type is explicitly configured (takes precedence over env var API keys)")
+	}
+}
+
+// TestProviderConfigure_CloudAuthWithOnlyAppKey tests that cloud auth takes precedence:
+// When both cloud_provider_type and app_key are set, cloud auth should take precedence
+func TestProviderConfigure_CloudAuthWithOnlyAppKey(t *testing.T) {
+	// Clear environment variables
+	os.Unsetenv("DD_API_KEY")
+	os.Unsetenv("DD_APP_KEY")
+	os.Unsetenv("DATADOG_API_KEY")
+	os.Unsetenv("DATADOG_APP_KEY")
+
+	d := schema.TestResourceDataRaw(t, datadog.Provider().Schema, map[string]interface{}{
+		"app_key":               "test_app_key",
+		"org_uuid":              "test-org-uuid",
+		"cloud_provider_type":   "aws",
+		"cloud_provider_region": "us-east-1",
+		"api_url":               "https://api.datad0g.com",
+		"validate":              false, // Skip validation since we don't have real creds
+	})
+
+	p := datadog.Provider()
+	result, diags := p.ConfigureContextFunc(context.Background(), d)
+
+	// Should not have errors
+	if diags.HasError() {
+		t.Errorf("providerConfigure should not error when both cloud auth and app_key are set, got: %v", diags)
+	}
+	if result == nil {
+		t.Fatal("providerConfigure should return a result")
+	}
+
+	config := result.(*datadog.ProviderConfiguration)
+	// Verify DelegatedTokenConfig IS set (cloud auth takes precedence)
+	if config.DatadogApiInstances.HttpClient.GetConfig().DelegatedTokenConfig == nil {
+		t.Error("DelegatedTokenConfig should be set when cloud_provider_type is explicitly configured (cloud auth takes precedence)")
+	}
+}
+
 func testAccPreCheck(t *testing.T) {
 	// Unset all regular env to avoid mistakenly running tests against wrong org
 	var envVars []string
