@@ -1,3 +1,5 @@
+import re
+
 from .utils import (
     GET_OPERATION,
     CREATE_OPERATION,
@@ -91,9 +93,29 @@ def get_data_sources(spec: dict, config: dict) -> dict:
 
 
 def get_terraform_primary_id(operations, path=UPDATE_OPERATION):
-    update_params = parameters(operations[path]["schema"])
-    primary_id = operations[path]["path"].split("/")[-1][1:-1]
-    primary_id_param = update_params.pop(primary_id)
+    """
+    Extract primary ID from path parameters.
+    
+    Handles path parameters anywhere in the URL, not just at the end.
+    For example: /api/v2/tables/{id}/rows extracts 'id'
+    """
+    operation_data = operations[path]
+    path_str = operation_data["path"]
+    params = parameters(operation_data["schema"])
+    
+    # Find all path parameters (anything in curly braces like {id})
+    path_params = re.findall(r'\{([^}]+)\}', path_str)
+    
+    if not path_params:
+        raise ValueError(f"No path parameters found in path: {path_str}")
+    
+    # Use the first path parameter as primary ID
+    primary_id = path_params[0]
+    
+    if primary_id not in params:
+        raise ValueError(f"Path parameter '{primary_id}' not found in operation parameters")
+    
+    primary_id_param = params.pop(primary_id)
 
     return {"schema": parameter_schema(primary_id_param), "name": primary_id}
 

@@ -1,0 +1,1 @@
+terraform import datadog_reference_table.new_list ""

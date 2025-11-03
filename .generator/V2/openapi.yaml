@@ -1,0 +1,1285 @@
+components:
+  schemas:
+    ReferenceTableSourceType:
+      example: "LOCAL_FILE"
+      description: The source type for reference table data. Includes all possible source types that can appear in responses.
+      enum:
+        - LOCAL_FILE
+        - S3
+        - GCS
+        - AZURE
+        - SERVICENOW
+        - SALESFORCE
+        - DATABRICKS
+        - SNOWFLAKE
+      type: string
+      x-enum-varnames:
+        - LOCAL_FILE
+        - S3
+        - GCS
+        - AZURE
+        - SERVICENOW
+        - SALESFORCE
+        - DATABRICKS
+        - SNOWFLAKE
+    ReferenceTableCreateSourceType:
+      example: "LOCAL_FILE"
+      description: The source type for creating reference table data. Only these source types can be created through this API.
+      enum:
+        - LOCAL_FILE
+        - S3
+        - GCS
+        - AZURE
+      type: string
+      x-enum-varnames:
+        - LOCAL_FILE
+        - S3
+        - GCS
+        - AZURE
+    ReferenceTableSortType:
+      description: Sort field and direction for reference tables. Use field name for ascending, prefix with "-" for descending.
+      enum:
+        - updated_at
+        - table_name
+        - status
+        - "-updated_at"
+        - "-table_name"
+        - "-status"
+      type: string
+      default: "-updated_at"
+      x-enum-varnames:
+        - UPDATED_AT
+        - TABLE_NAME
+        - STATUS
+        - MINUS_UPDATED_AT
+        - MINUS_TABLE_NAME
+        - MINUS_STATUS
+    ReferenceTableSchemaFieldType:
+      example: "STRING"
+      description: The field type for reference table schema fields.
+      enum:
+        - STRING
+        - INT32
+      type: string
+      x-enum-varnames:
+        - STRING
+        - INT32
+    TableResultV2DataAttributesFileMetadataCloudStorageErrorType:
+      description: The type of error that occurred during file processing. This field provides high-level error categories for easier troubleshooting and is only present when there are errors.
+      enum:
+        - TABLE_SCHEMA_ERROR
+        - FILE_FORMAT_ERROR
+        - CONFIGURATION_ERROR
+        - QUOTA_EXCEEDED
+        - CONFLICT_ERROR
+        - VALIDATION_ERROR
+        - STATE_ERROR
+        - OPERATION_ERROR
+        - SYSTEM_ERROR
+      type: string
+      x-enum-varnames:
+        - TABLE_SCHEMA_ERROR
+        - FILE_FORMAT_ERROR
+        - CONFIGURATION_ERROR
+        - QUOTA_EXCEEDED
+        - CONFLICT_ERROR
+        - VALIDATION_ERROR
+        - STATE_ERROR
+        - OPERATION_ERROR
+        - SYSTEM_ERROR
+    TableResultV2DataType:
+      x-ignore-duplicate-object: true
+      default: reference_table
+      description: Reference table resource type.
+      enum:
+        - reference_table
+      example: reference_table
+      type: string
+      x-enum-varnames:
+        - REFERENCE_TABLE
+    PatchTableRequestDataType:
+      x-ignore-duplicate-object: true
+      default: reference_table
+      description: Reference table resource type.
+      enum:
+        - reference_table
+      example: reference_table
+      type: string
+      x-enum-varnames:
+        - REFERENCE_TABLE
+    TableRowResourceDataType:
+      default: row
+      description: Row resource type.
+      enum:
+        - row
+      example: row
+      type: string
+      x-enum-varnames:
+        - ROW
+    CreateTableRequestDataType:
+      x-ignore-duplicate-object: true
+      default: reference_table
+      description: Reference table resource type.
+      enum:
+        - reference_table
+      example: reference_table
+      type: string
+      x-enum-varnames:
+        - REFERENCE_TABLE
+    CreateUploadRequestDataType:
+      x-ignore-duplicate-object: true
+      default: upload
+      description: Upload resource type.
+      enum:
+        - upload
+      example: upload
+      type: string
+      x-enum-varnames:
+        - UPLOAD
+    CreateUploadResponseDataType:
+      x-ignore-duplicate-object: true
+      default: upload
+      description: Upload resource type.
+      enum:
+        - upload
+      example: upload
+      type: string
+      x-enum-varnames:
+        - UPLOAD
+    CreateTableRequestDataAttributesSchemaFieldsItems:
+      x-ignore-duplicate-object: true
+      description: The definition of `CreateTableRequestDataAttributesSchemaFieldsItems` object.
+      properties:
+        name:
+          example: ""
+          description: The field name.
+          type: string
+        type:
+          $ref: "#/components/schemas/ReferenceTableSchemaFieldType"
+      required:
+        - name
+        - type
+      type: object
+    PatchTableRequestDataAttributesSchemaFieldsItems:
+      x-ignore-duplicate-object: true
+      description: The definition of `PatchTableRequestDataAttributesSchemaFieldsItems` object.
+      properties:
+        name:
+          example: ""
+          description: The field name.
+          type: string
+        type:
+          $ref: "#/components/schemas/ReferenceTableSchemaFieldType"
+      required:
+        - name
+        - type
+      type: object
+    TableResultV2DataAttributesSchemaFieldsItems:
+      x-ignore-duplicate-object: true
+      description: The definition of `TableResultV2DataAttributesSchemaFieldsItems` object.
+      properties:
+        name:
+          example: ""
+          description: The field name.
+          type: string
+        type:
+          $ref: "#/components/schemas/ReferenceTableSchemaFieldType"
+      required:
+        - name
+        - type
+      type: object
+    TableResultV2DataAttributesFileMetadataLocalFile:
+      description: File metadata for reference tables created by upload.
+      properties:
+        error_message:
+          description: The error message returned from the creation/update.
+          type: string
+        error_row_count:
+          description: The number of rows that failed to create/update.
+          format: int64
+          type: integer
+        upload_id:
+          description: The upload ID that was used to create/update the table.
+          type: string
+      title: LocalFileMetadataV2
+      type: object
+    TableResultV2DataAttributesFileMetadataCloudStorage:
+      description: File metadata for reference tables created by cloud storage.
+      properties:
+        access_details:
+          $ref: "#/components/schemas/TableResultV2DataAttributesFileMetadataOneOfAccessDetails"
+        error_message:
+          description: The error message returned from the sync.
+          type: string
+        error_row_count:
+          description: The number of rows that failed to sync.
+          format: int64
+          type: integer
+        error_type:
+          $ref: "#/components/schemas/TableResultV2DataAttributesFileMetadataCloudStorageErrorType"
+        sync_enabled:
+          description: Whether this table is synced automatically.
+          type: boolean
+      title: CloudFileMetadataV2
+      type: object
+    PatchTableRequestDataAttributesFileMetadataLocalFile:
+      description: Local file metadata for patch requests using upload ID.
+      properties:
+        upload_id:
+          example: ""
+          description: The upload ID.
+          type: string
+      required:
+        - upload_id
+      additionalProperties: false
+      title: LocalFileMetadataV2
+      type: object
+    PatchTableRequestDataAttributesFileMetadataCloudStorage:
+      description: Cloud storage file metadata for patch requests. Allows partial updates of access_details and sync_enabled.
+      properties:
+        access_details:
+          $ref: "#/components/schemas/PatchTableRequestDataAttributesFileMetadataOneOfAccessDetails"
+        sync_enabled:
+          example: false
+          description: Whether this table is synced automatically.
+          type: boolean
+      additionalProperties: false
+      title: CloudFileMetadataV2
+      type: object
+    CreateTableRequestDataAttributesFileMetadataLocalFile:
+      description: Local file metadata for create requests using the upload ID.
+      properties:
+        upload_id:
+          example: ""
+          description: The upload ID.
+          type: string
+      required:
+        - upload_id
+      additionalProperties: false
+      title: LocalFileMetadataV2
+      type: object
+    CreateTableRequestDataAttributesFileMetadataCloudStorage:
+      description: Cloud storage file metadata for create requests. Both access_details and sync_enabled are required.
+      properties:
+        access_details:
+          $ref: "#/components/schemas/CreateTableRequestDataAttributesFileMetadataOneOfAccessDetails"
+        sync_enabled:
+          example: false
+          description: Whether this table is synced automatically.
+          type: boolean
+      required:
+        - access_details
+        - sync_enabled
+      additionalProperties: false
+      title: CloudFileMetadataV2
+      type: object
+    CreateTableRequestDataAttributesFileMetadata:
+      description: The definition of `CreateTableRequestDataAttributesFileMetadata` object.
+      oneOf:
+        - $ref: "#/components/schemas/CreateTableRequestDataAttributesFileMetadataCloudStorage"
+        - $ref: "#/components/schemas/CreateTableRequestDataAttributesFileMetadataLocalFile"
+    PatchTableRequestDataAttributesFileMetadata:
+      description: The definition of `PatchTableRequestDataAttributesFileMetadata` object.
+      oneOf:
+        - $ref: "#/components/schemas/PatchTableRequestDataAttributesFileMetadataCloudStorage"
+        - $ref: "#/components/schemas/PatchTableRequestDataAttributesFileMetadataLocalFile"
+    TableResultV2DataAttributesFileMetadata:
+      description: The definition of `TableResultV2DataAttributesFileMetadata` object.
+      oneOf:
+        - $ref: "#/components/schemas/TableResultV2DataAttributesFileMetadataCloudStorage"
+        - $ref: "#/components/schemas/TableResultV2DataAttributesFileMetadataLocalFile"
+    TableResultV2DataAttributesFileMetadataOneOfAccessDetailsGcpDetail:
+      x-ignore-duplicate-object: true
+      description: The definition of `TableResultV2DataAttributesFileMetadataOneOfAccessDetailsGcpDetail` object.
+      properties:
+        file_path:
+          example: "data/reference_tables/users.csv"
+          description: The relative file path from the GCS bucket root to the CSV file.
+          type: string
+        gcp_bucket_name:
+          example: "example-data-bucket"
+          description: The name of the GCP bucket.
+          type: string
+        gcp_project_id:
+          example: "example-gcp-project-12345"
+          description: The ID of the GCP project.
+          type: string
+        gcp_service_account_email:
+          example: "example-service@example-gcp-project-12345.iam.gserviceaccount.com"
+          description: The email of the GCP service account.
+          type: string
+      type: object
+      x-oneOf-parent:
+        - GcpDetail
+    TableResultV2DataAttributesFileMetadataOneOfAccessDetailsAzureDetail:
+      x-ignore-duplicate-object: true
+      description: The definition of `TableResultV2DataAttributesFileMetadataOneOfAccessDetailsAzureDetail` object.
+      properties:
+        azure_client_id:
+          example: "aaaaaaaa-1111-2222-3333-bbbbbbbbbbbb"
+          description: The Azure client ID.
+          type: string
+        azure_container_name:
+          example: "reference-data"
+          description: The name of the Azure container.
+          type: string
+        azure_storage_account_name:
+          example: "examplestorageaccount"
+          description: The name of the Azure storage account.
+          type: string
+        azure_tenant_id:
+          example: "cccccccc-4444-5555-6666-dddddddddddd"
+          description: The ID of the Azure tenant.
+          type: string
+        file_path:
+          example: "tables/users.csv"
+          description: The relative file path from the Azure container root to the CSV file.
+          type: string
+      type: object
+      x-oneOf-parent:
+        - AzureDetail
+    TableResultV2DataAttributesFileMetadataOneOfAccessDetailsAwsDetail:
+      description: The definition of `TableResultV2DataAttributesFileMetadataOneOfAccessDetailsAwsDetail` object.
+      properties:
+        aws_account_id:
+          example: "123456789000"
+          description: The ID of the AWS account.
+          type: string
+        aws_bucket_name:
+          example: "example-data-bucket"
+          description: The name of the AWS bucket.
+          type: string
+        file_path:
+          example: "reference-tables/users.csv"
+          description: The relative file path from the S3 bucket root to the CSV file.
+          type: string
+      type: object
+      x-oneOf-parent:
+        - AwsDetail
+    TableResultV2DataAttributesFileMetadataOneOfAccessDetails:
+      description: The definition of `TableResultV2DataAttributesFileMetadataOneOfAccessDetails` object.
+      properties:
+        aws_detail:
+          $ref: "#/components/schemas/TableResultV2DataAttributesFileMetadataOneOfAccessDetailsAwsDetail"
+        azure_detail:
+          $ref: "#/components/schemas/TableResultV2DataAttributesFileMetadataOneOfAccessDetailsAzureDetail"
+        gcp_detail:
+          $ref: "#/components/schemas/TableResultV2DataAttributesFileMetadataOneOfAccessDetailsGcpDetail"
+      type: object
+    TableResultV2DataAttributesSchema:
+      description: The definition of `TableResultV2DataAttributesSchema` object.
+      properties:
+        fields:
+          description: The `schema` `fields`.
+          items:
+            $ref: "#/components/schemas/TableResultV2DataAttributesSchemaFieldsItems"
+          type: array
+        primary_keys:
+          example:
+            - ""
+          description: List of field names that serve as primary keys for the table. Only one primary key is supported, and it is used as an ID to retrieve rows.
+          items:
+            type: string
+          type: array
+      required:
+        - fields
+        - primary_keys
+      type: object
+    TableResultV2DataAttributes:
+      description: The definition of `TableResultV2DataAttributes` object.
+      properties:
+        created_by:
+          description: UUID of the user who created the reference table.
+          type: string
+        description:
+          description: The description of the reference table.
+          type: string
+        file_metadata:
+          $ref: "#/components/schemas/TableResultV2DataAttributesFileMetadata"
+        last_updated_by:
+          description: UUID of the user who last updated the reference table.
+          type: string
+        row_count:
+          description: The number of successfully processed rows in the reference table.
+          format: int64
+          type: integer
+        schema:
+          $ref: "#/components/schemas/TableResultV2DataAttributesSchema"
+        source:
+          $ref: "#/components/schemas/ReferenceTableSourceType"
+        status:
+          description: The status of the reference table.
+          type: string
+        table_name:
+          description: The name of the reference table.
+          type: string
+        tags:
+          description: The tags of the reference table.
+          items:
+            type: string
+          type: array
+        updated_at:
+          description: The timestamp of the last update to the reference table in ISO 8601 format.
+          type: string
+      type: object
+    PatchTableRequestDataAttributesFileMetadataOneOfAccessDetailsGcpDetail:
+      x-ignore-duplicate-object: true
+      description: The definition of `PatchTableRequestDataAttributesFileMetadataOneOfAccessDetailsGcpDetail` object.
+      properties:
+        file_path:
+          example: "data/reference_tables/users.csv"
+          description: The relative file path from the GCS bucket root to the CSV file.
+          type: string
+        gcp_bucket_name:
+          example: "example-data-bucket"
+          description: The name of the GCP bucket.
+          type: string
+        gcp_project_id:
+          example: "example-gcp-project-12345"
+          description: The ID of the GCP project.
+          type: string
+        gcp_service_account_email:
+          example: "example-service@example-gcp-project-12345.iam.gserviceaccount.com"
+          description: The email of the GCP service account.
+          type: string
+      type: object
+      x-oneOf-parent:
+        - GcpDetail
+    PatchTableRequestDataAttributesFileMetadataOneOfAccessDetailsAzureDetail:
+      x-ignore-duplicate-object: true
+      description: The definition of `PatchTableRequestDataAttributesFileMetadataOneOfAccessDetailsAzureDetail` object.
+      properties:
+        azure_client_id:
+          example: "aaaaaaaa-1111-2222-3333-bbbbbbbbbbbb"
+          description: The Azure client ID.
+          type: string
+        azure_container_name:
+          example: "reference-data"
+          description: The name of the Azure container.
+          type: string
+        azure_storage_account_name:
+          example: "examplestorageaccount"
+          description: The name of the Azure storage account.
+          type: string
+        azure_tenant_id:
+          example: "cccccccc-4444-5555-6666-dddddddddddd"
+          description: The ID of the Azure tenant.
+          type: string
+        file_path:
+          example: "tables/users.csv"
+          description: The relative file path from the Azure container root to the CSV file.
+          type: string
+      type: object
+      x-oneOf-parent:
+        - AzureDetail
+    PatchTableRequestDataAttributesFileMetadataOneOfAccessDetailsAwsDetail:
+      description: The definition of `PatchTableRequestDataAttributesFileMetadataOneOfAccessDetailsAwsDetail` object.
+      properties:
+        aws_account_id:
+          example: "123456789000"
+          description: The ID of the AWS account.
+          type: string
+        aws_bucket_name:
+          example: "example-data-bucket"
+          description: The name of the AWS bucket.
+          type: string
+        file_path:
+          example: "reference-tables/users.csv"
+          description: The relative file path from the S3 bucket root to the CSV file.
+          type: string
+      type: object
+      x-oneOf-parent:
+        - AwsDetail
+    PatchTableRequestDataAttributesFileMetadataOneOfAccessDetails:
+      description: The definition of `PatchTableRequestDataAttributesFileMetadataOneOfAccessDetails` object.
+      properties:
+        aws_detail:
+          $ref: "#/components/schemas/PatchTableRequestDataAttributesFileMetadataOneOfAccessDetailsAwsDetail"
+        azure_detail:
+          $ref: "#/components/schemas/PatchTableRequestDataAttributesFileMetadataOneOfAccessDetailsAzureDetail"
+        gcp_detail:
+          $ref: "#/components/schemas/PatchTableRequestDataAttributesFileMetadataOneOfAccessDetailsGcpDetail"
+      type: object
+    PatchTableRequestDataAttributesSchema:
+      description: The definition of `PatchTableRequestDataAttributesSchema` object.
+      properties:
+        fields:
+          description: The `schema` `fields`.
+          items:
+            $ref: "#/components/schemas/PatchTableRequestDataAttributesSchemaFieldsItems"
+          type: array
+        primary_keys:
+          example:
+            - ""
+          description: List of field names that serve as primary keys for the table. Only one primary key is supported, and it is used as an ID to retrieve rows.
+          items:
+            type: string
+          type: array
+      required:
+        - fields
+        - primary_keys
+      type: object
+    PatchTableRequestDataAttributes:
+      description: The definition of `PatchTableRequestDataAttributes` object.
+      properties:
+        description:
+          description: The description of the reference table.
+          type: string
+        file_metadata:
+          $ref: "#/components/schemas/PatchTableRequestDataAttributesFileMetadata"
+        schema:
+          $ref: "#/components/schemas/PatchTableRequestDataAttributesSchema"
+        sync_enabled:
+          description: Whether this table is synced automatically.
+          type: boolean
+        tags:
+          description: The tags of the reference table.
+          items:
+            type: string
+          type: array
+      type: object
+    TableRowResourceDataAttributes:
+      description: The definition of `TableRowResourceDataAttributes` object.
+      properties:
+        values:
+          description: The values of the row.
+          additionalProperties: {}
+          type: object
+      type: object
+    CreateTableRequestDataAttributesFileMetadataOneOfAccessDetailsGcpDetail:
+      description: The definition of `CreateTableRequestDataAttributesFileMetadataOneOfAccessDetailsGcpDetail` object.
+      properties:
+        file_path:
+          example: "data/reference_tables/users.csv"
+          description: The relative file path from the GCS bucket root to the CSV file.
+          type: string
+        gcp_bucket_name:
+          example: "example-data-bucket"
+          description: The name of the GCP bucket.
+          type: string
+        gcp_project_id:
+          example: "example-gcp-project-12345"
+          description: The ID of the GCP project.
+          type: string
+        gcp_service_account_email:
+          example: "example-service@example-gcp-project-12345.iam.gserviceaccount.com"
+          description: The email of the GCP service account.
+          type: string
+      required:
+        - file_path
+        - gcp_bucket_name
+        - gcp_project_id
+        - gcp_service_account_email
+      type: object
+      x-oneOf-parent:
+        - GcpDetail
+    CreateTableRequestDataAttributesFileMetadataOneOfAccessDetailsAzureDetail:
+      description: The definition of `CreateTableRequestDataAttributesFileMetadataOneOfAccessDetailsAzureDetail` object.
+      properties:
+        azure_client_id:
+          example: "aaaaaaaa-1111-2222-3333-bbbbbbbbbbbb"
+          description: The Azure client ID.
+          type: string
+        azure_container_name:
+          example: "reference-data"
+          description: The name of the Azure container.
+          type: string
+        azure_storage_account_name:
+          example: "examplestorageaccount"
+          description: The name of the Azure storage account.
+          type: string
+        azure_tenant_id:
+          example: "cccccccc-4444-5555-6666-dddddddddddd"
+          description: The ID of the Azure tenant.
+          type: string
+        file_path:
+          example: "tables/users.csv"
+          description: The relative file path from the Azure container root to the CSV file.
+          type: string
+      required:
+        - azure_client_id
+        - azure_container_name
+        - azure_storage_account_name
+        - azure_tenant_id
+        - file_path
+      type: object
+      x-oneOf-parent:
+        - AzureDetail
+    CreateTableRequestDataAttributesFileMetadataOneOfAccessDetailsAwsDetail:
+      description: The definition of `CreateTableRequestDataAttributesFileMetadataOneOfAccessDetailsAwsDetail` object.
+      properties:
+        aws_account_id:
+          example: "123456789000"
+          description: The ID of the AWS account.
+          type: string
+        aws_bucket_name:
+          example: "example-data-bucket"
+          description: The name of the Amazon S3 bucket.
+          type: string
+        file_path:
+          example: "reference-tables/users.csv"
+          description: The relative file path from the S3 bucket root to the CSV file.
+          type: string
+      required:
+        - aws_account_id
+        - aws_bucket_name
+        - file_path
+      type: object
+      x-oneOf-parent:
+        - AwsDetail
+    CreateTableRequestDataAttributesFileMetadataOneOfAccessDetails:
+      description: The definition of `CreateTableRequestDataAttributesFileMetadataOneOfAccessDetails` object.
+      properties:
+        aws_detail:
+          $ref: "#/components/schemas/CreateTableRequestDataAttributesFileMetadataOneOfAccessDetailsAwsDetail"
+        azure_detail:
+          $ref: "#/components/schemas/CreateTableRequestDataAttributesFileMetadataOneOfAccessDetailsAzureDetail"
+        gcp_detail:
+          $ref: "#/components/schemas/CreateTableRequestDataAttributesFileMetadataOneOfAccessDetailsGcpDetail"
+      type: object
+    CreateTableRequestDataAttributesSchema:
+      description: The definition of `CreateTableRequestDataAttributesSchema` object.
+      properties:
+        fields:
+          description: The `schema` `fields`.
+          items:
+            $ref: "#/components/schemas/CreateTableRequestDataAttributesSchemaFieldsItems"
+          type: array
+        primary_keys:
+          example:
+            - ""
+          description: List of field names that serve as primary keys for the table. Only one primary key is supported, and it is used as an ID to retrieve rows.
+          items:
+            type: string
+          type: array
+      required:
+        - fields
+        - primary_keys
+      type: object
+    CreateTableRequestDataAttributes:
+      description: The definition of `CreateTableRequestDataAttributes` object.
+      properties:
+        description:
+          description: The description of the reference table.
+          type: string
+        file_metadata:
+          $ref: "#/components/schemas/CreateTableRequestDataAttributesFileMetadata"
+        schema:
+          $ref: "#/components/schemas/CreateTableRequestDataAttributesSchema"
+        source:
+          $ref: "#/components/schemas/ReferenceTableCreateSourceType"
+        table_name:
+          example: ""
+          description: The name of the reference table.
+          type: string
+        tags:
+          description: The tags of the reference table.
+          items:
+            type: string
+          type: array
+      required:
+        - table_name
+        - schema
+        - source
+      type: object
+    CreateUploadRequestDataAttributes:
+      description: The definition of `CreateUploadRequestDataAttributes` object.
+      properties:
+        headers:
+          example:
+            - ""
+          description: The headers of the file to upload.
+          items:
+            type: string
+          type: array
+        part_count:
+          description: The number of parts in the upload.
+          format: int32
+          maximum: 20
+          type: integer
+          example: 3
+        part_size:
+          description: >-
+            The size of each part in the upload in bytes. For multipart uploads (part_count > 1), all parts except the last one must be at least 5,000,000 bytes. For single-part uploads (part_count = 1), any size is allowed.
+          format: int64
+          type: integer
+          example: 10000000
+        table_name:
+          example: ""
+          description: The name of the reference table.
+          type: string
+      required:
+        - headers
+        - table_name
+        - part_count
+        - part_size
+      type: object
+    CreateUploadResponseDataAttributes:
+      description: The definition of `CreateUploadResponseDataAttributes` object.
+      properties:
+        part_urls:
+          description: The URLs of the parts in the upload.
+          items:
+            type: string
+          type: array
+      type: object
+    CreateUploadResponseData:
+      description: The definition of `CreateUploadResponseData` object.
+      properties:
+        attributes:
+          $ref: "#/components/schemas/CreateUploadResponseDataAttributes"
+        id:
+          description: The ID of the upload.
+          type: string
+        type:
+          $ref: "#/components/schemas/CreateUploadResponseDataType"
+      required:
+        - type
+      type: object
+    CreateUploadResponse:
+      description: The definition of `CreateUploadResponse` object.
+      properties:
+        data:
+          $ref: "#/components/schemas/CreateUploadResponseData"
+      type: object
+    CreateUploadRequestData:
+      description: The definition of `CreateUploadRequestData` object.
+      properties:
+        attributes:
+          $ref: "#/components/schemas/CreateUploadRequestDataAttributes"
+        id:
+          description: The ID of the upload.
+          type: string
+        type:
+          $ref: "#/components/schemas/CreateUploadRequestDataType"
+      required:
+        - type
+      type: object
+    CreateUploadRequest:
+      description: The definition of `CreateUploadRequest` object.
+      properties:
+        data:
+          $ref: "#/components/schemas/CreateUploadRequestData"
+      type: object
+    CreateTableRequestData:
+      description: The definition of `CreateTableRequestData` object.
+      properties:
+        attributes:
+          $ref: "#/components/schemas/CreateTableRequestDataAttributes"
+        id:
+          description: The ID of the reference table.
+          type: string
+        type:
+          $ref: "#/components/schemas/CreateTableRequestDataType"
+      required:
+        - type
+      type: object
+    CreateTableRequest:
+      description: The definition of `CreateTableRequest` object.
+      example:
+        data:
+          attributes:
+            description: this is a cloud table generated via a cloud bucket sync
+            file_metadata:
+              access_details:
+                aws_detail:
+                  aws_account_id: test-account-id
+                  aws_bucket_name: test-bucket
+                  file_path: test_rt.csv
+              sync_enabled: true
+            schema:
+              fields:
+                - name: name
+                  type: STRING
+                - name: account_id
+                  type: STRING
+              primary_keys:
+                - account_id
+            source: S3
+            table_name: test_reference_table
+            tags:
+              - test_tag
+          type: reference_table
+      properties:
+        data:
+          $ref: "#/components/schemas/CreateTableRequestData"
+      type: object
+    TableResultV2Array:
+      description: The definition of `TableResultV2Array` object.
+      example:
+        data:
+          - attributes:
+              created_by: 00000000-0000-0000-0000-000000000000
+              description: example description
+              file_metadata:
+                access_details: {}
+                error_message: ""
+                error_row_count: 0
+                upload_id: 00000000-0000-0000-0000-000000000000
+              last_updated_by: ""
+              row_count: 5
+              schema:
+                fields:
+                  - name: id
+                    type: INT32
+                  - name: name
+                    type: STRING
+                primary_keys:
+                  - id
+              source: LOCAL_FILE
+              status: DONE
+              table_name: test_reference_table
+              tags:
+                - tag1
+                - tag2
+              updated_at: "2000-01-01T01:00:00+00:00"
+            id: 00000000-0000-0000-0000-000000000000
+            type: reference_table
+          - attributes:
+              created_by: 00000000-0000-0000-0000-000000000000
+              description: example description
+              file_metadata:
+                access_details:
+                  aws_detail:
+                    aws_account_id: test-account-id
+                    aws_bucket_name: test-bucket
+                    file_path: test_rt.csv
+                error_message: ""
+                error_row_count: 0
+                sync_enabled: true
+              last_updated_by: 00000000-0000-0000-0000-000000000000
+              row_count: 5
+              schema:
+                fields:
+                  - name: location
+                    type: STRING
+                  - name: file_name
+                    type: STRING
+                primary_keys:
+                  - location
+              source: S3
+              status: DONE
+              table_name: test_reference_table_2
+              tags:
+                - test_tag1
+                - tag2
+                - "3"
+              updated_at: "2000-01-01T01:00:00+00:00"
+            id: 00000000-0000-0000-0000-000000000000
+            type: reference_table
+      properties:
+        data:
+          description: The reference tables.
+          items:
+            $ref: "#/components/schemas/TableResultV2Data"
+          type: array
+      required:
+        - data
+      type: object
+    TableRowResourceData:
+      description: The definition of `TableRowResourceData` object.
+      properties:
+        attributes:
+          $ref: "#/components/schemas/TableRowResourceDataAttributes"
+        id:
+          description: The ID of the row.
+          type: string
+        type:
+          $ref: "#/components/schemas/TableRowResourceDataType"
+      required:
+        - type
+      type: object
+    TableRowResourceArray:
+      description: The definition of `TableRowResourceArray` object.
+      properties:
+        data:
+          description: The rows.
+          items:
+            $ref: "#/components/schemas/TableRowResourceData"
+          type: array
+      required:
+        - data
+      type: object
+    PatchTableRequestData:
+      description: The definition of `PatchTableRequestData` object.
+      properties:
+        attributes:
+          $ref: "#/components/schemas/PatchTableRequestDataAttributes"
+        id:
+          description: The ID of the reference table.
+          type: string
+        type:
+          $ref: "#/components/schemas/PatchTableRequestDataType"
+      required:
+        - type
+      type: object
+    PatchTableRequest:
+      description: The definition of `PatchTableRequest` object.
+      example:
+        data:
+          attributes:
+            description: this is a cloud table generated via a cloud bucket sync
+            file_metadata:
+              access_details:
+                aws_detail:
+                  aws_account_id: test-account-id
+                  aws_bucket_name: test-bucket
+                  file_path: test_rt.csv
+              sync_enabled: true
+            schema:
+              fields:
+                - name: id
+                  type: INT32
+                - name: name
+                  type: STRING
+              primary_keys:
+                - id
+            sync_enabled: false
+            tags:
+              - test_tag
+          id: 00000000-0000-0000-0000-000000000000
+          type: reference_table
+      properties:
+        data:
+          $ref: "#/components/schemas/PatchTableRequestData"
+      type: object
+    TableResultV2Data:
+      description: The definition of `TableResultV2Data` object.
+      properties:
+        attributes:
+          $ref: "#/components/schemas/TableResultV2DataAttributes"
+        id:
+          description: The ID of the reference table.
+          type: string
+        type:
+          $ref: "#/components/schemas/TableResultV2DataType"
+      required:
+        - type
+      type: object
+    TableResultV2:
+      description: The definition of `TableResultV2` object.
+      example:
+        data:
+          attributes:
+            created_by: 00000000-0000-0000-0000-000000000000
+            description: example description
+            file_metadata:
+              access_details: {}
+              upload_id: 00000000-0000-0000-0000-000000000000
+            last_updated_by: ""
+            row_count: 5
+            schema:
+              fields:
+                - name: id
+                  type: INT32
+                - name: name
+                  type: STRING
+              primary_keys:
+                - id
+            source: LOCAL_FILE
+            status: DONE
+            table_name: test_reference_table
+            tags:
+              - tag1
+              - tag2
+            updated_at: "2000-01-01T01:00:00+00:00"
+          id: 00000000-0000-0000-0000-000000000000
+          type: reference_table
+      properties:
+        data:
+          $ref: "#/components/schemas/TableResultV2Data"
+      type: object
+  parameters: {}
+paths:
+  /api/v2/reference-tables/tables/{id}:
+    delete:
+      summary: Delete table
+      security:
+        - apiKeyAuth: []
+          appKeyAuth: []
+        - AuthZ: []
+      x-menu-order: 7
+      tags:
+        - Reference Tables
+      operationId: DeleteTable
+      description: Delete a reference table by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: The ID of the reference table to delete
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "429":
+          $ref: "#/components/responses/TooManyRequestsResponse"
+      x-undo:
+        type: idempotent
+    get:
+      summary: Get table
+      security:
+        - apiKeyAuth: []
+          appKeyAuth: []
+        - AuthZ: []
+      x-menu-order: 4
+      tags:
+        - Reference Tables
+      operationId: GetTable
+      description: Get a reference table by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: The ID of the reference table to retrieve
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TableResultV2"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+        "429":
+          $ref: "#/components/responses/TooManyRequestsResponse"
+      x-undo:
+        type: safe
+    patch:
+      summary: Update reference table
+      security:
+        - apiKeyAuth: []
+          appKeyAuth: []
+        - AuthZ: []
+      x-menu-order: 6
+      tags:
+        - Reference Tables
+      operationId: UpdateReferenceTable
+      description: >-
+        Update a reference table by ID. You can update the table's data, description, and tags. Note: The source type cannot be changed after table creation. For data updates: For existing tables of type `source:LOCAL_FILE`, call POST api/v2/reference-tables/uploads first to get an upload ID, then PUT chunks of CSV data to each provided URL, and finally call this PATCH endpoint with the upload_id in file_metadata. For existing tables with `source:` types of `S3`, `GCS`, or `AZURE`, provide updated access_details in file_metadata pointing to a CSV file in the same type of cloud storage.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: The ID of the reference table to update
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PatchTableRequest"
+      responses:
+        "200":
+          description: OK
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "429":
+          $ref: "#/components/responses/TooManyRequestsResponse"
+      x-undo:
+        type: idempotent
+  /api/v2/reference-tables/tables/{id}/rows:
+    get:
+      summary: Get rows by id
+      security:
+        - apiKeyAuth: []
+          appKeyAuth: []
+        - AuthZ: []
+      x-menu-order: 5
+      tags:
+        - Reference Tables
+      operationId: GetRowsByID
+      description: Get reference table rows by their primary key values.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: The ID of the reference table
+          schema:
+            type: string
+          example: "table-123"
+        - in: query
+          name: row_id
+          required: true
+          description: List of row IDs (primary key values) to retrieve from the reference table.
+          schema:
+            type: array
+            items:
+              type: string
+          explode: true
+          example: ["row1", "row2"]
+      responses:
+        "200":
+          description: Some or all requested rows were found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TableRowResourceArray"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+        "429":
+          $ref: "#/components/responses/TooManyRequestsResponse"
+      x-undo:
+        type: safe
+  /api/v2/reference-tables/tables:
+    get:
+      summary: List tables
+      security:
+        - apiKeyAuth: []
+          appKeyAuth: []
+        - AuthZ: []
+      x-menu-order: 3
+      tags:
+        - Reference Tables
+      operationId: ListTables
+      description: List all reference tables in this organization.
+      parameters:
+        - in: query
+          name: limit
+          required: false
+          description: Number of tables to return.
+          schema:
+            type: integer
+            default: 15
+            maximum: 100
+            minimum: 1
+            format: int64
+          example: 15
+        - in: query
+          name: offset
+          required: false
+          description: Number of tables to skip for pagination.
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+            format: int64
+          example: 0
+        - in: query
+          name: sort
+          required: false
+          description: Sort field and direction. Use field name for ascending, prefix with "-" for descending.
+          schema:
+            $ref: "#/components/schemas/ReferenceTableSortType"
+          example: "-updated_at"
+        - in: query
+          name: filter[status]
+          required: false
+          description: Filter by table status.
+          schema:
+            type: string
+          example: DONE
+        - in: query
+          name: filter[table_name][exact]
+          required: false
+          description: Filter by exact table name match.
+          schema:
+            type: string
+          example: "my_reference_table"
+        - in: query
+          name: filter[table_name][contains]
+          required: false
+          description: Filter by table name containing substring.
+          schema:
+            type: string
+          example: "user"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TableResultV2Array"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "429":
+          $ref: "#/components/responses/TooManyRequestsResponse"
+      x-undo:
+        type: safe
+    post:
+      summary: Create reference table
+      security:
+        - apiKeyAuth: []
+          appKeyAuth: []
+        - AuthZ: []
+      x-menu-order: 2
+      tags:
+        - Reference Tables
+      operationId: CreateReferenceTable
+      description: >-
+        Create a new reference table. You can provide data in two ways: 1) Call POST api/v2/reference-tables/upload first to get an upload ID, then PUT chunks of CSV data to each provided URL, and finally call this POST endpoint with the upload_id in file_metadata, OR 2) Provide access_details in file_metadata pointing to a CSV file in cloud storage (Amazon S3, Azure Blob Storage, or GCP Cloud Storage).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateTableRequest"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TableResultV2"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "429":
+          $ref: "#/components/responses/TooManyRequestsResponse"
+      x-undo:
+        type: unsafe
+        operationId: DeleteTable
+        parameters:
+          - name: id
+            source: data.id
+  /api/v2/reference-tables/uploads:
+    post:
+      summary: Create reference table upload
+      security:
+        - apiKeyAuth: []
+          appKeyAuth: []
+        - AuthZ: []
+      x-menu-order: 1
+      tags:
+        - Reference Tables
+      operationId: CreateReferenceTableUpload
+      description: Create a reference table upload for bulk data ingestion
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateUploadRequest"
+        required: true
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreateUploadResponse"
+        "400":
+          $ref: "#/components/responses/BadRequestResponse"
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "429":
+          $ref: "#/components/responses/TooManyRequestsResponse"
+      x-undo:
+        type: idempotent
+tags:
+  - name: Reference Tables
+    description: Auto-generated tag Reference Tables
