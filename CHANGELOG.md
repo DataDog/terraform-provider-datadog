@@ -1,3 +1,21 @@
+## 3.79.0 (November 3, 2025)
+
+### BUGFIXES
+* [datadog_integration_gcp_sts] Fix handling prometheus default in mncs by @katherinekim-51 in https://github.com/DataDog/terraform-provider-datadog/pull/3297
+* [datadog_tag_pipeline_ruleset] Ensure resource handles tag pipeline rulesets deleted via the UI that are managed in tfstate by @alextmeyer in https://github.com/DataDog/terraform-provider-datadog/pull/3313
+* [datadog_synthetics_private_location] Fix restriction_policy_resource_id format by @Matt-Cam in https://github.com/DataDog/terraform-provider-datadog/pull/3310
+* [datadog_app_builder_app] fix bug with publish/unpublish by @tyffical in https://github.com/DataDog/terraform-provider-datadog/pull/3312
+### IMPROVEMENTS
+* [scripts] Update Cloud Cost import existing resources script  by @alextmeyer in https://github.com/DataDog/terraform-provider-datadog/pull/3309
+* [SEC_24449] Add support for schema processor by @seohyunh in https://github.com/DataDog/terraform-provider-datadog/pull/3289
+
+## New Contributors
+* @katherinekim-51 made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3297
+* @sean-r-williams made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3280
+* @seohyunh made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3289
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.78.0...v3.79.0
+
 ## 3.78.0 (October 29, 2025)
 
 ### BUGFIXES
