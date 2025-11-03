@@ -7,7 +7,7 @@
 * [datadog_app_builder_app] fix bug with publish/unpublish by @tyffical in https://github.com/DataDog/terraform-provider-datadog/pull/3312
 ### IMPROVEMENTS
 * [scripts] Update Cloud Cost import existing resources script  by @alextmeyer in https://github.com/DataDog/terraform-provider-datadog/pull/3309
-* [SEC_24449] Add support for schema processor by @seohyunh in https://github.com/DataDog/terraform-provider-datadog/pull/3289
+* [datadog_logs_pipelines] Add support for schema processor by @seohyunh in https://github.com/DataDog/terraform-provider-datadog/pull/3289
 
 ## New Contributors
 * @katherinekim-51 made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3297
