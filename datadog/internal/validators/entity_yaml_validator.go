@@ -52,18 +52,23 @@ func (v validEntityYAMLValidator) ValidateString(ctx context.Context, req valida
 		return
 	}
 
-	// verify apiVersion is v3 or above
+	// verify apiVersion is v3 or above, or backstage.io/v1alpha1
 	if e.APIVersion == "" {
-		resp.Diagnostics.AddAttributeError(req.Path, "", "apiVersion must be non empty (v3 or above)")
+		resp.Diagnostics.AddAttributeError(req.Path, "", "apiVersion must be non empty (v3 or above, or backstage.io/v1alpha1)")
+		return
+	}
+	if e.APIVersion == "backstage.io/v1alpha1" {
 		return
 	}
 
+	// validate as semantic version (v3 or above)
 	version, err := semver.NewVersion(e.APIVersion)
 	if err != nil {
-		resp.Diagnostics.AddAttributeError(req.Path, "", "apiVersion must be a valid version (v3 or above)")
+		resp.Diagnostics.AddAttributeError(req.Path, "", "apiVersion must be a valid version (v3 or above, or backstage.io/v1alpha1)")
+		return
 	}
 	if version.Major() < 3 {
-		resp.Diagnostics.AddAttributeError(req.Path, "", "apiVersion must be v3 or above")
+		resp.Diagnostics.AddAttributeError(req.Path, "", "apiVersion must be v3 or above, or backstage.io/v1alpha1")
 	}
 }
 
