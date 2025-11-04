@@ -1,0 +1,205 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 171
+        transfer_encoding: []
+        trailer: {}
+        host: api.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"dry_run":false,"env":"production","identifier":"tf-TestAccDeploymentGateBasic-local-1762264610","service":"my-service"},"type":"deployment_gate"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datad0g.com/api/v2/deployment_gates
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 542
+        uncompressed: false
+        body: '{"data":{"id":"1e3da24c-6d3a-42d9-922f-7e687500100a","type":"deployment_gate","attributes":{"created_at":"2025-11-04T13:56:52.577301Z","created_by":{"id":"9748ef73-8f8e-4e26-b85e-3ca8c1d5af26","name":"Aaron Hoffman","handle":"aaron.hoffman@datadoghq.com"},"dry_run":false,"env":"production","identifier":"tf-TestAccDeploymentGateBasic-local-1762264610","service":"my-service","updated_at":"2025-11-04T13:56:52.577301Z","updated_by":{"id":"9748ef73-8f8e-4e26-b85e-3ca8c1d5af26","name":"Aaron Hoffman","handle":"aaron.hoffman@datadoghq.com"}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 286.07175ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datad0g.com/api/v2/deployment_gates/1e3da24c-6d3a-42d9-922f-7e687500100a
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 542
+        uncompressed: false
+        body: '{"data":{"id":"1e3da24c-6d3a-42d9-922f-7e687500100a","type":"deployment_gate","attributes":{"created_at":"2025-11-04T13:56:52.577301Z","created_by":{"id":"9748ef73-8f8e-4e26-b85e-3ca8c1d5af26","name":"Aaron Hoffman","handle":"aaron.hoffman@datadoghq.com"},"dry_run":false,"env":"production","identifier":"tf-TestAccDeploymentGateBasic-local-1762264610","service":"my-service","updated_at":"2025-11-04T13:56:52.577301Z","updated_by":{"id":"9748ef73-8f8e-4e26-b85e-3ca8c1d5af26","name":"Aaron Hoffman","handle":"aaron.hoffman@datadoghq.com"}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 276.442708ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datad0g.com/api/v2/deployment_gates/1e3da24c-6d3a-42d9-922f-7e687500100a
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 542
+        uncompressed: false
+        body: '{"data":{"id":"1e3da24c-6d3a-42d9-922f-7e687500100a","type":"deployment_gate","attributes":{"created_at":"2025-11-04T13:56:52.577301Z","created_by":{"id":"9748ef73-8f8e-4e26-b85e-3ca8c1d5af26","name":"Aaron Hoffman","handle":"aaron.hoffman@datadoghq.com"},"dry_run":false,"env":"production","identifier":"tf-TestAccDeploymentGateBasic-local-1762264610","service":"my-service","updated_at":"2025-11-04T13:56:52.577301Z","updated_by":{"id":"9748ef73-8f8e-4e26-b85e-3ca8c1d5af26","name":"Aaron Hoffman","handle":"aaron.hoffman@datadoghq.com"}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 284.406ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 74
+        transfer_encoding: []
+        trailer: {}
+        host: api.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"dry_run":true},"id":"","type":"deployment_gate"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datad0g.com/api/v2/deployment_gates/1e3da24c-6d3a-42d9-922f-7e687500100a
+        method: PUT
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 541
+        uncompressed: false
+        body: '{"data":{"id":"1e3da24c-6d3a-42d9-922f-7e687500100a","type":"deployment_gate","attributes":{"created_at":"2025-11-04T13:56:52.577301Z","created_by":{"id":"9748ef73-8f8e-4e26-b85e-3ca8c1d5af26","name":"Aaron Hoffman","handle":"aaron.hoffman@datadoghq.com"},"dry_run":true,"env":"production","identifier":"tf-TestAccDeploymentGateBasic-local-1762264610","service":"my-service","updated_at":"2025-11-04T13:56:54.435289Z","updated_by":{"id":"9748ef73-8f8e-4e26-b85e-3ca8c1d5af26","name":"Aaron Hoffman","handle":"aaron.hoffman@datadoghq.com"}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 400.91325ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datad0g.com/api/v2/deployment_gates/1e3da24c-6d3a-42d9-922f-7e687500100a
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 541
+        uncompressed: false
+        body: '{"data":{"id":"1e3da24c-6d3a-42d9-922f-7e687500100a","type":"deployment_gate","attributes":{"created_at":"2025-11-04T13:56:52.577301Z","created_by":{"id":"9748ef73-8f8e-4e26-b85e-3ca8c1d5af26","name":"Aaron Hoffman","handle":"aaron.hoffman@datadoghq.com"},"dry_run":true,"env":"production","identifier":"tf-TestAccDeploymentGateBasic-local-1762264610","service":"my-service","updated_at":"2025-11-04T13:56:54.435289Z","updated_by":{"id":"9748ef73-8f8e-4e26-b85e-3ca8c1d5af26","name":"Aaron Hoffman","handle":"aaron.hoffman@datadoghq.com"}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 311.582583ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datad0g.com/api/v2/deployment_gates/1e3da24c-6d3a-42d9-922f-7e687500100a
+        method: DELETE
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 342.094042ms
