@@ -72,7 +72,7 @@ func (r *tagPipelineRulesetsResource) Create(ctx context.Context, request resour
 		return
 	}
 
-	r.updateOrder(ctx, &state, &response.Diagnostics)
+	r.updateOrder(&state, &response.Diagnostics)
 
 	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
@@ -170,7 +170,7 @@ func (r *tagPipelineRulesetsResource) Update(ctx context.Context, request resour
 		return
 	}
 
-	r.updateOrder(ctx, &state, &response.Diagnostics)
+	r.updateOrder(&state, &response.Diagnostics)
 
 	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
@@ -296,68 +296,68 @@ type unmanagedRulesetInfo struct {
 	AllAtEnd  bool
 }
 
-// extractRulesetID extracts the ID from a ruleset, handling the case where
-// the API client failed to deserialize and put the data in UnparsedObject
-func extractRulesetID(ruleset datadogV2.RulesetRespData) (string, bool) {
-	// Try to get ID from the normal field first
-	if rulesetID, ok := ruleset.GetIdOk(); ok && rulesetID != nil && *rulesetID != "" {
-		return *rulesetID, true
+// extractRulesetFields extracts ID, name, and position from a ruleset in a single pass,
+// handling the case where the API client failed to deserialize and put the data in UnparsedObject
+// Returns: (id, name, position, ok) where ok indicates if ID was successfully extracted
+func extractRulesetFields(ruleset datadogV2.RulesetRespData) (id string, name string, position int32, ok bool) {
+	// Try to get data from normal fields first
+	if rulesetID, idOk := ruleset.GetIdOk(); idOk && rulesetID != nil && *rulesetID != "" {
+		id = *rulesetID
+		ok = true
+
+		if attrs, attrsOk := ruleset.GetAttributesOk(); attrsOk {
+			name = attrs.GetName()
+			position = attrs.GetPosition()
+			return
+		}
 	}
 
-	// If that failed, try to extract from UnparsedObject
+	// If normal fields failed, try UnparsedObject
 	// This happens when the API returns fields the generated client doesn't know about
 	if ruleset.UnparsedObject != nil {
-		if id, ok := ruleset.UnparsedObject["id"].(string); ok && id != "" {
-			return id, true
+		// Extract ID
+		if idVal, idOk := ruleset.UnparsedObject["id"].(string); idOk && idVal != "" {
+			id = idVal
+			ok = true
+		}
+
+		// Extract attributes (name and position)
+		if attributesRaw, attrsOk := ruleset.UnparsedObject["attributes"].(map[string]interface{}); attrsOk {
+			// Extract name
+			if nameVal, nameOk := attributesRaw["name"].(string); nameOk {
+				name = nameVal
+			}
+
+			// Extract position (might be float64, int, or int32)
+			if posFloat, posOk := attributesRaw["position"].(float64); posOk {
+				position = int32(posFloat)
+			} else if posInt, posOk := attributesRaw["position"].(int); posOk {
+				position = int32(posInt)
+			} else if posInt32, posOk := attributesRaw["position"].(int32); posOk {
+				position = posInt32
+			}
 		}
 	}
 
-	return "", false
+	return
 }
 
-// extractRulesetName extracts the name from a ruleset, handling UnparsedObject
+// extractRulesetID extracts the ID from a ruleset (convenience wrapper around extractRulesetFields)
+func extractRulesetID(ruleset datadogV2.RulesetRespData) (string, bool) {
+	id, _, _, ok := extractRulesetFields(ruleset)
+	return id, ok
+}
+
+// extractRulesetName extracts the name from a ruleset (convenience wrapper around extractRulesetFields)
 func extractRulesetName(ruleset datadogV2.RulesetRespData) string {
-	// Try normal attributes first
-	if attrs, ok := ruleset.GetAttributesOk(); ok {
-		return attrs.GetName()
-	}
-
-	// Try UnparsedObject
-	if ruleset.UnparsedObject != nil {
-		if attributesRaw, ok := ruleset.UnparsedObject["attributes"].(map[string]interface{}); ok {
-			if name, ok := attributesRaw["name"].(string); ok {
-				return name
-			}
-		}
-	}
-
-	return ""
+	_, name, _, _ := extractRulesetFields(ruleset)
+	return name
 }
 
-// extractRulesetPosition extracts the position from a ruleset, handling UnparsedObject
+// extractRulesetPosition extracts the position from a ruleset (convenience wrapper around extractRulesetFields)
 func extractRulesetPosition(ruleset datadogV2.RulesetRespData) int32 {
-	// Try normal attributes first
-	if attrs, ok := ruleset.GetAttributesOk(); ok {
-		return attrs.GetPosition()
-	}
-
-	// Try UnparsedObject
-	if ruleset.UnparsedObject != nil {
-		if attributesRaw, ok := ruleset.UnparsedObject["attributes"].(map[string]interface{}); ok {
-			// Position might be float64 (JSON number) or int
-			if posFloat, ok := attributesRaw["position"].(float64); ok {
-				return int32(posFloat)
-			}
-			if posInt, ok := attributesRaw["position"].(int); ok {
-				return int32(posInt)
-			}
-			if posInt32, ok := attributesRaw["position"].(int32); ok {
-				return posInt32
-			}
-		}
-	}
-
-	return 0
+	_, _, position, _ := extractRulesetFields(ruleset)
+	return position
 }
 
 // getRulesetsWithPositions extracts all rulesets with their positions and sorts them by position
@@ -366,7 +366,7 @@ func getRulesetsWithPositions(rulesets []datadogV2.RulesetRespData, managedIDsSe
 	result := make([]rulesetWithPosition, 0, len(rulesets))
 
 	for _, ruleset := range rulesets {
-		rulesetID, ok := extractRulesetID(ruleset)
+		rulesetID, name, position, ok := extractRulesetFields(ruleset)
 		if !ok {
 			continue
 		}
@@ -375,9 +375,6 @@ func getRulesetsWithPositions(rulesets []datadogV2.RulesetRespData, managedIDsSe
 		if managedOnly && !managedIDsSet[rulesetID] {
 			continue
 		}
-
-		position := extractRulesetPosition(ruleset)
-		name := extractRulesetName(ruleset)
 
 		result = append(result, rulesetWithPosition{
 			ID:       rulesetID,
@@ -460,7 +457,7 @@ func formatUnmanagedDetails(unmanagedRulesets []rulesetWithPosition, includePosi
 	return details
 }
 
-func (r *tagPipelineRulesetsResource) updateOrder(ctx context.Context, state *tagPipelineRulesetsModel, diag *diag.Diagnostics) {
+func (r *tagPipelineRulesetsResource) updateOrder(state *tagPipelineRulesetsModel, diag *diag.Diagnostics) {
 	// Set the ID immediately to prevent "unknown value" errors
 	state.ID = types.StringValue("order")
 
@@ -478,14 +475,14 @@ func (r *tagPipelineRulesetsResource) updateOrder(ctx context.Context, state *ta
 	}
 
 	if override {
-		r.updateOrderWithDeletion(ctx, state, diag, desiredRulesetIDs)
+		r.updateOrderWithDeletion(state, diag, desiredRulesetIDs)
 	} else {
-		r.updateOrderWithAllRulesets(ctx, state, diag, desiredRulesetIDs)
+		r.updateOrderWithAllRulesets(state, diag, desiredRulesetIDs)
 	}
 }
 
 // Deletes unmanaged rulesets and reorders remaining ones when override is enabled
-func (r *tagPipelineRulesetsResource) updateOrderWithDeletion(ctx context.Context, state *tagPipelineRulesetsModel, diag *diag.Diagnostics, desiredOrder []string) {
+func (r *tagPipelineRulesetsResource) updateOrderWithDeletion(state *tagPipelineRulesetsModel, diag *diag.Diagnostics, desiredOrder []string) {
 	// Get all existing rulesets
 	resp, httpResponse, err := r.Api.ListTagPipelinesRulesets(r.Auth)
 	if err != nil {
@@ -588,7 +585,7 @@ func (r *tagPipelineRulesetsResource) updateOrderWithDeletion(ctx context.Contex
 	}
 }
 
-func (r *tagPipelineRulesetsResource) updateOrderWithAllRulesets(ctx context.Context, state *tagPipelineRulesetsModel, diag *diag.Diagnostics, desiredOrder []string) {
+func (r *tagPipelineRulesetsResource) updateOrderWithAllRulesets(state *tagPipelineRulesetsModel, diag *diag.Diagnostics, desiredOrder []string) {
 	// Get all existing rulesets
 	resp, httpResponse, err := r.Api.ListTagPipelinesRulesets(r.Auth)
 	if err != nil {
