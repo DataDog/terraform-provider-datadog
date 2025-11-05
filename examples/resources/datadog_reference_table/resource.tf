@@ -1,18 +1,48 @@
-# Create new reference_table resource
+# Create a reference table from an S3 bucket
+resource "datadog_reference_table" "s3_table" {
+  table_name  = "products_catalog"
+  description = "Product catalog synced from S3"
+  source      = "S3"
 
-resource "datadog_reference_table" "foo" {
-    description = "This is my reference table description"
-    schema {
+  file_metadata {
+    sync_enabled = true
+
+    access_details {
+      aws_detail {
+        aws_account_id  = "123456789000"
+        aws_bucket_name = "my-data-bucket"
+        file_path       = "reference-tables/products.csv"
+      }
+    }
+  }
+
+  schema {
+    primary_keys = ["product_id"]
+
     fields {
-    name = "id"
-    type = "STRING"
+      name = "product_id"
+      type = "STRING"
     }
-    primary_keys = ["id"]
+
+    fields {
+      name = "product_name"
+      type = "STRING"
     }
-    file_metadata {
-        upload_id = "1234567890"
+
+    fields {
+      name = "category"
+      type = "STRING"
     }
-    source = "LOCAL_FILE"
-    table_name = "my_reference_table"
-    tags = ["tag1", "tag2"]
+
+    fields {
+      name = "price_cents"
+      type = "INT32"
+    }
+  }
+
+  tags = [
+    "source:s3",
+    "team:catalog",
+    "env:production"
+  ]
 }
