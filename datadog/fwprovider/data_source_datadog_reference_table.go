@@ -2,6 +2,7 @@ package fwprovider
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
@@ -21,26 +22,26 @@ type datadogReferenceTableDataSource struct {
 }
 
 type datadogReferenceTableDataSourceModel struct {
-	// Datasource ID
-	ID types.String `tfsdk:"id"`
-
-	// Query Parameters
-	FilterStatus            types.String `tfsdk:"filter[status]"`
-	FilterTableNameExact    types.String `tfsdk:"filter[table_name][exact]"`
-	FilterTableNameContains types.String `tfsdk:"filter[table_name][contains]"`
+	// Query Parameters (mutually exclusive)
+	ID        types.String `tfsdk:"id"`
+	TableName types.String `tfsdk:"table_name"`
 
 	// Computed values
-	CreatedBy     types.String                       `tfsdk:"created_by"`
-	Description   types.String                       `tfsdk:"description"`
-	LastUpdatedBy types.String                       `tfsdk:"last_updated_by"`
-	RowCount      types.Int64                        `tfsdk:"row_count"`
-	Source        datadogV2.ReferenceTableSourceType `tfsdk:"source"`
-	Status        types.String                       `tfsdk:"status"`
-	TableName     types.String                       `tfsdk:"table_name"`
-	UpdatedAt     types.String                       `tfsdk:"updated_at"`
-	Tags          types.List                         `tfsdk:"tags"`
-	FileMetadata  *fileMetadataModel                 `tfsdk:"file_metadata"`
-	Schema        *schemaModel                       `tfsdk:"schema"`
+	CreatedBy     types.String                                         `tfsdk:"created_by"`
+	Description   types.String                                         `tfsdk:"description"`
+	LastUpdatedBy types.String                                         `tfsdk:"last_updated_by"`
+	RowCount      types.Int64                                          `tfsdk:"row_count"`
+	Source        types.String                                         `tfsdk:"source"`
+	Status        types.String                                         `tfsdk:"status"`
+	UpdatedAt     types.String                                         `tfsdk:"updated_at"`
+	Tags          types.List                                           `tfsdk:"tags"`
+	FileMetadata  *tableResultV2DataAttributesFileMetadataModel        `tfsdk:"file_metadata"`
+	Schema        *schemaModel                                         `tfsdk:"schema"`
+}
+
+type tableResultV2DataAttributesFileMetadataModel struct {
+	CloudStorage *tableResultV2DataAttributesFileMetadataCloudStorageModel `tfsdk:"cloud_storage"`
+	LocalFile    *tableResultV2DataAttributesFileMetadataLocalFileModel    `tfsdk:"local_file"`
 }
 
 type tableResultV2DataAttributesFileMetadataCloudStorageModel struct {
@@ -50,42 +51,11 @@ type tableResultV2DataAttributesFileMetadataCloudStorageModel struct {
 	SyncEnabled   types.Bool          `tfsdk:"sync_enabled"`
 	AccessDetails *accessDetailsModel `tfsdk:"access_details"`
 }
-type accessDetailsModel struct {
-	AwsDetail   *awsDetailModel   `tfsdk:"aws_detail"`
-	AzureDetail *azureDetailModel `tfsdk:"azure_detail"`
-	GcpDetail   *gcpDetailModel   `tfsdk:"gcp_detail"`
-}
-type awsDetailModel struct {
-	AwsAccountId  types.String `tfsdk:"aws_account_id"`
-	AwsBucketName types.String `tfsdk:"aws_bucket_name"`
-	FilePath      types.String `tfsdk:"file_path"`
-}
-type azureDetailModel struct {
-	AzureClientId           types.String `tfsdk:"azure_client_id"`
-	AzureContainerName      types.String `tfsdk:"azure_container_name"`
-	AzureStorageAccountName types.String `tfsdk:"azure_storage_account_name"`
-	AzureTenantId           types.String `tfsdk:"azure_tenant_id"`
-	FilePath                types.String `tfsdk:"file_path"`
-}
-type gcpDetailModel struct {
-	FilePath               types.String `tfsdk:"file_path"`
-	GcpBucketName          types.String `tfsdk:"gcp_bucket_name"`
-	GcpProjectId           types.String `tfsdk:"gcp_project_id"`
-	GcpServiceAccountEmail types.String `tfsdk:"gcp_service_account_email"`
-}
+
 type tableResultV2DataAttributesFileMetadataLocalFileModel struct {
 	ErrorMessage  types.String `tfsdk:"error_message"`
 	ErrorRowCount types.Int64  `tfsdk:"error_row_count"`
 	UploadId      types.String `tfsdk:"upload_id"`
-}
-
-type schemaModel struct {
-	PrimaryKeys types.List     `tfsdk:"primary_keys"`
-	Fields      []*fieldsModel `tfsdk:"fields"`
-}
-type fieldsModel struct {
-	Name types.String                            `tfsdk:"name"`
-	Type datadogV2.ReferenceTableSchemaFieldType `tfsdk:"type"`
 }
 
 func NewDatadogReferenceTableDataSource() datasource.DataSource {
@@ -104,22 +74,18 @@ func (d *datadogReferenceTableDataSource) Metadata(_ context.Context, request da
 
 func (d *datadogReferenceTableDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, response *datasource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "Use this data source to retrieve information about an existing Datadog reference_table.",
+		Description: "Use this data source to retrieve information about an existing Datadog reference table. Query by either table_name or id (mutually exclusive). Supports all source types including cloud storage (S3, GCS, Azure) and external integrations (ServiceNow, Salesforce, Databricks, Snowflake, LOCAL_FILE).",
 		Attributes: map[string]schema.Attribute{
-			// Datasource ID
-			"id": utils.ResourceIDAttribute(),
-			// Query Parameters
-			"filter[status]": schema.StringAttribute{
+			// Query Parameters (mutually exclusive)
+			"id": schema.StringAttribute{
 				Optional:    true,
-				Description: "Filter by processing status.",
+				Computed:    true,
+				Description: "The UUID of the reference table. Either id or table_name must be specified, but not both.",
 			},
-			"filter[table_name][exact]": schema.StringAttribute{
+			"table_name": schema.StringAttribute{
 				Optional:    true,
-				Description: "Filter by table name exactly.",
-			},
-			"filter[table_name][contains]": schema.StringAttribute{
-				Optional:    true,
-				Description: "Filter by table name contains.",
+				Computed:    true,
+				Description: "The name of the reference table. Either id or table_name must be specified, but not both.",
 			},
 			// Computed values
 			"created_by": schema.StringAttribute{
@@ -140,15 +106,11 @@ func (d *datadogReferenceTableDataSource) Schema(_ context.Context, _ datasource
 			},
 			"source": schema.StringAttribute{
 				Computed:    true,
-				Description: "The source type for reference table data. Includes all possible source types that can appear in responses.",
+				Description: "The source type for the reference table (e.g., S3, GCS, AZURE, SERVICENOW, SALESFORCE, DATABRICKS, SNOWFLAKE, LOCAL_FILE).",
 			},
 			"status": schema.StringAttribute{
 				Computed:    true,
-				Description: "The status of the reference table.",
-			},
-			"table_name": schema.StringAttribute{
-				Computed:    true,
-				Description: "The name of the reference table.",
+				Description: "The status of the reference table (e.g., DONE, PROCESSING, ERROR).",
 			},
 			"updated_at": schema.StringAttribute{
 				Computed:    true,
@@ -156,20 +118,24 @@ func (d *datadogReferenceTableDataSource) Schema(_ context.Context, _ datasource
 			},
 			"tags": schema.ListAttribute{
 				Computed:    true,
-				Description: "The tags of the reference table.",
+				Description: "The tags associated with the reference table.",
 				ElementType: types.StringType,
 			},
 		},
 		Blocks: map[string]schema.Block{
-			// Computed values
 			"file_metadata": schema.SingleNestedBlock{
-				Attributes: map[string]schema.Attribute{},
+				Description: "File metadata for the reference table. The structure depends on the source type.",
 				Blocks: map[string]schema.Block{
-					"table_result_v2_data_attributes_file_metadata_cloud_storage": schema.SingleNestedBlock{
+					"cloud_storage": schema.SingleNestedBlock{
+						Description: "Cloud storage metadata (for S3, GCS, or Azure sources).",
 						Attributes: map[string]schema.Attribute{
+							"sync_enabled": schema.BoolAttribute{
+								Computed:    true,
+								Description: "Whether automatic sync is enabled for this table.",
+							},
 							"error_message": schema.StringAttribute{
 								Computed:    true,
-								Description: "The error message returned from the sync.",
+								Description: "Error message from the last sync attempt, if any.",
 							},
 							"error_row_count": schema.Int64Attribute{
 								Computed:    true,
@@ -177,16 +143,12 @@ func (d *datadogReferenceTableDataSource) Schema(_ context.Context, _ datasource
 							},
 							"error_type": schema.StringAttribute{
 								Computed:    true,
-								Description: "The type of error that occurred during file processing. This field provides high-level error categories for easier troubleshooting and is only present when there are errors.",
-							},
-							"sync_enabled": schema.BoolAttribute{
-								Computed:    true,
-								Description: "Whether this table is synced automatically.",
+								Description: "The type of error that occurred during file processing.",
 							},
 						},
 						Blocks: map[string]schema.Block{
 							"access_details": schema.SingleNestedBlock{
-								Attributes: map[string]schema.Attribute{},
+								Description: "Cloud storage access configuration.",
 								Blocks: map[string]schema.Block{
 									"aws_detail": schema.SingleNestedBlock{
 										Attributes: map[string]schema.Attribute{
@@ -196,51 +158,27 @@ func (d *datadogReferenceTableDataSource) Schema(_ context.Context, _ datasource
 											},
 											"aws_bucket_name": schema.StringAttribute{
 												Computed:    true,
-												Description: "The name of the AWS bucket.",
+												Description: "The name of the AWS S3 bucket.",
 											},
 											"file_path": schema.StringAttribute{
 												Computed:    true,
-												Description: "The relative file path from the S3 bucket root to the CSV file.",
-											},
-										},
-									},
-									"azure_detail": schema.SingleNestedBlock{
-										Attributes: map[string]schema.Attribute{
-											"azure_client_id": schema.StringAttribute{
-												Computed:    true,
-												Description: "The Azure client ID.",
-											},
-											"azure_container_name": schema.StringAttribute{
-												Computed:    true,
-												Description: "The name of the Azure container.",
-											},
-											"azure_storage_account_name": schema.StringAttribute{
-												Computed:    true,
-												Description: "The name of the Azure storage account.",
-											},
-											"azure_tenant_id": schema.StringAttribute{
-												Computed:    true,
-												Description: "The ID of the Azure tenant.",
-											},
-											"file_path": schema.StringAttribute{
-												Computed:    true,
-												Description: "The relative file path from the Azure container root to the CSV file.",
+												Description: "The relative file path from the S3 bucket root.",
 											},
 										},
 									},
 									"gcp_detail": schema.SingleNestedBlock{
 										Attributes: map[string]schema.Attribute{
-											"file_path": schema.StringAttribute{
+											"gcp_project_id": schema.StringAttribute{
 												Computed:    true,
-												Description: "The relative file path from the GCS bucket root to the CSV file.",
+												Description: "The ID of the GCP project.",
 											},
 											"gcp_bucket_name": schema.StringAttribute{
 												Computed:    true,
 												Description: "The name of the GCP bucket.",
 											},
-											"gcp_project_id": schema.StringAttribute{
+											"file_path": schema.StringAttribute{
 												Computed:    true,
-												Description: "The ID of the GCP project.",
+												Description: "The relative file path from the GCS bucket root.",
 											},
 											"gcp_service_account_email": schema.StringAttribute{
 												Computed:    true,
@@ -248,47 +186,74 @@ func (d *datadogReferenceTableDataSource) Schema(_ context.Context, _ datasource
 											},
 										},
 									},
+									"azure_detail": schema.SingleNestedBlock{
+										Attributes: map[string]schema.Attribute{
+											"azure_tenant_id": schema.StringAttribute{
+												Computed:    true,
+												Description: "The ID of the Azure tenant.",
+											},
+											"azure_client_id": schema.StringAttribute{
+												Computed:    true,
+												Description: "The Azure client ID.",
+											},
+											"azure_storage_account_name": schema.StringAttribute{
+												Computed:    true,
+												Description: "The name of the Azure storage account.",
+											},
+											"azure_container_name": schema.StringAttribute{
+												Computed:    true,
+												Description: "The name of the Azure container.",
+											},
+											"file_path": schema.StringAttribute{
+												Computed:    true,
+												Description: "The relative file path from the Azure container root.",
+											},
+										},
+									},
 								},
 							},
 						},
 					},
-					"table_result_v2_data_attributes_file_metadata_local_file": schema.SingleNestedBlock{
+					"local_file": schema.SingleNestedBlock{
+						Description: "Local file metadata (for LOCAL_FILE source).",
 						Attributes: map[string]schema.Attribute{
+							"upload_id": schema.StringAttribute{
+								Computed:    true,
+								Description: "The upload ID used to create/update the table.",
+							},
 							"error_message": schema.StringAttribute{
 								Computed:    true,
-								Description: "The error message returned from the creation/update.",
+								Description: "Error message from the last upload, if any.",
 							},
 							"error_row_count": schema.Int64Attribute{
 								Computed:    true,
-								Description: "The number of rows that failed to create/update.",
-							},
-							"upload_id": schema.StringAttribute{
-								Computed:    true,
-								Description: "The upload ID that was used to create/update the table.",
+								Description: "The number of rows that failed to process.",
 							},
 						},
 					},
 				},
 			},
 			"schema": schema.SingleNestedBlock{
+				Description: "The schema definition for the reference table.",
 				Attributes: map[string]schema.Attribute{
 					"primary_keys": schema.ListAttribute{
 						Computed:    true,
-						Description: "List of field names that serve as primary keys for the table. Only one primary key is supported, and it is used as an ID to retrieve rows.",
+						Description: "List of field names that serve as primary keys for the table.",
 						ElementType: types.StringType,
 					},
 				},
 				Blocks: map[string]schema.Block{
 					"fields": schema.ListNestedBlock{
+						Description: "List of fields in the table schema.",
 						NestedObject: schema.NestedBlockObject{
 							Attributes: map[string]schema.Attribute{
 								"name": schema.StringAttribute{
 									Computed:    true,
-									Description: "The field name.",
+									Description: "The name of the field.",
 								},
 								"type": schema.StringAttribute{
 									Computed:    true,
-									Description: "The field type for reference table schema fields.",
+									Description: "The data type of the field (e.g., STRING, INT32).",
 								},
 							},
 						},
@@ -306,42 +271,74 @@ func (d *datadogReferenceTableDataSource) Read(ctx context.Context, request data
 		return
 	}
 
-	if !state.ID.IsNull() {
+	// Validate that exactly one of id or table_name is specified
+	hasID := !state.ID.IsNull() && state.ID.ValueString() != ""
+	hasTableName := !state.TableName.IsNull() && state.TableName.ValueString() != ""
+
+	if !hasID && !hasTableName {
+		response.Diagnostics.AddError(
+			"Missing required argument",
+			"Either 'id' or 'table_name' must be specified",
+		)
+		return
+	}
+
+	if hasID && hasTableName {
+		response.Diagnostics.AddError(
+			"Conflicting arguments",
+			"Only one of 'id' or 'table_name' can be specified, not both",
+		)
+		return
+	}
+
+	// Query by ID
+	if hasID {
 		tableId := state.ID.ValueString()
 		ddResp, _, err := d.Api.GetTable(d.Auth, tableId)
 		if err != nil {
-			response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error getting datadog referenceTable"))
+			response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error getting datadog reference table"))
 			return
 		}
 
 		d.updateState(ctx, &state, ddResp.Data)
 	} else {
-		filterStatus := state.FilterStatus.ValueString()
-		filterTableNameExact := state.FilterTableNameExact.ValueString()
-		filterTableNameContains := state.FilterTableNameContains.ValueString()
-
+		// Query by table_name using list endpoint with exact match
+		tableName := state.TableName.ValueString()
 		optionalParams := datadogV2.ListTablesOptionalParameters{
-			FilterStatus:            &filterStatus,
-			FilterTableNameExact:    &filterTableNameExact,
-			FilterTableNameContains: &filterTableNameContains,
+			FilterTableNameExact: &tableName,
 		}
 
 		ddResp, _, err := d.Api.ListTables(d.Auth, optionalParams)
 		if err != nil {
-			response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error listing datadog referenceTable"))
+			response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error listing datadog reference tables"))
+			return
+		}
+
+		if len(ddResp.Data) == 0 {
+			response.Diagnostics.AddError(
+				"Reference table not found",
+				fmt.Sprintf("No reference table found with table_name='%s'", tableName),
+			)
 			return
 		}
 
 		if len(ddResp.Data) > 1 {
-			response.Diagnostics.AddError("filters returned more than one result, use more specific search criteria", "")
-			return
-		}
-		if len(ddResp.Data) == 0 {
-			response.Diagnostics.AddError("filters returned no results", "")
+			response.Diagnostics.AddError(
+				"Multiple reference tables found",
+				fmt.Sprintf("Found %d reference tables with table_name='%s', expected exactly 1", len(ddResp.Data), tableName),
+			)
 			return
 		}
 
-		d.updateStateFromListResponse(ctx, &state, &ddResp.Data[0])
+		// Get full details using the ID from list response
+		tableId := ddResp.Data[0].GetId()
+		fullResp, _, err := d.Api.GetTable(d.Auth, tableId)
+		if err != nil {
+			response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error getting datadog reference table details"))
+			return
+		}
+
+		d.updateState(ctx, &state, fullResp.Data)
 	}
 
 	// Save data into Terraform state
@@ -349,73 +346,176 @@ func (d *datadogReferenceTableDataSource) Read(ctx context.Context, request data
 }
 
 func (d *datadogReferenceTableDataSource) updateState(ctx context.Context, state *datadogReferenceTableDataSourceModel, referenceTableData *datadogV2.TableResultV2Data) {
-	state.ID = types.StringValue(referenceTableData.GetId())
-
 	attributes := referenceTableData.GetAttributes()
-	state.CreatedBy = types.StringValue(attributes.GetCreatedBy())
-	state.Description = types.StringValue(attributes.GetDescription())
-	// cloud tables
-	state.FileMetadata.SyncEnabled = types.BoolValue(attributes.GetFileMetadata().TableResultV2DataAttributesFileMetadataCloudStorage.GetSyncEnabled())
-	state.FileMetadata.AccessDetails = &accessDetailsModel{
-		AwsDetail: &awsDetailModel{
-			AwsAccountId:  types.StringValue(attributes.GetFileMetadata().TableResultV2DataAttributesFileMetadataCloudStorage.GetAccessDetails().AwsDetail.GetAwsAccountId()),
-			AwsBucketName: types.StringValue(attributes.GetFileMetadata().TableResultV2DataAttributesFileMetadataCloudStorage.GetAccessDetails().AwsDetail.GetAwsBucketName()),
-			FilePath:      types.StringValue(attributes.GetFileMetadata().TableResultV2DataAttributesFileMetadataCloudStorage.GetAccessDetails().AwsDetail.GetFilePath()),
-		},
-		AzureDetail: &azureDetailModel{
-			AzureClientId:           types.StringValue(attributes.GetFileMetadata().TableResultV2DataAttributesFileMetadataCloudStorage.GetAccessDetails().AzureDetail.GetAzureClientId()),
-			AzureContainerName:      types.StringValue(attributes.GetFileMetadata().TableResultV2DataAttributesFileMetadataCloudStorage.GetAccessDetails().AzureDetail.GetAzureContainerName()),
-			AzureStorageAccountName: types.StringValue(attributes.GetFileMetadata().TableResultV2DataAttributesFileMetadataCloudStorage.GetAccessDetails().AzureDetail.GetAzureStorageAccountName()),
-			AzureTenantId:           types.StringValue(attributes.GetFileMetadata().TableResultV2DataAttributesFileMetadataCloudStorage.GetAccessDetails().AzureDetail.GetAzureTenantId()),
-			FilePath:                types.StringValue(attributes.GetFileMetadata().TableResultV2DataAttributesFileMetadataCloudStorage.GetAccessDetails().AzureDetail.GetFilePath()),
-		},
-		GcpDetail: &gcpDetailModel{
-			FilePath:               types.StringValue(attributes.GetFileMetadata().TableResultV2DataAttributesFileMetadataCloudStorage.GetAccessDetails().GcpDetail.GetFilePath()),
-			GcpBucketName:          types.StringValue(attributes.GetFileMetadata().TableResultV2DataAttributesFileMetadataCloudStorage.GetAccessDetails().GcpDetail.GetGcpBucketName()),
-			GcpProjectId:           types.StringValue(attributes.GetFileMetadata().TableResultV2DataAttributesFileMetadataCloudStorage.GetAccessDetails().GcpDetail.GetGcpProjectId()),
-			GcpServiceAccountEmail: types.StringValue(attributes.GetFileMetadata().TableResultV2DataAttributesFileMetadataCloudStorage.GetAccessDetails().GcpDetail.GetGcpServiceAccountEmail()),
-		},
+
+	// Set basic attributes
+	state.ID = types.StringValue(referenceTableData.GetId())
+	state.TableName = types.StringValue(attributes.GetTableName())
+
+	if createdBy, ok := attributes.GetCreatedByOk(); ok {
+		state.CreatedBy = types.StringValue(*createdBy)
 	}
-	// for local tables, file path is not stored (upload_id is used by the backend instead)
-	state.LastUpdatedBy = types.StringValue(attributes.GetLastUpdatedBy())
-	state.RowCount = types.Int64Value(int64(attributes.GetRowCount()))
-	primaryKeys := make([]string, len(attributes.GetSchema().PrimaryKeys))
-	for i, primaryKey := range attributes.GetSchema().PrimaryKeys {
-		primaryKeys[i] = primaryKey
+
+	if description, ok := attributes.GetDescriptionOk(); ok {
+		state.Description = types.StringValue(*description)
 	}
-	primaryKeysList, _ := types.ListValueFrom(ctx, types.StringType, primaryKeys)
-	state.Schema = &schemaModel{
-		PrimaryKeys: primaryKeysList,
-		Fields:      make([]*fieldsModel, len(attributes.GetSchema().Fields)),
+
+	if lastUpdatedBy, ok := attributes.GetLastUpdatedByOk(); ok {
+		state.LastUpdatedBy = types.StringValue(*lastUpdatedBy)
 	}
-	for i, field := range attributes.GetSchema().Fields {
-		state.Schema.Fields[i] = &fieldsModel{
-			Name: types.StringValue(field.GetName()),
-			Type: field.GetType(),
+
+	if rowCount, ok := attributes.GetRowCountOk(); ok {
+		state.RowCount = types.Int64Value(int64(*rowCount))
+	}
+
+	if source, ok := attributes.GetSourceOk(); ok {
+		state.Source = types.StringValue(string(*source))
+	}
+
+	if status, ok := attributes.GetStatusOk(); ok {
+		state.Status = types.StringValue(*status)
+	}
+
+	if updatedAt, ok := attributes.GetUpdatedAtOk(); ok {
+		state.UpdatedAt = types.StringValue(*updatedAt)
+	}
+
+	if tags, ok := attributes.GetTagsOk(); ok && len(*tags) > 0 {
+		state.Tags, _ = types.ListValueFrom(ctx, types.StringType, *tags)
+	}
+
+	// Handle FileMetadata (OneOf union type)
+	if fileMetadata, ok := attributes.GetFileMetadataOk(); ok {
+		fileMetadataTf := &tableResultV2DataAttributesFileMetadataModel{}
+
+		// Check if it's CloudStorage type
+		if cloudStorage := fileMetadata.TableResultV2DataAttributesFileMetadataCloudStorage; cloudStorage != nil {
+			cloudStorageTf := &tableResultV2DataAttributesFileMetadataCloudStorageModel{}
+
+			if syncEnabled, ok := cloudStorage.GetSyncEnabledOk(); ok {
+				cloudStorageTf.SyncEnabled = types.BoolValue(*syncEnabled)
+			}
+
+			if errorMessage, ok := cloudStorage.GetErrorMessageOk(); ok {
+				cloudStorageTf.ErrorMessage = types.StringValue(*errorMessage)
+			}
+
+			if errorRowCount, ok := cloudStorage.GetErrorRowCountOk(); ok {
+				cloudStorageTf.ErrorRowCount = types.Int64Value(*errorRowCount)
+			}
+
+			if errorType, ok := cloudStorage.GetErrorTypeOk(); ok {
+				cloudStorageTf.ErrorType = types.StringValue(string(*errorType))
+			}
+
+			// Extract access_details
+			if accessDetails, ok := cloudStorage.GetAccessDetailsOk(); ok {
+				accessDetailsTf := &accessDetailsModel{}
+
+				// AWS details
+				if awsDetail := accessDetails.AwsDetail; awsDetail != nil {
+					awsDetailTf := &awsDetailModel{}
+					if awsAccountId, ok := awsDetail.GetAwsAccountIdOk(); ok {
+						awsDetailTf.AwsAccountId = types.StringValue(*awsAccountId)
+					}
+					if awsBucketName, ok := awsDetail.GetAwsBucketNameOk(); ok {
+						awsDetailTf.AwsBucketName = types.StringValue(*awsBucketName)
+					}
+					if filePath, ok := awsDetail.GetFilePathOk(); ok {
+						awsDetailTf.FilePath = types.StringValue(*filePath)
+					}
+					accessDetailsTf.AwsDetail = awsDetailTf
+				}
+
+				// GCP details
+				if gcpDetail := accessDetails.GcpDetail; gcpDetail != nil {
+					gcpDetailTf := &gcpDetailModel{}
+					if gcpProjectId, ok := gcpDetail.GetGcpProjectIdOk(); ok {
+						gcpDetailTf.GcpProjectId = types.StringValue(*gcpProjectId)
+					}
+					if gcpBucketName, ok := gcpDetail.GetGcpBucketNameOk(); ok {
+						gcpDetailTf.GcpBucketName = types.StringValue(*gcpBucketName)
+					}
+					if filePath, ok := gcpDetail.GetFilePathOk(); ok {
+						gcpDetailTf.FilePath = types.StringValue(*filePath)
+					}
+					if gcpServiceAccountEmail, ok := gcpDetail.GetGcpServiceAccountEmailOk(); ok {
+						gcpDetailTf.GcpServiceAccountEmail = types.StringValue(*gcpServiceAccountEmail)
+					}
+					accessDetailsTf.GcpDetail = gcpDetailTf
+				}
+
+				// Azure details
+				if azureDetail := accessDetails.AzureDetail; azureDetail != nil {
+					azureDetailTf := &azureDetailModel{}
+					if azureTenantId, ok := azureDetail.GetAzureTenantIdOk(); ok {
+						azureDetailTf.AzureTenantId = types.StringValue(*azureTenantId)
+					}
+					if azureClientId, ok := azureDetail.GetAzureClientIdOk(); ok {
+						azureDetailTf.AzureClientId = types.StringValue(*azureClientId)
+					}
+					if azureStorageAccountName, ok := azureDetail.GetAzureStorageAccountNameOk(); ok {
+						azureDetailTf.AzureStorageAccountName = types.StringValue(*azureStorageAccountName)
+					}
+					if azureContainerName, ok := azureDetail.GetAzureContainerNameOk(); ok {
+						azureDetailTf.AzureContainerName = types.StringValue(*azureContainerName)
+					}
+					if filePath, ok := azureDetail.GetFilePathOk(); ok {
+						azureDetailTf.FilePath = types.StringValue(*filePath)
+					}
+					accessDetailsTf.AzureDetail = azureDetailTf
+				}
+
+				cloudStorageTf.AccessDetails = accessDetailsTf
+			}
+
+			fileMetadataTf.CloudStorage = cloudStorageTf
 		}
+
+		// Check if it's LocalFile type
+		if localFile := fileMetadata.TableResultV2DataAttributesFileMetadataLocalFile; localFile != nil {
+			localFileTf := &tableResultV2DataAttributesFileMetadataLocalFileModel{}
+
+			if uploadId, ok := localFile.GetUploadIdOk(); ok {
+				localFileTf.UploadId = types.StringValue(*uploadId)
+			}
+
+			if errorMessage, ok := localFile.GetErrorMessageOk(); ok {
+				localFileTf.ErrorMessage = types.StringValue(*errorMessage)
+			}
+
+			if errorRowCount, ok := localFile.GetErrorRowCountOk(); ok {
+				localFileTf.ErrorRowCount = types.Int64Value(*errorRowCount)
+			}
+
+			fileMetadataTf.LocalFile = localFileTf
+		}
+
+		state.FileMetadata = fileMetadataTf
 	}
-	state.Source = attributes.GetSource()
-	state.Status = types.StringValue(attributes.GetStatus())
-	state.TableName = types.StringValue(attributes.GetTableName())
-	state.UpdatedAt = types.StringValue(attributes.GetUpdatedAt())
-	state.Tags, _ = types.ListValueFrom(ctx, types.StringType, attributes.GetTags())
 
-}
+	// Handle Schema
+	if schema, ok := attributes.GetSchemaOk(); ok {
+		schemaTf := &schemaModel{}
 
-func (d *datadogReferenceTableDataSource) updateStateFromListResponse(ctx context.Context, state *datadogReferenceTableDataSourceModel, referenceTableData *datadogV2.ReferenceTable) {
-	state.ID = types.StringValue(referenceTableData.GetId())
-	state.Id = types.StringValue(referenceTableData.GetId())
+		if primaryKeys, ok := schema.GetPrimaryKeysOk(); ok && len(*primaryKeys) > 0 {
+			schemaTf.PrimaryKeys, _ = types.ListValueFrom(ctx, types.StringType, *primaryKeys)
+		}
 
-	attributes := referenceTableData.GetAttributes()
-	state.CreatedBy = types.StringValue(attributes.GetCreatedBy())
-	state.Description = types.StringValue(attributes.GetDescription())
-	state.LastUpdatedBy = types.StringValue(attributes.GetLastUpdatedBy())
-	state.RowCount = types.Int64Value(int64(attributes.GetRowCount()))
-	state.Source = types.StringValue(attributes.GetSource())
-	state.Status = types.StringValue(attributes.GetStatus())
-	state.TableName = types.StringValue(attributes.GetTableName())
-	state.UpdatedAt = types.StringValue(attributes.GetUpdatedAt())
-	state.Tags, _ = types.ListValueFrom(ctx, types.StringType, attributes.GetTags())
-	state.FileMetadata = types.StringValue(attributes.GetFileMetadata())
-	state.Schema = types.BlockValue(attributes.GetSchema())
+		if fields, ok := schema.GetFieldsOk(); ok && len(*fields) > 0 {
+			schemaTf.Fields = []*fieldsModel{}
+			for _, fieldDd := range *fields {
+				fieldTf := &fieldsModel{}
+				if name, ok := fieldDd.GetNameOk(); ok {
+					fieldTf.Name = types.StringValue(*name)
+				}
+				if typeVar, ok := fieldDd.GetTypeOk(); ok {
+					fieldTf.Type = types.StringValue(string(*typeVar))
+				}
+				schemaTf.Fields = append(schemaTf.Fields, fieldTf)
+			}
+		}
+
+		state.Schema = schemaTf
+	}
 }

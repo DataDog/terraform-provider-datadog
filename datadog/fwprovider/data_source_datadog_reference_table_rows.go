@@ -2,6 +2,7 @@ package fwprovider
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
@@ -21,23 +22,17 @@ type datadogReferenceTableRowsDataSource struct {
 }
 
 type datadogReferenceTableRowsDataSourceModel struct {
-	// Datasource ID
-	ID types.String `tfsdk:"id"`
-
 	// Query Parameters
-	RowIds types.List `tfsdk:"row_ids"`
+	TableId types.String `tfsdk:"table_id"`
+	RowIds  types.List   `tfsdk:"row_ids"`
 
-	// Computed values
-	Data []*dataModel `tfsdk:"data"`
+	// Computed values (list of rows)
+	Rows []*rowModel `tfsdk:"rows"`
 }
 
-type dataModel struct {
-	Id         types.String     `tfsdk:"id"`
-	Type       types.String     `tfsdk:"type"`
-	Attributes *attributesModel `tfsdk:"attributes"`
-}
-type attributesModel struct {
-	Values map[string]interface{} `tfsdk:"values"`
+type rowModel struct {
+	Id     types.String `tfsdk:"id"`
+	Values types.Map    `tfsdk:"values"`
 }
 
 func NewDatadogReferenceTableRowsDataSource() datasource.DataSource {
@@ -56,38 +51,31 @@ func (d *datadogReferenceTableRowsDataSource) Metadata(_ context.Context, reques
 
 func (d *datadogReferenceTableRowsDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, response *datasource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "Use this data source to retrieve information about an existing Datadog reference_table_rows.",
+		Description: "Use this data source to retrieve specific rows from a Datadog reference table by their primary key values. Works with all reference table source types.",
 		Attributes: map[string]schema.Attribute{
-			// Datasource ID
-			"id": utils.ResourceIDAttribute(),
+			"table_id": schema.StringAttribute{
+				Required:    true,
+				Description: "The UUID of the reference table to query rows from.",
+			},
 			"row_ids": schema.ListAttribute{
-				Optional:    false,
-				Description: "Array of row IDs to retrieve.",
+				Required:    true,
+				Description: "List of primary key values (row IDs) to retrieve. These are the values of the table's primary key field(s).",
 				ElementType: types.StringType,
 			},
 		},
 		Blocks: map[string]schema.Block{
-			// Computed values
-			"data": schema.ListNestedBlock{
+			"rows": schema.ListNestedBlock{
+				Description: "List of retrieved rows. Each row contains its ID and field values.",
 				NestedObject: schema.NestedBlockObject{
 					Attributes: map[string]schema.Attribute{
 						"id": schema.StringAttribute{
 							Computed:    true,
-							Description: "The ID of the row.",
+							Description: "The primary key value of the row.",
 						},
-						"type": schema.StringAttribute{
+						"values": schema.MapAttribute{
 							Computed:    true,
-							Description: "Row resource type.",
-						},
-					},
-					Blocks: map[string]schema.Block{
-						"attributes": schema.SingleNestedBlock{
-							Attributes: map[string]schema.Attribute{},
-							Blocks: map[string]schema.Block{
-								"values": schema.SingleNestedBlock{
-									Attributes: map[string]schema.Attribute{},
-								},
-							},
+							Description: "Map of field names to values for this row. All values are returned as strings.",
+							ElementType: types.StringType,
 						},
 					},
 				},
@@ -96,7 +84,6 @@ func (d *datadogReferenceTableRowsDataSource) Schema(_ context.Context, _ dataso
 	}
 }
 
-// TODO: how are we supposed to handle multiple rows? Should we return a list of rows or a single row?
 func (d *datadogReferenceTableRowsDataSource) Read(ctx context.Context, request datasource.ReadRequest, response *datasource.ReadResponse) {
 	var state datadogReferenceTableRowsDataSourceModel
 	response.Diagnostics.Append(request.Config.Get(ctx, &state)...)
@@ -104,43 +91,43 @@ func (d *datadogReferenceTableRowsDataSource) Read(ctx context.Context, request 
 		return
 	}
 
-	if !state.ID.IsNull() {
-		tableId := state.ID.ValueString()
-		// parse through data to get rows ids
-		rowsIds := make([]string, len(state.RowIds.Elements()))
-		for i, rowId := range state.RowIds.Elements() {
-			rowsIds[i] = rowId.String()
-		}
-		ddResp, _, err := d.Api.GetRowsByID(d.Auth, tableId, rowsIds)
-		if err != nil {
-			response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error getting datadog referenceTableRows"))
-			return
-		}
+	tableId := state.TableId.ValueString()
 
-		if len(ddResp.Data) == 0 {
-			response.Diagnostics.AddError("query returned no results, check the row_ids parameter", "")
-			return
-		} else if len(ddResp.Data) > 1 {
-			response.Diagnostics.AddError("query returned more than one result, check the row_ids parameter", "")
-			return
-		}
-
-		d.updateStateFromListResponse(ctx, &state, ddResp.Data)
+	// Extract row IDs from the list
+	var rowIds []string
+	response.Diagnostics.Append(state.RowIds.ElementsAs(ctx, &rowIds, false)...)
+	if response.Diagnostics.HasError() {
+		return
 	}
+
+	// Call API to get rows by ID
+	ddResp, _, err := d.Api.GetRowsByID(d.Auth, tableId, rowIds)
+	if err != nil {
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error getting reference table rows"))
+		return
+	}
+
+	// Convert API response to state
+	state.Rows = make([]*rowModel, len(ddResp.Data))
+	for i, row := range ddResp.Data {
+		rowTf := &rowModel{
+			Id: types.StringValue(row.GetId()),
+		}
+
+		// Convert values map to types.Map with string values
+		if attrs, ok := row.GetAttributesOk(); ok && attrs.Values != nil {
+			// Convert all values to strings for the map
+			stringValues := make(map[string]string)
+			for k, v := range attrs.Values {
+				// Convert value to string representation
+				stringValues[k] = fmt.Sprintf("%v", v)
+			}
+			rowTf.Values, _ = types.MapValueFrom(ctx, types.StringType, stringValues)
+		}
+
+		state.Rows[i] = rowTf
+	}
+
 	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
-}
-
-// TODO: how are we supposed to handle multiple rows? Should we return a list of rows or a single row?
-func (d *datadogReferenceTableRowsDataSource) updateStateFromListResponse(ctx context.Context, state *datadogReferenceTableRowsDataSourceModel, referenceTableRowsData []datadogV2.TableRowResourceData) {
-	state.Data = make([]*dataModel, len(referenceTableRowsData))
-	for i, row := range referenceTableRowsData {
-		state.Data[i] = &dataModel{
-			Id:   types.StringValue(row.GetId()),
-			Type: types.StringValue(string(datadogV2.TABLEROWRESOURCEDATATYPE_ROW)),
-			Attributes: &attributesModel{
-				Values: row.GetAttributes().Values,
-			},
-		}
-	}
 }
