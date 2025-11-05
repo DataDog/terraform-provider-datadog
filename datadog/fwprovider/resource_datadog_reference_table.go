@@ -2,12 +2,18 @@ package fwprovider
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
@@ -16,6 +22,7 @@ import (
 var (
 	_ resource.ResourceWithConfigure   = &referenceTableResource{}
 	_ resource.ResourceWithImportState = &referenceTableResource{}
+	_ resource.ResourceWithModifyPlan  = &referenceTableResource{}
 )
 
 type referenceTableResource struct {
@@ -39,16 +46,8 @@ type referenceTableModel struct {
 }
 
 type fileMetadataModel struct {
-	createTableRequestDataAttributesFileMetadataCloudStorageModel
-	createTableRequestDataAttributesFileMetadataLocalFileModel
-}
-type createTableRequestDataAttributesFileMetadataCloudStorageModel struct {
 	SyncEnabled   types.Bool          `tfsdk:"sync_enabled"`
 	AccessDetails *accessDetailsModel `tfsdk:"access_details"`
-}
-
-type createTableRequestDataAttributesFileMetadataLocalFileModel struct {
-	FilePath types.String `tfsdk:"file_path"` // for local files we accept the file path and will perform the upload as part of the resource creation
 }
 
 func NewReferenceTableResource() resource.Resource {
@@ -67,135 +66,164 @@ func (r *referenceTableResource) Metadata(_ context.Context, request resource.Me
 
 func (r *referenceTableResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "Provides a Datadog ReferenceTable resource. This can be used to create and manage Datadog reference_table.",
+		Description: "Provides a Datadog Reference Table resource for cloud storage sources (S3, GCS, Azure). This can be used to create and manage Datadog reference tables that sync data from cloud storage.",
 		Attributes: map[string]schema.Attribute{
+			"id": utils.ResourceIDAttribute(),
+			"table_name": schema.StringAttribute{
+				Required:    true,
+				Description: "The name of the reference table. This must be unique within your organization.",
+			},
+			"source": schema.StringAttribute{
+				Required:    true,
+				Description: "The source type for the reference table. Must be one of: S3, GCS, AZURE.",
+				Validators: []validator.String{
+					stringvalidator.OneOf("S3", "GCS", "AZURE"),
+				},
+			},
 			"description": schema.StringAttribute{
 				Optional:    true,
 				Description: "The description of the reference table.",
 			},
-			"source": schema.StringAttribute{
-				Required:    true,
-				Description: "The source type for creating reference table data. Only these source types can be created through this API.",
-			},
-			"table_name": schema.StringAttribute{
-				Required:    true,
-				Description: "The name of the reference table.",
-			},
 			"tags": schema.ListAttribute{
 				Optional:    true,
-				Description: "The tags of the reference table.",
+				Description: "A list of tags to associate with the reference table.",
 				ElementType: types.StringType,
 			},
-			"id": utils.ResourceIDAttribute(),
+			// Computed attributes
+			"created_by": schema.StringAttribute{
+				Computed:    true,
+				Description: "UUID of the user who created the reference table.",
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"last_updated_by": schema.StringAttribute{
+				Computed:    true,
+				Description: "UUID of the user who last updated the reference table.",
+			},
+			"row_count": schema.Int64Attribute{
+				Computed:    true,
+				Description: "The number of successfully processed rows in the reference table.",
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.UseStateForUnknown(),
+				},
+			},
+			"status": schema.StringAttribute{
+				Computed:    true,
+				Description: "The status of the reference table (e.g., DONE, PROCESSING, ERROR).",
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"updated_at": schema.StringAttribute{
+				Computed:    true,
+				Description: "The timestamp of the last update to the reference table in ISO 8601 format.",
+			},
 		},
 		Blocks: map[string]schema.Block{
 			"file_metadata": schema.SingleNestedBlock{
-				Attributes: map[string]schema.Attribute{},
+				Description: "Configuration for cloud storage file access and sync settings.",
+				Attributes: map[string]schema.Attribute{
+					"sync_enabled": schema.BoolAttribute{
+						Required:    true,
+						Description: "Whether this table should automatically sync with the cloud storage source.",
+					},
+				},
 				Blocks: map[string]schema.Block{
-					"create_table_request_data_attributes_file_metadata_cloud_storage": schema.SingleNestedBlock{
-						Attributes: map[string]schema.Attribute{
-							"sync_enabled": schema.BoolAttribute{
-								Optional:    true,
-								Description: "Whether this table is synced automatically.",
-							},
-						},
+					"access_details": schema.SingleNestedBlock{
+						Description: "Cloud storage access configuration. Exactly one of aws_detail, gcp_detail, or azure_detail must be specified.",
 						Blocks: map[string]schema.Block{
-							"access_details": schema.SingleNestedBlock{
-								Attributes: map[string]schema.Attribute{},
-								Blocks: map[string]schema.Block{
-									"aws_detail": schema.SingleNestedBlock{
-										Attributes: map[string]schema.Attribute{
-											"aws_account_id": schema.StringAttribute{
-												Optional:    true,
-												Description: "The ID of the AWS account.",
-											},
-											"aws_bucket_name": schema.StringAttribute{
-												Optional:    true,
-												Description: "The name of the Amazon S3 bucket.",
-											},
-											"file_path": schema.StringAttribute{
-												Optional:    true,
-												Description: "The relative file path from the S3 bucket root to the CSV file.",
-											},
-										},
+							"aws_detail": schema.SingleNestedBlock{
+								Description: "AWS S3 access configuration.",
+								Attributes: map[string]schema.Attribute{
+									"aws_account_id": schema.StringAttribute{
+										Required:    true,
+										Description: "The ID of the AWS account.",
 									},
-									"azure_detail": schema.SingleNestedBlock{
-										Attributes: map[string]schema.Attribute{
-											"azure_client_id": schema.StringAttribute{
-												Optional:    true,
-												Description: "The Azure client ID.",
-											},
-											"azure_container_name": schema.StringAttribute{
-												Optional:    true,
-												Description: "The name of the Azure container.",
-											},
-											"azure_storage_account_name": schema.StringAttribute{
-												Optional:    true,
-												Description: "The name of the Azure storage account.",
-											},
-											"azure_tenant_id": schema.StringAttribute{
-												Optional:    true,
-												Description: "The ID of the Azure tenant.",
-											},
-											"file_path": schema.StringAttribute{
-												Optional:    true,
-												Description: "The relative file path from the Azure container root to the CSV file.",
-											},
-										},
+									"aws_bucket_name": schema.StringAttribute{
+										Required:    true,
+										Description: "The name of the Amazon S3 bucket.",
 									},
-									"gcp_detail": schema.SingleNestedBlock{
-										Attributes: map[string]schema.Attribute{
-											"file_path": schema.StringAttribute{
-												Optional:    true,
-												Description: "The relative file path from the GCS bucket root to the CSV file.",
-											},
-											"gcp_bucket_name": schema.StringAttribute{
-												Optional:    true,
-												Description: "The name of the GCP bucket.",
-											},
-											"gcp_project_id": schema.StringAttribute{
-												Optional:    true,
-												Description: "The ID of the GCP project.",
-											},
-											"gcp_service_account_email": schema.StringAttribute{
-												Optional:    true,
-												Description: "The email of the GCP service account.",
-											},
-										},
+									"file_path": schema.StringAttribute{
+										Required:    true,
+										Description: "The relative file path from the S3 bucket root to the CSV file.",
 									},
 								},
 							},
-						},
-					},
-					"create_table_request_data_attributes_file_metadata_local_file": schema.SingleNestedBlock{
-						Attributes: map[string]schema.Attribute{
-							"upload_id": schema.StringAttribute{
-								Optional:    true,
-								Description: "The upload ID.",
+							"gcp_detail": schema.SingleNestedBlock{
+								Description: "Google Cloud Storage access configuration.",
+								Attributes: map[string]schema.Attribute{
+									"gcp_project_id": schema.StringAttribute{
+										Required:    true,
+										Description: "The ID of the GCP project.",
+									},
+									"gcp_bucket_name": schema.StringAttribute{
+										Required:    true,
+										Description: "The name of the GCP bucket.",
+									},
+									"file_path": schema.StringAttribute{
+										Required:    true,
+										Description: "The relative file path from the GCS bucket root to the CSV file.",
+									},
+									"gcp_service_account_email": schema.StringAttribute{
+										Required:    true,
+										Description: "The email of the GCP service account used to access the bucket.",
+									},
+								},
+							},
+							"azure_detail": schema.SingleNestedBlock{
+								Description: "Azure Blob Storage access configuration.",
+								Attributes: map[string]schema.Attribute{
+									"azure_tenant_id": schema.StringAttribute{
+										Required:    true,
+										Description: "The ID of the Azure tenant.",
+									},
+									"azure_client_id": schema.StringAttribute{
+										Required:    true,
+										Description: "The Azure client ID (application ID).",
+									},
+									"azure_storage_account_name": schema.StringAttribute{
+										Required:    true,
+										Description: "The name of the Azure storage account.",
+									},
+									"azure_container_name": schema.StringAttribute{
+										Required:    true,
+										Description: "The name of the Azure container.",
+									},
+									"file_path": schema.StringAttribute{
+										Required:    true,
+										Description: "The relative file path from the Azure container root to the CSV file.",
+									},
+								},
 							},
 						},
 					},
 				},
 			},
 			"schema": schema.SingleNestedBlock{
+				Description: "The schema definition for the reference table, including field definitions and primary keys.",
 				Attributes: map[string]schema.Attribute{
 					"primary_keys": schema.ListAttribute{
-						Optional:    true,
-						Description: "List of field names that serve as primary keys for the table. Only one primary key is supported, and it is used as an ID to retrieve rows.",
+						Required:    true,
+						Description: "List of field names that serve as primary keys for the table. Currently only one primary key is supported.",
 						ElementType: types.StringType,
 					},
 				},
 				Blocks: map[string]schema.Block{
 					"fields": schema.ListNestedBlock{
+						Description: "List of fields in the table schema. Must include at least one field.",
 						NestedObject: schema.NestedBlockObject{
 							Attributes: map[string]schema.Attribute{
 								"name": schema.StringAttribute{
-									Optional:    true,
-									Description: "The field name.",
+									Required:    true,
+									Description: "The name of the field.",
 								},
 								"type": schema.StringAttribute{
-									Optional:    true,
-									Description: "The field type for reference table schema fields.",
+									Required:    true,
+									Description: "The data type of the field. Must be one of: STRING, INT32.",
+									Validators: []validator.String{
+										stringvalidator.OneOf("STRING", "INT32"),
+									},
 								},
 							},
 						},
@@ -311,7 +339,6 @@ func (r *referenceTableResource) Delete(ctx context.Context, request resource.De
 }
 
 func (r *referenceTableResource) updateState(ctx context.Context, state *referenceTableModel, resp *datadogV2.TableResultV2) {
-
 	attributes := resp.Data.GetAttributes()
 
 	state.ID = types.StringValue(*resp.GetData().Id)
@@ -349,19 +376,90 @@ func (r *referenceTableResource) updateState(ctx context.Context, state *referen
 	}
 
 	if tags, ok := attributes.GetTagsOk(); ok && len(*tags) > 0 {
-
 		state.Tags, _ = types.ListValueFrom(ctx, types.StringType, *tags)
 	}
 
-	if schema, ok := attributes.GetSchemaOk(); ok {
+	// Handle FileMetadata from API response (OneOf union type)
+	if fileMetadata, ok := attributes.GetFileMetadataOk(); ok {
+		fileMetadataTf := &fileMetadataModel{}
 
+		// Check if it's CloudStorage type
+		if cloudStorage := fileMetadata.TableResultV2DataAttributesFileMetadataCloudStorage; cloudStorage != nil {
+			if syncEnabled, ok := cloudStorage.GetSyncEnabledOk(); ok {
+				fileMetadataTf.SyncEnabled = types.BoolValue(*syncEnabled)
+			}
+
+			// Extract access_details
+			if accessDetails, ok := cloudStorage.GetAccessDetailsOk(); ok {
+				accessDetailsTf := &accessDetailsModel{}
+
+				// AWS details
+				if awsDetail := accessDetails.AwsDetail; awsDetail != nil {
+					awsDetailTf := &awsDetailModel{}
+					if awsAccountId, ok := awsDetail.GetAwsAccountIdOk(); ok {
+						awsDetailTf.AwsAccountId = types.StringValue(*awsAccountId)
+					}
+					if awsBucketName, ok := awsDetail.GetAwsBucketNameOk(); ok {
+						awsDetailTf.AwsBucketName = types.StringValue(*awsBucketName)
+					}
+					if filePath, ok := awsDetail.GetFilePathOk(); ok {
+						awsDetailTf.FilePath = types.StringValue(*filePath)
+					}
+					accessDetailsTf.AwsDetail = awsDetailTf
+				}
+
+				// GCP details
+				if gcpDetail := accessDetails.GcpDetail; gcpDetail != nil {
+					gcpDetailTf := &gcpDetailModel{}
+					if gcpProjectId, ok := gcpDetail.GetGcpProjectIdOk(); ok {
+						gcpDetailTf.GcpProjectId = types.StringValue(*gcpProjectId)
+					}
+					if gcpBucketName, ok := gcpDetail.GetGcpBucketNameOk(); ok {
+						gcpDetailTf.GcpBucketName = types.StringValue(*gcpBucketName)
+					}
+					if filePath, ok := gcpDetail.GetFilePathOk(); ok {
+						gcpDetailTf.FilePath = types.StringValue(*filePath)
+					}
+					if gcpServiceAccountEmail, ok := gcpDetail.GetGcpServiceAccountEmailOk(); ok {
+						gcpDetailTf.GcpServiceAccountEmail = types.StringValue(*gcpServiceAccountEmail)
+					}
+					accessDetailsTf.GcpDetail = gcpDetailTf
+				}
+
+				// Azure details
+				if azureDetail := accessDetails.AzureDetail; azureDetail != nil {
+					azureDetailTf := &azureDetailModel{}
+					if azureTenantId, ok := azureDetail.GetAzureTenantIdOk(); ok {
+						azureDetailTf.AzureTenantId = types.StringValue(*azureTenantId)
+					}
+					if azureClientId, ok := azureDetail.GetAzureClientIdOk(); ok {
+						azureDetailTf.AzureClientId = types.StringValue(*azureClientId)
+					}
+					if azureStorageAccountName, ok := azureDetail.GetAzureStorageAccountNameOk(); ok {
+						azureDetailTf.AzureStorageAccountName = types.StringValue(*azureStorageAccountName)
+					}
+					if azureContainerName, ok := azureDetail.GetAzureContainerNameOk(); ok {
+						azureDetailTf.AzureContainerName = types.StringValue(*azureContainerName)
+					}
+					if filePath, ok := azureDetail.GetFilePathOk(); ok {
+						azureDetailTf.FilePath = types.StringValue(*filePath)
+					}
+					accessDetailsTf.AzureDetail = azureDetailTf
+				}
+
+				fileMetadataTf.AccessDetails = accessDetailsTf
+			}
+		}
+
+		state.FileMetadata = fileMetadataTf
+	}
+
+	// Handle Schema
+	if schema, ok := attributes.GetSchemaOk(); ok {
 		schemaTf := schemaModel{}
 		if fields, ok := schema.GetFieldsOk(); ok && len(*fields) > 0 {
-
 			schemaTf.Fields = []*fieldsModel{}
 			for _, fieldsDd := range *fields {
-				fieldsTfItem := fieldsModel{}
-
 				fieldsTf := fieldsModel{}
 				if name, ok := fieldsDd.GetNameOk(); ok {
 					fieldsTf.Name = types.StringValue(*name)
@@ -369,13 +467,10 @@ func (r *referenceTableResource) updateState(ctx context.Context, state *referen
 				if typeVar, ok := fieldsDd.GetTypeOk(); ok {
 					fieldsTf.Type = types.StringValue(string(*typeVar))
 				}
-				fieldsTfItem = fieldsTf
-
-				schemaTf.Fields = append(schemaTf.Fields, &fieldsTfItem)
+				schemaTf.Fields = append(schemaTf.Fields, &fieldsTf)
 			}
 		}
 		if primaryKeys, ok := schema.GetPrimaryKeysOk(); ok && len(*primaryKeys) > 0 {
-
 			schemaTf.PrimaryKeys, _ = types.ListValueFrom(ctx, types.StringType, *primaryKeys)
 		}
 		state.Schema = &schemaTf
@@ -384,7 +479,6 @@ func (r *referenceTableResource) updateState(ctx context.Context, state *referen
 
 func (r *referenceTableResource) buildReferenceTableRequestBody(ctx context.Context, state *referenceTableModel) (*datadogV2.CreateTableRequest, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
-	req := &datadogV2.CreateTableRequest{}
 	attributes := datadogV2.NewCreateTableRequestDataAttributesWithDefaults()
 
 	if !state.Description.IsNull() {
@@ -403,8 +497,55 @@ func (r *referenceTableResource) buildReferenceTableRequestBody(ctx context.Cont
 		attributes.SetTags(tags)
 	}
 
+	// Build file_metadata for cloud storage
+	if state.FileMetadata != nil {
+		cloudStorageMetadata := datadogV2.CreateTableRequestDataAttributesFileMetadataCloudStorage{}
+		cloudStorageMetadata.SetSyncEnabled(state.FileMetadata.SyncEnabled.ValueBool())
+
+		if state.FileMetadata.AccessDetails != nil {
+			accessDetails := datadogV2.CreateTableRequestDataAttributesFileMetadataOneOfAccessDetails{}
+
+			// AWS details
+			if state.FileMetadata.AccessDetails.AwsDetail != nil {
+				awsDetail := datadogV2.CreateTableRequestDataAttributesFileMetadataOneOfAccessDetailsAwsDetail{}
+				awsDetail.SetAwsAccountId(state.FileMetadata.AccessDetails.AwsDetail.AwsAccountId.ValueString())
+				awsDetail.SetAwsBucketName(state.FileMetadata.AccessDetails.AwsDetail.AwsBucketName.ValueString())
+				awsDetail.SetFilePath(state.FileMetadata.AccessDetails.AwsDetail.FilePath.ValueString())
+				accessDetails.AwsDetail = &awsDetail
+			}
+
+			// GCP details
+			if state.FileMetadata.AccessDetails.GcpDetail != nil {
+				gcpDetail := datadogV2.CreateTableRequestDataAttributesFileMetadataOneOfAccessDetailsGcpDetail{}
+				gcpDetail.SetGcpProjectId(state.FileMetadata.AccessDetails.GcpDetail.GcpProjectId.ValueString())
+				gcpDetail.SetGcpBucketName(state.FileMetadata.AccessDetails.GcpDetail.GcpBucketName.ValueString())
+				gcpDetail.SetFilePath(state.FileMetadata.AccessDetails.GcpDetail.FilePath.ValueString())
+				gcpDetail.SetGcpServiceAccountEmail(state.FileMetadata.AccessDetails.GcpDetail.GcpServiceAccountEmail.ValueString())
+				accessDetails.GcpDetail = &gcpDetail
+			}
+
+			// Azure details
+			if state.FileMetadata.AccessDetails.AzureDetail != nil {
+				azureDetail := datadogV2.CreateTableRequestDataAttributesFileMetadataOneOfAccessDetailsAzureDetail{}
+				azureDetail.SetAzureTenantId(state.FileMetadata.AccessDetails.AzureDetail.AzureTenantId.ValueString())
+				azureDetail.SetAzureClientId(state.FileMetadata.AccessDetails.AzureDetail.AzureClientId.ValueString())
+				azureDetail.SetAzureStorageAccountName(state.FileMetadata.AccessDetails.AzureDetail.AzureStorageAccountName.ValueString())
+				azureDetail.SetAzureContainerName(state.FileMetadata.AccessDetails.AzureDetail.AzureContainerName.ValueString())
+				azureDetail.SetFilePath(state.FileMetadata.AccessDetails.AzureDetail.FilePath.ValueString())
+				accessDetails.AzureDetail = &azureDetail
+			}
+
+			cloudStorageMetadata.SetAccessDetails(accessDetails)
+		}
+
+		// Set the file_metadata as a oneOf union type
+		fileMetadata := datadogV2.CreateTableRequestDataAttributesFileMetadataCloudStorageAsCreateTableRequestDataAttributesFileMetadata(&cloudStorageMetadata)
+		attributes.SetFileMetadata(fileMetadata)
+	}
+
+	// Build schema
 	if state.Schema != nil {
-		var schema datadogV2.CreateTableRequestDataAttributesSchema
+		schema := datadogV2.CreateTableRequestDataAttributesSchema{}
 
 		var primaryKeys []string
 		diags.Append(state.Schema.PrimaryKeys.ElementsAs(ctx, &primaryKeys, false)...)
@@ -414,7 +555,10 @@ func (r *referenceTableResource) buildReferenceTableRequestBody(ctx context.Cont
 			var fields []datadogV2.CreateTableRequestDataAttributesSchemaFieldsItems
 			for _, fieldsTFItem := range state.Schema.Fields {
 				if !fieldsTFItem.Name.IsNull() && !fieldsTFItem.Type.IsNull() {
-					fieldsDDItem := datadogV2.NewCreateTableRequestDataAttributesSchemaFieldsItems(fieldsTFItem.Name.ValueString(), datadogV2.ReferenceTableSchemaFieldType(fieldsTFItem.Type.ValueString()))
+					fieldsDDItem := datadogV2.NewCreateTableRequestDataAttributesSchemaFieldsItems(
+						fieldsTFItem.Name.ValueString(),
+						datadogV2.ReferenceTableSchemaFieldType(fieldsTFItem.Type.ValueString()),
+					)
 					fields = append(fields, *fieldsDDItem)
 				}
 			}
@@ -423,7 +567,7 @@ func (r *referenceTableResource) buildReferenceTableRequestBody(ctx context.Cont
 		attributes.Schema = schema
 	}
 
-	req = datadogV2.NewCreateTableRequestWithDefaults()
+	req := datadogV2.NewCreateTableRequestWithDefaults()
 	req.Data = datadogV2.NewCreateTableRequestDataWithDefaults()
 	req.Data.SetAttributes(*attributes)
 
@@ -432,14 +576,10 @@ func (r *referenceTableResource) buildReferenceTableRequestBody(ctx context.Cont
 
 func (r *referenceTableResource) buildReferenceTableUpdateRequestBody(ctx context.Context, state *referenceTableModel) (*datadogV2.PatchTableRequest, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
-	req := &datadogV2.PatchTableRequest{}
 	attributes := datadogV2.NewPatchTableRequestDataAttributesWithDefaults()
 
 	if !state.Description.IsNull() {
 		attributes.SetDescription(state.Description.ValueString())
-	}
-	if !state.FileMetadata.SyncEnabled.IsNull() {
-		attributes.SetSyncEnabled(state.FileMetadata.SyncEnabled.ValueBool())
 	}
 
 	if !state.Tags.IsNull() {
@@ -448,8 +588,58 @@ func (r *referenceTableResource) buildReferenceTableUpdateRequestBody(ctx contex
 		attributes.SetTags(tags)
 	}
 
+	// Build file_metadata for cloud storage updates
+	if state.FileMetadata != nil {
+		cloudStorageMetadata := datadogV2.PatchTableRequestDataAttributesFileMetadataCloudStorage{}
+
+		if !state.FileMetadata.SyncEnabled.IsNull() {
+			cloudStorageMetadata.SetSyncEnabled(state.FileMetadata.SyncEnabled.ValueBool())
+		}
+
+		if state.FileMetadata.AccessDetails != nil {
+			accessDetails := datadogV2.PatchTableRequestDataAttributesFileMetadataOneOfAccessDetails{}
+
+			// AWS details
+			if state.FileMetadata.AccessDetails.AwsDetail != nil {
+				awsDetail := datadogV2.PatchTableRequestDataAttributesFileMetadataOneOfAccessDetailsAwsDetail{}
+				awsDetail.SetAwsAccountId(state.FileMetadata.AccessDetails.AwsDetail.AwsAccountId.ValueString())
+				awsDetail.SetAwsBucketName(state.FileMetadata.AccessDetails.AwsDetail.AwsBucketName.ValueString())
+				awsDetail.SetFilePath(state.FileMetadata.AccessDetails.AwsDetail.FilePath.ValueString())
+				accessDetails.AwsDetail = &awsDetail
+			}
+
+			// GCP details
+			if state.FileMetadata.AccessDetails.GcpDetail != nil {
+				gcpDetail := datadogV2.PatchTableRequestDataAttributesFileMetadataOneOfAccessDetailsGcpDetail{}
+				gcpDetail.SetGcpProjectId(state.FileMetadata.AccessDetails.GcpDetail.GcpProjectId.ValueString())
+				gcpDetail.SetGcpBucketName(state.FileMetadata.AccessDetails.GcpDetail.GcpBucketName.ValueString())
+				gcpDetail.SetFilePath(state.FileMetadata.AccessDetails.GcpDetail.FilePath.ValueString())
+				gcpDetail.SetGcpServiceAccountEmail(state.FileMetadata.AccessDetails.GcpDetail.GcpServiceAccountEmail.ValueString())
+				accessDetails.GcpDetail = &gcpDetail
+			}
+
+			// Azure details
+			if state.FileMetadata.AccessDetails.AzureDetail != nil {
+				azureDetail := datadogV2.PatchTableRequestDataAttributesFileMetadataOneOfAccessDetailsAzureDetail{}
+				azureDetail.SetAzureTenantId(state.FileMetadata.AccessDetails.AzureDetail.AzureTenantId.ValueString())
+				azureDetail.SetAzureClientId(state.FileMetadata.AccessDetails.AzureDetail.AzureClientId.ValueString())
+				azureDetail.SetAzureStorageAccountName(state.FileMetadata.AccessDetails.AzureDetail.AzureStorageAccountName.ValueString())
+				azureDetail.SetAzureContainerName(state.FileMetadata.AccessDetails.AzureDetail.AzureContainerName.ValueString())
+				azureDetail.SetFilePath(state.FileMetadata.AccessDetails.AzureDetail.FilePath.ValueString())
+				accessDetails.AzureDetail = &azureDetail
+			}
+
+			cloudStorageMetadata.SetAccessDetails(accessDetails)
+		}
+
+		// Set the file_metadata as a oneOf union type
+		fileMetadata := datadogV2.PatchTableRequestDataAttributesFileMetadataCloudStorageAsPatchTableRequestDataAttributesFileMetadata(&cloudStorageMetadata)
+		attributes.SetFileMetadata(fileMetadata)
+	}
+
+	// Build schema for updates
 	if state.Schema != nil {
-		var schema datadogV2.PatchTableRequestDataAttributesSchema
+		schema := datadogV2.PatchTableRequestDataAttributesSchema{}
 
 		if !state.Schema.PrimaryKeys.IsNull() {
 			var primaryKeys []string
@@ -461,7 +651,10 @@ func (r *referenceTableResource) buildReferenceTableUpdateRequestBody(ctx contex
 			var fields []datadogV2.PatchTableRequestDataAttributesSchemaFieldsItems
 			for _, fieldsTFItem := range state.Schema.Fields {
 				if !fieldsTFItem.Name.IsNull() && !fieldsTFItem.Type.IsNull() {
-					fieldsDDItem := datadogV2.NewPatchTableRequestDataAttributesSchemaFieldsItems(fieldsTFItem.Name.ValueString(), datadogV2.ReferenceTableSchemaFieldType(fieldsTFItem.Type.ValueString()))
+					fieldsDDItem := datadogV2.NewPatchTableRequestDataAttributesSchemaFieldsItems(
+						fieldsTFItem.Name.ValueString(),
+						datadogV2.ReferenceTableSchemaFieldType(fieldsTFItem.Type.ValueString()),
+					)
 					fields = append(fields, *fieldsDDItem)
 				}
 			}
@@ -470,9 +663,127 @@ func (r *referenceTableResource) buildReferenceTableUpdateRequestBody(ctx contex
 		attributes.Schema = &schema
 	}
 
-	req = datadogV2.NewPatchTableRequestWithDefaults()
+	req := datadogV2.NewPatchTableRequestWithDefaults()
 	req.Data = datadogV2.NewPatchTableRequestDataWithDefaults()
 	req.Data.SetAttributes(*attributes)
 
 	return req, diags
+}
+
+func (r *referenceTableResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
+	// If the plan is null (resource is being destroyed) or no state exists yet, return early
+	if req.Plan.Raw.IsNull() || req.State.Raw.IsNull() {
+		return
+	}
+
+	var plan, state referenceTableModel
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
+	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// Validate schema changes
+	if plan.Schema != nil && state.Schema != nil {
+		planSchema := plan.Schema
+		stateSchema := state.Schema
+
+		// Check primary keys changes (destructive)
+		var planPrimaryKeys, statePrimaryKeys []string
+		if !planSchema.PrimaryKeys.IsNull() && !stateSchema.PrimaryKeys.IsNull() {
+			planSchema.PrimaryKeys.ElementsAs(ctx, &planPrimaryKeys, false)
+			stateSchema.PrimaryKeys.ElementsAs(ctx, &statePrimaryKeys, false)
+
+			// Check if primary keys have changed
+			if len(planPrimaryKeys) != len(statePrimaryKeys) {
+				resp.Diagnostics.AddError(
+					"Destructive schema changes are not supported",
+					fmt.Sprintf("Cannot change primary keys from %v to %v.\n\n"+
+						"The planned schema change would modify primary keys, which requires table recreation and causes downtime.\n\n"+
+						"To proceed:\n"+
+						"1. Remove the resource from Terraform state: terraform state rm datadog_reference_table.%s\n"+
+						"2. Update your configuration with the new schema\n"+
+						"3. Run terraform apply to recreate the table\n\n"+
+						"Note: The table will be unavailable during recreation, causing enrichment processors to fail.",
+						statePrimaryKeys, planPrimaryKeys, state.TableName.ValueString()),
+				)
+				return
+			}
+
+			for i, planKey := range planPrimaryKeys {
+				if i >= len(statePrimaryKeys) || planKey != statePrimaryKeys[i] {
+					resp.Diagnostics.AddError(
+						"Destructive schema changes are not supported",
+						fmt.Sprintf("Cannot change primary keys from %v to %v.\n\n"+
+							"The planned schema change would modify primary keys, which requires table recreation and causes downtime.\n\n"+
+							"To proceed:\n"+
+							"1. Remove the resource from Terraform state: terraform state rm datadog_reference_table.%s\n"+
+							"2. Update your configuration with the new schema\n"+
+							"3. Run terraform apply to recreate the table\n\n"+
+							"Note: The table will be unavailable during recreation, causing enrichment processors to fail.",
+							statePrimaryKeys, planPrimaryKeys, state.TableName.ValueString()),
+					)
+					return
+				}
+			}
+		}
+
+		// Build field maps for comparison
+		stateFieldMap := make(map[string]string) // field name -> type
+		if stateSchema.Fields != nil {
+			for _, field := range stateSchema.Fields {
+				if !field.Name.IsNull() && !field.Type.IsNull() {
+					stateFieldMap[field.Name.ValueString()] = field.Type.ValueString()
+				}
+			}
+		}
+
+		planFieldMap := make(map[string]string)
+		if planSchema.Fields != nil {
+			for _, field := range planSchema.Fields {
+				if !field.Name.IsNull() && !field.Type.IsNull() {
+					planFieldMap[field.Name.ValueString()] = field.Type.ValueString()
+				}
+			}
+		}
+
+		// Check for removed fields (destructive)
+		for fieldName := range stateFieldMap {
+			if _, exists := planFieldMap[fieldName]; !exists {
+				resp.Diagnostics.AddError(
+					"Destructive schema changes are not supported",
+					fmt.Sprintf("Cannot remove field '%s' from the schema.\n\n"+
+						"The planned schema change would remove fields, which requires table recreation and causes downtime.\n\n"+
+						"To proceed:\n"+
+						"1. Remove the resource from Terraform state: terraform state rm datadog_reference_table.%s\n"+
+						"2. Update your configuration with the new schema\n"+
+						"3. Run terraform apply to recreate the table\n\n"+
+						"Note: The table will be unavailable during recreation, causing enrichment processors to fail.",
+						fieldName, state.TableName.ValueString()),
+				)
+				return
+			}
+		}
+
+		// Check for field type changes (destructive)
+		for fieldName, planType := range planFieldMap {
+			if stateType, exists := stateFieldMap[fieldName]; exists {
+				if stateType != planType {
+					resp.Diagnostics.AddError(
+						"Destructive schema changes are not supported",
+						fmt.Sprintf("Cannot change type of field '%s' from '%s' to '%s'.\n\n"+
+							"The planned schema change would modify field types, which requires table recreation and causes downtime.\n\n"+
+							"To proceed:\n"+
+							"1. Remove the resource from Terraform state: terraform state rm datadog_reference_table.%s\n"+
+							"2. Update your configuration with the new schema\n"+
+							"3. Run terraform apply to recreate the table\n\n"+
+							"Note: The table will be unavailable during recreation, causing enrichment processors to fail.",
+							fieldName, stateType, planType, state.TableName.ValueString()),
+					)
+					return
+				}
+			}
+			// New fields (additive) are allowed - no error
+		}
+	}
 }
