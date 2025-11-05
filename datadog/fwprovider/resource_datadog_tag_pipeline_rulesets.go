@@ -117,9 +117,11 @@ func (r *tagPipelineRulesetsResource) Read(ctx context.Context, request resource
 	}
 
 	// Get rulesets with positions
+	// During import (managedRulesetIDs is empty): get ALL rulesets
 	// When override=false: only managed rulesets
 	// When override=true: ALL rulesets (so Terraform can detect difference and trigger Update to delete unmanaged)
-	rulesetPositions := getRulesetsWithPositions(rulesets, managedIDsSet, !override)
+	isImport := len(managedRulesetIDs) == 0
+	rulesetPositions := getRulesetsWithPositions(rulesets, managedIDsSet, !override && !isImport)
 
 	// Verify all managed rulesets still exist
 	managedCount := 0
