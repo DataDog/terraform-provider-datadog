@@ -974,7 +974,6 @@ resource "datadog_tag_pipeline_rulesets" "foo" {
 }`, uniq, uniq, uniq)
 }
 
-
 // testAccCheckUnmanagedRulesetsExist verifies that unmanaged rulesets still exist (not deleted)
 func testAccCheckUnmanagedRulesetsExist(frameworkProvider *fwprovider.FrameworkProvider, uniq string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
@@ -1316,4 +1315,3 @@ resource "datadog_tag_pipeline_rulesets" "foo" {
   ]
 }`, uniq, uniq, uniq, uniq, uniq)
 }
-
