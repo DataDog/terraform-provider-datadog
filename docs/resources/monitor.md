@@ -166,13 +166,10 @@ Optional:
 
 Required:
 
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `sum`, `max`, `min`, `last`, `area`, `l2norm`, `percentile`, `stddev`.
 - `data_source` (String) The data source for cloud cost queries. Valid values are `metrics`, `cloud_cost`, `datadog_usage`.
 - `name` (String) The name of the query for use in formulas.
 - `query` (String) The cloud cost query definition.
-
-Optional:
-
-- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `sum`, `max`, `min`, `last`, `area`, `l2norm`, `percentile`, `stddev`.
 
 
 <a id="nestedblock--variables--event_query"></a>
