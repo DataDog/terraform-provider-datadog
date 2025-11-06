@@ -59,7 +59,7 @@ func (r *agentlessScanningGcpScanOptionsResource) Schema(_ context.Context, _ re
 				Validators: []validator.String{
 					stringvalidator.RegexMatches(
 						regexp.MustCompile(`^[a-z]([a-z0-9-]{4,28}[a-z0-9])?$`),
-						"must be a valid GCP project ID (6-30 characters, start with lowercase letter, lowercase letters/digits/hyphens only)",
+						"must be a valid GCP project ID: 6–30 characters, start with a lowercase letter, and include only lowercase letters, digits, or hyphens.",
 					),
 				},
 			},
