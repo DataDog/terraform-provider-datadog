@@ -58,18 +58,10 @@ func (r *agentlessScanningGcpScanOptionsResource) Schema(_ context.Context, _ re
 				Required:    true,
 				Validators: []validator.String{
 					stringvalidator.RegexMatches(
-						regexp.MustCompile(`^[0-9]{12}$`),
-						"must be a valid GCP project ID",
+						regexp.MustCompile(`^[a-z]([a-z0-9-]{4,28}[a-z0-9])?$`),
+						"must be a valid GCP project ID (6-30 characters, start with lowercase letter, lowercase letters/digits/hyphens only)",
 					),
 				},
-			},
-			"lambda": schema.BoolAttribute{
-				Description: "Indicates if scanning of Lambda functions is enabled.",
-				Required:    true,
-			},
-			"sensitive_data": schema.BoolAttribute{
-				Description: "Indicates if scanning for sensitive data is enabled.",
-				Required:    true,
 			},
 			"vuln_containers_os": schema.BoolAttribute{
 				Description: "Indicates if scanning for vulnerabilities in containers is enabled.",
