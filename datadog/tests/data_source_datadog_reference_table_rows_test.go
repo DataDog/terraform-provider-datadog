@@ -3,6 +3,7 @@ package test
 import (
 	"context"
 	"fmt"
+	"strings"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
@@ -50,29 +51,29 @@ resource "datadog_reference_table" "test" {
 
     access_details {
       aws_detail {
-        aws_account_id  = "123456789000"
-        aws_bucket_name = "test-bucket"
-        file_path       = "data/test-rows.csv"
+        aws_account_id  = "924305315327"
+        aws_bucket_name = "dd-reference-tables-dev-staging"
+        file_path       = "test.csv"
       }
     }
   }
 
   schema {
-    primary_keys = ["id"]
+    primary_keys = ["a"]
 
     fields {
-      name = "id"
+      name = "a"
       type = "STRING"
     }
 
     fields {
-      name = "name"
+      name = "b"
       type = "STRING"
     }
 
     fields {
-      name = "value"
-      type = "INT32"
+      name = "c"
+      type = "STRING"
     }
   }
 
@@ -85,6 +86,5 @@ data "datadog_reference_table_rows" "test" {
   table_id = datadog_reference_table.test.id
   row_ids  = ["row1", "row2"]
 }
-`, uniq)
+`, strings.ToLower(strings.ReplaceAll(uniq, "-", "_")))
 }
-
