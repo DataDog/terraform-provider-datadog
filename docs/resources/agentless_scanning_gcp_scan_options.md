@@ -26,7 +26,7 @@ resource "datadog_agentless_scanning_gcp_scan_options" "example" {
 
 ### Required
 
-- `gcp_project_id` (String) The GCP project ID for which agentless scanning is configured. Must be a valid GCP project ID (6-30 characters, start with lowercase letter, lowercase letters/digits/hyphens only).
+- `gcp_project_id` (String) The GCP project ID for which agentless scanning is configured. Must be a valid GCP project ID: 6–30 characters, start with a lowercase letter, and include only lowercase letters, digits, or hyphens.
 - `vuln_containers_os` (Boolean) Indicates if scanning for vulnerabilities in containers is enabled.
 - `vuln_host_os` (Boolean) Indicates if scanning for vulnerabilities in hosts is enabled.
 
