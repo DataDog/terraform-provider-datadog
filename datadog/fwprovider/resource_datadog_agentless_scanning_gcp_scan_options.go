@@ -115,28 +115,13 @@ func (r *agentlessScanningGcpScanOptionsResource) Read(ctx context.Context, requ
 
 	projectID := state.GcpProjectId.ValueString()
 
-	// List all GCP scan options and find the one matching our project ID
-	gcpScanOptionsListResponse, _, err := r.Api.ListGcpScanOptions(r.Auth)
+	gcpScanOptionsResponse, _, err := r.Api.GetGcpScanOptions(r.Auth, projectID)
 	if err != nil {
 		response.Diagnostics.AddError("Error reading GCP scan options", err.Error())
 		return
 	}
 
-	var foundScanOptions *datadogV2.GcpScanOptionsData
-	for _, scanOption := range gcpScanOptionsListResponse.GetData() {
-		if scanOption.GetId() == projectID {
-			foundScanOptions = &scanOption
-			break
-		}
-	}
-
-	if foundScanOptions == nil {
-		// Resource doesn't exist, remove from state
-		response.State.RemoveResource(ctx)
-		return
-	}
-
-	r.updateStateFromScanOptionsData(&state, *foundScanOptions)
+	r.updateStateFromScanOptionsData(&state, *gcpScanOptionsResponse.Data)
 	// Set the Terraform resource ID to the GCP project ID
 	state.ID = types.StringValue(state.GcpProjectId.ValueString())
 

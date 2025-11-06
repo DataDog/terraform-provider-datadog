@@ -36,7 +36,7 @@ interactions:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 847.141125ms
+        duration: 873.742375ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -53,7 +53,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/agentless_scanning/accounts/gcp
+        url: https://api.datadoghq.com/api/v2/agentless_scanning/accounts/gcp/test-project
         method: GET
       response:
         proto: HTTP/1.1
@@ -61,15 +61,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 119
+        content_length: 117
         uncompressed: false
-        body: '{"data":[{"id":"test-project","type":"gcp_scan_options","attributes":{"vuln_containers_os":true,"vuln_host_os":true}}]}'
+        body: '{"data":{"id":"test-project","type":"gcp_scan_options","attributes":{"vuln_containers_os":true,"vuln_host_os":true}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 230.360709ms
+        duration: 233.504709ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -86,7 +86,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/agentless_scanning/accounts/gcp
+        url: https://api.datadoghq.com/api/v2/agentless_scanning/accounts/gcp/test-project
         method: GET
       response:
         proto: HTTP/1.1
@@ -94,15 +94,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 119
+        content_length: 117
         uncompressed: false
-        body: '{"data":[{"id":"test-project","type":"gcp_scan_options","attributes":{"vuln_containers_os":true,"vuln_host_os":true}}]}'
+        body: '{"data":{"id":"test-project","type":"gcp_scan_options","attributes":{"vuln_containers_os":true,"vuln_host_os":true}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 228.645542ms
+        duration: 229.477ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -133,7 +133,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 262.095625ms
+        duration: 222.933334ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -166,4 +166,4 @@ interactions:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 239.802667ms
+        duration: 230.295667ms
