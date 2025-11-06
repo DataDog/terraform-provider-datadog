@@ -581,7 +581,7 @@ func getMonitorFormulaQuerySchema() *schema.Schema {
 							},
 							"aggregator": {
 								Type:             schema.TypeString,
-								Optional:         true,
+								Required:         true,
 								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewMonitorFormulaAndFunctionCostAggregatorFromValue),
 								Description:      "The aggregation methods available for cloud cost queries.",
 							},
