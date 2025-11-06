@@ -28,6 +28,7 @@ data "datadog_user" "test" {
 ### Optional
 
 - `exact_match` (Boolean) When true, `filter` string is exact matched against the user's `email`, followed by `name` attribute. Defaults to `false`.
+- `exclude_service_accounts` (Boolean) When true, service accounts are excluded from the result. Defaults to `false`.
 
 ### Read-Only
 
