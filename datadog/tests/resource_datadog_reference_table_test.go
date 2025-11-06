@@ -3,6 +3,7 @@ package test
 import (
 	"context"
 	"fmt"
+	"strings"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
@@ -27,7 +28,7 @@ func TestAccReferenceTableS3_Basic(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogReferenceTableExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(
-						"datadog_reference_table.s3_table", "table_name", fmt.Sprintf("tf_test_s3_%s", uniq)),
+						"datadog_reference_table.s3_table", "table_name", fmt.Sprintf("tf_test_s3_%s", strings.ToLower(strings.ReplaceAll(uniq, "-", "_")))),
 					resource.TestCheckResourceAttr(
 						"datadog_reference_table.s3_table", "source", "S3"),
 					resource.TestCheckResourceAttr(
@@ -35,11 +36,11 @@ func TestAccReferenceTableS3_Basic(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_reference_table.s3_table", "file_metadata.sync_enabled", "true"),
 					resource.TestCheckResourceAttr(
-						"datadog_reference_table.s3_table", "file_metadata.access_details.aws_detail.aws_account_id", "123456789000"),
+						"datadog_reference_table.s3_table", "file_metadata.access_details.aws_detail.aws_account_id", "924305315327"),
 					resource.TestCheckResourceAttr(
-						"datadog_reference_table.s3_table", "schema.primary_keys.0", "id"),
+						"datadog_reference_table.s3_table", "schema.primary_keys.0", "a"),
 					resource.TestCheckResourceAttr(
-						"datadog_reference_table.s3_table", "schema.fields.0.name", "id"),
+						"datadog_reference_table.s3_table", "schema.fields.0.name", "a"),
 					resource.TestCheckResourceAttr(
 						"datadog_reference_table.s3_table", "schema.fields.0.type", "STRING"),
 					resource.TestCheckResourceAttrSet(
@@ -67,7 +68,7 @@ func TestAccReferenceTableGCS_Basic(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogReferenceTableExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(
-						"datadog_reference_table.gcs_table", "table_name", fmt.Sprintf("tf_test_gcs_%s", uniq)),
+						"datadog_reference_table.gcs_table", "table_name", fmt.Sprintf("tf_test_gcs_%s", strings.ToLower(strings.ReplaceAll(uniq, "-", "_")))),
 					resource.TestCheckResourceAttr(
 						"datadog_reference_table.gcs_table", "source", "GCS"),
 					resource.TestCheckResourceAttr(
@@ -93,7 +94,7 @@ func TestAccReferenceTableAzure_Basic(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogReferenceTableExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(
-						"datadog_reference_table.azure_table", "table_name", fmt.Sprintf("tf_test_azure_%s", uniq)),
+						"datadog_reference_table.azure_table", "table_name", fmt.Sprintf("tf_test_azure_%s", strings.ToLower(strings.ReplaceAll(uniq, "-", "_")))),
 					resource.TestCheckResourceAttr(
 						"datadog_reference_table.azure_table", "source", "AZURE"),
 					resource.TestCheckResourceAttr(
@@ -127,11 +128,9 @@ func TestAccReferenceTable_SchemaEvolution(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogReferenceTableExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(
-						"datadog_reference_table.evolution", "schema.fields.#", "4"),
+						"datadog_reference_table.evolution", "schema.fields.#", "3"),
 					resource.TestCheckResourceAttr(
-						"datadog_reference_table.evolution", "schema.fields.2.name", "email"),
-					resource.TestCheckResourceAttr(
-						"datadog_reference_table.evolution", "schema.fields.3.name", "age"),
+						"datadog_reference_table.evolution", "schema.fields.2.name", "c"),
 				),
 			},
 		},
@@ -191,6 +190,8 @@ func TestAccReferenceTable_Import(t *testing.T) {
 }
 
 func testAccCheckDatadogReferenceTableS3(uniq string) string {
+	// Sanitize: replace dashes with underscores and convert to lowercase
+	sanitized := strings.ToLower(strings.ReplaceAll(uniq, "-", "_"))
 	return fmt.Sprintf(`
 resource "datadog_reference_table" "s3_table" {
   table_name  = "tf_test_s3_%s"
@@ -202,29 +203,34 @@ resource "datadog_reference_table" "s3_table" {
 
     access_details {
       aws_detail {
-        aws_account_id  = "123456789000"
-        aws_bucket_name = "test-bucket"
-        file_path       = "reference-tables/test.csv"
+        aws_account_id  = "924305315327"
+        aws_bucket_name = "dd-reference-tables-dev-staging"
+        file_path       = "test.csv"
       }
     }
   }
 
   schema {
-    primary_keys = ["id"]
+    primary_keys = ["a"]
 
     fields {
-      name = "id"
+      name = "a"
       type = "STRING"
     }
 
     fields {
-      name = "value"
+      name = "b"
+      type = "STRING"
+    }
+
+    fields {
+      name = "c"
       type = "STRING"
     }
   }
 
   tags = ["test:terraform", "env:test"]
-}`, uniq)
+}`, sanitized)
 }
 
 func testAccCheckDatadogReferenceTableGCS(uniq string) string {
@@ -262,7 +268,7 @@ resource "datadog_reference_table" "gcs_table" {
   }
 
   tags = ["test:terraform", "source:gcs"]
-}`, uniq)
+}`, strings.ToLower(strings.ReplaceAll(uniq, "-", "_")))
 }
 
 func testAccCheckDatadogReferenceTableAzure(uniq string) string {
@@ -301,7 +307,7 @@ resource "datadog_reference_table" "azure_table" {
   }
 
   tags = ["test:terraform", "source:azure"]
-}`, uniq)
+}`, strings.ToLower(strings.ReplaceAll(uniq, "-", "_")))
 }
 
 func testAccCheckDatadogReferenceTableSchemaInitial(uniq string) string {
@@ -316,29 +322,29 @@ resource "datadog_reference_table" "evolution" {
 
     access_details {
       aws_detail {
-        aws_account_id  = "123456789000"
-        aws_bucket_name = "test-bucket"
-        file_path       = "data/customers.csv"
+        aws_account_id  = "924305315327"
+        aws_bucket_name = "dd-reference-tables-dev-staging"
+        file_path       = "test.csv"
       }
     }
   }
 
   schema {
-    primary_keys = ["customer_id"]
+    primary_keys = ["a"]
 
     fields {
-      name = "customer_id"
+      name = "a"
       type = "STRING"
     }
 
     fields {
-      name = "name"
+      name = "b"
       type = "STRING"
     }
   }
 
   tags = ["test:terraform"]
-}`, uniq)
+}`, strings.ToLower(strings.ReplaceAll(uniq, "-", "_")))
 }
 
 func testAccCheckDatadogReferenceTableSchemaAddFields(uniq string) string {
@@ -353,40 +359,35 @@ resource "datadog_reference_table" "evolution" {
 
     access_details {
       aws_detail {
-        aws_account_id  = "123456789000"
-        aws_bucket_name = "test-bucket"
-        file_path       = "data/customers.csv"
+        aws_account_id  = "924305315327"
+        aws_bucket_name = "dd-reference-tables-dev-staging"
+        file_path       = "test.csv"
       }
     }
   }
 
   schema {
-    primary_keys = ["customer_id"]
+    primary_keys = ["a"]
 
     fields {
-      name = "customer_id"
+      name = "a"
       type = "STRING"
     }
 
     fields {
-      name = "name"
+      name = "b"
       type = "STRING"
     }
 
-    # New fields added (additive change)
+    # New field added (additive change)
     fields {
-      name = "email"
+      name = "c"
       type = "STRING"
-    }
-
-    fields {
-      name = "age"
-      type = "INT32"
     }
   }
 
   tags = ["test:terraform"]
-}`, uniq)
+}`, strings.ToLower(strings.ReplaceAll(uniq, "-", "_")))
 }
 
 func testAccCheckDatadogReferenceTableSyncEnabled(uniq string, syncEnabled bool) string {
@@ -401,29 +402,34 @@ resource "datadog_reference_table" "sync_test" {
 
     access_details {
       aws_detail {
-        aws_account_id  = "123456789000"
-        aws_bucket_name = "test-bucket"
-        file_path       = "data/test.csv"
+        aws_account_id  = "924305315327"
+        aws_bucket_name = "dd-reference-tables-dev-staging"
+        file_path       = "test.csv"
       }
     }
   }
 
   schema {
-    primary_keys = ["id"]
+    primary_keys = ["a"]
 
     fields {
-      name = "id"
+      name = "a"
       type = "STRING"
     }
 
     fields {
-      name = "value"
+      name = "b"
+      type = "STRING"
+    }
+
+    fields {
+      name = "c"
       type = "STRING"
     }
   }
 
   tags = ["test:terraform"]
-}`, uniq, syncEnabled)
+}`, strings.ToLower(uniq), syncEnabled)
 }
 
 func testAccCheckDatadogReferenceTableDestroy(accProvider *fwprovider.FrameworkProvider) func(*terraform.State) error {

@@ -27,24 +27,24 @@ type datadogReferenceTableDataSourceModel struct {
 	TableName types.String `tfsdk:"table_name"`
 
 	// Computed values
-	CreatedBy     types.String                                         `tfsdk:"created_by"`
-	Description   types.String                                         `tfsdk:"description"`
-	LastUpdatedBy types.String                                         `tfsdk:"last_updated_by"`
-	RowCount      types.Int64                                          `tfsdk:"row_count"`
-	Source        types.String                                         `tfsdk:"source"`
-	Status        types.String                                         `tfsdk:"status"`
-	UpdatedAt     types.String                                         `tfsdk:"updated_at"`
-	Tags          types.List                                           `tfsdk:"tags"`
-	FileMetadata  *tableResultV2DataAttributesFileMetadataModel        `tfsdk:"file_metadata"`
-	Schema        *schemaModel                                         `tfsdk:"schema"`
+	CreatedBy     types.String                                   `tfsdk:"created_by"`
+	Description   types.String                                   `tfsdk:"description"`
+	LastUpdatedBy types.String                                   `tfsdk:"last_updated_by"`
+	RowCount      types.Int64                                    `tfsdk:"row_count"`
+	Source        types.String                                   `tfsdk:"source"`
+	Status        types.String                                   `tfsdk:"status"`
+	UpdatedAt     types.String                                   `tfsdk:"updated_at"`
+	Tags          types.List                                     `tfsdk:"tags"`
+	FileMetadata  *referenceTableDataAttributesFileMetadataModel `tfsdk:"file_metadata"`
+	Schema        *schemaModel                                   `tfsdk:"schema"`
 }
 
-type tableResultV2DataAttributesFileMetadataModel struct {
-	CloudStorage *tableResultV2DataAttributesFileMetadataCloudStorageModel `tfsdk:"cloud_storage"`
-	LocalFile    *tableResultV2DataAttributesFileMetadataLocalFileModel    `tfsdk:"local_file"`
+type referenceTableDataAttributesFileMetadataModel struct {
+	CloudStorage *referenceTableDataAttributesFileMetadataCloudStorageModel `tfsdk:"cloud_storage"`
+	LocalFile    *referenceTableDataAttributesFileMetadataLocalFileModel    `tfsdk:"local_file"`
 }
 
-type tableResultV2DataAttributesFileMetadataCloudStorageModel struct {
+type referenceTableDataAttributesFileMetadataCloudStorageModel struct {
 	ErrorMessage  types.String        `tfsdk:"error_message"`
 	ErrorRowCount types.Int64         `tfsdk:"error_row_count"`
 	ErrorType     types.String        `tfsdk:"error_type"`
@@ -52,7 +52,7 @@ type tableResultV2DataAttributesFileMetadataCloudStorageModel struct {
 	AccessDetails *accessDetailsModel `tfsdk:"access_details"`
 }
 
-type tableResultV2DataAttributesFileMetadataLocalFileModel struct {
+type referenceTableDataAttributesFileMetadataLocalFileModel struct {
 	ErrorMessage  types.String `tfsdk:"error_message"`
 	ErrorRowCount types.Int64  `tfsdk:"error_row_count"`
 	UploadId      types.String `tfsdk:"upload_id"`
@@ -386,11 +386,11 @@ func (d *datadogReferenceTableDataSource) updateState(ctx context.Context, state
 
 	// Handle FileMetadata (OneOf union type)
 	if fileMetadata, ok := attributes.GetFileMetadataOk(); ok {
-		fileMetadataTf := &tableResultV2DataAttributesFileMetadataModel{}
+		fileMetadataTf := &referenceTableDataAttributesFileMetadataModel{}
 
 		// Check if it's CloudStorage type
 		if cloudStorage := fileMetadata.TableResultV2DataAttributesFileMetadataCloudStorage; cloudStorage != nil {
-			cloudStorageTf := &tableResultV2DataAttributesFileMetadataCloudStorageModel{}
+			cloudStorageTf := &referenceTableDataAttributesFileMetadataCloudStorageModel{}
 
 			if syncEnabled, ok := cloudStorage.GetSyncEnabledOk(); ok {
 				cloudStorageTf.SyncEnabled = types.BoolValue(*syncEnabled)
@@ -474,11 +474,7 @@ func (d *datadogReferenceTableDataSource) updateState(ctx context.Context, state
 
 		// Check if it's LocalFile type
 		if localFile := fileMetadata.TableResultV2DataAttributesFileMetadataLocalFile; localFile != nil {
-			localFileTf := &tableResultV2DataAttributesFileMetadataLocalFileModel{}
-
-			if uploadId, ok := localFile.GetUploadIdOk(); ok {
-				localFileTf.UploadId = types.StringValue(*uploadId)
-			}
+			localFileTf := &referenceTableDataAttributesFileMetadataLocalFileModel{}
 
 			if errorMessage, ok := localFile.GetErrorMessageOk(); ok {
 				localFileTf.ErrorMessage = types.StringValue(*errorMessage)
