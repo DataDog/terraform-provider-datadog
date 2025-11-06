@@ -7,7 +7,7 @@ import (
 // Shared model definitions for reference table resource and data sources
 
 type schemaModel struct {
-	PrimaryKeys types.List  `tfsdk:"primary_keys"`
+	PrimaryKeys types.List     `tfsdk:"primary_keys"`
 	Fields      []*fieldsModel `tfsdk:"fields"`
 }
 
@@ -29,17 +29,16 @@ type awsDetailModel struct {
 }
 
 type azureDetailModel struct {
-	AzureTenantId          types.String `tfsdk:"azure_tenant_id"`
-	AzureClientId          types.String `tfsdk:"azure_client_id"`
+	AzureTenantId           types.String `tfsdk:"azure_tenant_id"`
+	AzureClientId           types.String `tfsdk:"azure_client_id"`
 	AzureStorageAccountName types.String `tfsdk:"azure_storage_account_name"`
-	AzureContainerName     types.String `tfsdk:"azure_container_name"`
-	FilePath               types.String `tfsdk:"file_path"`
+	AzureContainerName      types.String `tfsdk:"azure_container_name"`
+	FilePath                types.String `tfsdk:"file_path"`
 }
 
 type gcpDetailModel struct {
-	GcpProjectId            types.String `tfsdk:"gcp_project_id"`
-	GcpBucketName           types.String `tfsdk:"gcp_bucket_name"`
-	FilePath                types.String `tfsdk:"file_path"`
-	GcpServiceAccountEmail  types.String `tfsdk:"gcp_service_account_email"`
+	GcpProjectId           types.String `tfsdk:"gcp_project_id"`
+	GcpBucketName          types.String `tfsdk:"gcp_bucket_name"`
+	FilePath               types.String `tfsdk:"file_path"`
+	GcpServiceAccountEmail types.String `tfsdk:"gcp_service_account_email"`
 }
-

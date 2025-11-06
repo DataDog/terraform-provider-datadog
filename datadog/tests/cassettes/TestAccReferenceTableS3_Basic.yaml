@@ -1,0 +1,171 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 527
+        transfer_encoding: []
+        trailer: {}
+        host: dd.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"description":"Test S3 reference table","file_metadata":{"access_details":{"aws_detail":{"aws_account_id":"924305315327","aws_bucket_name":"dd-reference-tables-dev-staging","file_path":"test.csv"}},"sync_enabled":true},"schema":{"fields":[{"name":"a","type":"STRING"},{"name":"b","type":"STRING"},{"name":"c","type":"STRING"}],"primary_keys":["a"]},"source":"S3","table_name":"tf_test_s3_tf_testaccreferencetables3_basic_local_1762799964","tags":["test:terraform","env:test"]},"type":"reference_table"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://dd.datad0g.com/api/v2/reference-tables/tables
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 482.205125ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: dd.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://dd.datad0g.com/api/v2/reference-tables/tables
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":[{"id":"989727d4-0582-48b3-98cb-8d7222d84f7d","type":"reference_table","attributes":{"created_by":"51bca672-7464-11ea-ad29-6762102f9f58","description":"Test S3 reference table","file_metadata":{"error_row_count":0,"error_message":"","sync_enabled":true,"access_details":{"aws_detail":{"aws_account_id":"924305315327","aws_bucket_name":"dd-reference-tables-dev-staging","file_path":"test.csv"}}},"last_updated_by":"51bca672-7464-11ea-ad29-6762102f9f58","row_count":0,"schema":{"primary_keys":["a"],"fields":[{"name":"a","type":"STRING"},{"name":"b","type":"STRING"},{"name":"c","type":"STRING"}]},"source":"S3","status":"INITIALIZED","table_name":"tf_test_s3_tf_testaccreferencetables3_basic_local_1762799964","tags":["test:terraform","env:test"],"updated_at":"2025-11-10T18:39:26Z"}},{"id":"9c2434c4-370b-4bef-96db-5ad072227516","type":"reference_table","attributes":{"created_by":"d8673343-30d4-11f0-b7c9-22644aa72e77","description":"","last_updated_by":"d8673343-30d4-11f0-b7c9-22644aa72e77","row_count":1,"schema":{"primary_keys":["int32_col"],"fields":[{"name":"int32_col","type":"INT32"},{"name":"str_col","type":"STRING"}]},"source":"LOCAL_FILE","status":"DONE","table_name":"synthetics_test_rt_file_row_crud_flow_8920484491933708959","tags":["synthetics"],"updated_at":"2025-11-10T18:38:17Z"}},{"id":"4e4a9365-b7b3-4964-b0fd-5e6a89c4ba03","type":"reference_table","attributes":{"created_by":"d8673343-30d4-11f0-b7c9-22644aa72e77","description":"","last_updated_by":"d8673343-30d4-11f0-b7c9-22644aa72e77","row_count":2,"schema":{"primary_keys":["int32_col"],"fields":[{"name":"int32_col","type":"INT32"},{"name":"str_col","type":"STRING"}]},"source":"LOCAL_FILE","status":"DONE","table_name":"synthetics_test_rt_file_v2_row_crud_flow_7975272618167473279","tags":["synthetics"],"updated_at":"2025-11-10T18:38:17Z"}},{"id":"94f289af-92ba-4432-80f3-62a29e1d8534","type":"reference_table","attributes":{"created_by":"d8673343-30d4-11f0-b7c9-22644aa72e77","description":"","last_updated_by":"d8673343-30d4-11f0-b7c9-22644aa72e77","row_count":1,"schema":{"primary_keys":["int32_col"],"fields":[{"name":"int32_col","type":"INT32"},{"name":"str_col","type":"STRING"}]},"source":"LOCAL_FILE","status":"DONE","table_name":"synthetics_test_rt_file_crud_flow_1208188093118232193","tags":["synthetics"],"updated_at":"2025-11-10T18:38:16Z"}},{"id":"42b5c9ca-898a-466c-a54a-0481c9ab696f","type":"reference_table","attributes":{"created_by":"4ae61496-f55f-11eb-abf7-da7ad0900001","description":"","last_updated_by":"4ae61496-f55f-11eb-abf7-da7ad0900001","row_count":2,"schema":{"primary_keys":["name"],"fields":[{"name":"name","type":"STRING"},{"name":"url","type":"STRING"}]},"source":"SERVICENOW","status":"DONE","table_name":"http_bulk_client_e2e","tags":null,"updated_at":"2025-11-10T18:37:18Z"}},{"id":"4e12da36-962e-4ad4-85d2-cd03d8a83bf6","type":"reference_table","attributes":{"created_by":"4ae61496-f55f-11eb-abf7-da7ad0900001","description":"Updated synthetics test table","last_updated_by":"4ae61496-f55f-11eb-abf7-da7ad0900001","row_count":3,"schema":{"primary_keys":["id"],"fields":[{"name":"id","type":"STRING"},{"name":"name","type":"STRING"},{"name":"email","type":"STRING"}]},"source":"LOCAL_FILE","status":"DONE","table_name":"synthetics_test_upload_flow_1026872019196295837","tags":["synthetics"],"updated_at":"2025-11-10T18:37:07Z"}},{"id":"148edf38-d218-4994-93a5-81562384812e","type":"reference_table","attributes":{"created_by":"","description":"","last_updated_by":"","row_count":2,"schema":{"primary_keys":["id"],"fields":[{"name":"id","type":"STRING"},{"name":"createdat","type":"STRING"},{"name":"updatedat","type":"STRING"},{"name":"archived","type":"STRING"},{"name":"url","type":"STRING"},{"name":"address","type":"STRING"},{"name":"address2","type":"STRING"},{"name":"annualrevenue","type":"STRING"},{"name":"city","type":"STRING"},{"name":"country","type":"STRING"},{"name":"days_to_close","type":"STRING"},{"name":"description","type":"STRING"},{"name":"domain","type":"STRING"},{"name":"founded_year","type":"STRING"},{"name":"hs_analytics_first_timestamp","type":"STRING"},{"name":"hs_industry_group","type":"STRING"},{"name":"industry","type":"STRING"},{"name":"lifecyclestage","type":"STRING"},{"name":"name","type":"STRING"},{"name":"numberofemployees","type":"STRING"},{"name":"owneremail","type":"STRING"},{"name":"ownername","type":"STRING"},{"name":"state","type":"STRING"},{"name":"total_revenue","type":"STRING"},{"name":"website","type":"STRING"},{"name":"zip","type":"STRING"}]},"source":"HUBSPOT_CONTENT_HUB","status":"DONE","table_name":"hubspot_companies_b004746e_89e8_4b91_b318_1cbe6de5200c","tags":null,"updated_at":"2025-11-10T18:36:16Z"}},{"id":"d1931591-92f1-4e25-a2f1-d828dce54386","type":"reference_table","attributes":{"created_by":"","description":"","last_updated_by":"","row_count":2,"schema":{"primary_keys":["id"],"fields":[{"name":"id","type":"STRING"},{"name":"createdat","type":"STRING"},{"name":"updatedat","type":"STRING"},{"name":"archived","type":"STRING"},{"name":"url","type":"STRING"},{"name":"address","type":"STRING"},{"name":"address2","type":"STRING"},{"name":"annualrevenue","type":"STRING"},{"name":"city","type":"STRING"},{"name":"country","type":"STRING"},{"name":"days_to_close","type":"STRING"},{"name":"description","type":"STRING"},{"name":"domain","type":"STRING"},{"name":"founded_year","type":"STRING"},{"name":"hs_analytics_first_timestamp","type":"STRING"},{"name":"hs_industry_group","type":"STRING"},{"name":"industry","type":"STRING"},{"name":"lifecyclestage","type":"STRING"},{"name":"name","type":"STRING"},{"name":"numberofemployees","type":"STRING"},{"name":"owneremail","type":"STRING"},{"name":"ownername","type":"STRING"},{"name":"state","type":"STRING"},{"name":"total_revenue","type":"STRING"},{"name":"website","type":"STRING"},{"name":"zip","type":"STRING"}]},"source":"HUBSPOT_CONTENT_HUB","status":"DONE","table_name":"hubspot_companies_df2edd58_35fc_472e_a715_762aa5496914","tags":null,"updated_at":"2025-11-10T18:36:15Z"}},{"id":"d9a0d809-48a7-48c0-a754-8117dd49eba8","type":"reference_table","attributes":{"created_by":"","description":"","last_updated_by":"","row_count":2,"schema":{"primary_keys":["id"],"fields":[{"name":"id","type":"STRING"},{"name":"createdat","type":"STRING"},{"name":"updatedat","type":"STRING"},{"name":"archived","type":"STRING"},{"name":"url","type":"STRING"},{"name":"address","type":"STRING"},{"name":"address2","type":"STRING"},{"name":"annualrevenue","type":"STRING"},{"name":"city","type":"STRING"},{"name":"country","type":"STRING"},{"name":"days_to_close","type":"STRING"},{"name":"description","type":"STRING"},{"name":"domain","type":"STRING"},{"name":"founded_year","type":"STRING"},{"name":"hs_analytics_first_timestamp","type":"STRING"},{"name":"hs_industry_group","type":"STRING"},{"name":"industry","type":"STRING"},{"name":"lifecyclestage","type":"STRING"},{"name":"name","type":"STRING"},{"name":"numberofemployees","type":"STRING"},{"name":"owneremail","type":"STRING"},{"name":"ownername","type":"STRING"},{"name":"state","type":"STRING"},{"name":"total_revenue","type":"STRING"},{"name":"website","type":"STRING"},{"name":"zip","type":"STRING"}]},"source":"HUBSPOT_CONTENT_HUB","status":"DONE","table_name":"hubspot_companies_ec6c2912_e0a4_4c9e_bea8_3836986c83de","tags":null,"updated_at":"2025-11-10T18:36:14Z"}},{"id":"12a8410d-3cce-4f8f-aa2b-7c3ebad8f6d4","type":"reference_table","attributes":{"created_by":"","description":"","last_updated_by":"","row_count":2,"schema":{"primary_keys":["id"],"fields":[{"name":"id","type":"STRING"},{"name":"createdat","type":"STRING"},{"name":"updatedat","type":"STRING"},{"name":"archived","type":"STRING"},{"name":"url","type":"STRING"},{"name":"address","type":"STRING"},{"name":"address2","type":"STRING"},{"name":"annualrevenue","type":"STRING"},{"name":"city","type":"STRING"},{"name":"country","type":"STRING"},{"name":"days_to_close","type":"STRING"},{"name":"description","type":"STRING"},{"name":"domain","type":"STRING"},{"name":"founded_year","type":"STRING"},{"name":"hs_analytics_first_timestamp","type":"STRING"},{"name":"hs_industry_group","type":"STRING"},{"name":"industry","type":"STRING"},{"name":"lifecyclestage","type":"STRING"},{"name":"name","type":"STRING"},{"name":"numberofemployees","type":"STRING"},{"name":"owneremail","type":"STRING"},{"name":"ownername","type":"STRING"},{"name":"state","type":"STRING"},{"name":"total_revenue","type":"STRING"},{"name":"website","type":"STRING"},{"name":"zip","type":"STRING"}]},"source":"HUBSPOT_CONTENT_HUB","status":"DONE","table_name":"hubspot_companies_4f2b6d02_86dd_496b_b921_323b6a381a9a","tags":null,"updated_at":"2025-11-10T18:36:13Z"}},{"id":"4e6f5a86-4aa2-4288-b033-4f78a2e4298e","type":"reference_table","attributes":{"created_by":"","description":"","last_updated_by":"","row_count":2,"schema":{"primary_keys":["id"],"fields":[{"name":"id","type":"STRING"},{"name":"createdat","type":"STRING"},{"name":"updatedat","type":"STRING"},{"name":"archived","type":"STRING"},{"name":"url","type":"STRING"},{"name":"address","type":"STRING"},{"name":"address2","type":"STRING"},{"name":"annualrevenue","type":"STRING"},{"name":"city","type":"STRING"},{"name":"country","type":"STRING"},{"name":"days_to_close","type":"STRING"},{"name":"description","type":"STRING"},{"name":"domain","type":"STRING"},{"name":"founded_year","type":"STRING"},{"name":"hs_analytics_first_timestamp","type":"STRING"},{"name":"hs_industry_group","type":"STRING"},{"name":"industry","type":"STRING"},{"name":"lifecyclestage","type":"STRING"},{"name":"name","type":"STRING"},{"name":"numberofemployees","type":"STRING"},{"name":"owneremail","type":"STRING"},{"name":"ownername","type":"STRING"},{"name":"state","type":"STRING"},{"name":"total_revenue","type":"STRING"},{"name":"website","type":"STRING"},{"name":"zip","type":"STRING"}]},"source":"HUBSPOT_CONTENT_HUB","status":"DONE","table_name":"hubspot_companies_212c3bff_146e_4812_982f_2340e6efad58","tags":null,"updated_at":"2025-11-10T18:36:12Z"}},{"id":"151eca20-7469-4fcf-9dba-c855372749e2","type":"reference_table","attributes":{"created_by":"","description":"","last_updated_by":"","row_count":2,"schema":{"primary_keys":["id"],"fields":[{"name":"id","type":"STRING"},{"name":"createdat","type":"STRING"},{"name":"updatedat","type":"STRING"},{"name":"archived","type":"STRING"},{"name":"url","type":"STRING"},{"name":"address","type":"STRING"},{"name":"address2","type":"STRING"},{"name":"annualrevenue","type":"STRING"},{"name":"city","type":"STRING"},{"name":"country","type":"STRING"},{"name":"days_to_close","type":"STRING"},{"name":"description","type":"STRING"},{"name":"domain","type":"STRING"},{"name":"founded_year","type":"STRING"},{"name":"hs_analytics_first_timestamp","type":"STRING"},{"name":"hs_industry_group","type":"STRING"},{"name":"industry","type":"STRING"},{"name":"lifecyclestage","type":"STRING"},{"name":"name","type":"STRING"},{"name":"numberofemployees","type":"STRING"},{"name":"owneremail","type":"STRING"},{"name":"ownername","type":"STRING"},{"name":"state","type":"STRING"},{"name":"total_revenue","type":"STRING"},{"name":"website","type":"STRING"},{"name":"zip","type":"STRING"}]},"source":"HUBSPOT_CONTENT_HUB","status":"DONE","table_name":"hubspot_companies_dae61af2_a7c1_44be_be2f_a2502318624e","tags":null,"updated_at":"2025-11-10T18:36:11Z"}},{"id":"4658e474-9a01-4b27-8357-0025f54a157e","type":"reference_table","attributes":{"created_by":"","description":"","last_updated_by":"","row_count":2,"schema":{"primary_keys":["id"],"fields":[{"name":"id","type":"STRING"},{"name":"createdat","type":"STRING"},{"name":"updatedat","type":"STRING"},{"name":"archived","type":"STRING"},{"name":"url","type":"STRING"},{"name":"address","type":"STRING"},{"name":"address2","type":"STRING"},{"name":"annualrevenue","type":"STRING"},{"name":"city","type":"STRING"},{"name":"country","type":"STRING"},{"name":"days_to_close","type":"STRING"},{"name":"description","type":"STRING"},{"name":"domain","type":"STRING"},{"name":"founded_year","type":"STRING"},{"name":"hs_analytics_first_timestamp","type":"STRING"},{"name":"hs_industry_group","type":"STRING"},{"name":"industry","type":"STRING"},{"name":"lifecyclestage","type":"STRING"},{"name":"name","type":"STRING"},{"name":"numberofemployees","type":"STRING"},{"name":"owneremail","type":"STRING"},{"name":"ownername","type":"STRING"},{"name":"state","type":"STRING"},{"name":"total_revenue","type":"STRING"},{"name":"website","type":"STRING"},{"name":"zip","type":"STRING"}]},"source":"HUBSPOT_CONTENT_HUB","status":"DONE","table_name":"hubspot_companies_f8030e8d_d876_4219_bb72_2c3a114ab6c1","tags":null,"updated_at":"2025-11-10T18:36:09Z"}},{"id":"ae91c101-a2e2-41d2-b99f-0cb5ff87e72a","type":"reference_table","attributes":{"created_by":"","description":"This is NOT an actual Snowflake table - it''s a test table updated by this synthetics: https://ddstaging.datadoghq.com/synthetics/details/ajx-zbt-khs?from_ts=1741296820320\u0026to_ts=1741300420320\u0026live=true.","file_metadata":{"error_row_count":1,"error_message":"","access_details":{}},"last_updated_by":"","row_count":1,"schema":{"primary_keys":["id"],"fields":[{"name":"id","type":"STRING"},{"name":"name","type":"STRING"}]},"source":"SNOWFLAKE","status":"DONE_WITH_ERRORS","table_name":"synthetics_grpc_saas2","tags":null,"updated_at":"2025-11-10T18:30:19Z"}},{"id":"0780cb0d-6ab6-4b58-86f8-86f7e8ee2033","type":"reference_table","attributes":{"created_by":"0f10535c-dc66-11ec-ac2c-da7ad0900001","description":"","file_metadata":{"error_row_count":0,"error_message":"","sync_enabled":true,"access_details":{"aws_detail":{"aws_account_id":"727006795293","aws_bucket_name":"dd-logs-threat-intel-staging","file_path":"threat_intel_ip_ddsecres.csv"}}},"last_updated_by":"","row_count":14058,"schema":{"primary_keys":["ip_address"],"fields":[{"name":"ip_address","type":"STRING"},{"name":"source","type":"STRING"},{"name":"category","type":"STRING"},{"name":"intention","type":"STRING"},{"name":"attack_surface","type":"STRING"},{"name":"first_seen","type":"STRING"},{"name":"last_seen","type":"STRING"},{"name":"reputation","type":"STRING"},{"name":"additional_data","type":"STRING"}]},"source":"S3","status":"DONE","table_name":"threat_intel_ip_ddsecres","tags":null,"updated_at":"2025-11-10T18:21:49Z"}}],"meta":{"page":{"type":"offset_limit","offset":0,"limit":15,"total":null,"first_offset":0,"prev_offset":null,"next_offset":15,"last_offset":null}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 241.365541ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: dd.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://dd.datad0g.com/api/v2/reference-tables/tables/989727d4-0582-48b3-98cb-8d7222d84f7d
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 791
+        uncompressed: false
+        body: '{"data":{"id":"989727d4-0582-48b3-98cb-8d7222d84f7d","type":"reference_table","attributes":{"created_by":"51bca672-7464-11ea-ad29-6762102f9f58","description":"Test S3 reference table","file_metadata":{"error_row_count":0,"error_message":"","sync_enabled":true,"access_details":{"aws_detail":{"aws_account_id":"924305315327","aws_bucket_name":"dd-reference-tables-dev-staging","file_path":"test.csv"}}},"last_updated_by":"51bca672-7464-11ea-ad29-6762102f9f58","row_count":0,"schema":{"primary_keys":["a"],"fields":[{"name":"a","type":"STRING"},{"name":"b","type":"STRING"},{"name":"c","type":"STRING"}]},"source":"S3","status":"INITIALIZED","table_name":"tf_test_s3_tf_testaccreferencetables3_basic_local_1762799964","tags":["test:terraform","env:test"],"updated_at":"2025-11-10T18:39:26Z"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 41.326583ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: dd.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://dd.datad0g.com/api/v2/reference-tables/tables/989727d4-0582-48b3-98cb-8d7222d84f7d
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 791
+        uncompressed: false
+        body: '{"data":{"id":"989727d4-0582-48b3-98cb-8d7222d84f7d","type":"reference_table","attributes":{"created_by":"51bca672-7464-11ea-ad29-6762102f9f58","description":"Test S3 reference table","file_metadata":{"error_row_count":0,"error_message":"","sync_enabled":true,"access_details":{"aws_detail":{"aws_account_id":"924305315327","aws_bucket_name":"dd-reference-tables-dev-staging","file_path":"test.csv"}}},"last_updated_by":"51bca672-7464-11ea-ad29-6762102f9f58","row_count":0,"schema":{"primary_keys":["a"],"fields":[{"name":"a","type":"STRING"},{"name":"b","type":"STRING"},{"name":"c","type":"STRING"}]},"source":"S3","status":"INITIALIZED","table_name":"tf_test_s3_tf_testaccreferencetables3_basic_local_1762799964","tags":["test:terraform","env:test"],"updated_at":"2025-11-10T18:39:26Z"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 40.38375ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: dd.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://dd.datad0g.com/api/v2/reference-tables/tables/989727d4-0582-48b3-98cb-8d7222d84f7d
+        method: DELETE
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 337.020291ms

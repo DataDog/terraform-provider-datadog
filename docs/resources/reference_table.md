@@ -103,14 +103,14 @@ Optional:
 
 Optional:
 
-- `aws_detail` (Block, Optional) AWS S3 access configuration. (see [below for nested schema](#nestedblock--file_metadata--access_details--aws_detail))
-- `azure_detail` (Block, Optional) Azure Blob Storage access configuration. (see [below for nested schema](#nestedblock--file_metadata--access_details--azure_detail))
-- `gcp_detail` (Block, Optional) Google Cloud Storage access configuration. (see [below for nested schema](#nestedblock--file_metadata--access_details--gcp_detail))
+- `aws_detail` (Block, Optional) AWS S3 access configuration. Required when source is S3. (see [below for nested schema](#nestedblock--file_metadata--access_details--aws_detail))
+- `azure_detail` (Block, Optional) Azure Blob Storage access configuration. Required when source is AZURE. (see [below for nested schema](#nestedblock--file_metadata--access_details--azure_detail))
+- `gcp_detail` (Block, Optional) Google Cloud Storage access configuration. Required when source is GCS. (see [below for nested schema](#nestedblock--file_metadata--access_details--gcp_detail))
 
 <a id="nestedblock--file_metadata--access_details--aws_detail"></a>
 ### Nested Schema for `file_metadata.access_details.aws_detail`
 
-Required:
+Optional:
 
 - `aws_account_id` (String) The ID of the AWS account.
 - `aws_bucket_name` (String) The name of the Amazon S3 bucket.
@@ -120,7 +120,7 @@ Required:
 <a id="nestedblock--file_metadata--access_details--azure_detail"></a>
 ### Nested Schema for `file_metadata.access_details.azure_detail`
 
-Required:
+Optional:
 
 - `azure_client_id` (String) The Azure client ID (application ID).
 - `azure_container_name` (String) The name of the Azure container.
@@ -132,7 +132,7 @@ Required:
 <a id="nestedblock--file_metadata--access_details--gcp_detail"></a>
 ### Nested Schema for `file_metadata.access_details.gcp_detail`
 
-Required:
+Optional:
 
 - `file_path` (String) The relative file path from the GCS bucket root to the CSV file.
 - `gcp_bucket_name` (String) The name of the GCP bucket.

@@ -134,64 +134,64 @@ func (r *referenceTableResource) Schema(_ context.Context, _ resource.SchemaRequ
 						Description: "Cloud storage access configuration. Exactly one of aws_detail, gcp_detail, or azure_detail must be specified.",
 						Blocks: map[string]schema.Block{
 							"aws_detail": schema.SingleNestedBlock{
-								Description: "AWS S3 access configuration.",
+								Description: "AWS S3 access configuration. Required when source is S3.",
 								Attributes: map[string]schema.Attribute{
 									"aws_account_id": schema.StringAttribute{
-										Required:    true,
+										Optional:    true,
 										Description: "The ID of the AWS account.",
 									},
 									"aws_bucket_name": schema.StringAttribute{
-										Required:    true,
+										Optional:    true,
 										Description: "The name of the Amazon S3 bucket.",
 									},
 									"file_path": schema.StringAttribute{
-										Required:    true,
+										Optional:    true,
 										Description: "The relative file path from the S3 bucket root to the CSV file.",
 									},
 								},
 							},
 							"gcp_detail": schema.SingleNestedBlock{
-								Description: "Google Cloud Storage access configuration.",
+								Description: "Google Cloud Storage access configuration. Required when source is GCS.",
 								Attributes: map[string]schema.Attribute{
 									"gcp_project_id": schema.StringAttribute{
-										Required:    true,
+										Optional:    true,
 										Description: "The ID of the GCP project.",
 									},
 									"gcp_bucket_name": schema.StringAttribute{
-										Required:    true,
+										Optional:    true,
 										Description: "The name of the GCP bucket.",
 									},
 									"file_path": schema.StringAttribute{
-										Required:    true,
+										Optional:    true,
 										Description: "The relative file path from the GCS bucket root to the CSV file.",
 									},
 									"gcp_service_account_email": schema.StringAttribute{
-										Required:    true,
+										Optional:    true,
 										Description: "The email of the GCP service account used to access the bucket.",
 									},
 								},
 							},
 							"azure_detail": schema.SingleNestedBlock{
-								Description: "Azure Blob Storage access configuration.",
+								Description: "Azure Blob Storage access configuration. Required when source is AZURE.",
 								Attributes: map[string]schema.Attribute{
 									"azure_tenant_id": schema.StringAttribute{
-										Required:    true,
+										Optional:    true,
 										Description: "The ID of the Azure tenant.",
 									},
 									"azure_client_id": schema.StringAttribute{
-										Required:    true,
+										Optional:    true,
 										Description: "The Azure client ID (application ID).",
 									},
 									"azure_storage_account_name": schema.StringAttribute{
-										Required:    true,
+										Optional:    true,
 										Description: "The name of the Azure storage account.",
 									},
 									"azure_container_name": schema.StringAttribute{
-										Required:    true,
+										Optional:    true,
 										Description: "The name of the Azure container.",
 									},
 									"file_path": schema.StringAttribute{
-										Required:    true,
+										Optional:    true,
 										Description: "The relative file path from the Azure container root to the CSV file.",
 									},
 								},
@@ -255,10 +255,12 @@ func (r *referenceTableResource) Read(ctx context.Context, request resource.Read
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving ReferenceTable"))
 		return
 	}
-	if err := utils.CheckForUnparsed(resp); err != nil {
-		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
-		return
-	}
+	// Note: Skipping CheckForUnparsed because file_metadata OneOf always fails to unmarshal
+	// due to Go client bug. We handle it manually in updateState.
+	// if err := utils.CheckForUnparsed(resp); err != nil {
+	// 	response.Diagnostics.AddError("response contains unparsedObject", err.Error())
+	// 	return
+	// }
 
 	r.updateState(ctx, &state, &resp)
 
@@ -279,15 +281,66 @@ func (r *referenceTableResource) Create(ctx context.Context, request resource.Cr
 		return
 	}
 
-	resp, _, err := r.Api.CreateReferenceTable(r.Auth, *body)
+	resp, httpResp, err := r.Api.CreateReferenceTable(r.Auth, *body)
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving ReferenceTable"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error creating ReferenceTable"))
 		return
 	}
-	if err := utils.CheckForUnparsed(resp); err != nil {
-		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
-		return
+	// Note: Skipping CheckForUnparsed because file_metadata OneOf always fails to unmarshal
+	// due to Go client bug. We handle it manually in updateState.
+	// if err := utils.CheckForUnparsed(resp); err != nil {
+	// 	response.Diagnostics.AddError("response contains unparsedObject", err.Error())
+	// 	return
+	// }
+
+	// If the create response doesn't include data, fetch it with a list+filter request
+	if resp.Data == nil {
+		if httpResp != nil && httpResp.StatusCode == 201 {
+			// Table was created successfully, but response was empty - list tables and find by exact name
+			tableName := state.TableName.ValueString()
+			listResp, _, listErr := r.Api.ListTables(r.Auth)
+			if listErr != nil {
+				response.Diagnostics.Append(utils.FrameworkErrorDiag(listErr, "table created but error listing tables"))
+				return
+			}
+
+			// Find the table by exact name match
+			var foundTable *datadogV2.TableResultV2Data
+			if listResp.Data != nil {
+				for _, table := range listResp.Data {
+					if attrs, ok := table.GetAttributesOk(); ok {
+						if name, nameOk := attrs.GetTableNameOk(); nameOk && *name == tableName {
+							tableCopy := table
+							foundTable = &tableCopy
+							break
+						}
+					}
+				}
+			}
+
+			if foundTable == nil {
+				response.Diagnostics.AddError("API Error", fmt.Sprintf("Table %s was created but not found in list", tableName))
+				return
+			}
+
+			// Get the full table details by ID
+			tableID := foundTable.GetId()
+			getResp, _, getErr := r.Api.GetTable(r.Auth, tableID)
+			if getErr != nil {
+				response.Diagnostics.Append(utils.FrameworkErrorDiag(getErr, fmt.Sprintf("table created but error fetching details for ID %s", tableID)))
+				return
+			}
+			resp = getResp
+		} else {
+			statusCode := 0
+			if httpResp != nil {
+				statusCode = httpResp.StatusCode
+			}
+			response.Diagnostics.AddError("API Error", fmt.Sprintf("CreateReferenceTable returned an empty response (HTTP %d).", statusCode))
+			return
+		}
 	}
+
 	r.updateState(ctx, &state, &resp)
 
 	// Save data into Terraform state
@@ -315,6 +368,15 @@ func (r *referenceTableResource) Update(ctx context.Context, request resource.Up
 		return
 	}
 
+	// Read back the updated resource to get computed fields
+	resp, _, err := r.Api.GetTable(r.Auth, id)
+	if err != nil {
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error reading ReferenceTable after update"))
+		return
+	}
+
+	r.updateState(ctx, &state, &resp)
+
 	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
@@ -339,6 +401,11 @@ func (r *referenceTableResource) Delete(ctx context.Context, request resource.De
 }
 
 func (r *referenceTableResource) updateState(ctx context.Context, state *referenceTableModel, resp *datadogV2.TableResultV2) {
+	// Check if Data is present
+	if resp == nil || resp.Data == nil {
+		return
+	}
+
 	attributes := resp.Data.GetAttributes()
 
 	state.ID = types.StringValue(*resp.GetData().Id)
@@ -382,6 +449,84 @@ func (r *referenceTableResource) updateState(ctx context.Context, state *referen
 	// Handle FileMetadata from API response (OneOf union type)
 	if fileMetadata, ok := attributes.GetFileMetadataOk(); ok {
 		fileMetadataTf := &fileMetadataModel{}
+
+		// Handle UnparsedObject case - manually distinguish between CloudStorage and LocalFile
+		// The Go client's OneOf unmarshaler fails because both types can match, so we handle it manually.
+		if fileMetadata.UnparsedObject != nil {
+			if unparsedMap, ok := fileMetadata.UnparsedObject.(map[string]interface{}); ok {
+				// Check if it has access_details (CloudStorage) or not (LocalFile)
+				if accessDetails, hasAccessDetails := unparsedMap["access_details"]; hasAccessDetails && accessDetails != nil {
+					// It's CloudStorage
+					if syncEnabled, ok := unparsedMap["sync_enabled"].(bool); ok {
+						fileMetadataTf.SyncEnabled = types.BoolValue(syncEnabled)
+					}
+					
+					// Parse access_details
+					if accessDetailsMap, ok := accessDetails.(map[string]interface{}); ok {
+						accessDetailsTf := &accessDetailsModel{}
+						
+						// Check for AWS details
+						if awsDetail, ok := accessDetailsMap["aws_detail"].(map[string]interface{}); ok {
+							awsDetailTf := &awsDetailModel{}
+							if awsAccountId, ok := awsDetail["aws_account_id"].(string); ok {
+								awsDetailTf.AwsAccountId = types.StringValue(awsAccountId)
+							}
+							if awsBucketName, ok := awsDetail["aws_bucket_name"].(string); ok {
+								awsDetailTf.AwsBucketName = types.StringValue(awsBucketName)
+							}
+							if filePath, ok := awsDetail["file_path"].(string); ok {
+								awsDetailTf.FilePath = types.StringValue(filePath)
+							}
+							accessDetailsTf.AwsDetail = awsDetailTf
+						}
+						
+						// Check for GCP details
+						if gcpDetail, ok := accessDetailsMap["gcp_detail"].(map[string]interface{}); ok {
+							gcpDetailTf := &gcpDetailModel{}
+							if gcpProjectId, ok := gcpDetail["gcp_project_id"].(string); ok {
+								gcpDetailTf.GcpProjectId = types.StringValue(gcpProjectId)
+							}
+							if gcpBucketName, ok := gcpDetail["gcp_bucket_name"].(string); ok {
+								gcpDetailTf.GcpBucketName = types.StringValue(gcpBucketName)
+							}
+							if filePath, ok := gcpDetail["file_path"].(string); ok {
+								gcpDetailTf.FilePath = types.StringValue(filePath)
+							}
+							if gcpServiceAccountEmail, ok := gcpDetail["gcp_service_account_email"].(string); ok {
+								gcpDetailTf.GcpServiceAccountEmail = types.StringValue(gcpServiceAccountEmail)
+							}
+							accessDetailsTf.GcpDetail = gcpDetailTf
+						}
+						
+						// Check for Azure details
+						if azureDetail, ok := accessDetailsMap["azure_detail"].(map[string]interface{}); ok {
+							azureDetailTf := &azureDetailModel{}
+							if azureTenantId, ok := azureDetail["azure_tenant_id"].(string); ok {
+								azureDetailTf.AzureTenantId = types.StringValue(azureTenantId)
+							}
+							if azureClientId, ok := azureDetail["azure_client_id"].(string); ok {
+								azureDetailTf.AzureClientId = types.StringValue(azureClientId)
+							}
+							if azureStorageAccountName, ok := azureDetail["azure_storage_account_name"].(string); ok {
+								azureDetailTf.AzureStorageAccountName = types.StringValue(azureStorageAccountName)
+							}
+							if azureContainerName, ok := azureDetail["azure_container_name"].(string); ok {
+								azureDetailTf.AzureContainerName = types.StringValue(azureContainerName)
+							}
+							if filePath, ok := azureDetail["file_path"].(string); ok {
+								azureDetailTf.FilePath = types.StringValue(filePath)
+							}
+							accessDetailsTf.AzureDetail = azureDetailTf
+						}
+						
+						fileMetadataTf.AccessDetails = accessDetailsTf
+					}
+					
+					state.FileMetadata = fileMetadataTf
+					return // Skip the normal OneOf handling
+				}
+			}
+		}
 
 		// Check if it's CloudStorage type
 		if cloudStorage := fileMetadata.TableResultV2DataAttributesFileMetadataCloudStorage; cloudStorage != nil {
@@ -568,7 +713,7 @@ func (r *referenceTableResource) buildReferenceTableRequestBody(ctx context.Cont
 	}
 
 	req := datadogV2.NewCreateTableRequestWithDefaults()
-	req.Data = datadogV2.NewCreateTableRequestDataWithDefaults()
+	req.Data = datadogV2.NewCreateTableRequestData(datadogV2.CREATETABLEREQUESTDATATYPE_REFERENCE_TABLE)
 	req.Data.SetAttributes(*attributes)
 
 	return req, diags
@@ -664,7 +809,7 @@ func (r *referenceTableResource) buildReferenceTableUpdateRequestBody(ctx contex
 	}
 
 	req := datadogV2.NewPatchTableRequestWithDefaults()
-	req.Data = datadogV2.NewPatchTableRequestDataWithDefaults()
+	req.Data = datadogV2.NewPatchTableRequestData(datadogV2.PATCHTABLEREQUESTDATATYPE_REFERENCE_TABLE)
 	req.Data.SetAttributes(*attributes)
 
 	return req, diags

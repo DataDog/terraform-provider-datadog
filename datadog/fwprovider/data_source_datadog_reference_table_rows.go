@@ -116,13 +116,16 @@ func (d *datadogReferenceTableRowsDataSource) Read(ctx context.Context, request 
 
 		// Convert values map to types.Map with string values
 		if attrs, ok := row.GetAttributesOk(); ok && attrs.Values != nil {
-			// Convert all values to strings for the map
-			stringValues := make(map[string]string)
-			for k, v := range attrs.Values {
-				// Convert value to string representation
-				stringValues[k] = fmt.Sprintf("%v", v)
+			// Type assert Values to map[string]interface{}
+			if valuesMap, ok := attrs.Values.(map[string]interface{}); ok {
+				// Convert all values to strings for the map
+				stringValues := make(map[string]string)
+				for k, v := range valuesMap {
+					// Convert value to string representation
+					stringValues[k] = fmt.Sprintf("%v", v)
+				}
+				rowTf.Values, _ = types.MapValueFrom(ctx, types.StringType, stringValues)
 			}
-			rowTf.Values, _ = types.MapValueFrom(ctx, types.StringType, stringValues)
 		}
 
 		state.Rows[i] = rowTf
