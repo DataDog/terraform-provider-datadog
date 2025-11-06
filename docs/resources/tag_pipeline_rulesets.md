@@ -16,8 +16,7 @@ Provides a Datadog Tag Pipeline Ruleset Order resource that can be used to manag
 # ============================================================================
 # Example 1: Basic Usage - Manage the order of tag pipeline rulesets
 # ============================================================================
-# This example shows the default behavior where UI-defined rulesets that are
-# not in Terraform will be preserved at the end of the order.
+# This example shows the default behavior, where UI-defined rulesets not in Terraform are preserved at the end of the order.
 
 resource "datadog_tag_pipeline_ruleset" "first" {
   name    = "Standardize Environment Tags"
@@ -92,7 +91,7 @@ resource "datadog_tag_pipeline_rulesets" "order" {
 # Example 2: Override UI-defined rulesets (override_ui_defined_resources = true)
 # ============================================================================
 # When set to true, any rulesets created via the UI that are not defined in Terraform
-# will be automatically deleted during terraform apply.
+# will be automatically deleted during `terraform apply`.
 
 resource "datadog_tag_pipeline_ruleset" "managed_first" {
   name    = "Standardize Environment Tags"
@@ -146,7 +145,7 @@ resource "datadog_tag_pipeline_rulesets" "order_override" {
 # ============================================================================
 # When set to false (default), UI-defined rulesets that are not in Terraform
 # will be preserved at the end of the order. However, if unmanaged rulesets
-# are in the middle of the order, Terraform will error and require you to either:
+# are in the middle of the order, Terraform will return an error and require you to either:
 # 1. Import the unmanaged rulesets
 # 2. Set override_ui_defined_resources = true
 # 3. Manually reorder or delete them in the Datadog UI
@@ -210,7 +209,7 @@ resource "datadog_tag_pipeline_rulesets" "order_preserve" {
 
 ### Optional
 
-- `override_ui_defined_resources` (Boolean) Whether to override UI-defined rulesets. When set to true, any rulesets created via the UI that are not defined in Terraform will be deleted and perform reorder based on the rulesets from the terraform. Default is false
+- `override_ui_defined_resources` (Boolean) Whether to override rulesets defined in the UI. When set to `true`, any UI-created rulesets not defined in Terraform will be deleted, and the remaining rulesets will be reordered based on the Terraform configuration. Default is `false`.
 
 ### Read-Only
 
