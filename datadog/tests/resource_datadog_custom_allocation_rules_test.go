@@ -1065,6 +1065,7 @@ resource "datadog_custom_allocation_rule" "unmanaged_second" {
 
 func testAccCheckDatadogCustomAllocationRulesConfigOverrideFalseUnmanagedInMiddle(uniq string) string {
 	return fmt.Sprintf(`
+# Keep ALL the rules from Step 1 so they persist
 resource "datadog_custom_allocation_rule" "first" {
   costs_to_allocate {
     condition = "is"
@@ -1128,6 +1129,50 @@ resource "datadog_custom_allocation_rule" "third" {
   }
 }
 
+# Keep the unmanaged rules from Step 1 so they persist and remain unmanaged by the order resource
+resource "datadog_custom_allocation_rule" "unmanaged_first" {
+  costs_to_allocate {
+    condition = "is"
+    tag       = "aws_product"
+    value     = "AmazonECS"
+  }
+  enabled       = true
+  providernames = ["aws"]
+  rule_name     = "tf-test-unmanaged-first-%s"
+  strategy {
+    allocated_by_tag_keys = ["team"]
+    based_on_costs {
+      condition = "is"
+      tag       = "aws_product"
+      value     = "AmazonECS"
+    }
+    granularity = "daily"
+    method      = "even"
+  }
+}
+
+resource "datadog_custom_allocation_rule" "unmanaged_second" {
+  costs_to_allocate {
+    condition = "is"
+    tag       = "aws_product"
+    value     = "AmazonEKS"
+  }
+  enabled       = true
+  providernames = ["aws"]
+  rule_name     = "tf-test-unmanaged-second-%s"
+  strategy {
+    allocated_by_tag_keys = ["team"]
+    based_on_costs {
+      condition = "is"
+      tag       = "aws_product"
+      value     = "AmazonEKS"
+    }
+    granularity = "daily"
+    method      = "even"
+  }
+}
+
+# Order resource that only manages 3 of the 5 rules, leaving 2 unmanaged in the middle
 resource "datadog_custom_allocation_rules" "test_order" {
   override_ui_defined_resources = false
   rule_ids = [
@@ -1135,7 +1180,7 @@ resource "datadog_custom_allocation_rules" "test_order" {
     datadog_custom_allocation_rule.second.id,
     datadog_custom_allocation_rule.third.id
   ]
-}`, uniq, uniq, uniq)
+}`, uniq, uniq, uniq, uniq, uniq)
 }
 
 func testAccCheckDatadogCustomAllocationRulesConfigCreateBaseWithUnmanagedRulesAtEnd(uniq string) string {
@@ -1257,6 +1302,7 @@ resource "datadog_custom_allocation_rule" "unmanaged_second" {
 
 func testAccCheckDatadogCustomAllocationRulesConfigOverrideFalseUnmanagedAtEnd(uniq string) string {
 	return fmt.Sprintf(`
+# Keep ALL the rules from Step 1 so they persist
 resource "datadog_custom_allocation_rule" "first" {
   costs_to_allocate {
     condition = "is"
@@ -1320,6 +1366,50 @@ resource "datadog_custom_allocation_rule" "third" {
   }
 }
 
+# Keep the unmanaged rules from Step 1 so they persist and remain unmanaged by the order resource
+resource "datadog_custom_allocation_rule" "unmanaged_first" {
+  costs_to_allocate {
+    condition = "is"
+    tag       = "aws_product"
+    value     = "AmazonECS"
+  }
+  enabled       = true
+  providernames = ["aws"]
+  rule_name     = "tf-test-unmanaged-first-%s"
+  strategy {
+    allocated_by_tag_keys = ["team"]
+    based_on_costs {
+      condition = "is"
+      tag       = "aws_product"
+      value     = "AmazonECS"
+    }
+    granularity = "daily"
+    method      = "even"
+  }
+}
+
+resource "datadog_custom_allocation_rule" "unmanaged_second" {
+  costs_to_allocate {
+    condition = "is"
+    tag       = "aws_product"
+    value     = "AmazonEKS"
+  }
+  enabled       = true
+  providernames = ["aws"]
+  rule_name     = "tf-test-unmanaged-second-%s"
+  strategy {
+    allocated_by_tag_keys = ["team"]
+    based_on_costs {
+      condition = "is"
+      tag       = "aws_product"
+      value     = "AmazonEKS"
+    }
+    granularity = "daily"
+    method      = "even"
+  }
+}
+
+# Order resource that only manages 3 of the 5 rules, leaving 2 unmanaged at the end
 resource "datadog_custom_allocation_rules" "test_order" {
   override_ui_defined_resources = false
   rule_ids = [
@@ -1327,5 +1417,5 @@ resource "datadog_custom_allocation_rules" "test_order" {
     datadog_custom_allocation_rule.second.id,
     datadog_custom_allocation_rule.third.id
   ]
-}`, uniq, uniq, uniq)
+}`, uniq, uniq, uniq, uniq, uniq)
 }
