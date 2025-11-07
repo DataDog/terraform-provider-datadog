@@ -90,6 +90,10 @@ resource "datadog_custom_allocation_rules" "order" {
 
 - `rule_ids` (List of String) The list of Custom Allocation Rule IDs, in order. Rules are executed in the order specified in this list. Comes from the `id` field on a `datadog_custom_allocation_rule` resource.
 
+### Optional
+
+- `override_ui_defined_resources` (Boolean) Whether to override UI-defined rules. When set to true, any rules created via the UI that are not defined in Terraform will be deleted and perform reorder based on the rules from the terraform. Default is false
+
 ### Read-Only
 
 - `id` (String) The ID of this resource.
