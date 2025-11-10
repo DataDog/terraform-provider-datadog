@@ -303,17 +303,17 @@ func extractRulesetFields(ruleset datadogV2.RulesetRespData) (id string, name st
 	if ruleset.UnparsedObject == nil {
 		return
 	}
-	
+
 	if idVal, idOk := ruleset.UnparsedObject["id"].(string); idOk && idVal != "" {
 		id = idVal
 		ok = true
 	}
-	
+
 	if attributesRaw, attrsOk := ruleset.UnparsedObject["attributes"].(map[string]interface{}); attrsOk {
 		if nameVal, nameOk := attributesRaw["name"].(string); nameOk {
 			name = nameVal
 		}
-		
+
 		// Handle various numeric types for position
 		switch v := attributesRaw["position"].(type) {
 		case float64:
@@ -326,10 +326,9 @@ func extractRulesetFields(ruleset datadogV2.RulesetRespData) (id string, name st
 			position = int32(v)
 		}
 	}
-	
+
 	return
 }
-
 
 // getRulesetsWithPositions extracts all rulesets with their positions and sorts them by position
 // If managedOnly is true, only include rulesets in the managedIDsSet
