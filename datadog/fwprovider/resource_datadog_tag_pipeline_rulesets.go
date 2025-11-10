@@ -56,7 +56,7 @@ func (r *tagPipelineRulesetsResource) Schema(_ context.Context, _ resource.Schem
 				Required:    true,
 			},
 			"override_ui_defined_resources": schema.BoolAttribute{
-				Description: "Whether to override UI-defined rulesets. When set to true, any rulesets created via the UI that are not defined in Terraform will be deleted and perform reorder based on the rulesets from the terraform. Default is false",
+				Description: "Whether to override UI-defined rulesets. When set to true, any rulesets created via the UI that are not defined in Terraform will be deleted and Terraform will be used as the source of truth for rules and their ordering. When set to false, any rulesets created via the UI that are at the end of order will be kept but will be warned, otherwise an error will be thrown in terraform plan phase. Default is false",
 				Optional:    true,
 			},
 			// Resource ID
@@ -85,11 +85,11 @@ func (r *tagPipelineRulesetsResource) Read(ctx context.Context, request resource
 		return
 	}
 
-	// Get the managed ruleset IDs from the current state
-	var managedRulesetIDs []string
+	// Create a map for quick lookup of managed IDs
+	managedIDsSet := make(map[string]bool)
 	for _, tfID := range state.RulesetIDs.Elements() {
 		rulesetID := tfID.(types.String).ValueString()
-		managedRulesetIDs = append(managedRulesetIDs, rulesetID)
+		managedIDsSet[rulesetID] = true
 	}
 
 	// Check override setting to determine how to build state
@@ -110,17 +110,11 @@ func (r *tagPipelineRulesetsResource) Read(ctx context.Context, request resource
 		rulesets = *respData
 	}
 
-	// Create a map for quick lookup of managed IDs
-	managedIDsSet := make(map[string]bool)
-	for _, id := range managedRulesetIDs {
-		managedIDsSet[id] = true
-	}
-
 	// Get rulesets with positions
-	// During import (managedRulesetIDs is empty): get ALL rulesets
+	// During import (managedIDsSet is empty): get ALL rulesets
 	// When override=false: only managed rulesets
 	// When override=true: ALL rulesets (so Terraform can detect difference and trigger Update to delete unmanaged)
-	isImport := len(managedRulesetIDs) == 0
+	isImport := len(managedIDsSet) == 0
 	rulesetPositions := getRulesetsWithPositions(rulesets, managedIDsSet, !override && !isImport)
 
 	// Verify all managed rulesets still exist
@@ -131,14 +125,14 @@ func (r *tagPipelineRulesetsResource) Read(ctx context.Context, request resource
 		}
 	}
 
-	if managedCount != len(managedRulesetIDs) {
+	if managedCount != len(managedIDsSet) {
 		// Some managed rulesets were deleted
 		missingIDs := []string{}
 		foundIDs := make(map[string]bool)
 		for _, rp := range rulesetPositions {
 			foundIDs[rp.ID] = true
 		}
-		for _, id := range managedRulesetIDs {
+		for id := range managedIDsSet {
 			if !foundIDs[id] {
 				missingIDs = append(missingIDs, id)
 			}
@@ -146,8 +140,8 @@ func (r *tagPipelineRulesetsResource) Read(ctx context.Context, request resource
 		response.Diagnostics.AddWarning(
 			"Managed rulesets deleted outside Terraform",
 			fmt.Sprintf("The following managed ruleset(s) no longer exist in Datadog: %v. "+
-				"They may have been deleted outside of Terraform. "+
-				"Run 'terraform apply' to update the state.",
+				"They were deleted outside of Terraform. "+
+				"Apply to recreate missing rulesets.",
 				missingIDs),
 		)
 	}
@@ -213,17 +207,11 @@ func (r *tagPipelineRulesetsResource) ModifyPlan(ctx context.Context, request re
 		existingRulesets = *respData
 	}
 
-	// Convert the Terraform list to strings
-	var desiredRulesetIDs []string
-	for _, tfID := range plan.RulesetIDs.Elements() {
-		rulesetID := tfID.(types.String).ValueString()
-		desiredRulesetIDs = append(desiredRulesetIDs, rulesetID)
-	}
-
 	// Create a map of desired IDs for checking unmanaged rulesets
 	desiredIDsSet := make(map[string]bool)
-	for _, id := range desiredRulesetIDs {
-		desiredIDsSet[id] = true
+	for _, tfID := range plan.RulesetIDs.Elements() {
+		rulesetID := tfID.(types.String).ValueString()
+		desiredIDsSet[rulesetID] = true
 	}
 
 	// Get all rulesets with positions sorted
@@ -298,69 +286,50 @@ type unmanagedRulesetInfo struct {
 	AllAtEnd  bool
 }
 
-// extractRulesetFields extracts ID, name, and position from a ruleset in a single pass,
-// handling the case where the API client failed to deserialize and put the data in UnparsedObject
-// Returns: (id, name, position, ok) where ok indicates if ID was successfully extracted
+// extractRulesetFields extracts ID, name, and position from a ruleset
 func extractRulesetFields(ruleset datadogV2.RulesetRespData) (id string, name string, position int32, ok bool) {
-	// Try to get data from normal fields first
+	// Try normal fields first
 	if rulesetID, idOk := ruleset.GetIdOk(); idOk && rulesetID != nil && *rulesetID != "" {
 		id = *rulesetID
 		ok = true
-
 		if attrs, attrsOk := ruleset.GetAttributesOk(); attrsOk {
 			name = attrs.GetName()
 			position = attrs.GetPosition()
-			return
 		}
+		return
 	}
 
-	// If normal fields failed, try UnparsedObject
-	// This happens when the API returns fields the generated client doesn't know about
-	if ruleset.UnparsedObject != nil {
-		// Extract ID
-		if idVal, idOk := ruleset.UnparsedObject["id"].(string); idOk && idVal != "" {
-			id = idVal
-			ok = true
+	// Fallback to UnparsedObject
+	if ruleset.UnparsedObject == nil {
+		return
+	}
+	
+	if idVal, idOk := ruleset.UnparsedObject["id"].(string); idOk && idVal != "" {
+		id = idVal
+		ok = true
+	}
+	
+	if attributesRaw, attrsOk := ruleset.UnparsedObject["attributes"].(map[string]interface{}); attrsOk {
+		if nameVal, nameOk := attributesRaw["name"].(string); nameOk {
+			name = nameVal
 		}
-
-		// Extract attributes (name and position)
-		if attributesRaw, attrsOk := ruleset.UnparsedObject["attributes"].(map[string]interface{}); attrsOk {
-			// Extract name
-			if nameVal, nameOk := attributesRaw["name"].(string); nameOk {
-				name = nameVal
-			}
-
-			// Extract position (might be float64, int, or int32)
-			if posFloat, posOk := attributesRaw["position"].(float64); posOk {
-				position = int32(posFloat)
-			} else if posInt, posOk := attributesRaw["position"].(int); posOk {
-				position = int32(posInt)
-			} else if posInt32, posOk := attributesRaw["position"].(int32); posOk {
-				position = posInt32
-			}
+		
+		// Handle various numeric types for position
+		switch v := attributesRaw["position"].(type) {
+		case float64:
+			position = int32(v)
+		case int:
+			position = int32(v)
+		case int32:
+			position = v
+		case int64:
+			position = int32(v)
 		}
 	}
-
+	
 	return
 }
 
-// extractRulesetID extracts the ID from a ruleset (convenience wrapper around extractRulesetFields)
-func extractRulesetID(ruleset datadogV2.RulesetRespData) (string, bool) {
-	id, _, _, ok := extractRulesetFields(ruleset)
-	return id, ok
-}
-
-// extractRulesetName extracts the name from a ruleset (convenience wrapper around extractRulesetFields)
-func extractRulesetName(ruleset datadogV2.RulesetRespData) string {
-	_, name, _, _ := extractRulesetFields(ruleset)
-	return name
-}
-
-// extractRulesetPosition extracts the position from a ruleset (convenience wrapper around extractRulesetFields)
-func extractRulesetPosition(ruleset datadogV2.RulesetRespData) int32 {
-	_, _, position, _ := extractRulesetFields(ruleset)
-	return position
-}
 
 // getRulesetsWithPositions extracts all rulesets with their positions and sorts them by position
 // If managedOnly is true, only include rulesets in the managedIDsSet
@@ -503,28 +472,11 @@ func (r *tagPipelineRulesetsResource) updateOrderWithDeletion(state *tagPipeline
 
 	// Extract IDs from all rulesets, handling UnparsedObject for problematic rulesets
 	for _, ruleset := range existingRulesets {
-		rulesetID, ok := extractRulesetID(ruleset)
+		rulesetID, _, _, ok := extractRulesetFields(ruleset)
 		if ok {
 			existingIDs[rulesetID] = true
 			existingIDList = append(existingIDList, rulesetID)
 		}
-	}
-
-	// Check if we extracted fewer IDs than total rulesets (API client deserialization bug)
-	if len(existingIDList) < len(existingRulesets) {
-		diag.AddError(
-			"Unable to extract IDs from all rulesets",
-			fmt.Sprintf("The API returned %d rulesets, but we could only extract IDs from %d of them. "+
-				"This is likely due to a deserialization issue in the API client library. "+
-				"To work around this issue, please:\n"+
-				"1. Go to the Datadog UI and manually delete any problematic rulesets\n"+
-				"2. Or set override_ui_defined_resources=false to preserve unmanaged rulesets\n"+
-				"3. Then try again\n\n"+
-				"Successfully extracted IDs: %v\n"+
-				"Total rulesets from API: %d",
-				len(existingRulesets), len(existingIDList), existingIDList, len(existingRulesets)),
-		)
-		return
 	}
 
 	// Validate desired rulesets exist
@@ -544,7 +496,7 @@ func (r *tagPipelineRulesetsResource) updateOrderWithDeletion(state *tagPipeline
 	// Find and delete unmanaged rulesets
 	var unmanagedRulesets []string
 	for _, ruleset := range existingRulesets {
-		rulesetID, ok := extractRulesetID(ruleset)
+		rulesetID, _, _, ok := extractRulesetFields(ruleset)
 		if !ok {
 			continue
 		}
