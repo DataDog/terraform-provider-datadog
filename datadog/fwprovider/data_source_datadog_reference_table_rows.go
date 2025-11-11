@@ -102,10 +102,10 @@ func (d *datadogReferenceTableRowsDataSource) Read(ctx context.Context, request 
 
 	// Call API to get rows by ID
 	ddResp, _, err := d.Api.GetRowsByID(d.Auth, tableId, rowIds)
-	if err != nil {
+		if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error getting reference table rows"))
-		return
-	}
+			return
+		}
 
 	// Convert API response to state
 	state.Rows = make([]*rowModel, len(ddResp.Data))
@@ -125,7 +125,7 @@ func (d *datadogReferenceTableRowsDataSource) Read(ctx context.Context, request 
 					stringValues[k] = fmt.Sprintf("%v", v)
 				}
 				rowTf.Values, _ = types.MapValueFrom(ctx, types.StringType, stringValues)
-			}
+	}
 		}
 
 		state.Rows[i] = rowTf

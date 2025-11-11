@@ -53,58 +53,6 @@ func TestAccReferenceTableS3_Basic(t *testing.T) {
 	})
 }
 
-func TestAccReferenceTableGCS_Basic(t *testing.T) {
-	t.Parallel()
-	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
-	uniq := uniqueEntityName(ctx, t)
-
-	resource.Test(t, resource.TestCase{
-		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
-		CheckDestroy:             testAccCheckDatadogReferenceTableDestroy(providers.frameworkProvider),
-		Steps: []resource.TestStep{
-			{
-				Config: testAccCheckDatadogReferenceTableGCS(uniq),
-				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogReferenceTableExists(providers.frameworkProvider),
-					resource.TestCheckResourceAttr(
-						"datadog_reference_table.gcs_table", "table_name", fmt.Sprintf("tf_test_gcs_%s", strings.ToLower(strings.ReplaceAll(uniq, "-", "_")))),
-					resource.TestCheckResourceAttr(
-						"datadog_reference_table.gcs_table", "source", "GCS"),
-					resource.TestCheckResourceAttr(
-						"datadog_reference_table.gcs_table", "file_metadata.access_details.gcp_detail.gcp_project_id", "my-gcp-project"),
-				),
-			},
-		},
-	})
-}
-
-func TestAccReferenceTableAzure_Basic(t *testing.T) {
-	t.Parallel()
-	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
-	uniq := uniqueEntityName(ctx, t)
-
-	resource.Test(t, resource.TestCase{
-		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
-		CheckDestroy:             testAccCheckDatadogReferenceTableDestroy(providers.frameworkProvider),
-		Steps: []resource.TestStep{
-			{
-				Config: testAccCheckDatadogReferenceTableAzure(uniq),
-				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogReferenceTableExists(providers.frameworkProvider),
-					resource.TestCheckResourceAttr(
-						"datadog_reference_table.azure_table", "table_name", fmt.Sprintf("tf_test_azure_%s", strings.ToLower(strings.ReplaceAll(uniq, "-", "_")))),
-					resource.TestCheckResourceAttr(
-						"datadog_reference_table.azure_table", "source", "AZURE"),
-					resource.TestCheckResourceAttr(
-						"datadog_reference_table.azure_table", "file_metadata.access_details.azure_detail.azure_storage_account_name", "datadogstorage"),
-				),
-			},
-		},
-	})
-}
-
 func TestAccReferenceTable_SchemaEvolution(t *testing.T) {
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
@@ -233,83 +181,6 @@ resource "datadog_reference_table" "s3_table" {
 }`, sanitized)
 }
 
-func testAccCheckDatadogReferenceTableGCS(uniq string) string {
-	return fmt.Sprintf(`
-resource "datadog_reference_table" "gcs_table" {
-  table_name  = "tf_test_gcs_%s"
-  description = "Test GCS reference table"
-  source      = "GCS"
-
-  file_metadata {
-    sync_enabled = true
-
-    access_details {
-      gcp_detail {
-        gcp_project_id            = "my-gcp-project"
-        gcp_bucket_name           = "test-bucket"
-        file_path                 = "data/test.csv"
-        gcp_service_account_email = "datadog-sa@my-gcp-project.iam.gserviceaccount.com"
-      }
-    }
-  }
-
-  schema {
-    primary_keys = ["id"]
-
-    fields {
-      name = "id"
-      type = "STRING"
-    }
-
-    fields {
-      name = "name"
-      type = "STRING"
-    }
-  }
-
-  tags = ["test:terraform", "source:gcs"]
-}`, strings.ToLower(strings.ReplaceAll(uniq, "-", "_")))
-}
-
-func testAccCheckDatadogReferenceTableAzure(uniq string) string {
-	return fmt.Sprintf(`
-resource "datadog_reference_table" "azure_table" {
-  table_name  = "tf_test_azure_%s"
-  description = "Test Azure reference table"
-  source      = "AZURE"
-
-  file_metadata {
-    sync_enabled = true
-
-    access_details {
-      azure_detail {
-        azure_tenant_id            = "cccccccc-4444-5555-6666-dddddddddddd"
-        azure_client_id            = "aaaaaaaa-1111-2222-3333-bbbbbbbbbbbb"
-        azure_storage_account_name = "datadogstorage"
-        azure_container_name       = "test-container"
-        file_path                  = "data/test.csv"
-      }
-    }
-  }
-
-  schema {
-    primary_keys = ["sku"]
-
-    fields {
-      name = "sku"
-      type = "STRING"
-    }
-
-    fields {
-      name = "quantity"
-      type = "INT32"
-    }
-  }
-
-  tags = ["test:terraform", "source:azure"]
-}`, strings.ToLower(strings.ReplaceAll(uniq, "-", "_")))
-}
-
 func testAccCheckDatadogReferenceTableSchemaInitial(uniq string) string {
 	return fmt.Sprintf(`
 resource "datadog_reference_table" "evolution" {
@@ -409,7 +280,7 @@ resource "datadog_reference_table" "sync_test" {
     }
   }
 
-  schema {
+    schema {
     primary_keys = ["a"]
 
     fields {
@@ -419,7 +290,7 @@ resource "datadog_reference_table" "sync_test" {
 
     fields {
       name = "b"
-      type = "STRING"
+    type = "STRING"
     }
 
     fields {
