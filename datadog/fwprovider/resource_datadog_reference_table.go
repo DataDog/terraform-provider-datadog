@@ -460,11 +460,11 @@ func (r *referenceTableResource) updateState(ctx context.Context, state *referen
 					if syncEnabled, ok := unparsedMap["sync_enabled"].(bool); ok {
 						fileMetadataTf.SyncEnabled = types.BoolValue(syncEnabled)
 					}
-					
+
 					// Parse access_details
 					if accessDetailsMap, ok := accessDetails.(map[string]interface{}); ok {
 						accessDetailsTf := &accessDetailsModel{}
-						
+
 						// Check for AWS details
 						if awsDetail, ok := accessDetailsMap["aws_detail"].(map[string]interface{}); ok {
 							awsDetailTf := &awsDetailModel{}
@@ -479,7 +479,7 @@ func (r *referenceTableResource) updateState(ctx context.Context, state *referen
 							}
 							accessDetailsTf.AwsDetail = awsDetailTf
 						}
-						
+
 						// Check for GCP details
 						if gcpDetail, ok := accessDetailsMap["gcp_detail"].(map[string]interface{}); ok {
 							gcpDetailTf := &gcpDetailModel{}
@@ -497,7 +497,7 @@ func (r *referenceTableResource) updateState(ctx context.Context, state *referen
 							}
 							accessDetailsTf.GcpDetail = gcpDetailTf
 						}
-						
+
 						// Check for Azure details
 						if azureDetail, ok := accessDetailsMap["azure_detail"].(map[string]interface{}); ok {
 							azureDetailTf := &azureDetailModel{}
@@ -518,10 +518,10 @@ func (r *referenceTableResource) updateState(ctx context.Context, state *referen
 							}
 							accessDetailsTf.AzureDetail = azureDetailTf
 						}
-						
+
 						fileMetadataTf.AccessDetails = accessDetailsTf
 					}
-					
+
 					state.FileMetadata = fileMetadataTf
 					return // Skip the normal OneOf handling
 				}
