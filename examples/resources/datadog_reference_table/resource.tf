@@ -16,7 +16,7 @@ resource "datadog_reference_table" "s3_table" {
     }
   }
 
-  schema {
+    schema {
     primary_keys = ["product_id"]
 
     fields {
@@ -26,7 +26,7 @@ resource "datadog_reference_table" "s3_table" {
 
     fields {
       name = "product_name"
-      type = "STRING"
+    type = "STRING"
     }
 
     fields {
