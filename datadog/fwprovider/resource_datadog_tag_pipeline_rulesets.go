@@ -3,6 +3,7 @@ package fwprovider
 import (
 	"context"
 	"fmt"
+	"sort"
 	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
@@ -137,12 +138,18 @@ func (r *tagPipelineRulesetsResource) Read(ctx context.Context, request resource
 				missingIDs = append(missingIDs, id)
 			}
 		}
+		// Format missing IDs with more helpful context
+		var missingDetails []string
+		for _, id := range missingIDs {
+			missingDetails = append(missingDetails, fmt.Sprintf("• Ruleset ID: %s", id))
+		}
+		
 		response.Diagnostics.AddWarning(
 			"Managed rulesets deleted outside Terraform",
-			fmt.Sprintf("The following managed ruleset(s) no longer exist in Datadog: %v. "+
-				"They were deleted outside of Terraform. "+
-				"Apply to recreate missing rulesets.",
-				missingIDs),
+			fmt.Sprintf("The following %d managed ruleset(s) no longer exist in Datadog and were likely deleted outside of Terraform:\n\n%s\n\n"+
+				"These rulesets were managed by this Terraform configuration but are now missing from Datadog. "+
+				"Run 'terraform apply' to recreate them, or remove them from your configuration if they're no longer needed.",
+				len(missingIDs), strings.Join(missingDetails, "\n")),
 		)
 	}
 
@@ -361,13 +368,9 @@ func getRulesetsWithPositions(rulesets []datadogV2.RulesetRespData, managedIDsSe
 
 // sortRulesetsByPosition sorts rulesets by their position field (in-place)
 func sortRulesetsByPosition(rulesets []rulesetWithPosition) {
-	for i := 0; i < len(rulesets); i++ {
-		for j := i + 1; j < len(rulesets); j++ {
-			if rulesets[i].Position > rulesets[j].Position {
-				rulesets[i], rulesets[j] = rulesets[j], rulesets[i]
-			}
-		}
-	}
+	sort.SliceStable(rulesets, func(i, j int) bool {
+		return rulesets[i].Position < rulesets[j].Position
+	})
 }
 
 // findUnmanagedRulesets identifies unmanaged rulesets and checks if they are all at the end
@@ -383,20 +386,14 @@ func findUnmanagedRulesets(allRulesets []rulesetWithPosition, managedIDsSet map[
 	}
 
 	// Check if all unmanaged are at the end
+	// Since allRulesets is sorted by position, if unmanaged rulesets are all at the end,
+	// they should form a contiguous block. We only need to check if the first unmanaged
+	// ruleset starts at the expected position.
 	allAtEnd := false
 	if len(unmanagedRulesets) > 0 {
 		firstUnmanagedPos := unmanagedPositions[0]
 		expectedStartPos := len(allRulesets) - len(unmanagedRulesets)
-
 		allAtEnd = firstUnmanagedPos == expectedStartPos
-		if allAtEnd {
-			for i, pos := range unmanagedPositions {
-				if pos != expectedStartPos+i {
-					allAtEnd = false
-					break
-				}
-			}
-		}
 	}
 
 	return unmanagedRulesetInfo{
