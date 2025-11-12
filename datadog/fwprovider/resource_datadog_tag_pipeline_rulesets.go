@@ -143,7 +143,7 @@ func (r *tagPipelineRulesetsResource) Read(ctx context.Context, request resource
 		for _, id := range missingIDs {
 			missingDetails = append(missingDetails, fmt.Sprintf("• Ruleset ID: %s", id))
 		}
-		
+
 		response.Diagnostics.AddWarning(
 			"Managed rulesets deleted outside Terraform",
 			fmt.Sprintf("The following %d managed ruleset(s) no longer exist in Datadog and were likely deleted outside of Terraform:\n\n%s\n\n"+
