@@ -8260,8 +8260,59 @@ func getToplistRequestSchema() map[string]*schema.Schema {
 				Schema: getWidgetRequestStyle(),
 			},
 		},
+		"sort": getToplistRequestSortSchema(),
 	}
 }
+
+func getToplistRequestSortSchema() *schema.Schema {
+	return &schema.Schema{
+		Description: "The controls for sorting the widget.",
+		Type:        schema.TypeList,
+		Optional:    true,
+		MaxItems:    1,
+		Elem: &schema.Resource{
+			Schema: map[string]*schema.Schema{
+				"count": {
+					Description: "The number of items to limit the widget to.",
+					Type:        schema.TypeInt,
+					Optional:    true,
+				},
+				"order_by": {
+					Description: "The array of items to sort the widget by in order.",
+					Type:        schema.TypeList,
+					Optional:    true,
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"index": {
+								Description: "The index of the formula to sort by.",
+								Type:        schema.TypeInt,
+								Optional:    true,
+							},
+							"order": {
+								Description:      "Widget sorting methods. Allowed enum values: `asc`, `desc`",
+								Type:             schema.TypeString,
+								Required:         true,
+								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetSortFromValue),
+							},
+							"type": {
+								Description:      "Set the sort type to formula. Allowed enum values: `formula`",
+								Type:             schema.TypeString,
+								Required:         true,
+								ValidateDiagFunc: validators.ValidateStringEnumValue(datadogV1.FORMULATYPE_FORMULA, datadogV1.GROUPTYPE_GROUP),
+							},
+							"name": {
+								Description: "The name of the group.",
+								Type:        schema.TypeString,
+								Optional:    true,
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+}
+
 func buildDatadogToplistRequests(terraformRequests *[]interface{}) *[]datadogV1.ToplistWidgetRequest {
 	datadogRequests := make([]datadogV1.ToplistWidgetRequest, len(*terraformRequests))
 	for i, r := range *terraformRequests {
@@ -8329,10 +8380,49 @@ func buildDatadogToplistRequests(terraformRequests *[]interface{}) *[]datadogV1.
 				datadogToplistRequest.Style = buildDatadogWidgetRequestStyle(v)
 			}
 		}
+
+		if v, ok := terraformRequest["sort"].([]interface{}); ok && len(v) > 0 {
+			sort := v[0].(map[string]interface{})
+			datadogToplistRequest.Sort = buildDatadogToplistSortBy(sort)
+		}
 		datadogRequests[i] = *datadogToplistRequest
 	}
 	return &datadogRequests
 }
+
+func buildDatadogToplistSortBy(terraformSort map[string]interface{}) *datadogV1.WidgetSortBy {
+	datadogSortBy := datadogV1.NewWidgetSortBy()
+
+	if count, ok := terraformSort["count"].(int); ok {
+		datadogSortBy.SetCount(int64(count))
+	}
+
+	if orderByList, ok := terraformSort["order_by"].([]interface{}); ok && len(orderByList) > 0 {
+		orderBy := make([]datadogV1.WidgetSortOrderBy, len(orderByList))
+
+		for i, item := range orderByList {
+			itemMap := item.(map[string]interface{})
+			order := itemMap["order"].(string)
+			widgetSortOrder := datadogV1.WidgetSort(order)
+			sortType := itemMap["type"].(string)
+
+			if sortType == string(datadogV1.FORMULATYPE_FORMULA) {
+				index := int64(itemMap["index"].(int))
+				formula := datadogV1.NewWidgetFormulaSort(index, widgetSortOrder, datadogV1.FORMULATYPE_FORMULA)
+				orderBy[i] = datadogV1.WidgetFormulaSortAsWidgetSortOrderBy(formula)
+			} else if sortType == string(datadogV1.GROUPTYPE_GROUP) {
+				name := itemMap["name"].(string)
+				group := datadogV1.NewWidgetGroupSort(name, widgetSortOrder, datadogV1.GROUPTYPE_GROUP)
+				orderBy[i] = datadogV1.WidgetGroupSortAsWidgetSortOrderBy(group)
+			}
+		}
+
+		datadogSortBy.SetOrderBy(orderBy)
+	}
+
+	return datadogSortBy
+}
+
 func buildTerraformToplistRequests(datadogToplistRequests *[]datadogV1.ToplistWidgetRequest) *[]map[string]interface{} {
 	terraformRequests := make([]map[string]interface{}, len(*datadogToplistRequests))
 	for i, datadogRequest := range *datadogToplistRequests {
@@ -8373,9 +8463,49 @@ func buildTerraformToplistRequests(datadogToplistRequests *[]datadogV1.ToplistWi
 			style := buildTerraformWidgetRequestStyle(*v)
 			terraformRequest["style"] = []map[string]interface{}{style}
 		}
+		if v, ok := datadogRequest.GetSortOk(); ok {
+			sort := buildTerraformToplistWidgetSort(*v)
+			terraformRequest["sort"] = []map[string]interface{}{sort}
+		}
 		terraformRequests[i] = terraformRequest
 	}
 	return &terraformRequests
+}
+
+func buildTerraformToplistWidgetSort(datadogSort datadogV1.WidgetSortBy) map[string]interface{} {
+	terraformSort := make(map[string]interface{})
+
+	if count, ok := datadogSort.GetCountOk(); ok {
+		terraformSort["count"] = int(*count)
+	}
+
+	if orderByList, ok := datadogSort.GetOrderByOk(); ok && len(*orderByList) > 0 {
+		terraformOrderBy := make([]map[string]interface{}, len(*orderByList))
+
+		for i, item := range *orderByList {
+			orderByItem := make(map[string]interface{})
+
+			if formula := item.WidgetFormulaSort; formula != nil {
+				orderByItem["type"] = string(formula.GetType())
+				orderByItem["order"] = string(formula.GetOrder())
+				if index, ok := formula.GetIndexOk(); ok {
+					orderByItem["index"] = int(*index)
+				}
+			} else if group := item.WidgetGroupSort; group != nil {
+				orderByItem["type"] = string(group.GetType())
+				orderByItem["order"] = string(group.GetOrder())
+				if name, ok := group.GetNameOk(); ok {
+					orderByItem["name"] = *name
+				}
+			}
+
+			terraformOrderBy[i] = orderByItem
+		}
+
+		terraformSort["order_by"] = terraformOrderBy
+	}
+
+	return terraformSort
 }
 
 func buildTerraformToplistWidgetStyle(datadogToplistStyle *datadogV1.ToplistWidgetStyle) *[]map[string]interface{} {
