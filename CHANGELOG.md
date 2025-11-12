@@ -1,3 +1,17 @@
+## 3.80.0 (November 12, 2025)
+
+### BUGFIXES
+* [datadog_software_catalog] Allow backstage imports in software_catalog resource by @christinexlee in https://github.com/DataDog/terraform-provider-datadog/pull/3319
+* [datadog_monitor] Make cloud cost query `aggregator` field required by @fpighi in https://github.com/DataDog/terraform-provider-datadog/pull/3318
+### FEATURES
+* [datadog_agentless_scanning_gcp_scan_options] Add Terraform provider for GCP scan options by @mohamed-challal in https://github.com/DataDog/terraform-provider-datadog/pull/3321
+* [datadog_integration_gcp_sts] Add granular namespace filters to GCP V2 Terraform Provider by @ash-ddog in https://github.com/DataDog/terraform-provider-datadog/pull/3299
+
+## New Contributors
+* @mohamed-challal made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3321
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.79.0...v3.80.0
+
 ## 3.79.0 (November 3, 2025)
 
 ### BUGFIXES
