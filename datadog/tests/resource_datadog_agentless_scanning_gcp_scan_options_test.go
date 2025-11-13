@@ -125,24 +125,9 @@ func testAccCheckDatadogAgentlessScanningGcpScanOptionsExists(accProvider *fwpro
 				continue
 			}
 
-			projectID := r.Primary.ID
-
-			// Check if the resource exists by listing all scan options and finding this one
-			gcpScanOptionsListResponse, _, err := apiInstances.GetAgentlessScanningApiV2().ListGcpScanOptions(auth)
+			_, _, err := apiInstances.GetAgentlessScanningApiV2().GetGcpScanOptions(auth, r.Primary.ID)
 			if err != nil {
 				return fmt.Errorf("received an error retrieving agentless scanning gcp scan options: %s", err)
-			}
-
-			found := false
-			for _, scanOption := range gcpScanOptionsListResponse.GetData() {
-				if scanOption.GetId() == projectID {
-					found = true
-					break
-				}
-			}
-
-			if !found {
-				return fmt.Errorf("agentless scanning gcp scan options %s not found", projectID)
 			}
 		}
 		return nil
@@ -161,18 +146,13 @@ func testAccCheckDatadogAgentlessScanningGcpScanOptionsDestroy(accProvider *fwpr
 
 			projectID := r.Primary.ID
 
-			// Check if the resource still exists by listing all scan options
-			gcpScanOptionsListResponse, _, err := apiInstances.GetAgentlessScanningApiV2().ListGcpScanOptions(auth)
+			_, _, err := apiInstances.GetAgentlessScanningApiV2().GetGcpScanOptions(auth, r.Primary.ID)
 			if err != nil {
 				// If we get an error, assume the resource is gone
 				continue
 			}
 
-			for _, scanOption := range gcpScanOptionsListResponse.GetData() {
-				if scanOption.GetId() == projectID {
-					return fmt.Errorf("agentless scanning gcp scan options %s still exists", projectID)
-				}
-			}
+			return fmt.Errorf("agentless scanning gcp scan options %s still exists", projectID)
 		}
 		return nil
 	}
