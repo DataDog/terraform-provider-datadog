@@ -3,6 +3,8 @@ package fwprovider
 import (
 	"context"
 	"fmt"
+	"sort"
+	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -17,6 +19,7 @@ import (
 var (
 	_ resource.ResourceWithConfigure   = &tagPipelineRulesetsResource{}
 	_ resource.ResourceWithImportState = &tagPipelineRulesetsResource{}
+	_ resource.ResourceWithModifyPlan  = &tagPipelineRulesetsResource{}
 )
 
 func NewTagPipelineRulesetsResource() resource.Resource {
@@ -24,8 +27,9 @@ func NewTagPipelineRulesetsResource() resource.Resource {
 }
 
 type tagPipelineRulesetsModel struct {
-	ID         types.String `tfsdk:"id"`
-	RulesetIDs types.List   `tfsdk:"ruleset_ids"`
+	ID                         types.String `tfsdk:"id"`
+	RulesetIDs                 types.List   `tfsdk:"ruleset_ids"`
+	OverrideUIDefinedResources types.Bool   `tfsdk:"override_ui_defined_resources"`
 }
 
 type tagPipelineRulesetsResource struct {
@@ -51,6 +55,10 @@ func (r *tagPipelineRulesetsResource) Schema(_ context.Context, _ resource.Schem
 				Description: "The list of Tag Pipeline Ruleset IDs, in order. Rulesets are executed in the order specified in this list.",
 				ElementType: types.StringType,
 				Required:    true,
+			},
+			"override_ui_defined_resources": schema.BoolAttribute{
+				Description: "Whether to override UI-defined rulesets. When set to true, any rulesets created via the UI that are not defined in Terraform will be deleted and Terraform will be used as the source of truth for rules and their ordering. When set to false, any rulesets created via the UI that are at the end of order will be kept but will be warned, otherwise an error will be thrown in terraform plan phase. Default is false",
+				Optional:    true,
 			},
 			// Resource ID
 			"id": utils.ResourceIDAttribute(),
@@ -78,6 +86,19 @@ func (r *tagPipelineRulesetsResource) Read(ctx context.Context, request resource
 		return
 	}
 
+	// Create a map for quick lookup of managed IDs
+	managedIDsSet := make(map[string]bool)
+	for _, tfID := range state.RulesetIDs.Elements() {
+		rulesetID := tfID.(types.String).ValueString()
+		managedIDsSet[rulesetID] = true
+	}
+
+	// Check override setting to determine how to build state
+	override := false
+	if !state.OverrideUIDefinedResources.IsNull() {
+		override = state.OverrideUIDefinedResources.ValueBool()
+	}
+
 	// Get the current list of rulesets to read their order
 	resp, httpResponse, err := r.Api.ListTagPipelinesRulesets(r.Auth)
 	if err != nil {
@@ -90,39 +111,52 @@ func (r *tagPipelineRulesetsResource) Read(ctx context.Context, request resource
 		rulesets = *respData
 	}
 
-	// Create a slice of structs to sort by position
-	type rulesetWithPosition struct {
-		id       string
-		position int32
-	}
+	// Get rulesets with positions
+	// During import (managedIDsSet is empty): get ALL rulesets
+	// When override=false: only managed rulesets
+	// When override=true: ALL rulesets (so Terraform can detect difference and trigger Update to delete unmanaged)
+	isImport := len(managedIDsSet) == 0
+	rulesetPositions := getRulesetsWithPositions(rulesets, managedIDsSet, !override && !isImport)
 
-	rulesetPositions := make([]rulesetWithPosition, 0, len(rulesets))
-	for _, ruleset := range rulesets {
-		if rulesetID, ok := ruleset.GetIdOk(); ok {
-			position := int32(0)
-			if rulesetAttrs, ok := ruleset.GetAttributesOk(); ok {
-				position = rulesetAttrs.GetPosition()
-			}
-			rulesetPositions = append(rulesetPositions, rulesetWithPosition{
-				id:       *rulesetID,
-				position: position,
-			})
+	// Verify all managed rulesets still exist
+	managedCount := 0
+	for _, rp := range rulesetPositions {
+		if managedIDsSet[rp.ID] {
+			managedCount++
 		}
 	}
 
-	// Sort by position
-	for i := 0; i < len(rulesetPositions); i++ {
-		for j := i + 1; j < len(rulesetPositions); j++ {
-			if rulesetPositions[i].position > rulesetPositions[j].position {
-				rulesetPositions[i], rulesetPositions[j] = rulesetPositions[j], rulesetPositions[i]
+	if managedCount != len(managedIDsSet) {
+		// Some managed rulesets were deleted
+		missingIDs := []string{}
+		foundIDs := make(map[string]bool)
+		for _, rp := range rulesetPositions {
+			foundIDs[rp.ID] = true
+		}
+		for id := range managedIDsSet {
+			if !foundIDs[id] {
+				missingIDs = append(missingIDs, id)
 			}
 		}
+		// Format missing IDs with more helpful context
+		var missingDetails []string
+		for _, id := range missingIDs {
+			missingDetails = append(missingDetails, fmt.Sprintf("• Ruleset ID: %s", id))
+		}
+
+		response.Diagnostics.AddWarning(
+			"Managed rulesets deleted outside Terraform",
+			fmt.Sprintf("The following %d managed ruleset(s) no longer exist in Datadog and were likely deleted outside of Terraform:\n\n%s\n\n"+
+				"These rulesets were managed by this Terraform configuration but are now missing from Datadog. "+
+				"Run 'terraform apply' to recreate them, or remove them from your configuration if they're no longer needed.",
+				len(missingIDs), strings.Join(missingDetails, "\n")),
+		)
 	}
 
 	// Extract ordered IDs
 	orderedList := make([]string, 0, len(rulesetPositions))
 	for _, rp := range rulesetPositions {
-		orderedList = append(orderedList, rp.id)
+		orderedList = append(orderedList, rp.ID)
 	}
 
 	state.RulesetIDs, _ = types.ListValueFrom(ctx, types.StringType, orderedList)
@@ -150,8 +184,244 @@ func (r *tagPipelineRulesetsResource) Delete(ctx context.Context, request resour
 	// This follows the same pattern as other order resources in the provider
 }
 
+func (r *tagPipelineRulesetsResource) ModifyPlan(ctx context.Context, request resource.ModifyPlanRequest, response *resource.ModifyPlanResponse) {
+	// Show plan warnings during create/update operations
+	if request.State.Raw.IsNull() || request.Plan.Raw.IsNull() {
+		return
+	}
+
+	var plan tagPipelineRulesetsModel
+	response.Diagnostics.Append(request.Plan.Get(ctx, &plan)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	// Check if override is enabled
+	override := false
+	if !plan.OverrideUIDefinedResources.IsNull() {
+		override = plan.OverrideUIDefinedResources.ValueBool()
+	}
+
+	// Get all existing rulesets to check for unmanaged ones
+	resp, httpResponse, err := r.Api.ListTagPipelinesRulesets(r.Auth)
+	if err != nil {
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, fmt.Sprintf("error listing tag pipeline rulesets during plan: %v", httpResponse)))
+		return
+	}
+
+	var existingRulesets []datadogV2.RulesetRespData
+	if respData, ok := resp.GetDataOk(); ok {
+		existingRulesets = *respData
+	}
+
+	// Create a map of desired IDs for checking unmanaged rulesets
+	desiredIDsSet := make(map[string]bool)
+	for _, tfID := range plan.RulesetIDs.Elements() {
+		rulesetID := tfID.(types.String).ValueString()
+		desiredIDsSet[rulesetID] = true
+	}
+
+	// Get all rulesets with positions sorted
+	allRulesetPositions := getRulesetsWithPositions(existingRulesets, desiredIDsSet, false)
+
+	// Find unmanaged rulesets
+	unmanagedInfo := findUnmanagedRulesets(allRulesetPositions, desiredIDsSet)
+
+	if len(unmanagedInfo.Rulesets) > 0 {
+		// Format the list nicely
+		unmanagedDetails := formatUnmanagedDetails(unmanagedInfo.Rulesets, false)
+		detailsList := "  • " + strings.Join(unmanagedDetails, "\n  • ") + "\n"
+
+		if override {
+			// With override=true, warn about deletion (unmanaged can be anywhere)
+			response.Diagnostics.AddWarning(
+				"UI-defined rulesets will be deleted",
+				fmt.Sprintf("The following %d ruleset(s) will be deleted because override_ui_defined_resources is set to true:\n\n%s\n"+
+					"These rulesets exist in Datadog but are not defined in your Terraform configuration. "+
+					"When you run 'terraform apply', they will be permanently deleted.",
+					len(unmanagedInfo.Rulesets),
+					detailsList),
+			)
+		} else {
+			// With override=false, need to check position constraints
+			if !unmanagedInfo.AllAtEnd {
+				// Unmanaged in middle - ERROR
+				response.Diagnostics.AddError(
+					"Unmanaged rulesets detected in the middle of order",
+					fmt.Sprintf("Found %d rulesets in Datadog that are not managed by this Terraform configuration and are not at the end of the order.\n\n"+
+						"Current order: %v\n"+
+						"Unmanaged rulesets: %v at positions: %v\n\n"+
+						"To fix this, either:\n"+
+						"1. Set override_ui_defined_resources=true to automatically delete unmanaged rulesets\n"+
+						"2. Import the unmanaged rulesets into Terraform\n"+
+						"3. Manually reorder or delete the unmanaged rulesets in Datadog UI",
+						len(unmanagedInfo.Rulesets),
+						allRulesetPositions, unmanagedInfo.Rulesets, unmanagedInfo.Positions),
+				)
+			} else {
+				// Unmanaged at end - WARNING
+				response.Diagnostics.AddWarning(
+					"Unmanaged rulesets detected at the end of order",
+					fmt.Sprintf("Found %d unmanaged ruleset(s) at the end of the order:\n\n%s\n"+
+						"These rulesets are not managed by Terraform. Consider:\n"+
+						"1. Importing them: terraform import datadog_tag_pipeline_ruleset.<name> <ruleset_id>\n"+
+						"2. Deleting them from Datadog if not needed\n"+
+						"3. Setting override_ui_defined_resources=true to automatically delete them",
+						len(unmanagedInfo.Rulesets),
+						detailsList),
+				)
+			}
+		}
+	}
+}
+
 func (r *tagPipelineRulesetsResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, frameworkPath.Root("id"), request, response)
+}
+
+// rulesetWithPosition is a helper struct to track ruleset ID, position, and name
+type rulesetWithPosition struct {
+	ID       string `json:"id"`
+	Position int32  `json:"position"`
+	Name     string `json:"name"`
+}
+
+// unmanagedRulesetInfo contains information about unmanaged rulesets and their positions
+type unmanagedRulesetInfo struct {
+	Rulesets  []rulesetWithPosition
+	Positions []int
+	AllAtEnd  bool
+}
+
+// extractRulesetFields extracts ID, name, and position from a ruleset
+func extractRulesetFields(ruleset datadogV2.RulesetRespData) (id string, name string, position int32, ok bool) {
+	// Try normal fields first
+	if rulesetID, idOk := ruleset.GetIdOk(); idOk && rulesetID != nil && *rulesetID != "" {
+		id = *rulesetID
+		ok = true
+		if attrs, attrsOk := ruleset.GetAttributesOk(); attrsOk {
+			name = attrs.GetName()
+			position = attrs.GetPosition()
+		}
+		return
+	}
+
+	// Fallback to UnparsedObject
+	if ruleset.UnparsedObject == nil {
+		return
+	}
+
+	if idVal, idOk := ruleset.UnparsedObject["id"].(string); idOk && idVal != "" {
+		id = idVal
+		ok = true
+	}
+
+	if attributesRaw, attrsOk := ruleset.UnparsedObject["attributes"].(map[string]interface{}); attrsOk {
+		if nameVal, nameOk := attributesRaw["name"].(string); nameOk {
+			name = nameVal
+		}
+
+		// Handle various numeric types for position
+		switch v := attributesRaw["position"].(type) {
+		case float64:
+			position = int32(v)
+		case int:
+			position = int32(v)
+		case int32:
+			position = v
+		case int64:
+			position = int32(v)
+		}
+	}
+
+	return
+}
+
+// getRulesetsWithPositions extracts all rulesets with their positions and sorts them by position
+// If managedOnly is true, only include rulesets in the managedIDsSet
+func getRulesetsWithPositions(rulesets []datadogV2.RulesetRespData, managedIDsSet map[string]bool, managedOnly bool) []rulesetWithPosition {
+	result := make([]rulesetWithPosition, 0, len(rulesets))
+
+	for _, ruleset := range rulesets {
+		rulesetID, name, position, ok := extractRulesetFields(ruleset)
+		if !ok {
+			continue
+		}
+
+		// Skip unmanaged if managedOnly is true
+		if managedOnly && !managedIDsSet[rulesetID] {
+			continue
+		}
+
+		result = append(result, rulesetWithPosition{
+			ID:       rulesetID,
+			Position: position,
+			Name:     name,
+		})
+	}
+
+	// Sort by position
+	sortRulesetsByPosition(result)
+
+	return result
+}
+
+// sortRulesetsByPosition sorts rulesets by their position field (in-place)
+func sortRulesetsByPosition(rulesets []rulesetWithPosition) {
+	sort.SliceStable(rulesets, func(i, j int) bool {
+		return rulesets[i].Position < rulesets[j].Position
+	})
+}
+
+// findUnmanagedRulesets identifies unmanaged rulesets and checks if they are all at the end
+func findUnmanagedRulesets(allRulesets []rulesetWithPosition, managedIDsSet map[string]bool) unmanagedRulesetInfo {
+	var unmanagedRulesets []rulesetWithPosition
+	unmanagedPositions := make([]int, 0)
+
+	for i, rp := range allRulesets {
+		if !managedIDsSet[rp.ID] {
+			unmanagedRulesets = append(unmanagedRulesets, rp)
+			unmanagedPositions = append(unmanagedPositions, i)
+		}
+	}
+
+	// Check if all unmanaged are at the end
+	// Since allRulesets is sorted by position, if unmanaged rulesets are all at the end,
+	// they should form a contiguous block. We only need to check if the first unmanaged
+	// ruleset starts at the expected position.
+	allAtEnd := false
+	if len(unmanagedRulesets) > 0 {
+		firstUnmanagedPos := unmanagedPositions[0]
+		expectedStartPos := len(allRulesets) - len(unmanagedRulesets)
+		allAtEnd = firstUnmanagedPos == expectedStartPos
+	}
+
+	return unmanagedRulesetInfo{
+		Rulesets:  unmanagedRulesets,
+		Positions: unmanagedPositions,
+		AllAtEnd:  allAtEnd,
+	}
+}
+
+// formatUnmanagedDetails creates a formatted list of unmanaged rulesets for display
+func formatUnmanagedDetails(unmanagedRulesets []rulesetWithPosition, includePosition bool) []string {
+	details := make([]string, 0, len(unmanagedRulesets))
+	for _, urs := range unmanagedRulesets {
+		if urs.Name != "" {
+			if includePosition {
+				details = append(details, fmt.Sprintf("'%s' (ID: %s, Position: %d)", urs.Name, urs.ID, urs.Position))
+			} else {
+				details = append(details, fmt.Sprintf("'%s' (%s)", urs.Name, urs.ID))
+			}
+		} else {
+			if includePosition {
+				details = append(details, fmt.Sprintf("ID: %s (Position: %d)", urs.ID, urs.Position))
+			} else {
+				details = append(details, urs.ID)
+			}
+		}
+	}
+	return details
 }
 
 func (r *tagPipelineRulesetsResource) updateOrder(state *tagPipelineRulesetsModel, diag *diag.Diagnostics) {
@@ -165,13 +435,21 @@ func (r *tagPipelineRulesetsResource) updateOrder(state *tagPipelineRulesetsMode
 		desiredRulesetIDs = append(desiredRulesetIDs, rulesetID)
 	}
 
-	// Strict validation: only allow reordering if ALL existing rulesets are managed by Terraform
-	// This ensures complete infrastructure control and prevents configuration drift
-	r.updateOrderWithAllRulesets(state, diag, desiredRulesetIDs)
+	// Check override parameter - default to false for current behavior
+	override := false
+	if !state.OverrideUIDefinedResources.IsNull() {
+		override = state.OverrideUIDefinedResources.ValueBool()
+	}
+
+	if override {
+		r.updateOrderWithDeletion(state, diag, desiredRulesetIDs)
+	} else {
+		r.updateOrderWithAllRulesets(state, diag, desiredRulesetIDs)
+	}
 }
 
-// Validates that all existing rulesets are managed by Terraform before reordering
-func (r *tagPipelineRulesetsResource) updateOrderWithAllRulesets(state *tagPipelineRulesetsModel, diag *diag.Diagnostics, desiredOrder []string) {
+// Deletes unmanaged rulesets and reorders remaining ones when override is enabled
+func (r *tagPipelineRulesetsResource) updateOrderWithDeletion(state *tagPipelineRulesetsModel, diag *diag.Diagnostics, desiredOrder []string) {
 	// Get all existing rulesets
 	resp, httpResponse, err := r.Api.ListTagPipelinesRulesets(r.Auth)
 	if err != nil {
@@ -186,9 +464,14 @@ func (r *tagPipelineRulesetsResource) updateOrderWithAllRulesets(state *tagPipel
 
 	// Create a map of existing ruleset IDs for validation
 	existingIDs := make(map[string]bool)
+	var existingIDList []string
+
+	// Extract IDs from all rulesets, handling UnparsedObject for problematic rulesets
 	for _, ruleset := range existingRulesets {
-		if rulesetID, ok := ruleset.GetIdOk(); ok {
-			existingIDs[*rulesetID] = true
+		rulesetID, _, _, ok := extractRulesetFields(ruleset)
+		if ok {
+			existingIDs[rulesetID] = true
+			existingIDList = append(existingIDList, rulesetID)
 		}
 	}
 
@@ -206,74 +489,144 @@ func (r *tagPipelineRulesetsResource) updateOrderWithAllRulesets(state *tagPipel
 		desiredIDsSet[id] = true
 	}
 
-	// Strict validation: Check if there are unmanaged rulesets
-	if len(existingRulesets) != len(desiredOrder) {
-		// Find unmanaged rulesets
-		unmanagedRulesets := make([]string, 0)
-
-		for _, ruleset := range existingRulesets {
-			if rulesetID, ok := ruleset.GetIdOk(); ok {
-				if !desiredIDsSet[*rulesetID] {
-					unmanagedRulesets = append(unmanagedRulesets, *rulesetID)
-				}
-			}
+	// Find and delete unmanaged rulesets
+	var unmanagedRulesets []string
+	for _, ruleset := range existingRulesets {
+		rulesetID, _, _, ok := extractRulesetFields(ruleset)
+		if !ok {
+			continue
 		}
 
-		diag.AddError(
-			"Unmanaged rulesets detected",
-			fmt.Sprintf("Found %d rulesets in Datadog that are not managed by this Terraform configuration: %v. "+
-				"All rulesets must be managed by Terraform. Please either:\n"+
-				"1. Import existing rulesets using 'terraform import datadog_tag_pipeline_ruleset.<name> <ruleset_id>'\n"+
-				"2. Add the missing rulesets to your Terraform configuration\n"+
-				"3. Delete unmanaged rulesets from Datadog if they're no longer needed\n\n"+
-				"This ensures complete infrastructure control and prevents configuration drift.",
-				len(unmanagedRulesets), unmanagedRulesets),
-		)
+		if !desiredIDsSet[rulesetID] {
+			unmanagedRulesets = append(unmanagedRulesets, rulesetID)
+		}
+	}
+
+	// Delete unmanaged rulesets
+	for _, rulesetID := range unmanagedRulesets {
+		httpResp, err := r.Api.DeleteTagPipelinesRuleset(r.Auth, rulesetID)
+		if err != nil {
+			if httpResp != nil && httpResp.StatusCode == 404 {
+				// Resource already deleted - continue
+				continue
+			}
+			diag.Append(utils.FrameworkErrorDiag(err, fmt.Sprintf("error deleting unmanaged ruleset %s: %v", rulesetID, httpResp)))
+			return
+		}
+	}
+
+	// Now reorder the remaining rulesets
+	rulesetData := make([]datadogV2.ReorderRulesetResourceData, len(desiredOrder))
+	for i, rulesetID := range desiredOrder {
+		rulesetData[i] = datadogV2.ReorderRulesetResourceData{
+			Id:   &rulesetID,
+			Type: datadogV2.REORDERRULESETRESOURCEDATATYPE_RULESET,
+		}
+	}
+
+	reorderRequest := datadogV2.ReorderRulesetResourceArray{
+		Data: rulesetData,
+	}
+
+	httpResponse, err = r.Api.ReorderTagPipelinesRulesets(r.Auth, reorderRequest)
+	if err != nil {
+		diag.Append(utils.FrameworkErrorDiag(err, fmt.Sprintf("error reordering tag pipeline rulesets: %v", httpResponse)))
+		return
+	}
+}
+
+func (r *tagPipelineRulesetsResource) updateOrderWithAllRulesets(state *tagPipelineRulesetsModel, diag *diag.Diagnostics, desiredOrder []string) {
+	// Get all existing rulesets
+	resp, httpResponse, err := r.Api.ListTagPipelinesRulesets(r.Auth)
+	if err != nil {
+		diag.Append(utils.FrameworkErrorDiag(err, fmt.Sprintf("error listing tag pipeline rulesets: %v", httpResponse)))
 		return
 	}
 
-	// Create a slice of structs to sort by current position
-	type rulesetWithPosition struct {
-		id       string
-		position int32
+	var existingRulesets []datadogV2.RulesetRespData
+	if respData, ok := resp.GetDataOk(); ok {
+		existingRulesets = *respData
 	}
 
-	rulesetPositions := make([]rulesetWithPosition, 0, len(existingRulesets))
-	for _, ruleset := range existingRulesets {
-		if rulesetID, ok := ruleset.GetIdOk(); ok {
-			position := int32(0)
-			if rulesetAttrs, ok := ruleset.GetAttributesOk(); ok {
-				position = rulesetAttrs.GetPosition()
-			}
-			rulesetPositions = append(rulesetPositions, rulesetWithPosition{
-				id:       *rulesetID,
-				position: position,
-			})
+	// Create a map of desired IDs for quick lookup
+	desiredIDsSet := make(map[string]bool)
+	for _, id := range desiredOrder {
+		desiredIDsSet[id] = true
+	}
+
+	// Get all rulesets with positions (sorted)
+	rulesetPositions := getRulesetsWithPositions(existingRulesets, desiredIDsSet, false)
+
+	// Validate desired rulesets exist
+	existingIDs := make(map[string]bool)
+	for _, rp := range rulesetPositions {
+		existingIDs[rp.ID] = true
+	}
+
+	for _, rulesetID := range desiredOrder {
+		if !existingIDs[rulesetID] {
+			diag.AddError("Invalid ruleset ID", fmt.Sprintf("ruleset ID %s does not exist", rulesetID))
+			return
 		}
 	}
 
-	// Sort by position to get current order
-	for i := 0; i < len(rulesetPositions); i++ {
-		for j := i + 1; j < len(rulesetPositions); j++ {
-			if rulesetPositions[i].position > rulesetPositions[j].position {
-				rulesetPositions[i], rulesetPositions[j] = rulesetPositions[j], rulesetPositions[i]
+	// Check if there are unmanaged rulesets in the middle of the order
+	if len(existingRulesets) > len(desiredOrder) {
+		// Find unmanaged rulesets and check positions
+		unmanagedInfo := findUnmanagedRulesets(rulesetPositions, desiredIDsSet)
+
+		if len(unmanagedInfo.Rulesets) > 0 {
+			if !unmanagedInfo.AllAtEnd {
+				diag.AddError(
+					"Unmanaged rulesets detected in the middle of order",
+					fmt.Sprintf("Found %d rulesets in Datadog that are not managed by this Terraform configuration and are not all at the end of the order: %v. "+
+						"Unmanaged rulesets must be at the end of the order to allow reordering. Please either:\n"+
+						"1. Add the unmanaged rulesets to your Terraform configuration and import them using 'terraform import datadog_tag_pipeline_ruleset.<name> <ruleset_id>'\n"+
+						"2. Delete unmanaged rulesets from Datadog if they're no longer needed\n"+
+						"3. Set override_ui_defined_resources=true to automatically delete unmanaged rulesets\n"+
+						"4. Manually reorder the rulesets in Datadog UI so all unmanaged rulesets are at the end\n\n"+
+						"Current order positions: %v\n"+
+						"Unmanaged rulesets: %v at positions: %v\n"+
+						"Expected position for unmanaged rulesets to start: %d",
+						len(unmanagedInfo.Rulesets), unmanagedInfo.Rulesets,
+						rulesetPositions, unmanagedInfo.Rulesets, unmanagedInfo.Positions, len(rulesetPositions)-len(unmanagedInfo.Rulesets)),
+				)
+				return
 			}
+
+			// Warning: Notify user about unmanaged rulesets even though they're at the end
+			unmanagedDetails := formatUnmanagedDetails(unmanagedInfo.Rulesets, true)
+
+			diag.AddWarning(
+				"Unmanaged rulesets detected",
+				fmt.Sprintf("Found %d ruleset(s) in Datadog that are not managed by this Terraform configuration:\n\n"+
+					"%s\n\n"+
+					"These rulesets are currently at the end of the order, so they won't block this operation. However, "+
+					"to ensure complete infrastructure management and prevent configuration drift, consider:\n"+
+					"1. Importing them into Terraform: 'terraform import datadog_tag_pipeline_ruleset.<name> <ruleset_id>'\n"+
+					"2. Deleting them from Datadog if they're no longer needed\n"+
+					"3. Setting override_ui_defined_resources=true to automatically delete unmanaged rulesets\n\n"+
+					"Your managed rulesets will be placed first, followed by these unmanaged rulesets.",
+					len(unmanagedInfo.Rulesets),
+					"  • "+strings.Join(unmanagedDetails, "\n  • ")),
+			)
 		}
 	}
 
-	// Create final order: desired order first, then remaining rulesets in their current order
+	// Create final order: desired rulesets first, then remaining rulesets in their current order
 	finalOrder := make([]string, 0, len(rulesetPositions))
 
-	// Add desired rulesets in specified order
+	// Add desired rulesets in the specified order
 	finalOrder = append(finalOrder, desiredOrder...)
 
-	// Add remaining rulesets in their current order
+	// Add remaining unmanaged rulesets in their current order
 	for _, rp := range rulesetPositions {
-		if !desiredIDsSet[rp.id] {
-			finalOrder = append(finalOrder, rp.id)
+		if !desiredIDsSet[rp.ID] {
+			finalOrder = append(finalOrder, rp.ID)
 		}
 	}
 
+	// Build reorder request with ALL rulesets
 	rulesetData := make([]datadogV2.ReorderRulesetResourceData, len(finalOrder))
 	for i, rulesetID := range finalOrder {
 		rulesetData[i] = datadogV2.ReorderRulesetResourceData{
