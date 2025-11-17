@@ -29,6 +29,12 @@ func dataSourceDatadogUser() *schema.Resource {
 					Default:     false,
 					Optional:    true,
 				},
+				"exclude_service_accounts": {
+					Description: "When true, service accounts are excluded from the result.",
+					Type:        schema.TypeBool,
+					Default:     false,
+					Optional:    true,
+				},
 				// Computed values
 				"created_at": {
 					Description: "The time when the user was created (RFC3339 format).",
@@ -101,6 +107,7 @@ func dataSourceDatadogUserRead(ctx context.Context, d *schema.ResourceData, meta
 	auth := providerConf.Auth
 	filter := d.Get("filter").(string) // string | Filter all users by the given string. Defaults to no filtering. (optional) // string | Filter on status attribute. Comma separated list, with possible values `Active`, `Pending`, and `Disabled`. Defaults to no filtering. (optional)
 	exactMatch := d.Get("exact_match").(bool)
+	excludeServiceAccounts := d.Get("exclude_service_accounts").(bool)
 	optionalParams := datadogV2.ListUsersOptionalParameters{
 		Filter: &filter,
 	}
@@ -111,12 +118,25 @@ func dataSourceDatadogUserRead(ctx context.Context, d *schema.ResourceData, meta
 	}
 
 	users := res.GetData()
+	errorPrefix := ""
+	if excludeServiceAccounts {
+		errorPrefix = "after excluding service accounts, "
+		filteredUsers := make([]datadogV2.User, 0)
+		for _, user := range users {
+			if !user.Attributes.GetServiceAccount() {
+				filteredUsers = append(filteredUsers, user)
+			}
+		}
+		users = filteredUsers
+	}
+
 	if len(users) > 1 && !exactMatch {
-		return diag.Errorf("your query returned more than one result for filter \"%s\", please try a more specific search criteria",
+		return diag.Errorf("%syour query returned more than one result for filter \"%s\", please try a more specific search criteria",
+			errorPrefix,
 			filter,
 		)
 	} else if len(users) == 0 {
-		return diag.Errorf("didn't find any user matching filter string  \"%s\"", filter)
+		return diag.Errorf("%sdidn't find any user matching filter string \"%s\"", errorPrefix, filter)
 	}
 
 	matchedUser := users[0]
@@ -135,12 +155,13 @@ func dataSourceDatadogUserRead(ctx context.Context, d *schema.ResourceData, meta
 			}
 		}
 		if matchCount > 1 {
-			return diag.Errorf("your query returned more than one result for filter with exact match \"%s\", please try a more specific search criteria",
+			return diag.Errorf("%syour query returned more than one result for filter with exact match \"%s\", please try a more specific search criteria",
+				errorPrefix,
 				filter,
 			)
 		}
 		if matchCount == 0 {
-			return diag.Errorf("didn't find any user matching filter string with exact match \"%s\"", filter)
+			return diag.Errorf("%sdidn't find any user matching filter string with exact match \"%s\"", errorPrefix, filter)
 		}
 	}
 
