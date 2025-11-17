@@ -6,6 +6,42 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
+        content_length: 118
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"vuln_containers_os":true,"vuln_host_os":true},"id":"test-project","type":"gcp_scan_options"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/agentless_scanning/accounts/gcp
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 117
+        uncompressed: false
+        body: '{"data":{"id":"test-project","type":"gcp_scan_options","attributes":{"vuln_containers_os":true,"vuln_host_os":true}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 833.059125ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
         content_length: 0
         transfer_encoding: []
         trailer: {}
@@ -17,7 +53,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/tags/enrichment
+        url: https://api.datadoghq.com/api/v2/agentless_scanning/accounts/gcp
         method: GET
       response:
         proto: HTTP/1.1
@@ -25,51 +61,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 11
+        content_length: 119
         uncompressed: false
-        body: '{"data":[]}'
+        body: '{"data":[{"id":"test-project","type":"gcp_scan_options","attributes":{"vuln_containers_os":true,"vuln_host_os":true}}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 168.665791ms
-    - id: 1
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 371
-        transfer_encoding: []
-        trailer: {}
-        host: api.datadoghq.com
-        remote_addr: ""
-        request_uri: ""
-        body: |
-            {"data":{"attributes":{"enabled":true,"rules":[{"enabled":true,"mapping":null,"name":"single-rule","query":{"addition":{"key":"env","value":"test"},"case_insensitivity":false,"if_not_exists":false,"query":"service:single"},"reference_table":null}]},"id":"tf-test-order-single-tf-TestAccDatadogTagPipelineRulesets_SingleRuleset-local-1762796205","type":"create_ruleset"}}
-        form: {}
-        headers:
-            Accept:
-                - application/json
-            Content-Type:
-                - application/json
-        url: https://api.datadoghq.com/api/v2/tags/enrichment
-        method: POST
-      response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        transfer_encoding: []
-        trailer: {}
-        content_length: 622
-        uncompressed: false
-        body: '{"data":{"id":"c964a5a8-0335-4bcb-810b-f7b92934097c","type":"ruleset","attributes":{"created":{"seconds":1762796207,"nanos":28260000},"enabled":true,"last_modified_user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","modified":{"seconds":1762796207,"nanos":28260000},"name":"tf-test-order-single-tf-TestAccDatadogTagPipelineRulesets_SingleRuleset-local-1762796205","position":1,"rules":[{"name":"single-rule","enabled":true,"query":{"query":"service:single","addition":{"key":"env","value":"test"},"if_not_exists":false,"case_insensitivity":false},"mapping":null,"reference_table":null,"metadata":null}],"version":3623112}}}'
-        headers:
-            Content-Type:
-                - application/vnd.api+json
-        status: 200 OK
-        code: 200
-        duration: 103.938ms
+        duration: 214.725833ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -86,7 +86,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/tags/enrichment
+        url: https://api.datadoghq.com/api/v2/agentless_scanning/accounts/gcp/test-project
         method: GET
       response:
         proto: HTTP/1.1
@@ -94,82 +94,84 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 652
+        content_length: 117
         uncompressed: false
-        body: '{"data":[{"id":"c964a5a8-0335-4bcb-810b-f7b92934097c","type":"ruleset","attributes":{"created":{"seconds":1762796207,"nanos":28260000},"enabled":true,"last_modified_user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","modified":{"seconds":1762796207,"nanos":28260000},"name":"tf-test-order-single-tf-TestAccDatadogTagPipelineRulesets_SingleRuleset-local-1762796205","position":1,"processing_status":"error","rules":[{"name":"single-rule","enabled":true,"query":{"query":"service:single","addition":{"key":"env","value":"test"},"if_not_exists":false,"case_insensitivity":false},"mapping":null,"reference_table":null,"metadata":null}],"version":3623112}}]}'
+        body: '{"data":{"id":"test-project","type":"gcp_scan_options","attributes":{"vuln_containers_os":true,"vuln_host_os":true}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 92.810084ms
+        duration: 148.883208ms
     - id: 3
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 74
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/agentless_scanning/accounts/gcp/test-project
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 117
+        uncompressed: false
+        body: '{"data":{"id":"test-project","type":"gcp_scan_options","attributes":{"vuln_containers_os":true,"vuln_host_os":true}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 154.224208ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 120
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":[{"id":"c964a5a8-0335-4bcb-810b-f7b92934097c","type":"ruleset"}]}
+            {"data":{"attributes":{"vuln_containers_os":false,"vuln_host_os":false},"id":"test-project","type":"gcp_scan_options"}}
         form: {}
         headers:
             Accept:
-                - '*/*'
+                - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/tags/enrichment/reorder
-        method: POST
+        url: https://api.datadoghq.com/api/v2/agentless_scanning/accounts/gcp/test-project
+        method: PATCH
       response:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 0
+        content_length: 119
         uncompressed: false
-        body: ""
-        headers: {}
-        status: 204 No Content
-        code: 204
-        duration: 40.709042ms
-    - id: 4
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 0
-        transfer_encoding: []
-        trailer: {}
-        host: api.datadoghq.com
-        remote_addr: ""
-        request_uri: ""
-        body: ""
-        form: {}
-        headers:
-            Accept:
-                - application/json
-        url: https://api.datadoghq.com/api/v2/tags/enrichment
-        method: GET
-      response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        transfer_encoding: []
-        trailer: {}
-        content_length: 652
-        uncompressed: false
-        body: '{"data":[{"id":"c964a5a8-0335-4bcb-810b-f7b92934097c","type":"ruleset","attributes":{"created":{"seconds":1762796207,"nanos":28260000},"enabled":true,"last_modified_user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","modified":{"seconds":1762796207,"nanos":28260000},"name":"tf-test-order-single-tf-TestAccDatadogTagPipelineRulesets_SingleRuleset-local-1762796205","position":1,"processing_status":"error","rules":[{"name":"single-rule","enabled":true,"query":{"query":"service:single","addition":{"key":"env","value":"test"},"if_not_exists":false,"case_insensitivity":false},"mapping":null,"reference_table":null,"metadata":null}],"version":3623112}}]}'
+        body: '{"data":{"id":"test-project","type":"gcp_scan_options","attributes":{"vuln_containers_os":false,"vuln_host_os":false}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 105.80875ms
+        duration: 235.610875ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -186,7 +188,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/tags/enrichment/c964a5a8-0335-4bcb-810b-f7b92934097c
+        url: https://api.datadoghq.com/api/v2/agentless_scanning/accounts/gcp/test-project
         method: GET
       response:
         proto: HTTP/1.1
@@ -194,15 +196,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 650
+        content_length: 119
         uncompressed: false
-        body: '{"data":{"id":"c964a5a8-0335-4bcb-810b-f7b92934097c","type":"ruleset","attributes":{"created":{"seconds":1762796207,"nanos":28260000},"enabled":true,"last_modified_user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","modified":{"seconds":1762796207,"nanos":28260000},"name":"tf-test-order-single-tf-TestAccDatadogTagPipelineRulesets_SingleRuleset-local-1762796205","position":1,"processing_status":"error","rules":[{"name":"single-rule","enabled":true,"query":{"query":"service:single","addition":{"key":"env","value":"test"},"if_not_exists":false,"case_insensitivity":false},"mapping":null,"reference_table":null,"metadata":null}],"version":3623112}}}'
+        body: '{"data":{"id":"test-project","type":"gcp_scan_options","attributes":{"vuln_containers_os":false,"vuln_host_os":false}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 110.295333ms
+        duration: 149.568041ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -219,7 +221,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/tags/enrichment
+        url: https://api.datadoghq.com/api/v2/agentless_scanning/accounts/gcp
         method: GET
       response:
         proto: HTTP/1.1
@@ -227,15 +229,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 652
+        content_length: 121
         uncompressed: false
-        body: '{"data":[{"id":"c964a5a8-0335-4bcb-810b-f7b92934097c","type":"ruleset","attributes":{"created":{"seconds":1762796207,"nanos":28260000},"enabled":true,"last_modified_user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","modified":{"seconds":1762796207,"nanos":28260000},"name":"tf-test-order-single-tf-TestAccDatadogTagPipelineRulesets_SingleRuleset-local-1762796205","position":1,"processing_status":"error","rules":[{"name":"single-rule","enabled":true,"query":{"query":"service:single","addition":{"key":"env","value":"test"},"if_not_exists":false,"case_insensitivity":false},"mapping":null,"reference_table":null,"metadata":null}],"version":3623112}}]}'
+        body: '{"data":[{"id":"test-project","type":"gcp_scan_options","attributes":{"vuln_containers_os":false,"vuln_host_os":false}}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 102.250375ms
+        duration: 226.034917ms
     - id: 7
       request:
         proto: HTTP/1.1
@@ -252,7 +254,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/tags/enrichment
+        url: https://api.datadoghq.com/api/v2/agentless_scanning/accounts/gcp/test-project
         method: GET
       response:
         proto: HTTP/1.1
@@ -260,15 +262,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 652
+        content_length: 119
         uncompressed: false
-        body: '{"data":[{"id":"c964a5a8-0335-4bcb-810b-f7b92934097c","type":"ruleset","attributes":{"created":{"seconds":1762796207,"nanos":28260000},"enabled":true,"last_modified_user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","modified":{"seconds":1762796207,"nanos":28260000},"name":"tf-test-order-single-tf-TestAccDatadogTagPipelineRulesets_SingleRuleset-local-1762796205","position":1,"processing_status":"error","rules":[{"name":"single-rule","enabled":true,"query":{"query":"service:single","addition":{"key":"env","value":"test"},"if_not_exists":false,"case_insensitivity":false},"mapping":null,"reference_table":null,"metadata":null}],"version":3623112}}]}'
+        body: '{"data":{"id":"test-project","type":"gcp_scan_options","attributes":{"vuln_containers_os":false,"vuln_host_os":false}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 95.224459ms
+        duration: 156.282625ms
     - id: 8
       request:
         proto: HTTP/1.1
@@ -285,7 +287,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/tags/enrichment/c964a5a8-0335-4bcb-810b-f7b92934097c
+        url: https://api.datadoghq.com/api/v2/agentless_scanning/accounts/gcp/test-project
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -299,7 +301,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 48.522708ms
+        duration: 274.474709ms
     - id: 9
       request:
         proto: HTTP/1.1
@@ -316,7 +318,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/tags/enrichment
+        url: https://api.datadoghq.com/api/v2/agentless_scanning/accounts/gcp
         method: GET
       response:
         proto: HTTP/1.1
@@ -332,4 +334,4 @@ interactions:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 117.976125ms
+        duration: 219.371167ms
