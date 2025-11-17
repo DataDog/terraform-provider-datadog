@@ -82,26 +82,10 @@ func (r *agentlessScanningGcpScanOptionsResource) Create(ctx context.Context, re
 		return
 	}
 
-	body := datadogV2.GcpScanOptions{
-		Data: &datadogV2.GcpScanOptionsData{
-			Id:   state.GcpProjectId.ValueString(),
-			Type: datadogV2.GCPSCANOPTIONSDATATYPE_GCP_SCAN_OPTIONS,
-			Attributes: &datadogV2.GcpScanOptionsDataAttributes{
-				VulnContainersOs: boolPtr(state.VulnContainersOs.ValueBool()),
-				VulnHostOs:       boolPtr(state.VulnHostOs.ValueBool()),
-			},
-		},
-	}
-
-	gcpScanOptionsResponse, _, err := r.Api.CreateGcpScanOptions(r.Auth, body)
-	if err != nil {
-		response.Diagnostics.AddError("Error creating GCP scan options", err.Error())
+	r.createOrUpdate(&state, &response.Diagnostics)
+	if response.Diagnostics.HasError() {
 		return
 	}
-
-	r.updateStateFromResponse(&state, gcpScanOptionsResponse)
-	// Set the Terraform resource ID to the GCP project ID
-	state.ID = types.StringValue(state.GcpProjectId.ValueString())
 
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
@@ -135,42 +119,12 @@ func (r *agentlessScanningGcpScanOptionsResource) Update(ctx context.Context, re
 		return
 	}
 
-	projectID := state.GcpProjectId.ValueString()
-
-	body := datadogV2.GcpScanOptionsInputUpdate{
-		Data: &datadogV2.GcpScanOptionsInputUpdateData{
-			Id:   state.GcpProjectId.ValueString(),
-			Type: datadogV2.GCPSCANOPTIONSINPUTUPDATEDATATYPE_GCP_SCAN_OPTIONS,
-			Attributes: &datadogV2.GcpScanOptionsInputUpdateDataAttributes{
-				VulnContainersOs: boolPtr(state.VulnContainersOs.ValueBool()),
-				VulnHostOs:       boolPtr(state.VulnHostOs.ValueBool()),
-			},
-		},
-	}
-
-	_, res, err := r.Api.UpdateGcpScanOptions(r.Auth, projectID, body)
-	if err != nil {
-		errorMsg := "Error updating GCP scan options"
-		if res != nil {
-			errorMsg += fmt.Sprintf(". API response: %s", res.Body)
-		}
-		response.Diagnostics.AddError(errorMsg, err.Error())
-		return
-	}
-
-	// After update, we need to read the current state since the API doesn't return the updated object
-	readReq := resource.ReadRequest{State: response.State}
-	readResp := resource.ReadResponse{State: response.State, Diagnostics: diag.Diagnostics{}}
-
-	// Set the state with current values before reading
-	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+	r.createOrUpdate(&state, &response.Diagnostics)
 	if response.Diagnostics.HasError() {
 		return
 	}
 
-	r.Read(ctx, readReq, &readResp)
-	response.Diagnostics.Append(readResp.Diagnostics...)
-	response.State = readResp.State
+	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
 func (r *agentlessScanningGcpScanOptionsResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
@@ -207,4 +161,69 @@ func (r *agentlessScanningGcpScanOptionsResource) updateStateFromScanOptionsData
 	attributes := data.GetAttributes()
 	state.VulnContainersOs = types.BoolValue(attributes.GetVulnContainersOs())
 	state.VulnHostOs = types.BoolValue(attributes.GetVulnHostOs())
+}
+
+// createOrUpdate attempts to read existing scan options and either creates or updates them accordingly
+func (r *agentlessScanningGcpScanOptionsResource) createOrUpdate(state *agentlessScanningGcpScanOptionsResourceModel, diagnostics *diag.Diagnostics) {
+	projectID := state.GcpProjectId.ValueString()
+
+	// Try to read existing scan options
+	_, httpResp, err := r.Api.GetGcpScanOptions(r.Auth, projectID)
+
+	// Check if scan options already exist
+	scanOptionsExist := err == nil
+	if err != nil && httpResp != nil && httpResp.StatusCode != 404 {
+		// If error is not a 404, it's an unexpected error
+		diagnostics.AddError("Error checking existing GCP scan options", err.Error())
+		return
+	}
+
+	if scanOptionsExist {
+		// Scan options exist, perform update
+		updateBody := datadogV2.GcpScanOptionsInputUpdate{
+			Data: &datadogV2.GcpScanOptionsInputUpdateData{
+				Id:   projectID,
+				Type: datadogV2.GCPSCANOPTIONSINPUTUPDATEDATATYPE_GCP_SCAN_OPTIONS,
+				Attributes: &datadogV2.GcpScanOptionsInputUpdateDataAttributes{
+					VulnContainersOs: boolPtr(state.VulnContainersOs.ValueBool()),
+					VulnHostOs:       boolPtr(state.VulnHostOs.ValueBool()),
+				},
+			},
+		}
+
+		gcpScanOptionsResponse, res, err := r.Api.UpdateGcpScanOptions(r.Auth, projectID, updateBody)
+		if err != nil {
+			errorMsg := "Error updating GCP scan options"
+			if res != nil {
+				errorMsg += fmt.Sprintf(". API response: %s", res.Body)
+			}
+			diagnostics.AddError(errorMsg, err.Error())
+			return
+		}
+
+		r.updateStateFromResponse(state, gcpScanOptionsResponse)
+	} else {
+		// Scan options don't exist (404), perform create
+		createBody := datadogV2.GcpScanOptions{
+			Data: &datadogV2.GcpScanOptionsData{
+				Id:   projectID,
+				Type: datadogV2.GCPSCANOPTIONSDATATYPE_GCP_SCAN_OPTIONS,
+				Attributes: &datadogV2.GcpScanOptionsDataAttributes{
+					VulnContainersOs: boolPtr(state.VulnContainersOs.ValueBool()),
+					VulnHostOs:       boolPtr(state.VulnHostOs.ValueBool()),
+				},
+			},
+		}
+
+		gcpScanOptionsResponse, _, err := r.Api.CreateGcpScanOptions(r.Auth, createBody)
+		if err != nil {
+			diagnostics.AddError("Error creating GCP scan options", err.Error())
+			return
+		}
+
+		r.updateStateFromResponse(state, gcpScanOptionsResponse)
+	}
+
+	// Set the Terraform resource ID to the GCP project ID
+	state.ID = types.StringValue(projectID)
 }
