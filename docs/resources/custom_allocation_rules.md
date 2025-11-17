@@ -105,7 +105,7 @@ resource "datadog_custom_allocation_rules" "override_order" {
 
 ### Optional
 
-- `override_ui_defined_resources` (Boolean) Whether to override UI-defined rules. When set to true, any rules created via the UI that are not defined in Terraform will be deleted and perform reorder based on the rules from the terraform. Default is false
+- `override_ui_defined_resources` (Boolean) Whether to override UI-defined rules. When set to true, any rules created via the UI that are not defined in Terraform will be deleted and Terraform will be used as the source of truth for rules and their ordering. When set to false, any rules created via the UI that are at the end of order will be kept but will be warned, otherwise an error will be thrown in terraform plan phase. Default is false
 
 ### Read-Only
 
