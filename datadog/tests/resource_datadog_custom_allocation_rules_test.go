@@ -545,7 +545,7 @@ func TestAccDatadogCustomAllocationRules_OverrideFalseUnmanagedInMiddle(t *testi
 }
 
 func TestAccDatadogCustomAllocationRules_OverrideFalseUnmanagedAtEnd(t *testing.T) {
-	// Do not run in parallel - this resource manages global rule order  
+	// Do not run in parallel - this resource manages global rule order
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)
 
