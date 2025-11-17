@@ -58,7 +58,7 @@ func (r *customAllocationRulesResource) Schema(_ context.Context, _ resource.Sch
 				Required:    true,
 			},
 			"override_ui_defined_resources": schema.BoolAttribute{
-				Description: "Whether to override UI-defined rules. When set to true, any rules created via the UI that are not defined in Terraform will be deleted and perform reorder based on the rules from the terraform. Default is false",
+				Description: "Whether to override UI-defined rules. When set to true, any rules created via the UI that are not defined in Terraform will be deleted and Terraform will be used as the source of truth for rules and their ordering. When set to false, any rules created via the UI that are at the end of order will be kept but will be warned, otherwise an error will be thrown in terraform plan phase. Default is false",
 				Optional:    true,
 			},
 			// Resource ID
@@ -87,11 +87,11 @@ func (r *customAllocationRulesResource) Read(ctx context.Context, request resour
 		return
 	}
 
-	// Get the managed rule IDs from the current state
-	var managedRuleIDs []string
+	// Create a map for quick lookup of managed IDs
+	managedIDsSet := make(map[string]bool)
 	for _, tfID := range state.RuleIDs.Elements() {
 		ruleID := tfID.(types.String).ValueString()
-		managedRuleIDs = append(managedRuleIDs, ruleID)
+		managedIDsSet[ruleID] = true
 	}
 
 	// Check override setting to determine how to build state
@@ -112,17 +112,11 @@ func (r *customAllocationRulesResource) Read(ctx context.Context, request resour
 		rules = *respData
 	}
 
-	// Create a map for quick lookup of managed IDs
-	managedIDsSet := make(map[string]bool)
-	for _, id := range managedRuleIDs {
-		managedIDsSet[id] = true
-	}
-
 	// Get rules with positions
-	// During import (managedRuleIDs is empty): get ALL rules
-	// When override=false: only managed rules  
+	// During import (managedIDsSet is empty): get ALL rules
+	// When override=false: only managed rules
 	// When override=true: ALL rules (so Terraform can detect difference and trigger Update to delete unmanaged)
-	isImport := len(managedRuleIDs) == 0
+	isImport := len(managedIDsSet) == 0
 	rulePositions := getRulesWithPositions(rules, managedIDsSet, !override && !isImport)
 
 	// Verify all managed rules still exist
@@ -133,14 +127,14 @@ func (r *customAllocationRulesResource) Read(ctx context.Context, request resour
 		}
 	}
 
-	if managedCount != len(managedRuleIDs) {
+	if managedCount != len(managedIDsSet) {
 		// Some managed rules were deleted
 		missingIDs := []string{}
 		foundIDs := make(map[string]bool)
 		for _, rp := range rulePositions {
 			foundIDs[rp.ID] = true
 		}
-		for _, id := range managedRuleIDs {
+		for id := range managedIDsSet {
 			if !foundIDs[id] {
 				missingIDs = append(missingIDs, id)
 			}
@@ -214,17 +208,11 @@ func (r *customAllocationRulesResource) ModifyPlan(ctx context.Context, request 
 		existingRules = *respData
 	}
 
-	// Convert the Terraform list to strings
-	var desiredRuleIDs []string
-	for _, tfID := range plan.RuleIDs.Elements() {
-		ruleID := tfID.(types.String).ValueString()
-		desiredRuleIDs = append(desiredRuleIDs, ruleID)
-	}
-
 	// Create a map of desired IDs for checking unmanaged rules
 	desiredIDsSet := make(map[string]bool)
-	for _, id := range desiredRuleIDs {
-		desiredIDsSet[id] = true
+	for _, tfID := range plan.RuleIDs.Elements() {
+		ruleID := tfID.(types.String).ValueString()
+		desiredIDsSet[ruleID] = true
 	}
 
 	// Get all rules with positions sorted
@@ -341,7 +329,7 @@ func extractRuleFields(rule datadogV2.ArbitraryRuleResponseData) (id string, nam
 		}
 	}
 
-	// If normal fields failed, try UnparsedObject 
+	// If normal fields failed, try UnparsedObject
 	// This happens when the API returns fields the generated client doesn't know about
 	if rule.UnparsedObject != nil {
 		// Extract ID
@@ -426,20 +414,14 @@ func findUnmanagedRules(allRules []ruleWithPosition, managedIDsSet map[string]bo
 	}
 
 	// Check if all unmanaged are at the end
+	// Since allRules is sorted by position, if unmanaged rules are all at the end,
+	// they should form a contiguous block. We only need to check if the first unmanaged
+	// rule starts at the expected position.
 	allAtEnd := false
 	if len(unmanagedRules) > 0 {
 		firstUnmanagedPos := unmanagedPositions[0]
 		expectedStartPos := len(allRules) - len(unmanagedRules)
-
 		allAtEnd = firstUnmanagedPos == expectedStartPos
-		if allAtEnd {
-			for i, pos := range unmanagedPositions {
-				if pos != expectedStartPos+i {
-					allAtEnd = false
-					break
-				}
-			}
-		}
 	}
 
 	return unmanagedRuleInfo{
@@ -495,23 +477,6 @@ func (r *customAllocationRulesResource) updateOrderWithDeletion(state *customAll
 			existingIDs[ruleID] = true
 			existingIDList = append(existingIDList, ruleID)
 		}
-	}
-
-	// Check if we extracted fewer IDs than total rules (API client deserialization bug)
-	if len(existingIDList) < len(existingRules) {
-		diag.AddError(
-			"Unable to extract IDs from all rules",
-			fmt.Sprintf("The API returned %d rules, but we could only extract IDs from %d of them. "+
-				"This is likely due to a deserialization issue in the API client library. "+
-				"To work around this issue, please:\n"+
-				"1. Go to the Datadog UI and manually delete any problematic rules\n"+
-				"2. Or set override_ui_defined_resources=false to preserve unmanaged rules\n"+
-				"3. Then try again\n\n"+
-				"Successfully extracted IDs: %v\n"+
-				"Total rules from API: %d",
-				len(existingRules), len(existingIDList), existingIDList, len(existingRules)),
-		)
-		return
 	}
 
 	// Validate desired rules exist
