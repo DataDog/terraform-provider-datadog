@@ -83,6 +83,60 @@ func TestAccDatadogUserDatasourceWithExactMatchError(t *testing.T) {
 	})
 }
 
+func TestAccDatadogUserDatasourceWithExcludeServiceAccounts(t *testing.T) {
+	t.Parallel()
+	ctx, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	serviceAccountName := ("tf-service-account-" + strings.ToLower(uniqueEntityName(ctx, t)))[:50]
+	email := strings.ToLower(uniqueEntityName(ctx, t)) + "@example.com"
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: testAccDatasourceUserWithExcludeServiceAccountsConfig(email, serviceAccountName, "true"),
+				Check:  resource.TestCheckResourceAttr("data.datadog_user.test", "email", email),
+			},
+		},
+	})
+}
+
+func TestAccDatadogUserDatasourceWithExcludeServiceAccountsWithError(t *testing.T) {
+	t.Parallel()
+	ctx, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	serviceAccountName := ("tf-service-account-" + strings.ToLower(uniqueEntityName(ctx, t)))[:50]
+	email := strings.ToLower(uniqueEntityName(ctx, t)) + "@example.com"
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		Steps: []resource.TestStep{
+			{
+				Config:      testAccDatasourceUserWithExcludeServiceAccountsConfig(email, serviceAccountName, "false"),
+				ExpectError: regexp.MustCompile("your query returned more than one result for filter"),
+			},
+		},
+	})
+}
+
+func TestAccDatadogUserDatasourceWithExcludeServiceAccountsMultipleUsersWithError(t *testing.T) {
+	t.Parallel()
+	ctx, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	serviceAccountName := ("tf-service-account-" + strings.ToLower(uniqueEntityName(ctx, t)))[:50]
+	email := strings.ToLower(uniqueEntityName(ctx, t)) + "@example.com"
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		Steps: []resource.TestStep{
+			{
+				Config:      testAccDatasourceUserWithExcludeServiceAccountsMultipleUsersConfig(email, serviceAccountName, "true"),
+				ExpectError: regexp.MustCompile("after excluding service accounts, your query returned more than one result for filter"),
+			},
+		},
+	})
+}
+
 func testAccDatasourceUserWithExactMatchConfig(uniq, exactMatch string) string {
 	return fmt.Sprintf(`
 data "datadog_user" "test" {
@@ -99,6 +153,43 @@ resource "datadog_user" "bar" {
 }`, uniq, exactMatch)
 }
 
+func testAccDatasourceUserWithExcludeServiceAccountsConfig(uniq, serviceAccountName, excludeServiceAccounts string) string {
+	return fmt.Sprintf(`
+data "datadog_user" "test" {
+	filter = "%[1]s"
+	exclude_service_accounts = %[3]s
+	depends_on = [ datadog_user.foo, datadog_service_account.bar ]
+}
+
+resource "datadog_user" "foo" {
+	email = "%[1]s"
+}
+resource "datadog_service_account" "bar" {
+	email = "%[1]s"
+	name = "%[2]s"
+}`, uniq, serviceAccountName, excludeServiceAccounts)
+}
+
+func testAccDatasourceUserWithExcludeServiceAccountsMultipleUsersConfig(uniq, serviceAccountName, excludeServiceAccounts string) string {
+	return fmt.Sprintf(`
+data "datadog_user" "test" {
+	filter = "%[1]s"
+	exclude_service_accounts = %[3]s
+	depends_on = [ datadog_user.foo, datadog_service_account.bar ]
+}
+
+resource "datadog_user" "foo" {
+	email = "%[1]s"
+}
+resource "datadog_user" "otherfoo" {
+	email = "other%[1]s"
+}
+resource "datadog_service_account" "bar" {
+	email = "%[1]s"
+	name = "%[2]s"
+}`, uniq, serviceAccountName, excludeServiceAccounts)
+}
+
 func testAccDatasourceUserConfig(uniq string) string {
 	return fmt.Sprintf(`
 data "datadog_user" "test" {
@@ -113,7 +204,7 @@ resource "datadog_user" "foo" {
 }
 
 func testAccDatasourceUserError() string {
-	return `	
+	return `
 	data "datadog_user" "test" {
 		filter = "doesntexist01b0bb82-2000-4113-bb6b-e34b48ef37ff@example.com'"
 	}
