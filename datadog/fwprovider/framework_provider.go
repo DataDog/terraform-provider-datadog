@@ -107,6 +107,7 @@ var Resources = []func() resource.Resource{
 	NewDatadogCustomAllocationRuleResource,
 	NewCustomAllocationRulesResource,
 	NewAzureUcConfigResource,
+	NewReferenceTableResource,
 }
 
 var Datasources = []func() datasource.DataSource{
@@ -155,6 +156,8 @@ var Datasources = []func() datasource.DataSource{
 	NewDatadogGcpUcConfigDataSource,
 	NewDatadogCustomAllocationRuleDataSource,
 	NewDatadogAzureUcConfigDataSource,
+	NewDatadogReferenceTableDataSource,
+	NewDatadogReferenceTableRowsDataSource,
 }
 
 // FrameworkProvider struct

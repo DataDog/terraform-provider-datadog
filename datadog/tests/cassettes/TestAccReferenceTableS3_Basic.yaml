@@ -1,0 +1,171 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 527
+        transfer_encoding: []
+        trailer: {}
+        host: dd.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"description":"Test S3 reference table","file_metadata":{"access_details":{"aws_detail":{"aws_account_id":"924305315327","aws_bucket_name":"dd-reference-tables-dev-staging","file_path":"test.csv"}},"sync_enabled":true},"schema":{"fields":[{"name":"a","type":"STRING"},{"name":"b","type":"STRING"},{"name":"c","type":"STRING"}],"primary_keys":["a"]},"source":"S3","table_name":"tf_test_s3_tf_testaccreferencetables3_basic_local_1762896263","tags":["test:terraform","env:test"]},"type":"reference_table"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://dd.datad0g.com/api/v2/reference-tables/tables
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 874.400791ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: dd.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://dd.datad0g.com/api/v2/reference-tables/tables
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":[{"id":"e12c4aa5-92ba-4038-bb2e-899fb08d29b3","type":"reference_table","attributes":{"created_by":"51bca672-7464-11ea-ad29-6762102f9f58","description":"Test S3 reference table","file_metadata":{"error_row_count":0,"error_message":"","sync_enabled":true,"access_details":{"aws_detail":{"aws_account_id":"924305315327","aws_bucket_name":"dd-reference-tables-dev-staging","file_path":"test.csv"}}},"last_updated_by":"51bca672-7464-11ea-ad29-6762102f9f58","row_count":0,"schema":{"primary_keys":["a"],"fields":[{"name":"a","type":"STRING"},{"name":"b","type":"STRING"},{"name":"c","type":"STRING"}]},"source":"S3","status":"INITIALIZED","table_name":"tf_test_s3_tf_testaccreferencetables3_basic_local_1762896263","tags":["test:terraform","env:test"],"updated_at":"2025-11-11T21:24:26Z"}},{"id":"d31ce280-1981-4fda-9d24-13950c8569af","type":"reference_table","attributes":{"created_by":"d8673343-30d4-11f0-b7c9-22644aa72e77","description":"","last_updated_by":"d8673343-30d4-11f0-b7c9-22644aa72e77","row_count":1,"schema":{"primary_keys":["int32_col"],"fields":[{"name":"int32_col","type":"INT32"},{"name":"str_col","type":"STRING"}]},"source":"LOCAL_FILE","status":"DONE","table_name":"synth_ddsql_legacy_534316928526353250","tags":["synthetics"],"updated_at":"2025-11-11T21:23:54Z"}},{"id":"71e4dd1c-8429-48e8-bd9c-d925ede4a258","type":"reference_table","attributes":{"created_by":"d8673343-30d4-11f0-b7c9-22644aa72e77","description":"","last_updated_by":"d8673343-30d4-11f0-b7c9-22644aa72e77","row_count":1,"schema":{"primary_keys":["int32_col"],"fields":[{"name":"int32_col","type":"INT32"},{"name":"str_col","type":"STRING"}]},"source":"LOCAL_FILE","status":"DONE","table_name":"synth_trino_7692474347407128373","tags":["synthetics"],"updated_at":"2025-11-11T21:23:54Z"}},{"id":"ff44838e-b58a-452a-b0a7-714c432b5ad1","type":"reference_table","attributes":{"created_by":"d8673343-30d4-11f0-b7c9-22644aa72e77","description":"","last_updated_by":"d8673343-30d4-11f0-b7c9-22644aa72e77","row_count":1,"schema":{"primary_keys":["int32_col"],"fields":[{"name":"int32_col","type":"INT32"},{"name":"str_col","type":"STRING"}]},"source":"LOCAL_FILE","status":"DONE","table_name":"synth_ddsql_1208193347401320575","tags":["synthetics"],"updated_at":"2025-11-11T21:23:51Z"}},{"id":"8a674bac-589f-4ccc-b726-96894d394832","type":"reference_table","attributes":{"created_by":"d8673343-30d4-11f0-b7c9-22644aa72e77","description":"","last_updated_by":"d8673343-30d4-11f0-b7c9-22644aa72e77","row_count":1,"schema":{"primary_keys":["int32_col"],"fields":[{"name":"int32_col","type":"INT32"},{"name":"str_col","type":"STRING"}]},"source":"LOCAL_FILE","status":"DONE","table_name":"synthetics_test_rt_bloom_filter_1762896231010","tags":["synthetics"],"updated_at":"2025-11-11T21:23:51Z"}},{"id":"d95ca7e9-6497-48ea-9cf4-1bd62cfb7d20","type":"reference_table","attributes":{"created_by":"d8673343-30d4-11f0-b7c9-22644aa72e77","description":"","last_updated_by":"d8673343-30d4-11f0-b7c9-22644aa72e77","row_count":1,"schema":{"primary_keys":["int32_col"],"fields":[{"name":"int32_col","type":"INT32"},{"name":"str_col","type":"STRING"}]},"source":"LOCAL_FILE","status":"DONE","table_name":"synthetics_test_rt_file_row_crud_flow_5775535601749516370","tags":["synthetics"],"updated_at":"2025-11-11T21:23:50Z"}},{"id":"d0af0254-f8d8-4445-975f-b5c164d5028d","type":"reference_table","attributes":{"created_by":"d8673343-30d4-11f0-b7c9-22644aa72e77","description":"","last_updated_by":"d8673343-30d4-11f0-b7c9-22644aa72e77","row_count":1,"schema":{"primary_keys":["int32_col"],"fields":[{"name":"int32_col","type":"INT32"},{"name":"str_col","type":"STRING"}]},"source":"LOCAL_FILE","status":"DONE","table_name":"synth_trino_legacy_5017662283340822410","tags":["synthetics"],"updated_at":"2025-11-11T21:23:49Z"}},{"id":"f0cfdd86-04d1-4920-b895-5cc205c941e7","type":"reference_table","attributes":{"created_by":"4ae61496-f55f-11eb-abf7-da7ad0900001","description":"Updated synthetics test table","last_updated_by":"4ae61496-f55f-11eb-abf7-da7ad0900001","row_count":3,"schema":{"primary_keys":["id"],"fields":[{"name":"id","type":"STRING"},{"name":"name","type":"STRING"},{"name":"email","type":"STRING"}]},"source":"LOCAL_FILE","status":"DONE","table_name":"synthetics_test_upload_flow_593645714629116134","tags":["synthetics"],"updated_at":"2025-11-11T21:22:07Z"}},{"id":"ce328b4e-f848-4eba-a201-9a3050d2efc7","type":"reference_table","attributes":{"created_by":"11ee7f54-8bb5-11f0-befa-dac8fd103755","description":"","file_metadata":{"error_row_count":0,"error_message":"","access_details":{"aws_detail":{"aws_account_id":"924305315327","aws_bucket_name":"dd-reference-tables-dev-staging","file_path":"test_karanbokil_threat_intel.csv"}}},"last_updated_by":"11ee7f54-8bb5-11f0-befa-dac8fd103755","row_count":4008999,"schema":{"primary_keys":["ip_address"],"fields":[{"name":"ip_address","type":"STRING"},{"name":"intention","type":"STRING"},{"name":"category","type":"STRING"},{"name":"source","type":"STRING"},{"name":"additional_data","type":"STRING"}]},"source":"S3","status":"DONE","table_name":"karanbokil_11_11_ti_snappy_3","tags":["product_analytics_beta_enabled:true"],"updated_at":"2025-11-11T21:22:55Z"}},{"id":"ae91c101-a2e2-41d2-b99f-0cb5ff87e72a","type":"reference_table","attributes":{"created_by":"","description":"This is NOT an actual Snowflake table - it''s a test table updated by this synthetics: https://ddstaging.datadoghq.com/synthetics/details/ajx-zbt-khs?from_ts=1741296820320\u0026to_ts=1741300420320\u0026live=true.","file_metadata":{"error_row_count":1,"error_message":"","access_details":{}},"last_updated_by":"","row_count":1,"schema":{"primary_keys":["id"],"fields":[{"name":"id","type":"STRING"},{"name":"name","type":"STRING"}]},"source":"SNOWFLAKE","status":"DONE_WITH_ERRORS","table_name":"synthetics_grpc_saas2","tags":null,"updated_at":"2025-11-11T21:20:19Z"}},{"id":"42b5c9ca-898a-466c-a54a-0481c9ab696f","type":"reference_table","attributes":{"created_by":"4ae61496-f55f-11eb-abf7-da7ad0900001","description":"","last_updated_by":"4ae61496-f55f-11eb-abf7-da7ad0900001","row_count":2,"schema":{"primary_keys":["name"],"fields":[{"name":"name","type":"STRING"},{"name":"url","type":"STRING"}]},"source":"SERVICENOW","status":"DONE","table_name":"http_bulk_client_e2e","tags":null,"updated_at":"2025-11-11T21:17:18Z"}},{"id":"13cc1e33-4ac7-4f17-8f06-82937a9c97ae","type":"reference_table","attributes":{"created_by":"0f10535c-dc66-11ec-ac2c-da7ad0900001","description":"","file_metadata":{"error_row_count":0,"error_message":"","sync_enabled":true,"access_details":{"aws_detail":{"aws_account_id":"727006795293","aws_bucket_name":"dd-logs-threat-intel-staging","file_path":"threat_intel_sha256_ddsecres.csv"}}},"last_updated_by":"","row_count":12,"schema":{"primary_keys":["sha256"],"fields":[{"name":"sha256","type":"STRING"},{"name":"source","type":"STRING"},{"name":"category","type":"STRING"},{"name":"intention","type":"STRING"},{"name":"attack_surface","type":"STRING"},{"name":"first_seen","type":"STRING"},{"name":"last_seen","type":"STRING"},{"name":"reputation","type":"STRING"},{"name":"additional_data","type":"STRING"}]},"source":"S3","status":"DONE","table_name":"threat_intel_sha256_ddsecres","tags":null,"updated_at":"2025-11-11T21:06:52Z"}},{"id":"0780cb0d-6ab6-4b58-86f8-86f7e8ee2033","type":"reference_table","attributes":{"created_by":"0f10535c-dc66-11ec-ac2c-da7ad0900001","description":"","file_metadata":{"error_row_count":0,"error_message":"","sync_enabled":true,"access_details":{"aws_detail":{"aws_account_id":"727006795293","aws_bucket_name":"dd-logs-threat-intel-staging","file_path":"threat_intel_ip_ddsecres.csv"}}},"last_updated_by":"","row_count":14058,"schema":{"primary_keys":["ip_address"],"fields":[{"name":"ip_address","type":"STRING"},{"name":"source","type":"STRING"},{"name":"category","type":"STRING"},{"name":"intention","type":"STRING"},{"name":"attack_surface","type":"STRING"},{"name":"first_seen","type":"STRING"},{"name":"last_seen","type":"STRING"},{"name":"reputation","type":"STRING"},{"name":"additional_data","type":"STRING"}]},"source":"S3","status":"DONE","table_name":"threat_intel_ip_ddsecres","tags":null,"updated_at":"2025-11-11T21:06:49Z"}},{"id":"c14aab18-74ea-4615-8d48-ed84b152df5a","type":"reference_table","attributes":{"created_by":"11ee7f54-8bb5-11f0-befa-dac8fd103755","description":"","file_metadata":{"error_row_count":0,"error_message":"","access_details":{"aws_detail":{"aws_account_id":"924305315327","aws_bucket_name":"dd-reference-tables-dev-staging","file_path":"test_karanbokil_threat_intel.csv"}}},"last_updated_by":"11ee7f54-8bb5-11f0-befa-dac8fd103755","row_count":4008999,"schema":{"primary_keys":["ip_address"],"fields":[{"name":"ip_address","type":"STRING"},{"name":"intention","type":"STRING"},{"name":"category","type":"STRING"},{"name":"source","type":"STRING"},{"name":"additional_data","type":"STRING"}]},"source":"S3","status":"DONE","table_name":"karanbokil_11_11_ti_snappy_2","tags":["product_analytics_beta_enabled:true"],"updated_at":"2025-11-11T21:06:38Z"}},{"id":"503077cb-f4aa-4f77-a47f-066f4a1dc255","type":"reference_table","attributes":{"created_by":"","description":"","last_updated_by":"","row_count":269,"schema":{"primary_keys":["key"],"fields":[{"name":"key","type":"STRING"},{"name":"service","type":"STRING"},{"name":"team","type":"STRING"},{"name":"datacenter","type":"STRING"},{"name":"domains","type":"STRING"},{"name":"nb_domains","type":"INT32"}]},"source":"API","status":"DONE","table_name":"public_egress_service_domains","tags":null,"updated_at":"2025-11-11T21:01:36Z"}}],"meta":{"page":{"type":"offset_limit","offset":0,"limit":15,"total":null,"first_offset":0,"prev_offset":null,"next_offset":15,"last_offset":null}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 261.25775ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: dd.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://dd.datad0g.com/api/v2/reference-tables/tables/e12c4aa5-92ba-4038-bb2e-899fb08d29b3
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 791
+        uncompressed: false
+        body: '{"data":{"id":"e12c4aa5-92ba-4038-bb2e-899fb08d29b3","type":"reference_table","attributes":{"created_by":"51bca672-7464-11ea-ad29-6762102f9f58","description":"Test S3 reference table","file_metadata":{"error_row_count":0,"error_message":"","sync_enabled":true,"access_details":{"aws_detail":{"aws_account_id":"924305315327","aws_bucket_name":"dd-reference-tables-dev-staging","file_path":"test.csv"}}},"last_updated_by":"51bca672-7464-11ea-ad29-6762102f9f58","row_count":0,"schema":{"primary_keys":["a"],"fields":[{"name":"a","type":"STRING"},{"name":"b","type":"STRING"},{"name":"c","type":"STRING"}]},"source":"S3","status":"INITIALIZED","table_name":"tf_test_s3_tf_testaccreferencetables3_basic_local_1762896263","tags":["test:terraform","env:test"],"updated_at":"2025-11-11T21:24:26Z"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 37.003791ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: dd.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://dd.datad0g.com/api/v2/reference-tables/tables/e12c4aa5-92ba-4038-bb2e-899fb08d29b3
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 791
+        uncompressed: false
+        body: '{"data":{"id":"e12c4aa5-92ba-4038-bb2e-899fb08d29b3","type":"reference_table","attributes":{"created_by":"51bca672-7464-11ea-ad29-6762102f9f58","description":"Test S3 reference table","file_metadata":{"error_row_count":0,"error_message":"","sync_enabled":true,"access_details":{"aws_detail":{"aws_account_id":"924305315327","aws_bucket_name":"dd-reference-tables-dev-staging","file_path":"test.csv"}}},"last_updated_by":"51bca672-7464-11ea-ad29-6762102f9f58","row_count":0,"schema":{"primary_keys":["a"],"fields":[{"name":"a","type":"STRING"},{"name":"b","type":"STRING"},{"name":"c","type":"STRING"}]},"source":"S3","status":"INITIALIZED","table_name":"tf_test_s3_tf_testaccreferencetables3_basic_local_1762896263","tags":["test:terraform","env:test"],"updated_at":"2025-11-11T21:24:26Z"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 38.29825ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: dd.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://dd.datad0g.com/api/v2/reference-tables/tables/e12c4aa5-92ba-4038-bb2e-899fb08d29b3
+        method: DELETE
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 371.174708ms
