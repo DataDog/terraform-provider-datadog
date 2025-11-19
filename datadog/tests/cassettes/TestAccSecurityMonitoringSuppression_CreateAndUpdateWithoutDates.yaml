@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"description":"suppression for terraform provider test","enabled":true,"name":"tf-TestAccSecurityMonitoringSuppression_CreateAndUpdateWithoutDates-local-1757025268","rule_query":"severity:low source:cloudtrail","suppression_query":"env:staging"},"type":"suppressions"}}
+            {"data":{"attributes":{"description":"suppression for terraform provider test","enabled":true,"name":"tf-TestAccSecurityMonitoringSuppression_CreateAndUpdateWithoutDates-local-1763123426","rule_query":"severity:low source:cloudtrail","suppression_query":"env:staging"},"type":"suppressions"}}
         form: {}
         headers:
             Accept:
@@ -30,13 +30,13 @@ interactions:
         trailer: {}
         content_length: 545
         uncompressed: false
-        body: '{"data":{"id":"old-hd0-s8x","type":"suppressions","attributes":{"creation_date":1757025268821,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"data_exclusion_query":"","description":"suppression for terraform provider test","editable":true,"enabled":true,"name":"tf-TestAccSecurityMonitoringSuppression_CreateAndUpdateWithoutDates-local-1757025268","rule_query":"severity:low source:cloudtrail","suppression_query":"env:staging","tags":[],"update_date":1757025268821,"updater":{"handle":"frog@datadoghq.com","name":"frog"},"version":1}}}'
+        body: '{"data":{"id":"ij8-mvr-xmd","type":"suppressions","attributes":{"creation_date":1763123427215,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"data_exclusion_query":"","description":"suppression for terraform provider test","editable":true,"enabled":true,"name":"tf-TestAccSecurityMonitoringSuppression_CreateAndUpdateWithoutDates-local-1763123426","rule_query":"severity:low source:cloudtrail","suppression_query":"env:staging","tags":[],"update_date":1763123427215,"updater":{"handle":"frog@datadoghq.com","name":"frog"},"version":1}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 137.346833ms
+        duration: 259.728375ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -53,7 +53,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/old-hd0-s8x
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/ij8-mvr-xmd
         method: GET
       response:
         proto: HTTP/1.1
@@ -63,13 +63,13 @@ interactions:
         trailer: {}
         content_length: 545
         uncompressed: false
-        body: '{"data":{"id":"old-hd0-s8x","type":"suppressions","attributes":{"creation_date":1757025268821,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"data_exclusion_query":"","description":"suppression for terraform provider test","editable":true,"enabled":true,"name":"tf-TestAccSecurityMonitoringSuppression_CreateAndUpdateWithoutDates-local-1757025268","rule_query":"severity:low source:cloudtrail","suppression_query":"env:staging","tags":[],"update_date":1757025268821,"updater":{"handle":"frog@datadoghq.com","name":"frog"},"version":1}}}'
+        body: '{"data":{"id":"ij8-mvr-xmd","type":"suppressions","attributes":{"creation_date":1763123427215,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"data_exclusion_query":"","description":"suppression for terraform provider test","editable":true,"enabled":true,"name":"tf-TestAccSecurityMonitoringSuppression_CreateAndUpdateWithoutDates-local-1763123426","rule_query":"severity:low source:cloudtrail","suppression_query":"env:staging","tags":[],"update_date":1763123427215,"updater":{"handle":"frog@datadoghq.com","name":"frog"},"version":1}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 126.150792ms
+        duration: 238.98925ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -86,7 +86,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/old-hd0-s8x
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/ij8-mvr-xmd
         method: GET
       response:
         proto: HTTP/1.1
@@ -96,13 +96,13 @@ interactions:
         trailer: {}
         content_length: 545
         uncompressed: false
-        body: '{"data":{"id":"old-hd0-s8x","type":"suppressions","attributes":{"creation_date":1757025268821,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"data_exclusion_query":"","description":"suppression for terraform provider test","editable":true,"enabled":true,"name":"tf-TestAccSecurityMonitoringSuppression_CreateAndUpdateWithoutDates-local-1757025268","rule_query":"severity:low source:cloudtrail","suppression_query":"env:staging","tags":[],"update_date":1757025268821,"updater":{"handle":"frog@datadoghq.com","name":"frog"},"version":1}}}'
+        body: '{"data":{"id":"ij8-mvr-xmd","type":"suppressions","attributes":{"creation_date":1763123427215,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"data_exclusion_query":"","description":"suppression for terraform provider test","editable":true,"enabled":true,"name":"tf-TestAccSecurityMonitoringSuppression_CreateAndUpdateWithoutDates-local-1763123426","rule_query":"severity:low source:cloudtrail","suppression_query":"env:staging","tags":[],"update_date":1763123427215,"updater":{"handle":"frog@datadoghq.com","name":"frog"},"version":1}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 133.776583ms
+        duration: 256.611792ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -119,7 +119,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/old-hd0-s8x
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/ij8-mvr-xmd
         method: GET
       response:
         proto: HTTP/1.1
@@ -129,33 +129,33 @@ interactions:
         trailer: {}
         content_length: 545
         uncompressed: false
-        body: '{"data":{"id":"old-hd0-s8x","type":"suppressions","attributes":{"creation_date":1757025268821,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"data_exclusion_query":"","description":"suppression for terraform provider test","editable":true,"enabled":true,"name":"tf-TestAccSecurityMonitoringSuppression_CreateAndUpdateWithoutDates-local-1757025268","rule_query":"severity:low source:cloudtrail","suppression_query":"env:staging","tags":[],"update_date":1757025268821,"updater":{"handle":"frog@datadoghq.com","name":"frog"},"version":1}}}'
+        body: '{"data":{"id":"ij8-mvr-xmd","type":"suppressions","attributes":{"creation_date":1763123427215,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"data_exclusion_query":"","description":"suppression for terraform provider test","editable":true,"enabled":true,"name":"tf-TestAccSecurityMonitoringSuppression_CreateAndUpdateWithoutDates-local-1763123426","rule_query":"severity:low source:cloudtrail","suppression_query":"env:staging","tags":[],"update_date":1763123427215,"updater":{"handle":"frog@datadoghq.com","name":"frog"},"version":1}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 117.409375ms
+        duration: 240.502292ms
     - id: 4
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 338
+        content_length: 348
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"data_exclusion_query":"","description":"updated suppression for terraform provider test","enabled":true,"name":"tf-TestAccSecurityMonitoringSuppression_CreateAndUpdateWithoutDates-local-1757025268","rule_query":"severity:low source:(cloudtrail OR azure)","suppression_query":"env:staging"},"type":"suppressions"}}
+            {"data":{"attributes":{"data_exclusion_query":"","description":"updated suppression for terraform provider test","enabled":true,"name":"tf-TestAccSecurityMonitoringSuppression_CreateAndUpdateWithoutDates-local-1763123426","rule_query":"severity:low source:(cloudtrail OR azure)","suppression_query":"env:staging","tags":[]},"type":"suppressions"}}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/old-hd0-s8x
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/ij8-mvr-xmd
         method: PATCH
       response:
         proto: HTTP/1.1
@@ -165,13 +165,13 @@ interactions:
         trailer: {}
         content_length: 564
         uncompressed: false
-        body: '{"data":{"id":"old-hd0-s8x","type":"suppressions","attributes":{"creation_date":1757025268821,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"data_exclusion_query":"","description":"updated suppression for terraform provider test","editable":true,"enabled":true,"name":"tf-TestAccSecurityMonitoringSuppression_CreateAndUpdateWithoutDates-local-1757025268","rule_query":"severity:low source:(cloudtrail OR azure)","suppression_query":"env:staging","tags":[],"update_date":1757025270252,"updater":{"handle":"frog@datadoghq.com","name":"frog"},"version":2}}}'
+        body: '{"data":{"id":"ij8-mvr-xmd","type":"suppressions","attributes":{"creation_date":1763123427215,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"data_exclusion_query":"","description":"updated suppression for terraform provider test","editable":true,"enabled":true,"name":"tf-TestAccSecurityMonitoringSuppression_CreateAndUpdateWithoutDates-local-1763123426","rule_query":"severity:low source:(cloudtrail OR azure)","suppression_query":"env:staging","tags":[],"update_date":1763123429138,"updater":{"handle":"frog@datadoghq.com","name":"frog"},"version":2}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 138.084125ms
+        duration: 264.13875ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -188,7 +188,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/old-hd0-s8x
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/ij8-mvr-xmd
         method: GET
       response:
         proto: HTTP/1.1
@@ -198,13 +198,13 @@ interactions:
         trailer: {}
         content_length: 564
         uncompressed: false
-        body: '{"data":{"id":"old-hd0-s8x","type":"suppressions","attributes":{"creation_date":1757025268821,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"data_exclusion_query":"","description":"updated suppression for terraform provider test","editable":true,"enabled":true,"name":"tf-TestAccSecurityMonitoringSuppression_CreateAndUpdateWithoutDates-local-1757025268","rule_query":"severity:low source:(cloudtrail OR azure)","suppression_query":"env:staging","tags":[],"update_date":1757025270252,"updater":{"handle":"frog@datadoghq.com","name":"frog"},"version":2}}}'
+        body: '{"data":{"id":"ij8-mvr-xmd","type":"suppressions","attributes":{"creation_date":1763123427215,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"data_exclusion_query":"","description":"updated suppression for terraform provider test","editable":true,"enabled":true,"name":"tf-TestAccSecurityMonitoringSuppression_CreateAndUpdateWithoutDates-local-1763123426","rule_query":"severity:low source:(cloudtrail OR azure)","suppression_query":"env:staging","tags":[],"update_date":1763123429138,"updater":{"handle":"frog@datadoghq.com","name":"frog"},"version":2}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 127.841ms
+        duration: 239.408625ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -221,7 +221,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/old-hd0-s8x
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/ij8-mvr-xmd
         method: GET
       response:
         proto: HTTP/1.1
@@ -231,13 +231,13 @@ interactions:
         trailer: {}
         content_length: 564
         uncompressed: false
-        body: '{"data":{"id":"old-hd0-s8x","type":"suppressions","attributes":{"creation_date":1757025268821,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"data_exclusion_query":"","description":"updated suppression for terraform provider test","editable":true,"enabled":true,"name":"tf-TestAccSecurityMonitoringSuppression_CreateAndUpdateWithoutDates-local-1757025268","rule_query":"severity:low source:(cloudtrail OR azure)","suppression_query":"env:staging","tags":[],"update_date":1757025270252,"updater":{"handle":"frog@datadoghq.com","name":"frog"},"version":2}}}'
+        body: '{"data":{"id":"ij8-mvr-xmd","type":"suppressions","attributes":{"creation_date":1763123427215,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"data_exclusion_query":"","description":"updated suppression for terraform provider test","editable":true,"enabled":true,"name":"tf-TestAccSecurityMonitoringSuppression_CreateAndUpdateWithoutDates-local-1763123426","rule_query":"severity:low source:(cloudtrail OR azure)","suppression_query":"env:staging","tags":[],"update_date":1763123429138,"updater":{"handle":"frog@datadoghq.com","name":"frog"},"version":2}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 119.920416ms
+        duration: 243.072ms
     - id: 7
       request:
         proto: HTTP/1.1
@@ -254,7 +254,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/old-hd0-s8x
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/ij8-mvr-xmd
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -268,7 +268,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 132.409291ms
+        duration: 256.004958ms
     - id: 8
       request:
         proto: HTTP/1.1
@@ -285,7 +285,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/old-hd0-s8x
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/ij8-mvr-xmd
         method: GET
       response:
         proto: HTTP/1.1
@@ -295,10 +295,10 @@ interactions:
         trailer: {}
         content_length: 67
         uncompressed: false
-        body: '{"errors":["not_found(Suppression with ID old-hd0-s8x not found)"]}'
+        body: '{"errors":["not_found(Suppression with ID ij8-mvr-xmd not found)"]}'
         headers:
             Content-Type:
                 - application/json
         status: 404 Not Found
         code: 404
-        duration: 108.278375ms
+        duration: 228.4565ms

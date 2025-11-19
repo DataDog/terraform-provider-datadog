@@ -568,3 +568,115 @@ func TestAccSecurityMonitoringSuppression_ValidationEnabled(t *testing.T) {
 		},
 	})
 }
+
+// Create a suppression with tags, update tags, then remove all tags
+func TestAccSecurityMonitoringSuppression_CreateAndUpdateTags(t *testing.T) {
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	suppressionName := uniqueEntityName(ctx, t)
+	resourceName := "datadog_security_monitoring_suppression.suppression_test_tags"
+
+	configWithoutTags := fmt.Sprintf(`
+	resource "datadog_security_monitoring_suppression" "suppression_test_tags" {
+		name              = "%s"
+		description       = "suppression for terraform provider test"
+		enabled           = true
+		rule_query        = "severity:low source:cloudtrail"
+		suppression_query = "env:staging"
+		validate          = false
+	}
+	`, suppressionName)
+
+	configWithTags := func(tags []string) string {
+		tagsStr := ""
+		for i, tag := range tags {
+			if i > 0 {
+				tagsStr += ", "
+			}
+			tagsStr += fmt.Sprintf("\"%s\"", tag)
+		}
+		return fmt.Sprintf(`
+		resource "datadog_security_monitoring_suppression" "suppression_test_tags" {
+			name              = "%s"
+			description       = "suppression for terraform provider test"
+			enabled           = true
+			rule_query        = "severity:low source:cloudtrail"
+			suppression_query = "env:staging"
+			tags              = [%s]
+			validate          = false
+		}
+		`, suppressionName, tagsStr)
+	}
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckSecurityMonitoringSuppressionDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			// Create without tags
+			{
+				Config: configWithoutTags,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckSecurityMonitoringSuppressionExists(providers.frameworkProvider, resourceName),
+					checkSecurityMonitoringSuppressionContent(
+						resourceName,
+						suppressionName,
+						"suppression for terraform provider test",
+						"severity:low source:cloudtrail",
+						"env:staging",
+					),
+					resource.TestCheckResourceAttr(resourceName, "tags.#", "0"),
+				),
+			},
+			// Add tags
+			{
+				Config: configWithTags([]string{"env:test", "team:security"}),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckSecurityMonitoringSuppressionExists(providers.frameworkProvider, resourceName),
+					checkSecurityMonitoringSuppressionContent(
+						resourceName,
+						suppressionName,
+						"suppression for terraform provider test",
+						"severity:low source:cloudtrail",
+						"env:staging",
+					),
+					resource.TestCheckResourceAttr(resourceName, "tags.#", "2"),
+					resource.TestCheckResourceAttr(resourceName, "tags.0", "env:test"),
+					resource.TestCheckResourceAttr(resourceName, "tags.1", "team:security"),
+				),
+			},
+			// Update tags
+			{
+				Config: configWithTags([]string{"env:prod", "owner:terraform", "team:security"}),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckSecurityMonitoringSuppressionExists(providers.frameworkProvider, resourceName),
+					checkSecurityMonitoringSuppressionContent(
+						resourceName,
+						suppressionName,
+						"suppression for terraform provider test",
+						"severity:low source:cloudtrail",
+						"env:staging",
+					),
+					resource.TestCheckResourceAttr(resourceName, "tags.#", "3"),
+					resource.TestCheckResourceAttr(resourceName, "tags.0", "env:prod"),
+					resource.TestCheckResourceAttr(resourceName, "tags.1", "owner:terraform"),
+					resource.TestCheckResourceAttr(resourceName, "tags.2", "team:security"),
+				),
+			},
+			// Remove all tags
+			{
+				Config: configWithoutTags,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckSecurityMonitoringSuppressionExists(providers.frameworkProvider, resourceName),
+					checkSecurityMonitoringSuppressionContent(
+						resourceName,
+						suppressionName,
+						"suppression for terraform provider test",
+						"severity:low source:cloudtrail",
+						"env:staging",
+					),
+					resource.TestCheckResourceAttr(resourceName, "tags.#", "0"),
+				),
+			},
+		},
+	})
+}
