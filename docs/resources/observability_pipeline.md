@@ -304,7 +304,7 @@ Required:
 
 Optional:
 
-- `auth` (Block, Optional) GCP credentials used to authenticate with Google Cloud Storage. (see [below for nested schema](#nestedblock--config--destinations--google_chronicle--auth))
+- `auth` (Block, Optional) GCP credentials used to authenticate with Google Cloud services. (see [below for nested schema](#nestedblock--config--destinations--google_chronicle--auth))
 - `customer_id` (String) The Google Chronicle customer ID.
 - `encoding` (String) The encoding format for the logs sent to Chronicle.
 - `log_type` (String) The log type metadata associated with the Chronicle destination.
@@ -314,7 +314,7 @@ Optional:
 
 Optional:
 
-- `credentials_file` (String) Path to the GCP service account key file.
+- `credentials_file` (String) Path to the GCP service account key file. Required when auth block is specified.
 
 
 
@@ -323,7 +323,6 @@ Optional:
 
 Required:
 
-- `acl` (String) Access control list setting for objects written to the bucket.
 - `bucket` (String) Name of the GCS bucket.
 - `id` (String) Unique identifier for the destination component.
 - `inputs` (List of String) A list of component IDs whose output is used as the `input` for this component.
@@ -331,16 +330,17 @@ Required:
 
 Optional:
 
-- `auth` (Block, Optional) GCP credentials used to authenticate with Google Cloud Storage. (see [below for nested schema](#nestedblock--config--destinations--google_cloud_storage--auth))
+- `acl` (String) Access control list setting for objects written to the bucket.
+- `auth` (Block, Optional) GCP credentials used to authenticate with Google Cloud services. (see [below for nested schema](#nestedblock--config--destinations--google_cloud_storage--auth))
 - `key_prefix` (String) Optional prefix for object keys within the GCS bucket.
 - `metadata` (Block List) Custom metadata key-value pairs added to each object. (see [below for nested schema](#nestedblock--config--destinations--google_cloud_storage--metadata))
 
 <a id="nestedblock--config--destinations--google_cloud_storage--auth"></a>
 ### Nested Schema for `config.destinations.google_cloud_storage.auth`
 
-Required:
+Optional:
 
-- `credentials_file` (String) Path to the GCP service account key file.
+- `credentials_file` (String) Path to the GCP service account key file. Required when auth block is specified.
 
 
 <a id="nestedblock--config--destinations--google_cloud_storage--metadata"></a>
@@ -365,7 +365,7 @@ Required:
 
 Optional:
 
-- `auth` (Block, Optional) GCP credentials used to authenticate with Google Cloud Pub/Sub. (see [below for nested schema](#nestedblock--config--destinations--google_pubsub--auth))
+- `auth` (Block, Optional) GCP credentials used to authenticate with Google Cloud services. (see [below for nested schema](#nestedblock--config--destinations--google_pubsub--auth))
 - `encoding` (String) Encoding format for log events. Valid values: `json`, `raw_message`.
 - `tls` (Block, Optional) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--destinations--google_pubsub--tls))
 
@@ -374,7 +374,7 @@ Optional:
 
 Optional:
 
-- `credentials_file` (String) Path to the GCP service account key file.
+- `credentials_file` (String) Path to the GCP service account key file. Required when auth block is specified.
 
 
 <a id="nestedblock--config--destinations--google_pubsub--tls"></a>
@@ -1321,15 +1321,15 @@ Required:
 
 Optional:
 
-- `auth` (Block, Optional) GCP credentials used to authenticate with Google Cloud Storage. (see [below for nested schema](#nestedblock--config--sources--google_pubsub--auth))
+- `auth` (Block, Optional) GCP credentials used to authenticate with Google Cloud services. (see [below for nested schema](#nestedblock--config--sources--google_pubsub--auth))
 - `tls` (Block, Optional) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--sources--google_pubsub--tls))
 
 <a id="nestedblock--config--sources--google_pubsub--auth"></a>
 ### Nested Schema for `config.sources.google_pubsub.auth`
 
-Required:
+Optional:
 
-- `credentials_file` (String) Path to the GCP service account key file.
+- `credentials_file` (String) Path to the GCP service account key file. Required when auth block is specified.
 
 
 <a id="nestedblock--config--sources--google_pubsub--tls"></a>
