@@ -35,3 +35,4 @@ Read-Only:
 - `rule_query` (String)
 - `start_date` (String)
 - `suppression_query` (String)
+- `tags` (List of String)

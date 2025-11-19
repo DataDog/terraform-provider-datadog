@@ -28,6 +28,7 @@ type securityMonitoringSuppressionDataSourceItem struct {
 	RuleQuery          types.String `tfsdk:"rule_query"`
 	SuppressionQuery   types.String `tfsdk:"suppression_query"`
 	DataExclusionQuery types.String `tfsdk:"data_exclusion_query"`
+	Tags               types.List   `tfsdk:"tags"`
 }
 
 type securityMonitoringSuppressionsDataSourceModel struct {
@@ -97,6 +98,13 @@ func (r *securityMonitoringSuppressionDataSource) Read(ctx context.Context, requ
 			expirationDate := time.UnixMilli(*attributes.ExpirationDate).Format(time.RFC3339)
 			suppressionModel.ExpirationDate = types.StringValue(expirationDate)
 		}
+		if attributes.Tags == nil || len(attributes.Tags) == 0 {
+			suppressionModel.Tags = types.ListNull(types.StringType)
+		} else {
+			tags, diags := types.ListValueFrom(ctx, types.StringType, attributes.Tags)
+			suppressionModel.Tags = tags
+			response.Diagnostics.Append(diags...)
+		}
 
 		suppressionIds[idx] = suppression.GetId()
 		suppressions[idx] = suppressionModel
@@ -136,6 +144,7 @@ func (*securityMonitoringSuppressionDataSource) Schema(_ context.Context, _ data
 						"rule_query":           types.StringType,
 						"suppression_query":    types.StringType,
 						"data_exclusion_query": types.StringType,
+						"tags":                 types.ListType{ElemType: types.StringType},
 					},
 				},
 			},

@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"description":"suppression for validation test","enabled":true,"name":"tf-TestAccSecurityMonitoringSuppression_ValidationEnabled-local-1757025293","rule_query":"severity:low source:cloudtrail","start_date":4072775400000,"suppression_query":"env:staging"},"type":"suppressions"}}
+            {"data":{"attributes":{"description":"suppression for validation test","enabled":true,"name":"tf-TestAccSecurityMonitoringSuppression_ValidationEnabled-local-1763123459","rule_query":"severity:low source:cloudtrail","start_date":4072775400000,"suppression_query":"env:staging"},"type":"suppressions"}}
         form: {}
         headers:
             Accept:
@@ -34,7 +34,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 114.728667ms
+        duration: 241.80775ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -47,7 +47,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"description":"suppression for validation test","enabled":true,"name":"tf-TestAccSecurityMonitoringSuppression_ValidationEnabled-local-1757025293","rule_query":"severity:low source:cloudtrail","start_date":4072775400000,"suppression_query":"env:staging"},"type":"suppressions"}}
+            {"data":{"attributes":{"description":"suppression for validation test","enabled":true,"name":"tf-TestAccSecurityMonitoringSuppression_ValidationEnabled-local-1763123459","rule_query":"severity:low source:cloudtrail","start_date":4072775400000,"suppression_query":"env:staging"},"type":"suppressions"}}
         form: {}
         headers:
             Accept:
@@ -68,7 +68,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 113.056875ms
+        duration: 229.973ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -81,7 +81,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"description":"suppression for validation test","enabled":true,"name":"tf-TestAccSecurityMonitoringSuppression_ValidationEnabled-local-1757025293","rule_query":"severity:low source:cloudtrail","start_date":4072775400000,"suppression_query":"env:staging"},"type":"suppressions"}}
+            {"data":{"attributes":{"description":"suppression for validation test","enabled":true,"name":"tf-TestAccSecurityMonitoringSuppression_ValidationEnabled-local-1763123459","rule_query":"severity:low source:cloudtrail","start_date":4072775400000,"suppression_query":"env:staging"},"type":"suppressions"}}
         form: {}
         headers:
             Accept:
@@ -98,13 +98,13 @@ interactions:
         trailer: {}
         content_length: 554
         uncompressed: false
-        body: '{"data":{"id":"jkq-xpc-d7k","type":"suppressions","attributes":{"creation_date":1757025294408,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"data_exclusion_query":"","description":"suppression for validation test","editable":true,"enabled":true,"name":"tf-TestAccSecurityMonitoringSuppression_ValidationEnabled-local-1757025293","rule_query":"severity:low source:cloudtrail","start_date":4072775400000,"suppression_query":"env:staging","tags":[],"update_date":1757025294408,"updater":{"handle":"frog@datadoghq.com","name":"frog"},"version":1}}}'
+        body: '{"data":{"id":"nqb-u0q-jpq","type":"suppressions","attributes":{"creation_date":1763123460928,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"data_exclusion_query":"","description":"suppression for validation test","editable":true,"enabled":true,"name":"tf-TestAccSecurityMonitoringSuppression_ValidationEnabled-local-1763123459","rule_query":"severity:low source:cloudtrail","start_date":4072775400000,"suppression_query":"env:staging","tags":[],"update_date":1763123460928,"updater":{"handle":"frog@datadoghq.com","name":"frog"},"version":1}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 128.639542ms
+        duration: 250.070042ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -121,7 +121,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/jkq-xpc-d7k
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/nqb-u0q-jpq
         method: GET
       response:
         proto: HTTP/1.1
@@ -131,13 +131,13 @@ interactions:
         trailer: {}
         content_length: 554
         uncompressed: false
-        body: '{"data":{"id":"jkq-xpc-d7k","type":"suppressions","attributes":{"creation_date":1757025294408,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"data_exclusion_query":"","description":"suppression for validation test","editable":true,"enabled":true,"name":"tf-TestAccSecurityMonitoringSuppression_ValidationEnabled-local-1757025293","rule_query":"severity:low source:cloudtrail","start_date":4072775400000,"suppression_query":"env:staging","tags":[],"update_date":1757025294408,"updater":{"handle":"frog@datadoghq.com","name":"frog"},"version":1}}}'
+        body: '{"data":{"id":"nqb-u0q-jpq","type":"suppressions","attributes":{"creation_date":1763123460928,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"data_exclusion_query":"","description":"suppression for validation test","editable":true,"enabled":true,"name":"tf-TestAccSecurityMonitoringSuppression_ValidationEnabled-local-1763123459","rule_query":"severity:low source:cloudtrail","start_date":4072775400000,"suppression_query":"env:staging","tags":[],"update_date":1763123460928,"updater":{"handle":"frog@datadoghq.com","name":"frog"},"version":1}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 122.517416ms
+        duration: 236.965583ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -150,7 +150,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"description":"suppression for validation test","enabled":true,"name":"tf-TestAccSecurityMonitoringSuppression_ValidationEnabled-local-1757025293","rule_query":"severity:low source:cloudtrail","suppression_query":"env:staging"},"type":"suppressions"}}
+            {"data":{"attributes":{"description":"suppression for validation test","enabled":true,"name":"tf-TestAccSecurityMonitoringSuppression_ValidationEnabled-local-1763123459","rule_query":"severity:low source:cloudtrail","suppression_query":"env:staging"},"type":"suppressions"}}
         form: {}
         headers:
             Accept:
@@ -171,7 +171,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 120.476459ms
+        duration: 266.214542ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -188,7 +188,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/jkq-xpc-d7k
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/nqb-u0q-jpq
         method: GET
       response:
         proto: HTTP/1.1
@@ -198,13 +198,13 @@ interactions:
         trailer: {}
         content_length: 554
         uncompressed: false
-        body: '{"data":{"id":"jkq-xpc-d7k","type":"suppressions","attributes":{"creation_date":1757025294408,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"data_exclusion_query":"","description":"suppression for validation test","editable":true,"enabled":true,"name":"tf-TestAccSecurityMonitoringSuppression_ValidationEnabled-local-1757025293","rule_query":"severity:low source:cloudtrail","start_date":4072775400000,"suppression_query":"env:staging","tags":[],"update_date":1757025294408,"updater":{"handle":"frog@datadoghq.com","name":"frog"},"version":1}}}'
+        body: '{"data":{"id":"nqb-u0q-jpq","type":"suppressions","attributes":{"creation_date":1763123460928,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"data_exclusion_query":"","description":"suppression for validation test","editable":true,"enabled":true,"name":"tf-TestAccSecurityMonitoringSuppression_ValidationEnabled-local-1763123459","rule_query":"severity:low source:cloudtrail","start_date":4072775400000,"suppression_query":"env:staging","tags":[],"update_date":1763123460928,"updater":{"handle":"frog@datadoghq.com","name":"frog"},"version":1}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 122.216292ms
+        duration: 239.135625ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -217,7 +217,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"description":"suppression for validation test","enabled":true,"name":"tf-TestAccSecurityMonitoringSuppression_ValidationEnabled-local-1757025293","rule_query":"severity:low source:cloudtrail","suppression_query":"env:staging"},"type":"suppressions"}}
+            {"data":{"attributes":{"description":"suppression for validation test","enabled":true,"name":"tf-TestAccSecurityMonitoringSuppression_ValidationEnabled-local-1763123459","rule_query":"severity:low source:cloudtrail","suppression_query":"env:staging"},"type":"suppressions"}}
         form: {}
         headers:
             Accept:
@@ -238,7 +238,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 112.540625ms
+        duration: 250.998333ms
     - id: 7
       request:
         proto: HTTP/1.1
@@ -255,7 +255,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/jkq-xpc-d7k
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/nqb-u0q-jpq
         method: GET
       response:
         proto: HTTP/1.1
@@ -265,13 +265,13 @@ interactions:
         trailer: {}
         content_length: 554
         uncompressed: false
-        body: '{"data":{"id":"jkq-xpc-d7k","type":"suppressions","attributes":{"creation_date":1757025294408,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"data_exclusion_query":"","description":"suppression for validation test","editable":true,"enabled":true,"name":"tf-TestAccSecurityMonitoringSuppression_ValidationEnabled-local-1757025293","rule_query":"severity:low source:cloudtrail","start_date":4072775400000,"suppression_query":"env:staging","tags":[],"update_date":1757025294408,"updater":{"handle":"frog@datadoghq.com","name":"frog"},"version":1}}}'
+        body: '{"data":{"id":"nqb-u0q-jpq","type":"suppressions","attributes":{"creation_date":1763123460928,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"data_exclusion_query":"","description":"suppression for validation test","editable":true,"enabled":true,"name":"tf-TestAccSecurityMonitoringSuppression_ValidationEnabled-local-1763123459","rule_query":"severity:low source:cloudtrail","start_date":4072775400000,"suppression_query":"env:staging","tags":[],"update_date":1763123460928,"updater":{"handle":"frog@datadoghq.com","name":"frog"},"version":1}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 125.340042ms
+        duration: 256.753ms
     - id: 8
       request:
         proto: HTTP/1.1
@@ -284,7 +284,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"description":"suppression for validation test","enabled":true,"name":"tf-TestAccSecurityMonitoringSuppression_ValidationEnabled-local-1757025293","rule_query":"severity:low source:cloudtrail","start_date":4135847400000,"suppression_query":"env:staging"},"type":"suppressions"}}
+            {"data":{"attributes":{"description":"suppression for validation test","enabled":true,"name":"tf-TestAccSecurityMonitoringSuppression_ValidationEnabled-local-1763123459","rule_query":"severity:low source:cloudtrail","start_date":4135847400000,"suppression_query":"env:staging"},"type":"suppressions"}}
         form: {}
         headers:
             Accept:
@@ -305,7 +305,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 113.141541ms
+        duration: 226.17275ms
     - id: 9
       request:
         proto: HTTP/1.1
@@ -318,7 +318,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"description":"suppression for validation test","enabled":true,"name":"tf-TestAccSecurityMonitoringSuppression_ValidationEnabled-local-1757025293","rule_query":"severity:low source:cloudtrail","start_date":4135847400000,"suppression_query":"env:staging"},"type":"suppressions"}}
+            {"data":{"attributes":{"description":"suppression for validation test","enabled":true,"name":"tf-TestAccSecurityMonitoringSuppression_ValidationEnabled-local-1763123459","rule_query":"severity:low source:cloudtrail","start_date":4135847400000,"suppression_query":"env:staging"},"type":"suppressions"}}
         form: {}
         headers:
             Accept:
@@ -339,27 +339,27 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 111.226167ms
+        duration: 234.265958ms
     - id: 10
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 328
+        content_length: 338
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"data_exclusion_query":"","description":"suppression for validation test","enabled":true,"name":"tf-TestAccSecurityMonitoringSuppression_ValidationEnabled-local-1757025293","rule_query":"severity:low source:cloudtrail","start_date":4135847400000,"suppression_query":"env:staging"},"type":"suppressions"}}
+            {"data":{"attributes":{"data_exclusion_query":"","description":"suppression for validation test","enabled":true,"name":"tf-TestAccSecurityMonitoringSuppression_ValidationEnabled-local-1763123459","rule_query":"severity:low source:cloudtrail","start_date":4135847400000,"suppression_query":"env:staging","tags":[]},"type":"suppressions"}}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/jkq-xpc-d7k
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/nqb-u0q-jpq
         method: PATCH
       response:
         proto: HTTP/1.1
@@ -369,13 +369,13 @@ interactions:
         trailer: {}
         content_length: 554
         uncompressed: false
-        body: '{"data":{"id":"jkq-xpc-d7k","type":"suppressions","attributes":{"creation_date":1757025294408,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"data_exclusion_query":"","description":"suppression for validation test","editable":true,"enabled":true,"name":"tf-TestAccSecurityMonitoringSuppression_ValidationEnabled-local-1757025293","rule_query":"severity:low source:cloudtrail","start_date":4135847400000,"suppression_query":"env:staging","tags":[],"update_date":1757025296303,"updater":{"handle":"frog@datadoghq.com","name":"frog"},"version":2}}}'
+        body: '{"data":{"id":"nqb-u0q-jpq","type":"suppressions","attributes":{"creation_date":1763123460928,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"data_exclusion_query":"","description":"suppression for validation test","editable":true,"enabled":true,"name":"tf-TestAccSecurityMonitoringSuppression_ValidationEnabled-local-1763123459","rule_query":"severity:low source:cloudtrail","start_date":4135847400000,"suppression_query":"env:staging","tags":[],"update_date":1763123463900,"updater":{"handle":"frog@datadoghq.com","name":"frog"},"version":2}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 136.289208ms
+        duration: 344.992625ms
     - id: 11
       request:
         proto: HTTP/1.1
@@ -392,7 +392,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/jkq-xpc-d7k
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/nqb-u0q-jpq
         method: GET
       response:
         proto: HTTP/1.1
@@ -402,13 +402,13 @@ interactions:
         trailer: {}
         content_length: 554
         uncompressed: false
-        body: '{"data":{"id":"jkq-xpc-d7k","type":"suppressions","attributes":{"creation_date":1757025294408,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"data_exclusion_query":"","description":"suppression for validation test","editable":true,"enabled":true,"name":"tf-TestAccSecurityMonitoringSuppression_ValidationEnabled-local-1757025293","rule_query":"severity:low source:cloudtrail","start_date":4135847400000,"suppression_query":"env:staging","tags":[],"update_date":1757025296303,"updater":{"handle":"frog@datadoghq.com","name":"frog"},"version":2}}}'
+        body: '{"data":{"id":"nqb-u0q-jpq","type":"suppressions","attributes":{"creation_date":1763123460928,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"data_exclusion_query":"","description":"suppression for validation test","editable":true,"enabled":true,"name":"tf-TestAccSecurityMonitoringSuppression_ValidationEnabled-local-1763123459","rule_query":"severity:low source:cloudtrail","start_date":4135847400000,"suppression_query":"env:staging","tags":[],"update_date":1763123463900,"updater":{"handle":"frog@datadoghq.com","name":"frog"},"version":2}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 119.833417ms
+        duration: 285.857833ms
     - id: 12
       request:
         proto: HTTP/1.1
@@ -421,7 +421,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"description":"suppression for validation test","enabled":true,"name":"tf-TestAccSecurityMonitoringSuppression_ValidationEnabled-local-1757025293","rule_query":"severity:low source:cloudtrail","suppression_query":"env:staging"},"type":"suppressions"}}
+            {"data":{"attributes":{"description":"suppression for validation test","enabled":true,"name":"tf-TestAccSecurityMonitoringSuppression_ValidationEnabled-local-1763123459","rule_query":"severity:low source:cloudtrail","suppression_query":"env:staging"},"type":"suppressions"}}
         form: {}
         headers:
             Accept:
@@ -442,7 +442,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 112.754333ms
+        duration: 225.564375ms
     - id: 13
       request:
         proto: HTTP/1.1
@@ -459,7 +459,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/jkq-xpc-d7k
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/nqb-u0q-jpq
         method: GET
       response:
         proto: HTTP/1.1
@@ -469,13 +469,13 @@ interactions:
         trailer: {}
         content_length: 554
         uncompressed: false
-        body: '{"data":{"id":"jkq-xpc-d7k","type":"suppressions","attributes":{"creation_date":1757025294408,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"data_exclusion_query":"","description":"suppression for validation test","editable":true,"enabled":true,"name":"tf-TestAccSecurityMonitoringSuppression_ValidationEnabled-local-1757025293","rule_query":"severity:low source:cloudtrail","start_date":4135847400000,"suppression_query":"env:staging","tags":[],"update_date":1757025296303,"updater":{"handle":"frog@datadoghq.com","name":"frog"},"version":2}}}'
+        body: '{"data":{"id":"nqb-u0q-jpq","type":"suppressions","attributes":{"creation_date":1763123460928,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"data_exclusion_query":"","description":"suppression for validation test","editable":true,"enabled":true,"name":"tf-TestAccSecurityMonitoringSuppression_ValidationEnabled-local-1763123459","rule_query":"severity:low source:cloudtrail","start_date":4135847400000,"suppression_query":"env:staging","tags":[],"update_date":1763123463900,"updater":{"handle":"frog@datadoghq.com","name":"frog"},"version":2}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 118.228458ms
+        duration: 239.454042ms
     - id: 14
       request:
         proto: HTTP/1.1
@@ -488,7 +488,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"description":"suppression for validation test","enabled":true,"name":"tf-TestAccSecurityMonitoringSuppression_ValidationEnabled-local-1757025293","rule_query":"severity:low source:cloudtrail","suppression_query":"env:staging"},"type":"suppressions"}}
+            {"data":{"attributes":{"description":"suppression for validation test","enabled":true,"name":"tf-TestAccSecurityMonitoringSuppression_ValidationEnabled-local-1763123459","rule_query":"severity:low source:cloudtrail","suppression_query":"env:staging"},"type":"suppressions"}}
         form: {}
         headers:
             Accept:
@@ -509,7 +509,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 114.665833ms
+        duration: 228.587083ms
     - id: 15
       request:
         proto: HTTP/1.1
@@ -526,7 +526,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/jkq-xpc-d7k
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/nqb-u0q-jpq
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -540,7 +540,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 134.482959ms
+        duration: 250.318916ms
     - id: 16
       request:
         proto: HTTP/1.1
@@ -557,7 +557,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/jkq-xpc-d7k
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/nqb-u0q-jpq
         method: GET
       response:
         proto: HTTP/1.1
@@ -567,10 +567,10 @@ interactions:
         trailer: {}
         content_length: 67
         uncompressed: false
-        body: '{"errors":["not_found(Suppression with ID jkq-xpc-d7k not found)"]}'
+        body: '{"errors":["not_found(Suppression with ID nqb-u0q-jpq not found)"]}'
         headers:
             Content-Type:
                 - application/json
         status: 404 Not Found
         code: 404
-        duration: 120.684959ms
+        duration: 225.834792ms
