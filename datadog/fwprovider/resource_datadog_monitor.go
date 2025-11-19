@@ -3,6 +3,7 @@ package fwprovider
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"regexp"
@@ -91,6 +92,17 @@ type monitorResourceModel struct {
 	SchedulingOptions       []SchedulingOption               `tfsdk:"scheduling_options"`
 	Variables               []Variable                       `tfsdk:"variables"`
 	DraftStatus             types.String                     `tfsdk:"draft_status"`
+	MonitorAssets           []MonitorAsset                   `tfsdk:"assets"`
+}
+
+type MonitorAsset struct {
+	Name              types.String `tfsdk:"name"`
+	Url               types.String `tfsdk:"url"`
+	Category          types.String `tfsdk:"category"`
+	Options           types.Map    `tfsdk:"options"`
+	TemplateVariables types.Map    `tfsdk:"template_variables"`
+	ResourceKey       types.String `tfsdk:"resource_key"`
+	ResourceType      types.String `tfsdk:"resource_type"`
 }
 
 type MonitorThreshold struct {
@@ -448,6 +460,49 @@ func (r *monitorResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 			},
 		},
 		Blocks: map[string]schema.Block{
+			"assets": schema.ListNestedBlock{
+				Description: "List of monitor assets (e.g., runbooks, dashboards, workflows) tied to this monitor.",
+				NestedObject: schema.NestedBlockObject{
+					Attributes: map[string]schema.Attribute{
+						"name": schema.StringAttribute{
+							Required:    true,
+							Description: "Name for the monitor asset.",
+						},
+						"url": schema.StringAttribute{
+							Required:    true,
+							Description: "URL for the asset.",
+						},
+						"category": schema.StringAttribute{
+							Required:    true,
+							Description: "Type of asset the entity represents on a monitor.",
+							Validators: []validator.String{
+								stringvalidator.OneOf(r.getAllowMonitorAssetCategory()...),
+							},
+						},
+						"resource_key": schema.StringAttribute{
+							Optional:    true,
+							Description: "Identifier of the internal Datadog resource that this asset represents.",
+						},
+						"resource_type": schema.StringAttribute{
+							Optional:    true,
+							Description: "Type of internal Datadog resource associated with a monitor asset.",
+							Validators: []validator.String{
+								stringvalidator.OneOf(r.getAllowMonitorAssetResourceType()...),
+							},
+						},
+						"options": schema.MapAttribute{
+							Optional:    true,
+							ElementType: types.StringType,
+							Description: "Additional options for the asset as a string map.",
+						},
+						"template_variables": schema.MapAttribute{
+							Optional:    true,
+							ElementType: types.StringType,
+							Description: "Template variables for parameterizing the asset URL as a string map.",
+						},
+					},
+				},
+			},
 			"monitor_thresholds": schema.ListNestedBlock{
 				Description: "Alert thresholds of the monitor.",
 				Validators: []validator.List{
@@ -954,6 +1009,12 @@ func (r *monitorResource) buildMonitorStruct(ctx context.Context, state *monitor
 		u.SetRestrictedRolesNil()
 	}
 
+	// Assets
+	if assets := r.buildAssetsStruct(ctx, state.MonitorAssets); len(assets) > 0 {
+		m.SetAssets(assets)
+		u.SetAssets(assets)
+	}
+
 	monitorOptions := datadogV1.MonitorOptions{}
 	if !state.EscalationMessage.IsNull() {
 		escalationMessage := strings.TrimSpace(state.EscalationMessage.ValueString())
@@ -1162,6 +1223,53 @@ func (r *monitorResource) buildCloudCostQueryStruct(cloudCostQs []CloudCostQuery
 	return variablesReq
 }
 
+func (r *monitorResource) buildAssetsStruct(ctx context.Context, tfAssets []MonitorAsset) []datadogV1.MonitorAsset {
+	if len(tfAssets) == 0 {
+		return nil
+	}
+	assets := make([]datadogV1.MonitorAsset, 0, len(tfAssets))
+	for _, a := range tfAssets {
+		if a.Category.IsNull() || a.Name.IsNull() || a.Url.IsNull() {
+			continue
+		}
+		category := datadogV1.MonitorAssetCategory(a.Category.ValueString())
+		asset := datadogV1.NewMonitorAsset(category, a.Name.ValueString(), a.Url.ValueString())
+		if !a.ResourceKey.IsNull() {
+			asset.SetResourceKey(a.ResourceKey.ValueString())
+		}
+		if !a.ResourceType.IsNull() {
+			asset.SetResourceType(datadogV1.MonitorAssetResourceType(a.ResourceType.ValueString()))
+		}
+		// best-effort map conversions
+		if !a.Options.IsNull() && !a.Options.IsUnknown() {
+			opts := map[string]interface{}{}
+			var smap map[string]string
+			if di := a.Options.ElementsAs(ctx, &smap, false); !di.HasError() {
+				for k, v := range smap {
+					opts[k] = v
+				}
+				if len(opts) > 0 {
+					asset.SetOptions(opts)
+				}
+			}
+		}
+		if !a.TemplateVariables.IsNull() && !a.TemplateVariables.IsUnknown() {
+			tv := map[string]interface{}{}
+			var smap map[string]string
+			if di := a.TemplateVariables.ElementsAs(ctx, &smap, false); !di.HasError() {
+				for k, v := range smap {
+					tv[k] = v
+				}
+				if len(tv) > 0 {
+					asset.SetTemplateVariables(tv)
+				}
+			}
+		}
+		assets = append(assets, *asset)
+	}
+	return assets
+}
+
 func (r *monitorResource) updateState(ctx context.Context, state *monitorResourceModel, m *datadogV1.Monitor) {
 	if id, ok := m.GetIdOk(); ok && id != nil {
 		state.ID = types.StringValue(strconv.FormatInt(*id, 10))
@@ -1232,6 +1340,8 @@ func (r *monitorResource) updateState(ctx context.Context, state *monitorResourc
 	state.EnableLogsSample = fwutils.ToTerraformBool(m.Options.GetEnableLogsSampleOk())
 	state.Locked = fwutils.ToTerraformBool(m.Options.GetLockedOk())
 
+	r.updateAssetsState(ctx, state, m)
+
 	if monitorThresholds, ok := m.Options.GetThresholdsOk(); ok && monitorThresholds != nil {
 		state.MonitorThresholds = []MonitorThreshold{{
 			Ok:               r.buildFloatStringValue(fwutils.ToTerraformStr(monitorThresholds.GetOkOk())),
@@ -1250,6 +1360,87 @@ func (r *monitorResource) updateState(ctx context.Context, state *monitorResourc
 	}
 	r.updateSchedulingOptionState(state, m.Options)
 	r.updateVariablesState(ctx, state, m.Options)
+}
+
+func (r *monitorResource) updateAssetsState(ctx context.Context, state *monitorResourceModel, m *datadogV1.Monitor) {
+	// Assets -> state
+	if assets, ok := m.GetAssetsOk(); ok && assets != nil {
+		tfAssets := make([]MonitorAsset, 0, len(*assets))
+		for i, a := range *assets {
+			var priorAsset *MonitorAsset
+			if i < len(state.MonitorAssets) {
+				priorAsset = &state.MonitorAssets[i]
+			}
+			tfAsset := MonitorAsset{
+				Name:     fwutils.ToTerraformStr(a.GetNameOk()),
+				Url:      fwutils.ToTerraformStr(a.GetUrlOk()),
+				Category: types.StringValue(string(a.GetCategory())),
+			}
+			if rk, ok := a.GetResourceKeyOk(); ok && rk != nil {
+				tfAsset.ResourceKey = types.StringValue(*rk)
+			} else {
+				tfAsset.ResourceKey = types.StringNull()
+			}
+			if rt, ok := a.GetResourceTypeOk(); ok && rt != nil {
+				tfAsset.ResourceType = types.StringValue(string(*rt))
+			} else {
+				tfAsset.ResourceType = types.StringNull()
+			}
+			// best-effort conversion of options/template_variables map[string]interface{} -> map[string]string
+			if opts, ok := a.GetOptionsOk(); ok && opts != nil {
+				stringMap := map[string]string{}
+				if mapi, ok2 := (*opts).(map[string]interface{}); ok2 {
+					for k, v := range mapi {
+						stringMap[k] = fmt.Sprint(v)
+					}
+				}
+				if len(stringMap) > 0 {
+					tfAsset.Options, _ = types.MapValueFrom(ctx, types.StringType, stringMap)
+				} else {
+					// Preserve prior empty vs null semantics to avoid plan/apply drift
+					if priorAsset != nil && !priorAsset.Options.IsNull() {
+						tfAsset.Options, _ = types.MapValueFrom(ctx, types.StringType, map[string]string{})
+					} else {
+						tfAsset.Options = types.MapNull(types.StringType)
+					}
+				}
+			} else {
+				// Preserve prior empty vs null semantics to avoid plan/apply drift
+				if priorAsset != nil && !priorAsset.Options.IsNull() {
+					tfAsset.Options, _ = types.MapValueFrom(ctx, types.StringType, map[string]string{})
+				} else {
+					tfAsset.Options = types.MapNull(types.StringType)
+				}
+			}
+			if tvars, ok := a.GetTemplateVariablesOk(); ok && tvars != nil {
+				stringMap := map[string]string{}
+				if mapi, ok2 := (*tvars).(map[string]interface{}); ok2 {
+					for k, v := range mapi {
+						stringMap[k] = fmt.Sprint(v)
+					}
+				}
+				if len(stringMap) > 0 {
+					tfAsset.TemplateVariables, _ = types.MapValueFrom(ctx, types.StringType, stringMap)
+				} else {
+					// Preserve prior empty vs null semantics to avoid plan/apply drift
+					if priorAsset != nil && !priorAsset.TemplateVariables.IsNull() {
+						tfAsset.TemplateVariables, _ = types.MapValueFrom(ctx, types.StringType, map[string]string{})
+					} else {
+						tfAsset.TemplateVariables = types.MapNull(types.StringType)
+					}
+				}
+			} else {
+				// Preserve prior empty vs null semantics to avoid plan/apply drift
+				if priorAsset != nil && !priorAsset.TemplateVariables.IsNull() {
+					tfAsset.TemplateVariables, _ = types.MapValueFrom(ctx, types.StringType, map[string]string{})
+				} else {
+					tfAsset.TemplateVariables = types.MapNull(types.StringType)
+				}
+			}
+			tfAssets = append(tfAssets, tfAsset)
+		}
+		state.MonitorAssets = tfAssets
+	}
 }
 
 func (r *monitorResource) updateSchedulingOptionState(state *monitorResourceModel, mOptions *datadogV1.MonitorOptions) {
@@ -1414,6 +1605,14 @@ func (r *monitorResource) getAllowCloudCostDataSource() []string {
 
 func (r *monitorResource) getAllowCloudCostAggregator() []string {
 	return enumStrings((*datadogV1.MonitorFormulaAndFunctionCostAggregator)(nil).GetAllowedValues())
+}
+
+func (r *monitorResource) getAllowMonitorAssetCategory() []string {
+	return enumStrings((*datadogV1.MonitorAssetCategory)(nil).GetAllowedValues())
+}
+
+func (r *monitorResource) getAllowMonitorAssetResourceType() []string {
+	return enumStrings((*datadogV1.MonitorAssetResourceType)(nil).GetAllowedValues())
 }
 
 func (r *monitorResource) parseInt(v types.String) *int64 {
