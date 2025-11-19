@@ -74,7 +74,7 @@ resource "datadog_custom_allocation_rule" "rule_3" {
 }
 
 # Example 1: Preserve mode (default) - allows unmanaged rules to exist at the end
-# This preserves any existing rules created outside of Terraform as long as they are at the end
+# This will preserve any existing rules created outside of Terraform as long as they are at the end
 resource "datadog_custom_allocation_rules" "preserve_order" {
   # override_ui_defined_resources = false (default)
   rule_ids = [
@@ -85,7 +85,7 @@ resource "datadog_custom_allocation_rules" "preserve_order" {
 }
 
 # Example 2: Override mode - deletes all unmanaged rules and maintains strict order
-# This deletes any rules not defined in Terraform and enforce the exact order specified
+# This will delete any rules not defined in Terraform and enforce the exact order specified
 resource "datadog_custom_allocation_rules" "override_order" {
   override_ui_defined_resources = true
   rule_ids = [
@@ -105,7 +105,7 @@ resource "datadog_custom_allocation_rules" "override_order" {
 
 ### Optional
 
-- `override_ui_defined_resources` (Boolean) When `true` (use with caution), Terraform deletes any UI-defined rules that are not declared in configuration and enforces the exact order specified in `rule_ids`. When `false` (default), Terraform preserves UI-defined rules only if they appear at the end of the list; if UI-defined rules appear elsewhere, terraform plan will fail with an error.
+- `override_ui_defined_resources` (Boolean) Whether to override UI-defined rules. When set to true, any rules created via the UI that are not defined in Terraform will be deleted and Terraform will be used as the source of truth for rules and their ordering. When set to false, any rules created via the UI that are at the end of order will be kept but will be warned, otherwise an error will be thrown in terraform plan phase. Default is false
 
 ### Read-Only
 
