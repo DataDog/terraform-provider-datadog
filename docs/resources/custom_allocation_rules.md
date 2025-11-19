@@ -85,7 +85,7 @@ resource "datadog_custom_allocation_rules" "preserve_order" {
 }
 
 # Example 2: Override mode - deletes all unmanaged rules and maintains strict order
-# This will delete any rules not defined in Terraform and enforce the exact order specified
+# This deletes any rules not defined in Terraform and enforce the exact order specified
 resource "datadog_custom_allocation_rules" "override_order" {
   override_ui_defined_resources = true
   rule_ids = [
