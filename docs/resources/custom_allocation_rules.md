@@ -74,7 +74,7 @@ resource "datadog_custom_allocation_rule" "rule_3" {
 }
 
 # Example 1: Preserve mode (default) - allows unmanaged rules to exist at the end
-# This will preserve any existing rules created outside of Terraform as long as they are at the end
+# This preserves any existing rules created outside of Terraform as long as they are at the end
 resource "datadog_custom_allocation_rules" "preserve_order" {
   # override_ui_defined_resources = false (default)
   rule_ids = [
