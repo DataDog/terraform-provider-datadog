@@ -4886,7 +4886,7 @@ func expandGoogleChronicleDestination(ctx context.Context, src *googleChronicleD
 		if !src.Auth.CredentialsFile.IsNull() {
 			auth.SetCredentialsFile(src.Auth.CredentialsFile.ValueString())
 		}
-		dest.Auth = auth
+		dest.Auth = &auth
 	}
 
 	if !src.CustomerId.IsNull() {
