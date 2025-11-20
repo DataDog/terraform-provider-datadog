@@ -1421,7 +1421,7 @@ func resourceDatadogMonitorRead(ctx context.Context, d *schema.ResourceData, met
 		httpresp *http.Response
 	)
 	if err = retry.RetryContext(ctx, d.Timeout(schema.TimeoutRead), func() *retry.RetryError {
-		m, httpresp, err = apiInstances.GetMonitorsApiV1().GetMonitor(auth, i)
+		m, httpresp, err = apiInstances.GetMonitorsApiV1().GetMonitor(auth, i, *datadogV1.NewGetMonitorOptionalParameters().WithWithAssets(true))
 		if err != nil {
 			if httpresp != nil {
 				if httpresp.StatusCode == 404 {

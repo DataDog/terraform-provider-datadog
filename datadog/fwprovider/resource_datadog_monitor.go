@@ -820,7 +820,7 @@ func (r *monitorResource) Read(ctx context.Context, request resource.ReadRequest
 	if diags.HasError() {
 		return
 	}
-	resp, httpResp, err := r.Api.GetMonitor(r.Auth, *id)
+	resp, httpResp, err := r.Api.GetMonitor(r.Auth, *id, *datadogV1.NewGetMonitorOptionalParameters().WithWithAssets(true))
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == 404 {
 			response.State.RemoveResource(ctx)
