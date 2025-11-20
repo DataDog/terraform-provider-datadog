@@ -3,7 +3,6 @@ package fwprovider
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 	"regexp"
@@ -96,13 +95,11 @@ type monitorResourceModel struct {
 }
 
 type MonitorAsset struct {
-	Name              types.String `tfsdk:"name"`
-	Url               types.String `tfsdk:"url"`
-	Category          types.String `tfsdk:"category"`
-	Options           types.Map    `tfsdk:"options"`
-	TemplateVariables types.Map    `tfsdk:"template_variables"`
-	ResourceKey       types.String `tfsdk:"resource_key"`
-	ResourceType      types.String `tfsdk:"resource_type"`
+	Name         types.String `tfsdk:"name"`
+	Url          types.String `tfsdk:"url"`
+	Category     types.String `tfsdk:"category"`
+	ResourceKey  types.String `tfsdk:"resource_key"`
+	ResourceType types.String `tfsdk:"resource_type"`
 }
 
 type MonitorThreshold struct {
@@ -489,16 +486,6 @@ func (r *monitorResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 							Validators: []validator.String{
 								stringvalidator.OneOf(r.getAllowMonitorAssetResourceType()...),
 							},
-						},
-						"options": schema.MapAttribute{
-							Optional:    true,
-							ElementType: types.StringType,
-							Description: "Additional options for the asset as a string map.",
-						},
-						"template_variables": schema.MapAttribute{
-							Optional:    true,
-							ElementType: types.StringType,
-							Description: "Template variables for parameterizing the asset URL as a string map.",
 						},
 					},
 				},
@@ -1229,9 +1216,6 @@ func (r *monitorResource) buildAssetsStruct(ctx context.Context, tfAssets []Moni
 	}
 	assets := make([]datadogV1.MonitorAsset, 0, len(tfAssets))
 	for _, a := range tfAssets {
-		if a.Category.IsNull() || a.Name.IsNull() || a.Url.IsNull() {
-			continue
-		}
 		category := datadogV1.MonitorAssetCategory(a.Category.ValueString())
 		asset := datadogV1.NewMonitorAsset(category, a.Name.ValueString(), a.Url.ValueString())
 		if !a.ResourceKey.IsNull() {
@@ -1239,31 +1223,6 @@ func (r *monitorResource) buildAssetsStruct(ctx context.Context, tfAssets []Moni
 		}
 		if !a.ResourceType.IsNull() {
 			asset.SetResourceType(datadogV1.MonitorAssetResourceType(a.ResourceType.ValueString()))
-		}
-		// best-effort map conversions
-		if !a.Options.IsNull() && !a.Options.IsUnknown() {
-			opts := map[string]interface{}{}
-			var smap map[string]string
-			if di := a.Options.ElementsAs(ctx, &smap, false); !di.HasError() {
-				for k, v := range smap {
-					opts[k] = v
-				}
-				if len(opts) > 0 {
-					asset.SetOptions(opts)
-				}
-			}
-		}
-		if !a.TemplateVariables.IsNull() && !a.TemplateVariables.IsUnknown() {
-			tv := map[string]interface{}{}
-			var smap map[string]string
-			if di := a.TemplateVariables.ElementsAs(ctx, &smap, false); !di.HasError() {
-				for k, v := range smap {
-					tv[k] = v
-				}
-				if len(tv) > 0 {
-					asset.SetTemplateVariables(tv)
-				}
-			}
 		}
 		assets = append(assets, *asset)
 	}
@@ -1366,11 +1325,7 @@ func (r *monitorResource) updateAssetsState(ctx context.Context, state *monitorR
 	// Assets -> state
 	if assets, ok := m.GetAssetsOk(); ok && assets != nil {
 		tfAssets := make([]MonitorAsset, 0, len(*assets))
-		for i, a := range *assets {
-			var priorAsset *MonitorAsset
-			if i < len(state.MonitorAssets) {
-				priorAsset = &state.MonitorAssets[i]
-			}
+		for _, a := range *assets {
 			tfAsset := MonitorAsset{
 				Name:     fwutils.ToTerraformStr(a.GetNameOk()),
 				Url:      fwutils.ToTerraformStr(a.GetUrlOk()),
@@ -1385,57 +1340,6 @@ func (r *monitorResource) updateAssetsState(ctx context.Context, state *monitorR
 				tfAsset.ResourceType = types.StringValue(string(*rt))
 			} else {
 				tfAsset.ResourceType = types.StringNull()
-			}
-			// best-effort conversion of options/template_variables map[string]interface{} -> map[string]string
-			if opts, ok := a.GetOptionsOk(); ok && opts != nil {
-				stringMap := map[string]string{}
-				if mapi, ok2 := (*opts).(map[string]interface{}); ok2 {
-					for k, v := range mapi {
-						stringMap[k] = fmt.Sprint(v)
-					}
-				}
-				if len(stringMap) > 0 {
-					tfAsset.Options, _ = types.MapValueFrom(ctx, types.StringType, stringMap)
-				} else {
-					// Preserve prior empty vs null semantics to avoid plan/apply drift
-					if priorAsset != nil && !priorAsset.Options.IsNull() {
-						tfAsset.Options, _ = types.MapValueFrom(ctx, types.StringType, map[string]string{})
-					} else {
-						tfAsset.Options = types.MapNull(types.StringType)
-					}
-				}
-			} else {
-				// Preserve prior empty vs null semantics to avoid plan/apply drift
-				if priorAsset != nil && !priorAsset.Options.IsNull() {
-					tfAsset.Options, _ = types.MapValueFrom(ctx, types.StringType, map[string]string{})
-				} else {
-					tfAsset.Options = types.MapNull(types.StringType)
-				}
-			}
-			if tvars, ok := a.GetTemplateVariablesOk(); ok && tvars != nil {
-				stringMap := map[string]string{}
-				if mapi, ok2 := (*tvars).(map[string]interface{}); ok2 {
-					for k, v := range mapi {
-						stringMap[k] = fmt.Sprint(v)
-					}
-				}
-				if len(stringMap) > 0 {
-					tfAsset.TemplateVariables, _ = types.MapValueFrom(ctx, types.StringType, stringMap)
-				} else {
-					// Preserve prior empty vs null semantics to avoid plan/apply drift
-					if priorAsset != nil && !priorAsset.TemplateVariables.IsNull() {
-						tfAsset.TemplateVariables, _ = types.MapValueFrom(ctx, types.StringType, map[string]string{})
-					} else {
-						tfAsset.TemplateVariables = types.MapNull(types.StringType)
-					}
-				}
-			} else {
-				// Preserve prior empty vs null semantics to avoid plan/apply drift
-				if priorAsset != nil && !priorAsset.TemplateVariables.IsNull() {
-					tfAsset.TemplateVariables, _ = types.MapValueFrom(ctx, types.StringType, map[string]string{})
-				} else {
-					tfAsset.TemplateVariables = types.MapNull(types.StringType)
-				}
 			}
 			tfAssets = append(tfAssets, tfAsset)
 		}

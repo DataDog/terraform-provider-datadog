@@ -467,18 +467,6 @@ func resourceDatadogMonitor() *schema.Resource {
 								Optional:         true,
 								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewMonitorAssetResourceTypeFromValue),
 							},
-							"options": {
-								Description: "Additional options for the asset as a map of strings.",
-								Type:        schema.TypeMap,
-								Optional:    true,
-								Elem:        &schema.Schema{Type: schema.TypeString},
-							},
-							"template_variables": {
-								Description: "Template variables for parameterizing the asset URL as a map of strings.",
-								Type:        schema.TypeMap,
-								Optional:    true,
-								Elem:        &schema.Schema{Type: schema.TypeString},
-							},
 						},
 					},
 				},
@@ -1554,25 +1542,6 @@ func buildMonitorAssets(tfAssets []interface{}) []datadogV1.MonitorAsset {
 			rtEnum := datadogV1.MonitorAssetResourceType(rt)
 			asset.SetResourceType(rtEnum)
 		}
-		if opts, ok := aMap["options"].(map[string]interface{}); ok && len(opts) > 0 {
-			// Ensure values are strings in interface{} map
-			strMap := map[string]interface{}{}
-			for k, v := range opts {
-				strMap[k] = fmt.Sprint(v)
-			}
-			if len(strMap) > 0 {
-				asset.SetOptions(strMap)
-			}
-		}
-		if tvars, ok := aMap["template_variables"].(map[string]interface{}); ok && len(tvars) > 0 {
-			strMap := map[string]interface{}{}
-			for k, v := range tvars {
-				strMap[k] = fmt.Sprint(v)
-			}
-			if len(strMap) > 0 {
-				asset.SetTemplateVariables(strMap)
-			}
-		}
 		assets = append(assets, *asset)
 	}
 	return assets
@@ -1592,25 +1561,6 @@ func buildTerraformMonitorAssets(apiAssets []datadogV1.MonitorAsset) []map[strin
 		}
 		if rt, ok := a.GetResourceTypeOk(); ok && rt != nil {
 			tf["resource_type"] = string(*rt)
-		}
-		// Convert options/template_variables interface{} -> map[string]string best-effort
-		if opts, ok := a.GetOptionsOk(); ok && opts != nil {
-			if mapi, ok2 := (*opts).(map[string]interface{}); ok2 {
-				stringMap := map[string]string{}
-				for k, v := range mapi {
-					stringMap[k] = fmt.Sprint(v)
-				}
-				tf["options"] = stringMap
-			}
-		}
-		if tvars, ok := a.GetTemplateVariablesOk(); ok && tvars != nil {
-			if mapi, ok2 := (*tvars).(map[string]interface{}); ok2 {
-				stringMap := map[string]string{}
-				for k, v := range mapi {
-					stringMap[k] = fmt.Sprint(v)
-				}
-				tf["template_variables"] = stringMap
-			}
 		}
 		tfAssets = append(tfAssets, tf)
 	}
