@@ -32,6 +32,7 @@ var _ provider.Provider = &FrameworkProvider{}
 
 var Resources = []func() resource.Resource{
 	NewAgentlessScanningAwsScanOptionsResource,
+	NewAgentlessScanningGcpScanOptionsResource,
 	NewOpenapiApiResource,
 	NewAPIKeyResource,
 	NewApplicationKeyResource,
@@ -124,6 +125,7 @@ var Datasources = []func() datasource.DataSource{
 	NewDatadogMetricActiveTagsAndAggregationsDataSource,
 	NewDatadogMetricMetadataDataSource,
 	NewDatadogMetricTagsDataSource,
+	NewDatadogMetricsDataSource,
 	NewDatadogPowerpackDataSource,
 	NewDatadogServiceAccountDatasource,
 	NewDatadogSoftwareCatalogDataSource,
