@@ -1923,6 +1923,9 @@ func buildUpdatePayload(d *schema.ResourceData) (*datadogV2.SecurityMonitoringRu
 			tags[i] = value.(string)
 		}
 		payload.SetTags(tags)
+	} else {
+		// Hack because the Go client does not serialize empty arrays to the JSON payload
+		payload.AdditionalProperties = map[string]any{"tags": []string{}}
 	}
 
 	tfFilters := d.Get("filter")
