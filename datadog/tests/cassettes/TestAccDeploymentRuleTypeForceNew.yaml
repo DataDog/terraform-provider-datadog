@@ -9,7 +9,7 @@ interactions:
         content_length: 174
         transfer_encoding: []
         trailer: {}
-        host: api.datad0g.com
+        host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
@@ -20,7 +20,7 @@ interactions:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datad0g.com/api/v2/deployment_gates
+        url: https://api.datadoghq.com/api/v2/deployment_gates
         method: POST
       response:
         proto: HTTP/2.0
@@ -45,7 +45,7 @@ interactions:
         content_length: 193
         transfer_encoding: []
         trailer: {}
-        host: api.datad0g.com
+        host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
@@ -56,7 +56,7 @@ interactions:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datad0g.com/api/v2/deployment_gates/6ed44078-e0cf-4e1d-9c87-d3a213eb3e34/rules
+        url: https://api.datadoghq.com/api/v2/deployment_gates/6ed44078-e0cf-4e1d-9c87-d3a213eb3e34/rules
         method: POST
       response:
         proto: HTTP/2.0
@@ -81,7 +81,7 @@ interactions:
         content_length: 0
         transfer_encoding: []
         trailer: {}
-        host: api.datad0g.com
+        host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: ""
@@ -89,7 +89,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datad0g.com/api/v2/deployment_gates/6ed44078-e0cf-4e1d-9c87-d3a213eb3e34
+        url: https://api.datadoghq.com/api/v2/deployment_gates/6ed44078-e0cf-4e1d-9c87-d3a213eb3e34
         method: GET
       response:
         proto: HTTP/2.0
@@ -114,7 +114,7 @@ interactions:
         content_length: 0
         transfer_encoding: []
         trailer: {}
-        host: api.datad0g.com
+        host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: ""
@@ -122,7 +122,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datad0g.com/api/v2/deployment_gates/6ed44078-e0cf-4e1d-9c87-d3a213eb3e34/rules/31e754ff-1b40-4555-9168-d0b7437c5038
+        url: https://api.datadoghq.com/api/v2/deployment_gates/6ed44078-e0cf-4e1d-9c87-d3a213eb3e34/rules/31e754ff-1b40-4555-9168-d0b7437c5038
         method: GET
       response:
         proto: HTTP/2.0
@@ -147,7 +147,7 @@ interactions:
         content_length: 0
         transfer_encoding: []
         trailer: {}
-        host: api.datad0g.com
+        host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: ""
@@ -155,7 +155,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datad0g.com/api/v2/deployment_gates/6ed44078-e0cf-4e1d-9c87-d3a213eb3e34
+        url: https://api.datadoghq.com/api/v2/deployment_gates/6ed44078-e0cf-4e1d-9c87-d3a213eb3e34
         method: GET
       response:
         proto: HTTP/2.0
@@ -180,7 +180,7 @@ interactions:
         content_length: 0
         transfer_encoding: []
         trailer: {}
-        host: api.datad0g.com
+        host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: ""
@@ -188,7 +188,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datad0g.com/api/v2/deployment_gates/6ed44078-e0cf-4e1d-9c87-d3a213eb3e34/rules/31e754ff-1b40-4555-9168-d0b7437c5038
+        url: https://api.datadoghq.com/api/v2/deployment_gates/6ed44078-e0cf-4e1d-9c87-d3a213eb3e34/rules/31e754ff-1b40-4555-9168-d0b7437c5038
         method: GET
       response:
         proto: HTTP/2.0
@@ -213,7 +213,7 @@ interactions:
         content_length: 0
         transfer_encoding: []
         trailer: {}
-        host: api.datad0g.com
+        host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: ""
@@ -221,7 +221,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datad0g.com/api/v2/deployment_gates/6ed44078-e0cf-4e1d-9c87-d3a213eb3e34/rules/31e754ff-1b40-4555-9168-d0b7437c5038
+        url: https://api.datadoghq.com/api/v2/deployment_gates/6ed44078-e0cf-4e1d-9c87-d3a213eb3e34/rules/31e754ff-1b40-4555-9168-d0b7437c5038
         method: DELETE
       response:
         proto: HTTP/2.0
@@ -244,7 +244,7 @@ interactions:
         content_length: 155
         transfer_encoding: []
         trailer: {}
-        host: api.datad0g.com
+        host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
@@ -255,7 +255,7 @@ interactions:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datad0g.com/api/v2/deployment_gates/6ed44078-e0cf-4e1d-9c87-d3a213eb3e34/rules
+        url: https://api.datadoghq.com/api/v2/deployment_gates/6ed44078-e0cf-4e1d-9c87-d3a213eb3e34/rules
         method: POST
       response:
         proto: HTTP/2.0
@@ -280,7 +280,7 @@ interactions:
         content_length: 0
         transfer_encoding: []
         trailer: {}
-        host: api.datad0g.com
+        host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: ""
@@ -288,7 +288,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datad0g.com/api/v2/deployment_gates/6ed44078-e0cf-4e1d-9c87-d3a213eb3e34
+        url: https://api.datadoghq.com/api/v2/deployment_gates/6ed44078-e0cf-4e1d-9c87-d3a213eb3e34
         method: GET
       response:
         proto: HTTP/2.0
@@ -313,7 +313,7 @@ interactions:
         content_length: 0
         transfer_encoding: []
         trailer: {}
-        host: api.datad0g.com
+        host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: ""
@@ -321,7 +321,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datad0g.com/api/v2/deployment_gates/6ed44078-e0cf-4e1d-9c87-d3a213eb3e34/rules/ceffe5f7-edc2-45d8-b39d-4471acaff1bb
+        url: https://api.datadoghq.com/api/v2/deployment_gates/6ed44078-e0cf-4e1d-9c87-d3a213eb3e34/rules/ceffe5f7-edc2-45d8-b39d-4471acaff1bb
         method: GET
       response:
         proto: HTTP/2.0
@@ -346,7 +346,7 @@ interactions:
         content_length: 0
         transfer_encoding: []
         trailer: {}
-        host: api.datad0g.com
+        host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: ""
@@ -354,7 +354,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datad0g.com/api/v2/deployment_gates/6ed44078-e0cf-4e1d-9c87-d3a213eb3e34/rules/ceffe5f7-edc2-45d8-b39d-4471acaff1bb
+        url: https://api.datadoghq.com/api/v2/deployment_gates/6ed44078-e0cf-4e1d-9c87-d3a213eb3e34/rules/ceffe5f7-edc2-45d8-b39d-4471acaff1bb
         method: DELETE
       response:
         proto: HTTP/2.0
@@ -377,7 +377,7 @@ interactions:
         content_length: 0
         transfer_encoding: []
         trailer: {}
-        host: api.datad0g.com
+        host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: ""
@@ -385,7 +385,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datad0g.com/api/v2/deployment_gates/6ed44078-e0cf-4e1d-9c87-d3a213eb3e34
+        url: https://api.datadoghq.com/api/v2/deployment_gates/6ed44078-e0cf-4e1d-9c87-d3a213eb3e34
         method: DELETE
       response:
         proto: HTTP/2.0
