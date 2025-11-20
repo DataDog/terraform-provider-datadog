@@ -1276,6 +1276,49 @@ resource "datadog_observability_pipeline" "gcs_dest" {
 	})
 }
 
+func TestAccDatadogObservabilityPipeline_googleCloudStorageDestinationMinimal(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	resourceName := "datadog_observability_pipeline.gcs_dest_minimal"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "gcs_dest_minimal" {
+  name = "gcs-destination-minimal-pipeline"
+
+  config {
+    sources {
+      datadog_agent {
+        id = "source-1"
+      }
+    }
+
+    processors {}
+
+    destinations {
+      google_cloud_storage {
+        id            = "gcs-destination-1"
+        bucket        = "my-gcs-bucket"
+        storage_class = "NEARLINE"
+        inputs        = ["source-1"]
+      }
+    }
+  }
+}
+`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.google_cloud_storage.0.bucket", "my-gcs-bucket"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.google_cloud_storage.0.storage_class", "NEARLINE"),
+				),
+			},
+		},
+	})
+}
+
 func TestAccDatadogObservabilityPipeline_splunkHecDestination(t *testing.T) {
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	resourceName := "datadog_observability_pipeline.splunk_hec_dest"
@@ -2074,6 +2117,52 @@ resource "datadog_observability_pipeline" "pubsub" {
 	})
 }
 
+func TestAccDatadogObservabilityPipeline_googlePubSubSourceMinimal(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.pubsub_minimal"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "pubsub_minimal" {
+  name = "pubsub minimal pipeline"
+
+  config {
+    sources {
+      google_pubsub {
+        id           = "pubsub-source-1"
+        project      = "my-gcp-project"
+        subscription = "logs-subscription"
+        decoding     = "json"
+      }
+    }
+
+    processors {}
+
+    destinations {
+      datadog_logs {
+        id     = "destination-1"
+        inputs = ["pubsub-source-1"]
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.google_pubsub.0.id", "pubsub-source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.google_pubsub.0.project", "my-gcp-project"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.google_pubsub.0.subscription", "logs-subscription"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.google_pubsub.0.decoding", "json"),
+				),
+			},
+		},
+	})
+}
+
 func TestAccDatadogObservabilityPipeline_logstashSource(t *testing.T) {
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
@@ -2514,6 +2603,49 @@ resource "datadog_observability_pipeline" "chronicle" {
 					resource.TestCheckResourceAttr(resourceName, "config.destinations.google_chronicle.0.encoding", "json"),
 					resource.TestCheckResourceAttr(resourceName, "config.destinations.google_chronicle.0.log_type", "nginx_logs"),
 					resource.TestCheckResourceAttr(resourceName, "config.destinations.google_chronicle.0.auth.credentials_file", "/secrets/gcp.json"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogObservabilityPipeline_googleChronicleDestinationMinimal(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.chronicle_minimal"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "chronicle_minimal" {
+  name = "chronicle minimal pipeline"
+
+  config {
+    sources {
+      datadog_agent {
+        id = "source-1"
+      }
+    }
+
+	processors {}
+
+    destinations {
+      google_chronicle {
+        id     = "chronicle-dest-1"
+        inputs = ["source-1"]
+        customer_id = "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+        encoding    = "json"
+        log_type    = "nginx_logs"
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.google_chronicle.0.id", "chronicle-dest-1"),
 				),
 			},
 		},
@@ -3576,6 +3708,51 @@ resource "datadog_observability_pipeline" "pubsub_dest" {
 					resource.TestCheckResourceAttr(resourceName, "config.destinations.google_pubsub.0.encoding", "json"),
 					resource.TestCheckResourceAttr(resourceName, "config.destinations.google_pubsub.0.auth.credentials_file", "/var/secrets/gcp-creds.json"),
 					resource.TestCheckResourceAttr(resourceName, "config.destinations.google_pubsub.0.tls.crt_file", "/certs/pubsub.crt"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogObservabilityPipeline_googlePubSubDestinationMinimal(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	resourceName := "datadog_observability_pipeline.pubsub_dest_minimal"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "pubsub_dest_minimal" {
+  name = "pubsub-destination-minimal-pipeline"
+
+  config {
+    sources {
+      datadog_agent {
+        id = "source-1"
+      }
+    }
+
+    processors {}
+
+    destinations {
+      google_pubsub {
+        id       = "pubsub-destination-1"
+        project  = "my-gcp-project"
+        topic    = "logs-topic"
+        encoding      = "json"
+        inputs   = ["source-1"]
+      }
+    }
+  }
+}
+`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.google_pubsub.0.project", "my-gcp-project"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.google_pubsub.0.topic", "logs-topic"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.google_pubsub.0.encoding", "json"),
 				),
 			},
 		},
