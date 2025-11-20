@@ -2323,7 +2323,7 @@ func gcpAuthSchema() schema.SingleNestedBlock {
 		Attributes: map[string]schema.Attribute{
 			"credentials_file": schema.StringAttribute{
 				Optional:    true,
-				Description: "Path to the GCP service account key file. Required when auth block is specified.",
+				Description: "Path to the GCP service account key file. Required when `auth` block is specified.",
 			},
 		},
 	}

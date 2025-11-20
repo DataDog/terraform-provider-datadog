@@ -374,7 +374,7 @@ Optional:
 
 Optional:
 
-- `credentials_file` (String) Path to the GCP service account key file. Required when auth block is specified.
+- `credentials_file` (String) Path to the GCP service account key file. Required when `auth` block is specified.
 
 
 <a id="nestedblock--config--destinations--google_pubsub--tls"></a>
@@ -1329,7 +1329,7 @@ Optional:
 
 Optional:
 
-- `credentials_file` (String) Path to the GCP service account key file. Required when auth block is specified.
+- `credentials_file` (String) Path to the GCP service account key file. Required when `auth` block is specified.
 
 
 <a id="nestedblock--config--sources--google_pubsub--tls"></a>
