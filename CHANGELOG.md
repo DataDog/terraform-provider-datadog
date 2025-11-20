@@ -1,3 +1,20 @@
+## 3.81.0 (November 20, 2025)
+
+### BUGFIXES
+* [datadog_agentless_scanning_gcp_scan_options] Better support of resource conflict in agentless GCP scan options TF provider by @mohamed-challal in https://github.com/DataDog/terraform-provider-datadog/pull/3328
+* [datadog_security_monitoring_suppression] Fix issue when dealing with empty array of tags in Rules by @clementgbcn in https://github.com/DataDog/terraform-provider-datadog/pull/3331
+* [datadog_observability_pipeline] make google auth optional by @vladimir-dd in https://github.com/DataDog/terraform-provider-datadog/pull/3332
+### FEATURES
+* [datadog_tag_pipeline_rulesets] add the functionality to allow users decide tag pipeline reorder behaviors by @congx4 in https://github.com/DataDog/terraform-provider-datadog/pull/3320
+* [datadog_user] Add new exclude_service_accounts attribute to the datadog_user ds by @tquidetdd in https://github.com/DataDog/terraform-provider-datadog/pull/3323
+* [datadog_metrics] add 'datadog_metrics' data source by @mdb in https://github.com/DataDog/terraform-provider-datadog/pull/3214
+
+## New Contributors
+* @mfu00 made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3330
+* @mgaonach made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3327
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.80.0...v3.81.0
+
 ## 3.80.0 (November 12, 2025)
 
 ### BUGFIXES
