@@ -94,6 +94,129 @@ func testAccCheckDatadogMetricTagConfigurationExcludeTagsModeError(uniq string) 
 	`, uniq)
 }
 
+func TestAccDatadogMetricTagConfiguration_ExcludeTagsMode(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	uniqueMetricTagConfig := strings.ReplaceAll(uniqueEntityName(ctx, t), "-", "_")
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogMetricTagConfigurationDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogMetricTagConfigurationExcludeTagsModeUnset(uniqueMetricTagConfig),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogMetricTagConfigurationExists(accProvider),
+					resource.TestCheckResourceAttr(
+						"datadog_metric_tag_configuration.testing_unset", "metric_name", uniqueMetricTagConfig),
+					resource.TestCheckResourceAttr(
+						"datadog_metric_tag_configuration.testing_unset", "metric_type", "gauge"),
+					resource.TestCheckResourceAttr(
+						"datadog_metric_tag_configuration.testing_unset", "tags.#", "2"),
+					// When exclude_tags_mode is unset, it should not be present in state
+					resource.TestCheckNoResourceAttr(
+						"datadog_metric_tag_configuration.testing_unset", "exclude_tags_mode"),
+				),
+			},
+			{
+				Config: testAccCheckDatadogMetricTagConfigurationExcludeTagsModeTrue(uniqueMetricTagConfig),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogMetricTagConfigurationExists(accProvider),
+					resource.TestCheckResourceAttr(
+						"datadog_metric_tag_configuration.testing_true", "metric_name", uniqueMetricTagConfig),
+					resource.TestCheckResourceAttr(
+						"datadog_metric_tag_configuration.testing_true", "exclude_tags_mode", "true"),
+				),
+			},
+			{
+				Config: testAccCheckDatadogMetricTagConfigurationExcludeTagsModeFalse(uniqueMetricTagConfig),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogMetricTagConfigurationExists(accProvider),
+					resource.TestCheckResourceAttr(
+						"datadog_metric_tag_configuration.testing_false", "metric_name", uniqueMetricTagConfig),
+					resource.TestCheckResourceAttr(
+						"datadog_metric_tag_configuration.testing_false", "exclude_tags_mode", "false"),
+				),
+			},
+			{
+				// Test updating from false back to unset
+				Config: testAccCheckDatadogMetricTagConfigurationExcludeTagsModeUnset(uniqueMetricTagConfig),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogMetricTagConfigurationExists(accProvider),
+					resource.TestCheckResourceAttr(
+						"datadog_metric_tag_configuration.testing_unset", "metric_name", uniqueMetricTagConfig),
+					resource.TestCheckNoResourceAttr(
+						"datadog_metric_tag_configuration.testing_unset", "exclude_tags_mode"),
+				),
+			},
+		},
+	})
+}
+
+func testAccCheckDatadogMetricTagConfigurationExcludeTagsModeUnset(uniq string) string {
+	return fmt.Sprintf(`
+		resource "datadog_metric_tag_configuration" "testing_unset" {
+			metric_name = "%s"
+			metric_type = "gauge"
+			tags        = ["env", "service"]
+			# exclude_tags_mode is not set - allows all tags
+		}
+	`, uniq)
+}
+
+func testAccCheckDatadogMetricTagConfigurationExcludeTagsModeTrue(uniq string) string {
+	return fmt.Sprintf(`
+		resource "datadog_metric_tag_configuration" "testing_true" {
+			metric_name       = "%s"
+			metric_type       = "gauge"
+			tags              = ["env", "service"]
+			exclude_tags_mode = true
+		}
+	`, uniq)
+}
+
+func testAccCheckDatadogMetricTagConfigurationExcludeTagsModeFalse(uniq string) string {
+	return fmt.Sprintf(`
+		resource "datadog_metric_tag_configuration" "testing_false" {
+			metric_name       = "%s"
+			metric_type       = "gauge"
+			tags              = ["env", "service"]
+			exclude_tags_mode = false
+		}
+	`, uniq)
+}
+
+func testAccCheckDatadogMetricTagConfigurationExists(accProvider func() (*schema.Provider, error)) resource.TestCheckFunc {
+	return func(s *terraform.State) error {
+		provider, _ := accProvider()
+		meta := provider.Meta()
+		providerConf := meta.(*datadog.ProviderConfiguration)
+		apiInstances := providerConf.DatadogApiInstances
+		auth := providerConf.Auth
+
+		for _, r := range s.RootModule().Resources {
+			if r.Type != "datadog_metric_tag_configuration" {
+				continue
+			}
+
+			id := r.Primary.ID
+			_, resp, err := apiInstances.GetMetricsApiV2().ListTagConfigurationByName(auth, id)
+
+			if err != nil {
+				return fmt.Errorf("received an error retrieving metric_tag_configuration: %s", err.Error())
+			}
+
+			if resp.StatusCode != 200 {
+				return fmt.Errorf("metric_tag_configuration %s does not exist", id)
+			}
+		}
+
+		return nil
+	}
+}
+
 func testAccCheckDatadogMetricTagConfigurationDestroy(accProvider func() (*schema.Provider, error)) func(*terraform.State) error {
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()

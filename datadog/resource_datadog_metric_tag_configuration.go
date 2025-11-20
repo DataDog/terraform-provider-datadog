@@ -26,9 +26,9 @@ func resourceDatadogMetricTagConfiguration() *schema.Resource {
 			oldAggrs, newAggrs := diff.GetChange("aggregations")
 			metricType, metricTypeOk := diff.GetOkExists("metric_type")
 			tags, _ := diff.GetOkExists("tags")
-			excludeTagsMode, _ := diff.GetOkExists("exclude_tags_mode")
+			excludeTagsMode, excludeTagsModeOk := diff.GetOkExists("exclude_tags_mode")
 
-			if excludeTagsMode.(bool) && len(tags.(*schema.Set).List()) == 0 {
+			if excludeTagsModeOk && excludeTagsMode.(bool) && len(tags.(*schema.Set).List()) == 0 {
 				return fmt.Errorf("cannot use exclude_tags_mode without configuring any tags")
 			}
 
@@ -126,10 +126,9 @@ func resourceDatadogMetricTagConfiguration() *schema.Resource {
 					},
 				},
 				"exclude_tags_mode": {
-					Description: "Toggle to include/exclude tags as queryable for your metric. Can only be applied to metrics that have one or more tags configured.",
+					Description: "Toggle to include/exclude tags as queryable for your metric. Can only be applied to metrics that have one or more tags configured. If not set, the metric will allow all tags.",
 					Type:        schema.TypeBool,
 					Optional:    true,
-					Default:     false,
 				},
 			}
 		},
@@ -185,13 +184,13 @@ func buildDatadogMetricTagConfiguration(d *schema.ResourceData) (*datadogV2.Metr
 		attributes.SetIncludePercentiles(includePercentiles.(bool))
 	}
 
-	excludeTagsMode := d.Get("exclude_tags_mode")
-
-	if excludeTagsMode.(bool) && len(stringTags) == 0 {
-		return nil, fmt.Errorf("cannot use exclude_tags_mode without configuring any tags")
+	if excludeTagsMode, ok := d.GetOkExists("exclude_tags_mode"); ok {
+		excludeTagsModeVal := excludeTagsMode.(bool)
+		if excludeTagsModeVal && len(stringTags) == 0 {
+			return nil, fmt.Errorf("cannot use exclude_tags_mode without configuring any tags")
+		}
+		attributes.SetExcludeTagsMode(excludeTagsModeVal)
 	}
-
-	attributes.SetExcludeTagsMode(excludeTagsMode.(bool))
 
 	aggregationsArray, aggregationsFieldSet := d.GetOk("aggregations")
 	if aggregationsFieldSet {
@@ -235,13 +234,13 @@ func buildDatadogMetricTagConfigurationUpdate(d *schema.ResourceData, existingMe
 		attributes.SetIncludePercentiles(includePercentiles.(bool))
 	}
 
-	excludeTagsMode := d.Get("exclude_tags_mode")
-
-	if excludeTagsMode.(bool) && len(stringTags) == 0 {
-		return nil, fmt.Errorf("cannot use exclude_tags_mode without configuring any tags")
+	if excludeTagsMode, ok := d.GetOkExists("exclude_tags_mode"); ok {
+		excludeTagsModeVal := excludeTagsMode.(bool)
+		if excludeTagsModeVal && len(stringTags) == 0 {
+			return nil, fmt.Errorf("cannot use exclude_tags_mode without configuring any tags")
+		}
+		attributes.SetExcludeTagsMode(excludeTagsModeVal)
 	}
-
-	attributes.SetExcludeTagsMode(excludeTagsMode.(bool))
 
 	aggregationsArray, aggregationsFieldSet := d.GetOk("aggregations")
 	if aggregationsFieldSet {
@@ -317,9 +316,16 @@ func updateMetricTagConfigurationState(d *schema.ResourceData, metricTagConfigur
 			return diag.FromErr(err)
 		}
 
-		excludeTagsMode := attributes.GetExcludeTagsMode()
-		if err := d.Set("exclude_tags_mode", excludeTagsMode); err != nil {
-			return diag.FromErr(err)
+		// Only set exclude_tags_mode if it's explicitly present in the API response
+		if excludeTagsMode, ok := attributes.GetExcludeTagsModeOk(); ok {
+			if err := d.Set("exclude_tags_mode", *excludeTagsMode); err != nil {
+				return diag.FromErr(err)
+			}
+		} else {
+			// If the field is not present in the API response, clear it from state
+			if err := d.Set("exclude_tags_mode", nil); err != nil {
+				return diag.FromErr(err)
+			}
 		}
 	}
 
@@ -346,10 +352,7 @@ func resourceDatadogMetricTagConfigurationRead(ctx context.Context, d *schema.Re
 			d.SetId("")
 			return nil
 		}
-		if err != nil {
-			return utils.TranslateClientErrorDiag(err, httpresp, "metric tag configuration not found")
-		}
-		return diag.Errorf("error fetching metric tag configuration by name")
+		return utils.TranslateClientErrorDiag(err, httpresp, "metric tag configuration not found")
 	}
 	if httpresp.StatusCode != 200 {
 		return diag.Errorf("error fetching metric tag configuration by name, unexpected status code %d", httpresp.StatusCode)
@@ -375,7 +378,7 @@ func resourceDatadogMetricTagConfigurationUpdate(ctx context.Context, d *schema.
 	if httpresp == nil {
 		return diag.Errorf("error determining if tag configuration for metric exists")
 	}
-	if httpresp != nil && httpresp.StatusCode == 404 {
+	if httpresp.StatusCode == 404 {
 		return diag.Errorf("error updating tag configuration for metric, tag configuration does not exist")
 	}
 	if err := utils.CheckForUnparsed(metricTagConfigurationResponse); err != nil {
