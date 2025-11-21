@@ -346,92 +346,87 @@ func (d *datadogReferenceTableDataSource) updateState(ctx context.Context, state
 		state.Tags, _ = types.ListValueFrom(ctx, types.StringType, *tags)
 	}
 
-	// Handle FileMetadata from API response (OneOf union type)
+	// Handle FileMetadata from API response (flattened structure, no longer OneOf)
 	if fileMetadata, ok := attributes.GetFileMetadataOk(); ok {
 		fileMetadataTf := &fileMetadataModel{}
 
-		// Check if it's CloudStorage type
-		if cloudStorage := fileMetadata.TableResultV2DataAttributesFileMetadataCloudStorage; cloudStorage != nil {
-			if syncEnabled, ok := cloudStorage.GetSyncEnabledOk(); ok {
-				fileMetadataTf.SyncEnabled = types.BoolValue(*syncEnabled)
-			}
-
-			if errorMessage, ok := cloudStorage.GetErrorMessageOk(); ok {
-				fileMetadataTf.ErrorMessage = types.StringValue(*errorMessage)
-			}
-
-			if errorRowCount, ok := cloudStorage.GetErrorRowCountOk(); ok {
-				fileMetadataTf.ErrorRowCount = types.Int64Value(*errorRowCount)
-			}
-
-			if errorType, ok := cloudStorage.GetErrorTypeOk(); ok {
-				fileMetadataTf.ErrorType = types.StringValue(string(*errorType))
-			}
-
-			// Extract access_details
-			if accessDetails, ok := cloudStorage.GetAccessDetailsOk(); ok {
-				accessDetailsTf := &accessDetailsModel{}
-
-				// AWS details
-				if awsDetail := accessDetails.AwsDetail; awsDetail != nil {
-					awsDetailTf := &awsDetailModel{}
-					if awsAccountId, ok := awsDetail.GetAwsAccountIdOk(); ok {
-						awsDetailTf.AwsAccountId = types.StringValue(*awsAccountId)
-					}
-					if awsBucketName, ok := awsDetail.GetAwsBucketNameOk(); ok {
-						awsDetailTf.AwsBucketName = types.StringValue(*awsBucketName)
-					}
-					if filePath, ok := awsDetail.GetFilePathOk(); ok {
-						awsDetailTf.FilePath = types.StringValue(*filePath)
-					}
-					accessDetailsTf.AwsDetail = awsDetailTf
-				}
-
-				// GCP details
-				if gcpDetail := accessDetails.GcpDetail; gcpDetail != nil {
-					gcpDetailTf := &gcpDetailModel{}
-					if gcpProjectId, ok := gcpDetail.GetGcpProjectIdOk(); ok {
-						gcpDetailTf.GcpProjectId = types.StringValue(*gcpProjectId)
-					}
-					if gcpBucketName, ok := gcpDetail.GetGcpBucketNameOk(); ok {
-						gcpDetailTf.GcpBucketName = types.StringValue(*gcpBucketName)
-					}
-					if filePath, ok := gcpDetail.GetFilePathOk(); ok {
-						gcpDetailTf.FilePath = types.StringValue(*filePath)
-					}
-					if gcpServiceAccountEmail, ok := gcpDetail.GetGcpServiceAccountEmailOk(); ok {
-						gcpDetailTf.GcpServiceAccountEmail = types.StringValue(*gcpServiceAccountEmail)
-					}
-					accessDetailsTf.GcpDetail = gcpDetailTf
-				}
-
-				// Azure details
-				if azureDetail := accessDetails.AzureDetail; azureDetail != nil {
-					azureDetailTf := &azureDetailModel{}
-					if azureTenantId, ok := azureDetail.GetAzureTenantIdOk(); ok {
-						azureDetailTf.AzureTenantId = types.StringValue(*azureTenantId)
-					}
-					if azureClientId, ok := azureDetail.GetAzureClientIdOk(); ok {
-						azureDetailTf.AzureClientId = types.StringValue(*azureClientId)
-					}
-					if azureStorageAccountName, ok := azureDetail.GetAzureStorageAccountNameOk(); ok {
-						azureDetailTf.AzureStorageAccountName = types.StringValue(*azureStorageAccountName)
-					}
-					if azureContainerName, ok := azureDetail.GetAzureContainerNameOk(); ok {
-						azureDetailTf.AzureContainerName = types.StringValue(*azureContainerName)
-					}
-					if filePath, ok := azureDetail.GetFilePathOk(); ok {
-						azureDetailTf.FilePath = types.StringValue(*filePath)
-					}
-					accessDetailsTf.AzureDetail = azureDetailTf
-				}
-
-				fileMetadataTf.AccessDetails = accessDetailsTf
-			}
+		// FileMetadata is now a flattened struct with direct fields
+		if syncEnabled, ok := fileMetadata.GetSyncEnabledOk(); ok {
+			fileMetadataTf.SyncEnabled = types.BoolValue(*syncEnabled)
 		}
 
-		// Note: LocalFile type doesn't have file_metadata in the API response
-		// For LOCAL_FILE sources, file_metadata will be null/empty
+		if errorMessage, ok := fileMetadata.GetErrorMessageOk(); ok {
+			fileMetadataTf.ErrorMessage = types.StringValue(*errorMessage)
+		}
+
+		if errorRowCount, ok := fileMetadata.GetErrorRowCountOk(); ok {
+			fileMetadataTf.ErrorRowCount = types.Int64Value(*errorRowCount)
+		}
+
+		if errorType, ok := fileMetadata.GetErrorTypeOk(); ok {
+			fileMetadataTf.ErrorType = types.StringValue(string(*errorType))
+		}
+
+		// Extract access_details (only present for cloud storage sources)
+		if accessDetails, ok := fileMetadata.GetAccessDetailsOk(); ok {
+			accessDetailsTf := &accessDetailsModel{}
+
+			// AWS details
+			if awsDetail := accessDetails.AwsDetail; awsDetail != nil {
+				awsDetailTf := &awsDetailModel{}
+				if awsAccountId, ok := awsDetail.GetAwsAccountIdOk(); ok {
+					awsDetailTf.AwsAccountId = types.StringValue(*awsAccountId)
+				}
+				if awsBucketName, ok := awsDetail.GetAwsBucketNameOk(); ok {
+					awsDetailTf.AwsBucketName = types.StringValue(*awsBucketName)
+				}
+				if filePath, ok := awsDetail.GetFilePathOk(); ok {
+					awsDetailTf.FilePath = types.StringValue(*filePath)
+				}
+				accessDetailsTf.AwsDetail = awsDetailTf
+			}
+
+			// GCP details
+			if gcpDetail := accessDetails.GcpDetail; gcpDetail != nil {
+				gcpDetailTf := &gcpDetailModel{}
+				if gcpProjectId, ok := gcpDetail.GetGcpProjectIdOk(); ok {
+					gcpDetailTf.GcpProjectId = types.StringValue(*gcpProjectId)
+				}
+				if gcpBucketName, ok := gcpDetail.GetGcpBucketNameOk(); ok {
+					gcpDetailTf.GcpBucketName = types.StringValue(*gcpBucketName)
+				}
+				if filePath, ok := gcpDetail.GetFilePathOk(); ok {
+					gcpDetailTf.FilePath = types.StringValue(*filePath)
+				}
+				if gcpServiceAccountEmail, ok := gcpDetail.GetGcpServiceAccountEmailOk(); ok {
+					gcpDetailTf.GcpServiceAccountEmail = types.StringValue(*gcpServiceAccountEmail)
+				}
+				accessDetailsTf.GcpDetail = gcpDetailTf
+			}
+
+			// Azure details
+			if azureDetail := accessDetails.AzureDetail; azureDetail != nil {
+				azureDetailTf := &azureDetailModel{}
+				if azureTenantId, ok := azureDetail.GetAzureTenantIdOk(); ok {
+					azureDetailTf.AzureTenantId = types.StringValue(*azureTenantId)
+				}
+				if azureClientId, ok := azureDetail.GetAzureClientIdOk(); ok {
+					azureDetailTf.AzureClientId = types.StringValue(*azureClientId)
+				}
+				if azureStorageAccountName, ok := azureDetail.GetAzureStorageAccountNameOk(); ok {
+					azureDetailTf.AzureStorageAccountName = types.StringValue(*azureStorageAccountName)
+				}
+				if azureContainerName, ok := azureDetail.GetAzureContainerNameOk(); ok {
+					azureDetailTf.AzureContainerName = types.StringValue(*azureContainerName)
+				}
+				if filePath, ok := azureDetail.GetFilePathOk(); ok {
+					azureDetailTf.FilePath = types.StringValue(*filePath)
+				}
+				accessDetailsTf.AzureDetail = azureDetailTf
+			}
+
+			fileMetadataTf.AccessDetails = accessDetailsTf
+		}
 
 		state.FileMetadata = fileMetadataTf
 	}
