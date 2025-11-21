@@ -44,7 +44,7 @@ func (d *apiKeyDataSource) Metadata(_ context.Context, req datasource.MetadataRe
 
 func (d *apiKeyDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "Use this data source to retrieve information about an existing api key. Deprecated. This will be removed in a future release with prior notice. Securely store your API keys using a secret management system or use the datadog_api_key resource to manage API keys in your Datadog account.",
+		Description: "Use this data source to retrieve information about an existing API key. **Deprecated**: This will be removed in a future release with prior notice. For secure access to API key values without storing them in Terraform state, use the ephemeral `datadog_api_key` resource instead. See the ephemeral resource documentation for examples of secure API key access patterns.",
 		Attributes: map[string]schema.Attribute{
 			"name": schema.StringAttribute{
 				Description: "Name for API Key.",
@@ -59,7 +59,7 @@ func (d *apiKeyDataSource) Schema(_ context.Context, _ datasource.SchemaRequest,
 				Optional:    true,
 			},
 			"key": schema.StringAttribute{
-				Description: "The value of the API Key.",
+				Description: "The value of the API Key. **Security Note**: This field exposes sensitive data in Terraform state. For secure access without state storage, use the ephemeral `datadog_api_key` resource instead.",
 				Computed:    true,
 				Sensitive:   true,
 			},
@@ -68,7 +68,7 @@ func (d *apiKeyDataSource) Schema(_ context.Context, _ datasource.SchemaRequest,
 				Computed:    true,
 			},
 		},
-		DeprecationMessage: "Deprecated. This will be removed in a future release with prior notice. Securely store your API keys using a secret management system or use the datadog_api_key resource to manage API keys in your Datadog account.",
+		DeprecationMessage: "This data source is deprecated and will be removed in a future release with prior notice. For secure access to API key values without storing them in Terraform state, use the ephemeral datadog_api_key resource instead.",
 	}
 }
 
@@ -168,7 +168,7 @@ func (r *apiKeyDataSource) updateState(state *apiKeyDataSourceModel, apiKeyData 
 func (r *apiKeyDataSource) checkAPIDeprecated(apiKeyData *datadogV2.FullAPIKey, resp *datasource.ReadResponse) bool {
 	apiKeyAttributes := apiKeyData.GetAttributes()
 	if !apiKeyAttributes.HasKey() {
-		resp.Diagnostics.AddError("Deprecated", "The datadog_api_key data source is deprecated and will be removed in a future release. Securely store your API key using a secret management system or use the datadog_api_key resource to manage API keys in your Datadog account.")
+		resp.Diagnostics.AddError("Deprecated", "The datadog_api_key data source is deprecated and will be removed in a future release. For secure access to API key values without storing them in Terraform state, use the ephemeral datadog_api_key resource instead.")
 		return true
 	}
 	return false
