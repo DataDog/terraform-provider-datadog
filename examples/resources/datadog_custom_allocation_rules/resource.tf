@@ -58,8 +58,21 @@ resource "datadog_custom_allocation_rule" "rule_3" {
   }
 }
 
-# Manage the order of custom allocation rules
-resource "datadog_custom_allocation_rules" "order" {
+# Example 1: Preserve mode (default) - allows unmanaged rules to exist at the end
+# This will preserve any existing rules created outside of Terraform as long as they are at the end
+resource "datadog_custom_allocation_rules" "preserve_order" {
+  # override_ui_defined_resources = false (default)
+  rule_ids = [
+    datadog_custom_allocation_rule.rule_1.id,
+    datadog_custom_allocation_rule.rule_2.id,
+    datadog_custom_allocation_rule.rule_3.id
+  ]
+}
+
+# Example 2: Override mode - deletes all unmanaged rules and maintains strict order
+# This will delete any rules not defined in Terraform and enforce the exact order specified
+resource "datadog_custom_allocation_rules" "override_order" {
+  override_ui_defined_resources = true
   rule_ids = [
     datadog_custom_allocation_rule.rule_1.id,
     datadog_custom_allocation_rule.rule_2.id,
