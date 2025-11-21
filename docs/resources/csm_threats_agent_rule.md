@@ -47,6 +47,7 @@ resource "datadog_csm_threats_agent_rule" "my_agent_rule" {
 - `enabled` (Boolean) Indicates whether the Agent rule is enabled. Must not be used without policy_id.
 - `policy_id` (String) The ID of the agent policy in which the rule is saved
 - `product_tags` (Set of String) The list of product tags associated with the rule
+- `silent` (String) Indicates whether the event will be sent.
 
 ### Read-Only
 

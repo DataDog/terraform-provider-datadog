@@ -39,6 +39,7 @@ type csmThreatsAgentRuleDataSourceModel struct {
 	Expression  types.String  `tfsdk:"expression"`
 	ProductTags types.Set     `tfsdk:"product_tags"`
 	Actions     []ActionModel `tfsdk:"actions"`
+	Silent      types.Bool    `tfsdk:"silent"`
 }
 
 func NewCSMThreatsAgentRulesDataSource() datasource.DataSource {
@@ -97,6 +98,7 @@ func (r *csmThreatsAgentRulesDataSource) Read(ctx context.Context, request datas
 		agentRuleModel.Name = types.StringValue(attributes.GetName())
 		agentRuleModel.Description = types.StringValue(attributes.GetDescription())
 		agentRuleModel.Enabled = types.BoolValue(attributes.GetEnabled())
+		agentRuleModel.Silent = types.BoolValue(attributes.GetSilent())
 		agentRuleModel.Expression = types.StringValue(*attributes.Expression)
 		tags := attributes.GetProductTags()
 		tagSet := make(map[string]struct{})
@@ -228,6 +230,7 @@ func (*csmThreatsAgentRulesDataSource) Schema(_ context.Context, _ datasource.Sc
 						"description":  types.StringType,
 						"enabled":      types.BoolType,
 						"expression":   types.StringType,
+						"silent":       types.BoolType,
 						"product_tags": types.SetType{ElemType: types.StringType},
 						"actions": types.ListType{
 							ElemType: types.ObjectType{
