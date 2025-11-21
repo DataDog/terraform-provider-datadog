@@ -3,6 +3,8 @@ package fwprovider
 import (
 	"context"
 	"fmt"
+	"net/http"
+	"time"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
@@ -100,10 +102,37 @@ func (d *datadogReferenceTableRowsDataSource) Read(ctx context.Context, request 
 		return
 	}
 
-	// Call API to get rows by ID
-	ddResp, _, err := d.Api.GetRowsByID(d.Auth, tableId, rowIds)
-	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error getting reference table rows"))
+	// Call API to get rows by ID with retry logic
+	// Rows are written asynchronously, so we need to retry if the table hasn't synced yet
+	// Use a 5-second interval to avoid spamming the API while waiting for sync
+	var ddResp datadogV2.TableRowResourceArray
+	var httpResp *http.Response
+	var err error
+
+	retryErr := utils.Retry(5*time.Second, 10, func() error {
+		ddResp, httpResp, err = d.Api.GetRowsByID(d.Auth, tableId, rowIds)
+		if err != nil {
+			// If we get a 404, the table might not have synced yet - retry
+			if httpResp != nil && httpResp.StatusCode == 404 {
+				return &utils.RetryableError{Prob: fmt.Sprintf("rows not found (table may not have synced yet): %v", err)}
+			}
+			// For other errors, don't retry
+			return &utils.FatalError{Prob: fmt.Sprintf("error getting reference table rows: %v", err)}
+		}
+		// Success - check if we got the expected number of rows
+		if len(ddResp.Data) == len(rowIds) {
+			return nil
+		}
+		// If we got some rows but not all, the table might still be syncing - retry
+		if len(ddResp.Data) > 0 && len(ddResp.Data) < len(rowIds) {
+			return &utils.RetryableError{Prob: fmt.Sprintf("only %d of %d rows found (table may still be syncing)", len(ddResp.Data), len(rowIds))}
+		}
+		// If we got no rows, retry
+		return &utils.RetryableError{Prob: "no rows found (table may not have synced yet)"}
+	})
+
+	if retryErr != nil {
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(retryErr, "error getting reference table rows"))
 		return
 	}
 

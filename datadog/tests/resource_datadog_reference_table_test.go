@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
@@ -68,7 +69,27 @@ func TestAccReferenceTable_SchemaEvolution(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogReferenceTableExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(
-						"datadog_reference_table.evolution", "schema.fields.#", "2"),
+						"datadog_reference_table.evolution", "schema.fields.#", "3"),
+					resource.TestCheckResourceAttr(
+						"datadog_reference_table.evolution", "schema.fields.0.name", "a"),
+					resource.TestCheckResourceAttr(
+						"datadog_reference_table.evolution", "schema.fields.1.name", "b"),
+					resource.TestCheckResourceAttr(
+						"datadog_reference_table.evolution", "schema.fields.2.name", "c"),
+				),
+			},
+			{
+				// Wait step to ensure initial sync is fully complete before schema evolution
+				// Using the same config should trigger Terraform to refresh state automatically
+				// The check function waits for DONE status, ensuring the resource is ready
+				Config: testAccCheckDatadogReferenceTableSchemaInitial(uniq),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogReferenceTableExists(providers.frameworkProvider),
+					testAccCheckDatadogReferenceTableStatusDone(providers.frameworkProvider),
+					// Verify state attributes match API to ensure state is refreshed
+					// This helps Terraform understand the current state before Step 3
+					resource.TestCheckResourceAttrSet("datadog_reference_table.evolution", "status"),
+					resource.TestCheckResourceAttrSet("datadog_reference_table.evolution", "row_count"),
 				),
 			},
 			{
@@ -76,9 +97,11 @@ func TestAccReferenceTable_SchemaEvolution(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogReferenceTableExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(
-						"datadog_reference_table.evolution", "schema.fields.#", "3"),
+						"datadog_reference_table.evolution", "schema.fields.#", "4"),
 					resource.TestCheckResourceAttr(
 						"datadog_reference_table.evolution", "schema.fields.2.name", "c"),
+					resource.TestCheckResourceAttr(
+						"datadog_reference_table.evolution", "schema.fields.3.name", "d"),
 				),
 			},
 		},
@@ -182,43 +205,8 @@ resource "datadog_reference_table" "s3_table" {
 }
 
 func testAccCheckDatadogReferenceTableSchemaInitial(uniq string) string {
-	return fmt.Sprintf(`
-resource "datadog_reference_table" "evolution" {
-  table_name  = "tf_test_evolution_%s"
-  description = "Test schema evolution"
-  source      = "S3"
-
-  file_metadata {
-    sync_enabled = true
-
-    access_details {
-      aws_detail {
-        aws_account_id  = "924305315327"
-        aws_bucket_name = "dd-reference-tables-dev-staging"
-        file_path       = "test.csv"
-      }
-    }
-  }
-
-  schema {
-    primary_keys = ["a"]
-
-    fields {
-      name = "a"
-      type = "STRING"
-    }
-
-    fields {
-      name = "b"
-      type = "STRING"
-    }
-  }
-
-  tags = ["test:terraform"]
-}`, strings.ToLower(strings.ReplaceAll(uniq, "-", "_")))
-}
-
-func testAccCheckDatadogReferenceTableSchemaAddFields(uniq string) string {
+	// Sanitize: replace dashes with underscores and convert to lowercase
+	sanitized := strings.ToLower(strings.ReplaceAll(uniq, "-", "_"))
 	return fmt.Sprintf(`
 resource "datadog_reference_table" "evolution" {
   table_name  = "tf_test_evolution_%s"
@@ -250,7 +238,6 @@ resource "datadog_reference_table" "evolution" {
       type = "STRING"
     }
 
-    # New field added (additive change)
     fields {
       name = "c"
       type = "STRING"
@@ -258,10 +245,62 @@ resource "datadog_reference_table" "evolution" {
   }
 
   tags = ["test:terraform"]
-}`, strings.ToLower(strings.ReplaceAll(uniq, "-", "_")))
+}`, sanitized)
+}
+
+func testAccCheckDatadogReferenceTableSchemaAddFields(uniq string) string {
+	// Sanitize: replace dashes with underscores and convert to lowercase
+	sanitized := strings.ToLower(strings.ReplaceAll(uniq, "-", "_"))
+	return fmt.Sprintf(`
+resource "datadog_reference_table" "evolution" {
+  table_name  = "tf_test_evolution_%s"
+  description = "Test schema evolution"
+  source      = "S3"
+
+  file_metadata {
+    sync_enabled = true
+
+    access_details {
+      aws_detail {
+        aws_account_id  = "924305315327"
+        aws_bucket_name = "dd-reference-tables-dev-staging"
+        file_path       = "test2.csv"
+      }
+    }
+  }
+
+  schema {
+    primary_keys = ["a"]
+
+    fields {
+      name = "a"
+      type = "STRING"
+    }
+
+    fields {
+      name = "b"
+      type = "STRING"
+    }
+
+    fields {
+      name = "c"
+      type = "STRING"
+    }
+
+    # New field added (additive change)
+    fields {
+      name = "d"
+      type = "STRING"
+    }
+  }
+
+  tags = ["test:terraform"]
+}`, sanitized)
 }
 
 func testAccCheckDatadogReferenceTableSyncEnabled(uniq string, syncEnabled bool) string {
+	// Sanitize: replace dashes with underscores and convert to lowercase
+	sanitized := strings.ToLower(strings.ReplaceAll(uniq, "-", "_"))
 	return fmt.Sprintf(`
 resource "datadog_reference_table" "sync_test" {
   table_name  = "tf_test_sync_%s"
@@ -300,7 +339,7 @@ resource "datadog_reference_table" "sync_test" {
   }
 
   tags = ["test:terraform"]
-}`, strings.ToLower(uniq), syncEnabled)
+}`, sanitized, syncEnabled)
 }
 
 func testAccCheckDatadogReferenceTableDestroy(accProvider *fwprovider.FrameworkProvider) func(*terraform.State) error {
@@ -362,4 +401,48 @@ func referenceTableExistsHelper(auth context.Context, s *terraform.State, apiIns
 		}
 	}
 	return nil
+}
+
+func testAccCheckDatadogReferenceTableStatusDone(accProvider *fwprovider.FrameworkProvider) resource.TestCheckFunc {
+	return func(s *terraform.State) error {
+		apiInstances := accProvider.DatadogApiInstances
+		auth := accProvider.Auth
+
+		for _, r := range s.RootModule().Resources {
+			if r.Type != "resource_datadog_reference_table" {
+				continue
+			}
+			id := r.Primary.ID
+
+			// Wait for table status to be DONE (or ERROR) before proceeding
+			maxRetries := 20
+			retryInterval := 3 * time.Second
+			for i := 0; i < maxRetries; i++ {
+				resp, httpResp, err := apiInstances.GetReferenceTablesApiV2().GetTable(auth, id)
+				if err != nil {
+					return utils.TranslateClientError(err, httpResp, "error retrieving ReferenceTable")
+				}
+
+				if resp.Data != nil {
+					attrs := resp.Data.GetAttributes()
+					if status, ok := attrs.GetStatusOk(); ok && status != nil {
+						statusStr := string(*status)
+						if statusStr == "DONE" || statusStr == "ERROR" {
+							return nil // Table is ready
+						}
+						if i < maxRetries-1 {
+							time.Sleep(retryInterval)
+							continue
+						}
+						return fmt.Errorf("table status is %s after %d retries, expected DONE or ERROR", statusStr, maxRetries)
+					}
+				}
+				if i < maxRetries-1 {
+					time.Sleep(retryInterval)
+				}
+			}
+			return fmt.Errorf("unable to verify table status after %d retries", maxRetries)
+		}
+		return nil
+	}
 }

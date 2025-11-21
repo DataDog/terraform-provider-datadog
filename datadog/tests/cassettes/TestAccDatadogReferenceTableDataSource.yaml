@@ -1,3 +1,468 @@
 ---
 version: 2
-interactions: []
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 519
+        transfer_encoding: []
+        trailer: {}
+        host: api.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"description":"Test data source","file_metadata":{"access_details":{"aws_detail":{"aws_account_id":"924305315327","aws_bucket_name":"dd-reference-tables-dev-staging","file_path":"test.csv"}},"sync_enabled":true},"schema":{"fields":[{"name":"a","type":"STRING"},{"name":"b","type":"STRING"},{"name":"c","type":"STRING"}],"primary_keys":["a"]},"source":"S3","table_name":"tf_test_ds_tf_testaccdatadogreferencetabledatasource_local_1763581690","tags":["test:datasource"]},"type":"reference_table"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datad0g.com/api/v2/reference-tables/tables
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 749.475ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datad0g.com/api/v2/reference-tables/tables
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":[{"id":"e7d84519-47cb-4d39-ac2b-c51a64f0f8ff","type":"reference_table","attributes":{"created_by":"51bca672-7464-11ea-ad29-6762102f9f58","description":"Test data source","file_metadata":{"error_row_count":0,"error_message":"","sync_enabled":true,"access_details":{"aws_detail":{"aws_account_id":"924305315327","aws_bucket_name":"dd-reference-tables-dev-staging","file_path":"test.csv"}}},"last_updated_by":"51bca672-7464-11ea-ad29-6762102f9f58","row_count":0,"schema":{"primary_keys":["a"],"fields":[{"name":"a","type":"STRING"},{"name":"b","type":"STRING"},{"name":"c","type":"STRING"}]},"source":"S3","status":"INITIALIZED","table_name":"tf_test_ds_tf_testaccdatadogreferencetabledatasource_local_1763581690","tags":["test:datasource"],"updated_at":"2025-11-19T19:48:13Z"}},{"id":"72dc199d-6401-4527-b2e5-4cafaca6927c","type":"reference_table","attributes":{"created_by":"51bca672-7464-11ea-ad29-6762102f9f58","description":"Test schema evolution","file_metadata":{"error_row_count":0,"error_message":"","sync_enabled":true,"access_details":{"aws_detail":{"aws_account_id":"924305315327","aws_bucket_name":"dd-reference-tables-dev-staging","file_path":"test.csv"}}},"last_updated_by":"51bca672-7464-11ea-ad29-6762102f9f58","row_count":0,"schema":{"primary_keys":["a"],"fields":[{"name":"a","type":"STRING"},{"name":"b","type":"STRING"}]},"source":"S3","status":"INITIALIZED","table_name":"tf_test_evolution_tf_testaccreferencetable_schemaevolution_local_1763581690","tags":["test:terraform"],"updated_at":"2025-11-19T19:48:13Z"}},{"id":"8c4be62b-1b6c-4578-89b8-79c5f04b02b6","type":"reference_table","attributes":{"created_by":"51bca672-7464-11ea-ad29-6762102f9f58","description":"Test sync_enabled update","file_metadata":{"error_row_count":0,"error_message":"","sync_enabled":true,"access_details":{"aws_detail":{"aws_account_id":"924305315327","aws_bucket_name":"dd-reference-tables-dev-staging","file_path":"test.csv"}}},"last_updated_by":"51bca672-7464-11ea-ad29-6762102f9f58","row_count":0,"schema":{"primary_keys":["a"],"fields":[{"name":"a","type":"STRING"},{"name":"b","type":"STRING"},{"name":"c","type":"STRING"}]},"source":"S3","status":"INITIALIZED","table_name":"tf_test_sync_tf_testaccreferencetable_updatesyncenabled_local_1763581690","tags":["test:terraform"],"updated_at":"2025-11-19T19:48:13Z"}},{"id":"134ee13a-0917-40d1-b0c8-6123f05ac568","type":"reference_table","attributes":{"created_by":"51bca672-7464-11ea-ad29-6762102f9f58","description":"Test S3 reference table","file_metadata":{"error_row_count":0,"error_message":"","sync_enabled":true,"access_details":{"aws_detail":{"aws_account_id":"924305315327","aws_bucket_name":"dd-reference-tables-dev-staging","file_path":"test.csv"}}},"last_updated_by":"51bca672-7464-11ea-ad29-6762102f9f58","row_count":0,"schema":{"primary_keys":["a"],"fields":[{"name":"a","type":"STRING"},{"name":"b","type":"STRING"},{"name":"c","type":"STRING"}]},"source":"S3","status":"INITIALIZED","table_name":"tf_test_s3_tf_testaccreferencetables3_basic_local_1763581690","tags":["test:terraform","env:test"],"updated_at":"2025-11-19T19:48:13Z"}},{"id":"e15180ff-b17b-423a-b8cf-4c6fc3f78928","type":"reference_table","attributes":{"created_by":"51bca672-7464-11ea-ad29-6762102f9f58","description":"Test data source for rows","file_metadata":{"error_row_count":0,"error_message":"","sync_enabled":true,"access_details":{"aws_detail":{"aws_account_id":"924305315327","aws_bucket_name":"dd-reference-tables-dev-staging","file_path":"test.csv"}}},"last_updated_by":"51bca672-7464-11ea-ad29-6762102f9f58","row_count":0,"schema":{"primary_keys":["a"],"fields":[{"name":"a","type":"STRING"},{"name":"b","type":"STRING"},{"name":"c","type":"STRING"}]},"source":"S3","status":"INITIALIZED","table_name":"tf_test_ds_rows_tf_testaccdatadogreferencetablerowsdatasource_local_1763581690","tags":["test:datasource-rows"],"updated_at":"2025-11-19T19:48:13Z"}},{"id":"5b7451b5-f91a-4547-8e06-7da0664fecff","type":"reference_table","attributes":{"created_by":"51bca672-7464-11ea-ad29-6762102f9f58","description":"Test S3 reference table","file_metadata":{"error_row_count":0,"error_message":"","sync_enabled":true,"access_details":{"aws_detail":{"aws_account_id":"924305315327","aws_bucket_name":"dd-reference-tables-dev-staging","file_path":"test.csv"}}},"last_updated_by":"51bca672-7464-11ea-ad29-6762102f9f58","row_count":0,"schema":{"primary_keys":["a"],"fields":[{"name":"a","type":"STRING"},{"name":"b","type":"STRING"},{"name":"c","type":"STRING"}]},"source":"S3","status":"INITIALIZED","table_name":"tf_test_s3_tf_testaccreferencetable_import_local_1763581690","tags":["test:terraform","env:test"],"updated_at":"2025-11-19T19:48:13Z"}},{"id":"42b5c9ca-898a-466c-a54a-0481c9ab696f","type":"reference_table","attributes":{"created_by":"4ae61496-f55f-11eb-abf7-da7ad0900001","description":"","last_updated_by":"4ae61496-f55f-11eb-abf7-da7ad0900001","row_count":2,"schema":{"primary_keys":["name"],"fields":[{"name":"name","type":"STRING"},{"name":"url","type":"STRING"}]},"source":"SERVICENOW","status":"DONE","table_name":"http_bulk_client_e2e","tags":null,"updated_at":"2025-11-19T19:47:18Z"}},{"id":"f8ff12c9-4bdd-49e1-8956-4895cfcddbc3","type":"reference_table","attributes":{"created_by":"","description":"","file_metadata":{"error_row_count":342,"error_message":"","access_details":{}},"last_updated_by":"","row_count":4244780,"schema":{"primary_keys":["org_id"],"fields":[{"name":"account_family_customer_tier","type":"STRING"},{"name":"account_family_mrr","type":"STRING"},{"name":"account_health_status","type":"STRING"},{"name":"account_owner","type":"STRING"},{"name":"account_owner_email","type":"STRING"},{"name":"account_owner_role","type":"STRING"},{"name":"account_owner_territory","type":"STRING"},{"name":"account_sales_engineer","type":"STRING"},{"name":"account_status","type":"STRING"},{"name":"account_status_detail","type":"STRING"},{"name":"churn_reason","type":"STRING"},{"name":"churn_risk_likelihood","type":"STRING"},{"name":"churn_risk_reason","type":"STRING"},{"name":"country","type":"STRING"},{"name":"customer_success_rep","type":"STRING"},{"name":"customer_success_rep_email","type":"STRING"},{"name":"customer_tier","type":"STRING"},{"name":"employee_count","type":"STRING"},{"name":"industry","type":"STRING"},{"name":"is_msp","type":"STRING"},{"name":"is_premier_support_enabled","type":"STRING"},{"name":"master_org_id","type":"STRING"},{"name":"master_org_name","type":"STRING"},{"name":"org_id","type":"STRING"},{"name":"org_name","type":"STRING"},{"name":"owner_sales_department","type":"STRING"},{"name":"owner_sales_team","type":"STRING"},{"name":"partner_tier","type":"STRING"},{"name":"premier_support_mrr","type":"STRING"},{"name":"region","type":"STRING"},{"name":"sales_engineer","type":"STRING"},{"name":"sales_engineer_email","type":"STRING"},{"name":"sales_segment","type":"STRING"},{"name":"technical_product_health_status","type":"STRING"},{"name":"type","type":"STRING"},{"name":"row_created_at","type":"STRING"},{"name":"row_updated_at","type":"STRING"}]},"source":"SNOWFLAKE","status":"DONE_WITH_ERRORS","table_name":"test_product_analytics_write_dest_saas","tags":["product_analytics_beta_enabled:true"],"updated_at":"2025-11-19T19:46:12Z"}},{"id":"f704bb0a-9eaf-4734-bd22-1caaca09d6ca","type":"reference_table","attributes":{"created_by":"972dde90-34e1-11eb-958e-f7f08ce02c26","description":"","file_metadata":{"error_row_count":172,"error_message":"","sync_enabled":true,"access_details":{"aws_detail":{"aws_account_id":"727006795293","aws_bucket_name":"dd-logs-threat-intel-staging","file_path":"threat_intel_ip_abuse_ch_threatfox.csv"}}},"last_updated_by":"","row_count":1706,"schema":{"primary_keys":["ip_address"],"fields":[{"name":"ip_address","type":"STRING"},{"name":"intention","type":"STRING"},{"name":"category","type":"STRING"},{"name":"source","type":"STRING"},{"name":"additional_data","type":"STRING"}]},"source":"S3","status":"DONE_WITH_ERRORS","table_name":"threat_intel_ip_abuse_ch_threatfox","tags":null,"updated_at":"2025-11-19T19:45:55Z"}},{"id":"34c341b1-a97a-4893-b821-475f8bbf0561","type":"reference_table","attributes":{"created_by":"d8673343-30d4-11f0-b7c9-22644aa72e77","description":"","last_updated_by":"d8673343-30d4-11f0-b7c9-22644aa72e77","row_count":1,"schema":{"primary_keys":["int32_col"],"fields":[{"name":"int32_col","type":"INT32"},{"name":"str_col","type":"STRING"}]},"source":"LOCAL_FILE","status":"DONE","table_name":"synthetics_test_rt_file_crud_flow_7730722353299252260","tags":["synthetics"],"updated_at":"2025-11-19T19:45:48Z"}},{"id":"cbc703e8-45a7-428d-9a85-079c9b4abcbf","type":"reference_table","attributes":{"created_by":"d8673343-30d4-11f0-b7c9-22644aa72e77","description":"","last_updated_by":"d8673343-30d4-11f0-b7c9-22644aa72e77","row_count":2,"schema":{"primary_keys":["int32_col"],"fields":[{"name":"int32_col","type":"INT32"},{"name":"str_col","type":"STRING"}]},"source":"LOCAL_FILE","status":"DONE","table_name":"synthetics_test_rt_file_v2_row_crud_flow_3796209879804171102","tags":["synthetics"],"updated_at":"2025-11-19T19:45:48Z"}},{"id":"1fd37f6a-75a6-44b7-bb9a-2f8558fd2d6b","type":"reference_table","attributes":{"created_by":"d8673343-30d4-11f0-b7c9-22644aa72e77","description":"","last_updated_by":"d8673343-30d4-11f0-b7c9-22644aa72e77","row_count":1,"schema":{"primary_keys":["int32_col"],"fields":[{"name":"int32_col","type":"INT32"},{"name":"str_col","type":"STRING"}]},"source":"LOCAL_FILE","status":"DONE","table_name":"synthetics_test_rt_file_row_crud_flow_151529577687372015","tags":["synthetics"],"updated_at":"2025-11-19T19:45:48Z"}},{"id":"ae91c101-a2e2-41d2-b99f-0cb5ff87e72a","type":"reference_table","attributes":{"created_by":"","description":"This is NOT an actual Snowflake table - it''s a test table updated by this synthetics: https://ddstaging.datadoghq.com/synthetics/details/ajx-zbt-khs?from_ts=1741296820320\u0026to_ts=1741300420320\u0026live=true.","file_metadata":{"error_row_count":1,"error_message":"","access_details":{}},"last_updated_by":"","row_count":1,"schema":{"primary_keys":["id"],"fields":[{"name":"id","type":"STRING"},{"name":"name","type":"STRING"}]},"source":"SNOWFLAKE","status":"DONE_WITH_ERRORS","table_name":"synthetics_grpc_saas2","tags":null,"updated_at":"2025-11-19T19:43:35Z"}},{"id":"481ded06-c51f-48a3-97a6-aab88fd27b53","type":"reference_table","attributes":{"created_by":"4ae61496-f55f-11eb-abf7-da7ad0900001","description":"","last_updated_by":"4ae61496-f55f-11eb-abf7-da7ad0900001","row_count":29,"schema":{"primary_keys":["id"],"fields":[{"name":"id","type":"STRING"},{"name":"name","type":"STRING"}]},"source":"API","status":"DONE","table_name":"test_sync_nov_18","tags":null,"updated_at":"2025-11-19T19:38:08Z"}},{"id":"4acf614f-6ee4-404b-8c36-4f0c1f9df648","type":"reference_table","attributes":{"created_by":"","description":"","last_updated_by":"","row_count":2,"schema":{"primary_keys":["id"],"fields":[{"name":"id","type":"STRING"},{"name":"createdat","type":"STRING"},{"name":"updatedat","type":"STRING"},{"name":"archived","type":"STRING"},{"name":"url","type":"STRING"},{"name":"address","type":"STRING"},{"name":"address2","type":"STRING"},{"name":"annualrevenue","type":"STRING"},{"name":"city","type":"STRING"},{"name":"country","type":"STRING"},{"name":"days_to_close","type":"STRING"},{"name":"description","type":"STRING"},{"name":"domain","type":"STRING"},{"name":"founded_year","type":"STRING"},{"name":"hs_analytics_first_timestamp","type":"STRING"},{"name":"hs_industry_group","type":"STRING"},{"name":"industry","type":"STRING"},{"name":"lifecyclestage","type":"STRING"},{"name":"name","type":"STRING"},{"name":"numberofemployees","type":"STRING"},{"name":"owneremail","type":"STRING"},{"name":"ownername","type":"STRING"},{"name":"state","type":"STRING"},{"name":"total_revenue","type":"STRING"},{"name":"website","type":"STRING"},{"name":"zip","type":"STRING"}]},"source":"HUBSPOT_CONTENT_HUB","status":"DONE","table_name":"hubspot_companies_212c3bff_146e_4812_982f_2340e6efad58","tags":null,"updated_at":"2025-11-19T19:36:17Z"}}],"meta":{"page":{"type":"offset_limit","offset":0,"limit":15,"total":null,"first_offset":0,"prev_offset":null,"next_offset":15,"last_offset":null}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 288.170083ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datad0g.com/api/v2/reference-tables/tables/e7d84519-47cb-4d39-ac2b-c51a64f0f8ff
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 783
+        uncompressed: false
+        body: '{"data":{"id":"e7d84519-47cb-4d39-ac2b-c51a64f0f8ff","type":"reference_table","attributes":{"created_by":"51bca672-7464-11ea-ad29-6762102f9f58","description":"Test data source","file_metadata":{"error_row_count":0,"error_message":"","sync_enabled":true,"access_details":{"aws_detail":{"aws_account_id":"924305315327","aws_bucket_name":"dd-reference-tables-dev-staging","file_path":"test.csv"}}},"last_updated_by":"51bca672-7464-11ea-ad29-6762102f9f58","row_count":0,"schema":{"primary_keys":["a"],"fields":[{"name":"a","type":"STRING"},{"name":"b","type":"STRING"},{"name":"c","type":"STRING"}]},"source":"S3","status":"INITIALIZED","table_name":"tf_test_ds_tf_testaccdatadogreferencetabledatasource_local_1763581690","tags":["test:datasource"],"updated_at":"2025-11-19T19:48:13Z"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 54.653ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datad0g.com/api/v2/reference-tables/tables/e7d84519-47cb-4d39-ac2b-c51a64f0f8ff
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 783
+        uncompressed: false
+        body: '{"data":{"id":"e7d84519-47cb-4d39-ac2b-c51a64f0f8ff","type":"reference_table","attributes":{"created_by":"51bca672-7464-11ea-ad29-6762102f9f58","description":"Test data source","file_metadata":{"error_row_count":0,"error_message":"","sync_enabled":true,"access_details":{"aws_detail":{"aws_account_id":"924305315327","aws_bucket_name":"dd-reference-tables-dev-staging","file_path":"test.csv"}}},"last_updated_by":"51bca672-7464-11ea-ad29-6762102f9f58","row_count":0,"schema":{"primary_keys":["a"],"fields":[{"name":"a","type":"STRING"},{"name":"b","type":"STRING"},{"name":"c","type":"STRING"}]},"source":"S3","status":"INITIALIZED","table_name":"tf_test_ds_tf_testaccdatadogreferencetabledatasource_local_1763581690","tags":["test:datasource"],"updated_at":"2025-11-19T19:48:13Z"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 46.638792ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datad0g.com/api/v2/reference-tables/tables?filter%5Btable_name%5D%5Bexact%5D=tf_test_ds_tf_testaccdatadogreferencetabledatasource_local_1763581690
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 932
+        uncompressed: false
+        body: '{"data":[{"id":"e7d84519-47cb-4d39-ac2b-c51a64f0f8ff","type":"reference_table","attributes":{"created_by":"51bca672-7464-11ea-ad29-6762102f9f58","description":"Test data source","file_metadata":{"error_row_count":0,"error_message":"","sync_enabled":true,"access_details":{"aws_detail":{"aws_account_id":"924305315327","aws_bucket_name":"dd-reference-tables-dev-staging","file_path":"test.csv"}}},"last_updated_by":"51bca672-7464-11ea-ad29-6762102f9f58","row_count":0,"schema":{"primary_keys":["a"],"fields":[{"name":"a","type":"STRING"},{"name":"b","type":"STRING"},{"name":"c","type":"STRING"}]},"source":"S3","status":"INITIALIZED","table_name":"tf_test_ds_tf_testaccdatadogreferencetabledatasource_local_1763581690","tags":["test:datasource"],"updated_at":"2025-11-19T19:48:13Z"}}],"meta":{"page":{"type":"offset_limit","offset":0,"limit":15,"total":null,"first_offset":0,"prev_offset":null,"next_offset":15,"last_offset":null}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 244.735667ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datad0g.com/api/v2/reference-tables/tables/e7d84519-47cb-4d39-ac2b-c51a64f0f8ff
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 783
+        uncompressed: false
+        body: '{"data":{"id":"e7d84519-47cb-4d39-ac2b-c51a64f0f8ff","type":"reference_table","attributes":{"created_by":"51bca672-7464-11ea-ad29-6762102f9f58","description":"Test data source","file_metadata":{"error_row_count":0,"error_message":"","sync_enabled":true,"access_details":{"aws_detail":{"aws_account_id":"924305315327","aws_bucket_name":"dd-reference-tables-dev-staging","file_path":"test.csv"}}},"last_updated_by":"51bca672-7464-11ea-ad29-6762102f9f58","row_count":0,"schema":{"primary_keys":["a"],"fields":[{"name":"a","type":"STRING"},{"name":"b","type":"STRING"},{"name":"c","type":"STRING"}]},"source":"S3","status":"INITIALIZED","table_name":"tf_test_ds_tf_testaccdatadogreferencetabledatasource_local_1763581690","tags":["test:datasource"],"updated_at":"2025-11-19T19:48:13Z"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 41.256875ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datad0g.com/api/v2/reference-tables/tables/e7d84519-47cb-4d39-ac2b-c51a64f0f8ff
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 783
+        uncompressed: false
+        body: '{"data":{"id":"e7d84519-47cb-4d39-ac2b-c51a64f0f8ff","type":"reference_table","attributes":{"created_by":"51bca672-7464-11ea-ad29-6762102f9f58","description":"Test data source","file_metadata":{"error_row_count":0,"error_message":"","sync_enabled":true,"access_details":{"aws_detail":{"aws_account_id":"924305315327","aws_bucket_name":"dd-reference-tables-dev-staging","file_path":"test.csv"}}},"last_updated_by":"51bca672-7464-11ea-ad29-6762102f9f58","row_count":0,"schema":{"primary_keys":["a"],"fields":[{"name":"a","type":"STRING"},{"name":"b","type":"STRING"},{"name":"c","type":"STRING"}]},"source":"S3","status":"INITIALIZED","table_name":"tf_test_ds_tf_testaccdatadogreferencetabledatasource_local_1763581690","tags":["test:datasource"],"updated_at":"2025-11-19T19:48:13Z"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 58.675ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datad0g.com/api/v2/reference-tables/tables?filter%5Btable_name%5D%5Bexact%5D=tf_test_ds_tf_testaccdatadogreferencetabledatasource_local_1763581690
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 932
+        uncompressed: false
+        body: '{"data":[{"id":"e7d84519-47cb-4d39-ac2b-c51a64f0f8ff","type":"reference_table","attributes":{"created_by":"51bca672-7464-11ea-ad29-6762102f9f58","description":"Test data source","file_metadata":{"error_row_count":0,"error_message":"","sync_enabled":true,"access_details":{"aws_detail":{"aws_account_id":"924305315327","aws_bucket_name":"dd-reference-tables-dev-staging","file_path":"test.csv"}}},"last_updated_by":"51bca672-7464-11ea-ad29-6762102f9f58","row_count":0,"schema":{"primary_keys":["a"],"fields":[{"name":"a","type":"STRING"},{"name":"b","type":"STRING"},{"name":"c","type":"STRING"}]},"source":"S3","status":"INITIALIZED","table_name":"tf_test_ds_tf_testaccdatadogreferencetabledatasource_local_1763581690","tags":["test:datasource"],"updated_at":"2025-11-19T19:48:13Z"}}],"meta":{"page":{"type":"offset_limit","offset":0,"limit":15,"total":null,"first_offset":0,"prev_offset":null,"next_offset":15,"last_offset":null}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 258.126334ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datad0g.com/api/v2/reference-tables/tables/e7d84519-47cb-4d39-ac2b-c51a64f0f8ff
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 783
+        uncompressed: false
+        body: '{"data":{"id":"e7d84519-47cb-4d39-ac2b-c51a64f0f8ff","type":"reference_table","attributes":{"created_by":"51bca672-7464-11ea-ad29-6762102f9f58","description":"Test data source","file_metadata":{"error_row_count":0,"error_message":"","sync_enabled":true,"access_details":{"aws_detail":{"aws_account_id":"924305315327","aws_bucket_name":"dd-reference-tables-dev-staging","file_path":"test.csv"}}},"last_updated_by":"51bca672-7464-11ea-ad29-6762102f9f58","row_count":0,"schema":{"primary_keys":["a"],"fields":[{"name":"a","type":"STRING"},{"name":"b","type":"STRING"},{"name":"c","type":"STRING"}]},"source":"S3","status":"INITIALIZED","table_name":"tf_test_ds_tf_testaccdatadogreferencetabledatasource_local_1763581690","tags":["test:datasource"],"updated_at":"2025-11-19T19:48:13Z"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 47.11175ms
+    - id: 9
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datad0g.com/api/v2/reference-tables/tables/e7d84519-47cb-4d39-ac2b-c51a64f0f8ff
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 783
+        uncompressed: false
+        body: '{"data":{"id":"e7d84519-47cb-4d39-ac2b-c51a64f0f8ff","type":"reference_table","attributes":{"created_by":"51bca672-7464-11ea-ad29-6762102f9f58","description":"Test data source","file_metadata":{"error_row_count":0,"error_message":"","sync_enabled":true,"access_details":{"aws_detail":{"aws_account_id":"924305315327","aws_bucket_name":"dd-reference-tables-dev-staging","file_path":"test.csv"}}},"last_updated_by":"51bca672-7464-11ea-ad29-6762102f9f58","row_count":0,"schema":{"primary_keys":["a"],"fields":[{"name":"a","type":"STRING"},{"name":"b","type":"STRING"},{"name":"c","type":"STRING"}]},"source":"S3","status":"INITIALIZED","table_name":"tf_test_ds_tf_testaccdatadogreferencetabledatasource_local_1763581690","tags":["test:datasource"],"updated_at":"2025-11-19T19:48:13Z"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 104.207792ms
+    - id: 10
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datad0g.com/api/v2/reference-tables/tables/e7d84519-47cb-4d39-ac2b-c51a64f0f8ff
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 783
+        uncompressed: false
+        body: '{"data":{"id":"e7d84519-47cb-4d39-ac2b-c51a64f0f8ff","type":"reference_table","attributes":{"created_by":"51bca672-7464-11ea-ad29-6762102f9f58","description":"Test data source","file_metadata":{"error_row_count":0,"error_message":"","sync_enabled":true,"access_details":{"aws_detail":{"aws_account_id":"924305315327","aws_bucket_name":"dd-reference-tables-dev-staging","file_path":"test.csv"}}},"last_updated_by":"51bca672-7464-11ea-ad29-6762102f9f58","row_count":0,"schema":{"primary_keys":["a"],"fields":[{"name":"a","type":"STRING"},{"name":"b","type":"STRING"},{"name":"c","type":"STRING"}]},"source":"S3","status":"INITIALIZED","table_name":"tf_test_ds_tf_testaccdatadogreferencetabledatasource_local_1763581690","tags":["test:datasource"],"updated_at":"2025-11-19T19:48:13Z"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 50.034375ms
+    - id: 11
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datad0g.com/api/v2/reference-tables/tables?filter%5Btable_name%5D%5Bexact%5D=tf_test_ds_tf_testaccdatadogreferencetabledatasource_local_1763581690
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 932
+        uncompressed: false
+        body: '{"data":[{"id":"e7d84519-47cb-4d39-ac2b-c51a64f0f8ff","type":"reference_table","attributes":{"created_by":"51bca672-7464-11ea-ad29-6762102f9f58","description":"Test data source","file_metadata":{"error_row_count":0,"error_message":"","sync_enabled":true,"access_details":{"aws_detail":{"aws_account_id":"924305315327","aws_bucket_name":"dd-reference-tables-dev-staging","file_path":"test.csv"}}},"last_updated_by":"51bca672-7464-11ea-ad29-6762102f9f58","row_count":0,"schema":{"primary_keys":["a"],"fields":[{"name":"a","type":"STRING"},{"name":"b","type":"STRING"},{"name":"c","type":"STRING"}]},"source":"S3","status":"INITIALIZED","table_name":"tf_test_ds_tf_testaccdatadogreferencetabledatasource_local_1763581690","tags":["test:datasource"],"updated_at":"2025-11-19T19:48:13Z"}}],"meta":{"page":{"type":"offset_limit","offset":0,"limit":15,"total":null,"first_offset":0,"prev_offset":null,"next_offset":15,"last_offset":null}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 241.136541ms
+    - id: 12
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datad0g.com/api/v2/reference-tables/tables/e7d84519-47cb-4d39-ac2b-c51a64f0f8ff
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 783
+        uncompressed: false
+        body: '{"data":{"id":"e7d84519-47cb-4d39-ac2b-c51a64f0f8ff","type":"reference_table","attributes":{"created_by":"51bca672-7464-11ea-ad29-6762102f9f58","description":"Test data source","file_metadata":{"error_row_count":0,"error_message":"","sync_enabled":true,"access_details":{"aws_detail":{"aws_account_id":"924305315327","aws_bucket_name":"dd-reference-tables-dev-staging","file_path":"test.csv"}}},"last_updated_by":"51bca672-7464-11ea-ad29-6762102f9f58","row_count":0,"schema":{"primary_keys":["a"],"fields":[{"name":"a","type":"STRING"},{"name":"b","type":"STRING"},{"name":"c","type":"STRING"}]},"source":"S3","status":"INITIALIZED","table_name":"tf_test_ds_tf_testaccdatadogreferencetabledatasource_local_1763581690","tags":["test:datasource"],"updated_at":"2025-11-19T19:48:13Z"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 42.410583ms
+    - id: 13
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datad0g.com/api/v2/reference-tables/tables/e7d84519-47cb-4d39-ac2b-c51a64f0f8ff
+        method: DELETE
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 327.407625ms
