@@ -28,7 +28,7 @@ func TestAccDatadogReferenceTableDataSource(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"data.datadog_reference_table.by_id", "description", "Test data source"),
 					resource.TestCheckResourceAttr(
-						"data.datadog_reference_table.by_id", "file_metadata.cloud_storage.sync_enabled", "true"),
+						"data.datadog_reference_table.by_id", "file_metadata.sync_enabled", "true"),
 					resource.TestCheckResourceAttr(
 						"data.datadog_reference_table.by_id", "schema.primary_keys.0", "a"),
 					resource.TestCheckResourceAttrSet(

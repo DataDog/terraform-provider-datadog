@@ -27,35 +27,16 @@ type datadogReferenceTableDataSourceModel struct {
 	TableName types.String `tfsdk:"table_name"`
 
 	// Computed values
-	CreatedBy     types.String                                   `tfsdk:"created_by"`
-	Description   types.String                                   `tfsdk:"description"`
-	LastUpdatedBy types.String                                   `tfsdk:"last_updated_by"`
-	RowCount      types.Int64                                    `tfsdk:"row_count"`
-	Source        types.String                                   `tfsdk:"source"`
-	Status        types.String                                   `tfsdk:"status"`
-	UpdatedAt     types.String                                   `tfsdk:"updated_at"`
-	Tags          types.List                                     `tfsdk:"tags"`
-	FileMetadata  *referenceTableDataAttributesFileMetadataModel `tfsdk:"file_metadata"`
-	Schema        *schemaModel                                   `tfsdk:"schema"`
-}
-
-type referenceTableDataAttributesFileMetadataModel struct {
-	CloudStorage *referenceTableDataAttributesFileMetadataCloudStorageModel `tfsdk:"cloud_storage"`
-	LocalFile    *referenceTableDataAttributesFileMetadataLocalFileModel    `tfsdk:"local_file"`
-}
-
-type referenceTableDataAttributesFileMetadataCloudStorageModel struct {
-	ErrorMessage  types.String        `tfsdk:"error_message"`
-	ErrorRowCount types.Int64         `tfsdk:"error_row_count"`
-	ErrorType     types.String        `tfsdk:"error_type"`
-	SyncEnabled   types.Bool          `tfsdk:"sync_enabled"`
-	AccessDetails *accessDetailsModel `tfsdk:"access_details"`
-}
-
-type referenceTableDataAttributesFileMetadataLocalFileModel struct {
-	ErrorMessage  types.String `tfsdk:"error_message"`
-	ErrorRowCount types.Int64  `tfsdk:"error_row_count"`
-	UploadId      types.String `tfsdk:"upload_id"`
+	CreatedBy     types.String       `tfsdk:"created_by"`
+	Description   types.String       `tfsdk:"description"`
+	LastUpdatedBy types.String       `tfsdk:"last_updated_by"`
+	RowCount      types.Int64        `tfsdk:"row_count"`
+	Source        types.String       `tfsdk:"source"`
+	Status        types.String       `tfsdk:"status"`
+	UpdatedAt     types.String       `tfsdk:"updated_at"`
+	Tags          types.List         `tfsdk:"tags"`
+	FileMetadata  *fileMetadataModel `tfsdk:"file_metadata"`
+	Schema        *schemaModel       `tfsdk:"schema"`
 }
 
 func NewDatadogReferenceTableDataSource() datasource.DataSource {
@@ -124,110 +105,91 @@ func (d *datadogReferenceTableDataSource) Schema(_ context.Context, _ datasource
 		},
 		Blocks: map[string]schema.Block{
 			"file_metadata": schema.SingleNestedBlock{
-				Description: "File metadata for the reference table. The structure depends on the source type.",
+				Description: "File metadata for the reference table. Contains sync settings for cloud storage sources.",
+				Attributes: map[string]schema.Attribute{
+					"sync_enabled": schema.BoolAttribute{
+						Computed:    true,
+						Description: "Whether automatic sync is enabled for this table. Only present for cloud storage sources (S3, GCS, Azure).",
+					},
+					"error_message": schema.StringAttribute{
+						Computed:    true,
+						Description: "Error message from the last sync attempt, if any.",
+					},
+					"error_row_count": schema.Int64Attribute{
+						Computed:    true,
+						Description: "The number of rows that failed to sync.",
+					},
+					"error_type": schema.StringAttribute{
+						Computed:    true,
+						Description: "The type of error that occurred during file processing. Only present for cloud storage sources.",
+					},
+				},
 				Blocks: map[string]schema.Block{
-					"cloud_storage": schema.SingleNestedBlock{
-						Description: "Cloud storage metadata (for S3, GCS, or Azure sources).",
-						Attributes: map[string]schema.Attribute{
-							"sync_enabled": schema.BoolAttribute{
-								Computed:    true,
-								Description: "Whether automatic sync is enabled for this table.",
-							},
-							"error_message": schema.StringAttribute{
-								Computed:    true,
-								Description: "Error message from the last sync attempt, if any.",
-							},
-							"error_row_count": schema.Int64Attribute{
-								Computed:    true,
-								Description: "The number of rows that failed to sync.",
-							},
-							"error_type": schema.StringAttribute{
-								Computed:    true,
-								Description: "The type of error that occurred during file processing.",
-							},
-						},
+					"access_details": schema.SingleNestedBlock{
+						Description: "Cloud storage access configuration. Only present for cloud storage sources (S3, GCS, Azure).",
 						Blocks: map[string]schema.Block{
-							"access_details": schema.SingleNestedBlock{
-								Description: "Cloud storage access configuration.",
-								Blocks: map[string]schema.Block{
-									"aws_detail": schema.SingleNestedBlock{
-										Attributes: map[string]schema.Attribute{
-											"aws_account_id": schema.StringAttribute{
-												Computed:    true,
-												Description: "The ID of the AWS account.",
-											},
-											"aws_bucket_name": schema.StringAttribute{
-												Computed:    true,
-												Description: "The name of the AWS S3 bucket.",
-											},
-											"file_path": schema.StringAttribute{
-												Computed:    true,
-												Description: "The relative file path from the S3 bucket root.",
-											},
-										},
+							"aws_detail": schema.SingleNestedBlock{
+								Description: "AWS S3 access configuration.",
+								Attributes: map[string]schema.Attribute{
+									"aws_account_id": schema.StringAttribute{
+										Computed:    true,
+										Description: "The ID of the AWS account.",
 									},
-									"gcp_detail": schema.SingleNestedBlock{
-										Attributes: map[string]schema.Attribute{
-											"gcp_project_id": schema.StringAttribute{
-												Computed:    true,
-												Description: "The ID of the GCP project.",
-											},
-											"gcp_bucket_name": schema.StringAttribute{
-												Computed:    true,
-												Description: "The name of the GCP bucket.",
-											},
-											"file_path": schema.StringAttribute{
-												Computed:    true,
-												Description: "The relative file path from the GCS bucket root.",
-											},
-											"gcp_service_account_email": schema.StringAttribute{
-												Computed:    true,
-												Description: "The email of the GCP service account.",
-											},
-										},
+									"aws_bucket_name": schema.StringAttribute{
+										Computed:    true,
+										Description: "The name of the AWS S3 bucket.",
 									},
-									"azure_detail": schema.SingleNestedBlock{
-										Attributes: map[string]schema.Attribute{
-											"azure_tenant_id": schema.StringAttribute{
-												Computed:    true,
-												Description: "The ID of the Azure tenant.",
-											},
-											"azure_client_id": schema.StringAttribute{
-												Computed:    true,
-												Description: "The Azure client ID.",
-											},
-											"azure_storage_account_name": schema.StringAttribute{
-												Computed:    true,
-												Description: "The name of the Azure storage account.",
-											},
-											"azure_container_name": schema.StringAttribute{
-												Computed:    true,
-												Description: "The name of the Azure container.",
-											},
-											"file_path": schema.StringAttribute{
-												Computed:    true,
-												Description: "The relative file path from the Azure container root.",
-											},
-										},
+									"file_path": schema.StringAttribute{
+										Computed:    true,
+										Description: "The relative file path from the S3 bucket root.",
 									},
 								},
 							},
-						},
-					},
-					"local_file": schema.SingleNestedBlock{
-						Description: "Local file metadata (for LOCAL_FILE source).",
-						Attributes: map[string]schema.Attribute{
-							"upload_id": schema.StringAttribute{
-								Computed:    true,
-								Description: "The upload ID used to create/update the table.",
+							"gcp_detail": schema.SingleNestedBlock{
+								Description: "Google Cloud Storage access configuration.",
+								Attributes: map[string]schema.Attribute{
+									"gcp_project_id": schema.StringAttribute{
+										Computed:    true,
+										Description: "The ID of the GCP project.",
+									},
+									"gcp_bucket_name": schema.StringAttribute{
+										Computed:    true,
+										Description: "The name of the GCP bucket.",
+									},
+									"file_path": schema.StringAttribute{
+										Computed:    true,
+										Description: "The relative file path from the GCS bucket root.",
+									},
+									"gcp_service_account_email": schema.StringAttribute{
+										Computed:    true,
+										Description: "The email of the GCP service account.",
+									},
+								},
 							},
-							"error_message": schema.StringAttribute{
-								Computed:    true,
-								Description: "Error message from the last upload, if any.",
-							},
-							"error_row_count": schema.Int64Attribute{
-								Computed:    true,
-								Description: "The number of rows that failed to process.",
+							"azure_detail": schema.SingleNestedBlock{
+								Description: "Azure Blob Storage access configuration.",
+								Attributes: map[string]schema.Attribute{
+									"azure_tenant_id": schema.StringAttribute{
+										Computed:    true,
+										Description: "The ID of the Azure tenant.",
+									},
+									"azure_client_id": schema.StringAttribute{
+										Computed:    true,
+										Description: "The Azure client ID.",
+									},
+									"azure_storage_account_name": schema.StringAttribute{
+										Computed:    true,
+										Description: "The name of the Azure storage account.",
+									},
+									"azure_container_name": schema.StringAttribute{
+										Computed:    true,
+										Description: "The name of the Azure container.",
+									},
+									"file_path": schema.StringAttribute{
+										Computed:    true,
+										Description: "The relative file path from the Azure container root.",
+									},
+								},
 							},
 						},
 					},
@@ -384,28 +346,26 @@ func (d *datadogReferenceTableDataSource) updateState(ctx context.Context, state
 		state.Tags, _ = types.ListValueFrom(ctx, types.StringType, *tags)
 	}
 
-	// Handle FileMetadata (OneOf union type)
+	// Handle FileMetadata from API response (OneOf union type)
 	if fileMetadata, ok := attributes.GetFileMetadataOk(); ok {
-		fileMetadataTf := &referenceTableDataAttributesFileMetadataModel{}
+		fileMetadataTf := &fileMetadataModel{}
 
 		// Check if it's CloudStorage type
 		if cloudStorage := fileMetadata.TableResultV2DataAttributesFileMetadataCloudStorage; cloudStorage != nil {
-			cloudStorageTf := &referenceTableDataAttributesFileMetadataCloudStorageModel{}
-
 			if syncEnabled, ok := cloudStorage.GetSyncEnabledOk(); ok {
-				cloudStorageTf.SyncEnabled = types.BoolValue(*syncEnabled)
+				fileMetadataTf.SyncEnabled = types.BoolValue(*syncEnabled)
 			}
 
 			if errorMessage, ok := cloudStorage.GetErrorMessageOk(); ok {
-				cloudStorageTf.ErrorMessage = types.StringValue(*errorMessage)
+				fileMetadataTf.ErrorMessage = types.StringValue(*errorMessage)
 			}
 
 			if errorRowCount, ok := cloudStorage.GetErrorRowCountOk(); ok {
-				cloudStorageTf.ErrorRowCount = types.Int64Value(*errorRowCount)
+				fileMetadataTf.ErrorRowCount = types.Int64Value(*errorRowCount)
 			}
 
 			if errorType, ok := cloudStorage.GetErrorTypeOk(); ok {
-				cloudStorageTf.ErrorType = types.StringValue(string(*errorType))
+				fileMetadataTf.ErrorType = types.StringValue(string(*errorType))
 			}
 
 			// Extract access_details
@@ -466,26 +426,12 @@ func (d *datadogReferenceTableDataSource) updateState(ctx context.Context, state
 					accessDetailsTf.AzureDetail = azureDetailTf
 				}
 
-				cloudStorageTf.AccessDetails = accessDetailsTf
+				fileMetadataTf.AccessDetails = accessDetailsTf
 			}
-
-			fileMetadataTf.CloudStorage = cloudStorageTf
 		}
 
-		// Check if it's LocalFile type
-		if localFile := fileMetadata.TableResultV2DataAttributesFileMetadataLocalFile; localFile != nil {
-			localFileTf := &referenceTableDataAttributesFileMetadataLocalFileModel{}
-
-			if errorMessage, ok := localFile.GetErrorMessageOk(); ok {
-				localFileTf.ErrorMessage = types.StringValue(*errorMessage)
-			}
-
-			if errorRowCount, ok := localFile.GetErrorRowCountOk(); ok {
-				localFileTf.ErrorRowCount = types.Int64Value(*errorRowCount)
-			}
-
-			fileMetadataTf.LocalFile = localFileTf
-		}
+		// Note: LocalFile type doesn't have file_metadata in the API response
+		// For LOCAL_FILE sources, file_metadata will be null/empty
 
 		state.FileMetadata = fileMetadataTf
 	}
