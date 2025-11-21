@@ -1,0 +1,93 @@
+# cloned from hashicorp and modifed to support ubuntu-latest-m , which provides more disk space
+# for go build to complete successfully.
+name: Terraform Registry with goreleaser
+
+permissions:
+  contents: write
+  packages: read
+  statuses: write
+
+on:
+  workflow_call:
+    inputs:
+      goreleaser-release-args:
+        description: 'goreleaser release Arguments (e.g. --skip-validate)'
+        required: false
+        type: string
+      release-notes:
+        description: 'Enable release notes handling (must have previously uploaded artifact named "release-notes" with file "release-notes.txt")'
+        required: false
+        type: boolean
+      setup-go-version:
+        description: 'setup-go Go Version'
+        required: false
+        type: string
+      setup-go-version-file:
+        description: 'setup-go File From Which To Read Go Version'
+        required: false
+        type: string
+      git-ref:
+        description: 'branch, tag or SHA to checkout'
+        required: false
+        type: string
+    secrets:
+      gpg-private-key:
+        description: 'GPG Private Key'
+        required: true
+      gpg-private-key-passphrase:
+        description: 'GPG Private Key Passphrase'
+        required: false
+
+jobs:
+  Release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          ref: ${{ inputs.git-ref || github.ref }}
+          fetch-depth: 0
+      - name: Free up Ubuntu runner disk space
+        uses: jlumbroso/free-disk-space@54081f138730dfa15788a46383842cd2f914a1be # v1.3.1
+        with:
+          tool-cache: true
+          android: true
+          dotnet: true
+          haskell: true
+          large-packages: true
+          docker-images: false  # Preserve Docker for GoReleaser
+          swap-storage: true
+      - uses: actions/setup-go@d35c59abb061a4a6fb18e82ac0862c26744d6ab5 # v5.5.0
+        with:
+          go-version: ${{ inputs.setup-go-version }}
+          go-version-file: ${{ inputs.setup-go-version-file }}
+          cache: false  # Disable caching to skip the post-cleanup step. saves circa 15 minutes
+      - name: Import GPG key
+        id: import_gpg
+        uses: crazy-max/ghaction-import-gpg@e89d40939c28e39f97cf32126055eeae86ba74ec # v6.3.0
+        with:
+          gpg_private_key: ${{ secrets.gpg-private-key }}
+          passphrase: ${{ secrets.gpg-private-key-passphrase }}
+      - if: inputs.release-notes != true
+        name: goreleaser release (without release notes)
+        uses: goreleaser/goreleaser-action@9c156ee8a17a598857849441385a2041ef570552 # v6.3.0
+        with:
+          args: release --clean ${{ inputs.goreleaser-release-args }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GPG_FINGERPRINT: ${{ steps.import_gpg.outputs.fingerprint }}
+      - if: inputs.release-notes
+        id: release-notes-download
+        name: Release Notes Download
+        uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
+        with:
+          name: release-notes
+          path: /tmp
+      - if: inputs.release-notes
+        name: goreleaser release (with release notes)
+        uses: goreleaser/goreleaser-action@9c156ee8a17a598857849441385a2041ef570552 # v6.3.0
+        with:
+          args: release --release-notes ${{ steps.release-notes-download.outputs.download-path }}/release-notes.txt --clean ${{ inputs.goreleaser-release-args }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GPG_FINGERPRINT: ${{ steps.import_gpg.outputs.fingerprint }}
