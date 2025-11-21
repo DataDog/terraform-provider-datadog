@@ -1,0 +1,2943 @@
+gotestsum --version || go install gotest.tools/gotestsum@latest
+gotestsum version dev
+which goimports || go install golang.org/x/tools/cmd/goimports@latest
+/Users/aaron.hoffman/go/bin/goimports
+==> Checking that code complies with goimports requirements...
+==> Checking that examples pass with terraform fmt requirements
+gotestsum --hide-summary skipped --format testname --debug --packages $(go list ./...) --  -timeout=30s
+EMPTY datadog
+EMPTY datadog/fwprovider
+EMPTY datadog/fwprovider/observability_pipeline
+EMPTY datadog/internal/customtypes
+EMPTY datadog/internal/planmodifiers
+PASS datadog/internal/fwutils.TestCombineTags (0.00s)
+PASS datadog/internal/fwutils.TestEnrichSchemaAttributes/description_with_string_enum_validator (0.00s)
+PASS datadog/internal/fwutils.TestEnrichSchemaAttributes/description_with_string_oneOf_validator (0.00s)
+PASS datadog/internal/fwutils.TestEnrichSchemaAttributes/description_with_int64_atLeast_validator (0.00s)
+PASS datadog/internal/fwutils.TestEnrichSchemaAttributes/description_with_int64_enum_validator (0.00s)
+PASS datadog/internal/fwutils.TestEnrichSchemaAttributes/description_with_string_betweenValidator|float_validator (0.00s)
+PASS datadog/internal/fwutils.TestEnrichSchemaAttributes/description_with_string_regexMatches_without_message_validator (0.00s)
+PASS datadog/internal/fwutils.TestEnrichSchemaSingleNestedBlock/description_with_string_enum_validator (0.00s)
+PASS datadog/internal/fwutils.TestEnrichSchemaSingleNestedBlock/description_with_int64_atLeast_validator (0.00s)
+PASS datadog/internal/fwutils.TestEnrichSchemaSingleNestedBlock/description_with_string_betweenValidator|float_validator (0.00s)
+PASS datadog/internal/fwutils.TestEnrichSchemaSingleNestedBlock/description_with_string_CIDR_IP_validator (0.00s)
+PASS datadog/internal/fwutils.TestEnrichSchemaSingleNestedBlock/description_with_string_oneOf_validator (0.00s)
+PASS datadog/internal/fwutils.TestEnrichSchemaSingleNestedBlock/description_without_validator (0.00s)
+PASS datadog/internal/fwutils.TestEnrichSchemaSingleNestedBlock/description_with_int64_betweenValidator|int_validator (0.00s)
+PASS datadog/internal/fwutils.TestEnrichSchemaSingleNestedBlock/description_with_string_lengthAtLeast_validator (0.00s)
+PASS datadog/internal/fwutils.TestEnrichSchemaSingleNestedBlock/description_with_string_entity_YAML_validator (0.00s)
+PASS datadog/internal/fwutils.TestEnrichSchemaSingleNestedBlock/description_with_string_regexMatches_without_message_validator (0.00s)
+PASS datadog/internal/fwutils.TestEnrichSchemaSingleNestedBlock/description_with_string_regexMatches_with_message_validator (0.00s)
+PASS datadog/internal/fwutils.TestEnrichSchemaAttributes/description_with_string_CIDR_IP_validator (0.00s)
+PASS datadog/internal/fwutils.TestNestedNestedBlock/description_with_string_betweenValidator|float_validator_in_nested_nested_block (0.00s)
+PASS datadog/internal/fwutils.TestEnrichSchemaSingleNestedBlock (0.00s)
+PASS datadog/internal/fwutils.TestEnrichSchemaAttributes/description_with_string_regexMatches_with_message_validator (0.00s)
+PASS datadog/internal/fwutils.TestNestedNestedBlock/description_with_int64_atLeast_validator_in_nested_nested_block (0.00s)
+PASS datadog/internal/fwutils.TestNestedNestedBlock/description_with_string_lengthAtLeast_validator_in_nested_nested_block (0.00s)
+PASS datadog/internal/fwutils.TestEnrichSchemaAttributes/description_without_validators (0.00s)
+PASS datadog/internal/fwutils.TestNestedNestedBlock/description_with_string_regexMatches_without_message_validator_in_nested_nested_block (0.00s)
+PASS datadog/internal/fwutils.TestEnrichSchemaAttributes/description_with_int64_betweenValidator|int_validator (0.00s)
+PASS datadog/internal/fwutils.TestEnrichSchemaListNestedBlock/description_with_string_enum_validator (0.00s)
+PASS datadog/internal/fwutils.TestEnrichSchemaAttributes/description_with_string_entity_YAML_validator (0.00s)
+PASS datadog/internal/fwutils.TestEnrichSchemaListNestedBlock/description_with_string_lengthAtLeast_validator (0.00s)
+PASS datadog/internal/fwutils.TestEnrichSchemaListNestedBlock/description_with_string_regexMatches_without_message_validator (0.00s)
+PASS datadog/internal/fwutils.TestEnrichSchemaListNestedBlock/description_without_validator (0.00s)
+PASS datadog/internal/fwutils.TestEnrichSchemaListNestedBlock/description_with_int64_atLeast_validator (0.00s)
+PASS datadog/internal/fwutils.TestNestedNestedBlock/description_with_string_oneOf_validator_in_nested_nested_block (0.00s)
+PASS datadog/internal/fwutils.TestNestedNestedBlock/description_with_string_enum_validator_in_nested_nested_block (0.00s)
+PASS datadog/internal/fwutils.TestEnrichSchemaAttributes/description_with_string_lengthAtLeast_validator (0.00s)
+PASS datadog/internal/fwutils.TestEnrichSchemaAttributes (0.00s)
+PASS datadog/internal/fwutils.TestNestedNestedBlock/description_with_string_entity_YAML_validator_in_nested_nested_block (0.00s)
+PASS datadog/internal/fwutils.TestEnrichSchemaListNestedBlock/description_with_string_regexMatches_with_message_validator (0.00s)
+PASS datadog/internal/fwutils.TestEnrichSchemaListNestedBlock/description_with_string_CIDR_IP_validator (0.00s)
+PASS datadog/internal/fwutils.TestNestedNestedBlock/description_without_validator_in_nested_nested_block (0.00s)
+PASS datadog/internal/fwutils.TestNestedNestedBlock/description_with_string_CIDR_IP_validator_in_nested_nested_block (0.00s)
+PASS datadog/internal/fwutils.TestNestedNestedBlock/description_with_int64_betweenValidator|int_validator_in_nested_nested_block (0.00s)
+PASS datadog/internal/fwutils.TestEnrichSchemaListNestedBlock/description_with_int64_betweenValidator|int_validator (0.00s)
+PASS datadog/internal/fwutils.TestEnrichSchemaListNestedBlock/description_with_string_betweenValidator|float_validator (0.00s)
+PASS datadog/internal/fwutils.TestEnrichSchemaListNestedBlock/description_with_string_entity_YAML_validator (0.00s)
+PASS datadog/internal/fwutils.TestEnrichSchemaListNestedBlock/description_with_string_oneOf_validator (0.00s)
+PASS datadog/internal/fwutils.TestEnrichSchemaListNestedBlock (0.00s)
+PASS datadog/internal/fwutils.TestNestedNestedBlock/description_with_string_regexMatches_with_message_validator_in_nested_nested_block (0.00s)
+PASS datadog/internal/fwutils.TestNestedNestedBlock (0.00s)
+PASS datadog/internal/fwutils
+PASS datadog/internal/utils.TestTagNormalization (0.00s)
+PASS datadog/internal/utils.TestAccountAndLambdaArnFromID (0.00s)
+PASS datadog/internal/utils.TestAccountAndRoleFromID (0.00s)
+PASS datadog/internal/utils.TestAccountNameAndChannelNameFromID (0.00s)
+PASS datadog/internal/utils.TestConvertResponseByteToMap (0.00s)
+PASS datadog/internal/utils.TestDeleteKeyInMap (0.00s)
+PASS datadog/internal/utils.TestGetStringSlice (0.00s)
+PASS datadog/internal/utils.TestNormMetricNameParse (0.00s)
+PASS datadog/internal/utils.TestRemoveEmptyValuesInMap/array_with_maps (0.00s)
+PASS datadog/internal/utils.TestRemoveEmptyValuesInMap/empty_map (0.00s)
+PASS datadog/internal/utils.TestRemoveEmptyValuesInMap/nil_values (0.00s)
+PASS datadog/internal/utils.TestRemoveEmptyValuesInMap/empty_arrays (0.00s)
+PASS datadog/internal/utils.TestRemoveEmptyValuesInMap/nested_maps (0.00s)
+PASS datadog/internal/utils.TestRemoveEmptyValuesInMap (0.00s)
+PASS datadog/internal/utils.TestAppBuilderAppJSONStringSemanticEquals/semantically_equal_-_existence_of_id_field_is_ignored (0.00s)
+PASS datadog/internal/utils.TestAppBuilderAppJSONStringSemanticEquals/semantically_equal_-_object_byte-for-byte_match (0.00s)
+PASS datadog/internal/utils.TestAppBuilderAppJSONStringSemanticEquals/not_equal_-_array_additional_field (0.00s)
+PASS datadog/internal/utils.TestAppBuilderAppJSONStringSemanticEquals/not_equal_-_different_JSON_number_representations (0.00s)
+PASS datadog/internal/utils.TestAppBuilderAppJSONStringSemanticEquals/semantically_equal_-_larger_than_max_float64_values (0.00s)
+PASS datadog/internal/utils.TestAppBuilderAppJSONStringSemanticEquals/semantically_equal_-_array_byte-for-byte_match (0.00s)
+PASS datadog/internal/utils.TestAppBuilderAppJSONStringSemanticEquals/not_equal_-_mismatched_field_names (0.00s)
+PASS datadog/internal/utils.TestAppBuilderAppJSONStringSemanticEquals/not_equal_-_mismatched_field_values (0.00s)
+PASS datadog/internal/utils.TestAppBuilderAppJSONStringSemanticEquals/error_-_invalid_json (0.00s)
+PASS datadog/internal/utils.TestAppBuilderAppJSONStringSemanticEquals/semantically_equal_-_HTML_escape_characters_are_equal (0.00s)
+PASS datadog/internal/utils.TestAppBuilderAppJSONStringSemanticEquals/semantically_equal_-_object_whitespace_difference (0.00s)
+PASS datadog/internal/utils.TestAppBuilderAppJSONStringSemanticEquals/semantically_equal_-_object_field_order_difference (0.00s)
+PASS datadog/internal/utils.TestAppBuilderAppJSONStringSemanticEquals/not_equal_-_array_item_order_difference (0.00s)
+PASS datadog/internal/utils.TestAppBuilderAppJSONStringSemanticEquals/semantically_equal_-_array_whitespace_difference (0.00s)
+PASS datadog/internal/utils.TestAppBuilderAppJSONStringSemanticEquals/not_equal_-_object_additional_field (0.00s)
+PASS datadog/internal/utils.TestAppBuilderAppJSONStringSemanticEquals/semantically_equal_-_differences_in_id_field_is_ignored (0.00s)
+PASS datadog/internal/utils.TestAppBuilderAppJSONStringSemanticEquals (0.00s)
+PASS datadog/internal/utils
+PASS datadog/internal/validators.TestResourceDatadogDowntimeRecurrenceTypeValidation (0.00s)
+PASS datadog/internal/validators.TestResourceDatadogDowntimeRecurrenceWeekDaysValidation (0.00s)
+PASS datadog/internal/validators.TestStringEnumValidation (0.00s)
+PASS datadog/internal/validators.TestValidateFloat64Between (0.00s)
+PASS datadog/internal/validators.TestValidateHttpRequestHeader (0.00s)
+PASS datadog/internal/validators.TestEnumValidatorString/null_string_enum (0.00s)
+PASS datadog/internal/validators.TestEnumValidatorString/valid_string_enum (0.00s)
+PASS datadog/internal/validators.TestEnumValidatorString/unknown_string_enum (0.00s)
+PASS datadog/internal/validators.TestEnumValidatorString/invalid_string_enum (0.00s)
+PASS datadog/internal/validators.TestEnumValidatorString (0.00s)
+PASS datadog/internal/validators.TestEnumValidatorInt64/null_Int64_enum (0.00s)
+PASS datadog/internal/validators.TestEnumValidatorInt64/unknown_Int64_enum (0.00s)
+PASS datadog/internal/validators.TestEnumValidatorInt64/invalid_Int64_enum (0.00s)
+PASS datadog/internal/validators.TestEnumValidatorInt64/valid_Int64_enum (0.00s)
+PASS datadog/internal/validators.TestEnumValidatorInt64 (0.00s)
+PASS datadog/internal/validators
+EMPTY version
+2025/11/04 14:49:32 DD_AGENT_HOST is not configured. Tests are executed without tracer and profiler.
+SKIP datadog/tests.TestAccDatadogApplicationKeyDatasource_matchIdError (0.00s)
+SKIP datadog/tests.TestAccDatadogApplicationKeyDatasource_matchNameError (0.00s)
+SKIP datadog/tests.TestAccDatadogApplicationKeyDatasource_missingParametersError (0.00s)
+SKIP datadog/tests.TestAccCSMThreatsPoliciesDataSource (1.53s)
+SKIP datadog/tests.TestAccDatadogIntegrationAWSAvailableLogsServicesDatasource (0.00s)
+SKIP datadog/tests.TestAccDatadogIntegrationAWSAvailableNamespacesDatasource (0.00s)
+SKIP datadog/tests.TestAccDatadogIntegrationAWSExternalIDDatasource (0.00s)
+SKIP datadog/tests.TestAccDatadogIntegrationAWSIAMPermissionsStandardDatasource (0.00s)
+SKIP datadog/tests.TestAccDatadogIntegrationAWSIAMPermissionsDatasource (0.00s)
+SKIP datadog/tests.TestAccDatadogIntegrationAWSLogsServicesDatasource (0.00s)
+SKIP datadog/tests.TestAccDatadogLogsPipelinesDatasource (0.00s)
+SKIP datadog/tests.TestAccDatadogMonitorConfigPoliciesDatasource (0.00s)
+SKIP datadog/tests.TestAccDatadogRoleDatasource (0.00s)
+SKIP datadog/tests.TestAccDatadogRoleDatasourceExactMatch (0.00s)
+SKIP datadog/tests.TestAccDatadogRolesDatasource (0.00s)
+SKIP datadog/tests.TestAccDatadogRolesDatasourceMultipleMatch (0.00s)
+SKIP datadog/tests.TestAccSecurityMonitoringSuppressionDataSource (0.00s)
+SKIP datadog/tests.TestAccDatadogSoftwareCatalogEntity_Datasource (0.00s)
+SKIP datadog/tests.TestAccDatadogWorkflowAutomationDatasource (0.00s)
+PASS datadog/tests.TestFrameworkProviderConfigure_CloudAuthOnly (0.00s)
+PASS datadog/tests.TestFrameworkProviderConfigure_APIKeyOnly (0.00s)
+PASS datadog/tests.TestFrameworkProviderConfigure_CloudAuthWithAPIKey (0.00s)
+PASS datadog/tests.TestFrameworkProviderConfigure_CloudAuthWithEnvVarAPIKey (0.00s)
+PASS datadog/tests.TestFrameworkProviderConfigure_CloudAuthWithOnlyAppKey (0.00s)
+PASS datadog/tests.TestProvider (0.01s)
+PASS datadog/tests.TestProvider_impl (0.00s)
+PASS datadog/tests.TestProviderConfigure_CloudAuthOnly (0.00s)
+PASS datadog/tests.TestProviderConfigure_APIKeyOnly (0.00s)
+PASS datadog/tests.TestProviderConfigure_CloudAuthWithAPIKey (0.00s)
+PASS datadog/tests.TestProviderConfigure_CloudAuthWithEnvVarAPIKey (0.00s)
+PASS datadog/tests.TestProviderConfigure_CloudAuthWithOnlyAppKey (0.00s)
+SKIP datadog/tests.TestAccDatadogApiKey_Update (0.00s)
+SKIP datadog/tests.TestDatadogApiKey_import (0.00s)
+SKIP datadog/tests.TestAccDatadogAppKeyRegistrationResource (0.00s)
+SKIP datadog/tests.TestAccDatadogApplicationKey_Update (0.00s)
+SKIP datadog/tests.TestAccDatadogApplicationKey_Error (0.00s)
+SKIP datadog/tests.TestAccDatadogChildOrganization_Create (0.00s)
+SKIP datadog/tests.TestAccDatadogChildOrganization_IncorrectName (0.00s)
+SKIP datadog/tests.TestCustomFramework_CreateBasic (0.00s)
+SKIP datadog/tests.TestCustomFramework_CreateWithoutIconURL (0.00s)
+SKIP datadog/tests.TestCustomFramework_CreateAndUpdateMultipleRequirements (0.00s)
+SKIP datadog/tests.TestCustomFramework_SameFrameworkID (0.00s)
+SKIP datadog/tests.TestCustomFramework_InvalidCreate (0.00s)
+SKIP datadog/tests.TestCustomFramework_RecreateAfterAPIDelete (0.00s)
+SKIP datadog/tests.TestCustomFramework_DeleteAfterAPIDelete (0.00s)
+SKIP datadog/tests.TestCustomFramework_UpdateIfFrameworkExists (0.00s)
+SKIP datadog/tests.TestCustomFramework_RecreateOnImmutableFields (0.00s)
+SKIP datadog/tests.TestCustomFramework_DuplicateRuleIds (0.00s)
+SKIP datadog/tests.TestCustomFramework_DuplicateHandle (0.00s)
+SKIP datadog/tests.TestAccResourceEvaluationFilter (0.00s)
+SKIP datadog/tests.TestAccResourceEvaluationFilterImport (0.00s)
+SKIP datadog/tests.TestAccResourceEvaluationFilterInvalid (0.00s)
+SKIP datadog/tests.TestAccCSMThreatsAgentRule_CreateAndUpdate (0.00s)
+SKIP datadog/tests.TestAccCSMThreatsPolicy_CreateAndUpdate (0.00s)
+SKIP datadog/tests.TestAccCSMThreatsPolicy_CreateAndUpdateWithHostTagsLists (0.00s)
+SKIP datadog/tests.TestAccDatadogCustomAllocationRuleOrder_Basic (0.00s)
+SKIP datadog/tests.TestAccDatadogCustomAllocationRuleOrder_Update (0.00s)
+SKIP datadog/tests.TestAccDatadogCustomAllocationRuleOrder_Import (0.00s)
+SKIP datadog/tests.TestAccDatadogCustomAllocationRuleOrder_SingleRule (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardNoteContentError (0.00s)
+SKIP datadog/tests.TestAccDatadogDomainAllowlist_CreateUpdate (0.00s)
+SKIP datadog/tests.TestAccIntegrationAwsExternalIDBasic (0.00s)
+SKIP datadog/tests.TestAccIntegrationConfluentAccountBasic (0.00s)
+SKIP datadog/tests.TestAccIntegrationConfluentAccountUpdated (0.00s)
+SKIP datadog/tests.TestAccDatadogIntegrationSlackChannel_Import (0.00s)
+SKIP datadog/tests.TestAccDatadogIPAllowlist_CreateUpdate (0.00s)
+SKIP datadog/tests.TestAccDatadogLogsPipeline_basic (0.00s)
+SKIP datadog/tests.TestAccMonitor_Fwprovider_Create (0.01s)
+SKIP datadog/tests.TestAccMonitor_Fwprovider_Update (0.00s)
+SKIP datadog/tests.TestAccMonitor_Fwprovider_Basic (0.00s)
+SKIP datadog/tests.TestAccMonitor_Fwprovider_ServiceCheck_Basic (0.00s)
+SKIP datadog/tests.TestAccMonitor_Fwprovider_BasicNoTresholdOrPriority (0.00s)
+SKIP datadog/tests.TestAccMonitor_Fwprovider_Updated (0.00s)
+SKIP datadog/tests.TestAccMonitor_Fwprovider_UpdatedToRemoveTags (0.00s)
+SKIP datadog/tests.TestAccMonitor_Fwprovider_TrimWhiteSpace (0.00s)
+SKIP datadog/tests.TestAccMonitor_Fwprovider_Basic_float_int (0.00s)
+SKIP datadog/tests.TestAccMonitor_Fwprovider_Log (0.00s)
+SKIP datadog/tests.TestAccMonitor_Fwprovider_LogMultiAlert (0.00s)
+SKIP datadog/tests.TestAccMonitor_Fwprovider_NoThresholdWindows (0.00s)
+SKIP datadog/tests.TestAccMonitor_Fwprovider_ThresholdWindows (0.00s)
+SKIP datadog/tests.TestAccMonitor_Fwprovider_ComposeWithSyntheticsTest (0.00s)
+SKIP datadog/tests.TestAccMonitor_Fwprovider_FormulaFunction (0.00s)
+SKIP datadog/tests.TestAccMonitor_Fwprovider_FormulaFunction_Cost (0.00s)
+SKIP datadog/tests.TestAccMonitor_Fwprovider_ZeroDelay (0.00s)
+SKIP datadog/tests.TestAccMonitor_Fwprovider_RestrictedRoles (0.00s)
+SKIP datadog/tests.TestAccMonitor_Fwprovider_SchedulingOptions (0.00s)
+SKIP datadog/tests.TestAccMonitor_Fwprovider_EmptySchedulingOptions (0.00s)
+SKIP datadog/tests.TestAccMonitor_Fwprovider_SchedulingOptionsHourStart (0.00s)
+SKIP datadog/tests.TestAccMonitor_Fwprovider_SchedulingOptionsCustomSchedule (0.00s)
+SKIP datadog/tests.TestAccMonitor_Fwprovider_SchedulingOptionsCustomScheduleNoStart (0.00s)
+SKIP datadog/tests.TestAccMonitor_Fwprovider_DefaultTags (0.00s)
+SKIP datadog/tests.TestAccMonitor_Fwprovider_WithRestrictionPolicy (0.00s)
+SKIP datadog/tests.TestAccDatadogObservabilityPipeline_basic (0.00s)
+SKIP datadog/tests.TestAccDatadogObservabilityPipeline_kafka (0.00s)
+SKIP datadog/tests.TestAccDatadogObservabilityPipeline_datadogAgentWithTLS (0.00s)
+SKIP datadog/tests.TestAccDatadogObservabilityPipeline_filterProcessor (0.00s)
+SKIP datadog/tests.TestAccDatadogObservabilityPipeline_renameFieldsProcessor (0.00s)
+SKIP datadog/tests.TestAccDatadogObservabilityPipeline_removeFieldsProcessor (0.00s)
+SKIP datadog/tests.TestAccDatadogObservabilityPipeline_quotaProcessor (0.00s)
+SKIP datadog/tests.TestAccDatadogObservabilityPipeline_parseJsonProcessor (0.00s)
+SKIP datadog/tests.TestAccDatadogObservabilityPipeline_addFieldsProcessor (0.00s)
+SKIP datadog/tests.TestAccDatadogObservabilityPipeline_parseGrokProcessor (0.00s)
+SKIP datadog/tests.TestAccDatadogObservabilityPipeline_sampleProcessor (0.00s)
+SKIP datadog/tests.TestAccDatadogObservabilityPipeline_fluentdSource (0.00s)
+SKIP datadog/tests.TestAccDatadogObservabilityPipeline_fluentBitSource (0.00s)
+SKIP datadog/tests.TestAccDatadogObservabilityPipeline_httpServerSource (0.00s)
+SKIP datadog/tests.TestAccDatadogObservabilityPipeline_amazonS3Source (0.00s)
+SKIP datadog/tests.TestAccDatadogObservabilityPipeline_splunkHecSource (0.00s)
+SKIP datadog/tests.TestAccDatadogObservabilityPipeline_splunkTcpSource (0.00s)
+SKIP datadog/tests.TestAccDatadogObservabilityPipeline_generateMetricsProcessor (0.00s)
+SKIP datadog/tests.TestAccDatadogObservabilityPipeline_googleCloudStorageDestination (0.00s)
+SKIP datadog/tests.TestAccDatadogObservabilityPipeline_splunkHecDestination (0.00s)
+SKIP datadog/tests.TestAccDatadogObservabilityPipeline_sumoLogicDestination (0.00s)
+SKIP datadog/tests.TestAccDatadogObservabilityPipeline_rsyslogSource (0.00s)
+SKIP datadog/tests.TestAccDatadogObservabilityPipeline_syslogNgSource (0.00s)
+SKIP datadog/tests.TestAccDatadogObservabilityPipeline_rsyslogDestination (0.00s)
+SKIP datadog/tests.TestAccDatadogObservabilityPipeline_syslogNgDestination (0.00s)
+SKIP datadog/tests.TestAccDatadogObservabilityPipeline_elasticsearchDestination (0.00s)
+SKIP datadog/tests.TestAccDatadogObservabilityPipeline_azureStorageDestination (0.00s)
+SKIP datadog/tests.TestAccDatadogObservabilityPipeline_microsoftSentinelDestination (0.00s)
+SKIP datadog/tests.TestAccDatadogObservabilityPipeline_sensitiveDataScannerProcessor (0.00s)
+SKIP datadog/tests.TestAccDatadogObservabilityPipeline_sumoLogicSource (0.00s)
+SKIP datadog/tests.TestAccDatadogObservabilityPipeline_amazonDataFirehoseSource (0.00s)
+SKIP datadog/tests.TestAccDatadogObservabilityPipeline_httpClientSource (0.00s)
+SKIP datadog/tests.TestAccDatadogObservabilityPipeline_googlePubSubSource (0.00s)
+SKIP datadog/tests.TestAccDatadogObservabilityPipeline_logstashSource (0.00s)
+SKIP datadog/tests.TestAccDatadogObservabilityPipeline_dedupeProcessor (0.00s)
+SKIP datadog/tests.TestAccDatadogObservabilityPipeline_reduceProcessor (0.00s)
+SKIP datadog/tests.TestAccDatadogObservabilityPipeline_throttleProcessor (0.00s)
+SKIP datadog/tests.TestAccDatadogObservabilityPipeline_addEnvVarsProcessor (0.00s)
+SKIP datadog/tests.TestAccDatadogObservabilityPipeline_enrichmentTableProcessor (0.00s)
+SKIP datadog/tests.TestAccDatadogObservabilityPipeline_googleChronicleDestination (0.00s)
+SKIP datadog/tests.TestAccDatadogObservabilityPipeline_newRelicDestination (0.00s)
+SKIP datadog/tests.TestAccDatadogObservabilityPipeline_sentinelOneDestination (0.00s)
+SKIP datadog/tests.TestAccDatadogObservabilityPipeline_ocsfMapperLibraryOnly (0.00s)
+SKIP datadog/tests.TestAccDatadogObservabilityPipeline_opensearchDestination (0.00s)
+SKIP datadog/tests.TestAccDatadogObservabilityPipeline_amazonOpenSearchDestination (0.00s)
+SKIP datadog/tests.TestAccDatadogObservabilityPipeline_amazonOpenSearchDestination_basic (0.00s)
+SKIP datadog/tests.TestAccDatadogObservabilityPipeline_datadogTagsProcessor (0.00s)
+SKIP datadog/tests.TestAccDatadogObservabilityPipeline_quotaProcessor_overflowAction (0.00s)
+SKIP datadog/tests.TestAccDatadogObservabilityPipeline_socketSource_tcp (0.00s)
+SKIP datadog/tests.TestAccDatadogObservabilityPipeline_socketSource_udp (0.00s)
+SKIP datadog/tests.TestAccDatadogObservabilityPipeline_socketDestination_basic (0.00s)
+SKIP datadog/tests.TestAccDatadogObservabilityPipeline_socketDestination (0.00s)
+SKIP datadog/tests.TestAccDatadogObservabilityPipeline_customProcessor (0.00s)
+SKIP datadog/tests.TestAccDatadogObservabilityPipeline_amazonS3Destination (0.00s)
+SKIP datadog/tests.TestAccDatadogObservabilityPipeline_amazonS3Destination_basic (0.00s)
+SKIP datadog/tests.TestAccDatadogObservabilityPipeline_AmazonSecurityLakeDestination (0.00s)
+SKIP datadog/tests.TestAccDatadogObservabilityPipeline_crowdstrikeNextGenSiemDestination (0.00s)
+SKIP datadog/tests.TestAccDatadogObservabilityPipeline_crowdstrikeNextGenSiemDestination_basic (0.00s)
+SKIP datadog/tests.TestAccDatadogObservabilityPipeline_googlePubSubDestination (0.00s)
+SKIP datadog/tests.TestAccDatadogOrgConnection_Basic (0.00s)
+SKIP datadog/tests.TestAccDatadogOrgConnection_Update (0.00s)
+SKIP datadog/tests.TestAccDatadogOrgConnection_InvalidInput (0.00s)
+SKIP datadog/tests.TestAccDatadogOrganizationSettings_Update (0.00s)
+SKIP datadog/tests.TestAccDatadogOrganizationSettings_Import (0.00s)
+SKIP datadog/tests.TestAccDatadogOrganizationSettings_SecurityContacts (0.00s)
+SKIP datadog/tests.TestAccDatadogOrganizationSettings_IncorrectName (0.00s)
+SKIP datadog/tests.TestAccDatadogRole_CreateUpdate (0.00s)
+SKIP datadog/tests.TestAccDatadogRole_InvalidPerm (0.00s)
+SKIP datadog/tests.TestAccDatadogSecurityMonitoringDefaultRule_DeprecationWarning (0.00s)
+SKIP datadog/tests.TestAccSecurityMonitoringSuppression_CreateAndUpdateWithoutDates (0.00s)
+SKIP datadog/tests.TestAccSecurityMonitoringSuppression_CreateThenAddAndRemoveStartDate (0.00s)
+SKIP datadog/tests.TestAccSecurityMonitoringSuppression_CreateThenAddAndRemoveExpirationDate (0.00s)
+SKIP datadog/tests.TestAccSecurityMonitoringSuppression_CreateAndUpdateDataExclusionQuery (0.00s)
+SKIP datadog/tests.TestAccSecurityMonitoringSuppression_ValidationEnabled (0.00s)
+SKIP datadog/tests.TestAccServiceAccountApplicationKey_Error (0.00s)
+SKIP datadog/tests.TestAccDatadogTagPipelineRulesets_Basic (0.00s)
+SKIP datadog/tests.TestAccDatadogTagPipelineRulesets_Update (0.00s)
+SKIP datadog/tests.TestAccDatadogTagPipelineRulesets_Import (0.00s)
+SKIP datadog/tests.TestAccDatadogTagPipelineRulesets_SingleRuleset (0.00s)
+SKIP datadog/tests.TestAccDatadogWorkflowAutomationResource (0.00s)
+PASS datadog/tests.TestAccDatadogSyntheticsPrivateLocation_importBasic (0.00s)
+SKIP datadog/tests.TestAccDatadogActionConnectionDatasource_AWS_AssumeRole (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardSunburst (0.00s)
+SKIP datadog/tests.TestAccDatadogWebhook_Basic (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardStyle (0.00s)
+SKIP datadog/tests.TestAccDatadogServiceDefinition_BasicBackstage (0.00s)
+SKIP datadog/tests.TestAccDatadogSecurityMonitoringRule_CreateInvalidRule (0.00s)
+SKIP datadog/tests.TestAccDatadogPowerpackTreeMap (0.00s)
+SKIP datadog/tests.TestAccDatadogPowerpackIFrame (0.00s)
+SKIP datadog/tests.TestAccDatadogPowerpackListStream (0.00s)
+SKIP datadog/tests.TestAccDatadogPowerpackImage (0.00s)
+SKIP datadog/tests.TestAccDatadogServiceDefinition_Order (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardStyle_import (0.00s)
+SKIP datadog/tests.TestAccDatadogPowerpackHeatMap (0.00s)
+SKIP datadog/tests.TestAccDatadogPowerpackHostMap (0.00s)
+SKIP datadog/tests.TestAccDatadogPowerpackGeoMap (0.00s)
+SKIP datadog/tests.TestAccDatadogSyntheticsGlobalVariable_DynamicBlocks (0.01s)
+SKIP datadog/tests.TestAccDatadogPowerpackAlertGraph (0.00s)
+SKIP datadog/tests.TestAccDatadogPowerpackEventTimeline (0.00s)
+SKIP datadog/tests.TestAccDatadogPowerpackCheckStatus (0.00s)
+SKIP datadog/tests.TestAccDatadogPowerpackAlertValue (0.00s)
+SKIP datadog/tests.TestAccDatadogPowerpackFreeText (0.00s)
+SKIP datadog/tests.TestAccDatadogPowerpackEventStream (0.00s)
+SKIP datadog/tests.TestAccOpenapiApiBasic (0.00s)
+SKIP datadog/tests.TestAccDatadogPowerpackDistribution (0.00s)
+SKIP datadog/tests.TestAccDatadogPowerpackChange (0.00s)
+SKIP datadog/tests.TestAccDatadogObservabilityPipelineImport (0.00s)
+SKIP datadog/tests.TestAccOnCallTeamRoutingRulesCreateAndUpdate (0.00s)
+SKIP datadog/tests.TestAccOnCallScheduleCreateAndUpdate (0.00s)
+SKIP datadog/tests.TestAccOnCallEscalationPolicyCreateAndUpdate (0.00s)
+SKIP datadog/tests.TestAccDatadogMonitor_WithRestrictionPolicy (0.00s)
+SKIP datadog/tests.TestAccDatadogMonitor_DefaultTags (0.00s)
+SKIP datadog/tests.TestAccDatadogMonitor_SchedulingOptionsCustomScheduleNoStart (0.00s)
+SKIP datadog/tests.TestAccDatadogMonitor_WithTagConfig (0.00s)
+SKIP datadog/tests.TestAccDatadogMonitor_SchedulingOptionsCustomSchedule (0.00s)
+SKIP datadog/tests.TestAccDatadogMonitor_EmptySchedulingOptions (0.00s)
+SKIP datadog/tests.TestAccDatadogMonitor_SchedulingOptionsHourStart (0.00s)
+SKIP datadog/tests.TestAccDatadogMonitor_SchedulingOptions (0.00s)
+SKIP datadog/tests.TestAccDatadogMonitor_FormulaFunction (0.00s)
+SKIP datadog/tests.TestAccDatadogMonitor_ZeroDelay (0.00s)
+SKIP datadog/tests.TestAccDatadogMonitor_RestrictedRoles (0.00s)
+SKIP datadog/tests.TestAccDatadogMonitor_ComposeWithSyntheticsTest (0.00s)
+SKIP datadog/tests.TestAccDatadogMonitor_FormulaFunction_Cost (0.00s)
+SKIP datadog/tests.TestAccDatadogMonitor_Log (0.00s)
+SKIP datadog/tests.TestAccDatadogMonitor_ThresholdWindows (0.00s)
+SKIP datadog/tests.TestAccDatadogMonitor_LogMultiAlert (0.00s)
+SKIP datadog/tests.TestAccDatadogMonitor_NoThresholdWindows (0.00s)
+SKIP datadog/tests.TestAccDatadogMonitor_Basic_float_int (0.00s)
+SKIP datadog/tests.TestAccDatadogMonitor_TrimWhitespace (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardSunburst_import (0.00s)
+SKIP datadog/tests.TestAccDatadogMonitor_Updated (0.00s)
+SKIP datadog/tests.TestAccDatadogMonitorJSONBasic (0.00s)
+SKIP datadog/tests.TestAccDatadogMonitorServiceCheck_Basic (0.00s)
+SKIP datadog/tests.TestAccDatadogMonitor_BasicNoTresholdOrPriority (0.00s)
+SKIP datadog/tests.TestAccDatadogMonitor_UpdatedToRemoveTags (0.00s)
+SKIP datadog/tests.TestAccMonitorNotificationRule_Update (0.00s)
+SKIP datadog/tests.TestAccDatadogLogsMetric_Basic_Retry (0.00s)
+SKIP datadog/tests.TestAccDatadogMonitorConfigPolicy_Basic (0.00s)
+SKIP datadog/tests.TestAccMonitorNotificationRule_Create (0.00s)
+SKIP datadog/tests.TestAccMonitorNotificationRule_Import (0.00s)
+SKIP datadog/tests.TestAccDatadogMetricMetadata_Basic (0.00s)
+SKIP datadog/tests.TestAccDatadogLogsMetric_Basic (0.00s)
+SKIP datadog/tests.TestAccDatadogMonitorJSONImport (0.00s)
+SKIP datadog/tests.TestAccDatadogMonitor_Basic (0.00s)
+SKIP datadog/tests.TestAccDatadogMetricMetadata_Updated (0.00s)
+SKIP datadog/tests.TestAccDatadogLogsPipelineEmptyFilterQuery (0.00s)
+SKIP datadog/tests.TestAccDatadogLogsPipelineDefaultTags (0.00s)
+SKIP datadog/tests.TestAccDatadogLogsMetricCount_Basic (0.00s)
+SKIP datadog/tests.TestAccDatadogLogsArchiveS3Update_basic (0.00s)
+SKIP datadog/tests.TestAccDatadogIntegrationPagerdutyServiceObject_Basic (0.00s)
+SKIP datadog/tests.TestAccDatadogLogsMetric_import (0.00s)
+SKIP datadog/tests.TestAccDatadogLogsCustomDestination_forwarder_types (0.00s)
+SKIP datadog/tests.TestAccDatadogMetricTagConfiguration_Error (0.00s)
+SKIP datadog/tests.TestAccDatadogLogsPipeline_import (0.00s)
+SKIP datadog/tests.TestAccDatadogIntegrationOpsgenieServiceObject_Basic (0.00s)
+SKIP datadog/tests.TestAccMSTeamsWorkflowsWebhookHandlesBasic (0.00s)
+SKIP datadog/tests.TestAccIntegrationCloudflareAccountBasic (0.00s)
+SKIP datadog/tests.TestAccDatadogIntegrationGCP (0.00s)
+SKIP datadog/tests.TestAccIntegrationConfluentResourceBasic (0.00s)
+SKIP datadog/tests.TestAccDatadogIntegrationAzure (0.00s)
+SKIP datadog/tests.TestAccDatadogIntegrationAzure_import (0.00s)
+SKIP datadog/tests.TestAccIntegrationGcpStsDefault (0.00s)
+SKIP datadog/tests.TestAccIntegrationGcpStsBasic (0.00s)
+SKIP datadog/tests.TestAccDatadogLogsCustomDestination_basic (0.00s)
+SKIP datadog/tests.TestAccIntGcpStsMetricNamespaceConfigs/when_mrcs_never_specified_in_create_and_update,_uses_default (0.00s)
+SKIP datadog/tests.TestAccIntGcpStsMetricNamespaceConfigs/when_mrcs_never_specified_in_create,_but_specified_on_update,_overwrites_default (0.00s)
+SKIP datadog/tests.TestAccDatadogLogsIndex_Basic (0.00s)
+SKIP datadog/tests.TestAccDatadogIntegrationAWSAccessKey (0.00s)
+SKIP datadog/tests.TestAccIntegrationFastlyAccountBasic (0.00s)
+SKIP datadog/tests.TestAccDatadogIntegrationAWS (0.00s)
+SKIP datadog/tests.TestAccIntegrationAwsEventBridgeBasic (0.00s)
+SKIP datadog/tests.TestAccDatadogIntegrationAwsTagFilter_BasicAccessKey (0.00s)
+SKIP datadog/tests.TestAccDatadogIntegrationAwsTagFilter_Basic (0.00s)
+SKIP datadog/tests.TestAccIntGcpStsMetricNamespaceConfigs/when_mrcs_specified_in_create,_but_omitted_on_update,_initial_configs_kept (0.00s)
+SKIP datadog/tests.TestAccIntegrationAwsAccount_OptionalLogSourceConfig (0.00s)
+SKIP datadog/tests.TestAccDatadogIntegrationAWSLogCollectionAccessKey (0.00s)
+SKIP datadog/tests.TestAccDatadogIntegrationAWSLogCollection (0.00s)
+SKIP datadog/tests.TestAccIntegrationAwsAccount_InvalidEmptyTagFilters (0.00s)
+PASS datadog/tests.TestAccIntGcpStsMetricNamespaceConfigs (0.00s)
+SKIP datadog/tests.TestAccDatadogIntegrationAWSLambdaArnAccessKey (0.00s)
+SKIP datadog/tests.TestAccDatadogIntegrationAWSLambdaArn (0.00s)
+SKIP datadog/tests.TestAccIntegrationAwsAccountKeyBased (0.00s)
+SKIP datadog/tests.TestAccDatadogIncidentType_Import (0.00s)
+SKIP datadog/tests.TestAccDatadogIncidentType_Updated (0.00s)
+SKIP datadog/tests.TestAccDatadogLogsArchiveGCS_basic (0.00s)
+SKIP datadog/tests.TestAccIntegrationAwsAccount_RoleBased (0.00s)
+SKIP datadog/tests.TestAccDatadogIncidentType_Basic (0.00s)
+SKIP datadog/tests.TestAccDatadogIncidentNotificationTemplate_Updated (0.00s)
+SKIP datadog/tests.TestAccDatadogLogsArchiveOrder_basic (0.00s)
+SKIP datadog/tests.TestAccDatadogLogsArchiveS3_basic (0.00s)
+SKIP datadog/tests.TestAccDatadogIncidentNotificationRule_Import (0.00s)
+SKIP datadog/tests.TestAccDatadogIncidentNotificationTemplate_Import (0.00s)
+SKIP datadog/tests.TestAccDatadogIncidentNotificationTemplate_Basic (0.00s)
+SKIP datadog/tests.TestAccDatadogLogsArchiveAzure_basic (0.00s)
+SKIP datadog/tests.TestAccDatadogIntegrationSlackChannel_Basic (0.00s)
+SKIP datadog/tests.TestAccDatadogIncidentNotificationRule_Updated (0.00s)
+SKIP datadog/tests.TestAccDatadogDowntime_Updated (0.00s)
+SKIP datadog/tests.TestAccDatadogIncidentNotificationRule_Basic (0.00s)
+SKIP datadog/tests.TestAccDatadogIntegrationPagerduty_Basic (0.00s)
+SKIP datadog/tests.TestAccDatadogLogsArchiveOrder_empty (0.00s)
+SKIP datadog/tests.TestAccGcpUcConfigImport (0.00s)
+SKIP datadog/tests.TestAccDatadogDowntime_RRule (0.00s)
+SKIP datadog/tests.TestAccGcpUcConfigBasic (0.00s)
+SKIP datadog/tests.TestAccDatadogDowntime_WeekDayRecurring (0.00s)
+SKIP datadog/tests.TestAccDatadogDowntime_BasicMultiScope (0.00s)
+SKIP datadog/tests.TestAccDatadogDowntime_BasicNoRecurrence (0.00s)
+SKIP datadog/tests.TestAccDowntimeScheduleBasicOneTimeWithMonitorID (0.00s)
+SKIP datadog/tests.TestAccDowntimeScheduleBasicOneTime (0.00s)
+SKIP datadog/tests.TestAccDatadogDowntimeDatesConflict (0.00s)
+SKIP datadog/tests.TestAccDatadogDowntime_BasicUntilDateRecurrence (0.00s)
+SKIP datadog/tests.TestAccDowntimeScheduleBasicRecurring (0.00s)
+SKIP datadog/tests.TestAccDatadogDowntime_BasicUntilOccurrencesRecurrence (0.00s)
+SKIP datadog/tests.TestAccDowntimeScheduleBasicRecurring_Import (0.00s)
+SKIP datadog/tests.TestAccDeploymentRuleTypeForceNew (0.00s)
+SKIP datadog/tests.TestAccDatadogDataset_Update (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardTraceService_import (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardTreemap (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardTraceService (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardTopologyMap_import (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardTopologyMap (0.00s)
+SKIP datadog/tests.TestAccDatadogDataset_Basic (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardTreemap_import (0.00s)
+SKIP datadog/tests.TestAccDatadogDataset_InvalidInput (0.00s)
+SKIP datadog/tests.TestAccDeploymentGateBasic (0.00s)
+SKIP datadog/tests.TestAccDeploymentRuleBasic (0.00s)
+SKIP datadog/tests.TestAccDeploymentGateForceNew (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardTopListWithStyle (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardTopListFormula (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardTopListFormula_import (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardTimeseries (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardTopList (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardFormula_import (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardTimeseries_import (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardTimeseriesMultiCompute (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardTimeseriesMultiCompute_import (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardTopList_import (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardFormula (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardTemplateVariables (0.00s)
+SKIP datadog/tests.TestAccDatadogDowntime_BasicWithMonitorTags (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardMultiSizeLayout_createFixed (0.00s)
+SKIP datadog/tests.TestAccDowntimeScheduleChanged (0.00s)
+SKIP datadog/tests.TestAccDatadogDowntime_BasicWithMonitor (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardNotifyListDiff (0.00s)
+SKIP datadog/tests.TestAccDatadogDowntime_Basic (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardRbac_createRbac (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardRbac_updateToOpen (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardRbac_updateToRbac (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardRbac_updateToAdmin (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardRbac_createAdmin (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardLayoutForceNew (0.00s)
+SKIP datadog/tests.TestAccRumRetentionFilterOrder (0.00s)
+SKIP datadog/tests.TestAccDatadogUsersDatasourceFilter (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboard_import (0.00s)
+SKIP datadog/tests.TestAccDatadogFreeDashboard (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardRbac_createOpen (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboard_update (0.00s)
+SKIP datadog/tests.TestAccDatadogSecurityMonitoringRuleJSON_Basic (0.00s)
+SKIP datadog/tests.TestAccDatadogSecurityMonitoringRule_NewValueRule (0.00s)
+SKIP datadog/tests.TestAccDatadogSecurityMonitoringFilter (0.00s)
+SKIP datadog/tests.TestAccDatadogSecurityMonitoringRule_RemoveReferenceTables (0.00s)
+SKIP datadog/tests.TestAccDatadogSecurityMonitoringRule_SequenceDetection (0.00s)
+SKIP datadog/tests.TestAccDatadogSecurityMonitoringDefaultRule_Basic (0.00s)
+SKIP datadog/tests.TestAccDatadogSecurityMonitoringRule_ImpossibleTravelRule (0.00s)
+SKIP datadog/tests.TestAccDatadogSyntheticsGlobalVariableFIDO_Basic (0.00s)
+SKIP datadog/tests.TestAccDatadogSecurityMonitoringRule_Basic (0.00s)
+SKIP datadog/tests.TestAccDatadogSyntheticsGlobalVariableTOTP_Updated (0.00s)
+SKIP datadog/tests.TestAccDatadogSyntheticsGlobalVariableFIDO_Updated (0.00s)
+SKIP datadog/tests.TestAccDatadogSyntheticsGlobalVariableFromTest_LocalVariable (0.00s)
+SKIP datadog/tests.TestAccRumRetentionFilterOrderError (0.00s)
+SKIP datadog/tests.TestAccDatadogSyntheticsGlobalVariable_Updated (0.00s)
+SKIP datadog/tests.TestAccDatadogSyntheticsGlobalVariableSecure_Updated (0.00s)
+SKIP datadog/tests.TestAccSpansMetric_ValidateConfig (0.00s)
+SKIP datadog/tests.TestAccDatadogSyntheticsGlobalVariableTOTP_Basic (0.00s)
+SKIP datadog/tests.TestAccDatadogSyntheticsGlobalVariableSecure_Basic (0.00s)
+SKIP datadog/tests.TestAccDatadogSyntheticsGlobalVariable_importBasic (0.00s)
+SKIP datadog/tests.TestAccDatadogSyntheticsGlobalVariableFromTest_Basic (0.00s)
+SKIP datadog/tests.TestAccDatadogSyntheticsConcurrencyCap (0.00s)
+SKIP datadog/tests.TestAccDatadogSecurityNotificationRuleFull (0.00s)
+SKIP datadog/tests.TestAccDatadogSyntheticsGlobalVariable_Basic (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardMultiSizeLayout_createAuto (0.00s)
+SKIP datadog/tests.TestAccDatadogServiceDefinition_BasicV2_2 (0.00s)
+SKIP datadog/tests.TestAccServiceAccountApplicationKeyBasic_import (0.00s)
+SKIP datadog/tests.TestServiceAccountUpdate (0.00s)
+SKIP datadog/tests.TestAccServiceAccountApplicationKeyBasic (0.00s)
+SKIP datadog/tests.TestAccDatadogPowerpackSlo (0.00s)
+SKIP datadog/tests.TestAccSensitiveDataScannerRuleWithStandardPattern (0.00s)
+SKIP datadog/tests.TestAccDatadogPowerpackToplist (0.00s)
+SKIP datadog/tests.TestAccDatadogPowerpackTraceService (0.00s)
+SKIP datadog/tests.TestAccDatadogPowerpackTimeseriesFormula (0.00s)
+SKIP datadog/tests.TestAccDatadogPowerpackTimeseries (0.00s)
+SKIP datadog/tests.TestAccDatadogServiceDefinition_Basic (0.00s)
+SKIP datadog/tests.TestAccDatadogServiceDefinition_BasicV2_1 (0.00s)
+SKIP datadog/tests.TestServiceAccountCreate (0.00s)
+SKIP datadog/tests.TestAccDatadogPowerpackSunburst (0.00s)
+SKIP datadog/tests.TestAccDatadogPowerpack_update (0.00s)
+SKIP datadog/tests.TestAccSensitiveDataScannerRuleBasic (0.00s)
+SKIP datadog/tests.TestAccDatadogSensitiveDataScannerGroup_Basic (0.00s)
+SKIP datadog/tests.TestAccDatadogPowerpackTimeseriesMultiCompute (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardRbac_adminToRbac (0.00s)
+SKIP datadog/tests.TestAccDatadogPowerpackQueryValue (0.00s)
+SKIP datadog/tests.TestAccDatadogPowerpackTopologyMap (0.00s)
+SKIP datadog/tests.TestAccAwsCurConfigWithAccountFilters (0.00s)
+SKIP datadog/tests.TestAccDatadogPowerpackSloList (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardSplitGraphWithStaticSplits (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardSplitGraphWithStaticSplits_import (0.00s)
+SKIP datadog/tests.TestAccDatadogPowerpackRun_Workflow (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardSplitGraph (0.00s)
+SKIP datadog/tests.TestAccDatadogPowerpackServicemap (0.00s)
+SKIP datadog/tests.TestAccDatadogPowerpackScatterplot (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardSLO_import (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardSplitGraphWith_import (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardIFrame_import (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardSLO (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardIFrame (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardServiceMap_import (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardSloList (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardSloList_import (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardHostMap (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardHostMap_import (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardImage (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardServiceMap (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardScatterplotFormula (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardScatterplot_import (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardHeatMap (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardScatterplot (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardScatterplotFormula_import (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardHeatMapFormulaAndFunction (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardRunWorkflow (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardHeatMap_import (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardGeomapFormula_import (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardQueryValue (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardQueryValue_import (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardQueryValueFormula (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardRunWorkflow_import (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardQueryTableWithTextFormats (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardQueryTableFormula (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardQueryTable (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardQueryTable_import (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardNote (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardManageStatus_import (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardPowerpack (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardQueryTableFormula_import (0.00s)
+SKIP datadog/tests.TestAccDatadogDowntime_DiffStart (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardNote_import (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardQueryValueFormula_import (0.00s)
+SKIP datadog/tests.TestAccDatadogDowntimeDates (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardQueryTableWithTextFormats_import (0.00s)
+SKIP datadog/tests.TestAccAwsCurConfigBasic (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardManageStatus (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardLogStreamLogSet_import (0.00s)
+SKIP datadog/tests.TestAccDatadogAuthNMapping_import (0.00s)
+SKIP datadog/tests.TestAccDatadogServiceAccountDatasourceError (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardGeomapFormula (0.00s)
+SKIP datadog/tests.TestAccDatadogAppBuilderAppResource_FromFile_Import (0.00s)
+SKIP datadog/tests.TestAccAppsecWafCustomRuleBasic (0.00s)
+SKIP datadog/tests.TestAccDatadogDowntime_TrimWhitespace (0.00s)
+SKIP datadog/tests.TestAccDatadogAppBuilderAppResource_FromFile (0.00s)
+SKIP datadog/tests.TestAccDatadogAppBuilderAppResource_Escaped_Interpolated (0.00s)
+SKIP datadog/tests.TestAccDatadogAppBuilderAppResource_Escaped_Interpolated_Import (0.00s)
+SKIP datadog/tests.TestAccAppsecWafExclusionFilterBasic (0.00s)
+SKIP datadog/tests.TestAccDatadogAppBuilderAppResource_PublishUnpublish (0.00s)
+SKIP datadog/tests.TestAccDatadogAgentlessScanningAwsScanOptions_Import (0.00s)
+SKIP datadog/tests.TestAccApmRetentionFilter (0.01s)
+SKIP datadog/tests.TestAccDatadogAppBuilderAppResource_Inline_WithOptionalFields (0.01s)
+SKIP datadog/tests.TestAccDatadogApmRetentionFilterOrder (0.01s)
+SKIP datadog/tests.TestAccDatadogAuthNMapping_CreateUpdate (0.01s)
+SKIP datadog/tests.TestAccApmRetentionFilterWithTraceRate (0.01s)
+SKIP datadog/tests.TestAccDatadogAgentlessScanningAwsScanOptions_InvalidAccountID (0.01s)
+SKIP datadog/tests.TestAccDatadogAgentlessScanningAwsScanOptions_Basic (0.01s)
+SKIP datadog/tests.TestAccDatadogAgentlessScanningAwsScanOptions_Update (0.01s)
+SKIP datadog/tests.TestAccDatadogAppBuilderAppResource_Inline_WithOptionalFields_Import (0.01s)
+SKIP datadog/tests.TestAccDatadogActionConnectionResource_HTTP_TokenAuth (0.00s)
+SKIP datadog/tests.TestAccDatadogSDSGroupOrder_basic (0.00s)
+SKIP datadog/tests.TestAccSpansMetricGroupBys (0.00s)
+SKIP datadog/tests.TestDatadogMonitor_importNoDataTimeFrame (0.00s)
+SKIP datadog/tests.TestAccDatadogSecurityNotificationRuleVulnerabilityRuleSimple (0.00s)
+SKIP datadog/tests.TestAccSpansMetricBasic (0.00s)
+SKIP datadog/tests.TestAccSpansMetric_import (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardLogStream (0.00s)
+SKIP datadog/tests.TestAccDatadogCatalogEntity_Order (0.00s)
+SKIP datadog/tests.TestAccDatadogActionConnectionResource_AWS_AssumeRole (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardLogStream_import (0.00s)
+SKIP datadog/tests.TestDatadogUser_import (0.00s)
+SKIP datadog/tests.TestAccDatadogSloCorrection_Recurring (0.00s)
+SKIP datadog/tests.TestDatadogDashListImport (0.00s)
+SKIP datadog/tests.TestDatadogDashListInDashboard (0.00s)
+SKIP datadog/tests.TestAccDatadogSoftwareCatalogEntity_Basic (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardLogStreamLogSet (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardListStream (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardListStreamEvents (0.00s)
+SKIP datadog/tests.TestAccDatadogSecurityMonitoringRule_InvalidTypes (0.00s)
+SKIP datadog/tests.TestDatadogMonitor_import_no_recovery (0.01s)
+SKIP datadog/tests.TestAccDatadogSyntheticsMobileTest_Basic (0.00s)
+SKIP datadog/tests.TestAccDatadogUser_UpdateRole (0.00s)
+SKIP datadog/tests.TestAccDatadogUser_RoleDatasource (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardJSONImport (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardListStreamStorage (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardListRumEvents (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardJSONRbacDiff (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardJSONBasicScreenboard (0.00s)
+SKIP datadog/tests.TestDatadogDashListInDashboardJSON (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardJSONNoDiff (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardJSONNotifyListDiff (0.00s)
+SKIP datadog/tests.TestAccDatadogWebhookCustomVariable_Basic (0.00s)
+SKIP datadog/tests.TestAccDatadogUser_Invitation (0.00s)
+SKIP datadog/tests.TestAccDatadogUser_NoInvitation (0.00s)
+SKIP datadog/tests.TestAccDatadogSloCorrection_Updated (0.01s)
+SKIP datadog/tests.TestAccDatadogSecurityNotificationRuleSignalRuleSimple (0.00s)
+SKIP datadog/tests.TestAccDatadogPowerpackQueryTable (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardJSONBasicTimeboard (0.00s)
+SKIP datadog/tests.TestAccDatadogPowerpackNote (0.00s)
+SKIP datadog/tests.TestAccDatadogUser_Existing (0.00s)
+SKIP datadog/tests.TestAccUserRoleBasic (0.00s)
+SKIP datadog/tests.TestAccDatadogUser_ReEnableRoleUpdate (0.01s)
+SKIP datadog/tests.TestAccDatadogUser_Updated (0.00s)
+SKIP datadog/tests.TestAccTeamLinkBasic (0.00s)
+SKIP datadog/tests.TestAccDatadogSecurityMonitoringRule_ScheduledRule (0.00s)
+SKIP datadog/tests.TestAccDatadogPowerpackManageStatus (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardImage_import (0.00s)
+SKIP datadog/tests.TestAccTeamMembershipBasic (0.00s)
+SKIP datadog/tests.TestAccTeamBasic (0.00s)
+SKIP datadog/tests.TestAccTeamPermissionSettingBasic (0.00s)
+SKIP datadog/tests.TestAccDatadogTagPipelineRuleset_Import (0.00s)
+SKIP datadog/tests.TestAccDatadogTagPipelineRuleset_MultipleRules (0.00s)
+SKIP datadog/tests.TestAccDatadogServiceLevelObjective_TimeSlice (0.00s)
+SKIP datadog/tests.TestAccDatadogTagPipelineRuleset_Basic (0.00s)
+SKIP datadog/tests.TestAccDatadogLogsPipelinesDatasourceReadonly (0.00s)
+SKIP datadog/tests.TestAccDatadogTagPipelineRuleset_Update (0.00s)
+SKIP datadog/tests.TestAccDatadogSecurityMonitoringRule_ThirdParty (0.00s)
+SKIP datadog/tests.TestAccDatadogSloCorrection_Basic (0.00s)
+SKIP datadog/tests.TestAccDatadogServiceLevelObjective_DefaultTags (0.00s)
+SKIP datadog/tests.TestAccDatadogTagPipelineRuleset_ReferenceTableRule (0.00s)
+SKIP datadog/tests.TestAccDatadogTagPipelineRuleset_QueryRule (0.00s)
+SKIP datadog/tests.TestAccDatadogSecurityMonitoringRule_DefaultTags (0.01s)
+SKIP datadog/tests.TestAccDatadogSyntheticsBrowser_UpdateStepsWithLocalML (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardEventTimeline (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardGeomap (0.00s)
+SKIP datadog/tests.TestAccDatadogTagPipelineRuleset_MappingRule (0.00s)
+SKIP datadog/tests.TestAccDatadogSyntheticsBrowser_UpdateStepsWithRemoteML (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardFreeText (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardDistribution (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardApmStatsQueryDistribution (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardDistribution_import (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardFreeText_import (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardCrossOrg_import (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardGeomap_import (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardEventStream_import (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardCrossOrg (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardChange_import (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardCheckStatus (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardEventStream (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardChangeFormula_import (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardEventTimeline_import (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardChangeFormula (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardCheckStatus_import (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardChange (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardAlertValue (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardAlertValue_import (0.00s)
+SKIP datadog/tests.TestAccDatadogCustomAllocationRuleMultipleFilters (0.00s)
+SKIP datadog/tests.TestAccDatadogCustomAllocationRuleUpdate (0.00s)
+SKIP datadog/tests.TestAccDatadogSyntheticsTestMultistepApi_AllSubtypes (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardAlertGraph (0.00s)
+SKIP datadog/tests.TestAccDatadogCustomAllocationRuleImport (0.00s)
+SKIP datadog/tests.TestAccDatadogCustomAllocationRuleBasic (0.00s)
+SKIP datadog/tests.TestAccDatadogCloudWorkloadSecurityAgentRule (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardAlertGraph_import (0.00s)
+SKIP datadog/tests.TestAccDatadogSyntheticsTestMultistepApi_Basic (0.00s)
+SKIP datadog/tests.TestAccDatadogCostBudget_WithTagFilters (0.00s)
+SKIP datadog/tests.TestAccDatadogSyntheticsTestBrowserUserLocator_Basic (0.00s)
+SKIP datadog/tests.TestAccAzureUcConfigImport (0.00s)
+SKIP datadog/tests.TestAccDatadogCloudConfigurationRule_MandatoryFieldsOnly (0.00s)
+SKIP datadog/tests.TestAccDatadogCloudConfigurationRule_Import (0.00s)
+SKIP datadog/tests.TestAccDatadogSyntheticsTestMultistepApi_FileUpload (0.00s)
+SKIP datadog/tests.TestAccDatadogSyntheticsTestBrowserMML_Basic (0.00s)
+SKIP datadog/tests.TestAccDatadogSyntheticsBrowserTestBrowserVariables_Basic (0.00s)
+SKIP datadog/tests.TestAccDatadogCloudConfigurationRule_Basic (0.00s)
+SKIP datadog/tests.TestAccAzureUcConfigBasic (0.00s)
+SKIP datadog/tests.TestAccLogsCustomPipeline_importBasic (0.00s)
+SKIP datadog/tests.TestAccDatadogCostBudget_Basic (0.00s)
+SKIP datadog/tests.TestDatadogDowntime_import (0.00s)
+SKIP datadog/tests.TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields (0.00s)
+SKIP datadog/tests.TestAccDatadogSyntheticsBrowserTestBrowserNewBrowserStep_Basic (0.00s)
+SKIP datadog/tests.TestAccDatadogUsersDatasourceFilterStatus (0.00s)
+SKIP datadog/tests.TestDatadogIntegrationPagerduty_import (0.00s)
+SKIP datadog/tests.TestAccAwsCurConfigImport (0.00s)
+SKIP datadog/tests.TestAccDatadogStandardPatternDatasourceErrorNotFound (0.00s)
+SKIP datadog/tests.TestAccDatadogStandardPatternDatasourceErrorMultiple (0.00s)
+SKIP datadog/tests.TestAccDatadogStandardPatternDatasourceNameFilter (0.00s)
+SKIP datadog/tests.TestAccDatadogSecurityMonitoringRule_Import (0.00s)
+SKIP datadog/tests.TestAccDatadogUserDatasourceWithExactMatchError (0.00s)
+SKIP datadog/tests.TestAccDatadogSecurityMonitoringRuleDatasource (0.00s)
+SKIP datadog/tests.TestAccDatadogSyntheticsTestBrowserUserLocator_NoElement (0.00s)
+SKIP datadog/tests.TestDatadogMonitor_import (0.00s)
+SKIP datadog/tests.TestAccDatadogUserDatasourceWithExactMatch (0.00s)
+SKIP datadog/tests.TestAccDatadogSecurityMonitoringRule_SignalCorrelation (0.00s)
+SKIP datadog/tests.TestAccDatadogRUMApplicationDatasourceErrorMultiple (0.00s)
+SKIP datadog/tests.TestAccDatadogServiceAccountDatasourceMatchID (0.00s)
+SKIP datadog/tests.TestAccDatadogRUMApplicationDatasourceIDFilter (0.00s)
+SKIP datadog/tests.TestAccDatadogSecurityMonitoringFilterDatasource (0.00s)
+SKIP datadog/tests.TestAccDatadogRoleUsersDatasourceExactMatch (0.00s)
+SKIP datadog/tests.TestAccDatadogUserDatasourceError (0.00s)
+SKIP datadog/tests.TestAccDatadogSecurityMonitoringRule_AppsecRule (0.00s)
+SKIP datadog/tests.TestAccDatadogServiceAccountDatasourceMatchFilter (0.00s)
+SKIP datadog/tests.TestAccDatadogRUMApplicationDatasourceNameFilter (0.00s)
+SKIP datadog/tests.TestAccDatadogSDSGroupOrderDatasource (0.00s)
+SKIP datadog/tests.TestAccDatadogMetricTagsDatasource (0.00s)
+SKIP datadog/tests.TestAccRumRetentionFiltersDatasource (0.00s)
+SKIP datadog/tests.TestAccDatadogRoleDatasourceError (0.00s)
+SKIP datadog/tests.TestAccDatadogPowerpackDatasource (0.00s)
+SKIP datadog/tests.TestAccDatadogMetricMetadataDatasource (0.00s)
+SKIP datadog/tests.TestAccDatadogMonitorsDatasource (0.00s)
+SKIP datadog/tests.TestAccDatadogPermissionsDatasource (0.00s)
+SKIP datadog/tests.TestAccDatadogMetricActiveTagsAndAggregationsDatasource (0.00s)
+SKIP datadog/tests.TestAccDatadogRoleUsersDatasourceBasic (0.00s)
+SKIP datadog/tests.TestAccDatadogPowerpackLogStream (0.00s)
+SKIP datadog/tests.TestAccDatadogMonitorDatasource (0.00s)
+SKIP datadog/tests.TestAccDatadogSyntheticsMobileTest_Updated (0.00s)
+SKIP datadog/tests.TestAccDatadogPermissionsDatasourceIncludeRestricted (0.00s)
+SKIP datadog/tests.TestAccDatadogSyntheticsMobileTest_UpdatedWithoutSteps (0.00s)
+SKIP datadog/tests.TestAccDatadogTeamsDatasourceFilterKeyword (0.00s)
+SKIP datadog/tests.TestAccRumRetentionFilterAttributes (0.00s)
+SKIP datadog/tests.TestAccDatadogSyntheticsMobileTest_NoSteps (0.00s)
+SKIP datadog/tests.TestAccDatadogTeamDatasourceBasic (0.00s)
+SKIP datadog/tests.TestAccDatadogTeamMembershipsDatasourceBasic (0.00s)
+SKIP datadog/tests.TestAccRumRetentionFilterImport (0.00s)
+SKIP datadog/tests.TestAccDatadogTagPipelineRulesetDataSource_Basic (0.00s)
+SKIP datadog/tests.TestAccRumMetricAttributes (0.00s)
+SKIP datadog/tests.TestAccDatadogTagPipelineRulesetDataSource_MappingRule (0.00s)
+SKIP datadog/tests.TestAccRumMetricImport (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardDatasource (0.00s)
+SKIP datadog/tests.TestAccDatadogTagPipelineRulesetDataSource_ReferenceTableRule (0.00s)
+SKIP datadog/tests.TestAccDatadogRUMApplication_ProductScales (0.01s)
+SKIP datadog/tests.TestAccDatadogSyntheticsBrowserTest_Updated_RumSettings (0.00s)
+SKIP datadog/tests.TestAccDatadogServiceLevelObjective_Basic (0.00s)
+SKIP datadog/tests.TestAccDatadogLogsPipelinesOrderDatasource (0.00s)
+SKIP datadog/tests.TestAccDatadogTeamMembershipsDatasourceExactMatch (0.01s)
+SKIP datadog/tests.TestAccDatadogUserDatasourceExactMatch (0.00s)
+SKIP datadog/tests.TestAccDatadogLogsIndexesDatasource (0.00s)
+SKIP datadog/tests.TestAccDatadogSyntheticsBrowserTest_EmptyLocations (0.00s)
+SKIP datadog/tests.TestAccDatadogSyntheticsBrowserTest_NoSteps (0.00s)
+SKIP datadog/tests.TestAccDatadogSyntheticsBrowserTest_Basic (0.00s)
+SKIP datadog/tests.TestAccDatadogSyntheticsBrowserTest_UpdatedWithoutSteps (0.00s)
+SKIP datadog/tests.TestAccDatadogSyntheticsBrowserTest_Updated (0.00s)
+SKIP datadog/tests.TestAccDatadogSyntheticsWebsocketTest_Basic (0.00s)
+SKIP datadog/tests.TestAccDatadogSyntheticsGRPCTest_Basic (0.00s)
+SKIP datadog/tests.TestAccDatadogSyntheticsApiTest_FileUpload (0.00s)
+SKIP datadog/tests.TestAccDatadogSyntheticsICMPTest_Basic (0.00s)
+SKIP datadog/tests.TestAccDatadogSyntheticsDNSTest_Updated (0.00s)
+SKIP datadog/tests.TestAccDatadogSyntheticsDNSTest_Basic (0.00s)
+SKIP datadog/tests.TestAccDatadogSyntheticsTCPTest_Basic (0.00s)
+SKIP datadog/tests.TestAccDatadogSyntheticsWebsocketTest_Base64Message (0.00s)
+SKIP datadog/tests.TestAccDatadogSyntheticsTest (0.00s)
+SKIP datadog/tests.TestAccDatadogIncidentTypeDataSource_Basic (0.00s)
+SKIP datadog/tests.TestAccDatadogIpRangesDatasource_existing (0.00s)
+SKIP datadog/tests.TestAccDatadogSyntheticsGlobalVariable (0.00s)
+SKIP datadog/tests.TestAccDatadogSyntheticsSSLTest_Updated (0.00s)
+SKIP datadog/tests.TestAccDatadogSyntheticsUDPTest_Basic (0.00s)
+SKIP datadog/tests.TestAccDatadogSyntheticsLocation_existing (0.00s)
+SKIP datadog/tests.TestAccDatadogServiceAccountDatasourcePagination (0.00s)
+SKIP datadog/tests.TestAccDatadogServiceLevelObjectivesDatasource (0.00s)
+SKIP datadog/tests.TestAccDatadogServiceLevelObjectiveDatasource (0.00s)
+SKIP datadog/tests.TestAccDatadogSyntheticsTestWithUrl (0.00s)
+SKIP datadog/tests.TestAccDatadogSyntheticsSSLTest_Basic (0.00s)
+SKIP datadog/tests.TestAccDatadogDashboardListDatasource (0.00s)
+SKIP datadog/tests.TestAccDatadogSyntheticsTCPTest_Updated (0.01s)
+SKIP datadog/tests.TestAccDatadogCostBudgetDataSource_Basic (0.00s)
+SKIP datadog/tests.TestAccDatadogLogsArchivesOrderDatasource (0.01s)
+SKIP datadog/tests.TestAccDatadogSyntheticsMobileTest_importBasic (0.00s)
+SKIP datadog/tests.TestAccDatadogServiceLevelObjective_InvalidMonitor (0.01s)
+SKIP datadog/tests.TestAccDatadogSyntheticsAPITest_UpdatedNewAssertionsOptions (0.00s)
+SKIP datadog/tests.TestAccCSMThreatsAgentRulesDataSource (0.00s)
+SKIP datadog/tests.TestAccDatadogApmRetentionFiltersOrderDatasource (0.00s)
+SKIP datadog/tests.TestAccDatadogSyntheticsAPITest_AdvancedScheduling (0.00s)
+SKIP datadog/tests.TestAccDatadogSyntheticsAPITest_UpdatedTargetAndTargetValueCanBeNumberOrString (0.00s)
+SKIP datadog/tests.TestAccDatadogCloudWorkloadSecurityAgentRulesDatasource (0.00s)
+SKIP datadog/tests.TestAccDatadogIncidentNotificationTemplateDataSource_ByName (0.00s)
+SKIP datadog/tests.TestAccDatadogLogsIndexesOrderDatasource (0.00s)
+SKIP datadog/tests.TestAccDatadogSyntheticsAPITest_BasicTargetAndTargetValueCanBeNumberOrString (0.00s)
+SKIP datadog/tests.TestAccDatadogIntegrationAWSNamespaceRulesDatasource (0.00s)
+SKIP datadog/tests.TestAccDatadogIncidentNotificationRuleDataSource_ByID (0.00s)
+SKIP datadog/tests.TestAccDatadogApiKeyDatasource_matchName (0.00s)
+SKIP datadog/tests.TestAccDatadogApiKeyDatasource_exactMatchName (0.00s)
+SKIP datadog/tests.TestAccDatadogIncidentNotificationTemplateDataSource_ByID (0.00s)
+SKIP datadog/tests.TestAccDatadogSyntheticsAPITest_EmptyLocations (0.00s)
+SKIP datadog/tests.TestAccDatadogSyntheticsAPITest_Basic (0.00s)
+SKIP datadog/tests.TestAccDatadogSyntheticsAPITest_Updated (0.00s)
+PASS datadog/tests.TestUpdateStateWithEmptyRespClearsBindings (0.00s)
+SKIP datadog/tests.TestAccDatadogApiKeyDatasource_matchId (0.00s)
+SKIP datadog/tests.TestAccDatadogSyntheticsAPITest_BasicNewAssertionsOptions (0.00s)
+SKIP datadog/tests.TestAccDatadogSecurityMonitoringRule_CwsRule (0.00s)
+SKIP datadog/tests.TestAccDatadogAppBuilderAppDataSource_Inline_WithOptionalFields (0.00s)
+SKIP datadog/tests.TestAccDatadogApiKeyDatasource_matchNameError (0.00s)
+SKIP datadog/tests.TestAccDatadogHostsDatasource (0.00s)
+SKIP datadog/tests.TestAccDatadogRUMApplication_Basic (0.00s)
+SKIP datadog/tests.TestAccRestrictionPolicyInvalidInput (0.00s)
+PASS datadog/tests.TestAccDatadogSyntheticsPrivateLocation_Updated (0.00s)
+SKIP datadog/tests.TestAccDatadogApiKeyDatasource_matchIdError (0.00s)
+SKIP datadog/tests.TestAccDatadogSyntheticsGRPCTest_importBasic (0.00s)
+SKIP datadog/tests.TestAccDatadogSyntheticsBrowserTest_importBasic (0.00s)
+SKIP datadog/tests.TestAccDatadogSyntheticsSSLMissingTagsAttributeTest_Basic (0.00s)
+PASS datadog/tests.TestAccDatadogSyntheticsPrivateLocation_Basic (0.00s)
+SKIP datadog/tests.TestAccDatadogSyntheticsTCPTest_importBasic (0.00s)
+SKIP datadog/tests.TestAccDatadogApiKeyDatasource_missingParametersError (0.00s)
+SKIP datadog/tests.TestAccDatadogSyntheticsDNSTest_importBasic (0.00s)
+SKIP datadog/tests.TestAccDatadogSyntheticsAPITest_importBasic (0.00s)
+SKIP datadog/tests.TestAccRestrictionPolicyUpdate (0.00s)
+SKIP datadog/tests.TestAccRestrictionPolicyBasic (0.00s)
+SKIP datadog/tests.TestAccDatadogSyntheticsSSLTest_importBasic (0.00s)
+SKIP datadog/tests.TestAccMSTeamsTenantBasedHandlesBasic (0.35s)
+PASS datadog/tests
+
+DONE 797 tests, 684 skipped in 5.766s
+RECORD=true TF_ACC=1 gotestsum --format testname --debug --rerun-fails --packages ./... -- -v  -timeout 120m
+EMPTY .
+EMPTY datadog
+EMPTY datadog/fwprovider
+EMPTY datadog/fwprovider/observability_pipeline
+EMPTY datadog/internal/customtypes
+EMPTY datadog/internal/planmodifiers
+PASS datadog/internal/fwutils.TestCombineTags (0.00s)
+PASS datadog/internal/fwutils.TestEnrichSchemaListNestedBlock/description_with_string_oneOf_validator (0.00s)
+PASS datadog/internal/fwutils.TestEnrichSchemaListNestedBlock/description_without_validator (0.00s)
+PASS datadog/internal/fwutils.TestEnrichSchemaListNestedBlock/description_with_int64_atLeast_validator (0.00s)
+PASS datadog/internal/fwutils.TestEnrichSchemaListNestedBlock/description_with_string_betweenValidator|float_validator (0.00s)
+PASS datadog/internal/fwutils.TestEnrichSchemaListNestedBlock/description_with_string_CIDR_IP_validator (0.00s)
+PASS datadog/internal/fwutils.TestEnrichSchemaListNestedBlock/description_with_string_enum_validator (0.00s)
+PASS datadog/internal/fwutils.TestEnrichSchemaListNestedBlock/description_with_int64_betweenValidator|int_validator (0.00s)
+PASS datadog/internal/fwutils.TestEnrichSchemaListNestedBlock/description_with_string_lengthAtLeast_validator (0.00s)
+PASS datadog/internal/fwutils.TestEnrichSchemaListNestedBlock/description_with_string_entity_YAML_validator (0.00s)
+PASS datadog/internal/fwutils.TestEnrichSchemaListNestedBlock/description_with_string_regexMatches_without_message_validator (0.00s)
+PASS datadog/internal/fwutils.TestEnrichSchemaListNestedBlock/description_with_string_regexMatches_with_message_validator (0.00s)
+PASS datadog/internal/fwutils.TestEnrichSchemaListNestedBlock (0.00s)
+PASS datadog/internal/fwutils.TestEnrichSchemaAttributes/description_with_string_oneOf_validator (0.00s)
+PASS datadog/internal/fwutils.TestEnrichSchemaAttributes/description_with_string_CIDR_IP_validator (0.00s)
+PASS datadog/internal/fwutils.TestEnrichSchemaAttributes/description_without_validators (0.00s)
+PASS datadog/internal/fwutils.TestEnrichSchemaAttributes/description_with_string_lengthAtLeast_validator (0.00s)
+PASS datadog/internal/fwutils.TestEnrichSchemaAttributes/description_with_string_betweenValidator|float_validator (0.00s)
+PASS datadog/internal/fwutils.TestEnrichSchemaAttributes/description_with_int64_enum_validator (0.00s)
+PASS datadog/internal/fwutils.TestEnrichSchemaAttributes/description_with_string_entity_YAML_validator (0.00s)
+PASS datadog/internal/fwutils.TestEnrichSchemaAttributes/description_with_string_regexMatches_without_message_validator (0.00s)
+PASS datadog/internal/fwutils.TestEnrichSchemaAttributes/description_with_string_regexMatches_with_message_validator (0.00s)
+PASS datadog/internal/fwutils.TestEnrichSchemaAttributes/description_with_string_enum_validator (0.00s)
+PASS datadog/internal/fwutils.TestEnrichSchemaAttributes/description_with_int64_betweenValidator|int_validator (0.00s)
+PASS datadog/internal/fwutils.TestEnrichSchemaAttributes/description_with_int64_atLeast_validator (0.00s)
+PASS datadog/internal/fwutils.TestEnrichSchemaAttributes (0.00s)
+PASS datadog/internal/fwutils.TestEnrichSchemaSingleNestedBlock/description_with_int64_betweenValidator|int_validator (0.00s)
+PASS datadog/internal/fwutils.TestEnrichSchemaSingleNestedBlock/description_with_string_enum_validator (0.00s)
+PASS datadog/internal/fwutils.TestEnrichSchemaSingleNestedBlock/description_without_validator (0.00s)
+PASS datadog/internal/fwutils.TestEnrichSchemaSingleNestedBlock/description_with_string_betweenValidator|float_validator (0.00s)
+PASS datadog/internal/fwutils.TestEnrichSchemaSingleNestedBlock/description_with_string_lengthAtLeast_validator (0.00s)
+PASS datadog/internal/fwutils.TestEnrichSchemaSingleNestedBlock/description_with_string_CIDR_IP_validator (0.00s)
+PASS datadog/internal/fwutils.TestEnrichSchemaSingleNestedBlock/description_with_string_entity_YAML_validator (0.00s)
+PASS datadog/internal/fwutils.TestEnrichSchemaSingleNestedBlock/description_with_string_regexMatches_with_message_validator (0.00s)
+PASS datadog/internal/fwutils.TestEnrichSchemaSingleNestedBlock/description_with_string_oneOf_validator (0.00s)
+PASS datadog/internal/fwutils.TestEnrichSchemaSingleNestedBlock/description_with_string_regexMatches_without_message_validator (0.00s)
+PASS datadog/internal/fwutils.TestEnrichSchemaSingleNestedBlock/description_with_int64_atLeast_validator (0.00s)
+PASS datadog/internal/fwutils.TestEnrichSchemaSingleNestedBlock (0.00s)
+PASS datadog/internal/fwutils.TestNestedNestedBlock/description_with_string_regexMatches_with_message_validator_in_nested_nested_block (0.00s)
+PASS datadog/internal/fwutils.TestNestedNestedBlock/description_with_string_CIDR_IP_validator_in_nested_nested_block (0.00s)
+PASS datadog/internal/fwutils.TestNestedNestedBlock/description_with_string_entity_YAML_validator_in_nested_nested_block (0.00s)
+PASS datadog/internal/fwutils.TestNestedNestedBlock/description_without_validator_in_nested_nested_block (0.00s)
+PASS datadog/internal/fwutils.TestNestedNestedBlock/description_with_int64_betweenValidator|int_validator_in_nested_nested_block (0.00s)
+PASS datadog/internal/fwutils.TestNestedNestedBlock/description_with_string_oneOf_validator_in_nested_nested_block (0.00s)
+PASS datadog/internal/fwutils.TestNestedNestedBlock/description_with_string_enum_validator_in_nested_nested_block (0.00s)
+PASS datadog/internal/fwutils.TestNestedNestedBlock/description_with_int64_atLeast_validator_in_nested_nested_block (0.00s)
+PASS datadog/internal/fwutils.TestNestedNestedBlock/description_with_string_betweenValidator|float_validator_in_nested_nested_block (0.00s)
+PASS datadog/internal/fwutils.TestNestedNestedBlock/description_with_string_lengthAtLeast_validator_in_nested_nested_block (0.00s)
+PASS datadog/internal/fwutils.TestNestedNestedBlock/description_with_string_regexMatches_without_message_validator_in_nested_nested_block (0.00s)
+PASS datadog/internal/fwutils.TestNestedNestedBlock (0.00s)
+PASS datadog/internal/fwutils
+PASS datadog/internal/utils.TestTagNormalization (0.00s)
+PASS datadog/internal/utils.TestAccountAndLambdaArnFromID (0.00s)
+PASS datadog/internal/utils.TestAccountAndRoleFromID (0.00s)
+PASS datadog/internal/utils.TestAccountNameAndChannelNameFromID (0.00s)
+PASS datadog/internal/utils.TestConvertResponseByteToMap (0.00s)
+PASS datadog/internal/utils.TestDeleteKeyInMap (0.00s)
+PASS datadog/internal/utils.TestGetStringSlice (0.00s)
+PASS datadog/internal/utils.TestNormMetricNameParse (0.00s)
+PASS datadog/internal/utils.TestRemoveEmptyValuesInMap/empty_map (0.00s)
+PASS datadog/internal/utils.TestRemoveEmptyValuesInMap/nil_values (0.00s)
+PASS datadog/internal/utils.TestRemoveEmptyValuesInMap/empty_arrays (0.00s)
+PASS datadog/internal/utils.TestRemoveEmptyValuesInMap/nested_maps (0.00s)
+PASS datadog/internal/utils.TestRemoveEmptyValuesInMap/array_with_maps (0.00s)
+PASS datadog/internal/utils.TestRemoveEmptyValuesInMap (0.00s)
+PASS datadog/internal/utils.TestAppBuilderAppJSONStringSemanticEquals/semantically_equal_-_existence_of_id_field_is_ignored (0.00s)
+PASS datadog/internal/utils.TestAppBuilderAppJSONStringSemanticEquals/semantically_equal_-_object_whitespace_difference (0.00s)
+PASS datadog/internal/utils.TestAppBuilderAppJSONStringSemanticEquals/semantically_equal_-_array_byte-for-byte_match (0.00s)
+PASS datadog/internal/utils.TestAppBuilderAppJSONStringSemanticEquals/error_-_invalid_json (0.00s)
+PASS datadog/internal/utils.TestAppBuilderAppJSONStringSemanticEquals/not_equal_-_different_JSON_number_representations (0.00s)
+PASS datadog/internal/utils.TestAppBuilderAppJSONStringSemanticEquals/semantically_equal_-_array_whitespace_difference (0.00s)
+PASS datadog/internal/utils.TestAppBuilderAppJSONStringSemanticEquals/not_equal_-_object_additional_field (0.00s)
+PASS datadog/internal/utils.TestAppBuilderAppJSONStringSemanticEquals/not_equal_-_mismatched_field_names (0.00s)
+PASS datadog/internal/utils.TestAppBuilderAppJSONStringSemanticEquals/not_equal_-_array_item_order_difference (0.00s)
+PASS datadog/internal/utils.TestAppBuilderAppJSONStringSemanticEquals/semantically_equal_-_HTML_escape_characters_are_equal (0.00s)
+PASS datadog/internal/utils.TestAppBuilderAppJSONStringSemanticEquals/semantically_equal_-_larger_than_max_float64_values (0.00s)
+PASS datadog/internal/utils.TestAppBuilderAppJSONStringSemanticEquals/semantically_equal_-_object_field_order_difference (0.00s)
+PASS datadog/internal/utils.TestAppBuilderAppJSONStringSemanticEquals/not_equal_-_mismatched_field_values (0.00s)
+PASS datadog/internal/utils.TestAppBuilderAppJSONStringSemanticEquals/not_equal_-_array_additional_field (0.00s)
+PASS datadog/internal/utils.TestAppBuilderAppJSONStringSemanticEquals/semantically_equal_-_differences_in_id_field_is_ignored (0.00s)
+PASS datadog/internal/utils.TestAppBuilderAppJSONStringSemanticEquals/semantically_equal_-_object_byte-for-byte_match (0.00s)
+PASS datadog/internal/utils.TestAppBuilderAppJSONStringSemanticEquals (0.00s)
+PASS datadog/internal/utils
+PASS datadog/internal/validators.TestResourceDatadogDowntimeRecurrenceTypeValidation (0.00s)
+PASS datadog/internal/validators.TestResourceDatadogDowntimeRecurrenceWeekDaysValidation (0.00s)
+PASS datadog/internal/validators.TestStringEnumValidation (0.00s)
+PASS datadog/internal/validators.TestValidateFloat64Between (0.00s)
+PASS datadog/internal/validators.TestValidateHttpRequestHeader (0.00s)
+PASS datadog/internal/validators.TestEnumValidatorInt64/unknown_Int64_enum (0.00s)
+PASS datadog/internal/validators.TestEnumValidatorInt64/invalid_Int64_enum (0.00s)
+PASS datadog/internal/validators.TestEnumValidatorInt64/valid_Int64_enum (0.00s)
+PASS datadog/internal/validators.TestEnumValidatorInt64/null_Int64_enum (0.00s)
+PASS datadog/internal/validators.TestEnumValidatorInt64 (0.00s)
+PASS datadog/internal/validators.TestEnumValidatorString/unknown_string_enum (0.00s)
+PASS datadog/internal/validators.TestEnumValidatorString/null_string_enum (0.00s)
+PASS datadog/internal/validators.TestEnumValidatorString/valid_string_enum (0.00s)
+PASS datadog/internal/validators.TestEnumValidatorString/invalid_string_enum (0.00s)
+PASS datadog/internal/validators.TestEnumValidatorString (0.00s)
+PASS datadog/internal/validators
+EMPTY version
+2025/11/04 14:49:39 DD_AGENT_HOST is not configured. Tests are executed without tracer and profiler.
+SKIP datadog/tests.TestAccDatadogApplicationKeyDatasource_matchIdError (0.00s)
+SKIP datadog/tests.TestAccDatadogApplicationKeyDatasource_matchNameError (0.00s)
+SKIP datadog/tests.TestAccDatadogApplicationKeyDatasource_missingParametersError (0.00s)
+PASS datadog/tests.TestAccCSMThreatsPoliciesDataSource (10.17s)
+PASS datadog/tests.TestAccDatadogIntegrationAWSAvailableLogsServicesDatasource (2.52s)
+PASS datadog/tests.TestAccDatadogIntegrationAWSAvailableNamespacesDatasource (2.09s)
+=== RUN   TestAccDatadogIntegrationAWSExternalIDDatasource
+    data_source_datadog_integration_aws_external_id_test.go:19: Step 1/1 error: Error running pre-apply plan: exit status 1
+        
+        Error: AWS Integration not found
+        
+          with data.datadog_integration_aws_external_id.foo,
+          on terraform_plugin_test.tf line 13, in data "datadog_integration_aws_external_id" "foo":
+          13: data "datadog_integration_aws_external_id" "foo" {
+        
+        No AWS integration found for account ID: 123456789012
+--- FAIL: TestAccDatadogIntegrationAWSExternalIDDatasource (0.58s)
+FAIL datadog/tests.TestAccDatadogIntegrationAWSExternalIDDatasource (0.58s)
+PASS datadog/tests.TestAccDatadogIntegrationAWSIAMPermissionsStandardDatasource (2.28s)
+PASS datadog/tests.TestAccDatadogIntegrationAWSIAMPermissionsDatasource (2.45s)
+PASS datadog/tests.TestAccDatadogIntegrationAWSLogsServicesDatasource (2.59s)
+=== RUN   TestAccDatadogLogsPipelinesDatasource
+    data_source_datadog_logs_pipelines_test.go:22: Step 1/1 error: Check failed: Check 1/1 error: expected 1133 pipelines got 1137 pipelines
+--- FAIL: TestAccDatadogLogsPipelinesDatasource (14.44s)
+FAIL datadog/tests.TestAccDatadogLogsPipelinesDatasource (14.44s)
+PASS datadog/tests.TestAccDatadogMonitorConfigPoliciesDatasource (4.10s)
+PASS datadog/tests.TestAccDatadogRoleDatasource (2.28s)
+PASS datadog/tests.TestAccDatadogRoleDatasourceExactMatch (6.57s)
+=== RUN   TestAccDatadogRolesDatasource
+    data_source_datadog_roles_test.go:15: Step 1/1 error: Check failed: Check 3/3 error: data.datadog_roles.foo: Attribute 'roles.0.name' expected "Datadog Admin Role", got "Andreas - Datadog Admin Role"
+--- FAIL: TestAccDatadogRolesDatasource (1.02s)
+FAIL datadog/tests.TestAccDatadogRolesDatasource (1.02s)
+PASS datadog/tests.TestAccDatadogRolesDatasourceMultipleMatch (4.23s)
+PASS datadog/tests.TestAccSecurityMonitoringSuppressionDataSource (8.72s)
+PASS datadog/tests.TestAccDatadogSoftwareCatalogEntity_Datasource (4.28s)
+=== RUN   TestAccDatadogWorkflowAutomationDatasource
+    data_source_datadog_workflow_automation_test.go:27: Step 1/1 error: Error running apply: exit status 1
+        
+        Error: Error creating workflow
+        
+          with datadog_workflow_automation.my_workflow,
+          on terraform_plugin_test.tf line 13, in resource "datadog_workflow_automation" "my_workflow":
+          13: 	resource "datadog_workflow_automation" "my_workflow" {
+        
+        {"errors":[{"detail":"actions API access is not enabled on this application
+        key"}]}
+--- FAIL: TestAccDatadogWorkflowAutomationDatasource (1.24s)
+FAIL datadog/tests.TestAccDatadogWorkflowAutomationDatasource (1.24s)
+PASS datadog/tests.TestFrameworkProviderConfigure_CloudAuthOnly (0.00s)
+PASS datadog/tests.TestFrameworkProviderConfigure_APIKeyOnly (0.00s)
+PASS datadog/tests.TestFrameworkProviderConfigure_CloudAuthWithAPIKey (0.00s)
+PASS datadog/tests.TestFrameworkProviderConfigure_CloudAuthWithEnvVarAPIKey (0.00s)
+PASS datadog/tests.TestFrameworkProviderConfigure_CloudAuthWithOnlyAppKey (0.00s)
+PASS datadog/tests.TestProvider (0.01s)
+PASS datadog/tests.TestProvider_impl (0.00s)
+PASS datadog/tests.TestProviderConfigure_CloudAuthOnly (0.00s)
+PASS datadog/tests.TestProviderConfigure_APIKeyOnly (0.00s)
+PASS datadog/tests.TestProviderConfigure_CloudAuthWithAPIKey (0.00s)
+PASS datadog/tests.TestProviderConfigure_CloudAuthWithEnvVarAPIKey (0.00s)
+PASS datadog/tests.TestProviderConfigure_CloudAuthWithOnlyAppKey (0.00s)
+SKIP datadog/tests.TestAccDatadogApiKey_Update (0.00s)
+SKIP datadog/tests.TestDatadogApiKey_import (0.00s)
+=== RUN   TestAccDatadogAppKeyRegistrationResource
+    resource_datadog_app_key_registration_test.go:21: Step 1/1 error: Error running apply: exit status 1
+        
+        Error: Error registering app key
+        
+          with datadog_app_key_registration.my_registration,
+          on terraform_plugin_test.tf line 12, in resource "datadog_app_key_registration" "my_registration":
+          12: 	resource "datadog_app_key_registration" "my_registration" {
+        
+        {"errors":[{"detail":"actions API access is not enabled on this application
+        key"}]}
+--- FAIL: TestAccDatadogAppKeyRegistrationResource (0.85s)
+FAIL datadog/tests.TestAccDatadogAppKeyRegistrationResource (0.85s)
+SKIP datadog/tests.TestAccDatadogApplicationKey_Update (0.00s)
+SKIP datadog/tests.TestAccDatadogApplicationKey_Error (0.00s)
+SKIP datadog/tests.TestAccDatadogChildOrganization_Create (0.00s)
+SKIP datadog/tests.TestAccDatadogChildOrganization_IncorrectName (0.00s)
+PASS datadog/tests.TestCustomFramework_CreateBasic (7.15s)
+PASS datadog/tests.TestCustomFramework_CreateWithoutIconURL (3.06s)
+PASS datadog/tests.TestCustomFramework_CreateAndUpdateMultipleRequirements (4.86s)
+PASS datadog/tests.TestCustomFramework_SameFrameworkID (6.08s)
+PASS datadog/tests.TestCustomFramework_InvalidCreate (2.13s)
+PASS datadog/tests.TestCustomFramework_RecreateAfterAPIDelete (5.31s)
+PASS datadog/tests.TestCustomFramework_DeleteAfterAPIDelete (5.01s)
+PASS datadog/tests.TestCustomFramework_UpdateIfFrameworkExists (3.46s)
+PASS datadog/tests.TestCustomFramework_RecreateOnImmutableFields (5.79s)
+PASS datadog/tests.TestCustomFramework_DuplicateRuleIds (2.59s)
+=== RUN   TestCustomFramework_DuplicateHandle
+    resource_datadog_compliance_custom_framework_test.go:504: Step 2/2, expected an error but got none
+--- FAIL: TestCustomFramework_DuplicateHandle (3.92s)
+FAIL datadog/tests.TestCustomFramework_DuplicateHandle (3.92s)
+PASS datadog/tests.TestAccResourceEvaluationFilter (7.06s)
+PASS datadog/tests.TestAccResourceEvaluationFilterImport (3.27s)
+PASS datadog/tests.TestAccResourceEvaluationFilterInvalid (0.95s)
+=== RUN   TestAccCSMThreatsAgentRule_CreateAndUpdate
+    resource_datadog_csm_threats_agent_rule_test.go:33: Step 2/4 error: Error running apply: exit status 1
+        
+        Error: error creating agent rule
+        
+          with datadog_csm_threats_agent_rule.agent_rule_test,
+          on terraform_plugin_test.tf line 20, in resource "datadog_csm_threats_agent_rule" "agent_rule_test":
+          20: 				resource "datadog_csm_threats_agent_rule" "agent_rule_test" {
+        
+        500 Internal Server Error: {"errors":[{"title":"failed to create rule"}]}
+        
+--- FAIL: TestAccCSMThreatsAgentRule_CreateAndUpdate (7.34s)
+FAIL datadog/tests.TestAccCSMThreatsAgentRule_CreateAndUpdate (7.34s)
+PASS datadog/tests.TestAccCSMThreatsPolicy_CreateAndUpdate (11.18s)
+PASS datadog/tests.TestAccCSMThreatsPolicy_CreateAndUpdateWithHostTagsLists (10.07s)
+=== RUN   TestAccDatadogCustomAllocationRuleOrder_Basic
+    resource_datadog_custom_allocation_rules_test.go:19: Step 1/1 error: Error running apply: exit status 1
+        
+        Error: Unmanaged rules detected
+        
+          with datadog_custom_allocation_rules.foo,
+          on terraform_plugin_test.tf line 75, in resource "datadog_custom_allocation_rules" "foo":
+          75: resource "datadog_custom_allocation_rules" "foo" {
+        
+        Found 4 custom allocation rules in Datadog that are not managed by this
+        Terraform configuration: [933 931 932 964]. All custom allocation rules must
+        be managed by Terraform. Please either:
+        1. Import existing rules using 'terraform import
+        datadog_custom_allocation_rule.<name> <rule_id>'
+        2. Add the missing rules to your Terraform configuration
+        3. Delete unmanaged rules from Datadog if they're no longer needed
+        
+        This ensures complete infrastructure control and prevents configuration
+        drift.
+--- FAIL: TestAccDatadogCustomAllocationRuleOrder_Basic (2.36s)
+FAIL datadog/tests.TestAccDatadogCustomAllocationRuleOrder_Basic (2.36s)
+=== RUN   TestAccDatadogCustomAllocationRuleOrder_Update
+    resource_datadog_custom_allocation_rules_test.go:53: Step 1/2 error: Error running apply: exit status 1
+        
+        Error: Unmanaged rules detected
+        
+          with datadog_custom_allocation_rules.foo,
+          on terraform_plugin_test.tf line 75, in resource "datadog_custom_allocation_rules" "foo":
+          75: resource "datadog_custom_allocation_rules" "foo" {
+        
+        Found 4 custom allocation rules in Datadog that are not managed by this
+        Terraform configuration: [932 964 933 931]. All custom allocation rules must
+        be managed by Terraform. Please either:
+        1. Import existing rules using 'terraform import
+        datadog_custom_allocation_rule.<name> <rule_id>'
+        2. Add the missing rules to your Terraform configuration
+        3. Delete unmanaged rules from Datadog if they're no longer needed
+        
+        This ensures complete infrastructure control and prevents configuration
+        drift.
+--- FAIL: TestAccDatadogCustomAllocationRuleOrder_Update (3.42s)
+FAIL datadog/tests.TestAccDatadogCustomAllocationRuleOrder_Update (3.42s)
+=== RUN   TestAccDatadogCustomAllocationRuleOrder_Import
+    resource_datadog_custom_allocation_rules_test.go:105: Step 1/2 error: Error running apply: exit status 1
+        
+        Error: Unmanaged rules detected
+        
+          with datadog_custom_allocation_rules.foo,
+          on terraform_plugin_test.tf line 75, in resource "datadog_custom_allocation_rules" "foo":
+          75: resource "datadog_custom_allocation_rules" "foo" {
+        
+        Found 4 custom allocation rules in Datadog that are not managed by this
+        Terraform configuration: [933 931 932 964]. All custom allocation rules must
+        be managed by Terraform. Please either:
+        1. Import existing rules using 'terraform import
+        datadog_custom_allocation_rule.<name> <rule_id>'
+        2. Add the missing rules to your Terraform configuration
+        3. Delete unmanaged rules from Datadog if they're no longer needed
+        
+        This ensures complete infrastructure control and prevents configuration
+        drift.
+--- FAIL: TestAccDatadogCustomAllocationRuleOrder_Import (3.30s)
+FAIL datadog/tests.TestAccDatadogCustomAllocationRuleOrder_Import (3.30s)
+=== RUN   TestAccDatadogCustomAllocationRuleOrder_SingleRule
+    resource_datadog_custom_allocation_rules_test.go:142: Step 1/1 error: Error running apply: exit status 1
+        
+        Error: Unmanaged rules detected
+        
+          with datadog_custom_allocation_rules.foo,
+          on terraform_plugin_test.tf line 33, in resource "datadog_custom_allocation_rules" "foo":
+          33: resource "datadog_custom_allocation_rules" "foo" {
+        
+        Found 4 custom allocation rules in Datadog that are not managed by this
+        Terraform configuration: [933 931 932 964]. All custom allocation rules must
+        be managed by Terraform. Please either:
+        1. Import existing rules using 'terraform import
+        datadog_custom_allocation_rule.<name> <rule_id>'
+        2. Add the missing rules to your Terraform configuration
+        3. Delete unmanaged rules from Datadog if they're no longer needed
+        
+        This ensures complete infrastructure control and prevents configuration
+        drift.
+--- FAIL: TestAccDatadogCustomAllocationRuleOrder_SingleRule (4.61s)
+FAIL datadog/tests.TestAccDatadogCustomAllocationRuleOrder_SingleRule (4.61s)
+PASS datadog/tests.TestAccDatadogDashboardNoteContentError (0.28s)
+SKIP datadog/tests.TestAccDatadogDomainAllowlist_CreateUpdate (0.00s)
+PASS datadog/tests.TestAccIntegrationAwsExternalIDBasic (1.50s)
+PASS datadog/tests.TestAccIntegrationConfluentAccountBasic (2.58s)
+PASS datadog/tests.TestAccIntegrationConfluentAccountUpdated (4.90s)
+=== RUN   TestAccDatadogIntegrationSlackChannel_Import
+    resource_datadog_integration_slack_channel_test.go:79: Step 1/3 error: Error running pre-apply plan: exit status 1
+        
+        Error: error getting IPRanges
+        
+          with data.datadog_ip_ranges.test,
+          on terraform_plugin_test.tf line 12, in data "datadog_ip_ranges" "test":
+          12: 		data "datadog_ip_ranges" "test" {
+        
+        401 Unauthorized: {"errors":["Unauthorized"]}
+--- FAIL: TestAccDatadogIntegrationSlackChannel_Import (0.64s)
+FAIL datadog/tests.TestAccDatadogIntegrationSlackChannel_Import (0.64s)
+=== RUN   TestAccDatadogIPAllowlist_CreateUpdate
+    resource_datadog_ip_allowlist_test.go:19: Step 1/2 error: Error running apply: exit status 1
+        
+        Error: error updating IP allowlist
+        
+          with datadog_ip_allowlist.foo,
+          on terraform_plugin_test.tf line 12, in resource "datadog_ip_allowlist" "foo":
+          12: resource "datadog_ip_allowlist" "foo" {
+        
+        an error occurred from /api/v2/ip_allowlist: 404 Not Found:
+        {"errors":[{"status":"404","title":"Not Found","detail":"IP Allowlist is not
+        enabled for this org."}]}
+--- FAIL: TestAccDatadogIPAllowlist_CreateUpdate (1.09s)
+FAIL datadog/tests.TestAccDatadogIPAllowlist_CreateUpdate (1.09s)
+PASS datadog/tests.TestAccDatadogLogsPipeline_basic (17.56s)
+PASS datadog/tests.TestAccMonitor_Fwprovider_Create (4.11s)
+PASS datadog/tests.TestAccMonitor_Fwprovider_Update (7.93s)
+PASS datadog/tests.TestAccMonitor_Fwprovider_Basic (4.36s)
+PASS datadog/tests.TestAccMonitor_Fwprovider_ServiceCheck_Basic (4.59s)
+PASS datadog/tests.TestAccMonitor_Fwprovider_BasicNoTresholdOrPriority (4.31s)
+PASS datadog/tests.TestAccMonitor_Fwprovider_Updated (25.31s)
+PASS datadog/tests.TestAccMonitor_Fwprovider_UpdatedToRemoveTags (19.57s)
+PASS datadog/tests.TestAccMonitor_Fwprovider_TrimWhiteSpace (4.08s)
+PASS datadog/tests.TestAccMonitor_Fwprovider_Basic_float_int (8.51s)
+PASS datadog/tests.TestAccMonitor_Fwprovider_Log (4.07s)
+PASS datadog/tests.TestAccMonitor_Fwprovider_LogMultiAlert (4.19s)
+PASS datadog/tests.TestAccMonitor_Fwprovider_NoThresholdWindows (3.80s)
+PASS datadog/tests.TestAccMonitor_Fwprovider_ThresholdWindows (4.20s)
+PASS datadog/tests.TestAccMonitor_Fwprovider_ComposeWithSyntheticsTest (6.62s)
+PASS datadog/tests.TestAccMonitor_Fwprovider_FormulaFunction (4.60s)
+FAIL datadog/tests
+=== RUN   TestAccDatadogDataset_InvalidInput
+=== PAUSE TestAccDatadogDataset_InvalidInput
+FAIL datadog/tests.TestAccDatadogDataset_InvalidInput (-1.00s)
+=== RUN   TestAccIntegrationAwsAccount_InvalidEmptyTagFilters
+=== PAUSE TestAccIntegrationAwsAccount_InvalidEmptyTagFilters
+FAIL datadog/tests.TestAccIntegrationAwsAccount_InvalidEmptyTagFilters (-1.00s)
+=== RUN   TestAccDatadogDashboardManageStatus_import
+=== PAUSE TestAccDatadogDashboardManageStatus_import
+FAIL datadog/tests.TestAccDatadogDashboardManageStatus_import (-1.00s)
+=== RUN   TestAccDatadogDashboardScatterplotFormula_import
+=== PAUSE TestAccDatadogDashboardScatterplotFormula_import
+FAIL datadog/tests.TestAccDatadogDashboardScatterplotFormula_import (-1.00s)
+=== RUN   TestAccDeploymentGateBasic
+=== PAUSE TestAccDeploymentGateBasic
+FAIL datadog/tests.TestAccDeploymentGateBasic (-1.00s)
+=== RUN   TestAccDatadogIntegrationAWSLogCollectionAccessKey
+=== PAUSE TestAccDatadogIntegrationAWSLogCollectionAccessKey
+FAIL datadog/tests.TestAccDatadogIntegrationAWSLogCollectionAccessKey (-1.00s)
+=== RUN   TestAccDatadogIntegrationAzure_import
+=== PAUSE TestAccDatadogIntegrationAzure_import
+FAIL datadog/tests.TestAccDatadogIntegrationAzure_import (-1.00s)
+=== RUN   TestAccDatadogDashboardSunburst
+=== PAUSE TestAccDatadogDashboardSunburst
+FAIL datadog/tests.TestAccDatadogDashboardSunburst (-1.00s)
+=== RUN   TestAccDatadogFreeDashboard
+=== PAUSE TestAccDatadogFreeDashboard
+FAIL datadog/tests.TestAccDatadogFreeDashboard (-1.00s)
+=== RUN   TestAccDatadogMonitorConfigPolicy_Basic
+=== PAUSE TestAccDatadogMonitorConfigPolicy_Basic
+FAIL datadog/tests.TestAccDatadogMonitorConfigPolicy_Basic (-1.00s)
+=== RUN   TestAccDatadogMonitorDatasource
+=== PAUSE TestAccDatadogMonitorDatasource
+FAIL datadog/tests.TestAccDatadogMonitorDatasource (-1.00s)
+=== RUN   TestAccDatadogCustomAllocationRuleBasic
+=== PAUSE TestAccDatadogCustomAllocationRuleBasic
+FAIL datadog/tests.TestAccDatadogCustomAllocationRuleBasic (-1.00s)
+=== RUN   TestAccDatadogDashboardChangeFormula
+=== PAUSE TestAccDatadogDashboardChangeFormula
+FAIL datadog/tests.TestAccDatadogDashboardChangeFormula (-1.00s)
+=== RUN   TestAccDatadogDashboardJSONBasicTimeboard
+=== PAUSE TestAccDatadogDashboardJSONBasicTimeboard
+FAIL datadog/tests.TestAccDatadogDashboardJSONBasicTimeboard (-1.00s)
+=== RUN   TestAccDatadogDashboardDistribution_import
+=== PAUSE TestAccDatadogDashboardDistribution_import
+FAIL datadog/tests.TestAccDatadogDashboardDistribution_import (-1.00s)
+=== RUN   TestAccDatadogDashboardHostMap_import
+=== PAUSE TestAccDatadogDashboardHostMap_import
+FAIL datadog/tests.TestAccDatadogDashboardHostMap_import (-1.00s)
+=== RUN   TestAccDatadogDashboardScatterplot
+=== PAUSE TestAccDatadogDashboardScatterplot
+FAIL datadog/tests.TestAccDatadogDashboardScatterplot (-1.00s)
+=== RUN   TestAccDatadogIncidentNotificationTemplate_Updated
+=== PAUSE TestAccDatadogIncidentNotificationTemplate_Updated
+FAIL datadog/tests.TestAccDatadogIncidentNotificationTemplate_Updated (-1.00s)
+=== RUN   TestAccDatadogIntegrationAwsTagFilter_BasicAccessKey
+=== PAUSE TestAccDatadogIntegrationAwsTagFilter_BasicAccessKey
+FAIL datadog/tests.TestAccDatadogIntegrationAwsTagFilter_BasicAccessKey (-1.00s)
+=== RUN   TestAccDatadogDashboardDatasource
+=== PAUSE TestAccDatadogDashboardDatasource
+FAIL datadog/tests.TestAccDatadogDashboardDatasource (-1.00s)
+=== RUN   TestAccDatadogAppBuilderAppResource_Inline_WithOptionalFields_Import
+=== PAUSE TestAccDatadogAppBuilderAppResource_Inline_WithOptionalFields_Import
+FAIL datadog/tests.TestAccDatadogAppBuilderAppResource_Inline_WithOptionalFields_Import (-1.00s)
+=== RUN   TestAccAppsecWafCustomRuleBasic
+=== PAUSE TestAccAppsecWafCustomRuleBasic
+FAIL datadog/tests.TestAccAppsecWafCustomRuleBasic (-1.00s)
+=== RUN   TestAccDatadogDashboardMultiSizeLayout_createAuto
+=== PAUSE TestAccDatadogDashboardMultiSizeLayout_createAuto
+FAIL datadog/tests.TestAccDatadogDashboardMultiSizeLayout_createAuto (-1.00s)
+=== RUN   TestAccDatadogIntegrationAwsTagFilter_Basic
+=== PAUSE TestAccDatadogIntegrationAwsTagFilter_Basic
+FAIL datadog/tests.TestAccDatadogIntegrationAwsTagFilter_Basic (-1.00s)
+=== RUN   TestAccDatadogLogsPipelineDefaultTags
+=== PAUSE TestAccDatadogLogsPipelineDefaultTags
+FAIL datadog/tests.TestAccDatadogLogsPipelineDefaultTags (-1.00s)
+=== RUN   TestAccDatadogTagPipelineRulesetDataSource_MappingRule
+=== PAUSE TestAccDatadogTagPipelineRulesetDataSource_MappingRule
+FAIL datadog/tests.TestAccDatadogTagPipelineRulesetDataSource_MappingRule (-1.00s)
+=== RUN   TestAccDatadogDashboardSplitGraphWithStaticSplits_import
+=== PAUSE TestAccDatadogDashboardSplitGraphWithStaticSplits_import
+FAIL datadog/tests.TestAccDatadogDashboardSplitGraphWithStaticSplits_import (-1.00s)
+=== RUN   TestAccDowntimeScheduleBasicOneTimeWithMonitorID
+=== PAUSE TestAccDowntimeScheduleBasicOneTimeWithMonitorID
+FAIL datadog/tests.TestAccDowntimeScheduleBasicOneTimeWithMonitorID (-1.00s)
+=== RUN   TestAccDatadogDowntimeDatesConflict
+=== PAUSE TestAccDatadogDowntimeDatesConflict
+FAIL datadog/tests.TestAccDatadogDowntimeDatesConflict (-1.00s)
+=== RUN   TestAccDatadogIncidentNotificationTemplate_Import
+=== PAUSE TestAccDatadogIncidentNotificationTemplate_Import
+FAIL datadog/tests.TestAccDatadogIncidentNotificationTemplate_Import (-1.00s)
+=== RUN   TestAccDatadogPermissionsDatasourceIncludeRestricted
+=== PAUSE TestAccDatadogPermissionsDatasourceIncludeRestricted
+FAIL datadog/tests.TestAccDatadogPermissionsDatasourceIncludeRestricted (-1.00s)
+=== RUN   TestAccDatadogDashboardEventStream
+=== PAUSE TestAccDatadogDashboardEventStream
+FAIL datadog/tests.TestAccDatadogDashboardEventStream (-1.00s)
+=== RUN   TestAccDatadogDashboardRunWorkflow
+=== PAUSE TestAccDatadogDashboardRunWorkflow
+FAIL datadog/tests.TestAccDatadogDashboardRunWorkflow (-1.00s)
+=== RUN   TestAccDatadogDashboardSloList
+=== PAUSE TestAccDatadogDashboardSloList
+FAIL datadog/tests.TestAccDatadogDashboardSloList (-1.00s)
+=== RUN   TestAccDatadogDowntime_RRule
+=== PAUSE TestAccDatadogDowntime_RRule
+FAIL datadog/tests.TestAccDatadogDowntime_RRule (-1.00s)
+=== RUN   TestAccDatadogLogsPipelineEmptyFilterQuery
+=== PAUSE TestAccDatadogLogsPipelineEmptyFilterQuery
+FAIL datadog/tests.TestAccDatadogLogsPipelineEmptyFilterQuery (-1.00s)
+=== RUN   TestDatadogMonitor_import_no_recovery
+=== PAUSE TestDatadogMonitor_import_no_recovery
+FAIL datadog/tests.TestDatadogMonitor_import_no_recovery (-1.00s)
+=== RUN   TestAccDatadogDashboardSLO
+=== PAUSE TestAccDatadogDashboardSLO
+FAIL datadog/tests.TestAccDatadogDashboardSLO (-1.00s)
+=== RUN   TestAccDatadogIntegrationPagerduty_Basic
+=== PAUSE TestAccDatadogIntegrationPagerduty_Basic
+FAIL datadog/tests.TestAccDatadogIntegrationPagerduty_Basic (-1.00s)
+=== RUN   TestAccDatadogRUMApplicationDatasourceNameFilter
+=== PAUSE TestAccDatadogRUMApplicationDatasourceNameFilter
+FAIL datadog/tests.TestAccDatadogRUMApplicationDatasourceNameFilter (-1.00s)
+=== RUN   TestAccDatadogDashboardHostMap
+=== PAUSE TestAccDatadogDashboardHostMap
+FAIL datadog/tests.TestAccDatadogDashboardHostMap (-1.00s)
+=== RUN   TestDatadogDashListInDashboard
+=== PAUSE TestDatadogDashListInDashboard
+FAIL datadog/tests.TestDatadogDashListInDashboard (-1.00s)
+=== RUN   TestAccDatadogIntegrationAWSNamespaceRulesDatasource
+=== PAUSE TestAccDatadogIntegrationAWSNamespaceRulesDatasource
+FAIL datadog/tests.TestAccDatadogIntegrationAWSNamespaceRulesDatasource (-1.00s)
+=== RUN   TestAccDatadogStandardPatternDatasourceErrorNotFound
+=== PAUSE TestAccDatadogStandardPatternDatasourceErrorNotFound
+FAIL datadog/tests.TestAccDatadogStandardPatternDatasourceErrorNotFound (-1.00s)
+=== RUN   TestAccApmRetentionFilter
+=== PAUSE TestAccApmRetentionFilter
+FAIL datadog/tests.TestAccApmRetentionFilter (-1.00s)
+=== RUN   TestAccDatadogCloudWorkloadSecurityAgentRule
+=== PAUSE TestAccDatadogCloudWorkloadSecurityAgentRule
+FAIL datadog/tests.TestAccDatadogCloudWorkloadSecurityAgentRule (-1.00s)
+=== RUN   TestAccDatadogDashboardJSONNoDiff
+=== PAUSE TestAccDatadogDashboardJSONNoDiff
+FAIL datadog/tests.TestAccDatadogDashboardJSONNoDiff (-1.00s)
+=== RUN   TestAccDatadogDashboardQueryValue_import
+=== PAUSE TestAccDatadogDashboardQueryValue_import
+FAIL datadog/tests.TestAccDatadogDashboardQueryValue_import (-1.00s)
+=== RUN   TestAccDatadogApmRetentionFiltersOrderDatasource
+=== PAUSE TestAccDatadogApmRetentionFiltersOrderDatasource
+FAIL datadog/tests.TestAccDatadogApmRetentionFiltersOrderDatasource (-1.00s)
+=== RUN   TestAccDatadogIncidentTypeDataSource_Basic
+=== PAUSE TestAccDatadogIncidentTypeDataSource_Basic
+FAIL datadog/tests.TestAccDatadogIncidentTypeDataSource_Basic (-1.00s)
+=== RUN   TestAccDatadogAppBuilderAppResource_PublishUnpublish
+=== PAUSE TestAccDatadogAppBuilderAppResource_PublishUnpublish
+FAIL datadog/tests.TestAccDatadogAppBuilderAppResource_PublishUnpublish (-1.00s)
+=== RUN   TestAccDatadogDashboardJSONImport
+=== PAUSE TestAccDatadogDashboardJSONImport
+FAIL datadog/tests.TestAccDatadogDashboardJSONImport (-1.00s)
+=== RUN   TestAccDatadogDashboardRbac_createOpen
+=== PAUSE TestAccDatadogDashboardRbac_createOpen
+FAIL datadog/tests.TestAccDatadogDashboardRbac_createOpen (-1.00s)
+=== RUN   TestAccDatadogDataset_Basic
+=== PAUSE TestAccDatadogDataset_Basic
+FAIL datadog/tests.TestAccDatadogDataset_Basic (-1.00s)
+=== RUN   TestAccIntegrationFastlyAccountBasic
+=== PAUSE TestAccIntegrationFastlyAccountBasic
+FAIL datadog/tests.TestAccIntegrationFastlyAccountBasic (-1.00s)
+=== RUN   TestAccDatadogDashboardDistribution
+=== PAUSE TestAccDatadogDashboardDistribution
+FAIL datadog/tests.TestAccDatadogDashboardDistribution (-1.00s)
+=== RUN   TestAccDatadogDashboardQueryTable_import
+=== PAUSE TestAccDatadogDashboardQueryTable_import
+FAIL datadog/tests.TestAccDatadogDashboardQueryTable_import (-1.00s)
+=== RUN   TestAccDatadogDashboardTraceService
+=== PAUSE TestAccDatadogDashboardTraceService
+FAIL datadog/tests.TestAccDatadogDashboardTraceService (-1.00s)
+=== RUN   TestAccDeploymentGateForceNew
+=== PAUSE TestAccDeploymentGateForceNew
+FAIL datadog/tests.TestAccDeploymentGateForceNew (-1.00s)
+=== RUN   TestAccDatadogDowntime_BasicMultiScope
+=== PAUSE TestAccDatadogDowntime_BasicMultiScope
+FAIL datadog/tests.TestAccDatadogDowntime_BasicMultiScope (-1.00s)
+=== RUN   TestAccDatadogIncidentNotificationRule_Basic
+=== PAUSE TestAccDatadogIncidentNotificationRule_Basic
+FAIL datadog/tests.TestAccDatadogIncidentNotificationRule_Basic (-1.00s)
+=== RUN   TestAccDatadogIntegrationAzure
+=== PAUSE TestAccDatadogIntegrationAzure
+FAIL datadog/tests.TestAccDatadogIntegrationAzure (-1.00s)
+=== RUN   TestAccDatadogMetricTagsDatasource
+=== PAUSE TestAccDatadogMetricTagsDatasource
+FAIL datadog/tests.TestAccDatadogMetricTagsDatasource (-1.00s)
+=== RUN   TestAccDatadogServiceAccountDatasourceMatchID
+=== PAUSE TestAccDatadogServiceAccountDatasourceMatchID
+FAIL datadog/tests.TestAccDatadogServiceAccountDatasourceMatchID (-1.00s)
+=== RUN   TestAccDatadogTagPipelineRulesetDataSource_Basic
+=== PAUSE TestAccDatadogTagPipelineRulesetDataSource_Basic
+FAIL datadog/tests.TestAccDatadogTagPipelineRulesetDataSource_Basic (-1.00s)
+=== RUN   TestAccDatadogUserDatasourceWithExactMatch
+=== PAUSE TestAccDatadogUserDatasourceWithExactMatch
+FAIL datadog/tests.TestAccDatadogUserDatasourceWithExactMatch (-1.00s)
+=== RUN   TestAccDatadogDashboardHeatMap
+=== PAUSE TestAccDatadogDashboardHeatMap
+FAIL datadog/tests.TestAccDatadogDashboardHeatMap (-1.00s)
+=== RUN   TestAccDatadogDashboardTopListWithStyle
+=== PAUSE TestAccDatadogDashboardTopListWithStyle
+FAIL datadog/tests.TestAccDatadogDashboardTopListWithStyle (-1.00s)
+=== RUN   TestAccDatadogApiKeyDatasource_exactMatchName
+=== PAUSE TestAccDatadogApiKeyDatasource_exactMatchName
+FAIL datadog/tests.TestAccDatadogApiKeyDatasource_exactMatchName (-1.00s)
+=== RUN   TestAccDatadogCloudWorkloadSecurityAgentRulesDatasource
+=== PAUSE TestAccDatadogCloudWorkloadSecurityAgentRulesDatasource
+FAIL datadog/tests.TestAccDatadogCloudWorkloadSecurityAgentRulesDatasource (-1.00s)
+=== RUN   TestAccRumRetentionFiltersDatasource
+=== PAUSE TestAccRumRetentionFiltersDatasource
+FAIL datadog/tests.TestAccRumRetentionFiltersDatasource (-1.00s)
+=== RUN   TestAccDatadogSecurityMonitoringFilterDatasource
+=== PAUSE TestAccDatadogSecurityMonitoringFilterDatasource
+FAIL datadog/tests.TestAccDatadogSecurityMonitoringFilterDatasource (-1.00s)
+=== RUN   TestAccDatadogDashboardCheckStatus_import
+=== PAUSE TestAccDatadogDashboardCheckStatus_import
+FAIL datadog/tests.TestAccDatadogDashboardCheckStatus_import (-1.00s)
+=== RUN   TestAccDatadogDashboardEventStream_import
+=== PAUSE TestAccDatadogDashboardEventStream_import
+FAIL datadog/tests.TestAccDatadogDashboardEventStream_import (-1.00s)
+=== RUN   TestAccDatadogDashboardJSONRbacDiff
+=== PAUSE TestAccDatadogDashboardJSONRbacDiff
+FAIL datadog/tests.TestAccDatadogDashboardJSONRbacDiff (-1.00s)
+=== RUN   TestAccDatadogDashboardTreemap_import
+=== PAUSE TestAccDatadogDashboardTreemap_import
+FAIL datadog/tests.TestAccDatadogDashboardTreemap_import (-1.00s)
+=== RUN   TestAccDatadogLogsPipelinesDatasourceReadonly
+=== PAUSE TestAccDatadogLogsPipelinesDatasourceReadonly
+FAIL datadog/tests.TestAccDatadogLogsPipelinesDatasourceReadonly (-1.00s)
+=== RUN   TestAccDatadogPermissionsDatasource
+=== PAUSE TestAccDatadogPermissionsDatasource
+FAIL datadog/tests.TestAccDatadogPermissionsDatasource (-1.00s)
+=== RUN   TestAccDatadogCostBudget_Basic
+=== PAUSE TestAccDatadogCostBudget_Basic
+FAIL datadog/tests.TestAccDatadogCostBudget_Basic (-1.00s)
+=== RUN   TestAccDatadogDashboardChange
+=== PAUSE TestAccDatadogDashboardChange
+FAIL datadog/tests.TestAccDatadogDashboardChange (-1.00s)
+=== RUN   TestAccDatadogDashboardHeatMap_import
+=== PAUSE TestAccDatadogDashboardHeatMap_import
+FAIL datadog/tests.TestAccDatadogDashboardHeatMap_import (-1.00s)
+=== RUN   TestAccDatadogDashboardListStream
+=== PAUSE TestAccDatadogDashboardListStream
+FAIL datadog/tests.TestAccDatadogDashboardListStream (-1.00s)
+=== RUN   TestAccDatadogLogsCustomDestination_forwarder_types
+=== PAUSE TestAccDatadogLogsCustomDestination_forwarder_types
+FAIL datadog/tests.TestAccDatadogLogsCustomDestination_forwarder_types (-1.00s)
+=== RUN   TestAccDatadogMonitorsDatasource
+=== PAUSE TestAccDatadogMonitorsDatasource
+FAIL datadog/tests.TestAccDatadogMonitorsDatasource (-1.00s)
+=== RUN   TestAccDatadogActionConnectionResource_HTTP_TokenAuth
+=== PAUSE TestAccDatadogActionConnectionResource_HTTP_TokenAuth
+FAIL datadog/tests.TestAccDatadogActionConnectionResource_HTTP_TokenAuth (-1.00s)
+=== RUN   TestAccDatadogApmRetentionFilterOrder
+=== PAUSE TestAccDatadogApmRetentionFilterOrder
+FAIL datadog/tests.TestAccDatadogApmRetentionFilterOrder (-1.00s)
+=== RUN   TestAccDatadogDashboardManageStatus
+=== PAUSE TestAccDatadogDashboardManageStatus
+FAIL datadog/tests.TestAccDatadogDashboardManageStatus (-1.00s)
+=== RUN   TestAccDatadogDowntimeDates
+=== PAUSE TestAccDatadogDowntimeDates
+FAIL datadog/tests.TestAccDatadogDowntimeDates (-1.00s)
+=== RUN   TestAccIntegrationAwsAccount_RoleBased
+=== PAUSE TestAccIntegrationAwsAccount_RoleBased
+FAIL datadog/tests.TestAccIntegrationAwsAccount_RoleBased (-1.00s)
+=== RUN   TestAccDatadogIntegrationAWSLogCollection
+=== PAUSE TestAccDatadogIntegrationAWSLogCollection
+FAIL datadog/tests.TestAccDatadogIntegrationAWSLogCollection (-1.00s)
+=== RUN   TestAccDatadogIntegrationPagerdutyServiceObject_Basic
+=== PAUSE TestAccDatadogIntegrationPagerdutyServiceObject_Basic
+FAIL datadog/tests.TestAccDatadogIntegrationPagerdutyServiceObject_Basic (-1.00s)
+=== RUN   TestAccDatadogDashboardTimeseriesMultiCompute
+=== PAUSE TestAccDatadogDashboardTimeseriesMultiCompute
+FAIL datadog/tests.TestAccDatadogDashboardTimeseriesMultiCompute (-1.00s)
+=== RUN   TestAccDatadogTeamMembershipsDatasourceBasic
+=== PAUSE TestAccDatadogTeamMembershipsDatasourceBasic
+FAIL datadog/tests.TestAccDatadogTeamMembershipsDatasourceBasic (-1.00s)
+=== RUN   TestAccDatadogTeamsDatasourceFilterKeyword
+=== PAUSE TestAccDatadogTeamsDatasourceFilterKeyword
+FAIL datadog/tests.TestAccDatadogTeamsDatasourceFilterKeyword (-1.00s)
+=== RUN   TestAccDatadogDashboardQueryValueFormula_import
+=== PAUSE TestAccDatadogDashboardQueryValueFormula_import
+FAIL datadog/tests.TestAccDatadogDashboardQueryValueFormula_import (-1.00s)
+=== RUN   TestAccDatadogDashboardSplitGraphWith_import
+=== PAUSE TestAccDatadogDashboardSplitGraphWith_import
+FAIL datadog/tests.TestAccDatadogDashboardSplitGraphWith_import (-1.00s)
+=== RUN   TestAccDatadogCustomAllocationRuleUpdate
+=== PAUSE TestAccDatadogCustomAllocationRuleUpdate
+FAIL datadog/tests.TestAccDatadogCustomAllocationRuleUpdate (-1.00s)
+=== RUN   TestAccDatadogDashboardQueryValue
+=== PAUSE TestAccDatadogDashboardQueryValue
+FAIL datadog/tests.TestAccDatadogDashboardQueryValue (-1.00s)
+=== RUN   TestAccDatadogLogsIndexesOrderDatasource
+=== PAUSE TestAccDatadogLogsIndexesOrderDatasource
+FAIL datadog/tests.TestAccDatadogLogsIndexesOrderDatasource (-1.00s)
+=== RUN   TestAccDatadogUserDatasourceError
+=== PAUSE TestAccDatadogUserDatasourceError
+FAIL datadog/tests.TestAccDatadogUserDatasourceError (-1.00s)
+=== RUN   TestAccDatadogCloudConfigurationRule_Import
+=== PAUSE TestAccDatadogCloudConfigurationRule_Import
+FAIL datadog/tests.TestAccDatadogCloudConfigurationRule_Import (-1.00s)
+=== RUN   TestAccDatadogDashboardChangeFormula_import
+=== PAUSE TestAccDatadogDashboardChangeFormula_import
+FAIL datadog/tests.TestAccDatadogDashboardChangeFormula_import (-1.00s)
+=== RUN   TestAccDatadogDashboardQueryValueFormula
+=== PAUSE TestAccDatadogDashboardQueryValueFormula
+FAIL datadog/tests.TestAccDatadogDashboardQueryValueFormula (-1.00s)
+=== RUN   TestAccDatadogDashboardTimeseries
+=== PAUSE TestAccDatadogDashboardTimeseries
+FAIL datadog/tests.TestAccDatadogDashboardTimeseries (-1.00s)
+=== RUN   TestAccDatadogApiKeyDatasource_matchNameError
+=== PAUSE TestAccDatadogApiKeyDatasource_matchNameError
+FAIL datadog/tests.TestAccDatadogApiKeyDatasource_matchNameError (-1.00s)
+=== RUN   TestAccDatadogLogsPipelinesOrderDatasource
+=== PAUSE TestAccDatadogLogsPipelinesOrderDatasource
+FAIL datadog/tests.TestAccDatadogLogsPipelinesOrderDatasource (-1.00s)
+=== RUN   TestAccDatadogTeamDatasourceBasic
+=== PAUSE TestAccDatadogTeamDatasourceBasic
+FAIL datadog/tests.TestAccDatadogTeamDatasourceBasic (-1.00s)
+=== RUN   TestAccDatadogDashboardEventTimeline
+=== PAUSE TestAccDatadogDashboardEventTimeline
+FAIL datadog/tests.TestAccDatadogDashboardEventTimeline (-1.00s)
+=== RUN   TestAccDatadogIncidentNotificationRule_Import
+=== PAUSE TestAccDatadogIncidentNotificationRule_Import
+FAIL datadog/tests.TestAccDatadogIncidentNotificationRule_Import (-1.00s)
+=== RUN   TestAccDatadogSyntheticsGlobalVariable
+=== PAUSE TestAccDatadogSyntheticsGlobalVariable
+FAIL datadog/tests.TestAccDatadogSyntheticsGlobalVariable (-1.00s)
+=== RUN   TestAccAwsCurConfigWithAccountFilters
+=== PAUSE TestAccAwsCurConfigWithAccountFilters
+FAIL datadog/tests.TestAccAwsCurConfigWithAccountFilters (-1.00s)
+=== RUN   TestAccAzureUcConfigBasic
+=== PAUSE TestAccAzureUcConfigBasic
+FAIL datadog/tests.TestAccAzureUcConfigBasic (-1.00s)
+=== RUN   TestAccDatadogDashboardIFrame_import
+=== PAUSE TestAccDatadogDashboardIFrame_import
+FAIL datadog/tests.TestAccDatadogDashboardIFrame_import (-1.00s)
+=== RUN   TestAccDatadogApiKeyDatasource_matchId
+=== PAUSE TestAccDatadogApiKeyDatasource_matchId
+FAIL datadog/tests.TestAccDatadogApiKeyDatasource_matchId (-1.00s)
+=== RUN   TestAccDatadogSyntheticsTestWithUrl
+=== PAUSE TestAccDatadogSyntheticsTestWithUrl
+FAIL datadog/tests.TestAccDatadogSyntheticsTestWithUrl (-1.00s)
+=== RUN   TestAccDatadogDashboardLogStreamLogSet
+=== PAUSE TestAccDatadogDashboardLogStreamLogSet
+FAIL datadog/tests.TestAccDatadogDashboardLogStreamLogSet (-1.00s)
+=== RUN   TestAccDatadogIncidentNotificationRule_Updated
+=== PAUSE TestAccDatadogIncidentNotificationRule_Updated
+FAIL datadog/tests.TestAccDatadogIncidentNotificationRule_Updated (-1.00s)
+=== RUN   TestAccDatadogIntegrationOpsgenieServiceObject_Basic
+=== PAUSE TestAccDatadogIntegrationOpsgenieServiceObject_Basic
+FAIL datadog/tests.TestAccDatadogIntegrationOpsgenieServiceObject_Basic (-1.00s)
+=== RUN   TestAccDatadogLogsPipeline_import
+=== PAUSE TestAccDatadogLogsPipeline_import
+FAIL datadog/tests.TestAccDatadogLogsPipeline_import (-1.00s)
+=== RUN   TestAccMonitor_Fwprovider_FormulaFunction_Cost
+signal: interrupt
+FAIL datadog/tests.TestAccMonitor_Fwprovider_FormulaFunction_Cost (-1.00s)
+=== RUN   TestAccDatadogMetricActiveTagsAndAggregationsDatasource
+=== PAUSE TestAccDatadogMetricActiveTagsAndAggregationsDatasource
+FAIL datadog/tests.TestAccDatadogMetricActiveTagsAndAggregationsDatasource (-1.00s)
+=== RUN   TestAccIntGcpStsMetricNamespaceConfigs
+=== PAUSE TestAccIntGcpStsMetricNamespaceConfigs
+FAIL datadog/tests.TestAccIntGcpStsMetricNamespaceConfigs (-1.00s)
+=== RUN   TestAccDatadogDashboardRbac_createRbac
+=== PAUSE TestAccDatadogDashboardRbac_createRbac
+FAIL datadog/tests.TestAccDatadogDashboardRbac_createRbac (-1.00s)
+=== RUN   TestAccGcpUcConfigImport
+=== PAUSE TestAccGcpUcConfigImport
+FAIL datadog/tests.TestAccGcpUcConfigImport (-1.00s)
+=== RUN   TestAccDatadogServiceAccountDatasourcePagination
+=== PAUSE TestAccDatadogServiceAccountDatasourcePagination
+FAIL datadog/tests.TestAccDatadogServiceAccountDatasourcePagination (-1.00s)
+=== RUN   TestAccDatadogDashboardFreeText_import
+=== PAUSE TestAccDatadogDashboardFreeText_import
+FAIL datadog/tests.TestAccDatadogDashboardFreeText_import (-1.00s)
+=== RUN   TestAccDatadogDashboardPowerpack
+=== PAUSE TestAccDatadogDashboardPowerpack
+FAIL datadog/tests.TestAccDatadogDashboardPowerpack (-1.00s)
+=== RUN   TestAccDatadogDashboardStyle_import
+=== PAUSE TestAccDatadogDashboardStyle_import
+FAIL datadog/tests.TestAccDatadogDashboardStyle_import (-1.00s)
+=== RUN   TestAccIntegrationAwsAccountKeyBased
+=== PAUSE TestAccIntegrationAwsAccountKeyBased
+FAIL datadog/tests.TestAccIntegrationAwsAccountKeyBased (-1.00s)
+=== RUN   TestAccDatadogLogsMetric_Basic
+=== PAUSE TestAccDatadogLogsMetric_Basic
+FAIL datadog/tests.TestAccDatadogLogsMetric_Basic (-1.00s)
+=== RUN   TestAccDatadogServiceAccountDatasourceError
+=== PAUSE TestAccDatadogServiceAccountDatasourceError
+FAIL datadog/tests.TestAccDatadogServiceAccountDatasourceError (-1.00s)
+=== RUN   TestAccDatadogDowntime_Basic
+=== PAUSE TestAccDatadogDowntime_Basic
+FAIL datadog/tests.TestAccDatadogDowntime_Basic (-1.00s)
+=== RUN   TestDatadogDowntime_import
+=== PAUSE TestDatadogDowntime_import
+FAIL datadog/tests.TestDatadogDowntime_import (-1.00s)
+=== RUN   TestAccDatadogIncidentNotificationRuleDataSource_ByID
+=== PAUSE TestAccDatadogIncidentNotificationRuleDataSource_ByID
+FAIL datadog/tests.TestAccDatadogIncidentNotificationRuleDataSource_ByID (-1.00s)
+=== RUN   TestAccDatadogDashboardGeomap_import
+=== PAUSE TestAccDatadogDashboardGeomap_import
+FAIL datadog/tests.TestAccDatadogDashboardGeomap_import (-1.00s)
+=== RUN   TestAccDatadogDashboardServiceMap
+=== PAUSE TestAccDatadogDashboardServiceMap
+FAIL datadog/tests.TestAccDatadogDashboardServiceMap (-1.00s)
+=== RUN   TestAccDatadogDowntime_DiffStart
+=== PAUSE TestAccDatadogDowntime_DiffStart
+FAIL datadog/tests.TestAccDatadogDowntime_DiffStart (-1.00s)
+=== RUN   TestAccDatadogUsersDatasourceFilter
+=== PAUSE TestAccDatadogUsersDatasourceFilter
+FAIL datadog/tests.TestAccDatadogUsersDatasourceFilter (-1.00s)
+=== RUN   TestAccDatadogUsersDatasourceFilterStatus
+=== PAUSE TestAccDatadogUsersDatasourceFilterStatus
+FAIL datadog/tests.TestAccDatadogUsersDatasourceFilterStatus (-1.00s)
+=== RUN   TestDatadogUser_import
+=== PAUSE TestDatadogUser_import
+FAIL datadog/tests.TestDatadogUser_import (-1.00s)
+=== RUN   TestAccDatadogAppBuilderAppResource_FromFile
+=== PAUSE TestAccDatadogAppBuilderAppResource_FromFile
+FAIL datadog/tests.TestAccDatadogAppBuilderAppResource_FromFile (-1.00s)
+=== RUN   TestAccDatadogDashboardAlertValue
+=== PAUSE TestAccDatadogDashboardAlertValue
+FAIL datadog/tests.TestAccDatadogDashboardAlertValue (-1.00s)
+=== RUN   TestAccDatadogDowntime_BasicWithMonitorTags
+=== PAUSE TestAccDatadogDowntime_BasicWithMonitorTags
+FAIL datadog/tests.TestAccDatadogDowntime_BasicWithMonitorTags (-1.00s)
+=== RUN   TestAccDatadogIncidentType_Updated
+=== PAUSE TestAccDatadogIncidentType_Updated
+FAIL datadog/tests.TestAccDatadogIncidentType_Updated (-1.00s)
+=== RUN   TestAccDatadogIntegrationAWSAccessKey
+=== PAUSE TestAccDatadogIntegrationAWSAccessKey
+FAIL datadog/tests.TestAccDatadogIntegrationAWSAccessKey (-1.00s)
+=== RUN   TestAccDatadogDowntime_BasicNoRecurrence
+=== PAUSE TestAccDatadogDowntime_BasicNoRecurrence
+FAIL datadog/tests.TestAccDatadogDowntime_BasicNoRecurrence (-1.00s)
+=== RUN   TestAccIntegrationConfluentResourceBasic
+=== PAUSE TestAccIntegrationConfluentResourceBasic
+FAIL datadog/tests.TestAccIntegrationConfluentResourceBasic (-1.00s)
+=== RUN   TestAccIntegrationGcpStsBasic
+=== PAUSE TestAccIntegrationGcpStsBasic
+FAIL datadog/tests.TestAccIntegrationGcpStsBasic (-1.00s)
+=== RUN   TestAccDatadogLogsMetric_Basic_Retry
+=== PAUSE TestAccDatadogLogsMetric_Basic_Retry
+FAIL datadog/tests.TestAccDatadogLogsMetric_Basic_Retry (-1.00s)
+=== RUN   TestAccCSMThreatsAgentRulesDataSource
+=== PAUSE TestAccCSMThreatsAgentRulesDataSource
+FAIL datadog/tests.TestAccCSMThreatsAgentRulesDataSource (-1.00s)
+=== RUN   TestAccDowntimeScheduleBasicRecurring
+=== PAUSE TestAccDowntimeScheduleBasicRecurring
+FAIL datadog/tests.TestAccDowntimeScheduleBasicRecurring (-1.00s)
+=== RUN   TestAccDatadogDowntime_BasicUntilDateRecurrence
+=== PAUSE TestAccDatadogDowntime_BasicUntilDateRecurrence
+FAIL datadog/tests.TestAccDatadogDowntime_BasicUntilDateRecurrence (-1.00s)
+=== RUN   TestAccDatadogLogsArchiveGCS_basic
+=== PAUSE TestAccDatadogLogsArchiveGCS_basic
+FAIL datadog/tests.TestAccDatadogLogsArchiveGCS_basic (-1.00s)
+=== RUN   TestAccDatadogTeamMembershipsDatasourceExactMatch
+=== PAUSE TestAccDatadogTeamMembershipsDatasourceExactMatch
+FAIL datadog/tests.TestAccDatadogTeamMembershipsDatasourceExactMatch (-1.00s)
+=== RUN   TestAccDatadogDashboardIFrame
+=== PAUSE TestAccDatadogDashboardIFrame
+FAIL datadog/tests.TestAccDatadogDashboardIFrame (-1.00s)
+=== RUN   TestAccDatadogDashboardNote
+=== PAUSE TestAccDatadogDashboardNote
+FAIL datadog/tests.TestAccDatadogDashboardNote (-1.00s)
+=== RUN   TestAccDatadogMetricMetadata_Updated
+=== PAUSE TestAccDatadogMetricMetadata_Updated
+FAIL datadog/tests.TestAccDatadogMetricMetadata_Updated (-1.00s)
+=== RUN   TestAccDatadogRoleDatasourceError
+=== PAUSE TestAccDatadogRoleDatasourceError
+FAIL datadog/tests.TestAccDatadogRoleDatasourceError (-1.00s)
+=== RUN   TestAccDatadogStandardPatternDatasourceNameFilter
+=== PAUSE TestAccDatadogStandardPatternDatasourceNameFilter
+FAIL datadog/tests.TestAccDatadogStandardPatternDatasourceNameFilter (-1.00s)
+=== RUN   TestAccDatadogDashboardTopListFormula_import
+=== PAUSE TestAccDatadogDashboardTopListFormula_import
+FAIL datadog/tests.TestAccDatadogDashboardTopListFormula_import (-1.00s)
+=== RUN   TestAccDatadogLogsArchiveS3_basic
+=== PAUSE TestAccDatadogLogsArchiveS3_basic
+FAIL datadog/tests.TestAccDatadogLogsArchiveS3_basic (-1.00s)
+=== RUN   TestAccApmRetentionFilterWithTraceRate
+=== PAUSE TestAccApmRetentionFilterWithTraceRate
+FAIL datadog/tests.TestAccApmRetentionFilterWithTraceRate (-1.00s)
+=== RUN   TestAccDatadogDashboardGeomapFormula
+=== PAUSE TestAccDatadogDashboardGeomapFormula
+FAIL datadog/tests.TestAccDatadogDashboardGeomapFormula (-1.00s)
+=== RUN   TestAccDatadogDashboardListStreamEvents
+=== PAUSE TestAccDatadogDashboardListStreamEvents
+FAIL datadog/tests.TestAccDatadogDashboardListStreamEvents (-1.00s)
+=== RUN   TestAccDatadogDashboardQueryTableFormula_import
+=== PAUSE TestAccDatadogDashboardQueryTableFormula_import
+FAIL datadog/tests.TestAccDatadogDashboardQueryTableFormula_import (-1.00s)
+=== RUN   TestAccDatadogIncidentType_Import
+=== PAUSE TestAccDatadogIncidentType_Import
+FAIL datadog/tests.TestAccDatadogIncidentType_Import (-1.00s)
+=== RUN   TestAccDatadogLogsCustomDestination_basic
+=== PAUSE TestAccDatadogLogsCustomDestination_basic
+FAIL datadog/tests.TestAccDatadogLogsCustomDestination_basic (-1.00s)
+=== RUN   TestAccDatadogDashboardListRumEvents
+=== PAUSE TestAccDatadogDashboardListRumEvents
+FAIL datadog/tests.TestAccDatadogDashboardListRumEvents (-1.00s)
+=== RUN   TestAccDatadogDashboardSplitGraph
+=== PAUSE TestAccDatadogDashboardSplitGraph
+FAIL datadog/tests.TestAccDatadogDashboardSplitGraph (-1.00s)
+=== RUN   TestAccDeploymentRuleBasic
+=== PAUSE TestAccDeploymentRuleBasic
+FAIL datadog/tests.TestAccDeploymentRuleBasic (-1.00s)
+=== RUN   TestAccDowntimeScheduleBasicRecurring_Import
+=== PAUSE TestAccDowntimeScheduleBasicRecurring_Import
+FAIL datadog/tests.TestAccDowntimeScheduleBasicRecurring_Import (-1.00s)
+=== RUN   TestAccDatadogDowntime_BasicUntilOccurrencesRecurrence
+=== PAUSE TestAccDatadogDowntime_BasicUntilOccurrencesRecurrence
+FAIL datadog/tests.TestAccDatadogDowntime_BasicUntilOccurrencesRecurrence (-1.00s)
+=== RUN   TestAccDatadogIncidentNotificationTemplateDataSource_ByID
+=== PAUSE TestAccDatadogIncidentNotificationTemplateDataSource_ByID
+FAIL datadog/tests.TestAccDatadogIncidentNotificationTemplateDataSource_ByID (-1.00s)
+=== RUN   TestAccDatadogRoleUsersDatasourceExactMatch
+=== PAUSE TestAccDatadogRoleUsersDatasourceExactMatch
+FAIL datadog/tests.TestAccDatadogRoleUsersDatasourceExactMatch (-1.00s)
+=== RUN   TestAccDatadogUserDatasourceWithExactMatchError
+=== PAUSE TestAccDatadogUserDatasourceWithExactMatchError
+FAIL datadog/tests.TestAccDatadogUserDatasourceWithExactMatchError (-1.00s)
+=== RUN   TestAccDatadogDashboardRbac_adminToRbac
+=== PAUSE TestAccDatadogDashboardRbac_adminToRbac
+FAIL datadog/tests.TestAccDatadogDashboardRbac_adminToRbac (-1.00s)
+=== RUN   TestAccDatadogIncidentType_Basic
+=== PAUSE TestAccDatadogIncidentType_Basic
+FAIL datadog/tests.TestAccDatadogIncidentType_Basic (-1.00s)
+=== RUN   TestAccDatadogIntegrationAWSLambdaArn
+=== PAUSE TestAccDatadogIntegrationAWSLambdaArn
+FAIL datadog/tests.TestAccDatadogIntegrationAWSLambdaArn (-1.00s)
+=== RUN   TestAccDatadogAgentlessScanningAwsScanOptions_Basic
+=== PAUSE TestAccDatadogAgentlessScanningAwsScanOptions_Basic
+FAIL datadog/tests.TestAccDatadogAgentlessScanningAwsScanOptions_Basic (-1.00s)
+=== RUN   TestAccDatadogAgentlessScanningAwsScanOptions_InvalidAccountID
+=== PAUSE TestAccDatadogAgentlessScanningAwsScanOptions_InvalidAccountID
+FAIL datadog/tests.TestAccDatadogAgentlessScanningAwsScanOptions_InvalidAccountID (-1.00s)
+=== RUN   TestAccDatadogDashboard_import
+=== PAUSE TestAccDatadogDashboard_import
+FAIL datadog/tests.TestAccDatadogDashboard_import (-1.00s)
+=== RUN   TestAccDowntimeScheduleChanged
+=== PAUSE TestAccDowntimeScheduleChanged
+FAIL datadog/tests.TestAccDowntimeScheduleChanged (-1.00s)
+=== RUN   TestAccDatadogIntegrationAWS
+=== PAUSE TestAccDatadogIntegrationAWS
+FAIL datadog/tests.TestAccDatadogIntegrationAWS (-1.00s)
+=== RUN   TestAccDatadogIpRangesDatasource_existing
+=== PAUSE TestAccDatadogIpRangesDatasource_existing
+FAIL datadog/tests.TestAccDatadogIpRangesDatasource_existing (-1.00s)
+=== RUN   TestAccDatadogDashboardAlertGraph
+=== PAUSE TestAccDatadogDashboardAlertGraph
+FAIL datadog/tests.TestAccDatadogDashboardAlertGraph (-1.00s)
+=== RUN   TestAccDatadogDashboardTopListFormula
+=== PAUSE TestAccDatadogDashboardTopListFormula
+FAIL datadog/tests.TestAccDatadogDashboardTopListFormula (-1.00s)
+=== RUN   TestAccDatadogDashboardTopologyMap
+=== PAUSE TestAccDatadogDashboardTopologyMap
+FAIL datadog/tests.TestAccDatadogDashboardTopologyMap (-1.00s)
+=== RUN   TestAccDowntimeScheduleBasicOneTime
+=== PAUSE TestAccDowntimeScheduleBasicOneTime
+FAIL datadog/tests.TestAccDowntimeScheduleBasicOneTime (-1.00s)
+=== RUN   TestAccDatadogDowntime_Updated
+=== PAUSE TestAccDatadogDowntime_Updated
+FAIL datadog/tests.TestAccDatadogDowntime_Updated (-1.00s)
+=== RUN   TestAccDatadogLogsArchiveS3Update_basic
+=== PAUSE TestAccDatadogLogsArchiveS3Update_basic
+FAIL datadog/tests.TestAccDatadogLogsArchiveS3Update_basic (-1.00s)
+=== RUN   TestAccDatadogAppBuilderAppDataSource_Inline_WithOptionalFields
+=== PAUSE TestAccDatadogAppBuilderAppDataSource_Inline_WithOptionalFields
+FAIL datadog/tests.TestAccDatadogAppBuilderAppDataSource_Inline_WithOptionalFields (-1.00s)
+=== RUN   TestAccDatadogServiceLevelObjectivesDatasource
+=== PAUSE TestAccDatadogServiceLevelObjectivesDatasource
+FAIL datadog/tests.TestAccDatadogServiceLevelObjectivesDatasource (-1.00s)
+=== RUN   TestAccDatadogSyntheticsLocation_existing
+=== PAUSE TestAccDatadogSyntheticsLocation_existing
+FAIL datadog/tests.TestAccDatadogSyntheticsLocation_existing (-1.00s)
+=== RUN   TestDatadogDashListImport
+=== PAUSE TestDatadogDashListImport
+FAIL datadog/tests.TestDatadogDashListImport (-1.00s)
+=== RUN   TestAccDatadogDashboardQueryTableWithTextFormats
+=== PAUSE TestAccDatadogDashboardQueryTableWithTextFormats
+FAIL datadog/tests.TestAccDatadogDashboardQueryTableWithTextFormats (-1.00s)
+=== RUN   TestAccDatadogDashboardSLO_import
+=== PAUSE TestAccDatadogDashboardSLO_import
+FAIL datadog/tests.TestAccDatadogDashboardSLO_import (-1.00s)
+=== RUN   TestAccDatadogAppBuilderAppResource_FromFile_Import
+=== PAUSE TestAccDatadogAppBuilderAppResource_FromFile_Import
+FAIL datadog/tests.TestAccDatadogAppBuilderAppResource_FromFile_Import (-1.00s)
+=== RUN   TestDatadogDashListInDashboardJSON
+=== PAUSE TestDatadogDashListInDashboardJSON
+FAIL datadog/tests.TestDatadogDashListInDashboardJSON (-1.00s)
+=== RUN   TestAccDatadogDashboardTopologyMap_import
+=== PAUSE TestAccDatadogDashboardTopologyMap_import
+FAIL datadog/tests.TestAccDatadogDashboardTopologyMap_import (-1.00s)
+=== RUN   TestAccDeploymentRuleTypeForceNew
+=== PAUSE TestAccDeploymentRuleTypeForceNew
+FAIL datadog/tests.TestAccDeploymentRuleTypeForceNew (-1.00s)
+=== RUN   TestAccDatadogIntegrationAWSLambdaArnAccessKey
+=== PAUSE TestAccDatadogIntegrationAWSLambdaArnAccessKey
+FAIL datadog/tests.TestAccDatadogIntegrationAWSLambdaArnAccessKey (-1.00s)
+=== RUN   TestAccDatadogRoleUsersDatasourceBasic
+=== PAUSE TestAccDatadogRoleUsersDatasourceBasic
+FAIL datadog/tests.TestAccDatadogRoleUsersDatasourceBasic (-1.00s)
+=== RUN   TestAccDatadogDashboardFreeText
+=== PAUSE TestAccDatadogDashboardFreeText
+FAIL datadog/tests.TestAccDatadogDashboardFreeText (-1.00s)
+=== RUN   TestAccDatadogDashboardImage_import
+=== PAUSE TestAccDatadogDashboardImage_import
+FAIL datadog/tests.TestAccDatadogDashboardImage_import (-1.00s)
+=== RUN   TestAccDatadogDashboardTopList_import
+=== PAUSE TestAccDatadogDashboardTopList_import
+FAIL datadog/tests.TestAccDatadogDashboardTopList_import (-1.00s)
+=== RUN   TestAccDatadogLogsArchiveOrder_empty
+=== PAUSE TestAccDatadogLogsArchiveOrder_empty
+FAIL datadog/tests.TestAccDatadogLogsArchiveOrder_empty (-1.00s)
+=== RUN   TestAccDatadogSecurityMonitoringRuleDatasource
+=== PAUSE TestAccDatadogSecurityMonitoringRuleDatasource
+FAIL datadog/tests.TestAccDatadogSecurityMonitoringRuleDatasource (-1.00s)
+=== RUN   TestAccDatadogDashboardLogStream_import
+=== PAUSE TestAccDatadogDashboardLogStream_import
+FAIL datadog/tests.TestAccDatadogDashboardLogStream_import (-1.00s)
+=== RUN   TestAccDatadogDashboardListDatasource
+=== PAUSE TestAccDatadogDashboardListDatasource
+FAIL datadog/tests.TestAccDatadogDashboardListDatasource (-1.00s)
+=== RUN   TestAccDatadogPowerpackDatasource
+=== PAUSE TestAccDatadogPowerpackDatasource
+FAIL datadog/tests.TestAccDatadogPowerpackDatasource (-1.00s)
+=== RUN   TestAccDatadogCostBudget_WithTagFilters
+=== PAUSE TestAccDatadogCostBudget_WithTagFilters
+FAIL datadog/tests.TestAccDatadogCostBudget_WithTagFilters (-1.00s)
+=== RUN   TestAccDatadogDashboardEventTimeline_import
+=== PAUSE TestAccDatadogDashboardEventTimeline_import
+FAIL datadog/tests.TestAccDatadogDashboardEventTimeline_import (-1.00s)
+=== RUN   TestAccDatadogSyntheticsTest
+=== PAUSE TestAccDatadogSyntheticsTest
+FAIL datadog/tests.TestAccDatadogSyntheticsTest (-1.00s)
+=== RUN   TestAccDatadogDashboardCrossOrg_import
+=== PAUSE TestAccDatadogDashboardCrossOrg_import
+FAIL datadog/tests.TestAccDatadogDashboardCrossOrg_import (-1.00s)
+=== RUN   TestAccDatadogDashboardQueryTableFormula
+=== PAUSE TestAccDatadogDashboardQueryTableFormula
+FAIL datadog/tests.TestAccDatadogDashboardQueryTableFormula (-1.00s)
+=== RUN   TestAccDatadogDashboardRbac_updateToOpen
+=== PAUSE TestAccDatadogDashboardRbac_updateToOpen
+FAIL datadog/tests.TestAccDatadogDashboardRbac_updateToOpen (-1.00s)
+=== RUN   TestAccDatadogDashboardTraceService_import
+=== PAUSE TestAccDatadogDashboardTraceService_import
+FAIL datadog/tests.TestAccDatadogDashboardTraceService_import (-1.00s)
+=== RUN   TestAccDatadogLogsArchiveAzure_basic
+=== PAUSE TestAccDatadogLogsArchiveAzure_basic
+FAIL datadog/tests.TestAccDatadogLogsArchiveAzure_basic (-1.00s)
+=== RUN   TestAccDatadogDashboardTimeseriesMultiCompute_import
+=== PAUSE TestAccDatadogDashboardTimeseriesMultiCompute_import
+FAIL datadog/tests.TestAccDatadogDashboardTimeseriesMultiCompute_import (-1.00s)
+=== RUN   TestAccDatadogAuthNMapping_CreateUpdate
+=== PAUSE TestAccDatadogAuthNMapping_CreateUpdate
+FAIL datadog/tests.TestAccDatadogAuthNMapping_CreateUpdate (-1.00s)
+=== RUN   TestAccDatadogSDSGroupOrderDatasource
+=== PAUSE TestAccDatadogSDSGroupOrderDatasource
+FAIL datadog/tests.TestAccDatadogSDSGroupOrderDatasource (-1.00s)
+=== RUN   TestAccDatadogUserDatasourceExactMatch
+=== PAUSE TestAccDatadogUserDatasourceExactMatch
+FAIL datadog/tests.TestAccDatadogUserDatasourceExactMatch (-1.00s)
+=== RUN   TestAccDatadogDashboardImage
+=== PAUSE TestAccDatadogDashboardImage
+FAIL datadog/tests.TestAccDatadogDashboardImage (-1.00s)
+=== RUN   TestAccDatadogDashboardListStreamStorage
+=== PAUSE TestAccDatadogDashboardListStreamStorage
+FAIL datadog/tests.TestAccDatadogDashboardListStreamStorage (-1.00s)
+=== RUN   TestAccDatadogDashboardServiceMap_import
+=== PAUSE TestAccDatadogDashboardServiceMap_import
+FAIL datadog/tests.TestAccDatadogDashboardServiceMap_import (-1.00s)
+=== RUN   TestAccIntegrationGcpStsDefault
+=== PAUSE TestAccIntegrationGcpStsDefault
+FAIL datadog/tests.TestAccIntegrationGcpStsDefault (-1.00s)
+=== RUN   TestAccDatadogDashboardScatterplotFormula
+=== PAUSE TestAccDatadogDashboardScatterplotFormula
+FAIL datadog/tests.TestAccDatadogDashboardScatterplotFormula (-1.00s)
+=== RUN   TestAccDatadogDowntime_TrimWhitespace
+=== PAUSE TestAccDatadogDowntime_TrimWhitespace
+FAIL datadog/tests.TestAccDatadogDowntime_TrimWhitespace (-1.00s)
+=== RUN   TestAccIntegrationAwsEventBridgeBasic
+=== PAUSE TestAccIntegrationAwsEventBridgeBasic
+FAIL datadog/tests.TestAccIntegrationAwsEventBridgeBasic (-1.00s)
+=== RUN   TestAccMSTeamsWorkflowsWebhookHandlesBasic
+=== PAUSE TestAccMSTeamsWorkflowsWebhookHandlesBasic
+FAIL datadog/tests.TestAccMSTeamsWorkflowsWebhookHandlesBasic (-1.00s)
+=== RUN   TestAccDatadogActionConnectionDatasource_AWS_AssumeRole
+=== PAUSE TestAccDatadogActionConnectionDatasource_AWS_AssumeRole
+FAIL datadog/tests.TestAccDatadogActionConnectionDatasource_AWS_AssumeRole (-1.00s)
+=== RUN   TestAccDatadogServiceAccountDatasourceMatchFilter
+=== PAUSE TestAccDatadogServiceAccountDatasourceMatchFilter
+FAIL datadog/tests.TestAccDatadogServiceAccountDatasourceMatchFilter (-1.00s)
+=== RUN   TestAccDatadogActionConnectionResource_AWS_AssumeRole
+=== PAUSE TestAccDatadogActionConnectionResource_AWS_AssumeRole
+FAIL datadog/tests.TestAccDatadogActionConnectionResource_AWS_AssumeRole (-1.00s)
+=== RUN   TestAccDatadogDashboardJSONNotifyListDiff
+=== PAUSE TestAccDatadogDashboardJSONNotifyListDiff
+FAIL datadog/tests.TestAccDatadogDashboardJSONNotifyListDiff (-1.00s)
+=== RUN   TestAccDatadogDashboardRunWorkflow_import
+=== PAUSE TestAccDatadogDashboardRunWorkflow_import
+FAIL datadog/tests.TestAccDatadogDashboardRunWorkflow_import (-1.00s)
+=== RUN   TestAccIntegrationAwsAccount_OptionalLogSourceConfig
+=== PAUSE TestAccIntegrationAwsAccount_OptionalLogSourceConfig
+FAIL datadog/tests.TestAccIntegrationAwsAccount_OptionalLogSourceConfig (-1.00s)
+=== RUN   TestAccDatadogDashboardNotifyListDiff
+=== PAUSE TestAccDatadogDashboardNotifyListDiff
+FAIL datadog/tests.TestAccDatadogDashboardNotifyListDiff (-1.00s)
+=== RUN   TestAccDatadogApiKeyDatasource_missingParametersError
+=== PAUSE TestAccDatadogApiKeyDatasource_missingParametersError
+FAIL datadog/tests.TestAccDatadogApiKeyDatasource_missingParametersError (-1.00s)
+=== RUN   TestAccDatadogTagPipelineRulesetDataSource_ReferenceTableRule
+=== PAUSE TestAccDatadogTagPipelineRulesetDataSource_ReferenceTableRule
+FAIL datadog/tests.TestAccDatadogTagPipelineRulesetDataSource_ReferenceTableRule (-1.00s)
+=== RUN   TestAccDatadogDashboardQueryTableWithTextFormats_import
+=== PAUSE TestAccDatadogDashboardQueryTableWithTextFormats_import
+FAIL datadog/tests.TestAccDatadogDashboardQueryTableWithTextFormats_import (-1.00s)
+=== RUN   TestAccDatadogDashboardRbac_updateToAdmin
+=== PAUSE TestAccDatadogDashboardRbac_updateToAdmin
+FAIL datadog/tests.TestAccDatadogDashboardRbac_updateToAdmin (-1.00s)
+=== RUN   TestAccDatadogDashboardMultiSizeLayout_createFixed
+=== PAUSE TestAccDatadogDashboardMultiSizeLayout_createFixed
+FAIL datadog/tests.TestAccDatadogDashboardMultiSizeLayout_createFixed (-1.00s)
+=== RUN   TestAccDatadogDowntime_WeekDayRecurring
+=== PAUSE TestAccDatadogDowntime_WeekDayRecurring
+FAIL datadog/tests.TestAccDatadogDowntime_WeekDayRecurring (-1.00s)
+=== RUN   TestAccDatadogDashboardSunburst_import
+=== PAUSE TestAccDatadogDashboardSunburst_import
+FAIL datadog/tests.TestAccDatadogDashboardSunburst_import (-1.00s)
+=== RUN   TestAccDatadogAuthNMapping_import
+=== PAUSE TestAccDatadogAuthNMapping_import
+FAIL datadog/tests.TestAccDatadogAuthNMapping_import (-1.00s)
+=== RUN   TestAccDatadogDashboardHeatMapFormulaAndFunction
+=== PAUSE TestAccDatadogDashboardHeatMapFormulaAndFunction
+FAIL datadog/tests.TestAccDatadogDashboardHeatMapFormulaAndFunction (-1.00s)
+=== RUN   TestAccDatadogDashboardLogStreamLogSet_import
+=== PAUSE TestAccDatadogDashboardLogStreamLogSet_import
+FAIL datadog/tests.TestAccDatadogDashboardLogStreamLogSet_import (-1.00s)
+=== RUN   TestAccDatadogDashboardQueryTable
+=== PAUSE TestAccDatadogDashboardQueryTable
+FAIL datadog/tests.TestAccDatadogDashboardQueryTable (-1.00s)
+=== RUN   TestAccGcpUcConfigBasic
+=== PAUSE TestAccGcpUcConfigBasic
+FAIL datadog/tests.TestAccGcpUcConfigBasic (-1.00s)
+=== RUN   TestAccDatadogLogsMetric_import
+=== PAUSE TestAccDatadogLogsMetric_import
+FAIL datadog/tests.TestAccDatadogLogsMetric_import (-1.00s)
+=== RUN   TestAccDatadogDashboardRbac_updateToRbac
+=== PAUSE TestAccDatadogDashboardRbac_updateToRbac
+FAIL datadog/tests.TestAccDatadogDashboardRbac_updateToRbac (-1.00s)
+=== RUN   TestAccDatadogCostBudgetDataSource_Basic
+=== PAUSE TestAccDatadogCostBudgetDataSource_Basic
+FAIL datadog/tests.TestAccDatadogCostBudgetDataSource_Basic (-1.00s)
+=== RUN   TestAccDatadogAgentlessScanningAwsScanOptions_Update
+=== PAUSE TestAccDatadogAgentlessScanningAwsScanOptions_Update
+FAIL datadog/tests.TestAccDatadogAgentlessScanningAwsScanOptions_Update (-1.00s)
+=== RUN   TestAccDatadogCustomAllocationRuleMultipleFilters
+=== PAUSE TestAccDatadogCustomAllocationRuleMultipleFilters
+FAIL datadog/tests.TestAccDatadogCustomAllocationRuleMultipleFilters (-1.00s)
+=== RUN   TestAccDatadogApiKeyDatasource_matchIdError
+=== PAUSE TestAccDatadogApiKeyDatasource_matchIdError
+FAIL datadog/tests.TestAccDatadogApiKeyDatasource_matchIdError (-1.00s)
+=== RUN   TestAccDatadogMetricMetadataDatasource
+=== PAUSE TestAccDatadogMetricMetadataDatasource
+FAIL datadog/tests.TestAccDatadogMetricMetadataDatasource (-1.00s)
+=== RUN   TestAccDatadogAgentlessScanningAwsScanOptions_Import
+=== PAUSE TestAccDatadogAgentlessScanningAwsScanOptions_Import
+FAIL datadog/tests.TestAccDatadogAgentlessScanningAwsScanOptions_Import (-1.00s)
+=== RUN   TestAccDatadogDashboardSloList_import
+=== PAUSE TestAccDatadogDashboardSloList_import
+FAIL datadog/tests.TestAccDatadogDashboardSloList_import (-1.00s)
+=== RUN   TestAccDatadogDashboardSplitGraphWithStaticSplits
+=== PAUSE TestAccDatadogDashboardSplitGraphWithStaticSplits
+FAIL datadog/tests.TestAccDatadogDashboardSplitGraphWithStaticSplits (-1.00s)
+=== RUN   TestAccDatadogDashboardRbac_createAdmin
+=== PAUSE TestAccDatadogDashboardRbac_createAdmin
+FAIL datadog/tests.TestAccDatadogDashboardRbac_createAdmin (-1.00s)
+=== RUN   TestAccDatadogDataset_Update
+=== PAUSE TestAccDatadogDataset_Update
+FAIL datadog/tests.TestAccDatadogDataset_Update (-1.00s)
+=== RUN   TestAccDatadogApiKeyDatasource_matchName
+=== PAUSE TestAccDatadogApiKeyDatasource_matchName
+FAIL datadog/tests.TestAccDatadogApiKeyDatasource_matchName (-1.00s)
+=== RUN   TestAccDatadogLogsIndexesDatasource
+=== PAUSE TestAccDatadogLogsIndexesDatasource
+FAIL datadog/tests.TestAccDatadogLogsIndexesDatasource (-1.00s)
+=== RUN   TestDatadogIntegrationPagerduty_import
+=== PAUSE TestDatadogIntegrationPagerduty_import
+FAIL datadog/tests.TestDatadogIntegrationPagerduty_import (-1.00s)
+=== RUN   TestAccDatadogDashboardLogStream
+=== PAUSE TestAccDatadogDashboardLogStream
+FAIL datadog/tests.TestAccDatadogDashboardLogStream (-1.00s)
+=== RUN   TestAccDatadogDashboardFormula_import
+=== PAUSE TestAccDatadogDashboardFormula_import
+FAIL datadog/tests.TestAccDatadogDashboardFormula_import (-1.00s)
+=== RUN   TestAccDatadogLogsIndex_Basic
+=== PAUSE TestAccDatadogLogsIndex_Basic
+FAIL datadog/tests.TestAccDatadogLogsIndex_Basic (-1.00s)
+=== RUN   TestDatadogMonitor_importNoDataTimeFrame
+=== PAUSE TestDatadogMonitor_importNoDataTimeFrame
+FAIL datadog/tests.TestDatadogMonitor_importNoDataTimeFrame (-1.00s)
+=== RUN   TestAccDatadogDashboardCheckStatus
+=== PAUSE TestAccDatadogDashboardCheckStatus
+FAIL datadog/tests.TestAccDatadogDashboardCheckStatus (-1.00s)
+=== RUN   TestAccDatadogDashboardCrossOrg
+=== PAUSE TestAccDatadogDashboardCrossOrg
+FAIL datadog/tests.TestAccDatadogDashboardCrossOrg (-1.00s)
+=== RUN   TestAccDatadogDashboardGeomapFormula_import
+=== PAUSE TestAccDatadogDashboardGeomapFormula_import
+FAIL datadog/tests.TestAccDatadogDashboardGeomapFormula_import (-1.00s)
+=== RUN   TestAccDatadogDashboardNote_import
+=== PAUSE TestAccDatadogDashboardNote_import
+FAIL datadog/tests.TestAccDatadogDashboardNote_import (-1.00s)
+=== RUN   TestAccDatadogDashboardFormula
+=== PAUSE TestAccDatadogDashboardFormula
+FAIL datadog/tests.TestAccDatadogDashboardFormula (-1.00s)
+=== RUN   TestAccDatadogIncidentNotificationTemplate_Basic
+=== PAUSE TestAccDatadogIncidentNotificationTemplate_Basic
+FAIL datadog/tests.TestAccDatadogIncidentNotificationTemplate_Basic (-1.00s)
+=== RUN   TestAccDatadogMetricTagConfiguration_Error
+=== PAUSE TestAccDatadogMetricTagConfiguration_Error
+FAIL datadog/tests.TestAccDatadogMetricTagConfiguration_Error (-1.00s)
+=== RUN   TestAccDatadogDashboardAlertValue_import
+=== PAUSE TestAccDatadogDashboardAlertValue_import
+FAIL datadog/tests.TestAccDatadogDashboardAlertValue_import (-1.00s)
+=== RUN   TestAccDatadogDashboardApmStatsQueryDistribution
+=== PAUSE TestAccDatadogDashboardApmStatsQueryDistribution
+FAIL datadog/tests.TestAccDatadogDashboardApmStatsQueryDistribution (-1.00s)
+=== RUN   TestAccDatadogDashboardTreemap
+=== PAUSE TestAccDatadogDashboardTreemap
+FAIL datadog/tests.TestAccDatadogDashboardTreemap (-1.00s)
+=== RUN   TestAccDatadogDowntime_BasicWithMonitor
+=== PAUSE TestAccDatadogDowntime_BasicWithMonitor
+FAIL datadog/tests.TestAccDatadogDowntime_BasicWithMonitor (-1.00s)
+=== RUN   TestAccDatadogLogsArchiveOrder_basic
+=== PAUSE TestAccDatadogLogsArchiveOrder_basic
+FAIL datadog/tests.TestAccDatadogLogsArchiveOrder_basic (-1.00s)
+=== RUN   TestAccDatadogStandardPatternDatasourceErrorMultiple
+=== PAUSE TestAccDatadogStandardPatternDatasourceErrorMultiple
+FAIL datadog/tests.TestAccDatadogStandardPatternDatasourceErrorMultiple (-1.00s)
+=== RUN   TestAccAppsecWafExclusionFilterBasic
+=== PAUSE TestAccAppsecWafExclusionFilterBasic
+FAIL datadog/tests.TestAccAppsecWafExclusionFilterBasic (-1.00s)
+=== RUN   TestAccAwsCurConfigImport
+=== PAUSE TestAccAwsCurConfigImport
+FAIL datadog/tests.TestAccAwsCurConfigImport (-1.00s)
+=== RUN   TestAccAzureUcConfigImport
+=== PAUSE TestAccAzureUcConfigImport
+FAIL datadog/tests.TestAccAzureUcConfigImport (-1.00s)
+=== RUN   TestAccDatadogCloudConfigurationRule_Basic
+=== PAUSE TestAccDatadogCloudConfigurationRule_Basic
+FAIL datadog/tests.TestAccDatadogCloudConfigurationRule_Basic (-1.00s)
+=== RUN   TestAccDatadogDashboardScatterplot_import
+=== PAUSE TestAccDatadogDashboardScatterplot_import
+FAIL datadog/tests.TestAccDatadogDashboardScatterplot_import (-1.00s)
+=== RUN   TestAccDatadogDashboardStyle
+=== PAUSE TestAccDatadogDashboardStyle
+FAIL datadog/tests.TestAccDatadogDashboardStyle (-1.00s)
+=== RUN   TestAccIntegrationCloudflareAccountBasic
+=== PAUSE TestAccIntegrationCloudflareAccountBasic
+FAIL datadog/tests.TestAccIntegrationCloudflareAccountBasic (-1.00s)
+=== RUN   TestAccDatadogCloudConfigurationRule_MandatoryFieldsOnly
+=== PAUSE TestAccDatadogCloudConfigurationRule_MandatoryFieldsOnly
+FAIL datadog/tests.TestAccDatadogCloudConfigurationRule_MandatoryFieldsOnly (-1.00s)
+=== RUN   TestAccDatadogDashboardJSONBasicScreenboard
+=== PAUSE TestAccDatadogDashboardJSONBasicScreenboard
+FAIL datadog/tests.TestAccDatadogDashboardJSONBasicScreenboard (-1.00s)
+=== RUN   TestAccDatadogHostsDatasource
+=== PAUSE TestAccDatadogHostsDatasource
+FAIL datadog/tests.TestAccDatadogHostsDatasource (-1.00s)
+=== RUN   TestAccDatadogRUMApplicationDatasourceIDFilter
+=== PAUSE TestAccDatadogRUMApplicationDatasourceIDFilter
+FAIL datadog/tests.TestAccDatadogRUMApplicationDatasourceIDFilter (-1.00s)
+=== RUN   TestDatadogMonitor_import
+=== PAUSE TestDatadogMonitor_import
+FAIL datadog/tests.TestDatadogMonitor_import (-1.00s)
+=== RUN   TestAccDatadogCustomAllocationRuleImport
+=== PAUSE TestAccDatadogCustomAllocationRuleImport
+FAIL datadog/tests.TestAccDatadogCustomAllocationRuleImport (-1.00s)
+=== RUN   TestAccDatadogDashboardChange_import
+=== PAUSE TestAccDatadogDashboardChange_import
+FAIL datadog/tests.TestAccDatadogDashboardChange_import (-1.00s)
+=== RUN   TestAccDatadogDashboard_update
+=== PAUSE TestAccDatadogDashboard_update
+FAIL datadog/tests.TestAccDatadogDashboard_update (-1.00s)
+=== RUN   TestAccDatadogAppBuilderAppResource_Escaped_Interpolated_Import
+=== PAUSE TestAccDatadogAppBuilderAppResource_Escaped_Interpolated_Import
+FAIL datadog/tests.TestAccDatadogAppBuilderAppResource_Escaped_Interpolated_Import (-1.00s)
+=== RUN   TestAccDatadogDashboardTemplateVariables
+=== PAUSE TestAccDatadogDashboardTemplateVariables
+FAIL datadog/tests.TestAccDatadogDashboardTemplateVariables (-1.00s)
+=== RUN   TestAccDatadogDashboardTopList
+=== PAUSE TestAccDatadogDashboardTopList
+FAIL datadog/tests.TestAccDatadogDashboardTopList (-1.00s)
+=== RUN   TestAccMSTeamsTenantBasedHandlesBasic
+=== PAUSE TestAccMSTeamsTenantBasedHandlesBasic
+FAIL datadog/tests.TestAccMSTeamsTenantBasedHandlesBasic (-1.00s)
+=== RUN   TestAccDatadogMetricMetadata_Basic
+=== PAUSE TestAccDatadogMetricMetadata_Basic
+FAIL datadog/tests.TestAccDatadogMetricMetadata_Basic (-1.00s)
+=== RUN   TestAccDatadogLogsArchivesOrderDatasource
+=== PAUSE TestAccDatadogLogsArchivesOrderDatasource
+FAIL datadog/tests.TestAccDatadogLogsArchivesOrderDatasource (-1.00s)
+=== RUN   TestAccDatadogAppBuilderAppResource_Escaped_Interpolated
+=== PAUSE TestAccDatadogAppBuilderAppResource_Escaped_Interpolated
+FAIL datadog/tests.TestAccDatadogAppBuilderAppResource_Escaped_Interpolated (-1.00s)
+=== RUN   TestAccDatadogDashboardAlertGraph_import
+=== PAUSE TestAccDatadogDashboardAlertGraph_import
+FAIL datadog/tests.TestAccDatadogDashboardAlertGraph_import (-1.00s)
+=== RUN   TestAccDatadogDashboardGeomap
+=== PAUSE TestAccDatadogDashboardGeomap
+FAIL datadog/tests.TestAccDatadogDashboardGeomap (-1.00s)
+=== RUN   TestAccDatadogIncidentNotificationTemplateDataSource_ByName
+=== PAUSE TestAccDatadogIncidentNotificationTemplateDataSource_ByName
+FAIL datadog/tests.TestAccDatadogIncidentNotificationTemplateDataSource_ByName (-1.00s)
+=== RUN   TestAccDatadogRUMApplicationDatasourceErrorMultiple
+=== PAUSE TestAccDatadogRUMApplicationDatasourceErrorMultiple
+FAIL datadog/tests.TestAccDatadogRUMApplicationDatasourceErrorMultiple (-1.00s)
+=== RUN   TestAccLogsCustomPipeline_importBasic
+=== PAUSE TestAccLogsCustomPipeline_importBasic
+FAIL datadog/tests.TestAccLogsCustomPipeline_importBasic (-1.00s)
+=== RUN   TestAccDatadogIntegrationSlackChannel_Basic
+=== PAUSE TestAccDatadogIntegrationSlackChannel_Basic
+FAIL datadog/tests.TestAccDatadogIntegrationSlackChannel_Basic (-1.00s)
+=== RUN   TestAccDatadogAppBuilderAppResource_Inline_WithOptionalFields
+=== PAUSE TestAccDatadogAppBuilderAppResource_Inline_WithOptionalFields
+FAIL datadog/tests.TestAccDatadogAppBuilderAppResource_Inline_WithOptionalFields (-1.00s)
+=== RUN   TestAccAwsCurConfigBasic
+=== PAUSE TestAccAwsCurConfigBasic
+FAIL datadog/tests.TestAccAwsCurConfigBasic (-1.00s)
+=== RUN   TestAccDatadogIntegrationGCP
+=== PAUSE TestAccDatadogIntegrationGCP
+FAIL datadog/tests.TestAccDatadogIntegrationGCP (-1.00s)
+=== RUN   TestAccDatadogLogsMetricCount_Basic
+=== PAUSE TestAccDatadogLogsMetricCount_Basic
+FAIL datadog/tests.TestAccDatadogLogsMetricCount_Basic (-1.00s)
+=== RUN   TestAccDatadogServiceLevelObjectiveDatasource
+=== PAUSE TestAccDatadogServiceLevelObjectiveDatasource
+FAIL datadog/tests.TestAccDatadogServiceLevelObjectiveDatasource (-1.00s)
+=== RUN   TestAccDatadogDashboardLayoutForceNew
+=== PAUSE TestAccDatadogDashboardLayoutForceNew
+FAIL datadog/tests.TestAccDatadogDashboardLayoutForceNew (-1.00s)
+=== RUN   TestAccDatadogDashboardTimeseries_import
+=== PAUSE TestAccDatadogDashboardTimeseries_import
+FAIL datadog/tests.TestAccDatadogDashboardTimeseries_import (-1.00s)
+
+=== Skipped
+=== SKIP: datadog/tests TestAccDatadogApplicationKeyDatasource_matchIdError (0.00s)
+    data_source_datadog_application_key_test.go:105: This test doesn't support recording or replaying
+
+=== SKIP: datadog/tests TestAccDatadogApplicationKeyDatasource_matchNameError (0.00s)
+    data_source_datadog_application_key_test.go:125: This test doesn't support recording or replaying
+
+=== SKIP: datadog/tests TestAccDatadogApplicationKeyDatasource_missingParametersError (0.00s)
+    data_source_datadog_application_key_test.go:146: This test doesn't support recording or replaying
+
+=== SKIP: datadog/tests TestAccDatadogApiKey_Update (0.00s)
+    resource_datadog_api_key_test.go:17: This test doesn't support recording or replaying
+
+=== SKIP: datadog/tests TestDatadogApiKey_import (0.00s)
+    resource_datadog_api_key_test.go:95: This test doesn't support recording or replaying
+
+=== SKIP: datadog/tests TestAccDatadogApplicationKey_Update (0.00s)
+    resource_datadog_application_key_test.go:20: This test doesn't support recording or replaying
+
+=== SKIP: datadog/tests TestAccDatadogApplicationKey_Error (0.00s)
+    resource_datadog_application_key_test.go:68: This test doesn't support recording or replaying
+
+=== SKIP: datadog/tests TestAccDatadogChildOrganization_Create (0.00s)
+    resource_datadog_child_organization_test.go:14: This test only supports replaying
+
+=== SKIP: datadog/tests TestAccDatadogChildOrganization_IncorrectName (0.00s)
+    resource_datadog_child_organization_test.go:52: This test only supports replaying
+
+=== SKIP: datadog/tests TestAccDatadogDomainAllowlist_CreateUpdate (0.00s)
+    resource_datadog_domain_allowlist_test.go:18: This test only runs in replay mode
+
+=== Failed
+=== FAIL: datadog/tests TestAccDatadogIntegrationAWSExternalIDDatasource (0.58s)
+    data_source_datadog_integration_aws_external_id_test.go:19: Step 1/1 error: Error running pre-apply plan: exit status 1
+        
+        Error: AWS Integration not found
+        
+          with data.datadog_integration_aws_external_id.foo,
+          on terraform_plugin_test.tf line 13, in data "datadog_integration_aws_external_id" "foo":
+          13: data "datadog_integration_aws_external_id" "foo" {
+        
+        No AWS integration found for account ID: 123456789012
+
+=== FAIL: datadog/tests TestAccDatadogLogsPipelinesDatasource (14.44s)
+    data_source_datadog_logs_pipelines_test.go:22: Step 1/1 error: Check failed: Check 1/1 error: expected 1133 pipelines got 1137 pipelines
+
+=== FAIL: datadog/tests TestAccDatadogRolesDatasource (1.02s)
+    data_source_datadog_roles_test.go:15: Step 1/1 error: Check failed: Check 3/3 error: data.datadog_roles.foo: Attribute 'roles.0.name' expected "Datadog Admin Role", got "Andreas - Datadog Admin Role"
+
+=== FAIL: datadog/tests TestAccDatadogWorkflowAutomationDatasource (1.24s)
+    data_source_datadog_workflow_automation_test.go:27: Step 1/1 error: Error running apply: exit status 1
+        
+        Error: Error creating workflow
+        
+          with datadog_workflow_automation.my_workflow,
+          on terraform_plugin_test.tf line 13, in resource "datadog_workflow_automation" "my_workflow":
+          13: 	resource "datadog_workflow_automation" "my_workflow" {
+        
+        {"errors":[{"detail":"actions API access is not enabled on this application
+        key"}]}
+
+=== FAIL: datadog/tests TestAccDatadogAppKeyRegistrationResource (0.85s)
+    resource_datadog_app_key_registration_test.go:21: Step 1/1 error: Error running apply: exit status 1
+        
+        Error: Error registering app key
+        
+          with datadog_app_key_registration.my_registration,
+          on terraform_plugin_test.tf line 12, in resource "datadog_app_key_registration" "my_registration":
+          12: 	resource "datadog_app_key_registration" "my_registration" {
+        
+        {"errors":[{"detail":"actions API access is not enabled on this application
+        key"}]}
+
+=== FAIL: datadog/tests TestCustomFramework_DuplicateHandle (3.92s)
+    resource_datadog_compliance_custom_framework_test.go:504: Step 2/2, expected an error but got none
+
+=== FAIL: datadog/tests TestAccCSMThreatsAgentRule_CreateAndUpdate (7.34s)
+    resource_datadog_csm_threats_agent_rule_test.go:33: Step 2/4 error: Error running apply: exit status 1
+        
+        Error: error creating agent rule
+        
+          with datadog_csm_threats_agent_rule.agent_rule_test,
+          on terraform_plugin_test.tf line 20, in resource "datadog_csm_threats_agent_rule" "agent_rule_test":
+          20: 				resource "datadog_csm_threats_agent_rule" "agent_rule_test" {
+        
+        500 Internal Server Error: {"errors":[{"title":"failed to create rule"}]}
+        
+
+=== FAIL: datadog/tests TestAccDatadogCustomAllocationRuleOrder_Basic (2.36s)
+    resource_datadog_custom_allocation_rules_test.go:19: Step 1/1 error: Error running apply: exit status 1
+        
+        Error: Unmanaged rules detected
+        
+          with datadog_custom_allocation_rules.foo,
+          on terraform_plugin_test.tf line 75, in resource "datadog_custom_allocation_rules" "foo":
+          75: resource "datadog_custom_allocation_rules" "foo" {
+        
+        Found 4 custom allocation rules in Datadog that are not managed by this
+        Terraform configuration: [933 931 932 964]. All custom allocation rules must
+        be managed by Terraform. Please either:
+        1. Import existing rules using 'terraform import
+        datadog_custom_allocation_rule.<name> <rule_id>'
+        2. Add the missing rules to your Terraform configuration
+        3. Delete unmanaged rules from Datadog if they're no longer needed
+        
+        This ensures complete infrastructure control and prevents configuration
+        drift.
+
+=== FAIL: datadog/tests TestAccDatadogCustomAllocationRuleOrder_Update (3.42s)
+    resource_datadog_custom_allocation_rules_test.go:53: Step 1/2 error: Error running apply: exit status 1
+        
+        Error: Unmanaged rules detected
+        
+          with datadog_custom_allocation_rules.foo,
+          on terraform_plugin_test.tf line 75, in resource "datadog_custom_allocation_rules" "foo":
+          75: resource "datadog_custom_allocation_rules" "foo" {
+        
+        Found 4 custom allocation rules in Datadog that are not managed by this
+        Terraform configuration: [932 964 933 931]. All custom allocation rules must
+        be managed by Terraform. Please either:
+        1. Import existing rules using 'terraform import
+        datadog_custom_allocation_rule.<name> <rule_id>'
+        2. Add the missing rules to your Terraform configuration
+        3. Delete unmanaged rules from Datadog if they're no longer needed
+        
+        This ensures complete infrastructure control and prevents configuration
+        drift.
+
+=== FAIL: datadog/tests TestAccDatadogCustomAllocationRuleOrder_Import (3.30s)
+    resource_datadog_custom_allocation_rules_test.go:105: Step 1/2 error: Error running apply: exit status 1
+        
+        Error: Unmanaged rules detected
+        
+          with datadog_custom_allocation_rules.foo,
+          on terraform_plugin_test.tf line 75, in resource "datadog_custom_allocation_rules" "foo":
+          75: resource "datadog_custom_allocation_rules" "foo" {
+        
+        Found 4 custom allocation rules in Datadog that are not managed by this
+        Terraform configuration: [933 931 932 964]. All custom allocation rules must
+        be managed by Terraform. Please either:
+        1. Import existing rules using 'terraform import
+        datadog_custom_allocation_rule.<name> <rule_id>'
+        2. Add the missing rules to your Terraform configuration
+        3. Delete unmanaged rules from Datadog if they're no longer needed
+        
+        This ensures complete infrastructure control and prevents configuration
+        drift.
+
+=== FAIL: datadog/tests TestAccDatadogCustomAllocationRuleOrder_SingleRule (4.61s)
+    resource_datadog_custom_allocation_rules_test.go:142: Step 1/1 error: Error running apply: exit status 1
+        
+        Error: Unmanaged rules detected
+        
+          with datadog_custom_allocation_rules.foo,
+          on terraform_plugin_test.tf line 33, in resource "datadog_custom_allocation_rules" "foo":
+          33: resource "datadog_custom_allocation_rules" "foo" {
+        
+        Found 4 custom allocation rules in Datadog that are not managed by this
+        Terraform configuration: [933 931 932 964]. All custom allocation rules must
+        be managed by Terraform. Please either:
+        1. Import existing rules using 'terraform import
+        datadog_custom_allocation_rule.<name> <rule_id>'
+        2. Add the missing rules to your Terraform configuration
+        3. Delete unmanaged rules from Datadog if they're no longer needed
+        
+        This ensures complete infrastructure control and prevents configuration
+        drift.
+
+=== FAIL: datadog/tests TestAccDatadogIntegrationSlackChannel_Import (0.64s)
+    resource_datadog_integration_slack_channel_test.go:79: Step 1/3 error: Error running pre-apply plan: exit status 1
+        
+        Error: error getting IPRanges
+        
+          with data.datadog_ip_ranges.test,
+          on terraform_plugin_test.tf line 12, in data "datadog_ip_ranges" "test":
+          12: 		data "datadog_ip_ranges" "test" {
+        
+        401 Unauthorized: {"errors":["Unauthorized"]}
+
+=== FAIL: datadog/tests TestAccDatadogIPAllowlist_CreateUpdate (1.09s)
+    resource_datadog_ip_allowlist_test.go:19: Step 1/2 error: Error running apply: exit status 1
+        
+        Error: error updating IP allowlist
+        
+          with datadog_ip_allowlist.foo,
+          on terraform_plugin_test.tf line 12, in resource "datadog_ip_allowlist" "foo":
+          12: resource "datadog_ip_allowlist" "foo" {
+        
+        an error occurred from /api/v2/ip_allowlist: 404 Not Found:
+        {"errors":[{"status":"404","title":"Not Found","detail":"IP Allowlist is not
+        enabled for this org."}]}
+
+=== FAIL: datadog/tests TestAccDatadogDataset_InvalidInput (unknown)
+
+=== FAIL: datadog/tests TestAccIntegrationAwsAccount_InvalidEmptyTagFilters (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardManageStatus_import (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardScatterplotFormula_import (unknown)
+
+=== FAIL: datadog/tests TestAccDeploymentGateBasic (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogIntegrationAWSLogCollectionAccessKey (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogIntegrationAzure_import (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardSunburst (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogFreeDashboard (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogMonitorConfigPolicy_Basic (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogMonitorDatasource (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogCustomAllocationRuleBasic (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardChangeFormula (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardJSONBasicTimeboard (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardDistribution_import (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardHostMap_import (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardScatterplot (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogIncidentNotificationTemplate_Updated (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogIntegrationAwsTagFilter_BasicAccessKey (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardDatasource (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogAppBuilderAppResource_Inline_WithOptionalFields_Import (unknown)
+
+=== FAIL: datadog/tests TestAccAppsecWafCustomRuleBasic (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardMultiSizeLayout_createAuto (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogIntegrationAwsTagFilter_Basic (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogLogsPipelineDefaultTags (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogTagPipelineRulesetDataSource_MappingRule (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardSplitGraphWithStaticSplits_import (unknown)
+
+=== FAIL: datadog/tests TestAccDowntimeScheduleBasicOneTimeWithMonitorID (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDowntimeDatesConflict (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogIncidentNotificationTemplate_Import (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogPermissionsDatasourceIncludeRestricted (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardEventStream (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardRunWorkflow (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardSloList (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDowntime_RRule (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogLogsPipelineEmptyFilterQuery (unknown)
+
+=== FAIL: datadog/tests TestDatadogMonitor_import_no_recovery (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardSLO (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogIntegrationPagerduty_Basic (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogRUMApplicationDatasourceNameFilter (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardHostMap (unknown)
+
+=== FAIL: datadog/tests TestDatadogDashListInDashboard (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogIntegrationAWSNamespaceRulesDatasource (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogStandardPatternDatasourceErrorNotFound (unknown)
+
+=== FAIL: datadog/tests TestAccApmRetentionFilter (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogCloudWorkloadSecurityAgentRule (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardJSONNoDiff (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardQueryValue_import (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogApmRetentionFiltersOrderDatasource (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogIncidentTypeDataSource_Basic (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogAppBuilderAppResource_PublishUnpublish (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardJSONImport (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardRbac_createOpen (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDataset_Basic (unknown)
+
+=== FAIL: datadog/tests TestAccIntegrationFastlyAccountBasic (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardDistribution (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardQueryTable_import (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardTraceService (unknown)
+
+=== FAIL: datadog/tests TestAccDeploymentGateForceNew (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDowntime_BasicMultiScope (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogIncidentNotificationRule_Basic (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogIntegrationAzure (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogMetricTagsDatasource (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogServiceAccountDatasourceMatchID (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogTagPipelineRulesetDataSource_Basic (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogUserDatasourceWithExactMatch (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardHeatMap (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardTopListWithStyle (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogApiKeyDatasource_exactMatchName (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogCloudWorkloadSecurityAgentRulesDatasource (unknown)
+
+=== FAIL: datadog/tests TestAccRumRetentionFiltersDatasource (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogSecurityMonitoringFilterDatasource (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardCheckStatus_import (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardEventStream_import (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardJSONRbacDiff (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardTreemap_import (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogLogsPipelinesDatasourceReadonly (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogPermissionsDatasource (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogCostBudget_Basic (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardChange (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardHeatMap_import (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardListStream (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogLogsCustomDestination_forwarder_types (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogMonitorsDatasource (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogActionConnectionResource_HTTP_TokenAuth (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogApmRetentionFilterOrder (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardManageStatus (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDowntimeDates (unknown)
+
+=== FAIL: datadog/tests TestAccIntegrationAwsAccount_RoleBased (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogIntegrationAWSLogCollection (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogIntegrationPagerdutyServiceObject_Basic (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardTimeseriesMultiCompute (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogTeamMembershipsDatasourceBasic (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogTeamsDatasourceFilterKeyword (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardQueryValueFormula_import (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardSplitGraphWith_import (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogCustomAllocationRuleUpdate (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardQueryValue (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogLogsIndexesOrderDatasource (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogUserDatasourceError (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogCloudConfigurationRule_Import (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardChangeFormula_import (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardQueryValueFormula (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardTimeseries (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogApiKeyDatasource_matchNameError (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogLogsPipelinesOrderDatasource (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogTeamDatasourceBasic (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardEventTimeline (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogIncidentNotificationRule_Import (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogSyntheticsGlobalVariable (unknown)
+
+=== FAIL: datadog/tests TestAccAwsCurConfigWithAccountFilters (unknown)
+
+=== FAIL: datadog/tests TestAccAzureUcConfigBasic (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardIFrame_import (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogApiKeyDatasource_matchId (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogSyntheticsTestWithUrl (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardLogStreamLogSet (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogIncidentNotificationRule_Updated (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogIntegrationOpsgenieServiceObject_Basic (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogLogsPipeline_import (unknown)
+
+=== FAIL: datadog/tests TestAccMonitor_Fwprovider_FormulaFunction_Cost (unknown)
+signal: interrupt
+
+=== FAIL: datadog/tests TestAccDatadogMetricActiveTagsAndAggregationsDatasource (unknown)
+
+=== FAIL: datadog/tests TestAccIntGcpStsMetricNamespaceConfigs (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardRbac_createRbac (unknown)
+
+=== FAIL: datadog/tests TestAccGcpUcConfigImport (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogServiceAccountDatasourcePagination (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardFreeText_import (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardPowerpack (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardStyle_import (unknown)
+
+=== FAIL: datadog/tests TestAccIntegrationAwsAccountKeyBased (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogLogsMetric_Basic (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogServiceAccountDatasourceError (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDowntime_Basic (unknown)
+
+=== FAIL: datadog/tests TestDatadogDowntime_import (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogIncidentNotificationRuleDataSource_ByID (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardGeomap_import (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardServiceMap (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDowntime_DiffStart (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogUsersDatasourceFilter (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogUsersDatasourceFilterStatus (unknown)
+
+=== FAIL: datadog/tests TestDatadogUser_import (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogAppBuilderAppResource_FromFile (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardAlertValue (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDowntime_BasicWithMonitorTags (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogIncidentType_Updated (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogIntegrationAWSAccessKey (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDowntime_BasicNoRecurrence (unknown)
+
+=== FAIL: datadog/tests TestAccIntegrationConfluentResourceBasic (unknown)
+
+=== FAIL: datadog/tests TestAccIntegrationGcpStsBasic (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogLogsMetric_Basic_Retry (unknown)
+
+=== FAIL: datadog/tests TestAccCSMThreatsAgentRulesDataSource (unknown)
+
+=== FAIL: datadog/tests TestAccDowntimeScheduleBasicRecurring (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDowntime_BasicUntilDateRecurrence (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogLogsArchiveGCS_basic (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogTeamMembershipsDatasourceExactMatch (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardIFrame (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardNote (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogMetricMetadata_Updated (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogRoleDatasourceError (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogStandardPatternDatasourceNameFilter (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardTopListFormula_import (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogLogsArchiveS3_basic (unknown)
+
+=== FAIL: datadog/tests TestAccApmRetentionFilterWithTraceRate (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardGeomapFormula (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardListStreamEvents (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardQueryTableFormula_import (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogIncidentType_Import (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogLogsCustomDestination_basic (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardListRumEvents (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardSplitGraph (unknown)
+
+=== FAIL: datadog/tests TestAccDeploymentRuleBasic (unknown)
+
+=== FAIL: datadog/tests TestAccDowntimeScheduleBasicRecurring_Import (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDowntime_BasicUntilOccurrencesRecurrence (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogIncidentNotificationTemplateDataSource_ByID (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogRoleUsersDatasourceExactMatch (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogUserDatasourceWithExactMatchError (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardRbac_adminToRbac (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogIncidentType_Basic (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogIntegrationAWSLambdaArn (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogAgentlessScanningAwsScanOptions_Basic (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogAgentlessScanningAwsScanOptions_InvalidAccountID (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboard_import (unknown)
+
+=== FAIL: datadog/tests TestAccDowntimeScheduleChanged (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogIntegrationAWS (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogIpRangesDatasource_existing (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardAlertGraph (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardTopListFormula (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardTopologyMap (unknown)
+
+=== FAIL: datadog/tests TestAccDowntimeScheduleBasicOneTime (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDowntime_Updated (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogLogsArchiveS3Update_basic (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogAppBuilderAppDataSource_Inline_WithOptionalFields (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogServiceLevelObjectivesDatasource (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogSyntheticsLocation_existing (unknown)
+
+=== FAIL: datadog/tests TestDatadogDashListImport (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardQueryTableWithTextFormats (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardSLO_import (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogAppBuilderAppResource_FromFile_Import (unknown)
+
+=== FAIL: datadog/tests TestDatadogDashListInDashboardJSON (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardTopologyMap_import (unknown)
+
+=== FAIL: datadog/tests TestAccDeploymentRuleTypeForceNew (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogIntegrationAWSLambdaArnAccessKey (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogRoleUsersDatasourceBasic (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardFreeText (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardImage_import (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardTopList_import (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogLogsArchiveOrder_empty (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogSecurityMonitoringRuleDatasource (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardLogStream_import (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardListDatasource (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogPowerpackDatasource (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogCostBudget_WithTagFilters (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardEventTimeline_import (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogSyntheticsTest (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardCrossOrg_import (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardQueryTableFormula (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardRbac_updateToOpen (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardTraceService_import (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogLogsArchiveAzure_basic (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardTimeseriesMultiCompute_import (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogAuthNMapping_CreateUpdate (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogSDSGroupOrderDatasource (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogUserDatasourceExactMatch (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardImage (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardListStreamStorage (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardServiceMap_import (unknown)
+
+=== FAIL: datadog/tests TestAccIntegrationGcpStsDefault (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardScatterplotFormula (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDowntime_TrimWhitespace (unknown)
+
+=== FAIL: datadog/tests TestAccIntegrationAwsEventBridgeBasic (unknown)
+
+=== FAIL: datadog/tests TestAccMSTeamsWorkflowsWebhookHandlesBasic (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogActionConnectionDatasource_AWS_AssumeRole (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogServiceAccountDatasourceMatchFilter (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogActionConnectionResource_AWS_AssumeRole (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardJSONNotifyListDiff (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardRunWorkflow_import (unknown)
+
+=== FAIL: datadog/tests TestAccIntegrationAwsAccount_OptionalLogSourceConfig (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardNotifyListDiff (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogApiKeyDatasource_missingParametersError (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogTagPipelineRulesetDataSource_ReferenceTableRule (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardQueryTableWithTextFormats_import (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardRbac_updateToAdmin (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardMultiSizeLayout_createFixed (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDowntime_WeekDayRecurring (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardSunburst_import (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogAuthNMapping_import (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardHeatMapFormulaAndFunction (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardLogStreamLogSet_import (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardQueryTable (unknown)
+
+=== FAIL: datadog/tests TestAccGcpUcConfigBasic (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogLogsMetric_import (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardRbac_updateToRbac (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogCostBudgetDataSource_Basic (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogAgentlessScanningAwsScanOptions_Update (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogCustomAllocationRuleMultipleFilters (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogApiKeyDatasource_matchIdError (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogMetricMetadataDatasource (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogAgentlessScanningAwsScanOptions_Import (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardSloList_import (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardSplitGraphWithStaticSplits (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardRbac_createAdmin (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDataset_Update (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogApiKeyDatasource_matchName (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogLogsIndexesDatasource (unknown)
+
+=== FAIL: datadog/tests TestDatadogIntegrationPagerduty_import (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardLogStream (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardFormula_import (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogLogsIndex_Basic (unknown)
+
+=== FAIL: datadog/tests TestDatadogMonitor_importNoDataTimeFrame (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardCheckStatus (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardCrossOrg (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardGeomapFormula_import (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardNote_import (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardFormula (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogIncidentNotificationTemplate_Basic (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogMetricTagConfiguration_Error (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardAlertValue_import (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardApmStatsQueryDistribution (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardTreemap (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDowntime_BasicWithMonitor (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogLogsArchiveOrder_basic (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogStandardPatternDatasourceErrorMultiple (unknown)
+
+=== FAIL: datadog/tests TestAccAppsecWafExclusionFilterBasic (unknown)
+
+=== FAIL: datadog/tests TestAccAwsCurConfigImport (unknown)
+
+=== FAIL: datadog/tests TestAccAzureUcConfigImport (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogCloudConfigurationRule_Basic (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardScatterplot_import (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardStyle (unknown)
+
+=== FAIL: datadog/tests TestAccIntegrationCloudflareAccountBasic (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogCloudConfigurationRule_MandatoryFieldsOnly (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardJSONBasicScreenboard (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogHostsDatasource (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogRUMApplicationDatasourceIDFilter (unknown)
+
+=== FAIL: datadog/tests TestDatadogMonitor_import (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogCustomAllocationRuleImport (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardChange_import (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboard_update (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogAppBuilderAppResource_Escaped_Interpolated_Import (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardTemplateVariables (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardTopList (unknown)
+
+=== FAIL: datadog/tests TestAccMSTeamsTenantBasedHandlesBasic (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogMetricMetadata_Basic (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogLogsArchivesOrderDatasource (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogAppBuilderAppResource_Escaped_Interpolated (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardAlertGraph_import (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardGeomap (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogIncidentNotificationTemplateDataSource_ByName (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogRUMApplicationDatasourceErrorMultiple (unknown)
+
+=== FAIL: datadog/tests TestAccLogsCustomPipeline_importBasic (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogIntegrationSlackChannel_Basic (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogAppBuilderAppResource_Inline_WithOptionalFields (unknown)
+
+=== FAIL: datadog/tests TestAccAwsCurConfigBasic (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogIntegrationGCP (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogLogsMetricCount_Basic (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogServiceLevelObjectiveDatasource (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardLayoutForceNew (unknown)
+
+=== FAIL: datadog/tests TestAccDatadogDashboardTimeseries_import (unknown)
+
+DONE 494 tests, 10 skipped, 329 failures in 317.420s
