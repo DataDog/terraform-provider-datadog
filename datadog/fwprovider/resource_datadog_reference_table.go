@@ -45,8 +45,11 @@ type referenceTableModel struct {
 }
 
 type fileMetadataModel struct {
-	SyncEnabled   types.Bool          `tfsdk:"sync_enabled"`
-	AccessDetails *accessDetailsModel `tfsdk:"access_details"`
+	SyncEnabled    types.Bool          `tfsdk:"sync_enabled"`
+	AccessDetails  *accessDetailsModel `tfsdk:"access_details"`
+	ErrorMessage   types.String        `tfsdk:"error_message"`
+	ErrorRowCount  types.Int64         `tfsdk:"error_row_count"`
+	ErrorType      types.String        `tfsdk:"error_type"`
 }
 
 func NewReferenceTableResource() resource.Resource {
@@ -121,6 +124,18 @@ func (r *referenceTableResource) Schema(_ context.Context, _ resource.SchemaRequ
 					"sync_enabled": schema.BoolAttribute{
 						Required:    true,
 						Description: "Whether this table should automatically sync with the cloud storage source.",
+					},
+					"error_message": schema.StringAttribute{
+						Computed:    true,
+						Description: "Error message from the last sync attempt, if any.",
+					},
+					"error_row_count": schema.Int64Attribute{
+						Computed:    true,
+						Description: "The number of rows that failed to sync.",
+					},
+					"error_type": schema.StringAttribute{
+						Computed:    true,
+						Description: "The type of error that occurred during file processing.",
 					},
 				},
 				Blocks: map[string]schema.Block{
@@ -569,6 +584,18 @@ func (r *referenceTableResource) updateState(ctx context.Context, state *referen
 				if state.FileMetadata != nil && !state.FileMetadata.SyncEnabled.IsNull() {
 					fileMetadataTf.SyncEnabled = state.FileMetadata.SyncEnabled
 				}
+			}
+
+			if errorMessage, ok := cloudStorage.GetErrorMessageOk(); ok {
+				fileMetadataTf.ErrorMessage = types.StringValue(*errorMessage)
+			}
+
+			if errorRowCount, ok := cloudStorage.GetErrorRowCountOk(); ok {
+				fileMetadataTf.ErrorRowCount = types.Int64Value(*errorRowCount)
+			}
+
+			if errorType, ok := cloudStorage.GetErrorTypeOk(); ok {
+				fileMetadataTf.ErrorType = types.StringValue(string(*errorType))
 			}
 
 			// Extract access_details
