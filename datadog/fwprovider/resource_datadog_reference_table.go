@@ -3,6 +3,8 @@ package fwprovider
 import (
 	"context"
 	"fmt"
+	"net/http"
+	"time"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
@@ -10,9 +12,6 @@ import (
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
@@ -93,9 +92,6 @@ func (r *referenceTableResource) Schema(_ context.Context, _ resource.SchemaRequ
 			"created_by": schema.StringAttribute{
 				Computed:    true,
 				Description: "UUID of the user who created the reference table.",
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
-				},
 			},
 			"last_updated_by": schema.StringAttribute{
 				Computed:    true,
@@ -104,16 +100,14 @@ func (r *referenceTableResource) Schema(_ context.Context, _ resource.SchemaRequ
 			"row_count": schema.Int64Attribute{
 				Computed:    true,
 				Description: "The number of successfully processed rows in the reference table.",
-				PlanModifiers: []planmodifier.Int64{
-					int64planmodifier.UseStateForUnknown(),
-				},
+				// Removed UseStateForUnknown() to allow Terraform to accept changes to this computed value
+				// This is necessary for async resources where row_count changes as files are processed
 			},
 			"status": schema.StringAttribute{
 				Computed:    true,
 				Description: "The status of the reference table (e.g., DONE, PROCESSING, ERROR).",
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
-				},
+				// Removed UseStateForUnknown() to allow Terraform to accept changes to this computed value
+				// This is necessary for async resources where status changes as files are processed
 			},
 			"updated_at": schema.StringAttribute{
 				Computed:    true,
@@ -255,12 +249,10 @@ func (r *referenceTableResource) Read(ctx context.Context, request resource.Read
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving ReferenceTable"))
 		return
 	}
-	// Note: Skipping CheckForUnparsed because file_metadata OneOf always fails to unmarshal
-	// due to Go client bug. We handle it manually in updateState.
-	// if err := utils.CheckForUnparsed(resp); err != nil {
-	// 	response.Diagnostics.AddError("response contains unparsedObject", err.Error())
-	// 	return
-	// }
+	if err := utils.CheckForUnparsed(resp); err != nil {
+		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
+		return
+	}
 
 	r.updateState(ctx, &state, &resp)
 
@@ -286,12 +278,10 @@ func (r *referenceTableResource) Create(ctx context.Context, request resource.Cr
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error creating ReferenceTable"))
 		return
 	}
-	// Note: Skipping CheckForUnparsed because file_metadata OneOf always fails to unmarshal
-	// due to Go client bug. We handle it manually in updateState.
-	// if err := utils.CheckForUnparsed(resp); err != nil {
-	// 	response.Diagnostics.AddError("response contains unparsedObject", err.Error())
-	// 	return
-	// }
+	if err := utils.CheckForUnparsed(resp); err != nil {
+		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
+		return
+	}
 
 	// If the create response doesn't include data, fetch it with a list+filter request
 	if resp.Data == nil {
@@ -348,15 +338,67 @@ func (r *referenceTableResource) Create(ctx context.Context, request resource.Cr
 }
 
 func (r *referenceTableResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
-	var state referenceTableModel
-	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
+	var planState referenceTableModel
+	response.Diagnostics.Append(request.Plan.Get(ctx, &planState)...)
 	if response.Diagnostics.HasError() {
 		return
 	}
 
-	id := state.ID.ValueString()
+	var currentState referenceTableModel
+	response.Diagnostics.Append(request.State.Get(ctx, &currentState)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
 
-	body, diags := r.buildReferenceTableUpdateRequestBody(ctx, &state)
+	id := planState.ID.ValueString()
+
+	// If we're updating schema for a cloud file table, ensure the table is ready (not processing)
+	// This prevents race conditions where we try to update while the initial sync is still running
+	isUpdatingSchema := planState.Schema != nil
+	if isUpdatingSchema && currentState.Source.ValueString() != "LOCAL_FILE" {
+		// Check current status - if still processing, wait for it to complete
+		currentResp, _, err := r.Api.GetTable(r.Auth, id)
+		if err == nil && currentResp.Data != nil {
+			attrs := currentResp.Data.GetAttributes()
+			if status, ok := attrs.GetStatusOk(); ok && status != nil {
+				statusStr := string(*status)
+				if statusStr != "DONE" && statusStr != "ERROR" {
+					// Table is still processing - wait for it to complete before updating
+					var finalResp datadogV2.TableResultV2
+					waitErr := utils.Retry(3*time.Second, 20, func() error {
+						checkResp, _, checkErr := r.Api.GetTable(r.Auth, id)
+						if checkErr != nil {
+							return &utils.FatalError{Prob: fmt.Sprintf("error checking table status: %v", checkErr)}
+						}
+						if checkResp.Data != nil {
+							checkAttrs := checkResp.Data.GetAttributes()
+							if checkStatus, ok := checkAttrs.GetStatusOk(); ok && checkStatus != nil {
+								checkStatusStr := string(*checkStatus)
+								if checkStatusStr == "DONE" || checkStatusStr == "ERROR" {
+									finalResp = checkResp
+									return nil // Table is ready
+								}
+								return &utils.RetryableError{Prob: fmt.Sprintf("table status is %s, waiting for sync to complete before updating", checkStatusStr)}
+							}
+						}
+						return &utils.RetryableError{Prob: "unable to check table status"}
+					})
+					if waitErr != nil {
+						response.Diagnostics.Append(utils.FrameworkErrorDiag(waitErr, "error waiting for table to be ready before update"))
+						return
+					}
+					// Refresh currentState with fresh API data after waiting
+					r.updateState(ctx, &currentState, &finalResp)
+				} else {
+					// Status is already DONE/ERROR, refresh currentState with fresh API data
+					// to ensure we have the latest state (e.g., row_count, schema, etc.)
+					r.updateState(ctx, &currentState, &currentResp)
+				}
+			}
+		}
+	}
+
+	body, diags := r.buildReferenceTableUpdateRequestBody(ctx, &planState, &currentState)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
 		return
@@ -368,17 +410,84 @@ func (r *referenceTableResource) Update(ctx context.Context, request resource.Up
 		return
 	}
 
-	// Read back the updated resource to get computed fields
-	resp, _, err := r.Api.GetTable(r.Auth, id)
-	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error reading ReferenceTable after update"))
+	// Check if we're updating the schema - if so, we need to retry until the schema is updated
+	// Schema updates happen asynchronously when the file sync completes
+	var expectedFieldCount int
+	if isUpdatingSchema && planState.Schema.Fields != nil {
+		expectedFieldCount = len(planState.Schema.Fields)
+	}
+
+	// Wait a bit before first check to give the API time to start processing
+	// This matches what we did in the direct API test (waited before checking)
+	if isUpdatingSchema && expectedFieldCount > 0 {
+		time.Sleep(3 * time.Second)
+	}
+
+	// Read back the updated resource with retry logic if schema was updated
+	// Schema updates are asynchronous - the file sync needs to complete before schema is updated
+	var resp datadogV2.TableResultV2
+	var httpResp *http.Response
+	retryErr := utils.Retry(5*time.Second, 10, func() error {
+		var err error
+		resp, httpResp, err = r.Api.GetTable(r.Auth, id)
+		if err != nil {
+			if httpResp != nil && httpResp.StatusCode == 404 {
+				return &utils.RetryableError{Prob: fmt.Sprintf("table not found (may still be processing): %v", err)}
+			}
+			return &utils.FatalError{Prob: fmt.Sprintf("error reading ReferenceTable after update: %v", err)}
+		}
+
+		// If we're updating the schema, check if it matches the expected schema
+		// Schema can update while status is still PROCESSING, so check schema first
+		if isUpdatingSchema && expectedFieldCount > 0 {
+			if resp.Data != nil {
+				attrs := resp.Data.GetAttributes()
+				// Check for file processing errors - if file has more columns than schema, retry
+				// This can happen when schema update is async but file processing starts immediately
+				if fileMetadata, ok := attrs.GetFileMetadataOk(); ok && fileMetadata != nil {
+					if cloudStorage := fileMetadata.TableResultV2DataAttributesFileMetadataCloudStorage; cloudStorage != nil {
+						if errorMsg, ok := cloudStorage.GetErrorMessageOk(); ok && errorMsg != nil && *errorMsg != "" {
+							if errorRowCount, ok := cloudStorage.GetErrorRowCountOk(); ok && errorRowCount != nil && *errorRowCount > 0 {
+								// File processing error detected - likely schema mismatch, retry
+								return &utils.RetryableError{Prob: fmt.Sprintf("file processing error detected (may be schema mismatch): %s (%d rows failed). Retrying until schema is updated.", *errorMsg, *errorRowCount)}
+							}
+						}
+					}
+				}
+				// Check schema first - it may update before status becomes DONE
+				if schema, ok := attrs.GetSchemaOk(); ok && schema != nil {
+					if fields, ok := schema.GetFieldsOk(); ok && fields != nil {
+						actualFieldCount := len(*fields)
+						if actualFieldCount == expectedFieldCount {
+							return nil // Schema matches, we're done
+						}
+						// Schema doesn't match yet - check status to provide better error message
+						if status, ok := attrs.GetStatusOk(); ok && status != nil {
+							statusStr := string(*status)
+							return &utils.RetryableError{Prob: fmt.Sprintf("schema not yet updated: expected %d fields, got %d (status: %s, file sync may still be processing)", expectedFieldCount, actualFieldCount, statusStr)}
+						}
+						// Schema doesn't match yet, retry
+						return &utils.RetryableError{Prob: fmt.Sprintf("schema not yet updated: expected %d fields, got %d (file sync may still be processing)", expectedFieldCount, actualFieldCount)}
+					}
+				}
+			}
+			// If we can't check the schema, retry
+			return &utils.RetryableError{Prob: "unable to verify schema update (file sync may still be processing)"}
+		}
+
+		// No schema update or schema matches, we're done
+		return nil
+	})
+
+	if retryErr != nil {
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(retryErr, "error reading ReferenceTable after update"))
 		return
 	}
 
-	r.updateState(ctx, &state, &resp)
+	r.updateState(ctx, &planState, &resp)
 
 	// Save data into Terraform state
-	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+	response.Diagnostics.Append(response.State.Set(ctx, &planState)...)
 }
 
 func (r *referenceTableResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
@@ -450,88 +559,16 @@ func (r *referenceTableResource) updateState(ctx context.Context, state *referen
 	if fileMetadata, ok := attributes.GetFileMetadataOk(); ok {
 		fileMetadataTf := &fileMetadataModel{}
 
-		// Handle UnparsedObject case - manually distinguish between CloudStorage and LocalFile
-		// The Go client's OneOf unmarshaler fails because both types can match, so we handle it manually.
-		if fileMetadata.UnparsedObject != nil {
-			if unparsedMap, ok := fileMetadata.UnparsedObject.(map[string]interface{}); ok {
-				// Check if it has access_details (CloudStorage) or not (LocalFile)
-				if accessDetails, hasAccessDetails := unparsedMap["access_details"]; hasAccessDetails && accessDetails != nil {
-					// It's CloudStorage
-					if syncEnabled, ok := unparsedMap["sync_enabled"].(bool); ok {
-						fileMetadataTf.SyncEnabled = types.BoolValue(syncEnabled)
-					}
-
-					// Parse access_details
-					if accessDetailsMap, ok := accessDetails.(map[string]interface{}); ok {
-						accessDetailsTf := &accessDetailsModel{}
-
-						// Check for AWS details
-						if awsDetail, ok := accessDetailsMap["aws_detail"].(map[string]interface{}); ok {
-							awsDetailTf := &awsDetailModel{}
-							if awsAccountId, ok := awsDetail["aws_account_id"].(string); ok {
-								awsDetailTf.AwsAccountId = types.StringValue(awsAccountId)
-							}
-							if awsBucketName, ok := awsDetail["aws_bucket_name"].(string); ok {
-								awsDetailTf.AwsBucketName = types.StringValue(awsBucketName)
-							}
-							if filePath, ok := awsDetail["file_path"].(string); ok {
-								awsDetailTf.FilePath = types.StringValue(filePath)
-							}
-							accessDetailsTf.AwsDetail = awsDetailTf
-						}
-
-						// Check for GCP details
-						if gcpDetail, ok := accessDetailsMap["gcp_detail"].(map[string]interface{}); ok {
-							gcpDetailTf := &gcpDetailModel{}
-							if gcpProjectId, ok := gcpDetail["gcp_project_id"].(string); ok {
-								gcpDetailTf.GcpProjectId = types.StringValue(gcpProjectId)
-							}
-							if gcpBucketName, ok := gcpDetail["gcp_bucket_name"].(string); ok {
-								gcpDetailTf.GcpBucketName = types.StringValue(gcpBucketName)
-							}
-							if filePath, ok := gcpDetail["file_path"].(string); ok {
-								gcpDetailTf.FilePath = types.StringValue(filePath)
-							}
-							if gcpServiceAccountEmail, ok := gcpDetail["gcp_service_account_email"].(string); ok {
-								gcpDetailTf.GcpServiceAccountEmail = types.StringValue(gcpServiceAccountEmail)
-							}
-							accessDetailsTf.GcpDetail = gcpDetailTf
-						}
-
-						// Check for Azure details
-						if azureDetail, ok := accessDetailsMap["azure_detail"].(map[string]interface{}); ok {
-							azureDetailTf := &azureDetailModel{}
-							if azureTenantId, ok := azureDetail["azure_tenant_id"].(string); ok {
-								azureDetailTf.AzureTenantId = types.StringValue(azureTenantId)
-							}
-							if azureClientId, ok := azureDetail["azure_client_id"].(string); ok {
-								azureDetailTf.AzureClientId = types.StringValue(azureClientId)
-							}
-							if azureStorageAccountName, ok := azureDetail["azure_storage_account_name"].(string); ok {
-								azureDetailTf.AzureStorageAccountName = types.StringValue(azureStorageAccountName)
-							}
-							if azureContainerName, ok := azureDetail["azure_container_name"].(string); ok {
-								azureDetailTf.AzureContainerName = types.StringValue(azureContainerName)
-							}
-							if filePath, ok := azureDetail["file_path"].(string); ok {
-								azureDetailTf.FilePath = types.StringValue(filePath)
-							}
-							accessDetailsTf.AzureDetail = azureDetailTf
-						}
-
-						fileMetadataTf.AccessDetails = accessDetailsTf
-					}
-
-					state.FileMetadata = fileMetadataTf
-					return // Skip the normal OneOf handling
-				}
-			}
-		}
-
 		// Check if it's CloudStorage type
 		if cloudStorage := fileMetadata.TableResultV2DataAttributesFileMetadataCloudStorage; cloudStorage != nil {
 			if syncEnabled, ok := cloudStorage.GetSyncEnabledOk(); ok {
 				fileMetadataTf.SyncEnabled = types.BoolValue(*syncEnabled)
+			} else {
+				// If sync_enabled is not in API response, preserve existing value from state
+				// This handles cases where the API doesn't return sync_enabled in the response
+				if state.FileMetadata != nil && !state.FileMetadata.SyncEnabled.IsNull() {
+					fileMetadataTf.SyncEnabled = state.FileMetadata.SyncEnabled
+				}
 			}
 
 			// Extract access_details
@@ -719,82 +756,187 @@ func (r *referenceTableResource) buildReferenceTableRequestBody(ctx context.Cont
 	return req, diags
 }
 
-func (r *referenceTableResource) buildReferenceTableUpdateRequestBody(ctx context.Context, state *referenceTableModel) (*datadogV2.PatchTableRequest, diag.Diagnostics) {
+func (r *referenceTableResource) buildReferenceTableUpdateRequestBody(ctx context.Context, planState *referenceTableModel, currentState *referenceTableModel) (*datadogV2.PatchTableRequest, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
 	attributes := datadogV2.NewPatchTableRequestDataAttributesWithDefaults()
 
-	if !state.Description.IsNull() {
-		attributes.SetDescription(state.Description.ValueString())
+	if !planState.Description.IsNull() {
+		attributes.SetDescription(planState.Description.ValueString())
 	}
 
-	if !state.Tags.IsNull() {
+	if !planState.Tags.IsNull() {
 		var tags []string
-		diags.Append(state.Tags.ElementsAs(ctx, &tags, false)...)
+		diags.Append(planState.Tags.ElementsAs(ctx, &tags, false)...)
 		attributes.SetTags(tags)
 	}
 
+	// Check if we're updating the schema - if so, we need access_details or upload_id
+	isUpdatingSchema := planState.Schema != nil
+
 	// Build file_metadata for cloud storage updates
-	if state.FileMetadata != nil {
+	if planState.FileMetadata != nil {
 		cloudStorageMetadata := datadogV2.PatchTableRequestDataAttributesFileMetadataCloudStorage{}
 
-		if !state.FileMetadata.SyncEnabled.IsNull() {
-			cloudStorageMetadata.SetSyncEnabled(state.FileMetadata.SyncEnabled.ValueBool())
+		if !planState.FileMetadata.SyncEnabled.IsNull() {
+			cloudStorageMetadata.SetSyncEnabled(planState.FileMetadata.SyncEnabled.ValueBool())
 		}
 
-		if state.FileMetadata.AccessDetails != nil {
+		// If updating schema and access_details not in plan or null/unknown, use current state's access_details
+		accessDetailsToUse := planState.FileMetadata.AccessDetails
+		if isUpdatingSchema {
+			// Check if access_details is missing, null, or has no actual detail values
+			hasAccessDetails := accessDetailsToUse != nil &&
+				(accessDetailsToUse.AwsDetail != nil ||
+					accessDetailsToUse.GcpDetail != nil ||
+					accessDetailsToUse.AzureDetail != nil)
+			if !hasAccessDetails && currentState.FileMetadata != nil && currentState.FileMetadata.AccessDetails != nil {
+				accessDetailsToUse = currentState.FileMetadata.AccessDetails
+			}
+		}
+
+		// Check if we have valid access_details (at least one detail field must be set)
+		hasValidAccessDetails := accessDetailsToUse != nil &&
+			(accessDetailsToUse.AwsDetail != nil ||
+				accessDetailsToUse.GcpDetail != nil ||
+				accessDetailsToUse.AzureDetail != nil)
+
+		if hasValidAccessDetails {
 			accessDetails := datadogV2.PatchTableRequestDataAttributesFileMetadataOneOfAccessDetails{}
 
 			// AWS details
-			if state.FileMetadata.AccessDetails.AwsDetail != nil {
+			if accessDetailsToUse.AwsDetail != nil {
 				awsDetail := datadogV2.PatchTableRequestDataAttributesFileMetadataOneOfAccessDetailsAwsDetail{}
-				awsDetail.SetAwsAccountId(state.FileMetadata.AccessDetails.AwsDetail.AwsAccountId.ValueString())
-				awsDetail.SetAwsBucketName(state.FileMetadata.AccessDetails.AwsDetail.AwsBucketName.ValueString())
-				awsDetail.SetFilePath(state.FileMetadata.AccessDetails.AwsDetail.FilePath.ValueString())
+				awsDetail.SetAwsAccountId(accessDetailsToUse.AwsDetail.AwsAccountId.ValueString())
+				awsDetail.SetAwsBucketName(accessDetailsToUse.AwsDetail.AwsBucketName.ValueString())
+				awsDetail.SetFilePath(accessDetailsToUse.AwsDetail.FilePath.ValueString())
 				accessDetails.AwsDetail = &awsDetail
 			}
 
 			// GCP details
-			if state.FileMetadata.AccessDetails.GcpDetail != nil {
+			if accessDetailsToUse.GcpDetail != nil {
 				gcpDetail := datadogV2.PatchTableRequestDataAttributesFileMetadataOneOfAccessDetailsGcpDetail{}
-				gcpDetail.SetGcpProjectId(state.FileMetadata.AccessDetails.GcpDetail.GcpProjectId.ValueString())
-				gcpDetail.SetGcpBucketName(state.FileMetadata.AccessDetails.GcpDetail.GcpBucketName.ValueString())
-				gcpDetail.SetFilePath(state.FileMetadata.AccessDetails.GcpDetail.FilePath.ValueString())
-				gcpDetail.SetGcpServiceAccountEmail(state.FileMetadata.AccessDetails.GcpDetail.GcpServiceAccountEmail.ValueString())
+				gcpDetail.SetGcpProjectId(accessDetailsToUse.GcpDetail.GcpProjectId.ValueString())
+				gcpDetail.SetGcpBucketName(accessDetailsToUse.GcpDetail.GcpBucketName.ValueString())
+				gcpDetail.SetFilePath(accessDetailsToUse.GcpDetail.FilePath.ValueString())
+				gcpDetail.SetGcpServiceAccountEmail(accessDetailsToUse.GcpDetail.GcpServiceAccountEmail.ValueString())
 				accessDetails.GcpDetail = &gcpDetail
 			}
 
 			// Azure details
-			if state.FileMetadata.AccessDetails.AzureDetail != nil {
+			if accessDetailsToUse.AzureDetail != nil {
 				azureDetail := datadogV2.PatchTableRequestDataAttributesFileMetadataOneOfAccessDetailsAzureDetail{}
-				azureDetail.SetAzureTenantId(state.FileMetadata.AccessDetails.AzureDetail.AzureTenantId.ValueString())
-				azureDetail.SetAzureClientId(state.FileMetadata.AccessDetails.AzureDetail.AzureClientId.ValueString())
-				azureDetail.SetAzureStorageAccountName(state.FileMetadata.AccessDetails.AzureDetail.AzureStorageAccountName.ValueString())
-				azureDetail.SetAzureContainerName(state.FileMetadata.AccessDetails.AzureDetail.AzureContainerName.ValueString())
-				azureDetail.SetFilePath(state.FileMetadata.AccessDetails.AzureDetail.FilePath.ValueString())
+				azureDetail.SetAzureTenantId(accessDetailsToUse.AzureDetail.AzureTenantId.ValueString())
+				azureDetail.SetAzureClientId(accessDetailsToUse.AzureDetail.AzureClientId.ValueString())
+				azureDetail.SetAzureStorageAccountName(accessDetailsToUse.AzureDetail.AzureStorageAccountName.ValueString())
+				azureDetail.SetAzureContainerName(accessDetailsToUse.AzureDetail.AzureContainerName.ValueString())
+				azureDetail.SetFilePath(accessDetailsToUse.AzureDetail.FilePath.ValueString())
 				accessDetails.AzureDetail = &azureDetail
 			}
 
 			cloudStorageMetadata.SetAccessDetails(accessDetails)
+			fileMetadata := datadogV2.PatchTableRequestDataAttributesFileMetadataCloudStorageAsPatchTableRequestDataAttributesFileMetadata(&cloudStorageMetadata)
+			attributes.SetFileMetadata(fileMetadata)
+		} else if isUpdatingSchema {
+			// Schema updates require access_details for cloud storage sources
+			// Try to get access_details from current state
+			currentStateHasValidAccessDetails := currentState.FileMetadata != nil &&
+				currentState.FileMetadata.AccessDetails != nil &&
+				(currentState.FileMetadata.AccessDetails.AwsDetail != nil ||
+					currentState.FileMetadata.AccessDetails.GcpDetail != nil ||
+					currentState.FileMetadata.AccessDetails.AzureDetail != nil)
+			if currentStateHasValidAccessDetails {
+				// Use current state's access_details
+				accessDetails := datadogV2.PatchTableRequestDataAttributesFileMetadataOneOfAccessDetails{}
+				if currentState.FileMetadata.AccessDetails.AwsDetail != nil {
+					awsDetail := datadogV2.PatchTableRequestDataAttributesFileMetadataOneOfAccessDetailsAwsDetail{}
+					awsDetail.SetAwsAccountId(currentState.FileMetadata.AccessDetails.AwsDetail.AwsAccountId.ValueString())
+					awsDetail.SetAwsBucketName(currentState.FileMetadata.AccessDetails.AwsDetail.AwsBucketName.ValueString())
+					awsDetail.SetFilePath(currentState.FileMetadata.AccessDetails.AwsDetail.FilePath.ValueString())
+					accessDetails.AwsDetail = &awsDetail
+				}
+				if currentState.FileMetadata.AccessDetails.GcpDetail != nil {
+					gcpDetail := datadogV2.PatchTableRequestDataAttributesFileMetadataOneOfAccessDetailsGcpDetail{}
+					gcpDetail.SetGcpProjectId(currentState.FileMetadata.AccessDetails.GcpDetail.GcpProjectId.ValueString())
+					gcpDetail.SetGcpBucketName(currentState.FileMetadata.AccessDetails.GcpDetail.GcpBucketName.ValueString())
+					gcpDetail.SetFilePath(currentState.FileMetadata.AccessDetails.GcpDetail.FilePath.ValueString())
+					gcpDetail.SetGcpServiceAccountEmail(currentState.FileMetadata.AccessDetails.GcpDetail.GcpServiceAccountEmail.ValueString())
+					accessDetails.GcpDetail = &gcpDetail
+				}
+				if currentState.FileMetadata.AccessDetails.AzureDetail != nil {
+					azureDetail := datadogV2.PatchTableRequestDataAttributesFileMetadataOneOfAccessDetailsAzureDetail{}
+					azureDetail.SetAzureTenantId(currentState.FileMetadata.AccessDetails.AzureDetail.AzureTenantId.ValueString())
+					azureDetail.SetAzureClientId(currentState.FileMetadata.AccessDetails.AzureDetail.AzureClientId.ValueString())
+					azureDetail.SetAzureStorageAccountName(currentState.FileMetadata.AccessDetails.AzureDetail.AzureStorageAccountName.ValueString())
+					azureDetail.SetAzureContainerName(currentState.FileMetadata.AccessDetails.AzureDetail.AzureContainerName.ValueString())
+					azureDetail.SetFilePath(currentState.FileMetadata.AccessDetails.AzureDetail.FilePath.ValueString())
+					accessDetails.AzureDetail = &azureDetail
+				}
+				if !currentState.FileMetadata.SyncEnabled.IsNull() {
+					cloudStorageMetadata.SetSyncEnabled(currentState.FileMetadata.SyncEnabled.ValueBool())
+				}
+				cloudStorageMetadata.SetAccessDetails(accessDetails)
+				fileMetadata := datadogV2.PatchTableRequestDataAttributesFileMetadataCloudStorageAsPatchTableRequestDataAttributesFileMetadata(&cloudStorageMetadata)
+				attributes.SetFileMetadata(fileMetadata)
+			} else {
+				diags.AddError("Schema update requires access_details",
+					"When updating the schema, file_metadata must include access_details (for cloud storage sources)")
+				return nil, diags
+			}
 		}
-
-		// Set the file_metadata as a oneOf union type
-		fileMetadata := datadogV2.PatchTableRequestDataAttributesFileMetadataCloudStorageAsPatchTableRequestDataAttributesFileMetadata(&cloudStorageMetadata)
-		attributes.SetFileMetadata(fileMetadata)
+	} else if isUpdatingSchema {
+		// Schema update but no file_metadata in plan - try to get from current state
+		if currentState.FileMetadata != nil {
+			if currentState.FileMetadata.AccessDetails != nil {
+				// Use current state's access_details
+				cloudStorageMetadata := datadogV2.PatchTableRequestDataAttributesFileMetadataCloudStorage{}
+				if !currentState.FileMetadata.SyncEnabled.IsNull() {
+					cloudStorageMetadata.SetSyncEnabled(currentState.FileMetadata.SyncEnabled.ValueBool())
+				}
+				accessDetails := datadogV2.PatchTableRequestDataAttributesFileMetadataOneOfAccessDetails{}
+				if currentState.FileMetadata.AccessDetails.AwsDetail != nil {
+					awsDetail := datadogV2.PatchTableRequestDataAttributesFileMetadataOneOfAccessDetailsAwsDetail{}
+					awsDetail.SetAwsAccountId(currentState.FileMetadata.AccessDetails.AwsDetail.AwsAccountId.ValueString())
+					awsDetail.SetAwsBucketName(currentState.FileMetadata.AccessDetails.AwsDetail.AwsBucketName.ValueString())
+					awsDetail.SetFilePath(currentState.FileMetadata.AccessDetails.AwsDetail.FilePath.ValueString())
+					accessDetails.AwsDetail = &awsDetail
+				}
+				if currentState.FileMetadata.AccessDetails.GcpDetail != nil {
+					gcpDetail := datadogV2.PatchTableRequestDataAttributesFileMetadataOneOfAccessDetailsGcpDetail{}
+					gcpDetail.SetGcpProjectId(currentState.FileMetadata.AccessDetails.GcpDetail.GcpProjectId.ValueString())
+					gcpDetail.SetGcpBucketName(currentState.FileMetadata.AccessDetails.GcpDetail.GcpBucketName.ValueString())
+					gcpDetail.SetFilePath(currentState.FileMetadata.AccessDetails.GcpDetail.FilePath.ValueString())
+					gcpDetail.SetGcpServiceAccountEmail(currentState.FileMetadata.AccessDetails.GcpDetail.GcpServiceAccountEmail.ValueString())
+					accessDetails.GcpDetail = &gcpDetail
+				}
+				if currentState.FileMetadata.AccessDetails.AzureDetail != nil {
+					azureDetail := datadogV2.PatchTableRequestDataAttributesFileMetadataOneOfAccessDetailsAzureDetail{}
+					azureDetail.SetAzureTenantId(currentState.FileMetadata.AccessDetails.AzureDetail.AzureTenantId.ValueString())
+					azureDetail.SetAzureClientId(currentState.FileMetadata.AccessDetails.AzureDetail.AzureClientId.ValueString())
+					azureDetail.SetAzureStorageAccountName(currentState.FileMetadata.AccessDetails.AzureDetail.AzureStorageAccountName.ValueString())
+					azureDetail.SetAzureContainerName(currentState.FileMetadata.AccessDetails.AzureDetail.AzureContainerName.ValueString())
+					azureDetail.SetFilePath(currentState.FileMetadata.AccessDetails.AzureDetail.FilePath.ValueString())
+					accessDetails.AzureDetail = &azureDetail
+				}
+				cloudStorageMetadata.SetAccessDetails(accessDetails)
+				fileMetadata := datadogV2.PatchTableRequestDataAttributesFileMetadataCloudStorageAsPatchTableRequestDataAttributesFileMetadata(&cloudStorageMetadata)
+				attributes.SetFileMetadata(fileMetadata)
+			}
+		}
 	}
 
 	// Build schema for updates
-	if state.Schema != nil {
+	if planState.Schema != nil {
 		schema := datadogV2.PatchTableRequestDataAttributesSchema{}
 
-		if !state.Schema.PrimaryKeys.IsNull() {
+		if !planState.Schema.PrimaryKeys.IsNull() {
 			var primaryKeys []string
-			diags.Append(state.Schema.PrimaryKeys.ElementsAs(ctx, &primaryKeys, false)...)
+			diags.Append(planState.Schema.PrimaryKeys.ElementsAs(ctx, &primaryKeys, false)...)
 			schema.SetPrimaryKeys(primaryKeys)
 		}
 
-		if state.Schema.Fields != nil {
+		if planState.Schema.Fields != nil {
 			var fields []datadogV2.PatchTableRequestDataAttributesSchemaFieldsItems
-			for _, fieldsTFItem := range state.Schema.Fields {
+			for _, fieldsTFItem := range planState.Schema.Fields {
 				if !fieldsTFItem.Name.IsNull() && !fieldsTFItem.Type.IsNull() {
 					fieldsDDItem := datadogV2.NewPatchTableRequestDataAttributesSchemaFieldsItems(
 						fieldsTFItem.Name.ValueString(),
