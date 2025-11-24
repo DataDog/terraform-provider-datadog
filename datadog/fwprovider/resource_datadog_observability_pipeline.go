@@ -106,6 +106,23 @@ type tlsModel struct {
 // Processor models
 
 type processorsModel struct {
+	ProcessorGroups []*processorGroupModel `tfsdk:"processor_group"`
+}
+
+type processorGroupModel struct {
+	Id      types.String `tfsdk:"id"`
+	Enabled types.Bool   `tfsdk:"enabled"`
+	Include types.String `tfsdk:"include"`
+	Inputs  types.List   `tfsdk:"inputs"`
+
+	Processors *processorModel `tfsdk:"processor"`
+}
+
+type processorModel struct {
+	Id      types.String `tfsdk:"id"`
+	Enabled types.Bool   `tfsdk:"enabled"`
+	Include types.String `tfsdk:"include"`
+
 	FilterProcessor               []*filterProcessorModel                             `tfsdk:"filter"`
 	ParseJsonProcessor            []*parseJsonProcessorModel                          `tfsdk:"parse_json"`
 	AddFieldsProcessor            []*addFieldsProcessor                               `tfsdk:"add_fields"`
@@ -127,9 +144,6 @@ type processorsModel struct {
 }
 
 type ocsfMapperProcessorModel struct {
-	Id      types.String       `tfsdk:"id"`
-	Include types.String       `tfsdk:"include"`
-	Inputs  types.List         `tfsdk:"inputs"`
 	Mapping []ocsfMappingModel `tfsdk:"mapping"`
 }
 
@@ -139,12 +153,9 @@ type ocsfMappingModel struct {
 }
 
 type enrichmentTableProcessorModel struct {
-	Id      types.String          `tfsdk:"id"`
-	Include types.String          `tfsdk:"include"`
-	Inputs  types.List            `tfsdk:"inputs"`
-	Target  types.String          `tfsdk:"target"`
-	File    *enrichmentFileModel  `tfsdk:"file"`
-	GeoIp   *enrichmentGeoIpModel `tfsdk:"geoip"`
+	Target types.String          `tfsdk:"target"`
+	File   *enrichmentFileModel  `tfsdk:"file"`
+	GeoIp  *enrichmentGeoIpModel `tfsdk:"geoip"`
 }
 
 type enrichmentFileModel struct {
@@ -178,9 +189,6 @@ type enrichmentGeoIpModel struct {
 }
 
 type addEnvVarsProcessorModel struct {
-	Id        types.String         `tfsdk:"id"`
-	Include   types.String         `tfsdk:"include"`
-	Inputs    types.List           `tfsdk:"inputs"`
 	Variables []envVarMappingModel `tfsdk:"variables"`
 }
 
@@ -190,18 +198,12 @@ type envVarMappingModel struct {
 }
 
 type throttleProcessorModel struct {
-	Id        types.String   `tfsdk:"id"`
-	Include   types.String   `tfsdk:"include"`
-	Inputs    types.List     `tfsdk:"inputs"`
 	Threshold types.Int64    `tfsdk:"threshold"`
 	Window    types.Float64  `tfsdk:"window"`
 	GroupBy   []types.String `tfsdk:"group_by"`
 }
 
 type reduceProcessorModel struct {
-	Id              types.String         `tfsdk:"id"`
-	Include         types.String         `tfsdk:"include"`
-	Inputs          types.List           `tfsdk:"inputs"`
 	GroupBy         []types.String       `tfsdk:"group_by"`
 	MergeStrategies []mergeStrategyModel `tfsdk:"merge_strategies"`
 }
@@ -212,38 +214,23 @@ type mergeStrategyModel struct {
 }
 
 type dedupeProcessorModel struct {
-	Id      types.String   `tfsdk:"id"`
-	Include types.String   `tfsdk:"include"`
-	Inputs  types.List     `tfsdk:"inputs"`
-	Fields  []types.String `tfsdk:"fields"`
-	Mode    types.String   `tfsdk:"mode"`
+	Fields []types.String `tfsdk:"fields"`
+	Mode   types.String   `tfsdk:"mode"`
 }
 
 type filterProcessorModel struct {
-	Id      types.String `tfsdk:"id"`
-	Include types.String `tfsdk:"include"`
-	Inputs  types.List   `tfsdk:"inputs"`
 }
 
 type parseJsonProcessorModel struct {
-	Id      types.String `tfsdk:"id"`
-	Inputs  types.List   `tfsdk:"inputs"`
-	Include types.String `tfsdk:"include"`
-	Field   types.String `tfsdk:"field"`
+	Field types.String `tfsdk:"field"`
 }
 
 type addFieldsProcessor struct {
-	Id      types.String `tfsdk:"id"`
-	Include types.String `tfsdk:"include"`
-	Inputs  types.List   `tfsdk:"inputs"`
-	Fields  []fieldValue `tfsdk:"field"`
+	Fields []fieldValue `tfsdk:"field"`
 }
 
 type renameFieldsProcessorModel struct {
-	Id      types.String           `tfsdk:"id"`
-	Include types.String           `tfsdk:"include"`
-	Inputs  types.List             `tfsdk:"inputs"`
-	Fields  []renameFieldItemModel `tfsdk:"field"`
+	Fields []renameFieldItemModel `tfsdk:"field"`
 }
 
 type renameFieldItemModel struct {
@@ -253,16 +240,10 @@ type renameFieldItemModel struct {
 }
 
 type removeFieldsProcessorModel struct {
-	Id      types.String `tfsdk:"id"`
-	Include types.String `tfsdk:"include"`
-	Inputs  types.List   `tfsdk:"inputs"`
-	Fields  types.List   `tfsdk:"fields"`
+	Fields types.List `tfsdk:"fields"`
 }
 
 type quotaProcessorModel struct {
-	Id                          types.String         `tfsdk:"id"`
-	Include                     types.String         `tfsdk:"include"`
-	Inputs                      types.List           `tfsdk:"inputs"`
 	Name                        types.String         `tfsdk:"name"`
 	DropEvents                  types.Bool           `tfsdk:"drop_events"`
 	Limit                       quotaLimitModel      `tfsdk:"limit"`
@@ -369,9 +350,6 @@ type datadogLogsDestinationModel struct {
 }
 
 type parseGrokProcessorModel struct {
-	Id                  types.String                  `tfsdk:"id"`
-	Include             types.String                  `tfsdk:"include"`
-	Inputs              types.List                    `tfsdk:"inputs"`
 	DisableLibraryRules types.Bool                    `tfsdk:"disable_library_rules"`
 	Rules               []parseGrokProcessorRuleModel `tfsdk:"rules"`
 }
@@ -388,9 +366,6 @@ type grokRuleModel struct {
 }
 
 type sampleProcessorModel struct {
-	Id         types.String  `tfsdk:"id"`
-	Include    types.String  `tfsdk:"include"`
-	Inputs     types.List    `tfsdk:"inputs"`
 	Rate       types.Int64   `tfsdk:"rate"`
 	Percentage types.Float64 `tfsdk:"percentage"`
 }
@@ -418,9 +393,6 @@ type splunkHecSourceModel struct {
 }
 
 type generateMetricsProcessorModel struct {
-	Id      types.String           `tfsdk:"id"`
-	Include types.String           `tfsdk:"include"`
-	Inputs  types.List             `tfsdk:"inputs"`
 	Metrics []generatedMetricModel `tfsdk:"metrics"`
 }
 
@@ -532,10 +504,7 @@ type microsoftSentinelDestinationModel struct {
 }
 
 type sensitiveDataScannerProcessorModel struct {
-	Id      types.String                        `tfsdk:"id"`
-	Include types.String                        `tfsdk:"include"`
-	Inputs  types.List                          `tfsdk:"inputs"`
-	Rules   []sensitiveDataScannerProcessorRule `tfsdk:"rules"`
+	Rules []sensitiveDataScannerProcessorRule `tfsdk:"rules"`
 }
 
 type sensitiveDataScannerProcessorRule struct {
@@ -1009,843 +978,721 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 						},
 					},
 					"processors": schema.SingleNestedBlock{
-						Description: "List of processors.",
+						Description: "List of processor groups.",
 						Blocks: map[string]schema.Block{
-							"filter": schema.ListNestedBlock{
-								Description: "The `filter` processor allows conditional processing of logs based on a Datadog search query. Logs that match the `include` query are passed through; others are discarded.",
+							"processor_group": schema.ListNestedBlock{
+								Description: "A processor group containing common configuration and nested processors.",
 								NestedObject: schema.NestedBlockObject{
 									Attributes: map[string]schema.Attribute{
 										"id": schema.StringAttribute{
 											Required:    true,
-											Description: "The unique ID of the processor.",
+											Description: "The unique ID of the processor group.",
+										},
+										"enabled": schema.BoolAttribute{
+											Required:    true,
+											Description: "Whether this processor group is enabled.",
 										},
 										"include": schema.StringAttribute{
 											Required:    true,
-											Description: "A Datadog search query used to determine which logs should pass through the filter. Logs that match this query continue to downstream components; others are dropped.",
-										},
-										"inputs": schema.ListAttribute{
-											Description: "The inputs for the processor.",
-											ElementType: types.StringType,
-											Required:    true,
-										},
-									},
-								},
-							},
-							"parse_json": schema.ListNestedBlock{
-								Description: "The `parse_json` processor extracts JSON from a specified field and flattens it into the event. This is useful when logs contain embedded JSON as a string.",
-								NestedObject: schema.NestedBlockObject{
-									Attributes: map[string]schema.Attribute{
-										"id": schema.StringAttribute{
-											Required:    true,
-											Description: "The unique ID of the processor.",
-										},
-										"include": schema.StringAttribute{
-											Required:    true,
-											Description: "A Datadog search query used to determine which logs this processor targets.",
+											Description: "A Datadog search query used to determine which logs this processor group targets.",
 										},
 										"inputs": schema.ListAttribute{
 											Required:    true,
-											Description: "The inputs for the processor.",
 											ElementType: types.StringType,
-										},
-										"field": schema.StringAttribute{
-											Required:    true,
-											Description: "The field to parse.",
-										},
-									},
-								},
-							},
-							"add_fields": schema.ListNestedBlock{
-								Description: "The `add_fields` processor adds static key-value fields to logs.",
-								NestedObject: schema.NestedBlockObject{
-									Attributes: map[string]schema.Attribute{
-										"id": schema.StringAttribute{
-											Required:    true,
-											Description: "The unique ID of the processor.",
-										},
-										"include": schema.StringAttribute{
-											Required:    true,
-											Description: "A Datadog search query used to determine which logs this processor targets.",
-										},
-										"inputs": schema.ListAttribute{
-											Description: "The inputs for the processor.",
-											ElementType: types.StringType,
-											Required:    true,
+											Description: "A list of component IDs whose output is used as the input for this processor group.",
 										},
 									},
 									Blocks: map[string]schema.Block{
-										"field": schema.ListNestedBlock{
-											Validators: []validator.List{
-												// this is the only way to make the list of fields required in Terraform
-												listvalidator.SizeAtLeast(1),
-											},
-											Description: "A list of static fields (key-value pairs) that is added to each log event processed by this component.",
-											NestedObject: schema.NestedBlockObject{
-												Attributes: map[string]schema.Attribute{
-													"name": schema.StringAttribute{
-														Required:    true,
-														Description: "The field name to add.",
-													},
-													"value": schema.StringAttribute{
-														Required:    true,
-														Description: "The value to assign to the field.",
-													},
-												},
-											},
-										},
-									},
-								},
-							},
-							"rename_fields": schema.ListNestedBlock{
-								Description: "The `rename_fields` processor changes field names.",
-								NestedObject: schema.NestedBlockObject{
-									Attributes: map[string]schema.Attribute{
-										"id": schema.StringAttribute{
-											Required:    true,
-											Description: "The unique ID of the processor.",
-										},
-										"include": schema.StringAttribute{
-											Required:    true,
-											Description: "A Datadog search query used to determine which logs this processor targets.",
-										},
-										"inputs": schema.ListAttribute{
-											Required:    true,
-											Description: "The inputs for the processor.",
-											ElementType: types.StringType,
-										},
-									},
-									Blocks: map[string]schema.Block{
-										"field": schema.ListNestedBlock{
-											Validators: []validator.List{
-												// this is the only way to make the list of fields required in Terraform
-												listvalidator.SizeAtLeast(1),
-											},
-											Description: "List of fields to rename.",
-											NestedObject: schema.NestedBlockObject{
-												Attributes: map[string]schema.Attribute{
-													"source": schema.StringAttribute{
-														Required:    true,
-														Description: "Source field to rename.",
-													},
-													"destination": schema.StringAttribute{
-														Required:    true,
-														Description: "Destination field name.",
-													},
-													"preserve_source": schema.BoolAttribute{
-														Required:    true,
-														Description: "Whether to keep the original field.",
-													},
-												},
-											},
-										},
-									},
-								},
-							},
-							"remove_fields": schema.ListNestedBlock{
-								Description: "The `remove_fields` processor deletes specified fields from logs.",
-								NestedObject: schema.NestedBlockObject{
-									Attributes: map[string]schema.Attribute{
-										"id": schema.StringAttribute{
-											Required:    true,
-											Description: "The unique ID of the processor.",
-										},
-										"include": schema.StringAttribute{
-											Required:    true,
-											Description: "A Datadog search query used to determine which logs this processor targets.",
-										},
-										"inputs": schema.ListAttribute{
-											Required:    true,
-											Description: "The inputs for the processor.",
-											ElementType: types.StringType,
-										},
-										"fields": schema.ListAttribute{
-											Required:    true,
-											Description: "List of fields to remove from the events.",
-											ElementType: types.StringType,
-										},
-									},
-								},
-							},
-							"quota": schema.ListNestedBlock{
-								Description: "The `quota` measures logging traffic for logs that match a specified filter. When the configured daily quota is met, the processor can drop or alert.",
-								NestedObject: schema.NestedBlockObject{
-									Attributes: map[string]schema.Attribute{
-										"id": schema.StringAttribute{
-											Required:    true,
-											Description: "The unique ID of the processor.",
-										},
-										"include": schema.StringAttribute{
-											Required:    true,
-											Description: "A Datadog search query used to determine which logs this processor targets.",
-										},
-										"inputs": schema.ListAttribute{
-											Required:    true,
-											ElementType: types.StringType,
-											Description: "The inputs for the processor.",
-										},
-										"name": schema.StringAttribute{
-											Required:    true,
-											Description: "The name of the quota.",
-										},
-										"drop_events": schema.BoolAttribute{
-											Required:    true,
-											Description: "Whether to drop events exceeding the limit.",
-										},
-										"ignore_when_missing_partitions": schema.BoolAttribute{
-											Optional:    true,
-											Description: "Whether to ignore when partition fields are missing.",
-										},
-										"partition_fields": schema.ListAttribute{
-											Optional:    true,
-											ElementType: types.StringType,
-											Description: "List of partition fields.",
-										},
-										"overflow_action": schema.StringAttribute{
-											Optional:    true,
-											Description: "The action to take when the quota is exceeded: `drop`, `no_action`, or `overflow_routing`.",
-										},
-									},
-									Blocks: map[string]schema.Block{
-										"limit": schema.SingleNestedBlock{
+										"processor": schema.SingleNestedBlock{
+											Description: "The processor contained in this group.",
 											Attributes: map[string]schema.Attribute{
-												"enforce": schema.StringAttribute{
+												"id": schema.StringAttribute{
 													Required:    true,
-													Description: "Whether to enforce by 'bytes' or 'events'.",
-													Validators: []validator.String{
-														stringvalidator.OneOf("bytes", "events"),
-													},
+													Description: "The unique identifier for this processor.",
 												},
-												"limit": schema.Int64Attribute{
+												"enabled": schema.BoolAttribute{
 													Required:    true,
-													Description: "The daily quota limit.",
+													Description: "Whether this processor is enabled.",
 												},
-											},
-										},
-										"overrides": schema.ListNestedBlock{
-											Description: "The overrides for field-specific quotas.",
-											NestedObject: schema.NestedBlockObject{
-												Blocks: map[string]schema.Block{
-													"limit": schema.SingleNestedBlock{
-														Attributes: map[string]schema.Attribute{
-															"enforce": schema.StringAttribute{
-																Required:    true,
-																Description: "Whether to enforce by 'bytes' or 'events'.",
-																Validators: []validator.String{
-																	stringvalidator.OneOf("bytes", "events"),
-																},
-															},
-															"limit": schema.Int64Attribute{
-																Required:    true,
-																Description: "The daily quota limit.",
-															},
-														},
-													},
-													"field": schema.ListNestedBlock{
-														Description: "Fields that trigger this override.",
-														NestedObject: schema.NestedBlockObject{
-															Attributes: map[string]schema.Attribute{
-																"name": schema.StringAttribute{
-																	Description: "The field name.",
-																	Required:    true,
-																},
-																"value": schema.StringAttribute{
-																	Description: "The field value.",
-																	Required:    true,
-																},
-															},
-														},
-													},
-												},
-											},
-										},
-									},
-								},
-							},
-							"sensitive_data_scanner": schema.ListNestedBlock{
-								Description: "The `sensitive_data_scanner` processor detects and optionally redacts sensitive data in log events.",
-								NestedObject: schema.NestedBlockObject{
-									Attributes: map[string]schema.Attribute{
-										"id": schema.StringAttribute{
-											Required:    true,
-											Description: "The unique identifier for this component. Used to reference this component in other parts of the pipeline (e.g., as input to downstream components).",
-										},
-										"include": schema.StringAttribute{
-											Required:    true,
-											Description: "A Datadog search query used to determine which logs this processor targets.",
-										},
-										"inputs": schema.ListAttribute{
-											Required:    true,
-											Description: "A list of component IDs whose output is used as the `input` for this component.",
-											ElementType: types.StringType,
-										},
-									},
-									Blocks: map[string]schema.Block{
-										"rules": schema.ListNestedBlock{
-											Description: "A list of rules for identifying and acting on sensitive data patterns.",
-											NestedObject: schema.NestedBlockObject{
-												Attributes: map[string]schema.Attribute{
-													"name": schema.StringAttribute{
-														Optional:    true,
-														Description: "A name identifying the rule.",
-													},
-													"tags": schema.ListAttribute{
-														Optional:    true,
-														ElementType: types.StringType,
-														Description: "Tags assigned to this rule for filtering and classification.",
-													},
-												},
-												Blocks: map[string]schema.Block{
-													"keyword_options": schema.SingleNestedBlock{
-														Description: "Keyword-based proximity matching for sensitive data.",
-														Attributes: map[string]schema.Attribute{
-															"keywords": schema.ListAttribute{
-																Optional:    true,
-																ElementType: types.StringType,
-																Description: "A list of keywords to match near the sensitive pattern.",
-															},
-															"proximity": schema.Int64Attribute{
-																Optional:    true,
-																Description: "Maximum number of tokens between a keyword and a sensitive value match.",
-															},
-														},
-													},
-													"pattern": schema.SingleNestedBlock{
-														Description: "Pattern detection configuration for identifying sensitive data using either a custom regex or a library reference.",
-														Blocks: map[string]schema.Block{
-															"custom": schema.SingleNestedBlock{
-																Description: "Pattern detection using a custom regular expression.",
-																Attributes: map[string]schema.Attribute{
-																	"rule": schema.StringAttribute{
-																		Optional:    true,
-																		Description: "A regular expression used to detect sensitive values. Must be a valid regex.",
-																	},
-																},
-															},
-															"library": schema.SingleNestedBlock{
-																Description: "Pattern detection using a predefined pattern from the sensitive data scanner pattern library.",
-																Attributes: map[string]schema.Attribute{
-																	"id": schema.StringAttribute{
-																		Optional:    true,
-																		Description: "Identifier for a predefined pattern from the sensitive data scanner pattern library.",
-																	},
-																	"use_recommended_keywords": schema.BoolAttribute{
-																		Optional:    true,
-																		Description: "Whether to augment the pattern with recommended keywords (optional).",
-																	},
-																},
-															},
-														},
-													},
-													"scope": schema.SingleNestedBlock{
-														Description: "Field-level targeting options that determine where the scanner should operate.",
-														Blocks: map[string]schema.Block{
-															"include": schema.SingleNestedBlock{
-																Description: "Explicitly include these fields for scanning.",
-																Attributes: map[string]schema.Attribute{
-																	"fields": schema.ListAttribute{
-																		Optional:    true,
-																		ElementType: types.StringType,
-																		Description: "The fields to include in scanning.",
-																	},
-																},
-															},
-															"exclude": schema.SingleNestedBlock{
-																Description: "Explicitly exclude these fields from scanning.",
-																Attributes: map[string]schema.Attribute{
-																	"fields": schema.ListAttribute{
-																		Optional:    true,
-																		ElementType: types.StringType,
-																		Description: "The fields to exclude from scanning.",
-																	},
-																},
-															},
-														},
-														Attributes: map[string]schema.Attribute{
-															"all": schema.BoolAttribute{
-																Optional:    true,
-																Description: "Scan all fields.",
-															},
-														},
-													},
-													"on_match": schema.SingleNestedBlock{
-														Description: "The action to take when a sensitive value is found.",
-														Blocks: map[string]schema.Block{
-															"redact": schema.SingleNestedBlock{
-																Description: "Redacts the matched value.",
-																Attributes: map[string]schema.Attribute{
-																	"replace": schema.StringAttribute{
-																		Optional:    true,
-																		Description: "Replacement string for redacted values (e.g., `***`).",
-																	},
-																},
-															},
-															"hash": schema.SingleNestedBlock{
-																Description: "Hashes the matched value.",
-																Attributes:  map[string]schema.Attribute{}, // empty options
-															},
-															"partial_redact": schema.SingleNestedBlock{
-																Description: "Redacts part of the matched value (e.g., keep last 4 characters).",
-																Attributes: map[string]schema.Attribute{
-																	"characters": schema.Int64Attribute{
-																		Optional:    true,
-																		Description: "Number of characters to keep.",
-																	},
-																	"direction": schema.StringAttribute{
-																		Optional:    true,
-																		Description: "Direction from which to keep characters: `first` or `last`.",
-																	},
-																},
-															},
-														},
-													},
-												},
-											},
-										},
-									},
-								},
-							},
-							"generate_datadog_metrics": schema.ListNestedBlock{
-								Description: "The `generate_datadog_metrics` processor creates custom metrics from logs. Metrics can be counters, gauges, or distributions and optionally grouped by log fields.",
-								NestedObject: schema.NestedBlockObject{
-									Attributes: map[string]schema.Attribute{
-										"id": schema.StringAttribute{
-											Required:    true,
-											Description: "The unique identifier for this component. Used to reference this component in other parts of the pipeline.",
-										},
-										"include": schema.StringAttribute{
-											Required:    true,
-											Description: "A Datadog search query used to determine which logs this processor targets.",
-										},
-										"inputs": schema.ListAttribute{
-											Required:    true,
-											ElementType: types.StringType,
-											Description: "A list of component IDs whose output is used as the `input` for this processor.",
-										},
-									},
-									Blocks: map[string]schema.Block{
-										"metrics": schema.ListNestedBlock{
-											Description: "Configuration for generating individual metrics.",
-											NestedObject: schema.NestedBlockObject{
-												Attributes: map[string]schema.Attribute{
-													"name": schema.StringAttribute{
-														Required:    true,
-														Description: "Name of the custom metric to be created.",
-													},
-													"include": schema.StringAttribute{
-														Required:    true,
-														Description: "Datadog filter query to match logs for metric generation.",
-													},
-													"metric_type": schema.StringAttribute{
-														Required:    true,
-														Description: "Type of metric to create.",
-													},
-													"group_by": schema.ListAttribute{
-														Optional:    true,
-														ElementType: types.StringType,
-														Description: "Optional fields used to group the metric series.",
-													},
-												},
-												Blocks: map[string]schema.Block{
-													"value": schema.SingleNestedBlock{
-														Description: "Specifies how the value of the generated metric is computed.",
-														Attributes: map[string]schema.Attribute{
-															"strategy": schema.StringAttribute{
-																Required:    true,
-																Description: "Metric value strategy: `increment_by_one` or `increment_by_field`.",
-															},
-															"field": schema.StringAttribute{
-																Optional:    true,
-																Description: "Name of the log field containing the numeric value to increment the metric by (used only for `increment_by_field`).",
-															},
-														},
-													},
-												},
-											},
-										},
-									},
-								},
-							},
-							"parse_grok": schema.ListNestedBlock{
-								Description: "The `parse_grok` processor extracts structured fields from unstructured log messages using Grok patterns.",
-								NestedObject: schema.NestedBlockObject{
-									Attributes: map[string]schema.Attribute{
-										"id": schema.StringAttribute{
-											Required:    true,
-											Description: "A unique identifier for this processor.",
-										},
-										"include": schema.StringAttribute{
-											Required:    true,
-											Description: "A Datadog search query used to determine which logs this processor targets.",
-										},
-										"inputs": schema.ListAttribute{
-											Required:    true,
-											ElementType: types.StringType,
-											Description: "A list of component IDs whose output is used as the `input` for this component.",
-										},
-										"disable_library_rules": schema.BoolAttribute{
-											Optional:    true,
-											Description: "If set to `true`, disables the default Grok rules provided by Datadog.",
-										},
-									},
-									Blocks: map[string]schema.Block{
-										"rules": schema.ListNestedBlock{
-											Description: "The list of Grok parsing rules. If multiple parsing rules are provided, they are evaluated in order. The first successful match is applied.",
-											NestedObject: schema.NestedBlockObject{
-												Attributes: map[string]schema.Attribute{
-													"source": schema.StringAttribute{
-														Required:    true,
-														Description: "The name of the field in the log event to apply the Grok rules to.",
-													},
-												},
-												Blocks: map[string]schema.Block{
-													"match_rule": schema.ListNestedBlock{
-														Description: "A list of Grok parsing rules that define how to extract fields from the source field. Each rule must contain a name and a valid Grok pattern.",
-														NestedObject: schema.NestedBlockObject{
-															Attributes: map[string]schema.Attribute{
-																"name": schema.StringAttribute{
-																	Required:    true,
-																	Description: "The name of the rule.",
-																},
-																"rule": schema.StringAttribute{
-																	Required:    true,
-																	Description: "The definition of the Grok rule.",
-																},
-															},
-														},
-													},
-													"support_rule": schema.ListNestedBlock{
-														Description: "A list of helper Grok rules that can be referenced by the parsing rules.",
-														NestedObject: schema.NestedBlockObject{
-															Attributes: map[string]schema.Attribute{
-																"name": schema.StringAttribute{
-																	Required:    true,
-																	Description: "The name of the helper Grok rule.",
-																},
-																"rule": schema.StringAttribute{
-																	Required:    true,
-																	Description: "The definition of the helper Grok rule.",
-																},
-															},
-														},
-													},
-												},
-											},
-										},
-									},
-								},
-							},
-							"sample": schema.ListNestedBlock{
-								Description: "The `sample` processor allows probabilistic sampling of logs at a fixed rate.",
-								NestedObject: schema.NestedBlockObject{
-									Attributes: map[string]schema.Attribute{
-										"id": schema.StringAttribute{
-											Required:    true,
-											Description: "The unique identifier for this component. Used to reference this component in other parts of the pipeline (for example, as the `input` to downstream components).",
-										},
-										"include": schema.StringAttribute{
-											Required:    true,
-											Description: "A Datadog search query used to determine which logs this processor targets.",
-										},
-										"inputs": schema.ListAttribute{
-											Required:    true,
-											ElementType: types.StringType,
-											Description: "A list of component IDs whose output is used as the `input` for this component.",
-										},
-										"rate": schema.Int64Attribute{
-											Optional:    true,
-											Description: "Number of events to sample (1 in N).",
-										},
-										"percentage": schema.Float64Attribute{
-											Optional:    true,
-											Description: "The percentage of logs to sample.",
-										},
-									},
-								},
-							},
-							"dedupe": schema.ListNestedBlock{
-								Description: "The `dedupe` processor removes duplicate fields in log events.",
-								NestedObject: schema.NestedBlockObject{
-									Attributes: map[string]schema.Attribute{
-										"id": schema.StringAttribute{
-											Required:    true,
-											Description: "The unique identifier for this processor.",
-										},
-										"include": schema.StringAttribute{
-											Required:    true,
-											Description: "A Datadog search query used to determine which logs this processor targets.",
-										},
-										"inputs": schema.ListAttribute{
-											Required:    true,
-											ElementType: types.StringType,
-											Description: "A list of component IDs whose output is used as the input for this processor.",
-										},
-										"fields": schema.ListAttribute{
-											Required:    true,
-											ElementType: types.StringType,
-											Description: "A list of log field paths to check for duplicates.",
-										},
-										"mode": schema.StringAttribute{
-											Required:    true,
-											Description: "The deduplication mode to apply to the fields.",
-										},
-									},
-								},
-							},
-							"reduce": schema.ListNestedBlock{
-								Description: "The `reduce` processor aggregates and merges logs based on matching keys and merge strategies.",
-								NestedObject: schema.NestedBlockObject{
-									Attributes: map[string]schema.Attribute{
-										"id": schema.StringAttribute{
-											Required:    true,
-											Description: "The unique identifier for this processor.",
-										},
-										"include": schema.StringAttribute{
-											Required:    true,
-											Description: "A Datadog search query used to determine which logs this processor targets.",
-										},
-										"inputs": schema.ListAttribute{
-											Required:    true,
-											ElementType: types.StringType,
-											Description: "A list of component IDs whose output is used as the input for this processor.",
-										},
-										"group_by": schema.ListAttribute{
-											Required:    true,
-											ElementType: types.StringType,
-											Description: "A list of fields used to group log events for merging.",
-										},
-									},
-									Blocks: map[string]schema.Block{
-										"merge_strategies": schema.ListNestedBlock{
-											Description: "List of merge strategies defining how values from grouped events should be combined.",
-											NestedObject: schema.NestedBlockObject{
-												Attributes: map[string]schema.Attribute{
-													"path": schema.StringAttribute{
-														Required:    true,
-														Description: "The field path in the log event.",
-													},
-													"strategy": schema.StringAttribute{
-														Required:    true,
-														Description: "The merge strategy to apply.",
-													},
-												},
-											},
-										},
-									},
-								},
-							},
-							"throttle": schema.ListNestedBlock{
-								Description: "The `throttle` processor limits the number of events that pass through over a given time window.",
-								NestedObject: schema.NestedBlockObject{
-									Attributes: map[string]schema.Attribute{
-										"id": schema.StringAttribute{
-											Required:    true,
-											Description: "The unique identifier for this processor.",
-										},
-										"include": schema.StringAttribute{
-											Required:    true,
-											Description: "A Datadog search query used to determine which logs this processor targets.",
-										},
-										"inputs": schema.ListAttribute{
-											Required:    true,
-											ElementType: types.StringType,
-											Description: "A list of component IDs whose output is used as the input for this processor.",
-										},
-										"threshold": schema.Int64Attribute{
-											Required:    true,
-											Description: "The number of events to allow before throttling is applied.",
-										},
-										"window": schema.Float64Attribute{
-											Required:    true,
-											Description: "The time window in seconds over which the threshold applies.",
-										},
-										"group_by": schema.ListAttribute{
-											Optional:    true,
-											ElementType: types.StringType,
-											Description: "Optional list of fields used to group events before applying throttling.",
-										},
-									},
-								},
-							},
-							"add_env_vars": schema.ListNestedBlock{
-								Description: "The `add_env_vars` processor adds environment variable values to log events.",
-								NestedObject: schema.NestedBlockObject{
-									Attributes: map[string]schema.Attribute{
-										"id": schema.StringAttribute{
-											Required:    true,
-											Description: "The unique identifier for this component. Used to reference this processor in the pipeline.",
-										},
-										"include": schema.StringAttribute{
-											Required:    true,
-											Description: "A Datadog search query used to determine which logs this processor targets.",
-										},
-										"inputs": schema.ListAttribute{
-											Required:    true,
-											ElementType: types.StringType,
-											Description: "A list of component IDs whose output is used as the input for this processor.",
-										},
-									},
-									Blocks: map[string]schema.Block{
-										"variables": schema.ListNestedBlock{
-											Description: "A list of environment variable mappings to apply to log fields.",
-											NestedObject: schema.NestedBlockObject{
-												Attributes: map[string]schema.Attribute{
-													"field": schema.StringAttribute{
-														Required:    true,
-														Description: "The target field in the log event.",
-													},
-													"name": schema.StringAttribute{
-														Required:    true,
-														Description: "The name of the environment variable to read.",
-													},
-												},
-											},
-										},
-									},
-								},
-							},
-							"enrichment_table": schema.ListNestedBlock{
-								Description: "The `enrichment_table` processor enriches logs using a static CSV file or GeoIP database.",
-								NestedObject: schema.NestedBlockObject{
-									Attributes: map[string]schema.Attribute{
-										"id": schema.StringAttribute{
-											Required:    true,
-											Description: "The unique identifier for this processor.",
-										},
-										"include": schema.StringAttribute{
-											Required:    true,
-											Description: "A Datadog search query used to determine which logs this processor targets.",
-										},
-										"inputs": schema.ListAttribute{
-											Required:    true,
-											ElementType: types.StringType,
-											Description: "A list of component IDs whose output is used as the input for this processor.",
-										},
-										"target": schema.StringAttribute{
-											Required:    true,
-											Description: "Path where enrichment results should be stored in the log.",
-										},
-									},
-									Blocks: map[string]schema.Block{
-										"file": schema.SingleNestedBlock{
-											Description: "Defines a static enrichment table loaded from a CSV file.",
-											Attributes: map[string]schema.Attribute{
-												"path": schema.StringAttribute{
-													Optional:    true,
-													Description: "Path to the CSV file.",
+												"include": schema.StringAttribute{
+													Required:    true,
+													Description: "A Datadog search query used to determine which logs this processor targets.",
 												},
 											},
 											Blocks: map[string]schema.Block{
-												"encoding": schema.SingleNestedBlock{
-													Attributes: map[string]schema.Attribute{
-														"type": schema.StringAttribute{
-															Optional:    true,
-															Description: "File encoding format.",
-														},
-														"delimiter": schema.StringAttribute{
-															Optional:    true,
-															Description: "The `encoding` `delimiter`.",
-														},
-														"includes_headers": schema.BoolAttribute{
-															Optional:    true,
-															Description: "The `encoding` `includes_headers`.",
-														},
+												"filter": schema.ListNestedBlock{
+													Description: "The `filter` processor allows conditional processing of logs based on a Datadog search query. Logs that match the `include` query are passed through; others are discarded.",
+													Validators: []validator.List{
+														listvalidator.SizeAtMost(1),
+													},
+													NestedObject: schema.NestedBlockObject{
+														Attributes: map[string]schema.Attribute{},
 													},
 												},
-												"schema": schema.ListNestedBlock{
-													Description: "Schema defining column names and their types.",
-													NestedObject: schema.NestedBlockObject{
-														Attributes: map[string]schema.Attribute{
-															"column": schema.StringAttribute{
-																Optional:    true,
-																Description: "The `items` `column`.",
-															},
-															"type": schema.StringAttribute{
-																Optional:    true,
-																Description: "The type of the column (e.g. string, boolean, integer, etc.).",
-															},
-														},
+												"parse_json": schema.ListNestedBlock{
+													Description: "The `parse_json` processor extracts JSON from a specified field and flattens it into the event. This is useful when logs contain embedded JSON as a string.",
+													Validators: []validator.List{
+														listvalidator.SizeAtMost(1),
 													},
-												},
-												"key": schema.ListNestedBlock{
-													Description: "Key fields used to look up enrichment values.",
 													NestedObject: schema.NestedBlockObject{
 														Attributes: map[string]schema.Attribute{
-															"column": schema.StringAttribute{
-																Optional:    true,
-																Description: "The `items` `column`.",
-															},
-															"comparison": schema.StringAttribute{
-																Optional:    true,
-																Description: "The comparison method (e.g. equals).",
-															},
 															"field": schema.StringAttribute{
-																Optional:    true,
-																Description: "The `items` `field`.",
+																Required:    true,
+																Description: "The field to parse.",
 															},
 														},
 													},
 												},
-											},
-										},
-										"geoip": schema.SingleNestedBlock{
-											Description: "Uses a GeoIP database to enrich logs based on an IP field.",
-											Attributes: map[string]schema.Attribute{
-												"key_field": schema.StringAttribute{
-													Optional:    true,
-													Description: "Path to the IP field in the log.",
+												"add_fields": schema.ListNestedBlock{
+													Description: "The `add_fields` processor adds static key-value fields to logs.",
+													Validators: []validator.List{
+														listvalidator.SizeAtMost(1),
+													},
+													NestedObject: schema.NestedBlockObject{
+														Attributes: map[string]schema.Attribute{},
+														Blocks: map[string]schema.Block{
+															"field": schema.ListNestedBlock{
+																Validators: []validator.List{
+																	// this is the only way to make the list of fields required in Terraform
+																	listvalidator.SizeAtLeast(1),
+																},
+																Description: "A list of static fields (key-value pairs) that is added to each log event processed by this component.",
+																NestedObject: schema.NestedBlockObject{
+																	Attributes: map[string]schema.Attribute{
+																		"name": schema.StringAttribute{
+																			Required:    true,
+																			Description: "The field name to add.",
+																		},
+																		"value": schema.StringAttribute{
+																			Required:    true,
+																			Description: "The value to assign to the field.",
+																		},
+																	},
+																},
+															},
+														},
+													},
 												},
-												"locale": schema.StringAttribute{
-													Optional:    true,
-													Description: "Locale used to resolve geographical names.",
+												"rename_fields": schema.ListNestedBlock{
+													Description: "The `rename_fields` processor changes field names.",
+													Validators: []validator.List{
+														listvalidator.SizeAtMost(1),
+													},
+													NestedObject: schema.NestedBlockObject{
+														Attributes: map[string]schema.Attribute{},
+														Blocks: map[string]schema.Block{
+															"field": schema.ListNestedBlock{
+																Validators: []validator.List{
+																	// this is the only way to make the list of fields required in Terraform
+																	listvalidator.SizeAtLeast(1),
+																},
+																Description: "List of fields to rename.",
+																NestedObject: schema.NestedBlockObject{
+																	Attributes: map[string]schema.Attribute{
+																		"source": schema.StringAttribute{
+																			Required:    true,
+																			Description: "Source field to rename.",
+																		},
+																		"destination": schema.StringAttribute{
+																			Required:    true,
+																			Description: "Destination field name.",
+																		},
+																		"preserve_source": schema.BoolAttribute{
+																			Required:    true,
+																			Description: "Whether to keep the original field.",
+																		},
+																	},
+																},
+															},
+														},
+													},
 												},
-												"path": schema.StringAttribute{
-													Optional:    true,
-													Description: "Path to the GeoIP database file.",
+												"remove_fields": schema.ListNestedBlock{
+													Description: "The `remove_fields` processor deletes specified fields from logs.",
+													Validators: []validator.List{
+														listvalidator.SizeAtMost(1),
+													},
+													NestedObject: schema.NestedBlockObject{
+														Attributes: map[string]schema.Attribute{
+															"fields": schema.ListAttribute{
+																Required:    true,
+																Description: "List of fields to remove from the events.",
+																ElementType: types.StringType,
+															},
+														},
+													},
 												},
+												"quota": schema.ListNestedBlock{
+													Description: "The `quota` measures logging traffic for logs that match a specified filter. When the configured daily quota is met, the processor can drop or alert.",
+													Validators: []validator.List{
+														listvalidator.SizeAtMost(1),
+													},
+													NestedObject: schema.NestedBlockObject{
+														Attributes: map[string]schema.Attribute{
+															"name": schema.StringAttribute{
+																Required:    true,
+																Description: "The name of the quota.",
+															},
+															"drop_events": schema.BoolAttribute{
+																Optional:    true,
+																Description: "Whether to drop events exceeding the limit.",
+															},
+															"ignore_when_missing_partitions": schema.BoolAttribute{
+																Optional:    true,
+																Description: "Whether to ignore when partition fields are missing.",
+															},
+															"partition_fields": schema.ListAttribute{
+																Optional:    true,
+																ElementType: types.StringType,
+																Description: "List of partition fields.",
+															},
+															"overflow_action": schema.StringAttribute{
+																Optional:    true,
+																Description: "The action to take when the quota is exceeded: `drop`, `no_action`, or `overflow_routing`.",
+															},
+														},
+														Blocks: map[string]schema.Block{
+															"limit": schema.SingleNestedBlock{
+																Attributes: map[string]schema.Attribute{
+																	"enforce": schema.StringAttribute{
+																		Required:    true,
+																		Description: "Whether to enforce by 'bytes' or 'events'.",
+																		Validators: []validator.String{
+																			stringvalidator.OneOf("bytes", "events"),
+																		},
+																	},
+																	"limit": schema.Int64Attribute{
+																		Required:    true,
+																		Description: "The daily quota limit.",
+																	},
+																},
+															},
+															"overrides": schema.ListNestedBlock{
+																Description: "The overrides for field-specific quotas.",
+																NestedObject: schema.NestedBlockObject{
+																	Blocks: map[string]schema.Block{
+																		"limit": schema.SingleNestedBlock{
+																			Attributes: map[string]schema.Attribute{
+																				"enforce": schema.StringAttribute{
+																					Required:    true,
+																					Description: "Whether to enforce by 'bytes' or 'events'.",
+																					Validators: []validator.String{
+																						stringvalidator.OneOf("bytes", "events"),
+																					},
+																				},
+																				"limit": schema.Int64Attribute{
+																					Required:    true,
+																					Description: "The daily quota limit.",
+																				},
+																			},
+																		},
+																		"field": schema.ListNestedBlock{
+																			Description: "Fields that trigger this override.",
+																			NestedObject: schema.NestedBlockObject{
+																				Attributes: map[string]schema.Attribute{
+																					"name": schema.StringAttribute{
+																						Description: "The field name.",
+																						Required:    true,
+																					},
+																					"value": schema.StringAttribute{
+																						Description: "The field value.",
+																						Required:    true,
+																					},
+																				},
+																			},
+																		},
+																	},
+																},
+															},
+														},
+													},
+												},
+												"sensitive_data_scanner": schema.ListNestedBlock{
+													Description: "The `sensitive_data_scanner` processor detects and optionally redacts sensitive data in log events.",
+													Validators: []validator.List{
+														listvalidator.SizeAtMost(1),
+													},
+													NestedObject: schema.NestedBlockObject{
+														Attributes: map[string]schema.Attribute{},
+														Blocks: map[string]schema.Block{
+															"rules": schema.ListNestedBlock{
+																Description: "A list of rules for identifying and acting on sensitive data patterns.",
+																NestedObject: schema.NestedBlockObject{
+																	Attributes: map[string]schema.Attribute{
+																		"name": schema.StringAttribute{
+																			Optional:    true,
+																			Description: "A name identifying the rule.",
+																		},
+																		"tags": schema.ListAttribute{
+																			Optional:    true,
+																			ElementType: types.StringType,
+																			Description: "Tags assigned to this rule for filtering and classification.",
+																		},
+																	},
+																	Blocks: map[string]schema.Block{
+																		"keyword_options": schema.SingleNestedBlock{
+																			Description: "Keyword-based proximity matching for sensitive data.",
+																			Attributes: map[string]schema.Attribute{
+																				"keywords": schema.ListAttribute{
+																					Optional:    true,
+																					ElementType: types.StringType,
+																					Description: "A list of keywords to match near the sensitive pattern.",
+																				},
+																				"proximity": schema.Int64Attribute{
+																					Optional:    true,
+																					Description: "Maximum number of tokens between a keyword and a sensitive value match.",
+																				},
+																			},
+																		},
+																		"pattern": schema.SingleNestedBlock{
+																			Description: "Pattern detection configuration for identifying sensitive data using either a custom regex or a library reference.",
+																			Blocks: map[string]schema.Block{
+																				"custom": schema.SingleNestedBlock{
+																					Description: "Pattern detection using a custom regular expression.",
+																					Attributes: map[string]schema.Attribute{
+																						"rule": schema.StringAttribute{
+																							Optional:    true,
+																							Description: "A regular expression used to detect sensitive values. Must be a valid regex.",
+																						},
+																					},
+																				},
+																				"library": schema.SingleNestedBlock{
+																					Description: "Pattern detection using a predefined pattern from the sensitive data scanner pattern library.",
+																					Attributes: map[string]schema.Attribute{
+																						"id": schema.StringAttribute{
+																							Optional:    true,
+																							Description: "Identifier for a predefined pattern from the sensitive data scanner pattern library.",
+																						},
+																						"use_recommended_keywords": schema.BoolAttribute{
+																							Optional:    true,
+																							Description: "Whether to augment the pattern with recommended keywords (optional).",
+																						},
+																					},
+																				},
+																			},
+																		},
+																		"scope": schema.SingleNestedBlock{
+																			Description: "Field-level targeting options that determine where the scanner should operate.",
+																			Blocks: map[string]schema.Block{
+																				"include": schema.SingleNestedBlock{
+																					Description: "Explicitly include these fields for scanning.",
+																					Attributes: map[string]schema.Attribute{
+																						"fields": schema.ListAttribute{
+																							Optional:    true,
+																							ElementType: types.StringType,
+																							Description: "The fields to include in scanning.",
+																						},
+																					},
+																				},
+																				"exclude": schema.SingleNestedBlock{
+																					Description: "Explicitly exclude these fields from scanning.",
+																					Attributes: map[string]schema.Attribute{
+																						"fields": schema.ListAttribute{
+																							Optional:    true,
+																							ElementType: types.StringType,
+																							Description: "The fields to exclude from scanning.",
+																						},
+																					},
+																				},
+																			},
+																			Attributes: map[string]schema.Attribute{
+																				"all": schema.BoolAttribute{
+																					Optional:    true,
+																					Description: "Scan all fields.",
+																				},
+																			},
+																		},
+																		"on_match": schema.SingleNestedBlock{
+																			Description: "The action to take when a sensitive value is found.",
+																			Blocks: map[string]schema.Block{
+																				"redact": schema.SingleNestedBlock{
+																					Description: "Redacts the matched value.",
+																					Attributes: map[string]schema.Attribute{
+																						"replace": schema.StringAttribute{
+																							Optional:    true,
+																							Description: "Replacement string for redacted values (e.g., `***`).",
+																						},
+																					},
+																				},
+																				"hash": schema.SingleNestedBlock{
+																					Description: "Hashes the matched value.",
+																					Attributes:  map[string]schema.Attribute{}, // empty options
+																				},
+																				"partial_redact": schema.SingleNestedBlock{
+																					Description: "Redacts part of the matched value (e.g., keep last 4 characters).",
+																					Attributes: map[string]schema.Attribute{
+																						"characters": schema.Int64Attribute{
+																							Optional:    true,
+																							Description: "Number of characters to keep.",
+																						},
+																						"direction": schema.StringAttribute{
+																							Optional:    true,
+																							Description: "Direction from which to keep characters: `first` or `last`.",
+																						},
+																					},
+																				},
+																			},
+																		},
+																	},
+																},
+															},
+														},
+													},
+												},
+												"generate_datadog_metrics": schema.ListNestedBlock{
+													Description: "The `generate_datadog_metrics` processor creates custom metrics from logs. Metrics can be counters, gauges, or distributions and optionally grouped by log fields.",
+													Validators: []validator.List{
+														listvalidator.SizeAtMost(1),
+													},
+													NestedObject: schema.NestedBlockObject{
+														Attributes: map[string]schema.Attribute{},
+														Blocks: map[string]schema.Block{
+															"metrics": schema.ListNestedBlock{
+																Description: "Configuration for generating individual metrics.",
+																NestedObject: schema.NestedBlockObject{
+																	Attributes: map[string]schema.Attribute{
+																		"name": schema.StringAttribute{
+																			Required:    true,
+																			Description: "Name of the custom metric to be created.",
+																		},
+																		"include": schema.StringAttribute{
+																			Required:    true,
+																			Description: "Datadog filter query to match logs for metric generation.",
+																		},
+																		"metric_type": schema.StringAttribute{
+																			Required:    true,
+																			Description: "Type of metric to create.",
+																		},
+																		"group_by": schema.ListAttribute{
+																			Optional:    true,
+																			ElementType: types.StringType,
+																			Description: "Optional fields used to group the metric series.",
+																		},
+																	},
+																	Blocks: map[string]schema.Block{
+																		"value": schema.SingleNestedBlock{
+																			Description: "Specifies how the value of the generated metric is computed.",
+																			Attributes: map[string]schema.Attribute{
+																				"strategy": schema.StringAttribute{
+																					Required:    true,
+																					Description: "Metric value strategy: `increment_by_one` or `increment_by_field`.",
+																				},
+																				"field": schema.StringAttribute{
+																					Optional:    true,
+																					Description: "Name of the log field containing the numeric value to increment the metric by (used only for `increment_by_field`).",
+																				},
+																			},
+																		},
+																	},
+																},
+															},
+														},
+													},
+												},
+												"parse_grok": schema.ListNestedBlock{
+													Description: "The `parse_grok` processor extracts structured fields from unstructured log messages using Grok patterns.",
+													Validators: []validator.List{
+														listvalidator.SizeAtMost(1),
+													},
+													NestedObject: schema.NestedBlockObject{
+														Attributes: map[string]schema.Attribute{
+															"disable_library_rules": schema.BoolAttribute{
+																Optional:    true,
+																Description: "If set to `true`, disables the default Grok rules provided by Datadog.",
+															},
+														},
+														Blocks: map[string]schema.Block{
+															"rules": schema.ListNestedBlock{
+																Description: "The list of Grok parsing rules. If multiple parsing rules are provided, they are evaluated in order. The first successful match is applied.",
+																NestedObject: schema.NestedBlockObject{
+																	Attributes: map[string]schema.Attribute{
+																		"source": schema.StringAttribute{
+																			Required:    true,
+																			Description: "The name of the field in the log event to apply the Grok rules to.",
+																		},
+																	},
+																	Blocks: map[string]schema.Block{
+																		"match_rule": schema.ListNestedBlock{
+																			Description: "A list of Grok parsing rules that define how to extract fields from the source field. Each rule must contain a name and a valid Grok pattern.",
+																			NestedObject: schema.NestedBlockObject{
+																				Attributes: map[string]schema.Attribute{
+																					"name": schema.StringAttribute{
+																						Required:    true,
+																						Description: "The name of the rule.",
+																					},
+																					"rule": schema.StringAttribute{
+																						Required:    true,
+																						Description: "The definition of the Grok rule.",
+																					},
+																				},
+																			},
+																		},
+																		"support_rule": schema.ListNestedBlock{
+																			Description: "A list of helper Grok rules that can be referenced by the parsing rules.",
+																			NestedObject: schema.NestedBlockObject{
+																				Attributes: map[string]schema.Attribute{
+																					"name": schema.StringAttribute{
+																						Required:    true,
+																						Description: "The name of the helper Grok rule.",
+																					},
+																					"rule": schema.StringAttribute{
+																						Required:    true,
+																						Description: "The definition of the helper Grok rule.",
+																					},
+																				},
+																			},
+																		},
+																	},
+																},
+															},
+														},
+													},
+												},
+												"sample": schema.ListNestedBlock{
+													Description: "The `sample` processor allows probabilistic sampling of logs at a fixed rate.",
+													Validators: []validator.List{
+														listvalidator.SizeAtMost(1),
+													},
+													NestedObject: schema.NestedBlockObject{
+														Attributes: map[string]schema.Attribute{
+															"rate": schema.Int64Attribute{
+																Optional:    true,
+																Description: "Number of events to sample (1 in N).",
+															},
+															"percentage": schema.Float64Attribute{
+																Optional:    true,
+																Description: "The percentage of logs to sample.",
+															},
+														},
+													},
+												},
+												"dedupe": schema.ListNestedBlock{
+													Description: "The `dedupe` processor removes duplicate fields in log events.",
+													Validators: []validator.List{
+														listvalidator.SizeAtMost(1),
+													},
+													NestedObject: schema.NestedBlockObject{
+														Attributes: map[string]schema.Attribute{
+															"fields": schema.ListAttribute{
+																Required:    true,
+																ElementType: types.StringType,
+																Description: "A list of log field paths to check for duplicates.",
+															},
+															"mode": schema.StringAttribute{
+																Required:    true,
+																Description: "The deduplication mode to apply to the fields.",
+															},
+														},
+													},
+												},
+												"reduce": schema.ListNestedBlock{
+													Description: "The `reduce` processor aggregates and merges logs based on matching keys and merge strategies.",
+													Validators: []validator.List{
+														listvalidator.SizeAtMost(1),
+													},
+													NestedObject: schema.NestedBlockObject{
+														Attributes: map[string]schema.Attribute{
+															"group_by": schema.ListAttribute{
+																Required:    true,
+																ElementType: types.StringType,
+																Description: "A list of fields used to group log events for merging.",
+															},
+														},
+														Blocks: map[string]schema.Block{
+															"merge_strategies": schema.ListNestedBlock{
+																Description: "List of merge strategies defining how values from grouped events should be combined.",
+																NestedObject: schema.NestedBlockObject{
+																	Attributes: map[string]schema.Attribute{
+																		"path": schema.StringAttribute{
+																			Required:    true,
+																			Description: "The field path in the log event.",
+																		},
+																		"strategy": schema.StringAttribute{
+																			Required:    true,
+																			Description: "The merge strategy to apply.",
+																		},
+																	},
+																},
+															},
+														},
+													},
+												},
+												"throttle": schema.ListNestedBlock{
+													Description: "The `throttle` processor limits the number of events that pass through over a given time window.",
+													Validators: []validator.List{
+														listvalidator.SizeAtMost(1),
+													},
+													NestedObject: schema.NestedBlockObject{
+														Attributes: map[string]schema.Attribute{
+															"threshold": schema.Int64Attribute{
+																Required:    true,
+																Description: "The number of events to allow before throttling is applied.",
+															},
+															"window": schema.Float64Attribute{
+																Required:    true,
+																Description: "The time window in seconds over which the threshold applies.",
+															},
+															"group_by": schema.ListAttribute{
+																Optional:    true,
+																ElementType: types.StringType,
+																Description: "Optional list of fields used to group events before applying throttling.",
+															},
+														},
+													},
+												},
+												"add_env_vars": schema.ListNestedBlock{
+													Description: "The `add_env_vars` processor adds environment variable values to log events.",
+													Validators: []validator.List{
+														listvalidator.SizeAtMost(1),
+													},
+													NestedObject: schema.NestedBlockObject{
+														Attributes: map[string]schema.Attribute{},
+														Blocks: map[string]schema.Block{
+															"variables": schema.ListNestedBlock{
+																Description: "A list of environment variable mappings to apply to log fields.",
+																NestedObject: schema.NestedBlockObject{
+																	Attributes: map[string]schema.Attribute{
+																		"field": schema.StringAttribute{
+																			Required:    true,
+																			Description: "The target field in the log event.",
+																		},
+																		"name": schema.StringAttribute{
+																			Required:    true,
+																			Description: "The name of the environment variable to read.",
+																		},
+																	},
+																},
+															},
+														},
+													},
+												},
+												"enrichment_table": schema.ListNestedBlock{
+													Description: "The `enrichment_table` processor enriches logs using a static CSV file or GeoIP database.",
+													Validators: []validator.List{
+														listvalidator.SizeAtMost(1),
+													},
+													NestedObject: schema.NestedBlockObject{
+														Attributes: map[string]schema.Attribute{
+															"target": schema.StringAttribute{
+																Required:    true,
+																Description: "Path where enrichment results should be stored in the log.",
+															},
+														},
+														Blocks: map[string]schema.Block{
+															"file": schema.SingleNestedBlock{
+																Description: "Defines a static enrichment table loaded from a CSV file.",
+																Attributes: map[string]schema.Attribute{
+																	"path": schema.StringAttribute{
+																		Optional:    true,
+																		Description: "Path to the CSV file.",
+																	},
+																},
+																Blocks: map[string]schema.Block{
+																	"encoding": schema.SingleNestedBlock{
+																		Attributes: map[string]schema.Attribute{
+																			"type": schema.StringAttribute{
+																				Optional:    true,
+																				Description: "File encoding format.",
+																			},
+																			"delimiter": schema.StringAttribute{
+																				Optional:    true,
+																				Description: "The `encoding` `delimiter`.",
+																			},
+																			"includes_headers": schema.BoolAttribute{
+																				Optional:    true,
+																				Description: "The `encoding` `includes_headers`.",
+																			},
+																		},
+																	},
+																	"schema": schema.ListNestedBlock{
+																		Description: "Schema defining column names and their types.",
+																		NestedObject: schema.NestedBlockObject{
+																			Attributes: map[string]schema.Attribute{
+																				"column": schema.StringAttribute{
+																					Optional:    true,
+																					Description: "The `items` `column`.",
+																				},
+																				"type": schema.StringAttribute{
+																					Optional:    true,
+																					Description: "The type of the column (e.g. string, boolean, integer, etc.).",
+																				},
+																			},
+																		},
+																	},
+																	"key": schema.ListNestedBlock{
+																		Description: "Key fields used to look up enrichment values.",
+																		NestedObject: schema.NestedBlockObject{
+																			Attributes: map[string]schema.Attribute{
+																				"column": schema.StringAttribute{
+																					Optional:    true,
+																					Description: "The `items` `column`.",
+																				},
+																				"comparison": schema.StringAttribute{
+																					Optional:    true,
+																					Description: "The comparison method (e.g. equals).",
+																				},
+																				"field": schema.StringAttribute{
+																					Optional:    true,
+																					Description: "The `items` `field`.",
+																				},
+																			},
+																		},
+																	},
+																},
+															},
+															"geoip": schema.SingleNestedBlock{
+																Description: "Uses a GeoIP database to enrich logs based on an IP field.",
+																Attributes: map[string]schema.Attribute{
+																	"key_field": schema.StringAttribute{
+																		Optional:    true,
+																		Description: "Path to the IP field in the log.",
+																	},
+																	"locale": schema.StringAttribute{
+																		Optional:    true,
+																		Description: "Locale used to resolve geographical names.",
+																	},
+																	"path": schema.StringAttribute{
+																		Optional:    true,
+																		Description: "Path to the GeoIP database file.",
+																	},
+																},
+															},
+														},
+													},
+												},
+												"ocsf_mapper": schema.ListNestedBlock{
+													Description: "The `ocsf_mapper` processor transforms logs into the OCSF schema using predefined library mappings.",
+													Validators: []validator.List{
+														listvalidator.SizeAtMost(1),
+													},
+													NestedObject: schema.NestedBlockObject{
+														Attributes: map[string]schema.Attribute{},
+														Blocks: map[string]schema.Block{
+															"mapping": schema.ListNestedBlock{
+																Description: "List of OCSF mapping entries using library mapping.",
+																NestedObject: schema.NestedBlockObject{
+																	Attributes: map[string]schema.Attribute{
+																		"include": schema.StringAttribute{
+																			Required:    true,
+																			Description: "Search query for selecting which logs the mapping applies to.",
+																		},
+																		"library_mapping": schema.StringAttribute{
+																			Required:    true,
+																			Description: "Predefined library mapping for log transformation.",
+																		},
+																	},
+																},
+															},
+														},
+													},
+												},
+												"datadog_tags":     observability_pipeline.DatadogTagsProcessorSchema(),
+												"custom_processor": observability_pipeline.CustomProcessorSchema(),
 											},
 										},
 									},
 								},
 							},
-							"ocsf_mapper": schema.ListNestedBlock{
-								Description: "The `ocsf_mapper` processor transforms logs into the OCSF schema using predefined library mappings.",
-								NestedObject: schema.NestedBlockObject{
-									Attributes: map[string]schema.Attribute{
-										"id": schema.StringAttribute{
-											Required:    true,
-											Description: "The unique identifier for this component.",
-										},
-										"include": schema.StringAttribute{
-											Required:    true,
-											Description: "Search query to select logs.",
-										},
-										"inputs": schema.ListAttribute{
-											Required:    true,
-											ElementType: types.StringType,
-											Description: "List of component IDs whose output is used as input.",
-										},
-									},
-									Blocks: map[string]schema.Block{
-										"mapping": schema.ListNestedBlock{
-											Description: "List of OCSF mapping entries using library mapping.",
-											NestedObject: schema.NestedBlockObject{
-												Attributes: map[string]schema.Attribute{
-													"include": schema.StringAttribute{
-														Required:    true,
-														Description: "Search query for selecting which logs the mapping applies to.",
-													},
-													"library_mapping": schema.StringAttribute{
-														Required:    true,
-														Description: "Predefined library mapping for log transformation.",
-													},
-												},
-											},
-										},
-									},
-								},
-							},
-							"datadog_tags":     observability_pipeline.DatadogTagsProcessorSchema(),
-							"custom_processor": observability_pipeline.CustomProcessorSchema(),
 						},
 					},
 					"destinations": schema.SingleNestedBlock{
@@ -2430,6 +2277,12 @@ func (r *observabilityPipelineResource) Update(ctx context.Context, req resource
 		return
 	}
 
+	// Used for debugging purposes in the TF tests to display the payload sent to the Public API
+	if os.Getenv("TF_LOG") == "DEBUG" {
+		reqBytes, _ := json.MarshalIndent(body, "", "  ")
+		log.Printf("[DEBUG] Updating pipeline %s with request: %s", id, string(reqBytes))
+	}
+
 	result, _, err := r.Api.UpdatePipeline(r.Auth, id, *body)
 	if err != nil {
 		resp.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error updating Pipeline"))
@@ -2526,60 +2379,10 @@ func expandPipeline(ctx context.Context, state *observabilityPipelineModel) (*da
 		config.Sources = append(config.Sources, observability_pipeline.ExpandSocketSource(s))
 	}
 
-	// Processors
-	for _, p := range state.Config.Processors.FilterProcessor {
-		config.Processors = append(config.Processors, expandFilterProcessor(ctx, p))
-	}
-	for _, p := range state.Config.Processors.ParseJsonProcessor {
-		config.Processors = append(config.Processors, expandParseJsonProcessor(ctx, p))
-	}
-	for _, p := range state.Config.Processors.AddFieldsProcessor {
-		config.Processors = append(config.Processors, expandAddFieldsProcessor(ctx, p))
-	}
-	for _, p := range state.Config.Processors.RenameFieldsProcessor {
-		config.Processors = append(config.Processors, expandRenameFieldsProcessor(ctx, p))
-	}
-	for _, p := range state.Config.Processors.RemoveFieldsProcessor {
-		config.Processors = append(config.Processors, expandRemoveFieldsProcessor(ctx, p))
-	}
-	for _, p := range state.Config.Processors.QuotaProcessor {
-		config.Processors = append(config.Processors, expandQuotaProcessor(ctx, p))
-	}
-	for _, p := range state.Config.Processors.DedupeProcessor {
-		config.Processors = append(config.Processors, expandDedupeProcessor(ctx, p))
-	}
-	for _, p := range state.Config.Processors.ReduceProcessor {
-		config.Processors = append(config.Processors, expandReduceProcessor(ctx, p))
-	}
-	for _, p := range state.Config.Processors.ThrottleProcessor {
-		config.Processors = append(config.Processors, expandThrottleProcessor(ctx, p))
-	}
-	for _, p := range state.Config.Processors.AddEnvVarsProcessor {
-		config.Processors = append(config.Processors, expandAddEnvVarsProcessor(ctx, p))
-	}
-	for _, p := range state.Config.Processors.EnrichmentTableProcessor {
-		config.Processors = append(config.Processors, expandEnrichmentTableProcessor(ctx, p))
-	}
-	for _, p := range state.Config.Processors.OcsfMapperProcessor {
-		config.Processors = append(config.Processors, expandOcsfMapperProcessor(ctx, p))
-	}
-	for _, p := range state.Config.Processors.CustomProcessor {
-		config.Processors = append(config.Processors, observability_pipeline.ExpandCustomProcessor(ctx, p))
-	}
-	for _, p := range state.Config.Processors.ParseGrokProcessor {
-		config.Processors = append(config.Processors, expandParseGrokProcessor(ctx, p))
-	}
-	for _, p := range state.Config.Processors.SampleProcessor {
-		config.Processors = append(config.Processors, expandSampleProcessor(ctx, p))
-	}
-	for _, p := range state.Config.Processors.GenerateMetricsProcessor {
-		config.Processors = append(config.Processors, expandGenerateMetricsProcessor(ctx, p))
-	}
-	for _, p := range state.Config.Processors.SensitiveDataScannerProcessor {
-		config.Processors = append(config.Processors, expandSensitiveDataScannerProcessor(ctx, p))
-	}
-	for _, p := range state.Config.Processors.DatadogTagsProcessor {
-		config.Processors = append(config.Processors, expandDatadogTagsProcessor(ctx, p))
+	// Processors - iterate through processor groups
+	for _, group := range state.Config.Processors.ProcessorGroups {
+		processorGroup := expandProcessorGroup(ctx, group)
+		config.Processors = append(config.Processors, processorGroup)
 	}
 
 	// Destinations
@@ -2711,68 +2514,11 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 		}
 	}
 
-	for _, p := range cfg.GetProcessors() {
-
-		if f := flattenFilterProcessor(ctx, p.ObservabilityPipelineFilterProcessor); f != nil {
-			outCfg.Processors.FilterProcessor = append(outCfg.Processors.FilterProcessor, f)
-		}
-
-		if f := flattenParseJsonProcessor(ctx, p.ObservabilityPipelineParseJSONProcessor); f != nil {
-			outCfg.Processors.ParseJsonProcessor = append(outCfg.Processors.ParseJsonProcessor, f)
-		}
-
-		if f := flattenAddFieldsProcessor(ctx, p.ObservabilityPipelineAddFieldsProcessor); f != nil {
-			outCfg.Processors.AddFieldsProcessor = append(outCfg.Processors.AddFieldsProcessor, f)
-		}
-
-		if f := flattenRenameFieldsProcessor(ctx, p.ObservabilityPipelineRenameFieldsProcessor); f != nil {
-			outCfg.Processors.RenameFieldsProcessor = append(outCfg.Processors.RenameFieldsProcessor, f)
-		}
-
-		if f := flattenRemoveFieldsProcessor(ctx, p.ObservabilityPipelineRemoveFieldsProcessor); f != nil {
-			outCfg.Processors.RemoveFieldsProcessor = append(outCfg.Processors.RemoveFieldsProcessor, f)
-		}
-
-		if f := flattenQuotaProcessor(ctx, p.ObservabilityPipelineQuotaProcessor); f != nil {
-			outCfg.Processors.QuotaProcessor = append(outCfg.Processors.QuotaProcessor, f)
-		}
-		if f := flattenParseGrokProcessor(ctx, p.ObservabilityPipelineParseGrokProcessor); f != nil {
-			outCfg.Processors.ParseGrokProcessor = append(outCfg.Processors.ParseGrokProcessor, f)
-		}
-		if s := flattenSampleProcessor(ctx, p.ObservabilityPipelineSampleProcessor); s != nil {
-			outCfg.Processors.SampleProcessor = append(outCfg.Processors.SampleProcessor, s)
-		}
-
-		if f := flattenGenerateMetricsProcessor(ctx, p.ObservabilityPipelineGenerateMetricsProcessor); f != nil {
-			outCfg.Processors.GenerateMetricsProcessor = append(outCfg.Processors.GenerateMetricsProcessor, f)
-		}
-
-		if s := flattenSensitiveDataScannerProcessor(ctx, p.ObservabilityPipelineSensitiveDataScannerProcessor); s != nil {
-			outCfg.Processors.SensitiveDataScannerProcessor = append(outCfg.Processors.SensitiveDataScannerProcessor, s)
-		}
-		if f := flattenDedupeProcessor(ctx, p.ObservabilityPipelineDedupeProcessor); f != nil {
-			outCfg.Processors.DedupeProcessor = append(outCfg.Processors.DedupeProcessor, f)
-		}
-		if f := flattenReduceProcessor(ctx, p.ObservabilityPipelineReduceProcessor); f != nil {
-			outCfg.Processors.ReduceProcessor = append(outCfg.Processors.ReduceProcessor, f)
-		}
-		if f := flattenThrottleProcessor(ctx, p.ObservabilityPipelineThrottleProcessor); f != nil {
-			outCfg.Processors.ThrottleProcessor = append(outCfg.Processors.ThrottleProcessor, f)
-		}
-		if f := flattenAddEnvVarsProcessor(ctx, p.ObservabilityPipelineAddEnvVarsProcessor); f != nil {
-			outCfg.Processors.AddEnvVarsProcessor = append(outCfg.Processors.AddEnvVarsProcessor, f)
-		}
-		if f := flattenEnrichmentTableProcessor(ctx, p.ObservabilityPipelineEnrichmentTableProcessor); f != nil {
-			outCfg.Processors.EnrichmentTableProcessor = append(outCfg.Processors.EnrichmentTableProcessor, f)
-		}
-		if f := flattenOcsfMapperProcessor(ctx, p.ObservabilityPipelineOcsfMapperProcessor); f != nil {
-			outCfg.Processors.OcsfMapperProcessor = append(outCfg.Processors.OcsfMapperProcessor, f)
-		}
-		if f := flattenDatadogTagsProcessor(ctx, p.ObservabilityPipelineDatadogTagsProcessor); f != nil {
-			outCfg.Processors.DatadogTagsProcessor = append(outCfg.Processors.DatadogTagsProcessor, f)
-		}
-		if f := observability_pipeline.FlattenCustomProcessor(ctx, p.ObservabilityPipelineCustomProcessor); f != nil {
-			outCfg.Processors.CustomProcessor = append(outCfg.Processors.CustomProcessor, f)
+	// Process processor groups - each group may contain one or more processors
+	for _, group := range cfg.GetProcessors() {
+		flattenedGroup := flattenProcessorGroup(ctx, &group)
+		if flattenedGroup != nil {
+			outCfg.Processors.ProcessorGroups = append(outCfg.Processors.ProcessorGroups, flattenedGroup)
 		}
 	}
 
@@ -2904,7 +2650,8 @@ func expandKafkaSource(src *kafkaSourceModel) datadogV2.ObservabilityPipelineCon
 	source := datadogV2.NewObservabilityPipelineKafkaSourceWithDefaults()
 	source.SetId(src.Id.ValueString())
 	source.SetGroupId(src.GroupId.ValueString())
-	var topics []string
+	// Initialize as empty slice, not nil, to ensure it serializes as [] not null
+	topics := []string{}
 	for _, t := range src.Topics {
 		topics = append(topics, t.ValueString())
 	}
@@ -2941,66 +2688,315 @@ func expandKafkaSource(src *kafkaSourceModel) datadogV2.ObservabilityPipelineCon
 
 // ---------- Processors ----------
 
-func flattenFilterProcessor(ctx context.Context, src *datadogV2.ObservabilityPipelineFilterProcessor) *filterProcessorModel {
+// wrapProcessorInGroup wraps a processor item in a processor group with common fields
+func flattenFilterProcessorItem(ctx context.Context, src *datadogV2.ObservabilityPipelineFilterProcessor) *filterProcessorModel {
 	if src == nil {
 		return nil
 	}
-	inputs, _ := types.ListValueFrom(ctx, types.StringType, src.Inputs)
-	return &filterProcessorModel{
-		Id:      types.StringValue(src.Id),
-		Include: types.StringValue(src.Include),
-		Inputs:  inputs,
+	// Filter processor has no processor-specific fields, only common fields
+	return &filterProcessorModel{}
+}
+
+// flattenProcessorGroup converts a processor group from API model to Terraform model
+func flattenProcessorGroup(ctx context.Context, group *datadogV2.ObservabilityPipelineConfigProcessorGroup) *processorGroupModel {
+	if group == nil {
+		return nil
+	}
+
+	inputs, _ := types.ListValueFrom(ctx, types.StringType, group.GetInputs())
+
+	// Create the processorTypesModel from the processors in the group
+	processorTypes := &processorModel{}
+
+	// Get id, enabled, include from the first processor in the group
+	// (all processors in a group share these values)
+	processors := group.GetProcessors()
+	if len(processors) > 0 {
+		firstProc := processors[0]
+
+		// Extract common fields from the first processor - check all types
+		if firstProc.ObservabilityPipelineFilterProcessor != nil {
+			processorTypes.Id = types.StringValue(firstProc.ObservabilityPipelineFilterProcessor.GetId())
+			processorTypes.Enabled = types.BoolValue(firstProc.ObservabilityPipelineFilterProcessor.GetEnabled())
+			processorTypes.Include = types.StringValue(firstProc.ObservabilityPipelineFilterProcessor.GetInclude())
+		} else if firstProc.ObservabilityPipelineParseJSONProcessor != nil {
+			processorTypes.Id = types.StringValue(firstProc.ObservabilityPipelineParseJSONProcessor.GetId())
+			processorTypes.Enabled = types.BoolValue(firstProc.ObservabilityPipelineParseJSONProcessor.GetEnabled())
+			processorTypes.Include = types.StringValue(firstProc.ObservabilityPipelineParseJSONProcessor.GetInclude())
+		} else if firstProc.ObservabilityPipelineAddFieldsProcessor != nil {
+			processorTypes.Id = types.StringValue(firstProc.ObservabilityPipelineAddFieldsProcessor.GetId())
+			processorTypes.Enabled = types.BoolValue(firstProc.ObservabilityPipelineAddFieldsProcessor.GetEnabled())
+			processorTypes.Include = types.StringValue(firstProc.ObservabilityPipelineAddFieldsProcessor.GetInclude())
+		} else if firstProc.ObservabilityPipelineRenameFieldsProcessor != nil {
+			processorTypes.Id = types.StringValue(firstProc.ObservabilityPipelineRenameFieldsProcessor.GetId())
+			processorTypes.Enabled = types.BoolValue(firstProc.ObservabilityPipelineRenameFieldsProcessor.GetEnabled())
+			processorTypes.Include = types.StringValue(firstProc.ObservabilityPipelineRenameFieldsProcessor.GetInclude())
+		} else if firstProc.ObservabilityPipelineRemoveFieldsProcessor != nil {
+			processorTypes.Id = types.StringValue(firstProc.ObservabilityPipelineRemoveFieldsProcessor.GetId())
+			processorTypes.Enabled = types.BoolValue(firstProc.ObservabilityPipelineRemoveFieldsProcessor.GetEnabled())
+			processorTypes.Include = types.StringValue(firstProc.ObservabilityPipelineRemoveFieldsProcessor.GetInclude())
+		} else if firstProc.ObservabilityPipelineQuotaProcessor != nil {
+			processorTypes.Id = types.StringValue(firstProc.ObservabilityPipelineQuotaProcessor.GetId())
+			processorTypes.Enabled = types.BoolValue(firstProc.ObservabilityPipelineQuotaProcessor.GetEnabled())
+			processorTypes.Include = types.StringValue(firstProc.ObservabilityPipelineQuotaProcessor.GetInclude())
+		} else if firstProc.ObservabilityPipelineSensitiveDataScannerProcessor != nil {
+			processorTypes.Id = types.StringValue(firstProc.ObservabilityPipelineSensitiveDataScannerProcessor.GetId())
+			processorTypes.Enabled = types.BoolValue(firstProc.ObservabilityPipelineSensitiveDataScannerProcessor.GetEnabled())
+			processorTypes.Include = types.StringValue(firstProc.ObservabilityPipelineSensitiveDataScannerProcessor.GetInclude())
+		} else if firstProc.ObservabilityPipelineGenerateMetricsProcessor != nil {
+			processorTypes.Id = types.StringValue(firstProc.ObservabilityPipelineGenerateMetricsProcessor.GetId())
+			processorTypes.Enabled = types.BoolValue(firstProc.ObservabilityPipelineGenerateMetricsProcessor.GetEnabled())
+			processorTypes.Include = types.StringValue(firstProc.ObservabilityPipelineGenerateMetricsProcessor.GetInclude())
+		} else if firstProc.ObservabilityPipelineParseGrokProcessor != nil {
+			processorTypes.Id = types.StringValue(firstProc.ObservabilityPipelineParseGrokProcessor.GetId())
+			processorTypes.Enabled = types.BoolValue(firstProc.ObservabilityPipelineParseGrokProcessor.GetEnabled())
+			processorTypes.Include = types.StringValue(firstProc.ObservabilityPipelineParseGrokProcessor.GetInclude())
+		} else if firstProc.ObservabilityPipelineSampleProcessor != nil {
+			processorTypes.Id = types.StringValue(firstProc.ObservabilityPipelineSampleProcessor.GetId())
+			processorTypes.Enabled = types.BoolValue(firstProc.ObservabilityPipelineSampleProcessor.GetEnabled())
+			processorTypes.Include = types.StringValue(firstProc.ObservabilityPipelineSampleProcessor.GetInclude())
+		} else if firstProc.ObservabilityPipelineDedupeProcessor != nil {
+			processorTypes.Id = types.StringValue(firstProc.ObservabilityPipelineDedupeProcessor.GetId())
+			processorTypes.Enabled = types.BoolValue(firstProc.ObservabilityPipelineDedupeProcessor.GetEnabled())
+			processorTypes.Include = types.StringValue(firstProc.ObservabilityPipelineDedupeProcessor.GetInclude())
+		} else if firstProc.ObservabilityPipelineReduceProcessor != nil {
+			processorTypes.Id = types.StringValue(firstProc.ObservabilityPipelineReduceProcessor.GetId())
+			processorTypes.Enabled = types.BoolValue(firstProc.ObservabilityPipelineReduceProcessor.GetEnabled())
+			processorTypes.Include = types.StringValue(firstProc.ObservabilityPipelineReduceProcessor.GetInclude())
+		} else if firstProc.ObservabilityPipelineThrottleProcessor != nil {
+			processorTypes.Id = types.StringValue(firstProc.ObservabilityPipelineThrottleProcessor.GetId())
+			processorTypes.Enabled = types.BoolValue(firstProc.ObservabilityPipelineThrottleProcessor.GetEnabled())
+			processorTypes.Include = types.StringValue(firstProc.ObservabilityPipelineThrottleProcessor.GetInclude())
+		} else if firstProc.ObservabilityPipelineAddEnvVarsProcessor != nil {
+			processorTypes.Id = types.StringValue(firstProc.ObservabilityPipelineAddEnvVarsProcessor.GetId())
+			processorTypes.Enabled = types.BoolValue(firstProc.ObservabilityPipelineAddEnvVarsProcessor.GetEnabled())
+			processorTypes.Include = types.StringValue(firstProc.ObservabilityPipelineAddEnvVarsProcessor.GetInclude())
+		} else if firstProc.ObservabilityPipelineEnrichmentTableProcessor != nil {
+			processorTypes.Id = types.StringValue(firstProc.ObservabilityPipelineEnrichmentTableProcessor.GetId())
+			processorTypes.Enabled = types.BoolValue(firstProc.ObservabilityPipelineEnrichmentTableProcessor.GetEnabled())
+			processorTypes.Include = types.StringValue(firstProc.ObservabilityPipelineEnrichmentTableProcessor.GetInclude())
+		} else if firstProc.ObservabilityPipelineOcsfMapperProcessor != nil {
+			processorTypes.Id = types.StringValue(firstProc.ObservabilityPipelineOcsfMapperProcessor.GetId())
+			processorTypes.Enabled = types.BoolValue(firstProc.ObservabilityPipelineOcsfMapperProcessor.GetEnabled())
+			processorTypes.Include = types.StringValue(firstProc.ObservabilityPipelineOcsfMapperProcessor.GetInclude())
+		} else if firstProc.ObservabilityPipelineDatadogTagsProcessor != nil {
+			processorTypes.Id = types.StringValue(firstProc.ObservabilityPipelineDatadogTagsProcessor.GetId())
+			processorTypes.Enabled = types.BoolValue(firstProc.ObservabilityPipelineDatadogTagsProcessor.GetEnabled())
+			processorTypes.Include = types.StringValue(firstProc.ObservabilityPipelineDatadogTagsProcessor.GetInclude())
+		} else if firstProc.ObservabilityPipelineCustomProcessor != nil {
+			processorTypes.Id = types.StringValue(firstProc.ObservabilityPipelineCustomProcessor.GetId())
+			processorTypes.Enabled = types.BoolValue(firstProc.ObservabilityPipelineCustomProcessor.GetEnabled())
+			processorTypes.Include = types.StringValue(firstProc.ObservabilityPipelineCustomProcessor.GetInclude())
+		}
+
+		// Flatten each specific processor type
+		for _, p := range processors {
+			if f := flattenFilterProcessorItem(ctx, p.ObservabilityPipelineFilterProcessor); f != nil {
+				processorTypes.FilterProcessor = append(processorTypes.FilterProcessor, f)
+			}
+			if f := flattenParseJsonProcessorItem(ctx, p.ObservabilityPipelineParseJSONProcessor); f != nil {
+				processorTypes.ParseJsonProcessor = append(processorTypes.ParseJsonProcessor, f)
+			}
+			if f := flattenAddFieldsProcessorItem(ctx, p.ObservabilityPipelineAddFieldsProcessor); f != nil {
+				processorTypes.AddFieldsProcessor = append(processorTypes.AddFieldsProcessor, f)
+			}
+			if f := flattenRenameFieldsProcessorItem(ctx, p.ObservabilityPipelineRenameFieldsProcessor); f != nil {
+				processorTypes.RenameFieldsProcessor = append(processorTypes.RenameFieldsProcessor, f)
+			}
+			if f := flattenRemoveFieldsProcessorItem(ctx, p.ObservabilityPipelineRemoveFieldsProcessor); f != nil {
+				processorTypes.RemoveFieldsProcessor = append(processorTypes.RemoveFieldsProcessor, f)
+			}
+			if f := flattenQuotaProcessorItem(ctx, p.ObservabilityPipelineQuotaProcessor); f != nil {
+				processorTypes.QuotaProcessor = append(processorTypes.QuotaProcessor, f)
+			}
+			if f := flattenSensitiveDataScannerProcessorItem(ctx, p.ObservabilityPipelineSensitiveDataScannerProcessor); f != nil {
+				processorTypes.SensitiveDataScannerProcessor = append(processorTypes.SensitiveDataScannerProcessor, f)
+			}
+			if f := flattenGenerateDatadogMetricsProcessorItem(ctx, p.ObservabilityPipelineGenerateMetricsProcessor); f != nil {
+				processorTypes.GenerateMetricsProcessor = append(processorTypes.GenerateMetricsProcessor, f)
+			}
+			if f := flattenParseGrokProcessorItem(ctx, p.ObservabilityPipelineParseGrokProcessor); f != nil {
+				processorTypes.ParseGrokProcessor = append(processorTypes.ParseGrokProcessor, f)
+			}
+			if f := flattenSampleProcessorItem(ctx, p.ObservabilityPipelineSampleProcessor); f != nil {
+				processorTypes.SampleProcessor = append(processorTypes.SampleProcessor, f)
+			}
+			if f := flattenDedupeProcessorItem(ctx, p.ObservabilityPipelineDedupeProcessor); f != nil {
+				processorTypes.DedupeProcessor = append(processorTypes.DedupeProcessor, f)
+			}
+			if f := flattenReduceProcessorItem(ctx, p.ObservabilityPipelineReduceProcessor); f != nil {
+				processorTypes.ReduceProcessor = append(processorTypes.ReduceProcessor, f)
+			}
+			if f := flattenThrottleProcessorItem(ctx, p.ObservabilityPipelineThrottleProcessor); f != nil {
+				processorTypes.ThrottleProcessor = append(processorTypes.ThrottleProcessor, f)
+			}
+			if f := flattenAddEnvVarsProcessorItem(ctx, p.ObservabilityPipelineAddEnvVarsProcessor); f != nil {
+				processorTypes.AddEnvVarsProcessor = append(processorTypes.AddEnvVarsProcessor, f)
+			}
+			if f := flattenEnrichmentTableProcessorItem(ctx, p.ObservabilityPipelineEnrichmentTableProcessor); f != nil {
+				processorTypes.EnrichmentTableProcessor = append(processorTypes.EnrichmentTableProcessor, f)
+			}
+			if f := flattenOcsfMapperProcessorItem(ctx, p.ObservabilityPipelineOcsfMapperProcessor); f != nil {
+				processorTypes.OcsfMapperProcessor = append(processorTypes.OcsfMapperProcessor, f)
+			}
+			if f := observability_pipeline.FlattenDatadogTagsProcessor(p.ObservabilityPipelineDatadogTagsProcessor); f != nil {
+				processorTypes.DatadogTagsProcessor = append(processorTypes.DatadogTagsProcessor, f)
+			}
+			if f := observability_pipeline.FlattenCustomProcessor(p.ObservabilityPipelineCustomProcessor); f != nil {
+				processorTypes.CustomProcessor = append(processorTypes.CustomProcessor, f)
+			}
+		}
+	}
+
+	return &processorGroupModel{
+		Id:         types.StringValue(group.GetId()),
+		Enabled:    types.BoolValue(group.GetEnabled()),
+		Include:    types.StringValue(group.GetInclude()),
+		Inputs:     inputs,
+		Processors: processorTypes,
 	}
 }
 
-func expandFilterProcessor(ctx context.Context, src *filterProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
+// expandProcessorGroup converts a processor group from Terraform model to API model
+func expandProcessorGroup(ctx context.Context, group *processorGroupModel) datadogV2.ObservabilityPipelineConfigProcessorGroup {
+	apiGroup := datadogV2.NewObservabilityPipelineConfigProcessorGroupWithDefaults()
+
+	// Set group-level fields
+	apiGroup.SetId(group.Id.ValueString())
+	apiGroup.SetEnabled(group.Enabled.ValueBool())
+	apiGroup.SetInclude(group.Include.ValueString())
+
+	var inputs []string
+	group.Inputs.ElementsAs(ctx, &inputs, false)
+	apiGroup.SetInputs(inputs)
+
+	// Process the nested processor and get its items
+	// Pass processor-level id/enabled/include to be used by all processors in the group
+	if group.Processors != nil {
+		processorItems := expandProcessorTypes(ctx, group.Processors)
+		apiGroup.SetProcessors(processorItems)
+	}
+
+	return *apiGroup
+}
+
+// expandProcessorTypes converts the processor types model to a list of processor items
+// Uses the processor-level id, enabled, and include for all processors in the group
+func expandProcessorTypes(ctx context.Context, processors *processorModel) []datadogV2.ObservabilityPipelineConfigProcessorItem {
+	var items []datadogV2.ObservabilityPipelineConfigProcessorItem
+
+	// Get processor-level id/enabled/include
+	procId := processors.Id.ValueString()
+	procEnabled := processors.Enabled.ValueBool()
+	procInclude := processors.Include.ValueString()
+
+	// Check each processor type and expand if present
+	// Use processor-level id/enabled/include for all processors
+	for _, p := range processors.FilterProcessor {
+		items = append(items, expandFilterProcessorItem(ctx, procId, procEnabled, procInclude, p))
+	}
+	for _, p := range processors.ParseJsonProcessor {
+		items = append(items, expandParseJsonProcessorItem(ctx, procId, procEnabled, procInclude, p))
+	}
+	for _, p := range processors.AddFieldsProcessor {
+		items = append(items, expandAddFieldsProcessorItem(ctx, procId, procEnabled, procInclude, p))
+	}
+	for _, p := range processors.RenameFieldsProcessor {
+		items = append(items, expandRenameFieldsProcessorItem(ctx, procId, procEnabled, procInclude, p))
+	}
+	for _, p := range processors.RemoveFieldsProcessor {
+		items = append(items, expandRemoveFieldsProcessorItem(ctx, procId, procEnabled, procInclude, p))
+	}
+	for _, p := range processors.QuotaProcessor {
+		items = append(items, expandQuotaProcessorItem(ctx, procId, procEnabled, procInclude, p))
+	}
+	for _, p := range processors.DedupeProcessor {
+		items = append(items, expandDedupeProcessorItem(ctx, procId, procEnabled, procInclude, p))
+	}
+	for _, p := range processors.ReduceProcessor {
+		items = append(items, expandReduceProcessorItem(ctx, procId, procEnabled, procInclude, p))
+	}
+	for _, p := range processors.ThrottleProcessor {
+		items = append(items, expandThrottleProcessorItem(ctx, procId, procEnabled, procInclude, p))
+	}
+	for _, p := range processors.AddEnvVarsProcessor {
+		items = append(items, expandAddEnvVarsProcessorItem(ctx, procId, procEnabled, procInclude, p))
+	}
+	for _, p := range processors.EnrichmentTableProcessor {
+		items = append(items, expandEnrichmentTableProcessorItem(ctx, procId, procEnabled, procInclude, p))
+	}
+	for _, p := range processors.OcsfMapperProcessor {
+		items = append(items, expandOcsfMapperProcessorItem(ctx, procId, procEnabled, procInclude, p))
+	}
+	for _, p := range processors.ParseGrokProcessor {
+		items = append(items, expandParseGrokProcessorItem(ctx, procId, procEnabled, procInclude, p))
+	}
+	for _, p := range processors.SampleProcessor {
+		items = append(items, expandSampleProcessorItem(ctx, procId, procEnabled, procInclude, p))
+	}
+	for _, p := range processors.GenerateMetricsProcessor {
+		items = append(items, expandGenerateMetricsProcessorItem(ctx, procId, procEnabled, procInclude, p))
+	}
+	for _, p := range processors.SensitiveDataScannerProcessor {
+		items = append(items, expandSensitiveDataScannerProcessorItem(ctx, procId, procEnabled, procInclude, p))
+	}
+	for _, p := range processors.CustomProcessor {
+		item := observability_pipeline.ExpandCustomProcessor(p)
+		// Set common fields on the processor using processor-level values
+		if item.ObservabilityPipelineCustomProcessor != nil {
+			item.ObservabilityPipelineCustomProcessor.SetId(procId)
+			item.ObservabilityPipelineCustomProcessor.SetEnabled(procEnabled)
+			item.ObservabilityPipelineCustomProcessor.SetInclude(procInclude)
+		}
+		items = append(items, item)
+	}
+	for _, p := range processors.DatadogTagsProcessor {
+		item := observability_pipeline.ExpandDatadogTagsProcessor(p)
+		// Set common fields on the processor using processor-level values
+		if item.ObservabilityPipelineDatadogTagsProcessor != nil {
+			item.ObservabilityPipelineDatadogTagsProcessor.SetId(procId)
+			item.ObservabilityPipelineDatadogTagsProcessor.SetEnabled(procEnabled)
+			item.ObservabilityPipelineDatadogTagsProcessor.SetInclude(procInclude)
+		}
+		items = append(items, item)
+	}
+
+	return items
+}
+
+func expandFilterProcessorItem(ctx context.Context, id string, enabled bool, include string, src *filterProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
 	proc := datadogV2.NewObservabilityPipelineFilterProcessorWithDefaults()
-	proc.SetId(src.Id.ValueString())
-	proc.SetInclude(src.Include.ValueString())
-	var inputs []string
-	src.Inputs.ElementsAs(ctx, &inputs, false)
-	proc.SetInputs(inputs)
-	return datadogV2.ObservabilityPipelineConfigProcessorItem{
-		ObservabilityPipelineFilterProcessor: proc,
-	}
+	proc.SetId(id)
+	proc.SetEnabled(enabled)
+	proc.SetInclude(include)
+
+	return datadogV2.ObservabilityPipelineFilterProcessorAsObservabilityPipelineConfigProcessorItem(proc)
 }
 
-func flattenParseJsonProcessor(ctx context.Context, src *datadogV2.ObservabilityPipelineParseJSONProcessor) *parseJsonProcessorModel {
+func flattenParseJsonProcessorItem(ctx context.Context, src *datadogV2.ObservabilityPipelineParseJSONProcessor) *parseJsonProcessorModel {
 	if src == nil {
 		return nil
 	}
-	inputs, _ := types.ListValueFrom(ctx, types.StringType, src.Inputs)
 	return &parseJsonProcessorModel{
-		Id:      types.StringValue(src.Id),
-		Include: types.StringValue(src.Include),
-		Inputs:  inputs,
-		Field:   types.StringValue(src.Field),
+		Field: types.StringValue(src.Field),
 	}
 }
 
-func expandParseJsonProcessor(ctx context.Context, src *parseJsonProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
+func expandParseJsonProcessorItem(ctx context.Context, id string, enabled bool, include string, src *parseJsonProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
 	proc := datadogV2.NewObservabilityPipelineParseJSONProcessorWithDefaults()
-	proc.SetId(src.Id.ValueString())
-	proc.SetInclude(src.Include.ValueString())
-	var inputs []string
-	src.Inputs.ElementsAs(ctx, &inputs, false)
-	proc.SetInputs(inputs)
+	proc.SetId(id)
+	proc.SetEnabled(enabled)
+	proc.SetInclude(include)
 	proc.SetField(src.Field.ValueString())
-	return datadogV2.ObservabilityPipelineConfigProcessorItem{
-		ObservabilityPipelineParseJSONProcessor: proc,
-	}
+
+	return datadogV2.ObservabilityPipelineParseJSONProcessorAsObservabilityPipelineConfigProcessorItem(proc)
 }
 
-func flattenAddFieldsProcessor(ctx context.Context, src *datadogV2.ObservabilityPipelineAddFieldsProcessor) *addFieldsProcessor {
+func flattenAddFieldsProcessorItem(ctx context.Context, src *datadogV2.ObservabilityPipelineAddFieldsProcessor) *addFieldsProcessor {
 	if src == nil {
 		return nil
 	}
-	inputs, _ := types.ListValueFrom(ctx, types.StringType, src.Inputs)
-	out := &addFieldsProcessor{
-		Id:      types.StringValue(src.Id),
-		Include: types.StringValue(src.Include),
-		Inputs:  inputs,
-	}
+	out := &addFieldsProcessor{}
 	for _, f := range src.Fields {
 		out.Fields = append(out.Fields, fieldValue{
 			Name:  types.StringValue(f.Name),
@@ -3010,39 +3006,11 @@ func flattenAddFieldsProcessor(ctx context.Context, src *datadogV2.Observability
 	return out
 }
 
-func expandAddFieldsProcessor(ctx context.Context, src *addFieldsProcessor) datadogV2.ObservabilityPipelineConfigProcessorItem {
-	proc := datadogV2.NewObservabilityPipelineAddFieldsProcessorWithDefaults()
-	proc.SetId(src.Id.ValueString())
-	proc.SetInclude(src.Include.ValueString())
-	var inputs []string
-	src.Inputs.ElementsAs(ctx, &inputs, false)
-	proc.SetInputs(inputs)
-	var fields []datadogV2.ObservabilityPipelineFieldValue
-	for _, f := range src.Fields {
-		fields = append(fields, datadogV2.ObservabilityPipelineFieldValue{
-			Name:  f.Name.ValueString(),
-			Value: f.Value.ValueString(),
-		})
-	}
-	proc.SetFields(fields)
-	return datadogV2.ObservabilityPipelineConfigProcessorItem{
-		ObservabilityPipelineAddFieldsProcessor: proc,
-	}
-}
-
-func flattenRenameFieldsProcessor(ctx context.Context, src *datadogV2.ObservabilityPipelineRenameFieldsProcessor) *renameFieldsProcessorModel {
+func flattenRenameFieldsProcessorItem(ctx context.Context, src *datadogV2.ObservabilityPipelineRenameFieldsProcessor) *renameFieldsProcessorModel {
 	if src == nil {
 		return nil
 	}
-
-	inputs, _ := types.ListValueFrom(ctx, types.StringType, src.Inputs)
-
-	out := &renameFieldsProcessorModel{
-		Id:      types.StringValue(src.Id),
-		Include: types.StringValue(src.Include),
-		Inputs:  inputs,
-	}
-
+	out := &renameFieldsProcessorModel{}
 	for _, f := range src.Fields {
 		out.Fields = append(out.Fields, renameFieldItemModel{
 			Source:         types.StringValue(f.Source),
@@ -3050,112 +3018,65 @@ func flattenRenameFieldsProcessor(ctx context.Context, src *datadogV2.Observabil
 			PreserveSource: types.BoolValue(f.PreserveSource),
 		})
 	}
-
 	return out
 }
 
-func expandRenameFieldsProcessor(ctx context.Context, src *renameFieldsProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
-	proc := datadogV2.NewObservabilityPipelineRenameFieldsProcessorWithDefaults()
-	proc.SetId(src.Id.ValueString())
-	proc.SetInclude(src.Include.ValueString())
-
-	var inputs []string
-	src.Inputs.ElementsAs(ctx, &inputs, false)
-	proc.SetInputs(inputs)
-
-	var fields []datadogV2.ObservabilityPipelineRenameFieldsProcessorField
+func flattenRemoveFieldsProcessorItem(ctx context.Context, src *datadogV2.ObservabilityPipelineRemoveFieldsProcessor) *removeFieldsProcessorModel {
+	if src == nil {
+		return nil
+	}
+	// Use nil slice for optional fields - only populate if non-empty to preserve null in state
+	var fields []types.String
 	for _, f := range src.Fields {
-		fields = append(fields, datadogV2.ObservabilityPipelineRenameFieldsProcessorField{
-			Source:         f.Source.ValueString(),
-			Destination:    f.Destination.ValueString(),
-			PreserveSource: f.PreserveSource.ValueBool(),
-		})
+		fields = append(fields, types.StringValue(f))
 	}
-	proc.SetFields(fields)
-
-	return datadogV2.ObservabilityPipelineConfigProcessorItem{
-		ObservabilityPipelineRenameFieldsProcessor: proc,
-	}
-}
-
-func flattenRemoveFieldsProcessor(ctx context.Context, src *datadogV2.ObservabilityPipelineRemoveFieldsProcessor) *removeFieldsProcessorModel {
-	if src == nil {
-		return nil
-	}
-
-	inputs, _ := types.ListValueFrom(ctx, types.StringType, src.Inputs)
-	fields, _ := types.ListValueFrom(ctx, types.StringType, src.Fields)
-
+	fieldList, _ := types.ListValueFrom(ctx, types.StringType, fields)
 	return &removeFieldsProcessorModel{
-		Id:      types.StringValue(src.Id),
-		Include: types.StringValue(src.Include),
-		Inputs:  inputs,
-		Fields:  fields,
+		Fields: fieldList,
 	}
 }
 
-func expandRemoveFieldsProcessor(ctx context.Context, src *removeFieldsProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
-	proc := datadogV2.NewObservabilityPipelineRemoveFieldsProcessorWithDefaults()
-	proc.SetId(src.Id.ValueString())
-	proc.SetInclude(src.Include.ValueString())
-
-	var inputs []string
-	src.Inputs.ElementsAs(ctx, &inputs, false)
-	proc.SetInputs(inputs)
-
-	var fields []string
-	src.Fields.ElementsAs(ctx, &fields, false)
-	proc.SetFields(fields)
-
-	return datadogV2.ObservabilityPipelineConfigProcessorItem{
-		ObservabilityPipelineRemoveFieldsProcessor: proc,
-	}
-}
-
-func flattenQuotaProcessor(ctx context.Context, src *datadogV2.ObservabilityPipelineQuotaProcessor) *quotaProcessorModel {
+func flattenQuotaProcessorItem(ctx context.Context, src *datadogV2.ObservabilityPipelineQuotaProcessor) *quotaProcessorModel {
 	if src == nil {
 		return nil
 	}
 
-	inputs, _ := types.ListValueFrom(ctx, types.StringType, src.Inputs)
-	partitionFields, _ := types.ListValueFrom(ctx, types.StringType, src.PartitionFields)
-
-	var partitions []types.String
-	for _, p := range partitionFields.Elements() {
-		if strVal, ok := p.(types.String); ok {
-			partitions = append(partitions, strVal)
-		}
+	limit := src.GetLimit()
+	// Use nil slice for optional fields - only populate if non-empty to preserve null in state
+	var partitionFields []types.String
+	for _, p := range src.GetPartitionFields() {
+		partitionFields = append(partitionFields, types.StringValue(p))
 	}
 
 	out := &quotaProcessorModel{
-		Id:              types.StringValue(src.Id),
-		Include:         types.StringValue(src.Include),
-		Name:            types.StringValue(src.Name),
-		DropEvents:      types.BoolValue(src.DropEvents),
-		Inputs:          inputs,
-		PartitionFields: partitions,
+		Name: types.StringValue(src.GetName()),
 		Limit: quotaLimitModel{
-			Enforce: types.StringValue(string(src.Limit.Enforce)),
-			Limit:   types.Int64Value(src.Limit.Limit),
+			Enforce: types.StringValue(string(limit.GetEnforce())),
+			Limit:   types.Int64Value(limit.GetLimit()),
 		},
+		PartitionFields: partitionFields,
 	}
 
-	if src.IgnoreWhenMissingPartitions != nil {
-		out.IgnoreWhenMissingPartitions = types.BoolPointerValue(src.IgnoreWhenMissingPartitions)
+	if dropEvents, ok := src.GetDropEventsOk(); ok && dropEvents != nil {
+		out.DropEvents = types.BoolPointerValue(dropEvents)
 	}
 
-	if src.OverflowAction != nil {
-		out.OverflowAction = types.StringValue(string(*src.OverflowAction))
+	if ignoreMissing, ok := src.GetIgnoreWhenMissingPartitionsOk(); ok {
+		out.IgnoreWhenMissingPartitions = types.BoolPointerValue(ignoreMissing)
 	}
 
-	for _, o := range src.Overrides {
+	if overflowAction, ok := src.GetOverflowActionOk(); ok {
+		out.OverflowAction = types.StringValue(string(*overflowAction))
+	}
+
+	for _, o := range src.GetOverrides() {
 		override := quotaOverrideModel{
 			Limit: quotaLimitModel{
-				Enforce: types.StringValue(string(o.Limit.Enforce)),
-				Limit:   types.Int64Value(o.Limit.Limit),
+				Enforce: types.StringValue(string(o.Limit.GetEnforce())),
+				Limit:   types.Int64Value(o.Limit.GetLimit()),
 			},
 		}
-		for _, f := range o.Fields {
+		for _, f := range o.GetFields() {
 			override.Fields = append(override.Fields, fieldValue{
 				Name:  types.StringValue(f.Name),
 				Value: types.StringValue(f.Value),
@@ -3167,22 +3088,369 @@ func flattenQuotaProcessor(ctx context.Context, src *datadogV2.ObservabilityPipe
 	return out
 }
 
-func expandQuotaProcessor(ctx context.Context, src *quotaProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
+func flattenSensitiveDataScannerProcessorItem(ctx context.Context, src *datadogV2.ObservabilityPipelineSensitiveDataScannerProcessor) *sensitiveDataScannerProcessorModel {
+	if src == nil {
+		return nil
+	}
+	out := &sensitiveDataScannerProcessorModel{}
+	for _, rule := range src.GetRules() {
+		r := sensitiveDataScannerProcessorRule{
+			Name: types.StringValue(rule.GetName()),
+		}
+		// Use nil slice for optional fields - only populate if non-empty to preserve null in state
+		var tags []types.String
+		for _, t := range rule.GetTags() {
+			tags = append(tags, types.StringValue(t))
+		}
+		r.Tags = tags
+
+		if ko := rule.KeywordOptions; ko != nil {
+			// Use nil slice for optional fields - only populate if non-empty to preserve null in state
+			var keywords []types.String
+			for _, k := range ko.GetKeywords() {
+				keywords = append(keywords, types.StringValue(k))
+			}
+			r.KeywordOptions = &sensitiveDataScannerProcessorKeywordOptions{
+				Keywords:  keywords,
+				Proximity: types.Int64Value(ko.GetProximity()),
+			}
+		}
+
+		// Flatten Pattern
+		pattern := rule.GetPattern()
+		r.Pattern = &sensitiveDataScannerProcessorPattern{}
+		if pattern.ObservabilityPipelineSensitiveDataScannerProcessorCustomPattern != nil {
+			options := pattern.ObservabilityPipelineSensitiveDataScannerProcessorCustomPattern.GetOptions()
+			r.Pattern.Custom = &sensitiveDataScannerCustomPattern{
+				Rule: types.StringValue(options.GetRule()),
+			}
+		}
+		if pattern.ObservabilityPipelineSensitiveDataScannerProcessorLibraryPattern != nil {
+			options := pattern.ObservabilityPipelineSensitiveDataScannerProcessorLibraryPattern.GetOptions()
+			r.Pattern.Library = &sensitiveDataScannerLibraryPattern{
+				Id: types.StringValue(options.GetId()),
+			}
+			if useKw, ok := options.GetUseRecommendedKeywordsOk(); ok {
+				r.Pattern.Library.UseRecommendedKeywords = types.BoolPointerValue(useKw)
+			}
+		}
+
+		// Flatten Scope
+		scope := rule.GetScope()
+		r.Scope = &sensitiveDataScannerProcessorScope{}
+		if scope.ObservabilityPipelineSensitiveDataScannerProcessorScopeInclude != nil {
+			options := scope.ObservabilityPipelineSensitiveDataScannerProcessorScopeInclude.GetOptions()
+			// Use nil slice for optional fields - only populate if non-empty to preserve null in state
+			var fields []types.String
+			for _, f := range options.GetFields() {
+				fields = append(fields, types.StringValue(f))
+			}
+			r.Scope.Include = &sensitiveDataScannerScopeOptions{
+				Fields: fields,
+			}
+		}
+		if scope.ObservabilityPipelineSensitiveDataScannerProcessorScopeExclude != nil {
+			options := scope.ObservabilityPipelineSensitiveDataScannerProcessorScopeExclude.GetOptions()
+			// Use nil slice for optional fields - only populate if non-empty to preserve null in state
+			var fields []types.String
+			for _, f := range options.GetFields() {
+				fields = append(fields, types.StringValue(f))
+			}
+			r.Scope.Exclude = &sensitiveDataScannerScopeOptions{
+				Fields: fields,
+			}
+		}
+		if scope.ObservabilityPipelineSensitiveDataScannerProcessorScopeAll != nil {
+			all := true
+			r.Scope.All = &all
+		}
+
+		// Flatten OnMatch
+		onMatch := rule.GetOnMatch()
+		r.OnMatch = &sensitiveDataScannerProcessorAction{}
+		if onMatch.ObservabilityPipelineSensitiveDataScannerProcessorActionRedact != nil {
+			options := onMatch.ObservabilityPipelineSensitiveDataScannerProcessorActionRedact.GetOptions()
+			r.OnMatch.Redact = &sensitiveDataScannerRedactAction{
+				Replace: types.StringValue(options.GetReplace()),
+			}
+		}
+		if onMatch.ObservabilityPipelineSensitiveDataScannerProcessorActionHash != nil {
+			r.OnMatch.Hash = &sensitiveDataScannerHashAction{}
+		}
+		if onMatch.ObservabilityPipelineSensitiveDataScannerProcessorActionPartialRedact != nil {
+			options := onMatch.ObservabilityPipelineSensitiveDataScannerProcessorActionPartialRedact.GetOptions()
+			r.OnMatch.PartialRedact = &sensitiveDataScannerPartialRedactAction{
+				Characters: types.Int64Value(options.GetCharacters()),
+				Direction:  types.StringValue(string(options.GetDirection())),
+			}
+		}
+
+		out.Rules = append(out.Rules, r)
+	}
+	return out
+}
+
+func flattenGenerateDatadogMetricsProcessorItem(ctx context.Context, src *datadogV2.ObservabilityPipelineGenerateMetricsProcessor) *generateMetricsProcessorModel {
+	if src == nil {
+		return nil
+	}
+	out := &generateMetricsProcessorModel{}
+	for _, metric := range src.GetMetrics() {
+		groupByList, _ := types.ListValueFrom(ctx, types.StringType, metric.GetGroupBy())
+		m := generatedMetricModel{
+			Name:       types.StringValue(metric.GetName()),
+			Include:    types.StringValue(metric.GetInclude()),
+			MetricType: types.StringValue(string(metric.GetMetricType())),
+			GroupBy:    groupByList,
+		}
+		// Handle value
+		if metric.Value.ObservabilityPipelineGeneratedMetricIncrementByOne != nil {
+			m.Value = &generatedMetricValue{
+				Strategy: types.StringValue("increment_by_one"),
+			}
+		} else if metric.Value.ObservabilityPipelineGeneratedMetricIncrementByField != nil {
+			m.Value = &generatedMetricValue{
+				Strategy: types.StringValue("increment_by_field"),
+				Field:    types.StringValue(metric.Value.ObservabilityPipelineGeneratedMetricIncrementByField.GetField()),
+			}
+		}
+		out.Metrics = append(out.Metrics, m)
+	}
+	return out
+}
+
+func flattenParseGrokProcessorItem(ctx context.Context, src *datadogV2.ObservabilityPipelineParseGrokProcessor) *parseGrokProcessorModel {
+	if src == nil {
+		return nil
+	}
+	out := &parseGrokProcessorModel{
+		DisableLibraryRules: types.BoolValue(src.GetDisableLibraryRules()),
+	}
+	for _, rule := range src.GetRules() {
+		r := parseGrokProcessorRuleModel{
+			Source: types.StringValue(rule.GetSource()),
+		}
+		for _, m := range rule.GetMatchRules() {
+			r.MatchRules = append(r.MatchRules, grokRuleModel{
+				Name: types.StringValue(m.GetName()),
+				Rule: types.StringValue(m.GetRule()),
+			})
+		}
+		for _, s := range rule.GetSupportRules() {
+			r.SupportRules = append(r.SupportRules, grokRuleModel{
+				Name: types.StringValue(s.GetName()),
+				Rule: types.StringValue(s.GetRule()),
+			})
+		}
+		out.Rules = append(out.Rules, r)
+	}
+	return out
+}
+
+func flattenSampleProcessorItem(ctx context.Context, src *datadogV2.ObservabilityPipelineSampleProcessor) *sampleProcessorModel {
+	if src == nil {
+		return nil
+	}
+	return &sampleProcessorModel{
+		Rate:       types.Int64Value(src.GetRate()),
+		Percentage: types.Float64Value(src.GetPercentage()),
+	}
+}
+
+func flattenDedupeProcessorItem(ctx context.Context, src *datadogV2.ObservabilityPipelineDedupeProcessor) *dedupeProcessorModel {
+	if src == nil {
+		return nil
+	}
+	// Use nil slice for optional fields - only populate if non-empty to preserve null in state
+	var fields []types.String
+	for _, f := range src.GetFields() {
+		fields = append(fields, types.StringValue(f))
+	}
+	return &dedupeProcessorModel{
+		Fields: fields,
+		Mode:   types.StringValue(string(src.GetMode())),
+	}
+}
+
+func flattenReduceProcessorItem(ctx context.Context, src *datadogV2.ObservabilityPipelineReduceProcessor) *reduceProcessorModel {
+	if src == nil {
+		return nil
+	}
+	// Use nil slice for optional fields - only populate if non-empty to preserve null in state
+	var groupBy []types.String
+	for _, g := range src.GetGroupBy() {
+		groupBy = append(groupBy, types.StringValue(g))
+	}
+
+	out := &reduceProcessorModel{
+		GroupBy: groupBy,
+	}
+	for _, strategy := range src.GetMergeStrategies() {
+		out.MergeStrategies = append(out.MergeStrategies, mergeStrategyModel{
+			Path:     types.StringValue(strategy.GetPath()),
+			Strategy: types.StringValue(string(strategy.GetStrategy())),
+		})
+	}
+	return out
+}
+
+func flattenThrottleProcessorItem(ctx context.Context, src *datadogV2.ObservabilityPipelineThrottleProcessor) *throttleProcessorModel {
+	if src == nil {
+		return nil
+	}
+	// Use nil slice for optional fields - only populate if non-empty to preserve null in state
+	var groupBy []types.String
+	for _, g := range src.GetGroupBy() {
+		groupBy = append(groupBy, types.StringValue(g))
+	}
+	return &throttleProcessorModel{
+		Threshold: types.Int64Value(src.GetThreshold()),
+		Window:    types.Float64Value(src.GetWindow()),
+		GroupBy:   groupBy,
+	}
+}
+
+func flattenAddEnvVarsProcessorItem(ctx context.Context, src *datadogV2.ObservabilityPipelineAddEnvVarsProcessor) *addEnvVarsProcessorModel {
+	if src == nil {
+		return nil
+	}
+	out := &addEnvVarsProcessorModel{}
+	for _, v := range src.GetVariables() {
+		out.Variables = append(out.Variables, envVarMappingModel{
+			Field: types.StringValue(v.GetField()),
+			Name:  types.StringValue(v.GetName()),
+		})
+	}
+	return out
+}
+
+func flattenEnrichmentTableProcessorItem(ctx context.Context, src *datadogV2.ObservabilityPipelineEnrichmentTableProcessor) *enrichmentTableProcessorModel {
+	if src == nil {
+		return nil
+	}
+	out := &enrichmentTableProcessorModel{
+		Target: types.StringValue(src.GetTarget()),
+	}
+	if src.File != nil {
+		out.File = &enrichmentFileModel{
+			Path: types.StringValue(src.File.GetPath()),
+			Encoding: fileEncodingModel{
+				Type:            types.StringValue(string(src.File.Encoding.GetType())),
+				Delimiter:       types.StringValue(src.File.Encoding.GetDelimiter()),
+				IncludesHeaders: types.BoolValue(src.File.Encoding.GetIncludesHeaders()),
+			},
+		}
+		for _, s := range src.File.GetSchema() {
+			out.File.Schema = append(out.File.Schema, fileSchemaItemModel{
+				Column: types.StringValue(s.GetColumn()),
+				Type:   types.StringValue(string(s.GetType())),
+			})
+		}
+		for _, k := range src.File.GetKey() {
+			out.File.Key = append(out.File.Key, fileKeyItemModel{
+				Column:     types.StringValue(k.GetColumn()),
+				Comparison: types.StringValue(string(k.GetComparison())),
+				Field:      types.StringValue(k.GetField()),
+			})
+		}
+	}
+	if src.Geoip != nil {
+		out.GeoIp = &enrichmentGeoIpModel{
+			KeyField: types.StringValue(src.Geoip.GetKeyField()),
+			Locale:   types.StringValue(src.Geoip.GetLocale()),
+			Path:     types.StringValue(src.Geoip.GetPath()),
+		}
+	}
+	return out
+}
+
+func flattenOcsfMapperProcessorItem(ctx context.Context, src *datadogV2.ObservabilityPipelineOcsfMapperProcessor) *ocsfMapperProcessorModel {
+	if src == nil {
+		return nil
+	}
+	out := &ocsfMapperProcessorModel{}
+	for _, mapping := range src.GetMappings() {
+		m := ocsfMappingModel{
+			Include: types.StringValue(mapping.GetInclude()),
+		}
+		if mapping.Mapping.ObservabilityPipelineOcsfMappingLibrary != nil {
+			m.LibraryMapping = types.StringValue(string(*mapping.Mapping.ObservabilityPipelineOcsfMappingLibrary))
+		}
+		out.Mapping = append(out.Mapping, m)
+	}
+	return out
+}
+
+func expandAddFieldsProcessorItem(ctx context.Context, id string, enabled bool, include string, src *addFieldsProcessor) datadogV2.ObservabilityPipelineConfigProcessorItem {
+	proc := datadogV2.NewObservabilityPipelineAddFieldsProcessorWithDefaults()
+	proc.SetId(id)
+	proc.SetEnabled(enabled)
+	proc.SetInclude(include)
+
+	var fields []datadogV2.ObservabilityPipelineFieldValue
+	for _, f := range src.Fields {
+		fields = append(fields, datadogV2.ObservabilityPipelineFieldValue{
+			Name:  f.Name.ValueString(),
+			Value: f.Value.ValueString(),
+		})
+	}
+	proc.SetFields(fields)
+
+	return datadogV2.ObservabilityPipelineAddFieldsProcessorAsObservabilityPipelineConfigProcessorItem(proc)
+}
+
+func expandRenameFieldsProcessorItem(ctx context.Context, id string, enabled bool, include string, src *renameFieldsProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
+	proc := datadogV2.NewObservabilityPipelineRenameFieldsProcessorWithDefaults()
+	proc.SetId(id)
+	proc.SetEnabled(enabled)
+	proc.SetInclude(include)
+
+	var fields []datadogV2.ObservabilityPipelineRenameFieldsProcessorField
+	for _, f := range src.Fields {
+		fields = append(fields, datadogV2.ObservabilityPipelineRenameFieldsProcessorField{
+			Source:         f.Source.ValueString(),
+			Destination:    f.Destination.ValueString(),
+			PreserveSource: f.PreserveSource.ValueBool(),
+		})
+	}
+	proc.SetFields(fields)
+
+	return datadogV2.ObservabilityPipelineRenameFieldsProcessorAsObservabilityPipelineConfigProcessorItem(proc)
+}
+
+func expandRemoveFieldsProcessorItem(ctx context.Context, id string, enabled bool, include string, src *removeFieldsProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
+	proc := datadogV2.NewObservabilityPipelineRemoveFieldsProcessorWithDefaults()
+	proc.SetId(id)
+	proc.SetEnabled(enabled)
+	proc.SetInclude(include)
+
+	var fields []string
+	src.Fields.ElementsAs(ctx, &fields, false)
+	proc.SetFields(fields)
+
+	return datadogV2.ObservabilityPipelineRemoveFieldsProcessorAsObservabilityPipelineConfigProcessorItem(proc)
+}
+
+func expandQuotaProcessorItem(ctx context.Context, id string, enabled bool, include string, src *quotaProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
 	proc := datadogV2.NewObservabilityPipelineQuotaProcessorWithDefaults()
-	proc.SetId(src.Id.ValueString())
-	proc.SetInclude(src.Include.ValueString())
+	proc.SetId(id)
+	proc.SetEnabled(enabled)
+	proc.SetInclude(include)
 	proc.SetName(src.Name.ValueString())
-	proc.SetDropEvents(src.DropEvents.ValueBool())
+
+	if !src.DropEvents.IsNull() {
+		proc.SetDropEvents(src.DropEvents.ValueBool())
+	}
+
 	if !src.IgnoreWhenMissingPartitions.IsNull() {
 		proc.SetIgnoreWhenMissingPartitions(src.IgnoreWhenMissingPartitions.ValueBool())
 	}
 
-	var inputs, partitions []string
-	src.Inputs.ElementsAs(ctx, &inputs, false)
+	// Initialize as empty slice, not nil, to ensure it serializes as [] not null
+	partitions := []string{}
 	for _, p := range src.PartitionFields {
 		partitions = append(partitions, p.ValueString())
 	}
-	proc.SetInputs(inputs)
 	proc.SetPartitionFields(partitions)
 
 	proc.SetLimit(datadogV2.ObservabilityPipelineQuotaProcessorLimit{
@@ -3196,6 +3464,12 @@ func expandQuotaProcessor(ctx context.Context, src *quotaProcessorModel) datadog
 
 	var overrides []datadogV2.ObservabilityPipelineQuotaProcessorOverride
 	for _, o := range src.Overrides {
+		override := datadogV2.ObservabilityPipelineQuotaProcessorOverride{
+			Limit: datadogV2.ObservabilityPipelineQuotaProcessorLimit{
+				Enforce: datadogV2.ObservabilityPipelineQuotaProcessorLimitEnforceType(o.Limit.Enforce.ValueString()),
+				Limit:   o.Limit.Limit.ValueInt64(),
+			},
+		}
 		var fields []datadogV2.ObservabilityPipelineFieldValue
 		for _, f := range o.Fields {
 			fields = append(fields, datadogV2.ObservabilityPipelineFieldValue{
@@ -3203,19 +3477,395 @@ func expandQuotaProcessor(ctx context.Context, src *quotaProcessorModel) datadog
 				Value: f.Value.ValueString(),
 			})
 		}
-		overrides = append(overrides, datadogV2.ObservabilityPipelineQuotaProcessorOverride{
-			Fields: fields,
-			Limit: datadogV2.ObservabilityPipelineQuotaProcessorLimit{
-				Enforce: datadogV2.ObservabilityPipelineQuotaProcessorLimitEnforceType(o.Limit.Enforce.ValueString()),
-				Limit:   o.Limit.Limit.ValueInt64(),
-			},
-		})
+		override.SetFields(fields)
+		overrides = append(overrides, override)
 	}
 	proc.SetOverrides(overrides)
 
-	return datadogV2.ObservabilityPipelineConfigProcessorItem{
-		ObservabilityPipelineQuotaProcessor: proc,
+	return datadogV2.ObservabilityPipelineQuotaProcessorAsObservabilityPipelineConfigProcessorItem(proc)
+}
+
+func expandDedupeProcessorItem(ctx context.Context, id string, enabled bool, include string, src *dedupeProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
+	proc := datadogV2.NewObservabilityPipelineDedupeProcessorWithDefaults()
+	proc.SetId(id)
+	proc.SetEnabled(enabled)
+	proc.SetInclude(include)
+
+	// Initialize as empty slice, not nil, to ensure it serializes as [] not null
+	fields := []string{}
+	for _, f := range src.Fields {
+		fields = append(fields, f.ValueString())
 	}
+	proc.SetFields(fields)
+	proc.SetMode(datadogV2.ObservabilityPipelineDedupeProcessorMode(src.Mode.ValueString()))
+
+	return datadogV2.ObservabilityPipelineDedupeProcessorAsObservabilityPipelineConfigProcessorItem(proc)
+}
+
+func expandReduceProcessorItem(ctx context.Context, id string, enabled bool, include string, src *reduceProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
+	proc := datadogV2.NewObservabilityPipelineReduceProcessorWithDefaults()
+	proc.SetId(id)
+	proc.SetEnabled(enabled)
+	proc.SetInclude(include)
+
+	// Initialize as empty slice, not nil, to ensure it serializes as [] not null
+	groupBy := []string{}
+	for _, g := range src.GroupBy {
+		groupBy = append(groupBy, g.ValueString())
+	}
+	proc.SetGroupBy(groupBy)
+
+	var strategies []datadogV2.ObservabilityPipelineReduceProcessorMergeStrategy
+	for _, s := range src.MergeStrategies {
+		strategies = append(strategies, datadogV2.ObservabilityPipelineReduceProcessorMergeStrategy{
+			Path:     s.Path.ValueString(),
+			Strategy: datadogV2.ObservabilityPipelineReduceProcessorMergeStrategyStrategy(s.Strategy.ValueString()),
+		})
+	}
+	proc.SetMergeStrategies(strategies)
+
+	return datadogV2.ObservabilityPipelineReduceProcessorAsObservabilityPipelineConfigProcessorItem(proc)
+}
+
+func expandThrottleProcessorItem(ctx context.Context, id string, enabled bool, include string, src *throttleProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
+	proc := datadogV2.NewObservabilityPipelineThrottleProcessorWithDefaults()
+	proc.SetId(id)
+	proc.SetEnabled(enabled)
+	proc.SetInclude(include)
+	proc.SetThreshold(src.Threshold.ValueInt64())
+	proc.SetWindow(src.Window.ValueFloat64())
+
+	// Initialize as empty slice, not nil, to ensure it serializes as [] not null
+	groupBy := []string{}
+	for _, g := range src.GroupBy {
+		groupBy = append(groupBy, g.ValueString())
+	}
+	if len(groupBy) > 0 {
+		proc.SetGroupBy(groupBy)
+	}
+
+	return datadogV2.ObservabilityPipelineThrottleProcessorAsObservabilityPipelineConfigProcessorItem(proc)
+}
+
+func expandAddEnvVarsProcessorItem(ctx context.Context, id string, enabled bool, include string, src *addEnvVarsProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
+	proc := datadogV2.NewObservabilityPipelineAddEnvVarsProcessorWithDefaults()
+	proc.SetId(id)
+	proc.SetEnabled(enabled)
+	proc.SetInclude(include)
+
+	var vars []datadogV2.ObservabilityPipelineAddEnvVarsProcessorVariable
+	for _, v := range src.Variables {
+		vars = append(vars, datadogV2.ObservabilityPipelineAddEnvVarsProcessorVariable{
+			Field: v.Field.ValueString(),
+			Name:  v.Name.ValueString(),
+		})
+	}
+	proc.SetVariables(vars)
+
+	return datadogV2.ObservabilityPipelineAddEnvVarsProcessorAsObservabilityPipelineConfigProcessorItem(proc)
+}
+
+func expandEnrichmentTableProcessorItem(ctx context.Context, id string, enabled bool, include string, src *enrichmentTableProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
+	proc := datadogV2.NewObservabilityPipelineEnrichmentTableProcessorWithDefaults()
+	proc.SetId(id)
+	proc.SetEnabled(enabled)
+	proc.SetInclude(include)
+	proc.SetTarget(src.Target.ValueString())
+
+	if src.File != nil {
+		file := datadogV2.ObservabilityPipelineEnrichmentTableFile{
+			Path: src.File.Path.ValueString(),
+		}
+
+		file.Encoding = datadogV2.ObservabilityPipelineEnrichmentTableFileEncoding{
+			Type:            datadogV2.ObservabilityPipelineEnrichmentTableFileEncodingType(src.File.Encoding.Type.ValueString()),
+			Delimiter:       src.File.Encoding.Delimiter.ValueString(),
+			IncludesHeaders: src.File.Encoding.IncludesHeaders.ValueBool(),
+		}
+
+		for _, s := range src.File.Schema {
+			file.Schema = append(file.Schema, datadogV2.ObservabilityPipelineEnrichmentTableFileSchemaItems{
+				Column: s.Column.ValueString(),
+				Type:   datadogV2.ObservabilityPipelineEnrichmentTableFileSchemaItemsType(s.Type.ValueString()),
+			})
+		}
+
+		for _, k := range src.File.Key {
+			file.Key = append(file.Key, datadogV2.ObservabilityPipelineEnrichmentTableFileKeyItems{
+				Column:     k.Column.ValueString(),
+				Comparison: datadogV2.ObservabilityPipelineEnrichmentTableFileKeyItemsComparison(k.Comparison.ValueString()),
+				Field:      k.Field.ValueString(),
+			})
+		}
+
+		proc.SetFile(file)
+	}
+
+	if src.GeoIp != nil {
+		geoip := datadogV2.ObservabilityPipelineEnrichmentTableGeoIp{
+			KeyField: src.GeoIp.KeyField.ValueString(),
+			Locale:   src.GeoIp.Locale.ValueString(),
+			Path:     src.GeoIp.Path.ValueString(),
+		}
+		proc.SetGeoip(geoip)
+	}
+
+	return datadogV2.ObservabilityPipelineEnrichmentTableProcessorAsObservabilityPipelineConfigProcessorItem(proc)
+}
+
+func expandOcsfMapperProcessorItem(ctx context.Context, id string, enabled bool, include string, src *ocsfMapperProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
+	proc := datadogV2.NewObservabilityPipelineOcsfMapperProcessorWithDefaults()
+	proc.SetId(id)
+	proc.SetEnabled(enabled)
+	proc.SetInclude(include)
+
+	var mappings []datadogV2.ObservabilityPipelineOcsfMapperProcessorMapping
+	for _, m := range src.Mapping {
+		libMapping := datadogV2.ObservabilityPipelineOcsfMappingLibrary(m.LibraryMapping.ValueString())
+		mapping := datadogV2.ObservabilityPipelineOcsfMappingLibraryAsObservabilityPipelineOcsfMapperProcessorMappingMapping(&libMapping)
+		mappings = append(mappings, datadogV2.ObservabilityPipelineOcsfMapperProcessorMapping{
+			Include: m.Include.ValueString(),
+			Mapping: mapping,
+		})
+	}
+	proc.SetMappings(mappings)
+
+	return datadogV2.ObservabilityPipelineOcsfMapperProcessorAsObservabilityPipelineConfigProcessorItem(proc)
+}
+
+func expandParseGrokProcessorItem(ctx context.Context, id string, enabled bool, include string, src *parseGrokProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
+	proc := datadogV2.NewObservabilityPipelineParseGrokProcessorWithDefaults()
+	proc.SetId(id)
+	proc.SetEnabled(enabled)
+	proc.SetInclude(include)
+
+	if !src.DisableLibraryRules.IsNull() {
+		proc.SetDisableLibraryRules(src.DisableLibraryRules.ValueBool())
+	}
+
+	var rules []datadogV2.ObservabilityPipelineParseGrokProcessorRule
+	for _, r := range src.Rules {
+		rule := datadogV2.ObservabilityPipelineParseGrokProcessorRule{
+			Source: r.Source.ValueString(),
+		}
+
+		var matchRules []datadogV2.ObservabilityPipelineParseGrokProcessorRuleMatchRule
+		for _, m := range r.MatchRules {
+			matchRules = append(matchRules, datadogV2.ObservabilityPipelineParseGrokProcessorRuleMatchRule{
+				Name: m.Name.ValueString(),
+				Rule: m.Rule.ValueString(),
+			})
+		}
+		rule.SetMatchRules(matchRules)
+
+		var supportRules []datadogV2.ObservabilityPipelineParseGrokProcessorRuleSupportRule
+		for _, s := range r.SupportRules {
+			supportRules = append(supportRules, datadogV2.ObservabilityPipelineParseGrokProcessorRuleSupportRule{
+				Name: s.Name.ValueString(),
+				Rule: s.Rule.ValueString(),
+			})
+		}
+		rule.SetSupportRules(supportRules)
+
+		rules = append(rules, rule)
+	}
+	proc.SetRules(rules)
+
+	return datadogV2.ObservabilityPipelineParseGrokProcessorAsObservabilityPipelineConfigProcessorItem(proc)
+}
+
+func expandSampleProcessorItem(ctx context.Context, id string, enabled bool, include string, src *sampleProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
+	proc := datadogV2.NewObservabilityPipelineSampleProcessorWithDefaults()
+	proc.SetId(id)
+	proc.SetEnabled(enabled)
+	proc.SetInclude(include)
+
+	if !src.Rate.IsNull() {
+		proc.SetRate(src.Rate.ValueInt64())
+	}
+	if !src.Percentage.IsNull() {
+		proc.SetPercentage(src.Percentage.ValueFloat64())
+	}
+
+	return datadogV2.ObservabilityPipelineSampleProcessorAsObservabilityPipelineConfigProcessorItem(proc)
+}
+
+func expandGenerateMetricsProcessorItem(ctx context.Context, id string, enabled bool, include string, src *generateMetricsProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
+	proc := datadogV2.NewObservabilityPipelineGenerateMetricsProcessorWithDefaults()
+	proc.SetId(id)
+	proc.SetEnabled(enabled)
+	proc.SetInclude(include)
+
+	var metrics []datadogV2.ObservabilityPipelineGeneratedMetric
+	for _, m := range src.Metrics {
+		// Initialize as empty slice, not nil, to ensure it serializes as [] not null
+		groupBy := []string{}
+		m.GroupBy.ElementsAs(ctx, &groupBy, false)
+
+		val := datadogV2.ObservabilityPipelineMetricValue{}
+		if m.Value != nil {
+			switch m.Value.Strategy.ValueString() {
+			case "increment_by_one":
+				val.ObservabilityPipelineGeneratedMetricIncrementByOne = &datadogV2.ObservabilityPipelineGeneratedMetricIncrementByOne{
+					Strategy: "increment_by_one",
+				}
+			case "increment_by_field":
+				val.ObservabilityPipelineGeneratedMetricIncrementByField = &datadogV2.ObservabilityPipelineGeneratedMetricIncrementByField{
+					Strategy: "increment_by_field",
+					Field:    m.Value.Field.ValueString(),
+				}
+			}
+		}
+
+		metrics = append(metrics, datadogV2.ObservabilityPipelineGeneratedMetric{
+			Name:       m.Name.ValueString(),
+			Include:    m.Include.ValueString(),
+			MetricType: datadogV2.ObservabilityPipelineGeneratedMetricMetricType(m.MetricType.ValueString()),
+			Value:      val,
+			GroupBy:    groupBy,
+		})
+	}
+	proc.SetMetrics(metrics)
+
+	return datadogV2.ObservabilityPipelineGenerateMetricsProcessorAsObservabilityPipelineConfigProcessorItem(proc)
+}
+
+func expandSensitiveDataScannerProcessorItem(ctx context.Context, id string, enabled bool, include string, src *sensitiveDataScannerProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
+	proc := datadogV2.NewObservabilityPipelineSensitiveDataScannerProcessorWithDefaults()
+	proc.SetId(id)
+	proc.SetEnabled(enabled)
+	proc.SetInclude(include)
+
+	var rules []datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorRule
+	for _, r := range src.Rules {
+		rule := datadogV2.NewObservabilityPipelineSensitiveDataScannerProcessorRuleWithDefaults()
+
+		if !r.Name.IsNull() {
+			rule.SetName(r.Name.ValueString())
+		}
+
+		// Initialize as empty slice, not nil, to ensure it serializes as [] not null
+		tags := []string{}
+		for _, t := range r.Tags {
+			tags = append(tags, t.ValueString())
+		}
+		// Tags is required by the API (no omitempty), so always set it even if empty
+		rule.SetTags(tags)
+
+		if r.KeywordOptions != nil {
+			ko := datadogV2.NewObservabilityPipelineSensitiveDataScannerProcessorKeywordOptionsWithDefaults()
+			// Initialize as empty slice, not nil, to ensure it serializes as [] not null
+			keywords := []string{}
+			for _, k := range r.KeywordOptions.Keywords {
+				keywords = append(keywords, k.ValueString())
+			}
+			ko.SetKeywords(keywords)
+			if !r.KeywordOptions.Proximity.IsNull() {
+				ko.SetProximity(r.KeywordOptions.Proximity.ValueInt64())
+			}
+			rule.SetKeywordOptions(*ko)
+		}
+
+		// Expand Pattern
+		if r.Pattern != nil {
+			if r.Pattern.Custom != nil {
+				options := datadogV2.NewObservabilityPipelineSensitiveDataScannerProcessorCustomPatternOptionsWithDefaults()
+				options.SetRule(r.Pattern.Custom.Rule.ValueString())
+				customPattern := datadogV2.NewObservabilityPipelineSensitiveDataScannerProcessorCustomPattern(
+					*options,
+					datadogV2.OBSERVABILITYPIPELINESENSITIVEDATASCANNERPROCESSORCUSTOMPATTERNTYPE_CUSTOM,
+				)
+				pattern := datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorCustomPatternAsObservabilityPipelineSensitiveDataScannerProcessorPattern(customPattern)
+				rule.SetPattern(pattern)
+			} else if r.Pattern.Library != nil {
+				options := datadogV2.NewObservabilityPipelineSensitiveDataScannerProcessorLibraryPatternOptionsWithDefaults()
+				options.SetId(r.Pattern.Library.Id.ValueString())
+				if !r.Pattern.Library.UseRecommendedKeywords.IsNull() {
+					options.SetUseRecommendedKeywords(r.Pattern.Library.UseRecommendedKeywords.ValueBool())
+				}
+				libraryPattern := datadogV2.NewObservabilityPipelineSensitiveDataScannerProcessorLibraryPattern(
+					*options,
+					datadogV2.OBSERVABILITYPIPELINESENSITIVEDATASCANNERPROCESSORLIBRARYPATTERNTYPE_LIBRARY,
+				)
+				pattern := datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorLibraryPatternAsObservabilityPipelineSensitiveDataScannerProcessorPattern(libraryPattern)
+				rule.SetPattern(pattern)
+			}
+		}
+
+		// Expand Scope
+		if r.Scope != nil {
+			if r.Scope.Include != nil {
+				// Initialize as empty slice, not nil, to ensure it serializes as [] not null
+				fields := []string{}
+				for _, f := range r.Scope.Include.Fields {
+					fields = append(fields, f.ValueString())
+				}
+				options := datadogV2.NewObservabilityPipelineSensitiveDataScannerProcessorScopeOptionsWithDefaults()
+				options.SetFields(fields)
+				scopeInclude := datadogV2.NewObservabilityPipelineSensitiveDataScannerProcessorScopeInclude(
+					*options,
+					datadogV2.OBSERVABILITYPIPELINESENSITIVEDATASCANNERPROCESSORSCOPEINCLUDETARGET_INCLUDE,
+				)
+				scope := datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorScopeIncludeAsObservabilityPipelineSensitiveDataScannerProcessorScope(scopeInclude)
+				rule.SetScope(scope)
+			} else if r.Scope.Exclude != nil {
+				// Initialize as empty slice, not nil, to ensure it serializes as [] not null
+				fields := []string{}
+				for _, f := range r.Scope.Exclude.Fields {
+					fields = append(fields, f.ValueString())
+				}
+				options := datadogV2.NewObservabilityPipelineSensitiveDataScannerProcessorScopeOptionsWithDefaults()
+				options.SetFields(fields)
+				scopeExclude := datadogV2.NewObservabilityPipelineSensitiveDataScannerProcessorScopeExclude(
+					*options,
+					datadogV2.OBSERVABILITYPIPELINESENSITIVEDATASCANNERPROCESSORSCOPEEXCLUDETARGET_EXCLUDE,
+				)
+				scope := datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorScopeExcludeAsObservabilityPipelineSensitiveDataScannerProcessorScope(scopeExclude)
+				rule.SetScope(scope)
+			} else if r.Scope.All != nil && *r.Scope.All {
+				scopeAll := datadogV2.NewObservabilityPipelineSensitiveDataScannerProcessorScopeAll(
+					datadogV2.OBSERVABILITYPIPELINESENSITIVEDATASCANNERPROCESSORSCOPEALLTARGET_ALL,
+				)
+				scope := datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorScopeAllAsObservabilityPipelineSensitiveDataScannerProcessorScope(scopeAll)
+				rule.SetScope(scope)
+			}
+		}
+
+		// Expand OnMatch
+		if r.OnMatch != nil {
+			if r.OnMatch.Redact != nil {
+				options := datadogV2.NewObservabilityPipelineSensitiveDataScannerProcessorActionRedactOptionsWithDefaults()
+				options.SetReplace(r.OnMatch.Redact.Replace.ValueString())
+				actionRedact := datadogV2.NewObservabilityPipelineSensitiveDataScannerProcessorActionRedact(
+					datadogV2.OBSERVABILITYPIPELINESENSITIVEDATASCANNERPROCESSORACTIONREDACTACTION_REDACT,
+					*options,
+				)
+				action := datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorActionRedactAsObservabilityPipelineSensitiveDataScannerProcessorAction(actionRedact)
+				rule.SetOnMatch(action)
+			} else if r.OnMatch.Hash != nil {
+				actionHash := datadogV2.NewObservabilityPipelineSensitiveDataScannerProcessorActionHash(
+					datadogV2.OBSERVABILITYPIPELINESENSITIVEDATASCANNERPROCESSORACTIONHASHACTION_HASH,
+				)
+				action := datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorActionHashAsObservabilityPipelineSensitiveDataScannerProcessorAction(actionHash)
+				rule.SetOnMatch(action)
+			} else if r.OnMatch.PartialRedact != nil {
+				options := datadogV2.NewObservabilityPipelineSensitiveDataScannerProcessorActionPartialRedactOptionsWithDefaults()
+				options.SetCharacters(r.OnMatch.PartialRedact.Characters.ValueInt64())
+				options.SetDirection(datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorActionPartialRedactOptionsDirection(r.OnMatch.PartialRedact.Direction.ValueString()))
+				actionPartialRedact := datadogV2.NewObservabilityPipelineSensitiveDataScannerProcessorActionPartialRedact(
+					datadogV2.OBSERVABILITYPIPELINESENSITIVEDATASCANNERPROCESSORACTIONPARTIALREDACTACTION_PARTIAL_REDACT,
+					*options,
+				)
+				action := datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorActionPartialRedactAsObservabilityPipelineSensitiveDataScannerProcessorAction(actionPartialRedact)
+				rule.SetOnMatch(action)
+			}
+		}
+
+		rules = append(rules, *rule)
+	}
+	proc.SetRules(rules)
+
+	return datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorAsObservabilityPipelineConfigProcessorItem(proc)
 }
 
 // ---------- Destinations ----------
@@ -3260,140 +3910,6 @@ func expandTls(tlsTF *tlsModel) *datadogV2.ObservabilityPipelineTls {
 		tls.SetKeyFile(tlsTF.KeyFile.ValueString())
 	}
 	return tls
-}
-
-func expandParseGrokProcessor(ctx context.Context, p *parseGrokProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
-	proc := datadogV2.NewObservabilityPipelineParseGrokProcessorWithDefaults()
-	proc.SetId(p.Id.ValueString())
-	proc.SetInclude(p.Include.ValueString())
-
-	var inputs []string
-	p.Inputs.ElementsAs(ctx, &inputs, false)
-	proc.SetInputs(inputs)
-
-	if !p.DisableLibraryRules.IsNull() {
-		proc.SetDisableLibraryRules(p.DisableLibraryRules.ValueBool())
-	}
-
-	var rules []datadogV2.ObservabilityPipelineParseGrokProcessorRule
-	for _, r := range p.Rules {
-		var matchRules []datadogV2.ObservabilityPipelineParseGrokProcessorRuleMatchRule
-		for _, m := range r.MatchRules {
-			matchRules = append(matchRules, datadogV2.ObservabilityPipelineParseGrokProcessorRuleMatchRule{
-				Name: m.Name.ValueString(),
-				Rule: m.Rule.ValueString(),
-			})
-		}
-
-		var supportRules []datadogV2.ObservabilityPipelineParseGrokProcessorRuleSupportRule
-		for _, s := range r.SupportRules {
-			supportRules = append(supportRules, datadogV2.ObservabilityPipelineParseGrokProcessorRuleSupportRule{
-				Name: s.Name.ValueString(),
-				Rule: s.Rule.ValueString(),
-			})
-		}
-
-		rules = append(rules, datadogV2.ObservabilityPipelineParseGrokProcessorRule{
-			Source:       r.Source.ValueString(),
-			MatchRules:   matchRules,
-			SupportRules: supportRules,
-		})
-	}
-	proc.SetRules(rules)
-
-	return datadogV2.ObservabilityPipelineConfigProcessorItem{
-		ObservabilityPipelineParseGrokProcessor: proc,
-	}
-}
-
-func flattenParseGrokProcessor(ctx context.Context, proc *datadogV2.ObservabilityPipelineParseGrokProcessor) *parseGrokProcessorModel {
-	if proc == nil {
-		return nil
-	}
-
-	inputs, _ := types.ListValueFrom(ctx, types.StringType, proc.GetInputs())
-
-	out := &parseGrokProcessorModel{
-		Id:                  types.StringValue(proc.GetId()),
-		Include:             types.StringValue(proc.GetInclude()),
-		Inputs:              inputs,
-		DisableLibraryRules: types.BoolValue(proc.GetDisableLibraryRules()),
-	}
-
-	for _, r := range proc.GetRules() {
-		var matchRules []grokRuleModel
-		for _, m := range r.MatchRules {
-			matchRules = append(matchRules, grokRuleModel{
-				Name: types.StringValue(m.Name),
-				Rule: types.StringValue(m.Rule),
-			})
-		}
-
-		var supportRules []grokRuleModel
-		for _, s := range r.SupportRules {
-			supportRules = append(supportRules, grokRuleModel{
-				Name: types.StringValue(s.Name),
-				Rule: types.StringValue(s.Rule),
-			})
-		}
-
-		out.Rules = append(out.Rules, parseGrokProcessorRuleModel{
-			Source:       types.StringValue(r.Source),
-			MatchRules:   matchRules,
-			SupportRules: supportRules,
-		})
-	}
-
-	return out
-}
-
-func expandSampleProcessor(ctx context.Context, p *sampleProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
-	proc := datadogV2.NewObservabilityPipelineSampleProcessorWithDefaults()
-	proc.SetId(p.Id.ValueString())
-	proc.SetInclude(p.Include.ValueString())
-
-	var inputs []string
-	p.Inputs.ElementsAs(ctx, &inputs, false)
-	proc.SetInputs(inputs)
-
-	if !p.Rate.IsNull() {
-		proc.SetRate(p.Rate.ValueInt64())
-	}
-	if !p.Percentage.IsNull() {
-		proc.SetPercentage(p.Percentage.ValueFloat64())
-	}
-
-	return datadogV2.ObservabilityPipelineConfigProcessorItem{
-		ObservabilityPipelineSampleProcessor: proc,
-	}
-}
-
-func flattenSampleProcessor(ctx context.Context, proc *datadogV2.ObservabilityPipelineSampleProcessor) *sampleProcessorModel {
-	if proc == nil {
-		return nil
-	}
-
-	inputs, _ := types.ListValueFrom(ctx, types.StringType, proc.GetInputs())
-
-	out := &sampleProcessorModel{
-		Id:      types.StringValue(proc.GetId()),
-		Include: types.StringValue(proc.GetInclude()),
-		Inputs:  inputs,
-	}
-
-	if rate, ok := proc.GetRateOk(); ok {
-		out.Rate = types.Int64Value(*rate)
-	} else {
-		out.Rate = types.Int64Null()
-	}
-
-	if pct, ok := proc.GetPercentageOk(); ok {
-		out.Percentage = types.Float64Value(*pct)
-	} else {
-		out.Percentage = types.Float64Null()
-	}
-
-	return out
 }
 
 func expandFluentdSource(src *fluentdSourceModel) datadogV2.ObservabilityPipelineConfigSourceItem {
@@ -3680,88 +4196,6 @@ func flattenSplunkTcpSource(src *datadogV2.ObservabilityPipelineSplunkTcpSource)
 	}
 
 	return out
-}
-
-func expandGenerateMetricsProcessor(ctx context.Context, p *generateMetricsProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
-	proc := datadogV2.NewObservabilityPipelineGenerateMetricsProcessorWithDefaults()
-
-	proc.SetId(p.Id.ValueString())
-	proc.SetInclude(p.Include.ValueString())
-
-	var inputs []string
-	p.Inputs.ElementsAs(ctx, &inputs, false)
-	proc.SetInputs(inputs)
-
-	var metrics []datadogV2.ObservabilityPipelineGeneratedMetric
-	for _, m := range p.Metrics {
-		val := datadogV2.ObservabilityPipelineMetricValue{}
-
-		switch m.Value.Strategy.ValueString() {
-		case "increment_by_one":
-			val.ObservabilityPipelineGeneratedMetricIncrementByOne = &datadogV2.ObservabilityPipelineGeneratedMetricIncrementByOne{
-				Strategy: "increment_by_one",
-			}
-		case "increment_by_field":
-			val.ObservabilityPipelineGeneratedMetricIncrementByField = &datadogV2.ObservabilityPipelineGeneratedMetricIncrementByField{
-				Strategy: "increment_by_field",
-				Field:    m.Value.Field.ValueString(),
-			}
-		}
-
-		groupBy := []string{}
-		m.GroupBy.ElementsAs(ctx, &groupBy, false)
-
-		metrics = append(metrics, datadogV2.ObservabilityPipelineGeneratedMetric{
-			Name:       m.Name.ValueString(),
-			Include:    m.Include.ValueString(),
-			MetricType: datadogV2.ObservabilityPipelineGeneratedMetricMetricType(m.MetricType.ValueString()),
-			Value:      val,
-			GroupBy:    groupBy,
-		})
-	}
-
-	proc.SetMetrics(metrics)
-
-	return datadogV2.ObservabilityPipelineConfigProcessorItem{
-		ObservabilityPipelineGenerateMetricsProcessor: proc,
-	}
-}
-
-func flattenGenerateMetricsProcessor(ctx context.Context, proc *datadogV2.ObservabilityPipelineGenerateMetricsProcessor) *generateMetricsProcessorModel {
-	if proc == nil {
-		return nil
-	}
-
-	inputs, _ := types.ListValueFrom(ctx, types.StringType, proc.GetInputs())
-
-	var metrics []generatedMetricModel
-	for _, m := range proc.GetMetrics() {
-		groupBy, _ := types.ListValueFrom(ctx, types.StringType, m.GroupBy)
-
-		val := &generatedMetricValue{}
-		if m.Value.ObservabilityPipelineGeneratedMetricIncrementByOne != nil {
-			val.Strategy = types.StringValue("increment_by_one")
-		}
-		if m.Value.ObservabilityPipelineGeneratedMetricIncrementByField != nil {
-			val.Strategy = types.StringValue("increment_by_field")
-			val.Field = types.StringValue(m.Value.ObservabilityPipelineGeneratedMetricIncrementByField.Field)
-		}
-
-		metrics = append(metrics, generatedMetricModel{
-			Name:       types.StringValue(m.Name),
-			Include:    types.StringValue(m.Include),
-			MetricType: types.StringValue(string(m.MetricType)),
-			GroupBy:    groupBy,
-			Value:      val,
-		})
-	}
-
-	return &generateMetricsProcessorModel{
-		Id:      types.StringValue(proc.GetId()),
-		Include: types.StringValue(proc.GetInclude()),
-		Inputs:  inputs,
-		Metrics: metrics,
-	}
 }
 
 func expandSplunkHecDestination(ctx context.Context, d *splunkHecDestinationModel) datadogV2.ObservabilityPipelineConfigDestinationItem {
@@ -4170,239 +4604,6 @@ func flattenMicrosoftSentinelDestination(ctx context.Context, src *datadogV2.Mic
 	}
 }
 
-func expandSensitiveDataScannerProcessor(ctx context.Context, src *sensitiveDataScannerProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
-	obj := datadogV2.NewObservabilityPipelineSensitiveDataScannerProcessorWithDefaults()
-
-	obj.SetId(src.Id.ValueString())
-	obj.SetInclude(src.Include.ValueString())
-
-	var inputs []string
-	src.Inputs.ElementsAs(ctx, &inputs, false)
-	obj.SetInputs(inputs)
-
-	var rules []datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorRule
-	for _, rule := range src.Rules {
-		r := datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorRule{
-			Name: rule.Name.ValueString(),
-		}
-
-		for _, tag := range rule.Tags {
-			r.Tags = append(r.Tags, tag.ValueString())
-		}
-
-		if rule.KeywordOptions != nil {
-			r.KeywordOptions = &datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorKeywordOptions{}
-
-			for _, k := range rule.KeywordOptions.Keywords {
-				r.KeywordOptions.Keywords = append(r.KeywordOptions.Keywords, k.ValueString())
-			}
-
-			r.KeywordOptions.Proximity = rule.KeywordOptions.Proximity.ValueInt64()
-		}
-
-		if rule.Pattern != nil {
-			if rule.Pattern.Custom != nil {
-				r.Pattern = datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorPattern{
-					ObservabilityPipelineSensitiveDataScannerProcessorCustomPattern: &datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorCustomPattern{
-						Type: "custom",
-						Options: datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorCustomPatternOptions{
-							Rule: rule.Pattern.Custom.Rule.ValueString(),
-						},
-					},
-				}
-			} else if rule.Pattern.Library != nil {
-				r.Pattern = datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorPattern{
-					ObservabilityPipelineSensitiveDataScannerProcessorLibraryPattern: &datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorLibraryPattern{
-						Type: "library",
-						Options: datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorLibraryPatternOptions{
-							Id: rule.Pattern.Library.Id.ValueString(),
-						},
-					},
-				}
-				if !rule.Pattern.Library.UseRecommendedKeywords.IsNull() {
-					r.Pattern.ObservabilityPipelineSensitiveDataScannerProcessorLibraryPattern.Options.
-						SetUseRecommendedKeywords(rule.Pattern.Library.UseRecommendedKeywords.ValueBool())
-				}
-			}
-		}
-
-		if rule.Scope != nil {
-			if rule.Scope.Include != nil {
-				r.Scope = datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorScope{
-					ObservabilityPipelineSensitiveDataScannerProcessorScopeInclude: &datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorScopeInclude{
-						Target: "include",
-						Options: datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorScopeOptions{
-							Fields: extractStringList(rule.Scope.Include.Fields),
-						},
-					},
-				}
-			} else if rule.Scope.Exclude != nil {
-				r.Scope = datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorScope{
-					ObservabilityPipelineSensitiveDataScannerProcessorScopeExclude: &datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorScopeExclude{
-						Target: "exclude",
-						Options: datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorScopeOptions{
-							Fields: extractStringList(rule.Scope.Exclude.Fields),
-						},
-					},
-				}
-			} else if rule.Scope.All != nil && *rule.Scope.All {
-				r.Scope = datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorScope{
-					ObservabilityPipelineSensitiveDataScannerProcessorScopeAll: &datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorScopeAll{
-						Target: "all",
-					},
-				}
-			}
-		}
-
-		if rule.OnMatch != nil {
-			if rule.OnMatch.Redact != nil {
-				r.OnMatch = datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorAction{
-					ObservabilityPipelineSensitiveDataScannerProcessorActionRedact: &datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorActionRedact{
-						Action: "redact",
-						Options: datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorActionRedactOptions{
-							Replace: rule.OnMatch.Redact.Replace.ValueString(),
-						},
-					},
-				}
-			} else if rule.OnMatch.Hash != nil {
-				r.OnMatch = datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorAction{
-					ObservabilityPipelineSensitiveDataScannerProcessorActionHash: &datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorActionHash{
-						Action: "hash",
-					},
-				}
-			} else if rule.OnMatch.PartialRedact != nil {
-				r.OnMatch = datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorAction{
-					ObservabilityPipelineSensitiveDataScannerProcessorActionPartialRedact: &datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorActionPartialRedact{
-						Action: "partial_redact",
-						Options: datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorActionPartialRedactOptions{
-							Characters: rule.OnMatch.PartialRedact.Characters.ValueInt64(),
-							Direction:  datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorActionPartialRedactOptionsDirection(rule.OnMatch.PartialRedact.Direction.ValueString()),
-						},
-					},
-				}
-			}
-		}
-
-		rules = append(rules, r)
-	}
-	obj.SetRules(rules)
-
-	return datadogV2.ObservabilityPipelineConfigProcessorItem{
-		ObservabilityPipelineSensitiveDataScannerProcessor: obj,
-	}
-}
-
-func extractStringList(list []types.String) []string {
-	var out []string
-	for _, s := range list {
-		out = append(out, s.ValueString())
-	}
-	return out
-}
-
-func wrapStringList(vals []string) []types.String {
-	out := make([]types.String, len(vals))
-	for i, v := range vals {
-		out[i] = types.StringValue(v)
-	}
-	return out
-}
-
-func flattenSensitiveDataScannerProcessor(ctx context.Context, src *datadogV2.ObservabilityPipelineSensitiveDataScannerProcessor) *sensitiveDataScannerProcessorModel {
-	if src == nil {
-		return nil
-	}
-
-	inputs, _ := types.ListValueFrom(ctx, types.StringType, src.GetInputs())
-	out := &sensitiveDataScannerProcessorModel{
-		Id:      types.StringValue(src.GetId()),
-		Include: types.StringValue(src.GetInclude()),
-		Inputs:  inputs,
-	}
-
-	for _, r := range src.GetRules() {
-		rule := sensitiveDataScannerProcessorRule{
-			Name: types.StringValue(r.GetName()),
-		}
-
-		for _, tag := range r.GetTags() {
-			rule.Tags = append(rule.Tags, types.StringValue(tag))
-		}
-
-		if ko, ok := r.GetKeywordOptionsOk(); ok {
-			rule.KeywordOptions = &sensitiveDataScannerProcessorKeywordOptions{
-				Proximity: types.Int64Value(ko.Proximity),
-			}
-			for _, k := range ko.Keywords {
-				rule.KeywordOptions.Keywords = append(rule.KeywordOptions.Keywords, types.StringValue(k))
-			}
-		}
-
-		switch p := r.Pattern; {
-		case p.ObservabilityPipelineSensitiveDataScannerProcessorCustomPattern != nil:
-			rule.Pattern = &sensitiveDataScannerProcessorPattern{
-				Custom: &sensitiveDataScannerCustomPattern{
-					Rule: types.StringValue(p.ObservabilityPipelineSensitiveDataScannerProcessorCustomPattern.Options.Rule),
-				},
-			}
-		case p.ObservabilityPipelineSensitiveDataScannerProcessorLibraryPattern != nil:
-			opts := p.ObservabilityPipelineSensitiveDataScannerProcessorLibraryPattern.Options
-			rule.Pattern = &sensitiveDataScannerProcessorPattern{
-				Library: &sensitiveDataScannerLibraryPattern{
-					Id: types.StringValue(opts.Id),
-				},
-			}
-			if v, ok := opts.GetUseRecommendedKeywordsOk(); ok {
-				rule.Pattern.Library.UseRecommendedKeywords = types.BoolValue(*v)
-			}
-		}
-
-		switch s := r.Scope; {
-		case s.ObservabilityPipelineSensitiveDataScannerProcessorScopeInclude != nil:
-			rule.Scope = &sensitiveDataScannerProcessorScope{
-				Include: &sensitiveDataScannerScopeOptions{
-					Fields: wrapStringList(s.ObservabilityPipelineSensitiveDataScannerProcessorScopeInclude.Options.Fields),
-				},
-			}
-		case s.ObservabilityPipelineSensitiveDataScannerProcessorScopeExclude != nil:
-			rule.Scope = &sensitiveDataScannerProcessorScope{
-				Exclude: &sensitiveDataScannerScopeOptions{
-					Fields: wrapStringList(s.ObservabilityPipelineSensitiveDataScannerProcessorScopeExclude.Options.Fields),
-				},
-			}
-		case s.ObservabilityPipelineSensitiveDataScannerProcessorScopeAll != nil:
-			all := true
-			rule.Scope = &sensitiveDataScannerProcessorScope{
-				All: &all,
-			}
-		}
-
-		switch a := r.OnMatch; {
-		case a.ObservabilityPipelineSensitiveDataScannerProcessorActionRedact != nil:
-			rule.OnMatch = &sensitiveDataScannerProcessorAction{
-				Redact: &sensitiveDataScannerRedactAction{
-					Replace: types.StringValue(a.ObservabilityPipelineSensitiveDataScannerProcessorActionRedact.Options.Replace),
-				},
-			}
-		case a.ObservabilityPipelineSensitiveDataScannerProcessorActionHash != nil:
-			rule.OnMatch = &sensitiveDataScannerProcessorAction{
-				Hash: &sensitiveDataScannerHashAction{},
-			}
-		case a.ObservabilityPipelineSensitiveDataScannerProcessorActionPartialRedact != nil:
-			rule.OnMatch = &sensitiveDataScannerProcessorAction{
-				PartialRedact: &sensitiveDataScannerPartialRedactAction{
-					Characters: types.Int64Value(a.ObservabilityPipelineSensitiveDataScannerProcessorActionPartialRedact.Options.Characters),
-					Direction:  types.StringValue(string(a.ObservabilityPipelineSensitiveDataScannerProcessorActionPartialRedact.Options.Direction)),
-				},
-			}
-		}
-
-		out.Rules = append(out.Rules, rule)
-	}
-
-	return out
-}
-
 func expandSumoLogicSource(src *sumoLogicSourceModel) datadogV2.ObservabilityPipelineConfigSourceItem {
 	obj := datadogV2.NewObservabilityPipelineSumoLogicSourceWithDefaults()
 	obj.SetId(src.Id.ValueString())
@@ -4583,296 +4784,6 @@ func flattenLogstashSource(src *datadogV2.ObservabilityPipelineLogstashSource) *
 	return out
 }
 
-func expandDedupeProcessor(ctx context.Context, src *dedupeProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
-	proc := datadogV2.NewObservabilityPipelineDedupeProcessorWithDefaults()
-	proc.SetId(src.Id.ValueString())
-	proc.SetInclude(src.Include.ValueString())
-
-	var inputs []string
-	src.Inputs.ElementsAs(ctx, &inputs, false)
-	proc.SetInputs(inputs)
-
-	var fields []string
-	for _, f := range src.Fields {
-		fields = append(fields, f.ValueString())
-	}
-	proc.SetFields(fields)
-
-	proc.SetMode(datadogV2.ObservabilityPipelineDedupeProcessorMode(src.Mode.ValueString()))
-
-	return datadogV2.ObservabilityPipelineConfigProcessorItem{
-		ObservabilityPipelineDedupeProcessor: proc,
-	}
-}
-
-func flattenDedupeProcessor(ctx context.Context, src *datadogV2.ObservabilityPipelineDedupeProcessor) *dedupeProcessorModel {
-	if src == nil {
-		return nil
-	}
-
-	inputs, _ := types.ListValueFrom(ctx, types.StringType, src.Inputs)
-
-	var fields []types.String
-	for _, f := range src.Fields {
-		fields = append(fields, types.StringValue(f))
-	}
-
-	return &dedupeProcessorModel{
-		Id:      types.StringValue(src.Id),
-		Include: types.StringValue(src.Include),
-		Inputs:  inputs,
-		Fields:  fields,
-		Mode:    types.StringValue(string(src.Mode)),
-	}
-}
-
-func expandReduceProcessor(ctx context.Context, src *reduceProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
-	proc := datadogV2.NewObservabilityPipelineReduceProcessorWithDefaults()
-	proc.SetId(src.Id.ValueString())
-	proc.SetInclude(src.Include.ValueString())
-
-	var inputs, groupBy []string
-	src.Inputs.ElementsAs(ctx, &inputs, false)
-	for _, g := range src.GroupBy {
-		groupBy = append(groupBy, g.ValueString())
-	}
-	proc.SetInputs(inputs)
-	proc.SetGroupBy(groupBy)
-
-	var strategies []datadogV2.ObservabilityPipelineReduceProcessorMergeStrategy
-	for _, s := range src.MergeStrategies {
-		strategies = append(strategies, datadogV2.ObservabilityPipelineReduceProcessorMergeStrategy{
-			Path:     s.Path.ValueString(),
-			Strategy: datadogV2.ObservabilityPipelineReduceProcessorMergeStrategyStrategy(s.Strategy.ValueString()),
-		})
-	}
-	proc.SetMergeStrategies(strategies)
-
-	return datadogV2.ObservabilityPipelineConfigProcessorItem{
-		ObservabilityPipelineReduceProcessor: proc,
-	}
-}
-
-func flattenReduceProcessor(ctx context.Context, src *datadogV2.ObservabilityPipelineReduceProcessor) *reduceProcessorModel {
-	if src == nil {
-		return nil
-	}
-
-	inputs, _ := types.ListValueFrom(ctx, types.StringType, src.Inputs)
-
-	var groupBy []types.String
-	for _, g := range src.GroupBy {
-		groupBy = append(groupBy, types.StringValue(g))
-	}
-
-	var strategies []mergeStrategyModel
-	for _, s := range src.MergeStrategies {
-		strategies = append(strategies, mergeStrategyModel{
-			Path:     types.StringValue(s.Path),
-			Strategy: types.StringValue(string(s.Strategy)),
-		})
-	}
-
-	return &reduceProcessorModel{
-		Id:              types.StringValue(src.Id),
-		Include:         types.StringValue(src.Include),
-		Inputs:          inputs,
-		GroupBy:         groupBy,
-		MergeStrategies: strategies,
-	}
-}
-
-func expandThrottleProcessor(ctx context.Context, src *throttleProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
-	proc := datadogV2.NewObservabilityPipelineThrottleProcessorWithDefaults()
-	proc.SetId(src.Id.ValueString())
-	proc.SetInclude(src.Include.ValueString())
-
-	var inputs []string
-	src.Inputs.ElementsAs(ctx, &inputs, false)
-	proc.SetInputs(inputs)
-
-	proc.SetThreshold(src.Threshold.ValueInt64())
-	proc.SetWindow(src.Window.ValueFloat64())
-
-	var groupBy []string
-	for _, g := range src.GroupBy {
-		groupBy = append(groupBy, g.ValueString())
-	}
-	if len(groupBy) > 0 {
-		proc.SetGroupBy(groupBy)
-	}
-
-	return datadogV2.ObservabilityPipelineConfigProcessorItem{
-		ObservabilityPipelineThrottleProcessor: proc,
-	}
-}
-
-func flattenThrottleProcessor(ctx context.Context, src *datadogV2.ObservabilityPipelineThrottleProcessor) *throttleProcessorModel {
-	if src == nil {
-		return nil
-	}
-
-	inputs, _ := types.ListValueFrom(ctx, types.StringType, src.Inputs)
-
-	var groupBy []types.String
-	for _, g := range src.GroupBy {
-		groupBy = append(groupBy, types.StringValue(g))
-	}
-
-	return &throttleProcessorModel{
-		Id:        types.StringValue(src.Id),
-		Include:   types.StringValue(src.Include),
-		Inputs:    inputs,
-		Threshold: types.Int64Value(src.Threshold),
-		Window:    types.Float64Value(src.Window),
-		GroupBy:   groupBy,
-	}
-}
-
-func expandAddEnvVarsProcessor(ctx context.Context, src *addEnvVarsProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
-	proc := datadogV2.NewObservabilityPipelineAddEnvVarsProcessorWithDefaults()
-	proc.SetId(src.Id.ValueString())
-	proc.SetInclude(src.Include.ValueString())
-
-	var inputs []string
-	src.Inputs.ElementsAs(ctx, &inputs, false)
-	proc.SetInputs(inputs)
-
-	var vars []datadogV2.ObservabilityPipelineAddEnvVarsProcessorVariable
-	for _, v := range src.Variables {
-		vars = append(vars, datadogV2.ObservabilityPipelineAddEnvVarsProcessorVariable{
-			Field: v.Field.ValueString(),
-			Name:  v.Name.ValueString(),
-		})
-	}
-	proc.SetVariables(vars)
-
-	return datadogV2.ObservabilityPipelineConfigProcessorItem{
-		ObservabilityPipelineAddEnvVarsProcessor: proc,
-	}
-}
-
-func flattenAddEnvVarsProcessor(ctx context.Context, src *datadogV2.ObservabilityPipelineAddEnvVarsProcessor) *addEnvVarsProcessorModel {
-	if src == nil {
-		return nil
-	}
-
-	inputs, _ := types.ListValueFrom(ctx, types.StringType, src.Inputs)
-
-	var vars []envVarMappingModel
-	for _, v := range src.Variables {
-		vars = append(vars, envVarMappingModel{
-			Field: types.StringValue(v.Field),
-			Name:  types.StringValue(v.Name),
-		})
-	}
-
-	return &addEnvVarsProcessorModel{
-		Id:        types.StringValue(src.Id),
-		Include:   types.StringValue(src.Include),
-		Inputs:    inputs,
-		Variables: vars,
-	}
-}
-
-func expandEnrichmentTableProcessor(ctx context.Context, src *enrichmentTableProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
-	proc := datadogV2.NewObservabilityPipelineEnrichmentTableProcessorWithDefaults()
-	proc.SetId(src.Id.ValueString())
-	proc.SetInclude(src.Include.ValueString())
-	proc.SetTarget(src.Target.ValueString())
-
-	var inputs []string
-	src.Inputs.ElementsAs(ctx, &inputs, false)
-	proc.SetInputs(inputs)
-
-	if src.File != nil {
-		file := datadogV2.ObservabilityPipelineEnrichmentTableFile{
-			Path: src.File.Path.ValueString(),
-		}
-		file.Encoding = datadogV2.ObservabilityPipelineEnrichmentTableFileEncoding{
-			Type:            datadogV2.ObservabilityPipelineEnrichmentTableFileEncodingType(src.File.Encoding.Type.ValueString()),
-			Delimiter:       src.File.Encoding.Delimiter.ValueString(),
-			IncludesHeaders: src.File.Encoding.IncludesHeaders.ValueBool(),
-		}
-		for _, s := range src.File.Schema {
-			file.Schema = append(file.Schema, datadogV2.ObservabilityPipelineEnrichmentTableFileSchemaItems{
-				Column: s.Column.ValueString(),
-				Type:   datadogV2.ObservabilityPipelineEnrichmentTableFileSchemaItemsType(s.Type.ValueString()),
-			})
-		}
-		for _, k := range src.File.Key {
-			file.Key = append(file.Key, datadogV2.ObservabilityPipelineEnrichmentTableFileKeyItems{
-				Column:     k.Column.ValueString(),
-				Comparison: datadogV2.ObservabilityPipelineEnrichmentTableFileKeyItemsComparison(k.Comparison.ValueString()),
-				Field:      k.Field.ValueString(),
-			})
-		}
-		proc.File = &file
-	}
-
-	if src.GeoIp != nil {
-		proc.Geoip = &datadogV2.ObservabilityPipelineEnrichmentTableGeoIp{
-			KeyField: src.GeoIp.KeyField.ValueString(),
-			Locale:   src.GeoIp.Locale.ValueString(),
-			Path:     src.GeoIp.Path.ValueString(),
-		}
-	}
-
-	return datadogV2.ObservabilityPipelineConfigProcessorItem{
-		ObservabilityPipelineEnrichmentTableProcessor: proc,
-	}
-}
-
-func flattenEnrichmentTableProcessor(ctx context.Context, src *datadogV2.ObservabilityPipelineEnrichmentTableProcessor) *enrichmentTableProcessorModel {
-	if src == nil {
-		return nil
-	}
-
-	inputs, _ := types.ListValueFrom(ctx, types.StringType, src.Inputs)
-
-	out := &enrichmentTableProcessorModel{
-		Id:      types.StringValue(src.Id),
-		Include: types.StringValue(src.Include),
-		Inputs:  inputs,
-		Target:  types.StringValue(src.Target),
-	}
-
-	if src.File != nil {
-		file := enrichmentFileModel{
-			Path: types.StringValue(src.File.Path),
-		}
-		file.Encoding = fileEncodingModel{
-			Type:            types.StringValue(string(src.File.Encoding.Type)),
-			Delimiter:       types.StringValue(src.File.Encoding.Delimiter),
-			IncludesHeaders: types.BoolValue(src.File.Encoding.IncludesHeaders),
-		}
-		for _, s := range src.File.Schema {
-			file.Schema = append(file.Schema, fileSchemaItemModel{
-				Column: types.StringValue(s.Column),
-				Type:   types.StringValue(string(s.Type)),
-			})
-		}
-		for _, k := range src.File.Key {
-			file.Key = append(file.Key, fileKeyItemModel{
-				Column:     types.StringValue(k.Column),
-				Comparison: types.StringValue(string(k.Comparison)),
-				Field:      types.StringValue(k.Field),
-			})
-		}
-		out.File = &file
-	}
-
-	if src.Geoip != nil {
-		out.GeoIp = &enrichmentGeoIpModel{
-			KeyField: types.StringValue(src.Geoip.KeyField),
-			Locale:   types.StringValue(src.Geoip.Locale),
-			Path:     types.StringValue(src.Geoip.Path),
-		}
-	}
-
-	return out
-}
-
 func expandGoogleChronicleDestination(ctx context.Context, src *googleChronicleDestinationModel) datadogV2.ObservabilityPipelineConfigDestinationItem {
 	dest := datadogV2.NewObservabilityPipelineGoogleChronicleDestinationWithDefaults()
 	dest.SetId(src.Id.ValueString())
@@ -4886,7 +4797,7 @@ func expandGoogleChronicleDestination(ctx context.Context, src *googleChronicleD
 		if !src.Auth.CredentialsFile.IsNull() {
 			auth.SetCredentialsFile(src.Auth.CredentialsFile.ValueString())
 		}
-		dest.Auth = auth
+		dest.SetAuth(auth)
 	}
 
 	if !src.CustomerId.IsNull() {
@@ -4981,57 +4892,6 @@ func flattenSentinelOneDestination(ctx context.Context, src *datadogV2.Observabi
 		Id:     types.StringValue(src.GetId()),
 		Inputs: inputs,
 		Region: types.StringValue(string(src.GetRegion())),
-	}
-}
-
-func expandOcsfMapperProcessor(ctx context.Context, src *ocsfMapperProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
-	proc := datadogV2.NewObservabilityPipelineOcsfMapperProcessorWithDefaults()
-	proc.SetId(src.Id.ValueString())
-	proc.SetInclude(src.Include.ValueString())
-
-	var inputs []string
-	src.Inputs.ElementsAs(ctx, &inputs, false)
-	proc.SetInputs(inputs)
-
-	var mappings []datadogV2.ObservabilityPipelineOcsfMapperProcessorMapping
-	for _, m := range src.Mapping {
-		library := datadogV2.ObservabilityPipelineOcsfMappingLibrary(m.LibraryMapping.ValueString())
-		mappings = append(mappings, datadogV2.ObservabilityPipelineOcsfMapperProcessorMapping{
-			Include: m.Include.ValueString(),
-			Mapping: datadogV2.ObservabilityPipelineOcsfMapperProcessorMappingMapping{
-				ObservabilityPipelineOcsfMappingLibrary: &library,
-			},
-		})
-	}
-
-	proc.SetMappings(mappings)
-
-	return datadogV2.ObservabilityPipelineConfigProcessorItem{
-		ObservabilityPipelineOcsfMapperProcessor: proc,
-	}
-}
-
-func flattenOcsfMapperProcessor(ctx context.Context, src *datadogV2.ObservabilityPipelineOcsfMapperProcessor) *ocsfMapperProcessorModel {
-	if src == nil {
-		return nil
-	}
-
-	inputs, _ := types.ListValueFrom(ctx, types.StringType, src.Inputs)
-
-	var mappings []ocsfMappingModel
-	for _, m := range src.Mappings {
-		mapping := ocsfMappingModel{
-			Include:        types.StringValue(m.Include),
-			LibraryMapping: types.StringValue(string(*m.Mapping.ObservabilityPipelineOcsfMappingLibrary)),
-		}
-		mappings = append(mappings, mapping)
-	}
-
-	return &ocsfMapperProcessorModel{
-		Id:      types.StringValue(src.Id),
-		Include: types.StringValue(src.Include),
-		Inputs:  inputs,
-		Mapping: mappings,
 	}
 }
 
@@ -5130,14 +4990,6 @@ func flattenAmazonOpenSearchDestination(ctx context.Context, src *datadogV2.Obse
 	}
 
 	return model
-}
-
-func expandDatadogTagsProcessor(ctx context.Context, src *observability_pipeline.DatadogTagsProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
-	return observability_pipeline.ExpandDatadogTagsProcessor(ctx, src)
-}
-
-func flattenDatadogTagsProcessor(ctx context.Context, src *datadogV2.ObservabilityPipelineDatadogTagsProcessor) *observability_pipeline.DatadogTagsProcessorModel {
-	return observability_pipeline.FlattenDatadogTagsProcessor(ctx, src)
 }
 
 func expandObservabilityPipelinesAmazonSecurityLakeDestination(ctx context.Context, src *amazonSecurityLakeDestinationModel) datadogV2.ObservabilityPipelineConfigDestinationItem {
