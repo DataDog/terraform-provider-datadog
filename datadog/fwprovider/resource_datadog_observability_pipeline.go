@@ -115,7 +115,7 @@ type processorGroupModel struct {
 	Include types.String `tfsdk:"include"`
 	Inputs  types.List   `tfsdk:"inputs"`
 
-	Processors *processorModel `tfsdk:"processor"`
+	Processors []*processorModel `tfsdk:"processor"`
 }
 
 type processorModel struct {
@@ -1003,200 +1003,202 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 										},
 									},
 									Blocks: map[string]schema.Block{
-										"processor": schema.SingleNestedBlock{
+										"processor": schema.ListNestedBlock{
 											Description: "The processor contained in this group.",
-											Attributes: map[string]schema.Attribute{
-												"id": schema.StringAttribute{
-													Required:    true,
-													Description: "The unique identifier for this processor.",
-												},
-												"enabled": schema.BoolAttribute{
-													Required:    true,
-													Description: "Whether this processor is enabled.",
-												},
-												"include": schema.StringAttribute{
-													Required:    true,
-													Description: "A Datadog search query used to determine which logs this processor targets.",
-												},
-											},
-											Blocks: map[string]schema.Block{
-												"filter": schema.ListNestedBlock{
-													Description: "The `filter` processor allows conditional processing of logs based on a Datadog search query. Logs that match the `include` query are passed through; others are discarded.",
-													Validators: []validator.List{
-														listvalidator.SizeAtMost(1),
+											NestedObject: schema.NestedBlockObject{
+												Attributes: map[string]schema.Attribute{
+													"id": schema.StringAttribute{
+														Required:    true,
+														Description: "The unique identifier for this processor.",
 													},
-													NestedObject: schema.NestedBlockObject{
-														Attributes: map[string]schema.Attribute{},
+													"enabled": schema.BoolAttribute{
+														Required:    true,
+														Description: "Whether this processor is enabled.",
+													},
+													"include": schema.StringAttribute{
+														Required:    true,
+														Description: "A Datadog search query used to determine which logs this processor targets.",
 													},
 												},
-												"parse_json": schema.ListNestedBlock{
-													Description: "The `parse_json` processor extracts JSON from a specified field and flattens it into the event. This is useful when logs contain embedded JSON as a string.",
-													Validators: []validator.List{
-														listvalidator.SizeAtMost(1),
+												Blocks: map[string]schema.Block{
+													"filter": schema.ListNestedBlock{
+														Description: "The `filter` processor allows conditional processing of logs based on a Datadog search query. Logs that match the `include` query are passed through; others are discarded.",
+														Validators: []validator.List{
+															listvalidator.SizeAtMost(1),
+														},
+														NestedObject: schema.NestedBlockObject{
+															Attributes: map[string]schema.Attribute{},
+														},
 													},
-													NestedObject: schema.NestedBlockObject{
-														Attributes: map[string]schema.Attribute{
-															"field": schema.StringAttribute{
-																Required:    true,
-																Description: "The field to parse.",
+													"parse_json": schema.ListNestedBlock{
+														Description: "The `parse_json` processor extracts JSON from a specified field and flattens it into the event. This is useful when logs contain embedded JSON as a string.",
+														Validators: []validator.List{
+															listvalidator.SizeAtMost(1),
+														},
+														NestedObject: schema.NestedBlockObject{
+															Attributes: map[string]schema.Attribute{
+																"field": schema.StringAttribute{
+																	Required:    true,
+																	Description: "The field to parse.",
+																},
 															},
 														},
 													},
-												},
-												"add_fields": schema.ListNestedBlock{
-													Description: "The `add_fields` processor adds static key-value fields to logs.",
-													Validators: []validator.List{
-														listvalidator.SizeAtMost(1),
-													},
-													NestedObject: schema.NestedBlockObject{
-														Attributes: map[string]schema.Attribute{},
-														Blocks: map[string]schema.Block{
-															"field": schema.ListNestedBlock{
-																Validators: []validator.List{
-																	// this is the only way to make the list of fields required in Terraform
-																	listvalidator.SizeAtLeast(1),
-																},
-																Description: "A list of static fields (key-value pairs) that is added to each log event processed by this component.",
-																NestedObject: schema.NestedBlockObject{
-																	Attributes: map[string]schema.Attribute{
-																		"name": schema.StringAttribute{
-																			Required:    true,
-																			Description: "The field name to add.",
-																		},
-																		"value": schema.StringAttribute{
-																			Required:    true,
-																			Description: "The value to assign to the field.",
-																		},
+													"add_fields": schema.ListNestedBlock{
+														Description: "The `add_fields` processor adds static key-value fields to logs.",
+														Validators: []validator.List{
+															listvalidator.SizeAtMost(1),
+														},
+														NestedObject: schema.NestedBlockObject{
+															Attributes: map[string]schema.Attribute{},
+															Blocks: map[string]schema.Block{
+																"field": schema.ListNestedBlock{
+																	Validators: []validator.List{
+																		// this is the only way to make the list of fields required in Terraform
+																		listvalidator.SizeAtLeast(1),
 																	},
-																},
-															},
-														},
-													},
-												},
-												"rename_fields": schema.ListNestedBlock{
-													Description: "The `rename_fields` processor changes field names.",
-													Validators: []validator.List{
-														listvalidator.SizeAtMost(1),
-													},
-													NestedObject: schema.NestedBlockObject{
-														Attributes: map[string]schema.Attribute{},
-														Blocks: map[string]schema.Block{
-															"field": schema.ListNestedBlock{
-																Validators: []validator.List{
-																	// this is the only way to make the list of fields required in Terraform
-																	listvalidator.SizeAtLeast(1),
-																},
-																Description: "List of fields to rename.",
-																NestedObject: schema.NestedBlockObject{
-																	Attributes: map[string]schema.Attribute{
-																		"source": schema.StringAttribute{
-																			Required:    true,
-																			Description: "Source field to rename.",
-																		},
-																		"destination": schema.StringAttribute{
-																			Required:    true,
-																			Description: "Destination field name.",
-																		},
-																		"preserve_source": schema.BoolAttribute{
-																			Required:    true,
-																			Description: "Whether to keep the original field.",
-																		},
-																	},
-																},
-															},
-														},
-													},
-												},
-												"remove_fields": schema.ListNestedBlock{
-													Description: "The `remove_fields` processor deletes specified fields from logs.",
-													Validators: []validator.List{
-														listvalidator.SizeAtMost(1),
-													},
-													NestedObject: schema.NestedBlockObject{
-														Attributes: map[string]schema.Attribute{
-															"fields": schema.ListAttribute{
-																Required:    true,
-																Description: "List of fields to remove from the events.",
-																ElementType: types.StringType,
-															},
-														},
-													},
-												},
-												"quota": schema.ListNestedBlock{
-													Description: "The `quota` measures logging traffic for logs that match a specified filter. When the configured daily quota is met, the processor can drop or alert.",
-													Validators: []validator.List{
-														listvalidator.SizeAtMost(1),
-													},
-													NestedObject: schema.NestedBlockObject{
-														Attributes: map[string]schema.Attribute{
-															"name": schema.StringAttribute{
-																Required:    true,
-																Description: "The name of the quota.",
-															},
-															"drop_events": schema.BoolAttribute{
-																Optional:    true,
-																Description: "Whether to drop events exceeding the limit.",
-															},
-															"ignore_when_missing_partitions": schema.BoolAttribute{
-																Optional:    true,
-																Description: "Whether to ignore when partition fields are missing.",
-															},
-															"partition_fields": schema.ListAttribute{
-																Optional:    true,
-																ElementType: types.StringType,
-																Description: "List of partition fields.",
-															},
-															"overflow_action": schema.StringAttribute{
-																Optional:    true,
-																Description: "The action to take when the quota is exceeded: `drop`, `no_action`, or `overflow_routing`.",
-															},
-														},
-														Blocks: map[string]schema.Block{
-															"limit": schema.SingleNestedBlock{
-																Attributes: map[string]schema.Attribute{
-																	"enforce": schema.StringAttribute{
-																		Required:    true,
-																		Description: "Whether to enforce by 'bytes' or 'events'.",
-																		Validators: []validator.String{
-																			stringvalidator.OneOf("bytes", "events"),
-																		},
-																	},
-																	"limit": schema.Int64Attribute{
-																		Required:    true,
-																		Description: "The daily quota limit.",
-																	},
-																},
-															},
-															"overrides": schema.ListNestedBlock{
-																Description: "The overrides for field-specific quotas.",
-																NestedObject: schema.NestedBlockObject{
-																	Blocks: map[string]schema.Block{
-																		"limit": schema.SingleNestedBlock{
-																			Attributes: map[string]schema.Attribute{
-																				"enforce": schema.StringAttribute{
-																					Required:    true,
-																					Description: "Whether to enforce by 'bytes' or 'events'.",
-																					Validators: []validator.String{
-																						stringvalidator.OneOf("bytes", "events"),
-																					},
-																				},
-																				"limit": schema.Int64Attribute{
-																					Required:    true,
-																					Description: "The daily quota limit.",
-																				},
+																	Description: "A list of static fields (key-value pairs) that is added to each log event processed by this component.",
+																	NestedObject: schema.NestedBlockObject{
+																		Attributes: map[string]schema.Attribute{
+																			"name": schema.StringAttribute{
+																				Required:    true,
+																				Description: "The field name to add.",
+																			},
+																			"value": schema.StringAttribute{
+																				Required:    true,
+																				Description: "The value to assign to the field.",
 																			},
 																		},
-																		"field": schema.ListNestedBlock{
-																			Description: "Fields that trigger this override.",
-																			NestedObject: schema.NestedBlockObject{
+																	},
+																},
+															},
+														},
+													},
+													"rename_fields": schema.ListNestedBlock{
+														Description: "The `rename_fields` processor changes field names.",
+														Validators: []validator.List{
+															listvalidator.SizeAtMost(1),
+														},
+														NestedObject: schema.NestedBlockObject{
+															Attributes: map[string]schema.Attribute{},
+															Blocks: map[string]schema.Block{
+																"field": schema.ListNestedBlock{
+																	Validators: []validator.List{
+																		// this is the only way to make the list of fields required in Terraform
+																		listvalidator.SizeAtLeast(1),
+																	},
+																	Description: "List of fields to rename.",
+																	NestedObject: schema.NestedBlockObject{
+																		Attributes: map[string]schema.Attribute{
+																			"source": schema.StringAttribute{
+																				Required:    true,
+																				Description: "Source field to rename.",
+																			},
+																			"destination": schema.StringAttribute{
+																				Required:    true,
+																				Description: "Destination field name.",
+																			},
+																			"preserve_source": schema.BoolAttribute{
+																				Required:    true,
+																				Description: "Whether to keep the original field.",
+																			},
+																		},
+																	},
+																},
+															},
+														},
+													},
+													"remove_fields": schema.ListNestedBlock{
+														Description: "The `remove_fields` processor deletes specified fields from logs.",
+														Validators: []validator.List{
+															listvalidator.SizeAtMost(1),
+														},
+														NestedObject: schema.NestedBlockObject{
+															Attributes: map[string]schema.Attribute{
+																"fields": schema.ListAttribute{
+																	Required:    true,
+																	Description: "List of fields to remove from the events.",
+																	ElementType: types.StringType,
+																},
+															},
+														},
+													},
+													"quota": schema.ListNestedBlock{
+														Description: "The `quota` measures logging traffic for logs that match a specified filter. When the configured daily quota is met, the processor can drop or alert.",
+														Validators: []validator.List{
+															listvalidator.SizeAtMost(1),
+														},
+														NestedObject: schema.NestedBlockObject{
+															Attributes: map[string]schema.Attribute{
+																"name": schema.StringAttribute{
+																	Required:    true,
+																	Description: "The name of the quota.",
+																},
+																"drop_events": schema.BoolAttribute{
+																	Optional:    true,
+																	Description: "Whether to drop events exceeding the limit.",
+																},
+																"ignore_when_missing_partitions": schema.BoolAttribute{
+																	Optional:    true,
+																	Description: "Whether to ignore when partition fields are missing.",
+																},
+																"partition_fields": schema.ListAttribute{
+																	Optional:    true,
+																	ElementType: types.StringType,
+																	Description: "List of partition fields.",
+																},
+																"overflow_action": schema.StringAttribute{
+																	Optional:    true,
+																	Description: "The action to take when the quota is exceeded: `drop`, `no_action`, or `overflow_routing`.",
+																},
+															},
+															Blocks: map[string]schema.Block{
+																"limit": schema.SingleNestedBlock{
+																	Attributes: map[string]schema.Attribute{
+																		"enforce": schema.StringAttribute{
+																			Required:    true,
+																			Description: "Whether to enforce by 'bytes' or 'events'.",
+																			Validators: []validator.String{
+																				stringvalidator.OneOf("bytes", "events"),
+																			},
+																		},
+																		"limit": schema.Int64Attribute{
+																			Required:    true,
+																			Description: "The daily quota limit.",
+																		},
+																	},
+																},
+																"overrides": schema.ListNestedBlock{
+																	Description: "The overrides for field-specific quotas.",
+																	NestedObject: schema.NestedBlockObject{
+																		Blocks: map[string]schema.Block{
+																			"limit": schema.SingleNestedBlock{
 																				Attributes: map[string]schema.Attribute{
-																					"name": schema.StringAttribute{
-																						Description: "The field name.",
+																					"enforce": schema.StringAttribute{
 																						Required:    true,
+																						Description: "Whether to enforce by 'bytes' or 'events'.",
+																						Validators: []validator.String{
+																							stringvalidator.OneOf("bytes", "events"),
+																						},
 																					},
-																					"value": schema.StringAttribute{
-																						Description: "The field value.",
+																					"limit": schema.Int64Attribute{
 																						Required:    true,
+																						Description: "The daily quota limit.",
+																					},
+																				},
+																			},
+																			"field": schema.ListNestedBlock{
+																				Description: "Fields that trigger this override.",
+																				NestedObject: schema.NestedBlockObject{
+																					Attributes: map[string]schema.Attribute{
+																						"name": schema.StringAttribute{
+																							Description: "The field name.",
+																							Required:    true,
+																						},
+																						"value": schema.StringAttribute{
+																							Description: "The field value.",
+																							Required:    true,
+																						},
 																					},
 																				},
 																			},
@@ -1206,128 +1208,237 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 															},
 														},
 													},
-												},
-												"sensitive_data_scanner": schema.ListNestedBlock{
-													Description: "The `sensitive_data_scanner` processor detects and optionally redacts sensitive data in log events.",
-													Validators: []validator.List{
-														listvalidator.SizeAtMost(1),
-													},
-													NestedObject: schema.NestedBlockObject{
-														Attributes: map[string]schema.Attribute{},
-														Blocks: map[string]schema.Block{
-															"rules": schema.ListNestedBlock{
-																Description: "A list of rules for identifying and acting on sensitive data patterns.",
-																NestedObject: schema.NestedBlockObject{
-																	Attributes: map[string]schema.Attribute{
-																		"name": schema.StringAttribute{
-																			Optional:    true,
-																			Description: "A name identifying the rule.",
+													"sensitive_data_scanner": schema.ListNestedBlock{
+														Description: "The `sensitive_data_scanner` processor detects and optionally redacts sensitive data in log events.",
+														Validators: []validator.List{
+															listvalidator.SizeAtMost(1),
+														},
+														NestedObject: schema.NestedBlockObject{
+															Attributes: map[string]schema.Attribute{},
+															Blocks: map[string]schema.Block{
+																"rules": schema.ListNestedBlock{
+																	Description: "A list of rules for identifying and acting on sensitive data patterns.",
+																	NestedObject: schema.NestedBlockObject{
+																		Attributes: map[string]schema.Attribute{
+																			"name": schema.StringAttribute{
+																				Optional:    true,
+																				Description: "A name identifying the rule.",
+																			},
+																			"tags": schema.ListAttribute{
+																				Optional:    true,
+																				ElementType: types.StringType,
+																				Description: "Tags assigned to this rule for filtering and classification.",
+																			},
 																		},
-																		"tags": schema.ListAttribute{
-																			Optional:    true,
-																			ElementType: types.StringType,
-																			Description: "Tags assigned to this rule for filtering and classification.",
-																		},
-																	},
-																	Blocks: map[string]schema.Block{
-																		"keyword_options": schema.SingleNestedBlock{
-																			Description: "Keyword-based proximity matching for sensitive data.",
-																			Attributes: map[string]schema.Attribute{
-																				"keywords": schema.ListAttribute{
-																					Optional:    true,
-																					ElementType: types.StringType,
-																					Description: "A list of keywords to match near the sensitive pattern.",
+																		Blocks: map[string]schema.Block{
+																			"keyword_options": schema.SingleNestedBlock{
+																				Description: "Keyword-based proximity matching for sensitive data.",
+																				Attributes: map[string]schema.Attribute{
+																					"keywords": schema.ListAttribute{
+																						Optional:    true,
+																						ElementType: types.StringType,
+																						Description: "A list of keywords to match near the sensitive pattern.",
+																					},
+																					"proximity": schema.Int64Attribute{
+																						Optional:    true,
+																						Description: "Maximum number of tokens between a keyword and a sensitive value match.",
+																					},
 																				},
-																				"proximity": schema.Int64Attribute{
-																					Optional:    true,
-																					Description: "Maximum number of tokens between a keyword and a sensitive value match.",
+																			},
+																			"pattern": schema.SingleNestedBlock{
+																				Description: "Pattern detection configuration for identifying sensitive data using either a custom regex or a library reference.",
+																				Blocks: map[string]schema.Block{
+																					"custom": schema.SingleNestedBlock{
+																						Description: "Pattern detection using a custom regular expression.",
+																						Attributes: map[string]schema.Attribute{
+																							"rule": schema.StringAttribute{
+																								Optional:    true,
+																								Description: "A regular expression used to detect sensitive values. Must be a valid regex.",
+																							},
+																						},
+																					},
+																					"library": schema.SingleNestedBlock{
+																						Description: "Pattern detection using a predefined pattern from the sensitive data scanner pattern library.",
+																						Attributes: map[string]schema.Attribute{
+																							"id": schema.StringAttribute{
+																								Optional:    true,
+																								Description: "Identifier for a predefined pattern from the sensitive data scanner pattern library.",
+																							},
+																							"use_recommended_keywords": schema.BoolAttribute{
+																								Optional:    true,
+																								Description: "Whether to augment the pattern with recommended keywords (optional).",
+																							},
+																						},
+																					},
+																				},
+																			},
+																			"scope": schema.SingleNestedBlock{
+																				Description: "Field-level targeting options that determine where the scanner should operate.",
+																				Blocks: map[string]schema.Block{
+																					"include": schema.SingleNestedBlock{
+																						Description: "Explicitly include these fields for scanning.",
+																						Attributes: map[string]schema.Attribute{
+																							"fields": schema.ListAttribute{
+																								Optional:    true,
+																								ElementType: types.StringType,
+																								Description: "The fields to include in scanning.",
+																							},
+																						},
+																					},
+																					"exclude": schema.SingleNestedBlock{
+																						Description: "Explicitly exclude these fields from scanning.",
+																						Attributes: map[string]schema.Attribute{
+																							"fields": schema.ListAttribute{
+																								Optional:    true,
+																								ElementType: types.StringType,
+																								Description: "The fields to exclude from scanning.",
+																							},
+																						},
+																					},
+																				},
+																				Attributes: map[string]schema.Attribute{
+																					"all": schema.BoolAttribute{
+																						Optional:    true,
+																						Description: "Scan all fields.",
+																					},
+																				},
+																			},
+																			"on_match": schema.SingleNestedBlock{
+																				Description: "The action to take when a sensitive value is found.",
+																				Blocks: map[string]schema.Block{
+																					"redact": schema.SingleNestedBlock{
+																						Description: "Redacts the matched value.",
+																						Attributes: map[string]schema.Attribute{
+																							"replace": schema.StringAttribute{
+																								Optional:    true,
+																								Description: "Replacement string for redacted values (e.g., `***`).",
+																							},
+																						},
+																					},
+																					"hash": schema.SingleNestedBlock{
+																						Description: "Hashes the matched value.",
+																						Attributes:  map[string]schema.Attribute{}, // empty options
+																					},
+																					"partial_redact": schema.SingleNestedBlock{
+																						Description: "Redacts part of the matched value (e.g., keep last 4 characters).",
+																						Attributes: map[string]schema.Attribute{
+																							"characters": schema.Int64Attribute{
+																								Optional:    true,
+																								Description: "Number of characters to keep.",
+																							},
+																							"direction": schema.StringAttribute{
+																								Optional:    true,
+																								Description: "Direction from which to keep characters: `first` or `last`.",
+																							},
+																						},
+																					},
 																				},
 																			},
 																		},
-																		"pattern": schema.SingleNestedBlock{
-																			Description: "Pattern detection configuration for identifying sensitive data using either a custom regex or a library reference.",
-																			Blocks: map[string]schema.Block{
-																				"custom": schema.SingleNestedBlock{
-																					Description: "Pattern detection using a custom regular expression.",
+																	},
+																},
+															},
+														},
+													},
+													"generate_datadog_metrics": schema.ListNestedBlock{
+														Description: "The `generate_datadog_metrics` processor creates custom metrics from logs. Metrics can be counters, gauges, or distributions and optionally grouped by log fields.",
+														Validators: []validator.List{
+															listvalidator.SizeAtMost(1),
+														},
+														NestedObject: schema.NestedBlockObject{
+															Attributes: map[string]schema.Attribute{},
+															Blocks: map[string]schema.Block{
+																"metrics": schema.ListNestedBlock{
+																	Description: "Configuration for generating individual metrics.",
+																	NestedObject: schema.NestedBlockObject{
+																		Attributes: map[string]schema.Attribute{
+																			"name": schema.StringAttribute{
+																				Required:    true,
+																				Description: "Name of the custom metric to be created.",
+																			},
+																			"include": schema.StringAttribute{
+																				Required:    true,
+																				Description: "Datadog filter query to match logs for metric generation.",
+																			},
+																			"metric_type": schema.StringAttribute{
+																				Required:    true,
+																				Description: "Type of metric to create.",
+																			},
+																			"group_by": schema.ListAttribute{
+																				Optional:    true,
+																				ElementType: types.StringType,
+																				Description: "Optional fields used to group the metric series.",
+																			},
+																		},
+																		Blocks: map[string]schema.Block{
+																			"value": schema.SingleNestedBlock{
+																				Description: "Specifies how the value of the generated metric is computed.",
+																				Attributes: map[string]schema.Attribute{
+																					"strategy": schema.StringAttribute{
+																						Required:    true,
+																						Description: "Metric value strategy: `increment_by_one` or `increment_by_field`.",
+																					},
+																					"field": schema.StringAttribute{
+																						Optional:    true,
+																						Description: "Name of the log field containing the numeric value to increment the metric by (used only for `increment_by_field`).",
+																					},
+																				},
+																			},
+																		},
+																	},
+																},
+															},
+														},
+													},
+													"parse_grok": schema.ListNestedBlock{
+														Description: "The `parse_grok` processor extracts structured fields from unstructured log messages using Grok patterns.",
+														Validators: []validator.List{
+															listvalidator.SizeAtMost(1),
+														},
+														NestedObject: schema.NestedBlockObject{
+															Attributes: map[string]schema.Attribute{
+																"disable_library_rules": schema.BoolAttribute{
+																	Optional:    true,
+																	Description: "If set to `true`, disables the default Grok rules provided by Datadog.",
+																},
+															},
+															Blocks: map[string]schema.Block{
+																"rules": schema.ListNestedBlock{
+																	Description: "The list of Grok parsing rules. If multiple parsing rules are provided, they are evaluated in order. The first successful match is applied.",
+																	NestedObject: schema.NestedBlockObject{
+																		Attributes: map[string]schema.Attribute{
+																			"source": schema.StringAttribute{
+																				Required:    true,
+																				Description: "The name of the field in the log event to apply the Grok rules to.",
+																			},
+																		},
+																		Blocks: map[string]schema.Block{
+																			"match_rule": schema.ListNestedBlock{
+																				Description: "A list of Grok parsing rules that define how to extract fields from the source field. Each rule must contain a name and a valid Grok pattern.",
+																				NestedObject: schema.NestedBlockObject{
 																					Attributes: map[string]schema.Attribute{
+																						"name": schema.StringAttribute{
+																							Required:    true,
+																							Description: "The name of the rule.",
+																						},
 																						"rule": schema.StringAttribute{
-																							Optional:    true,
-																							Description: "A regular expression used to detect sensitive values. Must be a valid regex.",
-																						},
-																					},
-																				},
-																				"library": schema.SingleNestedBlock{
-																					Description: "Pattern detection using a predefined pattern from the sensitive data scanner pattern library.",
-																					Attributes: map[string]schema.Attribute{
-																						"id": schema.StringAttribute{
-																							Optional:    true,
-																							Description: "Identifier for a predefined pattern from the sensitive data scanner pattern library.",
-																						},
-																						"use_recommended_keywords": schema.BoolAttribute{
-																							Optional:    true,
-																							Description: "Whether to augment the pattern with recommended keywords (optional).",
+																							Required:    true,
+																							Description: "The definition of the Grok rule.",
 																						},
 																					},
 																				},
 																			},
-																		},
-																		"scope": schema.SingleNestedBlock{
-																			Description: "Field-level targeting options that determine where the scanner should operate.",
-																			Blocks: map[string]schema.Block{
-																				"include": schema.SingleNestedBlock{
-																					Description: "Explicitly include these fields for scanning.",
+																			"support_rule": schema.ListNestedBlock{
+																				Description: "A list of helper Grok rules that can be referenced by the parsing rules.",
+																				NestedObject: schema.NestedBlockObject{
 																					Attributes: map[string]schema.Attribute{
-																						"fields": schema.ListAttribute{
-																							Optional:    true,
-																							ElementType: types.StringType,
-																							Description: "The fields to include in scanning.",
+																						"name": schema.StringAttribute{
+																							Required:    true,
+																							Description: "The name of the helper Grok rule.",
 																						},
-																					},
-																				},
-																				"exclude": schema.SingleNestedBlock{
-																					Description: "Explicitly exclude these fields from scanning.",
-																					Attributes: map[string]schema.Attribute{
-																						"fields": schema.ListAttribute{
-																							Optional:    true,
-																							ElementType: types.StringType,
-																							Description: "The fields to exclude from scanning.",
-																						},
-																					},
-																				},
-																			},
-																			Attributes: map[string]schema.Attribute{
-																				"all": schema.BoolAttribute{
-																					Optional:    true,
-																					Description: "Scan all fields.",
-																				},
-																			},
-																		},
-																		"on_match": schema.SingleNestedBlock{
-																			Description: "The action to take when a sensitive value is found.",
-																			Blocks: map[string]schema.Block{
-																				"redact": schema.SingleNestedBlock{
-																					Description: "Redacts the matched value.",
-																					Attributes: map[string]schema.Attribute{
-																						"replace": schema.StringAttribute{
-																							Optional:    true,
-																							Description: "Replacement string for redacted values (e.g., `***`).",
-																						},
-																					},
-																				},
-																				"hash": schema.SingleNestedBlock{
-																					Description: "Hashes the matched value.",
-																					Attributes:  map[string]schema.Attribute{}, // empty options
-																				},
-																				"partial_redact": schema.SingleNestedBlock{
-																					Description: "Redacts part of the matched value (e.g., keep last 4 characters).",
-																					Attributes: map[string]schema.Attribute{
-																						"characters": schema.Int64Attribute{
-																							Optional:    true,
-																							Description: "Number of characters to keep.",
-																						},
-																						"direction": schema.StringAttribute{
-																							Optional:    true,
-																							Description: "Direction from which to keep characters: `first` or `last`.",
+																						"rule": schema.StringAttribute{
+																							Required:    true,
+																							Description: "The definition of the helper Grok rule.",
 																						},
 																					},
 																				},
@@ -1338,49 +1449,68 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 															},
 														},
 													},
-												},
-												"generate_datadog_metrics": schema.ListNestedBlock{
-													Description: "The `generate_datadog_metrics` processor creates custom metrics from logs. Metrics can be counters, gauges, or distributions and optionally grouped by log fields.",
-													Validators: []validator.List{
-														listvalidator.SizeAtMost(1),
+													"sample": schema.ListNestedBlock{
+														Description: "The `sample` processor allows probabilistic sampling of logs at a fixed rate.",
+														Validators: []validator.List{
+															listvalidator.SizeAtMost(1),
+														},
+														NestedObject: schema.NestedBlockObject{
+															Attributes: map[string]schema.Attribute{
+																"rate": schema.Int64Attribute{
+																	Optional:    true,
+																	Description: "Number of events to sample (1 in N).",
+																},
+																"percentage": schema.Float64Attribute{
+																	Optional:    true,
+																	Description: "The percentage of logs to sample.",
+																},
+															},
+														},
 													},
-													NestedObject: schema.NestedBlockObject{
-														Attributes: map[string]schema.Attribute{},
-														Blocks: map[string]schema.Block{
-															"metrics": schema.ListNestedBlock{
-																Description: "Configuration for generating individual metrics.",
-																NestedObject: schema.NestedBlockObject{
-																	Attributes: map[string]schema.Attribute{
-																		"name": schema.StringAttribute{
-																			Required:    true,
-																			Description: "Name of the custom metric to be created.",
-																		},
-																		"include": schema.StringAttribute{
-																			Required:    true,
-																			Description: "Datadog filter query to match logs for metric generation.",
-																		},
-																		"metric_type": schema.StringAttribute{
-																			Required:    true,
-																			Description: "Type of metric to create.",
-																		},
-																		"group_by": schema.ListAttribute{
-																			Optional:    true,
-																			ElementType: types.StringType,
-																			Description: "Optional fields used to group the metric series.",
-																		},
-																	},
-																	Blocks: map[string]schema.Block{
-																		"value": schema.SingleNestedBlock{
-																			Description: "Specifies how the value of the generated metric is computed.",
-																			Attributes: map[string]schema.Attribute{
-																				"strategy": schema.StringAttribute{
-																					Required:    true,
-																					Description: "Metric value strategy: `increment_by_one` or `increment_by_field`.",
-																				},
-																				"field": schema.StringAttribute{
-																					Optional:    true,
-																					Description: "Name of the log field containing the numeric value to increment the metric by (used only for `increment_by_field`).",
-																				},
+													"dedupe": schema.ListNestedBlock{
+														Description: "The `dedupe` processor removes duplicate fields in log events.",
+														Validators: []validator.List{
+															listvalidator.SizeAtMost(1),
+														},
+														NestedObject: schema.NestedBlockObject{
+															Attributes: map[string]schema.Attribute{
+																"fields": schema.ListAttribute{
+																	Required:    true,
+																	ElementType: types.StringType,
+																	Description: "A list of log field paths to check for duplicates.",
+																},
+																"mode": schema.StringAttribute{
+																	Required:    true,
+																	Description: "The deduplication mode to apply to the fields.",
+																},
+															},
+														},
+													},
+													"reduce": schema.ListNestedBlock{
+														Description: "The `reduce` processor aggregates and merges logs based on matching keys and merge strategies.",
+														Validators: []validator.List{
+															listvalidator.SizeAtMost(1),
+														},
+														NestedObject: schema.NestedBlockObject{
+															Attributes: map[string]schema.Attribute{
+																"group_by": schema.ListAttribute{
+																	Required:    true,
+																	ElementType: types.StringType,
+																	Description: "A list of fields used to group log events for merging.",
+																},
+															},
+															Blocks: map[string]schema.Block{
+																"merge_strategies": schema.ListNestedBlock{
+																	Description: "List of merge strategies defining how values from grouped events should be combined.",
+																	NestedObject: schema.NestedBlockObject{
+																		Attributes: map[string]schema.Attribute{
+																			"path": schema.StringAttribute{
+																				Required:    true,
+																				Description: "The field path in the log event.",
+																			},
+																			"strategy": schema.StringAttribute{
+																				Required:    true,
+																				Description: "The merge strategy to apply.",
 																			},
 																		},
 																	},
@@ -1388,58 +1518,48 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 															},
 														},
 													},
-												},
-												"parse_grok": schema.ListNestedBlock{
-													Description: "The `parse_grok` processor extracts structured fields from unstructured log messages using Grok patterns.",
-													Validators: []validator.List{
-														listvalidator.SizeAtMost(1),
-													},
-													NestedObject: schema.NestedBlockObject{
-														Attributes: map[string]schema.Attribute{
-															"disable_library_rules": schema.BoolAttribute{
-																Optional:    true,
-																Description: "If set to `true`, disables the default Grok rules provided by Datadog.",
+													"throttle": schema.ListNestedBlock{
+														Description: "The `throttle` processor limits the number of events that pass through over a given time window.",
+														Validators: []validator.List{
+															listvalidator.SizeAtMost(1),
+														},
+														NestedObject: schema.NestedBlockObject{
+															Attributes: map[string]schema.Attribute{
+																"threshold": schema.Int64Attribute{
+																	Required:    true,
+																	Description: "The number of events to allow before throttling is applied.",
+																},
+																"window": schema.Float64Attribute{
+																	Required:    true,
+																	Description: "The time window in seconds over which the threshold applies.",
+																},
+																"group_by": schema.ListAttribute{
+																	Optional:    true,
+																	ElementType: types.StringType,
+																	Description: "Optional list of fields used to group events before applying throttling.",
+																},
 															},
 														},
-														Blocks: map[string]schema.Block{
-															"rules": schema.ListNestedBlock{
-																Description: "The list of Grok parsing rules. If multiple parsing rules are provided, they are evaluated in order. The first successful match is applied.",
-																NestedObject: schema.NestedBlockObject{
-																	Attributes: map[string]schema.Attribute{
-																		"source": schema.StringAttribute{
-																			Required:    true,
-																			Description: "The name of the field in the log event to apply the Grok rules to.",
-																		},
-																	},
-																	Blocks: map[string]schema.Block{
-																		"match_rule": schema.ListNestedBlock{
-																			Description: "A list of Grok parsing rules that define how to extract fields from the source field. Each rule must contain a name and a valid Grok pattern.",
-																			NestedObject: schema.NestedBlockObject{
-																				Attributes: map[string]schema.Attribute{
-																					"name": schema.StringAttribute{
-																						Required:    true,
-																						Description: "The name of the rule.",
-																					},
-																					"rule": schema.StringAttribute{
-																						Required:    true,
-																						Description: "The definition of the Grok rule.",
-																					},
-																				},
+													},
+													"add_env_vars": schema.ListNestedBlock{
+														Description: "The `add_env_vars` processor adds environment variable values to log events.",
+														Validators: []validator.List{
+															listvalidator.SizeAtMost(1),
+														},
+														NestedObject: schema.NestedBlockObject{
+															Attributes: map[string]schema.Attribute{},
+															Blocks: map[string]schema.Block{
+																"variables": schema.ListNestedBlock{
+																	Description: "A list of environment variable mappings to apply to log fields.",
+																	NestedObject: schema.NestedBlockObject{
+																		Attributes: map[string]schema.Attribute{
+																			"field": schema.StringAttribute{
+																				Required:    true,
+																				Description: "The target field in the log event.",
 																			},
-																		},
-																		"support_rule": schema.ListNestedBlock{
-																			Description: "A list of helper Grok rules that can be referenced by the parsing rules.",
-																			NestedObject: schema.NestedBlockObject{
-																				Attributes: map[string]schema.Attribute{
-																					"name": schema.StringAttribute{
-																						Required:    true,
-																						Description: "The name of the helper Grok rule.",
-																					},
-																					"rule": schema.StringAttribute{
-																						Required:    true,
-																						Description: "The definition of the helper Grok rule.",
-																					},
-																				},
+																			"name": schema.StringAttribute{
+																				Required:    true,
+																				Description: "The name of the environment variable to read.",
 																			},
 																		},
 																	},
@@ -1447,247 +1567,129 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 															},
 														},
 													},
-												},
-												"sample": schema.ListNestedBlock{
-													Description: "The `sample` processor allows probabilistic sampling of logs at a fixed rate.",
-													Validators: []validator.List{
-														listvalidator.SizeAtMost(1),
-													},
-													NestedObject: schema.NestedBlockObject{
-														Attributes: map[string]schema.Attribute{
-															"rate": schema.Int64Attribute{
-																Optional:    true,
-																Description: "Number of events to sample (1 in N).",
-															},
-															"percentage": schema.Float64Attribute{
-																Optional:    true,
-																Description: "The percentage of logs to sample.",
-															},
+													"enrichment_table": schema.ListNestedBlock{
+														Description: "The `enrichment_table` processor enriches logs using a static CSV file or GeoIP database.",
+														Validators: []validator.List{
+															listvalidator.SizeAtMost(1),
 														},
-													},
-												},
-												"dedupe": schema.ListNestedBlock{
-													Description: "The `dedupe` processor removes duplicate fields in log events.",
-													Validators: []validator.List{
-														listvalidator.SizeAtMost(1),
-													},
-													NestedObject: schema.NestedBlockObject{
-														Attributes: map[string]schema.Attribute{
-															"fields": schema.ListAttribute{
-																Required:    true,
-																ElementType: types.StringType,
-																Description: "A list of log field paths to check for duplicates.",
+														NestedObject: schema.NestedBlockObject{
+															Attributes: map[string]schema.Attribute{
+																"target": schema.StringAttribute{
+																	Required:    true,
+																	Description: "Path where enrichment results should be stored in the log.",
+																},
 															},
-															"mode": schema.StringAttribute{
-																Required:    true,
-																Description: "The deduplication mode to apply to the fields.",
-															},
-														},
-													},
-												},
-												"reduce": schema.ListNestedBlock{
-													Description: "The `reduce` processor aggregates and merges logs based on matching keys and merge strategies.",
-													Validators: []validator.List{
-														listvalidator.SizeAtMost(1),
-													},
-													NestedObject: schema.NestedBlockObject{
-														Attributes: map[string]schema.Attribute{
-															"group_by": schema.ListAttribute{
-																Required:    true,
-																ElementType: types.StringType,
-																Description: "A list of fields used to group log events for merging.",
-															},
-														},
-														Blocks: map[string]schema.Block{
-															"merge_strategies": schema.ListNestedBlock{
-																Description: "List of merge strategies defining how values from grouped events should be combined.",
-																NestedObject: schema.NestedBlockObject{
+															Blocks: map[string]schema.Block{
+																"file": schema.SingleNestedBlock{
+																	Description: "Defines a static enrichment table loaded from a CSV file.",
 																	Attributes: map[string]schema.Attribute{
 																		"path": schema.StringAttribute{
-																			Required:    true,
-																			Description: "The field path in the log event.",
-																		},
-																		"strategy": schema.StringAttribute{
-																			Required:    true,
-																			Description: "The merge strategy to apply.",
+																			Optional:    true,
+																			Description: "Path to the CSV file.",
 																		},
 																	},
-																},
-															},
-														},
-													},
-												},
-												"throttle": schema.ListNestedBlock{
-													Description: "The `throttle` processor limits the number of events that pass through over a given time window.",
-													Validators: []validator.List{
-														listvalidator.SizeAtMost(1),
-													},
-													NestedObject: schema.NestedBlockObject{
-														Attributes: map[string]schema.Attribute{
-															"threshold": schema.Int64Attribute{
-																Required:    true,
-																Description: "The number of events to allow before throttling is applied.",
-															},
-															"window": schema.Float64Attribute{
-																Required:    true,
-																Description: "The time window in seconds over which the threshold applies.",
-															},
-															"group_by": schema.ListAttribute{
-																Optional:    true,
-																ElementType: types.StringType,
-																Description: "Optional list of fields used to group events before applying throttling.",
-															},
-														},
-													},
-												},
-												"add_env_vars": schema.ListNestedBlock{
-													Description: "The `add_env_vars` processor adds environment variable values to log events.",
-													Validators: []validator.List{
-														listvalidator.SizeAtMost(1),
-													},
-													NestedObject: schema.NestedBlockObject{
-														Attributes: map[string]schema.Attribute{},
-														Blocks: map[string]schema.Block{
-															"variables": schema.ListNestedBlock{
-																Description: "A list of environment variable mappings to apply to log fields.",
-																NestedObject: schema.NestedBlockObject{
-																	Attributes: map[string]schema.Attribute{
-																		"field": schema.StringAttribute{
-																			Required:    true,
-																			Description: "The target field in the log event.",
-																		},
-																		"name": schema.StringAttribute{
-																			Required:    true,
-																			Description: "The name of the environment variable to read.",
-																		},
-																	},
-																},
-															},
-														},
-													},
-												},
-												"enrichment_table": schema.ListNestedBlock{
-													Description: "The `enrichment_table` processor enriches logs using a static CSV file or GeoIP database.",
-													Validators: []validator.List{
-														listvalidator.SizeAtMost(1),
-													},
-													NestedObject: schema.NestedBlockObject{
-														Attributes: map[string]schema.Attribute{
-															"target": schema.StringAttribute{
-																Required:    true,
-																Description: "Path where enrichment results should be stored in the log.",
-															},
-														},
-														Blocks: map[string]schema.Block{
-															"file": schema.SingleNestedBlock{
-																Description: "Defines a static enrichment table loaded from a CSV file.",
-																Attributes: map[string]schema.Attribute{
-																	"path": schema.StringAttribute{
-																		Optional:    true,
-																		Description: "Path to the CSV file.",
-																	},
-																},
-																Blocks: map[string]schema.Block{
-																	"encoding": schema.SingleNestedBlock{
-																		Attributes: map[string]schema.Attribute{
-																			"type": schema.StringAttribute{
-																				Optional:    true,
-																				Description: "File encoding format.",
-																			},
-																			"delimiter": schema.StringAttribute{
-																				Optional:    true,
-																				Description: "The `encoding` `delimiter`.",
-																			},
-																			"includes_headers": schema.BoolAttribute{
-																				Optional:    true,
-																				Description: "The `encoding` `includes_headers`.",
-																			},
-																		},
-																	},
-																	"schema": schema.ListNestedBlock{
-																		Description: "Schema defining column names and their types.",
-																		NestedObject: schema.NestedBlockObject{
+																	Blocks: map[string]schema.Block{
+																		"encoding": schema.SingleNestedBlock{
 																			Attributes: map[string]schema.Attribute{
-																				"column": schema.StringAttribute{
-																					Optional:    true,
-																					Description: "The `items` `column`.",
-																				},
 																				"type": schema.StringAttribute{
 																					Optional:    true,
-																					Description: "The type of the column (e.g. string, boolean, integer, etc.).",
+																					Description: "File encoding format.",
+																				},
+																				"delimiter": schema.StringAttribute{
+																					Optional:    true,
+																					Description: "The `encoding` `delimiter`.",
+																				},
+																				"includes_headers": schema.BoolAttribute{
+																					Optional:    true,
+																					Description: "The `encoding` `includes_headers`.",
 																				},
 																			},
 																		},
-																	},
-																	"key": schema.ListNestedBlock{
-																		Description: "Key fields used to look up enrichment values.",
-																		NestedObject: schema.NestedBlockObject{
-																			Attributes: map[string]schema.Attribute{
-																				"column": schema.StringAttribute{
-																					Optional:    true,
-																					Description: "The `items` `column`.",
+																		"schema": schema.ListNestedBlock{
+																			Description: "Schema defining column names and their types.",
+																			NestedObject: schema.NestedBlockObject{
+																				Attributes: map[string]schema.Attribute{
+																					"column": schema.StringAttribute{
+																						Optional:    true,
+																						Description: "The `items` `column`.",
+																					},
+																					"type": schema.StringAttribute{
+																						Optional:    true,
+																						Description: "The type of the column (e.g. string, boolean, integer, etc.).",
+																					},
 																				},
-																				"comparison": schema.StringAttribute{
-																					Optional:    true,
-																					Description: "The comparison method (e.g. equals).",
-																				},
-																				"field": schema.StringAttribute{
-																					Optional:    true,
-																					Description: "The `items` `field`.",
+																			},
+																		},
+																		"key": schema.ListNestedBlock{
+																			Description: "Key fields used to look up enrichment values.",
+																			NestedObject: schema.NestedBlockObject{
+																				Attributes: map[string]schema.Attribute{
+																					"column": schema.StringAttribute{
+																						Optional:    true,
+																						Description: "The `items` `column`.",
+																					},
+																					"comparison": schema.StringAttribute{
+																						Optional:    true,
+																						Description: "The comparison method (e.g. equals).",
+																					},
+																					"field": schema.StringAttribute{
+																						Optional:    true,
+																						Description: "The `items` `field`.",
+																					},
 																				},
 																			},
 																		},
 																	},
 																},
-															},
-															"geoip": schema.SingleNestedBlock{
-																Description: "Uses a GeoIP database to enrich logs based on an IP field.",
-																Attributes: map[string]schema.Attribute{
-																	"key_field": schema.StringAttribute{
-																		Optional:    true,
-																		Description: "Path to the IP field in the log.",
-																	},
-																	"locale": schema.StringAttribute{
-																		Optional:    true,
-																		Description: "Locale used to resolve geographical names.",
-																	},
-																	"path": schema.StringAttribute{
-																		Optional:    true,
-																		Description: "Path to the GeoIP database file.",
-																	},
-																},
-															},
-														},
-													},
-												},
-												"ocsf_mapper": schema.ListNestedBlock{
-													Description: "The `ocsf_mapper` processor transforms logs into the OCSF schema using predefined library mappings.",
-													Validators: []validator.List{
-														listvalidator.SizeAtMost(1),
-													},
-													NestedObject: schema.NestedBlockObject{
-														Attributes: map[string]schema.Attribute{},
-														Blocks: map[string]schema.Block{
-															"mapping": schema.ListNestedBlock{
-																Description: "List of OCSF mapping entries using library mapping.",
-																NestedObject: schema.NestedBlockObject{
+																"geoip": schema.SingleNestedBlock{
+																	Description: "Uses a GeoIP database to enrich logs based on an IP field.",
 																	Attributes: map[string]schema.Attribute{
-																		"include": schema.StringAttribute{
-																			Required:    true,
-																			Description: "Search query for selecting which logs the mapping applies to.",
+																		"key_field": schema.StringAttribute{
+																			Optional:    true,
+																			Description: "Path to the IP field in the log.",
 																		},
-																		"library_mapping": schema.StringAttribute{
-																			Required:    true,
-																			Description: "Predefined library mapping for log transformation.",
+																		"locale": schema.StringAttribute{
+																			Optional:    true,
+																			Description: "Locale used to resolve geographical names.",
+																		},
+																		"path": schema.StringAttribute{
+																			Optional:    true,
+																			Description: "Path to the GeoIP database file.",
 																		},
 																	},
 																},
 															},
 														},
 													},
+													"ocsf_mapper": schema.ListNestedBlock{
+														Description: "The `ocsf_mapper` processor transforms logs into the OCSF schema using predefined library mappings.",
+														Validators: []validator.List{
+															listvalidator.SizeAtMost(1),
+														},
+														NestedObject: schema.NestedBlockObject{
+															Attributes: map[string]schema.Attribute{},
+															Blocks: map[string]schema.Block{
+																"mapping": schema.ListNestedBlock{
+																	Description: "List of OCSF mapping entries using library mapping.",
+																	NestedObject: schema.NestedBlockObject{
+																		Attributes: map[string]schema.Attribute{
+																			"include": schema.StringAttribute{
+																				Required:    true,
+																				Description: "Search query for selecting which logs the mapping applies to.",
+																			},
+																			"library_mapping": schema.StringAttribute{
+																				Required:    true,
+																				Description: "Predefined library mapping for log transformation.",
+																			},
+																		},
+																	},
+																},
+															},
+														},
+													},
+													"datadog_tags":     observability_pipeline.DatadogTagsProcessorSchema(),
+													"custom_processor": observability_pipeline.CustomProcessorSchema(),
 												},
-												"datadog_tags":     observability_pipeline.DatadogTagsProcessorSchema(),
-												"custom_processor": observability_pipeline.CustomProcessorSchema(),
 											},
 										},
 									},
@@ -2705,147 +2707,167 @@ func flattenProcessorGroup(ctx context.Context, group *datadogV2.ObservabilityPi
 
 	inputs, _ := types.ListValueFrom(ctx, types.StringType, group.GetInputs())
 
-	// Create the processorTypesModel from the processors in the group
-	processorTypes := &processorModel{}
+	// Group processors by id/enabled/include combination
+	processorsByKey := make(map[string]*processorModel)
+	processorOrder := []string{} // Track order of appearance
 
-	// Get id, enabled, include from the first processor in the group
-	// (all processors in a group share these values)
 	processors := group.GetProcessors()
-	if len(processors) > 0 {
-		firstProc := processors[0]
+	for _, p := range processors {
+		// Extract id/enabled/include from the processor
+		var id, include string
+		var enabled bool
 
-		// Extract common fields from the first processor - check all types
-		if firstProc.ObservabilityPipelineFilterProcessor != nil {
-			processorTypes.Id = types.StringValue(firstProc.ObservabilityPipelineFilterProcessor.GetId())
-			processorTypes.Enabled = types.BoolValue(firstProc.ObservabilityPipelineFilterProcessor.GetEnabled())
-			processorTypes.Include = types.StringValue(firstProc.ObservabilityPipelineFilterProcessor.GetInclude())
-		} else if firstProc.ObservabilityPipelineParseJSONProcessor != nil {
-			processorTypes.Id = types.StringValue(firstProc.ObservabilityPipelineParseJSONProcessor.GetId())
-			processorTypes.Enabled = types.BoolValue(firstProc.ObservabilityPipelineParseJSONProcessor.GetEnabled())
-			processorTypes.Include = types.StringValue(firstProc.ObservabilityPipelineParseJSONProcessor.GetInclude())
-		} else if firstProc.ObservabilityPipelineAddFieldsProcessor != nil {
-			processorTypes.Id = types.StringValue(firstProc.ObservabilityPipelineAddFieldsProcessor.GetId())
-			processorTypes.Enabled = types.BoolValue(firstProc.ObservabilityPipelineAddFieldsProcessor.GetEnabled())
-			processorTypes.Include = types.StringValue(firstProc.ObservabilityPipelineAddFieldsProcessor.GetInclude())
-		} else if firstProc.ObservabilityPipelineRenameFieldsProcessor != nil {
-			processorTypes.Id = types.StringValue(firstProc.ObservabilityPipelineRenameFieldsProcessor.GetId())
-			processorTypes.Enabled = types.BoolValue(firstProc.ObservabilityPipelineRenameFieldsProcessor.GetEnabled())
-			processorTypes.Include = types.StringValue(firstProc.ObservabilityPipelineRenameFieldsProcessor.GetInclude())
-		} else if firstProc.ObservabilityPipelineRemoveFieldsProcessor != nil {
-			processorTypes.Id = types.StringValue(firstProc.ObservabilityPipelineRemoveFieldsProcessor.GetId())
-			processorTypes.Enabled = types.BoolValue(firstProc.ObservabilityPipelineRemoveFieldsProcessor.GetEnabled())
-			processorTypes.Include = types.StringValue(firstProc.ObservabilityPipelineRemoveFieldsProcessor.GetInclude())
-		} else if firstProc.ObservabilityPipelineQuotaProcessor != nil {
-			processorTypes.Id = types.StringValue(firstProc.ObservabilityPipelineQuotaProcessor.GetId())
-			processorTypes.Enabled = types.BoolValue(firstProc.ObservabilityPipelineQuotaProcessor.GetEnabled())
-			processorTypes.Include = types.StringValue(firstProc.ObservabilityPipelineQuotaProcessor.GetInclude())
-		} else if firstProc.ObservabilityPipelineSensitiveDataScannerProcessor != nil {
-			processorTypes.Id = types.StringValue(firstProc.ObservabilityPipelineSensitiveDataScannerProcessor.GetId())
-			processorTypes.Enabled = types.BoolValue(firstProc.ObservabilityPipelineSensitiveDataScannerProcessor.GetEnabled())
-			processorTypes.Include = types.StringValue(firstProc.ObservabilityPipelineSensitiveDataScannerProcessor.GetInclude())
-		} else if firstProc.ObservabilityPipelineGenerateMetricsProcessor != nil {
-			processorTypes.Id = types.StringValue(firstProc.ObservabilityPipelineGenerateMetricsProcessor.GetId())
-			processorTypes.Enabled = types.BoolValue(firstProc.ObservabilityPipelineGenerateMetricsProcessor.GetEnabled())
-			processorTypes.Include = types.StringValue(firstProc.ObservabilityPipelineGenerateMetricsProcessor.GetInclude())
-		} else if firstProc.ObservabilityPipelineParseGrokProcessor != nil {
-			processorTypes.Id = types.StringValue(firstProc.ObservabilityPipelineParseGrokProcessor.GetId())
-			processorTypes.Enabled = types.BoolValue(firstProc.ObservabilityPipelineParseGrokProcessor.GetEnabled())
-			processorTypes.Include = types.StringValue(firstProc.ObservabilityPipelineParseGrokProcessor.GetInclude())
-		} else if firstProc.ObservabilityPipelineSampleProcessor != nil {
-			processorTypes.Id = types.StringValue(firstProc.ObservabilityPipelineSampleProcessor.GetId())
-			processorTypes.Enabled = types.BoolValue(firstProc.ObservabilityPipelineSampleProcessor.GetEnabled())
-			processorTypes.Include = types.StringValue(firstProc.ObservabilityPipelineSampleProcessor.GetInclude())
-		} else if firstProc.ObservabilityPipelineDedupeProcessor != nil {
-			processorTypes.Id = types.StringValue(firstProc.ObservabilityPipelineDedupeProcessor.GetId())
-			processorTypes.Enabled = types.BoolValue(firstProc.ObservabilityPipelineDedupeProcessor.GetEnabled())
-			processorTypes.Include = types.StringValue(firstProc.ObservabilityPipelineDedupeProcessor.GetInclude())
-		} else if firstProc.ObservabilityPipelineReduceProcessor != nil {
-			processorTypes.Id = types.StringValue(firstProc.ObservabilityPipelineReduceProcessor.GetId())
-			processorTypes.Enabled = types.BoolValue(firstProc.ObservabilityPipelineReduceProcessor.GetEnabled())
-			processorTypes.Include = types.StringValue(firstProc.ObservabilityPipelineReduceProcessor.GetInclude())
-		} else if firstProc.ObservabilityPipelineThrottleProcessor != nil {
-			processorTypes.Id = types.StringValue(firstProc.ObservabilityPipelineThrottleProcessor.GetId())
-			processorTypes.Enabled = types.BoolValue(firstProc.ObservabilityPipelineThrottleProcessor.GetEnabled())
-			processorTypes.Include = types.StringValue(firstProc.ObservabilityPipelineThrottleProcessor.GetInclude())
-		} else if firstProc.ObservabilityPipelineAddEnvVarsProcessor != nil {
-			processorTypes.Id = types.StringValue(firstProc.ObservabilityPipelineAddEnvVarsProcessor.GetId())
-			processorTypes.Enabled = types.BoolValue(firstProc.ObservabilityPipelineAddEnvVarsProcessor.GetEnabled())
-			processorTypes.Include = types.StringValue(firstProc.ObservabilityPipelineAddEnvVarsProcessor.GetInclude())
-		} else if firstProc.ObservabilityPipelineEnrichmentTableProcessor != nil {
-			processorTypes.Id = types.StringValue(firstProc.ObservabilityPipelineEnrichmentTableProcessor.GetId())
-			processorTypes.Enabled = types.BoolValue(firstProc.ObservabilityPipelineEnrichmentTableProcessor.GetEnabled())
-			processorTypes.Include = types.StringValue(firstProc.ObservabilityPipelineEnrichmentTableProcessor.GetInclude())
-		} else if firstProc.ObservabilityPipelineOcsfMapperProcessor != nil {
-			processorTypes.Id = types.StringValue(firstProc.ObservabilityPipelineOcsfMapperProcessor.GetId())
-			processorTypes.Enabled = types.BoolValue(firstProc.ObservabilityPipelineOcsfMapperProcessor.GetEnabled())
-			processorTypes.Include = types.StringValue(firstProc.ObservabilityPipelineOcsfMapperProcessor.GetInclude())
-		} else if firstProc.ObservabilityPipelineDatadogTagsProcessor != nil {
-			processorTypes.Id = types.StringValue(firstProc.ObservabilityPipelineDatadogTagsProcessor.GetId())
-			processorTypes.Enabled = types.BoolValue(firstProc.ObservabilityPipelineDatadogTagsProcessor.GetEnabled())
-			processorTypes.Include = types.StringValue(firstProc.ObservabilityPipelineDatadogTagsProcessor.GetInclude())
-		} else if firstProc.ObservabilityPipelineCustomProcessor != nil {
-			processorTypes.Id = types.StringValue(firstProc.ObservabilityPipelineCustomProcessor.GetId())
-			processorTypes.Enabled = types.BoolValue(firstProc.ObservabilityPipelineCustomProcessor.GetEnabled())
-			processorTypes.Include = types.StringValue(firstProc.ObservabilityPipelineCustomProcessor.GetInclude())
+		// Check all processor types to extract common fields
+		if p.ObservabilityPipelineFilterProcessor != nil {
+			id = p.ObservabilityPipelineFilterProcessor.GetId()
+			enabled = p.ObservabilityPipelineFilterProcessor.GetEnabled()
+			include = p.ObservabilityPipelineFilterProcessor.GetInclude()
+		} else if p.ObservabilityPipelineParseJSONProcessor != nil {
+			id = p.ObservabilityPipelineParseJSONProcessor.GetId()
+			enabled = p.ObservabilityPipelineParseJSONProcessor.GetEnabled()
+			include = p.ObservabilityPipelineParseJSONProcessor.GetInclude()
+		} else if p.ObservabilityPipelineAddFieldsProcessor != nil {
+			id = p.ObservabilityPipelineAddFieldsProcessor.GetId()
+			enabled = p.ObservabilityPipelineAddFieldsProcessor.GetEnabled()
+			include = p.ObservabilityPipelineAddFieldsProcessor.GetInclude()
+		} else if p.ObservabilityPipelineRenameFieldsProcessor != nil {
+			id = p.ObservabilityPipelineRenameFieldsProcessor.GetId()
+			enabled = p.ObservabilityPipelineRenameFieldsProcessor.GetEnabled()
+			include = p.ObservabilityPipelineRenameFieldsProcessor.GetInclude()
+		} else if p.ObservabilityPipelineRemoveFieldsProcessor != nil {
+			id = p.ObservabilityPipelineRemoveFieldsProcessor.GetId()
+			enabled = p.ObservabilityPipelineRemoveFieldsProcessor.GetEnabled()
+			include = p.ObservabilityPipelineRemoveFieldsProcessor.GetInclude()
+		} else if p.ObservabilityPipelineQuotaProcessor != nil {
+			id = p.ObservabilityPipelineQuotaProcessor.GetId()
+			enabled = p.ObservabilityPipelineQuotaProcessor.GetEnabled()
+			include = p.ObservabilityPipelineQuotaProcessor.GetInclude()
+		} else if p.ObservabilityPipelineSensitiveDataScannerProcessor != nil {
+			id = p.ObservabilityPipelineSensitiveDataScannerProcessor.GetId()
+			enabled = p.ObservabilityPipelineSensitiveDataScannerProcessor.GetEnabled()
+			include = p.ObservabilityPipelineSensitiveDataScannerProcessor.GetInclude()
+		} else if p.ObservabilityPipelineGenerateMetricsProcessor != nil {
+			id = p.ObservabilityPipelineGenerateMetricsProcessor.GetId()
+			enabled = p.ObservabilityPipelineGenerateMetricsProcessor.GetEnabled()
+			include = p.ObservabilityPipelineGenerateMetricsProcessor.GetInclude()
+		} else if p.ObservabilityPipelineParseGrokProcessor != nil {
+			id = p.ObservabilityPipelineParseGrokProcessor.GetId()
+			enabled = p.ObservabilityPipelineParseGrokProcessor.GetEnabled()
+			include = p.ObservabilityPipelineParseGrokProcessor.GetInclude()
+		} else if p.ObservabilityPipelineSampleProcessor != nil {
+			id = p.ObservabilityPipelineSampleProcessor.GetId()
+			enabled = p.ObservabilityPipelineSampleProcessor.GetEnabled()
+			include = p.ObservabilityPipelineSampleProcessor.GetInclude()
+		} else if p.ObservabilityPipelineDedupeProcessor != nil {
+			id = p.ObservabilityPipelineDedupeProcessor.GetId()
+			enabled = p.ObservabilityPipelineDedupeProcessor.GetEnabled()
+			include = p.ObservabilityPipelineDedupeProcessor.GetInclude()
+		} else if p.ObservabilityPipelineReduceProcessor != nil {
+			id = p.ObservabilityPipelineReduceProcessor.GetId()
+			enabled = p.ObservabilityPipelineReduceProcessor.GetEnabled()
+			include = p.ObservabilityPipelineReduceProcessor.GetInclude()
+		} else if p.ObservabilityPipelineThrottleProcessor != nil {
+			id = p.ObservabilityPipelineThrottleProcessor.GetId()
+			enabled = p.ObservabilityPipelineThrottleProcessor.GetEnabled()
+			include = p.ObservabilityPipelineThrottleProcessor.GetInclude()
+		} else if p.ObservabilityPipelineAddEnvVarsProcessor != nil {
+			id = p.ObservabilityPipelineAddEnvVarsProcessor.GetId()
+			enabled = p.ObservabilityPipelineAddEnvVarsProcessor.GetEnabled()
+			include = p.ObservabilityPipelineAddEnvVarsProcessor.GetInclude()
+		} else if p.ObservabilityPipelineEnrichmentTableProcessor != nil {
+			id = p.ObservabilityPipelineEnrichmentTableProcessor.GetId()
+			enabled = p.ObservabilityPipelineEnrichmentTableProcessor.GetEnabled()
+			include = p.ObservabilityPipelineEnrichmentTableProcessor.GetInclude()
+		} else if p.ObservabilityPipelineOcsfMapperProcessor != nil {
+			id = p.ObservabilityPipelineOcsfMapperProcessor.GetId()
+			enabled = p.ObservabilityPipelineOcsfMapperProcessor.GetEnabled()
+			include = p.ObservabilityPipelineOcsfMapperProcessor.GetInclude()
+		} else if p.ObservabilityPipelineDatadogTagsProcessor != nil {
+			id = p.ObservabilityPipelineDatadogTagsProcessor.GetId()
+			enabled = p.ObservabilityPipelineDatadogTagsProcessor.GetEnabled()
+			include = p.ObservabilityPipelineDatadogTagsProcessor.GetInclude()
+		} else if p.ObservabilityPipelineCustomProcessor != nil {
+			id = p.ObservabilityPipelineCustomProcessor.GetId()
+			enabled = p.ObservabilityPipelineCustomProcessor.GetEnabled()
+			include = p.ObservabilityPipelineCustomProcessor.GetInclude()
 		}
 
-		// Flatten each specific processor type
-		for _, p := range processors {
-			if f := flattenFilterProcessorItem(ctx, p.ObservabilityPipelineFilterProcessor); f != nil {
-				processorTypes.FilterProcessor = append(processorTypes.FilterProcessor, f)
+		// Create key from id/enabled/include
+		key := id
+
+		// Get or create processor model for this key
+		procModel, exists := processorsByKey[key]
+		if !exists {
+			procModel = &processorModel{
+				Id:      types.StringValue(id),
+				Enabled: types.BoolValue(enabled),
+				Include: types.StringValue(include),
 			}
-			if f := flattenParseJsonProcessorItem(ctx, p.ObservabilityPipelineParseJSONProcessor); f != nil {
-				processorTypes.ParseJsonProcessor = append(processorTypes.ParseJsonProcessor, f)
-			}
-			if f := flattenAddFieldsProcessorItem(ctx, p.ObservabilityPipelineAddFieldsProcessor); f != nil {
-				processorTypes.AddFieldsProcessor = append(processorTypes.AddFieldsProcessor, f)
-			}
-			if f := flattenRenameFieldsProcessorItem(ctx, p.ObservabilityPipelineRenameFieldsProcessor); f != nil {
-				processorTypes.RenameFieldsProcessor = append(processorTypes.RenameFieldsProcessor, f)
-			}
-			if f := flattenRemoveFieldsProcessorItem(ctx, p.ObservabilityPipelineRemoveFieldsProcessor); f != nil {
-				processorTypes.RemoveFieldsProcessor = append(processorTypes.RemoveFieldsProcessor, f)
-			}
-			if f := flattenQuotaProcessorItem(ctx, p.ObservabilityPipelineQuotaProcessor); f != nil {
-				processorTypes.QuotaProcessor = append(processorTypes.QuotaProcessor, f)
-			}
-			if f := flattenSensitiveDataScannerProcessorItem(ctx, p.ObservabilityPipelineSensitiveDataScannerProcessor); f != nil {
-				processorTypes.SensitiveDataScannerProcessor = append(processorTypes.SensitiveDataScannerProcessor, f)
-			}
-			if f := flattenGenerateDatadogMetricsProcessorItem(ctx, p.ObservabilityPipelineGenerateMetricsProcessor); f != nil {
-				processorTypes.GenerateMetricsProcessor = append(processorTypes.GenerateMetricsProcessor, f)
-			}
-			if f := flattenParseGrokProcessorItem(ctx, p.ObservabilityPipelineParseGrokProcessor); f != nil {
-				processorTypes.ParseGrokProcessor = append(processorTypes.ParseGrokProcessor, f)
-			}
-			if f := flattenSampleProcessorItem(ctx, p.ObservabilityPipelineSampleProcessor); f != nil {
-				processorTypes.SampleProcessor = append(processorTypes.SampleProcessor, f)
-			}
-			if f := flattenDedupeProcessorItem(ctx, p.ObservabilityPipelineDedupeProcessor); f != nil {
-				processorTypes.DedupeProcessor = append(processorTypes.DedupeProcessor, f)
-			}
-			if f := flattenReduceProcessorItem(ctx, p.ObservabilityPipelineReduceProcessor); f != nil {
-				processorTypes.ReduceProcessor = append(processorTypes.ReduceProcessor, f)
-			}
-			if f := flattenThrottleProcessorItem(ctx, p.ObservabilityPipelineThrottleProcessor); f != nil {
-				processorTypes.ThrottleProcessor = append(processorTypes.ThrottleProcessor, f)
-			}
-			if f := flattenAddEnvVarsProcessorItem(ctx, p.ObservabilityPipelineAddEnvVarsProcessor); f != nil {
-				processorTypes.AddEnvVarsProcessor = append(processorTypes.AddEnvVarsProcessor, f)
-			}
-			if f := flattenEnrichmentTableProcessorItem(ctx, p.ObservabilityPipelineEnrichmentTableProcessor); f != nil {
-				processorTypes.EnrichmentTableProcessor = append(processorTypes.EnrichmentTableProcessor, f)
-			}
-			if f := flattenOcsfMapperProcessorItem(ctx, p.ObservabilityPipelineOcsfMapperProcessor); f != nil {
-				processorTypes.OcsfMapperProcessor = append(processorTypes.OcsfMapperProcessor, f)
-			}
-			if f := observability_pipeline.FlattenDatadogTagsProcessor(p.ObservabilityPipelineDatadogTagsProcessor); f != nil {
-				processorTypes.DatadogTagsProcessor = append(processorTypes.DatadogTagsProcessor, f)
-			}
-			if f := observability_pipeline.FlattenCustomProcessor(p.ObservabilityPipelineCustomProcessor); f != nil {
-				processorTypes.CustomProcessor = append(processorTypes.CustomProcessor, f)
-			}
+			processorsByKey[key] = procModel
+			processorOrder = append(processorOrder, key)
 		}
+
+		// Flatten specific processor types into the model
+		if f := flattenFilterProcessorItem(ctx, p.ObservabilityPipelineFilterProcessor); f != nil {
+			procModel.FilterProcessor = append(procModel.FilterProcessor, f)
+		}
+		if f := flattenParseJsonProcessorItem(ctx, p.ObservabilityPipelineParseJSONProcessor); f != nil {
+			procModel.ParseJsonProcessor = append(procModel.ParseJsonProcessor, f)
+		}
+		if f := flattenAddFieldsProcessorItem(ctx, p.ObservabilityPipelineAddFieldsProcessor); f != nil {
+			procModel.AddFieldsProcessor = append(procModel.AddFieldsProcessor, f)
+		}
+		if f := flattenRenameFieldsProcessorItem(ctx, p.ObservabilityPipelineRenameFieldsProcessor); f != nil {
+			procModel.RenameFieldsProcessor = append(procModel.RenameFieldsProcessor, f)
+		}
+		if f := flattenRemoveFieldsProcessorItem(ctx, p.ObservabilityPipelineRemoveFieldsProcessor); f != nil {
+			procModel.RemoveFieldsProcessor = append(procModel.RemoveFieldsProcessor, f)
+		}
+		if f := flattenQuotaProcessorItem(ctx, p.ObservabilityPipelineQuotaProcessor); f != nil {
+			procModel.QuotaProcessor = append(procModel.QuotaProcessor, f)
+		}
+		if f := flattenSensitiveDataScannerProcessorItem(ctx, p.ObservabilityPipelineSensitiveDataScannerProcessor); f != nil {
+			procModel.SensitiveDataScannerProcessor = append(procModel.SensitiveDataScannerProcessor, f)
+		}
+		if f := flattenGenerateDatadogMetricsProcessorItem(ctx, p.ObservabilityPipelineGenerateMetricsProcessor); f != nil {
+			procModel.GenerateMetricsProcessor = append(procModel.GenerateMetricsProcessor, f)
+		}
+		if f := flattenParseGrokProcessorItem(ctx, p.ObservabilityPipelineParseGrokProcessor); f != nil {
+			procModel.ParseGrokProcessor = append(procModel.ParseGrokProcessor, f)
+		}
+		if f := flattenSampleProcessorItem(ctx, p.ObservabilityPipelineSampleProcessor); f != nil {
+			procModel.SampleProcessor = append(procModel.SampleProcessor, f)
+		}
+		if f := flattenDedupeProcessorItem(ctx, p.ObservabilityPipelineDedupeProcessor); f != nil {
+			procModel.DedupeProcessor = append(procModel.DedupeProcessor, f)
+		}
+		if f := flattenReduceProcessorItem(ctx, p.ObservabilityPipelineReduceProcessor); f != nil {
+			procModel.ReduceProcessor = append(procModel.ReduceProcessor, f)
+		}
+		if f := flattenThrottleProcessorItem(ctx, p.ObservabilityPipelineThrottleProcessor); f != nil {
+			procModel.ThrottleProcessor = append(procModel.ThrottleProcessor, f)
+		}
+		if f := flattenAddEnvVarsProcessorItem(ctx, p.ObservabilityPipelineAddEnvVarsProcessor); f != nil {
+			procModel.AddEnvVarsProcessor = append(procModel.AddEnvVarsProcessor, f)
+		}
+		if f := flattenEnrichmentTableProcessorItem(ctx, p.ObservabilityPipelineEnrichmentTableProcessor); f != nil {
+			procModel.EnrichmentTableProcessor = append(procModel.EnrichmentTableProcessor, f)
+		}
+		if f := flattenOcsfMapperProcessorItem(ctx, p.ObservabilityPipelineOcsfMapperProcessor); f != nil {
+			procModel.OcsfMapperProcessor = append(procModel.OcsfMapperProcessor, f)
+		}
+		if f := observability_pipeline.FlattenDatadogTagsProcessor(p.ObservabilityPipelineDatadogTagsProcessor); f != nil {
+			procModel.DatadogTagsProcessor = append(procModel.DatadogTagsProcessor, f)
+		}
+		if f := observability_pipeline.FlattenCustomProcessor(p.ObservabilityPipelineCustomProcessor); f != nil {
+			procModel.CustomProcessor = append(procModel.CustomProcessor, f)
+		}
+	}
+
+	// Convert map to list in order
+	var processorsList []*processorModel
+	for _, key := range processorOrder {
+		processorsList = append(processorsList, processorsByKey[key])
 	}
 
 	return &processorGroupModel{
@@ -2853,7 +2875,7 @@ func flattenProcessorGroup(ctx context.Context, group *datadogV2.ObservabilityPi
 		Enabled:    types.BoolValue(group.GetEnabled()),
 		Include:    types.StringValue(group.GetInclude()),
 		Inputs:     inputs,
-		Processors: processorTypes,
+		Processors: processorsList,
 	}
 }
 
@@ -2870,10 +2892,13 @@ func expandProcessorGroup(ctx context.Context, group *processorGroupModel) datad
 	group.Inputs.ElementsAs(ctx, &inputs, false)
 	apiGroup.SetInputs(inputs)
 
-	// Process the nested processor and get its items
-	// Pass processor-level id/enabled/include to be used by all processors in the group
-	if group.Processors != nil {
-		processorItems := expandProcessorTypes(ctx, group.Processors)
+	// Process the nested processors and get all items
+	var processorItems []datadogV2.ObservabilityPipelineConfigProcessorItem
+	for _, processor := range group.Processors {
+		items := expandProcessorTypes(ctx, processor)
+		processorItems = append(processorItems, items...)
+	}
+	if len(processorItems) > 0 {
 		apiGroup.SetProcessors(processorItems)
 	}
 

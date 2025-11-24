@@ -53,10 +53,10 @@ func TestAccDatadogObservabilityPipeline_basic(t *testing.T) {
 					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.id", "parser-group-1"),
 					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.enabled", "true"),
 					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.include", "service:my-service"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.id", "parser-1"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.enabled", "true"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.include", "service:my-service"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.parse_json.0.field", "message"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.id", "parser-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.enabled", "true"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.include", "service:my-service"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.parse_json.0.field", "message"),
 					resource.TestCheckResourceAttr(resourceName, "config.destinations.datadog_logs.0.id", "destination-1"),
 					resource.TestCheckResourceAttr(resourceName, "config.destinations.datadog_logs.0.inputs.0", "parser-group-1"),
 				),
@@ -66,7 +66,7 @@ func TestAccDatadogObservabilityPipeline_basic(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr(resourceName, "name", "updated pipeline"),
 					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.include", "service:updated-service"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.include", "service:updated-service"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.include", "service:updated-service"),
 				),
 			},
 		},
@@ -380,8 +380,8 @@ resource "datadog_observability_pipeline" "filter" {
 					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.id", "filter-group-1"),
 					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.include", "env:prod"),
 					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.inputs.0", "source-1"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.id", "filter-1"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.include", "env:prod"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.id", "filter-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.include", "env:prod"),
 				),
 			},
 		},
@@ -445,10 +445,10 @@ resource "datadog_observability_pipeline" "rename_fields" {
 					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(resourceName, "name", "rename-fields-pipeline"),
 					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.id", "rename-group-1"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.id", "rename-1"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.rename_fields.0.field.0.source", "old.field"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.rename_fields.0.field.0.destination", "new.field"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.rename_fields.0.field.0.preserve_source", "true"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.id", "rename-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.rename_fields.0.field.0.source", "old.field"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.rename_fields.0.field.0.destination", "new.field"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.rename_fields.0.field.0.preserve_source", "true"),
 				),
 			},
 		},
@@ -508,10 +508,10 @@ resource "datadog_observability_pipeline" "remove_fields" {
 					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(resourceName, "name", "remove-fields-pipeline"),
 					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.id", "remove-group-1"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.id", "remove-1"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.include", "*"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.remove_fields.0.fields.0", "temp.debug"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.remove_fields.0.fields.1", "internal.trace_id"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.id", "remove-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.include", "*"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.remove_fields.0.fields.0", "temp.debug"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.remove_fields.0.fields.1", "internal.trace_id"),
 				),
 			},
 		},
@@ -609,23 +609,23 @@ resource "datadog_observability_pipeline" "quota" {
 					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(resourceName, "name", "quota-pipeline"),
 					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.id", "quota-group-1"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.id", "quota-1"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.quota.0.name", "limitByHostAndEnv"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.quota.0.drop_events", "true"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.quota.0.limit.enforce", "events"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.quota.0.limit.limit", "1000"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.quota.0.overrides.0.field.0.name", "env"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.quota.0.overrides.0.field.0.value", "prod"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.quota.0.overrides.0.field.1.name", "host"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.quota.0.overrides.0.field.1.value", "*"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.quota.0.overrides.0.limit.enforce", "events"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.quota.0.overrides.0.limit.limit", "500"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.quota.0.overrides.1.field.0.name", "env"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.quota.0.overrides.1.field.0.value", "*"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.quota.0.overrides.1.field.1.name", "host"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.quota.0.overrides.1.field.1.value", "localhost"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.quota.0.overrides.1.limit.enforce", "bytes"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.quota.0.overrides.1.limit.limit", "300"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.id", "quota-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.quota.0.name", "limitByHostAndEnv"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.quota.0.drop_events", "true"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.quota.0.limit.enforce", "events"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.quota.0.limit.limit", "1000"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.quota.0.overrides.0.field.0.name", "env"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.quota.0.overrides.0.field.0.value", "prod"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.quota.0.overrides.0.field.1.name", "host"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.quota.0.overrides.0.field.1.value", "*"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.quota.0.overrides.0.limit.enforce", "events"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.quota.0.overrides.0.limit.limit", "500"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.quota.0.overrides.1.field.0.name", "env"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.quota.0.overrides.1.field.0.value", "*"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.quota.0.overrides.1.field.1.name", "host"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.quota.0.overrides.1.field.1.value", "localhost"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.quota.0.overrides.1.limit.enforce", "bytes"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.quota.0.overrides.1.limit.limit", "300"),
 				),
 			},
 		},
@@ -687,8 +687,8 @@ resource "datadog_observability_pipeline" "parse_json" {
 					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.id", "parser-group-1"),
 					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.include", "env:parse"),
 					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.inputs.0", "source-1"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.id", "parser-1"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.parse_json.0.field", "message"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.id", "parser-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.parse_json.0.field", "message"),
 				),
 			},
 		},
@@ -755,11 +755,11 @@ resource "datadog_observability_pipeline" "add_fields" {
 					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(resourceName, "name", "add-fields-pipeline"),
 					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.id", "add-fields-group-1"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.id", "add-fields-1"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.add_fields.0.field.0.name", "custom.field"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.add_fields.0.field.0.value", "hello-world"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.add_fields.0.field.1.name", "env"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.add_fields.0.field.1.value", "prod"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.id", "add-fields-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.add_fields.0.field.0.name", "custom.field"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.add_fields.0.field.0.value", "hello-world"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.add_fields.0.field.1.name", "env"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.add_fields.0.field.1.value", "prod"),
 				),
 			},
 		},
@@ -842,22 +842,22 @@ resource "datadog_observability_pipeline" "parse_grok" {
 					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(resourceName, "name", "parse-grok-test"),
 					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.id", "parse-grok-group-1"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.id", "parse-grok-1"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.include", "*"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.parse_grok.0.disable_library_rules", "true"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.parse_grok.0.rules.0.source", "message"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.id", "parse-grok-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.include", "*"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.parse_grok.0.disable_library_rules", "true"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.parse_grok.0.rules.0.source", "message"),
 
 					// Match Rules
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.parse_grok.0.rules.0.match_rule.0.name", "match_user"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.parse_grok.0.rules.0.match_rule.0.rule", "%{word:user.name}"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.parse_grok.0.rules.0.match_rule.1.name", "match_action"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.parse_grok.0.rules.0.match_rule.1.rule", "%{word:action}"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.parse_grok.0.rules.0.match_rule.0.name", "match_user"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.parse_grok.0.rules.0.match_rule.0.rule", "%{word:user.name}"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.parse_grok.0.rules.0.match_rule.1.name", "match_action"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.parse_grok.0.rules.0.match_rule.1.rule", "%{word:action}"),
 
 					// Support Rules
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.parse_grok.0.rules.0.support_rule.0.name", "word"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.parse_grok.0.rules.0.support_rule.0.rule", "\\w+"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.parse_grok.0.rules.0.support_rule.1.name", "custom_word"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.parse_grok.0.rules.0.support_rule.1.rule", "[a-zA-Z]+"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.parse_grok.0.rules.0.support_rule.0.name", "word"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.parse_grok.0.rules.0.support_rule.0.rule", "\\w+"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.parse_grok.0.rules.0.support_rule.1.name", "custom_word"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.parse_grok.0.rules.0.support_rule.1.rule", "[a-zA-Z]+"),
 				),
 			},
 		},
@@ -933,9 +933,9 @@ resource "datadog_observability_pipeline" "sample" {
 					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(resourceName, "name", "sample-pipeline"),
 					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.id", "sample-group-1"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.id", "sample-1"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.include", "*"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.sample.0.rate", "10"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.id", "sample-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.include", "*"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.sample.0.rate", "10"),
 					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.1.id", "sample-group-2"),
 					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.1.processor.id", "sample-2"),
 					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.1.processor.sample.0.percentage", "4.99"),
@@ -1336,10 +1336,10 @@ resource "datadog_observability_pipeline" "generate_metrics" {
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.id", "generate-metrics-group-1"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.id", "generate-metrics-1"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.generate_datadog_metrics.0.metrics.0.name", "logs.generated"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.generate_datadog_metrics.0.metrics.0.value.strategy", "increment_by_field"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.generate_datadog_metrics.0.metrics.1.value.strategy", "increment_by_one"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.id", "generate-metrics-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.generate_datadog_metrics.0.metrics.0.name", "logs.generated"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.generate_datadog_metrics.0.metrics.0.value.strategy", "increment_by_field"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.generate_datadog_metrics.0.metrics.1.value.strategy", "increment_by_one"),
 				),
 			},
 		},
@@ -2018,56 +2018,187 @@ resource "datadog_observability_pipeline" "sds" {
 					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.inputs.0", "source-a"),
 
 					// Processor metadata
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.id", "sds-1"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.enabled", "true"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.include", "*"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.id", "sds-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.enabled", "true"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.include", "*"),
 
 					// Rule 0 - Custom pattern + keywords + exclude scope + redact action
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.sensitive_data_scanner.0.rules.0.name", "Redact with Exclude"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.sensitive_data_scanner.0.rules.0.tags.#", "2"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.sensitive_data_scanner.0.rules.0.tags.0", "confidential"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.sensitive_data_scanner.0.rules.0.tags.1", "mask"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.sensitive_data_scanner.0.rules.0.keyword_options.keywords.#", "2"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.sensitive_data_scanner.0.rules.0.keyword_options.keywords.0", "secret"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.sensitive_data_scanner.0.rules.0.keyword_options.keywords.1", "token"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.sensitive_data_scanner.0.rules.0.keyword_options.proximity", "6"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.sensitive_data_scanner.0.rules.0.pattern.custom.rule", "\\bsecret-[a-z0-9]+\\b"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.sensitive_data_scanner.0.rules.0.scope.exclude.fields.#", "1"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.sensitive_data_scanner.0.rules.0.scope.exclude.fields.0", "not_this_field"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.sensitive_data_scanner.0.rules.0.on_match.redact.replace", "[REDACTED]"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.sensitive_data_scanner.0.rules.0.name", "Redact with Exclude"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.sensitive_data_scanner.0.rules.0.tags.#", "2"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.sensitive_data_scanner.0.rules.0.tags.0", "confidential"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.sensitive_data_scanner.0.rules.0.tags.1", "mask"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.sensitive_data_scanner.0.rules.0.keyword_options.keywords.#", "2"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.sensitive_data_scanner.0.rules.0.keyword_options.keywords.0", "secret"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.sensitive_data_scanner.0.rules.0.keyword_options.keywords.1", "token"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.sensitive_data_scanner.0.rules.0.keyword_options.proximity", "6"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.sensitive_data_scanner.0.rules.0.pattern.custom.rule", "\\bsecret-[a-z0-9]+\\b"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.sensitive_data_scanner.0.rules.0.scope.exclude.fields.#", "1"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.sensitive_data_scanner.0.rules.0.scope.exclude.fields.0", "not_this_field"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.sensitive_data_scanner.0.rules.0.on_match.redact.replace", "[REDACTED]"),
 
 					// Rule 1 - Library pattern + use_recommended_keywords + all scope + hash action
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.sensitive_data_scanner.0.rules.1.name", "Library Hash"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.sensitive_data_scanner.0.rules.1.tags.#", "1"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.sensitive_data_scanner.0.rules.1.tags.0", "pii"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.sensitive_data_scanner.0.rules.1.pattern.library.id", "ip_address"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.sensitive_data_scanner.0.rules.1.pattern.library.use_recommended_keywords", "true"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.sensitive_data_scanner.0.rules.1.scope.all", "true"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.sensitive_data_scanner.0.rules.1.name", "Library Hash"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.sensitive_data_scanner.0.rules.1.tags.#", "1"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.sensitive_data_scanner.0.rules.1.tags.0", "pii"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.sensitive_data_scanner.0.rules.1.pattern.library.id", "ip_address"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.sensitive_data_scanner.0.rules.1.pattern.library.use_recommended_keywords", "true"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.sensitive_data_scanner.0.rules.1.scope.all", "true"),
 
 					// Rule 2 - Custom pattern + include scope + partial_redact (first) + no tags field (should be null/absent)
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.sensitive_data_scanner.0.rules.2.name", "Partial Default Scope No Tags"),
-					resource.TestCheckNoResourceAttr(resourceName, "config.processors.processor_group.0.processor.sensitive_data_scanner.0.rules.2.tags"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.sensitive_data_scanner.0.rules.2.pattern.custom.rule", "user\\d{3,}"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.sensitive_data_scanner.0.rules.2.scope.include.fields.#", "1"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.sensitive_data_scanner.0.rules.2.scope.include.fields.0", "this_field_only"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.sensitive_data_scanner.0.rules.2.on_match.partial_redact.characters", "3"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.sensitive_data_scanner.0.rules.2.on_match.partial_redact.direction", "first"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.sensitive_data_scanner.0.rules.2.name", "Partial Default Scope No Tags"),
+					resource.TestCheckNoResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.sensitive_data_scanner.0.rules.2.tags"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.sensitive_data_scanner.0.rules.2.pattern.custom.rule", "user\\d{3,}"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.sensitive_data_scanner.0.rules.2.scope.include.fields.#", "1"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.sensitive_data_scanner.0.rules.2.scope.include.fields.0", "this_field_only"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.sensitive_data_scanner.0.rules.2.on_match.partial_redact.characters", "3"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.sensitive_data_scanner.0.rules.2.on_match.partial_redact.direction", "first"),
 
 					// Rule 3 - Library pattern + no keywords + empty tags + exclude scope + partial_redact (last)
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.sensitive_data_scanner.0.rules.3.name", "Library Empty Tags No Keywords Last Direction"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.sensitive_data_scanner.0.rules.3.tags.#", "0"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.sensitive_data_scanner.0.rules.3.pattern.library.id", "email_address"),
-					resource.TestCheckNoResourceAttr(resourceName, "config.processors.processor_group.0.processor.sensitive_data_scanner.0.rules.3.pattern.library.use_recommended_keywords"),
-					resource.TestCheckNoResourceAttr(resourceName, "config.processors.processor_group.0.processor.sensitive_data_scanner.0.rules.3.keyword_options"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.sensitive_data_scanner.0.rules.3.scope.exclude.fields.#", "1"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.sensitive_data_scanner.0.rules.3.scope.exclude.fields.0", "excluded_field"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.sensitive_data_scanner.0.rules.3.on_match.partial_redact.characters", "5"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.sensitive_data_scanner.0.rules.3.on_match.partial_redact.direction", "last"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.sensitive_data_scanner.0.rules.3.name", "Library Empty Tags No Keywords Last Direction"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.sensitive_data_scanner.0.rules.3.tags.#", "0"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.sensitive_data_scanner.0.rules.3.pattern.library.id", "email_address"),
+					resource.TestCheckNoResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.sensitive_data_scanner.0.rules.3.pattern.library.use_recommended_keywords"),
+					resource.TestCheckNoResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.sensitive_data_scanner.0.rules.3.keyword_options"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.sensitive_data_scanner.0.rules.3.scope.exclude.fields.#", "1"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.sensitive_data_scanner.0.rules.3.scope.exclude.fields.0", "excluded_field"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.sensitive_data_scanner.0.rules.3.on_match.partial_redact.characters", "5"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.sensitive_data_scanner.0.rules.3.on_match.partial_redact.direction", "last"),
 
 					// Destination
 					resource.TestCheckResourceAttr(resourceName, "config.destinations.datadog_logs.0.id", "sink"),
 					resource.TestCheckResourceAttr(resourceName, "config.destinations.datadog_logs.0.inputs.#", "1"),
 					resource.TestCheckResourceAttr(resourceName, "config.destinations.datadog_logs.0.inputs.0", "sds-group-1"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogObservabilityPipeline_multipleProcessorGroups(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	resourceName := "datadog_observability_pipeline.multi_groups"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "multi_groups" {
+  name = "multiple-processor-groups-test"
+
+  config {
+    sources {
+      datadog_agent {
+        id = "my-source"
+      }
+    }
+
+    processors {
+      processor_group {
+        id = "filter-group"
+        enabled = true
+        include = "*"
+        inputs = ["my-source"]
+
+        processor {
+          id = "filter-1"
+          enabled = true
+          include = "*"
+
+          filter {}
+        }
+
+        processor {
+          id = "filter-2"
+          enabled = true
+          include = "*"
+
+          remove_fields {
+            fields = ["old_field", "another_field"]
+          }
+        }
+      }
+
+      processor_group {
+        id = "remap-group"
+        enabled = true
+        include = "*"
+        inputs = ["filter-group"]
+
+        processor {
+          id = "remap-1"
+          enabled = true
+          include = "*"
+
+          add_fields {
+            field {
+              name = "new_field"
+              value = ".old_field"
+            }
+          }
+        }
+      }
+    }
+
+    destinations {
+      datadog_logs {
+        id = "output"
+        inputs = ["remap-group"]
+      }
+    }
+  }
+}
+`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+
+					// Pipeline metadata
+					resource.TestCheckResourceAttr(resourceName, "name", "multiple-processor-groups-test"),
+
+					// Source
+					resource.TestCheckResourceAttr(resourceName, "config.sources.datadog_agent.0.id", "my-source"),
+
+					// First processor group (filter) with 2 processors
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.id", "filter-group"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.enabled", "true"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.include", "*"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.inputs.#", "1"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.inputs.0", "my-source"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.#", "2"),
+					// First processor in group (filter-1)
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.id", "filter-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.enabled", "true"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.include", "*"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.filter.#", "1"),
+					// Second processor in group (filter-2)
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.1.id", "filter-2"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.1.enabled", "true"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.1.include", "*"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.1.remove_fields.#", "1"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.1.remove_fields.0.fields.#", "2"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.1.remove_fields.0.fields.0", "old_field"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.1.remove_fields.0.fields.1", "another_field"),
+
+					// Second processor group (add_fields) with 1 processor
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.1.id", "remap-group"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.1.enabled", "true"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.1.include", "*"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.1.inputs.#", "1"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.1.inputs.0", "filter-group"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.1.processor.#", "1"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.1.processor.0.id", "remap-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.1.processor.0.enabled", "true"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.1.processor.0.include", "*"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.1.processor.0.add_fields.#", "1"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.1.processor.0.add_fields.0.field.#", "1"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.1.processor.0.add_fields.0.field.0.name", "new_field"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.1.processor.0.add_fields.0.field.0.value", ".old_field"),
+
+					// Destination
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.datadog_logs.0.id", "output"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.datadog_logs.0.inputs.#", "1"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.datadog_logs.0.inputs.0", "remap-group"),
 				),
 			},
 		},
@@ -2391,9 +2522,9 @@ resource "datadog_observability_pipeline" "dedupe" {
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.id", "dedupe-group-1"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.id", "dedupe-match"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.dedupe.0.mode", "match"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.dedupe.0.fields.0", "log.message"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.id", "dedupe-match"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.dedupe.0.mode", "match"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.dedupe.0.fields.0", "log.message"),
 					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.1.id", "dedupe-group-2"),
 					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.1.processor.id", "dedupe-ignore"),
 					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.1.processor.dedupe.0.mode", "ignore"),
@@ -2475,14 +2606,14 @@ resource "datadog_observability_pipeline" "reduce" {
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.id", "reduce-group-1"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.id", "reduce-1"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.include", "env:prod"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.reduce.0.group_by.0", "log.user.id"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.reduce.0.group_by.1", "log.device.id"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.reduce.0.merge_strategies.0.strategy", "flat_unique"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.reduce.0.merge_strategies.1.strategy", "concat"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.reduce.0.merge_strategies.2.strategy", "sum"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.reduce.0.merge_strategies.3.strategy", "retain"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.id", "reduce-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.include", "env:prod"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.reduce.0.group_by.0", "log.user.id"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.reduce.0.group_by.1", "log.device.id"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.reduce.0.merge_strategies.0.strategy", "flat_unique"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.reduce.0.merge_strategies.1.strategy", "concat"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.reduce.0.merge_strategies.2.strategy", "sum"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.reduce.0.merge_strategies.3.strategy", "retain"),
 				),
 			},
 		},
@@ -2560,8 +2691,8 @@ resource "datadog_observability_pipeline" "throttle" {
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.id", "throttle-group-1"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.id", "throttle-global"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.throttle.0.threshold", "1000"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.id", "throttle-global"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.throttle.0.threshold", "1000"),
 					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.1.id", "throttle-group-2"),
 					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.1.processor.id", "throttle-grouped"),
 					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.1.processor.throttle.0.group_by.0", "log.user.id"),
@@ -2631,9 +2762,9 @@ resource "datadog_observability_pipeline" "add_env_vars" {
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.id", "add-env-group-1"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.id", "add-env-1"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.add_env_vars.0.variables.0.name", "AWS_REGION"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.add_env_vars.0.variables.1.name", "AWS_ACCOUNT_ID"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.id", "add-env-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.add_env_vars.0.variables.0.name", "AWS_REGION"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.add_env_vars.0.variables.1.name", "AWS_ACCOUNT_ID"),
 				),
 			},
 		},
@@ -2741,12 +2872,12 @@ resource "datadog_observability_pipeline" "enrichment" {
 					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
 					// CSV enrichment checks
 					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.id", "enrichment-group-1"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.id", "csv-enrichment"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.enrichment_table.0.target", "log.enrichment"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.enrichment_table.0.file.path", "/etc/enrichment/lookup.csv"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.enrichment_table.0.file.encoding.delimiter", ","),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.enrichment_table.0.file.schema.0.column", "region"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.enrichment_table.0.file.key.0.field", "log.user.id"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.id", "csv-enrichment"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.enrichment_table.0.target", "log.enrichment"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.enrichment_table.0.file.path", "/etc/enrichment/lookup.csv"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.enrichment_table.0.file.encoding.delimiter", ","),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.enrichment_table.0.file.schema.0.column", "region"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.enrichment_table.0.file.key.0.field", "log.user.id"),
 					// GeoIP enrichment checks
 					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.1.id", "enrichment-group-2"),
 					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.1.processor.id", "geoip-enrichment"),
@@ -3153,14 +3284,14 @@ resource "datadog_observability_pipeline" "datadog_tags" {
 					resource.TestCheckResourceAttr(resourceName, "name", "datadog tags processor test"),
 					resource.TestCheckResourceAttr(resourceName, "config.sources.datadog_agent.0.id", "source-1"),
 					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.id", "datadog-tags-group-1"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.id", "datadog-tags-processor"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.enabled", "true"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.include", "service:my-service"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.datadog_tags.0.mode", "filter"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.datadog_tags.0.action", "include"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.datadog_tags.0.keys.0", "env"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.datadog_tags.0.keys.1", "service"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.datadog_tags.0.keys.2", "version"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.id", "datadog-tags-processor"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.enabled", "true"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.include", "service:my-service"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.datadog_tags.0.mode", "filter"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.datadog_tags.0.action", "include"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.datadog_tags.0.keys.0", "env"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.datadog_tags.0.keys.1", "service"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.datadog_tags.0.keys.2", "version"),
 					resource.TestCheckResourceAttr(resourceName, "config.destinations.datadog_logs.0.id", "destination-1"),
 				),
 			},
@@ -3207,9 +3338,9 @@ resource "datadog_observability_pipeline" "datadog_tags" {
 }`,
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr(resourceName, "name", "datadog tags processor test updated"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.datadog_tags.0.action", "exclude"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.datadog_tags.0.keys.0", "env"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.datadog_tags.0.keys.1", "service"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.datadog_tags.0.action", "exclude"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.datadog_tags.0.keys.0", "env"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.datadog_tags.0.keys.1", "service"),
 				),
 			},
 		},
@@ -3274,12 +3405,12 @@ resource "datadog_observability_pipeline" "quota" {
 					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
 
 					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.id", "quota-group-1"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.id", "quota-1"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.include", "*"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.quota.0.name", "MyQuota"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.quota.0.overflow_action", "drop"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.quota.0.limit.enforce", "events"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.quota.0.limit.limit", "1000"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.id", "quota-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.include", "*"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.quota.0.name", "MyQuota"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.quota.0.overflow_action", "drop"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.quota.0.limit.enforce", "events"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.quota.0.limit.limit", "1000"),
 				),
 			},
 		},
@@ -3581,17 +3712,17 @@ resource "datadog_observability_pipeline" "custom_processor" {
 					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.enabled", "true"),
 					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.include", "*"),
 					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.inputs.0", "source-1"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.id", "remap-processor-1"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.enabled", "true"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.include", "*"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.custom_processor.0.remaps.0.include", "service:web"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.custom_processor.0.remaps.0.name", "Parse JSON from message"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.custom_processor.0.remaps.0.enabled", "true"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.custom_processor.0.remaps.0.source", ". = parse_json!(string!(.message))"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.custom_processor.0.remaps.0.drop_on_error", "false"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.custom_processor.0.remaps.1.include", "env:prod"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.custom_processor.0.remaps.1.name", "Add timestamp"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.custom_processor.0.remaps.1.source", ".timestamp = now()"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.id", "remap-processor-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.enabled", "true"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.include", "*"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.custom_processor.0.remaps.0.include", "service:web"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.custom_processor.0.remaps.0.name", "Parse JSON from message"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.custom_processor.0.remaps.0.enabled", "true"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.custom_processor.0.remaps.0.source", ". = parse_json!(string!(.message))"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.custom_processor.0.remaps.0.drop_on_error", "false"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.custom_processor.0.remaps.1.include", "env:prod"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.custom_processor.0.remaps.1.name", "Add timestamp"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.custom_processor.0.remaps.1.source", ".timestamp = now()"),
 					resource.TestCheckResourceAttr(resourceName, "config.destinations.datadog_logs.0.id", "destination-1"),
 					resource.TestCheckResourceAttr(resourceName, "config.destinations.datadog_logs.0.inputs.0", "remap-group-1"),
 				),
