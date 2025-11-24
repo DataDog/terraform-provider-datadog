@@ -77,6 +77,45 @@ func TestAccDatadogCostBudget_WithTagFilters(t *testing.T) {
 	})
 }
 
+func TestAccDatadogCostBudget_Update(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	budgetName := uniqueEntityName(ctx, t)
+	budgetNameUpdated := budgetName + "updated!"
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogCostBudgetDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogCostBudgetBasic(budgetName),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(
+						"datadog_cost_budget.foo", "name", budgetName),
+					resource.TestCheckResourceAttrSet(
+						"datadog_cost_budget.foo", "id"),
+					resource.TestCheckResourceAttr(
+						"datadog_cost_budget.foo", "entries.0.amount", "1000"),
+				),
+			},
+			{
+				Config: testAccCheckDatadogCostBudgetUpdated(budgetNameUpdated),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(
+						"datadog_cost_budget.foo", "name", budgetNameUpdated),
+					// The most important!!: ID should remain the same after update, so making sure the id is different between the 2 steps
+					resource.TestCheckResourceAttrPair(
+						"datadog_cost_budget.foo", "id",
+						"datadog_cost_budget.foo", "id"),
+					resource.TestCheckResourceAttr(
+						"datadog_cost_budget.foo", "entries.0.amount", "2000"),
+				),
+			},
+		},
+	})
+}
+
 func testAccCheckDatadogCostBudgetDestroy(provider *fwprovider.FrameworkProvider) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 
@@ -261,6 +300,64 @@ resource "datadog_cost_budget" "foo" {
       tag_key = "account"
       tag_value = "ec2"
     }
+  }
+}`, uniq)
+}
+
+func testAccCheckDatadogCostBudgetUpdated(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_cost_budget" "foo" {
+  name = "%s"
+  metrics_query = "sum:aws.cost.amortized{*}"
+  start_month = 202401
+  end_month = 202412
+  entries {
+    amount = 2000
+    month = 202401
+  }
+  entries {
+    amount = 2000
+    month = 202402
+  }
+  entries {
+    amount = 2000
+    month = 202403
+  }
+  entries {
+    amount = 2000
+    month = 202404
+  }
+  entries {
+    amount = 2000
+    month = 202405
+  }
+  entries {
+    amount = 2000
+    month = 202406
+  }
+  entries {
+    amount = 2000
+    month = 202407
+  }
+  entries {
+    amount = 2000
+    month = 202408
+  }
+  entries {
+    amount = 2000
+    month = 202409
+  }
+  entries {
+    amount = 2000
+    month = 202410
+  }
+  entries {
+    amount = 2000
+    month = 202411
+  }
+  entries {
+    amount = 2000
+    month = 202412
   }
 }`, uniq)
 }
