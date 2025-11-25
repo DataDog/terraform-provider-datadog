@@ -1,81 +1,116 @@
-resource "datadog_cost_budget" "example" {
+# Simple budget without tag filters
+# Note: Must provide entries for all months in the budget period
+resource "datadog_cost_budget" "simple" {
   name          = "My AWS Cost Budget"
   metrics_query = "sum:aws.cost.amortized{*}"
-  start_month   = 202401
-  end_month     = 202412
+  start_month   = 202501
+  end_month     = 202503
 
   entries {
+    month  = 202501
     amount = 1000
-    month  = 202401
   }
   entries {
-    amount = 1000
-    month  = 202402
+    month  = 202502
+    amount = 1200
   }
   entries {
+    month  = 202503
     amount = 1000
-    month  = 202403
-  }
-  entries {
-    amount = 1000
-    month  = 202404
-  }
-  entries {
-    amount = 1000
-    month  = 202405
-  }
-  entries {
-    amount = 1000
-    month  = 202406
-  }
-  entries {
-    amount = 1000
-    month  = 202407
-  }
-  entries {
-    amount = 1000
-    month  = 202408
-  }
-  entries {
-    amount = 1000
-    month  = 202409
-  }
-  entries {
-    amount = 1000
-    month  = 202410
-  }
-  entries {
-    amount = 1000
-    month  = 202411
-  }
-  entries {
-    amount = 1000
-    month  = 202412
   }
 }
 
 # Budget with tag filters
-resource "datadog_cost_budget" "example_with_filters" {
-  name          = "My Filtered Budget"
-  metrics_query = "sum:aws.cost.amortized{*}"
-  start_month   = 202401
-  end_month     = 202412
+# Note: Must provide entries for all months in the budget period
+resource "datadog_cost_budget" "with_tag_filters" {
+  name          = "Production AWS Budget"
+  metrics_query = "sum:aws.cost.amortized{*} by {environment}"
+  start_month   = 202501
+  end_month     = 202503
 
   entries {
-    amount = 500
-    month  = 202401
+    month  = 202501
+    amount = 2000
     tag_filters {
-      tag_key   = "account"
-      tag_value = "ec2"
+      tag_key   = "environment"
+      tag_value = "production"
     }
   }
   entries {
-    amount = 500
-    month  = 202402
+    month  = 202502
+    amount = 2200
     tag_filters {
-      tag_key   = "account"
-      tag_value = "ec2"
+      tag_key   = "environment"
+      tag_value = "production"
+    }
+  }
+  entries {
+    month  = 202503
+    amount = 2000
+    tag_filters {
+      tag_key   = "environment"
+      tag_value = "production"
     }
   }
 }
 
+# Hierarchical budget with multiple tag combinations
+# Note: Order of tags in "by {tag1,tag2}" determines UI hierarchy (parent,child)
+# Each unique tag combination must have entries for all months in the budget period
+resource "datadog_cost_budget" "hierarchical" {
+  name          = "Team-Based AWS Budget"
+  metrics_query = "sum:aws.cost.amortized{*} by {team,account}"
+  start_month   = 202501
+  end_month     = 202503
+
+  entries {
+    month  = 202501
+    amount = 500
+    tag_filters {
+      tag_key   = "team"
+      tag_value = "backend"
+    }
+    tag_filters {
+      tag_key   = "account"
+      tag_value = "staging"
+    }
+  }
+  entries {
+    month  = 202502
+    amount = 500
+    tag_filters {
+      tag_key   = "team"
+      tag_value = "backend"
+    }
+    tag_filters {
+      tag_key   = "account"
+      tag_value = "staging"
+    }
+  }
+  entries {
+    month  = 202503
+    amount = 500
+    tag_filters {
+      tag_key   = "team"
+      tag_value = "backend"
+    }
+    tag_filters {
+      tag_key   = "account"
+      tag_value = "staging"
+    }
+  }
+
+  entries {
+    month  = 202501
+    amount = 1500
+    tag_filters {
+      tag_key   = "team"
+      tag_value = "backend"
+    }
+    tag_filters {
+      tag_key   = "account"
+      tag_value = "production"
+    }
+  }
+  # ... repeat for additional months and tag combinations
+}
