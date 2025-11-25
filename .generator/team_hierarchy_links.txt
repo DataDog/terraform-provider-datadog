@@ -1,0 +1,18 @@
+resources:
+  team-hierarchy-links:
+    read:
+      method: get
+      path: /api/v2/team-hierarchy-links/{link_id}
+    create:
+      method: post
+      path: /api/v2/team-hierarchy-links
+    update:
+      method: patch
+      path: /api/v2/team-hierarchy-links/{link_id}
+    delete:
+      method: delete
+      path: /api/v2/team-hierarchy-links/{link_id}
+datasources:
+  team-hierarchy-links:
+    singular: /api/v2/team-hierarchy-links/{link_id}
+    plural: /api/v2/team-hierarchy-links
