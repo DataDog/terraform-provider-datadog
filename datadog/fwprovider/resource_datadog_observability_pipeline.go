@@ -1221,11 +1221,11 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 																	NestedObject: schema.NestedBlockObject{
 																		Attributes: map[string]schema.Attribute{
 																			"name": schema.StringAttribute{
-																				Optional:    true,
+																				Required:    true,
 																				Description: "A name identifying the rule.",
 																			},
 																			"tags": schema.ListAttribute{
-																				Optional:    true,
+																				Required:    true,
 																				ElementType: types.StringType,
 																				Description: "Tags assigned to this rule for filtering and classification.",
 																			},
@@ -2627,9 +2627,13 @@ func flattenKafkaSource(src *datadogV2.ObservabilityPipelineKafkaSource) *kafkaS
 		Id:      types.StringValue(src.GetId()),
 		GroupId: types.StringValue(src.GetGroupId()),
 	}
+	// Topics is required by the API (always present, even if empty)
+	// Initialize as empty slice to preserve [] vs null distinction
+	topics := []types.String{}
 	for _, topic := range src.GetTopics() {
-		out.Topics = append(out.Topics, types.StringValue(topic))
+		topics = append(topics, types.StringValue(topic))
 	}
+	out.Topics = topics
 	if src.Tls != nil {
 		tls := flattenTls(src.Tls)
 		out.Tls = &tls
@@ -3067,10 +3071,13 @@ func flattenQuotaProcessorItem(ctx context.Context, src *datadogV2.Observability
 	}
 
 	limit := src.GetLimit()
-	// Use nil slice for optional fields - only populate if non-empty to preserve null in state
+	// PartitionFields is optional - only populate if present to distinguish null from []
 	var partitionFields []types.String
-	for _, p := range src.GetPartitionFields() {
-		partitionFields = append(partitionFields, types.StringValue(p))
+	if pf, ok := src.GetPartitionFieldsOk(); ok {
+		partitionFields = []types.String{}
+		for _, p := range *pf {
+			partitionFields = append(partitionFields, types.StringValue(p))
+		}
 	}
 
 	out := &quotaProcessorModel{
@@ -3122,16 +3129,19 @@ func flattenSensitiveDataScannerProcessorItem(ctx context.Context, src *datadogV
 		r := sensitiveDataScannerProcessorRule{
 			Name: types.StringValue(rule.GetName()),
 		}
-		// Use nil slice for optional fields - only populate if non-empty to preserve null in state
-		var tags []types.String
-		for _, t := range rule.GetTags() {
-			tags = append(tags, types.StringValue(t))
+		// Tags is optional - only populate if present to distinguish null from []
+		if tags, ok := rule.GetTagsOk(); ok {
+			tagsList := []types.String{}
+			for _, t := range *tags {
+				tagsList = append(tagsList, types.StringValue(t))
+			}
+			r.Tags = tagsList
 		}
-		r.Tags = tags
 
 		if ko := rule.KeywordOptions; ko != nil {
-			// Use nil slice for optional fields - only populate if non-empty to preserve null in state
-			var keywords []types.String
+			// Keywords is required by the API (always present, even if empty)
+			// Initialize as empty slice to preserve [] vs null distinction
+			keywords := []types.String{}
 			for _, k := range ko.GetKeywords() {
 				keywords = append(keywords, types.StringValue(k))
 			}
@@ -3165,8 +3175,9 @@ func flattenSensitiveDataScannerProcessorItem(ctx context.Context, src *datadogV
 		r.Scope = &sensitiveDataScannerProcessorScope{}
 		if scope.ObservabilityPipelineSensitiveDataScannerProcessorScopeInclude != nil {
 			options := scope.ObservabilityPipelineSensitiveDataScannerProcessorScopeInclude.GetOptions()
-			// Use nil slice for optional fields - only populate if non-empty to preserve null in state
-			var fields []types.String
+			// Fields is required by the API (always present, even if empty)
+			// Initialize as empty slice to preserve [] vs null distinction
+			fields := []types.String{}
 			for _, f := range options.GetFields() {
 				fields = append(fields, types.StringValue(f))
 			}
@@ -3176,8 +3187,9 @@ func flattenSensitiveDataScannerProcessorItem(ctx context.Context, src *datadogV
 		}
 		if scope.ObservabilityPipelineSensitiveDataScannerProcessorScopeExclude != nil {
 			options := scope.ObservabilityPipelineSensitiveDataScannerProcessorScopeExclude.GetOptions()
-			// Use nil slice for optional fields - only populate if non-empty to preserve null in state
-			var fields []types.String
+			// Fields is required by the API (always present, even if empty)
+			// Initialize as empty slice to preserve [] vs null distinction
+			fields := []types.String{}
 			for _, f := range options.GetFields() {
 				fields = append(fields, types.StringValue(f))
 			}
@@ -3276,18 +3288,23 @@ func flattenSampleProcessorItem(ctx context.Context, src *datadogV2.Observabilit
 	if src == nil {
 		return nil
 	}
-	return &sampleProcessorModel{
-		Rate:       types.Int64Value(src.GetRate()),
-		Percentage: types.Float64Value(src.GetPercentage()),
+	out := &sampleProcessorModel{}
+	if rate, ok := src.GetRateOk(); ok {
+		out.Rate = types.Int64PointerValue(rate)
 	}
+	if percentage, ok := src.GetPercentageOk(); ok {
+		out.Percentage = types.Float64PointerValue(percentage)
+	}
+	return out
 }
 
 func flattenDedupeProcessorItem(ctx context.Context, src *datadogV2.ObservabilityPipelineDedupeProcessor) *dedupeProcessorModel {
 	if src == nil {
 		return nil
 	}
-	// Use nil slice for optional fields - only populate if non-empty to preserve null in state
-	var fields []types.String
+	// Fields is required by the API (always present, even if empty)
+	// Initialize as empty slice to preserve [] vs null distinction
+	fields := []types.String{}
 	for _, f := range src.GetFields() {
 		fields = append(fields, types.StringValue(f))
 	}
@@ -3301,8 +3318,9 @@ func flattenReduceProcessorItem(ctx context.Context, src *datadogV2.Observabilit
 	if src == nil {
 		return nil
 	}
-	// Use nil slice for optional fields - only populate if non-empty to preserve null in state
-	var groupBy []types.String
+	// GroupBy is required by the API (always present, even if empty)
+	// Initialize as empty slice to preserve [] vs null distinction
+	groupBy := []types.String{}
 	for _, g := range src.GetGroupBy() {
 		groupBy = append(groupBy, types.StringValue(g))
 	}
@@ -3471,12 +3489,14 @@ func expandQuotaProcessorItem(ctx context.Context, id string, enabled bool, incl
 		proc.SetIgnoreWhenMissingPartitions(src.IgnoreWhenMissingPartitions.ValueBool())
 	}
 
-	// Initialize as empty slice, not nil, to ensure it serializes as [] not null
-	partitions := []string{}
-	for _, p := range src.PartitionFields {
-		partitions = append(partitions, p.ValueString())
+	// Only set partition_fields if user specified them in config (to distinguish null from [])
+	if src.PartitionFields != nil {
+		partitions := []string{}
+		for _, p := range src.PartitionFields {
+			partitions = append(partitions, p.ValueString())
+		}
+		proc.SetPartitionFields(partitions)
 	}
-	proc.SetPartitionFields(partitions)
 
 	proc.SetLimit(datadogV2.ObservabilityPipelineQuotaProcessorLimit{
 		Enforce: datadogV2.ObservabilityPipelineQuotaProcessorLimitEnforceType(src.Limit.Enforce.ValueString()),
@@ -3769,13 +3789,14 @@ func expandSensitiveDataScannerProcessorItem(ctx context.Context, id string, ena
 			rule.SetName(r.Name.ValueString())
 		}
 
-		// Initialize as empty slice, not nil, to ensure it serializes as [] not null
-		tags := []string{}
-		for _, t := range r.Tags {
-			tags = append(tags, t.ValueString())
+		// Only set tags if user specified them in config (to distinguish null from [])
+		if r.Tags != nil {
+			tags := []string{}
+			for _, t := range r.Tags {
+				tags = append(tags, t.ValueString())
+			}
+			rule.SetTags(tags)
 		}
-		// Tags is required by the API (no omitempty), so always set it even if empty
-		rule.SetTags(tags)
 
 		if r.KeywordOptions != nil {
 			ko := datadogV2.NewObservabilityPipelineSensitiveDataScannerProcessorKeywordOptionsWithDefaults()

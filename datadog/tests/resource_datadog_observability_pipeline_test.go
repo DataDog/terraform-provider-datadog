@@ -905,13 +905,13 @@ resource "datadog_observability_pipeline" "sample" {
 
       processor_group {
         id      = "sample-group-2"
-        enabled = true
+        enabled = false
         include = "*"
         inputs  = ["sample-group-1"]
         
         processor {
           id      = "sample-2"
-          enabled = true
+          enabled = false
           include = "*"
           
           sample {
@@ -933,12 +933,16 @@ resource "datadog_observability_pipeline" "sample" {
 					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(resourceName, "name", "sample-pipeline"),
 					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.id", "sample-group-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.enabled", "true"),
 					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.id", "sample-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.enabled", "true"),
 					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.include", "*"),
 					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.sample.0.rate", "10"),
 					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.1.id", "sample-group-2"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.1.processor.id", "sample-2"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.1.processor.sample.0.percentage", "4.99"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.1.enabled", "false"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.1.processor.0.id", "sample-2"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.1.processor.0.enabled", "false"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.1.processor.0.sample.0.percentage", "4.99"),
 				),
 			},
 		},
@@ -1943,6 +1947,7 @@ resource "datadog_observability_pipeline" "sds" {
 
             rules {
               name = "Partial Default Scope No Tags"
+              tags = []
 
               pattern {
                 custom {
@@ -2044,9 +2049,9 @@ resource "datadog_observability_pipeline" "sds" {
 					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.sensitive_data_scanner.0.rules.1.pattern.library.use_recommended_keywords", "true"),
 					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.sensitive_data_scanner.0.rules.1.scope.all", "true"),
 
-					// Rule 2 - Custom pattern + include scope + partial_redact (first) + no tags field (should be null/absent)
+					// Rule 2 - Custom pattern + include scope + partial_redact (first)
 					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.sensitive_data_scanner.0.rules.2.name", "Partial Default Scope No Tags"),
-					resource.TestCheckNoResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.sensitive_data_scanner.0.rules.2.tags"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.sensitive_data_scanner.0.rules.2.tags.#", "0"),
 					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.sensitive_data_scanner.0.rules.2.pattern.custom.rule", "user\\d{3,}"),
 					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.sensitive_data_scanner.0.rules.2.scope.include.fields.#", "1"),
 					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.sensitive_data_scanner.0.rules.2.scope.include.fields.0", "this_field_only"),
@@ -2522,13 +2527,19 @@ resource "datadog_observability_pipeline" "dedupe" {
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.id", "dedupe-group-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.enabled", "true"),
 					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.id", "dedupe-match"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.enabled", "true"),
 					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.dedupe.0.mode", "match"),
 					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.dedupe.0.fields.0", "log.message"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.dedupe.0.fields.1", "log.tags"),
 					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.1.id", "dedupe-group-2"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.1.processor.id", "dedupe-ignore"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.1.processor.dedupe.0.mode", "ignore"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.1.processor.dedupe.0.fields.1", "log.context"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.1.enabled", "true"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.1.processor.0.id", "dedupe-ignore"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.1.processor.0.enabled", "true"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.1.processor.0.dedupe.0.mode", "ignore"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.1.processor.0.dedupe.0.fields.0", "log.source"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.1.processor.0.dedupe.0.fields.1", "log.context"),
 				),
 			},
 		},
@@ -2691,12 +2702,19 @@ resource "datadog_observability_pipeline" "throttle" {
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.id", "throttle-group-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.enabled", "true"),
 					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.id", "throttle-global"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.enabled", "true"),
 					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.throttle.0.threshold", "1000"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.throttle.0.window", "60"),
 					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.1.id", "throttle-group-2"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.1.processor.id", "throttle-grouped"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.1.processor.throttle.0.group_by.0", "log.user.id"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.1.processor.throttle.0.group_by.1", "log.level"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.1.enabled", "true"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.1.processor.0.id", "throttle-grouped"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.1.processor.0.enabled", "true"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.1.processor.0.throttle.0.threshold", "100"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.1.processor.0.throttle.0.window", "10"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.1.processor.0.throttle.0.group_by.0", "log.user.id"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.1.processor.0.throttle.0.group_by.1", "log.level"),
 				),
 			},
 		},
@@ -2872,19 +2890,30 @@ resource "datadog_observability_pipeline" "enrichment" {
 					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
 					// CSV enrichment checks
 					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.id", "enrichment-group-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.enabled", "true"),
 					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.id", "csv-enrichment"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.enabled", "true"),
 					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.enrichment_table.0.target", "log.enrichment"),
 					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.enrichment_table.0.file.path", "/etc/enrichment/lookup.csv"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.enrichment_table.0.file.encoding.type", "csv"),
 					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.enrichment_table.0.file.encoding.delimiter", ","),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.enrichment_table.0.file.encoding.includes_headers", "true"),
 					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.enrichment_table.0.file.schema.0.column", "region"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.enrichment_table.0.file.schema.0.type", "string"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.enrichment_table.0.file.schema.1.column", "city"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.enrichment_table.0.file.schema.1.type", "string"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.enrichment_table.0.file.key.0.column", "user_id"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.enrichment_table.0.file.key.0.comparison", "equals"),
 					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.enrichment_table.0.file.key.0.field", "log.user.id"),
 					// GeoIP enrichment checks
 					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.1.id", "enrichment-group-2"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.1.processor.id", "geoip-enrichment"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.1.processor.enrichment_table.0.target", "log.geo.geoip"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.1.processor.enrichment_table.0.geoip.key_field", "log.source.ip"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.1.processor.enrichment_table.0.geoip.locale", "en"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.1.processor.enrichment_table.0.geoip.path", "/etc/geoip/GeoLite2-City.mmdb"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.1.enabled", "true"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.1.processor.0.id", "geoip-enrichment"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.1.processor.0.enabled", "true"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.1.processor.0.enrichment_table.0.target", "log.geo.geoip"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.1.processor.0.enrichment_table.0.geoip.key_field", "log.source.ip"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.1.processor.0.enrichment_table.0.geoip.locale", "en"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.1.processor.0.enrichment_table.0.geoip.path", "/etc/geoip/GeoLite2-City.mmdb"),
 				),
 			},
 		},
@@ -3048,15 +3077,23 @@ resource "datadog_observability_pipeline" "ocsf" {
     }
 
     processors {
-      ocsf_mapper {
-        id      = "ocsf-mapper"
+      processor_group {
+        id      = "ocsf-group-1"
         enabled = true
         include = "*"
         inputs  = ["source-1"]
 
-        mapping {
-          include         = "source:lib"
-          library_mapping = "CloudTrail Account Change"
+        processor {
+          id      = "ocsf-mapper"
+          enabled = true
+          include = "*"
+
+          ocsf_mapper {
+            mapping {
+              include         = "source:lib"
+              library_mapping = "CloudTrail Account Change"
+            }
+          }
         }
       }
     }
@@ -3064,17 +3101,20 @@ resource "datadog_observability_pipeline" "ocsf" {
     destinations {
       datadog_logs {
         id     = "destination-1"
-        inputs = ["ocsf-mapper"]
+        inputs = ["ocsf-group-1"]
       }
     }
   }
 }`,
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.ocsf_mapper.0.id", "ocsf-mapper"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.ocsf_mapper.0.include", "*"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.ocsf_mapper.0.mapping.0.include", "source:lib"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.ocsf_mapper.0.mapping.0.library_mapping", "CloudTrail Account Change"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.id", "ocsf-group-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.enabled", "true"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.id", "ocsf-mapper"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.enabled", "true"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.include", "*"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.ocsf_mapper.0.mapping.0.include", "source:lib"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.ocsf_mapper.0.mapping.0.library_mapping", "CloudTrail Account Change"),
 				),
 			},
 		},
