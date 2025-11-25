@@ -2206,6 +2206,107 @@ resource "datadog_observability_pipeline" "multi_groups" {
 					resource.TestCheckResourceAttr(resourceName, "config.destinations.datadog_logs.0.inputs.0", "remap-group"),
 				),
 			},
+			// reorder the processors inside the processor group and validate that the pipeline is updated correctly
+			{
+				Config: `
+resource "datadog_observability_pipeline" "multi_groups" {
+  name = "multiple-processor-groups-test"
+
+  config {
+    sources {
+      datadog_agent {
+        id = "my-source"
+      }
+    }
+
+    processors {
+      processor_group {
+        id = "filter-group"
+        enabled = true
+        include = "*"
+        inputs = ["my-source"]
+
+        processor {
+          id = "filter-2"
+          enabled = true
+          include = "*"
+
+          remove_fields {
+            fields = ["old_field", "another_field"]
+          }
+        }
+
+        processor {
+          id = "filter-1"
+          enabled = true
+          include = "*"
+
+          filter {}
+        }
+      }
+
+      processor_group {
+        id = "remap-group"
+        enabled = true
+        include = "*"
+        inputs = ["filter-group"]
+
+        processor {
+          id = "remap-1"
+          enabled = true
+          include = "*"
+
+          add_fields {
+            field {
+              name = "new_field"
+              value = ".old_field"
+            }
+          }
+        }
+      }
+    }
+
+    destinations {
+      datadog_logs {
+        id = "output"
+        inputs = ["remap-group"]
+      }
+    }
+  }
+}
+`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+
+					// Pipeline metadata
+					resource.TestCheckResourceAttr(resourceName, "name", "multiple-processor-groups-test"),
+
+					// First processor group with processors in swapped order
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.id", "filter-group"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.#", "2"),
+					// First processor is now filter-2 (was second)
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.id", "filter-2"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.enabled", "true"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.include", "*"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.remove_fields.#", "1"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.remove_fields.0.fields.#", "2"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.remove_fields.0.fields.0", "old_field"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.remove_fields.0.fields.1", "another_field"),
+					// Second processor is now filter-1 (was first)
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.1.id", "filter-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.1.enabled", "true"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.1.include", "*"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.1.filter.#", "1"),
+
+					// Second processor group unchanged
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.1.id", "remap-group"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.1.processor.#", "1"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.1.processor.0.id", "remap-1"),
+
+					// Destination unchanged
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.datadog_logs.0.id", "output"),
+				),
+			},
 		},
 	})
 }
