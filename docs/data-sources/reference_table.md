@@ -24,7 +24,7 @@ Use this data source to retrieve information about an existing Datadog reference
 
 - `created_by` (String) UUID of the user who created the reference table.
 - `description` (String) The description of the reference table.
-- `file_metadata` (Block, Read-only) File metadata for the reference table. The structure depends on the source type. (see [below for nested schema](#nestedblock--file_metadata))
+- `file_metadata` (Block, Read-only) File metadata for the reference table. Contains sync settings for cloud storage sources. (see [below for nested schema](#nestedblock--file_metadata))
 - `last_updated_by` (String) UUID of the user who last updated the reference table.
 - `row_count` (Number) The number of successfully processed rows in the reference table.
 - `schema` (Block, Read-only) The schema definition for the reference table. (see [below for nested schema](#nestedblock--schema))
@@ -38,31 +38,23 @@ Use this data source to retrieve information about an existing Datadog reference
 
 Read-Only:
 
-- `cloud_storage` (Block, Read-only) Cloud storage metadata (for S3, GCS, or Azure sources). (see [below for nested schema](#nestedblock--file_metadata--cloud_storage))
-- `local_file` (Block, Read-only) Local file metadata (for LOCAL_FILE source). (see [below for nested schema](#nestedblock--file_metadata--local_file))
-
-<a id="nestedblock--file_metadata--cloud_storage"></a>
-### Nested Schema for `file_metadata.cloud_storage`
-
-Read-Only:
-
-- `access_details` (Block, Read-only) Cloud storage access configuration. (see [below for nested schema](#nestedblock--file_metadata--cloud_storage--access_details))
+- `access_details` (Block, Read-only) Cloud storage access configuration. Only present for cloud storage sources (S3, GCS, Azure). (see [below for nested schema](#nestedblock--file_metadata--access_details))
 - `error_message` (String) Error message from the last sync attempt, if any.
 - `error_row_count` (Number) The number of rows that failed to sync.
-- `error_type` (String) The type of error that occurred during file processing.
-- `sync_enabled` (Boolean) Whether automatic sync is enabled for this table.
+- `error_type` (String) The type of error that occurred during file processing. Only present for cloud storage sources.
+- `sync_enabled` (Boolean) Whether automatic sync is enabled for this table. Only present for cloud storage sources (S3, GCS, Azure).
 
-<a id="nestedblock--file_metadata--cloud_storage--access_details"></a>
-### Nested Schema for `file_metadata.cloud_storage.access_details`
+<a id="nestedblock--file_metadata--access_details"></a>
+### Nested Schema for `file_metadata.access_details`
 
 Read-Only:
 
-- `aws_detail` (Block, Read-only) (see [below for nested schema](#nestedblock--file_metadata--cloud_storage--access_details--aws_detail))
-- `azure_detail` (Block, Read-only) (see [below for nested schema](#nestedblock--file_metadata--cloud_storage--access_details--azure_detail))
-- `gcp_detail` (Block, Read-only) (see [below for nested schema](#nestedblock--file_metadata--cloud_storage--access_details--gcp_detail))
+- `aws_detail` (Block, Read-only) AWS S3 access configuration. (see [below for nested schema](#nestedblock--file_metadata--access_details--aws_detail))
+- `azure_detail` (Block, Read-only) Azure Blob Storage access configuration. (see [below for nested schema](#nestedblock--file_metadata--access_details--azure_detail))
+- `gcp_detail` (Block, Read-only) Google Cloud Storage access configuration. (see [below for nested schema](#nestedblock--file_metadata--access_details--gcp_detail))
 
-<a id="nestedblock--file_metadata--cloud_storage--access_details--aws_detail"></a>
-### Nested Schema for `file_metadata.cloud_storage.access_details.aws_detail`
+<a id="nestedblock--file_metadata--access_details--aws_detail"></a>
+### Nested Schema for `file_metadata.access_details.aws_detail`
 
 Read-Only:
 
@@ -71,8 +63,8 @@ Read-Only:
 - `file_path` (String) The relative file path from the S3 bucket root.
 
 
-<a id="nestedblock--file_metadata--cloud_storage--access_details--azure_detail"></a>
-### Nested Schema for `file_metadata.cloud_storage.access_details.azure_detail`
+<a id="nestedblock--file_metadata--access_details--azure_detail"></a>
+### Nested Schema for `file_metadata.access_details.azure_detail`
 
 Read-Only:
 
@@ -83,8 +75,8 @@ Read-Only:
 - `file_path` (String) The relative file path from the Azure container root.
 
 
-<a id="nestedblock--file_metadata--cloud_storage--access_details--gcp_detail"></a>
-### Nested Schema for `file_metadata.cloud_storage.access_details.gcp_detail`
+<a id="nestedblock--file_metadata--access_details--gcp_detail"></a>
+### Nested Schema for `file_metadata.access_details.gcp_detail`
 
 Read-Only:
 
@@ -93,17 +85,6 @@ Read-Only:
 - `gcp_project_id` (String) The ID of the GCP project.
 - `gcp_service_account_email` (String) The email of the GCP service account.
 
-
-
-
-<a id="nestedblock--file_metadata--local_file"></a>
-### Nested Schema for `file_metadata.local_file`
-
-Read-Only:
-
-- `error_message` (String) Error message from the last upload, if any.
-- `error_row_count` (Number) The number of rows that failed to process.
-- `upload_id` (String) The upload ID used to create/update the table.
 
 
 
