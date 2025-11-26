@@ -54,7 +54,9 @@ func TestAccReferenceTableS3_Basic(t *testing.T) {
 	})
 }
 
-func TestAccReferenceTable_SchemaEvolution(t *testing.T) {
+func TestAccReferenceTable_SchemaOnCreate(t *testing.T) {
+	// Test that schema is set correctly on create
+	// Note: Schema updates via PATCH are not supported; schema is derived from the file asynchronously
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)
@@ -79,29 +81,16 @@ func TestAccReferenceTable_SchemaEvolution(t *testing.T) {
 				),
 			},
 			{
-				// Wait step to ensure initial sync is fully complete before schema evolution
-				// Using the same config should trigger Terraform to refresh state automatically
-				// The check function waits for DONE status, ensuring the resource is ready
+				// Wait for table to be DONE and verify schema is preserved
 				Config: testAccCheckDatadogReferenceTableSchemaInitial(uniq),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogReferenceTableExists(providers.frameworkProvider),
 					testAccCheckDatadogReferenceTableStatusDone(providers.frameworkProvider),
-					// Verify state attributes match API to ensure state is refreshed
-					// This helps Terraform understand the current state before Step 3
 					resource.TestCheckResourceAttrSet("datadog_reference_table.evolution", "status"),
 					resource.TestCheckResourceAttrSet("datadog_reference_table.evolution", "row_count"),
-				),
-			},
-			{
-				Config: testAccCheckDatadogReferenceTableSchemaAddFields(uniq),
-				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogReferenceTableExists(providers.frameworkProvider),
+					// Schema should still have 3 fields after sync completes
 					resource.TestCheckResourceAttr(
-						"datadog_reference_table.evolution", "schema.fields.#", "4"),
-					resource.TestCheckResourceAttr(
-						"datadog_reference_table.evolution", "schema.fields.2.name", "c"),
-					resource.TestCheckResourceAttr(
-						"datadog_reference_table.evolution", "schema.fields.3.name", "d"),
+						"datadog_reference_table.evolution", "schema.fields.#", "3"),
 				),
 			},
 		},
@@ -240,56 +229,6 @@ resource "datadog_reference_table" "evolution" {
 
     fields {
       name = "c"
-      type = "STRING"
-    }
-  }
-
-  tags = ["test:terraform"]
-}`, sanitized)
-}
-
-func testAccCheckDatadogReferenceTableSchemaAddFields(uniq string) string {
-	// Sanitize: replace dashes with underscores and convert to lowercase
-	sanitized := strings.ToLower(strings.ReplaceAll(uniq, "-", "_"))
-	return fmt.Sprintf(`
-resource "datadog_reference_table" "evolution" {
-  table_name  = "tf_test_evolution_%s"
-  description = "Test schema evolution"
-  source      = "S3"
-
-  file_metadata {
-    sync_enabled = true
-
-    access_details {
-      aws_detail {
-        aws_account_id  = "924305315327"
-        aws_bucket_name = "dd-reference-tables-dev-staging"
-        file_path       = "test2.csv"
-      }
-    }
-  }
-
-  schema {
-    primary_keys = ["a"]
-
-    fields {
-      name = "a"
-      type = "STRING"
-    }
-
-    fields {
-      name = "b"
-      type = "STRING"
-    }
-
-    fields {
-      name = "c"
-      type = "STRING"
-    }
-
-    # New field added (additive change)
-    fields {
-      name = "d"
       type = "STRING"
     }
   }
@@ -442,6 +381,52 @@ func testAccCheckDatadogReferenceTableStatusDone(accProvider *fwprovider.Framewo
 				}
 			}
 			return fmt.Errorf("unable to verify table status after %d retries", maxRetries)
+		}
+		return nil
+	}
+}
+
+func testAccCheckDatadogReferenceTableSchemaUpdated(accProvider *fwprovider.FrameworkProvider, expectedFieldCount int) resource.TestCheckFunc {
+	return func(s *terraform.State) error {
+		apiInstances := accProvider.DatadogApiInstances
+		auth := accProvider.Auth
+
+		for _, r := range s.RootModule().Resources {
+			if r.Type != "resource_datadog_reference_table" {
+				continue
+			}
+			id := r.Primary.ID
+
+			// Wait for schema to be updated (async operation) - typically completes in ~10 seconds
+			maxRetries := 5
+			retryInterval := 2 * time.Second
+			for i := 0; i < maxRetries; i++ {
+				resp, httpResp, err := apiInstances.GetReferenceTablesApiV2().GetTable(auth, id)
+				if err != nil {
+					return utils.TranslateClientError(err, httpResp, "error retrieving ReferenceTable")
+				}
+
+				if resp.Data != nil {
+					attrs := resp.Data.GetAttributes()
+					if schema, ok := attrs.GetSchemaOk(); ok && schema != nil {
+						if fields, ok := schema.GetFieldsOk(); ok && fields != nil {
+							actualFieldCount := len(*fields)
+							if actualFieldCount == expectedFieldCount {
+								return nil // Schema matches expected count
+							}
+							if i < maxRetries-1 {
+								time.Sleep(retryInterval)
+								continue
+							}
+							return fmt.Errorf("schema field count is %d after %d retries, expected %d", actualFieldCount, maxRetries, expectedFieldCount)
+						}
+					}
+				}
+				if i < maxRetries-1 {
+					time.Sleep(retryInterval)
+				}
+			}
+			return fmt.Errorf("unable to verify schema field count after %d retries", maxRetries)
 		}
 		return nil
 	}

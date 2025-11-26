@@ -3,8 +3,6 @@ package fwprovider
 import (
 	"context"
 	"fmt"
-	"net/http"
-	"time"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
@@ -12,6 +10,10 @@ import (
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/listplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/objectplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
@@ -45,11 +47,11 @@ type referenceTableModel struct {
 }
 
 type fileMetadataModel struct {
-	SyncEnabled    types.Bool          `tfsdk:"sync_enabled"`
-	AccessDetails  *accessDetailsModel `tfsdk:"access_details"`
-	ErrorMessage   types.String        `tfsdk:"error_message"`
-	ErrorRowCount  types.Int64         `tfsdk:"error_row_count"`
-	ErrorType      types.String        `tfsdk:"error_type"`
+	SyncEnabled   types.Bool          `tfsdk:"sync_enabled"`
+	AccessDetails *accessDetailsModel `tfsdk:"access_details"`
+	ErrorMessage  types.String        `tfsdk:"error_message"`
+	ErrorRowCount types.Int64         `tfsdk:"error_row_count"`
+	ErrorType     types.String        `tfsdk:"error_type"`
 }
 
 func NewReferenceTableResource() resource.Resource {
@@ -103,14 +105,10 @@ func (r *referenceTableResource) Schema(_ context.Context, _ resource.SchemaRequ
 			"row_count": schema.Int64Attribute{
 				Computed:    true,
 				Description: "The number of successfully processed rows in the reference table.",
-				// Removed UseStateForUnknown() to allow Terraform to accept changes to this computed value
-				// This is necessary for async resources where row_count changes as files are processed
 			},
 			"status": schema.StringAttribute{
 				Computed:    true,
 				Description: "The status of the reference table (e.g., DONE, PROCESSING, ERROR).",
-				// Removed UseStateForUnknown() to allow Terraform to accept changes to this computed value
-				// This is necessary for async resources where status changes as files are processed
 			},
 			"updated_at": schema.StringAttribute{
 				Computed:    true,
@@ -210,28 +208,46 @@ func (r *referenceTableResource) Schema(_ context.Context, _ resource.SchemaRequ
 				},
 			},
 			"schema": schema.SingleNestedBlock{
-				Description: "The schema definition for the reference table, including field definitions and primary keys.",
+				Description: "The schema definition for the reference table, including field definitions and primary keys. Schema is only set on create; updates are derived from the file asynchronously.",
+				PlanModifiers: []planmodifier.Object{
+					objectplanmodifier.UseStateForUnknown(),
+				},
 				Attributes: map[string]schema.Attribute{
 					"primary_keys": schema.ListAttribute{
-						Required:    true,
+						Optional:    true,
+						Computed:    true,
 						Description: "List of field names that serve as primary keys for the table. Currently only one primary key is supported.",
 						ElementType: types.StringType,
+						PlanModifiers: []planmodifier.List{
+							listplanmodifier.UseStateForUnknown(),
+						},
 					},
 				},
 				Blocks: map[string]schema.Block{
 					"fields": schema.ListNestedBlock{
-						Description: "List of fields in the table schema. Must include at least one field.",
+						Description: "List of fields in the table schema. Must include at least one field. Schema is only set on create.",
+						PlanModifiers: []planmodifier.List{
+							listplanmodifier.UseStateForUnknown(),
+						},
 						NestedObject: schema.NestedBlockObject{
 							Attributes: map[string]schema.Attribute{
 								"name": schema.StringAttribute{
-									Required:    true,
+									Optional:    true,
+									Computed:    true,
 									Description: "The name of the field.",
+									PlanModifiers: []planmodifier.String{
+										stringplanmodifier.UseStateForUnknown(),
+									},
 								},
 								"type": schema.StringAttribute{
-									Required:    true,
+									Optional:    true,
+									Computed:    true,
 									Description: "The data type of the field. Must be one of: STRING, INT32.",
 									Validators: []validator.String{
 										stringvalidator.OneOf("STRING", "INT32"),
+									},
+									PlanModifiers: []planmodifier.String{
+										stringplanmodifier.UseStateForUnknown(),
 									},
 								},
 							},
@@ -367,52 +383,6 @@ func (r *referenceTableResource) Update(ctx context.Context, request resource.Up
 
 	id := planState.ID.ValueString()
 
-	// If we're updating schema for a cloud file table, ensure the table is ready (not processing)
-	// This prevents race conditions where we try to update while the initial sync is still running
-	isUpdatingSchema := planState.Schema != nil
-	if isUpdatingSchema && currentState.Source.ValueString() != "LOCAL_FILE" {
-		// Check current status - if still processing, wait for it to complete
-		currentResp, _, err := r.Api.GetTable(r.Auth, id)
-		if err == nil && currentResp.Data != nil {
-			attrs := currentResp.Data.GetAttributes()
-			if status, ok := attrs.GetStatusOk(); ok && status != nil {
-				statusStr := string(*status)
-				if statusStr != "DONE" && statusStr != "ERROR" {
-					// Table is still processing - wait for it to complete before updating
-					var finalResp datadogV2.TableResultV2
-					waitErr := utils.Retry(3*time.Second, 20, func() error {
-						checkResp, _, checkErr := r.Api.GetTable(r.Auth, id)
-						if checkErr != nil {
-							return &utils.FatalError{Prob: fmt.Sprintf("error checking table status: %v", checkErr)}
-						}
-						if checkResp.Data != nil {
-							checkAttrs := checkResp.Data.GetAttributes()
-							if checkStatus, ok := checkAttrs.GetStatusOk(); ok && checkStatus != nil {
-								checkStatusStr := string(*checkStatus)
-								if checkStatusStr == "DONE" || checkStatusStr == "ERROR" {
-									finalResp = checkResp
-									return nil // Table is ready
-								}
-								return &utils.RetryableError{Prob: fmt.Sprintf("table status is %s, waiting for sync to complete before updating", checkStatusStr)}
-							}
-						}
-						return &utils.RetryableError{Prob: "unable to check table status"}
-					})
-					if waitErr != nil {
-						response.Diagnostics.Append(utils.FrameworkErrorDiag(waitErr, "error waiting for table to be ready before update"))
-						return
-					}
-					// Refresh currentState with fresh API data after waiting
-					r.updateState(ctx, &currentState, &finalResp)
-				} else {
-					// Status is already DONE/ERROR, refresh currentState with fresh API data
-					// to ensure we have the latest state (e.g., row_count, schema, etc.)
-					r.updateState(ctx, &currentState, &currentResp)
-				}
-			}
-		}
-	}
-
 	body, diags := r.buildReferenceTableUpdateRequestBody(ctx, &planState, &currentState)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
@@ -425,75 +395,16 @@ func (r *referenceTableResource) Update(ctx context.Context, request resource.Up
 		return
 	}
 
-	// Check if we're updating the schema - if so, we need to retry until the schema is updated
-	// Schema updates happen asynchronously when the file sync completes
-	var expectedFieldCount int
-	if isUpdatingSchema && planState.Schema.Fields != nil {
-		expectedFieldCount = len(planState.Schema.Fields)
+	// Read back the updated resource to populate state
+	// Note: Schema updates happen asynchronously, so the schema may not be updated immediately.
+	// Terraform will refresh state on the next plan/apply cycle to pick up async changes.
+	resp, _, err := r.Api.GetTable(r.Auth, id)
+	if err != nil {
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error reading ReferenceTable after update"))
+		return
 	}
-
-	// Wait a bit before first check to give the API time to start processing
-	// This matches what we did in the direct API test (waited before checking)
-	if isUpdatingSchema && expectedFieldCount > 0 {
-		time.Sleep(3 * time.Second)
-	}
-
-	// Read back the updated resource with retry logic if schema was updated
-	// Schema updates are asynchronous - the file sync needs to complete before schema is updated
-	var resp datadogV2.TableResultV2
-	var httpResp *http.Response
-	retryErr := utils.Retry(5*time.Second, 10, func() error {
-		var err error
-		resp, httpResp, err = r.Api.GetTable(r.Auth, id)
-		if err != nil {
-			if httpResp != nil && httpResp.StatusCode == 404 {
-				return &utils.RetryableError{Prob: fmt.Sprintf("table not found (may still be processing): %v", err)}
-			}
-			return &utils.FatalError{Prob: fmt.Sprintf("error reading ReferenceTable after update: %v", err)}
-		}
-
-		// If we're updating the schema, check if it matches the expected schema
-		// Schema can update while status is still PROCESSING, so check schema first
-		if isUpdatingSchema && expectedFieldCount > 0 {
-			if resp.Data != nil {
-				attrs := resp.Data.GetAttributes()
-				// Check for file processing errors - if file has more columns than schema, retry
-				// This can happen when schema update is async but file processing starts immediately
-				if fileMetadata, ok := attrs.GetFileMetadataOk(); ok && fileMetadata != nil {
-					if errorMsg, ok := fileMetadata.GetErrorMessageOk(); ok && errorMsg != nil && *errorMsg != "" {
-						if errorRowCount, ok := fileMetadata.GetErrorRowCountOk(); ok && errorRowCount != nil && *errorRowCount > 0 {
-							// File processing error detected - likely schema mismatch, retry
-							return &utils.RetryableError{Prob: fmt.Sprintf("file processing error detected (may be schema mismatch): %s (%d rows failed). Retrying until schema is updated.", *errorMsg, *errorRowCount)}
-						}
-					}
-				}
-				// Check schema first - it may update before status becomes DONE
-				if schema, ok := attrs.GetSchemaOk(); ok && schema != nil {
-					if fields, ok := schema.GetFieldsOk(); ok && fields != nil {
-						actualFieldCount := len(*fields)
-						if actualFieldCount == expectedFieldCount {
-							return nil // Schema matches, we're done
-						}
-						// Schema doesn't match yet - check status to provide better error message
-						if status, ok := attrs.GetStatusOk(); ok && status != nil {
-							statusStr := string(*status)
-							return &utils.RetryableError{Prob: fmt.Sprintf("schema not yet updated: expected %d fields, got %d (status: %s, file sync may still be processing)", expectedFieldCount, actualFieldCount, statusStr)}
-						}
-						// Schema doesn't match yet, retry
-						return &utils.RetryableError{Prob: fmt.Sprintf("schema not yet updated: expected %d fields, got %d (file sync may still be processing)", expectedFieldCount, actualFieldCount)}
-					}
-				}
-			}
-			// If we can't check the schema, retry
-			return &utils.RetryableError{Prob: "unable to verify schema update (file sync may still be processing)"}
-		}
-
-		// No schema update or schema matches, we're done
-		return nil
-	})
-
-	if retryErr != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(retryErr, "error reading ReferenceTable after update"))
+	if err := utils.CheckForUnparsed(resp); err != nil {
+		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
 		return
 	}
 
@@ -793,8 +704,8 @@ func (r *referenceTableResource) buildReferenceTableUpdateRequestBody(ctx contex
 		attributes.SetTags(tags)
 	}
 
-	// Check if we're updating the schema - if so, we need access_details or upload_id
-	isUpdatingSchema := planState.Schema != nil
+	// Note: Schema updates are not supported via PATCH - schema is only set on create.
+	// The schema will be derived from the file asynchronously.
 
 	// Build file_metadata for cloud storage updates
 	if planState.FileMetadata != nil {
@@ -804,18 +715,7 @@ func (r *referenceTableResource) buildReferenceTableUpdateRequestBody(ctx contex
 			cloudStorageMetadata.SetSyncEnabled(planState.FileMetadata.SyncEnabled.ValueBool())
 		}
 
-		// If updating schema and access_details not in plan or null/unknown, use current state's access_details
 		accessDetailsToUse := planState.FileMetadata.AccessDetails
-		if isUpdatingSchema {
-			// Check if access_details is missing, null, or has no actual detail values
-			hasAccessDetails := accessDetailsToUse != nil &&
-				(accessDetailsToUse.AwsDetail != nil ||
-					accessDetailsToUse.GcpDetail != nil ||
-					accessDetailsToUse.AzureDetail != nil)
-			if !hasAccessDetails && currentState.FileMetadata != nil && currentState.FileMetadata.AccessDetails != nil {
-				accessDetailsToUse = currentState.FileMetadata.AccessDetails
-			}
-		}
 
 		// Check if we have valid access_details (at least one detail field must be set)
 		hasValidAccessDetails := accessDetailsToUse != nil &&
@@ -859,119 +759,11 @@ func (r *referenceTableResource) buildReferenceTableUpdateRequestBody(ctx contex
 			cloudStorageMetadata.SetAccessDetails(accessDetails)
 			fileMetadata := datadogV2.PatchTableRequestDataAttributesFileMetadataCloudStorageAsPatchTableRequestDataAttributesFileMetadata(&cloudStorageMetadata)
 			attributes.SetFileMetadata(fileMetadata)
-		} else if isUpdatingSchema {
-			// Schema updates require access_details for cloud storage sources
-			// Try to get access_details from current state
-			currentStateHasValidAccessDetails := currentState.FileMetadata != nil &&
-				currentState.FileMetadata.AccessDetails != nil &&
-				(currentState.FileMetadata.AccessDetails.AwsDetail != nil ||
-					currentState.FileMetadata.AccessDetails.GcpDetail != nil ||
-					currentState.FileMetadata.AccessDetails.AzureDetail != nil)
-			if currentStateHasValidAccessDetails {
-				// Use current state's access_details
-				accessDetails := datadogV2.PatchTableRequestDataAttributesFileMetadataOneOfAccessDetails{}
-				if currentState.FileMetadata.AccessDetails.AwsDetail != nil {
-					awsDetail := datadogV2.PatchTableRequestDataAttributesFileMetadataOneOfAccessDetailsAwsDetail{}
-					awsDetail.SetAwsAccountId(currentState.FileMetadata.AccessDetails.AwsDetail.AwsAccountId.ValueString())
-					awsDetail.SetAwsBucketName(currentState.FileMetadata.AccessDetails.AwsDetail.AwsBucketName.ValueString())
-					awsDetail.SetFilePath(currentState.FileMetadata.AccessDetails.AwsDetail.FilePath.ValueString())
-					accessDetails.AwsDetail = &awsDetail
-				}
-				if currentState.FileMetadata.AccessDetails.GcpDetail != nil {
-					gcpDetail := datadogV2.PatchTableRequestDataAttributesFileMetadataOneOfAccessDetailsGcpDetail{}
-					gcpDetail.SetGcpProjectId(currentState.FileMetadata.AccessDetails.GcpDetail.GcpProjectId.ValueString())
-					gcpDetail.SetGcpBucketName(currentState.FileMetadata.AccessDetails.GcpDetail.GcpBucketName.ValueString())
-					gcpDetail.SetFilePath(currentState.FileMetadata.AccessDetails.GcpDetail.FilePath.ValueString())
-					gcpDetail.SetGcpServiceAccountEmail(currentState.FileMetadata.AccessDetails.GcpDetail.GcpServiceAccountEmail.ValueString())
-					accessDetails.GcpDetail = &gcpDetail
-				}
-				if currentState.FileMetadata.AccessDetails.AzureDetail != nil {
-					azureDetail := datadogV2.PatchTableRequestDataAttributesFileMetadataOneOfAccessDetailsAzureDetail{}
-					azureDetail.SetAzureTenantId(currentState.FileMetadata.AccessDetails.AzureDetail.AzureTenantId.ValueString())
-					azureDetail.SetAzureClientId(currentState.FileMetadata.AccessDetails.AzureDetail.AzureClientId.ValueString())
-					azureDetail.SetAzureStorageAccountName(currentState.FileMetadata.AccessDetails.AzureDetail.AzureStorageAccountName.ValueString())
-					azureDetail.SetAzureContainerName(currentState.FileMetadata.AccessDetails.AzureDetail.AzureContainerName.ValueString())
-					azureDetail.SetFilePath(currentState.FileMetadata.AccessDetails.AzureDetail.FilePath.ValueString())
-					accessDetails.AzureDetail = &azureDetail
-				}
-				if !currentState.FileMetadata.SyncEnabled.IsNull() {
-					cloudStorageMetadata.SetSyncEnabled(currentState.FileMetadata.SyncEnabled.ValueBool())
-				}
-				cloudStorageMetadata.SetAccessDetails(accessDetails)
-				fileMetadata := datadogV2.PatchTableRequestDataAttributesFileMetadataCloudStorageAsPatchTableRequestDataAttributesFileMetadata(&cloudStorageMetadata)
-				attributes.SetFileMetadata(fileMetadata)
-			} else {
-				diags.AddError("Schema update requires access_details",
-					"When updating the schema, file_metadata must include access_details (for cloud storage sources)")
-				return nil, diags
-			}
-		}
-	} else if isUpdatingSchema {
-		// Schema update but no file_metadata in plan - try to get from current state
-		if currentState.FileMetadata != nil {
-			if currentState.FileMetadata.AccessDetails != nil {
-				// Use current state's access_details
-				cloudStorageMetadata := datadogV2.PatchTableRequestDataAttributesFileMetadataCloudStorage{}
-				if !currentState.FileMetadata.SyncEnabled.IsNull() {
-					cloudStorageMetadata.SetSyncEnabled(currentState.FileMetadata.SyncEnabled.ValueBool())
-				}
-				accessDetails := datadogV2.PatchTableRequestDataAttributesFileMetadataOneOfAccessDetails{}
-				if currentState.FileMetadata.AccessDetails.AwsDetail != nil {
-					awsDetail := datadogV2.PatchTableRequestDataAttributesFileMetadataOneOfAccessDetailsAwsDetail{}
-					awsDetail.SetAwsAccountId(currentState.FileMetadata.AccessDetails.AwsDetail.AwsAccountId.ValueString())
-					awsDetail.SetAwsBucketName(currentState.FileMetadata.AccessDetails.AwsDetail.AwsBucketName.ValueString())
-					awsDetail.SetFilePath(currentState.FileMetadata.AccessDetails.AwsDetail.FilePath.ValueString())
-					accessDetails.AwsDetail = &awsDetail
-				}
-				if currentState.FileMetadata.AccessDetails.GcpDetail != nil {
-					gcpDetail := datadogV2.PatchTableRequestDataAttributesFileMetadataOneOfAccessDetailsGcpDetail{}
-					gcpDetail.SetGcpProjectId(currentState.FileMetadata.AccessDetails.GcpDetail.GcpProjectId.ValueString())
-					gcpDetail.SetGcpBucketName(currentState.FileMetadata.AccessDetails.GcpDetail.GcpBucketName.ValueString())
-					gcpDetail.SetFilePath(currentState.FileMetadata.AccessDetails.GcpDetail.FilePath.ValueString())
-					gcpDetail.SetGcpServiceAccountEmail(currentState.FileMetadata.AccessDetails.GcpDetail.GcpServiceAccountEmail.ValueString())
-					accessDetails.GcpDetail = &gcpDetail
-				}
-				if currentState.FileMetadata.AccessDetails.AzureDetail != nil {
-					azureDetail := datadogV2.PatchTableRequestDataAttributesFileMetadataOneOfAccessDetailsAzureDetail{}
-					azureDetail.SetAzureTenantId(currentState.FileMetadata.AccessDetails.AzureDetail.AzureTenantId.ValueString())
-					azureDetail.SetAzureClientId(currentState.FileMetadata.AccessDetails.AzureDetail.AzureClientId.ValueString())
-					azureDetail.SetAzureStorageAccountName(currentState.FileMetadata.AccessDetails.AzureDetail.AzureStorageAccountName.ValueString())
-					azureDetail.SetAzureContainerName(currentState.FileMetadata.AccessDetails.AzureDetail.AzureContainerName.ValueString())
-					azureDetail.SetFilePath(currentState.FileMetadata.AccessDetails.AzureDetail.FilePath.ValueString())
-					accessDetails.AzureDetail = &azureDetail
-				}
-				cloudStorageMetadata.SetAccessDetails(accessDetails)
-				fileMetadata := datadogV2.PatchTableRequestDataAttributesFileMetadataCloudStorageAsPatchTableRequestDataAttributesFileMetadata(&cloudStorageMetadata)
-				attributes.SetFileMetadata(fileMetadata)
-			}
 		}
 	}
 
-	// Build schema for updates
-	if planState.Schema != nil {
-		schema := datadogV2.PatchTableRequestDataAttributesSchema{}
-
-		if !planState.Schema.PrimaryKeys.IsNull() {
-			var primaryKeys []string
-			diags.Append(planState.Schema.PrimaryKeys.ElementsAs(ctx, &primaryKeys, false)...)
-			schema.SetPrimaryKeys(primaryKeys)
-		}
-
-		if planState.Schema.Fields != nil {
-			var fields []datadogV2.PatchTableRequestDataAttributesSchemaFieldsItems
-			for _, fieldsTFItem := range planState.Schema.Fields {
-				if !fieldsTFItem.Name.IsNull() && !fieldsTFItem.Type.IsNull() {
-					fieldsDDItem := datadogV2.NewPatchTableRequestDataAttributesSchemaFieldsItems(
-						fieldsTFItem.Name.ValueString(),
-						datadogV2.ReferenceTableSchemaFieldType(fieldsTFItem.Type.ValueString()),
-					)
-					fields = append(fields, *fieldsDDItem)
-				}
-			}
-			schema.SetFields(fields)
-		}
-		attributes.Schema = &schema
-	}
+	// Note: Schema is not included in PATCH requests. Schema is only set on create.
+	// The schema will be derived from the file asynchronously by the backend.
 
 	req := datadogV2.NewPatchTableRequestWithDefaults()
 	req.Data = datadogV2.NewPatchTableRequestData(datadogV2.PATCHTABLEREQUESTDATATYPE_REFERENCE_TABLE)
