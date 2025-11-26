@@ -12,7 +12,7 @@
 # Terraform plugin sdk resources/data-sources
 datadog/*datadog_dashboard*                @DataDog/api-reliability @DataDog/dashboards-backend
 datadog/*datadog_downtime*                 @DataDog/api-reliability @DataDog/monitor-app
-datadog/*datadog_integration_aws*          @DataDog/api-reliability @DataDog/cloud-integrations
+datadog/*datadog_integration_aws*          @DataDog/api-reliability @DataDog/aws-integrations
 datadog/*datadog_integration_pagerduty*    @DataDog/api-reliability @DataDog/collaboration-integrations
 datadog/*datadog_integration_opsgenie*     @DataDog/api-reliability @Datadog/collaboration-integrations
 datadog/*datadog_logs*                     @DataDog/api-reliability @DataDog/logs-backend @DataDog/logs-core @DataDog/logs-forwarding @DataDog/logs-app
