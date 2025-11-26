@@ -75,7 +75,7 @@ resource "datadog_reference_table" "s3_table" {
 
 - `description` (String) The description of the reference table.
 - `file_metadata` (Block, Optional) Configuration for cloud storage file access and sync settings. (see [below for nested schema](#nestedblock--file_metadata))
-- `schema` (Block, Optional) The schema definition for the reference table, including field definitions and primary keys. (see [below for nested schema](#nestedblock--schema))
+- `schema` (Block, Optional) The schema definition for the reference table, including field definitions and primary keys. Schema is only set on create; updates are derived from the file asynchronously. (see [below for nested schema](#nestedblock--schema))
 - `tags` (List of String) A list of tags to associate with the reference table.
 
 ### Read-Only
@@ -97,6 +97,12 @@ Required:
 Optional:
 
 - `access_details` (Block, Optional) Cloud storage access configuration. Exactly one of aws_detail, gcp_detail, or azure_detail must be specified. (see [below for nested schema](#nestedblock--file_metadata--access_details))
+
+Read-Only:
+
+- `error_message` (String) Error message from the last sync attempt, if any.
+- `error_row_count` (Number) The number of rows that failed to sync.
+- `error_type` (String) The type of error that occurred during file processing.
 
 <a id="nestedblock--file_metadata--access_details"></a>
 ### Nested Schema for `file_metadata.access_details`
@@ -145,18 +151,15 @@ Optional:
 <a id="nestedblock--schema"></a>
 ### Nested Schema for `schema`
 
-Required:
-
-- `primary_keys` (List of String) List of field names that serve as primary keys for the table. Currently only one primary key is supported.
-
 Optional:
 
-- `fields` (Block List) List of fields in the table schema. Must include at least one field. (see [below for nested schema](#nestedblock--schema--fields))
+- `fields` (Block List) List of fields in the table schema. Must include at least one field. Schema is only set on create. (see [below for nested schema](#nestedblock--schema--fields))
+- `primary_keys` (List of String) List of field names that serve as primary keys for the table. Currently only one primary key is supported.
 
 <a id="nestedblock--schema--fields"></a>
 ### Nested Schema for `schema.fields`
 
-Required:
+Optional:
 
 - `name` (String) The name of the field.
 - `type` (String) The data type of the field. Must be one of: STRING, INT32. Valid values are `STRING`, `INT32`.
