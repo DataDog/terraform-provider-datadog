@@ -23,7 +23,6 @@ import (
 var (
 	_ resource.ResourceWithConfigure   = &referenceTableResource{}
 	_ resource.ResourceWithImportState = &referenceTableResource{}
-	_ resource.ResourceWithModifyPlan  = &referenceTableResource{}
 )
 
 type referenceTableResource struct {
@@ -304,64 +303,41 @@ func (r *referenceTableResource) Create(ctx context.Context, request resource.Cr
 		return
 	}
 
-	resp, httpResp, err := r.Api.CreateReferenceTable(r.Auth, *body)
+	_, httpResp, err := r.Api.CreateReferenceTable(r.Auth, *body)
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error creating ReferenceTable"))
 		return
 	}
-	if err := utils.CheckForUnparsed(resp); err != nil {
-		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
+
+	// The create API returns an empty body with 201 status, so we need to fetch the table by name
+	if httpResp == nil || httpResp.StatusCode != 201 {
+		statusCode := 0
+		if httpResp != nil {
+			statusCode = httpResp.StatusCode
+		}
+		response.Diagnostics.AddError("API Error", fmt.Sprintf("CreateReferenceTable returned unexpected status (HTTP %d).", statusCode))
 		return
 	}
 
-	// If the create response doesn't include data, fetch it with a list+filter request
-	if resp.Data == nil {
-		if httpResp != nil && httpResp.StatusCode == 201 {
-			// Table was created successfully, but response was empty - list tables and find by exact name
-			tableName := state.TableName.ValueString()
-			listResp, _, listErr := r.Api.ListTables(r.Auth)
-			if listErr != nil {
-				response.Diagnostics.Append(utils.FrameworkErrorDiag(listErr, "table created but error listing tables"))
-				return
-			}
-
-			// Find the table by exact name match
-			var foundTable *datadogV2.TableResultV2Data
-			if listResp.Data != nil {
-				for _, table := range listResp.Data {
-					if attrs, ok := table.GetAttributesOk(); ok {
-						if name, nameOk := attrs.GetTableNameOk(); nameOk && *name == tableName {
-							tableCopy := table
-							foundTable = &tableCopy
-							break
-						}
-					}
-				}
-			}
-
-			if foundTable == nil {
-				response.Diagnostics.AddError("API Error", fmt.Sprintf("Table %s was created but not found in list", tableName))
-				return
-			}
-
-			// Get the full table details by ID
-			tableID := foundTable.GetId()
-			getResp, _, getErr := r.Api.GetTable(r.Auth, tableID)
-			if getErr != nil {
-				response.Diagnostics.Append(utils.FrameworkErrorDiag(getErr, fmt.Sprintf("table created but error fetching details for ID %s", tableID)))
-				return
-			}
-			resp = getResp
-		} else {
-			statusCode := 0
-			if httpResp != nil {
-				statusCode = httpResp.StatusCode
-			}
-			response.Diagnostics.AddError("API Error", fmt.Sprintf("CreateReferenceTable returned an empty response (HTTP %d).", statusCode))
-			return
-		}
+	// List tables with exact name filter to find the created one
+	tableName := state.TableName.ValueString()
+	optionalParams := datadogV2.ListTablesOptionalParameters{
+		FilterTableNameExact: &tableName,
+	}
+	listResp, _, listErr := r.Api.ListTables(r.Auth, optionalParams)
+	if listErr != nil {
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(listErr, "table created but error listing tables"))
+		return
 	}
 
+	if len(listResp.Data) == 0 {
+		response.Diagnostics.AddError("API Error", fmt.Sprintf("Table %s was created but not found in list", tableName))
+		return
+	}
+
+	// Use the table data from the list response
+	tableData := listResp.Data[0]
+	resp := datadogV2.TableResultV2{Data: &tableData}
 	r.updateState(ctx, &state, &resp)
 
 	// Save data into Terraform state
@@ -770,122 +746,4 @@ func (r *referenceTableResource) buildReferenceTableUpdateRequestBody(ctx contex
 	req.Data.SetAttributes(*attributes)
 
 	return req, diags
-}
-
-func (r *referenceTableResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
-	// If the plan is null (resource is being destroyed) or no state exists yet, return early
-	if req.Plan.Raw.IsNull() || req.State.Raw.IsNull() {
-		return
-	}
-
-	var plan, state referenceTableModel
-	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
-	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
-	// Validate schema changes
-	if plan.Schema != nil && state.Schema != nil {
-		planSchema := plan.Schema
-		stateSchema := state.Schema
-
-		// Check primary keys changes (destructive)
-		var planPrimaryKeys, statePrimaryKeys []string
-		if !planSchema.PrimaryKeys.IsNull() && !stateSchema.PrimaryKeys.IsNull() {
-			planSchema.PrimaryKeys.ElementsAs(ctx, &planPrimaryKeys, false)
-			stateSchema.PrimaryKeys.ElementsAs(ctx, &statePrimaryKeys, false)
-
-			// Check if primary keys have changed
-			if len(planPrimaryKeys) != len(statePrimaryKeys) {
-				resp.Diagnostics.AddError(
-					"Destructive schema changes are not supported",
-					fmt.Sprintf("Cannot change primary keys from %v to %v.\n\n"+
-						"The planned schema change would modify primary keys, which requires table recreation and causes downtime.\n\n"+
-						"To proceed:\n"+
-						"1. Remove the resource from Terraform state: terraform state rm datadog_reference_table.%s\n"+
-						"2. Update your configuration with the new schema\n"+
-						"3. Run terraform apply to recreate the table\n\n"+
-						"Note: The table will be unavailable during recreation, causing enrichment processors to fail.",
-						statePrimaryKeys, planPrimaryKeys, state.TableName.ValueString()),
-				)
-				return
-			}
-
-			for i, planKey := range planPrimaryKeys {
-				if i >= len(statePrimaryKeys) || planKey != statePrimaryKeys[i] {
-					resp.Diagnostics.AddError(
-						"Destructive schema changes are not supported",
-						fmt.Sprintf("Cannot change primary keys from %v to %v.\n\n"+
-							"The planned schema change would modify primary keys, which requires table recreation and causes downtime.\n\n"+
-							"To proceed:\n"+
-							"1. Remove the resource from Terraform state: terraform state rm datadog_reference_table.%s\n"+
-							"2. Update your configuration with the new schema\n"+
-							"3. Run terraform apply to recreate the table\n\n"+
-							"Note: The table will be unavailable during recreation, causing enrichment processors to fail.",
-							statePrimaryKeys, planPrimaryKeys, state.TableName.ValueString()),
-					)
-					return
-				}
-			}
-		}
-
-		// Build field maps for comparison
-		stateFieldMap := make(map[string]string) // field name -> type
-		if stateSchema.Fields != nil {
-			for _, field := range stateSchema.Fields {
-				if !field.Name.IsNull() && !field.Type.IsNull() {
-					stateFieldMap[field.Name.ValueString()] = field.Type.ValueString()
-				}
-			}
-		}
-
-		planFieldMap := make(map[string]string)
-		if planSchema.Fields != nil {
-			for _, field := range planSchema.Fields {
-				if !field.Name.IsNull() && !field.Type.IsNull() {
-					planFieldMap[field.Name.ValueString()] = field.Type.ValueString()
-				}
-			}
-		}
-
-		// Check for removed fields (destructive)
-		for fieldName := range stateFieldMap {
-			if _, exists := planFieldMap[fieldName]; !exists {
-				resp.Diagnostics.AddError(
-					"Destructive schema changes are not supported",
-					fmt.Sprintf("Cannot remove field '%s' from the schema.\n\n"+
-						"The planned schema change would remove fields, which requires table recreation and causes downtime.\n\n"+
-						"To proceed:\n"+
-						"1. Remove the resource from Terraform state: terraform state rm datadog_reference_table.%s\n"+
-						"2. Update your configuration with the new schema\n"+
-						"3. Run terraform apply to recreate the table\n\n"+
-						"Note: The table will be unavailable during recreation, causing enrichment processors to fail.",
-						fieldName, state.TableName.ValueString()),
-				)
-				return
-			}
-		}
-
-		// Check for field type changes (destructive)
-		for fieldName, planType := range planFieldMap {
-			if stateType, exists := stateFieldMap[fieldName]; exists {
-				if stateType != planType {
-					resp.Diagnostics.AddError(
-						"Destructive schema changes are not supported",
-						fmt.Sprintf("Cannot change type of field '%s' from '%s' to '%s'.\n\n"+
-							"The planned schema change would modify field types, which requires table recreation and causes downtime.\n\n"+
-							"To proceed:\n"+
-							"1. Remove the resource from Terraform state: terraform state rm datadog_reference_table.%s\n"+
-							"2. Update your configuration with the new schema\n"+
-							"3. Run terraform apply to recreate the table\n\n"+
-							"Note: The table will be unavailable during recreation, causing enrichment processors to fail.",
-							fieldName, stateType, planType, state.TableName.ValueString()),
-					)
-					return
-				}
-			}
-			// New fields (additive) are allowed - no error
-		}
-	}
 }

@@ -14,6 +14,9 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
+// TestAccReferenceTableS3_Basic tests creating a reference table backed by an S3 file.
+// It verifies that all attributes (table_name, source, description, file_metadata, schema, tags)
+// are correctly set on the created resource.
 func TestAccReferenceTableS3_Basic(t *testing.T) {
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
@@ -54,9 +57,12 @@ func TestAccReferenceTableS3_Basic(t *testing.T) {
 	})
 }
 
+// TestAccReferenceTable_SchemaOnCreate tests that schema is correctly set during table creation.
+// Schema is only configurable on create - updates are not supported because the backend
+// derives the schema asynchronously from the file contents. This test verifies:
+// 1. Schema fields are correctly set on initial creation
+// 2. Schema is preserved after the table reaches DONE status (file processing complete)
 func TestAccReferenceTable_SchemaOnCreate(t *testing.T) {
-	// Test that schema is set correctly on create
-	// Note: Schema updates via PATCH are not supported; schema is derived from the file asynchronously
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)
@@ -97,6 +103,10 @@ func TestAccReferenceTable_SchemaOnCreate(t *testing.T) {
 	})
 }
 
+// TestAccReferenceTable_UpdateSyncEnabled tests that the sync_enabled attribute can be updated
+// via PATCH request. This verifies that file_metadata updates work correctly:
+// 1. Creates a table with sync_enabled=true
+// 2. Updates to sync_enabled=false and verifies the change is applied
 func TestAccReferenceTable_UpdateSyncEnabled(t *testing.T) {
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
@@ -127,6 +137,10 @@ func TestAccReferenceTable_UpdateSyncEnabled(t *testing.T) {
 	})
 }
 
+// TestAccReferenceTable_Import tests that an existing reference table can be imported
+// into Terraform state using `terraform import`. This verifies:
+// 1. A table can be created normally
+// 2. The table can be imported by ID and all attributes match the original configuration
 func TestAccReferenceTable_Import(t *testing.T) {
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
