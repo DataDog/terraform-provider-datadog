@@ -61,7 +61,7 @@ func (r *costBudgetResource) Schema(_ context.Context, _ resource.SchemaRequest,
 			},
 			"metrics_query": schema.StringAttribute{
 				Required:    true,
-				Description: "The cost query used to track against the budget.",
+				Description: "The cost query used to track against the budget. **Note:** For hierarchical budgets using `by {tag1,tag2}`, the order of tags determines the UI hierarchy (parent, child).",
 			},
 			"start_month": schema.Int64Attribute{
 				Required:    true,
@@ -78,7 +78,7 @@ func (r *costBudgetResource) Schema(_ context.Context, _ resource.SchemaRequest,
 		},
 		Blocks: map[string]schema.Block{
 			"entries": schema.ListNestedBlock{
-				Description: "The entries of the budget.",
+				Description: "The entries of the budget. **Note:** You must provide entries for all months in the budget period. For hierarchical budgets, each unique tag combination must have entries for all months.",
 				NestedObject: schema.NestedBlockObject{
 					Attributes: map[string]schema.Attribute{
 						"amount": schema.Float64Attribute{
@@ -92,7 +92,10 @@ func (r *costBudgetResource) Schema(_ context.Context, _ resource.SchemaRequest,
 						"tag_filters": schema.ListNestedBlock{
 							NestedObject: schema.NestedBlockObject{
 								Attributes: map[string]schema.Attribute{
-									"tag_key":   schema.StringAttribute{Required: true},
+									"tag_key": schema.StringAttribute{
+										Required:    true,
+										Description: "**Note:** Must be one of the tags from the `metrics_query`.",
+									},
 									"tag_value": schema.StringAttribute{Required: true},
 								},
 							},
