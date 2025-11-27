@@ -156,6 +156,15 @@ func (r *costBudgetResource) Update(ctx context.Context, req resource.UpdateRequ
 		return
 	}
 
+	// we need to retrieve the ID from the current state and copy it to the plan
+	// otherwise the API will create a new budget instead of updating
+	var state costBudgetModel
+	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	plan.ID = state.ID
+
 	apiReq := buildBudgetWithEntriesFromModel(plan)
 	apiResp, response, err := r.Api.UpsertBudget(r.Auth, apiReq)
 	if err != nil {
