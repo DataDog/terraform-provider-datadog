@@ -13,12 +13,42 @@ Provides a Datadog IntegrationCloudflareAccount resource. This can be used to cr
 ## Example Usage
 
 ```terraform
-# Create new integration_cloudflare_account resource
-
-resource "datadog_integration_cloudflare_account" "foo" {
+# Basic Usage
+resource "datadog_integration_cloudflare_account" "basic" {
   api_key = "12345678910abc"
   email   = "test-email@example.com"
   name    = "test-name"
+}
+
+# Write-Only API Key (Recommended for Terraform 1.11+)
+resource "datadog_integration_cloudflare_account" "secure" {
+  name  = "prod-cloudflare"
+  email = "admin@company.com"
+
+  # Write-only API key with version trigger
+  api_key_wo         = var.cloudflare_api_key
+  api_key_wo_version = "1" # Any string: "1", "v2.1", "2024-Q1", etc.
+}
+
+# Advanced: Automated Version Management
+locals {
+  cloudflare_keepers = {
+    rotation_date   = "2024-02-15"
+    environment     = "production"
+    security_policy = "v3.1"
+  }
+
+  # Auto-generate version from keepers
+  api_key_version = "rotation-${substr(md5(jsonencode(local.cloudflare_keepers)), 0, 8)}"
+}
+
+resource "datadog_integration_cloudflare_account" "automated" {
+  name  = "prod-cloudflare"
+  email = "admin@company.com"
+
+  # Version automatically updates when any keeper changes
+  api_key_wo         = var.cloudflare_api_key
+  api_key_wo_version = local.api_key_version
 }
 ```
 
@@ -27,11 +57,15 @@ resource "datadog_integration_cloudflare_account" "foo" {
 
 ### Required
 
-- `api_key` (String, Sensitive) The API key (or token) for the Cloudflare account.
 - `name` (String) The name of the Cloudflare account.
 
 ### Optional
 
+> **NOTE**: [Write-only arguments](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments) are supported in Terraform 1.11 and later.
+
+- `api_key` (String, Sensitive) The API key (or token) for the Cloudflare account.
+- `api_key_wo` (String, Sensitive, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Write-only API key (or token) for the Cloudflare account.
+- `api_key_wo_version` (String) Version associated with api_key_wo. Changing this triggers an update. Can be any string (e.g., '1', 'v2.1', '2024-Q1'). String length must be at least 1.
 - `email` (String) The email associated with the Cloudflare account. If an API key is provided (and not a token), this field is also required.
 - `resources` (Set of String) An allowlist of resources to pull metrics for. Includes `web`, `dns`, `lb` (load balancer), and `worker`).
 
