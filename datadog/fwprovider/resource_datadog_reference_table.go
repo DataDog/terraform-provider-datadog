@@ -455,11 +455,9 @@ func (r *referenceTableResource) updateState(ctx context.Context, state *referen
 		state.Tags, _ = types.ListValueFrom(ctx, types.StringType, *tags)
 	}
 
-	// Handle FileMetadata from API response (flattened structure, no longer OneOf)
 	if fileMetadata, ok := attributes.GetFileMetadataOk(); ok {
 		fileMetadataTf := &fileMetadataModel{}
 
-		// FileMetadata is now a flattened struct with direct fields
 		if syncEnabled, ok := fileMetadata.GetSyncEnabledOk(); ok {
 			fileMetadataTf.SyncEnabled = types.BoolValue(*syncEnabled)
 		} else {
@@ -630,7 +628,6 @@ func (r *referenceTableResource) buildReferenceTableRequestBody(ctx context.Cont
 			cloudStorageMetadata.SetAccessDetails(accessDetails)
 		}
 
-		// Set the file_metadata as a oneOf union type
 		fileMetadata := datadogV2.CreateTableRequestDataAttributesFileMetadataCloudStorageAsCreateTableRequestDataAttributesFileMetadata(&cloudStorageMetadata)
 		attributes.SetFileMetadata(fileMetadata)
 	}
