@@ -37,16 +37,16 @@ type relationshipsModel struct {
 	SubTeam    *subTeamModel    `tfsdk:"sub_team"`
 }
 type parentTeamModel struct {
-	Data *dataModel `tfsdk:"data"`
+	Data *parentTeamDataModel `tfsdk:"data"`
 }
-type dataModel struct {
+type parentTeamDataModel struct {
 	Id   types.String `tfsdk:"id"`
 	Type types.String `tfsdk:"type"`
 }
 type subTeamModel struct {
-	Data *dataModel `tfsdk:"data"`
+	Data *subTeamDataModel `tfsdk:"data"`
 }
-type dataModel struct {
+type subTeamDataModel struct {
 	Id   types.String `tfsdk:"id"`
 	Type types.String `tfsdk:"type"`
 }

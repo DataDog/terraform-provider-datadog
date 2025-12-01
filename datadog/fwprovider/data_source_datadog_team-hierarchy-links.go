@@ -87,9 +87,9 @@ func (d *datadogTeamHierarchyLinksDataSource) Read(ctx context.Context, request 
 		return
 	}
 
-	if !state.TeamHierarchyLinksId.IsNull() {
-		teamHierarchyLinksId := state.TeamHierarchyLinksId.ValueString()
-		ddResp, _, err := d.Api.GetTeamHierarchyLinks(d.Auth, teamHierarchyLinksId)
+	if !state.LinkId.IsNull() {
+		teamHierarchyLinkId := state.LinkId.ValueString()
+		ddResp, _, err := d.Api.GetTeamHierarchyLinks(d.Auth, teamHierarchyLinkId)
 		if err != nil {
 			response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error getting datadog teamHierarchyLinks"))
 			return
@@ -127,7 +127,7 @@ func (d *datadogTeamHierarchyLinksDataSource) Read(ctx context.Context, request 
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (d *datadogTeamHierarchyLinksDataSource) updateState(ctx context.Context, state *datadogTeamHierarchyLinksDataSourceModel, teamHierarchyLinksData *datadogV2.TeamHierarchyLinks) {
+func (d *datadogTeamHierarchyLinksDataSource) updateState(ctx context.Context, state *datadogTeamHierarchyLinksDataSourceModel, teamHierarchyLinksData *datadogV2.TeamHierarchyLink) {
 	state.ID = types.StringValue(teamHierarchyLinksData.GetId())
 
 	attributes := teamHierarchyLinksData.GetAttributes()
@@ -135,7 +135,7 @@ func (d *datadogTeamHierarchyLinksDataSource) updateState(ctx context.Context, s
 	state.ProvisionedBy = types.StringValue(attributes.GetProvisionedBy())
 }
 
-func (d *datadogTeamHierarchyLinksDataSource) updateStateFromListResponse(ctx context.Context, state *datadogTeamHierarchyLinksDataSourceModel, teamHierarchyLinksData *datadogV2.TeamHierarchyLinks) {
+func (d *datadogTeamHierarchyLinksDataSource) updateStateFromListResponse(ctx context.Context, state *datadogTeamHierarchyLinksDataSourceModel, teamHierarchyLinksData *datadogV2.TeamHierarchyLink) {
 	state.ID = types.StringValue(teamHierarchyLinksData.GetId())
 	state.LinkId = types.StringValue(teamHierarchyLinksData.GetId())
 
