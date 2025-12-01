@@ -12,7 +12,7 @@
 # Terraform plugin sdk resources/data-sources
 datadog/*datadog_dashboard*                @DataDog/api-reliability @DataDog/dashboards-backend
 datadog/*datadog_downtime*                 @DataDog/api-reliability @DataDog/monitor-app
-datadog/*datadog_integration_aws*          @DataDog/api-reliability @DataDog/cloud-integrations
+datadog/*datadog_integration_aws*          @DataDog/api-reliability @DataDog/aws-integrations
 datadog/*datadog_integration_pagerduty*    @DataDog/api-reliability @DataDog/collaboration-integrations
 datadog/*datadog_integration_opsgenie*     @DataDog/api-reliability @Datadog/collaboration-integrations
 datadog/*datadog_logs*                     @DataDog/api-reliability @DataDog/logs-backend @DataDog/logs-core @DataDog/logs-forwarding @DataDog/logs-app
@@ -64,7 +64,7 @@ datadog/**/*datadog_sensitive_data_scanner*      @DataDog/api-reliability @DataD
 datadog/**/*datadog_service_account*             @DataDog/api-reliability @DataDog/team-aaa
 datadog/**/*datadog_software_catalog*            @DataDog/api-reliability @DataDog/service-catalog
 datadog/**/*datadog_spans_metric*                @DataDog/api-reliability @DataDog/apm-trace-intake
-datadog/**/*datadog_synthetics_concurrency_cap*  @DataDog/api-reliability @DataDog/synthetics-managing
+datadog/**/*datadog_synthetics*                  @DataDog/api-reliability @DataDog/synthetics-managing
 datadog/**/*datadog_team*                        @DataDog/api-reliability @DataDog/core-app
 datadog/**/*datadog_user*                        @DataDog/api-reliability @DataDog/team-aaa
 datadog/**/*datadog_webhook*                     @DataDog/api-reliability @DataDog/collaboration-integrations
@@ -73,4 +73,13 @@ datadog/**/*datadog_powerpack*                   @DataDog/api-reliability @DataD
 datadog/**/*datadog_role_users*                  @DataDog/api-reliability @DataDog/team-aaa
 datadog/**/*datadog_rum*                         @DataDog/api-reliability @DataDog/rum-backend
 datadog/**/*datadog_security*                    @DataDog/api-reliability @DataDog/k9-cloud-security-platform
+datadog/**/*datadog_csm_threats*                 @DataDog/api-reliability @DataDog/k9-cws-backend
+datadog/**/*datadog_cloud_workload_security*     @DataDog/api-reliability @DataDog/k9-cws-backend
 datadog/**/*datadog_app_builder_app*             @DataDog/api-reliability @DataDog/app-builder-backend
+datadog/**/*datadog_custom_allocation_rule*      @DataDog/api-reliability @DataDog/cloud-cost-management
+datadog/**/*datadog_aws_cur_config*              @DataDog/api-reliability @DataDog/cloud-cost-management
+datadog/**/*datadog_azure_uc_config*             @DataDog/api-reliability @DataDog/cloud-cost-management
+datadog/**/*datadog_gcp_uc_config*               @DataDog/api-reliability @DataDog/cloud-cost-management
+datadog/**/*datadog_cost_budget*                 @DataDog/api-reliability @DataDog/cloud-cost-management
+datadog/**/*datadog_tag_pipeline_ruleset*        @DataDog/api-reliability @DataDog/cloud-cost-management
+scripts/*cloud-cost-import-existing-resources*   @DataDog/cloud-cost-management

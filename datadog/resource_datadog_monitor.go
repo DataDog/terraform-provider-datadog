@@ -33,7 +33,7 @@ func resourceDatadogMonitor() *schema.Resource {
 		ReadContext:   resourceDatadogMonitorRead,
 		UpdateContext: resourceDatadogMonitorUpdate,
 		DeleteContext: resourceDatadogMonitorDelete,
-		CustomizeDiff: customdiff.All(resourceDatadogMonitorCustomizeDiff, tagDiff),
+		CustomizeDiff: customdiff.All(tagDiff, resourceDatadogMonitorCustomizeDiff),
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
@@ -427,6 +427,13 @@ func resourceDatadogMonitor() *schema.Resource {
 					Optional:         true,
 					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewMonitorOptionsNotificationPresetsFromValue),
 				},
+				"draft_status": {
+					Description:      "Indicates whether the monitor is in a draft or published state. When set to `draft`, the monitor appears as Draft and does not send notifications. When set to `published`, the monitor is active, and it evaluates conditions and sends notifications as configured.",
+					Type:             schema.TypeString,
+					Optional:         true,
+					Default:          string(datadogV1.MONITORDRAFTSTATUS_PUBLISHED),
+					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewMonitorDraftStatusFromValue),
+				},
 			}
 		},
 	}
@@ -574,7 +581,7 @@ func getMonitorFormulaQuerySchema() *schema.Schema {
 							},
 							"aggregator": {
 								Type:             schema.TypeString,
-								Optional:         true,
+								Required:         true,
 								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewMonitorFormulaAndFunctionCostAggregatorFromValue),
 								Description:      "The aggregation methods available for cloud cost queries.",
 							},
@@ -816,6 +823,12 @@ func buildMonitorStruct(d utils.Resource) (*datadogV1.Monitor, *datadogV1.Monito
 	u.SetMessage(d.Get("message").(string))
 	u.SetOptions(o)
 
+	if draftStatus, ok := d.GetOk("draft_status"); ok {
+		ds := datadogV1.MonitorDraftStatus(draftStatus.(string))
+		m.SetDraftStatus(ds)
+		u.SetDraftStatus(ds)
+	}
+
 	if attr, ok := d.GetOk("priority"); ok {
 		x, _ := strconv.ParseInt(attr.(string), 10, 64)
 		m.SetPriority(x)
@@ -1037,6 +1050,17 @@ func updateMonitorState(d *schema.ResourceData, meta interface{}, m *datadogV1.M
 	}
 	if err := d.Set("type", m.GetType()); err != nil {
 		return diag.FromErr(err)
+	}
+
+	if v, ok := m.GetDraftStatusOk(); ok && v != nil {
+		if err := d.Set("draft_status", *v); err != nil {
+			return diag.FromErr(err)
+		}
+	} else {
+		// Workaround to handle the api response missing the draft_status field when monitor-draft-status-api is not enabled
+		if err := d.Set("draft_status", string(datadogV1.MONITORDRAFTSTATUS_PUBLISHED)); err != nil {
+			return diag.FromErr(err)
+		}
 	}
 
 	priorityStr := ""

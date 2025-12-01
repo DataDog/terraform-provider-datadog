@@ -32,6 +32,7 @@ var _ provider.Provider = &FrameworkProvider{}
 
 var Resources = []func() resource.Resource{
 	NewAgentlessScanningAwsScanOptionsResource,
+	NewAgentlessScanningGcpScanOptionsResource,
 	NewOpenapiApiResource,
 	NewAPIKeyResource,
 	NewApplicationKeyResource,
@@ -93,6 +94,8 @@ var Resources = []func() resource.Resource{
 	NewSecurityMonitoringRuleJSONResource,
 	NewComplianceCustomFrameworkResource,
 	NewCostBudgetResource,
+	NewTagPipelineRulesetResource,
+	NewTagPipelineRulesetsResource,
 	NewCSMThreatsAgentRuleResource,
 	NewCSMThreatsPolicyResource,
 	NewAppKeyRegistrationResource,
@@ -101,6 +104,8 @@ var Resources = []func() resource.Resource{
 	NewIncidentNotificationRuleResource,
 	NewAwsCurConfigResource,
 	NewGcpUcConfigResource,
+	NewDatadogCustomAllocationRuleResource,
+	NewCustomAllocationRulesResource,
 	NewAzureUcConfigResource,
 }
 
@@ -119,6 +124,7 @@ var Datasources = []func() datasource.DataSource{
 	NewDatadogMetricActiveTagsAndAggregationsDataSource,
 	NewDatadogMetricMetadataDataSource,
 	NewDatadogMetricTagsDataSource,
+	NewDatadogMetricsDataSource,
 	NewDatadogPowerpackDataSource,
 	NewDatadogServiceAccountDatasource,
 	NewDatadogSoftwareCatalogDataSource,
@@ -140,6 +146,7 @@ var Datasources = []func() datasource.DataSource{
 	NewWorkflowAutomationDataSource,
 	NewDatadogAppBuilderAppDataSource,
 	NewCostBudgetDataSource,
+	NewTagPipelineRulesetDataSource,
 	NewCSMThreatsAgentRulesDataSource,
 	NewCSMThreatsPoliciesDataSource,
 	NewIncidentTypeDataSource,
@@ -147,6 +154,7 @@ var Datasources = []func() datasource.DataSource{
 	NewIncidentNotificationRuleDataSource,
 	NewDatadogAwsCurConfigDataSource,
 	NewDatadogGcpUcConfigDataSource,
+	NewDatadogCustomAllocationRuleDataSource,
 	NewDatadogAzureUcConfigDataSource,
 }
 
@@ -518,20 +526,8 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 
 	// Initialize the official Datadog V1 API client
 	auth := context.Background()
-	if config.ApiKey.ValueString() != "" || config.AppKey.ValueString() != "" {
-		auth = context.WithValue(
-			auth,
-			datadog.ContextAPIKeys,
-			map[string]datadog.APIKey{
-				"apiKeyAuth": {
-					Key: config.ApiKey.ValueString(),
-				},
-				"appKeyAuth": {
-					Key: config.AppKey.ValueString(),
-				},
-			},
-		)
-	} else if cloudProviderType != "" {
+	// Check cloud_provider_type first - explicit config takes precedence over API keys
+	if cloudProviderType != "" {
 		// Allows for delegated token authentication
 		auth = context.WithValue(
 			auth,
@@ -553,6 +549,19 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 			diags.AddError("cloud_provider_type must be set to a valid value unless validate = false", "")
 			return diags
 		}
+	} else if config.ApiKey.ValueString() != "" || config.AppKey.ValueString() != "" {
+		auth = context.WithValue(
+			auth,
+			datadog.ContextAPIKeys,
+			map[string]datadog.APIKey{
+				"apiKeyAuth": {
+					Key: config.ApiKey.ValueString(),
+				},
+				"appKeyAuth": {
+					Key: config.AppKey.ValueString(),
+				},
+			},
+		)
 	}
 	ddClientConfig := datadog.NewConfiguration()
 	ddClientConfig.UserAgent = utils.GetUserAgentFramework(ddClientConfig.UserAgent, request.TerraformVersion)
@@ -666,14 +675,17 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	}
 
 	ddClientConfig.HTTPClient = utils.NewHTTPClient()
-	switch cloudProviderType {
-	case "aws":
-		ddClientConfig.DelegatedTokenConfig = &datadog.DelegatedTokenConfig{
-			OrgUUID: orgUUID,
-			ProviderAuth: &datadog.AWSAuth{
-				AwsRegion: cloudProviderRegion,
-			},
-			Provider: "aws",
+	// If cloud_provider_type is set, use cloud auth (takes precedence over API keys)
+	if cloudProviderType != "" {
+		switch cloudProviderType {
+		case "aws":
+			ddClientConfig.DelegatedTokenConfig = &datadog.DelegatedTokenConfig{
+				OrgUUID: orgUUID,
+				ProviderAuth: &datadog.AWSAuth{
+					AwsRegion: cloudProviderRegion,
+				},
+				Provider: "aws",
+			}
 		}
 	}
 	datadogClient := datadog.NewAPIClient(ddClientConfig)

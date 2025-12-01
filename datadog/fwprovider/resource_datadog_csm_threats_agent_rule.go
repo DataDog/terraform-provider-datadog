@@ -17,6 +17,7 @@ import (
 
 	"net/http"
 
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/customtypes"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
@@ -32,14 +33,14 @@ type csmThreatsAgentRuleResource struct {
 }
 
 type csmThreatsAgentRuleModel struct {
-	Id          types.String  `tfsdk:"id"`
-	PolicyId    types.String  `tfsdk:"policy_id"`
-	Name        types.String  `tfsdk:"name"`
-	Description types.String  `tfsdk:"description"`
-	Enabled     types.Bool    `tfsdk:"enabled"`
-	Expression  types.String  `tfsdk:"expression"`
-	ProductTags types.Set     `tfsdk:"product_tags"`
-	Actions     []ActionModel `tfsdk:"actions"`
+	Id          types.String                     `tfsdk:"id"`
+	PolicyId    types.String                     `tfsdk:"policy_id"`
+	Name        types.String                     `tfsdk:"name"`
+	Description types.String                     `tfsdk:"description"`
+	Enabled     types.Bool                       `tfsdk:"enabled"`
+	Expression  customtypes.TrimSpaceStringValue `tfsdk:"expression"`
+	ProductTags types.Set                        `tfsdk:"product_tags"`
+	Actions     []ActionModel                    `tfsdk:"actions"`
 }
 
 type ActionModel struct {
@@ -48,13 +49,16 @@ type ActionModel struct {
 }
 
 type SetActionModel struct {
-	Name   types.String `tfsdk:"name"`
-	Value  types.String `tfsdk:"value"`
-	Field  types.String `tfsdk:"field"`
-	Append types.Bool   `tfsdk:"append"`
-	Size   types.Int64  `tfsdk:"size"`
-	Ttl    types.Int64  `tfsdk:"ttl"`
-	Scope  types.String `tfsdk:"scope"`
+	Name         types.String `tfsdk:"name"`
+	Value        types.String `tfsdk:"value"`
+	Field        types.String `tfsdk:"field"`
+	Append       types.Bool   `tfsdk:"append"`
+	Size         types.Int64  `tfsdk:"size"`
+	Ttl          types.Int64  `tfsdk:"ttl"`
+	Scope        types.String `tfsdk:"scope"`
+	Expression   types.String `tfsdk:"expression"`
+	Inherited    types.Bool   `tfsdk:"inherited"`
+	DefaultValue types.String `tfsdk:"default_value"`
 }
 
 type HashActionModel struct {
@@ -104,6 +108,7 @@ func (r *csmThreatsAgentRuleResource) Schema(_ context.Context, _ resource.Schem
 			"expression": schema.StringAttribute{
 				Required:    true,
 				Description: "The SECL expression of the Agent rule",
+				CustomType:  customtypes.TrimSpaceStringType{},
 			},
 			"product_tags": schema.SetAttribute{
 				Optional:    true,
@@ -153,6 +158,21 @@ func (r *csmThreatsAgentRuleResource) Schema(_ context.Context, _ resource.Schem
 									Optional:    true,
 									Computed:    true,
 									Description: "The scope of the set action (process, container, cgroup, or empty)",
+								},
+								"expression": schema.StringAttribute{
+									Optional:    true,
+									Computed:    true,
+									Description: "The expression to use for the set action",
+								},
+								"inherited": schema.BoolAttribute{
+									Optional:    true,
+									Computed:    true,
+									Description: "Whether the set action is inherited",
+								},
+								"default_value": schema.StringAttribute{
+									Optional:    true,
+									Computed:    true,
+									Description: "The default value to set",
 								},
 							},
 						},
@@ -213,19 +233,40 @@ func (r *csmThreatsAgentRuleResource) validateActions(_ context.Context, actions
 			// Check that exactly one of value, field is set
 			hasValue := !action.Set.Value.IsNull() && !action.Set.Value.IsUnknown() && action.Set.Value.ValueString() != ""
 			hasField := !action.Set.Field.IsNull() && !action.Set.Field.IsUnknown() && action.Set.Field.ValueString() != ""
+			hasExpression := !action.Set.Expression.IsNull() && !action.Set.Expression.IsUnknown() && action.Set.Expression.ValueString() != ""
+			hasDefaultValue := !action.Set.DefaultValue.IsNull() && !action.Set.DefaultValue.IsUnknown() && action.Set.DefaultValue.ValueString() != ""
 
-			if !hasValue && !hasField {
+			var count int
+			if hasValue {
+				count++
+			}
+			if hasField {
+				count++
+			}
+			if hasExpression {
+				count++
+			}
+
+			if count == 0 {
 				diags.AddError(
 					"Missing Required Field",
-					fmt.Sprintf("Action %d: One of 'value' or 'field' must be set in the set action configuration.", i),
+					fmt.Sprintf("Action %d: One of 'value', 'field' or 'expression' must be set in the set action configuration.", i),
 				)
 				continue
 			}
 
-			if hasValue && hasField {
+			if count > 1 {
 				diags.AddError(
 					"Invalid Configuration",
-					fmt.Sprintf("Action %d: Only one of 'value' or 'field' can be set in the set action configuration.", i),
+					fmt.Sprintf("Action %d: Only one of 'value', 'field' or 'expression' can be set in the set action configuration.", i),
+				)
+				continue
+			}
+
+			if hasDefaultValue && hasValue {
+				diags.AddError(
+					"Invalid Configuration",
+					fmt.Sprintf("Action %d: 'default_value' and 'value' cannot be set at the same time.", i),
 				)
 				continue
 			}
@@ -443,6 +484,18 @@ func (r *csmThreatsAgentRuleResource) buildCreateCSMThreatsAgentRulePayload(stat
 					scope := a.Set.Scope.ValueString()
 					sa.Scope = &scope
 				}
+				if !a.Set.Expression.IsNull() && !a.Set.Expression.IsUnknown() {
+					expression := a.Set.Expression.ValueString()
+					sa.Expression = &expression
+				}
+				if !a.Set.Inherited.IsNull() && !a.Set.Inherited.IsUnknown() {
+					inherited := a.Set.Inherited.ValueBool()
+					sa.Inherited = &inherited
+				}
+				if !a.Set.DefaultValue.IsNull() && !a.Set.DefaultValue.IsUnknown() {
+					defaultValue := a.Set.DefaultValue.ValueString()
+					sa.DefaultValue = &defaultValue
+				}
 				action.Set = &sa
 			}
 
@@ -511,6 +564,18 @@ func (r *csmThreatsAgentRuleResource) buildUpdateCSMThreatsAgentRulePayload(stat
 					scope := a.Set.Scope.ValueString()
 					sa.Scope = &scope
 				}
+				if !a.Set.Expression.IsNull() && !a.Set.Expression.IsUnknown() {
+					expression := a.Set.Expression.ValueString()
+					sa.Expression = &expression
+				}
+				if !a.Set.Inherited.IsNull() && !a.Set.Inherited.IsUnknown() {
+					inherited := a.Set.Inherited.ValueBool()
+					sa.Inherited = &inherited
+				}
+				if !a.Set.DefaultValue.IsNull() && !a.Set.DefaultValue.IsUnknown() {
+					defaultValue := a.Set.DefaultValue.ValueString()
+					sa.DefaultValue = &defaultValue
+				}
 				action.Set = &sa
 			}
 
@@ -576,7 +641,9 @@ func (r *csmThreatsAgentRuleResource) updateStateFromResponse(ctx context.Contex
 	} else {
 		state.Enabled = types.BoolNull()
 	}
-	state.Expression = types.StringValue(attributes.GetExpression())
+	state.Expression = customtypes.TrimSpaceStringValue{
+		StringValue: types.StringValue(attributes.GetExpression()),
+	}
 
 	tags := attributes.GetProductTags()
 	if len(tags) > 0 {
@@ -632,6 +699,21 @@ func (r *csmThreatsAgentRuleResource) updateStateFromResponse(ctx context.Contex
 			} else {
 				// Use empty string as default when API returns null for scope
 				setAction.Scope = types.StringValue("")
+			}
+			if s.Expression != nil {
+				setAction.Expression = types.StringValue(*s.Expression)
+			} else {
+				setAction.Expression = types.StringNull()
+			}
+			if s.Inherited != nil {
+				setAction.Inherited = types.BoolValue(*s.Inherited)
+			} else {
+				setAction.Inherited = types.BoolValue(false)
+			}
+			if s.DefaultValue != nil {
+				setAction.DefaultValue = types.StringValue(*s.DefaultValue)
+			} else {
+				setAction.DefaultValue = types.StringNull()
 			}
 			action.Set = setAction
 		}

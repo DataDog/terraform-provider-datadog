@@ -1338,7 +1338,11 @@ func buildDatadogWidget(terraformWidget map[string]interface{}) (*datadogV1.Widg
 		}
 	} else if def, ok := terraformWidget["list_stream_definition"].([]interface{}); ok && len(def) > 0 {
 		if listStreamDefinition, ok := def[0].(map[string]interface{}); ok {
-			definition = datadogV1.ListStreamWidgetDefinitionAsWidgetDefinition(buildDatadogListStreamDefinition(listStreamDefinition))
+			datadogDefinition, err := buildDatadogListStreamDefinition(listStreamDefinition)
+			if err != nil {
+				return nil, err
+			}
+			definition = datadogV1.ListStreamWidgetDefinitionAsWidgetDefinition(datadogDefinition)
 		}
 	} else if def, ok := terraformWidget["run_workflow_definition"].([]interface{}); ok && len(def) > 0 {
 		if runWorkflowDefinition, ok := def[0].(map[string]interface{}); ok {
@@ -5873,6 +5877,7 @@ func getListStreamRequestSchema() map[string]*schema.Schema {
 			Description: "Widget columns.",
 			Type:        schema.TypeList,
 			Required:    true,
+			MinItems:    1,
 			Elem: &schema.Resource{
 				Schema: map[string]*schema.Schema{
 					"width": {
@@ -5964,11 +5969,15 @@ func getListStreamRequestSchema() map[string]*schema.Schema {
 	}
 }
 
-func buildDatadogListStreamDefinition(terraformDefinition map[string]interface{}) *datadogV1.ListStreamWidgetDefinition {
+func buildDatadogListStreamDefinition(terraformDefinition map[string]interface{}) (*datadogV1.ListStreamWidgetDefinition, error) {
 	datadogDefinition := datadogV1.NewListStreamWidgetDefinitionWithDefaults()
 	// Required params
 	terraformRequest := terraformDefinition["request"].([]interface{})
-	datadogDefinition.SetRequests(*buildDatadogListStreamRequests(&terraformRequest))
+	requests, err := buildDatadogListStreamRequests(&terraformRequest)
+	if err != nil {
+		return nil, err
+	}
+	datadogDefinition.SetRequests(*requests)
 	// Optional params
 	if v, ok := terraformDefinition["title"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetTitle(v)
@@ -5979,10 +5988,10 @@ func buildDatadogListStreamDefinition(terraformDefinition map[string]interface{}
 	if v, ok := terraformDefinition["title_align"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetTitleAlign(datadogV1.WidgetTextAlign(v))
 	}
-	return datadogDefinition
+	return datadogDefinition, nil
 }
 
-func buildDatadogListStreamRequests(terraformRequests *[]interface{}) *[]datadogV1.ListStreamWidgetRequest {
+func buildDatadogListStreamRequests(terraformRequests *[]interface{}) (*[]datadogV1.ListStreamWidgetRequest, error) {
 	datadogRequests := make([]datadogV1.ListStreamWidgetRequest, len(*terraformRequests))
 	for i, r := range *terraformRequests {
 		terraformRequest := r.(map[string]interface{})
@@ -6045,7 +6054,26 @@ func buildDatadogListStreamRequests(terraformRequests *[]interface{}) *[]datadog
 			}
 		}
 
-		terraformColumns := terraformRequest["columns"].([]interface{})
+		// Validate columns field
+		terraformColumns, ok := terraformRequest["columns"].([]interface{})
+		if !ok {
+			return nil, fmt.Errorf("request.columns is missing")
+		}
+
+		if len(terraformColumns) == 0 {
+			return nil, fmt.Errorf("list_stream_definition requires at least one column in request.columns")
+		}
+
+		// In the case where columns is passed in as {}, the length of columns is still 1, with a nil item at index 0. This extensive check prevents a panic during the for loop iteration below.
+		if len(terraformColumns) == 1 {
+			if terraformColumns[0] == nil {
+				return nil, fmt.Errorf("list_stream_definition requires request.columns to not be nil")
+			}
+			if m, ok := terraformColumns[0].(map[string]interface{}); !ok || m == nil || len(m) == 0 {
+				return nil, fmt.Errorf("list_stream_definition requires request.columns to be a non-empty map")
+			}
+		}
+
 		var datadogColumns []datadogV1.ListStreamColumn
 		for _, c := range terraformColumns {
 			column := c.(map[string]interface{})
@@ -6058,7 +6086,7 @@ func buildDatadogListStreamRequests(terraformRequests *[]interface{}) *[]datadog
 
 		datadogRequests[i] = *datadogListStreamRequest
 	}
-	return &datadogRequests
+	return &datadogRequests, nil
 }
 
 // Geomap Widget Definition helpers
@@ -7628,7 +7656,7 @@ func buildDatadogFormula(data map[string]interface{}) *datadogV1.WidgetFormula {
 		formula.SetStyle(*datadogFormulaStyle)
 	}
 	if number, ok := data["number_format"].([]interface{}); ok && len(number) != 0 {
-		datadogNumberFormat := buildNumberFormatFormulaSchema(number[0].(map[string]interface{}))
+		datadogNumberFormat := buildDatadogNumberFormatFormulaSchema(number[0].(map[string]interface{}))
 		formula.SetNumberFormat(*datadogNumberFormat)
 	}
 
@@ -11057,7 +11085,7 @@ func getNumberFormatFormulaSchema() map[string]*schema.Schema {
 	}
 }
 
-func buildNumberFormatFormulaSchema(terraformStyle map[string]interface{}) *datadogV1.WidgetNumberFormat {
+func buildDatadogNumberFormatFormulaSchema(terraformStyle map[string]interface{}) *datadogV1.WidgetNumberFormat {
 	if terraformStyle == nil || len(terraformStyle) == 0 {
 		return nil
 	}
@@ -11087,6 +11115,15 @@ func buildNumberFormatFormulaSchema(terraformStyle map[string]interface{}) *data
 			}
 		}
 	}
+	if v, ok := terraformStyle["unit_scale"].([]interface{}); ok && len(v) > 0 {
+		unitScale := v[0].(map[string]interface{})
+		if unitName, ok := unitScale["unit_name"].(string); ok && len(unitName) > 0 {
+			datadogNumber.UnitScale = *datadogV1.NewNullableNumberFormatUnitScale(&datadogV1.NumberFormatUnitScale{
+				Type:     datadogV1.NUMBERFORMATUNITSCALETYPE_CANONICAL_UNIT.Ptr(),
+				UnitName: datadog.PtrString(unitName),
+			})
+		}
+	}
 	return &datadogNumber
 }
 
@@ -11106,8 +11143,7 @@ func buildTerraformNumberFormatFormulaSchema(datadogStyle datadogV1.WidgetNumber
 		m["unit"] = []map[string]interface{}{unit}
 	}
 	if v, ok := datadogStyle.GetUnitScaleOk(); ok {
-		unitScale := map[string]interface{}{}
-		unitScale["unit_name"] = []map[string]interface{}{{"unit_name": v.UnitName}}
+		unitScale := map[string]interface{}{"unit_name": v.UnitName}
 		m["unit_scale"] = []map[string]interface{}{unitScale}
 	}
 	return []map[string]interface{}{m}

@@ -14,7 +14,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
@@ -22,6 +21,25 @@ var (
 	integrationGcpStsMutex sync.Mutex
 	_                      resource.ResourceWithConfigure   = &integrationGcpStsResource{}
 	_                      resource.ResourceWithImportState = &integrationGcpStsResource{}
+
+	MetricNamespaceConfigSpec = types.ObjectType{
+		AttrTypes: map[string]attr.Type{
+			"id":       types.StringType,
+			"disabled": types.BoolType,
+			"filters": types.SetType{
+				ElemType: types.StringType,
+			},
+		},
+	}
+
+	MonitoredResourceConfigSpec = types.ObjectType{
+		AttrTypes: map[string]attr.Type{
+			"type": types.StringType,
+			"filters": types.SetType{
+				ElemType: types.StringType,
+			},
+		},
+	}
 )
 
 type integrationGcpStsResource struct {
@@ -32,15 +50,7 @@ type integrationGcpStsResource struct {
 type MetricNamespaceConfigModel struct {
 	ID       types.String `tfsdk:"id"`
 	Disabled types.Bool   `tfsdk:"disabled"`
-}
-
-var MonitoredResourceConfigSpec = types.ObjectType{
-	AttrTypes: map[string]attr.Type{
-		"type": types.StringType,
-		"filters": types.SetType{
-			ElemType: types.StringType,
-		},
-	},
+	Filters  types.Set    `tfsdk:"filters"`
 }
 
 type MonitoredResourceConfigModel struct {
@@ -49,20 +59,20 @@ type MonitoredResourceConfigModel struct {
 }
 
 type integrationGcpStsModel struct {
-	ID                                types.String                  `tfsdk:"id"`
-	AccountTags                       types.Set                     `tfsdk:"account_tags"`
-	Automute                          types.Bool                    `tfsdk:"automute"`
-	ClientEmail                       types.String                  `tfsdk:"client_email"`
-	DelegateAccountEmail              types.String                  `tfsdk:"delegate_account_email"`
-	HostFilters                       types.Set                     `tfsdk:"host_filters"`               // DEPRECATED: use MonitoredResourceConfigs["gce_instance"]
-	CloudRunRevisionFilters           types.Set                     `tfsdk:"cloud_run_revision_filters"` // DEPRECATED: use MonitoredResourceConfigs["cloud_run_revision"]
-	IsCspmEnabled                     types.Bool                    `tfsdk:"is_cspm_enabled"`
-	IsSecurityCommandCenterEnabled    types.Bool                    `tfsdk:"is_security_command_center_enabled"`
-	IsResourceChangeCollectionEnabled types.Bool                    `tfsdk:"is_resource_change_collection_enabled"`
-	IsPerProjectQuotaEnabled          types.Bool                    `tfsdk:"is_per_project_quota_enabled"`
-	ResourceCollectionEnabled         types.Bool                    `tfsdk:"resource_collection_enabled"`
-	MetricNamespaceConfigs            []*MetricNamespaceConfigModel `tfsdk:"metric_namespace_configs"`
-	MonitoredResourceConfigs          types.Set                     `tfsdk:"monitored_resource_configs"`
+	ID                                types.String `tfsdk:"id"`
+	AccountTags                       types.Set    `tfsdk:"account_tags"`
+	Automute                          types.Bool   `tfsdk:"automute"`
+	ClientEmail                       types.String `tfsdk:"client_email"`
+	DelegateAccountEmail              types.String `tfsdk:"delegate_account_email"`
+	HostFilters                       types.Set    `tfsdk:"host_filters"`               // DEPRECATED: use MonitoredResourceConfigs["gce_instance"]
+	CloudRunRevisionFilters           types.Set    `tfsdk:"cloud_run_revision_filters"` // DEPRECATED: use MonitoredResourceConfigs["cloud_run_revision"]
+	IsCspmEnabled                     types.Bool   `tfsdk:"is_cspm_enabled"`
+	IsSecurityCommandCenterEnabled    types.Bool   `tfsdk:"is_security_command_center_enabled"`
+	IsResourceChangeCollectionEnabled types.Bool   `tfsdk:"is_resource_change_collection_enabled"`
+	IsPerProjectQuotaEnabled          types.Bool   `tfsdk:"is_per_project_quota_enabled"`
+	ResourceCollectionEnabled         types.Bool   `tfsdk:"resource_collection_enabled"`
+	MetricNamespaceConfigs            types.Set    `tfsdk:"metric_namespace_configs"`
+	MonitoredResourceConfigs          types.Set    `tfsdk:"monitored_resource_configs"`
 }
 
 func NewIntegrationGcpStsResource() resource.Resource {
@@ -152,14 +162,11 @@ func (r *integrationGcpStsResource) Schema(_ context.Context, _ resource.SchemaR
 				Computed:    true,
 			},
 			"metric_namespace_configs": schema.SetAttribute{
-				Optional:    true,
+				Optional: true,
+				// if this field is not set by the user, then we will disable prometheus by default
+				Computed:    true,
 				Description: "Configurations for GCP metric namespaces.",
-				ElementType: types.ObjectType{
-					AttrTypes: map[string]attr.Type{
-						"id":       types.StringType,
-						"disabled": types.BoolType,
-					},
-				},
+				ElementType: MetricNamespaceConfigSpec,
 			},
 			"monitored_resource_configs": schema.SetAttribute{
 				Optional:    true,
@@ -181,6 +188,7 @@ func (r *integrationGcpStsResource) Read(ctx context.Context, request resource.R
 	if response.Diagnostics.HasError() {
 		return
 	}
+
 	resp, httpResp, err := r.Api.ListGCPSTSAccounts(r.Auth)
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == 404 {
@@ -199,7 +207,7 @@ func (r *integrationGcpStsResource) Read(ctx context.Context, request resource.R
 	for _, account := range resp.GetData() {
 		if account.GetId() == state.ID.ValueString() {
 			found = true
-			r.updateState(ctx, &state, &account)
+			r.parseGcpStsResponseBody(ctx, &state, &account)
 			break
 		}
 	}
@@ -214,12 +222,11 @@ func (r *integrationGcpStsResource) Read(ctx context.Context, request resource.R
 }
 
 func (r *integrationGcpStsResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
-	var state integrationGcpStsModel
-	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
+	var plan integrationGcpStsModel
+	response.Diagnostics.Append(request.Plan.Get(ctx, &plan)...)
 	if response.Diagnostics.HasError() {
 		return
 	}
-
 	integrationGcpStsMutex.Lock()
 	defer integrationGcpStsMutex.Unlock()
 
@@ -234,11 +241,11 @@ func (r *integrationGcpStsResource) Create(ctx context.Context, request resource
 		return
 	}
 	delegateEmail := delegateResponse.Data.Attributes.GetDelegateAccountEmail()
-	state.DelegateAccountEmail = types.StringValue(delegateEmail)
+	plan.DelegateAccountEmail = types.StringValue(delegateEmail)
 
-	attributes, diags := r.buildIntegrationGcpStsRequestBody(ctx, &state)
-	if !state.ClientEmail.IsNull() {
-		attributes.SetClientEmail(state.ClientEmail.ValueString())
+	attributes, diags := r.buildGcpStsRequestBody(ctx, &plan)
+	if !plan.ClientEmail.IsNull() {
+		attributes.SetClientEmail(plan.ClientEmail.ValueString())
 	}
 
 	body := datadogV2.NewGCPSTSServiceAccountCreateRequestWithDefaults()
@@ -258,15 +265,16 @@ func (r *integrationGcpStsResource) Create(ctx context.Context, request resource
 		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
 		return
 	}
-	r.updateState(ctx, &state, resp.Data)
+
+	r.parseGcpStsResponseBody(ctx, &plan, resp.Data)
 
 	// Save data into Terraform state
-	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+	response.Diagnostics.Append(response.State.Set(ctx, &plan)...)
 }
 
 func (r *integrationGcpStsResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
-	var state integrationGcpStsModel
-	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
+	var plan integrationGcpStsModel
+	response.Diagnostics.Append(request.Plan.Get(ctx, &plan)...)
 	if response.Diagnostics.HasError() {
 		return
 	}
@@ -274,9 +282,9 @@ func (r *integrationGcpStsResource) Update(ctx context.Context, request resource
 	integrationGcpStsMutex.Lock()
 	defer integrationGcpStsMutex.Unlock()
 
-	id := state.ID.ValueString()
+	id := plan.ID.ValueString()
 
-	attributes, diags := r.buildIntegrationGcpStsRequestBody(ctx, &state)
+	attributes, diags := r.buildGcpStsRequestBody(ctx, &plan)
 	body := datadogV2.NewGCPSTSServiceAccountUpdateRequestWithDefaults()
 	body.Data = datadogV2.NewGCPSTSServiceAccountUpdateRequestDataWithDefaults()
 	body.Data.SetAttributes(attributes)
@@ -291,14 +299,16 @@ func (r *integrationGcpStsResource) Update(ctx context.Context, request resource
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving Integration Gcp Sts"))
 		return
 	}
+
 	if err := utils.CheckForUnparsed(resp); err != nil {
 		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
 		return
 	}
-	r.updateState(ctx, &state, resp.Data)
+
+	r.parseGcpStsResponseBody(ctx, &plan, resp.Data)
 
 	// Save data into Terraform state
-	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+	response.Diagnostics.Append(response.State.Set(ctx, &plan)...)
 }
 
 func (r *integrationGcpStsResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
@@ -323,48 +333,48 @@ func (r *integrationGcpStsResource) Delete(ctx context.Context, request resource
 	}
 }
 
-func (r *integrationGcpStsResource) updateState(ctx context.Context, state *integrationGcpStsModel, resp *datadogV2.GCPSTSServiceAccount) {
-	state.ID = types.StringValue(resp.GetId())
+func (r *integrationGcpStsResource) parseGcpStsResponseBody(ctx context.Context, model *integrationGcpStsModel, resp *datadogV2.GCPSTSServiceAccount) {
+	model.ID = types.StringValue(resp.GetId())
 
 	attributes := resp.GetAttributes()
 	if automute, ok := attributes.GetAutomuteOk(); ok {
-		state.Automute = types.BoolValue(*automute)
+		model.Automute = types.BoolValue(*automute)
 	}
 	if clientEmail, ok := attributes.GetClientEmailOk(); ok {
-		state.ClientEmail = types.StringValue(*clientEmail)
+		model.ClientEmail = types.StringValue(*clientEmail)
 	}
 	if isCspmEnabled, ok := attributes.GetIsCspmEnabledOk(); ok {
-		state.IsCspmEnabled = types.BoolValue(*isCspmEnabled)
+		model.IsCspmEnabled = types.BoolValue(*isCspmEnabled)
 	}
 	if isSecurityCommandCenterEnabled, ok := attributes.GetIsSecurityCommandCenterEnabledOk(); ok {
-		state.IsSecurityCommandCenterEnabled = types.BoolValue(*isSecurityCommandCenterEnabled)
+		model.IsSecurityCommandCenterEnabled = types.BoolValue(*isSecurityCommandCenterEnabled)
 	}
 	if isResourceChangeCollectionEnabled, ok := attributes.GetIsResourceChangeCollectionEnabledOk(); ok {
-		state.IsResourceChangeCollectionEnabled = types.BoolValue(*isResourceChangeCollectionEnabled)
+		model.IsResourceChangeCollectionEnabled = types.BoolValue(*isResourceChangeCollectionEnabled)
 	}
 	if isPerProjectQuotaEnabled, ok := attributes.GetIsPerProjectQuotaEnabledOk(); ok {
-		state.IsPerProjectQuotaEnabled = types.BoolValue(*isPerProjectQuotaEnabled)
+		model.IsPerProjectQuotaEnabled = types.BoolValue(*isPerProjectQuotaEnabled)
 	}
 	if resourceCollectionEnabled, ok := attributes.GetResourceCollectionEnabledOk(); ok {
-		state.ResourceCollectionEnabled = types.BoolValue(*resourceCollectionEnabled)
+		model.ResourceCollectionEnabled = types.BoolValue(*resourceCollectionEnabled)
 	}
 
 	if accountTags := attributes.GetAccountTags(); len(accountTags) > 0 {
-		state.AccountTags, _ = types.SetValueFrom(ctx, types.StringType, accountTags)
+		model.AccountTags, _ = types.SetValueFrom(ctx, types.StringType, accountTags)
 	}
 
-	if mncs := attributes.GetMetricNamespaceConfigs(); len(mncs) > 0 {
-		state.MetricNamespaceConfigs = make([]*MetricNamespaceConfigModel, 0, len(mncs))
-		for _, mnc := range mncs {
-			state.MetricNamespaceConfigs = append(state.MetricNamespaceConfigs, &MetricNamespaceConfigModel{
-				ID:       types.StringValue(mnc.GetId()),
-				Disabled: types.BoolValue(mnc.GetDisabled()),
-			})
-		}
+	mncs := make([]*MetricNamespaceConfigModel, 0)
+	for _, cfg := range attributes.GetMetricNamespaceConfigs() {
+		var mdl MetricNamespaceConfigModel
+		mdl.ID = types.StringValue(cfg.GetId())
+		mdl.Disabled = types.BoolValue(cfg.GetDisabled())
+		mdl.Filters, _ = types.SetValueFrom(ctx, types.StringType, cfg.GetFilters())
+		mncs = append(mncs, &mdl)
 	}
+	model.MetricNamespaceConfigs, _ = types.SetValueFrom(ctx, MetricNamespaceConfigSpec, mncs)
 
-	state.HostFilters, _ = types.SetValueFrom(ctx, types.StringType, attributes.GetHostFilters())
-	state.CloudRunRevisionFilters, _ = types.SetValueFrom(ctx, types.StringType, attributes.GetCloudRunRevisionFilters())
+	model.HostFilters, _ = types.SetValueFrom(ctx, types.StringType, attributes.GetHostFilters())
+	model.CloudRunRevisionFilters, _ = types.SetValueFrom(ctx, types.StringType, attributes.GetCloudRunRevisionFilters())
 	mrcs := make([]*MonitoredResourceConfigModel, 0)
 	for _, mrc := range attributes.GetMonitoredResourceConfigs() {
 		var mdl MonitoredResourceConfigModel
@@ -372,47 +382,52 @@ func (r *integrationGcpStsResource) updateState(ctx context.Context, state *inte
 		mdl.Filters, _ = types.SetValueFrom(ctx, types.StringType, mrc.GetFilters())
 		mrcs = append(mrcs, &mdl)
 	}
-	state.MonitoredResourceConfigs, _ = types.SetValueFrom(ctx, MonitoredResourceConfigSpec, mrcs)
+	model.MonitoredResourceConfigs, _ = types.SetValueFrom(ctx, MonitoredResourceConfigSpec, mrcs)
 }
 
-func (r *integrationGcpStsResource) buildIntegrationGcpStsRequestBody(ctx context.Context, state *integrationGcpStsModel) (datadogV2.GCPSTSServiceAccountAttributes, diag.Diagnostics) {
+func (r *integrationGcpStsResource) buildGcpStsRequestBody(ctx context.Context, model *integrationGcpStsModel) (datadogV2.GCPSTSServiceAccountAttributes, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
 	attributes := datadogV2.GCPSTSServiceAccountAttributes{}
 
-	if !state.Automute.IsNull() {
-		attributes.SetAutomute(state.Automute.ValueBool())
+	if !model.Automute.IsNull() {
+		attributes.SetAutomute(model.Automute.ValueBool())
 	}
-	if !state.IsCspmEnabled.IsNull() {
-		attributes.SetIsCspmEnabled(state.IsCspmEnabled.ValueBool())
+	if !model.IsCspmEnabled.IsNull() {
+		attributes.SetIsCspmEnabled(model.IsCspmEnabled.ValueBool())
 	}
-	if !state.IsSecurityCommandCenterEnabled.IsUnknown() {
-		attributes.SetIsSecurityCommandCenterEnabled(state.IsSecurityCommandCenterEnabled.ValueBool())
+	if !model.IsSecurityCommandCenterEnabled.IsUnknown() {
+		attributes.SetIsSecurityCommandCenterEnabled(model.IsSecurityCommandCenterEnabled.ValueBool())
 	}
-	if !state.IsResourceChangeCollectionEnabled.IsUnknown() {
-		attributes.SetIsResourceChangeCollectionEnabled(state.IsResourceChangeCollectionEnabled.ValueBool())
+	if !model.IsResourceChangeCollectionEnabled.IsUnknown() {
+		attributes.SetIsResourceChangeCollectionEnabled(model.IsResourceChangeCollectionEnabled.ValueBool())
 	}
-	if !state.ResourceCollectionEnabled.IsUnknown() {
-		attributes.SetResourceCollectionEnabled(state.ResourceCollectionEnabled.ValueBool())
+	if !model.ResourceCollectionEnabled.IsUnknown() {
+		attributes.SetResourceCollectionEnabled(model.ResourceCollectionEnabled.ValueBool())
 	}
-	if !state.IsPerProjectQuotaEnabled.IsUnknown() {
-		attributes.SetIsPerProjectQuotaEnabled(state.IsPerProjectQuotaEnabled.ValueBool())
+	if !model.IsPerProjectQuotaEnabled.IsUnknown() {
+		attributes.SetIsPerProjectQuotaEnabled(model.IsPerProjectQuotaEnabled.ValueBool())
 	}
 
-	attributes.SetAccountTags(tfCollectionToSlice[string](ctx, diags, state.AccountTags))
+	attributes.SetAccountTags(tfCollectionToSlice[string](ctx, diags, model.AccountTags))
 
-	mncs := make([]datadogV2.GCPMetricNamespaceConfig, 0)
-	for _, mnc := range state.MetricNamespaceConfigs {
-		mncs = append(mncs, datadogV2.GCPMetricNamespaceConfig{
-			Id:       mnc.ID.ValueStringPointer(),
-			Disabled: mnc.Disabled.ValueBoolPointer(),
-		})
+	// only set this field if the user explicitly sets the field
+	// otherwise we want to omit it so that the API server can populate defaults when applicable
+	if cfgs := model.MetricNamespaceConfigs; !cfgs.IsUnknown() {
+		mncs := make([]datadogV2.GCPMetricNamespaceConfig, 0)
+		for _, mnc := range tfCollectionToSlice[*MetricNamespaceConfigModel](ctx, diags, cfgs) {
+			mncs = append(mncs, datadogV2.GCPMetricNamespaceConfig{
+				Id:       mnc.ID.ValueStringPointer(),
+				Disabled: mnc.Disabled.ValueBoolPointer(),
+				Filters:  tfCollectionToSlice[string](ctx, diags, mnc.Filters),
+			})
+		}
+		attributes.SetMetricNamespaceConfigs(mncs)
 	}
-	attributes.SetMetricNamespaceConfigs(mncs)
 
-	attributes.SetHostFilters(tfCollectionToSlice[string](ctx, diags, state.HostFilters))
-	attributes.SetCloudRunRevisionFilters(tfCollectionToSlice[string](ctx, diags, state.CloudRunRevisionFilters))
+	attributes.SetHostFilters(tfCollectionToSlice[string](ctx, diags, model.HostFilters))
+	attributes.SetCloudRunRevisionFilters(tfCollectionToSlice[string](ctx, diags, model.CloudRunRevisionFilters))
 	mrcs := make([]datadogV2.GCPMonitoredResourceConfig, 0)
-	for _, mrc := range tfCollectionToSlice[*MonitoredResourceConfigModel](ctx, diags, state.MonitoredResourceConfigs) {
+	for _, mrc := range tfCollectionToSlice[*MonitoredResourceConfigModel](ctx, diags, model.MonitoredResourceConfigs) {
 		mrcs = append(mrcs, datadogV2.GCPMonitoredResourceConfig{
 			Type:    ptrTo(datadogV2.GCPMonitoredResourceConfigType(mrc.Type.ValueString())),
 			Filters: tfCollectionToSlice[string](ctx, diags, mrc.Filters),

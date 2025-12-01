@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -34,6 +35,12 @@ type awsCurConfigModel struct {
 	ReportName     types.String         `tfsdk:"report_name"`
 	ReportPrefix   types.String         `tfsdk:"report_prefix"`
 	AccountFilters *accountFiltersModel `tfsdk:"account_filters"`
+	// Computed fields
+	CreatedAt       types.String `tfsdk:"created_at"`
+	Status          types.String `tfsdk:"status"`
+	StatusUpdatedAt types.String `tfsdk:"status_updated_at"`
+	UpdatedAt       types.String `tfsdk:"updated_at"`
+	ErrorMessages   types.List   `tfsdk:"error_messages"`
 }
 
 type accountFiltersModel struct {
@@ -86,6 +93,27 @@ func (r *awsCurConfigResource) Schema(_ context.Context, _ resource.SchemaReques
 				PlanModifiers: []planmodifier.String{stringplanmodifier.RequiresReplace()},
 			},
 			"id": utils.ResourceIDAttribute(),
+			"created_at": schema.StringAttribute{
+				Computed:    true,
+				Description: "The timestamp when the AWS CUR configuration was created.",
+			},
+			"status": schema.StringAttribute{
+				Computed:    true,
+				Description: "The current status of the AWS CUR configuration.",
+			},
+			"status_updated_at": schema.StringAttribute{
+				Computed:    true,
+				Description: "The timestamp when the configuration status was last updated.",
+			},
+			"updated_at": schema.StringAttribute{
+				Computed:    true,
+				Description: "The timestamp when the AWS CUR configuration was last modified.",
+			},
+			"error_messages": schema.ListAttribute{
+				Computed:    true,
+				Description: "List of error messages if the AWS CUR configuration encountered any issues during setup or data processing.",
+				ElementType: types.StringType,
+			},
 		},
 		Blocks: map[string]schema.Block{
 			"account_filters": schema.SingleNestedBlock{
@@ -243,9 +271,23 @@ func (r *awsCurConfigResource) updateStateFromSingleConfig(ctx context.Context, 
 		state.ReportName = types.StringValue(attributes.GetReportName())
 		state.ReportPrefix = types.StringValue(attributes.GetReportPrefix())
 
-		// Set AccountFilters if present in API response and was originally specified in config
-		if accountFilters, ok := attributes.GetAccountFiltersOk(); ok && state.AccountFilters != nil {
+		// Set computed fields
+		state.CreatedAt = types.StringValue(attributes.GetCreatedAt())
+		state.Status = types.StringValue(attributes.GetStatus())
+		state.StatusUpdatedAt = types.StringValue(attributes.GetStatusUpdatedAt())
+		state.UpdatedAt = types.StringValue(attributes.GetUpdatedAt())
+		if errorMessages, ok := attributes.GetErrorMessagesOk(); ok && errorMessages != nil {
+			state.ErrorMessages, _ = types.ListValueFrom(ctx, types.StringType, *errorMessages)
+		} else {
+			state.ErrorMessages = types.ListValueMust(types.StringType, []attr.Value{})
+		}
+
+		// Set AccountFilters if present in API response and contains data
+		if accountFilters, ok := attributes.GetAccountFiltersOk(); ok && accountFiltersHasData(accountFilters) {
 			state.AccountFilters = mapAccountFilters(ctx, accountFilters)
+		} else if state.AccountFilters == nil {
+			// If API doesn't return account_filters or it's empty, set to nil
+			state.AccountFilters = nil
 		}
 	}
 }
@@ -260,9 +302,23 @@ func (r *awsCurConfigResource) updateStateFromResponseData(ctx context.Context, 
 		state.ReportName = types.StringValue(attributes.GetReportName())
 		state.ReportPrefix = types.StringValue(attributes.GetReportPrefix())
 
-		// Set AccountFilters if present in API response and was originally specified in config
-		if accountFilters, ok := attributes.GetAccountFiltersOk(); ok && state.AccountFilters != nil {
+		// Set computed fields
+		state.CreatedAt = types.StringValue(attributes.GetCreatedAt())
+		state.Status = types.StringValue(attributes.GetStatus())
+		state.StatusUpdatedAt = types.StringValue(attributes.GetStatusUpdatedAt())
+		state.UpdatedAt = types.StringValue(attributes.GetUpdatedAt())
+		if errorMessages, ok := attributes.GetErrorMessagesOk(); ok && errorMessages != nil {
+			state.ErrorMessages, _ = types.ListValueFrom(ctx, types.StringType, *errorMessages)
+		} else {
+			state.ErrorMessages = types.ListValueMust(types.StringType, []attr.Value{})
+		}
+
+		// Set AccountFilters if present in API response and contains data
+		if accountFilters, ok := attributes.GetAccountFiltersOk(); ok && accountFiltersFromResponseDataHasData(accountFilters) {
 			state.AccountFilters = mapAccountFiltersFromResponseData(ctx, accountFilters)
+		} else if state.AccountFilters == nil {
+			// If API doesn't return account_filters or it's empty, set to nil
+			state.AccountFilters = nil
 		}
 	}
 }

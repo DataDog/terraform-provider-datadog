@@ -35,6 +35,9 @@ type datadogAzureUcConfigDataSourceModel struct {
 	Scope               types.String              `tfsdk:"scope"`
 	Status              types.String              `tfsdk:"status"`
 	CreatedAt           types.String              `tfsdk:"created_at"`
+	StatusUpdatedAt     types.String              `tfsdk:"status_updated_at"`
+	UpdatedAt           types.String              `tfsdk:"updated_at"`
+	ErrorMessages       types.List                `tfsdk:"error_messages"`
 	ActualBillConfig    *actualBillConfigModel    `tfsdk:"actual_bill_config"`
 	AmortizedBillConfig *amortizedBillConfigModel `tfsdk:"amortized_bill_config"`
 }
@@ -84,6 +87,19 @@ func (d *datadogAzureUcConfigDataSource) Schema(_ context.Context, _ datasource.
 			"created_at": schema.StringAttribute{
 				Computed:    true,
 				Description: "The timestamp when the Azure Usage Cost configuration was created.",
+			},
+			"status_updated_at": schema.StringAttribute{
+				Computed:    true,
+				Description: "The timestamp when the configuration status was last updated.",
+			},
+			"updated_at": schema.StringAttribute{
+				Computed:    true,
+				Description: "The timestamp when the Azure Usage Cost configuration was last modified.",
+			},
+			"error_messages": schema.ListAttribute{
+				Computed:    true,
+				Description: "List of error messages if the Azure Usage Cost configuration encountered any issues during setup or data processing.",
+				ElementType: types.StringType,
 			},
 		},
 		Blocks: map[string]schema.Block{
@@ -174,6 +190,9 @@ func (d *datadogAzureUcConfigDataSource) updateState(ctx context.Context, state 
 				state.Scope = types.StringValue(firstConfig.GetScope())
 				state.Status = types.StringValue(firstConfig.GetStatus())
 				state.CreatedAt = types.StringValue(firstConfig.GetCreatedAt())
+				state.StatusUpdatedAt = types.StringValue(firstConfig.GetStatusUpdatedAt())
+				state.UpdatedAt = types.StringValue(firstConfig.GetUpdatedAt())
+				state.ErrorMessages, _ = types.ListValueFrom(ctx, types.StringType, firstConfig.GetErrorMessages())
 
 				// Separate configs by dataset_type and populate respective blocks
 				for _, configData := range configs {

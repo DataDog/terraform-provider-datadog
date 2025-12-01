@@ -15,6 +15,150 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
+func TestAccIntGcpStsMetricNamespaceConfigs(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	uniq := uniqueEntityName(ctx, t)
+
+	t.Run("when mrcs never specified in create and update, uses default", func(t *testing.T) {
+		resource.Test(t, resource.TestCase{
+			ProtoV5ProviderFactories: accProviders,
+			CheckDestroy:             testAccCheckDatadogIntegrationGcpStsDestroy(providers.frameworkProvider),
+			Steps: []resource.TestStep{
+				{
+					Config: fmt.Sprintf(`
+					resource "datadog_integration_gcp_sts" "foo" {
+					  client_email                          = "%s@test-project.iam.gserviceaccount.com"
+					}`, uniq),
+					Check: resource.ComposeTestCheckFunc(testAccCheckDatadogIntegrationGcpStsExists(providers.frameworkProvider)),
+					ConfigStateChecks: []statecheck.StateCheck{
+						statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("metric_namespace_configs"), knownvalue.SetExact([]knownvalue.Check{
+							knownvalue.ObjectExact(map[string]knownvalue.Check{
+								"id":       knownvalue.StringExact("prometheus"),
+								"disabled": knownvalue.Bool(true),
+								"filters":  knownvalue.SetExact(nil),
+							}),
+						})),
+					},
+				},
+				{
+					Config: fmt.Sprintf(`
+					resource "datadog_integration_gcp_sts" "foo" {
+					  client_email                          = "%s@test-project.iam.gserviceaccount.com"
+					  is_cspm_enabled                       = "true"
+					}`, uniq),
+					Check: resource.ComposeTestCheckFunc(testAccCheckDatadogIntegrationGcpStsExists(providers.frameworkProvider)),
+					ConfigStateChecks: []statecheck.StateCheck{
+						statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("metric_namespace_configs"), knownvalue.SetExact([]knownvalue.Check{
+							knownvalue.ObjectExact(map[string]knownvalue.Check{
+								"id":       knownvalue.StringExact("prometheus"),
+								"disabled": knownvalue.Bool(true),
+								"filters":  knownvalue.SetExact(nil),
+							}),
+						})),
+					},
+				},
+			},
+		})
+	})
+
+	t.Run("when mrcs never specified in create, but specified on update, overwrites default", func(t *testing.T) {
+		resource.Test(t, resource.TestCase{
+			ProtoV5ProviderFactories: accProviders,
+			CheckDestroy:             testAccCheckDatadogIntegrationGcpStsDestroy(providers.frameworkProvider),
+			Steps: []resource.TestStep{
+				{
+					Config: fmt.Sprintf(`
+					resource "datadog_integration_gcp_sts" "foo" {
+					  client_email                          = "%s@test-project.iam.gserviceaccount.com"
+					}`, uniq),
+					Check: resource.ComposeTestCheckFunc(testAccCheckDatadogIntegrationGcpStsExists(providers.frameworkProvider)),
+					ConfigStateChecks: []statecheck.StateCheck{
+						statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("metric_namespace_configs"), knownvalue.SetExact([]knownvalue.Check{
+							knownvalue.ObjectExact(map[string]knownvalue.Check{
+								"id":       knownvalue.StringExact("prometheus"),
+								"disabled": knownvalue.Bool(true),
+								"filters":  knownvalue.SetExact(nil),
+							}),
+						})),
+					},
+				},
+				{
+					Config: fmt.Sprintf(`
+					resource "datadog_integration_gcp_sts" "foo" {
+					  client_email                          = "%s@test-project.iam.gserviceaccount.com"
+					  metric_namespace_configs = [
+						{
+						  id       = "aiplatform",
+						  disabled = true
+                          filters = []
+						}
+					  ]
+					}`, uniq),
+					Check: resource.ComposeTestCheckFunc(testAccCheckDatadogIntegrationGcpStsExists(providers.frameworkProvider)),
+					ConfigStateChecks: []statecheck.StateCheck{
+						statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("metric_namespace_configs"), knownvalue.SetExact([]knownvalue.Check{
+							knownvalue.ObjectExact(map[string]knownvalue.Check{
+								"id":       knownvalue.StringExact("aiplatform"),
+								"disabled": knownvalue.Bool(true),
+								"filters":  knownvalue.SetExact(nil),
+							}),
+						})),
+					},
+				},
+			},
+		})
+	})
+
+	t.Run("when mrcs specified in create, but omitted on update, initial configs kept", func(t *testing.T) {
+		resource.Test(t, resource.TestCase{
+			ProtoV5ProviderFactories: accProviders,
+			CheckDestroy:             testAccCheckDatadogIntegrationGcpStsDestroy(providers.frameworkProvider),
+			Steps: []resource.TestStep{
+				{
+					Config: fmt.Sprintf(`
+					resource "datadog_integration_gcp_sts" "foo" {
+					  client_email                          = "%s@test-project.iam.gserviceaccount.com"
+					  metric_namespace_configs = [
+						{
+						  id       = "aiplatform",
+						  disabled = true
+                          filters = []
+						}
+					  ]
+					}`, uniq),
+					Check: resource.ComposeTestCheckFunc(testAccCheckDatadogIntegrationGcpStsExists(providers.frameworkProvider)),
+					ConfigStateChecks: []statecheck.StateCheck{
+						statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("metric_namespace_configs"), knownvalue.SetExact([]knownvalue.Check{
+							knownvalue.ObjectExact(map[string]knownvalue.Check{
+								"id":       knownvalue.StringExact("aiplatform"),
+								"disabled": knownvalue.Bool(true),
+								"filters":  knownvalue.SetExact(nil),
+							}),
+						})),
+					},
+				},
+				{
+					Config: fmt.Sprintf(`
+					resource "datadog_integration_gcp_sts" "foo" {
+					  client_email                          = "%s@test-project.iam.gserviceaccount.com"
+					}`, uniq),
+					Check: resource.ComposeTestCheckFunc(testAccCheckDatadogIntegrationGcpStsExists(providers.frameworkProvider)),
+					ConfigStateChecks: []statecheck.StateCheck{
+						statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("metric_namespace_configs"), knownvalue.SetExact([]knownvalue.Check{
+							knownvalue.ObjectExact(map[string]knownvalue.Check{
+								"id":       knownvalue.StringExact("aiplatform"),
+								"disabled": knownvalue.Bool(true),
+								"filters":  knownvalue.SetExact(nil),
+							}),
+						})),
+					},
+				},
+			},
+		})
+	})
+}
+
 func TestAccIntegrationGcpStsBasic(t *testing.T) {
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
@@ -49,6 +193,12 @@ func TestAccIntegrationGcpStsBasic(t *testing.T) {
 						{
 						  id       = "aiplatform",
 						  disabled = true
+						  filters = []
+						},
+						{
+						  id       = "pubsub",
+						  disabled = false
+						  filters = ["snapshot.*", "!*_by_region"]
 						}
 					  ]
 					  cloud_run_revision_filters            = ["rev:one", "rev:two"]
@@ -72,6 +222,15 @@ func TestAccIntegrationGcpStsBasic(t *testing.T) {
 						knownvalue.ObjectExact(map[string]knownvalue.Check{
 							"id":       knownvalue.StringExact("aiplatform"),
 							"disabled": knownvalue.Bool(true),
+							"filters":  knownvalue.SetExact(nil),
+						}),
+						knownvalue.ObjectExact(map[string]knownvalue.Check{
+							"id":       knownvalue.StringExact("pubsub"),
+							"disabled": knownvalue.Bool(false),
+							"filters": knownvalue.SetExact([]knownvalue.Check{
+								knownvalue.StringExact("snapshot.*"),
+								knownvalue.StringExact("!*_by_region"),
+							}),
 						}),
 					})),
 					statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("cloud_run_revision_filters"), cloudRunRevisionFilters),
@@ -98,6 +257,13 @@ func TestAccIntegrationGcpStsBasic(t *testing.T) {
 					  is_security_command_center_enabled    = "true"
 					  is_resource_change_collection_enabled = "true"
 					  is_per_project_quota_enabled          = "true"
+					  metric_namespace_configs = [
+						{
+						  id       = "appengine",
+						  disabled = false
+						  filters = ["flex.autoscaler.*"]
+						}
+					  ]
 					  monitored_resource_configs = [
 						{
 						  type    = "cloud_function"
@@ -119,7 +285,15 @@ func TestAccIntegrationGcpStsBasic(t *testing.T) {
 					statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("is_resource_change_collection_enabled"), knownvalue.Bool(true)),
 					statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("is_per_project_quota_enabled"), knownvalue.Bool(true)),
 					statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("account_tags"), knownvalue.Null()),
-					statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("metric_namespace_configs"), knownvalue.Null()),
+					statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("metric_namespace_configs"), knownvalue.SetExact([]knownvalue.Check{
+						knownvalue.ObjectExact(map[string]knownvalue.Check{
+							"id":       knownvalue.StringExact("appengine"),
+							"disabled": knownvalue.Bool(false),
+							"filters": knownvalue.SetExact([]knownvalue.Check{
+								knownvalue.StringExact("flex.autoscaler.*"),
+							}),
+						}),
+					})),
 					statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("cloud_run_revision_filters"), knownvalue.SetExact(nil)),
 					statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("host_filters"), updatedHostFilters),
 					statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("monitored_resource_configs"), knownvalue.SetExact([]knownvalue.Check{
@@ -166,7 +340,13 @@ func TestAccIntegrationGcpStsDefault(t *testing.T) {
 					statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("is_resource_change_collection_enabled"), knownvalue.Bool(false)),
 					statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("is_per_project_quota_enabled"), knownvalue.Bool(false)),
 					statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("account_tags"), knownvalue.Null()),
-					statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("metric_namespace_configs"), knownvalue.Null()),
+					statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("metric_namespace_configs"), knownvalue.SetExact([]knownvalue.Check{
+						knownvalue.ObjectExact(map[string]knownvalue.Check{
+							"id":       knownvalue.StringExact("prometheus"),
+							"disabled": knownvalue.Bool(true),
+							"filters":  knownvalue.SetExact(nil),
+						}),
+					})),
 					statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("cloud_run_revision_filters"), knownvalue.SetExact(nil)),
 					statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("host_filters"), knownvalue.SetExact(nil)),
 					statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("monitored_resource_configs"), knownvalue.SetExact(nil)),

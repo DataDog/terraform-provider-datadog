@@ -48,6 +48,7 @@ Email notifications can be sent to specific users by using the same `@username` 
 
 ### Optional
 
+- `draft_status` (String) Indicates whether the monitor is in a draft or published state. When set to `draft`, the monitor appears as Draft and does not send notifications. When set to `published`, the monitor is active, and it evaluates conditions and sends notifications as configured. Valid values are `draft`, `published`. Defaults to `"published"`.
 - `enable_logs_sample` (Boolean) A boolean indicating whether or not to include a list of log values which triggered the alert. This is only used by log monitors. Defaults to `false`.
 - `enable_samples` (Boolean) Whether or not a list of samples which triggered the alert is included. This is only used by CI Test and Pipeline monitors.
 - `escalation_message` (String) A message to include with a re-notification. Supports the `@username` notification allowed elsewhere.
@@ -165,13 +166,10 @@ Optional:
 
 Required:
 
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `sum`, `max`, `min`, `last`, `area`, `l2norm`, `percentile`, `stddev`.
 - `data_source` (String) The data source for cloud cost queries. Valid values are `metrics`, `cloud_cost`, `datadog_usage`.
 - `name` (String) The name of the query for use in formulas.
 - `query` (String) The cloud cost query definition.
-
-Optional:
-
-- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `sum`, `max`, `min`, `last`, `area`, `l2norm`, `percentile`, `stddev`.
 
 
 <a id="nestedblock--variables--event_query"></a>

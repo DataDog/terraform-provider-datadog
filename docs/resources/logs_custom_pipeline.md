@@ -207,6 +207,7 @@ Optional:
 - `message_remapper` (Block List, Max: 1) Message Remapper Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#log-message-remapper) (see [below for nested schema](#nestedblock--processor--message_remapper))
 - `pipeline` (Block List, Max: 1) (see [below for nested schema](#nestedblock--processor--pipeline))
 - `reference_table_lookup_processor` (Block List, Max: 1) Reference Table Lookup Processor. Reference Tables are in public beta. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#lookup-processor) (see [below for nested schema](#nestedblock--processor--reference_table_lookup_processor))
+- `schema_processor` (Block List, Max: 1) Schema Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#schema-processor) (see [below for nested schema](#nestedblock--processor--schema_processor))
 - `service_remapper` (Block List, Max: 1) Service Remapper Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#service-remapper) (see [below for nested schema](#nestedblock--processor--service_remapper))
 - `span_id_remapper` (Block List, Max: 1) Span ID Remapper Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/log_configuration/processors/?tab=ui#span-remapper) (see [below for nested schema](#nestedblock--processor--span_id_remapper))
 - `status_remapper` (Block List, Max: 1) Status Remapper Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#log-status-remapper) (see [below for nested schema](#nestedblock--processor--status_remapper))
@@ -471,6 +472,7 @@ Optional:
 - `lookup_processor` (Block List, Max: 1) Lookup Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#lookup-processor) (see [below for nested schema](#nestedblock--processor--pipeline--processor--lookup_processor))
 - `message_remapper` (Block List, Max: 1) Message Remapper Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#log-message-remapper) (see [below for nested schema](#nestedblock--processor--pipeline--processor--message_remapper))
 - `reference_table_lookup_processor` (Block List, Max: 1) Reference Table Lookup Processor. Reference Tables are in public beta. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#lookup-processor) (see [below for nested schema](#nestedblock--processor--pipeline--processor--reference_table_lookup_processor))
+- `schema_processor` (Block List, Max: 1) Schema Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#schema-processor) (see [below for nested schema](#nestedblock--processor--pipeline--processor--schema_processor))
 - `service_remapper` (Block List, Max: 1) Service Remapper Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#service-remapper) (see [below for nested schema](#nestedblock--processor--pipeline--processor--service_remapper))
 - `span_id_remapper` (Block List, Max: 1) Span ID Remapper Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/log_configuration/processors/?tab=ui#span-remapper) (see [below for nested schema](#nestedblock--processor--pipeline--processor--span_id_remapper))
 - `status_remapper` (Block List, Max: 1) Status Remapper Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#log-status-remapper) (see [below for nested schema](#nestedblock--processor--pipeline--processor--status_remapper))
@@ -711,6 +713,111 @@ Optional:
 - `name` (String) Name of the processor
 
 
+<a id="nestedblock--processor--pipeline--processor--schema_processor"></a>
+### Nested Schema for `processor.pipeline.processor.schema_processor`
+
+Required:
+
+- `mappers` (Block List, Min: 1) Array of mappers for the schema processor. (see [below for nested schema](#nestedblock--processor--pipeline--processor--schema_processor--mappers))
+- `schema` (Block List, Min: 1, Max: 1) Configuration of the schema data to use. (see [below for nested schema](#nestedblock--processor--pipeline--processor--schema_processor--schema))
+
+Optional:
+
+- `is_enabled` (Boolean) If the processor is enabled or not.
+- `name` (String) The name of the processor.
+
+<a id="nestedblock--processor--pipeline--processor--schema_processor--mappers"></a>
+### Nested Schema for `processor.pipeline.processor.schema_processor.mappers`
+
+Optional:
+
+- `schema_category_mapper` (Block List) Mapper that categorizes log events into enum fields. In the case of OCSF, they can be used to map sibling fields which are composed of an ID and a name. (see [below for nested schema](#nestedblock--processor--pipeline--processor--schema_processor--mappers--schema_category_mapper))
+- `schema_remapper` (Block List) Mapper that maps source log fields to their correct fields. (see [below for nested schema](#nestedblock--processor--pipeline--processor--schema_processor--mappers--schema_remapper))
+
+<a id="nestedblock--processor--pipeline--processor--schema_processor--mappers--schema_category_mapper"></a>
+### Nested Schema for `processor.pipeline.processor.schema_processor.mappers.schema_category_mapper`
+
+Required:
+
+- `categories` (Block List, Min: 1) Object describing the logs filter with corresponding category ID. (see [below for nested schema](#nestedblock--processor--pipeline--processor--schema_processor--mappers--schema_category_mapper--categories))
+- `name` (String) Name of the logs schema category mapper.
+- `targets` (Block List, Min: 1, Max: 1) Name of the target attributes which value is defined by the matching. (see [below for nested schema](#nestedblock--processor--pipeline--processor--schema_processor--mappers--schema_category_mapper--targets))
+
+Optional:
+
+- `fallback` (Block List, Max: 1) Used to override hardcoded category values with a value pulled from a source attribute on the log. (see [below for nested schema](#nestedblock--processor--pipeline--processor--schema_processor--mappers--schema_category_mapper--fallback))
+
+<a id="nestedblock--processor--pipeline--processor--schema_processor--mappers--schema_category_mapper--categories"></a>
+### Nested Schema for `processor.pipeline.processor.schema_processor.mappers.schema_category_mapper.categories`
+
+Required:
+
+- `filter` (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--processor--pipeline--processor--schema_processor--mappers--schema_category_mapper--categories--filter))
+- `id` (Number) ID to inject into the category.
+- `name` (String) Value to assign to target schema field.
+
+<a id="nestedblock--processor--pipeline--processor--schema_processor--mappers--schema_category_mapper--categories--filter"></a>
+### Nested Schema for `processor.pipeline.processor.schema_processor.mappers.schema_category_mapper.categories.filter`
+
+Required:
+
+- `query` (String) Filter criteria of the category.
+
+
+
+<a id="nestedblock--processor--pipeline--processor--schema_processor--mappers--schema_category_mapper--targets"></a>
+### Nested Schema for `processor.pipeline.processor.schema_processor.mappers.schema_category_mapper.targets`
+
+Optional:
+
+- `id` (String) ID of the field to map log attributes to
+- `name` (String) Name of the field to map log attributes to.
+
+
+<a id="nestedblock--processor--pipeline--processor--schema_processor--mappers--schema_category_mapper--fallback"></a>
+### Nested Schema for `processor.pipeline.processor.schema_processor.mappers.schema_category_mapper.fallback`
+
+Optional:
+
+- `sources` (Map of String) Fallback sources used to populate value of field.
+- `values` (Map of String) Values that define when the fallback is used.
+
+
+
+<a id="nestedblock--processor--pipeline--processor--schema_processor--mappers--schema_remapper"></a>
+### Nested Schema for `processor.pipeline.processor.schema_processor.mappers.schema_remapper`
+
+Required:
+
+- `name` (String) Name of the logs schema remapper.
+- `sources` (List of String) Array of source attributes.
+- `target` (String) Target field to map log source field to
+
+Optional:
+
+- `override_on_conflict` (Boolean) Override or not the target element if already set.
+- `preserve_source` (Boolean) Remove or preserve the remapped source element.
+- `target_format` (String) If the `target_type` of the remapper is `attribute`, try to cast the value to a new specific type. If the cast is not possible, the original type is kept. `string`, `integer`, or `double` are the possible types. If the `target_type` is `tag`, this parameter may not be specified.
+
+
+
+<a id="nestedblock--processor--pipeline--processor--schema_processor--schema"></a>
+### Nested Schema for `processor.pipeline.processor.schema_processor.schema`
+
+Required:
+
+- `class_name` (String) Class name of the schema to use.
+- `class_uid` (Number) Class UID of the schema to use.
+- `schema_type` (String) Type of schema to use.
+- `version` (String) Version of the schema to use.
+
+Optional:
+
+- `extensions` (List of String) Optional list of extensions to modify the schema.
+- `profiles` (List of String) Optional list of profiles to modify the schema.
+
+
+
 <a id="nestedblock--processor--pipeline--processor--service_remapper"></a>
 ### Nested Schema for `processor.pipeline.processor.service_remapper`
 
@@ -823,6 +930,111 @@ Optional:
 
 - `is_enabled` (Boolean) If the processor is enabled or not.
 - `name` (String) Name of the processor
+
+
+<a id="nestedblock--processor--schema_processor"></a>
+### Nested Schema for `processor.schema_processor`
+
+Required:
+
+- `mappers` (Block List, Min: 1) Array of mappers for the schema processor. (see [below for nested schema](#nestedblock--processor--schema_processor--mappers))
+- `schema` (Block List, Min: 1, Max: 1) Configuration of the schema data to use. (see [below for nested schema](#nestedblock--processor--schema_processor--schema))
+
+Optional:
+
+- `is_enabled` (Boolean) If the processor is enabled or not.
+- `name` (String) The name of the processor.
+
+<a id="nestedblock--processor--schema_processor--mappers"></a>
+### Nested Schema for `processor.schema_processor.mappers`
+
+Optional:
+
+- `schema_category_mapper` (Block List) Mapper that categorizes log events into enum fields. In the case of OCSF, they can be used to map sibling fields which are composed of an ID and a name. (see [below for nested schema](#nestedblock--processor--schema_processor--mappers--schema_category_mapper))
+- `schema_remapper` (Block List) Mapper that maps source log fields to their correct fields. (see [below for nested schema](#nestedblock--processor--schema_processor--mappers--schema_remapper))
+
+<a id="nestedblock--processor--schema_processor--mappers--schema_category_mapper"></a>
+### Nested Schema for `processor.schema_processor.mappers.schema_category_mapper`
+
+Required:
+
+- `categories` (Block List, Min: 1) Object describing the logs filter with corresponding category ID. (see [below for nested schema](#nestedblock--processor--schema_processor--mappers--schema_category_mapper--categories))
+- `name` (String) Name of the logs schema category mapper.
+- `targets` (Block List, Min: 1, Max: 1) Name of the target attributes which value is defined by the matching. (see [below for nested schema](#nestedblock--processor--schema_processor--mappers--schema_category_mapper--targets))
+
+Optional:
+
+- `fallback` (Block List, Max: 1) Used to override hardcoded category values with a value pulled from a source attribute on the log. (see [below for nested schema](#nestedblock--processor--schema_processor--mappers--schema_category_mapper--fallback))
+
+<a id="nestedblock--processor--schema_processor--mappers--schema_category_mapper--categories"></a>
+### Nested Schema for `processor.schema_processor.mappers.schema_category_mapper.categories`
+
+Required:
+
+- `filter` (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--processor--schema_processor--mappers--schema_category_mapper--categories--filter))
+- `id` (Number) ID to inject into the category.
+- `name` (String) Value to assign to target schema field.
+
+<a id="nestedblock--processor--schema_processor--mappers--schema_category_mapper--categories--filter"></a>
+### Nested Schema for `processor.schema_processor.mappers.schema_category_mapper.categories.filter`
+
+Required:
+
+- `query` (String) Filter criteria of the category.
+
+
+
+<a id="nestedblock--processor--schema_processor--mappers--schema_category_mapper--targets"></a>
+### Nested Schema for `processor.schema_processor.mappers.schema_category_mapper.targets`
+
+Optional:
+
+- `id` (String) ID of the field to map log attributes to
+- `name` (String) Name of the field to map log attributes to.
+
+
+<a id="nestedblock--processor--schema_processor--mappers--schema_category_mapper--fallback"></a>
+### Nested Schema for `processor.schema_processor.mappers.schema_category_mapper.fallback`
+
+Optional:
+
+- `sources` (Map of String) Fallback sources used to populate value of field.
+- `values` (Map of String) Values that define when the fallback is used.
+
+
+
+<a id="nestedblock--processor--schema_processor--mappers--schema_remapper"></a>
+### Nested Schema for `processor.schema_processor.mappers.schema_remapper`
+
+Required:
+
+- `name` (String) Name of the logs schema remapper.
+- `sources` (List of String) Array of source attributes.
+- `target` (String) Target field to map log source field to
+
+Optional:
+
+- `override_on_conflict` (Boolean) Override or not the target element if already set.
+- `preserve_source` (Boolean) Remove or preserve the remapped source element.
+- `target_format` (String) If the `target_type` of the remapper is `attribute`, try to cast the value to a new specific type. If the cast is not possible, the original type is kept. `string`, `integer`, or `double` are the possible types. If the `target_type` is `tag`, this parameter may not be specified.
+
+
+
+<a id="nestedblock--processor--schema_processor--schema"></a>
+### Nested Schema for `processor.schema_processor.schema`
+
+Required:
+
+- `class_name` (String) Class name of the schema to use.
+- `class_uid` (Number) Class UID of the schema to use.
+- `schema_type` (String) Type of schema to use.
+- `version` (String) Version of the schema to use.
+
+Optional:
+
+- `extensions` (List of String) Optional list of extensions to modify the schema.
+- `profiles` (List of String) Optional list of profiles to modify the schema.
+
 
 
 <a id="nestedblock--processor--service_remapper"></a>

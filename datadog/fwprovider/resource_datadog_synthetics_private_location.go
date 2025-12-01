@@ -33,13 +33,14 @@ type syntheticsPrivateLocationResource struct {
 }
 
 type syntheticsPrivateLocationModel struct {
-	Id          types.String                             `tfsdk:"id"`
-	Config      types.String                             `tfsdk:"config"`
-	Description types.String                             `tfsdk:"description"`
-	Metadata    []syntheticsPrivateLocationMetadataModel `tfsdk:"metadata"`
-	Name        types.String                             `tfsdk:"name"`
-	Tags        types.List                               `tfsdk:"tags"`
-	ApiKey      types.String                             `tfsdk:"api_key"`
+	Id                          types.String                             `tfsdk:"id"`
+	RestrictionPolicyResourceId types.String                             `tfsdk:"restriction_policy_resource_id"`
+	Config                      types.String                             `tfsdk:"config"`
+	Description                 types.String                             `tfsdk:"description"`
+	Metadata                    []syntheticsPrivateLocationMetadataModel `tfsdk:"metadata"`
+	Name                        types.String                             `tfsdk:"name"`
+	Tags                        types.List                               `tfsdk:"tags"`
+	ApiKey                      types.String                             `tfsdk:"api_key"`
 }
 
 type syntheticsPrivateLocationMetadataModel struct {
@@ -95,6 +96,10 @@ func (r *syntheticsPrivateLocationResource) Schema(_ context.Context, _ resource
 				Sensitive:   true,
 			},
 			"id": utils.ResourceIDAttribute(),
+			"restriction_policy_resource_id": schema.StringAttribute{
+				Description: "Resource ID to use when setting restrictions with a `datadog_restriction_policy` resource.",
+				Computed:    true,
+			},
 		},
 		Blocks: map[string]schema.Block{
 			"metadata": schema.ListNestedBlock{
@@ -263,6 +268,11 @@ func (r *syntheticsPrivateLocationResource) updateState(ctx context.Context, sta
 	state.Description = types.StringValue(resp.GetDescription())
 	state.Name = types.StringValue(resp.GetName())
 	state.Tags, _ = types.ListValueFrom(ctx, types.StringType, resp.Tags)
+	// Convert the private location ID to the format expected by restriction policies
+	// The format should be: synthetics-private-location:pl:xxx (keep the pl: prefix)
+	privateLocationId := resp.GetId()
+	restrictionPolicyId := fmt.Sprintf("synthetics-private-location:%s", privateLocationId)
+	state.RestrictionPolicyResourceId = types.StringValue(restrictionPolicyId)
 
 	if metadata, ok := resp.GetMetadataOk(); ok {
 		if restrictedRoles, ok := metadata.GetRestrictedRolesOk(); ok {

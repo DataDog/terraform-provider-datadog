@@ -1,3 +1,108 @@
+## 3.81.0 (November 20, 2025)
+
+### BUGFIXES
+* [datadog_agentless_scanning_gcp_scan_options] Better support of resource conflict in agentless GCP scan options TF provider by @mohamed-challal in https://github.com/DataDog/terraform-provider-datadog/pull/3328
+* [datadog_security_monitoring_suppression] Fix issue when dealing with empty array of tags in Rules by @clementgbcn in https://github.com/DataDog/terraform-provider-datadog/pull/3331
+* [datadog_observability_pipeline] make google auth optional by @vladimir-dd in https://github.com/DataDog/terraform-provider-datadog/pull/3332
+### FEATURES
+* [datadog_tag_pipeline_rulesets] add the functionality to allow users decide tag pipeline reorder behaviors by @congx4 in https://github.com/DataDog/terraform-provider-datadog/pull/3320
+* [datadog_user] Add new exclude_service_accounts attribute to the datadog_user ds by @tquidetdd in https://github.com/DataDog/terraform-provider-datadog/pull/3323
+* [datadog_metrics] add 'datadog_metrics' data source by @mdb in https://github.com/DataDog/terraform-provider-datadog/pull/3214
+
+## New Contributors
+* @mfu00 made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3330
+* @mgaonach made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3327
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.80.0...v3.81.0
+
+## 3.80.0 (November 12, 2025)
+
+### BUGFIXES
+* [datadog_software_catalog] Allow backstage imports in software_catalog resource by @christinexlee in https://github.com/DataDog/terraform-provider-datadog/pull/3319
+* [datadog_monitor] Make cloud cost query `aggregator` field required by @fpighi in https://github.com/DataDog/terraform-provider-datadog/pull/3318
+### FEATURES
+* [datadog_agentless_scanning_gcp_scan_options] Add Terraform provider for GCP scan options by @mohamed-challal in https://github.com/DataDog/terraform-provider-datadog/pull/3321
+* [datadog_integration_gcp_sts] Add granular namespace filters to GCP V2 Terraform Provider by @ash-ddog in https://github.com/DataDog/terraform-provider-datadog/pull/3299 - NOTE: due to limitations with the Terraform protocol v5 currently in use by our provider, users should add `filters = []` to each `metric_namespace_configs` key. Omitting it would result in an error. For more information on `filters`, see [Integrations - Google Cloud Platform](https://docs.datadoghq.com/integrations/google-cloud-platform/?tab=organdfolderlevelprojectdiscovery#configuration)
+
+## New Contributors
+* @mohamed-challal made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3321
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.79.0...v3.80.0
+
+## 3.79.0 (November 3, 2025)
+
+### BUGFIXES
+* [datadog_integration_gcp_sts] Fix handling prometheus default in mncs by @katherinekim-51 in https://github.com/DataDog/terraform-provider-datadog/pull/3297
+* [datadog_tag_pipeline_ruleset] Ensure resource handles tag pipeline rulesets deleted via the UI that are managed in tfstate by @alextmeyer in https://github.com/DataDog/terraform-provider-datadog/pull/3313
+* [datadog_synthetics_private_location] Fix restriction_policy_resource_id format by @Matt-Cam in https://github.com/DataDog/terraform-provider-datadog/pull/3310
+* [datadog_app_builder_app] fix bug with publish/unpublish by @tyffical in https://github.com/DataDog/terraform-provider-datadog/pull/3312
+### IMPROVEMENTS
+* [scripts] Update Cloud Cost import existing resources script  by @alextmeyer in https://github.com/DataDog/terraform-provider-datadog/pull/3309
+* [datadog_logs_pipelines] Add support for schema processor by @seohyunh in https://github.com/DataDog/terraform-provider-datadog/pull/3289
+
+## New Contributors
+* @katherinekim-51 made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3297
+* @sean-r-williams made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3280
+* @seohyunh made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3289
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.78.0...v3.79.0
+
+## 3.78.0 (October 29, 2025)
+
+### BUGFIXES
+* [datadog_dashboards] Fix type error in unitScale by @brlee19 in https://github.com/DataDog/terraform-provider-datadog/pull/3238
+* [datadog_csm_threats] Fix tags field in csm_threat_policy resource by @QuentinGuillard in https://github.com/DataDog/terraform-provider-datadog/pull/3298
+* [datadog_monitor] Fix monitor validation on default tags by @shaneyuandd in https://github.com/DataDog/terraform-provider-datadog/pull/3296
+* [datadog_application_key] Update docs for application key by @wangwillson1 in https://github.com/DataDog/terraform-provider-datadog/pull/3305
+### IMPROVEMENTS
+* [datdog_csm_threats_agent_rule] add missing set action fields by @safchain in https://github.com/DataDog/terraform-provider-datadog/pull/3295
+
+## New Contributors
+* @brlee19 made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3238
+* @safchain made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3295
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.77.0...v3.78.0
+
+## 3.77.0 (October 21, 2025)
+
+### BUGFIXES
+* [datadog_synthetics_test] Allow deletion of Synthetics test steps by @ALenfant in https://github.com/DataDog/terraform-provider-datadog/pull/3284
+* [datadog_custom_allocation_rule] update terraform go api-client by @congx4 in https://github.com/DataDog/terraform-provider-datadog/pull/3283
+* [datadog_aws_cur_config][datadog_custom_allocation_rule] Minor fixes to Cloud Cost resources to prevent apply needed after imports by @alextmeyer in https://github.com/DataDog/terraform-provider-datadog/pull/3287
+### FEATURES
+* [datadog_synthetics_test] Support the `blockedRequestPatterns` option for browser tests by @SKYWy in https://github.com/DataDog/terraform-provider-datadog/pull/3257
+* [datadog_monitor] Update Monitors terraform to support draft monitors by @kevinpombo-datadog in https://github.com/DataDog/terraform-provider-datadog/pull/3275
+* [scripts] Create helper script to automatically find and import any existing Datadog Cloud Cost resources into terraform by @alextmeyer in https://github.com/DataDog/terraform-provider-datadog/pull/3278
+
+## New Contributors
+* @ALenfant made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3284
+* @SKYWy made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3257
+* @kevinpombo-datadog made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3275
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.76.0...v3.77.0
+
+## 3.76.0 (October 15, 2025)
+
+### BUGFIXES
+* [datadog_azure_uc_config] Add support for Cloud Cost Azure Cloud Usage Cost Config resource and data source by @alextmeyer in https://github.com/DataDog/terraform-provider-datadog/pull/3263
+* [datadog_csm_threats] Fix csm threats agent rule expression whitespace inconsistency by @QuentinGuillard in https://github.com/DataDog/terraform-provider-datadog/pull/3269
+* [datadog_tag_pipeline_ruleset] Fix an edge case when imports tag pipeline rulesets without any rules by @congx4 in https://github.com/DataDog/terraform-provider-datadog/pull/3277
+### IMPROVEMENTS
+* [datadog_synthetics_private_location] Add restriction_policy_resource_id to synthetics private locations to use with restriction policy by @romainberger in https://github.com/DataDog/terraform-provider-datadog/pull/3271
+* [datadog_azure_uc_config][datadog_aws_cur_config][datadog_gcp_uc_config] Update Cloud cost provider resources to support exposing computed fields by @alextmeyer in https://github.com/DataDog/terraform-provider-datadog/pull/3274
+### FEATURES
+* [datadog_security_monitoring_rule] Add sequence detection method to security monitoring rule resource by @paul-hf in https://github.com/DataDog/terraform-provider-datadog/pull/3239
+* [datadog_gcp_uc_config] Add support for Cloud Cost Google Cloud Usage Cost Config resource and data source by @alextmeyer in https://github.com/DataDog/terraform-provider-datadog/pull/3258
+* [datadog_integration_aws_iam_permissions_standard] Add new data source for AWS Integration standard IAM permissions by @raymondeah in https://github.com/DataDog/terraform-provider-datadog/pull/3261
+* [datadog_tag_pipeline_ruleset] terraform support for tag-pipeline by @congx4 in https://github.com/DataDog/terraform-provider-datadog/pull/3236
+* [datadog_custom_allocation_rule] Add support for CCM custom allocation rules by @elihschiff in https://github.com/DataDog/terraform-provider-datadog/pull/3262
+
+## New Contributors
+* @congx4 made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3236
+* @elihschiff made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3262
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.75.0...v3.76.0
+
 ## 3.75.0 (October 1, 2025)
 
 ### BUGFIXES
