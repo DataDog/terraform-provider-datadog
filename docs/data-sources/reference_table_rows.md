@@ -17,7 +17,7 @@ Use this data source to retrieve specific rows from a Datadog reference table by
 
 ### Required
 
-- `row_ids` (List of String) List of primary key values (row IDs) to retrieve. These are the values of the table's primary key field(s).
+- `row_ids` (List of String) List of primary key values (row IDs) to retrieve. These are the values of the table's primary key field(s). Maximum 250 IDs per request.
 - `table_id` (String) The UUID of the reference table to query rows from.
 
 ### Read-Only
