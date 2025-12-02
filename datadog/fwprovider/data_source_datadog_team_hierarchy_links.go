@@ -26,8 +26,8 @@ type datadogTeamHierarchyLinksDataSourceModel struct {
 
 	// Query Parameters
 	LinkId           types.String `tfsdk:"link_id"`
-	FilterParentTeam types.String `tfsdk:"filter[parent_team]"`
-	FilterSubTeam    types.String `tfsdk:"filter[sub_team]"`
+	FilterParentTeam types.String `tfsdk:"filter_parent_team"`
+	FilterSubTeam    types.String `tfsdk:"filter_sub_team"`
 
 	// Computed values
 	CreatedAt     types.String `tfsdk:"created_at"`
@@ -57,15 +57,15 @@ func (d *datadogTeamHierarchyLinksDataSource) Schema(_ context.Context, _ dataso
 			// Query Parameters
 			"link_id": schema.StringAttribute{
 				Optional:    true,
-				Description: "UPDATE ME",
+				Description: "The team hierarchy link’s identifier",
 			},
-			"filter[parent_team]": schema.StringAttribute{
+			"filter_parent_team": schema.StringAttribute{
 				Optional:    true,
-				Description: "UPDATE ME",
+				Description: "Filter by parent team ID",
 			},
-			"filter[sub_team]": schema.StringAttribute{
+			"filter_sub_team": schema.StringAttribute{
 				Optional:    true,
-				Description: "UPDATE ME",
+				Description: "Filter by sub team ID",
 			},
 			// Computed values
 			"created_at": schema.StringAttribute{

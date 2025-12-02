@@ -8,6 +8,8 @@ import (
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
@@ -25,32 +27,10 @@ type teamHierarchyLinksResource struct {
 
 type teamHierarchyLinksModel struct {
 	ID            types.String `tfsdk:"id"`
+	ParentTeamId  types.String `tfsdk:"parent_team_id"`
+	SubTeamId     types.String `tfsdk:"sub_team_id"`
 	CreatedAt     types.String `tfsdk:"created_at"`
 	ProvisionedBy types.String `tfsdk:"provisioned_by"`
-	Data          *dataModel   `tfsdk:"data"`
-}
-
-type dataModel struct {
-	Type          types.String        `tfsdk:"type"`
-	Relationships *relationshipsModel `tfsdk:"relationships"`
-}
-type relationshipsModel struct {
-	ParentTeam *parentTeamModel `tfsdk:"parent_team"`
-	SubTeam    *subTeamModel    `tfsdk:"sub_team"`
-}
-type parentTeamModel struct {
-	Data *parentTeamDataModel `tfsdk:"data"`
-}
-type parentTeamDataModel struct {
-	Id   types.String `tfsdk:"id"`
-	Type types.String `tfsdk:"type"`
-}
-type subTeamModel struct {
-	Data *subTeamDataModel `tfsdk:"data"`
-}
-type subTeamDataModel struct {
-	Id   types.String `tfsdk:"id"`
-	Type types.String `tfsdk:"type"`
 }
 
 func NewTeamHierarchyLinksResource() resource.Resource {
@@ -72,56 +52,29 @@ func (r *teamHierarchyLinksResource) Schema(_ context.Context, _ resource.Schema
 		Description: "Provides a Datadog TeamHierarchyLinks resource. This can be used to create and manage Datadog team-hierarchy-links.",
 		Attributes: map[string]schema.Attribute{
 			"id": utils.ResourceIDAttribute(),
-		},
-		Blocks: map[string]schema.Block{
-			"data": schema.SingleNestedBlock{
-				Attributes: map[string]schema.Attribute{
-					"type": schema.StringAttribute{
-						Optional:    true,
-						Description: "Team hierarchy link type",
-					},
+			"parent_team_id": schema.StringAttribute{
+				Required:    true,
+				Description: "ID of the parent team the team hierarchy link is associated with.",
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+					stringplanmodifier.UseStateForUnknown(),
 				},
-				Blocks: map[string]schema.Block{
-					"relationships": schema.SingleNestedBlock{
-						Attributes: map[string]schema.Attribute{},
-						Blocks: map[string]schema.Block{
-							"parent_team": schema.SingleNestedBlock{
-								Attributes: map[string]schema.Attribute{},
-								Blocks: map[string]schema.Block{
-									"data": schema.SingleNestedBlock{
-										Attributes: map[string]schema.Attribute{
-											"id": schema.StringAttribute{
-												Optional:    true,
-												Description: "The team's identifier",
-											},
-											"type": schema.StringAttribute{
-												Optional:    true,
-												Description: "Team type",
-											},
-										},
-									},
-								},
-							},
-							"sub_team": schema.SingleNestedBlock{
-								Attributes: map[string]schema.Attribute{},
-								Blocks: map[string]schema.Block{
-									"data": schema.SingleNestedBlock{
-										Attributes: map[string]schema.Attribute{
-											"id": schema.StringAttribute{
-												Optional:    true,
-												Description: "The team's identifier",
-											},
-											"type": schema.StringAttribute{
-												Optional:    true,
-												Description: "Team type",
-											},
-										},
-									},
-								},
-							},
-						},
-					},
+			},
+			"sub_team_id": schema.StringAttribute{
+				Required:    true,
+				Description: "ID of the sub team the team hierarchy link is associated with.",
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+					stringplanmodifier.UseStateForUnknown(),
 				},
+			},
+			"created_at": schema.StringAttribute{
+				Computed:    true,
+				Description: "Timestamp when the team hierarchy link was created.",
+			},
+			"provisioned_by": schema.StringAttribute{
+				Computed:    true,
+				Description: "The user who created the team hierarchy link.",
 			},
 		},
 	}
@@ -230,49 +183,32 @@ func (r *teamHierarchyLinksResource) buildTeamHierarchyLinksRequestBody(ctx cont
 	diags := diag.Diagnostics{}
 	req := &datadogV2.TeamHierarchyLinkCreateRequest{}
 
-	if state.Data != nil {
-		var data datadogV2.TeamHierarchyLinkCreate
+	var data datadogV2.TeamHierarchyLinkCreate
 
-		data.SetType(datadogV2.TeamHierarchyLinkType(state.Data.Type.ValueString()))
+	data.SetType(datadogV2.TEAMHIERARCHYLINKTYPE_TEAM_HIERARCHY_LINKS)
 
-		var relationships datadogV2.TeamHierarchyLinkCreateRelationships
+	var relationships datadogV2.TeamHierarchyLinkCreateRelationships
+	var parentTeam datadogV2.TeamHierarchyLinkCreateTeamRelationship
+	var parentTeamData datadogV2.TeamHierarchyLinkCreateTeam
+	parentTeamData.SetType(datadogV2.TEAMTYPE_TEAM)
+	parentTeamData.SetId(state.ParentTeamId.ValueString())
 
-		if state.Data.Relationships.ParentTeam != nil {
-			var parentTeam datadogV2.TeamHierarchyLinkCreateTeamRelationship
+	parentTeam.Data = parentTeamData
 
-			if state.Data.Relationships.ParentTeam.Data != nil {
-				var data datadogV2.TeamHierarchyLinkCreateTeam
+	relationships.ParentTeam = parentTeam
 
-				if !state.Data.Relationships.ParentTeam.Data.Id.IsNull() {
-					data.SetId(state.Data.Relationships.ParentTeam.Data.Id.ValueString())
-				}
-				if !state.Data.Relationships.ParentTeam.Data.Type.IsNull() {
-					data.SetType(datadogV2.TeamType(state.Data.Relationships.ParentTeam.Data.Type.ValueString()))
-				}
-				parentTeam.Data = data
-			}
-			relationships.ParentTeam = parentTeam
-		}
+	var subTeam datadogV2.TeamHierarchyLinkCreateTeamRelationship
+	var subTeamData datadogV2.TeamHierarchyLinkCreateTeam
+	subTeamData.SetType(datadogV2.TEAMTYPE_TEAM)
+	subTeamData.SetId(state.SubTeamId.ValueString())
 
-		if state.Data.Relationships.SubTeam != nil {
-			var subTeam datadogV2.TeamHierarchyLinkCreateTeamRelationship
+	subTeam.Data = subTeamData
 
-			if state.Data.Relationships.SubTeam.Data != nil {
-				var data datadogV2.TeamHierarchyLinkCreateTeam
+	relationships.SubTeam = subTeam
 
-				if !state.Data.Relationships.SubTeam.Data.Id.IsNull() {
-					data.SetId(state.Data.Relationships.SubTeam.Data.Id.ValueString())
-				}
-				if !state.Data.Relationships.SubTeam.Data.Type.IsNull() {
-					data.SetType(datadogV2.TeamType(state.Data.Relationships.SubTeam.Data.Type.ValueString()))
-				}
-				subTeam.Data = data
-			}
-			relationships.SubTeam = subTeam
-		}
-		data.Relationships = relationships
-		req.Data = data
-	}
+	data.Relationships = relationships
+
+	req.Data = data
 
 	return req, diags
 }

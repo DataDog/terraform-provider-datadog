@@ -3,6 +3,7 @@ package test
 import (
 	"context"
 	"fmt"
+	"strings"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
@@ -15,7 +16,7 @@ import (
 func TestAccTeamHierarchyLinksBasic(t *testing.T) {
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
-	uniq := uniqueEntityName(ctx, t)
+	uniq := strings.ToLower(uniqueEntityName(ctx, t))
 
 	resource.Test(t, resource.TestCase{
 		ProtoV5ProviderFactories: accProviders,
@@ -36,37 +37,21 @@ func testAccCheckDatadogTeamHierarchyLinks(uniq string) string {
 	return fmt.Sprintf(`
 	resource "datadog_team" "parent" {
 		description = "Parent team description."
-		handle = "%s-parent"
+		handle = "%sp"
 		name = "%s-parent"
 	}
 
 	resource "datadog_team" "child" {
 		description = "Child team description."
-		handle = "%s-child"
+		handle = "%sc"
 		name = "%s-child"
 	}
 
-	resource "datadog_team-hierarchy-links" "foo" {
-		body {
-			data {
-				relationships {
-					parent_team {
-						data {
-							id = datadog_team.parent.id
-							type = "team"
-						}
-					}
-					sub_team {
-						data {
-							id = datadog_team.child.id
-							type = "team"
-						}
-					}
-				}
-				type = "team_hierarchy_links"
-			}
-		}
-}`, uniq, uniq, uniq, uniq)
+	resource "datadog_team_hierarchy_links" "foo" {
+		parent_team_id = datadog_team.parent.id
+		sub_team_id    = datadog_team.child.id
+	}
+`, uniq, uniq, uniq, uniq)
 }
 
 func testAccCheckDatadogTeamHierarchyLinksDestroy(accProvider *fwprovider.FrameworkProvider) func(*terraform.State) error {
