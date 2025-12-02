@@ -78,6 +78,7 @@ var Resources = []func() resource.Resource{
 	NewWebhookResource,
 	NewWebhookCustomVariableResource,
 	NewLogsCustomDestinationResource,
+	NewLogsRestrictionQueryResource,
 	NewTenantBasedHandleResource,
 	NewAppsecWafExclusionFilterResource,
 	NewAppsecWafCustomRuleResource,
