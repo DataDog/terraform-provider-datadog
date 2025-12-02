@@ -1,0 +1,843 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 157
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"restriction_query":"service:test-tf-TestAccDatadogLogsRestrictionQuery_Update-local-1764702064"},"type":"logs_restriction_queries"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/logs/config/restriction_queries
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"logs_restriction_queries","id":"4180375c-cfb1-11f0-9f32-da7ad0900002","attributes":{"restriction_query":"service:test-tf-TestAccDatadogLogsRestrictionQuery_Update-local-1764702064","created_at":"2025-12-02T19:01:06.355990+00:00","modified_at":"2025-12-02T19:01:06.355990+00:00"}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 116.103792ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/logs/config/restriction_queries/4180375c-cfb1-11f0-9f32-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"logs_restriction_queries","id":"4180375c-cfb1-11f0-9f32-da7ad0900002","attributes":{"restriction_query":"service:test-tf-TestAccDatadogLogsRestrictionQuery_Update-local-1764702064","created_at":"2025-12-02T19:01:06.355990+00:00","modified_at":"2025-12-02T19:01:06.355990+00:00"},"relationships":{"roles":{"data":[]}}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 66.727375ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/logs/config/restriction_queries/4180375c-cfb1-11f0-9f32-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"logs_restriction_queries","id":"4180375c-cfb1-11f0-9f32-da7ad0900002","attributes":{"restriction_query":"service:test-tf-TestAccDatadogLogsRestrictionQuery_Update-local-1764702064","created_at":"2025-12-02T19:01:06.355990+00:00","modified_at":"2025-12-02T19:01:06.355990+00:00"},"relationships":{"roles":{"data":[]}}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 101.644833ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/logs/config/restriction_queries/4180375c-cfb1-11f0-9f32-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"logs_restriction_queries","id":"4180375c-cfb1-11f0-9f32-da7ad0900002","attributes":{"restriction_query":"service:test-tf-TestAccDatadogLogsRestrictionQuery_Update-local-1764702064","created_at":"2025-12-02T19:01:06.355990+00:00","modified_at":"2025-12-02T19:01:06.355990+00:00"},"relationships":{"roles":{"data":[]}}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 103.877958ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/logs/config/restriction_queries/4180375c-cfb1-11f0-9f32-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"logs_restriction_queries","id":"4180375c-cfb1-11f0-9f32-da7ad0900002","attributes":{"restriction_query":"service:test-tf-TestAccDatadogLogsRestrictionQuery_Update-local-1764702064","created_at":"2025-12-02T19:01:06.355990+00:00","modified_at":"2025-12-02T19:01:06.355990+00:00"},"relationships":{"roles":{"data":[]}}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 64.009ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/logs/config/restriction_queries/4180375c-cfb1-11f0-9f32-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"logs_restriction_queries","id":"4180375c-cfb1-11f0-9f32-da7ad0900002","attributes":{"restriction_query":"service:test-tf-TestAccDatadogLogsRestrictionQuery_Update-local-1764702064","created_at":"2025-12-02T19:01:06.355990+00:00","modified_at":"2025-12-02T19:01:06.355990+00:00"},"relationships":{"roles":{"data":[]}}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 67.92625ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 144
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"name":"tf-test-role-tf-TestAccDatadogLogsRestrictionQuery_Update-local-1764702064"},"relationships":{},"type":"roles"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/roles
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 997
+        uncompressed: false
+        body: '{"data":{"id":"42675e02-cfb1-11f0-84f9-da7ad0900002","type":"roles","attributes":{"created_at":"2025-12-02T19:01:07.870627Z","modified_at":"2025-12-02T19:01:07.87073Z","name":"tf-test-role-tf-TestAccDatadogLogsRestrictionQuery_Update-local-1764702064","team_count":0,"user_count":0},"relationships":{"permissions":{"data":[{"id":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2","type":"permissions"},{"id":"4441648c-d8b1-11e9-a77a-1b899a04b304","type":"permissions"},{"id":"417ba636-2dce-11eb-84c0-6bce5b0d9de0","type":"permissions"},{"id":"12efc20e-d36c-11eb-a9b8-da7ad0900002","type":"permissions"},{"id":"7605ef24-f376-11eb-b90b-da7ad0900002","type":"permissions"},{"id":"b6bf9ac6-9a59-11ec-8480-da7ad0900002","type":"permissions"},{"id":"f8e941cf-e746-11ec-b22d-da7ad0900002","type":"permissions"},{"id":"6c5ad874-7aff-11ed-a5cd-da7ad0900002","type":"permissions"},{"id":"a8b4d6e8-4ea4-11ee-b482-da7ad0900002","type":"permissions"},{"id":"50c270de-69ee-11ee-9151-da7ad0900002","type":"permissions"}]}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 67.564792ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/roles/42675e02-cfb1-11f0-84f9-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":{"id":"42675e02-cfb1-11f0-84f9-da7ad0900002","type":"roles","attributes":{"created_at":"2025-12-02T19:01:07.870627Z","created_by_handle":"frog@datadoghq.com","modified_at":"2025-12-02T19:01:07.87073Z","modified_by_handle":"frog@datadoghq.com","name":"tf-test-role-tf-TestAccDatadogLogsRestrictionQuery_Update-local-1764702064","team_count":0,"user_count":0},"relationships":{"permissions":{"data":[{"id":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2","type":"permissions"},{"id":"4441648c-d8b1-11e9-a77a-1b899a04b304","type":"permissions"},{"id":"417ba636-2dce-11eb-84c0-6bce5b0d9de0","type":"permissions"},{"id":"12efc20e-d36c-11eb-a9b8-da7ad0900002","type":"permissions"},{"id":"7605ef24-f376-11eb-b90b-da7ad0900002","type":"permissions"},{"id":"b6bf9ac6-9a59-11ec-8480-da7ad0900002","type":"permissions"},{"id":"f8e941cf-e746-11ec-b22d-da7ad0900002","type":"permissions"},{"id":"6c5ad874-7aff-11ed-a5cd-da7ad0900002","type":"permissions"},{"id":"a8b4d6e8-4ea4-11ee-b482-da7ad0900002","type":"permissions"},{"id":"50c270de-69ee-11ee-9151-da7ad0900002","type":"permissions"}]}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 63.176208ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 160
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"restriction_query":"service:updated-tf-TestAccDatadogLogsRestrictionQuery_Update-local-1764702064"},"type":"logs_restriction_queries"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/logs/config/restriction_queries/4180375c-cfb1-11f0-9f32-da7ad0900002
+        method: PATCH
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"logs_restriction_queries","id":"4180375c-cfb1-11f0-9f32-da7ad0900002","attributes":{"restriction_query":"service:updated-tf-TestAccDatadogLogsRestrictionQuery_Update-local-1764702064","created_at":"2025-12-02T19:01:06.355990+00:00","modified_at":"2025-12-02T19:01:08.026591+00:00"}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 81.226875ms
+    - id: 9
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 70
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"id":"42675e02-cfb1-11f0-84f9-da7ad0900002","type":"roles"}}
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/logs/config/restriction_queries/4180375c-cfb1-11f0-9f32-da7ad0900002/roles
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Content-Type:
+                - text/html; charset=utf-8
+        status: 204 No Content
+        code: 204
+        duration: 111.744292ms
+    - id: 10
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/logs/config/restriction_queries/4180375c-cfb1-11f0-9f32-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"logs_restriction_queries","id":"4180375c-cfb1-11f0-9f32-da7ad0900002","attributes":{"restriction_query":"service:updated-tf-TestAccDatadogLogsRestrictionQuery_Update-local-1764702064","created_at":"2025-12-02T19:01:06.355990+00:00","modified_at":"2025-12-02T19:01:08.026591+00:00"},"relationships":{"roles":{"data":[{"type":"roles","id":"42675e02-cfb1-11f0-84f9-da7ad0900002"}]}}},"included":[{"type":"roles","id":"42675e02-cfb1-11f0-84f9-da7ad0900002","attributes":{"name":"tf-test-role-tf-TestAccDatadogLogsRestrictionQuery_Update-local-1764702064"}}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 74.657542ms
+    - id: 11
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/logs/config/restriction_queries/4180375c-cfb1-11f0-9f32-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"logs_restriction_queries","id":"4180375c-cfb1-11f0-9f32-da7ad0900002","attributes":{"restriction_query":"service:updated-tf-TestAccDatadogLogsRestrictionQuery_Update-local-1764702064","created_at":"2025-12-02T19:01:06.355990+00:00","modified_at":"2025-12-02T19:01:08.026591+00:00"},"relationships":{"roles":{"data":[{"type":"roles","id":"42675e02-cfb1-11f0-84f9-da7ad0900002"}]}}},"included":[{"type":"roles","id":"42675e02-cfb1-11f0-84f9-da7ad0900002","attributes":{"name":"tf-test-role-tf-TestAccDatadogLogsRestrictionQuery_Update-local-1764702064"}}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 178.947875ms
+    - id: 12
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/roles/42675e02-cfb1-11f0-84f9-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":{"id":"42675e02-cfb1-11f0-84f9-da7ad0900002","type":"roles","attributes":{"created_at":"2025-12-02T19:01:07.870627Z","created_by_handle":"frog@datadoghq.com","modified_at":"2025-12-02T19:01:08.123617Z","modified_by_handle":"frog@datadoghq.com","name":"tf-test-role-tf-TestAccDatadogLogsRestrictionQuery_Update-local-1764702064","team_count":0,"user_count":0},"relationships":{"permissions":{"data":[{"id":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2","type":"permissions"},{"id":"4441648c-d8b1-11e9-a77a-1b899a04b304","type":"permissions"},{"id":"1af86ce4-7823-11ea-93dc-d7cad1b1c6cb","type":"permissions"},{"id":"417ba636-2dce-11eb-84c0-6bce5b0d9de0","type":"permissions"},{"id":"12efc20e-d36c-11eb-a9b8-da7ad0900002","type":"permissions"},{"id":"7605ef24-f376-11eb-b90b-da7ad0900002","type":"permissions"},{"id":"b6bf9ac6-9a59-11ec-8480-da7ad0900002","type":"permissions"},{"id":"f8e941cf-e746-11ec-b22d-da7ad0900002","type":"permissions"},{"id":"6c5ad874-7aff-11ed-a5cd-da7ad0900002","type":"permissions"},{"id":"a8b4d6e8-4ea4-11ee-b482-da7ad0900002","type":"permissions"},{"id":"50c270de-69ee-11ee-9151-da7ad0900002","type":"permissions"}]}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 64.432083ms
+    - id: 13
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/logs/config/restriction_queries/4180375c-cfb1-11f0-9f32-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"logs_restriction_queries","id":"4180375c-cfb1-11f0-9f32-da7ad0900002","attributes":{"restriction_query":"service:updated-tf-TestAccDatadogLogsRestrictionQuery_Update-local-1764702064","created_at":"2025-12-02T19:01:06.355990+00:00","modified_at":"2025-12-02T19:01:08.026591+00:00"},"relationships":{"roles":{"data":[{"type":"roles","id":"42675e02-cfb1-11f0-84f9-da7ad0900002"}]}}},"included":[{"type":"roles","id":"42675e02-cfb1-11f0-84f9-da7ad0900002","attributes":{"name":"tf-test-role-tf-TestAccDatadogLogsRestrictionQuery_Update-local-1764702064"}}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 87.331167ms
+    - id: 14
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/roles/42675e02-cfb1-11f0-84f9-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":{"id":"42675e02-cfb1-11f0-84f9-da7ad0900002","type":"roles","attributes":{"created_at":"2025-12-02T19:01:07.870627Z","created_by_handle":"frog@datadoghq.com","modified_at":"2025-12-02T19:01:08.123617Z","modified_by_handle":"frog@datadoghq.com","name":"tf-test-role-tf-TestAccDatadogLogsRestrictionQuery_Update-local-1764702064","team_count":0,"user_count":0},"relationships":{"permissions":{"data":[{"id":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2","type":"permissions"},{"id":"4441648c-d8b1-11e9-a77a-1b899a04b304","type":"permissions"},{"id":"1af86ce4-7823-11ea-93dc-d7cad1b1c6cb","type":"permissions"},{"id":"417ba636-2dce-11eb-84c0-6bce5b0d9de0","type":"permissions"},{"id":"12efc20e-d36c-11eb-a9b8-da7ad0900002","type":"permissions"},{"id":"7605ef24-f376-11eb-b90b-da7ad0900002","type":"permissions"},{"id":"b6bf9ac6-9a59-11ec-8480-da7ad0900002","type":"permissions"},{"id":"f8e941cf-e746-11ec-b22d-da7ad0900002","type":"permissions"},{"id":"6c5ad874-7aff-11ed-a5cd-da7ad0900002","type":"permissions"},{"id":"a8b4d6e8-4ea4-11ee-b482-da7ad0900002","type":"permissions"},{"id":"50c270de-69ee-11ee-9151-da7ad0900002","type":"permissions"}]}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 100.452709ms
+    - id: 15
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/logs/config/restriction_queries/4180375c-cfb1-11f0-9f32-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"logs_restriction_queries","id":"4180375c-cfb1-11f0-9f32-da7ad0900002","attributes":{"restriction_query":"service:updated-tf-TestAccDatadogLogsRestrictionQuery_Update-local-1764702064","created_at":"2025-12-02T19:01:06.355990+00:00","modified_at":"2025-12-02T19:01:08.026591+00:00"},"relationships":{"roles":{"data":[{"type":"roles","id":"42675e02-cfb1-11f0-84f9-da7ad0900002"}]}}},"included":[{"type":"roles","id":"42675e02-cfb1-11f0-84f9-da7ad0900002","attributes":{"name":"tf-test-role-tf-TestAccDatadogLogsRestrictionQuery_Update-local-1764702064"}}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 106.731792ms
+    - id: 16
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/roles/42675e02-cfb1-11f0-84f9-da7ad0900002
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 49.248875ms
+    - id: 17
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 158
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"restriction_query":"service:final-tf-TestAccDatadogLogsRestrictionQuery_Update-local-1764702064"},"type":"logs_restriction_queries"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/logs/config/restriction_queries/4180375c-cfb1-11f0-9f32-da7ad0900002
+        method: PATCH
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"logs_restriction_queries","id":"4180375c-cfb1-11f0-9f32-da7ad0900002","attributes":{"restriction_query":"service:final-tf-TestAccDatadogLogsRestrictionQuery_Update-local-1764702064","created_at":"2025-12-02T19:01:06.355990+00:00","modified_at":"2025-12-02T19:01:09.471334+00:00"}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 94.956792ms
+    - id: 18
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 70
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"id":"42675e02-cfb1-11f0-84f9-da7ad0900002","type":"roles"}}
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/logs/config/restriction_queries/4180375c-cfb1-11f0-9f32-da7ad0900002/roles
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"errors":["role with uuid: 42675e02-cfb1-11f0-84f9-da7ad0900002 doesn''t exist or uuid is not proper type"]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 400 Bad Request
+        code: 400
+        duration: 77.541875ms
+    - id: 19
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/logs/config/restriction_queries/4180375c-cfb1-11f0-9f32-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"logs_restriction_queries","id":"4180375c-cfb1-11f0-9f32-da7ad0900002","attributes":{"restriction_query":"service:final-tf-TestAccDatadogLogsRestrictionQuery_Update-local-1764702064","created_at":"2025-12-02T19:01:06.355990+00:00","modified_at":"2025-12-02T19:01:09.471334+00:00"},"relationships":{"roles":{"data":[]}}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 71.340291ms
+    - id: 20
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/logs/config/restriction_queries/4180375c-cfb1-11f0-9f32-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"logs_restriction_queries","id":"4180375c-cfb1-11f0-9f32-da7ad0900002","attributes":{"restriction_query":"service:final-tf-TestAccDatadogLogsRestrictionQuery_Update-local-1764702064","created_at":"2025-12-02T19:01:06.355990+00:00","modified_at":"2025-12-02T19:01:09.471334+00:00"},"relationships":{"roles":{"data":[]}}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 73.497417ms
+    - id: 21
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/logs/config/restriction_queries/4180375c-cfb1-11f0-9f32-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"logs_restriction_queries","id":"4180375c-cfb1-11f0-9f32-da7ad0900002","attributes":{"restriction_query":"service:final-tf-TestAccDatadogLogsRestrictionQuery_Update-local-1764702064","created_at":"2025-12-02T19:01:06.355990+00:00","modified_at":"2025-12-02T19:01:09.471334+00:00"},"relationships":{"roles":{"data":[]}}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 65.975334ms
+    - id: 22
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/logs/config/restriction_queries/4180375c-cfb1-11f0-9f32-da7ad0900002
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Content-Type:
+                - text/html; charset=utf-8
+        status: 204 No Content
+        code: 204
+        duration: 119.074708ms
+    - id: 23
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/logs/config/restriction_queries/4180375c-cfb1-11f0-9f32-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"errors":["Restriction query not found"]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 62.141ms

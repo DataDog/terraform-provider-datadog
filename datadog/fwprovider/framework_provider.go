@@ -78,6 +78,7 @@ var Resources = []func() resource.Resource{
 	NewWebhookResource,
 	NewWebhookCustomVariableResource,
 	NewLogsCustomDestinationResource,
+	NewLogsRestrictionQueryResource,
 	NewTenantBasedHandleResource,
 	NewAppsecWafExclusionFilterResource,
 	NewAppsecWafCustomRuleResource,
@@ -581,6 +582,14 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.CreateDataset", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateDataset", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteDataset", true)
+
+	// Enable Logs Restriction Queries
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateRestrictionQuery", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetRestrictionQuery", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateRestrictionQuery", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteRestrictionQuery", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.AddRoleToRestrictionQuery", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.RemoveRoleFromRestrictionQuery", true)
 
 	// Enable Observability Pipelines
 	ddClientConfig.SetUnstableOperationEnabled("v2.CreatePipeline", true)
