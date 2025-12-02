@@ -59,11 +59,11 @@ func (d *datadogReferenceTableRowsDataSource) Schema(_ context.Context, _ dataso
 				Required:    true,
 				Description: "The UUID of the reference table to query rows from.",
 			},
-		"row_ids": schema.ListAttribute{
-			Required:    true,
-			Description: "List of primary key values (row IDs) to retrieve. These are the values of the table's primary key field(s). Maximum 250 IDs per request.",
-			ElementType: types.StringType,
-		},
+			"row_ids": schema.ListAttribute{
+				Required:    true,
+				Description: "List of primary key values (row IDs) to retrieve. These are the values of the table's primary key field(s). Maximum 250 IDs per request.",
+				ElementType: types.StringType,
+			},
 		},
 		Blocks: map[string]schema.Block{
 			"rows": schema.ListNestedBlock{
