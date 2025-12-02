@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"assets":[{"category":"runbook","name":"Datadog Runbook","resource_key":"1234","resource_type":"notebook","url":"/notebook/1234"},{"category":"runbook","name":"Confluence Runbook","url":"https://datadoghq.atlassian.net/wiki/spaces/ENG/pages/12345/Runbook"}],"draft_status":"published","message":"some message Notify: @hipchat-channel","name":"tf-TestAccDatadogMonitor_Assets-local-1763675413","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":2,"warning":1}},"priority":null,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} \u003e 2","restricted_roles":null,"tags":[],"type":"query alert"}
+            {"assets":[{"category":"runbook","name":"Datadog Runbook","resource_key":"1234","resource_type":"notebook","url":"/notebook/1234"},{"category":"runbook","name":"Confluence Runbook","url":"https://datadoghq.atlassian.net/wiki/spaces/ENG/pages/12345/Runbook"}],"draft_status":"published","message":"some message Notify: @hipchat-channel","name":"tf-TestAccDatadogMonitor_Assets-local-1764706239","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":2,"warning":1}},"priority":null,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} \u003e 2","restricted_roles":null,"tags":[],"type":"query alert"}
         form: {}
         headers:
             Accept:
@@ -37,7 +37,7 @@ interactions:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 208.994333ms
+        duration: 197.5555ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -50,7 +50,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"assets":[{"category":"runbook","name":"Datadog Runbook","resource_key":"1234","resource_type":"notebook","url":"/notebook/1234"},{"category":"runbook","name":"Confluence Runbook","url":"https://datadoghq.atlassian.net/wiki/spaces/ENG/pages/12345/Runbook"}],"draft_status":"published","message":"some message Notify: @hipchat-channel","name":"tf-TestAccDatadogMonitor_Assets-local-1763675413","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":2,"warning":1}},"priority":null,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} \u003e 2","restricted_roles":null,"tags":[],"type":"query alert"}
+            {"assets":[{"category":"runbook","name":"Datadog Runbook","resource_key":"1234","resource_type":"notebook","url":"/notebook/1234"},{"category":"runbook","name":"Confluence Runbook","url":"https://datadoghq.atlassian.net/wiki/spaces/ENG/pages/12345/Runbook"}],"draft_status":"published","message":"some message Notify: @hipchat-channel","name":"tf-TestAccDatadogMonitor_Assets-local-1764706239","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":2,"warning":1}},"priority":null,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} \u003e 2","restricted_roles":null,"tags":[],"type":"query alert"}
         form: {}
         headers:
             Accept:
@@ -74,7 +74,7 @@ interactions:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 85.632333ms
+        duration: 91.654917ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -87,7 +87,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"assets":[{"category":"runbook","name":"Datadog Runbook","resource_key":"1234","resource_type":"notebook","url":"/notebook/1234"},{"category":"runbook","name":"Confluence Runbook","url":"https://datadoghq.atlassian.net/wiki/spaces/ENG/pages/12345/Runbook"}],"draft_status":"published","message":"some message Notify: @hipchat-channel","name":"tf-TestAccDatadogMonitor_Assets-local-1763675413","options":{"include_tags":true,"new_host_delay":300,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":2,"warning":1}},"priority":null,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} \u003e 2","restricted_roles":null,"tags":[],"type":"query alert"}
+            {"assets":[{"category":"runbook","name":"Datadog Runbook","resource_key":"1234","resource_type":"notebook","url":"/notebook/1234"},{"category":"runbook","name":"Confluence Runbook","url":"https://datadoghq.atlassian.net/wiki/spaces/ENG/pages/12345/Runbook"}],"draft_status":"published","message":"some message Notify: @hipchat-channel","name":"tf-TestAccDatadogMonitor_Assets-local-1764706239","options":{"include_tags":true,"new_host_delay":300,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":2,"warning":1}},"priority":null,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} \u003e 2","restricted_roles":null,"tags":[],"type":"query alert"}
         form: {}
         headers:
             Accept:
@@ -106,13 +106,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":238477527,"org_id":197728,"type":"query alert","name":"tf-TestAccDatadogMonitor_Assets-local-1763675413","message":"some message Notify: @hipchat-channel","tags":[],"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2","options":{"include_tags":true,"new_host_delay":300,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":2.0,"warning":1.0},"notify_audit":false,"silenced":{}},"multi":true,"created_at":1763675414000,"created":"2025-11-20T21:50:14.913203+00:00","modified":"2025-11-20T21:50:14.913203+00:00","deleted":null,"priority":null,"restricted_roles":null,"restriction_policy":null,"draft_status":"published","assets":[{"monitor_id":238477527,"name":"Datadog Runbook","category":"runbook","url":"/notebook/1234","template_variables":{},"options":{},"resource_key":"1234","resource_type":"notebook"},{"monitor_id":238477527,"name":"Confluence Runbook","category":"runbook","url":"https://datadoghq.atlassian.net/wiki/spaces/ENG/pages/12345/Runbook","template_variables":{},"options":{},"resource_key":null,"resource_type":null}],"overall_state_modified":null,"overall_state":"No Data","creator":{"name":"Kevin Pombo","handle":"kevin.pombo@datadoghq.com","email":"kevin.pombo@datadoghq.com","id":25712273}}
+            {"id":241252769,"org_id":197728,"type":"query alert","name":"tf-TestAccDatadogMonitor_Assets-local-1764706239","message":"some message Notify: @hipchat-channel","tags":[],"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2","options":{"include_tags":true,"new_host_delay":300,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":2.0,"warning":1.0},"notify_audit":false,"silenced":{}},"multi":true,"created_at":1764706241000,"created":"2025-12-02T20:10:41.115565+00:00","modified":"2025-12-02T20:10:41.115565+00:00","deleted":null,"priority":null,"restricted_roles":null,"restriction_policy":null,"draft_status":"published","assets":[{"monitor_id":241252769,"name":"Datadog Runbook","category":"runbook","url":"/notebook/1234","template_variables":{},"options":{},"resource_key":"1234","resource_type":"notebook"},{"monitor_id":241252769,"name":"Confluence Runbook","category":"runbook","url":"https://datadoghq.atlassian.net/wiki/spaces/ENG/pages/12345/Runbook","template_variables":{},"options":{},"resource_key":null,"resource_type":null}],"overall_state_modified":null,"overall_state":"No Data","creator":{"name":"Kevin Pombo","handle":"kevin.pombo@datadoghq.com","email":"kevin.pombo@datadoghq.com","id":25712273}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 5.322130125s
+        duration: 3.0470245s
     - id: 3
       request:
         proto: HTTP/1.1
@@ -129,7 +129,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/238477527
+        url: https://api.datadoghq.com/api/v1/monitor/241252769
         method: GET
       response:
         proto: HTTP/1.1
@@ -141,13 +141,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":238477527,"org_id":197728,"type":"query alert","name":"tf-TestAccDatadogMonitor_Assets-local-1763675413","message":"some message Notify: @hipchat-channel","tags":[],"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2","options":{"include_tags":true,"new_host_delay":300,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":2.0,"warning":1.0},"notify_audit":false,"silenced":{}},"multi":true,"created_at":1763675414000,"created":"2025-11-20T21:50:14.913203+00:00","modified":"2025-11-20T21:50:14.913203+00:00","deleted":null,"priority":null,"restricted_roles":null,"draft_status":"published","assets":[],"overall_state_modified":null,"overall_state":"No Data","creator":{"name":"Kevin Pombo","email":"kevin.pombo@datadoghq.com","handle":"kevin.pombo@datadoghq.com","id":25712273}}
+            {"id":241252769,"org_id":197728,"type":"query alert","name":"tf-TestAccDatadogMonitor_Assets-local-1764706239","message":"some message Notify: @hipchat-channel","tags":[],"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2","options":{"include_tags":true,"new_host_delay":300,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":2.0,"warning":1.0},"notify_audit":false,"silenced":{}},"multi":true,"created_at":1764706241000,"created":"2025-12-02T20:10:41.115565+00:00","modified":"2025-12-02T20:10:41.115565+00:00","deleted":null,"priority":null,"restricted_roles":null,"draft_status":"published","assets":[],"overall_state_modified":null,"overall_state":"No Data","creator":{"name":"Kevin Pombo","email":"kevin.pombo@datadoghq.com","handle":"kevin.pombo@datadoghq.com","id":25712273}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 152.242625ms
+        duration: 114.913208ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -160,14 +160,14 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"assets":[{"category":"runbook","name":"Datadog Runbook","resource_key":"1234","resource_type":"notebook","url":"/notebook/1234"},{"category":"runbook","name":"Confluence Runbook","url":"https://datadoghq.atlassian.net/wiki/spaces/ENG/pages/12345/Runbook"}],"draft_status":"published","message":"some message Notify: @hipchat-channel","name":"tf-TestAccDatadogMonitor_Assets-local-1763675413","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":2,"warning":1}},"priority":null,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} \u003e 2","restricted_roles":null,"tags":[],"type":"query alert"}
+            {"assets":[{"category":"runbook","name":"Datadog Runbook","resource_key":"1234","resource_type":"notebook","url":"/notebook/1234"},{"category":"runbook","name":"Confluence Runbook","url":"https://datadoghq.atlassian.net/wiki/spaces/ENG/pages/12345/Runbook"}],"draft_status":"published","message":"some message Notify: @hipchat-channel","name":"tf-TestAccDatadogMonitor_Assets-local-1764706239","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":2,"warning":1}},"priority":null,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} \u003e 2","restricted_roles":null,"tags":[],"type":"query alert"}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/238477527/validate
+        url: https://api.datadoghq.com/api/v1/monitor/241252769/validate
         method: POST
       response:
         proto: HTTP/1.1
@@ -184,7 +184,7 @@ interactions:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 102.497041ms
+        duration: 107.597959ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -201,7 +201,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/238477527?with_assets=true
+        url: https://api.datadoghq.com/api/v1/monitor/241252769?with_assets=true
         method: GET
       response:
         proto: HTTP/1.1
@@ -213,13 +213,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":238477527,"org_id":197728,"type":"query alert","name":"tf-TestAccDatadogMonitor_Assets-local-1763675413","message":"some message Notify: @hipchat-channel","tags":[],"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2","options":{"include_tags":true,"new_host_delay":300,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":2.0,"warning":1.0},"notify_audit":false,"silenced":{}},"multi":true,"created_at":1763675414000,"created":"2025-11-20T21:50:14.913203+00:00","modified":"2025-11-20T21:50:14.913203+00:00","deleted":null,"priority":null,"restricted_roles":null,"draft_status":"published","assets":[{"name":"Datadog Runbook","category":"runbook","url":"/notebook/1234","template_variables":{},"options":{},"resource_key":"1234","resource_type":"notebook"},{"name":"Confluence Runbook","category":"runbook","url":"https://datadoghq.atlassian.net/wiki/spaces/ENG/pages/12345/Runbook","template_variables":{},"options":{},"resource_key":null,"resource_type":null}],"overall_state_modified":null,"overall_state":"No Data","creator":{"name":"Kevin Pombo","email":"kevin.pombo@datadoghq.com","handle":"kevin.pombo@datadoghq.com","id":25712273}}
+            {"id":241252769,"org_id":197728,"type":"query alert","name":"tf-TestAccDatadogMonitor_Assets-local-1764706239","message":"some message Notify: @hipchat-channel","tags":[],"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2","options":{"include_tags":true,"new_host_delay":300,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":2.0,"warning":1.0},"notify_audit":false,"silenced":{}},"multi":true,"created_at":1764706241000,"created":"2025-12-02T20:10:41.115565+00:00","modified":"2025-12-02T20:10:41.115565+00:00","deleted":null,"priority":null,"restricted_roles":null,"draft_status":"published","assets":[{"name":"Datadog Runbook","category":"runbook","url":"/notebook/1234","template_variables":{},"options":{},"resource_key":"1234","resource_type":"notebook"},{"name":"Confluence Runbook","category":"runbook","url":"https://datadoghq.atlassian.net/wiki/spaces/ENG/pages/12345/Runbook","template_variables":{},"options":{},"resource_key":null,"resource_type":null}],"overall_state_modified":null,"overall_state":"No Data","creator":{"name":"Kevin Pombo","email":"kevin.pombo@datadoghq.com","handle":"kevin.pombo@datadoghq.com","id":25712273}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 201.371708ms
+        duration: 364.118375ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -232,14 +232,14 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"assets":[{"category":"runbook","name":"Datadog Runbook","resource_key":"1234","resource_type":"notebook","url":"/notebook/1234"},{"category":"runbook","name":"Confluence Runbook","url":"https://datadoghq.atlassian.net/wiki/spaces/ENG/pages/12345/Runbook"}],"draft_status":"published","message":"some message Notify: @hipchat-channel","name":"tf-TestAccDatadogMonitor_Assets-local-1763675413","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":2,"warning":1}},"priority":null,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} \u003e 2","restricted_roles":null,"tags":[],"type":"query alert"}
+            {"assets":[{"category":"runbook","name":"Datadog Runbook","resource_key":"1234","resource_type":"notebook","url":"/notebook/1234"},{"category":"runbook","name":"Confluence Runbook","url":"https://datadoghq.atlassian.net/wiki/spaces/ENG/pages/12345/Runbook"}],"draft_status":"published","message":"some message Notify: @hipchat-channel","name":"tf-TestAccDatadogMonitor_Assets-local-1764706239","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":2,"warning":1}},"priority":null,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} \u003e 2","restricted_roles":null,"tags":[],"type":"query alert"}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/238477527/validate
+        url: https://api.datadoghq.com/api/v1/monitor/241252769/validate
         method: POST
       response:
         proto: HTTP/1.1
@@ -256,7 +256,7 @@ interactions:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 105.307625ms
+        duration: 3.800572333s
     - id: 7
       request:
         proto: HTTP/1.1
@@ -273,8 +273,8 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/238477527
-        method: DELETE
+        url: https://api.datadoghq.com/api/v1/monitor/241252769?with_assets=true
+        method: GET
       response:
         proto: HTTP/1.1
         proto_major: 1
@@ -285,14 +285,126 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"deleted_monitor_id":238477527}
+            {"id":241252769,"org_id":197728,"type":"query alert","name":"tf-TestAccDatadogMonitor_Assets-local-1764706239","message":"some message Notify: @hipchat-channel","tags":[],"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2","options":{"include_tags":true,"new_host_delay":300,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":2.0,"warning":1.0},"notify_audit":false,"silenced":{}},"multi":true,"created_at":1764706241000,"created":"2025-12-02T20:10:41.115565+00:00","modified":"2025-12-02T20:10:41.115565+00:00","deleted":null,"priority":null,"restricted_roles":null,"draft_status":"published","assets":[{"name":"Datadog Runbook","category":"runbook","url":"/notebook/1234","template_variables":{},"options":{},"resource_key":"1234","resource_type":"notebook"},{"name":"Confluence Runbook","category":"runbook","url":"https://datadoghq.atlassian.net/wiki/spaces/ENG/pages/12345/Runbook","template_variables":{},"options":{},"resource_key":null,"resource_type":null}],"overall_state_modified":"2025-12-02T20:10:47+00:00","overall_state":"No Data","creator":{"name":"Kevin Pombo","email":"kevin.pombo@datadoghq.com","handle":"kevin.pombo@datadoghq.com","id":25712273}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 5.624289542s
+        duration: 182.750833ms
     - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 809
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"assets":[{"category":"runbook","name":"Datadog Runbook 2","resource_key":"5678","resource_type":"notebook","url":"/notebook/5678"},{"category":"runbook","name":"Confluence Runbook","url":"https://datadoghq.atlassian.net/wiki/spaces/ENG/pages/12345/Runbook"},{"category":"runbook","name":"Google Doc Runbook","url":"https://docs.google.com/runbook"}],"draft_status":"published","message":"some message Notify: @hipchat-channel","name":"tf-TestAccDatadogMonitor_Assets-local-1764706239","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":2,"warning":1}},"priority":null,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} \u003e 2","restricted_roles":null,"tags":[],"type":"query alert"}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/monitor/241252769/validate
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 3
+        uncompressed: false
+        body: |
+            {}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 98.95ms
+    - id: 9
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 809
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"assets":[{"category":"runbook","name":"Datadog Runbook 2","resource_key":"5678","resource_type":"notebook","url":"/notebook/5678"},{"category":"runbook","name":"Confluence Runbook","url":"https://datadoghq.atlassian.net/wiki/spaces/ENG/pages/12345/Runbook"},{"category":"runbook","name":"Google Doc Runbook","url":"https://docs.google.com/runbook"}],"draft_status":"published","message":"some message Notify: @hipchat-channel","name":"tf-TestAccDatadogMonitor_Assets-local-1764706239","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":2,"warning":1}},"priority":null,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} \u003e 2","restricted_roles":null,"tags":[],"type":"query alert"}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/monitor/241252769/validate
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 3
+        uncompressed: false
+        body: |
+            {}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 92.083917ms
+    - id: 10
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 801
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"assets":[{"category":"runbook","name":"Datadog Runbook 2","resource_key":"5678","resource_type":"notebook","url":"/notebook/5678"},{"category":"runbook","name":"Confluence Runbook","url":"https://datadoghq.atlassian.net/wiki/spaces/ENG/pages/12345/Runbook"},{"category":"runbook","name":"Google Doc Runbook","url":"https://docs.google.com/runbook"}],"draft_status":"published","id":241252769,"message":"some message Notify: @hipchat-channel","name":"tf-TestAccDatadogMonitor_Assets-local-1764706239","options":{"include_tags":true,"new_host_delay":300,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":2,"warning":1}},"priority":null,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} \u003e 2","restricted_roles":null,"tags":[],"type":"query alert"}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/monitor/241252769
+        method: PUT
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":241252769,"org_id":197728,"type":"query alert","name":"tf-TestAccDatadogMonitor_Assets-local-1764706239","message":"some message Notify: @hipchat-channel","tags":[],"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2","options":{"include_tags":true,"new_host_delay":300,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":2.0,"warning":1.0},"notify_audit":false,"silenced":{}},"multi":true,"created_at":1764706241000,"created":"2025-12-02T20:10:41.115565+00:00","modified":"2025-12-02T20:10:49.744527+00:00","deleted":null,"priority":null,"restricted_roles":null,"restriction_policy":null,"draft_status":"published","assets":[{"monitor_id":241252769,"name":"Datadog Runbook 2","category":"runbook","url":"/notebook/5678","template_variables":{},"options":{},"resource_key":"5678","resource_type":"notebook"},{"monitor_id":241252769,"name":"Confluence Runbook","category":"runbook","url":"https://datadoghq.atlassian.net/wiki/spaces/ENG/pages/12345/Runbook","template_variables":{},"options":{},"resource_key":null,"resource_type":null},{"monitor_id":241252769,"name":"Google Doc Runbook","category":"runbook","url":"https://docs.google.com/runbook","template_variables":{},"options":{},"resource_key":null,"resource_type":null}],"overall_state_modified":null,"overall_state":"No Data"}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 219.85475ms
+    - id: 11
       request:
         proto: HTTP/1.1
         proto_major: 1
@@ -308,7 +420,186 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/238477527
+        url: https://api.datadoghq.com/api/v1/monitor/241252769
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":241252769,"org_id":197728,"type":"query alert","name":"tf-TestAccDatadogMonitor_Assets-local-1764706239","message":"some message Notify: @hipchat-channel","tags":[],"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2","options":{"include_tags":true,"new_host_delay":300,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":2.0,"warning":1.0},"notify_audit":false,"silenced":{}},"multi":true,"created_at":1764706241000,"created":"2025-12-02T20:10:41.115565+00:00","modified":"2025-12-02T20:10:49.744527+00:00","deleted":null,"priority":null,"restricted_roles":null,"draft_status":"published","assets":[],"overall_state_modified":"2025-12-02T20:10:47+00:00","overall_state":"No Data","creator":{"name":"Kevin Pombo","email":"kevin.pombo@datadoghq.com","handle":"kevin.pombo@datadoghq.com","id":25712273}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 122.0385ms
+    - id: 12
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 809
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"assets":[{"category":"runbook","name":"Datadog Runbook 2","resource_key":"5678","resource_type":"notebook","url":"/notebook/5678"},{"category":"runbook","name":"Confluence Runbook","url":"https://datadoghq.atlassian.net/wiki/spaces/ENG/pages/12345/Runbook"},{"category":"runbook","name":"Google Doc Runbook","url":"https://docs.google.com/runbook"}],"draft_status":"published","message":"some message Notify: @hipchat-channel","name":"tf-TestAccDatadogMonitor_Assets-local-1764706239","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":2,"warning":1}},"priority":null,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} \u003e 2","restricted_roles":null,"tags":[],"type":"query alert"}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/monitor/241252769/validate
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 3
+        uncompressed: false
+        body: |
+            {}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 104.427084ms
+    - id: 13
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/monitor/241252769?with_assets=true
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":241252769,"org_id":197728,"type":"query alert","name":"tf-TestAccDatadogMonitor_Assets-local-1764706239","message":"some message Notify: @hipchat-channel","tags":[],"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2","options":{"include_tags":true,"new_host_delay":300,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":2.0,"warning":1.0},"notify_audit":false,"silenced":{}},"multi":true,"created_at":1764706241000,"created":"2025-12-02T20:10:41.115565+00:00","modified":"2025-12-02T20:10:49.744527+00:00","deleted":null,"priority":null,"restricted_roles":null,"draft_status":"published","assets":[{"name":"Datadog Runbook 2","category":"runbook","url":"/notebook/5678","template_variables":{},"options":{},"resource_key":"5678","resource_type":"notebook"},{"name":"Confluence Runbook","category":"runbook","url":"https://datadoghq.atlassian.net/wiki/spaces/ENG/pages/12345/Runbook","template_variables":{},"options":{},"resource_key":null,"resource_type":null},{"name":"Google Doc Runbook","category":"runbook","url":"https://docs.google.com/runbook","template_variables":{},"options":{},"resource_key":null,"resource_type":null}],"overall_state_modified":"2025-12-02T20:10:47+00:00","overall_state":"No Data","creator":{"name":"Kevin Pombo","email":"kevin.pombo@datadoghq.com","handle":"kevin.pombo@datadoghq.com","id":25712273}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 166.106583ms
+    - id: 14
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 809
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"assets":[{"category":"runbook","name":"Datadog Runbook 2","resource_key":"5678","resource_type":"notebook","url":"/notebook/5678"},{"category":"runbook","name":"Confluence Runbook","url":"https://datadoghq.atlassian.net/wiki/spaces/ENG/pages/12345/Runbook"},{"category":"runbook","name":"Google Doc Runbook","url":"https://docs.google.com/runbook"}],"draft_status":"published","message":"some message Notify: @hipchat-channel","name":"tf-TestAccDatadogMonitor_Assets-local-1764706239","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":2,"warning":1}},"priority":null,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} \u003e 2","restricted_roles":null,"tags":[],"type":"query alert"}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/monitor/241252769/validate
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 3
+        uncompressed: false
+        body: |
+            {}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 111.970833ms
+    - id: 15
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/monitor/241252769
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"deleted_monitor_id":241252769}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 2.893700625s
+    - id: 16
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/monitor/241252769
         method: GET
       response:
         proto: HTTP/1.1
@@ -325,4 +616,4 @@ interactions:
                 - application/json
         status: 404 Not Found
         code: 404
-        duration: 96.005083ms
+        duration: 90.029084ms

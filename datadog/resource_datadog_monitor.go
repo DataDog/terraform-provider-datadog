@@ -1530,9 +1530,6 @@ func buildMonitorAssets(tfAssets []interface{}) []datadogV1.MonitorAsset {
 		categoryStr, _ := aMap["category"].(string)
 		nameStr, _ := aMap["name"].(string)
 		urlStr, _ := aMap["url"].(string)
-		if categoryStr == "" || nameStr == "" || urlStr == "" {
-			continue
-		}
 		category := datadogV1.MonitorAssetCategory(categoryStr)
 		asset := datadogV1.NewMonitorAsset(category, nameStr, urlStr)
 		if rk, ok := aMap["resource_key"].(string); ok && rk != "" {
