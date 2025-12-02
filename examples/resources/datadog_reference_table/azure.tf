@@ -41,6 +41,4 @@ resource "datadog_reference_table" "azure_table" {
       type = "STRING"
     }
   }
-
-  tags = ["source:azure", "team:warehouse"]
 }
