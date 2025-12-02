@@ -7,7 +7,6 @@ import (
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
-	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -63,6 +62,7 @@ func (r *LogsRestrictionQueryResource) Schema(_ context.Context, _ resource.Sche
 				Description: "An array of role IDs that have access to this restriction query.",
 				ElementType: types.StringType,
 				Optional:    true,
+				Computed:    true,
 			},
 			"created_at": schema.StringAttribute{
 				Description: "Creation time of the restriction query (in ISO 8601).",
@@ -227,8 +227,12 @@ func (r *LogsRestrictionQueryResource) Update(ctx context.Context, request resou
 		roleData.SetId(roleId)
 		relationshipToRole.SetData(*roleData)
 
-		_, err := r.API.RemoveRoleFromRestrictionQuery(r.Auth, restrictionQueryId, *relationshipToRole)
+		httpResp, err := r.API.RemoveRoleFromRestrictionQuery(r.Auth, restrictionQueryId, *relationshipToRole)
 		if err != nil {
+			// If role doesn't exist (400 or 404), it's already removed - continue
+			if httpResp != nil && (httpResp.StatusCode == http.StatusNotFound || httpResp.StatusCode == http.StatusBadRequest) {
+				continue
+			}
 			response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error removing role from logs restriction query"))
 			return
 		}
@@ -288,20 +292,18 @@ func (r *LogsRestrictionQueryResource) updateState(ctx context.Context, state *L
 	}
 
 	// Extract role IDs from relationships
+	// Since role_ids is Optional+Computed, we can always set it to match API response without causing drift
+	roleIds := []string{}
 	if relationships, ok := data.GetRelationshipsOk(); ok {
 		if roles, ok := relationships.GetRolesOk(); ok {
 			if rolesData, ok := roles.GetDataOk(); ok {
-				roleIds := make([]string, 0, len(*rolesData))
 				for _, role := range *rolesData {
 					roleIds = append(roleIds, role.GetId())
 				}
-				state.RoleIds, _ = types.SetValueFrom(ctx, types.StringType, roleIds)
 			}
 		}
 	}
-	if state.RoleIds.IsNull() {
-		state.RoleIds, _ = types.SetValue(types.StringType, []attr.Value{})
-	}
+	state.RoleIds, _ = types.SetValueFrom(ctx, types.StringType, roleIds)
 
 	if createdAt, ok := attributes.GetCreatedAtOk(); ok && !createdAt.IsZero() {
 		state.CreatedAt = timetypes.NewRFC3339TimeValue(*createdAt)
