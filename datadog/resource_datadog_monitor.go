@@ -434,6 +434,42 @@ func resourceDatadogMonitor() *schema.Resource {
 					Default:          string(datadogV1.MONITORDRAFTSTATUS_PUBLISHED),
 					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewMonitorDraftStatusFromValue),
 				},
+				"assets": {
+					Description: "List of monitor assets (for example, runbooks, dashboards, workflows) tied to this monitor.",
+					Type:        schema.TypeList,
+					Optional:    true,
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"name": {
+								Description: "Name for the monitor asset.",
+								Type:        schema.TypeString,
+								Required:    true,
+							},
+							"url": {
+								Description: "URL for the asset.",
+								Type:        schema.TypeString,
+								Required:    true,
+							},
+							"category": {
+								Description:      "Type of asset the entity represents on a monitor.",
+								Type:             schema.TypeString,
+								Required:         true,
+								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewMonitorAssetCategoryFromValue),
+							},
+							"resource_key": {
+								Description: "Identifier of the internal Datadog resource that this asset represents.",
+								Type:        schema.TypeString,
+								Optional:    true,
+							},
+							"resource_type": {
+								Description:      "Type of internal Datadog resource associated with a monitor asset.",
+								Type:             schema.TypeString,
+								Optional:         true,
+								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewMonitorAssetResourceTypeFromValue),
+							},
+						},
+					},
+				},
 			}
 		},
 	}
@@ -858,6 +894,16 @@ func buildMonitorStruct(d utils.Resource) (*datadogV1.Monitor, *datadogV1.Monito
 	m.SetTags(tags)
 	u.SetTags(tags)
 
+	// Assets
+	if attr, ok := d.GetOk("assets"); ok {
+		tfAssets := attr.([]interface{})
+		assets := buildMonitorAssets(tfAssets)
+		if len(assets) > 0 {
+			m.SetAssets(assets)
+			u.SetAssets(assets)
+		}
+	}
+
 	return m, u
 }
 
@@ -1236,6 +1282,14 @@ func updateMonitorState(d *schema.ResourceData, meta interface{}, m *datadogV1.M
 		return diag.FromErr(err)
 	}
 
+	// Assets -> state
+	if assets, ok := m.GetAssetsOk(); ok && assets != nil {
+		terraformAssets := buildTerraformMonitorAssets(*assets)
+		if err := d.Set("assets", terraformAssets); err != nil {
+			return diag.FromErr(err)
+		}
+	}
+
 	return nil
 }
 
@@ -1355,7 +1409,7 @@ func resourceDatadogMonitorRead(ctx context.Context, d *schema.ResourceData, met
 		httpresp *http.Response
 	)
 	if err = retry.RetryContext(ctx, d.Timeout(schema.TimeoutRead), func() *retry.RetryError {
-		m, httpresp, err = apiInstances.GetMonitorsApiV1().GetMonitor(auth, i)
+		m, httpresp, err = apiInstances.GetMonitorsApiV1().GetMonitor(auth, i, *datadogV1.NewGetMonitorOptionalParameters().WithWithAssets(true))
 		if err != nil {
 			if httpresp != nil {
 				if httpresp.StatusCode == 404 {
@@ -1460,4 +1514,52 @@ func getEnv(key, fallback string) string {
 		return value
 	}
 	return fallback
+}
+
+// buildMonitorAssets converts Terraform assets into API MonitorAsset slice.
+func buildMonitorAssets(tfAssets []interface{}) []datadogV1.MonitorAsset {
+	if len(tfAssets) == 0 {
+		return nil
+	}
+	assets := make([]datadogV1.MonitorAsset, 0, len(tfAssets))
+	for _, raw := range tfAssets {
+		aMap, ok := raw.(map[string]interface{})
+		if !ok {
+			continue
+		}
+		categoryStr, _ := aMap["category"].(string)
+		nameStr, _ := aMap["name"].(string)
+		urlStr, _ := aMap["url"].(string)
+		category := datadogV1.MonitorAssetCategory(categoryStr)
+		asset := datadogV1.NewMonitorAsset(category, nameStr, urlStr)
+		if rk, ok := aMap["resource_key"].(string); ok && rk != "" {
+			asset.SetResourceKey(rk)
+		}
+		if rt, ok := aMap["resource_type"].(string); ok && rt != "" {
+			rtEnum := datadogV1.MonitorAssetResourceType(rt)
+			asset.SetResourceType(rtEnum)
+		}
+		assets = append(assets, *asset)
+	}
+	return assets
+}
+
+// buildTerraformMonitorAssets flattens API assets into Terraform state shape.
+func buildTerraformMonitorAssets(apiAssets []datadogV1.MonitorAsset) []map[string]interface{} {
+	tfAssets := make([]map[string]interface{}, 0, len(apiAssets))
+	for _, a := range apiAssets {
+		tf := map[string]interface{}{
+			"name":     a.GetName(),
+			"url":      a.GetUrl(),
+			"category": string(a.GetCategory()),
+		}
+		if rk, ok := a.GetResourceKeyOk(); ok && rk != nil {
+			tf["resource_key"] = *rk
+		}
+		if rt, ok := a.GetResourceTypeOk(); ok && rt != nil {
+			tf["resource_type"] = string(*rt)
+		}
+		tfAssets = append(tfAssets, tf)
+	}
+	return tfAssets
 }
