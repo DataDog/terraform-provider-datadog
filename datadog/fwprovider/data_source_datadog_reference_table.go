@@ -258,7 +258,7 @@ func (d *datadogReferenceTableDataSource) Read(ctx context.Context, request data
 		tableId := state.ID.ValueString()
 		ddResp, _, err := d.Api.GetTable(d.Auth, tableId)
 		if err != nil {
-			response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error getting datadog reference table"))
+			response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error getting reference table"))
 			return
 		}
 
@@ -296,7 +296,7 @@ func (d *datadogReferenceTableDataSource) Read(ctx context.Context, request data
 		tableId := ddResp.Data[0].GetId()
 		fullResp, _, err := d.Api.GetTable(d.Auth, tableId)
 		if err != nil {
-			response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error getting datadog reference table details"))
+			response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error getting reference table"))
 			return
 		}
 

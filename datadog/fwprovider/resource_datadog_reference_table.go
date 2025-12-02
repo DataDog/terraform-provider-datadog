@@ -21,8 +21,9 @@ import (
 )
 
 var (
-	_ resource.ResourceWithConfigure   = &referenceTableResource{}
-	_ resource.ResourceWithImportState = &referenceTableResource{}
+	_ resource.ResourceWithConfigure      = &referenceTableResource{}
+	_ resource.ResourceWithImportState    = &referenceTableResource{}
+	_ resource.ResourceWithValidateConfig = &referenceTableResource{}
 )
 
 type referenceTableResource struct {
@@ -260,6 +261,97 @@ func (r *referenceTableResource) Schema(_ context.Context, _ resource.SchemaRequ
 
 func (r *referenceTableResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, frameworkPath.Root("id"), request, response)
+}
+
+func (r *referenceTableResource) ValidateConfig(ctx context.Context, request resource.ValidateConfigRequest, response *resource.ValidateConfigResponse) {
+	var config referenceTableModel
+	response.Diagnostics.Append(request.Config.Get(ctx, &config)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	// Validate that access_details matches source type
+	if config.FileMetadata != nil && config.FileMetadata.AccessDetails != nil {
+		source := config.Source.ValueString()
+		ad := config.FileMetadata.AccessDetails
+
+		hasAws := ad.AwsDetail != nil
+		hasGcp := ad.GcpDetail != nil
+		hasAzure := ad.AzureDetail != nil
+
+		// Count how many detail types are specified
+		detailCount := 0
+		if hasAws {
+			detailCount++
+		}
+		if hasGcp {
+			detailCount++
+		}
+		if hasAzure {
+			detailCount++
+		}
+
+		// Exactly one detail type must be specified
+		if detailCount == 0 {
+			response.Diagnostics.AddError(
+				"Missing access_details configuration",
+				"Exactly one of aws_detail, gcp_detail, or azure_detail must be specified in access_details.",
+			)
+			return
+		}
+		if detailCount > 1 {
+			response.Diagnostics.AddError(
+				"Multiple access_details configurations",
+				"Only one of aws_detail, gcp_detail, or azure_detail can be specified in access_details.",
+			)
+			return
+		}
+
+		// Validate that the detail type matches the source
+		switch source {
+		case "S3":
+			if !hasAws {
+				response.Diagnostics.AddError(
+					"Invalid access_details for source",
+					"Source 'S3' requires aws_detail in access_details.",
+				)
+			}
+		case "GCS":
+			if !hasGcp {
+				response.Diagnostics.AddError(
+					"Invalid access_details for source",
+					"Source 'GCS' requires gcp_detail in access_details.",
+				)
+			}
+		case "AZURE":
+			if !hasAzure {
+				response.Diagnostics.AddError(
+					"Invalid access_details for source",
+					"Source 'AZURE' requires azure_detail in access_details.",
+				)
+			}
+		}
+	}
+
+	// Validate schema fields are not empty
+	if config.Schema != nil {
+		if len(config.Schema.Fields) == 0 {
+			response.Diagnostics.AddError(
+				"Empty schema fields",
+				"At least one field must be specified in the schema.",
+			)
+		}
+
+		// Validate primary_keys is not empty
+		var primaryKeys []string
+		config.Schema.PrimaryKeys.ElementsAs(ctx, &primaryKeys, false)
+		if len(primaryKeys) == 0 {
+			response.Diagnostics.AddError(
+				"Empty primary_keys",
+				"At least one primary key must be specified in the schema.",
+			)
+		}
+	}
 }
 
 func (r *referenceTableResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
@@ -595,33 +687,30 @@ func (r *referenceTableResource) buildReferenceTableRequestBody(ctx context.Cont
 		if state.FileMetadata.AccessDetails != nil {
 			accessDetails := datadogV2.CreateTableRequestDataAttributesFileMetadataOneOfAccessDetails{}
 
-			// AWS details
-			if state.FileMetadata.AccessDetails.AwsDetail != nil {
+			if aws := state.FileMetadata.AccessDetails.AwsDetail; aws != nil {
 				awsDetail := datadogV2.CreateTableRequestDataAttributesFileMetadataOneOfAccessDetailsAwsDetail{}
-				awsDetail.SetAwsAccountId(state.FileMetadata.AccessDetails.AwsDetail.AwsAccountId.ValueString())
-				awsDetail.SetAwsBucketName(state.FileMetadata.AccessDetails.AwsDetail.AwsBucketName.ValueString())
-				awsDetail.SetFilePath(state.FileMetadata.AccessDetails.AwsDetail.FilePath.ValueString())
+				awsDetail.SetAwsAccountId(aws.AwsAccountId.ValueString())
+				awsDetail.SetAwsBucketName(aws.AwsBucketName.ValueString())
+				awsDetail.SetFilePath(aws.FilePath.ValueString())
 				accessDetails.AwsDetail = &awsDetail
 			}
 
-			// GCP details
-			if state.FileMetadata.AccessDetails.GcpDetail != nil {
+			if gcp := state.FileMetadata.AccessDetails.GcpDetail; gcp != nil {
 				gcpDetail := datadogV2.CreateTableRequestDataAttributesFileMetadataOneOfAccessDetailsGcpDetail{}
-				gcpDetail.SetGcpProjectId(state.FileMetadata.AccessDetails.GcpDetail.GcpProjectId.ValueString())
-				gcpDetail.SetGcpBucketName(state.FileMetadata.AccessDetails.GcpDetail.GcpBucketName.ValueString())
-				gcpDetail.SetFilePath(state.FileMetadata.AccessDetails.GcpDetail.FilePath.ValueString())
-				gcpDetail.SetGcpServiceAccountEmail(state.FileMetadata.AccessDetails.GcpDetail.GcpServiceAccountEmail.ValueString())
+				gcpDetail.SetGcpProjectId(gcp.GcpProjectId.ValueString())
+				gcpDetail.SetGcpBucketName(gcp.GcpBucketName.ValueString())
+				gcpDetail.SetFilePath(gcp.FilePath.ValueString())
+				gcpDetail.SetGcpServiceAccountEmail(gcp.GcpServiceAccountEmail.ValueString())
 				accessDetails.GcpDetail = &gcpDetail
 			}
 
-			// Azure details
-			if state.FileMetadata.AccessDetails.AzureDetail != nil {
+			if azure := state.FileMetadata.AccessDetails.AzureDetail; azure != nil {
 				azureDetail := datadogV2.CreateTableRequestDataAttributesFileMetadataOneOfAccessDetailsAzureDetail{}
-				azureDetail.SetAzureTenantId(state.FileMetadata.AccessDetails.AzureDetail.AzureTenantId.ValueString())
-				azureDetail.SetAzureClientId(state.FileMetadata.AccessDetails.AzureDetail.AzureClientId.ValueString())
-				azureDetail.SetAzureStorageAccountName(state.FileMetadata.AccessDetails.AzureDetail.AzureStorageAccountName.ValueString())
-				azureDetail.SetAzureContainerName(state.FileMetadata.AccessDetails.AzureDetail.AzureContainerName.ValueString())
-				azureDetail.SetFilePath(state.FileMetadata.AccessDetails.AzureDetail.FilePath.ValueString())
+				azureDetail.SetAzureTenantId(azure.AzureTenantId.ValueString())
+				azureDetail.SetAzureClientId(azure.AzureClientId.ValueString())
+				azureDetail.SetAzureStorageAccountName(azure.AzureStorageAccountName.ValueString())
+				azureDetail.SetAzureContainerName(azure.AzureContainerName.ValueString())
+				azureDetail.SetFilePath(azure.FilePath.ValueString())
 				accessDetails.AzureDetail = &azureDetail
 			}
 
@@ -699,33 +788,30 @@ func (r *referenceTableResource) buildReferenceTableUpdateRequestBody(ctx contex
 		if hasValidAccessDetails {
 			accessDetails := datadogV2.PatchTableRequestDataAttributesFileMetadataOneOfAccessDetails{}
 
-			// AWS details
-			if accessDetailsToUse.AwsDetail != nil {
+			if aws := accessDetailsToUse.AwsDetail; aws != nil {
 				awsDetail := datadogV2.PatchTableRequestDataAttributesFileMetadataOneOfAccessDetailsAwsDetail{}
-				awsDetail.SetAwsAccountId(accessDetailsToUse.AwsDetail.AwsAccountId.ValueString())
-				awsDetail.SetAwsBucketName(accessDetailsToUse.AwsDetail.AwsBucketName.ValueString())
-				awsDetail.SetFilePath(accessDetailsToUse.AwsDetail.FilePath.ValueString())
+				awsDetail.SetAwsAccountId(aws.AwsAccountId.ValueString())
+				awsDetail.SetAwsBucketName(aws.AwsBucketName.ValueString())
+				awsDetail.SetFilePath(aws.FilePath.ValueString())
 				accessDetails.AwsDetail = &awsDetail
 			}
 
-			// GCP details
-			if accessDetailsToUse.GcpDetail != nil {
+			if gcp := accessDetailsToUse.GcpDetail; gcp != nil {
 				gcpDetail := datadogV2.PatchTableRequestDataAttributesFileMetadataOneOfAccessDetailsGcpDetail{}
-				gcpDetail.SetGcpProjectId(accessDetailsToUse.GcpDetail.GcpProjectId.ValueString())
-				gcpDetail.SetGcpBucketName(accessDetailsToUse.GcpDetail.GcpBucketName.ValueString())
-				gcpDetail.SetFilePath(accessDetailsToUse.GcpDetail.FilePath.ValueString())
-				gcpDetail.SetGcpServiceAccountEmail(accessDetailsToUse.GcpDetail.GcpServiceAccountEmail.ValueString())
+				gcpDetail.SetGcpProjectId(gcp.GcpProjectId.ValueString())
+				gcpDetail.SetGcpBucketName(gcp.GcpBucketName.ValueString())
+				gcpDetail.SetFilePath(gcp.FilePath.ValueString())
+				gcpDetail.SetGcpServiceAccountEmail(gcp.GcpServiceAccountEmail.ValueString())
 				accessDetails.GcpDetail = &gcpDetail
 			}
 
-			// Azure details
-			if accessDetailsToUse.AzureDetail != nil {
+			if azure := accessDetailsToUse.AzureDetail; azure != nil {
 				azureDetail := datadogV2.PatchTableRequestDataAttributesFileMetadataOneOfAccessDetailsAzureDetail{}
-				azureDetail.SetAzureTenantId(accessDetailsToUse.AzureDetail.AzureTenantId.ValueString())
-				azureDetail.SetAzureClientId(accessDetailsToUse.AzureDetail.AzureClientId.ValueString())
-				azureDetail.SetAzureStorageAccountName(accessDetailsToUse.AzureDetail.AzureStorageAccountName.ValueString())
-				azureDetail.SetAzureContainerName(accessDetailsToUse.AzureDetail.AzureContainerName.ValueString())
-				azureDetail.SetFilePath(accessDetailsToUse.AzureDetail.FilePath.ValueString())
+				azureDetail.SetAzureTenantId(azure.AzureTenantId.ValueString())
+				azureDetail.SetAzureClientId(azure.AzureClientId.ValueString())
+				azureDetail.SetAzureStorageAccountName(azure.AzureStorageAccountName.ValueString())
+				azureDetail.SetAzureContainerName(azure.AzureContainerName.ValueString())
+				azureDetail.SetFilePath(azure.FilePath.ValueString())
 				accessDetails.AzureDetail = &azureDetail
 			}
 

@@ -59,11 +59,11 @@ func (d *datadogReferenceTableRowsDataSource) Schema(_ context.Context, _ dataso
 				Required:    true,
 				Description: "The UUID of the reference table to query rows from.",
 			},
-			"row_ids": schema.ListAttribute{
-				Required:    true,
-				Description: "List of primary key values (row IDs) to retrieve. These are the values of the table's primary key field(s).",
-				ElementType: types.StringType,
-			},
+		"row_ids": schema.ListAttribute{
+			Required:    true,
+			Description: "List of primary key values (row IDs) to retrieve. These are the values of the table's primary key field(s). Maximum 250 IDs per request.",
+			ElementType: types.StringType,
+		},
 		},
 		Blocks: map[string]schema.Block{
 			"rows": schema.ListNestedBlock{
@@ -99,6 +99,15 @@ func (d *datadogReferenceTableRowsDataSource) Read(ctx context.Context, request 
 	var rowIds []string
 	response.Diagnostics.Append(state.RowIds.ElementsAs(ctx, &rowIds, false)...)
 	if response.Diagnostics.HasError() {
+		return
+	}
+
+	// Validate row ID count (API limit is 250)
+	if len(rowIds) > 250 {
+		response.Diagnostics.AddError(
+			"Too many row IDs",
+			fmt.Sprintf("Maximum 250 row IDs allowed per request, got %d", len(rowIds)),
+		)
 		return
 	}
 
