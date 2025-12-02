@@ -89,7 +89,7 @@ func (d *datadogTeamHierarchyLinksDataSource) Read(ctx context.Context, request 
 
 	if !state.LinkId.IsNull() {
 		teamHierarchyLinkId := state.LinkId.ValueString()
-		ddResp, _, err := d.Api.GetTeamHierarchyLinks(d.Auth, teamHierarchyLinkId)
+		ddResp, _, err := d.Api.GetTeamHierarchyLink(d.Auth, teamHierarchyLinkId)
 		if err != nil {
 			response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error getting datadog teamHierarchyLinks"))
 			return
@@ -100,12 +100,12 @@ func (d *datadogTeamHierarchyLinksDataSource) Read(ctx context.Context, request 
 		filterParentTeam := state.FilterParentTeam.ValueString()
 		filterSubTeam := state.FilterSubTeam.ValueString()
 
-		optionalParams := datadogV2.ListTeamHierarchyLinkssOptionalParameters{
+		optionalParams := datadogV2.ListTeamHierarchyLinksOptionalParameters{
 			FilterParentTeam: &filterParentTeam,
 			FilterSubTeam:    &filterSubTeam,
 		}
 
-		ddResp, _, err := d.Api.ListTeamHierarchyLinkss(d.Auth, optionalParams)
+		ddResp, _, err := d.Api.ListTeamHierarchyLinks(d.Auth, optionalParams)
 		if err != nil {
 			response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error listing datadog teamHierarchyLinks"))
 			return
