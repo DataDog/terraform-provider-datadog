@@ -24,6 +24,7 @@ var (
 	_ resource.ResourceWithConfigure      = &referenceTableResource{}
 	_ resource.ResourceWithImportState    = &referenceTableResource{}
 	_ resource.ResourceWithValidateConfig = &referenceTableResource{}
+	_ resource.ResourceWithModifyPlan     = &referenceTableResource{}
 )
 
 type referenceTableResource struct {
@@ -349,6 +350,63 @@ func (r *referenceTableResource) ValidateConfig(ctx context.Context, request res
 			response.Diagnostics.AddError(
 				"Empty primary_keys",
 				"At least one primary key must be specified in the schema.",
+			)
+		}
+	}
+}
+
+func (r *referenceTableResource) ModifyPlan(ctx context.Context, request resource.ModifyPlanRequest, response *resource.ModifyPlanResponse) {
+	// Skip if this is a create or destroy operation
+	if request.State.Raw.IsNull() || request.Plan.Raw.IsNull() {
+		return
+	}
+
+	var state referenceTableModel
+	var plan referenceTableModel
+	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
+	response.Diagnostics.Append(request.Plan.Get(ctx, &plan)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	// Check if schema is being modified on an existing resource
+	if state.Schema != nil && plan.Schema != nil {
+		schemaChanged := false
+
+		// Compare primary keys
+		var statePKs, planPKs []string
+		state.Schema.PrimaryKeys.ElementsAs(ctx, &statePKs, false)
+		plan.Schema.PrimaryKeys.ElementsAs(ctx, &planPKs, false)
+		if len(statePKs) != len(planPKs) {
+			schemaChanged = true
+		} else {
+			for i := range statePKs {
+				if statePKs[i] != planPKs[i] {
+					schemaChanged = true
+					break
+				}
+			}
+		}
+
+		// Compare fields
+		if !schemaChanged && len(state.Schema.Fields) != len(plan.Schema.Fields) {
+			schemaChanged = true
+		}
+		if !schemaChanged {
+			for i := range state.Schema.Fields {
+				if state.Schema.Fields[i].Name.ValueString() != plan.Schema.Fields[i].Name.ValueString() ||
+					state.Schema.Fields[i].Type.ValueString() != plan.Schema.Fields[i].Type.ValueString() {
+					schemaChanged = true
+					break
+				}
+			}
+		}
+
+		if schemaChanged {
+			response.Diagnostics.AddError(
+				"Schema modification not supported",
+				"Reference table schema cannot be modified after creation. The schema is derived from the CSV file in cloud storage. "+
+					"To change the schema, update the CSV file and the table will sync automatically if sync_enabled is true.",
 			)
 		}
 	}
