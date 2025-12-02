@@ -3,12 +3,12 @@
 page_title: "datadog_reference_table Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Provides a Datadog Reference Table resource for cloud storage sources (S3, GCS, Azure). This can be used to create and manage Datadog reference tables that sync data from cloud storage.
+  Provides a Datadog Reference Table resource for cloud storage sources (S3, GCS, Azure). This can be used to create and manage Datadog reference tables that sync data from cloud storage. For setup instructions including granting Datadog read access to your cloud storage bucket, see the Reference Tables documentation https://docs.datadoghq.com/reference_tables/?tab=cloudstorage#create-a-reference-table.
 ---
 
 # datadog_reference_table (Resource)
 
-Provides a Datadog Reference Table resource for cloud storage sources (S3, GCS, Azure). This can be used to create and manage Datadog reference tables that sync data from cloud storage.
+Provides a Datadog Reference Table resource for cloud storage sources (S3, GCS, Azure). This can be used to create and manage Datadog reference tables that sync data from cloud storage. For setup instructions including granting Datadog read access to your cloud storage bucket, see the [Reference Tables documentation](https://docs.datadoghq.com/reference_tables/?tab=cloudstorage#create-a-reference-table).
 
 ## Example Usage
 
