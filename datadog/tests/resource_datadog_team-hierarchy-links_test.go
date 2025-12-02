@@ -33,27 +33,40 @@ func TestAccTeamHierarchyLinksBasic(t *testing.T) {
 
 func testAccCheckDatadogTeamHierarchyLinks(uniq string) string {
 	// Update me to make use of the unique value
-	return fmt.Sprintf(`resource "datadog_team-hierarchy-links" "foo" {
-    body {
-    data {
-    relationships {
-    parent_team {
-    data {
-    id = "692e8073-12c4-4c71-8408-5090bd44c9c8"
-    type = "team"
-    }
-    }
-    sub_team {
-    data {
-    id = "692e8073-12c4-4c71-8408-5090bd44c9c8"
-    type = "team"
-    }
-    }
-    }
-    type = "team_hierarchy_links"
-    }
-    }
-}`, uniq)
+	return fmt.Sprintf(`
+	resource "datadog_team" "parent" {
+		description = "Parent team description."
+		handle = "%s-parent"
+		name = "%s-parent"
+	}
+
+	resource "datadog_team" "child" {
+		description = "Child team description."
+		handle = "%s-child"
+		name = "%s-child"
+	}
+
+	resource "datadog_team-hierarchy-links" "foo" {
+		body {
+			data {
+				relationships {
+					parent_team {
+						data {
+							id = datadog_team.parent.id
+							type = "team"
+						}
+					}
+					sub_team {
+						data {
+							id = datadog_team.child.id
+							type = "team"
+						}
+					}
+				}
+				type = "team_hierarchy_links"
+			}
+		}
+}`, uniq, uniq, uniq, uniq)
 }
 
 func testAccCheckDatadogTeamHierarchyLinksDestroy(accProvider *fwprovider.FrameworkProvider) func(*terraform.State) error {

@@ -24,8 +24,10 @@ type teamHierarchyLinksResource struct {
 }
 
 type teamHierarchyLinksModel struct {
-	ID   types.String `tfsdk:"id"`
-	Data *dataModel   `tfsdk:"data"`
+	ID            types.String `tfsdk:"id"`
+	CreatedAt     types.String `tfsdk:"created_at"`
+	ProvisionedBy types.String `tfsdk:"provisioned_by"`
+	Data          *dataModel   `tfsdk:"data"`
 }
 
 type dataModel struct {
@@ -186,7 +188,7 @@ func (r *teamHierarchyLinksResource) Create(ctx context.Context, request resourc
 }
 
 func (r *teamHierarchyLinksResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
-	response.Diagnostics.AddError("Update not supported for this resource", "Hierarchy links should be updated by deleting the old link and creating a new one.")
+	response.Diagnostics.AddError("Update not supported for this resource", "Hierarchy links are immutable.")
 }
 
 func (r *teamHierarchyLinksResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
@@ -209,13 +211,17 @@ func (r *teamHierarchyLinksResource) Delete(ctx context.Context, request resourc
 }
 
 func (r *teamHierarchyLinksResource) updateState(ctx context.Context, state *teamHierarchyLinksModel, resp *datadogV2.TeamHierarchyLinkResponse) {
-	state.ID = types.StringValue(resp.GetLinkId())
+	data := resp.GetData()
 
-	if createdAt, ok := resp.GetCreatedAtOk(); ok {
+	state.ID = types.StringValue(data.GetId())
+
+	attributes := data.GetAttributes()
+
+	if createdAt, ok := attributes.GetCreatedAtOk(); ok {
 		state.CreatedAt = types.StringValue(createdAt.String())
 	}
 
-	if provisionedBy, ok := resp.GetProvisionedByOk(); ok {
+	if provisionedBy, ok := attributes.GetProvisionedByOk(); ok {
 		state.ProvisionedBy = types.StringValue(*provisionedBy)
 	}
 }
@@ -243,9 +249,9 @@ func (r *teamHierarchyLinksResource) buildTeamHierarchyLinksRequestBody(ctx cont
 				if !state.Data.Relationships.ParentTeam.Data.Type.IsNull() {
 					data.SetType(datadogV2.TeamType(state.Data.Relationships.ParentTeam.Data.Type.ValueString()))
 				}
-				parentTeam.Data = &data
+				parentTeam.Data = data
 			}
-			relationships.ParentTeam = &parentTeam
+			relationships.ParentTeam = parentTeam
 		}
 
 		if state.Data.Relationships.SubTeam != nil {
@@ -260,12 +266,12 @@ func (r *teamHierarchyLinksResource) buildTeamHierarchyLinksRequestBody(ctx cont
 				if !state.Data.Relationships.SubTeam.Data.Type.IsNull() {
 					data.SetType(datadogV2.TeamType(state.Data.Relationships.SubTeam.Data.Type.ValueString()))
 				}
-				subTeam.Data = &data
+				subTeam.Data = data
 			}
-			relationships.SubTeam = &subTeam
+			relationships.SubTeam = subTeam
 		}
 		data.Relationships = relationships
-		req.Data = &data
+		req.Data = data
 	}
 
 	return req, diags
