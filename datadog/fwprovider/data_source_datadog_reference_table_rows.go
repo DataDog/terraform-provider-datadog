@@ -10,6 +10,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/retry"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
@@ -111,22 +112,23 @@ func (d *datadogReferenceTableRowsDataSource) Read(ctx context.Context, request 
 		return
 	}
 
-	// Call API to get rows by ID with retry logic
+	// Call API to get rows by ID with retry logic using exponential backoff
 	// Rows are written asynchronously, so we need to retry if the table hasn't synced yet
-	// Use a 5-second interval to avoid spamming the API while waiting for sync
+	// Uses the Terraform SDK retry helper which implements exponential backoff
 	var ddResp datadogV2.TableRowResourceArray
 	var httpResp *http.Response
 	var err error
 
-	retryErr := utils.Retry(5*time.Second, 10, func() error {
+	// Retry for up to 1 minute with exponential backoff (managed by the SDK)
+	retryErr := retry.RetryContext(ctx, 1*time.Minute, func() *retry.RetryError {
 		ddResp, httpResp, err = d.Api.GetRowsByID(d.Auth, tableId, rowIds)
 		if err != nil {
 			// If we get a 404, the table might not have synced yet - retry
 			if httpResp != nil && httpResp.StatusCode == 404 {
-				return &utils.RetryableError{Prob: fmt.Sprintf("rows not found (table may not have synced yet): %v", err)}
+				return retry.RetryableError(fmt.Errorf("rows not found (table may not have synced yet): %v", err))
 			}
 			// For other errors, don't retry
-			return &utils.FatalError{Prob: fmt.Sprintf("error getting reference table rows: %v", err)}
+			return retry.NonRetryableError(fmt.Errorf("error getting reference table rows: %v", err))
 		}
 		// Success - check if we got the expected number of rows
 		if len(ddResp.Data) == len(rowIds) {
@@ -134,10 +136,10 @@ func (d *datadogReferenceTableRowsDataSource) Read(ctx context.Context, request 
 		}
 		// If we got some rows but not all, the table might still be syncing - retry
 		if len(ddResp.Data) > 0 && len(ddResp.Data) < len(rowIds) {
-			return &utils.RetryableError{Prob: fmt.Sprintf("only %d of %d rows found (table may still be syncing)", len(ddResp.Data), len(rowIds))}
+			return retry.RetryableError(fmt.Errorf("only %d of %d rows found (table may still be syncing)", len(ddResp.Data), len(rowIds)))
 		}
 		// If we got no rows, retry
-		return &utils.RetryableError{Prob: "no rows found (table may not have synced yet)"}
+		return retry.RetryableError(fmt.Errorf("no rows found (table may not have synced yet)"))
 	})
 
 	if retryErr != nil {
