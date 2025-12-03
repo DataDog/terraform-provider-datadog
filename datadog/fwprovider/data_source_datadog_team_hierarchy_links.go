@@ -50,7 +50,7 @@ func (d *datadogTeamHierarchyLinksDataSource) Metadata(_ context.Context, reques
 
 func (d *datadogTeamHierarchyLinksDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, response *datasource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "Use this data source to retrieve information about an existing Datadog team-hierarchy-links.",
+		Description: "Use this data source to retrieve information about existing Datadog Team Hierarchy Links.",
 		Attributes: map[string]schema.Attribute{
 			// Datasource ID
 			"id": utils.ResourceIDAttribute(),

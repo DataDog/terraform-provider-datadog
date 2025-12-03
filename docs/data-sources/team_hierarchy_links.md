@@ -3,12 +3,12 @@
 page_title: "datadog_team_hierarchy_links Data Source - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Use this data source to retrieve information about an existing Datadog team-hierarchy-links.
+  Use this data source to retrieve information about existing Datadog Team Hierarchy Links.
 ---
 
 # datadog_team_hierarchy_links (Data Source)
 
-Use this data source to retrieve information about an existing Datadog team-hierarchy-link.
+Use this data source to retrieve information about existing Datadog Team Hierarchy Links.
 
 
 

@@ -49,7 +49,7 @@ func (r *teamHierarchyLinksResource) Metadata(_ context.Context, request resourc
 
 func (r *teamHierarchyLinksResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "Provides a Datadog TeamHierarchyLinks resource. This can be used to create and manage Datadog team-hierarchy-links.",
+		Description: "Provides a Datadog TeamHierarchyLinks resource. This can be used to create and manage Datadog Team Hierarchy Links.",
 		Attributes: map[string]schema.Attribute{
 			"id": utils.ResourceIDAttribute(),
 			"parent_team_id": schema.StringAttribute{

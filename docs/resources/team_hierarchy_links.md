@@ -3,12 +3,12 @@
 page_title: "datadog_team_hierarchy_links Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Provides a Datadog TeamHierarchyLinks resource. This can be used to create and manage Datadog team-hierarchy-links.
+  Provides a Datadog TeamHierarchyLinks resource. This can be used to create and manage Datadog Team Hierarchy Links.
 ---
 
 # datadog_team_hierarchy_links (Resource)
 
-Provides a Datadog TeamHierarchyLinks resource. This can be used to create and manage Datadog team-hierarchy-links.
+Provides a Datadog TeamHierarchyLinks resource. This can be used to create and manage Datadog Team Hierarchy Links.
 
 
 
