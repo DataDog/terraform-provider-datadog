@@ -23,6 +23,6 @@ Use this data source to retrieve information about existing Datadog Team Hierarc
 
 ### Read-Only
 
-- `created_at` (String) Timestamp when the team hierarchy link was created
+- `created_at` (String) Timestamp when the team hierarchy link was created.
 - `id` (String) The ID of this resource.
-- `provisioned_by` (String) The provisioner of the team hierarchy link
+- `provisioned_by` (String) The provisioner of the team hierarchy link.
