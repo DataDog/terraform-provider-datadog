@@ -17,9 +17,9 @@ Use this data source to retrieve information about existing Datadog Team Hierarc
 
 ### Optional
 
-- `filter_parent_team` (String) Filter by parent team ID
-- `filter_sub_team` (String) Filter by sub team ID
-- `link_id` (String) The team hierarchy link’s identifier
+- `filter_parent_team` (String) Filter by parent team ID.
+- `filter_sub_team` (String) Filter by sub team ID.
+- `link_id` (String) The team hierarchy link’s identifier.
 
 ### Read-Only
 
