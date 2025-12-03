@@ -57,24 +57,24 @@ func (d *datadogTeamHierarchyLinksDataSource) Schema(_ context.Context, _ dataso
 			// Query Parameters
 			"link_id": schema.StringAttribute{
 				Optional:    true,
-				Description: "The team hierarchy link’s identifier",
+				Description: "The team hierarchy link’s identifier.",
 			},
 			"filter_parent_team": schema.StringAttribute{
 				Optional:    true,
-				Description: "Filter by parent team ID",
+				Description: "Filter by parent team ID.",
 			},
 			"filter_sub_team": schema.StringAttribute{
 				Optional:    true,
-				Description: "Filter by sub team ID",
+				Description: "Filter by sub team ID.",
 			},
 			// Computed values
 			"created_at": schema.StringAttribute{
 				Computed:    true,
-				Description: "Timestamp when the team hierarchy link was created",
+				Description: "Timestamp when the team hierarchy link was created.",
 			},
 			"provisioned_by": schema.StringAttribute{
 				Computed:    true,
-				Description: "The provisioner of the team hierarchy link",
+				Description: "The provisioner of the team hierarchy link.",
 			},
 		},
 	}
