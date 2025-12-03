@@ -188,6 +188,7 @@ func (r *teamHierarchyLinksResource) buildTeamHierarchyLinksRequestBody(ctx cont
 	data.SetType(datadogV2.TEAMHIERARCHYLINKTYPE_TEAM_HIERARCHY_LINKS)
 
 	var relationships datadogV2.TeamHierarchyLinkCreateRelationships
+
 	var parentTeam datadogV2.TeamHierarchyLinkCreateTeamRelationship
 	var parentTeamData datadogV2.TeamHierarchyLinkCreateTeam
 	parentTeamData.SetType(datadogV2.TEAMTYPE_TEAM)

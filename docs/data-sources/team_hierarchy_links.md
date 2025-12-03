@@ -8,7 +8,7 @@ description: |-
 
 # datadog_team_hierarchy_links (Data Source)
 
-Use this data source to retrieve information about an existing Datadog team-hierarchy-links.
+Use this data source to retrieve information about an existing Datadog team-hierarchy-link.
 
 
 
