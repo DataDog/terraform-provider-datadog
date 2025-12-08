@@ -45,8 +45,11 @@ type configModel struct {
 }
 
 type destinationModel struct {
+	Id     types.String `tfsdk:"id"`
+	Inputs types.List   `tfsdk:"inputs"`
+
 	DatadogLogsDestination            []*datadogLogsDestinationModel                                   `tfsdk:"datadog_logs"`
-	GoogleCloudStorageDestination     []*googleCloudStorageDestinationModel                            `tfsdk:"google_cloud_storage"`
+	GoogleCloudStorageDestination     []*gcsDestinationModel                                           `tfsdk:"google_cloud_storage"`
 	GooglePubSubDestination           []*googlePubSubDestinationModel                                  `tfsdk:"google_pubsub"`
 	SplunkHecDestination              []*splunkHecDestinationModel                                     `tfsdk:"splunk_hec"`
 	SumoLogicDestination              []*sumoLogicDestinationModel                                     `tfsdk:"sumo_logic"`
@@ -313,8 +316,6 @@ type destinationsModel struct {
 }
 
 type amazonOpenSearchDestinationModel struct {
-	Id        types.String               `tfsdk:"id"`
-	Inputs    types.List                 `tfsdk:"inputs"`
 	BulkIndex types.String               `tfsdk:"bulk_index"`
 	Auth      *amazonOpenSearchAuthModel `tfsdk:"auth"`
 }
@@ -328,26 +329,18 @@ type amazonOpenSearchAuthModel struct {
 }
 
 type opensearchDestinationModel struct {
-	Id        types.String `tfsdk:"id"`
-	Inputs    types.List   `tfsdk:"inputs"`
 	BulkIndex types.String `tfsdk:"bulk_index"`
 }
 
 type sentinelOneDestinationModel struct {
-	Id     types.String `tfsdk:"id"`
-	Inputs types.List   `tfsdk:"inputs"`
 	Region types.String `tfsdk:"region"`
 }
 
 type newRelicDestinationModel struct {
-	Id     types.String `tfsdk:"id"`
-	Inputs types.List   `tfsdk:"inputs"`
 	Region types.String `tfsdk:"region"`
 }
 
 type googleChronicleDestinationModel struct {
-	Id         types.String  `tfsdk:"id"`
-	Inputs     types.List    `tfsdk:"inputs"`
 	Auth       *gcpAuthModel `tfsdk:"auth"`
 	CustomerId types.String  `tfsdk:"customer_id"`
 	Encoding   types.String  `tfsdk:"encoding"`
@@ -355,8 +348,6 @@ type googleChronicleDestinationModel struct {
 }
 
 type googlePubSubDestinationModel struct {
-	Id       types.String  `tfsdk:"id"`
-	Inputs   types.List    `tfsdk:"inputs"`
 	Project  types.String  `tfsdk:"project"`
 	Topic    types.String  `tfsdk:"topic"`
 	Auth     *gcpAuthModel `tfsdk:"auth"`
@@ -428,8 +419,6 @@ type splunkTcpSourceModel struct {
 }
 
 type splunkHecDestinationModel struct {
-	Id                   types.String `tfsdk:"id"`
-	Inputs               types.List   `tfsdk:"inputs"`
 	AutoExtractTimestamp types.Bool   `tfsdk:"auto_extract_timestamp"`
 	Encoding             types.String `tfsdk:"encoding"`
 	Sourcetype           types.String `tfsdk:"sourcetype"`
@@ -437,8 +426,6 @@ type splunkHecDestinationModel struct {
 }
 
 type gcsDestinationModel struct {
-	Id           types.String    `tfsdk:"id"`
-	Inputs       types.List      `tfsdk:"inputs"`
 	Bucket       types.String    `tfsdk:"bucket"`
 	KeyPrefix    types.String    `tfsdk:"key_prefix"`
 	StorageClass types.String    `tfsdk:"storage_class"`
@@ -453,8 +440,6 @@ type metadataEntry struct {
 }
 
 type sumoLogicDestinationModel struct {
-	Id                   types.String             `tfsdk:"id"`
-	Inputs               types.List               `tfsdk:"inputs"`
 	Encoding             types.String             `tfsdk:"encoding"`
 	HeaderHostName       types.String             `tfsdk:"header_host_name"`
 	HeaderSourceName     types.String             `tfsdk:"header_source_name"`
@@ -478,36 +463,26 @@ type syslogNgSourceModel struct {
 }
 
 type rsyslogDestinationModel struct {
-	Id        types.String `tfsdk:"id"`
-	Inputs    types.List   `tfsdk:"inputs"`
-	Keepalive types.Int64  `tfsdk:"keepalive"`
-	Tls       *tlsModel    `tfsdk:"tls"`
+	Keepalive types.Int64 `tfsdk:"keepalive"`
+	Tls       *tlsModel   `tfsdk:"tls"`
 }
 
 type syslogNgDestinationModel struct {
-	Id        types.String `tfsdk:"id"`
-	Inputs    types.List   `tfsdk:"inputs"`
-	Keepalive types.Int64  `tfsdk:"keepalive"`
-	Tls       *tlsModel    `tfsdk:"tls"`
+	Keepalive types.Int64 `tfsdk:"keepalive"`
+	Tls       *tlsModel   `tfsdk:"tls"`
 }
 
 type elasticsearchDestinationModel struct {
-	Id         types.String `tfsdk:"id"`
-	Inputs     types.List   `tfsdk:"inputs"`
 	ApiVersion types.String `tfsdk:"api_version"`
 	BulkIndex  types.String `tfsdk:"bulk_index"`
 }
 
 type azureStorageDestinationModel struct {
-	Id            types.String `tfsdk:"id"`
-	Inputs        types.List   `tfsdk:"inputs"`
 	ContainerName types.String `tfsdk:"container_name"`
 	BlobPrefix    types.String `tfsdk:"blob_prefix"`
 }
 
 type microsoftSentinelDestinationModel struct {
-	Id             types.String `tfsdk:"id"`
-	Inputs         types.List   `tfsdk:"inputs"`
 	ClientId       types.String `tfsdk:"client_id"`
 	TenantId       types.String `tfsdk:"tenant_id"`
 	DcrImmutableId types.String `tfsdk:"dcr_immutable_id"`
@@ -602,16 +577,6 @@ type googlePubSubSourceModel struct {
 
 type gcpAuthModel struct {
 	CredentialsFile types.String `tfsdk:"credentials_file"`
-}
-
-type amazonSecurityLakeDestinationModel struct {
-	Id               types.String                         `tfsdk:"id"`
-	Inputs           types.List                           `tfsdk:"inputs"`
-	Bucket           types.String                         `tfsdk:"bucket"`
-	Region           types.String                         `tfsdk:"region"`
-	CustomSourceName types.String                         `tfsdk:"custom_source_name"`
-	Tls              *tlsModel                            `tfsdk:"tls"`
-	Auth             *observability_pipeline.AwsAuthModel `tfsdk:"auth"`
 }
 
 func NewObservabilitPipelineResource() resource.Resource {
@@ -2398,68 +2363,70 @@ func expandPipeline(ctx context.Context, state *observabilityPipelineModel) (*da
 	}
 
 	// Processors - iterate through processor groups
-	for _, group := range state.Config.Processors.ProcessorGroups {
+	for _, group := range state.Config.Processors {
 		processorGroup := expandProcessorGroup(ctx, group)
 		config.Processors = append(config.Processors, processorGroup)
 	}
 
 	// Destinations
-	for _, d := range state.Config.Destinations.DatadogLogsDestination {
-		config.Destinations = append(config.Destinations, expandDatadogLogsDestination(ctx, d))
-	}
-	for _, d := range state.Config.Destinations.SplunkHecDestination {
-		config.Destinations = append(config.Destinations, expandSplunkHecDestination(ctx, d))
-	}
-	for _, d := range state.Config.Destinations.GoogleCloudStorageDestination {
-		config.Destinations = append(config.Destinations, expandGoogleCloudStorageDestination(ctx, d))
-	}
-	for _, d := range state.Config.Destinations.GooglePubSubDestination {
-		config.Destinations = append(config.Destinations, expandGooglePubSubDestination(ctx, d))
-	}
-	for _, d := range state.Config.Destinations.SumoLogicDestination {
-		config.Destinations = append(config.Destinations, expandSumoLogicDestination(ctx, d))
-	}
-	for _, d := range state.Config.Destinations.RsyslogDestination {
-		config.Destinations = append(config.Destinations, expandRsyslogDestination(ctx, d))
-	}
-	for _, d := range state.Config.Destinations.SyslogNgDestination {
-		config.Destinations = append(config.Destinations, expandSyslogNgDestination(ctx, d))
-	}
-	for _, d := range state.Config.Destinations.ElasticsearchDestination {
-		config.Destinations = append(config.Destinations, expandElasticsearchDestination(ctx, d))
-	}
-	for _, d := range state.Config.Destinations.AzureStorageDestination {
-		config.Destinations = append(config.Destinations, expandAzureStorageDestination(ctx, d))
-	}
-	for _, d := range state.Config.Destinations.MicrosoftSentinelDestination {
-		config.Destinations = append(config.Destinations, expandMicrosoftSentinelDestination(ctx, d))
-	}
-	for _, d := range state.Config.Destinations.GoogleChronicleDestination {
-		config.Destinations = append(config.Destinations, expandGoogleChronicleDestination(ctx, d))
-	}
-	for _, d := range state.Config.Destinations.NewRelicDestination {
-		config.Destinations = append(config.Destinations, expandNewRelicDestination(ctx, d))
-	}
-	for _, d := range state.Config.Destinations.SentinelOneDestination {
-		config.Destinations = append(config.Destinations, expandSentinelOneDestination(ctx, d))
-	}
-	for _, d := range state.Config.Destinations.OpenSearchDestination {
-		config.Destinations = append(config.Destinations, expandOpenSearchDestination(ctx, d))
-	}
-	for _, d := range state.Config.Destinations.AmazonOpenSearchDestination {
-		config.Destinations = append(config.Destinations, expandAmazonOpenSearchDestination(ctx, d))
-	}
-	for _, d := range state.Config.Destinations.SocketDestination {
-		config.Destinations = append(config.Destinations, observability_pipeline.ExpandSocketDestination(ctx, d))
-	}
-	for _, d := range state.Config.Destinations.AmazonS3Destination {
-		config.Destinations = append(config.Destinations, observability_pipeline.ExpandAmazonS3Destination(ctx, d))
-	}
-	for _, d := range state.Config.Destinations.AmazonSecurityLakeDestination {
-		config.Destinations = append(config.Destinations, observability_pipeline.ExpandObservabilityPipelinesAmazonSecurityLakeDestination(ctx, d))
-	}
-	for _, d := range state.Config.Destinations.CrowdStrikeNextGenSiemDestination {
-		config.Destinations = append(config.Destinations, observability_pipeline.ExpandCrowdStrikeNextGenSiemDestination(ctx, d))
+	for _, dest := range state.Config.Destinations {
+		for _, d := range dest.DatadogLogsDestination {
+			config.Destinations = append(config.Destinations, expandDatadogLogsDestination(ctx, dest, d))
+		}
+		for _, d := range dest.SplunkHecDestination {
+			config.Destinations = append(config.Destinations, expandSplunkHecDestination(ctx, dest, d))
+		}
+		for _, d := range dest.GoogleCloudStorageDestination {
+			config.Destinations = append(config.Destinations, expandGoogleCloudStorageDestination(ctx, dest, d))
+		}
+		for _, d := range dest.GooglePubSubDestination {
+			config.Destinations = append(config.Destinations, expandGooglePubSubDestination(ctx, dest, d))
+		}
+		for _, d := range dest.SumoLogicDestination {
+			config.Destinations = append(config.Destinations, expandSumoLogicDestination(ctx, dest, d))
+		}
+		for _, d := range dest.RsyslogDestination {
+			config.Destinations = append(config.Destinations, expandRsyslogDestination(ctx, dest, d))
+		}
+		for _, d := range dest.SyslogNgDestination {
+			config.Destinations = append(config.Destinations, expandSyslogNgDestination(ctx, dest, d))
+		}
+		for _, d := range dest.ElasticsearchDestination {
+			config.Destinations = append(config.Destinations, expandElasticsearchDestination(ctx, dest, d))
+		}
+		for _, d := range dest.AzureStorageDestination {
+			config.Destinations = append(config.Destinations, expandAzureStorageDestination(ctx, dest, d))
+		}
+		for _, d := range dest.MicrosoftSentinelDestination {
+			config.Destinations = append(config.Destinations, expandMicrosoftSentinelDestination(ctx, dest, d))
+		}
+		for _, d := range dest.GoogleChronicleDestination {
+			config.Destinations = append(config.Destinations, expandGoogleChronicleDestination(ctx, dest, d))
+		}
+		for _, d := range dest.NewRelicDestination {
+			config.Destinations = append(config.Destinations, expandNewRelicDestination(ctx, dest, d))
+		}
+		for _, d := range dest.SentinelOneDestination {
+			config.Destinations = append(config.Destinations, expandSentinelOneDestination(ctx, dest, d))
+		}
+		for _, d := range dest.OpenSearchDestination {
+			config.Destinations = append(config.Destinations, expandOpenSearchDestination(ctx, dest, d))
+		}
+		for _, d := range dest.AmazonOpenSearchDestination {
+			config.Destinations = append(config.Destinations, expandAmazonOpenSearchDestination(ctx, dest, d))
+		}
+		for _, d := range dest.SocketDestination {
+			config.Destinations = append(config.Destinations, observability_pipeline.ExpandSocketDestination(ctx, dest.Id.ValueString(), dest.Inputs, d))
+		}
+		for _, d := range dest.AmazonS3Destination {
+			config.Destinations = append(config.Destinations, observability_pipeline.ExpandAmazonS3Destination(ctx, dest.Id.ValueString(), dest.Inputs, d))
+		}
+		for _, d := range dest.AmazonSecurityLakeDestination {
+			config.Destinations = append(config.Destinations, observability_pipeline.ExpandObservabilityPipelinesAmazonSecurityLakeDestination(ctx, dest.Id.ValueString(), dest.Inputs, d))
+		}
+		for _, d := range dest.CrowdStrikeNextGenSiemDestination {
+			config.Destinations = append(config.Destinations, observability_pipeline.ExpandCrowdStrikeNextGenSiemDestination(ctx, dest.Id.ValueString(), dest.Inputs, d))
+		}
 	}
 
 	attrs.SetConfig(*config)
@@ -2551,73 +2518,109 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 	for _, group := range cfg.GetProcessors() {
 		flattenedGroup := flattenProcessorGroup(ctx, &group)
 		if flattenedGroup != nil {
-			outCfg.Processors.ProcessorGroups = append(outCfg.Processors.ProcessorGroups, flattenedGroup)
+			outCfg.Processors = append(outCfg.Processors, flattenedGroup)
 		}
 	}
 
 	for _, d := range cfg.GetDestinations() {
+		destBlock := &destinationModel{}
 
 		if logs := flattenDatadogLogsDestination(ctx, d.ObservabilityPipelineDatadogLogsDestination); logs != nil {
-			outCfg.Destinations.DatadogLogsDestination = append(outCfg.Destinations.DatadogLogsDestination, logs)
+			destBlock.Id = types.StringValue(d.ObservabilityPipelineDatadogLogsDestination.GetId())
+			destBlock.Inputs, _ = types.ListValueFrom(ctx, types.StringType, d.ObservabilityPipelineDatadogLogsDestination.GetInputs())
+			destBlock.DatadogLogsDestination = append(destBlock.DatadogLogsDestination, logs)
+			outCfg.Destinations = append(outCfg.Destinations, destBlock)
+		} else if chronicle := flattenGoogleChronicleDestination(ctx, d.ObservabilityPipelineGoogleChronicleDestination); chronicle != nil {
+			destBlock.Id = types.StringValue(d.ObservabilityPipelineGoogleChronicleDestination.GetId())
+			destBlock.Inputs, _ = types.ListValueFrom(ctx, types.StringType, d.ObservabilityPipelineGoogleChronicleDestination.GetInputs())
+			destBlock.GoogleChronicleDestination = append(destBlock.GoogleChronicleDestination, chronicle)
+			outCfg.Destinations = append(outCfg.Destinations, destBlock)
+		} else if newrelic := flattenNewRelicDestination(ctx, d.ObservabilityPipelineNewRelicDestination); newrelic != nil {
+			destBlock.Id = types.StringValue(d.ObservabilityPipelineNewRelicDestination.GetId())
+			destBlock.Inputs, _ = types.ListValueFrom(ctx, types.StringType, d.ObservabilityPipelineNewRelicDestination.GetInputs())
+			destBlock.NewRelicDestination = append(destBlock.NewRelicDestination, newrelic)
+			outCfg.Destinations = append(outCfg.Destinations, destBlock)
+		} else if sentinelone := flattenSentinelOneDestination(ctx, d.ObservabilityPipelineSentinelOneDestination); sentinelone != nil {
+			destBlock.Id = types.StringValue(d.ObservabilityPipelineSentinelOneDestination.GetId())
+			destBlock.Inputs, _ = types.ListValueFrom(ctx, types.StringType, d.ObservabilityPipelineSentinelOneDestination.GetInputs())
+			destBlock.SentinelOneDestination = append(destBlock.SentinelOneDestination, sentinelone)
+			outCfg.Destinations = append(outCfg.Destinations, destBlock)
+		} else if hec := flattenSplunkHecDestination(ctx, d.ObservabilityPipelineSplunkHecDestination); hec != nil {
+			destBlock.Id = types.StringValue(d.ObservabilityPipelineSplunkHecDestination.GetId())
+			destBlock.Inputs, _ = types.ListValueFrom(ctx, types.StringType, d.ObservabilityPipelineSplunkHecDestination.GetInputs())
+			destBlock.SplunkHecDestination = append(destBlock.SplunkHecDestination, hec)
+			outCfg.Destinations = append(outCfg.Destinations, destBlock)
+		} else if gcs := flattenGoogleCloudStorageDestination(ctx, d.ObservabilityPipelineGoogleCloudStorageDestination); gcs != nil {
+			destBlock.Id = types.StringValue(d.ObservabilityPipelineGoogleCloudStorageDestination.GetId())
+			destBlock.Inputs, _ = types.ListValueFrom(ctx, types.StringType, d.ObservabilityPipelineGoogleCloudStorageDestination.GetInputs())
+			destBlock.GoogleCloudStorageDestination = append(destBlock.GoogleCloudStorageDestination, gcs)
+			outCfg.Destinations = append(outCfg.Destinations, destBlock)
+		} else if pubsub := flattenGooglePubSubDestination(ctx, d.ObservabilityPipelineGooglePubSubDestination); pubsub != nil {
+			destBlock.Id = types.StringValue(d.ObservabilityPipelineGooglePubSubDestination.GetId())
+			destBlock.Inputs, _ = types.ListValueFrom(ctx, types.StringType, d.ObservabilityPipelineGooglePubSubDestination.GetInputs())
+			destBlock.GooglePubSubDestination = append(destBlock.GooglePubSubDestination, pubsub)
+			outCfg.Destinations = append(outCfg.Destinations, destBlock)
+		} else if s := flattenSumoLogicDestination(ctx, d.ObservabilityPipelineSumoLogicDestination); s != nil {
+			destBlock.Id = types.StringValue(d.ObservabilityPipelineSumoLogicDestination.GetId())
+			destBlock.Inputs, _ = types.ListValueFrom(ctx, types.StringType, d.ObservabilityPipelineSumoLogicDestination.GetInputs())
+			destBlock.SumoLogicDestination = append(destBlock.SumoLogicDestination, s)
+			outCfg.Destinations = append(outCfg.Destinations, destBlock)
+		} else if r := flattenRsyslogDestination(ctx, d.ObservabilityPipelineRsyslogDestination); r != nil {
+			destBlock.Id = types.StringValue(d.ObservabilityPipelineRsyslogDestination.GetId())
+			destBlock.Inputs, _ = types.ListValueFrom(ctx, types.StringType, d.ObservabilityPipelineRsyslogDestination.GetInputs())
+			destBlock.RsyslogDestination = append(destBlock.RsyslogDestination, r)
+			outCfg.Destinations = append(outCfg.Destinations, destBlock)
+		} else if s := flattenSyslogNgDestination(ctx, d.ObservabilityPipelineSyslogNgDestination); s != nil {
+			destBlock.Id = types.StringValue(d.ObservabilityPipelineSyslogNgDestination.GetId())
+			destBlock.Inputs, _ = types.ListValueFrom(ctx, types.StringType, d.ObservabilityPipelineSyslogNgDestination.GetInputs())
+			destBlock.SyslogNgDestination = append(destBlock.SyslogNgDestination, s)
+			outCfg.Destinations = append(outCfg.Destinations, destBlock)
+		} else if e := flattenElasticsearchDestination(ctx, d.ObservabilityPipelineElasticsearchDestination); e != nil {
+			destBlock.Id = types.StringValue(d.ObservabilityPipelineElasticsearchDestination.GetId())
+			destBlock.Inputs, _ = types.ListValueFrom(ctx, types.StringType, d.ObservabilityPipelineElasticsearchDestination.GetInputs())
+			destBlock.ElasticsearchDestination = append(destBlock.ElasticsearchDestination, e)
+			outCfg.Destinations = append(outCfg.Destinations, destBlock)
+		} else if a := flattenAzureStorageDestination(ctx, d.AzureStorageDestination); a != nil {
+			destBlock.Id = types.StringValue(d.AzureStorageDestination.GetId())
+			destBlock.Inputs, _ = types.ListValueFrom(ctx, types.StringType, d.AzureStorageDestination.GetInputs())
+			destBlock.AzureStorageDestination = append(destBlock.AzureStorageDestination, a)
+			outCfg.Destinations = append(outCfg.Destinations, destBlock)
+		} else if m := flattenMicrosoftSentinelDestination(ctx, d.MicrosoftSentinelDestination); m != nil {
+			destBlock.Id = types.StringValue(d.MicrosoftSentinelDestination.GetId())
+			destBlock.Inputs, _ = types.ListValueFrom(ctx, types.StringType, d.MicrosoftSentinelDestination.GetInputs())
+			destBlock.MicrosoftSentinelDestination = append(destBlock.MicrosoftSentinelDestination, m)
+			outCfg.Destinations = append(outCfg.Destinations, destBlock)
+		} else if opensearch := flattenOpenSearchDestination(ctx, d.ObservabilityPipelineOpenSearchDestination); opensearch != nil {
+			destBlock.Id = types.StringValue(d.ObservabilityPipelineOpenSearchDestination.GetId())
+			destBlock.Inputs, _ = types.ListValueFrom(ctx, types.StringType, d.ObservabilityPipelineOpenSearchDestination.GetInputs())
+			destBlock.OpenSearchDestination = append(destBlock.OpenSearchDestination, opensearch)
+			outCfg.Destinations = append(outCfg.Destinations, destBlock)
+		} else if amazonopensearch := flattenAmazonOpenSearchDestination(ctx, d.ObservabilityPipelineAmazonOpenSearchDestination); amazonopensearch != nil {
+			destBlock.Id = types.StringValue(d.ObservabilityPipelineAmazonOpenSearchDestination.GetId())
+			destBlock.Inputs, _ = types.ListValueFrom(ctx, types.StringType, d.ObservabilityPipelineAmazonOpenSearchDestination.GetInputs())
+			destBlock.AmazonOpenSearchDestination = append(destBlock.AmazonOpenSearchDestination, amazonopensearch)
+			outCfg.Destinations = append(outCfg.Destinations, destBlock)
+		} else if socket := observability_pipeline.FlattenSocketDestination(ctx, d.ObservabilityPipelineSocketDestination); socket != nil {
+			destBlock.Id = types.StringValue(d.ObservabilityPipelineSocketDestination.GetId())
+			destBlock.Inputs, _ = types.ListValueFrom(ctx, types.StringType, d.ObservabilityPipelineSocketDestination.GetInputs())
+			destBlock.SocketDestination = append(destBlock.SocketDestination, socket)
+			outCfg.Destinations = append(outCfg.Destinations, destBlock)
+		} else if s3 := observability_pipeline.FlattenAmazonS3Destination(ctx, d.ObservabilityPipelineAmazonS3Destination); s3 != nil {
+			destBlock.Id = types.StringValue(d.ObservabilityPipelineAmazonS3Destination.GetId())
+			destBlock.Inputs, _ = types.ListValueFrom(ctx, types.StringType, d.ObservabilityPipelineAmazonS3Destination.GetInputs())
+			destBlock.AmazonS3Destination = append(destBlock.AmazonS3Destination, s3)
+			outCfg.Destinations = append(outCfg.Destinations, destBlock)
+		} else if securitylake := observability_pipeline.FlattenObservabilityPipelinesAmazonSecurityLakeDestination(ctx, d.ObservabilityPipelineAmazonSecurityLakeDestination); securitylake != nil {
+			destBlock.Id = types.StringValue(d.ObservabilityPipelineAmazonSecurityLakeDestination.GetId())
+			destBlock.Inputs, _ = types.ListValueFrom(ctx, types.StringType, d.ObservabilityPipelineAmazonSecurityLakeDestination.GetInputs())
+			destBlock.AmazonSecurityLakeDestination = append(destBlock.AmazonSecurityLakeDestination, securitylake)
+			outCfg.Destinations = append(outCfg.Destinations, destBlock)
+		} else if crowdstrike := observability_pipeline.FlattenCrowdStrikeNextGenSiemDestination(ctx, d.ObservabilityPipelineCrowdStrikeNextGenSiemDestination); crowdstrike != nil {
+			destBlock.Id = types.StringValue(d.ObservabilityPipelineCrowdStrikeNextGenSiemDestination.GetId())
+			destBlock.Inputs, _ = types.ListValueFrom(ctx, types.StringType, d.ObservabilityPipelineCrowdStrikeNextGenSiemDestination.GetInputs())
+			destBlock.CrowdStrikeNextGenSiemDestination = append(destBlock.CrowdStrikeNextGenSiemDestination, crowdstrike)
+			outCfg.Destinations = append(outCfg.Destinations, destBlock)
 		}
-		if d := flattenGoogleChronicleDestination(ctx, d.ObservabilityPipelineGoogleChronicleDestination); d != nil {
-			outCfg.Destinations.GoogleChronicleDestination = append(outCfg.Destinations.GoogleChronicleDestination, d)
-		}
-		if d := flattenNewRelicDestination(ctx, d.ObservabilityPipelineNewRelicDestination); d != nil {
-			outCfg.Destinations.NewRelicDestination = append(outCfg.Destinations.NewRelicDestination, d)
-		}
-		if d := flattenSentinelOneDestination(ctx, d.ObservabilityPipelineSentinelOneDestination); d != nil {
-			outCfg.Destinations.SentinelOneDestination = append(outCfg.Destinations.SentinelOneDestination, d)
-		}
-		if hec := flattenSplunkHecDestination(ctx, d.ObservabilityPipelineSplunkHecDestination); hec != nil {
-			outCfg.Destinations.SplunkHecDestination = append(outCfg.Destinations.SplunkHecDestination, hec)
-		}
-
-		if gcs := flattenGoogleCloudStorageDestination(ctx, d.ObservabilityPipelineGoogleCloudStorageDestination); gcs != nil {
-			outCfg.Destinations.GoogleCloudStorageDestination = append(outCfg.Destinations.GoogleCloudStorageDestination, gcs)
-		}
-
-		if pubsub := flattenGooglePubSubDestination(ctx, d.ObservabilityPipelineGooglePubSubDestination); pubsub != nil {
-			outCfg.Destinations.GooglePubSubDestination = append(outCfg.Destinations.GooglePubSubDestination, pubsub)
-		}
-
-		if s := flattenSumoLogicDestination(ctx, d.ObservabilityPipelineSumoLogicDestination); s != nil {
-			outCfg.Destinations.SumoLogicDestination = append(outCfg.Destinations.SumoLogicDestination, s)
-		}
-		if r := flattenRsyslogDestination(ctx, d.ObservabilityPipelineRsyslogDestination); r != nil {
-			outCfg.Destinations.RsyslogDestination = append(outCfg.Destinations.RsyslogDestination, r)
-		}
-		if s := flattenSyslogNgDestination(ctx, d.ObservabilityPipelineSyslogNgDestination); s != nil {
-			outCfg.Destinations.SyslogNgDestination = append(outCfg.Destinations.SyslogNgDestination, s)
-		}
-		if e := flattenElasticsearchDestination(ctx, d.ObservabilityPipelineElasticsearchDestination); e != nil {
-			outCfg.Destinations.ElasticsearchDestination = append(outCfg.Destinations.ElasticsearchDestination, e)
-		}
-		if a := flattenAzureStorageDestination(ctx, d.AzureStorageDestination); a != nil {
-			outCfg.Destinations.AzureStorageDestination = append(outCfg.Destinations.AzureStorageDestination, a)
-		}
-		if m := flattenMicrosoftSentinelDestination(ctx, d.MicrosoftSentinelDestination); m != nil {
-			outCfg.Destinations.MicrosoftSentinelDestination = append(outCfg.Destinations.MicrosoftSentinelDestination, m)
-		}
-		if d := flattenOpenSearchDestination(ctx, d.ObservabilityPipelineOpenSearchDestination); d != nil {
-			outCfg.Destinations.OpenSearchDestination = append(outCfg.Destinations.OpenSearchDestination, d)
-		}
-		if d := flattenAmazonOpenSearchDestination(ctx, d.ObservabilityPipelineAmazonOpenSearchDestination); d != nil {
-			outCfg.Destinations.AmazonOpenSearchDestination = append(outCfg.Destinations.AmazonOpenSearchDestination, d)
-		}
-		if d := observability_pipeline.FlattenSocketDestination(ctx, d.ObservabilityPipelineSocketDestination); d != nil {
-			outCfg.Destinations.SocketDestination = append(outCfg.Destinations.SocketDestination, d)
-		}
-		if d := observability_pipeline.FlattenAmazonS3Destination(ctx, d.ObservabilityPipelineAmazonS3Destination); d != nil {
-			outCfg.Destinations.AmazonS3Destination = append(outCfg.Destinations.AmazonS3Destination, d)
-		}
-		if d := observability_pipeline.FlattenObservabilityPipelinesAmazonSecurityLakeDestination(ctx, d.ObservabilityPipelineAmazonSecurityLakeDestination); d != nil {
-			outCfg.Destinations.AmazonSecurityLakeDestination = append(outCfg.Destinations.AmazonSecurityLakeDestination, d)
-		}
-		if d := observability_pipeline.FlattenCrowdStrikeNextGenSiemDestination(ctx, d.ObservabilityPipelineCrowdStrikeNextGenSiemDestination); d != nil {
-			outCfg.Destinations.CrowdStrikeNextGenSiemDestination = append(outCfg.Destinations.CrowdStrikeNextGenSiemDestination, d)
-		}
-
 	}
 
 	state.Config = &outCfg
@@ -3948,21 +3951,17 @@ func flattenDatadogLogsDestination(ctx context.Context, src *datadogV2.Observabi
 	if src == nil {
 		return nil
 	}
-	inputs, _ := types.ListValueFrom(ctx, types.StringType, src.Inputs)
-	return &datadogLogsDestinationModel{
-		Id:     types.StringValue(src.Id),
-		Inputs: inputs,
-	}
+	return &datadogLogsDestinationModel{}
 }
 
-func expandDatadogLogsDestination(ctx context.Context, src *datadogLogsDestinationModel) datadogV2.ObservabilityPipelineConfigDestinationItem {
-	dest := datadogV2.NewObservabilityPipelineDatadogLogsDestinationWithDefaults()
-	dest.SetId(src.Id.ValueString())
+func expandDatadogLogsDestination(ctx context.Context, dest *destinationModel, src *datadogLogsDestinationModel) datadogV2.ObservabilityPipelineConfigDestinationItem {
+	d := datadogV2.NewObservabilityPipelineDatadogLogsDestinationWithDefaults()
+	d.SetId(dest.Id.ValueString())
 	var inputs []string
-	src.Inputs.ElementsAs(ctx, &inputs, false)
-	dest.SetInputs(inputs)
+	dest.Inputs.ElementsAs(ctx, &inputs, false)
+	d.SetInputs(inputs)
 	return datadogV2.ObservabilityPipelineConfigDestinationItem{
-		ObservabilityPipelineDatadogLogsDestination: dest,
+		ObservabilityPipelineDatadogLogsDestination: d,
 	}
 }
 
@@ -4110,10 +4109,10 @@ func flattenSplunkHecSource(src *datadogV2.ObservabilityPipelineSplunkHecSource)
 	return out
 }
 
-func expandGoogleCloudStorageDestination(ctx context.Context, d *gcsDestinationModel) datadogV2.ObservabilityPipelineConfigDestinationItem {
+func expandGoogleCloudStorageDestination(ctx context.Context, destModel *destinationModel, d *gcsDestinationModel) datadogV2.ObservabilityPipelineConfigDestinationItem {
 	dest := datadogV2.NewObservabilityPipelineGoogleCloudStorageDestinationWithDefaults()
 
-	dest.SetId(d.Id.ValueString())
+	dest.SetId(destModel.Id.ValueString())
 	dest.SetBucket(d.Bucket.ValueString())
 	dest.SetStorageClass(datadogV2.ObservabilityPipelineGoogleCloudStorageDestinationStorageClass(d.StorageClass.ValueString()))
 	dest.SetAcl(datadogV2.ObservabilityPipelineGoogleCloudStorageDestinationAcl(d.Acl.ValueString()))
@@ -4136,7 +4135,7 @@ func expandGoogleCloudStorageDestination(ctx context.Context, d *gcsDestinationM
 	dest.SetMetadata(metadata)
 
 	var inputs []string
-	d.Inputs.ElementsAs(ctx, &inputs, false)
+	destModel.Inputs.ElementsAs(ctx, &inputs, false)
 	dest.SetInputs(inputs)
 
 	return datadogV2.ObservabilityPipelineConfigDestinationItem{
@@ -4149,8 +4148,6 @@ func flattenGoogleCloudStorageDestination(ctx context.Context, src *datadogV2.Ob
 		return nil
 	}
 
-	inputs, _ := types.ListValueFrom(ctx, types.StringType, src.GetInputs())
-
 	var metadata []metadataEntry
 	for _, m := range src.GetMetadata() {
 		metadata = append(metadata, metadataEntry{
@@ -4160,7 +4157,6 @@ func flattenGoogleCloudStorageDestination(ctx context.Context, src *datadogV2.Ob
 	}
 
 	return &gcsDestinationModel{
-		Id:           types.StringValue(src.GetId()),
 		Bucket:       types.StringValue(src.GetBucket()),
 		KeyPrefix:    types.StringPointerValue(src.KeyPrefix),
 		StorageClass: types.StringValue(string(src.GetStorageClass())),
@@ -4169,36 +4165,35 @@ func flattenGoogleCloudStorageDestination(ctx context.Context, src *datadogV2.Ob
 			CredentialsFile: types.StringValue(src.Auth.CredentialsFile),
 		},
 		Metadata: metadata,
-		Inputs:   inputs,
 	}
 }
 
-func expandGooglePubSubDestination(ctx context.Context, d *googlePubSubDestinationModel) datadogV2.ObservabilityPipelineConfigDestinationItem {
-	dest := datadogV2.NewObservabilityPipelineGooglePubSubDestinationWithDefaults()
-	dest.SetId(d.Id.ValueString())
-	dest.SetProject(d.Project.ValueString())
-	dest.SetTopic(d.Topic.ValueString())
+func expandGooglePubSubDestination(ctx context.Context, dest *destinationModel, d *googlePubSubDestinationModel) datadogV2.ObservabilityPipelineConfigDestinationItem {
+	pubsub := datadogV2.NewObservabilityPipelineGooglePubSubDestinationWithDefaults()
+	pubsub.SetId(dest.Id.ValueString())
+	pubsub.SetProject(d.Project.ValueString())
+	pubsub.SetTopic(d.Topic.ValueString())
 
 	if !d.Encoding.IsNull() {
-		dest.SetEncoding(datadogV2.ObservabilityPipelineGooglePubSubDestinationEncoding(d.Encoding.ValueString()))
+		pubsub.SetEncoding(datadogV2.ObservabilityPipelineGooglePubSubDestinationEncoding(d.Encoding.ValueString()))
 	}
 
 	if d.Auth != nil {
 		auth := datadogV2.ObservabilityPipelineGcpAuth{}
 		auth.SetCredentialsFile(d.Auth.CredentialsFile.ValueString())
-		dest.SetAuth(auth)
+		pubsub.SetAuth(auth)
 	}
 
 	if d.Tls != nil {
-		dest.Tls = expandTls(d.Tls)
+		pubsub.Tls = expandTls(d.Tls)
 	}
 
 	var inputs []string
-	d.Inputs.ElementsAs(ctx, &inputs, false)
-	dest.SetInputs(inputs)
+	dest.Inputs.ElementsAs(ctx, &inputs, false)
+	pubsub.SetInputs(inputs)
 
 	return datadogV2.ObservabilityPipelineConfigDestinationItem{
-		ObservabilityPipelineGooglePubSubDestination: dest,
+		ObservabilityPipelineGooglePubSubDestination: pubsub,
 	}
 }
 
@@ -4207,13 +4202,9 @@ func flattenGooglePubSubDestination(ctx context.Context, src *datadogV2.Observab
 		return nil
 	}
 
-	inputs, _ := types.ListValueFrom(ctx, types.StringType, src.GetInputs())
-
 	out := &googlePubSubDestinationModel{
-		Id:      types.StringValue(src.GetId()),
 		Project: types.StringValue(src.GetProject()),
 		Topic:   types.StringValue(src.GetTopic()),
-		Inputs:  inputs,
 	}
 
 	if encoding, ok := src.GetEncodingOk(); ok {
@@ -4262,30 +4253,30 @@ func flattenSplunkTcpSource(src *datadogV2.ObservabilityPipelineSplunkTcpSource)
 	return out
 }
 
-func expandSplunkHecDestination(ctx context.Context, d *splunkHecDestinationModel) datadogV2.ObservabilityPipelineConfigDestinationItem {
-	dest := datadogV2.NewObservabilityPipelineSplunkHecDestinationWithDefaults()
+func expandSplunkHecDestination(ctx context.Context, dest *destinationModel, d *splunkHecDestinationModel) datadogV2.ObservabilityPipelineConfigDestinationItem {
+	splunk := datadogV2.NewObservabilityPipelineSplunkHecDestinationWithDefaults()
 
-	dest.SetId(d.Id.ValueString())
+	splunk.SetId(dest.Id.ValueString())
 
 	var inputs []string
-	d.Inputs.ElementsAs(ctx, &inputs, false)
-	dest.SetInputs(inputs)
+	dest.Inputs.ElementsAs(ctx, &inputs, false)
+	splunk.SetInputs(inputs)
 
 	if !d.AutoExtractTimestamp.IsNull() {
-		dest.SetAutoExtractTimestamp(d.AutoExtractTimestamp.ValueBool())
+		splunk.SetAutoExtractTimestamp(d.AutoExtractTimestamp.ValueBool())
 	}
 	if !d.Encoding.IsNull() {
-		dest.SetEncoding(datadogV2.ObservabilityPipelineSplunkHecDestinationEncoding(d.Encoding.ValueString()))
+		splunk.SetEncoding(datadogV2.ObservabilityPipelineSplunkHecDestinationEncoding(d.Encoding.ValueString()))
 	}
 	if !d.Sourcetype.IsNull() {
-		dest.SetSourcetype(d.Sourcetype.ValueString())
+		splunk.SetSourcetype(d.Sourcetype.ValueString())
 	}
 	if !d.Index.IsNull() {
-		dest.SetIndex(d.Index.ValueString())
+		splunk.SetIndex(d.Index.ValueString())
 	}
 
 	return datadogV2.ObservabilityPipelineConfigDestinationItem{
-		ObservabilityPipelineSplunkHecDestination: dest,
+		ObservabilityPipelineSplunkHecDestination: splunk,
 	}
 }
 
@@ -4294,11 +4285,7 @@ func flattenSplunkHecDestination(ctx context.Context, src *datadogV2.Observabili
 		return nil
 	}
 
-	inputs, _ := types.ListValueFrom(ctx, types.StringType, src.GetInputs())
-
 	return &splunkHecDestinationModel{
-		Id:                   types.StringValue(src.GetId()),
-		Inputs:               inputs,
 		AutoExtractTimestamp: types.BoolValue(src.GetAutoExtractTimestamp()),
 		Encoding:             types.StringValue(string(*src.Encoding)),
 		Sourcetype:           types.StringPointerValue(src.Sourcetype),
@@ -4349,25 +4336,25 @@ func flattenAmazonS3Source(src *datadogV2.ObservabilityPipelineAmazonS3Source) *
 	return out
 }
 
-func expandSumoLogicDestination(ctx context.Context, src *sumoLogicDestinationModel) datadogV2.ObservabilityPipelineConfigDestinationItem {
-	dest := datadogV2.NewObservabilityPipelineSumoLogicDestinationWithDefaults()
-	dest.SetId(src.Id.ValueString())
+func expandSumoLogicDestination(ctx context.Context, dest *destinationModel, src *sumoLogicDestinationModel) datadogV2.ObservabilityPipelineConfigDestinationItem {
+	sumo := datadogV2.NewObservabilityPipelineSumoLogicDestinationWithDefaults()
+	sumo.SetId(dest.Id.ValueString())
 
 	var inputs []string
-	src.Inputs.ElementsAs(ctx, &inputs, false)
-	dest.SetInputs(inputs)
+	dest.Inputs.ElementsAs(ctx, &inputs, false)
+	sumo.SetInputs(inputs)
 
 	if !src.Encoding.IsNull() {
-		dest.SetEncoding(datadogV2.ObservabilityPipelineSumoLogicDestinationEncoding(src.Encoding.ValueString()))
+		sumo.SetEncoding(datadogV2.ObservabilityPipelineSumoLogicDestinationEncoding(src.Encoding.ValueString()))
 	}
 	if !src.HeaderHostName.IsNull() {
-		dest.SetHeaderHostName(src.HeaderHostName.ValueString())
+		sumo.SetHeaderHostName(src.HeaderHostName.ValueString())
 	}
 	if !src.HeaderSourceName.IsNull() {
-		dest.SetHeaderSourceName(src.HeaderSourceName.ValueString())
+		sumo.SetHeaderSourceName(src.HeaderSourceName.ValueString())
 	}
 	if !src.HeaderSourceCategory.IsNull() {
-		dest.SetHeaderSourceCategory(src.HeaderSourceCategory.ValueString())
+		sumo.SetHeaderSourceCategory(src.HeaderSourceCategory.ValueString())
 	}
 
 	if len(src.HeaderCustomFields) > 0 {
@@ -4378,11 +4365,11 @@ func expandSumoLogicDestination(ctx context.Context, src *sumoLogicDestinationMo
 				Value: f.Value.ValueString(),
 			})
 		}
-		dest.SetHeaderCustomFields(fields)
+		sumo.SetHeaderCustomFields(fields)
 	}
 
 	return datadogV2.ObservabilityPipelineConfigDestinationItem{
-		ObservabilityPipelineSumoLogicDestination: dest,
+		ObservabilityPipelineSumoLogicDestination: sumo,
 	}
 }
 
@@ -4391,12 +4378,7 @@ func flattenSumoLogicDestination(ctx context.Context, src *datadogV2.Observabili
 		return nil
 	}
 
-	inputs, _ := types.ListValueFrom(ctx, types.StringType, src.GetInputs())
-
-	out := &sumoLogicDestinationModel{
-		Id:     types.StringValue(src.GetId()),
-		Inputs: inputs,
-	}
+	out := &sumoLogicDestinationModel{}
 
 	if v, ok := src.GetEncodingOk(); ok {
 		out.Encoding = types.StringValue(string(*v))
@@ -4480,12 +4462,12 @@ func flattenSyslogNgSource(src *datadogV2.ObservabilityPipelineSyslogNgSource) *
 	return out
 }
 
-func expandRsyslogDestination(ctx context.Context, src *rsyslogDestinationModel) datadogV2.ObservabilityPipelineConfigDestinationItem {
+func expandRsyslogDestination(ctx context.Context, dest *destinationModel, src *rsyslogDestinationModel) datadogV2.ObservabilityPipelineConfigDestinationItem {
 	obj := datadogV2.NewObservabilityPipelineRsyslogDestinationWithDefaults()
-	obj.SetId(src.Id.ValueString())
+	obj.SetId(dest.Id.ValueString())
 
 	var inputs []string
-	src.Inputs.ElementsAs(ctx, &inputs, false)
+	dest.Inputs.ElementsAs(ctx, &inputs, false)
 	obj.SetInputs(inputs)
 
 	if !src.Keepalive.IsNull() {
@@ -4503,11 +4485,7 @@ func flattenRsyslogDestination(ctx context.Context, src *datadogV2.Observability
 	if src == nil {
 		return nil
 	}
-	inputs, _ := types.ListValueFrom(ctx, types.StringType, src.GetInputs())
-	out := &rsyslogDestinationModel{
-		Id:     types.StringValue(src.GetId()),
-		Inputs: inputs,
-	}
+	out := &rsyslogDestinationModel{}
 	if v, ok := src.GetKeepaliveOk(); ok {
 		out.Keepalive = types.Int64Value(*v)
 	}
@@ -4518,12 +4496,12 @@ func flattenRsyslogDestination(ctx context.Context, src *datadogV2.Observability
 	return out
 }
 
-func expandSyslogNgDestination(ctx context.Context, src *syslogNgDestinationModel) datadogV2.ObservabilityPipelineConfigDestinationItem {
+func expandSyslogNgDestination(ctx context.Context, dest *destinationModel, src *syslogNgDestinationModel) datadogV2.ObservabilityPipelineConfigDestinationItem {
 	obj := datadogV2.NewObservabilityPipelineSyslogNgDestinationWithDefaults()
-	obj.SetId(src.Id.ValueString())
+	obj.SetId(dest.Id.ValueString())
 
 	var inputs []string
-	src.Inputs.ElementsAs(ctx, &inputs, false)
+	dest.Inputs.ElementsAs(ctx, &inputs, false)
 	obj.SetInputs(inputs)
 
 	if !src.Keepalive.IsNull() {
@@ -4542,11 +4520,7 @@ func flattenSyslogNgDestination(ctx context.Context, src *datadogV2.Observabilit
 	if src == nil {
 		return nil
 	}
-	inputs, _ := types.ListValueFrom(ctx, types.StringType, src.GetInputs())
-	out := &syslogNgDestinationModel{
-		Id:     types.StringValue(src.GetId()),
-		Inputs: inputs,
-	}
+	out := &syslogNgDestinationModel{}
 	if v, ok := src.GetKeepaliveOk(); ok {
 		out.Keepalive = types.Int64Value(*v)
 	}
@@ -4557,12 +4531,12 @@ func flattenSyslogNgDestination(ctx context.Context, src *datadogV2.Observabilit
 	return out
 }
 
-func expandElasticsearchDestination(ctx context.Context, src *elasticsearchDestinationModel) datadogV2.ObservabilityPipelineConfigDestinationItem {
+func expandElasticsearchDestination(ctx context.Context, dest *destinationModel, src *elasticsearchDestinationModel) datadogV2.ObservabilityPipelineConfigDestinationItem {
 	obj := datadogV2.NewObservabilityPipelineElasticsearchDestinationWithDefaults()
-	obj.SetId(src.Id.ValueString())
+	obj.SetId(dest.Id.ValueString())
 
 	var inputs []string
-	src.Inputs.ElementsAs(ctx, &inputs, false)
+	dest.Inputs.ElementsAs(ctx, &inputs, false)
 	obj.SetInputs(inputs)
 
 	if !src.ApiVersion.IsNull() {
@@ -4581,11 +4555,7 @@ func flattenElasticsearchDestination(ctx context.Context, src *datadogV2.Observa
 	if src == nil {
 		return nil
 	}
-	inputs, _ := types.ListValueFrom(ctx, types.StringType, src.GetInputs())
-	out := &elasticsearchDestinationModel{
-		Id:     types.StringValue(src.GetId()),
-		Inputs: inputs,
-	}
+	out := &elasticsearchDestinationModel{}
 	if v, ok := src.GetApiVersionOk(); ok {
 		out.ApiVersion = types.StringValue(string(*v))
 	}
@@ -4595,12 +4565,12 @@ func flattenElasticsearchDestination(ctx context.Context, src *datadogV2.Observa
 	return out
 }
 
-func expandAzureStorageDestination(ctx context.Context, src *azureStorageDestinationModel) datadogV2.ObservabilityPipelineConfigDestinationItem {
+func expandAzureStorageDestination(ctx context.Context, dest *destinationModel, src *azureStorageDestinationModel) datadogV2.ObservabilityPipelineConfigDestinationItem {
 	obj := datadogV2.NewAzureStorageDestinationWithDefaults()
-	obj.SetId(src.Id.ValueString())
+	obj.SetId(dest.Id.ValueString())
 
 	var inputs []string
-	src.Inputs.ElementsAs(ctx, &inputs, false)
+	dest.Inputs.ElementsAs(ctx, &inputs, false)
 	obj.SetInputs(inputs)
 
 	obj.SetContainerName(src.ContainerName.ValueString())
@@ -4618,10 +4588,7 @@ func flattenAzureStorageDestination(ctx context.Context, src *datadogV2.AzureSto
 	if src == nil {
 		return nil
 	}
-	inputs, _ := types.ListValueFrom(ctx, types.StringType, src.GetInputs())
 	out := &azureStorageDestinationModel{
-		Id:            types.StringValue(src.GetId()),
-		Inputs:        inputs,
 		ContainerName: types.StringValue(src.GetContainerName()),
 	}
 	if v, ok := src.GetBlobPrefixOk(); ok {
@@ -4630,12 +4597,12 @@ func flattenAzureStorageDestination(ctx context.Context, src *datadogV2.AzureSto
 	return out
 }
 
-func expandMicrosoftSentinelDestination(ctx context.Context, src *microsoftSentinelDestinationModel) datadogV2.ObservabilityPipelineConfigDestinationItem {
+func expandMicrosoftSentinelDestination(ctx context.Context, dest *destinationModel, src *microsoftSentinelDestinationModel) datadogV2.ObservabilityPipelineConfigDestinationItem {
 	obj := datadogV2.NewMicrosoftSentinelDestinationWithDefaults()
-	obj.SetId(src.Id.ValueString())
+	obj.SetId(dest.Id.ValueString())
 
 	var inputs []string
-	src.Inputs.ElementsAs(ctx, &inputs, false)
+	dest.Inputs.ElementsAs(ctx, &inputs, false)
 	obj.SetInputs(inputs)
 
 	obj.SetClientId(src.ClientId.ValueString())
@@ -4652,10 +4619,7 @@ func flattenMicrosoftSentinelDestination(ctx context.Context, src *datadogV2.Mic
 	if src == nil {
 		return nil
 	}
-	inputs, _ := types.ListValueFrom(ctx, types.StringType, src.GetInputs())
 	return &microsoftSentinelDestinationModel{
-		Id:             types.StringValue(src.GetId()),
-		Inputs:         inputs,
 		ClientId:       types.StringValue(src.GetClientId()),
 		TenantId:       types.StringValue(src.GetTenantId()),
 		DcrImmutableId: types.StringValue(src.GetDcrImmutableId()),
@@ -4835,34 +4799,34 @@ func flattenLogstashSource(src *datadogV2.ObservabilityPipelineLogstashSource) *
 	return out
 }
 
-func expandGoogleChronicleDestination(ctx context.Context, src *googleChronicleDestinationModel) datadogV2.ObservabilityPipelineConfigDestinationItem {
-	dest := datadogV2.NewObservabilityPipelineGoogleChronicleDestinationWithDefaults()
-	dest.SetId(src.Id.ValueString())
+func expandGoogleChronicleDestination(ctx context.Context, dest *destinationModel, src *googleChronicleDestinationModel) datadogV2.ObservabilityPipelineConfigDestinationItem {
+	chronicle := datadogV2.NewObservabilityPipelineGoogleChronicleDestinationWithDefaults()
+	chronicle.SetId(dest.Id.ValueString())
 
 	var inputs []string
-	src.Inputs.ElementsAs(ctx, &inputs, false)
-	dest.SetInputs(inputs)
+	dest.Inputs.ElementsAs(ctx, &inputs, false)
+	chronicle.SetInputs(inputs)
 
 	if src.Auth != nil {
 		auth := datadogV2.ObservabilityPipelineGcpAuth{}
 		if !src.Auth.CredentialsFile.IsNull() {
 			auth.SetCredentialsFile(src.Auth.CredentialsFile.ValueString())
 		}
-		dest.SetAuth(auth)
+		chronicle.SetAuth(auth)
 	}
 
 	if !src.CustomerId.IsNull() {
-		dest.SetCustomerId(src.CustomerId.ValueString())
+		chronicle.SetCustomerId(src.CustomerId.ValueString())
 	}
 	if !src.Encoding.IsNull() {
-		dest.SetEncoding(datadogV2.ObservabilityPipelineGoogleChronicleDestinationEncoding(src.Encoding.ValueString()))
+		chronicle.SetEncoding(datadogV2.ObservabilityPipelineGoogleChronicleDestinationEncoding(src.Encoding.ValueString()))
 	}
 	if !src.LogType.IsNull() {
-		dest.SetLogType(src.LogType.ValueString())
+		chronicle.SetLogType(src.LogType.ValueString())
 	}
 
 	return datadogV2.ObservabilityPipelineConfigDestinationItem{
-		ObservabilityPipelineGoogleChronicleDestination: dest,
+		ObservabilityPipelineGoogleChronicleDestination: chronicle,
 	}
 }
 
@@ -4871,11 +4835,7 @@ func flattenGoogleChronicleDestination(ctx context.Context, src *datadogV2.Obser
 		return nil
 	}
 
-	inputs, _ := types.ListValueFrom(ctx, types.StringType, src.Inputs)
-
 	out := &googleChronicleDestinationModel{
-		Id:         types.StringValue(src.GetId()),
-		Inputs:     inputs,
 		CustomerId: types.StringValue(src.GetCustomerId()),
 		Encoding:   types.StringValue(string(src.GetEncoding())),
 		LogType:    types.StringValue(src.GetLogType()),
@@ -4888,18 +4848,18 @@ func flattenGoogleChronicleDestination(ctx context.Context, src *datadogV2.Obser
 	return out
 }
 
-func expandNewRelicDestination(ctx context.Context, src *newRelicDestinationModel) datadogV2.ObservabilityPipelineConfigDestinationItem {
-	dest := datadogV2.NewObservabilityPipelineNewRelicDestinationWithDefaults()
-	dest.SetId(src.Id.ValueString())
+func expandNewRelicDestination(ctx context.Context, dest *destinationModel, src *newRelicDestinationModel) datadogV2.ObservabilityPipelineConfigDestinationItem {
+	newrelic := datadogV2.NewObservabilityPipelineNewRelicDestinationWithDefaults()
+	newrelic.SetId(dest.Id.ValueString())
 
 	var inputs []string
-	src.Inputs.ElementsAs(ctx, &inputs, false)
-	dest.SetInputs(inputs)
+	dest.Inputs.ElementsAs(ctx, &inputs, false)
+	newrelic.SetInputs(inputs)
 
-	dest.SetRegion(datadogV2.ObservabilityPipelineNewRelicDestinationRegion(src.Region.ValueString()))
+	newrelic.SetRegion(datadogV2.ObservabilityPipelineNewRelicDestinationRegion(src.Region.ValueString()))
 
 	return datadogV2.ObservabilityPipelineConfigDestinationItem{
-		ObservabilityPipelineNewRelicDestination: dest,
+		ObservabilityPipelineNewRelicDestination: newrelic,
 	}
 }
 
@@ -4908,27 +4868,23 @@ func flattenNewRelicDestination(ctx context.Context, src *datadogV2.Observabilit
 		return nil
 	}
 
-	inputs, _ := types.ListValueFrom(ctx, types.StringType, src.Inputs)
-
 	return &newRelicDestinationModel{
-		Id:     types.StringValue(src.GetId()),
-		Inputs: inputs,
 		Region: types.StringValue(string(src.GetRegion())),
 	}
 }
 
-func expandSentinelOneDestination(ctx context.Context, src *sentinelOneDestinationModel) datadogV2.ObservabilityPipelineConfigDestinationItem {
-	dest := datadogV2.NewObservabilityPipelineSentinelOneDestinationWithDefaults()
-	dest.SetId(src.Id.ValueString())
+func expandSentinelOneDestination(ctx context.Context, dest *destinationModel, src *sentinelOneDestinationModel) datadogV2.ObservabilityPipelineConfigDestinationItem {
+	sentinel := datadogV2.NewObservabilityPipelineSentinelOneDestinationWithDefaults()
+	sentinel.SetId(dest.Id.ValueString())
 
 	var inputs []string
-	src.Inputs.ElementsAs(ctx, &inputs, false)
-	dest.SetInputs(inputs)
+	dest.Inputs.ElementsAs(ctx, &inputs, false)
+	sentinel.SetInputs(inputs)
 
-	dest.SetRegion(datadogV2.ObservabilityPipelineSentinelOneDestinationRegion(src.Region.ValueString()))
+	sentinel.SetRegion(datadogV2.ObservabilityPipelineSentinelOneDestinationRegion(src.Region.ValueString()))
 
 	return datadogV2.ObservabilityPipelineConfigDestinationItem{
-		ObservabilityPipelineSentinelOneDestination: dest,
+		ObservabilityPipelineSentinelOneDestination: sentinel,
 	}
 }
 
@@ -4937,29 +4893,25 @@ func flattenSentinelOneDestination(ctx context.Context, src *datadogV2.Observabi
 		return nil
 	}
 
-	inputs, _ := types.ListValueFrom(ctx, types.StringType, src.Inputs)
-
 	return &sentinelOneDestinationModel{
-		Id:     types.StringValue(src.GetId()),
-		Inputs: inputs,
 		Region: types.StringValue(string(src.GetRegion())),
 	}
 }
 
-func expandOpenSearchDestination(ctx context.Context, src *opensearchDestinationModel) datadogV2.ObservabilityPipelineConfigDestinationItem {
-	dest := datadogV2.NewObservabilityPipelineOpenSearchDestinationWithDefaults()
-	dest.SetId(src.Id.ValueString())
+func expandOpenSearchDestination(ctx context.Context, dest *destinationModel, src *opensearchDestinationModel) datadogV2.ObservabilityPipelineConfigDestinationItem {
+	opensearch := datadogV2.NewObservabilityPipelineOpenSearchDestinationWithDefaults()
+	opensearch.SetId(dest.Id.ValueString())
 
 	var inputs []string
-	src.Inputs.ElementsAs(ctx, &inputs, false)
-	dest.SetInputs(inputs)
+	dest.Inputs.ElementsAs(ctx, &inputs, false)
+	opensearch.SetInputs(inputs)
 
 	if !src.BulkIndex.IsNull() {
-		dest.SetBulkIndex(src.BulkIndex.ValueString())
+		opensearch.SetBulkIndex(src.BulkIndex.ValueString())
 	}
 
 	return datadogV2.ObservabilityPipelineConfigDestinationItem{
-		ObservabilityPipelineOpenSearchDestination: dest,
+		ObservabilityPipelineOpenSearchDestination: opensearch,
 	}
 }
 
@@ -4968,11 +4920,7 @@ func flattenOpenSearchDestination(ctx context.Context, src *datadogV2.Observabil
 		return nil
 	}
 
-	inputs, _ := types.ListValueFrom(ctx, types.StringType, src.GetInputs())
-	out := &opensearchDestinationModel{
-		Id:     types.StringValue(src.GetId()),
-		Inputs: inputs,
-	}
+	out := &opensearchDestinationModel{}
 	if v, ok := src.GetBulkIndexOk(); ok {
 		out.BulkIndex = types.StringValue(*v)
 	}
@@ -4980,16 +4928,16 @@ func flattenOpenSearchDestination(ctx context.Context, src *datadogV2.Observabil
 	return out
 }
 
-func expandAmazonOpenSearchDestination(ctx context.Context, src *amazonOpenSearchDestinationModel) datadogV2.ObservabilityPipelineConfigDestinationItem {
-	dest := datadogV2.NewObservabilityPipelineAmazonOpenSearchDestinationWithDefaults()
-	dest.SetId(src.Id.ValueString())
+func expandAmazonOpenSearchDestination(ctx context.Context, dest *destinationModel, src *amazonOpenSearchDestinationModel) datadogV2.ObservabilityPipelineConfigDestinationItem {
+	amazonopensearch := datadogV2.NewObservabilityPipelineAmazonOpenSearchDestinationWithDefaults()
+	amazonopensearch.SetId(dest.Id.ValueString())
 
 	var inputs []string
-	src.Inputs.ElementsAs(ctx, &inputs, false)
-	dest.SetInputs(inputs)
+	dest.Inputs.ElementsAs(ctx, &inputs, false)
+	amazonopensearch.SetInputs(inputs)
 
 	if !src.BulkIndex.IsNull() {
-		dest.SetBulkIndex(src.BulkIndex.ValueString())
+		amazonopensearch.SetBulkIndex(src.BulkIndex.ValueString())
 	}
 
 	if src.Auth != nil {
@@ -5008,11 +4956,11 @@ func expandAmazonOpenSearchDestination(ctx context.Context, src *amazonOpenSearc
 		if !src.Auth.SessionName.IsNull() {
 			auth.SessionName = src.Auth.SessionName.ValueStringPointer()
 		}
-		dest.SetAuth(auth)
+		amazonopensearch.SetAuth(auth)
 	}
 
 	return datadogV2.ObservabilityPipelineConfigDestinationItem{
-		ObservabilityPipelineAmazonOpenSearchDestination: dest,
+		ObservabilityPipelineAmazonOpenSearchDestination: amazonopensearch,
 	}
 }
 
@@ -5021,12 +4969,7 @@ func flattenAmazonOpenSearchDestination(ctx context.Context, src *datadogV2.Obse
 		return nil
 	}
 
-	inputs, _ := types.ListValueFrom(ctx, types.StringType, src.Inputs)
-
-	model := &amazonOpenSearchDestinationModel{
-		Id:     types.StringValue(src.GetId()),
-		Inputs: inputs,
-	}
+	model := &amazonOpenSearchDestinationModel{}
 
 	if v, ok := src.GetBulkIndexOk(); ok {
 		model.BulkIndex = types.StringValue(*v)
@@ -5041,33 +4984,4 @@ func flattenAmazonOpenSearchDestination(ctx context.Context, src *datadogV2.Obse
 	}
 
 	return model
-}
-
-func expandObservabilityPipelinesAmazonSecurityLakeDestination(ctx context.Context, src *amazonSecurityLakeDestinationModel) datadogV2.ObservabilityPipelineConfigDestinationItem {
-	dest := datadogV2.NewObservabilityPipelineAmazonSecurityLakeDestinationWithDefaults()
-	dest.SetId(src.Id.ValueString())
-
-	var inputs []string
-	src.Inputs.ElementsAs(ctx, &inputs, false)
-	dest.SetInputs(inputs)
-
-	if !src.Bucket.IsNull() {
-		dest.SetBucket(src.Bucket.ValueString())
-	}
-	if !src.Region.IsNull() {
-		dest.SetRegion(src.Region.ValueString())
-	}
-	if !src.CustomSourceName.IsNull() {
-		dest.SetCustomSourceName(src.CustomSourceName.ValueString())
-	}
-	if src.Tls != nil {
-		dest.Tls = expandTls(src.Tls)
-	}
-	if src.Auth != nil {
-		dest.Auth = observability_pipeline.ExpandAwsAuth(src.Auth)
-	}
-
-	return datadogV2.ObservabilityPipelineConfigDestinationItem{
-		ObservabilityPipelineAmazonSecurityLakeDestination: dest,
-	}
 }
