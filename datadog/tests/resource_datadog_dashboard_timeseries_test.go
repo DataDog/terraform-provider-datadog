@@ -1012,3 +1012,73 @@ func TestAccDatadogDashboardTimeseriesMultiCompute(t *testing.T) {
 func TestAccDatadogDashboardTimeseriesMultiCompute_import(t *testing.T) {
 	testAccDatadogDashboardWidgetUtilImport(t, datadogDashboardTimeseriesMultiComputeConfigImport, "datadog_dashboard.timeseries_dashboard")
 }
+
+const datadogDashboardTimeseriesSemanticModeConfig = `
+resource "datadog_dashboard" "timeseries_dashboard" {
+	title         = "{{uniq}}"
+	description   = "Created using the Datadog provider in Terraform"
+	layout_type   = "ordered"
+	widget {
+		timeseries_definition {
+			title = "Timeseries with Semantic Mode Combined"
+			request {
+				formula {
+					formula_expression = "query1"
+				}
+				query {
+					metric_query {
+						data_source = "metrics"
+						query = "avg:system.cpu.user{*}"
+						name = "query1"
+						semantic_mode = "combined"
+					}
+				}
+			}
+		}
+	}
+	widget {
+		timeseries_definition {
+			title = "Timeseries with Semantic Mode Native"
+			request {
+				formula {
+					formula_expression = "query2"
+				}
+				query {
+					metric_query {
+						data_source = "metrics"
+						query = "avg:system.cpu.user{*}"
+						name = "query2"
+						semantic_mode = "native"
+					}
+				}
+			}
+		}
+	}
+}
+`
+
+var datadogDashboardTimeseriesSemanticModeAsserts = []string{
+	"title = {{uniq}}",
+	"description = Created using the Datadog provider in Terraform",
+	"layout_type = ordered",
+	"widget.0.timeseries_definition.0.title = Timeseries with Semantic Mode Combined",
+	"widget.0.timeseries_definition.0.request.0.formula.0.formula_expression = query1",
+	"widget.0.timeseries_definition.0.request.0.query.0.metric_query.0.data_source = metrics",
+	"widget.0.timeseries_definition.0.request.0.query.0.metric_query.0.query = avg:system.cpu.user{*}",
+	"widget.0.timeseries_definition.0.request.0.query.0.metric_query.0.name = query1",
+	"widget.0.timeseries_definition.0.request.0.query.0.metric_query.0.semantic_mode = combined",
+	"widget.1.timeseries_definition.0.title = Timeseries with Semantic Mode Native",
+	"widget.1.timeseries_definition.0.request.0.formula.0.formula_expression = query2",
+	"widget.1.timeseries_definition.0.request.0.query.0.metric_query.0.data_source = metrics",
+	"widget.1.timeseries_definition.0.request.0.query.0.metric_query.0.query = avg:system.cpu.user{*}",
+	"widget.1.timeseries_definition.0.request.0.query.0.metric_query.0.name = query2",
+	"widget.1.timeseries_definition.0.request.0.query.0.metric_query.0.semantic_mode = native",
+}
+
+func TestAccDatadogDashboardTimeseriesSemanticMode(t *testing.T) {
+	testAccDatadogDashboardWidgetUtil(t, datadogDashboardTimeseriesSemanticModeConfig, "datadog_dashboard.timeseries_dashboard", datadogDashboardTimeseriesSemanticModeAsserts)
+}
+
+func TestAccDatadogDashboardTimeseriesSemanticMode_import(t *testing.T) {
+	testAccDatadogDashboardWidgetUtilImport(t, datadogDashboardTimeseriesSemanticModeConfig, "datadog_dashboard.timeseries_dashboard")
+}
