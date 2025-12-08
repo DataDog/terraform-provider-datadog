@@ -39,11 +39,34 @@ type observabilityPipelineModel struct {
 }
 
 type configModel struct {
-	Sources      sourcesModel      `tfsdk:"sources"`
-	Processors   processorsModel   `tfsdk:"processors"`
-	Destinations destinationsModel `tfsdk:"destinations"`
+	Sources      []*sourceModel         `tfsdk:"source"`
+	Processors   []*processorGroupModel `tfsdk:"processor_group"`
+	Destinations []*destinationModel    `tfsdk:"destination"`
 }
-type sourcesModel struct {
+
+type destinationModel struct {
+	DatadogLogsDestination            []*datadogLogsDestinationModel                                   `tfsdk:"datadog_logs"`
+	GoogleCloudStorageDestination     []*googleCloudStorageDestinationModel                            `tfsdk:"google_cloud_storage"`
+	GooglePubSubDestination           []*googlePubSubDestinationModel                                  `tfsdk:"google_pubsub"`
+	SplunkHecDestination              []*splunkHecDestinationModel                                     `tfsdk:"splunk_hec"`
+	SumoLogicDestination              []*sumoLogicDestinationModel                                     `tfsdk:"sumo_logic"`
+	RsyslogDestination                []*rsyslogDestinationModel                                       `tfsdk:"rsyslog"`
+	SyslogNgDestination               []*syslogNgDestinationModel                                      `tfsdk:"syslog_ng"`
+	ElasticsearchDestination          []*elasticsearchDestinationModel                                 `tfsdk:"elasticsearch"`
+	AzureStorageDestination           []*azureStorageDestinationModel                                  `tfsdk:"azure_storage"`
+	MicrosoftSentinelDestination      []*microsoftSentinelDestinationModel                             `tfsdk:"microsoft_sentinel"`
+	GoogleChronicleDestination        []*googleChronicleDestinationModel                               `tfsdk:"google_chronicle"`
+	NewRelicDestination               []*newRelicDestinationModel                                      `tfsdk:"new_relic"`
+	SentinelOneDestination            []*sentinelOneDestinationModel                                   `tfsdk:"sentinel_one"`
+	OpenSearchDestination             []*opensearchDestinationModel                                    `tfsdk:"opensearch"`
+	AmazonOpenSearchDestination       []*amazonOpenSearchDestinationModel                              `tfsdk:"amazon_opensearch"`
+	SocketDestination                 []*observability_pipeline.SocketDestinationModel                 `tfsdk:"socket"`
+	AmazonS3Destination               []*observability_pipeline.AmazonS3DestinationModel               `tfsdk:"amazon_s3"`
+	AmazonSecurityLakeDestination     []*observability_pipeline.AmazonSecurityLakeDestinationModel     `tfsdk:"amazon_security_lake"`
+	CrowdStrikeNextGenSiemDestination []*observability_pipeline.CrowdStrikeNextGenSiemDestinationModel `tfsdk:"crowdstrike_next_gen_siem"`
+}
+
+type sourceModel struct {
 	DatadogAgentSource       []*datadogAgentSourceModel                  `tfsdk:"datadog_agent"`
 	KafkaSource              []*kafkaSourceModel                         `tfsdk:"kafka"`
 	RsyslogSource            []*rsyslogSourceModel                       `tfsdk:"rsyslog"`
@@ -63,17 +86,14 @@ type sourcesModel struct {
 }
 
 type logstashSourceModel struct {
-	Id  types.String `tfsdk:"id"`
-	Tls *tlsModel    `tfsdk:"tls"`
+	Tls *tlsModel `tfsdk:"tls"`
 }
 
 type datadogAgentSourceModel struct {
-	Id  types.String `tfsdk:"id"`
-	Tls *tlsModel    `tfsdk:"tls"`
+	Tls *tlsModel `tfsdk:"tls"`
 }
 
 type kafkaSourceModel struct {
-	Id                types.String            `tfsdk:"id"`
 	GroupId           types.String            `tfsdk:"group_id"`
 	Topics            []types.String          `tfsdk:"topics"`
 	LibrdkafkaOptions []librdkafkaOptionModel `tfsdk:"librdkafka_option"`
@@ -91,7 +111,6 @@ type kafkaSourceSaslModel struct {
 }
 
 type amazonS3SourceModel struct {
-	Id     types.String                         `tfsdk:"id"`     // Unique identifier for the component
 	Region types.String                         `tfsdk:"region"` // AWS region where the S3 bucket resides
 	Auth   *observability_pipeline.AwsAuthModel `tfsdk:"auth"`   // AWS authentication credentials
 	Tls    *tlsModel                            `tfsdk:"tls"`    // TLS encryption configuration
@@ -345,8 +364,6 @@ type googlePubSubDestinationModel struct {
 }
 
 type datadogLogsDestinationModel struct {
-	Id     types.String `tfsdk:"id"`
-	Inputs types.List   `tfsdk:"inputs"`
 }
 
 type parseGrokProcessorModel struct {
@@ -371,25 +388,21 @@ type sampleProcessorModel struct {
 }
 
 type fluentdSourceModel struct {
-	Id  types.String `tfsdk:"id"`
-	Tls *tlsModel    `tfsdk:"tls"`
+	Tls *tlsModel `tfsdk:"tls"`
 }
 
 type fluentBitSourceModel struct {
-	Id  types.String `tfsdk:"id"`
-	Tls *tlsModel    `tfsdk:"tls"`
+	Tls *tlsModel `tfsdk:"tls"`
 }
 
 type httpServerSourceModel struct {
-	Id           types.String `tfsdk:"id"`
 	AuthStrategy types.String `tfsdk:"auth_strategy"`
 	Decoding     types.String `tfsdk:"decoding"`
 	Tls          *tlsModel    `tfsdk:"tls"`
 }
 
 type splunkHecSourceModel struct {
-	Id  types.String `tfsdk:"id"`  // The unique identifier for this component.
-	Tls *tlsModel    `tfsdk:"tls"` // TLS encryption settings for secure ingestion.
+	Tls *tlsModel `tfsdk:"tls"` // TLS encryption settings for secure ingestion.
 }
 
 type generateMetricsProcessorModel struct {
@@ -410,8 +423,7 @@ type generatedMetricValue struct {
 }
 
 type splunkTcpSourceModel struct {
-	Id  types.String `tfsdk:"id"`  // The unique identifier for this component.
-	Tls *tlsModel    `tfsdk:"tls"` // TLS encryption settings for secure transmission.
+	Tls *tlsModel `tfsdk:"tls"` // TLS encryption settings for secure transmission.
 }
 
 type splunkHecDestinationModel struct {
@@ -455,13 +467,11 @@ type headerCustomFieldModel struct {
 }
 
 type rsyslogSourceModel struct {
-	Id   types.String `tfsdk:"id"`
 	Mode types.String `tfsdk:"mode"`
 	Tls  *tlsModel    `tfsdk:"tls"`
 }
 
 type syslogNgSourceModel struct {
-	Id   types.String `tfsdk:"id"`
 	Mode types.String `tfsdk:"mode"`
 	Tls  *tlsModel    `tfsdk:"tls"`
 }
@@ -566,17 +576,14 @@ type sensitiveDataScannerPartialRedactAction struct {
 }
 
 type sumoLogicSourceModel struct {
-	Id types.String `tfsdk:"id"`
 }
 
 type amazonDataFirehoseSourceModel struct {
-	Id   types.String                         `tfsdk:"id"`
 	Auth *observability_pipeline.AwsAuthModel `tfsdk:"auth"`
 	Tls  *tlsModel                            `tfsdk:"tls"`
 }
 
 type httpClientSourceModel struct {
-	Id             types.String `tfsdk:"id"`
 	Decoding       types.String `tfsdk:"decoding"`
 	ScrapeInterval types.Int64  `tfsdk:"scrape_interval_secs"`
 	ScrapeTimeout  types.Int64  `tfsdk:"scrape_timeout_secs"`
@@ -585,7 +592,6 @@ type httpClientSourceModel struct {
 }
 
 type googlePubSubSourceModel struct {
-	Id           types.String  `tfsdk:"id"`
 	Project      types.String  `tfsdk:"project"`
 	Subscription types.String  `tfsdk:"subscription"`
 	Decoding     types.String  `tfsdk:"decoding"`
@@ -2598,9 +2604,7 @@ func flattenDatadogAgentSource(src *datadogV2.ObservabilityPipelineDatadogAgentS
 	if src == nil {
 		return nil
 	}
-	out := &datadogAgentSourceModel{
-		Id: types.StringValue(src.Id),
-	}
+	out := &datadogAgentSourceModel{}
 	if src.Tls != nil {
 		tls := flattenTls(src.Tls)
 		out.Tls = &tls
@@ -2610,7 +2614,6 @@ func flattenDatadogAgentSource(src *datadogV2.ObservabilityPipelineDatadogAgentS
 
 func expandDatadogAgentSource(src *datadogAgentSourceModel) datadogV2.ObservabilityPipelineConfigSourceItem {
 	agent := datadogV2.NewObservabilityPipelineDatadogAgentSourceWithDefaults()
-	agent.SetId(src.Id.ValueString())
 	if src.Tls != nil {
 		agent.Tls = expandTls(src.Tls)
 	}
@@ -2624,7 +2627,6 @@ func flattenKafkaSource(src *datadogV2.ObservabilityPipelineKafkaSource) *kafkaS
 		return nil
 	}
 	out := &kafkaSourceModel{
-		Id:      types.StringValue(src.GetId()),
 		GroupId: types.StringValue(src.GetGroupId()),
 	}
 	// Topics is required by the API (always present, even if empty)
@@ -2654,7 +2656,6 @@ func flattenKafkaSource(src *datadogV2.ObservabilityPipelineKafkaSource) *kafkaS
 
 func expandKafkaSource(src *kafkaSourceModel) datadogV2.ObservabilityPipelineConfigSourceItem {
 	source := datadogV2.NewObservabilityPipelineKafkaSourceWithDefaults()
-	source.SetId(src.Id.ValueString())
 	source.SetGroupId(src.GroupId.ValueString())
 	// Initialize as empty slice, not nil, to ensure it serializes as [] not null
 	topics := []string{}
@@ -3960,7 +3961,6 @@ func expandTls(tlsTF *tlsModel) *datadogV2.ObservabilityPipelineTls {
 
 func expandFluentdSource(src *fluentdSourceModel) datadogV2.ObservabilityPipelineConfigSourceItem {
 	source := datadogV2.NewObservabilityPipelineFluentdSourceWithDefaults()
-	source.SetId(src.Id.ValueString())
 
 	if src.Tls != nil {
 		source.Tls = expandTls(src.Tls)
@@ -3973,7 +3973,6 @@ func expandFluentdSource(src *fluentdSourceModel) datadogV2.ObservabilityPipelin
 
 func expandFluentBitSource(src *fluentBitSourceModel) datadogV2.ObservabilityPipelineConfigSourceItem {
 	source := datadogV2.NewObservabilityPipelineFluentBitSourceWithDefaults()
-	source.SetId(src.Id.ValueString())
 
 	if src.Tls != nil {
 		source.Tls = expandTls(src.Tls)
@@ -3989,9 +3988,7 @@ func flattenFluentdSource(src *datadogV2.ObservabilityPipelineFluentdSource) *fl
 		return nil
 	}
 
-	out := &fluentdSourceModel{
-		Id: types.StringValue(src.GetId()),
-	}
+	out := &fluentdSourceModel{}
 	if src.Tls != nil {
 		tls := flattenTls(src.Tls)
 		out.Tls = &tls
@@ -4004,9 +4001,7 @@ func flattenFluentBitSource(src *datadogV2.ObservabilityPipelineFluentBitSource)
 		return nil
 	}
 
-	out := &fluentBitSourceModel{
-		Id: types.StringValue(src.GetId()),
-	}
+	out := &fluentBitSourceModel{}
 	if src.Tls != nil {
 		tls := flattenTls(src.Tls)
 		out.Tls = &tls
@@ -4026,7 +4021,6 @@ func decodingSchema() schema.StringAttribute {
 
 func expandHttpServerSource(src *httpServerSourceModel) datadogV2.ObservabilityPipelineConfigSourceItem {
 	s := datadogV2.NewObservabilityPipelineHttpServerSourceWithDefaults()
-	s.SetId(src.Id.ValueString())
 
 	s.SetAuthStrategy(datadogV2.ObservabilityPipelineHttpServerSourceAuthStrategy(src.AuthStrategy.ValueString()))
 	s.SetDecoding(datadogV2.ObservabilityPipelineDecoding(src.Decoding.ValueString()))
@@ -4046,7 +4040,6 @@ func flattenHttpServerSource(src *datadogV2.ObservabilityPipelineHttpServerSourc
 	}
 
 	out := &httpServerSourceModel{
-		Id:           types.StringValue(src.GetId()),
 		AuthStrategy: types.StringValue(string(src.GetAuthStrategy())),
 		Decoding:     types.StringValue(string(src.GetDecoding())),
 	}
@@ -4062,8 +4055,6 @@ func flattenHttpServerSource(src *datadogV2.ObservabilityPipelineHttpServerSourc
 func expandSplunkHecSource(src *splunkHecSourceModel) datadogV2.ObservabilityPipelineConfigSourceItem {
 	s := datadogV2.NewObservabilityPipelineSplunkHecSourceWithDefaults()
 
-	s.SetId(src.Id.ValueString())
-
 	if src.Tls != nil {
 		s.Tls = expandTls(src.Tls)
 	}
@@ -4078,9 +4069,7 @@ func flattenSplunkHecSource(src *datadogV2.ObservabilityPipelineSplunkHecSource)
 		return nil
 	}
 
-	out := &splunkHecSourceModel{
-		Id: types.StringValue(src.GetId()),
-	}
+	out := &splunkHecSourceModel{}
 
 	if src.Tls != nil {
 		tls := flattenTls(src.Tls)
@@ -4216,7 +4205,6 @@ func flattenGooglePubSubDestination(ctx context.Context, src *datadogV2.Observab
 
 func expandSplunkTcpSource(src *splunkTcpSourceModel) datadogV2.ObservabilityPipelineConfigSourceItem {
 	s := datadogV2.NewObservabilityPipelineSplunkTcpSourceWithDefaults()
-	s.SetId(src.Id.ValueString())
 
 	if src.Tls != nil {
 		s.Tls = expandTls(src.Tls)
@@ -4232,9 +4220,7 @@ func flattenSplunkTcpSource(src *datadogV2.ObservabilityPipelineSplunkTcpSource)
 		return nil
 	}
 
-	out := &splunkTcpSourceModel{
-		Id: types.StringValue(src.GetId()),
-	}
+	out := &splunkTcpSourceModel{}
 
 	if src.Tls != nil {
 		tls := flattenTls(src.Tls)
@@ -4291,7 +4277,6 @@ func flattenSplunkHecDestination(ctx context.Context, src *datadogV2.Observabili
 func expandAmazonS3Source(src *amazonS3SourceModel) datadogV2.ObservabilityPipelineConfigSourceItem {
 	s := datadogV2.NewObservabilityPipelineAmazonS3SourceWithDefaults()
 
-	s.SetId(src.Id.ValueString())
 	s.SetRegion(src.Region.ValueString())
 
 	if src.Auth != nil {
@@ -4316,7 +4301,6 @@ func flattenAmazonS3Source(src *datadogV2.ObservabilityPipelineAmazonS3Source) *
 	}
 
 	out := &amazonS3SourceModel{
-		Id:     types.StringValue(src.GetId()),
 		Region: types.StringValue(src.GetRegion()),
 	}
 
@@ -4407,7 +4391,6 @@ func flattenSumoLogicDestination(ctx context.Context, src *datadogV2.Observabili
 
 func expandRsyslogSource(src *rsyslogSourceModel) datadogV2.ObservabilityPipelineConfigSourceItem {
 	obj := datadogV2.NewObservabilityPipelineRsyslogSourceWithDefaults()
-	obj.SetId(src.Id.ValueString())
 	if !src.Mode.IsNull() {
 		obj.SetMode(datadogV2.ObservabilityPipelineSyslogSourceMode(src.Mode.ValueString()))
 	}
@@ -4423,9 +4406,7 @@ func flattenRsyslogSource(src *datadogV2.ObservabilityPipelineRsyslogSource) *rs
 	if src == nil {
 		return nil
 	}
-	out := &rsyslogSourceModel{
-		Id: types.StringValue(src.GetId()),
-	}
+	out := &rsyslogSourceModel{}
 	if v, ok := src.GetModeOk(); ok {
 		out.Mode = types.StringValue(string(*v))
 	}
@@ -4438,7 +4419,6 @@ func flattenRsyslogSource(src *datadogV2.ObservabilityPipelineRsyslogSource) *rs
 
 func expandSyslogNgSource(src *syslogNgSourceModel) datadogV2.ObservabilityPipelineConfigSourceItem {
 	obj := datadogV2.NewObservabilityPipelineSyslogNgSourceWithDefaults()
-	obj.SetId(src.Id.ValueString())
 	if !src.Mode.IsNull() {
 		obj.SetMode(datadogV2.ObservabilityPipelineSyslogSourceMode(src.Mode.ValueString()))
 	}
@@ -4454,9 +4434,7 @@ func flattenSyslogNgSource(src *datadogV2.ObservabilityPipelineSyslogNgSource) *
 	if src == nil {
 		return nil
 	}
-	out := &syslogNgSourceModel{
-		Id: types.StringValue(src.GetId()),
-	}
+	out := &syslogNgSourceModel{}
 	if v, ok := src.GetModeOk(); ok {
 		out.Mode = types.StringValue(string(*v))
 	}
@@ -4652,7 +4630,6 @@ func flattenMicrosoftSentinelDestination(ctx context.Context, src *datadogV2.Mic
 
 func expandSumoLogicSource(src *sumoLogicSourceModel) datadogV2.ObservabilityPipelineConfigSourceItem {
 	obj := datadogV2.NewObservabilityPipelineSumoLogicSourceWithDefaults()
-	obj.SetId(src.Id.ValueString())
 
 	return datadogV2.ObservabilityPipelineConfigSourceItem{
 		ObservabilityPipelineSumoLogicSource: obj,
@@ -4663,14 +4640,11 @@ func flattenSumoLogicSource(src *datadogV2.ObservabilityPipelineSumoLogicSource)
 	if src == nil {
 		return nil
 	}
-	return &sumoLogicSourceModel{
-		Id: types.StringValue(src.GetId()),
-	}
+	return &sumoLogicSourceModel{}
 }
 
 func expandAmazonDataFirehoseSource(src *amazonDataFirehoseSourceModel) datadogV2.ObservabilityPipelineConfigSourceItem {
 	firehose := datadogV2.NewObservabilityPipelineAmazonDataFirehoseSourceWithDefaults()
-	firehose.SetId(src.Id.ValueString())
 
 	if src.Auth != nil {
 		auth := observability_pipeline.ExpandAwsAuth(src.Auth)
@@ -4693,9 +4667,7 @@ func flattenAmazonDataFirehoseSource(src *datadogV2.ObservabilityPipelineAmazonD
 		return nil
 	}
 
-	out := &amazonDataFirehoseSourceModel{
-		Id: types.StringValue(src.GetId()),
-	}
+	out := &amazonDataFirehoseSourceModel{}
 
 	if auth, ok := src.GetAuthOk(); ok {
 		out.Auth = observability_pipeline.FlattenAwsAuth(auth)
@@ -4711,7 +4683,6 @@ func flattenAmazonDataFirehoseSource(src *datadogV2.ObservabilityPipelineAmazonD
 
 func expandHttpClientSource(src *httpClientSourceModel) datadogV2.ObservabilityPipelineConfigSourceItem {
 	httpSrc := datadogV2.NewObservabilityPipelineHttpClientSourceWithDefaults()
-	httpSrc.SetId(src.Id.ValueString())
 	httpSrc.SetDecoding(datadogV2.ObservabilityPipelineDecoding(src.Decoding.ValueString()))
 
 	if !src.ScrapeInterval.IsNull() {
@@ -4739,7 +4710,6 @@ func flattenHttpClientSource(src *datadogV2.ObservabilityPipelineHttpClientSourc
 	}
 
 	out := &httpClientSourceModel{
-		Id:       types.StringValue(src.GetId()),
 		Decoding: types.StringValue(string(src.GetDecoding())),
 	}
 
@@ -4762,7 +4732,6 @@ func flattenHttpClientSource(src *datadogV2.ObservabilityPipelineHttpClientSourc
 
 func expandGooglePubSubSource(src *googlePubSubSourceModel) datadogV2.ObservabilityPipelineConfigSourceItem {
 	pubsub := datadogV2.NewObservabilityPipelineGooglePubSubSourceWithDefaults()
-	pubsub.SetId(src.Id.ValueString())
 	pubsub.SetProject(src.Project.ValueString())
 	pubsub.SetSubscription(src.Subscription.ValueString())
 	pubsub.SetDecoding(datadogV2.ObservabilityPipelineDecoding(src.Decoding.ValueString()))
@@ -4787,7 +4756,6 @@ func flattenGooglePubSubSource(src *datadogV2.ObservabilityPipelineGooglePubSubS
 		return nil
 	}
 	out := &googlePubSubSourceModel{
-		Id:           types.StringValue(src.GetId()),
 		Project:      types.StringValue(src.GetProject()),
 		Subscription: types.StringValue(src.GetSubscription()),
 		Decoding:     types.StringValue(string(src.GetDecoding())),
@@ -4807,7 +4775,6 @@ func flattenGooglePubSubSource(src *datadogV2.ObservabilityPipelineGooglePubSubS
 
 func expandLogstashSource(src *logstashSourceModel) datadogV2.ObservabilityPipelineConfigSourceItem {
 	logstash := datadogV2.NewObservabilityPipelineLogstashSourceWithDefaults()
-	logstash.SetId(src.Id.ValueString())
 	if src.Tls != nil {
 		logstash.Tls = expandTls(src.Tls)
 	}
@@ -4820,9 +4787,7 @@ func flattenLogstashSource(src *datadogV2.ObservabilityPipelineLogstashSource) *
 	if src == nil {
 		return nil
 	}
-	out := &logstashSourceModel{
-		Id: types.StringValue(src.GetId()),
-	}
+	out := &logstashSourceModel{}
 	if src.Tls != nil {
 		tls := flattenTls(src.Tls)
 		out.Tls = &tls

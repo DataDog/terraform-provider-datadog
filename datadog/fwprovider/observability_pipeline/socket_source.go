@@ -10,7 +10,6 @@ import (
 
 // SocketSourceModel represents the Terraform model for socket source configuration
 type SocketSourceModel struct {
-	Id      types.String       `tfsdk:"id"`
 	Mode    types.String       `tfsdk:"mode"`
 	Framing SocketFramingModel `tfsdk:"framing"`
 	Tls     *tlsModel          `tfsdk:"tls"`
@@ -19,7 +18,6 @@ type SocketSourceModel struct {
 // ExpandSocketSource converts the Terraform model to the Datadog API model
 func ExpandSocketSource(src *SocketSourceModel) datadogV2.ObservabilityPipelineConfigSourceItem {
 	s := datadogV2.NewObservabilityPipelineSocketSourceWithDefaults()
-	s.SetId(src.Id.ValueString())
 	s.SetMode(datadogV2.ObservabilityPipelineSocketSourceMode(src.Mode.ValueString()))
 
 	switch src.Framing.Method.ValueString() {
@@ -72,7 +70,6 @@ func FlattenSocketSource(src *datadogV2.ObservabilityPipelineSocketSource) *Sock
 	}
 
 	out := &SocketSourceModel{
-		Id:   types.StringValue(src.GetId()),
 		Mode: types.StringValue(string(src.GetMode())),
 	}
 
@@ -106,10 +103,6 @@ func SocketSourceSchema() schema.ListNestedBlock {
 		Description: "The `socket` source ingests logs over TCP or UDP.",
 		NestedObject: schema.NestedBlockObject{
 			Attributes: map[string]schema.Attribute{
-				"id": schema.StringAttribute{
-					Required:    true,
-					Description: "The unique identifier for this component.",
-				},
 				"mode": schema.StringAttribute{
 					Required:    true,
 					Description: "The protocol used to receive logs.",
