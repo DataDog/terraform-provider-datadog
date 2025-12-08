@@ -32,6 +32,7 @@ type securityMonitoringSuppressionModel struct {
 	SuppressionQuery   types.String `tfsdk:"suppression_query"`
 	DataExclusionQuery types.String `tfsdk:"data_exclusion_query"`
 	Validate           types.Bool   `tfsdk:"validate"`
+	Tags               types.List   `tfsdk:"tags"`
 }
 
 type securityMonitoringSuppressionResource struct {
@@ -98,6 +99,11 @@ func (r *securityMonitoringSuppressionResource) Schema(_ context.Context, _ reso
 				Default:     booldefault.StaticBool(true),
 				Description: "Whether to validate the suppression rule during `terraform plan`. When set to `true`, the rule is validated against Datadog's suppression validation endpoint.",
 			},
+			"tags": schema.ListAttribute{
+				Optional:    true,
+				ElementType: types.StringType,
+				Description: "A list of tags associated with the suppression rule.",
+			},
 		},
 	}
 }
@@ -113,7 +119,7 @@ func (r *securityMonitoringSuppressionResource) Create(ctx context.Context, requ
 		return
 	}
 
-	suppressionPayload, err := r.buildCreateSecurityMonitoringSuppressionPayload(&state)
+	suppressionPayload, err := r.buildCreateSecurityMonitoringSuppressionPayload(&state, ctx)
 
 	if err != nil {
 		response.Diagnostics.AddError("error while parsing resource", err.Error())
@@ -181,7 +187,7 @@ func (r *securityMonitoringSuppressionResource) Update(ctx context.Context, requ
 	updateStartDate := plan.StartDate != state.StartDate
 	updateExpirationDate := plan.ExpirationDate != state.ExpirationDate
 
-	suppressionPayload, err := r.buildUpdateSecurityMonitoringSuppressionPayload(&plan, updateStartDate, updateExpirationDate)
+	suppressionPayload, err := r.buildUpdateSecurityMonitoringSuppressionPayload(&plan, ctx, updateStartDate, updateExpirationDate)
 
 	if err != nil {
 		response.Diagnostics.AddError("error while parsing resource", err.Error())
@@ -268,7 +274,7 @@ func (r *securityMonitoringSuppressionResource) ModifyPlan(ctx context.Context, 
 		}
 	}
 
-	suppressionPayload, err := r.buildCreateSecurityMonitoringSuppressionPayload(&newConfig)
+	suppressionPayload, err := r.buildCreateSecurityMonitoringSuppressionPayload(&newConfig, ctx)
 	if err != nil {
 		response.Diagnostics.AddError("error while building suppression payload for validation", err.Error())
 		return
@@ -282,8 +288,8 @@ func (r *securityMonitoringSuppressionResource) ModifyPlan(ctx context.Context, 
 	}
 }
 
-func (r *securityMonitoringSuppressionResource) buildCreateSecurityMonitoringSuppressionPayload(state *securityMonitoringSuppressionModel) (*datadogV2.SecurityMonitoringSuppressionCreateRequest, error) {
-	name, description, enabled, startDate, expirationDate, ruleQuery, suppressionQuery, dataExclusionQuery, err := r.extractSuppressionAttributesFromResource(state)
+func (r *securityMonitoringSuppressionResource) buildCreateSecurityMonitoringSuppressionPayload(state *securityMonitoringSuppressionModel, ctx context.Context) (*datadogV2.SecurityMonitoringSuppressionCreateRequest, error) {
+	name, description, enabled, startDate, expirationDate, ruleQuery, suppressionQuery, dataExclusionQuery, tags, err := r.extractSuppressionAttributesFromResource(state, ctx)
 
 	if err != nil {
 		return nil, err
@@ -295,13 +301,14 @@ func (r *securityMonitoringSuppressionResource) buildCreateSecurityMonitoringSup
 	attributes.Description = description
 	attributes.StartDate = startDate
 	attributes.ExpirationDate = expirationDate
+	attributes.Tags = tags
 
 	data := datadogV2.NewSecurityMonitoringSuppressionCreateData(*attributes, datadogV2.SECURITYMONITORINGSUPPRESSIONTYPE_SUPPRESSIONS)
 	return datadogV2.NewSecurityMonitoringSuppressionCreateRequest(*data), nil
 }
 
-func (r *securityMonitoringSuppressionResource) buildUpdateSecurityMonitoringSuppressionPayload(state *securityMonitoringSuppressionModel, updateStartDate bool, updateExpirationDate bool) (*datadogV2.SecurityMonitoringSuppressionUpdateRequest, error) {
-	name, description, enabled, startDate, expirationDate, ruleQuery, suppressionQuery, dataExclusionQuery, err := r.extractSuppressionAttributesFromResource(state)
+func (r *securityMonitoringSuppressionResource) buildUpdateSecurityMonitoringSuppressionPayload(state *securityMonitoringSuppressionModel, ctx context.Context, updateStartDate bool, updateExpirationDate bool) (*datadogV2.SecurityMonitoringSuppressionUpdateRequest, error) {
+	name, description, enabled, startDate, expirationDate, ruleQuery, suppressionQuery, dataExclusionQuery, tags, err := r.extractSuppressionAttributesFromResource(state, ctx)
 
 	if err != nil {
 		return nil, err
@@ -339,11 +346,17 @@ func (r *securityMonitoringSuppressionResource) buildUpdateSecurityMonitoringSup
 		attributes.SetDataExclusionQuery("")
 	}
 
+	if tags != nil {
+		attributes.SetTags(tags)
+	} else {
+		attributes.SetTags(make([]string, 0))
+	}
+
 	data := datadogV2.NewSecurityMonitoringSuppressionUpdateData(*attributes, datadogV2.SECURITYMONITORINGSUPPRESSIONTYPE_SUPPRESSIONS)
 	return datadogV2.NewSecurityMonitoringSuppressionUpdateRequest(*data), nil
 }
 
-func (r *securityMonitoringSuppressionResource) extractSuppressionAttributesFromResource(state *securityMonitoringSuppressionModel) (string, *string, bool, *int64, *int64, string, *string, *string, error) {
+func (r *securityMonitoringSuppressionResource) extractSuppressionAttributesFromResource(state *securityMonitoringSuppressionModel, ctx context.Context) (string, *string, bool, *int64, *int64, string, *string, *string, []string, error) {
 	// Mandatory fields
 
 	name := state.Name.ValueString()
@@ -362,7 +375,7 @@ func (r *securityMonitoringSuppressionResource) extractSuppressionAttributesFrom
 		startDateTime, err := time.Parse(time.RFC3339, *tfStartDate)
 
 		if err != nil {
-			return "", nil, false, nil, nil, "", nil, nil, err
+			return "", nil, false, nil, nil, "", nil, nil, nil, err
 		}
 
 		startDateTimestamp := startDateTime.UnixMilli()
@@ -376,7 +389,7 @@ func (r *securityMonitoringSuppressionResource) extractSuppressionAttributesFrom
 		expirationDateTime, err := time.Parse(time.RFC3339, *tfExpirationDate)
 
 		if err != nil {
-			return "", nil, false, nil, nil, "", nil, nil, err
+			return "", nil, false, nil, nil, "", nil, nil, nil, err
 		}
 
 		expirationDateTimestamp := expirationDateTime.UnixMilli()
@@ -384,7 +397,13 @@ func (r *securityMonitoringSuppressionResource) extractSuppressionAttributesFrom
 
 	}
 
-	return name, description, enabled, startDate, expirationDate, ruleQuery, suppressionQuery, dataExclusionQuery, nil
+	var tags []string
+	if !state.Tags.IsNull() {
+		tags = make([]string, 0)
+		state.Tags.ElementsAs(ctx, &tags, false)
+	}
+
+	return name, description, enabled, startDate, expirationDate, ruleQuery, suppressionQuery, dataExclusionQuery, tags, nil
 }
 
 func (r *securityMonitoringSuppressionResource) updateStateFromResponse(ctx context.Context, state *securityMonitoringSuppressionModel, res *datadogV2.SecurityMonitoringSuppressionResponse) {
@@ -399,6 +418,12 @@ func (r *securityMonitoringSuppressionResource) updateStateFromResponse(ctx cont
 	// The API returns an empty string, which, if put in the state, would result in a mismatch between state and config
 	if description := attributes.GetDescription(); description != "" || !state.Description.IsNull() {
 		state.Description = types.StringValue(description)
+	}
+
+	if attributes.GetTags() == nil || len(attributes.GetTags()) == 0 {
+		state.Tags = types.ListNull(types.StringType)
+	} else {
+		state.Tags, _ = types.ListValueFrom(ctx, types.StringType, attributes.GetTags())
 	}
 
 	state.Enabled = types.BoolValue(attributes.GetEnabled())

@@ -73,8 +73,21 @@ resource "datadog_custom_allocation_rule" "rule_3" {
   }
 }
 
-# Manage the order of custom allocation rules
-resource "datadog_custom_allocation_rules" "order" {
+# Example 1: Preserve mode (default) - allows unmanaged rules to exist at the end
+# This will preserve any existing rules created outside of Terraform as long as they are at the end
+resource "datadog_custom_allocation_rules" "preserve_order" {
+  # override_ui_defined_resources = false (default)
+  rule_ids = [
+    datadog_custom_allocation_rule.rule_1.id,
+    datadog_custom_allocation_rule.rule_2.id,
+    datadog_custom_allocation_rule.rule_3.id
+  ]
+}
+
+# Example 2: Override mode - deletes all unmanaged rules and maintains strict order
+# This will delete any rules not defined in Terraform and enforce the exact order specified
+resource "datadog_custom_allocation_rules" "override_order" {
+  override_ui_defined_resources = true
   rule_ids = [
     datadog_custom_allocation_rule.rule_1.id,
     datadog_custom_allocation_rule.rule_2.id,
@@ -89,6 +102,10 @@ resource "datadog_custom_allocation_rules" "order" {
 ### Required
 
 - `rule_ids` (List of String) The list of Custom Allocation Rule IDs, in order. Rules are executed in the order specified in this list. Comes from the `id` field on a `datadog_custom_allocation_rule` resource.
+
+### Optional
+
+- `override_ui_defined_resources` (Boolean) Whether to override UI-defined rules. When set to true, any rules created via the UI that are not defined in Terraform will be deleted and Terraform will be used as the source of truth for rules and their ordering. When set to false, any rules created via the UI that are at the end of order will be kept but will be warned, otherwise an error will be thrown in terraform plan phase. Default is false
 
 ### Read-Only
 

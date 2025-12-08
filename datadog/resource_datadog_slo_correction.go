@@ -53,7 +53,7 @@ func resourceDatadogSloCorrection() *schema.Resource {
 				"timezone": {
 					Type:        schema.TypeString,
 					Optional:    true,
-					Description: "The timezone to display in the UI for the correction times (defaults to \"UTC\")",
+					Description: "The timezone to display in the UI for the correction times. Prefers IANA timezone name format (for example, 'America/Los_Angeles', 'Europe/Paris'), but some common standard abbreviations are supported. Defaults to 'UTC'.",
 				},
 				"duration": {
 					Type:        schema.TypeInt,

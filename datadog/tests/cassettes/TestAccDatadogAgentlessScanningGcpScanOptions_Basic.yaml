@@ -6,6 +6,39 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/agentless_scanning/accounts/gcp/test-project
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 117
+        uncompressed: false
+        body: '{"data":{"id":"test-project","type":"gcp_scan_options","attributes":{"vuln_containers_os":true,"vuln_host_os":true}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 849.756833ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
         content_length: 118
         transfer_encoding: []
         trailer: {}
@@ -20,8 +53,8 @@ interactions:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/agentless_scanning/accounts/gcp
-        method: POST
+        url: https://api.datadoghq.com/api/v2/agentless_scanning/accounts/gcp/test-project
+        method: PATCH
       response:
         proto: HTTP/1.1
         proto_major: 1
@@ -34,42 +67,9 @@ interactions:
         headers:
             Content-Type:
                 - application/vnd.api+json
-        status: 201 Created
-        code: 201
-        duration: 839.950875ms
-    - id: 1
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 0
-        transfer_encoding: []
-        trailer: {}
-        host: api.datadoghq.com
-        remote_addr: ""
-        request_uri: ""
-        body: ""
-        form: {}
-        headers:
-            Accept:
-                - application/json
-        url: https://api.datadoghq.com/api/v2/agentless_scanning/accounts/gcp
-        method: GET
-      response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        transfer_encoding: []
-        trailer: {}
-        content_length: 119
-        uncompressed: false
-        body: '{"data":[{"id":"test-project","type":"gcp_scan_options","attributes":{"vuln_containers_os":true,"vuln_host_os":true}}]}'
-        headers:
-            Content-Type:
-                - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 259.589417ms
+        duration: 236.684791ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -102,8 +102,41 @@ interactions:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 180.8215ms
+        duration: 234.115666ms
     - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/agentless_scanning/accounts/gcp/test-project
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 117
+        uncompressed: false
+        body: '{"data":{"id":"test-project","type":"gcp_scan_options","attributes":{"vuln_containers_os":true,"vuln_host_os":true}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 233.34675ms
+    - id: 4
       request:
         proto: HTTP/1.1
         proto_major: 1
@@ -133,8 +166,8 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 233.299417ms
-    - id: 4
+        duration: 226.154ms
+    - id: 5
       request:
         proto: HTTP/1.1
         proto_major: 1
@@ -150,7 +183,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/agentless_scanning/accounts/gcp
+        url: https://api.datadoghq.com/api/v2/agentless_scanning/accounts/gcp/test-project
         method: GET
       response:
         proto: HTTP/1.1
@@ -158,12 +191,12 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 11
+        content_length: 91
         uncompressed: false
-        body: '{"data":[]}'
+        body: '{"errors":[{"status":"404","detail":"no gcp scan options found for project test-project"}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
-        status: 200 OK
-        code: 200
-        duration: 223.779208ms
+        status: 404 Not Found
+        code: 404
+        duration: 236.0365ms

@@ -7,11 +7,13 @@ on:
   pull_request:
     branches:
       - master
+      - 4.x
   schedule:
     - cron: "0 1 * * *"
   push:
     branches:
       - mq-working-branch-master-**
+      - mq-working-branch-4.x-**
 
 concurrency:
   group: ${{ github.head_ref || github.run_id }}-test
