@@ -7083,7 +7083,7 @@ func getFormulaQuerySchema() *schema.Schema {
 								Type:             schema.TypeString,
 								Optional:         true,
 								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewFormulaAndFunctionMetricSemanticModeFromValue),
-								Description:      "Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.",
+								Description:      "Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.",
 							},
 						},
 					},
