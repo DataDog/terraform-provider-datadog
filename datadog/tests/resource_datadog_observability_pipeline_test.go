@@ -49,24 +49,26 @@ func TestAccDatadogObservabilityPipeline_basic(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(resourceName, "name", "test pipeline"),
-					resource.TestCheckResourceAttr(resourceName, "config.sources.datadog_agent.0.id", "source-1"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.id", "parser-group-1"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.enabled", "true"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.include", "service:my-service"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.id", "parser-1"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.enabled", "true"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.include", "service:my-service"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.parse_json.0.field", "message"),
-					resource.TestCheckResourceAttr(resourceName, "config.destinations.datadog_logs.0.id", "destination-1"),
-					resource.TestCheckResourceAttr(resourceName, "config.destinations.datadog_logs.0.inputs.0", "parser-group-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.source.0.id", "source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.source.0.datadog_agent.#", "1"),
+					resource.TestCheckResourceAttr(resourceName, "config.processor_group.0.id", "parser-group-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.processor_group.0.enabled", "true"),
+					resource.TestCheckResourceAttr(resourceName, "config.processor_group.0.include", "service:my-service"),
+					resource.TestCheckResourceAttr(resourceName, "config.processor_group.0.processor.0.id", "parser-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.processor_group.0.processor.0.enabled", "true"),
+					resource.TestCheckResourceAttr(resourceName, "config.processor_group.0.processor.0.include", "service:my-service"),
+					resource.TestCheckResourceAttr(resourceName, "config.processor_group.0.processor.0.parse_json.0.field", "message"),
+					resource.TestCheckResourceAttr(resourceName, "config.destination.0.id", "destination-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.destination.0.inputs.0", "parser-group-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.destination.0.datadog_logs.#", "1"),
 				),
 			},
 			{
 				Config: testAccObservabilityPipelineUpdatedConfig(),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr(resourceName, "name", "updated pipeline"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.include", "service:updated-service"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.processor_group.0.processor.0.include", "service:updated-service"),
+					resource.TestCheckResourceAttr(resourceName, "config.processor_group.0.include", "service:updated-service"),
+					resource.TestCheckResourceAttr(resourceName, "config.processor_group.0.processor.0.include", "service:updated-service"),
 				),
 			},
 		},
@@ -79,35 +81,35 @@ resource "datadog_observability_pipeline" "basic" {
   name = "test pipeline"
 
   config {
-    sources {
+    source {
+      id = "source-1"
+      
       datadog_agent {
-        id = "source-1"
       }
     }
 
-    processors {
-      processor_group {
-        id      = "parser-group-1"
+    processor_group {
+      id      = "parser-group-1"
+      enabled = true
+      include = "service:my-service"
+      inputs  = ["source-1"]
+      
+      processor {
+        id      = "parser-1"
         enabled = true
         include = "service:my-service"
-        inputs  = ["source-1"]
         
-        processor {
-          id      = "parser-1"
-          enabled = true
-          include = "service:my-service"
-          
-          parse_json {
-            field = "message"
-          }
+        parse_json {
+          field = "message"
         }
       }
     }
 
-    destinations {
+    destination {
+      id     = "destination-1"
+      inputs = ["parser-group-1"]
+      
       datadog_logs {
-        id     = "destination-1"
-        inputs = ["parser-group-1"]
       }
     }
   }
@@ -120,38 +122,34 @@ resource "datadog_observability_pipeline" "basic" {
   name = "updated pipeline"
 
   config {
-    sources {
+
+    source {
+      id = "source-1" 
       datadog_agent {
-        id = "source-1"
-        tls {
-          crt_file = "/path/to/cert.crt"
-        }
       }
     }
 
-    processors {
-      processor_group {
-        id      = "parser-group-1"
+    processor_group {
+      id      = "parser-group-1"
+      enabled = true
+      include = "service:updated-service"
+      inputs  = ["source-1"]
+      
+      processor {
+        id      = "parser-1"
         enabled = true
         include = "service:updated-service"
-        inputs  = ["source-1"]
         
-        processor {
-          id      = "parser-1"
-          enabled = true
-          include = "service:updated-service"
-          
-          parse_json {
-            field = "message"
-          }
+        parse_json {
+          field = "message"
         }
       }
     }
 
-    destinations {
+    destination {
+      id     = "destination-1"
+      inputs = ["parser-group-1"]
       datadog_logs {
-        id     = "destination-1"
-        inputs = ["parser-group-1"]
       }
     }
   }
@@ -316,11 +314,11 @@ resource "datadog_observability_pipeline" "agent_tls" {
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(resourceName, "name", "agent with tls"),
-					resource.TestCheckResourceAttr(resourceName, "config.sources.datadog_agent.0.id", "source-with-tls"),
-					resource.TestCheckResourceAttr(resourceName, "config.sources.datadog_agent.0.tls.crt_file", "/etc/certs/agent.crt"),
-					resource.TestCheckResourceAttr(resourceName, "config.sources.datadog_agent.0.tls.ca_file", "/etc/certs/ca.crt"),
-					resource.TestCheckResourceAttr(resourceName, "config.sources.datadog_agent.0.tls.key_file", "/etc/certs/agent.key"),
-					resource.TestCheckResourceAttr(resourceName, "config.destinations.datadog_logs.0.id", "destination-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.source.datadog_agent.0.id", "source-with-tls"),
+					resource.TestCheckResourceAttr(resourceName, "config.source.datadog_agent.0.tls.crt_file", "/etc/certs/agent.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.source.datadog_agent.0.tls.ca_file", "/etc/certs/ca.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.source.datadog_agent.0.tls.key_file", "/etc/certs/agent.key"),
+					resource.TestCheckResourceAttr(resourceName, "config.destination.datadog_logs.0.id", "destination-1"),
 				),
 			},
 		},
