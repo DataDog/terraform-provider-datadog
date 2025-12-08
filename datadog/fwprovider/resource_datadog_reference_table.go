@@ -152,7 +152,7 @@ func (r *referenceTableResource) Schema(_ context.Context, _ resource.SchemaRequ
 									},
 									"aws_bucket_name": schema.StringAttribute{
 										Optional:    true,
-										Description: "The name of the Amazon S3 bucket.",
+										Description: "The name of the AWS S3 bucket.",
 									},
 									"file_path": schema.StringAttribute{
 										Optional:    true,

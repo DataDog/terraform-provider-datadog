@@ -60,7 +60,7 @@ Read-Only:
 
 - `aws_account_id` (String) The ID of the AWS account.
 - `aws_bucket_name` (String) The name of the AWS S3 bucket.
-- `file_path` (String) The relative file path from the AWS S3 bucket root.
+- `file_path` (String) The relative file path from the AWS S3 bucket root to the CSV file.
 
 
 <a id="nestedblock--file_metadata--access_details--azure_detail"></a>
@@ -68,11 +68,11 @@ Read-Only:
 
 Read-Only:
 
-- `azure_client_id` (String) The Azure client ID.
+- `azure_client_id` (String) The Azure client ID (application ID).
 - `azure_container_name` (String) The name of the Azure container.
 - `azure_storage_account_name` (String) The name of the Azure storage account.
 - `azure_tenant_id` (String) The ID of the Azure tenant.
-- `file_path` (String) The relative file path from the Azure container root.
+- `file_path` (String) The relative file path from the Azure container root to the CSV file.
 
 
 <a id="nestedblock--file_metadata--access_details--gcp_detail"></a>
@@ -80,10 +80,10 @@ Read-Only:
 
 Read-Only:
 
-- `file_path` (String) The relative file path from the GCS bucket root.
+- `file_path` (String) The relative file path from the GCS bucket root to the CSV file.
 - `gcp_bucket_name` (String) The name of the GCP bucket.
 - `gcp_project_id` (String) The ID of the GCP project.
-- `gcp_service_account_email` (String) The email of the GCP service account.
+- `gcp_service_account_email` (String) The email of the GCP service account used to access the bucket.
 
 
 

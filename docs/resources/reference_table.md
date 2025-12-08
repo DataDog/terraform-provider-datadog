@@ -119,7 +119,7 @@ Optional:
 Optional:
 
 - `aws_account_id` (String) The ID of the AWS account.
-- `aws_bucket_name` (String) The name of the Amazon S3 bucket.
+- `aws_bucket_name` (String) The name of the AWS S3 bucket.
 - `file_path` (String) The relative file path from the AWS S3 bucket root to the CSV file.
 
 

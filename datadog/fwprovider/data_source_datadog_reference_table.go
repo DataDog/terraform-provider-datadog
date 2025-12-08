@@ -141,7 +141,7 @@ func (d *datadogReferenceTableDataSource) Schema(_ context.Context, _ datasource
 									},
 									"file_path": schema.StringAttribute{
 										Computed:    true,
-										Description: "The relative file path from the AWS S3 bucket root.",
+										Description: "The relative file path from the AWS S3 bucket root to the CSV file.",
 									},
 								},
 							},
@@ -158,11 +158,11 @@ func (d *datadogReferenceTableDataSource) Schema(_ context.Context, _ datasource
 									},
 									"file_path": schema.StringAttribute{
 										Computed:    true,
-										Description: "The relative file path from the GCS bucket root.",
+										Description: "The relative file path from the GCS bucket root to the CSV file.",
 									},
 									"gcp_service_account_email": schema.StringAttribute{
 										Computed:    true,
-										Description: "The email of the GCP service account.",
+										Description: "The email of the GCP service account used to access the bucket.",
 									},
 								},
 							},
@@ -175,7 +175,7 @@ func (d *datadogReferenceTableDataSource) Schema(_ context.Context, _ datasource
 									},
 									"azure_client_id": schema.StringAttribute{
 										Computed:    true,
-										Description: "The Azure client ID.",
+										Description: "The Azure client ID (application ID).",
 									},
 									"azure_storage_account_name": schema.StringAttribute{
 										Computed:    true,
@@ -187,7 +187,7 @@ func (d *datadogReferenceTableDataSource) Schema(_ context.Context, _ datasource
 									},
 									"file_path": schema.StringAttribute{
 										Computed:    true,
-										Description: "The relative file path from the Azure container root.",
+										Description: "The relative file path from the Azure container root to the CSV file.",
 									},
 								},
 							},
