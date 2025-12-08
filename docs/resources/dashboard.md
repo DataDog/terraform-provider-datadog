@@ -1303,7 +1303,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`. Valid values are `combined`, `native`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--change_definition--request--query--process_query"></a>
@@ -2266,7 +2266,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`. Valid values are `combined`, `native`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--geomap_definition--request--query--process_query"></a>
@@ -2910,7 +2910,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`. Valid values are `combined`, `native`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--group_definition--widget--change_definition--request--query--process_query"></a>
@@ -3873,7 +3873,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`. Valid values are `combined`, `native`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--group_definition--widget--geomap_definition--request--query--process_query"></a>
@@ -4437,7 +4437,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`. Valid values are `combined`, `native`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--group_definition--widget--heatmap_definition--request--query--process_query"></a>
@@ -5955,7 +5955,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`. Valid values are `combined`, `native`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--group_definition--widget--query_table_definition--request--query--process_query"></a>
@@ -6693,7 +6693,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`. Valid values are `combined`, `native`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--group_definition--widget--query_value_definition--request--query--process_query"></a>
@@ -7130,7 +7130,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`. Valid values are `combined`, `native`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--query--process_query"></a>
@@ -8325,7 +8325,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`. Valid values are `combined`, `native`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--change_definition--request--query--process_query"></a>
@@ -8859,7 +8859,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`. Valid values are `combined`, `native`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--geomap_definition--request--query--process_query"></a>
@@ -9475,7 +9475,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`. Valid values are `combined`, `native`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_table_definition--request--query--process_query"></a>
@@ -10213,7 +10213,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`. Valid values are `combined`, `native`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_value_definition--request--query--process_query"></a>
@@ -10613,7 +10613,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`. Valid values are `combined`, `native`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--query--process_query"></a>
@@ -11835,7 +11835,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`. Valid values are `combined`, `native`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--query--process_query"></a>
@@ -12624,7 +12624,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`. Valid values are `combined`, `native`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--query--process_query"></a>
@@ -13347,7 +13347,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`. Valid values are `combined`, `native`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--toplist_definition--request--query--process_query"></a>
@@ -13824,7 +13824,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`. Valid values are `combined`, `native`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--treemap_definition--request--query--process_query"></a>
@@ -14518,7 +14518,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`. Valid values are `combined`, `native`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--query--process_query"></a>
@@ -15307,7 +15307,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`. Valid values are `combined`, `native`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--query--process_query"></a>
@@ -16030,7 +16030,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`. Valid values are `combined`, `native`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--group_definition--widget--toplist_definition--request--query--process_query"></a>
@@ -16574,7 +16574,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`. Valid values are `combined`, `native`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--group_definition--widget--treemap_definition--request--query--process_query"></a>
@@ -17082,7 +17082,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`. Valid values are `combined`, `native`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--heatmap_definition--request--query--process_query"></a>
@@ -18600,7 +18600,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`. Valid values are `combined`, `native`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--query_table_definition--request--query--process_query"></a>
@@ -19338,7 +19338,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`. Valid values are `combined`, `native`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--query_value_definition--request--query--process_query"></a>
@@ -19775,7 +19775,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`. Valid values are `combined`, `native`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--scatterplot_definition--request--scatterplot_table--query--process_query"></a>
@@ -20970,7 +20970,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`. Valid values are `combined`, `native`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--change_definition--request--query--process_query"></a>
@@ -21504,7 +21504,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`. Valid values are `combined`, `native`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition--request--query--process_query"></a>
@@ -22120,7 +22120,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`. Valid values are `combined`, `native`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--query--process_query"></a>
@@ -22858,7 +22858,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`. Valid values are `combined`, `native`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--query--process_query"></a>
@@ -23258,7 +23258,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`. Valid values are `combined`, `native`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--query--process_query"></a>
@@ -24480,7 +24480,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`. Valid values are `combined`, `native`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--query--process_query"></a>
@@ -25269,7 +25269,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`. Valid values are `combined`, `native`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--query--process_query"></a>
@@ -25992,7 +25992,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`. Valid values are `combined`, `native`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--query--process_query"></a>
@@ -26469,7 +26469,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`. Valid values are `combined`, `native`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request--query--process_query"></a>
@@ -27163,7 +27163,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`. Valid values are `combined`, `native`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--sunburst_definition--request--query--process_query"></a>
@@ -27952,7 +27952,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`. Valid values are `combined`, `native`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--timeseries_definition--request--query--process_query"></a>
@@ -28675,7 +28675,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`. Valid values are `combined`, `native`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--toplist_definition--request--query--process_query"></a>
@@ -29219,7 +29219,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`. Valid values are `combined`, `native`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--treemap_definition--request--query--process_query"></a>
