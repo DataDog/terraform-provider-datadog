@@ -68,7 +68,7 @@ resource "datadog_reference_table" "s3_table" {
 
 ### Required
 
-- `source` (String) The source type for the reference table. Must be one of: S3, GCS, AZURE. Valid values are `S3`, `GCS`, `AZURE`.
+- `source` (String) The source type for the reference table. Valid values are `S3`, `GCS`, `AZURE`.
 - `table_name` (String) The name of the reference table. This must be unique within your organization.
 
 ### Optional
@@ -120,7 +120,7 @@ Optional:
 
 - `aws_account_id` (String) The ID of the AWS account.
 - `aws_bucket_name` (String) The name of the Amazon S3 bucket.
-- `file_path` (String) The relative file path from the S3 bucket root to the CSV file.
+- `file_path` (String) The relative file path from the AWS S3 bucket root to the CSV file.
 
 
 <a id="nestedblock--file_metadata--access_details--azure_detail"></a>

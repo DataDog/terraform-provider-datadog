@@ -141,7 +141,7 @@ func (d *datadogReferenceTableDataSource) Schema(_ context.Context, _ datasource
 									},
 									"file_path": schema.StringAttribute{
 										Computed:    true,
-										Description: "The relative file path from the S3 bucket root.",
+										Description: "The relative file path from the AWS S3 bucket root.",
 									},
 								},
 							},

@@ -118,6 +118,7 @@ func (d *datadogReferenceTableRowsDataSource) Read(ctx context.Context, request 
 	var ddResp datadogV2.TableRowResourceArray
 	var httpResp *http.Response
 	var err error
+	var partialResults bool
 
 	// Retry for up to 1 minute with exponential backoff (managed by the SDK)
 	retryErr := retry.RetryContext(ctx, 1*time.Minute, func() *retry.RetryError {
@@ -142,10 +143,22 @@ func (d *datadogReferenceTableRowsDataSource) Read(ctx context.Context, request 
 		return retry.RetryableError(fmt.Errorf("no rows found (table may not have synced yet)"))
 	})
 
+	// If retries exhausted but we have partial results, return them with a warning
+	// This helps users identify which row IDs are invalid or not yet synced
 	if retryErr != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(retryErr, "error getting reference table rows"))
-		return
+		if len(ddResp.Data) > 0 {
+			partialResults = true
+			response.Diagnostics.AddWarning(
+				"Partial results returned",
+				fmt.Sprintf("Only %d of %d requested rows were found. Some row IDs may be invalid or the table may still be syncing. "+
+					"Returning available rows.", len(ddResp.Data), len(rowIds)),
+			)
+		} else {
+			response.Diagnostics.Append(utils.FrameworkErrorDiag(retryErr, "error getting reference table rows"))
+			return
+		}
 	}
+	_ = partialResults // Used for clarity in the logic above
 
 	// Convert API response to state
 	state.Rows = make([]*rowModel, len(ddResp.Data))

@@ -3,8 +3,10 @@ package fwprovider
 import (
 	"context"
 	"fmt"
+	"slices"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
@@ -80,7 +82,7 @@ func (r *referenceTableResource) Schema(_ context.Context, _ resource.SchemaRequ
 			},
 			"source": schema.StringAttribute{
 				Required:    true,
-				Description: "The source type for the reference table. Must be one of: S3, GCS, AZURE.",
+				Description: "The source type for the reference table.",
 				Validators: []validator.String{
 					stringvalidator.OneOf("S3", "GCS", "AZURE"),
 				},
@@ -154,7 +156,7 @@ func (r *referenceTableResource) Schema(_ context.Context, _ resource.SchemaRequ
 									},
 									"file_path": schema.StringAttribute{
 										Optional:    true,
-										Description: "The relative file path from the S3 bucket root to the CSV file.",
+										Description: "The relative file path from the AWS S3 bucket root to the CSV file.",
 									},
 								},
 							},
@@ -219,6 +221,9 @@ func (r *referenceTableResource) Schema(_ context.Context, _ resource.SchemaRequ
 						Computed:    true,
 						Description: "List of field names that serve as primary keys for the table. Currently only one primary key is supported.",
 						ElementType: types.StringType,
+						Validators: []validator.List{
+							listvalidator.SizeAtLeast(1),
+						},
 						PlanModifiers: []planmodifier.List{
 							listplanmodifier.UseStateForUnknown(),
 						},
@@ -227,6 +232,9 @@ func (r *referenceTableResource) Schema(_ context.Context, _ resource.SchemaRequ
 				Blocks: map[string]schema.Block{
 					"fields": schema.ListNestedBlock{
 						Description: "List of fields in the table schema. Must include at least one field. Schema is only set on create.",
+						Validators: []validator.List{
+							listvalidator.SizeAtLeast(1),
+						},
 						PlanModifiers: []planmodifier.List{
 							listplanmodifier.UseStateForUnknown(),
 						},
@@ -333,26 +341,7 @@ func (r *referenceTableResource) ValidateConfig(ctx context.Context, request res
 			}
 		}
 	}
-
-	// Validate schema fields are not empty
-	if config.Schema != nil {
-		if len(config.Schema.Fields) == 0 {
-			response.Diagnostics.AddError(
-				"Empty schema fields",
-				"At least one field must be specified in the schema.",
-			)
-		}
-
-		// Validate primary_keys is not empty
-		var primaryKeys []string
-		config.Schema.PrimaryKeys.ElementsAs(ctx, &primaryKeys, false)
-		if len(primaryKeys) == 0 {
-			response.Diagnostics.AddError(
-				"Empty primary_keys",
-				"At least one primary key must be specified in the schema.",
-			)
-		}
-	}
+	// Note: schema.fields and schema.primary_keys validation is handled by listvalidator.SizeAtLeast(1) in schema definition
 }
 
 func (r *referenceTableResource) ModifyPlan(ctx context.Context, request resource.ModifyPlanRequest, response *resource.ModifyPlanResponse) {
@@ -371,41 +360,37 @@ func (r *referenceTableResource) ModifyPlan(ctx context.Context, request resourc
 
 	// Check if schema is being modified on an existing resource
 	if state.Schema != nil && plan.Schema != nil {
-		schemaChanged := false
-
-		// Compare primary keys
+		// Compare primary keys using slices.Equal
 		var statePKs, planPKs []string
 		state.Schema.PrimaryKeys.ElementsAs(ctx, &statePKs, false)
 		plan.Schema.PrimaryKeys.ElementsAs(ctx, &planPKs, false)
-		if len(statePKs) != len(planPKs) {
-			schemaChanged = true
-		} else {
-			for i := range statePKs {
-				if statePKs[i] != planPKs[i] {
-					schemaChanged = true
-					break
-				}
-			}
+		if !slices.Equal(statePKs, planPKs) {
+			response.Diagnostics.AddError(
+				"Primary key modification not supported",
+				"Reference table primary keys cannot be modified after creation. "+
+					"To change the primary key, you must delete and recreate the table.",
+			)
+			return
 		}
 
 		// Compare fields
-		if !schemaChanged && len(state.Schema.Fields) != len(plan.Schema.Fields) {
-			schemaChanged = true
-		}
-		if !schemaChanged {
+		fieldsChanged := false
+		if len(state.Schema.Fields) != len(plan.Schema.Fields) {
+			fieldsChanged = true
+		} else {
 			for i := range state.Schema.Fields {
 				if state.Schema.Fields[i].Name.ValueString() != plan.Schema.Fields[i].Name.ValueString() ||
 					state.Schema.Fields[i].Type.ValueString() != plan.Schema.Fields[i].Type.ValueString() {
-					schemaChanged = true
+					fieldsChanged = true
 					break
 				}
 			}
 		}
 
-		if schemaChanged {
+		if fieldsChanged {
 			response.Diagnostics.AddError(
-				"Schema modification not supported",
-				"Reference table schema cannot be modified after creation. The schema is derived from the CSV file in cloud storage. "+
+				"Schema field modification not supported",
+				"Reference table schema fields cannot be modified through Terraform after creation. The schema is derived from the CSV file in cloud storage. "+
 					"To change the schema, update the CSV file and the table will sync automatically if sync_enabled is true.",
 			)
 		}
