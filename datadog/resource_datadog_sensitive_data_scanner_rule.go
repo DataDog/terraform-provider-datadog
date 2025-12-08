@@ -353,7 +353,6 @@ func buildSensitiveDataScannerRuleAttributes(d *schema.ResourceData) *datadogV2.
 			// If the user creates a rule derived from a standard rule, let's add that the rule is not using the recommended keywords.
 			includedKeywordConfiguration.SetUseRecommendedKeywords(false)
 		}
-		attributes.SetIncludedKeywordConfiguration(includedKeywordConfiguration)
 	} else if hasSp {
 		// The user is creating / updating a rule derived from a standard rule, without specifying an included keyword configuration.
 		// Let's use the recommended keywords here by default.
@@ -361,9 +360,12 @@ func buildSensitiveDataScannerRuleAttributes(d *schema.ResourceData) *datadogV2.
 		includedKeywordConfiguration.SetKeywords(keywords)
 		includedKeywordConfiguration.SetCharacterCount(int64(30))
 		includedKeywordConfiguration.SetUseRecommendedKeywords(true)
-
-		attributes.SetIncludedKeywordConfiguration(includedKeywordConfiguration)
+	} else {
+		includedKeywordConfiguration.SetKeywords(make([]string, 0))
+		includedKeywordConfiguration.SetCharacterCount(int64(30))
+		includedKeywordConfiguration.SetUseRecommendedKeywords(false)
 	}
+	attributes.SetIncludedKeywordConfiguration(includedKeywordConfiguration)
 
 	if priority, ok := d.GetOk("priority"); ok {
 		attributes.SetPriority(int64(priority.(int)))
