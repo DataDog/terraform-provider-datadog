@@ -16,8 +16,9 @@ type SocketSourceModel struct {
 }
 
 // ExpandSocketSource converts the Terraform model to the Datadog API model
-func ExpandSocketSource(src *SocketSourceModel) datadogV2.ObservabilityPipelineConfigSourceItem {
+func ExpandSocketSource(src *SocketSourceModel, id string) datadogV2.ObservabilityPipelineConfigSourceItem {
 	s := datadogV2.NewObservabilityPipelineSocketSourceWithDefaults()
+	s.SetId(id)
 	s.SetMode(datadogV2.ObservabilityPipelineSocketSourceMode(src.Mode.ValueString()))
 
 	switch src.Framing.Method.ValueString() {

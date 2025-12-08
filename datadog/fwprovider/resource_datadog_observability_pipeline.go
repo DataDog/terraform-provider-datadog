@@ -67,6 +67,7 @@ type destinationModel struct {
 }
 
 type sourceModel struct {
+	Id                       types.String                                `tfsdk:"id"`
 	DatadogAgentSource       []*datadogAgentSourceModel                  `tfsdk:"datadog_agent"`
 	KafkaSource              []*kafkaSourceModel                         `tfsdk:"kafka"`
 	RsyslogSource            []*rsyslogSourceModel                       `tfsdk:"rsyslog"`
@@ -645,6 +646,12 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 				Blocks: map[string]schema.Block{
 					"sources": schema.SingleNestedBlock{
 						Description: "List of sources.",
+						Attributes: map[string]schema.Attribute{
+							"id": schema.StringAttribute{
+								Required:    true,
+								Description: "The unique identifier for this source.",
+							},
+						},
 						Blocks: map[string]schema.Block{
 							"datadog_agent": schema.ListNestedBlock{
 								Description: "The `datadog_agent` source collects logs from the Datadog Agent.",
@@ -2338,53 +2345,56 @@ func expandPipeline(ctx context.Context, state *observabilityPipelineModel) (*da
 	config := datadogV2.NewObservabilityPipelineConfigWithDefaults()
 
 	// Sources
-	for _, s := range state.Config.Sources.DatadogAgentSource {
-		config.Sources = append(config.Sources, expandDatadogAgentSource(s))
-	}
-	for _, k := range state.Config.Sources.KafkaSource {
-		config.Sources = append(config.Sources, expandKafkaSource(k))
-	}
-	for _, f := range state.Config.Sources.FluentdSource {
-		config.Sources = append(config.Sources, expandFluentdSource(f))
-	}
-	for _, f := range state.Config.Sources.FluentBitSource {
-		config.Sources = append(config.Sources, expandFluentBitSource(f))
-	}
-	for _, s := range state.Config.Sources.HttpServerSource {
-		config.Sources = append(config.Sources, expandHttpServerSource(s))
-	}
-	for _, s := range state.Config.Sources.SplunkHecSource {
-		config.Sources = append(config.Sources, expandSplunkHecSource(s))
-	}
-	for _, s := range state.Config.Sources.SplunkTcpSource {
-		config.Sources = append(config.Sources, expandSplunkTcpSource(s))
-	}
-	for _, s := range state.Config.Sources.AmazonS3Source {
-		config.Sources = append(config.Sources, expandAmazonS3Source(s))
-	}
-	for _, s := range state.Config.Sources.RsyslogSource {
-		config.Sources = append(config.Sources, expandRsyslogSource(s))
-	}
-	for _, s := range state.Config.Sources.SyslogNgSource {
-		config.Sources = append(config.Sources, expandSyslogNgSource(s))
-	}
-	for _, s := range state.Config.Sources.SumoLogicSource {
-		config.Sources = append(config.Sources, expandSumoLogicSource(s))
-	}
-	for _, a := range state.Config.Sources.AmazonDataFirehoseSource {
-		config.Sources = append(config.Sources, expandAmazonDataFirehoseSource(a))
-	}
-	for _, h := range state.Config.Sources.HttpClientSource {
-		config.Sources = append(config.Sources, expandHttpClientSource(h))
-	}
-	for _, g := range state.Config.Sources.GooglePubSubSource {
-		config.Sources = append(config.Sources, expandGooglePubSubSource(g))
-	}
-	for _, l := range state.Config.Sources.LogstashSource {
-		config.Sources = append(config.Sources, expandLogstashSource(l))
-	}
-	for _, s := range state.Config.Sources.SocketSource {
-		config.Sources = append(config.Sources, observability_pipeline.ExpandSocketSource(s))
+	for _, sourceBlock := range state.Config.Sources {
+		sourceId := sourceBlock.Id.ValueString()
+		for _, s := range sourceBlock.DatadogAgentSource {
+			config.Sources = append(config.Sources, expandDatadogAgentSource(s, sourceId))
+		}
+		for _, k := range sourceBlock.KafkaSource {
+			config.Sources = append(config.Sources, expandKafkaSource(k, sourceId))
+		}
+		for _, f := range sourceBlock.FluentdSource {
+			config.Sources = append(config.Sources, expandFluentdSource(f, sourceId))
+		}
+		for _, f := range sourceBlock.FluentBitSource {
+			config.Sources = append(config.Sources, expandFluentBitSource(f, sourceId))
+		}
+		for _, s := range sourceBlock.HttpServerSource {
+			config.Sources = append(config.Sources, expandHttpServerSource(s, sourceId))
+		}
+		for _, s := range sourceBlock.SplunkHecSource {
+			config.Sources = append(config.Sources, expandSplunkHecSource(s, sourceId))
+		}
+		for _, s := range sourceBlock.SplunkTcpSource {
+			config.Sources = append(config.Sources, expandSplunkTcpSource(s, sourceId))
+		}
+		for _, s := range sourceBlock.AmazonS3Source {
+			config.Sources = append(config.Sources, expandAmazonS3Source(s, sourceId))
+		}
+		for _, s := range sourceBlock.RsyslogSource {
+			config.Sources = append(config.Sources, expandRsyslogSource(s, sourceId))
+		}
+		for _, s := range sourceBlock.SyslogNgSource {
+			config.Sources = append(config.Sources, expandSyslogNgSource(s, sourceId))
+		}
+		for _, s := range sourceBlock.SumoLogicSource {
+			config.Sources = append(config.Sources, expandSumoLogicSource(s, sourceId))
+		}
+		for _, a := range sourceBlock.AmazonDataFirehoseSource {
+			config.Sources = append(config.Sources, expandAmazonDataFirehoseSource(a, sourceId))
+		}
+		for _, h := range sourceBlock.HttpClientSource {
+			config.Sources = append(config.Sources, expandHttpClientSource(h, sourceId))
+		}
+		for _, g := range sourceBlock.GooglePubSubSource {
+			config.Sources = append(config.Sources, expandGooglePubSubSource(g, sourceId))
+		}
+		for _, l := range sourceBlock.LogstashSource {
+			config.Sources = append(config.Sources, expandLogstashSource(l, sourceId))
+		}
+		for _, s := range sourceBlock.SocketSource {
+			config.Sources = append(config.Sources, observability_pipeline.ExpandSocketSource(s, sourceId))
+		}
 	}
 
 	// Processors - iterate through processor groups
@@ -2468,57 +2478,72 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 	outCfg := configModel{}
 
 	for _, src := range cfg.GetSources() {
+		sourceBlock := &sourceModel{}
 
 		if a := flattenDatadogAgentSource(src.ObservabilityPipelineDatadogAgentSource); a != nil {
-			outCfg.Sources.DatadogAgentSource = append(outCfg.Sources.DatadogAgentSource, a)
-		}
-		if k := flattenKafkaSource(src.ObservabilityPipelineKafkaSource); k != nil {
-			outCfg.Sources.KafkaSource = append(outCfg.Sources.KafkaSource, k)
-		}
-		if f := flattenFluentdSource(src.ObservabilityPipelineFluentdSource); f != nil {
-			outCfg.Sources.FluentdSource = append(outCfg.Sources.FluentdSource, f)
-		}
-		if f := flattenFluentBitSource(src.ObservabilityPipelineFluentBitSource); f != nil {
-			outCfg.Sources.FluentBitSource = append(outCfg.Sources.FluentBitSource, f)
-		}
-		if s := flattenHttpServerSource(src.ObservabilityPipelineHttpServerSource); s != nil {
-			outCfg.Sources.HttpServerSource = append(outCfg.Sources.HttpServerSource, s)
-		}
-
-		if s := flattenSplunkHecSource(src.ObservabilityPipelineSplunkHecSource); s != nil {
-			outCfg.Sources.SplunkHecSource = append(outCfg.Sources.SplunkHecSource, s)
-		}
-
-		if s := flattenSplunkTcpSource(src.ObservabilityPipelineSplunkTcpSource); s != nil {
-			outCfg.Sources.SplunkTcpSource = append(outCfg.Sources.SplunkTcpSource, s)
-		}
-
-		if s3 := flattenAmazonS3Source(src.ObservabilityPipelineAmazonS3Source); s3 != nil {
-			outCfg.Sources.AmazonS3Source = append(outCfg.Sources.AmazonS3Source, s3)
-		}
-		if r := flattenRsyslogSource(src.ObservabilityPipelineRsyslogSource); r != nil {
-			outCfg.Sources.RsyslogSource = append(outCfg.Sources.RsyslogSource, r)
-		}
-		if s := flattenSyslogNgSource(src.ObservabilityPipelineSyslogNgSource); s != nil {
-			outCfg.Sources.SyslogNgSource = append(outCfg.Sources.SyslogNgSource, s)
-		}
-		if s := flattenSumoLogicSource(src.ObservabilityPipelineSumoLogicSource); s != nil {
-			outCfg.Sources.SumoLogicSource = append(outCfg.Sources.SumoLogicSource, s)
-		}
-		if f := flattenAmazonDataFirehoseSource(src.ObservabilityPipelineAmazonDataFirehoseSource); f != nil {
-			outCfg.Sources.AmazonDataFirehoseSource = append(outCfg.Sources.AmazonDataFirehoseSource, f)
-		}
-		if h := flattenHttpClientSource(src.ObservabilityPipelineHttpClientSource); h != nil {
-			outCfg.Sources.HttpClientSource = append(outCfg.Sources.HttpClientSource, h)
-		}
-		if g := flattenGooglePubSubSource(src.ObservabilityPipelineGooglePubSubSource); g != nil {
-			outCfg.Sources.GooglePubSubSource = append(outCfg.Sources.GooglePubSubSource, g)
-		}
-		if l := flattenLogstashSource(src.ObservabilityPipelineLogstashSource); l != nil {
-			outCfg.Sources.LogstashSource = append(outCfg.Sources.LogstashSource, l)
-		}
-		if s := observability_pipeline.FlattenSocketSource(src.ObservabilityPipelineSocketSource); s != nil {
-			outCfg.Sources.SocketSource = append(outCfg.Sources.SocketSource, s)
+			sourceBlock.Id = types.StringValue(src.ObservabilityPipelineDatadogAgentSource.GetId())
+			sourceBlock.DatadogAgentSource = append(sourceBlock.DatadogAgentSource, a)
+			outCfg.Sources = append(outCfg.Sources, sourceBlock)
+		} else if k := flattenKafkaSource(src.ObservabilityPipelineKafkaSource); k != nil {
+			sourceBlock.Id = types.StringValue(src.ObservabilityPipelineKafkaSource.GetId())
+			sourceBlock.KafkaSource = append(sourceBlock.KafkaSource, k)
+			outCfg.Sources = append(outCfg.Sources, sourceBlock)
+		} else if f := flattenFluentdSource(src.ObservabilityPipelineFluentdSource); f != nil {
+			sourceBlock.Id = types.StringValue(src.ObservabilityPipelineFluentdSource.GetId())
+			sourceBlock.FluentdSource = append(sourceBlock.FluentdSource, f)
+			outCfg.Sources = append(outCfg.Sources, sourceBlock)
+		} else if f := flattenFluentBitSource(src.ObservabilityPipelineFluentBitSource); f != nil {
+			sourceBlock.Id = types.StringValue(src.ObservabilityPipelineFluentBitSource.GetId())
+			sourceBlock.FluentBitSource = append(sourceBlock.FluentBitSource, f)
+			outCfg.Sources = append(outCfg.Sources, sourceBlock)
+		} else if s := flattenHttpServerSource(src.ObservabilityPipelineHttpServerSource); s != nil {
+			sourceBlock.Id = types.StringValue(src.ObservabilityPipelineHttpServerSource.GetId())
+			sourceBlock.HttpServerSource = append(sourceBlock.HttpServerSource, s)
+			outCfg.Sources = append(outCfg.Sources, sourceBlock)
+		} else if s := flattenSplunkHecSource(src.ObservabilityPipelineSplunkHecSource); s != nil {
+			sourceBlock.Id = types.StringValue(src.ObservabilityPipelineSplunkHecSource.GetId())
+			sourceBlock.SplunkHecSource = append(sourceBlock.SplunkHecSource, s)
+			outCfg.Sources = append(outCfg.Sources, sourceBlock)
+		} else if s := flattenSplunkTcpSource(src.ObservabilityPipelineSplunkTcpSource); s != nil {
+			sourceBlock.Id = types.StringValue(src.ObservabilityPipelineSplunkTcpSource.GetId())
+			sourceBlock.SplunkTcpSource = append(sourceBlock.SplunkTcpSource, s)
+			outCfg.Sources = append(outCfg.Sources, sourceBlock)
+		} else if s3 := flattenAmazonS3Source(src.ObservabilityPipelineAmazonS3Source); s3 != nil {
+			sourceBlock.Id = types.StringValue(src.ObservabilityPipelineAmazonS3Source.GetId())
+			sourceBlock.AmazonS3Source = append(sourceBlock.AmazonS3Source, s3)
+			outCfg.Sources = append(outCfg.Sources, sourceBlock)
+		} else if r := flattenRsyslogSource(src.ObservabilityPipelineRsyslogSource); r != nil {
+			sourceBlock.Id = types.StringValue(src.ObservabilityPipelineRsyslogSource.GetId())
+			sourceBlock.RsyslogSource = append(sourceBlock.RsyslogSource, r)
+			outCfg.Sources = append(outCfg.Sources, sourceBlock)
+		} else if s := flattenSyslogNgSource(src.ObservabilityPipelineSyslogNgSource); s != nil {
+			sourceBlock.Id = types.StringValue(src.ObservabilityPipelineSyslogNgSource.GetId())
+			sourceBlock.SyslogNgSource = append(sourceBlock.SyslogNgSource, s)
+			outCfg.Sources = append(outCfg.Sources, sourceBlock)
+		} else if s := flattenSumoLogicSource(src.ObservabilityPipelineSumoLogicSource); s != nil {
+			sourceBlock.Id = types.StringValue(src.ObservabilityPipelineSumoLogicSource.GetId())
+			sourceBlock.SumoLogicSource = append(sourceBlock.SumoLogicSource, s)
+			outCfg.Sources = append(outCfg.Sources, sourceBlock)
+		} else if f := flattenAmazonDataFirehoseSource(src.ObservabilityPipelineAmazonDataFirehoseSource); f != nil {
+			sourceBlock.Id = types.StringValue(src.ObservabilityPipelineAmazonDataFirehoseSource.GetId())
+			sourceBlock.AmazonDataFirehoseSource = append(sourceBlock.AmazonDataFirehoseSource, f)
+			outCfg.Sources = append(outCfg.Sources, sourceBlock)
+		} else if h := flattenHttpClientSource(src.ObservabilityPipelineHttpClientSource); h != nil {
+			sourceBlock.Id = types.StringValue(src.ObservabilityPipelineHttpClientSource.GetId())
+			sourceBlock.HttpClientSource = append(sourceBlock.HttpClientSource, h)
+			outCfg.Sources = append(outCfg.Sources, sourceBlock)
+		} else if g := flattenGooglePubSubSource(src.ObservabilityPipelineGooglePubSubSource); g != nil {
+			sourceBlock.Id = types.StringValue(src.ObservabilityPipelineGooglePubSubSource.GetId())
+			sourceBlock.GooglePubSubSource = append(sourceBlock.GooglePubSubSource, g)
+			outCfg.Sources = append(outCfg.Sources, sourceBlock)
+		} else if l := flattenLogstashSource(src.ObservabilityPipelineLogstashSource); l != nil {
+			sourceBlock.Id = types.StringValue(src.ObservabilityPipelineLogstashSource.GetId())
+			sourceBlock.LogstashSource = append(sourceBlock.LogstashSource, l)
+			outCfg.Sources = append(outCfg.Sources, sourceBlock)
+		} else if s := observability_pipeline.FlattenSocketSource(src.ObservabilityPipelineSocketSource); s != nil {
+			sourceBlock.Id = types.StringValue(src.ObservabilityPipelineSocketSource.GetId())
+			sourceBlock.SocketSource = append(sourceBlock.SocketSource, s)
+			outCfg.Sources = append(outCfg.Sources, sourceBlock)
 		}
 	}
 
@@ -2612,8 +2637,9 @@ func flattenDatadogAgentSource(src *datadogV2.ObservabilityPipelineDatadogAgentS
 	return out
 }
 
-func expandDatadogAgentSource(src *datadogAgentSourceModel) datadogV2.ObservabilityPipelineConfigSourceItem {
+func expandDatadogAgentSource(src *datadogAgentSourceModel, id string) datadogV2.ObservabilityPipelineConfigSourceItem {
 	agent := datadogV2.NewObservabilityPipelineDatadogAgentSourceWithDefaults()
+	agent.SetId(id)
 	if src.Tls != nil {
 		agent.Tls = expandTls(src.Tls)
 	}
@@ -2654,8 +2680,9 @@ func flattenKafkaSource(src *datadogV2.ObservabilityPipelineKafkaSource) *kafkaS
 	return out
 }
 
-func expandKafkaSource(src *kafkaSourceModel) datadogV2.ObservabilityPipelineConfigSourceItem {
+func expandKafkaSource(src *kafkaSourceModel, id string) datadogV2.ObservabilityPipelineConfigSourceItem {
 	source := datadogV2.NewObservabilityPipelineKafkaSourceWithDefaults()
+	source.SetId(id)
 	source.SetGroupId(src.GroupId.ValueString())
 	// Initialize as empty slice, not nil, to ensure it serializes as [] not null
 	topics := []string{}
@@ -3959,8 +3986,9 @@ func expandTls(tlsTF *tlsModel) *datadogV2.ObservabilityPipelineTls {
 	return tls
 }
 
-func expandFluentdSource(src *fluentdSourceModel) datadogV2.ObservabilityPipelineConfigSourceItem {
+func expandFluentdSource(src *fluentdSourceModel, id string) datadogV2.ObservabilityPipelineConfigSourceItem {
 	source := datadogV2.NewObservabilityPipelineFluentdSourceWithDefaults()
+	source.SetId(id)
 
 	if src.Tls != nil {
 		source.Tls = expandTls(src.Tls)
@@ -3971,8 +3999,9 @@ func expandFluentdSource(src *fluentdSourceModel) datadogV2.ObservabilityPipelin
 	}
 }
 
-func expandFluentBitSource(src *fluentBitSourceModel) datadogV2.ObservabilityPipelineConfigSourceItem {
+func expandFluentBitSource(src *fluentBitSourceModel, id string) datadogV2.ObservabilityPipelineConfigSourceItem {
 	source := datadogV2.NewObservabilityPipelineFluentBitSourceWithDefaults()
+	source.SetId(id)
 
 	if src.Tls != nil {
 		source.Tls = expandTls(src.Tls)
@@ -4019,8 +4048,9 @@ func decodingSchema() schema.StringAttribute {
 	}
 }
 
-func expandHttpServerSource(src *httpServerSourceModel) datadogV2.ObservabilityPipelineConfigSourceItem {
+func expandHttpServerSource(src *httpServerSourceModel, id string) datadogV2.ObservabilityPipelineConfigSourceItem {
 	s := datadogV2.NewObservabilityPipelineHttpServerSourceWithDefaults()
+	s.SetId(id)
 
 	s.SetAuthStrategy(datadogV2.ObservabilityPipelineHttpServerSourceAuthStrategy(src.AuthStrategy.ValueString()))
 	s.SetDecoding(datadogV2.ObservabilityPipelineDecoding(src.Decoding.ValueString()))
@@ -4052,8 +4082,9 @@ func flattenHttpServerSource(src *datadogV2.ObservabilityPipelineHttpServerSourc
 	return out
 }
 
-func expandSplunkHecSource(src *splunkHecSourceModel) datadogV2.ObservabilityPipelineConfigSourceItem {
+func expandSplunkHecSource(src *splunkHecSourceModel, id string) datadogV2.ObservabilityPipelineConfigSourceItem {
 	s := datadogV2.NewObservabilityPipelineSplunkHecSourceWithDefaults()
+	s.SetId(id)
 
 	if src.Tls != nil {
 		s.Tls = expandTls(src.Tls)
@@ -4203,8 +4234,9 @@ func flattenGooglePubSubDestination(ctx context.Context, src *datadogV2.Observab
 	return out
 }
 
-func expandSplunkTcpSource(src *splunkTcpSourceModel) datadogV2.ObservabilityPipelineConfigSourceItem {
+func expandSplunkTcpSource(src *splunkTcpSourceModel, id string) datadogV2.ObservabilityPipelineConfigSourceItem {
 	s := datadogV2.NewObservabilityPipelineSplunkTcpSourceWithDefaults()
+	s.SetId(id)
 
 	if src.Tls != nil {
 		s.Tls = expandTls(src.Tls)
@@ -4274,8 +4306,9 @@ func flattenSplunkHecDestination(ctx context.Context, src *datadogV2.Observabili
 	}
 }
 
-func expandAmazonS3Source(src *amazonS3SourceModel) datadogV2.ObservabilityPipelineConfigSourceItem {
+func expandAmazonS3Source(src *amazonS3SourceModel, id string) datadogV2.ObservabilityPipelineConfigSourceItem {
 	s := datadogV2.NewObservabilityPipelineAmazonS3SourceWithDefaults()
+	s.SetId(id)
 
 	s.SetRegion(src.Region.ValueString())
 
@@ -4389,8 +4422,9 @@ func flattenSumoLogicDestination(ctx context.Context, src *datadogV2.Observabili
 	return out
 }
 
-func expandRsyslogSource(src *rsyslogSourceModel) datadogV2.ObservabilityPipelineConfigSourceItem {
+func expandRsyslogSource(src *rsyslogSourceModel, id string) datadogV2.ObservabilityPipelineConfigSourceItem {
 	obj := datadogV2.NewObservabilityPipelineRsyslogSourceWithDefaults()
+	obj.SetId(id)
 	if !src.Mode.IsNull() {
 		obj.SetMode(datadogV2.ObservabilityPipelineSyslogSourceMode(src.Mode.ValueString()))
 	}
@@ -4417,8 +4451,9 @@ func flattenRsyslogSource(src *datadogV2.ObservabilityPipelineRsyslogSource) *rs
 	return out
 }
 
-func expandSyslogNgSource(src *syslogNgSourceModel) datadogV2.ObservabilityPipelineConfigSourceItem {
+func expandSyslogNgSource(src *syslogNgSourceModel, id string) datadogV2.ObservabilityPipelineConfigSourceItem {
 	obj := datadogV2.NewObservabilityPipelineSyslogNgSourceWithDefaults()
+	obj.SetId(id)
 	if !src.Mode.IsNull() {
 		obj.SetMode(datadogV2.ObservabilityPipelineSyslogSourceMode(src.Mode.ValueString()))
 	}
@@ -4628,8 +4663,9 @@ func flattenMicrosoftSentinelDestination(ctx context.Context, src *datadogV2.Mic
 	}
 }
 
-func expandSumoLogicSource(src *sumoLogicSourceModel) datadogV2.ObservabilityPipelineConfigSourceItem {
+func expandSumoLogicSource(src *sumoLogicSourceModel, id string) datadogV2.ObservabilityPipelineConfigSourceItem {
 	obj := datadogV2.NewObservabilityPipelineSumoLogicSourceWithDefaults()
+	obj.SetId(id)
 
 	return datadogV2.ObservabilityPipelineConfigSourceItem{
 		ObservabilityPipelineSumoLogicSource: obj,
@@ -4643,8 +4679,9 @@ func flattenSumoLogicSource(src *datadogV2.ObservabilityPipelineSumoLogicSource)
 	return &sumoLogicSourceModel{}
 }
 
-func expandAmazonDataFirehoseSource(src *amazonDataFirehoseSourceModel) datadogV2.ObservabilityPipelineConfigSourceItem {
+func expandAmazonDataFirehoseSource(src *amazonDataFirehoseSourceModel, id string) datadogV2.ObservabilityPipelineConfigSourceItem {
 	firehose := datadogV2.NewObservabilityPipelineAmazonDataFirehoseSourceWithDefaults()
+	firehose.SetId(id)
 
 	if src.Auth != nil {
 		auth := observability_pipeline.ExpandAwsAuth(src.Auth)
@@ -4681,8 +4718,9 @@ func flattenAmazonDataFirehoseSource(src *datadogV2.ObservabilityPipelineAmazonD
 	return out
 }
 
-func expandHttpClientSource(src *httpClientSourceModel) datadogV2.ObservabilityPipelineConfigSourceItem {
+func expandHttpClientSource(src *httpClientSourceModel, id string) datadogV2.ObservabilityPipelineConfigSourceItem {
 	httpSrc := datadogV2.NewObservabilityPipelineHttpClientSourceWithDefaults()
+	httpSrc.SetId(id)
 	httpSrc.SetDecoding(datadogV2.ObservabilityPipelineDecoding(src.Decoding.ValueString()))
 
 	if !src.ScrapeInterval.IsNull() {
@@ -4730,8 +4768,9 @@ func flattenHttpClientSource(src *datadogV2.ObservabilityPipelineHttpClientSourc
 	return out
 }
 
-func expandGooglePubSubSource(src *googlePubSubSourceModel) datadogV2.ObservabilityPipelineConfigSourceItem {
+func expandGooglePubSubSource(src *googlePubSubSourceModel, id string) datadogV2.ObservabilityPipelineConfigSourceItem {
 	pubsub := datadogV2.NewObservabilityPipelineGooglePubSubSourceWithDefaults()
+	pubsub.SetId(id)
 	pubsub.SetProject(src.Project.ValueString())
 	pubsub.SetSubscription(src.Subscription.ValueString())
 	pubsub.SetDecoding(datadogV2.ObservabilityPipelineDecoding(src.Decoding.ValueString()))
@@ -4773,8 +4812,9 @@ func flattenGooglePubSubSource(src *datadogV2.ObservabilityPipelineGooglePubSubS
 	return out
 }
 
-func expandLogstashSource(src *logstashSourceModel) datadogV2.ObservabilityPipelineConfigSourceItem {
+func expandLogstashSource(src *logstashSourceModel, id string) datadogV2.ObservabilityPipelineConfigSourceItem {
 	logstash := datadogV2.NewObservabilityPipelineLogstashSourceWithDefaults()
+	logstash.SetId(id)
 	if src.Tls != nil {
 		logstash.Tls = expandTls(src.Tls)
 	}
