@@ -212,7 +212,7 @@ type enrichmentGeoIpModel struct {
 }
 
 type addEnvVarsProcessorModel struct {
-	Variables []envVarMappingModel `tfsdk:"variables"`
+	Variables []envVarMappingModel `tfsdk:"variable"`
 }
 
 type envVarMappingModel struct {
@@ -228,7 +228,7 @@ type throttleProcessorModel struct {
 
 type reduceProcessorModel struct {
 	GroupBy         []types.String       `tfsdk:"group_by"`
-	MergeStrategies []mergeStrategyModel `tfsdk:"merge_strategies"`
+	MergeStrategies []mergeStrategyModel `tfsdk:"merge_strategy"`
 }
 
 type mergeStrategyModel struct {
@@ -272,7 +272,7 @@ type quotaProcessorModel struct {
 	Limit                       quotaLimitModel      `tfsdk:"limit"`
 	PartitionFields             []types.String       `tfsdk:"partition_fields"`
 	IgnoreWhenMissingPartitions types.Bool           `tfsdk:"ignore_when_missing_partitions"`
-	Overrides                   []quotaOverrideModel `tfsdk:"overrides"`
+	Overrides                   []quotaOverrideModel `tfsdk:"override"`
 	OverflowAction              types.String         `tfsdk:"overflow_action"`
 }
 
@@ -360,7 +360,7 @@ type datadogLogsDestinationModel struct {
 
 type parseGrokProcessorModel struct {
 	DisableLibraryRules types.Bool                    `tfsdk:"disable_library_rules"`
-	Rules               []parseGrokProcessorRuleModel `tfsdk:"rules"`
+	Rules               []parseGrokProcessorRuleModel `tfsdk:"rule"`
 }
 
 type parseGrokProcessorRuleModel struct {
@@ -398,7 +398,7 @@ type splunkHecSourceModel struct {
 }
 
 type generateMetricsProcessorModel struct {
-	Metrics []generatedMetricModel `tfsdk:"metrics"`
+	Metrics []generatedMetricModel `tfsdk:"metric"`
 }
 
 type generatedMetricModel struct {
@@ -444,7 +444,7 @@ type sumoLogicDestinationModel struct {
 	HeaderHostName       types.String             `tfsdk:"header_host_name"`
 	HeaderSourceName     types.String             `tfsdk:"header_source_name"`
 	HeaderSourceCategory types.String             `tfsdk:"header_source_category"`
-	HeaderCustomFields   []headerCustomFieldModel `tfsdk:"header_custom_fields"`
+	HeaderCustomFields   []headerCustomFieldModel `tfsdk:"header_custom_field"`
 }
 
 type headerCustomFieldModel struct {
@@ -490,7 +490,7 @@ type microsoftSentinelDestinationModel struct {
 }
 
 type sensitiveDataScannerProcessorModel struct {
-	Rules []sensitiveDataScannerProcessorRule `tfsdk:"rules"`
+	Rules []sensitiveDataScannerProcessorRule `tfsdk:"rule"`
 }
 
 type sensitiveDataScannerProcessorRule struct {
@@ -1146,7 +1146,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 																		},
 																	},
 																},
-																"overrides": schema.ListNestedBlock{
+																"override": schema.ListNestedBlock{
 																	Description: "The overrides for field-specific quotas.",
 																	NestedObject: schema.NestedBlockObject{
 																		Blocks: map[string]schema.Block{
@@ -1194,7 +1194,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 														NestedObject: schema.NestedBlockObject{
 															Attributes: map[string]schema.Attribute{},
 															Blocks: map[string]schema.Block{
-																"rules": schema.ListNestedBlock{
+																"rule": schema.ListNestedBlock{
 																	Description: "A list of rules for identifying and acting on sensitive data patterns.",
 																	NestedObject: schema.NestedBlockObject{
 																		Attributes: map[string]schema.Attribute{
@@ -1326,7 +1326,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 														NestedObject: schema.NestedBlockObject{
 															Attributes: map[string]schema.Attribute{},
 															Blocks: map[string]schema.Block{
-																"metrics": schema.ListNestedBlock{
+																"metric": schema.ListNestedBlock{
 																	Description: "Configuration for generating individual metrics.",
 																	NestedObject: schema.NestedBlockObject{
 																		Attributes: map[string]schema.Attribute{
@@ -1381,7 +1381,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 																},
 															},
 															Blocks: map[string]schema.Block{
-																"rules": schema.ListNestedBlock{
+																"rule": schema.ListNestedBlock{
 																	Description: "The list of Grok parsing rules. If multiple parsing rules are provided, they are evaluated in order. The first successful match is applied.",
 																	NestedObject: schema.NestedBlockObject{
 																		Attributes: map[string]schema.Attribute{
@@ -1478,7 +1478,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 																},
 															},
 															Blocks: map[string]schema.Block{
-																"merge_strategies": schema.ListNestedBlock{
+																"merge_strategy": schema.ListNestedBlock{
 																	Description: "List of merge strategies defining how values from grouped events should be combined.",
 																	NestedObject: schema.NestedBlockObject{
 																		Attributes: map[string]schema.Attribute{
@@ -1527,7 +1527,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 														NestedObject: schema.NestedBlockObject{
 															Attributes: map[string]schema.Attribute{},
 															Blocks: map[string]schema.Block{
-																"variables": schema.ListNestedBlock{
+																"variable": schema.ListNestedBlock{
 																	Description: "A list of environment variable mappings to apply to log fields.",
 																	NestedObject: schema.NestedBlockObject{
 																		Attributes: map[string]schema.Attribute{
@@ -1855,7 +1855,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 										},
 									},
 									Blocks: map[string]schema.Block{
-										"header_custom_fields": schema.ListNestedBlock{
+										"header_custom_field": schema.ListNestedBlock{
 											Description: "A list of custom headers to include in the request to Sumo Logic.",
 											NestedObject: schema.NestedBlockObject{
 												Attributes: map[string]schema.Attribute{
