@@ -49,7 +49,7 @@ type escalationStepModel struct {
 }
 type escalationTargetModel struct {
 	Schedule         types.String `tfsdk:"schedule"`
-	SchedulePosition types.String `tfsdk:"schedule_position"`
+	SchedulePosition types.String `tfsdk:"position"`
 	Team             types.String `tfsdk:"team"`
 	User             types.String `tfsdk:"user"`
 }
@@ -145,7 +145,7 @@ func (r *onCallEscalationPolicyResource) Schema(_ context.Context, _ resource.Sc
 										Optional:    true,
 										Description: "Targeted schedule ID.",
 									},
-									"schedule_position": schema.StringAttribute{
+									"position": schema.StringAttribute{
 										Optional:    true,
 										Description: "For schedule targets, specifies which on-call user to page. Valid values: `current` (default), `previous`, `next`.",
 										Validators:  []validator.String{stringvalidator.OneOf("current", "previous", "next")},
