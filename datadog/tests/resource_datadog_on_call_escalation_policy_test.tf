@@ -47,6 +47,14 @@ resource "datadog_on_call_escalation_policy" "policy_test" {
       schedule = datadog_on_call_schedule.schedule.id
     }
   }
+
+  step {
+    escalate_after_seconds = 600
+    target {
+      schedule          = datadog_on_call_schedule.schedule.id
+      schedule_position = "next"
+    }
+  }
 }
 
 # This policy is used to test the defaults of the escalation policy resource.

@@ -48,9 +48,10 @@ type escalationStepModel struct {
 	Targets       []*escalationTargetModel `tfsdk:"target"`
 }
 type escalationTargetModel struct {
-	Schedule types.String `tfsdk:"schedule"`
-	Team     types.String `tfsdk:"team"`
-	User     types.String `tfsdk:"user"`
+	Schedule         types.String `tfsdk:"schedule"`
+	SchedulePosition types.String `tfsdk:"schedule_position"`
+	Team             types.String `tfsdk:"team"`
+	User             types.String `tfsdk:"user"`
 }
 
 func NewOnCallEscalationPolicyResource() resource.Resource {
@@ -143,6 +144,11 @@ func (r *onCallEscalationPolicyResource) Schema(_ context.Context, _ resource.Sc
 									"schedule": schema.StringAttribute{
 										Optional:    true,
 										Description: "Targeted schedule ID.",
+									},
+									"schedule_position": schema.StringAttribute{
+										Optional:    true,
+										Description: "For schedule targets, specifies which on-call user to page. Valid values: `current` (default), `previous`, `next`.",
+										Validators:  []validator.String{stringvalidator.OneOf("current", "previous", "next")},
 									},
 									"team": schema.StringAttribute{
 										Optional:    true,
@@ -329,6 +335,14 @@ func (r *onCallEscalationPolicyResource) stateFromResponse(resp *datadogV2.Escal
 			stepsById[*item.EscalationPolicyStep.Id] = item.EscalationPolicyStep
 		}
 	}
+	// Build map of configured schedules from included
+	configuredSchedulesById := map[string]*datadogV2.ConfiguredSchedule{}
+	for _, item := range resp.GetIncluded() {
+		if item.ConfiguredSchedule != nil {
+			configuredSchedulesById[item.ConfiguredSchedule.GetId()] = item.ConfiguredSchedule
+		}
+	}
+
 	for _, step := range resp.Data.Relationships.Steps.Data {
 		fullStep := stepsById[step.Id]
 		targets := []*escalationTargetModel{}
@@ -338,6 +352,14 @@ func (r *onCallEscalationPolicyResource) stateFromResponse(resp *datadogV2.Escal
 				stateTarget.User = types.StringValue(target.UserTarget.Id)
 			} else if target.ScheduleTarget != nil {
 				stateTarget.Schedule = types.StringValue(target.ScheduleTarget.Id)
+			} else if target.ConfiguredScheduleTarget != nil {
+				// Lookup the full configured schedule from included
+				if configSched, ok := configuredSchedulesById[target.ConfiguredScheduleTarget.Id]; ok {
+					stateTarget.Schedule = types.StringValue(configSched.Relationships.Schedule.Data.Id)
+					if pos, ok := configSched.Attributes.GetPositionOk(); ok {
+						stateTarget.SchedulePosition = types.StringValue(string(*pos))
+					}
+				}
 			} else if target.TeamTarget != nil {
 				stateTarget.Team = types.StringValue(target.TeamTarget.Id)
 			}
@@ -428,10 +450,19 @@ func (r *onCallEscalationPolicyResource) buildOnCallEscalationPolicyRequestBody(
 			}
 
 			if !plannedTarget.Schedule.IsNull() {
-				targets = append(targets, datadogV2.EscalationPolicyStepTarget{
+				target := datadogV2.EscalationPolicyStepTarget{
 					Id:   plannedTarget.Schedule.ValueStringPointer(),
 					Type: ptrValue(datadogV2.ESCALATIONPOLICYSTEPTARGETTYPE_SCHEDULES),
-				})
+				}
+				if !plannedTarget.SchedulePosition.IsNull() {
+					position := datadogV2.ScheduleTargetPosition(plannedTarget.SchedulePosition.ValueString())
+					target.Config = &datadogV2.EscalationPolicyStepTargetConfig{
+						Schedule: &datadogV2.EscalationPolicyStepTargetConfigSchedule{
+							Position: &position,
+						},
+					}
+				}
+				targets = append(targets, target)
 				assignedFields += 1
 			}
 
@@ -548,10 +579,19 @@ func (r *onCallEscalationPolicyResource) buildOnCallEscalationPolicyUpdateReques
 				}
 
 				if !plannedTarget.Schedule.IsNull() {
-					targets = append(targets, datadogV2.EscalationPolicyStepTarget{
+					target := datadogV2.EscalationPolicyStepTarget{
 						Id:   plannedTarget.Schedule.ValueStringPointer(),
 						Type: ptrValue(datadogV2.ESCALATIONPOLICYSTEPTARGETTYPE_SCHEDULES),
-					})
+					}
+					if !plannedTarget.SchedulePosition.IsNull() {
+						position := datadogV2.ScheduleTargetPosition(plannedTarget.SchedulePosition.ValueString())
+						target.Config = &datadogV2.EscalationPolicyStepTargetConfig{
+							Schedule: &datadogV2.EscalationPolicyStepTargetConfigSchedule{
+								Position: &position,
+							},
+						}
+					}
+					targets = append(targets, target)
 					assignedFields += 1
 				}
 
