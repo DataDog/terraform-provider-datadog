@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"crypto/sha256"
+	"encoding/json"
 	"fmt"
 	"io"
 	"log"
@@ -87,6 +88,8 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/data_source_datadog_monitors_test":                                 "monitors",
 	"tests/data_source_datadog_permissions_test":                              "permissions",
 	"tests/data_source_datadog_powerpack_test":                                "powerpacks",
+	"tests/data_source_datadog_reference_table_test":                          "reference-tables",
+	"tests/data_source_datadog_reference_table_rows_test":                     "reference-tables",
 	"tests/data_source_datadog_restriction_policy_test":                       "restriction-policy",
 	"tests/data_source_datadog_role_test":                                     "roles",
 	"tests/data_source_datadog_role_users_test":                               "roles",
@@ -249,6 +252,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_on_call_team_routing_rules_test":                  "on-call",
 	"tests/resource_datadog_organization_settings_test":                       "organization",
 	"tests/resource_datadog_org_connection_test":                              "org_connection",
+	"tests/resource_datadog_reference_table_test":                             "reference-tables",
 	"tests/resource_datadog_restriction_policy_test":                          "restriction-policy",
 	"tests/resource_datadog_role_test":                                        "roles",
 	"tests/resource_datadog_rum_application_test":                             "rum-application",
@@ -381,6 +385,50 @@ func isTestOrg() bool {
 	publicID := ddTestOrg
 	if v := os.Getenv(testOrgEnvName); v != "" {
 		publicID = v
+		// If DD_TEST_ORG is explicitly set, validate by checking current_user endpoint
+		// instead of org endpoint (which requires admin permissions)
+		client := &http.Client{}
+		req, _ := http.NewRequest("GET", fmt.Sprintf("%s/api/v2/current_user", strings.TrimRight(apiURL, "/")), nil)
+		req.Header.Add("DD-API-KEY", os.Getenv(testAPIKeyEnvName))
+		req.Header.Add("DD-APPLICATION-KEY", os.Getenv(testAPPKeyEnvName))
+		resp, err := client.Do(req)
+		if err != nil || resp.StatusCode != 200 {
+			r := false
+			isTestOrgC = &r
+			return r
+		}
+		// Parse response to check if org public_id matches
+		var result map[string]interface{}
+		if err := json.NewDecoder(resp.Body).Decode(&result); err == nil {
+			if data, ok := result["data"].(map[string]interface{}); ok {
+				if relationships, ok := data["relationships"].(map[string]interface{}); ok {
+					if org, ok := relationships["org"].(map[string]interface{}); ok {
+						if _, ok := org["data"].(map[string]interface{}); ok {
+							// Check included orgs for public_id match
+							if included, ok := result["included"].([]interface{}); ok {
+								for _, item := range included {
+									if itemMap, ok := item.(map[string]interface{}); ok {
+										if itemType, _ := itemMap["type"].(string); itemType == "orgs" {
+											if attrs, ok := itemMap["attributes"].(map[string]interface{}); ok {
+												if publicIDAttr, ok := attrs["public_id"].(string); ok && publicIDAttr == publicID {
+													r := true
+													isTestOrgC = &r
+													return r
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		resp.Body.Close()
+		r := false
+		isTestOrgC = &r
+		return r
 	}
 
 	client := &http.Client{}
