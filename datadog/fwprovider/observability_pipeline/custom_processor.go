@@ -10,7 +10,7 @@ import (
 
 // CustomProcessorModel represents the Terraform model for remap VRL processor configuration
 type CustomProcessorModel struct {
-	Remaps []CustomProcessorRemapModel `tfsdk:"remaps"`
+	Remaps []CustomProcessorRemapModel `tfsdk:"remap"`
 }
 
 // CustomProcessorRemapModel represents a single VRL remap rule
@@ -74,7 +74,7 @@ func CustomProcessorSchema() schema.ListNestedBlock {
 		NestedObject: schema.NestedBlockObject{
 			Attributes: map[string]schema.Attribute{},
 			Blocks: map[string]schema.Block{
-				"remaps": schema.ListNestedBlock{
+				"remap": schema.ListNestedBlock{
 					Description: "Array of VRL remap configurations. Each remap defines a transformation rule with its own filter and VRL script.",
 					Validators: []validator.List{
 						listvalidator.SizeAtLeast(1),
