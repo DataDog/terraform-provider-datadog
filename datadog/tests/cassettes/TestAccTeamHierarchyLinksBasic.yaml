@@ -1,0 +1,305 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 209
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"description":"Child team description.","handle":"tf-testaccteamhierarchylinksbasic-local-1764710645c","name":"tf-testaccteamhierarchylinksbasic-local-1764710645-child"},"type":"team"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/team
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: false
+        body: '{"data":{"id":"4a0241e1-3ab3-490e-8550-0926e38d0929","type":"team","attributes":{"avatar":null,"banner":1,"created_at":"2025-12-02T21:24:06.147821+00:00","description":"Child team description.","handle":"tf-testaccteamhierarchylinksbasic-local-1764710645c","hidden_modules":null,"is_managed":false,"link_count":0,"modified_at":"2025-12-02T21:24:06.147821+00:00","name":"tf-testaccteamhierarchylinksbasic-local-1764710645-child","summary":"Child team description.","user_count":0,"visible_modules":null},"relationships":{"team_links":{"data":[],"links":{"related":"/api/v2/team/4a0241e1-3ab3-490e-8550-0926e38d0929/links"}},"user_team_permissions":{"data":null,"links":{"related":"/api/v2/team/4a0241e1-3ab3-490e-8550-0926e38d0929/permission-settings"}}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 176.411417ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 211
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"description":"Parent team description.","handle":"tf-testaccteamhierarchylinksbasic-local-1764710645p","name":"tf-testaccteamhierarchylinksbasic-local-1764710645-parent"},"type":"team"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/team
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: false
+        body: '{"data":{"id":"4ce3c9ef-7d4d-4510-835d-60599739e39e","type":"team","attributes":{"avatar":null,"banner":12,"created_at":"2025-12-02T21:24:06.145939+00:00","description":"Parent team description.","handle":"tf-testaccteamhierarchylinksbasic-local-1764710645p","hidden_modules":null,"is_managed":false,"link_count":0,"modified_at":"2025-12-02T21:24:06.145939+00:00","name":"tf-testaccteamhierarchylinksbasic-local-1764710645-parent","summary":"Parent team description.","user_count":0,"visible_modules":null},"relationships":{"team_links":{"data":[],"links":{"related":"/api/v2/team/4ce3c9ef-7d4d-4510-835d-60599739e39e/links"}},"user_team_permissions":{"data":null,"links":{"related":"/api/v2/team/4ce3c9ef-7d4d-4510-835d-60599739e39e/permission-settings"}}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 179.515834ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 222
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"relationships":{"parent_team":{"data":{"id":"4ce3c9ef-7d4d-4510-835d-60599739e39e","type":"team"}},"sub_team":{"data":{"id":"4a0241e1-3ab3-490e-8550-0926e38d0929","type":"team"}}},"type":"team_hierarchy_links"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/team-hierarchy-links
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":{"id":"16b55787-7465-425c-8a88-87dd6635000f","type":"team_hierarchy_links","attributes":{"created_at":"2025-12-02T21:24:06.328855327Z","provisioned_by":""},"relationships":{"parent_team":{"data":{"id":"4ce3c9ef-7d4d-4510-835d-60599739e39e","type":"team"}},"sub_team":{"data":{"id":"4a0241e1-3ab3-490e-8550-0926e38d0929","type":"team"}}}},"included":[{"id":"4ce3c9ef-7d4d-4510-835d-60599739e39e","type":"team","attributes":{"avatar":null,"banner":12,"handle":"tf-testaccteamhierarchylinksbasic-local-1764710645p","is_managed":false,"is_open_membership":false,"link_count":0,"name":"tf-testaccteamhierarchylinksbasic-local-1764710645-parent","summary":"Parent team description.","user_count":0}},{"id":"4a0241e1-3ab3-490e-8550-0926e38d0929","type":"team","attributes":{"avatar":null,"banner":1,"handle":"tf-testaccteamhierarchylinksbasic-local-1764710645c","is_managed":false,"is_open_membership":false,"link_count":0,"name":"tf-testaccteamhierarchylinksbasic-local-1764710645-child","summary":"Child team description.","user_count":0}}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 99.280791ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/team/4ce3c9ef-7d4d-4510-835d-60599739e39e
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 688
+        uncompressed: false
+        body: '{"data":{"id":"4ce3c9ef-7d4d-4510-835d-60599739e39e","type":"team","attributes":{"created_at":"2025-12-02T21:24:06.145939+00:00","description":"Parent team description.","handle":"tf-testaccteamhierarchylinksbasic-local-1764710645p","is_managed":false,"link_count":0,"modified_at":"2025-12-02T21:24:06.145939+00:00","name":"tf-testaccteamhierarchylinksbasic-local-1764710645-parent","summary":"Parent team description.","user_count":0},"relationships":{"team_links":{"data":[],"links":{"related":"/api/v2/team/4ce3c9ef-7d4d-4510-835d-60599739e39e/links"}},"user_team_permissions":{"data":null,"links":{"related":"/api/v2/team/4ce3c9ef-7d4d-4510-835d-60599739e39e/permission-settings"}}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 50.369625ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/team/4a0241e1-3ab3-490e-8550-0926e38d0929
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 685
+        uncompressed: false
+        body: '{"data":{"id":"4a0241e1-3ab3-490e-8550-0926e38d0929","type":"team","attributes":{"created_at":"2025-12-02T21:24:06.147821+00:00","description":"Child team description.","handle":"tf-testaccteamhierarchylinksbasic-local-1764710645c","is_managed":false,"link_count":0,"modified_at":"2025-12-02T21:24:06.147821+00:00","name":"tf-testaccteamhierarchylinksbasic-local-1764710645-child","summary":"Child team description.","user_count":0},"relationships":{"team_links":{"data":[],"links":{"related":"/api/v2/team/4a0241e1-3ab3-490e-8550-0926e38d0929/links"}},"user_team_permissions":{"data":null,"links":{"related":"/api/v2/team/4a0241e1-3ab3-490e-8550-0926e38d0929/permission-settings"}}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 51.442ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/team-hierarchy-links/16b55787-7465-425c-8a88-87dd6635000f
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":{"id":"16b55787-7465-425c-8a88-87dd6635000f","type":"team_hierarchy_links","attributes":{"created_at":"2025-12-02T21:24:06.328855Z","provisioned_by":""},"relationships":{"parent_team":{"data":{"id":"4ce3c9ef-7d4d-4510-835d-60599739e39e","type":"team"}},"sub_team":{"data":{"id":"4a0241e1-3ab3-490e-8550-0926e38d0929","type":"team"}}}},"links":{"self":"https://api.datadoghq.com/api/v2/team-hierarchy-links/16b55787-7465-425c-8a88-87dd6635000f"},"included":[{"id":"4a0241e1-3ab3-490e-8550-0926e38d0929","type":"team","attributes":{"avatar":null,"banner":1,"handle":"tf-testaccteamhierarchylinksbasic-local-1764710645c","is_managed":false,"is_open_membership":false,"link_count":0,"name":"tf-testaccteamhierarchylinksbasic-local-1764710645-child","summary":"Child team description.","user_count":0}},{"id":"4ce3c9ef-7d4d-4510-835d-60599739e39e","type":"team","attributes":{"avatar":null,"banner":12,"handle":"tf-testaccteamhierarchylinksbasic-local-1764710645p","is_managed":false,"is_open_membership":false,"link_count":0,"name":"tf-testaccteamhierarchylinksbasic-local-1764710645-parent","summary":"Parent team description.","user_count":0}}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 60.334291ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/team-hierarchy-links/16b55787-7465-425c-8a88-87dd6635000f
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 98.232167ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/team/4ce3c9ef-7d4d-4510-835d-60599739e39e
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 201.0645ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/team/4a0241e1-3ab3-490e-8550-0926e38d0929
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 207.12975ms
