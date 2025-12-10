@@ -30,21 +30,41 @@ resource "datadog_monitor_notification_rule" "foo" {
 ### Required
 
 - `name` (String) The name of the monitor notification rule.
-- `recipients` (Set of String) List of recipients to notify.
 
 ### Optional
 
+- `conditional_recipients` (Block, Optional) Use conditional recipients to define different recipients for different situations. Cannot be used with `recipients`. (see [below for nested schema](#nestedblock--conditional_recipients))
 - `filter` (Block, Optional) (see [below for nested schema](#nestedblock--filter))
+- `recipients` (Set of String) List of recipients to notify. Cannot be used with `conditional_recipients`.
 
 ### Read-Only
 
 - `id` (String) The ID of this resource.
 
-<a id="nestedblock--filter"></a>
-### Nested Schema for `filter`
+<a id="nestedblock--conditional_recipients"></a>
+### Nested Schema for `conditional_recipients`
+
+Optional:
+
+- `conditions` (Block List) Conditions of the notification rule. (see [below for nested schema](#nestedblock--conditional_recipients--conditions))
+- `fallback_recipients` (Set of String) If none of the `conditions` applied, `fallback_recipients` will get notified.
+
+<a id="nestedblock--conditional_recipients--conditions"></a>
+### Nested Schema for `conditional_recipients.conditions`
 
 Required:
 
+- `recipients` (Set of String) List of recipients to notify.
+- `scope` (String) The scope to which the monitor applied.
+
+
+
+<a id="nestedblock--filter"></a>
+### Nested Schema for `filter`
+
+Optional:
+
+- `scope` (String) The scope to which the monitor applied.
 - `tags` (Set of String) All tags that target monitors must match.
 
 ## Import
