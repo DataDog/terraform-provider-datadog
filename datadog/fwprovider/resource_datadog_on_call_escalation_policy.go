@@ -437,49 +437,10 @@ func (r *onCallEscalationPolicyResource) buildOnCallEscalationPolicyRequestBody(
 			step.SetEscalateAfterSeconds(plannedStep.EscalateAfter.ValueInt64())
 		}
 
-		var targets []datadogV2.EscalationPolicyStepTarget
-
-		for _, plannedTarget := range plannedStep.Targets {
-			assignedFields := 0
-			if !plannedTarget.User.IsNull() {
-				targets = append(targets, datadogV2.EscalationPolicyStepTarget{
-					Id:   plannedTarget.User.ValueStringPointer(),
-					Type: ptrValue(datadogV2.ESCALATIONPOLICYSTEPTARGETTYPE_USERS),
-				})
-				assignedFields += 1
-			}
-
-			if !plannedTarget.Schedule.IsNull() {
-				target := datadogV2.EscalationPolicyStepTarget{
-					Id:   plannedTarget.Schedule.ValueStringPointer(),
-					Type: ptrValue(datadogV2.ESCALATIONPOLICYSTEPTARGETTYPE_SCHEDULES),
-				}
-				if !plannedTarget.SchedulePosition.IsNull() {
-					position := datadogV2.ScheduleTargetPosition(plannedTarget.SchedulePosition.ValueString())
-					target.Config = &datadogV2.EscalationPolicyStepTargetConfig{
-						Schedule: &datadogV2.EscalationPolicyStepTargetConfigSchedule{
-							Position: &position,
-						},
-					}
-				}
-				targets = append(targets, target)
-				assignedFields += 1
-			}
-
-			if !plannedTarget.Team.IsNull() {
-				targets = append(targets, datadogV2.EscalationPolicyStepTarget{
-					Id:   plannedTarget.Team.ValueStringPointer(),
-					Type: ptrValue(datadogV2.ESCALATIONPOLICYSTEPTARGETTYPE_TEAMS),
-				})
-				assignedFields += 1
-			}
-
-			if assignedFields != 1 {
-				diags.AddError("invalid target", "target must specify one of `user`, `schedule` or `team`")
-				return nil, diags
-			}
+		targets := buildTargetsFromPlan(plannedStep.Targets, &diags)
+		if diags.HasError() {
+			return nil, diags
 		}
-
 		step.SetTargets(targets)
 		steps = append(steps, *step)
 
@@ -566,49 +527,10 @@ func (r *onCallEscalationPolicyResource) buildOnCallEscalationPolicyUpdateReques
 				step.SetEscalateAfterSeconds(plannedStep.EscalateAfter.ValueInt64())
 			}
 
-			var targets []datadogV2.EscalationPolicyStepTarget
-
-			for _, plannedTarget := range plannedStep.Targets {
-				assignedFields := 0
-				if !plannedTarget.User.IsNull() {
-					targets = append(targets, datadogV2.EscalationPolicyStepTarget{
-						Id:   plannedTarget.User.ValueStringPointer(),
-						Type: ptrValue(datadogV2.ESCALATIONPOLICYSTEPTARGETTYPE_USERS),
-					})
-					assignedFields += 1
-				}
-
-				if !plannedTarget.Schedule.IsNull() {
-					target := datadogV2.EscalationPolicyStepTarget{
-						Id:   plannedTarget.Schedule.ValueStringPointer(),
-						Type: ptrValue(datadogV2.ESCALATIONPOLICYSTEPTARGETTYPE_SCHEDULES),
-					}
-					if !plannedTarget.SchedulePosition.IsNull() {
-						position := datadogV2.ScheduleTargetPosition(plannedTarget.SchedulePosition.ValueString())
-						target.Config = &datadogV2.EscalationPolicyStepTargetConfig{
-							Schedule: &datadogV2.EscalationPolicyStepTargetConfigSchedule{
-								Position: &position,
-							},
-						}
-					}
-					targets = append(targets, target)
-					assignedFields += 1
-				}
-
-				if !plannedTarget.Team.IsNull() {
-					targets = append(targets, datadogV2.EscalationPolicyStepTarget{
-						Id:   plannedTarget.Team.ValueStringPointer(),
-						Type: ptrValue(datadogV2.ESCALATIONPOLICYSTEPTARGETTYPE_TEAMS),
-					})
-					assignedFields += 1
-				}
-
-				if assignedFields != 1 {
-					diags.AddError("invalid target", "target must specify one of `user`, `schedule` or `team`")
-					return nil, diags
-				}
+			targets := buildTargetsFromPlan(plannedStep.Targets, &diags)
+			if diags.HasError() {
+				return nil, diags
 			}
-
 			step.SetTargets(targets)
 			steps = append(steps, *step)
 		}
@@ -630,4 +552,58 @@ func (r *onCallEscalationPolicyResource) buildOnCallEscalationPolicyUpdateReques
 
 func ptrValue[T any](t T) *T {
 	return &t
+}
+
+func buildTargetsFromPlan(plannedTargets []*escalationTargetModel, diags *diag.Diagnostics) []datadogV2.EscalationPolicyStepTarget {
+	var targets []datadogV2.EscalationPolicyStepTarget
+
+	for _, plannedTarget := range plannedTargets {
+		assignedFields := 0
+
+		// Validate position is only set with schedule
+		if !plannedTarget.SchedulePosition.IsNull() && plannedTarget.Schedule.IsNull() {
+			diags.AddError("invalid target", "`position` can only be set when `schedule` is specified")
+			return nil
+		}
+
+		if !plannedTarget.User.IsNull() {
+			targets = append(targets, datadogV2.EscalationPolicyStepTarget{
+				Id:   plannedTarget.User.ValueStringPointer(),
+				Type: ptrValue(datadogV2.ESCALATIONPOLICYSTEPTARGETTYPE_USERS),
+			})
+			assignedFields += 1
+		}
+
+		if !plannedTarget.Schedule.IsNull() {
+			target := datadogV2.EscalationPolicyStepTarget{
+				Id:   plannedTarget.Schedule.ValueStringPointer(),
+				Type: ptrValue(datadogV2.ESCALATIONPOLICYSTEPTARGETTYPE_SCHEDULES),
+			}
+			if !plannedTarget.SchedulePosition.IsNull() {
+				position := datadogV2.ScheduleTargetPosition(plannedTarget.SchedulePosition.ValueString())
+				target.Config = &datadogV2.EscalationPolicyStepTargetConfig{
+					Schedule: &datadogV2.EscalationPolicyStepTargetConfigSchedule{
+						Position: &position,
+					},
+				}
+			}
+			targets = append(targets, target)
+			assignedFields += 1
+		}
+
+		if !plannedTarget.Team.IsNull() {
+			targets = append(targets, datadogV2.EscalationPolicyStepTarget{
+				Id:   plannedTarget.Team.ValueStringPointer(),
+				Type: ptrValue(datadogV2.ESCALATIONPOLICYSTEPTARGETTYPE_TEAMS),
+			})
+			assignedFields += 1
+		}
+
+		if assignedFields != 1 {
+			diags.AddError("invalid target", "target must specify one of `user`, `schedule` or `team`")
+			return nil
+		}
+	}
+
+	return targets
 }
