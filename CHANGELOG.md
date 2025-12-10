@@ -1,3 +1,19 @@
+## 3.82.0 (December 10, 2025)
+
+### BUGFIXES
+* [datadog_cost_budget] Fix update creating duplicate instead of updating existing by @zeinageb in https://github.com/DataDog/terraform-provider-datadog/pull/3341
+### FEATURES
+* [datadog_custom_allocation_rules] add the functionality to allow users decide custom allocation rule reorder behaviors by @congx4 in https://github.com/DataDog/terraform-provider-datadog/pull/3324
+* [datadog_reference_table] Add terraform support for reference tables by @g-brizolier in https://github.com/DataDog/terraform-provider-datadog/pull/3317
+* [datadog_team_hierarchy_links] Add TF provider for team hierarchy links by @dshivara in https://github.com/DataDog/terraform-provider-datadog/pull/3348
+
+## New Contributors
+* @zeinageb made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3341
+* @dshivara made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3358
+* @g-brizolier made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3317
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.81.0...v3.82.0
+
 ## 3.81.0 (November 20, 2025)
 
 ### BUGFIXES
