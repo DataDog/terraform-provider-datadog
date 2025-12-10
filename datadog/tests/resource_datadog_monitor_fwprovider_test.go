@@ -882,6 +882,73 @@ func TestAccMonitor_Fwprovider_FormulaFunction_Cost(t *testing.T) {
 	})
 }
 
+func TestAccMonitor_Fwprovider_FormulaFunction_ApmMetrics(t *testing.T) {
+	t.Setenv("TERRAFORM_MONITOR_FRAMEWORK_PROVIDER", "true")
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	monitorName := uniqueEntityName(ctx, t)
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogMonitorDestroyFwprovider(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogApmMetricsMonitorFormulaFunction(monitorName),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogMonitorExistsFwprovider(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "name", monitorName),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "type", "apm-metric alert"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "variables.#", "1"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "variables.0.apm_metrics_query.#", "1"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "variables.0.apm_metrics_query.0.data_source", "apm_metrics"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "variables.0.apm_metrics_query.0.stat", "error_rate"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "variables.0.apm_metrics_query.0.name", "query1"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "variables.0.apm_metrics_query.0.service", "my-service"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "variables.0.apm_metrics_query.0.operation_name", "my-operation"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "variables.0.apm_metrics_query.0.query_filter", "env:prod"),
+				),
+			},
+			{
+				Config: testAccCheckDatadogApmMetricsMonitorFormulaFunctionUpdated(monitorName),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogMonitorExistsFwprovider(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "name", monitorName),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "type", "apm-metric alert"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "variables.#", "1"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "variables.0.apm_metrics_query.#", "1"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "variables.0.apm_metrics_query.0.data_source", "apm_metrics"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "variables.0.apm_metrics_query.0.stat", "latency_p95"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "variables.0.apm_metrics_query.0.name", "query1"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "variables.0.apm_metrics_query.0.service", "updated-service"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "variables.0.apm_metrics_query.0.resource_name", "my-resource"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "variables.0.apm_metrics_query.0.span_kind", "server"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "variables.0.apm_metrics_query.0.operation_mode", "union"),
+				),
+			},
+		},
+	})
+}
+
 func TestAccMonitor_Fwprovider_ZeroDelay(t *testing.T) {
 	t.Setenv("TERRAFORM_MONITOR_FRAMEWORK_PROVIDER", "true")
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
