@@ -1401,7 +1401,7 @@ resource "datadog_observability_pipeline" "gcs_dest" {
 					resource.TestCheckResourceAttr(resourceName, "config.destination.0.inputs.0", "source-1"),
 					resource.TestCheckResourceAttr(resourceName, "config.destination.0.google_cloud_storage.0.bucket", "my-gcs-bucket"),
 					resource.TestCheckResourceAttr(resourceName, "config.destination.0.google_cloud_storage.0.key_prefix", "logs/"),
-					resource.TestCheckResourceAttr(resourceName, "config.destination.0.google_cloud_storage.0.auth.credentials_file", "/var/secrets/gcp-creds.json"),
+					resource.TestCheckResourceAttr(resourceName, "config.destination.0.google_cloud_storage.0.auth.0.credentials_file", "/var/secrets/gcp-creds.json"),
 					resource.TestCheckResourceAttr(resourceName, "config.destination.0.google_cloud_storage.0.metadata.0.name", "environment"),
 					resource.TestCheckResourceAttr(resourceName, "config.destination.0.google_cloud_storage.0.metadata.0.value", "production"),
 					resource.TestCheckResourceAttr(resourceName, "config.destination.0.google_cloud_storage.0.metadata.1.name", "team"),
@@ -1426,20 +1426,18 @@ resource "datadog_observability_pipeline" "gcs_dest_minimal" {
   name = "gcs-destination-minimal-pipeline"
 
   config {
-    sources {
+    source {
+      id = "source-1"
       datadog_agent {
-        id = "source-1"
       }
     }
-
-    processors {}
-
-    destinations {
+    
+    destination {
+      id = "gcs-destination-1"
+      inputs = ["source-1"]
       google_cloud_storage {
-        id            = "gcs-destination-1"
-        bucket        = "my-gcs-bucket"
+        bucket = "my-gcs-bucket"
         storage_class = "NEARLINE"
-        inputs        = ["source-1"]
       }
     }
   }
@@ -1447,8 +1445,8 @@ resource "datadog_observability_pipeline" "gcs_dest_minimal" {
 `,
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
-					resource.TestCheckResourceAttr(resourceName, "config.destinations.google_cloud_storage.0.bucket", "my-gcs-bucket"),
-					resource.TestCheckResourceAttr(resourceName, "config.destinations.google_cloud_storage.0.storage_class", "NEARLINE"),
+					resource.TestCheckResourceAttr(resourceName, "config.destination.0.google_cloud_storage.0.bucket", "my-gcs-bucket"),
+					resource.TestCheckResourceAttr(resourceName, "config.destination.0.google_cloud_storage.0.storage_class", "NEARLINE"),
 				),
 			},
 		},
@@ -2530,7 +2528,7 @@ resource "datadog_observability_pipeline" "pubsub" {
 					resource.TestCheckResourceAttr(resourceName, "config.source.0.google_pubsub.0.project", "my-gcp-project"),
 					resource.TestCheckResourceAttr(resourceName, "config.source.0.google_pubsub.0.subscription", "logs-subscription"),
 					resource.TestCheckResourceAttr(resourceName, "config.source.0.google_pubsub.0.decoding", "json"),
-					resource.TestCheckResourceAttr(resourceName, "config.source.0.google_pubsub.0.auth.credentials_file", "/secrets/creds.json"),
+					resource.TestCheckResourceAttr(resourceName, "config.source.0.google_pubsub.0.auth.0.credentials_file", "/secrets/creds.json"),
 					resource.TestCheckResourceAttr(resourceName, "config.source.0.google_pubsub.0.tls.crt_file", "/certs/pubsub.crt"),
 				),
 			},
@@ -2553,31 +2551,29 @@ resource "datadog_observability_pipeline" "pubsub_minimal" {
   name = "pubsub minimal pipeline"
 
   config {
-    sources {
+    source {
+      id = "pubsub-source-1"
       google_pubsub {
-        id           = "pubsub-source-1"
         project      = "my-gcp-project"
         subscription = "logs-subscription"
         decoding     = "json"
       }
     }
 
-    processors {}
-
-    destinations {
+    destination {
+      id = "destination-1"
+      inputs = ["pubsub-source-1"]
       datadog_logs {
-        id     = "destination-1"
-        inputs = ["pubsub-source-1"]
       }
     }
   }
 }`,
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
-					resource.TestCheckResourceAttr(resourceName, "config.sources.google_pubsub.0.id", "pubsub-source-1"),
-					resource.TestCheckResourceAttr(resourceName, "config.sources.google_pubsub.0.project", "my-gcp-project"),
-					resource.TestCheckResourceAttr(resourceName, "config.sources.google_pubsub.0.subscription", "logs-subscription"),
-					resource.TestCheckResourceAttr(resourceName, "config.sources.google_pubsub.0.decoding", "json"),
+					resource.TestCheckResourceAttr(resourceName, "config.source.0.id", "pubsub-source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.source.0.google_pubsub.0.project", "my-gcp-project"),
+					resource.TestCheckResourceAttr(resourceName, "config.source.0.google_pubsub.0.subscription", "logs-subscription"),
+					resource.TestCheckResourceAttr(resourceName, "config.source.0.google_pubsub.0.decoding", "json"),
 				),
 			},
 		},
@@ -3120,7 +3116,7 @@ resource "datadog_observability_pipeline" "chronicle" {
 					resource.TestCheckResourceAttr(resourceName, "config.destination.0.google_chronicle.0.customer_id", "3fa85f64-5717-4562-b3fc-2c963f66afa6"),
 					resource.TestCheckResourceAttr(resourceName, "config.destination.0.google_chronicle.0.encoding", "json"),
 					resource.TestCheckResourceAttr(resourceName, "config.destination.0.google_chronicle.0.log_type", "nginx_logs"),
-					resource.TestCheckResourceAttr(resourceName, "config.destination.0.google_chronicle.0.auth.credentials_file", "/secrets/gcp.json"),
+					resource.TestCheckResourceAttr(resourceName, "config.destination.0.google_chronicle.0.auth.0.credentials_file", "/secrets/gcp.json"),
 				),
 			},
 		},
@@ -3142,28 +3138,30 @@ resource "datadog_observability_pipeline" "chronicle_minimal" {
   name = "chronicle minimal pipeline"
 
   config {
-    sources {
+    source {
+      id = "source-1"
       datadog_agent {
-        id = "source-1"
       }
     }
 
-	processors {}
-
-    destinations {
+    destination {
+      id = "chronicle-dest-1"
+      inputs = ["source-1"]
       google_chronicle {
-        id     = "chronicle-dest-1"
-        inputs = ["source-1"]
         customer_id = "3fa85f64-5717-4562-b3fc-2c963f66afa6"
         encoding    = "json"
         log_type    = "nginx_logs"
-      }
+      }  
     }
   }
 }`,
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
-					resource.TestCheckResourceAttr(resourceName, "config.destinations.google_chronicle.0.id", "chronicle-dest-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.destination.0.id", "chronicle-dest-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.destination.0.inputs.0", "source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.destination.0.google_chronicle.0.customer_id", "3fa85f64-5717-4562-b3fc-2c963f66afa6"),
+					resource.TestCheckResourceAttr(resourceName, "config.destination.0.google_chronicle.0.encoding", "json"),
+					resource.TestCheckResourceAttr(resourceName, "config.destination.0.google_chronicle.0.log_type", "nginx_logs"),
 				),
 			},
 		},
@@ -4252,7 +4250,7 @@ resource "datadog_observability_pipeline" "pubsub_dest" {
 					resource.TestCheckResourceAttr(resourceName, "config.destination.0.google_pubsub.0.project", "my-gcp-project"),
 					resource.TestCheckResourceAttr(resourceName, "config.destination.0.google_pubsub.0.topic", "logs-topic"),
 					resource.TestCheckResourceAttr(resourceName, "config.destination.0.google_pubsub.0.encoding", "json"),
-					resource.TestCheckResourceAttr(resourceName, "config.destination.0.google_pubsub.0.auth.credentials_file", "/var/secrets/gcp-creds.json"),
+					resource.TestCheckResourceAttr(resourceName, "config.destination.0.google_pubsub.0.auth.0.credentials_file", "/var/secrets/gcp-creds.json"),
 					resource.TestCheckResourceAttr(resourceName, "config.destination.0.google_pubsub.0.tls.crt_file", "/certs/pubsub.crt"),
 				),
 			},
@@ -4274,21 +4272,19 @@ resource "datadog_observability_pipeline" "pubsub_dest_minimal" {
   name = "pubsub-destination-minimal-pipeline"
 
   config {
-    sources {
+    source {
+      id = "source-1"
       datadog_agent {
-        id = "source-1"
       }
     }
-
-    processors {}
-
-    destinations {
+      
+    destination {
+      id       = "pubsub-destination-1"
+      inputs   = ["source-1"]
       google_pubsub {
-        id       = "pubsub-destination-1"
         project  = "my-gcp-project"
         topic    = "logs-topic"
-        encoding      = "json"
-        inputs   = ["source-1"]
+        encoding = "json"
       }
     }
   }
@@ -4296,9 +4292,9 @@ resource "datadog_observability_pipeline" "pubsub_dest_minimal" {
 `,
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
-					resource.TestCheckResourceAttr(resourceName, "config.destinations.google_pubsub.0.project", "my-gcp-project"),
-					resource.TestCheckResourceAttr(resourceName, "config.destinations.google_pubsub.0.topic", "logs-topic"),
-					resource.TestCheckResourceAttr(resourceName, "config.destinations.google_pubsub.0.encoding", "json"),
+					resource.TestCheckResourceAttr(resourceName, "config.destination.0.google_pubsub.0.project", "my-gcp-project"),
+					resource.TestCheckResourceAttr(resourceName, "config.destination.0.google_pubsub.0.topic", "logs-topic"),
+					resource.TestCheckResourceAttr(resourceName, "config.destination.0.google_pubsub.0.encoding", "json"),
 				),
 			},
 		},

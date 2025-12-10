@@ -31,13 +31,13 @@ interactions:
         content_length: 451
         uncompressed: false
         body: |
-            {"data":{"id":"ecd40738-d5b9-11f0-9060-da7ad0900002","type":"pipelines","attributes":{"name":"sentinel-pipeline","config":{"destinations":[{"client_id":"a1b2c3d4-5678-90ab-cdef-1234567890ab","dcr_immutable_id":"dcr-uuid-1234","id":"sentinel-dest-1","inputs":["source-1"],"table":"CustomLogsTable","tenant_id":"abcdef12-3456-7890-abcd-ef1234567890","type":"microsoft_sentinel"}],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"08f23232-d5c4-11f0-a7db-da7ad0900002","type":"pipelines","attributes":{"name":"sentinel-pipeline","config":{"destinations":[{"client_id":"a1b2c3d4-5678-90ab-cdef-1234567890ab","dcr_immutable_id":"dcr-uuid-1234","id":"sentinel-dest-1","inputs":["source-1"],"table":"CustomLogsTable","tenant_id":"abcdef12-3456-7890-abcd-ef1234567890","type":"microsoft_sentinel"}],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/json
         status: 201 Created
         code: 201
-        duration: 616.987291ms
+        duration: 654.28775ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -54,7 +54,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/ecd40738-d5b9-11f0-9060-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/08f23232-d5c4-11f0-a7db-da7ad0900002
         method: GET
       response:
         proto: HTTP/1.1
@@ -65,13 +65,13 @@ interactions:
         content_length: 451
         uncompressed: false
         body: |
-            {"data":{"id":"ecd40738-d5b9-11f0-9060-da7ad0900002","type":"pipelines","attributes":{"name":"sentinel-pipeline","config":{"destinations":[{"client_id":"a1b2c3d4-5678-90ab-cdef-1234567890ab","dcr_immutable_id":"dcr-uuid-1234","id":"sentinel-dest-1","inputs":["source-1"],"table":"CustomLogsTable","tenant_id":"abcdef12-3456-7890-abcd-ef1234567890","type":"microsoft_sentinel"}],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"08f23232-d5c4-11f0-a7db-da7ad0900002","type":"pipelines","attributes":{"name":"sentinel-pipeline","config":{"destinations":[{"client_id":"a1b2c3d4-5678-90ab-cdef-1234567890ab","dcr_immutable_id":"dcr-uuid-1234","id":"sentinel-dest-1","inputs":["source-1"],"table":"CustomLogsTable","tenant_id":"abcdef12-3456-7890-abcd-ef1234567890","type":"microsoft_sentinel"}],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 284.611834ms
+        duration: 293.721917ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -88,7 +88,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/ecd40738-d5b9-11f0-9060-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/08f23232-d5c4-11f0-a7db-da7ad0900002
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -104,4 +104,4 @@ interactions:
                 - application/json
         status: 204 No Content
         code: 204
-        duration: 758.576417ms
+        duration: 566.768625ms

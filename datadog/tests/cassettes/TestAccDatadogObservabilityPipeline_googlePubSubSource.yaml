@@ -31,13 +31,13 @@ interactions:
         content_length: 461
         uncompressed: false
         body: |
-            {"data":{"id":"f9c5cba2-d5b9-11f0-90f7-da7ad0900002","type":"pipelines","attributes":{"name":"pubsub pipeline","config":{"destinations":[{"id":"destination-1","inputs":["pubsub-source-1"],"type":"datadog_logs"}],"processors":[],"sources":[{"auth":{"credentials_file":"/secrets/creds.json"},"decoding":"json","id":"pubsub-source-1","project":"my-gcp-project","subscription":"logs-subscription","tls":{"crt_file":"/certs/pubsub.crt"},"type":"google_pubsub"}]}}}}
+            {"data":{"id":"1520e7ec-d5c4-11f0-a3cf-da7ad0900002","type":"pipelines","attributes":{"name":"pubsub pipeline","config":{"destinations":[{"id":"destination-1","inputs":["pubsub-source-1"],"type":"datadog_logs"}],"processors":[],"sources":[{"auth":{"credentials_file":"/secrets/creds.json"},"decoding":"json","id":"pubsub-source-1","project":"my-gcp-project","subscription":"logs-subscription","tls":{"crt_file":"/certs/pubsub.crt"},"type":"google_pubsub"}]}}}}
         headers:
             Content-Type:
                 - application/json
         status: 201 Created
         code: 201
-        duration: 440.402208ms
+        duration: 510.726916ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -54,7 +54,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/f9c5cba2-d5b9-11f0-90f7-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/1520e7ec-d5c4-11f0-a3cf-da7ad0900002
         method: GET
       response:
         proto: HTTP/1.1
@@ -65,13 +65,13 @@ interactions:
         content_length: 461
         uncompressed: false
         body: |
-            {"data":{"id":"f9c5cba2-d5b9-11f0-90f7-da7ad0900002","type":"pipelines","attributes":{"name":"pubsub pipeline","config":{"destinations":[{"id":"destination-1","inputs":["pubsub-source-1"],"type":"datadog_logs"}],"processors":[],"sources":[{"auth":{"credentials_file":"/secrets/creds.json"},"decoding":"json","id":"pubsub-source-1","project":"my-gcp-project","subscription":"logs-subscription","tls":{"crt_file":"/certs/pubsub.crt"},"type":"google_pubsub"}]}}}}
+            {"data":{"id":"1520e7ec-d5c4-11f0-a3cf-da7ad0900002","type":"pipelines","attributes":{"name":"pubsub pipeline","config":{"destinations":[{"id":"destination-1","inputs":["pubsub-source-1"],"type":"datadog_logs"}],"processors":[],"sources":[{"auth":{"credentials_file":"/secrets/creds.json"},"decoding":"json","id":"pubsub-source-1","project":"my-gcp-project","subscription":"logs-subscription","tls":{"crt_file":"/certs/pubsub.crt"},"type":"google_pubsub"}]}}}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 300.505292ms
+        duration: 309.722833ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -88,7 +88,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/f9c5cba2-d5b9-11f0-90f7-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/1520e7ec-d5c4-11f0-a3cf-da7ad0900002
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -104,4 +104,4 @@ interactions:
                 - application/json
         status: 204 No Content
         code: 204
-        duration: 580.256542ms
+        duration: 435.250167ms

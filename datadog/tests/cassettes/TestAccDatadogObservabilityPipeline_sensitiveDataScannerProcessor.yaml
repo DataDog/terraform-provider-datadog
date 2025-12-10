@@ -31,13 +31,13 @@ interactions:
         content_length: 1510
         uncompressed: false
         body: |
-            {"data":{"id":"eec12ac6-d5b9-11f0-9062-da7ad0900002","type":"pipelines","attributes":{"name":"sds-full-test","config":{"destinations":[{"id":"sink","inputs":["sds-group-1"],"type":"datadog_logs"}],"processors":[{"enabled":true,"id":"sds-group-1","include":"*","inputs":["source-a"],"processors":[{"enabled":true,"id":"sds-1","include":"*","rules":[{"keyword_options":{"keywords":["secret","token"],"proximity":6},"name":"Redact with Exclude","on_match":{"action":"redact","options":{"replace":"[REDACTED]"}},"pattern":{"options":{"rule":"\\bsecret-[a-z0-9]+\\b"},"type":"custom"},"scope":{"options":{"fields":["not_this_field"]},"target":"exclude"},"tags":["confidential","mask"]},{"name":"Library Hash","on_match":{"action":"hash"},"pattern":{"options":{"id":"ip_address","use_recommended_keywords":true},"type":"library"},"scope":{"target":"all"},"tags":["pii"]},{"name":"Partial Default Scope No Tags","on_match":{"action":"partial_redact","options":{"characters":3,"direction":"first"}},"pattern":{"options":{"rule":"user\\d{3,}"},"type":"custom"},"scope":{"options":{"fields":["this_field_only"]},"target":"include"},"tags":[]},{"name":"Library Empty Tags No Keywords Last Direction","on_match":{"action":"partial_redact","options":{"characters":5,"direction":"last"}},"pattern":{"options":{"id":"email_address"},"type":"library"},"scope":{"options":{"fields":["excluded_field"]},"target":"exclude"},"tags":[]}],"type":"sensitive_data_scanner"}]}],"sources":[{"id":"source-a","type":"datadog_agent"}]}}}}
+            {"data":{"id":"0abecc56-d5c4-11f0-a3c9-da7ad0900002","type":"pipelines","attributes":{"name":"sds-full-test","config":{"destinations":[{"id":"sink","inputs":["sds-group-1"],"type":"datadog_logs"}],"processors":[{"enabled":true,"id":"sds-group-1","include":"*","inputs":["source-a"],"processors":[{"enabled":true,"id":"sds-1","include":"*","rules":[{"keyword_options":{"keywords":["secret","token"],"proximity":6},"name":"Redact with Exclude","on_match":{"action":"redact","options":{"replace":"[REDACTED]"}},"pattern":{"options":{"rule":"\\bsecret-[a-z0-9]+\\b"},"type":"custom"},"scope":{"options":{"fields":["not_this_field"]},"target":"exclude"},"tags":["confidential","mask"]},{"name":"Library Hash","on_match":{"action":"hash"},"pattern":{"options":{"id":"ip_address","use_recommended_keywords":true},"type":"library"},"scope":{"target":"all"},"tags":["pii"]},{"name":"Partial Default Scope No Tags","on_match":{"action":"partial_redact","options":{"characters":3,"direction":"first"}},"pattern":{"options":{"rule":"user\\d{3,}"},"type":"custom"},"scope":{"options":{"fields":["this_field_only"]},"target":"include"},"tags":[]},{"name":"Library Empty Tags No Keywords Last Direction","on_match":{"action":"partial_redact","options":{"characters":5,"direction":"last"}},"pattern":{"options":{"id":"email_address"},"type":"library"},"scope":{"options":{"fields":["excluded_field"]},"target":"exclude"},"tags":[]}],"type":"sensitive_data_scanner"}]}],"sources":[{"id":"source-a","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/json
         status: 201 Created
         code: 201
-        duration: 624.313625ms
+        duration: 521.31325ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -54,7 +54,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/eec12ac6-d5b9-11f0-9062-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/0abecc56-d5c4-11f0-a3c9-da7ad0900002
         method: GET
       response:
         proto: HTTP/1.1
@@ -65,13 +65,13 @@ interactions:
         content_length: 1510
         uncompressed: false
         body: |
-            {"data":{"id":"eec12ac6-d5b9-11f0-9062-da7ad0900002","type":"pipelines","attributes":{"name":"sds-full-test","config":{"destinations":[{"id":"sink","inputs":["sds-group-1"],"type":"datadog_logs"}],"processors":[{"enabled":true,"id":"sds-group-1","include":"*","inputs":["source-a"],"processors":[{"enabled":true,"id":"sds-1","include":"*","rules":[{"keyword_options":{"keywords":["secret","token"],"proximity":6},"name":"Redact with Exclude","on_match":{"action":"redact","options":{"replace":"[REDACTED]"}},"pattern":{"options":{"rule":"\\bsecret-[a-z0-9]+\\b"},"type":"custom"},"scope":{"options":{"fields":["not_this_field"]},"target":"exclude"},"tags":["confidential","mask"]},{"name":"Library Hash","on_match":{"action":"hash"},"pattern":{"options":{"id":"ip_address","use_recommended_keywords":true},"type":"library"},"scope":{"target":"all"},"tags":["pii"]},{"name":"Partial Default Scope No Tags","on_match":{"action":"partial_redact","options":{"characters":3,"direction":"first"}},"pattern":{"options":{"rule":"user\\d{3,}"},"type":"custom"},"scope":{"options":{"fields":["this_field_only"]},"target":"include"},"tags":[]},{"name":"Library Empty Tags No Keywords Last Direction","on_match":{"action":"partial_redact","options":{"characters":5,"direction":"last"}},"pattern":{"options":{"id":"email_address"},"type":"library"},"scope":{"options":{"fields":["excluded_field"]},"target":"exclude"},"tags":[]}],"type":"sensitive_data_scanner"}]}],"sources":[{"id":"source-a","type":"datadog_agent"}]}}}}
+            {"data":{"id":"0abecc56-d5c4-11f0-a3c9-da7ad0900002","type":"pipelines","attributes":{"name":"sds-full-test","config":{"destinations":[{"id":"sink","inputs":["sds-group-1"],"type":"datadog_logs"}],"processors":[{"enabled":true,"id":"sds-group-1","include":"*","inputs":["source-a"],"processors":[{"enabled":true,"id":"sds-1","include":"*","rules":[{"keyword_options":{"keywords":["secret","token"],"proximity":6},"name":"Redact with Exclude","on_match":{"action":"redact","options":{"replace":"[REDACTED]"}},"pattern":{"options":{"rule":"\\bsecret-[a-z0-9]+\\b"},"type":"custom"},"scope":{"options":{"fields":["not_this_field"]},"target":"exclude"},"tags":["confidential","mask"]},{"name":"Library Hash","on_match":{"action":"hash"},"pattern":{"options":{"id":"ip_address","use_recommended_keywords":true},"type":"library"},"scope":{"target":"all"},"tags":["pii"]},{"name":"Partial Default Scope No Tags","on_match":{"action":"partial_redact","options":{"characters":3,"direction":"first"}},"pattern":{"options":{"rule":"user\\d{3,}"},"type":"custom"},"scope":{"options":{"fields":["this_field_only"]},"target":"include"},"tags":[]},{"name":"Library Empty Tags No Keywords Last Direction","on_match":{"action":"partial_redact","options":{"characters":5,"direction":"last"}},"pattern":{"options":{"id":"email_address"},"type":"library"},"scope":{"options":{"fields":["excluded_field"]},"target":"exclude"},"tags":[]}],"type":"sensitive_data_scanner"}]}],"sources":[{"id":"source-a","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 367.420958ms
+        duration: 232.749ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -88,7 +88,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/eec12ac6-d5b9-11f0-9062-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/0abecc56-d5c4-11f0-a3c9-da7ad0900002
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -104,4 +104,4 @@ interactions:
                 - application/json
         status: 204 No Content
         code: 204
-        duration: 782.582167ms
+        duration: 595.134625ms

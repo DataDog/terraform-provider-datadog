@@ -335,18 +335,18 @@ type newRelicDestinationModel struct {
 }
 
 type googleChronicleDestinationModel struct {
-	Auth       *gcpAuthModel `tfsdk:"auth"`
-	CustomerId types.String  `tfsdk:"customer_id"`
-	Encoding   types.String  `tfsdk:"encoding"`
-	LogType    types.String  `tfsdk:"log_type"`
+	Auth       []gcpAuthModel `tfsdk:"auth"`
+	CustomerId types.String   `tfsdk:"customer_id"`
+	Encoding   types.String   `tfsdk:"encoding"`
+	LogType    types.String   `tfsdk:"log_type"`
 }
 
 type googlePubSubDestinationModel struct {
-	Project  types.String  `tfsdk:"project"`
-	Topic    types.String  `tfsdk:"topic"`
-	Auth     *gcpAuthModel `tfsdk:"auth"`
-	Encoding types.String  `tfsdk:"encoding"`
-	Tls      *tlsModel     `tfsdk:"tls"`
+	Project  types.String   `tfsdk:"project"`
+	Topic    types.String   `tfsdk:"topic"`
+	Auth     []gcpAuthModel `tfsdk:"auth"`
+	Encoding types.String   `tfsdk:"encoding"`
+	Tls      *tlsModel      `tfsdk:"tls"`
 }
 
 type datadogLogsDestinationModel struct {
@@ -424,7 +424,7 @@ type gcsDestinationModel struct {
 	KeyPrefix    types.String    `tfsdk:"key_prefix"`
 	StorageClass types.String    `tfsdk:"storage_class"`
 	Acl          types.String    `tfsdk:"acl"`
-	Auth         *gcpAuthModel   `tfsdk:"auth"`
+	Auth         []gcpAuthModel  `tfsdk:"auth"`
 	Metadata     []metadataEntry `tfsdk:"metadata"`
 }
 
@@ -562,11 +562,11 @@ type httpClientSourceModel struct {
 }
 
 type googlePubSubSourceModel struct {
-	Project      types.String  `tfsdk:"project"`
-	Subscription types.String  `tfsdk:"subscription"`
-	Decoding     types.String  `tfsdk:"decoding"`
-	Auth         *gcpAuthModel `tfsdk:"auth"`
-	Tls          *tlsModel     `tfsdk:"tls"`
+	Project      types.String   `tfsdk:"project"`
+	Subscription types.String   `tfsdk:"subscription"`
+	Decoding     types.String   `tfsdk:"decoding"`
+	Auth         []gcpAuthModel `tfsdk:"auth"`
+	Tls          *tlsModel      `tfsdk:"tls"`
 }
 
 type gcpAuthModel struct {
@@ -849,16 +849,8 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 											},
 										},
 										Blocks: map[string]schema.Block{
-											"auth": schema.SingleNestedBlock{
-												Description: "GCP credentials used to authenticate with Google Cloud Storage.",
-												Attributes: map[string]schema.Attribute{
-													"credentials_file": schema.StringAttribute{
-														Required:    true,
-														Description: "Path to the GCP service account key file.",
-													},
-												},
-											},
-											"tls": tlsSchema(),
+											"auth": gcpAuthSchema(),
+											"tls":  tlsSchema(),
 										},
 									},
 								},
@@ -1625,20 +1617,12 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 												Description: "Storage class used for objects stored in GCS.",
 											},
 											"acl": schema.StringAttribute{
-												Required:    true,
+												Optional:    true,
 												Description: "Access control list setting for objects written to the bucket.",
 											},
 										},
 										Blocks: map[string]schema.Block{
-											"auth": schema.SingleNestedBlock{
-												Description: "GCP credentials used to authenticate with Google Cloud Storage.",
-												Attributes: map[string]schema.Attribute{
-													"credentials_file": schema.StringAttribute{
-														Required:    true,
-														Description: "Path to the GCP service account key file.",
-													},
-												},
-											},
+											"auth": gcpAuthSchema(),
 											"metadata": schema.ListNestedBlock{
 												Description: "Custom metadata key-value pairs added to each object.",
 												NestedObject: schema.NestedBlockObject{
@@ -1675,16 +1659,8 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 											},
 										},
 										Blocks: map[string]schema.Block{
-											"auth": schema.SingleNestedBlock{
-												Description: "GCP credentials used to authenticate with Google Cloud Pub/Sub.",
-												Attributes: map[string]schema.Attribute{
-													"credentials_file": schema.StringAttribute{
-														Optional:    true,
-														Description: "Path to the GCP service account key file.",
-													},
-												},
-											},
-											"tls": tlsSchema(),
+											"auth": gcpAuthSchema(),
+											"tls":  tlsSchema(),
 										},
 									},
 								},
@@ -1898,15 +1874,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 											},
 										},
 										Blocks: map[string]schema.Block{
-											"auth": schema.SingleNestedBlock{
-												Description: "GCP credentials used to authenticate with Google Cloud Storage.",
-												Attributes: map[string]schema.Attribute{
-													"credentials_file": schema.StringAttribute{
-														Optional:    true,
-														Description: "Path to the GCP service account key file.",
-													},
-												},
-											},
+											"auth": gcpAuthSchema(),
 										},
 									},
 								},
@@ -1965,37 +1933,42 @@ func tlsSchema() schema.SingleNestedBlock {
 	}
 }
 
-func gcpAuthSchema() schema.SingleNestedBlock {
-	return schema.SingleNestedBlock{
+func gcpAuthSchema() schema.ListNestedBlock {
+	return schema.ListNestedBlock{
 		Description: "GCP credentials used to authenticate with Google Cloud services.",
-		Attributes: map[string]schema.Attribute{
-			"credentials_file": schema.StringAttribute{
-				Optional:    true,
-				Description: "Path to the GCP service account key file. Required when `auth` block is specified.",
+		NestedObject: schema.NestedBlockObject{
+			Attributes: map[string]schema.Attribute{
+				"credentials_file": schema.StringAttribute{
+					Required:    true,
+					Description: "Path to the GCP service account key file.",
+				},
 			},
+		},
+		Validators: []validator.List{
+			listvalidator.SizeAtMost(1),
 		},
 	}
 }
 
-func expandGcpAuth(auth *gcpAuthModel) *datadogV2.ObservabilityPipelineGcpAuth {
-	if auth == nil {
+func expandGcpAuth(auth []gcpAuthModel) *datadogV2.ObservabilityPipelineGcpAuth {
+	if len(auth) == 0 {
 		return nil
 	}
 
-	gcpAuth := &datadogV2.ObservabilityPipelineGcpAuth{}
-	if !auth.CredentialsFile.IsNull() {
-		gcpAuth.SetCredentialsFile(auth.CredentialsFile.ValueString())
+	return &datadogV2.ObservabilityPipelineGcpAuth{
+		CredentialsFile: auth[0].CredentialsFile.ValueString(),
 	}
-	return gcpAuth
 }
 
-func flattenGcpAuth(auth *datadogV2.ObservabilityPipelineGcpAuth) *gcpAuthModel {
+func flattenGcpAuth(auth *datadogV2.ObservabilityPipelineGcpAuth) []gcpAuthModel {
 	if auth == nil {
 		return nil
 	}
 
-	return &gcpAuthModel{
-		CredentialsFile: types.StringValue(auth.CredentialsFile),
+	return []gcpAuthModel{
+		{
+			CredentialsFile: types.StringValue(auth.CredentialsFile),
+		},
 	}
 }
 
@@ -3982,15 +3955,11 @@ func flattenGoogleCloudStorageDestination(ctx context.Context, src *datadogV2.Ob
 		})
 	}
 
-	return &gcsDestinationModel{
+	out := &gcsDestinationModel{
 		Bucket:       types.StringValue(src.GetBucket()),
 		KeyPrefix:    types.StringPointerValue(src.KeyPrefix),
 		StorageClass: types.StringValue(string(src.GetStorageClass())),
-		Acl:          types.StringValue(string(src.GetAcl())),
-		Auth: gcpAuthModel{
-			CredentialsFile: types.StringValue(src.Auth.CredentialsFile),
-		},
-		Metadata: metadata,
+		Metadata:     metadata,
 	}
 
 	if acl, ok := src.GetAclOk(); ok {
@@ -4014,9 +3983,9 @@ func expandGooglePubSubDestination(ctx context.Context, dest *destinationModel, 
 		pubsub.SetEncoding(datadogV2.ObservabilityPipelineGooglePubSubDestinationEncoding(d.Encoding.ValueString()))
 	}
 
-	if d.Auth != nil {
+	if len(d.Auth) > 0 {
 		auth := datadogV2.ObservabilityPipelineGcpAuth{}
-		auth.SetCredentialsFile(d.Auth.CredentialsFile.ValueString())
+		auth.SetCredentialsFile(d.Auth[0].CredentialsFile.ValueString())
 		pubsub.SetAuth(auth)
 	}
 
@@ -4639,10 +4608,10 @@ func expandGoogleChronicleDestination(ctx context.Context, dest *destinationMode
 	dest.Inputs.ElementsAs(ctx, &inputs, false)
 	chronicle.SetInputs(inputs)
 
-	if src.Auth != nil {
+	if len(src.Auth) > 0 {
 		auth := datadogV2.ObservabilityPipelineGcpAuth{}
-		if !src.Auth.CredentialsFile.IsNull() {
-			auth.SetCredentialsFile(src.Auth.CredentialsFile.ValueString())
+		if !src.Auth[0].CredentialsFile.IsNull() {
+			auth.SetCredentialsFile(src.Auth[0].CredentialsFile.ValueString())
 		}
 		chronicle.SetAuth(auth)
 	}

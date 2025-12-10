@@ -31,13 +31,13 @@ interactions:
         content_length: 546
         uncompressed: false
         body: |
-            {"data":{"id":"ddec450a-d5b9-11f0-9050-da7ad0900002","type":"pipelines","attributes":{"name":"gcs-destination-pipeline","config":{"destinations":[{"acl":"project-private","auth":{"credentials_file":"/var/secrets/gcp-creds.json"},"bucket":"my-gcs-bucket","id":"gcs-destination-1","inputs":["source-1"],"key_prefix":"logs/","metadata":[{"name":"environment","value":"production"},{"name":"team","value":"platform"}],"storage_class":"NEARLINE","type":"google_cloud_storage"}],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"f85c383c-d5c3-11f0-a3bf-da7ad0900002","type":"pipelines","attributes":{"name":"gcs-destination-pipeline","config":{"destinations":[{"acl":"project-private","auth":{"credentials_file":"/var/secrets/gcp-creds.json"},"bucket":"my-gcs-bucket","id":"gcs-destination-1","inputs":["source-1"],"key_prefix":"logs/","metadata":[{"name":"environment","value":"production"},{"name":"team","value":"platform"}],"storage_class":"NEARLINE","type":"google_cloud_storage"}],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/json
         status: 201 Created
         code: 201
-        duration: 500.7355ms
+        duration: 496.349333ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -54,7 +54,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/ddec450a-d5b9-11f0-9050-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/f85c383c-d5c3-11f0-a3bf-da7ad0900002
         method: GET
       response:
         proto: HTTP/1.1
@@ -65,13 +65,13 @@ interactions:
         content_length: 546
         uncompressed: false
         body: |
-            {"data":{"id":"ddec450a-d5b9-11f0-9050-da7ad0900002","type":"pipelines","attributes":{"name":"gcs-destination-pipeline","config":{"destinations":[{"acl":"project-private","auth":{"credentials_file":"/var/secrets/gcp-creds.json"},"bucket":"my-gcs-bucket","id":"gcs-destination-1","inputs":["source-1"],"key_prefix":"logs/","metadata":[{"name":"environment","value":"production"},{"name":"team","value":"platform"}],"storage_class":"NEARLINE","type":"google_cloud_storage"}],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"f85c383c-d5c3-11f0-a3bf-da7ad0900002","type":"pipelines","attributes":{"name":"gcs-destination-pipeline","config":{"destinations":[{"acl":"project-private","auth":{"credentials_file":"/var/secrets/gcp-creds.json"},"bucket":"my-gcs-bucket","id":"gcs-destination-1","inputs":["source-1"],"key_prefix":"logs/","metadata":[{"name":"environment","value":"production"},{"name":"team","value":"platform"}],"storage_class":"NEARLINE","type":"google_cloud_storage"}],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 338.337209ms
+        duration: 268.433375ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -88,7 +88,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/ddec450a-d5b9-11f0-9050-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/f85c383c-d5c3-11f0-a3bf-da7ad0900002
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -104,4 +104,4 @@ interactions:
                 - application/json
         status: 204 No Content
         code: 204
-        duration: 453.672958ms
+        duration: 579.684125ms
