@@ -31,13 +31,13 @@ interactions:
         content_length: 336
         uncompressed: false
         body: |
-            {"data":{"id":"e57d6b62-24e0-11f0-be87-da7ad0900002","type":"pipelines","attributes":{"name":"logstash pipeline","config":{"destinations":[{"id":"destination-1","inputs":["logstash-source-1"],"type":"datadog_logs"}],"processors":[],"sources":[{"id":"logstash-source-1","tls":{"crt_file":"/path/to/logstash.crt"},"type":"logstash"}]}}}}
+            {"data":{"id":"fb5b2764-d5b9-11f0-906a-da7ad0900002","type":"pipelines","attributes":{"name":"logstash pipeline","config":{"destinations":[{"id":"destination-1","inputs":["logstash-source-1"],"type":"datadog_logs"}],"processors":[],"sources":[{"id":"logstash-source-1","tls":{"crt_file":"/path/to/logstash.crt"},"type":"logstash"}]}}}}
         headers:
             Content-Type:
                 - application/json
         status: 201 Created
         code: 201
-        duration: 528.6655ms
+        duration: 953.76225ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -54,7 +54,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/e57d6b62-24e0-11f0-be87-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/fb5b2764-d5b9-11f0-906a-da7ad0900002
         method: GET
       response:
         proto: HTTP/1.1
@@ -65,13 +65,13 @@ interactions:
         content_length: 336
         uncompressed: false
         body: |
-            {"data":{"id":"e57d6b62-24e0-11f0-be87-da7ad0900002","type":"pipelines","attributes":{"name":"logstash pipeline","config":{"destinations":[{"id":"destination-1","inputs":["logstash-source-1"],"type":"datadog_logs"}],"processors":[],"sources":[{"id":"logstash-source-1","tls":{"crt_file":"/path/to/logstash.crt"},"type":"logstash"}]}}}}
+            {"data":{"id":"fb5b2764-d5b9-11f0-906a-da7ad0900002","type":"pipelines","attributes":{"name":"logstash pipeline","config":{"destinations":[{"id":"destination-1","inputs":["logstash-source-1"],"type":"datadog_logs"}],"processors":[],"sources":[{"id":"logstash-source-1","tls":{"crt_file":"/path/to/logstash.crt"},"type":"logstash"}]}}}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 314.980375ms
+        duration: 284.610875ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -88,7 +88,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/e57d6b62-24e0-11f0-be87-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/fb5b2764-d5b9-11f0-906a-da7ad0900002
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -104,4 +104,4 @@ interactions:
                 - application/json
         status: 204 No Content
         code: 204
-        duration: 598.157166ms
+        duration: 674.523ms

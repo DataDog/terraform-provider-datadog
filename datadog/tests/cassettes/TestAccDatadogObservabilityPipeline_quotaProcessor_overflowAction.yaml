@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 408
+        content_length: 476
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"config":{"destinations":[{"id":"logs-1","inputs":["quota-1"],"type":"datadog_logs"}],"processors":[{"drop_events":false,"id":"quota-1","include":"*","inputs":["source-1"],"limit":{"enforce":"events","limit":1000},"name":"MyQuota","overflow_action":"drop","type":"quota"}],"sources":[{"id":"source-1","type":"datadog_agent"}]},"name":"quota with overflow_action"},"type":"pipelines"}}
+            {"data":{"attributes":{"config":{"destinations":[{"id":"logs-1","inputs":["quota-group-1"],"type":"datadog_logs"}],"processors":[{"enabled":true,"id":"quota-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"quota-1","include":"*","limit":{"enforce":"events","limit":1000},"name":"MyQuota","overflow_action":"drop","type":"quota"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]},"name":"quota with overflow_action"},"type":"pipelines"}}
         form: {}
         headers:
             Accept:
@@ -28,16 +28,16 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 452
+        content_length: 520
         uncompressed: false
         body: |
-            {"data":{"id":"ff7ee496-24e0-11f0-b6fc-da7ad0900002","type":"pipelines","attributes":{"name":"quota with overflow_action","config":{"destinations":[{"id":"logs-1","inputs":["quota-1"],"type":"datadog_logs"}],"processors":[{"drop_events":false,"id":"quota-1","include":"*","inputs":["source-1"],"limit":{"enforce":"events","limit":1000},"name":"MyQuota","overflow_action":"drop","type":"quota"}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"1668e384-d5ba-11f0-9082-da7ad0900002","type":"pipelines","attributes":{"name":"quota with overflow_action","config":{"destinations":[{"id":"logs-1","inputs":["quota-group-1"],"type":"datadog_logs"}],"processors":[{"enabled":true,"id":"quota-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"quota-1","include":"*","limit":{"enforce":"events","limit":1000},"name":"MyQuota","overflow_action":"drop","type":"quota"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/json
         status: 201 Created
         code: 201
-        duration: 588.714375ms
+        duration: 576.630166ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -54,7 +54,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/ff7ee496-24e0-11f0-b6fc-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/1668e384-d5ba-11f0-9082-da7ad0900002
         method: GET
       response:
         proto: HTTP/1.1
@@ -62,16 +62,16 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 452
+        content_length: 520
         uncompressed: false
         body: |
-            {"data":{"id":"ff7ee496-24e0-11f0-b6fc-da7ad0900002","type":"pipelines","attributes":{"name":"quota with overflow_action","config":{"destinations":[{"id":"logs-1","inputs":["quota-1"],"type":"datadog_logs"}],"processors":[{"drop_events":false,"id":"quota-1","include":"*","inputs":["source-1"],"limit":{"enforce":"events","limit":1000},"name":"MyQuota","overflow_action":"drop","type":"quota"}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"1668e384-d5ba-11f0-9082-da7ad0900002","type":"pipelines","attributes":{"name":"quota with overflow_action","config":{"destinations":[{"id":"logs-1","inputs":["quota-group-1"],"type":"datadog_logs"}],"processors":[{"enabled":true,"id":"quota-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"quota-1","include":"*","limit":{"enforce":"events","limit":1000},"name":"MyQuota","overflow_action":"drop","type":"quota"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 256.303708ms
+        duration: 257.3725ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -88,7 +88,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/ff7ee496-24e0-11f0-b6fc-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/1668e384-d5ba-11f0-9082-da7ad0900002
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -104,4 +104,4 @@ interactions:
                 - application/json
         status: 204 No Content
         code: 204
-        duration: 372.519958ms
+        duration: 536.687417ms

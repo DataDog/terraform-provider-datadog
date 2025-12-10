@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 233
+        content_length: 231
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"config":{"destinations":[{"id":"newrelic-dest-1","inputs":["source-1"],"region":"us","type":"new_relic"}],"sources":[{"id":"source-1","type":"datadog_agent"}]},"name":"newrelic pipeline"},"type":"pipelines"}}
+            {"data":{"attributes":{"config":{"destinations":[{"id":"destination-1","inputs":["source-1"],"region":"us","type":"new_relic"}],"sources":[{"id":"source-1","type":"datadog_agent"}]},"name":"newrelic pipeline"},"type":"pipelines"}}
         form: {}
         headers:
             Accept:
@@ -28,16 +28,16 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 293
+        content_length: 291
         uncompressed: false
         body: |
-            {"data":{"id":"f355faec-24e0-11f0-be8d-da7ad0900002","type":"pipelines","attributes":{"name":"newrelic pipeline","config":{"destinations":[{"id":"newrelic-dest-1","inputs":["source-1"],"region":"us","type":"new_relic"}],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"08877078-d5ba-11f0-9074-da7ad0900002","type":"pipelines","attributes":{"name":"newrelic pipeline","config":{"destinations":[{"id":"destination-1","inputs":["source-1"],"region":"us","type":"new_relic"}],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/json
         status: 201 Created
         code: 201
-        duration: 510.196666ms
+        duration: 577.365292ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -54,7 +54,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/f355faec-24e0-11f0-be8d-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/08877078-d5ba-11f0-9074-da7ad0900002
         method: GET
       response:
         proto: HTTP/1.1
@@ -62,16 +62,16 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 293
+        content_length: 291
         uncompressed: false
         body: |
-            {"data":{"id":"f355faec-24e0-11f0-be8d-da7ad0900002","type":"pipelines","attributes":{"name":"newrelic pipeline","config":{"destinations":[{"id":"newrelic-dest-1","inputs":["source-1"],"region":"us","type":"new_relic"}],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"08877078-d5ba-11f0-9074-da7ad0900002","type":"pipelines","attributes":{"name":"newrelic pipeline","config":{"destinations":[{"id":"destination-1","inputs":["source-1"],"region":"us","type":"new_relic"}],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 373.668084ms
+        duration: 361.910916ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -88,7 +88,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/f355faec-24e0-11f0-be8d-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/08877078-d5ba-11f0-9074-da7ad0900002
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -104,4 +104,4 @@ interactions:
                 - application/json
         status: 204 No Content
         code: 204
-        duration: 579.959667ms
+        duration: 608.28875ms
