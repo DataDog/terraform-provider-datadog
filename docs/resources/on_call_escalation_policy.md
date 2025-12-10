@@ -72,6 +72,7 @@ Read-Only:
 
 Optional:
 
+- `position` (String) For schedule targets, specifies which on-call user to page. Valid values: `current` (default), `previous`, `next`. Valid values are `current`, `previous`, `next`.
 - `schedule` (String) Targeted schedule ID.
 - `team` (String) Targeted team ID.
 - `user` (String) Targeted user ID.
