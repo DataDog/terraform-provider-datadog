@@ -2,6 +2,7 @@ package datadog
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
@@ -4521,6 +4522,83 @@ func getQueryTableRequestSchema() map[string]*schema.Schema {
 			Type:             schema.TypeString,
 			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetSortFromValue),
 			Optional:         true,
+		},
+		"sort": {
+			Description: "The controls for sorting the widget",
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Elem: &schema.Resource{
+				Schema: map[string]*schema.Schema{
+					"count": {
+						Description: "The number of items to limit the widget to",
+						Type:        schema.TypeInt,
+						Required:    true,
+					},
+					"order_by": {
+						Description: "The array of items to sort the widget by in order",
+						Type:        schema.TypeList,
+						Required:    true,
+						MinItems:    1,
+						MaxItems:    1,
+						Elem: &schema.Resource{
+							Schema: map[string]*schema.Schema{
+								"type": {
+									Description: "Sort type. Allowed enum values: formula, group",
+									Type:        schema.TypeString,
+									Required:    true,
+									ValidateFunc: validation.StringInSlice([]string{
+										"formula", "group",
+									}, false),
+								},
+								"name": {
+									Description: "The name of the group",
+									Type:        schema.TypeString,
+									Optional:    true,
+								},
+								"index": {
+									Description: "The index of the formula to sort by",
+									Type:        schema.TypeInt,
+									Optional:    true,
+								},
+								"order": {
+									Description: "Widget sorting methods. Allowed enum values: asc, desc",
+									Type:        schema.TypeString,
+									Required:    true,
+									ValidateFunc: validation.StringInSlice([]string{
+										"asc", "desc",
+									}, false),
+								},
+							},
+							CustomizeDiff: func(ctx context.Context, diff *schema.ResourceDiff, i interface{}) error {
+								// type as discriminator field validation
+								typeVal := diff.Get("type").(string)
+								nameVal := diff.Get("name").(*string)
+								indexVal := diff.Get("index").(*int)
+
+								if typeVal == "formula" {
+									if indexVal == nil {
+										return errors.New("index is required for type formula")
+									}
+									if nameVal != nil {
+										return errors.New("name should not be set for type formula")
+									}
+									return nil
+								} else if typeVal == "group" {
+									if nameVal == nil {
+										return errors.New("name is required for type group")
+									}
+									if indexVal != nil {
+										return errors.New("index should not be set for type group")
+									}
+									return nil
+								}
+								return errors.New("type should be set to either formula or group")
+							},
+						},
+					},
+				},
+			},
 		},
 		"cell_display_mode": {
 			Description: "A list of display modes for each table cell.",
