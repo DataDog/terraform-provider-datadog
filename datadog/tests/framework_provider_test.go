@@ -51,6 +51,14 @@ func buildFrameworkDatadogClient(ctx context.Context, httpClient *http.Client) *
 	config.SetUnstableOperationEnabled("v2.UpdateDataset", true)
 	config.SetUnstableOperationEnabled("v2.DeleteDataset", true)
 
+	// Enable Logs Restriction Queries
+	config.SetUnstableOperationEnabled("v2.CreateRestrictionQuery", true)
+	config.SetUnstableOperationEnabled("v2.GetRestrictionQuery", true)
+	config.SetUnstableOperationEnabled("v2.UpdateRestrictionQuery", true)
+	config.SetUnstableOperationEnabled("v2.DeleteRestrictionQuery", true)
+	config.SetUnstableOperationEnabled("v2.AddRoleToRestrictionQuery", true)
+	config.SetUnstableOperationEnabled("v2.RemoveRoleFromRestrictionQuery", true)
+
 	// Enable Observability Pipelines
 	config.SetUnstableOperationEnabled("v2.CreatePipeline", true)
 	config.SetUnstableOperationEnabled("v2.GetPipeline", true)

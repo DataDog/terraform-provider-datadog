@@ -73,6 +73,7 @@ type ApiInstances struct {
 	logsArchivesApiV2              *datadogV2.LogsArchivesApi
 	logsCustomDestinationsApiV2    *datadogV2.LogsCustomDestinationsApi
 	logsMetricsApiV2               *datadogV2.LogsMetricsApi
+	logsRestrictionQueriesApiV2    *datadogV2.LogsRestrictionQueriesApi
 	metricsApiV2                   *datadogV2.MetricsApi
 	microsoftTeamsIntegrationApiV2 *datadogV2.MicrosoftTeamsIntegrationApi
 	monitorsApiV2                  *datadogV2.MonitorsApi
@@ -515,6 +516,14 @@ func (i *ApiInstances) GetLogsMetricsApiV2() *datadogV2.LogsMetricsApi {
 		i.logsMetricsApiV2 = datadogV2.NewLogsMetricsApi(i.HttpClient)
 	}
 	return i.logsMetricsApiV2
+}
+
+// GetLogsRestrictionQueriesApiV2 get instance of LogsRestrictionQueriesApi
+func (i *ApiInstances) GetLogsRestrictionQueriesApiV2() *datadogV2.LogsRestrictionQueriesApi {
+	if i.logsRestrictionQueriesApiV2 == nil {
+		i.logsRestrictionQueriesApiV2 = datadogV2.NewLogsRestrictionQueriesApi(i.HttpClient)
+	}
+	return i.logsRestrictionQueriesApiV2
 }
 
 // GetMetricsApiV2 get instance of MetricsApi
