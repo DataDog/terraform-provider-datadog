@@ -424,7 +424,7 @@ type gcsDestinationModel struct {
 	KeyPrefix    types.String    `tfsdk:"key_prefix"`
 	StorageClass types.String    `tfsdk:"storage_class"`
 	Acl          types.String    `tfsdk:"acl"`
-	Auth         gcpAuthModel    `tfsdk:"auth"`
+	Auth         *gcpAuthModel   `tfsdk:"auth"`
 	Metadata     []metadataEntry `tfsdk:"metadata"`
 }
 
@@ -1962,6 +1962,40 @@ func tlsSchema() schema.SingleNestedBlock {
 				Description: "Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.",
 			},
 		},
+	}
+}
+
+func gcpAuthSchema() schema.SingleNestedBlock {
+	return schema.SingleNestedBlock{
+		Description: "GCP credentials used to authenticate with Google Cloud services.",
+		Attributes: map[string]schema.Attribute{
+			"credentials_file": schema.StringAttribute{
+				Optional:    true,
+				Description: "Path to the GCP service account key file. Required when `auth` block is specified.",
+			},
+		},
+	}
+}
+
+func expandGcpAuth(auth *gcpAuthModel) *datadogV2.ObservabilityPipelineGcpAuth {
+	if auth == nil {
+		return nil
+	}
+
+	gcpAuth := &datadogV2.ObservabilityPipelineGcpAuth{}
+	if !auth.CredentialsFile.IsNull() {
+		gcpAuth.SetCredentialsFile(auth.CredentialsFile.ValueString())
+	}
+	return gcpAuth
+}
+
+func flattenGcpAuth(auth *datadogV2.ObservabilityPipelineGcpAuth) *gcpAuthModel {
+	if auth == nil {
+		return nil
+	}
+
+	return &gcpAuthModel{
+		CredentialsFile: types.StringValue(auth.CredentialsFile),
 	}
 }
 
@@ -3904,15 +3938,18 @@ func expandGoogleCloudStorageDestination(ctx context.Context, destModel *destina
 	dest.SetId(destModel.Id.ValueString())
 	dest.SetBucket(d.Bucket.ValueString())
 	dest.SetStorageClass(datadogV2.ObservabilityPipelineGoogleCloudStorageDestinationStorageClass(d.StorageClass.ValueString()))
-	dest.SetAcl(datadogV2.ObservabilityPipelineGoogleCloudStorageDestinationAcl(d.Acl.ValueString()))
+
+	if !d.Acl.IsNull() {
+		dest.SetAcl(datadogV2.ObservabilityPipelineGoogleCloudStorageDestinationAcl(d.Acl.ValueString()))
+	}
 
 	if !d.KeyPrefix.IsNull() {
 		dest.SetKeyPrefix(d.KeyPrefix.ValueString())
 	}
 
-	dest.SetAuth(datadogV2.ObservabilityPipelineGcpAuth{
-		CredentialsFile: d.Auth.CredentialsFile.ValueString(),
-	})
+	if auth := expandGcpAuth(d.Auth); auth != nil {
+		dest.SetAuth(*auth)
+	}
 
 	var metadata []datadogV2.ObservabilityPipelineMetadataEntry
 	for _, m := range d.Metadata {
@@ -3955,6 +3992,16 @@ func flattenGoogleCloudStorageDestination(ctx context.Context, src *datadogV2.Ob
 		},
 		Metadata: metadata,
 	}
+
+	if acl, ok := src.GetAclOk(); ok {
+		out.Acl = types.StringValue(string(*acl))
+	}
+
+	if auth, ok := src.GetAuthOk(); ok {
+		out.Auth = flattenGcpAuth(auth)
+	}
+
+	return out
 }
 
 func expandGooglePubSubDestination(ctx context.Context, dest *destinationModel, d *googlePubSubDestinationModel) datadogV2.ObservabilityPipelineConfigDestinationItem {
@@ -4001,9 +4048,7 @@ func flattenGooglePubSubDestination(ctx context.Context, src *datadogV2.Observab
 	}
 
 	if auth, ok := src.GetAuthOk(); ok {
-		out.Auth = &gcpAuthModel{
-			CredentialsFile: types.StringValue(auth.CredentialsFile),
-		}
+		out.Auth = flattenGcpAuth(auth)
 	}
 
 	if src.Tls != nil {
@@ -4528,10 +4573,8 @@ func expandGooglePubSubSource(src *googlePubSubSourceModel, id string) datadogV2
 	pubsub.SetSubscription(src.Subscription.ValueString())
 	pubsub.SetDecoding(datadogV2.ObservabilityPipelineDecoding(src.Decoding.ValueString()))
 
-	if src.Auth != nil {
-		auth := datadogV2.ObservabilityPipelineGcpAuth{}
-		auth.SetCredentialsFile(src.Auth.CredentialsFile.ValueString())
-		pubsub.SetAuth(auth)
+	if auth := expandGcpAuth(src.Auth); auth != nil {
+		pubsub.SetAuth(*auth)
 	}
 
 	if src.Tls != nil {
@@ -4553,8 +4596,8 @@ func flattenGooglePubSubSource(src *datadogV2.ObservabilityPipelineGooglePubSubS
 		Decoding:     types.StringValue(string(src.GetDecoding())),
 	}
 
-	out.Auth = &gcpAuthModel{
-		CredentialsFile: types.StringValue(src.Auth.CredentialsFile),
+	if auth, ok := src.GetAuthOk(); ok {
+		out.Auth = flattenGcpAuth(auth)
 	}
 
 	if src.Tls != nil {
@@ -4630,8 +4673,8 @@ func flattenGoogleChronicleDestination(ctx context.Context, src *datadogV2.Obser
 		LogType:    types.StringValue(src.GetLogType()),
 	}
 
-	out.Auth = &gcpAuthModel{
-		CredentialsFile: types.StringValue(src.Auth.CredentialsFile),
+	if auth, ok := src.GetAuthOk(); ok {
+		out.Auth = flattenGcpAuth(auth)
 	}
 
 	return out
