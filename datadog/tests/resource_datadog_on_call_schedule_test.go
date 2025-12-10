@@ -67,7 +67,7 @@ func TestAccOnCallScheduleCreateAndUpdate(t *testing.T) {
 						"datadog_on_call_schedule.single_layer", "layer.0.effective_date", "2025-02-01T00:00:00Z"),
 				),
 			},
-			// Add a layer
+			// Add a layer on first position
 			{
 				Config: addLayer(createConfig("2025-02-01T00:00:00Z"), `
 					layer {
@@ -78,12 +78,15 @@ func TestAccOnCallScheduleCreateAndUpdate(t *testing.T) {
     					rotation_start = "2026-01-01T00:00:00Z"
     					users = [null]
     					name = "Added Layer"
+						time_zone = "Asia/Tokyo"
 					}
 				`),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogOnCallScheduleExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(
 						"datadog_on_call_schedule.single_layer", "layer.0.name", "Added Layer"),
+					resource.TestCheckResourceAttr(
+						"datadog_on_call_schedule.single_layer", "layer.0.time_zone", "Asia/Tokyo"),
 					// Existing layer is not modified
 					resource.TestCheckResourceAttr(
 						"datadog_on_call_schedule.single_layer", "layer.1.name", "Primary On-Call Layer"),
