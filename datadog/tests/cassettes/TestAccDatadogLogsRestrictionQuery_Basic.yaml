@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"restriction_query":"service:test-tf-TestAccDatadogLogsRestrictionQuery_Basic-local-1764702064"},"type":"logs_restriction_queries"}}
+            {"data":{"attributes":{"restriction_query":"service:test-tf-TestAccDatadogLogsRestrictionQuery_Basic-local-1765384910"},"type":"logs_restriction_queries"}}
         form: {}
         headers:
             Accept:
@@ -32,13 +32,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"type":"logs_restriction_queries","id":"4181f0e2-cfb1-11f0-9f33-da7ad0900002","attributes":{"restriction_query":"service:test-tf-TestAccDatadogLogsRestrictionQuery_Basic-local-1764702064","created_at":"2025-12-02T19:01:06.367975+00:00","modified_at":"2025-12-02T19:01:06.367975+00:00"}}}
+            {"data":{"type":"logs_restriction_queries","id":"21d84e62-d5e7-11f0-93e9-da7ad0900002","attributes":{"restriction_query":"service:test-tf-TestAccDatadogLogsRestrictionQuery_Basic-local-1765384910","created_at":"2025-12-10T16:41:53.046080+00:00","modified_at":"2025-12-10T16:41:53.046080+00:00"}}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 121.706333ms
+        duration: 579.269ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -55,7 +55,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/logs/config/restriction_queries/4181f0e2-cfb1-11f0-9f33-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/logs/config/restriction_queries/21d84e62-d5e7-11f0-93e9-da7ad0900002
         method: GET
       response:
         proto: HTTP/1.1
@@ -67,13 +67,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"type":"logs_restriction_queries","id":"4181f0e2-cfb1-11f0-9f33-da7ad0900002","attributes":{"restriction_query":"service:test-tf-TestAccDatadogLogsRestrictionQuery_Basic-local-1764702064","created_at":"2025-12-02T19:01:06.367975+00:00","modified_at":"2025-12-02T19:01:06.367975+00:00"},"relationships":{"roles":{"data":[]}}}}
+            {"data":{"type":"logs_restriction_queries","id":"21d84e62-d5e7-11f0-93e9-da7ad0900002","attributes":{"restriction_query":"service:test-tf-TestAccDatadogLogsRestrictionQuery_Basic-local-1765384910","created_at":"2025-12-10T16:41:53.046080+00:00","modified_at":"2025-12-10T16:41:53.046080+00:00"},"relationships":{"roles":{"data":[]}}}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 61.811541ms
+        duration: 923.485167ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -90,7 +90,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/logs/config/restriction_queries/4181f0e2-cfb1-11f0-9f33-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/logs/config/restriction_queries/21d84e62-d5e7-11f0-93e9-da7ad0900002
         method: GET
       response:
         proto: HTTP/1.1
@@ -102,13 +102,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"type":"logs_restriction_queries","id":"4181f0e2-cfb1-11f0-9f33-da7ad0900002","attributes":{"restriction_query":"service:test-tf-TestAccDatadogLogsRestrictionQuery_Basic-local-1764702064","created_at":"2025-12-02T19:01:06.367975+00:00","modified_at":"2025-12-02T19:01:06.367975+00:00"},"relationships":{"roles":{"data":[]}}}}
+            {"data":{"type":"logs_restriction_queries","id":"21d84e62-d5e7-11f0-93e9-da7ad0900002","attributes":{"restriction_query":"service:test-tf-TestAccDatadogLogsRestrictionQuery_Basic-local-1765384910","created_at":"2025-12-10T16:41:53.046080+00:00","modified_at":"2025-12-10T16:41:53.046080+00:00"},"relationships":{"roles":{"data":[]}}}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 54.236875ms
+        duration: 91.47425ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -125,7 +125,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/logs/config/restriction_queries/4181f0e2-cfb1-11f0-9f33-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/logs/config/restriction_queries/21d84e62-d5e7-11f0-93e9-da7ad0900002
         method: GET
       response:
         proto: HTTP/1.1
@@ -137,13 +137,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"type":"logs_restriction_queries","id":"4181f0e2-cfb1-11f0-9f33-da7ad0900002","attributes":{"restriction_query":"service:test-tf-TestAccDatadogLogsRestrictionQuery_Basic-local-1764702064","created_at":"2025-12-02T19:01:06.367975+00:00","modified_at":"2025-12-02T19:01:06.367975+00:00"},"relationships":{"roles":{"data":[]}}}}
+            {"data":{"type":"logs_restriction_queries","id":"21d84e62-d5e7-11f0-93e9-da7ad0900002","attributes":{"restriction_query":"service:test-tf-TestAccDatadogLogsRestrictionQuery_Basic-local-1765384910","created_at":"2025-12-10T16:41:53.046080+00:00","modified_at":"2025-12-10T16:41:53.046080+00:00"},"relationships":{"roles":{"data":[]}}}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 70.721833ms
+        duration: 105.479625ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -160,7 +160,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/logs/config/restriction_queries/4181f0e2-cfb1-11f0-9f33-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/logs/config/restriction_queries/21d84e62-d5e7-11f0-93e9-da7ad0900002
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -176,7 +176,7 @@ interactions:
                 - text/html; charset=utf-8
         status: 204 No Content
         code: 204
-        duration: 123.711ms
+        duration: 196.893375ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -193,7 +193,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/logs/config/restriction_queries/4181f0e2-cfb1-11f0-9f33-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/logs/config/restriction_queries/21d84e62-d5e7-11f0-93e9-da7ad0900002
         method: GET
       response:
         proto: HTTP/1.1
@@ -210,4 +210,4 @@ interactions:
                 - application/json
         status: 404 Not Found
         code: 404
-        duration: 53.253625ms
+        duration: 69.716375ms
