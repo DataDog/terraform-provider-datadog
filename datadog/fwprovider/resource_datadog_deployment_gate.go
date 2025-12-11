@@ -118,7 +118,7 @@ func (r *deploymentGateResource) Schema(_ context.Context, _ resource.SchemaRequ
 						},
 						"name": schema.StringAttribute{
 							Required:    true,
-							Description: "The rule name.",
+							Description: "The rule name. Must be unique within the deployment gate.",
 						},
 						"type": schema.StringAttribute{
 							Required:    true,
@@ -393,9 +393,30 @@ func (r *deploymentGateResource) buildDeploymentGateUpdateRequestBody(ctx contex
 	return req, diags
 }
 
-// validateRules validates that rule types match their options
+// validateRules validates that rule types match their options and that rule names are unique
 func (r *deploymentGateResource) validateRules(ctx context.Context, state *deploymentGateModel) diag.Diagnostics {
 	var diags diag.Diagnostics
+
+	// Check for duplicate rule names
+	nameCount := make(map[string]int)
+	nameIndices := make(map[string][]int)
+	for i, rule := range state.Rules {
+		name := rule.Name.ValueString()
+		nameCount[name]++
+		nameIndices[name] = append(nameIndices[name], i)
+	}
+
+	for name, count := range nameCount {
+		if count > 1 {
+			indices := nameIndices[name]
+			diags.AddError(
+				"Duplicate rule name",
+				fmt.Sprintf("Rule name '%s' is used %d times (at indices %v). "+
+					"Rule names must be unique within a deployment gate since they are used to track rule identity across updates. "+
+					"Please ensure each rule has a unique name.", name, count, indices),
+			)
+		}
+	}
 
 	for i, rule := range state.Rules {
 		if isEmptyOption(rule.Options) {
