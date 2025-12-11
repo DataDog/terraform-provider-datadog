@@ -33,14 +33,16 @@ type apiKeyResourceModel struct {
 }
 
 type apiKeyResource struct {
-	Api  *datadogV2.KeyManagementApi
-	Auth context.Context
+	Api                 *datadogV2.KeyManagementApi
+	Auth                context.Context
+	StoreSensitiveState bool
 }
 
 func (r *apiKeyResource) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
 	providerData := request.ProviderData.(*FrameworkProvider)
 	r.Api = providerData.DatadogApiInstances.GetKeyManagementApiV2()
 	r.Auth = providerData.Auth
+	r.StoreSensitiveState = providerData.StoreSensitiveState
 }
 
 func (r *apiKeyResource) Metadata(_ context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
@@ -49,14 +51,14 @@ func (r *apiKeyResource) Metadata(_ context.Context, request resource.MetadataRe
 
 func (r *apiKeyResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "Provides a Datadog API Key resource. This can be used to create and manage Datadog API Keys. Import functionality for this resource is deprecated and will be removed in a future release with prior notice. Securely store your API keys using a secret management system or use this resource to create and manage new API keys.",
+		Description: "Provides a Datadog API Key resource. This can be used to create and manage Datadog API Keys. Import functionality for this resource is deprecated and will be removed in a future release with prior notice. For enhanced security when `store_sensitive_state = false`, use the ephemeral `datadog_api_key` resource to access key values without storing them in state.",
 		Attributes: map[string]schema.Attribute{
 			"name": schema.StringAttribute{
 				Description: "Name for API Key.",
 				Required:    true,
 			},
 			"key": schema.StringAttribute{
-				Description:   "The value of the API Key.",
+				Description:   "The value of the API Key. This field is only populated when the provider's `store_sensitive_state` is set to `true` (default). When `store_sensitive_state` is `false`, use the ephemeral `datadog_api_key` resource to access the key value without storing it in state.",
 				Computed:      true,
 				Sensitive:     true,
 				PlanModifiers: []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
@@ -194,8 +196,14 @@ func (r *apiKeyResource) updateState(state *apiKeyResourceModel, apiKeyData *dat
 		d = frameworkDiag.NewErrorDiagnostic("remote_config_read_enabled is true but Remote config is not enabled at org level", "Please either remove remote_config_read_enabled from the resource configuration or enable Remote config at org level")
 	}
 	state.RemoteConfig = types.BoolValue(apiKeyAttributes.GetRemoteConfigReadEnabled())
-	if apiKeyAttributes.HasKey() {
+	if apiKeyAttributes.HasKey() && r.StoreSensitiveState {
+		// API has key AND user wants to store sensitive state
 		state.Key = types.StringValue(apiKeyAttributes.GetKey())
+	} else if !r.StoreSensitiveState {
+		// User explicitly chose not to store sensitive state - always set to null
+		state.Key = types.StringNull()
 	}
+	// If HasKey() is false but StoreSensitiveState is true, leave unchanged
+	// (PlanModifier will preserve existing state)
 	return d
 }
