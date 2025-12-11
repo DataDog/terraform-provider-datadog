@@ -1,0 +1,99 @@
+# Periodic sync of feature branch (4.x) with master via merges
+name: Sync feature branch
+
+permissions:
+  contents: write
+  id-token: write
+
+on:
+  schedule:
+    - cron: "0 3 * * 1-5"
+  workflow_dispatch: {}
+
+jobs:
+  merge_master_into_4x:
+    runs-on: ubuntu-latest
+    env:
+      BASE_BRANCH: master
+      TARGET_BRANCH: 4.x
+
+    steps:
+      - uses: DataDog/dd-octo-sts-action@acaa02eee7e3bb0839e4272dacb37b8f3b58ba80 # v1.0.3
+        id: octo-sts
+        with:
+          scope: DataDog/terraform-provider-datadog
+          policy: self.sync-feature
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ steps.octo-sts.outputs.token }}
+
+      - name: Configure git identity
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Fetch branches
+        run: |
+          git fetch origin "$BASE_BRANCH" "$TARGET_BRANCH"
+
+      - name: Check if target already contains base
+        id: status
+        run: |
+          echo "## Sync summary" >> "$GITHUB_STEP_SUMMARY"
+
+          if git merge-base --is-ancestor "origin/$BASE_BRANCH" "origin/$TARGET_BRANCH"; then
+            echo "needs_merge=false" >> "$GITHUB_OUTPUT"
+            message="\`$TARGET_BRANCH\` already contains \`$BASE_BRANCH\`; nothing to do."
+            echo "$message"
+            echo "- $message" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "needs_merge=true" >> "$GITHUB_OUTPUT"
+            echo "$TARGET_BRANCH is behind $BASE_BRANCH; merge needed."
+          fi
+
+      - name: Merge base into target (detect conflicts)
+        id: merge
+        if: steps.status.outputs.needs_merge == 'true'
+        run: |
+          git checkout -B "$TARGET_BRANCH" "origin/$TARGET_BRANCH"
+
+          set +e
+          git merge --no-ff "origin/$BASE_BRANCH" -m "Merge branch '$BASE_BRANCH' into $TARGET_BRANCH [CI]"
+          status=$?
+          set -e
+
+          if [ "$status" -ne 0 ]; then
+            message="Merge failed due to conflicts while merging \`$BASE_BRANCH\` into \`$TARGET_BRANCH\`. See logs for details."
+            echo "$message"
+            echo "- $message" >> "$GITHUB_STEP_SUMMARY"
+            git merge --abort || true
+            exit 1
+          fi
+
+          if git diff --quiet "origin/$TARGET_BRANCH"..HEAD; then
+            echo "should_push=false" >> "$GITHUB_OUTPUT"
+            message="Merged \`$BASE_BRANCH\` into \`$TARGET_BRANCH\`; no new commits to push."
+            echo "$message"
+            echo "- $message" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "should_push=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Push updated target branch
+        if: steps.status.outputs.needs_merge == 'true' && steps.merge.outputs.should_push == 'true'
+        run: |
+          if output=$(git push origin "$TARGET_BRANCH" 2>&1); then
+            echo "$output"
+            message="Merged \`$BASE_BRANCH\` into \`$TARGET_BRANCH\` and pushed updates."
+            echo "$message"
+            echo "- $message" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "$output"
+            message="Merge succeeded but pushing \`$TARGET_BRANCH\` failed: $output"
+            echo "$message"
+            echo "- $message" >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi

@@ -1,3 +1,36 @@
+## 3.82.0 (December 10, 2025)
+
+### BUGFIXES
+* [datadog_cost_budget] Fix update creating duplicate instead of updating existing by @zeinageb in https://github.com/DataDog/terraform-provider-datadog/pull/3341
+### FEATURES
+* [datadog_custom_allocation_rules] add the functionality to allow users decide custom allocation rule reorder behaviors by @congx4 in https://github.com/DataDog/terraform-provider-datadog/pull/3324
+* [datadog_reference_table] Add terraform support for reference tables by @g-brizolier in https://github.com/DataDog/terraform-provider-datadog/pull/3317
+* [datadog_team_hierarchy_links] Add TF provider for team hierarchy links by @dshivara in https://github.com/DataDog/terraform-provider-datadog/pull/3348
+
+## New Contributors
+* @zeinageb made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3341
+* @dshivara made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3358
+* @g-brizolier made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3317
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.81.0...v3.82.0
+
+## 3.81.0 (November 20, 2025)
+
+### BUGFIXES
+* [datadog_agentless_scanning_gcp_scan_options] Better support of resource conflict in agentless GCP scan options TF provider by @mohamed-challal in https://github.com/DataDog/terraform-provider-datadog/pull/3328
+* [datadog_security_monitoring_suppression] Fix issue when dealing with empty array of tags in Rules by @clementgbcn in https://github.com/DataDog/terraform-provider-datadog/pull/3331
+* [datadog_observability_pipeline] make google auth optional by @vladimir-dd in https://github.com/DataDog/terraform-provider-datadog/pull/3332
+### FEATURES
+* [datadog_tag_pipeline_rulesets] add the functionality to allow users decide tag pipeline reorder behaviors by @congx4 in https://github.com/DataDog/terraform-provider-datadog/pull/3320
+* [datadog_user] Add new exclude_service_accounts attribute to the datadog_user ds by @tquidetdd in https://github.com/DataDog/terraform-provider-datadog/pull/3323
+* [datadog_metrics] add 'datadog_metrics' data source by @mdb in https://github.com/DataDog/terraform-provider-datadog/pull/3214
+
+## New Contributors
+* @mfu00 made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3330
+* @mgaonach made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3327
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.80.0...v3.81.0
+
 ## 3.80.0 (November 12, 2025)
 
 ### BUGFIXES

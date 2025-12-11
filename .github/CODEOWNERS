@@ -12,7 +12,7 @@
 # Terraform plugin sdk resources/data-sources
 datadog/*datadog_dashboard*                @DataDog/api-reliability @DataDog/dashboards-backend
 datadog/*datadog_downtime*                 @DataDog/api-reliability @DataDog/monitor-app
-datadog/*datadog_integration_aws*          @DataDog/api-reliability @DataDog/cloud-integrations
+datadog/*datadog_integration_aws*          @DataDog/api-reliability @DataDog/aws-integrations
 datadog/*datadog_integration_pagerduty*    @DataDog/api-reliability @DataDog/collaboration-integrations
 datadog/*datadog_integration_opsgenie*     @DataDog/api-reliability @Datadog/collaboration-integrations
 datadog/*datadog_logs*                     @DataDog/api-reliability @DataDog/logs-backend @DataDog/logs-core @DataDog/logs-forwarding @DataDog/logs-app
@@ -58,14 +58,14 @@ datadog/**/*datadog_integration_microsoft_teams* @DataDog/api-reliability @DataD
 datadog/**/*datadog_integration_ms_teams*        @DataDog/api-reliability @DataDog/chat-integrations
 datadog/**/*datadog_ip_ranges*                   @DataDog/api-reliability @DataDog/team-aaa
 datadog/**/*datadog_open_api*                    @DataDog/api-reliability @DataDog/service-catalog
-datadog/**/*datadog_organization_settings*       @DataDog/api-reliability @DataDog/core-app @DataDog/trust-and-safety
+datadog/**/*datadog_organization_settings*       @DataDog/api-reliability @DataDog/aaa-omg @DataDog/trust-and-safety
 datadog/**/*datadog_restriction_policy*          @DataDog/api-reliability @DataDog/aaa-granular-access
 datadog/**/*datadog_sensitive_data_scanner*      @DataDog/api-reliability @DataDog/sensitive-data-scanner
 datadog/**/*datadog_service_account*             @DataDog/api-reliability @DataDog/team-aaa
 datadog/**/*datadog_software_catalog*            @DataDog/api-reliability @DataDog/service-catalog
 datadog/**/*datadog_spans_metric*                @DataDog/api-reliability @DataDog/apm-trace-intake
 datadog/**/*datadog_synthetics*                  @DataDog/api-reliability @DataDog/synthetics-managing
-datadog/**/*datadog_team*                        @DataDog/api-reliability @DataDog/core-app
+datadog/**/*datadog_team*                        @DataDog/api-reliability @DataDog/aaa-omg
 datadog/**/*datadog_user*                        @DataDog/api-reliability @DataDog/team-aaa
 datadog/**/*datadog_webhook*                     @DataDog/api-reliability @DataDog/collaboration-integrations
 datadog/**/*datadog_workflow_automation*         @DataDog/api-reliability @DataDog/workflow-automation-backend

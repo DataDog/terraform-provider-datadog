@@ -83,6 +83,7 @@ type ApiInstances struct {
 	orgConnectionsApiV2            *datadogV2.OrgConnectionsApi
 	processesApiV2                 *datadogV2.ProcessesApi
 	powerpackApiV2                 *datadogV2.PowerpackApi
+	referenceTablesApiV2           *datadogV2.ReferenceTablesApi
 	restrictionPolicyApiV2         *datadogV2.RestrictionPoliciesApi
 	rolesApiV2                     *datadogV2.RolesApi
 	rumApiV2                       *datadogV2.RUMApi
@@ -794,4 +795,12 @@ func (i *ApiInstances) GetDeploymentGatesApiV2() *datadogV2.DeploymentGatesApi {
 		i.deploymentGatesV2 = datadogV2.NewDeploymentGatesApi(i.HttpClient)
 	}
 	return i.deploymentGatesV2
+}
+
+// GetReferenceTablesApiV2 get instance of ReferenceTablesApi
+func (i *ApiInstances) GetReferenceTablesApiV2() *datadogV2.ReferenceTablesApi {
+	if i.referenceTablesApiV2 == nil {
+		i.referenceTablesApiV2 = datadogV2.NewReferenceTablesApi(i.HttpClient)
+	}
+	return i.referenceTablesApiV2
 }
