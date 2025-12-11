@@ -28,12 +28,11 @@ func ExpandCustomProcessor(src *CustomProcessorModel) datadogV2.ObservabilityPip
 
 	var remaps []datadogV2.ObservabilityPipelineCustomProcessorRemap
 	for _, remap := range src.Remaps {
-		enabled := remap.Enabled.ValueBool()
 		remaps = append(remaps, datadogV2.ObservabilityPipelineCustomProcessorRemap{
 			Include:     remap.Include.ValueString(),
 			Name:        remap.Name.ValueString(),
 			Source:      remap.Source.ValueString(),
-			Enabled:     &enabled,
+			Enabled:     remap.Enabled.ValueBoolPointer(),
 			DropOnError: remap.DropOnError.ValueBool(),
 		})
 	}
