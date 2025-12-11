@@ -377,7 +377,7 @@ func (r *deploymentGateResource) validateRules(ctx context.Context, state *deplo
 	var diags diag.Diagnostics
 
 	for i, rule := range state.Rules {
-		if rule.Options == nil {
+		if isEmptyOption(rule.Options) {
 			continue
 		}
 
@@ -705,7 +705,7 @@ func (r *deploymentGateResource) buildRuleRequestBody(ctx context.Context, rule 
 	}
 
 	// Handle options based on rule type
-	if rule.Options != nil {
+	if !isEmptyOption(rule.Options) {
 		options := datadogV2.DeploymentRulesOptions{}
 
 		if rule.Type.ValueString() == "faulty_deployment_detection" {
@@ -758,7 +758,7 @@ func (r *deploymentGateResource) buildRuleUpdateRequestBody(ctx context.Context,
 	}
 
 	// Handle options based on rule type
-	if rule.Options != nil {
+	if !isEmptyOption(rule.Options) {
 		options := datadogV2.DeploymentRulesOptions{}
 
 		if rule.Type.ValueString() == "faulty_deployment_detection" {
@@ -864,4 +864,12 @@ func (r *deploymentGateResource) updateRuleState(ctx context.Context, rule *depl
 	rule.ID = types.StringValue(data.GetId())
 	attributes := data.GetAttributes()
 	r.updateRuleStateFromAttributes(ctx, rule, &attributes)
+}
+
+func isEmptyOption(options *deploymentGateRuleOptionsModel) bool {
+	if options == nil {
+		return true
+	}
+
+	return options.Query.IsNull() && !options.ExcludedResources.IsNull() && !options.Duration.IsNull()
 }
