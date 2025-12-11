@@ -16,10 +16,30 @@ Provides a Datadog DeploymentGate resource. This can be used to create and manag
 # Create new deployment_gate resource
 
 resource "datadog_deployment_gate" "foo" {
-  dry_run    = "UPDATE ME"
+  dry_run    = "false"
   env        = "production"
   identifier = "my-gate"
   service    = "my-service"
+
+  rule {
+    name    = "fdd"
+    type    = "faulty_deployment_detection"
+    dry_run = false
+    options {
+      duration           = 1300
+      excluded_resources = ["GET api/v1/test"]
+    }
+  }
+
+  rule {
+    name    = "monitor"
+    type    = "monitor"
+    dry_run = false
+    options {
+      query    = "service:test-service"
+      duration = 1300
+    }
+  }
 }
 ```
 
@@ -35,12 +55,42 @@ resource "datadog_deployment_gate" "foo" {
 
 - `dry_run` (Boolean) The `attributes` `dry_run`.
 - `identifier` (String) The `attributes` `identifier`.
+- `rule` (Block List) Deployment rules for this gate. (see [below for nested schema](#nestedblock--rule))
 
 ### Read-Only
 
 - `created_at` (String) Creation timestamp of the deployment gate.
 - `id` (String) The ID of this resource.
 - `updated_at` (String) Last update timestamp of the deployment gate.
+
+<a id="nestedblock--rule"></a>
+### Nested Schema for `rule`
+
+Required:
+
+- `name` (String) The rule name. Must be unique within the deployment gate.
+- `type` (String) The rule type (e.g., 'faulty_deployment_detection', 'monitor').
+
+Optional:
+
+- `dry_run` (Boolean) Whether the rule is in dry run mode.
+- `options` (Block, Optional) Options for the deployment rule. (see [below for nested schema](#nestedblock--rule--options))
+
+Read-Only:
+
+- `id` (String) The rule ID.
+
+<a id="nestedblock--rule--options"></a>
+### Nested Schema for `rule.options`
+
+Required:
+
+- `duration` (Number) The duration for the rule.
+
+Optional:
+
+- `excluded_resources` (List of String) Resources to exclude from faulty deployment detection.
+- `query` (String) The query for monitor rules.
 
 ## Import
 
