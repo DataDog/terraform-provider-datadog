@@ -2738,65 +2738,65 @@ func expandProcessorGroup(ctx context.Context, group *processorGroupModel) datad
 
 // expandProcessorTypes converts the processor types model to a list of processor items
 // Uses the processor-level id, enabled, and include for all processors in the group
-func expandProcessorTypes(ctx context.Context, processors *processorModel) []datadogV2.ObservabilityPipelineConfigProcessorItem {
+func expandProcessorTypes(ctx context.Context, processor *processorModel) []datadogV2.ObservabilityPipelineConfigProcessorItem {
 	var items []datadogV2.ObservabilityPipelineConfigProcessorItem
 
 	// Get processor-level id/enabled/include
-	procId := processors.Id.ValueString()
-	procEnabled := processors.Enabled.ValueBool()
-	procInclude := processors.Include.ValueString()
+	procId := processor.Id.ValueString()
+	procEnabled := processor.Enabled.ValueBool()
+	procInclude := processor.Include.ValueString()
 
 	// Check each processor type and expand if present
 	// Use processor-level id/enabled/include for all processors
-	for _, p := range processors.FilterProcessor {
+	for _, p := range processor.FilterProcessor {
 		items = append(items, expandFilterProcessorItem(ctx, procId, procEnabled, procInclude, p))
 	}
-	for _, p := range processors.ParseJsonProcessor {
+	for _, p := range processor.ParseJsonProcessor {
 		items = append(items, expandParseJsonProcessorItem(ctx, procId, procEnabled, procInclude, p))
 	}
-	for _, p := range processors.AddFieldsProcessor {
+	for _, p := range processor.AddFieldsProcessor {
 		items = append(items, expandAddFieldsProcessorItem(ctx, procId, procEnabled, procInclude, p))
 	}
-	for _, p := range processors.RenameFieldsProcessor {
+	for _, p := range processor.RenameFieldsProcessor {
 		items = append(items, expandRenameFieldsProcessorItem(ctx, procId, procEnabled, procInclude, p))
 	}
-	for _, p := range processors.RemoveFieldsProcessor {
+	for _, p := range processor.RemoveFieldsProcessor {
 		items = append(items, expandRemoveFieldsProcessorItem(ctx, procId, procEnabled, procInclude, p))
 	}
-	for _, p := range processors.QuotaProcessor {
+	for _, p := range processor.QuotaProcessor {
 		items = append(items, expandQuotaProcessorItem(ctx, procId, procEnabled, procInclude, p))
 	}
-	for _, p := range processors.DedupeProcessor {
+	for _, p := range processor.DedupeProcessor {
 		items = append(items, expandDedupeProcessorItem(ctx, procId, procEnabled, procInclude, p))
 	}
-	for _, p := range processors.ReduceProcessor {
+	for _, p := range processor.ReduceProcessor {
 		items = append(items, expandReduceProcessorItem(ctx, procId, procEnabled, procInclude, p))
 	}
-	for _, p := range processors.ThrottleProcessor {
+	for _, p := range processor.ThrottleProcessor {
 		items = append(items, expandThrottleProcessorItem(ctx, procId, procEnabled, procInclude, p))
 	}
-	for _, p := range processors.AddEnvVarsProcessor {
+	for _, p := range processor.AddEnvVarsProcessor {
 		items = append(items, expandAddEnvVarsProcessorItem(ctx, procId, procEnabled, procInclude, p))
 	}
-	for _, p := range processors.EnrichmentTableProcessor {
+	for _, p := range processor.EnrichmentTableProcessor {
 		items = append(items, expandEnrichmentTableProcessorItem(ctx, procId, procEnabled, procInclude, p))
 	}
-	for _, p := range processors.OcsfMapperProcessor {
+	for _, p := range processor.OcsfMapperProcessor {
 		items = append(items, expandOcsfMapperProcessorItem(ctx, procId, procEnabled, procInclude, p))
 	}
-	for _, p := range processors.ParseGrokProcessor {
+	for _, p := range processor.ParseGrokProcessor {
 		items = append(items, expandParseGrokProcessorItem(ctx, procId, procEnabled, procInclude, p))
 	}
-	for _, p := range processors.SampleProcessor {
+	for _, p := range processor.SampleProcessor {
 		items = append(items, expandSampleProcessorItem(ctx, procId, procEnabled, procInclude, p))
 	}
-	for _, p := range processors.GenerateMetricsProcessor {
+	for _, p := range processor.GenerateMetricsProcessor {
 		items = append(items, expandGenerateMetricsProcessorItem(ctx, procId, procEnabled, procInclude, p))
 	}
-	for _, p := range processors.SensitiveDataScannerProcessor {
+	for _, p := range processor.SensitiveDataScannerProcessor {
 		items = append(items, expandSensitiveDataScannerProcessorItem(ctx, procId, procEnabled, procInclude, p))
 	}
-	for _, p := range processors.CustomProcessor {
+	for _, p := range processor.CustomProcessor {
 		item := observability_pipeline.ExpandCustomProcessor(p)
 		// Set common fields on the processor using processor-level values
 		if item.ObservabilityPipelineCustomProcessor != nil {
@@ -2806,7 +2806,7 @@ func expandProcessorTypes(ctx context.Context, processors *processorModel) []dat
 		}
 		items = append(items, item)
 	}
-	for _, p := range processors.DatadogTagsProcessor {
+	for _, p := range processor.DatadogTagsProcessor {
 		item := observability_pipeline.ExpandDatadogTagsProcessor(p)
 		// Set common fields on the processor using processor-level values
 		if item.ObservabilityPipelineDatadogTagsProcessor != nil {
