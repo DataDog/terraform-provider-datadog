@@ -236,6 +236,20 @@ func (r *deploymentGateResource) Create(ctx context.Context, request resource.Cr
 
 func (r *deploymentGateResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
 	var state deploymentGateModel
+	var priorState deploymentGateModel
+	request.State.Get(ctx, &priorState) // Get current state with IDs
+
+	var plan deploymentGateModel
+	request.Plan.Get(ctx, &plan) // Get desired config
+
+	// Merge: copy rule IDs from priorState to plan
+	for i := range plan.Rules {
+		if i < len(priorState.Rules) {
+			plan.Rules[i].ID = priorState.Rules[i].ID
+		}
+	}
+
+	state = plan
 	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
