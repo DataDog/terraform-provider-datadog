@@ -109,7 +109,6 @@ var Resources = []func() resource.Resource{
 	NewCustomAllocationRulesResource,
 	NewAzureUcConfigResource,
 	NewDeploymentGateResource,
-	NewDeploymentRuleResource,
 	NewReferenceTableResource,
 }
 
@@ -161,8 +160,6 @@ var Datasources = []func() datasource.DataSource{
 	NewDatadogGcpUcConfigDataSource,
 	NewDatadogCustomAllocationRuleDataSource,
 	NewDatadogAzureUcConfigDataSource,
-	NewDatadogDeploymentGateDataSource,
-	NewDatadogDeploymentRuleDataSource,
 	NewDatadogReferenceTableDataSource,
 	NewDatadogReferenceTableRowsDataSource,
 }
@@ -639,6 +636,7 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateDeploymentRule", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteDeploymentRule", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.GetDeploymentRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetDeploymentGateRules", true)
 
 	if !config.ApiUrl.IsNull() && config.ApiUrl.ValueString() != "" {
 		parsedAPIURL, parseErr := url.Parse(config.ApiUrl.ValueString())
