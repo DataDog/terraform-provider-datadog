@@ -885,5 +885,5 @@ func isEmptyOption(options *deploymentGateRuleOptionsModel) bool {
 		return true
 	}
 
-	return options.Query.IsNull() && !options.ExcludedResources.IsNull() && !options.Duration.IsNull()
+	return options.Query.IsNull() && options.ExcludedResources.IsNull() && options.Duration.IsNull()
 }
