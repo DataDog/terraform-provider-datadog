@@ -137,13 +137,13 @@ resource "datadog_cost_budget" "hierarchical" {
 ### Required
 
 - `end_month` (Number) The month when the budget ends (YYYYMM).
-- `metrics_query` (String) The cost query used to track against the budget.
+- `metrics_query` (String) The cost query used to track against the budget. **Note:** For hierarchical budgets using `by {tag1,tag2}`, the order of tags determines the UI hierarchy (parent, child).
 - `name` (String) The name of the budget.
 - `start_month` (Number) The month when the budget starts (YYYYMM).
 
 ### Optional
 
-- `entries` (Block List) The entries of the budget. (see [below for nested schema](#nestedblock--entries))
+- `entries` (Block List) The entries of the budget. **Note:** You must provide entries for all months in the budget period. For hierarchical budgets, each unique tag combination must have entries for all months. (see [below for nested schema](#nestedblock--entries))
 - `id` (String) The ID of the budget.
 
 ### Read-Only
@@ -167,7 +167,7 @@ Optional:
 
 Required:
 
-- `tag_key` (String)
+- `tag_key` (String) **Note:** Must be one of the tags from the `metrics_query`.
 - `tag_value` (String)
 
 ## Import
