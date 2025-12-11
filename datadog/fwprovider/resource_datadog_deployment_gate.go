@@ -242,10 +242,17 @@ func (r *deploymentGateResource) Update(ctx context.Context, request resource.Up
 	var plan deploymentGateModel
 	request.Plan.Get(ctx, &plan) // Get desired config
 
-	// Merge: copy rule IDs from priorState to plan
+	priorRulesByName := make(map[string]deploymentGateRuleModel)
+	for _, rule := range priorState.Rules {
+		key := rule.Name.ValueString()
+		priorRulesByName[key] = rule
+	}
+
+	// Match plan rules with prior rules by name to preserve IDs
 	for i := range plan.Rules {
-		if i < len(priorState.Rules) {
-			plan.Rules[i].ID = priorState.Rules[i].ID
+		key := plan.Rules[i].Name.ValueString()
+		if priorRule, exists := priorRulesByName[key]; exists {
+			plan.Rules[i].ID = priorRule.ID
 		}
 	}
 
@@ -719,13 +726,14 @@ func (r *deploymentGateResource) buildRuleRequestBody(ctx context.Context, rule 
 	}
 
 	// Handle options based on rule type
-	if !isEmptyOption(rule.Options) {
-		options := datadogV2.DeploymentRulesOptions{}
+	// If options is nil, create an empty options object to avoid marshaling errors
+	options := datadogV2.DeploymentRulesOptions{}
 
-		if rule.Type.ValueString() == "faulty_deployment_detection" {
+	if rule.Type.ValueString() == "faulty_deployment_detection" {
+		options.DeploymentRuleOptionsFaultyDeploymentDetection = &datadogV2.DeploymentRuleOptionsFaultyDeploymentDetection{}
+
+		if !isEmptyOption(rule.Options) {
 			fddOptions := rule.Options
-			options.DeploymentRuleOptionsFaultyDeploymentDetection = &datadogV2.DeploymentRuleOptionsFaultyDeploymentDetection{}
-
 			if !fddOptions.Duration.IsNull() {
 				options.DeploymentRuleOptionsFaultyDeploymentDetection.Duration = fddOptions.Duration.ValueInt64Pointer()
 			}
@@ -736,10 +744,12 @@ func (r *deploymentGateResource) buildRuleRequestBody(ctx context.Context, rule 
 					options.DeploymentRuleOptionsFaultyDeploymentDetection.ExcludedResources = excludedResources
 				}
 			}
-		} else if rule.Type.ValueString() == "monitor" {
-			monitorOptions := rule.Options
-			options.DeploymentRuleOptionsMonitor = &datadogV2.DeploymentRuleOptionsMonitor{}
+		}
+	} else if rule.Type.ValueString() == "monitor" {
+		options.DeploymentRuleOptionsMonitor = &datadogV2.DeploymentRuleOptionsMonitor{}
 
+		if !isEmptyOption(rule.Options) {
+			monitorOptions := rule.Options
 			if !monitorOptions.Duration.IsNull() {
 				options.DeploymentRuleOptionsMonitor.Duration = monitorOptions.Duration.ValueInt64Pointer()
 			}
@@ -747,9 +757,9 @@ func (r *deploymentGateResource) buildRuleRequestBody(ctx context.Context, rule 
 				options.DeploymentRuleOptionsMonitor.Query = monitorOptions.Query.ValueString()
 			}
 		}
-
-		attributes.SetOptions(options)
 	}
+
+	attributes.SetOptions(options)
 
 	req := datadogV2.NewCreateDeploymentRuleParamsWithDefaults()
 	req.Data = datadogV2.NewCreateDeploymentRuleParamsDataWithDefaults()
@@ -771,14 +781,13 @@ func (r *deploymentGateResource) buildRuleUpdateRequestBody(ctx context.Context,
 		attributes.SetName(rule.Name.ValueString())
 	}
 
-	// Handle options based on rule type
-	if !isEmptyOption(rule.Options) {
-		options := datadogV2.DeploymentRulesOptions{}
+	options := datadogV2.DeploymentRulesOptions{}
 
-		if rule.Type.ValueString() == "faulty_deployment_detection" {
+	if rule.Type.ValueString() == "faulty_deployment_detection" {
+		options.DeploymentRuleOptionsFaultyDeploymentDetection = &datadogV2.DeploymentRuleOptionsFaultyDeploymentDetection{}
+
+		if !isEmptyOption(rule.Options) {
 			fddOptions := rule.Options
-			options.DeploymentRuleOptionsFaultyDeploymentDetection = &datadogV2.DeploymentRuleOptionsFaultyDeploymentDetection{}
-
 			if !fddOptions.Duration.IsNull() {
 				options.DeploymentRuleOptionsFaultyDeploymentDetection.Duration = fddOptions.Duration.ValueInt64Pointer()
 			}
@@ -789,10 +798,12 @@ func (r *deploymentGateResource) buildRuleUpdateRequestBody(ctx context.Context,
 					options.DeploymentRuleOptionsFaultyDeploymentDetection.ExcludedResources = excludedResources
 				}
 			}
-		} else if rule.Type.ValueString() == "monitor" {
-			monitorOptions := rule.Options
-			options.DeploymentRuleOptionsMonitor = &datadogV2.DeploymentRuleOptionsMonitor{}
+		}
+	} else if rule.Type.ValueString() == "monitor" {
+		options.DeploymentRuleOptionsMonitor = &datadogV2.DeploymentRuleOptionsMonitor{}
 
+		if !isEmptyOption(rule.Options) {
+			monitorOptions := rule.Options
 			if !monitorOptions.Duration.IsNull() {
 				options.DeploymentRuleOptionsMonitor.Duration = monitorOptions.Duration.ValueInt64Pointer()
 			}
@@ -800,9 +811,9 @@ func (r *deploymentGateResource) buildRuleUpdateRequestBody(ctx context.Context,
 				options.DeploymentRuleOptionsMonitor.Query = monitorOptions.Query.ValueString()
 			}
 		}
-
-		attributes.SetOptions(options)
 	}
+
+	attributes.SetOptions(options)
 
 	req := datadogV2.NewUpdateDeploymentRuleParamsWithDefaults()
 	req.Data = *datadogV2.NewUpdateDeploymentRuleParamsDataWithDefaults()

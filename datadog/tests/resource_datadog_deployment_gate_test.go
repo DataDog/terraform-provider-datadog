@@ -606,7 +606,7 @@ func TestAccDeploymentGateModifyMonitorRuleQuery(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogDeploymentGateExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(
-						"datadog_deployment_gate.foo", "rule.#", "1"),
+						"datadog_deployment_gate.foo", "rule.1", "2"),
 					resource.TestCheckResourceAttr(
 						"datadog_deployment_gate.foo", "rule.0.options.query", "service:test-2"),
 					resource.TestCheckResourceAttr(
