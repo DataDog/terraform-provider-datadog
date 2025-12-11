@@ -44,6 +44,8 @@ func TestAccOnCallEscalationPolicyCreateAndUpdate(t *testing.T) {
 				Config: createConfig(),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogOnCallEscalationPolicyExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(
+						"datadog_on_call_escalation_policy.policy_test", "step.1.target.0.position", "next"),
 				),
 			},
 		},
