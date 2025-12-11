@@ -548,7 +548,6 @@ func (r *deploymentGateResource) syncRules(ctx context.Context, gateID string, s
 	existingRuleIDs := make(map[string]bool)
 	if apiRules != nil {
 		for _, apiRule := range *apiRules {
-			// Extract rule ID from AdditionalProperties since it's not in the spec
 			if idVal, ok := apiRule.AdditionalProperties["id"]; ok {
 				if idStr, ok := idVal.(string); ok {
 					existingRuleIDs[idStr] = true
@@ -567,7 +566,6 @@ func (r *deploymentGateResource) syncRules(ctx context.Context, gateID string, s
 	// Delete rules not in desired state (including unmanaged rules)
 	if apiRules != nil {
 		for _, apiRule := range *apiRules {
-			// Extract rule ID from AdditionalProperties since it's not in the spec
 			var ruleID string
 			if idVal, ok := apiRule.AdditionalProperties["id"]; ok {
 				if idStr, ok := idVal.(string); ok {
