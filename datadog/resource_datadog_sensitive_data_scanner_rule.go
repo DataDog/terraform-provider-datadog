@@ -81,7 +81,6 @@ func resourceDatadogSensitiveDataScannerRule() *schema.Resource {
 					Type:        schema.TypeList,
 					Optional:    true,
 					MaxItems:    1,
-					ForceNew:    true, // If the attribute is removed, we need to recreate the rule.
 					Description: "Object defining a set of keywords and a number of characters that help reduce noise. You can provide a list of keywords you would like to check within a defined proximity of the matching pattern. If any of the keywords are found within the proximity check then the match is kept. If none are found, the match is discarded. If the rule has the `standard_pattern_id` field, then discarding this field will apply the recommended keywords. Setting the `create_before_destroy` lifecycle Meta-argument to `true` is highly recommended if modifying this field to avoid unexpectedly disabling Sensitive Data Scanner groups.",
 					Elem: &schema.Resource{
 						Schema: map[string]*schema.Schema{
@@ -354,7 +353,6 @@ func buildSensitiveDataScannerRuleAttributes(d *schema.ResourceData) *datadogV2.
 			// If the user creates a rule derived from a standard rule, let's add that the rule is not using the recommended keywords.
 			includedKeywordConfiguration.SetUseRecommendedKeywords(false)
 		}
-		attributes.SetIncludedKeywordConfiguration(includedKeywordConfiguration)
 	} else if hasSp {
 		// The user is creating / updating a rule derived from a standard rule, without specifying an included keyword configuration.
 		// Let's use the recommended keywords here by default.
@@ -362,9 +360,12 @@ func buildSensitiveDataScannerRuleAttributes(d *schema.ResourceData) *datadogV2.
 		includedKeywordConfiguration.SetKeywords(keywords)
 		includedKeywordConfiguration.SetCharacterCount(int64(30))
 		includedKeywordConfiguration.SetUseRecommendedKeywords(true)
-
-		attributes.SetIncludedKeywordConfiguration(includedKeywordConfiguration)
+	} else {
+		includedKeywordConfiguration.SetKeywords(make([]string, 0))
+		includedKeywordConfiguration.SetCharacterCount(int64(30))
+		includedKeywordConfiguration.SetUseRecommendedKeywords(false)
 	}
+	attributes.SetIncludedKeywordConfiguration(includedKeywordConfiguration)
 
 	if priority, ok := d.GetOk("priority"); ok {
 		attributes.SetPriority(int64(priority.(int)))
