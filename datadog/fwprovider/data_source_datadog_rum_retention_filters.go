@@ -32,12 +32,12 @@ type rumRetentionFiltersDataSourceModel struct {
 }
 
 type rumRetentionFilterDataSourceModel struct {
-	ID         types.String `tfsdk:"id"`
-	Name       types.String `tfsdk:"name"`
-	EventType  types.String `tfsdk:"event_type"`
-	SampleRate types.Int64  `tfsdk:"sample_rate"`
-	Query      types.String `tfsdk:"query"`
-	Enabled    types.Bool   `tfsdk:"enabled"`
+	ID         types.String  `tfsdk:"id"`
+	Name       types.String  `tfsdk:"name"`
+	EventType  types.String  `tfsdk:"event_type"`
+	SampleRate types.Float64 `tfsdk:"sample_rate"`
+	Query      types.String  `tfsdk:"query"`
+	Enabled    types.Bool    `tfsdk:"enabled"`
 }
 
 func (r *rumRetentionFiltersDataSource) Configure(_ context.Context, request datasource.ConfigureRequest, _ *datasource.ConfigureResponse) {
@@ -67,7 +67,7 @@ func (r *rumRetentionFiltersDataSource) Schema(_ context.Context, _ datasource.S
 						"id":          types.StringType,
 						"name":        types.StringType,
 						"event_type":  types.StringType,
-						"sample_rate": types.Int64Type,
+						"sample_rate": types.Float64Type,
 						"query":       types.StringType,
 						"enabled":     types.BoolType,
 					},
@@ -102,7 +102,7 @@ func (r *rumRetentionFiltersDataSource) updateState(state *rumRetentionFiltersDa
 			ID:         types.StringValue(*retentionFilter.Id),
 			Name:       types.StringValue(*retentionFilter.Attributes.Name),
 			EventType:  types.StringValue(string(*retentionFilter.Attributes.EventType)),
-			SampleRate: types.Int64Value(*retentionFilter.Attributes.SampleRate),
+			SampleRate: types.Float64Value(*retentionFilter.Attributes.SampleRate),
 			Query:      types.StringValue(*retentionFilter.Attributes.Query),
 			Enabled:    types.BoolValue(*retentionFilter.Attributes.Enabled),
 		}

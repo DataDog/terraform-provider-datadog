@@ -32,13 +32,13 @@ type rumRetentionFilterResource struct {
 }
 
 type rumRetentionFilterModel struct {
-	ID            types.String `tfsdk:"id"` // retention_filter_id
-	ApplicationID types.String `tfsdk:"application_id"`
-	Name          types.String `tfsdk:"name"`
-	EventType     types.String `tfsdk:"event_type"`
-	SampleRate    types.Int64  `tfsdk:"sample_rate"`
-	Query         types.String `tfsdk:"query"`   // Optional
-	Enabled       types.Bool   `tfsdk:"enabled"` // Optional
+	ID            types.String  `tfsdk:"id"` // retention_filter_id
+	ApplicationID types.String  `tfsdk:"application_id"`
+	Name          types.String  `tfsdk:"name"`
+	EventType     types.String  `tfsdk:"event_type"`
+	SampleRate    types.Float64 `tfsdk:"sample_rate"`
+	Query         types.String  `tfsdk:"query"`   // Optional
+	Enabled       types.Bool    `tfsdk:"enabled"` // Optional
 }
 
 func NewRumRetentionFilterResource() resource.Resource {
@@ -74,8 +74,8 @@ func (r *rumRetentionFilterResource) Schema(_ context.Context, _ resource.Schema
 				Description: "The type of RUM events to filter on.",
 				Required:    true,
 			},
-			"sample_rate": schema.Int64Attribute{
-				Description: "The sample rate for a RUM retention filter, between 0 and 100.",
+			"sample_rate": schema.Float64Attribute{
+				Description: "The sample rate for a RUM retention filter, between 0.1 and 100. Supports one decimal place (e.g., 50.5).",
 				Required:    true,
 			},
 			"query": schema.StringAttribute{
@@ -212,7 +212,7 @@ func (r *rumRetentionFilterResource) updateState(state *rumRetentionFilterModel,
 	state.ID = types.StringValue(data.GetId())
 	state.EventType = types.StringValue(string(attributes.GetEventType()))
 	state.Name = types.StringValue(attributes.GetName())
-	state.SampleRate = types.Int64Value(attributes.GetSampleRate())
+	state.SampleRate = types.Float64Value(attributes.GetSampleRate())
 	state.Query = types.StringValue(attributes.GetQuery())
 	state.Enabled = types.BoolValue(attributes.GetEnabled())
 }
@@ -223,7 +223,7 @@ func (r *rumRetentionFilterResource) buildRumRetentionFilterCreateRequestBody(st
 	attributes := datadogV2.NewRumRetentionFilterCreateAttributesWithDefaults()
 	attributes.SetName(state.Name.ValueString())
 	attributes.SetEventType(datadogV2.RumRetentionFilterEventType(state.EventType.ValueString()))
-	attributes.SetSampleRate(state.SampleRate.ValueInt64())
+	attributes.SetSampleRate(state.SampleRate.ValueFloat64())
 
 	if !state.Query.IsNull() {
 		attributes.SetQuery(state.Query.ValueString())
@@ -251,7 +251,7 @@ func (r *rumRetentionFilterResource) buildRumRetentionFilterUpdateRequestBody(st
 
 	attributes.SetName(state.Name.ValueString())
 	attributes.SetEventType(datadogV2.RumRetentionFilterEventType(state.EventType.ValueString()))
-	attributes.SetSampleRate(state.SampleRate.ValueInt64())
+	attributes.SetSampleRate(state.SampleRate.ValueFloat64())
 
 	if !state.Query.IsNull() {
 		attributes.SetQuery(state.Query.ValueString())
