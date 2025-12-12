@@ -248,10 +248,16 @@ func (r *deploymentGateResource) Update(ctx context.Context, request resource.Up
 		priorRulesByName[key] = rule
 	}
 
-	// Get the plan into state
-	state = plan
-	// Preserve the gate ID from prior state (plan only has config, not computed values like ID)
+	// Get the plan into state using the framework method
+	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	// Preserve computed fields from prior state
 	state.ID = priorState.ID
+	state.CreatedAt = priorState.CreatedAt
+	state.UpdatedAt = priorState.UpdatedAt
 
 	// Match state rules with prior rules by name to preserve IDs
 	// Only preserve ID if the type hasn't changed (type changes require recreation)
