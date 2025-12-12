@@ -490,7 +490,7 @@ func (r *deploymentGateResource) createRules(ctx context.Context, gateID string,
 }
 
 // readAndReconcileRules reads all rules from API and reconciles with desired state
-// This deletes any unmanaged rules
+// This deletes any unmanaged rules and rebuilds the rules list from API
 func (r *deploymentGateResource) readAndReconcileRules(ctx context.Context, gateID string, state *deploymentGateModel) diag.Diagnostics {
 	var diags diag.Diagnostics
 
@@ -516,6 +516,8 @@ func (r *deploymentGateResource) readAndReconcileRules(ctx context.Context, gate
 	attributes := data.GetAttributes()
 	apiRules, ok := attributes.GetRulesOk()
 	if !ok || apiRules == nil {
+		// No rules in API, clear state rules
+		state.Rules = []deploymentGateRuleModel{}
 		return diags
 	}
 
@@ -546,32 +548,20 @@ func (r *deploymentGateResource) readAndReconcileRules(ctx context.Context, gate
 					fmt.Sprintf("Could not delete unmanaged rule %s: %v", ruleID, err),
 				)
 			}
+			// Remove from the map so it's not included in rebuilt state
+			delete(apiRulesByID, ruleID)
 		}
 	}
 
-	// Update state with current rule details from API response
-	for i := range state.Rules {
-		rule := &state.Rules[i]
-		if rule.ID.IsNull() || rule.ID.IsUnknown() {
-			continue
-		}
-
-		ruleID := rule.ID.ValueString()
-
-		// Check if the rule still exists in the API and update its data
-		if apiRule, exists := apiRulesByID[ruleID]; exists {
-			// Update state with the API rule data
-			r.updateRuleStateFromAttributes(ctx, rule, apiRule)
-		} else {
-			// Rule was deleted outside Terraform - this will cause drift
-			// Terraform will detect this and prompt for recreation on next apply
-			diags.AddWarning(
-				"Managed rule not found",
-				fmt.Sprintf("Rule %s (name: %s) was deleted outside of Terraform. "+
-					"Run terraform apply to recreate it.", ruleID, rule.Name.ValueString()),
-			)
-		}
+	// Rebuild the rules list from API response (only managed rules remain)
+	newRules := make([]deploymentGateRuleModel, 0, len(apiRulesByID))
+	for _, apiRule := range apiRulesByID {
+		rule := deploymentGateRuleModel{}
+		r.updateRuleStateFromAttributes(ctx, &rule, apiRule)
+		newRules = append(newRules, rule)
 	}
+
+	state.Rules = newRules
 
 	return diags
 }
