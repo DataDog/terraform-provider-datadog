@@ -302,6 +302,12 @@ func (r *deploymentGateResource) Update(ctx context.Context, request resource.Up
 		return
 	}
 
+	// Re-read rules to ensure state is correct after sync
+	response.Diagnostics.Append(r.readAndReconcileRules(ctx, id, &state)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
 	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
@@ -490,7 +496,7 @@ func (r *deploymentGateResource) createRules(ctx context.Context, gateID string,
 }
 
 // readAndReconcileRules reads all rules from API and updates state to match
-// This is a read-only operation and does not modify the remote resource
+// This ensures the state reflects what's actually in the API
 func (r *deploymentGateResource) readAndReconcileRules(ctx context.Context, gateID string, state *deploymentGateModel) diag.Diagnostics {
 	var diags diag.Diagnostics
 
@@ -509,6 +515,8 @@ func (r *deploymentGateResource) readAndReconcileRules(ctx context.Context, gate
 	attributes := data.GetAttributes()
 	apiRules, ok := attributes.GetRulesOk()
 	if !ok || apiRules == nil {
+		// No rules in API, clear state rules
+		state.Rules = []deploymentGateRuleModel{}
 		return diags
 	}
 
@@ -524,10 +532,16 @@ func (r *deploymentGateResource) readAndReconcileRules(ctx context.Context, gate
 		}
 	}
 
-	// Update state with current rule details from API response
+	// Build a new rules list with only rules that:
+	// 1. Are in the desired state (state.Rules)
+	// 2. Actually exist in the API
+	// This ensures we clean up any rules that were deleted
+	reconciledRules := []deploymentGateRuleModel{}
 	for i := range state.Rules {
-		rule := &state.Rules[i]
+		rule := state.Rules[i]
 		if rule.ID.IsNull() || rule.ID.IsUnknown() {
+			// Rule doesn't have an ID yet (shouldn't happen in read/update, but handle it)
+			reconciledRules = append(reconciledRules, rule)
 			continue
 		}
 
@@ -535,18 +549,14 @@ func (r *deploymentGateResource) readAndReconcileRules(ctx context.Context, gate
 
 		// Check if the rule still exists in the API and update its data
 		if apiRule, exists := apiRulesByID[ruleID]; exists {
-			// Update state with the API rule data
-			r.updateRuleStateFromAttributes(ctx, rule, apiRule)
-		} else {
-			// Rule was deleted outside Terraform - this will cause drift
-			// Terraform will detect this and prompt for recreation on next apply
-			diags.AddWarning(
-				"Managed rule not found",
-				fmt.Sprintf("Rule %s (name: %s) was deleted outside of Terraform. "+
-					"Run terraform apply to recreate it.", ruleID, rule.Name.ValueString()),
-			)
+			// Update rule with the API rule data
+			r.updateRuleStateFromAttributes(ctx, &rule, apiRule)
+			reconciledRules = append(reconciledRules, rule)
 		}
+		// If rule doesn't exist in API, it was deleted - don't add it to reconciledRules
 	}
+
+	state.Rules = reconciledRules
 
 	return diags
 }
