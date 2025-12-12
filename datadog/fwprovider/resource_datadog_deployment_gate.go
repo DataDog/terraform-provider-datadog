@@ -248,18 +248,15 @@ func (r *deploymentGateResource) Update(ctx context.Context, request resource.Up
 		priorRulesByName[key] = rule
 	}
 
-	// Match plan rules with prior rules by name to preserve IDs
-	for i := range plan.Rules {
-		key := plan.Rules[i].Name.ValueString()
-		if priorRule, exists := priorRulesByName[key]; exists {
-			plan.Rules[i].ID = priorRule.ID
-		}
-	}
-
+	// Get the plan into state
 	state = plan
-	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
-	if response.Diagnostics.HasError() {
-		return
+
+	// Match state rules with prior rules by name to preserve IDs
+	for i := range state.Rules {
+		key := state.Rules[i].Name.ValueString()
+		if priorRule, exists := priorRulesByName[key]; exists {
+			state.Rules[i].ID = priorRule.ID
+		}
 	}
 
 	// Validate rules before updating
