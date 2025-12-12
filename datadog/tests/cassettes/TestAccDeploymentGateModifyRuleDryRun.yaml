@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"dry_run":false,"env":"production","identifier":"tf-TestAccDeploymentGateModifyRuleDryRun-local-1765466740","service":"my-service"},"type":"deployment_gate"}}
+            {"data":{"attributes":{"dry_run":false,"env":"production","identifier":"tf-TestAccDeploymentGateModifyRuleDryRun-local-1765529958","service":"my-service"},"type":"deployment_gate"}}
         form: {}
         headers:
             Accept:
@@ -28,15 +28,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 551
+        content_length: 553
         uncompressed: false
-        body: '{"data":{"id":"5cec402b-2e36-47ad-b386-0b3f9be30b78","type":"deployment_gate","attributes":{"created_at":"2025-12-11T15:25:42.26656Z","created_by":{"id":"4174e73d-b8b6-11f0-8b15-d2ad600af287","name":"Aaron Hoffman","handle":"aaron.hoffman@datadoghq.com"},"dry_run":false,"env":"production","identifier":"tf-TestAccDeploymentGateModifyRuleDryRun-local-1765466740","service":"my-service","updated_at":"2025-12-11T15:25:42.26656Z","updated_by":{"id":"4174e73d-b8b6-11f0-8b15-d2ad600af287","name":"Aaron Hoffman","handle":"aaron.hoffman@datadoghq.com"}}}}'
+        body: '{"data":{"id":"20e9d9d3-2dc6-47d3-a1bd-88e4e63e1db2","type":"deployment_gate","attributes":{"created_at":"2025-12-12T08:59:19.969063Z","created_by":{"id":"4174e73d-b8b6-11f0-8b15-d2ad600af287","name":"Aaron Hoffman","handle":"aaron.hoffman@datadoghq.com"},"dry_run":false,"env":"production","identifier":"tf-TestAccDeploymentGateModifyRuleDryRun-local-1765529958","service":"my-service","updated_at":"2025-12-12T08:59:19.969063Z","updated_by":{"id":"4174e73d-b8b6-11f0-8b15-d2ad600af287","name":"Aaron Hoffman","handle":"aaron.hoffman@datadoghq.com"}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 202.6415ms
+        duration: 138.931125ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -56,7 +56,7 @@ interactions:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/deployment_gates/5cec402b-2e36-47ad-b386-0b3f9be30b78/rules
+        url: https://api.datadoghq.com/api/v2/deployment_gates/20e9d9d3-2dc6-47d3-a1bd-88e4e63e1db2/rules
         method: POST
       response:
         proto: HTTP/1.1
@@ -66,13 +66,13 @@ interactions:
         trailer: {}
         content_length: 571
         uncompressed: false
-        body: '{"data":{"id":"f3834e09-2ba7-4515-a417-58ec1e1d1d1d","type":"deployment_rule","attributes":{"created_at":"2025-12-11T15:25:42.415631Z","created_by":{"id":"4174e73d-b8b6-11f0-8b15-d2ad600af287","name":"Aaron Hoffman","handle":"aaron.hoffman@datadoghq.com"},"dry_run":false,"gate_id":"5cec402b-2e36-47ad-b386-0b3f9be30b78","name":"test_rule","options":{"duration":1300},"type":"faulty_deployment_detection","updated_at":"2025-12-11T15:25:42.415631Z","updated_by":{"id":"4174e73d-b8b6-11f0-8b15-d2ad600af287","name":"Aaron Hoffman","handle":"aaron.hoffman@datadoghq.com"}}}}'
+        body: '{"data":{"id":"68163227-cb81-45f1-8c91-e7be9e7b1a36","type":"deployment_rule","attributes":{"created_at":"2025-12-12T08:59:20.114538Z","created_by":{"id":"4174e73d-b8b6-11f0-8b15-d2ad600af287","name":"Aaron Hoffman","handle":"aaron.hoffman@datadoghq.com"},"dry_run":false,"gate_id":"20e9d9d3-2dc6-47d3-a1bd-88e4e63e1db2","name":"test_rule","options":{"duration":1300},"type":"faulty_deployment_detection","updated_at":"2025-12-12T08:59:20.114538Z","updated_by":{"id":"4174e73d-b8b6-11f0-8b15-d2ad600af287","name":"Aaron Hoffman","handle":"aaron.hoffman@datadoghq.com"}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 144.486458ms
+        duration: 142.351959ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -89,7 +89,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/deployment_gates/5cec402b-2e36-47ad-b386-0b3f9be30b78
+        url: https://api.datadoghq.com/api/v2/deployment_gates/20e9d9d3-2dc6-47d3-a1bd-88e4e63e1db2
         method: GET
       response:
         proto: HTTP/1.1
@@ -97,15 +97,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 551
+        content_length: 553
         uncompressed: false
-        body: '{"data":{"id":"5cec402b-2e36-47ad-b386-0b3f9be30b78","type":"deployment_gate","attributes":{"created_at":"2025-12-11T15:25:42.26656Z","created_by":{"id":"4174e73d-b8b6-11f0-8b15-d2ad600af287","name":"Aaron Hoffman","handle":"aaron.hoffman@datadoghq.com"},"dry_run":false,"env":"production","identifier":"tf-TestAccDeploymentGateModifyRuleDryRun-local-1765466740","service":"my-service","updated_at":"2025-12-11T15:25:42.26656Z","updated_by":{"id":"4174e73d-b8b6-11f0-8b15-d2ad600af287","name":"Aaron Hoffman","handle":"aaron.hoffman@datadoghq.com"}}}}'
+        body: '{"data":{"id":"20e9d9d3-2dc6-47d3-a1bd-88e4e63e1db2","type":"deployment_gate","attributes":{"created_at":"2025-12-12T08:59:19.969063Z","created_by":{"id":"4174e73d-b8b6-11f0-8b15-d2ad600af287","name":"Aaron Hoffman","handle":"aaron.hoffman@datadoghq.com"},"dry_run":false,"env":"production","identifier":"tf-TestAccDeploymentGateModifyRuleDryRun-local-1765529958","service":"my-service","updated_at":"2025-12-12T08:59:19.969063Z","updated_by":{"id":"4174e73d-b8b6-11f0-8b15-d2ad600af287","name":"Aaron Hoffman","handle":"aaron.hoffman@datadoghq.com"}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 212.43575ms
+        duration: 141.936125ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -122,7 +122,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/deployment_gates/5cec402b-2e36-47ad-b386-0b3f9be30b78/rules
+        url: https://api.datadoghq.com/api/v2/deployment_gates/20e9d9d3-2dc6-47d3-a1bd-88e4e63e1db2/rules
         method: GET
       response:
         proto: HTTP/1.1
@@ -132,13 +132,13 @@ interactions:
         trailer: {}
         content_length: 633
         uncompressed: false
-        body: '{"data":{"id":"5cec402b-2e36-47ad-b386-0b3f9be30b78","type":"list_deployment_rules","attributes":{"rules":[{"id":"f3834e09-2ba7-4515-a417-58ec1e1d1d1d","name":"test_rule","type":"faulty_deployment_detection","dry_run":false,"created_at":"2025-12-11T15:25:42.415631Z","created_by":{"id":"4174e73d-b8b6-11f0-8b15-d2ad600af287","name":"Aaron Hoffman","handle":"aaron.hoffman@datadoghq.com"},"updated_at":"2025-12-11T15:25:42.415631Z","updated_by":{"id":"4174e73d-b8b6-11f0-8b15-d2ad600af287","name":"Aaron Hoffman","handle":"aaron.hoffman@datadoghq.com"},"gate_id":"5cec402b-2e36-47ad-b386-0b3f9be30b78","options":{"duration":1300}}]}}}'
+        body: '{"data":{"id":"20e9d9d3-2dc6-47d3-a1bd-88e4e63e1db2","type":"list_deployment_rules","attributes":{"rules":[{"id":"68163227-cb81-45f1-8c91-e7be9e7b1a36","name":"test_rule","type":"faulty_deployment_detection","dry_run":false,"created_at":"2025-12-12T08:59:20.114538Z","created_by":{"id":"4174e73d-b8b6-11f0-8b15-d2ad600af287","name":"Aaron Hoffman","handle":"aaron.hoffman@datadoghq.com"},"updated_at":"2025-12-12T08:59:20.114538Z","updated_by":{"id":"4174e73d-b8b6-11f0-8b15-d2ad600af287","name":"Aaron Hoffman","handle":"aaron.hoffman@datadoghq.com"},"gate_id":"20e9d9d3-2dc6-47d3-a1bd-88e4e63e1db2","options":{"duration":1300}}]}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 261.603292ms
+        duration: 152.556417ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -155,7 +155,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/deployment_gates/5cec402b-2e36-47ad-b386-0b3f9be30b78
+        url: https://api.datadoghq.com/api/v2/deployment_gates/20e9d9d3-2dc6-47d3-a1bd-88e4e63e1db2
         method: GET
       response:
         proto: HTTP/1.1
@@ -163,15 +163,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 551
+        content_length: 553
         uncompressed: false
-        body: '{"data":{"id":"5cec402b-2e36-47ad-b386-0b3f9be30b78","type":"deployment_gate","attributes":{"created_at":"2025-12-11T15:25:42.26656Z","created_by":{"id":"4174e73d-b8b6-11f0-8b15-d2ad600af287","name":"Aaron Hoffman","handle":"aaron.hoffman@datadoghq.com"},"dry_run":false,"env":"production","identifier":"tf-TestAccDeploymentGateModifyRuleDryRun-local-1765466740","service":"my-service","updated_at":"2025-12-11T15:25:42.26656Z","updated_by":{"id":"4174e73d-b8b6-11f0-8b15-d2ad600af287","name":"Aaron Hoffman","handle":"aaron.hoffman@datadoghq.com"}}}}'
+        body: '{"data":{"id":"20e9d9d3-2dc6-47d3-a1bd-88e4e63e1db2","type":"deployment_gate","attributes":{"created_at":"2025-12-12T08:59:19.969063Z","created_by":{"id":"4174e73d-b8b6-11f0-8b15-d2ad600af287","name":"Aaron Hoffman","handle":"aaron.hoffman@datadoghq.com"},"dry_run":false,"env":"production","identifier":"tf-TestAccDeploymentGateModifyRuleDryRun-local-1765529958","service":"my-service","updated_at":"2025-12-12T08:59:19.969063Z","updated_by":{"id":"4174e73d-b8b6-11f0-8b15-d2ad600af287","name":"Aaron Hoffman","handle":"aaron.hoffman@datadoghq.com"}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 136.527125ms
+        duration: 139.982959ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -188,7 +188,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/deployment_gates/5cec402b-2e36-47ad-b386-0b3f9be30b78/rules
+        url: https://api.datadoghq.com/api/v2/deployment_gates/20e9d9d3-2dc6-47d3-a1bd-88e4e63e1db2/rules
         method: GET
       response:
         proto: HTTP/1.1
@@ -198,13 +198,13 @@ interactions:
         trailer: {}
         content_length: 633
         uncompressed: false
-        body: '{"data":{"id":"5cec402b-2e36-47ad-b386-0b3f9be30b78","type":"list_deployment_rules","attributes":{"rules":[{"id":"f3834e09-2ba7-4515-a417-58ec1e1d1d1d","name":"test_rule","type":"faulty_deployment_detection","dry_run":false,"created_at":"2025-12-11T15:25:42.415631Z","created_by":{"id":"4174e73d-b8b6-11f0-8b15-d2ad600af287","name":"Aaron Hoffman","handle":"aaron.hoffman@datadoghq.com"},"updated_at":"2025-12-11T15:25:42.415631Z","updated_by":{"id":"4174e73d-b8b6-11f0-8b15-d2ad600af287","name":"Aaron Hoffman","handle":"aaron.hoffman@datadoghq.com"},"gate_id":"5cec402b-2e36-47ad-b386-0b3f9be30b78","options":{"duration":1300}}]}}}'
+        body: '{"data":{"id":"20e9d9d3-2dc6-47d3-a1bd-88e4e63e1db2","type":"list_deployment_rules","attributes":{"rules":[{"id":"68163227-cb81-45f1-8c91-e7be9e7b1a36","name":"test_rule","type":"faulty_deployment_detection","dry_run":false,"created_at":"2025-12-12T08:59:20.114538Z","created_by":{"id":"4174e73d-b8b6-11f0-8b15-d2ad600af287","name":"Aaron Hoffman","handle":"aaron.hoffman@datadoghq.com"},"updated_at":"2025-12-12T08:59:20.114538Z","updated_by":{"id":"4174e73d-b8b6-11f0-8b15-d2ad600af287","name":"Aaron Hoffman","handle":"aaron.hoffman@datadoghq.com"},"gate_id":"20e9d9d3-2dc6-47d3-a1bd-88e4e63e1db2","options":{"duration":1300}}]}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 133.994416ms
+        duration: 145.362709ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -224,7 +224,7 @@ interactions:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/deployment_gates/5cec402b-2e36-47ad-b386-0b3f9be30b78
+        url: https://api.datadoghq.com/api/v2/deployment_gates/20e9d9d3-2dc6-47d3-a1bd-88e4e63e1db2
         method: PUT
       response:
         proto: HTTP/1.1
@@ -232,15 +232,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 552
+        content_length: 553
         uncompressed: false
-        body: '{"data":{"id":"5cec402b-2e36-47ad-b386-0b3f9be30b78","type":"deployment_gate","attributes":{"created_at":"2025-12-11T15:25:42.26656Z","created_by":{"id":"4174e73d-b8b6-11f0-8b15-d2ad600af287","name":"Aaron Hoffman","handle":"aaron.hoffman@datadoghq.com"},"dry_run":false,"env":"production","identifier":"tf-TestAccDeploymentGateModifyRuleDryRun-local-1765466740","service":"my-service","updated_at":"2025-12-11T15:25:44.150758Z","updated_by":{"id":"4174e73d-b8b6-11f0-8b15-d2ad600af287","name":"Aaron Hoffman","handle":"aaron.hoffman@datadoghq.com"}}}}'
+        body: '{"data":{"id":"20e9d9d3-2dc6-47d3-a1bd-88e4e63e1db2","type":"deployment_gate","attributes":{"created_at":"2025-12-12T08:59:19.969063Z","created_by":{"id":"4174e73d-b8b6-11f0-8b15-d2ad600af287","name":"Aaron Hoffman","handle":"aaron.hoffman@datadoghq.com"},"dry_run":false,"env":"production","identifier":"tf-TestAccDeploymentGateModifyRuleDryRun-local-1765529958","service":"my-service","updated_at":"2025-12-12T08:59:21.611493Z","updated_by":{"id":"4174e73d-b8b6-11f0-8b15-d2ad600af287","name":"Aaron Hoffman","handle":"aaron.hoffman@datadoghq.com"}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 130.907125ms
+        duration: 139.512458ms
     - id: 7
       request:
         proto: HTTP/1.1
@@ -257,7 +257,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/deployment_gates/5cec402b-2e36-47ad-b386-0b3f9be30b78/rules
+        url: https://api.datadoghq.com/api/v2/deployment_gates/20e9d9d3-2dc6-47d3-a1bd-88e4e63e1db2/rules
         method: GET
       response:
         proto: HTTP/1.1
@@ -267,65 +267,34 @@ interactions:
         trailer: {}
         content_length: 633
         uncompressed: false
-        body: '{"data":{"id":"5cec402b-2e36-47ad-b386-0b3f9be30b78","type":"list_deployment_rules","attributes":{"rules":[{"id":"f3834e09-2ba7-4515-a417-58ec1e1d1d1d","name":"test_rule","type":"faulty_deployment_detection","dry_run":false,"created_at":"2025-12-11T15:25:42.415631Z","created_by":{"id":"4174e73d-b8b6-11f0-8b15-d2ad600af287","name":"Aaron Hoffman","handle":"aaron.hoffman@datadoghq.com"},"updated_at":"2025-12-11T15:25:42.415631Z","updated_by":{"id":"4174e73d-b8b6-11f0-8b15-d2ad600af287","name":"Aaron Hoffman","handle":"aaron.hoffman@datadoghq.com"},"gate_id":"5cec402b-2e36-47ad-b386-0b3f9be30b78","options":{"duration":1300}}]}}}'
+        body: '{"data":{"id":"20e9d9d3-2dc6-47d3-a1bd-88e4e63e1db2","type":"list_deployment_rules","attributes":{"rules":[{"id":"68163227-cb81-45f1-8c91-e7be9e7b1a36","name":"test_rule","type":"faulty_deployment_detection","dry_run":false,"created_at":"2025-12-12T08:59:20.114538Z","created_by":{"id":"4174e73d-b8b6-11f0-8b15-d2ad600af287","name":"Aaron Hoffman","handle":"aaron.hoffman@datadoghq.com"},"updated_at":"2025-12-12T08:59:20.114538Z","updated_by":{"id":"4174e73d-b8b6-11f0-8b15-d2ad600af287","name":"Aaron Hoffman","handle":"aaron.hoffman@datadoghq.com"},"gate_id":"20e9d9d3-2dc6-47d3-a1bd-88e4e63e1db2","options":{"duration":1300}}]}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 129.382ms
+        duration: 142.907625ms
     - id: 8
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 0
-        transfer_encoding: []
-        trailer: {}
-        host: api.datadoghq.com
-        remote_addr: ""
-        request_uri: ""
-        body: ""
-        form: {}
-        headers:
-            Accept:
-                - '*/*'
-        url: https://api.datadoghq.com/api/v2/deployment_gates/5cec402b-2e36-47ad-b386-0b3f9be30b78/rules/f3834e09-2ba7-4515-a417-58ec1e1d1d1d
-        method: DELETE
-      response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        transfer_encoding: []
-        trailer: {}
-        content_length: 0
-        uncompressed: false
-        body: ""
-        headers: {}
-        status: 204 No Content
-        code: 204
-        duration: 130.090375ms
-    - id: 9
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 150
+        content_length: 113
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"dry_run":true,"name":"test_rule","options":{"duration":1300},"type":"faulty_deployment_detection"},"type":"deployment_rule"}}
+            {"data":{"attributes":{"dry_run":true,"name":"test_rule","options":{"duration":1300}},"type":"deployment_rule"}}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/deployment_gates/5cec402b-2e36-47ad-b386-0b3f9be30b78/rules
-        method: POST
+        url: https://api.datadoghq.com/api/v2/deployment_gates/20e9d9d3-2dc6-47d3-a1bd-88e4e63e1db2/rules/68163227-cb81-45f1-8c91-e7be9e7b1a36
+        method: PUT
       response:
         proto: HTTP/1.1
         proto_major: 1
@@ -334,13 +303,46 @@ interactions:
         trailer: {}
         content_length: 570
         uncompressed: false
-        body: '{"data":{"id":"b049c8f6-c799-4a2d-916f-f85616e2648b","type":"deployment_rule","attributes":{"created_at":"2025-12-11T15:25:44.539878Z","created_by":{"id":"4174e73d-b8b6-11f0-8b15-d2ad600af287","name":"Aaron Hoffman","handle":"aaron.hoffman@datadoghq.com"},"dry_run":true,"gate_id":"5cec402b-2e36-47ad-b386-0b3f9be30b78","name":"test_rule","options":{"duration":1300},"type":"faulty_deployment_detection","updated_at":"2025-12-11T15:25:44.539878Z","updated_by":{"id":"4174e73d-b8b6-11f0-8b15-d2ad600af287","name":"Aaron Hoffman","handle":"aaron.hoffman@datadoghq.com"}}}}'
+        body: '{"data":{"id":"68163227-cb81-45f1-8c91-e7be9e7b1a36","type":"deployment_rule","attributes":{"created_at":"2025-12-12T08:59:20.114538Z","created_by":{"id":"4174e73d-b8b6-11f0-8b15-d2ad600af287","name":"Aaron Hoffman","handle":"aaron.hoffman@datadoghq.com"},"dry_run":true,"gate_id":"20e9d9d3-2dc6-47d3-a1bd-88e4e63e1db2","name":"test_rule","options":{"duration":1300},"type":"faulty_deployment_detection","updated_at":"2025-12-12T08:59:21.897621Z","updated_by":{"id":"4174e73d-b8b6-11f0-8b15-d2ad600af287","name":"Aaron Hoffman","handle":"aaron.hoffman@datadoghq.com"}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 126.754042ms
+        duration: 142.648459ms
+    - id: 9
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/deployment_gates/20e9d9d3-2dc6-47d3-a1bd-88e4e63e1db2
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 553
+        uncompressed: false
+        body: '{"data":{"id":"20e9d9d3-2dc6-47d3-a1bd-88e4e63e1db2","type":"deployment_gate","attributes":{"created_at":"2025-12-12T08:59:19.969063Z","created_by":{"id":"4174e73d-b8b6-11f0-8b15-d2ad600af287","name":"Aaron Hoffman","handle":"aaron.hoffman@datadoghq.com"},"dry_run":false,"env":"production","identifier":"tf-TestAccDeploymentGateModifyRuleDryRun-local-1765529958","service":"my-service","updated_at":"2025-12-12T08:59:21.611493Z","updated_by":{"id":"4174e73d-b8b6-11f0-8b15-d2ad600af287","name":"Aaron Hoffman","handle":"aaron.hoffman@datadoghq.com"}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 145.039625ms
     - id: 10
       request:
         proto: HTTP/1.1
@@ -357,7 +359,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/deployment_gates/5cec402b-2e36-47ad-b386-0b3f9be30b78
+        url: https://api.datadoghq.com/api/v2/deployment_gates/20e9d9d3-2dc6-47d3-a1bd-88e4e63e1db2/rules
         method: GET
       response:
         proto: HTTP/1.1
@@ -365,15 +367,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 552
+        content_length: 632
         uncompressed: false
-        body: '{"data":{"id":"5cec402b-2e36-47ad-b386-0b3f9be30b78","type":"deployment_gate","attributes":{"created_at":"2025-12-11T15:25:42.26656Z","created_by":{"id":"4174e73d-b8b6-11f0-8b15-d2ad600af287","name":"Aaron Hoffman","handle":"aaron.hoffman@datadoghq.com"},"dry_run":false,"env":"production","identifier":"tf-TestAccDeploymentGateModifyRuleDryRun-local-1765466740","service":"my-service","updated_at":"2025-12-11T15:25:44.150758Z","updated_by":{"id":"4174e73d-b8b6-11f0-8b15-d2ad600af287","name":"Aaron Hoffman","handle":"aaron.hoffman@datadoghq.com"}}}}'
+        body: '{"data":{"id":"20e9d9d3-2dc6-47d3-a1bd-88e4e63e1db2","type":"list_deployment_rules","attributes":{"rules":[{"id":"68163227-cb81-45f1-8c91-e7be9e7b1a36","name":"test_rule","type":"faulty_deployment_detection","dry_run":true,"created_at":"2025-12-12T08:59:20.114538Z","created_by":{"id":"4174e73d-b8b6-11f0-8b15-d2ad600af287","name":"Aaron Hoffman","handle":"aaron.hoffman@datadoghq.com"},"updated_at":"2025-12-12T08:59:21.897621Z","updated_by":{"id":"4174e73d-b8b6-11f0-8b15-d2ad600af287","name":"Aaron Hoffman","handle":"aaron.hoffman@datadoghq.com"},"gate_id":"20e9d9d3-2dc6-47d3-a1bd-88e4e63e1db2","options":{"duration":1300}}]}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 129.952417ms
+        duration: 149.895542ms
     - id: 11
       request:
         proto: HTTP/1.1
@@ -390,7 +392,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/deployment_gates/5cec402b-2e36-47ad-b386-0b3f9be30b78/rules
+        url: https://api.datadoghq.com/api/v2/deployment_gates/20e9d9d3-2dc6-47d3-a1bd-88e4e63e1db2/rules
         method: GET
       response:
         proto: HTTP/1.1
@@ -400,13 +402,13 @@ interactions:
         trailer: {}
         content_length: 632
         uncompressed: false
-        body: '{"data":{"id":"5cec402b-2e36-47ad-b386-0b3f9be30b78","type":"list_deployment_rules","attributes":{"rules":[{"id":"b049c8f6-c799-4a2d-916f-f85616e2648b","name":"test_rule","type":"faulty_deployment_detection","dry_run":true,"created_at":"2025-12-11T15:25:44.539878Z","created_by":{"id":"4174e73d-b8b6-11f0-8b15-d2ad600af287","name":"Aaron Hoffman","handle":"aaron.hoffman@datadoghq.com"},"updated_at":"2025-12-11T15:25:44.539878Z","updated_by":{"id":"4174e73d-b8b6-11f0-8b15-d2ad600af287","name":"Aaron Hoffman","handle":"aaron.hoffman@datadoghq.com"},"gate_id":"5cec402b-2e36-47ad-b386-0b3f9be30b78","options":{"duration":1300}}]}}}'
+        body: '{"data":{"id":"20e9d9d3-2dc6-47d3-a1bd-88e4e63e1db2","type":"list_deployment_rules","attributes":{"rules":[{"id":"68163227-cb81-45f1-8c91-e7be9e7b1a36","name":"test_rule","type":"faulty_deployment_detection","dry_run":true,"created_at":"2025-12-12T08:59:20.114538Z","created_by":{"id":"4174e73d-b8b6-11f0-8b15-d2ad600af287","name":"Aaron Hoffman","handle":"aaron.hoffman@datadoghq.com"},"updated_at":"2025-12-12T08:59:21.897621Z","updated_by":{"id":"4174e73d-b8b6-11f0-8b15-d2ad600af287","name":"Aaron Hoffman","handle":"aaron.hoffman@datadoghq.com"},"gate_id":"20e9d9d3-2dc6-47d3-a1bd-88e4e63e1db2","options":{"duration":1300}}]}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 134.919208ms
+        duration: 150.437666ms
     - id: 12
       request:
         proto: HTTP/1.1
@@ -422,24 +424,22 @@ interactions:
         form: {}
         headers:
             Accept:
-                - application/json
-        url: https://api.datadoghq.com/api/v2/deployment_gates/5cec402b-2e36-47ad-b386-0b3f9be30b78/rules
-        method: GET
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/deployment_gates/20e9d9d3-2dc6-47d3-a1bd-88e4e63e1db2/rules/68163227-cb81-45f1-8c91-e7be9e7b1a36
+        method: DELETE
       response:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 632
+        content_length: 0
         uncompressed: false
-        body: '{"data":{"id":"5cec402b-2e36-47ad-b386-0b3f9be30b78","type":"list_deployment_rules","attributes":{"rules":[{"id":"b049c8f6-c799-4a2d-916f-f85616e2648b","name":"test_rule","type":"faulty_deployment_detection","dry_run":true,"created_at":"2025-12-11T15:25:44.539878Z","created_by":{"id":"4174e73d-b8b6-11f0-8b15-d2ad600af287","name":"Aaron Hoffman","handle":"aaron.hoffman@datadoghq.com"},"updated_at":"2025-12-11T15:25:44.539878Z","updated_by":{"id":"4174e73d-b8b6-11f0-8b15-d2ad600af287","name":"Aaron Hoffman","handle":"aaron.hoffman@datadoghq.com"},"gate_id":"5cec402b-2e36-47ad-b386-0b3f9be30b78","options":{"duration":1300}}]}}}'
-        headers:
-            Content-Type:
-                - application/vnd.api+json
-        status: 200 OK
-        code: 200
-        duration: 129.376375ms
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 138.637583ms
     - id: 13
       request:
         proto: HTTP/1.1
@@ -456,7 +456,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/deployment_gates/5cec402b-2e36-47ad-b386-0b3f9be30b78/rules/b049c8f6-c799-4a2d-916f-f85616e2648b
+        url: https://api.datadoghq.com/api/v2/deployment_gates/20e9d9d3-2dc6-47d3-a1bd-88e4e63e1db2
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -470,35 +470,4 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 147.129417ms
-    - id: 14
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 0
-        transfer_encoding: []
-        trailer: {}
-        host: api.datadoghq.com
-        remote_addr: ""
-        request_uri: ""
-        body: ""
-        form: {}
-        headers:
-            Accept:
-                - '*/*'
-        url: https://api.datadoghq.com/api/v2/deployment_gates/5cec402b-2e36-47ad-b386-0b3f9be30b78
-        method: DELETE
-      response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        transfer_encoding: []
-        trailer: {}
-        content_length: 0
-        uncompressed: false
-        body: ""
-        headers: {}
-        status: 204 No Content
-        code: 204
-        duration: 186.068458ms
+        duration: 143.405209ms

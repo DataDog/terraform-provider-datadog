@@ -252,10 +252,15 @@ func (r *deploymentGateResource) Update(ctx context.Context, request resource.Up
 	state = plan
 
 	// Match state rules with prior rules by name to preserve IDs
+	// Only preserve ID if the type hasn't changed (type changes require recreation)
 	for i := range state.Rules {
 		key := state.Rules[i].Name.ValueString()
 		if priorRule, exists := priorRulesByName[key]; exists {
-			state.Rules[i].ID = priorRule.ID
+			// Only preserve ID if type is the same
+			// If type changed, treat it as a new rule (old one will be deleted, new one created)
+			if state.Rules[i].Type.ValueString() == priorRule.Type.ValueString() {
+				state.Rules[i].ID = priorRule.ID
+			}
 		}
 	}
 
