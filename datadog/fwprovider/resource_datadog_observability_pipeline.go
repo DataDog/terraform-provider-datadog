@@ -285,30 +285,6 @@ type fieldValue struct {
 	Value types.String `tfsdk:"value"`
 }
 
-// Destination models
-
-type destinationsModel struct {
-	DatadogLogsDestination            []*datadogLogsDestinationModel                                   `tfsdk:"datadog_logs"`
-	GoogleCloudStorageDestination     []*gcsDestinationModel                                           `tfsdk:"google_cloud_storage"`
-	GooglePubSubDestination           []*googlePubSubDestinationModel                                  `tfsdk:"google_pubsub"`
-	SplunkHecDestination              []*splunkHecDestinationModel                                     `tfsdk:"splunk_hec"`
-	SumoLogicDestination              []*sumoLogicDestinationModel                                     `tfsdk:"sumo_logic"`
-	RsyslogDestination                []*rsyslogDestinationModel                                       `tfsdk:"rsyslog"`
-	SyslogNgDestination               []*syslogNgDestinationModel                                      `tfsdk:"syslog_ng"`
-	ElasticsearchDestination          []*elasticsearchDestinationModel                                 `tfsdk:"elasticsearch"`
-	AzureStorageDestination           []*azureStorageDestinationModel                                  `tfsdk:"azure_storage"`
-	MicrosoftSentinelDestination      []*microsoftSentinelDestinationModel                             `tfsdk:"microsoft_sentinel"`
-	GoogleChronicleDestination        []*googleChronicleDestinationModel                               `tfsdk:"google_chronicle"`
-	NewRelicDestination               []*newRelicDestinationModel                                      `tfsdk:"new_relic"`
-	SentinelOneDestination            []*sentinelOneDestinationModel                                   `tfsdk:"sentinel_one"`
-	OpenSearchDestination             []*opensearchDestinationModel                                    `tfsdk:"opensearch"`
-	AmazonOpenSearchDestination       []*amazonOpenSearchDestinationModel                              `tfsdk:"amazon_opensearch"`
-	SocketDestination                 []*observability_pipeline.SocketDestinationModel                 `tfsdk:"socket"`
-	AmazonS3Destination               []*observability_pipeline.AmazonS3DestinationModel               `tfsdk:"amazon_s3"`
-	AmazonSecurityLakeDestination     []*observability_pipeline.AmazonSecurityLakeDestinationModel     `tfsdk:"amazon_security_lake"`
-	CrowdStrikeNextGenSiemDestination []*observability_pipeline.CrowdStrikeNextGenSiemDestinationModel `tfsdk:"crowdstrike_next_gen_siem"`
-}
-
 type amazonOpenSearchDestinationModel struct {
 	BulkIndex types.String               `tfsdk:"bulk_index"`
 	Auth      *amazonOpenSearchAuthModel `tfsdk:"auth"`
