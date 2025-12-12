@@ -39,9 +39,9 @@ type observabilityPipelineModel struct {
 }
 
 type configModel struct {
-	Sources      []*sourceModel         `tfsdk:"source"`
-	Processors   []*processorGroupModel `tfsdk:"processor_group"`
-	Destinations []*destinationModel    `tfsdk:"destination"`
+	Sources         []*sourceModel         `tfsdk:"source"`
+	ProcessorGroups []*processorGroupModel `tfsdk:"processor_group"`
+	Destinations    []*destinationModel    `tfsdk:"destination"`
 }
 
 type destinationModel struct {
@@ -2159,7 +2159,7 @@ func expandPipeline(ctx context.Context, state *observabilityPipelineModel) (*da
 	}
 
 	// Processors - iterate through processor groups
-	for _, group := range state.Config.Processors {
+	for _, group := range state.Config.ProcessorGroups {
 		processorGroup := expandProcessorGroup(ctx, group)
 		config.Processors = append(config.Processors, processorGroup)
 	}
@@ -2314,7 +2314,7 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 	for _, group := range cfg.GetProcessors() {
 		flattenedGroup := flattenProcessorGroup(ctx, &group)
 		if flattenedGroup != nil {
-			outCfg.Processors = append(outCfg.Processors, flattenedGroup)
+			outCfg.ProcessorGroups = append(outCfg.ProcessorGroups, flattenedGroup)
 		}
 	}
 
