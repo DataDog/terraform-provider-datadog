@@ -549,8 +549,7 @@ func (r *deploymentGateResource) readAndReconcileRules(ctx context.Context, gate
 		}
 	}
 
-	// Verify managed rules still exist - just check existence, don't update data
-	// (updating data here can cause issues if called immediately after Update due to API response timing)
+	// Update state with current rule details from API response
 	for i := range state.Rules {
 		rule := &state.Rules[i]
 		if rule.ID.IsNull() || rule.ID.IsUnknown() {
@@ -559,8 +558,11 @@ func (r *deploymentGateResource) readAndReconcileRules(ctx context.Context, gate
 
 		ruleID := rule.ID.ValueString()
 
-		// Check if the rule still exists in the API
-		if _, exists := apiRulesByID[ruleID]; !exists {
+		// Check if the rule still exists in the API and update its data
+		if apiRule, exists := apiRulesByID[ruleID]; exists {
+			// Update state with the API rule data
+			r.updateRuleStateFromAttributes(ctx, rule, apiRule)
+		} else {
 			// Rule was deleted outside Terraform - this will cause drift
 			// Terraform will detect this and prompt for recreation on next apply
 			diags.AddWarning(
