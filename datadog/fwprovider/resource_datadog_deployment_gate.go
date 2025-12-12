@@ -250,6 +250,8 @@ func (r *deploymentGateResource) Update(ctx context.Context, request resource.Up
 
 	// Get the plan into state
 	state = plan
+	// Preserve the gate ID from prior state (plan only has config, not computed values like ID)
+	state.ID = priorState.ID
 
 	// Match state rules with prior rules by name to preserve IDs
 	// Only preserve ID if the type hasn't changed (type changes require recreation)
@@ -541,8 +543,8 @@ func (r *deploymentGateResource) readAndReconcileRules(ctx context.Context, gate
 		}
 	}
 
-	// Update state with current rule details from API response
-	// Note: We use the data we already have from GetDeploymentGateRules
+	// Verify managed rules still exist - just check existence, don't update data
+	// (updating data here can cause issues if called immediately after Update due to API response timing)
 	for i := range state.Rules {
 		rule := &state.Rules[i]
 		if rule.ID.IsNull() || rule.ID.IsUnknown() {
@@ -552,10 +554,7 @@ func (r *deploymentGateResource) readAndReconcileRules(ctx context.Context, gate
 		ruleID := rule.ID.ValueString()
 
 		// Check if the rule still exists in the API
-		if apiRule, exists := apiRulesByID[ruleID]; exists {
-			// Update state with the API rule data
-			r.updateRuleStateFromAttributes(ctx, rule, apiRule)
-		} else {
+		if _, exists := apiRulesByID[ruleID]; !exists {
 			// Rule was deleted outside Terraform - this will cause drift
 			// Terraform will detect this and prompt for recreation on next apply
 			diags.AddWarning(
