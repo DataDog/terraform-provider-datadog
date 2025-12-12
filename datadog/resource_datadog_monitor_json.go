@@ -126,8 +126,19 @@ func resourceDatadogMonitorJSONRead(_ context.Context, d *schema.ResourceData, m
 	// try to keep restricted_roles from mixing into it from API responses
 	monitor := d.Get("monitor").(string)
 	attrMap, _ := structure.ExpandJsonFromString(monitor)
+
+	params := []string{}
 	if _, ok := attrMap["restricted_roles"]; !ok {
-		url += "?with_restricted_roles=false"
+		params = append(params, "with_restricted_roles=false")
+	}
+
+	// only query for monitor assets if they are explicitly defined in the JSON
+	if _, ok := attrMap["assets"]; ok {
+		params = append(params, "with_assets=true")
+	}
+
+	if len(params) > 0 {
+		url += "?" + strings.Join(params, "&")
 	}
 
 	respByte, httpResp, err := utils.SendRequest(auth, apiInstances.HttpClient, "GET", url, nil)
@@ -240,6 +251,13 @@ func updateMonitorJSONState(d *schema.ResourceData, monitor map[string]interface
 	attrMap, _ := structure.ExpandJsonFromString(d.Get("monitor").(string))
 	if val := reflect.ValueOf(attrMap["restricted_roles"]); !val.IsValid() {
 		utils.DeleteKeyInMap(monitor, []string{"restricted_roles"})
+	}
+
+	// If the user did not specify assets in the config, do not store them
+	// in the state to avoid unnecessary diffs when the API returns an empty
+	// assets array.
+	if val := reflect.ValueOf(attrMap["assets"]); !val.IsValid() {
+		utils.DeleteKeyInMap(monitor, []string{"assets"})
 	}
 
 	monitorString, err := structure.FlattenJsonToString(monitor)

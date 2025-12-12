@@ -48,6 +48,7 @@ Email notifications can be sent to specific users by using the same `@username` 
 
 ### Optional
 
+- `assets` (Block List) List of monitor assets (for example, runbooks, dashboards, workflows) tied to this monitor. (see [below for nested schema](#nestedblock--assets))
 - `draft_status` (String) Indicates whether the monitor is in a draft or published state. When set to `draft`, the monitor appears as Draft and does not send notifications. When set to `published`, the monitor is active, and it evaluates conditions and sends notifications as configured. Valid values are `draft`, `published`. Defaults to `"published"`.
 - `enable_logs_sample` (Boolean) A boolean indicating whether or not to include a list of log values which triggered the alert. This is only used by log monitors. Defaults to `false`.
 - `enable_samples` (Boolean) Whether or not a list of samples which triggered the alert is included. This is only used by CI Test and Pipeline monitors.
@@ -90,6 +91,21 @@ We recommend at least 2x the monitor timeframe for metric alerts or 2 minutes fo
 ### Read-Only
 
 - `id` (String) The ID of this resource.
+
+<a id="nestedblock--assets"></a>
+### Nested Schema for `assets`
+
+Required:
+
+- `category` (String) Type of asset the entity represents on a monitor. Valid values are `runbook`.
+- `name` (String) Name for the monitor asset.
+- `url` (String) URL for the asset.
+
+Optional:
+
+- `resource_key` (String) Identifier of the internal Datadog resource that this asset represents.
+- `resource_type` (String) Type of internal Datadog resource associated with a monitor asset. Valid values are `notebook`.
+
 
 <a id="nestedblock--monitor_threshold_windows"></a>
 ### Nested Schema for `monitor_threshold_windows`
