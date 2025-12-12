@@ -208,6 +208,10 @@ resource "datadog_sensitive_data_scanner_rule" "sample_rule" {
 	group_id = datadog_sensitive_data_scanner_group.sample_group.id
 	pattern = "regex"
 	tags = ["sensitive_data:true"]
+	included_keyword_configuration {
+		keywords = []
+		character_count = 30
+	}
 }
 `, name)
 }
@@ -327,6 +331,10 @@ resource "datadog_sensitive_data_scanner_rule" "sample_rule" {
 	group_id = datadog_sensitive_data_scanner_group.new_group.id
 	pattern = "regex"
 	tags = ["sensitive_data:true"]
+	included_keyword_configuration {
+		keywords = []
+		character_count = 30
+	}
 }
 `, name)
 }
