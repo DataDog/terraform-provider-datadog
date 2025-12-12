@@ -108,6 +108,7 @@ var Resources = []func() resource.Resource{
 	NewDatadogCustomAllocationRuleResource,
 	NewCustomAllocationRulesResource,
 	NewAzureUcConfigResource,
+	NewDeploymentGateResource,
 	NewReferenceTableResource,
 }
 
@@ -625,6 +626,17 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.ListCostAWSCURConfigs", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateCostAWSCURConfig", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteCostAWSCURConfig", true)
+
+	// Enable Deployment Gates & Rules
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateDeploymentGate", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateDeploymentGate", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteDeploymentGate", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetDeploymentGate", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateDeploymentRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateDeploymentRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteDeploymentRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetDeploymentRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetDeploymentGateRules", true)
 
 	if !config.ApiUrl.IsNull() && config.ApiUrl.ValueString() != "" {
 		parsedAPIURL, parseErr := url.Parse(config.ApiUrl.ValueString())
