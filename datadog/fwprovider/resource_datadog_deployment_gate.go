@@ -489,8 +489,8 @@ func (r *deploymentGateResource) createRules(ctx context.Context, gateID string,
 	return diags
 }
 
-// readAndReconcileRules reads all rules from API and reconciles with desired state
-// This deletes any unmanaged rules
+// readAndReconcileRules reads all rules from API and updates state to match
+// This is a read-only operation and does not modify the remote resource
 func (r *deploymentGateResource) readAndReconcileRules(ctx context.Context, gateID string, state *deploymentGateModel) diag.Diagnostics {
 	var diags diag.Diagnostics
 
@@ -502,13 +502,6 @@ func (r *deploymentGateResource) readAndReconcileRules(ctx context.Context, gate
 
 	if err := utils.CheckForUnparsed(rulesResp); err != nil {
 		diags.AddWarning("response contains unparsedObject", err.Error())
-	}
-
-	managedRuleIDs := make(map[string]struct{})
-	for _, rule := range state.Rules {
-		if !rule.ID.IsNull() && !rule.ID.IsUnknown() {
-			managedRuleIDs[rule.ID.ValueString()] = struct{}{}
-		}
 	}
 
 	// Get rules from API response
@@ -527,24 +520,6 @@ func (r *deploymentGateResource) readAndReconcileRules(ctx context.Context, gate
 		if idVal, ok := apiRule.AdditionalProperties["id"]; ok {
 			if idStr, ok := idVal.(string); ok {
 				apiRulesByID[idStr] = apiRule
-			}
-		}
-	}
-
-	// Delete any unmanaged rules
-	for ruleID := range apiRulesByID {
-		if _, present := managedRuleIDs[ruleID]; !present {
-			// This rule is not managed by Terraform, delete it
-			httpResp, err := r.Api.DeleteDeploymentRule(r.Auth, gateID, ruleID)
-			if err != nil {
-				if httpResp != nil && httpResp.StatusCode == 404 {
-					// Already deleted, continue
-					continue
-				}
-				diags.AddWarning(
-					"Failed to delete unmanaged rule",
-					fmt.Sprintf("Could not delete unmanaged rule %s: %v", ruleID, err),
-				)
 			}
 		}
 	}
@@ -691,7 +666,7 @@ func (r *deploymentGateResource) syncRules(ctx context.Context, gateID string, s
 }
 
 // deleteAllRules deletes all rules for a gate
-func (r *deploymentGateResource) deleteAllRules(ctx context.Context, gateID string) diag.Diagnostics {
+func (r *deploymentGateResource) deleteAllRules(_ context.Context, gateID string) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	// Get all rules for this gate
@@ -854,7 +829,7 @@ func (r *deploymentGateResource) buildRuleUpdateRequestBody(ctx context.Context,
 }
 
 // updateRuleStateFromAttributes updates the rule state from rule attributes
-func (r *deploymentGateResource) updateRuleStateFromAttributes(ctx context.Context, rule *deploymentGateRuleModel, attributes *datadogV2.DeploymentRuleResponseDataAttributes) {
+func (r *deploymentGateResource) updateRuleStateFromAttributes(_ context.Context, rule *deploymentGateRuleModel, attributes *datadogV2.DeploymentRuleResponseDataAttributes) {
 	// Extract rule ID from AdditionalProperties since it's not in the spec
 	if idVal, ok := attributes.AdditionalProperties["id"]; ok {
 		if idStr, ok := idVal.(string); ok {
@@ -893,8 +868,8 @@ func (r *deploymentGateResource) updateRuleStateFromAttributes(ctx context.Conte
 				if excludedResources, ok := fddOptions.GetExcludedResourcesOk(); ok {
 					if excludedResources != nil && len(*excludedResources) > 0 {
 						elements := make([]attr.Value, len(*excludedResources))
-						for i, resource := range *excludedResources {
-							elements[i] = types.StringValue(resource)
+						for i, resourceName := range *excludedResources {
+							elements[i] = types.StringValue(resourceName)
 						}
 						rule.Options.ExcludedResources, _ = types.ListValue(types.StringType, elements)
 					}
