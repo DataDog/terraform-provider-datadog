@@ -593,6 +593,75 @@ func getMonitorFormulaQuerySchema() *schema.Schema {
 						},
 					},
 				},
+				"apm_metrics_query": {
+					Type:        schema.TypeList,
+					Optional:    true,
+					MaxItems:    5,
+					Description: "The APM metrics query using formulas and functions.",
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"data_source": {
+								Type:             schema.TypeString,
+								Required:         true,
+								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewMonitorFormulaAndFunctionApmMetricDataSourceFromValue),
+								Description:      "The data source for APM metrics queries.",
+							},
+							"stat": {
+								Type:             schema.TypeString,
+								Required:         true,
+								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewMonitorFormulaAndFunctionApmMetricStatFromValue),
+								Description:      "Statistic to compute for an APM metric query.",
+							},
+							"name": {
+								Type:        schema.TypeString,
+								Required:    true,
+								Description: "Name of the query for use in formulas.",
+							},
+							"service": {
+								Type:        schema.TypeString,
+								Optional:    true,
+								Description: "APM service.",
+							},
+							"operation_name": {
+								Type:        schema.TypeString,
+								Optional:    true,
+								Description: "Name of operation on service.",
+							},
+							"resource_name": {
+								Type:        schema.TypeString,
+								Optional:    true,
+								Description: "APM resource name.",
+							},
+							"resource_hash": {
+								Type:        schema.TypeString,
+								Optional:    true,
+								Description: "Hash of the resource name that can be used to identify the resource instead of the resource name.",
+							},
+							"query_filter": {
+								Type:        schema.TypeString,
+								Optional:    true,
+								Description: "Query filter to apply to the APM metric query.",
+							},
+							"group_by": {
+								Type:        schema.TypeList,
+								Optional:    true,
+								Description: "List of tags to group by.",
+								Elem:        &schema.Schema{Type: schema.TypeString},
+							},
+							"span_kind": {
+								Type:        schema.TypeString,
+								Optional:    true,
+								Description: "Span kind.",
+							},
+							"operation_mode": {
+								Type:             schema.TypeString,
+								Optional:         true,
+								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewMonitorFormulaAndFunctionApmMetricOperationModeFromValue),
+								Description:      "Operation mode used for aggregate operation values.",
+							},
+						},
+					},
+				},
 			},
 		},
 	}
@@ -772,6 +841,12 @@ func buildMonitorStruct(d utils.Resource) (*datadogV1.Monitor, *datadogV1.Monito
 						monitorVariables = append(monitorVariables, *buildMonitorFormulaAndFunctionCloudCostQuery(q.(map[string]interface{})))
 					}
 				}
+				if query, ok := m["apm_metrics_query"]; ok {
+					queries := query.([]interface{})
+					for _, q := range queries {
+						monitorVariables = append(monitorVariables, *buildMonitorFormulaAndFunctionApmMetricsQuery(q.(map[string]interface{})))
+					}
+				}
 				o.SetVariables(monitorVariables)
 			}
 		}
@@ -943,6 +1018,45 @@ func buildMonitorFormulaAndFunctionCloudCostQuery(data map[string]interface{}) *
 	datadogV1.MonitorFormulaAndFunctionCostQueryDefinitionAsMonitorFormulaAndFunctionQueryDefinition(cloudCostQuery)
 
 	definition := datadogV1.MonitorFormulaAndFunctionCostQueryDefinitionAsMonitorFormulaAndFunctionQueryDefinition(cloudCostQuery)
+	return &definition
+}
+
+func buildMonitorFormulaAndFunctionApmMetricsQuery(data map[string]interface{}) *datadogV1.MonitorFormulaAndFunctionQueryDefinition {
+	dataSource := datadogV1.MonitorFormulaAndFunctionApmMetricDataSource(data["data_source"].(string))
+	stat := datadogV1.MonitorFormulaAndFunctionApmMetricStat(data["stat"].(string))
+
+	apmMetricsQuery := datadogV1.NewMonitorFormulaAndFunctionApmMetricQueryDefinition(dataSource, data["name"].(string), stat)
+
+	if v, ok := data["service"].(string); ok && len(v) != 0 {
+		apmMetricsQuery.SetService(v)
+	}
+	if v, ok := data["operation_name"].(string); ok && len(v) != 0 {
+		apmMetricsQuery.SetOperationName(v)
+	}
+	if v, ok := data["resource_name"].(string); ok && len(v) != 0 {
+		apmMetricsQuery.SetResourceName(v)
+	}
+	if v, ok := data["resource_hash"].(string); ok && len(v) != 0 {
+		apmMetricsQuery.SetResourceHash(v)
+	}
+	if v, ok := data["query_filter"].(string); ok && len(v) != 0 {
+		apmMetricsQuery.SetQueryFilter(v)
+	}
+	if v, ok := data["group_by"].([]interface{}); ok && len(v) > 0 {
+		groupBy := make([]string, len(v))
+		for i, g := range v {
+			groupBy[i] = g.(string)
+		}
+		apmMetricsQuery.SetGroupBy(groupBy)
+	}
+	if v, ok := data["span_kind"].(string); ok && len(v) != 0 {
+		apmMetricsQuery.SetSpanKind(v)
+	}
+	if v, ok := data["operation_mode"].(string); ok && len(v) != 0 {
+		apmMetricsQuery.SetOperationMode(datadogV1.MonitorFormulaAndFunctionApmMetricOperationMode(v))
+	}
+
+	definition := datadogV1.MonitorFormulaAndFunctionApmMetricQueryDefinitionAsMonitorFormulaAndFunctionQueryDefinition(apmMetricsQuery)
 	return &definition
 }
 
@@ -1160,6 +1274,11 @@ func updateMonitorState(d *schema.ResourceData, meta interface{}, m *datadogV1.M
 			if err := d.Set("variables", terraformVariables); err != nil {
 				return diag.FromErr(err)
 			}
+		} else if m.GetType() == datadogV1.MONITORTYPE_APM_METRIC_ALERT {
+			terraformVariables := buildTerraformApmMetricMonitorVariables(*variables)
+			if err := d.Set("variables", terraformVariables); err != nil {
+				return diag.FromErr(err)
+			}
 		} else {
 			terraformVariables := buildTerraformMonitorVariables(*variables)
 			if err := d.Set("variables", terraformVariables); err != nil {
@@ -1336,6 +1455,55 @@ func buildTerraformCostMonitorVariables(datadogVariables []datadogV1.MonitorForm
 	}
 	terraformVariables := make([]map[string]interface{}, 1)
 	terraformVariables[0] = map[string]interface{}{"cloud_cost_query": queries}
+
+	log.Printf("[INFO] queries: %+v", terraformVariables)
+	return terraformVariables
+}
+
+func buildTerraformApmMetricMonitorVariables(datadogVariables []datadogV1.MonitorFormulaAndFunctionQueryDefinition) []map[string]interface{} {
+	queries := make([]map[string]interface{}, len(datadogVariables))
+	for i, query := range datadogVariables {
+		terraformQuery := map[string]interface{}{}
+		terraformApmMetricsQueryDefinition := query.MonitorFormulaAndFunctionApmMetricQueryDefinition
+		if terraformApmMetricsQueryDefinition != nil {
+			if dataSource, ok := terraformApmMetricsQueryDefinition.GetDataSourceOk(); ok {
+				terraformQuery["data_source"] = dataSource
+			}
+			if stat, ok := terraformApmMetricsQueryDefinition.GetStatOk(); ok {
+				terraformQuery["stat"] = stat
+			}
+			if name, ok := terraformApmMetricsQueryDefinition.GetNameOk(); ok {
+				terraformQuery["name"] = name
+			}
+			if service, ok := terraformApmMetricsQueryDefinition.GetServiceOk(); ok {
+				terraformQuery["service"] = service
+			}
+			if operationName, ok := terraformApmMetricsQueryDefinition.GetOperationNameOk(); ok {
+				terraformQuery["operation_name"] = operationName
+			}
+			if resourceName, ok := terraformApmMetricsQueryDefinition.GetResourceNameOk(); ok {
+				terraformQuery["resource_name"] = resourceName
+			}
+			if resourceHash, ok := terraformApmMetricsQueryDefinition.GetResourceHashOk(); ok {
+				terraformQuery["resource_hash"] = resourceHash
+			}
+			if queryFilter, ok := terraformApmMetricsQueryDefinition.GetQueryFilterOk(); ok {
+				terraformQuery["query_filter"] = queryFilter
+			}
+			if groupBy, ok := terraformApmMetricsQueryDefinition.GetGroupByOk(); ok {
+				terraformQuery["group_by"] = groupBy
+			}
+			if spanKind, ok := terraformApmMetricsQueryDefinition.GetSpanKindOk(); ok {
+				terraformQuery["span_kind"] = spanKind
+			}
+			if operationMode, ok := terraformApmMetricsQueryDefinition.GetOperationModeOk(); ok {
+				terraformQuery["operation_mode"] = operationMode
+			}
+			queries[i] = terraformQuery
+		}
+	}
+	terraformVariables := make([]map[string]interface{}, 1)
+	terraformVariables[0] = map[string]interface{}{"apm_metrics_query": queries}
 
 	log.Printf("[INFO] queries: %+v", terraformVariables)
 	return terraformVariables

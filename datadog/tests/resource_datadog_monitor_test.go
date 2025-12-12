@@ -850,6 +850,73 @@ func TestAccDatadogMonitor_FormulaFunction_Cost(t *testing.T) {
 	})
 }
 
+func TestAccDatadogMonitor_FormulaFunction_ApmMetrics(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	monitorName := uniqueEntityName(ctx, t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogMonitorDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogApmMetricsMonitorFormulaFunction(monitorName),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "name", monitorName),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "type", "apm-metric alert"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "variables.#", "1"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "variables.0.apm_metrics_query.#", "1"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "variables.0.apm_metrics_query.0.data_source", "apm_metrics"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "variables.0.apm_metrics_query.0.stat", "error_rate"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "variables.0.apm_metrics_query.0.name", "query1"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "variables.0.apm_metrics_query.0.service", "my-service"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "variables.0.apm_metrics_query.0.operation_name", "my-operation"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "variables.0.apm_metrics_query.0.query_filter", "env:prod"),
+				),
+			},
+			{
+				Config: testAccCheckDatadogApmMetricsMonitorFormulaFunctionUpdated(monitorName),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "name", monitorName),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "type", "apm-metric alert"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "variables.#", "1"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "variables.0.apm_metrics_query.#", "1"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "variables.0.apm_metrics_query.0.data_source", "apm_metrics"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "variables.0.apm_metrics_query.0.stat", "latency_p95"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "variables.0.apm_metrics_query.0.name", "query1"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "variables.0.apm_metrics_query.0.service", "updated-service"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "variables.0.apm_metrics_query.0.resource_name", "my-resource"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "variables.0.apm_metrics_query.0.span_kind", "server"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "variables.0.apm_metrics_query.0.operation_mode", "union"),
+				),
+			},
+		},
+	})
+}
+
 func testAccCheckDatadogMonitorDestroy(accProvider func() (*schema.Provider, error)) func(*terraform.State) error {
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
@@ -1710,6 +1777,62 @@ resource "datadog_monitor" "foo" {
 
   monitor_thresholds {
       critical = 6
+  }
+}
+`, uniq)
+}
+
+func testAccCheckDatadogApmMetricsMonitorFormulaFunction(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_monitor" "foo" {
+  name = "%s"
+  type = "apm-metric alert"
+  message = "test"
+
+  query = "formula(\"query1\").last(\"5m\") > 0.1"
+
+  variables {
+  	apm_metrics_query {
+		data_source    = "apm_metrics"
+		stat           = "error_rate"
+		name           = "query1"
+		service        = "my-service"
+		operation_name = "my-operation"
+		query_filter   = "env:prod"
+	}
+  }
+
+  monitor_thresholds {
+      critical = 0.1
+  }
+}
+`, uniq)
+}
+
+func testAccCheckDatadogApmMetricsMonitorFormulaFunctionUpdated(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_monitor" "foo" {
+  name = "%s"
+  type = "apm-metric alert"
+  message = "test"
+
+  query = "formula(\"query1\").last(\"5m\") > 500"
+
+  variables {
+  	apm_metrics_query {
+		data_source    = "apm_metrics"
+		stat           = "latency_p95"
+		name           = "query1"
+		service        = "updated-service"
+		resource_name  = "my-resource"
+		span_kind      = "server"
+		operation_mode = "union"
+		group_by       = ["env", "service"]
+	}
+  }
+
+  monitor_thresholds {
+      critical = 500
   }
 }
 `, uniq)

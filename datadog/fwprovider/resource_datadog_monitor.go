@@ -129,8 +129,9 @@ type Recurrence struct {
 }
 
 type Variable struct {
-	EventQuery     []EventQuery     `tfsdk:"event_query"`
-	CloudCostQuery []CloudCostQuery `tfsdk:"cloud_cost_query"`
+	EventQuery      []EventQuery      `tfsdk:"event_query"`
+	CloudCostQuery  []CloudCostQuery  `tfsdk:"cloud_cost_query"`
+	ApmMetricsQuery []ApmMetricsQuery `tfsdk:"apm_metrics_query"`
 }
 
 type EventQuery struct {
@@ -169,6 +170,20 @@ type CloudCostQuery struct {
 	Query      types.String `tfsdk:"query"`
 	Aggregator types.String `tfsdk:"aggregator"`
 	Name       types.String `tfsdk:"name"`
+}
+
+type ApmMetricsQuery struct {
+	DataSource    types.String `tfsdk:"data_source"`
+	Stat          types.String `tfsdk:"stat"`
+	Name          types.String `tfsdk:"name"`
+	Service       types.String `tfsdk:"service"`
+	OperationName types.String `tfsdk:"operation_name"`
+	ResourceName  types.String `tfsdk:"resource_name"`
+	ResourceHash  types.String `tfsdk:"resource_hash"`
+	QueryFilter   types.String `tfsdk:"query_filter"`
+	GroupBy       types.List   `tfsdk:"group_by"`
+	SpanKind      types.String `tfsdk:"span_kind"`
+	OperationMode types.String `tfsdk:"operation_mode"`
 }
 
 type monitorResource struct {
@@ -743,6 +758,70 @@ func (r *monitorResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 								},
 							},
 						},
+						"apm_metrics_query": schema.ListNestedBlock{
+							Description: "The APM metrics query using formulas and functions.",
+							Validators: []validator.List{
+								listvalidator.SizeAtMost(5),
+							},
+							NestedObject: schema.NestedBlockObject{
+								Attributes: map[string]schema.Attribute{
+									"data_source": schema.StringAttribute{
+										Required:    true,
+										Description: "The data source for APM metrics queries.",
+										Validators: []validator.String{
+											stringvalidator.OneOf(r.getAllowApmMetricDataSource()...),
+										},
+									},
+									"stat": schema.StringAttribute{
+										Required:    true,
+										Description: "Stat to compute for an APM metric query.",
+										Validators: []validator.String{
+											stringvalidator.OneOf(r.getAllowApmMetricStat()...),
+										},
+									},
+									"name": schema.StringAttribute{
+										Required:    true,
+										Description: "Name of the query for use in formulas.",
+									},
+									"service": schema.StringAttribute{
+										Optional:    true,
+										Description: "APM service.",
+									},
+									"operation_name": schema.StringAttribute{
+										Optional:    true,
+										Description: "Name of operation on service.",
+									},
+									"resource_name": schema.StringAttribute{
+										Optional:    true,
+										Description: "APM resource name.",
+									},
+									"resource_hash": schema.StringAttribute{
+										Optional:    true,
+										Description: "Hash of the resource name that can be used to identify the resource instead of the resource name.",
+									},
+									"query_filter": schema.StringAttribute{
+										Optional:    true,
+										Description: "Query filter to apply to the APM metric query.",
+									},
+									"group_by": schema.ListAttribute{
+										Optional:    true,
+										ElementType: types.StringType,
+										Description: "List of tags to group by.",
+									},
+									"span_kind": schema.StringAttribute{
+										Optional:    true,
+										Description: "Span kind.",
+									},
+									"operation_mode": schema.StringAttribute{
+										Optional:    true,
+										Description: "Operation mode used for aggregate operation values.",
+										Validators: []validator.String{
+											stringvalidator.OneOf(r.getAllowApmMetricOperationMode()...),
+										},
+									},
+								},
+							},
+						},
 					},
 				},
 			},
@@ -1081,6 +1160,9 @@ func (r *monitorResource) buildVariablesStruct(ctx context.Context, variables []
 	if cloudCostReq := r.buildCloudCostQueryStruct(variable.CloudCostQuery); len(cloudCostReq) > 0 {
 		variablesReq = append(variablesReq, cloudCostReq...)
 	}
+	if apmMetricsReq := r.buildApmMetricsQueryStruct(ctx, variable.ApmMetricsQuery); len(apmMetricsReq) > 0 {
+		variablesReq = append(variablesReq, apmMetricsReq...)
+	}
 	return variablesReq
 }
 
@@ -1157,6 +1239,37 @@ func (r *monitorResource) buildCloudCostQueryStruct(cloudCostQs []CloudCostQuery
 			cloudCostQueryReq.SetAggregator(datadogV1.MonitorFormulaAndFunctionCostAggregator(cloudCostQ.Aggregator.ValueString()))
 		}
 		variableReq.MonitorFormulaAndFunctionCostQueryDefinition = &cloudCostQueryReq
+		variablesReq = append(variablesReq, variableReq)
+	}
+	return variablesReq
+}
+
+func (r *monitorResource) buildApmMetricsQueryStruct(ctx context.Context, apmMetricsQs []ApmMetricsQuery) []datadogV1.MonitorFormulaAndFunctionQueryDefinition {
+	if apmMetricsQs == nil || len(apmMetricsQs) == 0 {
+		return nil
+	}
+	variablesReq := []datadogV1.MonitorFormulaAndFunctionQueryDefinition{}
+	for _, apmMetricsQ := range apmMetricsQs {
+		variableReq := datadogV1.MonitorFormulaAndFunctionQueryDefinition{}
+		apmMetricsQueryReq := datadogV1.MonitorFormulaAndFunctionApmMetricQueryDefinition{}
+		fwutils.SetOptString(apmMetricsQ.Name, apmMetricsQueryReq.SetName)
+		if !apmMetricsQ.DataSource.IsNull() {
+			apmMetricsQueryReq.SetDataSource(datadogV1.MonitorFormulaAndFunctionApmMetricDataSource(apmMetricsQ.DataSource.ValueString()))
+		}
+		if !apmMetricsQ.Stat.IsNull() {
+			apmMetricsQueryReq.SetStat(datadogV1.MonitorFormulaAndFunctionApmMetricStat(apmMetricsQ.Stat.ValueString()))
+		}
+		fwutils.SetOptString(apmMetricsQ.Service, apmMetricsQueryReq.SetService)
+		fwutils.SetOptString(apmMetricsQ.OperationName, apmMetricsQueryReq.SetOperationName)
+		fwutils.SetOptString(apmMetricsQ.ResourceName, apmMetricsQueryReq.SetResourceName)
+		fwutils.SetOptString(apmMetricsQ.ResourceHash, apmMetricsQueryReq.SetResourceHash)
+		fwutils.SetOptString(apmMetricsQ.QueryFilter, apmMetricsQueryReq.SetQueryFilter)
+		fwutils.SetOptStringList(apmMetricsQ.GroupBy, apmMetricsQueryReq.SetGroupBy, ctx)
+		fwutils.SetOptString(apmMetricsQ.SpanKind, apmMetricsQueryReq.SetSpanKind)
+		if !apmMetricsQ.OperationMode.IsNull() {
+			apmMetricsQueryReq.SetOperationMode(datadogV1.MonitorFormulaAndFunctionApmMetricOperationMode(apmMetricsQ.OperationMode.ValueString()))
+		}
+		variableReq.MonitorFormulaAndFunctionApmMetricQueryDefinition = &apmMetricsQueryReq
 		variablesReq = append(variablesReq, variableReq)
 	}
 	return variablesReq
@@ -1287,6 +1400,7 @@ func (r *monitorResource) updateVariablesState(ctx context.Context, state *monit
 	}
 	eventQueryStates := []EventQuery{}
 	CloudCostQueryStates := []CloudCostQuery{}
+	ApmMetricsQueryStates := []ApmMetricsQuery{}
 	for _, v := range *variables {
 		if eventQState := r.buildEventQueryState(ctx, v.MonitorFormulaAndFunctionEventQueryDefinition); eventQState != nil {
 			eventQueryStates = append(eventQueryStates, *eventQState)
@@ -1294,10 +1408,14 @@ func (r *monitorResource) updateVariablesState(ctx context.Context, state *monit
 		if costQState := r.buildCloudCostQueryState(v.MonitorFormulaAndFunctionCostQueryDefinition); costQState != nil {
 			CloudCostQueryStates = append(CloudCostQueryStates, *costQState)
 		}
+		if apmMetricsQState := r.buildApmMetricsQueryState(ctx, v.MonitorFormulaAndFunctionApmMetricQueryDefinition); apmMetricsQState != nil {
+			ApmMetricsQueryStates = append(ApmMetricsQueryStates, *apmMetricsQState)
+		}
 	}
 	state.Variables = []Variable{{
-		EventQuery:     eventQueryStates,
-		CloudCostQuery: CloudCostQueryStates,
+		EventQuery:      eventQueryStates,
+		CloudCostQuery:  CloudCostQueryStates,
+		ApmMetricsQuery: ApmMetricsQueryStates,
 	}}
 }
 
@@ -1365,6 +1483,30 @@ func (r *monitorResource) buildCloudCostQueryState(cloudCostQ *datadogV1.Monitor
 	return &cloudCostQueryState
 }
 
+func (r *monitorResource) buildApmMetricsQueryState(ctx context.Context, apmMetricsQ *datadogV1.MonitorFormulaAndFunctionApmMetricQueryDefinition) *ApmMetricsQuery {
+	if apmMetricsQ == nil {
+		return nil
+	}
+	apmMetricsQueryState := ApmMetricsQuery{
+		DataSource:    types.StringValue(string(apmMetricsQ.DataSource)),
+		Stat:          types.StringValue(string(apmMetricsQ.Stat)),
+		Name:          fwutils.ToTerraformStr(apmMetricsQ.GetNameOk()),
+		Service:       fwutils.ToTerraformStr(apmMetricsQ.GetServiceOk()),
+		OperationName: fwutils.ToTerraformStr(apmMetricsQ.GetOperationNameOk()),
+		ResourceName:  fwutils.ToTerraformStr(apmMetricsQ.GetResourceNameOk()),
+		ResourceHash:  fwutils.ToTerraformStr(apmMetricsQ.GetResourceHashOk()),
+		QueryFilter:   fwutils.ToTerraformStr(apmMetricsQ.GetQueryFilterOk()),
+		SpanKind:      fwutils.ToTerraformStr(apmMetricsQ.GetSpanKindOk()),
+	}
+	if groupBy, ok := apmMetricsQ.GetGroupByOk(); ok && groupBy != nil {
+		apmMetricsQueryState.GroupBy, _ = types.ListValueFrom(ctx, types.StringType, groupBy)
+	}
+	if operationMode, ok := apmMetricsQ.GetOperationModeOk(); ok && operationMode != nil {
+		apmMetricsQueryState.OperationMode = types.StringValue(string(*operationMode))
+	}
+	return &apmMetricsQueryState
+}
+
 func (r *monitorResource) getMonitorId(state *monitorResourceModel) (*int64, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
 	stateId := state.ID.ValueString()
@@ -1414,6 +1556,18 @@ func (r *monitorResource) getAllowCloudCostDataSource() []string {
 
 func (r *monitorResource) getAllowCloudCostAggregator() []string {
 	return enumStrings((*datadogV1.MonitorFormulaAndFunctionCostAggregator)(nil).GetAllowedValues())
+}
+
+func (r *monitorResource) getAllowApmMetricDataSource() []string {
+	return enumStrings((*datadogV1.MonitorFormulaAndFunctionApmMetricDataSource)(nil).GetAllowedValues())
+}
+
+func (r *monitorResource) getAllowApmMetricStat() []string {
+	return enumStrings((*datadogV1.MonitorFormulaAndFunctionApmMetricStat)(nil).GetAllowedValues())
+}
+
+func (r *monitorResource) getAllowApmMetricOperationMode() []string {
+	return enumStrings((*datadogV1.MonitorFormulaAndFunctionApmMetricOperationMode)(nil).GetAllowedValues())
 }
 
 func (r *monitorResource) parseInt(v types.String) *int64 {
