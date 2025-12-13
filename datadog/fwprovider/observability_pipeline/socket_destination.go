@@ -12,8 +12,6 @@ import (
 
 // SocketDestinationModel represents the Terraform model for socket destination configuration
 type SocketDestinationModel struct {
-	Id       types.String       `tfsdk:"id"`
-	Inputs   types.List         `tfsdk:"inputs"`
 	Mode     types.String       `tfsdk:"mode"`
 	Encoding types.String       `tfsdk:"encoding"`
 	Framing  SocketFramingModel `tfsdk:"framing"`
@@ -21,13 +19,13 @@ type SocketDestinationModel struct {
 }
 
 // ExpandSocketDestination converts the Terraform model to the Datadog API model
-func ExpandSocketDestination(ctx context.Context, src *SocketDestinationModel) datadogV2.ObservabilityPipelineConfigDestinationItem {
+func ExpandSocketDestination(ctx context.Context, id string, inputs types.List, src *SocketDestinationModel) datadogV2.ObservabilityPipelineConfigDestinationItem {
 	s := datadogV2.NewObservabilityPipelineSocketDestinationWithDefaults()
-	s.SetId(src.Id.ValueString())
+	s.SetId(id)
 
-	var inputs []string
-	src.Inputs.ElementsAs(ctx, &inputs, false)
-	s.SetInputs(inputs)
+	var inputsList []string
+	inputs.ElementsAs(ctx, &inputsList, false)
+	s.SetInputs(inputsList)
 
 	s.SetMode(datadogV2.ObservabilityPipelineSocketDestinationMode(src.Mode.ValueString()))
 	s.SetEncoding(datadogV2.ObservabilityPipelineSocketDestinationEncoding(src.Encoding.ValueString()))
@@ -69,11 +67,7 @@ func FlattenSocketDestination(ctx context.Context, src *datadogV2.ObservabilityP
 		return nil
 	}
 
-	inputs, _ := types.ListValueFrom(ctx, types.StringType, src.Inputs)
-
 	out := &SocketDestinationModel{
-		Id:       types.StringValue(src.GetId()),
-		Inputs:   inputs,
 		Mode:     types.StringValue(string(src.GetMode())),
 		Encoding: types.StringValue(string(src.GetEncoding())),
 	}
@@ -107,15 +101,6 @@ func SocketDestinationSchema() schema.ListNestedBlock {
 		Description: "The `socket` destination sends logs over TCP or UDP to a remote server.",
 		NestedObject: schema.NestedBlockObject{
 			Attributes: map[string]schema.Attribute{
-				"id": schema.StringAttribute{
-					Required:    true,
-					Description: "The unique identifier for this destination.",
-				},
-				"inputs": schema.ListAttribute{
-					Required:    true,
-					ElementType: types.StringType,
-					Description: "A list of component IDs whose output is used as the `input` for this destination.",
-				},
 				"mode": schema.StringAttribute{
 					Required:    true,
 					Description: "The protocol used to send logs.",
