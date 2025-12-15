@@ -107,6 +107,7 @@ var Resources = []func() resource.Resource{
 	NewDatadogCustomAllocationRuleResource,
 	NewCustomAllocationRulesResource,
 	NewAzureUcConfigResource,
+	NewCloudInventorySyncConfigResource,
 }
 
 var Datasources = []func() datasource.DataSource{
