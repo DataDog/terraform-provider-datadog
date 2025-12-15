@@ -72,6 +72,7 @@ var Resources = []func() resource.Resource{
 	NewTeamMembershipResource,
 	NewTeamPermissionSettingResource,
 	NewTeamResource,
+	NewTeamHierarchyLinksResource,
 	NewUserRoleResource,
 	NewSecurityMonitoringSuppressionResource,
 	NewServiceAccountResource,
@@ -107,6 +108,7 @@ var Resources = []func() resource.Resource{
 	NewDatadogCustomAllocationRuleResource,
 	NewCustomAllocationRulesResource,
 	NewAzureUcConfigResource,
+	NewReferenceTableResource,
 }
 
 var Datasources = []func() datasource.DataSource{
@@ -116,6 +118,7 @@ var Datasources = []func() datasource.DataSource{
 	NewAwsIntegrationExternalIDDataSource,
 	NewAwsIntegrationIAMPermissionsDataSource,
 	NewAwsIntegrationIAMPermissionsStandardDataSource,
+	NewAwsIntegrationIAMPermissionsResourceCollectionDataSource,
 	NewAwsLogsServicesDataSource,
 	NewDatadogApmRetentionFiltersOrderDataSource,
 	NewDatadogDashboardListDataSource,
@@ -128,6 +131,7 @@ var Datasources = []func() datasource.DataSource{
 	NewDatadogServiceAccountDatasource,
 	NewDatadogSoftwareCatalogDataSource,
 	NewDatadogTeamDataSource,
+	NewDatadogTeamHierarchyLinksDataSource,
 	NewDatadogTeamMembershipsDataSource,
 	NewHostsDataSource,
 	NewIPRangesDataSource,
@@ -155,6 +159,8 @@ var Datasources = []func() datasource.DataSource{
 	NewDatadogGcpUcConfigDataSource,
 	NewDatadogCustomAllocationRuleDataSource,
 	NewDatadogAzureUcConfigDataSource,
+	NewDatadogReferenceTableDataSource,
+	NewDatadogReferenceTableRowsDataSource,
 }
 
 // FrameworkProvider struct

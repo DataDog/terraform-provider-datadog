@@ -117,7 +117,7 @@ func (r *syntheticsSuiteResource) Schema(_ context.Context, _ resource.SchemaReq
 						},
 						"alerting_criticality": schema.StringAttribute{
 							Description: "Alerting criticality for the test. Valid values are `ignore`, `critical`.",
-							Optional: true,
+							Optional:   true,
 							Validators: []validator.String{
 								stringvalidator.OneOf("ignore", "critical"),
 							},
