@@ -104,10 +104,6 @@ func TestAccDatadogCostBudget_Update(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr(
 						"datadog_cost_budget.foo", "name", budgetNameUpdated),
-					// The most important!!: ID should remain the same after update, so making sure the id is different between the 2 steps
-					resource.TestCheckResourceAttrPair(
-						"datadog_cost_budget.foo", "id",
-						"datadog_cost_budget.foo", "id"),
 					resource.TestCheckResourceAttr(
 						"datadog_cost_budget.foo", "entries.0.amount", "2000"),
 				),
