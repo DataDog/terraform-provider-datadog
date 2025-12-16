@@ -3,6 +3,7 @@ package test
 import (
 	"context"
 	"fmt"
+	"regexp"
 	"testing"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
@@ -356,4 +357,233 @@ resource "datadog_cost_budget" "foo" {
     month = 202412
   }
 }`, uniq)
+}
+
+// TestAccDatadogCostBudget_Validation verifies client-side validation catches errors during terraform plan
+func TestAccDatadogCostBudget_Validation(t *testing.T) {
+	t.Parallel()
+	_, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	// Test cases for ValidateConfig validation order
+	testCases := []struct {
+		name        string
+		config      string
+		expectError string
+	}{
+		// Validate tags length
+		{
+			name: "TooManyTags",
+			config: `
+resource "datadog_cost_budget" "foo" {
+  name = "test-too-many-tags"
+  metrics_query = "sum:aws.cost.amortized{*} by {team,account,region}"
+  start_month = 202501
+  end_month = 202501
+  entries {
+    amount = 1000
+    month = 202501
+    tag_filters {
+      tag_key = "team"
+      tag_value = "backend"
+    }
+    tag_filters {
+      tag_key = "account"
+      tag_value = "staging"
+    }
+    tag_filters {
+      tag_key = "region"
+      tag_value = "us-east-1"
+    }
+  }
+}`,
+			expectError: "tags must have 0, 1 or 2 elements",
+		},
+		// Validate tags are unique
+		{
+			name: "DuplicateTags",
+			config: `
+resource "datadog_cost_budget" "foo" {
+  name = "test-duplicate-tags"
+  metrics_query = "sum:aws.cost.amortized{*} by {team,team}"
+  start_month = 202501
+  end_month = 202501
+  entries {
+    amount = 1000
+    month = 202501
+    tag_filters {
+      tag_key = "team"
+      tag_value = "backend"
+    }
+    tag_filters {
+      tag_key = "team"
+      tag_value = "frontend"
+    }
+  }
+}`,
+			expectError: "tags must be unique",
+		},
+		// Validate start_month > 0
+		{
+			name: "InvalidStartMonth",
+			config: `
+resource "datadog_cost_budget" "foo" {
+  name = "test-invalid-start-month"
+  metrics_query = "sum:aws.cost.amortized{*}"
+  start_month = 0
+  end_month = 202501
+  entries {
+    amount = 1000
+    month = 202501
+  }
+}`,
+			expectError: "start_month must be greater than 0",
+		},
+		// Validate end_month > 0
+		{
+			name: "InvalidEndMonth",
+			config: `
+resource "datadog_cost_budget" "foo" {
+  name = "test-invalid-end-month"
+  metrics_query = "sum:aws.cost.amortized{*}"
+  start_month = 202501
+  end_month = 0
+  entries {
+    amount = 1000
+    month = 202501
+  }
+}`,
+			expectError: "end_month must be greater than 0",
+		},
+		// Validate end_month >= start_month
+		{
+			name: "EndMonthBeforeStartMonth",
+			config: `
+resource "datadog_cost_budget" "foo" {
+  name = "test-end-before-start"
+  metrics_query = "sum:aws.cost.amortized{*}"
+  start_month = 202512
+  end_month = 202501
+  entries {
+    amount = 1000
+    month = 202501
+  }
+}`,
+			expectError: "end_month must be greater than or equal to start_month",
+		},
+		// Validate entry month in range
+		{
+			name: "MonthOutOfRange",
+			config: `
+resource "datadog_cost_budget" "foo" {
+  name = "test-month-out-of-range"
+  metrics_query = "sum:aws.cost.amortized{*}"
+  start_month = 202501
+  end_month = 202503
+  entries {
+    amount = 1000
+    month = 202506
+  }
+}`,
+			expectError: "entry month must be between start_month and end_month",
+		},
+		// Validate entry amount >= 0
+		{
+			name: "NegativeAmount",
+			config: `
+resource "datadog_cost_budget" "foo" {
+  name = "test-negative-amount"
+  metrics_query = "sum:aws.cost.amortized{*}"
+  start_month = 202501
+  end_month = 202501
+  entries {
+    amount = -100
+    month = 202501
+  }
+}`,
+			expectError: "entry amount must be greater than or equal to 0",
+		},
+		// Validate tag_filters count matches tags
+		{
+			name: "WrongTagCount",
+			config: `
+resource "datadog_cost_budget" "foo" {
+  name = "test-wrong-tag-count"
+  metrics_query = "sum:aws.cost.amortized{*} by {team,account}"
+  start_month = 202501
+  end_month = 202501
+  entries {
+    amount = 1000
+    month = 202501
+    tag_filters {
+      tag_key = "team"
+      tag_value = "backend"
+    }
+  }
+}`,
+			expectError: "entry tag_filters must include all group by tags",
+		},
+		// Validate tag_key is in metrics_query tags
+		{
+			name: "InvalidTagKey",
+			config: `
+resource "datadog_cost_budget" "foo" {
+  name = "test-invalid-tag-key"
+  metrics_query = "sum:aws.cost.amortized{*} by {account}"
+  start_month = 202501
+  end_month = 202501
+  entries {
+    amount = 1000
+    month = 202501
+    tag_filters {
+      tag_key = "wrong_tag"
+      tag_value = "value"
+    }
+  }
+}`,
+			expectError: "tag_key must be one of the values inside the tags array",
+		},
+		// Validate entries exist
+		{
+			name: "NoEntries",
+			config: `
+resource "datadog_cost_budget" "foo" {
+  name = "test-no-entries"
+  metrics_query = "sum:aws.cost.amortized{*}"
+  start_month = 202501
+  end_month = 202501
+}`,
+			expectError: "entries are required",
+		},
+		// Validate all tag combinations have entries for all months
+		{
+			name: "MissingMonths",
+			config: `
+resource "datadog_cost_budget" "foo" {
+  name = "test-missing-months"
+  metrics_query = "sum:aws.cost.amortized{*}"
+  start_month = 202501
+  end_month = 202503
+  entries {
+    amount = 1000
+    month = 202501
+  }
+}`,
+			expectError: "missing entries for tag value pair",
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			resource.Test(t, resource.TestCase{
+				PreCheck:                 func() { testAccPreCheck(t) },
+				ProtoV5ProviderFactories: accProviders,
+				Steps: []resource.TestStep{
+					{
+						Config:      tc.config,
+						ExpectError: regexp.MustCompile(tc.expectError),
+					},
+				},
+			})
+		})
+	}
 }
