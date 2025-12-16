@@ -51,7 +51,7 @@ resource "datadog_cloud_inventory_sync_config" "gcp_example" {
 
 ### Required
 
-- `cloud_provider` (String) The cloud provider type. Valid values are `aws`, `azure`, `gcp`. Valid values are `aws`, `azure`, `gcp`.
+- `cloud_provider` (String) The cloud provider type. Valid values are `aws`, `azure`, and `gcp`.
 
 ### Optional
 
