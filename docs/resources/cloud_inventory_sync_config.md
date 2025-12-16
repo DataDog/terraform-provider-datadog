@@ -67,7 +67,7 @@ resource "datadog_cloud_inventory_sync_config" "gcp_example" {
 - `destination_prefix` (String) Name of the prefix holding the inventory files.
 - `gcp_destination_bucket_name` (String) Name of the GCP bucket holding the inventory files. Required when cloud_provider is `gcp`.
 - `gcp_project_id` (String) GCP Project ID of the project holding the bucket. Required when cloud_provider is `gcp`.
-- `gcp_service_account_email` (String) Service account email used for reading the bucket. Required when cloud_provider is `gcp`.
+- `gcp_service_account_email` (String) Email of the GCP service account used to read the bucket. Required when cloud_provider is `gcp`.
 - `gcp_source_bucket_name` (String) Name of the GCP bucket for which the inventory report is generated. Required when cloud_provider is `gcp`.
 
 ### Read-Only
