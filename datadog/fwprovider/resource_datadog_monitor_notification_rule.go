@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/resourcevalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/setvalidator"
@@ -14,6 +15,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/fwutils"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
@@ -30,14 +32,26 @@ type MonitorNotificationRuleResource struct {
 }
 
 type MonitorNotificationRuleModel struct {
-	ID                            types.String                   `tfsdk:"id"`
-	Name                          types.String                   `tfsdk:"name"`
-	Recipients                    types.Set                      `tfsdk:"recipients"`
-	MonitorNotificationRuleFilter *MonitorNotificationRuleFilter `tfsdk:"filter"`
+	ID                                           types.String                                  `tfsdk:"id"`
+	Name                                         types.String                                  `tfsdk:"name"`
+	Recipients                                   types.Set                                     `tfsdk:"recipients"`
+	MonitorNotificationRuleFilter                *MonitorNotificationRuleFilter                `tfsdk:"filter"`
+	MonitorNotificationRuleConditionalRecipients *MonitorNotificationRuleConditionalRecipients `tfsdk:"conditional_recipients"`
 }
 
 type MonitorNotificationRuleFilter struct {
-	Tags types.Set `tfsdk:"tags"`
+	Scope types.String `tfsdk:"scope"`
+	Tags  types.Set    `tfsdk:"tags"`
+}
+
+type MonitorNotificationRuleConditionalRecipientsCondition struct {
+	Scope      types.String `tfsdk:"scope"`
+	Recipients types.Set    `tfsdk:"recipients"`
+}
+
+type MonitorNotificationRuleConditionalRecipients struct {
+	MonitorNotificationRuleConditionalRecipientsConditions []MonitorNotificationRuleConditionalRecipientsCondition `tfsdk:"conditions"`
+	FallbackRecipients                                     types.Set                                               `tfsdk:"fallback_recipients"`
 }
 
 func NewMonitorNotificationRuleResource() resource.Resource {
@@ -48,6 +62,11 @@ func (r *MonitorNotificationRuleResource) ConfigValidators(ctx context.Context) 
 	return []resource.ConfigValidator{
 		resourcevalidator.ExactlyOneOf(
 			frameworkPath.MatchRoot("filter").AtName("tags"),
+			frameworkPath.MatchRoot("filter").AtName("scope"),
+		),
+		resourcevalidator.ExactlyOneOf(
+			frameworkPath.MatchRoot("recipients"),
+			frameworkPath.MatchRoot("conditional_recipients"),
 		),
 	}
 }
@@ -72,9 +91,9 @@ func (r *MonitorNotificationRuleResource) Schema(_ context.Context, _ resource.S
 				Description: "The name of the monitor notification rule.",
 			},
 			"recipients": schema.SetAttribute{
-				Required:    true,
 				ElementType: types.StringType,
-				Description: "List of recipients to notify.",
+				Description: "List of recipients to notify. Cannot be used with `conditional_recipients`.",
+				Optional:    true,
 				Validators: []validator.Set{
 					setvalidator.SizeAtLeast(1),
 				},
@@ -84,16 +103,57 @@ func (r *MonitorNotificationRuleResource) Schema(_ context.Context, _ resource.S
 			"filter": schema.SingleNestedBlock{
 				Attributes: map[string]schema.Attribute{
 					"tags": schema.SetAttribute{
-						Required:    true,
 						ElementType: types.StringType,
+						Optional:    true,
 						Description: "All tags that target monitors must match.",
 						Validators: []validator.Set{
 							setvalidator.SizeAtLeast(1),
 						},
 					},
+					"scope": schema.StringAttribute{
+						Description: "The scope to which the monitor applied.",
+						Optional:    true,
+					},
 				},
 				Validators: []validator.Object{
 					objectvalidator.IsRequired(),
+				},
+			},
+			"conditional_recipients": schema.SingleNestedBlock{
+				Description: "Use conditional recipients to define different recipients for different situations. Cannot be used with `recipients`.",
+				Attributes: map[string]schema.Attribute{
+					"fallback_recipients": schema.SetAttribute{
+						ElementType: types.StringType,
+						Optional:    true,
+						Description: "If none of the `conditions` applied, `fallback_recipients` will get notified.",
+						Validators: []validator.Set{
+							setvalidator.SizeAtLeast(1),
+						},
+					},
+				},
+				Blocks: map[string]schema.Block{
+					"conditions": schema.ListNestedBlock{
+						Description: "Conditions of the notification rule.",
+						Validators: []validator.List{
+							listvalidator.SizeAtLeast(1),
+						},
+						NestedObject: schema.NestedBlockObject{
+							Attributes: map[string]schema.Attribute{
+								"scope": schema.StringAttribute{
+									Required:    true,
+									Description: "The scope to which the monitor applied.",
+								},
+								"recipients": schema.SetAttribute{
+									ElementType: types.StringType,
+									Description: "List of recipients to notify.",
+									Required:    true,
+									Validators: []validator.Set{
+										setvalidator.SizeAtLeast(1),
+									},
+								},
+							},
+						},
+					},
 				},
 			},
 		},
@@ -204,36 +264,74 @@ func (r *MonitorNotificationRuleResource) updateState(ctx context.Context, state
 	attributes := data.GetAttributes()
 
 	state.Name = types.StringValue(attributes.GetName())
-	state.Recipients, _ = types.SetValueFrom(ctx, types.StringType, attributes.GetRecipients())
+	state.Recipients = fwutils.ToTerraformSetString(ctx, attributes.GetRecipientsOk)
 
-	if filter := attributes.GetFilter(); filter.MonitorNotificationRuleFilterTags != nil {
-		tags, _ := types.SetValueFrom(ctx, types.StringType, filter.MonitorNotificationRuleFilterTags.GetTags())
+	if filter, ok := attributes.GetFilterOk(); ok && filter != nil {
 		state.MonitorNotificationRuleFilter = &MonitorNotificationRuleFilter{
-			Tags: tags,
+			Scope: fwutils.ToTerraformStr(filter.MonitorNotificationRuleFilterScope.GetScopeOk()),
+			Tags:  fwutils.ToTerraformSetString(ctx, filter.MonitorNotificationRuleFilterTags.GetTagsOk),
 		}
+	}
+	r.updateConditionalRecipientsState(ctx, state, attributes)
+}
+
+func (r *MonitorNotificationRuleResource) updateConditionalRecipientsState(ctx context.Context, state *MonitorNotificationRuleModel, attributes datadogV2.MonitorNotificationRuleResponseAttributes) {
+	conditionalRecipients, ok := attributes.GetConditionalRecipientsOk()
+	if !ok || conditionalRecipients == nil {
+		return
+	}
+
+	conditionsPtr, ok := conditionalRecipients.GetConditionsOk()
+	if !ok || conditionsPtr == nil {
+		// In practice, will never hit this scenario
+		return
+	}
+
+	conditions := *conditionsPtr
+	conditionsState := make([]MonitorNotificationRuleConditionalRecipientsCondition, 0, len(conditions))
+	for _, condition := range conditions {
+		conditionState := MonitorNotificationRuleConditionalRecipientsCondition{
+			Scope:      fwutils.ToTerraformStr(condition.GetScopeOk()),
+			Recipients: fwutils.ToTerraformSetString(ctx, condition.GetRecipientsOk),
+		}
+		conditionsState = append(conditionsState, conditionState)
+	}
+
+	state.MonitorNotificationRuleConditionalRecipients = &MonitorNotificationRuleConditionalRecipients{
+		MonitorNotificationRuleConditionalRecipientsConditions: conditionsState,
+		FallbackRecipients: fwutils.ToTerraformSetString(ctx, conditionalRecipients.GetFallbackRecipientsOk),
 	}
 }
 
-func buildRequestAttributes(ctx context.Context, state *MonitorNotificationRuleModel) (*datadogV2.MonitorNotificationRuleAttributes, diag.Diagnostics) {
+func (r *MonitorNotificationRuleResource) buildRequestAttributes(ctx context.Context, state *MonitorNotificationRuleModel) (*datadogV2.MonitorNotificationRuleAttributes, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
 	attributes := datadogV2.NewMonitorNotificationRuleAttributesWithDefaults()
 
 	attributes.SetName(state.Name.ValueString())
 
-	var recipients []string
-	diags.Append(state.Recipients.ElementsAs(ctx, &recipients, false)...)
-	attributes.SetRecipients(recipients)
+	notificationRuleFilter := datadogV2.MonitorNotificationRuleFilter{}
+	if !state.MonitorNotificationRuleFilter.Scope.IsNull() {
+		scopeFilter := datadogV2.MonitorNotificationRuleFilterScope{}
+		fwutils.SetOptString(state.MonitorNotificationRuleFilter.Scope, scopeFilter.SetScope)
+		notificationRuleFilter.MonitorNotificationRuleFilterScope = &scopeFilter
+	} else if !state.MonitorNotificationRuleFilter.Tags.IsNull() {
+		tagsFilter := datadogV2.MonitorNotificationRuleFilterTags{}
+		fwutils.SetOptStringList(state.MonitorNotificationRuleFilter.Tags, tagsFilter.SetTags, ctx)
+		notificationRuleFilter.MonitorNotificationRuleFilterTags = &tagsFilter
+	}
+	attributes.SetFilter(notificationRuleFilter)
 
-	var tags []string
-	diags.Append(state.MonitorNotificationRuleFilter.Tags.ElementsAs(ctx, &tags, false)...)
-	filterTags := datadogV2.NewMonitorNotificationRuleFilterTags(tags)
-	attributes.SetFilter(datadogV2.MonitorNotificationRuleFilter{MonitorNotificationRuleFilterTags: filterTags})
+	fwutils.SetOptStringList(state.Recipients, attributes.SetRecipients, ctx)
+
+	if conditionalRecipientsStruct := r.buildConditionalRecipientsRequest(ctx, state.MonitorNotificationRuleConditionalRecipients); conditionalRecipientsStruct != nil {
+		attributes.SetConditionalRecipients(*conditionalRecipientsStruct)
+	}
 
 	return attributes, diags
 }
 
 func (r *MonitorNotificationRuleResource) buildMonitorNotificationRuleCreateRequest(ctx context.Context, state *MonitorNotificationRuleModel) (*datadogV2.MonitorNotificationRuleCreateRequest, diag.Diagnostics) {
-	attributes, diags := buildRequestAttributes(ctx, state)
+	attributes, diags := r.buildRequestAttributes(ctx, state)
 
 	data := datadogV2.NewMonitorNotificationRuleCreateRequestDataWithDefaults()
 	data.SetType(resourceType)
@@ -245,7 +343,7 @@ func (r *MonitorNotificationRuleResource) buildMonitorNotificationRuleCreateRequ
 }
 
 func (r *MonitorNotificationRuleResource) buildMonitorNotificationRuleUpdateRequest(ctx context.Context, state *MonitorNotificationRuleModel) (*datadogV2.MonitorNotificationRuleUpdateRequest, diag.Diagnostics) {
-	attributes, diags := buildRequestAttributes(ctx, state)
+	attributes, diags := r.buildRequestAttributes(ctx, state)
 
 	data := datadogV2.NewMonitorNotificationRuleUpdateRequestDataWithDefaults()
 	data.SetId(state.ID.ValueString())
@@ -255,4 +353,21 @@ func (r *MonitorNotificationRuleResource) buildMonitorNotificationRuleUpdateRequ
 	req := datadogV2.NewMonitorNotificationRuleUpdateRequestWithDefaults()
 	req.SetData(*data)
 	return req, diags
+}
+
+func (r *MonitorNotificationRuleResource) buildConditionalRecipientsRequest(ctx context.Context, conditionalRecipients *MonitorNotificationRuleConditionalRecipients) *datadogV2.MonitorNotificationRuleConditionalRecipients {
+	if conditionalRecipients == nil {
+		return nil
+	}
+	conditionalRecipientsReq := datadogV2.MonitorNotificationRuleConditionalRecipients{}
+	conditionsReq := []datadogV2.MonitorNotificationRuleCondition{}
+	for _, condition := range conditionalRecipients.MonitorNotificationRuleConditionalRecipientsConditions {
+		conditionReq := datadogV2.MonitorNotificationRuleCondition{}
+		fwutils.SetOptStringList(condition.Recipients, conditionReq.SetRecipients, ctx)
+		fwutils.SetOptString(condition.Scope, conditionReq.SetScope)
+		conditionsReq = append(conditionsReq, conditionReq)
+	}
+	conditionalRecipientsReq.SetConditions(conditionsReq)
+	fwutils.SetOptStringList(conditionalRecipients.FallbackRecipients, conditionalRecipientsReq.SetFallbackRecipients, ctx)
+	return &conditionalRecipientsReq
 }

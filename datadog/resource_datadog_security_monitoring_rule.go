@@ -1924,8 +1924,7 @@ func buildUpdatePayload(d *schema.ResourceData) (*datadogV2.SecurityMonitoringRu
 		}
 		payload.SetTags(tags)
 	} else {
-		// Hack because the Go client does not serialize empty arrays to the JSON payload
-		payload.AdditionalProperties = map[string]any{"tags": []string{}}
+		payload.SetTags([]string{})
 	}
 
 	tfFilters := d.Get("filter")
@@ -1940,6 +1939,13 @@ func buildUpdatePayload(d *schema.ResourceData) (*datadogV2.SecurityMonitoringRu
 			payload.SetReferenceTables(make([]datadogV2.SecurityMonitoringReferenceTable, 0))
 		}
 
+		if v, ok := d.GetOk("group_signals_by"); ok {
+			payload.SetGroupSignalsBy(parseStringArray(v.([]interface{})))
+		} else if d.HasChange("group_signals_by") {
+			// Only send empty list if group_signals_by was removed in config
+			payload.SetGroupSignalsBy([]string{})
+		}
+
 		if v, ok := d.GetOk("scheduling_options"); ok {
 			tfSchedulingOptions := v.([]any)
 			payload.SetSchedulingOptions(*buildPayloadSchedulingOptions(tfSchedulingOptions))
@@ -1947,11 +1953,10 @@ func buildUpdatePayload(d *schema.ResourceData) (*datadogV2.SecurityMonitoringRu
 			payload.SetSchedulingOptionsNil()
 		}
 
-		if v, ok := d.GetOk("calculated_fields"); ok {
+		if v, ok := d.GetOk("calculated_field"); ok {
 			payload.SetCalculatedFields(buildPayloadCalculatedFields(v.([]any)))
 		} else {
-			// Hack because the Go client does not serialize empty arrays to the JSON payload
-			payload.AdditionalProperties = map[string]any{"calculatedFields": []string{}}
+			payload.SetCalculatedFields([]datadogV2.CalculatedField{})
 		}
 	}
 
