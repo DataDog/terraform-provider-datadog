@@ -55,7 +55,7 @@ resource "datadog_cloud_inventory_sync_config" "gcp_example" {
 
 ### Optional
 
-- `aws_account_id` (String) AWS Account ID of the account holding the bucket. Required when cloud_provider is `aws`.
+- `aws_account_id` (String) AWS Account ID of the account where the bucket is located. Required when cloud_provider is `aws`.
 - `azure_client_id` (String) Azure Client ID. Required when cloud_provider is `azure`.
 - `azure_container` (String) Azure Container name. Required when cloud_provider is `azure`.
 - `azure_resource_group` (String) Azure Resource Group. Required when cloud_provider is `azure`.
