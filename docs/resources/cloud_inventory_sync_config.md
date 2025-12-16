@@ -76,9 +76,7 @@ resource "datadog_cloud_inventory_sync_config" "gcp_example" {
 
 ## Import
 
-Import is supported using the following syntax:
-
-The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
+Import is supported using the [`terraform import`](https://developer.hashicorp.com/terraform/cli/commands/import) command. For example:
 
 ```shell
 # Cloud Inventory Sync Configs can be imported using the ID format specific to each cloud provider.
