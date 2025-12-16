@@ -2168,3 +2168,121 @@ func TestAccDatadogMonitor_WithTagConfig(t *testing.T) {
 		},
 	})
 }
+
+func TestAccDatadogMonitor_Assets(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	monitorName := uniqueEntityName(ctx, t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogMonitorDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogMonitorAssetsConfigClassic(monitorName),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogMonitorExists(accProvider),
+					resource.TestCheckResourceAttr("datadog_monitor.foo", "name", monitorName),
+					resource.TestCheckResourceAttr("datadog_monitor.foo", "type", "query alert"),
+					resource.TestCheckResourceAttr("datadog_monitor.foo", "assets.#", "2"),
+					resource.TestCheckResourceAttr("datadog_monitor.foo", "assets.0.name", "Datadog Runbook"),
+					resource.TestCheckResourceAttr("datadog_monitor.foo", "assets.0.url", "/notebook/1234"),
+					resource.TestCheckResourceAttr("datadog_monitor.foo", "assets.0.category", "runbook"),
+					resource.TestCheckResourceAttr("datadog_monitor.foo", "assets.0.resource_key", "1234"),
+					resource.TestCheckResourceAttr("datadog_monitor.foo", "assets.0.resource_type", "notebook"),
+					resource.TestCheckResourceAttr("datadog_monitor.foo", "assets.1.name", "Confluence Runbook"),
+					resource.TestCheckResourceAttr("datadog_monitor.foo", "assets.1.url", "https://datadoghq.atlassian.net/wiki/spaces/ENG/pages/12345/Runbook"),
+					resource.TestCheckResourceAttr("datadog_monitor.foo", "assets.1.category", "runbook"),
+				),
+			},
+			{
+				Config: testAccCheckDatadogMonitorAssetsConfigUpdated(monitorName),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogMonitorExists(accProvider),
+					resource.TestCheckResourceAttr("datadog_monitor.foo", "name", monitorName),
+					resource.TestCheckResourceAttr("datadog_monitor.foo", "type", "query alert"),
+					resource.TestCheckResourceAttr("datadog_monitor.foo", "assets.#", "3"),
+					resource.TestCheckResourceAttr("datadog_monitor.foo", "assets.0.name", "Datadog Runbook 2"),
+					resource.TestCheckResourceAttr("datadog_monitor.foo", "assets.0.url", "/notebook/5678"),
+					resource.TestCheckResourceAttr("datadog_monitor.foo", "assets.0.category", "runbook"),
+					resource.TestCheckResourceAttr("datadog_monitor.foo", "assets.0.resource_key", "5678"),
+					resource.TestCheckResourceAttr("datadog_monitor.foo", "assets.0.resource_type", "notebook"),
+					resource.TestCheckResourceAttr("datadog_monitor.foo", "assets.1.name", "Confluence Runbook"),
+					resource.TestCheckResourceAttr("datadog_monitor.foo", "assets.1.url", "https://datadoghq.atlassian.net/wiki/spaces/ENG/pages/12345/Runbook"),
+					resource.TestCheckResourceAttr("datadog_monitor.foo", "assets.1.category", "runbook"),
+					resource.TestCheckResourceAttr("datadog_monitor.foo", "assets.2.name", "Google Doc Runbook"),
+					resource.TestCheckResourceAttr("datadog_monitor.foo", "assets.2.url", "https://docs.google.com/runbook"),
+					resource.TestCheckResourceAttr("datadog_monitor.foo", "assets.2.category", "runbook"),
+				),
+			},
+		},
+	})
+}
+
+func testAccCheckDatadogMonitorAssetsConfigClassic(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_monitor" "foo" {
+  name    = "%s"
+  type    = "query alert"
+  message = "some message Notify: @hipchat-channel"
+
+  query = "avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2"
+
+  monitor_thresholds {
+	warning  = "1.0"
+	critical = "2.0"
+  }
+
+  assets {
+	name               = "Datadog Runbook"
+	url                = "/notebook/1234"
+	category           = "runbook"
+	resource_key       = "1234"
+	resource_type      = "notebook"
+  }
+
+  assets {
+	name               = "Confluence Runbook"
+	url                = "https://datadoghq.atlassian.net/wiki/spaces/ENG/pages/12345/Runbook"
+	category           = "runbook"
+  }
+}`, uniq)
+}
+
+func testAccCheckDatadogMonitorAssetsConfigUpdated(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_monitor" "foo" {
+  name    = "%s"
+  type    = "query alert"
+  message = "some message Notify: @hipchat-channel"
+
+  query = "avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2"
+
+  monitor_thresholds {
+	warning  = "1.0"
+	critical = "2.0"
+  }
+
+  assets {
+	name               = "Datadog Runbook 2"
+	url                = "/notebook/5678"
+	category           = "runbook"
+	resource_key       = "5678"
+	resource_type      = "notebook"
+  }
+
+  assets {
+	name               = "Confluence Runbook"
+	url                = "https://datadoghq.atlassian.net/wiki/spaces/ENG/pages/12345/Runbook"
+	category           = "runbook"
+  }
+
+  assets {
+	name               = "Google Doc Runbook"
+	url                = "https://docs.google.com/runbook"
+	category           = "runbook"
+  }
+}`, uniq)
+}
