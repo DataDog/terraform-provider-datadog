@@ -8,7 +8,7 @@ description: |-
 
 # datadog_cloud_inventory_sync_config (Resource)
 
-Provides a Datadog Cloud Inventory Sync Config resource. This can be used to create cloud inventory sync configurations for AWS, Azure, or GCP.
+Provides a Datadog Cloud Inventory Sync Config resource for configuring cloud inventory syncs with AWS, Azure, or GCP.
 
 ## Example Usage
 
