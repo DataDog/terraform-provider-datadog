@@ -12,9 +12,9 @@ import (
 
 // CrowdStrikeNextGenSiemDestinationModel represents the Terraform model for the CrowdStrikeNextGenSiemDestination
 type CrowdStrikeNextGenSiemDestinationModel struct {
-	Encoding    types.String      `tfsdk:"encoding"`
-	Compression *compressionModel `tfsdk:"compression"`
-	Tls         *tlsModel         `tfsdk:"tls"`
+	Encoding    types.String       `tfsdk:"encoding"`
+	Compression []compressionModel `tfsdk:"compression"`
+	Tls         []TlsModel         `tfsdk:"tls"`
 }
 
 // CrowdStrikeNextGenSiemDestinationSchema returns the schema for the CrowdStrikeNextGenSiemDestination
@@ -51,19 +51,11 @@ func ExpandCrowdStrikeNextGenSiemDestination(ctx context.Context, id string, inp
 	dest.SetEncoding(datadogV2.ObservabilityPipelineCrowdStrikeNextGenSiemDestinationEncoding(src.Encoding.ValueString()))
 
 	// Handle compression configuration
-	if src.Compression != nil {
-		compression := ExpandCompression(src.Compression)
-		if compression != nil {
-			dest.SetCompression(*compression)
-		}
+	if len(src.Compression) > 0 {
+		dest.Compression = ExpandCompression(src.Compression)
 	}
-
-	// Handle TLS configuration
-	if src.Tls != nil {
-		tls := ExpandTls(src.Tls)
-		if tls != nil {
-			dest.SetTls(*tls)
-		}
+	if len(src.Tls) > 0 {
+		dest.Tls = ExpandTls(src.Tls)
 	}
 
 	return datadogV2.ObservabilityPipelineConfigDestinationItem{
@@ -81,16 +73,14 @@ func FlattenCrowdStrikeNextGenSiemDestination(ctx context.Context, src *datadogV
 		Encoding: types.StringValue(string(src.GetEncoding())),
 	}
 
+	if src.Tls != nil {
+		out.Tls = FlattenTls(src.Tls)
+	}
+
 	// Handle compression configuration
 	if src.Compression != nil {
 		compression := FlattenCompression(src.Compression)
-		out.Compression = &compression
-	}
-
-	// Handle TLS configuration
-	if src.Tls != nil {
-		tls := FlattenTls(src.Tls)
-		out.Tls = &tls
+		out.Compression = []compressionModel{compression}
 	}
 
 	return out

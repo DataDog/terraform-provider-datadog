@@ -10,11 +10,11 @@ import (
 
 // AmazonSecurityLakeDestinationModel represents the Terraform model for the AmazonSecurityLakeDestination
 type AmazonSecurityLakeDestinationModel struct {
-	Bucket           types.String  `tfsdk:"bucket"`
-	Region           types.String  `tfsdk:"region"`
-	CustomSourceName types.String  `tfsdk:"custom_source_name"`
-	Tls              *tlsModel     `tfsdk:"tls"`
-	Auth             *AwsAuthModel `tfsdk:"auth"`
+	Bucket           types.String   `tfsdk:"bucket"`
+	Region           types.String   `tfsdk:"region"`
+	CustomSourceName types.String   `tfsdk:"custom_source_name"`
+	Tls              []TlsModel     `tfsdk:"tls"`
+	Auth             []AwsAuthModel `tfsdk:"auth"`
 }
 
 func AmazonSecurityLakeDestinationSchema() schema.ListNestedBlock {
@@ -60,11 +60,11 @@ func ExpandObservabilityPipelinesAmazonSecurityLakeDestination(ctx context.Conte
 	if !src.CustomSourceName.IsNull() {
 		dest.SetCustomSourceName(src.CustomSourceName.ValueString())
 	}
-	if src.Tls != nil {
+	if len(src.Tls) > 0 {
 		dest.Tls = ExpandTls(src.Tls)
 	}
-	if src.Auth != nil {
-		dest.Auth = ExpandAwsAuth(src.Auth)
+	if len(src.Auth) > 0 {
+		dest.SetAuth(ExpandAwsAuth(src.Auth[0]))
 	}
 
 	return datadogV2.ObservabilityPipelineConfigDestinationItem{
@@ -84,12 +84,11 @@ func FlattenObservabilityPipelinesAmazonSecurityLakeDestination(ctx context.Cont
 	}
 
 	if src.Tls != nil {
-		tls := FlattenTls(src.Tls)
-		model.Tls = &tls
+		model.Tls = FlattenTls(src.Tls)
 	}
+
 	if src.Auth != nil {
-		auth := FlattenAwsAuth(src.Auth)
-		model.Auth = auth
+		model.Auth = FlattenAwsAuth(src.Auth)
 	}
 
 	return model

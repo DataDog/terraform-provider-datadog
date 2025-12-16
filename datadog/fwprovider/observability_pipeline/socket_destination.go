@@ -4,6 +4,7 @@ import (
 	"context"
 
 	datadogV2 "github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
@@ -12,10 +13,10 @@ import (
 
 // SocketDestinationModel represents the Terraform model for socket destination configuration
 type SocketDestinationModel struct {
-	Mode     types.String       `tfsdk:"mode"`
-	Encoding types.String       `tfsdk:"encoding"`
-	Framing  SocketFramingModel `tfsdk:"framing"`
-	Tls      *tlsModel          `tfsdk:"tls"`
+	Mode     types.String         `tfsdk:"mode"`
+	Encoding types.String         `tfsdk:"encoding"`
+	Framing  []SocketFramingModel `tfsdk:"framing"`
+	Tls      []TlsModel           `tfsdk:"tls"`
 }
 
 // ExpandSocketDestination converts the Terraform model to the Datadog API model
@@ -30,7 +31,7 @@ func ExpandSocketDestination(ctx context.Context, id string, inputs types.List, 
 	s.SetMode(datadogV2.ObservabilityPipelineSocketDestinationMode(src.Mode.ValueString()))
 	s.SetEncoding(datadogV2.ObservabilityPipelineSocketDestinationEncoding(src.Encoding.ValueString()))
 
-	switch src.Framing.Method.ValueString() {
+	switch src.Framing[0].Method.ValueString() {
 	case "newline_delimited":
 		s.Framing = datadogV2.ObservabilityPipelineSocketDestinationFraming{
 			ObservabilityPipelineSocketDestinationFramingNewlineDelimited: &datadogV2.ObservabilityPipelineSocketDestinationFramingNewlineDelimited{
@@ -47,13 +48,13 @@ func ExpandSocketDestination(ctx context.Context, id string, inputs types.List, 
 		s.Framing = datadogV2.ObservabilityPipelineSocketDestinationFraming{
 			ObservabilityPipelineSocketDestinationFramingCharacterDelimited: &datadogV2.ObservabilityPipelineSocketDestinationFramingCharacterDelimited{
 				Method:    "character_delimited",
-				Delimiter: src.Framing.CharacterDelimited.Delimiter.ValueString(),
+				Delimiter: src.Framing[0].CharacterDelimited[0].Delimiter.ValueString(),
 			},
 		}
 	}
 
-	if src.Tls != nil {
-		s.SetTls(*ExpandTls(src.Tls))
+	if len(src.Tls) > 0 {
+		s.Tls = ExpandTls(src.Tls)
 	}
 
 	return datadogV2.ObservabilityPipelineConfigDestinationItem{
@@ -72,25 +73,23 @@ func FlattenSocketDestination(ctx context.Context, src *datadogV2.ObservabilityP
 		Encoding: types.StringValue(string(src.GetEncoding())),
 	}
 
-	switch {
-	case src.Framing.ObservabilityPipelineSocketDestinationFramingNewlineDelimited != nil:
-		out.Framing.Method = types.StringValue("newline_delimited")
-	case src.Framing.ObservabilityPipelineSocketDestinationFramingBytes != nil:
-		out.Framing.Method = types.StringValue("bytes")
-	case src.Framing.ObservabilityPipelineSocketDestinationFramingCharacterDelimited != nil:
-		out.Framing.Method = types.StringValue("character_delimited")
-		out.Framing.CharacterDelimited = &SocketFramingCharacterDelimitedModel{
-			Delimiter: types.StringValue(src.Framing.ObservabilityPipelineSocketDestinationFramingCharacterDelimited.Delimiter),
-		}
+	if src.Tls != nil {
+		out.Tls = FlattenTls(src.Tls)
 	}
 
-	if src.Tls != nil {
-		out.Tls = &tlsModel{
-			CrtFile: types.StringValue(src.Tls.GetCrtFile()),
-			CaFile:  types.StringValue(src.Tls.GetCaFile()),
-			KeyFile: types.StringValue(src.Tls.GetKeyFile()),
-		}
+	outFraming := SocketFramingModel{}
+	switch {
+	case src.Framing.ObservabilityPipelineSocketDestinationFramingNewlineDelimited != nil:
+		outFraming.Method = types.StringValue("newline_delimited")
+	case src.Framing.ObservabilityPipelineSocketDestinationFramingBytes != nil:
+		outFraming.Method = types.StringValue("bytes")
+	case src.Framing.ObservabilityPipelineSocketDestinationFramingCharacterDelimited != nil:
+		outFraming.Method = types.StringValue("character_delimited")
+		outFraming.CharacterDelimited = []SocketFramingCharacterDelimitedModel{{
+			Delimiter: types.StringValue(src.Framing.ObservabilityPipelineSocketDestinationFramingCharacterDelimited.Delimiter),
+		}}
 	}
+	out.Framing = []SocketFramingModel{outFraming}
 
 	return out
 }
@@ -117,31 +116,42 @@ func SocketDestinationSchema() schema.ListNestedBlock {
 				},
 			},
 			Blocks: map[string]schema.Block{
-				"framing": schema.SingleNestedBlock{
+				"framing": schema.ListNestedBlock{
 					Description: "Defines the framing method for outgoing messages.",
-					Attributes: map[string]schema.Attribute{
-						"method": schema.StringAttribute{
-							Required:    true,
-							Description: "The framing method.",
-							Validators: []validator.String{
-								stringvalidator.OneOf(
-									"newline_delimited",
-									"bytes",
-									"character_delimited",
-								),
-							},
-						},
-					},
-					Blocks: map[string]schema.Block{
-						"character_delimited": schema.SingleNestedBlock{
-							Description: "Used when `method` is `character_delimited`. Specifies the delimiter character.",
-							Attributes: map[string]schema.Attribute{
-								"delimiter": schema.StringAttribute{
-									Optional:    true,
-									Description: "A single ASCII character used as a delimiter.",
+					NestedObject: schema.NestedBlockObject{
+						Attributes: map[string]schema.Attribute{
+							"method": schema.StringAttribute{
+								Required:    true,
+								Description: "The framing method.",
+								Validators: []validator.String{
+									stringvalidator.OneOf(
+										"newline_delimited",
+										"bytes",
+										"character_delimited",
+									),
 								},
 							},
 						},
+						Blocks: map[string]schema.Block{
+							"character_delimited": schema.ListNestedBlock{
+								Description: "Used when `method` is `character_delimited`. Specifies the delimiter character.",
+								NestedObject: schema.NestedBlockObject{
+									Attributes: map[string]schema.Attribute{
+										"delimiter": schema.StringAttribute{
+											Required:    true,
+											Description: "A single ASCII character used as a delimiter.",
+										},
+									},
+								},
+								Validators: []validator.List{
+									listvalidator.SizeAtMost(1),
+								},
+							},
+						},
+					},
+					Validators: []validator.List{
+						listvalidator.SizeAtLeast(1),
+						listvalidator.SizeAtMost(1),
 					},
 				},
 				"tls": TlsSchema(),

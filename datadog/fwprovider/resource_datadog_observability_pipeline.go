@@ -33,9 +33,9 @@ type observabilityPipelineResource struct {
 }
 
 type observabilityPipelineModel struct {
-	ID     types.String `tfsdk:"id"`
-	Name   types.String `tfsdk:"name"`
-	Config *configModel `tfsdk:"config"` // config must be a pointer to allow terraform import
+	ID     types.String  `tfsdk:"id"`
+	Name   types.String  `tfsdk:"name"`
+	Config []configModel `tfsdk:"config"`
 }
 
 type configModel struct {
@@ -90,19 +90,19 @@ type sourceModel struct {
 }
 
 type logstashSourceModel struct {
-	Tls *tlsModel `tfsdk:"tls"`
+	Tls []observability_pipeline.TlsModel `tfsdk:"tls"`
 }
 
 type datadogAgentSourceModel struct {
-	Tls *tlsModel `tfsdk:"tls"`
+	Tls []observability_pipeline.TlsModel `tfsdk:"tls"`
 }
 
 type kafkaSourceModel struct {
-	GroupId           types.String            `tfsdk:"group_id"`
-	Topics            []types.String          `tfsdk:"topics"`
-	LibrdkafkaOptions []librdkafkaOptionModel `tfsdk:"librdkafka_option"`
-	Sasl              *kafkaSourceSaslModel   `tfsdk:"sasl"`
-	Tls               *tlsModel               `tfsdk:"tls"`
+	GroupId           types.String                      `tfsdk:"group_id"`
+	Topics            []types.String                    `tfsdk:"topics"`
+	LibrdkafkaOptions []librdkafkaOptionModel           `tfsdk:"librdkafka_option"`
+	Sasl              []kafkaSourceSaslModel            `tfsdk:"sasl"`
+	Tls               []observability_pipeline.TlsModel `tfsdk:"tls"`
 }
 
 type librdkafkaOptionModel struct {
@@ -115,15 +115,9 @@ type kafkaSourceSaslModel struct {
 }
 
 type amazonS3SourceModel struct {
-	Region types.String                         `tfsdk:"region"` // AWS region where the S3 bucket resides
-	Auth   *observability_pipeline.AwsAuthModel `tfsdk:"auth"`   // AWS authentication credentials
-	Tls    *tlsModel                            `tfsdk:"tls"`    // TLS encryption configuration
-}
-
-type tlsModel struct {
-	CrtFile types.String `tfsdk:"crt_file"`
-	CaFile  types.String `tfsdk:"ca_file"`
-	KeyFile types.String `tfsdk:"key_file"`
+	Region types.String                          `tfsdk:"region"` // AWS region where the S3 bucket resides
+	Auth   []observability_pipeline.AwsAuthModel `tfsdk:"auth"`   // AWS authentication credentials
+	Tls    []observability_pipeline.TlsModel     `tfsdk:"tls"`    // TLS encryption configuration
 }
 
 type processorGroupModel struct {
@@ -170,14 +164,14 @@ type ocsfMappingModel struct {
 }
 
 type enrichmentTableProcessorModel struct {
-	Target types.String          `tfsdk:"target"`
-	File   *enrichmentFileModel  `tfsdk:"file"`
-	GeoIp  *enrichmentGeoIpModel `tfsdk:"geoip"`
+	Target types.String           `tfsdk:"target"`
+	File   []enrichmentFileModel  `tfsdk:"file"`
+	GeoIp  []enrichmentGeoIpModel `tfsdk:"geoip"`
 }
 
 type enrichmentFileModel struct {
 	Path     types.String          `tfsdk:"path"`
-	Encoding fileEncodingModel     `tfsdk:"encoding"`
+	Encoding []fileEncodingModel   `tfsdk:"encoding"`
 	Schema   []fileSchemaItemModel `tfsdk:"schema"`
 	Key      []fileKeyItemModel    `tfsdk:"key"`
 }
@@ -263,7 +257,7 @@ type removeFieldsProcessorModel struct {
 type quotaProcessorModel struct {
 	Name                        types.String         `tfsdk:"name"`
 	DropEvents                  types.Bool           `tfsdk:"drop_events"`
-	Limit                       quotaLimitModel      `tfsdk:"limit"`
+	Limit                       []quotaLimitModel    `tfsdk:"limit"`
 	PartitionFields             []types.String       `tfsdk:"partition_fields"`
 	IgnoreWhenMissingPartitions types.Bool           `tfsdk:"ignore_when_missing_partitions"`
 	Overrides                   []quotaOverrideModel `tfsdk:"override"`
@@ -276,8 +270,8 @@ type quotaLimitModel struct {
 }
 
 type quotaOverrideModel struct {
-	Fields []fieldValue    `tfsdk:"field"`
-	Limit  quotaLimitModel `tfsdk:"limit"`
+	Fields []fieldValue      `tfsdk:"field"`
+	Limit  []quotaLimitModel `tfsdk:"limit"`
 }
 
 type fieldValue struct {
@@ -286,8 +280,8 @@ type fieldValue struct {
 }
 
 type amazonOpenSearchDestinationModel struct {
-	BulkIndex types.String               `tfsdk:"bulk_index"`
-	Auth      *amazonOpenSearchAuthModel `tfsdk:"auth"`
+	BulkIndex types.String                `tfsdk:"bulk_index"`
+	Auth      []amazonOpenSearchAuthModel `tfsdk:"auth"`
 }
 
 type amazonOpenSearchAuthModel struct {
@@ -318,11 +312,11 @@ type googleChronicleDestinationModel struct {
 }
 
 type googlePubSubDestinationModel struct {
-	Project  types.String   `tfsdk:"project"`
-	Topic    types.String   `tfsdk:"topic"`
-	Auth     []gcpAuthModel `tfsdk:"auth"`
-	Encoding types.String   `tfsdk:"encoding"`
-	Tls      *tlsModel      `tfsdk:"tls"`
+	Project  types.String                      `tfsdk:"project"`
+	Topic    types.String                      `tfsdk:"topic"`
+	Auth     []gcpAuthModel                    `tfsdk:"auth"`
+	Encoding types.String                      `tfsdk:"encoding"`
+	Tls      []observability_pipeline.TlsModel `tfsdk:"tls"`
 }
 
 type datadogLogsDestinationModel struct {
@@ -350,21 +344,21 @@ type sampleProcessorModel struct {
 }
 
 type fluentdSourceModel struct {
-	Tls *tlsModel `tfsdk:"tls"`
+	Tls []observability_pipeline.TlsModel `tfsdk:"tls"`
 }
 
 type fluentBitSourceModel struct {
-	Tls *tlsModel `tfsdk:"tls"`
+	Tls []observability_pipeline.TlsModel `tfsdk:"tls"`
 }
 
 type httpServerSourceModel struct {
-	AuthStrategy types.String `tfsdk:"auth_strategy"`
-	Decoding     types.String `tfsdk:"decoding"`
-	Tls          *tlsModel    `tfsdk:"tls"`
+	AuthStrategy types.String                      `tfsdk:"auth_strategy"`
+	Decoding     types.String                      `tfsdk:"decoding"`
+	Tls          []observability_pipeline.TlsModel `tfsdk:"tls"`
 }
 
 type splunkHecSourceModel struct {
-	Tls *tlsModel `tfsdk:"tls"` // TLS encryption settings for secure ingestion.
+	Tls []observability_pipeline.TlsModel `tfsdk:"tls"` // TLS encryption settings for secure ingestion.
 }
 
 type generateMetricsProcessorModel struct {
@@ -372,11 +366,11 @@ type generateMetricsProcessorModel struct {
 }
 
 type generatedMetricModel struct {
-	Name       types.String          `tfsdk:"name"`
-	Include    types.String          `tfsdk:"include"`
-	MetricType types.String          `tfsdk:"metric_type"`
-	GroupBy    types.List            `tfsdk:"group_by"`
-	Value      *generatedMetricValue `tfsdk:"value"`
+	Name       types.String           `tfsdk:"name"`
+	Include    types.String           `tfsdk:"include"`
+	MetricType types.String           `tfsdk:"metric_type"`
+	GroupBy    types.List             `tfsdk:"group_by"`
+	Value      []generatedMetricValue `tfsdk:"value"`
 }
 
 type generatedMetricValue struct {
@@ -385,7 +379,7 @@ type generatedMetricValue struct {
 }
 
 type splunkTcpSourceModel struct {
-	Tls *tlsModel `tfsdk:"tls"` // TLS encryption settings for secure transmission.
+	Tls []observability_pipeline.TlsModel `tfsdk:"tls"` // TLS encryption settings for secure transmission.
 }
 
 type splunkHecDestinationModel struct {
@@ -423,23 +417,23 @@ type headerCustomFieldModel struct {
 }
 
 type rsyslogSourceModel struct {
-	Mode types.String `tfsdk:"mode"`
-	Tls  *tlsModel    `tfsdk:"tls"`
+	Mode types.String                      `tfsdk:"mode"`
+	Tls  []observability_pipeline.TlsModel `tfsdk:"tls"`
 }
 
 type syslogNgSourceModel struct {
-	Mode types.String `tfsdk:"mode"`
-	Tls  *tlsModel    `tfsdk:"tls"`
+	Mode types.String                      `tfsdk:"mode"`
+	Tls  []observability_pipeline.TlsModel `tfsdk:"tls"`
 }
 
 type rsyslogDestinationModel struct {
-	Keepalive types.Int64 `tfsdk:"keepalive"`
-	Tls       *tlsModel   `tfsdk:"tls"`
+	Keepalive types.Int64                       `tfsdk:"keepalive"`
+	Tls       []observability_pipeline.TlsModel `tfsdk:"tls"`
 }
 
 type syslogNgDestinationModel struct {
-	Keepalive types.Int64 `tfsdk:"keepalive"`
-	Tls       *tlsModel   `tfsdk:"tls"`
+	Keepalive types.Int64                       `tfsdk:"keepalive"`
+	Tls       []observability_pipeline.TlsModel `tfsdk:"tls"`
 }
 
 type elasticsearchDestinationModel struct {
@@ -464,12 +458,12 @@ type sensitiveDataScannerProcessorModel struct {
 }
 
 type sensitiveDataScannerProcessorRule struct {
-	Name           types.String                                 `tfsdk:"name"`
-	Tags           []types.String                               `tfsdk:"tags"`
-	KeywordOptions *sensitiveDataScannerProcessorKeywordOptions `tfsdk:"keyword_options"`
-	Pattern        *sensitiveDataScannerProcessorPattern        `tfsdk:"pattern"`
-	Scope          *sensitiveDataScannerProcessorScope          `tfsdk:"scope"`
-	OnMatch        *sensitiveDataScannerProcessorAction         `tfsdk:"on_match"`
+	Name           types.String                                  `tfsdk:"name"`
+	Tags           []types.String                                `tfsdk:"tags"`
+	KeywordOptions []sensitiveDataScannerProcessorKeywordOptions `tfsdk:"keyword_options"` // it's not a list in the API thus the plural name
+	Pattern        []sensitiveDataScannerProcessorPattern        `tfsdk:"pattern"`
+	Scope          []sensitiveDataScannerProcessorScope          `tfsdk:"scope"`
+	OnMatch        []sensitiveDataScannerProcessorAction         `tfsdk:"on_match"`
 }
 
 // Nested structs (extracted per your preference)
@@ -479,8 +473,8 @@ type sensitiveDataScannerProcessorKeywordOptions struct {
 }
 
 type sensitiveDataScannerProcessorPattern struct {
-	Custom  *sensitiveDataScannerCustomPattern  `tfsdk:"custom"`
-	Library *sensitiveDataScannerLibraryPattern `tfsdk:"library"`
+	Custom  []sensitiveDataScannerCustomPattern  `tfsdk:"custom"`
+	Library []sensitiveDataScannerLibraryPattern `tfsdk:"library"`
 }
 
 type sensitiveDataScannerCustomPattern struct {
@@ -493,9 +487,9 @@ type sensitiveDataScannerLibraryPattern struct {
 }
 
 type sensitiveDataScannerProcessorScope struct {
-	Include *sensitiveDataScannerScopeOptions `tfsdk:"include"`
-	Exclude *sensitiveDataScannerScopeOptions `tfsdk:"exclude"`
-	All     *bool                             `tfsdk:"all"`
+	Include []sensitiveDataScannerScopeOptions `tfsdk:"include"`
+	Exclude []sensitiveDataScannerScopeOptions `tfsdk:"exclude"`
+	All     *bool                              `tfsdk:"all"`
 }
 
 type sensitiveDataScannerScopeOptions struct {
@@ -503,9 +497,9 @@ type sensitiveDataScannerScopeOptions struct {
 }
 
 type sensitiveDataScannerProcessorAction struct {
-	Redact        *sensitiveDataScannerRedactAction        `tfsdk:"redact"`
-	Hash          *sensitiveDataScannerHashAction          `tfsdk:"hash"`
-	PartialRedact *sensitiveDataScannerPartialRedactAction `tfsdk:"partial_redact"`
+	Redact        []sensitiveDataScannerRedactAction        `tfsdk:"redact"`
+	Hash          []sensitiveDataScannerHashAction          `tfsdk:"hash"`
+	PartialRedact []sensitiveDataScannerPartialRedactAction `tfsdk:"partial_redact"`
 }
 
 type sensitiveDataScannerRedactAction struct {
@@ -525,24 +519,24 @@ type sumoLogicSourceModel struct {
 }
 
 type amazonDataFirehoseSourceModel struct {
-	Auth *observability_pipeline.AwsAuthModel `tfsdk:"auth"`
-	Tls  *tlsModel                            `tfsdk:"tls"`
+	Auth []observability_pipeline.AwsAuthModel `tfsdk:"auth"`
+	Tls  []observability_pipeline.TlsModel     `tfsdk:"tls"`
 }
 
 type httpClientSourceModel struct {
-	Decoding       types.String `tfsdk:"decoding"`
-	ScrapeInterval types.Int64  `tfsdk:"scrape_interval_secs"`
-	ScrapeTimeout  types.Int64  `tfsdk:"scrape_timeout_secs"`
-	AuthStrategy   types.String `tfsdk:"auth_strategy"`
-	Tls            *tlsModel    `tfsdk:"tls"`
+	Decoding       types.String                      `tfsdk:"decoding"`
+	ScrapeInterval types.Int64                       `tfsdk:"scrape_interval_secs"`
+	ScrapeTimeout  types.Int64                       `tfsdk:"scrape_timeout_secs"`
+	AuthStrategy   types.String                      `tfsdk:"auth_strategy"`
+	Tls            []observability_pipeline.TlsModel `tfsdk:"tls"`
 }
 
 type googlePubSubSourceModel struct {
-	Project      types.String   `tfsdk:"project"`
-	Subscription types.String   `tfsdk:"subscription"`
-	Decoding     types.String   `tfsdk:"decoding"`
-	Auth         []gcpAuthModel `tfsdk:"auth"`
-	Tls          *tlsModel      `tfsdk:"tls"`
+	Project      types.String                      `tfsdk:"project"`
+	Subscription types.String                      `tfsdk:"subscription"`
+	Decoding     types.String                      `tfsdk:"decoding"`
+	Auth         []gcpAuthModel                    `tfsdk:"auth"`
+	Tls          []observability_pipeline.TlsModel `tfsdk:"tls"`
 }
 
 type gcpAuthModel struct {
@@ -576,1334 +570,1388 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 			},
 		},
 		Blocks: map[string]schema.Block{
-			"config": schema.SingleNestedBlock{
+			"config": schema.ListNestedBlock{
 				Description: "Configuration for the pipeline.",
-				Blocks: map[string]schema.Block{
-					"source": schema.ListNestedBlock{
-						Description: "List of sources.",
-						NestedObject: schema.NestedBlockObject{
-							Attributes: map[string]schema.Attribute{
-								"id": schema.StringAttribute{
-									Required:    true,
-									Description: "The unique identifier for this source.",
-								},
-							},
-							Blocks: map[string]schema.Block{
-								"datadog_agent": schema.ListNestedBlock{
-									Description: "The `datadog_agent` source collects logs from the Datadog Agent.",
-									NestedObject: schema.NestedBlockObject{
-										Blocks: map[string]schema.Block{
-											"tls": tlsSchema(),
-										},
+				NestedObject: schema.NestedBlockObject{
+					Blocks: map[string]schema.Block{
+						"source": schema.ListNestedBlock{
+							Description: "List of sources.",
+							NestedObject: schema.NestedBlockObject{
+								Attributes: map[string]schema.Attribute{
+									"id": schema.StringAttribute{
+										Required:    true,
+										Description: "The unique identifier for this source.",
 									},
 								},
-								"kafka": schema.ListNestedBlock{
-									Description: "The `kafka` source ingests data from Apache Kafka topics.",
-									NestedObject: schema.NestedBlockObject{
-										Attributes: map[string]schema.Attribute{
-											"group_id": schema.StringAttribute{
-												Required:    true,
-												Description: "The Kafka consumer group ID.",
-											},
-											"topics": schema.ListAttribute{
-												Required:    true,
-												Description: "A list of Kafka topic names to subscribe to. The source ingests messages from each topic specified.",
-												ElementType: types.StringType,
+								Blocks: map[string]schema.Block{
+									"datadog_agent": schema.ListNestedBlock{
+										Description: "The `datadog_agent` source collects logs from the Datadog Agent.",
+										NestedObject: schema.NestedBlockObject{
+											Blocks: map[string]schema.Block{
+												"tls": observability_pipeline.TlsSchema(),
 											},
 										},
-										Blocks: map[string]schema.Block{
-											"librdkafka_option": schema.ListNestedBlock{
-												Description: "Advanced librdkafka client configuration options.",
-												NestedObject: schema.NestedBlockObject{
-													Attributes: map[string]schema.Attribute{
-														"name": schema.StringAttribute{
-															Required:    true,
-															Description: "The name of the librdkafka option.",
-														},
-														"value": schema.StringAttribute{
-															Required:    true,
-															Description: "The value of the librdkafka option.",
-														},
-													},
+									},
+									"kafka": schema.ListNestedBlock{
+										Description: "The `kafka` source ingests data from Apache Kafka topics.",
+										NestedObject: schema.NestedBlockObject{
+											Attributes: map[string]schema.Attribute{
+												"group_id": schema.StringAttribute{
+													Required:    true,
+													Description: "The Kafka consumer group ID.",
+												},
+												"topics": schema.ListAttribute{
+													Required:    true,
+													Description: "A list of Kafka topic names to subscribe to. The source ingests messages from each topic specified.",
+													ElementType: types.StringType,
 												},
 											},
-											"sasl": schema.SingleNestedBlock{
-												Description: "SASL authentication settings.",
-												Attributes: map[string]schema.Attribute{
-													"mechanism": schema.StringAttribute{
-														Optional:    true, // must be optional to make the block optional
-														Description: "SASL mechanism to use (e.g., PLAIN, SCRAM-SHA-256, SCRAM-SHA-512).",
-														Validators: []validator.String{
-															stringvalidator.OneOf("PLAIN", "SCRAM-SHA-256", "SCRAM-SHA-512"),
+											Blocks: map[string]schema.Block{
+												"librdkafka_option": schema.ListNestedBlock{
+													Description: "Advanced librdkafka client configuration options.",
+													NestedObject: schema.NestedBlockObject{
+														Attributes: map[string]schema.Attribute{
+															"name": schema.StringAttribute{
+																Required:    true,
+																Description: "The name of the librdkafka option.",
+															},
+															"value": schema.StringAttribute{
+																Required:    true,
+																Description: "The value of the librdkafka option.",
+															},
 														},
 													},
 												},
-											},
-											"tls": tlsSchema(),
-										},
-									},
-								},
-								"fluentd": schema.ListNestedBlock{
-									Description: "The `fluent` source ingests logs from a Fluentd-compatible service.",
-									NestedObject: schema.NestedBlockObject{
-										Blocks: map[string]schema.Block{
-											"tls": tlsSchema(),
-										},
-									},
-								},
-								"fluent_bit": schema.ListNestedBlock{
-									Description: "The `fluent` source ingests logs from Fluent Bit.",
-									NestedObject: schema.NestedBlockObject{
-										Blocks: map[string]schema.Block{
-											"tls": tlsSchema(),
-										},
-									},
-								},
-								"http_server": schema.ListNestedBlock{
-									Description: "The `http_server` source collects logs over HTTP POST from external services.",
-									NestedObject: schema.NestedBlockObject{
-										Attributes: map[string]schema.Attribute{
-											"auth_strategy": schema.StringAttribute{
-												Required:    true,
-												Description: "HTTP authentication method.",
-												Validators: []validator.String{
-													stringvalidator.OneOf("none", "plain"),
-												},
-											},
-											"decoding": decodingSchema(),
-										},
-										Blocks: map[string]schema.Block{
-											"tls": tlsSchema(),
-										},
-									},
-								},
-								"amazon_s3": schema.ListNestedBlock{
-									Description: "The `amazon_s3` source ingests logs from an Amazon S3 bucket. It supports AWS authentication and TLS encryption.",
-									NestedObject: schema.NestedBlockObject{
-										Attributes: map[string]schema.Attribute{
-											"region": schema.StringAttribute{
-												Required:    true,
-												Description: "AWS region where the S3 bucket resides.",
-											},
-										},
-										Blocks: map[string]schema.Block{
-											"auth": schema.SingleNestedBlock{
-												Description: "AWS authentication credentials used for accessing AWS services such as S3. If omitted, the system's default credentials are used (for example, the IAM role and environment variables).",
-												Attributes: map[string]schema.Attribute{
-													"assume_role": schema.StringAttribute{
-														Optional:    true,
-														Description: "The Amazon Resource Name (ARN) of the role to assume.",
+												"sasl": schema.ListNestedBlock{
+													Description: "SASL authentication settings.",
+													NestedObject: schema.NestedBlockObject{
+														Attributes: map[string]schema.Attribute{
+															"mechanism": schema.StringAttribute{
+																Required:    true,
+																Description: "SASL mechanism to use (e.g., PLAIN, SCRAM-SHA-256, SCRAM-SHA-512).",
+																Validators: []validator.String{
+																	stringvalidator.OneOf("PLAIN", "SCRAM-SHA-256", "SCRAM-SHA-512"),
+																},
+															},
+														},
 													},
-													"external_id": schema.StringAttribute{
-														Optional:    true,
-														Description: "A unique identifier for cross-account role assumption.",
-													},
-													"session_name": schema.StringAttribute{
-														Optional:    true,
-														Description: "A session identifier used for logging and tracing the assumed role session.",
+													Validators: []validator.List{
+														listvalidator.SizeAtMost(1),
 													},
 												},
-											},
-											"tls": tlsSchema(),
-										},
-									},
-								},
-								"splunk_hec": schema.ListNestedBlock{
-									Description: "The `splunk_hec` source implements the Splunk HTTP Event Collector (HEC) API.",
-									NestedObject: schema.NestedBlockObject{
-										Blocks: map[string]schema.Block{
-											"tls": tlsSchema(),
-										},
-									},
-								},
-								"splunk_tcp": schema.ListNestedBlock{
-									Description: "The `splunk_tcp` source receives logs from a Splunk Universal Forwarder over TCP. TLS is supported for secure transmission.",
-									NestedObject: schema.NestedBlockObject{
-										Blocks: map[string]schema.Block{
-											"tls": tlsSchema(),
-										},
-									},
-								},
-								"rsyslog": schema.ListNestedBlock{
-									Description: "The `rsyslog` source listens for logs over TCP or UDP from an `rsyslog` server using the syslog protocol.",
-									NestedObject: schema.NestedBlockObject{
-										Attributes: map[string]schema.Attribute{
-											"mode": schema.StringAttribute{
-												Optional:    true,
-												Description: "Protocol used by the syslog source to receive messages.",
+												"tls": observability_pipeline.TlsSchema(),
 											},
 										},
-										Blocks: map[string]schema.Block{
-											"tls": tlsSchema(),
-										},
 									},
-								},
-								"syslog_ng": schema.ListNestedBlock{
-									Description: "The `syslog_ng` source listens for logs over TCP or UDP from a `syslog-ng` server using the syslog protocol.",
-									NestedObject: schema.NestedBlockObject{
-										Attributes: map[string]schema.Attribute{
-											"mode": schema.StringAttribute{
-												Optional:    true,
-												Description: "Protocol used by the syslog source to receive messages.",
+									"fluentd": schema.ListNestedBlock{
+										Description: "The `fluent` source ingests logs from a Fluentd-compatible service.",
+										NestedObject: schema.NestedBlockObject{
+											Blocks: map[string]schema.Block{
+												"tls": observability_pipeline.TlsSchema(),
 											},
 										},
-										Blocks: map[string]schema.Block{
-											"tls": tlsSchema(),
+									},
+									"fluent_bit": schema.ListNestedBlock{
+										Description: "The `fluent` source ingests logs from Fluent Bit.",
+										NestedObject: schema.NestedBlockObject{
+											Blocks: map[string]schema.Block{
+												"tls": observability_pipeline.TlsSchema(),
+											},
 										},
 									},
-								},
-								"sumo_logic": schema.ListNestedBlock{
-									Description:  "The `sumo_logic` source receives logs from Sumo Logic collectors.",
-									NestedObject: schema.NestedBlockObject{},
-								},
-								"amazon_data_firehose": schema.ListNestedBlock{
-									Description: "The `amazon_data_firehose` source ingests logs from AWS Data Firehose.",
-									NestedObject: schema.NestedBlockObject{
-										Blocks: map[string]schema.Block{
-											"auth": schema.SingleNestedBlock{
-												Description: "AWS authentication credentials used for accessing AWS services such as S3. If omitted, the system's default credentials are used (for example, the IAM role and environment variables).",
-												Attributes: map[string]schema.Attribute{
-													"assume_role": schema.StringAttribute{
-														Optional:    true,
-														Description: "The Amazon Resource Name (ARN) of the role to assume.",
-													},
-													"external_id": schema.StringAttribute{
-														Optional:    true,
-														Description: "A unique identifier for cross-account role assumption.",
-													},
-													"session_name": schema.StringAttribute{
-														Optional:    true,
-														Description: "A session identifier used for logging and tracing the assumed role session.",
+									"http_server": schema.ListNestedBlock{
+										Description: "The `http_server` source collects logs over HTTP POST from external services.",
+										NestedObject: schema.NestedBlockObject{
+											Attributes: map[string]schema.Attribute{
+												"auth_strategy": schema.StringAttribute{
+													Required:    true,
+													Description: "HTTP authentication method.",
+													Validators: []validator.String{
+														stringvalidator.OneOf("none", "plain"),
 													},
 												},
+												"decoding": decodingSchema(),
 											},
-											"tls": tlsSchema(),
+											Blocks: map[string]schema.Block{
+												"tls": observability_pipeline.TlsSchema(),
+											},
 										},
 									},
-								},
-								"http_client": schema.ListNestedBlock{
-									Description: "The `http_client` source scrapes logs from HTTP endpoints at regular intervals.",
-									NestedObject: schema.NestedBlockObject{
-										Attributes: map[string]schema.Attribute{
-											"decoding": schema.StringAttribute{
-												Required:    true,
-												Description: "The decoding format used to interpret incoming logs.",
+									"amazon_s3": schema.ListNestedBlock{
+										Description: "The `amazon_s3` source ingests logs from an Amazon S3 bucket. It supports AWS authentication and TLS encryption.",
+										NestedObject: schema.NestedBlockObject{
+											Attributes: map[string]schema.Attribute{
+												"region": schema.StringAttribute{
+													Required:    true,
+													Description: "AWS region where the S3 bucket resides.",
+												},
 											},
-											"scrape_interval_secs": schema.Int64Attribute{
-												Optional:    true,
-												Description: "The interval (in seconds) between HTTP scrape requests.",
+											Blocks: map[string]schema.Block{
+												"auth": observability_pipeline.AwsAuthSchema(),
+												"tls":  observability_pipeline.TlsSchema(),
 											},
-											"scrape_timeout_secs": schema.Int64Attribute{
-												Optional:    true,
-												Description: "The timeout (in seconds) for each scrape request.",
-											},
-											"auth_strategy": schema.StringAttribute{
-												Optional:    true,
-												Description: "Optional authentication strategy for HTTP requests.",
-											},
-										},
-										Blocks: map[string]schema.Block{
-											"tls": tlsSchema(),
 										},
 									},
-								},
-								"google_pubsub": schema.ListNestedBlock{
-									Description: "The `google_pubsub` source ingests logs from a Google Cloud Pub/Sub subscription.",
-									NestedObject: schema.NestedBlockObject{
-										Attributes: map[string]schema.Attribute{
-											"project": schema.StringAttribute{
-												Required:    true,
-												Description: "The GCP project ID that owns the Pub/Sub subscription.",
+									"splunk_hec": schema.ListNestedBlock{
+										Description: "The `splunk_hec` source implements the Splunk HTTP Event Collector (HEC) API.",
+										NestedObject: schema.NestedBlockObject{
+											Blocks: map[string]schema.Block{
+												"tls": observability_pipeline.TlsSchema(),
 											},
-											"subscription": schema.StringAttribute{
-												Required:    true,
-												Description: "The Pub/Sub subscription name from which messages are consumed.",
-											},
-											"decoding": schema.StringAttribute{
-												Required:    true,
-												Description: "The decoding format used to interpret incoming logs.",
-											},
-										},
-										Blocks: map[string]schema.Block{
-											"auth": gcpAuthSchema(),
-											"tls":  tlsSchema(),
 										},
 									},
-								},
-								"logstash": schema.ListNestedBlock{
-									Description: "The `logstash` source ingests logs from a Logstash forwarder.",
-									NestedObject: schema.NestedBlockObject{
-										Blocks: map[string]schema.Block{
-											"tls": tlsSchema(),
+									"splunk_tcp": schema.ListNestedBlock{
+										Description: "The `splunk_tcp` source receives logs from a Splunk Universal Forwarder over TCP. TLS is supported for secure transmission.",
+										NestedObject: schema.NestedBlockObject{
+											Blocks: map[string]schema.Block{
+												"tls": observability_pipeline.TlsSchema(),
+											},
 										},
 									},
+									"rsyslog": schema.ListNestedBlock{
+										Description: "The `rsyslog` source listens for logs over TCP or UDP from an `rsyslog` server using the syslog protocol.",
+										NestedObject: schema.NestedBlockObject{
+											Attributes: map[string]schema.Attribute{
+												"mode": schema.StringAttribute{
+													Optional:    true,
+													Description: "Protocol used by the syslog source to receive messages.",
+												},
+											},
+											Blocks: map[string]schema.Block{
+												"tls": observability_pipeline.TlsSchema(),
+											},
+										},
+									},
+									"syslog_ng": schema.ListNestedBlock{
+										Description: "The `syslog_ng` source listens for logs over TCP or UDP from a `syslog-ng` server using the syslog protocol.",
+										NestedObject: schema.NestedBlockObject{
+											Attributes: map[string]schema.Attribute{
+												"mode": schema.StringAttribute{
+													Optional:    true,
+													Description: "Protocol used by the syslog source to receive messages.",
+												},
+											},
+											Blocks: map[string]schema.Block{
+												"tls": observability_pipeline.TlsSchema(),
+											},
+										},
+									},
+									"sumo_logic": schema.ListNestedBlock{
+										Description:  "The `sumo_logic` source receives logs from Sumo Logic collectors.",
+										NestedObject: schema.NestedBlockObject{},
+									},
+									"amazon_data_firehose": schema.ListNestedBlock{
+										Description: "The `amazon_data_firehose` source ingests logs from AWS Data Firehose.",
+										NestedObject: schema.NestedBlockObject{
+											Blocks: map[string]schema.Block{
+												"auth": observability_pipeline.AwsAuthSchema(),
+												"tls":  observability_pipeline.TlsSchema(),
+											},
+										},
+									},
+									"http_client": schema.ListNestedBlock{
+										Description: "The `http_client` source scrapes logs from HTTP endpoints at regular intervals.",
+										NestedObject: schema.NestedBlockObject{
+											Attributes: map[string]schema.Attribute{
+												"decoding": schema.StringAttribute{
+													Required:    true,
+													Description: "The decoding format used to interpret incoming logs.",
+												},
+												"scrape_interval_secs": schema.Int64Attribute{
+													Optional:    true,
+													Description: "The interval (in seconds) between HTTP scrape requests.",
+												},
+												"scrape_timeout_secs": schema.Int64Attribute{
+													Optional:    true,
+													Description: "The timeout (in seconds) for each scrape request.",
+												},
+												"auth_strategy": schema.StringAttribute{
+													Optional:    true,
+													Description: "Optional authentication strategy for HTTP requests.",
+												},
+											},
+											Blocks: map[string]schema.Block{
+												"tls": observability_pipeline.TlsSchema(),
+											},
+										},
+									},
+									"google_pubsub": schema.ListNestedBlock{
+										Description: "The `google_pubsub` source ingests logs from a Google Cloud Pub/Sub subscription.",
+										NestedObject: schema.NestedBlockObject{
+											Attributes: map[string]schema.Attribute{
+												"project": schema.StringAttribute{
+													Required:    true,
+													Description: "The GCP project ID that owns the Pub/Sub subscription.",
+												},
+												"subscription": schema.StringAttribute{
+													Required:    true,
+													Description: "The Pub/Sub subscription name from which messages are consumed.",
+												},
+												"decoding": schema.StringAttribute{
+													Required:    true,
+													Description: "The decoding format used to interpret incoming logs.",
+												},
+											},
+											Blocks: map[string]schema.Block{
+												"auth": gcpAuthSchema(),
+												"tls":  observability_pipeline.TlsSchema(),
+											},
+										},
+									},
+									"logstash": schema.ListNestedBlock{
+										Description: "The `logstash` source ingests logs from a Logstash forwarder.",
+										NestedObject: schema.NestedBlockObject{
+											Blocks: map[string]schema.Block{
+												"tls": observability_pipeline.TlsSchema(),
+											},
+										},
+									},
+									"socket": observability_pipeline.SocketSourceSchema(),
 								},
-								"socket": observability_pipeline.SocketSourceSchema(),
 							},
 						},
-					},
-					"processor_group": schema.ListNestedBlock{
-						Description: "A processor group containing common configuration and nested processors.",
-						NestedObject: schema.NestedBlockObject{
-							Attributes: map[string]schema.Attribute{
-								"id": schema.StringAttribute{
-									Required:    true,
-									Description: "The unique ID of the processor group.",
+						"processor_group": schema.ListNestedBlock{
+							Description: "A processor group containing common configuration and nested processors.",
+							NestedObject: schema.NestedBlockObject{
+								Attributes: map[string]schema.Attribute{
+									"id": schema.StringAttribute{
+										Required:    true,
+										Description: "The unique ID of the processor group.",
+									},
+									"enabled": schema.BoolAttribute{
+										Required:    true,
+										Description: "Whether this processor group is enabled.",
+									},
+									"include": schema.StringAttribute{
+										Required:    true,
+										Description: "A Datadog search query used to determine which logs this processor group targets.",
+									},
+									"inputs": schema.ListAttribute{
+										Required:    true,
+										ElementType: types.StringType,
+										Description: "A list of component IDs whose output is used as the input for this processor group.",
+									},
 								},
-								"enabled": schema.BoolAttribute{
-									Required:    true,
-									Description: "Whether this processor group is enabled.",
-								},
-								"include": schema.StringAttribute{
-									Required:    true,
-									Description: "A Datadog search query used to determine which logs this processor group targets.",
-								},
-								"inputs": schema.ListAttribute{
-									Required:    true,
-									ElementType: types.StringType,
-									Description: "A list of component IDs whose output is used as the input for this processor group.",
-								},
-							},
-							Blocks: map[string]schema.Block{
-								"processor": schema.ListNestedBlock{
-									Description: "The processor contained in this group.",
-									NestedObject: schema.NestedBlockObject{
-										Attributes: map[string]schema.Attribute{
-											"id": schema.StringAttribute{
-												Required:    true,
-												Description: "The unique identifier for this processor.",
-											},
-											"enabled": schema.BoolAttribute{
-												Required:    true,
-												Description: "Whether this processor is enabled.",
-											},
-											"include": schema.StringAttribute{
-												Required:    true,
-												Description: "A Datadog search query used to determine which logs this processor targets.",
-											},
-										},
-										Blocks: map[string]schema.Block{
-											"filter": schema.ListNestedBlock{
-												Description: "The `filter` processor allows conditional processing of logs based on a Datadog search query. Logs that match the `include` query are passed through; others are discarded.",
-												Validators: []validator.List{
-													listvalidator.SizeAtMost(1),
+								Blocks: map[string]schema.Block{
+									"processor": schema.ListNestedBlock{
+										Description: "The processor contained in this group.",
+										NestedObject: schema.NestedBlockObject{
+											Attributes: map[string]schema.Attribute{
+												"id": schema.StringAttribute{
+													Required:    true,
+													Description: "The unique identifier for this processor.",
 												},
-												NestedObject: schema.NestedBlockObject{
-													Attributes: map[string]schema.Attribute{},
+												"enabled": schema.BoolAttribute{
+													Required:    true,
+													Description: "Whether this processor is enabled.",
+												},
+												"include": schema.StringAttribute{
+													Required:    true,
+													Description: "A Datadog search query used to determine which logs this processor targets.",
 												},
 											},
-											"parse_json": schema.ListNestedBlock{
-												Description: "The `parse_json` processor extracts JSON from a specified field and flattens it into the event. This is useful when logs contain embedded JSON as a string.",
-												Validators: []validator.List{
-													listvalidator.SizeAtMost(1),
-												},
-												NestedObject: schema.NestedBlockObject{
-													Attributes: map[string]schema.Attribute{
-														"field": schema.StringAttribute{
-															Required:    true,
-															Description: "The field to parse.",
-														},
+											Blocks: map[string]schema.Block{
+												"filter": schema.ListNestedBlock{
+													Description: "The `filter` processor allows conditional processing of logs based on a Datadog search query. Logs that match the `include` query are passed through; others are discarded.",
+													Validators: []validator.List{
+														listvalidator.SizeAtMost(1),
+													},
+													NestedObject: schema.NestedBlockObject{
+														Attributes: map[string]schema.Attribute{},
 													},
 												},
-											},
-											"add_fields": schema.ListNestedBlock{
-												Description: "The `add_fields` processor adds static key-value fields to logs.",
-												Validators: []validator.List{
-													listvalidator.SizeAtMost(1),
-												},
-												NestedObject: schema.NestedBlockObject{
-													Attributes: map[string]schema.Attribute{},
-													Blocks: map[string]schema.Block{
-														"field": schema.ListNestedBlock{
-															Validators: []validator.List{
-																// this is the only way to make the list of fields required in Terraform
-																listvalidator.SizeAtLeast(1),
-															},
-															Description: "A list of static fields (key-value pairs) that is added to each log event processed by this component.",
-															NestedObject: schema.NestedBlockObject{
-																Attributes: map[string]schema.Attribute{
-																	"name": schema.StringAttribute{
-																		Required:    true,
-																		Description: "The field name to add.",
-																	},
-																	"value": schema.StringAttribute{
-																		Required:    true,
-																		Description: "The value to assign to the field.",
-																	},
-																},
+												"parse_json": schema.ListNestedBlock{
+													Description: "The `parse_json` processor extracts JSON from a specified field and flattens it into the event. This is useful when logs contain embedded JSON as a string.",
+													Validators: []validator.List{
+														listvalidator.SizeAtMost(1),
+													},
+													NestedObject: schema.NestedBlockObject{
+														Attributes: map[string]schema.Attribute{
+															"field": schema.StringAttribute{
+																Required:    true,
+																Description: "The field to parse.",
 															},
 														},
 													},
 												},
-											},
-											"rename_fields": schema.ListNestedBlock{
-												Description: "The `rename_fields` processor changes field names.",
-												Validators: []validator.List{
-													listvalidator.SizeAtMost(1),
-												},
-												NestedObject: schema.NestedBlockObject{
-													Attributes: map[string]schema.Attribute{},
-													Blocks: map[string]schema.Block{
-														"field": schema.ListNestedBlock{
-															Validators: []validator.List{
-																// this is the only way to make the list of fields required in Terraform
-																listvalidator.SizeAtLeast(1),
-															},
-															Description: "List of fields to rename.",
-															NestedObject: schema.NestedBlockObject{
-																Attributes: map[string]schema.Attribute{
-																	"source": schema.StringAttribute{
-																		Required:    true,
-																		Description: "Source field to rename.",
-																	},
-																	"destination": schema.StringAttribute{
-																		Required:    true,
-																		Description: "Destination field name.",
-																	},
-																	"preserve_source": schema.BoolAttribute{
-																		Required:    true,
-																		Description: "Whether to keep the original field.",
-																	},
+												"add_fields": schema.ListNestedBlock{
+													Description: "The `add_fields` processor adds static key-value fields to logs.",
+													Validators: []validator.List{
+														listvalidator.SizeAtMost(1),
+													},
+													NestedObject: schema.NestedBlockObject{
+														Attributes: map[string]schema.Attribute{},
+														Blocks: map[string]schema.Block{
+															"field": schema.ListNestedBlock{
+																Validators: []validator.List{
+																	// this is the only way to make the list of fields required in Terraform
+																	listvalidator.SizeAtLeast(1),
 																},
-															},
-														},
-													},
-												},
-											},
-											"remove_fields": schema.ListNestedBlock{
-												Description: "The `remove_fields` processor deletes specified fields from logs.",
-												Validators: []validator.List{
-													listvalidator.SizeAtMost(1),
-												},
-												NestedObject: schema.NestedBlockObject{
-													Attributes: map[string]schema.Attribute{
-														"fields": schema.ListAttribute{
-															Required:    true,
-															Description: "List of fields to remove from the events.",
-															ElementType: types.StringType,
-														},
-													},
-												},
-											},
-											"quota": schema.ListNestedBlock{
-												Description: "The `quota` measures logging traffic for logs that match a specified filter. When the configured daily quota is met, the processor can drop or alert.",
-												Validators: []validator.List{
-													listvalidator.SizeAtMost(1),
-												},
-												NestedObject: schema.NestedBlockObject{
-													Attributes: map[string]schema.Attribute{
-														"name": schema.StringAttribute{
-															Required:    true,
-															Description: "The name of the quota.",
-														},
-														"drop_events": schema.BoolAttribute{
-															Optional:    true,
-															Description: "Whether to drop events exceeding the limit.",
-														},
-														"ignore_when_missing_partitions": schema.BoolAttribute{
-															Optional:    true,
-															Description: "Whether to ignore when partition fields are missing.",
-														},
-														"partition_fields": schema.ListAttribute{
-															Optional:    true,
-															ElementType: types.StringType,
-															Description: "List of partition fields.",
-														},
-														"overflow_action": schema.StringAttribute{
-															Optional:    true,
-															Description: "The action to take when the quota is exceeded: `drop`, `no_action`, or `overflow_routing`.",
-														},
-													},
-													Blocks: map[string]schema.Block{
-														"limit": schema.SingleNestedBlock{
-															Attributes: map[string]schema.Attribute{
-																"enforce": schema.StringAttribute{
-																	Required:    true,
-																	Description: "Whether to enforce by 'bytes' or 'events'.",
-																	Validators: []validator.String{
-																		stringvalidator.OneOf("bytes", "events"),
-																	},
-																},
-																"limit": schema.Int64Attribute{
-																	Required:    true,
-																	Description: "The daily quota limit.",
-																},
-															},
-														},
-														"override": schema.ListNestedBlock{
-															Description: "The overrides for field-specific quotas.",
-															NestedObject: schema.NestedBlockObject{
-																Blocks: map[string]schema.Block{
-																	"limit": schema.SingleNestedBlock{
-																		Attributes: map[string]schema.Attribute{
-																			"enforce": schema.StringAttribute{
-																				Required:    true,
-																				Description: "Whether to enforce by 'bytes' or 'events'.",
-																				Validators: []validator.String{
-																					stringvalidator.OneOf("bytes", "events"),
-																				},
-																			},
-																			"limit": schema.Int64Attribute{
-																				Required:    true,
-																				Description: "The daily quota limit.",
-																			},
-																		},
-																	},
-																	"field": schema.ListNestedBlock{
-																		Description: "Fields that trigger this override.",
-																		NestedObject: schema.NestedBlockObject{
-																			Attributes: map[string]schema.Attribute{
-																				"name": schema.StringAttribute{
-																					Description: "The field name.",
-																					Required:    true,
-																				},
-																				"value": schema.StringAttribute{
-																					Description: "The field value.",
-																					Required:    true,
-																				},
-																			},
-																		},
-																	},
-																},
-															},
-														},
-													},
-												},
-											},
-											"sensitive_data_scanner": schema.ListNestedBlock{
-												Description: "The `sensitive_data_scanner` processor detects and optionally redacts sensitive data in log events.",
-												Validators: []validator.List{
-													listvalidator.SizeAtMost(1),
-												},
-												NestedObject: schema.NestedBlockObject{
-													Attributes: map[string]schema.Attribute{},
-													Blocks: map[string]schema.Block{
-														"rule": schema.ListNestedBlock{
-															Description: "A list of rules for identifying and acting on sensitive data patterns.",
-															NestedObject: schema.NestedBlockObject{
-																Attributes: map[string]schema.Attribute{
-																	"name": schema.StringAttribute{
-																		Required:    true,
-																		Description: "A name identifying the rule.",
-																	},
-																	"tags": schema.ListAttribute{
-																		Required:    true,
-																		ElementType: types.StringType,
-																		Description: "Tags assigned to this rule for filtering and classification.",
-																	},
-																},
-																Blocks: map[string]schema.Block{
-																	"keyword_options": schema.SingleNestedBlock{
-																		Description: "Keyword-based proximity matching for sensitive data.",
-																		Attributes: map[string]schema.Attribute{
-																			"keywords": schema.ListAttribute{
-																				Optional:    true,
-																				ElementType: types.StringType,
-																				Description: "A list of keywords to match near the sensitive pattern.",
-																			},
-																			"proximity": schema.Int64Attribute{
-																				Optional:    true,
-																				Description: "Maximum number of tokens between a keyword and a sensitive value match.",
-																			},
-																		},
-																	},
-																	"pattern": schema.SingleNestedBlock{
-																		Description: "Pattern detection configuration for identifying sensitive data using either a custom regex or a library reference.",
-																		Blocks: map[string]schema.Block{
-																			"custom": schema.SingleNestedBlock{
-																				Description: "Pattern detection using a custom regular expression.",
-																				Attributes: map[string]schema.Attribute{
-																					"rule": schema.StringAttribute{
-																						Optional:    true,
-																						Description: "A regular expression used to detect sensitive values. Must be a valid regex.",
-																					},
-																				},
-																			},
-																			"library": schema.SingleNestedBlock{
-																				Description: "Pattern detection using a predefined pattern from the sensitive data scanner pattern library.",
-																				Attributes: map[string]schema.Attribute{
-																					"id": schema.StringAttribute{
-																						Optional:    true,
-																						Description: "Identifier for a predefined pattern from the sensitive data scanner pattern library.",
-																					},
-																					"use_recommended_keywords": schema.BoolAttribute{
-																						Optional:    true,
-																						Description: "Whether to augment the pattern with recommended keywords (optional).",
-																					},
-																				},
-																			},
-																		},
-																	},
-																	"scope": schema.SingleNestedBlock{
-																		Description: "Field-level targeting options that determine where the scanner should operate.",
-																		Blocks: map[string]schema.Block{
-																			"include": schema.SingleNestedBlock{
-																				Description: "Explicitly include these fields for scanning.",
-																				Attributes: map[string]schema.Attribute{
-																					"fields": schema.ListAttribute{
-																						Optional:    true,
-																						ElementType: types.StringType,
-																						Description: "The fields to include in scanning.",
-																					},
-																				},
-																			},
-																			"exclude": schema.SingleNestedBlock{
-																				Description: "Explicitly exclude these fields from scanning.",
-																				Attributes: map[string]schema.Attribute{
-																					"fields": schema.ListAttribute{
-																						Optional:    true,
-																						ElementType: types.StringType,
-																						Description: "The fields to exclude from scanning.",
-																					},
-																				},
-																			},
-																		},
-																		Attributes: map[string]schema.Attribute{
-																			"all": schema.BoolAttribute{
-																				Optional:    true,
-																				Description: "Scan all fields.",
-																			},
-																		},
-																	},
-																	"on_match": schema.SingleNestedBlock{
-																		Description: "The action to take when a sensitive value is found.",
-																		Blocks: map[string]schema.Block{
-																			"redact": schema.SingleNestedBlock{
-																				Description: "Redacts the matched value.",
-																				Attributes: map[string]schema.Attribute{
-																					"replace": schema.StringAttribute{
-																						Optional:    true,
-																						Description: "Replacement string for redacted values (e.g., `***`).",
-																					},
-																				},
-																			},
-																			"hash": schema.SingleNestedBlock{
-																				Description: "Hashes the matched value.",
-																				Attributes:  map[string]schema.Attribute{}, // empty options
-																			},
-																			"partial_redact": schema.SingleNestedBlock{
-																				Description: "Redacts part of the matched value (e.g., keep last 4 characters).",
-																				Attributes: map[string]schema.Attribute{
-																					"characters": schema.Int64Attribute{
-																						Optional:    true,
-																						Description: "Number of characters to keep.",
-																					},
-																					"direction": schema.StringAttribute{
-																						Optional:    true,
-																						Description: "Direction from which to keep characters: `first` or `last`.",
-																					},
-																				},
-																			},
-																		},
-																	},
-																},
-															},
-														},
-													},
-												},
-											},
-											"generate_datadog_metrics": schema.ListNestedBlock{
-												Description: "The `generate_datadog_metrics` processor creates custom metrics from logs. Metrics can be counters, gauges, or distributions and optionally grouped by log fields.",
-												Validators: []validator.List{
-													listvalidator.SizeAtMost(1),
-												},
-												NestedObject: schema.NestedBlockObject{
-													Attributes: map[string]schema.Attribute{},
-													Blocks: map[string]schema.Block{
-														"metric": schema.ListNestedBlock{
-															Description: "Configuration for generating individual metrics.",
-															NestedObject: schema.NestedBlockObject{
-																Attributes: map[string]schema.Attribute{
-																	"name": schema.StringAttribute{
-																		Required:    true,
-																		Description: "Name of the custom metric to be created.",
-																	},
-																	"include": schema.StringAttribute{
-																		Required:    true,
-																		Description: "Datadog filter query to match logs for metric generation.",
-																	},
-																	"metric_type": schema.StringAttribute{
-																		Required:    true,
-																		Description: "Type of metric to create.",
-																	},
-																	"group_by": schema.ListAttribute{
-																		Optional:    true,
-																		ElementType: types.StringType,
-																		Description: "Optional fields used to group the metric series.",
-																	},
-																},
-																Blocks: map[string]schema.Block{
-																	"value": schema.SingleNestedBlock{
-																		Description: "Specifies how the value of the generated metric is computed.",
-																		Attributes: map[string]schema.Attribute{
-																			"strategy": schema.StringAttribute{
-																				Required:    true,
-																				Description: "Metric value strategy: `increment_by_one` or `increment_by_field`.",
-																			},
-																			"field": schema.StringAttribute{
-																				Optional:    true,
-																				Description: "Name of the log field containing the numeric value to increment the metric by (used only for `increment_by_field`).",
-																			},
-																		},
-																	},
-																},
-															},
-														},
-													},
-												},
-											},
-											"parse_grok": schema.ListNestedBlock{
-												Description: "The `parse_grok` processor extracts structured fields from unstructured log messages using Grok patterns.",
-												Validators: []validator.List{
-													listvalidator.SizeAtMost(1),
-												},
-												NestedObject: schema.NestedBlockObject{
-													Attributes: map[string]schema.Attribute{
-														"disable_library_rules": schema.BoolAttribute{
-															Optional:    true,
-															Description: "If set to `true`, disables the default Grok rules provided by Datadog.",
-														},
-													},
-													Blocks: map[string]schema.Block{
-														"rule": schema.ListNestedBlock{
-															Description: "The list of Grok parsing rules. If multiple parsing rules are provided, they are evaluated in order. The first successful match is applied.",
-															NestedObject: schema.NestedBlockObject{
-																Attributes: map[string]schema.Attribute{
-																	"source": schema.StringAttribute{
-																		Required:    true,
-																		Description: "The name of the field in the log event to apply the Grok rules to.",
-																	},
-																},
-																Blocks: map[string]schema.Block{
-																	"match_rule": schema.ListNestedBlock{
-																		Description: "A list of Grok parsing rules that define how to extract fields from the source field. Each rule must contain a name and a valid Grok pattern.",
-																		NestedObject: schema.NestedBlockObject{
-																			Attributes: map[string]schema.Attribute{
-																				"name": schema.StringAttribute{
-																					Required:    true,
-																					Description: "The name of the rule.",
-																				},
-																				"rule": schema.StringAttribute{
-																					Required:    true,
-																					Description: "The definition of the Grok rule.",
-																				},
-																			},
-																		},
-																	},
-																	"support_rule": schema.ListNestedBlock{
-																		Description: "A list of helper Grok rules that can be referenced by the parsing rules.",
-																		NestedObject: schema.NestedBlockObject{
-																			Attributes: map[string]schema.Attribute{
-																				"name": schema.StringAttribute{
-																					Required:    true,
-																					Description: "The name of the helper Grok rule.",
-																				},
-																				"rule": schema.StringAttribute{
-																					Required:    true,
-																					Description: "The definition of the helper Grok rule.",
-																				},
-																			},
-																		},
-																	},
-																},
-															},
-														},
-													},
-												},
-											},
-											"sample": schema.ListNestedBlock{
-												Description: "The `sample` processor allows probabilistic sampling of logs at a fixed rate.",
-												Validators: []validator.List{
-													listvalidator.SizeAtMost(1),
-												},
-												NestedObject: schema.NestedBlockObject{
-													Attributes: map[string]schema.Attribute{
-														"rate": schema.Int64Attribute{
-															Optional:    true,
-															Description: "Number of events to sample (1 in N).",
-														},
-														"percentage": schema.Float64Attribute{
-															Optional:    true,
-															Description: "The percentage of logs to sample.",
-														},
-													},
-												},
-											},
-											"dedupe": schema.ListNestedBlock{
-												Description: "The `dedupe` processor removes duplicate fields in log events.",
-												Validators: []validator.List{
-													listvalidator.SizeAtMost(1),
-												},
-												NestedObject: schema.NestedBlockObject{
-													Attributes: map[string]schema.Attribute{
-														"fields": schema.ListAttribute{
-															Required:    true,
-															ElementType: types.StringType,
-															Description: "A list of log field paths to check for duplicates.",
-														},
-														"mode": schema.StringAttribute{
-															Required:    true,
-															Description: "The deduplication mode to apply to the fields.",
-														},
-													},
-												},
-											},
-											"reduce": schema.ListNestedBlock{
-												Description: "The `reduce` processor aggregates and merges logs based on matching keys and merge strategies.",
-												Validators: []validator.List{
-													listvalidator.SizeAtMost(1),
-												},
-												NestedObject: schema.NestedBlockObject{
-													Attributes: map[string]schema.Attribute{
-														"group_by": schema.ListAttribute{
-															Required:    true,
-															ElementType: types.StringType,
-															Description: "A list of fields used to group log events for merging.",
-														},
-													},
-													Blocks: map[string]schema.Block{
-														"merge_strategy": schema.ListNestedBlock{
-															Description: "List of merge strategies defining how values from grouped events should be combined.",
-															NestedObject: schema.NestedBlockObject{
-																Attributes: map[string]schema.Attribute{
-																	"path": schema.StringAttribute{
-																		Required:    true,
-																		Description: "The field path in the log event.",
-																	},
-																	"strategy": schema.StringAttribute{
-																		Required:    true,
-																		Description: "The merge strategy to apply.",
-																	},
-																},
-															},
-														},
-													},
-												},
-											},
-											"throttle": schema.ListNestedBlock{
-												Description: "The `throttle` processor limits the number of events that pass through over a given time window.",
-												Validators: []validator.List{
-													listvalidator.SizeAtMost(1),
-												},
-												NestedObject: schema.NestedBlockObject{
-													Attributes: map[string]schema.Attribute{
-														"threshold": schema.Int64Attribute{
-															Required:    true,
-															Description: "The number of events to allow before throttling is applied.",
-														},
-														"window": schema.Float64Attribute{
-															Required:    true,
-															Description: "The time window in seconds over which the threshold applies.",
-														},
-														"group_by": schema.ListAttribute{
-															Optional:    true,
-															ElementType: types.StringType,
-															Description: "Optional list of fields used to group events before applying throttling.",
-														},
-													},
-												},
-											},
-											"add_env_vars": schema.ListNestedBlock{
-												Description: "The `add_env_vars` processor adds environment variable values to log events.",
-												Validators: []validator.List{
-													listvalidator.SizeAtMost(1),
-												},
-												NestedObject: schema.NestedBlockObject{
-													Attributes: map[string]schema.Attribute{},
-													Blocks: map[string]schema.Block{
-														"variable": schema.ListNestedBlock{
-															Description: "A list of environment variable mappings to apply to log fields.",
-															NestedObject: schema.NestedBlockObject{
-																Attributes: map[string]schema.Attribute{
-																	"field": schema.StringAttribute{
-																		Required:    true,
-																		Description: "The target field in the log event.",
-																	},
-																	"name": schema.StringAttribute{
-																		Required:    true,
-																		Description: "The name of the environment variable to read.",
-																	},
-																},
-															},
-														},
-													},
-												},
-											},
-											"enrichment_table": schema.ListNestedBlock{
-												Description: "The `enrichment_table` processor enriches logs using a static CSV file or GeoIP database.",
-												Validators: []validator.List{
-													listvalidator.SizeAtMost(1),
-												},
-												NestedObject: schema.NestedBlockObject{
-													Attributes: map[string]schema.Attribute{
-														"target": schema.StringAttribute{
-															Required:    true,
-															Description: "Path where enrichment results should be stored in the log.",
-														},
-													},
-													Blocks: map[string]schema.Block{
-														"file": schema.SingleNestedBlock{
-															Description: "Defines a static enrichment table loaded from a CSV file.",
-															Attributes: map[string]schema.Attribute{
-																"path": schema.StringAttribute{
-																	Optional:    true,
-																	Description: "Path to the CSV file.",
-																},
-															},
-															Blocks: map[string]schema.Block{
-																"encoding": schema.SingleNestedBlock{
+																Description: "A list of static fields (key-value pairs) that is added to each log event processed by this component.",
+																NestedObject: schema.NestedBlockObject{
 																	Attributes: map[string]schema.Attribute{
-																		"type": schema.StringAttribute{
-																			Optional:    true,
-																			Description: "File encoding format.",
+																		"name": schema.StringAttribute{
+																			Required:    true,
+																			Description: "The field name to add.",
 																		},
-																		"delimiter": schema.StringAttribute{
-																			Optional:    true,
-																			Description: "The `encoding` `delimiter`.",
+																		"value": schema.StringAttribute{
+																			Required:    true,
+																			Description: "The value to assign to the field.",
 																		},
-																		"includes_headers": schema.BoolAttribute{
-																			Optional:    true,
-																			Description: "The `encoding` `includes_headers`.",
-																		},
-																	},
-																},
-																"schema": schema.ListNestedBlock{
-																	Description: "Schema defining column names and their types.",
-																	NestedObject: schema.NestedBlockObject{
-																		Attributes: map[string]schema.Attribute{
-																			"column": schema.StringAttribute{
-																				Optional:    true,
-																				Description: "The `items` `column`.",
-																			},
-																			"type": schema.StringAttribute{
-																				Optional:    true,
-																				Description: "The type of the column (e.g. string, boolean, integer, etc.).",
-																			},
-																		},
-																	},
-																},
-																"key": schema.ListNestedBlock{
-																	Description: "Key fields used to look up enrichment values.",
-																	NestedObject: schema.NestedBlockObject{
-																		Attributes: map[string]schema.Attribute{
-																			"column": schema.StringAttribute{
-																				Optional:    true,
-																				Description: "The `items` `column`.",
-																			},
-																			"comparison": schema.StringAttribute{
-																				Optional:    true,
-																				Description: "The comparison method (e.g. equals).",
-																			},
-																			"field": schema.StringAttribute{
-																				Optional:    true,
-																				Description: "The `items` `field`.",
-																			},
-																		},
-																	},
-																},
-															},
-														},
-														"geoip": schema.SingleNestedBlock{
-															Description: "Uses a GeoIP database to enrich logs based on an IP field.",
-															Attributes: map[string]schema.Attribute{
-																"key_field": schema.StringAttribute{
-																	Optional:    true,
-																	Description: "Path to the IP field in the log.",
-																},
-																"locale": schema.StringAttribute{
-																	Optional:    true,
-																	Description: "Locale used to resolve geographical names.",
-																},
-																"path": schema.StringAttribute{
-																	Optional:    true,
-																	Description: "Path to the GeoIP database file.",
-																},
-															},
-														},
-													},
-												},
-											},
-											"ocsf_mapper": schema.ListNestedBlock{
-												Description: "The `ocsf_mapper` processor transforms logs into the OCSF schema using predefined library mappings.",
-												Validators: []validator.List{
-													listvalidator.SizeAtMost(1),
-												},
-												NestedObject: schema.NestedBlockObject{
-													Attributes: map[string]schema.Attribute{},
-													Blocks: map[string]schema.Block{
-														"mapping": schema.ListNestedBlock{
-															Description: "List of OCSF mapping entries using library mapping.",
-															NestedObject: schema.NestedBlockObject{
-																Attributes: map[string]schema.Attribute{
-																	"include": schema.StringAttribute{
-																		Required:    true,
-																		Description: "Search query for selecting which logs the mapping applies to.",
-																	},
-																	"library_mapping": schema.StringAttribute{
-																		Required:    true,
-																		Description: "Predefined library mapping for log transformation.",
 																	},
 																},
 															},
 														},
 													},
 												},
+												"rename_fields": schema.ListNestedBlock{
+													Description: "The `rename_fields` processor changes field names.",
+													Validators: []validator.List{
+														listvalidator.SizeAtMost(1),
+													},
+													NestedObject: schema.NestedBlockObject{
+														Attributes: map[string]schema.Attribute{},
+														Blocks: map[string]schema.Block{
+															"field": schema.ListNestedBlock{
+																Validators: []validator.List{
+																	// this is the only way to make the list of fields required in Terraform
+																	listvalidator.SizeAtLeast(1),
+																},
+																Description: "List of fields to rename.",
+																NestedObject: schema.NestedBlockObject{
+																	Attributes: map[string]schema.Attribute{
+																		"source": schema.StringAttribute{
+																			Required:    true,
+																			Description: "Source field to rename.",
+																		},
+																		"destination": schema.StringAttribute{
+																			Required:    true,
+																			Description: "Destination field name.",
+																		},
+																		"preserve_source": schema.BoolAttribute{
+																			Required:    true,
+																			Description: "Whether to keep the original field.",
+																		},
+																	},
+																},
+															},
+														},
+													},
+												},
+												"remove_fields": schema.ListNestedBlock{
+													Description: "The `remove_fields` processor deletes specified fields from logs.",
+													Validators: []validator.List{
+														listvalidator.SizeAtMost(1),
+													},
+													NestedObject: schema.NestedBlockObject{
+														Attributes: map[string]schema.Attribute{
+															"fields": schema.ListAttribute{
+																Required:    true,
+																Description: "List of fields to remove from the events.",
+																ElementType: types.StringType,
+															},
+														},
+													},
+												},
+												"quota": schema.ListNestedBlock{
+													Description: "The `quota` measures logging traffic for logs that match a specified filter. When the configured daily quota is met, the processor can drop or alert.",
+													Validators: []validator.List{
+														listvalidator.SizeAtMost(1),
+													},
+													NestedObject: schema.NestedBlockObject{
+														Attributes: map[string]schema.Attribute{
+															"name": schema.StringAttribute{
+																Required:    true,
+																Description: "The name of the quota.",
+															},
+															"drop_events": schema.BoolAttribute{
+																Optional:    true,
+																Description: "Whether to drop events exceeding the limit.",
+															},
+															"ignore_when_missing_partitions": schema.BoolAttribute{
+																Optional:    true,
+																Description: "Whether to ignore when partition fields are missing.",
+															},
+															"partition_fields": schema.ListAttribute{
+																Optional:    true,
+																ElementType: types.StringType,
+																Description: "List of partition fields.",
+															},
+															"overflow_action": schema.StringAttribute{
+																Optional:    true,
+																Description: "The action to take when the quota is exceeded: `drop`, `no_action`, or `overflow_routing`.",
+															},
+														},
+														Blocks: map[string]schema.Block{
+															"limit": schema.ListNestedBlock{
+																NestedObject: schema.NestedBlockObject{
+																	Attributes: map[string]schema.Attribute{
+																		"enforce": schema.StringAttribute{
+																			Required:    true,
+																			Description: "Whether to enforce by 'bytes' or 'events'.",
+																			Validators: []validator.String{
+																				stringvalidator.OneOf("bytes", "events"),
+																			},
+																		},
+																		"limit": schema.Int64Attribute{
+																			Required:    true,
+																			Description: "The daily quota limit.",
+																		},
+																	},
+																},
+																Validators: []validator.List{
+																	listvalidator.SizeAtLeast(1),
+																	listvalidator.SizeAtMost(1),
+																},
+															},
+															"override": schema.ListNestedBlock{
+																Description: "The overrides for field-specific quotas.",
+																NestedObject: schema.NestedBlockObject{
+																	Blocks: map[string]schema.Block{
+																		"limit": schema.ListNestedBlock{
+																			NestedObject: schema.NestedBlockObject{
+																				Attributes: map[string]schema.Attribute{
+																					"enforce": schema.StringAttribute{
+																						Required:    true,
+																						Description: "Whether to enforce by 'bytes' or 'events'.",
+																						Validators: []validator.String{
+																							stringvalidator.OneOf("bytes", "events"),
+																						},
+																					},
+																					"limit": schema.Int64Attribute{
+																						Required:    true,
+																						Description: "The daily quota limit.",
+																					},
+																				},
+																			},
+																			Validators: []validator.List{
+																				listvalidator.SizeAtLeast(1),
+																				listvalidator.SizeAtMost(1),
+																			},
+																		},
+																		"field": schema.ListNestedBlock{
+																			Description: "Fields that trigger this override.",
+																			NestedObject: schema.NestedBlockObject{
+																				Attributes: map[string]schema.Attribute{
+																					"name": schema.StringAttribute{
+																						Description: "The field name.",
+																						Required:    true,
+																					},
+																					"value": schema.StringAttribute{
+																						Description: "The field value.",
+																						Required:    true,
+																					},
+																				},
+																			},
+																		},
+																	},
+																},
+															},
+														},
+													},
+												},
+												"sensitive_data_scanner": schema.ListNestedBlock{
+													Description: "The `sensitive_data_scanner` processor detects and optionally redacts sensitive data in log events.",
+													Validators: []validator.List{
+														listvalidator.SizeAtMost(1),
+													},
+													NestedObject: schema.NestedBlockObject{
+														Attributes: map[string]schema.Attribute{},
+														Blocks: map[string]schema.Block{
+															"rule": schema.ListNestedBlock{
+																Description: "A list of rules for identifying and acting on sensitive data patterns.",
+																NestedObject: schema.NestedBlockObject{
+																	Attributes: map[string]schema.Attribute{
+																		"name": schema.StringAttribute{
+																			Required:    true,
+																			Description: "A name identifying the rule.",
+																		},
+																		"tags": schema.ListAttribute{
+																			Required:    true,
+																			ElementType: types.StringType,
+																			Description: "Tags assigned to this rule for filtering and classification.",
+																		},
+																	},
+																	Blocks: map[string]schema.Block{
+																		"keyword_options": schema.ListNestedBlock{
+																			Description: "Keyword-based proximity matching for sensitive data.",
+																			NestedObject: schema.NestedBlockObject{
+																				Attributes: map[string]schema.Attribute{
+																					"keywords": schema.ListAttribute{
+																						Optional:    true,
+																						ElementType: types.StringType,
+																						Description: "A list of keywords to match near the sensitive pattern.",
+																					},
+																					"proximity": schema.Int64Attribute{
+																						Optional:    true,
+																						Description: "Maximum number of tokens between a keyword and a sensitive value match.",
+																					},
+																				},
+																			},
+																			Validators: []validator.List{
+																				listvalidator.SizeAtMost(1),
+																			},
+																		},
+																		"pattern": schema.ListNestedBlock{
+																			Description: "Pattern detection configuration for identifying sensitive data using either a custom regex or a library reference.",
+																			NestedObject: schema.NestedBlockObject{
+																				Blocks: map[string]schema.Block{
+																					"custom": schema.ListNestedBlock{
+																						Description: "Pattern detection using a custom regular expression.",
+																						NestedObject: schema.NestedBlockObject{
+																							Attributes: map[string]schema.Attribute{
+																								"rule": schema.StringAttribute{
+																									Optional:    true,
+																									Description: "A regular expression used to detect sensitive values. Must be a valid regex.",
+																								},
+																							},
+																						},
+																						Validators: []validator.List{
+																							listvalidator.SizeAtMost(1),
+																						},
+																					},
+																					"library": schema.ListNestedBlock{
+																						Description: "Pattern detection using a predefined pattern from the sensitive data scanner pattern library.",
+																						NestedObject: schema.NestedBlockObject{
+																							Attributes: map[string]schema.Attribute{
+																								"id": schema.StringAttribute{
+																									Optional:    true,
+																									Description: "Identifier for a predefined pattern from the sensitive data scanner pattern library.",
+																								},
+																								"use_recommended_keywords": schema.BoolAttribute{
+																									Optional:    true,
+																									Description: "Whether to augment the pattern with recommended keywords (optional).",
+																								},
+																							},
+																						},
+																						Validators: []validator.List{
+																							listvalidator.SizeAtMost(1),
+																						},
+																					},
+																				},
+																			},
+																			Validators: []validator.List{
+																				listvalidator.SizeAtMost(1),
+																			},
+																		},
+																		"scope": schema.ListNestedBlock{
+																			Description: "Field-level targeting options that determine where the scanner should operate.",
+																			NestedObject: schema.NestedBlockObject{
+																				Blocks: map[string]schema.Block{
+																					"include": schema.ListNestedBlock{
+																						Description: "Explicitly include these fields for scanning.",
+																						NestedObject: schema.NestedBlockObject{
+																							Attributes: map[string]schema.Attribute{
+																								"fields": schema.ListAttribute{
+																									Optional:    true,
+																									ElementType: types.StringType,
+																									Description: "The fields to include in scanning.",
+																								},
+																							},
+																						},
+																						Validators: []validator.List{
+																							listvalidator.SizeAtMost(1),
+																						},
+																					},
+																					"exclude": schema.ListNestedBlock{
+																						Description: "Explicitly exclude these fields from scanning.",
+																						NestedObject: schema.NestedBlockObject{
+																							Attributes: map[string]schema.Attribute{
+																								"fields": schema.ListAttribute{
+																									Optional:    true,
+																									ElementType: types.StringType,
+																									Description: "The fields to exclude from scanning.",
+																								},
+																							},
+																						},
+																						Validators: []validator.List{
+																							listvalidator.SizeAtMost(1),
+																						},
+																					},
+																				},
+																				Attributes: map[string]schema.Attribute{
+																					"all": schema.BoolAttribute{
+																						Optional:    true,
+																						Description: "Scan all fields.",
+																					},
+																				},
+																			},
+																			Validators: []validator.List{
+																				listvalidator.SizeAtMost(1),
+																			},
+																		},
+																		"on_match": schema.ListNestedBlock{
+																			Description: "The action to take when a sensitive value is found.",
+																			NestedObject: schema.NestedBlockObject{
+																				Blocks: map[string]schema.Block{
+																					"redact": schema.ListNestedBlock{
+																						Description: "Redacts the matched value.",
+																						NestedObject: schema.NestedBlockObject{
+																							Attributes: map[string]schema.Attribute{
+																								"replace": schema.StringAttribute{
+																									Optional:    true,
+																									Description: "Replacement string for redacted values (e.g., `***`).",
+																								},
+																							},
+																						},
+																						Validators: []validator.List{
+																							listvalidator.SizeAtMost(1),
+																						},
+																					},
+																					"hash": schema.ListNestedBlock{
+																						Description: "Hashes the matched value.",
+																						NestedObject: schema.NestedBlockObject{
+																							Attributes: map[string]schema.Attribute{}, // empty options
+																						},
+																						Validators: []validator.List{
+																							listvalidator.SizeAtMost(1),
+																						},
+																					},
+																					"partial_redact": schema.ListNestedBlock{
+																						Description: "Redacts part of the matched value (e.g., keep last 4 characters).",
+																						NestedObject: schema.NestedBlockObject{
+																							Attributes: map[string]schema.Attribute{
+																								"characters": schema.Int64Attribute{
+																									Optional:    true,
+																									Description: "Number of characters to keep.",
+																								},
+																								"direction": schema.StringAttribute{
+																									Optional:    true,
+																									Description: "Direction from which to keep characters: `first` or `last`.",
+																								},
+																							},
+																						},
+																						Validators: []validator.List{
+																							listvalidator.SizeAtMost(1),
+																						},
+																					},
+																				},
+																			},
+																			Validators: []validator.List{
+																				listvalidator.SizeAtMost(1),
+																			},
+																		},
+																	},
+																},
+															},
+														},
+													},
+												},
+												"generate_datadog_metrics": schema.ListNestedBlock{
+													Description: "The `generate_datadog_metrics` processor creates custom metrics from logs. Metrics can be counters, gauges, or distributions and optionally grouped by log fields.",
+													Validators: []validator.List{
+														listvalidator.SizeAtMost(1),
+													},
+													NestedObject: schema.NestedBlockObject{
+														Attributes: map[string]schema.Attribute{},
+														Blocks: map[string]schema.Block{
+															"metric": schema.ListNestedBlock{
+																Description: "Configuration for generating individual metrics.",
+																NestedObject: schema.NestedBlockObject{
+																	Attributes: map[string]schema.Attribute{
+																		"name": schema.StringAttribute{
+																			Required:    true,
+																			Description: "Name of the custom metric to be created.",
+																		},
+																		"include": schema.StringAttribute{
+																			Required:    true,
+																			Description: "Datadog filter query to match logs for metric generation.",
+																		},
+																		"metric_type": schema.StringAttribute{
+																			Required:    true,
+																			Description: "Type of metric to create.",
+																		},
+																		"group_by": schema.ListAttribute{
+																			Optional:    true,
+																			ElementType: types.StringType,
+																			Description: "Optional fields used to group the metric series.",
+																		},
+																	},
+																	Blocks: map[string]schema.Block{
+																		"value": schema.ListNestedBlock{
+																			Description: "Specifies how the value of the generated metric is computed.",
+																			NestedObject: schema.NestedBlockObject{
+																				Attributes: map[string]schema.Attribute{
+																					"strategy": schema.StringAttribute{
+																						Required:    true,
+																						Description: "Metric value strategy: `increment_by_one` or `increment_by_field`.",
+																					},
+																					"field": schema.StringAttribute{
+																						Optional:    true,
+																						Description: "Name of the log field containing the numeric value to increment the metric by (used only for `increment_by_field`).",
+																					},
+																				},
+																			},
+																			Validators: []validator.List{
+																				listvalidator.SizeAtLeast(1),
+																				listvalidator.SizeAtMost(1),
+																			},
+																		},
+																	},
+																},
+															},
+														},
+													},
+												},
+												"parse_grok": schema.ListNestedBlock{
+													Description: "The `parse_grok` processor extracts structured fields from unstructured log messages using Grok patterns.",
+													Validators: []validator.List{
+														listvalidator.SizeAtMost(1),
+													},
+													NestedObject: schema.NestedBlockObject{
+														Attributes: map[string]schema.Attribute{
+															"disable_library_rules": schema.BoolAttribute{
+																Optional:    true,
+																Description: "If set to `true`, disables the default Grok rules provided by Datadog.",
+															},
+														},
+														Blocks: map[string]schema.Block{
+															"rule": schema.ListNestedBlock{
+																Description: "The list of Grok parsing rules. If multiple parsing rules are provided, they are evaluated in order. The first successful match is applied.",
+																NestedObject: schema.NestedBlockObject{
+																	Attributes: map[string]schema.Attribute{
+																		"source": schema.StringAttribute{
+																			Required:    true,
+																			Description: "The name of the field in the log event to apply the Grok rules to.",
+																		},
+																	},
+																	Blocks: map[string]schema.Block{
+																		"match_rule": schema.ListNestedBlock{
+																			Description: "A list of Grok parsing rules that define how to extract fields from the source field. Each rule must contain a name and a valid Grok pattern.",
+																			NestedObject: schema.NestedBlockObject{
+																				Attributes: map[string]schema.Attribute{
+																					"name": schema.StringAttribute{
+																						Required:    true,
+																						Description: "The name of the rule.",
+																					},
+																					"rule": schema.StringAttribute{
+																						Required:    true,
+																						Description: "The definition of the Grok rule.",
+																					},
+																				},
+																			},
+																		},
+																		"support_rule": schema.ListNestedBlock{
+																			Description: "A list of helper Grok rules that can be referenced by the parsing rules.",
+																			NestedObject: schema.NestedBlockObject{
+																				Attributes: map[string]schema.Attribute{
+																					"name": schema.StringAttribute{
+																						Required:    true,
+																						Description: "The name of the helper Grok rule.",
+																					},
+																					"rule": schema.StringAttribute{
+																						Required:    true,
+																						Description: "The definition of the helper Grok rule.",
+																					},
+																				},
+																			},
+																		},
+																	},
+																},
+															},
+														},
+													},
+												},
+												"sample": schema.ListNestedBlock{
+													Description: "The `sample` processor allows probabilistic sampling of logs at a fixed rate.",
+													Validators: []validator.List{
+														listvalidator.SizeAtMost(1),
+													},
+													NestedObject: schema.NestedBlockObject{
+														Attributes: map[string]schema.Attribute{
+															"rate": schema.Int64Attribute{
+																Optional:    true,
+																Description: "Number of events to sample (1 in N).",
+															},
+															"percentage": schema.Float64Attribute{
+																Optional:    true,
+																Description: "The percentage of logs to sample.",
+															},
+														},
+													},
+												},
+												"dedupe": schema.ListNestedBlock{
+													Description: "The `dedupe` processor removes duplicate fields in log events.",
+													Validators: []validator.List{
+														listvalidator.SizeAtMost(1),
+													},
+													NestedObject: schema.NestedBlockObject{
+														Attributes: map[string]schema.Attribute{
+															"fields": schema.ListAttribute{
+																Required:    true,
+																ElementType: types.StringType,
+																Description: "A list of log field paths to check for duplicates.",
+															},
+															"mode": schema.StringAttribute{
+																Required:    true,
+																Description: "The deduplication mode to apply to the fields.",
+															},
+														},
+													},
+												},
+												"reduce": schema.ListNestedBlock{
+													Description: "The `reduce` processor aggregates and merges logs based on matching keys and merge strategies.",
+													Validators: []validator.List{
+														listvalidator.SizeAtMost(1),
+													},
+													NestedObject: schema.NestedBlockObject{
+														Attributes: map[string]schema.Attribute{
+															"group_by": schema.ListAttribute{
+																Required:    true,
+																ElementType: types.StringType,
+																Description: "A list of fields used to group log events for merging.",
+															},
+														},
+														Blocks: map[string]schema.Block{
+															"merge_strategy": schema.ListNestedBlock{
+																Description: "List of merge strategies defining how values from grouped events should be combined.",
+																NestedObject: schema.NestedBlockObject{
+																	Attributes: map[string]schema.Attribute{
+																		"path": schema.StringAttribute{
+																			Required:    true,
+																			Description: "The field path in the log event.",
+																		},
+																		"strategy": schema.StringAttribute{
+																			Required:    true,
+																			Description: "The merge strategy to apply.",
+																		},
+																	},
+																},
+															},
+														},
+													},
+												},
+												"throttle": schema.ListNestedBlock{
+													Description: "The `throttle` processor limits the number of events that pass through over a given time window.",
+													Validators: []validator.List{
+														listvalidator.SizeAtMost(1),
+													},
+													NestedObject: schema.NestedBlockObject{
+														Attributes: map[string]schema.Attribute{
+															"threshold": schema.Int64Attribute{
+																Required:    true,
+																Description: "The number of events to allow before throttling is applied.",
+															},
+															"window": schema.Float64Attribute{
+																Required:    true,
+																Description: "The time window in seconds over which the threshold applies.",
+															},
+															"group_by": schema.ListAttribute{
+																Optional:    true,
+																ElementType: types.StringType,
+																Description: "Optional list of fields used to group events before applying throttling.",
+															},
+														},
+													},
+												},
+												"add_env_vars": schema.ListNestedBlock{
+													Description: "The `add_env_vars` processor adds environment variable values to log events.",
+													Validators: []validator.List{
+														listvalidator.SizeAtMost(1),
+													},
+													NestedObject: schema.NestedBlockObject{
+														Attributes: map[string]schema.Attribute{},
+														Blocks: map[string]schema.Block{
+															"variable": schema.ListNestedBlock{
+																Description: "A list of environment variable mappings to apply to log fields.",
+																NestedObject: schema.NestedBlockObject{
+																	Attributes: map[string]schema.Attribute{
+																		"field": schema.StringAttribute{
+																			Required:    true,
+																			Description: "The target field in the log event.",
+																		},
+																		"name": schema.StringAttribute{
+																			Required:    true,
+																			Description: "The name of the environment variable to read.",
+																		},
+																	},
+																},
+															},
+														},
+													},
+												},
+												"enrichment_table": schema.ListNestedBlock{
+													Description: "The `enrichment_table` processor enriches logs using a static CSV file or GeoIP database.",
+													Validators: []validator.List{
+														listvalidator.SizeAtMost(1),
+													},
+													NestedObject: schema.NestedBlockObject{
+														Attributes: map[string]schema.Attribute{
+															"target": schema.StringAttribute{
+																Required:    true,
+																Description: "Path where enrichment results should be stored in the log.",
+															},
+														},
+														Blocks: map[string]schema.Block{
+															"file": schema.ListNestedBlock{
+																Description: "Defines a static enrichment table loaded from a CSV file.",
+																NestedObject: schema.NestedBlockObject{
+																	Attributes: map[string]schema.Attribute{
+																		"path": schema.StringAttribute{
+																			Optional:    true,
+																			Description: "Path to the CSV file.",
+																		},
+																	},
+																	Blocks: map[string]schema.Block{
+																		"encoding": schema.ListNestedBlock{
+																			NestedObject: schema.NestedBlockObject{
+																				Attributes: map[string]schema.Attribute{
+																					"type": schema.StringAttribute{
+																						Required:    true,
+																						Description: "File encoding format.",
+																					},
+																					"delimiter": schema.StringAttribute{
+																						Required:    true,
+																						Description: "The `encoding` `delimiter`.",
+																					},
+																					"includes_headers": schema.BoolAttribute{
+																						Optional:    true,
+																						Description: "The `encoding` `includes_headers`.",
+																					},
+																				},
+																			},
+																			Validators: []validator.List{
+																				listvalidator.SizeAtLeast(1),
+																				listvalidator.SizeAtMost(1),
+																			},
+																		},
+																		"schema": schema.ListNestedBlock{
+																			Description: "Schema defining column names and their types.",
+																			NestedObject: schema.NestedBlockObject{
+																				Attributes: map[string]schema.Attribute{
+																					"column": schema.StringAttribute{
+																						Optional:    true,
+																						Description: "The `items` `column`.",
+																					},
+																					"type": schema.StringAttribute{
+																						Optional:    true,
+																						Description: "The type of the column (e.g. string, boolean, integer, etc.).",
+																					},
+																				},
+																			},
+																		},
+																		"key": schema.ListNestedBlock{
+																			Description: "Key fields used to look up enrichment values.",
+																			NestedObject: schema.NestedBlockObject{
+																				Attributes: map[string]schema.Attribute{
+																					"column": schema.StringAttribute{
+																						Optional:    true,
+																						Description: "The `items` `column`.",
+																					},
+																					"comparison": schema.StringAttribute{
+																						Optional:    true,
+																						Description: "The comparison method (e.g. equals).",
+																					},
+																					"field": schema.StringAttribute{
+																						Optional:    true,
+																						Description: "The `items` `field`.",
+																					},
+																				},
+																			},
+																		},
+																	},
+																},
+																Validators: []validator.List{
+																	listvalidator.SizeAtMost(1),
+																},
+															},
+															"geoip": schema.ListNestedBlock{
+																Description: "Uses a GeoIP database to enrich logs based on an IP field.",
+																NestedObject: schema.NestedBlockObject{
+																	Attributes: map[string]schema.Attribute{
+																		"key_field": schema.StringAttribute{
+																			Optional:    true,
+																			Description: "Path to the IP field in the log.",
+																		},
+																		"locale": schema.StringAttribute{
+																			Optional:    true,
+																			Description: "Locale used to resolve geographical names.",
+																		},
+																		"path": schema.StringAttribute{
+																			Optional:    true,
+																			Description: "Path to the GeoIP database file.",
+																		},
+																	},
+																},
+																Validators: []validator.List{
+																	listvalidator.SizeAtMost(1),
+																},
+															},
+														},
+													},
+												},
+												"ocsf_mapper": schema.ListNestedBlock{
+													Description: "The `ocsf_mapper` processor transforms logs into the OCSF schema using predefined library mappings.",
+													Validators: []validator.List{
+														listvalidator.SizeAtMost(1),
+													},
+													NestedObject: schema.NestedBlockObject{
+														Attributes: map[string]schema.Attribute{},
+														Blocks: map[string]schema.Block{
+															"mapping": schema.ListNestedBlock{
+																Description: "List of OCSF mapping entries using library mapping.",
+																NestedObject: schema.NestedBlockObject{
+																	Attributes: map[string]schema.Attribute{
+																		"include": schema.StringAttribute{
+																			Required:    true,
+																			Description: "Search query for selecting which logs the mapping applies to.",
+																		},
+																		"library_mapping": schema.StringAttribute{
+																			Required:    true,
+																			Description: "Predefined library mapping for log transformation.",
+																		},
+																	},
+																},
+															},
+														},
+													},
+												},
+												"datadog_tags":     observability_pipeline.DatadogTagsProcessorSchema(),
+												"custom_processor": observability_pipeline.CustomProcessorSchema(),
 											},
-											"datadog_tags":     observability_pipeline.DatadogTagsProcessorSchema(),
-											"custom_processor": observability_pipeline.CustomProcessorSchema(),
 										},
 									},
 								},
 							},
 						},
-					},
-					"destination": schema.ListNestedBlock{
-						Description: "List of destinations.",
-						NestedObject: schema.NestedBlockObject{
-							Attributes: map[string]schema.Attribute{
-								"id": schema.StringAttribute{
-									Required:    true,
-									Description: "The unique identifier for this destination.",
+						"destination": schema.ListNestedBlock{
+							Description: "List of destinations.",
+							NestedObject: schema.NestedBlockObject{
+								Attributes: map[string]schema.Attribute{
+									"id": schema.StringAttribute{
+										Required:    true,
+										Description: "The unique identifier for this destination.",
+									},
+									"inputs": schema.ListAttribute{
+										Required:    true,
+										Description: "A list of component IDs whose output is used as the `input` for this component.",
+										ElementType: types.StringType,
+									},
 								},
-								"inputs": schema.ListAttribute{
-									Required:    true,
-									Description: "A list of component IDs whose output is used as the `input` for this component.",
-									ElementType: types.StringType,
-								},
-							},
-							Blocks: map[string]schema.Block{
-								"datadog_logs": schema.ListNestedBlock{
-									Description:  "The `datadog_logs` destination forwards logs to Datadog Log Management.",
-									NestedObject: schema.NestedBlockObject{},
-								},
-								"google_cloud_storage": schema.ListNestedBlock{
-									Description: "The `google_cloud_storage` destination stores logs in a Google Cloud Storage (GCS) bucket.",
-									NestedObject: schema.NestedBlockObject{
-										Attributes: map[string]schema.Attribute{
-											"bucket": schema.StringAttribute{
-												Required:    true,
-												Description: "Name of the GCS bucket.",
+								Blocks: map[string]schema.Block{
+									"datadog_logs": schema.ListNestedBlock{
+										Description:  "The `datadog_logs` destination forwards logs to Datadog Log Management.",
+										NestedObject: schema.NestedBlockObject{},
+									},
+									"google_cloud_storage": schema.ListNestedBlock{
+										Description: "The `google_cloud_storage` destination stores logs in a Google Cloud Storage (GCS) bucket.",
+										NestedObject: schema.NestedBlockObject{
+											Attributes: map[string]schema.Attribute{
+												"bucket": schema.StringAttribute{
+													Required:    true,
+													Description: "Name of the GCS bucket.",
+												},
+												"key_prefix": schema.StringAttribute{
+													Optional:    true,
+													Description: "Optional prefix for object keys within the GCS bucket.",
+												},
+												"storage_class": schema.StringAttribute{
+													Required:    true,
+													Description: "Storage class used for objects stored in GCS.",
+												},
+												"acl": schema.StringAttribute{
+													Optional:    true,
+													Description: "Access control list setting for objects written to the bucket.",
+												},
 											},
-											"key_prefix": schema.StringAttribute{
-												Optional:    true,
-												Description: "Optional prefix for object keys within the GCS bucket.",
-											},
-											"storage_class": schema.StringAttribute{
-												Required:    true,
-												Description: "Storage class used for objects stored in GCS.",
-											},
-											"acl": schema.StringAttribute{
-												Optional:    true,
-												Description: "Access control list setting for objects written to the bucket.",
-											},
-										},
-										Blocks: map[string]schema.Block{
-											"auth": gcpAuthSchema(),
-											"metadata": schema.ListNestedBlock{
-												Description: "Custom metadata key-value pairs added to each object.",
-												NestedObject: schema.NestedBlockObject{
-													Attributes: map[string]schema.Attribute{
-														"name": schema.StringAttribute{
-															Required:    true,
-															Description: "The metadata key.",
-														},
-														"value": schema.StringAttribute{
-															Required:    true,
-															Description: "The metadata value.",
+											Blocks: map[string]schema.Block{
+												"auth": gcpAuthSchema(),
+												"metadata": schema.ListNestedBlock{
+													Description: "Custom metadata key-value pairs added to each object.",
+													NestedObject: schema.NestedBlockObject{
+														Attributes: map[string]schema.Attribute{
+															"name": schema.StringAttribute{
+																Required:    true,
+																Description: "The metadata key.",
+															},
+															"value": schema.StringAttribute{
+																Required:    true,
+																Description: "The metadata value.",
+															},
 														},
 													},
 												},
 											},
 										},
 									},
-								},
-								"google_pubsub": schema.ListNestedBlock{
-									Description: "The `google_pubsub` destination publishes logs to a Google Cloud Pub/Sub topic.",
-									NestedObject: schema.NestedBlockObject{
-										Attributes: map[string]schema.Attribute{
-											"project": schema.StringAttribute{
-												Required:    true,
-												Description: "The GCP project ID that owns the Pub/Sub topic.",
+									"google_pubsub": schema.ListNestedBlock{
+										Description: "The `google_pubsub` destination publishes logs to a Google Cloud Pub/Sub topic.",
+										NestedObject: schema.NestedBlockObject{
+											Attributes: map[string]schema.Attribute{
+												"project": schema.StringAttribute{
+													Required:    true,
+													Description: "The GCP project ID that owns the Pub/Sub topic.",
+												},
+												"topic": schema.StringAttribute{
+													Required:    true,
+													Description: "The Pub/Sub topic name to publish logs to.",
+												},
+												"encoding": schema.StringAttribute{
+													Optional:    true,
+													Description: "Encoding format for log events. Valid values: `json`, `raw_message`.",
+												},
 											},
-											"topic": schema.StringAttribute{
-												Required:    true,
-												Description: "The Pub/Sub topic name to publish logs to.",
-											},
-											"encoding": schema.StringAttribute{
-												Optional:    true,
-												Description: "Encoding format for log events. Valid values: `json`, `raw_message`.",
-											},
-										},
-										Blocks: map[string]schema.Block{
-											"auth": gcpAuthSchema(),
-											"tls":  tlsSchema(),
-										},
-									},
-								},
-								"splunk_hec": schema.ListNestedBlock{
-									Description: "The `splunk_hec` destination forwards logs to Splunk using the HTTP Event Collector (HEC).",
-									NestedObject: schema.NestedBlockObject{
-										Attributes: map[string]schema.Attribute{
-											"auto_extract_timestamp": schema.BoolAttribute{
-												Optional:    true,
-												Description: "If `true`, Splunk tries to extract timestamps from incoming log events.",
-											},
-											"encoding": schema.StringAttribute{
-												Optional:    true,
-												Description: "Encoding format for log events. Valid values: `json`, `raw_message`.",
-											},
-											"sourcetype": schema.StringAttribute{
-												Optional:    true,
-												Description: "The Splunk sourcetype to assign to log events.",
-											},
-											"index": schema.StringAttribute{
-												Optional:    true,
-												Description: "Optional name of the Splunk index where logs are written.",
+											Blocks: map[string]schema.Block{
+												"auth": gcpAuthSchema(),
+												"tls":  observability_pipeline.TlsSchema(),
 											},
 										},
 									},
-								},
-								"sumo_logic": schema.ListNestedBlock{
-									Description: "The `sumo_logic` destination forwards logs to Sumo Logic.",
-									NestedObject: schema.NestedBlockObject{
-										Attributes: map[string]schema.Attribute{
-											"encoding": schema.StringAttribute{
-												Optional:    true,
-												Description: "The output encoding format.",
-											},
-											"header_host_name": schema.StringAttribute{
-												Optional:    true,
-												Description: "Optional override for the host name header.",
-											},
-											"header_source_name": schema.StringAttribute{
-												Optional:    true,
-												Description: "Optional override for the source name header.",
-											},
-											"header_source_category": schema.StringAttribute{
-												Optional:    true,
-												Description: "Optional override for the source category header.",
+									"splunk_hec": schema.ListNestedBlock{
+										Description: "The `splunk_hec` destination forwards logs to Splunk using the HTTP Event Collector (HEC).",
+										NestedObject: schema.NestedBlockObject{
+											Attributes: map[string]schema.Attribute{
+												"auto_extract_timestamp": schema.BoolAttribute{
+													Optional:    true,
+													Description: "If `true`, Splunk tries to extract timestamps from incoming log events.",
+												},
+												"encoding": schema.StringAttribute{
+													Optional:    true,
+													Description: "Encoding format for log events. Valid values: `json`, `raw_message`.",
+												},
+												"sourcetype": schema.StringAttribute{
+													Optional:    true,
+													Description: "The Splunk sourcetype to assign to log events.",
+												},
+												"index": schema.StringAttribute{
+													Optional:    true,
+													Description: "Optional name of the Splunk index where logs are written.",
+												},
 											},
 										},
-										Blocks: map[string]schema.Block{
-											"header_custom_field": schema.ListNestedBlock{
-												Description: "A list of custom headers to include in the request to Sumo Logic.",
-												NestedObject: schema.NestedBlockObject{
-													Attributes: map[string]schema.Attribute{
-														"name": schema.StringAttribute{
-															Optional:    true,
-															Description: "The header field name.",
-														},
-														"value": schema.StringAttribute{
-															Optional:    true,
-															Description: "The header field value.",
+									},
+									"sumo_logic": schema.ListNestedBlock{
+										Description: "The `sumo_logic` destination forwards logs to Sumo Logic.",
+										NestedObject: schema.NestedBlockObject{
+											Attributes: map[string]schema.Attribute{
+												"encoding": schema.StringAttribute{
+													Optional:    true,
+													Description: "The output encoding format.",
+												},
+												"header_host_name": schema.StringAttribute{
+													Optional:    true,
+													Description: "Optional override for the host name header.",
+												},
+												"header_source_name": schema.StringAttribute{
+													Optional:    true,
+													Description: "Optional override for the source name header.",
+												},
+												"header_source_category": schema.StringAttribute{
+													Optional:    true,
+													Description: "Optional override for the source category header.",
+												},
+											},
+											Blocks: map[string]schema.Block{
+												"header_custom_field": schema.ListNestedBlock{
+													Description: "A list of custom headers to include in the request to Sumo Logic.",
+													NestedObject: schema.NestedBlockObject{
+														Attributes: map[string]schema.Attribute{
+															"name": schema.StringAttribute{
+																Optional:    true,
+																Description: "The header field name.",
+															},
+															"value": schema.StringAttribute{
+																Optional:    true,
+																Description: "The header field value.",
+															},
 														},
 													},
 												},
 											},
 										},
 									},
-								},
-								"rsyslog": schema.ListNestedBlock{
-									Description: "The `rsyslog` destination forwards logs to an external `rsyslog` server over TCP or UDP using the syslog protocol.",
-									NestedObject: schema.NestedBlockObject{
-										Attributes: map[string]schema.Attribute{
-											"keepalive": schema.Int64Attribute{
-												Optional:    true,
-												Description: "Optional socket keepalive duration in milliseconds.",
+									"rsyslog": schema.ListNestedBlock{
+										Description: "The `rsyslog` destination forwards logs to an external `rsyslog` server over TCP or UDP using the syslog protocol.",
+										NestedObject: schema.NestedBlockObject{
+											Attributes: map[string]schema.Attribute{
+												"keepalive": schema.Int64Attribute{
+													Optional:    true,
+													Description: "Optional socket keepalive duration in milliseconds.",
+												},
 											},
-										},
-										Blocks: map[string]schema.Block{
-											"tls": tlsSchema(),
-										},
-									},
-								},
-								"syslog_ng": schema.ListNestedBlock{
-									Description: "The `syslog_ng` destination forwards logs to an external `syslog-ng` server over TCP or UDP using the syslog protocol.",
-									NestedObject: schema.NestedBlockObject{
-										Attributes: map[string]schema.Attribute{
-											"keepalive": schema.Int64Attribute{
-												Optional:    true,
-												Description: "Optional socket keepalive duration in milliseconds.",
-											},
-										},
-										Blocks: map[string]schema.Block{
-											"tls": tlsSchema(),
-										},
-									},
-								},
-								"elasticsearch": schema.ListNestedBlock{
-									Description: "The `elasticsearch` destination writes logs to an Elasticsearch cluster.",
-									NestedObject: schema.NestedBlockObject{
-										Attributes: map[string]schema.Attribute{
-											"api_version": schema.StringAttribute{
-												Optional:    true,
-												Description: "The Elasticsearch API version to use. Set to `auto` to auto-detect.",
-											},
-											"bulk_index": schema.StringAttribute{
-												Optional:    true,
-												Description: "The index or datastream to write logs to in Elasticsearch.",
+											Blocks: map[string]schema.Block{
+												"tls": observability_pipeline.TlsSchema(),
 											},
 										},
 									},
-								},
-								"opensearch": schema.ListNestedBlock{
-									Description: "The `opensearch` destination writes logs to an OpenSearch cluster.",
-									NestedObject: schema.NestedBlockObject{
-										Attributes: map[string]schema.Attribute{
-											"bulk_index": schema.StringAttribute{
-												Optional:    true,
-												Description: "The index or datastream to write logs to.",
+									"syslog_ng": schema.ListNestedBlock{
+										Description: "The `syslog_ng` destination forwards logs to an external `syslog-ng` server over TCP or UDP using the syslog protocol.",
+										NestedObject: schema.NestedBlockObject{
+											Attributes: map[string]schema.Attribute{
+												"keepalive": schema.Int64Attribute{
+													Optional:    true,
+													Description: "Optional socket keepalive duration in milliseconds.",
+												},
+											},
+											Blocks: map[string]schema.Block{
+												"tls": observability_pipeline.TlsSchema(),
 											},
 										},
 									},
-								},
-								"amazon_opensearch": schema.ListNestedBlock{
-									Description: "The `amazon_opensearch` destination writes logs to Amazon OpenSearch.",
-									NestedObject: schema.NestedBlockObject{
-										Attributes: map[string]schema.Attribute{
-											"bulk_index": schema.StringAttribute{
-												Optional:    true,
-												Description: "The index or datastream to write logs to.",
+									"elasticsearch": schema.ListNestedBlock{
+										Description: "The `elasticsearch` destination writes logs to an Elasticsearch cluster.",
+										NestedObject: schema.NestedBlockObject{
+											Attributes: map[string]schema.Attribute{
+												"api_version": schema.StringAttribute{
+													Optional:    true,
+													Description: "The Elasticsearch API version to use. Set to `auto` to auto-detect.",
+												},
+												"bulk_index": schema.StringAttribute{
+													Optional:    true,
+													Description: "The index or datastream to write logs to in Elasticsearch.",
+												},
 											},
 										},
-										Blocks: map[string]schema.Block{
-											"auth": schema.SingleNestedBlock{
-												Attributes: map[string]schema.Attribute{
-													"strategy": schema.StringAttribute{
-														Required:    true,
-														Description: "The authentication strategy to use (e.g. aws or basic).",
+									},
+									"opensearch": schema.ListNestedBlock{
+										Description: "The `opensearch` destination writes logs to an OpenSearch cluster.",
+										NestedObject: schema.NestedBlockObject{
+											Attributes: map[string]schema.Attribute{
+												"bulk_index": schema.StringAttribute{
+													Optional:    true,
+													Description: "The index or datastream to write logs to.",
+												},
+											},
+										},
+									},
+									"amazon_opensearch": schema.ListNestedBlock{
+										Description: "The `amazon_opensearch` destination writes logs to Amazon OpenSearch.",
+										NestedObject: schema.NestedBlockObject{
+											Attributes: map[string]schema.Attribute{
+												"bulk_index": schema.StringAttribute{
+													Optional:    true,
+													Description: "The index or datastream to write logs to.",
+												},
+											},
+											Blocks: map[string]schema.Block{
+												"auth": schema.ListNestedBlock{
+													NestedObject: schema.NestedBlockObject{
+														Attributes: map[string]schema.Attribute{
+															"strategy": schema.StringAttribute{
+																Required:    true,
+																Description: "The authentication strategy to use (e.g. aws or basic).",
+															},
+															"aws_region": schema.StringAttribute{
+																Optional:    true,
+																Description: "AWS region override (if applicable).",
+															},
+															"assume_role": schema.StringAttribute{
+																Optional:    true,
+																Description: "ARN of the role to assume.",
+															},
+															"external_id": schema.StringAttribute{
+																Optional:    true,
+																Description: "External ID for assumed role.",
+															},
+															"session_name": schema.StringAttribute{
+																Optional:    true,
+																Description: "Session name for assumed role.",
+															},
+														},
 													},
-													"aws_region": schema.StringAttribute{
-														Optional:    true,
-														Description: "AWS region override (if applicable).",
-													},
-													"assume_role": schema.StringAttribute{
-														Optional:    true,
-														Description: "ARN of the role to assume.",
-													},
-													"external_id": schema.StringAttribute{
-														Optional:    true,
-														Description: "External ID for assumed role.",
-													},
-													"session_name": schema.StringAttribute{
-														Optional:    true,
-														Description: "Session name for assumed role.",
+													Validators: []validator.List{
+														listvalidator.SizeAtLeast(1),
+														listvalidator.SizeAtMost(1),
 													},
 												},
 											},
 										},
 									},
-								},
-								"azure_storage": schema.ListNestedBlock{
-									Description: "The `azure_storage` destination forwards logs to an Azure Blob Storage container.",
-									NestedObject: schema.NestedBlockObject{
-										Attributes: map[string]schema.Attribute{
-											"container_name": schema.StringAttribute{
-												Required:    true,
-												Description: "The name of the Azure Blob Storage container to store logs in.",
-											},
-											"blob_prefix": schema.StringAttribute{
-												Optional:    true,
-												Description: "Optional prefix for blobs written to the container.",
-											},
-										},
-									},
-								},
-								"microsoft_sentinel": schema.ListNestedBlock{
-									Description: "The `microsoft_sentinel` destination forwards logs to Microsoft Sentinel.",
-									NestedObject: schema.NestedBlockObject{
-										Attributes: map[string]schema.Attribute{
-											"client_id": schema.StringAttribute{
-												Required:    true,
-												Description: "Azure AD client ID used for authentication.",
-											},
-											"tenant_id": schema.StringAttribute{
-												Required:    true,
-												Description: "Azure AD tenant ID.",
-											},
-											"dcr_immutable_id": schema.StringAttribute{
-												Required:    true,
-												Description: "The immutable ID of the Data Collection Rule (DCR).",
-											},
-											"table": schema.StringAttribute{
-												Required:    true,
-												Description: "The name of the Log Analytics table where logs will be sent.",
+									"azure_storage": schema.ListNestedBlock{
+										Description: "The `azure_storage` destination forwards logs to an Azure Blob Storage container.",
+										NestedObject: schema.NestedBlockObject{
+											Attributes: map[string]schema.Attribute{
+												"container_name": schema.StringAttribute{
+													Required:    true,
+													Description: "The name of the Azure Blob Storage container to store logs in.",
+												},
+												"blob_prefix": schema.StringAttribute{
+													Optional:    true,
+													Description: "Optional prefix for blobs written to the container.",
+												},
 											},
 										},
 									},
-								},
-								"google_chronicle": schema.ListNestedBlock{
-									Description: "The `google_chronicle` destination sends logs to Google Chronicle.",
-									NestedObject: schema.NestedBlockObject{
-										Attributes: map[string]schema.Attribute{
-											"customer_id": schema.StringAttribute{
-												Optional:    true,
-												Description: "The Google Chronicle customer ID.",
-											},
-											"encoding": schema.StringAttribute{
-												Optional:    true,
-												Description: "The encoding format for the logs sent to Chronicle.",
-											},
-											"log_type": schema.StringAttribute{
-												Optional:    true,
-												Description: "The log type metadata associated with the Chronicle destination.",
-											},
-										},
-										Blocks: map[string]schema.Block{
-											"auth": gcpAuthSchema(),
-										},
-									},
-								},
-								"new_relic": schema.ListNestedBlock{
-									Description: "The `new_relic` destination sends logs to the New Relic platform.",
-									NestedObject: schema.NestedBlockObject{
-										Attributes: map[string]schema.Attribute{
-											"region": schema.StringAttribute{
-												Required:    true,
-												Description: "The New Relic region.",
+									"microsoft_sentinel": schema.ListNestedBlock{
+										Description: "The `microsoft_sentinel` destination forwards logs to Microsoft Sentinel.",
+										NestedObject: schema.NestedBlockObject{
+											Attributes: map[string]schema.Attribute{
+												"client_id": schema.StringAttribute{
+													Required:    true,
+													Description: "Azure AD client ID used for authentication.",
+												},
+												"tenant_id": schema.StringAttribute{
+													Required:    true,
+													Description: "Azure AD tenant ID.",
+												},
+												"dcr_immutable_id": schema.StringAttribute{
+													Required:    true,
+													Description: "The immutable ID of the Data Collection Rule (DCR).",
+												},
+												"table": schema.StringAttribute{
+													Required:    true,
+													Description: "The name of the Log Analytics table where logs will be sent.",
+												},
 											},
 										},
 									},
-								},
-								"sentinel_one": schema.ListNestedBlock{
-									Description: "The `sentinel_one` destination sends logs to SentinelOne.",
-									NestedObject: schema.NestedBlockObject{
-										Attributes: map[string]schema.Attribute{
-											"region": schema.StringAttribute{
-												Required:    true,
-												Description: "The SentinelOne region to send logs to.",
+									"google_chronicle": schema.ListNestedBlock{
+										Description: "The `google_chronicle` destination sends logs to Google Chronicle.",
+										NestedObject: schema.NestedBlockObject{
+											Attributes: map[string]schema.Attribute{
+												"customer_id": schema.StringAttribute{
+													Optional:    true,
+													Description: "The Google Chronicle customer ID.",
+												},
+												"encoding": schema.StringAttribute{
+													Optional:    true,
+													Description: "The encoding format for the logs sent to Chronicle.",
+												},
+												"log_type": schema.StringAttribute{
+													Optional:    true,
+													Description: "The log type metadata associated with the Chronicle destination.",
+												},
+											},
+											Blocks: map[string]schema.Block{
+												"auth": gcpAuthSchema(),
 											},
 										},
 									},
+									"new_relic": schema.ListNestedBlock{
+										Description: "The `new_relic` destination sends logs to the New Relic platform.",
+										NestedObject: schema.NestedBlockObject{
+											Attributes: map[string]schema.Attribute{
+												"region": schema.StringAttribute{
+													Required:    true,
+													Description: "The New Relic region.",
+												},
+											},
+										},
+									},
+									"sentinel_one": schema.ListNestedBlock{
+										Description: "The `sentinel_one` destination sends logs to SentinelOne.",
+										NestedObject: schema.NestedBlockObject{
+											Attributes: map[string]schema.Attribute{
+												"region": schema.StringAttribute{
+													Required:    true,
+													Description: "The SentinelOne region to send logs to.",
+												},
+											},
+										},
+									},
+									"socket":                    observability_pipeline.SocketDestinationSchema(),
+									"amazon_s3":                 observability_pipeline.AmazonS3DestinationSchema(),
+									"amazon_security_lake":      observability_pipeline.AmazonSecurityLakeDestinationSchema(),
+									"crowdstrike_next_gen_siem": observability_pipeline.CrowdStrikeNextGenSiemDestinationSchema(),
 								},
-								"socket":                    observability_pipeline.SocketDestinationSchema(),
-								"amazon_s3":                 observability_pipeline.AmazonS3DestinationSchema(),
-								"amazon_security_lake":      observability_pipeline.AmazonSecurityLakeDestinationSchema(),
-								"crowdstrike_next_gen_siem": observability_pipeline.CrowdStrikeNextGenSiemDestinationSchema(),
 							},
 						},
 					},
 				},
-			},
-		},
-	}
-}
-
-func tlsSchema() schema.SingleNestedBlock {
-	return schema.SingleNestedBlock{
-		Description: "Configuration for enabling TLS encryption between the pipeline component and external services.",
-		Attributes: map[string]schema.Attribute{
-			"crt_file": schema.StringAttribute{
-				Optional:    true, // must be optional to make the block optional
-				Description: "Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.",
-			},
-			"ca_file": schema.StringAttribute{
-				Optional:    true,
-				Description: "Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.",
-			},
-			"key_file": schema.StringAttribute{
-				Optional:    true,
-				Description: "Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.",
+				Validators: []validator.List{
+					listvalidator.SizeAtLeast(1),
+					listvalidator.SizeAtMost(1),
+				},
 			},
 		},
 	}
@@ -2082,7 +2130,7 @@ func expandPipeline(ctx context.Context, state *observabilityPipelineModel) (*da
 	config := datadogV2.NewObservabilityPipelineConfigWithDefaults()
 
 	// Sources
-	for _, sourceBlock := range state.Config.Sources {
+	for _, sourceBlock := range state.Config[0].Sources {
 		sourceId := sourceBlock.Id.ValueString()
 		for _, s := range sourceBlock.DatadogAgentSource {
 			config.Sources = append(config.Sources, expandDatadogAgentSource(s, sourceId))
@@ -2135,13 +2183,13 @@ func expandPipeline(ctx context.Context, state *observabilityPipelineModel) (*da
 	}
 
 	// Processors - iterate through processor groups
-	for _, group := range state.Config.ProcessorGroups {
+	for _, group := range state.Config[0].ProcessorGroups {
 		processorGroup := expandProcessorGroup(ctx, group)
 		config.Processors = append(config.Processors, processorGroup)
 	}
 
 	// Destinations
-	for _, dest := range state.Config.Destinations {
+	for _, dest := range state.Config[0].Destinations {
 		for _, d := range dest.DatadogLogsDestination {
 			config.Destinations = append(config.Destinations, expandDatadogLogsDestination(ctx, dest, d))
 		}
@@ -2367,7 +2415,7 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 			destBlock.Inputs, _ = types.ListValueFrom(ctx, types.StringType, d.ObservabilityPipelineOpenSearchDestination.GetInputs())
 			destBlock.OpenSearchDestination = append(destBlock.OpenSearchDestination, opensearch)
 			outCfg.Destinations = append(outCfg.Destinations, destBlock)
-		} else if amazonopensearch := flattenAmazonOpenSearchDestination(ctx, d.ObservabilityPipelineAmazonOpenSearchDestination); amazonopensearch != nil {
+		} else if amazonopensearch := flattenAmazonOpenSearchDestination(d.ObservabilityPipelineAmazonOpenSearchDestination); amazonopensearch != nil {
 			destBlock.Id = types.StringValue(d.ObservabilityPipelineAmazonOpenSearchDestination.GetId())
 			destBlock.Inputs, _ = types.ListValueFrom(ctx, types.StringType, d.ObservabilityPipelineAmazonOpenSearchDestination.GetInputs())
 			destBlock.AmazonOpenSearchDestination = append(destBlock.AmazonOpenSearchDestination, amazonopensearch)
@@ -2395,7 +2443,7 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 		}
 	}
 
-	state.Config = &outCfg
+	state.Config = []configModel{outCfg}
 }
 
 // ---------- Sources ----------
@@ -2406,8 +2454,7 @@ func flattenDatadogAgentSource(src *datadogV2.ObservabilityPipelineDatadogAgentS
 	}
 	out := &datadogAgentSourceModel{}
 	if src.Tls != nil {
-		tls := flattenTls(src.Tls)
-		out.Tls = &tls
+		out.Tls = observability_pipeline.FlattenTls(src.Tls)
 	}
 	return out
 }
@@ -2415,9 +2462,7 @@ func flattenDatadogAgentSource(src *datadogV2.ObservabilityPipelineDatadogAgentS
 func expandDatadogAgentSource(src *datadogAgentSourceModel, id string) datadogV2.ObservabilityPipelineConfigSourceItem {
 	agent := datadogV2.NewObservabilityPipelineDatadogAgentSourceWithDefaults()
 	agent.SetId(id)
-	if src.Tls != nil {
-		agent.Tls = expandTls(src.Tls)
-	}
+	agent.Tls = observability_pipeline.ExpandTls(src.Tls)
 	return datadogV2.ObservabilityPipelineConfigSourceItem{
 		ObservabilityPipelineDatadogAgentSource: agent,
 	}
@@ -2430,6 +2475,11 @@ func flattenKafkaSource(src *datadogV2.ObservabilityPipelineKafkaSource) *kafkaS
 	out := &kafkaSourceModel{
 		GroupId: types.StringValue(src.GetGroupId()),
 	}
+
+	if src.Tls != nil {
+		out.Tls = observability_pipeline.FlattenTls(src.Tls)
+	}
+
 	// Topics is required by the API (always present, even if empty)
 	// Initialize as empty slice to preserve [] vs null distinction
 	topics := []types.String{}
@@ -2437,13 +2487,11 @@ func flattenKafkaSource(src *datadogV2.ObservabilityPipelineKafkaSource) *kafkaS
 		topics = append(topics, types.StringValue(topic))
 	}
 	out.Topics = topics
-	if src.Tls != nil {
-		tls := flattenTls(src.Tls)
-		out.Tls = &tls
-	}
 	if sasl, ok := src.GetSaslOk(); ok {
-		out.Sasl = &kafkaSourceSaslModel{
-			Mechanism: types.StringValue(string(sasl.GetMechanism())),
+		out.Sasl = []kafkaSourceSaslModel{
+			{
+				Mechanism: types.StringValue(string(sasl.GetMechanism())),
+			},
 		}
 	}
 	for _, opt := range src.GetLibrdkafkaOptions() {
@@ -2466,16 +2514,15 @@ func expandKafkaSource(src *kafkaSourceModel, id string) datadogV2.Observability
 	}
 	source.SetTopics(topics)
 
-	if src.Tls != nil {
-		source.Tls = expandTls(src.Tls)
-	}
+	source.Tls = observability_pipeline.ExpandTls(src.Tls)
 
-	if src.Sasl != nil {
-		mechanism, _ := datadogV2.NewObservabilityPipelinePipelineKafkaSourceSaslMechanismFromValue(src.Sasl.Mechanism.ValueString())
+	if len(src.Sasl) > 0 {
+		sasl := src.Sasl[0]
+		mechanism, _ := datadogV2.NewObservabilityPipelinePipelineKafkaSourceSaslMechanismFromValue(sasl.Mechanism.ValueString())
 		if mechanism != nil {
-			sasl := datadogV2.ObservabilityPipelineKafkaSourceSasl{}
-			sasl.SetMechanism(*mechanism)
-			source.SetSasl(sasl)
+			saslConfig := datadogV2.ObservabilityPipelineKafkaSourceSasl{}
+			saslConfig.SetMechanism(*mechanism)
+			source.SetSasl(saslConfig)
 		}
 	}
 
@@ -2885,9 +2932,11 @@ func flattenQuotaProcessorItem(ctx context.Context, src *datadogV2.Observability
 
 	out := &quotaProcessorModel{
 		Name: types.StringValue(src.GetName()),
-		Limit: quotaLimitModel{
-			Enforce: types.StringValue(string(limit.GetEnforce())),
-			Limit:   types.Int64Value(limit.GetLimit()),
+		Limit: []quotaLimitModel{
+			{
+				Enforce: types.StringValue(string(limit.GetEnforce())),
+				Limit:   types.Int64Value(limit.GetLimit()),
+			},
 		},
 		PartitionFields: partitionFields,
 	}
@@ -2906,9 +2955,11 @@ func flattenQuotaProcessorItem(ctx context.Context, src *datadogV2.Observability
 
 	for _, o := range src.GetOverrides() {
 		override := quotaOverrideModel{
-			Limit: quotaLimitModel{
-				Enforce: types.StringValue(string(o.Limit.GetEnforce())),
-				Limit:   types.Int64Value(o.Limit.GetLimit()),
+			Limit: []quotaLimitModel{
+				{
+					Enforce: types.StringValue(string(o.Limit.GetEnforce())),
+					Limit:   types.Int64Value(o.Limit.GetLimit()),
+				},
 			},
 		}
 		for _, f := range o.GetFields() {
@@ -2948,34 +2999,41 @@ func flattenSensitiveDataScannerProcessorItem(ctx context.Context, src *datadogV
 			for _, k := range ko.GetKeywords() {
 				keywords = append(keywords, types.StringValue(k))
 			}
-			r.KeywordOptions = &sensitiveDataScannerProcessorKeywordOptions{
-				Keywords:  keywords,
-				Proximity: types.Int64Value(ko.GetProximity()),
+			r.KeywordOptions = []sensitiveDataScannerProcessorKeywordOptions{
+				{
+					Keywords:  keywords,
+					Proximity: types.Int64Value(ko.GetProximity()),
+				},
 			}
 		}
 
 		// Flatten Pattern
-		pattern := rule.GetPattern()
-		r.Pattern = &sensitiveDataScannerProcessorPattern{}
-		if pattern.ObservabilityPipelineSensitiveDataScannerProcessorCustomPattern != nil {
-			options := pattern.ObservabilityPipelineSensitiveDataScannerProcessorCustomPattern.GetOptions()
-			r.Pattern.Custom = &sensitiveDataScannerCustomPattern{
-				Rule: types.StringValue(options.GetRule()),
+		if pattern, ok := rule.GetPatternOk(); ok {
+			outPattern := sensitiveDataScannerProcessorPattern{}
+			if pattern.ObservabilityPipelineSensitiveDataScannerProcessorCustomPattern != nil {
+				options := pattern.ObservabilityPipelineSensitiveDataScannerProcessorCustomPattern.GetOptions()
+				outPattern.Custom = []sensitiveDataScannerCustomPattern{
+					{
+						Rule: types.StringValue(options.GetRule()),
+					},
+				}
 			}
+			if pattern.ObservabilityPipelineSensitiveDataScannerProcessorLibraryPattern != nil {
+				options := pattern.ObservabilityPipelineSensitiveDataScannerProcessorLibraryPattern.GetOptions()
+				outPattern.Library = []sensitiveDataScannerLibraryPattern{
+					{
+						Id: types.StringValue(options.GetId()),
+					},
+				}
+				if useKw, ok := options.GetUseRecommendedKeywordsOk(); ok {
+					outPattern.Library[0].UseRecommendedKeywords = types.BoolPointerValue(useKw)
+				}
+			}
+			r.Pattern = append(r.Pattern, outPattern)
 		}
-		if pattern.ObservabilityPipelineSensitiveDataScannerProcessorLibraryPattern != nil {
-			options := pattern.ObservabilityPipelineSensitiveDataScannerProcessorLibraryPattern.GetOptions()
-			r.Pattern.Library = &sensitiveDataScannerLibraryPattern{
-				Id: types.StringValue(options.GetId()),
-			}
-			if useKw, ok := options.GetUseRecommendedKeywordsOk(); ok {
-				r.Pattern.Library.UseRecommendedKeywords = types.BoolPointerValue(useKw)
-			}
-		}
-
 		// Flatten Scope
 		scope := rule.GetScope()
-		r.Scope = &sensitiveDataScannerProcessorScope{}
+		outScope := sensitiveDataScannerProcessorScope{}
 		if scope.ObservabilityPipelineSensitiveDataScannerProcessorScopeInclude != nil {
 			options := scope.ObservabilityPipelineSensitiveDataScannerProcessorScopeInclude.GetOptions()
 			// Fields is required by the API (always present, even if empty)
@@ -2984,8 +3042,10 @@ func flattenSensitiveDataScannerProcessorItem(ctx context.Context, src *datadogV
 			for _, f := range options.GetFields() {
 				fields = append(fields, types.StringValue(f))
 			}
-			r.Scope.Include = &sensitiveDataScannerScopeOptions{
-				Fields: fields,
+			outScope.Include = []sensitiveDataScannerScopeOptions{
+				{
+					Fields: fields,
+				},
 			}
 		}
 		if scope.ObservabilityPipelineSensitiveDataScannerProcessorScopeExclude != nil {
@@ -2996,34 +3056,44 @@ func flattenSensitiveDataScannerProcessorItem(ctx context.Context, src *datadogV
 			for _, f := range options.GetFields() {
 				fields = append(fields, types.StringValue(f))
 			}
-			r.Scope.Exclude = &sensitiveDataScannerScopeOptions{
-				Fields: fields,
+			outScope.Exclude = []sensitiveDataScannerScopeOptions{
+				{
+					Fields: fields,
+				},
 			}
 		}
 		if scope.ObservabilityPipelineSensitiveDataScannerProcessorScopeAll != nil {
 			all := true
-			r.Scope.All = &all
+			outScope.All = &all
 		}
+		r.Scope = append(r.Scope, outScope)
 
 		// Flatten OnMatch
 		onMatch := rule.GetOnMatch()
-		r.OnMatch = &sensitiveDataScannerProcessorAction{}
+		outOnMatch := sensitiveDataScannerProcessorAction{}
 		if onMatch.ObservabilityPipelineSensitiveDataScannerProcessorActionRedact != nil {
 			options := onMatch.ObservabilityPipelineSensitiveDataScannerProcessorActionRedact.GetOptions()
-			r.OnMatch.Redact = &sensitiveDataScannerRedactAction{
-				Replace: types.StringValue(options.GetReplace()),
+			outOnMatch.Redact = []sensitiveDataScannerRedactAction{
+				{
+					Replace: types.StringValue(options.GetReplace()),
+				},
 			}
 		}
 		if onMatch.ObservabilityPipelineSensitiveDataScannerProcessorActionHash != nil {
-			r.OnMatch.Hash = &sensitiveDataScannerHashAction{}
+			outOnMatch.Hash = []sensitiveDataScannerHashAction{
+				{},
+			}
 		}
 		if onMatch.ObservabilityPipelineSensitiveDataScannerProcessorActionPartialRedact != nil {
 			options := onMatch.ObservabilityPipelineSensitiveDataScannerProcessorActionPartialRedact.GetOptions()
-			r.OnMatch.PartialRedact = &sensitiveDataScannerPartialRedactAction{
-				Characters: types.Int64Value(options.GetCharacters()),
-				Direction:  types.StringValue(string(options.GetDirection())),
+			outOnMatch.PartialRedact = []sensitiveDataScannerPartialRedactAction{
+				{
+					Characters: types.Int64Value(options.GetCharacters()),
+					Direction:  types.StringValue(string(options.GetDirection())),
+				},
 			}
 		}
+		r.OnMatch = append(r.OnMatch, outOnMatch)
 
 		out.Rules = append(out.Rules, r)
 	}
@@ -3045,13 +3115,17 @@ func flattenGenerateDatadogMetricsProcessorItem(ctx context.Context, src *datado
 		}
 		// Handle value
 		if metric.Value.ObservabilityPipelineGeneratedMetricIncrementByOne != nil {
-			m.Value = &generatedMetricValue{
-				Strategy: types.StringValue("increment_by_one"),
+			m.Value = []generatedMetricValue{
+				{
+					Strategy: types.StringValue("increment_by_one"),
+				},
 			}
 		} else if metric.Value.ObservabilityPipelineGeneratedMetricIncrementByField != nil {
-			m.Value = &generatedMetricValue{
-				Strategy: types.StringValue("increment_by_field"),
-				Field:    types.StringValue(metric.Value.ObservabilityPipelineGeneratedMetricIncrementByField.GetField()),
+			m.Value = []generatedMetricValue{
+				{
+					Strategy: types.StringValue("increment_by_field"),
+					Field:    types.StringValue(metric.Value.ObservabilityPipelineGeneratedMetricIncrementByField.GetField()),
+				},
 			}
 		}
 		out.Metrics = append(out.Metrics, m)
@@ -3178,22 +3252,26 @@ func flattenEnrichmentTableProcessorItem(ctx context.Context, src *datadogV2.Obs
 		Target: types.StringValue(src.GetTarget()),
 	}
 	if src.File != nil {
-		out.File = &enrichmentFileModel{
-			Path: types.StringValue(src.File.GetPath()),
-			Encoding: fileEncodingModel{
-				Type:            types.StringValue(string(src.File.Encoding.GetType())),
-				Delimiter:       types.StringValue(src.File.Encoding.GetDelimiter()),
-				IncludesHeaders: types.BoolValue(src.File.Encoding.GetIncludesHeaders()),
+		out.File = []enrichmentFileModel{
+			{
+				Path: types.StringValue(src.File.GetPath()),
+				Encoding: []fileEncodingModel{
+					{
+						Type:            types.StringValue(string(src.File.Encoding.GetType())),
+						Delimiter:       types.StringValue(src.File.Encoding.GetDelimiter()),
+						IncludesHeaders: types.BoolValue(src.File.Encoding.GetIncludesHeaders()),
+					},
+				},
 			},
 		}
 		for _, s := range src.File.GetSchema() {
-			out.File.Schema = append(out.File.Schema, fileSchemaItemModel{
+			out.File[0].Schema = append(out.File[0].Schema, fileSchemaItemModel{
 				Column: types.StringValue(s.GetColumn()),
 				Type:   types.StringValue(string(s.GetType())),
 			})
 		}
 		for _, k := range src.File.GetKey() {
-			out.File.Key = append(out.File.Key, fileKeyItemModel{
+			out.File[0].Key = append(out.File[0].Key, fileKeyItemModel{
 				Column:     types.StringValue(k.GetColumn()),
 				Comparison: types.StringValue(string(k.GetComparison())),
 				Field:      types.StringValue(k.GetField()),
@@ -3201,10 +3279,12 @@ func flattenEnrichmentTableProcessorItem(ctx context.Context, src *datadogV2.Obs
 		}
 	}
 	if src.Geoip != nil {
-		out.GeoIp = &enrichmentGeoIpModel{
-			KeyField: types.StringValue(src.Geoip.GetKeyField()),
-			Locale:   types.StringValue(src.Geoip.GetLocale()),
-			Path:     types.StringValue(src.Geoip.GetPath()),
+		out.GeoIp = []enrichmentGeoIpModel{
+			{
+				KeyField: types.StringValue(src.Geoip.GetKeyField()),
+				Locale:   types.StringValue(src.Geoip.GetLocale()),
+				Path:     types.StringValue(src.Geoip.GetPath()),
+			},
 		}
 	}
 	return out
@@ -3301,10 +3381,12 @@ func expandQuotaProcessorItem(ctx context.Context, id string, enabled bool, incl
 		proc.SetPartitionFields(partitions)
 	}
 
-	proc.SetLimit(datadogV2.ObservabilityPipelineQuotaProcessorLimit{
-		Enforce: datadogV2.ObservabilityPipelineQuotaProcessorLimitEnforceType(src.Limit.Enforce.ValueString()),
-		Limit:   src.Limit.Limit.ValueInt64(),
-	})
+	if len(src.Limit) > 0 {
+		proc.SetLimit(datadogV2.ObservabilityPipelineQuotaProcessorLimit{
+			Enforce: datadogV2.ObservabilityPipelineQuotaProcessorLimitEnforceType(src.Limit[0].Enforce.ValueString()),
+			Limit:   src.Limit[0].Limit.ValueInt64(),
+		})
+	}
 
 	if !src.OverflowAction.IsNull() {
 		proc.SetOverflowAction(datadogV2.ObservabilityPipelineQuotaProcessorOverflowAction(src.OverflowAction.ValueString()))
@@ -3314,8 +3396,8 @@ func expandQuotaProcessorItem(ctx context.Context, id string, enabled bool, incl
 	for _, o := range src.Overrides {
 		override := datadogV2.ObservabilityPipelineQuotaProcessorOverride{
 			Limit: datadogV2.ObservabilityPipelineQuotaProcessorLimit{
-				Enforce: datadogV2.ObservabilityPipelineQuotaProcessorLimitEnforceType(o.Limit.Enforce.ValueString()),
-				Limit:   o.Limit.Limit.ValueInt64(),
+				Enforce: datadogV2.ObservabilityPipelineQuotaProcessorLimitEnforceType(o.Limit[0].Enforce.ValueString()),
+				Limit:   o.Limit[0].Limit.ValueInt64(),
 			},
 		}
 		var fields []datadogV2.ObservabilityPipelineFieldValue
@@ -3420,25 +3502,25 @@ func expandEnrichmentTableProcessorItem(ctx context.Context, id string, enabled 
 	proc.SetInclude(include)
 	proc.SetTarget(src.Target.ValueString())
 
-	if src.File != nil {
+	if len(src.File) > 0 {
 		file := datadogV2.ObservabilityPipelineEnrichmentTableFile{
-			Path: src.File.Path.ValueString(),
+			Path: src.File[0].Path.ValueString(),
 		}
 
 		file.Encoding = datadogV2.ObservabilityPipelineEnrichmentTableFileEncoding{
-			Type:            datadogV2.ObservabilityPipelineEnrichmentTableFileEncodingType(src.File.Encoding.Type.ValueString()),
-			Delimiter:       src.File.Encoding.Delimiter.ValueString(),
-			IncludesHeaders: src.File.Encoding.IncludesHeaders.ValueBool(),
+			Type:            datadogV2.ObservabilityPipelineEnrichmentTableFileEncodingType(src.File[0].Encoding[0].Type.ValueString()),
+			Delimiter:       src.File[0].Encoding[0].Delimiter.ValueString(),
+			IncludesHeaders: src.File[0].Encoding[0].IncludesHeaders.ValueBool(),
 		}
 
-		for _, s := range src.File.Schema {
+		for _, s := range src.File[0].Schema {
 			file.Schema = append(file.Schema, datadogV2.ObservabilityPipelineEnrichmentTableFileSchemaItems{
 				Column: s.Column.ValueString(),
 				Type:   datadogV2.ObservabilityPipelineEnrichmentTableFileSchemaItemsType(s.Type.ValueString()),
 			})
 		}
 
-		for _, k := range src.File.Key {
+		for _, k := range src.File[0].Key {
 			file.Key = append(file.Key, datadogV2.ObservabilityPipelineEnrichmentTableFileKeyItems{
 				Column:     k.Column.ValueString(),
 				Comparison: datadogV2.ObservabilityPipelineEnrichmentTableFileKeyItemsComparison(k.Comparison.ValueString()),
@@ -3449,11 +3531,11 @@ func expandEnrichmentTableProcessorItem(ctx context.Context, id string, enabled 
 		proc.SetFile(file)
 	}
 
-	if src.GeoIp != nil {
+	if len(src.GeoIp) > 0 {
 		geoip := datadogV2.ObservabilityPipelineEnrichmentTableGeoIp{
-			KeyField: src.GeoIp.KeyField.ValueString(),
-			Locale:   src.GeoIp.Locale.ValueString(),
-			Path:     src.GeoIp.Path.ValueString(),
+			KeyField: src.GeoIp[0].KeyField.ValueString(),
+			Locale:   src.GeoIp[0].Locale.ValueString(),
+			Path:     src.GeoIp[0].Path.ValueString(),
 		}
 		proc.SetGeoip(geoip)
 	}
@@ -3551,8 +3633,8 @@ func expandGenerateMetricsProcessorItem(ctx context.Context, id string, enabled 
 		m.GroupBy.ElementsAs(ctx, &groupBy, false)
 
 		val := datadogV2.ObservabilityPipelineMetricValue{}
-		if m.Value != nil {
-			switch m.Value.Strategy.ValueString() {
+		if len(m.Value) > 0 {
+			switch m.Value[0].Strategy.ValueString() {
 			case "increment_by_one":
 				val.ObservabilityPipelineGeneratedMetricIncrementByOne = &datadogV2.ObservabilityPipelineGeneratedMetricIncrementByOne{
 					Strategy: "increment_by_one",
@@ -3560,7 +3642,7 @@ func expandGenerateMetricsProcessorItem(ctx context.Context, id string, enabled 
 			case "increment_by_field":
 				val.ObservabilityPipelineGeneratedMetricIncrementByField = &datadogV2.ObservabilityPipelineGeneratedMetricIncrementByField{
 					Strategy: "increment_by_field",
-					Field:    m.Value.Field.ValueString(),
+					Field:    m.Value[0].Field.ValueString(),
 				}
 			}
 		}
@@ -3605,32 +3687,33 @@ func expandSensitiveDataScannerProcessorItem(ctx context.Context, id string, ena
 			ko := datadogV2.NewObservabilityPipelineSensitiveDataScannerProcessorKeywordOptionsWithDefaults()
 			// Initialize as empty slice, not nil, to ensure it serializes as [] not null
 			keywords := []string{}
-			for _, k := range r.KeywordOptions.Keywords {
+			for _, k := range r.KeywordOptions[0].Keywords {
 				keywords = append(keywords, k.ValueString())
 			}
 			ko.SetKeywords(keywords)
-			if !r.KeywordOptions.Proximity.IsNull() {
-				ko.SetProximity(r.KeywordOptions.Proximity.ValueInt64())
+			if !r.KeywordOptions[0].Proximity.IsNull() {
+				ko.SetProximity(r.KeywordOptions[0].Proximity.ValueInt64())
 			}
 			rule.SetKeywordOptions(*ko)
 		}
 
 		// Expand Pattern
-		if r.Pattern != nil {
-			if r.Pattern.Custom != nil {
+		if len(r.Pattern) > 0 {
+			tfPattern := r.Pattern[0]
+			if len(tfPattern.Custom) > 0 {
 				options := datadogV2.NewObservabilityPipelineSensitiveDataScannerProcessorCustomPatternOptionsWithDefaults()
-				options.SetRule(r.Pattern.Custom.Rule.ValueString())
+				options.SetRule(tfPattern.Custom[0].Rule.ValueString())
 				customPattern := datadogV2.NewObservabilityPipelineSensitiveDataScannerProcessorCustomPattern(
 					*options,
 					datadogV2.OBSERVABILITYPIPELINESENSITIVEDATASCANNERPROCESSORCUSTOMPATTERNTYPE_CUSTOM,
 				)
 				pattern := datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorCustomPatternAsObservabilityPipelineSensitiveDataScannerProcessorPattern(customPattern)
 				rule.SetPattern(pattern)
-			} else if r.Pattern.Library != nil {
+			} else if len(tfPattern.Library) > 0 {
 				options := datadogV2.NewObservabilityPipelineSensitiveDataScannerProcessorLibraryPatternOptionsWithDefaults()
-				options.SetId(r.Pattern.Library.Id.ValueString())
-				if !r.Pattern.Library.UseRecommendedKeywords.IsNull() {
-					options.SetUseRecommendedKeywords(r.Pattern.Library.UseRecommendedKeywords.ValueBool())
+				options.SetId(tfPattern.Library[0].Id.ValueString())
+				if !tfPattern.Library[0].UseRecommendedKeywords.IsNull() {
+					options.SetUseRecommendedKeywords(tfPattern.Library[0].UseRecommendedKeywords.ValueBool())
 				}
 				libraryPattern := datadogV2.NewObservabilityPipelineSensitiveDataScannerProcessorLibraryPattern(
 					*options,
@@ -3642,11 +3725,12 @@ func expandSensitiveDataScannerProcessorItem(ctx context.Context, id string, ena
 		}
 
 		// Expand Scope
-		if r.Scope != nil {
-			if r.Scope.Include != nil {
+		if len(r.Scope) > 0 {
+			tfScope := r.Scope[0]
+			if tfScope.Include != nil {
 				// Initialize as empty slice, not nil, to ensure it serializes as [] not null
 				fields := []string{}
-				for _, f := range r.Scope.Include.Fields {
+				for _, f := range tfScope.Include[0].Fields {
 					fields = append(fields, f.ValueString())
 				}
 				options := datadogV2.NewObservabilityPipelineSensitiveDataScannerProcessorScopeOptionsWithDefaults()
@@ -3657,10 +3741,10 @@ func expandSensitiveDataScannerProcessorItem(ctx context.Context, id string, ena
 				)
 				scope := datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorScopeIncludeAsObservabilityPipelineSensitiveDataScannerProcessorScope(scopeInclude)
 				rule.SetScope(scope)
-			} else if r.Scope.Exclude != nil {
+			} else if len(tfScope.Exclude) > 0 {
 				// Initialize as empty slice, not nil, to ensure it serializes as [] not null
 				fields := []string{}
-				for _, f := range r.Scope.Exclude.Fields {
+				for _, f := range tfScope.Exclude[0].Fields {
 					fields = append(fields, f.ValueString())
 				}
 				options := datadogV2.NewObservabilityPipelineSensitiveDataScannerProcessorScopeOptionsWithDefaults()
@@ -3671,7 +3755,7 @@ func expandSensitiveDataScannerProcessorItem(ctx context.Context, id string, ena
 				)
 				scope := datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorScopeExcludeAsObservabilityPipelineSensitiveDataScannerProcessorScope(scopeExclude)
 				rule.SetScope(scope)
-			} else if r.Scope.All != nil && *r.Scope.All {
+			} else if tfScope.All != nil && *tfScope.All {
 				scopeAll := datadogV2.NewObservabilityPipelineSensitiveDataScannerProcessorScopeAll(
 					datadogV2.OBSERVABILITYPIPELINESENSITIVEDATASCANNERPROCESSORSCOPEALLTARGET_ALL,
 				)
@@ -3681,26 +3765,27 @@ func expandSensitiveDataScannerProcessorItem(ctx context.Context, id string, ena
 		}
 
 		// Expand OnMatch
-		if r.OnMatch != nil {
-			if r.OnMatch.Redact != nil {
+		if len(r.OnMatch) > 0 {
+			tfOnMatch := r.OnMatch[0]
+			if len(tfOnMatch.Redact) > 0 {
 				options := datadogV2.NewObservabilityPipelineSensitiveDataScannerProcessorActionRedactOptionsWithDefaults()
-				options.SetReplace(r.OnMatch.Redact.Replace.ValueString())
+				options.SetReplace(tfOnMatch.Redact[0].Replace.ValueString())
 				actionRedact := datadogV2.NewObservabilityPipelineSensitiveDataScannerProcessorActionRedact(
 					datadogV2.OBSERVABILITYPIPELINESENSITIVEDATASCANNERPROCESSORACTIONREDACTACTION_REDACT,
 					*options,
 				)
 				action := datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorActionRedactAsObservabilityPipelineSensitiveDataScannerProcessorAction(actionRedact)
 				rule.SetOnMatch(action)
-			} else if r.OnMatch.Hash != nil {
+			} else if tfOnMatch.Hash != nil {
 				actionHash := datadogV2.NewObservabilityPipelineSensitiveDataScannerProcessorActionHash(
 					datadogV2.OBSERVABILITYPIPELINESENSITIVEDATASCANNERPROCESSORACTIONHASHACTION_HASH,
 				)
 				action := datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorActionHashAsObservabilityPipelineSensitiveDataScannerProcessorAction(actionHash)
 				rule.SetOnMatch(action)
-			} else if r.OnMatch.PartialRedact != nil {
+			} else if len(tfOnMatch.PartialRedact) > 0 {
 				options := datadogV2.NewObservabilityPipelineSensitiveDataScannerProcessorActionPartialRedactOptionsWithDefaults()
-				options.SetCharacters(r.OnMatch.PartialRedact.Characters.ValueInt64())
-				options.SetDirection(datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorActionPartialRedactOptionsDirection(r.OnMatch.PartialRedact.Direction.ValueString()))
+				options.SetCharacters(tfOnMatch.PartialRedact[0].Characters.ValueInt64())
+				options.SetDirection(datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorActionPartialRedactOptionsDirection(tfOnMatch.PartialRedact[0].Direction.ValueString()))
 				actionPartialRedact := datadogV2.NewObservabilityPipelineSensitiveDataScannerProcessorActionPartialRedact(
 					datadogV2.OBSERVABILITYPIPELINESENSITIVEDATASCANNERPROCESSORACTIONPARTIALREDACTACTION_PARTIAL_REDACT,
 					*options,
@@ -3737,33 +3822,10 @@ func expandDatadogLogsDestination(ctx context.Context, dest *destinationModel, s
 	}
 }
 
-func flattenTls(src *datadogV2.ObservabilityPipelineTls) tlsModel {
-	return tlsModel{
-		CrtFile: types.StringValue(src.CrtFile),
-		CaFile:  types.StringPointerValue(src.CaFile),
-		KeyFile: types.StringPointerValue(src.KeyFile),
-	}
-}
-
-func expandTls(tlsTF *tlsModel) *datadogV2.ObservabilityPipelineTls {
-	tls := &datadogV2.ObservabilityPipelineTls{}
-	tls.SetCrtFile(tlsTF.CrtFile.ValueString())
-	if !tlsTF.CaFile.IsNull() {
-		tls.SetCaFile(tlsTF.CaFile.ValueString())
-	}
-	if !tlsTF.KeyFile.IsNull() {
-		tls.SetKeyFile(tlsTF.KeyFile.ValueString())
-	}
-	return tls
-}
-
 func expandFluentdSource(src *fluentdSourceModel, id string) datadogV2.ObservabilityPipelineConfigSourceItem {
 	source := datadogV2.NewObservabilityPipelineFluentdSourceWithDefaults()
 	source.SetId(id)
-
-	if src.Tls != nil {
-		source.Tls = expandTls(src.Tls)
-	}
+	source.Tls = observability_pipeline.ExpandTls(src.Tls)
 
 	return datadogV2.ObservabilityPipelineConfigSourceItem{
 		ObservabilityPipelineFluentdSource: source,
@@ -3775,7 +3837,7 @@ func expandFluentBitSource(src *fluentBitSourceModel, id string) datadogV2.Obser
 	source.SetId(id)
 
 	if src.Tls != nil {
-		source.Tls = expandTls(src.Tls)
+		source.Tls = observability_pipeline.ExpandTls(src.Tls)
 	}
 
 	return datadogV2.ObservabilityPipelineConfigSourceItem{
@@ -3789,10 +3851,11 @@ func flattenFluentdSource(src *datadogV2.ObservabilityPipelineFluentdSource) *fl
 	}
 
 	out := &fluentdSourceModel{}
+
 	if src.Tls != nil {
-		tls := flattenTls(src.Tls)
-		out.Tls = &tls
+		out.Tls = observability_pipeline.FlattenTls(src.Tls)
 	}
+
 	return out
 }
 
@@ -3802,10 +3865,11 @@ func flattenFluentBitSource(src *datadogV2.ObservabilityPipelineFluentBitSource)
 	}
 
 	out := &fluentBitSourceModel{}
+
 	if src.Tls != nil {
-		tls := flattenTls(src.Tls)
-		out.Tls = &tls
+		out.Tls = observability_pipeline.FlattenTls(src.Tls)
 	}
+
 	return out
 }
 
@@ -3826,9 +3890,7 @@ func expandHttpServerSource(src *httpServerSourceModel, id string) datadogV2.Obs
 	s.SetAuthStrategy(datadogV2.ObservabilityPipelineHttpServerSourceAuthStrategy(src.AuthStrategy.ValueString()))
 	s.SetDecoding(datadogV2.ObservabilityPipelineDecoding(src.Decoding.ValueString()))
 
-	if src.Tls != nil {
-		s.Tls = expandTls(src.Tls)
-	}
+	s.Tls = observability_pipeline.ExpandTls(src.Tls)
 
 	return datadogV2.ObservabilityPipelineConfigSourceItem{
 		ObservabilityPipelineHttpServerSource: s,
@@ -3846,8 +3908,7 @@ func flattenHttpServerSource(src *datadogV2.ObservabilityPipelineHttpServerSourc
 	}
 
 	if src.Tls != nil {
-		tls := flattenTls(src.Tls)
-		out.Tls = &tls
+		out.Tls = observability_pipeline.FlattenTls(src.Tls)
 	}
 
 	return out
@@ -3858,7 +3919,7 @@ func expandSplunkHecSource(src *splunkHecSourceModel, id string) datadogV2.Obser
 	s.SetId(id)
 
 	if src.Tls != nil {
-		s.Tls = expandTls(src.Tls)
+		s.Tls = observability_pipeline.ExpandTls(src.Tls)
 	}
 
 	return datadogV2.ObservabilityPipelineConfigSourceItem{
@@ -3874,8 +3935,7 @@ func flattenSplunkHecSource(src *datadogV2.ObservabilityPipelineSplunkHecSource)
 	out := &splunkHecSourceModel{}
 
 	if src.Tls != nil {
-		tls := flattenTls(src.Tls)
-		out.Tls = &tls
+		out.Tls = observability_pipeline.FlattenTls(src.Tls)
 	}
 
 	return out
@@ -3965,9 +4025,7 @@ func expandGooglePubSubDestination(ctx context.Context, dest *destinationModel, 
 		pubsub.SetAuth(auth)
 	}
 
-	if d.Tls != nil {
-		pubsub.Tls = expandTls(d.Tls)
-	}
+	pubsub.Tls = observability_pipeline.ExpandTls(d.Tls)
 
 	var inputs []string
 	dest.Inputs.ElementsAs(ctx, &inputs, false)
@@ -3988,17 +4046,16 @@ func flattenGooglePubSubDestination(ctx context.Context, src *datadogV2.Observab
 		Topic:   types.StringValue(src.GetTopic()),
 	}
 
+	if src.Tls != nil {
+		out.Tls = observability_pipeline.FlattenTls(src.Tls)
+	}
+
 	if encoding, ok := src.GetEncodingOk(); ok {
 		out.Encoding = types.StringValue(string(*encoding))
 	}
 
 	if auth, ok := src.GetAuthOk(); ok {
 		out.Auth = flattenGcpAuth(auth)
-	}
-
-	if src.Tls != nil {
-		tls := flattenTls(src.Tls)
-		out.Tls = &tls
 	}
 
 	return out
@@ -4008,9 +4065,7 @@ func expandSplunkTcpSource(src *splunkTcpSourceModel, id string) datadogV2.Obser
 	s := datadogV2.NewObservabilityPipelineSplunkTcpSourceWithDefaults()
 	s.SetId(id)
 
-	if src.Tls != nil {
-		s.Tls = expandTls(src.Tls)
-	}
+	s.Tls = observability_pipeline.ExpandTls(src.Tls)
 
 	return datadogV2.ObservabilityPipelineConfigSourceItem{
 		ObservabilityPipelineSplunkTcpSource: s,
@@ -4025,8 +4080,7 @@ func flattenSplunkTcpSource(src *datadogV2.ObservabilityPipelineSplunkTcpSource)
 	out := &splunkTcpSourceModel{}
 
 	if src.Tls != nil {
-		tls := flattenTls(src.Tls)
-		out.Tls = &tls
+		out.Tls = observability_pipeline.FlattenTls(src.Tls)
 	}
 
 	return out
@@ -4078,16 +4132,11 @@ func expandAmazonS3Source(src *amazonS3SourceModel, id string) datadogV2.Observa
 
 	s.SetRegion(src.Region.ValueString())
 
-	if src.Auth != nil {
-		auth := observability_pipeline.ExpandAwsAuth(src.Auth)
-		if auth != nil {
-			s.SetAuth(*auth)
-		}
+	if len(src.Auth) > 0 {
+		s.SetAuth(observability_pipeline.ExpandAwsAuth(src.Auth[0]))
 	}
 
-	if src.Tls != nil {
-		s.Tls = expandTls(src.Tls)
-	}
+	s.Tls = observability_pipeline.ExpandTls(src.Tls)
 
 	return datadogV2.ObservabilityPipelineConfigSourceItem{
 		ObservabilityPipelineAmazonS3Source: s,
@@ -4103,13 +4152,12 @@ func flattenAmazonS3Source(src *datadogV2.ObservabilityPipelineAmazonS3Source) *
 		Region: types.StringValue(src.GetRegion()),
 	}
 
-	if auth, ok := src.GetAuthOk(); ok {
-		out.Auth = observability_pipeline.FlattenAwsAuth(auth)
+	if src.Tls != nil {
+		out.Tls = observability_pipeline.FlattenTls(src.Tls)
 	}
 
-	if src.Tls != nil {
-		tls := flattenTls(src.Tls)
-		out.Tls = &tls
+	if auth, ok := src.GetAuthOk(); ok {
+		out.Auth = observability_pipeline.FlattenAwsAuth(auth)
 	}
 
 	return out
@@ -4189,9 +4237,7 @@ func expandRsyslogSource(src *rsyslogSourceModel, id string) datadogV2.Observabi
 	if !src.Mode.IsNull() {
 		obj.SetMode(datadogV2.ObservabilityPipelineSyslogSourceMode(src.Mode.ValueString()))
 	}
-	if src.Tls != nil {
-		obj.Tls = expandTls(src.Tls)
-	}
+	obj.Tls = observability_pipeline.ExpandTls(src.Tls)
 	return datadogV2.ObservabilityPipelineConfigSourceItem{
 		ObservabilityPipelineRsyslogSource: obj,
 	}
@@ -4206,9 +4252,9 @@ func flattenRsyslogSource(src *datadogV2.ObservabilityPipelineRsyslogSource) *rs
 		out.Mode = types.StringValue(string(*v))
 	}
 	if src.Tls != nil {
-		tls := flattenTls(src.Tls)
-		out.Tls = &tls
+		out.Tls = observability_pipeline.FlattenTls(src.Tls)
 	}
+
 	return out
 }
 
@@ -4218,9 +4264,7 @@ func expandSyslogNgSource(src *syslogNgSourceModel, id string) datadogV2.Observa
 	if !src.Mode.IsNull() {
 		obj.SetMode(datadogV2.ObservabilityPipelineSyslogSourceMode(src.Mode.ValueString()))
 	}
-	if src.Tls != nil {
-		obj.Tls = expandTls(src.Tls)
-	}
+	obj.Tls = observability_pipeline.ExpandTls(src.Tls)
 	return datadogV2.ObservabilityPipelineConfigSourceItem{
 		ObservabilityPipelineSyslogNgSource: obj,
 	}
@@ -4235,8 +4279,7 @@ func flattenSyslogNgSource(src *datadogV2.ObservabilityPipelineSyslogNgSource) *
 		out.Mode = types.StringValue(string(*v))
 	}
 	if src.Tls != nil {
-		tls := flattenTls(src.Tls)
-		out.Tls = &tls
+		out.Tls = observability_pipeline.FlattenTls(src.Tls)
 	}
 	return out
 }
@@ -4252,9 +4295,7 @@ func expandRsyslogDestination(ctx context.Context, dest *destinationModel, src *
 	if !src.Keepalive.IsNull() {
 		obj.SetKeepalive(src.Keepalive.ValueInt64())
 	}
-	if src.Tls != nil {
-		obj.Tls = expandTls(src.Tls)
-	}
+	obj.Tls = observability_pipeline.ExpandTls(src.Tls)
 	return datadogV2.ObservabilityPipelineConfigDestinationItem{
 		ObservabilityPipelineRsyslogDestination: obj,
 	}
@@ -4265,12 +4306,11 @@ func flattenRsyslogDestination(ctx context.Context, src *datadogV2.Observability
 		return nil
 	}
 	out := &rsyslogDestinationModel{}
+	if src.Tls != nil {
+		out.Tls = observability_pipeline.FlattenTls(src.Tls)
+	}
 	if v, ok := src.GetKeepaliveOk(); ok {
 		out.Keepalive = types.Int64Value(*v)
-	}
-	if src.Tls != nil {
-		tls := flattenTls(src.Tls)
-		out.Tls = &tls
 	}
 	return out
 }
@@ -4286,9 +4326,7 @@ func expandSyslogNgDestination(ctx context.Context, dest *destinationModel, src 
 	if !src.Keepalive.IsNull() {
 		obj.SetKeepalive(src.Keepalive.ValueInt64())
 	}
-	if src.Tls != nil {
-		obj.Tls = expandTls(src.Tls)
-	}
+	obj.Tls = observability_pipeline.ExpandTls(src.Tls)
 
 	return datadogV2.ObservabilityPipelineConfigDestinationItem{
 		ObservabilityPipelineSyslogNgDestination: obj,
@@ -4300,12 +4338,11 @@ func flattenSyslogNgDestination(ctx context.Context, src *datadogV2.Observabilit
 		return nil
 	}
 	out := &syslogNgDestinationModel{}
+	if src.Tls != nil {
+		out.Tls = observability_pipeline.FlattenTls(src.Tls)
+	}
 	if v, ok := src.GetKeepaliveOk(); ok {
 		out.Keepalive = types.Int64Value(*v)
-	}
-	if src.Tls != nil {
-		tls := flattenTls(src.Tls)
-		out.Tls = &tls
 	}
 	return out
 }
@@ -4426,15 +4463,12 @@ func expandAmazonDataFirehoseSource(src *amazonDataFirehoseSourceModel, id strin
 	firehose := datadogV2.NewObservabilityPipelineAmazonDataFirehoseSourceWithDefaults()
 	firehose.SetId(id)
 
-	if src.Auth != nil {
-		auth := observability_pipeline.ExpandAwsAuth(src.Auth)
-		if auth != nil {
-			firehose.SetAuth(*auth)
-		}
+	if len(src.Auth) > 0 {
+		firehose.SetAuth(observability_pipeline.ExpandAwsAuth(src.Auth[0]))
 	}
 
 	if src.Tls != nil {
-		firehose.Tls = expandTls(src.Tls)
+		firehose.Tls = observability_pipeline.ExpandTls(src.Tls)
 	}
 
 	return datadogV2.ObservabilityPipelineConfigSourceItem{
@@ -4449,13 +4483,12 @@ func flattenAmazonDataFirehoseSource(src *datadogV2.ObservabilityPipelineAmazonD
 
 	out := &amazonDataFirehoseSourceModel{}
 
-	if auth, ok := src.GetAuthOk(); ok {
-		out.Auth = observability_pipeline.FlattenAwsAuth(auth)
+	if src.Tls != nil {
+		out.Tls = observability_pipeline.FlattenTls(src.Tls)
 	}
 
-	if src.Tls != nil {
-		tls := flattenTls(src.Tls)
-		out.Tls = &tls
+	if auth, ok := src.GetAuthOk(); ok {
+		out.Auth = observability_pipeline.FlattenAwsAuth(auth)
 	}
 
 	return out
@@ -4476,9 +4509,7 @@ func expandHttpClientSource(src *httpClientSourceModel, id string) datadogV2.Obs
 		auth := datadogV2.ObservabilityPipelineHttpClientSourceAuthStrategy(src.AuthStrategy.ValueString())
 		httpSrc.SetAuthStrategy(auth)
 	}
-	if src.Tls != nil {
-		httpSrc.Tls = expandTls(src.Tls)
-	}
+	httpSrc.Tls = observability_pipeline.ExpandTls(src.Tls)
 
 	return datadogV2.ObservabilityPipelineConfigSourceItem{
 		ObservabilityPipelineHttpClientSource: httpSrc,
@@ -4494,6 +4525,10 @@ func flattenHttpClientSource(src *datadogV2.ObservabilityPipelineHttpClientSourc
 		Decoding: types.StringValue(string(src.GetDecoding())),
 	}
 
+	if src.Tls != nil {
+		out.Tls = observability_pipeline.FlattenTls(src.Tls)
+	}
+
 	if v, ok := src.GetScrapeIntervalSecsOk(); ok {
 		out.ScrapeInterval = types.Int64Value(*v)
 	}
@@ -4502,10 +4537,6 @@ func flattenHttpClientSource(src *datadogV2.ObservabilityPipelineHttpClientSourc
 	}
 	if v, ok := src.GetAuthStrategyOk(); ok && v != nil {
 		out.AuthStrategy = types.StringValue(string(*v))
-	}
-	if src.Tls != nil {
-		tls := flattenTls(src.Tls)
-		out.Tls = &tls
 	}
 
 	return out
@@ -4522,9 +4553,7 @@ func expandGooglePubSubSource(src *googlePubSubSourceModel, id string) datadogV2
 		pubsub.SetAuth(*auth)
 	}
 
-	if src.Tls != nil {
-		pubsub.Tls = expandTls(src.Tls)
-	}
+	pubsub.Tls = observability_pipeline.ExpandTls(src.Tls)
 
 	return datadogV2.ObservabilityPipelineConfigSourceItem{
 		ObservabilityPipelineGooglePubSubSource: pubsub,
@@ -4541,13 +4570,12 @@ func flattenGooglePubSubSource(src *datadogV2.ObservabilityPipelineGooglePubSubS
 		Decoding:     types.StringValue(string(src.GetDecoding())),
 	}
 
-	if auth, ok := src.GetAuthOk(); ok {
-		out.Auth = flattenGcpAuth(auth)
+	if src.Tls != nil {
+		out.Tls = observability_pipeline.FlattenTls(src.Tls)
 	}
 
-	if src.Tls != nil {
-		tls := flattenTls(src.Tls)
-		out.Tls = &tls
+	if auth, ok := src.GetAuthOk(); ok {
+		out.Auth = flattenGcpAuth(auth)
 	}
 
 	return out
@@ -4556,9 +4584,7 @@ func flattenGooglePubSubSource(src *datadogV2.ObservabilityPipelineGooglePubSubS
 func expandLogstashSource(src *logstashSourceModel, id string) datadogV2.ObservabilityPipelineConfigSourceItem {
 	logstash := datadogV2.NewObservabilityPipelineLogstashSourceWithDefaults()
 	logstash.SetId(id)
-	if src.Tls != nil {
-		logstash.Tls = expandTls(src.Tls)
-	}
+	logstash.Tls = observability_pipeline.ExpandTls(src.Tls)
 	return datadogV2.ObservabilityPipelineConfigSourceItem{
 		ObservabilityPipelineLogstashSource: logstash,
 	}
@@ -4570,9 +4596,9 @@ func flattenLogstashSource(src *datadogV2.ObservabilityPipelineLogstashSource) *
 	}
 	out := &logstashSourceModel{}
 	if src.Tls != nil {
-		tls := flattenTls(src.Tls)
-		out.Tls = &tls
+		out.Tls = observability_pipeline.FlattenTls(src.Tls)
 	}
+
 	return out
 }
 
@@ -4717,21 +4743,22 @@ func expandAmazonOpenSearchDestination(ctx context.Context, dest *destinationMod
 		amazonopensearch.SetBulkIndex(src.BulkIndex.ValueString())
 	}
 
-	if src.Auth != nil {
+	if len(src.Auth) > 0 {
+		authSrc := src.Auth[0]
 		auth := datadogV2.ObservabilityPipelineAmazonOpenSearchDestinationAuth{
-			Strategy: datadogV2.ObservabilityPipelineAmazonOpenSearchDestinationAuthStrategy(src.Auth.Strategy.ValueString()),
+			Strategy: datadogV2.ObservabilityPipelineAmazonOpenSearchDestinationAuthStrategy(authSrc.Strategy.ValueString()),
 		}
-		if !src.Auth.AwsRegion.IsNull() {
-			auth.AwsRegion = src.Auth.AwsRegion.ValueStringPointer()
+		if !authSrc.AwsRegion.IsNull() {
+			auth.AwsRegion = authSrc.AwsRegion.ValueStringPointer()
 		}
-		if !src.Auth.AssumeRole.IsNull() {
-			auth.AssumeRole = src.Auth.AssumeRole.ValueStringPointer()
+		if !authSrc.AssumeRole.IsNull() {
+			auth.AssumeRole = authSrc.AssumeRole.ValueStringPointer()
 		}
-		if !src.Auth.ExternalId.IsNull() {
-			auth.ExternalId = src.Auth.ExternalId.ValueStringPointer()
+		if !authSrc.ExternalId.IsNull() {
+			auth.ExternalId = authSrc.ExternalId.ValueStringPointer()
 		}
-		if !src.Auth.SessionName.IsNull() {
-			auth.SessionName = src.Auth.SessionName.ValueStringPointer()
+		if !authSrc.SessionName.IsNull() {
+			auth.SessionName = authSrc.SessionName.ValueStringPointer()
 		}
 		amazonopensearch.SetAuth(auth)
 	}
@@ -4741,7 +4768,7 @@ func expandAmazonOpenSearchDestination(ctx context.Context, dest *destinationMod
 	}
 }
 
-func flattenAmazonOpenSearchDestination(ctx context.Context, src *datadogV2.ObservabilityPipelineAmazonOpenSearchDestination) *amazonOpenSearchDestinationModel {
+func flattenAmazonOpenSearchDestination(src *datadogV2.ObservabilityPipelineAmazonOpenSearchDestination) *amazonOpenSearchDestinationModel {
 	if src == nil {
 		return nil
 	}
@@ -4752,12 +4779,14 @@ func flattenAmazonOpenSearchDestination(ctx context.Context, src *datadogV2.Obse
 		model.BulkIndex = types.StringValue(*v)
 	}
 
-	model.Auth = &amazonOpenSearchAuthModel{
-		Strategy:    types.StringValue(string(src.Auth.Strategy)),
-		AwsRegion:   types.StringPointerValue(src.Auth.AwsRegion),
-		AssumeRole:  types.StringPointerValue(src.Auth.AssumeRole),
-		ExternalId:  types.StringPointerValue(src.Auth.ExternalId),
-		SessionName: types.StringPointerValue(src.Auth.SessionName),
+	model.Auth = []amazonOpenSearchAuthModel{
+		{
+			Strategy:    types.StringValue(string(src.Auth.Strategy)),
+			AwsRegion:   types.StringPointerValue(src.Auth.AwsRegion),
+			AssumeRole:  types.StringPointerValue(src.Auth.AssumeRole),
+			ExternalId:  types.StringPointerValue(src.Auth.ExternalId),
+			SessionName: types.StringPointerValue(src.Auth.SessionName),
+		},
 	}
 
 	return model
