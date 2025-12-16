@@ -66,7 +66,7 @@ resource "datadog_cloud_inventory_sync_config" "gcp_example" {
 - `destination_bucket_region` (String) AWS Region of the bucket holding the inventory files. Required when cloud_provider is `aws`.
 - `destination_prefix` (String) Name of the prefix holding the inventory files.
 - `gcp_destination_bucket_name` (String) Name of the GCP bucket where the inventory files are stored. Required when cloud_provider is `gcp`.
-- `gcp_project_id` (String) GCP Project ID of the project holding the bucket. Required when cloud_provider is `gcp`.
+- `gcp_project_id` (String) GCP project ID of the project that owns the bucket. Required when cloud_provider is `gcp`.
 - `gcp_service_account_email` (String) Email of the GCP service account used to read the bucket. Required when cloud_provider is `gcp`.
 - `gcp_source_bucket_name` (String) Name of the GCP bucket for which the inventory report is generated. Required when cloud_provider is `gcp`.
 
