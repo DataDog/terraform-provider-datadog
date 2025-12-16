@@ -209,7 +209,8 @@ func (r *costBudgetResource) ImportState(ctx context.Context, req resource.Impor
 }
 
 // ValidateConfig performs client-side validation during terraform plan
-// Mirrors BudgetWithEntries.validate() from dd-source: cost-planning-api/budgets/handler.go
+// Note: This duplicates the API's validation logic in BudgetWithEntries.validate() in dd-source
+// Will be replaced by API-based validation (dry-run or /validate endpoint) in a future release
 func (r *costBudgetResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
 	var data costBudgetModel
 	resp.Diagnostics.Append(req.Config.Get(ctx, &data)...)
