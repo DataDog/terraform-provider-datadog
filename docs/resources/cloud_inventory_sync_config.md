@@ -62,7 +62,7 @@ resource "datadog_cloud_inventory_sync_config" "gcp_example" {
 - `azure_storage_account` (String) Azure Storage Account name. Required when cloud_provider is `azure`.
 - `azure_subscription_id` (String) Azure Subscription ID. Required when cloud_provider is `azure`.
 - `azure_tenant_id` (String) Azure Tenant ID. Required when cloud_provider is `azure`.
-- `destination_bucket_name` (String) Name of the bucket holding the inventory files. Required when cloud_provider is `aws`.
+- `destination_bucket_name` (String) Name of the bucket where the inventory files are stored. Required when cloud_provider is `aws`.
 - `destination_bucket_region` (String) AWS region of the bucket where the inventory files are stored. Required when cloud_provider is `aws`.
 - `destination_prefix` (String) Prefix within the bucket where inventory files are stored.
 - `gcp_destination_bucket_name` (String) Name of the GCP bucket where the inventory files are stored. Required when cloud_provider is `gcp`.
