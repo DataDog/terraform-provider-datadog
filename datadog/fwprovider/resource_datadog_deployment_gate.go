@@ -444,7 +444,7 @@ func (r *deploymentGateResource) validateRules(ctx context.Context, state *deplo
 			diags.AddError(
 				"Missing required options block",
 				fmt.Sprintf("Rule %d ('%s'): the options block is required for all deployment rules. "+
-					"Please provide an options block with at least the duration field.", i, rule.Name.ValueString()),
+					"Please provide an options block.", i, rule.Name.ValueString()),
 			)
 			continue
 		}
