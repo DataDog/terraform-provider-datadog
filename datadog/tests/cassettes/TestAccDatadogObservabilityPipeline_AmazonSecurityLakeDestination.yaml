@@ -31,13 +31,13 @@ interactions:
         content_length: 643
         uncompressed: false
         body: |
-            {"data":{"id":"4667da2c-d5c4-11f0-9f0d-da7ad0900002","type":"pipelines","attributes":{"name":"amazon-security-lake-destination-pipeline","config":{"destinations":[{"auth":{"assume_role":"arn:aws:iam::123456789012:role/SecurityLakeRole","external_id":"external-id","session_name":"session-name"},"bucket":"my-security-lake-bucket","custom_source_name":"my-custom-source","id":"security-lake-dest-1","inputs":["source-1"],"region":"us-east-1","tls":{"ca_file":"/path/to/ca.crt","crt_file":"/path/to/cert.crt","key_file":"/path/to/key.key"},"type":"amazon_security_lake"}],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"3d1976ac-db59-11f0-b5b8-da7ad0900002","type":"pipelines","attributes":{"name":"amazon-security-lake-destination-pipeline","config":{"destinations":[{"auth":{"assume_role":"arn:aws:iam::123456789012:role/SecurityLakeRole","external_id":"external-id","session_name":"session-name"},"bucket":"my-security-lake-bucket","custom_source_name":"my-custom-source","id":"security-lake-dest-1","inputs":["source-1"],"region":"us-east-1","tls":{"ca_file":"/path/to/ca.crt","crt_file":"/path/to/cert.crt","key_file":"/path/to/key.key"},"type":"amazon_security_lake"}],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/json
         status: 201 Created
         code: 201
-        duration: 724.278209ms
+        duration: 751.599541ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -54,7 +54,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/4667da2c-d5c4-11f0-9f0d-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/3d1976ac-db59-11f0-b5b8-da7ad0900002
         method: GET
       response:
         proto: HTTP/1.1
@@ -65,13 +65,13 @@ interactions:
         content_length: 643
         uncompressed: false
         body: |
-            {"data":{"id":"4667da2c-d5c4-11f0-9f0d-da7ad0900002","type":"pipelines","attributes":{"name":"amazon-security-lake-destination-pipeline","config":{"destinations":[{"auth":{"assume_role":"arn:aws:iam::123456789012:role/SecurityLakeRole","external_id":"external-id","session_name":"session-name"},"bucket":"my-security-lake-bucket","custom_source_name":"my-custom-source","id":"security-lake-dest-1","inputs":["source-1"],"region":"us-east-1","tls":{"ca_file":"/path/to/ca.crt","crt_file":"/path/to/cert.crt","key_file":"/path/to/key.key"},"type":"amazon_security_lake"}],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"3d1976ac-db59-11f0-b5b8-da7ad0900002","type":"pipelines","attributes":{"name":"amazon-security-lake-destination-pipeline","config":{"destinations":[{"auth":{"assume_role":"arn:aws:iam::123456789012:role/SecurityLakeRole","external_id":"external-id","session_name":"session-name"},"bucket":"my-security-lake-bucket","custom_source_name":"my-custom-source","id":"security-lake-dest-1","inputs":["source-1"],"region":"us-east-1","tls":{"ca_file":"/path/to/ca.crt","crt_file":"/path/to/cert.crt","key_file":"/path/to/key.key"},"type":"amazon_security_lake"}],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 799.273916ms
+        duration: 269.351959ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -88,7 +88,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/4667da2c-d5c4-11f0-9f0d-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/3d1976ac-db59-11f0-b5b8-da7ad0900002
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -104,4 +104,4 @@ interactions:
                 - application/json
         status: 204 No Content
         code: 204
-        duration: 1.228843s
+        duration: 569.147792ms

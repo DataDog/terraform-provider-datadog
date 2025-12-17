@@ -31,13 +31,13 @@ interactions:
         content_length: 527
         uncompressed: false
         body: |
-            {"data":{"id":"2b0bc4c8-d5c4-11f0-9f01-da7ad0900002","type":"pipelines","attributes":{"name":"ocsf mapper (library only)","config":{"destinations":[{"id":"destination-1","inputs":["ocsf-group-1"],"type":"datadog_logs"}],"processors":[{"enabled":true,"id":"ocsf-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"ocsf-mapper","include":"*","mappings":[{"include":"source:lib","mapping":"CloudTrail Account Change"}],"type":"ocsf_mapper"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"22d4d1e2-db59-11f0-b59e-da7ad0900002","type":"pipelines","attributes":{"name":"ocsf mapper (library only)","config":{"destinations":[{"id":"destination-1","inputs":["ocsf-group-1"],"type":"datadog_logs"}],"processors":[{"enabled":true,"id":"ocsf-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"ocsf-mapper","include":"*","mappings":[{"include":"source:lib","mapping":"CloudTrail Account Change"}],"type":"ocsf_mapper"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/json
         status: 201 Created
         code: 201
-        duration: 684.360416ms
+        duration: 712.099458ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -54,7 +54,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/2b0bc4c8-d5c4-11f0-9f01-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/22d4d1e2-db59-11f0-b59e-da7ad0900002
         method: GET
       response:
         proto: HTTP/1.1
@@ -65,13 +65,13 @@ interactions:
         content_length: 527
         uncompressed: false
         body: |
-            {"data":{"id":"2b0bc4c8-d5c4-11f0-9f01-da7ad0900002","type":"pipelines","attributes":{"name":"ocsf mapper (library only)","config":{"destinations":[{"id":"destination-1","inputs":["ocsf-group-1"],"type":"datadog_logs"}],"processors":[{"enabled":true,"id":"ocsf-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"ocsf-mapper","include":"*","mappings":[{"include":"source:lib","mapping":"CloudTrail Account Change"}],"type":"ocsf_mapper"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"22d4d1e2-db59-11f0-b59e-da7ad0900002","type":"pipelines","attributes":{"name":"ocsf mapper (library only)","config":{"destinations":[{"id":"destination-1","inputs":["ocsf-group-1"],"type":"datadog_logs"}],"processors":[{"enabled":true,"id":"ocsf-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"ocsf-mapper","include":"*","mappings":[{"include":"source:lib","mapping":"CloudTrail Account Change"}],"type":"ocsf_mapper"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 288.410375ms
+        duration: 306.052875ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -88,7 +88,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/2b0bc4c8-d5c4-11f0-9f01-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/22d4d1e2-db59-11f0-b59e-da7ad0900002
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -104,4 +104,4 @@ interactions:
                 - application/json
         status: 204 No Content
         code: 204
-        duration: 699.535041ms
+        duration: 387.550458ms

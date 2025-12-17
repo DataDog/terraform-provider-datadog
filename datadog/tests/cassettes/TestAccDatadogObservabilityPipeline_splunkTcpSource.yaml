@@ -31,13 +31,13 @@ interactions:
         content_length: 417
         uncompressed: false
         body: |
-            {"data":{"id":"f4c15c5c-d5c3-11f0-a3bb-da7ad0900002","type":"pipelines","attributes":{"name":"splunk-tcp-pipeline","config":{"destinations":[{"id":"destination-1","inputs":["splunk-tcp-source-1"],"type":"datadog_logs"}],"processors":[],"sources":[{"id":"splunk-tcp-source-1","tls":{"ca_file":"/etc/ssl/certs/tcp.ca","crt_file":"/etc/ssl/certs/tcp.crt","key_file":"/etc/ssl/private/tcp.key"},"type":"splunk_tcp"}]}}}}
+            {"data":{"id":"eab24358-db58-11f0-a53c-da7ad0900002","type":"pipelines","attributes":{"name":"splunk-tcp-pipeline","config":{"destinations":[{"id":"destination-1","inputs":["splunk-tcp-source-1"],"type":"datadog_logs"}],"processors":[],"sources":[{"id":"splunk-tcp-source-1","tls":{"ca_file":"/etc/ssl/certs/tcp.ca","crt_file":"/etc/ssl/certs/tcp.crt","key_file":"/etc/ssl/private/tcp.key"},"type":"splunk_tcp"}]}}}}
         headers:
             Content-Type:
                 - application/json
         status: 201 Created
         code: 201
-        duration: 613.434625ms
+        duration: 525.598291ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -54,7 +54,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/f4c15c5c-d5c3-11f0-a3bb-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/eab24358-db58-11f0-a53c-da7ad0900002
         method: GET
       response:
         proto: HTTP/1.1
@@ -65,13 +65,13 @@ interactions:
         content_length: 417
         uncompressed: false
         body: |
-            {"data":{"id":"f4c15c5c-d5c3-11f0-a3bb-da7ad0900002","type":"pipelines","attributes":{"name":"splunk-tcp-pipeline","config":{"destinations":[{"id":"destination-1","inputs":["splunk-tcp-source-1"],"type":"datadog_logs"}],"processors":[],"sources":[{"id":"splunk-tcp-source-1","tls":{"ca_file":"/etc/ssl/certs/tcp.ca","crt_file":"/etc/ssl/certs/tcp.crt","key_file":"/etc/ssl/private/tcp.key"},"type":"splunk_tcp"}]}}}}
+            {"data":{"id":"eab24358-db58-11f0-a53c-da7ad0900002","type":"pipelines","attributes":{"name":"splunk-tcp-pipeline","config":{"destinations":[{"id":"destination-1","inputs":["splunk-tcp-source-1"],"type":"datadog_logs"}],"processors":[],"sources":[{"id":"splunk-tcp-source-1","tls":{"ca_file":"/etc/ssl/certs/tcp.ca","crt_file":"/etc/ssl/certs/tcp.crt","key_file":"/etc/ssl/private/tcp.key"},"type":"splunk_tcp"}]}}}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 338.424375ms
+        duration: 273.287ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -88,7 +88,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/f4c15c5c-d5c3-11f0-a3bb-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/eab24358-db58-11f0-a53c-da7ad0900002
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -104,4 +104,4 @@ interactions:
                 - application/json
         status: 204 No Content
         code: 204
-        duration: 713.372667ms
+        duration: 360.067959ms

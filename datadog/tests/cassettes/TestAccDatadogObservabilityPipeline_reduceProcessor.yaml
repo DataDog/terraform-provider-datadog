@@ -31,13 +31,13 @@ interactions:
         content_length: 695
         uncompressed: false
         body: |
-            {"data":{"id":"1c6060c8-d5c4-11f0-9ef9-da7ad0900002","type":"pipelines","attributes":{"name":"reduce pipeline","config":{"destinations":[{"id":"destination-1","inputs":["reduce-group-1"],"type":"datadog_logs"}],"processors":[{"enabled":true,"id":"reduce-group-1","include":"env:prod","inputs":["source-1"],"processors":[{"enabled":true,"group_by":["log.user.id","log.device.id"],"id":"reduce-1","include":"env:prod","merge_strategies":[{"path":"log.user.roles","strategy":"flat_unique"},{"path":"log.error.messages","strategy":"concat"},{"path":"log.count","strategy":"sum"},{"path":"log.status","strategy":"retain"}],"type":"reduce"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"12ad6fd6-db59-11f0-b590-da7ad0900002","type":"pipelines","attributes":{"name":"reduce pipeline","config":{"destinations":[{"id":"destination-1","inputs":["reduce-group-1"],"type":"datadog_logs"}],"processors":[{"enabled":true,"id":"reduce-group-1","include":"env:prod","inputs":["source-1"],"processors":[{"enabled":true,"group_by":["log.user.id","log.device.id"],"id":"reduce-1","include":"env:prod","merge_strategies":[{"path":"log.user.roles","strategy":"flat_unique"},{"path":"log.error.messages","strategy":"concat"},{"path":"log.count","strategy":"sum"},{"path":"log.status","strategy":"retain"}],"type":"reduce"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/json
         status: 201 Created
         code: 201
-        duration: 685.397417ms
+        duration: 471.677958ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -54,7 +54,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/1c6060c8-d5c4-11f0-9ef9-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/12ad6fd6-db59-11f0-b590-da7ad0900002
         method: GET
       response:
         proto: HTTP/1.1
@@ -65,13 +65,13 @@ interactions:
         content_length: 695
         uncompressed: false
         body: |
-            {"data":{"id":"1c6060c8-d5c4-11f0-9ef9-da7ad0900002","type":"pipelines","attributes":{"name":"reduce pipeline","config":{"destinations":[{"id":"destination-1","inputs":["reduce-group-1"],"type":"datadog_logs"}],"processors":[{"enabled":true,"id":"reduce-group-1","include":"env:prod","inputs":["source-1"],"processors":[{"enabled":true,"group_by":["log.user.id","log.device.id"],"id":"reduce-1","include":"env:prod","merge_strategies":[{"path":"log.user.roles","strategy":"flat_unique"},{"path":"log.error.messages","strategy":"concat"},{"path":"log.count","strategy":"sum"},{"path":"log.status","strategy":"retain"}],"type":"reduce"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"12ad6fd6-db59-11f0-b590-da7ad0900002","type":"pipelines","attributes":{"name":"reduce pipeline","config":{"destinations":[{"id":"destination-1","inputs":["reduce-group-1"],"type":"datadog_logs"}],"processors":[{"enabled":true,"id":"reduce-group-1","include":"env:prod","inputs":["source-1"],"processors":[{"enabled":true,"group_by":["log.user.id","log.device.id"],"id":"reduce-1","include":"env:prod","merge_strategies":[{"path":"log.user.roles","strategy":"flat_unique"},{"path":"log.error.messages","strategy":"concat"},{"path":"log.count","strategy":"sum"},{"path":"log.status","strategy":"retain"}],"type":"reduce"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 273.254167ms
+        duration: 239.021666ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -88,7 +88,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/1c6060c8-d5c4-11f0-9ef9-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/12ad6fd6-db59-11f0-b590-da7ad0900002
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -104,4 +104,4 @@ interactions:
                 - application/json
         status: 204 No Content
         code: 204
-        duration: 592.45525ms
+        duration: 365.933041ms
