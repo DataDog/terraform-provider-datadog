@@ -32,6 +32,13 @@ type observabilityPipelineResource struct {
 	Auth context.Context
 }
 
+// Note on nested block design:
+// SingleNestedBlocks are not allowed in this resource schema. Instead, we use ListNestedBlock
+// with size validation: listvalidator.SizeAtMost(1) and listvalidator.SizeAtLeast(1)(for required blocks).
+// We do this to make the TF schema more robust, future-proof and
+// eliminate potential breaking changes related to required/optional blocks and fields.
+// See hashicorp/terraform-provider-aws#35813 as an example of the same approach.
+
 type observabilityPipelineModel struct {
 	ID     types.String  `tfsdk:"id"`
 	Name   types.String  `tfsdk:"name"`
