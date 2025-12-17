@@ -48,13 +48,13 @@ resource "datadog_deployment_gate" "foo" {
 
 ### Required
 
-- `env` (String) The `attributes` `env`.
-- `service` (String) The `attributes` `service`.
+- `env` (String) The target environment (example: dev).
+- `service` (String) The service name (example: transaction-backend).
 
 ### Optional
 
-- `dry_run` (Boolean) The `attributes` `dry_run`.
-- `identifier` (String) The `attributes` `identifier`.
+- `dry_run` (Boolean) Enable Dry Run to test gate behavior without impacting deployments. The evaluation of a dry run gate always responds with a pass status, but the in-app result is the real status based on rules evaluation. This is particularly useful when performing an initial evaluation of the gate behavior without impacting the deployment pipeline.
+- `identifier` (String) Unique name for multiple gates on the same service/environment.
 - `rule` (Block List) Deployment rules for this gate. (see [below for nested schema](#nestedblock--rule))
 
 ### Read-Only

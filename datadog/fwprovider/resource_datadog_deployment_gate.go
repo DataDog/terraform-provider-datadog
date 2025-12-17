@@ -72,12 +72,12 @@ func (r *deploymentGateResource) Schema(_ context.Context, _ resource.SchemaRequ
 		Attributes: map[string]schema.Attribute{
 			"dry_run": schema.BoolAttribute{
 				Optional:    true,
-				Description: "The `attributes` `dry_run`.",
+				Description: "Enable Dry Run to test gate behavior without impacting deployments. The evaluation of a dry run gate always responds with a pass status, but the in-app result is the real status based on rules evaluation. This is particularly useful when performing an initial evaluation of the gate behavior without impacting the deployment pipeline.",
 				Computed:    true,
 			},
 			"env": schema.StringAttribute{
 				Required:    true,
-				Description: "The `attributes` `env`.",
+				Description: "The target environment (example: dev).",
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
@@ -85,14 +85,14 @@ func (r *deploymentGateResource) Schema(_ context.Context, _ resource.SchemaRequ
 			"identifier": schema.StringAttribute{
 				Optional:    true,
 				Computed:    true,
-				Description: "The `attributes` `identifier`.",
+				Description: "Unique name for multiple gates on the same service/environment.",
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
 			},
 			"service": schema.StringAttribute{
 				Required:    true,
-				Description: "The `attributes` `service`.",
+				Description: "The service name (example: transaction-backend).",
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
