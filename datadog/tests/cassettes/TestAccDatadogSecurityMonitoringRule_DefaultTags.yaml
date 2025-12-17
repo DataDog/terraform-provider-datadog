@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":[{"condition":"first \u003e 3 || second \u003e 10","name":"high case","notifications":["@user"],"status":"high"},{"condition":"first \u003e 0 || second \u003e 0","name":"warning case","notifications":[],"status":"medium"},{"condition":"third \u003e 9000","name":"low case","notifications":[],"status":"low"}],"hasExtendedTitle":true,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765372086","options":{"decreaseCriticalityBasedOnEnv":true,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"first","query":"does not really match much"},{"aggregation":"cardinality","dataSource":"logs","distinctFields":["@orgId"],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"second","query":"does not really match much either"},{"aggregation":"sum","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"@network.bytes_read","metrics":[],"name":"third","query":"does not really match much either"}],"referenceTables":[{"checkPresence":true,"columnName":"column1","logFieldPath":"@testattribute","ruleQueryName":"first","tableName":"table1"}],"tags":["foo:bar","foo:double_bar","baz"],"type":"log_detection"}
+            {"cases":[{"condition":"first \u003e 3 || second \u003e 10","name":"high case","notifications":["@user"],"status":"high"},{"condition":"first \u003e 0 || second \u003e 0","name":"warning case","notifications":[],"status":"medium"},{"condition":"third \u003e 9000","name":"low case","notifications":[],"status":"low"}],"hasExtendedTitle":true,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765474107","options":{"decreaseCriticalityBasedOnEnv":true,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"first","query":"does not really match much"},{"aggregation":"cardinality","dataSource":"logs","distinctFields":["@orgId"],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"second","query":"does not really match much either"},{"aggregation":"sum","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"@network.bytes_read","metrics":[],"name":"third","query":"does not really match much either"}],"referenceTables":[{"checkPresence":true,"columnName":"column1","logFieldPath":"@testattribute","ruleQueryName":"first","tableName":"table1"}],"tags":["foo:bar","foo:double_bar","baz"],"type":"log_detection"}
         form: {}
         headers:
             Accept:
@@ -34,7 +34,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 421.851125ms
+        duration: 415.666083ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -47,7 +47,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":[{"condition":"first \u003e 3 || second \u003e 10","name":"high case","notifications":["@user"],"status":"high"},{"condition":"first \u003e 0 || second \u003e 0","name":"warning case","notifications":[],"status":"medium"},{"condition":"third \u003e 9000","name":"low case","notifications":[],"status":"low"}],"hasExtendedTitle":true,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765372086","options":{"decreaseCriticalityBasedOnEnv":true,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"first","query":"does not really match much"},{"aggregation":"cardinality","dataSource":"logs","distinctFields":["@orgId"],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"second","query":"does not really match much either"},{"aggregation":"sum","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"@network.bytes_read","metrics":[],"name":"third","query":"does not really match much either"}],"referenceTables":[{"checkPresence":true,"columnName":"column1","logFieldPath":"@testattribute","ruleQueryName":"first","tableName":"table1"}],"tags":["foo:bar","foo:double_bar","baz"],"type":"log_detection"}
+            {"cases":[{"condition":"first \u003e 3 || second \u003e 10","name":"high case","notifications":["@user"],"status":"high"},{"condition":"first \u003e 0 || second \u003e 0","name":"warning case","notifications":[],"status":"medium"},{"condition":"third \u003e 9000","name":"low case","notifications":[],"status":"low"}],"hasExtendedTitle":true,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765474107","options":{"decreaseCriticalityBasedOnEnv":true,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"first","query":"does not really match much"},{"aggregation":"cardinality","dataSource":"logs","distinctFields":["@orgId"],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"second","query":"does not really match much either"},{"aggregation":"sum","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"@network.bytes_read","metrics":[],"name":"third","query":"does not really match much either"}],"referenceTables":[{"checkPresence":true,"columnName":"column1","logFieldPath":"@testattribute","ruleQueryName":"first","tableName":"table1"}],"tags":["foo:bar","foo:double_bar","baz"],"type":"log_detection"}
         form: {}
         headers:
             Accept:
@@ -68,7 +68,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 389.937625ms
+        duration: 148.990666ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -81,7 +81,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":[{"condition":"first \u003e 3 || second \u003e 10","name":"high case","notifications":["@user"],"status":"high"},{"condition":"first \u003e 0 || second \u003e 0","name":"warning case","notifications":[],"status":"medium"},{"condition":"third \u003e 9000","name":"low case","notifications":[],"status":"low"}],"hasExtendedTitle":true,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765372086","options":{"decreaseCriticalityBasedOnEnv":true,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"first","query":"does not really match much"},{"aggregation":"cardinality","dataSource":"logs","distinctFields":["@orgId"],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"second","query":"does not really match much either"},{"aggregation":"sum","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"@network.bytes_read","metrics":[],"name":"third","query":"does not really match much either"}],"referenceTables":[{"checkPresence":true,"columnName":"column1","logFieldPath":"@testattribute","ruleQueryName":"first","tableName":"table1"}],"tags":["default_key:default_value","foo:bar","foo:double_bar","baz"],"type":"log_detection"}
+            {"cases":[{"condition":"first \u003e 3 || second \u003e 10","name":"high case","notifications":["@user"],"status":"high"},{"condition":"first \u003e 0 || second \u003e 0","name":"warning case","notifications":[],"status":"medium"},{"condition":"third \u003e 9000","name":"low case","notifications":[],"status":"low"}],"hasExtendedTitle":true,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765474107","options":{"decreaseCriticalityBasedOnEnv":true,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"first","query":"does not really match much"},{"aggregation":"cardinality","dataSource":"logs","distinctFields":["@orgId"],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"second","query":"does not really match much either"},{"aggregation":"sum","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"@network.bytes_read","metrics":[],"name":"third","query":"does not really match much either"}],"referenceTables":[{"checkPresence":true,"columnName":"column1","logFieldPath":"@testattribute","ruleQueryName":"first","tableName":"table1"}],"tags":["default_key:default_value","foo:bar","foo:double_bar","baz"],"type":"log_detection"}
         form: {}
         headers:
             Accept:
@@ -98,13 +98,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765372086","createdAt":1765372091629,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first","dataSource":"logs"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":["@orgId"],"aggregation":"cardinality","name":"second","dataSource":"logs"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"aggregation":"sum","name":"third","dataSource":"logs"}],"options":{"evaluationWindow":300,"detectionMethod":"threshold","maxSignalDuration":900,"keepAlive":600,"decreaseCriticalityBasedOnEnv":true},"cases":[{"name":"high case","status":"high","notifications":["@user"],"condition":"first \u003e 3 || second \u003e 10"},{"name":"warning case","status":"medium","notifications":[],"condition":"first \u003e 0 || second \u003e 0"},{"name":"low case","status":"low","notifications":[],"condition":"third \u003e 9000"}],"message":"acceptance rule triggered","tags":["default_key:default_value","foo:bar","baz","foo:double_bar"],"hasExtendedTitle":true,"type":"log_detection","filters":[],"version":1,"id":"bwt-rq8-dcw","blocking":false,"metadata":{"entities":null,"sources":null},"referenceTables":[{"tableName":"table1","columnName":"column1","logFieldPath":"@testattribute","checkPresence":true,"ruleQueryName":"first"}],"creationAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"","name":""}}'
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765474107","createdAt":1765474111388,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first","dataSource":"logs"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":["@orgId"],"aggregation":"cardinality","name":"second","dataSource":"logs"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"aggregation":"sum","name":"third","dataSource":"logs"}],"options":{"evaluationWindow":300,"detectionMethod":"threshold","maxSignalDuration":900,"keepAlive":600,"decreaseCriticalityBasedOnEnv":true},"cases":[{"name":"high case","status":"high","notifications":["@user"],"condition":"first \u003e 3 || second \u003e 10"},{"name":"warning case","status":"medium","notifications":[],"condition":"first \u003e 0 || second \u003e 0"},{"name":"low case","status":"low","notifications":[],"condition":"third \u003e 9000"}],"message":"acceptance rule triggered","tags":["default_key:default_value","foo:bar","baz","foo:double_bar"],"hasExtendedTitle":true,"type":"log_detection","filters":[],"version":1,"id":"f6q-tah-6ms","blocking":false,"metadata":{"entities":null,"sources":null},"referenceTables":[{"tableName":"table1","columnName":"column1","logFieldPath":"@testattribute","checkPresence":true,"ruleQueryName":"first"}],"creationAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"","name":""}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 143.059167ms
+        duration: 1.624302542s
     - id: 3
       request:
         proto: HTTP/1.1
@@ -117,7 +117,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":[{"condition":"first \u003e 3 || second \u003e 10","name":"high case","notifications":["@user"],"status":"high"},{"condition":"first \u003e 0 || second \u003e 0","name":"warning case","notifications":[],"status":"medium"},{"condition":"third \u003e 9000","name":"low case","notifications":[],"status":"low"}],"hasExtendedTitle":true,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765372086","options":{"decreaseCriticalityBasedOnEnv":true,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"first","query":"does not really match much"},{"aggregation":"cardinality","dataSource":"logs","distinctFields":["@orgId"],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"second","query":"does not really match much either"},{"aggregation":"sum","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"@network.bytes_read","metrics":[],"name":"third","query":"does not really match much either"}],"referenceTables":[{"checkPresence":true,"columnName":"column1","logFieldPath":"@testattribute","ruleQueryName":"first","tableName":"table1"}],"tags":["foo:bar","foo:double_bar","baz"],"type":"log_detection"}
+            {"cases":[{"condition":"first \u003e 3 || second \u003e 10","name":"high case","notifications":["@user"],"status":"high"},{"condition":"first \u003e 0 || second \u003e 0","name":"warning case","notifications":[],"status":"medium"},{"condition":"third \u003e 9000","name":"low case","notifications":[],"status":"low"}],"hasExtendedTitle":true,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765474107","options":{"decreaseCriticalityBasedOnEnv":true,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"first","query":"does not really match much"},{"aggregation":"cardinality","dataSource":"logs","distinctFields":["@orgId"],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"second","query":"does not really match much either"},{"aggregation":"sum","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"@network.bytes_read","metrics":[],"name":"third","query":"does not really match much either"}],"referenceTables":[{"checkPresence":true,"columnName":"column1","logFieldPath":"@testattribute","ruleQueryName":"first","tableName":"table1"}],"tags":["foo:bar","foo:double_bar","baz"],"type":"log_detection"}
         form: {}
         headers:
             Accept:
@@ -138,7 +138,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 221.873708ms
+        duration: 556.681209ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -155,7 +155,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/bwt-rq8-dcw
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/f6q-tah-6ms
         method: GET
       response:
         proto: HTTP/1.1
@@ -165,13 +165,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765372086","createdAt":1765372091629,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first","dataSource":"logs"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":["@orgId"],"aggregation":"cardinality","name":"second","dataSource":"logs"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"aggregation":"sum","name":"third","dataSource":"logs"}],"options":{"evaluationWindow":300,"detectionMethod":"threshold","maxSignalDuration":900,"keepAlive":600,"decreaseCriticalityBasedOnEnv":true},"cases":[{"name":"high case","status":"high","notifications":["@user"],"condition":"first \u003e 3 || second \u003e 10"},{"name":"warning case","status":"medium","notifications":[],"condition":"first \u003e 0 || second \u003e 0"},{"name":"low case","status":"low","notifications":[],"condition":"third \u003e 9000"}],"message":"acceptance rule triggered","tags":["default_key:default_value","foo:bar","baz","foo:double_bar"],"hasExtendedTitle":true,"type":"log_detection","filters":[],"version":1,"id":"bwt-rq8-dcw","blocking":false,"metadata":{"entities":null,"sources":null},"referenceTables":[{"tableName":"table1","columnName":"column1","logFieldPath":"@testattribute","checkPresence":true,"ruleQueryName":"first"}],"creationAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"","name":""}}'
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765474107","createdAt":1765474111388,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first","dataSource":"logs"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":["@orgId"],"aggregation":"cardinality","name":"second","dataSource":"logs"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"aggregation":"sum","name":"third","dataSource":"logs"}],"options":{"evaluationWindow":300,"detectionMethod":"threshold","maxSignalDuration":900,"keepAlive":600,"decreaseCriticalityBasedOnEnv":true},"cases":[{"name":"high case","status":"high","notifications":["@user"],"condition":"first \u003e 3 || second \u003e 10"},{"name":"warning case","status":"medium","notifications":[],"condition":"first \u003e 0 || second \u003e 0"},{"name":"low case","status":"low","notifications":[],"condition":"third \u003e 9000"}],"message":"acceptance rule triggered","tags":["default_key:default_value","foo:bar","baz","foo:double_bar"],"hasExtendedTitle":true,"type":"log_detection","filters":[],"version":1,"id":"f6q-tah-6ms","blocking":false,"metadata":{"entities":null,"sources":null},"referenceTables":[{"tableName":"table1","columnName":"column1","logFieldPath":"@testattribute","checkPresence":true,"ruleQueryName":"first"}],"creationAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"","name":""}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 131.288792ms
+        duration: 161.921208ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -184,7 +184,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":[{"condition":"first \u003e 3 || second \u003e 10","name":"high case","notifications":["@user"],"status":"high"},{"condition":"first \u003e 0 || second \u003e 0","name":"warning case","notifications":[],"status":"medium"},{"condition":"third \u003e 9000","name":"low case","notifications":[],"status":"low"}],"hasExtendedTitle":true,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765372086","options":{"decreaseCriticalityBasedOnEnv":true,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"first","query":"does not really match much"},{"aggregation":"cardinality","dataSource":"logs","distinctFields":["@orgId"],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"second","query":"does not really match much either"},{"aggregation":"sum","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"name":"third","query":"does not really match much either"}],"referenceTables":[{"checkPresence":true,"columnName":"column1","logFieldPath":"@testattribute","ruleQueryName":"first","tableName":"table1"}],"tags":["foo:bar","foo:double_bar","baz"],"type":"log_detection"}
+            {"cases":[{"condition":"first \u003e 3 || second \u003e 10","name":"high case","notifications":["@user"],"status":"high"},{"condition":"first \u003e 0 || second \u003e 0","name":"warning case","notifications":[],"status":"medium"},{"condition":"third \u003e 9000","name":"low case","notifications":[],"status":"low"}],"hasExtendedTitle":true,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765474107","options":{"decreaseCriticalityBasedOnEnv":true,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"first","query":"does not really match much"},{"aggregation":"cardinality","dataSource":"logs","distinctFields":["@orgId"],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"second","query":"does not really match much either"},{"aggregation":"sum","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"name":"third","query":"does not really match much either"}],"referenceTables":[{"checkPresence":true,"columnName":"column1","logFieldPath":"@testattribute","ruleQueryName":"first","tableName":"table1"}],"tags":["foo:bar","foo:double_bar","baz"],"type":"log_detection"}
         form: {}
         headers:
             Accept:
@@ -205,7 +205,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 508.980166ms
+        duration: 322.525959ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -222,7 +222,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/bwt-rq8-dcw
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/f6q-tah-6ms
         method: GET
       response:
         proto: HTTP/1.1
@@ -232,13 +232,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765372086","createdAt":1765372091629,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first","dataSource":"logs"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":["@orgId"],"aggregation":"cardinality","name":"second","dataSource":"logs"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"aggregation":"sum","name":"third","dataSource":"logs"}],"options":{"evaluationWindow":300,"detectionMethod":"threshold","maxSignalDuration":900,"keepAlive":600,"decreaseCriticalityBasedOnEnv":true},"cases":[{"name":"high case","status":"high","notifications":["@user"],"condition":"first \u003e 3 || second \u003e 10"},{"name":"warning case","status":"medium","notifications":[],"condition":"first \u003e 0 || second \u003e 0"},{"name":"low case","status":"low","notifications":[],"condition":"third \u003e 9000"}],"message":"acceptance rule triggered","tags":["default_key:default_value","foo:bar","baz","foo:double_bar"],"hasExtendedTitle":true,"type":"log_detection","filters":[],"version":1,"id":"bwt-rq8-dcw","blocking":false,"metadata":{"entities":null,"sources":null},"referenceTables":[{"tableName":"table1","columnName":"column1","logFieldPath":"@testattribute","checkPresence":true,"ruleQueryName":"first"}],"creationAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"","name":""}}'
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765474107","createdAt":1765474111388,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first","dataSource":"logs"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":["@orgId"],"aggregation":"cardinality","name":"second","dataSource":"logs"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"aggregation":"sum","name":"third","dataSource":"logs"}],"options":{"evaluationWindow":300,"detectionMethod":"threshold","maxSignalDuration":900,"keepAlive":600,"decreaseCriticalityBasedOnEnv":true},"cases":[{"name":"high case","status":"high","notifications":["@user"],"condition":"first \u003e 3 || second \u003e 10"},{"name":"warning case","status":"medium","notifications":[],"condition":"first \u003e 0 || second \u003e 0"},{"name":"low case","status":"low","notifications":[],"condition":"third \u003e 9000"}],"message":"acceptance rule triggered","tags":["default_key:default_value","foo:bar","baz","foo:double_bar"],"hasExtendedTitle":true,"type":"log_detection","filters":[],"version":1,"id":"f6q-tah-6ms","blocking":false,"metadata":{"entities":null,"sources":null},"referenceTables":[{"tableName":"table1","columnName":"column1","logFieldPath":"@testattribute","checkPresence":true,"ruleQueryName":"first"}],"creationAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"","name":""}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 216.598084ms
+        duration: 2.236718583s
     - id: 7
       request:
         proto: HTTP/1.1
@@ -251,7 +251,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":[{"condition":"first \u003e 3 || second \u003e 10","name":"high case","notifications":["@user"],"status":"high"},{"condition":"first \u003e 0 || second \u003e 0","name":"warning case","notifications":[],"status":"medium"},{"condition":"third \u003e 9000","name":"low case","notifications":[],"status":"low"}],"hasExtendedTitle":true,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765372086","options":{"decreaseCriticalityBasedOnEnv":true,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"first","query":"does not really match much"},{"aggregation":"cardinality","dataSource":"logs","distinctFields":["@orgId"],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"second","query":"does not really match much either"},{"aggregation":"sum","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"name":"third","query":"does not really match much either"}],"referenceTables":[{"checkPresence":true,"columnName":"column1","logFieldPath":"@testattribute","ruleQueryName":"first","tableName":"table1"}],"tags":["foo:bar","foo:double_bar","baz"],"type":"log_detection"}
+            {"cases":[{"condition":"first \u003e 3 || second \u003e 10","name":"high case","notifications":["@user"],"status":"high"},{"condition":"first \u003e 0 || second \u003e 0","name":"warning case","notifications":[],"status":"medium"},{"condition":"third \u003e 9000","name":"low case","notifications":[],"status":"low"}],"hasExtendedTitle":true,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765474107","options":{"decreaseCriticalityBasedOnEnv":true,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"first","query":"does not really match much"},{"aggregation":"cardinality","dataSource":"logs","distinctFields":["@orgId"],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"second","query":"does not really match much either"},{"aggregation":"sum","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"name":"third","query":"does not really match much either"}],"referenceTables":[{"checkPresence":true,"columnName":"column1","logFieldPath":"@testattribute","ruleQueryName":"first","tableName":"table1"}],"tags":["foo:bar","foo:double_bar","baz"],"type":"log_detection"}
         form: {}
         headers:
             Accept:
@@ -272,7 +272,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 134.367708ms
+        duration: 120.730084ms
     - id: 8
       request:
         proto: HTTP/1.1
@@ -285,7 +285,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":[{"condition":"first \u003e 3 || second \u003e 10","name":"high case","notifications":["@user"],"status":"high"},{"condition":"first \u003e 0 || second \u003e 0","name":"warning case","notifications":[],"status":"medium"},{"condition":"third \u003e 9000","name":"low case","notifications":[],"status":"low"}],"hasExtendedTitle":true,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765372086","options":{"decreaseCriticalityBasedOnEnv":true,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"first","query":"does not really match much"},{"aggregation":"cardinality","dataSource":"logs","distinctFields":["@orgId"],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"second","query":"does not really match much either"},{"aggregation":"sum","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"name":"third","query":"does not really match much either"}],"referenceTables":[{"checkPresence":true,"columnName":"column1","logFieldPath":"@testattribute","ruleQueryName":"first","tableName":"table1"}],"tags":["foo:bar","foo:double_bar","baz"],"type":"log_detection"}
+            {"cases":[{"condition":"first \u003e 3 || second \u003e 10","name":"high case","notifications":["@user"],"status":"high"},{"condition":"first \u003e 0 || second \u003e 0","name":"warning case","notifications":[],"status":"medium"},{"condition":"third \u003e 9000","name":"low case","notifications":[],"status":"low"}],"hasExtendedTitle":true,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765474107","options":{"decreaseCriticalityBasedOnEnv":true,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"first","query":"does not really match much"},{"aggregation":"cardinality","dataSource":"logs","distinctFields":["@orgId"],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"second","query":"does not really match much either"},{"aggregation":"sum","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"name":"third","query":"does not really match much either"}],"referenceTables":[{"checkPresence":true,"columnName":"column1","logFieldPath":"@testattribute","ruleQueryName":"first","tableName":"table1"}],"tags":["foo:bar","foo:double_bar","baz"],"type":"log_detection"}
         form: {}
         headers:
             Accept:
@@ -306,7 +306,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 338.395084ms
+        duration: 631.013292ms
     - id: 9
       request:
         proto: HTTP/1.1
@@ -319,14 +319,14 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"calculatedFields":[],"cases":[{"condition":"first \u003e 3 || second \u003e 10","name":"high case","notifications":["@user"],"status":"high"},{"condition":"first \u003e 0 || second \u003e 0","name":"warning case","notifications":[],"status":"medium"},{"condition":"third \u003e 9000","name":"low case","notifications":[],"status":"low"}],"filters":[],"hasExtendedTitle":true,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765372086","options":{"decreaseCriticalityBasedOnEnv":true,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"first","query":"does not really match much"},{"aggregation":"cardinality","dataSource":"logs","distinctFields":["@orgId"],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"second","query":"does not really match much either"},{"aggregation":"sum","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"name":"third","query":"does not really match much either"}],"referenceTables":[{"checkPresence":true,"columnName":"column1","logFieldPath":"@testattribute","ruleQueryName":"first","tableName":"table1"}],"schedulingOptions":null,"tags":["foo:bar","foo:double_bar","baz"]}
+            {"calculatedFields":[],"cases":[{"condition":"first \u003e 3 || second \u003e 10","name":"high case","notifications":["@user"],"status":"high"},{"condition":"first \u003e 0 || second \u003e 0","name":"warning case","notifications":[],"status":"medium"},{"condition":"third \u003e 9000","name":"low case","notifications":[],"status":"low"}],"filters":[],"hasExtendedTitle":true,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765474107","options":{"decreaseCriticalityBasedOnEnv":true,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"first","query":"does not really match much"},{"aggregation":"cardinality","dataSource":"logs","distinctFields":["@orgId"],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"second","query":"does not really match much either"},{"aggregation":"sum","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"name":"third","query":"does not really match much either"}],"referenceTables":[{"checkPresence":true,"columnName":"column1","logFieldPath":"@testattribute","ruleQueryName":"first","tableName":"table1"}],"schedulingOptions":null,"tags":["foo:bar","foo:double_bar","baz"]}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/bwt-rq8-dcw
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/f6q-tah-6ms
         method: PUT
       response:
         proto: HTTP/1.1
@@ -336,13 +336,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765372086","isEnabled":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first","dataSource":"logs"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":["@orgId"],"aggregation":"cardinality","name":"second","dataSource":"logs"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"aggregation":"sum","name":"third","dataSource":"logs"}],"options":{"evaluationWindow":300,"detectionMethod":"threshold","maxSignalDuration":900,"keepAlive":600,"decreaseCriticalityBasedOnEnv":true},"cases":[{"name":"high case","status":"high","notifications":["@user"],"condition":"first \u003e 3 || second \u003e 10"},{"name":"warning case","status":"medium","notifications":[],"condition":"first \u003e 0 || second \u003e 0"},{"name":"low case","status":"low","notifications":[],"condition":"third \u003e 9000"}],"message":"acceptance rule triggered","tags":["foo:bar","baz","foo:double_bar"],"hasExtendedTitle":true,"type":"log_detection","filters":[],"id":"bwt-rq8-dcw","version":2,"createdAt":1765372091629,"creationAuthorId":1445416,"updateAuthorId":1445416,"updatedAt":1765372095412,"isDefault":false,"blocking":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"metadata":{"entities":null,"sources":null},"referenceTables":[{"tableName":"table1","columnName":"column1","logFieldPath":"@testattribute","checkPresence":true,"ruleQueryName":"first"}]}'
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765474107","isEnabled":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first","dataSource":"logs"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":["@orgId"],"aggregation":"cardinality","name":"second","dataSource":"logs"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"aggregation":"sum","name":"third","dataSource":"logs"}],"options":{"evaluationWindow":300,"detectionMethod":"threshold","maxSignalDuration":900,"keepAlive":600,"decreaseCriticalityBasedOnEnv":true},"cases":[{"name":"high case","status":"high","notifications":["@user"],"condition":"first \u003e 3 || second \u003e 10"},{"name":"warning case","status":"medium","notifications":[],"condition":"first \u003e 0 || second \u003e 0"},{"name":"low case","status":"low","notifications":[],"condition":"third \u003e 9000"}],"message":"acceptance rule triggered","tags":["foo:bar","baz","foo:double_bar"],"hasExtendedTitle":true,"type":"log_detection","filters":[],"id":"f6q-tah-6ms","version":2,"createdAt":1765474111388,"creationAuthorId":1445416,"updateAuthorId":1445416,"updatedAt":1765474117544,"isDefault":false,"blocking":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"metadata":{"entities":null,"sources":null},"referenceTables":[{"tableName":"table1","columnName":"column1","logFieldPath":"@testattribute","checkPresence":true,"ruleQueryName":"first"}]}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 157.520333ms
+        duration: 522.097417ms
     - id: 10
       request:
         proto: HTTP/1.1
@@ -355,7 +355,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":[{"condition":"first \u003e 3 || second \u003e 10","name":"high case","notifications":["@user"],"status":"high"},{"condition":"first \u003e 0 || second \u003e 0","name":"warning case","notifications":[],"status":"medium"},{"condition":"third \u003e 9000","name":"low case","notifications":[],"status":"low"}],"hasExtendedTitle":true,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765372086","options":{"decreaseCriticalityBasedOnEnv":true,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"first","query":"does not really match much"},{"aggregation":"cardinality","dataSource":"logs","distinctFields":["@orgId"],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"second","query":"does not really match much either"},{"aggregation":"sum","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"name":"third","query":"does not really match much either"}],"referenceTables":[{"checkPresence":true,"columnName":"column1","logFieldPath":"@testattribute","ruleQueryName":"first","tableName":"table1"}],"tags":["foo:bar","foo:double_bar","baz"],"type":"log_detection"}
+            {"cases":[{"condition":"first \u003e 3 || second \u003e 10","name":"high case","notifications":["@user"],"status":"high"},{"condition":"first \u003e 0 || second \u003e 0","name":"warning case","notifications":[],"status":"medium"},{"condition":"third \u003e 9000","name":"low case","notifications":[],"status":"low"}],"hasExtendedTitle":true,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765474107","options":{"decreaseCriticalityBasedOnEnv":true,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"first","query":"does not really match much"},{"aggregation":"cardinality","dataSource":"logs","distinctFields":["@orgId"],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"second","query":"does not really match much either"},{"aggregation":"sum","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"name":"third","query":"does not really match much either"}],"referenceTables":[{"checkPresence":true,"columnName":"column1","logFieldPath":"@testattribute","ruleQueryName":"first","tableName":"table1"}],"tags":["foo:bar","foo:double_bar","baz"],"type":"log_detection"}
         form: {}
         headers:
             Accept:
@@ -376,7 +376,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 238.133458ms
+        duration: 667.402208ms
     - id: 11
       request:
         proto: HTTP/1.1
@@ -393,7 +393,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/bwt-rq8-dcw
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/f6q-tah-6ms
         method: GET
       response:
         proto: HTTP/1.1
@@ -403,13 +403,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765372086","createdAt":1765372091629,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first","dataSource":"logs"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":["@orgId"],"aggregation":"cardinality","name":"second","dataSource":"logs"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"aggregation":"sum","name":"third","dataSource":"logs"}],"options":{"evaluationWindow":300,"detectionMethod":"threshold","maxSignalDuration":900,"keepAlive":600,"decreaseCriticalityBasedOnEnv":true},"cases":[{"name":"high case","status":"high","notifications":["@user"],"condition":"first \u003e 3 || second \u003e 10"},{"name":"warning case","status":"medium","notifications":[],"condition":"first \u003e 0 || second \u003e 0"},{"name":"low case","status":"low","notifications":[],"condition":"third \u003e 9000"}],"message":"acceptance rule triggered","tags":["foo:bar","baz","foo:double_bar"],"hasExtendedTitle":true,"type":"log_detection","filters":[],"version":2,"id":"bwt-rq8-dcw","updatedAt":1765372095412,"blocking":false,"metadata":{"entities":null,"sources":null},"referenceTables":[{"tableName":"table1","columnName":"column1","logFieldPath":"@testattribute","checkPresence":true,"ruleQueryName":"first"}],"creationAuthorId":1445416,"updateAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"frog@datadoghq.com","name":"frog"}}'
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765474107","createdAt":1765474111388,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first","dataSource":"logs"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":["@orgId"],"aggregation":"cardinality","name":"second","dataSource":"logs"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"aggregation":"sum","name":"third","dataSource":"logs"}],"options":{"evaluationWindow":300,"detectionMethod":"threshold","maxSignalDuration":900,"keepAlive":600,"decreaseCriticalityBasedOnEnv":true},"cases":[{"name":"high case","status":"high","notifications":["@user"],"condition":"first \u003e 3 || second \u003e 10"},{"name":"warning case","status":"medium","notifications":[],"condition":"first \u003e 0 || second \u003e 0"},{"name":"low case","status":"low","notifications":[],"condition":"third \u003e 9000"}],"message":"acceptance rule triggered","tags":["foo:bar","baz","foo:double_bar"],"hasExtendedTitle":true,"type":"log_detection","filters":[],"version":2,"id":"f6q-tah-6ms","updatedAt":1765474117544,"blocking":false,"metadata":{"entities":null,"sources":null},"referenceTables":[{"tableName":"table1","columnName":"column1","logFieldPath":"@testattribute","checkPresence":true,"ruleQueryName":"first"}],"creationAuthorId":1445416,"updateAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"frog@datadoghq.com","name":"frog"}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 487.766291ms
+        duration: 236.862084ms
     - id: 12
       request:
         proto: HTTP/1.1
@@ -422,7 +422,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":[{"condition":"first \u003e 3 || second \u003e 10","name":"high case","notifications":["@user"],"status":"high"},{"condition":"first \u003e 0 || second \u003e 0","name":"warning case","notifications":[],"status":"medium"},{"condition":"third \u003e 9000","name":"low case","notifications":[],"status":"low"}],"hasExtendedTitle":true,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765372086","options":{"decreaseCriticalityBasedOnEnv":true,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"first","query":"does not really match much"},{"aggregation":"cardinality","dataSource":"logs","distinctFields":["@orgId"],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"second","query":"does not really match much either"},{"aggregation":"sum","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"name":"third","query":"does not really match much either"}],"referenceTables":[{"checkPresence":true,"columnName":"column1","logFieldPath":"@testattribute","ruleQueryName":"first","tableName":"table1"}],"tags":["foo:bar","foo:double_bar","baz"],"type":"log_detection"}
+            {"cases":[{"condition":"first \u003e 3 || second \u003e 10","name":"high case","notifications":["@user"],"status":"high"},{"condition":"first \u003e 0 || second \u003e 0","name":"warning case","notifications":[],"status":"medium"},{"condition":"third \u003e 9000","name":"low case","notifications":[],"status":"low"}],"hasExtendedTitle":true,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765474107","options":{"decreaseCriticalityBasedOnEnv":true,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"first","query":"does not really match much"},{"aggregation":"cardinality","dataSource":"logs","distinctFields":["@orgId"],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"second","query":"does not really match much either"},{"aggregation":"sum","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"name":"third","query":"does not really match much either"}],"referenceTables":[{"checkPresence":true,"columnName":"column1","logFieldPath":"@testattribute","ruleQueryName":"first","tableName":"table1"}],"tags":["foo:bar","foo:double_bar","baz"],"type":"log_detection"}
         form: {}
         headers:
             Accept:
@@ -443,7 +443,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 178.087541ms
+        duration: 255.242083ms
     - id: 13
       request:
         proto: HTTP/1.1
@@ -460,7 +460,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/bwt-rq8-dcw
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/f6q-tah-6ms
         method: GET
       response:
         proto: HTTP/1.1
@@ -470,13 +470,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765372086","createdAt":1765372091629,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first","dataSource":"logs"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":["@orgId"],"aggregation":"cardinality","name":"second","dataSource":"logs"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"aggregation":"sum","name":"third","dataSource":"logs"}],"options":{"evaluationWindow":300,"detectionMethod":"threshold","maxSignalDuration":900,"keepAlive":600,"decreaseCriticalityBasedOnEnv":true},"cases":[{"name":"high case","status":"high","notifications":["@user"],"condition":"first \u003e 3 || second \u003e 10"},{"name":"warning case","status":"medium","notifications":[],"condition":"first \u003e 0 || second \u003e 0"},{"name":"low case","status":"low","notifications":[],"condition":"third \u003e 9000"}],"message":"acceptance rule triggered","tags":["foo:bar","baz","foo:double_bar"],"hasExtendedTitle":true,"type":"log_detection","filters":[],"version":2,"id":"bwt-rq8-dcw","updatedAt":1765372095412,"blocking":false,"metadata":{"entities":null,"sources":null},"referenceTables":[{"tableName":"table1","columnName":"column1","logFieldPath":"@testattribute","checkPresence":true,"ruleQueryName":"first"}],"creationAuthorId":1445416,"updateAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"frog@datadoghq.com","name":"frog"}}'
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765474107","createdAt":1765474111388,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first","dataSource":"logs"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":["@orgId"],"aggregation":"cardinality","name":"second","dataSource":"logs"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"aggregation":"sum","name":"third","dataSource":"logs"}],"options":{"evaluationWindow":300,"detectionMethod":"threshold","maxSignalDuration":900,"keepAlive":600,"decreaseCriticalityBasedOnEnv":true},"cases":[{"name":"high case","status":"high","notifications":["@user"],"condition":"first \u003e 3 || second \u003e 10"},{"name":"warning case","status":"medium","notifications":[],"condition":"first \u003e 0 || second \u003e 0"},{"name":"low case","status":"low","notifications":[],"condition":"third \u003e 9000"}],"message":"acceptance rule triggered","tags":["foo:bar","baz","foo:double_bar"],"hasExtendedTitle":true,"type":"log_detection","filters":[],"version":2,"id":"f6q-tah-6ms","updatedAt":1765474117544,"blocking":false,"metadata":{"entities":null,"sources":null},"referenceTables":[{"tableName":"table1","columnName":"column1","logFieldPath":"@testattribute","checkPresence":true,"ruleQueryName":"first"}],"creationAuthorId":1445416,"updateAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"frog@datadoghq.com","name":"frog"}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 174.284459ms
+        duration: 130.747708ms
     - id: 14
       request:
         proto: HTTP/1.1
@@ -489,7 +489,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":[{"condition":"first \u003e 3 || second \u003e 10","name":"high case","notifications":["@user"],"status":"high"},{"condition":"first \u003e 0 || second \u003e 0","name":"warning case","notifications":[],"status":"medium"},{"condition":"third \u003e 9000","name":"low case","notifications":[],"status":"low"}],"hasExtendedTitle":true,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765372086","options":{"decreaseCriticalityBasedOnEnv":true,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"first","query":"does not really match much"},{"aggregation":"cardinality","dataSource":"logs","distinctFields":["@orgId"],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"second","query":"does not really match much either"},{"aggregation":"sum","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"name":"third","query":"does not really match much either"}],"referenceTables":[{"checkPresence":true,"columnName":"column1","logFieldPath":"@testattribute","ruleQueryName":"first","tableName":"table1"}],"tags":["foo:bar","baz"],"type":"log_detection"}
+            {"cases":[{"condition":"first \u003e 3 || second \u003e 10","name":"high case","notifications":["@user"],"status":"high"},{"condition":"first \u003e 0 || second \u003e 0","name":"warning case","notifications":[],"status":"medium"},{"condition":"third \u003e 9000","name":"low case","notifications":[],"status":"low"}],"hasExtendedTitle":true,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765474107","options":{"decreaseCriticalityBasedOnEnv":true,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"first","query":"does not really match much"},{"aggregation":"cardinality","dataSource":"logs","distinctFields":["@orgId"],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"second","query":"does not really match much either"},{"aggregation":"sum","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"name":"third","query":"does not really match much either"}],"referenceTables":[{"checkPresence":true,"columnName":"column1","logFieldPath":"@testattribute","ruleQueryName":"first","tableName":"table1"}],"tags":["foo:bar","baz"],"type":"log_detection"}
         form: {}
         headers:
             Accept:
@@ -510,7 +510,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 389.702875ms
+        duration: 514.9795ms
     - id: 15
       request:
         proto: HTTP/1.1
@@ -523,7 +523,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":[{"condition":"first \u003e 3 || second \u003e 10","name":"high case","notifications":["@user"],"status":"high"},{"condition":"first \u003e 0 || second \u003e 0","name":"warning case","notifications":[],"status":"medium"},{"condition":"third \u003e 9000","name":"low case","notifications":[],"status":"low"}],"hasExtendedTitle":true,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765372086","options":{"decreaseCriticalityBasedOnEnv":true,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"first","query":"does not really match much"},{"aggregation":"cardinality","dataSource":"logs","distinctFields":["@orgId"],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"second","query":"does not really match much either"},{"aggregation":"sum","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"name":"third","query":"does not really match much either"}],"referenceTables":[{"checkPresence":true,"columnName":"column1","logFieldPath":"@testattribute","ruleQueryName":"first","tableName":"table1"}],"tags":["foo:bar","baz"],"type":"log_detection"}
+            {"cases":[{"condition":"first \u003e 3 || second \u003e 10","name":"high case","notifications":["@user"],"status":"high"},{"condition":"first \u003e 0 || second \u003e 0","name":"warning case","notifications":[],"status":"medium"},{"condition":"third \u003e 9000","name":"low case","notifications":[],"status":"low"}],"hasExtendedTitle":true,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765474107","options":{"decreaseCriticalityBasedOnEnv":true,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"first","query":"does not really match much"},{"aggregation":"cardinality","dataSource":"logs","distinctFields":["@orgId"],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"second","query":"does not really match much either"},{"aggregation":"sum","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"name":"third","query":"does not really match much either"}],"referenceTables":[{"checkPresence":true,"columnName":"column1","logFieldPath":"@testattribute","ruleQueryName":"first","tableName":"table1"}],"tags":["foo:bar","baz"],"type":"log_detection"}
         form: {}
         headers:
             Accept:
@@ -544,7 +544,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 140.761291ms
+        duration: 560.946167ms
     - id: 16
       request:
         proto: HTTP/1.1
@@ -557,14 +557,14 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"calculatedFields":[],"cases":[{"condition":"first \u003e 3 || second \u003e 10","name":"high case","notifications":["@user"],"status":"high"},{"condition":"first \u003e 0 || second \u003e 0","name":"warning case","notifications":[],"status":"medium"},{"condition":"third \u003e 9000","name":"low case","notifications":[],"status":"low"}],"filters":[],"hasExtendedTitle":true,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765372086","options":{"decreaseCriticalityBasedOnEnv":true,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"first","query":"does not really match much"},{"aggregation":"cardinality","dataSource":"logs","distinctFields":["@orgId"],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"second","query":"does not really match much either"},{"aggregation":"sum","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"name":"third","query":"does not really match much either"}],"referenceTables":[{"checkPresence":true,"columnName":"column1","logFieldPath":"@testattribute","ruleQueryName":"first","tableName":"table1"}],"schedulingOptions":null,"tags":["new_tag:new_value","foo:bar","baz"]}
+            {"calculatedFields":[],"cases":[{"condition":"first \u003e 3 || second \u003e 10","name":"high case","notifications":["@user"],"status":"high"},{"condition":"first \u003e 0 || second \u003e 0","name":"warning case","notifications":[],"status":"medium"},{"condition":"third \u003e 9000","name":"low case","notifications":[],"status":"low"}],"filters":[],"hasExtendedTitle":true,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765474107","options":{"decreaseCriticalityBasedOnEnv":true,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"first","query":"does not really match much"},{"aggregation":"cardinality","dataSource":"logs","distinctFields":["@orgId"],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"second","query":"does not really match much either"},{"aggregation":"sum","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"name":"third","query":"does not really match much either"}],"referenceTables":[{"checkPresence":true,"columnName":"column1","logFieldPath":"@testattribute","ruleQueryName":"first","tableName":"table1"}],"schedulingOptions":null,"tags":["new_tag:new_value","foo:bar","baz"]}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/bwt-rq8-dcw
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/f6q-tah-6ms
         method: PUT
       response:
         proto: HTTP/1.1
@@ -574,13 +574,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765372086","isEnabled":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first","dataSource":"logs"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":["@orgId"],"aggregation":"cardinality","name":"second","dataSource":"logs"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"aggregation":"sum","name":"third","dataSource":"logs"}],"options":{"evaluationWindow":300,"detectionMethod":"threshold","maxSignalDuration":900,"keepAlive":600,"decreaseCriticalityBasedOnEnv":true},"cases":[{"name":"high case","status":"high","notifications":["@user"],"condition":"first \u003e 3 || second \u003e 10"},{"name":"warning case","status":"medium","notifications":[],"condition":"first \u003e 0 || second \u003e 0"},{"name":"low case","status":"low","notifications":[],"condition":"third \u003e 9000"}],"message":"acceptance rule triggered","tags":["foo:bar","new_tag:new_value","baz"],"hasExtendedTitle":true,"type":"log_detection","filters":[],"id":"bwt-rq8-dcw","version":3,"createdAt":1765372091629,"creationAuthorId":1445416,"updateAuthorId":1445416,"updatedAt":1765372099296,"isDefault":false,"blocking":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"metadata":{"entities":null,"sources":null},"referenceTables":[{"tableName":"table1","columnName":"column1","logFieldPath":"@testattribute","checkPresence":true,"ruleQueryName":"first"}]}'
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765474107","isEnabled":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first","dataSource":"logs"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":["@orgId"],"aggregation":"cardinality","name":"second","dataSource":"logs"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"aggregation":"sum","name":"third","dataSource":"logs"}],"options":{"evaluationWindow":300,"detectionMethod":"threshold","maxSignalDuration":900,"keepAlive":600,"decreaseCriticalityBasedOnEnv":true},"cases":[{"name":"high case","status":"high","notifications":["@user"],"condition":"first \u003e 3 || second \u003e 10"},{"name":"warning case","status":"medium","notifications":[],"condition":"first \u003e 0 || second \u003e 0"},{"name":"low case","status":"low","notifications":[],"condition":"third \u003e 9000"}],"message":"acceptance rule triggered","tags":["foo:bar","new_tag:new_value","baz"],"hasExtendedTitle":true,"type":"log_detection","filters":[],"id":"f6q-tah-6ms","version":3,"createdAt":1765474111388,"creationAuthorId":1445416,"updateAuthorId":1445416,"updatedAt":1765474123427,"isDefault":false,"blocking":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"metadata":{"entities":null,"sources":null},"referenceTables":[{"tableName":"table1","columnName":"column1","logFieldPath":"@testattribute","checkPresence":true,"ruleQueryName":"first"}]}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 148.473916ms
+        duration: 1.751738125s
     - id: 17
       request:
         proto: HTTP/1.1
@@ -593,7 +593,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":[{"condition":"first \u003e 3 || second \u003e 10","name":"high case","notifications":["@user"],"status":"high"},{"condition":"first \u003e 0 || second \u003e 0","name":"warning case","notifications":[],"status":"medium"},{"condition":"third \u003e 9000","name":"low case","notifications":[],"status":"low"}],"hasExtendedTitle":true,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765372086","options":{"decreaseCriticalityBasedOnEnv":true,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"first","query":"does not really match much"},{"aggregation":"cardinality","dataSource":"logs","distinctFields":["@orgId"],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"second","query":"does not really match much either"},{"aggregation":"sum","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"name":"third","query":"does not really match much either"}],"referenceTables":[{"checkPresence":true,"columnName":"column1","logFieldPath":"@testattribute","ruleQueryName":"first","tableName":"table1"}],"tags":["foo:bar","baz"],"type":"log_detection"}
+            {"cases":[{"condition":"first \u003e 3 || second \u003e 10","name":"high case","notifications":["@user"],"status":"high"},{"condition":"first \u003e 0 || second \u003e 0","name":"warning case","notifications":[],"status":"medium"},{"condition":"third \u003e 9000","name":"low case","notifications":[],"status":"low"}],"hasExtendedTitle":true,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765474107","options":{"decreaseCriticalityBasedOnEnv":true,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"first","query":"does not really match much"},{"aggregation":"cardinality","dataSource":"logs","distinctFields":["@orgId"],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"second","query":"does not really match much either"},{"aggregation":"sum","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"name":"third","query":"does not really match much either"}],"referenceTables":[{"checkPresence":true,"columnName":"column1","logFieldPath":"@testattribute","ruleQueryName":"first","tableName":"table1"}],"tags":["foo:bar","baz"],"type":"log_detection"}
         form: {}
         headers:
             Accept:
@@ -614,7 +614,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 220.867625ms
+        duration: 371.804458ms
     - id: 18
       request:
         proto: HTTP/1.1
@@ -631,7 +631,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/bwt-rq8-dcw
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/f6q-tah-6ms
         method: GET
       response:
         proto: HTTP/1.1
@@ -641,13 +641,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765372086","createdAt":1765372091629,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first","dataSource":"logs"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":["@orgId"],"aggregation":"cardinality","name":"second","dataSource":"logs"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"aggregation":"sum","name":"third","dataSource":"logs"}],"options":{"evaluationWindow":300,"detectionMethod":"threshold","maxSignalDuration":900,"keepAlive":600,"decreaseCriticalityBasedOnEnv":true},"cases":[{"name":"high case","status":"high","notifications":["@user"],"condition":"first \u003e 3 || second \u003e 10"},{"name":"warning case","status":"medium","notifications":[],"condition":"first \u003e 0 || second \u003e 0"},{"name":"low case","status":"low","notifications":[],"condition":"third \u003e 9000"}],"message":"acceptance rule triggered","tags":["foo:bar","new_tag:new_value","baz"],"hasExtendedTitle":true,"type":"log_detection","filters":[],"version":3,"id":"bwt-rq8-dcw","updatedAt":1765372099296,"blocking":false,"metadata":{"entities":null,"sources":null},"referenceTables":[{"tableName":"table1","columnName":"column1","logFieldPath":"@testattribute","checkPresence":true,"ruleQueryName":"first"}],"creationAuthorId":1445416,"updateAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"frog@datadoghq.com","name":"frog"}}'
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765474107","createdAt":1765474111388,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first","dataSource":"logs"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":["@orgId"],"aggregation":"cardinality","name":"second","dataSource":"logs"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"aggregation":"sum","name":"third","dataSource":"logs"}],"options":{"evaluationWindow":300,"detectionMethod":"threshold","maxSignalDuration":900,"keepAlive":600,"decreaseCriticalityBasedOnEnv":true},"cases":[{"name":"high case","status":"high","notifications":["@user"],"condition":"first \u003e 3 || second \u003e 10"},{"name":"warning case","status":"medium","notifications":[],"condition":"first \u003e 0 || second \u003e 0"},{"name":"low case","status":"low","notifications":[],"condition":"third \u003e 9000"}],"message":"acceptance rule triggered","tags":["foo:bar","new_tag:new_value","baz"],"hasExtendedTitle":true,"type":"log_detection","filters":[],"version":3,"id":"f6q-tah-6ms","updatedAt":1765474123427,"blocking":false,"metadata":{"entities":null,"sources":null},"referenceTables":[{"tableName":"table1","columnName":"column1","logFieldPath":"@testattribute","checkPresence":true,"ruleQueryName":"first"}],"creationAuthorId":1445416,"updateAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"frog@datadoghq.com","name":"frog"}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 121.444083ms
+        duration: 608.768708ms
     - id: 19
       request:
         proto: HTTP/1.1
@@ -660,7 +660,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":[{"condition":"first \u003e 3 || second \u003e 10","name":"high case","notifications":["@user"],"status":"high"},{"condition":"first \u003e 0 || second \u003e 0","name":"warning case","notifications":[],"status":"medium"},{"condition":"third \u003e 9000","name":"low case","notifications":[],"status":"low"}],"hasExtendedTitle":true,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765372086","options":{"decreaseCriticalityBasedOnEnv":true,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"first","query":"does not really match much"},{"aggregation":"cardinality","dataSource":"logs","distinctFields":["@orgId"],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"second","query":"does not really match much either"},{"aggregation":"sum","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"name":"third","query":"does not really match much either"}],"referenceTables":[{"checkPresence":true,"columnName":"column1","logFieldPath":"@testattribute","ruleQueryName":"first","tableName":"table1"}],"tags":["foo:bar","baz"],"type":"log_detection"}
+            {"cases":[{"condition":"first \u003e 3 || second \u003e 10","name":"high case","notifications":["@user"],"status":"high"},{"condition":"first \u003e 0 || second \u003e 0","name":"warning case","notifications":[],"status":"medium"},{"condition":"third \u003e 9000","name":"low case","notifications":[],"status":"low"}],"hasExtendedTitle":true,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765474107","options":{"decreaseCriticalityBasedOnEnv":true,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"first","query":"does not really match much"},{"aggregation":"cardinality","dataSource":"logs","distinctFields":["@orgId"],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"second","query":"does not really match much either"},{"aggregation":"sum","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"name":"third","query":"does not really match much either"}],"referenceTables":[{"checkPresence":true,"columnName":"column1","logFieldPath":"@testattribute","ruleQueryName":"first","tableName":"table1"}],"tags":["foo:bar","baz"],"type":"log_detection"}
         form: {}
         headers:
             Accept:
@@ -681,7 +681,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 116.779ms
+        duration: 148.136833ms
     - id: 20
       request:
         proto: HTTP/1.1
@@ -698,7 +698,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/bwt-rq8-dcw
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/f6q-tah-6ms
         method: GET
       response:
         proto: HTTP/1.1
@@ -708,13 +708,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765372086","createdAt":1765372091629,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first","dataSource":"logs"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":["@orgId"],"aggregation":"cardinality","name":"second","dataSource":"logs"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"aggregation":"sum","name":"third","dataSource":"logs"}],"options":{"evaluationWindow":300,"detectionMethod":"threshold","maxSignalDuration":900,"keepAlive":600,"decreaseCriticalityBasedOnEnv":true},"cases":[{"name":"high case","status":"high","notifications":["@user"],"condition":"first \u003e 3 || second \u003e 10"},{"name":"warning case","status":"medium","notifications":[],"condition":"first \u003e 0 || second \u003e 0"},{"name":"low case","status":"low","notifications":[],"condition":"third \u003e 9000"}],"message":"acceptance rule triggered","tags":["foo:bar","new_tag:new_value","baz"],"hasExtendedTitle":true,"type":"log_detection","filters":[],"version":3,"id":"bwt-rq8-dcw","updatedAt":1765372099296,"blocking":false,"metadata":{"entities":null,"sources":null},"referenceTables":[{"tableName":"table1","columnName":"column1","logFieldPath":"@testattribute","checkPresence":true,"ruleQueryName":"first"}],"creationAuthorId":1445416,"updateAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"frog@datadoghq.com","name":"frog"}}'
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765474107","createdAt":1765474111388,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first","dataSource":"logs"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":["@orgId"],"aggregation":"cardinality","name":"second","dataSource":"logs"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"aggregation":"sum","name":"third","dataSource":"logs"}],"options":{"evaluationWindow":300,"detectionMethod":"threshold","maxSignalDuration":900,"keepAlive":600,"decreaseCriticalityBasedOnEnv":true},"cases":[{"name":"high case","status":"high","notifications":["@user"],"condition":"first \u003e 3 || second \u003e 10"},{"name":"warning case","status":"medium","notifications":[],"condition":"first \u003e 0 || second \u003e 0"},{"name":"low case","status":"low","notifications":[],"condition":"third \u003e 9000"}],"message":"acceptance rule triggered","tags":["foo:bar","new_tag:new_value","baz"],"hasExtendedTitle":true,"type":"log_detection","filters":[],"version":3,"id":"f6q-tah-6ms","updatedAt":1765474123427,"blocking":false,"metadata":{"entities":null,"sources":null},"referenceTables":[{"tableName":"table1","columnName":"column1","logFieldPath":"@testattribute","checkPresence":true,"ruleQueryName":"first"}],"creationAuthorId":1445416,"updateAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"frog@datadoghq.com","name":"frog"}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 131.377667ms
+        duration: 179.938334ms
     - id: 21
       request:
         proto: HTTP/1.1
@@ -727,7 +727,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":[{"condition":"first \u003e 3 || second \u003e 10","name":"high case","notifications":["@user"],"status":"high"},{"condition":"first \u003e 0 || second \u003e 0","name":"warning case","notifications":[],"status":"medium"},{"condition":"third \u003e 9000","name":"low case","notifications":[],"status":"low"}],"hasExtendedTitle":true,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765372086","options":{"decreaseCriticalityBasedOnEnv":true,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"first","query":"does not really match much"},{"aggregation":"cardinality","dataSource":"logs","distinctFields":["@orgId"],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"second","query":"does not really match much either"},{"aggregation":"sum","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"name":"third","query":"does not really match much either"}],"referenceTables":[{"checkPresence":true,"columnName":"column1","logFieldPath":"@testattribute","ruleQueryName":"first","tableName":"table1"}],"tags":["foo:bar","baz"],"type":"log_detection"}
+            {"cases":[{"condition":"first \u003e 3 || second \u003e 10","name":"high case","notifications":["@user"],"status":"high"},{"condition":"first \u003e 0 || second \u003e 0","name":"warning case","notifications":[],"status":"medium"},{"condition":"third \u003e 9000","name":"low case","notifications":[],"status":"low"}],"hasExtendedTitle":true,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765474107","options":{"decreaseCriticalityBasedOnEnv":true,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"first","query":"does not really match much"},{"aggregation":"cardinality","dataSource":"logs","distinctFields":["@orgId"],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"second","query":"does not really match much either"},{"aggregation":"sum","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"name":"third","query":"does not really match much either"}],"referenceTables":[{"checkPresence":true,"columnName":"column1","logFieldPath":"@testattribute","ruleQueryName":"first","tableName":"table1"}],"tags":["foo:bar","baz"],"type":"log_detection"}
         form: {}
         headers:
             Accept:
@@ -748,7 +748,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 126.028709ms
+        duration: 112.187958ms
     - id: 22
       request:
         proto: HTTP/1.1
@@ -761,7 +761,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":[{"condition":"first \u003e 3 || second \u003e 10","name":"high case","notifications":["@user"],"status":"high"},{"condition":"first \u003e 0 || second \u003e 0","name":"warning case","notifications":[],"status":"medium"},{"condition":"third \u003e 9000","name":"low case","notifications":[],"status":"low"}],"hasExtendedTitle":true,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765372086","options":{"decreaseCriticalityBasedOnEnv":true,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"first","query":"does not really match much"},{"aggregation":"cardinality","dataSource":"logs","distinctFields":["@orgId"],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"second","query":"does not really match much either"},{"aggregation":"sum","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"name":"third","query":"does not really match much either"}],"referenceTables":[{"checkPresence":true,"columnName":"column1","logFieldPath":"@testattribute","ruleQueryName":"first","tableName":"table1"}],"tags":["foo:bar","baz"],"type":"log_detection"}
+            {"cases":[{"condition":"first \u003e 3 || second \u003e 10","name":"high case","notifications":["@user"],"status":"high"},{"condition":"first \u003e 0 || second \u003e 0","name":"warning case","notifications":[],"status":"medium"},{"condition":"third \u003e 9000","name":"low case","notifications":[],"status":"low"}],"hasExtendedTitle":true,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765474107","options":{"decreaseCriticalityBasedOnEnv":true,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"first","query":"does not really match much"},{"aggregation":"cardinality","dataSource":"logs","distinctFields":["@orgId"],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"second","query":"does not really match much either"},{"aggregation":"sum","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"name":"third","query":"does not really match much either"}],"referenceTables":[{"checkPresence":true,"columnName":"column1","logFieldPath":"@testattribute","ruleQueryName":"first","tableName":"table1"}],"tags":["foo:bar","baz"],"type":"log_detection"}
         form: {}
         headers:
             Accept:
@@ -782,7 +782,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 119.7765ms
+        duration: 630.151ms
     - id: 23
       request:
         proto: HTTP/1.1
@@ -795,14 +795,14 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"calculatedFields":[],"cases":[{"condition":"first \u003e 3 || second \u003e 10","name":"high case","notifications":["@user"],"status":"high"},{"condition":"first \u003e 0 || second \u003e 0","name":"warning case","notifications":[],"status":"medium"},{"condition":"third \u003e 9000","name":"low case","notifications":[],"status":"low"}],"filters":[],"hasExtendedTitle":true,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765372086","options":{"decreaseCriticalityBasedOnEnv":true,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"first","query":"does not really match much"},{"aggregation":"cardinality","dataSource":"logs","distinctFields":["@orgId"],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"second","query":"does not really match much either"},{"aggregation":"sum","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"name":"third","query":"does not really match much either"}],"referenceTables":[{"checkPresence":true,"columnName":"column1","logFieldPath":"@testattribute","ruleQueryName":"first","tableName":"table1"}],"schedulingOptions":null,"tags":["no_value","foo:bar","baz"]}
+            {"calculatedFields":[],"cases":[{"condition":"first \u003e 3 || second \u003e 10","name":"high case","notifications":["@user"],"status":"high"},{"condition":"first \u003e 0 || second \u003e 0","name":"warning case","notifications":[],"status":"medium"},{"condition":"third \u003e 9000","name":"low case","notifications":[],"status":"low"}],"filters":[],"hasExtendedTitle":true,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765474107","options":{"decreaseCriticalityBasedOnEnv":true,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"first","query":"does not really match much"},{"aggregation":"cardinality","dataSource":"logs","distinctFields":["@orgId"],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"second","query":"does not really match much either"},{"aggregation":"sum","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"name":"third","query":"does not really match much either"}],"referenceTables":[{"checkPresence":true,"columnName":"column1","logFieldPath":"@testattribute","ruleQueryName":"first","tableName":"table1"}],"schedulingOptions":null,"tags":["no_value","foo:bar","baz"]}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/bwt-rq8-dcw
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/f6q-tah-6ms
         method: PUT
       response:
         proto: HTTP/1.1
@@ -812,13 +812,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765372086","isEnabled":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first","dataSource":"logs"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":["@orgId"],"aggregation":"cardinality","name":"second","dataSource":"logs"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"aggregation":"sum","name":"third","dataSource":"logs"}],"options":{"evaluationWindow":300,"detectionMethod":"threshold","maxSignalDuration":900,"keepAlive":600,"decreaseCriticalityBasedOnEnv":true},"cases":[{"name":"high case","status":"high","notifications":["@user"],"condition":"first \u003e 3 || second \u003e 10"},{"name":"warning case","status":"medium","notifications":[],"condition":"first \u003e 0 || second \u003e 0"},{"name":"low case","status":"low","notifications":[],"condition":"third \u003e 9000"}],"message":"acceptance rule triggered","tags":["foo:bar","baz","no_value"],"hasExtendedTitle":true,"type":"log_detection","filters":[],"id":"bwt-rq8-dcw","version":4,"createdAt":1765372091629,"creationAuthorId":1445416,"updateAuthorId":1445416,"updatedAt":1765372101885,"isDefault":false,"blocking":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"metadata":{"entities":null,"sources":null},"referenceTables":[{"tableName":"table1","columnName":"column1","logFieldPath":"@testattribute","checkPresence":true,"ruleQueryName":"first"}]}'
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765474107","isEnabled":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first","dataSource":"logs"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":["@orgId"],"aggregation":"cardinality","name":"second","dataSource":"logs"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"aggregation":"sum","name":"third","dataSource":"logs"}],"options":{"evaluationWindow":300,"detectionMethod":"threshold","maxSignalDuration":900,"keepAlive":600,"decreaseCriticalityBasedOnEnv":true},"cases":[{"name":"high case","status":"high","notifications":["@user"],"condition":"first \u003e 3 || second \u003e 10"},{"name":"warning case","status":"medium","notifications":[],"condition":"first \u003e 0 || second \u003e 0"},{"name":"low case","status":"low","notifications":[],"condition":"third \u003e 9000"}],"message":"acceptance rule triggered","tags":["foo:bar","baz","no_value"],"hasExtendedTitle":true,"type":"log_detection","filters":[],"id":"f6q-tah-6ms","version":4,"createdAt":1765474111388,"creationAuthorId":1445416,"updateAuthorId":1445416,"updatedAt":1765474126902,"isDefault":false,"blocking":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"metadata":{"entities":null,"sources":null},"referenceTables":[{"tableName":"table1","columnName":"column1","logFieldPath":"@testattribute","checkPresence":true,"ruleQueryName":"first"}]}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 157.021166ms
+        duration: 197.23625ms
     - id: 24
       request:
         proto: HTTP/1.1
@@ -831,7 +831,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":[{"condition":"first \u003e 3 || second \u003e 10","name":"high case","notifications":["@user"],"status":"high"},{"condition":"first \u003e 0 || second \u003e 0","name":"warning case","notifications":[],"status":"medium"},{"condition":"third \u003e 9000","name":"low case","notifications":[],"status":"low"}],"hasExtendedTitle":true,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765372086","options":{"decreaseCriticalityBasedOnEnv":true,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"first","query":"does not really match much"},{"aggregation":"cardinality","dataSource":"logs","distinctFields":["@orgId"],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"second","query":"does not really match much either"},{"aggregation":"sum","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"name":"third","query":"does not really match much either"}],"referenceTables":[{"checkPresence":true,"columnName":"column1","logFieldPath":"@testattribute","ruleQueryName":"first","tableName":"table1"}],"tags":["foo:bar","baz"],"type":"log_detection"}
+            {"cases":[{"condition":"first \u003e 3 || second \u003e 10","name":"high case","notifications":["@user"],"status":"high"},{"condition":"first \u003e 0 || second \u003e 0","name":"warning case","notifications":[],"status":"medium"},{"condition":"third \u003e 9000","name":"low case","notifications":[],"status":"low"}],"hasExtendedTitle":true,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765474107","options":{"decreaseCriticalityBasedOnEnv":true,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"first","query":"does not really match much"},{"aggregation":"cardinality","dataSource":"logs","distinctFields":["@orgId"],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"second","query":"does not really match much either"},{"aggregation":"sum","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"name":"third","query":"does not really match much either"}],"referenceTables":[{"checkPresence":true,"columnName":"column1","logFieldPath":"@testattribute","ruleQueryName":"first","tableName":"table1"}],"tags":["foo:bar","baz"],"type":"log_detection"}
         form: {}
         headers:
             Accept:
@@ -852,7 +852,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 141.803625ms
+        duration: 1.457784084s
     - id: 25
       request:
         proto: HTTP/1.1
@@ -869,7 +869,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/bwt-rq8-dcw
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/f6q-tah-6ms
         method: GET
       response:
         proto: HTTP/1.1
@@ -879,13 +879,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765372086","createdAt":1765372091629,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first","dataSource":"logs"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":["@orgId"],"aggregation":"cardinality","name":"second","dataSource":"logs"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"aggregation":"sum","name":"third","dataSource":"logs"}],"options":{"evaluationWindow":300,"detectionMethod":"threshold","maxSignalDuration":900,"keepAlive":600,"decreaseCriticalityBasedOnEnv":true},"cases":[{"name":"high case","status":"high","notifications":["@user"],"condition":"first \u003e 3 || second \u003e 10"},{"name":"warning case","status":"medium","notifications":[],"condition":"first \u003e 0 || second \u003e 0"},{"name":"low case","status":"low","notifications":[],"condition":"third \u003e 9000"}],"message":"acceptance rule triggered","tags":["foo:bar","baz","no_value"],"hasExtendedTitle":true,"type":"log_detection","filters":[],"version":4,"id":"bwt-rq8-dcw","updatedAt":1765372101885,"blocking":false,"metadata":{"entities":null,"sources":null},"referenceTables":[{"tableName":"table1","columnName":"column1","logFieldPath":"@testattribute","checkPresence":true,"ruleQueryName":"first"}],"creationAuthorId":1445416,"updateAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"frog@datadoghq.com","name":"frog"}}'
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765474107","createdAt":1765474111388,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first","dataSource":"logs"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":["@orgId"],"aggregation":"cardinality","name":"second","dataSource":"logs"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"aggregation":"sum","name":"third","dataSource":"logs"}],"options":{"evaluationWindow":300,"detectionMethod":"threshold","maxSignalDuration":900,"keepAlive":600,"decreaseCriticalityBasedOnEnv":true},"cases":[{"name":"high case","status":"high","notifications":["@user"],"condition":"first \u003e 3 || second \u003e 10"},{"name":"warning case","status":"medium","notifications":[],"condition":"first \u003e 0 || second \u003e 0"},{"name":"low case","status":"low","notifications":[],"condition":"third \u003e 9000"}],"message":"acceptance rule triggered","tags":["foo:bar","baz","no_value"],"hasExtendedTitle":true,"type":"log_detection","filters":[],"version":4,"id":"f6q-tah-6ms","updatedAt":1765474126902,"blocking":false,"metadata":{"entities":null,"sources":null},"referenceTables":[{"tableName":"table1","columnName":"column1","logFieldPath":"@testattribute","checkPresence":true,"ruleQueryName":"first"}],"creationAuthorId":1445416,"updateAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"frog@datadoghq.com","name":"frog"}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 153.004834ms
+        duration: 1.515863833s
     - id: 26
       request:
         proto: HTTP/1.1
@@ -898,7 +898,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":[{"condition":"first \u003e 3 || second \u003e 10","name":"high case","notifications":["@user"],"status":"high"},{"condition":"first \u003e 0 || second \u003e 0","name":"warning case","notifications":[],"status":"medium"},{"condition":"third \u003e 9000","name":"low case","notifications":[],"status":"low"}],"hasExtendedTitle":true,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765372086","options":{"decreaseCriticalityBasedOnEnv":true,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"first","query":"does not really match much"},{"aggregation":"cardinality","dataSource":"logs","distinctFields":["@orgId"],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"second","query":"does not really match much either"},{"aggregation":"sum","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"name":"third","query":"does not really match much either"}],"referenceTables":[{"checkPresence":true,"columnName":"column1","logFieldPath":"@testattribute","ruleQueryName":"first","tableName":"table1"}],"tags":["foo:bar","baz"],"type":"log_detection"}
+            {"cases":[{"condition":"first \u003e 3 || second \u003e 10","name":"high case","notifications":["@user"],"status":"high"},{"condition":"first \u003e 0 || second \u003e 0","name":"warning case","notifications":[],"status":"medium"},{"condition":"third \u003e 9000","name":"low case","notifications":[],"status":"low"}],"hasExtendedTitle":true,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765474107","options":{"decreaseCriticalityBasedOnEnv":true,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"first","query":"does not really match much"},{"aggregation":"cardinality","dataSource":"logs","distinctFields":["@orgId"],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"second","query":"does not really match much either"},{"aggregation":"sum","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"name":"third","query":"does not really match much either"}],"referenceTables":[{"checkPresence":true,"columnName":"column1","logFieldPath":"@testattribute","ruleQueryName":"first","tableName":"table1"}],"tags":["foo:bar","baz"],"type":"log_detection"}
         form: {}
         headers:
             Accept:
@@ -919,7 +919,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 110.025833ms
+        duration: 125.62725ms
     - id: 27
       request:
         proto: HTTP/1.1
@@ -936,7 +936,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/bwt-rq8-dcw
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/f6q-tah-6ms
         method: GET
       response:
         proto: HTTP/1.1
@@ -946,13 +946,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765372086","createdAt":1765372091629,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first","dataSource":"logs"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":["@orgId"],"aggregation":"cardinality","name":"second","dataSource":"logs"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"aggregation":"sum","name":"third","dataSource":"logs"}],"options":{"evaluationWindow":300,"detectionMethod":"threshold","maxSignalDuration":900,"keepAlive":600,"decreaseCriticalityBasedOnEnv":true},"cases":[{"name":"high case","status":"high","notifications":["@user"],"condition":"first \u003e 3 || second \u003e 10"},{"name":"warning case","status":"medium","notifications":[],"condition":"first \u003e 0 || second \u003e 0"},{"name":"low case","status":"low","notifications":[],"condition":"third \u003e 9000"}],"message":"acceptance rule triggered","tags":["foo:bar","baz","no_value"],"hasExtendedTitle":true,"type":"log_detection","filters":[],"version":4,"id":"bwt-rq8-dcw","updatedAt":1765372101885,"blocking":false,"metadata":{"entities":null,"sources":null},"referenceTables":[{"tableName":"table1","columnName":"column1","logFieldPath":"@testattribute","checkPresence":true,"ruleQueryName":"first"}],"creationAuthorId":1445416,"updateAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"frog@datadoghq.com","name":"frog"}}'
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765474107","createdAt":1765474111388,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first","dataSource":"logs"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":["@orgId"],"aggregation":"cardinality","name":"second","dataSource":"logs"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"aggregation":"sum","name":"third","dataSource":"logs"}],"options":{"evaluationWindow":300,"detectionMethod":"threshold","maxSignalDuration":900,"keepAlive":600,"decreaseCriticalityBasedOnEnv":true},"cases":[{"name":"high case","status":"high","notifications":["@user"],"condition":"first \u003e 3 || second \u003e 10"},{"name":"warning case","status":"medium","notifications":[],"condition":"first \u003e 0 || second \u003e 0"},{"name":"low case","status":"low","notifications":[],"condition":"third \u003e 9000"}],"message":"acceptance rule triggered","tags":["foo:bar","baz","no_value"],"hasExtendedTitle":true,"type":"log_detection","filters":[],"version":4,"id":"f6q-tah-6ms","updatedAt":1765474126902,"blocking":false,"metadata":{"entities":null,"sources":null},"referenceTables":[{"tableName":"table1","columnName":"column1","logFieldPath":"@testattribute","checkPresence":true,"ruleQueryName":"first"}],"creationAuthorId":1445416,"updateAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"frog@datadoghq.com","name":"frog"}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 127.391709ms
+        duration: 133.111458ms
     - id: 28
       request:
         proto: HTTP/1.1
@@ -965,7 +965,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":[{"condition":"first \u003e 3 || second \u003e 10","name":"high case","notifications":["@user"],"status":"high"},{"condition":"first \u003e 0 || second \u003e 0","name":"warning case","notifications":[],"status":"medium"},{"condition":"third \u003e 9000","name":"low case","notifications":[],"status":"low"}],"hasExtendedTitle":true,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765372086","options":{"decreaseCriticalityBasedOnEnv":true,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"first","query":"does not really match much"},{"aggregation":"cardinality","dataSource":"logs","distinctFields":["@orgId"],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"second","query":"does not really match much either"},{"aggregation":"sum","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"name":"third","query":"does not really match much either"}],"referenceTables":[{"checkPresence":true,"columnName":"column1","logFieldPath":"@testattribute","ruleQueryName":"first","tableName":"table1"}],"tags":["foo:bar","baz"],"type":"log_detection"}
+            {"cases":[{"condition":"first \u003e 3 || second \u003e 10","name":"high case","notifications":["@user"],"status":"high"},{"condition":"first \u003e 0 || second \u003e 0","name":"warning case","notifications":[],"status":"medium"},{"condition":"third \u003e 9000","name":"low case","notifications":[],"status":"low"}],"hasExtendedTitle":true,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765474107","options":{"decreaseCriticalityBasedOnEnv":true,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"first","query":"does not really match much"},{"aggregation":"cardinality","dataSource":"logs","distinctFields":["@orgId"],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"second","query":"does not really match much either"},{"aggregation":"sum","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"name":"third","query":"does not really match much either"}],"referenceTables":[{"checkPresence":true,"columnName":"column1","logFieldPath":"@testattribute","ruleQueryName":"first","tableName":"table1"}],"tags":["foo:bar","baz"],"type":"log_detection"}
         form: {}
         headers:
             Accept:
@@ -986,7 +986,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 128.651875ms
+        duration: 119.293541ms
     - id: 29
       request:
         proto: HTTP/1.1
@@ -999,7 +999,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":[{"condition":"first \u003e 3 || second \u003e 10","name":"high case","notifications":["@user"],"status":"high"},{"condition":"first \u003e 0 || second \u003e 0","name":"warning case","notifications":[],"status":"medium"},{"condition":"third \u003e 9000","name":"low case","notifications":[],"status":"low"}],"hasExtendedTitle":true,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765372086","options":{"decreaseCriticalityBasedOnEnv":true,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"first","query":"does not really match much"},{"aggregation":"cardinality","dataSource":"logs","distinctFields":["@orgId"],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"second","query":"does not really match much either"},{"aggregation":"sum","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"name":"third","query":"does not really match much either"}],"referenceTables":[{"checkPresence":true,"columnName":"column1","logFieldPath":"@testattribute","ruleQueryName":"first","tableName":"table1"}],"tags":["foo:bar","baz"],"type":"log_detection"}
+            {"cases":[{"condition":"first \u003e 3 || second \u003e 10","name":"high case","notifications":["@user"],"status":"high"},{"condition":"first \u003e 0 || second \u003e 0","name":"warning case","notifications":[],"status":"medium"},{"condition":"third \u003e 9000","name":"low case","notifications":[],"status":"low"}],"hasExtendedTitle":true,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765474107","options":{"decreaseCriticalityBasedOnEnv":true,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"first","query":"does not really match much"},{"aggregation":"cardinality","dataSource":"logs","distinctFields":["@orgId"],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"second","query":"does not really match much either"},{"aggregation":"sum","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"name":"third","query":"does not really match much either"}],"referenceTables":[{"checkPresence":true,"columnName":"column1","logFieldPath":"@testattribute","ruleQueryName":"first","tableName":"table1"}],"tags":["foo:bar","baz"],"type":"log_detection"}
         form: {}
         headers:
             Accept:
@@ -1020,7 +1020,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 248.430042ms
+        duration: 509.643459ms
     - id: 30
       request:
         proto: HTTP/1.1
@@ -1033,14 +1033,14 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"calculatedFields":[],"cases":[{"condition":"first \u003e 3 || second \u003e 10","name":"high case","notifications":["@user"],"status":"high"},{"condition":"first \u003e 0 || second \u003e 0","name":"warning case","notifications":[],"status":"medium"},{"condition":"third \u003e 9000","name":"low case","notifications":[],"status":"low"}],"filters":[],"hasExtendedTitle":true,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765372086","options":{"decreaseCriticalityBasedOnEnv":true,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"first","query":"does not really match much"},{"aggregation":"cardinality","dataSource":"logs","distinctFields":["@orgId"],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"second","query":"does not really match much either"},{"aggregation":"sum","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"name":"third","query":"does not really match much either"}],"referenceTables":[{"checkPresence":true,"columnName":"column1","logFieldPath":"@testattribute","ruleQueryName":"first","tableName":"table1"}],"schedulingOptions":null,"tags":["foo:bar","baz","repo_url:https://github.com/repo/path"]}
+            {"calculatedFields":[],"cases":[{"condition":"first \u003e 3 || second \u003e 10","name":"high case","notifications":["@user"],"status":"high"},{"condition":"first \u003e 0 || second \u003e 0","name":"warning case","notifications":[],"status":"medium"},{"condition":"third \u003e 9000","name":"low case","notifications":[],"status":"low"}],"filters":[],"hasExtendedTitle":true,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765474107","options":{"decreaseCriticalityBasedOnEnv":true,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"first","query":"does not really match much"},{"aggregation":"cardinality","dataSource":"logs","distinctFields":["@orgId"],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"second","query":"does not really match much either"},{"aggregation":"sum","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"name":"third","query":"does not really match much either"}],"referenceTables":[{"checkPresence":true,"columnName":"column1","logFieldPath":"@testattribute","ruleQueryName":"first","tableName":"table1"}],"schedulingOptions":null,"tags":["foo:bar","baz","repo_url:https://github.com/repo/path"]}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/bwt-rq8-dcw
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/f6q-tah-6ms
         method: PUT
       response:
         proto: HTTP/1.1
@@ -1050,13 +1050,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765372086","isEnabled":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first","dataSource":"logs"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":["@orgId"],"aggregation":"cardinality","name":"second","dataSource":"logs"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"aggregation":"sum","name":"third","dataSource":"logs"}],"options":{"evaluationWindow":300,"detectionMethod":"threshold","maxSignalDuration":900,"keepAlive":600,"decreaseCriticalityBasedOnEnv":true},"cases":[{"name":"high case","status":"high","notifications":["@user"],"condition":"first \u003e 3 || second \u003e 10"},{"name":"warning case","status":"medium","notifications":[],"condition":"first \u003e 0 || second \u003e 0"},{"name":"low case","status":"low","notifications":[],"condition":"third \u003e 9000"}],"message":"acceptance rule triggered","tags":["foo:bar","baz","repo_url:https://github.com/repo/path"],"hasExtendedTitle":true,"type":"log_detection","filters":[],"id":"bwt-rq8-dcw","version":5,"createdAt":1765372091629,"creationAuthorId":1445416,"updateAuthorId":1445416,"updatedAt":1765372104279,"isDefault":false,"blocking":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"metadata":{"entities":null,"sources":null},"referenceTables":[{"tableName":"table1","columnName":"column1","logFieldPath":"@testattribute","checkPresence":true,"ruleQueryName":"first"}]}'
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765474107","isEnabled":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first","dataSource":"logs"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":["@orgId"],"aggregation":"cardinality","name":"second","dataSource":"logs"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"aggregation":"sum","name":"third","dataSource":"logs"}],"options":{"evaluationWindow":300,"detectionMethod":"threshold","maxSignalDuration":900,"keepAlive":600,"decreaseCriticalityBasedOnEnv":true},"cases":[{"name":"high case","status":"high","notifications":["@user"],"condition":"first \u003e 3 || second \u003e 10"},{"name":"warning case","status":"medium","notifications":[],"condition":"first \u003e 0 || second \u003e 0"},{"name":"low case","status":"low","notifications":[],"condition":"third \u003e 9000"}],"message":"acceptance rule triggered","tags":["foo:bar","baz","repo_url:https://github.com/repo/path"],"hasExtendedTitle":true,"type":"log_detection","filters":[],"id":"f6q-tah-6ms","version":5,"createdAt":1765474111388,"creationAuthorId":1445416,"updateAuthorId":1445416,"updatedAt":1765474132301,"isDefault":false,"blocking":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"metadata":{"entities":null,"sources":null},"referenceTables":[{"tableName":"table1","columnName":"column1","logFieldPath":"@testattribute","checkPresence":true,"ruleQueryName":"first"}]}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 160.879583ms
+        duration: 277.734791ms
     - id: 31
       request:
         proto: HTTP/1.1
@@ -1069,7 +1069,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":[{"condition":"first \u003e 3 || second \u003e 10","name":"high case","notifications":["@user"],"status":"high"},{"condition":"first \u003e 0 || second \u003e 0","name":"warning case","notifications":[],"status":"medium"},{"condition":"third \u003e 9000","name":"low case","notifications":[],"status":"low"}],"hasExtendedTitle":true,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765372086","options":{"decreaseCriticalityBasedOnEnv":true,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"first","query":"does not really match much"},{"aggregation":"cardinality","dataSource":"logs","distinctFields":["@orgId"],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"second","query":"does not really match much either"},{"aggregation":"sum","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"name":"third","query":"does not really match much either"}],"referenceTables":[{"checkPresence":true,"columnName":"column1","logFieldPath":"@testattribute","ruleQueryName":"first","tableName":"table1"}],"tags":["foo:bar","baz"],"type":"log_detection"}
+            {"cases":[{"condition":"first \u003e 3 || second \u003e 10","name":"high case","notifications":["@user"],"status":"high"},{"condition":"first \u003e 0 || second \u003e 0","name":"warning case","notifications":[],"status":"medium"},{"condition":"third \u003e 9000","name":"low case","notifications":[],"status":"low"}],"hasExtendedTitle":true,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765474107","options":{"decreaseCriticalityBasedOnEnv":true,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"first","query":"does not really match much"},{"aggregation":"cardinality","dataSource":"logs","distinctFields":["@orgId"],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"second","query":"does not really match much either"},{"aggregation":"sum","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"name":"third","query":"does not really match much either"}],"referenceTables":[{"checkPresence":true,"columnName":"column1","logFieldPath":"@testattribute","ruleQueryName":"first","tableName":"table1"}],"tags":["foo:bar","baz"],"type":"log_detection"}
         form: {}
         headers:
             Accept:
@@ -1090,7 +1090,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 121.411375ms
+        duration: 126.183459ms
     - id: 32
       request:
         proto: HTTP/1.1
@@ -1107,7 +1107,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/bwt-rq8-dcw
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/f6q-tah-6ms
         method: GET
       response:
         proto: HTTP/1.1
@@ -1117,13 +1117,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765372086","createdAt":1765372091629,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first","dataSource":"logs"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":["@orgId"],"aggregation":"cardinality","name":"second","dataSource":"logs"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"aggregation":"sum","name":"third","dataSource":"logs"}],"options":{"evaluationWindow":300,"detectionMethod":"threshold","maxSignalDuration":900,"keepAlive":600,"decreaseCriticalityBasedOnEnv":true},"cases":[{"name":"high case","status":"high","notifications":["@user"],"condition":"first \u003e 3 || second \u003e 10"},{"name":"warning case","status":"medium","notifications":[],"condition":"first \u003e 0 || second \u003e 0"},{"name":"low case","status":"low","notifications":[],"condition":"third \u003e 9000"}],"message":"acceptance rule triggered","tags":["foo:bar","baz","repo_url:https://github.com/repo/path"],"hasExtendedTitle":true,"type":"log_detection","filters":[],"version":5,"id":"bwt-rq8-dcw","updatedAt":1765372104279,"blocking":false,"metadata":{"entities":null,"sources":null},"referenceTables":[{"tableName":"table1","columnName":"column1","logFieldPath":"@testattribute","checkPresence":true,"ruleQueryName":"first"}],"creationAuthorId":1445416,"updateAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"frog@datadoghq.com","name":"frog"}}'
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765474107","createdAt":1765474111388,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first","dataSource":"logs"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":["@orgId"],"aggregation":"cardinality","name":"second","dataSource":"logs"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"aggregation":"sum","name":"third","dataSource":"logs"}],"options":{"evaluationWindow":300,"detectionMethod":"threshold","maxSignalDuration":900,"keepAlive":600,"decreaseCriticalityBasedOnEnv":true},"cases":[{"name":"high case","status":"high","notifications":["@user"],"condition":"first \u003e 3 || second \u003e 10"},{"name":"warning case","status":"medium","notifications":[],"condition":"first \u003e 0 || second \u003e 0"},{"name":"low case","status":"low","notifications":[],"condition":"third \u003e 9000"}],"message":"acceptance rule triggered","tags":["foo:bar","baz","repo_url:https://github.com/repo/path"],"hasExtendedTitle":true,"type":"log_detection","filters":[],"version":5,"id":"f6q-tah-6ms","updatedAt":1765474132301,"blocking":false,"metadata":{"entities":null,"sources":null},"referenceTables":[{"tableName":"table1","columnName":"column1","logFieldPath":"@testattribute","checkPresence":true,"ruleQueryName":"first"}],"creationAuthorId":1445416,"updateAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"frog@datadoghq.com","name":"frog"}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 143.426625ms
+        duration: 376.181125ms
     - id: 33
       request:
         proto: HTTP/1.1
@@ -1136,7 +1136,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":[{"condition":"first \u003e 3 || second \u003e 10","name":"high case","notifications":["@user"],"status":"high"},{"condition":"first \u003e 0 || second \u003e 0","name":"warning case","notifications":[],"status":"medium"},{"condition":"third \u003e 9000","name":"low case","notifications":[],"status":"low"}],"hasExtendedTitle":true,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765372086","options":{"decreaseCriticalityBasedOnEnv":true,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"first","query":"does not really match much"},{"aggregation":"cardinality","dataSource":"logs","distinctFields":["@orgId"],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"second","query":"does not really match much either"},{"aggregation":"sum","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"name":"third","query":"does not really match much either"}],"referenceTables":[{"checkPresence":true,"columnName":"column1","logFieldPath":"@testattribute","ruleQueryName":"first","tableName":"table1"}],"tags":["foo:bar","baz"],"type":"log_detection"}
+            {"cases":[{"condition":"first \u003e 3 || second \u003e 10","name":"high case","notifications":["@user"],"status":"high"},{"condition":"first \u003e 0 || second \u003e 0","name":"warning case","notifications":[],"status":"medium"},{"condition":"third \u003e 9000","name":"low case","notifications":[],"status":"low"}],"hasExtendedTitle":true,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765474107","options":{"decreaseCriticalityBasedOnEnv":true,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"first","query":"does not really match much"},{"aggregation":"cardinality","dataSource":"logs","distinctFields":["@orgId"],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"second","query":"does not really match much either"},{"aggregation":"sum","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"name":"third","query":"does not really match much either"}],"referenceTables":[{"checkPresence":true,"columnName":"column1","logFieldPath":"@testattribute","ruleQueryName":"first","tableName":"table1"}],"tags":["foo:bar","baz"],"type":"log_detection"}
         form: {}
         headers:
             Accept:
@@ -1157,7 +1157,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 126.14975ms
+        duration: 122.054542ms
     - id: 34
       request:
         proto: HTTP/1.1
@@ -1174,7 +1174,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/bwt-rq8-dcw
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/f6q-tah-6ms
         method: GET
       response:
         proto: HTTP/1.1
@@ -1184,13 +1184,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765372086","createdAt":1765372091629,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first","dataSource":"logs"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":["@orgId"],"aggregation":"cardinality","name":"second","dataSource":"logs"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"aggregation":"sum","name":"third","dataSource":"logs"}],"options":{"evaluationWindow":300,"detectionMethod":"threshold","maxSignalDuration":900,"keepAlive":600,"decreaseCriticalityBasedOnEnv":true},"cases":[{"name":"high case","status":"high","notifications":["@user"],"condition":"first \u003e 3 || second \u003e 10"},{"name":"warning case","status":"medium","notifications":[],"condition":"first \u003e 0 || second \u003e 0"},{"name":"low case","status":"low","notifications":[],"condition":"third \u003e 9000"}],"message":"acceptance rule triggered","tags":["foo:bar","baz","repo_url:https://github.com/repo/path"],"hasExtendedTitle":true,"type":"log_detection","filters":[],"version":5,"id":"bwt-rq8-dcw","updatedAt":1765372104279,"blocking":false,"metadata":{"entities":null,"sources":null},"referenceTables":[{"tableName":"table1","columnName":"column1","logFieldPath":"@testattribute","checkPresence":true,"ruleQueryName":"first"}],"creationAuthorId":1445416,"updateAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"frog@datadoghq.com","name":"frog"}}'
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765474107","createdAt":1765474111388,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first","dataSource":"logs"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":["@orgId"],"aggregation":"cardinality","name":"second","dataSource":"logs"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"aggregation":"sum","name":"third","dataSource":"logs"}],"options":{"evaluationWindow":300,"detectionMethod":"threshold","maxSignalDuration":900,"keepAlive":600,"decreaseCriticalityBasedOnEnv":true},"cases":[{"name":"high case","status":"high","notifications":["@user"],"condition":"first \u003e 3 || second \u003e 10"},{"name":"warning case","status":"medium","notifications":[],"condition":"first \u003e 0 || second \u003e 0"},{"name":"low case","status":"low","notifications":[],"condition":"third \u003e 9000"}],"message":"acceptance rule triggered","tags":["foo:bar","baz","repo_url:https://github.com/repo/path"],"hasExtendedTitle":true,"type":"log_detection","filters":[],"version":5,"id":"f6q-tah-6ms","updatedAt":1765474132301,"blocking":false,"metadata":{"entities":null,"sources":null},"referenceTables":[{"tableName":"table1","columnName":"column1","logFieldPath":"@testattribute","checkPresence":true,"ruleQueryName":"first"}],"creationAuthorId":1445416,"updateAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"frog@datadoghq.com","name":"frog"}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 169.226292ms
+        duration: 744.382833ms
     - id: 35
       request:
         proto: HTTP/1.1
@@ -1203,7 +1203,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":[{"condition":"first \u003e 3 || second \u003e 10","name":"high case","notifications":["@user"],"status":"high"},{"condition":"first \u003e 0 || second \u003e 0","name":"warning case","notifications":[],"status":"medium"},{"condition":"third \u003e 9000","name":"low case","notifications":[],"status":"low"}],"hasExtendedTitle":true,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765372086","options":{"decreaseCriticalityBasedOnEnv":true,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"first","query":"does not really match much"},{"aggregation":"cardinality","dataSource":"logs","distinctFields":["@orgId"],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"second","query":"does not really match much either"},{"aggregation":"sum","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"name":"third","query":"does not really match much either"}],"referenceTables":[{"checkPresence":true,"columnName":"column1","logFieldPath":"@testattribute","ruleQueryName":"first","tableName":"table1"}],"tags":["foo:bar","baz","repo_url:https://github.com/repo/path"],"type":"log_detection"}
+            {"cases":[{"condition":"first \u003e 3 || second \u003e 10","name":"high case","notifications":["@user"],"status":"high"},{"condition":"first \u003e 0 || second \u003e 0","name":"warning case","notifications":[],"status":"medium"},{"condition":"third \u003e 9000","name":"low case","notifications":[],"status":"low"}],"hasExtendedTitle":true,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765474107","options":{"decreaseCriticalityBasedOnEnv":true,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"first","query":"does not really match much"},{"aggregation":"cardinality","dataSource":"logs","distinctFields":["@orgId"],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"second","query":"does not really match much either"},{"aggregation":"sum","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"name":"third","query":"does not really match much either"}],"referenceTables":[{"checkPresence":true,"columnName":"column1","logFieldPath":"@testattribute","ruleQueryName":"first","tableName":"table1"}],"tags":["foo:bar","baz","repo_url:https://github.com/repo/path"],"type":"log_detection"}
         form: {}
         headers:
             Accept:
@@ -1224,7 +1224,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 128.622833ms
+        duration: 119.687375ms
     - id: 36
       request:
         proto: HTTP/1.1
@@ -1237,7 +1237,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":[{"condition":"first \u003e 3 || second \u003e 10","name":"high case","notifications":["@user"],"status":"high"},{"condition":"first \u003e 0 || second \u003e 0","name":"warning case","notifications":[],"status":"medium"},{"condition":"third \u003e 9000","name":"low case","notifications":[],"status":"low"}],"hasExtendedTitle":true,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765372086","options":{"decreaseCriticalityBasedOnEnv":true,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"first","query":"does not really match much"},{"aggregation":"cardinality","dataSource":"logs","distinctFields":["@orgId"],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"second","query":"does not really match much either"},{"aggregation":"sum","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"name":"third","query":"does not really match much either"}],"referenceTables":[{"checkPresence":true,"columnName":"column1","logFieldPath":"@testattribute","ruleQueryName":"first","tableName":"table1"}],"tags":["foo:bar","baz","repo_url:https://github.com/repo/path"],"type":"log_detection"}
+            {"cases":[{"condition":"first \u003e 3 || second \u003e 10","name":"high case","notifications":["@user"],"status":"high"},{"condition":"first \u003e 0 || second \u003e 0","name":"warning case","notifications":[],"status":"medium"},{"condition":"third \u003e 9000","name":"low case","notifications":[],"status":"low"}],"hasExtendedTitle":true,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765474107","options":{"decreaseCriticalityBasedOnEnv":true,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"first","query":"does not really match much"},{"aggregation":"cardinality","dataSource":"logs","distinctFields":["@orgId"],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"second","query":"does not really match much either"},{"aggregation":"sum","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"name":"third","query":"does not really match much either"}],"referenceTables":[{"checkPresence":true,"columnName":"column1","logFieldPath":"@testattribute","ruleQueryName":"first","tableName":"table1"}],"tags":["foo:bar","baz","repo_url:https://github.com/repo/path"],"type":"log_detection"}
         form: {}
         headers:
             Accept:
@@ -1258,7 +1258,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 124.149458ms
+        duration: 116.076041ms
     - id: 37
       request:
         proto: HTTP/1.1
@@ -1271,14 +1271,14 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"calculatedFields":[],"cases":[{"condition":"first \u003e 3 || second \u003e 10","name":"high case","notifications":["@user"],"status":"high"},{"condition":"first \u003e 0 || second \u003e 0","name":"warning case","notifications":[],"status":"medium"},{"condition":"third \u003e 9000","name":"low case","notifications":[],"status":"low"}],"filters":[],"hasExtendedTitle":true,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765372086","options":{"decreaseCriticalityBasedOnEnv":true,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"first","query":"does not really match much"},{"aggregation":"cardinality","dataSource":"logs","distinctFields":["@orgId"],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"second","query":"does not really match much either"},{"aggregation":"sum","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"name":"third","query":"does not really match much either"}],"referenceTables":[{"checkPresence":true,"columnName":"column1","logFieldPath":"@testattribute","ruleQueryName":"first","tableName":"table1"}],"schedulingOptions":null,"tags":["default_key:default_value","foo:bar","baz","repo_url:https://github.com/repo/path"]}
+            {"calculatedFields":[],"cases":[{"condition":"first \u003e 3 || second \u003e 10","name":"high case","notifications":["@user"],"status":"high"},{"condition":"first \u003e 0 || second \u003e 0","name":"warning case","notifications":[],"status":"medium"},{"condition":"third \u003e 9000","name":"low case","notifications":[],"status":"low"}],"filters":[],"hasExtendedTitle":true,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765474107","options":{"decreaseCriticalityBasedOnEnv":true,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"first","query":"does not really match much"},{"aggregation":"cardinality","dataSource":"logs","distinctFields":["@orgId"],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"second","query":"does not really match much either"},{"aggregation":"sum","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"name":"third","query":"does not really match much either"}],"referenceTables":[{"checkPresence":true,"columnName":"column1","logFieldPath":"@testattribute","ruleQueryName":"first","tableName":"table1"}],"schedulingOptions":null,"tags":["default_key:default_value","foo:bar","baz","repo_url:https://github.com/repo/path"]}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/bwt-rq8-dcw
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/f6q-tah-6ms
         method: PUT
       response:
         proto: HTTP/1.1
@@ -1288,13 +1288,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765372086","isEnabled":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first","dataSource":"logs"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":["@orgId"],"aggregation":"cardinality","name":"second","dataSource":"logs"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"aggregation":"sum","name":"third","dataSource":"logs"}],"options":{"evaluationWindow":300,"detectionMethod":"threshold","maxSignalDuration":900,"keepAlive":600,"decreaseCriticalityBasedOnEnv":true},"cases":[{"name":"high case","status":"high","notifications":["@user"],"condition":"first \u003e 3 || second \u003e 10"},{"name":"warning case","status":"medium","notifications":[],"condition":"first \u003e 0 || second \u003e 0"},{"name":"low case","status":"low","notifications":[],"condition":"third \u003e 9000"}],"message":"acceptance rule triggered","tags":["default_key:default_value","foo:bar","baz","repo_url:https://github.com/repo/path"],"hasExtendedTitle":true,"type":"log_detection","filters":[],"id":"bwt-rq8-dcw","version":6,"createdAt":1765372091629,"creationAuthorId":1445416,"updateAuthorId":1445416,"updatedAt":1765372106534,"isDefault":false,"blocking":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"metadata":{"entities":null,"sources":null},"referenceTables":[{"tableName":"table1","columnName":"column1","logFieldPath":"@testattribute","checkPresence":true,"ruleQueryName":"first"}]}'
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765474107","isEnabled":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first","dataSource":"logs"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":["@orgId"],"aggregation":"cardinality","name":"second","dataSource":"logs"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"aggregation":"sum","name":"third","dataSource":"logs"}],"options":{"evaluationWindow":300,"detectionMethod":"threshold","maxSignalDuration":900,"keepAlive":600,"decreaseCriticalityBasedOnEnv":true},"cases":[{"name":"high case","status":"high","notifications":["@user"],"condition":"first \u003e 3 || second \u003e 10"},{"name":"warning case","status":"medium","notifications":[],"condition":"first \u003e 0 || second \u003e 0"},{"name":"low case","status":"low","notifications":[],"condition":"third \u003e 9000"}],"message":"acceptance rule triggered","tags":["default_key:default_value","foo:bar","baz","repo_url:https://github.com/repo/path"],"hasExtendedTitle":true,"type":"log_detection","filters":[],"id":"f6q-tah-6ms","version":6,"createdAt":1765474111388,"creationAuthorId":1445416,"updateAuthorId":1445416,"updatedAt":1765474135518,"isDefault":false,"blocking":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"metadata":{"entities":null,"sources":null},"referenceTables":[{"tableName":"table1","columnName":"column1","logFieldPath":"@testattribute","checkPresence":true,"ruleQueryName":"first"}]}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 170.108792ms
+        duration: 156.646666ms
     - id: 38
       request:
         proto: HTTP/1.1
@@ -1307,7 +1307,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":[{"condition":"first \u003e 3 || second \u003e 10","name":"high case","notifications":["@user"],"status":"high"},{"condition":"first \u003e 0 || second \u003e 0","name":"warning case","notifications":[],"status":"medium"},{"condition":"third \u003e 9000","name":"low case","notifications":[],"status":"low"}],"hasExtendedTitle":true,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765372086","options":{"decreaseCriticalityBasedOnEnv":true,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"first","query":"does not really match much"},{"aggregation":"cardinality","dataSource":"logs","distinctFields":["@orgId"],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"second","query":"does not really match much either"},{"aggregation":"sum","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"name":"third","query":"does not really match much either"}],"referenceTables":[{"checkPresence":true,"columnName":"column1","logFieldPath":"@testattribute","ruleQueryName":"first","tableName":"table1"}],"tags":["default_key:default_value","foo:bar","baz","repo_url:https://github.com/repo/path"],"type":"log_detection"}
+            {"cases":[{"condition":"first \u003e 3 || second \u003e 10","name":"high case","notifications":["@user"],"status":"high"},{"condition":"first \u003e 0 || second \u003e 0","name":"warning case","notifications":[],"status":"medium"},{"condition":"third \u003e 9000","name":"low case","notifications":[],"status":"low"}],"hasExtendedTitle":true,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765474107","options":{"decreaseCriticalityBasedOnEnv":true,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"first","query":"does not really match much"},{"aggregation":"cardinality","dataSource":"logs","distinctFields":["@orgId"],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"second","query":"does not really match much either"},{"aggregation":"sum","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"name":"third","query":"does not really match much either"}],"referenceTables":[{"checkPresence":true,"columnName":"column1","logFieldPath":"@testattribute","ruleQueryName":"first","tableName":"table1"}],"tags":["default_key:default_value","foo:bar","baz","repo_url:https://github.com/repo/path"],"type":"log_detection"}
         form: {}
         headers:
             Accept:
@@ -1328,7 +1328,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 130.138ms
+        duration: 517.810084ms
     - id: 39
       request:
         proto: HTTP/1.1
@@ -1345,7 +1345,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/bwt-rq8-dcw
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/f6q-tah-6ms
         method: GET
       response:
         proto: HTTP/1.1
@@ -1355,13 +1355,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765372086","createdAt":1765372091629,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first","dataSource":"logs"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":["@orgId"],"aggregation":"cardinality","name":"second","dataSource":"logs"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"aggregation":"sum","name":"third","dataSource":"logs"}],"options":{"evaluationWindow":300,"detectionMethod":"threshold","maxSignalDuration":900,"keepAlive":600,"decreaseCriticalityBasedOnEnv":true},"cases":[{"name":"high case","status":"high","notifications":["@user"],"condition":"first \u003e 3 || second \u003e 10"},{"name":"warning case","status":"medium","notifications":[],"condition":"first \u003e 0 || second \u003e 0"},{"name":"low case","status":"low","notifications":[],"condition":"third \u003e 9000"}],"message":"acceptance rule triggered","tags":["default_key:default_value","foo:bar","baz","repo_url:https://github.com/repo/path"],"hasExtendedTitle":true,"type":"log_detection","filters":[],"version":6,"id":"bwt-rq8-dcw","updatedAt":1765372106534,"blocking":false,"metadata":{"entities":null,"sources":null},"referenceTables":[{"tableName":"table1","columnName":"column1","logFieldPath":"@testattribute","checkPresence":true,"ruleQueryName":"first"}],"creationAuthorId":1445416,"updateAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"frog@datadoghq.com","name":"frog"}}'
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765474107","createdAt":1765474111388,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first","dataSource":"logs"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":["@orgId"],"aggregation":"cardinality","name":"second","dataSource":"logs"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"aggregation":"sum","name":"third","dataSource":"logs"}],"options":{"evaluationWindow":300,"detectionMethod":"threshold","maxSignalDuration":900,"keepAlive":600,"decreaseCriticalityBasedOnEnv":true},"cases":[{"name":"high case","status":"high","notifications":["@user"],"condition":"first \u003e 3 || second \u003e 10"},{"name":"warning case","status":"medium","notifications":[],"condition":"first \u003e 0 || second \u003e 0"},{"name":"low case","status":"low","notifications":[],"condition":"third \u003e 9000"}],"message":"acceptance rule triggered","tags":["default_key:default_value","foo:bar","baz","repo_url:https://github.com/repo/path"],"hasExtendedTitle":true,"type":"log_detection","filters":[],"version":6,"id":"f6q-tah-6ms","updatedAt":1765474135518,"blocking":false,"metadata":{"entities":null,"sources":null},"referenceTables":[{"tableName":"table1","columnName":"column1","logFieldPath":"@testattribute","checkPresence":true,"ruleQueryName":"first"}],"creationAuthorId":1445416,"updateAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"frog@datadoghq.com","name":"frog"}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 151.947875ms
+        duration: 118.551292ms
     - id: 40
       request:
         proto: HTTP/1.1
@@ -1374,7 +1374,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":[{"condition":"first \u003e 3 || second \u003e 10","name":"high case","notifications":["@user"],"status":"high"},{"condition":"first \u003e 0 || second \u003e 0","name":"warning case","notifications":[],"status":"medium"},{"condition":"third \u003e 9000","name":"low case","notifications":[],"status":"low"}],"hasExtendedTitle":true,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765372086","options":{"decreaseCriticalityBasedOnEnv":true,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"first","query":"does not really match much"},{"aggregation":"cardinality","dataSource":"logs","distinctFields":["@orgId"],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"second","query":"does not really match much either"},{"aggregation":"sum","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"name":"third","query":"does not really match much either"}],"referenceTables":[{"checkPresence":true,"columnName":"column1","logFieldPath":"@testattribute","ruleQueryName":"first","tableName":"table1"}],"tags":["default_key:default_value","foo:bar","baz","repo_url:https://github.com/repo/path"],"type":"log_detection"}
+            {"cases":[{"condition":"first \u003e 3 || second \u003e 10","name":"high case","notifications":["@user"],"status":"high"},{"condition":"first \u003e 0 || second \u003e 0","name":"warning case","notifications":[],"status":"medium"},{"condition":"third \u003e 9000","name":"low case","notifications":[],"status":"low"}],"hasExtendedTitle":true,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_DefaultTags-local-1765474107","options":{"decreaseCriticalityBasedOnEnv":true,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"first","query":"does not really match much"},{"aggregation":"cardinality","dataSource":"logs","distinctFields":["@orgId"],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"second","query":"does not really match much either"},{"aggregation":"sum","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"name":"third","query":"does not really match much either"}],"referenceTables":[{"checkPresence":true,"columnName":"column1","logFieldPath":"@testattribute","ruleQueryName":"first","tableName":"table1"}],"tags":["default_key:default_value","foo:bar","baz","repo_url:https://github.com/repo/path"],"type":"log_detection"}
         form: {}
         headers:
             Accept:
@@ -1395,7 +1395,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 118.971458ms
+        duration: 328.937041ms
     - id: 41
       request:
         proto: HTTP/1.1
@@ -1412,7 +1412,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/bwt-rq8-dcw
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/f6q-tah-6ms
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -1426,4 +1426,4 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 157.713542ms
+        duration: 146.805166ms

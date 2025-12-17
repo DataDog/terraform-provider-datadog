@@ -4,6 +4,8 @@
 
 # All your base
 *                                         @DataDog/api-reliability
+# Except cassettes
+datadog/tests/cassettes/
 
 /.generator                               @DataDog/api-reliability
 
