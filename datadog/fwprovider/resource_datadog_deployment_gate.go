@@ -136,7 +136,7 @@ func (r *deploymentGateResource) Schema(_ context.Context, _ resource.SchemaRequ
 							Attributes: map[string]schema.Attribute{
 								"duration": schema.Int64Attribute{
 									Description: "The duration for the rule.",
-									Required:    true,
+									Optional:    true,
 								},
 								"query": schema.StringAttribute{
 									Optional:    true,
@@ -439,7 +439,13 @@ func (r *deploymentGateResource) validateRules(ctx context.Context, state *deplo
 	}
 
 	for i, rule := range state.Rules {
+		// Validate that options block is provided
 		if isEmptyOption(rule.Options) {
+			diags.AddError(
+				"Missing required options block",
+				fmt.Sprintf("Rule %d ('%s'): the options block is required for all deployment rules. "+
+					"Please provide an options block with at least the duration field.", i, rule.Name.ValueString()),
+			)
 			continue
 		}
 

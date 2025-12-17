@@ -83,12 +83,9 @@ Read-Only:
 <a id="nestedblock--rule--options"></a>
 ### Nested Schema for `rule.options`
 
-Required:
-
-- `duration` (Number) The duration for the rule.
-
 Optional:
 
+- `duration` (Number) The duration for the rule.
 - `excluded_resources` (List of String) Resources to exclude from faulty deployment detection.
 - `query` (String) The query for monitor rules.
 
