@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 496
+        content_length: 665
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"config":{"destinations":[{"id":"destination-1","inputs":["dedupe-ignore"],"type":"datadog_logs"}],"processors":[{"fields":["log.message","log.tags"],"id":"dedupe-match","include":"*","inputs":["source-1"],"mode":"match","type":"dedupe"},{"fields":["log.source","log.context"],"id":"dedupe-ignore","include":"*","inputs":["dedupe-match"],"mode":"ignore","type":"dedupe"}],"sources":[{"id":"source-1","type":"datadog_agent"}]},"name":"dedupe pipeline"},"type":"pipelines"}}
+            {"data":{"attributes":{"config":{"destinations":[{"id":"destination-1","inputs":["dedupe-group-2"],"type":"datadog_logs"}],"processors":[{"enabled":true,"id":"dedupe-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"fields":["log.message","log.tags"],"id":"dedupe-match","include":"*","mode":"match","type":"dedupe"}]},{"enabled":true,"id":"dedupe-group-2","include":"*","inputs":["dedupe-group-1"],"processors":[{"enabled":true,"fields":["log.source","log.context"],"id":"dedupe-ignore","include":"*","mode":"ignore","type":"dedupe"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]},"name":"dedupe pipeline"},"type":"pipelines"}}
         form: {}
         headers:
             Accept:
@@ -28,16 +28,16 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 540
+        content_length: 709
         uncompressed: false
         body: |
-            {"data":{"id":"e771ac30-24e0-11f0-92e0-da7ad0900002","type":"pipelines","attributes":{"name":"dedupe pipeline","config":{"destinations":[{"id":"destination-1","inputs":["dedupe-ignore"],"type":"datadog_logs"}],"processors":[{"fields":["log.message","log.tags"],"id":"dedupe-match","include":"*","inputs":["source-1"],"mode":"match","type":"dedupe"},{"fields":["log.source","log.context"],"id":"dedupe-ignore","include":"*","inputs":["dedupe-match"],"mode":"ignore","type":"dedupe"}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"10cf5378-db59-11f0-b58e-da7ad0900002","type":"pipelines","attributes":{"name":"dedupe pipeline","config":{"destinations":[{"id":"destination-1","inputs":["dedupe-group-2"],"type":"datadog_logs"}],"processors":[{"enabled":true,"id":"dedupe-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"fields":["log.message","log.tags"],"id":"dedupe-match","include":"*","mode":"match","type":"dedupe"}]},{"enabled":true,"id":"dedupe-group-2","include":"*","inputs":["dedupe-group-1"],"processors":[{"enabled":true,"fields":["log.source","log.context"],"id":"dedupe-ignore","include":"*","mode":"ignore","type":"dedupe"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/json
         status: 201 Created
         code: 201
-        duration: 633.1005ms
+        duration: 449.612417ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -54,7 +54,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/e771ac30-24e0-11f0-92e0-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/10cf5378-db59-11f0-b58e-da7ad0900002
         method: GET
       response:
         proto: HTTP/1.1
@@ -62,16 +62,16 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 540
+        content_length: 709
         uncompressed: false
         body: |
-            {"data":{"id":"e771ac30-24e0-11f0-92e0-da7ad0900002","type":"pipelines","attributes":{"name":"dedupe pipeline","config":{"destinations":[{"id":"destination-1","inputs":["dedupe-ignore"],"type":"datadog_logs"}],"processors":[{"fields":["log.message","log.tags"],"id":"dedupe-match","include":"*","inputs":["source-1"],"mode":"match","type":"dedupe"},{"fields":["log.source","log.context"],"id":"dedupe-ignore","include":"*","inputs":["dedupe-match"],"mode":"ignore","type":"dedupe"}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"10cf5378-db59-11f0-b58e-da7ad0900002","type":"pipelines","attributes":{"name":"dedupe pipeline","config":{"destinations":[{"id":"destination-1","inputs":["dedupe-group-2"],"type":"datadog_logs"}],"processors":[{"enabled":true,"id":"dedupe-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"fields":["log.message","log.tags"],"id":"dedupe-match","include":"*","mode":"match","type":"dedupe"}]},{"enabled":true,"id":"dedupe-group-2","include":"*","inputs":["dedupe-group-1"],"processors":[{"enabled":true,"fields":["log.source","log.context"],"id":"dedupe-ignore","include":"*","mode":"ignore","type":"dedupe"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 282.627083ms
+        duration: 256.947625ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -88,7 +88,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/e771ac30-24e0-11f0-92e0-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/10cf5378-db59-11f0-b58e-da7ad0900002
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -104,4 +104,4 @@ interactions:
                 - application/json
         status: 204 No Content
         code: 204
-        duration: 604.233ms
+        duration: 362.699334ms
