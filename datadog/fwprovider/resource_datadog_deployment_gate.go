@@ -394,6 +394,14 @@ func (r *deploymentGateResource) buildDeploymentGateRequestBody(ctx context.Cont
 	req.Data.Type = "deployment_gate"
 	req.Data.SetAttributes(*attributes)
 
+	// Set metadata to indicate this was created from Terraform
+	if req.Data.AdditionalProperties == nil {
+		req.Data.AdditionalProperties = make(map[string]interface{})
+	}
+	req.Data.AdditionalProperties["_metadata"] = map[string]interface{}{
+		"created_from": "terraform",
+	}
+
 	return req, diags
 }
 
@@ -805,6 +813,14 @@ func (r *deploymentGateResource) buildRuleRequestBody(ctx context.Context, rule 
 	req.Data = datadogV2.NewCreateDeploymentRuleParamsDataWithDefaults()
 	req.Data.Type = "deployment_rule"
 	req.Data.SetAttributes(*attributes)
+
+	// Set metadata to indicate this was created from Terraform
+	if req.Data.AdditionalProperties == nil {
+		req.Data.AdditionalProperties = make(map[string]interface{})
+	}
+	req.Data.AdditionalProperties["_metadata"] = map[string]interface{}{
+		"created_from": "terraform",
+	}
 
 	return req, diags
 }
