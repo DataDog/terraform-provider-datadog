@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 264
+        content_length: 266
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"config":{"destinations":[{"auth":{"strategy":"basic"},"id":"aos-basic-1","inputs":["source-1"],"type":"amazon_opensearch"}],"sources":[{"id":"source-1","type":"datadog_agent"}]},"name":"amazon opensearch (basic auth)"},"type":"pipelines"}}
+            {"data":{"attributes":{"config":{"destinations":[{"auth":{"strategy":"basic"},"id":"destination-1","inputs":["source-1"],"type":"amazon_opensearch"}],"sources":[{"id":"source-1","type":"datadog_agent"}]},"name":"amazon opensearch (basic auth)"},"type":"pipelines"}}
         form: {}
         headers:
             Accept:
@@ -28,16 +28,16 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 324
+        content_length: 326
         uncompressed: false
         body: |
-            {"data":{"id":"fd791da6-24e0-11f0-b6fa-da7ad0900002","type":"pipelines","attributes":{"name":"amazon opensearch (basic auth)","config":{"destinations":[{"auth":{"strategy":"basic"},"id":"aos-basic-1","inputs":["source-1"],"type":"amazon_opensearch"}],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"282b9c0c-db59-11f0-b5a4-da7ad0900002","type":"pipelines","attributes":{"name":"amazon opensearch (basic auth)","config":{"destinations":[{"auth":{"strategy":"basic"},"id":"destination-1","inputs":["source-1"],"type":"amazon_opensearch"}],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/json
         status: 201 Created
         code: 201
-        duration: 762.408875ms
+        duration: 654.647792ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -54,7 +54,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/fd791da6-24e0-11f0-b6fa-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/282b9c0c-db59-11f0-b5a4-da7ad0900002
         method: GET
       response:
         proto: HTTP/1.1
@@ -62,16 +62,16 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 324
+        content_length: 326
         uncompressed: false
         body: |
-            {"data":{"id":"fd791da6-24e0-11f0-b6fa-da7ad0900002","type":"pipelines","attributes":{"name":"amazon opensearch (basic auth)","config":{"destinations":[{"auth":{"strategy":"basic"},"id":"aos-basic-1","inputs":["source-1"],"type":"amazon_opensearch"}],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"282b9c0c-db59-11f0-b5a4-da7ad0900002","type":"pipelines","attributes":{"name":"amazon opensearch (basic auth)","config":{"destinations":[{"auth":{"strategy":"basic"},"id":"destination-1","inputs":["source-1"],"type":"amazon_opensearch"}],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 256.489584ms
+        duration: 334.895167ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -88,7 +88,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/fd791da6-24e0-11f0-b6fa-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/282b9c0c-db59-11f0-b5a4-da7ad0900002
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -104,4 +104,4 @@ interactions:
                 - application/json
         status: 204 No Content
         code: 204
-        duration: 543.510083ms
+        duration: 412.143958ms
