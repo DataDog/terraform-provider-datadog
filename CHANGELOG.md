@@ -1,3 +1,23 @@
+## 3.83.0 (December 18, 2025)
+
+### BUGFIXES
+* [datadog_security_monitoring] Fix how tags and calculated fields array are handled by @clementgbcn in https://github.com/DataDog/terraform-provider-datadog/pull/3347
+* [datadog_security_monitoring] Fix missing group_signals_by in rules by @clementgbcn in https://github.com/DataDog/terraform-provider-datadog/pull/3365
+### IMPROVEMENTS
+* [datadog_sensitive_data_scanner_rule] drop ForceNew from included_keyword_configuration by @OBe95 in https://github.com/DataDog/terraform-provider-datadog/pull/3355
+* [datadog_cost_budget] Add Validation for terraform plan by @zeinageb in https://github.com/DataDog/terraform-provider-datadog/pull/3349
+### FEATURES
+* [datadog_integration_aws_iam_permissions_resource_collection] Add new data source for AWS Integration resource collection IAM permissions by @raymondeah in https://github.com/DataDog/terraform-provider-datadog/pull/3265
+* [datadog_monitor_notification_rule] Add support for scope and conditional_recipients by @shaneyuandd in https://github.com/DataDog/terraform-provider-datadog/pull/3363
+* [datadog_resource_datadog_monitor] Add Support for Saving Assets to Monitors by @kevinpombo-datadog in https://github.com/DataDog/terraform-provider-datadog/pull/3334
+* [datadog_logs_restriction_query] Add LRQ Terraform Resource by @dwijetunga in https://github.com/DataDog/terraform-provider-datadog/pull/3352
+
+## New Contributors
+* @OBe95 made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3355
+* @dwijetunga made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3352
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.82.0...v3.83.0
+
 ## 3.82.0 (December 10, 2025)
 
 ### BUGFIXES
