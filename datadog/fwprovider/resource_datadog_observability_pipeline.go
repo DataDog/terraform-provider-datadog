@@ -651,7 +651,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 										},
 									},
 									"fluentd": schema.ListNestedBlock{
-										Description: "The `fluent` source ingests logs from a Fluentd-compatible service.",
+										Description: "The `fluentd source ingests logs from a Fluentd-compatible service.",
 										NestedObject: schema.NestedBlockObject{
 											Blocks: map[string]schema.Block{
 												"tls": observability_pipeline.TlsSchema(),
@@ -659,7 +659,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 										},
 									},
 									"fluent_bit": schema.ListNestedBlock{
-										Description: "The `fluent` source ingests logs from Fluent Bit.",
+										Description: "The `fluent_bit` source ingests logs from Fluent Bit.",
 										NestedObject: schema.NestedBlockObject{
 											Blocks: map[string]schema.Block{
 												"tls": observability_pipeline.TlsSchema(),
@@ -961,7 +961,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 													},
 												},
 												"quota": schema.ListNestedBlock{
-													Description: "The `quota` measures logging traffic for logs that match a specified filter. When the configured daily quota is met, the processor can drop or alert.",
+													Description: "The `quota` processor measures logging traffic for logs that match a specified filter. When the configured daily quota is met, the processor can drop or alert.",
 													Validators: []validator.List{
 														listvalidator.SizeAtMost(1),
 													},
