@@ -222,13 +222,9 @@ func (r *catalogEntityResource) Read(ctx context.Context, request resource.ReadR
 
 	id := state.ID.ValueString()
 	path := catalogPath + "?include=raw_schema&filter[ref]=" + id
-	httpRespByte, httpResp, err := utils.SendRequest(r.Auth, r.Api, "GET", path, nil)
+	httpRespByte, _, err := utils.SendRequest(r.Auth, r.Api, "GET", path, nil)
 
 	if err != nil {
-		if httpResp != nil && httpResp.StatusCode == 404 {
-			response.State.RemoveResource(ctx)
-			return
-		}
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error getting entity"))
 		return
 	}
@@ -236,10 +232,18 @@ func (r *catalogEntityResource) Read(ctx context.Context, request resource.ReadR
 	err = json.Unmarshal(httpRespByte, &entityResp)
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error unmarshalling entity"))
+		return
 	}
 
+	// Entity not found via filter - remove from Terraform state (drift detection)
+	if len(entityResp.Included) == 0 {
+		response.State.RemoveResource(ctx)
+		return
+	}
+
+	// Validate response format
 	if len(entityResp.Included) != 1 || entityResp.Included[0].Attributes == nil || entityResp.Included[0].Attributes.RawSchema == "" {
-		err := fmt.Errorf("no entity is found in the response, path=%v response=%v", path, string(httpRespByte))
+		err := fmt.Errorf("unexpected response format, path=%v response=%v", path, string(httpRespByte))
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving entity"))
 		return
 	}
