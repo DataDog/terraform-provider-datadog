@@ -16,7 +16,6 @@ import (
 
 type csmThreatsPolicyModel struct {
 	Id            types.String `tfsdk:"id"`
-	Type          types.String `tfsdk:"type"`
 	Tags          types.Set    `tfsdk:"tags"`
 	HostTagsLists types.Set    `tfsdk:"host_tags_lists"`
 	Name          types.String `tfsdk:"name"`
@@ -61,11 +60,6 @@ func (r *csmThreatsPolicyResource) Schema(_ context.Context, _ resource.SchemaRe
 				Optional:    true,
 				Default:     booldefault.StaticBool(false),
 				Description: "Indicates whether the policy is enabled.",
-				Computed:    true,
-			},
-			"type": schema.StringAttribute{
-				Optional:    true,
-				Description: "The type of the policy.",
 				Computed:    true,
 			},
 			"tags": schema.SetAttribute{
@@ -270,7 +264,6 @@ func (r *csmThreatsPolicyResource) updateStateFromResponse(ctx context.Context, 
 	state.Id = types.StringValue(res.Data.GetId())
 
 	attributes := res.Data.Attributes
-	state.Type = types.StringValue(attributes.GetPolicyType())
 	state.Name = types.StringValue(attributes.GetName())
 	state.Description = types.StringValue(attributes.GetDescription())
 	state.Enabled = types.BoolValue(attributes.GetEnabled())
