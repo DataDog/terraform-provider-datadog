@@ -466,7 +466,10 @@ func (r *csmThreatsAgentRuleResource) buildCreateCSMThreatsAgentRulePayload(stat
 				}
 				if !a.Set.Value.IsNull() && !a.Set.Value.IsUnknown() {
 					value := a.Set.Value.ValueString()
-					sa.Value = &value
+					valueWrapper := datadogV2.CloudWorkloadSecurityAgentRuleActionSetValue{
+						String: &value,
+					}
+					sa.Value = &valueWrapper
 				}
 				if !a.Set.Append.IsNull() && !a.Set.Append.IsUnknown() {
 					append := a.Set.Append.ValueBool()
@@ -500,8 +503,8 @@ func (r *csmThreatsAgentRuleResource) buildCreateCSMThreatsAgentRulePayload(stat
 			}
 
 			if a.Hash != nil {
-				ha := make(map[string]interface{})
-				action.Hash = ha
+				hashWrapper := &datadogV2.CloudWorkloadSecurityAgentRuleActionHash{}
+				action.Hash = hashWrapper
 			}
 
 			outActions = append(outActions, action)
@@ -546,7 +549,10 @@ func (r *csmThreatsAgentRuleResource) buildUpdateCSMThreatsAgentRulePayload(stat
 				}
 				if !a.Set.Value.IsNull() && !a.Set.Value.IsUnknown() {
 					value := a.Set.Value.ValueString()
-					sa.Value = &value
+					valueWrapper := datadogV2.CloudWorkloadSecurityAgentRuleActionSetValue{
+						String: &value,
+					}
+					sa.Value = &valueWrapper
 				}
 				if !a.Set.Append.IsNull() && !a.Set.Append.IsUnknown() {
 					append := a.Set.Append.ValueBool()
@@ -580,8 +586,8 @@ func (r *csmThreatsAgentRuleResource) buildUpdateCSMThreatsAgentRulePayload(stat
 			}
 
 			if a.Hash != nil {
-				ha := make(map[string]interface{})
-				action.Hash = ha
+				hashWrapper := &datadogV2.CloudWorkloadSecurityAgentRuleActionHash{}
+				action.Hash = hashWrapper
 			}
 
 			outActions = append(outActions, action)
@@ -671,7 +677,13 @@ func (r *csmThreatsAgentRuleResource) updateStateFromResponse(ctx context.Contex
 				setAction.Field = types.StringNull()
 			}
 			if s.Value != nil {
-				setAction.Value = types.StringValue(*s.Value)
+				// CloudWorkloadSecurityAgentRuleActionSetValue is a oneOf wrapper
+				// We need to extract the string value from it
+				if strPtr := s.Value.String; strPtr != nil {
+					setAction.Value = types.StringValue(*strPtr)
+				} else {
+					setAction.Value = types.StringNull()
+				}
 			} else {
 				setAction.Value = types.StringNull()
 			}

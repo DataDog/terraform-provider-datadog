@@ -135,7 +135,13 @@ func (r *csmThreatsAgentRulesDataSource) Read(ctx context.Context, request datas
 					setAction.Field = types.StringNull()
 				}
 				if s.Value != nil {
-					setAction.Value = types.StringValue(*s.Value)
+					// CloudWorkloadSecurityAgentRuleActionSetValue is a oneOf wrapper
+					// We need to extract the string value from it
+					if strPtr := s.Value.String; strPtr != nil {
+						setAction.Value = types.StringValue(*strPtr)
+					} else {
+						setAction.Value = types.StringNull()
+					}
 				} else {
 					setAction.Value = types.StringNull()
 				}

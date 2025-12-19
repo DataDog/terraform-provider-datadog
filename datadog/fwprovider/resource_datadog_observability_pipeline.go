@@ -842,7 +842,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 									},
 									"display_name": schema.StringAttribute{
 										Optional:    true,
-										Description: "The human-friendly name of the processor group.",
+										Description: "A human-friendly name of the processor group.",
 									},
 								},
 								Blocks: map[string]schema.Block{
