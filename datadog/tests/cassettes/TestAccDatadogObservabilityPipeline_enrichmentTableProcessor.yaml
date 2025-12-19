@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 829
+        content_length: 1012
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"config":{"destinations":[{"id":"destination-1","inputs":["geoip-enrichment"],"type":"datadog_logs"}],"processors":[{"file":{"encoding":{"delimiter":",","includes_headers":true,"type":"csv"},"key":[{"column":"user_id","comparison":"equals","field":"log.user.id"}],"path":"/etc/enrichment/lookup.csv","schema":[{"column":"region","type":"string"},{"column":"city","type":"string"}]},"id":"csv-enrichment","include":"*","inputs":["source-1"],"target":"log.geo.csv","type":"enrichment_table"},{"geoip":{"key_field":"log.source.ip","locale":"en","path":"/etc/geoip/GeoLite2-City.mmdb"},"id":"geoip-enrichment","include":"*","inputs":["csv-enrichment"],"target":"log.geo.geoip","type":"enrichment_table"}],"sources":[{"id":"source-1","type":"datadog_agent"}]},"name":"enrichment pipeline"},"type":"pipelines"}}
+            {"data":{"attributes":{"config":{"destinations":[{"id":"destination-1","inputs":["enrichment-group-2"],"type":"datadog_logs"}],"processors":[{"enabled":true,"id":"enrichment-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"file":{"encoding":{"delimiter":",","includes_headers":true,"type":"csv"},"key":[{"column":"user_id","comparison":"equals","field":"log.user.id"}],"path":"/etc/enrichment/lookup.csv","schema":[{"column":"region","type":"string"},{"column":"city","type":"string"}]},"id":"csv-enrichment","include":"*","target":"log.enrichment","type":"enrichment_table"}]},{"enabled":true,"id":"enrichment-group-2","include":"*","inputs":["enrichment-group-1"],"processors":[{"enabled":true,"geoip":{"key_field":"log.source.ip","locale":"en","path":"/etc/geoip/GeoLite2-City.mmdb"},"id":"geoip-enrichment","include":"*","target":"log.geo.geoip","type":"enrichment_table"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]},"name":"enrichment pipeline"},"type":"pipelines"}}
         form: {}
         headers:
             Accept:
@@ -28,16 +28,16 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 873
+        content_length: 1056
         uncompressed: false
         body: |
-            {"data":{"id":"ef850dae-24e0-11f0-be8b-da7ad0900002","type":"pipelines","attributes":{"name":"enrichment pipeline","config":{"destinations":[{"id":"destination-1","inputs":["geoip-enrichment"],"type":"datadog_logs"}],"processors":[{"file":{"encoding":{"delimiter":",","includes_headers":true,"type":"csv"},"key":[{"column":"user_id","comparison":"equals","field":"log.user.id"}],"path":"/etc/enrichment/lookup.csv","schema":[{"column":"region","type":"string"},{"column":"city","type":"string"}]},"id":"csv-enrichment","include":"*","inputs":["source-1"],"target":"log.geo.csv","type":"enrichment_table"},{"geoip":{"key_field":"log.source.ip","locale":"en","path":"/etc/geoip/GeoLite2-City.mmdb"},"id":"geoip-enrichment","include":"*","inputs":["csv-enrichment"],"target":"log.geo.geoip","type":"enrichment_table"}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"188d52f4-db59-11f0-b596-da7ad0900002","type":"pipelines","attributes":{"name":"enrichment pipeline","config":{"destinations":[{"id":"destination-1","inputs":["enrichment-group-2"],"type":"datadog_logs"}],"processors":[{"enabled":true,"id":"enrichment-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"file":{"encoding":{"delimiter":",","includes_headers":true,"type":"csv"},"key":[{"column":"user_id","comparison":"equals","field":"log.user.id"}],"path":"/etc/enrichment/lookup.csv","schema":[{"column":"region","type":"string"},{"column":"city","type":"string"}]},"id":"csv-enrichment","include":"*","target":"log.enrichment","type":"enrichment_table"}]},{"enabled":true,"id":"enrichment-group-2","include":"*","inputs":["enrichment-group-1"],"processors":[{"enabled":true,"geoip":{"key_field":"log.source.ip","locale":"en","path":"/etc/geoip/GeoLite2-City.mmdb"},"id":"geoip-enrichment","include":"*","target":"log.geo.geoip","type":"enrichment_table"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/json
         status: 201 Created
         code: 201
-        duration: 500.445416ms
+        duration: 546.75775ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -54,7 +54,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/ef850dae-24e0-11f0-be8b-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/188d52f4-db59-11f0-b596-da7ad0900002
         method: GET
       response:
         proto: HTTP/1.1
@@ -62,16 +62,16 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 873
+        content_length: 1056
         uncompressed: false
         body: |
-            {"data":{"id":"ef850dae-24e0-11f0-be8b-da7ad0900002","type":"pipelines","attributes":{"name":"enrichment pipeline","config":{"destinations":[{"id":"destination-1","inputs":["geoip-enrichment"],"type":"datadog_logs"}],"processors":[{"file":{"encoding":{"delimiter":",","includes_headers":true,"type":"csv"},"key":[{"column":"user_id","comparison":"equals","field":"log.user.id"}],"path":"/etc/enrichment/lookup.csv","schema":[{"column":"region","type":"string"},{"column":"city","type":"string"}]},"id":"csv-enrichment","include":"*","inputs":["source-1"],"target":"log.geo.csv","type":"enrichment_table"},{"geoip":{"key_field":"log.source.ip","locale":"en","path":"/etc/geoip/GeoLite2-City.mmdb"},"id":"geoip-enrichment","include":"*","inputs":["csv-enrichment"],"target":"log.geo.geoip","type":"enrichment_table"}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"188d52f4-db59-11f0-b596-da7ad0900002","type":"pipelines","attributes":{"name":"enrichment pipeline","config":{"destinations":[{"id":"destination-1","inputs":["enrichment-group-2"],"type":"datadog_logs"}],"processors":[{"enabled":true,"id":"enrichment-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"file":{"encoding":{"delimiter":",","includes_headers":true,"type":"csv"},"key":[{"column":"user_id","comparison":"equals","field":"log.user.id"}],"path":"/etc/enrichment/lookup.csv","schema":[{"column":"region","type":"string"},{"column":"city","type":"string"}]},"id":"csv-enrichment","include":"*","target":"log.enrichment","type":"enrichment_table"}]},{"enabled":true,"id":"enrichment-group-2","include":"*","inputs":["enrichment-group-1"],"processors":[{"enabled":true,"geoip":{"key_field":"log.source.ip","locale":"en","path":"/etc/geoip/GeoLite2-City.mmdb"},"id":"geoip-enrichment","include":"*","target":"log.geo.geoip","type":"enrichment_table"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 331.221875ms
+        duration: 433.338208ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -88,7 +88,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/ef850dae-24e0-11f0-be8b-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/188d52f4-db59-11f0-b596-da7ad0900002
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -104,4 +104,4 @@ interactions:
                 - application/json
         status: 204 No Content
         code: 204
-        duration: 432.389083ms
+        duration: 802.852541ms

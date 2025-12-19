@@ -2,6 +2,7 @@ package test
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"strings"
 	"testing"
@@ -178,8 +179,21 @@ func checkCatalogEntityExists(accProvider *fwprovider.FrameworkProvider) resourc
 		auth := accProvider.Auth
 		for _, r := range s.RootModule().Resources {
 			err := utils.Retry(5000*time.Millisecond, 4, func() error {
-				if _, _, err := utils.SendRequest(auth, apiInstances.HttpClient, "GET", "/api/v2/catalog/entity?include=raw_schema&filter[ref]="+r.Primary.ID, nil); err != nil {
+				respBody, _, err := utils.SendRequest(auth, apiInstances.HttpClient, "GET", "/api/v2/catalog/entity?include=raw_schema&filter[ref]="+r.Primary.ID, nil)
+				if err != nil {
 					return &utils.RetryableError{Prob: fmt.Sprintf("received an error retrieving entity %s", err)}
+				}
+
+				// API returns 200 with empty included array when entity doesn't exist
+				var entityResp struct {
+					Included []json.RawMessage `json:"included"`
+				}
+				if err := json.Unmarshal(respBody, &entityResp); err != nil {
+					return fmt.Errorf("error unmarshalling response: %s", err)
+				}
+
+				if len(entityResp.Included) == 0 {
+					return &utils.RetryableError{Prob: "entity not found"}
 				}
 				return nil
 			})
@@ -198,10 +212,21 @@ func testAccCheckDatadogCatalogEntityDestroy(accProvider *fwprovider.FrameworkPr
 
 		for _, r := range s.RootModule().Resources {
 			err := utils.Retry(200*time.Millisecond, 4, func() error {
-				if _, httpResp, err := utils.SendRequest(auth, apiInstances.HttpClient, "GET", "/api/v2/catalog/entity?filter[ref]="+r.Primary.ID, nil); err != nil {
-					if httpResp != nil && httpResp.StatusCode != 404 {
-						return &utils.RetryableError{Prob: "entity still exists"}
-					}
+				respBody, _, err := utils.SendRequest(auth, apiInstances.HttpClient, "GET", "/api/v2/catalog/entity?filter[ref]="+r.Primary.ID, nil)
+				if err != nil {
+					return &utils.RetryableError{Prob: fmt.Sprintf("error checking entity: %s", err)}
+				}
+
+				// API returns 200 with empty included array when entity doesn't exist
+				var entityResp struct {
+					Included []json.RawMessage `json:"included"`
+				}
+				if err := json.Unmarshal(respBody, &entityResp); err != nil {
+					return fmt.Errorf("error unmarshalling response: %s", err)
+				}
+
+				if len(entityResp.Included) > 0 {
+					return &utils.RetryableError{Prob: "entity still exists"}
 				}
 				return nil
 			})
