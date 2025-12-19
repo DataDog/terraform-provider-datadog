@@ -54,6 +54,7 @@ func TestAccDatadogObservabilityPipeline_basic(t *testing.T) {
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.id", "parser-group-1"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.enabled", "true"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.include", "service:my-service"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.display_name", "processor group"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.id", "parser-1"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.enabled", "true"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.include", "service:my-service"),
@@ -93,7 +94,8 @@ resource "datadog_observability_pipeline" "basic" {
       enabled = true
       include = "service:my-service"
       inputs  = ["source-1"]
-      
+      display_name = "processor group"
+
       processor {
         id      = "parser-1"
         enabled = true

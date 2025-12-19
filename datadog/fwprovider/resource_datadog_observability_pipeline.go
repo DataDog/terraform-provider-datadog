@@ -128,10 +128,11 @@ type amazonS3SourceModel struct {
 }
 
 type processorGroupModel struct {
-	Id      types.String `tfsdk:"id"`
-	Enabled types.Bool   `tfsdk:"enabled"`
-	Include types.String `tfsdk:"include"`
-	Inputs  types.List   `tfsdk:"inputs"`
+	Id          types.String `tfsdk:"id"`
+	Enabled     types.Bool   `tfsdk:"enabled"`
+	DisplayName types.String `tfsdk:"display_name"`
+	Include     types.String `tfsdk:"include"`
+	Inputs      types.List   `tfsdk:"inputs"`
 
 	Processors []*processorModel `tfsdk:"processor"`
 }
@@ -837,6 +838,10 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 										Required:    true,
 										ElementType: types.StringType,
 										Description: "A list of component IDs whose output is used as the input for this processor group.",
+									},
+									"display_name": schema.StringAttribute{
+										Optional:    true,
+										Description: "The display name of the processor group.",
 									},
 								},
 								Blocks: map[string]schema.Block{
@@ -2731,13 +2736,17 @@ func flattenProcessorGroup(ctx context.Context, group *datadogV2.ObservabilityPi
 		processorsList = append(processorsList, processorsByKey[key])
 	}
 
-	return &processorGroupModel{
+	out := &processorGroupModel{
 		Id:         types.StringValue(group.GetId()),
 		Enabled:    types.BoolValue(group.GetEnabled()),
 		Include:    types.StringValue(group.GetInclude()),
 		Inputs:     inputs,
 		Processors: processorsList,
 	}
+	if group.DisplayName != nil {
+		out.DisplayName = types.StringValue(group.GetDisplayName())
+	}
+	return out
 }
 
 // expandProcessorGroup converts a processor group from Terraform model to API model
@@ -2748,7 +2757,9 @@ func expandProcessorGroup(ctx context.Context, group *processorGroupModel) datad
 	apiGroup.SetId(group.Id.ValueString())
 	apiGroup.SetEnabled(group.Enabled.ValueBool())
 	apiGroup.SetInclude(group.Include.ValueString())
-
+	if !group.DisplayName.IsNull() {
+		apiGroup.SetDisplayName(group.DisplayName.ValueString())
+	}
 	var inputs []string
 	group.Inputs.ElementsAs(ctx, &inputs, false)
 	apiGroup.SetInputs(inputs)
