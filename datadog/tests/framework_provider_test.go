@@ -91,6 +91,18 @@ func buildFrameworkDatadogClient(ctx context.Context, httpClient *http.Client) *
 	config.SetUnstableOperationEnabled("v2.DeleteIncidentNotificationRule", true)
 	config.SetUnstableOperationEnabled("v2.ListIncidentNotificationRules", true)
 
+	// Enable DeploymentGates
+	config.SetUnstableOperationEnabled("v2.CreateDeploymentGate", true)
+	config.SetUnstableOperationEnabled("v2.UpdateDeploymentGate", true)
+	config.SetUnstableOperationEnabled("v2.DeleteDeploymentGate", true)
+	config.SetUnstableOperationEnabled("v2.GetDeploymentGate", true)
+
+	config.SetUnstableOperationEnabled("v2.CreateDeploymentRule", true)
+	config.SetUnstableOperationEnabled("v2.UpdateDeploymentRule", true)
+	config.SetUnstableOperationEnabled("v2.DeleteDeploymentRule", true)
+	config.SetUnstableOperationEnabled("v2.GetDeploymentRule", true)
+	config.SetUnstableOperationEnabled("v2.GetDeploymentGateRules", true)
+
 	if ctx.Value("http_retry_enable") == true {
 		config.RetryConfiguration.EnableRetry = true
 	}
