@@ -10,13 +10,11 @@ import (
 
 // AmazonSecurityLakeDestinationModel represents the Terraform model for the AmazonSecurityLakeDestination
 type AmazonSecurityLakeDestinationModel struct {
-	Id               types.String  `tfsdk:"id"`
-	Inputs           types.List    `tfsdk:"inputs"`
-	Bucket           types.String  `tfsdk:"bucket"`
-	Region           types.String  `tfsdk:"region"`
-	CustomSourceName types.String  `tfsdk:"custom_source_name"`
-	Tls              *tlsModel     `tfsdk:"tls"`
-	Auth             *AwsAuthModel `tfsdk:"auth"`
+	Bucket           types.String   `tfsdk:"bucket"`
+	Region           types.String   `tfsdk:"region"`
+	CustomSourceName types.String   `tfsdk:"custom_source_name"`
+	Tls              []TlsModel     `tfsdk:"tls"`
+	Auth             []AwsAuthModel `tfsdk:"auth"`
 }
 
 func AmazonSecurityLakeDestinationSchema() schema.ListNestedBlock {
@@ -24,15 +22,6 @@ func AmazonSecurityLakeDestinationSchema() schema.ListNestedBlock {
 		Description: "The `amazon_security_lake` destination sends your logs to Amazon Security Lake.",
 		NestedObject: schema.NestedBlockObject{
 			Attributes: map[string]schema.Attribute{
-				"id": schema.StringAttribute{
-					Required:    true,
-					Description: "Unique identifier for the destination component.",
-				},
-				"inputs": schema.ListAttribute{
-					ElementType: types.StringType,
-					Required:    true,
-					Description: "A list of component IDs whose output is used as the `input` for this component.",
-				},
 				"bucket": schema.StringAttribute{
 					Required:    true,
 					Description: "Name of the Amazon S3 bucket in Security Lake (3-63 characters).",
@@ -54,13 +43,13 @@ func AmazonSecurityLakeDestinationSchema() schema.ListNestedBlock {
 	}
 }
 
-func ExpandObservabilityPipelinesAmazonSecurityLakeDestination(ctx context.Context, src *AmazonSecurityLakeDestinationModel) datadogV2.ObservabilityPipelineConfigDestinationItem {
+func ExpandObservabilityPipelinesAmazonSecurityLakeDestination(ctx context.Context, id string, inputs types.List, src *AmazonSecurityLakeDestinationModel) datadogV2.ObservabilityPipelineConfigDestinationItem {
 	dest := datadogV2.NewObservabilityPipelineAmazonSecurityLakeDestinationWithDefaults()
-	dest.SetId(src.Id.ValueString())
+	dest.SetId(id)
 
-	var inputs []string
-	src.Inputs.ElementsAs(ctx, &inputs, false)
-	dest.SetInputs(inputs)
+	var inputsList []string
+	inputs.ElementsAs(ctx, &inputsList, false)
+	dest.SetInputs(inputsList)
 
 	if !src.Bucket.IsNull() {
 		dest.SetBucket(src.Bucket.ValueString())
@@ -71,11 +60,11 @@ func ExpandObservabilityPipelinesAmazonSecurityLakeDestination(ctx context.Conte
 	if !src.CustomSourceName.IsNull() {
 		dest.SetCustomSourceName(src.CustomSourceName.ValueString())
 	}
-	if src.Tls != nil {
+	if len(src.Tls) > 0 {
 		dest.Tls = ExpandTls(src.Tls)
 	}
-	if src.Auth != nil {
-		dest.Auth = ExpandAwsAuth(src.Auth)
+	if len(src.Auth) > 0 {
+		dest.SetAuth(ExpandAwsAuth(src.Auth[0]))
 	}
 
 	return datadogV2.ObservabilityPipelineConfigDestinationItem{
@@ -88,23 +77,18 @@ func FlattenObservabilityPipelinesAmazonSecurityLakeDestination(ctx context.Cont
 		return nil
 	}
 
-	inputs, _ := types.ListValueFrom(ctx, types.StringType, src.GetInputs())
-
 	model := &AmazonSecurityLakeDestinationModel{
-		Id:               types.StringValue(src.GetId()),
-		Inputs:           inputs,
 		Bucket:           types.StringValue(src.GetBucket()),
 		Region:           types.StringValue(src.GetRegion()),
 		CustomSourceName: types.StringValue(src.GetCustomSourceName()),
 	}
 
 	if src.Tls != nil {
-		tls := FlattenTls(src.Tls)
-		model.Tls = &tls
+		model.Tls = FlattenTls(src.Tls)
 	}
+
 	if src.Auth != nil {
-		auth := FlattenAwsAuth(src.Auth)
-		model.Auth = auth
+		model.Auth = FlattenAwsAuth(src.Auth)
 	}
 
 	return model
