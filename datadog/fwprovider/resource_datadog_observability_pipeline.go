@@ -2568,7 +2568,6 @@ type baseProcessor interface {
 	GetId() string
 	GetEnabled() bool
 	GetInclude() string
-	GetDisplayName() string
 	GetDisplayNameOk() (*string, bool)
 	// Set methods for expand (Terraform -> API)
 	SetId(string)
