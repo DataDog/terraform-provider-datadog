@@ -2561,23 +2561,8 @@ func expandKafkaSource(src *kafkaSourceModel, id string) datadogV2.Observability
 
 // ---------- Processors ----------
 
-// baseProcessor interface defines common fields that all processors have
-// Used for both flatten (Get methods) and expand (Set methods) operations
-type baseProcessor interface {
-	// Get methods for flatten (API -> Terraform)
-	GetId() string
-	GetEnabled() bool
-	GetInclude() string
-	GetDisplayNameOk() (*string, bool)
-	// Set methods for expand (Terraform -> API)
-	SetId(string)
-	SetEnabled(bool)
-	SetInclude(string)
-	SetDisplayName(string)
-}
-
 // createProcessorModel creates a processorModel with common fields populated
-func createProcessorModel(proc baseProcessor) *processorModel {
+func createProcessorModel(proc observability_pipeline.BaseProcessor) *processorModel {
 	model := &processorModel{
 		Id:      types.StringValue(proc.GetId()),
 		Enabled: types.BoolValue(proc.GetEnabled()),
@@ -2764,20 +2749,20 @@ func expandProcessorTypes(ctx context.Context, processor *processorModel) []data
 		items = append(items, expandSensitiveDataScannerProcessorItem(ctx, common, p))
 	}
 	for _, p := range processor.CustomProcessor {
-		item := observability_pipeline.ExpandCustomProcessor(p)
-		// Set common fields on the processor using common struct
-		if item.ObservabilityPipelineCustomProcessor != nil {
-			common.applyTo(item.ObservabilityPipelineCustomProcessor)
-		}
-		items = append(items, item)
+		items = append(items, observability_pipeline.ExpandCustomProcessor(observability_pipeline.BaseProcessorFields{
+			Id:          common.id,
+			Enabled:     common.enabled,
+			Include:     common.include,
+			DisplayName: common.displayName,
+		}, p))
 	}
 	for _, p := range processor.DatadogTagsProcessor {
-		item := observability_pipeline.ExpandDatadogTagsProcessor(p)
-		// Set common fields on the processor using common struct
-		if item.ObservabilityPipelineDatadogTagsProcessor != nil {
-			common.applyTo(item.ObservabilityPipelineDatadogTagsProcessor)
-		}
-		items = append(items, item)
+		items = append(items, observability_pipeline.ExpandDatadogTagsProcessor(observability_pipeline.BaseProcessorFields{
+			Id:          common.id,
+			Enabled:     common.enabled,
+			Include:     common.include,
+			DisplayName: common.displayName,
+		}, p))
 	}
 
 	return items
@@ -2792,7 +2777,7 @@ type baseProcessorFields struct {
 }
 
 // applyTo sets the common fields on any processor
-func (c baseProcessorFields) applyTo(proc baseProcessor) {
+func (c baseProcessorFields) applyTo(proc observability_pipeline.BaseProcessor) {
 	proc.SetId(c.id)
 	proc.SetEnabled(c.enabled)
 	proc.SetInclude(c.include)
