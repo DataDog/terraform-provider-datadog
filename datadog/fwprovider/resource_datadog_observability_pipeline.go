@@ -138,9 +138,10 @@ type processorGroupModel struct {
 }
 
 type processorModel struct {
-	Id      types.String `tfsdk:"id"`
-	Enabled types.Bool   `tfsdk:"enabled"`
-	Include types.String `tfsdk:"include"`
+	Id          types.String `tfsdk:"id"`
+	Enabled     types.Bool   `tfsdk:"enabled"`
+	Include     types.String `tfsdk:"include"`
+	DisplayName types.String `tfsdk:"display_name"`
 
 	FilterProcessor               []*filterProcessorModel                             `tfsdk:"filter"`
 	ParseJsonProcessor            []*parseJsonProcessorModel                          `tfsdk:"parse_json"`
@@ -841,7 +842,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 									},
 									"display_name": schema.StringAttribute{
 										Optional:    true,
-										Description: "The display name of the processor group.",
+										Description: "The human-friendly name of the processor group.",
 									},
 								},
 								Blocks: map[string]schema.Block{
@@ -860,6 +861,10 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 												"include": schema.StringAttribute{
 													Required:    true,
 													Description: "A Datadog search query used to determine which logs this processor targets.",
+												},
+												"display_name": schema.StringAttribute{
+													Optional:    true,
+													Description: "A human-friendly name for this processor.",
 												},
 											},
 											Blocks: map[string]schema.Block{
@@ -2579,8 +2584,9 @@ func flattenProcessorGroup(ctx context.Context, group *datadogV2.ObservabilityPi
 
 	processors := group.GetProcessors()
 	for _, p := range processors {
-		// Extract id/enabled/include from the processor
+		// Extract id/enabled/include/display_name from the processor
 		var id, include string
+		var displayName *string
 		var enabled bool
 
 		// Check all processor types to extract common fields
@@ -2588,74 +2594,92 @@ func flattenProcessorGroup(ctx context.Context, group *datadogV2.ObservabilityPi
 			id = p.ObservabilityPipelineFilterProcessor.GetId()
 			enabled = p.ObservabilityPipelineFilterProcessor.GetEnabled()
 			include = p.ObservabilityPipelineFilterProcessor.GetInclude()
+			displayName = p.ObservabilityPipelineFilterProcessor.DisplayName
 		} else if p.ObservabilityPipelineParseJSONProcessor != nil {
 			id = p.ObservabilityPipelineParseJSONProcessor.GetId()
 			enabled = p.ObservabilityPipelineParseJSONProcessor.GetEnabled()
 			include = p.ObservabilityPipelineParseJSONProcessor.GetInclude()
+			displayName = p.ObservabilityPipelineParseJSONProcessor.DisplayName
 		} else if p.ObservabilityPipelineAddFieldsProcessor != nil {
 			id = p.ObservabilityPipelineAddFieldsProcessor.GetId()
 			enabled = p.ObservabilityPipelineAddFieldsProcessor.GetEnabled()
 			include = p.ObservabilityPipelineAddFieldsProcessor.GetInclude()
+			displayName = p.ObservabilityPipelineAddFieldsProcessor.DisplayName
 		} else if p.ObservabilityPipelineRenameFieldsProcessor != nil {
 			id = p.ObservabilityPipelineRenameFieldsProcessor.GetId()
 			enabled = p.ObservabilityPipelineRenameFieldsProcessor.GetEnabled()
 			include = p.ObservabilityPipelineRenameFieldsProcessor.GetInclude()
+			displayName = p.ObservabilityPipelineRenameFieldsProcessor.DisplayName
 		} else if p.ObservabilityPipelineRemoveFieldsProcessor != nil {
 			id = p.ObservabilityPipelineRemoveFieldsProcessor.GetId()
 			enabled = p.ObservabilityPipelineRemoveFieldsProcessor.GetEnabled()
 			include = p.ObservabilityPipelineRemoveFieldsProcessor.GetInclude()
+			displayName = p.ObservabilityPipelineRemoveFieldsProcessor.DisplayName
 		} else if p.ObservabilityPipelineQuotaProcessor != nil {
 			id = p.ObservabilityPipelineQuotaProcessor.GetId()
 			enabled = p.ObservabilityPipelineQuotaProcessor.GetEnabled()
 			include = p.ObservabilityPipelineQuotaProcessor.GetInclude()
+			displayName = p.ObservabilityPipelineQuotaProcessor.DisplayName
 		} else if p.ObservabilityPipelineSensitiveDataScannerProcessor != nil {
 			id = p.ObservabilityPipelineSensitiveDataScannerProcessor.GetId()
 			enabled = p.ObservabilityPipelineSensitiveDataScannerProcessor.GetEnabled()
 			include = p.ObservabilityPipelineSensitiveDataScannerProcessor.GetInclude()
+			displayName = p.ObservabilityPipelineSensitiveDataScannerProcessor.DisplayName
 		} else if p.ObservabilityPipelineGenerateMetricsProcessor != nil {
 			id = p.ObservabilityPipelineGenerateMetricsProcessor.GetId()
 			enabled = p.ObservabilityPipelineGenerateMetricsProcessor.GetEnabled()
 			include = p.ObservabilityPipelineGenerateMetricsProcessor.GetInclude()
+			displayName = p.ObservabilityPipelineGenerateMetricsProcessor.DisplayName
 		} else if p.ObservabilityPipelineParseGrokProcessor != nil {
 			id = p.ObservabilityPipelineParseGrokProcessor.GetId()
 			enabled = p.ObservabilityPipelineParseGrokProcessor.GetEnabled()
 			include = p.ObservabilityPipelineParseGrokProcessor.GetInclude()
+			displayName = p.ObservabilityPipelineParseGrokProcessor.DisplayName
 		} else if p.ObservabilityPipelineSampleProcessor != nil {
 			id = p.ObservabilityPipelineSampleProcessor.GetId()
 			enabled = p.ObservabilityPipelineSampleProcessor.GetEnabled()
 			include = p.ObservabilityPipelineSampleProcessor.GetInclude()
+			displayName = p.ObservabilityPipelineSampleProcessor.DisplayName
 		} else if p.ObservabilityPipelineDedupeProcessor != nil {
 			id = p.ObservabilityPipelineDedupeProcessor.GetId()
 			enabled = p.ObservabilityPipelineDedupeProcessor.GetEnabled()
 			include = p.ObservabilityPipelineDedupeProcessor.GetInclude()
+			displayName = p.ObservabilityPipelineDedupeProcessor.DisplayName
 		} else if p.ObservabilityPipelineReduceProcessor != nil {
 			id = p.ObservabilityPipelineReduceProcessor.GetId()
 			enabled = p.ObservabilityPipelineReduceProcessor.GetEnabled()
 			include = p.ObservabilityPipelineReduceProcessor.GetInclude()
+			displayName = p.ObservabilityPipelineReduceProcessor.DisplayName
 		} else if p.ObservabilityPipelineThrottleProcessor != nil {
 			id = p.ObservabilityPipelineThrottleProcessor.GetId()
 			enabled = p.ObservabilityPipelineThrottleProcessor.GetEnabled()
 			include = p.ObservabilityPipelineThrottleProcessor.GetInclude()
+			displayName = p.ObservabilityPipelineThrottleProcessor.DisplayName
 		} else if p.ObservabilityPipelineAddEnvVarsProcessor != nil {
 			id = p.ObservabilityPipelineAddEnvVarsProcessor.GetId()
 			enabled = p.ObservabilityPipelineAddEnvVarsProcessor.GetEnabled()
 			include = p.ObservabilityPipelineAddEnvVarsProcessor.GetInclude()
+			displayName = p.ObservabilityPipelineAddEnvVarsProcessor.DisplayName
 		} else if p.ObservabilityPipelineEnrichmentTableProcessor != nil {
 			id = p.ObservabilityPipelineEnrichmentTableProcessor.GetId()
 			enabled = p.ObservabilityPipelineEnrichmentTableProcessor.GetEnabled()
 			include = p.ObservabilityPipelineEnrichmentTableProcessor.GetInclude()
+			displayName = p.ObservabilityPipelineEnrichmentTableProcessor.DisplayName
 		} else if p.ObservabilityPipelineOcsfMapperProcessor != nil {
 			id = p.ObservabilityPipelineOcsfMapperProcessor.GetId()
 			enabled = p.ObservabilityPipelineOcsfMapperProcessor.GetEnabled()
 			include = p.ObservabilityPipelineOcsfMapperProcessor.GetInclude()
+			displayName = p.ObservabilityPipelineOcsfMapperProcessor.DisplayName
 		} else if p.ObservabilityPipelineDatadogTagsProcessor != nil {
 			id = p.ObservabilityPipelineDatadogTagsProcessor.GetId()
 			enabled = p.ObservabilityPipelineDatadogTagsProcessor.GetEnabled()
 			include = p.ObservabilityPipelineDatadogTagsProcessor.GetInclude()
+			displayName = p.ObservabilityPipelineDatadogTagsProcessor.DisplayName
 		} else if p.ObservabilityPipelineCustomProcessor != nil {
 			id = p.ObservabilityPipelineCustomProcessor.GetId()
 			enabled = p.ObservabilityPipelineCustomProcessor.GetEnabled()
 			include = p.ObservabilityPipelineCustomProcessor.GetInclude()
+			displayName = p.ObservabilityPipelineCustomProcessor.DisplayName
 		}
 
 		// Create key from id/enabled/include
@@ -2668,6 +2692,9 @@ func flattenProcessorGroup(ctx context.Context, group *datadogV2.ObservabilityPi
 				Id:      types.StringValue(id),
 				Enabled: types.BoolValue(enabled),
 				Include: types.StringValue(include),
+			}
+			if displayName != nil {
+				procModel.DisplayName = types.StringValue(*displayName)
 			}
 			processorsByKey[key] = procModel
 			processorOrder = append(processorOrder, key)
@@ -2778,82 +2805,85 @@ func expandProcessorGroup(ctx context.Context, group *processorGroupModel) datad
 }
 
 // expandProcessorTypes converts the processor types model to a list of processor items
-// Uses the processor-level id, enabled, and include for all processors in the group
+// Uses the processor-level id, enabled, include, and display_name for all processors in the group
 func expandProcessorTypes(ctx context.Context, processor *processorModel) []datadogV2.ObservabilityPipelineConfigProcessorItem {
 	var items []datadogV2.ObservabilityPipelineConfigProcessorItem
 
-	// Get processor-level id/enabled/include
-	procId := processor.Id.ValueString()
-	procEnabled := processor.Enabled.ValueBool()
-	procInclude := processor.Include.ValueString()
+	// Create common fields struct to pass to all expand functions
+	var displayName *string
+	if !processor.DisplayName.IsNull() {
+		dn := processor.DisplayName.ValueString()
+		displayName = &dn
+	}
+	common := baseProcessorFields{
+		id:          processor.Id.ValueString(),
+		enabled:     processor.Enabled.ValueBool(),
+		include:     processor.Include.ValueString(),
+		displayName: displayName,
+	}
 
 	// Check each processor type and expand if present
-	// Use processor-level id/enabled/include for all processors
 	for _, p := range processor.FilterProcessor {
-		items = append(items, expandFilterProcessorItem(ctx, procId, procEnabled, procInclude, p))
+		items = append(items, expandFilterProcessorItem(ctx, common, p))
 	}
 	for _, p := range processor.ParseJsonProcessor {
-		items = append(items, expandParseJsonProcessorItem(ctx, procId, procEnabled, procInclude, p))
+		items = append(items, expandParseJsonProcessorItem(ctx, common, p))
 	}
 	for _, p := range processor.AddFieldsProcessor {
-		items = append(items, expandAddFieldsProcessorItem(ctx, procId, procEnabled, procInclude, p))
+		items = append(items, expandAddFieldsProcessorItem(ctx, common, p))
 	}
 	for _, p := range processor.RenameFieldsProcessor {
-		items = append(items, expandRenameFieldsProcessorItem(ctx, procId, procEnabled, procInclude, p))
+		items = append(items, expandRenameFieldsProcessorItem(ctx, common, p))
 	}
 	for _, p := range processor.RemoveFieldsProcessor {
-		items = append(items, expandRemoveFieldsProcessorItem(ctx, procId, procEnabled, procInclude, p))
+		items = append(items, expandRemoveFieldsProcessorItem(ctx, common, p))
 	}
 	for _, p := range processor.QuotaProcessor {
-		items = append(items, expandQuotaProcessorItem(ctx, procId, procEnabled, procInclude, p))
+		items = append(items, expandQuotaProcessorItem(ctx, common, p))
 	}
 	for _, p := range processor.DedupeProcessor {
-		items = append(items, expandDedupeProcessorItem(ctx, procId, procEnabled, procInclude, p))
+		items = append(items, expandDedupeProcessorItem(ctx, common, p))
 	}
 	for _, p := range processor.ReduceProcessor {
-		items = append(items, expandReduceProcessorItem(ctx, procId, procEnabled, procInclude, p))
+		items = append(items, expandReduceProcessorItem(ctx, common, p))
 	}
 	for _, p := range processor.ThrottleProcessor {
-		items = append(items, expandThrottleProcessorItem(ctx, procId, procEnabled, procInclude, p))
+		items = append(items, expandThrottleProcessorItem(ctx, common, p))
 	}
 	for _, p := range processor.AddEnvVarsProcessor {
-		items = append(items, expandAddEnvVarsProcessorItem(ctx, procId, procEnabled, procInclude, p))
+		items = append(items, expandAddEnvVarsProcessorItem(ctx, common, p))
 	}
 	for _, p := range processor.EnrichmentTableProcessor {
-		items = append(items, expandEnrichmentTableProcessorItem(ctx, procId, procEnabled, procInclude, p))
+		items = append(items, expandEnrichmentTableProcessorItem(ctx, common, p))
 	}
 	for _, p := range processor.OcsfMapperProcessor {
-		items = append(items, expandOcsfMapperProcessorItem(ctx, procId, procEnabled, procInclude, p))
+		items = append(items, expandOcsfMapperProcessorItem(ctx, common, p))
 	}
 	for _, p := range processor.ParseGrokProcessor {
-		items = append(items, expandParseGrokProcessorItem(ctx, procId, procEnabled, procInclude, p))
+		items = append(items, expandParseGrokProcessorItem(ctx, common, p))
 	}
 	for _, p := range processor.SampleProcessor {
-		items = append(items, expandSampleProcessorItem(ctx, procId, procEnabled, procInclude, p))
+		items = append(items, expandSampleProcessorItem(ctx, common, p))
 	}
 	for _, p := range processor.GenerateMetricsProcessor {
-		items = append(items, expandGenerateMetricsProcessorItem(ctx, procId, procEnabled, procInclude, p))
+		items = append(items, expandGenerateMetricsProcessorItem(ctx, common, p))
 	}
 	for _, p := range processor.SensitiveDataScannerProcessor {
-		items = append(items, expandSensitiveDataScannerProcessorItem(ctx, procId, procEnabled, procInclude, p))
+		items = append(items, expandSensitiveDataScannerProcessorItem(ctx, common, p))
 	}
 	for _, p := range processor.CustomProcessor {
 		item := observability_pipeline.ExpandCustomProcessor(p)
-		// Set common fields on the processor using processor-level values
+		// Set common fields on the processor using common struct
 		if item.ObservabilityPipelineCustomProcessor != nil {
-			item.ObservabilityPipelineCustomProcessor.SetId(procId)
-			item.ObservabilityPipelineCustomProcessor.SetEnabled(procEnabled)
-			item.ObservabilityPipelineCustomProcessor.SetInclude(procInclude)
+			common.applyTo(item.ObservabilityPipelineCustomProcessor)
 		}
 		items = append(items, item)
 	}
 	for _, p := range processor.DatadogTagsProcessor {
 		item := observability_pipeline.ExpandDatadogTagsProcessor(p)
-		// Set common fields on the processor using processor-level values
+		// Set common fields on the processor using common struct
 		if item.ObservabilityPipelineDatadogTagsProcessor != nil {
-			item.ObservabilityPipelineDatadogTagsProcessor.SetId(procId)
-			item.ObservabilityPipelineDatadogTagsProcessor.SetEnabled(procEnabled)
-			item.ObservabilityPipelineDatadogTagsProcessor.SetInclude(procInclude)
+			common.applyTo(item.ObservabilityPipelineDatadogTagsProcessor)
 		}
 		items = append(items, item)
 	}
@@ -2861,11 +2891,35 @@ func expandProcessorTypes(ctx context.Context, processor *processorModel) []data
 	return items
 }
 
-func expandFilterProcessorItem(ctx context.Context, id string, enabled bool, include string, src *filterProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
+// baseProcessorFields holds the common fields shared by all processors
+type baseProcessorFields struct {
+	id          string
+	enabled     bool
+	include     string
+	displayName *string
+}
+
+// applyTo sets the common fields on any processor
+func (c baseProcessorFields) applyTo(proc baseProcessor) {
+	proc.SetId(c.id)
+	proc.SetEnabled(c.enabled)
+	proc.SetInclude(c.include)
+	if c.displayName != nil {
+		proc.SetDisplayName(*c.displayName)
+	}
+}
+
+// baseProcessor defines the common interface for processors
+type baseProcessor interface {
+	SetId(string)
+	SetEnabled(bool)
+	SetInclude(string)
+	SetDisplayName(string)
+}
+
+func expandFilterProcessorItem(ctx context.Context, common baseProcessorFields, src *filterProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
 	proc := datadogV2.NewObservabilityPipelineFilterProcessorWithDefaults()
-	proc.SetId(id)
-	proc.SetEnabled(enabled)
-	proc.SetInclude(include)
+	common.applyTo(proc)
 
 	return datadogV2.ObservabilityPipelineFilterProcessorAsObservabilityPipelineConfigProcessorItem(proc)
 }
@@ -2879,11 +2933,9 @@ func flattenParseJsonProcessorItem(ctx context.Context, src *datadogV2.Observabi
 	}
 }
 
-func expandParseJsonProcessorItem(ctx context.Context, id string, enabled bool, include string, src *parseJsonProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
+func expandParseJsonProcessorItem(ctx context.Context, common baseProcessorFields, src *parseJsonProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
 	proc := datadogV2.NewObservabilityPipelineParseJSONProcessorWithDefaults()
-	proc.SetId(id)
-	proc.SetEnabled(enabled)
-	proc.SetInclude(include)
+	common.applyTo(proc)
 	proc.SetField(src.Field.ValueString())
 
 	return datadogV2.ObservabilityPipelineParseJSONProcessorAsObservabilityPipelineConfigProcessorItem(proc)
@@ -3325,11 +3377,9 @@ func flattenOcsfMapperProcessorItem(ctx context.Context, src *datadogV2.Observab
 	return out
 }
 
-func expandAddFieldsProcessorItem(ctx context.Context, id string, enabled bool, include string, src *addFieldsProcessor) datadogV2.ObservabilityPipelineConfigProcessorItem {
+func expandAddFieldsProcessorItem(ctx context.Context, common baseProcessorFields, src *addFieldsProcessor) datadogV2.ObservabilityPipelineConfigProcessorItem {
 	proc := datadogV2.NewObservabilityPipelineAddFieldsProcessorWithDefaults()
-	proc.SetId(id)
-	proc.SetEnabled(enabled)
-	proc.SetInclude(include)
+	common.applyTo(proc)
 
 	var fields []datadogV2.ObservabilityPipelineFieldValue
 	for _, f := range src.Fields {
@@ -3343,11 +3393,9 @@ func expandAddFieldsProcessorItem(ctx context.Context, id string, enabled bool, 
 	return datadogV2.ObservabilityPipelineAddFieldsProcessorAsObservabilityPipelineConfigProcessorItem(proc)
 }
 
-func expandRenameFieldsProcessorItem(ctx context.Context, id string, enabled bool, include string, src *renameFieldsProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
+func expandRenameFieldsProcessorItem(ctx context.Context, common baseProcessorFields, src *renameFieldsProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
 	proc := datadogV2.NewObservabilityPipelineRenameFieldsProcessorWithDefaults()
-	proc.SetId(id)
-	proc.SetEnabled(enabled)
-	proc.SetInclude(include)
+	common.applyTo(proc)
 
 	var fields []datadogV2.ObservabilityPipelineRenameFieldsProcessorField
 	for _, f := range src.Fields {
@@ -3362,11 +3410,9 @@ func expandRenameFieldsProcessorItem(ctx context.Context, id string, enabled boo
 	return datadogV2.ObservabilityPipelineRenameFieldsProcessorAsObservabilityPipelineConfigProcessorItem(proc)
 }
 
-func expandRemoveFieldsProcessorItem(ctx context.Context, id string, enabled bool, include string, src *removeFieldsProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
+func expandRemoveFieldsProcessorItem(ctx context.Context, common baseProcessorFields, src *removeFieldsProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
 	proc := datadogV2.NewObservabilityPipelineRemoveFieldsProcessorWithDefaults()
-	proc.SetId(id)
-	proc.SetEnabled(enabled)
-	proc.SetInclude(include)
+	common.applyTo(proc)
 
 	var fields []string
 	src.Fields.ElementsAs(ctx, &fields, false)
@@ -3375,11 +3421,9 @@ func expandRemoveFieldsProcessorItem(ctx context.Context, id string, enabled boo
 	return datadogV2.ObservabilityPipelineRemoveFieldsProcessorAsObservabilityPipelineConfigProcessorItem(proc)
 }
 
-func expandQuotaProcessorItem(ctx context.Context, id string, enabled bool, include string, src *quotaProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
+func expandQuotaProcessorItem(ctx context.Context, common baseProcessorFields, src *quotaProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
 	proc := datadogV2.NewObservabilityPipelineQuotaProcessorWithDefaults()
-	proc.SetId(id)
-	proc.SetEnabled(enabled)
-	proc.SetInclude(include)
+	common.applyTo(proc)
 	proc.SetName(src.Name.ValueString())
 
 	if !src.DropEvents.IsNull() {
@@ -3433,11 +3477,9 @@ func expandQuotaProcessorItem(ctx context.Context, id string, enabled bool, incl
 	return datadogV2.ObservabilityPipelineQuotaProcessorAsObservabilityPipelineConfigProcessorItem(proc)
 }
 
-func expandDedupeProcessorItem(ctx context.Context, id string, enabled bool, include string, src *dedupeProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
+func expandDedupeProcessorItem(ctx context.Context, common baseProcessorFields, src *dedupeProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
 	proc := datadogV2.NewObservabilityPipelineDedupeProcessorWithDefaults()
-	proc.SetId(id)
-	proc.SetEnabled(enabled)
-	proc.SetInclude(include)
+	common.applyTo(proc)
 
 	// Initialize as empty slice, not nil, to ensure it serializes as [] not null
 	fields := []string{}
@@ -3450,11 +3492,9 @@ func expandDedupeProcessorItem(ctx context.Context, id string, enabled bool, inc
 	return datadogV2.ObservabilityPipelineDedupeProcessorAsObservabilityPipelineConfigProcessorItem(proc)
 }
 
-func expandReduceProcessorItem(ctx context.Context, id string, enabled bool, include string, src *reduceProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
+func expandReduceProcessorItem(ctx context.Context, common baseProcessorFields, src *reduceProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
 	proc := datadogV2.NewObservabilityPipelineReduceProcessorWithDefaults()
-	proc.SetId(id)
-	proc.SetEnabled(enabled)
-	proc.SetInclude(include)
+	common.applyTo(proc)
 
 	// Initialize as empty slice, not nil, to ensure it serializes as [] not null
 	groupBy := []string{}
@@ -3475,11 +3515,9 @@ func expandReduceProcessorItem(ctx context.Context, id string, enabled bool, inc
 	return datadogV2.ObservabilityPipelineReduceProcessorAsObservabilityPipelineConfigProcessorItem(proc)
 }
 
-func expandThrottleProcessorItem(ctx context.Context, id string, enabled bool, include string, src *throttleProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
+func expandThrottleProcessorItem(ctx context.Context, common baseProcessorFields, src *throttleProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
 	proc := datadogV2.NewObservabilityPipelineThrottleProcessorWithDefaults()
-	proc.SetId(id)
-	proc.SetEnabled(enabled)
-	proc.SetInclude(include)
+	common.applyTo(proc)
 	proc.SetThreshold(src.Threshold.ValueInt64())
 	proc.SetWindow(src.Window.ValueFloat64())
 
@@ -3495,11 +3533,9 @@ func expandThrottleProcessorItem(ctx context.Context, id string, enabled bool, i
 	return datadogV2.ObservabilityPipelineThrottleProcessorAsObservabilityPipelineConfigProcessorItem(proc)
 }
 
-func expandAddEnvVarsProcessorItem(ctx context.Context, id string, enabled bool, include string, src *addEnvVarsProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
+func expandAddEnvVarsProcessorItem(ctx context.Context, common baseProcessorFields, src *addEnvVarsProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
 	proc := datadogV2.NewObservabilityPipelineAddEnvVarsProcessorWithDefaults()
-	proc.SetId(id)
-	proc.SetEnabled(enabled)
-	proc.SetInclude(include)
+	common.applyTo(proc)
 
 	var vars []datadogV2.ObservabilityPipelineAddEnvVarsProcessorVariable
 	for _, v := range src.Variables {
@@ -3513,11 +3549,9 @@ func expandAddEnvVarsProcessorItem(ctx context.Context, id string, enabled bool,
 	return datadogV2.ObservabilityPipelineAddEnvVarsProcessorAsObservabilityPipelineConfigProcessorItem(proc)
 }
 
-func expandEnrichmentTableProcessorItem(ctx context.Context, id string, enabled bool, include string, src *enrichmentTableProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
+func expandEnrichmentTableProcessorItem(ctx context.Context, common baseProcessorFields, src *enrichmentTableProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
 	proc := datadogV2.NewObservabilityPipelineEnrichmentTableProcessorWithDefaults()
-	proc.SetId(id)
-	proc.SetEnabled(enabled)
-	proc.SetInclude(include)
+	common.applyTo(proc)
 	proc.SetTarget(src.Target.ValueString())
 
 	if len(src.File) > 0 {
@@ -3561,11 +3595,9 @@ func expandEnrichmentTableProcessorItem(ctx context.Context, id string, enabled 
 	return datadogV2.ObservabilityPipelineEnrichmentTableProcessorAsObservabilityPipelineConfigProcessorItem(proc)
 }
 
-func expandOcsfMapperProcessorItem(ctx context.Context, id string, enabled bool, include string, src *ocsfMapperProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
+func expandOcsfMapperProcessorItem(ctx context.Context, common baseProcessorFields, src *ocsfMapperProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
 	proc := datadogV2.NewObservabilityPipelineOcsfMapperProcessorWithDefaults()
-	proc.SetId(id)
-	proc.SetEnabled(enabled)
-	proc.SetInclude(include)
+	common.applyTo(proc)
 
 	var mappings []datadogV2.ObservabilityPipelineOcsfMapperProcessorMapping
 	for _, m := range src.Mapping {
@@ -3581,11 +3613,9 @@ func expandOcsfMapperProcessorItem(ctx context.Context, id string, enabled bool,
 	return datadogV2.ObservabilityPipelineOcsfMapperProcessorAsObservabilityPipelineConfigProcessorItem(proc)
 }
 
-func expandParseGrokProcessorItem(ctx context.Context, id string, enabled bool, include string, src *parseGrokProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
+func expandParseGrokProcessorItem(ctx context.Context, common baseProcessorFields, src *parseGrokProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
 	proc := datadogV2.NewObservabilityPipelineParseGrokProcessorWithDefaults()
-	proc.SetId(id)
-	proc.SetEnabled(enabled)
-	proc.SetInclude(include)
+	common.applyTo(proc)
 
 	if !src.DisableLibraryRules.IsNull() {
 		proc.SetDisableLibraryRules(src.DisableLibraryRules.ValueBool())
@@ -3622,11 +3652,9 @@ func expandParseGrokProcessorItem(ctx context.Context, id string, enabled bool, 
 	return datadogV2.ObservabilityPipelineParseGrokProcessorAsObservabilityPipelineConfigProcessorItem(proc)
 }
 
-func expandSampleProcessorItem(ctx context.Context, id string, enabled bool, include string, src *sampleProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
+func expandSampleProcessorItem(ctx context.Context, common baseProcessorFields, src *sampleProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
 	proc := datadogV2.NewObservabilityPipelineSampleProcessorWithDefaults()
-	proc.SetId(id)
-	proc.SetEnabled(enabled)
-	proc.SetInclude(include)
+	common.applyTo(proc)
 
 	if !src.Rate.IsNull() {
 		proc.SetRate(src.Rate.ValueInt64())
@@ -3638,11 +3666,9 @@ func expandSampleProcessorItem(ctx context.Context, id string, enabled bool, inc
 	return datadogV2.ObservabilityPipelineSampleProcessorAsObservabilityPipelineConfigProcessorItem(proc)
 }
 
-func expandGenerateMetricsProcessorItem(ctx context.Context, id string, enabled bool, include string, src *generateMetricsProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
+func expandGenerateMetricsProcessorItem(ctx context.Context, common baseProcessorFields, src *generateMetricsProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
 	proc := datadogV2.NewObservabilityPipelineGenerateMetricsProcessorWithDefaults()
-	proc.SetId(id)
-	proc.SetEnabled(enabled)
-	proc.SetInclude(include)
+	common.applyTo(proc)
 
 	var metrics []datadogV2.ObservabilityPipelineGeneratedMetric
 	for _, m := range src.Metrics {
@@ -3678,11 +3704,9 @@ func expandGenerateMetricsProcessorItem(ctx context.Context, id string, enabled 
 	return datadogV2.ObservabilityPipelineGenerateMetricsProcessorAsObservabilityPipelineConfigProcessorItem(proc)
 }
 
-func expandSensitiveDataScannerProcessorItem(ctx context.Context, id string, enabled bool, include string, src *sensitiveDataScannerProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
+func expandSensitiveDataScannerProcessorItem(ctx context.Context, common baseProcessorFields, src *sensitiveDataScannerProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
 	proc := datadogV2.NewObservabilityPipelineSensitiveDataScannerProcessorWithDefaults()
-	proc.SetId(id)
-	proc.SetEnabled(enabled)
-	proc.SetInclude(include)
+	common.applyTo(proc)
 
 	var rules []datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorRule
 	for _, r := range src.Rules {
