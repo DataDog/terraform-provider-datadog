@@ -85,4 +85,5 @@ datadog/**/*datadog_azure_uc_config*             @DataDog/api-reliability @DataD
 datadog/**/*datadog_gcp_uc_config*               @DataDog/api-reliability @DataDog/cloud-cost-management
 datadog/**/*datadog_cost_budget*                 @DataDog/api-reliability @DataDog/cloud-cost-management
 datadog/**/*datadog_tag_pipeline_ruleset*        @DataDog/api-reliability @DataDog/cloud-cost-management
+datadog/**/*datadog_deployment_gate*             @DataDog/api-reliability @DataDog/ci-app-backend
 scripts/*cloud-cost-import-existing-resources*   @DataDog/cloud-cost-management
