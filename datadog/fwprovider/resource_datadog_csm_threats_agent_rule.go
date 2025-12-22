@@ -62,7 +62,7 @@ type SetActionModel struct {
 }
 
 type HashActionModel struct {
-	// empty on purpose, has no attributes
+	Field types.String `tfsdk:"field"`
 }
 
 func NewCSMThreatsAgentRuleResource() resource.Resource {
@@ -126,7 +126,7 @@ func (r *csmThreatsAgentRuleResource) Schema(_ context.Context, _ resource.Schem
 							Description: "Set action configuration",
 							Attributes: map[string]schema.Attribute{
 								"name": schema.StringAttribute{
-									Required:    true,
+									Optional:    true,
 									Description: "The name of the set action",
 								},
 								"value": schema.StringAttribute{
@@ -178,8 +178,11 @@ func (r *csmThreatsAgentRuleResource) Schema(_ context.Context, _ resource.Schem
 						},
 						"hash": schema.SingleNestedBlock{
 							Description: "Hash action configuration",
-							Attributes:  map[string]schema.Attribute{
-								// empty on purpose, has no attributes
+							Attributes: map[string]schema.Attribute{
+								"field": schema.StringAttribute{
+									Optional:    true,
+									Description: "The field to hash",
+								},
 							},
 						},
 					},
@@ -285,9 +288,15 @@ func (r *csmThreatsAgentRuleResource) validateActions(_ context.Context, actions
 		}
 
 		// Hash action validation (currently no specific validation needed)
-		// if hasHash {
-		//     // Add hash-specific validation here if needed in the future
-		// }
+		if hasHash {
+			if action.Hash.Field.IsNull() || action.Hash.Field.IsUnknown() || action.Hash.Field.ValueString() == "" {
+				diags.AddError(
+					"Missing Required Field",
+					fmt.Sprintf("Action %d: 'field' is required in the hash action configuration.", i),
+				)
+				continue
+			}
+		}
 	}
 
 	return diags
@@ -451,11 +460,10 @@ func (r *csmThreatsAgentRuleResource) buildCreateCSMThreatsAgentRulePayload(stat
 	// Only populate actions if there are any configured
 	if state.Actions != nil {
 		for _, a := range state.Actions {
-			action := datadogV2.CloudWorkloadSecurityAgentRuleAction{}
-
 			if a.Set != nil {
-				sa := datadogV2.CloudWorkloadSecurityAgentRuleActionSet{}
+				action := datadogV2.CloudWorkloadSecurityAgentRuleAction{}
 
+				sa := datadogV2.CloudWorkloadSecurityAgentRuleActionSet{}
 				if !a.Set.Name.IsNull() && !a.Set.Name.IsUnknown() {
 					name := a.Set.Name.ValueString()
 					sa.Name = &name
@@ -466,10 +474,8 @@ func (r *csmThreatsAgentRuleResource) buildCreateCSMThreatsAgentRulePayload(stat
 				}
 				if !a.Set.Value.IsNull() && !a.Set.Value.IsUnknown() {
 					value := a.Set.Value.ValueString()
-					valueWrapper := datadogV2.CloudWorkloadSecurityAgentRuleActionSetValue{
-						String: &value,
-					}
-					sa.Value = &valueWrapper
+					valueObj := datadogV2.StringAsCloudWorkloadSecurityAgentRuleActionSetValue(&value)
+					sa.Value = &valueObj
 				}
 				if !a.Set.Append.IsNull() && !a.Set.Append.IsUnknown() {
 					append := a.Set.Append.ValueBool()
@@ -500,14 +506,22 @@ func (r *csmThreatsAgentRuleResource) buildCreateCSMThreatsAgentRulePayload(stat
 					sa.DefaultValue = &defaultValue
 				}
 				action.Set = &sa
+
+				outActions = append(outActions, action)
 			}
 
 			if a.Hash != nil {
-				hashWrapper := &datadogV2.CloudWorkloadSecurityAgentRuleActionHash{}
-				action.Hash = hashWrapper
-			}
+				action := datadogV2.CloudWorkloadSecurityAgentRuleAction{}
 
-			outActions = append(outActions, action)
+				ha := datadogV2.NewCloudWorkloadSecurityAgentRuleActionHash()
+				if !a.Hash.Field.IsNull() && !a.Hash.Field.IsUnknown() {
+					field := a.Hash.Field.ValueString()
+					ha.Field = &field
+				}
+				action.Hash = ha
+
+				outActions = append(outActions, action)
+			}
 		}
 	}
 
@@ -534,11 +548,10 @@ func (r *csmThreatsAgentRuleResource) buildUpdateCSMThreatsAgentRulePayload(stat
 	// Only populate actions if there are any configured
 	if state.Actions != nil {
 		for _, a := range state.Actions {
-			action := datadogV2.CloudWorkloadSecurityAgentRuleAction{}
-
 			if a.Set != nil {
-				sa := datadogV2.CloudWorkloadSecurityAgentRuleActionSet{}
+				action := datadogV2.CloudWorkloadSecurityAgentRuleAction{}
 
+				sa := datadogV2.CloudWorkloadSecurityAgentRuleActionSet{}
 				if !a.Set.Name.IsNull() && !a.Set.Name.IsUnknown() {
 					name := a.Set.Name.ValueString()
 					sa.Name = &name
@@ -549,10 +562,8 @@ func (r *csmThreatsAgentRuleResource) buildUpdateCSMThreatsAgentRulePayload(stat
 				}
 				if !a.Set.Value.IsNull() && !a.Set.Value.IsUnknown() {
 					value := a.Set.Value.ValueString()
-					valueWrapper := datadogV2.CloudWorkloadSecurityAgentRuleActionSetValue{
-						String: &value,
-					}
-					sa.Value = &valueWrapper
+					valueObj := datadogV2.StringAsCloudWorkloadSecurityAgentRuleActionSetValue(&value)
+					sa.Value = &valueObj
 				}
 				if !a.Set.Append.IsNull() && !a.Set.Append.IsUnknown() {
 					append := a.Set.Append.ValueBool()
@@ -583,14 +594,22 @@ func (r *csmThreatsAgentRuleResource) buildUpdateCSMThreatsAgentRulePayload(stat
 					sa.DefaultValue = &defaultValue
 				}
 				action.Set = &sa
+
+				outActions = append(outActions, action)
 			}
 
 			if a.Hash != nil {
-				hashWrapper := &datadogV2.CloudWorkloadSecurityAgentRuleActionHash{}
-				action.Hash = hashWrapper
-			}
+				action := datadogV2.CloudWorkloadSecurityAgentRuleAction{}
 
-			outActions = append(outActions, action)
+				ha := datadogV2.NewCloudWorkloadSecurityAgentRuleActionHash()
+				if !a.Hash.Field.IsNull() && !a.Hash.Field.IsUnknown() {
+					field := a.Hash.Field.ValueString()
+					ha.Field = &field
+				}
+				action.Hash = ha
+
+				outActions = append(outActions, action)
+			}
 		}
 	}
 
@@ -677,10 +696,13 @@ func (r *csmThreatsAgentRuleResource) updateStateFromResponse(ctx context.Contex
 				setAction.Field = types.StringNull()
 			}
 			if s.Value != nil {
-				// CloudWorkloadSecurityAgentRuleActionSetValue is a oneOf wrapper
-				// We need to extract the string value from it
-				if strPtr := s.Value.String; strPtr != nil {
-					setAction.Value = types.StringValue(*strPtr)
+				// Handle different value types from API
+				if s.Value.Bool != nil {
+					setAction.Value = types.StringValue(fmt.Sprintf("%t", *s.Value.Bool))
+				} else if s.Value.String != nil {
+					setAction.Value = types.StringValue(*s.Value.String)
+				} else if s.Value.Int32 != nil {
+					setAction.Value = types.StringValue(fmt.Sprintf("%d", *s.Value.Int32))
 				} else {
 					setAction.Value = types.StringNull()
 				}
@@ -731,7 +753,15 @@ func (r *csmThreatsAgentRuleResource) updateStateFromResponse(ctx context.Contex
 		}
 
 		if act.Hash != nil {
-			action.Hash = &HashActionModel{}
+			hashAction := &HashActionModel{}
+			h := act.Hash
+
+			if h.Field != nil {
+				hashAction.Field = types.StringValue(*h.Field)
+			} else {
+				hashAction.Field = types.StringNull()
+			}
+			action.Hash = hashAction
 		}
 
 		actions = append(actions, action)

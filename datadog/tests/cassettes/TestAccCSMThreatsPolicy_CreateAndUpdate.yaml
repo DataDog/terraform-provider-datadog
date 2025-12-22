@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"description":"im a policy","enabled":true,"hostTags":["host_name:test_host"],"name":"jacicieeit"},"type":"policy"}}
+            {"data":{"attributes":{"description":"im a policy","enabled":true,"hostTags":["host_name:test_host"],"name":"vlfbodbgvp"},"type":"policy"}}
         form: {}
         headers:
             Accept:
@@ -28,15 +28,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 391
+        content_length: 413
         uncompressed: false
-        body: '{"data":{"id":"xhl-xdb-wos","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"im a policy","disabledRulesCount":1,"enabled":true,"hostTagsLists":[["host_name:test_host"]],"monitoringRulesCount":7,"name":"jacicieeit","pinned":false,"policyVersion":"1","ruleCount":8,"updateDate":1761225140436,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
+        body: '{"data":{"id":"nzc-sue-x1d","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"im a policy","disabledRulesCount":1,"enabled":true,"hostTagsLists":[["host_name:test_host"]],"monitoringRulesCount":7,"name":"vlfbodbgvp","pinned":false,"policyType":"policy","policyVersion":"1","ruleCount":8,"updateDate":1766061652421,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 788.890292ms
+        duration: 656.758651ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -53,7 +53,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/xhl-xdb-wos
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/nzc-sue-x1d
         method: GET
       response:
         proto: HTTP/1.1
@@ -61,15 +61,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 391
+        content_length: 413
         uncompressed: false
-        body: '{"data":{"id":"xhl-xdb-wos","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"im a policy","disabledRulesCount":0,"enabled":true,"hostTagsLists":[["host_name:test_host"]],"monitoringRulesCount":0,"name":"jacicieeit","pinned":false,"policyVersion":"1","ruleCount":0,"updateDate":1761225140436,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
+        body: '{"data":{"id":"nzc-sue-x1d","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"im a policy","disabledRulesCount":0,"enabled":true,"hostTagsLists":[["host_name:test_host"]],"monitoringRulesCount":0,"name":"vlfbodbgvp","pinned":false,"policyType":"policy","policyVersion":"1","ruleCount":0,"updateDate":1766061652421,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 395.327334ms
+        duration: 340.863094ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -86,7 +86,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/xhl-xdb-wos
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/nzc-sue-x1d
         method: GET
       response:
         proto: HTTP/1.1
@@ -94,15 +94,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 391
+        content_length: 413
         uncompressed: false
-        body: '{"data":{"id":"xhl-xdb-wos","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"im a policy","disabledRulesCount":0,"enabled":true,"hostTagsLists":[["host_name:test_host"]],"monitoringRulesCount":0,"name":"jacicieeit","pinned":false,"policyVersion":"1","ruleCount":0,"updateDate":1761225140436,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
+        body: '{"data":{"id":"nzc-sue-x1d","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"im a policy","disabledRulesCount":0,"enabled":true,"hostTagsLists":[["host_name:test_host"]],"monitoringRulesCount":0,"name":"vlfbodbgvp","pinned":false,"policyType":"policy","policyVersion":"1","ruleCount":0,"updateDate":1766061652421,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 870.126291ms
+        duration: 326.883722ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -119,7 +119,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/xhl-xdb-wos
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/nzc-sue-x1d
         method: GET
       response:
         proto: HTTP/1.1
@@ -127,15 +127,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 391
+        content_length: 413
         uncompressed: false
-        body: '{"data":{"id":"xhl-xdb-wos","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"im a policy","disabledRulesCount":0,"enabled":true,"hostTagsLists":[["host_name:test_host"]],"monitoringRulesCount":0,"name":"jacicieeit","pinned":false,"policyVersion":"1","ruleCount":0,"updateDate":1761225140436,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
+        body: '{"data":{"id":"nzc-sue-x1d","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"im a policy","disabledRulesCount":0,"enabled":true,"hostTagsLists":[["host_name:test_host"]],"monitoringRulesCount":0,"name":"vlfbodbgvp","pinned":false,"policyType":"policy","policyVersion":"1","ruleCount":0,"updateDate":1766061652421,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 374.32175ms
+        duration: 267.083271ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -148,14 +148,14 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"description":"updated policy for terraform provider test","enabled":true,"hostTags":["host_name:test_host"],"name":"jacicieeit"},"id":"xhl-xdb-wos","type":"policy"}}
+            {"data":{"attributes":{"description":"updated policy for terraform provider test","enabled":true,"hostTags":["host_name:test_host"],"name":"vlfbodbgvp"},"id":"nzc-sue-x1d","type":"policy"}}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/xhl-xdb-wos
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/nzc-sue-x1d
         method: PATCH
       response:
         proto: HTTP/1.1
@@ -163,15 +163,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 422
+        content_length: 444
         uncompressed: false
-        body: '{"data":{"id":"xhl-xdb-wos","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"updated policy for terraform provider test","disabledRulesCount":0,"enabled":true,"hostTagsLists":[["host_name:test_host"]],"monitoringRulesCount":0,"name":"jacicieeit","pinned":false,"policyVersion":"2","ruleCount":0,"updateDate":1761225144141,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
+        body: '{"data":{"id":"nzc-sue-x1d","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"updated policy for terraform provider test","disabledRulesCount":0,"enabled":true,"hostTagsLists":[["host_name:test_host"]],"monitoringRulesCount":0,"name":"vlfbodbgvp","pinned":false,"policyType":"policy","policyVersion":"2","ruleCount":0,"updateDate":1766061654846,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 1.055766792s
+        duration: 1.233532364s
     - id: 5
       request:
         proto: HTTP/1.1
@@ -188,7 +188,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/xhl-xdb-wos
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/nzc-sue-x1d
         method: GET
       response:
         proto: HTTP/1.1
@@ -196,15 +196,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 422
+        content_length: 444
         uncompressed: false
-        body: '{"data":{"id":"xhl-xdb-wos","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"updated policy for terraform provider test","disabledRulesCount":0,"enabled":true,"hostTagsLists":[["host_name:test_host"]],"monitoringRulesCount":0,"name":"jacicieeit","pinned":false,"policyVersion":"2","ruleCount":0,"updateDate":1761225144141,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
+        body: '{"data":{"id":"nzc-sue-x1d","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"updated policy for terraform provider test","disabledRulesCount":0,"enabled":true,"hostTagsLists":[["host_name:test_host"]],"monitoringRulesCount":0,"name":"vlfbodbgvp","pinned":false,"policyType":"policy","policyVersion":"2","ruleCount":0,"updateDate":1766061654846,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 348.65325ms
+        duration: 715.723666ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -221,7 +221,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/xhl-xdb-wos
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/nzc-sue-x1d
         method: GET
       response:
         proto: HTTP/1.1
@@ -229,15 +229,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 422
+        content_length: 444
         uncompressed: false
-        body: '{"data":{"id":"xhl-xdb-wos","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"updated policy for terraform provider test","disabledRulesCount":0,"enabled":true,"hostTagsLists":[["host_name:test_host"]],"monitoringRulesCount":0,"name":"jacicieeit","pinned":false,"policyVersion":"2","ruleCount":0,"updateDate":1761225144141,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
+        body: '{"data":{"id":"nzc-sue-x1d","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"updated policy for terraform provider test","disabledRulesCount":0,"enabled":true,"hostTagsLists":[["host_name:test_host"]],"monitoringRulesCount":0,"name":"vlfbodbgvp","pinned":false,"policyType":"policy","policyVersion":"2","ruleCount":0,"updateDate":1766061654846,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 397.942667ms
+        duration: 492.419265ms
     - id: 7
       request:
         proto: HTTP/1.1
@@ -254,7 +254,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/xhl-xdb-wos
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/nzc-sue-x1d
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -270,7 +270,7 @@ interactions:
                 - application/json
         status: 204 No Content
         code: 204
-        duration: 519.089375ms
+        duration: 499.034398ms
     - id: 8
       request:
         proto: HTTP/1.1
@@ -287,7 +287,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/xhl-xdb-wos
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/nzc-sue-x1d
         method: GET
       response:
         proto: HTTP/1.1
@@ -303,4 +303,4 @@ interactions:
                 - application/json
         status: 404 Not Found
         code: 404
-        duration: 289.977666ms
+        duration: 449.203043ms
