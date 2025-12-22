@@ -31,13 +31,13 @@ interactions:
         content_length: 580
         uncompressed: false
         body: |
-            {"data":{"id":"1670abb0-db59-11f0-b594-da7ad0900002","type":"pipelines","attributes":{"name":"add-env-vars pipeline","config":{"destinations":[{"id":"destination-1","inputs":["add-env-group-1"],"type":"datadog_logs"}],"processors":[{"enabled":true,"id":"add-env-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"add-env-1","include":"*","type":"add_env_vars","variables":[{"field":"log.environment.region","name":"AWS_REGION"},{"field":"log.environment.account","name":"AWS_ACCOUNT_ID"}]}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"05533e32-dcfe-11f0-b89e-da7ad0900002","type":"pipelines","attributes":{"name":"add-env-vars pipeline","config":{"destinations":[{"id":"destination-1","inputs":["add-env-group-1"],"type":"datadog_logs"}],"processors":[{"enabled":true,"id":"add-env-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"add-env-1","include":"*","type":"add_env_vars","variables":[{"field":"log.environment.region","name":"AWS_REGION"},{"field":"log.environment.account","name":"AWS_ACCOUNT_ID"}]}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
-                - application/json
+                - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 697.040333ms
+        duration: 707.0005ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -54,7 +54,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/1670abb0-db59-11f0-b594-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/05533e32-dcfe-11f0-b89e-da7ad0900002
         method: GET
       response:
         proto: HTTP/1.1
@@ -65,13 +65,13 @@ interactions:
         content_length: 580
         uncompressed: false
         body: |
-            {"data":{"id":"1670abb0-db59-11f0-b594-da7ad0900002","type":"pipelines","attributes":{"name":"add-env-vars pipeline","config":{"destinations":[{"id":"destination-1","inputs":["add-env-group-1"],"type":"datadog_logs"}],"processors":[{"enabled":true,"id":"add-env-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"add-env-1","include":"*","type":"add_env_vars","variables":[{"field":"log.environment.region","name":"AWS_REGION"},{"field":"log.environment.account","name":"AWS_ACCOUNT_ID"}]}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"05533e32-dcfe-11f0-b89e-da7ad0900002","type":"pipelines","attributes":{"name":"add-env-vars pipeline","config":{"destinations":[{"id":"destination-1","inputs":["add-env-group-1"],"type":"datadog_logs"}],"processors":[{"enabled":true,"id":"add-env-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"add-env-1","include":"*","type":"add_env_vars","variables":[{"field":"log.environment.region","name":"AWS_REGION"},{"field":"log.environment.account","name":"AWS_ACCOUNT_ID"}]}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
-                - application/json
+                - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 277.277541ms
+        duration: 239.3045ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -88,7 +88,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/1670abb0-db59-11f0-b594-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/05533e32-dcfe-11f0-b89e-da7ad0900002
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -104,4 +104,4 @@ interactions:
                 - application/json
         status: 204 No Content
         code: 204
-        duration: 511.044583ms
+        duration: 294.388625ms

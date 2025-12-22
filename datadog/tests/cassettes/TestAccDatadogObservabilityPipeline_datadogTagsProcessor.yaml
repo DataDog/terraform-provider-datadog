@@ -31,13 +31,13 @@ interactions:
         content_length: 584
         uncompressed: false
         body: |
-            {"data":{"id":"29f891fc-db59-11f0-b5a6-da7ad0900002","type":"pipelines","attributes":{"name":"datadog tags processor test","config":{"destinations":[{"id":"destination-1","inputs":["datadog-tags-group-1"],"type":"datadog_logs"}],"processors":[{"enabled":true,"id":"datadog-tags-group-1","include":"service:my-service","inputs":["source-1"],"processors":[{"action":"include","enabled":true,"id":"datadog-tags-processor","include":"service:my-service","keys":["env","service","version"],"mode":"filter","type":"datadog_tags"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"15a5b9b8-dcfe-11f0-b8aa-da7ad0900002","type":"pipelines","attributes":{"name":"datadog tags processor test","config":{"destinations":[{"id":"destination-1","inputs":["datadog-tags-group-1"],"type":"datadog_logs"}],"processors":[{"enabled":true,"id":"datadog-tags-group-1","include":"service:my-service","inputs":["source-1"],"processors":[{"action":"include","enabled":true,"id":"datadog-tags-processor","include":"service:my-service","keys":["env","service","version"],"mode":"filter","type":"datadog_tags"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
-                - application/json
+                - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 873.218292ms
+        duration: 441.649667ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -54,7 +54,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/29f891fc-db59-11f0-b5a6-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/15a5b9b8-dcfe-11f0-b8aa-da7ad0900002
         method: GET
       response:
         proto: HTTP/1.1
@@ -65,13 +65,13 @@ interactions:
         content_length: 584
         uncompressed: false
         body: |
-            {"data":{"id":"29f891fc-db59-11f0-b5a6-da7ad0900002","type":"pipelines","attributes":{"name":"datadog tags processor test","config":{"destinations":[{"id":"destination-1","inputs":["datadog-tags-group-1"],"type":"datadog_logs"}],"processors":[{"enabled":true,"id":"datadog-tags-group-1","include":"service:my-service","inputs":["source-1"],"processors":[{"action":"include","enabled":true,"id":"datadog-tags-processor","include":"service:my-service","keys":["env","service","version"],"mode":"filter","type":"datadog_tags"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"15a5b9b8-dcfe-11f0-b8aa-da7ad0900002","type":"pipelines","attributes":{"name":"datadog tags processor test","config":{"destinations":[{"id":"destination-1","inputs":["datadog-tags-group-1"],"type":"datadog_logs"}],"processors":[{"enabled":true,"id":"datadog-tags-group-1","include":"service:my-service","inputs":["source-1"],"processors":[{"action":"include","enabled":true,"id":"datadog-tags-processor","include":"service:my-service","keys":["env","service","version"],"mode":"filter","type":"datadog_tags"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
-                - application/json
+                - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 366.160458ms
+        duration: 343.939875ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -88,7 +88,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/29f891fc-db59-11f0-b5a6-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/15a5b9b8-dcfe-11f0-b8aa-da7ad0900002
         method: GET
       response:
         proto: HTTP/1.1
@@ -99,13 +99,13 @@ interactions:
         content_length: 584
         uncompressed: false
         body: |
-            {"data":{"id":"29f891fc-db59-11f0-b5a6-da7ad0900002","type":"pipelines","attributes":{"name":"datadog tags processor test","config":{"destinations":[{"id":"destination-1","inputs":["datadog-tags-group-1"],"type":"datadog_logs"}],"processors":[{"enabled":true,"id":"datadog-tags-group-1","include":"service:my-service","inputs":["source-1"],"processors":[{"action":"include","enabled":true,"id":"datadog-tags-processor","include":"service:my-service","keys":["env","service","version"],"mode":"filter","type":"datadog_tags"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"15a5b9b8-dcfe-11f0-b8aa-da7ad0900002","type":"pipelines","attributes":{"name":"datadog tags processor test","config":{"destinations":[{"id":"destination-1","inputs":["datadog-tags-group-1"],"type":"datadog_logs"}],"processors":[{"enabled":true,"id":"datadog-tags-group-1","include":"service:my-service","inputs":["source-1"],"processors":[{"action":"include","enabled":true,"id":"datadog-tags-processor","include":"service:my-service","keys":["env","service","version"],"mode":"filter","type":"datadog_tags"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
-                - application/json
+                - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 255.446083ms
+        duration: 282.699709ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -125,7 +125,7 @@ interactions:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/29f891fc-db59-11f0-b5a6-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/15a5b9b8-dcfe-11f0-b8aa-da7ad0900002
         method: PUT
       response:
         proto: HTTP/1.1
@@ -136,13 +136,13 @@ interactions:
         content_length: 582
         uncompressed: false
         body: |
-            {"data":{"id":"29f891fc-db59-11f0-b5a6-da7ad0900002","type":"pipelines","attributes":{"name":"datadog tags processor test updated","config":{"destinations":[{"id":"destination-1","inputs":["datadog-tags-group-1"],"type":"datadog_logs"}],"processors":[{"enabled":true,"id":"datadog-tags-group-1","include":"service:my-service","inputs":["source-1"],"processors":[{"action":"exclude","enabled":true,"id":"datadog-tags-processor","include":"service:my-service","keys":["env","service"],"mode":"filter","type":"datadog_tags"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"15a5b9b8-dcfe-11f0-b8aa-da7ad0900002","type":"pipelines","attributes":{"name":"datadog tags processor test updated","config":{"destinations":[{"id":"destination-1","inputs":["datadog-tags-group-1"],"type":"datadog_logs"}],"processors":[{"enabled":true,"id":"datadog-tags-group-1","include":"service:my-service","inputs":["source-1"],"processors":[{"action":"exclude","enabled":true,"id":"datadog-tags-processor","include":"service:my-service","keys":["env","service"],"mode":"filter","type":"datadog_tags"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
-                - application/json
+                - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 712.532584ms
+        duration: 418.902458ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -159,7 +159,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/29f891fc-db59-11f0-b5a6-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/15a5b9b8-dcfe-11f0-b8aa-da7ad0900002
         method: GET
       response:
         proto: HTTP/1.1
@@ -170,13 +170,13 @@ interactions:
         content_length: 582
         uncompressed: false
         body: |
-            {"data":{"id":"29f891fc-db59-11f0-b5a6-da7ad0900002","type":"pipelines","attributes":{"name":"datadog tags processor test updated","config":{"destinations":[{"id":"destination-1","inputs":["datadog-tags-group-1"],"type":"datadog_logs"}],"processors":[{"enabled":true,"id":"datadog-tags-group-1","include":"service:my-service","inputs":["source-1"],"processors":[{"action":"exclude","enabled":true,"id":"datadog-tags-processor","include":"service:my-service","keys":["env","service"],"mode":"filter","type":"datadog_tags"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"15a5b9b8-dcfe-11f0-b8aa-da7ad0900002","type":"pipelines","attributes":{"name":"datadog tags processor test updated","config":{"destinations":[{"id":"destination-1","inputs":["datadog-tags-group-1"],"type":"datadog_logs"}],"processors":[{"enabled":true,"id":"datadog-tags-group-1","include":"service:my-service","inputs":["source-1"],"processors":[{"action":"exclude","enabled":true,"id":"datadog-tags-processor","include":"service:my-service","keys":["env","service"],"mode":"filter","type":"datadog_tags"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
-                - application/json
+                - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 308.993625ms
+        duration: 221.254ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -193,7 +193,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/29f891fc-db59-11f0-b5a6-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/15a5b9b8-dcfe-11f0-b8aa-da7ad0900002
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -209,4 +209,4 @@ interactions:
                 - application/json
         status: 204 No Content
         code: 204
-        duration: 410.748ms
+        duration: 344.419166ms

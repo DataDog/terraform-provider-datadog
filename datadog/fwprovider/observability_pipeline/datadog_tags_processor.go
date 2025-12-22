@@ -56,8 +56,10 @@ func DatadogTagsProcessorSchema() schema.ListNestedBlock {
 }
 
 // ExpandDatadogTagsProcessor converts the Terraform model to the API model
-func ExpandDatadogTagsProcessor(src *DatadogTagsProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
+func ExpandDatadogTagsProcessor(common BaseProcessorFields, src *DatadogTagsProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
 	proc := datadogV2.NewObservabilityPipelineDatadogTagsProcessorWithDefaults()
+	common.ApplyTo(proc)
+
 	proc.SetMode(datadogV2.ObservabilityPipelineDatadogTagsProcessorMode(src.Mode.ValueString()))
 	proc.SetAction(datadogV2.ObservabilityPipelineDatadogTagsProcessorAction(src.Action.ValueString()))
 

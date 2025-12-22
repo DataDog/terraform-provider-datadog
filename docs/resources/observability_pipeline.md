@@ -544,6 +544,7 @@ Required:
 
 Optional:
 
+- `display_name` (String) A human-friendly name of the processor group.
 - `processor` (Block List) The processor contained in this group. (see [below for nested schema](#nestedblock--config--processor_group--processor))
 
 <a id="nestedblock--config--processor_group--processor"></a>
@@ -562,6 +563,7 @@ Optional:
 - `custom_processor` (Block List) The `custom_processor` processor transforms events using Vector Remap Language (VRL) scripts with advanced filtering capabilities. (see [below for nested schema](#nestedblock--config--processor_group--processor--custom_processor))
 - `datadog_tags` (Block List) (see [below for nested schema](#nestedblock--config--processor_group--processor--datadog_tags))
 - `dedupe` (Block List) The `dedupe` processor removes duplicate fields in log events. (see [below for nested schema](#nestedblock--config--processor_group--processor--dedupe))
+- `display_name` (String) A human-friendly name for this processor.
 - `enrichment_table` (Block List) The `enrichment_table` processor enriches logs using a static CSV file or GeoIP database. (see [below for nested schema](#nestedblock--config--processor_group--processor--enrichment_table))
 - `filter` (Block List) The `filter` processor allows conditional processing of logs based on a Datadog search query. Logs that match the `include` query are passed through; others are discarded. (see [below for nested schema](#nestedblock--config--processor_group--processor--filter))
 - `generate_datadog_metrics` (Block List) The `generate_datadog_metrics` processor creates custom metrics from logs. Metrics can be counters, gauges, or distributions and optionally grouped by log fields. (see [below for nested schema](#nestedblock--config--processor_group--processor--generate_datadog_metrics))
