@@ -23,8 +23,9 @@ type CustomProcessorRemapModel struct {
 }
 
 // ExpandCustomProcessor converts the Terraform model to the Datadog API model
-func ExpandCustomProcessor(src *CustomProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
+func ExpandCustomProcessor(common BaseProcessorFields, src *CustomProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
 	proc := datadogV2.NewObservabilityPipelineCustomProcessorWithDefaults()
+	common.ApplyTo(proc)
 
 	var remaps []datadogV2.ObservabilityPipelineCustomProcessorRemap
 	for _, remap := range src.Remaps {

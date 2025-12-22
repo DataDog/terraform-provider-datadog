@@ -54,9 +54,11 @@ func TestAccDatadogObservabilityPipeline_basic(t *testing.T) {
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.id", "parser-group-1"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.enabled", "true"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.include", "service:my-service"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.display_name", "processor group"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.id", "parser-1"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.enabled", "true"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.include", "service:my-service"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.display_name", "json parser"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.parse_json.0.field", "message"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.id", "destination-1"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "parser-group-1"),
@@ -93,11 +95,13 @@ resource "datadog_observability_pipeline" "basic" {
       enabled = true
       include = "service:my-service"
       inputs  = ["source-1"]
-      
+      display_name = "processor group"
+
       processor {
         id      = "parser-1"
         enabled = true
         include = "service:my-service"
+        display_name = "json parser"
         
         parse_json {
           field = "message"
