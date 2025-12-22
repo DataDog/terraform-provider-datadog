@@ -2562,6 +2562,8 @@ func expandKafkaSource(src *kafkaSourceModel, id string) datadogV2.Observability
 // ---------- Processors ----------
 
 // createProcessorModel creates a processorModel with common fields populated
+// This function could be removed once we move `processorModel` to `processor_common.go`
+// and split all processor types into their own files.
 func createProcessorModel(proc observability_pipeline.BaseProcessor) *processorModel {
 	displayName, _ := proc.GetDisplayNameOk()
 	return &processorModel{
@@ -2690,11 +2692,11 @@ func expandProcessorTypes(ctx context.Context, processor *processorModel) []data
 		dn := processor.DisplayName.ValueString()
 		displayName = &dn
 	}
-	common := baseProcessorFields{
-		id:          processor.Id.ValueString(),
-		enabled:     processor.Enabled.ValueBool(),
-		include:     processor.Include.ValueString(),
-		displayName: displayName,
+	common := observability_pipeline.BaseProcessorFields{
+		Id:          processor.Id.ValueString(),
+		Enabled:     processor.Enabled.ValueBool(),
+		Include:     processor.Include.ValueString(),
+		DisplayName: displayName,
 	}
 
 	// Check each processor type and expand if present
@@ -2747,46 +2749,18 @@ func expandProcessorTypes(ctx context.Context, processor *processorModel) []data
 		items = append(items, expandSensitiveDataScannerProcessorItem(ctx, common, p))
 	}
 	for _, p := range processor.CustomProcessor {
-		items = append(items, observability_pipeline.ExpandCustomProcessor(observability_pipeline.BaseProcessorFields{
-			Id:          common.id,
-			Enabled:     common.enabled,
-			Include:     common.include,
-			DisplayName: common.displayName,
-		}, p))
+		items = append(items, observability_pipeline.ExpandCustomProcessor(common, p))
 	}
 	for _, p := range processor.DatadogTagsProcessor {
-		items = append(items, observability_pipeline.ExpandDatadogTagsProcessor(observability_pipeline.BaseProcessorFields{
-			Id:          common.id,
-			Enabled:     common.enabled,
-			Include:     common.include,
-			DisplayName: common.displayName,
-		}, p))
+		items = append(items, observability_pipeline.ExpandDatadogTagsProcessor(common, p))
 	}
 
 	return items
 }
 
-// baseProcessorFields holds the common fields shared by all processors
-type baseProcessorFields struct {
-	id          string
-	enabled     bool
-	include     string
-	displayName *string
-}
-
-// applyTo sets the common fields on any processor
-func (c baseProcessorFields) applyTo(proc observability_pipeline.BaseProcessor) {
-	proc.SetId(c.id)
-	proc.SetEnabled(c.enabled)
-	proc.SetInclude(c.include)
-	if c.displayName != nil {
-		proc.SetDisplayName(*c.displayName)
-	}
-}
-
-func expandFilterProcessorItem(ctx context.Context, common baseProcessorFields, src *filterProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
+func expandFilterProcessorItem(ctx context.Context, common observability_pipeline.BaseProcessorFields, src *filterProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
 	proc := datadogV2.NewObservabilityPipelineFilterProcessorWithDefaults()
-	common.applyTo(proc)
+	common.ApplyTo(proc)
 
 	return datadogV2.ObservabilityPipelineFilterProcessorAsObservabilityPipelineConfigProcessorItem(proc)
 }
@@ -2802,9 +2776,9 @@ func flattenParseJsonProcessor(ctx context.Context, src *datadogV2.Observability
 	return model
 }
 
-func expandParseJsonProcessorItem(ctx context.Context, common baseProcessorFields, src *parseJsonProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
+func expandParseJsonProcessorItem(ctx context.Context, common observability_pipeline.BaseProcessorFields, src *parseJsonProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
 	proc := datadogV2.NewObservabilityPipelineParseJSONProcessorWithDefaults()
-	common.applyTo(proc)
+	common.ApplyTo(proc)
 	proc.SetField(src.Field.ValueString())
 
 	return datadogV2.ObservabilityPipelineParseJSONProcessorAsObservabilityPipelineConfigProcessorItem(proc)
@@ -3297,9 +3271,9 @@ func flattenCustomProcessor(ctx context.Context, src *datadogV2.ObservabilityPip
 	return model
 }
 
-func expandAddFieldsProcessorItem(ctx context.Context, common baseProcessorFields, src *addFieldsProcessor) datadogV2.ObservabilityPipelineConfigProcessorItem {
+func expandAddFieldsProcessorItem(ctx context.Context, common observability_pipeline.BaseProcessorFields, src *addFieldsProcessor) datadogV2.ObservabilityPipelineConfigProcessorItem {
 	proc := datadogV2.NewObservabilityPipelineAddFieldsProcessorWithDefaults()
-	common.applyTo(proc)
+	common.ApplyTo(proc)
 
 	var fields []datadogV2.ObservabilityPipelineFieldValue
 	for _, f := range src.Fields {
@@ -3313,9 +3287,9 @@ func expandAddFieldsProcessorItem(ctx context.Context, common baseProcessorField
 	return datadogV2.ObservabilityPipelineAddFieldsProcessorAsObservabilityPipelineConfigProcessorItem(proc)
 }
 
-func expandRenameFieldsProcessorItem(ctx context.Context, common baseProcessorFields, src *renameFieldsProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
+func expandRenameFieldsProcessorItem(ctx context.Context, common observability_pipeline.BaseProcessorFields, src *renameFieldsProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
 	proc := datadogV2.NewObservabilityPipelineRenameFieldsProcessorWithDefaults()
-	common.applyTo(proc)
+	common.ApplyTo(proc)
 
 	var fields []datadogV2.ObservabilityPipelineRenameFieldsProcessorField
 	for _, f := range src.Fields {
@@ -3330,9 +3304,9 @@ func expandRenameFieldsProcessorItem(ctx context.Context, common baseProcessorFi
 	return datadogV2.ObservabilityPipelineRenameFieldsProcessorAsObservabilityPipelineConfigProcessorItem(proc)
 }
 
-func expandRemoveFieldsProcessorItem(ctx context.Context, common baseProcessorFields, src *removeFieldsProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
+func expandRemoveFieldsProcessorItem(ctx context.Context, common observability_pipeline.BaseProcessorFields, src *removeFieldsProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
 	proc := datadogV2.NewObservabilityPipelineRemoveFieldsProcessorWithDefaults()
-	common.applyTo(proc)
+	common.ApplyTo(proc)
 
 	var fields []string
 	src.Fields.ElementsAs(ctx, &fields, false)
@@ -3341,9 +3315,9 @@ func expandRemoveFieldsProcessorItem(ctx context.Context, common baseProcessorFi
 	return datadogV2.ObservabilityPipelineRemoveFieldsProcessorAsObservabilityPipelineConfigProcessorItem(proc)
 }
 
-func expandQuotaProcessorItem(ctx context.Context, common baseProcessorFields, src *quotaProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
+func expandQuotaProcessorItem(ctx context.Context, common observability_pipeline.BaseProcessorFields, src *quotaProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
 	proc := datadogV2.NewObservabilityPipelineQuotaProcessorWithDefaults()
-	common.applyTo(proc)
+	common.ApplyTo(proc)
 	proc.SetName(src.Name.ValueString())
 
 	if !src.DropEvents.IsNull() {
@@ -3397,9 +3371,9 @@ func expandQuotaProcessorItem(ctx context.Context, common baseProcessorFields, s
 	return datadogV2.ObservabilityPipelineQuotaProcessorAsObservabilityPipelineConfigProcessorItem(proc)
 }
 
-func expandDedupeProcessorItem(ctx context.Context, common baseProcessorFields, src *dedupeProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
+func expandDedupeProcessorItem(ctx context.Context, common observability_pipeline.BaseProcessorFields, src *dedupeProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
 	proc := datadogV2.NewObservabilityPipelineDedupeProcessorWithDefaults()
-	common.applyTo(proc)
+	common.ApplyTo(proc)
 
 	// Initialize as empty slice, not nil, to ensure it serializes as [] not null
 	fields := []string{}
@@ -3412,9 +3386,9 @@ func expandDedupeProcessorItem(ctx context.Context, common baseProcessorFields, 
 	return datadogV2.ObservabilityPipelineDedupeProcessorAsObservabilityPipelineConfigProcessorItem(proc)
 }
 
-func expandReduceProcessorItem(ctx context.Context, common baseProcessorFields, src *reduceProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
+func expandReduceProcessorItem(ctx context.Context, common observability_pipeline.BaseProcessorFields, src *reduceProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
 	proc := datadogV2.NewObservabilityPipelineReduceProcessorWithDefaults()
-	common.applyTo(proc)
+	common.ApplyTo(proc)
 
 	// Initialize as empty slice, not nil, to ensure it serializes as [] not null
 	groupBy := []string{}
@@ -3435,9 +3409,9 @@ func expandReduceProcessorItem(ctx context.Context, common baseProcessorFields, 
 	return datadogV2.ObservabilityPipelineReduceProcessorAsObservabilityPipelineConfigProcessorItem(proc)
 }
 
-func expandThrottleProcessorItem(ctx context.Context, common baseProcessorFields, src *throttleProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
+func expandThrottleProcessorItem(ctx context.Context, common observability_pipeline.BaseProcessorFields, src *throttleProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
 	proc := datadogV2.NewObservabilityPipelineThrottleProcessorWithDefaults()
-	common.applyTo(proc)
+	common.ApplyTo(proc)
 	proc.SetThreshold(src.Threshold.ValueInt64())
 	proc.SetWindow(src.Window.ValueFloat64())
 
@@ -3453,9 +3427,9 @@ func expandThrottleProcessorItem(ctx context.Context, common baseProcessorFields
 	return datadogV2.ObservabilityPipelineThrottleProcessorAsObservabilityPipelineConfigProcessorItem(proc)
 }
 
-func expandAddEnvVarsProcessorItem(ctx context.Context, common baseProcessorFields, src *addEnvVarsProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
+func expandAddEnvVarsProcessorItem(ctx context.Context, common observability_pipeline.BaseProcessorFields, src *addEnvVarsProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
 	proc := datadogV2.NewObservabilityPipelineAddEnvVarsProcessorWithDefaults()
-	common.applyTo(proc)
+	common.ApplyTo(proc)
 
 	var vars []datadogV2.ObservabilityPipelineAddEnvVarsProcessorVariable
 	for _, v := range src.Variables {
@@ -3469,9 +3443,9 @@ func expandAddEnvVarsProcessorItem(ctx context.Context, common baseProcessorFiel
 	return datadogV2.ObservabilityPipelineAddEnvVarsProcessorAsObservabilityPipelineConfigProcessorItem(proc)
 }
 
-func expandEnrichmentTableProcessorItem(ctx context.Context, common baseProcessorFields, src *enrichmentTableProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
+func expandEnrichmentTableProcessorItem(ctx context.Context, common observability_pipeline.BaseProcessorFields, src *enrichmentTableProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
 	proc := datadogV2.NewObservabilityPipelineEnrichmentTableProcessorWithDefaults()
-	common.applyTo(proc)
+	common.ApplyTo(proc)
 	proc.SetTarget(src.Target.ValueString())
 
 	if len(src.File) > 0 {
@@ -3515,9 +3489,9 @@ func expandEnrichmentTableProcessorItem(ctx context.Context, common baseProcesso
 	return datadogV2.ObservabilityPipelineEnrichmentTableProcessorAsObservabilityPipelineConfigProcessorItem(proc)
 }
 
-func expandOcsfMapperProcessorItem(ctx context.Context, common baseProcessorFields, src *ocsfMapperProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
+func expandOcsfMapperProcessorItem(ctx context.Context, common observability_pipeline.BaseProcessorFields, src *ocsfMapperProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
 	proc := datadogV2.NewObservabilityPipelineOcsfMapperProcessorWithDefaults()
-	common.applyTo(proc)
+	common.ApplyTo(proc)
 
 	var mappings []datadogV2.ObservabilityPipelineOcsfMapperProcessorMapping
 	for _, m := range src.Mapping {
@@ -3533,9 +3507,9 @@ func expandOcsfMapperProcessorItem(ctx context.Context, common baseProcessorFiel
 	return datadogV2.ObservabilityPipelineOcsfMapperProcessorAsObservabilityPipelineConfigProcessorItem(proc)
 }
 
-func expandParseGrokProcessorItem(ctx context.Context, common baseProcessorFields, src *parseGrokProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
+func expandParseGrokProcessorItem(ctx context.Context, common observability_pipeline.BaseProcessorFields, src *parseGrokProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
 	proc := datadogV2.NewObservabilityPipelineParseGrokProcessorWithDefaults()
-	common.applyTo(proc)
+	common.ApplyTo(proc)
 
 	if !src.DisableLibraryRules.IsNull() {
 		proc.SetDisableLibraryRules(src.DisableLibraryRules.ValueBool())
@@ -3572,9 +3546,9 @@ func expandParseGrokProcessorItem(ctx context.Context, common baseProcessorField
 	return datadogV2.ObservabilityPipelineParseGrokProcessorAsObservabilityPipelineConfigProcessorItem(proc)
 }
 
-func expandSampleProcessorItem(ctx context.Context, common baseProcessorFields, src *sampleProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
+func expandSampleProcessorItem(ctx context.Context, common observability_pipeline.BaseProcessorFields, src *sampleProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
 	proc := datadogV2.NewObservabilityPipelineSampleProcessorWithDefaults()
-	common.applyTo(proc)
+	common.ApplyTo(proc)
 
 	if !src.Rate.IsNull() {
 		proc.SetRate(src.Rate.ValueInt64())
@@ -3586,9 +3560,9 @@ func expandSampleProcessorItem(ctx context.Context, common baseProcessorFields, 
 	return datadogV2.ObservabilityPipelineSampleProcessorAsObservabilityPipelineConfigProcessorItem(proc)
 }
 
-func expandGenerateMetricsProcessorItem(ctx context.Context, common baseProcessorFields, src *generateMetricsProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
+func expandGenerateMetricsProcessorItem(ctx context.Context, common observability_pipeline.BaseProcessorFields, src *generateMetricsProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
 	proc := datadogV2.NewObservabilityPipelineGenerateMetricsProcessorWithDefaults()
-	common.applyTo(proc)
+	common.ApplyTo(proc)
 
 	var metrics []datadogV2.ObservabilityPipelineGeneratedMetric
 	for _, m := range src.Metrics {
@@ -3624,9 +3598,9 @@ func expandGenerateMetricsProcessorItem(ctx context.Context, common baseProcesso
 	return datadogV2.ObservabilityPipelineGenerateMetricsProcessorAsObservabilityPipelineConfigProcessorItem(proc)
 }
 
-func expandSensitiveDataScannerProcessorItem(ctx context.Context, common baseProcessorFields, src *sensitiveDataScannerProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
+func expandSensitiveDataScannerProcessorItem(ctx context.Context, common observability_pipeline.BaseProcessorFields, src *sensitiveDataScannerProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
 	proc := datadogV2.NewObservabilityPipelineSensitiveDataScannerProcessorWithDefaults()
-	common.applyTo(proc)
+	common.ApplyTo(proc)
 
 	var rules []datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorRule
 	for _, r := range src.Rules {
