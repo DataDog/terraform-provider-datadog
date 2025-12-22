@@ -348,7 +348,6 @@ type grokRuleModel struct {
 }
 
 type sampleProcessorModel struct {
-	Rate       types.Int64   `tfsdk:"rate"`
 	Percentage types.Float64 `tfsdk:"percentage"`
 }
 
@@ -1376,12 +1375,8 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 													},
 													NestedObject: schema.NestedBlockObject{
 														Attributes: map[string]schema.Attribute{
-															"rate": schema.Int64Attribute{
-																Optional:    true,
-																Description: "Number of events to sample (1 in N).",
-															},
 															"percentage": schema.Float64Attribute{
-																Optional:    true,
+																Required:    true,
 																Description: "The percentage of logs to sample.",
 															},
 														},
@@ -3095,9 +3090,6 @@ func flattenSampleProcessor(ctx context.Context, src *datadogV2.ObservabilityPip
 	}
 	model := createProcessorModel(src)
 	sample := &sampleProcessorModel{}
-	if rate, ok := src.GetRateOk(); ok {
-		sample.Rate = types.Int64PointerValue(rate)
-	}
 	if percentage, ok := src.GetPercentageOk(); ok {
 		sample.Percentage = types.Float64PointerValue(percentage)
 	}
@@ -3550,9 +3542,6 @@ func expandSampleProcessorItem(ctx context.Context, common observability_pipelin
 	proc := datadogV2.NewObservabilityPipelineSampleProcessorWithDefaults()
 	common.ApplyTo(proc)
 
-	if !src.Rate.IsNull() {
-		proc.SetRate(src.Rate.ValueInt64())
-	}
 	if !src.Percentage.IsNull() {
 		proc.SetPercentage(src.Percentage.ValueFloat64())
 	}
