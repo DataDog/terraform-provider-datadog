@@ -375,26 +375,16 @@ func (r *syntheticsGlobalVariableResource) updateState(ctx context.Context, stat
 	state.IsTotp = types.BoolValue(resp.GetIsTotp())
 	state.IsFido = types.BoolValue(resp.GetIsFido())
 
-	if value, ok := resp.GetValueOk(); ok {
-		if !value.GetSecure() {
-			// Only change the value in state if the global variable is not secure
-			// Otherwise it will not be returned by the api, so we keep the config value
-			state.Value = types.StringValue(value.GetValue())
+	variableValue := newGlobalVariableValue(ctx, resp)
+	if variableValue.valueOK {
+		if !variableValue.secureOK {
+			state.Value = variableValue.value
 		}
-		if secure, ok := value.GetSecureOk(); ok {
-			state.Secure = types.BoolValue(*secure)
+		if variableValue.secureOK {
+			state.Secure = variableValue.secure
 		}
-		if options, ok := value.GetOptionsOk(); ok {
-			var optionsList []syntheticsGlobalVariableOptionsModel
-			localVariableOptions := syntheticsGlobalVariableOptionsModel{}
-			if totpParameters, ok := options.GetTotpParametersOk(); ok {
-				localTotpParameters := syntheticsGlobalVariableTotpParametersModel{}
-				localTotpParameters.Digits = types.Int64Value(int64(totpParameters.GetDigits()))
-				localTotpParameters.RefreshInterval = types.Int64Value(int64(totpParameters.GetRefreshInterval()))
-				localVariableOptions.TotpParameters = []syntheticsGlobalVariableTotpParametersModel{localTotpParameters}
-			}
-			optionsList = append(optionsList, localVariableOptions)
-			state.Options, _ = types.ListValueFrom(ctx, syntheticsGlobalVariableOptionsAttrType, optionsList)
+		if variableValue.optionsOK {
+			state.Options = variableValue.options
 		}
 	}
 
@@ -402,30 +392,11 @@ func (r *syntheticsGlobalVariableResource) updateState(ctx context.Context, stat
 		state.RestrictedRoles, _ = types.SetValueFrom(ctx, types.StringType, attributes.GetRestrictedRoles())
 	}
 
-	if parseTestId, ok := resp.GetParseTestPublicIdOk(); ok {
-		state.ParseTestId = types.StringValue(*parseTestId)
-
-		if parseTestOptions, ok := resp.GetParseTestOptionsOk(); ok {
-			var parseTestOptionsList []syntheticsGlobalVariableParseTestOptionsModel
-			localParseTestOptions := syntheticsGlobalVariableParseTestOptionsModel{}
-			localParseTestOptions.Type = types.StringValue(string(parseTestOptions.GetType()))
-			if field, ok := parseTestOptions.GetFieldOk(); ok {
-				localParseTestOptions.Field = types.StringValue(*field)
-			}
-			if parser, ok := parseTestOptions.GetParserOk(); ok {
-				localParser := syntheticsGlobalVariableParserModel{}
-				localParser.Type = types.StringValue(string(parser.GetType()))
-				if value, ok := parser.GetValueOk(); ok {
-					localParser.Value = types.StringValue(*value)
-				}
-				localParseTestOptions.Parser = []syntheticsGlobalVariableParserModel{localParser}
-			}
-			if localVariableName, ok := parseTestOptions.GetLocalVariableNameOk(); ok {
-				localParseTestOptions.LocalVariableName = types.StringValue(*localVariableName)
-			}
-
-			parseTestOptionsList = append(parseTestOptionsList, localParseTestOptions)
-			state.ParseTestOptions, _ = types.ListValueFrom(ctx, syntheticsGlobalVariableParseTestOptionsAttrType, parseTestOptionsList)
+	parseTestOptions := newGlobalVariableParseTestOptions(ctx, resp)
+	if parseTestOptions.parseTestIdOK {
+		state.ParseTestId = parseTestOptions.parseTestId
+		if parseTestOptions.parseTestOptionsOK {
+			state.ParseTestOptions = parseTestOptions.parseTestOptions
 		}
 	}
 }
@@ -595,4 +566,98 @@ func (r syntheticsGlobalVariableResource) ModifyPlan(ctx context.Context, req re
 		resp.Plan.SetAttribute(ctx, frameworkPath.Root("secure"), types.BoolValue(true))
 		return
 	}
+}
+
+func newGlobalVariableParseTestOptions(ctx context.Context, resp *datadogV1.SyntheticsGlobalVariable) syntheticsGlobalVariableTestOptions {
+	parseTestId, parseTestIdOK := resp.GetParseTestPublicIdOk()
+	if !parseTestIdOK {
+		return syntheticsGlobalVariableTestOptions{}
+	}
+
+	parseTestOptions, parseTestOptionsOK := newParseTestOptions(ctx, resp)
+	return syntheticsGlobalVariableTestOptions{
+		parseTestId:        types.StringPointerValue(parseTestId),
+		parseTestIdOK:      true,
+		parseTestOptions:   parseTestOptions,
+		parseTestOptionsOK: parseTestOptionsOK,
+	}
+}
+
+func newParseTestOptions(ctx context.Context, resp *datadogV1.SyntheticsGlobalVariable) (types.List, bool) {
+	parseTestOptions, ok := resp.GetParseTestOptionsOk()
+	if !ok {
+		return types.ListNull(syntheticsGlobalVariableParseTestOptionsAttrType), false
+	}
+
+	localParseTestOptions := syntheticsGlobalVariableParseTestOptionsModel{}
+	localParseTestOptions.Type = types.StringValue(string(parseTestOptions.GetType()))
+	if field, ok := parseTestOptions.GetFieldOk(); ok {
+		localParseTestOptions.Field = types.StringValue(*field)
+	}
+	if parser, ok := parseTestOptions.GetParserOk(); ok {
+		localParser := syntheticsGlobalVariableParserModel{}
+		localParser.Type = types.StringValue(string(parser.GetType()))
+		if value, ok := parser.GetValueOk(); ok {
+			localParser.Value = types.StringValue(*value)
+		}
+		localParseTestOptions.Parser = []syntheticsGlobalVariableParserModel{localParser}
+	}
+	if localVariableName, ok := parseTestOptions.GetLocalVariableNameOk(); ok {
+		localParseTestOptions.LocalVariableName = types.StringValue(*localVariableName)
+	}
+	parseTestOptionsList := []syntheticsGlobalVariableParseTestOptionsModel{localParseTestOptions}
+	list, _ := types.ListValueFrom(ctx, syntheticsGlobalVariableParseTestOptionsAttrType, parseTestOptionsList)
+	return list, true
+}
+
+type syntheticsGlobalVariableTestOptions struct {
+	parseTestId        types.String
+	parseTestIdOK      bool
+	parseTestOptions   types.List
+	parseTestOptionsOK bool
+}
+
+func newGlobalVariableValue(ctx context.Context, resp *datadogV1.SyntheticsGlobalVariable) syntheticsGlobalVariableValue {
+	value, ok := resp.GetValueOk()
+	if !ok {
+		return syntheticsGlobalVariableValue{}
+	}
+	secure, secureOK := value.GetSecureOk()
+	options, optionsOK := newOptions(ctx, value)
+
+	return syntheticsGlobalVariableValue{
+		value:     types.StringValue(value.GetValue()),
+		valueOK:   true,
+		secure:    types.BoolPointerValue(secure),
+		secureOK:  secureOK,
+		options:   options,
+		optionsOK: optionsOK,
+	}
+}
+
+func newOptions(ctx context.Context, value *datadogV1.SyntheticsGlobalVariableValue) (types.List, bool) {
+	options, ok := value.GetOptionsOk()
+	if !ok {
+		return types.ListNull(syntheticsGlobalVariableOptionsAttrType), false
+	}
+	localVariableOptions := syntheticsGlobalVariableOptionsModel{}
+	if totpParameters, ok := options.GetTotpParametersOk(); ok {
+		localTotpParameters := syntheticsGlobalVariableTotpParametersModel{
+			Digits:          types.Int64Value(int64(totpParameters.GetDigits())),
+			RefreshInterval: types.Int64Value(int64(totpParameters.GetRefreshInterval())),
+		}
+		localVariableOptions.TotpParameters = []syntheticsGlobalVariableTotpParametersModel{localTotpParameters}
+	}
+	optionsList := []syntheticsGlobalVariableOptionsModel{localVariableOptions}
+	list, _ := types.ListValueFrom(ctx, syntheticsGlobalVariableOptionsAttrType, optionsList)
+	return list, true
+}
+
+type syntheticsGlobalVariableValue struct {
+	value     types.String
+	valueOK   bool
+	secure    types.Bool
+	secureOK  bool
+	options   types.List
+	optionsOK bool
 }
