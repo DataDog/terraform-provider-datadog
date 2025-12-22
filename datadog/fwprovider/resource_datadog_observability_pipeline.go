@@ -2563,15 +2563,13 @@ func expandKafkaSource(src *kafkaSourceModel, id string) datadogV2.Observability
 
 // createProcessorModel creates a processorModel with common fields populated
 func createProcessorModel(proc observability_pipeline.BaseProcessor) *processorModel {
-	model := &processorModel{
-		Id:      types.StringValue(proc.GetId()),
-		Enabled: types.BoolValue(proc.GetEnabled()),
-		Include: types.StringValue(proc.GetInclude()),
+	displayName, _ := proc.GetDisplayNameOk()
+	return &processorModel{
+		Id:          types.StringValue(proc.GetId()),
+		Enabled:     types.BoolValue(proc.GetEnabled()),
+		Include:     types.StringValue(proc.GetInclude()),
+		DisplayName: types.StringPointerValue(displayName),
 	}
-	if displayName, ok := proc.GetDisplayNameOk(); ok && displayName != nil {
-		model.DisplayName = types.StringValue(*displayName)
-	}
-	return model
 }
 
 func flattenFilterProcessor(ctx context.Context, src *datadogV2.ObservabilityPipelineFilterProcessor) *processorModel {
