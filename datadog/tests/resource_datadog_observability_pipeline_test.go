@@ -4412,7 +4412,6 @@ resource "datadog_observability_pipeline" "add_hostname_test" {
 func TestAccDatadogObservabilityPipeline_ParseXML(t *testing.T) {
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	resourceName := "datadog_observability_pipeline.parse_xml_test"
-
 	resource.Test(t, resource.TestCase{
 		ProtoV5ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
@@ -4469,7 +4468,7 @@ resource "datadog_observability_pipeline" "parse_xml_test" {
     }
 
     destination {
-      id     = "dest-1"
+          id     = "dest-1"
       inputs = ["group-1"]
       datadog_logs {}
     }
@@ -4557,87 +4556,567 @@ func TestAccDatadogObservabilityPipeline_SplitArray(t *testing.T) {
 
 func testAccObservabilityPipelineSplitArrayMinimal() string {
 	return `
-resource "datadog_observability_pipeline" "split_array_test" {
-  name = "split_array pipeline"
-
-  config {
-    source {
-      id = "source-1"
-      datadog_agent {}
-    }
-
-    processor_group {
-      id      = "group-1"
-      enabled = true
-      include = "*"
-      inputs  = ["source-1"]
-
-      processor {
-        id      = "split-array-proc"
+  resource "datadog_observability_pipeline" "split_array_test" {
+    name = "split_array pipeline"
+  
+    config {
+      source {
+        id = "source-1"
+        datadog_agent {}
+      }
+  
+      processor_group {
+        id      = "group-1"
         enabled = true
         include = "*"
-
-        split_array {
-          array {
-            include = "*"
-            field   = "tags"
+        inputs  = ["source-1"]
+  
+        processor {
+          id      = "split-array-proc"
+          enabled = true
+          include = "*"
+  
+          split_array {
+            array {
+              include = "*"
+              field   = "tags"
+            }
           }
         }
       }
-    }
-
-    destination {
-      id     = "dest-1"
-      inputs = ["group-1"]
-      datadog_logs {}
+  
+      destination {
+        id     = "dest-1"
+        inputs = ["group-1"]
+        datadog_logs {}
+      }
     }
   }
-}
-`
+  `
 }
 
 func testAccObservabilityPipelineSplitArrayFull() string {
 	return `
-resource "datadog_observability_pipeline" "split_array_test" {
-  name = "split_array pipeline updated"
+  resource "datadog_observability_pipeline" "split_array_test" {
+    name = "split_array pipeline updated"
+  
+    config {
+      source {
+        id = "source-1"
+        datadog_agent {}
+      }
+  
+      processor_group {
+        id      = "group-1"
+        enabled = true
+        include = "*"
+        inputs  = ["source-1"]
+  
+        processor {
+          id           = "split-array-proc"
+          enabled      = true
+          include      = "*"
+          display_name = "Array Splitter"
+  
+          split_array {
+            array {
+              include = "source:prod"
+              field   = "items"
+            }
+            array {
+              include = "source:staging"
+              field   = "events"
+            }
+          }
+        }
+      }
+  
+      destination {
+        id     = "dest-1"
+        inputs = ["group-1"]
+        datadog_logs {}
+      }
+    }
+  }
+  `
+}
+
+func TestAccDatadogObservabilityPipeline_metricsPipelineType(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.metrics_pipeline"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "metrics_pipeline" {
+  name = "metrics pipeline"
 
   config {
+    pipeline_type = "metrics"
+
     source {
       id = "source-1"
-      datadog_agent {}
+      datadog_agent {
+      }
     }
 
     processor_group {
-      id      = "group-1"
+      id      = "metric-tags-group-1"
       enabled = true
       include = "*"
       inputs  = ["source-1"]
 
       processor {
-        id           = "split-array-proc"
-        enabled      = true
-        include      = "*"
-        display_name = "Array Splitter"
+        id      = "metric-tags-1"
+        enabled = true
+        include = "*"
 
-        split_array {
-          array {
-            include = "source:prod"
-            field   = "items"
-          }
-          array {
-            include = "source:staging"
-            field   = "events"
+        metric_tags {
+          rule {
+            mode   = "filter"
+            action = "include"
+            keys   = ["env", "service", "version"]
           }
         }
       }
     }
 
     destination {
-      id     = "dest-1"
-      inputs = ["group-1"]
-      datadog_logs {}
+      id     = "destination-1"
+      inputs = ["metric-tags-group-1"]
+      datadog_metrics {
+      }
     }
   }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "metrics pipeline"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.pipeline_type", "metrics"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.id", "source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.id", "metric-tags-group-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.id", "metric-tags-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.metric_tags.0.rule.0.mode", "filter"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.metric_tags.0.rule.0.action", "include"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.metric_tags.0.rule.0.keys.0", "env"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.metric_tags.0.rule.0.keys.1", "service"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.metric_tags.0.rule.0.keys.2", "version"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.id", "destination-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.datadog_metrics.#", "1"),
+				),
+			},
+		},
+	})
 }
-`
+
+func TestAccDatadogObservabilityPipeline_metricTagsProcessor(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.metric_tags"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "metric_tags" {
+  name = "metric tags processor test"
+
+  config {
+    pipeline_type = "metrics"
+
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+
+    processor_group {
+      id      = "metric-tags-group-1"
+      enabled = true
+      include = "*"
+      inputs  = ["source-1"]
+
+      processor {
+        id      = "metric-tags-processor"
+        enabled = true
+        include = "*"
+
+        metric_tags {
+          rule {
+            mode   = "filter"
+            action = "include"
+            keys   = ["env", "service", "version"]
+          }
+
+          rule {
+            mode   = "filter"
+            action = "exclude"
+            keys   = ["debug", "internal"]
+          }
+        }
+      }
+    }
+
+    destination {
+      id     = "destination-1"
+      inputs = ["metric-tags-group-1"]
+      datadog_metrics {
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "metric tags processor test"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.pipeline_type", "metrics"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.id", "source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.id", "metric-tags-group-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.id", "metric-tags-processor"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.enabled", "true"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.include", "*"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.metric_tags.0.rule.0.mode", "filter"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.metric_tags.0.rule.0.action", "include"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.metric_tags.0.rule.0.keys.0", "env"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.metric_tags.0.rule.0.keys.1", "service"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.metric_tags.0.rule.0.keys.2", "version"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.metric_tags.0.rule.1.mode", "filter"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.metric_tags.0.rule.1.action", "exclude"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.metric_tags.0.rule.1.keys.0", "debug"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.metric_tags.0.rule.1.keys.1", "internal"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.id", "destination-1"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogObservabilityPipeline_datadogMetricsDestination(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.datadog_metrics"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "datadog_metrics" {
+  name = "datadog metrics destination test"
+
+  config {
+    pipeline_type = "metrics"
+
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+
+    processor_group {
+      id      = "filter-group-1"
+      enabled = true
+      include = "*"
+      inputs  = ["source-1"]
+
+      processor {
+        id      = "filter-1"
+        enabled = true
+        include = "*"
+
+        filter {}
+      }
+    }
+
+    destination {
+      id     = "datadog-metrics-dest-1"
+      inputs = ["filter-group-1"]
+      datadog_metrics {
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "datadog metrics destination test"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.pipeline_type", "metrics"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.id", "source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.id", "filter-group-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.id", "datadog-metrics-dest-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "filter-group-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.datadog_metrics.#", "1"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogObservabilityPipeline_httpClientDestination(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.http_client_dest"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "http_client_dest" {
+  name = "http client destination pipeline"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+
+    destination {
+      id     = "http-client-dest-1"
+      inputs = ["source-1"]
+
+      http_client {
+        encoding      = "json"
+        auth_strategy = "basic"
+
+        compression {
+          algorithm = "gzip"
+        }
+
+        tls {
+          crt_file = "/etc/ssl/certs/http.crt"
+          ca_file  = "/etc/ssl/certs/ca.crt"
+          key_file = "/etc/ssl/private/http.key"
+        }
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "http client destination pipeline"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.id", "source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.id", "http-client-dest-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.http_client.0.encoding", "json"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.http_client.0.auth_strategy", "basic"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.http_client.0.compression.0.algorithm", "gzip"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.http_client.0.tls.0.crt_file", "/etc/ssl/certs/http.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.http_client.0.tls.0.ca_file", "/etc/ssl/certs/ca.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.http_client.0.tls.0.key_file", "/etc/ssl/private/http.key"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogObservabilityPipeline_httpClientDestinationMinimal(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.http_client_dest_minimal"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "http_client_dest_minimal" {
+  name = "http client destination minimal"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+
+    destination {
+      id     = "http-client-dest-minimal-1"
+      inputs = ["source-1"]
+
+      http_client {
+        encoding = "json"
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "http client destination minimal"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.id", "http-client-dest-minimal-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.http_client.0.encoding", "json"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogObservabilityPipeline_metricsFullPipeline(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.metrics_full"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "metrics_full" {
+  name = "metrics full pipeline test"
+
+  config {
+    pipeline_type = "metrics"
+
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+
+    processor_group {
+      id      = "filter-group-1"
+      enabled = true
+      include = "*"
+      inputs  = ["source-1"]
+
+      processor {
+        id      = "filter-1"
+        enabled = true
+        include = "env:prod"
+
+        filter {}
+      }
+    }
+
+    processor_group {
+      id      = "metric-tags-group-1"
+      enabled = true
+      include = "*"
+      inputs  = ["filter-group-1"]
+
+      processor {
+        id      = "metric-tags-1"
+        enabled = true
+        include = "*"
+
+        metric_tags {
+          rule {
+            mode   = "filter"
+            action = "include"
+            keys   = ["env", "service"]
+          }
+        }
+      }
+    }
+
+    destination {
+      id     = "datadog-metrics-dest-1"
+      inputs = ["metric-tags-group-1"]
+      datadog_metrics {
+      }
+    }
+
+    destination {
+      id     = "http-dest-1"
+      inputs = ["metric-tags-group-1"]
+      http_client {
+        encoding = "json"
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "metrics full pipeline test"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.pipeline_type", "metrics"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.id", "source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.id", "filter-group-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.id", "filter-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.include", "env:prod"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.1.id", "metric-tags-group-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.1.processor.0.id", "metric-tags-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.1.processor.0.metric_tags.0.rule.0.keys.0", "env"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.1.processor.0.metric_tags.0.rule.0.keys.1", "service"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.id", "datadog-metrics-dest-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.datadog_metrics.#", "1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.1.id", "http-dest-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.1.http_client.0.encoding", "json"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogObservabilityPipeline_logsPipelineTypeExplicit(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.logs_explicit"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "logs_explicit" {
+  name = "logs pipeline explicit"
+
+  config {
+    pipeline_type = "logs"
+
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+
+    processor_group {
+      id      = "parser-group-1"
+      enabled = true
+      include = "*"
+      inputs  = ["source-1"]
+
+      processor {
+        id      = "parser-1"
+        enabled = true
+        include = "*"
+
+        parse_json {
+          field = "message"
+        }
+      }
+    }
+
+    destination {
+      id     = "destination-1"
+      inputs = ["parser-group-1"]
+      datadog_logs {
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "logs pipeline explicit"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.pipeline_type", "logs"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.id", "source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.id", "parser-group-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.id", "parser-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.parse_json.0.field", "message"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.id", "destination-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.datadog_logs.#", "1"),
+				),
+			},
+		},
+	})
 }
