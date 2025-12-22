@@ -40,11 +40,15 @@ func TestAccCSMThreatsAgentRulesDataSource(t *testing.T) {
 			actions {
 				set {
 					name   = "test_action"
-					field  = "exec.file.path"
+					field  = "open.file.path"
 					append = false
 					scope  = "process"
 				}
-				hash {}
+            }
+			actions {
+				hash {
+					field = "open.file"
+				}
 			}
 		}
 	`, policyConfig, agentRuleName)
@@ -96,11 +100,15 @@ resource "datadog_csm_threats_agent_rule" "agent_rule" {
   actions {
     set {
       name   = "test_action"
-      field  = "exec.file.path"
+      field  = "open.file.path"
       append = false
       scope  = "process"
     }
-    hash {}
+  }
+  actions {
+    hash {
+      field = "open.file"
+    }
   }
 }
 `, policyName, agentRuleName)
@@ -166,12 +174,12 @@ func checkCSMThreatsAgentRulesDataSourceContent(accProvider *fwprovider.Framewor
 			resource.TestCheckResourceAttr(dataSourceName, fmt.Sprintf("agent_rules.%d.expression", idx), "open.file.name == \"etc/shadow/password\""),
 			resource.TestCheckResourceAttr(dataSourceName, fmt.Sprintf("agent_rules.%d.product_tags.#", idx), "1"),
 			resource.TestCheckTypeSetElemAttr(dataSourceName, fmt.Sprintf("agent_rules.%d.product_tags.*", idx), "compliance_framework:PCI-DSS"),
-			resource.TestCheckResourceAttr(dataSourceName, fmt.Sprintf("agent_rules.%d.actions.#", idx), "1"),
+			resource.TestCheckResourceAttr(dataSourceName, fmt.Sprintf("agent_rules.%d.actions.#", idx), "2"),
 			resource.TestCheckResourceAttr(dataSourceName, fmt.Sprintf("agent_rules.%d.actions.0.set.name", idx), "test_action"),
-			resource.TestCheckResourceAttr(dataSourceName, fmt.Sprintf("agent_rules.%d.actions.0.set.field", idx), "exec.file.path"),
+			resource.TestCheckResourceAttr(dataSourceName, fmt.Sprintf("agent_rules.%d.actions.0.set.field", idx), "open.file.path"),
 			resource.TestCheckResourceAttr(dataSourceName, fmt.Sprintf("agent_rules.%d.actions.0.set.append", idx), "false"),
 			resource.TestCheckResourceAttr(dataSourceName, fmt.Sprintf("agent_rules.%d.actions.0.set.scope", idx), "process"),
-			resource.TestCheckResourceAttr(dataSourceName, fmt.Sprintf("agent_rules.%d.actions.0.hash.%%", idx), "0"),
+			resource.TestCheckResourceAttr(dataSourceName, fmt.Sprintf("agent_rules.%d.actions.1.hash.field", idx), "open.file"),
 		)(state)
 	}
 }

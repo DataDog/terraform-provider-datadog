@@ -53,11 +53,15 @@ func TestAccCSMThreatsAgentRule_CreateAndUpdate(t *testing.T) {
 					actions {
 						set {
 							name   = "test_action"
-							field  = "exec.file.path"
+							field  = "open.file.path"
 							append = false
 							scope  = "process"
 						}
-						hash {}
+					}
+					actions {
+						hash {
+							field = "open.file"
+						}
 					}
 				}`, policyConfig, agentRuleName),
 				Check: resource.ComposeTestCheckFunc(
@@ -71,6 +75,7 @@ func TestAccCSMThreatsAgentRule_CreateAndUpdate(t *testing.T) {
 						"test_action",
 						"exec.file.path",
 						"process",
+						"open.file",
 					),
 				),
 			},
@@ -92,7 +97,11 @@ func TestAccCSMThreatsAgentRule_CreateAndUpdate(t *testing.T) {
 							append = true
 							scope  = "container"
 						}
-						hash {}
+					}
+					actions {
+						hash {
+							field = "open.file"
+						}
 					}
 				}`, policyConfig, agentRuleName),
 				Check: resource.ComposeTestCheckFunc(
@@ -106,6 +115,7 @@ func TestAccCSMThreatsAgentRule_CreateAndUpdate(t *testing.T) {
 						"updated_action",
 						"new_value",
 						"container",
+						"open.file",
 					),
 				),
 			},
@@ -128,7 +138,11 @@ func TestAccCSMThreatsAgentRule_CreateAndUpdate(t *testing.T) {
 							inherited = true
 							default_value = "abc"
 						}
-						hash {}
+					}
+					actions {
+						hash {
+							field = "open.file"
+						}
 					}
 				}`, policyConfig, agentRuleName),
 				Check: resource.ComposeTestCheckFunc(
@@ -142,6 +156,7 @@ func TestAccCSMThreatsAgentRule_CreateAndUpdate(t *testing.T) {
 						"updated_action",
 						"new_value",
 						"process",
+						"open.file",
 					),
 				),
 			},
@@ -195,7 +210,7 @@ func testAccCheckCSMThreatsAgentRuleDestroy(accProvider *fwprovider.FrameworkPro
 	}
 }
 
-func checkCSMThreatsAgentRuleContent(resourceName string, name string, description string, expression string, product_tags string, action_name string, action_value_source string, action_scope string) resource.TestCheckFunc {
+func checkCSMThreatsAgentRuleContent(resourceName string, name string, description string, expression string, product_tags string, action_name string, action_value_source string, action_scope string, hash_field string) resource.TestCheckFunc {
 	return resource.ComposeTestCheckFunc(
 		resource.TestCheckResourceAttr(resourceName, "name", name),
 		resource.TestCheckResourceAttr(resourceName, "description", description),
@@ -203,10 +218,10 @@ func checkCSMThreatsAgentRuleContent(resourceName string, name string, descripti
 		resource.TestCheckResourceAttr(resourceName, "expression", expression),
 		resource.TestCheckResourceAttr(resourceName, "product_tags.#", "1"),
 		resource.TestCheckTypeSetElemAttr(resourceName, "product_tags.*", product_tags),
-		resource.TestCheckResourceAttr(resourceName, "actions.#", "1"),
+		resource.TestCheckResourceAttr(resourceName, "actions.#", "2"),
 		resource.TestCheckResourceAttr(resourceName, "actions.0.set.name", action_name),
 		resource.TestCheckResourceAttr(resourceName, "actions.0.set.scope", action_scope),
-		resource.TestCheckResourceAttr(resourceName, "actions.0.hash.%", "0"),
+		resource.TestCheckResourceAttr(resourceName, "actions.1.hash.field", hash_field),
 		func(s *terraform.State) error {
 			r := s.RootModule().Resources[resourceName]
 			if r == nil {

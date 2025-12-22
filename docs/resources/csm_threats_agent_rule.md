@@ -63,13 +63,13 @@ Optional:
 <a id="nestedblock--actions--hash"></a>
 ### Nested Schema for `actions.hash`
 
+Optional:
+
+- `field` (String) The field to hash
+
 
 <a id="nestedblock--actions--set"></a>
 ### Nested Schema for `actions.set`
-
-Required:
-
-- `name` (String) The name of the set action
 
 Optional:
 
@@ -78,6 +78,7 @@ Optional:
 - `expression` (String) The expression to use for the set action
 - `field` (String) The field to get the value from
 - `inherited` (Boolean) Whether the set action is inherited
+- `name` (String) The name of the set action
 - `scope` (String) The scope of the set action (process, container, cgroup, or empty)
 - `size` (Number) The maximum size of the set
 - `ttl` (Number) The time to live for the set in nanoseconds
