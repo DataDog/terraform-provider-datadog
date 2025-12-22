@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"description":"im a policy","enabled":true,"hostTagsLists":[["host_name:test_host","env:prod"],["host_name:test_host2","env:staging"]],"name":"njvhuenogj"},"type":"policy"}}
+            {"data":{"attributes":{"description":"im a policy","enabled":true,"hostTagsLists":[["host_name:test_host","env:prod"],["host_name:test_host2","env:staging"]],"name":"xnbeamemgi"},"type":"policy"}}
         form: {}
         headers:
             Accept:
@@ -28,15 +28,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 441
+        content_length: 463
         uncompressed: false
-        body: '{"data":{"id":"ivn-pii-xfy","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"im a policy","disabledRulesCount":1,"enabled":true,"hostTagsLists":[["host_name:test_host","env:prod"],["host_name:test_host2","env:staging"]],"monitoringRulesCount":7,"name":"njvhuenogj","pinned":false,"policyVersion":"1","ruleCount":8,"updateDate":1761225148343,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
+        body: '{"data":{"id":"bmz-gfs-erx","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"im a policy","disabledRulesCount":1,"enabled":true,"hostTagsLists":[["host_name:test_host","env:prod"],["host_name:test_host2","env:staging"]],"monitoringRulesCount":7,"name":"xnbeamemgi","pinned":false,"policyType":"policy","policyVersion":"1","ruleCount":8,"updateDate":1766061658883,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 502.749125ms
+        duration: 410.108024ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -53,7 +53,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/ivn-pii-xfy
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/bmz-gfs-erx
         method: GET
       response:
         proto: HTTP/1.1
@@ -61,15 +61,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 441
+        content_length: 463
         uncompressed: false
-        body: '{"data":{"id":"ivn-pii-xfy","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"im a policy","disabledRulesCount":0,"enabled":true,"hostTagsLists":[["host_name:test_host","env:prod"],["host_name:test_host2","env:staging"]],"monitoringRulesCount":0,"name":"njvhuenogj","pinned":false,"policyVersion":"1","ruleCount":0,"updateDate":1761225148343,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
+        body: '{"data":{"id":"bmz-gfs-erx","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"im a policy","disabledRulesCount":0,"enabled":true,"hostTagsLists":[["host_name:test_host","env:prod"],["host_name:test_host2","env:staging"]],"monitoringRulesCount":0,"name":"xnbeamemgi","pinned":false,"policyType":"policy","policyVersion":"1","ruleCount":0,"updateDate":1766061658883,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 548.877459ms
+        duration: 298.691404ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -86,7 +86,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/ivn-pii-xfy
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/bmz-gfs-erx
         method: GET
       response:
         proto: HTTP/1.1
@@ -94,15 +94,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 441
+        content_length: 463
         uncompressed: false
-        body: '{"data":{"id":"ivn-pii-xfy","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"im a policy","disabledRulesCount":0,"enabled":true,"hostTagsLists":[["host_name:test_host","env:prod"],["host_name:test_host2","env:staging"]],"monitoringRulesCount":0,"name":"njvhuenogj","pinned":false,"policyVersion":"1","ruleCount":0,"updateDate":1761225148343,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
+        body: '{"data":{"id":"bmz-gfs-erx","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"im a policy","disabledRulesCount":0,"enabled":true,"hostTagsLists":[["host_name:test_host","env:prod"],["host_name:test_host2","env:staging"]],"monitoringRulesCount":0,"name":"xnbeamemgi","pinned":false,"policyType":"policy","policyVersion":"1","ruleCount":0,"updateDate":1766061658883,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 509.076042ms
+        duration: 275.229968ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -119,7 +119,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/ivn-pii-xfy
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/bmz-gfs-erx
         method: GET
       response:
         proto: HTTP/1.1
@@ -127,15 +127,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 441
+        content_length: 463
         uncompressed: false
-        body: '{"data":{"id":"ivn-pii-xfy","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"im a policy","disabledRulesCount":0,"enabled":true,"hostTagsLists":[["host_name:test_host","env:prod"],["host_name:test_host2","env:staging"]],"monitoringRulesCount":0,"name":"njvhuenogj","pinned":false,"policyVersion":"1","ruleCount":0,"updateDate":1761225148343,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
+        body: '{"data":{"id":"bmz-gfs-erx","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"im a policy","disabledRulesCount":0,"enabled":true,"hostTagsLists":[["host_name:test_host","env:prod"],["host_name:test_host2","env:staging"]],"monitoringRulesCount":0,"name":"xnbeamemgi","pinned":false,"policyType":"policy","policyVersion":"1","ruleCount":0,"updateDate":1766061658883,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 449.714791ms
+        duration: 308.892729ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -148,14 +148,14 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"description":"updated policy for terraform provider test","enabled":true,"hostTagsLists":[["host_name:test","env:prod"],["host_name:test_host2","env:test"]],"name":"njvhuenogj"},"id":"ivn-pii-xfy","type":"policy"}}
+            {"data":{"attributes":{"description":"updated policy for terraform provider test","enabled":true,"hostTagsLists":[["host_name:test","env:prod"],["host_name:test_host2","env:test"]],"name":"xnbeamemgi"},"id":"bmz-gfs-erx","type":"policy"}}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/ivn-pii-xfy
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/bmz-gfs-erx
         method: PATCH
       response:
         proto: HTTP/1.1
@@ -163,15 +163,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 464
+        content_length: 486
         uncompressed: false
-        body: '{"data":{"id":"ivn-pii-xfy","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"updated policy for terraform provider test","disabledRulesCount":0,"enabled":true,"hostTagsLists":[["host_name:test","env:prod"],["host_name:test_host2","env:test"]],"monitoringRulesCount":0,"name":"njvhuenogj","pinned":false,"policyVersion":"2","ruleCount":0,"updateDate":1761225151989,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
+        body: '{"data":{"id":"bmz-gfs-erx","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"updated policy for terraform provider test","disabledRulesCount":0,"enabled":true,"hostTagsLists":[["host_name:test","env:prod"],["host_name:test_host2","env:test"]],"monitoringRulesCount":0,"name":"xnbeamemgi","pinned":false,"policyType":"policy","policyVersion":"2","ruleCount":0,"updateDate":1766061661092,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 1.180185125s
+        duration: 865.169779ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -188,7 +188,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/ivn-pii-xfy
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/bmz-gfs-erx
         method: GET
       response:
         proto: HTTP/1.1
@@ -196,15 +196,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 464
+        content_length: 486
         uncompressed: false
-        body: '{"data":{"id":"ivn-pii-xfy","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"updated policy for terraform provider test","disabledRulesCount":0,"enabled":true,"hostTagsLists":[["host_name:test","env:prod"],["host_name:test_host2","env:test"]],"monitoringRulesCount":0,"name":"njvhuenogj","pinned":false,"policyVersion":"2","ruleCount":0,"updateDate":1761225151989,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
+        body: '{"data":{"id":"bmz-gfs-erx","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"updated policy for terraform provider test","disabledRulesCount":0,"enabled":true,"hostTagsLists":[["host_name:test","env:prod"],["host_name:test_host2","env:test"]],"monitoringRulesCount":0,"name":"xnbeamemgi","pinned":false,"policyType":"policy","policyVersion":"2","ruleCount":0,"updateDate":1766061661092,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 371.277459ms
+        duration: 330.73939ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -221,7 +221,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/ivn-pii-xfy
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/bmz-gfs-erx
         method: GET
       response:
         proto: HTTP/1.1
@@ -229,15 +229,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 464
+        content_length: 486
         uncompressed: false
-        body: '{"data":{"id":"ivn-pii-xfy","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"updated policy for terraform provider test","disabledRulesCount":0,"enabled":true,"hostTagsLists":[["host_name:test","env:prod"],["host_name:test_host2","env:test"]],"monitoringRulesCount":0,"name":"njvhuenogj","pinned":false,"policyVersion":"2","ruleCount":0,"updateDate":1761225151989,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
+        body: '{"data":{"id":"bmz-gfs-erx","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"updated policy for terraform provider test","disabledRulesCount":0,"enabled":true,"hostTagsLists":[["host_name:test","env:prod"],["host_name:test_host2","env:test"]],"monitoringRulesCount":0,"name":"xnbeamemgi","pinned":false,"policyType":"policy","policyVersion":"2","ruleCount":0,"updateDate":1766061661092,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 312.513791ms
+        duration: 525.11269ms
     - id: 7
       request:
         proto: HTTP/1.1
@@ -254,7 +254,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/ivn-pii-xfy
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/bmz-gfs-erx
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -270,7 +270,7 @@ interactions:
                 - application/json
         status: 204 No Content
         code: 204
-        duration: 389.202375ms
+        duration: 484.23856ms
     - id: 8
       request:
         proto: HTTP/1.1
@@ -287,7 +287,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/ivn-pii-xfy
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/bmz-gfs-erx
         method: GET
       response:
         proto: HTTP/1.1
@@ -303,4 +303,4 @@ interactions:
                 - application/json
         status: 404 Not Found
         code: 404
-        duration: 400.014542ms
+        duration: 341.047261ms
