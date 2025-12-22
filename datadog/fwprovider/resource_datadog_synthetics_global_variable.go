@@ -19,6 +19,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/fwutils"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 )
@@ -28,6 +29,20 @@ var (
 	_ resource.ResourceWithImportState = &syntheticsGlobalVariableResource{}
 	_ resource.ResourceWithModifyPlan  = &syntheticsGlobalVariableResource{}
 )
+
+var valueConfig = fwutils.WriteOnlySecretConfig{
+	OriginalAttr:         "value",
+	WriteOnlyAttr:        "value_wo",
+	TriggerAttr:          "value_wo_version",
+	OriginalDescription:  "The value of the global variable. Required unless `is_fido` is set to `true` or `value_wo` is used",
+	WriteOnlyDescription: "Write-only value of the global variable. Must be used with `value_wo_version`.",
+	TriggerDescription:   "Version associated with the write-only value. Changing this triggers an update. Can be any string (e.g., '1', 'v2.1', '2024-Q1').",
+}
+
+var valueHandler = &fwutils.WriteOnlySecretHandler{
+	Config:                 valueConfig,
+	SecretRequiredOnUpdate: false, // API supports partial updates (secret is optional)
+}
 
 type syntheticsGlobalVariableResource struct {
 	Api  *datadogV1.SyntheticsApi
@@ -40,6 +55,8 @@ type syntheticsGlobalVariableModel struct {
 	Description      types.String `tfsdk:"description"`
 	Tags             types.List   `tfsdk:"tags"`
 	Value            types.String `tfsdk:"value"`
+	ValueWo          types.String `tfsdk:"value_wo"`
+	ValueWoVersion   types.String `tfsdk:"value_wo_version"`
 	Secure           types.Bool   `tfsdk:"secure"`
 	ParseTestId      types.String `tfsdk:"parse_test_id"`
 	ParseTestOptions types.List   `tfsdk:"parse_test_options"`
@@ -135,10 +152,41 @@ func (r *syntheticsGlobalVariableResource) Schema(_ context.Context, _ resource.
 				Optional:    true,
 				Default:     listdefault.StaticValue(types.ListValueMust(types.StringType, []attr.Value{})),
 			},
-			"value": schema.StringAttribute{
-				Description: "The value of the global variable. Required unless `is_fido` is set to `true`.",
+			valueConfig.OriginalAttr: schema.StringAttribute{
 				Optional:    true,
+				Description: valueConfig.OriginalDescription,
 				Sensitive:   true,
+				Validators: []validator.String{
+					stringvalidator.ExactlyOneOf(
+						frameworkPath.MatchRoot(valueConfig.OriginalAttr),
+						frameworkPath.MatchRoot(valueConfig.WriteOnlyAttr),
+					),
+				},
+			},
+			valueConfig.WriteOnlyAttr: schema.StringAttribute{
+				Optional:    true,
+				Description: valueConfig.WriteOnlyDescription,
+				Sensitive:   true,
+				WriteOnly:   true,
+				Validators: []validator.String{
+					stringvalidator.ExactlyOneOf(
+						frameworkPath.MatchRoot(valueConfig.OriginalAttr),
+						frameworkPath.MatchRoot(valueConfig.WriteOnlyAttr),
+					),
+					stringvalidator.AlsoRequires(
+						frameworkPath.MatchRoot(valueConfig.TriggerAttr),
+					),
+				},
+			},
+			valueConfig.TriggerAttr: schema.StringAttribute{
+				Optional:    true,
+				Description: valueConfig.TriggerDescription,
+				Validators: []validator.String{
+					stringvalidator.LengthAtLeast(1),
+					stringvalidator.AlsoRequires(frameworkPath.Expressions{
+						frameworkPath.MatchRoot(valueConfig.WriteOnlyAttr),
+					}...),
+				},
 			},
 			"secure": schema.BoolAttribute{
 				Description: "If set to true, the value of the global variable is hidden. This setting is automatically set to `true` if `is_totp` or `is_fido` is set to `true`.",
@@ -294,7 +342,14 @@ func (r *syntheticsGlobalVariableResource) Create(ctx context.Context, request r
 		return
 	}
 
-	body, diags := r.buildSyntheticsGlobalVariableRequestBody(ctx, &state)
+	// Get secret for create
+	secretResult := valueHandler.GetSecretForCreate(ctx, &request.Config)
+	response.Diagnostics.Append(secretResult.Diagnostics...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	body, diags := r.buildSyntheticsGlobalVariableRequestBody(ctx, &state, secretResult)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
 		return
@@ -316,15 +371,22 @@ func (r *syntheticsGlobalVariableResource) Create(ctx context.Context, request r
 }
 
 func (r *syntheticsGlobalVariableResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
-	var state syntheticsGlobalVariableModel
-	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
+	var plan syntheticsGlobalVariableModel
+	response.Diagnostics.Append(request.Plan.Get(ctx, &plan)...)
 	if response.Diagnostics.HasError() {
 		return
 	}
 
-	id := state.Id.ValueString()
+	id := plan.Id.ValueString()
 
-	body, diags := r.buildSyntheticsGlobalVariableRequestBody(ctx, &state)
+	// Get secret for update
+	secretResult := valueHandler.GetSecretForUpdate(ctx, &request.Config, &request)
+	response.Diagnostics.Append(secretResult.Diagnostics...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	body, diags := r.buildSyntheticsGlobalVariableRequestBody(ctx, &plan, secretResult)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
 		return
@@ -339,10 +401,10 @@ func (r *syntheticsGlobalVariableResource) Update(ctx context.Context, request r
 		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
 		return
 	}
-	r.updateState(ctx, &state, &resp)
+	r.updateState(ctx, &plan, &resp)
 
 	// Save data into Terraform state
-	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+	response.Diagnostics.Append(response.State.Set(ctx, &plan)...)
 }
 
 func (r *syntheticsGlobalVariableResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
@@ -375,9 +437,15 @@ func (r *syntheticsGlobalVariableResource) updateState(ctx context.Context, stat
 	state.IsTotp = types.BoolValue(resp.GetIsTotp())
 	state.IsFido = types.BoolValue(resp.GetIsFido())
 
+	// When write-only mode is used, we must NOT populate the plaintext `value` in state, even if the API returns it.
+	usingWriteOnly := !state.ValueWoVersion.IsNull() && !state.ValueWoVersion.IsUnknown() && state.ValueWoVersion.ValueString() != ""
+	if usingWriteOnly {
+		state.Value = types.StringNull()
+	}
+
 	if value, ok := resp.GetValueOk(); ok {
-		if !value.GetSecure() {
-			// Only change the value in state if the global variable is not secure
+		if !usingWriteOnly && !value.GetSecure() {
+			// Only change the value in state if the global variable is not secure and we're NOT using the write-only pattern.
 			// Otherwise it will not be returned by the api, so we keep the config value
 			state.Value = types.StringValue(value.GetValue())
 		}
@@ -430,7 +498,7 @@ func (r *syntheticsGlobalVariableResource) updateState(ctx context.Context, stat
 	}
 }
 
-func (r *syntheticsGlobalVariableResource) buildSyntheticsGlobalVariableRequestBody(ctx context.Context, state *syntheticsGlobalVariableModel) (*datadogV1.SyntheticsGlobalVariableRequest, diag.Diagnostics) {
+func (r *syntheticsGlobalVariableResource) buildSyntheticsGlobalVariableRequestBody(ctx context.Context, state *syntheticsGlobalVariableModel, secretResult fwutils.SecretResult) (*datadogV1.SyntheticsGlobalVariableRequest, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
 	syntheticsGlobalVariableRequest := datadogV1.NewSyntheticsGlobalVariableRequestWithDefaults()
 
@@ -501,10 +569,25 @@ func (r *syntheticsGlobalVariableResource) buildSyntheticsGlobalVariableRequestB
 		}
 	}
 
-	if !state.Value.IsNull() {
+	// Handle value with write-only support using the provided secretResult
+	var valueToSet string
+	var shouldSetValue bool
+
+	if secretResult.SendWriteOnlySecret {
+		// Using write-only mode and should send the secret
+		valueToSet = secretResult.Value
+		shouldSetValue = true
+	} else if !state.Value.IsNull() {
+		// Using plaintext mode
+		valueToSet = state.Value.ValueString()
+		shouldSetValue = true
+	}
+
+	// Only set value if we should (either from write-only or plaintext).
+	if shouldSetValue {
 		var value datadogV1.SyntheticsGlobalVariableValue
 
-		value.SetValue(state.Value.ValueString())
+		value.SetValue(valueToSet)
 		if !state.Secure.IsNull() {
 			value.SetSecure(state.Secure.ValueBool())
 		}
@@ -551,21 +634,22 @@ func (r syntheticsGlobalVariableResource) ValidateConfig(ctx context.Context, re
 	isFido := config.IsFido.ValueBool()
 	isTotp := config.IsTotp.ValueBool()
 
-	// If `is_fido` is `true` and `value` is set, return an error.
-	if isFido && !config.Value.IsNull() {
+	hasValue := !config.Value.IsNull()
+	hasValueWo := !config.ValueWo.IsNull()
+
+	if isFido && (hasValue || hasValueWo) {
 		resp.Diagnostics.AddAttributeError(
 			frameworkPath.Root("value"),
 			"Invalid Configuration",
-			"`value` cannot be set when `is_fido` is `true`.",
+			"`value` or `value_wo` cannot be set when `is_fido` is `true`.",
 		)
 	}
 
-	// If `is_fido` is `false` and `value` is not set, return an error.
-	if !isFido && config.Value.IsNull() {
+	if !isFido && !hasValue && !hasValueWo {
 		resp.Diagnostics.AddAttributeError(
 			frameworkPath.Root("value"),
 			"Invalid Configuration",
-			"`value` must be set.",
+			"Either `value` or `value_wo` must be set.",
 		)
 	}
 
@@ -580,19 +664,18 @@ func (r syntheticsGlobalVariableResource) ValidateConfig(ctx context.Context, re
 }
 
 func (r syntheticsGlobalVariableResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
-	var config syntheticsGlobalVariableModel
-	diags := req.Plan.Get(ctx, &config)
+	var plan syntheticsGlobalVariableModel
+	diags := req.Plan.Get(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	isTotp := config.IsTotp.ValueBool()
-	isFido := config.IsFido.ValueBool()
+	isTotp := plan.IsTotp.ValueBool()
+	isFido := plan.IsFido.ValueBool()
 
 	// Default to true for secure when is_fido or is_totp is true
 	if isFido || isTotp {
 		resp.Plan.SetAttribute(ctx, frameworkPath.Root("secure"), types.BoolValue(true))
-		return
 	}
 }
