@@ -1,0 +1,402 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 174
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"dry_run":false,"env":"prod","identifier":"tf-TestAccDeploymentRuleTypeForceNew-local-1762264610","service":"test-service"},"type":"deployment_gate"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/deployment_gates
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 545
+        uncompressed: false
+        body: '{"data":{"id":"6ed44078-e0cf-4e1d-9c87-d3a213eb3e34","type":"deployment_gate","attributes":{"created_at":"2025-11-04T13:56:52.580896Z","created_by":{"id":"9748ef73-8f8e-4e26-b85e-3ca8c1d5af26","name":"Aaron Hoffman","handle":"aaron.hoffman@datadoghq.com"},"dry_run":false,"env":"prod","identifier":"tf-TestAccDeploymentRuleTypeForceNew-local-1762264610","service":"test-service","updated_at":"2025-11-04T13:56:52.580896Z","updated_by":{"id":"9748ef73-8f8e-4e26-b85e-3ca8c1d5af26","name":"Aaron Hoffman","handle":"aaron.hoffman@datadoghq.com"}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 283.733459ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 193
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"dry_run":false,"name":"My deployment rule","options":{"duration":10,"excluded_resources":["resource1"]},"type":"faulty_deployment_detection"},"type":"deployment_rule"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/deployment_gates/6ed44078-e0cf-4e1d-9c87-d3a213eb3e34/rules
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 613
+        uncompressed: false
+        body: '{"data":{"id":"31e754ff-1b40-4555-9168-d0b7437c5038","type":"deployment_rule","attributes":{"created_at":"2025-11-04T13:56:52.882141Z","created_by":{"id":"9748ef73-8f8e-4e26-b85e-3ca8c1d5af26","name":"Aaron Hoffman","handle":"aaron.hoffman@datadoghq.com"},"dry_run":false,"gate_id":"6ed44078-e0cf-4e1d-9c87-d3a213eb3e34","name":"My deployment rule","options":{"duration":10,"excluded_resources":["resource1"]},"type":"faulty_deployment_detection","updated_at":"2025-11-04T13:56:52.882141Z","updated_by":{"id":"9748ef73-8f8e-4e26-b85e-3ca8c1d5af26","name":"Aaron Hoffman","handle":"aaron.hoffman@datadoghq.com"}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 222.684584ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/deployment_gates/6ed44078-e0cf-4e1d-9c87-d3a213eb3e34
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 545
+        uncompressed: false
+        body: '{"data":{"id":"6ed44078-e0cf-4e1d-9c87-d3a213eb3e34","type":"deployment_gate","attributes":{"created_at":"2025-11-04T13:56:52.580896Z","created_by":{"id":"9748ef73-8f8e-4e26-b85e-3ca8c1d5af26","name":"Aaron Hoffman","handle":"aaron.hoffman@datadoghq.com"},"dry_run":false,"env":"prod","identifier":"tf-TestAccDeploymentRuleTypeForceNew-local-1762264610","service":"test-service","updated_at":"2025-11-04T13:56:52.580896Z","updated_by":{"id":"9748ef73-8f8e-4e26-b85e-3ca8c1d5af26","name":"Aaron Hoffman","handle":"aaron.hoffman@datadoghq.com"}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 230.662542ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/deployment_gates/6ed44078-e0cf-4e1d-9c87-d3a213eb3e34/rules/31e754ff-1b40-4555-9168-d0b7437c5038
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 613
+        uncompressed: false
+        body: '{"data":{"id":"31e754ff-1b40-4555-9168-d0b7437c5038","type":"deployment_rule","attributes":{"created_at":"2025-11-04T13:56:52.882141Z","created_by":{"id":"9748ef73-8f8e-4e26-b85e-3ca8c1d5af26","name":"Aaron Hoffman","handle":"aaron.hoffman@datadoghq.com"},"dry_run":false,"gate_id":"6ed44078-e0cf-4e1d-9c87-d3a213eb3e34","name":"My deployment rule","options":{"duration":10,"excluded_resources":["resource1"]},"type":"faulty_deployment_detection","updated_at":"2025-11-04T13:56:52.882141Z","updated_by":{"id":"9748ef73-8f8e-4e26-b85e-3ca8c1d5af26","name":"Aaron Hoffman","handle":"aaron.hoffman@datadoghq.com"}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 288.202709ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/deployment_gates/6ed44078-e0cf-4e1d-9c87-d3a213eb3e34
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 545
+        uncompressed: false
+        body: '{"data":{"id":"6ed44078-e0cf-4e1d-9c87-d3a213eb3e34","type":"deployment_gate","attributes":{"created_at":"2025-11-04T13:56:52.580896Z","created_by":{"id":"9748ef73-8f8e-4e26-b85e-3ca8c1d5af26","name":"Aaron Hoffman","handle":"aaron.hoffman@datadoghq.com"},"dry_run":false,"env":"prod","identifier":"tf-TestAccDeploymentRuleTypeForceNew-local-1762264610","service":"test-service","updated_at":"2025-11-04T13:56:52.580896Z","updated_by":{"id":"9748ef73-8f8e-4e26-b85e-3ca8c1d5af26","name":"Aaron Hoffman","handle":"aaron.hoffman@datadoghq.com"}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 403.530542ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/deployment_gates/6ed44078-e0cf-4e1d-9c87-d3a213eb3e34/rules/31e754ff-1b40-4555-9168-d0b7437c5038
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 613
+        uncompressed: false
+        body: '{"data":{"id":"31e754ff-1b40-4555-9168-d0b7437c5038","type":"deployment_rule","attributes":{"created_at":"2025-11-04T13:56:52.882141Z","created_by":{"id":"9748ef73-8f8e-4e26-b85e-3ca8c1d5af26","name":"Aaron Hoffman","handle":"aaron.hoffman@datadoghq.com"},"dry_run":false,"gate_id":"6ed44078-e0cf-4e1d-9c87-d3a213eb3e34","name":"My deployment rule","options":{"duration":10,"excluded_resources":["resource1"]},"type":"faulty_deployment_detection","updated_at":"2025-11-04T13:56:52.882141Z","updated_by":{"id":"9748ef73-8f8e-4e26-b85e-3ca8c1d5af26","name":"Aaron Hoffman","handle":"aaron.hoffman@datadoghq.com"}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 400.458458ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/deployment_gates/6ed44078-e0cf-4e1d-9c87-d3a213eb3e34/rules/31e754ff-1b40-4555-9168-d0b7437c5038
+        method: DELETE
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 332.894875ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 155
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"dry_run":false,"name":"My deployment rule","options":{"query":"service:test-service"},"type":"monitor"},"type":"deployment_rule"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/deployment_gates/6ed44078-e0cf-4e1d-9c87-d3a213eb3e34/rules
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 575
+        uncompressed: false
+        body: '{"data":{"id":"ceffe5f7-edc2-45d8-b39d-4471acaff1bb","type":"deployment_rule","attributes":{"created_at":"2025-11-04T13:56:55.738322Z","created_by":{"id":"9748ef73-8f8e-4e26-b85e-3ca8c1d5af26","name":"Aaron Hoffman","handle":"aaron.hoffman@datadoghq.com"},"dry_run":false,"gate_id":"6ed44078-e0cf-4e1d-9c87-d3a213eb3e34","name":"My deployment rule","options":{"query":"service:test-service"},"type":"monitor","updated_at":"2025-11-04T13:56:55.738322Z","updated_by":{"id":"9748ef73-8f8e-4e26-b85e-3ca8c1d5af26","name":"Aaron Hoffman","handle":"aaron.hoffman@datadoghq.com"}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 368.103209ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/deployment_gates/6ed44078-e0cf-4e1d-9c87-d3a213eb3e34
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 545
+        uncompressed: false
+        body: '{"data":{"id":"6ed44078-e0cf-4e1d-9c87-d3a213eb3e34","type":"deployment_gate","attributes":{"created_at":"2025-11-04T13:56:52.580896Z","created_by":{"id":"9748ef73-8f8e-4e26-b85e-3ca8c1d5af26","name":"Aaron Hoffman","handle":"aaron.hoffman@datadoghq.com"},"dry_run":false,"env":"prod","identifier":"tf-TestAccDeploymentRuleTypeForceNew-local-1762264610","service":"test-service","updated_at":"2025-11-04T13:56:52.580896Z","updated_by":{"id":"9748ef73-8f8e-4e26-b85e-3ca8c1d5af26","name":"Aaron Hoffman","handle":"aaron.hoffman@datadoghq.com"}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 311.359708ms
+    - id: 9
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/deployment_gates/6ed44078-e0cf-4e1d-9c87-d3a213eb3e34/rules/ceffe5f7-edc2-45d8-b39d-4471acaff1bb
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 575
+        uncompressed: false
+        body: '{"data":{"id":"ceffe5f7-edc2-45d8-b39d-4471acaff1bb","type":"deployment_rule","attributes":{"created_at":"2025-11-04T13:56:55.738322Z","created_by":{"id":"9748ef73-8f8e-4e26-b85e-3ca8c1d5af26","name":"Aaron Hoffman","handle":"aaron.hoffman@datadoghq.com"},"dry_run":false,"gate_id":"6ed44078-e0cf-4e1d-9c87-d3a213eb3e34","name":"My deployment rule","options":{"query":"service:test-service"},"type":"monitor","updated_at":"2025-11-04T13:56:55.738322Z","updated_by":{"id":"9748ef73-8f8e-4e26-b85e-3ca8c1d5af26","name":"Aaron Hoffman","handle":"aaron.hoffman@datadoghq.com"}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 223.779ms
+    - id: 10
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/deployment_gates/6ed44078-e0cf-4e1d-9c87-d3a213eb3e34/rules/ceffe5f7-edc2-45d8-b39d-4471acaff1bb
+        method: DELETE
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 291.965ms
+    - id: 11
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/deployment_gates/6ed44078-e0cf-4e1d-9c87-d3a213eb3e34
+        method: DELETE
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 259.647584ms
