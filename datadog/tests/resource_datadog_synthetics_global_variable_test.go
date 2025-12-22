@@ -209,6 +209,49 @@ func TestAccDatadogSyntheticsGlobalVariable_DynamicBlocks(t *testing.T) {
 	})
 }
 
+func TestAccDatadogSyntheticsGlobalVariableWriteOnly_Basic(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testSyntheticsGlobalVariableResourceIsDestroyed(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			createSyntheticsGlobalVariableWriteOnlyStep(ctx, providers.frameworkProvider, t),
+		},
+	})
+}
+
+func TestAccDatadogSyntheticsGlobalVariableWriteOnly_Updated(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testSyntheticsGlobalVariableResourceIsDestroyed(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			createSyntheticsGlobalVariableWriteOnlyStep(ctx, providers.frameworkProvider, t),
+			updateSyntheticsGlobalVariableWriteOnlyStep(ctx, providers.frameworkProvider, t),
+		},
+	})
+}
+
+func TestAccDatadogSyntheticsGlobalVariableWriteOnlySecure_Basic(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testSyntheticsGlobalVariableResourceIsDestroyed(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			createSyntheticsGlobalVariableWriteOnlySecureStep(ctx, providers.frameworkProvider, t),
+		},
+	})
+}
+
 func createSyntheticsGlobalVariableStep(ctx context.Context, accProvider *fwprovider.FrameworkProvider, t *testing.T) resource.TestStep {
 	variableName := getUniqueVariableName(ctx, t)
 	return resource.TestStep{
@@ -834,4 +877,114 @@ func testSyntheticsGlobalVariableResourceIsDestroyed(accProvider *fwprovider.Fra
 		}
 		return nil
 	}
+}
+
+func createSyntheticsGlobalVariableWriteOnlyStep(ctx context.Context, accProvider *fwprovider.FrameworkProvider, t *testing.T) resource.TestStep {
+	variableName := getUniqueVariableName(ctx, t)
+	return resource.TestStep{
+		Config: createSyntheticsGlobalVariableWriteOnlyConfig(variableName),
+		Check: resource.ComposeTestCheckFunc(
+			testSyntheticsGlobalVariableResourceExists(accProvider),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_global_variable.foo", "name", variableName),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_global_variable.foo", "description", "a write-only global variable"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_global_variable.foo", "tags.#", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_global_variable.foo", "tags.0", "foo:bar"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_global_variable.foo", "tags.1", "baz"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_global_variable.foo", "value_wo_version", "1"),
+			resource.TestCheckNoResourceAttr(
+				"datadog_synthetics_global_variable.foo", "value_wo"),
+		),
+	}
+}
+
+func createSyntheticsGlobalVariableWriteOnlyConfig(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_synthetics_global_variable" "foo" {
+	name = "%s"
+	description = "a write-only global variable"
+	tags = ["foo:bar", "baz"]
+	value_wo = "variable-wo-value"
+	value_wo_version = "1"
+}`, uniq)
+}
+
+func updateSyntheticsGlobalVariableWriteOnlyStep(ctx context.Context, accProvider *fwprovider.FrameworkProvider, t *testing.T) resource.TestStep {
+	variableName := getUniqueVariableName(ctx, t) + "_UPDATED"
+	return resource.TestStep{
+		Config: updateSyntheticsGlobalVariableWriteOnlyConfig(variableName),
+		Check: resource.ComposeTestCheckFunc(
+			testSyntheticsGlobalVariableResourceExists(accProvider),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_global_variable.foo", "name", variableName),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_global_variable.foo", "description", "an updated write-only global variable"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_global_variable.foo", "tags.#", "3"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_global_variable.foo", "tags.0", "foo:bar"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_global_variable.foo", "tags.1", "baz"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_global_variable.foo", "tags.2", "env:test"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_global_variable.foo", "value_wo_version", "2"),
+			resource.TestCheckNoResourceAttr(
+				"datadog_synthetics_global_variable.foo", "value_wo"),
+		),
+	}
+}
+
+func updateSyntheticsGlobalVariableWriteOnlyConfig(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_synthetics_global_variable" "foo" {
+	name = "%s"
+	description = "an updated write-only global variable"
+	tags = ["foo:bar", "baz", "env:test"]
+	value_wo = "variable-wo-value-updated"
+	value_wo_version = "2"
+}`, uniq)
+}
+
+func createSyntheticsGlobalVariableWriteOnlySecureStep(ctx context.Context, accProvider *fwprovider.FrameworkProvider, t *testing.T) resource.TestStep {
+	variableName := getUniqueVariableName(ctx, t)
+	return resource.TestStep{
+		Config: createSyntheticsGlobalVariableWriteOnlySecureConfig(variableName),
+		Check: resource.ComposeTestCheckFunc(
+			testSyntheticsGlobalVariableResourceExists(accProvider),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_global_variable.foo", "name", variableName),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_global_variable.foo", "description", "a secure write-only global variable"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_global_variable.foo", "tags.#", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_global_variable.foo", "tags.0", "foo:bar"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_global_variable.foo", "tags.1", "baz"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_global_variable.foo", "secure", "true"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_global_variable.foo", "value_wo_version", "1"),
+			resource.TestCheckNoResourceAttr(
+				"datadog_synthetics_global_variable.foo", "value_wo"),
+		),
+	}
+}
+
+func createSyntheticsGlobalVariableWriteOnlySecureConfig(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_synthetics_global_variable" "foo" {
+	name = "%s"
+	description = "a secure write-only global variable"
+	tags = ["foo:bar", "baz"]
+	value_wo = "variable-wo-secure-value"
+	value_wo_version = "1"
+	secure = true
+}`, uniq)
 }

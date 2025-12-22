@@ -1,0 +1,178 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 240
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"description":"a write-only global variable","is_fido":false,"is_totp":false,"name":"TF_TESTACCDATADOGSYNTHETICSGLOBALVARIABLEWRITEONLY_BASIC_LOCAL_1766409801","tags":["foo:bar","baz"],"value":{"secure":false,"value":"variable-wo-value"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/variables
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"7535548b-312b-4209-9f4a-700ad4094455","name":"TF_TESTACCDATADOGSYNTHETICSGLOBALVARIABLEWRITEONLY_BASIC_LOCAL_1766409801","description":"a write-only global variable","type":"variable","tags":["foo:bar","baz"],"last_error":null,"value":{"secure":false,"value":"variable-wo-value"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 199.867708ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/variables/7535548b-312b-4209-9f4a-700ad4094455
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"7535548b-312b-4209-9f4a-700ad4094455","name":"TF_TESTACCDATADOGSYNTHETICSGLOBALVARIABLEWRITEONLY_BASIC_LOCAL_1766409801","description":"a write-only global variable","type":"variable","tags":["foo:bar","baz"],"created_at":"2025-12-22T13:23:22.298960+00:00","modified_at":"2025-12-22T13:23:22.298960+00:00","last_error":null,"value":{"secure":false,"value":"variable-wo-value"},"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"editor":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 176.0215ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/variables/7535548b-312b-4209-9f4a-700ad4094455
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"7535548b-312b-4209-9f4a-700ad4094455","name":"TF_TESTACCDATADOGSYNTHETICSGLOBALVARIABLEWRITEONLY_BASIC_LOCAL_1766409801","description":"a write-only global variable","type":"variable","tags":["foo:bar","baz"],"created_at":"2025-12-22T13:23:22.298960+00:00","modified_at":"2025-12-22T13:23:22.298960+00:00","last_error":null,"value":{"secure":false,"value":"variable-wo-value"},"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"editor":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 163.068458ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v1/synthetics/variables/7535548b-312b-4209-9f4a-700ad4094455
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Content-Type:
+                - text/html; charset=utf-8
+        status: 200 OK
+        code: 200
+        duration: 280.263834ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/variables/7535548b-312b-4209-9f4a-700ad4094455
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"errors":["Synthetics global variable not found"]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 189.541ms
