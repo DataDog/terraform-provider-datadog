@@ -1,0 +1,19 @@
+resources:
+  datadog_datastore_item:
+    read:
+      method: get
+      path: /api/v2/actions-datastores/{datastore_id}/items
+    create:
+      method: post
+      path: /api/v2/actions-datastores/{datastore_id}/items/bulk
+    update:
+      method: patch
+      path: /api/v2/actions-datastores/{datastore_id}/items
+    delete:
+      method: delete
+      path: /api/v2/actions-datastores/{datastore_id}/items
+
+datasources:
+  datadog_datastore_item:
+    singular: /api/v2/actions-datastores/{datastore_id}/items
+    plural: /api/v2/actions-datastores/{datastore_id}/items
