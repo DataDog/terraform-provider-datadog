@@ -14,6 +14,6 @@ resources:
       path: /api/v2/actions-datastores/{datastore_id}
 
 datasources:
-  datastore_datasource:
+  datadog_datastore:
     singular: /api/v2/actions-datastores/{datastore_id}
     plural: /api/v2/actions-datastores
