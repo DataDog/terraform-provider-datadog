@@ -1,1 +1,0 @@
-terraform import datadog_datadog_datastore.new_list ""
