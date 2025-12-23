@@ -486,12 +486,14 @@ type sensitiveDataScannerProcessorPattern struct {
 }
 
 type sensitiveDataScannerCustomPattern struct {
-	Rule types.String `tfsdk:"rule"`
+	Rule        types.String `tfsdk:"rule"`
+	Description types.String `tfsdk:"description"`
 }
 
 type sensitiveDataScannerLibraryPattern struct {
 	Id                     types.String `tfsdk:"id"`
 	UseRecommendedKeywords types.Bool   `tfsdk:"use_recommended_keywords"`
+	Description            types.String `tfsdk:"description"`
 }
 
 type sensitiveDataScannerProcessorScope struct {
@@ -1120,6 +1122,10 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 																									Optional:    true,
 																									Description: "A regular expression used to detect sensitive values. Must be a valid regex.",
 																								},
+																								"description": schema.StringAttribute{
+																									Optional:    true,
+																									Description: "Human-readable description providing context about a sensitive data scanner rule",
+																								},
 																							},
 																						},
 																						Validators: []validator.List{
@@ -1137,6 +1143,10 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 																								"use_recommended_keywords": schema.BoolAttribute{
 																									Optional:    true,
 																									Description: "Whether to augment the pattern with recommended keywords (optional).",
+																								},
+																								"description": schema.StringAttribute{
+																									Optional:    true,
+																									Description: "Human-readable description providing context about a sensitive data scanner rule",
 																								},
 																							},
 																						},
@@ -2932,7 +2942,8 @@ func flattenSensitiveDataScannerProcessor(ctx context.Context, src *datadogV2.Ob
 				options := pattern.ObservabilityPipelineSensitiveDataScannerProcessorCustomPattern.GetOptions()
 				outPattern.Custom = []sensitiveDataScannerCustomPattern{
 					{
-						Rule: types.StringValue(options.GetRule()),
+						Rule:        types.StringValue(options.GetRule()),
+						Description: types.StringValue(options.GetDescription()),
 					},
 				}
 			}
@@ -2940,7 +2951,8 @@ func flattenSensitiveDataScannerProcessor(ctx context.Context, src *datadogV2.Ob
 				options := pattern.ObservabilityPipelineSensitiveDataScannerProcessorLibraryPattern.GetOptions()
 				outPattern.Library = []sensitiveDataScannerLibraryPattern{
 					{
-						Id: types.StringValue(options.GetId()),
+						Id:          types.StringValue(options.GetId()),
+						Description: types.StringValue(options.GetDescription()),
 					},
 				}
 				if useKw, ok := options.GetUseRecommendedKeywordsOk(); ok {
@@ -3628,6 +3640,7 @@ func expandSensitiveDataScannerProcessorItem(ctx context.Context, common observa
 			if len(tfPattern.Custom) > 0 {
 				options := datadogV2.NewObservabilityPipelineSensitiveDataScannerProcessorCustomPatternOptionsWithDefaults()
 				options.SetRule(tfPattern.Custom[0].Rule.ValueString())
+				options.SetDescription(tfPattern.Custom[0].Description.ValueString())
 				customPattern := datadogV2.NewObservabilityPipelineSensitiveDataScannerProcessorCustomPattern(
 					*options,
 					datadogV2.OBSERVABILITYPIPELINESENSITIVEDATASCANNERPROCESSORCUSTOMPATTERNTYPE_CUSTOM,
@@ -3637,6 +3650,7 @@ func expandSensitiveDataScannerProcessorItem(ctx context.Context, common observa
 			} else if len(tfPattern.Library) > 0 {
 				options := datadogV2.NewObservabilityPipelineSensitiveDataScannerProcessorLibraryPatternOptionsWithDefaults()
 				options.SetId(tfPattern.Library[0].Id.ValueString())
+				options.SetDescription(tfPattern.Library[0].Description.ValueString())
 				if !tfPattern.Library[0].UseRecommendedKeywords.IsNull() {
 					options.SetUseRecommendedKeywords(tfPattern.Library[0].UseRecommendedKeywords.ValueBool())
 				}

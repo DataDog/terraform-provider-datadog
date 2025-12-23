@@ -1945,6 +1945,7 @@ resource "datadog_observability_pipeline" "sds" {
             pattern {
               custom {
                 rule = "\\bsecret-[a-z0-9]+\\b"
+                description = "secret"
               }
             }
 
@@ -2012,6 +2013,7 @@ resource "datadog_observability_pipeline" "sds" {
             pattern {
               library {
                 id = "email_address"
+                description = "email address"
               }
             }
 
