@@ -924,10 +924,9 @@ Required:
 <a id="nestedblock--config--processor_group--processor--sample"></a>
 ### Nested Schema for `config.processor_group.processor.sample`
 
-Optional:
+Required:
 
 - `percentage` (Number) The percentage of logs to sample.
-- `rate` (Number) Number of events to sample (1 in N).
 
 
 <a id="nestedblock--config--processor_group--processor--sensitive_data_scanner"></a>
