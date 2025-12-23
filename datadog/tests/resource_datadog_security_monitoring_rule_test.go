@@ -902,14 +902,15 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
     case {
         name = ""
         status = "high"
-        condition = "my_query > 0"
+        condition = "my_query > 0.95"
         notifications = ["@user"]
     }
 
     options {
         detection_method = "anomaly_detection"
-        keep_alive = 600
-        max_signal_duration = 900
+        keep_alive = 10800
+        max_signal_duration = 10800
+		evaluation_window = 1800
         anomaly_detection_options {
             bucket_duration = 300
             learning_duration = 24
@@ -1237,14 +1238,15 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
     case {
         name = ""
         status = "high"
-        condition = "my_updated_query > 0"
+        condition = "my_updated_query > 0.99"
         notifications = ["@user"]
     }
 
     options {
         detection_method = "anomaly_detection"
-        keep_alive = 600
-        max_signal_duration = 900
+        keep_alive = 10800
+        max_signal_duration = 10800
+        evaluation_window = 1800
         anomaly_detection_options {
             bucket_duration = 600
             learning_duration = 48
