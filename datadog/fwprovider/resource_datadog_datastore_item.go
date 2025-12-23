@@ -43,7 +43,7 @@ func (r *datastoreItemResource) Configure(_ context.Context, request resource.Co
 }
 
 func (r *datastoreItemResource) Metadata(_ context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
-	response.TypeName = "datadog_datastore_item"
+	response.TypeName = "datastore_item"
 }
 
 func (r *datastoreItemResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
@@ -228,7 +228,7 @@ func (r *datastoreItemResource) Delete(ctx context.Context, request resource.Del
 		if httpResp != nil && httpResp.StatusCode == 404 {
 			return
 		}
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error deleting datadog_datastore_item"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error deleting datastore_item"))
 		return
 	}
 }

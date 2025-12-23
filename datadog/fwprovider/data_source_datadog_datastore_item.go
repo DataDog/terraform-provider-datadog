@@ -49,7 +49,7 @@ func (d *datastoreItemDataSource) Configure(_ context.Context, request datasourc
 }
 
 func (d *datastoreItemDataSource) Metadata(_ context.Context, request datasource.MetadataRequest, response *datasource.MetadataResponse) {
-	response.TypeName = "datadog_datastore_item"
+	response.TypeName = "datastore_item"
 }
 
 func (d *datastoreItemDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, response *datasource.SchemaResponse) {

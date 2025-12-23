@@ -12,15 +12,15 @@ import (
 )
 
 var (
-	_ datasource.DataSource = &datadogDatadogDatastoreDataSource{}
+	_ datasource.DataSource = &datadogDatastoreDataSource{}
 )
 
-type datadogDatadogDatastoreDataSource struct {
+type datadogDatastoreDataSource struct {
 	Api  *datadogV2.ActionsDatastoresApi
 	Auth context.Context
 }
 
-type datadogDatadogDatastoreDataSourceModel struct {
+type datadogDatastoreDataSourceModel struct {
 	// Datasource ID
 	ID types.String `tfsdk:"id"`
 
@@ -39,23 +39,23 @@ type datadogDatadogDatastoreDataSourceModel struct {
 	PrimaryKeyGenerationStrategy types.String `tfsdk:"primary_key_generation_strategy"`
 }
 
-func NewDatadogDatadogDatastoreDataSource() datasource.DataSource {
-	return &datadogDatadogDatastoreDataSource{}
+func NewDatadogDatastoreDataSource() datasource.DataSource {
+	return &datadogDatastoreDataSource{}
 }
 
-func (d *datadogDatadogDatastoreDataSource) Configure(_ context.Context, request datasource.ConfigureRequest, response *datasource.ConfigureResponse) {
+func (d *datadogDatastoreDataSource) Configure(_ context.Context, request datasource.ConfigureRequest, response *datasource.ConfigureResponse) {
 	providerData, _ := request.ProviderData.(*FrameworkProvider)
 	d.Api = providerData.DatadogApiInstances.GetActionsDatastoresApiV2()
 	d.Auth = providerData.Auth
 }
 
-func (d *datadogDatadogDatastoreDataSource) Metadata(_ context.Context, request datasource.MetadataRequest, response *datasource.MetadataResponse) {
-	response.TypeName = "datadog_datastore"
+func (d *datadogDatastoreDataSource) Metadata(_ context.Context, request datasource.MetadataRequest, response *datasource.MetadataResponse) {
+	response.TypeName = "datastore"
 }
 
-func (d *datadogDatadogDatastoreDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, response *datasource.SchemaResponse) {
+func (d *datadogDatastoreDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, response *datasource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "Use this data source to retrieve information about an existing Datadog datadog_datastore.",
+		Description: "Use this data source to retrieve information about an existing Datadog datastore.",
 		Attributes: map[string]schema.Attribute{
 			// Datasource ID
 			"id": utils.ResourceIDAttribute(),
@@ -105,29 +105,29 @@ func (d *datadogDatadogDatastoreDataSource) Schema(_ context.Context, _ datasour
 	}
 }
 
-func (d *datadogDatadogDatastoreDataSource) Read(ctx context.Context, request datasource.ReadRequest, response *datasource.ReadResponse) {
-	var state datadogDatadogDatastoreDataSourceModel
+func (d *datadogDatastoreDataSource) Read(ctx context.Context, request datasource.ReadRequest, response *datasource.ReadResponse) {
+	var state datadogDatastoreDataSourceModel
 	response.Diagnostics.Append(request.Config.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
 	}
 
-	if !state.DatadogDatastoreId.IsNull() {
-		datadogDatastoreId := state.DatadogDatastoreId.ValueString()
-		ddResp, _, err := d.Api.GetDatadogDatastore(d.Auth, datadogDatastoreId)
+	if !state.DatastoreId.IsNull() {
+		datastoreId := state.DatastoreId.ValueString()
+		ddResp, _, err := d.Api.GetDatastore(d.Auth, datastoreId)
 		if err != nil {
-			response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error getting datadog datadogDatastore"))
+			response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error getting datadog datastore"))
 			return
 		}
 
 		d.updateState(ctx, &state, ddResp.Data)
 	} else {
 
-		optionalParams := datadogV2.ListDatadogDatastoresOptionalParameters{}
+		optionalParams := datadogV2.ListDatastoresOptionalParameters{}
 
-		ddResp, _, err := d.Api.ListDatadogDatastores(d.Auth, optionalParams)
+		ddResp, _, err := d.Api.ListDatastores(d.Auth, optionalParams)
 		if err != nil {
-			response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error listing datadog datadogDatastore"))
+			response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error listing datadog datastore"))
 			return
 		}
 
@@ -147,10 +147,10 @@ func (d *datadogDatadogDatastoreDataSource) Read(ctx context.Context, request da
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (d *datadogDatadogDatastoreDataSource) updateState(ctx context.Context, state *datadogDatadogDatastoreDataSourceModel, datadogDatastoreData *datadogV2.DatadogDatastore) {
-	state.ID = types.StringValue(datadogDatastoreData.GetId())
+func (d *datadogDatastoreDataSource) updateState(ctx context.Context, state *datadogDatastoreDataSourceModel, datastoreData *datadogV2.Datastore) {
+	state.ID = types.StringValue(datastoreData.GetId())
 
-	attributes := datadogDatastoreData.GetAttributes()
+	attributes := datastoreData.GetAttributes()
 	state.CreatedAt = types.StringValue(attributes.GetCreatedAt().String())
 	state.CreatorUserId = types.Int64Value(int64(attributes.GetCreatorUserId()))
 	state.CreatorUserUuid = types.StringValue(attributes.GetCreatorUserUuid())
@@ -162,11 +162,11 @@ func (d *datadogDatadogDatastoreDataSource) updateState(ctx context.Context, sta
 	state.PrimaryKeyGenerationStrategy = types.StringValue(attributes.GetPrimaryKeyGenerationStrategy())
 }
 
-func (d *datadogDatadogDatastoreDataSource) updateStateFromListResponse(ctx context.Context, state *datadogDatadogDatastoreDataSourceModel, datadogDatastoreData *datadogV2.DatadogDatastore) {
-	state.ID = types.StringValue(datadogDatastoreData.GetId())
-	state.DatastoreId = types.StringValue(datadogDatastoreData.GetId())
+func (d *datadogDatastoreDataSource) updateStateFromListResponse(ctx context.Context, state *datadogDatastoreDataSourceModel, datastoreData *datadogV2.Datastore) {
+	state.ID = types.StringValue(datastoreData.GetId())
+	state.DatastoreId = types.StringValue(datastoreData.GetId())
 
-	attributes := datadogDatastoreData.GetAttributes()
+	attributes := datastoreData.GetAttributes()
 	state.CreatedAt = types.StringValue(attributes.GetCreatedAt().String())
 	state.CreatorUserId = types.Int64Value(int64(attributes.GetCreatorUserId()))
 	state.CreatorUserUuid = types.StringValue(attributes.GetCreatorUserUuid())

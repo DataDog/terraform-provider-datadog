@@ -14,16 +14,16 @@ import (
 )
 
 var (
-	_ resource.ResourceWithConfigure   = &datadogDatastoreResource{}
-	_ resource.ResourceWithImportState = &datadogDatastoreResource{}
+	_ resource.ResourceWithConfigure   = &datastoreResource{}
+	_ resource.ResourceWithImportState = &datastoreResource{}
 )
 
-type datadogDatastoreResource struct {
+type datastoreResource struct {
 	Api  *datadogV2.ActionsDatastoresApi
 	Auth context.Context
 }
 
-type datadogDatastoreModel struct {
+type datastoreModel struct {
 	ID                           types.String `tfsdk:"id"`
 	Description                  types.String `tfsdk:"description"`
 	Name                         types.String `tfsdk:"name"`
@@ -32,23 +32,23 @@ type datadogDatastoreModel struct {
 	PrimaryKeyGenerationStrategy types.String `tfsdk:"primary_key_generation_strategy"`
 }
 
-func NewDatadogDatastoreResource() resource.Resource {
-	return &datadogDatastoreResource{}
+func NewDatastoreResource() resource.Resource {
+	return &datastoreResource{}
 }
 
-func (r *datadogDatastoreResource) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
+func (r *datastoreResource) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
 	providerData, _ := request.ProviderData.(*FrameworkProvider)
 	r.Api = providerData.DatadogApiInstances.GetActionsDatastoresApiV2()
 	r.Auth = providerData.Auth
 }
 
-func (r *datadogDatastoreResource) Metadata(_ context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
-	response.TypeName = "datadog_datastore"
+func (r *datastoreResource) Metadata(_ context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
+	response.TypeName = "datastore"
 }
 
-func (r *datadogDatastoreResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
+func (r *datastoreResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "Provides a Datadog DatadogDatastore resource. This can be used to create and manage Datadog datadog_datastore.",
+		Description: "Provides a Datadog Datastore resource. This can be used to create and manage Datadog datastore.",
 		Attributes: map[string]schema.Attribute{
 			"description": schema.StringAttribute{
 				Optional:    true,
@@ -75,12 +75,12 @@ func (r *datadogDatastoreResource) Schema(_ context.Context, _ resource.SchemaRe
 	}
 }
 
-func (r *datadogDatastoreResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
+func (r *datastoreResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, frameworkPath.Root("id"), request, response)
 }
 
-func (r *datadogDatastoreResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
-	var state datadogDatastoreModel
+func (r *datastoreResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
+	var state datastoreModel
 	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -93,7 +93,7 @@ func (r *datadogDatastoreResource) Read(ctx context.Context, request resource.Re
 			response.State.RemoveResource(ctx)
 			return
 		}
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving DatadogDatastore"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving Datastore"))
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {
@@ -107,14 +107,14 @@ func (r *datadogDatastoreResource) Read(ctx context.Context, request resource.Re
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (r *datadogDatastoreResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
-	var state datadogDatastoreModel
+func (r *datastoreResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
+	var state datastoreModel
 	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
 	}
 
-	body, diags := r.buildDatadogDatastoreRequestBody(ctx, &state)
+	body, diags := r.buildDatastoreRequestBody(ctx, &state)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
 		return
@@ -122,7 +122,7 @@ func (r *datadogDatastoreResource) Create(ctx context.Context, request resource.
 
 	resp, _, err := r.Api.CreateDatastore(r.Auth, *body)
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving DatadogDatastore"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving Datastore"))
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {
@@ -135,8 +135,8 @@ func (r *datadogDatastoreResource) Create(ctx context.Context, request resource.
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (r *datadogDatastoreResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
-	var state datadogDatastoreModel
+func (r *datastoreResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
+	var state datastoreModel
 	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -144,7 +144,7 @@ func (r *datadogDatastoreResource) Update(ctx context.Context, request resource.
 
 	id := state.ID.ValueString()
 
-	body, diags := r.buildDatadogDatastoreUpdateRequestBody(ctx, &state)
+	body, diags := r.buildDatastoreUpdateRequestBody(ctx, &state)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
 		return
@@ -152,7 +152,7 @@ func (r *datadogDatastoreResource) Update(ctx context.Context, request resource.
 
 	resp, _, err := r.Api.UpdateDatastore(r.Auth, id, *body)
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving DatadogDatastore"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving Datastore"))
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {
@@ -165,8 +165,8 @@ func (r *datadogDatastoreResource) Update(ctx context.Context, request resource.
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (r *datadogDatastoreResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
-	var state datadogDatastoreModel
+func (r *datastoreResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
+	var state datastoreModel
 	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -179,12 +179,12 @@ func (r *datadogDatastoreResource) Delete(ctx context.Context, request resource.
 		if httpResp != nil && httpResp.StatusCode == 404 {
 			return
 		}
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error deleting datadog_datastore"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error deleting datastore"))
 		return
 	}
 }
 
-func (r *datadogDatastoreResource) updateState(ctx context.Context, state *datadogDatastoreModel, resp *datadogV2.Datastore) {
+func (r *datastoreResource) updateState(ctx context.Context, state *datastoreModel, resp *datadogV2.Datastore) {
 	state.ID = types.StringValue(resp.GetDatastoreId())
 
 	if createdAt, ok := resp.GetCreatedAtOk(); ok {
@@ -222,7 +222,7 @@ func (r *datadogDatastoreResource) updateState(ctx context.Context, state *datad
 	}
 }
 
-func (r *datadogDatastoreResource) buildDatadogDatastoreRequestBody(ctx context.Context, state *datadogDatastoreModel) (*datadogV2.CreateAppsDatastoreRequest, diag.Diagnostics) {
+func (r *datastoreResource) buildDatastoreRequestBody(ctx context.Context, state *datastoreModel) (*datadogV2.CreateAppsDatastoreRequest, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
 	req := &datadogV2.CreateAppsDatastoreRequest{}
 	attributes := datadogV2.NewCreateAppsDatastoreRequestDataAttributesWithDefaults()
@@ -250,7 +250,7 @@ func (r *datadogDatastoreResource) buildDatadogDatastoreRequestBody(ctx context.
 	return req, diags
 }
 
-func (r *datadogDatastoreResource) buildDatadogDatastoreUpdateRequestBody(ctx context.Context, state *datadogDatastoreModel) (*datadogV2.UpdateAppsDatastoreRequest, diag.Diagnostics) {
+func (r *datastoreResource) buildDatastoreUpdateRequestBody(ctx context.Context, state *datastoreModel) (*datadogV2.UpdateAppsDatastoreRequest, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
 	req := &datadogV2.UpdateAppsDatastoreRequest{}
 	attributes := datadogV2.NewUpdateAppsDatastoreRequestDataAttributesWithDefaults()
