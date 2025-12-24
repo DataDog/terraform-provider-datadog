@@ -370,6 +370,28 @@ func datadogSecurityMonitoringRuleSchema(includeValidate bool) map[string]*schem
 						Default:     false,
 						Description: "If true, signals in non-production environments have a lower severity than what is defined by the rule case, which can reduce noise. The decrement is applied when the environment tag of the signal starts with `staging`, `test`, or `dev`. Only available when the rule type is `log_detection`.",
 					},
+
+					"compliance_rule_options": {
+						Type:        schema.TypeList,
+						Optional:    true,
+						MaxItems:    1,
+						Description: "Options for compliance rules. Only available when the rule type is `api_security`.",
+						Elem: &schema.Resource{
+							Schema: map[string]*schema.Schema{
+								"resource_type": {
+									Type:        schema.TypeString,
+									Required:    true,
+									Description: "The resource type to check for compliance violations.",
+								},
+								"compliance_frameworks": {
+									Type:        schema.TypeList,
+									Optional:    true,
+									Description: "Compliance frameworks associated with this rule.",
+									Elem:        &schema.Schema{Type: schema.TypeString},
+								},
+							},
+						},
+					},
 				},
 			},
 		},
@@ -548,7 +570,8 @@ func datadogSecurityMonitoringRuleSchema(includeValidate bool) map[string]*schem
 			Type: schema.TypeString,
 			ValidateDiagFunc: validators.ValidateStringEnumValue(
 				datadogV2.SECURITYMONITORINGRULETYPEREAD_APPLICATION_SECURITY, datadogV2.SECURITYMONITORINGRULETYPEREAD_LOG_DETECTION,
-				datadogV2.SECURITYMONITORINGRULETYPEREAD_WORKLOAD_SECURITY, datadogV2.SECURITYMONITORINGSIGNALRULETYPE_SIGNAL_CORRELATION),
+				datadogV2.SECURITYMONITORINGRULETYPEREAD_WORKLOAD_SECURITY, datadogV2.SECURITYMONITORINGSIGNALRULETYPE_SIGNAL_CORRELATION,
+				datadogV2.SECURITYMONITORINGRULETYPEREAD_API_SECURITY),
 			Optional:    true,
 			Description: "The rule type.",
 			Default:     "log_detection",
@@ -598,6 +621,29 @@ func datadogSecurityMonitoringRuleSchema(includeValidate bool) map[string]*schem
 			Optional:    true,
 			Description: "Additional grouping to perform on top of the query grouping.",
 			Elem:        &schema.Schema{Type: schema.TypeString},
+		},
+
+		"compliance_signal_options": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "Options for compliance signal generation. Only available when the rule type is `api_security`.",
+			Elem: &schema.Resource{
+				Schema: map[string]*schema.Schema{
+					"user_activation_status": {
+						Type:        schema.TypeBool,
+						Optional:    true,
+						Default:     false,
+						Description: "Whether the rule is activated by the user.",
+					},
+					"user_group_by_fields": {
+						Type:        schema.TypeList,
+						Optional:    true,
+						Description: "Fields to group compliance findings by.",
+						Elem:        &schema.Schema{Type: schema.TypeString},
+					},
+				},
+			},
 		},
 
 		"calculated_field": {
@@ -897,6 +943,13 @@ func buildStandardPayload(d utils.Resource) (*datadogV2.SecurityMonitoringStanda
 		payload.SetGroupSignalsBy(parseStringArray(v.([]interface{})))
 	}
 
+	if v, ok := d.GetOk("compliance_signal_options"); ok {
+		tfComplianceSignalOptionsList := v.([]interface{})
+		if complianceSignalOptions, ok := buildPayloadComplianceSignalOptions(tfComplianceSignalOptionsList); ok {
+			payload.SetComplianceSignalOptions(*complianceSignalOptions)
+		}
+	}
+
 	return &payload, nil
 }
 
@@ -1077,6 +1130,13 @@ func buildPayloadOptions(tfOptionsList []interface{}, ruleType string) *datadogV
 		}
 	}
 
+	if v, ok := tfOptions["compliance_rule_options"]; ok && ruleType == string(datadogV2.SECURITYMONITORINGRULETYPECREATE_API_SECURITY) {
+		tfComplianceRuleOptionsList := v.([]interface{})
+		if payloadComplianceRuleOptions, ok := buildPayloadComplianceRuleOptions(tfComplianceRuleOptionsList); ok {
+			payloadOptions.ComplianceRuleOptions = payloadComplianceRuleOptions
+		}
+	}
+
 	return payloadOptions
 }
 
@@ -1219,6 +1279,50 @@ func buildPayloadSequenceDetectionOptions(tfOptionsList []interface{}) (*datadog
 			payloadTransitions[idx] = transition
 		}
 		options.SetStepTransitions(payloadTransitions)
+	}
+
+	return options, hasPayload
+}
+
+func buildPayloadComplianceRuleOptions(tfOptionsList []interface{}) (*datadogV2.CloudConfigurationComplianceRuleOptions, bool) {
+	options := datadogV2.NewCloudConfigurationComplianceRuleOptions()
+	hasPayload := false
+
+	tfOptions := extractMapFromInterface(tfOptionsList)
+
+	if v, ok := tfOptions["resource_type"]; ok {
+		hasPayload = true
+		options.SetResourceType(v.(string))
+	}
+
+	if v, ok := tfOptions["compliance_frameworks"]; ok {
+		tfFrameworks := v.([]interface{})
+		if len(tfFrameworks) > 0 {
+			hasPayload = true
+			options.SetComplianceFrameworks(parseStringArray(tfFrameworks))
+		}
+	}
+
+	return options, hasPayload
+}
+
+func buildPayloadComplianceSignalOptions(tfOptionsList []interface{}) (*datadogV2.CloudConfigurationRuleComplianceSignalOptions, bool) {
+	options := datadogV2.NewCloudConfigurationRuleComplianceSignalOptions()
+	hasPayload := false
+
+	tfOptions := extractMapFromInterface(tfOptionsList)
+
+	if v, ok := tfOptions["user_activation_status"]; ok {
+		hasPayload = true
+		options.SetUserActivationStatus(v.(bool))
+	}
+
+	if v, ok := tfOptions["user_group_by_fields"]; ok {
+		tfFields := v.([]interface{})
+		if len(tfFields) > 0 {
+			hasPayload = true
+		}
+		options.SetUserGroupByFields(parseStringArray(tfFields))
 	}
 
 	return options, hasPayload
@@ -1501,6 +1605,19 @@ func updateStandardResourceDataFromResponse(d *schema.ResourceData, ruleResponse
 		d.Set("group_signals_by", groupSignalsBy)
 	}
 
+	if complianceSignalOptions, ok := ruleResponse.GetComplianceSignalOptionsOk(); ok {
+		tfComplianceSignalOptions := make(map[string]interface{})
+		if userActivationStatus, ok := complianceSignalOptions.GetUserActivationStatusOk(); ok {
+			tfComplianceSignalOptions["user_activation_status"] = *userActivationStatus
+		}
+		if userGroupByFields, ok := complianceSignalOptions.GetUserGroupByFieldsOk(); ok {
+			tfComplianceSignalOptions["user_group_by_fields"] = *userGroupByFields
+		}
+		if len(tfComplianceSignalOptions) > 0 {
+			d.Set("compliance_signal_options", []map[string]interface{}{tfComplianceSignalOptions})
+		}
+	}
+
 	if calculatedFields, ok := ruleResponse.GetCalculatedFieldsOk(); ok {
 		d.Set("calculated_field", extractCalculatedFields(*calculatedFields))
 	}
@@ -1748,6 +1865,18 @@ func extractTfOptions(options datadogV2.SecurityMonitoringRuleOptions) map[strin
 			tfOptions["sequence_detection_options"] = []map[string]interface{}{tfSeqOptions}
 		}
 	}
+	if complianceRuleOptions, ok := options.GetComplianceRuleOptionsOk(); ok {
+		tfComplianceRuleOptions := make(map[string]interface{})
+		if resourceType, ok := complianceRuleOptions.GetResourceTypeOk(); ok {
+			tfComplianceRuleOptions["resource_type"] = *resourceType
+		}
+		if complianceFrameworks, ok := complianceRuleOptions.GetComplianceFrameworksOk(); ok {
+			tfComplianceRuleOptions["compliance_frameworks"] = *complianceFrameworks
+		}
+		if len(tfComplianceRuleOptions) > 0 {
+			tfOptions["compliance_rule_options"] = []map[string]interface{}{tfComplianceRuleOptions}
+		}
+	}
 	return tfOptions
 }
 
@@ -1944,6 +2073,13 @@ func buildUpdatePayload(d *schema.ResourceData) (*datadogV2.SecurityMonitoringRu
 		} else if d.HasChange("group_signals_by") {
 			// Only send empty list if group_signals_by was removed in config
 			payload.SetGroupSignalsBy([]string{})
+		}
+
+		if v, ok := d.GetOk("compliance_signal_options"); ok {
+			tfComplianceSignalOptionsList := v.([]interface{})
+			if complianceSignalOptions, ok := buildPayloadComplianceSignalOptions(tfComplianceSignalOptionsList); ok {
+				payload.SetComplianceSignalOptions(*complianceSignalOptions)
+			}
 		}
 
 		if v, ok := d.GetOk("scheduling_options"); ok {
