@@ -171,6 +171,7 @@ func datadogSecurityMonitoringRuleSchema(includeValidate bool) map[string]*schem
 						Optional:         true,
 						Description:      "The detection method.",
 						Default:          "threshold",
+						ForceNew:         true,
 					},
 
 					"evaluation_window": {
