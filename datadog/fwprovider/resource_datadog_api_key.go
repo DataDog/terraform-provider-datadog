@@ -13,6 +13,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/secretbridge"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
@@ -26,10 +27,12 @@ func NewAPIKeyResource() resource.Resource {
 }
 
 type apiKeyResourceModel struct {
-	ID           types.String `tfsdk:"id"`
-	Name         types.String `tfsdk:"name"`
-	Key          types.String `tfsdk:"key"`
-	RemoteConfig types.Bool   `tfsdk:"remote_config_read_enabled"`
+	ID              types.String `tfsdk:"id"`
+	Name            types.String `tfsdk:"name"`
+	Key             types.String `tfsdk:"key"`
+	EncryptedKey    types.String `tfsdk:"encrypted_key"`
+	EncryptionKeyWO types.String `tfsdk:"encryption_key_wo"`
+	RemoteConfig    types.Bool   `tfsdk:"remote_config_read_enabled"`
 }
 
 type apiKeyResource struct {
@@ -56,11 +59,17 @@ func (r *apiKeyResource) Schema(_ context.Context, _ resource.SchemaRequest, res
 				Required:    true,
 			},
 			"key": schema.StringAttribute{
-				Description:   "The value of the API Key.",
+				Description:   "The value of the API Key. Mutually exclusive with `encrypted_key` when `encryption_key_wo` is set.",
 				Computed:      true,
 				Sensitive:     true,
 				PlanModifiers: []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
 			},
+			"encrypted_key": schema.StringAttribute{
+				Description:   "The encrypted value of the API Key. Only populated when `encryption_key_wo` is provided. Use the `datadog_secret_decrypt` ephemeral resource to decrypt this value.",
+				Computed:      true,
+				PlanModifiers: []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
+			},
+			"encryption_key_wo": secretbridge.EncryptionKeyAttribute(),
 			"remote_config_read_enabled": schema.BoolAttribute{
 				Description: "Whether the API key is used for remote config. Set to true only if remote config is enabled in `/organization-settings/remote-config`.",
 				Optional:    true,
@@ -79,6 +88,12 @@ func (r *apiKeyResource) Create(ctx context.Context, request resource.CreateRequ
 		return
 	}
 
+	// Write-only attributes must be read from Config, not Plan (always null in plan)
+	response.Diagnostics.Append(request.Config.GetAttribute(ctx, frameworkPath.Root("encryption_key_wo"), &state.EncryptionKeyWO)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
 	resp, _, err := r.Api.CreateAPIKey(r.Auth, *r.buildDatadogApiKeyCreateV2Struct(&state))
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error creating api key"))
@@ -87,7 +102,28 @@ func (r *apiKeyResource) Create(ctx context.Context, request resource.CreateRequ
 
 	apiKeyData := resp.GetData()
 	state.ID = types.StringValue(apiKeyData.GetId())
-	updateStateDiag := r.updateState(&state, &apiKeyData)
+
+	// Handle encryption if encryption_key_wo is provided
+	apiKeyAttrs := apiKeyData.GetAttributes()
+	if apiKeyAttrs.HasKey() {
+		plaintextKey := apiKeyAttrs.GetKey()
+		if !state.EncryptionKeyWO.IsNull() {
+			// Encrypt the key and store in encrypted_key, set key to null
+			encrypted, diags := secretbridge.Encrypt(ctx, plaintextKey, []byte(state.EncryptionKeyWO.ValueString()))
+			response.Diagnostics.Append(diags...)
+			if response.Diagnostics.HasError() {
+				return
+			}
+			state.EncryptedKey = types.StringValue(encrypted)
+			state.Key = types.StringNull()
+		} else {
+			// No encryption - store key in plaintext, set encrypted_key to null
+			state.Key = types.StringValue(plaintextKey)
+			state.EncryptedKey = types.StringNull()
+		}
+	}
+
+	updateStateDiag := r.updateStateMetadata(&state, &apiKeyData)
 	if updateStateDiag != nil {
 		response.Diagnostics.Append(updateStateDiag)
 	}
@@ -113,7 +149,8 @@ func (r *apiKeyResource) Read(ctx context.Context, request resource.ReadRequest,
 	}
 
 	apiKeyData := resp.GetData()
-	updateStateDiag := r.updateState(&state, &apiKeyData)
+	// Only update metadata - key/encrypted_key are preserved from state
+	updateStateDiag := r.updateStateMetadata(&state, &apiKeyData)
 	if updateStateDiag != nil {
 		response.Diagnostics.Append(updateStateDiag)
 		return
@@ -138,7 +175,8 @@ func (r *apiKeyResource) Update(ctx context.Context, request resource.UpdateRequ
 
 	apiKeyData := resp.GetData()
 	state.ID = types.StringValue(apiKeyData.GetId())
-	updateStateDiag := r.updateState(&state, &apiKeyData)
+	// Only update metadata - key/encrypted_key preserved from plan to avoid state churn
+	updateStateDiag := r.updateStateMetadata(&state, &apiKeyData)
 	if updateStateDiag != nil {
 		response.Diagnostics.Append(updateStateDiag)
 		return
@@ -186,7 +224,9 @@ func (r *apiKeyResource) buildDatadogApiKeyUpdateV2Struct(state *apiKeyResourceM
 	return apiKeyRequest
 }
 
-func (r *apiKeyResource) updateState(state *apiKeyResourceModel, apiKeyData *datadogV2.FullAPIKey) frameworkDiag.Diagnostic {
+// updateStateMetadata updates only non-key fields from API response.
+// Key fields (key, encrypted_key) are handled separately in Create and preserved in Read/Update.
+func (r *apiKeyResource) updateStateMetadata(state *apiKeyResourceModel, apiKeyData *datadogV2.FullAPIKey) frameworkDiag.Diagnostic {
 	var d frameworkDiag.Diagnostic
 	apiKeyAttributes := apiKeyData.GetAttributes()
 	state.Name = types.StringValue(apiKeyAttributes.GetName())
@@ -194,8 +234,5 @@ func (r *apiKeyResource) updateState(state *apiKeyResourceModel, apiKeyData *dat
 		d = frameworkDiag.NewErrorDiagnostic("remote_config_read_enabled is true but Remote config is not enabled at org level", "Please either remove remote_config_read_enabled from the resource configuration or enable Remote config at org level")
 	}
 	state.RemoteConfig = types.BoolValue(apiKeyAttributes.GetRemoteConfigReadEnabled())
-	if apiKeyAttributes.HasKey() {
-		state.Key = types.StringValue(apiKeyAttributes.GetKey())
-	}
 	return d
 }
