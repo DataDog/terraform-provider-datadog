@@ -3961,7 +3961,6 @@ resource "datadog_observability_pipeline" "kafka_dest" {
       kafka {
         encoding               = "json"
         topic                  = "logs-topic"
-        bootstrap_servers_key  = "KAFKA_BOOTSTRAP_SERVERS"
         compression            = "gzip"
         headers_key            = "headers"
         key_field              = "message_key"
@@ -4000,7 +3999,6 @@ resource "datadog_observability_pipeline" "kafka_dest" {
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "source-1"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.kafka.0.encoding", "json"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.kafka.0.topic", "logs-topic"),
-					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.kafka.0.bootstrap_servers_key", "KAFKA_BOOTSTRAP_SERVERS"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.kafka.0.compression", "gzip"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.kafka.0.headers_key", "headers"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.kafka.0.key_field", "message_key"),

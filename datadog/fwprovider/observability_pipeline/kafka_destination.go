@@ -15,7 +15,6 @@ import (
 type KafkaDestinationModel struct {
 	Encoding              types.String            `tfsdk:"encoding"`
 	Topic                 types.String            `tfsdk:"topic"`
-	BootstrapServersKey   types.String            `tfsdk:"bootstrap_servers_key"`
 	Compression           types.String            `tfsdk:"compression"`
 	HeadersKey            types.String            `tfsdk:"headers_key"`
 	KeyField              types.String            `tfsdk:"key_field"`
@@ -53,9 +52,6 @@ func ExpandKafkaDestination(ctx context.Context, id string, inputs types.List, s
 	d.SetTopic(src.Topic.ValueString())
 
 	// Optional string fields
-	if !src.BootstrapServersKey.IsNull() {
-		d.SetBootstrapServersKey(src.BootstrapServersKey.ValueString())
-	}
 	if !src.HeadersKey.IsNull() {
 		d.SetHeadersKey(src.HeadersKey.ValueString())
 	}
@@ -127,9 +123,6 @@ func FlattenKafkaDestination(ctx context.Context, src *datadogV2.ObservabilityPi
 	}
 
 	// Optional string fields
-	if v, ok := src.GetBootstrapServersKeyOk(); ok {
-		out.BootstrapServersKey = types.StringValue(*v)
-	}
 	if v, ok := src.GetHeadersKeyOk(); ok {
 		out.HeadersKey = types.StringValue(*v)
 	}
@@ -197,10 +190,6 @@ func KafkaDestinationSchema() schema.ListNestedBlock {
 				"topic": schema.StringAttribute{
 					Required:    true,
 					Description: "The Kafka topic name to publish logs to.",
-				},
-				"bootstrap_servers_key": schema.StringAttribute{
-					Optional:    true,
-					Description: "Environment variable key containing the comma-separated list of Kafka bootstrap servers.",
 				},
 				"compression": schema.StringAttribute{
 					Optional:    true,
