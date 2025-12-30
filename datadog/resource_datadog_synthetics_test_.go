@@ -1073,11 +1073,15 @@ func syntheticsTestAPIStep() *schema.Schema {
 					Required:    true,
 				},
 				"subtype": {
-					Description:      "The subtype of the Synthetic multistep API test step.",
-					Type:             schema.TypeString,
-					Optional:         true,
-					Default:          "http",
-					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsAPITestStepSubtypeFromValue, datadogV1.NewSyntheticsAPIWaitStepSubtypeFromValue),
+					Description: "The subtype of the Synthetic multistep API test step.",
+					Type:        schema.TypeString,
+					Optional:    true,
+					Default:     "http",
+					ValidateDiagFunc: validators.ValidateEnumValue(
+						datadogV1.NewSyntheticsAPITestStepSubtypeFromValue,
+						datadogV1.NewSyntheticsAPIWaitStepSubtypeFromValue,
+						datadogV1.NewSyntheticsAPISubtestStepSubtypeFromValue,
+					),
 				},
 				"exit_if_succeed": {
 					Description: "Determines whether or not to exit the test if the step succeeds.",
@@ -1167,6 +1171,11 @@ func syntheticsTestAPIStep() *schema.Schema {
 				"value": {
 					Description: "The time to wait in seconds. Minimum value: 0. Maximum value: 180.",
 					Type:        schema.TypeInt,
+					Optional:    true,
+				},
+				"subtest_public_id": {
+					Description: "Public ID of the test to be played as part of a `playSubTest` step type.",
+					Type:        schema.TypeString,
 					Optional:    true,
 				},
 			},
@@ -2592,6 +2601,11 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 				localStep["name"] = step.SyntheticsAPIWaitStep.GetName()
 				localStep["subtype"] = step.SyntheticsAPIWaitStep.GetSubtype()
 				localStep["value"] = step.SyntheticsAPIWaitStep.GetValue()
+			} else if step.SyntheticsAPISubtestStep != nil {
+				localStep["id"] = step.SyntheticsAPISubtestStep.GetId()
+				localStep["name"] = step.SyntheticsAPISubtestStep.GetName()
+				localStep["subtype"] = step.SyntheticsAPISubtestStep.GetSubtype()
+				localStep["subtest_public_id"] = step.SyntheticsAPISubtestStep.GetSubtestPublicId()
 			}
 
 			localSteps[i] = localStep
@@ -3086,6 +3100,13 @@ func buildDatadogSyntheticsAPITest(d *schema.ResourceData) (*datadogV1.Synthetic
 				step.SyntheticsAPIWaitStep.SetName(stepMap["name"].(string))
 				step.SyntheticsAPIWaitStep.SetSubtype(datadogV1.SyntheticsAPIWaitStepSubtype(stepMap["subtype"].(string)))
 				step.SyntheticsAPIWaitStep.SetValue(int32(stepMap["value"].(int)))
+			} else if stepSubtype == "playSubTest" {
+				step.SyntheticsAPISubtestStep = datadogV1.NewSyntheticsAPISubtestStepWithDefaults()
+				step.SyntheticsAPISubtestStep.SetName(stepMap["name"].(string))
+				step.SyntheticsAPISubtestStep.SetSubtype(datadogV1.SyntheticsAPISubtestStepSubtype(stepMap["subtype"].(string)))
+				if subtestPublicID, ok := stepMap["subtest_public_id"].(string); ok && subtestPublicID != "" {
+					step.SyntheticsAPISubtestStep.SetSubtestPublicId(subtestPublicID)
+				}
 			}
 
 			steps = append(steps, step)
