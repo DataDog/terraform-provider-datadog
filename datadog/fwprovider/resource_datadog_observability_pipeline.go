@@ -75,6 +75,7 @@ type destinationModel struct {
 	AmazonSecurityLakeDestination     []*observability_pipeline.AmazonSecurityLakeDestinationModel     `tfsdk:"amazon_security_lake"`
 	CrowdStrikeNextGenSiemDestination []*observability_pipeline.CrowdStrikeNextGenSiemDestinationModel `tfsdk:"crowdstrike_next_gen_siem"`
 	CloudPremDestination              []*observability_pipeline.CloudPremDestinationModel              `tfsdk:"cloud_prem"`
+	KafkaDestination                  []*observability_pipeline.KafkaDestinationModel                  `tfsdk:"kafka"`
 }
 
 type sourceModel struct {
@@ -1962,6 +1963,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 									"amazon_security_lake":      observability_pipeline.AmazonSecurityLakeDestinationSchema(),
 									"crowdstrike_next_gen_siem": observability_pipeline.CrowdStrikeNextGenSiemDestinationSchema(),
 									"cloud_prem":                observability_pipeline.CloudPremDestinationSchema(),
+									"kafka":                     observability_pipeline.KafkaDestinationSchema(),
 								},
 							},
 						},
@@ -2269,6 +2271,9 @@ func expandPipeline(ctx context.Context, state *observabilityPipelineModel) (*da
 		for _, d := range dest.CloudPremDestination {
 			config.Destinations = append(config.Destinations, observability_pipeline.ExpandCloudPremDestination(ctx, dest.Id.ValueString(), dest.Inputs, d))
 		}
+		for _, d := range dest.KafkaDestination {
+			config.Destinations = append(config.Destinations, observability_pipeline.ExpandKafkaDestination(ctx, dest.Id.ValueString(), dest.Inputs, d))
+		}
 	}
 
 	attrs.SetConfig(*config)
@@ -2466,6 +2471,11 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 			destBlock.Id = types.StringValue(d.ObservabilityPipelineCloudPremDestination.GetId())
 			destBlock.Inputs, _ = types.ListValueFrom(ctx, types.StringType, d.ObservabilityPipelineCloudPremDestination.GetInputs())
 			destBlock.CloudPremDestination = append(destBlock.CloudPremDestination, cloudprem)
+			outCfg.Destinations = append(outCfg.Destinations, destBlock)
+		} else if kafka := observability_pipeline.FlattenKafkaDestination(ctx, d.ObservabilityPipelineKafkaDestination); kafka != nil {
+			destBlock.Id = types.StringValue(d.ObservabilityPipelineKafkaDestination.GetId())
+			destBlock.Inputs, _ = types.ListValueFrom(ctx, types.StringType, d.ObservabilityPipelineKafkaDestination.GetInputs())
+			destBlock.KafkaDestination = append(destBlock.KafkaDestination, kafka)
 			outCfg.Destinations = append(outCfg.Destinations, destBlock)
 		}
 	}
