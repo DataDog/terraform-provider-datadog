@@ -3903,6 +3903,127 @@ resource "datadog_observability_pipeline" "cloud_prem_dest" {
 	})
 }
 
+func TestAccDatadogObservabilityPipeline_kafkaDestination(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.kafka_dest"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "kafka_dest" {
+  name = "kafka-destination-pipeline"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+
+    destination {
+      id     = "kafka-dest-1"
+      inputs = ["source-1"]
+      
+      kafka {
+        encoding = "json"
+        topic    = "logs-topic"
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "kafka-destination-pipeline"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.id", "kafka-dest-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.kafka.0.encoding", "json"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.kafka.0.topic", "logs-topic"),
+				),
+			},
+			{
+				Config: `
+resource "datadog_observability_pipeline" "kafka_dest" {
+  name = "kafka-destination-pipeline"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+
+    destination {
+      id     = "kafka-dest-1"
+      inputs = ["source-1"]
+      
+      kafka {
+        encoding               = "json"
+        topic                  = "logs-topic"
+        bootstrap_servers_key  = "KAFKA_BOOTSTRAP_SERVERS"
+        compression            = "gzip"
+        headers_key            = "headers"
+        key_field              = "message_key"
+        message_timeout_ms     = 30000
+        rate_limit_duration_secs = 1
+        rate_limit_num         = 1000
+        socket_timeout_ms      = 60000
+
+        sasl {
+          mechanism = "PLAIN"
+        }
+
+        librdkafka_option {
+          name  = "client.id"
+          value = "observability-pipeline"
+        }
+
+        librdkafka_option {
+          name  = "queue.buffering.max.messages"
+          value = "15"
+        }
+
+        tls {
+          ca_file  = "/etc/ssl/certs/ca.crt"
+          crt_file = "/etc/ssl/certs/client.crt"
+          key_file = "/etc/ssl/private/client.key"
+        }
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "kafka-destination-pipeline"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.id", "kafka-dest-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.kafka.0.encoding", "json"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.kafka.0.topic", "logs-topic"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.kafka.0.bootstrap_servers_key", "KAFKA_BOOTSTRAP_SERVERS"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.kafka.0.compression", "gzip"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.kafka.0.headers_key", "headers"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.kafka.0.key_field", "message_key"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.kafka.0.message_timeout_ms", "30000"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.kafka.0.rate_limit_duration_secs", "1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.kafka.0.rate_limit_num", "1000"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.kafka.0.socket_timeout_ms", "60000"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.kafka.0.sasl.0.mechanism", "PLAIN"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.kafka.0.librdkafka_option.0.name", "client.id"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.kafka.0.librdkafka_option.0.value", "observability-pipeline"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.kafka.0.librdkafka_option.1.name", "queue.buffering.max.messages"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.kafka.0.librdkafka_option.1.value", "15"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.kafka.0.tls.0.ca_file", "/etc/ssl/certs/ca.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.kafka.0.tls.0.crt_file", "/etc/ssl/certs/client.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.kafka.0.tls.0.key_file", "/etc/ssl/private/client.key"),
+				),
+			},
+		},
+	})
+}
+
 func TestAccDatadogObservabilityPipeline_customProcessor(t *testing.T) {
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
