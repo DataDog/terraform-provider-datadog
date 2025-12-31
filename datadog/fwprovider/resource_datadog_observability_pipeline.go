@@ -161,6 +161,9 @@ type processorModel struct {
 	OcsfMapperProcessor           []*ocsfMapperProcessorModel                         `tfsdk:"ocsf_mapper"`
 	DatadogTagsProcessor          []*observability_pipeline.DatadogTagsProcessorModel `tfsdk:"datadog_tags"`
 	CustomProcessor               []*observability_pipeline.CustomProcessorModel      `tfsdk:"custom_processor"`
+	AddHostnameProcessor          []*addHostnameProcessorModel                        `tfsdk:"add_hostname"`
+	ParseXMLProcessor             []*parseXMLProcessorModel                           `tfsdk:"parse_xml"`
+	SplitArrayProcessor           []*splitArrayProcessorModel                         `tfsdk:"split_array"`
 }
 
 type ocsfMapperProcessorModel struct {
@@ -528,6 +531,30 @@ type sensitiveDataScannerPartialRedactAction struct {
 type sumoLogicSourceModel struct {
 }
 
+type addHostnameProcessorModel struct {
+	// No additional fields beyond common processor fields
+}
+
+type parseXMLProcessorModel struct {
+	Field            types.String `tfsdk:"field"`
+	IncludeAttr      types.Bool   `tfsdk:"include_attr"`
+	AlwaysUseTextKey types.Bool   `tfsdk:"always_use_text_key"`
+	ParseNumber      types.Bool   `tfsdk:"parse_number"`
+	ParseBool        types.Bool   `tfsdk:"parse_bool"`
+	ParseNull        types.Bool   `tfsdk:"parse_null"`
+	AttrPrefix       types.String `tfsdk:"attr_prefix"`
+	TextKey          types.String `tfsdk:"text_key"`
+}
+
+type splitArrayProcessorModel struct {
+	Arrays []splitArrayConfigModel `tfsdk:"array"`
+}
+
+type splitArrayConfigModel struct {
+	Include types.String `tfsdk:"include"`
+	Field   types.String `tfsdk:"field"`
+}
+
 type amazonDataFirehoseSourceModel struct {
 	Auth []observability_pipeline.AwsAuthModel `tfsdk:"auth"`
 	Tls  []observability_pipeline.TlsModel     `tfsdk:"tls"`
@@ -892,6 +919,48 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 														},
 													},
 												},
+												"parse_xml": schema.ListNestedBlock{
+													Description: "The `parse_xml` processor parses XML from a specified field and extracts it into the event.",
+													Validators: []validator.List{
+														listvalidator.SizeAtMost(1),
+													},
+													NestedObject: schema.NestedBlockObject{
+														Attributes: map[string]schema.Attribute{
+															"field": schema.StringAttribute{
+																Required:    true,
+																Description: "The path to the log field on which you want to parse XML.",
+															},
+															"include_attr": schema.BoolAttribute{
+																Optional:    true,
+																Description: "Whether to include XML attributes in the parsed output.",
+															},
+															"always_use_text_key": schema.BoolAttribute{
+																Optional:    true,
+																Description: "Whether to always store text inside an object using the text key even when no attributes exist.",
+															},
+															"parse_number": schema.BoolAttribute{
+																Optional:    true,
+																Description: "Whether to parse numeric values from strings.",
+															},
+															"parse_bool": schema.BoolAttribute{
+																Optional:    true,
+																Description: "Whether to parse boolean values from strings.",
+															},
+															"parse_null": schema.BoolAttribute{
+																Optional:    true,
+																Description: "Whether to parse null values.",
+															},
+															"attr_prefix": schema.StringAttribute{
+																Optional:    true,
+																Description: "The prefix to use for XML attributes in the parsed output. If the field is left empty, the original attribute key is used.",
+															},
+															"text_key": schema.StringAttribute{
+																Optional:    true,
+																Description: "The key name to use for the text node when XML attributes are appended.",
+															},
+														},
+													},
+												},
 												"add_fields": schema.ListNestedBlock{
 													Description: "The `add_fields` processor adds static key-value fields to logs.",
 													Validators: []validator.List{
@@ -920,6 +989,15 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 																},
 															},
 														},
+													},
+												},
+												"add_hostname": schema.ListNestedBlock{
+													Description: "The `add_hostname` processor adds the hostname to log events.",
+													Validators: []validator.List{
+														listvalidator.SizeAtMost(1),
+													},
+													NestedObject: schema.NestedBlockObject{
+														Attributes: map[string]schema.Attribute{},
 													},
 												},
 												"rename_fields": schema.ListNestedBlock{
@@ -1436,6 +1514,36 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 																		"strategy": schema.StringAttribute{
 																			Required:    true,
 																			Description: "The merge strategy to apply.",
+																		},
+																	},
+																},
+															},
+														},
+													},
+												},
+												"split_array": schema.ListNestedBlock{
+													Description: "The `split_array` processor splits array fields into separate events based on configured rules.",
+													Validators: []validator.List{
+														listvalidator.SizeAtMost(1),
+													},
+													NestedObject: schema.NestedBlockObject{
+														Attributes: map[string]schema.Attribute{},
+														Blocks: map[string]schema.Block{
+															"array": schema.ListNestedBlock{
+																Description: "A list of array split configurations.",
+																Validators: []validator.List{
+																	listvalidator.SizeAtLeast(1),
+																	listvalidator.SizeAtMost(15),
+																},
+																NestedObject: schema.NestedBlockObject{
+																	Attributes: map[string]schema.Attribute{
+																		"include": schema.StringAttribute{
+																			Required:    true,
+																			Description: "A Datadog search query used to determine which logs this array split operation targets.",
+																		},
+																		"field": schema.StringAttribute{
+																			Required:    true,
+																			Description: "The path to the array field to split.",
 																		},
 																	},
 																},
@@ -2638,6 +2746,12 @@ func flattenProcessorGroup(ctx context.Context, group *datadogV2.ObservabilityPi
 			procModel = flattenDatadogTagsProcessor(ctx, p.ObservabilityPipelineDatadogTagsProcessor)
 		} else if p.ObservabilityPipelineCustomProcessor != nil {
 			procModel = flattenCustomProcessor(ctx, p.ObservabilityPipelineCustomProcessor)
+		} else if p.ObservabilityPipelineAddHostnameProcessor != nil {
+			procModel = flattenAddHostnameProcessor(ctx, p.ObservabilityPipelineAddHostnameProcessor)
+		} else if p.ObservabilityPipelineParseXMLProcessor != nil {
+			procModel = flattenParseXMLProcessor(ctx, p.ObservabilityPipelineParseXMLProcessor)
+		} else if p.ObservabilityPipelineSplitArrayProcessor != nil {
+			procModel = flattenSplitArrayProcessor(ctx, p.ObservabilityPipelineSplitArrayProcessor)
 		}
 
 		if procModel != nil {
@@ -2758,6 +2872,15 @@ func expandProcessorTypes(ctx context.Context, processor *processorModel) []data
 	}
 	for _, p := range processor.DatadogTagsProcessor {
 		items = append(items, observability_pipeline.ExpandDatadogTagsProcessor(common, p))
+	}
+	for _, p := range processor.AddHostnameProcessor {
+		items = append(items, expandAddHostnameProcessorItem(ctx, common, p))
+	}
+	for _, p := range processor.ParseXMLProcessor {
+		items = append(items, expandParseXMLProcessorItem(ctx, common, p))
+	}
+	for _, p := range processor.SplitArrayProcessor {
+		items = append(items, expandSplitArrayProcessorItem(ctx, common, p))
 	}
 
 	return items
@@ -3747,6 +3870,122 @@ func expandSensitiveDataScannerProcessorItem(ctx context.Context, common observa
 	proc.SetRules(rules)
 
 	return datadogV2.ObservabilityPipelineSensitiveDataScannerProcessorAsObservabilityPipelineConfigProcessorItem(proc)
+}
+
+func expandAddHostnameProcessorItem(ctx context.Context, common observability_pipeline.BaseProcessorFields, src *addHostnameProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
+	proc := datadogV2.NewObservabilityPipelineAddHostnameProcessorWithDefaults()
+	common.ApplyTo(proc)
+
+	return datadogV2.ObservabilityPipelineAddHostnameProcessorAsObservabilityPipelineConfigProcessorItem(proc)
+}
+
+func expandParseXMLProcessorItem(ctx context.Context, common observability_pipeline.BaseProcessorFields, src *parseXMLProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
+	proc := datadogV2.NewObservabilityPipelineParseXMLProcessorWithDefaults()
+	common.ApplyTo(proc)
+
+	proc.SetField(src.Field.ValueString())
+
+	if !src.IncludeAttr.IsNull() {
+		proc.SetIncludeAttr(src.IncludeAttr.ValueBool())
+	}
+	if !src.AlwaysUseTextKey.IsNull() {
+		proc.SetAlwaysUseTextKey(src.AlwaysUseTextKey.ValueBool())
+	}
+	if !src.ParseNumber.IsNull() {
+		proc.SetParseNumber(src.ParseNumber.ValueBool())
+	}
+	if !src.ParseBool.IsNull() {
+		proc.SetParseBool(src.ParseBool.ValueBool())
+	}
+	if !src.ParseNull.IsNull() {
+		proc.SetParseNull(src.ParseNull.ValueBool())
+	}
+	if !src.AttrPrefix.IsNull() {
+		proc.SetAttrPrefix(src.AttrPrefix.ValueString())
+	}
+	if !src.TextKey.IsNull() {
+		proc.SetTextKey(src.TextKey.ValueString())
+	}
+
+	return datadogV2.ObservabilityPipelineParseXMLProcessorAsObservabilityPipelineConfigProcessorItem(proc)
+}
+
+func expandSplitArrayProcessorItem(ctx context.Context, common observability_pipeline.BaseProcessorFields, src *splitArrayProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
+	proc := datadogV2.NewObservabilityPipelineSplitArrayProcessorWithDefaults()
+	common.ApplyTo(proc)
+
+	var arrays []datadogV2.ObservabilityPipelineSplitArrayProcessorArrayConfig
+	for _, arr := range src.Arrays {
+		arrays = append(arrays, datadogV2.ObservabilityPipelineSplitArrayProcessorArrayConfig{
+			Include: arr.Include.ValueString(),
+			Field:   arr.Field.ValueString(),
+		})
+	}
+	proc.SetArrays(arrays)
+
+	return datadogV2.ObservabilityPipelineSplitArrayProcessorAsObservabilityPipelineConfigProcessorItem(proc)
+}
+
+func flattenAddHostnameProcessor(ctx context.Context, src *datadogV2.ObservabilityPipelineAddHostnameProcessor) *processorModel {
+	if src == nil {
+		return nil
+	}
+	model := createProcessorModel(src)
+	model.AddHostnameProcessor = append(model.AddHostnameProcessor, &addHostnameProcessorModel{})
+	return model
+}
+
+func flattenParseXMLProcessor(ctx context.Context, src *datadogV2.ObservabilityPipelineParseXMLProcessor) *processorModel {
+	if src == nil {
+		return nil
+	}
+	model := createProcessorModel(src)
+	parseXML := &parseXMLProcessorModel{
+		Field: types.StringValue(src.GetField()),
+	}
+
+	if val, ok := src.GetIncludeAttrOk(); ok {
+		parseXML.IncludeAttr = types.BoolValue(*val)
+	}
+	if val, ok := src.GetAlwaysUseTextKeyOk(); ok {
+		parseXML.AlwaysUseTextKey = types.BoolValue(*val)
+	}
+	if val, ok := src.GetParseNumberOk(); ok {
+		parseXML.ParseNumber = types.BoolValue(*val)
+	}
+	if val, ok := src.GetParseBoolOk(); ok {
+		parseXML.ParseBool = types.BoolValue(*val)
+	}
+	if val, ok := src.GetParseNullOk(); ok {
+		parseXML.ParseNull = types.BoolValue(*val)
+	}
+	if val, ok := src.GetAttrPrefixOk(); ok {
+		parseXML.AttrPrefix = types.StringValue(*val)
+	}
+	if val, ok := src.GetTextKeyOk(); ok {
+		parseXML.TextKey = types.StringValue(*val)
+	}
+
+	model.ParseXMLProcessor = append(model.ParseXMLProcessor, parseXML)
+	return model
+}
+
+func flattenSplitArrayProcessor(ctx context.Context, src *datadogV2.ObservabilityPipelineSplitArrayProcessor) *processorModel {
+	if src == nil {
+		return nil
+	}
+	model := createProcessorModel(src)
+	splitArray := &splitArrayProcessorModel{}
+
+	for _, arr := range src.GetArrays() {
+		splitArray.Arrays = append(splitArray.Arrays, splitArrayConfigModel{
+			Include: types.StringValue(arr.GetInclude()),
+			Field:   types.StringValue(arr.GetField()),
+		})
+	}
+
+	model.SplitArrayProcessor = append(model.SplitArrayProcessor, splitArray)
+	return model
 }
 
 // ---------- Destinations ----------

@@ -560,6 +560,7 @@ Optional:
 
 - `add_env_vars` (Block List) The `add_env_vars` processor adds environment variable values to log events. (see [below for nested schema](#nestedblock--config--processor_group--processor--add_env_vars))
 - `add_fields` (Block List) The `add_fields` processor adds static key-value fields to logs. (see [below for nested schema](#nestedblock--config--processor_group--processor--add_fields))
+- `add_hostname` (Block List) The `add_hostname` processor adds the hostname to log events. (see [below for nested schema](#nestedblock--config--processor_group--processor--add_hostname))
 - `custom_processor` (Block List) The `custom_processor` processor transforms events using Vector Remap Language (VRL) scripts with advanced filtering capabilities. (see [below for nested schema](#nestedblock--config--processor_group--processor--custom_processor))
 - `datadog_tags` (Block List) (see [below for nested schema](#nestedblock--config--processor_group--processor--datadog_tags))
 - `dedupe` (Block List) The `dedupe` processor removes duplicate fields in log events. (see [below for nested schema](#nestedblock--config--processor_group--processor--dedupe))
@@ -570,12 +571,14 @@ Optional:
 - `ocsf_mapper` (Block List) The `ocsf_mapper` processor transforms logs into the OCSF schema using predefined library mappings. (see [below for nested schema](#nestedblock--config--processor_group--processor--ocsf_mapper))
 - `parse_grok` (Block List) The `parse_grok` processor extracts structured fields from unstructured log messages using Grok patterns. (see [below for nested schema](#nestedblock--config--processor_group--processor--parse_grok))
 - `parse_json` (Block List) The `parse_json` processor extracts JSON from a specified field and flattens it into the event. This is useful when logs contain embedded JSON as a string. (see [below for nested schema](#nestedblock--config--processor_group--processor--parse_json))
+- `parse_xml` (Block List) The `parse_xml` processor parses XML from a specified field and extracts it into the event. (see [below for nested schema](#nestedblock--config--processor_group--processor--parse_xml))
 - `quota` (Block List) The `quota` processor measures logging traffic for logs that match a specified filter. When the configured daily quota is met, the processor can drop or alert. (see [below for nested schema](#nestedblock--config--processor_group--processor--quota))
 - `reduce` (Block List) The `reduce` processor aggregates and merges logs based on matching keys and merge strategies. (see [below for nested schema](#nestedblock--config--processor_group--processor--reduce))
 - `remove_fields` (Block List) The `remove_fields` processor deletes specified fields from logs. (see [below for nested schema](#nestedblock--config--processor_group--processor--remove_fields))
 - `rename_fields` (Block List) The `rename_fields` processor changes field names. (see [below for nested schema](#nestedblock--config--processor_group--processor--rename_fields))
 - `sample` (Block List) The `sample` processor allows probabilistic sampling of logs at a fixed rate. (see [below for nested schema](#nestedblock--config--processor_group--processor--sample))
 - `sensitive_data_scanner` (Block List) The `sensitive_data_scanner` processor detects and optionally redacts sensitive data in log events. (see [below for nested schema](#nestedblock--config--processor_group--processor--sensitive_data_scanner))
+- `split_array` (Block List) The `split_array` processor splits array fields into separate events based on configured rules. (see [below for nested schema](#nestedblock--config--processor_group--processor--split_array))
 - `throttle` (Block List) The `throttle` processor limits the number of events that pass through over a given time window. (see [below for nested schema](#nestedblock--config--processor_group--processor--throttle))
 
 <a id="nestedblock--config--processor_group--processor--add_env_vars"></a>
@@ -610,6 +613,10 @@ Required:
 - `name` (String) The field name to add.
 - `value` (String) The value to assign to the field.
 
+
+
+<a id="nestedblock--config--processor_group--processor--add_hostname"></a>
+### Nested Schema for `config.processor_group.processor.add_hostname`
 
 
 <a id="nestedblock--config--processor_group--processor--custom_processor"></a>
@@ -819,6 +826,24 @@ Required:
 Required:
 
 - `field` (String) The field to parse.
+
+
+<a id="nestedblock--config--processor_group--processor--parse_xml"></a>
+### Nested Schema for `config.processor_group.processor.parse_xml`
+
+Required:
+
+- `field` (String) The path to the log field on which you want to parse XML.
+
+Optional:
+
+- `always_use_text_key` (Boolean) Whether to always store text inside an object using the text key even when no attributes exist.
+- `attr_prefix` (String) The prefix to use for XML attributes in the parsed output. If the field is left empty, the original attribute key is used.
+- `include_attr` (Boolean) Whether to include XML attributes in the parsed output.
+- `parse_bool` (Boolean) Whether to parse boolean values from strings.
+- `parse_null` (Boolean) Whether to parse null values.
+- `parse_number` (Boolean) Whether to parse numeric values from strings.
+- `text_key` (String) The key name to use for the text node when XML attributes are appended.
 
 
 <a id="nestedblock--config--processor_group--processor--quota"></a>
@@ -1044,6 +1069,23 @@ Optional:
 - `fields` (List of String) The fields to include in scanning.
 
 
+
+
+
+<a id="nestedblock--config--processor_group--processor--split_array"></a>
+### Nested Schema for `config.processor_group.processor.split_array`
+
+Optional:
+
+- `array` (Block List) A list of array split configurations. (see [below for nested schema](#nestedblock--config--processor_group--processor--split_array--array))
+
+<a id="nestedblock--config--processor_group--processor--split_array--array"></a>
+### Nested Schema for `config.processor_group.processor.split_array.array`
+
+Required:
+
+- `field` (String) The path to the array field to split.
+- `include` (String) A Datadog search query used to determine which logs this array split operation targets.
 
 
 

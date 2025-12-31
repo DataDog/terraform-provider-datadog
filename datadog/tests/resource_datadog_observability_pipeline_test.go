@@ -4308,3 +4308,336 @@ resource "datadog_observability_pipeline" "pubsub_dest_minimal" {
 		},
 	})
 }
+
+func TestAccDatadogObservabilityPipeline_AddHostname(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	resourceName := "datadog_observability_pipeline.add_hostname_test"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccObservabilityPipelineAddHostnameMinimal(),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "add_hostname pipeline"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.add_hostname.#", "1"),
+				),
+			},
+			{
+				Config: testAccObservabilityPipelineAddHostnameFull(),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(resourceName, "name", "add_hostname pipeline updated"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.include", "service:updated"),
+				),
+			},
+		},
+	})
+}
+
+func testAccObservabilityPipelineAddHostnameMinimal() string {
+	return `
+resource "datadog_observability_pipeline" "add_hostname_test" {
+  name = "add_hostname pipeline"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {}
+    }
+
+    processor_group {
+      id      = "group-1"
+      enabled = true
+      include = "*"
+      inputs  = ["source-1"]
+
+      processor {
+        id      = "add-hostname-proc"
+        enabled = true
+        include = "service:test"
+
+        add_hostname {}
+      }
+    }
+
+    destination {
+      id     = "dest-1"
+      inputs = ["group-1"]
+      datadog_logs {}
+    }
+  }
+}
+`
+}
+
+func testAccObservabilityPipelineAddHostnameFull() string {
+	return `
+resource "datadog_observability_pipeline" "add_hostname_test" {
+  name = "add_hostname pipeline updated"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {}
+    }
+
+    processor_group {
+      id      = "group-1"
+      enabled = true
+      include = "*"
+      inputs  = ["source-1"]
+
+      processor {
+        id           = "add-hostname-proc"
+        enabled      = true
+        include      = "service:updated"
+        display_name = "Add Hostname Processor"
+
+        add_hostname {}
+      }
+    }
+
+    destination {
+      id     = "dest-1"
+      inputs = ["group-1"]
+      datadog_logs {}
+    }
+  }
+}
+`
+}
+
+func TestAccDatadogObservabilityPipeline_ParseXML(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	resourceName := "datadog_observability_pipeline.parse_xml_test"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccObservabilityPipelineParseXMLMinimal(),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "parse_xml pipeline"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.parse_xml.#", "1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.parse_xml.0.field", "message"),
+				),
+			},
+			{
+				Config: testAccObservabilityPipelineParseXMLFull(),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(resourceName, "name", "parse_xml pipeline updated"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.parse_xml.0.field", "xml_data"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.parse_xml.0.include_attr", "true"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.parse_xml.0.parse_number", "true"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.parse_xml.0.attr_prefix", "attr_"),
+				),
+			},
+		},
+	})
+}
+
+func testAccObservabilityPipelineParseXMLMinimal() string {
+	return `
+resource "datadog_observability_pipeline" "parse_xml_test" {
+  name = "parse_xml pipeline"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {}
+    }
+
+    processor_group {
+      id      = "group-1"
+      enabled = true
+      include = "*"
+      inputs  = ["source-1"]
+
+      processor {
+        id      = "parse-xml-proc"
+        enabled = true
+        include = "service:test"
+
+        parse_xml {
+          field = "message"
+        }
+      }
+    }
+
+    destination {
+      id     = "dest-1"
+      inputs = ["group-1"]
+      datadog_logs {}
+    }
+  }
+}
+`
+}
+
+func testAccObservabilityPipelineParseXMLFull() string {
+	return `
+resource "datadog_observability_pipeline" "parse_xml_test" {
+  name = "parse_xml pipeline updated"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {}
+    }
+
+    processor_group {
+      id      = "group-1"
+      enabled = true
+      include = "*"
+      inputs  = ["source-1"]
+
+      processor {
+        id           = "parse-xml-proc"
+        enabled      = true
+        include      = "service:test"
+        display_name = "XML Parser"
+
+        parse_xml {
+          field                = "xml_data"
+          include_attr         = true
+          always_use_text_key  = false
+          parse_number         = true
+          parse_bool           = true
+          parse_null           = false
+          attr_prefix          = "attr_"
+          text_key             = "text"
+        }
+      }
+    }
+
+    destination {
+      id     = "dest-1"
+      inputs = ["group-1"]
+      datadog_logs {}
+    }
+  }
+}
+`
+}
+
+func TestAccDatadogObservabilityPipeline_SplitArray(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	resourceName := "datadog_observability_pipeline.split_array_test"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccObservabilityPipelineSplitArrayMinimal(),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "split_array pipeline"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.split_array.#", "1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.split_array.0.array.#", "1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.split_array.0.array.0.field", "tags"),
+				),
+			},
+			{
+				Config: testAccObservabilityPipelineSplitArrayFull(),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(resourceName, "name", "split_array pipeline updated"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.split_array.0.array.#", "2"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.split_array.0.array.0.field", "items"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.split_array.0.array.1.field", "events"),
+				),
+			},
+		},
+	})
+}
+
+func testAccObservabilityPipelineSplitArrayMinimal() string {
+	return `
+resource "datadog_observability_pipeline" "split_array_test" {
+  name = "split_array pipeline"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {}
+    }
+
+    processor_group {
+      id      = "group-1"
+      enabled = true
+      include = "*"
+      inputs  = ["source-1"]
+
+      processor {
+        id      = "split-array-proc"
+        enabled = true
+        include = "*"
+
+        split_array {
+          array {
+            include = "*"
+            field   = "tags"
+          }
+        }
+      }
+    }
+
+    destination {
+      id     = "dest-1"
+      inputs = ["group-1"]
+      datadog_logs {}
+    }
+  }
+}
+`
+}
+
+func testAccObservabilityPipelineSplitArrayFull() string {
+	return `
+resource "datadog_observability_pipeline" "split_array_test" {
+  name = "split_array pipeline updated"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {}
+    }
+
+    processor_group {
+      id      = "group-1"
+      enabled = true
+      include = "*"
+      inputs  = ["source-1"]
+
+      processor {
+        id           = "split-array-proc"
+        enabled      = true
+        include      = "*"
+        display_name = "Array Splitter"
+
+        split_array {
+          array {
+            include = "source:prod"
+            field   = "items"
+          }
+          array {
+            include = "source:staging"
+            field   = "events"
+          }
+        }
+      }
+    }
+
+    destination {
+      id     = "dest-1"
+      inputs = ["group-1"]
+      datadog_logs {}
+    }
+  }
+}
+`
+}
