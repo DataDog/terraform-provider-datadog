@@ -17,6 +17,52 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
+func getMetricQueryDefinitionSchema() map[string]*schema.Schema {
+	// Note this purposefully mirrors "metric_query" defined in resource_datadog_dashboard.go in the `getFormulaQuerySchema()` function.
+	// One difference is that we don't support the "aggregator" field here, as it's not supported by the SLO API.
+	// We may support "event_query" in the future, but for now we only support "metric_query".
+	return map[string]*schema.Schema{
+		"data_source": {
+			Type:        schema.TypeString,
+			Optional:    true,
+			Default:     "metrics",
+			Description: "The data source for the queries.",
+		},
+		"query": {
+			Type:        schema.TypeString,
+			Required:    true,
+			Description: "The query definition.",
+		},
+		"name": {
+			Type:        schema.TypeString,
+			Required:    true,
+			Description: "The name of the query for use in formulas.",
+		},
+	}
+}
+
+func getMetricQueriesSchema() *schema.Schema {
+	return &schema.Schema{
+		Type:        schema.TypeList,
+		Description: "A list of timeseries query definitions",
+		Required:    true,
+		MinItems:    1,
+		Elem: &schema.Resource{
+			Schema: map[string]*schema.Schema{
+				"metric_query": {
+					Type:        schema.TypeList,
+					Optional:    true,
+					MaxItems:    1,
+					Description: "A timeseries formula and functions metrics query.",
+					Elem: &schema.Resource{
+						Schema: getMetricQueryDefinitionSchema(),
+					},
+				},
+			},
+		},
+	}
+}
+
 func getTimeseriesQuerySchema() *schema.Schema {
 	return &schema.Schema{
 		Type:        schema.TypeList,
@@ -41,45 +87,7 @@ func getTimeseriesQuerySchema() *schema.Schema {
 						},
 					},
 				},
-				"query": {
-					Type:        schema.TypeList,
-					Description: "A list of data-source-specific queries that are in the formula.",
-					Required:    true,
-					MinItems:    1,
-					Elem: &schema.Resource{
-						// Note this purposefully mirrors "metric_query" defined in resource_datadog_dashboard.go in the `getFormulaQuerySchema()` function.
-						// One difference is that we don't support the "aggregator" field here, as it's not supported by the SLO API.
-						// We may support "event_query" in the future, but for now we only support "metric_query".
-						Schema: map[string]*schema.Schema{
-							"metric_query": {
-								Type:        schema.TypeList,
-								Optional:    true,
-								MaxItems:    1,
-								Description: "A timeseries formula and functions metrics query.",
-								Elem: &schema.Resource{
-									Schema: map[string]*schema.Schema{
-										"data_source": {
-											Type:        schema.TypeString,
-											Optional:    true,
-											Default:     "metrics",
-											Description: "The data source for metrics queries.",
-										},
-										"query": {
-											Type:        schema.TypeString,
-											Required:    true,
-											Description: "The metrics query definition.",
-										},
-										"name": {
-											Type:        schema.TypeString,
-											Required:    true,
-											Description: "The name of the query for use in formulas.",
-										},
-									},
-								},
-							},
-						},
-					},
-				},
+				"query": getMetricQueriesSchema(),
 			},
 		},
 	}
@@ -204,7 +212,7 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 					Type:          schema.TypeList,
 					MaxItems:      1,
 					Optional:      true,
-					ConflictsWith: []string{"monitor_ids", "sli_specification", "groups"},
+					ConflictsWith: []string{"monitor_ids", "groups"},
 					Description:   "The metric query of good / total events",
 					Elem: &schema.Resource{
 						Schema: map[string]*schema.Schema{
@@ -235,22 +243,23 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 					Elem:          &schema.Schema{Type: schema.TypeInt, MinItems: 1},
 				},
 
-				// Time-Slice SLO
+				// Count-based (metric) and Time-Slice SLO
 				"sli_specification": {
 					Type:          schema.TypeList,
 					MinItems:      1,
 					MaxItems:      1,
 					Optional:      true,
-					ConflictsWith: []string{"query", "monitor_ids", "groups"},
+					ConflictsWith: []string{"monitor_ids", "groups"},
 					Description:   "A map of SLI specifications to use as part of the SLO.",
 					Elem: &schema.Resource{
 						Schema: map[string]*schema.Schema{
 							"time_slice": {
-								Type:        schema.TypeList,
-								MinItems:    1,
-								MaxItems:    1,
-								Required:    true,
-								Description: "The time slice condition, composed of 3 parts: 1. The timeseries query, 2. The comparator, and 3. The threshold. Optionally, a fourth part, the query interval, can be provided.",
+								Type:          schema.TypeList,
+								MinItems:      1,
+								MaxItems:      1,
+								Optional:      true,
+								ConflictsWith: []string{"sli_specification.0.count"},
+								Description:   "The time slice condition, composed of 3 parts: 1. The timeseries query, 2. The comparator, and 3. The threshold. Optionally, a fourth part, the query interval, can be provided.",
 								Elem: &schema.Resource{
 									Schema: map[string]*schema.Schema{
 										"comparator": {
@@ -272,6 +281,51 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 											Description:      "The interval used when querying data, which defines the size of a time slice.",
 											ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSLOTimeSliceIntervalFromValue),
 										},
+									},
+								},
+							},
+							"count": {
+								Type:          schema.TypeList,
+								MinItems:      1,
+								MaxItems:      1,
+								Optional:      true,
+								ConflictsWith: []string{"sli_specification.0.time_slice"},
+								Description:   "The count-based (metric) SLI specification, composed of the good events formula, total events formula, and metric queries.",
+								Elem: &schema.Resource{
+									Schema: map[string]*schema.Schema{
+										"good_events_formula": {
+											Type:        schema.TypeList,
+											Required:    true,
+											MinItems:    1,
+											MaxItems:    1,
+											Description: "The formula string for the good events query",
+											Elem: &schema.Resource{
+												Schema: map[string]*schema.Schema{
+													"formula_expression": {
+														Type:        schema.TypeString,
+														Required:    true,
+														Description: "The formula string for the good events query.",
+													},
+												},
+											},
+										},
+										"total_events_formula": {
+											Type:        schema.TypeList,
+											Required:    true,
+											MinItems:    1,
+											MaxItems:    1,
+											Description: "The formula string for the total events query",
+											Elem: &schema.Resource{
+												Schema: map[string]*schema.Schema{
+													"formula_expression": {
+														Type:        schema.TypeString,
+														Required:    true,
+														Description: "The formula string for the total events.",
+													},
+												},
+											},
+										},
+										"queries": getMetricQueriesSchema(),
 									},
 								},
 							},
@@ -331,6 +385,25 @@ func resourceDatadogServiceLevelObjectiveCustomizeDiff(ctx context.Context, diff
 	return nil
 }
 
+func buildSLOMetricQueries(rawQueries []interface{}) []datadogV1.SLODataSourceQueryDefinition {
+	var queries []datadogV1.SLODataSourceQueryDefinition
+	for _, rawQueryEl := range rawQueries {
+		rawQuery := rawQueryEl.(map[string]interface{})
+		if rawMetricQueries, ok := rawQuery["metric_query"].([]interface{}); ok && len(rawMetricQueries) >= 1 {
+			if rawMetricQuery, ok := rawMetricQueries[0].(map[string]interface{}); ok {
+				name := rawMetricQuery["name"].(string)
+				query := rawMetricQuery["query"].(string)
+				rawDataSource := rawMetricQuery["data_source"].(string)
+				dataSource, _ := datadogV1.NewFormulaAndFunctionMetricDataSourceFromValue(rawDataSource)
+				queries = append(queries,
+					datadogV1.FormulaAndFunctionMetricQueryDefinitionAsSLODataSourceQueryDefinition(
+						datadogV1.NewFormulaAndFunctionMetricQueryDefinition(*dataSource, name, query)))
+			}
+		}
+	}
+	return queries
+}
+
 func buildSLOTimeSliceQueryStruct(d []interface{}) *datadogV1.SLOTimeSliceQuery {
 	// only use the first defined query
 	ret := datadogV1.NewSLOTimeSliceQueryWithDefaults()
@@ -348,22 +421,27 @@ func buildSLOTimeSliceQueryStruct(d []interface{}) *datadogV1.SLOTimeSliceQuery 
 				}
 			}
 			if rawQueries, ok := raw["query"].([]interface{}); ok {
-				for _, rawQueryEl := range rawQueries {
-					rawQuery := rawQueryEl.(map[string]interface{})
-					rawMetricQueries := rawQuery["metric_query"].([]interface{})
-					if len(rawMetricQueries) >= 1 {
-						if rawMetricQuery, ok := rawMetricQueries[0].(map[string]interface{}); ok {
-							name := rawMetricQuery["name"].(string)
-							query := rawMetricQuery["query"].(string)
-							rawDataSource := rawMetricQuery["data_source"].(string)
-							dataSource, _ := datadogV1.NewFormulaAndFunctionMetricDataSourceFromValue(rawDataSource)
-							ret.Queries = append(ret.Queries,
-								datadogV1.FormulaAndFunctionMetricQueryDefinitionAsSLODataSourceQueryDefinition(
-									datadogV1.NewFormulaAndFunctionMetricQueryDefinition(*dataSource, name, query)))
-						}
-					}
-				}
+				ret.Queries = buildSLOMetricQueries(rawQueries)
 			}
+		}
+	}
+	return ret
+}
+
+func buildSLOCountQueryStruct(d []interface{}) *datadogV1.SLOCountSpec {
+	raw := d[0].(map[string]interface{})
+	ret := datadogV1.NewSLOCountSpecWithDefaults()
+	if rawQueries, ok := raw["queries"].([]interface{}); ok {
+		ret.Queries = buildSLOMetricQueries(rawQueries)
+	}
+	if rawGoodFormula, ok := raw["good_events_formula"].([]interface{}); ok && len(rawGoodFormula) >= 1 {
+		if goodFormula, ok := rawGoodFormula[0].(map[string]interface{}); ok {
+			ret.GoodEventsFormula = datadogV1.NewSLOFormula(goodFormula["formula_expression"].(string))
+		}
+	}
+	if rawTotalFormula, ok := raw["total_events_formula"].([]interface{}); ok && len(rawTotalFormula) >= 1 {
+		if totalFormula, ok := rawTotalFormula[0].(map[string]interface{}); ok {
+			ret.TotalEventsFormula = datadogV1.NewSLOFormula(totalFormula["formula_expression"].(string))
 		}
 	}
 	return ret
@@ -442,8 +520,19 @@ func buildServiceLevelObjectiveStructs(d *schema.ResourceData) (*datadogV1.Servi
 		slo.SetSliSpecification(sliSpec)
 		slor.SetSliSpecification(sliSpec)
 	default:
-		// metric type
-		if attr, ok := d.GetOk("query"); ok {
+		if attr, ok := d.GetOk("sli_specification"); ok {
+			var sliSpec datadogV1.SLOSliSpec
+			raw := attr.([]interface{})
+			if len(raw) >= 1 {
+				rawSliSpec := raw[0].(map[string]interface{})
+				if rawCountSpec, ok := rawSliSpec["count"]; ok {
+					rawCountList := rawCountSpec.([]interface{})
+					sliSpec.SLOCountSpec = buildSLOCountQueryStruct(rawCountList)
+				}
+			}
+			slo.SetSliSpecification(sliSpec)
+			slor.SetSliSpecification(sliSpec)
+		} else if attr, ok := d.GetOk("query"); ok {
 			queries := make([]map[string]interface{}, 0)
 			raw := attr.([]interface{})
 			for _, rawQuery := range raw {
@@ -452,7 +541,6 @@ func buildServiceLevelObjectiveStructs(d *schema.ResourceData) (*datadogV1.Servi
 				}
 			}
 			if len(queries) >= 1 {
-				// only use the first defined query
 				slo.SetQuery(*datadogV1.NewServiceLevelObjectiveQuery(
 					queries[0]["denominator"].(string),
 					queries[0]["numerator"].(string)))
@@ -461,7 +549,7 @@ func buildServiceLevelObjectiveStructs(d *schema.ResourceData) (*datadogV1.Servi
 					queries[0]["numerator"].(string)))
 			}
 		} else {
-			return nil, nil, fmt.Errorf("query is required for metric SLOs")
+			return nil, nil, fmt.Errorf("query or sli_specification is required for metric SLOs")
 		}
 	}
 
@@ -640,7 +728,32 @@ func buildTerraformSliSpecification(sliSpec *datadogV1.SLOSliSpec) []map[string]
 		}
 		rawTimeSliceSpec = append(rawTimeSliceSpec, rawTimeSliceCond)
 		rawSliSpec = append(rawSliSpec, map[string]interface{}{"time_slice": rawTimeSliceSpec})
+	} else if sliSpec.SLOCountSpec != nil {
+		rawCountSpec := make([]map[string]interface{}, 0)
+		rawGoodFormula := []map[string]interface{}{
+			{"formula_expression": sliSpec.SLOCountSpec.GoodEventsFormula.GetFormula()},
+		}
+		rawTotalFormula := []map[string]interface{}{
+			{"formula_expression": sliSpec.SLOCountSpec.TotalEventsFormula.GetFormula()},
+		}
+		rawQueries := make([]map[string]interface{}, 0)
+		for _, q := range sliSpec.SLOCountSpec.GetQueries() {
+			rawMetricQuery := map[string]interface{}{
+				"name":        q.FormulaAndFunctionMetricQueryDefinition.GetName(),
+				"data_source": q.FormulaAndFunctionMetricQueryDefinition.GetDataSource(),
+				"query":       q.FormulaAndFunctionMetricQueryDefinition.GetQuery(),
+			}
+			rawQueries = append(rawQueries, map[string]interface{}{"metric_query": []map[string]interface{}{rawMetricQuery}})
+		}
+		rawCount := map[string]interface{}{
+			"good_events_formula":  rawGoodFormula,
+			"total_events_formula": rawTotalFormula,
+			"queries":              rawQueries,
+		}
+		rawCountSpec = append(rawCountSpec, rawCount)
+		rawSliSpec = append(rawSliSpec, map[string]interface{}{"count": rawCountSpec})
 	}
+
 	return rawSliSpec
 }
 
@@ -716,6 +829,12 @@ func updateSLOState(d *schema.ResourceData, slo *datadogV1.ServiceLevelObjective
 		}
 	default:
 		// metric type
+		if sliSpec, ok := slo.GetSliSpecificationOk(); ok && sliSpec.SLOCountSpec != nil {
+			tfSliSpec := buildTerraformSliSpecification(sliSpec)
+			if err := d.Set("sli_specification", tfSliSpec); err != nil {
+				return diag.FromErr(err)
+			}
+		}
 		query := make(map[string]interface{})
 		q := slo.GetQuery()
 		query["numerator"] = q.GetNumerator()
@@ -800,6 +919,12 @@ func updateSLOStateFromRead(d *schema.ResourceData, slo *datadogV1.SLOResponseDa
 		}
 	default:
 		// metric type
+		if sliSpec, ok := slo.GetSliSpecificationOk(); ok && sliSpec.SLOCountSpec != nil {
+			tfSliSpec := buildTerraformSliSpecification(&sliSpec)
+			if err := d.Set("sli_specification", tfSliSpec); err != nil {
+				return diag.FromErr(err)
+			}
+		}
 		query := make(map[string]interface{})
 		q := slo.GetQuery()
 		query["numerator"] = q.GetNumerator()
