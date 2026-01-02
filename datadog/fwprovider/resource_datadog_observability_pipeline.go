@@ -2315,7 +2315,7 @@ func expandPipeline(ctx context.Context, state *observabilityPipelineModel) (*da
 	// Processors - iterate through processor groups
 	for _, group := range state.Config[0].ProcessorGroups {
 		processorGroup := expandProcessorGroup(ctx, group)
-		config.Processors = append(config.Processors, processorGroup)
+		config.ProcessorGroups = append(config.ProcessorGroups, processorGroup)
 	}
 
 	// Destinations
@@ -2465,7 +2465,7 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 	}
 
 	// Process processor groups - each group may contain one or more processors
-	for _, group := range cfg.GetProcessors() {
+	for _, group := range cfg.GetProcessorGroups() {
 		flattenedGroup := flattenProcessorGroup(ctx, &group)
 		if flattenedGroup != nil {
 			outCfg.ProcessorGroups = append(outCfg.ProcessorGroups, flattenedGroup)
