@@ -110,6 +110,7 @@ Read-Only:
 
 Read-Only:
 
+- `anomaly_detection_options` (List of Object) (see [below for nested schema](#nestedobjatt--rules--options--anomaly_detection_options))
 - `decrease_criticality_based_on_env` (Boolean)
 - `detection_method` (String)
 - `evaluation_window` (Number)
@@ -119,6 +120,17 @@ Read-Only:
 - `new_value_options` (List of Object) (see [below for nested schema](#nestedobjatt--rules--options--new_value_options))
 - `sequence_detection_options` (List of Object) (see [below for nested schema](#nestedobjatt--rules--options--sequence_detection_options))
 - `third_party_rule_options` (List of Object) (see [below for nested schema](#nestedobjatt--rules--options--third_party_rule_options))
+
+<a id="nestedobjatt--rules--options--anomaly_detection_options"></a>
+### Nested Schema for `rules.options.anomaly_detection_options`
+
+Read-Only:
+
+- `bucket_duration` (Number)
+- `detection_tolerance` (Number)
+- `learning_duration` (Number)
+- `learning_period_baseline` (Number)
+
 
 <a id="nestedobjatt--rules--options--impossible_travel_options"></a>
 ### Nested Schema for `rules.options.impossible_travel_options`
