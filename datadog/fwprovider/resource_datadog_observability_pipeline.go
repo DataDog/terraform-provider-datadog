@@ -46,6 +46,7 @@ type observabilityPipelineModel struct {
 }
 
 type configModel struct {
+	PipelineType    types.String           `tfsdk:"pipeline_type"`
 	Sources         []*sourceModel         `tfsdk:"source"`
 	ProcessorGroups []*processorGroupModel `tfsdk:"processor_group"`
 	Destinations    []*destinationModel    `tfsdk:"destination"`
@@ -74,6 +75,23 @@ type destinationModel struct {
 	AmazonS3Destination               []*observability_pipeline.AmazonS3DestinationModel               `tfsdk:"amazon_s3"`
 	AmazonSecurityLakeDestination     []*observability_pipeline.AmazonSecurityLakeDestinationModel     `tfsdk:"amazon_security_lake"`
 	CrowdStrikeNextGenSiemDestination []*observability_pipeline.CrowdStrikeNextGenSiemDestinationModel `tfsdk:"crowdstrike_next_gen_siem"`
+	DatadogMetricsDestination         []*datadogMetricsDestinationModel                                `tfsdk:"datadog_metrics"`
+	HttpClientDestination             []*httpClientDestinationModel                                    `tfsdk:"http_client"`
+}
+
+type datadogMetricsDestinationModel struct {
+	// No additional fields needed - only id and inputs (defined in destinationModel)
+}
+
+type httpClientDestinationModel struct {
+	Encoding     types.String                            `tfsdk:"encoding"`
+	Compression  []httpClientDestinationCompressionModel `tfsdk:"compression"`
+	AuthStrategy types.String                            `tfsdk:"auth_strategy"`
+	Tls          []observability_pipeline.TlsModel       `tfsdk:"tls"`
+}
+
+type httpClientDestinationCompressionModel struct {
+	Algorithm types.String `tfsdk:"algorithm"`
 }
 
 type sourceModel struct {
@@ -164,6 +182,17 @@ type processorModel struct {
 	AddHostnameProcessor          []*addHostnameProcessorModel                        `tfsdk:"add_hostname"`
 	ParseXMLProcessor             []*parseXMLProcessorModel                           `tfsdk:"parse_xml"`
 	SplitArrayProcessor           []*splitArrayProcessorModel                         `tfsdk:"split_array"`
+	MetricTagsProcessor           []*metricTagsProcessorModel                         `tfsdk:"metric_tags"`
+}
+
+type metricTagsProcessorModel struct {
+	Rules []metricTagsProcessorRuleModel `tfsdk:"rule"`
+}
+
+type metricTagsProcessorRuleModel struct {
+	Mode   types.String   `tfsdk:"mode"`
+	Action types.String   `tfsdk:"action"`
+	Keys   []types.String `tfsdk:"keys"`
 }
 
 type ocsfMapperProcessorModel struct {
@@ -610,6 +639,16 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 			"config": schema.ListNestedBlock{
 				Description: "Configuration for the pipeline.",
 				NestedObject: schema.NestedBlockObject{
+					Attributes: map[string]schema.Attribute{
+						"pipeline_type": schema.StringAttribute{
+							Optional:    true,
+							Computed:    true,
+							Description: "The type of data being ingested. Defaults to `logs` if not specified.",
+							Validators: []validator.String{
+								stringvalidator.OneOf("logs", "metrics"),
+							},
+						},
+					},
 					Blocks: map[string]schema.Block{
 						"source": schema.ListNestedBlock{
 							Description: "List of sources.",
@@ -805,6 +844,9 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 												"auth_strategy": schema.StringAttribute{
 													Optional:    true,
 													Description: "Optional authentication strategy for HTTP requests.",
+													Validators: []validator.String{
+														stringvalidator.OneOf("none", "basic", "bearer"),
+													},
 												},
 											},
 											Blocks: map[string]schema.Block{
@@ -1738,6 +1780,47 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 												},
 												"datadog_tags":     observability_pipeline.DatadogTagsProcessorSchema(),
 												"custom_processor": observability_pipeline.CustomProcessorSchema(),
+												"metric_tags": schema.ListNestedBlock{
+													Description: "The `metric_tags` processor filters metrics based on their tags using Datadog tag key patterns.",
+													Validators: []validator.List{
+														listvalidator.SizeAtMost(1),
+													},
+													NestedObject: schema.NestedBlockObject{
+														Attributes: map[string]schema.Attribute{},
+														Blocks: map[string]schema.Block{
+															"rule": schema.ListNestedBlock{
+																Description: "A list of rules for filtering metric tags.",
+																Validators: []validator.List{
+																	listvalidator.SizeAtLeast(1),
+																	listvalidator.SizeAtMost(100),
+																},
+																NestedObject: schema.NestedBlockObject{
+																	Attributes: map[string]schema.Attribute{
+																		"mode": schema.StringAttribute{
+																			Required:    true,
+																			Description: "The processing mode for tag filtering.",
+																			Validators: []validator.String{
+																				stringvalidator.OneOf("filter"),
+																			},
+																		},
+																		"action": schema.StringAttribute{
+																			Required:    true,
+																			Description: "The action to take on tags with matching keys.",
+																			Validators: []validator.String{
+																				stringvalidator.OneOf("include", "exclude"),
+																			},
+																		},
+																		"keys": schema.ListAttribute{
+																			ElementType: types.StringType,
+																			Required:    true,
+																			Description: "A list of tag keys to include or exclude.",
+																		},
+																	},
+																},
+															},
+														},
+													},
+												},
 											},
 										},
 									},
@@ -1762,6 +1845,51 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 									"datadog_logs": schema.ListNestedBlock{
 										Description:  "The `datadog_logs` destination forwards logs to Datadog Log Management.",
 										NestedObject: schema.NestedBlockObject{},
+									},
+									"datadog_metrics": schema.ListNestedBlock{
+										Description:  "The `datadog_metrics` destination forwards metrics to Datadog.",
+										NestedObject: schema.NestedBlockObject{},
+									},
+									"http_client": schema.ListNestedBlock{
+										Description: "The `http_client` destination sends data to an HTTP endpoint.",
+										NestedObject: schema.NestedBlockObject{
+											Attributes: map[string]schema.Attribute{
+												"encoding": schema.StringAttribute{
+													Required:    true,
+													Description: "Encoding format for events.",
+													Validators: []validator.String{
+														stringvalidator.OneOf("json"),
+													},
+												},
+												"auth_strategy": schema.StringAttribute{
+													Optional:    true,
+													Description: "HTTP authentication strategy.",
+													Validators: []validator.String{
+														stringvalidator.OneOf("none", "basic", "bearer"),
+													},
+												},
+											},
+											Blocks: map[string]schema.Block{
+												"compression": schema.ListNestedBlock{
+													Description: "Compression configuration for HTTP requests.",
+													NestedObject: schema.NestedBlockObject{
+														Attributes: map[string]schema.Attribute{
+															"algorithm": schema.StringAttribute{
+																Required:    true,
+																Description: "Compression algorithm.",
+																Validators: []validator.String{
+																	stringvalidator.OneOf("gzip"),
+																},
+															},
+														},
+													},
+													Validators: []validator.List{
+														listvalidator.SizeAtMost(1),
+													},
+												},
+												"tls": observability_pipeline.TlsSchema(),
+											},
+										},
 									},
 									"google_cloud_storage": schema.ListNestedBlock{
 										Description: "The `google_cloud_storage` destination stores logs in a Google Cloud Storage (GCS) bucket.",
@@ -2259,6 +2387,13 @@ func expandPipeline(ctx context.Context, state *observabilityPipelineModel) (*da
 
 	config := datadogV2.NewObservabilityPipelineConfigWithDefaults()
 
+	// Always set pipeline_type, defaulting to "logs" if not specified
+	pipelineType := "logs"
+	if len(state.Config) > 0 && !state.Config[0].PipelineType.IsNull() && !state.Config[0].PipelineType.IsUnknown() {
+		pipelineType = state.Config[0].PipelineType.ValueString()
+	}
+	config.SetPipelineType(datadogV2.ObservabilityPipelineConfigPipelineType(pipelineType))
+
 	// Sources
 	for _, sourceBlock := range state.Config[0].Sources {
 		sourceId := sourceBlock.Id.ValueString()
@@ -2322,6 +2457,12 @@ func expandPipeline(ctx context.Context, state *observabilityPipelineModel) (*da
 	for _, dest := range state.Config[0].Destinations {
 		for _, d := range dest.DatadogLogsDestination {
 			config.Destinations = append(config.Destinations, expandDatadogLogsDestination(ctx, dest, d))
+		}
+		for _, d := range dest.DatadogMetricsDestination {
+			config.Destinations = append(config.Destinations, expandDatadogMetricsDestination(ctx, dest, d))
+		}
+		for _, d := range dest.HttpClientDestination {
+			config.Destinations = append(config.Destinations, expandHttpClientDestination(ctx, dest, d))
 		}
 		for _, d := range dest.SplunkHecDestination {
 			config.Destinations = append(config.Destinations, expandSplunkHecDestination(ctx, dest, d))
@@ -2393,6 +2534,14 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 
 	cfg := attrs.GetConfig()
 	outCfg := configModel{}
+
+	if pt, ok := cfg.GetPipelineTypeOk(); ok {
+		outCfg.PipelineType = types.StringValue(string(*pt))
+	} else {
+		// API doesn't return pipeline_type when it's "logs" (the default)
+		// Set it explicitly to avoid state drift
+		outCfg.PipelineType = types.StringValue("logs")
+	}
 
 	for _, src := range cfg.GetSources() {
 		sourceBlock := &sourceModel{}
@@ -2479,6 +2628,16 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 			destBlock.Id = types.StringValue(d.ObservabilityPipelineDatadogLogsDestination.GetId())
 			destBlock.Inputs, _ = types.ListValueFrom(ctx, types.StringType, d.ObservabilityPipelineDatadogLogsDestination.GetInputs())
 			destBlock.DatadogLogsDestination = append(destBlock.DatadogLogsDestination, logs)
+			outCfg.Destinations = append(outCfg.Destinations, destBlock)
+		} else if metrics := flattenDatadogMetricsDestination(ctx, d.ObservabilityPipelineDatadogMetricsDestination); metrics != nil {
+			destBlock.Id = types.StringValue(d.ObservabilityPipelineDatadogMetricsDestination.GetId())
+			destBlock.Inputs, _ = types.ListValueFrom(ctx, types.StringType, d.ObservabilityPipelineDatadogMetricsDestination.GetInputs())
+			destBlock.DatadogMetricsDestination = append(destBlock.DatadogMetricsDestination, metrics)
+			outCfg.Destinations = append(outCfg.Destinations, destBlock)
+		} else if httpClient := flattenHttpClientDestination(ctx, d.ObservabilityPipelineHttpClientDestination); httpClient != nil {
+			destBlock.Id = types.StringValue(d.ObservabilityPipelineHttpClientDestination.GetId())
+			destBlock.Inputs, _ = types.ListValueFrom(ctx, types.StringType, d.ObservabilityPipelineHttpClientDestination.GetInputs())
+			destBlock.HttpClientDestination = append(destBlock.HttpClientDestination, httpClient)
 			outCfg.Destinations = append(outCfg.Destinations, destBlock)
 		} else if chronicle := flattenGoogleChronicleDestination(ctx, d.ObservabilityPipelineGoogleChronicleDestination); chronicle != nil {
 			destBlock.Id = types.StringValue(d.ObservabilityPipelineGoogleChronicleDestination.GetId())
@@ -2752,6 +2911,8 @@ func flattenProcessorGroup(ctx context.Context, group *datadogV2.ObservabilityPi
 			procModel = flattenParseXMLProcessor(ctx, p.ObservabilityPipelineParseXMLProcessor)
 		} else if p.ObservabilityPipelineSplitArrayProcessor != nil {
 			procModel = flattenSplitArrayProcessor(ctx, p.ObservabilityPipelineSplitArrayProcessor)
+		} else if p.ObservabilityPipelineMetricTagsProcessor != nil {
+			procModel = flattenMetricTagsProcessor(ctx, p.ObservabilityPipelineMetricTagsProcessor)
 		}
 
 		if procModel != nil {
@@ -2881,6 +3042,9 @@ func expandProcessorTypes(ctx context.Context, processor *processorModel) []data
 	}
 	for _, p := range processor.SplitArrayProcessor {
 		items = append(items, expandSplitArrayProcessorItem(ctx, common, p))
+	}
+	for _, p := range processor.MetricTagsProcessor {
+		items = append(items, expandMetricTagsProcessorItem(ctx, common, p))
 	}
 
 	return items
@@ -3987,6 +4151,48 @@ func flattenSplitArrayProcessor(ctx context.Context, src *datadogV2.Observabilit
 	model.SplitArrayProcessor = append(model.SplitArrayProcessor, splitArray)
 	return model
 }
+func flattenMetricTagsProcessor(ctx context.Context, src *datadogV2.ObservabilityPipelineMetricTagsProcessor) *processorModel {
+	if src == nil {
+		return nil
+	}
+	model := createProcessorModel(src)
+	metricTags := &metricTagsProcessorModel{}
+	for _, rule := range src.GetRules() {
+		var keys []types.String
+		for _, k := range rule.GetKeys() {
+			keys = append(keys, types.StringValue(k))
+		}
+		metricTags.Rules = append(metricTags.Rules, metricTagsProcessorRuleModel{
+			Mode:   types.StringValue(string(rule.GetMode())),
+			Action: types.StringValue(string(rule.GetAction())),
+			Keys:   keys,
+		})
+	}
+	model.MetricTagsProcessor = append(model.MetricTagsProcessor, metricTags)
+	return model
+}
+
+func expandMetricTagsProcessorItem(ctx context.Context, common observability_pipeline.BaseProcessorFields, src *metricTagsProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
+	proc := datadogV2.NewObservabilityPipelineMetricTagsProcessorWithDefaults()
+	common.ApplyTo(proc)
+
+	var rules []datadogV2.ObservabilityPipelineMetricTagsProcessorRule
+	for _, r := range src.Rules {
+		rule := datadogV2.ObservabilityPipelineMetricTagsProcessorRule{
+			Mode:   datadogV2.ObservabilityPipelineMetricTagsProcessorRuleMode(r.Mode.ValueString()),
+			Action: datadogV2.ObservabilityPipelineMetricTagsProcessorRuleAction(r.Action.ValueString()),
+		}
+		var keys []string
+		for _, k := range r.Keys {
+			keys = append(keys, k.ValueString())
+		}
+		rule.SetKeys(keys)
+		rules = append(rules, rule)
+	}
+	proc.SetRules(rules)
+
+	return datadogV2.ObservabilityPipelineMetricTagsProcessorAsObservabilityPipelineConfigProcessorItem(proc)
+}
 
 // ---------- Destinations ----------
 
@@ -4006,6 +4212,80 @@ func expandDatadogLogsDestination(ctx context.Context, dest *destinationModel, s
 	return datadogV2.ObservabilityPipelineConfigDestinationItem{
 		ObservabilityPipelineDatadogLogsDestination: d,
 	}
+}
+
+func flattenDatadogMetricsDestination(ctx context.Context, src *datadogV2.ObservabilityPipelineDatadogMetricsDestination) *datadogMetricsDestinationModel {
+	if src == nil {
+		return nil
+	}
+	return &datadogMetricsDestinationModel{}
+}
+
+func expandDatadogMetricsDestination(ctx context.Context, dest *destinationModel, src *datadogMetricsDestinationModel) datadogV2.ObservabilityPipelineConfigDestinationItem {
+	d := datadogV2.NewObservabilityPipelineDatadogMetricsDestinationWithDefaults()
+	d.SetId(dest.Id.ValueString())
+	var inputs []string
+	dest.Inputs.ElementsAs(ctx, &inputs, false)
+	d.SetInputs(inputs)
+	return datadogV2.ObservabilityPipelineConfigDestinationItem{
+		ObservabilityPipelineDatadogMetricsDestination: d,
+	}
+}
+
+func expandHttpClientDestination(ctx context.Context, dest *destinationModel, src *httpClientDestinationModel) datadogV2.ObservabilityPipelineConfigDestinationItem {
+	d := datadogV2.NewObservabilityPipelineHttpClientDestinationWithDefaults()
+	d.SetId(dest.Id.ValueString())
+
+	var inputs []string
+	dest.Inputs.ElementsAs(ctx, &inputs, false)
+	d.SetInputs(inputs)
+
+	d.SetEncoding(datadogV2.ObservabilityPipelineHttpClientDestinationEncoding(src.Encoding.ValueString()))
+
+	if !src.AuthStrategy.IsNull() {
+		d.SetAuthStrategy(datadogV2.ObservabilityPipelineHttpClientDestinationAuthStrategy(src.AuthStrategy.ValueString()))
+	}
+
+	if len(src.Compression) > 0 {
+		comp := datadogV2.ObservabilityPipelineHttpClientDestinationCompression{
+			Algorithm: datadogV2.ObservabilityPipelineHttpClientDestinationCompressionAlgorithm(src.Compression[0].Algorithm.ValueString()),
+		}
+		d.SetCompression(comp)
+	}
+
+	d.Tls = observability_pipeline.ExpandTls(src.Tls)
+
+	return datadogV2.ObservabilityPipelineConfigDestinationItem{
+		ObservabilityPipelineHttpClientDestination: d,
+	}
+}
+
+func flattenHttpClientDestination(ctx context.Context, src *datadogV2.ObservabilityPipelineHttpClientDestination) *httpClientDestinationModel {
+	if src == nil {
+		return nil
+	}
+
+	out := &httpClientDestinationModel{
+		Encoding: types.StringValue(string(src.GetEncoding())),
+	}
+
+	if src.Tls != nil {
+		out.Tls = observability_pipeline.FlattenTls(src.Tls)
+	}
+
+	if auth, ok := src.GetAuthStrategyOk(); ok {
+		out.AuthStrategy = types.StringValue(string(*auth))
+	}
+
+	if comp, ok := src.GetCompressionOk(); ok {
+		out.Compression = []httpClientDestinationCompressionModel{
+			{
+				Algorithm: types.StringValue(string(comp.GetAlgorithm())),
+			},
+		}
+	}
+
+	return out
 }
 
 func expandFluentdSource(src *fluentdSourceModel, id string) datadogV2.ObservabilityPipelineConfigSourceItem {
