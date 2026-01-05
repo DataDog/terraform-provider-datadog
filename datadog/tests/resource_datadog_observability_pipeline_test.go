@@ -4468,7 +4468,7 @@ resource "datadog_observability_pipeline" "parse_xml_test" {
     }
 
     destination {
-          id     = "dest-1"
+      id     = "dest-1"
       inputs = ["group-1"]
       datadog_logs {}
     }
