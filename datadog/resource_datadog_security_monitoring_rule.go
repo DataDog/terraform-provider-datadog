@@ -13,6 +13,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/customdiff"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
 
 func resourceDatadogSecurityMonitoringRule() *schema.Resource {
@@ -247,6 +248,41 @@ func datadogSecurityMonitoringRuleSchema(includeValidate bool) map[string]*schem
 									Optional:    true,
 									Default:     false,
 									Description: "If true, signals are suppressed for the first 24 hours. During that time, Datadog learns the user's regular access locations. This can be helpful to reduce noise and infer VPN usage or credentialed API access.",
+								},
+							},
+						},
+					},
+
+					"anomaly_detection_options": {
+						Type:        schema.TypeList,
+						Optional:    true,
+						MaxItems:    1,
+						Description: "Options for rules using the anomaly detection method.",
+						Elem: &schema.Resource{
+							Schema: map[string]*schema.Schema{
+								"bucket_duration": {
+									Type:             schema.TypeInt,
+									Optional:         true,
+									ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewSecurityMonitoringRuleAnomalyDetectionOptionsBucketDurationFromValue),
+									Description:      "Duration in seconds of the time buckets used to aggregate events matched by the rule. Valid values are 300, 600, 900, 1800, 3600, 10800.",
+								},
+								"learning_duration": {
+									Type:             schema.TypeInt,
+									Optional:         true,
+									ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewSecurityMonitoringRuleAnomalyDetectionOptionsLearningDurationFromValue),
+									Description:      "Learning duration in hours. Anomaly detection waits for at least this amount of historical data before it starts evaluating. Valid values are 1, 6, 12, 24, 48, 168, 336.",
+								},
+								"detection_tolerance": {
+									Type:             schema.TypeInt,
+									Optional:         true,
+									ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewSecurityMonitoringRuleAnomalyDetectionOptionsDetectionToleranceFromValue),
+									Description:      "An optional parameter that sets how permissive anomaly detection is. Higher values require higher deviations before triggering a signal. Valid values are 1, 2, 3, 4, 5.",
+								},
+								"learning_period_baseline": {
+									Type:         schema.TypeInt,
+									Optional:     true,
+									ValidateFunc: validation.IntAtLeast(0),
+									Description:  "An optional override baseline to apply while the rule is in the learning period. Must be greater than or equal to 0.",
 								},
 							},
 						},
@@ -1064,6 +1100,13 @@ func buildPayloadOptions(tfOptionsList []interface{}, ruleType string) *datadogV
 		}
 	}
 
+	if v, ok := tfOptions["anomaly_detection_options"]; ok {
+		tfAnomalyDetectionOptionsList := v.([]interface{})
+		if payloadAnomalyDetectionOptions, ok := buildPayloadAnomalyDetectionOptions(tfAnomalyDetectionOptionsList); ok {
+			payloadOptions.AnomalyDetectionOptions = payloadAnomalyDetectionOptions
+		}
+	}
+
 	if v, ok := tfOptions["third_party_rule_options"]; ok {
 		tfThirdPartyOptionsList := v.([]interface{})
 		if payloadThirdPartyRuleOptions, ok := buildPayloadThirdPartyRuleOptions(tfThirdPartyOptionsList); ok {
@@ -1091,6 +1134,39 @@ func buildPayloadImpossibleTravelOptions(tfOptionsList []interface{}) (*datadogV
 		hasPayload = true
 		shouldBaselineUserLocations := v.(bool)
 		options.BaselineUserLocations = &shouldBaselineUserLocations
+	}
+
+	return options, hasPayload
+}
+
+func buildPayloadAnomalyDetectionOptions(tfOptionsList []interface{}) (*datadogV2.SecurityMonitoringRuleAnomalyDetectionOptions, bool) {
+	options := datadogV2.NewSecurityMonitoringRuleAnomalyDetectionOptions()
+	tfOptions := extractMapFromInterface(tfOptionsList)
+
+	hasPayload := false
+
+	if v, ok := tfOptions["bucket_duration"]; ok {
+		hasPayload = true
+		bucketDuration := datadogV2.SecurityMonitoringRuleAnomalyDetectionOptionsBucketDuration(v.(int))
+		options.BucketDuration = &bucketDuration
+	}
+
+	if v, ok := tfOptions["learning_duration"]; ok {
+		hasPayload = true
+		learningDuration := datadogV2.SecurityMonitoringRuleAnomalyDetectionOptionsLearningDuration(v.(int))
+		options.LearningDuration = &learningDuration
+	}
+
+	if v, ok := tfOptions["detection_tolerance"]; ok {
+		hasPayload = true
+		detectionTolerance := datadogV2.SecurityMonitoringRuleAnomalyDetectionOptionsDetectionTolerance(v.(int))
+		options.DetectionTolerance = &detectionTolerance
+	}
+
+	if v, ok := tfOptions["learning_period_baseline"]; ok {
+		hasPayload = true
+		learningPeriodBaseline := int64(v.(int))
+		options.LearningPeriodBaseline = &learningPeriodBaseline
 	}
 
 	return options, hasPayload
@@ -1681,6 +1757,16 @@ func extractTfOptions(options datadogV2.SecurityMonitoringRuleOptions) map[strin
 		tfImpossibleTravelOptions := make(map[string]interface{})
 		tfImpossibleTravelOptions["baseline_user_locations"] = impossibleTravelOptions.GetBaselineUserLocations()
 		tfOptions["impossible_travel_options"] = []map[string]interface{}{tfImpossibleTravelOptions}
+	}
+	if anomalyDetectionOptions, ok := options.GetAnomalyDetectionOptionsOk(); ok {
+		tfAnomalyDetectionOptions := make(map[string]interface{})
+		tfAnomalyDetectionOptions["bucket_duration"] = int(anomalyDetectionOptions.GetBucketDuration())
+		tfAnomalyDetectionOptions["learning_duration"] = int(anomalyDetectionOptions.GetLearningDuration())
+		tfAnomalyDetectionOptions["detection_tolerance"] = int(anomalyDetectionOptions.GetDetectionTolerance())
+		if learningPeriodBaseline, ok := anomalyDetectionOptions.GetLearningPeriodBaselineOk(); ok {
+			tfAnomalyDetectionOptions["learning_period_baseline"] = *learningPeriodBaseline
+		}
+		tfOptions["anomaly_detection_options"] = []map[string]interface{}{tfAnomalyDetectionOptions}
 	}
 	if thirdPartyOptions, ok := options.GetThirdPartyRuleOptionsOk(); ok {
 		tfThirdPartyOptions := make(map[string]interface{})
