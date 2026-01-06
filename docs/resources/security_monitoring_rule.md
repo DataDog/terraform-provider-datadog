@@ -175,6 +175,7 @@ Optional:
 Required:
 
 - `forget_after` (Number) The duration in days after which a learned value is forgotten. Valid values are `1`, `2`, `7`, `14`, `21`, `28`.
+- `instantaneous_baseline` (Boolean) When set to true, Datadog uses previous values that fall within the defined learning window to construct the baseline, enabling the system to establish an accurate baseline more rapidly rather than relying solely on gradual learning over time.
 
 Optional:
 
