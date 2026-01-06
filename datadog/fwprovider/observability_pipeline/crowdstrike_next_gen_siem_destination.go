@@ -12,9 +12,10 @@ import (
 
 // CrowdStrikeNextGenSiemDestinationModel represents the Terraform model for the CrowdStrikeNextGenSiemDestination
 type CrowdStrikeNextGenSiemDestinationModel struct {
-	Encoding    types.String       `tfsdk:"encoding"`
-	Compression []compressionModel `tfsdk:"compression"`
-	Tls         []TlsModel         `tfsdk:"tls"`
+	Encoding    types.String         `tfsdk:"encoding"`
+	Compression []compressionModel   `tfsdk:"compression"`
+	Tls         []TlsModel           `tfsdk:"tls"`
+	Buffer      []BufferOptionsModel `tfsdk:"buffer"`
 }
 
 // CrowdStrikeNextGenSiemDestinationSchema returns the schema for the CrowdStrikeNextGenSiemDestination
@@ -34,6 +35,7 @@ func CrowdStrikeNextGenSiemDestinationSchema() schema.ListNestedBlock {
 			Blocks: map[string]schema.Block{
 				"compression": CompressionSchema(),
 				"tls":         TlsSchema(),
+				"buffer":      BufferOptionsSchema(),
 			},
 		},
 	}
@@ -56,6 +58,13 @@ func ExpandCrowdStrikeNextGenSiemDestination(ctx context.Context, id string, inp
 	}
 	if len(src.Tls) > 0 {
 		dest.Tls = ExpandTls(src.Tls)
+	}
+
+	if len(src.Buffer) > 0 {
+		buffer := ExpandBufferOptions(src.Buffer[0])
+		if buffer != nil {
+			dest.SetBuffer(*buffer)
+		}
 	}
 
 	return datadogV2.ObservabilityPipelineConfigDestinationItem{
@@ -81,6 +90,13 @@ func FlattenCrowdStrikeNextGenSiemDestination(ctx context.Context, src *datadogV
 	if src.Compression != nil {
 		compression := FlattenCompression(src.Compression)
 		out.Compression = []compressionModel{compression}
+	}
+
+	if buffer, ok := src.GetBufferOk(); ok {
+		outBuffer := FlattenBufferOptions(buffer)
+		if outBuffer != nil {
+			out.Buffer = []BufferOptionsModel{*outBuffer}
+		}
 	}
 
 	return out

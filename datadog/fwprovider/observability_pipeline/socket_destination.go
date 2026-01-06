@@ -17,6 +17,7 @@ type SocketDestinationModel struct {
 	Encoding types.String         `tfsdk:"encoding"`
 	Framing  []SocketFramingModel `tfsdk:"framing"`
 	Tls      []TlsModel           `tfsdk:"tls"`
+	Buffer   []BufferOptionsModel `tfsdk:"buffer"`
 }
 
 // ExpandSocketDestination converts the Terraform model to the Datadog API model
@@ -57,6 +58,13 @@ func ExpandSocketDestination(ctx context.Context, id string, inputs types.List, 
 		s.Tls = ExpandTls(src.Tls)
 	}
 
+	if len(src.Buffer) > 0 {
+		buffer := ExpandBufferOptions(src.Buffer[0])
+		if buffer != nil {
+			s.SetBuffer(*buffer)
+		}
+	}
+
 	return datadogV2.ObservabilityPipelineConfigDestinationItem{
 		ObservabilityPipelineSocketDestination: s,
 	}
@@ -91,6 +99,13 @@ func FlattenSocketDestination(ctx context.Context, src *datadogV2.ObservabilityP
 	}
 	out.Framing = []SocketFramingModel{outFraming}
 
+	if buffer, ok := src.GetBufferOk(); ok {
+		outBuffer := FlattenBufferOptions(buffer)
+		if outBuffer != nil {
+			out.Buffer = []BufferOptionsModel{*outBuffer}
+		}
+	}
+
 	return out
 }
 
@@ -116,6 +131,7 @@ func SocketDestinationSchema() schema.ListNestedBlock {
 				},
 			},
 			Blocks: map[string]schema.Block{
+				"buffer": BufferOptionsSchema(),
 				"framing": schema.ListNestedBlock{
 					Description: "Defines the framing method for outgoing messages.",
 					NestedObject: schema.NestedBlockObject{
