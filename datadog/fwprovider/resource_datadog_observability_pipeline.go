@@ -77,6 +77,7 @@ type destinationModel struct {
 	CrowdStrikeNextGenSiemDestination []*observability_pipeline.CrowdStrikeNextGenSiemDestinationModel `tfsdk:"crowdstrike_next_gen_siem"`
 	DatadogMetricsDestination         []*datadogMetricsDestinationModel                                `tfsdk:"datadog_metrics"`
 	HttpClientDestination             []*httpClientDestinationModel                                    `tfsdk:"http_client"`
+	CloudPremDestination              []*observability_pipeline.CloudPremDestinationModel              `tfsdk:"cloud_prem"`
 }
 
 type datadogMetricsDestinationModel struct {
@@ -2201,6 +2202,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 									"amazon_s3":                 observability_pipeline.AmazonS3DestinationSchema(),
 									"amazon_security_lake":      observability_pipeline.AmazonSecurityLakeDestinationSchema(),
 									"crowdstrike_next_gen_siem": observability_pipeline.CrowdStrikeNextGenSiemDestinationSchema(),
+									"cloud_prem":                observability_pipeline.CloudPremDestinationSchema(),
 								},
 							},
 						},
@@ -2518,6 +2520,9 @@ func expandPipeline(ctx context.Context, state *observabilityPipelineModel) (*da
 		for _, d := range dest.CrowdStrikeNextGenSiemDestination {
 			config.Destinations = append(config.Destinations, observability_pipeline.ExpandCrowdStrikeNextGenSiemDestination(ctx, dest.Id.ValueString(), dest.Inputs, d))
 		}
+		for _, d := range dest.CloudPremDestination {
+			config.Destinations = append(config.Destinations, observability_pipeline.ExpandCloudPremDestination(ctx, dest.Id.ValueString(), dest.Inputs, d))
+		}
 	}
 
 	attrs.SetConfig(*config)
@@ -2729,6 +2734,11 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 			destBlock.Inputs, _ = types.ListValueFrom(ctx, types.StringType, d.ObservabilityPipelineCrowdStrikeNextGenSiemDestination.GetInputs())
 			destBlock.CrowdStrikeNextGenSiemDestination = append(destBlock.CrowdStrikeNextGenSiemDestination, crowdstrike)
 			outCfg.Destinations = append(outCfg.Destinations, destBlock)
+		} else if cloudprem := observability_pipeline.FlattenCloudPremDestination(ctx, d.ObservabilityPipelineCloudPremDestination); cloudprem != nil {
+			destBlock.Id = types.StringValue(d.ObservabilityPipelineCloudPremDestination.GetId())
+			destBlock.Inputs, _ = types.ListValueFrom(ctx, types.StringType, d.ObservabilityPipelineCloudPremDestination.GetInputs())
+			destBlock.CloudPremDestination = append(destBlock.CloudPremDestination, cloudprem)
+			outCfg.Destinations = append(outCfg.Destinations, destBlock)
 		}
 	}
 
@@ -2807,18 +2817,18 @@ func expandKafkaSource(src *kafkaSourceModel, id string) datadogV2.Observability
 
 	if len(src.Sasl) > 0 {
 		sasl := src.Sasl[0]
-		mechanism, _ := datadogV2.NewObservabilityPipelinePipelineKafkaSourceSaslMechanismFromValue(sasl.Mechanism.ValueString())
+		mechanism, _ := datadogV2.NewObservabilityPipelineKafkaSaslMechanismFromValue(sasl.Mechanism.ValueString())
 		if mechanism != nil {
-			saslConfig := datadogV2.ObservabilityPipelineKafkaSourceSasl{}
+			saslConfig := datadogV2.ObservabilityPipelineKafkaSasl{}
 			saslConfig.SetMechanism(*mechanism)
 			source.SetSasl(saslConfig)
 		}
 	}
 
 	if len(src.LibrdkafkaOptions) > 0 {
-		opts := []datadogV2.ObservabilityPipelineKafkaSourceLibrdkafkaOption{}
+		opts := []datadogV2.ObservabilityPipelineKafkaLibrdkafkaOption{}
 		for _, opt := range src.LibrdkafkaOptions {
-			opts = append(opts, datadogV2.ObservabilityPipelineKafkaSourceLibrdkafkaOption{
+			opts = append(opts, datadogV2.ObservabilityPipelineKafkaLibrdkafkaOption{
 				Name:  opt.Name.ValueString(),
 				Value: opt.Value.ValueString(),
 			})
