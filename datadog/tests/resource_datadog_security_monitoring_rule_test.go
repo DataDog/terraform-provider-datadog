@@ -708,6 +708,7 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
 		new_value_options {
 			forget_after = 7
 			learning_duration = 1
+			instantaneous_baseline = false
 		}
     }
 
@@ -795,6 +796,8 @@ func testAccCheckDatadogSecurityMonitorCreatedCheckNewValueRule(accProvider func
 			tfSecurityRuleName, "options.0.new_value_options.0.learning_duration", "1"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "options.0.new_value_options.0.learning_threshold", "0"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.new_value_options.0.instantaneous_baseline", "false"),
 		resource.TestCheckTypeSetElemAttr(
 			tfSecurityRuleName, "tags.*", "i:tomato"),
 		resource.TestCheckTypeSetElemAttr(
@@ -1637,6 +1640,7 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
 		new_value_options {
 			forget_after = 1
 			learning_duration = 0
+			instantaneous_baseline = true
 		}
     }
 
@@ -1688,6 +1692,8 @@ func testAccCheckDatadogSecurityMonitoringUpdateCheckNewValueRule(accProvider fu
 			tfSecurityRuleName, "options.0.new_value_options.0.learning_duration", "0"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "options.0.new_value_options.0.learning_threshold", "0"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.new_value_options.0.instantaneous_baseline", "true"),
 		resource.TestCheckTypeSetElemAttr(
 			tfSecurityRuleName, "tags.*", "u:tomato"),
 		resource.TestCheckTypeSetElemAttr(

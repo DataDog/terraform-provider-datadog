@@ -231,6 +231,12 @@ func datadogSecurityMonitoringRuleSchema(includeValidate bool) map[string]*schem
 									Required:         true,
 									Description:      "The duration in days after which a learned value is forgotten.",
 								},
+								"instantaneous_baseline": {
+									Type:        schema.TypeBool,
+									Optional:    true,
+									Default:     false,
+									Description: "When set to true, Datadog uses previous values that fall within the defined learning window to construct the baseline, enabling the system to establish an accurate baseline more rapidly rather than relying solely on gradual learning over time.",
+								},
 							},
 						},
 					},
@@ -1196,6 +1202,10 @@ func buildPayloadNewValueOptions(tfOptionsList []interface{}) (*datadogV2.Securi
 		forgetAfter := datadogV2.SecurityMonitoringRuleNewValueOptionsForgetAfter(v.(int))
 		payloadNewValueRulesOptions.ForgetAfter = &forgetAfter
 	}
+	if v, ok := tfOptions["instantaneous_baseline"]; ok {
+		hasPayload = true
+		payloadNewValueRulesOptions.SetInstantaneousBaseline(v.(bool))
+	}
 	return payloadNewValueRulesOptions, hasPayload
 }
 
@@ -1747,6 +1757,7 @@ func extractTfOptions(options datadogV2.SecurityMonitoringRuleOptions) map[strin
 	}
 	if newValueOptions, ok := options.GetNewValueOptionsOk(); ok {
 		tfNewValueOptions := make(map[string]interface{})
+		tfNewValueOptions["instantaneous_baseline"] = bool(newValueOptions.GetInstantaneousBaseline())
 		tfNewValueOptions["forget_after"] = int(newValueOptions.GetForgetAfter())
 		tfNewValueOptions["learning_method"] = string(newValueOptions.GetLearningMethod())
 		tfNewValueOptions["learning_duration"] = int(newValueOptions.GetLearningDuration())
