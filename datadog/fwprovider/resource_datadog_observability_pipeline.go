@@ -3611,7 +3611,7 @@ func flattenEnrichmentTableProcessor(ctx context.Context, src *datadogV2.Observa
 			},
 		}
 	}
-	if refTableRaw, ok := src.AdditionalProperties["reference_table"]; ok {
+	if refTableRaw, ok := src.ReferenceTable; ok {
 		if refTable, ok := refTableRaw.(map[string]interface{}); ok {
 			refTableModel := enrichmentReferenceTableModel{}
 			if keyField, ok := refTable["key_field"].(string); ok {
