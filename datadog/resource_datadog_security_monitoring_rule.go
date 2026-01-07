@@ -233,7 +233,8 @@ func datadogSecurityMonitoringRuleSchema(includeValidate bool) map[string]*schem
 								},
 								"instantaneous_baseline": {
 									Type:        schema.TypeBool,
-									Required:    true,
+									Optional:    true,
+									Default:     false,
 									Description: "When set to true, Datadog uses previous values that fall within the defined learning window to construct the baseline, enabling the system to establish an accurate baseline more rapidly rather than relying solely on gradual learning over time.",
 								},
 							},
