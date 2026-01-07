@@ -97,23 +97,24 @@ type httpClientDestinationCompressionModel struct {
 }
 
 type sourceModel struct {
-	Id                       types.String                                `tfsdk:"id"`
-	DatadogAgentSource       []*datadogAgentSourceModel                  `tfsdk:"datadog_agent"`
-	KafkaSource              []*kafkaSourceModel                         `tfsdk:"kafka"`
-	RsyslogSource            []*rsyslogSourceModel                       `tfsdk:"rsyslog"`
-	SyslogNgSource           []*syslogNgSourceModel                      `tfsdk:"syslog_ng"`
-	SumoLogicSource          []*sumoLogicSourceModel                     `tfsdk:"sumo_logic"`
-	FluentdSource            []*fluentdSourceModel                       `tfsdk:"fluentd"`
-	FluentBitSource          []*fluentBitSourceModel                     `tfsdk:"fluent_bit"`
-	HttpServerSource         []*httpServerSourceModel                    `tfsdk:"http_server"`
-	AmazonS3Source           []*amazonS3SourceModel                      `tfsdk:"amazon_s3"`
-	SplunkHecSource          []*splunkHecSourceModel                     `tfsdk:"splunk_hec"`
-	SplunkTcpSource          []*splunkTcpSourceModel                     `tfsdk:"splunk_tcp"`
-	AmazonDataFirehoseSource []*amazonDataFirehoseSourceModel            `tfsdk:"amazon_data_firehose"`
-	HttpClientSource         []*httpClientSourceModel                    `tfsdk:"http_client"`
-	GooglePubSubSource       []*googlePubSubSourceModel                  `tfsdk:"google_pubsub"`
-	LogstashSource           []*logstashSourceModel                      `tfsdk:"logstash"`
-	SocketSource             []*observability_pipeline.SocketSourceModel `tfsdk:"socket"`
+	Id                       types.String                                       `tfsdk:"id"`
+	DatadogAgentSource       []*datadogAgentSourceModel                         `tfsdk:"datadog_agent"`
+	KafkaSource              []*kafkaSourceModel                                `tfsdk:"kafka"`
+	RsyslogSource            []*rsyslogSourceModel                              `tfsdk:"rsyslog"`
+	SyslogNgSource           []*syslogNgSourceModel                             `tfsdk:"syslog_ng"`
+	SumoLogicSource          []*sumoLogicSourceModel                            `tfsdk:"sumo_logic"`
+	FluentdSource            []*fluentdSourceModel                              `tfsdk:"fluentd"`
+	FluentBitSource          []*fluentBitSourceModel                            `tfsdk:"fluent_bit"`
+	HttpServerSource         []*httpServerSourceModel                           `tfsdk:"http_server"`
+	AmazonS3Source           []*amazonS3SourceModel                             `tfsdk:"amazon_s3"`
+	SplunkHecSource          []*splunkHecSourceModel                            `tfsdk:"splunk_hec"`
+	SplunkTcpSource          []*splunkTcpSourceModel                            `tfsdk:"splunk_tcp"`
+	AmazonDataFirehoseSource []*amazonDataFirehoseSourceModel                   `tfsdk:"amazon_data_firehose"`
+	HttpClientSource         []*httpClientSourceModel                           `tfsdk:"http_client"`
+	GooglePubSubSource       []*googlePubSubSourceModel                         `tfsdk:"google_pubsub"`
+	LogstashSource           []*logstashSourceModel                             `tfsdk:"logstash"`
+	SocketSource             []*observability_pipeline.SocketSourceModel        `tfsdk:"socket"`
+	OpentelemetrySource      []*observability_pipeline.OpentelemetrySourceModel `tfsdk:"opentelemetry"`
 }
 
 type logstashSourceModel struct {
@@ -887,7 +888,8 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 											},
 										},
 									},
-									"socket": observability_pipeline.SocketSourceSchema(),
+									"socket":        observability_pipeline.SocketSourceSchema(),
+									"opentelemetry": observability_pipeline.OpentelemetrySourceSchema(),
 								},
 							},
 						},
@@ -2449,6 +2451,9 @@ func expandPipeline(ctx context.Context, state *observabilityPipelineModel) (*da
 		for _, s := range sourceBlock.SocketSource {
 			config.Sources = append(config.Sources, observability_pipeline.ExpandSocketSource(s, sourceId))
 		}
+		for _, o := range sourceBlock.OpentelemetrySource {
+			config.Sources = append(config.Sources, observability_pipeline.ExpandOpentelemetrySource(o, sourceId))
+		}
 	}
 
 	// Processors - iterate through processor groups
@@ -2619,6 +2624,10 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 		} else if s := observability_pipeline.FlattenSocketSource(src.ObservabilityPipelineSocketSource); s != nil {
 			sourceBlock.Id = types.StringValue(src.ObservabilityPipelineSocketSource.GetId())
 			sourceBlock.SocketSource = append(sourceBlock.SocketSource, s)
+			outCfg.Sources = append(outCfg.Sources, sourceBlock)
+		} else if o := observability_pipeline.FlattenOpentelemetrySource(src.ObservabilityPipelineOpentelemetrySource); o != nil {
+			sourceBlock.Id = types.StringValue(src.ObservabilityPipelineOpentelemetrySource.GetId())
+			sourceBlock.OpentelemetrySource = append(sourceBlock.OpentelemetrySource, o)
 			outCfg.Sources = append(outCfg.Sources, sourceBlock)
 		}
 	}
