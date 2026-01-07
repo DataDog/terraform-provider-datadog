@@ -3080,6 +3080,129 @@ resource "datadog_observability_pipeline" "enrichment" {
 	})
 }
 
+func TestAccDatadogObservabilityPipeline_enrichmentTableReferenceTable(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.reference_table_enrichment"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				// Minimal config
+				Config: `
+resource "datadog_observability_pipeline" "reference_table_enrichment" {
+  name = "reference table enrichment pipeline"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+
+    processor_group {
+      id      = "ref-table-group-1"
+      enabled = true
+      include = "*"
+      inputs  = ["source-1"]
+
+      processor {
+        id      = "ref-table-enrichment"
+        enabled = true
+        include = "*"
+
+        enrichment_table {
+          target = "log.enrichment"
+
+          reference_table {
+            key_field = "log.user.id"
+            table_id  = "550e8400-e29b-41d4-a716-446655440000"
+          }
+        }
+      }
+    }
+
+    destination {
+      id     = "destination-1"
+      inputs = ["ref-table-group-1"]
+      datadog_logs {
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.id", "ref-table-group-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.enabled", "true"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.id", "ref-table-enrichment"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.enabled", "true"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.enrichment_table.0.target", "log.enrichment"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.enrichment_table.0.reference_table.0.key_field", "log.user.id"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.enrichment_table.0.reference_table.0.table_id", "550e8400-e29b-41d4-a716-446655440000"),
+				),
+			},
+			{
+				// Full config with columns
+				Config: `
+resource "datadog_observability_pipeline" "reference_table_enrichment" {
+  name = "reference table enrichment pipeline updated"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+
+    processor_group {
+      id      = "ref-table-group-1"
+      enabled = true
+      include = "*"
+      inputs  = ["source-1"]
+
+      processor {
+        id      = "ref-table-enrichment"
+        enabled = true
+        include = "*"
+
+        enrichment_table {
+          target = "log.enrichment.updated"
+
+          reference_table {
+            key_field = "log.account.id"
+            table_id  = "550e8400-e29b-41d4-a716-446655440001"
+            columns   = ["region", "country", "city"]
+          }
+        }
+      }
+    }
+
+    destination {
+      id     = "destination-1"
+      inputs = ["ref-table-group-1"]
+      datadog_logs {
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "reference table enrichment pipeline updated"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.enrichment_table.0.target", "log.enrichment.updated"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.enrichment_table.0.reference_table.0.key_field", "log.account.id"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.enrichment_table.0.reference_table.0.table_id", "550e8400-e29b-41d4-a716-446655440001"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.enrichment_table.0.reference_table.0.columns.#", "3"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.enrichment_table.0.reference_table.0.columns.0", "region"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.enrichment_table.0.reference_table.0.columns.1", "country"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.enrichment_table.0.reference_table.0.columns.2", "city"),
+				),
+			},
+		},
+	})
+}
+
 func TestAccDatadogObservabilityPipeline_googleChronicleDestination(t *testing.T) {
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
@@ -5448,3 +5571,92 @@ resource "datadog_observability_pipeline" "logs_explicit" {
 		},
 	})
 }
+
+func TestAccDatadogObservabilityPipeline_elasticsearchDestinationDataStream(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	resourceName := "datadog_observability_pipeline.elasticsearch_datastream"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				// Minimal config - only data_stream with dtype
+				Config: `
+resource "datadog_observability_pipeline" "elasticsearch_datastream" {
+  name = "elasticsearch-datastream-pipeline"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+    
+    destination {
+      id     = "elasticsearch-destination-1"
+      inputs = ["source-1"]
+            
+      elasticsearch {
+        api_version = "v8"
+        data_stream {
+          dtype = "logs"
+        }
+      }
+    }
+  }
+}
+`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "elasticsearch-datastream-pipeline"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.id", "elasticsearch-destination-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.elasticsearch.0.api_version", "v8"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.elasticsearch.0.data_stream.0.dtype", "logs"),
+				),
+			},
+			{
+				// Full config - data_stream with all fields
+				Config: `
+resource "datadog_observability_pipeline" "elasticsearch_datastream" {
+  name = "elasticsearch-datastream-pipeline-updated"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+    
+    destination {
+      id     = "elasticsearch-destination-1"
+      inputs = ["source-1"]
+            
+      elasticsearch {
+        api_version = "v8"
+        data_stream {
+          dtype     = "logs"
+          dataset   = "my-application"
+          namespace = "production"
+        }
+      }
+    }
+  }
+}
+`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "elasticsearch-datastream-pipeline-updated"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.id", "elasticsearch-destination-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.elasticsearch.0.api_version", "v8"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.elasticsearch.0.data_stream.0.dtype", "logs"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.elasticsearch.0.data_stream.0.dataset", "my-application"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.elasticsearch.0.data_stream.0.namespace", "production"),
+				),
+			},
+		},
+	})
+}
+
