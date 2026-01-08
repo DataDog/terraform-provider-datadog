@@ -146,6 +146,7 @@ Read-Only:
 Read-Only:
 
 - `forget_after` (Number)
+- `instantaneous_baseline` (Boolean)
 - `learning_duration` (Number)
 - `learning_method` (String)
 - `learning_threshold` (Number)
