@@ -8,6 +8,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
+	"github.com/hashicorp/terraform-plugin-testing/tfversion"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
 )
@@ -214,6 +215,9 @@ func TestAccDatadogSyntheticsGlobalVariableWriteOnly_Basic(t *testing.T) {
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
 	resource.Test(t, resource.TestCase{
+		TerraformVersionChecks: []tfversion.TerraformVersionCheck{
+			tfversion.SkipBelow(tfversion.Version1_11_0),
+		},
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV5ProviderFactories: accProviders,
 		CheckDestroy:             testSyntheticsGlobalVariableResourceIsDestroyed(providers.frameworkProvider),
@@ -228,6 +232,9 @@ func TestAccDatadogSyntheticsGlobalVariableWriteOnly_Updated(t *testing.T) {
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
 	resource.Test(t, resource.TestCase{
+		TerraformVersionChecks: []tfversion.TerraformVersionCheck{
+			tfversion.SkipBelow(tfversion.Version1_11_0),
+		},
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV5ProviderFactories: accProviders,
 		CheckDestroy:             testSyntheticsGlobalVariableResourceIsDestroyed(providers.frameworkProvider),
@@ -243,6 +250,9 @@ func TestAccDatadogSyntheticsGlobalVariableWriteOnlySecure_Basic(t *testing.T) {
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
 	resource.Test(t, resource.TestCase{
+		TerraformVersionChecks: []tfversion.TerraformVersionCheck{
+			tfversion.SkipBelow(tfversion.Version1_11_0),
+		},
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV5ProviderFactories: accProviders,
 		CheckDestroy:             testSyntheticsGlobalVariableResourceIsDestroyed(providers.frameworkProvider),
