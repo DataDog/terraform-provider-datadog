@@ -313,6 +313,7 @@ type quotaProcessorModel struct {
 	IgnoreWhenMissingPartitions types.Bool           `tfsdk:"ignore_when_missing_partitions"`
 	Overrides                   []quotaOverrideModel `tfsdk:"override"`
 	OverflowAction              types.String         `tfsdk:"overflow_action"`
+	TooManyBucketsAction        types.String         `tfsdk:"too_many_buckets_action"`
 }
 
 type quotaLimitModel struct {
@@ -1136,6 +1137,10 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 															"overflow_action": schema.StringAttribute{
 																Optional:    true,
 																Description: "The action to take when the quota is exceeded: `drop`, `no_action`, or `overflow_routing`.",
+															},
+															"too_many_buckets_action": schema.StringAttribute{
+																Optional:    true,
+																Description: "The action to take when the max number of buckets is exceeded: `drop`, `no_action`, or `overflow_routing`.",
 															},
 														},
 														Blocks: map[string]schema.Block{
@@ -3256,6 +3261,10 @@ func flattenQuotaProcessor(ctx context.Context, src *datadogV2.ObservabilityPipe
 		quota.OverflowAction = types.StringValue(string(*overflowAction))
 	}
 
+	if tooManyBucketsAction, ok := src.GetTooManyBucketsActionOk(); ok {
+		quota.TooManyBucketsAction = types.StringValue(string(*tooManyBucketsAction))
+	}
+
 	for _, o := range src.GetOverrides() {
 		override := quotaOverrideModel{
 			Limit: []quotaLimitModel{
@@ -3755,6 +3764,10 @@ func expandQuotaProcessorItem(ctx context.Context, common observability_pipeline
 
 	if !src.OverflowAction.IsNull() {
 		proc.SetOverflowAction(datadogV2.ObservabilityPipelineQuotaProcessorOverflowAction(src.OverflowAction.ValueString()))
+	}
+
+	if !src.TooManyBucketsAction.IsNull() {
+		proc.SetTooManyBucketsAction(datadogV2.ObservabilityPipelineQuotaProcessorOverflowAction(src.TooManyBucketsAction.ValueString()))
 	}
 
 	var overrides []datadogV2.ObservabilityPipelineQuotaProcessorOverride
