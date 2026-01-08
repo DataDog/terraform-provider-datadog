@@ -55,6 +55,7 @@ type integrationAwsAccountModel struct {
 	AccountTags     types.List            `tfsdk:"account_tags"`
 	AuthConfig      *authConfigModel      `tfsdk:"auth_config"`
 	AwsRegions      *awsRegionsModel      `tfsdk:"aws_regions"`
+	CcmConfig       *ccmConfigModel       `tfsdk:"ccm_config"`
 	LogsConfig      *logsConfigModel      `tfsdk:"logs_config"`
 	MetricsConfig   *metricsConfigModel   `tfsdk:"metrics_config"`
 	ResourcesConfig *resourcesConfigModel `tfsdk:"resources_config"`
@@ -131,6 +132,18 @@ type tracesConfigModel struct {
 type xrayServicesModel struct {
 	IncludeAll  types.Bool `tfsdk:"include_all"`
 	IncludeOnly types.List `tfsdk:"include_only"`
+}
+
+type ccmConfigModel struct {
+	DataExportConfigs []*dataExportConfigModel `tfsdk:"data_export_configs"`
+}
+
+type dataExportConfigModel struct {
+	ReportName   types.String `tfsdk:"report_name"`
+	ReportPrefix types.String `tfsdk:"report_prefix"`
+	ReportType   types.String `tfsdk:"report_type"`
+	BucketName   types.String `tfsdk:"bucket_name"`
+	BucketRegion types.String `tfsdk:"bucket_region"`
 }
 
 func NewIntegrationAwsAccountResource() resource.Resource {
@@ -329,6 +342,39 @@ func (r *integrationAwsAccountResource) Schema(_ context.Context, _ resource.Sch
 						Optional:    true,
 						Description: "Include only these regions.",
 						ElementType: types.StringType,
+					},
+				},
+			},
+			"ccm_config": schema.SingleNestedBlock{
+				Description: "AWS Cloud Cost Management config for configuring Cost and Usage Reports.",
+				Attributes:  map[string]schema.Attribute{},
+				Blocks: map[string]schema.Block{
+					"data_export_configs": schema.ListNestedBlock{
+						Description: "List of data export configurations for Cost and Usage Reports.",
+						NestedObject: schema.NestedBlockObject{
+							Attributes: map[string]schema.Attribute{
+								"report_name": schema.StringAttribute{
+									Required:    true,
+									Description: "The name of the Cost and Usage Report.",
+								},
+								"report_prefix": schema.StringAttribute{
+									Required:    true,
+									Description: "The S3 prefix where the Cost and Usage Report is stored.",
+								},
+								"report_type": schema.StringAttribute{
+									Optional:    true,
+									Description: "The type of the Cost and Usage Report (e.g., 'CUR2.0').",
+								},
+								"bucket_name": schema.StringAttribute{
+									Required:    true,
+									Description: "The name of the S3 bucket where the Cost and Usage Report is stored.",
+								},
+								"bucket_region": schema.StringAttribute{
+									Required:    true,
+									Description: "The AWS region of the S3 bucket.",
+								},
+							},
+						},
 					},
 				},
 			},
@@ -805,6 +851,36 @@ func buildStateAccountTags(ctx context.Context, attributes datadogV2.AWSAccountR
 	return accountTags
 }
 
+func buildStateCcmConfig(attributes datadogV2.AWSAccountResponseAttributes) *ccmConfigModel {
+	ccmConfig := attributes.GetCcmConfig()
+	ccmConfigTf := ccmConfigModel{}
+	ccmConfigTf.DataExportConfigs = []*dataExportConfigModel{}
+
+	if dataExportConfigs, ok := ccmConfig.GetDataExportConfigsOk(); ok && len(*dataExportConfigs) > 0 {
+		for _, dataExportConfigDd := range *dataExportConfigs {
+			dataExportConfigTfItem := dataExportConfigModel{}
+			if reportName, ok := dataExportConfigDd.GetReportNameOk(); ok {
+				dataExportConfigTfItem.ReportName = types.StringValue(*reportName)
+			}
+			if reportPrefix, ok := dataExportConfigDd.GetReportPrefixOk(); ok {
+				dataExportConfigTfItem.ReportPrefix = types.StringValue(*reportPrefix)
+			}
+			if reportType, ok := dataExportConfigDd.GetReportTypeOk(); ok {
+				dataExportConfigTfItem.ReportType = types.StringValue(*reportType)
+			}
+			if bucketName, ok := dataExportConfigDd.GetBucketNameOk(); ok {
+				dataExportConfigTfItem.BucketName = types.StringValue(*bucketName)
+			}
+			if bucketRegion, ok := dataExportConfigDd.GetBucketRegionOk(); ok {
+				dataExportConfigTfItem.BucketRegion = types.StringValue(*bucketRegion)
+			}
+			ccmConfigTf.DataExportConfigs = append(ccmConfigTf.DataExportConfigs, &dataExportConfigTfItem)
+		}
+	}
+
+	return &ccmConfigTf
+}
+
 func (r *integrationAwsAccountResource) updateState(ctx context.Context, state *integrationAwsAccountModel, resp *datadogV2.AWSAccountResponse) {
 	state.ID = types.StringValue(resp.Data.GetId())
 	diags := diag.Diagnostics{}
@@ -823,6 +899,7 @@ func (r *integrationAwsAccountResource) updateState(ctx context.Context, state *
 	state.AwsRegions = buildStateAwsRegions(ctx, attributes, diags)
 	state.AuthConfig = buildStateAuthConfig(attributes, secretAccessKey)
 	state.AccountTags = buildStateAccountTags(ctx, attributes)
+	state.CcmConfig = buildStateCcmConfig(attributes)
 	state.LogsConfig = buildStateLogsConfig(ctx, attributes, state, diags)
 	state.MetricsConfig = buildStateMetricsConfig(ctx, attributes, diags)
 	state.ResourcesConfig = buildStateResourcesConfig(attributes)
@@ -838,6 +915,7 @@ func (r *integrationAwsAccountResource) buildIntegrationAwsAccountRequestBody(ct
 	attributes.SetAwsRegions(buildRequestAwsRegions(ctx, state, diags))
 	attributes.SetAuthConfig(buildRequestAuthConfig(state))
 	attributes.SetAccountTags(buildRequestAccountTags(ctx, state, diags))
+	attributes.SetCcmConfig(buildRequestCcmConfig(state))
 	attributes.SetLogsConfig(buildRequestLogsConfig(ctx, state, diags))
 	attributes.SetMetricsConfig(buildRequestMetricsConfig(ctx, state, diags))
 	attributes.SetResourcesConfig(buildRequestResourcesConfig(state))
@@ -897,6 +975,38 @@ func buildRequestAccountTags(ctx context.Context, state *integrationAwsAccountMo
 	}
 
 	return accountTags
+}
+
+func buildRequestCcmConfig(state *integrationAwsAccountModel) datadogV2.AWSCCMConfig {
+	ccmConfig := datadogV2.AWSCCMConfig{}
+
+	if state.CcmConfig != nil && state.CcmConfig.DataExportConfigs != nil {
+		dataExportConfigs := []datadogV2.DataExportConfig{}
+		for _, dataExportConfigTf := range state.CcmConfig.DataExportConfigs {
+			dataExportConfigDd := datadogV2.NewDataExportConfigWithDefaults()
+
+			if !dataExportConfigTf.ReportName.IsNull() {
+				dataExportConfigDd.SetReportName(dataExportConfigTf.ReportName.ValueString())
+			}
+			if !dataExportConfigTf.ReportPrefix.IsNull() {
+				dataExportConfigDd.SetReportPrefix(dataExportConfigTf.ReportPrefix.ValueString())
+			}
+			if !dataExportConfigTf.ReportType.IsNull() {
+				dataExportConfigDd.SetReportType(dataExportConfigTf.ReportType.ValueString())
+			}
+			if !dataExportConfigTf.BucketName.IsNull() {
+				dataExportConfigDd.SetBucketName(dataExportConfigTf.BucketName.ValueString())
+			}
+			if !dataExportConfigTf.BucketRegion.IsNull() {
+				dataExportConfigDd.SetBucketRegion(dataExportConfigTf.BucketRegion.ValueString())
+			}
+
+			dataExportConfigs = append(dataExportConfigs, *dataExportConfigDd)
+		}
+		ccmConfig.SetDataExportConfigs(dataExportConfigs)
+	}
+
+	return ccmConfig
 }
 
 func buildRequestLogsConfig(ctx context.Context, state *integrationAwsAccountModel, diags diag.Diagnostics) datadogV2.AWSLogsConfig {
@@ -1039,6 +1149,7 @@ func (r *integrationAwsAccountResource) buildIntegrationAwsAccountUpdateRequestB
 	attributes.SetAwsRegions(buildRequestAwsRegions(ctx, state, diags))
 	attributes.SetAuthConfig(buildRequestAuthConfig(state))
 	attributes.SetAccountTags(buildRequestAccountTags(ctx, state, diags))
+	attributes.SetCcmConfig(buildRequestCcmConfig(state))
 	attributes.SetLogsConfig(buildRequestLogsConfig(ctx, state, diags))
 	attributes.SetMetricsConfig(buildRequestMetricsConfig(ctx, state, diags))
 	attributes.SetResourcesConfig(buildRequestResourcesConfig(state))
