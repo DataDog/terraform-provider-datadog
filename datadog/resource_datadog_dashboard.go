@@ -7079,6 +7079,12 @@ func getFormulaQuerySchema() *schema.Schema {
 								Description: "The source organization UUID for cross organization queries. Feature in Private Beta.",
 								Elem:        &schema.Schema{Type: schema.TypeString},
 							},
+							"semantic_mode": {
+								Type:             schema.TypeString,
+								Optional:         true,
+								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewFormulaAndFunctionMetricSemanticModeFromValue),
+								Description:      "Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.",
+							},
 						},
 					},
 				},
@@ -7751,6 +7757,11 @@ func buildDatadogMetricQuery(data map[string]interface{}) *datadogV1.FormulaAndF
 		if c, ok := cross_org_uuids[0].(string); ok && len(c) != 0 {
 			metricQuery.CrossOrgUuids = []string{c}
 		}
+	}
+
+	if v, ok := data["semantic_mode"].(string); ok && len(v) != 0 {
+		semanticMode := datadogV1.FormulaAndFunctionMetricSemanticMode(v)
+		metricQuery.SetSemanticMode(semanticMode)
 	}
 
 	definition := datadogV1.FormulaAndFunctionMetricQueryDefinitionAsFormulaAndFunctionQueryDefinition(metricQuery)
@@ -10090,6 +10101,9 @@ func buildTerraformQuery(datadogQueries *[]datadogV1.FormulaAndFunctionQueryDefi
 			}
 			if name, ok := terraformMetricQueryDefinition.GetNameOk(); ok {
 				terraformQuery["name"] = name
+			}
+			if semanticMode, ok := terraformMetricQueryDefinition.GetSemanticModeOk(); ok {
+				terraformQuery["semantic_mode"] = semanticMode
 			}
 			terraformQueries := []map[string]interface{}{terraformQuery}
 			terraformMetricQuery := map[string]interface{}{}

@@ -31,13 +31,13 @@ interactions:
         content_length: 359
         uncompressed: false
         body: |
-            {"data":{"id":"cf85d10a-24e0-11f0-bd60-da7ad0900002","type":"pipelines","attributes":{"name":"syslogng-source-pipeline","config":{"destinations":[{"id":"destination-1","inputs":["syslogng-source-1"],"type":"datadog_logs"}],"processors":[],"sources":[{"id":"syslogng-source-1","mode":"udp","tls":{"crt_file":"/etc/certs/syslogng.crt"},"type":"syslog_ng"}]}}}}
+            {"data":{"id":"e6de8182-dcfd-11f0-9516-da7ad0900002","type":"pipelines","attributes":{"name":"syslogng-source-pipeline","config":{"destinations":[{"id":"destination-1","inputs":["syslogng-source-1"],"type":"datadog_logs"}],"processors":[],"sources":[{"id":"syslogng-source-1","mode":"udp","tls":{"crt_file":"/etc/certs/syslogng.crt"},"type":"syslog_ng"}]}}}}
         headers:
             Content-Type:
-                - application/json
+                - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 592.642833ms
+        duration: 422.34825ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -54,7 +54,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/cf85d10a-24e0-11f0-bd60-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/e6de8182-dcfd-11f0-9516-da7ad0900002
         method: GET
       response:
         proto: HTTP/1.1
@@ -65,13 +65,13 @@ interactions:
         content_length: 359
         uncompressed: false
         body: |
-            {"data":{"id":"cf85d10a-24e0-11f0-bd60-da7ad0900002","type":"pipelines","attributes":{"name":"syslogng-source-pipeline","config":{"destinations":[{"id":"destination-1","inputs":["syslogng-source-1"],"type":"datadog_logs"}],"processors":[],"sources":[{"id":"syslogng-source-1","mode":"udp","tls":{"crt_file":"/etc/certs/syslogng.crt"},"type":"syslog_ng"}]}}}}
+            {"data":{"id":"e6de8182-dcfd-11f0-9516-da7ad0900002","type":"pipelines","attributes":{"name":"syslogng-source-pipeline","config":{"destinations":[{"id":"destination-1","inputs":["syslogng-source-1"],"type":"datadog_logs"}],"processors":[],"sources":[{"id":"syslogng-source-1","mode":"udp","tls":{"crt_file":"/etc/certs/syslogng.crt"},"type":"syslog_ng"}]}}}}
         headers:
             Content-Type:
-                - application/json
+                - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 283.461291ms
+        duration: 215.34275ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -88,7 +88,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/cf85d10a-24e0-11f0-bd60-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/e6de8182-dcfd-11f0-9516-da7ad0900002
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -104,4 +104,4 @@ interactions:
                 - application/json
         status: 204 No Content
         code: 204
-        duration: 436.73975ms
+        duration: 310.567958ms

@@ -1,8 +1,6 @@
 package observability_pipeline
 
 import (
-	"context"
-
 	datadogV2 "github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -12,9 +10,7 @@ import (
 
 // CustomProcessorModel represents the Terraform model for remap VRL processor configuration
 type CustomProcessorModel struct {
-	Id     types.String                `tfsdk:"id"`
-	Inputs types.List                  `tfsdk:"inputs"`
-	Remaps []CustomProcessorRemapModel `tfsdk:"remaps"`
+	Remaps []CustomProcessorRemapModel `tfsdk:"remap"`
 }
 
 // CustomProcessorRemapModel represents a single VRL remap rule
@@ -27,13 +23,9 @@ type CustomProcessorRemapModel struct {
 }
 
 // ExpandCustomProcessor converts the Terraform model to the Datadog API model
-func ExpandCustomProcessor(ctx context.Context, src *CustomProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
+func ExpandCustomProcessor(common BaseProcessorFields, src *CustomProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
 	proc := datadogV2.NewObservabilityPipelineCustomProcessorWithDefaults()
-	proc.SetId(src.Id.ValueString())
-
-	var inputs []string
-	src.Inputs.ElementsAs(ctx, &inputs, false)
-	proc.SetInputs(inputs)
+	common.ApplyTo(proc)
 
 	var remaps []datadogV2.ObservabilityPipelineCustomProcessorRemap
 	for _, remap := range src.Remaps {
@@ -41,24 +33,20 @@ func ExpandCustomProcessor(ctx context.Context, src *CustomProcessorModel) datad
 			Include:     remap.Include.ValueString(),
 			Name:        remap.Name.ValueString(),
 			Source:      remap.Source.ValueString(),
-			Enabled:     remap.Enabled.ValueBool(),
+			Enabled:     remap.Enabled.ValueBoolPointer(),
 			DropOnError: remap.DropOnError.ValueBool(),
 		})
 	}
 	proc.SetRemaps(remaps)
 
-	return datadogV2.ObservabilityPipelineConfigProcessorItem{
-		ObservabilityPipelineCustomProcessor: proc,
-	}
+	return datadogV2.ObservabilityPipelineCustomProcessorAsObservabilityPipelineConfigProcessorItem(proc)
 }
 
 // FlattenCustomProcessor converts the Datadog API model to the Terraform model
-func FlattenCustomProcessor(ctx context.Context, src *datadogV2.ObservabilityPipelineCustomProcessor) *CustomProcessorModel {
+func FlattenCustomProcessor(src *datadogV2.ObservabilityPipelineCustomProcessor) *CustomProcessorModel {
 	if src == nil {
 		return nil
 	}
-
-	inputs, _ := types.ListValueFrom(ctx, types.StringType, src.GetInputs())
 
 	var remaps []CustomProcessorRemapModel
 	for _, remap := range src.GetRemaps() {
@@ -72,8 +60,6 @@ func FlattenCustomProcessor(ctx context.Context, src *datadogV2.ObservabilityPip
 	}
 
 	return &CustomProcessorModel{
-		Id:     types.StringValue(src.GetId()),
-		Inputs: inputs,
 		Remaps: remaps,
 	}
 }
@@ -82,20 +68,13 @@ func FlattenCustomProcessor(ctx context.Context, src *datadogV2.ObservabilityPip
 func CustomProcessorSchema() schema.ListNestedBlock {
 	return schema.ListNestedBlock{
 		Description: "The `custom_processor` processor transforms events using Vector Remap Language (VRL) scripts with advanced filtering capabilities.",
+		Validators: []validator.List{
+			listvalidator.SizeAtMost(1),
+		},
 		NestedObject: schema.NestedBlockObject{
-			Attributes: map[string]schema.Attribute{
-				"id": schema.StringAttribute{
-					Required:    true,
-					Description: "The unique identifier for this processor.",
-				},
-				"inputs": schema.ListAttribute{
-					Required:    true,
-					ElementType: types.StringType,
-					Description: "A list of component IDs whose output is used as the input for this processor.",
-				},
-			},
+			Attributes: map[string]schema.Attribute{},
 			Blocks: map[string]schema.Block{
-				"remaps": schema.ListNestedBlock{
+				"remap": schema.ListNestedBlock{
 					Description: "Array of VRL remap configurations. Each remap defines a transformation rule with its own filter and VRL script.",
 					Validators: []validator.List{
 						listvalidator.SizeAtLeast(1),

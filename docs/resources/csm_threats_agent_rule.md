@@ -47,6 +47,7 @@ resource "datadog_csm_threats_agent_rule" "my_agent_rule" {
 - `enabled` (Boolean) Indicates whether the Agent rule is enabled. Must not be used without policy_id.
 - `policy_id` (String) The ID of the agent policy in which the rule is saved
 - `product_tags` (Set of String) The list of product tags associated with the rule
+- `silent` (Boolean) Indicates whether the Agent rule is silent.
 
 ### Read-Only
 
@@ -63,13 +64,13 @@ Optional:
 <a id="nestedblock--actions--hash"></a>
 ### Nested Schema for `actions.hash`
 
+Optional:
+
+- `field` (String) The field to hash
+
 
 <a id="nestedblock--actions--set"></a>
 ### Nested Schema for `actions.set`
-
-Required:
-
-- `name` (String) The name of the set action
 
 Optional:
 
@@ -78,6 +79,7 @@ Optional:
 - `expression` (String) The expression to use for the set action
 - `field` (String) The field to get the value from
 - `inherited` (Boolean) Whether the set action is inherited
+- `name` (String) The name of the set action
 - `scope` (String) The scope of the set action (process, container, cgroup, or empty)
 - `size` (Number) The maximum size of the set
 - `ttl` (Number) The time to live for the set in nanoseconds

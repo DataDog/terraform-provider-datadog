@@ -241,6 +241,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_logs_custom_pipeline_test":                                   "logs-pipelines",
 	"tests/resource_datadog_logs_index_test":                                             "logs-index",
 	"tests/resource_datadog_logs_metric_test":                                            "logs-metric",
+	"tests/resource_datadog_logs_restriction_query_test":                                 "logs-restriction-queries",
 	"tests/resource_datadog_metric_metadata_test":                                        "metrics",
 	"tests/resource_datadog_metric_tag_configuration_test":                               "metrics",
 	"tests/resource_datadog_monitor_config_policy_test":                                  "monitor-config-policies",
@@ -309,6 +310,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/data_source_datadog_incident_notification_template_test":                      "incidents",
 	"tests/resource_datadog_incident_notification_rule_test":                             "incidents",
 	"tests/data_source_datadog_incident_notification_rule_test":                          "incidents",
+	"tests/resource_datadog_deployment_gate_test":                                        "deployment-gates",
 }
 
 // getEndpointTagValue traverses callstack frames to find the test function that invoked this call;

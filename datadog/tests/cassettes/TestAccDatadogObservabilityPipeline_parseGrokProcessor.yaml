@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 578
+        content_length: 671
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"config":{"destinations":[{"id":"destination-1","inputs":["parse-grok-1"],"type":"datadog_logs"}],"processors":[{"disable_library_rules":true,"id":"parse-grok-1","include":"*","inputs":["source-1"],"rules":[{"match_rules":[{"name":"match_user","rule":"%{word:user.name}"},{"name":"match_action","rule":"%{word:action}"}],"source":"message","support_rules":[{"name":"word","rule":"\\w+"},{"name":"custom_word","rule":"[a-zA-Z]+"}]}],"type":"parse_grok"}],"sources":[{"id":"source-1","type":"datadog_agent"}]},"name":"parse-grok-test"},"type":"pipelines"}}
+            {"data":{"attributes":{"config":{"destinations":[{"id":"destination-1","inputs":["parse-grok-group-1"],"type":"datadog_logs"}],"processors":[{"enabled":true,"id":"parse-grok-group-1","include":"*","inputs":["source-1"],"processors":[{"disable_library_rules":true,"enabled":true,"id":"parse-grok-1","include":"*","rules":[{"match_rules":[{"name":"match_user","rule":"%{word:user.name}"},{"name":"match_action","rule":"%{word:action}"}],"source":"message","support_rules":[{"name":"word","rule":"\\w+"},{"name":"custom_word","rule":"[a-zA-Z]+"}]}],"type":"parse_grok"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]},"name":"parse-grok-test"},"type":"pipelines"}}
         form: {}
         headers:
             Accept:
@@ -28,16 +28,16 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 622
+        content_length: 715
         uncompressed: false
         body: |
-            {"data":{"id":"b661caa8-24e0-11f0-b6e2-da7ad0900002","type":"pipelines","attributes":{"name":"parse-grok-test","config":{"destinations":[{"id":"destination-1","inputs":["parse-grok-1"],"type":"datadog_logs"}],"processors":[{"disable_library_rules":true,"id":"parse-grok-1","include":"*","inputs":["source-1"],"rules":[{"match_rules":[{"name":"match_user","rule":"%{word:user.name}"},{"name":"match_action","rule":"%{word:action}"}],"source":"message","support_rules":[{"name":"word","rule":"\\w+"},{"name":"custom_word","rule":"[a-zA-Z]+"}]}],"type":"parse_grok"}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"d05a8604-dcfd-11f0-b894-da7ad0900002","type":"pipelines","attributes":{"name":"parse-grok-test","config":{"destinations":[{"id":"destination-1","inputs":["parse-grok-group-1"],"type":"datadog_logs"}],"processors":[{"enabled":true,"id":"parse-grok-group-1","include":"*","inputs":["source-1"],"processors":[{"disable_library_rules":true,"enabled":true,"id":"parse-grok-1","include":"*","rules":[{"match_rules":[{"name":"match_user","rule":"%{word:user.name}"},{"name":"match_action","rule":"%{word:action}"}],"source":"message","support_rules":[{"name":"word","rule":"\\w+"},{"name":"custom_word","rule":"[a-zA-Z]+"}]}],"type":"parse_grok"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
-                - application/json
+                - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 590.234833ms
+        duration: 441.700375ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -54,7 +54,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/b661caa8-24e0-11f0-b6e2-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/d05a8604-dcfd-11f0-b894-da7ad0900002
         method: GET
       response:
         proto: HTTP/1.1
@@ -62,16 +62,16 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 622
+        content_length: 715
         uncompressed: false
         body: |
-            {"data":{"id":"b661caa8-24e0-11f0-b6e2-da7ad0900002","type":"pipelines","attributes":{"name":"parse-grok-test","config":{"destinations":[{"id":"destination-1","inputs":["parse-grok-1"],"type":"datadog_logs"}],"processors":[{"disable_library_rules":true,"id":"parse-grok-1","include":"*","inputs":["source-1"],"rules":[{"match_rules":[{"name":"match_user","rule":"%{word:user.name}"},{"name":"match_action","rule":"%{word:action}"}],"source":"message","support_rules":[{"name":"word","rule":"\\w+"},{"name":"custom_word","rule":"[a-zA-Z]+"}]}],"type":"parse_grok"}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"d05a8604-dcfd-11f0-b894-da7ad0900002","type":"pipelines","attributes":{"name":"parse-grok-test","config":{"destinations":[{"id":"destination-1","inputs":["parse-grok-group-1"],"type":"datadog_logs"}],"processors":[{"enabled":true,"id":"parse-grok-group-1","include":"*","inputs":["source-1"],"processors":[{"disable_library_rules":true,"enabled":true,"id":"parse-grok-1","include":"*","rules":[{"match_rules":[{"name":"match_user","rule":"%{word:user.name}"},{"name":"match_action","rule":"%{word:action}"}],"source":"message","support_rules":[{"name":"word","rule":"\\w+"},{"name":"custom_word","rule":"[a-zA-Z]+"}]}],"type":"parse_grok"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
-                - application/json
+                - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 471.585333ms
+        duration: 251.282584ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -88,7 +88,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/b661caa8-24e0-11f0-b6e2-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/d05a8604-dcfd-11f0-b894-da7ad0900002
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -104,4 +104,4 @@ interactions:
                 - application/json
         status: 204 No Content
         code: 204
-        duration: 423.76875ms
+        duration: 475.825625ms
