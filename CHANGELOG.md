@@ -2,14 +2,14 @@
 
 ### BUGFIXES
 * [datadog_software_catalog] Fix software_catalog resource to handle empty API responses for deleted entities by @KruthiVuppala in https://github.com/DataDog/terraform-provider-datadog/pull/3371
-* [CWS] fix multiple actions support by @safchain in https://github.com/DataDog/terraform-provider-datadog/pull/3375
+* [datadog_csm_threat_agent] fix multiple actions support by @safchain in https://github.com/DataDog/terraform-provider-datadog/pull/3375
 * [datadog_security_monitoring_rule] Replace security monitoring rules with an updated detection method by @paul-hf in https://github.com/DataDog/terraform-provider-datadog/pull/3392
 ### IMPROVEMENTS
-* [CWS] add silent attribute to rules by @safchain in https://github.com/DataDog/terraform-provider-datadog/pull/3380
+* [datadog_csm_threats_agent_rule] add silent attribute to rules by @safchain in https://github.com/DataDog/terraform-provider-datadog/pull/3380
 ### FEATURES
 * [datadog_observability_pipeline] Add processor groups instead of standalone processors by @vladimir-dd in https://github.com/DataDog/terraform-provider-datadog/pull/3346
 * [datadog_deployment_gate] Add deployment gates terraform provider by @Aaron-9900 in https://github.com/DataDog/terraform-provider-datadog/pull/3286
-* [resource_datadog_dashboard] Add semantic_mode support to metric queries by @brtu in https://github.com/DataDog/terraform-provider-datadog/pull/3356
+* [datadog_dashboard] Add semantic_mode support to metric queries by @brtu in https://github.com/DataDog/terraform-provider-datadog/pull/3356
 * [datadog_observability_pipeline] Add `display_name` for processors and processor groups by @vladimir-dd in https://github.com/DataDog/terraform-provider-datadog/pull/3377
 * [datadog_security_monitoring_rule] Add anomaly detection options to security monitoring rule resource by @paul-hf in https://github.com/DataDog/terraform-provider-datadog/pull/3376
 * [datadog_security_monitoring_rule] Add instantaneous baseline option to NewValue by @hachem-dd in https://github.com/DataDog/terraform-provider-datadog/pull/3400
