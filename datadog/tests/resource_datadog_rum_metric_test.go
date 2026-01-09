@@ -25,7 +25,7 @@ func TestAccRumMetricImport(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogRumMetricDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -46,7 +46,7 @@ func TestAccRumMetricAttributes(t *testing.T) {
 	uniq := strings.ReplaceAll(uniqueEntityName(ctx, t), "-", "_")
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogRumMetricDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -67,7 +67,7 @@ func TestAccRumMetricAttributes(t *testing.T) {
 	})
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogRumMetricDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -94,7 +94,7 @@ func TestAccRumMetricAttributes(t *testing.T) {
 	})
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogRumMetricDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -125,7 +125,7 @@ func TestAccRumMetricAttributes(t *testing.T) {
 	})
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogRumMetricDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -180,7 +180,7 @@ func TestAccRumMetricAttributes(t *testing.T) {
 	})
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogRumMetricDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{

@@ -19,7 +19,7 @@ func TestAccGcpUcConfigBasic(t *testing.T) {
 	uniq := uniqueEntityName(ctx, t)
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogGcpUcConfigDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -68,7 +68,7 @@ func TestAccGcpUcConfigImport(t *testing.T) {
 	uniq := uniqueEntityName(ctx, t)
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogGcpUcConfigDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{

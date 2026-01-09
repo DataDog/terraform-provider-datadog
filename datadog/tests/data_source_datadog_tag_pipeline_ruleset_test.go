@@ -15,7 +15,7 @@ func TestAccDatadogTagPipelineRulesetDataSource_Basic(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogTagPipelineRulesetDestroy(ctx, providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -54,7 +54,7 @@ func TestAccDatadogTagPipelineRulesetDataSource_MappingRule(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogTagPipelineRulesetDestroy(ctx, providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -79,7 +79,7 @@ func TestAccDatadogTagPipelineRulesetDataSource_ReferenceTableRule(t *testing.T)
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogTagPipelineRulesetDestroy(ctx, providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{

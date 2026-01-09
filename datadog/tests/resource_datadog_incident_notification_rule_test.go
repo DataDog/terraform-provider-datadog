@@ -19,7 +19,7 @@ func TestAccDatadogIncidentNotificationRule_Basic(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogIncidentNotificationRuleDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -67,7 +67,7 @@ func TestAccDatadogIncidentNotificationRule_Updated(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogIncidentNotificationRuleDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -105,7 +105,7 @@ func TestAccDatadogIncidentNotificationRule_Import(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogIncidentNotificationRuleDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
