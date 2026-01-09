@@ -53,6 +53,7 @@ var isTestOrgC *bool
 var allowedHeaders = map[string]string{"Accept": "", "Content-Type": ""}
 
 var testFiles2EndpointTags = map[string]string{
+	"resource_datadog_dashboard_widget_time_test.go":                                     "dashboard",
 	"tests/data_source_datadog_api_key_test":                                             "api_keys",
 	"tests/data_source_datadog_apm_retention_filters_order_test":                         "apm_retention_filters_order",
 	"tests/data_source_datadog_app_builder_app_test":                                     "app_builder_app",
@@ -167,8 +168,9 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_dashboard_service_map_test":                                  "dashboards",
 	"tests/resource_datadog_dashboard_slo_list_test":                                     "dashboards",
 	"tests/resource_datadog_dashboard_slo_test":                                          "dashboards",
-	"tests/resource_datadog_dashboard_style_test":                                        "dashboards",
+	"tests/resource_datadog_dashboard_spans_test":                                        "dashboards",
 	"tests/resource_datadog_dashboard_split_graph_test":                                  "dashboards",
+	"tests/resource_datadog_dashboard_style_test":                                        "dashboards",
 	"tests/resource_datadog_dashboard_sunburst_test":                                     "dashboards",
 	"tests/resource_datadog_dashboard_test":                                              "dashboards",
 	"tests/resource_datadog_dashboard_timeseries_test":                                   "dashboards",
