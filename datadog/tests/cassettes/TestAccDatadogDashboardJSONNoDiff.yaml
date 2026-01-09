@@ -14,7 +14,7 @@ interactions:
         request_uri: ""
         body: |
             {
-               "title": "tf-TestAccDatadogDashboardJSONNoDiff-local-1767993168",
+               "title": "tf-TestAccDatadogDashboardJSONNoDiff-local-1767995754",
                "description": "",
                "widgets": [],
                "template_variables": [],
@@ -38,13 +38,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id":"8nm-b6x-k2e","title":"tf-TestAccDatadogDashboardJSONNoDiff-local-1767993168","description":"","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/8nm-b6x-k2e/tf-testaccdatadogdashboardjsonnodiff-local-1767993168","template_variables":[],"widgets":[],"notify_list":[],"created_at":"2026-01-09T21:12:49.560229+00:00","modified_at":"2026-01-09T21:12:49.560229+00:00","reflow_type":"fixed"}'
+        body: '{"id":"gck-wr9-96w","title":"tf-TestAccDatadogDashboardJSONNoDiff-local-1767995754","description":"","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/gck-wr9-96w/tf-testaccdatadogdashboardjsonnodiff-local-1767995754","template_variables":[],"widgets":[],"notify_list":[],"created_at":"2026-01-09T21:55:54.904705+00:00","modified_at":"2026-01-09T21:55:54.904705+00:00","reflow_type":"fixed"}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 137.971459ms
+        duration: 139.492083ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -61,7 +61,7 @@ interactions:
         headers:
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/dashboard/8nm-b6x-k2e
+        url: https://api.datadoghq.com/api/v1/dashboard/gck-wr9-96w
         method: GET
       response:
         proto: HTTP/1.1
@@ -72,13 +72,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id":"8nm-b6x-k2e","title":"tf-TestAccDatadogDashboardJSONNoDiff-local-1767993168","description":"","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/8nm-b6x-k2e/tf-testaccdatadogdashboardjsonnodiff-local-1767993168","template_variables":[],"widgets":[],"notify_list":[],"created_at":"2026-01-09T21:12:49.560229+00:00","modified_at":"2026-01-09T21:12:49.560229+00:00","reflow_type":"fixed"}'
+        body: '{"id":"gck-wr9-96w","title":"tf-TestAccDatadogDashboardJSONNoDiff-local-1767995754","description":"","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/gck-wr9-96w/tf-testaccdatadogdashboardjsonnodiff-local-1767995754","template_variables":[],"widgets":[],"notify_list":[],"created_at":"2026-01-09T21:55:54.904705+00:00","modified_at":"2026-01-09T21:55:54.904705+00:00","reflow_type":"fixed"}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 91.927083ms
+        duration: 110.489833ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -95,7 +95,7 @@ interactions:
         headers:
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/dashboard/8nm-b6x-k2e
+        url: https://api.datadoghq.com/api/v1/dashboard/gck-wr9-96w
         method: GET
       response:
         proto: HTTP/1.1
@@ -106,13 +106,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id":"8nm-b6x-k2e","title":"tf-TestAccDatadogDashboardJSONNoDiff-local-1767993168","description":"","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/8nm-b6x-k2e/tf-testaccdatadogdashboardjsonnodiff-local-1767993168","template_variables":[],"widgets":[],"notify_list":[],"created_at":"2026-01-09T21:12:49.560229+00:00","modified_at":"2026-01-09T21:12:49.560229+00:00","reflow_type":"fixed"}'
+        body: '{"id":"gck-wr9-96w","title":"tf-TestAccDatadogDashboardJSONNoDiff-local-1767995754","description":"","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/gck-wr9-96w/tf-testaccdatadogdashboardjsonnodiff-local-1767995754","template_variables":[],"widgets":[],"notify_list":[],"created_at":"2026-01-09T21:55:54.904705+00:00","modified_at":"2026-01-09T21:55:54.904705+00:00","reflow_type":"fixed"}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 108.091709ms
+        duration: 119.331625ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -129,7 +129,7 @@ interactions:
         headers:
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/dashboard/8nm-b6x-k2e
+        url: https://api.datadoghq.com/api/v1/dashboard/gck-wr9-96w
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -140,10 +140,10 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"deleted_dashboard_id":"8nm-b6x-k2e"}'
+        body: '{"deleted_dashboard_id":"gck-wr9-96w"}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 505.642083ms
+        duration: 334.586584ms
