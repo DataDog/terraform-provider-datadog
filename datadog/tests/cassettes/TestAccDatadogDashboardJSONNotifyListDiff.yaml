@@ -1,413 +1,781 @@
+---
 version: 2
 interactions:
-- request:
-    body: |
-      {"data":{"attributes":{"email":"a-user@example.com","name":"Test User"},"relationships":{"roles":{"data":[]}},"type":"users"}}
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/users
-    method: POST
-    id: 0
-  response:
-    body: '{"errors":["User a-user@example.com already exists"]}'
-    headers:
-      Content-Type:
-      - application/json
-    status: 409 Conflict
-    code: 409
-    duration: "0ms"
-- request:
-    body: |
-      {"data":{"attributes":{"email":"k-user@example.com","name":"Test User"},"relationships":{"roles":{"data":[]}},"type":"users"}}
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/users
-    method: POST
-    id: 1
-  response:
-    body: '{"errors":["User k-user@example.com already exists"]}'
-    headers:
-      Content-Type:
-      - application/json
-    status: 409 Conflict
-    code: 409
-    duration: "0ms"
-- request:
-    body: |
-      {"data":{"attributes":{"email":"z-user1@example.com","name":"Test User"},"relationships":{"roles":{"data":[]}},"type":"users"}}
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/users
-    method: POST
-    id: 2
-  response:
-    body: '{"errors":["User z-user1@example.com already exists"]}'
-    headers:
-      Content-Type:
-      - application/json
-    status: 409 Conflict
-    code: 409
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/users?filter=k-user%40example.com
-    method: GET
-    id: 3
-  response:
-    body: |
-      {"data":[{"type":"users","id":"3e344a0e-5457-11ec-a8c2-da7ad0900002","attributes":{"name":"Test User","handle":"k-user@example.com","created_at":"2021-12-03T16:37:02.412935+00:00","modified_at":"2023-04-20T15:10:00.282651+00:00","email":"k-user@example.com","icon":"https://secure.gravatar.com/avatar/98eadd67eaa2d8c224d446b2e88f0bf2?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":true,"allowed_login_methods":[],"status":"Disabled"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}],"meta":{"page":{"total_count":157822,"total_filtered_count":1}}}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/users?filter=a-user%40example.com
-    method: GET
-    id: 4
-  response:
-    body: |
-      {"data":[{"type":"users","id":"3e3379ee-5457-11ec-a8c2-da7ad0900002","attributes":{"name":"Test User","handle":"a-user@example.com","created_at":"2021-12-03T16:37:02.407801+00:00","modified_at":"2023-04-20T15:10:00.331214+00:00","email":"a-user@example.com","icon":"https://secure.gravatar.com/avatar/d3f689172d62d7bcc2e4698422091ecf?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":true,"allowed_login_methods":[],"status":"Disabled"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}],"meta":{"page":{"total_count":157822,"total_filtered_count":1}}}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/users?filter=z-user1%40example.com
-    method: GET
-    id: 5
-  response:
-    body: |
-      {"data":[{"type":"users","id":"5aad1674-5458-11ec-a8c2-da7ad0900002","attributes":{"name":"Test User","handle":"z-user1@example.com","created_at":"2021-12-03T16:44:59.676899+00:00","modified_at":"2023-04-20T15:09:19.179396+00:00","email":"z-user1@example.com","icon":"https://secure.gravatar.com/avatar/aa14440b86c5f63ef8622b92e85e3360?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":true,"allowed_login_methods":[],"status":"Disabled"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}],"meta":{"page":{"total_count":157822,"total_filtered_count":1}}}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: |
-      {"data":{"attributes":{"disabled":false,"email":"k-user@example.com","name":"Test User"},"id":"3e344a0e-5457-11ec-a8c2-da7ad0900002","type":"users"}}
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/users/3e344a0e-5457-11ec-a8c2-da7ad0900002
-    method: PATCH
-    id: 6
-  response:
-    body: |
-      {"data":{"type":"users","id":"3e344a0e-5457-11ec-a8c2-da7ad0900002","attributes":{"name":"Test User","handle":"k-user@example.com","created_at":"2021-12-03T16:37:02.412935+00:00","modified_at":"2023-04-20T15:11:21.633339+00:00","email":"k-user@example.com","icon":"https://secure.gravatar.com/avatar/98eadd67eaa2d8c224d446b2e88f0bf2?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: |
-      {"data":{"attributes":{"disabled":false,"email":"a-user@example.com","name":"Test User"},"id":"3e3379ee-5457-11ec-a8c2-da7ad0900002","type":"users"}}
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/users/3e3379ee-5457-11ec-a8c2-da7ad0900002
-    method: PATCH
-    id: 7
-  response:
-    body: |
-      {"data":{"type":"users","id":"3e3379ee-5457-11ec-a8c2-da7ad0900002","attributes":{"name":"Test User","handle":"a-user@example.com","created_at":"2021-12-03T16:37:02.407801+00:00","modified_at":"2023-04-20T15:11:21.669074+00:00","email":"a-user@example.com","icon":"https://secure.gravatar.com/avatar/d3f689172d62d7bcc2e4698422091ecf?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: |
-      {"data":{"attributes":{"disabled":false,"email":"z-user1@example.com","name":"Test User"},"id":"5aad1674-5458-11ec-a8c2-da7ad0900002","type":"users"}}
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/users/5aad1674-5458-11ec-a8c2-da7ad0900002
-    method: PATCH
-    id: 8
-  response:
-    body: |
-      {"data":{"type":"users","id":"5aad1674-5458-11ec-a8c2-da7ad0900002","attributes":{"name":"Test User","handle":"z-user1@example.com","created_at":"2021-12-03T16:44:59.676899+00:00","modified_at":"2023-04-20T15:11:21.849524+00:00","email":"z-user1@example.com","icon":"https://secure.gravatar.com/avatar/aa14440b86c5f63ef8622b92e85e3360?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: |
-      {"data":[{"relationships":{"user":{"data":{"id":"3e3379ee-5457-11ec-a8c2-da7ad0900002","type":"users"}}},"type":"user_invitations"}]}
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/user_invitations
-    method: POST
-    id: 9
-  response:
-    body: |
-      {"data":[{"type":"user_invitations","id":"9bfcf5a6-df8d-11ed-ae03-da7ad0900002","attributes":{"uuid":"9bfcf5a6-df8d-11ed-ae03-da7ad0900002","login_method":null,"invite_type":"basic_reminder","created_at":"2023-04-20T15:11:21.877385+00:00","expires_at":"2023-04-22T15:11:21.812232+00:00"},"relationships":{"user":{"data":{"type":"users","id":"3e3379ee-5457-11ec-a8c2-da7ad0900002"}}}}]}
-    headers:
-      Content-Type:
-      - application/json
-    status: 201 Created
-    code: 201
-    duration: "0ms"
-- request:
-    body: |
-      {"data":[{"relationships":{"user":{"data":{"id":"3e344a0e-5457-11ec-a8c2-da7ad0900002","type":"users"}}},"type":"user_invitations"}]}
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/user_invitations
-    method: POST
-    id: 10
-  response:
-    body: |
-      {"data":[{"type":"user_invitations","id":"9c0c600e-df8d-11ed-bcda-da7ad0900002","attributes":{"uuid":"9c0c600e-df8d-11ed-bcda-da7ad0900002","login_method":null,"invite_type":"basic_reminder","created_at":"2023-04-20T15:11:21.978978+00:00","expires_at":"2023-04-22T15:11:21.800906+00:00"},"relationships":{"user":{"data":{"type":"users","id":"3e344a0e-5457-11ec-a8c2-da7ad0900002"}}}}]}
-    headers:
-      Content-Type:
-      - application/json
-    status: 201 Created
-    code: 201
-    duration: "0ms"
-- request:
-    body: |
-      {"data":[{"relationships":{"user":{"data":{"id":"5aad1674-5458-11ec-a8c2-da7ad0900002","type":"users"}}},"type":"user_invitations"}]}
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/user_invitations
-    method: POST
-    id: 11
-  response:
-    body: |
-      {"data":[{"type":"user_invitations","id":"9c1ad0b2-df8d-11ed-a4cd-da7ad0900002","attributes":{"uuid":"9c1ad0b2-df8d-11ed-a4cd-da7ad0900002","login_method":null,"invite_type":"basic_reminder","created_at":"2023-04-20T15:11:22.073780+00:00","expires_at":"2023-04-22T15:11:21.992356+00:00"},"relationships":{"user":{"data":{"type":"users","id":"5aad1674-5458-11ec-a8c2-da7ad0900002"}}}}]}
-    headers:
-      Content-Type:
-      - application/json
-    status: 201 Created
-    code: 201
-    duration: "0ms"
-- request:
-    body: "{\n   \"author_handle\":\"removed_handle\",\n   \"title\":\"tf-TestAccDatadogDashboardJSONNotifyListDiff-local-1682003475\",\n   \"description\":\"Created using the Datadog provider in Terraform\",\n   \"widgets\":[],\n   \"template_variables\":[\n      \n   ],\n   \"layout_type\":\"ordered\",\n   \"is_read_only\":true,\n   \"restricted_roles\":[],\n   \"notify_list\":[\"z-user1@example.com\",\"a-user@example.com\",\"k-user@example.com\"],\n   \"id\":\"5uw-bbj-xec\"\n}\n"
-    form: {}
-    headers:
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard
-    method: POST
-    id: 12
-  response:
-    body: |
-      {"id":"8a2-5yx-ww5","title":"tf-TestAccDatadogDashboardJSONNotifyListDiff-local-1682003475","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/8a2-5yx-ww5/tf-testaccdatadogdashboardjsonnotifylistdiff-local-1682003475","template_variables":[],"widgets":[],"notify_list":["z-user1@example.com","k-user@example.com","a-user@example.com"],"created_at":"2023-04-20T15:11:22.250990+00:00","modified_at":"2023-04-20T15:11:22.250990+00:00","restricted_roles":[]}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/8a2-5yx-ww5
-    method: GET
-    id: 13
-  response:
-    body: |
-      {"id":"8a2-5yx-ww5","title":"tf-TestAccDatadogDashboardJSONNotifyListDiff-local-1682003475","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/8a2-5yx-ww5/tf-testaccdatadogdashboardjsonnotifylistdiff-local-1682003475","template_variables":[],"widgets":[],"notify_list":["z-user1@example.com","k-user@example.com","a-user@example.com"],"created_at":"2023-04-20T15:11:22.250990+00:00","modified_at":"2023-04-20T15:11:22.250990+00:00","restricted_roles":[]}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/users/3e3379ee-5457-11ec-a8c2-da7ad0900002
-    method: GET
-    id: 14
-  response:
-    body: |
-      {"data":{"type":"users","id":"3e3379ee-5457-11ec-a8c2-da7ad0900002","attributes":{"name":"Test User","handle":"a-user@example.com","created_at":"2021-12-03T16:37:02.407801+00:00","modified_at":"2023-04-20T15:11:21.669074+00:00","email":"a-user@example.com","icon":"https://secure.gravatar.com/avatar/d3f689172d62d7bcc2e4698422091ecf?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/users/3e344a0e-5457-11ec-a8c2-da7ad0900002
-    method: GET
-    id: 15
-  response:
-    body: |
-      {"data":{"type":"users","id":"3e344a0e-5457-11ec-a8c2-da7ad0900002","attributes":{"name":"Test User","handle":"k-user@example.com","created_at":"2021-12-03T16:37:02.412935+00:00","modified_at":"2023-04-20T15:11:21.633339+00:00","email":"k-user@example.com","icon":"https://secure.gravatar.com/avatar/98eadd67eaa2d8c224d446b2e88f0bf2?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/users/5aad1674-5458-11ec-a8c2-da7ad0900002
-    method: GET
-    id: 16
-  response:
-    body: |
-      {"data":{"type":"users","id":"5aad1674-5458-11ec-a8c2-da7ad0900002","attributes":{"name":"Test User","handle":"z-user1@example.com","created_at":"2021-12-03T16:44:59.676899+00:00","modified_at":"2023-04-20T15:11:21.849524+00:00","email":"z-user1@example.com","icon":"https://secure.gravatar.com/avatar/aa14440b86c5f63ef8622b92e85e3360?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/8a2-5yx-ww5
-    method: GET
-    id: 17
-  response:
-    body: |
-      {"id":"8a2-5yx-ww5","title":"tf-TestAccDatadogDashboardJSONNotifyListDiff-local-1682003475","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/8a2-5yx-ww5/tf-testaccdatadogdashboardjsonnotifylistdiff-local-1682003475","template_variables":[],"widgets":[],"notify_list":["z-user1@example.com","k-user@example.com","a-user@example.com"],"created_at":"2023-04-20T15:11:22.250990+00:00","modified_at":"2023-04-20T15:11:22.250990+00:00","restricted_roles":[]}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/8a2-5yx-ww5
-    method: DELETE
-    id: 18
-  response:
-    body: |
-      {"deleted_dashboard_id":"8a2-5yx-ww5"}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - '*/*'
-    url: https://api.datadoghq.com/api/v2/users/5aad1674-5458-11ec-a8c2-da7ad0900002
-    method: DELETE
-    id: 19
-  response:
-    body: ""
-    headers: {}
-    status: 204 No Content
-    code: 204
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - '*/*'
-    url: https://api.datadoghq.com/api/v2/users/3e3379ee-5457-11ec-a8c2-da7ad0900002
-    method: DELETE
-    id: 20
-  response:
-    body: ""
-    headers: {}
-    status: 204 No Content
-    code: 204
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - '*/*'
-    url: https://api.datadoghq.com/api/v2/users/3e344a0e-5457-11ec-a8c2-da7ad0900002
-    method: DELETE
-    id: 21
-  response:
-    body: ""
-    headers: {}
-    status: 204 No Content
-    code: 204
-    duration: "0ms"
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 128
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"email":"z-user1@example.com","name":"Test User"},"relationships":{"roles":{"data":[]}},"type":"users"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/users
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"errors":["User z-user1@example.com already exists"]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 409 Conflict
+        code: 409
+        duration: 81.318458ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 127
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"email":"a-user@example.com","name":"Test User"},"relationships":{"roles":{"data":[]}},"type":"users"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/users
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"errors":["User a-user@example.com already exists"]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 409 Conflict
+        code: 409
+        duration: 155.113916ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 127
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"email":"k-user@example.com","name":"Test User"},"relationships":{"roles":{"data":[]}},"type":"users"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/users
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"errors":["User k-user@example.com already exists"]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 409 Conflict
+        code: 409
+        duration: 157.652792ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/users?filter=z-user1%40example.com
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":[{"type":"users","id":"5aad1674-5458-11ec-a8c2-da7ad0900002","attributes":{"name":"Test User","handle":"z-user1@example.com","created_at":"2021-12-03T16:44:59.676899+00:00","modified_at":"2026-01-09T12:27:36.664972+00:00","email":"z-user1@example.com","icon":"https://secure.gravatar.com/avatar/aa14440b86c5f63ef8622b92e85e3360?s=48&d=retro","title":"","verified":false,"service_account":false,"disabled":true,"allowed_login_methods":["google_oidc","standard"],"status":"Disabled","mfa_enabled":false,"last_login_time":null},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}],"meta":{"page":{"total_count":227423,"total_filtered_count":1,"max_page_size":1000}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 146.427084ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/users?filter=a-user%40example.com
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":[{"type":"users","id":"3e3379ee-5457-11ec-a8c2-da7ad0900002","attributes":{"name":"Test User","handle":"a-user@example.com","created_at":"2021-12-03T16:37:02.407801+00:00","modified_at":"2026-01-09T12:27:57.410357+00:00","email":"a-user@example.com","icon":"https://secure.gravatar.com/avatar/d3f689172d62d7bcc2e4698422091ecf?s=48&d=retro","title":"","verified":false,"service_account":false,"disabled":true,"allowed_login_methods":["google_oidc","standard"],"status":"Disabled","mfa_enabled":false,"last_login_time":null},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}],"meta":{"page":{"total_count":227423,"total_filtered_count":1,"max_page_size":1000}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 144.836542ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/users?filter=k-user%40example.com
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":[{"type":"users","id":"3e344a0e-5457-11ec-a8c2-da7ad0900002","attributes":{"name":"Test User","handle":"k-user@example.com","created_at":"2021-12-03T16:37:02.412935+00:00","modified_at":"2026-01-09T12:27:57.383400+00:00","email":"k-user@example.com","icon":"https://secure.gravatar.com/avatar/98eadd67eaa2d8c224d446b2e88f0bf2?s=48&d=retro","title":"","verified":false,"service_account":false,"disabled":true,"allowed_login_methods":["google_oidc","standard"],"status":"Disabled","mfa_enabled":false,"last_login_time":null},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}],"meta":{"page":{"total_count":227423,"total_filtered_count":1,"max_page_size":1000}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 148.164708ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 151
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"disabled":false,"email":"z-user1@example.com","name":"Test User"},"id":"5aad1674-5458-11ec-a8c2-da7ad0900002","type":"users"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/users/5aad1674-5458-11ec-a8c2-da7ad0900002
+        method: PATCH
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"users","id":"5aad1674-5458-11ec-a8c2-da7ad0900002","attributes":{"name":"Test User","handle":"z-user1@example.com","created_at":"2021-12-03T16:44:59.676899+00:00","modified_at":"2026-01-09T20:06:19.324183+00:00","email":"z-user1@example.com","icon":"https://secure.gravatar.com/avatar/aa14440b86c5f63ef8622b92e85e3360?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending","last_login_time":null},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 135.90225ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 150
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"disabled":false,"email":"a-user@example.com","name":"Test User"},"id":"3e3379ee-5457-11ec-a8c2-da7ad0900002","type":"users"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/users/3e3379ee-5457-11ec-a8c2-da7ad0900002
+        method: PATCH
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"users","id":"3e3379ee-5457-11ec-a8c2-da7ad0900002","attributes":{"name":"Test User","handle":"a-user@example.com","created_at":"2021-12-03T16:37:02.407801+00:00","modified_at":"2026-01-09T20:06:19.384411+00:00","email":"a-user@example.com","icon":"https://secure.gravatar.com/avatar/d3f689172d62d7bcc2e4698422091ecf?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending","last_login_time":null},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 123.6215ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 150
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"disabled":false,"email":"k-user@example.com","name":"Test User"},"id":"3e344a0e-5457-11ec-a8c2-da7ad0900002","type":"users"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/users/3e344a0e-5457-11ec-a8c2-da7ad0900002
+        method: PATCH
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"users","id":"3e344a0e-5457-11ec-a8c2-da7ad0900002","attributes":{"name":"Test User","handle":"k-user@example.com","created_at":"2021-12-03T16:37:02.412935+00:00","modified_at":"2026-01-09T20:06:19.399797+00:00","email":"k-user@example.com","icon":"https://secure.gravatar.com/avatar/98eadd67eaa2d8c224d446b2e88f0bf2?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending","last_login_time":null},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 129.079208ms
+    - id: 9
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 134
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":[{"relationships":{"user":{"data":{"id":"3e344a0e-5457-11ec-a8c2-da7ad0900002","type":"users"}}},"type":"user_invitations"}]}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/user_invitations
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":[{"type":"user_invitations","id":"a9b845aa-ed96-11f0-b2ce-da7ad0900002","attributes":{"uuid":"a9b845aa-ed96-11f0-b2ce-da7ad0900002","login_method":null,"invite_type":"basic_reminder","created_at":"2026-01-09T20:06:19.677954+00:00","expires_at":"2026-01-11T20:06:19.555736+00:00"},"relationships":{"user":{"data":{"type":"users","id":"3e344a0e-5457-11ec-a8c2-da7ad0900002"}}}}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 201 Created
+        code: 201
+        duration: 280.845375ms
+    - id: 10
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 134
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":[{"relationships":{"user":{"data":{"id":"5aad1674-5458-11ec-a8c2-da7ad0900002","type":"users"}}},"type":"user_invitations"}]}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/user_invitations
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":[{"type":"user_invitations","id":"a9cd3a14-ed96-11f0-8cd7-da7ad0900002","attributes":{"uuid":"a9cd3a14-ed96-11f0-8cd7-da7ad0900002","login_method":null,"invite_type":"basic_reminder","created_at":"2026-01-09T20:06:19.816012+00:00","expires_at":"2026-01-11T20:06:19.498059+00:00"},"relationships":{"user":{"data":{"type":"users","id":"5aad1674-5458-11ec-a8c2-da7ad0900002"}}}}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 201 Created
+        code: 201
+        duration: 478.524125ms
+    - id: 11
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 134
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":[{"relationships":{"user":{"data":{"id":"3e3379ee-5457-11ec-a8c2-da7ad0900002","type":"users"}}},"type":"user_invitations"}]}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/user_invitations
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":[{"type":"user_invitations","id":"a9d6f748-ed96-11f0-84be-da7ad0900002","attributes":{"uuid":"a9d6f748-ed96-11f0-84be-da7ad0900002","login_method":null,"invite_type":"basic_reminder","created_at":"2026-01-09T20:06:19.879637+00:00","expires_at":"2026-01-11T20:06:19.558010+00:00"},"relationships":{"user":{"data":{"type":"users","id":"3e3379ee-5457-11ec-a8c2-da7ad0900002"}}}}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 201 Created
+        code: 201
+        duration: 486.055083ms
+    - id: 12
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 401
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: "{\n   \"author_handle\":\"removed_handle\",\n   \"title\":\"tf-TestAccDatadogDashboardJSONNotifyListDiff-local-1767989178\",\n   \"description\":\"Created using the Datadog provider in Terraform\",\n   \"widgets\":[],\n   \"template_variables\":[\n      \n   ],\n   \"layout_type\":\"ordered\",\n   \"restricted_roles\":[],\n   \"notify_list\":[\"z-user1@example.com\",\"a-user@example.com\",\"k-user@example.com\"],\n   \"id\":\"5uw-bbj-xec\"\n}\n"
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"5ca-hg7-zed","title":"tf-TestAccDatadogDashboardJSONNotifyListDiff-local-1767989178","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/5ca-hg7-zed/tf-testaccdatadogdashboardjsonnotifylistdiff-local-1767989178","template_variables":[],"widgets":[],"notify_list":["a-user@example.com","k-user@example.com","z-user1@example.com"],"created_at":"2026-01-09T20:06:20.033503+00:00","modified_at":"2026-01-09T20:06:20.033503+00:00","restricted_roles":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 171.713833ms
+    - id: 13
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/5ca-hg7-zed
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"5ca-hg7-zed","title":"tf-TestAccDatadogDashboardJSONNotifyListDiff-local-1767989178","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/5ca-hg7-zed/tf-testaccdatadogdashboardjsonnotifylistdiff-local-1767989178","template_variables":[],"widgets":[],"notify_list":["a-user@example.com","k-user@example.com","z-user1@example.com"],"created_at":"2026-01-09T20:06:20.033503+00:00","modified_at":"2026-01-09T20:06:20.033503+00:00","restricted_roles":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 94.060583ms
+    - id: 14
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/users/3e3379ee-5457-11ec-a8c2-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"users","id":"3e3379ee-5457-11ec-a8c2-da7ad0900002","attributes":{"name":"Test User","handle":"a-user@example.com","created_at":"2021-12-03T16:37:02.407801+00:00","modified_at":"2026-01-09T20:06:19.384411+00:00","email":"a-user@example.com","icon":"https://secure.gravatar.com/avatar/d3f689172d62d7bcc2e4698422091ecf?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending","mfa_enabled":false,"last_login_time":null},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 93.117875ms
+    - id: 15
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/users/3e344a0e-5457-11ec-a8c2-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"users","id":"3e344a0e-5457-11ec-a8c2-da7ad0900002","attributes":{"name":"Test User","handle":"k-user@example.com","created_at":"2021-12-03T16:37:02.412935+00:00","modified_at":"2026-01-09T20:06:19.399797+00:00","email":"k-user@example.com","icon":"https://secure.gravatar.com/avatar/98eadd67eaa2d8c224d446b2e88f0bf2?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending","mfa_enabled":false,"last_login_time":null},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 106.810583ms
+    - id: 16
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/users/5aad1674-5458-11ec-a8c2-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"users","id":"5aad1674-5458-11ec-a8c2-da7ad0900002","attributes":{"name":"Test User","handle":"z-user1@example.com","created_at":"2021-12-03T16:44:59.676899+00:00","modified_at":"2026-01-09T20:06:19.324183+00:00","email":"z-user1@example.com","icon":"https://secure.gravatar.com/avatar/aa14440b86c5f63ef8622b92e85e3360?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending","mfa_enabled":false,"last_login_time":null},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 184.328959ms
+    - id: 17
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/5ca-hg7-zed
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"5ca-hg7-zed","title":"tf-TestAccDatadogDashboardJSONNotifyListDiff-local-1767989178","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/5ca-hg7-zed/tf-testaccdatadogdashboardjsonnotifylistdiff-local-1767989178","template_variables":[],"widgets":[],"notify_list":["a-user@example.com","k-user@example.com","z-user1@example.com"],"created_at":"2026-01-09T20:06:20.033503+00:00","modified_at":"2026-01-09T20:06:20.033503+00:00","restricted_roles":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 110.84825ms
+    - id: 18
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/5ca-hg7-zed
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"deleted_dashboard_id":"5ca-hg7-zed"}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 351.8825ms
+    - id: 19
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/users/3e344a0e-5457-11ec-a8c2-da7ad0900002
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 202.412167ms
+    - id: 20
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/users/3e3379ee-5457-11ec-a8c2-da7ad0900002
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 221.064666ms
+    - id: 21
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/users/5aad1674-5458-11ec-a8c2-da7ad0900002
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 330.4475ms
