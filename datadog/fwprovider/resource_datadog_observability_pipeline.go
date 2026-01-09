@@ -488,8 +488,8 @@ type syslogNgDestinationModel struct {
 }
 
 type elasticsearchDestinationModel struct {
-	ApiVersion types.String                             `tfsdk:"api_version"`
-	BulkIndex  types.String                             `tfsdk:"bulk_index"`
+	ApiVersion types.String                              `tfsdk:"api_version"`
+	BulkIndex  types.String                              `tfsdk:"bulk_index"`
 	DataStream []elasticsearchDestinationDataStreamModel `tfsdk:"data_stream"`
 }
 
@@ -3620,29 +3620,18 @@ func flattenEnrichmentTableProcessor(ctx context.Context, src *datadogV2.Observa
 			},
 		}
 	}
-	if refTableRaw, ok := src.ReferenceTable; ok {
-		if refTable, ok := refTableRaw.(map[string]interface{}); ok {
-			refTableModel := enrichmentReferenceTableModel{}
-			if keyField, ok := refTable["key_field"].(string); ok {
-				refTableModel.KeyField = types.StringValue(keyField)
-			}
-			if tableId, ok := refTable["table_id"].(string); ok {
-				refTableModel.TableId = types.StringValue(tableId)
-			}
-			if columnsRaw, ok := refTable["columns"].([]interface{}); ok {
-				var columns []string
-				for _, c := range columnsRaw {
-					if col, ok := c.(string); ok {
-						columns = append(columns, col)
-					}
-				}
-				columnsList, _ := types.ListValueFrom(ctx, types.StringType, columns)
-				refTableModel.Columns = columnsList
-			} else {
-				refTableModel.Columns = types.ListNull(types.StringType)
-			}
-			enrichment.ReferenceTable = []enrichmentReferenceTableModel{refTableModel}
+	if src.ReferenceTable != nil {
+		refTableModel := enrichmentReferenceTableModel{
+			KeyField: types.StringValue(src.ReferenceTable.GetKeyField()),
+			TableId:  types.StringValue(src.ReferenceTable.GetTableId()),
 		}
+		if len(src.ReferenceTable.GetColumns()) > 0 {
+			columnsList, _ := types.ListValueFrom(ctx, types.StringType, src.ReferenceTable.GetColumns())
+			refTableModel.Columns = columnsList
+		} else {
+			refTableModel.Columns = types.ListNull(types.StringType)
+		}
+		enrichment.ReferenceTable = []enrichmentReferenceTableModel{refTableModel}
 	}
 	model.EnrichmentTableProcessor = append(model.EnrichmentTableProcessor, enrichment)
 	return model
@@ -3909,16 +3898,16 @@ func expandEnrichmentTableProcessorItem(ctx context.Context, common observabilit
 	}
 
 	if len(src.ReferenceTable) > 0 {
-		refTable := map[string]interface{}{
-			"key_field": src.ReferenceTable[0].KeyField.ValueString(),
-			"table_id":  src.ReferenceTable[0].TableId.ValueString(),
+		refTable := datadogV2.ObservabilityPipelineEnrichmentTableReferenceTable{
+			KeyField: src.ReferenceTable[0].KeyField.ValueString(),
+			TableId:  src.ReferenceTable[0].TableId.ValueString(),
 		}
 		if !src.ReferenceTable[0].Columns.IsNull() && !src.ReferenceTable[0].Columns.IsUnknown() {
 			var columns []string
 			src.ReferenceTable[0].Columns.ElementsAs(ctx, &columns, false)
-			refTable["columns"] = columns
+			refTable.Columns = columns
 		}
-		proc.AdditionalProperties["reference_table"] = refTable
+		proc.ReferenceTable = &refTable
 	}
 
 	return datadogV2.ObservabilityPipelineEnrichmentTableProcessorAsObservabilityPipelineConfigProcessorItem(proc)
@@ -4968,19 +4957,17 @@ func expandElasticsearchDestination(ctx context.Context, dest *destinationModel,
 		obj.SetBulkIndex(src.BulkIndex.ValueString())
 	}
 	if len(src.DataStream) > 0 {
-		ds := make(map[string]interface{})
+		ds := datadogV2.NewObservabilityPipelineElasticsearchDestinationDataStream()
 		if !src.DataStream[0].Dtype.IsNull() {
-			ds["dtype"] = src.DataStream[0].Dtype.ValueString()
+			ds.SetDtype(src.DataStream[0].Dtype.ValueString())
 		}
 		if !src.DataStream[0].Dataset.IsNull() {
-			ds["dataset"] = src.DataStream[0].Dataset.ValueString()
+			ds.SetDataset(src.DataStream[0].Dataset.ValueString())
 		}
 		if !src.DataStream[0].Namespace.IsNull() {
-			ds["namespace"] = src.DataStream[0].Namespace.ValueString()
+			ds.SetNamespace(src.DataStream[0].Namespace.ValueString())
 		}
-		obj.AdditionalProperties = map[string]interface{}{
-			"data_stream": ds,
-		}
+		obj.DataStream = ds
 	}
 
 	return datadogV2.ObservabilityPipelineConfigDestinationItem{
@@ -4999,20 +4986,18 @@ func flattenElasticsearchDestination(ctx context.Context, src *datadogV2.Observa
 	if v, ok := src.GetBulkIndexOk(); ok {
 		out.BulkIndex = types.StringValue(*v)
 	}
-	if dsRaw, ok := src.AdditionalProperties["data_stream"]; ok {
-		if ds, ok := dsRaw.(map[string]interface{}); ok {
-			dsModel := elasticsearchDestinationDataStreamModel{}
-			if v, ok := ds["dtype"].(string); ok {
-				dsModel.Dtype = types.StringValue(v)
-			}
-			if v, ok := ds["dataset"].(string); ok {
-				dsModel.Dataset = types.StringValue(v)
-			}
-			if v, ok := ds["namespace"].(string); ok {
-				dsModel.Namespace = types.StringValue(v)
-			}
-			out.DataStream = []elasticsearchDestinationDataStreamModel{dsModel}
+	if ds, ok := src.GetDataStreamOk(); ok && ds != nil {
+		dsModel := elasticsearchDestinationDataStreamModel{}
+		if v, ok := ds.GetDtypeOk(); ok {
+			dsModel.Dtype = types.StringValue(*v)
 		}
+		if v, ok := ds.GetDatasetOk(); ok {
+			dsModel.Dataset = types.StringValue(*v)
+		}
+		if v, ok := ds.GetNamespaceOk(); ok {
+			dsModel.Namespace = types.StringValue(*v)
+		}
+		out.DataStream = []elasticsearchDestinationDataStreamModel{dsModel}
 	}
 	return out
 }
