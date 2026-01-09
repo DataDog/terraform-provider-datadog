@@ -453,9 +453,6 @@ func updatePowerpackState(d *schema.ResourceData, powerpack *datadogV2.Powerpack
 		return diag.FromErr(err)
 	}
 
-	// Note: hide_incomplete_cost_data is not read from the API yet as
-	// PowerpackGroupWidget doesn't support it in the API client.
-
 	// Set template variables
 	templateVariables := buildPowerpackTerraformTemplateVariables(powerpack.Data.Attributes.GetTemplateVariables())
 	if err := d.Set("template_variables", templateVariables); err != nil {
