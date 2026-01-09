@@ -5659,4 +5659,3 @@ resource "datadog_observability_pipeline" "elasticsearch_datastream" {
 		},
 	})
 }
-
