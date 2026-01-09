@@ -132,9 +132,9 @@ func TestIsWidgetTimeUnparsedObject(t *testing.T) {
 		{
 			name: "WidgetNewLiveSpan with hide_incomplete_cost_data",
 			obj: map[string]interface{}{
-				"type":                       "live",
-				"unit":                       "hour",
-				"value":                      1,
+				"type":                      "live",
+				"unit":                      "hour",
+				"value":                     1,
 				"hide_incomplete_cost_data": true,
 			},
 			expected: true,
@@ -158,7 +158,7 @@ func TestIsWidgetTimeUnparsedObject(t *testing.T) {
 		{
 			name: "WidgetLegacyLiveSpan with hide_incomplete_cost_data",
 			obj: map[string]interface{}{
-				"live_span":                  "1h",
+				"live_span":                 "1h",
 				"hide_incomplete_cost_data": true,
 			},
 			expected: true,
@@ -210,4 +210,3 @@ func TestIsWidgetTimeUnparsedObject(t *testing.T) {
 func boolPtr(b bool) *bool {
 	return &b
 }
-
