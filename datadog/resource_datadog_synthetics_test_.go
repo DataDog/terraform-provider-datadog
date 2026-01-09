@@ -2046,7 +2046,7 @@ func resourceDatadogSyntheticsTestRead(ctx context.Context, d *schema.ResourceDa
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 
-	var syntheticsTest datadogV1.SyntheticsTestDetails
+	var syntheticsTest datadogV1.SyntheticsTestDetailsWithoutSteps
 	var syntheticsAPITest datadogV1.SyntheticsAPITest
 	var syntheticsBrowserTest datadogV1.SyntheticsBrowserTest
 	var syntheticsMobileTest datadogV1.SyntheticsMobileTest
