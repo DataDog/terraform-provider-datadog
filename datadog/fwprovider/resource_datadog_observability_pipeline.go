@@ -208,9 +208,10 @@ type ocsfMappingModel struct {
 }
 
 type enrichmentTableProcessorModel struct {
-	Target types.String           `tfsdk:"target"`
-	File   []enrichmentFileModel  `tfsdk:"file"`
-	GeoIp  []enrichmentGeoIpModel `tfsdk:"geoip"`
+	Target         types.String                    `tfsdk:"target"`
+	File           []enrichmentFileModel           `tfsdk:"file"`
+	GeoIp          []enrichmentGeoIpModel          `tfsdk:"geoip"`
+	ReferenceTable []enrichmentReferenceTableModel `tfsdk:"reference_table"`
 }
 
 type enrichmentFileModel struct {
@@ -241,6 +242,12 @@ type enrichmentGeoIpModel struct {
 	KeyField types.String `tfsdk:"key_field"`
 	Locale   types.String `tfsdk:"locale"`
 	Path     types.String `tfsdk:"path"`
+}
+
+type enrichmentReferenceTableModel struct {
+	KeyField types.String `tfsdk:"key_field"`
+	TableId  types.String `tfsdk:"table_id"`
+	Columns  types.List   `tfsdk:"columns"`
 }
 
 type addEnvVarsProcessorModel struct {
@@ -481,8 +488,15 @@ type syslogNgDestinationModel struct {
 }
 
 type elasticsearchDestinationModel struct {
-	ApiVersion types.String `tfsdk:"api_version"`
-	BulkIndex  types.String `tfsdk:"bulk_index"`
+	ApiVersion types.String                              `tfsdk:"api_version"`
+	BulkIndex  types.String                              `tfsdk:"bulk_index"`
+	DataStream []elasticsearchDestinationDataStreamModel `tfsdk:"data_stream"`
+}
+
+type elasticsearchDestinationDataStreamModel struct {
+	Dtype     types.String `tfsdk:"dtype"`
+	Dataset   types.String `tfsdk:"dataset"`
+	Namespace types.String `tfsdk:"namespace"`
 }
 
 type azureStorageDestinationModel struct {
@@ -1758,6 +1772,29 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 																	listvalidator.SizeAtMost(1),
 																},
 															},
+															"reference_table": schema.ListNestedBlock{
+																Description: "Uses a Datadog reference table to enrich logs.",
+																NestedObject: schema.NestedBlockObject{
+																	Attributes: map[string]schema.Attribute{
+																		"key_field": schema.StringAttribute{
+																			Required:    true,
+																			Description: "Path to the field in the log event to match against the reference table.",
+																		},
+																		"table_id": schema.StringAttribute{
+																			Required:    true,
+																			Description: "The unique identifier of the reference table.",
+																		},
+																		"columns": schema.ListAttribute{
+																			Optional:    true,
+																			ElementType: types.StringType,
+																			Description: "List of column names to include from the reference table. If not provided, all columns are included.",
+																		},
+																	},
+																},
+																Validators: []validator.List{
+																	listvalidator.SizeAtMost(1),
+																},
+															},
 														},
 													},
 												},
@@ -2066,6 +2103,30 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 												"bulk_index": schema.StringAttribute{
 													Optional:    true,
 													Description: "The index or datastream to write logs to in Elasticsearch.",
+												},
+											},
+											Blocks: map[string]schema.Block{
+												"data_stream": schema.ListNestedBlock{
+													Description: "Configuration options for writing to Elasticsearch Data Streams instead of a fixed index.",
+													NestedObject: schema.NestedBlockObject{
+														Attributes: map[string]schema.Attribute{
+															"dtype": schema.StringAttribute{
+																Optional:    true,
+																Description: "The data stream type for your logs. This determines how logs are categorized within the data stream.",
+															},
+															"dataset": schema.StringAttribute{
+																Optional:    true,
+																Description: "The data stream dataset for your logs. This groups logs by their source or application.",
+															},
+															"namespace": schema.StringAttribute{
+																Optional:    true,
+																Description: "The data stream namespace for your logs. This separates logs into different environments or domains.",
+															},
+														},
+													},
+													Validators: []validator.List{
+														listvalidator.SizeAtMost(1),
+													},
 												},
 											},
 										},
@@ -3559,6 +3620,19 @@ func flattenEnrichmentTableProcessor(ctx context.Context, src *datadogV2.Observa
 			},
 		}
 	}
+	if src.ReferenceTable != nil {
+		refTableModel := enrichmentReferenceTableModel{
+			KeyField: types.StringValue(src.ReferenceTable.GetKeyField()),
+			TableId:  types.StringValue(src.ReferenceTable.GetTableId()),
+		}
+		if len(src.ReferenceTable.GetColumns()) > 0 {
+			columnsList, _ := types.ListValueFrom(ctx, types.StringType, src.ReferenceTable.GetColumns())
+			refTableModel.Columns = columnsList
+		} else {
+			refTableModel.Columns = types.ListNull(types.StringType)
+		}
+		enrichment.ReferenceTable = []enrichmentReferenceTableModel{refTableModel}
+	}
 	model.EnrichmentTableProcessor = append(model.EnrichmentTableProcessor, enrichment)
 	return model
 }
@@ -3821,6 +3895,19 @@ func expandEnrichmentTableProcessorItem(ctx context.Context, common observabilit
 			Path:     src.GeoIp[0].Path.ValueString(),
 		}
 		proc.SetGeoip(geoip)
+	}
+
+	if len(src.ReferenceTable) > 0 {
+		refTable := datadogV2.ObservabilityPipelineEnrichmentTableReferenceTable{
+			KeyField: src.ReferenceTable[0].KeyField.ValueString(),
+			TableId:  src.ReferenceTable[0].TableId.ValueString(),
+		}
+		if !src.ReferenceTable[0].Columns.IsNull() && !src.ReferenceTable[0].Columns.IsUnknown() {
+			var columns []string
+			src.ReferenceTable[0].Columns.ElementsAs(ctx, &columns, false)
+			refTable.Columns = columns
+		}
+		proc.ReferenceTable = &refTable
 	}
 
 	return datadogV2.ObservabilityPipelineEnrichmentTableProcessorAsObservabilityPipelineConfigProcessorItem(proc)
@@ -4869,6 +4956,19 @@ func expandElasticsearchDestination(ctx context.Context, dest *destinationModel,
 	if !src.BulkIndex.IsNull() {
 		obj.SetBulkIndex(src.BulkIndex.ValueString())
 	}
+	if len(src.DataStream) > 0 {
+		ds := datadogV2.NewObservabilityPipelineElasticsearchDestinationDataStream()
+		if !src.DataStream[0].Dtype.IsNull() {
+			ds.SetDtype(src.DataStream[0].Dtype.ValueString())
+		}
+		if !src.DataStream[0].Dataset.IsNull() {
+			ds.SetDataset(src.DataStream[0].Dataset.ValueString())
+		}
+		if !src.DataStream[0].Namespace.IsNull() {
+			ds.SetNamespace(src.DataStream[0].Namespace.ValueString())
+		}
+		obj.DataStream = ds
+	}
 
 	return datadogV2.ObservabilityPipelineConfigDestinationItem{
 		ObservabilityPipelineElasticsearchDestination: obj,
@@ -4885,6 +4985,19 @@ func flattenElasticsearchDestination(ctx context.Context, src *datadogV2.Observa
 	}
 	if v, ok := src.GetBulkIndexOk(); ok {
 		out.BulkIndex = types.StringValue(*v)
+	}
+	if ds, ok := src.GetDataStreamOk(); ok && ds != nil {
+		dsModel := elasticsearchDestinationDataStreamModel{}
+		if v, ok := ds.GetDtypeOk(); ok {
+			dsModel.Dtype = types.StringValue(*v)
+		}
+		if v, ok := ds.GetDatasetOk(); ok {
+			dsModel.Dataset = types.StringValue(*v)
+		}
+		if v, ok := ds.GetNamespaceOk(); ok {
+			dsModel.Namespace = types.StringValue(*v)
+		}
+		out.DataStream = []elasticsearchDestinationDataStreamModel{dsModel}
 	}
 	return out
 }
