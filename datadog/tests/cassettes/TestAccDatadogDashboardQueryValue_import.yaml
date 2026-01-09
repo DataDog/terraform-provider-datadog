@@ -1,112 +1,210 @@
+---
 version: 2
 interactions:
-- request:
-    body: |
-      {"description":"Created using the Datadog provider in Terraform","id":"","is_read_only":true,"layout_type":"ordered","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardQueryValue_import-local-1682003523","widgets":[{"definition":{"autoscale":true,"custom_links":[{"label":"Test Custom Link label","link":"https://app.datadoghq.com/dashboard/lists"}],"custom_unit":"Gib","precision":3,"requests":[{"aggregator":"max","conditional_formats":[{"comparator":"\u003c","hide_value":false,"palette":"white_on_red","value":9},{"comparator":"\u003e=","hide_value":false,"palette":"white_on_green","value":9}],"q":"avg:system.mem.free{account:prod}"}],"time":{"live_span":"1h"},"timeseries_background":{"type":"area","yaxis":{"include_zero":true}},"title":"Avg of system.mem.free over account:prod","title_align":"center","title_size":"16","type":"query_value"}}]}
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard
-    method: POST
-    id: 0
-  response:
-    body: |
-      {"id":"jn3-tc5-qf7","title":"tf-TestAccDatadogDashboardQueryValue_import-local-1682003523","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/jn3-tc5-qf7/tf-testaccdatadogdashboardqueryvalueimport-local-1682003523","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"autoscale":true,"custom_links":[{"label":"Test Custom Link label","link":"https://app.datadoghq.com/dashboard/lists"}],"custom_unit":"Gib","precision":3,"requests":[{"aggregator":"max","conditional_formats":[{"comparator":"<","hide_value":false,"palette":"white_on_red","value":9},{"comparator":">=","hide_value":false,"palette":"white_on_green","value":9}],"q":"avg:system.mem.free{account:prod}"}],"time":{"live_span":"1h"},"timeseries_background":{"type":"area","yaxis":{"include_zero":true}},"title":"Avg of system.mem.free over account:prod","title_align":"center","title_size":"16","type":"query_value"},"id":5373441239316621}],"notify_list":[],"created_at":"2023-04-20T15:12:05.216029+00:00","modified_at":"2023-04-20T15:12:05.216029+00:00","template_variable_presets":[],"tags":[]}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/jn3-tc5-qf7
-    method: GET
-    id: 1
-  response:
-    body: |
-      {"id":"jn3-tc5-qf7","title":"tf-TestAccDatadogDashboardQueryValue_import-local-1682003523","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/jn3-tc5-qf7/tf-testaccdatadogdashboardqueryvalueimport-local-1682003523","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"autoscale":true,"custom_links":[{"label":"Test Custom Link label","link":"https://app.datadoghq.com/dashboard/lists"}],"custom_unit":"Gib","precision":3,"requests":[{"aggregator":"max","conditional_formats":[{"comparator":"<","hide_value":false,"palette":"white_on_red","value":9},{"comparator":">=","hide_value":false,"palette":"white_on_green","value":9}],"q":"avg:system.mem.free{account:prod}"}],"time":{"live_span":"1h"},"timeseries_background":{"type":"area","yaxis":{"include_zero":true}},"title":"Avg of system.mem.free over account:prod","title_align":"center","title_size":"16","type":"query_value"},"id":5373441239316621}],"notify_list":[],"created_at":"2023-04-20T15:12:05.216029+00:00","modified_at":"2023-04-20T15:12:05.216029+00:00","template_variable_presets":[],"tags":[]}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/jn3-tc5-qf7
-    method: GET
-    id: 2
-  response:
-    body: |
-      {"id":"jn3-tc5-qf7","title":"tf-TestAccDatadogDashboardQueryValue_import-local-1682003523","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/jn3-tc5-qf7/tf-testaccdatadogdashboardqueryvalueimport-local-1682003523","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"autoscale":true,"custom_links":[{"label":"Test Custom Link label","link":"https://app.datadoghq.com/dashboard/lists"}],"custom_unit":"Gib","precision":3,"requests":[{"aggregator":"max","conditional_formats":[{"comparator":"<","hide_value":false,"palette":"white_on_red","value":9},{"comparator":">=","hide_value":false,"palette":"white_on_green","value":9}],"q":"avg:system.mem.free{account:prod}"}],"time":{"live_span":"1h"},"timeseries_background":{"type":"area","yaxis":{"include_zero":true}},"title":"Avg of system.mem.free over account:prod","title_align":"center","title_size":"16","type":"query_value"},"id":5373441239316621}],"notify_list":[],"created_at":"2023-04-20T15:12:05.216029+00:00","modified_at":"2023-04-20T15:12:05.216029+00:00","template_variable_presets":[],"tags":[]}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/jn3-tc5-qf7
-    method: GET
-    id: 3
-  response:
-    body: |
-      {"id":"jn3-tc5-qf7","title":"tf-TestAccDatadogDashboardQueryValue_import-local-1682003523","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/jn3-tc5-qf7/tf-testaccdatadogdashboardqueryvalueimport-local-1682003523","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"autoscale":true,"custom_links":[{"label":"Test Custom Link label","link":"https://app.datadoghq.com/dashboard/lists"}],"custom_unit":"Gib","precision":3,"requests":[{"aggregator":"max","conditional_formats":[{"comparator":"<","hide_value":false,"palette":"white_on_red","value":9},{"comparator":">=","hide_value":false,"palette":"white_on_green","value":9}],"q":"avg:system.mem.free{account:prod}"}],"time":{"live_span":"1h"},"timeseries_background":{"type":"area","yaxis":{"include_zero":true}},"title":"Avg of system.mem.free over account:prod","title_align":"center","title_size":"16","type":"query_value"},"id":5373441239316621}],"notify_list":[],"created_at":"2023-04-20T15:12:05.216029+00:00","modified_at":"2023-04-20T15:12:05.216029+00:00","template_variable_presets":[],"tags":[]}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/jn3-tc5-qf7
-    method: DELETE
-    id: 4
-  response:
-    body: |
-      {"deleted_dashboard_id":"jn3-tc5-qf7"}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/jn3-tc5-qf7
-    method: GET
-    id: 5
-  response:
-    body: '{"errors":["Dashboard with ID jn3-tc5-qf7 not found"]}'
-    headers:
-      Content-Type:
-      - application/json
-    status: 404 Not Found
-    code: 404
-    duration: "0ms"
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 900
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"description":"Created using the Datadog provider in Terraform","id":"","layout_type":"ordered","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardQueryValue_import-local-1767989329","widgets":[{"definition":{"autoscale":true,"custom_links":[{"label":"Test Custom Link label","link":"https://app.datadoghq.com/dashboard/lists"}],"custom_unit":"Gib","precision":3,"requests":[{"aggregator":"max","conditional_formats":[{"comparator":"\u003c","hide_value":false,"palette":"white_on_red","value":9},{"comparator":"\u003e=","hide_value":false,"palette":"white_on_green","value":9}],"q":"avg:system.mem.free{account:prod}"}],"time":{"live_span":"1h"},"timeseries_background":{"type":"area","yaxis":{"include_zero":true}},"title":"Avg of system.mem.free over account:prod","title_align":"center","title_size":"16","type":"query_value"}}]}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"tzu-ngx-s7g","title":"tf-TestAccDatadogDashboardQueryValue_import-local-1767989329","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/tzu-ngx-s7g/tf-testaccdatadogdashboardqueryvalueimport-local-1767989329","template_variables":[],"widgets":[{"definition":{"autoscale":true,"custom_links":[{"label":"Test Custom Link label","link":"https://app.datadoghq.com/dashboard/lists"}],"custom_unit":"Gib","precision":3,"requests":[{"aggregator":"max","conditional_formats":[{"comparator":"<","hide_value":false,"palette":"white_on_red","value":9},{"comparator":">=","hide_value":false,"palette":"white_on_green","value":9}],"q":"avg:system.mem.free{account:prod}"}],"time":{"live_span":"1h"},"timeseries_background":{"type":"area","yaxis":{"include_zero":true}},"title":"Avg of system.mem.free over account:prod","title_align":"center","title_size":"16","type":"query_value"},"id":3608848826059972}],"notify_list":[],"created_at":"2026-01-09T20:08:50.202939+00:00","modified_at":"2026-01-09T20:08:50.202939+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 147.857ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/tzu-ngx-s7g
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"tzu-ngx-s7g","title":"tf-TestAccDatadogDashboardQueryValue_import-local-1767989329","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/tzu-ngx-s7g/tf-testaccdatadogdashboardqueryvalueimport-local-1767989329","template_variables":[],"widgets":[{"definition":{"autoscale":true,"custom_links":[{"label":"Test Custom Link label","link":"https://app.datadoghq.com/dashboard/lists"}],"custom_unit":"Gib","precision":3,"requests":[{"aggregator":"max","conditional_formats":[{"comparator":"<","hide_value":false,"palette":"white_on_red","value":9},{"comparator":">=","hide_value":false,"palette":"white_on_green","value":9}],"q":"avg:system.mem.free{account:prod}"}],"time":{"live_span":"1h"},"timeseries_background":{"type":"area","yaxis":{"include_zero":true}},"title":"Avg of system.mem.free over account:prod","title_align":"center","title_size":"16","type":"query_value"},"id":3608848826059972}],"notify_list":[],"created_at":"2026-01-09T20:08:50.202939+00:00","modified_at":"2026-01-09T20:08:50.202939+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 92.529458ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/tzu-ngx-s7g
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"tzu-ngx-s7g","title":"tf-TestAccDatadogDashboardQueryValue_import-local-1767989329","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/tzu-ngx-s7g/tf-testaccdatadogdashboardqueryvalueimport-local-1767989329","template_variables":[],"widgets":[{"definition":{"autoscale":true,"custom_links":[{"label":"Test Custom Link label","link":"https://app.datadoghq.com/dashboard/lists"}],"custom_unit":"Gib","precision":3,"requests":[{"aggregator":"max","conditional_formats":[{"comparator":"<","hide_value":false,"palette":"white_on_red","value":9},{"comparator":">=","hide_value":false,"palette":"white_on_green","value":9}],"q":"avg:system.mem.free{account:prod}"}],"time":{"live_span":"1h"},"timeseries_background":{"type":"area","yaxis":{"include_zero":true}},"title":"Avg of system.mem.free over account:prod","title_align":"center","title_size":"16","type":"query_value"},"id":3608848826059972}],"notify_list":[],"created_at":"2026-01-09T20:08:50.202939+00:00","modified_at":"2026-01-09T20:08:50.202939+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 99.873667ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/tzu-ngx-s7g
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"tzu-ngx-s7g","title":"tf-TestAccDatadogDashboardQueryValue_import-local-1767989329","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/tzu-ngx-s7g/tf-testaccdatadogdashboardqueryvalueimport-local-1767989329","template_variables":[],"widgets":[{"definition":{"autoscale":true,"custom_links":[{"label":"Test Custom Link label","link":"https://app.datadoghq.com/dashboard/lists"}],"custom_unit":"Gib","precision":3,"requests":[{"aggregator":"max","conditional_formats":[{"comparator":"<","hide_value":false,"palette":"white_on_red","value":9},{"comparator":">=","hide_value":false,"palette":"white_on_green","value":9}],"q":"avg:system.mem.free{account:prod}"}],"time":{"live_span":"1h"},"timeseries_background":{"type":"area","yaxis":{"include_zero":true}},"title":"Avg of system.mem.free over account:prod","title_align":"center","title_size":"16","type":"query_value"},"id":3608848826059972}],"notify_list":[],"created_at":"2026-01-09T20:08:50.202939+00:00","modified_at":"2026-01-09T20:08:50.202939+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 96.686875ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/tzu-ngx-s7g
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"deleted_dashboard_id":"tzu-ngx-s7g"}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 343.877041ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/tzu-ngx-s7g
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"errors":["Dashboard with ID tzu-ngx-s7g not found"]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 80.710417ms

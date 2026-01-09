@@ -9,7 +9,6 @@ resource "datadog_dashboard" "change_dashboard" {
    	title         = "{{uniq}}"
    	description   = "Created using the Datadog provider in Terraform"
    	layout_type   = "ordered"
-   	is_read_only  = true
 	widget {
 		change_definition {
 			request {
@@ -47,7 +46,6 @@ resource "datadog_dashboard" "change_dashboard" {
    	title         = "{{uniq}}"
    	description   = "Created using the Datadog provider in Terraform"
    	layout_type   = "ordered"
-   	is_read_only  = true
 	widget {
 		change_definition {
 			request {
@@ -90,7 +88,6 @@ resource "datadog_dashboard" "change_dashboard" {
 	title         = "{{uniq}}"
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "ordered"
-	is_read_only  = "true"
 	widget {
 		change_definition {
 		  request {
@@ -158,7 +155,6 @@ var datadogDashboardChangeAsserts = []string{
 	"widget.1.change_definition.0.title = Sum of system.cpu.user over * by service,account",
 	"widget.1.change_definition.0.title_size = 16",
 	"widget.1.change_definition.0.request.0.compare_to = day_before",
-	"is_read_only = true",
 	"widget.0.change_definition.0.title_align =",
 	"widget.0.change_definition.0.title =",
 	"widget.1.change_definition.0.request.0.q = sum:system.cpu.user{*} by {service,account}",
@@ -183,7 +179,6 @@ var datadogDashboardChangeAsserts = []string{
 
 var datadogDashboardChangeFormulaAsserts = []string{
 	"title = {{uniq}}",
-	"is_read_only = true",
 	"layout_type = ordered",
 	"description = Created using the Datadog provider in Terraform",
 	"widget.0.change_definition.0.request.0.formula.0.formula_expression = query1 + query2",

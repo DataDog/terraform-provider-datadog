@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"description":"Created using the Datadog provider in Terraform","id":"","layout_type":"ordered","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardTimeseriesSemanticMode-local-1765220900","widgets":[{"definition":{"requests":[{"formulas":[{"formula":"query1"}],"on_right_yaxis":false,"queries":[{"data_source":"metrics","name":"query1","query":"avg:system.cpu.user{*}","semantic_mode":"combined"}],"response_format":"timeseries"}],"show_legend":false,"title":"Timeseries with Semantic Mode Combined","type":"timeseries"}},{"definition":{"requests":[{"formulas":[{"formula":"query2"}],"on_right_yaxis":false,"queries":[{"data_source":"metrics","name":"query2","query":"avg:system.cpu.user{*}","semantic_mode":"native"}],"response_format":"timeseries"}],"show_legend":false,"title":"Timeseries with Semantic Mode Native","type":"timeseries"}}]}
+            {"description":"Created using the Datadog provider in Terraform","id":"","layout_type":"ordered","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardTimeseriesSemanticMode-local-1767989471","widgets":[{"definition":{"requests":[{"formulas":[{"formula":"query1"}],"on_right_yaxis":false,"queries":[{"data_source":"metrics","name":"query1","query":"avg:system.cpu.user{*}","semantic_mode":"combined"}],"response_format":"timeseries"}],"show_legend":false,"title":"Timeseries with Semantic Mode Combined","type":"timeseries"}},{"definition":{"requests":[{"formulas":[{"formula":"query2"}],"on_right_yaxis":false,"queries":[{"data_source":"metrics","name":"query2","query":"avg:system.cpu.user{*}","semantic_mode":"native"}],"response_format":"timeseries"}],"show_legend":false,"title":"Timeseries with Semantic Mode Native","type":"timeseries"}}]}
         form: {}
         headers:
             Accept:
@@ -31,13 +31,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id":"viz-cf6-bep","title":"tf-TestAccDatadogDashboardTimeseriesSemanticMode-local-1765220900","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/viz-cf6-bep/tf-testaccdatadogdashboardtimeseriessemanticmode-local-1765220900","template_variables":[],"widgets":[{"definition":{"requests":[{"formulas":[{"formula":"query1"}],"on_right_yaxis":false,"queries":[{"data_source":"metrics","name":"query1","query":"avg:system.cpu.user{*}","semantic_mode":"combined"}],"response_format":"timeseries"}],"show_legend":false,"title":"Timeseries with Semantic Mode Combined","type":"timeseries"},"id":68429571665591},{"definition":{"requests":[{"formulas":[{"formula":"query2"}],"on_right_yaxis":false,"queries":[{"data_source":"metrics","name":"query2","query":"avg:system.cpu.user{*}","semantic_mode":"native"}],"response_format":"timeseries"}],"show_legend":false,"title":"Timeseries with Semantic Mode Native","type":"timeseries"},"id":7395438274798656}],"notify_list":[],"created_at":"2025-12-08T19:08:22.527237+00:00","modified_at":"2025-12-08T19:08:22.527237+00:00","template_variable_presets":[],"tags":[]}'
+        body: '{"id":"xdd-92s-4xe","title":"tf-TestAccDatadogDashboardTimeseriesSemanticMode-local-1767989471","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/xdd-92s-4xe/tf-testaccdatadogdashboardtimeseriessemanticmode-local-1767989471","template_variables":[],"widgets":[{"definition":{"requests":[{"formulas":[{"formula":"query1"}],"on_right_yaxis":false,"queries":[{"data_source":"metrics","name":"query1","query":"avg:system.cpu.user{*}","semantic_mode":"combined"}],"response_format":"timeseries"}],"show_legend":false,"title":"Timeseries with Semantic Mode Combined","type":"timeseries"},"id":6727317248439033},{"definition":{"requests":[{"formulas":[{"formula":"query2"}],"on_right_yaxis":false,"queries":[{"data_source":"metrics","name":"query2","query":"avg:system.cpu.user{*}","semantic_mode":"native"}],"response_format":"timeseries"}],"show_legend":false,"title":"Timeseries with Semantic Mode Native","type":"timeseries"},"id":684448942484573}],"notify_list":[],"created_at":"2026-01-09T20:11:12.707833+00:00","modified_at":"2026-01-09T20:11:12.707833+00:00","template_variable_presets":[],"tags":[]}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 197.038416ms
+        duration: 244.278583ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -54,7 +54,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/dashboard/viz-cf6-bep
+        url: https://api.datadoghq.com/api/v1/dashboard/xdd-92s-4xe
         method: GET
       response:
         proto: HTTP/1.1
@@ -65,13 +65,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id":"viz-cf6-bep","title":"tf-TestAccDatadogDashboardTimeseriesSemanticMode-local-1765220900","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/viz-cf6-bep/tf-testaccdatadogdashboardtimeseriessemanticmode-local-1765220900","template_variables":[],"widgets":[{"definition":{"requests":[{"formulas":[{"formula":"query1"}],"on_right_yaxis":false,"queries":[{"data_source":"metrics","name":"query1","query":"avg:system.cpu.user{*}","semantic_mode":"combined"}],"response_format":"timeseries"}],"show_legend":false,"title":"Timeseries with Semantic Mode Combined","type":"timeseries"},"id":68429571665591},{"definition":{"requests":[{"formulas":[{"formula":"query2"}],"on_right_yaxis":false,"queries":[{"data_source":"metrics","name":"query2","query":"avg:system.cpu.user{*}","semantic_mode":"native"}],"response_format":"timeseries"}],"show_legend":false,"title":"Timeseries with Semantic Mode Native","type":"timeseries"},"id":7395438274798656}],"notify_list":[],"created_at":"2025-12-08T19:08:22.527237+00:00","modified_at":"2025-12-08T19:08:22.527237+00:00","template_variable_presets":[],"tags":[]}'
+        body: '{"id":"xdd-92s-4xe","title":"tf-TestAccDatadogDashboardTimeseriesSemanticMode-local-1767989471","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/xdd-92s-4xe/tf-testaccdatadogdashboardtimeseriessemanticmode-local-1767989471","template_variables":[],"widgets":[{"definition":{"requests":[{"formulas":[{"formula":"query1"}],"on_right_yaxis":false,"queries":[{"data_source":"metrics","name":"query1","query":"avg:system.cpu.user{*}","semantic_mode":"combined"}],"response_format":"timeseries"}],"show_legend":false,"title":"Timeseries with Semantic Mode Combined","type":"timeseries"},"id":6727317248439033},{"definition":{"requests":[{"formulas":[{"formula":"query2"}],"on_right_yaxis":false,"queries":[{"data_source":"metrics","name":"query2","query":"avg:system.cpu.user{*}","semantic_mode":"native"}],"response_format":"timeseries"}],"show_legend":false,"title":"Timeseries with Semantic Mode Native","type":"timeseries"},"id":684448942484573}],"notify_list":[],"created_at":"2026-01-09T20:11:12.707833+00:00","modified_at":"2026-01-09T20:11:12.707833+00:00","template_variable_presets":[],"tags":[]}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 89.366333ms
+        duration: 103.8645ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -88,7 +88,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/dashboard/viz-cf6-bep
+        url: https://api.datadoghq.com/api/v1/dashboard/xdd-92s-4xe
         method: GET
       response:
         proto: HTTP/1.1
@@ -99,13 +99,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id":"viz-cf6-bep","title":"tf-TestAccDatadogDashboardTimeseriesSemanticMode-local-1765220900","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/viz-cf6-bep/tf-testaccdatadogdashboardtimeseriessemanticmode-local-1765220900","template_variables":[],"widgets":[{"definition":{"requests":[{"formulas":[{"formula":"query1"}],"on_right_yaxis":false,"queries":[{"data_source":"metrics","name":"query1","query":"avg:system.cpu.user{*}","semantic_mode":"combined"}],"response_format":"timeseries"}],"show_legend":false,"title":"Timeseries with Semantic Mode Combined","type":"timeseries"},"id":68429571665591},{"definition":{"requests":[{"formulas":[{"formula":"query2"}],"on_right_yaxis":false,"queries":[{"data_source":"metrics","name":"query2","query":"avg:system.cpu.user{*}","semantic_mode":"native"}],"response_format":"timeseries"}],"show_legend":false,"title":"Timeseries with Semantic Mode Native","type":"timeseries"},"id":7395438274798656}],"notify_list":[],"created_at":"2025-12-08T19:08:22.527237+00:00","modified_at":"2025-12-08T19:08:22.527237+00:00","template_variable_presets":[],"tags":[]}'
+        body: '{"id":"xdd-92s-4xe","title":"tf-TestAccDatadogDashboardTimeseriesSemanticMode-local-1767989471","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/xdd-92s-4xe/tf-testaccdatadogdashboardtimeseriessemanticmode-local-1767989471","template_variables":[],"widgets":[{"definition":{"requests":[{"formulas":[{"formula":"query1"}],"on_right_yaxis":false,"queries":[{"data_source":"metrics","name":"query1","query":"avg:system.cpu.user{*}","semantic_mode":"combined"}],"response_format":"timeseries"}],"show_legend":false,"title":"Timeseries with Semantic Mode Combined","type":"timeseries"},"id":6727317248439033},{"definition":{"requests":[{"formulas":[{"formula":"query2"}],"on_right_yaxis":false,"queries":[{"data_source":"metrics","name":"query2","query":"avg:system.cpu.user{*}","semantic_mode":"native"}],"response_format":"timeseries"}],"show_legend":false,"title":"Timeseries with Semantic Mode Native","type":"timeseries"},"id":684448942484573}],"notify_list":[],"created_at":"2026-01-09T20:11:12.707833+00:00","modified_at":"2026-01-09T20:11:12.707833+00:00","template_variable_presets":[],"tags":[]}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 172.641083ms
+        duration: 118.318417ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -122,7 +122,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/dashboard/viz-cf6-bep
+        url: https://api.datadoghq.com/api/v1/dashboard/xdd-92s-4xe
         method: GET
       response:
         proto: HTTP/1.1
@@ -133,13 +133,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id":"viz-cf6-bep","title":"tf-TestAccDatadogDashboardTimeseriesSemanticMode-local-1765220900","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/viz-cf6-bep/tf-testaccdatadogdashboardtimeseriessemanticmode-local-1765220900","template_variables":[],"widgets":[{"definition":{"requests":[{"formulas":[{"formula":"query1"}],"on_right_yaxis":false,"queries":[{"data_source":"metrics","name":"query1","query":"avg:system.cpu.user{*}","semantic_mode":"combined"}],"response_format":"timeseries"}],"show_legend":false,"title":"Timeseries with Semantic Mode Combined","type":"timeseries"},"id":68429571665591},{"definition":{"requests":[{"formulas":[{"formula":"query2"}],"on_right_yaxis":false,"queries":[{"data_source":"metrics","name":"query2","query":"avg:system.cpu.user{*}","semantic_mode":"native"}],"response_format":"timeseries"}],"show_legend":false,"title":"Timeseries with Semantic Mode Native","type":"timeseries"},"id":7395438274798656}],"notify_list":[],"created_at":"2025-12-08T19:08:22.527237+00:00","modified_at":"2025-12-08T19:08:22.527237+00:00","template_variable_presets":[],"tags":[]}'
+        body: '{"id":"xdd-92s-4xe","title":"tf-TestAccDatadogDashboardTimeseriesSemanticMode-local-1767989471","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/xdd-92s-4xe/tf-testaccdatadogdashboardtimeseriessemanticmode-local-1767989471","template_variables":[],"widgets":[{"definition":{"requests":[{"formulas":[{"formula":"query1"}],"on_right_yaxis":false,"queries":[{"data_source":"metrics","name":"query1","query":"avg:system.cpu.user{*}","semantic_mode":"combined"}],"response_format":"timeseries"}],"show_legend":false,"title":"Timeseries with Semantic Mode Combined","type":"timeseries"},"id":6727317248439033},{"definition":{"requests":[{"formulas":[{"formula":"query2"}],"on_right_yaxis":false,"queries":[{"data_source":"metrics","name":"query2","query":"avg:system.cpu.user{*}","semantic_mode":"native"}],"response_format":"timeseries"}],"show_legend":false,"title":"Timeseries with Semantic Mode Native","type":"timeseries"},"id":684448942484573}],"notify_list":[],"created_at":"2026-01-09T20:11:12.707833+00:00","modified_at":"2026-01-09T20:11:12.707833+00:00","template_variable_presets":[],"tags":[]}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 91.47725ms
+        duration: 95.480083ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -156,7 +156,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/dashboard/viz-cf6-bep
+        url: https://api.datadoghq.com/api/v1/dashboard/xdd-92s-4xe
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -167,13 +167,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"deleted_dashboard_id":"viz-cf6-bep"}'
+        body: '{"deleted_dashboard_id":"xdd-92s-4xe"}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 328.2465ms
+        duration: 337.749042ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -190,7 +190,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/dashboard/viz-cf6-bep
+        url: https://api.datadoghq.com/api/v1/dashboard/xdd-92s-4xe
         method: GET
       response:
         proto: HTTP/1.1
@@ -201,10 +201,10 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"errors":["Dashboard with ID viz-cf6-bep not found"]}'
+        body: '{"errors":["Dashboard with ID xdd-92s-4xe not found"]}'
         headers:
             Content-Type:
                 - application/json
         status: 404 Not Found
         code: 404
-        duration: 79.145125ms
+        duration: 81.143584ms
