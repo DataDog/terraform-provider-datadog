@@ -2,6 +2,7 @@ package datadog
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -313,6 +314,55 @@ func updateDashboardState(d *schema.ResourceData, dashboard *datadogV1.Dashboard
 	return nil
 }
 
+// isWidgetTimeUnparsedObject checks if an unparsed object is a WidgetTime.
+// WidgetTime can be unparsed due to oneOf ambiguity between legacy and new formats.
+func isWidgetTimeUnparsedObject(obj interface{}) bool {
+	m, ok := obj.(map[string]interface{})
+	if !ok {
+		return false
+	}
+
+	// Check for WidgetNewLiveSpan signature: type="live", unit, value
+	if typeVal, hasType := m["type"]; hasType && typeVal == "live" {
+		_, hasUnit := m["unit"]
+		_, hasValue := m["value"]
+		return hasUnit && hasValue
+	}
+
+	// Check for WidgetNewFixedSpan signature: type="fixed", from, to
+	if typeVal, hasType := m["type"]; hasType && typeVal == "fixed" {
+		_, hasFrom := m["from"]
+		_, hasTo := m["to"]
+		return hasFrom && hasTo
+	}
+
+	// Check for WidgetLegacyLiveSpan signature: live_span (and optionally hide_incomplete_cost_data)
+	// This is less specific, so only match if it has live_span and no other unexpected fields
+	if _, hasLiveSpan := m["live_span"]; hasLiveSpan {
+		// Should only have live_span and optionally hide_incomplete_cost_data
+		for key := range m {
+			if key != "live_span" && key != "hide_incomplete_cost_data" {
+				return false // Has other fields, not a legacy live span
+			}
+		}
+		return true
+	}
+
+	return false
+}
+
+// checkForUnparsedDashboard checks for unparsed elements but allows WidgetTime unparsed objects.
+// WidgetTime can be unparsed due to oneOf ambiguity, which we handle separately.
+func checkForUnparsedDashboard(dashboard datadogV1.Dashboard) error {
+	if unparsed, invalidPart := datadog.ContainsUnparsedObject(dashboard); unparsed {
+		if !isWidgetTimeUnparsedObject(invalidPart) {
+			return fmt.Errorf("dashboard contains unparsed element: %+v", invalidPart)
+		}
+		// WidgetTime unparsed objects are expected and handled by buildTerraformWidgetTime
+	}
+	return nil
+}
+
 func resourceDatadogDashboardRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
@@ -326,10 +376,9 @@ func resourceDatadogDashboardRead(ctx context.Context, d *schema.ResourceData, m
 		}
 		return utils.TranslateClientErrorDiag(err, httpresp, "error getting dashboard")
 	}
-	if err := utils.CheckForUnparsed(dashboard); err != nil {
+	if err := checkForUnparsedDashboard(dashboard); err != nil {
 		return diag.FromErr(err)
 	}
-
 	return updateDashboardState(d, &dashboard)
 }
 
@@ -6300,7 +6349,7 @@ func buildTerraformGeomapRequests(datadogGeomapRequests *[]datadogV1.GeomapWidge
 //
 
 func getTimeseriesDefinitionSchema() map[string]*schema.Schema {
-	return map[string]*schema.Schema{
+	schema := map[string]*schema.Schema{
 		"request": {
 			Description: "A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `network_query`, `security_query` or `process_query` is required within the `request` block).",
 			Type:        schema.TypeList,
@@ -6385,7 +6434,6 @@ func getTimeseriesDefinitionSchema() map[string]*schema.Schema {
 				ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewTimeseriesWidgetLegendColumnFromValue),
 			},
 		},
-		"live_span": getWidgetLiveSpanSchema(),
 		"custom_link": {
 			Description: "A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below.",
 			Type:        schema.TypeList,
@@ -6395,6 +6443,18 @@ func getTimeseriesDefinitionSchema() map[string]*schema.Schema {
 			},
 		},
 	}
+	schema = mergeSchemas(schema, getCommonSpanSchema())
+	return schema
+}
+
+func mergeSchemas(schemas ...map[string]*schema.Schema) map[string]*schema.Schema {
+	merged := make(map[string]*schema.Schema)
+	for _, schema := range schemas {
+		for k, v := range schema {
+			merged[k] = v
+		}
+	}
+	return merged
 }
 
 func buildDatadogTimeseriesDefinition(terraformDefinition map[string]interface{}) *datadogV1.TimeseriesWidgetDefinition {
@@ -6428,10 +6488,8 @@ func buildDatadogTimeseriesDefinition(terraformDefinition map[string]interface{}
 	if v, ok := terraformDefinition["title_align"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetTitleAlign(datadogV1.WidgetTextAlign(v))
 	}
-	if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
-		datadogDefinition.Time = &datadogV1.WidgetTime{
-			WidgetLegacyLiveSpan: &datadogV1.WidgetLegacyLiveSpan{LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr()},
-		}
+	if widgetTime := buildDatadogWidgetTime(terraformDefinition); widgetTime != nil {
+		datadogDefinition.Time = widgetTime
 	}
 	if v, ok := terraformDefinition["show_legend"].(bool); ok {
 		datadogDefinition.SetShowLegend(v)
@@ -6485,7 +6543,7 @@ func buildTerraformTimeseriesDefinition(datadogDefinition *datadogV1.TimeseriesW
 		terraformDefinition["title_align"] = *v
 	}
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
-		terraformDefinition["live_span"] = v.WidgetLegacyLiveSpan.GetLiveSpan()
+		buildTerraformWidgetTime(v, terraformDefinition)
 	}
 	if v, ok := datadogDefinition.GetShowLegendOk(); ok {
 		terraformDefinition["show_legend"] = *v
@@ -9732,12 +9790,115 @@ func buildTerraformWidgetEvents(datadogWidgetEvents *[]datadogV1.WidgetEvent) *[
 }
 
 // Widget Time helpers
+
+// widgetLiveSpanUnitToAbbrev converts WidgetLiveSpanUnit enum to legacy format abbreviation
+func widgetLiveSpanUnitToAbbrev(unit datadogV1.WidgetLiveSpanUnit) string {
+	switch unit {
+	case "minute":
+		return "m"
+	case "hour":
+		return "h"
+	case "day":
+		return "d"
+	case "week":
+		return "w"
+	case "month":
+		return "mo"
+	case "year":
+		return "y"
+	default:
+		return string(unit)
+	}
+}
+
+// buildDatadogWidgetTime creates a WidgetTime from Terraform definition.
+// Always uses legacy format - API will handle conversion if needed.
+func buildDatadogWidgetTime(terraformDefinition map[string]interface{}) *datadogV1.WidgetTime {
+	if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
+		widgetLegacyLiveSpan := &datadogV1.WidgetLegacyLiveSpan{
+			LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr(),
+		}
+		if hic, ok := terraformDefinition["hide_incomplete_cost_data"].(bool); ok {
+			widgetLegacyLiveSpan.SetHideIncompleteCostData(hic)
+		}
+		return &datadogV1.WidgetTime{
+			WidgetLegacyLiveSpan: widgetLegacyLiveSpan,
+		}
+	}
+	return nil
+}
+
+// buildTerraformWidgetTime extracts time settings from a WidgetTime union into a Terraform definition map.
+// Handles WidgetLegacyLiveSpan, WidgetNewLiveSpan, and UnparsedObject fallback.
+func buildTerraformWidgetTime(widgetTime *datadogV1.WidgetTime, terraformDefinition map[string]interface{}) {
+	if widgetTime == nil {
+		return
+	}
+
+	if widgetTime.WidgetLegacyLiveSpan != nil {
+		// Legacy format: {"live_span": "1h"}
+		terraformDefinition["live_span"] = widgetTime.WidgetLegacyLiveSpan.GetLiveSpan()
+		// Only set hide_incomplete_cost_data if explicitly present in API response
+		if hic, ok := widgetTime.WidgetLegacyLiveSpan.GetHideIncompleteCostDataOk(); ok {
+			terraformDefinition["hide_incomplete_cost_data"] = *hic
+		}
+	} else if widgetTime.WidgetNewLiveSpan != nil {
+		// New format: {"type": "live", "unit": "hour", "value": 1}
+		// Convert back to legacy format for Terraform
+		unit := widgetTime.WidgetNewLiveSpan.GetUnit()
+		value := widgetTime.WidgetNewLiveSpan.GetValue()
+		unitAbbrev := widgetLiveSpanUnitToAbbrev(unit)
+		terraformDefinition["live_span"] = fmt.Sprintf("%d%s", value, unitAbbrev)
+		if hic, ok := widgetTime.WidgetNewLiveSpan.GetHideIncompleteCostDataOk(); ok {
+			terraformDefinition["hide_incomplete_cost_data"] = *hic
+		}
+	} else if widgetTime.UnparsedObject != nil {
+		// Handle unparsed WidgetTime (due to oneOf ambiguity)
+		// Use the API client's own UnmarshalJSON methods to parse
+		unparsedBytes, err := json.Marshal(widgetTime.UnparsedObject)
+		if err == nil {
+			// Try new format first (more specific - has required fields)
+			var newLiveSpan datadogV1.WidgetNewLiveSpan
+			if err := json.Unmarshal(unparsedBytes, &newLiveSpan); err == nil && newLiveSpan.UnparsedObject == nil {
+				// Successfully parsed as new format
+				unit := newLiveSpan.GetUnit()
+				value := newLiveSpan.GetValue()
+				unitAbbrev := widgetLiveSpanUnitToAbbrev(unit)
+				terraformDefinition["live_span"] = fmt.Sprintf("%d%s", value, unitAbbrev)
+				if hic, ok := newLiveSpan.GetHideIncompleteCostDataOk(); ok {
+					terraformDefinition["hide_incomplete_cost_data"] = *hic
+				}
+			} else {
+				// Try legacy format
+				var legacyLiveSpan datadogV1.WidgetLegacyLiveSpan
+				if err := json.Unmarshal(unparsedBytes, &legacyLiveSpan); err == nil && legacyLiveSpan.UnparsedObject == nil {
+					terraformDefinition["live_span"] = legacyLiveSpan.GetLiveSpan()
+					if hic, ok := legacyLiveSpan.GetHideIncompleteCostDataOk(); ok {
+						terraformDefinition["hide_incomplete_cost_data"] = *hic
+					}
+				}
+			}
+		}
+	}
+}
+
 func getWidgetLiveSpanSchema() *schema.Schema {
 	return &schema.Schema{
 		Description:      "The timeframe to use when displaying the widget.",
 		Type:             schema.TypeString,
 		ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetLiveSpanFromValue),
 		Optional:         true,
+	}
+}
+
+func getCommonSpanSchema() map[string]*schema.Schema {
+	return map[string]*schema.Schema{
+		"live_span": getWidgetLiveSpanSchema(),
+		"hide_incomplete_cost_data": {
+			Description: "Whether to hide incomplete cost data.",
+			Type:        schema.TypeBool,
+			Optional:    true,
+		},
 	}
 }
 
