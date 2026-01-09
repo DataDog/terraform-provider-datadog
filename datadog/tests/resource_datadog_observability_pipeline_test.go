@@ -5005,9 +5005,10 @@ resource "datadog_observability_pipeline" "metrics_pipeline" {
 
         metric_tags {
           rule {
-            mode   = "filter"
-            action = "include"
-            keys   = ["env", "service", "version"]
+            include = "*"
+            mode    = "filter"
+            action  = "include"
+            keys    = ["env", "service", "version"]
           }
         }
       }
@@ -5028,6 +5029,7 @@ resource "datadog_observability_pipeline" "metrics_pipeline" {
 					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.id", "source-1"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.id", "metric-tags-group-1"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.id", "metric-tags-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.metric_tags.0.rule.0.include", "*"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.metric_tags.0.rule.0.mode", "filter"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.metric_tags.0.rule.0.action", "include"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.metric_tags.0.rule.0.keys.0", "env"),
@@ -5077,15 +5079,17 @@ resource "datadog_observability_pipeline" "metric_tags" {
 
         metric_tags {
           rule {
-            mode   = "filter"
-            action = "include"
-            keys   = ["env", "service", "version"]
+            include = "*"
+            mode    = "filter"
+            action  = "include"
+            keys    = ["env", "service", "version"]
           }
 
           rule {
-            mode   = "filter"
-            action = "exclude"
-            keys   = ["debug", "internal"]
+            include = "service:web-*"
+            mode    = "filter"
+            action  = "exclude"
+            keys    = ["debug", "internal"]
           }
         }
       }
@@ -5108,11 +5112,13 @@ resource "datadog_observability_pipeline" "metric_tags" {
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.id", "metric-tags-processor"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.enabled", "true"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.include", "*"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.metric_tags.0.rule.0.include", "*"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.metric_tags.0.rule.0.mode", "filter"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.metric_tags.0.rule.0.action", "include"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.metric_tags.0.rule.0.keys.0", "env"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.metric_tags.0.rule.0.keys.1", "service"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.metric_tags.0.rule.0.keys.2", "version"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.metric_tags.0.rule.1.include", "service:web-*"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.metric_tags.0.rule.1.mode", "filter"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.metric_tags.0.rule.1.action", "exclude"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.metric_tags.0.rule.1.keys.0", "debug"),
@@ -5339,9 +5345,10 @@ resource "datadog_observability_pipeline" "metrics_full" {
 
         metric_tags {
           rule {
-            mode   = "filter"
-            action = "include"
-            keys   = ["env", "service"]
+            include = "*"
+            mode    = "filter"
+            action  = "include"
+            keys    = ["env", "service"]
           }
         }
       }
@@ -5353,12 +5360,12 @@ resource "datadog_observability_pipeline" "metrics_full" {
       datadog_metrics {
       }
     }
-
-    destination {
+      destination {
       id     = "http-dest-1"
       inputs = ["metric-tags-group-1"]
       http_client {
         encoding = "json"
+        auth_strategy = "none"
       }
     }
   }
@@ -5373,6 +5380,7 @@ resource "datadog_observability_pipeline" "metrics_full" {
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.include", "env:prod"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.1.id", "metric-tags-group-1"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.1.processor.0.id", "metric-tags-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.1.processor.0.metric_tags.0.rule.0.include", "*"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.1.processor.0.metric_tags.0.rule.0.keys.0", "env"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.1.processor.0.metric_tags.0.rule.0.keys.1", "service"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.id", "datadog-metrics-dest-1"),

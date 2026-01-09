@@ -193,9 +193,10 @@ type metricTagsProcessorModel struct {
 }
 
 type metricTagsProcessorRuleModel struct {
-	Mode   types.String   `tfsdk:"mode"`
-	Action types.String   `tfsdk:"action"`
-	Keys   []types.String `tfsdk:"keys"`
+	Include types.String   `tfsdk:"include"`
+	Mode    types.String   `tfsdk:"mode"`
+	Action  types.String   `tfsdk:"action"`
+	Keys    []types.String `tfsdk:"keys"`
 }
 
 type ocsfMapperProcessorModel struct {
@@ -1805,6 +1806,10 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 																},
 																NestedObject: schema.NestedBlockObject{
 																	Attributes: map[string]schema.Attribute{
+																		"include": schema.StringAttribute{
+																			Required:    true,
+																			Description: "A Datadog search query used to determine which metrics this rule targets.",
+																		},
 																		"mode": schema.StringAttribute{
 																			Required:    true,
 																			Description: "The processing mode for tag filtering.",
@@ -4205,9 +4210,10 @@ func flattenMetricTagsProcessor(ctx context.Context, src *datadogV2.Observabilit
 			keys = append(keys, types.StringValue(k))
 		}
 		metricTags.Rules = append(metricTags.Rules, metricTagsProcessorRuleModel{
-			Mode:   types.StringValue(string(rule.GetMode())),
-			Action: types.StringValue(string(rule.GetAction())),
-			Keys:   keys,
+			Include: types.StringValue(rule.GetInclude()),
+			Mode:    types.StringValue(string(rule.GetMode())),
+			Action:  types.StringValue(string(rule.GetAction())),
+			Keys:    keys,
 		})
 	}
 	model.MetricTagsProcessor = append(model.MetricTagsProcessor, metricTags)
@@ -4221,8 +4227,9 @@ func expandMetricTagsProcessorItem(ctx context.Context, common observability_pip
 	var rules []datadogV2.ObservabilityPipelineMetricTagsProcessorRule
 	for _, r := range src.Rules {
 		rule := datadogV2.ObservabilityPipelineMetricTagsProcessorRule{
-			Mode:   datadogV2.ObservabilityPipelineMetricTagsProcessorRuleMode(r.Mode.ValueString()),
-			Action: datadogV2.ObservabilityPipelineMetricTagsProcessorRuleAction(r.Action.ValueString()),
+			Include: r.Include.ValueString(),
+			Mode:    datadogV2.ObservabilityPipelineMetricTagsProcessorRuleMode(r.Mode.ValueString()),
+			Action:  datadogV2.ObservabilityPipelineMetricTagsProcessorRuleAction(r.Action.ValueString()),
 		}
 		var keys []string
 		for _, k := range r.Keys {
