@@ -9872,7 +9872,7 @@ func getCommonSpanSchema() map[string]*schema.Schema {
 			Description: "Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.",
 			Type:        schema.TypeBool,
 			Optional:    true,
-			Default: false,
+			Default:     false,
 		},
 	}
 }
