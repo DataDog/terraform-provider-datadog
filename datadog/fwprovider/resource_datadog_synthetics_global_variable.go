@@ -17,6 +17,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/listdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
+	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
@@ -35,11 +36,14 @@ type syntheticsGlobalVariableResource struct {
 }
 
 type syntheticsGlobalVariableModel struct {
-	Id               types.String `tfsdk:"id"`
-	Name             types.String `tfsdk:"name"`
-	Description      types.String `tfsdk:"description"`
-	Tags             types.List   `tfsdk:"tags"`
-	Value            types.String `tfsdk:"value"`
+	Id                    types.String `tfsdk:"id"`
+	Name                  types.String `tfsdk:"name"`
+	Description           types.String `tfsdk:"description"`
+	Tags                  types.List   `tfsdk:"tags"`
+	Value                 types.String `tfsdk:"value"`
+	ValueWriteOnly        types.String `tfsdk:"value_wo"`
+	ValueWriteOnlyVersion types.String `tfsdk:"value_wo_version"`
+
 	Secure           types.Bool   `tfsdk:"secure"`
 	ParseTestId      types.String `tfsdk:"parse_test_id"`
 	ParseTestOptions types.List   `tfsdk:"parse_test_options"`
@@ -139,6 +143,40 @@ func (r *syntheticsGlobalVariableResource) Schema(_ context.Context, _ resource.
 				Description: "The value of the global variable. Required unless `is_fido` is set to `true`.",
 				Optional:    true,
 				Sensitive:   true,
+				Validators: []validator.String{
+					stringvalidator.ExactlyOneOf(
+						frameworkPath.MatchRoot("value"),
+						frameworkPath.MatchRoot("value_wo"),
+					),
+					stringvalidator.PreferWriteOnlyAttribute(
+						frameworkPath.MatchRoot("value_wo"),
+					),
+				},
+			},
+			"value_wo": schema.StringAttribute{
+				Description: "The value of the global variable. Required unless `is_fido` is set to `true`.",
+				Optional:    true,
+				WriteOnly:   true,
+				Sensitive:   true,
+				Validators: []validator.String{
+					stringvalidator.ExactlyOneOf(
+						frameworkPath.MatchRoot("value"),
+						frameworkPath.MatchRoot("value_wo"),
+					),
+					stringvalidator.AlsoRequires(
+						frameworkPath.MatchRoot("value_wo_version"),
+					),
+				},
+			},
+			"value_wo_version": schema.StringAttribute{
+				Optional:    true,
+				Description: "Version associated with value_wo. Changing this triggers an update. Can be any string. (e.g. '1', 'v1.2', '2024-Q1')",
+				Validators: []validator.String{
+					stringvalidator.LengthAtLeast(1),
+					stringvalidator.AlsoRequires(frameworkPath.Expressions{
+						frameworkPath.MatchRoot("value_wo"),
+					}...),
+				},
 			},
 			"secure": schema.BoolAttribute{
 				Description: "If set to true, the value of the global variable is hidden. This setting is automatically set to `true` if `is_totp` or `is_fido` is set to `true`.",
@@ -294,7 +332,7 @@ func (r *syntheticsGlobalVariableResource) Create(ctx context.Context, request r
 		return
 	}
 
-	body, diags := r.buildSyntheticsGlobalVariableRequestBody(ctx, &state)
+	body, diags := r.buildSyntheticsGlobalVariableRequestBody(ctx, &state, &request.Config)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
 		return
@@ -324,7 +362,7 @@ func (r *syntheticsGlobalVariableResource) Update(ctx context.Context, request r
 
 	id := state.Id.ValueString()
 
-	body, diags := r.buildSyntheticsGlobalVariableRequestBody(ctx, &state)
+	body, diags := r.buildSyntheticsGlobalVariableRequestBody(ctx, &state, &request.Config)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
 		return
@@ -430,7 +468,7 @@ func (r *syntheticsGlobalVariableResource) updateState(ctx context.Context, stat
 	}
 }
 
-func (r *syntheticsGlobalVariableResource) buildSyntheticsGlobalVariableRequestBody(ctx context.Context, state *syntheticsGlobalVariableModel) (*datadogV1.SyntheticsGlobalVariableRequest, diag.Diagnostics) {
+func (r *syntheticsGlobalVariableResource) buildSyntheticsGlobalVariableRequestBody(ctx context.Context, state *syntheticsGlobalVariableModel, config *tfsdk.Config) (*datadogV1.SyntheticsGlobalVariableRequest, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
 	syntheticsGlobalVariableRequest := datadogV1.NewSyntheticsGlobalVariableRequestWithDefaults()
 
@@ -536,7 +574,26 @@ func (r *syntheticsGlobalVariableResource) buildSyntheticsGlobalVariableRequestB
 		syntheticsGlobalVariableRequest.SetValue(value)
 	}
 
+	valueWriteOnly, d := retrieveAttribute(ctx, config, "value_wo")
+	diags.Append(d...)
+	if !valueWriteOnly.IsNull() && !valueWriteOnly.IsUnknown() {
+		var value datadogV1.SyntheticsGlobalVariableValue
+		value.SetValue(valueWriteOnly.ValueString())
+
+		if !state.Secure.IsNull() {
+			value.SetSecure(state.Secure.ValueBool())
+		}
+
+		syntheticsGlobalVariableRequest.SetValue(value)
+	}
+
 	return syntheticsGlobalVariableRequest, diags
+}
+
+func retrieveAttribute(ctx context.Context, config *tfsdk.Config, attributeName string) (types.String, diag.Diagnostics) {
+	var value types.String
+	d := config.GetAttribute(ctx, frameworkPath.Root(attributeName), &value)
+	return value, d
 }
 
 func (r syntheticsGlobalVariableResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
@@ -561,11 +618,12 @@ func (r syntheticsGlobalVariableResource) ValidateConfig(ctx context.Context, re
 	}
 
 	// If `is_fido` is `false` and `value` is not set, return an error.
-	if !isFido && config.Value.IsNull() {
+	isValueMissing := config.Value.IsNull() && config.ValueWriteOnly.IsNull()
+	if !isFido && isValueMissing {
 		resp.Diagnostics.AddAttributeError(
 			frameworkPath.Root("value"),
 			"Invalid Configuration",
-			"`value` must be set.",
+			"`value` or `value_wo` must be set.",
 		)
 	}
 
