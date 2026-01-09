@@ -253,16 +253,9 @@ func prepResource(attrMap map[string]interface{}) map[string]interface{} {
 	if widgets, ok := attrMap["widgets"].([]interface{}); ok {
 		deleteWidgetID(widgets)
 	}
-	// 'restricted_roles' takes precedence over 'is_read_only'
-	if _, ok := attrMap["restricted_roles"].([]interface{}); ok {
-		delete(attrMap, "is_read_only")
-	} else {
-		// `is_read_only` defaults to false.
-		// We set it manually to avoid continous diff when not set.
-		if _, ok := attrMap["is_read_only"]; !ok {
-			attrMap["is_read_only"] = false
-		}
-	}
+	// 'is_read_only' is deprecated and no longer supported by the Datadog API
+	// but it is still returned by the API. It needs to be removed to avoid API errors.
+	delete(attrMap, "is_read_only")
 	// handle `notify_list` order
 	if notifyList, ok := attrMap["notify_list"].([]interface{}); ok {
 		sort.SliceStable(notifyList, func(i, j int) bool {

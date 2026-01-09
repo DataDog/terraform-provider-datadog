@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"description":"Created using the Datadog provider in Terraform","id":"","layout_type":"ordered","notify_list":[],"reflow_type":"auto","tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardRunWorkflow_import-local-1767989392","widgets":[{"definition":{"inputs":[{"name":"env","value":"$Env.value"},{"name":"Foo","value":"$Env"}],"title":"My workflow widget","title_align":"left","title_size":"13","type":"run_workflow","workflow_id":"2e055f16-8b6a-4cdd-b452-17a34c44b160"}}]}
+            {"description":"Created using the Datadog provider in Terraform","id":"","layout_type":"ordered","notify_list":[],"reflow_type":"auto","tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardRunWorkflow_import-local-1767993192","widgets":[{"definition":{"inputs":[{"name":"env","value":"$Env.value"},{"name":"Foo","value":"$Env"}],"title":"My workflow widget","title_align":"left","title_size":"13","type":"run_workflow","workflow_id":"2e055f16-8b6a-4cdd-b452-17a34c44b160"}}]}
         form: {}
         headers:
             Accept:
@@ -31,13 +31,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id":"w2f-ivn-rek","title":"tf-TestAccDatadogDashboardRunWorkflow_import-local-1767989392","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/w2f-ivn-rek/tf-testaccdatadogdashboardrunworkflowimport-local-1767989392","template_variables":[],"widgets":[{"definition":{"inputs":[{"name":"env","value":"$Env.value"},{"name":"Foo","value":"$Env"}],"title":"My workflow widget","title_align":"left","title_size":"13","type":"run_workflow","workflow_id":"2e055f16-8b6a-4cdd-b452-17a34c44b160"},"id":1410530082676174}],"notify_list":[],"created_at":"2026-01-09T20:09:54.243734+00:00","modified_at":"2026-01-09T20:09:54.243734+00:00","template_variable_presets":[],"reflow_type":"auto","tags":[]}'
+        body: '{"id":"3j8-fst-bv4","title":"tf-TestAccDatadogDashboardRunWorkflow_import-local-1767993192","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/3j8-fst-bv4/tf-testaccdatadogdashboardrunworkflowimport-local-1767993192","template_variables":[],"widgets":[{"definition":{"inputs":[{"name":"env","value":"$Env.value"},{"name":"Foo","value":"$Env"}],"title":"My workflow widget","title_align":"left","title_size":"13","type":"run_workflow","workflow_id":"2e055f16-8b6a-4cdd-b452-17a34c44b160"},"id":7112168878092329}],"notify_list":[],"created_at":"2026-01-09T21:13:14.148424+00:00","modified_at":"2026-01-09T21:13:14.148424+00:00","template_variable_presets":[],"reflow_type":"auto","tags":[]}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 361.039708ms
+        duration: 206.592292ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -54,7 +54,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/dashboard/w2f-ivn-rek
+        url: https://api.datadoghq.com/api/v1/dashboard/3j8-fst-bv4
         method: GET
       response:
         proto: HTTP/1.1
@@ -65,13 +65,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id":"w2f-ivn-rek","title":"tf-TestAccDatadogDashboardRunWorkflow_import-local-1767989392","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/w2f-ivn-rek/tf-testaccdatadogdashboardrunworkflowimport-local-1767989392","template_variables":[],"widgets":[{"definition":{"inputs":[{"name":"env","value":"$Env.value"},{"name":"Foo","value":"$Env"}],"title":"My workflow widget","title_align":"left","title_size":"13","type":"run_workflow","workflow_id":"2e055f16-8b6a-4cdd-b452-17a34c44b160"},"id":1410530082676174}],"notify_list":[],"created_at":"2026-01-09T20:09:54.243734+00:00","modified_at":"2026-01-09T20:09:54.243734+00:00","template_variable_presets":[],"reflow_type":"auto","tags":[]}'
+        body: '{"id":"3j8-fst-bv4","title":"tf-TestAccDatadogDashboardRunWorkflow_import-local-1767993192","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/3j8-fst-bv4/tf-testaccdatadogdashboardrunworkflowimport-local-1767993192","template_variables":[],"widgets":[{"definition":{"inputs":[{"name":"env","value":"$Env.value"},{"name":"Foo","value":"$Env"}],"title":"My workflow widget","title_align":"left","title_size":"13","type":"run_workflow","workflow_id":"2e055f16-8b6a-4cdd-b452-17a34c44b160"},"id":7112168878092329}],"notify_list":[],"created_at":"2026-01-09T21:13:14.148424+00:00","modified_at":"2026-01-09T21:13:14.148424+00:00","template_variable_presets":[],"reflow_type":"auto","tags":[]}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 104.631583ms
+        duration: 98.930583ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -88,7 +88,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/dashboard/w2f-ivn-rek
+        url: https://api.datadoghq.com/api/v1/dashboard/3j8-fst-bv4
         method: GET
       response:
         proto: HTTP/1.1
@@ -99,13 +99,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id":"w2f-ivn-rek","title":"tf-TestAccDatadogDashboardRunWorkflow_import-local-1767989392","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/w2f-ivn-rek/tf-testaccdatadogdashboardrunworkflowimport-local-1767989392","template_variables":[],"widgets":[{"definition":{"inputs":[{"name":"env","value":"$Env.value"},{"name":"Foo","value":"$Env"}],"title":"My workflow widget","title_align":"left","title_size":"13","type":"run_workflow","workflow_id":"2e055f16-8b6a-4cdd-b452-17a34c44b160"},"id":1410530082676174}],"notify_list":[],"created_at":"2026-01-09T20:09:54.243734+00:00","modified_at":"2026-01-09T20:09:54.243734+00:00","template_variable_presets":[],"reflow_type":"auto","tags":[]}'
+        body: '{"id":"3j8-fst-bv4","title":"tf-TestAccDatadogDashboardRunWorkflow_import-local-1767993192","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/3j8-fst-bv4/tf-testaccdatadogdashboardrunworkflowimport-local-1767993192","template_variables":[],"widgets":[{"definition":{"inputs":[{"name":"env","value":"$Env.value"},{"name":"Foo","value":"$Env"}],"title":"My workflow widget","title_align":"left","title_size":"13","type":"run_workflow","workflow_id":"2e055f16-8b6a-4cdd-b452-17a34c44b160"},"id":7112168878092329}],"notify_list":[],"created_at":"2026-01-09T21:13:14.148424+00:00","modified_at":"2026-01-09T21:13:14.148424+00:00","template_variable_presets":[],"reflow_type":"auto","tags":[]}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 106.1435ms
+        duration: 96.701208ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -122,7 +122,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/dashboard/w2f-ivn-rek
+        url: https://api.datadoghq.com/api/v1/dashboard/3j8-fst-bv4
         method: GET
       response:
         proto: HTTP/1.1
@@ -133,13 +133,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id":"w2f-ivn-rek","title":"tf-TestAccDatadogDashboardRunWorkflow_import-local-1767989392","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/w2f-ivn-rek/tf-testaccdatadogdashboardrunworkflowimport-local-1767989392","template_variables":[],"widgets":[{"definition":{"inputs":[{"name":"env","value":"$Env.value"},{"name":"Foo","value":"$Env"}],"title":"My workflow widget","title_align":"left","title_size":"13","type":"run_workflow","workflow_id":"2e055f16-8b6a-4cdd-b452-17a34c44b160"},"id":1410530082676174}],"notify_list":[],"created_at":"2026-01-09T20:09:54.243734+00:00","modified_at":"2026-01-09T20:09:54.243734+00:00","template_variable_presets":[],"reflow_type":"auto","tags":[]}'
+        body: '{"id":"3j8-fst-bv4","title":"tf-TestAccDatadogDashboardRunWorkflow_import-local-1767993192","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/3j8-fst-bv4/tf-testaccdatadogdashboardrunworkflowimport-local-1767993192","template_variables":[],"widgets":[{"definition":{"inputs":[{"name":"env","value":"$Env.value"},{"name":"Foo","value":"$Env"}],"title":"My workflow widget","title_align":"left","title_size":"13","type":"run_workflow","workflow_id":"2e055f16-8b6a-4cdd-b452-17a34c44b160"},"id":7112168878092329}],"notify_list":[],"created_at":"2026-01-09T21:13:14.148424+00:00","modified_at":"2026-01-09T21:13:14.148424+00:00","template_variable_presets":[],"reflow_type":"auto","tags":[]}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 103.300333ms
+        duration: 97.975166ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -156,7 +156,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/dashboard/w2f-ivn-rek
+        url: https://api.datadoghq.com/api/v1/dashboard/3j8-fst-bv4
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -167,13 +167,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"deleted_dashboard_id":"w2f-ivn-rek"}'
+        body: '{"deleted_dashboard_id":"3j8-fst-bv4"}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 337.557667ms
+        duration: 562.433542ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -190,7 +190,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/dashboard/w2f-ivn-rek
+        url: https://api.datadoghq.com/api/v1/dashboard/3j8-fst-bv4
         method: GET
       response:
         proto: HTTP/1.1
@@ -201,10 +201,10 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"errors":["Dashboard with ID w2f-ivn-rek not found"]}'
+        body: '{"errors":["Dashboard with ID 3j8-fst-bv4 not found"]}'
         headers:
             Content-Type:
                 - application/json
         status: 404 Not Found
         code: 404
-        duration: 97.116958ms
+        duration: 78.587917ms

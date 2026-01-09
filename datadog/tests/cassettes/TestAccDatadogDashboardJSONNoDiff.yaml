@@ -14,7 +14,7 @@ interactions:
         request_uri: ""
         body: |
             {
-               "title": "tf-TestAccDatadogDashboardJSONNoDiff-local-1767989174",
+               "title": "tf-TestAccDatadogDashboardJSONNoDiff-local-1767993168",
                "description": "",
                "widgets": [],
                "template_variables": [],
@@ -38,13 +38,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id":"g63-vcn-hcz","title":"tf-TestAccDatadogDashboardJSONNoDiff-local-1767989174","description":"","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/g63-vcn-hcz/tf-testaccdatadogdashboardjsonnodiff-local-1767989174","template_variables":[],"widgets":[],"notify_list":[],"created_at":"2026-01-09T20:06:15.004376+00:00","modified_at":"2026-01-09T20:06:15.004376+00:00","reflow_type":"fixed"}'
+        body: '{"id":"8nm-b6x-k2e","title":"tf-TestAccDatadogDashboardJSONNoDiff-local-1767993168","description":"","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/8nm-b6x-k2e/tf-testaccdatadogdashboardjsonnodiff-local-1767993168","template_variables":[],"widgets":[],"notify_list":[],"created_at":"2026-01-09T21:12:49.560229+00:00","modified_at":"2026-01-09T21:12:49.560229+00:00","reflow_type":"fixed"}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 131.48325ms
+        duration: 137.971459ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -61,7 +61,7 @@ interactions:
         headers:
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/dashboard/g63-vcn-hcz
+        url: https://api.datadoghq.com/api/v1/dashboard/8nm-b6x-k2e
         method: GET
       response:
         proto: HTTP/1.1
@@ -72,13 +72,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id":"g63-vcn-hcz","title":"tf-TestAccDatadogDashboardJSONNoDiff-local-1767989174","description":"","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/g63-vcn-hcz/tf-testaccdatadogdashboardjsonnodiff-local-1767989174","template_variables":[],"widgets":[],"notify_list":[],"created_at":"2026-01-09T20:06:15.004376+00:00","modified_at":"2026-01-09T20:06:15.004376+00:00","reflow_type":"fixed"}'
+        body: '{"id":"8nm-b6x-k2e","title":"tf-TestAccDatadogDashboardJSONNoDiff-local-1767993168","description":"","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/8nm-b6x-k2e/tf-testaccdatadogdashboardjsonnodiff-local-1767993168","template_variables":[],"widgets":[],"notify_list":[],"created_at":"2026-01-09T21:12:49.560229+00:00","modified_at":"2026-01-09T21:12:49.560229+00:00","reflow_type":"fixed"}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 95.125667ms
+        duration: 91.927083ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -95,7 +95,41 @@ interactions:
         headers:
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/dashboard/g63-vcn-hcz
+        url: https://api.datadoghq.com/api/v1/dashboard/8nm-b6x-k2e
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"8nm-b6x-k2e","title":"tf-TestAccDatadogDashboardJSONNoDiff-local-1767993168","description":"","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/8nm-b6x-k2e/tf-testaccdatadogdashboardjsonnodiff-local-1767993168","template_variables":[],"widgets":[],"notify_list":[],"created_at":"2026-01-09T21:12:49.560229+00:00","modified_at":"2026-01-09T21:12:49.560229+00:00","reflow_type":"fixed"}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 108.091709ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/8nm-b6x-k2e
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -106,10 +140,10 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"deleted_dashboard_id":"g63-vcn-hcz"}'
+        body: '{"deleted_dashboard_id":"8nm-b6x-k2e"}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 336.754083ms
+        duration: 505.642083ms

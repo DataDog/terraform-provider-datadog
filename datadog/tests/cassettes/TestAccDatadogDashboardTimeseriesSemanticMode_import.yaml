@@ -1,3 +1,210 @@
 ---
 version: 2
-interactions: []
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 917
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"description":"Created using the Datadog provider in Terraform","id":"","layout_type":"ordered","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardTimeseriesSemanticMode_import-local-1767993205","widgets":[{"definition":{"requests":[{"formulas":[{"formula":"query1"}],"on_right_yaxis":false,"queries":[{"data_source":"metrics","name":"query1","query":"avg:system.cpu.user{*}","semantic_mode":"combined"}],"response_format":"timeseries"}],"show_legend":false,"title":"Timeseries with Semantic Mode Combined","type":"timeseries"}},{"definition":{"requests":[{"formulas":[{"formula":"query2"}],"on_right_yaxis":false,"queries":[{"data_source":"metrics","name":"query2","query":"avg:system.cpu.user{*}","semantic_mode":"native"}],"response_format":"timeseries"}],"show_legend":false,"title":"Timeseries with Semantic Mode Native","type":"timeseries"}}]}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"w7y-dzc-5j7","title":"tf-TestAccDatadogDashboardTimeseriesSemanticMode_import-local-1767993205","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/w7y-dzc-5j7/tf-testaccdatadogdashboardtimeseriessemanticmodeimport-local-1767993205","template_variables":[],"widgets":[{"definition":{"requests":[{"formulas":[{"formula":"query1"}],"on_right_yaxis":false,"queries":[{"data_source":"metrics","name":"query1","query":"avg:system.cpu.user{*}","semantic_mode":"combined"}],"response_format":"timeseries"}],"show_legend":false,"title":"Timeseries with Semantic Mode Combined","type":"timeseries"},"id":3651726252826238},{"definition":{"requests":[{"formulas":[{"formula":"query2"}],"on_right_yaxis":false,"queries":[{"data_source":"metrics","name":"query2","query":"avg:system.cpu.user{*}","semantic_mode":"native"}],"response_format":"timeseries"}],"show_legend":false,"title":"Timeseries with Semantic Mode Native","type":"timeseries"},"id":181770387123827}],"notify_list":[],"created_at":"2026-01-09T21:13:27.002195+00:00","modified_at":"2026-01-09T21:13:27.002195+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 142.092209ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/w7y-dzc-5j7
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"w7y-dzc-5j7","title":"tf-TestAccDatadogDashboardTimeseriesSemanticMode_import-local-1767993205","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/w7y-dzc-5j7/tf-testaccdatadogdashboardtimeseriessemanticmodeimport-local-1767993205","template_variables":[],"widgets":[{"definition":{"requests":[{"formulas":[{"formula":"query1"}],"on_right_yaxis":false,"queries":[{"data_source":"metrics","name":"query1","query":"avg:system.cpu.user{*}","semantic_mode":"combined"}],"response_format":"timeseries"}],"show_legend":false,"title":"Timeseries with Semantic Mode Combined","type":"timeseries"},"id":3651726252826238},{"definition":{"requests":[{"formulas":[{"formula":"query2"}],"on_right_yaxis":false,"queries":[{"data_source":"metrics","name":"query2","query":"avg:system.cpu.user{*}","semantic_mode":"native"}],"response_format":"timeseries"}],"show_legend":false,"title":"Timeseries with Semantic Mode Native","type":"timeseries"},"id":181770387123827}],"notify_list":[],"created_at":"2026-01-09T21:13:27.002195+00:00","modified_at":"2026-01-09T21:13:27.002195+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 104.579625ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/w7y-dzc-5j7
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"w7y-dzc-5j7","title":"tf-TestAccDatadogDashboardTimeseriesSemanticMode_import-local-1767993205","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/w7y-dzc-5j7/tf-testaccdatadogdashboardtimeseriessemanticmodeimport-local-1767993205","template_variables":[],"widgets":[{"definition":{"requests":[{"formulas":[{"formula":"query1"}],"on_right_yaxis":false,"queries":[{"data_source":"metrics","name":"query1","query":"avg:system.cpu.user{*}","semantic_mode":"combined"}],"response_format":"timeseries"}],"show_legend":false,"title":"Timeseries with Semantic Mode Combined","type":"timeseries"},"id":3651726252826238},{"definition":{"requests":[{"formulas":[{"formula":"query2"}],"on_right_yaxis":false,"queries":[{"data_source":"metrics","name":"query2","query":"avg:system.cpu.user{*}","semantic_mode":"native"}],"response_format":"timeseries"}],"show_legend":false,"title":"Timeseries with Semantic Mode Native","type":"timeseries"},"id":181770387123827}],"notify_list":[],"created_at":"2026-01-09T21:13:27.002195+00:00","modified_at":"2026-01-09T21:13:27.002195+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 107.758958ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/w7y-dzc-5j7
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"w7y-dzc-5j7","title":"tf-TestAccDatadogDashboardTimeseriesSemanticMode_import-local-1767993205","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/w7y-dzc-5j7/tf-testaccdatadogdashboardtimeseriessemanticmodeimport-local-1767993205","template_variables":[],"widgets":[{"definition":{"requests":[{"formulas":[{"formula":"query1"}],"on_right_yaxis":false,"queries":[{"data_source":"metrics","name":"query1","query":"avg:system.cpu.user{*}","semantic_mode":"combined"}],"response_format":"timeseries"}],"show_legend":false,"title":"Timeseries with Semantic Mode Combined","type":"timeseries"},"id":3651726252826238},{"definition":{"requests":[{"formulas":[{"formula":"query2"}],"on_right_yaxis":false,"queries":[{"data_source":"metrics","name":"query2","query":"avg:system.cpu.user{*}","semantic_mode":"native"}],"response_format":"timeseries"}],"show_legend":false,"title":"Timeseries with Semantic Mode Native","type":"timeseries"},"id":181770387123827}],"notify_list":[],"created_at":"2026-01-09T21:13:27.002195+00:00","modified_at":"2026-01-09T21:13:27.002195+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 92.957166ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/w7y-dzc-5j7
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"deleted_dashboard_id":"w7y-dzc-5j7"}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 355.228667ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/w7y-dzc-5j7
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"errors":["Dashboard with ID w7y-dzc-5j7 not found"]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 81.328417ms
