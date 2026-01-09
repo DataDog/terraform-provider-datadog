@@ -55,7 +55,15 @@ func TestBuildTerraformWidgetTime_UnparsedNewFormat(t *testing.T) {
 			terraformDef := make(map[string]interface{})
 			buildTerraformWidgetTime(widgetTime, terraformDef)
 
-			assert.Equal(t, tt.expectedSpan, terraformDef["live_span"])
+			// WidgetLiveSpan is a type alias, convert to string for comparison
+			if liveSpan, ok := terraformDef["live_span"].(datadogV1.WidgetLiveSpan); ok {
+				assert.Equal(t, tt.expectedSpan, string(liveSpan))
+			} else if liveSpanStr, ok := terraformDef["live_span"].(string); ok {
+				assert.Equal(t, tt.expectedSpan, liveSpanStr)
+			} else {
+				t.Fatalf("live_span has unexpected type: %T", terraformDef["live_span"])
+			}
+
 			if tt.expectedHide != nil {
 				assert.Equal(t, *tt.expectedHide, terraformDef["hide_incomplete_cost_data"])
 			} else {
@@ -102,7 +110,15 @@ func TestBuildTerraformWidgetTime_UnparsedLegacyFormat(t *testing.T) {
 			terraformDef := make(map[string]interface{})
 			buildTerraformWidgetTime(widgetTime, terraformDef)
 
-			assert.Equal(t, tt.expectedSpan, terraformDef["live_span"])
+			// WidgetLiveSpan is a type alias, convert to string for comparison
+			if liveSpan, ok := terraformDef["live_span"].(datadogV1.WidgetLiveSpan); ok {
+				assert.Equal(t, tt.expectedSpan, string(liveSpan))
+			} else if liveSpanStr, ok := terraformDef["live_span"].(string); ok {
+				assert.Equal(t, tt.expectedSpan, liveSpanStr)
+			} else {
+				t.Fatalf("live_span has unexpected type: %T", terraformDef["live_span"])
+			}
+
 			if tt.expectedHide != nil {
 				assert.Equal(t, *tt.expectedHide, terraformDef["hide_incomplete_cost_data"])
 			} else {
