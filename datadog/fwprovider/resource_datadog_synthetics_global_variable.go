@@ -454,84 +454,26 @@ func (r *syntheticsGlobalVariableResource) buildSyntheticsGlobalVariableRequestB
 	syntheticsGlobalVariableRequest.SetTags(tags)
 
 	if !state.RestrictedRoles.IsNull() {
-		var attributes datadogV1.SyntheticsGlobalVariableAttributes
-
-		var restrictedRoles []string
-		diags.Append(state.RestrictedRoles.ElementsAs(ctx, &restrictedRoles, false)...)
-		attributes.SetRestrictedRoles(restrictedRoles)
-
-		syntheticsGlobalVariableRequest.Attributes = &attributes
+		attributes, d := parseRestrictedRoleSet(ctx, state.RestrictedRoles)
+		diags.Append(d...)
+		syntheticsGlobalVariableRequest.Attributes = attributes
 	}
 
-	if !state.ParseTestId.IsNull() {
-		if !state.ParseTestOptions.IsNull() && len(state.ParseTestOptions.Elements()) > 0 {
-			syntheticsGlobalVariableRequest.SetParseTestPublicId(state.ParseTestId.ValueString())
-
-			var parseTestOptionsList []syntheticsGlobalVariableParseTestOptionsModel
-			diags.Append(state.ParseTestOptions.ElementsAs(ctx, &parseTestOptionsList, false)...)
-			if diags.HasError() {
-				return nil, diags
-			}
-
-			if len(parseTestOptionsList) > 0 {
-				var parseTestOptions datadogV1.SyntheticsGlobalVariableParseTestOptions
-				if !parseTestOptionsList[0].Field.IsNull() {
-					parseTestOptions.SetField(parseTestOptionsList[0].Field.ValueString())
-				}
-				if !parseTestOptionsList[0].LocalVariableName.IsNull() {
-					parseTestOptions.SetLocalVariableName(parseTestOptionsList[0].LocalVariableName.ValueString())
-				}
-				if !parseTestOptionsList[0].Type.IsNull() {
-					parseTestOptions.SetType(datadogV1.SyntheticsGlobalVariableParseTestOptionsType(parseTestOptionsList[0].Type.ValueString()))
-				}
-
-				if len(parseTestOptionsList[0].Parser) > 0 {
-					var parser datadogV1.SyntheticsVariableParser
-
-					if !parseTestOptionsList[0].Parser[0].Type.IsNull() {
-						parser.SetType(datadogV1.SyntheticsGlobalVariableParserType(parseTestOptionsList[0].Parser[0].Type.ValueString()))
-					}
-					if !parseTestOptionsList[0].Parser[0].Value.IsNull() {
-						parser.SetValue(parseTestOptionsList[0].Parser[0].Value.ValueString())
-					}
-					parseTestOptions.Parser = &parser
-				}
-				syntheticsGlobalVariableRequest.ParseTestOptions = &parseTestOptions
-			}
+	if !state.ParseTestId.IsNull() && !state.ParseTestOptions.IsNull() && len(state.ParseTestOptions.Elements()) > 0 {
+		parseTestOptions, d := parseTestOptionsList(ctx, state.ParseTestOptions)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
 		}
+		syntheticsGlobalVariableRequest.SetParseTestPublicId(state.ParseTestId.ValueString())
+		syntheticsGlobalVariableRequest.ParseTestOptions = parseTestOptions
 	}
 
 	if !state.Value.IsNull() {
-		var value datadogV1.SyntheticsGlobalVariableValue
-
-		value.SetValue(state.Value.ValueString())
-		if !state.Secure.IsNull() {
-			value.SetSecure(state.Secure.ValueBool())
-		}
-
-		if !state.Options.IsNull() && len(state.Options.Elements()) > 0 {
-			var optionsList []syntheticsGlobalVariableOptionsModel
-			diags.Append(state.Options.ElementsAs(ctx, &optionsList, false)...)
-			if diags.HasError() {
-				return nil, diags
-			}
-
-			if len(optionsList) > 0 {
-				var options datadogV1.SyntheticsGlobalVariableOptions
-
-				if len(optionsList[0].TotpParameters) > 0 {
-					var totpParameters datadogV1.SyntheticsGlobalVariableTOTPParameters
-
-					if !optionsList[0].TotpParameters[0].Digits.IsNull() {
-						totpParameters.SetDigits(int32(optionsList[0].TotpParameters[0].Digits.ValueInt64()))
-					}
-					if !optionsList[0].TotpParameters[0].RefreshInterval.IsNull() {
-						totpParameters.SetRefreshInterval(int32(optionsList[0].TotpParameters[0].RefreshInterval.ValueInt64()))
-					}
-					options.TotpParameters = &totpParameters
-				}
-				value.Options = &options
-			}
+		value, d := parseVariableValue(ctx, state.Value, state.Secure, state.Options)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
 		}
 		syntheticsGlobalVariableRequest.SetValue(value)
 	}
@@ -595,4 +537,94 @@ func (r syntheticsGlobalVariableResource) ModifyPlan(ctx context.Context, req re
 		resp.Plan.SetAttribute(ctx, frameworkPath.Root("secure"), types.BoolValue(true))
 		return
 	}
+}
+
+func parseRestrictedRoleSet(ctx context.Context, restrictedRolesSet types.Set) (*datadogV1.SyntheticsGlobalVariableAttributes, diag.Diagnostics) {
+	var restrictedRoles []string
+	d := restrictedRolesSet.ElementsAs(ctx, &restrictedRoles, false)
+
+	var attributes datadogV1.SyntheticsGlobalVariableAttributes
+	attributes.SetRestrictedRoles(restrictedRoles)
+	return &attributes, d
+}
+
+func parseTestOptionsList(ctx context.Context, terraformTestOptionsList types.List) (*datadogV1.SyntheticsGlobalVariableParseTestOptions, diag.Diagnostics) {
+	diags := diag.Diagnostics{}
+
+	var parseTestOptionsList []syntheticsGlobalVariableParseTestOptionsModel
+	diags.Append(terraformTestOptionsList.ElementsAs(ctx, &parseTestOptionsList, false)...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	if len(parseTestOptionsList) == 0 {
+		return nil, diags
+	}
+
+	var parseTestOptions datadogV1.SyntheticsGlobalVariableParseTestOptions
+	if !parseTestOptionsList[0].Field.IsNull() {
+		parseTestOptions.SetField(parseTestOptionsList[0].Field.ValueString())
+	}
+	if !parseTestOptionsList[0].LocalVariableName.IsNull() {
+		parseTestOptions.SetLocalVariableName(parseTestOptionsList[0].LocalVariableName.ValueString())
+	}
+	if !parseTestOptionsList[0].Type.IsNull() {
+		parseTestOptions.SetType(datadogV1.SyntheticsGlobalVariableParseTestOptionsType(parseTestOptionsList[0].Type.ValueString()))
+	}
+
+	if len(parseTestOptionsList[0].Parser) > 0 {
+		var parser datadogV1.SyntheticsVariableParser
+
+		if !parseTestOptionsList[0].Parser[0].Type.IsNull() {
+			parser.SetType(datadogV1.SyntheticsGlobalVariableParserType(parseTestOptionsList[0].Parser[0].Type.ValueString()))
+		}
+		if !parseTestOptionsList[0].Parser[0].Value.IsNull() {
+			parser.SetValue(parseTestOptionsList[0].Parser[0].Value.ValueString())
+		}
+		parseTestOptions.Parser = &parser
+	}
+	return &parseTestOptions, diags
+}
+
+func parseVariableValueOptions(ctx context.Context, terraformOptions types.List) (*datadogV1.SyntheticsGlobalVariableOptions, diag.Diagnostics) {
+	diags := diag.Diagnostics{}
+	var optionsList []syntheticsGlobalVariableOptionsModel
+
+	diags.Append(terraformOptions.ElementsAs(ctx, &optionsList, false)...)
+	if diags.HasError() {
+		return nil, diags
+	}
+
+	var options datadogV1.SyntheticsGlobalVariableOptions
+	if len(optionsList[0].TotpParameters) > 0 {
+		var totpParameters datadogV1.SyntheticsGlobalVariableTOTPParameters
+
+		if !optionsList[0].TotpParameters[0].Digits.IsNull() {
+			totpParameters.SetDigits(int32(optionsList[0].TotpParameters[0].Digits.ValueInt64()))
+		}
+		if !optionsList[0].TotpParameters[0].RefreshInterval.IsNull() {
+			totpParameters.SetRefreshInterval(int32(optionsList[0].TotpParameters[0].RefreshInterval.ValueInt64()))
+		}
+		options.TotpParameters = &totpParameters
+	}
+	return &options, diags
+}
+
+func parseVariableValue(ctx context.Context, terraformValue types.String, terraformSecure types.Bool, terraformOptions types.List) (datadogV1.SyntheticsGlobalVariableValue, diag.Diagnostics) {
+	diags := diag.Diagnostics{}
+	value := datadogV1.SyntheticsGlobalVariableValue{}
+	value.SetValue(terraformValue.ValueString())
+	if !terraformSecure.IsNull() {
+		value.SetSecure(terraformSecure.ValueBool())
+	}
+	if terraformOptions.IsNull() || len(terraformOptions.Elements()) == 0 {
+		return value, diags
+	}
+
+	options, d := parseVariableValueOptions(ctx, terraformOptions)
+	diags.Append(d...)
+	if diags.HasError() {
+		return datadogV1.SyntheticsGlobalVariableValue{}, diags
+	}
+	value.Options = options
+	return value, diags
 }
