@@ -16,6 +16,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
+	"github.com/hashicorp/terraform-plugin-framework/ephemeral"
 	"github.com/hashicorp/terraform-plugin-framework/provider"
 	"github.com/hashicorp/terraform-plugin-framework/provider/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -29,6 +30,7 @@ import (
 )
 
 var _ provider.Provider = &FrameworkProvider{}
+var _ provider.ProviderWithEphemeralResources = &FrameworkProvider{}
 
 var Resources = []func() resource.Resource{
 	NewAgentlessScanningAwsScanOptionsResource,
@@ -166,6 +168,10 @@ var Datasources = []func() datasource.DataSource{
 	NewDatadogReferenceTableRowsDataSource,
 }
 
+var EphemeralResources = []func() ephemeral.EphemeralResource{
+	NewAPIKeyEphemeralResource,
+}
+
 // FrameworkProvider struct
 type FrameworkProvider struct {
 	CommunityClient     *datadogCommunity.Client
@@ -230,6 +236,18 @@ func (p *FrameworkProvider) DataSources(_ context.Context) []func() datasource.D
 	}
 
 	return wrappedDatasources
+}
+
+func (p *FrameworkProvider) EphemeralResources(_ context.Context) []func() ephemeral.EphemeralResource {
+	var wrappedEphemeralResources []func() ephemeral.EphemeralResource
+	for _, f := range EphemeralResources {
+		r := f()
+		wrappedEphemeralResources = append(wrappedEphemeralResources, func() ephemeral.EphemeralResource {
+			return NewFrameworkEphemeralResourceWrapper(&r)
+		})
+	}
+
+	return wrappedEphemeralResources
 }
 
 func (p *FrameworkProvider) Metadata(_ context.Context, _ provider.MetadataRequest, response *provider.MetadataResponse) {
