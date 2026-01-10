@@ -112,6 +112,8 @@ var Resources = []func() resource.Resource{
 	NewAzureUcConfigResource,
 	NewDeploymentGateResource,
 	NewReferenceTableResource,
+	NewDatastoreResource,
+	NewDatastoreItemResource,
 }
 
 var Datasources = []func() datasource.DataSource{
@@ -164,6 +166,8 @@ var Datasources = []func() datasource.DataSource{
 	NewDatadogAzureUcConfigDataSource,
 	NewDatadogReferenceTableDataSource,
 	NewDatadogReferenceTableRowsDataSource,
+	NewDatadogDatastoreDataSource,
+	NewDatastoreItemDataSource,
 }
 
 // FrameworkProvider struct
