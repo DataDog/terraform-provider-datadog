@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 3277
+        content_length: 451
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"config":{"assertions":[],"configVariables":[],"steps":[{"allowFailure":false,"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":true,"name":"Request on github.com","request":{"allow_insecure":false,"follow_redirects":false,"httpVersion":"any","method":"GET","noSavingResponseBody":false,"persistCookies":false,"timeout":0,"url":"https://github.com"},"retry":{"count":0,"interval":300},"subtype":"http"},{"name":"Wait 10 seconds","subtype":"wait","value":10},{"allowFailure":false,"assertions":[],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":true,"name":"Test on grpcb.in","request":{"allow_insecure":false,"callType":"unary","host":"grpcb.in","message":"{\n    \"a\": \"Lorem Ipsum\",\n    \"b\": \"Lorem Ipsum\"\n}","method":"Concat","port":"9000","service":"addsvc.Add","timeout":0},"retry":{"count":0,"interval":300},"subtype":"grpc"},{"allowFailure":false,"assertions":[{"operator":"moreThanOrEqual","target":"1.3","type":"tlsVersion"}],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":true,"name":"Test on google.fr","request":{"allow_insecure":false,"checkCertificateRevocation":true,"disableAiaIntermediateFetching":true,"host":"example.org","port":"443","timeout":0},"retry":{"count":0,"interval":300},"subtype":"ssl"},{"allowFailure":false,"assertions":[{"operator":"is","property":"A","target":"213.186.33.19","type":"recordSome"}],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":true,"name":"Test on troisdizaines.com","request":{"allow_insecure":false,"dnsServer":"8.8.8.8","dnsServerPort":"53","host":"troisdizaines.com","timeout":0},"retry":{"count":0,"interval":300},"subtype":"dns"},{"allowFailure":false,"assertions":[{"operator":"lessThan","target":1000,"type":"responseTime"}],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":true,"name":"Test on ws://34.95.79.70/web-socket","request":{"allow_insecure":false,"isMessageBase64Encoded":true,"message":"My message","timeout":0,"url":"ws://34.95.79.70/web-socket"},"retry":{"count":0,"interval":300},"subtype":"websocket"},{"allowFailure":false,"assertions":[{"operator":"lessThan","target":1000,"type":"responseTime"}],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":true,"name":"Test on 34.95.79.70","request":{"allow_insecure":false,"host":"34.95.79.70","port":"80","shouldTrackHops":true,"timeout":32},"retry":{"count":0,"interval":300},"subtype":"tcp"},{"allowFailure":false,"assertions":[{"operator":"lessThan","target":1000,"type":"responseTime"}],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":true,"name":"Test on udp.shopist.io","request":{"allow_insecure":false,"host":"8.8.8.8","message":"A image.google.com","port":"53","timeout":0},"retry":{"count":0,"interval":300},"subtype":"udp"}]},"locations":["aws:us-east-1"],"message":"","name":"tf-TestAccDatadogSyntheticsTestMultistepApi_AllSubtypes-local-1756481460","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900},"status":"paused","subtype":"multi","tags":["env:sandbox"],"type":"api"}
+            {"config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","url":"https://www.datadoghq.com"}},"locations":["aws:us-east-1"],"message":"Notify @datadog.user","name":"tf-TestAccDatadogSyntheticsTestMultistepApi_AllSubtypes-local-1767102898","options":{"httpVersion":"any","min_location_failed":1,"tick_every":60},"status":"paused","subtype":"http","tags":["foo:bar","baz"],"type":"api"}
         form: {}
         headers:
             Accept:
@@ -32,13 +32,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"6q6-jwq-fqx","name":"tf-TestAccDatadogSyntheticsTestMultistepApi_AllSubtypes-local-1756481460","status":"paused","type":"api","subtype":"multi","tags":["env:sandbox"],"created_at":"2025-08-29T15:31:02.928660+00:00","modified_at":"2025-08-29T15:31:02.928660+00:00","config":{"assertions":[],"configVariables":[],"steps":[{"allowFailure":false,"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":true,"name":"Request on github.com","request":{"allow_insecure":false,"follow_redirects":false,"httpVersion":"any","method":"GET","noSavingResponseBody":false,"persistCookies":false,"timeout":0,"url":"https://github.com"},"retry":{"count":0,"interval":300},"subtype":"http","id":"ugd-7mj-yg6"},{"name":"Wait 10 seconds","subtype":"wait","value":10,"id":"xi4-bce-cjw"},{"allowFailure":false,"assertions":[],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":true,"name":"Test on grpcb.in","request":{"allow_insecure":false,"callType":"unary","host":"grpcb.in","message":"{\n    \"a\": \"Lorem Ipsum\",\n    \"b\": \"Lorem Ipsum\"\n}","method":"Concat","port":"9000","service":"addsvc.Add","timeout":0},"retry":{"count":0,"interval":300},"subtype":"grpc","id":"yfz-x62-mqz"},{"allowFailure":false,"assertions":[{"operator":"moreThanOrEqual","target":"1.3","type":"tlsVersion"}],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":true,"name":"Test on google.fr","request":{"allow_insecure":false,"checkCertificateRevocation":true,"disableAiaIntermediateFetching":true,"host":"example.org","port":"443","timeout":0},"retry":{"count":0,"interval":300},"subtype":"ssl","id":"n9h-j3j-jha"},{"allowFailure":false,"assertions":[{"operator":"is","property":"A","target":"213.186.33.19","type":"recordSome"}],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":true,"name":"Test on troisdizaines.com","request":{"allow_insecure":false,"dnsServer":"8.8.8.8","dnsServerPort":"53","host":"troisdizaines.com","timeout":0},"retry":{"count":0,"interval":300},"subtype":"dns","id":"suu-cfd-jer"},{"allowFailure":false,"assertions":[{"operator":"lessThan","target":1000,"type":"responseTime"}],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":true,"name":"Test on ws://34.95.79.70/web-socket","request":{"allow_insecure":false,"isMessageBase64Encoded":true,"message":"My message","timeout":0,"url":"ws://34.95.79.70/web-socket"},"retry":{"count":0,"interval":300},"subtype":"websocket","id":"ktc-yhn-9mv"},{"allowFailure":false,"assertions":[{"operator":"lessThan","target":1000,"type":"responseTime"}],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":true,"name":"Test on 34.95.79.70","request":{"allow_insecure":false,"host":"34.95.79.70","port":"80","shouldTrackHops":true,"timeout":32},"retry":{"count":0,"interval":300},"subtype":"tcp","id":"446-4km-9kk"},{"allowFailure":false,"assertions":[{"operator":"lessThan","target":1000,"type":"responseTime"}],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":true,"name":"Test on udp.shopist.io","request":{"allow_insecure":false,"host":"8.8.8.8","message":"A image.google.com","port":"53","timeout":0},"retry":{"count":0,"interval":300},"subtype":"udp","id":"9kx-2e9-wtc"}]},"message":"","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900},"locations":["aws:us-east-1"],"created_by":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"deleted_at":null,"monitor_id":192795111,"org_id":321813,"modified_by":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"creation_source":"terraform"}
+            {"public_id":"auw-sr8-sf4","name":"tf-TestAccDatadogSyntheticsTestMultistepApi_AllSubtypes-local-1767102898","status":"paused","type":"api","subtype":"http","tags":["foo:bar","baz"],"created_at":"2025-12-30T13:55:00.910660+00:00","modified_at":"2025-12-30T13:55:00.910660+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","url":"https://www.datadoghq.com"}},"message":"Notify @datadog.user","options":{"httpVersion":"any","min_location_failed":1,"tick_every":60},"locations":["aws:us-east-1"],"created_by":{"name":"Frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"deleted_at":null,"monitor_id":247513063,"org_id":569509,"modified_by":{"name":"Frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"creation_source":"terraform"}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 781.39575ms
+        duration: 587.282833ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -55,7 +55,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/6q6-jwq-fqx
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/auw-sr8-sf4
         method: GET
       response:
         proto: HTTP/1.1
@@ -67,31 +67,34 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"6q6-jwq-fqx","name":"tf-TestAccDatadogSyntheticsTestMultistepApi_AllSubtypes-local-1756481460","status":"paused","type":"api","subtype":"multi","tags":["env:sandbox"],"created_at":"2025-08-29T15:31:02.928660+00:00","modified_at":"2025-08-29T15:31:02.928660+00:00","config":{"assertions":[],"configVariables":[],"steps":[{"allowFailure":false,"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":true,"name":"Request on github.com","request":{"allow_insecure":false,"follow_redirects":false,"httpVersion":"any","method":"GET","noSavingResponseBody":false,"persistCookies":false,"timeout":0,"url":"https://github.com"},"retry":{"count":0,"interval":300},"subtype":"http","id":"ugd-7mj-yg6"},{"name":"Wait 10 seconds","subtype":"wait","value":10,"id":"xi4-bce-cjw"},{"allowFailure":false,"assertions":[],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":true,"name":"Test on grpcb.in","request":{"allow_insecure":false,"callType":"unary","host":"grpcb.in","message":"{\n    \"a\": \"Lorem Ipsum\",\n    \"b\": \"Lorem Ipsum\"\n}","method":"Concat","port":"9000","service":"addsvc.Add","timeout":0},"retry":{"count":0,"interval":300},"subtype":"grpc","id":"yfz-x62-mqz"},{"allowFailure":false,"assertions":[{"operator":"moreThanOrEqual","target":"1.3","type":"tlsVersion"}],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":true,"name":"Test on google.fr","request":{"allow_insecure":false,"checkCertificateRevocation":true,"disableAiaIntermediateFetching":true,"host":"example.org","port":"443","timeout":0},"retry":{"count":0,"interval":300},"subtype":"ssl","id":"n9h-j3j-jha"},{"allowFailure":false,"assertions":[{"operator":"is","property":"A","target":"213.186.33.19","type":"recordSome"}],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":true,"name":"Test on troisdizaines.com","request":{"allow_insecure":false,"dnsServer":"8.8.8.8","dnsServerPort":"53","host":"troisdizaines.com","timeout":0},"retry":{"count":0,"interval":300},"subtype":"dns","id":"suu-cfd-jer"},{"allowFailure":false,"assertions":[{"operator":"lessThan","target":1000,"type":"responseTime"}],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":true,"name":"Test on ws://34.95.79.70/web-socket","request":{"allow_insecure":false,"isMessageBase64Encoded":true,"message":"My message","timeout":0,"url":"ws://34.95.79.70/web-socket"},"retry":{"count":0,"interval":300},"subtype":"websocket","id":"ktc-yhn-9mv"},{"allowFailure":false,"assertions":[{"operator":"lessThan","target":1000,"type":"responseTime"}],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":true,"name":"Test on 34.95.79.70","request":{"allow_insecure":false,"host":"34.95.79.70","port":"80","shouldTrackHops":true,"timeout":32},"retry":{"count":0,"interval":300},"subtype":"tcp","id":"446-4km-9kk"},{"allowFailure":false,"assertions":[{"operator":"lessThan","target":1000,"type":"responseTime"}],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":true,"name":"Test on udp.shopist.io","request":{"allow_insecure":false,"host":"8.8.8.8","message":"A image.google.com","port":"53","timeout":0},"retry":{"count":0,"interval":300},"subtype":"udp","id":"9kx-2e9-wtc"}]},"message":"","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900},"locations":["aws:us-east-1"],"monitor_id":192795111,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"public_id":"auw-sr8-sf4","name":"tf-TestAccDatadogSyntheticsTestMultistepApi_AllSubtypes-local-1767102898","status":"paused","type":"api","subtype":"http","tags":["foo:bar","baz"],"created_at":"2025-12-30T13:55:00.910660+00:00","modified_at":"2025-12-30T13:55:00.910660+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","url":"https://www.datadoghq.com"}},"message":"Notify @datadog.user","options":{"httpVersion":"any","min_location_failed":1,"tick_every":60},"locations":["aws:us-east-1"],"monitor_id":247513063,"creator":{"name":"Frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 239.64375ms
+        duration: 201.208958ms
     - id: 2
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 0
+        content_length: 3357
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
-        body: ""
+        body: |
+            {"config":{"assertions":[],"configVariables":[],"steps":[{"allowFailure":false,"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":true,"name":"Request on github.com","request":{"allow_insecure":false,"follow_redirects":false,"httpVersion":"any","method":"GET","noSavingResponseBody":false,"persistCookies":false,"timeout":0,"url":"https://github.com"},"retry":{"count":0,"interval":300},"subtype":"http"},{"name":"Wait 10 seconds","subtype":"wait","value":10},{"allowFailure":false,"assertions":[],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":true,"name":"Test on grpcb.in","request":{"allow_insecure":false,"callType":"unary","host":"grpcb.in","message":"{\n    \"a\": \"Lorem Ipsum\",\n    \"b\": \"Lorem Ipsum\"\n}","method":"Concat","port":"9000","service":"addsvc.Add","timeout":0},"retry":{"count":0,"interval":300},"subtype":"grpc"},{"allowFailure":false,"assertions":[{"operator":"moreThanOrEqual","target":"1.3","type":"tlsVersion"}],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":true,"name":"Test on google.fr","request":{"allow_insecure":false,"checkCertificateRevocation":true,"disableAiaIntermediateFetching":true,"host":"example.org","port":"443","timeout":0},"retry":{"count":0,"interval":300},"subtype":"ssl"},{"allowFailure":false,"assertions":[{"operator":"is","property":"A","target":"213.186.33.19","type":"recordSome"}],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":true,"name":"Test on troisdizaines.com","request":{"allow_insecure":false,"dnsServer":"8.8.8.8","dnsServerPort":"53","host":"troisdizaines.com","timeout":0},"retry":{"count":0,"interval":300},"subtype":"dns"},{"allowFailure":false,"assertions":[{"operator":"lessThan","target":1000,"type":"responseTime"}],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":true,"name":"Test on ws://34.95.79.70/web-socket","request":{"allow_insecure":false,"isMessageBase64Encoded":true,"message":"My message","timeout":0,"url":"ws://34.95.79.70/web-socket"},"retry":{"count":0,"interval":300},"subtype":"websocket"},{"allowFailure":false,"assertions":[{"operator":"lessThan","target":1000,"type":"responseTime"}],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":true,"name":"Test on 34.95.79.70","request":{"allow_insecure":false,"host":"34.95.79.70","port":"80","shouldTrackHops":true,"timeout":32},"retry":{"count":0,"interval":300},"subtype":"tcp"},{"allowFailure":false,"assertions":[{"operator":"lessThan","target":1000,"type":"responseTime"}],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":true,"name":"Test on udp.shopist.io","request":{"allow_insecure":false,"host":"8.8.8.8","message":"A image.google.com","port":"53","timeout":0},"retry":{"count":0,"interval":300},"subtype":"udp"},{"name":"Subtest step","subtestPublicId":"auw-sr8-sf4","subtype":"playSubTest"}]},"locations":["aws:us-east-1"],"message":"","name":"tf-TestAccDatadogSyntheticsTestMultistepApi_AllSubtypes-local-1767102898","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900},"status":"paused","subtype":"multi","tags":["env:sandbox"],"type":"api"}
         form: {}
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/6q6-jwq-fqx
-        method: GET
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api
+        method: POST
       response:
         proto: HTTP/1.1
         proto_major: 1
@@ -102,13 +105,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"6q6-jwq-fqx","name":"tf-TestAccDatadogSyntheticsTestMultistepApi_AllSubtypes-local-1756481460","status":"paused","type":"api","subtype":"multi","tags":["env:sandbox"],"created_at":"2025-08-29T15:31:02.928660+00:00","modified_at":"2025-08-29T15:31:02.928660+00:00","config":{"assertions":[],"configVariables":[],"steps":[{"allowFailure":false,"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":true,"name":"Request on github.com","request":{"allow_insecure":false,"follow_redirects":false,"httpVersion":"any","method":"GET","noSavingResponseBody":false,"persistCookies":false,"timeout":0,"url":"https://github.com"},"retry":{"count":0,"interval":300},"subtype":"http","id":"ugd-7mj-yg6"},{"name":"Wait 10 seconds","subtype":"wait","value":10,"id":"xi4-bce-cjw"},{"allowFailure":false,"assertions":[],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":true,"name":"Test on grpcb.in","request":{"allow_insecure":false,"callType":"unary","host":"grpcb.in","message":"{\n    \"a\": \"Lorem Ipsum\",\n    \"b\": \"Lorem Ipsum\"\n}","method":"Concat","port":"9000","service":"addsvc.Add","timeout":0},"retry":{"count":0,"interval":300},"subtype":"grpc","id":"yfz-x62-mqz"},{"allowFailure":false,"assertions":[{"operator":"moreThanOrEqual","target":"1.3","type":"tlsVersion"}],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":true,"name":"Test on google.fr","request":{"allow_insecure":false,"checkCertificateRevocation":true,"disableAiaIntermediateFetching":true,"host":"example.org","port":"443","timeout":0},"retry":{"count":0,"interval":300},"subtype":"ssl","id":"n9h-j3j-jha"},{"allowFailure":false,"assertions":[{"operator":"is","property":"A","target":"213.186.33.19","type":"recordSome"}],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":true,"name":"Test on troisdizaines.com","request":{"allow_insecure":false,"dnsServer":"8.8.8.8","dnsServerPort":"53","host":"troisdizaines.com","timeout":0},"retry":{"count":0,"interval":300},"subtype":"dns","id":"suu-cfd-jer"},{"allowFailure":false,"assertions":[{"operator":"lessThan","target":1000,"type":"responseTime"}],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":true,"name":"Test on ws://34.95.79.70/web-socket","request":{"allow_insecure":false,"isMessageBase64Encoded":true,"message":"My message","timeout":0,"url":"ws://34.95.79.70/web-socket"},"retry":{"count":0,"interval":300},"subtype":"websocket","id":"ktc-yhn-9mv"},{"allowFailure":false,"assertions":[{"operator":"lessThan","target":1000,"type":"responseTime"}],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":true,"name":"Test on 34.95.79.70","request":{"allow_insecure":false,"host":"34.95.79.70","port":"80","shouldTrackHops":true,"timeout":32},"retry":{"count":0,"interval":300},"subtype":"tcp","id":"446-4km-9kk"},{"allowFailure":false,"assertions":[{"operator":"lessThan","target":1000,"type":"responseTime"}],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":true,"name":"Test on udp.shopist.io","request":{"allow_insecure":false,"host":"8.8.8.8","message":"A image.google.com","port":"53","timeout":0},"retry":{"count":0,"interval":300},"subtype":"udp","id":"9kx-2e9-wtc"}]},"message":"","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900},"locations":["aws:us-east-1"],"monitor_id":192795111,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"public_id":"mwt-ybi-7ra","name":"tf-TestAccDatadogSyntheticsTestMultistepApi_AllSubtypes-local-1767102898","status":"paused","type":"api","subtype":"multi","tags":["env:sandbox"],"created_at":"2025-12-30T13:55:01.670850+00:00","modified_at":"2025-12-30T13:55:01.670850+00:00","config":{"assertions":[],"configVariables":[],"steps":[{"allowFailure":false,"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":true,"name":"Request on github.com","request":{"allow_insecure":false,"follow_redirects":false,"httpVersion":"any","method":"GET","noSavingResponseBody":false,"persistCookies":false,"timeout":0,"url":"https://github.com"},"retry":{"count":0,"interval":300},"subtype":"http","id":"88m-xmf-54i"},{"name":"Wait 10 seconds","subtype":"wait","value":10,"id":"p5s-zzr-c5p"},{"allowFailure":false,"assertions":[],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":true,"name":"Test on grpcb.in","request":{"allow_insecure":false,"callType":"unary","host":"grpcb.in","message":"{\n    \"a\": \"Lorem Ipsum\",\n    \"b\": \"Lorem Ipsum\"\n}","method":"Concat","port":"9000","service":"addsvc.Add","timeout":0},"retry":{"count":0,"interval":300},"subtype":"grpc","id":"t8u-ms8-5g6"},{"allowFailure":false,"assertions":[{"operator":"moreThanOrEqual","target":"1.3","type":"tlsVersion"}],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":true,"name":"Test on google.fr","request":{"allow_insecure":false,"checkCertificateRevocation":true,"disableAiaIntermediateFetching":true,"host":"example.org","port":"443","timeout":0},"retry":{"count":0,"interval":300},"subtype":"ssl","id":"4bx-veb-88x"},{"allowFailure":false,"assertions":[{"operator":"is","property":"A","target":"213.186.33.19","type":"recordSome"}],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":true,"name":"Test on troisdizaines.com","request":{"allow_insecure":false,"dnsServer":"8.8.8.8","dnsServerPort":"53","host":"troisdizaines.com","timeout":0},"retry":{"count":0,"interval":300},"subtype":"dns","id":"cpv-f8g-bnb"},{"allowFailure":false,"assertions":[{"operator":"lessThan","target":1000,"type":"responseTime"}],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":true,"name":"Test on ws://34.95.79.70/web-socket","request":{"allow_insecure":false,"isMessageBase64Encoded":true,"message":"My message","timeout":0,"url":"ws://34.95.79.70/web-socket"},"retry":{"count":0,"interval":300},"subtype":"websocket","id":"bi5-tmw-ai9"},{"allowFailure":false,"assertions":[{"operator":"lessThan","target":1000,"type":"responseTime"}],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":true,"name":"Test on 34.95.79.70","request":{"allow_insecure":false,"host":"34.95.79.70","port":"80","shouldTrackHops":true,"timeout":32},"retry":{"count":0,"interval":300},"subtype":"tcp","id":"c88-3wt-gkw"},{"allowFailure":false,"assertions":[{"operator":"lessThan","target":1000,"type":"responseTime"}],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":true,"name":"Test on udp.shopist.io","request":{"allow_insecure":false,"host":"8.8.8.8","message":"A image.google.com","port":"53","timeout":0},"retry":{"count":0,"interval":300},"subtype":"udp","id":"ukt-b33-4id"},{"name":"Subtest step","subtestPublicId":"auw-sr8-sf4","subtype":"playSubTest","id":"mj4-dgk-37q"}]},"message":"","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900},"locations":["aws:us-east-1"],"created_by":{"name":"Frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"deleted_at":null,"monitor_id":247513066,"org_id":569509,"modified_by":{"name":"Frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"creation_source":"terraform"}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 241.798667ms
+        duration: 513.4065ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -125,7 +128,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/6q6-jwq-fqx
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/mwt-ybi-7ra
         method: GET
       response:
         proto: HTTP/1.1
@@ -137,13 +140,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"6q6-jwq-fqx","name":"tf-TestAccDatadogSyntheticsTestMultistepApi_AllSubtypes-local-1756481460","status":"paused","type":"api","subtype":"multi","tags":["env:sandbox"],"created_at":"2025-08-29T15:31:02.928660+00:00","modified_at":"2025-08-29T15:31:02.928660+00:00","config":{"assertions":[],"configVariables":[],"steps":[{"allowFailure":false,"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":true,"name":"Request on github.com","request":{"allow_insecure":false,"follow_redirects":false,"httpVersion":"any","method":"GET","noSavingResponseBody":false,"persistCookies":false,"timeout":0,"url":"https://github.com"},"retry":{"count":0,"interval":300},"subtype":"http","id":"ugd-7mj-yg6"},{"name":"Wait 10 seconds","subtype":"wait","value":10,"id":"xi4-bce-cjw"},{"allowFailure":false,"assertions":[],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":true,"name":"Test on grpcb.in","request":{"allow_insecure":false,"callType":"unary","host":"grpcb.in","message":"{\n    \"a\": \"Lorem Ipsum\",\n    \"b\": \"Lorem Ipsum\"\n}","method":"Concat","port":"9000","service":"addsvc.Add","timeout":0},"retry":{"count":0,"interval":300},"subtype":"grpc","id":"yfz-x62-mqz"},{"allowFailure":false,"assertions":[{"operator":"moreThanOrEqual","target":"1.3","type":"tlsVersion"}],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":true,"name":"Test on google.fr","request":{"allow_insecure":false,"checkCertificateRevocation":true,"disableAiaIntermediateFetching":true,"host":"example.org","port":"443","timeout":0},"retry":{"count":0,"interval":300},"subtype":"ssl","id":"n9h-j3j-jha"},{"allowFailure":false,"assertions":[{"operator":"is","property":"A","target":"213.186.33.19","type":"recordSome"}],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":true,"name":"Test on troisdizaines.com","request":{"allow_insecure":false,"dnsServer":"8.8.8.8","dnsServerPort":"53","host":"troisdizaines.com","timeout":0},"retry":{"count":0,"interval":300},"subtype":"dns","id":"suu-cfd-jer"},{"allowFailure":false,"assertions":[{"operator":"lessThan","target":1000,"type":"responseTime"}],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":true,"name":"Test on ws://34.95.79.70/web-socket","request":{"allow_insecure":false,"isMessageBase64Encoded":true,"message":"My message","timeout":0,"url":"ws://34.95.79.70/web-socket"},"retry":{"count":0,"interval":300},"subtype":"websocket","id":"ktc-yhn-9mv"},{"allowFailure":false,"assertions":[{"operator":"lessThan","target":1000,"type":"responseTime"}],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":true,"name":"Test on 34.95.79.70","request":{"allow_insecure":false,"host":"34.95.79.70","port":"80","shouldTrackHops":true,"timeout":32},"retry":{"count":0,"interval":300},"subtype":"tcp","id":"446-4km-9kk"},{"allowFailure":false,"assertions":[{"operator":"lessThan","target":1000,"type":"responseTime"}],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":true,"name":"Test on udp.shopist.io","request":{"allow_insecure":false,"host":"8.8.8.8","message":"A image.google.com","port":"53","timeout":0},"retry":{"count":0,"interval":300},"subtype":"udp","id":"9kx-2e9-wtc"}]},"message":"","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900},"locations":["aws:us-east-1"],"monitor_id":192795111,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"public_id":"mwt-ybi-7ra","name":"tf-TestAccDatadogSyntheticsTestMultistepApi_AllSubtypes-local-1767102898","status":"paused","type":"api","subtype":"multi","tags":["env:sandbox"],"created_at":"2025-12-30T13:55:01.670850+00:00","modified_at":"2025-12-30T13:55:01.670850+00:00","config":{"assertions":[],"configVariables":[],"steps":[{"allowFailure":false,"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":true,"name":"Request on github.com","request":{"allow_insecure":false,"follow_redirects":false,"httpVersion":"any","method":"GET","noSavingResponseBody":false,"persistCookies":false,"timeout":0,"url":"https://github.com"},"retry":{"count":0,"interval":300},"subtype":"http","id":"88m-xmf-54i"},{"name":"Wait 10 seconds","subtype":"wait","value":10,"id":"p5s-zzr-c5p"},{"allowFailure":false,"assertions":[],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":true,"name":"Test on grpcb.in","request":{"allow_insecure":false,"callType":"unary","host":"grpcb.in","message":"{\n    \"a\": \"Lorem Ipsum\",\n    \"b\": \"Lorem Ipsum\"\n}","method":"Concat","port":"9000","service":"addsvc.Add","timeout":0},"retry":{"count":0,"interval":300},"subtype":"grpc","id":"t8u-ms8-5g6"},{"allowFailure":false,"assertions":[{"operator":"moreThanOrEqual","target":"1.3","type":"tlsVersion"}],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":true,"name":"Test on google.fr","request":{"allow_insecure":false,"checkCertificateRevocation":true,"disableAiaIntermediateFetching":true,"host":"example.org","port":"443","timeout":0},"retry":{"count":0,"interval":300},"subtype":"ssl","id":"4bx-veb-88x"},{"allowFailure":false,"assertions":[{"operator":"is","property":"A","target":"213.186.33.19","type":"recordSome"}],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":true,"name":"Test on troisdizaines.com","request":{"allow_insecure":false,"dnsServer":"8.8.8.8","dnsServerPort":"53","host":"troisdizaines.com","timeout":0},"retry":{"count":0,"interval":300},"subtype":"dns","id":"cpv-f8g-bnb"},{"allowFailure":false,"assertions":[{"operator":"lessThan","target":1000,"type":"responseTime"}],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":true,"name":"Test on ws://34.95.79.70/web-socket","request":{"allow_insecure":false,"isMessageBase64Encoded":true,"message":"My message","timeout":0,"url":"ws://34.95.79.70/web-socket"},"retry":{"count":0,"interval":300},"subtype":"websocket","id":"bi5-tmw-ai9"},{"allowFailure":false,"assertions":[{"operator":"lessThan","target":1000,"type":"responseTime"}],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":true,"name":"Test on 34.95.79.70","request":{"allow_insecure":false,"host":"34.95.79.70","port":"80","shouldTrackHops":true,"timeout":32},"retry":{"count":0,"interval":300},"subtype":"tcp","id":"c88-3wt-gkw"},{"allowFailure":false,"assertions":[{"operator":"lessThan","target":1000,"type":"responseTime"}],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":true,"name":"Test on udp.shopist.io","request":{"allow_insecure":false,"host":"8.8.8.8","message":"A image.google.com","port":"53","timeout":0},"retry":{"count":0,"interval":300},"subtype":"udp","id":"ukt-b33-4id"},{"name":"Subtest step","subtestPublicId":"auw-sr8-sf4","subtype":"playSubTest","id":"mj4-dgk-37q"}]},"message":"","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900},"locations":["aws:us-east-1"],"monitor_id":247513066,"creator":{"name":"Frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 220.216875ms
+        duration: 204.842375ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -160,7 +163,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/6q6-jwq-fqx
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/auw-sr8-sf4
         method: GET
       response:
         proto: HTTP/1.1
@@ -172,14 +175,189 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"6q6-jwq-fqx","name":"tf-TestAccDatadogSyntheticsTestMultistepApi_AllSubtypes-local-1756481460","status":"paused","type":"api","subtype":"multi","tags":["env:sandbox"],"created_at":"2025-08-29T15:31:02.928660+00:00","modified_at":"2025-08-29T15:31:02.928660+00:00","config":{"assertions":[],"configVariables":[],"steps":[{"allowFailure":false,"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":true,"name":"Request on github.com","request":{"allow_insecure":false,"follow_redirects":false,"httpVersion":"any","method":"GET","noSavingResponseBody":false,"persistCookies":false,"timeout":0,"url":"https://github.com"},"retry":{"count":0,"interval":300},"subtype":"http","id":"ugd-7mj-yg6"},{"name":"Wait 10 seconds","subtype":"wait","value":10,"id":"xi4-bce-cjw"},{"allowFailure":false,"assertions":[],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":true,"name":"Test on grpcb.in","request":{"allow_insecure":false,"callType":"unary","host":"grpcb.in","message":"{\n    \"a\": \"Lorem Ipsum\",\n    \"b\": \"Lorem Ipsum\"\n}","method":"Concat","port":"9000","service":"addsvc.Add","timeout":0},"retry":{"count":0,"interval":300},"subtype":"grpc","id":"yfz-x62-mqz"},{"allowFailure":false,"assertions":[{"operator":"moreThanOrEqual","target":"1.3","type":"tlsVersion"}],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":true,"name":"Test on google.fr","request":{"allow_insecure":false,"checkCertificateRevocation":true,"disableAiaIntermediateFetching":true,"host":"example.org","port":"443","timeout":0},"retry":{"count":0,"interval":300},"subtype":"ssl","id":"n9h-j3j-jha"},{"allowFailure":false,"assertions":[{"operator":"is","property":"A","target":"213.186.33.19","type":"recordSome"}],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":true,"name":"Test on troisdizaines.com","request":{"allow_insecure":false,"dnsServer":"8.8.8.8","dnsServerPort":"53","host":"troisdizaines.com","timeout":0},"retry":{"count":0,"interval":300},"subtype":"dns","id":"suu-cfd-jer"},{"allowFailure":false,"assertions":[{"operator":"lessThan","target":1000,"type":"responseTime"}],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":true,"name":"Test on ws://34.95.79.70/web-socket","request":{"allow_insecure":false,"isMessageBase64Encoded":true,"message":"My message","timeout":0,"url":"ws://34.95.79.70/web-socket"},"retry":{"count":0,"interval":300},"subtype":"websocket","id":"ktc-yhn-9mv"},{"allowFailure":false,"assertions":[{"operator":"lessThan","target":1000,"type":"responseTime"}],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":true,"name":"Test on 34.95.79.70","request":{"allow_insecure":false,"host":"34.95.79.70","port":"80","shouldTrackHops":true,"timeout":32},"retry":{"count":0,"interval":300},"subtype":"tcp","id":"446-4km-9kk"},{"allowFailure":false,"assertions":[{"operator":"lessThan","target":1000,"type":"responseTime"}],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":true,"name":"Test on udp.shopist.io","request":{"allow_insecure":false,"host":"8.8.8.8","message":"A image.google.com","port":"53","timeout":0},"retry":{"count":0,"interval":300},"subtype":"udp","id":"9kx-2e9-wtc"}]},"message":"","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900},"locations":["aws:us-east-1"],"monitor_id":192795111,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"public_id":"auw-sr8-sf4","name":"tf-TestAccDatadogSyntheticsTestMultistepApi_AllSubtypes-local-1767102898","status":"paused","type":"api","subtype":"http","tags":["foo:bar","baz"],"created_at":"2025-12-30T13:55:00.910660+00:00","modified_at":"2025-12-30T13:55:00.910660+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","url":"https://www.datadoghq.com"}},"message":"Notify @datadog.user","options":{"httpVersion":"any","min_location_failed":1,"tick_every":60},"locations":["aws:us-east-1"],"monitor_id":247513063,"creator":{"name":"Frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 615.922834ms
+        duration: 199.171042ms
     - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/mwt-ybi-7ra
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"mwt-ybi-7ra","name":"tf-TestAccDatadogSyntheticsTestMultistepApi_AllSubtypes-local-1767102898","status":"paused","type":"api","subtype":"multi","tags":["env:sandbox"],"created_at":"2025-12-30T13:55:01.670850+00:00","modified_at":"2025-12-30T13:55:01.670850+00:00","config":{"assertions":[],"configVariables":[],"steps":[{"allowFailure":false,"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":true,"name":"Request on github.com","request":{"allow_insecure":false,"follow_redirects":false,"httpVersion":"any","method":"GET","noSavingResponseBody":false,"persistCookies":false,"timeout":0,"url":"https://github.com"},"retry":{"count":0,"interval":300},"subtype":"http","id":"88m-xmf-54i"},{"name":"Wait 10 seconds","subtype":"wait","value":10,"id":"p5s-zzr-c5p"},{"allowFailure":false,"assertions":[],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":true,"name":"Test on grpcb.in","request":{"allow_insecure":false,"callType":"unary","host":"grpcb.in","message":"{\n    \"a\": \"Lorem Ipsum\",\n    \"b\": \"Lorem Ipsum\"\n}","method":"Concat","port":"9000","service":"addsvc.Add","timeout":0},"retry":{"count":0,"interval":300},"subtype":"grpc","id":"t8u-ms8-5g6"},{"allowFailure":false,"assertions":[{"operator":"moreThanOrEqual","target":"1.3","type":"tlsVersion"}],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":true,"name":"Test on google.fr","request":{"allow_insecure":false,"checkCertificateRevocation":true,"disableAiaIntermediateFetching":true,"host":"example.org","port":"443","timeout":0},"retry":{"count":0,"interval":300},"subtype":"ssl","id":"4bx-veb-88x"},{"allowFailure":false,"assertions":[{"operator":"is","property":"A","target":"213.186.33.19","type":"recordSome"}],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":true,"name":"Test on troisdizaines.com","request":{"allow_insecure":false,"dnsServer":"8.8.8.8","dnsServerPort":"53","host":"troisdizaines.com","timeout":0},"retry":{"count":0,"interval":300},"subtype":"dns","id":"cpv-f8g-bnb"},{"allowFailure":false,"assertions":[{"operator":"lessThan","target":1000,"type":"responseTime"}],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":true,"name":"Test on ws://34.95.79.70/web-socket","request":{"allow_insecure":false,"isMessageBase64Encoded":true,"message":"My message","timeout":0,"url":"ws://34.95.79.70/web-socket"},"retry":{"count":0,"interval":300},"subtype":"websocket","id":"bi5-tmw-ai9"},{"allowFailure":false,"assertions":[{"operator":"lessThan","target":1000,"type":"responseTime"}],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":true,"name":"Test on 34.95.79.70","request":{"allow_insecure":false,"host":"34.95.79.70","port":"80","shouldTrackHops":true,"timeout":32},"retry":{"count":0,"interval":300},"subtype":"tcp","id":"c88-3wt-gkw"},{"allowFailure":false,"assertions":[{"operator":"lessThan","target":1000,"type":"responseTime"}],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":true,"name":"Test on udp.shopist.io","request":{"allow_insecure":false,"host":"8.8.8.8","message":"A image.google.com","port":"53","timeout":0},"retry":{"count":0,"interval":300},"subtype":"udp","id":"ukt-b33-4id"},{"name":"Subtest step","subtestPublicId":"auw-sr8-sf4","subtype":"playSubTest","id":"mj4-dgk-37q"}]},"message":"","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900},"locations":["aws:us-east-1"],"monitor_id":247513066,"creator":{"name":"Frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 214.967208ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/auw-sr8-sf4
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"auw-sr8-sf4","name":"tf-TestAccDatadogSyntheticsTestMultistepApi_AllSubtypes-local-1767102898","status":"paused","type":"api","subtype":"http","tags":["foo:bar","baz"],"created_at":"2025-12-30T13:55:00.910660+00:00","modified_at":"2025-12-30T13:55:00.910660+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","url":"https://www.datadoghq.com"}},"message":"Notify @datadog.user","options":{"httpVersion":"any","min_location_failed":1,"tick_every":60},"locations":["aws:us-east-1"],"monitor_id":247513063,"creator":{"name":"Frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 214.15ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/auw-sr8-sf4
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"auw-sr8-sf4","name":"tf-TestAccDatadogSyntheticsTestMultistepApi_AllSubtypes-local-1767102898","status":"paused","type":"api","subtype":"http","tags":["foo:bar","baz"],"created_at":"2025-12-30T13:55:00.910660+00:00","modified_at":"2025-12-30T13:55:00.910660+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","url":"https://www.datadoghq.com"}},"message":"Notify @datadog.user","options":{"httpVersion":"any","min_location_failed":1,"tick_every":60},"locations":["aws:us-east-1"],"monitor_id":247513063,"creator":{"name":"Frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 198.162542ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/mwt-ybi-7ra
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"mwt-ybi-7ra","name":"tf-TestAccDatadogSyntheticsTestMultistepApi_AllSubtypes-local-1767102898","status":"paused","type":"api","subtype":"multi","tags":["env:sandbox"],"created_at":"2025-12-30T13:55:01.670850+00:00","modified_at":"2025-12-30T13:55:01.670850+00:00","config":{"assertions":[],"configVariables":[],"steps":[{"allowFailure":false,"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":true,"name":"Request on github.com","request":{"allow_insecure":false,"follow_redirects":false,"httpVersion":"any","method":"GET","noSavingResponseBody":false,"persistCookies":false,"timeout":0,"url":"https://github.com"},"retry":{"count":0,"interval":300},"subtype":"http","id":"88m-xmf-54i"},{"name":"Wait 10 seconds","subtype":"wait","value":10,"id":"p5s-zzr-c5p"},{"allowFailure":false,"assertions":[],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":true,"name":"Test on grpcb.in","request":{"allow_insecure":false,"callType":"unary","host":"grpcb.in","message":"{\n    \"a\": \"Lorem Ipsum\",\n    \"b\": \"Lorem Ipsum\"\n}","method":"Concat","port":"9000","service":"addsvc.Add","timeout":0},"retry":{"count":0,"interval":300},"subtype":"grpc","id":"t8u-ms8-5g6"},{"allowFailure":false,"assertions":[{"operator":"moreThanOrEqual","target":"1.3","type":"tlsVersion"}],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":true,"name":"Test on google.fr","request":{"allow_insecure":false,"checkCertificateRevocation":true,"disableAiaIntermediateFetching":true,"host":"example.org","port":"443","timeout":0},"retry":{"count":0,"interval":300},"subtype":"ssl","id":"4bx-veb-88x"},{"allowFailure":false,"assertions":[{"operator":"is","property":"A","target":"213.186.33.19","type":"recordSome"}],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":true,"name":"Test on troisdizaines.com","request":{"allow_insecure":false,"dnsServer":"8.8.8.8","dnsServerPort":"53","host":"troisdizaines.com","timeout":0},"retry":{"count":0,"interval":300},"subtype":"dns","id":"cpv-f8g-bnb"},{"allowFailure":false,"assertions":[{"operator":"lessThan","target":1000,"type":"responseTime"}],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":true,"name":"Test on ws://34.95.79.70/web-socket","request":{"allow_insecure":false,"isMessageBase64Encoded":true,"message":"My message","timeout":0,"url":"ws://34.95.79.70/web-socket"},"retry":{"count":0,"interval":300},"subtype":"websocket","id":"bi5-tmw-ai9"},{"allowFailure":false,"assertions":[{"operator":"lessThan","target":1000,"type":"responseTime"}],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":true,"name":"Test on 34.95.79.70","request":{"allow_insecure":false,"host":"34.95.79.70","port":"80","shouldTrackHops":true,"timeout":32},"retry":{"count":0,"interval":300},"subtype":"tcp","id":"c88-3wt-gkw"},{"allowFailure":false,"assertions":[{"operator":"lessThan","target":1000,"type":"responseTime"}],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":true,"name":"Test on udp.shopist.io","request":{"allow_insecure":false,"host":"8.8.8.8","message":"A image.google.com","port":"53","timeout":0},"retry":{"count":0,"interval":300},"subtype":"udp","id":"ukt-b33-4id"},{"name":"Subtest step","subtestPublicId":"auw-sr8-sf4","subtype":"playSubTest","id":"mj4-dgk-37q"}]},"message":"","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900},"locations":["aws:us-east-1"],"monitor_id":247513066,"creator":{"name":"Frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 360.934709ms
+    - id: 9
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/mwt-ybi-7ra
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"mwt-ybi-7ra","name":"tf-TestAccDatadogSyntheticsTestMultistepApi_AllSubtypes-local-1767102898","status":"paused","type":"api","subtype":"multi","tags":["env:sandbox"],"created_at":"2025-12-30T13:55:01.670850+00:00","modified_at":"2025-12-30T13:55:01.670850+00:00","config":{"assertions":[],"configVariables":[],"steps":[{"allowFailure":false,"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":true,"name":"Request on github.com","request":{"allow_insecure":false,"follow_redirects":false,"httpVersion":"any","method":"GET","noSavingResponseBody":false,"persistCookies":false,"timeout":0,"url":"https://github.com"},"retry":{"count":0,"interval":300},"subtype":"http","id":"88m-xmf-54i"},{"name":"Wait 10 seconds","subtype":"wait","value":10,"id":"p5s-zzr-c5p"},{"allowFailure":false,"assertions":[],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":true,"name":"Test on grpcb.in","request":{"allow_insecure":false,"callType":"unary","host":"grpcb.in","message":"{\n    \"a\": \"Lorem Ipsum\",\n    \"b\": \"Lorem Ipsum\"\n}","method":"Concat","port":"9000","service":"addsvc.Add","timeout":0},"retry":{"count":0,"interval":300},"subtype":"grpc","id":"t8u-ms8-5g6"},{"allowFailure":false,"assertions":[{"operator":"moreThanOrEqual","target":"1.3","type":"tlsVersion"}],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":true,"name":"Test on google.fr","request":{"allow_insecure":false,"checkCertificateRevocation":true,"disableAiaIntermediateFetching":true,"host":"example.org","port":"443","timeout":0},"retry":{"count":0,"interval":300},"subtype":"ssl","id":"4bx-veb-88x"},{"allowFailure":false,"assertions":[{"operator":"is","property":"A","target":"213.186.33.19","type":"recordSome"}],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":true,"name":"Test on troisdizaines.com","request":{"allow_insecure":false,"dnsServer":"8.8.8.8","dnsServerPort":"53","host":"troisdizaines.com","timeout":0},"retry":{"count":0,"interval":300},"subtype":"dns","id":"cpv-f8g-bnb"},{"allowFailure":false,"assertions":[{"operator":"lessThan","target":1000,"type":"responseTime"}],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":true,"name":"Test on ws://34.95.79.70/web-socket","request":{"allow_insecure":false,"isMessageBase64Encoded":true,"message":"My message","timeout":0,"url":"ws://34.95.79.70/web-socket"},"retry":{"count":0,"interval":300},"subtype":"websocket","id":"bi5-tmw-ai9"},{"allowFailure":false,"assertions":[{"operator":"lessThan","target":1000,"type":"responseTime"}],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":true,"name":"Test on 34.95.79.70","request":{"allow_insecure":false,"host":"34.95.79.70","port":"80","shouldTrackHops":true,"timeout":32},"retry":{"count":0,"interval":300},"subtype":"tcp","id":"c88-3wt-gkw"},{"allowFailure":false,"assertions":[{"operator":"lessThan","target":1000,"type":"responseTime"}],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":true,"name":"Test on udp.shopist.io","request":{"allow_insecure":false,"host":"8.8.8.8","message":"A image.google.com","port":"53","timeout":0},"retry":{"count":0,"interval":300},"subtype":"udp","id":"ukt-b33-4id"},{"name":"Subtest step","subtestPublicId":"auw-sr8-sf4","subtype":"playSubTest","id":"mj4-dgk-37q"}]},"message":"","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900},"locations":["aws:us-east-1"],"monitor_id":247513066,"creator":{"name":"Frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 197.841417ms
+    - id: 10
       request:
         proto: HTTP/1.1
         proto_major: 1
@@ -191,7 +369,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"public_ids":["6q6-jwq-fqx"]}
+            {"public_ids":["mwt-ybi-7ra"]}
         form: {}
         headers:
             Accept:
@@ -210,14 +388,52 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"deleted_tests":[{"public_id":"6q6-jwq-fqx","deleted_at":"2025-08-29T15:31:06.420709+00:00"}]}
+            {"deleted_tests":[{"public_id":"mwt-ybi-7ra","deleted_at":"2025-12-30T13:55:04.867348+00:00"}]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 1.326540666s
-    - id: 6
+        duration: 424.8475ms
+    - id: 11
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 31
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"public_ids":["auw-sr8-sf4"]}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/delete
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"deleted_tests":[{"public_id":"auw-sr8-sf4","deleted_at":"2025-12-30T13:55:05.460505+00:00"}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 567.160583ms
+    - id: 12
       request:
         proto: HTTP/1.1
         proto_major: 1
@@ -233,7 +449,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/6q6-jwq-fqx
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/auw-sr8-sf4
         method: GET
       response:
         proto: HTTP/1.1
@@ -250,4 +466,38 @@ interactions:
                 - application/json
         status: 404 Not Found
         code: 404
-        duration: 148.241041ms
+        duration: 145.685666ms
+    - id: 13
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/mwt-ybi-7ra
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"errors":["Synthetics test not found"]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 141.353459ms
