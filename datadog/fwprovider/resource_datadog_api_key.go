@@ -9,6 +9,7 @@ import (
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -29,6 +30,7 @@ type apiKeyResourceModel struct {
 	ID           types.String `tfsdk:"id"`
 	Name         types.String `tfsdk:"name"`
 	Key          types.String `tfsdk:"key"`
+	StoreKey     types.Bool   `tfsdk:"store_key"`
 	RemoteConfig types.Bool   `tfsdk:"remote_config_read_enabled"`
 }
 
@@ -60,6 +62,12 @@ func (r *apiKeyResource) Schema(_ context.Context, _ resource.SchemaRequest, res
 				Computed:      true,
 				Sensitive:     true,
 				PlanModifiers: []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
+			},
+			"store_key": schema.BoolAttribute{
+				Description: "Whether to store the API key value in Terraform state. Set to `false` to avoid storing the key in state for security purposes. Defaults to `true` for backwards compatibility. When set to `false`, the `key` attribute will be empty.",
+				Optional:    true,
+				Computed:    true,
+				Default:     booldefault.StaticBool(true),
 			},
 			"remote_config_read_enabled": schema.BoolAttribute{
 				Description: "Whether the API key is used for remote config. Set to true only if remote config is enabled in `/organization-settings/remote-config`.",
@@ -194,8 +202,13 @@ func (r *apiKeyResource) updateState(state *apiKeyResourceModel, apiKeyData *dat
 		d = frameworkDiag.NewErrorDiagnostic("remote_config_read_enabled is true but Remote config is not enabled at org level", "Please either remove remote_config_read_enabled from the resource configuration or enable Remote config at org level")
 	}
 	state.RemoteConfig = types.BoolValue(apiKeyAttributes.GetRemoteConfigReadEnabled())
-	if apiKeyAttributes.HasKey() {
+
+	// Only store the key if store_key is true (default behavior for backwards compatibility)
+	if state.StoreKey.ValueBool() && apiKeyAttributes.HasKey() {
 		state.Key = types.StringValue(apiKeyAttributes.GetKey())
+	} else if !state.StoreKey.ValueBool() {
+		// Explicitly set to null when store_key is false
+		state.Key = types.StringNull()
 	}
 	return d
 }
