@@ -1228,7 +1228,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 																			Description: "A name identifying the rule.",
 																		},
 																		"tags": schema.ListAttribute{
-																			Required:    true,
+																			Optional:    true,
 																			ElementType: types.StringType,
 																			Description: "Tags assigned to this rule for filtering and classification.",
 																		},
