@@ -49,7 +49,7 @@ datadog/**/*datadog_app_key_registration*        @DataDog/api-reliability @DataD
 datadog/**/*datadog_api_key*                     @DataDog/api-reliability @DataDog/credentials-management
 datadog/**/*datadog_apm_retention_filter*        @DataDog/api-reliability @DataDog/apm-trace-intake
 datadog/**/*datadog_application_key*             @DataDog/api-reliability @DataDog/credentials-management
-datadog/**/*datadog_hosts*                       @DataDog/api-reliability @DataDog/redapl-storage
+datadog/**/*datadog_hosts*                       @DataDog/api-reliability @DataDog/redapl-hosts
 datadog/**/*datadog_integration_aws*             @DataDog/api-reliability @DataDog/aws-ints-core
 datadog/**/*datadog_integration_azure*           @DataDog/api-reliability @DataDog/azure-integrations
 datadog/**/*datadog_integration_cloudflare*      @DataDog/api-reliability @DataDog/saas-integrations
