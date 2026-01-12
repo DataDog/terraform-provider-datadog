@@ -219,8 +219,18 @@ func (r *costBudgetResource) ValidateConfig(ctx context.Context, req resource.Va
 		return
 	}
 
+	// Validate entries exist
+	if data.Entries.IsNull() {
+		resp.Diagnostics.AddAttributeError(
+			frameworkPath.Root("entries"),
+			"Missing entries",
+			"entries are required",
+		)
+		return
+	}
+
 	// Skip validation if entries are unknown
-	if data.Entries.IsNull() || data.Entries.IsUnknown() {
+	if data.Entries.IsUnknown() {
 		return
 	}
 
@@ -310,41 +320,56 @@ func (r *costBudgetResource) ValidateConfig(ctx context.Context, req resource.Va
 		}
 
 		// Skip tag_filters validation if unknown
-		if entry.TagFilters.IsNull() || entry.TagFilters.IsUnknown() {
+		if entry.TagFilters.IsUnknown() {
 			continue
 		}
 
-		// Convert types.List to []tagFilter for validation
-		var tagFilters []tagFilter
-		resp.Diagnostics.Append(entry.TagFilters.ElementsAs(ctx, &tagFilters, false)...)
-		if resp.Diagnostics.HasError() {
-			return
-		}
+		var tagValues []string
 
-		// Validate tag_filters count
-		if len(tagFilters) != len(tags) {
-			resp.Diagnostics.AddAttributeError(
-				frameworkPath.Root("entries").AtListIndex(i).AtName("tag_filters"),
-				"Invalid tag_filters",
-				"entry tag_filters must include all group by tags",
-			)
-			continue
-		}
-
-		// Validate tag_key and collect tag values
-		tagValues := make([]string, len(tagFilters))
-		for j, tf := range tagFilters {
-			tagKey := tf.TagKey.ValueString()
-
-			if !slices.Contains(tags, tagKey) {
+		// Handle null tag_filters
+		if entry.TagFilters.IsNull() {
+			if len(tags) > 0 {
 				resp.Diagnostics.AddAttributeError(
-					frameworkPath.Root("entries").AtListIndex(i).AtName("tag_filters").AtListIndex(j).AtName("tag_key"),
-					"Invalid tag_key",
-					"tag_key must be one of the values inside the tags array",
+					frameworkPath.Root("entries").AtListIndex(i).AtName("tag_filters"),
+					"Invalid tag_filters",
+					"entry tag_filters must include all group by tags",
 				)
+				continue
+			}
+			// No tags expected and none provided
+		} else {
+			// Convert types.List to []tagFilter for validation
+			var tagFilters []tagFilter
+			resp.Diagnostics.Append(entry.TagFilters.ElementsAs(ctx, &tagFilters, false)...)
+			if resp.Diagnostics.HasError() {
+				return
 			}
 
-			tagValues[j] = tf.TagValue.ValueString()
+			// Validate tag_filters count
+			if len(tagFilters) != len(tags) {
+				resp.Diagnostics.AddAttributeError(
+					frameworkPath.Root("entries").AtListIndex(i).AtName("tag_filters"),
+					"Invalid tag_filters",
+					"entry tag_filters must include all group by tags",
+				)
+				continue
+			}
+
+			// Validate tag_key and collect tag values
+			tagValues = make([]string, len(tagFilters))
+			for j, tf := range tagFilters {
+				tagKey := tf.TagKey.ValueString()
+
+				if !slices.Contains(tags, tagKey) {
+					resp.Diagnostics.AddAttributeError(
+						frameworkPath.Root("entries").AtListIndex(i).AtName("tag_filters").AtListIndex(j).AtName("tag_key"),
+						"Invalid tag_key",
+						"tag_key must be one of the values inside the tags array",
+					)
+				}
+
+				tagValues[j] = tf.TagValue.ValueString()
+			}
 		}
 
 		// Build unique key for this tag combination (e.g., "ASE\tstaging")
@@ -355,16 +380,6 @@ func (r *costBudgetResource) ValidateConfig(ctx context.Context, req resource.Va
 			entriesMap[tagCombination] = make(map[int64]bool)
 		}
 		entriesMap[tagCombination][month] = true
-	}
-
-	// Validate entries exist
-	if len(entriesMap) == 0 && len(entries) == 0 {
-		resp.Diagnostics.AddAttributeError(
-			frameworkPath.Root("entries"),
-			"Missing entries",
-			"entries are required",
-		)
-		return
 	}
 
 	// Validate all tag combinations have entries for all months
