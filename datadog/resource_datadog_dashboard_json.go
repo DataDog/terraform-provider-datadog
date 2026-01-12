@@ -99,6 +99,21 @@ func deleteWidgetID(widgets []interface{}) {
 	}
 }
 
+// stripDeprecatedFields removes fields that are no longer accepted by the API
+// but are still returned for backward compatibility
+func stripDeprecatedFields(dashboardJSON string) (string, error) {
+	dashboardMap, err := structure.ExpandJsonFromString(dashboardJSON)
+	if err != nil {
+		return "", err
+	}
+	
+	// Remove is_read_only as it's no longer accepted by the API
+	// (though still returned for backward compatibility)
+	delete(dashboardMap, "is_read_only")
+	
+	return structure.FlattenJsonToString(dashboardMap)
+}
+
 func resourceDatadogDashboardJSONRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
@@ -129,8 +144,14 @@ func resourceDatadogDashboardJSONCreate(ctx context.Context, d *schema.ResourceD
 	auth := providerConf.Auth
 
 	dashboard := d.Get("dashboard").(string)
+	
+	// Strip deprecated fields before sending to API
+	dashboardToSend, err := stripDeprecatedFields(dashboard)
+	if err != nil {
+		return diag.FromErr(fmt.Errorf("error preparing dashboard for API: %s", err))
+	}
 
-	respByte, httpresp, err := utils.SendRequest(auth, apiInstances.HttpClient, "POST", path, &dashboard)
+	respByte, httpresp, err := utils.SendRequest(auth, apiInstances.HttpClient, "POST", path, &dashboardToSend)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error creating resource")
 	}
@@ -182,8 +203,14 @@ func resourceDatadogDashboardJSONUpdate(ctx context.Context, d *schema.ResourceD
 
 	dashboard := d.Get("dashboard").(string)
 	id := d.Id()
+	
+	// Strip deprecated fields before sending to API
+	dashboardToSend, err := stripDeprecatedFields(dashboard)
+	if err != nil {
+		return diag.FromErr(fmt.Errorf("error preparing dashboard for API: %s", err))
+	}
 
-	respByte, httpresp, err := utils.SendRequest(auth, apiInstances.HttpClient, "PUT", path+"/"+id, &dashboard)
+	respByte, httpresp, err := utils.SendRequest(auth, apiInstances.HttpClient, "PUT", path+"/"+id, &dashboardToSend)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error updating dashboard")
 	}
@@ -253,9 +280,16 @@ func prepResource(attrMap map[string]interface{}) map[string]interface{} {
 	if widgets, ok := attrMap["widgets"].([]interface{}); ok {
 		deleteWidgetID(widgets)
 	}
-	// 'is_read_only' is deprecated and no longer supported by the Datadog API
-	// but it is still returned by the API. It needs to be removed to avoid API errors.
-	delete(attrMap, "is_read_only")
+	// 'restricted_roles' takes precedence over 'is_read_only'
+	if _, ok := attrMap["restricted_roles"].([]interface{}); ok {
+		delete(attrMap, "is_read_only")
+	} else {
+		// `is_read_only` defaults to false.
+		// We set it manually to avoid continous diff when not set.
+		if _, ok := attrMap["is_read_only"]; !ok {
+			attrMap["is_read_only"] = false
+		}
+	}
 	// handle `notify_list` order
 	if notifyList, ok := attrMap["notify_list"].([]interface{}); ok {
 		sort.SliceStable(notifyList, func(i, j int) bool {
