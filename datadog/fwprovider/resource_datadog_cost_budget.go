@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+	"github.com/hashicorp/terraform-plugin-framework/attr"
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -38,13 +39,13 @@ type costBudgetModel struct {
 	StartMonth   types.Int64   `tfsdk:"start_month"`
 	EndMonth     types.Int64   `tfsdk:"end_month"`
 	TotalAmount  types.Float64 `tfsdk:"total_amount"`
-	Entries      []budgetEntry `tfsdk:"entries"`
+	Entries      types.List    `tfsdk:"entries"`
 }
 
 type budgetEntry struct {
 	Amount     types.Float64 `tfsdk:"amount"`
 	Month      types.Int64   `tfsdk:"month"`
-	TagFilters []tagFilter   `tfsdk:"tag_filters"`
+	TagFilters types.List    `tfsdk:"tag_filters"`
 }
 
 type tagFilter struct {
@@ -132,14 +133,14 @@ func (r *costBudgetResource) Create(ctx context.Context, req resource.CreateRequ
 		return
 	}
 
-	apiReq := buildBudgetWithEntriesFromModel(plan)
+	apiReq := buildBudgetWithEntriesFromModel(ctx, plan)
 	apiResp, response, err := r.Api.UpsertBudget(r.Auth, apiReq)
 	if err != nil {
 		resp.Diagnostics.AddError("Error creating budget", utils.TranslateClientError(err, response, "").Error())
 		return
 	}
 
-	setModelFromBudgetWithEntries(&plan, apiResp)
+	setModelFromBudgetWithEntries(ctx, &plan, apiResp)
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 }
@@ -157,7 +158,7 @@ func (r *costBudgetResource) Read(ctx context.Context, req resource.ReadRequest,
 		return
 	}
 
-	setModelFromBudgetWithEntries(&state, apiResp)
+	setModelFromBudgetWithEntries(ctx, &state, apiResp)
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
@@ -178,14 +179,14 @@ func (r *costBudgetResource) Update(ctx context.Context, req resource.UpdateRequ
 	}
 	plan.ID = state.ID
 
-	apiReq := buildBudgetWithEntriesFromModel(plan)
+	apiReq := buildBudgetWithEntriesFromModel(ctx, plan)
 	apiResp, response, err := r.Api.UpsertBudget(r.Auth, apiReq)
 	if err != nil {
 		resp.Diagnostics.AddError("Error updating budget", utils.TranslateClientError(err, response, "").Error())
 		return
 	}
 
-	setModelFromBudgetWithEntries(&plan, apiResp)
+	setModelFromBudgetWithEntries(ctx, &plan, apiResp)
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 }
@@ -210,11 +211,23 @@ func (r *costBudgetResource) ImportState(ctx context.Context, req resource.Impor
 
 // ValidateConfig performs client-side validation during terraform plan
 // Note: This duplicates the API's validation logic in BudgetWithEntries.validate() in dd-source
-// Will be replaced by API-based validation (dry-run or /validate endpoint) in a future release
+// Will be replaced by API-based validation (/validate endpoint) in a future release
 func (r *costBudgetResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
 	var data costBudgetModel
 	resp.Diagnostics.Append(req.Config.Get(ctx, &data)...)
 	if resp.Diagnostics.HasError() || data.MetricsQuery.IsUnknown() || data.StartMonth.IsUnknown() || data.EndMonth.IsUnknown() {
+		return
+	}
+
+	// Skip validation if entries are unknown
+	if data.Entries.IsNull() || data.Entries.IsUnknown() {
+		return
+	}
+
+	// Convert types.List to []budgetEntry for validation
+	var entries []budgetEntry
+	resp.Diagnostics.Append(data.Entries.ElementsAs(ctx, &entries, false)...)
+	if resp.Diagnostics.HasError() {
 		return
 	}
 
@@ -274,7 +287,7 @@ func (r *costBudgetResource) ValidateConfig(ctx context.Context, req resource.Va
 	entriesMap := make(map[string]map[int64]bool)
 
 	// Validate entries
-	for i, entry := range data.Entries {
+	for i, entry := range entries {
 		month := entry.Month.ValueInt64()
 		amount := entry.Amount.ValueFloat64()
 
@@ -296,8 +309,20 @@ func (r *costBudgetResource) ValidateConfig(ctx context.Context, req resource.Va
 			)
 		}
 
+		// Skip tag_filters validation if unknown
+		if entry.TagFilters.IsNull() || entry.TagFilters.IsUnknown() {
+			continue
+		}
+
+		// Convert types.List to []tagFilter for validation
+		var tagFilters []tagFilter
+		resp.Diagnostics.Append(entry.TagFilters.ElementsAs(ctx, &tagFilters, false)...)
+		if resp.Diagnostics.HasError() {
+			return
+		}
+
 		// Validate tag_filters count
-		if len(entry.TagFilters) != len(tags) {
+		if len(tagFilters) != len(tags) {
 			resp.Diagnostics.AddAttributeError(
 				frameworkPath.Root("entries").AtListIndex(i).AtName("tag_filters"),
 				"Invalid tag_filters",
@@ -307,8 +332,8 @@ func (r *costBudgetResource) ValidateConfig(ctx context.Context, req resource.Va
 		}
 
 		// Validate tag_key and collect tag values
-		tagValues := make([]string, len(entry.TagFilters))
-		for j, tf := range entry.TagFilters {
+		tagValues := make([]string, len(tagFilters))
+		for j, tf := range tagFilters {
 			tagKey := tf.TagKey.ValueString()
 
 			if !slices.Contains(tags, tagKey) {
@@ -333,7 +358,7 @@ func (r *costBudgetResource) ValidateConfig(ctx context.Context, req resource.Va
 	}
 
 	// Validate entries exist
-	if len(entriesMap) == 0 {
+	if len(entriesMap) == 0 && len(entries) == 0 {
 		resp.Diagnostics.AddAttributeError(
 			frameworkPath.Root("entries"),
 			"Missing entries",
@@ -351,6 +376,31 @@ func (r *costBudgetResource) ValidateConfig(ctx context.Context, req resource.Va
 				fmt.Sprintf("missing entries for tag value pair: %v", tagCombination),
 			)
 		}
+	}
+}
+
+// --- Helper functions ---
+
+// tagFilterAttrTypes returns the attribute type definition for tagFilter
+// This is used for converting between []tagFilter and types.List
+func tagFilterAttrTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"tag_key":   types.StringType,
+		"tag_value": types.StringType,
+	}
+}
+
+// budgetEntryAttrTypes returns the attribute type definition for budgetEntry
+// This is used for converting between []budgetEntry and types.List
+func budgetEntryAttrTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"amount": types.Float64Type,
+		"month":  types.Int64Type,
+		"tag_filters": types.ListType{
+			ElemType: types.ObjectType{
+				AttrTypes: tagFilterAttrTypes(),
+			},
+		},
 	}
 }
 
@@ -381,12 +431,20 @@ func calculateMonthCount(start, end int64) int {
 }
 
 // --- Helper functions to map between model and API types go here ---
-func buildBudgetWithEntriesFromModel(plan costBudgetModel) datadogV2.BudgetWithEntries {
-	// Convert entries
+func buildBudgetWithEntriesFromModel(ctx context.Context, plan costBudgetModel) datadogV2.BudgetWithEntries {
+	// Convert types.List to []budgetEntry
+	var planEntries []budgetEntry
+	plan.Entries.ElementsAs(ctx, &planEntries, false)
+
+	// Convert entries to API format
 	var entries []datadogV2.BudgetEntry
-	for _, e := range plan.Entries {
+	for _, e := range planEntries {
+		// Convert tag_filters from types.List to []tagFilter
+		var entryTagFilters []tagFilter
+		e.TagFilters.ElementsAs(ctx, &entryTagFilters, false)
+
 		var tagFilters []datadogV2.TagFilter
-		for _, tf := range e.TagFilters {
+		for _, tf := range entryTagFilters {
 			tagFilters = append(tagFilters, datadogV2.TagFilter{
 				TagKey:   tf.TagKey.ValueStringPointer(),
 				TagValue: tf.TagValue.ValueStringPointer(),
@@ -426,7 +484,7 @@ func buildBudgetWithEntriesFromModel(plan costBudgetModel) datadogV2.BudgetWithE
 	}
 }
 
-func setModelFromBudgetWithEntries(model *costBudgetModel, apiResp datadogV2.BudgetWithEntries) {
+func setModelFromBudgetWithEntries(ctx context.Context, model *costBudgetModel, apiResp datadogV2.BudgetWithEntries) {
 	if apiResp.Data == nil || apiResp.Data.Attributes == nil {
 		return
 	}
@@ -488,11 +546,24 @@ func setModelFromBudgetWithEntries(model *costBudgetModel, apiResp datadogV2.Bud
 			month = types.Int64Null()
 		}
 
+		// Convert []tagFilter to types.List
+		tagFiltersList, _ := types.ListValueFrom(
+			ctx,
+			types.ObjectType{AttrTypes: tagFilterAttrTypes()},
+			tagFilters,
+		)
+
 		entries = append(entries, budgetEntry{
 			Amount:     amount,
 			Month:      month,
-			TagFilters: tagFilters,
+			TagFilters: tagFiltersList,
 		})
 	}
-	model.Entries = entries
+
+	// Convert []budgetEntry to types.List
+	model.Entries, _ = types.ListValueFrom(
+		ctx,
+		types.ObjectType{AttrTypes: budgetEntryAttrTypes()},
+		entries,
+	)
 }
