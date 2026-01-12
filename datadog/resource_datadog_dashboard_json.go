@@ -99,6 +99,21 @@ func deleteWidgetID(widgets []interface{}) {
 	}
 }
 
+// stripDeprecatedFields removes fields that are no longer accepted by the API
+// but are still returned for backward compatibility
+func stripDeprecatedFields(dashboardJSON string) (string, error) {
+	dashboardMap, err := structure.ExpandJsonFromString(dashboardJSON)
+	if err != nil {
+		return "", err
+	}
+
+	// Remove is_read_only as it's no longer accepted by the API
+	// (though still returned for backward compatibility)
+	delete(dashboardMap, "is_read_only")
+
+	return structure.FlattenJsonToString(dashboardMap)
+}
+
 func resourceDatadogDashboardJSONRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
@@ -130,7 +145,13 @@ func resourceDatadogDashboardJSONCreate(ctx context.Context, d *schema.ResourceD
 
 	dashboard := d.Get("dashboard").(string)
 
-	respByte, httpresp, err := utils.SendRequest(auth, apiInstances.HttpClient, "POST", path, &dashboard)
+	// Strip deprecated fields before sending to API
+	dashboardToSend, err := stripDeprecatedFields(dashboard)
+	if err != nil {
+		return diag.FromErr(fmt.Errorf("error preparing dashboard for API: %s", err))
+	}
+
+	respByte, httpresp, err := utils.SendRequest(auth, apiInstances.HttpClient, "POST", path, &dashboardToSend)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error creating resource")
 	}
@@ -183,7 +204,13 @@ func resourceDatadogDashboardJSONUpdate(ctx context.Context, d *schema.ResourceD
 	dashboard := d.Get("dashboard").(string)
 	id := d.Id()
 
-	respByte, httpresp, err := utils.SendRequest(auth, apiInstances.HttpClient, "PUT", path+"/"+id, &dashboard)
+	// Strip deprecated fields before sending to API
+	dashboardToSend, err := stripDeprecatedFields(dashboard)
+	if err != nil {
+		return diag.FromErr(fmt.Errorf("error preparing dashboard for API: %s", err))
+	}
+
+	respByte, httpresp, err := utils.SendRequest(auth, apiInstances.HttpClient, "PUT", path+"/"+id, &dashboardToSend)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error updating dashboard")
 	}

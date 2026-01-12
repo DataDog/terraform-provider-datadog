@@ -9,7 +9,6 @@ resource "datadog_dashboard" "top_list_dashboard" {
 	title         = "{{uniq}}"
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "ordered"
-	is_read_only  = "true"
 
 	widget {
 		toplist_definition {
@@ -44,7 +43,6 @@ resource "datadog_dashboard" "top_list_dashboard" {
 	title         = "{{uniq}}"
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "ordered"
-	is_read_only  = "true"
 
 	widget {
 		toplist_definition {
@@ -74,7 +72,6 @@ resource "datadog_dashboard" "top_list_dashboard" {
 	title         = "{{uniq}}"
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "ordered"
-	is_read_only  = "true"
 	widget {
 		toplist_definition {
 		  request {
@@ -139,7 +136,6 @@ resource "datadog_dashboard" "top_list_dashboard" {
 	title         = "{{uniq}}"
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "ordered"
-	is_read_only  = "true"
 
 	widget {
 		toplist_definition {
@@ -216,7 +212,6 @@ var datadogDashboardTopListAsserts = []string{
 	"title = {{uniq}}",
 	"widget.0.toplist_definition.0.request.0.conditional_formats.0.custom_bg_color =",
 	"widget.0.toplist_definition.0.request.0.conditional_formats.0.palette = white_on_red",
-	"is_read_only = true",
 	"widget.0.toplist_definition.0.live_span = 1w",
 	"widget.0.toplist_definition.0.time.% = 0",
 	"widget.0.toplist_definition.0.request.0.conditional_formats.0.hide_value = false",
@@ -236,7 +231,6 @@ var datadogDashboardTopListAsserts = []string{
 
 var datadogDashboardTopListFormulaAsserts = []string{
 	"title = {{uniq}}",
-	"is_read_only = true",
 	"layout_type = ordered",
 	"description = Created using the Datadog provider in Terraform",
 	"widget.0.toplist_definition.0.request.0.formula.0.formula_expression = query1 + query2",
@@ -265,7 +259,6 @@ var datadogDashboardTopListAssertsWithStyle = []string{
 	"title = {{uniq}}",
 	"description = Created using the Datadog provider in Terraform",
 	"layout_type = ordered",
-	"is_read_only = true",
 
 	"widget.0.toplist_definition.0.request.0.conditional_formats.0.timeframe =",
 	"widget.0.toplist_definition.0.request.0.conditional_formats.0.image_url =",

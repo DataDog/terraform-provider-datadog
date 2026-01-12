@@ -9,7 +9,6 @@ resource "datadog_dashboard" "trace_service_dashboard" {
 	title         = "{{uniq}}"
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "free"
-	is_read_only  = "true"
 
 	widget {
 		trace_service_definition {
@@ -44,7 +43,6 @@ resource "datadog_dashboard" "trace_service_dashboard" {
 	title         = "{{uniq}}"
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "free"
-	is_read_only  = "true"
 
 	widget {
 		trace_service_definition {
@@ -77,7 +75,6 @@ resource "datadog_dashboard" "trace_service_dashboard" {
 var datadogDashboardTraceServiceAsserts = []string{
 	"widget.0.trace_service_definition.0.show_distribution = true",
 	"widget.0.trace_service_definition.0.title = postgres #env:datadoghq.com",
-	"is_read_only = true",
 	"widget.0.trace_service_definition.0.show_hits = true",
 	"widget.0.trace_service_definition.0.span_name = postgres.connection.rollback",
 	"widget.0.widget_layout.0.height = 43",

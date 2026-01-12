@@ -7,7 +7,6 @@ resource "datadog_dashboard" "powerpack_dashboard" {
 	title         = "{{uniq}}"
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "ordered"
-	is_read_only  = "true"
 
   widget {
     powerpack_definition {
@@ -52,7 +51,6 @@ var datadogDashboardPowerpackAsserts = []string{
 	"widget.0.powerpack_definition.0.template_variables.0.controlled_externally.0.prefix = dc",
 
 	"layout_type = ordered",
-	"is_read_only = true",
 }
 
 func TestAccDatadogDashboardPowerpack(t *testing.T) {

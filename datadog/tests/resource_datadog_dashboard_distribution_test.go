@@ -9,8 +9,7 @@ resource "datadog_dashboard" "distribution_dashboard" {
 	title         = "{{uniq}}"
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "ordered"
-	is_read_only  = "true"
-	
+
 	widget {
 		distribution_definition {
 			title = "Avg of system.cpu.user over account:prod by service,account"
@@ -48,8 +47,7 @@ resource "datadog_dashboard" "distribution_dashboard" {
 	title         = "{{uniq}}"
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "ordered"
-	is_read_only  = "true"
-	
+
 	widget {
 		distribution_definition {
 			title = "Avg of system.cpu.user over account:prod by service,account"
@@ -90,8 +88,7 @@ resource "datadog_dashboard" "distribution_dashboard" {
 	title         = "{{uniq}}"
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "ordered"
-	is_read_only  = "true"
-	
+
 	widget {
 		distribution_definition {
 			title = "Avg of system.cpu.user over account:prod by service,account"
@@ -145,7 +142,6 @@ var datadogDashboardDistributionAsserts = []string{
 	"widget.0.distribution_definition.0.yaxis.0.include_zero = true",
 	"widget.0.distribution_definition.0.yaxis.0.label = cpu (%)",
 	"layout_type = ordered",
-	"is_read_only = true",
 }
 
 var datadogDashboardDistributionApmStatsQueryAsserts = []string{

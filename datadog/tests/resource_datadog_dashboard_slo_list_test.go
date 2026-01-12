@@ -9,7 +9,6 @@ resource "datadog_dashboard" "slo_list_dashboard" {
 	title         = "{{uniq}}"
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "ordered"
-	is_read_only  = "true"
 
 	widget {
 		slo_list_definition {
@@ -38,7 +37,6 @@ var datadogDashboardSloListAsserts = []string{
 	"title = {{uniq}}",
 	"description = Created using the Datadog provider in Terraform",
 	"layout_type = ordered",
-	"is_read_only = true",
 	"widget.0.slo_list_definition.0.request.0.query.0.query_string = env:prod AND service:my-app",
 	"widget.0.slo_list_definition.0.request.0.query.0.limit = 30",
 	"widget.0.slo_list_definition.0.title = my title",
