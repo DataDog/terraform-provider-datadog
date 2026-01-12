@@ -106,11 +106,11 @@ func stripDeprecatedFields(dashboardJSON string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	
+
 	// Remove is_read_only as it's no longer accepted by the API
 	// (though still returned for backward compatibility)
 	delete(dashboardMap, "is_read_only")
-	
+
 	return structure.FlattenJsonToString(dashboardMap)
 }
 
@@ -144,7 +144,7 @@ func resourceDatadogDashboardJSONCreate(ctx context.Context, d *schema.ResourceD
 	auth := providerConf.Auth
 
 	dashboard := d.Get("dashboard").(string)
-	
+
 	// Strip deprecated fields before sending to API
 	dashboardToSend, err := stripDeprecatedFields(dashboard)
 	if err != nil {
@@ -203,7 +203,7 @@ func resourceDatadogDashboardJSONUpdate(ctx context.Context, d *schema.ResourceD
 
 	dashboard := d.Get("dashboard").(string)
 	id := d.Id()
-	
+
 	// Strip deprecated fields before sending to API
 	dashboardToSend, err := stripDeprecatedFields(dashboard)
 	if err != nil {
