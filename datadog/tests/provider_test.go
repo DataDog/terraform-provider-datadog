@@ -253,6 +253,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_on_call_schedule_test":                                       "on-call",
 	"tests/resource_datadog_on_call_team_routing_rules_test":                             "on-call",
 	"tests/resource_datadog_on_call_user_notification_channel_test":                      "on-call",
+	"tests/resource_datadog_on_call_user_notification_rule_test":                         "on-call",
 	"tests/resource_datadog_organization_settings_test":                                  "organization",
 	"tests/resource_datadog_org_connection_test":                                         "org_connection",
 	"tests/resource_datadog_reference_table_test":                                        "reference-tables",

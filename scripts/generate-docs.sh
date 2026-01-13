@@ -8,6 +8,7 @@ exclude_files=(
   "docs/resources/on_call_schedule.md"
   "docs/resources/on_call_team_routing_rules.md"
   "docs/resources/on_call_user_notification_channel.md"
+  "docs/resources/on_call_user_notification_rule.md"
 )
 
 # Check if manual changes were made to any excluded files and exit
