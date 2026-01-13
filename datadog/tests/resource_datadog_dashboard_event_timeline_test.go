@@ -9,7 +9,6 @@ resource "datadog_dashboard" "event_timeline_dashboard" {
 	title         = "{{uniq}}"
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "free"
-	is_read_only  = "true"
 	
 	widget {
 		event_timeline_definition {
@@ -34,7 +33,6 @@ resource "datadog_dashboard" "event_timeline_dashboard" {
 	title         = "{{uniq}}"
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "free"
-	is_read_only  = "true"
 	
 	widget {
 		event_timeline_definition {
@@ -62,7 +60,6 @@ var datadogDashboardEventTimelineAsserts = []string{
 	"description = Created using the Datadog provider in Terraform",
 	"widget.0.event_timeline_definition.0.live_span = 1h",
 	"title = {{uniq}}",
-	"is_read_only = true",
 	"widget.0.widget_layout.0.width = 32",
 	"widget.0.event_timeline_definition.0.title_size = 16",
 	"layout_type = free",

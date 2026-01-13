@@ -7,7 +7,6 @@ resource "datadog_dashboard" "topology_map_dashboard" {
   title         = "{{uniq}}"
   description   = "Created using the Datadog provider in Terraform"
   layout_type   = "free"
-  is_read_only  = "true"
 
   widget {
 		topology_map_definition {
@@ -57,7 +56,6 @@ var datadogDashboardTopologyMapAsserts = []string{
 	"widget.0.topology_map_definition.0.request.0.query.0.filters.0 = env:prod",
 	"widget.0.topology_map_definition.0.request.0.query.0.service = master-db",
 	"widget.0.topology_map_definition.0.request.0.query.0.filters.1 = datacenter:dc1",
-	"is_read_only = true",
 	"widget.0.widget_layout.0.y = 5",
 	"widget.0.topology_map_definition.0.title = env: prod, datacenter:dc1, service: master-db",
 	"widget.0.widget_layout.0.height = 43",

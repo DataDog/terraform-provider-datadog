@@ -14,7 +14,6 @@ resource "datadog_dashboard" "note_dashboard" {
 	title         = "{{uniq}}"
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "ordered"
-	is_read_only  = "true"
 
 	widget {
 		note_definition {
@@ -36,7 +35,6 @@ resource "datadog_dashboard" "note_dashboard" {
 	title         = "%s"
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "ordered"
-	is_read_only  = "true"
 
 	widget {
 		note_definition {
@@ -55,7 +53,6 @@ var datadogDashboardNoteAsserts = []string{
 	"widget.0.note_definition.0.show_tick = true",
 	"widget.0.note_definition.0.tick_edge = bottom",
 	"layout_type = ordered",
-	"is_read_only = true",
 	"widget.0.note_definition.0.tick_pos = 50%",
 	"widget.0.note_definition.0.background_color = green",
 }
