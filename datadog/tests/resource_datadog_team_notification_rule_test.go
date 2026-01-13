@@ -238,7 +238,7 @@ func TestAccTeamNotificationRuleUpdate(t *testing.T) {
 					testAccCheckDatadogTeamNotificationRuleExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr("datadog_team_notification_rule.foo", "slack.channel", "#alerts"),
 					resource.TestCheckResourceAttr("datadog_team_notification_rule.foo", "slack.workspace", "MyWorkspace"),
-					resource.TestCheckNoResourceAttr("datadog_team_notification_rule.foo", "email.enabled"),
+					resource.TestCheckResourceAttr("datadog_team_notification_rule.foo", "email.enabled", "false"),
 				),
 			},
 			{
@@ -325,6 +325,9 @@ func testAccCheckDatadogTeamNotificationRuleSlackOnly(uniq string) string {
 		}
 		resource "datadog_team_notification_rule" "foo" {
 		  team_id = datadog_team.foo.id
+		  email {
+			enabled = false
+		  }
 		  slack {
 			channel   = "#alerts"
 			workspace = "MyWorkspace"
