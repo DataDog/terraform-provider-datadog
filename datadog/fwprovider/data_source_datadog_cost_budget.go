@@ -25,7 +25,7 @@ type costBudgetDataSourceModel struct {
 	StartMonth   types.Int64   `tfsdk:"start_month"`
 	EndMonth     types.Int64   `tfsdk:"end_month"`
 	TotalAmount  types.Float64 `tfsdk:"total_amount"`
-	Entries      []budgetEntry `tfsdk:"entries"`
+	Entries      types.List    `tfsdk:"entries"`
 }
 
 func (d *costBudgetDataSource) Metadata(_ context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
@@ -108,12 +108,12 @@ func (d *costBudgetDataSource) Read(ctx context.Context, req datasource.ReadRequ
 		return
 	}
 
-	setDataSourceModelFromBudgetWithEntries(&state, apiResp)
+	setDataSourceModelFromBudgetWithEntries(ctx, &state, apiResp)
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
-func setDataSourceModelFromBudgetWithEntries(model *costBudgetDataSourceModel, apiResp datadogV2.BudgetWithEntries) {
+func setDataSourceModelFromBudgetWithEntries(ctx context.Context, model *costBudgetDataSourceModel, apiResp datadogV2.BudgetWithEntries) {
 	if apiResp.Data == nil || apiResp.Data.Attributes == nil {
 		return
 	}
@@ -175,11 +175,24 @@ func setDataSourceModelFromBudgetWithEntries(model *costBudgetDataSourceModel, a
 			month = types.Int64Null()
 		}
 
+		// Convert []tagFilter to types.List
+		tagFiltersList, _ := types.ListValueFrom(
+			ctx,
+			types.ObjectType{AttrTypes: tagFilterAttrTypes()},
+			tagFilters,
+		)
+
 		entries = append(entries, budgetEntry{
 			Amount:     amount,
 			Month:      month,
-			TagFilters: tagFilters,
+			TagFilters: tagFiltersList,
 		})
 	}
-	model.Entries = entries
+
+	// Convert []budgetEntry to types.List
+	model.Entries, _ = types.ListValueFrom(
+		ctx,
+		types.ObjectType{AttrTypes: budgetEntryAttrTypes()},
+		entries,
+	)
 }
