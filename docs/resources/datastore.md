@@ -16,11 +16,11 @@ Provides a Datadog Datastore resource. This can be used to create and manage Dat
 # Create new datastore resource
 
 resource "datadog_datastore" "foo" {
-    description                      = "My application datastore"
-    name                             = "my-datastore"
-    org_access                       = "manager"
-    primary_column_name              = "id"
-    primary_key_generation_strategy  = "none"
+  description                     = "My application datastore"
+  name                            = "my-datastore"
+  org_access                      = "manager"
+  primary_column_name             = "id"
+  primary_key_generation_strategy = "none"
 }
 ```
 
