@@ -1,0 +1,2 @@
+terraform import datadog_integration_aws_account_ccm_config.foo "<aws_account_config_id>"
+
