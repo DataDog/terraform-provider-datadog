@@ -35,8 +35,7 @@ func TestAccDatadogApiKey_Update(t *testing.T) {
 					testAccCheckDatadogApiKeyExists(providers.frameworkProvider, resourceName),
 					resource.TestCheckResourceAttr(resourceName, "name", apiKeyName),
 					resource.TestCheckResourceAttrSet(resourceName, "key"),
-					// Without encryption_key_wo, encrypted_key should be empty
-					resource.TestCheckResourceAttr(resourceName, "encrypted_key", ""),
+					resource.TestCheckNoResourceAttr(resourceName, "encrypted_key"),
 					resource.TestCheckResourceAttr(resourceName, "remote_config_read_enabled", "true"),
 					func(s *terraform.State) error {
 						resource, ok := s.RootModule().Resources[resourceName]
@@ -259,4 +258,68 @@ func testAccCheckDatadogApiKeyEncryptedKeyValid(resourceName, encryptionKey stri
 
 		return nil
 	}
+}
+
+func TestAccDatadogApiKey_AddEncryption(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	apiKeyName := uniqueEntityName(ctx, t)
+	resourceName := "datadog_api_key.foo"
+	encryptionKey := "01234567890123456789012345678901"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogApiKeyDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogApiKeyConfigRequired(apiKeyName, nil),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogApiKeyExists(providers.frameworkProvider, resourceName),
+					resource.TestCheckResourceAttrSet(resourceName, "key"),
+					resource.TestCheckNoResourceAttr(resourceName, "encrypted_key"),
+				),
+			},
+			{
+				Config: testAccCheckDatadogApiKeyConfigWithEncryption(apiKeyName, encryptionKey),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogApiKeyExists(providers.frameworkProvider, resourceName),
+					resource.TestCheckNoResourceAttr(resourceName, "key"),
+					resource.TestCheckResourceAttrSet(resourceName, "encrypted_key"),
+					testAccCheckDatadogApiKeyEncryptedKeyValid(resourceName, encryptionKey),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogApiKey_RemoveEncryption(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	apiKeyName := uniqueEntityName(ctx, t)
+	resourceName := "datadog_api_key.foo"
+	encryptionKey := "01234567890123456789012345678901"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogApiKeyDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogApiKeyConfigWithEncryption(apiKeyName, encryptionKey),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogApiKeyExists(providers.frameworkProvider, resourceName),
+					resource.TestCheckNoResourceAttr(resourceName, "key"),
+					resource.TestCheckResourceAttrSet(resourceName, "encrypted_key"),
+				),
+			},
+			{
+				Config: testAccCheckDatadogApiKeyConfigRequired(apiKeyName, nil),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogApiKeyExists(providers.frameworkProvider, resourceName),
+					// After removing encryption, both key fields are null
+					resource.TestCheckNoResourceAttr(resourceName, "key"),
+					resource.TestCheckNoResourceAttr(resourceName, "encrypted_key"),
+				),
+			},
+		},
+	})
 }
