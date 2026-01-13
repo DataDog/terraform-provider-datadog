@@ -1,3 +1,7 @@
+## 4.0.0 (Unreleased)
+
+This is a major release with breaking changes. Please refer to the [v4.0.0 Upgrade Guide](https://registry.terraform.io/providers/DataDog/datadog/latest/docs/guides/v4-upgrade-guide) for migration instructions.
+
 ## 3.84.0 (January 8, 2026)
 
 ### BUGFIXES
