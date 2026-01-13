@@ -28,11 +28,11 @@ func TestAccDatastoreItemBasic(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatastoreItemExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttrSet(
-						"datastore_item.test_item", "datastore_id"),
+						"datadog_datastore_item.test_item", "datastore_id"),
 					resource.TestCheckResourceAttr(
-						"datastore_item.test_item", "item_key", fmt.Sprintf("test-key-%s", uniq)),
+						"datadog_datastore_item.test_item", "item_key", fmt.Sprintf("test-key-%s", uniq)),
 					resource.TestCheckResourceAttr(
-						"datastore_item.test_item", "value.test_field", "test_value"),
+						"datadog_datastore_item.test_item", "value.test_field", "test_value"),
 				),
 			},
 		},
@@ -41,15 +41,15 @@ func TestAccDatastoreItemBasic(t *testing.T) {
 
 func testAccCheckDatastoreItem(uniq string) string {
 	return fmt.Sprintf(`
-resource "datastore" "test_datastore" {
+resource "datadog_datastore" "test_datastore" {
     name                             = "test-datastore-%s"
     description                      = "Test datastore for items"
     primary_column_name              = "id"
     primary_key_generation_strategy  = "none"
 }
 
-resource "datastore_item" "test_item" {
-    datastore_id = datastore.test_datastore.id
+resource "datadog_datastore_item" "test_item" {
+    datastore_id = datadog_datastore.test_datastore.id
     item_key     = "test-key-%s"
     value = {
         id          = "test-key-%s"
@@ -73,7 +73,7 @@ func testAccCheckDatastoreItemDestroy(accProvider *fwprovider.FrameworkProvider)
 func datastoreItemDestroyHelper(auth context.Context, s *terraform.State, apiInstances *utils.ApiInstances) error {
 	err := utils.Retry(2, 10, func() error {
 		for _, r := range s.RootModule().Resources {
-			if r.Type != "datastore_item" {
+			if r.Type != "datadog_datastore_item" {
 				continue
 			}
 
@@ -124,7 +124,7 @@ func testAccCheckDatastoreItemExists(accProvider *fwprovider.FrameworkProvider) 
 
 func datastoreItemExistsHelper(auth context.Context, s *terraform.State, apiInstances *utils.ApiInstances) error {
 	for _, r := range s.RootModule().Resources {
-		if r.Type != "datastore_item" {
+		if r.Type != "datadog_datastore_item" {
 			continue
 		}
 

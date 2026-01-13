@@ -30,6 +30,12 @@ type datastoreModel struct {
 	OrgAccess                    types.String `tfsdk:"org_access"`
 	PrimaryColumnName            types.String `tfsdk:"primary_column_name"`
 	PrimaryKeyGenerationStrategy types.String `tfsdk:"primary_key_generation_strategy"`
+	// Computed fields
+	CreatedAt       types.String `tfsdk:"created_at"`
+	CreatorUserId   types.Int64  `tfsdk:"creator_user_id"`
+	CreatorUserUuid types.String `tfsdk:"creator_user_uuid"`
+	ModifiedAt      types.String `tfsdk:"modified_at"`
+	OrgId           types.Int64  `tfsdk:"org_id"`
 }
 
 func NewDatastoreResource() resource.Resource {
@@ -69,6 +75,26 @@ func (r *datastoreResource) Schema(_ context.Context, _ resource.SchemaRequest, 
 			"primary_key_generation_strategy": schema.StringAttribute{
 				Optional:    true,
 				Description: "Can be set to `uuid` to automatically generate primary keys when new items are added. Default value is `none`, which requires you to supply a primary key for each new item.",
+			},
+			"created_at": schema.StringAttribute{
+				Computed:    true,
+				Description: "Timestamp when the datastore was created.",
+			},
+			"creator_user_id": schema.Int64Attribute{
+				Computed:    true,
+				Description: "The numeric ID of the user who created the datastore.",
+			},
+			"creator_user_uuid": schema.StringAttribute{
+				Computed:    true,
+				Description: "The UUID of the user who created the datastore.",
+			},
+			"modified_at": schema.StringAttribute{
+				Computed:    true,
+				Description: "Timestamp when the datastore was last modified.",
+			},
+			"org_id": schema.Int64Attribute{
+				Computed:    true,
+				Description: "The ID of the organization that owns this datastore.",
 			},
 			"id": utils.ResourceIDAttribute(),
 		},
@@ -122,14 +148,28 @@ func (r *datastoreResource) Create(ctx context.Context, request resource.CreateR
 
 	resp, _, err := r.Api.CreateDatastore(r.Auth, *body)
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving Datastore"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error creating Datastore"))
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {
 		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
 		return
 	}
-	r.updateState(ctx, &state, &resp)
+
+	// Set the ID from create response
+	if data, ok := resp.GetDataOk(); ok && data != nil {
+		if id, ok := data.GetIdOk(); ok && id != nil {
+			state.ID = types.StringValue(*id)
+		}
+	}
+
+	// Read back the full datastore to populate all fields
+	readResp, _, err := r.Api.GetDatastore(r.Auth, state.ID.ValueString())
+	if err != nil {
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error reading created Datastore"))
+		return
+	}
+	r.updateState(ctx, &state, &readResp)
 
 	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
@@ -174,7 +214,7 @@ func (r *datastoreResource) Delete(ctx context.Context, request resource.DeleteR
 
 	id := state.ID.ValueString()
 
-	_, httpResp, err := r.Api.DeleteDatastore(r.Auth, id)
+	httpResp, err := r.Api.DeleteDatastore(r.Auth, id)
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == 404 {
 			return
@@ -185,46 +225,56 @@ func (r *datastoreResource) Delete(ctx context.Context, request resource.DeleteR
 }
 
 func (r *datastoreResource) updateState(ctx context.Context, state *datastoreModel, resp *datadogV2.Datastore) {
-	state.ID = types.StringValue(resp.GetDatastoreId())
+	// Get the data wrapper
+	data := resp.GetData()
 
-	if createdAt, ok := resp.GetCreatedAtOk(); ok {
+	// Set ID
+	if id, ok := data.GetIdOk(); ok && id != nil {
+		state.ID = types.StringValue(*id)
+	}
+
+	// Get attributes
+	attributes := data.GetAttributes()
+
+	if createdAt, ok := attributes.GetCreatedAtOk(); ok && createdAt != nil {
 		state.CreatedAt = types.StringValue(createdAt.String())
 	}
 
-	if creatorUserId, ok := resp.GetCreatorUserIdOk(); ok {
-		state.CreatorUserId = types.Int64Value(int64(creatorUserId))
+	if creatorUserId, ok := attributes.GetCreatorUserIdOk(); ok && creatorUserId != nil {
+		state.CreatorUserId = types.Int64Value(*creatorUserId)
 	}
 
-	if creatorUserUuid, ok := resp.GetCreatorUserUuidOk(); ok {
+	if creatorUserUuid, ok := attributes.GetCreatorUserUuidOk(); ok && creatorUserUuid != nil {
 		state.CreatorUserUuid = types.StringValue(*creatorUserUuid)
 	}
 
-	if description, ok := resp.GetDescriptionOk(); ok {
+	if description, ok := attributes.GetDescriptionOk(); ok && description != nil {
 		state.Description = types.StringValue(*description)
 	}
 
-	if modifiedAt, ok := resp.GetModifiedAtOk(); ok {
+	if modifiedAt, ok := attributes.GetModifiedAtOk(); ok && modifiedAt != nil {
 		state.ModifiedAt = types.StringValue(modifiedAt.String())
 	}
 
-	if name, ok := resp.GetNameOk(); ok {
+	if name, ok := attributes.GetNameOk(); ok && name != nil {
 		state.Name = types.StringValue(*name)
 	}
 
-	if orgId, ok := resp.GetOrgIdOk(); ok {
-		state.OrgId = types.Int64Value(int64(orgId))
+	if orgId, ok := attributes.GetOrgIdOk(); ok && orgId != nil {
+		state.OrgId = types.Int64Value(*orgId)
 	}
 
-	state.PrimaryColumnName = types.StringValue(resp.GetPrimaryColumnName())
+	if primaryColumnName, ok := attributes.GetPrimaryColumnNameOk(); ok && primaryColumnName != nil {
+		state.PrimaryColumnName = types.StringValue(*primaryColumnName)
+	}
 
-	if primaryKeyGenerationStrategy, ok := resp.GetPrimaryKeyGenerationStrategyOk(); ok {
+	if primaryKeyGenerationStrategy, ok := attributes.GetPrimaryKeyGenerationStrategyOk(); ok && primaryKeyGenerationStrategy != nil {
 		state.PrimaryKeyGenerationStrategy = types.StringValue(string(*primaryKeyGenerationStrategy))
 	}
 }
 
 func (r *datastoreResource) buildDatastoreRequestBody(ctx context.Context, state *datastoreModel) (*datadogV2.CreateAppsDatastoreRequest, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
-	req := &datadogV2.CreateAppsDatastoreRequest{}
 	attributes := datadogV2.NewCreateAppsDatastoreRequestDataAttributesWithDefaults()
 
 	if !state.Description.IsNull() {
@@ -252,7 +302,6 @@ func (r *datastoreResource) buildDatastoreRequestBody(ctx context.Context, state
 
 func (r *datastoreResource) buildDatastoreUpdateRequestBody(ctx context.Context, state *datastoreModel) (*datadogV2.UpdateAppsDatastoreRequest, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
-	req := &datadogV2.UpdateAppsDatastoreRequest{}
 	attributes := datadogV2.NewUpdateAppsDatastoreRequestDataAttributesWithDefaults()
 
 	if !state.Description.IsNull() {

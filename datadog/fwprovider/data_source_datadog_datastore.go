@@ -62,7 +62,7 @@ func (d *datadogDatastoreDataSource) Schema(_ context.Context, _ datasource.Sche
 			// Query Parameters
 			"datastore_id": schema.StringAttribute{
 				Optional:    true,
-				Description: "UPDATE ME",
+				Description: "The unique identifier of the datastore to retrieve. If not specified, returns a single datastore from the list.",
 			},
 			// Computed values
 			"created_at": schema.StringAttribute{
@@ -116,64 +116,104 @@ func (d *datadogDatastoreDataSource) Read(ctx context.Context, request datasourc
 		datastoreId := state.DatastoreId.ValueString()
 		ddResp, _, err := d.Api.GetDatastore(d.Auth, datastoreId)
 		if err != nil {
-			response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error getting datadog datastore"))
+			response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error getting datastore"))
 			return
 		}
 
-		d.updateState(ctx, &state, ddResp.Data)
+		d.updateState(ctx, &state, ddResp.GetData())
 	} else {
-
-		optionalParams := datadogV2.ListDatastoresOptionalParameters{}
-
-		ddResp, _, err := d.Api.ListDatastores(d.Auth, optionalParams)
+		ddResp, _, err := d.Api.ListDatastores(d.Auth)
 		if err != nil {
-			response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error listing datadog datastore"))
+			response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error listing datastores"))
 			return
 		}
 
-		if len(ddResp.Data) > 1 {
+		data := ddResp.GetData()
+		if len(data) > 1 {
 			response.Diagnostics.AddError("filters returned more than one result, use more specific search criteria", "")
 			return
 		}
-		if len(ddResp.Data) == 0 {
+		if len(data) == 0 {
 			response.Diagnostics.AddError("filters returned no results", "")
 			return
 		}
 
-		d.updateStateFromListResponse(ctx, &state, &ddResp.Data[0])
+		d.updateStateFromListResponse(ctx, &state, &data[0])
 	}
 
 	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (d *datadogDatastoreDataSource) updateState(ctx context.Context, state *datadogDatastoreDataSourceModel, datastoreData *datadogV2.Datastore) {
-	state.ID = types.StringValue(datastoreData.GetId())
+func (d *datadogDatastoreDataSource) updateState(ctx context.Context, state *datadogDatastoreDataSourceModel, datastoreData datadogV2.DatastoreData) {
+	if id, ok := datastoreData.GetIdOk(); ok && id != nil {
+		state.ID = types.StringValue(*id)
+	}
 
 	attributes := datastoreData.GetAttributes()
-	state.CreatedAt = types.StringValue(attributes.GetCreatedAt().String())
-	state.CreatorUserId = types.Int64Value(int64(attributes.GetCreatorUserId()))
-	state.CreatorUserUuid = types.StringValue(attributes.GetCreatorUserUuid())
-	state.Description = types.StringValue(attributes.GetDescription())
-	state.ModifiedAt = types.StringValue(attributes.GetModifiedAt().String())
-	state.Name = types.StringValue(attributes.GetName())
-	state.OrgId = types.Int64Value(int64(attributes.GetOrgId()))
-	state.PrimaryColumnName = types.StringValue(attributes.GetPrimaryColumnName())
-	state.PrimaryKeyGenerationStrategy = types.StringValue(attributes.GetPrimaryKeyGenerationStrategy())
+
+	if createdAt, ok := attributes.GetCreatedAtOk(); ok && createdAt != nil {
+		state.CreatedAt = types.StringValue(createdAt.String())
+	}
+	if creatorUserId, ok := attributes.GetCreatorUserIdOk(); ok && creatorUserId != nil {
+		state.CreatorUserId = types.Int64Value(*creatorUserId)
+	}
+	if creatorUserUuid, ok := attributes.GetCreatorUserUuidOk(); ok && creatorUserUuid != nil {
+		state.CreatorUserUuid = types.StringValue(*creatorUserUuid)
+	}
+	if description, ok := attributes.GetDescriptionOk(); ok && description != nil {
+		state.Description = types.StringValue(*description)
+	}
+	if modifiedAt, ok := attributes.GetModifiedAtOk(); ok && modifiedAt != nil {
+		state.ModifiedAt = types.StringValue(modifiedAt.String())
+	}
+	if name, ok := attributes.GetNameOk(); ok && name != nil {
+		state.Name = types.StringValue(*name)
+	}
+	if orgId, ok := attributes.GetOrgIdOk(); ok && orgId != nil {
+		state.OrgId = types.Int64Value(*orgId)
+	}
+	if primaryColumnName, ok := attributes.GetPrimaryColumnNameOk(); ok && primaryColumnName != nil {
+		state.PrimaryColumnName = types.StringValue(*primaryColumnName)
+	}
+	if primaryKeyGenerationStrategy, ok := attributes.GetPrimaryKeyGenerationStrategyOk(); ok && primaryKeyGenerationStrategy != nil {
+		state.PrimaryKeyGenerationStrategy = types.StringValue(string(*primaryKeyGenerationStrategy))
+	}
 }
 
-func (d *datadogDatastoreDataSource) updateStateFromListResponse(ctx context.Context, state *datadogDatastoreDataSourceModel, datastoreData *datadogV2.Datastore) {
-	state.ID = types.StringValue(datastoreData.GetId())
-	state.DatastoreId = types.StringValue(datastoreData.GetId())
+func (d *datadogDatastoreDataSource) updateStateFromListResponse(ctx context.Context, state *datadogDatastoreDataSourceModel, datastoreData *datadogV2.DatastoreData) {
+	if id, ok := datastoreData.GetIdOk(); ok && id != nil {
+		state.ID = types.StringValue(*id)
+		state.DatastoreId = types.StringValue(*id)
+	}
 
 	attributes := datastoreData.GetAttributes()
-	state.CreatedAt = types.StringValue(attributes.GetCreatedAt().String())
-	state.CreatorUserId = types.Int64Value(int64(attributes.GetCreatorUserId()))
-	state.CreatorUserUuid = types.StringValue(attributes.GetCreatorUserUuid())
-	state.Description = types.StringValue(attributes.GetDescription())
-	state.ModifiedAt = types.StringValue(attributes.GetModifiedAt().String())
-	state.Name = types.StringValue(attributes.GetName())
-	state.OrgId = types.Int64Value(int64(attributes.GetOrgId()))
-	state.PrimaryColumnName = types.StringValue(attributes.GetPrimaryColumnName())
-	state.PrimaryKeyGenerationStrategy = types.StringValue(attributes.GetPrimaryKeyGenerationStrategy())
+
+	if createdAt, ok := attributes.GetCreatedAtOk(); ok && createdAt != nil {
+		state.CreatedAt = types.StringValue(createdAt.String())
+	}
+	if creatorUserId, ok := attributes.GetCreatorUserIdOk(); ok && creatorUserId != nil {
+		state.CreatorUserId = types.Int64Value(*creatorUserId)
+	}
+	if creatorUserUuid, ok := attributes.GetCreatorUserUuidOk(); ok && creatorUserUuid != nil {
+		state.CreatorUserUuid = types.StringValue(*creatorUserUuid)
+	}
+	if description, ok := attributes.GetDescriptionOk(); ok && description != nil {
+		state.Description = types.StringValue(*description)
+	}
+	if modifiedAt, ok := attributes.GetModifiedAtOk(); ok && modifiedAt != nil {
+		state.ModifiedAt = types.StringValue(modifiedAt.String())
+	}
+	if name, ok := attributes.GetNameOk(); ok && name != nil {
+		state.Name = types.StringValue(*name)
+	}
+	if orgId, ok := attributes.GetOrgIdOk(); ok && orgId != nil {
+		state.OrgId = types.Int64Value(*orgId)
+	}
+	if primaryColumnName, ok := attributes.GetPrimaryColumnNameOk(); ok && primaryColumnName != nil {
+		state.PrimaryColumnName = types.StringValue(*primaryColumnName)
+	}
+	if primaryKeyGenerationStrategy, ok := attributes.GetPrimaryKeyGenerationStrategyOk(); ok && primaryKeyGenerationStrategy != nil {
+		state.PrimaryKeyGenerationStrategy = types.StringValue(string(*primaryKeyGenerationStrategy))
+	}
 }

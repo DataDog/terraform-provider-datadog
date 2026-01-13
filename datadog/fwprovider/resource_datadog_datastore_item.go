@@ -181,7 +181,6 @@ func (r *datastoreItemResource) Update(ctx context.Context, request resource.Upd
 	}
 
 	datastoreID := state.DatastoreID.ValueString()
-	itemKey := state.ItemKey.ValueString()
 
 	body, diags := r.buildDatastoreItemUpdateRequestBody(ctx, &state)
 	response.Diagnostics.Append(diags...)

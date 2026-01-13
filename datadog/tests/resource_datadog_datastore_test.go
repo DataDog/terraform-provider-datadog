@@ -26,15 +26,15 @@ func TestAccDatastoreBasic(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogDatastoreExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(
-						"datadog_datastore.foo", "description", "UPDATE ME"),
+						"datadog_datastore.foo", "description", "Test datastore for acceptance testing"),
+					resource.TestCheckResourceAttrSet(
+						"datadog_datastore.foo", "name"),
 					resource.TestCheckResourceAttr(
-						"datadog_datastore.foo", "name", "datastore-name"),
+						"datadog_datastore.foo", "org_access", "manager"),
 					resource.TestCheckResourceAttr(
-						"datadog_datastore.foo", "org_access", "UPDATE ME"),
+						"datadog_datastore.foo", "primary_column_name", "id"),
 					resource.TestCheckResourceAttr(
-						"datadog_datastore.foo", "primary_column_name", "UPDATE ME"),
-					resource.TestCheckResourceAttr(
-						"datadog_datastore.foo", "primary_key_generation_strategy", "UPDATE ME"),
+						"datadog_datastore.foo", "primary_key_generation_strategy", "none"),
 				),
 			},
 		},
@@ -42,13 +42,12 @@ func TestAccDatastoreBasic(t *testing.T) {
 }
 
 func testAccCheckDatadogDatastore(uniq string) string {
-	// Update me to make use of the unique value
 	return fmt.Sprintf(`resource "datadog_datastore" "foo" {
-    description = "UPDATE ME"
-    name = "datastore-name"
-    org_access = "UPDATE ME"
-    primary_column_name = "UPDATE ME"
-    primary_key_generation_strategy = "UPDATE ME"
+    description = "Test datastore for acceptance testing"
+    name = "tf-test-datastore-%s"
+    org_access = "manager"
+    primary_column_name = "id"
+    primary_key_generation_strategy = "none"
 }`, uniq)
 }
 
@@ -67,7 +66,7 @@ func testAccCheckDatadogDatastoreDestroy(accProvider *fwprovider.FrameworkProvid
 func DatastoreDestroyHelper(auth context.Context, s *terraform.State, apiInstances *utils.ApiInstances) error {
 	err := utils.Retry(2, 10, func() error {
 		for _, r := range s.RootModule().Resources {
-			if r.Type != "resource_datadog_datastore" {
+			if r.Type != "datadog_datastore" {
 				continue
 			}
 			id := r.Primary.ID
@@ -100,7 +99,7 @@ func testAccCheckDatadogDatastoreExists(accProvider *fwprovider.FrameworkProvide
 
 func datastoreExistsHelper(auth context.Context, s *terraform.State, apiInstances *utils.ApiInstances) error {
 	for _, r := range s.RootModule().Resources {
-		if r.Type != "resource_datadog_datastore" {
+		if r.Type != "datadog_datastore" {
 			continue
 		}
 		id := r.Primary.ID
