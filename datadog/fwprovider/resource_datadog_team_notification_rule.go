@@ -21,6 +21,7 @@ var (
 	_ resource.ResourceWithConfigure        = &teamNotificationRuleResource{}
 	_ resource.ResourceWithImportState      = &teamNotificationRuleResource{}
 	_ resource.ResourceWithConfigValidators = &teamNotificationRuleResource{}
+	_ resource.ResourceWithModifyPlan       = &teamNotificationRuleResource{}
 )
 
 type teamNotificationRuleResource struct {
@@ -136,6 +137,40 @@ func (r *teamNotificationRuleResource) ConfigValidators(ctx context.Context) []r
 	return []resource.ConfigValidator{
 		&teamNotificationRuleValidator{},
 	}
+}
+
+func (r *teamNotificationRuleResource) ModifyPlan(ctx context.Context, request resource.ModifyPlanRequest, response *resource.ModifyPlanResponse) {
+	// If the resource is being destroyed, no need to modify the plan
+	if request.Plan.Raw.IsNull() {
+		return
+	}
+
+	var config teamNotificationRuleModel
+	response.Diagnostics.Append(request.Config.Get(ctx, &config)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	var plan teamNotificationRuleModel
+	response.Diagnostics.Append(request.Plan.Get(ctx, &plan)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	// For each optional notification block, if it's not in the config but is in the plan,
+	// explicitly set it to null in the plan. This ensures proper handling in Terraform 1.1.2
+	// where optional nested blocks aren't automatically planned for removal.
+	if config.MsTeams == nil && plan.MsTeams != nil {
+		plan.MsTeams = nil
+	}
+	if config.Pagerduty == nil && plan.Pagerduty != nil {
+		plan.Pagerduty = nil
+	}
+	if config.Slack == nil && plan.Slack != nil {
+		plan.Slack = nil
+	}
+
+	response.Diagnostics.Append(response.Plan.Set(ctx, &plan)...)
 }
 
 func (r *teamNotificationRuleResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
