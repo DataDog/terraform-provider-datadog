@@ -20,7 +20,30 @@ import (
 var (
 	_ resource.ResourceWithConfigure   = &apiKeyResource{}
 	_ resource.ResourceWithImportState = &apiKeyResource{}
+	_ resource.ResourceWithModifyPlan  = &apiKeyResource{}
 )
+
+type encryptionTransition int
+
+const (
+	noEncryptionTransition encryptionTransition = iota
+	addingEncryption
+	removingEncryption
+)
+
+func detectEncryptionTransition(encryptionKeyWO, stateKey, stateEncryptedKey types.String) encryptionTransition {
+	encryptionRequested := !encryptionKeyWO.IsNull() && encryptionKeyWO.ValueString() != ""
+	hadPlaintextKey := !stateKey.IsNull() && stateKey.ValueString() != ""
+	hadEncryptedKey := !stateEncryptedKey.IsNull() && stateEncryptedKey.ValueString() != ""
+
+	if encryptionRequested && hadPlaintextKey && !hadEncryptedKey {
+		return addingEncryption
+	}
+	if !encryptionRequested && hadEncryptedKey {
+		return removingEncryption
+	}
+	return noEncryptionTransition
+}
 
 func NewAPIKeyResource() resource.Resource {
 	return &apiKeyResource{}
@@ -167,6 +190,18 @@ func (r *apiKeyResource) Update(ctx context.Context, request resource.UpdateRequ
 		return
 	}
 
+	var encryptionKeyWO types.String
+	response.Diagnostics.Append(request.Config.GetAttribute(ctx, frameworkPath.Root("encryption_key_wo"), &encryptionKeyWO)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	var priorState apiKeyResourceModel
+	response.Diagnostics.Append(request.State.Get(ctx, &priorState)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
 	resp, _, err := r.Api.UpdateAPIKey(r.Auth, state.ID.ValueString(), *r.buildDatadogApiKeyUpdateV2Struct(&state))
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error updating api key"))
@@ -175,13 +210,35 @@ func (r *apiKeyResource) Update(ctx context.Context, request resource.UpdateRequ
 
 	apiKeyData := resp.GetData()
 	state.ID = types.StringValue(apiKeyData.GetId())
-	// Only update metadata - key/encrypted_key preserved from plan to avoid state churn
+
+	switch detectEncryptionTransition(encryptionKeyWO, priorState.Key, priorState.EncryptedKey) {
+	case addingEncryption:
+		encrypted, diags := secretbridge.Encrypt(ctx, priorState.Key.ValueString(), []byte(encryptionKeyWO.ValueString()))
+		response.Diagnostics.Append(diags...)
+		if response.Diagnostics.HasError() {
+			return
+		}
+		state.EncryptedKey = types.StringValue(encrypted)
+		state.Key = types.StringNull()
+	case removingEncryption:
+		state.Key = types.StringNull()
+		state.EncryptedKey = types.StringNull()
+		response.Diagnostics.AddWarning(
+			"Encryption Removed",
+			"The encryption key has been removed. The API key value is no longer accessible from Terraform state. "+
+				"Retrieve the key from Datadog console or recreate the resource if needed.",
+		)
+	case noEncryptionTransition:
+		// No transition: preserve key fields from prior state
+		state.Key = priorState.Key
+		state.EncryptedKey = priorState.EncryptedKey
+	}
+
 	updateStateDiag := r.updateStateMetadata(&state, &apiKeyData)
 	if updateStateDiag != nil {
 		response.Diagnostics.Append(updateStateDiag)
 		return
 	}
-	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
@@ -202,6 +259,31 @@ func (r *apiKeyResource) ImportState(ctx context.Context, request resource.Impor
 		"The import functionality for datadog_api_key resources is deprecated and will be removed in a future release with prior notice. Securely store your API keys using a secret management system or use the datadog_api_key resource to create and manage new API keys.",
 	)
 	resource.ImportStatePassthroughID(ctx, frameworkPath.Root("id"), request, response)
+}
+
+func (r *apiKeyResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
+	if req.State.Raw.IsNull() || req.Plan.Raw.IsNull() {
+		return
+	}
+
+	var encryptionKeyWO, stateKey, stateEncryptedKey types.String
+	resp.Diagnostics.Append(req.Config.GetAttribute(ctx, frameworkPath.Root("encryption_key_wo"), &encryptionKeyWO)...)
+	resp.Diagnostics.Append(req.State.GetAttribute(ctx, frameworkPath.Root("key"), &stateKey)...)
+	resp.Diagnostics.Append(req.State.GetAttribute(ctx, frameworkPath.Root("encrypted_key"), &stateEncryptedKey)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	switch detectEncryptionTransition(encryptionKeyWO, stateKey, stateEncryptedKey) {
+	case addingEncryption:
+		resp.Diagnostics.Append(resp.Plan.SetAttribute(ctx, frameworkPath.Root("key"), types.StringNull())...)
+		resp.Diagnostics.Append(resp.Plan.SetAttribute(ctx, frameworkPath.Root("encrypted_key"), types.StringUnknown())...)
+	case removingEncryption:
+		resp.Diagnostics.Append(resp.Plan.SetAttribute(ctx, frameworkPath.Root("key"), types.StringNull())...)
+		resp.Diagnostics.Append(resp.Plan.SetAttribute(ctx, frameworkPath.Root("encrypted_key"), types.StringNull())...)
+	case noEncryptionTransition:
+		// No change needed
+	}
 }
 
 func (r *apiKeyResource) buildDatadogApiKeyCreateV2Struct(state *apiKeyResourceModel) *datadogV2.APIKeyCreateRequest {
