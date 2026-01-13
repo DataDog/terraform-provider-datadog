@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 1596
+        content_length: 1576
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"description":"Created using the Datadog provider in Terraform","id":"","is_read_only":true,"layout_type":"ordered","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardQueryTableFormula_import-local-1740574766","widgets":[{"definition":{"requests":[{"formulas":[{"cell_display_mode":"trend","cell_display_mode_options":{"trend_type":"line","y_scale":"independent"},"conditional_formats":[{"comparator":"\u003c","hide_value":false,"palette":"white_on_green","value":90},{"comparator":"\u003e=","hide_value":false,"palette":"white_on_red","value":90}],"formula":"query1","limit":{"count":500,"order":"desc"},"number_format":{"unit":{"per_unit_name":"second","type":"canonical_unit","unit_name":"joule"}}}],"queries":[{"aggregator":"sum","data_source":"metrics","name":"query1","query":"avg:system.cpu.system{*} by {datacenter}"}],"response_format":"scalar"}],"type":"query_table"}},{"definition":{"requests":[{"queries":[{"data_source":"apm_dependency_stats","env":"ci","is_upstream":false,"name":"my-query","operation_name":"cassandra.query","resource_name":"CREATE TABLE IF NOT EXISTS foobar","service":"cassandra","stat":"avg_duration"}],"response_format":"scalar"}],"type":"query_table"}},{"definition":{"requests":[{"queries":[{"data_source":"apm_resource_stats","env":"staging","group_by":["resource_name"],"name":"my-query-2","operation_name":"pylons.request","primary_tag_name":"datacenter","primary_tag_value":"abc","service":"foobar-controller","stat":"latency_p99"}],"response_format":"scalar"}],"type":"query_table"}}]}
+            {"description":"Created using the Datadog provider in Terraform","id":"","layout_type":"ordered","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardQueryTableFormula_import-local-1767989315","widgets":[{"definition":{"requests":[{"formulas":[{"cell_display_mode":"trend","cell_display_mode_options":{"trend_type":"line","y_scale":"independent"},"conditional_formats":[{"comparator":"\u003c","hide_value":false,"palette":"white_on_green","value":90},{"comparator":"\u003e=","hide_value":false,"palette":"white_on_red","value":90}],"formula":"query1","limit":{"count":500,"order":"desc"},"number_format":{"unit":{"per_unit_name":"second","type":"canonical_unit","unit_name":"joule"}}}],"queries":[{"aggregator":"sum","data_source":"metrics","name":"query1","query":"avg:system.cpu.system{*} by {datacenter}"}],"response_format":"scalar"}],"type":"query_table"}},{"definition":{"requests":[{"queries":[{"data_source":"apm_dependency_stats","env":"ci","is_upstream":false,"name":"my-query","operation_name":"cassandra.query","resource_name":"CREATE TABLE IF NOT EXISTS foobar","service":"cassandra","stat":"avg_duration"}],"response_format":"scalar"}],"type":"query_table"}},{"definition":{"requests":[{"queries":[{"data_source":"apm_resource_stats","env":"staging","group_by":["resource_name"],"name":"my-query-2","operation_name":"pylons.request","primary_tag_name":"datacenter","primary_tag_value":"abc","service":"foobar-controller","stat":"latency_p99"}],"response_format":"scalar"}],"type":"query_table"}}]}
         form: {}
         headers:
             Accept:
@@ -31,14 +31,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: |
-            {"id":"ydc-whq-bni","title":"tf-TestAccDatadogDashboardQueryTableFormula_import-local-1740574766","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/ydc-whq-bni/tf-testaccdatadogdashboardquerytableformulaimport-local-1740574766","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"requests":[{"formulas":[{"cell_display_mode":"trend","cell_display_mode_options":{"trend_type":"line","y_scale":"independent"},"conditional_formats":[{"comparator":"<","hide_value":false,"palette":"white_on_green","value":90},{"comparator":">=","hide_value":false,"palette":"white_on_red","value":90}],"formula":"query1","limit":{"count":500,"order":"desc"},"number_format":{"unit":{"per_unit_name":"second","type":"canonical_unit","unit_name":"joule"}}}],"queries":[{"aggregator":"sum","data_source":"metrics","name":"query1","query":"avg:system.cpu.system{*} by {datacenter}"}],"response_format":"scalar"}],"type":"query_table"},"id":6114398219307090},{"definition":{"requests":[{"queries":[{"data_source":"apm_dependency_stats","env":"ci","is_upstream":false,"name":"my-query","operation_name":"cassandra.query","resource_name":"CREATE TABLE IF NOT EXISTS foobar","service":"cassandra","stat":"avg_duration"}],"response_format":"scalar"}],"type":"query_table"},"id":8475899976743452},{"definition":{"requests":[{"queries":[{"data_source":"apm_resource_stats","env":"staging","group_by":["resource_name"],"name":"my-query-2","operation_name":"pylons.request","primary_tag_name":"datacenter","primary_tag_value":"abc","service":"foobar-controller","stat":"latency_p99"}],"response_format":"scalar"}],"type":"query_table"},"id":4773452182075061}],"notify_list":[],"created_at":"2025-02-26T12:59:31.492473+00:00","modified_at":"2025-02-26T12:59:31.492473+00:00","template_variable_presets":[],"tags":[]}
+        body: '{"id":"e2u-ysw-are","title":"tf-TestAccDatadogDashboardQueryTableFormula_import-local-1767989315","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/e2u-ysw-are/tf-testaccdatadogdashboardquerytableformulaimport-local-1767989315","template_variables":[],"widgets":[{"definition":{"requests":[{"formulas":[{"cell_display_mode":"trend","cell_display_mode_options":{"trend_type":"line","y_scale":"independent"},"conditional_formats":[{"comparator":"<","hide_value":false,"palette":"white_on_green","value":90},{"comparator":">=","hide_value":false,"palette":"white_on_red","value":90}],"formula":"query1","limit":{"count":500,"order":"desc"},"number_format":{"unit":{"per_unit_name":"second","type":"canonical_unit","unit_name":"joule"}}}],"queries":[{"aggregator":"sum","data_source":"metrics","name":"query1","query":"avg:system.cpu.system{*} by {datacenter}"}],"response_format":"scalar"}],"type":"query_table"},"id":641233207955966},{"definition":{"requests":[{"queries":[{"data_source":"apm_dependency_stats","env":"ci","is_upstream":false,"name":"my-query","operation_name":"cassandra.query","resource_name":"CREATE TABLE IF NOT EXISTS foobar","service":"cassandra","stat":"avg_duration"}],"response_format":"scalar"}],"type":"query_table"},"id":3951001357182518},{"definition":{"requests":[{"queries":[{"data_source":"apm_resource_stats","env":"staging","group_by":["resource_name"],"name":"my-query-2","operation_name":"pylons.request","primary_tag_name":"datacenter","primary_tag_value":"abc","service":"foobar-controller","stat":"latency_p99"}],"response_format":"scalar"}],"type":"query_table"},"id":5728676590679525}],"notify_list":[],"created_at":"2026-01-09T20:08:36.634013+00:00","modified_at":"2026-01-09T20:08:36.634013+00:00","template_variable_presets":[],"tags":[]}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 701.644042ms
+        duration: 152.279792ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -55,7 +54,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/dashboard/ydc-whq-bni
+        url: https://api.datadoghq.com/api/v1/dashboard/e2u-ysw-are
         method: GET
       response:
         proto: HTTP/1.1
@@ -66,14 +65,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: |
-            {"id":"ydc-whq-bni","title":"tf-TestAccDatadogDashboardQueryTableFormula_import-local-1740574766","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/ydc-whq-bni/tf-testaccdatadogdashboardquerytableformulaimport-local-1740574766","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"requests":[{"formulas":[{"cell_display_mode":"trend","cell_display_mode_options":{"trend_type":"line","y_scale":"independent"},"conditional_formats":[{"comparator":"<","hide_value":false,"palette":"white_on_green","value":90},{"comparator":">=","hide_value":false,"palette":"white_on_red","value":90}],"formula":"query1","limit":{"count":500,"order":"desc"},"number_format":{"unit":{"per_unit_name":"second","type":"canonical_unit","unit_name":"joule"}}}],"queries":[{"aggregator":"sum","data_source":"metrics","name":"query1","query":"avg:system.cpu.system{*} by {datacenter}"}],"response_format":"scalar"}],"type":"query_table"},"id":6114398219307090},{"definition":{"requests":[{"queries":[{"data_source":"apm_dependency_stats","env":"ci","is_upstream":false,"name":"my-query","operation_name":"cassandra.query","resource_name":"CREATE TABLE IF NOT EXISTS foobar","service":"cassandra","stat":"avg_duration"}],"response_format":"scalar"}],"type":"query_table"},"id":8475899976743452},{"definition":{"requests":[{"queries":[{"data_source":"apm_resource_stats","env":"staging","group_by":["resource_name"],"name":"my-query-2","operation_name":"pylons.request","primary_tag_name":"datacenter","primary_tag_value":"abc","service":"foobar-controller","stat":"latency_p99"}],"response_format":"scalar"}],"type":"query_table"},"id":4773452182075061}],"notify_list":[],"created_at":"2025-02-26T12:59:31.492473+00:00","modified_at":"2025-02-26T12:59:31.492473+00:00","template_variable_presets":[],"tags":[]}
+        body: '{"id":"e2u-ysw-are","title":"tf-TestAccDatadogDashboardQueryTableFormula_import-local-1767989315","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/e2u-ysw-are/tf-testaccdatadogdashboardquerytableformulaimport-local-1767989315","template_variables":[],"widgets":[{"definition":{"requests":[{"formulas":[{"cell_display_mode":"trend","cell_display_mode_options":{"trend_type":"line","y_scale":"independent"},"conditional_formats":[{"comparator":"<","hide_value":false,"palette":"white_on_green","value":90},{"comparator":">=","hide_value":false,"palette":"white_on_red","value":90}],"formula":"query1","limit":{"count":500,"order":"desc"},"number_format":{"unit":{"per_unit_name":"second","type":"canonical_unit","unit_name":"joule"}}}],"queries":[{"aggregator":"sum","data_source":"metrics","name":"query1","query":"avg:system.cpu.system{*} by {datacenter}"}],"response_format":"scalar"}],"type":"query_table"},"id":641233207955966},{"definition":{"requests":[{"queries":[{"data_source":"apm_dependency_stats","env":"ci","is_upstream":false,"name":"my-query","operation_name":"cassandra.query","resource_name":"CREATE TABLE IF NOT EXISTS foobar","service":"cassandra","stat":"avg_duration"}],"response_format":"scalar"}],"type":"query_table"},"id":3951001357182518},{"definition":{"requests":[{"queries":[{"data_source":"apm_resource_stats","env":"staging","group_by":["resource_name"],"name":"my-query-2","operation_name":"pylons.request","primary_tag_name":"datacenter","primary_tag_value":"abc","service":"foobar-controller","stat":"latency_p99"}],"response_format":"scalar"}],"type":"query_table"},"id":5728676590679525}],"notify_list":[],"created_at":"2026-01-09T20:08:36.634013+00:00","modified_at":"2026-01-09T20:08:36.634013+00:00","template_variable_presets":[],"tags":[]}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 188.937958ms
+        duration: 110.877375ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -90,7 +88,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/dashboard/ydc-whq-bni
+        url: https://api.datadoghq.com/api/v1/dashboard/e2u-ysw-are
         method: GET
       response:
         proto: HTTP/1.1
@@ -101,14 +99,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: |
-            {"id":"ydc-whq-bni","title":"tf-TestAccDatadogDashboardQueryTableFormula_import-local-1740574766","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/ydc-whq-bni/tf-testaccdatadogdashboardquerytableformulaimport-local-1740574766","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"requests":[{"formulas":[{"cell_display_mode":"trend","cell_display_mode_options":{"trend_type":"line","y_scale":"independent"},"conditional_formats":[{"comparator":"<","hide_value":false,"palette":"white_on_green","value":90},{"comparator":">=","hide_value":false,"palette":"white_on_red","value":90}],"formula":"query1","limit":{"count":500,"order":"desc"},"number_format":{"unit":{"per_unit_name":"second","type":"canonical_unit","unit_name":"joule"}}}],"queries":[{"aggregator":"sum","data_source":"metrics","name":"query1","query":"avg:system.cpu.system{*} by {datacenter}"}],"response_format":"scalar"}],"type":"query_table"},"id":6114398219307090},{"definition":{"requests":[{"queries":[{"data_source":"apm_dependency_stats","env":"ci","is_upstream":false,"name":"my-query","operation_name":"cassandra.query","resource_name":"CREATE TABLE IF NOT EXISTS foobar","service":"cassandra","stat":"avg_duration"}],"response_format":"scalar"}],"type":"query_table"},"id":8475899976743452},{"definition":{"requests":[{"queries":[{"data_source":"apm_resource_stats","env":"staging","group_by":["resource_name"],"name":"my-query-2","operation_name":"pylons.request","primary_tag_name":"datacenter","primary_tag_value":"abc","service":"foobar-controller","stat":"latency_p99"}],"response_format":"scalar"}],"type":"query_table"},"id":4773452182075061}],"notify_list":[],"created_at":"2025-02-26T12:59:31.492473+00:00","modified_at":"2025-02-26T12:59:31.492473+00:00","template_variable_presets":[],"tags":[]}
+        body: '{"id":"e2u-ysw-are","title":"tf-TestAccDatadogDashboardQueryTableFormula_import-local-1767989315","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/e2u-ysw-are/tf-testaccdatadogdashboardquerytableformulaimport-local-1767989315","template_variables":[],"widgets":[{"definition":{"requests":[{"formulas":[{"cell_display_mode":"trend","cell_display_mode_options":{"trend_type":"line","y_scale":"independent"},"conditional_formats":[{"comparator":"<","hide_value":false,"palette":"white_on_green","value":90},{"comparator":">=","hide_value":false,"palette":"white_on_red","value":90}],"formula":"query1","limit":{"count":500,"order":"desc"},"number_format":{"unit":{"per_unit_name":"second","type":"canonical_unit","unit_name":"joule"}}}],"queries":[{"aggregator":"sum","data_source":"metrics","name":"query1","query":"avg:system.cpu.system{*} by {datacenter}"}],"response_format":"scalar"}],"type":"query_table"},"id":641233207955966},{"definition":{"requests":[{"queries":[{"data_source":"apm_dependency_stats","env":"ci","is_upstream":false,"name":"my-query","operation_name":"cassandra.query","resource_name":"CREATE TABLE IF NOT EXISTS foobar","service":"cassandra","stat":"avg_duration"}],"response_format":"scalar"}],"type":"query_table"},"id":3951001357182518},{"definition":{"requests":[{"queries":[{"data_source":"apm_resource_stats","env":"staging","group_by":["resource_name"],"name":"my-query-2","operation_name":"pylons.request","primary_tag_name":"datacenter","primary_tag_value":"abc","service":"foobar-controller","stat":"latency_p99"}],"response_format":"scalar"}],"type":"query_table"},"id":5728676590679525}],"notify_list":[],"created_at":"2026-01-09T20:08:36.634013+00:00","modified_at":"2026-01-09T20:08:36.634013+00:00","template_variable_presets":[],"tags":[]}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 185.734541ms
+        duration: 100.396958ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -125,7 +122,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/dashboard/ydc-whq-bni
+        url: https://api.datadoghq.com/api/v1/dashboard/e2u-ysw-are
         method: GET
       response:
         proto: HTTP/1.1
@@ -136,14 +133,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: |
-            {"id":"ydc-whq-bni","title":"tf-TestAccDatadogDashboardQueryTableFormula_import-local-1740574766","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/ydc-whq-bni/tf-testaccdatadogdashboardquerytableformulaimport-local-1740574766","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"requests":[{"formulas":[{"cell_display_mode":"trend","cell_display_mode_options":{"trend_type":"line","y_scale":"independent"},"conditional_formats":[{"comparator":"<","hide_value":false,"palette":"white_on_green","value":90},{"comparator":">=","hide_value":false,"palette":"white_on_red","value":90}],"formula":"query1","limit":{"count":500,"order":"desc"},"number_format":{"unit":{"per_unit_name":"second","type":"canonical_unit","unit_name":"joule"}}}],"queries":[{"aggregator":"sum","data_source":"metrics","name":"query1","query":"avg:system.cpu.system{*} by {datacenter}"}],"response_format":"scalar"}],"type":"query_table"},"id":6114398219307090},{"definition":{"requests":[{"queries":[{"data_source":"apm_dependency_stats","env":"ci","is_upstream":false,"name":"my-query","operation_name":"cassandra.query","resource_name":"CREATE TABLE IF NOT EXISTS foobar","service":"cassandra","stat":"avg_duration"}],"response_format":"scalar"}],"type":"query_table"},"id":8475899976743452},{"definition":{"requests":[{"queries":[{"data_source":"apm_resource_stats","env":"staging","group_by":["resource_name"],"name":"my-query-2","operation_name":"pylons.request","primary_tag_name":"datacenter","primary_tag_value":"abc","service":"foobar-controller","stat":"latency_p99"}],"response_format":"scalar"}],"type":"query_table"},"id":4773452182075061}],"notify_list":[],"created_at":"2025-02-26T12:59:31.492473+00:00","modified_at":"2025-02-26T12:59:31.492473+00:00","template_variable_presets":[],"tags":[]}
+        body: '{"id":"e2u-ysw-are","title":"tf-TestAccDatadogDashboardQueryTableFormula_import-local-1767989315","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/e2u-ysw-are/tf-testaccdatadogdashboardquerytableformulaimport-local-1767989315","template_variables":[],"widgets":[{"definition":{"requests":[{"formulas":[{"cell_display_mode":"trend","cell_display_mode_options":{"trend_type":"line","y_scale":"independent"},"conditional_formats":[{"comparator":"<","hide_value":false,"palette":"white_on_green","value":90},{"comparator":">=","hide_value":false,"palette":"white_on_red","value":90}],"formula":"query1","limit":{"count":500,"order":"desc"},"number_format":{"unit":{"per_unit_name":"second","type":"canonical_unit","unit_name":"joule"}}}],"queries":[{"aggregator":"sum","data_source":"metrics","name":"query1","query":"avg:system.cpu.system{*} by {datacenter}"}],"response_format":"scalar"}],"type":"query_table"},"id":641233207955966},{"definition":{"requests":[{"queries":[{"data_source":"apm_dependency_stats","env":"ci","is_upstream":false,"name":"my-query","operation_name":"cassandra.query","resource_name":"CREATE TABLE IF NOT EXISTS foobar","service":"cassandra","stat":"avg_duration"}],"response_format":"scalar"}],"type":"query_table"},"id":3951001357182518},{"definition":{"requests":[{"queries":[{"data_source":"apm_resource_stats","env":"staging","group_by":["resource_name"],"name":"my-query-2","operation_name":"pylons.request","primary_tag_name":"datacenter","primary_tag_value":"abc","service":"foobar-controller","stat":"latency_p99"}],"response_format":"scalar"}],"type":"query_table"},"id":5728676590679525}],"notify_list":[],"created_at":"2026-01-09T20:08:36.634013+00:00","modified_at":"2026-01-09T20:08:36.634013+00:00","template_variable_presets":[],"tags":[]}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 175.327875ms
+        duration: 178.887208ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -160,7 +156,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/dashboard/ydc-whq-bni
+        url: https://api.datadoghq.com/api/v1/dashboard/e2u-ysw-are
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -171,14 +167,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: |
-            {"deleted_dashboard_id":"ydc-whq-bni"}
+        body: '{"deleted_dashboard_id":"e2u-ysw-are"}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 232.431375ms
+        duration: 372.790625ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -195,7 +190,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/dashboard/ydc-whq-bni
+        url: https://api.datadoghq.com/api/v1/dashboard/e2u-ysw-are
         method: GET
       response:
         proto: HTTP/1.1
@@ -206,10 +201,10 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"errors":["Dashboard with ID ydc-whq-bni not found"]}'
+        body: '{"errors":["Dashboard with ID e2u-ysw-are not found"]}'
         headers:
             Content-Type:
                 - application/json
         status: 404 Not Found
         code: 404
-        duration: 149.282625ms
+        duration: 80.008833ms

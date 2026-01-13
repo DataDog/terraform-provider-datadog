@@ -9,7 +9,6 @@ resource "datadog_dashboard" "geomap_dashboard" {
 	title         = "{{uniq}}"
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "ordered"
-	is_read_only  = "true"
 
 	widget {
 		geomap_definition {
@@ -82,7 +81,6 @@ resource "datadog_dashboard" "geomap_dashboard" {
 	title         = "{{uniq}}"
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "ordered"
-	is_read_only  = "true"
 	widget {
 		geomap_definition {
 		  request {
@@ -190,7 +188,6 @@ var datadogDashboardGeomapAsserts = []string{
 	"description = Created using the Datadog provider in Terraform",
 	"layout_type = ordered",
 	"title = {{uniq}}",
-	"is_read_only = true",
 	"widget.0.geomap_definition.0.request.0.q = avg:system.load.1{*}",
 	"widget.0.geomap_definition.0.style.0.palette = hostmap_blues",
 	"widget.0.geomap_definition.0.style.0.palette_flip = false",
@@ -217,7 +214,6 @@ var datadogDashboardGeomapAsserts = []string{
 
 var datadogDashboardGeomapFormulaAsserts = []string{
 	"title = {{uniq}}",
-	"is_read_only = true",
 	"layout_type = ordered",
 	"description = Created using the Datadog provider in Terraform",
 	"widget.0.geomap_definition.0.request.0.formula.0.formula_expression = query1 + query2",

@@ -1,112 +1,210 @@
+---
 version: 2
 interactions:
-- request:
-    body: |
-      {"description":"Created using the Datadog provider in Terraform","id":"","is_read_only":true,"layout_type":"ordered","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardListStreamEvents-local-1685562716","widgets":[{"definition":{"requests":[{"columns":[{"field":"source","width":"auto"}],"query":{"data_source":"event_stream","event_size":"l","query_string":"example.metric","sort":{"column":"source","order":"desc"}},"response_format":"event_list"}],"title":"List Stream 2","title_align":"right","title_size":"16","type":"list_stream"}}]}
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard
-    method: POST
-    id: 0
-  response:
-    body: |
-      {"id":"cfd-hra-gqy","title":"tf-TestAccDatadogDashboardListStreamEvents-local-1685562716","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/cfd-hra-gqy/tf-testaccdatadogdashboardliststreamevents-local-1685562716","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"requests":[{"columns":[{"field":"source","width":"auto"}],"query":{"data_source":"event_stream","event_size":"l","query_string":"example.metric","sort":{"column":"source","order":"desc"}},"response_format":"event_list"}],"title":"List Stream 2","title_align":"right","title_size":"16","type":"list_stream"},"id":7557900052484720}],"notify_list":[],"created_at":"2023-05-31T19:51:59.015851+00:00","modified_at":"2023-05-31T19:51:59.015851+00:00","template_variable_presets":[],"tags":[]}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/cfd-hra-gqy
-    method: GET
-    id: 1
-  response:
-    body: |
-      {"id":"cfd-hra-gqy","title":"tf-TestAccDatadogDashboardListStreamEvents-local-1685562716","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/cfd-hra-gqy/tf-testaccdatadogdashboardliststreamevents-local-1685562716","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"requests":[{"columns":[{"field":"source","width":"auto"}],"query":{"data_source":"event_stream","event_size":"l","query_string":"example.metric","sort":{"column":"source","order":"desc"}},"response_format":"event_list"}],"title":"List Stream 2","title_align":"right","title_size":"16","type":"list_stream"},"id":7557900052484720}],"notify_list":[],"created_at":"2023-05-31T19:51:59.015851+00:00","modified_at":"2023-05-31T19:51:59.015851+00:00","template_variable_presets":[],"tags":[]}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/cfd-hra-gqy
-    method: GET
-    id: 2
-  response:
-    body: |
-      {"id":"cfd-hra-gqy","title":"tf-TestAccDatadogDashboardListStreamEvents-local-1685562716","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/cfd-hra-gqy/tf-testaccdatadogdashboardliststreamevents-local-1685562716","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"requests":[{"columns":[{"field":"source","width":"auto"}],"query":{"data_source":"event_stream","event_size":"l","query_string":"example.metric","sort":{"column":"source","order":"desc"}},"response_format":"event_list"}],"title":"List Stream 2","title_align":"right","title_size":"16","type":"list_stream"},"id":7557900052484720}],"notify_list":[],"created_at":"2023-05-31T19:51:59.015851+00:00","modified_at":"2023-05-31T19:51:59.015851+00:00","template_variable_presets":[],"tags":[]}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/cfd-hra-gqy
-    method: GET
-    id: 3
-  response:
-    body: |
-      {"id":"cfd-hra-gqy","title":"tf-TestAccDatadogDashboardListStreamEvents-local-1685562716","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/cfd-hra-gqy/tf-testaccdatadogdashboardliststreamevents-local-1685562716","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"requests":[{"columns":[{"field":"source","width":"auto"}],"query":{"data_source":"event_stream","event_size":"l","query_string":"example.metric","sort":{"column":"source","order":"desc"}},"response_format":"event_list"}],"title":"List Stream 2","title_align":"right","title_size":"16","type":"list_stream"},"id":7557900052484720}],"notify_list":[],"created_at":"2023-05-31T19:51:59.015851+00:00","modified_at":"2023-05-31T19:51:59.015851+00:00","template_variable_presets":[],"tags":[]}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/cfd-hra-gqy
-    method: DELETE
-    id: 4
-  response:
-    body: |
-      {"deleted_dashboard_id":"cfd-hra-gqy"}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/cfd-hra-gqy
-    method: GET
-    id: 5
-  response:
-    body: '{"errors":["Dashboard with ID cfd-hra-gqy not found"]}'
-    headers:
-      Content-Type:
-      - application/json
-    status: 404 Not Found
-    code: 404
-    duration: "0ms"
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 586
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"description":"Created using the Datadog provider in Terraform","id":"","layout_type":"ordered","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardListStreamEvents-local-1767989211","widgets":[{"definition":{"requests":[{"columns":[{"field":"source","width":"auto"}],"query":{"data_source":"event_stream","event_size":"l","query_string":"example.metric","sort":{"column":"source","order":"desc"}},"response_format":"event_list"}],"title":"List Stream 2","title_align":"right","title_size":"16","type":"list_stream"}}]}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"j67-2yw-6nx","title":"tf-TestAccDatadogDashboardListStreamEvents-local-1767989211","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/j67-2yw-6nx/tf-testaccdatadogdashboardliststreamevents-local-1767989211","template_variables":[],"widgets":[{"definition":{"requests":[{"columns":[{"field":"source","width":"auto"}],"query":{"data_source":"event_stream","event_size":"l","query_string":"example.metric","sort":{"column":"source","order":"desc"}},"response_format":"event_list"}],"title":"List Stream 2","title_align":"right","title_size":"16","type":"list_stream"},"id":6983332181132452}],"notify_list":[],"created_at":"2026-01-09T20:06:52.278249+00:00","modified_at":"2026-01-09T20:06:52.278249+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 129.30275ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/j67-2yw-6nx
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"j67-2yw-6nx","title":"tf-TestAccDatadogDashboardListStreamEvents-local-1767989211","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/j67-2yw-6nx/tf-testaccdatadogdashboardliststreamevents-local-1767989211","template_variables":[],"widgets":[{"definition":{"requests":[{"columns":[{"field":"source","width":"auto"}],"query":{"data_source":"event_stream","event_size":"l","query_string":"example.metric","sort":{"column":"source","order":"desc"}},"response_format":"event_list"}],"title":"List Stream 2","title_align":"right","title_size":"16","type":"list_stream"},"id":6983332181132452}],"notify_list":[],"created_at":"2026-01-09T20:06:52.278249+00:00","modified_at":"2026-01-09T20:06:52.278249+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 94.417916ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/j67-2yw-6nx
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"j67-2yw-6nx","title":"tf-TestAccDatadogDashboardListStreamEvents-local-1767989211","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/j67-2yw-6nx/tf-testaccdatadogdashboardliststreamevents-local-1767989211","template_variables":[],"widgets":[{"definition":{"requests":[{"columns":[{"field":"source","width":"auto"}],"query":{"data_source":"event_stream","event_size":"l","query_string":"example.metric","sort":{"column":"source","order":"desc"}},"response_format":"event_list"}],"title":"List Stream 2","title_align":"right","title_size":"16","type":"list_stream"},"id":6983332181132452}],"notify_list":[],"created_at":"2026-01-09T20:06:52.278249+00:00","modified_at":"2026-01-09T20:06:52.278249+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 104.607875ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/j67-2yw-6nx
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"j67-2yw-6nx","title":"tf-TestAccDatadogDashboardListStreamEvents-local-1767989211","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/j67-2yw-6nx/tf-testaccdatadogdashboardliststreamevents-local-1767989211","template_variables":[],"widgets":[{"definition":{"requests":[{"columns":[{"field":"source","width":"auto"}],"query":{"data_source":"event_stream","event_size":"l","query_string":"example.metric","sort":{"column":"source","order":"desc"}},"response_format":"event_list"}],"title":"List Stream 2","title_align":"right","title_size":"16","type":"list_stream"},"id":6983332181132452}],"notify_list":[],"created_at":"2026-01-09T20:06:52.278249+00:00","modified_at":"2026-01-09T20:06:52.278249+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 103.833625ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/j67-2yw-6nx
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"deleted_dashboard_id":"j67-2yw-6nx"}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 307.257875ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/j67-2yw-6nx
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"errors":["Dashboard with ID j67-2yw-6nx not found"]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 82.588833ms

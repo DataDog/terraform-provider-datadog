@@ -20,7 +20,6 @@ resource "datadog_dashboard" "ordered_dashboard" {
 	title         = "%s"
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "ordered"
-	is_read_only  = true
 	tags		  = ["team:foobar"]
 	widget {
 		alert_graph_definition {
@@ -456,7 +455,6 @@ resource "datadog_dashboard" "simple_dashboard" {
 	title         = "%s"
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "ordered"
-	is_read_only  = true
 	tags          = ["team:foobar"]
 	widget {
 		alert_graph_definition {
@@ -508,7 +506,6 @@ resource "datadog_dashboard" "free_dashboard" {
 	title         = "%s"
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "free"
-	is_read_only  = false
 	tags          = ["team:foobar"]
 	widget {
 		event_stream_definition {
@@ -686,7 +683,6 @@ resource "datadog_dashboard" "simple_dashboard" {
 	title         = "%s"
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "free"
-	is_read_only  = true
 	tags          = ["team:foobar"]
 	widget {
 		alert_graph_definition {
@@ -742,7 +738,6 @@ var datadogSimpleOrderedDashboardAsserts = []string{
 	// Dashboard metadata
 	"description = Created using the Datadog provider in Terraform",
 	"layout_type = ordered",
-	"is_read_only = true",
 	"widget.# = 1",
 	"tags.# = 1",
 	"tags.0 = team:foobar",
@@ -777,7 +772,6 @@ var datadogSimpleFreeDashboardAsserts = []string{
 	// Dashboard metadata
 	"description = Created using the Datadog provider in Terraform",
 	"layout_type = free",
-	"is_read_only = true",
 	"widget.# = 1",
 	"tags.# = 1",
 	"tags.0 = team:foobar",
@@ -816,7 +810,6 @@ var datadogOrderedDashboardAsserts = []string{
 	// Dashboard metadata
 	"description = Created using the Datadog provider in Terraform",
 	"layout_type = ordered",
-	"is_read_only = true",
 	"tags.# = 1",
 	"tags.0 = team:foobar",
 	"widget.# = 16",
@@ -1081,7 +1074,6 @@ var datadogFreeDashboardAsserts = []string{
 	// Dashboard metadata
 	"description = Created using the Datadog provider in Terraform",
 	"layout_type = free",
-	"is_read_only = false",
 	"tags.# = 1",
 	"tags.0 = team:foobar",
 	"widget.# = 8",
@@ -1421,7 +1413,6 @@ resource "datadog_dashboard" "rbac_dashboard" {
 }
 
 var datadogOpenDashboardAsserts = []string{
-	"is_read_only = false",
 	"restricted_roles.# = 0",
 }
 
@@ -1436,13 +1427,10 @@ resource "datadog_dashboard" "rbac_dashboard" {
 			content = "note text"
 		}
 	}
-	is_read_only     = true
 }`, uniqueDashboardName)
 }
 
-var datadogAdminDashboardAsserts = []string{
-	"is_read_only = true",
-}
+var datadogAdminDashboardAsserts = []string{}
 
 func datadogRbacDashboardConfig(uniqueDashboardName string, uniqueRoleName string) string {
 	return fmt.Sprintf(`
@@ -1778,7 +1766,6 @@ resource "datadog_dashboard" "ordered_dashboard" {
   title        = "%s"
   description  = "Created using the Datadog provider in Terraform"
   layout_type  = "ordered"
-  is_read_only = true
   notify_list  = [datadog_user.one.email, datadog_user.two.email, datadog_user.three.email]
   
   depends_on = [
@@ -1822,7 +1809,6 @@ resource "datadog_dashboard" "ordered_dashboard" {
   title        = "%s"
   description  = "Created using the Datadog provider in Terraform"
   layout_type  = "ordered"
-  is_read_only = true
 
   template_variable {
     name    = "var_1"
