@@ -139,6 +139,7 @@ Required:
 
 Optional:
 
+- `anomaly_detection_options` (Block List, Max: 1) Options for rules using the anomaly detection method. (see [below for nested schema](#nestedblock--options--anomaly_detection_options))
 - `decrease_criticality_based_on_env` (Boolean) If true, signals in non-production environments have a lower severity than what is defined by the rule case, which can reduce noise. The decrement is applied when the environment tag of the signal starts with `staging`, `test`, or `dev`. Only available when the rule type is `log_detection`. Defaults to `false`.
 - `detection_method` (String) The detection method. Valid values are `threshold`, `new_value`, `anomaly_detection`, `impossible_travel`, `hardcoded`, `third_party`, `anomaly_threshold`, `sequence_detection`. Defaults to `"threshold"`.
 - `evaluation_window` (Number) A time window is specified to match when at least one of the cases matches true. This is a sliding window and evaluates in real time. Valid values are `0`, `60`, `300`, `600`, `900`, `1800`, `3600`, `7200`, `10800`, `21600`, `43200`, `86400`.
@@ -148,6 +149,17 @@ Optional:
 - `new_value_options` (Block List, Max: 1) New value rules specific options. (see [below for nested schema](#nestedblock--options--new_value_options))
 - `sequence_detection_options` (Block List, Max: 1) Options for rules using the sequence detection method. (see [below for nested schema](#nestedblock--options--sequence_detection_options))
 - `third_party_rule_options` (Block List, Max: 1) Options for rules using the third-party detection method. (see [below for nested schema](#nestedblock--options--third_party_rule_options))
+
+<a id="nestedblock--options--anomaly_detection_options"></a>
+### Nested Schema for `options.anomaly_detection_options`
+
+Optional:
+
+- `bucket_duration` (Number) Duration in seconds of the time buckets used to aggregate events matched by the rule. Valid values are 300, 600, 900, 1800, 3600, 10800. Valid values are `300`, `600`, `900`, `1800`, `3600`, `10800`.
+- `detection_tolerance` (Number) An optional parameter that sets how permissive anomaly detection is. Higher values require higher deviations before triggering a signal. Valid values are 1, 2, 3, 4, 5. Valid values are `1`, `2`, `3`, `4`, `5`.
+- `learning_duration` (Number) Learning duration in hours. Anomaly detection waits for at least this amount of historical data before it starts evaluating. Valid values are 1, 6, 12, 24, 48, 168, 336. Valid values are `1`, `6`, `12`, `24`, `48`, `168`, `336`.
+- `learning_period_baseline` (Number) An optional override baseline to apply while the rule is in the learning period. Must be greater than or equal to 0.
+
 
 <a id="nestedblock--options--impossible_travel_options"></a>
 ### Nested Schema for `options.impossible_travel_options`
@@ -166,6 +178,7 @@ Required:
 
 Optional:
 
+- `instantaneous_baseline` (Boolean) When set to true, Datadog uses previous values that fall within the defined learning window to construct the baseline, enabling the system to establish an accurate baseline more rapidly rather than relying solely on gradual learning over time. Defaults to `false`.
 - `learning_duration` (Number) The duration in days during which values are learned, and after which signals will be generated for values that weren't learned. If set to 0, a signal will be generated for all new values after the first value is learned. Valid values are `0`, `1`, `7`. Defaults to `1`.
 - `learning_method` (String) The learning method used to determine when signals should be generated for values that weren't learned. Valid values are `duration`, `threshold`. Defaults to `"duration"`.
 - `learning_threshold` (Number) A number of occurrences after which signals are generated for values that weren't learned. Valid values are `0`, `1`. Defaults to `0`.

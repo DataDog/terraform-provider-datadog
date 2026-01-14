@@ -2,6 +2,7 @@ package datadog
 
 import (
 	"context"
+	"sort"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -88,6 +89,15 @@ func dataSourceDatadogServiceLevelObjective() *schema.Resource {
 						},
 					},
 				},
+				"tags": {
+					Description: "List of tags associated with the service level objective.",
+					// we use TypeSet to represent tags, paradoxically to be able to maintain them ordered;
+					// we order them explicitly in the read/create/update methods of this resource and using
+					// TypeSet makes Terraform ignore differences in order when creating a plan
+					Type:     schema.TypeSet,
+					Computed: true,
+					Elem:     &schema.Schema{Type: schema.TypeString},
+				},
 			}
 		},
 	}
@@ -128,6 +138,10 @@ func dataSourceDatadogServiceLevelObjectiveRead(ctx context.Context, d *schema.R
 
 	slo := slosResp.GetData()[0]
 
+	var tags []string
+	tags = append(tags, slo.GetTags()...)
+	sort.Strings(tags)
+
 	d.SetId(slo.GetId())
 	if err := d.Set("name", slo.GetName()); err != nil {
 		return diag.FromErr(err)
@@ -145,6 +159,9 @@ func dataSourceDatadogServiceLevelObjectiveRead(ctx context.Context, d *schema.R
 		return diag.FromErr(err)
 	}
 	if err := d.Set("timeframe", slo.GetTimeframe()); err != nil {
+		return diag.FromErr(err)
+	}
+	if err := d.Set("tags", tags); err != nil {
 		return diag.FromErr(err)
 	}
 	query := make(map[string]interface{})

@@ -1,112 +1,210 @@
+---
 version: 2
 interactions:
-- request:
-    body: |
-      {"description":"Created using the Datadog provider in Terraform","id":"","is_read_only":true,"layout_type":"ordered","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardAlertValue_import-local-1682003520","widgets":[{"definition":{"alert_id":"895605","type":"alert_value"}},{"definition":{"alert_id":"895606","precision":1,"text_align":"center","title":"Widget Title","title_align":"center","title_size":"16","type":"alert_value","unit":"b"}}]}
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard
-    method: POST
-    id: 0
-  response:
-    body: |
-      {"id":"9gb-r98-aae","title":"tf-TestAccDatadogDashboardAlertValue_import-local-1682003520","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/9gb-r98-aae/tf-testaccdatadogdashboardalertvalueimport-local-1682003520","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"alert_id":"895605","type":"alert_value"},"id":8796666934794095},{"definition":{"alert_id":"895606","precision":1,"text_align":"center","title":"Widget Title","title_align":"center","title_size":"16","type":"alert_value","unit":"b"},"id":3176650579237759}],"notify_list":[],"created_at":"2023-04-20T15:12:01.873723+00:00","modified_at":"2023-04-20T15:12:01.873723+00:00","template_variable_presets":[],"tags":[]}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/9gb-r98-aae
-    method: GET
-    id: 1
-  response:
-    body: |
-      {"id":"9gb-r98-aae","title":"tf-TestAccDatadogDashboardAlertValue_import-local-1682003520","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/9gb-r98-aae/tf-testaccdatadogdashboardalertvalueimport-local-1682003520","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"alert_id":"895605","type":"alert_value"},"id":8796666934794095},{"definition":{"alert_id":"895606","precision":1,"text_align":"center","title":"Widget Title","title_align":"center","title_size":"16","type":"alert_value","unit":"b"},"id":3176650579237759}],"notify_list":[],"created_at":"2023-04-20T15:12:01.873723+00:00","modified_at":"2023-04-20T15:12:01.873723+00:00","template_variable_presets":[],"tags":[]}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/9gb-r98-aae
-    method: GET
-    id: 2
-  response:
-    body: |
-      {"id":"9gb-r98-aae","title":"tf-TestAccDatadogDashboardAlertValue_import-local-1682003520","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/9gb-r98-aae/tf-testaccdatadogdashboardalertvalueimport-local-1682003520","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"alert_id":"895605","type":"alert_value"},"id":8796666934794095},{"definition":{"alert_id":"895606","precision":1,"text_align":"center","title":"Widget Title","title_align":"center","title_size":"16","type":"alert_value","unit":"b"},"id":3176650579237759}],"notify_list":[],"created_at":"2023-04-20T15:12:01.873723+00:00","modified_at":"2023-04-20T15:12:01.873723+00:00","template_variable_presets":[],"tags":[]}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/9gb-r98-aae
-    method: GET
-    id: 3
-  response:
-    body: |
-      {"id":"9gb-r98-aae","title":"tf-TestAccDatadogDashboardAlertValue_import-local-1682003520","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/9gb-r98-aae/tf-testaccdatadogdashboardalertvalueimport-local-1682003520","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"alert_id":"895605","type":"alert_value"},"id":8796666934794095},{"definition":{"alert_id":"895606","precision":1,"text_align":"center","title":"Widget Title","title_align":"center","title_size":"16","type":"alert_value","unit":"b"},"id":3176650579237759}],"notify_list":[],"created_at":"2023-04-20T15:12:01.873723+00:00","modified_at":"2023-04-20T15:12:01.873723+00:00","template_variable_presets":[],"tags":[]}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/9gb-r98-aae
-    method: DELETE
-    id: 4
-  response:
-    body: |
-      {"deleted_dashboard_id":"9gb-r98-aae"}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/9gb-r98-aae
-    method: GET
-    id: 5
-  response:
-    body: '{"errors":["Dashboard with ID 9gb-r98-aae not found"]}'
-    headers:
-      Content-Type:
-      - application/json
-    status: 404 Not Found
-    code: 404
-    duration: "0ms"
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 490
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"description":"Created using the Datadog provider in Terraform","id":"","layout_type":"ordered","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardAlertValue_import-local-1767988438","widgets":[{"definition":{"alert_id":"895605","type":"alert_value"}},{"definition":{"alert_id":"895606","precision":1,"text_align":"center","title":"Widget Title","title_align":"center","title_size":"16","type":"alert_value","unit":"b"}}]}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"i43-xgx-rie","title":"tf-TestAccDatadogDashboardAlertValue_import-local-1767988438","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/i43-xgx-rie/tf-testaccdatadogdashboardalertvalueimport-local-1767988438","template_variables":[],"widgets":[{"definition":{"alert_id":"895605","type":"alert_value"},"id":4177427738782530},{"definition":{"alert_id":"895606","precision":1,"text_align":"center","title":"Widget Title","title_align":"center","title_size":"16","type":"alert_value","unit":"b"},"id":1635330359432347}],"notify_list":[],"created_at":"2026-01-09T19:53:59.854060+00:00","modified_at":"2026-01-09T19:53:59.854060+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 127.610333ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/i43-xgx-rie
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"i43-xgx-rie","title":"tf-TestAccDatadogDashboardAlertValue_import-local-1767988438","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/i43-xgx-rie/tf-testaccdatadogdashboardalertvalueimport-local-1767988438","template_variables":[],"widgets":[{"definition":{"alert_id":"895605","type":"alert_value"},"id":4177427738782530},{"definition":{"alert_id":"895606","precision":1,"text_align":"center","title":"Widget Title","title_align":"center","title_size":"16","type":"alert_value","unit":"b"},"id":1635330359432347}],"notify_list":[],"created_at":"2026-01-09T19:53:59.854060+00:00","modified_at":"2026-01-09T19:53:59.854060+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 98.307958ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/i43-xgx-rie
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"i43-xgx-rie","title":"tf-TestAccDatadogDashboardAlertValue_import-local-1767988438","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/i43-xgx-rie/tf-testaccdatadogdashboardalertvalueimport-local-1767988438","template_variables":[],"widgets":[{"definition":{"alert_id":"895605","type":"alert_value"},"id":4177427738782530},{"definition":{"alert_id":"895606","precision":1,"text_align":"center","title":"Widget Title","title_align":"center","title_size":"16","type":"alert_value","unit":"b"},"id":1635330359432347}],"notify_list":[],"created_at":"2026-01-09T19:53:59.854060+00:00","modified_at":"2026-01-09T19:53:59.854060+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 157.080417ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/i43-xgx-rie
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"i43-xgx-rie","title":"tf-TestAccDatadogDashboardAlertValue_import-local-1767988438","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/i43-xgx-rie/tf-testaccdatadogdashboardalertvalueimport-local-1767988438","template_variables":[],"widgets":[{"definition":{"alert_id":"895605","type":"alert_value"},"id":4177427738782530},{"definition":{"alert_id":"895606","precision":1,"text_align":"center","title":"Widget Title","title_align":"center","title_size":"16","type":"alert_value","unit":"b"},"id":1635330359432347}],"notify_list":[],"created_at":"2026-01-09T19:53:59.854060+00:00","modified_at":"2026-01-09T19:53:59.854060+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 102.807125ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/i43-xgx-rie
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"deleted_dashboard_id":"i43-xgx-rie"}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 316.844125ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/i43-xgx-rie
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"errors":["Dashboard with ID i43-xgx-rie not found"]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 78.01025ms

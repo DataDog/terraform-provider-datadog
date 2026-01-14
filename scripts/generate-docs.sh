@@ -7,6 +7,7 @@ exclude_files=(
   "docs/resources/compliance_custom_framework.md"
   "docs/resources/on_call_schedule.md"
   "docs/resources/on_call_team_routing_rules.md"
+  "docs/resources/on_call_user_notification_channel.md"
 )
 
 # Check if manual changes were made to any excluded files and exit
