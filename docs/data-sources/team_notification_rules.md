@@ -44,7 +44,7 @@ Read-Only:
 
 Read-Only:
 
-- `enabled` (Boolean) Flag indicating whether email notifications should be sent
+- `enabled` (Boolean) Flag indicating whether email notifications should be sent.
 
 
 <a id="nestedblock--notification_rules--ms_teams"></a>
