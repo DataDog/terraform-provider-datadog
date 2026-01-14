@@ -33,7 +33,7 @@ Use this data source to retrieve information about Datadog team notification rul
 
 Read-Only:
 
-- `email` (Block, Read-only) (see [below for nested schema](#nestedblock--notification_rules--email))
+- `email` (Block, Read-only) (see [below for nested schema](#nestedblock--notification_rules--email)).
 - `id` (String) The ID of the notification rule.
 - `ms_teams` (Block, Read-only) (see [below for nested schema](#nestedblock--notification_rules--ms_teams))
 - `pagerduty` (Block, Read-only) (see [below for nested schema](#nestedblock--notification_rules--pagerduty))
