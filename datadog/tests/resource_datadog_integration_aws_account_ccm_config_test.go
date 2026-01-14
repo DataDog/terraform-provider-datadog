@@ -14,15 +14,14 @@ import (
 
 func TestAccIntegrationAwsAccountCcmConfigBasic(t *testing.T) {
 	t.Parallel()
-	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
-	uniq := uniqueEntityName(ctx, t)
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
 	resource.Test(t, resource.TestCase{
 		ProtoV5ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogIntegrationAwsAccountCcmConfigDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogIntegrationAwsAccountCcmConfig(uniq),
+				Config: testAccCheckDatadogIntegrationAwsAccountCcmConfig(),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogIntegrationAwsAccountCcmConfigExists(providers.frameworkProvider),
 				),
@@ -31,21 +30,20 @@ func TestAccIntegrationAwsAccountCcmConfigBasic(t *testing.T) {
 	})
 }
 
-func testAccCheckDatadogIntegrationAwsAccountCcmConfig(uniq string) string {
-	// Update the aws_account_config_id to a valid value for your tests
-	return fmt.Sprintf(`resource "datadog_integration_aws_account_ccm_config" "foo" {
-  aws_account_config_id = "00000000-0000-0000-0000-000000000000"
+func testAccCheckDatadogIntegrationAwsAccountCcmConfig() string {
+	return `resource "datadog_integration_aws_account_ccm_config" "foo" {
+  aws_account_config_id = "b2087a32-4d4f-45b1-9321-1a0a48e9d7cf"
 
   ccm_config {
     data_export_configs {
-      report_name   = "cost-and-usage-report-%s"
+      report_name   = "cost-and-usage-report"
       report_prefix = "reports"
       report_type   = "CUR2.0"
       bucket_name   = "billing"
       bucket_region = "us-east-1"
     }
   }
-}`, uniq)
+}`
 }
 
 func testAccCheckDatadogIntegrationAwsAccountCcmConfigDestroy(accProvider *fwprovider.FrameworkProvider) func(*terraform.State) error {

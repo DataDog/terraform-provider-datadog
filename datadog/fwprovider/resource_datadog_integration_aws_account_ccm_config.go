@@ -2,6 +2,7 @@ package fwprovider
 
 import (
 	"context"
+	_nethttp "net/http"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -113,9 +114,22 @@ func (r *integrationAwsAccountCcmConfigResource) Read(ctx context.Context, reque
 	}
 	awsAccountConfigId := state.AwsAccountConfigId.ValueString()
 
-	resp, httpResp, err := r.Api.GetAWSAccountCCMConfig(r.Auth, awsAccountConfigId)
+	var resp datadogV2.AWSCcmConfigResponse
+	err := utils.Retry(5, 10, func() error {
+		var httpResp *_nethttp.Response
+		var err error
+		resp, httpResp, err = r.Api.GetAWSAccountCCMConfig(r.Auth, awsAccountConfigId)
+		if err != nil {
+			if httpResp != nil && httpResp.StatusCode == 404 {
+				return &utils.RetryableError{Prob: "CCM config not found yet, retrying"}
+			}
+			return err
+		}
+		return nil
+	})
 	if err != nil {
-		if httpResp != nil && httpResp.StatusCode == 404 {
+		if _, ok := err.(*utils.RetryableError); ok {
+			// Still 404 after retries - resource doesn't exist
 			response.State.RemoveResource(ctx)
 			return
 		}
