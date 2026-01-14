@@ -52,7 +52,7 @@ Read-Only:
 
 Read-Only:
 
-- `connector_name` (String) MS Teams connector name
+- `connector_name` (String) MS Teams connector name.
 
 
 <a id="nestedblock--notification_rules--pagerduty"></a>
