@@ -68,5 +68,5 @@ Read-Only:
 
 Read-Only:
 
-- `channel` (String) Slack channel for notifications
-- `workspace` (String) Slack workspace for notifications
+- `channel` (String) Slack channel for notifications.
+- `workspace` (String) Slack workspace for notifications.
