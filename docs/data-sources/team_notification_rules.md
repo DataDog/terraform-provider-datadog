@@ -21,7 +21,7 @@ Use this data source to retrieve information about Datadog team notification rul
 
 ### Optional
 
-- `rule_id` (String) Optional rule ID to filter to a specific notification rule. If not provided, all notification rules for the team will be returned.
+- `rule_id` (String) Optional rule ID to filter to a specific notification rule. If not provided, all notification rules for the team are returned.
 
 ### Read-Only
 
