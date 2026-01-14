@@ -26,7 +26,7 @@ Use this data source to retrieve information about Datadog team notification rul
 ### Read-Only
 
 - `id` (String) The ID of this resource.
-- `notification_rules` (Block List) List of notification rules for the team. (see [below for nested schema](#nestedblock--notification_rules))
+- `notification_rules` (Block List) List of notification rules for the team. (See [below for nested schema](#nestedblock--notification_rules).)
 
 <a id="nestedblock--notification_rules"></a>
 ### Nested Schema for `notification_rules`
