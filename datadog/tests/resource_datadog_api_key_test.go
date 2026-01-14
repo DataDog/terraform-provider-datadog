@@ -8,6 +8,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
+	"github.com/hashicorp/terraform-plugin-testing/tfversion"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/secretbridge"
@@ -202,6 +203,10 @@ func TestAccDatadogApiKey_WithEncryption(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		ProtoV5ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogApiKeyDestroy(providers.frameworkProvider),
+		// Write-only attributes require Terraform 1.11+
+		TerraformVersionChecks: []tfversion.TerraformVersionCheck{
+			tfversion.SkipBelow(tfversion.Version1_11_0),
+		},
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogApiKeyConfigWithEncryption(apiKeyName, encryptionKey),
@@ -270,6 +275,10 @@ func TestAccDatadogApiKey_AddEncryption(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		ProtoV5ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogApiKeyDestroy(providers.frameworkProvider),
+		// Write-only attributes require Terraform 1.11+
+		TerraformVersionChecks: []tfversion.TerraformVersionCheck{
+			tfversion.SkipBelow(tfversion.Version1_11_0),
+		},
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogApiKeyConfigRequired(apiKeyName, nil),
@@ -302,6 +311,10 @@ func TestAccDatadogApiKey_RemoveEncryption(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		ProtoV5ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogApiKeyDestroy(providers.frameworkProvider),
+		// Write-only attributes require Terraform 1.11+
+		TerraformVersionChecks: []tfversion.TerraformVersionCheck{
+			tfversion.SkipBelow(tfversion.Version1_11_0),
+		},
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogApiKeyConfigWithEncryption(apiKeyName, encryptionKey),
