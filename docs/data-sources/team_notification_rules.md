@@ -60,7 +60,7 @@ Read-Only:
 
 Read-Only:
 
-- `service_name` (String) PagerDuty service name
+- `service_name` (String) PagerDuty service name.
 
 
 <a id="nestedblock--notification_rules--slack"></a>
