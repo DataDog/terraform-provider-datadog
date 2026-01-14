@@ -1,2 +1,2 @@
-# Import using the cloud provider as the ID (aws, azure, or gcp)
-terraform import datadog_cloud_inventory_sync_config.example "aws"
+# Import using the sync config ID returned by the API
+terraform import datadog_cloud_inventory_sync_config.example "<sync-config-id>"

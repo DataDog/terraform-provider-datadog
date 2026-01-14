@@ -1,4 +1,3 @@
-
 package fwprovider
 
 import (
@@ -171,7 +170,7 @@ func (r *cloudInventorySyncConfigResource) Schema(_ context.Context, _ resource.
 			},
 		},
 		Blocks: map[string]schema.Block{
-"aws": schema.SingleNestedBlock{
+			"aws": schema.SingleNestedBlock{
 				Description: "AWS-specific configuration. Required when cloud_provider is `aws`.",
 				Attributes: map[string]schema.Attribute{
 					"aws_account_id": schema.StringAttribute{
@@ -284,8 +283,6 @@ func (r *cloudInventorySyncConfigResource) Read(ctx context.Context, request res
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-
-
 func (r *cloudInventorySyncConfigResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
 	var state cloudInventorySyncConfigModel
 	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
@@ -305,21 +302,23 @@ func (r *cloudInventorySyncConfigResource) Create(ctx context.Context, request r
 		return
 	}
 
-	// Set ID based on cloud provider
-	state.ID = types.StringValue(state.CloudProvider.ValueString())
-
 	var resp syncConfigResponse
 	if len(respBytes) > 0 {
-		if err := json.Unmarshal(respBytes, &resp); err == nil {
-			r.updateState(ctx, &state, &resp)
+		if err := json.Unmarshal(respBytes, &resp); err != nil {
+			response.Diagnostics.AddError("error parsing CloudInventorySyncConfig response", err.Error())
+			return
 		}
+		r.updateState(ctx, &state, &resp)
+	}
+
+	if state.ID.IsNull() || state.ID.ValueString() == "" {
+		response.Diagnostics.AddError("error creating CloudInventorySyncConfig", "no ID returned from API")
+		return
 	}
 
 	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
-
-
 
 func (r *cloudInventorySyncConfigResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
 	var state cloudInventorySyncConfigModel
@@ -330,6 +329,7 @@ func (r *cloudInventorySyncConfigResource) Update(ctx context.Context, request r
 
 	body := r.buildCloudInventorySyncConfigRequestBody(ctx, &state)
 
+	// Uses same upsert endpoint as Create
 	respBytes, httpResp, err := utils.SendRequest(r.Auth, r.Api, http.MethodPut, syncConfigsPath, body)
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error updating CloudInventorySyncConfig"))
@@ -351,8 +351,6 @@ func (r *cloudInventorySyncConfigResource) Update(ctx context.Context, request r
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-
-
 func (r *cloudInventorySyncConfigResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
 	var state cloudInventorySyncConfigModel
 	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
@@ -372,7 +370,6 @@ func (r *cloudInventorySyncConfigResource) Delete(ctx context.Context, request r
 		return
 	}
 }
-
 
 func (r *cloudInventorySyncConfigResource) updateState(ctx context.Context, state *cloudInventorySyncConfigModel, resp *syncConfigResponse) {
 	if resp == nil || resp.Data == nil {
@@ -448,9 +445,6 @@ func (r *cloudInventorySyncConfigResource) updateState(ctx context.Context, stat
 	}
 }
 
-
-
-
 func (r *cloudInventorySyncConfigResource) buildCloudInventorySyncConfigRequestBody(ctx context.Context, state *cloudInventorySyncConfigModel) *syncConfigRequest {
 	cloudProvider := state.CloudProvider.ValueString()
 	attributes := &syncConfigRequestAttributes{}
@@ -517,4 +511,3 @@ func (r *cloudInventorySyncConfigResource) buildCloudInventorySyncConfigRequestB
 		},
 	}
 }
-
