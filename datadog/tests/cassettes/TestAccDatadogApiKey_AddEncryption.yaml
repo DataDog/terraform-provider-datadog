@@ -1,0 +1,321 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 108
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"name":"tf-TestAccDatadogApiKey_AddEncryption-local-1768402662"},"type":"api_keys"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/api_keys
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"api_keys","attributes":{"created_at":"2026-01-14T14:57:44.559435+00:00","key":"34680f68a22f9daf48bb4dc88548e6ea","last4":"e6ea","modified_at":"2026-01-14T14:57:44.559435+00:00","remote_config_read_enabled":true,"category":"default","name":"tf-TestAccDatadogApiKey_AddEncryption-local-1768402662"},"relationships":{"created_by":{"data":{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0"}},"modified_by":{"data":{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0"}},"leak_information":{"data":null}},"id":"bc337f7b-5e27-4e05-90b0-0da2dfc4ce99"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 201 Created
+        code: 201
+        duration: 410.456375ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/api_keys/bc337f7b-5e27-4e05-90b0-0da2dfc4ce99
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"api_keys","attributes":{"created_at":"2026-01-14T14:57:44.559436+00:00","key":"34680f68a22f9daf48bb4dc88548e6ea","last4":"e6ea","modified_at":"2026-01-14T14:57:44.559436+00:00","remote_config_read_enabled":true,"category":"default","name":"tf-TestAccDatadogApiKey_AddEncryption-local-1768402662","date_last_used":null,"used_in_last_24_hours":false,"last_used_date":{"timestamp":null,"description":"Timestamp of when this key was last used in the past ninety (90) days, null if no recent usage"}},"relationships":{"created_by":{"data":{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0"}},"modified_by":{"data":{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0"}},"leak_information":{"data":null}},"id":"bc337f7b-5e27-4e05-90b0-0da2dfc4ce99"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 179.827916ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/api_keys/bc337f7b-5e27-4e05-90b0-0da2dfc4ce99
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"api_keys","attributes":{"created_at":"2026-01-14T14:57:44.559436+00:00","key":"34680f68a22f9daf48bb4dc88548e6ea","last4":"e6ea","modified_at":"2026-01-14T14:57:44.559436+00:00","remote_config_read_enabled":true,"category":"default","name":"tf-TestAccDatadogApiKey_AddEncryption-local-1768402662","date_last_used":null,"used_in_last_24_hours":false,"last_used_date":{"timestamp":null,"description":"Timestamp of when this key was last used in the past ninety (90) days, null if no recent usage"}},"relationships":{"created_by":{"data":{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0"}},"modified_by":{"data":{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0"}},"leak_information":{"data":null}},"id":"bc337f7b-5e27-4e05-90b0-0da2dfc4ce99"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 174.118167ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/api_keys/bc337f7b-5e27-4e05-90b0-0da2dfc4ce99
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"api_keys","attributes":{"created_at":"2026-01-14T14:57:44.559436+00:00","key":"34680f68a22f9daf48bb4dc88548e6ea","last4":"e6ea","modified_at":"2026-01-14T14:57:44.559436+00:00","remote_config_read_enabled":true,"category":"default","name":"tf-TestAccDatadogApiKey_AddEncryption-local-1768402662","date_last_used":null,"used_in_last_24_hours":false,"last_used_date":{"timestamp":null,"description":"Timestamp of when this key was last used in the past ninety (90) days, null if no recent usage"}},"relationships":{"created_by":{"data":{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0"}},"modified_by":{"data":{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0"}},"leak_information":{"data":null}},"id":"bc337f7b-5e27-4e05-90b0-0da2dfc4ce99"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 278.110583ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 186
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"name":"tf-TestAccDatadogApiKey_AddEncryption-local-1768402662","remote_config_read_enabled":true},"id":"bc337f7b-5e27-4e05-90b0-0da2dfc4ce99","type":"api_keys"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/api_keys/bc337f7b-5e27-4e05-90b0-0da2dfc4ce99
+        method: PATCH
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"api_keys","attributes":{"created_at":"2026-01-14T14:57:44.559436+00:00","key":"34680f68a22f9daf48bb4dc88548e6ea","last4":"e6ea","modified_at":"2026-01-14T14:57:46.228669+00:00","remote_config_read_enabled":true,"category":"default","name":"tf-TestAccDatadogApiKey_AddEncryption-local-1768402662"},"relationships":{"created_by":{"data":{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0"}},"modified_by":{"data":{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0"}},"leak_information":{"data":null}},"id":"bc337f7b-5e27-4e05-90b0-0da2dfc4ce99"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 185.515375ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/api_keys/bc337f7b-5e27-4e05-90b0-0da2dfc4ce99
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"api_keys","attributes":{"created_at":"2026-01-14T14:57:44.559436+00:00","key":"34680f68a22f9daf48bb4dc88548e6ea","last4":"e6ea","modified_at":"2026-01-14T14:57:46.228669+00:00","remote_config_read_enabled":true,"category":"default","name":"tf-TestAccDatadogApiKey_AddEncryption-local-1768402662","date_last_used":null,"used_in_last_24_hours":false,"last_used_date":{"timestamp":null,"description":"Timestamp of when this key was last used in the past ninety (90) days, null if no recent usage"}},"relationships":{"created_by":{"data":{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0"}},"modified_by":{"data":{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0"}},"leak_information":{"data":null}},"id":"bc337f7b-5e27-4e05-90b0-0da2dfc4ce99"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 168.548792ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/api_keys/bc337f7b-5e27-4e05-90b0-0da2dfc4ce99
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"api_keys","attributes":{"created_at":"2026-01-14T14:57:44.559436+00:00","key":"34680f68a22f9daf48bb4dc88548e6ea","last4":"e6ea","modified_at":"2026-01-14T14:57:46.228669+00:00","remote_config_read_enabled":true,"category":"default","name":"tf-TestAccDatadogApiKey_AddEncryption-local-1768402662","date_last_used":null,"used_in_last_24_hours":false,"last_used_date":{"timestamp":null,"description":"Timestamp of when this key was last used in the past ninety (90) days, null if no recent usage"}},"relationships":{"created_by":{"data":{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0"}},"modified_by":{"data":{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0"}},"leak_information":{"data":null}},"id":"bc337f7b-5e27-4e05-90b0-0da2dfc4ce99"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 180.171125ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/api_keys/bc337f7b-5e27-4e05-90b0-0da2dfc4ce99
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Content-Type:
+                - text/html; charset=utf-8
+        status: 204 No Content
+        code: 204
+        duration: 170.657792ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/api_keys/bc337f7b-5e27-4e05-90b0-0da2dfc4ce99
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"errors":["API key not found"]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 146.763708ms
