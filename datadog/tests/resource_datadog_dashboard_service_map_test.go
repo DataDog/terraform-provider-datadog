@@ -7,7 +7,6 @@ resource "datadog_dashboard" "service_map_dashboard" {
   title         = "{{uniq}}"
   description   = "Created using the Datadog provider in Terraform"
   layout_type   = "free"
-  is_read_only  = "true"
 
   widget {
 		servicemap_definition {
@@ -46,7 +45,6 @@ var datadogDashboardServiceMapAsserts = []string{
 	"widget.0.servicemap_definition.0.title_size = 16",
 	"layout_type = free",
 	"widget.0.servicemap_definition.0.service = master-db",
-	"is_read_only = true",
 	"widget.0.widget_layout.0.y = 5",
 	"widget.0.servicemap_definition.0.title = env: prod, datacenter:dc1, service: master-db",
 	"widget.0.widget_layout.0.height = 43",

@@ -41,6 +41,7 @@ type csmThreatsAgentRuleModel struct {
 	Expression  customtypes.TrimSpaceStringValue `tfsdk:"expression"`
 	ProductTags types.Set                        `tfsdk:"product_tags"`
 	Actions     []ActionModel                    `tfsdk:"actions"`
+	Silent      types.Bool                       `tfsdk:"silent"`
 }
 
 type ActionModel struct {
@@ -114,6 +115,11 @@ func (r *csmThreatsAgentRuleResource) Schema(_ context.Context, _ resource.Schem
 				Optional:    true,
 				ElementType: types.StringType,
 				Description: "The list of product tags associated with the rule",
+				Computed:    true,
+			},
+			"silent": schema.BoolAttribute{
+				Optional:    true,
+				Description: "Indicates whether the Agent rule is silent.",
 				Computed:    true,
 			},
 		},
@@ -444,7 +450,7 @@ func (r *csmThreatsAgentRuleResource) Delete(ctx context.Context, request resour
 }
 
 func (r *csmThreatsAgentRuleResource) buildCreateCSMThreatsAgentRulePayload(state *csmThreatsAgentRuleModel) (*datadogV2.CloudWorkloadSecurityAgentRuleCreateRequest, error) {
-	_, policyId, name, description, enabled, expression, productTags := r.extractAgentRuleAttributesFromResource(state)
+	_, policyId, name, description, enabled, expression, productTags, silent := r.extractAgentRuleAttributesFromResource(state)
 
 	attributes := datadogV2.CloudWorkloadSecurityAgentRuleCreateAttributes{}
 	attributes.Expression = expression
@@ -453,6 +459,7 @@ func (r *csmThreatsAgentRuleResource) buildCreateCSMThreatsAgentRulePayload(stat
 	attributes.Enabled = &enabled
 	attributes.PolicyId = policyId
 	attributes.ProductTags = productTags
+	attributes.Silent = &silent
 
 	// Initialize empty actions array - this ensures we always send the actions field
 	outActions := make([]datadogV2.CloudWorkloadSecurityAgentRuleAction, 0)
@@ -533,7 +540,7 @@ func (r *csmThreatsAgentRuleResource) buildCreateCSMThreatsAgentRulePayload(stat
 }
 
 func (r *csmThreatsAgentRuleResource) buildUpdateCSMThreatsAgentRulePayload(state *csmThreatsAgentRuleModel) (*datadogV2.CloudWorkloadSecurityAgentRuleUpdateRequest, error) {
-	agentRuleId, policyId, _, description, enabled, expression, productTags := r.extractAgentRuleAttributesFromResource(state)
+	agentRuleId, policyId, _, description, enabled, expression, productTags, silent := r.extractAgentRuleAttributesFromResource(state)
 
 	attributes := datadogV2.CloudWorkloadSecurityAgentRuleUpdateAttributes{}
 	attributes.Expression = &expression
@@ -541,7 +548,7 @@ func (r *csmThreatsAgentRuleResource) buildUpdateCSMThreatsAgentRulePayload(stat
 	attributes.Enabled = &enabled
 	attributes.PolicyId = policyId
 	attributes.ProductTags = productTags
-
+	attributes.Silent = &silent
 	// Initialize empty actions array - this ensures we always send the actions field
 	outActions := make([]datadogV2.CloudWorkloadSecurityAgentRuleAction, 0)
 
@@ -621,7 +628,7 @@ func (r *csmThreatsAgentRuleResource) buildUpdateCSMThreatsAgentRulePayload(stat
 	return datadogV2.NewCloudWorkloadSecurityAgentRuleUpdateRequest(*data), nil
 }
 
-func (r *csmThreatsAgentRuleResource) extractAgentRuleAttributesFromResource(state *csmThreatsAgentRuleModel) (string, *string, string, *string, bool, string, []string) {
+func (r *csmThreatsAgentRuleResource) extractAgentRuleAttributesFromResource(state *csmThreatsAgentRuleModel) (string, *string, string, *string, bool, string, []string, bool) {
 	// Mandatory fields
 	id := state.Id.ValueString()
 	name := state.Name.ValueString()
@@ -636,18 +643,19 @@ func (r *csmThreatsAgentRuleResource) extractAgentRuleAttributesFromResource(sta
 	enabled := state.Enabled.ValueBool()
 	expression := state.Expression.ValueString()
 	description := state.Description.ValueStringPointer()
+	silent := state.Silent.ValueBool()
 	var productTags []string
 	if !state.ProductTags.IsNull() && !state.ProductTags.IsUnknown() {
 		for _, tag := range state.ProductTags.Elements() {
 			tagStr, ok := tag.(types.String)
 			if !ok {
-				return "", nil, "", nil, false, "", nil
+				return "", nil, "", nil, false, "", nil, false
 			}
 			productTags = append(productTags, tagStr.ValueString())
 		}
 	}
 
-	return id, policyId, name, description, enabled, expression, productTags
+	return id, policyId, name, description, enabled, expression, productTags, silent
 }
 
 func (r *csmThreatsAgentRuleResource) updateStateFromResponse(ctx context.Context, state *csmThreatsAgentRuleModel, res *datadogV2.CloudWorkloadSecurityAgentRuleResponse) {
@@ -668,6 +676,11 @@ func (r *csmThreatsAgentRuleResource) updateStateFromResponse(ctx context.Contex
 	}
 	state.Expression = customtypes.TrimSpaceStringValue{
 		StringValue: types.StringValue(attributes.GetExpression()),
+	}
+	if attributes.Silent != nil {
+		state.Silent = types.BoolValue(*attributes.Silent)
+	} else {
+		state.Silent = types.BoolNull()
 	}
 
 	tags := attributes.GetProductTags()
