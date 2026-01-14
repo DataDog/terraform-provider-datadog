@@ -35,9 +35,9 @@ Read-Only:
 
 - `email` (Block, Read-only) (see [below for nested schema](#nestedblock--notification_rules--email)).
 - `id` (String) The ID of the notification rule.
-- `ms_teams` (Block, Read-only) (see [below for nested schema](#nestedblock--notification_rules--ms_teams))
-- `pagerduty` (Block, Read-only) (see [below for nested schema](#nestedblock--notification_rules--pagerduty))
-- `slack` (Block, Read-only) (see [below for nested schema](#nestedblock--notification_rules--slack))
+- `ms_teams` (Block, Read-only) (see [below for nested schema](#nestedblock--notification_rules--ms_teams)).
+- `pagerduty` (Block, Read-only) (see [below for nested schema](#nestedblock--notification_rules--pagerduty)).
+- `slack` (Block, Read-only) (see [below for nested schema](#nestedblock--notification_rules--slack)).
 
 <a id="nestedblock--notification_rules--email"></a>
 ### Nested Schema for `notification_rules.email`
