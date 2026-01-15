@@ -88,6 +88,5 @@ datadog/**/*datadog_cost_budget*                 @DataDog/api-reliability @DataD
 datadog/**/*datadog_tag_pipeline_ruleset*        @DataDog/api-reliability @DataDog/cloud-cost-management
 datadog/**/*datadog_deployment_gate*             @DataDog/api-reliability @DataDog/ci-app-backend
 datadog/**/*observability_pipeline*              @DataDog/observability-pipelines
-datadog/tests/cassettes/TestAccDatadogObservabilityPipeline*  @DataDog/observability-pipelines
 docs/resources/observability_pipeline.md         @DataDog/observability-pipelines
 scripts/*cloud-cost-import-existing-resources*   @DataDog/cloud-cost-management
