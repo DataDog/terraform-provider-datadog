@@ -221,7 +221,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/actions-datastores/aeb3c455-b287-4534-a534-45556ac51d9e/items?item_key=test-key-tf-TestAccDatastoreItem
+        url: https://api.datadoghq.com/api/v2/actions-datastores/aeb3c455-b287-4534-a534-45556ac51d9e/items?item_key=test-key-tf-TestAccDatastoreItemBasic-local-1768498260
         method: GET
       response:
         proto: HTTP/2.0
