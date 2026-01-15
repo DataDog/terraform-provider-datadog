@@ -1,3 +1,212 @@
 ---
 version: 2
-interactions: []
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 460
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"config":{"destinations":[{"id":"dest-1","inputs":["group-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[{"enabled":true,"id":"group-1","include":"*","inputs":["source-1"],"processors":[{"arrays":[{"field":"tags","include":"*"}],"enabled":true,"id":"split-array-proc","include":"*","type":"split_array"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]},"name":"split_array pipeline"},"type":"pipelines"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 720
+        uncompressed: false
+        body: |
+            {"data":{"id":"1cedc50c-f20d-11f0-9e18-da7ad0900002","type":"pipelines","attributes":{"name":"split_array pipeline","config":{"destinations":[{"id":"dest-1","inputs":["group-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[{"enabled":true,"id":"group-1","include":"*","inputs":["source-1"],"processors":[{"arrays":[{"field":"tags","include":"*"}],"enabled":true,"id":"split-array-proc","include":"*","type":"split_array"}]}],"processors":[{"enabled":true,"id":"group-1","include":"*","inputs":["source-1"],"processors":[{"arrays":[{"field":"tags","include":"*"}],"enabled":true,"id":"split-array-proc","include":"*","type":"split_array"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 544.773375ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/1cedc50c-f20d-11f0-9e18-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 720
+        uncompressed: false
+        body: |
+            {"data":{"id":"1cedc50c-f20d-11f0-9e18-da7ad0900002","type":"pipelines","attributes":{"name":"split_array pipeline","config":{"destinations":[{"id":"dest-1","inputs":["group-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[{"enabled":true,"id":"group-1","include":"*","inputs":["source-1"],"processors":[{"arrays":[{"field":"tags","include":"*"}],"enabled":true,"id":"split-array-proc","include":"*","type":"split_array"}]}],"processors":[{"enabled":true,"id":"group-1","include":"*","inputs":["source-1"],"processors":[{"arrays":[{"field":"tags","include":"*"}],"enabled":true,"id":"split-array-proc","include":"*","type":"split_array"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 258.320708ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/1cedc50c-f20d-11f0-9e18-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 720
+        uncompressed: false
+        body: |
+            {"data":{"id":"1cedc50c-f20d-11f0-9e18-da7ad0900002","type":"pipelines","attributes":{"name":"split_array pipeline","config":{"destinations":[{"id":"dest-1","inputs":["group-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[{"enabled":true,"id":"group-1","include":"*","inputs":["source-1"],"processors":[{"arrays":[{"field":"tags","include":"*"}],"enabled":true,"id":"split-array-proc","include":"*","type":"split_array"}]}],"processors":[{"enabled":true,"id":"group-1","include":"*","inputs":["source-1"],"processors":[{"arrays":[{"field":"tags","include":"*"}],"enabled":true,"id":"split-array-proc","include":"*","type":"split_array"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 334.593459ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 565
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"config":{"destinations":[{"id":"dest-1","inputs":["group-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[{"enabled":true,"id":"group-1","include":"*","inputs":["source-1"],"processors":[{"arrays":[{"field":"items","include":"source:prod"},{"field":"events","include":"source:staging"}],"display_name":"Array Splitter","enabled":true,"id":"split-array-proc","include":"*","type":"split_array"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]},"name":"split_array pipeline updated"},"id":"","type":"pipelines"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/1cedc50c-f20d-11f0-9e18-da7ad0900002
+        method: PUT
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 906
+        uncompressed: false
+        body: |
+            {"data":{"id":"1cedc50c-f20d-11f0-9e18-da7ad0900002","type":"pipelines","attributes":{"name":"split_array pipeline updated","config":{"destinations":[{"id":"dest-1","inputs":["group-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[{"enabled":true,"id":"group-1","include":"*","inputs":["source-1"],"processors":[{"arrays":[{"field":"items","include":"source:prod"},{"field":"events","include":"source:staging"}],"display_name":"Array Splitter","enabled":true,"id":"split-array-proc","include":"*","type":"split_array"}]}],"processors":[{"enabled":true,"id":"group-1","include":"*","inputs":["source-1"],"processors":[{"arrays":[{"field":"items","include":"source:prod"},{"field":"events","include":"source:staging"}],"display_name":"Array Splitter","enabled":true,"id":"split-array-proc","include":"*","type":"split_array"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 472.377041ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/1cedc50c-f20d-11f0-9e18-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 906
+        uncompressed: false
+        body: |
+            {"data":{"id":"1cedc50c-f20d-11f0-9e18-da7ad0900002","type":"pipelines","attributes":{"name":"split_array pipeline updated","config":{"destinations":[{"id":"dest-1","inputs":["group-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[{"enabled":true,"id":"group-1","include":"*","inputs":["source-1"],"processors":[{"arrays":[{"field":"items","include":"source:prod"},{"field":"events","include":"source:staging"}],"display_name":"Array Splitter","enabled":true,"id":"split-array-proc","include":"*","type":"split_array"}]}],"processors":[{"enabled":true,"id":"group-1","include":"*","inputs":["source-1"],"processors":[{"arrays":[{"field":"items","include":"source:prod"},{"field":"events","include":"source:staging"}],"display_name":"Array Splitter","enabled":true,"id":"split-array-proc","include":"*","type":"split_array"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 253.665625ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/1cedc50c-f20d-11f0-9e18-da7ad0900002
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Content-Type:
+                - application/json
+        status: 204 No Content
+        code: 204
+        duration: 378.695833ms

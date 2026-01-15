@@ -1,3 +1,212 @@
 ---
 version: 2
-interactions: []
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 745
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"config":{"destinations":[{"id":"output","inputs":["remap-group"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[{"enabled":true,"id":"filter-group","include":"*","inputs":["my-source"],"processors":[{"enabled":true,"id":"filter-1","include":"*","type":"filter"},{"enabled":true,"fields":["old_field","another_field"],"id":"filter-2","include":"*","type":"remove_fields"}]},{"enabled":true,"id":"remap-group","include":"*","inputs":["filter-group"],"processors":[{"enabled":true,"fields":[{"name":"new_field","value":".old_field"}],"id":"remap-1","include":"*","type":"add_fields"}]}],"sources":[{"id":"my-source","type":"datadog_agent"}]},"name":"multiple-processor-groups-test"},"type":"pipelines"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 1275
+        uncompressed: false
+        body: |
+            {"data":{"id":"c55e8db2-f20c-11f0-9dce-da7ad0900002","type":"pipelines","attributes":{"name":"multiple-processor-groups-test","config":{"destinations":[{"id":"output","inputs":["remap-group"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[{"enabled":true,"id":"filter-group","include":"*","inputs":["my-source"],"processors":[{"enabled":true,"id":"filter-1","include":"*","type":"filter"},{"enabled":true,"fields":["old_field","another_field"],"id":"filter-2","include":"*","type":"remove_fields"}]},{"enabled":true,"id":"remap-group","include":"*","inputs":["filter-group"],"processors":[{"enabled":true,"fields":[{"name":"new_field","value":".old_field"}],"id":"remap-1","include":"*","type":"add_fields"}]}],"processors":[{"enabled":true,"id":"filter-group","include":"*","inputs":["my-source"],"processors":[{"enabled":true,"id":"filter-1","include":"*","type":"filter"},{"enabled":true,"fields":["old_field","another_field"],"id":"filter-2","include":"*","type":"remove_fields"}]},{"enabled":true,"id":"remap-group","include":"*","inputs":["filter-group"],"processors":[{"enabled":true,"fields":[{"name":"new_field","value":".old_field"}],"id":"remap-1","include":"*","type":"add_fields"}]}],"sources":[{"id":"my-source","type":"datadog_agent"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 502.490875ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/c55e8db2-f20c-11f0-9dce-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 1275
+        uncompressed: false
+        body: |
+            {"data":{"id":"c55e8db2-f20c-11f0-9dce-da7ad0900002","type":"pipelines","attributes":{"name":"multiple-processor-groups-test","config":{"destinations":[{"id":"output","inputs":["remap-group"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[{"enabled":true,"id":"filter-group","include":"*","inputs":["my-source"],"processors":[{"enabled":true,"id":"filter-1","include":"*","type":"filter"},{"enabled":true,"fields":["old_field","another_field"],"id":"filter-2","include":"*","type":"remove_fields"}]},{"enabled":true,"id":"remap-group","include":"*","inputs":["filter-group"],"processors":[{"enabled":true,"fields":[{"name":"new_field","value":".old_field"}],"id":"remap-1","include":"*","type":"add_fields"}]}],"processors":[{"enabled":true,"id":"filter-group","include":"*","inputs":["my-source"],"processors":[{"enabled":true,"id":"filter-1","include":"*","type":"filter"},{"enabled":true,"fields":["old_field","another_field"],"id":"filter-2","include":"*","type":"remove_fields"}]},{"enabled":true,"id":"remap-group","include":"*","inputs":["filter-group"],"processors":[{"enabled":true,"fields":[{"name":"new_field","value":".old_field"}],"id":"remap-1","include":"*","type":"add_fields"}]}],"sources":[{"id":"my-source","type":"datadog_agent"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 402.435667ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/c55e8db2-f20c-11f0-9dce-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 1275
+        uncompressed: false
+        body: |
+            {"data":{"id":"c55e8db2-f20c-11f0-9dce-da7ad0900002","type":"pipelines","attributes":{"name":"multiple-processor-groups-test","config":{"destinations":[{"id":"output","inputs":["remap-group"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[{"enabled":true,"id":"filter-group","include":"*","inputs":["my-source"],"processors":[{"enabled":true,"id":"filter-1","include":"*","type":"filter"},{"enabled":true,"fields":["old_field","another_field"],"id":"filter-2","include":"*","type":"remove_fields"}]},{"enabled":true,"id":"remap-group","include":"*","inputs":["filter-group"],"processors":[{"enabled":true,"fields":[{"name":"new_field","value":".old_field"}],"id":"remap-1","include":"*","type":"add_fields"}]}],"processors":[{"enabled":true,"id":"filter-group","include":"*","inputs":["my-source"],"processors":[{"enabled":true,"id":"filter-1","include":"*","type":"filter"},{"enabled":true,"fields":["old_field","another_field"],"id":"filter-2","include":"*","type":"remove_fields"}]},{"enabled":true,"id":"remap-group","include":"*","inputs":["filter-group"],"processors":[{"enabled":true,"fields":[{"name":"new_field","value":".old_field"}],"id":"remap-1","include":"*","type":"add_fields"}]}],"sources":[{"id":"my-source","type":"datadog_agent"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 302.485167ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 753
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"config":{"destinations":[{"id":"output","inputs":["remap-group"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[{"enabled":true,"id":"filter-group","include":"*","inputs":["my-source"],"processors":[{"enabled":true,"fields":["old_field","another_field"],"id":"filter-2","include":"*","type":"remove_fields"},{"enabled":true,"id":"filter-1","include":"*","type":"filter"}]},{"enabled":true,"id":"remap-group","include":"*","inputs":["filter-group"],"processors":[{"enabled":true,"fields":[{"name":"new_field","value":".old_field"}],"id":"remap-1","include":"*","type":"add_fields"}]}],"sources":[{"id":"my-source","type":"datadog_agent"}]},"name":"multiple-processor-groups-test"},"id":"","type":"pipelines"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/c55e8db2-f20c-11f0-9dce-da7ad0900002
+        method: PUT
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 1275
+        uncompressed: false
+        body: |
+            {"data":{"id":"c55e8db2-f20c-11f0-9dce-da7ad0900002","type":"pipelines","attributes":{"name":"multiple-processor-groups-test","config":{"destinations":[{"id":"output","inputs":["remap-group"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[{"enabled":true,"id":"filter-group","include":"*","inputs":["my-source"],"processors":[{"enabled":true,"fields":["old_field","another_field"],"id":"filter-2","include":"*","type":"remove_fields"},{"enabled":true,"id":"filter-1","include":"*","type":"filter"}]},{"enabled":true,"id":"remap-group","include":"*","inputs":["filter-group"],"processors":[{"enabled":true,"fields":[{"name":"new_field","value":".old_field"}],"id":"remap-1","include":"*","type":"add_fields"}]}],"processors":[{"enabled":true,"id":"filter-group","include":"*","inputs":["my-source"],"processors":[{"enabled":true,"fields":["old_field","another_field"],"id":"filter-2","include":"*","type":"remove_fields"},{"enabled":true,"id":"filter-1","include":"*","type":"filter"}]},{"enabled":true,"id":"remap-group","include":"*","inputs":["filter-group"],"processors":[{"enabled":true,"fields":[{"name":"new_field","value":".old_field"}],"id":"remap-1","include":"*","type":"add_fields"}]}],"sources":[{"id":"my-source","type":"datadog_agent"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 459.1505ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/c55e8db2-f20c-11f0-9dce-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 1275
+        uncompressed: false
+        body: |
+            {"data":{"id":"c55e8db2-f20c-11f0-9dce-da7ad0900002","type":"pipelines","attributes":{"name":"multiple-processor-groups-test","config":{"destinations":[{"id":"output","inputs":["remap-group"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[{"enabled":true,"id":"filter-group","include":"*","inputs":["my-source"],"processors":[{"enabled":true,"fields":["old_field","another_field"],"id":"filter-2","include":"*","type":"remove_fields"},{"enabled":true,"id":"filter-1","include":"*","type":"filter"}]},{"enabled":true,"id":"remap-group","include":"*","inputs":["filter-group"],"processors":[{"enabled":true,"fields":[{"name":"new_field","value":".old_field"}],"id":"remap-1","include":"*","type":"add_fields"}]}],"processors":[{"enabled":true,"id":"filter-group","include":"*","inputs":["my-source"],"processors":[{"enabled":true,"fields":["old_field","another_field"],"id":"filter-2","include":"*","type":"remove_fields"},{"enabled":true,"id":"filter-1","include":"*","type":"filter"}]},{"enabled":true,"id":"remap-group","include":"*","inputs":["filter-group"],"processors":[{"enabled":true,"fields":[{"name":"new_field","value":".old_field"}],"id":"remap-1","include":"*","type":"add_fields"}]}],"sources":[{"id":"my-source","type":"datadog_agent"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 361.409041ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/c55e8db2-f20c-11f0-9dce-da7ad0900002
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Content-Type:
+                - application/json
+        status: 204 No Content
+        code: 204
+        duration: 311.765042ms

@@ -1,3 +1,107 @@
 ---
 version: 2
-interactions: []
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 528
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"config":{"destinations":[{"id":"destination-1","inputs":["add-fields-group-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[{"enabled":true,"id":"add-fields-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"fields":[{"name":"custom.field","value":"hello-world"},{"name":"env","value":"prod"}],"id":"add-fields-1","include":"*","type":"add_fields"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]},"name":"add-fields-pipeline"},"type":"pipelines"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 839
+        uncompressed: false
+        body: |
+            {"data":{"id":"c836be66-f20b-11f0-a38a-da7ad0900002","type":"pipelines","attributes":{"name":"add-fields-pipeline","config":{"destinations":[{"id":"destination-1","inputs":["add-fields-group-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[{"enabled":true,"id":"add-fields-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"fields":[{"name":"custom.field","value":"hello-world"},{"name":"env","value":"prod"}],"id":"add-fields-1","include":"*","type":"add_fields"}]}],"processors":[{"enabled":true,"id":"add-fields-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"fields":[{"name":"custom.field","value":"hello-world"},{"name":"env","value":"prod"}],"id":"add-fields-1","include":"*","type":"add_fields"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 522.036875ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/c836be66-f20b-11f0-a38a-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 839
+        uncompressed: false
+        body: |
+            {"data":{"id":"c836be66-f20b-11f0-a38a-da7ad0900002","type":"pipelines","attributes":{"name":"add-fields-pipeline","config":{"destinations":[{"id":"destination-1","inputs":["add-fields-group-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[{"enabled":true,"id":"add-fields-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"fields":[{"name":"custom.field","value":"hello-world"},{"name":"env","value":"prod"}],"id":"add-fields-1","include":"*","type":"add_fields"}]}],"processors":[{"enabled":true,"id":"add-fields-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"fields":[{"name":"custom.field","value":"hello-world"},{"name":"env","value":"prod"}],"id":"add-fields-1","include":"*","type":"add_fields"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 239.119959ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/c836be66-f20b-11f0-a38a-da7ad0900002
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Content-Type:
+                - application/json
+        status: 204 No Content
+        code: 204
+        duration: 323.041167ms

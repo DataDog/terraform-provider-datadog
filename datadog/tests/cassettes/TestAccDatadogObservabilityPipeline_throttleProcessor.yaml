@@ -1,3 +1,107 @@
 ---
 version: 2
-interactions: []
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 705
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"config":{"destinations":[{"id":"destination-1","inputs":["throttle-group-2"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[{"enabled":true,"id":"throttle-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"throttle-global","include":"*","threshold":1000,"type":"throttle","window":60}]},{"enabled":true,"id":"throttle-group-2","include":"*","inputs":["throttle-group-1"],"processors":[{"enabled":true,"group_by":["log.user.id","log.level"],"id":"throttle-grouped","include":"*","threshold":100,"type":"throttle","window":10}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]},"name":"throttle pipeline"},"type":"pipelines"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 1197
+        uncompressed: false
+        body: |
+            {"data":{"id":"d7c7eeee-f20c-11f0-9dde-da7ad0900002","type":"pipelines","attributes":{"name":"throttle pipeline","config":{"destinations":[{"id":"destination-1","inputs":["throttle-group-2"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[{"enabled":true,"id":"throttle-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"throttle-global","include":"*","threshold":1000,"type":"throttle","window":60}]},{"enabled":true,"id":"throttle-group-2","include":"*","inputs":["throttle-group-1"],"processors":[{"enabled":true,"group_by":["log.user.id","log.level"],"id":"throttle-grouped","include":"*","threshold":100,"type":"throttle","window":10}]}],"processors":[{"enabled":true,"id":"throttle-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"throttle-global","include":"*","threshold":1000,"type":"throttle","window":60}]},{"enabled":true,"id":"throttle-group-2","include":"*","inputs":["throttle-group-1"],"processors":[{"enabled":true,"group_by":["log.user.id","log.level"],"id":"throttle-grouped","include":"*","threshold":100,"type":"throttle","window":10}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 654.534791ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/d7c7eeee-f20c-11f0-9dde-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 1197
+        uncompressed: false
+        body: |
+            {"data":{"id":"d7c7eeee-f20c-11f0-9dde-da7ad0900002","type":"pipelines","attributes":{"name":"throttle pipeline","config":{"destinations":[{"id":"destination-1","inputs":["throttle-group-2"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[{"enabled":true,"id":"throttle-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"throttle-global","include":"*","threshold":1000,"type":"throttle","window":60}]},{"enabled":true,"id":"throttle-group-2","include":"*","inputs":["throttle-group-1"],"processors":[{"enabled":true,"group_by":["log.user.id","log.level"],"id":"throttle-grouped","include":"*","threshold":100,"type":"throttle","window":10}]}],"processors":[{"enabled":true,"id":"throttle-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"throttle-global","include":"*","threshold":1000,"type":"throttle","window":60}]},{"enabled":true,"id":"throttle-group-2","include":"*","inputs":["throttle-group-1"],"processors":[{"enabled":true,"group_by":["log.user.id","log.level"],"id":"throttle-grouped","include":"*","threshold":100,"type":"throttle","window":10}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 228.4945ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/d7c7eeee-f20c-11f0-9dde-da7ad0900002
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Content-Type:
+                - application/json
+        status: 204 No Content
+        code: 204
+        duration: 344.338042ms

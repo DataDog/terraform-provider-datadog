@@ -1,3 +1,107 @@
 ---
 version: 2
-interactions: []
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 505
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"config":{"destinations":[{"id":"logs-1","inputs":["quota-group-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[{"enabled":true,"id":"quota-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"quota-1","include":"*","limit":{"enforce":"events","limit":1000},"name":"MyQuota","overflow_action":"drop","type":"quota"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]},"name":"quota with overflow_action"},"type":"pipelines"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 798
+        uncompressed: false
+        body: |
+            {"data":{"id":"f2c9fd86-f20c-11f0-9df2-da7ad0900002","type":"pipelines","attributes":{"name":"quota with overflow_action","config":{"destinations":[{"id":"logs-1","inputs":["quota-group-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[{"enabled":true,"id":"quota-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"quota-1","include":"*","limit":{"enforce":"events","limit":1000},"name":"MyQuota","overflow_action":"drop","type":"quota"}]}],"processors":[{"enabled":true,"id":"quota-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"quota-1","include":"*","limit":{"enforce":"events","limit":1000},"name":"MyQuota","overflow_action":"drop","type":"quota"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 499.740042ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/f2c9fd86-f20c-11f0-9df2-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 798
+        uncompressed: false
+        body: |
+            {"data":{"id":"f2c9fd86-f20c-11f0-9df2-da7ad0900002","type":"pipelines","attributes":{"name":"quota with overflow_action","config":{"destinations":[{"id":"logs-1","inputs":["quota-group-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[{"enabled":true,"id":"quota-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"quota-1","include":"*","limit":{"enforce":"events","limit":1000},"name":"MyQuota","overflow_action":"drop","type":"quota"}]}],"processors":[{"enabled":true,"id":"quota-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"quota-1","include":"*","limit":{"enforce":"events","limit":1000},"name":"MyQuota","overflow_action":"drop","type":"quota"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 377.03425ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/f2c9fd86-f20c-11f0-9df2-da7ad0900002
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Content-Type:
+                - application/json
+        status: 204 No Content
+        code: 204
+        duration: 422.806375ms

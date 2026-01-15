@@ -1,3 +1,212 @@
 ---
 version: 2
-interactions: []
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 283
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"config":{"destinations":[{"encoding":"json","id":"kafka-dest-1","inputs":["source-1"],"topic":"logs-topic","type":"kafka"}],"pipeline_type":"logs","sources":[{"id":"source-1","type":"datadog_agent"}]},"name":"kafka-destination-pipeline"},"type":"pipelines"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 365
+        uncompressed: false
+        body: |
+            {"data":{"id":"032947ae-f20d-11f0-9e02-da7ad0900002","type":"pipelines","attributes":{"name":"kafka-destination-pipeline","config":{"destinations":[{"encoding":"json","id":"kafka-dest-1","inputs":["source-1"],"topic":"logs-topic","type":"kafka"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 565.126542ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/032947ae-f20d-11f0-9e02-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 365
+        uncompressed: false
+        body: |
+            {"data":{"id":"032947ae-f20d-11f0-9e02-da7ad0900002","type":"pipelines","attributes":{"name":"kafka-destination-pipeline","config":{"destinations":[{"encoding":"json","id":"kafka-dest-1","inputs":["source-1"],"topic":"logs-topic","type":"kafka"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 236.228375ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/032947ae-f20d-11f0-9e02-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 365
+        uncompressed: false
+        body: |
+            {"data":{"id":"032947ae-f20d-11f0-9e02-da7ad0900002","type":"pipelines","attributes":{"name":"kafka-destination-pipeline","config":{"destinations":[{"encoding":"json","id":"kafka-dest-1","inputs":["source-1"],"topic":"logs-topic","type":"kafka"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 227.72325ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 747
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"config":{"destinations":[{"compression":"gzip","encoding":"json","headers_key":"headers","id":"kafka-dest-1","inputs":["source-1"],"key_field":"message_key","librdkafka_options":[{"name":"client.id","value":"observability-pipeline"},{"name":"queue.buffering.max.messages","value":"15"}],"message_timeout_ms":30000,"rate_limit_duration_secs":1,"rate_limit_num":1000,"sasl":{"mechanism":"PLAIN"},"socket_timeout_ms":60000,"tls":{"ca_file":"/etc/ssl/certs/ca.crt","crt_file":"/etc/ssl/certs/client.crt","key_file":"/etc/ssl/private/client.key"},"topic":"logs-topic","type":"kafka"}],"pipeline_type":"logs","sources":[{"id":"source-1","type":"datadog_agent"}]},"name":"kafka-destination-pipeline"},"id":"","type":"pipelines"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/032947ae-f20d-11f0-9e02-da7ad0900002
+        method: PUT
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 821
+        uncompressed: false
+        body: |
+            {"data":{"id":"032947ae-f20d-11f0-9e02-da7ad0900002","type":"pipelines","attributes":{"name":"kafka-destination-pipeline","config":{"destinations":[{"compression":"gzip","encoding":"json","headers_key":"headers","id":"kafka-dest-1","inputs":["source-1"],"key_field":"message_key","librdkafka_options":[{"name":"client.id","value":"observability-pipeline"},{"name":"queue.buffering.max.messages","value":"15"}],"message_timeout_ms":30000,"rate_limit_duration_secs":1,"rate_limit_num":1000,"sasl":{"mechanism":"PLAIN"},"socket_timeout_ms":60000,"tls":{"ca_file":"/etc/ssl/certs/ca.crt","crt_file":"/etc/ssl/certs/client.crt","key_file":"/etc/ssl/private/client.key"},"topic":"logs-topic","type":"kafka"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 474.344167ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/032947ae-f20d-11f0-9e02-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 821
+        uncompressed: false
+        body: |
+            {"data":{"id":"032947ae-f20d-11f0-9e02-da7ad0900002","type":"pipelines","attributes":{"name":"kafka-destination-pipeline","config":{"destinations":[{"compression":"gzip","encoding":"json","headers_key":"headers","id":"kafka-dest-1","inputs":["source-1"],"key_field":"message_key","librdkafka_options":[{"name":"client.id","value":"observability-pipeline"},{"name":"queue.buffering.max.messages","value":"15"}],"message_timeout_ms":30000,"rate_limit_duration_secs":1,"rate_limit_num":1000,"sasl":{"mechanism":"PLAIN"},"socket_timeout_ms":60000,"tls":{"ca_file":"/etc/ssl/certs/ca.crt","crt_file":"/etc/ssl/certs/client.crt","key_file":"/etc/ssl/private/client.key"},"topic":"logs-topic","type":"kafka"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 283.042834ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/032947ae-f20d-11f0-9e02-da7ad0900002
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Content-Type:
+                - application/json
+        status: 204 No Content
+        code: 204
+        duration: 616.448167ms

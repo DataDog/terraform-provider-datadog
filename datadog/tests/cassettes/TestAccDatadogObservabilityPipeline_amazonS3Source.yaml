@@ -1,3 +1,107 @@
 ---
 version: 2
-interactions: []
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 516
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"config":{"destinations":[{"id":"destination-1","inputs":["s3-source-1"],"type":"datadog_logs"}],"pipeline_type":"logs","sources":[{"auth":{"assume_role":"arn:aws:iam::123456789012:role/test-role","external_id":"external-test-id","session_name":"session-test"},"id":"s3-source-1","region":"us-east-1","tls":{"ca_file":"/etc/ssl/certs/s3.ca","crt_file":"/etc/ssl/certs/s3.crt","key_file":"/etc/ssl/private/s3.key"},"type":"amazon_s3"}]},"name":"amazon_s3-source-pipeline"},"type":"pipelines"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 598
+        uncompressed: false
+        body: |
+            {"data":{"id":"d269cbd0-f20b-11f0-a396-da7ad0900002","type":"pipelines","attributes":{"name":"amazon_s3-source-pipeline","config":{"destinations":[{"id":"destination-1","inputs":["s3-source-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"auth":{"assume_role":"arn:aws:iam::123456789012:role/test-role","external_id":"external-test-id","session_name":"session-test"},"id":"s3-source-1","region":"us-east-1","tls":{"ca_file":"/etc/ssl/certs/s3.ca","crt_file":"/etc/ssl/certs/s3.crt","key_file":"/etc/ssl/private/s3.key"},"type":"amazon_s3"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 364.889125ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/d269cbd0-f20b-11f0-a396-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 598
+        uncompressed: false
+        body: |
+            {"data":{"id":"d269cbd0-f20b-11f0-a396-da7ad0900002","type":"pipelines","attributes":{"name":"amazon_s3-source-pipeline","config":{"destinations":[{"id":"destination-1","inputs":["s3-source-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"auth":{"assume_role":"arn:aws:iam::123456789012:role/test-role","external_id":"external-test-id","session_name":"session-test"},"id":"s3-source-1","region":"us-east-1","tls":{"ca_file":"/etc/ssl/certs/s3.ca","crt_file":"/etc/ssl/certs/s3.crt","key_file":"/etc/ssl/private/s3.key"},"type":"amazon_s3"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 221.536292ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/d269cbd0-f20b-11f0-a396-da7ad0900002
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Content-Type:
+                - application/json
+        status: 204 No Content
+        code: 204
+        duration: 336.939792ms
