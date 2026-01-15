@@ -1268,7 +1268,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 																								},
 																								"description": schema.StringAttribute{
 																									Optional:    true,
-																									Description: "Human-readable description providing context about a sensitive data scanner rule",
+																									Description: "Human-readable description providing context about a sensitive data scanner rule.",
 																								},
 																							},
 																						},
@@ -1290,7 +1290,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 																								},
 																								"description": schema.StringAttribute{
 																									Optional:    true,
-																									Description: "Human-readable description providing context about a sensitive data scanner rule",
+																									Description: "Human-readable description providing context about a sensitive data scanner rule.",
 																								},
 																							},
 																						},

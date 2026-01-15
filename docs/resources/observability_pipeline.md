@@ -1175,7 +1175,7 @@ Optional:
 
 Optional:
 
-- `description` (String) Human-readable description providing context about a sensitive data scanner rule
+- `description` (String) Human-readable description providing context about a sensitive data scanner rule.
 - `rule` (String) A regular expression used to detect sensitive values. Must be a valid regex.
 
 
@@ -1184,7 +1184,7 @@ Optional:
 
 Optional:
 
-- `description` (String) Human-readable description providing context about a sensitive data scanner rule
+- `description` (String) Human-readable description providing context about a sensitive data scanner rule.
 - `id` (String) Identifier for a predefined pattern from the sensitive data scanner pattern library.
 - `use_recommended_keywords` (Boolean) Whether to augment the pattern with recommended keywords (optional).
 
