@@ -108,7 +108,7 @@ func (r *teamNotificationRuleResource) Schema(_ context.Context, _ resource.Sche
 				Attributes: map[string]schema.Attribute{
 					"channel": schema.StringAttribute{
 						Optional:    true,
-						Description: "Slack channel name for notifications (e.g., #alerts or #team-notifications).",
+						Description: "Slack channel name for notifications (for example, #alerts or #team-notifications).",
 					},
 					"workspace": schema.StringAttribute{
 						Optional:    true,

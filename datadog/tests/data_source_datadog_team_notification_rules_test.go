@@ -9,7 +9,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
 
-func TestAccDatadogTeamNotificationRuleDatasourceBasic(t *testing.T) {
+func TestAccDatadogTeamNotificationRulesDatasourceBasic(t *testing.T) {
 	t.Parallel()
 	ctx, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := strings.ToLower(uniqueEntityName(ctx, t))
@@ -19,7 +19,7 @@ func TestAccDatadogTeamNotificationRuleDatasourceBasic(t *testing.T) {
 		ProtoV5ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccDatasourceTeamNotificationRuleConfig(uniq),
+				Config: testAccDatasourceTeamNotificationRulesPluralConfig(uniq),
 				Check: resource.ComposeTestCheckFunc(
 					// Check data source that fetches all rules for team foo
 					resource.TestCheckResourceAttrSet("data.datadog_team_notification_rules.foo_all", "id"),
@@ -31,12 +31,6 @@ func TestAccDatadogTeamNotificationRuleDatasourceBasic(t *testing.T) {
 					resource.TestCheckResourceAttr("data.datadog_team_notification_rules.foo_all", "notification_rules.0.pagerduty.service_name", "my-service"),
 					resource.TestCheckResourceAttr("data.datadog_team_notification_rules.foo_all", "notification_rules.0.slack.channel", "#test-channel"),
 					resource.TestCheckResourceAttr("data.datadog_team_notification_rules.foo_all", "notification_rules.0.slack.workspace", "Datadog"),
-					// Check data source that fetches specific rule for team foo
-					resource.TestCheckResourceAttrSet("data.datadog_team_notification_rules.foo_specific", "id"),
-					resource.TestCheckResourceAttrSet("data.datadog_team_notification_rules.foo_specific", "team_id"),
-					resource.TestCheckResourceAttrSet("data.datadog_team_notification_rules.foo_specific", "rule_id"),
-					resource.TestCheckResourceAttr("data.datadog_team_notification_rules.foo_specific", "notification_rules.#", "1"),
-					resource.TestCheckResourceAttrSet("data.datadog_team_notification_rules.foo_specific", "notification_rules.0.id"),
 					// Check data source that fetches all rules for team foo2
 					resource.TestCheckResourceAttrSet("data.datadog_team_notification_rules.foo2_all", "id"),
 					resource.TestCheckResourceAttrSet("data.datadog_team_notification_rules.foo2_all", "team_id"),
@@ -53,7 +47,7 @@ func TestAccDatadogTeamNotificationRuleDatasourceBasic(t *testing.T) {
 	})
 }
 
-func TestAccDatadogTeamNotificationRuleDatasourceEmpty(t *testing.T) {
+func TestAccDatadogTeamNotificationRulesDatasourceEmpty(t *testing.T) {
 	t.Parallel()
 	ctx, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := strings.ToLower(uniqueEntityName(ctx, t))
@@ -63,7 +57,7 @@ func TestAccDatadogTeamNotificationRuleDatasourceEmpty(t *testing.T) {
 		ProtoV5ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccDatasourceTeamNotificationRuleEmptyConfig(uniq),
+				Config: testAccDatasourceTeamNotificationRulesEmptyConfig(uniq),
 				Check: resource.ComposeTestCheckFunc(
 					// Check that team with no notification rules returns empty list
 					resource.TestCheckResourceAttrSet("data.datadog_team_notification_rules.empty", "id"),
@@ -75,7 +69,7 @@ func TestAccDatadogTeamNotificationRuleDatasourceEmpty(t *testing.T) {
 	})
 }
 
-func testAccDatasourceTeamNotificationRuleConfig(uniq string) string {
+func testAccDatasourceTeamNotificationRulesPluralConfig(uniq string) string {
 	return fmt.Sprintf(`
 		resource "datadog_team" "foo" {
 			description = "Example team"
@@ -129,13 +123,6 @@ func testAccDatasourceTeamNotificationRuleConfig(uniq string) string {
 			depends_on = [datadog_team_notification_rule.foo]
 		}
 
-		# Data source that fetches a specific rule for team foo
-		data "datadog_team_notification_rules" "foo_specific" {
-			team_id    = datadog_team.foo.id
-			rule_id    = datadog_team_notification_rule.foo.id
-			depends_on = [datadog_team_notification_rule.foo]
-		}
-
 		# Data source that fetches all rules for team foo2
 		data "datadog_team_notification_rules" "foo2_all" {
 			team_id    = datadog_team.foo2.id
@@ -144,7 +131,7 @@ func testAccDatasourceTeamNotificationRuleConfig(uniq string) string {
 `, uniq, uniq, uniq, uniq)
 }
 
-func testAccDatasourceTeamNotificationRuleEmptyConfig(uniq string) string {
+func testAccDatasourceTeamNotificationRulesEmptyConfig(uniq string) string {
 	return fmt.Sprintf(`
 		resource "datadog_team" "empty" {
 			description = "Team with no notification rules"

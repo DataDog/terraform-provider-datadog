@@ -6,42 +6,6 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 235
-        transfer_encoding: []
-        trailer: {}
-        host: api.datadoghq.com
-        remote_addr: ""
-        request_uri: ""
-        body: |
-            {"data":{"attributes":{"description":"Example team 2","handle":"tf-testaccdatadogteamnotificationruledatasourcebasic-local-1768299759-2","name":"tf-testaccdatadogteamnotificationruledatasourcebasic-local-1768299759-2"},"type":"team"}}
-        form: {}
-        headers:
-            Accept:
-                - application/json
-            Content-Type:
-                - application/json
-        url: https://api.datadoghq.com/api/v2/team
-        method: POST
-      response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        transfer_encoding: []
-        trailer: {}
-        content_length: 772
-        uncompressed: false
-        body: '{"data":{"id":"173b83a1-d558-4a76-bcfd-0b4befdcd18c","type":"team","attributes":{"avatar":null,"banner":5,"created_at":"2026-01-13T10:22:40.833834+00:00","description":"Example team 2","handle":"tf-testaccdatadogteamnotificationruledatasourcebasic-local-1768299759-2","hidden_modules":null,"is_managed":false,"link_count":0,"modified_at":"2026-01-13T10:22:40.833834+00:00","name":"tf-testaccdatadogteamnotificationruledatasourcebasic-local-1768299759-2","summary":"Example team 2","user_count":0,"visible_modules":null},"relationships":{"team_links":{"data":[],"links":{"related":"/api/v2/team/173b83a1-d558-4a76-bcfd-0b4befdcd18c/links"}},"user_team_permissions":{"data":null,"links":{"related":"/api/v2/team/173b83a1-d558-4a76-bcfd-0b4befdcd18c/permission-settings"}}}}}'
-        headers:
-            Content-Type:
-                - application/vnd.api+json
-        status: 201 Created
-        code: 201
-        duration: 531.19ms
-    - id: 1
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
         content_length: 229
         transfer_encoding: []
         trailer: {}
@@ -49,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"description":"Example team","handle":"tf-testaccdatadogteamnotificationruledatasourcebasic-local-1768299759","name":"tf-testaccdatadogteamnotificationruledatasourcebasic-local-1768299759"},"type":"team"}}
+            {"data":{"attributes":{"description":"Example team","handle":"tf-testaccdatadogteamnotificationruledatasourcebasic-local-1768471891","name":"tf-testaccdatadogteamnotificationruledatasourcebasic-local-1768471891"},"type":"team"}}
         form: {}
         headers:
             Accept:
@@ -64,16 +28,16 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 765
+        content_length: 764
         uncompressed: false
-        body: '{"data":{"id":"76ae7478-e92d-41e6-8e89-27dbf2b97ca5","type":"team","attributes":{"avatar":null,"banner":15,"created_at":"2026-01-13T10:22:40.841657+00:00","description":"Example team","handle":"tf-testaccdatadogteamnotificationruledatasourcebasic-local-1768299759","hidden_modules":null,"is_managed":false,"link_count":0,"modified_at":"2026-01-13T10:22:40.841657+00:00","name":"tf-testaccdatadogteamnotificationruledatasourcebasic-local-1768299759","summary":"Example team","user_count":0,"visible_modules":null},"relationships":{"team_links":{"data":[],"links":{"related":"/api/v2/team/76ae7478-e92d-41e6-8e89-27dbf2b97ca5/links"}},"user_team_permissions":{"data":null,"links":{"related":"/api/v2/team/76ae7478-e92d-41e6-8e89-27dbf2b97ca5/permission-settings"}}}}}'
+        body: '{"data":{"id":"20108387-45db-49c1-912a-ea0782b30c90","type":"team","attributes":{"avatar":null,"banner":5,"created_at":"2026-01-15T10:11:34.038300+00:00","description":"Example team","handle":"tf-testaccdatadogteamnotificationruledatasourcebasic-local-1768471891","hidden_modules":null,"is_managed":false,"link_count":0,"modified_at":"2026-01-15T10:11:34.038301+00:00","name":"tf-testaccdatadogteamnotificationruledatasourcebasic-local-1768471891","summary":"Example team","user_count":0,"visible_modules":null},"relationships":{"team_links":{"data":[],"links":{"related":"/api/v2/team/20108387-45db-49c1-912a-ea0782b30c90/links"}},"user_team_permissions":{"data":null,"links":{"related":"/api/v2/team/20108387-45db-49c1-912a-ea0782b30c90/permission-settings"}}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 538.178667ms
-    - id: 2
+        duration: 578.971666ms
+    - id: 1
       request:
         proto: HTTP/1.1
         proto_major: 1
@@ -92,7 +56,7 @@ interactions:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/team/76ae7478-e92d-41e6-8e89-27dbf2b97ca5/notification-rules
+        url: https://api.datadoghq.com/api/v2/team/20108387-45db-49c1-912a-ea0782b30c90/notification-rules
         method: POST
       response:
         proto: HTTP/1.1
@@ -102,49 +66,79 @@ interactions:
         trailer: {}
         content_length: 277
         uncompressed: false
-        body: '{"data":{"id":"faa94254-87b7-4768-a17c-bacf8d60ca2c","type":"team_notification_rules","attributes":{"email":{"enabled":true},"ms_teams":{"connector_name":"test-teams-handle"},"pagerduty":{"service_name":"my-service"},"slack":{"workspace":"Datadog","channel":"#test-channel"}}}}'
+        body: '{"data":{"id":"f312f57b-fcb7-407f-bb19-0ee1307efcdb","type":"team_notification_rules","attributes":{"email":{"enabled":true},"ms_teams":{"connector_name":"test-teams-handle"},"pagerduty":{"service_name":"my-service"},"slack":{"workspace":"Datadog","channel":"#test-channel"}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 212.034625ms
-    - id: 3
+        duration: 204.894875ms
+    - id: 2
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 242
+        content_length: 0
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
-        body: |
-            {"data":{"attributes":{"email":{"enabled":false},"ms_teams":{"connector_name":"test-teams-handle-2"},"pagerduty":{"service_name":"my-service-2"},"slack":{"channel":"#test-channel-2","workspace":"Datadog2"}},"type":"team_notification_rules"}}
+        body: ""
         form: {}
         headers:
             Accept:
                 - application/json
-            Content-Type:
-                - application/json
-        url: https://api.datadoghq.com/api/v2/team/173b83a1-d558-4a76-bcfd-0b4befdcd18c/notification-rules
-        method: POST
+        url: https://api.datadoghq.com/api/v2/team/20108387-45db-49c1-912a-ea0782b30c90/notification-rules/f312f57b-fcb7-407f-bb19-0ee1307efcdb
+        method: GET
       response:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 259
+        content_length: 277
         uncompressed: false
-        body: '{"data":{"id":"43da9d8d-9eb0-40ae-b833-b5b19af448a6","type":"team_notification_rules","attributes":{"ms_teams":{"connector_name":"test-teams-handle-2"},"pagerduty":{"service_name":"my-service-2"},"slack":{"workspace":"Datadog2","channel":"#test-channel-2"}}}}'
+        body: '{"data":{"id":"f312f57b-fcb7-407f-bb19-0ee1307efcdb","type":"team_notification_rules","attributes":{"email":{"enabled":true},"ms_teams":{"connector_name":"test-teams-handle"},"pagerduty":{"service_name":"my-service"},"slack":{"workspace":"Datadog","channel":"#test-channel"}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
-        status: 201 Created
-        code: 201
-        duration: 212.061583ms
+        status: 200 OK
+        code: 200
+        duration: 151.399833ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/team/20108387-45db-49c1-912a-ea0782b30c90/notification-rules/f312f57b-fcb7-407f-bb19-0ee1307efcdb
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 277
+        uncompressed: false
+        body: '{"data":{"id":"f312f57b-fcb7-407f-bb19-0ee1307efcdb","type":"team_notification_rules","attributes":{"email":{"enabled":true},"ms_teams":{"connector_name":"test-teams-handle"},"pagerduty":{"service_name":"my-service"},"slack":{"workspace":"Datadog","channel":"#test-channel"}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 140.870708ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -161,7 +155,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/team/173b83a1-d558-4a76-bcfd-0b4befdcd18c/notification-rules
+        url: https://api.datadoghq.com/api/v2/team/20108387-45db-49c1-912a-ea0782b30c90
         method: GET
       response:
         proto: HTTP/1.1
@@ -169,15 +163,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 405
+        content_length: 694
         uncompressed: false
-        body: '{"data":[{"id":"43da9d8d-9eb0-40ae-b833-b5b19af448a6","type":"team_notification_rules","attributes":{"ms_teams":{"connector_name":"test-teams-handle-2"},"pagerduty":{"service_name":"my-service-2"},"slack":{"workspace":"Datadog2","channel":"#test-channel-2"}}}],"meta":{"page":{"type":"offset_limit","offset":0,"limit":100,"total":1,"first_offset":0,"prev_offset":null,"next_offset":null,"last_offset":0}}}'
+        body: '{"data":{"id":"20108387-45db-49c1-912a-ea0782b30c90","type":"team","attributes":{"created_at":"2026-01-15T10:11:34.038300+00:00","description":"Example team","handle":"tf-testaccdatadogteamnotificationruledatasourcebasic-local-1768471891","is_managed":false,"link_count":0,"modified_at":"2026-01-15T10:11:34.038301+00:00","name":"tf-testaccdatadogteamnotificationruledatasourcebasic-local-1768471891","summary":"Example team","user_count":0},"relationships":{"team_links":{"data":[],"links":{"related":"/api/v2/team/20108387-45db-49c1-912a-ea0782b30c90/links"}},"user_team_permissions":{"data":null,"links":{"related":"/api/v2/team/20108387-45db-49c1-912a-ea0782b30c90/permission-settings"}}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 136.565167ms
+        duration: 152.167209ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -194,7 +188,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/team/76ae7478-e92d-41e6-8e89-27dbf2b97ca5/notification-rules/faa94254-87b7-4768-a17c-bacf8d60ca2c
+        url: https://api.datadoghq.com/api/v2/team/20108387-45db-49c1-912a-ea0782b30c90/notification-rules/f312f57b-fcb7-407f-bb19-0ee1307efcdb
         method: GET
       response:
         proto: HTTP/1.1
@@ -204,13 +198,13 @@ interactions:
         trailer: {}
         content_length: 277
         uncompressed: false
-        body: '{"data":{"id":"faa94254-87b7-4768-a17c-bacf8d60ca2c","type":"team_notification_rules","attributes":{"email":{"enabled":true},"ms_teams":{"connector_name":"test-teams-handle"},"pagerduty":{"service_name":"my-service"},"slack":{"workspace":"Datadog","channel":"#test-channel"}}}}'
+        body: '{"data":{"id":"f312f57b-fcb7-407f-bb19-0ee1307efcdb","type":"team_notification_rules","attributes":{"email":{"enabled":true},"ms_teams":{"connector_name":"test-teams-handle"},"pagerduty":{"service_name":"my-service"},"slack":{"workspace":"Datadog","channel":"#test-channel"}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 136.6155ms
+        duration: 152.101208ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -227,7 +221,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/team/76ae7478-e92d-41e6-8e89-27dbf2b97ca5/notification-rules
+        url: https://api.datadoghq.com/api/v2/team/20108387-45db-49c1-912a-ea0782b30c90/notification-rules/f312f57b-fcb7-407f-bb19-0ee1307efcdb
         method: GET
       response:
         proto: HTTP/1.1
@@ -235,15 +229,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 423
+        content_length: 277
         uncompressed: false
-        body: '{"data":[{"id":"faa94254-87b7-4768-a17c-bacf8d60ca2c","type":"team_notification_rules","attributes":{"email":{"enabled":true},"ms_teams":{"connector_name":"test-teams-handle"},"pagerduty":{"service_name":"my-service"},"slack":{"workspace":"Datadog","channel":"#test-channel"}}}],"meta":{"page":{"type":"offset_limit","offset":0,"limit":100,"total":1,"first_offset":0,"prev_offset":null,"next_offset":null,"last_offset":0}}}'
+        body: '{"data":{"id":"f312f57b-fcb7-407f-bb19-0ee1307efcdb","type":"team_notification_rules","attributes":{"email":{"enabled":true},"ms_teams":{"connector_name":"test-teams-handle"},"pagerduty":{"service_name":"my-service"},"slack":{"workspace":"Datadog","channel":"#test-channel"}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 280.152125ms
+        duration: 152.897042ms
     - id: 7
       request:
         proto: HTTP/1.1
@@ -259,24 +253,22 @@ interactions:
         form: {}
         headers:
             Accept:
-                - application/json
-        url: https://api.datadoghq.com/api/v2/team/76ae7478-e92d-41e6-8e89-27dbf2b97ca5/notification-rules/faa94254-87b7-4768-a17c-bacf8d60ca2c
-        method: GET
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/team/20108387-45db-49c1-912a-ea0782b30c90/notification-rules/f312f57b-fcb7-407f-bb19-0ee1307efcdb
+        method: DELETE
       response:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 277
+        content_length: 0
         uncompressed: false
-        body: '{"data":{"id":"faa94254-87b7-4768-a17c-bacf8d60ca2c","type":"team_notification_rules","attributes":{"email":{"enabled":true},"ms_teams":{"connector_name":"test-teams-handle"},"pagerduty":{"service_name":"my-service"},"slack":{"workspace":"Datadog","channel":"#test-channel"}}}}'
-        headers:
-            Content-Type:
-                - application/vnd.api+json
-        status: 200 OK
-        code: 200
-        duration: 152.8295ms
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 169.234542ms
     - id: 8
       request:
         proto: HTTP/1.1
@@ -292,305 +284,8 @@ interactions:
         form: {}
         headers:
             Accept:
-                - application/json
-        url: https://api.datadoghq.com/api/v2/team/173b83a1-d558-4a76-bcfd-0b4befdcd18c/notification-rules
-        method: GET
-      response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        transfer_encoding: []
-        trailer: {}
-        content_length: 405
-        uncompressed: false
-        body: '{"data":[{"id":"43da9d8d-9eb0-40ae-b833-b5b19af448a6","type":"team_notification_rules","attributes":{"ms_teams":{"connector_name":"test-teams-handle-2"},"pagerduty":{"service_name":"my-service-2"},"slack":{"workspace":"Datadog2","channel":"#test-channel-2"}}}],"meta":{"page":{"type":"offset_limit","offset":0,"limit":100,"total":1,"first_offset":0,"prev_offset":null,"next_offset":null,"last_offset":0}}}'
-        headers:
-            Content-Type:
-                - application/vnd.api+json
-        status: 200 OK
-        code: 200
-        duration: 167.970167ms
-    - id: 9
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 0
-        transfer_encoding: []
-        trailer: {}
-        host: api.datadoghq.com
-        remote_addr: ""
-        request_uri: ""
-        body: ""
-        form: {}
-        headers:
-            Accept:
-                - application/json
-        url: https://api.datadoghq.com/api/v2/team/76ae7478-e92d-41e6-8e89-27dbf2b97ca5/notification-rules
-        method: GET
-      response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        transfer_encoding: []
-        trailer: {}
-        content_length: 423
-        uncompressed: false
-        body: '{"data":[{"id":"faa94254-87b7-4768-a17c-bacf8d60ca2c","type":"team_notification_rules","attributes":{"email":{"enabled":true},"ms_teams":{"connector_name":"test-teams-handle"},"pagerduty":{"service_name":"my-service"},"slack":{"workspace":"Datadog","channel":"#test-channel"}}}],"meta":{"page":{"type":"offset_limit","offset":0,"limit":100,"total":1,"first_offset":0,"prev_offset":null,"next_offset":null,"last_offset":0}}}'
-        headers:
-            Content-Type:
-                - application/vnd.api+json
-        status: 200 OK
-        code: 200
-        duration: 300.85425ms
-    - id: 10
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 0
-        transfer_encoding: []
-        trailer: {}
-        host: api.datadoghq.com
-        remote_addr: ""
-        request_uri: ""
-        body: ""
-        form: {}
-        headers:
-            Accept:
-                - application/json
-        url: https://api.datadoghq.com/api/v2/team/173b83a1-d558-4a76-bcfd-0b4befdcd18c
-        method: GET
-      response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        transfer_encoding: []
-        trailer: {}
-        content_length: 702
-        uncompressed: false
-        body: '{"data":{"id":"173b83a1-d558-4a76-bcfd-0b4befdcd18c","type":"team","attributes":{"created_at":"2026-01-13T10:22:40.833834+00:00","description":"Example team 2","handle":"tf-testaccdatadogteamnotificationruledatasourcebasic-local-1768299759-2","is_managed":false,"link_count":0,"modified_at":"2026-01-13T10:22:40.833834+00:00","name":"tf-testaccdatadogteamnotificationruledatasourcebasic-local-1768299759-2","summary":"Example team 2","user_count":0},"relationships":{"team_links":{"data":[],"links":{"related":"/api/v2/team/173b83a1-d558-4a76-bcfd-0b4befdcd18c/links"}},"user_team_permissions":{"data":null,"links":{"related":"/api/v2/team/173b83a1-d558-4a76-bcfd-0b4befdcd18c/permission-settings"}}}}}'
-        headers:
-            Content-Type:
-                - application/vnd.api+json
-        status: 200 OK
-        code: 200
-        duration: 145.604333ms
-    - id: 11
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 0
-        transfer_encoding: []
-        trailer: {}
-        host: api.datadoghq.com
-        remote_addr: ""
-        request_uri: ""
-        body: ""
-        form: {}
-        headers:
-            Accept:
-                - application/json
-        url: https://api.datadoghq.com/api/v2/team/76ae7478-e92d-41e6-8e89-27dbf2b97ca5
-        method: GET
-      response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        transfer_encoding: []
-        trailer: {}
-        content_length: 694
-        uncompressed: false
-        body: '{"data":{"id":"76ae7478-e92d-41e6-8e89-27dbf2b97ca5","type":"team","attributes":{"created_at":"2026-01-13T10:22:40.841657+00:00","description":"Example team","handle":"tf-testaccdatadogteamnotificationruledatasourcebasic-local-1768299759","is_managed":false,"link_count":0,"modified_at":"2026-01-13T10:22:40.841657+00:00","name":"tf-testaccdatadogteamnotificationruledatasourcebasic-local-1768299759","summary":"Example team","user_count":0},"relationships":{"team_links":{"data":[],"links":{"related":"/api/v2/team/76ae7478-e92d-41e6-8e89-27dbf2b97ca5/links"}},"user_team_permissions":{"data":null,"links":{"related":"/api/v2/team/76ae7478-e92d-41e6-8e89-27dbf2b97ca5/permission-settings"}}}}}'
-        headers:
-            Content-Type:
-                - application/vnd.api+json
-        status: 200 OK
-        code: 200
-        duration: 145.601167ms
-    - id: 12
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 0
-        transfer_encoding: []
-        trailer: {}
-        host: api.datadoghq.com
-        remote_addr: ""
-        request_uri: ""
-        body: ""
-        form: {}
-        headers:
-            Accept:
-                - application/json
-        url: https://api.datadoghq.com/api/v2/team/76ae7478-e92d-41e6-8e89-27dbf2b97ca5/notification-rules/faa94254-87b7-4768-a17c-bacf8d60ca2c
-        method: GET
-      response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        transfer_encoding: []
-        trailer: {}
-        content_length: 277
-        uncompressed: false
-        body: '{"data":{"id":"faa94254-87b7-4768-a17c-bacf8d60ca2c","type":"team_notification_rules","attributes":{"email":{"enabled":true},"ms_teams":{"connector_name":"test-teams-handle"},"pagerduty":{"service_name":"my-service"},"slack":{"workspace":"Datadog","channel":"#test-channel"}}}}'
-        headers:
-            Content-Type:
-                - application/vnd.api+json
-        status: 200 OK
-        code: 200
-        duration: 132.416667ms
-    - id: 13
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 0
-        transfer_encoding: []
-        trailer: {}
-        host: api.datadoghq.com
-        remote_addr: ""
-        request_uri: ""
-        body: ""
-        form: {}
-        headers:
-            Accept:
-                - application/json
-        url: https://api.datadoghq.com/api/v2/team/173b83a1-d558-4a76-bcfd-0b4befdcd18c/notification-rules/43da9d8d-9eb0-40ae-b833-b5b19af448a6
-        method: GET
-      response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        transfer_encoding: []
-        trailer: {}
-        content_length: 259
-        uncompressed: false
-        body: '{"data":{"id":"43da9d8d-9eb0-40ae-b833-b5b19af448a6","type":"team_notification_rules","attributes":{"ms_teams":{"connector_name":"test-teams-handle-2"},"pagerduty":{"service_name":"my-service-2"},"slack":{"workspace":"Datadog2","channel":"#test-channel-2"}}}}'
-        headers:
-            Content-Type:
-                - application/vnd.api+json
-        status: 200 OK
-        code: 200
-        duration: 138.418708ms
-    - id: 14
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 0
-        transfer_encoding: []
-        trailer: {}
-        host: api.datadoghq.com
-        remote_addr: ""
-        request_uri: ""
-        body: ""
-        form: {}
-        headers:
-            Accept:
-                - application/json
-        url: https://api.datadoghq.com/api/v2/team/76ae7478-e92d-41e6-8e89-27dbf2b97ca5/notification-rules/faa94254-87b7-4768-a17c-bacf8d60ca2c
-        method: GET
-      response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        transfer_encoding: []
-        trailer: {}
-        content_length: 277
-        uncompressed: false
-        body: '{"data":{"id":"faa94254-87b7-4768-a17c-bacf8d60ca2c","type":"team_notification_rules","attributes":{"email":{"enabled":true},"ms_teams":{"connector_name":"test-teams-handle"},"pagerduty":{"service_name":"my-service"},"slack":{"workspace":"Datadog","channel":"#test-channel"}}}}'
-        headers:
-            Content-Type:
-                - application/vnd.api+json
-        status: 200 OK
-        code: 200
-        duration: 136.927541ms
-    - id: 15
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 0
-        transfer_encoding: []
-        trailer: {}
-        host: api.datadoghq.com
-        remote_addr: ""
-        request_uri: ""
-        body: ""
-        form: {}
-        headers:
-            Accept:
-                - application/json
-        url: https://api.datadoghq.com/api/v2/team/76ae7478-e92d-41e6-8e89-27dbf2b97ca5/notification-rules
-        method: GET
-      response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        transfer_encoding: []
-        trailer: {}
-        content_length: 423
-        uncompressed: false
-        body: '{"data":[{"id":"faa94254-87b7-4768-a17c-bacf8d60ca2c","type":"team_notification_rules","attributes":{"email":{"enabled":true},"ms_teams":{"connector_name":"test-teams-handle"},"pagerduty":{"service_name":"my-service"},"slack":{"workspace":"Datadog","channel":"#test-channel"}}}],"meta":{"page":{"type":"offset_limit","offset":0,"limit":100,"total":1,"first_offset":0,"prev_offset":null,"next_offset":null,"last_offset":0}}}'
-        headers:
-            Content-Type:
-                - application/vnd.api+json
-        status: 200 OK
-        code: 200
-        duration: 141.3965ms
-    - id: 16
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 0
-        transfer_encoding: []
-        trailer: {}
-        host: api.datadoghq.com
-        remote_addr: ""
-        request_uri: ""
-        body: ""
-        form: {}
-        headers:
-            Accept:
-                - application/json
-        url: https://api.datadoghq.com/api/v2/team/173b83a1-d558-4a76-bcfd-0b4befdcd18c/notification-rules
-        method: GET
-      response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        transfer_encoding: []
-        trailer: {}
-        content_length: 405
-        uncompressed: false
-        body: '{"data":[{"id":"43da9d8d-9eb0-40ae-b833-b5b19af448a6","type":"team_notification_rules","attributes":{"ms_teams":{"connector_name":"test-teams-handle-2"},"pagerduty":{"service_name":"my-service-2"},"slack":{"workspace":"Datadog2","channel":"#test-channel-2"}}}],"meta":{"page":{"type":"offset_limit","offset":0,"limit":100,"total":1,"first_offset":0,"prev_offset":null,"next_offset":null,"last_offset":0}}}'
-        headers:
-            Content-Type:
-                - application/vnd.api+json
-        status: 200 OK
-        code: 200
-        duration: 271.859584ms
-    - id: 17
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 0
-        transfer_encoding: []
-        trailer: {}
-        host: api.datadoghq.com
-        remote_addr: ""
-        request_uri: ""
-        body: ""
-        form: {}
-        headers:
-            Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/team/173b83a1-d558-4a76-bcfd-0b4befdcd18c/notification-rules/43da9d8d-9eb0-40ae-b833-b5b19af448a6
+        url: https://api.datadoghq.com/api/v2/team/20108387-45db-49c1-912a-ea0782b30c90
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -604,97 +299,4 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 148.9655ms
-    - id: 18
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 0
-        transfer_encoding: []
-        trailer: {}
-        host: api.datadoghq.com
-        remote_addr: ""
-        request_uri: ""
-        body: ""
-        form: {}
-        headers:
-            Accept:
-                - '*/*'
-        url: https://api.datadoghq.com/api/v2/team/76ae7478-e92d-41e6-8e89-27dbf2b97ca5/notification-rules/faa94254-87b7-4768-a17c-bacf8d60ca2c
-        method: DELETE
-      response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        transfer_encoding: []
-        trailer: {}
-        content_length: 0
-        uncompressed: false
-        body: ""
-        headers: {}
-        status: 204 No Content
-        code: 204
-        duration: 155.232917ms
-    - id: 19
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 0
-        transfer_encoding: []
-        trailer: {}
-        host: api.datadoghq.com
-        remote_addr: ""
-        request_uri: ""
-        body: ""
-        form: {}
-        headers:
-            Accept:
-                - '*/*'
-        url: https://api.datadoghq.com/api/v2/team/173b83a1-d558-4a76-bcfd-0b4befdcd18c
-        method: DELETE
-      response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        transfer_encoding: []
-        trailer: {}
-        content_length: 0
-        uncompressed: false
-        body: ""
-        headers: {}
-        status: 204 No Content
-        code: 204
-        duration: 280.833833ms
-    - id: 20
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 0
-        transfer_encoding: []
-        trailer: {}
-        host: api.datadoghq.com
-        remote_addr: ""
-        request_uri: ""
-        body: ""
-        form: {}
-        headers:
-            Accept:
-                - '*/*'
-        url: https://api.datadoghq.com/api/v2/team/76ae7478-e92d-41e6-8e89-27dbf2b97ca5
-        method: DELETE
-      response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        transfer_encoding: []
-        trailer: {}
-        content_length: 0
-        uncompressed: false
-        body: ""
-        headers: {}
-        status: 204 No Content
-        code: 204
-        duration: 288.705375ms
+        duration: 275.072875ms
