@@ -11,8 +11,10 @@ import (
 	"fmt"
 	"io"
 
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	resourceSchema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 )
 
 // KeySize is the required encryption key size (32 bytes for AES-256).
@@ -33,6 +35,9 @@ func EncryptionKeyAttribute() resourceSchema.StringAttribute {
 		Optional:  true,
 		Sensitive: true,
 		WriteOnly: true,
+		Validators: []validator.String{
+			stringvalidator.LengthBetween(KeySize, KeySize),
+		},
 	}
 }
 
