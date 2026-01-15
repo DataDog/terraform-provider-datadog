@@ -6,21 +6,21 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 299
+        content_length: 322
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"config":{"destinations":[{"bucket":"my-gcs-bucket","id":"gcs-destination-1","inputs":["source-1"],"storage_class":"NEARLINE","type":"google_cloud_storage"}],"sources":[{"id":"source-1","type":"datadog_agent"}]},"name":"gcs-destination-minimal-pipeline"},"type":"pipelines"}}
+            {"data":{"attributes":{"config":{"destinations":[{"bucket":"my-gcs-bucket","id":"gcs-destination-1","inputs":["source-1"],"storage_class":"NEARLINE","type":"google_cloud_storage"}],"pipeline_type":"logs","sources":[{"id":"source-1","type":"datadog_agent"}]},"name":"gcs-destination-minimal-pipeline"},"type":"pipelines"}}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines
         method: POST
       response:
         proto: HTTP/1.1
@@ -28,16 +28,16 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 359
+        content_length: 404
         uncompressed: false
         body: |
-            {"data":{"id":"e0afd9e6-dcfd-11f0-950e-da7ad0900002","type":"pipelines","attributes":{"name":"gcs-destination-minimal-pipeline","config":{"destinations":[{"bucket":"my-gcs-bucket","id":"gcs-destination-1","inputs":["source-1"],"storage_class":"NEARLINE","type":"google_cloud_storage"}],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"daa0def6-f20b-11f0-a3a0-da7ad0900002","type":"pipelines","attributes":{"name":"gcs-destination-minimal-pipeline","config":{"destinations":[{"bucket":"my-gcs-bucket","id":"gcs-destination-1","inputs":["source-1"],"storage_class":"NEARLINE","type":"google_cloud_storage"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 342.879875ms
+        duration: 357.973667ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -54,7 +54,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/e0afd9e6-dcfd-11f0-950e-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/daa0def6-f20b-11f0-a3a0-da7ad0900002
         method: GET
       response:
         proto: HTTP/1.1
@@ -62,16 +62,16 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 359
+        content_length: 404
         uncompressed: false
         body: |
-            {"data":{"id":"e0afd9e6-dcfd-11f0-950e-da7ad0900002","type":"pipelines","attributes":{"name":"gcs-destination-minimal-pipeline","config":{"destinations":[{"bucket":"my-gcs-bucket","id":"gcs-destination-1","inputs":["source-1"],"storage_class":"NEARLINE","type":"google_cloud_storage"}],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"daa0def6-f20b-11f0-a3a0-da7ad0900002","type":"pipelines","attributes":{"name":"gcs-destination-minimal-pipeline","config":{"destinations":[{"bucket":"my-gcs-bucket","id":"gcs-destination-1","inputs":["source-1"],"storage_class":"NEARLINE","type":"google_cloud_storage"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 211.515916ms
+        duration: 224.61575ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -88,7 +88,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/e0afd9e6-dcfd-11f0-950e-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/daa0def6-f20b-11f0-a3a0-da7ad0900002
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -104,4 +104,4 @@ interactions:
                 - application/json
         status: 204 No Content
         code: 204
-        duration: 558.200041ms
+        duration: 501.290042ms
