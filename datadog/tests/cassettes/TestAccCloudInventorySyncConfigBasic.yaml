@@ -9,7 +9,7 @@ interactions:
         content_length: 225
         transfer_encoding: []
         trailer: {}
-        host: api.datad0g.com
+        host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
@@ -18,7 +18,7 @@ interactions:
         headers:
             Content-Type:
                 - application/json
-        url: https://api.datad0g.com/api/unstable/cloudinventoryservice/syncconfigs
+        url: https://api.datadoghq.com/api/unstable/cloudinventoryservice/syncconfigs
         method: PUT
       response:
         proto: HTTP/2.0
@@ -43,7 +43,7 @@ interactions:
         content_length: 0
         transfer_encoding: []
         trailer: {}
-        host: api.datad0g.com
+        host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: ""
@@ -51,7 +51,7 @@ interactions:
         headers:
             Content-Type:
                 - application/json
-        url: https://api.datad0g.com/api/unstable/cloudinventoryservice/syncconfigs/3526615b-4d65-4d9b-947a-d89c18faf0dc
+        url: https://api.datadoghq.com/api/unstable/cloudinventoryservice/syncconfigs/3526615b-4d65-4d9b-947a-d89c18faf0dc
         method: GET
       response:
         proto: HTTP/2.0
@@ -76,7 +76,7 @@ interactions:
         content_length: 0
         transfer_encoding: []
         trailer: {}
-        host: api.datad0g.com
+        host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: ""
@@ -84,7 +84,7 @@ interactions:
         headers:
             Content-Type:
                 - application/json
-        url: https://api.datad0g.com/api/unstable/cloudinventoryservice/syncconfigs/3526615b-4d65-4d9b-947a-d89c18faf0dc
+        url: https://api.datadoghq.com/api/unstable/cloudinventoryservice/syncconfigs/3526615b-4d65-4d9b-947a-d89c18faf0dc
         method: GET
       response:
         proto: HTTP/2.0
@@ -109,7 +109,7 @@ interactions:
         content_length: 0
         transfer_encoding: []
         trailer: {}
-        host: api.datad0g.com
+        host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: ""
@@ -117,7 +117,7 @@ interactions:
         headers:
             Content-Type:
                 - application/json
-        url: https://api.datad0g.com/api/unstable/cloudinventoryservice/syncconfigs/3526615b-4d65-4d9b-947a-d89c18faf0dc
+        url: https://api.datadoghq.com/api/unstable/cloudinventoryservice/syncconfigs/3526615b-4d65-4d9b-947a-d89c18faf0dc
         method: DELETE
       response:
         proto: HTTP/2.0
@@ -140,7 +140,7 @@ interactions:
         content_length: 0
         transfer_encoding: []
         trailer: {}
-        host: api.datad0g.com
+        host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: ""
@@ -148,7 +148,7 @@ interactions:
         headers:
             Content-Type:
                 - application/json
-        url: https://api.datad0g.com/api/unstable/cloudinventoryservice/syncconfigs/3526615b-4d65-4d9b-947a-d89c18faf0dc
+        url: https://api.datadoghq.com/api/unstable/cloudinventoryservice/syncconfigs/3526615b-4d65-4d9b-947a-d89c18faf0dc
         method: GET
       response:
         proto: HTTP/2.0
