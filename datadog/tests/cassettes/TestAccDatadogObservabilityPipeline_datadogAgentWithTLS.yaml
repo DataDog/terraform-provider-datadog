@@ -6,21 +6,21 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 337
+        content_length: 360
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"config":{"destinations":[{"id":"destination-1","inputs":["source-with-tls"],"type":"datadog_logs"}],"sources":[{"id":"source-with-tls","tls":{"ca_file":"/etc/certs/ca.crt","crt_file":"/etc/certs/agent.crt","key_file":"/etc/certs/agent.key"},"type":"datadog_agent"}]},"name":"agent with tls"},"type":"pipelines"}}
+            {"data":{"attributes":{"config":{"destinations":[{"id":"destination-1","inputs":["source-with-tls"],"type":"datadog_logs"}],"pipeline_type":"logs","sources":[{"id":"source-with-tls","tls":{"ca_file":"/etc/certs/ca.crt","crt_file":"/etc/certs/agent.crt","key_file":"/etc/certs/agent.key"},"type":"datadog_agent"}]},"name":"agent with tls"},"type":"pipelines"}}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines
         method: POST
       response:
         proto: HTTP/1.1
@@ -28,16 +28,16 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 397
+        content_length: 442
         uncompressed: false
         body: |
-            {"data":{"id":"c3ce0ed8-dcfd-11f0-b886-da7ad0900002","type":"pipelines","attributes":{"name":"agent with tls","config":{"destinations":[{"id":"destination-1","inputs":["source-with-tls"],"type":"datadog_logs"}],"processors":[],"sources":[{"id":"source-with-tls","tls":{"ca_file":"/etc/certs/ca.crt","crt_file":"/etc/certs/agent.crt","key_file":"/etc/certs/agent.key"},"type":"datadog_agent"}]}}}}
+            {"data":{"id":"bd4ddf7a-f20b-11f0-a37e-da7ad0900002","type":"pipelines","attributes":{"name":"agent with tls","config":{"destinations":[{"id":"destination-1","inputs":["source-with-tls"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-with-tls","tls":{"ca_file":"/etc/certs/ca.crt","crt_file":"/etc/certs/agent.crt","key_file":"/etc/certs/agent.key"},"type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 512.847291ms
+        duration: 478.097916ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -54,7 +54,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/c3ce0ed8-dcfd-11f0-b886-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/bd4ddf7a-f20b-11f0-a37e-da7ad0900002
         method: GET
       response:
         proto: HTTP/1.1
@@ -62,16 +62,16 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 397
+        content_length: 442
         uncompressed: false
         body: |
-            {"data":{"id":"c3ce0ed8-dcfd-11f0-b886-da7ad0900002","type":"pipelines","attributes":{"name":"agent with tls","config":{"destinations":[{"id":"destination-1","inputs":["source-with-tls"],"type":"datadog_logs"}],"processors":[],"sources":[{"id":"source-with-tls","tls":{"ca_file":"/etc/certs/ca.crt","crt_file":"/etc/certs/agent.crt","key_file":"/etc/certs/agent.key"},"type":"datadog_agent"}]}}}}
+            {"data":{"id":"bd4ddf7a-f20b-11f0-a37e-da7ad0900002","type":"pipelines","attributes":{"name":"agent with tls","config":{"destinations":[{"id":"destination-1","inputs":["source-with-tls"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-with-tls","tls":{"ca_file":"/etc/certs/ca.crt","crt_file":"/etc/certs/agent.crt","key_file":"/etc/certs/agent.key"},"type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 209.854833ms
+        duration: 220.323792ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -88,7 +88,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/c3ce0ed8-dcfd-11f0-b886-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/bd4ddf7a-f20b-11f0-a37e-da7ad0900002
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -104,4 +104,4 @@ interactions:
                 - application/json
         status: 204 No Content
         code: 204
-        duration: 395.031375ms
+        duration: 307.136334ms
