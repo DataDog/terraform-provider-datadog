@@ -6915,12 +6915,45 @@ func createSyntheticsMultistepAPITestAllStepSubtypes(ctx context.Context, accPro
 				"datadog_synthetics_test.test_all_api_subtypes", "api_step.7.retry.0.count", "0"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.test_all_api_subtypes", "api_step.7.retry.0.interval", "300"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.test_all_api_subtypes", "api_step.8.name", "Subtest step"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.test_all_api_subtypes", "api_step.8.subtype", "playSubTest"),
+			resource.TestCheckResourceAttrSet(
+				"datadog_synthetics_test.test_all_api_subtypes", "api_step.8.subtest_public_id"),
 		),
 	}
 }
 
 func createSyntheticsMultistepAPITestConfigAllStepSubtypes(testName string) string {
 	return fmt.Sprintf(`
+		resource "datadog_synthetics_test" "single_api" {
+			type = "api"
+			subtype = "http"
+
+			request_definition {
+				method = "GET"
+				url = "https://www.datadoghq.com"
+			}
+
+			assertion {
+				type = "statusCode"
+				operator = "is"
+				target = "200"
+			}
+			locations = ["aws:us-east-1"]
+
+			options_list {
+				tick_every = 60
+			}
+
+			name = "%[1]s"
+			message = "Notify @datadog.user"
+			tags = ["foo:bar", "baz"]
+
+			status = "paused"
+		}
+
 		resource "datadog_synthetics_test" "test_all_api_subtypes" {
 			name      = "%[1]s"
 			type      = "api"
@@ -7103,6 +7136,12 @@ func createSyntheticsMultistepAPITestConfigAllStepSubtypes(testName string) stri
 					count    = 0
 					interval = 300
 				}
+			}
+
+			api_step {
+				name              = "Subtest step"
+				subtype           = "playSubTest"
+				subtest_public_id = datadog_synthetics_test.single_api.id
 			}
 		}
 	`, testName)
