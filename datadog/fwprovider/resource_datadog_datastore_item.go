@@ -269,15 +269,16 @@ func (r *datastoreItemResource) buildDatastoreItemRequestBody(ctx context.Contex
 	diags := diag.Diagnostics{}
 
 	// Convert the value map to a format suitable for the API
-	valueElements := make(map[string]interface{})
-	diags.Append(state.Value.ElementsAs(ctx, &valueElements, false)...)
+	// First convert to map[string]string, then to map[string]interface{}
+	stringElements := make(map[string]string)
+	diags.Append(state.Value.ElementsAs(ctx, &stringElements, false)...)
 	if diags.HasError() {
 		return nil, diags
 	}
-
-	// Add the item key to the value map
-	itemKey := state.ItemKey.ValueString()
-	valueElements[itemKey] = itemKey
+	valueElements := make(map[string]interface{})
+	for k, v := range stringElements {
+		valueElements[k] = v
+	}
 
 	values := []map[string]interface{}{valueElements}
 
@@ -296,10 +297,15 @@ func (r *datastoreItemResource) buildDatastoreItemUpdateRequestBody(ctx context.
 	diags := diag.Diagnostics{}
 
 	// Convert the value map to ops_set format
-	valueElements := make(map[string]interface{})
-	diags.Append(state.Value.ElementsAs(ctx, &valueElements, false)...)
+	// First convert to map[string]string, then to map[string]interface{}
+	stringElements := make(map[string]string)
+	diags.Append(state.Value.ElementsAs(ctx, &stringElements, false)...)
 	if diags.HasError() {
 		return nil, diags
+	}
+	valueElements := make(map[string]interface{})
+	for k, v := range stringElements {
+		valueElements[k] = v
 	}
 
 	req := datadogV2.NewUpdateAppsDatastoreItemRequestWithDefaults()

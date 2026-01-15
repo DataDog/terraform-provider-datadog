@@ -1,0 +1,342 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 225
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"description":"Test datastore for items","name":"test-datastore-tf-TestAccDatastoreItemBasic-local-1768498260","primary_column_name":"id","primary_key_generation_strategy":"none"},"type":"datastores"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/actions-datastores
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 74
+        uncompressed: false
+        body: '{"data":{"id":"aeb3c455-b287-4534-a534-45556ac51d9e","type":"datastores"}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 122.6ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/actions-datastores/aeb3c455-b287-4534-a534-45556ac51d9e
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 451
+        uncompressed: false
+        body: '{"data":{"id":"aeb3c455-b287-4534-a534-45556ac51d9e","type":"datastores","attributes":{"created_at":"2026-01-15T17:31:00.847914Z","creator_user_id":1123028,"creator_user_uuid":"74dc9a7f-5fe1-11ef-8d67-dec0c2fdd3d9","description":"Test datastore for items","modified_at":"2026-01-15T17:31:00.847914Z","name":"test-datastore-tf-TestAccDatastoreItemBasic-local-1768498260","org_id":2,"primary_column_name":"id","primary_key_generation_strategy":"none"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 46.870375ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 177
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"conflict_mode":"fail_on_conflict","values":[{"id":"test-key-tf-TestAccDatastoreItemBasic-local-1768498260","test_field":"test_value"}]},"type":"items"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/actions-datastores/aeb3c455-b287-4534-a534-45556ac51d9e/items/bulk
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 71
+        uncompressed: false
+        body: '{"data":[{"id":"1fb82b9f-6f36-4cbf-93c4-fe931b7ed0da","type":"items"}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 74.37275ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/actions-datastores/aeb3c455-b287-4534-a534-45556ac51d9e/items?item_key=test-key-tf-TestAccDatastoreItemBasic-local-1768498260
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 901
+        uncompressed: false
+        body: '{"data":[{"id":"1fb82b9f-6f36-4cbf-93c4-fe931b7ed0da","type":"items","attributes":{"created_at":"2026-01-15T17:31:01.00343Z","modified_at":"2026-01-15T17:31:01.00343Z","org_id":2,"primary_column_name":"id","signature":"{\"signature\":\"{\\\"version\\\":2,\\\"algorithm\\\":\\\"ecdsa-p384\\\",\\\"pubkey\\\":\\\"fEWETihKaVTSZlXqFWi1ecITB/GNp5LTtrw2c6pLyiU=\\\",\\\"timestamp\\\":1768498261,\\\"proof\\\":\\\"MGYCMQC/qNtppR5f2OvoYq7btEjVkdGoy+tPtO4u/qjxwUe4JnuCpYKZ80zGmL39EOBOB2ICMQDtmB/YV6DQ6GKEo+mrqo26QV4fkZcNNR6R647o+igXh1Er8iQirLUHIKS1UdIRAoM=\\\"}\",\"version\":1}","store_id":"aeb3c455-b287-4534-a534-45556ac51d9e","value":{"id":"test-key-tf-TestAccDatastoreItemBasic-local-1768498260","test_field":"test_value"}}}],"meta":{"page":{"totalCount":1,"totalFilteredCount":1,"hasMore":false},"schema":{"primary_key":"id","fields":[{"name":"id","type":"STRING"},{"name":"test_field","type":"JSON"}]}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 68.44575ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/actions-datastores/aeb3c455-b287-4534-a534-45556ac51d9e/items?item_key=test-key-tf-TestAccDatastoreItemBasic-local-1768498260
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 901
+        uncompressed: false
+        body: '{"data":[{"id":"1fb82b9f-6f36-4cbf-93c4-fe931b7ed0da","type":"items","attributes":{"created_at":"2026-01-15T17:31:01.00343Z","modified_at":"2026-01-15T17:31:01.00343Z","org_id":2,"primary_column_name":"id","signature":"{\"signature\":\"{\\\"version\\\":2,\\\"algorithm\\\":\\\"ecdsa-p384\\\",\\\"pubkey\\\":\\\"fEWETihKaVTSZlXqFWi1ecITB/GNp5LTtrw2c6pLyiU=\\\",\\\"timestamp\\\":1768498261,\\\"proof\\\":\\\"MGYCMQC/qNtppR5f2OvoYq7btEjVkdGoy+tPtO4u/qjxwUe4JnuCpYKZ80zGmL39EOBOB2ICMQDtmB/YV6DQ6GKEo+mrqo26QV4fkZcNNR6R647o+igXh1Er8iQirLUHIKS1UdIRAoM=\\\"}\",\"version\":1}","store_id":"aeb3c455-b287-4534-a534-45556ac51d9e","value":{"id":"test-key-tf-TestAccDatastoreItemBasic-local-1768498260","test_field":"test_value"}}}],"meta":{"page":{"totalCount":1,"totalFilteredCount":1,"hasMore":false},"schema":{"primary_key":"id","fields":[{"name":"id","type":"STRING"},{"name":"test_field","type":"JSON"}]}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 69.8125ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/actions-datastores/aeb3c455-b287-4534-a534-45556ac51d9e
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 451
+        uncompressed: false
+        body: '{"data":{"id":"aeb3c455-b287-4534-a534-45556ac51d9e","type":"datastores","attributes":{"created_at":"2026-01-15T17:31:00.847914Z","creator_user_id":1123028,"creator_user_uuid":"74dc9a7f-5fe1-11ef-8d67-dec0c2fdd3d9","description":"Test datastore for items","modified_at":"2026-01-15T17:31:00.847914Z","name":"test-datastore-tf-TestAccDatastoreItemBasic-local-1768498260","org_id":2,"primary_column_name":"id","primary_key_generation_strategy":"none"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 64.205542ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/actions-datastores/aeb3c455-b287-4534-a534-45556ac51d9e/items?item_key=test-key-tf-TestAccDatastoreItem
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 901
+        uncompressed: false
+        body: '{"data":[{"id":"1fb82b9f-6f36-4cbf-93c4-fe931b7ed0da","type":"items","attributes":{"created_at":"2026-01-15T17:31:01.00343Z","modified_at":"2026-01-15T17:31:01.00343Z","org_id":2,"primary_column_name":"id","signature":"{\"signature\":\"{\\\"version\\\":2,\\\"algorithm\\\":\\\"ecdsa-p384\\\",\\\"pubkey\\\":\\\"fEWETihKaVTSZlXqFWi1ecITB/GNp5LTtrw2c6pLyiU=\\\",\\\"timestamp\\\":1768498261,\\\"proof\\\":\\\"MGYCMQC/qNtppR5f2OvoYq7btEjVkdGoy+tPtO4u/qjxwUe4JnuCpYKZ80zGmL39EOBOB2ICMQDtmB/YV6DQ6GKEo+mrqo26QV4fkZcNNR6R647o+igXh1Er8iQirLUHIKS1UdIRAoM=\\\"}\",\"version\":1}","store_id":"aeb3c455-b287-4534-a534-45556ac51d9e","value":{"id":"test-key-tf-TestAccDatastoreItemBasic-local-1768498260","test_field":"test_value"}}}],"meta":{"page":{"totalCount":1,"totalFilteredCount":1,"hasMore":false},"schema":{"primary_key":"id","fields":[{"name":"id","type":"STRING"},{"name":"test_field","type":"JSON"}]}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 70.050041ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 109
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"item_key":"test-key-tf-TestAccDatastoreItemBasic-local-1768498260"},"type":"items"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/actions-datastores/aeb3c455-b287-4534-a534-45556ac51d9e/items
+        method: DELETE
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 69
+        uncompressed: false
+        body: '{"data":{"id":"1fb82b9f-6f36-4cbf-93c4-fe931b7ed0da","type":"items"}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 54.579625ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/actions-datastores/aeb3c455-b287-4534-a534-45556ac51d9e
+        method: DELETE
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 74
+        uncompressed: false
+        body: '{"data":{"id":"aeb3c455-b287-4534-a534-45556ac51d9e","type":"datastores"}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 58.380084ms
+    - id: 9
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/actions-datastores/aeb3c455-b287-4534-a534-45556ac51d9e/items?item_key=test-key-tf-TestAccDatastoreItemBasic-local-1768498260
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 103
+        uncompressed: false
+        body: '{"errors":[{"status":"404","id":"761d24e7-ab23-41e8-8929-96805a109da0","title":"datastore not found"}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 404 Not Found
+        code: 404
+        duration: 54.486666ms
