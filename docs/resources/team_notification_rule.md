@@ -48,10 +48,10 @@ resource "datadog_team_notification_rule" "foo" {
 
 ### Optional
 
-- `email` (Block, Optional) (see [below for nested schema](#nestedblock--email)).
-- `ms_teams` (Block, Optional) (see [below for nested schema](#nestedblock--ms_teams)).
-- `pagerduty` (Block, Optional) (see [below for nested schema](#nestedblock--pagerduty)).
-- `slack` (Block, Optional) (see [below for nested schema](#nestedblock--slack)).
+- `email` (Block, Optional) The email notification settings. (see [below for nested schema](#nestedblock--email))
+- `ms_teams` (Block, Optional) The MS Teams notification settings. (see [below for nested schema](#nestedblock--ms_teams))
+- `pagerduty` (Block, Optional) The PagerDuty notification settings. (see [below for nested schema](#nestedblock--pagerduty))
+- `slack` (Block, Optional) The Slack notification settings. (see [below for nested schema](#nestedblock--slack))
 
 ### Read-Only
 

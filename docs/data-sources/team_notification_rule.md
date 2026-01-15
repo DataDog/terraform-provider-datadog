@@ -30,11 +30,11 @@ data "datadog_team_notification_rule" "example" {
 
 ### Read-Only
 
-- `email` (Block, Read-only) Email notification configuration. (see [below for nested schema](#nestedblock--email))
+- `email` (Block, Read-only) The email notification settings. (see [below for nested schema](#nestedblock--email))
 - `id` (String) The ID of this resource.
-- `ms_teams` (Block, Read-only) Microsoft Teams notification configuration. (see [below for nested schema](#nestedblock--ms_teams))
-- `pagerduty` (Block, Read-only) PagerDuty notification configuration. (see [below for nested schema](#nestedblock--pagerduty))
-- `slack` (Block, Read-only) Slack notification configuration. (see [below for nested schema](#nestedblock--slack))
+- `ms_teams` (Block, Read-only) The MS Teams notification settings. (see [below for nested schema](#nestedblock--ms_teams))
+- `pagerduty` (Block, Read-only) The PagerDuty notification settings. (see [below for nested schema](#nestedblock--pagerduty))
+- `slack` (Block, Read-only) The Slack notification settings. (see [below for nested schema](#nestedblock--slack))
 
 <a id="nestedblock--email"></a>
 ### Nested Schema for `email`

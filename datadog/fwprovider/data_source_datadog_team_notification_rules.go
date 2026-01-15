@@ -79,6 +79,7 @@ func (d *datadogTeamNotificationRulesDataSource) Schema(_ context.Context, _ dat
 					},
 					Blocks: map[string]schema.Block{
 						"email": schema.SingleNestedBlock{
+							Description: "The email notification settings.",
 							Attributes: map[string]schema.Attribute{
 								"enabled": schema.BoolAttribute{
 									Computed:    true,
@@ -87,6 +88,7 @@ func (d *datadogTeamNotificationRulesDataSource) Schema(_ context.Context, _ dat
 							},
 						},
 						"ms_teams": schema.SingleNestedBlock{
+							Description: "The MS Teams notification settings.",
 							Attributes: map[string]schema.Attribute{
 								"connector_name": schema.StringAttribute{
 									Computed:    true,
@@ -95,6 +97,7 @@ func (d *datadogTeamNotificationRulesDataSource) Schema(_ context.Context, _ dat
 							},
 						},
 						"pagerduty": schema.SingleNestedBlock{
+							Description: "The PagerDuty notification settings.",
 							Attributes: map[string]schema.Attribute{
 								"service_name": schema.StringAttribute{
 									Computed:    true,
@@ -103,6 +106,7 @@ func (d *datadogTeamNotificationRulesDataSource) Schema(_ context.Context, _ dat
 							},
 						},
 						"slack": schema.SingleNestedBlock{
+							Description: "The Slack notification settings.",
 							Attributes: map[string]schema.Attribute{
 								"channel": schema.StringAttribute{
 									Computed:    true,

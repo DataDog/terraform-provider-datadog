@@ -81,6 +81,7 @@ func (r *teamNotificationRuleResource) Schema(_ context.Context, _ resource.Sche
 		},
 		Blocks: map[string]schema.Block{
 			"email": schema.SingleNestedBlock{
+				Description: "The email notification settings.",
 				Attributes: map[string]schema.Attribute{
 					"enabled": schema.BoolAttribute{
 						Optional:    true,
@@ -89,6 +90,7 @@ func (r *teamNotificationRuleResource) Schema(_ context.Context, _ resource.Sche
 				},
 			},
 			"ms_teams": schema.SingleNestedBlock{
+				Description: "The MS Teams notification settings.",
 				Attributes: map[string]schema.Attribute{
 					"connector_name": schema.StringAttribute{
 						Optional:    true,
@@ -97,6 +99,7 @@ func (r *teamNotificationRuleResource) Schema(_ context.Context, _ resource.Sche
 				},
 			},
 			"pagerduty": schema.SingleNestedBlock{
+				Description: "The PagerDuty notification settings.",
 				Attributes: map[string]schema.Attribute{
 					"service_name": schema.StringAttribute{
 						Optional:    true,
@@ -105,6 +108,7 @@ func (r *teamNotificationRuleResource) Schema(_ context.Context, _ resource.Sche
 				},
 			},
 			"slack": schema.SingleNestedBlock{
+				Description: "The Slack notification settings.",
 				Attributes: map[string]schema.Attribute{
 					"channel": schema.StringAttribute{
 						Optional:    true,
