@@ -23,8 +23,15 @@ import (
 // submitTestMetricPreConfig returns a PreConfig function that submits a metric to Datadog
 // so it exists before we configure tags on it. The Datadog API requires a metric to exist
 // before you can configure its tags.
+// NOTE: This only runs when recording cassettes (RECORD=true), not during replay.
 func submitTestMetricPreConfig(t *testing.T, metricName string, metricType string) func() {
 	return func() {
+		// Skip metric submission during cassette replay - the recorded cassette
+		// already has the necessary API interactions
+		if isReplaying() {
+			return
+		}
+
 		apiKey := os.Getenv(testAPIKeyEnvName)
 		appKey := os.Getenv(testAPPKeyEnvName)
 		apiURL := os.Getenv(testAPIUrlEnvName)
