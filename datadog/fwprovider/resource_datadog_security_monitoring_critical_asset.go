@@ -51,7 +51,7 @@ func (r *securityMonitoringCriticalAssetResource) Configure(_ context.Context, r
 
 func (r *securityMonitoringCriticalAssetResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "Provides a Datadog Security Monitoring Critical Asset resource. It can be used to create and manage Datadog security monitoring critical assets to modify signal severity based on asset importance.",
+		Description: "Provides a Datadog Security Monitoring Critical Asset resource. It can be used to create and manage critical assets which modify the severity of a signal.",
 		Attributes: map[string]schema.Attribute{
 			"id": utils.ResourceIDAttribute(),
 			"enabled": schema.BoolAttribute{

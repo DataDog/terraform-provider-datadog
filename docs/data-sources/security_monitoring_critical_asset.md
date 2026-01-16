@@ -3,12 +3,12 @@
 page_title: "datadog_security_monitoring_critical_asset Data Source - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Use this data source to retrieve information about an existing security monitoring critical asset.
+  Use this data source to retrieve information about an existing critical asset.
 ---
 
 # datadog_security_monitoring_critical_asset (Data Source)
 
-Use this data source to retrieve information about an existing security monitoring critical asset.
+Use this data source to retrieve information about an existing critical asset.
 
 ## Example Usage
 

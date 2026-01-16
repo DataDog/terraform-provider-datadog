@@ -3,12 +3,12 @@
 page_title: "datadog_security_monitoring_critical_asset Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Provides a Datadog Security Monitoring Critical Asset resource. It can be used to create and manage Datadog security monitoring critical assets to modify signal severity based on asset importance.
+  Provides a Datadog Security Monitoring Critical Asset resource. It can be used to create and manage critical assets which modify the severity of a signal.
 ---
 
 # datadog_security_monitoring_critical_asset (Resource)
 
-Provides a Datadog Security Monitoring Critical Asset resource. It can be used to create and manage Datadog security monitoring critical assets to modify signal severity based on asset importance.
+Provides a Datadog Security Monitoring Critical Asset resource. It can be used to create and manage critical assets which modify the severity of a signal.
 
 ## Example Usage
 

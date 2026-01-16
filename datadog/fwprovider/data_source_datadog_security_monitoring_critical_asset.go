@@ -45,7 +45,7 @@ func (d *securityMonitoringCriticalAssetDataSource) Configure(_ context.Context,
 
 func (d *securityMonitoringCriticalAssetDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, response *datasource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "Use this data source to retrieve information about an existing security monitoring critical asset.",
+		Description: "Use this data source to retrieve information about an existing critical asset.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
 				Required:    true,
