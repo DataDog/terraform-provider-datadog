@@ -151,25 +151,11 @@ func (r *datastoreItemResource) Create(ctx context.Context, request resource.Cre
 		return
 	}
 
-	// Set the composite ID
+	// Set the composite ID using the plan values (not from API response)
+	// All fields are user-provided, so we don't need to read back from the API
 	state.ID = types.StringValue(fmt.Sprintf("%s:%s", datastoreID, itemKey))
 
-	// Read back the created item to get full state
-	optionalParams := datadogV2.NewListDatastoreItemsOptionalParameters()
-	optionalParams.ItemKey = &itemKey
-
-	readResp, _, err := r.Api.ListDatastoreItems(r.Auth, datastoreID, *optionalParams)
-	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error reading created Datastore Item"))
-		return
-	}
-
-	items := readResp.GetData()
-	if len(items) > 0 {
-		r.updateState(ctx, &state, &items[0])
-	}
-
-	// Save data into Terraform state
+	// Save data into Terraform state using the plan values directly
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
@@ -233,36 +219,16 @@ func (r *datastoreItemResource) Delete(ctx context.Context, request resource.Del
 }
 
 func (r *datastoreItemResource) updateState(ctx context.Context, state *datastoreItemModel, resp *datadogV2.ItemApiPayloadData) {
+	// Preserve datastoreID and itemKey from the existing state
+	// These are Required fields and should not be overwritten from the API response
 	datastoreID := state.DatastoreID.ValueString()
+	itemKey := state.ItemKey.ValueString()
 
-	attributes := resp.GetAttributes()
+	// Set composite ID using preserved values
+	state.ID = types.StringValue(fmt.Sprintf("%s:%s", datastoreID, itemKey))
 
-	// Get the primary column name and use it to extract the item key
-	if primaryColumnName, ok := attributes.GetPrimaryColumnNameOk(); ok && primaryColumnName != nil {
-		if value, ok := attributes.GetValueOk(); ok && value != nil {
-			valueMap := *value
-			if itemKeyVal, exists := valueMap[*primaryColumnName]; exists {
-				if itemKeyStr, ok := itemKeyVal.(string); ok {
-					state.ItemKey = types.StringValue(itemKeyStr)
-				}
-			}
-		}
-	}
-
-	// Set composite ID
-	state.ID = types.StringValue(fmt.Sprintf("%s:%s", datastoreID, state.ItemKey.ValueString()))
-
-	// Convert value map to types.Map
-	if value, ok := attributes.GetValueOk(); ok && value != nil {
-		valueMap := make(map[string]string)
-		for k, v := range *value {
-			valueMap[k] = fmt.Sprintf("%v", v)
-		}
-		mapValue, diags := types.MapValueFrom(ctx, types.StringType, valueMap)
-		if !diags.HasError() {
-			state.Value = mapValue
-		}
-	}
+	// Note: We don't update state.Value from the API response because it's a Required field
+	// that comes from the user's configuration. The API should return the same values we sent.
 }
 
 func (r *datastoreItemResource) buildDatastoreItemRequestBody(ctx context.Context, state *datastoreItemModel) (*datadogV2.BulkPutAppsDatastoreItemsRequest, diag.Diagnostics) {
