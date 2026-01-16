@@ -223,6 +223,54 @@ func TestAccDatadogSecurityMonitoringRule_AppsecRule(t *testing.T) {
 	})
 }
 
+func TestAccDatadogSecurityMonitoringRule_AppSecSpansDeprecated(t *testing.T) {
+	t.Parallel()
+	_, accProviders := testAccProviders(context.Background(), t)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		Steps: []resource.TestStep{
+			{
+				Config:      testAccCheckDatadogSecurityMonitoringConfigAppSecSpansDeprecated(),
+				ExpectError: regexp.MustCompile("app_sec_spans datasource is deprecated"),
+			},
+		},
+	})
+}
+
+func testAccCheckDatadogSecurityMonitoringConfigAppSecSpansDeprecated() string {
+	return `
+resource "datadog_security_monitoring_rule" "acceptance_test" {
+	name = "test-app_sec_spans-deprecated"
+	message = "acceptance rule triggered"
+	enabled = false
+
+	query {
+		name = "first"
+		query = "@appsec.security_activity:*"
+		aggregation = "count"
+		data_source = "app_sec_spans"
+		group_by_fields = ["service"]
+	}
+
+	case {
+		status = "high"
+		condition = "first > 0"
+	}
+
+	options {
+		detection_method = "threshold"
+		evaluation_window = 300
+		keep_alive = 600
+		max_signal_duration = 900
+	}
+
+	type = "application_security"
+}
+`
+}
+
 func TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields(t *testing.T) {
 	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
@@ -2348,7 +2396,7 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
 		name = "first"
 		query = "@appsec.security_activity:attack_attempt.*"
 		aggregation = "count"
-		data_source = "app_sec_spans"
+		data_source = "spans"
 		group_by_fields = ["service", "env"]
 		has_optional_group_by_fields = false
 	}
@@ -2400,7 +2448,7 @@ func testAccCheckDatadogSecurityMonitoringCreatedCheckAppsecRule(accProvider fun
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "query.0.aggregation", "count"),
 		resource.TestCheckResourceAttr(
-			tfSecurityRuleName, "query.0.data_source", "app_sec_spans"),
+			tfSecurityRuleName, "query.0.data_source", "spans"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "query.0.has_optional_group_by_fields", "false"),
 		resource.TestCheckResourceAttr(
@@ -2450,7 +2498,7 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
 		name = "first"
 		query = "@appsec.security_activity:attack_attempt.*"
 		aggregation = "count"
-		data_source = "app_sec_spans"
+		data_source = "spans"
 		group_by_fields = ["service", "env"]
 		has_optional_group_by_fields = false
 	}
@@ -2502,7 +2550,7 @@ func testAccCheckDatadogSecurityMonitoringUpdateCheckAppsecRule(accProvider func
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "query.0.aggregation", "count"),
 		resource.TestCheckResourceAttr(
-			tfSecurityRuleName, "query.0.data_source", "app_sec_spans"),
+			tfSecurityRuleName, "query.0.data_source", "spans"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "query.0.has_optional_group_by_fields", "false"),
 		resource.TestCheckResourceAttr(
