@@ -35,7 +35,7 @@ interactions:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 762.503333ms
+        duration: 677.643916ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -70,7 +70,7 @@ interactions:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 612.360791ms
+        duration: 603.101917ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -105,4 +105,4 @@ interactions:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 371.661417ms
+        duration: 449.806958ms
