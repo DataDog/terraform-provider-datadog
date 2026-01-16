@@ -1,0 +1,212 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 403
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"config":{"destinations":[{"id":"destination-1","inputs":["opentelemetry-source-3"],"type":"datadog_logs"}],"pipeline_type":"logs","sources":[{"id":"opentelemetry-source-3","tls":{"ca_file":"/etc/ssl/certs/old-ca.crt","crt_file":"/etc/ssl/certs/old.crt","key_file":"/etc/ssl/private/old.key"},"type":"opentelemetry"}]},"name":"opentelemetry-pipeline-update"},"type":"pipelines"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 485
+        uncompressed: false
+        body: |
+            {"data":{"id":"f7e1079c-f20c-11f0-868c-da7ad0900002","type":"pipelines","attributes":{"name":"opentelemetry-pipeline-update","config":{"destinations":[{"id":"destination-1","inputs":["opentelemetry-source-3"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"opentelemetry-source-3","tls":{"ca_file":"/etc/ssl/certs/old-ca.crt","crt_file":"/etc/ssl/certs/old.crt","key_file":"/etc/ssl/private/old.key"},"type":"opentelemetry"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 506.925125ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/f7e1079c-f20c-11f0-868c-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 485
+        uncompressed: false
+        body: |
+            {"data":{"id":"f7e1079c-f20c-11f0-868c-da7ad0900002","type":"pipelines","attributes":{"name":"opentelemetry-pipeline-update","config":{"destinations":[{"id":"destination-1","inputs":["opentelemetry-source-3"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"opentelemetry-source-3","tls":{"ca_file":"/etc/ssl/certs/old-ca.crt","crt_file":"/etc/ssl/certs/old.crt","key_file":"/etc/ssl/private/old.key"},"type":"opentelemetry"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 218.31925ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/f7e1079c-f20c-11f0-868c-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 485
+        uncompressed: false
+        body: |
+            {"data":{"id":"f7e1079c-f20c-11f0-868c-da7ad0900002","type":"pipelines","attributes":{"name":"opentelemetry-pipeline-update","config":{"destinations":[{"id":"destination-1","inputs":["opentelemetry-source-3"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"opentelemetry-source-3","tls":{"ca_file":"/etc/ssl/certs/old-ca.crt","crt_file":"/etc/ssl/certs/old.crt","key_file":"/etc/ssl/private/old.key"},"type":"opentelemetry"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 221.072083ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 412
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"config":{"destinations":[{"id":"destination-1","inputs":["opentelemetry-source-3"],"type":"datadog_logs"}],"pipeline_type":"logs","sources":[{"id":"opentelemetry-source-3","tls":{"ca_file":"/etc/ssl/certs/new-ca.crt","crt_file":"/etc/ssl/certs/new.crt","key_file":"/etc/ssl/private/new.key"},"type":"opentelemetry"}]},"name":"opentelemetry-pipeline-updated"},"id":"","type":"pipelines"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/f7e1079c-f20c-11f0-868c-da7ad0900002
+        method: PUT
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 486
+        uncompressed: false
+        body: |
+            {"data":{"id":"f7e1079c-f20c-11f0-868c-da7ad0900002","type":"pipelines","attributes":{"name":"opentelemetry-pipeline-updated","config":{"destinations":[{"id":"destination-1","inputs":["opentelemetry-source-3"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"opentelemetry-source-3","tls":{"ca_file":"/etc/ssl/certs/new-ca.crt","crt_file":"/etc/ssl/certs/new.crt","key_file":"/etc/ssl/private/new.key"},"type":"opentelemetry"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 598.877583ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/f7e1079c-f20c-11f0-868c-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 486
+        uncompressed: false
+        body: |
+            {"data":{"id":"f7e1079c-f20c-11f0-868c-da7ad0900002","type":"pipelines","attributes":{"name":"opentelemetry-pipeline-updated","config":{"destinations":[{"id":"destination-1","inputs":["opentelemetry-source-3"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"opentelemetry-source-3","tls":{"ca_file":"/etc/ssl/certs/new-ca.crt","crt_file":"/etc/ssl/certs/new.crt","key_file":"/etc/ssl/private/new.key"},"type":"opentelemetry"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 236.478084ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/f7e1079c-f20c-11f0-868c-da7ad0900002
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Content-Type:
+                - application/json
+        status: 204 No Content
+        code: 204
+        duration: 368.396083ms

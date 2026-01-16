@@ -102,6 +102,7 @@ resource "datadog_observability_pipeline" "test" {
 Optional:
 
 - `destination` (Block List) List of destinations. (see [below for nested schema](#nestedblock--config--destination))
+- `pipeline_type` (String) The type of data being ingested. Defaults to `logs` if not specified. Valid values are `logs`, `metrics`.
 - `processor_group` (Block List) A processor group containing common configuration and nested processors. (see [below for nested schema](#nestedblock--config--processor_group))
 - `source` (Block List) List of sources. (see [below for nested schema](#nestedblock--config--source))
 
@@ -119,12 +120,16 @@ Optional:
 - `amazon_s3` (Block List) The `amazon_s3` destination sends your logs in Datadog-rehydratable format to an Amazon S3 bucket for archiving. (see [below for nested schema](#nestedblock--config--destination--amazon_s3))
 - `amazon_security_lake` (Block List) The `amazon_security_lake` destination sends your logs to Amazon Security Lake. (see [below for nested schema](#nestedblock--config--destination--amazon_security_lake))
 - `azure_storage` (Block List) The `azure_storage` destination forwards logs to an Azure Blob Storage container. (see [below for nested schema](#nestedblock--config--destination--azure_storage))
+- `cloud_prem` (Block List) The `cloud_prem` destination sends logs to Datadog CloudPrem. (see [below for nested schema](#nestedblock--config--destination--cloud_prem))
 - `crowdstrike_next_gen_siem` (Block List) The `crowdstrike_next_gen_siem` destination forwards logs to CrowdStrike Next Gen SIEM. (see [below for nested schema](#nestedblock--config--destination--crowdstrike_next_gen_siem))
 - `datadog_logs` (Block List) The `datadog_logs` destination forwards logs to Datadog Log Management. (see [below for nested schema](#nestedblock--config--destination--datadog_logs))
+- `datadog_metrics` (Block List) The `datadog_metrics` destination forwards metrics to Datadog. (see [below for nested schema](#nestedblock--config--destination--datadog_metrics))
 - `elasticsearch` (Block List) The `elasticsearch` destination writes logs to an Elasticsearch cluster. (see [below for nested schema](#nestedblock--config--destination--elasticsearch))
 - `google_chronicle` (Block List) The `google_chronicle` destination sends logs to Google Chronicle. (see [below for nested schema](#nestedblock--config--destination--google_chronicle))
 - `google_cloud_storage` (Block List) The `google_cloud_storage` destination stores logs in a Google Cloud Storage (GCS) bucket. (see [below for nested schema](#nestedblock--config--destination--google_cloud_storage))
 - `google_pubsub` (Block List) The `google_pubsub` destination publishes logs to a Google Cloud Pub/Sub topic. (see [below for nested schema](#nestedblock--config--destination--google_pubsub))
+- `http_client` (Block List) The `http_client` destination sends data to an HTTP endpoint. (see [below for nested schema](#nestedblock--config--destination--http_client))
+- `kafka` (Block List) The `kafka` destination sends logs to Apache Kafka topics. (see [below for nested schema](#nestedblock--config--destination--kafka))
 - `microsoft_sentinel` (Block List) The `microsoft_sentinel` destination forwards logs to Microsoft Sentinel. (see [below for nested schema](#nestedblock--config--destination--microsoft_sentinel))
 - `new_relic` (Block List) The `new_relic` destination sends logs to the New Relic platform. (see [below for nested schema](#nestedblock--config--destination--new_relic))
 - `opensearch` (Block List) The `opensearch` destination writes logs to an OpenSearch cluster. (see [below for nested schema](#nestedblock--config--destination--opensearch))
@@ -234,6 +239,10 @@ Optional:
 - `blob_prefix` (String) Optional prefix for blobs written to the container.
 
 
+<a id="nestedblock--config--destination--cloud_prem"></a>
+### Nested Schema for `config.destination.cloud_prem`
+
+
 <a id="nestedblock--config--destination--crowdstrike_next_gen_siem"></a>
 ### Nested Schema for `config.destination.crowdstrike_next_gen_siem`
 
@@ -276,6 +285,10 @@ Optional:
 ### Nested Schema for `config.destination.datadog_logs`
 
 
+<a id="nestedblock--config--destination--datadog_metrics"></a>
+### Nested Schema for `config.destination.datadog_metrics`
+
+
 <a id="nestedblock--config--destination--elasticsearch"></a>
 ### Nested Schema for `config.destination.elasticsearch`
 
@@ -283,6 +296,17 @@ Optional:
 
 - `api_version` (String) The Elasticsearch API version to use. Set to `auto` to auto-detect.
 - `bulk_index` (String) The index or datastream to write logs to in Elasticsearch.
+- `data_stream` (Block List) Configuration options for writing to Elasticsearch Data Streams instead of a fixed index. (see [below for nested schema](#nestedblock--config--destination--elasticsearch--data_stream))
+
+<a id="nestedblock--config--destination--elasticsearch--data_stream"></a>
+### Nested Schema for `config.destination.elasticsearch.data_stream`
+
+Optional:
+
+- `dataset` (String) The data stream dataset for your logs. This groups logs by their source or application.
+- `dtype` (String) The data stream type for your logs. This determines how logs are categorized within the data stream.
+- `namespace` (String) The data stream namespace for your logs. This separates logs into different environments or domains.
+
 
 
 <a id="nestedblock--config--destination--google_chronicle"></a>
@@ -361,6 +385,93 @@ Required:
 
 <a id="nestedblock--config--destination--google_pubsub--tls"></a>
 ### Nested Schema for `config.destination.google_pubsub.tls`
+
+Required:
+
+- `crt_file` (String) Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.
+
+Optional:
+
+- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
+- `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
+
+
+
+<a id="nestedblock--config--destination--http_client"></a>
+### Nested Schema for `config.destination.http_client`
+
+Required:
+
+- `encoding` (String) Encoding format for events. Valid values are `json`.
+
+Optional:
+
+- `auth_strategy` (String) HTTP authentication strategy. Valid values are `none`, `basic`, `bearer`.
+- `compression` (Block List) Compression configuration for HTTP requests. (see [below for nested schema](#nestedblock--config--destination--http_client--compression))
+- `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--destination--http_client--tls))
+
+<a id="nestedblock--config--destination--http_client--compression"></a>
+### Nested Schema for `config.destination.http_client.compression`
+
+Required:
+
+- `algorithm` (String) Compression algorithm. Valid values are `gzip`.
+
+
+<a id="nestedblock--config--destination--http_client--tls"></a>
+### Nested Schema for `config.destination.http_client.tls`
+
+Required:
+
+- `crt_file` (String) Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.
+
+Optional:
+
+- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
+- `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
+
+
+
+<a id="nestedblock--config--destination--kafka"></a>
+### Nested Schema for `config.destination.kafka`
+
+Required:
+
+- `encoding` (String) Encoding format for log events. Valid values are `json`, `raw_message`.
+- `topic` (String) The Kafka topic name to publish logs to.
+
+Optional:
+
+- `compression` (String) Compression codec for Kafka messages. Valid values are `none`, `gzip`, `snappy`, `lz4`, `zstd`.
+- `headers_key` (String) The field name to use for Kafka message headers.
+- `key_field` (String) The field name to use as the Kafka message key.
+- `librdkafka_option` (Block List) Optional list of advanced Kafka producer configuration options, defined as key-value pairs. (see [below for nested schema](#nestedblock--config--destination--kafka--librdkafka_option))
+- `message_timeout_ms` (Number) Maximum time in milliseconds to wait for message delivery confirmation.
+- `rate_limit_duration_secs` (Number) Duration in seconds for the rate limit window.
+- `rate_limit_num` (Number) Maximum number of messages allowed per rate limit duration.
+- `sasl` (Block List) Specifies the SASL mechanism for authenticating with a Kafka cluster. (see [below for nested schema](#nestedblock--config--destination--kafka--sasl))
+- `socket_timeout_ms` (Number) Socket timeout in milliseconds for network requests.
+- `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--destination--kafka--tls))
+
+<a id="nestedblock--config--destination--kafka--librdkafka_option"></a>
+### Nested Schema for `config.destination.kafka.librdkafka_option`
+
+Required:
+
+- `name` (String) The name of the librdkafka configuration option.
+- `value` (String) The value of the librdkafka configuration option.
+
+
+<a id="nestedblock--config--destination--kafka--sasl"></a>
+### Nested Schema for `config.destination.kafka.sasl`
+
+Required:
+
+- `mechanism` (String) SASL authentication mechanism. Valid values are `PLAIN`, `SCRAM-SHA-256`, `SCRAM-SHA-512`.
+
+
+<a id="nestedblock--config--destination--kafka--tls"></a>
+### Nested Schema for `config.destination.kafka.tls`
 
 Required:
 
@@ -560,6 +671,7 @@ Optional:
 
 - `add_env_vars` (Block List) The `add_env_vars` processor adds environment variable values to log events. (see [below for nested schema](#nestedblock--config--processor_group--processor--add_env_vars))
 - `add_fields` (Block List) The `add_fields` processor adds static key-value fields to logs. (see [below for nested schema](#nestedblock--config--processor_group--processor--add_fields))
+- `add_hostname` (Block List) The `add_hostname` processor adds the hostname to log events. (see [below for nested schema](#nestedblock--config--processor_group--processor--add_hostname))
 - `custom_processor` (Block List) The `custom_processor` processor transforms events using Vector Remap Language (VRL) scripts with advanced filtering capabilities. (see [below for nested schema](#nestedblock--config--processor_group--processor--custom_processor))
 - `datadog_tags` (Block List) (see [below for nested schema](#nestedblock--config--processor_group--processor--datadog_tags))
 - `dedupe` (Block List) The `dedupe` processor removes duplicate fields in log events. (see [below for nested schema](#nestedblock--config--processor_group--processor--dedupe))
@@ -567,15 +679,18 @@ Optional:
 - `enrichment_table` (Block List) The `enrichment_table` processor enriches logs using a static CSV file or GeoIP database. (see [below for nested schema](#nestedblock--config--processor_group--processor--enrichment_table))
 - `filter` (Block List) The `filter` processor allows conditional processing of logs based on a Datadog search query. Logs that match the `include` query are passed through; others are discarded. (see [below for nested schema](#nestedblock--config--processor_group--processor--filter))
 - `generate_datadog_metrics` (Block List) The `generate_datadog_metrics` processor creates custom metrics from logs. Metrics can be counters, gauges, or distributions and optionally grouped by log fields. (see [below for nested schema](#nestedblock--config--processor_group--processor--generate_datadog_metrics))
+- `metric_tags` (Block List) The `metric_tags` processor filters metrics based on their tags using Datadog tag key patterns. (see [below for nested schema](#nestedblock--config--processor_group--processor--metric_tags))
 - `ocsf_mapper` (Block List) The `ocsf_mapper` processor transforms logs into the OCSF schema using predefined library mappings. (see [below for nested schema](#nestedblock--config--processor_group--processor--ocsf_mapper))
 - `parse_grok` (Block List) The `parse_grok` processor extracts structured fields from unstructured log messages using Grok patterns. (see [below for nested schema](#nestedblock--config--processor_group--processor--parse_grok))
 - `parse_json` (Block List) The `parse_json` processor extracts JSON from a specified field and flattens it into the event. This is useful when logs contain embedded JSON as a string. (see [below for nested schema](#nestedblock--config--processor_group--processor--parse_json))
+- `parse_xml` (Block List) The `parse_xml` processor parses XML from a specified field and extracts it into the event. (see [below for nested schema](#nestedblock--config--processor_group--processor--parse_xml))
 - `quota` (Block List) The `quota` processor measures logging traffic for logs that match a specified filter. When the configured daily quota is met, the processor can drop or alert. (see [below for nested schema](#nestedblock--config--processor_group--processor--quota))
 - `reduce` (Block List) The `reduce` processor aggregates and merges logs based on matching keys and merge strategies. (see [below for nested schema](#nestedblock--config--processor_group--processor--reduce))
 - `remove_fields` (Block List) The `remove_fields` processor deletes specified fields from logs. (see [below for nested schema](#nestedblock--config--processor_group--processor--remove_fields))
 - `rename_fields` (Block List) The `rename_fields` processor changes field names. (see [below for nested schema](#nestedblock--config--processor_group--processor--rename_fields))
 - `sample` (Block List) The `sample` processor allows probabilistic sampling of logs at a fixed rate. (see [below for nested schema](#nestedblock--config--processor_group--processor--sample))
 - `sensitive_data_scanner` (Block List) The `sensitive_data_scanner` processor detects and optionally redacts sensitive data in log events. (see [below for nested schema](#nestedblock--config--processor_group--processor--sensitive_data_scanner))
+- `split_array` (Block List) The `split_array` processor splits array fields into separate events based on configured rules. (see [below for nested schema](#nestedblock--config--processor_group--processor--split_array))
 - `throttle` (Block List) The `throttle` processor limits the number of events that pass through over a given time window. (see [below for nested schema](#nestedblock--config--processor_group--processor--throttle))
 
 <a id="nestedblock--config--processor_group--processor--add_env_vars"></a>
@@ -610,6 +725,10 @@ Required:
 - `name` (String) The field name to add.
 - `value` (String) The value to assign to the field.
 
+
+
+<a id="nestedblock--config--processor_group--processor--add_hostname"></a>
+### Nested Schema for `config.processor_group.processor.add_hostname`
 
 
 <a id="nestedblock--config--processor_group--processor--custom_processor"></a>
@@ -662,6 +781,7 @@ Optional:
 
 - `file` (Block List) Defines a static enrichment table loaded from a CSV file. (see [below for nested schema](#nestedblock--config--processor_group--processor--enrichment_table--file))
 - `geoip` (Block List) Uses a GeoIP database to enrich logs based on an IP field. (see [below for nested schema](#nestedblock--config--processor_group--processor--enrichment_table--geoip))
+- `reference_table` (Block List) Uses a Datadog reference table to enrich logs. (see [below for nested schema](#nestedblock--config--processor_group--processor--enrichment_table--reference_table))
 
 <a id="nestedblock--config--processor_group--processor--enrichment_table--file"></a>
 ### Nested Schema for `config.processor_group.processor.enrichment_table.file`
@@ -716,6 +836,19 @@ Optional:
 - `path` (String) Path to the GeoIP database file.
 
 
+<a id="nestedblock--config--processor_group--processor--enrichment_table--reference_table"></a>
+### Nested Schema for `config.processor_group.processor.enrichment_table.reference_table`
+
+Required:
+
+- `key_field` (String) Path to the field in the log event to match against the reference table.
+- `table_id` (String) The unique identifier of the reference table.
+
+Optional:
+
+- `columns` (List of String) List of column names to include from the reference table. If not provided, all columns are included.
+
+
 
 <a id="nestedblock--config--processor_group--processor--filter"></a>
 ### Nested Schema for `config.processor_group.processor.filter`
@@ -753,6 +886,25 @@ Optional:
 
 - `field` (String) Name of the log field containing the numeric value to increment the metric by (used only for `increment_by_field`).
 
+
+
+
+<a id="nestedblock--config--processor_group--processor--metric_tags"></a>
+### Nested Schema for `config.processor_group.processor.metric_tags`
+
+Optional:
+
+- `rule` (Block List) A list of rules for filtering metric tags. (see [below for nested schema](#nestedblock--config--processor_group--processor--metric_tags--rule))
+
+<a id="nestedblock--config--processor_group--processor--metric_tags--rule"></a>
+### Nested Schema for `config.processor_group.processor.metric_tags.rule`
+
+Required:
+
+- `action` (String) The action to take on tags with matching keys. Valid values are `include`, `exclude`.
+- `include` (String) A Datadog search query used to determine which metrics this rule targets.
+- `keys` (List of String) A list of tag keys to include or exclude.
+- `mode` (String) The processing mode for tag filtering. Valid values are `filter`.
 
 
 
@@ -821,6 +973,24 @@ Required:
 - `field` (String) The field to parse.
 
 
+<a id="nestedblock--config--processor_group--processor--parse_xml"></a>
+### Nested Schema for `config.processor_group.processor.parse_xml`
+
+Required:
+
+- `field` (String) The path to the log field on which you want to parse XML.
+
+Optional:
+
+- `always_use_text_key` (Boolean) Whether to always store text inside an object using the text key even when no attributes exist.
+- `attr_prefix` (String) The prefix to use for XML attributes in the parsed output. If the field is left empty, the original attribute key is used.
+- `include_attr` (Boolean) Whether to include XML attributes in the parsed output.
+- `parse_bool` (Boolean) Whether to parse boolean values from strings.
+- `parse_null` (Boolean) Whether to parse null values.
+- `parse_number` (Boolean) Whether to parse numeric values from strings.
+- `text_key` (String) The key name to use for the text node when XML attributes are appended.
+
+
 <a id="nestedblock--config--processor_group--processor--quota"></a>
 ### Nested Schema for `config.processor_group.processor.quota`
 
@@ -836,6 +1006,7 @@ Optional:
 - `overflow_action` (String) The action to take when the quota is exceeded: `drop`, `no_action`, or `overflow_routing`.
 - `override` (Block List) The overrides for field-specific quotas. (see [below for nested schema](#nestedblock--config--processor_group--processor--quota--override))
 - `partition_fields` (List of String) List of partition fields.
+- `too_many_buckets_action` (String) The action to take when the max number of buckets is exceeded: `drop`, `no_action`, or `overflow_routing`.
 
 <a id="nestedblock--config--processor_group--processor--quota--limit"></a>
 ### Nested Schema for `config.processor_group.processor.quota.limit`
@@ -924,10 +1095,9 @@ Required:
 <a id="nestedblock--config--processor_group--processor--sample"></a>
 ### Nested Schema for `config.processor_group.processor.sample`
 
-Optional:
+Required:
 
 - `percentage` (Number) The percentage of logs to sample.
-- `rate` (Number) Number of events to sample (1 in N).
 
 
 <a id="nestedblock--config--processor_group--processor--sensitive_data_scanner"></a>
@@ -1005,6 +1175,7 @@ Optional:
 
 Optional:
 
+- `description` (String) Human-readable description providing context about a sensitive data scanner rule.
 - `rule` (String) A regular expression used to detect sensitive values. Must be a valid regex.
 
 
@@ -1013,6 +1184,7 @@ Optional:
 
 Optional:
 
+- `description` (String) Human-readable description providing context about a sensitive data scanner rule.
 - `id` (String) Identifier for a predefined pattern from the sensitive data scanner pattern library.
 - `use_recommended_keywords` (Boolean) Whether to augment the pattern with recommended keywords (optional).
 
@@ -1043,6 +1215,23 @@ Optional:
 - `fields` (List of String) The fields to include in scanning.
 
 
+
+
+
+<a id="nestedblock--config--processor_group--processor--split_array"></a>
+### Nested Schema for `config.processor_group.processor.split_array`
+
+Optional:
+
+- `array` (Block List) A list of array split configurations. (see [below for nested schema](#nestedblock--config--processor_group--processor--split_array--array))
+
+<a id="nestedblock--config--processor_group--processor--split_array--array"></a>
+### Nested Schema for `config.processor_group.processor.split_array.array`
+
+Required:
+
+- `field` (String) The path to the array field to split.
+- `include` (String) A Datadog search query used to determine which logs this array split operation targets.
 
 
 
@@ -1080,6 +1269,7 @@ Optional:
 - `http_server` (Block List) The `http_server` source collects logs over HTTP POST from external services. (see [below for nested schema](#nestedblock--config--source--http_server))
 - `kafka` (Block List) The `kafka` source ingests data from Apache Kafka topics. (see [below for nested schema](#nestedblock--config--source--kafka))
 - `logstash` (Block List) The `logstash` source ingests logs from a Logstash forwarder. (see [below for nested schema](#nestedblock--config--source--logstash))
+- `opentelemetry` (Block List) The `opentelemetry` source receives telemetry data using the OpenTelemetry Protocol (OTLP) over gRPC and HTTP. (see [below for nested schema](#nestedblock--config--source--opentelemetry))
 - `rsyslog` (Block List) The `rsyslog` source listens for logs over TCP or UDP from an `rsyslog` server using the syslog protocol. (see [below for nested schema](#nestedblock--config--source--rsyslog))
 - `socket` (Block List) The `socket` source ingests logs over TCP or UDP. (see [below for nested schema](#nestedblock--config--source--socket))
 - `splunk_hec` (Block List) The `splunk_hec` source implements the Splunk HTTP Event Collector (HEC) API. (see [below for nested schema](#nestedblock--config--source--splunk_hec))
@@ -1263,7 +1453,7 @@ Required:
 
 Optional:
 
-- `auth_strategy` (String) Optional authentication strategy for HTTP requests.
+- `auth_strategy` (String) Optional authentication strategy for HTTP requests. Valid values are `none`, `basic`, `bearer`.
 - `scrape_interval_secs` (Number) The interval (in seconds) between HTTP scrape requests.
 - `scrape_timeout_secs` (Number) The timeout (in seconds) for each scrape request.
 - `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--source--http_client--tls))
@@ -1362,6 +1552,27 @@ Optional:
 
 <a id="nestedblock--config--source--logstash--tls"></a>
 ### Nested Schema for `config.source.logstash.tls`
+
+Required:
+
+- `crt_file` (String) Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.
+
+Optional:
+
+- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
+- `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
+
+
+
+<a id="nestedblock--config--source--opentelemetry"></a>
+### Nested Schema for `config.source.opentelemetry`
+
+Optional:
+
+- `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--source--opentelemetry--tls))
+
+<a id="nestedblock--config--source--opentelemetry--tls"></a>
+### Nested Schema for `config.source.opentelemetry.tls`
 
 Required:
 

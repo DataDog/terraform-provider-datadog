@@ -1,0 +1,107 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 653
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"config":{"destinations":[{"id":"destination-1","inputs":["metric-tags-group-1"],"type":"datadog_metrics"}],"pipeline_type":"metrics","processor_groups":[{"enabled":true,"id":"metric-tags-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"metric-tags-processor","include":"*","rules":[{"action":"include","include":"*","keys":["env","service","version"],"mode":"filter"},{"action":"exclude","include":"service:web-*","keys":["debug","internal"],"mode":"filter"}],"type":"metric_tags"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]},"name":"metric tags processor test"},"type":"pipelines"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 1075
+        uncompressed: false
+        body: |
+            {"data":{"id":"22df87f2-f20d-11f0-9e1a-da7ad0900002","type":"pipelines","attributes":{"name":"metric tags processor test","config":{"destinations":[{"id":"destination-1","inputs":["metric-tags-group-1"],"type":"datadog_metrics"}],"pipeline_type":"metrics","processor_groups":[{"enabled":true,"id":"metric-tags-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"metric-tags-processor","include":"*","rules":[{"action":"include","include":"*","keys":["env","service","version"],"mode":"filter"},{"action":"exclude","include":"service:web-*","keys":["debug","internal"],"mode":"filter"}],"type":"metric_tags"}]}],"processors":[{"enabled":true,"id":"metric-tags-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"metric-tags-processor","include":"*","rules":[{"action":"include","include":"*","keys":["env","service","version"],"mode":"filter"},{"action":"exclude","include":"service:web-*","keys":["debug","internal"],"mode":"filter"}],"type":"metric_tags"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 430.313458ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/22df87f2-f20d-11f0-9e1a-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 1075
+        uncompressed: false
+        body: |
+            {"data":{"id":"22df87f2-f20d-11f0-9e1a-da7ad0900002","type":"pipelines","attributes":{"name":"metric tags processor test","config":{"destinations":[{"id":"destination-1","inputs":["metric-tags-group-1"],"type":"datadog_metrics"}],"pipeline_type":"metrics","processor_groups":[{"enabled":true,"id":"metric-tags-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"metric-tags-processor","include":"*","rules":[{"action":"include","include":"*","keys":["env","service","version"],"mode":"filter"},{"action":"exclude","include":"service:web-*","keys":["debug","internal"],"mode":"filter"}],"type":"metric_tags"}]}],"processors":[{"enabled":true,"id":"metric-tags-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"metric-tags-processor","include":"*","rules":[{"action":"include","include":"*","keys":["env","service","version"],"mode":"filter"},{"action":"exclude","include":"service:web-*","keys":["debug","internal"],"mode":"filter"}],"type":"metric_tags"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 283.117041ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/22df87f2-f20d-11f0-9e1a-da7ad0900002
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Content-Type:
+                - application/json
+        status: 204 No Content
+        code: 204
+        duration: 539.875708ms

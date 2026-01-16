@@ -6,21 +6,21 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 357
+        content_length: 380
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"config":{"destinations":[{"id":"destination-1","inputs":["splunk-tcp-source-1"],"type":"datadog_logs"}],"sources":[{"id":"splunk-tcp-source-1","tls":{"ca_file":"/etc/ssl/certs/tcp.ca","crt_file":"/etc/ssl/certs/tcp.crt","key_file":"/etc/ssl/private/tcp.key"},"type":"splunk_tcp"}]},"name":"splunk-tcp-pipeline"},"type":"pipelines"}}
+            {"data":{"attributes":{"config":{"destinations":[{"id":"destination-1","inputs":["splunk-tcp-source-1"],"type":"datadog_logs"}],"pipeline_type":"logs","sources":[{"id":"splunk-tcp-source-1","tls":{"ca_file":"/etc/ssl/certs/tcp.ca","crt_file":"/etc/ssl/certs/tcp.crt","key_file":"/etc/ssl/private/tcp.key"},"type":"splunk_tcp"}]},"name":"splunk-tcp-pipeline"},"type":"pipelines"}}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines
         method: POST
       response:
         proto: HTTP/1.1
@@ -28,16 +28,16 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 417
+        content_length: 462
         uncompressed: false
         body: |
-            {"data":{"id":"dc0214f4-dcfd-11f0-9508-da7ad0900002","type":"pipelines","attributes":{"name":"splunk-tcp-pipeline","config":{"destinations":[{"id":"destination-1","inputs":["splunk-tcp-source-1"],"type":"datadog_logs"}],"processors":[],"sources":[{"id":"splunk-tcp-source-1","tls":{"ca_file":"/etc/ssl/certs/tcp.ca","crt_file":"/etc/ssl/certs/tcp.crt","key_file":"/etc/ssl/private/tcp.key"},"type":"splunk_tcp"}]}}}}
+            {"data":{"id":"d5888266-f20b-11f0-a39a-da7ad0900002","type":"pipelines","attributes":{"name":"splunk-tcp-pipeline","config":{"destinations":[{"id":"destination-1","inputs":["splunk-tcp-source-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"splunk-tcp-source-1","tls":{"ca_file":"/etc/ssl/certs/tcp.ca","crt_file":"/etc/ssl/certs/tcp.crt","key_file":"/etc/ssl/private/tcp.key"},"type":"splunk_tcp"}]}}}}
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 352.326416ms
+        duration: 462.032292ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -54,7 +54,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/dc0214f4-dcfd-11f0-9508-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/d5888266-f20b-11f0-a39a-da7ad0900002
         method: GET
       response:
         proto: HTTP/1.1
@@ -62,16 +62,16 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 417
+        content_length: 462
         uncompressed: false
         body: |
-            {"data":{"id":"dc0214f4-dcfd-11f0-9508-da7ad0900002","type":"pipelines","attributes":{"name":"splunk-tcp-pipeline","config":{"destinations":[{"id":"destination-1","inputs":["splunk-tcp-source-1"],"type":"datadog_logs"}],"processors":[],"sources":[{"id":"splunk-tcp-source-1","tls":{"ca_file":"/etc/ssl/certs/tcp.ca","crt_file":"/etc/ssl/certs/tcp.crt","key_file":"/etc/ssl/private/tcp.key"},"type":"splunk_tcp"}]}}}}
+            {"data":{"id":"d5888266-f20b-11f0-a39a-da7ad0900002","type":"pipelines","attributes":{"name":"splunk-tcp-pipeline","config":{"destinations":[{"id":"destination-1","inputs":["splunk-tcp-source-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"splunk-tcp-source-1","tls":{"ca_file":"/etc/ssl/certs/tcp.ca","crt_file":"/etc/ssl/certs/tcp.crt","key_file":"/etc/ssl/private/tcp.key"},"type":"splunk_tcp"}]}}}}
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 215.500167ms
+        duration: 218.704083ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -88,7 +88,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/dc0214f4-dcfd-11f0-9508-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/d5888266-f20b-11f0-a39a-da7ad0900002
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -104,4 +104,4 @@ interactions:
                 - application/json
         status: 204 No Content
         code: 204
-        duration: 385.998416ms
+        duration: 364.185584ms
