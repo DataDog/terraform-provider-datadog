@@ -31,26 +31,9 @@ func resourceDatadogMetricTagConfiguration() *schema.Resource {
 				return fmt.Errorf("cannot use exclude_tags_mode without configuring any tags")
 			}
 
-			// Check if user explicitly defined aggregations (deprecated field)
-			rawConfig := diff.GetRawConfig()
-			aggregationsInConfig := false
-			if !rawConfig.IsNull() {
-				aggregationsAttr := rawConfig.GetAttr("aggregations")
-				if !aggregationsAttr.IsNull() && aggregationsAttr.IsKnown() {
-					if aggregationsAttr.CanIterateElements() {
-						aggregationsInConfig = aggregationsAttr.LengthInt() > 0
-					} else {
-						aggregationsInConfig = true
-					}
-				}
-			}
-
-			if aggregationsInConfig {
-				return fmt.Errorf("the 'aggregations' field is deprecated and no longer supported by the Datadog API. " +
-					"Please remove the 'aggregations' block from your configuration. " +
-					"This field will be removed in a future version of the provider")
-			}
-
+			// Clear aggregations from diff to prevent state flapping.
+			// The field is deprecated and ignored - the schema's Deprecated field
+			// will show a warning to users who still have it configured.
 			if err := diff.Clear("aggregations"); err != nil {
 				return err
 			}

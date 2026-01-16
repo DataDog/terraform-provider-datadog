@@ -283,9 +283,9 @@ func TestAccDatadogMetricTagConfiguration_Error(t *testing.T) {
 	})
 }
 
-// TestAccDatadogMetricTagConfiguration_AggregationsDeprecatedError tests that
-// using the deprecated aggregations field returns an error.
-func TestAccDatadogMetricTagConfiguration_AggregationsDeprecatedError(t *testing.T) {
+// TestAccDatadogMetricTagConfiguration_AggregationsIgnored tests that
+// the deprecated aggregations field is silently ignored (no error, no state flapping).
+func TestAccDatadogMetricTagConfiguration_AggregationsIgnored(t *testing.T) {
 	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	uniqueMetricTagConfig := strings.ReplaceAll(uniqueEntityName(ctx, t), "-", "_")
@@ -297,16 +297,12 @@ func TestAccDatadogMetricTagConfiguration_AggregationsDeprecatedError(t *testing
 		CheckDestroy:      testAccCheckDatadogMetricTagConfigurationDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config:      testAccCheckDatadogMetricTagConfigurationAggregationsDeprecated(uniqueMetricTagConfig, "gauge"),
-				ExpectError: regexp.MustCompile("the 'aggregations' field is deprecated and no longer supported by the Datadog API"),
-			},
-			{
-				Config:      testAccCheckDatadogMetricTagConfigurationAggregationsDeprecated(uniqueMetricTagConfig, "count"),
-				ExpectError: regexp.MustCompile("the 'aggregations' field is deprecated and no longer supported by the Datadog API"),
-			},
-			{
-				Config:      testAccCheckDatadogMetricTagConfigurationAggregationsDeprecated(uniqueMetricTagConfig, "rate"),
-				ExpectError: regexp.MustCompile("the 'aggregations' field is deprecated and no longer supported by the Datadog API"),
+				// Test that config with aggregations works without error (aggregations is ignored)
+				PreConfig: submitTestMetricPreConfig(t, uniqueMetricTagConfig, "gauge"),
+				Config:    testAccCheckDatadogMetricTagConfigurationAggregationsDeprecated(uniqueMetricTagConfig, "gauge"),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogMetricTagConfigurationExists(accProvider, "datadog_metric_tag_configuration.testing_metric_tag_config_aggregations"),
+				),
 			},
 		},
 	})
