@@ -23,7 +23,6 @@ func resourceDatadogMetricTagConfiguration() *schema.Resource {
 		DeleteContext: resourceDatadogMetricTagConfigurationDelete,
 		CustomizeDiff: func(ctx context.Context, diff *schema.ResourceDiff, meta interface{}) error {
 			_, includePercentilesOk := diff.GetOkExists("include_percentiles")
-			oldAggrs, newAggrs := diff.GetChange("aggregations")
 			metricType, metricTypeOk := diff.GetOkExists("metric_type")
 			tags, _ := diff.GetOkExists("tags")
 			excludeTagsMode, _ := diff.GetOkExists("exclude_tags_mode")
@@ -32,8 +31,14 @@ func resourceDatadogMetricTagConfiguration() *schema.Resource {
 				return fmt.Errorf("cannot use exclude_tags_mode without configuring any tags")
 			}
 
-			if !includePercentilesOk && oldAggrs.(*schema.Set).Equal(newAggrs.(*schema.Set)) && !metricTypeOk {
-				// if there was no change to include_percentiles nor aggregations nor metricType we don't need special handling
+			// Clear aggregations from diff to prevent state flapping.
+			// The field is deprecated and ignored - the schema's Deprecated field
+			// will show a warning to users who still have it configured.
+			if err := diff.Clear("aggregations"); err != nil {
+				return err
+			}
+
+			if !includePercentilesOk && !metricTypeOk {
 				return nil
 			}
 			metricTypeValidated, err := datadogV2.NewMetricTagConfigurationMetricTypesFromValue(metricType.(string))
@@ -42,29 +47,6 @@ func resourceDatadogMetricTagConfiguration() *schema.Resource {
 			}
 			if includePercentilesOk && *metricTypeValidated != datadogV2.METRICTAGCONFIGURATIONMETRICTYPES_DISTRIBUTION {
 				return fmt.Errorf("cannot use include_percentiles with a metric_type of %s, must use metric_type of 'distribution'", metricType)
-			}
-
-			if *metricTypeValidated == datadogV2.METRICTAGCONFIGURATIONMETRICTYPES_DISTRIBUTION {
-				if !oldAggrs.(*schema.Set).Equal(newAggrs.(*schema.Set)) {
-					return fmt.Errorf("cannot use aggregations with a metric_type of %s, must use metric_type of 'count','rate', or 'gauge'", metricType)
-				}
-				diff.SetNew("aggregations", nil)
-			} else {
-				// Always add the default aggregation regardless of if the user manually added it or not
-				var defaultAggrCombo map[string]interface{}
-				if *metricTypeValidated == datadogV2.METRICTAGCONFIGURATIONMETRICTYPES_GAUGE {
-					// the avg/avg combo is the default aggregation for gauge metrics
-					defaultAggrCombo = map[string]interface{}{"time": "avg", "space": "avg"}
-				} else {
-					// the sum/sum combo is the default aggregation for count/rates metrics
-					defaultAggrCombo = map[string]interface{}{"time": "sum", "space": "sum"}
-				}
-
-				newAggrs.(*schema.Set).Add(defaultAggrCombo)
-
-				if err := diff.SetNew("aggregations", newAggrs); err != nil {
-					return err
-				}
 			}
 
 			return nil
@@ -108,6 +90,7 @@ func resourceDatadogMetricTagConfiguration() *schema.Resource {
 					Type:        schema.TypeSet,
 					Optional:    true,
 					Computed:    true,
+					Deprecated:  "The 'aggregations' field is no longer supported by the Datadog API and will be ignored. This field will be removed in a future version of the provider.",
 					Elem: &schema.Resource{
 						Schema: map[string]*schema.Schema{
 							"time": {
@@ -303,9 +286,9 @@ func updateMetricTagConfigurationState(d *schema.ResourceData, metricTagConfigur
 						aggregationsMap["space"] = aggregation.GetSpace()
 						aggregationsMapArray = append(aggregationsMapArray, aggregationsMap)
 					}
-					if err := d.Set("aggregations", aggregationsMapArray); err != nil {
-						return diag.FromErr(err)
-					}
+				}
+				if err := d.Set("aggregations", aggregationsMapArray); err != nil {
+					return diag.FromErr(err)
 				}
 			}
 		}
@@ -329,8 +312,6 @@ func updateMetricTagConfigurationState(d *schema.ResourceData, metricTagConfigur
 	}
 
 	d.SetId(metricName)
-	// we do not care about the created_at nor modified_at fields
-
 	return nil
 }
 
