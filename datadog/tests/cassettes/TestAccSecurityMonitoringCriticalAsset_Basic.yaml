@@ -1,0 +1,169 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 350
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"enabled":true,"query":"source:runtime-security-agent","rule_query":"type:(log_detection OR signal_correlation OR workload_security OR application_security) ruleId:007-d1a-1f3","severity":"increase","tags":["test:tf-tf-TestAccSecurityMonitoringCriticalAsset_Basic-local-1768600035","team:security"]},"type":"critical_assets"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/critical_assets
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 631
+        uncompressed: false
+        body: '{"data":{"id":"ac61dd62-9e01-4e3b-9df6-db101d42854a","type":"critical_assets","attributes":{"creation_author_id":1445416,"creation_date":1768600036726,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"enabled":true,"query":"source:runtime-security-agent","rule_query":"type:(log_detection OR signal_correlation OR workload_security OR application_security) ruleId:007-d1a-1f3","severity":"increase","tags":["test:tf-tf-TestAccSecurityMonitoringCriticalAsset_Basic-local-1768600035","team:security"],"update_author_id":1445416,"update_date":1768600036726,"updater":{"handle":"frog@datadoghq.com","name":"frog"},"version":1}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 105.955834ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/critical_assets/ac61dd62-9e01-4e3b-9df6-db101d42854a
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 631
+        uncompressed: false
+        body: '{"data":{"id":"ac61dd62-9e01-4e3b-9df6-db101d42854a","type":"critical_assets","attributes":{"creation_author_id":1445416,"creation_date":1768600036726,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"enabled":true,"query":"source:runtime-security-agent","rule_query":"type:(log_detection OR signal_correlation OR workload_security OR application_security) ruleId:007-d1a-1f3","severity":"increase","tags":["test:tf-tf-TestAccSecurityMonitoringCriticalAsset_Basic-local-1768600035","team:security"],"update_author_id":1445416,"update_date":1768600036726,"updater":{"handle":"frog@datadoghq.com","name":"frog"},"version":1}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 63.236584ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/critical_assets/ac61dd62-9e01-4e3b-9df6-db101d42854a
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 631
+        uncompressed: false
+        body: '{"data":{"id":"ac61dd62-9e01-4e3b-9df6-db101d42854a","type":"critical_assets","attributes":{"creation_author_id":1445416,"creation_date":1768600036726,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"enabled":true,"query":"source:runtime-security-agent","rule_query":"type:(log_detection OR signal_correlation OR workload_security OR application_security) ruleId:007-d1a-1f3","severity":"increase","tags":["test:tf-tf-TestAccSecurityMonitoringCriticalAsset_Basic-local-1768600035","team:security"],"update_author_id":1445416,"update_date":1768600036726,"updater":{"handle":"frog@datadoghq.com","name":"frog"},"version":1}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 55.2665ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/critical_assets/ac61dd62-9e01-4e3b-9df6-db101d42854a
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 45.9815ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/critical_assets/ac61dd62-9e01-4e3b-9df6-db101d42854a
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 95
+        uncompressed: false
+        body: '{"errors":["not_found(Critical asset with ID ac61dd62-9e01-4e3b-9df6-db101d42854a not found)"]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 43.497583ms
