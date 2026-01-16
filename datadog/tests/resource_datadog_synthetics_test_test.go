@@ -26,7 +26,7 @@ func TestAccDatadogSyntheticsAPITest_importBasic(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testSyntheticsTestIsDestroyed(providers.sdkV2Provider),
 		Steps: []resource.TestStep{
 			{
@@ -53,7 +53,7 @@ func TestAccDatadogSyntheticsSSLTest_importBasic(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			{
@@ -76,7 +76,7 @@ func TestAccDatadogSyntheticsTCPTest_importBasic(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			{
@@ -99,7 +99,7 @@ func TestAccDatadogSyntheticsDNSTest_importBasic(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			{
@@ -121,7 +121,7 @@ func TestAccDatadogSyntheticsGRPCTest_importBasic(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			{
@@ -144,7 +144,7 @@ func TestAccDatadogSyntheticsBrowserTest_importBasic(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			{
@@ -167,7 +167,7 @@ func TestAccDatadogSyntheticsMobileTest_importBasic(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			{
@@ -190,7 +190,7 @@ func TestAccDatadogSyntheticsAPITest_Basic(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsAPITestStep(ctx, accProvider, t),
@@ -206,7 +206,7 @@ func TestAccDatadogSyntheticsAPITest_EmptyLocations(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			{
@@ -224,7 +224,7 @@ func TestAccDatadogSyntheticsAPITest_Updated(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsAPITestStep(ctx, accProvider, t),
@@ -240,7 +240,7 @@ func TestAccDatadogSyntheticsAPITest_BasicNewAssertionsOptions(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsAPITestStepNewAssertionsOptions(ctx, accProvider, t),
@@ -255,7 +255,7 @@ func TestAccDatadogSyntheticsAPITest_BasicTargetAndTargetValueCanBeNumberOrStrin
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsAPITestStepTargetAndTargetValueCanBeNumberOrString(ctx, accProvider, t),
@@ -270,7 +270,7 @@ func TestAccDatadogSyntheticsAPITest_AdvancedScheduling(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsAPITestStepAdvancedScheduling(ctx, accProvider, t),
@@ -285,7 +285,7 @@ func TestAccDatadogSyntheticsAPITest_UpdatedNewAssertionsOptions(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsAPITestStepNewAssertionsOptions(ctx, accProvider, t),
@@ -301,7 +301,7 @@ func TestAccDatadogSyntheticsAPITest_UpdatedTargetAndTargetValueCanBeNumberOrStr
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsAPITestStepTargetAndTargetValueCanBeNumberOrString(ctx, accProvider, t),
@@ -326,7 +326,7 @@ func TestAccDatadogSyntheticsApiTest_FileUpload(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsAPITestFileUpload(ctx, accProvider, t, testName, filesCreation, &previousBucketKey, true),
@@ -343,7 +343,7 @@ func TestAccDatadogSyntheticsSSLTest_Basic(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsSSLTestStep(ctx, accProvider, t),
@@ -358,7 +358,7 @@ func TestAccDatadogSyntheticsSSLTest_Updated(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsSSLTestStep(ctx, accProvider, t),
@@ -374,7 +374,7 @@ func TestAccDatadogSyntheticsSSLMissingTagsAttributeTest_Basic(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsSSLMissingTagsAttributeTestStep(ctx, accProvider, t),
@@ -389,7 +389,7 @@ func TestAccDatadogSyntheticsTCPTest_Basic(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsTCPTestStep(ctx, accProvider, t),
@@ -404,7 +404,7 @@ func TestAccDatadogSyntheticsTCPTest_Updated(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsTCPTestStep(ctx, accProvider, t),
@@ -420,7 +420,7 @@ func TestAccDatadogSyntheticsDNSTest_Basic(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsDNSTestStep(ctx, accProvider, t),
@@ -435,7 +435,7 @@ func TestAccDatadogSyntheticsDNSTest_Updated(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsDNSTestStep(ctx, accProvider, t),
@@ -451,7 +451,7 @@ func TestAccDatadogSyntheticsICMPTest_Basic(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsICMPTestStep(ctx, accProvider, t),
@@ -466,7 +466,7 @@ func TestAccDatadogSyntheticsUDPTest_Basic(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsUDPTestStep(ctx, accProvider, t),
@@ -481,7 +481,7 @@ func TestAccDatadogSyntheticsWebsocketTest_Basic(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsWebsocketTestStep(ctx, accProvider, t),
@@ -496,7 +496,7 @@ func TestAccDatadogSyntheticsWebsocketTest_Base64Message(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsWebsocketBase64TestStep(ctx, accProvider, t),
@@ -511,7 +511,7 @@ func TestAccDatadogSyntheticsGRPCTest_Basic(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsGRPCTestStep(ctx, accProvider, t),
@@ -527,7 +527,7 @@ func TestAccDatadogSyntheticsBrowserTest_Basic(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsBrowserTestStep(ctx, accProvider, t),
@@ -542,7 +542,7 @@ func TestAccDatadogSyntheticsBrowserTest_NoSteps(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsBrowserTestWithoutStepsStep(ctx, accProvider, t),
@@ -558,7 +558,7 @@ func TestAccDatadogSyntheticsBrowserTest_EmptyLocations(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			{
@@ -576,7 +576,7 @@ func TestAccDatadogSyntheticsBrowserTest_Updated(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsBrowserTestStep(ctx, accProvider, t),
@@ -592,7 +592,7 @@ func TestAccDatadogSyntheticsBrowserTest_UpdatedWithoutSteps(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsBrowserTestStep(ctx, accProvider, t),
@@ -608,7 +608,7 @@ func TestAccDatadogSyntheticsMobileTest_Basic(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsMobileTestStep(ctx, accProvider, t),
@@ -623,7 +623,7 @@ func TestAccDatadogSyntheticsMobileTest_NoSteps(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsMobileTestWithoutStepsStep(ctx, accProvider, t),
@@ -638,7 +638,7 @@ func TestAccDatadogSyntheticsMobileTest_Updated(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsMobileTestStep(ctx, accProvider, t),
@@ -654,7 +654,7 @@ func TestAccDatadogSyntheticsMobileTest_UpdatedWithoutSteps(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsMobileTestStep(ctx, accProvider, t),
@@ -670,7 +670,7 @@ func TestAccDatadogSyntheticsBrowserTest_Updated_RumSettings(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsBrowserTestStep(ctx, accProvider, t),
@@ -687,7 +687,7 @@ func TestAccDatadogSyntheticsBrowserTestBrowserVariables_Basic(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsBrowserTestBrowserVariablesStep(ctx, accProvider, t),
@@ -703,7 +703,7 @@ func TestAccDatadogSyntheticsBrowserTestBrowserNewBrowserStep_Basic(t *testing.T
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsBrowserTestStepNewBrowserStep(ctx, accProvider, t, testName),
@@ -719,7 +719,7 @@ func TestAccDatadogSyntheticsTestBrowserMML_Basic(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsBrowserTestStepMML(ctx, accProvider, t, testName),
@@ -738,7 +738,7 @@ func TestAccDatadogSyntheticsTestBrowserUserLocator_Basic(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsBrowserTestStepUserLocator(ctx, accProvider, t, testName),
@@ -754,7 +754,7 @@ func TestAccDatadogSyntheticsTestBrowserUserLocator_NoElement(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsBrowserTestStepUserLocatorNoElement(ctx, accProvider, t, testName),
@@ -770,7 +770,7 @@ func TestAccDatadogSyntheticsTestMultistepApi_Basic(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsMultistepAPITest(ctx, accProvider, fwProvider, t),
@@ -794,7 +794,7 @@ func TestAccDatadogSyntheticsTestMultistepApi_FileUpload(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsMultistepAPITestFileUpload(ctx, accProvider, t, testName, filesCreation, &previousBucketKey, true),
@@ -811,7 +811,7 @@ func TestAccDatadogSyntheticsTestMultistepApi_AllSubtypes(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsMultistepAPITestAllStepSubtypes(ctx, accProvider, t),
@@ -857,7 +857,7 @@ func TestAccDatadogSyntheticsBrowser_UpdateStepsWithLocalML(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsBrowserTestWithMultipleStepsWithLocalMLStep(ctx, accProvider, t, testName, stepsCreatedStr),
@@ -1010,7 +1010,7 @@ func TestAccDatadogSyntheticsBrowser_UpdateStepsWithRemoteML(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsBrowserTestWithMultipleStepsWithRemoteMLStep(ctx, accProvider, t, testName, stepsCreatedStr),

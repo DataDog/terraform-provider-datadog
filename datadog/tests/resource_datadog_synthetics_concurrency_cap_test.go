@@ -12,7 +12,7 @@ func TestAccDatadogSyntheticsConcurrencyCap(t *testing.T) {
 	_, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
 				Config: `

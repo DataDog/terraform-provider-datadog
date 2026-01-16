@@ -23,7 +23,7 @@ func TestAccRumRetentionFilterImport(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogRumRetentionFilterDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -50,7 +50,7 @@ func TestAccRumRetentionFilterAttributes(t *testing.T) {
 	name2 := uniqueEntityName(ctx, t)
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogRumRetentionFilterDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{

@@ -1996,7 +1996,7 @@ func TestAccDatadogMonitor_WithRestrictionPolicy(t *testing.T) {
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniqueName := uniqueEntityName(ctx, t)
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		PreCheck:                 func() { testAccPreCheck(t) },
 		CheckDestroy:             testAccCheckDatadogMonitorWithRestrictionRoleDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{

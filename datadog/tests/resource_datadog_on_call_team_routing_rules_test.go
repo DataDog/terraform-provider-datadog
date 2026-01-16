@@ -37,7 +37,7 @@ func TestAccOnCallTeamRoutingRulesCreateAndUpdate(t *testing.T) {
 	}
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogOnCallTeamRoutingRulesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{

@@ -20,7 +20,7 @@ func TestAccDatadogAppKeyRegistrationResource(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogAppKeyRegistrationDestroy(providers.frameworkProvider, resourceName),
 		Steps: []resource.TestStep{
 			{

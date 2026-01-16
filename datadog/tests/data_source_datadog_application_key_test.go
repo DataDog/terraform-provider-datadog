@@ -19,7 +19,7 @@ import (
 // 	applicationKeyName := uniqueEntityName(ctx, t)
 // 	resource.Test(t, resource.TestCase{
 // 		PreCheck:                 func() { testAccPreCheck(t) },
-// 		ProtoV5ProviderFactories: accProviders,
+// 		ProtoV6ProviderFactories: accProviders,
 // 		CheckDestroy:             testAccCheckDatadogApplicationKeyDestroy(providers.frameworkProvider),
 // 		Steps: []resource.TestStep{
 // 			{
@@ -46,7 +46,7 @@ import (
 
 // 	resource.Test(t, resource.TestCase{
 // 		PreCheck:                 func() { testAccPreCheck(t) },
-// 		ProtoV5ProviderFactories: accProviders,
+// 		ProtoV6ProviderFactories: accProviders,
 // 		CheckDestroy:             testAccCheckDatadogApplicationKeyDestroy(providers.frameworkProvider),
 // 		Steps: []resource.TestStep{
 // 			{
@@ -83,7 +83,7 @@ import (
 
 // 	resource.Test(t, resource.TestCase{
 // 		PreCheck:                 func() { testAccPreCheck(t) },
-// 		ProtoV5ProviderFactories: accProviders,
+// 		ProtoV6ProviderFactories: accProviders,
 // 		CheckDestroy:             testAccCheckDatadogApplicationKeyDestroy(providers.frameworkProvider),
 // 		Steps: []resource.TestStep{
 // 			{
@@ -109,7 +109,7 @@ func TestAccDatadogApplicationKeyDatasource_matchIdError(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogApplicationKeyDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -130,7 +130,7 @@ func TestAccDatadogApplicationKeyDatasource_matchNameError(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogApplicationKeyDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -150,7 +150,7 @@ func TestAccDatadogApplicationKeyDatasource_missingParametersError(t *testing.T)
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogApplicationKeyDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{

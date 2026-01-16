@@ -23,7 +23,7 @@ func TestAccDatadogTagPipelineRulesets_Basic(t *testing.T) {
 			testAccPreCheck(t)
 			testAccCleanupOrphanedTagPipelineRulesets(t, providers.frameworkProvider)
 		},
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogTagPipelineRulesetsDestroy(ctx, providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -51,7 +51,7 @@ func TestAccDatadogTagPipelineRulesets_Update(t *testing.T) {
 			testAccPreCheck(t)
 			testAccCleanupOrphanedTagPipelineRulesets(t, providers.frameworkProvider)
 		},
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogTagPipelineRulesetsDestroy(ctx, providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -84,7 +84,7 @@ func TestAccDatadogTagPipelineRulesets_Import(t *testing.T) {
 			testAccPreCheck(t)
 			testAccCleanupOrphanedTagPipelineRulesets(t, providers.frameworkProvider)
 		},
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogTagPipelineRulesetsDestroy(ctx, providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -113,7 +113,7 @@ func TestAccDatadogTagPipelineRulesets_SingleRuleset(t *testing.T) {
 			testAccPreCheck(t)
 			testAccCleanupOrphanedTagPipelineRulesets(t, providers.frameworkProvider)
 		},
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogTagPipelineRulesetsDestroy(ctx, providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -138,7 +138,7 @@ func TestAccDatadogTagPipelineRulesets_OverrideTrue(t *testing.T) {
 			testAccPreCheck(t)
 			testAccCleanupOrphanedTagPipelineRulesets(t, providers.frameworkProvider)
 		},
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogTagPipelineRulesetsDestroy(ctx, providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -167,7 +167,7 @@ func TestAccDatadogTagPipelineRulesets_OverrideTrueDeletesUnmanaged(t *testing.T
 			testAccPreCheck(t)
 			// Don't cleanup - we want to create unmanaged rulesets first
 		},
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogTagPipelineRulesetsDestroy(ctx, providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			// First step: create unmanaged rulesets via Terraform resources (without the order resource)
@@ -206,7 +206,7 @@ func TestAccDatadogTagPipelineRulesets_OverrideFalseNoUnmanaged(t *testing.T) {
 			testAccPreCheck(t)
 			testAccCleanupOrphanedTagPipelineRulesets(t, providers.frameworkProvider)
 		},
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogTagPipelineRulesetsDestroy(ctx, providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -235,7 +235,7 @@ func TestAccDatadogTagPipelineRulesets_OverrideFalseUnmanagedInMiddle(t *testing
 			testAccPreCheck(t)
 			// Don't cleanup - we want to create unmanaged rulesets first
 		},
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogTagPipelineRulesetsDestroy(ctx, providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			// First step: create unmanaged rulesets
@@ -265,7 +265,7 @@ func TestAccDatadogTagPipelineRulesets_OverrideFalseUnmanagedAtEnd(t *testing.T)
 			testAccPreCheck(t)
 			// Don't cleanup - we want to create unmanaged rulesets first
 		},
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogTagPipelineRulesetsDestroy(ctx, providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			// First step: create managed rulesets first to establish order
