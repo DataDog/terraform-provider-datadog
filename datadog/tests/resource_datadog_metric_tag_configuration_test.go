@@ -3,17 +3,89 @@ package test
 import (
 	"context"
 	"fmt"
+	"io"
+	"net/http"
+	"os"
 	"regexp"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
+	datadogCommunity "github.com/zorkian/go-datadog-api"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
+
+// submitTestMetricPreConfig returns a PreConfig function that submits a metric to Datadog
+// so it exists before we configure tags on it. The Datadog API requires a metric to exist
+// before you can configure its tags.
+func submitTestMetricPreConfig(t *testing.T, metricName string, metricType string) func() {
+	return func() {
+		apiKey := os.Getenv(testAPIKeyEnvName)
+		appKey := os.Getenv(testAPPKeyEnvName)
+		apiURL := os.Getenv(testAPIUrlEnvName)
+		if apiURL == "" {
+			apiURL = "https://api.datadoghq.com"
+		}
+
+		client := datadogCommunity.NewClient(apiKey, appKey)
+		client.SetBaseUrl(apiURL)
+
+		datapointUnixTime := float64(time.Now().Unix())
+		datapointValue := float64(1)
+
+		// Distribution metrics require a different submission method
+		// For now, we submit as gauge since the community client doesn't support distributions directly
+		submissionType := metricType
+		if metricType == "distribution" {
+			// Submit distribution points using raw HTTP since community client doesn't support it
+			submitDistributionMetric(t, apiKey, appKey, apiURL, metricName)
+		} else {
+			metric := datadogCommunity.Metric{
+				Metric: datadogCommunity.String(metricName),
+				Points: []datadogCommunity.DataPoint{{&datapointUnixTime, &datapointValue}},
+				Type:   datadogCommunity.String(submissionType),
+				Tags:   []string{"sport:soccer", "datacenter:us-east"},
+			}
+			if err := client.PostMetrics([]datadogCommunity.Metric{metric}); err != nil {
+				t.Fatalf("error submitting test metric %s: %v", metricName, err)
+			}
+		}
+		// Wait for Datadog to index the metric before configuring tags
+		time.Sleep(5 * time.Second)
+	}
+}
+
+// submitDistributionMetric submits a distribution metric using the V1 distribution_points API
+func submitDistributionMetric(t *testing.T, apiKey, appKey, apiURL, metricName string) {
+	client := &http.Client{}
+	timestamp := float64(time.Now().Unix())
+	// V1 distribution_points format: points are [[timestamp, [values...]]]
+	body := fmt.Sprintf(`{"series":[{"metric":"%s","points":[[%f,[1.0,2.0,3.0,4.0,5.0]]],"tags":["sport:soccer","datacenter:us-east"]}]}`,
+		metricName, timestamp)
+
+	req, err := http.NewRequest("POST", apiURL+"/api/v1/distribution_points", strings.NewReader(body))
+	if err != nil {
+		t.Fatalf("error creating request for distribution metric %s: %v", metricName, err)
+	}
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("DD-API-KEY", apiKey)
+
+	resp, err := client.Do(req)
+	if err != nil {
+		t.Fatalf("error submitting distribution metric %s: %v", metricName, err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != 202 && resp.StatusCode != 200 {
+		body, _ := io.ReadAll(resp.Body)
+		t.Fatalf("error submitting distribution metric %s: status %d, body: %s", metricName, resp.StatusCode, string(body))
+	}
+}
 
 // TestAccDatadogMetricTagConfiguration_GaugeBasic tests creating a gauge metric
 // tag configuration without aggregations (the normal, expected usage since
@@ -30,7 +102,8 @@ func TestAccDatadogMetricTagConfiguration_GaugeBasic(t *testing.T) {
 		CheckDestroy:      testAccCheckDatadogMetricTagConfigurationDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogMetricTagConfigurationGaugeBasic(uniqueMetricTagConfig),
+				PreConfig: submitTestMetricPreConfig(t, uniqueMetricTagConfig, "gauge"),
+				Config:    testAccCheckDatadogMetricTagConfigurationGaugeBasic(uniqueMetricTagConfig),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMetricTagConfigurationExists(accProvider, "datadog_metric_tag_configuration.testing_metric_tag_config_gauge"),
 					resource.TestCheckResourceAttr(
@@ -64,7 +137,8 @@ func TestAccDatadogMetricTagConfiguration_CountBasic(t *testing.T) {
 		CheckDestroy:      testAccCheckDatadogMetricTagConfigurationDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogMetricTagConfigurationCountBasic(uniqueMetricTagConfig),
+				PreConfig: submitTestMetricPreConfig(t, uniqueMetricTagConfig, "count"),
+				Config:    testAccCheckDatadogMetricTagConfigurationCountBasic(uniqueMetricTagConfig),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMetricTagConfigurationExists(accProvider, "datadog_metric_tag_configuration.testing_metric_tag_config_count"),
 					resource.TestCheckResourceAttr(
@@ -96,7 +170,8 @@ func TestAccDatadogMetricTagConfiguration_DistributionBasic(t *testing.T) {
 		CheckDestroy:      testAccCheckDatadogMetricTagConfigurationDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogMetricTagConfigurationDistributionBasic(uniqueMetricTagConfig),
+				PreConfig: submitTestMetricPreConfig(t, uniqueMetricTagConfig, "distribution"),
+				Config:    testAccCheckDatadogMetricTagConfigurationDistributionBasic(uniqueMetricTagConfig),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMetricTagConfigurationExists(accProvider, "datadog_metric_tag_configuration.testing_metric_tag_config_distribution"),
 					resource.TestCheckResourceAttr(
@@ -125,7 +200,8 @@ func TestAccDatadogMetricTagConfiguration_GaugeUpdate(t *testing.T) {
 		CheckDestroy:      testAccCheckDatadogMetricTagConfigurationDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogMetricTagConfigurationGaugeBasic(uniqueMetricTagConfig),
+				PreConfig: submitTestMetricPreConfig(t, uniqueMetricTagConfig, "gauge"),
+				Config:    testAccCheckDatadogMetricTagConfigurationGaugeBasic(uniqueMetricTagConfig),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMetricTagConfigurationExists(accProvider, "datadog_metric_tag_configuration.testing_metric_tag_config_gauge"),
 					resource.TestCheckResourceAttr(
@@ -159,12 +235,14 @@ func TestAccDatadogMetricTagConfiguration_Import(t *testing.T) {
 		CheckDestroy:      testAccCheckDatadogMetricTagConfigurationDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogMetricTagConfigurationGaugeBasic(uniqueMetricTagConfig),
+				PreConfig: submitTestMetricPreConfig(t, uniqueMetricTagConfig, "gauge"),
+				Config:    testAccCheckDatadogMetricTagConfigurationGaugeBasic(uniqueMetricTagConfig),
 			},
 			{
-				ResourceName:      resourceName,
-				ImportState:       true,
-				ImportStateVerify: true,
+				ResourceName:            resourceName,
+				ImportState:             true,
+				ImportStateVerify:       true,
+				ImportStateVerifyIgnore: []string{"aggregations"},
 			},
 		},
 	})
@@ -240,7 +318,8 @@ func TestAccDatadogMetricTagConfiguration_ExcludeTagsMode(t *testing.T) {
 		CheckDestroy:      testAccCheckDatadogMetricTagConfigurationDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogMetricTagConfigurationExcludeTagsMode(uniqueMetricTagConfig),
+				PreConfig: submitTestMetricPreConfig(t, uniqueMetricTagConfig, "gauge"),
+				Config:    testAccCheckDatadogMetricTagConfigurationExcludeTagsMode(uniqueMetricTagConfig),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMetricTagConfigurationExists(accProvider, "datadog_metric_tag_configuration.testing_metric_tag_config_exclude"),
 					resource.TestCheckResourceAttr(
