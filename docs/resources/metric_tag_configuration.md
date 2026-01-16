@@ -27,15 +27,11 @@ resource "datadog_metric_tag_configuration" "example_count_metric" {
   metric_type       = "count"
   tags              = ["sport", "datacenter"]
   exclude_tags_mode = false
-  # DEPRECATED: aggregations is no longer supported by the Datadog API.
-  # Remove these blocks from your configuration.
+  # DEPRECATED: The aggregations field is no longer supported by the Datadog API.
+  # If present in your configuration, it will be ignored with a warning.
   # aggregations {
   #   time  = "avg"
-  #   space = "min"
-  # }
-  # aggregations {
-  #   time  = "avg"
-  #   space = "max"
+  #   space = "avg"
   # }
 }
 ```
@@ -51,7 +47,7 @@ resource "datadog_metric_tag_configuration" "example_count_metric" {
 
 ### Optional
 
-- `aggregations` (Block Set, Deprecated) **Deprecated.** This field is no longer supported by the Datadog API. Configuring this field will result in an error. This field will be removed in a future version of the provider. (see [below for nested schema](#nestedblock--aggregations))
+- `aggregations` (Block Set, Deprecated) A list of queryable aggregation combinations for a count, rate, or gauge metric. By default, count and rate metrics require the (time: sum, space: sum) aggregation and gauge metrics require the (time: avg, space: avg) aggregation. Can only be applied to metrics that have a `metric_type` of count, rate, or gauge. **Deprecated.** The 'aggregations' field is no longer supported by the Datadog API and will be ignored. This field will be removed in a future version of the provider. (see [below for nested schema](#nestedblock--aggregations))
 - `exclude_tags_mode` (Boolean) Toggle to include/exclude tags as queryable for your metric. Can only be applied to metrics that have one or more tags configured. Defaults to `false`.
 - `include_percentiles` (Boolean) Toggle to include/exclude percentiles for a distribution metric. Defaults to false. Can only be applied to metrics that have a `metric_type` of distribution.
 
