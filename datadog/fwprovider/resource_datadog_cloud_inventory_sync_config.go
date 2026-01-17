@@ -10,6 +10,8 @@ import (
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
@@ -176,18 +178,30 @@ func (r *cloudInventorySyncConfigResource) Schema(_ context.Context, _ resource.
 					"aws_account_id": schema.StringAttribute{
 						Optional:    true,
 						Description: "AWS Account ID of the account holding the bucket.",
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
 					},
 					"destination_bucket_name": schema.StringAttribute{
 						Optional:    true,
 						Description: "Name of the S3 bucket holding the inventory files.",
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
 					},
 					"destination_bucket_region": schema.StringAttribute{
 						Optional:    true,
 						Description: "AWS Region of the bucket holding the inventory files.",
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
 					},
 					"destination_prefix": schema.StringAttribute{
 						Optional:    true,
 						Description: "Prefix path within the bucket for inventory files.",
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
 					},
 				},
 			},
