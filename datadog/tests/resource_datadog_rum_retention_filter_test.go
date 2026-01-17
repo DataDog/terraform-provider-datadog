@@ -43,6 +43,37 @@ func TestAccRumRetentionFilterImport(t *testing.T) {
 	})
 }
 
+func TestAccRumRetentionFilterDecimalSampleRate(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	name := uniqueEntityName(ctx, t)
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogRumRetentionFilterDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: withDecimalSampleRateDatadogRumRetentionFilter(name),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogRumRetentionFilterExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(
+						"datadog_rum_retention_filter.testing_rum_retention_filter", "application_id", RumRetentionFilterResourceTestAppId),
+					resource.TestCheckResourceAttr(
+						"datadog_rum_retention_filter.testing_rum_retention_filter", "name", name),
+					resource.TestCheckResourceAttr(
+						"datadog_rum_retention_filter.testing_rum_retention_filter", "event_type", "session"),
+					resource.TestCheckResourceAttr(
+						"datadog_rum_retention_filter.testing_rum_retention_filter", "sample_rate", "50.5"),
+					resource.TestCheckResourceAttr(
+						"datadog_rum_retention_filter.testing_rum_retention_filter", "query", "custom_query"),
+					resource.TestCheckResourceAttr(
+						"datadog_rum_retention_filter.testing_rum_retention_filter", "enabled", "true"),
+				),
+			},
+		},
+	})
+}
+
 func TestAccRumRetentionFilterAttributes(t *testing.T) {
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
@@ -182,6 +213,18 @@ func withEnabledDatadogRumRetentionFilter(name string) string {
 		enabled = false
 	}
 
+	`, RumRetentionFilterResourceTestAppId, name)
+}
+
+func withDecimalSampleRateDatadogRumRetentionFilter(name string) string {
+	return fmt.Sprintf(`resource "datadog_rum_retention_filter" "testing_rum_retention_filter" {
+		application_id = %q
+		name = %q
+	    event_type = "session"
+		sample_rate = 50.5
+		query = "custom_query"
+		enabled = true
+	}
 	`, RumRetentionFilterResourceTestAppId, name)
 }
 
