@@ -29,6 +29,7 @@ resource "datadog_api_key" "foo" {
 ### Optional
 
 - `remote_config_read_enabled` (Boolean) Whether the API key is used for remote config. Set to true only if remote config is enabled in `/organization-settings/remote-config`.
+- `store_key` (Boolean) Whether to store the API key value in Terraform state. Set to `false` to avoid storing the key in state for security purposes. Defaults to `true` for backwards compatibility. When set to `false`, the `key` attribute will be empty. Defaults to `true`.
 
 ### Read-Only
 
