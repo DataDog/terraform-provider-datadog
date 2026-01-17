@@ -3,12 +3,15 @@ package test
 import (
 	"context"
 	"fmt"
+	"strings"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
+	"github.com/hashicorp/terraform-plugin-testing/tfversion"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/secretbridge"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
@@ -33,6 +36,7 @@ func TestAccDatadogApiKey_Update(t *testing.T) {
 					testAccCheckDatadogApiKeyExists(providers.frameworkProvider, resourceName),
 					resource.TestCheckResourceAttr(resourceName, "name", apiKeyName),
 					resource.TestCheckResourceAttrSet(resourceName, "key"),
+					resource.TestCheckNoResourceAttr(resourceName, "encrypted_key"),
 					resource.TestCheckResourceAttr(resourceName, "remote_config_read_enabled", "true"),
 					func(s *terraform.State) error {
 						resource, ok := s.RootModule().Resources[resourceName]
@@ -184,4 +188,151 @@ func datadogApiKeyDestroyHelper(ctx context.Context, s *terraform.State, apiInst
 
 func Ptr[T any](v T) *T {
 	return &v
+}
+
+// TestAccDatadogApiKey_WithEncryption tests that when encryption_key_wo is provided,
+// the API key is encrypted and stored in encrypted_key, while key remains null.
+func TestAccDatadogApiKey_WithEncryption(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	apiKeyName := uniqueEntityName(ctx, t)
+	resourceName := "datadog_api_key.foo"
+	// 32-byte key for AES-256
+	encryptionKey := "01234567890123456789012345678901"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogApiKeyDestroy(providers.frameworkProvider),
+		// Write-only attributes require Terraform 1.11+
+		TerraformVersionChecks: []tfversion.TerraformVersionCheck{
+			tfversion.SkipBelow(tfversion.Version1_11_0),
+		},
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogApiKeyConfigWithEncryption(apiKeyName, encryptionKey),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogApiKeyExists(providers.frameworkProvider, resourceName),
+					resource.TestCheckResourceAttr(resourceName, "name", apiKeyName),
+					// When encryption is enabled, key should be null and encrypted_key should be set
+					resource.TestCheckNoResourceAttr(resourceName, "key"),
+					resource.TestCheckResourceAttrSet(resourceName, "encrypted_key"),
+					// Verify the encrypted_key can be decrypted
+					testAccCheckDatadogApiKeyEncryptedKeyValid(resourceName, encryptionKey),
+				),
+			},
+		},
+	})
+}
+
+func testAccCheckDatadogApiKeyConfigWithEncryption(name, encryptionKey string) string {
+	return fmt.Sprintf(`
+resource "datadog_api_key" "foo" {
+  name              = "%s"
+  encryption_key_wo = "%s"
+}`, name, encryptionKey)
+}
+
+// testAccCheckDatadogApiKeyEncryptedKeyValid verifies that the encrypted_key attribute
+// contains valid ciphertext that can be decrypted with the provided key.
+func testAccCheckDatadogApiKeyEncryptedKeyValid(resourceName, encryptionKey string) resource.TestCheckFunc {
+	return func(s *terraform.State) error {
+		rs, ok := s.RootModule().Resources[resourceName]
+		if !ok {
+			return fmt.Errorf("resource not found: %s", resourceName)
+		}
+
+		encryptedKey := rs.Primary.Attributes["encrypted_key"]
+		if encryptedKey == "" {
+			return fmt.Errorf("encrypted_key is empty")
+		}
+
+		// Verify the ciphertext is valid JSON (secretbridge format)
+		if !strings.HasPrefix(encryptedKey, "{") {
+			return fmt.Errorf("encrypted_key doesn't look like valid secretbridge ciphertext")
+		}
+
+		// Decrypt and verify we get a non-empty result
+		plaintext, diags := secretbridge.Decrypt(context.Background(), encryptedKey, []byte(encryptionKey))
+		if diags.HasError() {
+			return fmt.Errorf("failed to decrypt encrypted_key: %v", diags.Errors())
+		}
+
+		if plaintext == "" {
+			return fmt.Errorf("decrypted key is empty")
+		}
+
+		return nil
+	}
+}
+
+func TestAccDatadogApiKey_AddEncryption(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	apiKeyName := uniqueEntityName(ctx, t)
+	resourceName := "datadog_api_key.foo"
+	encryptionKey := "01234567890123456789012345678901"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogApiKeyDestroy(providers.frameworkProvider),
+		// Write-only attributes require Terraform 1.11+
+		TerraformVersionChecks: []tfversion.TerraformVersionCheck{
+			tfversion.SkipBelow(tfversion.Version1_11_0),
+		},
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogApiKeyConfigRequired(apiKeyName, nil),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogApiKeyExists(providers.frameworkProvider, resourceName),
+					resource.TestCheckResourceAttrSet(resourceName, "key"),
+					resource.TestCheckNoResourceAttr(resourceName, "encrypted_key"),
+				),
+			},
+			{
+				Config: testAccCheckDatadogApiKeyConfigWithEncryption(apiKeyName, encryptionKey),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogApiKeyExists(providers.frameworkProvider, resourceName),
+					resource.TestCheckNoResourceAttr(resourceName, "key"),
+					resource.TestCheckResourceAttrSet(resourceName, "encrypted_key"),
+					testAccCheckDatadogApiKeyEncryptedKeyValid(resourceName, encryptionKey),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogApiKey_RemoveEncryption(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	apiKeyName := uniqueEntityName(ctx, t)
+	resourceName := "datadog_api_key.foo"
+	encryptionKey := "01234567890123456789012345678901"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogApiKeyDestroy(providers.frameworkProvider),
+		// Write-only attributes require Terraform 1.11+
+		TerraformVersionChecks: []tfversion.TerraformVersionCheck{
+			tfversion.SkipBelow(tfversion.Version1_11_0),
+		},
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogApiKeyConfigWithEncryption(apiKeyName, encryptionKey),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogApiKeyExists(providers.frameworkProvider, resourceName),
+					resource.TestCheckNoResourceAttr(resourceName, "key"),
+					resource.TestCheckResourceAttrSet(resourceName, "encrypted_key"),
+				),
+			},
+			{
+				Config: testAccCheckDatadogApiKeyConfigRequired(apiKeyName, nil),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogApiKeyExists(providers.frameworkProvider, resourceName),
+					// After removing encryption, both key fields are null
+					resource.TestCheckNoResourceAttr(resourceName, "key"),
+					resource.TestCheckNoResourceAttr(resourceName, "encrypted_key"),
+				),
+			},
+		},
+	})
 }

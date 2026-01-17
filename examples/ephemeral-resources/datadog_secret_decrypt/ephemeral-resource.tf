@@ -1,10 +1,6 @@
-# Create a new Datadog API Key
-resource "datadog_api_key" "foo" {
-  name = "foo-application"
-}
-
-# Create an API Key with encryption for secure secret management
+# Decrypt an encrypted API key for use with a secret manager
 # Requires Terraform 1.11+
+
 variable "encryption_key" {
   type = string
 }
