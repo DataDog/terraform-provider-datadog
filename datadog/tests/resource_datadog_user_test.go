@@ -368,9 +368,10 @@ func testAccCheckDatadogUserConfigRoleUpdate1(uniq string) string {
 	return fmt.Sprintf(`%s
 
 resource "datadog_user" "foo" {
-  email     = "%s"
-  name      = "Test User"
-  roles     = [data.datadog_role.ro_role.id, data.datadog_role.st_role.id]
+  email                 = "%s"
+  name                  = "Test User"
+  roles                 = [data.datadog_role.ro_role.id, data.datadog_role.st_role.id]
+  send_user_invitation  = false
 }`, roleDatasources, uniq)
 }
 
@@ -378,9 +379,10 @@ func testAccCheckDatadogUserConfigRoleUpdate2(uniq string) string {
 	return fmt.Sprintf(`%s
 
 resource "datadog_user" "foo" {
-  email     = "%s"
-  name      = "Test User"
-  roles     = [data.datadog_role.st_role.id, data.datadog_role.adm_role.id]
+  email                 = "%s"
+  name                  = "Test User"
+  roles                 = [data.datadog_role.st_role.id, data.datadog_role.adm_role.id]
+  send_user_invitation  = false
 }`, roleDatasources, uniq)
 }
 
