@@ -167,6 +167,7 @@ var Datasources = []func() datasource.DataSource{
 	NewDatadogAzureUcConfigDataSource,
 	NewDatadogReferenceTableDataSource,
 	NewDatadogReferenceTableRowsDataSource,
+	NewOrganizationSettingsDataSource,
 }
 
 // FrameworkProvider struct

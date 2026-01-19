@@ -87,6 +87,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/data_source_datadog_metrics_test":                                             "metrics",
 	"tests/data_source_datadog_monitor_test":                                             "monitors",
 	"tests/data_source_datadog_monitors_test":                                            "monitors",
+	"tests/data_source_datadog_organization_settings_test":                               "organization",
 	"tests/data_source_datadog_permissions_test":                                         "permissions",
 	"tests/data_source_datadog_powerpack_test":                                           "powerpacks",
 	"tests/data_source_datadog_reference_table_test":                                     "reference-tables",
