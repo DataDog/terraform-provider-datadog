@@ -29,7 +29,7 @@ resource "datadog_integration_aws" "account" {
   	host_tags                        = ["key:value", "key2:value2"]
   	account_specific_namespace_rules = {
     	    auto_scaling = false
-    	    opsworks = true
+    	    lambda = true
   	}
   	excluded_regions                 = ["us-east-1", "us-west-2"]
 	metrics_collection_enabled       = false
@@ -95,7 +95,7 @@ func TestAccDatadogIntegrationAWS(t *testing.T) {
 						"account_specific_namespace_rules.auto_scaling", "false"),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_aws.account",
-						"account_specific_namespace_rules.opsworks", "true"),
+						"account_specific_namespace_rules.lambda", "true"),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_aws.account",
 						"excluded_regions.0", "us-east-1"),
@@ -172,7 +172,7 @@ resource "datadog_integration_aws" "account_access_key" {
   	host_tags                        = ["key:value", "key2:value2"]
   	account_specific_namespace_rules = {
     	    auto_scaling = false
-    	    opsworks = true
+    	    lambda = true
   	}
   	excluded_regions                 = ["us-east-1", "us-west-2"]
 }`, account_id, access_key_id)
@@ -227,7 +227,7 @@ func TestAccDatadogIntegrationAWSAccessKey(t *testing.T) {
 						"account_specific_namespace_rules.auto_scaling", "false"),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_aws.account_access_key",
-						"account_specific_namespace_rules.opsworks", "true"),
+						"account_specific_namespace_rules.lambda", "true"),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_aws.account_access_key",
 						"excluded_regions.0", "us-east-1"),
