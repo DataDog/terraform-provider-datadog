@@ -3,6 +3,7 @@ package test
 import (
 	"context"
 	"fmt"
+	"regexp"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
@@ -4150,6 +4151,70 @@ resource "datadog_observability_pipeline" "socket_dest" {
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.socket.0.tls.0.ca_file", "/etc/ssl/certs/ca.crt"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.socket.0.tls.0.key_file", "/etc/ssl/private/socket.key"),
 				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogObservabilityPipeline_socketSource_framingValidation(t *testing.T) {
+	_, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "socket_no_framing" {
+  name = "socket-pipeline-no-framing"
+
+  config {
+    source {
+      id = "socket-source-1"
+      socket {
+        mode = "tcp"
+      }
+    }
+
+    destination {
+      id     = "destination-1"
+      inputs = ["socket-source-1"]
+      datadog_logs {
+      }
+    }
+  }
+}`,
+				ExpectError: regexp.MustCompile(`The 'framing' block is required for socket source`),
+			},
+			{
+				Config: `
+resource "datadog_observability_pipeline" "socket_invalid_framing" {
+  name = "socket-pipeline-invalid-framing"
+
+  config {
+    source {
+      id = "socket-source-1"
+      socket {
+        mode = "tcp"
+
+        framing {
+          method = "newline_delimited"
+
+          character_delimited {
+            delimiter = ","
+          }
+        }
+      }
+    }
+
+    destination {
+      id     = "destination-1"
+      inputs = ["socket-source-1"]
+      datadog_logs {
+      }
+    }
+  }
+}`,
+				ExpectError: regexp.MustCompile(`The 'character_delimited' block must not be specified`),
 			},
 		},
 	})

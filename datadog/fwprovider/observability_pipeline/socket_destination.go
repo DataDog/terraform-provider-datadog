@@ -6,6 +6,7 @@ import (
 	datadogV2 "github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -20,7 +21,8 @@ type SocketDestinationModel struct {
 }
 
 // ExpandSocketDestination converts the Terraform model to the Datadog API model
-func ExpandSocketDestination(ctx context.Context, id string, inputs types.List, src *SocketDestinationModel) datadogV2.ObservabilityPipelineConfigDestinationItem {
+func ExpandSocketDestination(ctx context.Context, id string, inputs types.List, src *SocketDestinationModel) (datadogV2.ObservabilityPipelineConfigDestinationItem, diag.Diagnostics) {
+	var diags diag.Diagnostics
 	s := datadogV2.NewObservabilityPipelineSocketDestinationWithDefaults()
 	s.SetId(id)
 
@@ -30,6 +32,11 @@ func ExpandSocketDestination(ctx context.Context, id string, inputs types.List, 
 
 	s.SetMode(datadogV2.ObservabilityPipelineSocketDestinationMode(src.Mode.ValueString()))
 	s.SetEncoding(datadogV2.ObservabilityPipelineSocketDestinationEncoding(src.Encoding.ValueString()))
+
+	if len(src.Framing) == 0 {
+		diags.AddError("Missing required block", "The 'framing' block is required for socket destination")
+		return datadogV2.ObservabilityPipelineConfigDestinationItem{}, diags
+	}
 
 	switch src.Framing[0].Method.ValueString() {
 	case "newline_delimited":
@@ -45,11 +52,14 @@ func ExpandSocketDestination(ctx context.Context, id string, inputs types.List, 
 			},
 		}
 	case "character_delimited":
+		charDelimited := &datadogV2.ObservabilityPipelineSocketDestinationFramingCharacterDelimited{
+			Method: "character_delimited",
+		}
+		if len(src.Framing[0].CharacterDelimited) > 0 {
+			charDelimited.Delimiter = src.Framing[0].CharacterDelimited[0].Delimiter.ValueString()
+		}
 		s.Framing = datadogV2.ObservabilityPipelineSocketDestinationFraming{
-			ObservabilityPipelineSocketDestinationFramingCharacterDelimited: &datadogV2.ObservabilityPipelineSocketDestinationFramingCharacterDelimited{
-				Method:    "character_delimited",
-				Delimiter: src.Framing[0].CharacterDelimited[0].Delimiter.ValueString(),
-			},
+			ObservabilityPipelineSocketDestinationFramingCharacterDelimited: charDelimited,
 		}
 	}
 
@@ -59,7 +69,7 @@ func ExpandSocketDestination(ctx context.Context, id string, inputs types.List, 
 
 	return datadogV2.ObservabilityPipelineConfigDestinationItem{
 		ObservabilityPipelineSocketDestination: s,
-	}
+	}, diags
 }
 
 // FlattenSocketDestination converts the Datadog API model to the Terraform model
@@ -147,6 +157,9 @@ func SocketDestinationSchema() schema.ListNestedBlock {
 									listvalidator.SizeAtMost(1),
 								},
 							},
+						},
+						Validators: []validator.Object{
+							SocketFramingValidator{},
 						},
 					},
 					Validators: []validator.List{

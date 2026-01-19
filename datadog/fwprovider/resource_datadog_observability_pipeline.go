@@ -2520,7 +2520,12 @@ func expandPipeline(ctx context.Context, state *observabilityPipelineModel) (*da
 			config.Sources = append(config.Sources, expandLogstashSource(l, sourceId))
 		}
 		for _, s := range sourceBlock.SocketSource {
-			config.Sources = append(config.Sources, observability_pipeline.ExpandSocketSource(s, sourceId))
+			item, d := observability_pipeline.ExpandSocketSource(s, sourceId)
+			diags.Append(d...)
+			if d.HasError() {
+				return nil, diags
+			}
+			config.Sources = append(config.Sources, item)
 		}
 		for _, o := range sourceBlock.OpentelemetrySource {
 			config.Sources = append(config.Sources, observability_pipeline.ExpandOpentelemetrySource(o, sourceId))
@@ -2587,7 +2592,12 @@ func expandPipeline(ctx context.Context, state *observabilityPipelineModel) (*da
 			config.Destinations = append(config.Destinations, expandAmazonOpenSearchDestination(ctx, dest, d))
 		}
 		for _, d := range dest.SocketDestination {
-			config.Destinations = append(config.Destinations, observability_pipeline.ExpandSocketDestination(ctx, dest.Id.ValueString(), dest.Inputs, d))
+			item, socketDiags := observability_pipeline.ExpandSocketDestination(ctx, dest.Id.ValueString(), dest.Inputs, d)
+			diags.Append(socketDiags...)
+			if socketDiags.HasError() {
+				return nil, diags
+			}
+			config.Destinations = append(config.Destinations, item)
 		}
 		for _, d := range dest.AmazonS3Destination {
 			config.Destinations = append(config.Destinations, observability_pipeline.ExpandAmazonS3Destination(ctx, dest.Id.ValueString(), dest.Inputs, d))
