@@ -56,6 +56,7 @@ data "datadog_team_memberships" "foo" {
 
 resource "datadog_user" "foo" {
 	email = "%s@example.com"
+	send_user_invitation = false
 }
 
 resource "datadog_team" "foo" {
@@ -84,11 +85,13 @@ data "datadog_team_memberships" "foo" {
 resource "datadog_user" "foo" {
 	email = "%[1]s@example.com"
 	name  = "Foo BarBar"
+	send_user_invitation = false
 }
 
 resource "datadog_user" "bar" {
 	email = "%[1]s1@example.com"
 	name  = "Foo Bar"
+	send_user_invitation = false
 }
 
 resource "datadog_team" "foo" {
