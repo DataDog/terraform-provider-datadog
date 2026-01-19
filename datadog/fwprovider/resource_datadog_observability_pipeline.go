@@ -2015,7 +2015,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 													Description: "If `true`, Splunk tries to extract timestamps from incoming log events.",
 												},
 												"encoding": schema.StringAttribute{
-													Optional:    true,
+													Required:    true,
 													Description: "Encoding format for log events. Valid values: `json`, `raw_message`.",
 												},
 												"sourcetype": schema.StringAttribute{
@@ -4720,8 +4720,13 @@ func flattenSplunkHecDestination(ctx context.Context, src *datadogV2.Observabili
 		return nil
 	}
 
+	autoExtractTimestamp := types.BoolNull()
+	if src.HasAutoExtractTimestamp() {
+		autoExtractTimestamp = types.BoolValue(src.GetAutoExtractTimestamp())
+	}
+
 	return &splunkHecDestinationModel{
-		AutoExtractTimestamp: types.BoolValue(src.GetAutoExtractTimestamp()),
+		AutoExtractTimestamp: autoExtractTimestamp,
 		Encoding:             types.StringValue(string(*src.Encoding)),
 		Sourcetype:           types.StringPointerValue(src.Sourcetype),
 		Index:                types.StringPointerValue(src.Index),
