@@ -117,7 +117,7 @@ func resourceDatadogSecurityMonitoringDefaultRule() *schema.Resource {
 							},
 							"data_source": {
 								Type:             schema.TypeString,
-								ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewSecurityMonitoringStandardDataSourceFromValue),
+								ValidateDiagFunc: validators.ValidateSecurityMonitoringDataSource(validators.ValidateEnumValue(datadogV2.NewSecurityMonitoringStandardDataSourceFromValue)),
 								Optional:         true,
 								Computed:         true,
 								Description:      "Source of events.",
