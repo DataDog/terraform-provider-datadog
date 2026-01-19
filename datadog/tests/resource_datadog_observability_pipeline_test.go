@@ -1983,8 +1983,31 @@ resource "datadog_observability_pipeline" "sds" {
           }
 
           rule {
-            name = "Partial Default Scope No Tags"
+            name = "Partial Default Scope Empty Tags"
             tags = []
+
+            pattern {
+              custom {
+                rule = "user\\d{3,}"
+              }
+            }
+
+            scope {
+              include {
+                fields = ["this_field_only"]
+              }
+            }
+
+            on_match {
+              partial_redact {
+                characters = 3
+                direction  = "first"
+              }
+            }
+          }
+
+          rule {
+            name = "Partial Default Scope No Tags"
 
             pattern {
               custom {
