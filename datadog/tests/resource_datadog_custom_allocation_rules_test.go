@@ -1060,6 +1060,19 @@ resource "datadog_custom_allocation_rule" "unmanaged_second" {
     granularity = "daily"
     method      = "even"
   }
+}
+
+# Use order resource with override=true to explicitly place unmanaged rules in the middle
+# This sets up the test scenario properly for Step 2
+resource "datadog_custom_allocation_rules" "initial_order" {
+  override_ui_defined_resources = true
+  rule_ids = [
+    datadog_custom_allocation_rule.first.id,
+    datadog_custom_allocation_rule.unmanaged_first.id,
+    datadog_custom_allocation_rule.second.id,
+    datadog_custom_allocation_rule.unmanaged_second.id,
+    datadog_custom_allocation_rule.third.id,
+  ]
 }`, uniq, uniq, uniq, uniq, uniq)
 }
 
