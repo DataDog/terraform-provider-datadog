@@ -1102,6 +1102,10 @@ Required:
 
 - `percentage` (Number) The percentage of logs to sample.
 
+Optional:
+
+- `group_by` (List of String) Optional list of fields to group events by. Each group is sampled independently.
+
 
 <a id="nestedblock--config--processor_group--processor--sensitive_data_scanner"></a>
 ### Nested Schema for `config.processor_group.processor.sensitive_data_scanner`

@@ -392,7 +392,8 @@ type grokRuleModel struct {
 }
 
 type sampleProcessorModel struct {
-	Percentage types.Float64 `tfsdk:"percentage"`
+	Percentage types.Float64  `tfsdk:"percentage"`
+	GroupBy    []types.String `tfsdk:"group_by"`
 }
 
 type fluentdSourceModel struct {
@@ -1532,6 +1533,11 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 															"percentage": schema.Float64Attribute{
 																Required:    true,
 																Description: "The percentage of logs to sample.",
+															},
+															"group_by": schema.ListAttribute{
+																Optional:    true,
+																ElementType: types.StringType,
+																Description: "Optional list of fields to group events by. Each group is sampled independently.",
 															},
 														},
 													},
@@ -3500,6 +3506,12 @@ func flattenSampleProcessor(ctx context.Context, src *datadogV2.ObservabilityPip
 	if percentage, ok := src.GetPercentageOk(); ok {
 		sample.Percentage = types.Float64PointerValue(percentage)
 	}
+	// Use nil slice for optional fields - only populate if non-empty to preserve null in state
+	var groupBy []types.String
+	for _, g := range src.GetGroupBy() {
+		groupBy = append(groupBy, types.StringValue(g))
+	}
+	sample.GroupBy = groupBy
 	model.SampleProcessor = append(model.SampleProcessor, sample)
 	return model
 }
@@ -3981,6 +3993,15 @@ func expandSampleProcessorItem(ctx context.Context, common observability_pipelin
 
 	if !src.Percentage.IsNull() {
 		proc.SetPercentage(src.Percentage.ValueFloat64())
+	}
+
+	// Only set group_by if there are values
+	var groupBy []string
+	for _, g := range src.GroupBy {
+		groupBy = append(groupBy, g.ValueString())
+	}
+	if len(groupBy) > 0 {
+		proc.SetGroupBy(groupBy)
 	}
 
 	return datadogV2.ObservabilityPipelineSampleProcessorAsObservabilityPipelineConfigProcessorItem(proc)
