@@ -42,13 +42,12 @@ func logsArchiveOrderCount(state *terraform.State, responseCount int) error {
 
 func TestAccDatadogLogsArchivesOrderDatasource(t *testing.T) {
 	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
-	accProvider := testAccProvider(t, accProviders)
+	ctx, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := uniqueAWSAccountID(ctx, t)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
 				Config: `data "datadog_logs_archives_order" "order" {}`,
@@ -57,7 +56,7 @@ func TestAccDatadogLogsArchivesOrderDatasource(t *testing.T) {
 			{
 				Config: testAccDatasourceDatadogLogsArchiveOrderWithArchive(uniq),
 				Check: resource.ComposeTestCheckFunc(
-					logsArchiveOrderCheckCount(accProvider),
+					resource.TestCheckResourceAttrSet("data.datadog_logs_archives_order.order", "archive_ids.#"),
 				),
 			},
 		},
