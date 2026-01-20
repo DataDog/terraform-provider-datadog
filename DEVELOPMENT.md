@@ -21,6 +21,35 @@ Terraform provides helpful [Extending Terraform][1] documentation for best pract
   - One that will have a singular name (ex: `datadog_user`) which returns exactly one objects (and fails if there is 0 or more than 0)
   - One that will have a plural name (ex: `datadog_users`) which returns a list of objects and succeed in all cases (0, 1 or more than 1 objects)
 
+### Ephemeral Resources and Secrets
+
+#### When to Use Ephemerals
+
+Use ephemeral resources when a value should:
+- Never be stored in Terraform state
+- Be available only during apply
+- Be passed to other ephemeral-aware resources
+- Can be returned by the API outside of the initial resource creation (unlike one-time-read secrets)
+
+See [Terraform Ephemeral Resources][17] for concepts.
+
+#### SecretBridge Pattern
+
+For resources that receive sensitive computed values from APIs (like `datadog_api_key`) and can return these values only on creation (one-time-read), use the secretbridge library to encrypt-on-create:
+
+1. Add `encryption_key_wo` attribute using `secretbridge.EncryptionKeyAttribute()`
+2. On Create, encrypt the API response using `secretbridge.Encrypt()`
+3. Store encrypted value in `encrypted_<value_argument_name>`, set plaintext to null
+4. Users decrypt via `datadog_secret_decrypt` ephemeral resource
+
+See [secretbridge/README.md][18] for API details.
+
+#### Important Constraints
+
+- **Transit only**: Encrypted values are for one-time transfer to secret managers
+- **No key rotation**: Encryption algorithm may change without notice
+- **Terraform 1.11+**: Required for write-only attributes
+
 ## Makefile
 
 The root of this project contains a `GNUmakefile` with the purpose of making each development step easier. While some commands are outlined here, please see [GNUmakefile][5] for all available commands.
@@ -140,3 +169,5 @@ It needs one changelog label (among `improvement`, `feature`, `bugfix`, `note` a
 [14]: https://developer.hashicorp.com/terraform/plugin/framework/handling-data/attributes#nested-attribute-types
 [15]: https://developer.hashicorp.com/terraform/plugin/framework/handling-data/blocks
 [16]: https://developer.hashicorp.com/terraform/plugin/framework/handling-data/attributes/object
+[17]: https://developer.hashicorp.com/terraform/language/resources/ephemeral
+[18]: datadog/internal/secretbridge/README.md

@@ -1,6 +1,6 @@
 # SecretBridge
 
-Encrypts computed secrets (API keys, app keys) for secure transfer to secret managers.
+Encrypts computed secrets for secure transfer to secret managers.
 
 ## Problem
 
@@ -25,7 +25,7 @@ func Decrypt(ctx context.Context, ciphertext string, key []byte) (string, diag.D
 func EncryptionKeyAttribute() resourceSchema.StringAttribute
 ```
 
-## Usage
+## Usage in Resources
 
 ### Resource Schema
 
@@ -59,25 +59,8 @@ plaintext, diags := secretbridge.Decrypt(ctx, config.Ciphertext.ValueString(), [
 resp.Diagnostics.Append(diags...)
 ```
 
-### HCL
+## See Also
 
-```hcl
-ephemeral "random_password" "key" {
-  length = 32
-}
-
-resource "datadog_api_key" "example" {
-  name   = "my-key"
-  encryption_key_wo = ephemeral.random_password.key.result
-}
-
-ephemeral "datadog_secret_decrypt" "api_key" {
-  ciphertext = datadog_api_key.example.encrypted_key
-  encryption_key_wo     = ephemeral.random_password.key.result
-}
-
-resource "aws_secretsmanager_secret_version" "api_key" {
-  secret_id     = aws_secretsmanager_secret.api_key.id
-  secret_string = ephemeral.datadog_secret_decrypt.api_key.value
-}
-```
+- [User examples](../../../examples/resources/datadog_api_key/)
+- [Ephemeral decrypter docs](../../../docs/ephemeral-resources/secret_decrypt.md)
+- [Development guide](../../../DEVELOPMENT.md#ephemeral-resources-and-secrets)

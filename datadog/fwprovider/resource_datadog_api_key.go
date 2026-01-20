@@ -88,7 +88,7 @@ func (r *apiKeyResource) Schema(_ context.Context, _ resource.SchemaRequest, res
 				PlanModifiers: []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
 			},
 			"encrypted_key": schema.StringAttribute{
-				Description:   "The encrypted value of the API Key. Only populated when `encryption_key_wo` is provided. Use the `datadog_secret_decrypt` ephemeral resource to decrypt this value.",
+				Description:   "The encrypted value of the API Key. Only populated when `encryption_key_wo` is provided. Use the `datadog_secret_decrypt` ephemeral resource to decrypt this value. **Warning:** This attribute is intended only for a transfer to a secret manager. The encryption format may change in future provider versions without notice resulting in decryption failure if attempted.",
 				Computed:      true,
 				PlanModifiers: []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
 			},
@@ -139,6 +139,14 @@ func (r *apiKeyResource) Create(ctx context.Context, request resource.CreateRequ
 			}
 			state.EncryptedKey = types.StringValue(encrypted)
 			state.Key = types.StringNull()
+
+			response.Diagnostics.AddWarning(
+				"Encrypted Key for Transit Only",
+				"The encrypted_key attribute is intended only for a transfer to a secret manager. "+
+					"Do not rely on decrypting it across different provider versions. The encryption format may "+
+					"change in future releases without notice. After transferring the secret, "+
+					"consider removing the encryption_key_wo to clear the encrypted value from state.",
+			)
 		} else {
 			// No encryption - store key in plaintext, set encrypted_key to null
 			state.Key = types.StringValue(plaintextKey)
