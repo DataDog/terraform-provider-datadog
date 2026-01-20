@@ -67,12 +67,29 @@ func TestAccDatadogLogsArchivesOrderDatasource(t *testing.T) {
 func testAccDatasourceDatadogLogsArchiveOrderWithArchive(uniq string) string {
 	return fmt.Sprintf(`
 data "datadog_logs_archives_order" "order" {
-	depends_on = ["datadog_logs_archive.sample_archive"]
+	depends_on = [datadog_logs_archive.sample_archive]
 }
 
-resource "datadog_integration_aws" "account" {
-	account_id         = "%[1]s"
-	role_name          = "testacc-datadog-integration-role"
+resource "datadog_integration_aws_account" "account" {
+	aws_account_id = "%[1]s"
+	aws_partition  = "aws"
+	aws_regions {}
+
+	auth_config {
+		aws_auth_config_role {
+			role_name = "testacc-datadog-integration-role"
+		}
+	}
+	logs_config {
+		lambda_forwarder {}
+	}
+	metrics_config {
+		namespace_filters {}
+	}
+	resources_config {}
+	traces_config {
+		xray_services {}
+	}
 }
 
 resource "datadog_logs_archive" "sample_archive" {
@@ -81,7 +98,7 @@ resource "datadog_logs_archive" "sample_archive" {
 	s3_archive {
 		bucket 		 = "my-bucket"
 		path 		 = "/path/foo"
-		account_id   = datadog_integration_aws.account.account_id
+		account_id   = datadog_integration_aws_account.account.aws_account_id
 		role_name    = "testacc-datadog-integration-role"
 	}
 	rehydration_tags = ["team:intake", "team:app"]
