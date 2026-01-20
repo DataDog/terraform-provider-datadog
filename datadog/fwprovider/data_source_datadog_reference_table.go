@@ -440,7 +440,7 @@ func (d *datadogReferenceTableDataSource) updateState(ctx context.Context, state
 		}
 
 		if fields, ok := schema.GetFieldsOk(); ok && len(*fields) > 0 {
-			schemaTf.Fields = []*fieldsModel{}
+			var fieldsList []*fieldsModel
 			for _, fieldDd := range *fields {
 				fieldTf := &fieldsModel{}
 				if name, ok := fieldDd.GetNameOk(); ok {
@@ -449,8 +449,11 @@ func (d *datadogReferenceTableDataSource) updateState(ctx context.Context, state
 				if typeVar, ok := fieldDd.GetTypeOk(); ok {
 					fieldTf.Type = types.StringValue(string(*typeVar))
 				}
-				schemaTf.Fields = append(schemaTf.Fields, fieldTf)
+				fieldsList = append(fieldsList, fieldTf)
 			}
+			schemaTf.Fields, _ = fieldsToListValue(ctx, fieldsList)
+		} else {
+			schemaTf.Fields = types.ListNull(fieldsModelObjectType())
 		}
 
 		state.Schema = schemaTf
