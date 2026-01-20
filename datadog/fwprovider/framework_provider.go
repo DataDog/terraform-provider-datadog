@@ -54,6 +54,7 @@ var Resources = []func() resource.Resource{
 	NewIntegrationFastlyServiceResource,
 	NewIntegrationGcpResource,
 	NewIntegrationGcpStsResource,
+	NewCloudInventorySyncConfigResource,
 	NewIpAllowListResource,
 	NewMonitorNotificationRuleResource,
 	NewSecurityNotificationRuleResource,

@@ -1,0 +1,167 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 225
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"type":"cloud_provider","id":"aws","attributes":{"aws":{"aws_account_id":"123456789012","destination_bucket_name":"test-inventory-bucket","destination_bucket_region":"us-east-1","destination_prefix":"inventory/"}}}}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/unstable/cloudinventoryservice/syncconfigs
+        method: PUT
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 76
+        uncompressed: false
+        body: '{"data":{"id":"3526615b-4d65-4d9b-947a-d89c18faf0dc","type":"sync_configs"}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 109.101708ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/unstable/cloudinventoryservice/syncconfigs/3526615b-4d65-4d9b-947a-d89c18faf0dc
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 253
+        uncompressed: false
+        body: '{"data":{"id":"3526615b-4d65-4d9b-947a-d89c18faf0dc","type":"sync_configs","attributes":{"aws_account_id":"123456789012","aws_bucket_name":"test-inventory-bucket","aws_region":"us-east-1","cloud_provider":"aws","error":"SUCCESS","prefix":"inventory/"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 121.08825ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/unstable/cloudinventoryservice/syncconfigs/3526615b-4d65-4d9b-947a-d89c18faf0dc
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 253
+        uncompressed: false
+        body: '{"data":{"id":"3526615b-4d65-4d9b-947a-d89c18faf0dc","type":"sync_configs","attributes":{"aws_account_id":"123456789012","aws_bucket_name":"test-inventory-bucket","aws_region":"us-east-1","cloud_provider":"aws","error":"SUCCESS","prefix":"inventory/"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 59.8885ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/unstable/cloudinventoryservice/syncconfigs/3526615b-4d65-4d9b-947a-d89c18faf0dc
+        method: DELETE
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 31.590167ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/unstable/cloudinventoryservice/syncconfigs/3526615b-4d65-4d9b-947a-d89c18faf0dc
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 112
+        uncompressed: false
+        body: '{"errors":[{"title":"Not Found","detail":"sync config with ID 3526615b-4d65-4d9b-947a-d89c18faf0dc not found"}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 404 Not Found
+        code: 404
+        duration: 65.854625ms
