@@ -903,6 +903,7 @@ resource "datadog_observability_pipeline" "sample" {
         
         sample {
           percentage = 10
+          group_by   = ["service", "host"]
         }
       }
     }
@@ -942,11 +943,15 @@ resource "datadog_observability_pipeline" "sample" {
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.enabled", "true"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.include", "*"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.sample.0.percentage", "10"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.sample.0.group_by.#", "2"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.sample.0.group_by.0", "service"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.sample.0.group_by.1", "host"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.1.id", "sample-group-2"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.1.enabled", "false"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.1.processor.0.id", "sample-2"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.1.processor.0.enabled", "false"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.1.processor.0.sample.0.percentage", "4.99"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.1.processor.0.sample.0.group_by.#", "0"),
 				),
 			},
 		},
