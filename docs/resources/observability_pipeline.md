@@ -591,10 +591,13 @@ Optional:
 <a id="nestedblock--config--destination--splunk_hec"></a>
 ### Nested Schema for `config.destination.splunk_hec`
 
+Required:
+
+- `encoding` (String) Encoding format for log events. Valid values: `json`, `raw_message`.
+
 Optional:
 
 - `auto_extract_timestamp` (Boolean) If `true`, Splunk tries to extract timestamps from incoming log events.
-- `encoding` (String) Encoding format for log events. Valid values: `json`, `raw_message`.
 - `index` (String) Optional name of the Splunk index where logs are written.
 - `sourcetype` (String) The Splunk sourcetype to assign to log events.
 
