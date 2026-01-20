@@ -698,7 +698,7 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 		}
 
 		if !config.HttpClientRetryBackoffBase.IsNull() {
-			ddClientConfig.RetryConfiguration.BackOffBase = float64(config.HttpClientRetryBackoffMultiplier.ValueInt64())
+			ddClientConfig.RetryConfiguration.BackOffBase = float64(config.HttpClientRetryBackoffBase.ValueInt64())
 		}
 
 		if !config.HttpClientRetryMaxRetries.IsNull() {
