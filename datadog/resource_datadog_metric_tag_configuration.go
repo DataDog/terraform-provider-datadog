@@ -23,6 +23,7 @@ func resourceDatadogMetricTagConfiguration() *schema.Resource {
 		DeleteContext: resourceDatadogMetricTagConfigurationDelete,
 		CustomizeDiff: func(ctx context.Context, diff *schema.ResourceDiff, meta interface{}) error {
 			_, includePercentilesOk := diff.GetOkExists("include_percentiles")
+			oldAggrs, newAggrs := diff.GetChange("aggregations")
 			metricType, metricTypeOk := diff.GetOkExists("metric_type")
 			tags, _ := diff.GetOkExists("tags")
 			excludeTagsMode, _ := diff.GetOkExists("exclude_tags_mode")
@@ -31,14 +32,8 @@ func resourceDatadogMetricTagConfiguration() *schema.Resource {
 				return fmt.Errorf("cannot use exclude_tags_mode without configuring any tags")
 			}
 
-			// Clear aggregations from diff to prevent state flapping.
-			// The field is deprecated and ignored - the schema's Deprecated field
-			// will show a warning to users who still have it configured.
-			if err := diff.Clear("aggregations"); err != nil {
-				return err
-			}
-
-			if !includePercentilesOk && !metricTypeOk {
+			if !includePercentilesOk && oldAggrs.(*schema.Set).Equal(newAggrs.(*schema.Set)) && !metricTypeOk {
+				// if there was no change to include_percentiles nor aggregations nor metricType we don't need special handling
 				return nil
 			}
 			metricTypeValidated, err := datadogV2.NewMetricTagConfigurationMetricTypesFromValue(metricType.(string))
@@ -47,6 +42,19 @@ func resourceDatadogMetricTagConfiguration() *schema.Resource {
 			}
 			if includePercentilesOk && *metricTypeValidated != datadogV2.METRICTAGCONFIGURATIONMETRICTYPES_DISTRIBUTION {
 				return fmt.Errorf("cannot use include_percentiles with a metric_type of %s, must use metric_type of 'distribution'", metricType)
+			}
+
+			if *metricTypeValidated == datadogV2.METRICTAGCONFIGURATIONMETRICTYPES_DISTRIBUTION {
+				if !oldAggrs.(*schema.Set).Equal(newAggrs.(*schema.Set)) {
+					return fmt.Errorf("cannot use aggregations with a metric_type of %s, must use metric_type of 'count','rate', or 'gauge'", metricType)
+				}
+			}
+
+			// Clear aggregations from diff to prevent state flapping.
+			// The aggregations field is deprecated and ignored - the schema's Deprecated field
+			// will show a warning to users who still have it configured.
+			if err := diff.Clear("aggregations"); err != nil {
+				return err
 			}
 
 			return nil
