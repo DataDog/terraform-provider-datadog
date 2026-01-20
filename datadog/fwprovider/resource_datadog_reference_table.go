@@ -361,13 +361,21 @@ func (r *referenceTableResource) ModifyPlan(ctx context.Context, request resourc
 		}
 
 		// Compare fields
+		stateFields, diags := getFieldsFromList(ctx, state.Schema.Fields)
+		response.Diagnostics.Append(diags...)
+		planFields, diags := getFieldsFromList(ctx, plan.Schema.Fields)
+		response.Diagnostics.Append(diags...)
+		if response.Diagnostics.HasError() {
+			return
+		}
+
 		fieldsChanged := false
-		if len(state.Schema.Fields) != len(plan.Schema.Fields) {
+		if len(stateFields) != len(planFields) {
 			fieldsChanged = true
 		} else {
-			for i := range state.Schema.Fields {
-				if state.Schema.Fields[i].Name.ValueString() != plan.Schema.Fields[i].Name.ValueString() ||
-					state.Schema.Fields[i].Type.ValueString() != plan.Schema.Fields[i].Type.ValueString() {
+			for i := range stateFields {
+				if stateFields[i].Name.ValueString() != planFields[i].Name.ValueString() ||
+					stateFields[i].Type.ValueString() != planFields[i].Type.ValueString() {
 					fieldsChanged = true
 					break
 				}
@@ -670,7 +678,7 @@ func (r *referenceTableResource) updateState(ctx context.Context, state *referen
 	if schema, ok := attributes.GetSchemaOk(); ok {
 		schemaTf := schemaModel{}
 		if fields, ok := schema.GetFieldsOk(); ok && len(*fields) > 0 {
-			schemaTf.Fields = []*fieldsModel{}
+			var fieldsList []*fieldsModel
 			for _, fieldsDd := range *fields {
 				fieldsTf := fieldsModel{}
 				if name, ok := fieldsDd.GetNameOk(); ok {
@@ -679,8 +687,11 @@ func (r *referenceTableResource) updateState(ctx context.Context, state *referen
 				if typeVar, ok := fieldsDd.GetTypeOk(); ok {
 					fieldsTf.Type = types.StringValue(string(*typeVar))
 				}
-				schemaTf.Fields = append(schemaTf.Fields, &fieldsTf)
+				fieldsList = append(fieldsList, &fieldsTf)
 			}
+			schemaTf.Fields, _ = fieldsToListValue(ctx, fieldsList)
+		} else {
+			schemaTf.Fields = types.ListNull(fieldsModelObjectType())
 		}
 		if primaryKeys, ok := schema.GetPrimaryKeysOk(); ok && len(*primaryKeys) > 0 {
 			schemaTf.PrimaryKeys, _ = types.ListValueFrom(ctx, types.StringType, *primaryKeys)
@@ -759,9 +770,11 @@ func (r *referenceTableResource) buildReferenceTableRequestBody(ctx context.Cont
 		diags.Append(state.Schema.PrimaryKeys.ElementsAs(ctx, &primaryKeys, false)...)
 		schema.SetPrimaryKeys(primaryKeys)
 
-		if state.Schema.Fields != nil {
+		if !state.Schema.Fields.IsNull() && !state.Schema.Fields.IsUnknown() {
+			fieldsList, fieldDiags := getFieldsFromList(ctx, state.Schema.Fields)
+			diags.Append(fieldDiags...)
 			var fields []datadogV2.CreateTableRequestDataAttributesSchemaFieldsItems
-			for _, fieldsTFItem := range state.Schema.Fields {
+			for _, fieldsTFItem := range fieldsList {
 				if !fieldsTFItem.Name.IsNull() && !fieldsTFItem.Type.IsNull() {
 					fieldsDDItem := datadogV2.NewCreateTableRequestDataAttributesSchemaFieldsItems(
 						fieldsTFItem.Name.ValueString(),
