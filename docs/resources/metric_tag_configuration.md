@@ -27,16 +27,6 @@ resource "datadog_metric_tag_configuration" "example_count_metric" {
   metric_type       = "count"
   tags              = ["sport", "datacenter"]
   exclude_tags_mode = false
-  # DEPRECATED: The aggregations field is no longer supported by the Datadog API.
-  # If present in your configuration, it will be ignored with a warning.
-  # aggregations {
-  #   time  = "avg"
-  #   space = "min"
-  # }
-  # aggregations {
-  #   time  = "avg"
-  #   space = "max"
-  # }
 }
 ```
 
