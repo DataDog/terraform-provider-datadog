@@ -16,6 +16,10 @@ resource "datadog_metric_tag_configuration" "example_count_metric" {
   # If present in your configuration, it will be ignored with a warning.
   # aggregations {
   #   time  = "avg"
-  #   space = "avg"
+  #   space = "min"
+  # }
+  # aggregations {
+  #   time  = "avg"
+  #   space = "max"
   # }
 }
