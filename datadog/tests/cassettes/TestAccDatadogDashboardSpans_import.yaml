@@ -1,0 +1,210 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 578
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"description":"Created using the Datadog provider in Terraform","id":"","layout_type":"ordered","notify_list":[],"reflow_type":"auto","tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardSpans_import-local-1767972750","widgets":[{"definition":{"requests":[{"on_right_yaxis":false,"queries":[{"data_source":"metrics","name":"query1","query":"avg:system.cpu.user{*}"}],"response_format":"timeseries"}],"show_legend":false,"time":{"hide_incomplete_cost_data":true,"live_span":"1h"},"title":"CPU Utilization?","type":"timeseries"}}]}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"94t-eye-ift","title":"tf-TestAccDatadogDashboardSpans_import-local-1767972750","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/94t-eye-ift/tf-testaccdatadogdashboardspansimport-local-1767972750","template_variables":[],"widgets":[{"definition":{"requests":[{"on_right_yaxis":false,"queries":[{"data_source":"metrics","name":"query1","query":"avg:system.cpu.user{*}"}],"response_format":"timeseries"}],"show_legend":false,"time":{"hide_incomplete_cost_data":true,"live_span":"1h"},"title":"CPU Utilization?","type":"timeseries"},"id":4787561433867474}],"notify_list":[],"created_at":"2026-01-09T15:32:31.961278+00:00","modified_at":"2026-01-09T15:32:31.961278+00:00","template_variable_presets":[],"reflow_type":"auto","tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 261.875166ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/94t-eye-ift
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"94t-eye-ift","title":"tf-TestAccDatadogDashboardSpans_import-local-1767972750","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/94t-eye-ift/tf-testaccdatadogdashboardspansimport-local-1767972750","template_variables":[],"widgets":[{"definition":{"requests":[{"on_right_yaxis":false,"queries":[{"data_source":"metrics","name":"query1","query":"avg:system.cpu.user{*}"}],"response_format":"timeseries"}],"show_legend":false,"time":{"hide_incomplete_cost_data":true,"live_span":"1h"},"title":"CPU Utilization?","type":"timeseries"},"id":4787561433867474}],"notify_list":[],"created_at":"2026-01-09T15:32:31.961278+00:00","modified_at":"2026-01-09T15:32:31.961278+00:00","template_variable_presets":[],"reflow_type":"auto","tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 95.702541ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/94t-eye-ift
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"94t-eye-ift","title":"tf-TestAccDatadogDashboardSpans_import-local-1767972750","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/94t-eye-ift/tf-testaccdatadogdashboardspansimport-local-1767972750","template_variables":[],"widgets":[{"definition":{"requests":[{"on_right_yaxis":false,"queries":[{"data_source":"metrics","name":"query1","query":"avg:system.cpu.user{*}"}],"response_format":"timeseries"}],"show_legend":false,"time":{"hide_incomplete_cost_data":true,"live_span":"1h"},"title":"CPU Utilization?","type":"timeseries"},"id":4787561433867474}],"notify_list":[],"created_at":"2026-01-09T15:32:31.961278+00:00","modified_at":"2026-01-09T15:32:31.961278+00:00","template_variable_presets":[],"reflow_type":"auto","tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 89.680209ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/94t-eye-ift
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"94t-eye-ift","title":"tf-TestAccDatadogDashboardSpans_import-local-1767972750","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/94t-eye-ift/tf-testaccdatadogdashboardspansimport-local-1767972750","template_variables":[],"widgets":[{"definition":{"requests":[{"on_right_yaxis":false,"queries":[{"data_source":"metrics","name":"query1","query":"avg:system.cpu.user{*}"}],"response_format":"timeseries"}],"show_legend":false,"time":{"hide_incomplete_cost_data":true,"live_span":"1h"},"title":"CPU Utilization?","type":"timeseries"},"id":4787561433867474}],"notify_list":[],"created_at":"2026-01-09T15:32:31.961278+00:00","modified_at":"2026-01-09T15:32:31.961278+00:00","template_variable_presets":[],"reflow_type":"auto","tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 108.917958ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/94t-eye-ift
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"deleted_dashboard_id":"94t-eye-ift"}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 332.714541ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/94t-eye-ift
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"errors":["Dashboard with ID 94t-eye-ift not found"]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 97.298ms
