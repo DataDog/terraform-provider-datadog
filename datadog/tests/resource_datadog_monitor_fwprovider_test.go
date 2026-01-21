@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/hashicorp/terraform-plugin-go/tfprotov5"
+	"github.com/hashicorp/terraform-plugin-go/tfprotov6"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 
@@ -1125,7 +1125,7 @@ func TestAccMonitor_Fwprovider_DefaultTags(t *testing.T) {
 		Steps: []resource.TestStep{
 			{ // New tags are correctly added and duplicates are kept
 				Config: testAccCheckDatadogMonitorConfigDuplicateTags(monitorName),
-				ProtoV6ProviderFactories: map[string]func() (tfprotov5.ProviderServer, error){
+				ProtoV6ProviderFactories: map[string]func() (tfprotov6.ProviderServer, error){
 					"datadog": withDefaultTagsFw(ctx, providers, map[string]string{
 						"default_key": "default_value",
 					}),
@@ -1148,7 +1148,7 @@ func TestAccMonitor_Fwprovider_DefaultTags(t *testing.T) {
 			},
 			{ // Resource tags take precedence over default tags and duplicates stay
 				Config: testAccCheckDatadogMonitorConfigDuplicateTags(monitorName),
-				ProtoV6ProviderFactories: map[string]func() (tfprotov5.ProviderServer, error){
+				ProtoV6ProviderFactories: map[string]func() (tfprotov6.ProviderServer, error){
 					"datadog": withDefaultTagsFw(ctx, providers, map[string]string{
 						"foo": "not_bar",
 					}),
@@ -1169,7 +1169,7 @@ func TestAccMonitor_Fwprovider_DefaultTags(t *testing.T) {
 			},
 			{ // Resource tags take precedence over default tags, but new tags are added
 				Config: testAccCheckDatadogMonitorConfig(monitorName),
-				ProtoV6ProviderFactories: map[string]func() (tfprotov5.ProviderServer, error){
+				ProtoV6ProviderFactories: map[string]func() (tfprotov6.ProviderServer, error){
 					"datadog": withDefaultTagsFw(ctx, providers, map[string]string{
 						"foo":     "not_bar",
 						"new_tag": "new_value",
@@ -1191,7 +1191,7 @@ func TestAccMonitor_Fwprovider_DefaultTags(t *testing.T) {
 			},
 			{ // Tags without any value work correctly
 				Config: testAccCheckDatadogMonitorConfig(monitorName),
-				ProtoV6ProviderFactories: map[string]func() (tfprotov5.ProviderServer, error){
+				ProtoV6ProviderFactories: map[string]func() (tfprotov6.ProviderServer, error){
 					"datadog": withDefaultTagsFw(ctx, providers, map[string]string{
 						"no_value": "",
 					}),
@@ -1212,7 +1212,7 @@ func TestAccMonitor_Fwprovider_DefaultTags(t *testing.T) {
 			},
 			{ // Tags with colons in the value work correctly
 				Config: testAccCheckDatadogMonitorConfig(monitorName),
-				ProtoV6ProviderFactories: map[string]func() (tfprotov5.ProviderServer, error){
+				ProtoV6ProviderFactories: map[string]func() (tfprotov6.ProviderServer, error){
 					"datadog": withDefaultTagsFw(ctx, providers, map[string]string{
 						"repo_url": "https://github.com/repo/path",
 					}),
@@ -1233,7 +1233,7 @@ func TestAccMonitor_Fwprovider_DefaultTags(t *testing.T) {
 			},
 			{ // Works with monitors without a tag attribute
 				Config: testAccCheckDatadogMonitorConfigNoTag(monitorName),
-				ProtoV6ProviderFactories: map[string]func() (tfprotov5.ProviderServer, error){
+				ProtoV6ProviderFactories: map[string]func() (tfprotov6.ProviderServer, error){
 					"datadog": withDefaultTagsFw(ctx, providers, map[string]string{
 						"default_key": "default_value",
 					}),
