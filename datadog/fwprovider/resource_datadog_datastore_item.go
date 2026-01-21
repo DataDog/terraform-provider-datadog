@@ -88,6 +88,7 @@ func (r *datastoreItemResource) Read(ctx context.Context, request resource.ReadR
 	var state datastoreItemModel
 	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
+		response.Diagnostics.AddWarning("Failed to read datastore item state", "An error occurred while reading the current state")
 		return
 	}
 
@@ -129,6 +130,7 @@ func (r *datastoreItemResource) Create(ctx context.Context, request resource.Cre
 	var state datastoreItemModel
 	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
+		response.Diagnostics.AddWarning("Failed to read datastore item plan", "An error occurred while reading the planned state")
 		return
 	}
 
@@ -138,6 +140,7 @@ func (r *datastoreItemResource) Create(ctx context.Context, request resource.Cre
 	body, diags := r.buildDatastoreItemRequestBody(ctx, &state)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
+		response.Diagnostics.AddWarning("Failed to build datastore item request", "An error occurred while building the create request body")
 		return
 	}
 
@@ -163,6 +166,7 @@ func (r *datastoreItemResource) Update(ctx context.Context, request resource.Upd
 	var state datastoreItemModel
 	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
+		response.Diagnostics.AddWarning("Failed to read datastore item plan", "An error occurred while reading the planned state")
 		return
 	}
 
@@ -171,6 +175,7 @@ func (r *datastoreItemResource) Update(ctx context.Context, request resource.Upd
 	body, diags := r.buildDatastoreItemUpdateRequestBody(ctx, &state)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
+		response.Diagnostics.AddWarning("Failed to build datastore item update request", "An error occurred while building the update request body")
 		return
 	}
 
@@ -195,6 +200,7 @@ func (r *datastoreItemResource) Delete(ctx context.Context, request resource.Del
 	var state datastoreItemModel
 	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
+		response.Diagnostics.AddWarning("Failed to read datastore item state", "An error occurred while reading the current state")
 		return
 	}
 
@@ -231,19 +237,31 @@ func (r *datastoreItemResource) updateState(ctx context.Context, state *datastor
 	// that comes from the user's configuration. The API should return the same values we sent.
 }
 
-func (r *datastoreItemResource) buildDatastoreItemRequestBody(ctx context.Context, state *datastoreItemModel) (*datadogV2.BulkPutAppsDatastoreItemsRequest, diag.Diagnostics) {
+func (r *datastoreItemResource) convertValueMapToInterface(ctx context.Context, value types.Map) (map[string]interface{}, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
 
-	// Convert the value map to a format suitable for the API
-	// First convert to map[string]string, then to map[string]interface{}
 	stringElements := make(map[string]string)
-	diags.Append(state.Value.ElementsAs(ctx, &stringElements, false)...)
+	diags.Append(value.ElementsAs(ctx, &stringElements, false)...)
 	if diags.HasError() {
+		diags.AddWarning("Failed to convert value map", "An error occurred while converting the value map to string elements")
 		return nil, diags
 	}
+
 	valueElements := make(map[string]interface{})
 	for k, v := range stringElements {
 		valueElements[k] = v
+	}
+
+	return valueElements, diags
+}
+
+func (r *datastoreItemResource) buildDatastoreItemRequestBody(ctx context.Context, state *datastoreItemModel) (*datadogV2.BulkPutAppsDatastoreItemsRequest, diag.Diagnostics) {
+	diags := diag.Diagnostics{}
+
+	valueElements, convDiags := r.convertValueMapToInterface(ctx, state.Value)
+	diags.Append(convDiags...)
+	if diags.HasError() {
+		return nil, diags
 	}
 
 	values := []map[string]interface{}{valueElements}
@@ -262,16 +280,10 @@ func (r *datastoreItemResource) buildDatastoreItemRequestBody(ctx context.Contex
 func (r *datastoreItemResource) buildDatastoreItemUpdateRequestBody(ctx context.Context, state *datastoreItemModel) (*datadogV2.UpdateAppsDatastoreItemRequest, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
 
-	// Convert the value map to ops_set format
-	// First convert to map[string]string, then to map[string]interface{}
-	stringElements := make(map[string]string)
-	diags.Append(state.Value.ElementsAs(ctx, &stringElements, false)...)
+	valueElements, convDiags := r.convertValueMapToInterface(ctx, state.Value)
+	diags.Append(convDiags...)
 	if diags.HasError() {
 		return nil, diags
-	}
-	valueElements := make(map[string]interface{})
-	for k, v := range stringElements {
-		valueElements[k] = v
 	}
 
 	req := datadogV2.NewUpdateAppsDatastoreItemRequestWithDefaults()

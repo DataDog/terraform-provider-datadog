@@ -71,43 +71,40 @@ func testAccCheckDatastoreItemDestroy(accProvider *fwprovider.FrameworkProvider)
 }
 
 func datastoreItemDestroyHelper(auth context.Context, s *terraform.State, apiInstances *utils.ApiInstances) error {
-	err := utils.Retry(2, 10, func() error {
-		for _, r := range s.RootModule().Resources {
-			if r.Type != "datadog_datastore_item" {
-				continue
-			}
+	for _, r := range s.RootModule().Resources {
+		if r.Type != "datadog_datastore_item" {
+			continue
+		}
 
-			// Parse composite ID (datastore_id:item_key)
-			parts := strings.SplitN(r.Primary.ID, ":", 2)
-			if len(parts) != 2 {
-				return fmt.Errorf("invalid ID format: %s", r.Primary.ID)
-			}
-			datastoreID := parts[0]
-			itemKey := parts[1]
+		// Parse composite ID (datastore_id:item_key)
+		parts := strings.SplitN(r.Primary.ID, ":", 2)
+		if len(parts) != 2 {
+			return fmt.Errorf("invalid ID format: %s", r.Primary.ID)
+		}
+		datastoreID := parts[0]
+		itemKey := parts[1]
 
-			// Try to read the item
-			optionalParams := datadogV2.NewListDatastoreItemsOptionalParameters()
-			optionalParams.ItemKey = &itemKey
+		// Try to read the item
+		optionalParams := datadogV2.NewListDatastoreItemsOptionalParameters()
+		optionalParams.ItemKey = &itemKey
 
-			resp, httpResp, err := apiInstances.GetActionsDatastoresApiV2().ListDatastoreItems(auth, datastoreID, *optionalParams)
-			if err != nil {
-				if httpResp != nil && httpResp.StatusCode == 404 {
-					return nil
-				}
-				return &utils.RetryableError{Prob: fmt.Sprintf("received an error retrieving Datastore Item: %s", err)}
-			}
-
-			// Check if item exists in response
-			items := resp.GetData()
-			if len(items) == 0 {
+		resp, httpResp, err := apiInstances.GetActionsDatastoresApiV2().ListDatastoreItems(auth, datastoreID, *optionalParams)
+		if err != nil {
+			if httpResp != nil && httpResp.StatusCode == 404 {
 				return nil
 			}
-
-			return &utils.RetryableError{Prob: "Datastore Item still exists"}
+			return fmt.Errorf("received an error retrieving Datastore Item: %s", err)
 		}
-		return nil
-	})
-	return err
+
+		// Check if item exists in response
+		items := resp.GetData()
+		if len(items) == 0 {
+			return nil
+		}
+
+		return fmt.Errorf("Datastore Item still exists")
+	}
+	return nil
 }
 
 func testAccCheckDatastoreItemExists(accProvider *fwprovider.FrameworkProvider) resource.TestCheckFunc {

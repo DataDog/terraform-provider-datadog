@@ -3,12 +3,12 @@
 page_title: "datadog_datastore Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Provides a Datadog Datastore resource. This can be used to create and manage Datadog datastores.
+  Provides a Datadog Datastore resource. This can be used to create and manage Datadog datastore.
 ---
 
 # datadog_datastore (Resource)
 
-Provides a Datadog Datastore resource. This can be used to create and manage Datadog datastores.
+Provides a Datadog Datastore resource. This can be used to create and manage Datadog datastore.
 
 ## Example Usage
 

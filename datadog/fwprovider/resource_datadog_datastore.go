@@ -109,6 +109,7 @@ func (r *datastoreResource) Read(ctx context.Context, request resource.ReadReque
 	var state datastoreModel
 	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
+		response.Diagnostics.AddWarning("Failed to read datastore state", "An error occurred while reading the current state")
 		return
 	}
 	id := state.ID.ValueString()
@@ -137,12 +138,14 @@ func (r *datastoreResource) Create(ctx context.Context, request resource.CreateR
 	var state datastoreModel
 	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
+		response.Diagnostics.AddWarning("Failed to read datastore plan", "An error occurred while reading the planned state")
 		return
 	}
 
 	body, diags := r.buildDatastoreRequestBody(ctx, &state)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
+		response.Diagnostics.AddWarning("Failed to build datastore request", "An error occurred while building the create request body")
 		return
 	}
 
@@ -179,6 +182,7 @@ func (r *datastoreResource) Update(ctx context.Context, request resource.UpdateR
 	var state datastoreModel
 	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
+		response.Diagnostics.AddWarning("Failed to read datastore plan", "An error occurred while reading the planned state")
 		return
 	}
 
@@ -187,6 +191,7 @@ func (r *datastoreResource) Update(ctx context.Context, request resource.UpdateR
 	body, diags := r.buildDatastoreUpdateRequestBody(ctx, &state)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
+		response.Diagnostics.AddWarning("Failed to build datastore update request", "An error occurred while building the update request body")
 		return
 	}
 
@@ -209,6 +214,7 @@ func (r *datastoreResource) Delete(ctx context.Context, request resource.DeleteR
 	var state datastoreModel
 	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
+		response.Diagnostics.AddWarning("Failed to read datastore state", "An error occurred while reading the current state")
 		return
 	}
 

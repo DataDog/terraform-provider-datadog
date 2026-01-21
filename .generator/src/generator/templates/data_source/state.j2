@@ -23,27 +23,9 @@ func (d *datadog{{ name|camel_case }}DataSource) updateState(ctx context.Context
 }
 
 func (d *datadog{{ name|camel_case }}DataSource) updateStateFromListResponse(ctx context.Context, state *datadog{{ name|camel_case }}DataSourceModel, {{ name|camel_case|untitle_case }}Data *datadog{{ version }}.{{ name|camel_case }}) {
-    state.ID = types.StringValue({{ name|camel_case|untitle_case }}Data.GetId())
     {%- for attr, schema in singularParamAttr[0].items() %}
     state.{{attr|camel_case}} = types.StringValue({{ name|camel_case|untitle_case }}Data.GetId())
     {%- endfor %}
 
-    attributes := {{ name|camel_case|untitle_case }}Data.GetAttributes()
-
-    {%- for attr, schema in primitiveRespAttr.items() %}
-        {%- set accessor = "attributes.Get" + attr|camel_case + "()" %}
-        state.{{attr|camel_case}} = types.{{ get_terraform_schema_type(schema) }}Value({{accessor|go_to_terraform_type_formatter(schema, False)}})
-    {%- endfor %}
-
-    {%- for attr, schema in primitiveRespArrAttr.items() %}
-        state.{{attr|camel_case}}, _ = types.{{ get_terraform_schema_type(schema) }}ValueFrom(ctx, types.{{get_terraform_schema_type(schema["items"])}}Type ,attributes.Get{{attr|camel_case}}())
-    {%- endfor %}
-
-    {%- for attr, schema in nonPrimitiveRespListAttr.items() %}
-        state.{{attr|camel_case}}, _ = types.{{ get_terraform_schema_type(schema) }}ValueFrom(ctx, types.{{get_terraform_schema_type(schema["items"])}}Type ,attributes.Get{{attr|camel_case}}())
-    {%- endfor %}
-
-    {%- for attr, schema in nonPrimitiveRespObjAttr.items() %}
-        state.{{attr|camel_case}} = types.{{ get_terraform_schema_type(schema) }}Value(attributes.Get{{attr|camel_case}}())
-    {%- endfor %}
+    d.updateState(ctx, state, {{ name|camel_case|untitle_case }}Data)
 }
