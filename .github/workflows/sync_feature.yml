@@ -82,6 +82,20 @@ jobs:
             echo "should_push=true" >> "$GITHUB_OUTPUT"
           fi
 
+      - name: Migrate tests to v6 protocol
+        if: steps.status.outputs.needs_merge == 'true' && steps.merge.outputs.should_push == 'true'
+        run: |
+          if grep -r "ProtoV5ProviderFactories:" datadog/tests/*_test.go 2>/dev/null; then
+            echo "Found ProtoV5ProviderFactories references, migrating to v6..."
+            sed -i 's/ProtoV5ProviderFactories:/ProtoV6ProviderFactories:/g' datadog/tests/*_test.go
+
+            # Commit the change
+            git add datadog/tests/*_test.go
+            git commit -m "chore: migrate tests to v6 protocol [CI]"
+          else
+            echo "No ProtoV5ProviderFactories references found, nothing to migrate"
+          fi
+
       - name: Push updated target branch
         if: steps.status.outputs.needs_merge == 'true' && steps.merge.outputs.should_push == 'true'
         run: |
