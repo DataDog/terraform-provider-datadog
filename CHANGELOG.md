@@ -1,3 +1,31 @@
+## 3.85.0 (January 21, 2026)
+
+### BUGFIXES
+* [CCV-4166] [datadog_cost_budget] Bug fix for entries and tag_filters arguments for datadog_cost_budget  resource by @zeinageb in https://github.com/DataDog/terraform-provider-datadog/pull/3419
+* [datadog_observability_pipeline] Fix Splunk Hec destination by @vladimir-dd in https://github.com/DataDog/terraform-provider-datadog/pull/3433
+* [datadog_observability_pipeline] Adding group by optional parameter to Observability Pipelines by @taylorchandleryoung in https://github.com/DataDog/terraform-provider-datadog/pull/3438
+### IMPROVEMENTS
+* [data_source_service_level_objective] Add attributes tags computed by @sbecker59 in https://github.com/DataDog/terraform-provider-datadog/pull/2926
+* [dashboard_json] Remove deprecated dashboard_json.is_read_only field from update requests, and all dashboard test files by @yacomink in https://github.com/DataDog/terraform-provider-datadog/pull/3413
+* [datadog_synthetics_global_variable] feat: add write-only value support by @LiuVII in https://github.com/DataDog/terraform-provider-datadog/pull/3382
+* [datadog_synthetics_test] Add support for multistep subtest steps by @romainberger in https://github.com/DataDog/terraform-provider-datadog/pull/3394
+* [datadog_dashboard] Support hide_incomplete_cost_data field for widget time spans by @yacomink in https://github.com/DataDog/terraform-provider-datadog/pull/3411
+### FEATURES
+* [datadog_oncall] Add on_call_user_notification_channel resource by @kevinconaway in https://github.com/DataDog/terraform-provider-datadog/pull/3406
+* [datadog_team_notification_rule] Added resource and datasource by @javierciccarelli in https://github.com/DataDog/terraform-provider-datadog/pull/3422
+* [datadog_observability_pipeline] Add support for more components and metrics pipelines by @vladimir-dd in https://github.com/DataDog/terraform-provider-datadog/pull/3386
+* [datadog_organization_settings] Add data source to retrieve organization settings by @LorisFriedel in https://github.com/DataDog/terraform-provider-datadog/pull/3429
+* [datadog_integration_gcp_sts] Add regionFilterConfigs and isGlobalLocationEnabled by @katherinekim-51 in https://github.com/DataDog/terraform-provider-datadog/pull/3354
+* [datadog_cloud_inventory_sync_config] added terraform resource datadog_cloud_inventory_sync_config | STGMON-285 by @denozor-dog in https://github.com/DataDog/terraform-provider-datadog/pull/3368
+
+## New Contributors
+* @kevinconaway made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3406
+* @yacomink made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3413
+* @javierciccarelli made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3422
+* @denozor-dog made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3368
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.84.0...v3.85.0
+
 ## 3.84.0 (January 8, 2026)
 
 ### BUGFIXES
