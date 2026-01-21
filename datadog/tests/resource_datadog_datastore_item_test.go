@@ -96,13 +96,13 @@ func datastoreItemDestroyHelper(auth context.Context, s *terraform.State, apiIns
 			return fmt.Errorf("received an error retrieving Datastore Item: %s", err)
 		}
 
-		// Check if item exists in response
+		// Check if the specific item exists in response
 		items := resp.GetData()
-		if len(items) == 0 {
-			return nil
+		for _, item := range items {
+			if id, ok := item.GetIdOk(); ok && id != nil && *id == itemKey {
+				return fmt.Errorf("Datastore Item %s still exists", itemKey)
+			}
 		}
-
-		return fmt.Errorf("Datastore Item still exists")
 	}
 	return nil
 }
