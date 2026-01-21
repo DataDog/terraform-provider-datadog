@@ -14,6 +14,9 @@ import (
 )
 
 func TestAccGcpUcConfigBasic(t *testing.T) {
+	if !isReplaying() {
+		t.Skip("This test only supports replaying")
+	}
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)
@@ -63,6 +66,9 @@ func TestAccGcpUcConfigBasic(t *testing.T) {
 }
 
 func TestAccGcpUcConfigImport(t *testing.T) {
+	if !isReplaying() {
+		t.Skip("This test only supports replaying")
+	}
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)
