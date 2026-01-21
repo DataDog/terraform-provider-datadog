@@ -28,7 +28,7 @@ func TestAccResourceEvaluationFilter(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckResourceEvaluationFilterDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -110,7 +110,7 @@ func TestAccResourceEvaluationFilterImport(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
 				Config: fmt.Sprintf(`
@@ -149,7 +149,7 @@ func TestAccResourceEvaluationFilterInvalid(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
 				Config: fmt.Sprintf(`

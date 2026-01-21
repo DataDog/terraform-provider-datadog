@@ -18,7 +18,7 @@ func TestServiceAccountCreate(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogUserV2FwDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -44,7 +44,7 @@ func TestServiceAccountUpdate(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogUserV2FwDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{

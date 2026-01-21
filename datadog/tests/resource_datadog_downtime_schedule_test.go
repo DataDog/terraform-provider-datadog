@@ -20,7 +20,7 @@ func TestAccDowntimeScheduleBasicRecurring_Import(t *testing.T) {
 	uniq := uniqueEntityName(ctx, t)
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogDowntimeScheduleDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -41,7 +41,7 @@ func TestAccDowntimeScheduleBasicRecurring(t *testing.T) {
 	uniq := uniqueEntityName(ctx, t)
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogDowntimeScheduleDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -108,7 +108,7 @@ func TestAccDowntimeScheduleBasicOneTime(t *testing.T) {
 	uniq := uniqueEntityName(ctx, t)
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogDowntimeScheduleDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -157,7 +157,7 @@ func TestAccDowntimeScheduleBasicOneTimeWithMonitorID(t *testing.T) {
 	uniq := uniqueEntityName(ctx, t)
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogDowntimeScheduleDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -178,7 +178,7 @@ func TestAccDowntimeScheduleChanged(t *testing.T) {
 	uniq := uniqueEntityName(ctx, t)
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogDowntimeScheduleDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{

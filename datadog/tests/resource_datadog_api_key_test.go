@@ -24,7 +24,7 @@ func TestAccDatadogApiKey_Update(t *testing.T) {
 	var apiKey string
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogApiKeyDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -101,7 +101,7 @@ func TestDatadogApiKey_import(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogApiKeyDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{

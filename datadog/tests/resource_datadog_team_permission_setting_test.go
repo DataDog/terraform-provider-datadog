@@ -15,7 +15,7 @@ func TestAccTeamPermissionSettingBasic(t *testing.T) {
 	uniq := strings.ToLower(uniqueEntityName(ctx, t))
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogTeamPermissionSetting(uniq),

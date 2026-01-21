@@ -17,7 +17,7 @@ func TestAccDatadogUsersDatasourceFilter(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDatasourceUsersFilterConfig(uniq, email),
@@ -44,7 +44,7 @@ func TestAccDatadogUsersDatasourceFilterStatus(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDatasourceUsersFilterStatusConfig(uniq, expectedUserName, status),

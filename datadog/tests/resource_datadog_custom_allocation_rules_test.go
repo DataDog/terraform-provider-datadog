@@ -20,7 +20,7 @@ func TestAccDatadogCustomAllocationRuleOrder_Basic(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogCustomAllocationRuleOrderDestroy(ctx, providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -54,7 +54,7 @@ func TestAccDatadogCustomAllocationRuleOrder_Update(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogCustomAllocationRuleOrderDestroy(ctx, providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -106,7 +106,7 @@ func TestAccDatadogCustomAllocationRuleOrder_Import(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogCustomAllocationRuleOrderDestroy(ctx, providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -143,7 +143,7 @@ func TestAccDatadogCustomAllocationRuleOrder_SingleRule(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogCustomAllocationRuleOrderDestroy(ctx, providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -457,7 +457,7 @@ func TestAccDatadogCustomAllocationRules_OverrideTrue(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogCustomAllocationRuleOrderDestroy(ctx, providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -479,7 +479,7 @@ func TestAccDatadogCustomAllocationRules_OverrideTrueDeletesUnmanaged(t *testing
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogCustomAllocationRuleOrderDestroy(ctx, providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			// Step 1: Create base rules first
@@ -506,7 +506,7 @@ func TestAccDatadogCustomAllocationRules_OverrideFalseNoUnmanaged(t *testing.T) 
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogCustomAllocationRuleOrderDestroy(ctx, providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -528,7 +528,7 @@ func TestAccDatadogCustomAllocationRules_OverrideFalseUnmanagedInMiddle(t *testi
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogCustomAllocationRuleOrderDestroy(ctx, providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			// Step 1: Create base rules with unmanaged rules
@@ -551,7 +551,7 @@ func TestAccDatadogCustomAllocationRules_OverrideFalseUnmanagedAtEnd(t *testing.
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogCustomAllocationRuleOrderDestroy(ctx, providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			// Step 1: Create base rules with unmanaged rules at end

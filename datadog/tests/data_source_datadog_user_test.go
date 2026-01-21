@@ -91,7 +91,7 @@ func TestAccDatadogUserDatasourceWithExcludeServiceAccounts(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDatasourceUserWithExcludeServiceAccountsConfig(email, serviceAccountName, "true"),
@@ -109,7 +109,7 @@ func TestAccDatadogUserDatasourceWithExcludeServiceAccountsWithError(t *testing.
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
 				Config:      testAccDatasourceUserWithExcludeServiceAccountsConfig(email, serviceAccountName, "false"),
@@ -127,7 +127,7 @@ func TestAccDatadogUserDatasourceWithExcludeServiceAccountsMultipleUsersWithErro
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
 				Config:      testAccDatasourceUserWithExcludeServiceAccountsMultipleUsersConfig(email, serviceAccountName, "true"),

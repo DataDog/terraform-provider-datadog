@@ -20,7 +20,7 @@ func TestAccDatadogAuthNMapping_CreateUpdate(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogAuthNMappingDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -61,7 +61,7 @@ func TestAccDatadogAuthNMapping_import(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogAuthNMappingDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{

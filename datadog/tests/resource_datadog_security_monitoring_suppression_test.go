@@ -20,7 +20,7 @@ func TestAccSecurityMonitoringSuppression_CreateAndUpdateWithoutDates(t *testing
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckSecurityMonitoringSuppressionDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			// Create suppression
@@ -106,7 +106,7 @@ func TestAccSecurityMonitoringSuppression_CreateThenAddAndRemoveStartDate(t *tes
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckSecurityMonitoringSuppressionDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			// Create without start date
@@ -219,7 +219,7 @@ func TestAccSecurityMonitoringSuppression_CreateThenAddAndRemoveExpirationDate(t
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckSecurityMonitoringSuppressionDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			// Create without expiration date
@@ -343,7 +343,7 @@ func TestAccSecurityMonitoringSuppression_CreateAndUpdateDataExclusionQuery(t *t
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckSecurityMonitoringSuppressionDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			// Create with suppression query
@@ -535,7 +535,7 @@ func TestAccSecurityMonitoringSuppression_ValidationEnabled(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckSecurityMonitoringSuppressionDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -609,7 +609,7 @@ func TestAccSecurityMonitoringSuppression_CreateAndUpdateTags(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckSecurityMonitoringSuppressionDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			// Create without tags

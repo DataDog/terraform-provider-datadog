@@ -19,7 +19,7 @@ func TestAccTeamBasic(t *testing.T) {
 	uniq := strings.ToLower(uniqueEntityName(ctx, t))
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogTeamDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{

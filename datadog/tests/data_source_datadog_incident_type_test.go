@@ -18,7 +18,7 @@ func TestAccDatadogIncidentTypeDataSource_Basic(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogIncidentTypeDestroy(providers.frameworkProvider, "datadog_incident_type.test"),
 		Steps: []resource.TestStep{
 			{

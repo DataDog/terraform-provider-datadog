@@ -22,7 +22,7 @@ func TestAccSpansMetric_import(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogSpansMetricDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -43,7 +43,7 @@ func TestAccSpansMetricBasic(t *testing.T) {
 	uniq := strings.ReplaceAll(uniqueEntityName(ctx, t), "-", "_")
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogSpansMetricDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -88,7 +88,7 @@ func TestAccSpansMetricGroupBys(t *testing.T) {
 	uniq := strings.ReplaceAll(uniqueEntityName(ctx, t), "-", "_")
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogSpansMetricDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -121,7 +121,7 @@ func TestAccSpansMetric_ValidateConfig(t *testing.T) {
 	uniq := strings.ReplaceAll(uniqueEntityName(ctx, t), "-", "_")
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogSpansMetricDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{

@@ -18,7 +18,7 @@ func TestAccDatadogIPAllowlist_CreateUpdate(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogIPAllowlistDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{

@@ -26,7 +26,7 @@ func TestAccDatadogWorkflowAutomationDatasource(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogWorkflowDestroy(providers.frameworkProvider, "datadog_workflow_automation.my_workflow"),
 		Steps: []resource.TestStep{
 			{

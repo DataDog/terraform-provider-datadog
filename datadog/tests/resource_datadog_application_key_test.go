@@ -28,7 +28,7 @@ func TestAccDatadogApplicationKey_Update(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogApplicationKeyDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -74,7 +74,7 @@ func TestAccDatadogApplicationKey_Error(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
 				Config:      testAccCheckDatadogScopedApplicationKeyConfigRequired(applicationKeyNameUpdate, []string{}),
@@ -99,7 +99,7 @@ func TestAccDatadogApplicationKey_Error(t *testing.T) {
 
 // 	resource.Test(t, resource.TestCase{
 // 		PreCheck:                 func() { testAccPreCheck(t) },
-// 		ProtoV5ProviderFactories: accProviders,
+// 		ProtoV6ProviderFactories: accProviders,
 // 		CheckDestroy:             testAccCheckDatadogApplicationKeyDestroy(providers.frameworkProvider),
 // 		Steps: []resource.TestStep{
 // 			{

@@ -24,7 +24,7 @@ func TestAccServiceAccountApplicationKeyBasic(t *testing.T) {
 	uniqUpdated := uniq + "updated"
 	scopes := []string{"dashboards_read", "dashboards_write"}
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogServiceAccountApplicationKeyDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -97,7 +97,7 @@ func TestAccServiceAccountApplicationKey_Error(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
 				Config:      testAccCheckDatadogServiceAccountScopedApplicationKey(applicationKeyNameUpdate, []string{}),
@@ -122,7 +122,7 @@ func TestAccServiceAccountApplicationKeyBasic_import(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogServiceAccountApplicationKeyDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{

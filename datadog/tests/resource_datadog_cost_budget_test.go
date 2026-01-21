@@ -19,7 +19,7 @@ func TestAccDatadogCostBudget_Basic(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogCostBudgetDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -50,7 +50,7 @@ func TestAccDatadogCostBudget_WithTagFilters(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogCostBudgetDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -86,7 +86,7 @@ func TestAccDatadogCostBudget_Update(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogCostBudgetDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -576,7 +576,7 @@ resource "datadog_cost_budget" "foo" {
 		t.Run(tc.name, func(t *testing.T) {
 			resource.Test(t, resource.TestCase{
 				PreCheck:                 func() { testAccPreCheck(t) },
-				ProtoV5ProviderFactories: accProviders,
+				ProtoV6ProviderFactories: accProviders,
 				Steps: []resource.TestStep{
 					{
 						Config:      tc.config,

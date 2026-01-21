@@ -20,7 +20,7 @@ func TestAccDatadogServiceAccountDatasourceMatchFilter(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDatasourceServiceAccountConfig(email, name),
@@ -56,7 +56,7 @@ func TestAccDatadogServiceAccountDatasourceMatchID(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDatasourceServiceAccountConfigID(email, name),
@@ -87,7 +87,7 @@ func TestAccDatadogServiceAccountDatasourceError(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
 				Config:      testAccDatasourceServiceAccountNotFoundError(email),
@@ -127,7 +127,7 @@ func TestAccDatadogServiceAccountDatasourcePagination(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDatasourceServiceAccountPaginationConfig(emailSuffix, namePrefix),

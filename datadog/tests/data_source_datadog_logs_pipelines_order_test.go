@@ -18,7 +18,7 @@ func TestAccDatadogLogsPipelinesOrderDatasource(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDatasourceDatadogLogsPipelinesOrderWithPipelineConfig(uniq),

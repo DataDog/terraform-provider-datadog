@@ -15,7 +15,7 @@ func TestAccIntegrationAwsExternalIDBasic(t *testing.T) {
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogIntegrationAwsExternalID(),

@@ -31,7 +31,7 @@ func TestAccMSTeamsTenantBasedHandlesBasic(t *testing.T) {
 	channelName := *resp.Data[0].Attributes.ChannelName
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogMSTeamsTenantBasedHandlesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{

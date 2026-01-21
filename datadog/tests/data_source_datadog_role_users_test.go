@@ -16,7 +16,7 @@ func TestAccDatadogRoleUsersDatasourceBasic(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDatasourceRoleUsersConfig(uniq),
@@ -33,7 +33,7 @@ func TestAccDatadogRoleUsersDatasourceExactMatch(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDatasourceRoleUsersExactMatchConfig(uniq, "false"),

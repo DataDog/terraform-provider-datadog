@@ -18,7 +18,7 @@ func TestAccIntegrationConfluentAccountBasic(t *testing.T) {
 	uniq := uniqueEntityName(ctx, t)
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogIntegrationConfluentAccountDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -43,7 +43,7 @@ func TestAccIntegrationConfluentAccountUpdated(t *testing.T) {
 	uniq := uniqueEntityName(ctx, t)
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogIntegrationConfluentAccountDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{

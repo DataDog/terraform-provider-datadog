@@ -12,7 +12,7 @@ func TestAccDatadogHostsDatasource(t *testing.T) {
 	_, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
 				Config: `data "datadog_hosts" "test" {

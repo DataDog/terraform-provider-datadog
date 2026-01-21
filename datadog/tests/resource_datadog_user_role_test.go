@@ -19,7 +19,7 @@ func TestAccUserRoleBasic(t *testing.T) {
 	username := strings.ToLower(uniqueEntityName(ctx, t)) + "@example.com"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogUserRoleDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{

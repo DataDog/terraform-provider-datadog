@@ -16,7 +16,7 @@ func TestAccDatadogReferenceTableRowsDataSource(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
 				// Step 1: Create the table (rows will sync asynchronously)

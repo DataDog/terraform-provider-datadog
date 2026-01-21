@@ -24,7 +24,7 @@ func TestAccDatadogDataset_Basic(t *testing.T) {
 	datasetName := uniqueDatasetName(ctx, t)
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogDatasetDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -43,7 +43,7 @@ func TestAccDatadogDataset_Update(t *testing.T) {
 	datasetName := uniqueDatasetName(ctx, t)
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogDatasetDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -77,7 +77,7 @@ func TestAccDatadogDataset_InvalidInput(t *testing.T) {
 	invalidProduct := "ci-visibility"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
 				Config:      testAccCheckDatadogDataset(datasetName, invalidProduct),

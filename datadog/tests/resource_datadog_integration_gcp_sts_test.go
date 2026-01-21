@@ -22,7 +22,7 @@ func TestAccIntGcpStsMetricNamespaceConfigs(t *testing.T) {
 
 	t.Run("when mrcs never specified in create and update, uses default", func(t *testing.T) {
 		resource.Test(t, resource.TestCase{
-			ProtoV5ProviderFactories: accProviders,
+			ProtoV6ProviderFactories: accProviders,
 			CheckDestroy:             testAccCheckDatadogIntegrationGcpStsDestroy(providers.frameworkProvider),
 			Steps: []resource.TestStep{
 				{
@@ -64,7 +64,7 @@ func TestAccIntGcpStsMetricNamespaceConfigs(t *testing.T) {
 
 	t.Run("when mrcs never specified in create, but specified on update, overwrites default", func(t *testing.T) {
 		resource.Test(t, resource.TestCase{
-			ProtoV5ProviderFactories: accProviders,
+			ProtoV6ProviderFactories: accProviders,
 			CheckDestroy:             testAccCheckDatadogIntegrationGcpStsDestroy(providers.frameworkProvider),
 			Steps: []resource.TestStep{
 				{
@@ -112,7 +112,7 @@ func TestAccIntGcpStsMetricNamespaceConfigs(t *testing.T) {
 
 	t.Run("when mrcs specified in create, but omitted on update, initial configs kept", func(t *testing.T) {
 		resource.Test(t, resource.TestCase{
-			ProtoV5ProviderFactories: accProviders,
+			ProtoV6ProviderFactories: accProviders,
 			CheckDestroy:             testAccCheckDatadogIntegrationGcpStsDestroy(providers.frameworkProvider),
 			Steps: []resource.TestStep{
 				{
@@ -175,7 +175,7 @@ func TestAccIntegrationGcpStsBasic(t *testing.T) {
 		knownvalue.StringExact("host:three"),
 	})
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogIntegrationGcpStsDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -331,7 +331,7 @@ func TestAccIntegrationGcpStsDefault(t *testing.T) {
 	uniq := uniqueEntityName(ctx, t)
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogIntegrationGcpStsDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{

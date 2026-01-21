@@ -43,7 +43,7 @@ func TestAccOnCallScheduleCreateAndUpdate(t *testing.T) {
 	}
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogOnCallScheduleDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{

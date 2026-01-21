@@ -17,7 +17,7 @@ func TestAccDeploymentGateBasic(t *testing.T) {
 	uniq := uniqueEntityName(ctx, t)
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogDeploymentGateDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -76,7 +76,7 @@ func TestAccDeploymentGateForceNew(t *testing.T) {
 	uniq := uniqueEntityName(ctx, t)
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogDeploymentGateDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -188,7 +188,7 @@ func TestAccDeploymentGateWithRules(t *testing.T) {
 	uniq := uniqueEntityName(ctx, t)
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogDeploymentGateDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -258,7 +258,7 @@ func TestAccDeploymentGateRuleWithExcludedResources(t *testing.T) {
 	uniq := uniqueEntityName(ctx, t)
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogDeploymentGateDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -307,7 +307,7 @@ func TestAccDeploymentGateModifyRuleDryRun(t *testing.T) {
 	uniq := uniqueEntityName(ctx, t)
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogDeploymentGateDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			// Create gate with rule where dry_run = false
@@ -381,7 +381,7 @@ func TestAccDeploymentGateModifyRuleOptions(t *testing.T) {
 	uniq := uniqueEntityName(ctx, t)
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogDeploymentGateDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			// Create gate with FDD rule with basic options
@@ -462,7 +462,7 @@ func TestAccDeploymentGateChangeRuleType(t *testing.T) {
 	uniq := uniqueEntityName(ctx, t)
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogDeploymentGateDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			// Create gate with FDD rule

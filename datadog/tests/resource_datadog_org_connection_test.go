@@ -25,7 +25,7 @@ func TestAccDatadogOrgConnection_Basic(t *testing.T) {
 	_ = ctx
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogOrgConnectionDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -59,7 +59,7 @@ func TestAccDatadogOrgConnection_Update(t *testing.T) {
 	_ = ctx
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogOrgConnectionDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -93,7 +93,7 @@ func TestAccDatadogOrgConnection_InvalidInput(t *testing.T) {
 	_ = ctx
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
 				Config:      testAccCheckDatadogOrgConnectionInvalidUUID("invalid-uuid", []string{"logs"}),

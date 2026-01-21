@@ -45,7 +45,7 @@ func TestAccDatadogLogsArchiveAzure_basic(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckArchiveAndIntegrationAzureDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -111,7 +111,7 @@ func TestAccDatadogLogsArchiveGCS_basic(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckArchiveAndIntegrationGCSDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -175,7 +175,7 @@ func TestAccDatadogLogsArchiveS3_basic(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckArchiveAndIntegrationAWSDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -253,7 +253,7 @@ func TestAccDatadogLogsArchiveS3Update_basic(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckArchiveAndIntegrationAWSDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{

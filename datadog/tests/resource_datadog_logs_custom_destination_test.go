@@ -29,7 +29,7 @@ func TestAccDatadogLogsCustomDestination_basic(t *testing.T) {
 	path := "datadog_logs_custom_destination.sample_destination"
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
 				Config: destinationWithRequiredFieldsOnly,
@@ -100,7 +100,7 @@ func TestAccDatadogLogsCustomDestination_forwarder_types(t *testing.T) {
 	path := "datadog_logs_custom_destination.sample_destination"
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogCreateLogsCustomDestination(name, httpWithBasicAuth),

@@ -21,7 +21,7 @@ func TestAccCSMThreatsPolicy_CreateAndUpdate(t *testing.T) {
 	tags := []string{"host_name:test_host"}
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckCSMThreatsPolicyDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -83,7 +83,7 @@ func TestAccCSMThreatsPolicy_CreateAndUpdateWithHostTagsLists(t *testing.T) {
 	}
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckCSMThreatsPolicyDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{

@@ -24,7 +24,7 @@ func TestAccDatadogAppBuilderAppDataSource_Inline_WithOptionalFields(t *testing.
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogAppBuilderAppDestroy(providers.frameworkProvider, resourceName),
 		Steps: []resource.TestStep{
 			{

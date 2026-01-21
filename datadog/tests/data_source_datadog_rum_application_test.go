@@ -16,7 +16,7 @@ func TestAccDatadogRUMApplicationDatasourceNameFilter(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDatasourceRUMApplicationNameFilterConfig(uniq),
@@ -42,7 +42,7 @@ func TestAccDatadogRUMApplicationDatasourceIDFilter(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDatasourceRUMApplicationIDConfig(uniq),
@@ -68,7 +68,7 @@ func TestAccDatadogRUMApplicationDatasourceErrorMultiple(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
 				Config:      testAccDatasourceRUMApplicationMultiple(uniq),

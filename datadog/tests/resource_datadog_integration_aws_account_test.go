@@ -20,7 +20,7 @@ func TestAccIntegrationAwsAccount_RoleBased(t *testing.T) {
 	accountID := uniqueAWSAccountID(ctx, t)
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogIntegrationAwsAccountDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{ // create role-based account with defaults
@@ -295,7 +295,7 @@ func TestAccIntegrationAwsAccountKeyBased(t *testing.T) {
 	secretAccessKey := "wJalrXUtnFEMI" + uniq
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogIntegrationAwsAccountDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{ // create key-based account with defaults
@@ -455,7 +455,7 @@ func TestAccIntegrationAwsAccount_OptionalLogSourceConfig(t *testing.T) {
 	accountID := uniqueAWSAccountID(ctx, t)
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogIntegrationAwsAccountDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{ // test that empty log_source_config block is valid and clears filters
@@ -497,7 +497,7 @@ func TestAccIntegrationAwsAccount_InvalidEmptyTagFilters(t *testing.T) {
 	accountID := uniqueAWSAccountID(ctx, t)
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogIntegrationAwsAccountDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{

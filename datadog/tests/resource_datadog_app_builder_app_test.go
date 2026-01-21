@@ -27,7 +27,7 @@ func TestAccDatadogAppBuilderAppResource_Inline_WithOptionalFields(t *testing.T)
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogAppBuilderAppDestroy(providers.frameworkProvider, resourceName),
 		Steps: []resource.TestStep{
 			{
@@ -60,7 +60,7 @@ func TestAccDatadogAppBuilderAppResource_Inline_WithOptionalFields_Import(t *tes
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogAppBuilderAppDestroy(providers.frameworkProvider, resourceName),
 		Steps: []resource.TestStep{
 			{
@@ -113,7 +113,7 @@ func TestAccDatadogAppBuilderAppResource_Escaped_Interpolated(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogAppBuilderAppDestroy(providers.frameworkProvider, resourceName),
 		Steps: []resource.TestStep{
 			{
@@ -146,7 +146,7 @@ func TestAccDatadogAppBuilderAppResource_Escaped_Interpolated_Import(t *testing.
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogAppBuilderAppDestroy(providers.frameworkProvider, resourceName),
 		Steps: []resource.TestStep{
 			{
@@ -225,7 +225,7 @@ func TestAccDatadogAppBuilderAppResource_FromFile(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogAppBuilderAppDestroy(providers.frameworkProvider, resourceName),
 		Steps: []resource.TestStep{
 			{
@@ -283,7 +283,7 @@ func TestAccDatadogAppBuilderAppResource_FromFile_Import(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogAppBuilderAppDestroy(providers.frameworkProvider, resourceName),
 		Steps: []resource.TestStep{
 			{
@@ -423,7 +423,7 @@ func TestAccDatadogAppBuilderAppResource_PublishUnpublish(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogAppBuilderAppDestroy(providers.frameworkProvider, resourceName),
 		Steps: []resource.TestStep{
 			// Create app as unpublished

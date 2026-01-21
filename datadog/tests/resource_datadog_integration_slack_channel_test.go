@@ -21,7 +21,7 @@ func TestAccDatadogIntegrationSlackChannel_Basic(t *testing.T) {
 	uniqueChannelAccountName := reg.ReplaceAllString(uniqueEntityName(ctx, t), "")
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogIntegrationSlackChannelDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -77,7 +77,7 @@ func TestAccDatadogIntegrationSlackChannel_Import(t *testing.T) {
 	uniqueChannelAccountName := reg.ReplaceAllString(uniqueEntityName(ctx, t), "")
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogIntegrationSlackChannelDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{

@@ -18,7 +18,7 @@ func TestAccMonitorNotificationRule_Import(t *testing.T) {
 	uniq := uniqueEntityName(ctx, t)
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogMonitorNotificationRuleDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -39,7 +39,7 @@ func TestAccMonitorNotificationRule_Create(t *testing.T) {
 	uniq := uniqueEntityName(ctx, t)
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogMonitorNotificationRuleDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -68,7 +68,7 @@ func TestAccMonitorNotificationRuleWithScope_Create(t *testing.T) {
 	uniq := uniqueEntityName(ctx, t)
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogMonitorNotificationRuleDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -95,7 +95,7 @@ func TestAccMonitorNotificationRuleWithConditionalRecipients_Create(t *testing.T
 	uniq := uniqueEntityName(ctx, t)
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogMonitorNotificationRuleDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -137,7 +137,7 @@ func TestAccMonitorNotificationRule_Update(t *testing.T) {
 	uniq_updated := uniqueEntityName(ctx, t)
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogMonitorNotificationRuleDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{

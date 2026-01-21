@@ -20,7 +20,7 @@ func TestAccMonitor_Fwprovider_Create(t *testing.T) {
 	uniq := uniqueEntityName(ctx, t)
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogMonitorDestroyFwprovider(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -47,7 +47,7 @@ func TestAccMonitor_Fwprovider_Update(t *testing.T) {
 	uniq := uniqueEntityName(ctx, t)
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogMonitorDestroyFwprovider(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -88,7 +88,7 @@ func TestAccMonitor_Fwprovider_Basic(t *testing.T) {
 	monitorName := uniqueEntityName(ctx, t)
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogMonitorDestroyFwprovider(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -151,7 +151,7 @@ func TestAccMonitor_Fwprovider_Assets(t *testing.T) {
 	monitorName := uniqueEntityName(ctx, t)
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogMonitorDestroyFwprovider(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -201,7 +201,7 @@ func TestAccMonitor_Fwprovider_ServiceCheck_Basic(t *testing.T) {
 	monitorName := uniqueEntityName(ctx, t)
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogMonitorDestroyFwprovider(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -262,7 +262,7 @@ func TestAccMonitor_Fwprovider_BasicNoTresholdOrPriority(t *testing.T) {
 	monitorName := uniqueEntityName(ctx, t)
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogMonitorDestroyFwprovider(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -312,7 +312,7 @@ func TestAccMonitor_Fwprovider_Updated(t *testing.T) {
 	monitorNameUpdated := monitorName + "-updated"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogMonitorDestroyFwprovider(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -462,7 +462,7 @@ func TestAccMonitor_Fwprovider_UpdatedToRemoveTags(t *testing.T) {
 	monitorNameUpdated := monitorName + "-updated"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogMonitorDestroyFwprovider(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -609,7 +609,7 @@ func TestAccMonitor_Fwprovider_TrimWhiteSpace(t *testing.T) {
 	monitorName := uniqueEntityName(ctx, t)
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogMonitorDestroyFwprovider(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -636,7 +636,7 @@ func TestAccMonitor_Fwprovider_Basic_float_int(t *testing.T) {
 	monitorName := uniqueEntityName(ctx, t)
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogMonitorDestroyFwprovider(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -677,7 +677,7 @@ func TestAccMonitor_Fwprovider_Log(t *testing.T) {
 	monitorName := uniqueEntityName(ctx, t)
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogMonitorDestroyFwprovider(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -728,7 +728,7 @@ func TestAccMonitor_Fwprovider_LogMultiAlert(t *testing.T) {
 	monitorName := uniqueEntityName(ctx, t)
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogMonitorDestroyFwprovider(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -783,7 +783,7 @@ func TestAccMonitor_Fwprovider_NoThresholdWindows(t *testing.T) {
 	monitorName := uniqueEntityName(ctx, t)
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogMonitorDestroyFwprovider(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -805,7 +805,7 @@ func TestAccMonitor_Fwprovider_ThresholdWindows(t *testing.T) {
 	monitorName := uniqueEntityName(ctx, t)
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogMonitorDestroyFwprovider(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -863,7 +863,7 @@ func TestAccMonitor_Fwprovider_ComposeWithSyntheticsTest(t *testing.T) {
 	monitorName := uniqueEntityName(ctx, t)
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogMonitorDestroyFwprovider(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -888,7 +888,7 @@ func TestAccMonitor_Fwprovider_FormulaFunction(t *testing.T) {
 	monitorName := uniqueEntityName(ctx, t)
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogMonitorDestroyFwprovider(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -913,7 +913,7 @@ func TestAccMonitor_Fwprovider_FormulaFunction_Cost(t *testing.T) {
 	monitorName := uniqueEntityName(ctx, t)
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogMonitorDestroyFwprovider(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -938,7 +938,7 @@ func TestAccMonitor_Fwprovider_ZeroDelay(t *testing.T) {
 	monitorName := uniqueEntityName(ctx, t)
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogMonitorDestroyFwprovider(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -967,7 +967,7 @@ func TestAccMonitor_Fwprovider_RestrictedRoles(t *testing.T) {
 	monitorName := uniqueEntityName(ctx, t)
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogMonitorDestroyFwprovider(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -1000,7 +1000,7 @@ func TestAccMonitor_Fwprovider_SchedulingOptions(t *testing.T) {
 	monitorName := uniqueEntityName(ctx, t)
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogMonitorDestroyFwprovider(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -1025,7 +1025,7 @@ func TestAccMonitor_Fwprovider_EmptySchedulingOptions(t *testing.T) {
 	monitorName := uniqueEntityName(ctx, t)
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogMonitorDestroyFwprovider(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -1046,7 +1046,7 @@ func TestAccMonitor_Fwprovider_SchedulingOptionsHourStart(t *testing.T) {
 	monitorName := uniqueEntityName(ctx, t)
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogMonitorDestroyFwprovider(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -1069,7 +1069,7 @@ func TestAccMonitor_Fwprovider_SchedulingOptionsCustomSchedule(t *testing.T) {
 	monitorName := uniqueEntityName(ctx, t)
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogMonitorDestroyFwprovider(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -1096,7 +1096,7 @@ func TestAccMonitor_Fwprovider_SchedulingOptionsCustomScheduleNoStart(t *testing
 	monitorName := uniqueEntityName(ctx, t)
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogMonitorDestroyFwprovider(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -1125,7 +1125,7 @@ func TestAccMonitor_Fwprovider_DefaultTags(t *testing.T) {
 		Steps: []resource.TestStep{
 			{ // New tags are correctly added and duplicates are kept
 				Config: testAccCheckDatadogMonitorConfigDuplicateTags(monitorName),
-				ProtoV5ProviderFactories: map[string]func() (tfprotov5.ProviderServer, error){
+				ProtoV6ProviderFactories: map[string]func() (tfprotov5.ProviderServer, error){
 					"datadog": withDefaultTagsFw(ctx, providers, map[string]string{
 						"default_key": "default_value",
 					}),
@@ -1148,7 +1148,7 @@ func TestAccMonitor_Fwprovider_DefaultTags(t *testing.T) {
 			},
 			{ // Resource tags take precedence over default tags and duplicates stay
 				Config: testAccCheckDatadogMonitorConfigDuplicateTags(monitorName),
-				ProtoV5ProviderFactories: map[string]func() (tfprotov5.ProviderServer, error){
+				ProtoV6ProviderFactories: map[string]func() (tfprotov5.ProviderServer, error){
 					"datadog": withDefaultTagsFw(ctx, providers, map[string]string{
 						"foo": "not_bar",
 					}),
@@ -1169,7 +1169,7 @@ func TestAccMonitor_Fwprovider_DefaultTags(t *testing.T) {
 			},
 			{ // Resource tags take precedence over default tags, but new tags are added
 				Config: testAccCheckDatadogMonitorConfig(monitorName),
-				ProtoV5ProviderFactories: map[string]func() (tfprotov5.ProviderServer, error){
+				ProtoV6ProviderFactories: map[string]func() (tfprotov5.ProviderServer, error){
 					"datadog": withDefaultTagsFw(ctx, providers, map[string]string{
 						"foo":     "not_bar",
 						"new_tag": "new_value",
@@ -1191,7 +1191,7 @@ func TestAccMonitor_Fwprovider_DefaultTags(t *testing.T) {
 			},
 			{ // Tags without any value work correctly
 				Config: testAccCheckDatadogMonitorConfig(monitorName),
-				ProtoV5ProviderFactories: map[string]func() (tfprotov5.ProviderServer, error){
+				ProtoV6ProviderFactories: map[string]func() (tfprotov5.ProviderServer, error){
 					"datadog": withDefaultTagsFw(ctx, providers, map[string]string{
 						"no_value": "",
 					}),
@@ -1212,7 +1212,7 @@ func TestAccMonitor_Fwprovider_DefaultTags(t *testing.T) {
 			},
 			{ // Tags with colons in the value work correctly
 				Config: testAccCheckDatadogMonitorConfig(monitorName),
-				ProtoV5ProviderFactories: map[string]func() (tfprotov5.ProviderServer, error){
+				ProtoV6ProviderFactories: map[string]func() (tfprotov5.ProviderServer, error){
 					"datadog": withDefaultTagsFw(ctx, providers, map[string]string{
 						"repo_url": "https://github.com/repo/path",
 					}),
@@ -1233,7 +1233,7 @@ func TestAccMonitor_Fwprovider_DefaultTags(t *testing.T) {
 			},
 			{ // Works with monitors without a tag attribute
 				Config: testAccCheckDatadogMonitorConfigNoTag(monitorName),
-				ProtoV5ProviderFactories: map[string]func() (tfprotov5.ProviderServer, error){
+				ProtoV6ProviderFactories: map[string]func() (tfprotov5.ProviderServer, error){
 					"datadog": withDefaultTagsFw(ctx, providers, map[string]string{
 						"default_key": "default_value",
 					}),
@@ -1258,7 +1258,7 @@ func TestAccMonitor_Fwprovider_WithRestrictionPolicy(t *testing.T) {
 	monitorName := uniqueEntityName(ctx, t)
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogMonitorWithRestrictionRoleDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
