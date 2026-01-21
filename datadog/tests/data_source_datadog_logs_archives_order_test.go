@@ -41,6 +41,9 @@ func logsArchiveOrderCount(state *terraform.State, responseCount int) error {
 }
 
 func TestAccDatadogLogsArchivesOrderDatasource(t *testing.T) {
+	if !isReplaying() {
+		t.Skip("This test only supports replaying")
+	}
 	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
