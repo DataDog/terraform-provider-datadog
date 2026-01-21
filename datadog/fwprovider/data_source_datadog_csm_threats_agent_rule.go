@@ -135,7 +135,16 @@ func (r *csmThreatsAgentRulesDataSource) Read(ctx context.Context, request datas
 					setAction.Field = types.StringNull()
 				}
 				if s.Value != nil {
-					setAction.Value = types.StringValue(*s.Value)
+					// Handle different value types from API - convert all to string
+					if s.Value.Bool != nil {
+						setAction.Value = types.StringValue(fmt.Sprintf("%t", *s.Value.Bool))
+					} else if s.Value.String != nil {
+						setAction.Value = types.StringValue(*s.Value.String)
+					} else if s.Value.Int32 != nil {
+						setAction.Value = types.StringValue(fmt.Sprintf("%d", *s.Value.Int32))
+					} else {
+						setAction.Value = types.StringNull()
+					}
 				} else {
 					setAction.Value = types.StringNull()
 				}
@@ -178,7 +187,15 @@ func (r *csmThreatsAgentRulesDataSource) Read(ctx context.Context, request datas
 			}
 
 			if act.Hash != nil {
-				action.Hash = &HashActionModel{}
+				hashAction := &HashActionModel{}
+				h := act.Hash
+
+				if h.Field != nil {
+					hashAction.Field = types.StringValue(*h.Field)
+				} else {
+					hashAction.Field = types.StringNull()
+				}
+				action.Hash = hashAction
 			}
 
 			actions = append(actions, action)
@@ -247,7 +264,9 @@ func (*csmThreatsAgentRulesDataSource) Schema(_ context.Context, _ datasource.Sc
 										},
 									},
 									"hash": types.ObjectType{
-										AttrTypes: map[string]attr.Type{},
+										AttrTypes: map[string]attr.Type{
+											"field": types.StringType,
+										},
 									},
 								},
 							},

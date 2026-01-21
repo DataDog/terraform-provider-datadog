@@ -44,10 +44,11 @@ Email notifications can be sent to specific users by using the same `@username` 
 - `query` (String) The monitor query to notify on. Note this is not the same query you see in the UI and the syntax is different depending on the monitor type, please see the [API Reference](https://docs.datadoghq.com/api/v1/monitors/#create-a-monitor) for details. `terraform plan` will validate query contents unless `validate` is set to `false`.
 
 **Note:** APM latency data is now available as Distribution Metrics. Existing monitors have been migrated automatically but all terraformed monitors can still use the existing metrics. We strongly recommend updating monitor definitions to query the new metrics. To learn more, or to see examples of how to update your terraform definitions to utilize the new distribution metrics, see the [detailed doc](https://docs.datadoghq.com/tracing/guide/ddsketch_trace_metrics/).
-- `type` (String) The type of the monitor. The mapping from these types to the types found in the Datadog Web UI can be found in the Datadog API [documentation page](https://docs.datadoghq.com/api/v1/monitors/#create-a-monitor). Note: The monitor type cannot be changed after a monitor is created. Valid values are `composite`, `event alert`, `log alert`, `metric alert`, `process alert`, `query alert`, `rum alert`, `service check`, `synthetics alert`, `trace-analytics alert`, `slo alert`, `event-v2 alert`, `audit alert`, `ci-pipelines alert`, `ci-tests alert`, `error-tracking alert`, `database-monitoring alert`, `network-performance alert`, `cost alert`.
+- `type` (String) The type of the monitor. The mapping from these types to the types found in the Datadog Web UI can be found in the Datadog API [documentation page](https://docs.datadoghq.com/api/v1/monitors/#create-a-monitor). Note: The monitor type cannot be changed after a monitor is created. Valid values are `composite`, `event alert`, `log alert`, `metric alert`, `process alert`, `query alert`, `rum alert`, `service check`, `synthetics alert`, `trace-analytics alert`, `slo alert`, `event-v2 alert`, `audit alert`, `ci-pipelines alert`, `ci-tests alert`, `error-tracking alert`, `database-monitoring alert`, `network-performance alert`, `cost alert`, `data-quality alert`.
 
 ### Optional
 
+- `assets` (Block List) List of monitor assets (for example, runbooks, dashboards, workflows) tied to this monitor. (see [below for nested schema](#nestedblock--assets))
 - `draft_status` (String) Indicates whether the monitor is in a draft or published state. When set to `draft`, the monitor appears as Draft and does not send notifications. When set to `published`, the monitor is active, and it evaluates conditions and sends notifications as configured. Valid values are `draft`, `published`. Defaults to `"published"`.
 - `enable_logs_sample` (Boolean) A boolean indicating whether or not to include a list of log values which triggered the alert. This is only used by log monitors. Defaults to `false`.
 - `enable_samples` (Boolean) Whether or not a list of samples which triggered the alert is included. This is only used by CI Test and Pipeline monitors.
@@ -90,6 +91,21 @@ We recommend at least 2x the monitor timeframe for metric alerts or 2 minutes fo
 ### Read-Only
 
 - `id` (String) The ID of this resource.
+
+<a id="nestedblock--assets"></a>
+### Nested Schema for `assets`
+
+Required:
+
+- `category` (String) Type of asset the entity represents on a monitor. Valid values are `runbook`.
+- `name` (String) Name for the monitor asset.
+- `url` (String) URL for the asset.
+
+Optional:
+
+- `resource_key` (String) Identifier of the internal Datadog resource that this asset represents.
+- `resource_type` (String) Type of internal Datadog resource associated with a monitor asset. Valid values are `notebook`.
+
 
 <a id="nestedblock--monitor_threshold_windows"></a>
 ### Nested Schema for `monitor_threshold_windows`

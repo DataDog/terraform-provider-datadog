@@ -53,6 +53,7 @@ var isTestOrgC *bool
 var allowedHeaders = map[string]string{"Accept": "", "Content-Type": ""}
 
 var testFiles2EndpointTags = map[string]string{
+	"resource_datadog_dashboard_widget_time_test.go":                                     "dashboard",
 	"tests/data_source_datadog_api_key_test":                                             "api_keys",
 	"tests/data_source_datadog_apm_retention_filters_order_test":                         "apm_retention_filters_order",
 	"tests/data_source_datadog_app_builder_app_test":                                     "app_builder_app",
@@ -87,6 +88,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/data_source_datadog_metrics_test":                                             "metrics",
 	"tests/data_source_datadog_monitor_test":                                             "monitors",
 	"tests/data_source_datadog_monitors_test":                                            "monitors",
+	"tests/data_source_datadog_organization_settings_test":                               "organization",
 	"tests/data_source_datadog_permissions_test":                                         "permissions",
 	"tests/data_source_datadog_powerpack_test":                                           "powerpacks",
 	"tests/data_source_datadog_reference_table_test":                                     "reference-tables",
@@ -132,6 +134,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_authn_mapping_test":                                          "authn_mapping",
 	"tests/resource_datadog_child_organization_test":                                     "organization",
 	"tests/resource_datadog_cloud_configuration_rule_test":                               "security-monitoring",
+	"tests/resource_datadog_cloud_inventory_sync_config_test":                            "cloud-inventory",
 	"tests/resource_datadog_cloud_workload_security_agent_rule_test":                     "cloud_workload_security",
 	"tests/resource_datadog_action_connection_test":                                      "action_connection",
 	"tests/resource_datadog_agentless_scanning_aws_scan_options_test":                    "agentless-scanning",
@@ -167,10 +170,11 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_dashboard_service_map_test":                                  "dashboards",
 	"tests/resource_datadog_dashboard_slo_list_test":                                     "dashboards",
 	"tests/resource_datadog_dashboard_slo_test":                                          "dashboards",
-	"tests/resource_datadog_dashboard_style_test":                                        "dashboards",
 	"tests/resource_datadog_dashboard_split_graph_test":                                  "dashboards",
+	"tests/resource_datadog_dashboard_style_test":                                        "dashboards",
 	"tests/resource_datadog_dashboard_sunburst_test":                                     "dashboards",
 	"tests/resource_datadog_dashboard_test":                                              "dashboards",
+	"tests/resource_datadog_dashboard_time_spans_test":                                   "dashboards",
 	"tests/resource_datadog_dashboard_timeseries_test":                                   "dashboards",
 	"tests/resource_datadog_dashboard_top_list_test":                                     "dashboards",
 	"tests/resource_datadog_dashboard_topology_map_test":                                 "dashboards",
@@ -241,6 +245,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_logs_custom_pipeline_test":                                   "logs-pipelines",
 	"tests/resource_datadog_logs_index_test":                                             "logs-index",
 	"tests/resource_datadog_logs_metric_test":                                            "logs-metric",
+	"tests/resource_datadog_logs_restriction_query_test":                                 "logs-restriction-queries",
 	"tests/resource_datadog_metric_metadata_test":                                        "metrics",
 	"tests/resource_datadog_metric_tag_configuration_test":                               "metrics",
 	"tests/resource_datadog_monitor_config_policy_test":                                  "monitor-config-policies",
@@ -251,6 +256,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_on_call_escalation_policy_test":                              "on-call",
 	"tests/resource_datadog_on_call_schedule_test":                                       "on-call",
 	"tests/resource_datadog_on_call_team_routing_rules_test":                             "on-call",
+	"tests/resource_datadog_on_call_user_notification_channel_test":                      "on-call",
 	"tests/resource_datadog_organization_settings_test":                                  "organization",
 	"tests/resource_datadog_org_connection_test":                                         "org_connection",
 	"tests/resource_datadog_reference_table_test":                                        "reference-tables",
@@ -285,6 +291,9 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_team_permission_setting_test":                                "team",
 	"tests/resource_datadog_team_test":                                                   "team",
 	"tests/resource_datadog_team_hierarchy_links_test":                                   "team",
+	"tests/resource_datadog_team_notification_rule_test":                                 "team",
+	"tests/data_source_datadog_team_notification_rule_test":                              "team",
+	"tests/data_source_datadog_team_notification_rules_test":                             "team",
 	"tests/resource_datadog_timeboard_test":                                              "dashboards",
 	"tests/resource_datadog_user_test":                                                   "users",
 	"tests/resource_datadog_user_role_test":                                              "roles",
@@ -309,6 +318,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/data_source_datadog_incident_notification_template_test":                      "incidents",
 	"tests/resource_datadog_incident_notification_rule_test":                             "incidents",
 	"tests/data_source_datadog_incident_notification_rule_test":                          "incidents",
+	"tests/resource_datadog_deployment_gate_test":                                        "deployment-gates",
 }
 
 // getEndpointTagValue traverses callstack frames to find the test function that invoked this call;

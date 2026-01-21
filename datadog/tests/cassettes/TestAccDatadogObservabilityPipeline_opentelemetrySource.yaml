@@ -1,0 +1,107 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 412
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"config":{"destinations":[{"id":"destination-1","inputs":["opentelemetry-source-1"],"type":"datadog_logs"}],"pipeline_type":"logs","sources":[{"id":"opentelemetry-source-1","tls":{"ca_file":"/etc/ssl/certs/ca.crt","crt_file":"/etc/ssl/certs/opentelemetry.crt","key_file":"/etc/ssl/private/opentelemetry.key"},"type":"opentelemetry"}]},"name":"opentelemetry-pipeline"},"type":"pipelines"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 494
+        uncompressed: false
+        body: |
+            {"data":{"id":"f4b5028a-f20c-11f0-9df4-da7ad0900002","type":"pipelines","attributes":{"name":"opentelemetry-pipeline","config":{"destinations":[{"id":"destination-1","inputs":["opentelemetry-source-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"opentelemetry-source-1","tls":{"ca_file":"/etc/ssl/certs/ca.crt","crt_file":"/etc/ssl/certs/opentelemetry.crt","key_file":"/etc/ssl/private/opentelemetry.key"},"type":"opentelemetry"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 473.836125ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/f4b5028a-f20c-11f0-9df4-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 494
+        uncompressed: false
+        body: |
+            {"data":{"id":"f4b5028a-f20c-11f0-9df4-da7ad0900002","type":"pipelines","attributes":{"name":"opentelemetry-pipeline","config":{"destinations":[{"id":"destination-1","inputs":["opentelemetry-source-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"opentelemetry-source-1","tls":{"ca_file":"/etc/ssl/certs/ca.crt","crt_file":"/etc/ssl/certs/opentelemetry.crt","key_file":"/etc/ssl/private/opentelemetry.key"},"type":"opentelemetry"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 223.079292ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/f4b5028a-f20c-11f0-9df4-da7ad0900002
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Content-Type:
+                - application/json
+        status: 204 No Content
+        code: 204
+        duration: 349.588417ms
