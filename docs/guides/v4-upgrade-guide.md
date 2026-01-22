@@ -81,6 +81,62 @@ Brief description of the breaking change.
 ================================================================================
 -->
 
+### Deprecating `locked` on `datadog_monitor`
+
+Deprecating `locked` and changing the default behavior of `restricted_roles` on `datadog_monitor`. These changes are intended 
+to encourage users to migrate and manage monitor permissions through the `datadog_restriction_policy` resource. 
+
+**Note:** Migrating off `restricted_roles` is not required. This field is still supported by the monitor provider. However, we strongly recommend migrating to `datadog_restriction_policy` as the preferred way to manage monitor permissions going forward.
+
+**Before (v3.x):**
+
+```terraform
+# Old configuration
+
+resource "datadog_monitor" "foo" {
+  name               = "Name for monitor foo"
+  type               = "metric alert"
+  message            = "Monitor triggered. Notify: @hipchat-channel"
+  escalation_message = "Escalation message @pagerduty"
+
+  query = "avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 4"
+  monitor_thresholds {
+    critical = 4
+  }
+  restricted_roles = ["aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"]
+}
+
+```
+
+**After (v4.0.0):**
+
+```terraform
+resource "datadog_monitor" "foo" {
+  name               = "Name for monitor foo"
+  type               = "metric alert"
+  message            = "Monitor triggered. Notify: @hipchat-channel"
+  escalation_message = "Escalation message @pagerduty"
+
+  query = "avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 4"
+  monitor_thresholds {
+    critical = 4
+  }
+  restricted_roles = ["aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"]
+}
+
+resource "datadog_restriction_policy" "bar" {
+  resource_id = "monitor:${datadog_monitor.foo.id}"
+  bindings {
+    principals = ["role:aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"]
+    relation   = "editor"
+  }
+}
+```
+
+**Migration steps:**
+1. Remove the `locked` or `restricted_roles` field from monitor resources.
+2. Create a `datadog_restriction_policy` the associated monitor ID and the roles you want to restrict.
+
 ## Getting Help
 
 If you encounter issues upgrading to v4.0.0:
