@@ -33,11 +33,6 @@ func ExpandSocketDestination(ctx context.Context, id string, inputs types.List, 
 	s.SetMode(datadogV2.ObservabilityPipelineSocketDestinationMode(src.Mode.ValueString()))
 	s.SetEncoding(datadogV2.ObservabilityPipelineSocketDestinationEncoding(src.Encoding.ValueString()))
 
-	if len(src.Framing) == 0 {
-		diags.AddError("Missing required block", "The 'framing' block is required for socket destination")
-		return datadogV2.ObservabilityPipelineConfigDestinationItem{}, diags
-	}
-
 	switch src.Framing[0].Method.ValueString() {
 	case "newline_delimited":
 		s.Framing = datadogV2.ObservabilityPipelineSocketDestinationFraming{
@@ -163,7 +158,7 @@ func SocketDestinationSchema() schema.ListNestedBlock {
 						},
 					},
 					Validators: []validator.List{
-						listvalidator.SizeAtLeast(1),
+						listvalidator.IsRequired(),
 						listvalidator.SizeAtMost(1),
 					},
 				},

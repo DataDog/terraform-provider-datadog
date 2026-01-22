@@ -4183,7 +4183,7 @@ resource "datadog_observability_pipeline" "socket_no_framing" {
     }
   }
 }`,
-				ExpectError: regexp.MustCompile(`The 'framing' block is required for socket source`),
+				ExpectError: regexp.MustCompile(`must have a configuration value`),
 			},
 			{
 				Config: `

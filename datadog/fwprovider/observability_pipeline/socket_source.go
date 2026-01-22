@@ -24,11 +24,6 @@ func ExpandSocketSource(src *SocketSourceModel, id string) (datadogV2.Observabil
 	s.SetId(id)
 	s.SetMode(datadogV2.ObservabilityPipelineSocketSourceMode(src.Mode.ValueString()))
 
-	if len(src.Framing) == 0 {
-		diags.AddError("Missing required block", "The 'framing' block is required for socket source")
-		return datadogV2.ObservabilityPipelineConfigSourceItem{}, diags
-	}
-
 	switch src.Framing[0].Method.ValueString() {
 	case "newline_delimited":
 		s.Framing = datadogV2.ObservabilityPipelineSocketSourceFraming{
@@ -162,7 +157,7 @@ func SocketSourceSchema() schema.ListNestedBlock {
 						},
 					},
 					Validators: []validator.List{
-						listvalidator.SizeAtLeast(1),
+						listvalidator.IsRequired(),
 						listvalidator.SizeAtMost(1),
 					},
 				},
