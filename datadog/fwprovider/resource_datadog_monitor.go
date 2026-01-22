@@ -76,7 +76,6 @@ type monitorResourceModel struct {
 	NotifyAudit             types.Bool                       `tfsdk:"notify_audit"`
 	TimeoutH                types.Int64                      `tfsdk:"timeout_h"`
 	RequireFullWindow       types.Bool                       `tfsdk:"require_full_window"`
-	Locked                  types.Bool                       `tfsdk:"locked"`
 	RestrictedRoles         types.Set                        `tfsdk:"restricted_roles"`
 	IncludeTags             types.Bool                       `tfsdk:"include_tags"`
 	GroupbySimpleMonitor    types.Bool                       `tfsdk:"groupby_simple_monitor"`
@@ -201,10 +200,6 @@ func (r *monitorResource) ConfigValidators(ctx context.Context) []resource.Confi
 			frameworkPath.MatchRoot("no_data_timeframe"),
 		),
 		resourcevalidator.Conflicting(
-			frameworkPath.MatchRoot("locked"),
-			frameworkPath.MatchRoot("restricted_roles"),
-		),
-		resourcevalidator.Conflicting(
 			frameworkPath.MatchRoot("scheduling_options").AtAnyListIndex().
 				AtName("evaluation_window").AtAnyListIndex().
 				AtName("hour_starts"),
@@ -327,11 +322,6 @@ func (r *monitorResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 				Optional:    true,
 				Computed:    true,
 				Default:     booldefault.StaticBool(true),
-			},
-			"locked": schema.BoolAttribute{
-				MarkdownDescription: "A boolean indicating whether changes to this monitor should be restricted to the creator or admins. Defaults to `false`.",
-				Optional:            true,
-				DeprecationMessage:  "Use `restricted_roles`.",
 			},
 			// We only set new_group_delay in the monitor API payload if it is nonzero
 			// because the SDKv2 terraform plugin API prevents unsetting new_group_delay
@@ -1038,7 +1028,6 @@ func (r *monitorResource) buildMonitorStruct(ctx context.Context, state *monitor
 	fwutils.SetOptBool(state.GroupbySimpleMonitor, monitorOptions.SetGroupbySimpleMonitor)
 	fwutils.SetOptBool(state.EnableLogsSample, monitorOptions.SetEnableLogsSample)
 	fwutils.SetOptBool(state.EnableSamples, monitorOptions.SetEnableSamples)
-	fwutils.SetOptBool(state.Locked, monitorOptions.SetLocked)
 
 	if state.MonitorThresholds != nil {
 		thresholdObj := state.MonitorThresholds[0]
@@ -1297,7 +1286,6 @@ func (r *monitorResource) updateState(ctx context.Context, state *monitorResourc
 	state.GroupbySimpleMonitor = fwutils.ToTerraformBool(m.Options.GetGroupbySimpleMonitorOk())
 	state.NotifyBy = fwutils.ToTerraformSetString(ctx, m.Options.GetNotifyByOk)
 	state.EnableLogsSample = fwutils.ToTerraformBool(m.Options.GetEnableLogsSampleOk())
-	state.Locked = fwutils.ToTerraformBool(m.Options.GetLockedOk())
 
 	r.updateAssetsState(ctx, state, m)
 

@@ -38,7 +38,6 @@ data "datadog_monitor" "test" {
 - `groupby_simple_monitor` (Boolean) Whether or not to trigger one alert if any source breaches a threshold.
 - `id` (String) The ID of this resource.
 - `include_tags` (Boolean) Whether or not notifications from the monitor automatically inserts its triggering tags into the title.
-- `locked` (Boolean) Whether or not changes to the monitor are restricted to the creator or admins.
 - `message` (String) Message included with notifications for this monitor
 - `monitor_threshold_windows` (List of Object) Mapping containing `recovery_window` and `trigger_window` values, e.g. `last_15m`. This is only used by anomaly monitors. (see [below for nested schema](#nestedatt--monitor_threshold_windows))
 - `monitor_thresholds` (List of Object) Alert thresholds of the monitor. (see [below for nested schema](#nestedatt--monitor_thresholds))
