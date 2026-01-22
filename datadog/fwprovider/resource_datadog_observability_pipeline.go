@@ -34,7 +34,7 @@ type observabilityPipelineResource struct {
 
 // Note on nested block design:
 // SingleNestedBlocks are not allowed in this resource schema. Instead, we use ListNestedBlock
-// with size validation: listvalidator.SizeAtMost(1) and listvalidator.SizeAtLeast(1)(for required blocks).
+// with size validation: listvalidator.SizeAtMost(1) and listvalidator.IsRequired()(for required blocks).
 // We do this to make the TF schema more robust, future-proof and
 // eliminate potential breaking changes related to required/optional blocks and fields.
 // See hashicorp/terraform-provider-aws#35813 as an example of the same approach.
@@ -1034,8 +1034,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 														Blocks: map[string]schema.Block{
 															"field": schema.ListNestedBlock{
 																Validators: []validator.List{
-																	// this is the only way to make the list of fields required in Terraform
-																	listvalidator.SizeAtLeast(1),
+																	listvalidator.IsRequired(),
 																},
 																Description: "A list of static fields (key-value pairs) that is added to each log event processed by this component.",
 																NestedObject: schema.NestedBlockObject{
@@ -1074,7 +1073,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 															"field": schema.ListNestedBlock{
 																Validators: []validator.List{
 																	// this is the only way to make the list of fields required in Terraform
-																	listvalidator.SizeAtLeast(1),
+																	listvalidator.IsRequired(),
 																},
 																Description: "List of fields to rename.",
 																NestedObject: schema.NestedBlockObject{
@@ -1163,7 +1162,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 																	},
 																},
 																Validators: []validator.List{
-																	listvalidator.SizeAtLeast(1),
+																	listvalidator.IsRequired(),
 																	listvalidator.SizeAtMost(1),
 																},
 															},
@@ -1188,7 +1187,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 																				},
 																			},
 																			Validators: []validator.List{
-																				listvalidator.SizeAtLeast(1),
+																				listvalidator.IsRequired(),
 																				listvalidator.SizeAtMost(1),
 																			},
 																		},
@@ -1454,7 +1453,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 																				},
 																			},
 																			Validators: []validator.List{
-																				listvalidator.SizeAtLeast(1),
+																				listvalidator.IsRequired(),
 																				listvalidator.SizeAtMost(1),
 																			},
 																		},
@@ -1604,7 +1603,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 															"array": schema.ListNestedBlock{
 																Description: "A list of array split configurations.",
 																Validators: []validator.List{
-																	listvalidator.SizeAtLeast(1),
+																	listvalidator.IsRequired(),
 																	listvalidator.SizeAtMost(15),
 																},
 																NestedObject: schema.NestedBlockObject{
@@ -1713,7 +1712,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 																				},
 																			},
 																			Validators: []validator.List{
-																				listvalidator.SizeAtLeast(1),
+																				listvalidator.IsRequired(),
 																				listvalidator.SizeAtMost(1),
 																			},
 																		},
@@ -1844,7 +1843,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 															"rule": schema.ListNestedBlock{
 																Description: "A list of rules for filtering metric tags.",
 																Validators: []validator.List{
-																	listvalidator.SizeAtLeast(1),
+																	listvalidator.IsRequired(),
 																	listvalidator.SizeAtMost(100),
 																},
 																NestedObject: schema.NestedBlockObject{
@@ -2189,7 +2188,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 														},
 													},
 													Validators: []validator.List{
-														listvalidator.SizeAtLeast(1),
+														listvalidator.IsRequired(),
 														listvalidator.SizeAtMost(1),
 													},
 												},
@@ -2290,7 +2289,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 					},
 				},
 				Validators: []validator.List{
-					listvalidator.SizeAtLeast(1),
+					listvalidator.IsRequired(),
 					listvalidator.SizeAtMost(1),
 				},
 			},
@@ -2526,7 +2525,12 @@ func expandPipeline(ctx context.Context, state *observabilityPipelineModel) (*da
 			config.Sources = append(config.Sources, expandLogstashSource(l, sourceId))
 		}
 		for _, s := range sourceBlock.SocketSource {
-			config.Sources = append(config.Sources, observability_pipeline.ExpandSocketSource(s, sourceId))
+			item, d := observability_pipeline.ExpandSocketSource(s, sourceId)
+			diags.Append(d...)
+			if d.HasError() {
+				return nil, diags
+			}
+			config.Sources = append(config.Sources, item)
 		}
 		for _, o := range sourceBlock.OpentelemetrySource {
 			config.Sources = append(config.Sources, observability_pipeline.ExpandOpentelemetrySource(o, sourceId))
@@ -2593,7 +2597,12 @@ func expandPipeline(ctx context.Context, state *observabilityPipelineModel) (*da
 			config.Destinations = append(config.Destinations, expandAmazonOpenSearchDestination(ctx, dest, d))
 		}
 		for _, d := range dest.SocketDestination {
-			config.Destinations = append(config.Destinations, observability_pipeline.ExpandSocketDestination(ctx, dest.Id.ValueString(), dest.Inputs, d))
+			item, socketDiags := observability_pipeline.ExpandSocketDestination(ctx, dest.Id.ValueString(), dest.Inputs, d)
+			diags.Append(socketDiags...)
+			if socketDiags.HasError() {
+				return nil, diags
+			}
+			config.Destinations = append(config.Destinations, item)
 		}
 		for _, d := range dest.AmazonS3Destination {
 			config.Destinations = append(config.Destinations, observability_pipeline.ExpandAmazonS3Destination(ctx, dest.Id.ValueString(), dest.Inputs, d))
