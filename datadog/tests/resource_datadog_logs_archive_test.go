@@ -144,13 +144,29 @@ func TestAccDatadogLogsArchiveGCS_basic(t *testing.T) {
 // create: Ok s3
 func archiveS3ConfigForCreation(uniq string, encryption string) string {
 	return fmt.Sprintf(`
-resource "datadog_integration_aws" "account" {
-  account_id         = "%s"
-  role_name          = "testacc-datadog-integration-role"
+resource "datadog_integration_aws_account" "account" {
+  aws_account_id = "%s"
+  aws_partition  = "aws"
+  aws_regions {}
+  auth_config {
+    aws_auth_config_role {
+      role_name = "testacc-datadog-integration-role"
+    }
+  }
+  logs_config {
+    lambda_forwarder {}
+  }
+  metrics_config {
+    namespace_filters {}
+  }
+  resources_config {}
+  traces_config {
+    xray_services {}
+  }
 }
 
 resource "datadog_logs_archive" "my_s3_archive" {
-  depends_on = ["datadog_integration_aws.account"]
+  depends_on = ["datadog_integration_aws_account.account"]
   name = "my first s3 archive"
   query = "service:tutu"
   s3_archive {
@@ -216,13 +232,29 @@ func TestAccDatadogLogsArchiveS3_basic(t *testing.T) {
 // update: Ok s3
 func archiveS3ConfigForUpdate(uniq string, encryption string) string {
 	return fmt.Sprintf(`
-resource "datadog_integration_aws" "account" {
-  account_id = "%s"
-  role_name  = "testacc-datadog-integration-role"
+resource "datadog_integration_aws_account" "account" {
+  aws_account_id = "%s"
+  aws_partition  = "aws"
+  aws_regions {}
+  auth_config {
+    aws_auth_config_role {
+      role_name = "testacc-datadog-integration-role"
+    }
+  }
+  logs_config {
+    lambda_forwarder {}
+  }
+  metrics_config {
+    namespace_filters {}
+  }
+  resources_config {}
+  traces_config {
+    xray_services {}
+  }
 }
 
 resource "datadog_logs_archive" "my_s3_archive" {
-  depends_on = ["datadog_integration_aws.account"]
+  depends_on = ["datadog_integration_aws_account.account"]
   name       = "my first s3 archive after update"
   query      = "service:tutu"
   s3_archive {
@@ -380,7 +412,7 @@ func testAccCheckArchiveAndIntegrationAWSDestroy(accProvider *fwprovider.Framewo
 		if err != nil {
 			return err
 		}
-		err = checkIntegrationAWSDestroy(accProvider)(s)
+		err = IntegrationAwsAccountDestroyHelper(accProvider.Auth, s, accProvider.DatadogApiInstances)
 		return err
 	}
 }
