@@ -86,7 +86,8 @@ Brief description of the breaking change.
 Deprecating `locked` and changing the default behavior of `restricted_roles` on `datadog_monitor`. These changes are intended 
 to encourage users to migrate and manage monitor permissions through the `datadog_restriction_policy` resource. 
 
-**Note:** Migrating off `restricted_roles` is not required. This field is still supported by the monitor provider. However, we strongly recommend migrating to `datadog_restriction_policy` as the preferred way to manage monitor permissions going forward.
+**Note:** Migrating off `restricted_roles` is not required. This field is still supported by the monitor provider. However, we
+strongly recommend migrating to `datadog_restriction_policy` as the preferred way to manage monitor permissions going forward.
 
 **Before (v3.x):**
 
@@ -105,7 +106,6 @@ resource "datadog_monitor" "foo" {
   }
   restricted_roles = ["aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"]
 }
-
 ```
 
 **After (v4.0.0):**
