@@ -286,6 +286,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_synthetics_concurrency_cap_test":                             "synthetics",
 	"tests/resource_datadog_synthetics_global_variable_test":                             "synthetics",
 	"tests/resource_datadog_synthetics_private_location_test":                            "synthetics",
+	"tests/resource_datadog_synthetics_suite_test":                                       "synthetics",
 	"tests/resource_datadog_synthetics_test_test":                                        "synthetics",
 	"tests/resource_datadog_team_link_test":                                              "team",
 	"tests/resource_datadog_team_membership_test":                                        "team",
