@@ -138,8 +138,9 @@ type Recurrence struct {
 }
 
 type Variable struct {
-	EventQuery     []EventQuery     `tfsdk:"event_query"`
-	CloudCostQuery []CloudCostQuery `tfsdk:"cloud_cost_query"`
+	EventQuery       []EventQuery       `tfsdk:"event_query"`
+	CloudCostQuery   []CloudCostQuery   `tfsdk:"cloud_cost_query"`
+	DataQualityQuery []DataQualityQuery `tfsdk:"data_quality_query"`
 }
 
 type EventQuery struct {
@@ -178,6 +179,25 @@ type CloudCostQuery struct {
 	Query      types.String `tfsdk:"query"`
 	Aggregator types.String `tfsdk:"aggregator"`
 	Name       types.String `tfsdk:"name"`
+}
+
+type DataQualityQuery struct {
+	Name           types.String                `tfsdk:"name"`
+	DataSource     types.String                `tfsdk:"data_source"`
+	SchemaVersion  types.String                `tfsdk:"schema_version"`
+	Measure        types.String                `tfsdk:"measure"`
+	Filter         types.String                `tfsdk:"filter"`
+	Scope          types.String                `tfsdk:"scope"`
+	GroupBy        types.List                  `tfsdk:"group_by"`
+	MonitorOptions []DataQualityMonitorOptions `tfsdk:"monitor_options"`
+}
+
+type DataQualityMonitorOptions struct {
+	CustomSql         types.String `tfsdk:"custom_sql"`
+	CustomWhere       types.String `tfsdk:"custom_where"`
+	GroupByColumns    types.List   `tfsdk:"group_by_columns"`
+	CrontabOverride   types.String `tfsdk:"crontab_override"`
+	ModelTypeOverride types.String `tfsdk:"model_type_override"`
 }
 
 type monitorResource struct {
@@ -785,6 +805,81 @@ func (r *monitorResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 								},
 							},
 						},
+						"data_quality_query": schema.ListNestedBlock{
+							Description: "The Data Quality query using formulas and functions.",
+							Validators: []validator.List{
+								listvalidator.SizeAtMost(5),
+							},
+							NestedObject: schema.NestedBlockObject{
+								Attributes: map[string]schema.Attribute{
+									"name": schema.StringAttribute{
+										Required:    true,
+										Description: "The name of the query for use in formulas.",
+									},
+									"data_source": schema.StringAttribute{
+										Required:    true,
+										Description: "The data source for data quality queries. Valid value is `data_quality_metrics`.",
+										Validators: []validator.String{
+											stringvalidator.OneOf(r.getAllowDataQualityDataSource()...),
+										},
+									},
+									"schema_version": schema.StringAttribute{
+										Optional:    true,
+										Description: "Schema version for the data quality query.",
+									},
+									"measure": schema.StringAttribute{
+										Required:    true,
+										Description: "The measure to query. Common values include `bytes`, `cardinality`, `custom`, `freshness`, `max`, `mean`, `min`, `nullness`, `percent_negative`, `percent_zero`, `row_count`, `stddev`, `sum`, `uniqueness`. Additional values may be supported.",
+									},
+									"filter": schema.StringAttribute{
+										Required:    true,
+										Description: "Filter expression used to match on data entities. Uses AAstra query syntax.",
+									},
+									"scope": schema.StringAttribute{
+										Optional:    true,
+										Description: "Optional scoping expression to further filter metrics.",
+									},
+									"group_by": schema.ListAttribute{
+										Optional:    true,
+										ElementType: types.StringType,
+										Description: "Optional grouping fields for aggregation.",
+									},
+								},
+								Blocks: map[string]schema.Block{
+									"monitor_options": schema.ListNestedBlock{
+										Description: "Monitor configuration options for data quality queries.",
+										Validators: []validator.List{
+											listvalidator.SizeAtMost(1),
+										},
+										NestedObject: schema.NestedBlockObject{
+											Attributes: map[string]schema.Attribute{
+												"custom_sql": schema.StringAttribute{
+													Optional:    true,
+													Description: "Custom SQL query for the monitor.",
+												},
+												"custom_where": schema.StringAttribute{
+													Optional:    true,
+													Description: "Custom WHERE clause for the query.",
+												},
+												"group_by_columns": schema.ListAttribute{
+													Optional:    true,
+													ElementType: types.StringType,
+													Description: "Columns to group results by.",
+												},
+												"crontab_override": schema.StringAttribute{
+													Optional:    true,
+													Description: "Crontab expression to override the default schedule.",
+												},
+												"model_type_override": schema.StringAttribute{
+													Optional:    true,
+													Description: "Override for the model type. Valid values are `freshness`, `percentage`, `any`.",
+												},
+											},
+										},
+									},
+								},
+							},
+						},
 					},
 				},
 			},
@@ -1129,6 +1224,9 @@ func (r *monitorResource) buildVariablesStruct(ctx context.Context, variables []
 	if cloudCostReq := r.buildCloudCostQueryStruct(variable.CloudCostQuery); len(cloudCostReq) > 0 {
 		variablesReq = append(variablesReq, cloudCostReq...)
 	}
+	if dataQualityReq := r.buildDataQualityQueryStruct(ctx, variable.DataQualityQuery); len(dataQualityReq) > 0 {
+		variablesReq = append(variablesReq, dataQualityReq...)
+	}
 	return variablesReq
 }
 
@@ -1205,6 +1303,45 @@ func (r *monitorResource) buildCloudCostQueryStruct(cloudCostQs []CloudCostQuery
 			cloudCostQueryReq.SetAggregator(datadogV1.MonitorFormulaAndFunctionCostAggregator(cloudCostQ.Aggregator.ValueString()))
 		}
 		variableReq.MonitorFormulaAndFunctionCostQueryDefinition = &cloudCostQueryReq
+		variablesReq = append(variablesReq, variableReq)
+	}
+	return variablesReq
+}
+
+func (r *monitorResource) buildDataQualityQueryStruct(ctx context.Context, dataQualityQs []DataQualityQuery) []datadogV1.MonitorFormulaAndFunctionQueryDefinition {
+	if dataQualityQs == nil || len(dataQualityQs) == 0 {
+		return nil
+	}
+	variablesReq := []datadogV1.MonitorFormulaAndFunctionQueryDefinition{}
+	for _, dataQualityQ := range dataQualityQs {
+		variableReq := datadogV1.MonitorFormulaAndFunctionQueryDefinition{}
+		dataQualityQueryReq := datadogV1.MonitorFormulaAndFunctionDataQualityQueryDefinition{}
+		fwutils.SetOptString(dataQualityQ.Name, dataQualityQueryReq.SetName)
+		fwutils.SetOptString(dataQualityQ.Filter, dataQualityQueryReq.SetFilter)
+		fwutils.SetOptString(dataQualityQ.SchemaVersion, dataQualityQueryReq.SetSchemaVersion)
+		fwutils.SetOptString(dataQualityQ.Scope, dataQualityQueryReq.SetScope)
+		if !dataQualityQ.DataSource.IsNull() {
+			dataQualityQueryReq.SetDataSource(datadogV1.MonitorFormulaAndFunctionDataQualityDataSource(dataQualityQ.DataSource.ValueString()))
+		}
+		if !dataQualityQ.Measure.IsNull() {
+			dataQualityQueryReq.SetMeasure(dataQualityQ.Measure.ValueString())
+		}
+		// Group by
+		fwutils.SetOptStringList(dataQualityQ.GroupBy, dataQualityQueryReq.SetGroupBy, ctx)
+		// Monitor options
+		if monitorOpts := dataQualityQ.MonitorOptions; len(monitorOpts) > 0 {
+			monitorOptsReq := datadogV1.MonitorFormulaAndFunctionDataQualityMonitorOptions{}
+			opt := monitorOpts[0]
+			fwutils.SetOptString(opt.CustomSql, monitorOptsReq.SetCustomSql)
+			fwutils.SetOptString(opt.CustomWhere, monitorOptsReq.SetCustomWhere)
+			fwutils.SetOptString(opt.CrontabOverride, monitorOptsReq.SetCrontabOverride)
+			fwutils.SetOptStringList(opt.GroupByColumns, monitorOptsReq.SetGroupByColumns, ctx)
+			if !opt.ModelTypeOverride.IsNull() {
+				monitorOptsReq.SetModelTypeOverride(datadogV1.MonitorFormulaAndFunctionDataQualityModelTypeOverride(opt.ModelTypeOverride.ValueString()))
+			}
+			dataQualityQueryReq.SetMonitorOptions(monitorOptsReq)
+		}
+		variableReq.MonitorFormulaAndFunctionDataQualityQueryDefinition = &dataQualityQueryReq
 		variablesReq = append(variablesReq, variableReq)
 	}
 	return variablesReq
@@ -1382,6 +1519,8 @@ func (r *monitorResource) updateVariablesState(ctx context.Context, state *monit
 	}
 	eventQueryStates := []EventQuery{}
 	CloudCostQueryStates := []CloudCostQuery{}
+	DataQualityQueryStates := []DataQualityQuery{}
+
 	for _, v := range *variables {
 		if eventQState := r.buildEventQueryState(ctx, v.MonitorFormulaAndFunctionEventQueryDefinition); eventQState != nil {
 			eventQueryStates = append(eventQueryStates, *eventQState)
@@ -1389,10 +1528,14 @@ func (r *monitorResource) updateVariablesState(ctx context.Context, state *monit
 		if costQState := r.buildCloudCostQueryState(v.MonitorFormulaAndFunctionCostQueryDefinition); costQState != nil {
 			CloudCostQueryStates = append(CloudCostQueryStates, *costQState)
 		}
+		if dataQualityQState := r.buildDataQualityQueryState(ctx, v.MonitorFormulaAndFunctionDataQualityQueryDefinition); dataQualityQState != nil {
+			DataQualityQueryStates = append(DataQualityQueryStates, *dataQualityQState)
+		}
 	}
 	state.Variables = []Variable{{
-		EventQuery:     eventQueryStates,
-		CloudCostQuery: CloudCostQueryStates,
+		EventQuery:       eventQueryStates,
+		CloudCostQuery:   CloudCostQueryStates,
+		DataQualityQuery: DataQualityQueryStates,
 	}}
 }
 
@@ -1460,6 +1603,43 @@ func (r *monitorResource) buildCloudCostQueryState(cloudCostQ *datadogV1.Monitor
 	return &cloudCostQueryState
 }
 
+func (r *monitorResource) buildDataQualityQueryState(ctx context.Context, dataQualityQ *datadogV1.MonitorFormulaAndFunctionDataQualityQueryDefinition) *DataQualityQuery {
+	if dataQualityQ == nil {
+		return nil
+	}
+	dataQualityQueryState := DataQualityQuery{
+		Name:          fwutils.ToTerraformStr(dataQualityQ.GetNameOk()),
+		Filter:        fwutils.ToTerraformStr(dataQualityQ.GetFilterOk()),
+		SchemaVersion: fwutils.ToTerraformStr(dataQualityQ.GetSchemaVersionOk()),
+		Scope:         fwutils.ToTerraformStr(dataQualityQ.GetScopeOk()),
+	}
+	if dataSource, ok := dataQualityQ.GetDataSourceOk(); ok && dataSource != nil {
+		dataQualityQueryState.DataSource = types.StringValue(string(*dataSource))
+	}
+	if measure, ok := dataQualityQ.GetMeasureOk(); ok && measure != nil {
+		dataQualityQueryState.Measure = types.StringValue(string(*measure))
+	}
+	if groupBy, ok := dataQualityQ.GetGroupByOk(); ok && groupBy != nil {
+		dataQualityQueryState.GroupBy, _ = types.ListValueFrom(ctx, types.StringType, groupBy)
+	}
+	// Monitor options
+	if monitorOpts, ok := dataQualityQ.GetMonitorOptionsOk(); ok && monitorOpts != nil {
+		monitorOptsState := DataQualityMonitorOptions{
+			CustomSql:       fwutils.ToTerraformStr(monitorOpts.GetCustomSqlOk()),
+			CustomWhere:     fwutils.ToTerraformStr(monitorOpts.GetCustomWhereOk()),
+			CrontabOverride: fwutils.ToTerraformStr(monitorOpts.GetCrontabOverrideOk()),
+		}
+		if groupByCols, ok := monitorOpts.GetGroupByColumnsOk(); ok && groupByCols != nil {
+			monitorOptsState.GroupByColumns, _ = types.ListValueFrom(ctx, types.StringType, groupByCols)
+		}
+		if modelTypeOverride, ok := monitorOpts.GetModelTypeOverrideOk(); ok && modelTypeOverride != nil {
+			monitorOptsState.ModelTypeOverride = types.StringValue(string(*modelTypeOverride))
+		}
+		dataQualityQueryState.MonitorOptions = []DataQualityMonitorOptions{monitorOptsState}
+	}
+	return &dataQualityQueryState
+}
+
 func (r *monitorResource) getMonitorId(state *monitorResourceModel) (*int64, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
 	stateId := state.ID.ValueString()
@@ -1509,6 +1689,10 @@ func (r *monitorResource) getAllowCloudCostDataSource() []string {
 
 func (r *monitorResource) getAllowCloudCostAggregator() []string {
 	return enumStrings((*datadogV1.MonitorFormulaAndFunctionCostAggregator)(nil).GetAllowedValues())
+}
+
+func (r *monitorResource) getAllowDataQualityDataSource() []string {
+	return enumStrings((*datadogV1.MonitorFormulaAndFunctionDataQualityDataSource)(nil).GetAllowedValues())
 }
 
 func (r *monitorResource) getAllowMonitorAssetCategory() []string {
