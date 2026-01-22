@@ -260,7 +260,6 @@ func KafkaDestinationSchema() schema.ListNestedBlock {
 			},
 		},
 		Validators: []validator.List{
-			listvalidator.SizeAtLeast(1),
 			listvalidator.SizeAtMost(1),
 		},
 	}

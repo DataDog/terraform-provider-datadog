@@ -77,7 +77,7 @@ func CustomProcessorSchema() schema.ListNestedBlock {
 				"remap": schema.ListNestedBlock{
 					Description: "Array of VRL remap configurations. Each remap defines a transformation rule with its own filter and VRL script.",
 					Validators: []validator.List{
-						listvalidator.SizeAtLeast(1),
+						listvalidator.IsRequired(),
 					},
 					NestedObject: schema.NestedBlockObject{
 						Attributes: map[string]schema.Attribute{

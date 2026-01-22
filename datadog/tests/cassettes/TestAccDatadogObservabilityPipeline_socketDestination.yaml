@@ -31,13 +31,13 @@ interactions:
         content_length: 523
         uncompressed: false
         body: |
-            {"data":{"id":"ffdee806-f20c-11f0-9dfe-da7ad0900002","type":"pipelines","attributes":{"name":"socket-destination-pipeline","config":{"destinations":[{"encoding":"json","framing":{"method":"newline_delimited"},"id":"socket-dest-1","inputs":["source-1"],"mode":"tcp","tls":{"ca_file":"/etc/ssl/certs/ca.crt","crt_file":"/etc/ssl/certs/socket.crt","key_file":"/etc/ssl/private/socket.key"},"type":"socket"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"122e422a-f791-11f0-888d-da7ad0900002","type":"pipelines","attributes":{"name":"socket-destination-pipeline","config":{"destinations":[{"encoding":"json","framing":{"method":"newline_delimited"},"id":"socket-dest-1","inputs":["source-1"],"mode":"tcp","tls":{"ca_file":"/etc/ssl/certs/ca.crt","crt_file":"/etc/ssl/certs/socket.crt","key_file":"/etc/ssl/private/socket.key"},"type":"socket"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 425.050458ms
+        duration: 523.862833ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -54,7 +54,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/ffdee806-f20c-11f0-9dfe-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/122e422a-f791-11f0-888d-da7ad0900002
         method: GET
       response:
         proto: HTTP/1.1
@@ -65,13 +65,13 @@ interactions:
         content_length: 523
         uncompressed: false
         body: |
-            {"data":{"id":"ffdee806-f20c-11f0-9dfe-da7ad0900002","type":"pipelines","attributes":{"name":"socket-destination-pipeline","config":{"destinations":[{"encoding":"json","framing":{"method":"newline_delimited"},"id":"socket-dest-1","inputs":["source-1"],"mode":"tcp","tls":{"ca_file":"/etc/ssl/certs/ca.crt","crt_file":"/etc/ssl/certs/socket.crt","key_file":"/etc/ssl/private/socket.key"},"type":"socket"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"122e422a-f791-11f0-888d-da7ad0900002","type":"pipelines","attributes":{"name":"socket-destination-pipeline","config":{"destinations":[{"encoding":"json","framing":{"method":"newline_delimited"},"id":"socket-dest-1","inputs":["source-1"],"mode":"tcp","tls":{"ca_file":"/etc/ssl/certs/ca.crt","crt_file":"/etc/ssl/certs/socket.crt","key_file":"/etc/ssl/private/socket.key"},"type":"socket"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 230.879291ms
+        duration: 278.861416ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -88,7 +88,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/ffdee806-f20c-11f0-9dfe-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/122e422a-f791-11f0-888d-da7ad0900002
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -104,4 +104,4 @@ interactions:
                 - application/json
         status: 204 No Content
         code: 204
-        duration: 380.247125ms
+        duration: 447.045041ms
