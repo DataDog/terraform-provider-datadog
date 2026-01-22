@@ -181,6 +181,8 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_dashboard_trace_service_test":                                "dashboards",
 	"tests/resource_datadog_dashboard_treemap_test":                                      "dashboards",
 	"tests/resource_datadog_dataset_test":                                                "dataset",
+	"tests/resource_datadog_datastore_test":                                              "datastores",
+	"tests/resource_datadog_datastore_item_test":                                         "datastores",
 	"tests/resource_datadog_domain_allowlist_test":                                       "domain-allowlist",
 	"tests/resource_datadog_security_notification_rule_test":                             "security_notification_rule",
 	"tests/resource_datadog_observability_pipeline_test":                                 "observability-pipelines",
