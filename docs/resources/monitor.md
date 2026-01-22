@@ -175,6 +175,7 @@ Optional:
 Optional:
 
 - `cloud_cost_query` (Block List, Max: 5) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--variables--cloud_cost_query))
+- `data_quality_query` (Block List, Max: 5) The Data Quality query using formulas and functions. (see [below for nested schema](#nestedblock--variables--data_quality_query))
 - `event_query` (Block List) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--variables--event_query))
 
 <a id="nestedblock--variables--cloud_cost_query"></a>
@@ -186,6 +187,36 @@ Required:
 - `data_source` (String) The data source for cloud cost queries. Valid values are `metrics`, `cloud_cost`, `datadog_usage`.
 - `name` (String) The name of the query for use in formulas.
 - `query` (String) The cloud cost query definition.
+
+
+<a id="nestedblock--variables--data_quality_query"></a>
+### Nested Schema for `variables.data_quality_query`
+
+Required:
+
+- `data_source` (String) The data source for data quality queries. Valid value is `data_quality_metrics`. Valid values are `data_quality_metrics`.
+- `filter` (String) Filter expression used to match on data entities. Uses AAstra query syntax.
+- `measure` (String) The measure to query. Common values include `bytes`, `cardinality`, `custom`, `freshness`, `max`, `mean`, `min`, `nullness`, `percent_negative`, `percent_zero`, `row_count`, `stddev`, `sum`, `uniqueness`. Additional values may be supported.
+- `name` (String) The name of the query for use in formulas.
+
+Optional:
+
+- `group_by` (List of String) Optional grouping fields for aggregation.
+- `monitor_options` (Block List, Max: 1) Monitor configuration options for data quality queries. (see [below for nested schema](#nestedblock--variables--data_quality_query--monitor_options))
+- `schema_version` (String) Schema version for the data quality query.
+- `scope` (String) Optional scoping expression to further filter metrics.
+
+<a id="nestedblock--variables--data_quality_query--monitor_options"></a>
+### Nested Schema for `variables.data_quality_query.monitor_options`
+
+Optional:
+
+- `crontab_override` (String) Crontab expression to override the default schedule.
+- `custom_sql` (String) Custom SQL query for the monitor.
+- `custom_where` (String) Custom WHERE clause for the query.
+- `group_by_columns` (List of String) Columns to group results by.
+- `model_type_override` (String) Override for the model type. Valid values are `freshness`, `percentage`, `any`.
+
 
 
 <a id="nestedblock--variables--event_query"></a>

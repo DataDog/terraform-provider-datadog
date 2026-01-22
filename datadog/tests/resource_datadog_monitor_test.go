@@ -2286,3 +2286,64 @@ resource "datadog_monitor" "foo" {
   }
 }`, uniq)
 }
+
+// TestAccDatadogMonitor_DataQuality_Basic tests basic data quality monitor functionality
+func TestAccDatadogMonitor_DataQuality_Basic(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	monitorName := uniqueEntityName(ctx, t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogMonitorDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogDataQualityMonitorBasic(monitorName),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.data_quality_basic", "name", monitorName),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.data_quality_basic", "type", "data-quality alert"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.data_quality_basic", "query", `formula("query1").last("30m") > 1000`),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.data_quality_basic", "variables.#", "1"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.data_quality_basic", "variables.0.data_quality_query.#", "1"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.data_quality_basic", "variables.0.data_quality_query.0.name", "query1"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.data_quality_basic", "variables.0.data_quality_query.0.data_source", "data_quality_metrics"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.data_quality_basic", "variables.0.data_quality_query.0.measure", "row_count"),
+				),
+			},
+		},
+	})
+}
+
+func testAccCheckDatadogDataQualityMonitorBasic(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_monitor" "data_quality_basic" {
+  name    = "%s"
+  type    = "data-quality alert"
+  message = "Data quality threshold exceeded"
+  query   = "formula(\"query1\").last(\"30m\") > 1000"
+
+  monitor_thresholds {
+    critical = 1000
+  }
+
+  variables {
+    data_quality_query {
+      name        = "query1"
+      data_source = "data_quality_metrics"
+      measure     = "row_count"
+      filter      = "search for column where `+"`"+`database:production AND table:users`+"`"+`"
+      group_by    = ["entity_id"]
+    }
+  }
+}`, uniq)
+}
