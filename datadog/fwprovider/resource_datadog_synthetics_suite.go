@@ -117,7 +117,7 @@ func (r *syntheticsSuiteResource) Schema(_ context.Context, _ resource.SchemaReq
 						},
 						"alerting_criticality": schema.StringAttribute{
 							Description: "Alerting criticality for the test. Valid values are `ignore`, `critical`.",
-							Optional:   true,
+							Optional:    true,
 							Validators: []validator.String{
 								stringvalidator.OneOf("ignore", "critical"),
 							},
@@ -276,10 +276,8 @@ func (r *syntheticsSuiteResource) buildSyntheticsSuiteBody(ctx context.Context, 
 		}
 
 		if len(optionsList) > 0 {
-			alerting := datadogV2.NewSyntheticsSuiteOptionsAlerting()
 			threshold := optionsList[0].AlertingThreshold.ValueFloat64()
-			alerting.SetThreshold(threshold)
-			options.SetAlerting(*alerting)
+			options.SetAlertingThreshold(threshold)
 		}
 	}
 	suite.SetOptions(*options)
@@ -315,7 +313,7 @@ func (r *syntheticsSuiteResource) buildSyntheticsSuiteBody(ctx context.Context, 
 	}
 
 	// Build request
-	createEdit := datadogV2.NewSuiteCreateEdit(*suite, datadogV2.SYNTHETICSSUITETYPE_SUITE)
+	createEdit := datadogV2.NewSuiteCreateEdit(*suite, datadogV2.SYNTHETICSSUITETYPES_SUITES)
 	body := datadogV2.NewSuiteCreateEditRequest(*createEdit)
 
 	return *body, diags
@@ -337,15 +335,13 @@ func (r *syntheticsSuiteResource) updateState(ctx context.Context, state *Synthe
 
 			// Update options
 			if opts, ok := attrs.GetOptionsOk(); ok {
-				if alerting, ok := opts.GetAlertingOk(); ok {
-					if threshold, ok := alerting.GetThresholdOk(); ok {
-						optionsModel := SyntheticsSuiteOptionsModel{
-							AlertingThreshold: types.Float64Value(*threshold),
-						}
-						optionsList, d := types.ListValueFrom(ctx, syntheticsSuiteOptionsAttrType, []SyntheticsSuiteOptionsModel{optionsModel})
-						diags.Append(d...)
-						state.Options = optionsList
+				if threshold, ok := opts.GetAlertingThresholdOk(); ok {
+					optionsModel := SyntheticsSuiteOptionsModel{
+						AlertingThreshold: types.Float64Value(*threshold),
 					}
+					optionsList, d := types.ListValueFrom(ctx, syntheticsSuiteOptionsAttrType, []SyntheticsSuiteOptionsModel{optionsModel})
+					diags.Append(d...)
+					state.Options = optionsList
 				}
 			}
 

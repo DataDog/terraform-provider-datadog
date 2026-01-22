@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//Users/romain.berger/go/pkg/mod/github.com/!data!dog/datadog-api-client-go/v2@v2.54.1-0.20260121144459-90bd7e6804b7/api/datadogV2/**)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

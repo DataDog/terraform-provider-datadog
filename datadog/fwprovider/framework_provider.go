@@ -69,6 +69,7 @@ var Resources = []func() resource.Resource{
 	NewSyntheticsConcurrencyCapResource,
 	NewSyntheticsGlobalVariableResource,
 	NewSyntheticsPrivateLocationResource,
+	NewSyntheticsSuiteResource,
 	NewTeamLinkResource,
 	NewTeamMembershipResource,
 	NewTeamNotificationRuleResource,
