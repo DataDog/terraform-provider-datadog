@@ -1920,7 +1920,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 															},
 															"include": schema.StringAttribute{
 																Required:    true,
-																Description: "Filter query that determines which logs are forwarded using this route.",
+																Description: "A Datadog search query that determines which logs are forwarded using this route.",
 															},
 															"site": schema.StringAttribute{
 																Required:    true,
@@ -1928,7 +1928,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 															},
 															"api_key_key": schema.StringAttribute{
 																Required:    true,
-																Description: "Identifier that stores the Datadog API key used by this route.",
+																Description: "Name of the environment variable or secret that stores the Datadog API key used by this route.",
 															},
 														},
 													},
