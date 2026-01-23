@@ -18,7 +18,7 @@ interactions:
         headers:
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/unstable/cloudinventoryservice/syncconfigs
+        url: https://api.datadoghq.com/api/v2/cloudinventoryservice/syncconfigs
         method: PUT
       response:
         proto: HTTP/2.0
@@ -51,7 +51,7 @@ interactions:
         headers:
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/unstable/cloudinventoryservice/syncconfigs/3526615b-4d65-4d9b-947a-d89c18faf0dc
+        url: https://api.datadoghq.com/api/v2/cloudinventoryservice/syncconfigs/3526615b-4d65-4d9b-947a-d89c18faf0dc
         method: GET
       response:
         proto: HTTP/2.0
@@ -84,7 +84,7 @@ interactions:
         headers:
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/unstable/cloudinventoryservice/syncconfigs/3526615b-4d65-4d9b-947a-d89c18faf0dc
+        url: https://api.datadoghq.com/api/v2/cloudinventoryservice/syncconfigs/3526615b-4d65-4d9b-947a-d89c18faf0dc
         method: GET
       response:
         proto: HTTP/2.0
@@ -117,7 +117,7 @@ interactions:
         headers:
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/unstable/cloudinventoryservice/syncconfigs/3526615b-4d65-4d9b-947a-d89c18faf0dc
+        url: https://api.datadoghq.com/api/v2/cloudinventoryservice/syncconfigs/3526615b-4d65-4d9b-947a-d89c18faf0dc
         method: DELETE
       response:
         proto: HTTP/2.0
@@ -148,7 +148,7 @@ interactions:
         headers:
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/unstable/cloudinventoryservice/syncconfigs/3526615b-4d65-4d9b-947a-d89c18faf0dc
+        url: https://api.datadoghq.com/api/v2/cloudinventoryservice/syncconfigs/3526615b-4d65-4d9b-947a-d89c18faf0dc
         method: GET
       response:
         proto: HTTP/2.0

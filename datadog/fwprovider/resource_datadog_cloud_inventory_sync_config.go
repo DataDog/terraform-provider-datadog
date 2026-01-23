@@ -24,8 +24,8 @@ var (
 
 // API paths
 const (
-	syncConfigsPath    = "/api/unstable/cloudinventoryservice/syncconfigs"
-	syncConfigByIDPath = "/api/unstable/cloudinventoryservice/syncconfigs/%s"
+	syncConfigsPath    = "/api/v2/cloudinventoryservice/syncconfigs"
+	syncConfigByIDPath = "/api/v2/cloudinventoryservice/syncconfigs/%s"
 )
 
 type cloudInventorySyncConfigResource struct {
