@@ -1,0 +1,212 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 505
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"config":{"destinations":[{"id":"destination-logs-routes","inputs":["group-logs-routes"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[{"enabled":true,"id":"group-logs-routes","include":"*","inputs":["source-logs-routes"],"processors":[{"enabled":true,"field":"message","id":"processor-logs-routes","include":"*","type":"parse_json"}]}],"sources":[{"id":"source-logs-routes","type":"datadog_agent"}]},"name":"datadog logs routes pipeline"},"type":"pipelines"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 765
+        uncompressed: false
+        body: |
+            {"data":{"id":"81349a28-f888-11f0-a148-da7ad0900002","type":"pipelines","attributes":{"name":"datadog logs routes pipeline","config":{"destinations":[{"id":"destination-logs-routes","inputs":["group-logs-routes"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[{"enabled":true,"id":"group-logs-routes","include":"*","inputs":["source-logs-routes"],"processors":[{"enabled":true,"field":"message","id":"processor-logs-routes","include":"*","type":"parse_json"}]}],"processors":[{"enabled":true,"id":"group-logs-routes","include":"*","inputs":["source-logs-routes"],"processors":[{"enabled":true,"field":"message","id":"processor-logs-routes","include":"*","type":"parse_json"}]}],"sources":[{"id":"source-logs-routes","type":"datadog_agent"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 400.055875ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/81349a28-f888-11f0-a148-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 765
+        uncompressed: false
+        body: |
+            {"data":{"id":"81349a28-f888-11f0-a148-da7ad0900002","type":"pipelines","attributes":{"name":"datadog logs routes pipeline","config":{"destinations":[{"id":"destination-logs-routes","inputs":["group-logs-routes"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[{"enabled":true,"id":"group-logs-routes","include":"*","inputs":["source-logs-routes"],"processors":[{"enabled":true,"field":"message","id":"processor-logs-routes","include":"*","type":"parse_json"}]}],"processors":[{"enabled":true,"id":"group-logs-routes","include":"*","inputs":["source-logs-routes"],"processors":[{"enabled":true,"field":"message","id":"processor-logs-routes","include":"*","type":"parse_json"}]}],"sources":[{"id":"source-logs-routes","type":"datadog_agent"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 124.84925ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/81349a28-f888-11f0-a148-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 765
+        uncompressed: false
+        body: |
+            {"data":{"id":"81349a28-f888-11f0-a148-da7ad0900002","type":"pipelines","attributes":{"name":"datadog logs routes pipeline","config":{"destinations":[{"id":"destination-logs-routes","inputs":["group-logs-routes"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[{"enabled":true,"id":"group-logs-routes","include":"*","inputs":["source-logs-routes"],"processors":[{"enabled":true,"field":"message","id":"processor-logs-routes","include":"*","type":"parse_json"}]}],"processors":[{"enabled":true,"id":"group-logs-routes","include":"*","inputs":["source-logs-routes"],"processors":[{"enabled":true,"field":"message","id":"processor-logs-routes","include":"*","type":"parse_json"}]}],"sources":[{"id":"source-logs-routes","type":"datadog_agent"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 170.23075ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 624
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"config":{"destinations":[{"id":"destination-logs-routes","inputs":["group-logs-routes"],"routes":[{"api_key_key":"API_KEY_IDENT","include":"service:api","route_id":"route-us1","site":"us1"}],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[{"enabled":true,"id":"group-logs-routes","include":"*","inputs":["source-logs-routes"],"processors":[{"enabled":true,"field":"message","id":"processor-logs-routes","include":"*","type":"parse_json"}]}],"sources":[{"id":"source-logs-routes","type":"datadog_agent"}]},"name":"datadog logs routes pipeline updated"},"id":"","type":"pipelines"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/81349a28-f888-11f0-a148-da7ad0900002
+        method: PUT
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 876
+        uncompressed: false
+        body: |
+            {"data":{"id":"81349a28-f888-11f0-a148-da7ad0900002","type":"pipelines","attributes":{"name":"datadog logs routes pipeline updated","config":{"destinations":[{"id":"destination-logs-routes","inputs":["group-logs-routes"],"routes":[{"api_key_key":"API_KEY_IDENT","include":"service:api","route_id":"route-us1","site":"us1"}],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[{"enabled":true,"id":"group-logs-routes","include":"*","inputs":["source-logs-routes"],"processors":[{"enabled":true,"field":"message","id":"processor-logs-routes","include":"*","type":"parse_json"}]}],"processors":[{"enabled":true,"id":"group-logs-routes","include":"*","inputs":["source-logs-routes"],"processors":[{"enabled":true,"field":"message","id":"processor-logs-routes","include":"*","type":"parse_json"}]}],"sources":[{"id":"source-logs-routes","type":"datadog_agent"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 576.808125ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/81349a28-f888-11f0-a148-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 876
+        uncompressed: false
+        body: |
+            {"data":{"id":"81349a28-f888-11f0-a148-da7ad0900002","type":"pipelines","attributes":{"name":"datadog logs routes pipeline updated","config":{"destinations":[{"id":"destination-logs-routes","inputs":["group-logs-routes"],"routes":[{"api_key_key":"API_KEY_IDENT","include":"service:api","route_id":"route-us1","site":"us1"}],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[{"enabled":true,"id":"group-logs-routes","include":"*","inputs":["source-logs-routes"],"processors":[{"enabled":true,"field":"message","id":"processor-logs-routes","include":"*","type":"parse_json"}]}],"processors":[{"enabled":true,"id":"group-logs-routes","include":"*","inputs":["source-logs-routes"],"processors":[{"enabled":true,"field":"message","id":"processor-logs-routes","include":"*","type":"parse_json"}]}],"sources":[{"id":"source-logs-routes","type":"datadog_agent"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 200.400083ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/81349a28-f888-11f0-a148-da7ad0900002
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Content-Type:
+                - application/json
+        status: 204 No Content
+        code: 204
+        duration: 300.802958ms
