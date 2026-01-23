@@ -187,14 +187,9 @@ func dataSourceDatadogMonitor() *schema.Resource {
 					Type:        schema.TypeBool,
 					Computed:    true,
 				},
-				"locked": {
-					Description: "Whether or not changes to the monitor are restricted to the creator or admins.",
-					Type:        schema.TypeBool,
-					Computed:    true,
-				},
 				"restricted_roles": {
 					// Uncomment when generally available
-					// Description: "A list of role identifiers to associate with the monitor. Cannot be used with `locked`.",
+					// Description: "A list of role identifiers to associate with the monitor.
 					Type:     schema.TypeSet,
 					Computed: true,
 					Elem:     &schema.Schema{Type: schema.TypeString},
@@ -410,7 +405,6 @@ func dataSourceDatadogMonitorRead(ctx context.Context, d *schema.ResourceData, m
 	d.Set("include_tags", m.Options.GetIncludeTags())
 	d.Set("tags", tags)
 	d.Set("require_full_window", m.Options.GetRequireFullWindow()) // TODO Is this one of those options that we neeed to check?
-	d.Set("locked", m.Options.GetLocked())
 	d.Set("restricted_roles", restricted_roles)
 	d.Set("groupby_simple_monitor", m.Options.GetGroupbySimpleMonitor())
 	d.Set("notify_by", m.Options.GetNotifyBy())
