@@ -38,6 +38,7 @@ func logsArchiveOrderCheckCountV2(accProvider *fwprovider.FrameworkProvider) fun
 }
 
 func TestAccDatadogLogsArchivesOrderDatasource(t *testing.T) {
+	t.Skip("This test doesn't support recording or replaying")
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := uniqueAWSAccountID(ctx, t)

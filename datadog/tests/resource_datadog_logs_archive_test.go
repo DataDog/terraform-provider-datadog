@@ -184,6 +184,7 @@ resource "datadog_logs_archive" "my_s3_archive" {
 }
 
 func TestAccDatadogLogsArchiveS3_basic(t *testing.T) {
+	t.Skip("This test doesn't support recording or replaying")
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	accountID := uniqueAWSAccountID(ctx, t)
@@ -271,10 +272,8 @@ resource "datadog_logs_archive" "my_s3_archive" {
 }
 
 func TestAccDatadogLogsArchiveS3Update_basic(t *testing.T) {
+	t.Skip("This test doesn't support recording or replaying")
 	t.Parallel()
-	if !isReplaying() {
-		t.Skip("This test only supports replaying")
-	}
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	accountID := uniqueAWSAccountID(ctx, t)
 	encryptionSseS3 := `encryption_type = "SSE_S3"`
