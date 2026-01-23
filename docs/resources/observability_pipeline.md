@@ -127,7 +127,7 @@ Optional:
 - `elasticsearch` (Block List) The `elasticsearch` destination writes logs to an Elasticsearch cluster. (see [below for nested schema](#nestedblock--config--destination--elasticsearch))
 - `google_cloud_storage` (Block List) The `google_cloud_storage` destination stores logs in a Google Cloud Storage (GCS) bucket. (see [below for nested schema](#nestedblock--config--destination--google_cloud_storage))
 - `google_pubsub` (Block List) The `google_pubsub` destination publishes logs to a Google Cloud Pub/Sub topic. (see [below for nested schema](#nestedblock--config--destination--google_pubsub))
-- `google_secops` (Block List) The `google_chronicle` destination sends logs to Google Chronicle. (see [below for nested schema](#nestedblock--config--destination--google_secops))
+- `google_secops` (Block List) The `google_chronicle` destination sends logs to Google SecOps. (see [below for nested schema](#nestedblock--config--destination--google_secops))
 - `http_client` (Block List) The `http_client` destination sends data to an HTTP endpoint. (see [below for nested schema](#nestedblock--config--destination--http_client))
 - `kafka` (Block List) The `kafka` destination sends logs to Apache Kafka topics. (see [below for nested schema](#nestedblock--config--destination--kafka))
 - `microsoft_sentinel` (Block List) The `microsoft_sentinel` destination forwards logs to Microsoft Sentinel. (see [below for nested schema](#nestedblock--config--destination--microsoft_sentinel))
@@ -383,9 +383,9 @@ Optional:
 
 Required:
 
-- `customer_id` (String) The Google Chronicle customer ID.
-- `encoding` (String) The encoding format for the logs sent to Chronicle. Valid values are `json`, `raw_message`.
-- `log_type` (String) The log type metadata associated with the Chronicle destination.
+- `customer_id` (String) The Google SecOps customer ID.
+- `encoding` (String) The encoding format for the logs sent to Google SecOps. Valid values are `json`, `raw_message`.
+- `log_type` (String) The log type metadata associated with the Google SecOps destination.
 
 Optional:
 

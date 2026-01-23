@@ -2234,23 +2234,23 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 										},
 									},
 									"google_secops": schema.ListNestedBlock{
-										Description: "The `google_chronicle` destination sends logs to Google Chronicle.",
+										Description: "The `google_chronicle` destination sends logs to Google SecOps.",
 										NestedObject: schema.NestedBlockObject{
 											Attributes: map[string]schema.Attribute{
 												"customer_id": schema.StringAttribute{
 													Required:    true,
-													Description: "The Google Chronicle customer ID.",
+													Description: "The Google SecOps customer ID.",
 												},
 												"encoding": schema.StringAttribute{
 													Required:    true,
-													Description: "The encoding format for the logs sent to Chronicle.",
+													Description: "The encoding format for the logs sent to Google SecOps.",
 													Validators: []validator.String{
 														stringvalidator.OneOf("json", "raw_message"),
 													},
 												},
 												"log_type": schema.StringAttribute{
 													Required:    true,
-													Description: "The log type metadata associated with the Chronicle destination.",
+													Description: "The log type metadata associated with the Google SecOps destination.",
 												},
 											},
 											Blocks: map[string]schema.Block{
