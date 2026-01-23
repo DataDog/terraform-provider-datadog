@@ -28,12 +28,12 @@ func NewSyntheticsSuiteResource() resource.Resource {
 }
 
 type SyntheticsSuiteModel struct {
-	PublicID types.String `tfsdk:"public_id"`
-	Name     types.String `tfsdk:"name"`
-	Message  types.String `tfsdk:"message"`
-	Tags     types.List   `tfsdk:"tags"`
-	Options  types.List   `tfsdk:"options"`
-	Tests    types.List   `tfsdk:"tests"`
+	ID      types.String `tfsdk:"id"`
+	Name    types.String `tfsdk:"name"`
+	Message types.String `tfsdk:"message"`
+	Tags    types.List   `tfsdk:"tags"`
+	Options types.List   `tfsdk:"options"`
+	Tests   types.List   `tfsdk:"tests"`
 }
 
 type SyntheticsSuiteOptionsModel struct {
@@ -77,7 +77,7 @@ func (r *syntheticsSuiteResource) Schema(_ context.Context, _ resource.SchemaReq
 	response.Schema = schema.Schema{
 		Description: "Provides a Datadog Synthetics Suite resource. This can be used to create and manage Synthetics test suites.",
 		Attributes: map[string]schema.Attribute{
-			"public_id": utils.ResourceIDAttribute(),
+			"id": utils.ResourceIDAttribute(),
 			"name": schema.StringAttribute{
 				Description: "Name of the Synthetics suite.",
 				Required:    true,
@@ -168,8 +168,9 @@ func (r *syntheticsSuiteResource) Read(ctx context.Context, request resource.Rea
 		return
 	}
 
-	publicID := state.PublicID.ValueString()
-	resp, httpResponse, err := r.Api.GetSyntheticsSuite(r.Auth, publicID)
+	id := state.ID.ValueString()
+
+	resp, httpResponse, err := r.Api.GetSyntheticsSuite(r.Auth, id)
 	if err != nil {
 		if httpResponse != nil && httpResponse.StatusCode == 404 {
 			response.State.RemoveResource(ctx)
@@ -199,14 +200,14 @@ func (r *syntheticsSuiteResource) Update(ctx context.Context, request resource.U
 		return
 	}
 
-	publicID := state.PublicID.ValueString()
+	id := state.ID.ValueString()
 	body, diags := r.buildSyntheticsSuiteBody(ctx, &state)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
 		return
 	}
 
-	resp, httpResponse, err := r.Api.EditSyntheticsSuite(r.Auth, publicID, body)
+	resp, httpResponse, err := r.Api.EditSyntheticsSuite(r.Auth, id, body)
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, fmt.Sprintf("error updating synthetics suite: %v", httpResponse)))
 		return
@@ -232,10 +233,10 @@ func (r *syntheticsSuiteResource) Delete(ctx context.Context, request resource.D
 		return
 	}
 
-	publicID := state.PublicID.ValueString()
+	id := state.ID.ValueString()
 
-	// Build delete request with suite public_id
-	deleteAttrs := datadogV2.NewDeletedSuitesRequestDeleteAttributes([]string{publicID})
+	// Build delete request with suite id
+	deleteAttrs := datadogV2.NewDeletedSuitesRequestDeleteAttributes([]string{id})
 	deleteData := datadogV2.NewDeletedSuitesRequestDelete(*deleteAttrs)
 	deleteBody := datadogV2.NewDeletedSuitesRequestDeleteRequest(*deleteData)
 
@@ -250,7 +251,7 @@ func (r *syntheticsSuiteResource) Delete(ctx context.Context, request resource.D
 }
 
 func (r *syntheticsSuiteResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
-	resource.ImportStatePassthroughID(ctx, frameworkPath.Root("public_id"), request, response)
+	resource.ImportStatePassthroughID(ctx, frameworkPath.Root("id"), request, response)
 }
 
 // buildSyntheticsSuiteBody builds the API request body from the Terraform state
@@ -321,76 +322,63 @@ func (r *syntheticsSuiteResource) buildSyntheticsSuiteBody(ctx context.Context, 
 
 // updateState updates the Terraform state from the API response
 func (r *syntheticsSuiteResource) updateState(ctx context.Context, state *SyntheticsSuiteModel, resp *datadogV2.SyntheticsSuiteResponse, diags *diag.Diagnostics) {
-	if data, ok := resp.GetDataOk(); ok {
-		if attrs, ok := data.GetAttributesOk(); ok {
-			// Update name
-			if name, ok := attrs.GetNameOk(); ok {
-				state.Name = types.StringValue(*name)
-			}
+	data := resp.GetData()
 
-			// Update message
-			if message, ok := attrs.GetMessageOk(); ok {
-				state.Message = types.StringValue(*message)
-			}
+	// Set the id from data.Id
+	state.ID = types.StringValue(data.GetId())
 
-			// Update options
-			if opts, ok := attrs.GetOptionsOk(); ok {
-				if threshold, ok := opts.GetAlertingThresholdOk(); ok {
-					optionsModel := SyntheticsSuiteOptionsModel{
-						AlertingThreshold: types.Float64Value(*threshold),
-					}
-					optionsList, d := types.ListValueFrom(ctx, syntheticsSuiteOptionsAttrType, []SyntheticsSuiteOptionsModel{optionsModel})
-					diags.Append(d...)
-					state.Options = optionsList
+	if attrs, ok := data.GetAttributesOk(); ok {
+		// Update name
+		if name, ok := attrs.GetNameOk(); ok {
+			state.Name = types.StringValue(*name)
+		}
+
+		// Update message
+		if message, ok := attrs.GetMessageOk(); ok {
+			state.Message = types.StringValue(*message)
+		}
+
+		// Update options
+		if opts, ok := attrs.GetOptionsOk(); ok {
+			if threshold, ok := opts.GetAlertingThresholdOk(); ok {
+				optionsModel := SyntheticsSuiteOptionsModel{
+					AlertingThreshold: types.Float64Value(*threshold),
 				}
-			}
-
-			// Update tests - always set, even if empty
-			var testModels []SyntheticsSuiteTestModel
-			if tests, ok := attrs.GetTestsOk(); ok && len(*tests) > 0 {
-				testModels = make([]SyntheticsSuiteTestModel, len(*tests))
-				for i, test := range *tests {
-					testModel := SyntheticsSuiteTestModel{
-						PublicID: types.StringValue(test.GetPublicId()),
-					}
-					if criticality, ok := test.GetAlertingCriticalityOk(); ok {
-						testModel.AlertingCriticality = types.StringValue(string(*criticality))
-					} else {
-						testModel.AlertingCriticality = types.StringNull()
-					}
-					testModels[i] = testModel
-				}
-			} else {
-				testModels = []SyntheticsSuiteTestModel{}
-			}
-			testsList, d := types.ListValueFrom(ctx, syntheticsSuiteTestAttrType, testModels)
-			diags.Append(d...)
-			state.Tests = testsList
-
-			// Update tags
-			if tags, ok := attrs.GetTagsOk(); ok {
-				tagsList, d := types.ListValueFrom(ctx, types.StringType, *tags)
+				optionsList, d := types.ListValueFrom(ctx, syntheticsSuiteOptionsAttrType, []SyntheticsSuiteOptionsModel{optionsModel})
 				diags.Append(d...)
-				state.Tags = tagsList
-			} else {
-				state.Tags = types.ListNull(types.StringType)
+				state.Options = optionsList
 			}
+		}
 
-			// Handle public_id - Note: The API response might not include the public_id directly
-			// in the attributes. We need to check if it's in the AdditionalProperties or
-			// use the publicId parameter that was passed to the API call
-			// For now, we'll preserve the existing public_id from state if it's already set
-			// On Create, we'll need to extract it from the response somehow
-			if state.PublicID.IsNull() || state.PublicID.IsUnknown() {
-				// Try to get from AdditionalProperties if available
-				if data.AdditionalProperties != nil {
-					if publicID, ok := data.AdditionalProperties["id"].(string); ok {
-						state.PublicID = types.StringValue(publicID)
-					} else if publicID, ok := data.AdditionalProperties["public_id"].(string); ok {
-						state.PublicID = types.StringValue(publicID)
-					}
+		// Update tests - always set, even if empty
+		var testModels []SyntheticsSuiteTestModel
+		if tests, ok := attrs.GetTestsOk(); ok && len(*tests) > 0 {
+			testModels = make([]SyntheticsSuiteTestModel, len(*tests))
+			for i, test := range *tests {
+				testModel := SyntheticsSuiteTestModel{
+					PublicID: types.StringValue(test.GetPublicId()),
 				}
+				if criticality, ok := test.GetAlertingCriticalityOk(); ok {
+					testModel.AlertingCriticality = types.StringValue(string(*criticality))
+				} else {
+					testModel.AlertingCriticality = types.StringNull()
+				}
+				testModels[i] = testModel
 			}
+		} else {
+			testModels = []SyntheticsSuiteTestModel{}
+		}
+		testsList, d := types.ListValueFrom(ctx, syntheticsSuiteTestAttrType, testModels)
+		diags.Append(d...)
+		state.Tests = testsList
+
+		// Update tags
+		if tags, ok := attrs.GetTagsOk(); ok {
+			tagsList, d := types.ListValueFrom(ctx, types.StringType, *tags)
+			diags.Append(d...)
+			state.Tags = tagsList
+		} else {
+			state.Tags = types.ListNull(types.StringType)
 		}
 	}
 }

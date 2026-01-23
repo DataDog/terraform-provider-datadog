@@ -102,7 +102,7 @@ func createSyntheticsSuiteStep(ctx context.Context, accProvider *fwprovider.Fram
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_suite.foo", "tests.#", "0"),
 			resource.TestCheckResourceAttrSet(
-				"datadog_synthetics_suite.foo", "public_id"),
+				"datadog_synthetics_suite.foo", "id"),
 		),
 	}
 }
@@ -117,14 +117,6 @@ resource "datadog_synthetics_suite" "foo" {
 	options {
 		alerting_threshold = 0.5
 	}
-}`, uniqSuiteName)
-}
-
-func createSyntheticsSuiteConfigMinimal(uniqSuiteName string) string {
-	return fmt.Sprintf(`
-resource "datadog_synthetics_suite" "foo" {
-	name    = "%s"
-	message = "This is a test suite"
 }`, uniqSuiteName)
 }
 
@@ -151,7 +143,7 @@ func updateSyntheticsSuiteStep(ctx context.Context, accProvider *fwprovider.Fram
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_suite.foo", "tests.#", "0"),
 			resource.TestCheckResourceAttrSet(
-				"datadog_synthetics_suite.foo", "public_id"),
+				"datadog_synthetics_suite.foo", "id"),
 		),
 	}
 }
@@ -192,7 +184,7 @@ func createSyntheticsSuiteWithTestsStep(ctx context.Context, accProvider *fwprov
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_suite.bar", "tests.1.alerting_criticality", "ignore"),
 			resource.TestCheckResourceAttrSet(
-				"datadog_synthetics_suite.bar", "public_id"),
+				"datadog_synthetics_suite.bar", "id"),
 		),
 	}
 }
@@ -245,6 +237,11 @@ resource "datadog_synthetics_test" "test2" {
 }
 
 resource "datadog_synthetics_suite" "bar" {
+	depends_on = [
+		datadog_synthetics_test.test1,
+		datadog_synthetics_test.test2
+	]
+
 	name    = "%[1]s"
 	message = "Suite with tests"
 	tags    = ["env:test"]
