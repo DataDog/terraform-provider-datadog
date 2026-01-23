@@ -1,0 +1,3 @@
+data "datadog_security_monitoring_critical_asset" "my_critical_asset" {
+  id = "1dab677c-5eb4-4ac8-b1d3-444bf0117e19"
+}
