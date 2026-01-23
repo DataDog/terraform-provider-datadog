@@ -3209,10 +3209,10 @@ resource "datadog_observability_pipeline" "reference_table_enrichment" {
 	})
 }
 
-func TestAccDatadogObservabilityPipeline_googleChronicleDestination(t *testing.T) {
+func TestAccDatadogObservabilityPipeline_googleSecOpsDestination(t *testing.T) {
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
-	resourceName := "datadog_observability_pipeline.chronicle"
+	resourceName := "datadog_observability_pipeline.secops"
 
 	resource.Test(t, resource.TestCase{
 		ProtoV5ProviderFactories: accProviders,
@@ -3220,8 +3220,8 @@ func TestAccDatadogObservabilityPipeline_googleChronicleDestination(t *testing.T
 		Steps: []resource.TestStep{
 			{
 				Config: `
-resource "datadog_observability_pipeline" "chronicle" {
-  name = "chronicle pipeline"
+resource "datadog_observability_pipeline" "secops" {
+  name = "secops pipeline"
 
   config {
     source {
@@ -3233,7 +3233,7 @@ resource "datadog_observability_pipeline" "chronicle" {
     destination {
       id = "destination-1"
       inputs = ["source-1"]
-      google_chronicle {
+      google_secops {
         customer_id = "3fa85f64-5717-4562-b3fc-2c963f66afa6"
         encoding    = "json"
         log_type    = "nginx_logs"
@@ -3248,20 +3248,20 @@ resource "datadog_observability_pipeline" "chronicle" {
 					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.id", "destination-1"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "source-1"),
-					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.google_chronicle.0.customer_id", "3fa85f64-5717-4562-b3fc-2c963f66afa6"),
-					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.google_chronicle.0.encoding", "json"),
-					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.google_chronicle.0.log_type", "nginx_logs"),
-					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.google_chronicle.0.auth.0.credentials_file", "/secrets/gcp.json"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.google_secops.0.customer_id", "3fa85f64-5717-4562-b3fc-2c963f66afa6"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.google_secops.0.encoding", "json"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.google_secops.0.log_type", "nginx_logs"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.google_secops.0.auth.0.credentials_file", "/secrets/gcp.json"),
 				),
 			},
 		},
 	})
 }
 
-func TestAccDatadogObservabilityPipeline_googleChronicleDestinationMinimal(t *testing.T) {
+func TestAccDatadogObservabilityPipeline_googleSecOpsDestinationMinimal(t *testing.T) {
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
-	resourceName := "datadog_observability_pipeline.chronicle_minimal"
+	resourceName := "datadog_observability_pipeline.secops_minimal"
 
 	resource.Test(t, resource.TestCase{
 		ProtoV5ProviderFactories: accProviders,
@@ -3269,8 +3269,8 @@ func TestAccDatadogObservabilityPipeline_googleChronicleDestinationMinimal(t *te
 		Steps: []resource.TestStep{
 			{
 				Config: `
-resource "datadog_observability_pipeline" "chronicle_minimal" {
-  name = "chronicle minimal pipeline"
+resource "datadog_observability_pipeline" "secops_minimal" {
+  name = "secops minimal pipeline"
 
   config {
     source {
@@ -3282,7 +3282,7 @@ resource "datadog_observability_pipeline" "chronicle_minimal" {
     destination {
       id = "chronicle-dest-1"
       inputs = ["source-1"]
-      google_chronicle {
+      google_secops {
         customer_id = "3fa85f64-5717-4562-b3fc-2c963f66afa6"
         encoding    = "json"
         log_type    = "nginx_logs"
@@ -3294,9 +3294,9 @@ resource "datadog_observability_pipeline" "chronicle_minimal" {
 					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.id", "chronicle-dest-1"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "source-1"),
-					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.google_chronicle.0.customer_id", "3fa85f64-5717-4562-b3fc-2c963f66afa6"),
-					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.google_chronicle.0.encoding", "json"),
-					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.google_chronicle.0.log_type", "nginx_logs"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.google_secops.0.customer_id", "3fa85f64-5717-4562-b3fc-2c963f66afa6"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.google_secops.0.encoding", "json"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.google_secops.0.log_type", "nginx_logs"),
 				),
 			},
 		},
