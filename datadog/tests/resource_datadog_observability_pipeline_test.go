@@ -3212,7 +3212,7 @@ resource "datadog_observability_pipeline" "reference_table_enrichment" {
 func TestAccDatadogObservabilityPipeline_googleSecOpsDestination(t *testing.T) {
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
-	resourceName := "datadog_observability_pipeline.chronicle"
+	resourceName := "datadog_observability_pipeline.secops"
 
 	resource.Test(t, resource.TestCase{
 		ProtoV5ProviderFactories: accProviders,
