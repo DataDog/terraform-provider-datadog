@@ -28,7 +28,7 @@ Provides a Datadog Synthetics Suite resource. This can be used to create and man
 
 ### Read-Only
 
-- `public_id` (String) The ID of this resource.
+- `id` (String) The ID of this resource.
 
 <a id="nestedblock--options"></a>
 ### Nested Schema for `options`
