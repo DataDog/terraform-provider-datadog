@@ -66,7 +66,7 @@ type destinationModel struct {
 	ElasticsearchDestination          []*elasticsearchDestinationModel                                 `tfsdk:"elasticsearch"`
 	AzureStorageDestination           []*azureStorageDestinationModel                                  `tfsdk:"azure_storage"`
 	MicrosoftSentinelDestination      []*microsoftSentinelDestinationModel                             `tfsdk:"microsoft_sentinel"`
-	GoogleChronicleDestination        []*googleChronicleDestinationModel                               `tfsdk:"google_chronicle"`
+	GoogleSecopsDestination           []*googleSecopsDestinationModel                                  `tfsdk:"google_secops"`
 	NewRelicDestination               []*newRelicDestinationModel                                      `tfsdk:"new_relic"`
 	SentinelOneDestination            []*sentinelOneDestinationModel                                   `tfsdk:"sentinel_one"`
 	OpenSearchDestination             []*opensearchDestinationModel                                    `tfsdk:"opensearch"`
@@ -357,7 +357,7 @@ type newRelicDestinationModel struct {
 	Region types.String `tfsdk:"region"`
 }
 
-type googleChronicleDestinationModel struct {
+type googleSecopsDestinationModel struct {
 	Auth       []gcpAuthModel `tfsdk:"auth"`
 	CustomerId types.String   `tfsdk:"customer_id"`
 	Encoding   types.String   `tfsdk:"encoding"`
@@ -2233,20 +2233,23 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 											},
 										},
 									},
-									"google_chronicle": schema.ListNestedBlock{
+									"google_secops": schema.ListNestedBlock{
 										Description: "The `google_chronicle` destination sends logs to Google Chronicle.",
 										NestedObject: schema.NestedBlockObject{
 											Attributes: map[string]schema.Attribute{
 												"customer_id": schema.StringAttribute{
-													Optional:    true,
+													Required:    true,
 													Description: "The Google Chronicle customer ID.",
 												},
 												"encoding": schema.StringAttribute{
-													Optional:    true,
+													Required:    true,
 													Description: "The encoding format for the logs sent to Chronicle.",
+													Validators: []validator.String{
+														stringvalidator.OneOf("json", "raw_message"),
+													},
 												},
 												"log_type": schema.StringAttribute{
-													Optional:    true,
+													Required:    true,
 													Description: "The log type metadata associated with the Chronicle destination.",
 												},
 											},
@@ -2581,8 +2584,8 @@ func expandPipeline(ctx context.Context, state *observabilityPipelineModel) (*da
 		for _, d := range dest.MicrosoftSentinelDestination {
 			config.Destinations = append(config.Destinations, expandMicrosoftSentinelDestination(ctx, dest, d))
 		}
-		for _, d := range dest.GoogleChronicleDestination {
-			config.Destinations = append(config.Destinations, expandGoogleChronicleDestination(ctx, dest, d))
+		for _, d := range dest.GoogleSecopsDestination {
+			config.Destinations = append(config.Destinations, expandGoogleSecopsDestination(ctx, dest, d))
 		}
 		for _, d := range dest.NewRelicDestination {
 			config.Destinations = append(config.Destinations, expandNewRelicDestination(ctx, dest, d))
@@ -2744,10 +2747,10 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 			destBlock.Inputs, _ = types.ListValueFrom(ctx, types.StringType, d.ObservabilityPipelineHttpClientDestination.GetInputs())
 			destBlock.HttpClientDestination = append(destBlock.HttpClientDestination, httpClient)
 			outCfg.Destinations = append(outCfg.Destinations, destBlock)
-		} else if chronicle := flattenGoogleChronicleDestination(ctx, d.ObservabilityPipelineGoogleChronicleDestination); chronicle != nil {
+		} else if chronicle := flattenGoogleSecopsDestination(ctx, d.ObservabilityPipelineGoogleChronicleDestination); chronicle != nil {
 			destBlock.Id = types.StringValue(d.ObservabilityPipelineGoogleChronicleDestination.GetId())
 			destBlock.Inputs, _ = types.ListValueFrom(ctx, types.StringType, d.ObservabilityPipelineGoogleChronicleDestination.GetInputs())
-			destBlock.GoogleChronicleDestination = append(destBlock.GoogleChronicleDestination, chronicle)
+			destBlock.GoogleSecopsDestination = append(destBlock.GoogleSecopsDestination, chronicle)
 			outCfg.Destinations = append(outCfg.Destinations, destBlock)
 		} else if newrelic := flattenNewRelicDestination(ctx, d.ObservabilityPipelineNewRelicDestination); newrelic != nil {
 			destBlock.Id = types.StringValue(d.ObservabilityPipelineNewRelicDestination.GetId())
@@ -5265,7 +5268,7 @@ func flattenLogstashSource(src *datadogV2.ObservabilityPipelineLogstashSource) *
 	return out
 }
 
-func expandGoogleChronicleDestination(ctx context.Context, dest *destinationModel, src *googleChronicleDestinationModel) datadogV2.ObservabilityPipelineConfigDestinationItem {
+func expandGoogleSecopsDestination(ctx context.Context, dest *destinationModel, src *googleSecopsDestinationModel) datadogV2.ObservabilityPipelineConfigDestinationItem {
 	chronicle := datadogV2.NewObservabilityPipelineGoogleChronicleDestinationWithDefaults()
 	chronicle.SetId(dest.Id.ValueString())
 
@@ -5296,15 +5299,21 @@ func expandGoogleChronicleDestination(ctx context.Context, dest *destinationMode
 	}
 }
 
-func flattenGoogleChronicleDestination(ctx context.Context, src *datadogV2.ObservabilityPipelineGoogleChronicleDestination) *googleChronicleDestinationModel {
+func flattenGoogleSecopsDestination(ctx context.Context, src *datadogV2.ObservabilityPipelineGoogleChronicleDestination) *googleSecopsDestinationModel {
 	if src == nil {
 		return nil
 	}
 
-	out := &googleChronicleDestinationModel{
-		CustomerId: types.StringValue(src.GetCustomerId()),
-		Encoding:   types.StringValue(string(src.GetEncoding())),
-		LogType:    types.StringValue(src.GetLogType()),
+	out := &googleSecopsDestinationModel{}
+
+	if v, ok := src.GetCustomerIdOk(); ok && v != nil && *v != "" {
+		out.CustomerId = types.StringValue(*v)
+	}
+	if v, ok := src.GetEncodingOk(); ok && v != nil && string(*v) != "" {
+		out.Encoding = types.StringValue(string(*v))
+	}
+	if v, ok := src.GetLogTypeOk(); ok && v != nil && *v != "" {
+		out.LogType = types.StringValue(*v)
 	}
 
 	if auth, ok := src.GetAuthOk(); ok {

@@ -1,0 +1,107 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 351
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"config":{"destinations":[{"customer_id":"3fa85f64-5717-4562-b3fc-2c963f66afa6","encoding":"json","id":"chronicle-dest-1","inputs":["source-1"],"log_type":"nginx_logs","type":"google_chronicle"}],"pipeline_type":"logs","sources":[{"id":"source-1","type":"datadog_agent"}]},"name":"secops minimal pipeline"},"type":"pipelines"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 433
+        uncompressed: false
+        body: |
+            {"data":{"id":"2ec00ae8-f851-11f0-bbfc-da7ad0900002","type":"pipelines","attributes":{"name":"secops minimal pipeline","config":{"destinations":[{"customer_id":"3fa85f64-5717-4562-b3fc-2c963f66afa6","encoding":"json","id":"chronicle-dest-1","inputs":["source-1"],"log_type":"nginx_logs","type":"google_chronicle"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 463.747208ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/2ec00ae8-f851-11f0-bbfc-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 433
+        uncompressed: false
+        body: |
+            {"data":{"id":"2ec00ae8-f851-11f0-bbfc-da7ad0900002","type":"pipelines","attributes":{"name":"secops minimal pipeline","config":{"destinations":[{"customer_id":"3fa85f64-5717-4562-b3fc-2c963f66afa6","encoding":"json","id":"chronicle-dest-1","inputs":["source-1"],"log_type":"nginx_logs","type":"google_chronicle"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 275.883209ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/2ec00ae8-f851-11f0-bbfc-da7ad0900002
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Content-Type:
+                - application/json
+        status: 204 No Content
+        code: 204
+        duration: 364.326334ms

@@ -125,9 +125,9 @@ Optional:
 - `datadog_logs` (Block List) The `datadog_logs` destination forwards logs to Datadog Log Management. (see [below for nested schema](#nestedblock--config--destination--datadog_logs))
 - `datadog_metrics` (Block List) The `datadog_metrics` destination forwards metrics to Datadog. (see [below for nested schema](#nestedblock--config--destination--datadog_metrics))
 - `elasticsearch` (Block List) The `elasticsearch` destination writes logs to an Elasticsearch cluster. (see [below for nested schema](#nestedblock--config--destination--elasticsearch))
-- `google_chronicle` (Block List) The `google_chronicle` destination sends logs to Google Chronicle. (see [below for nested schema](#nestedblock--config--destination--google_chronicle))
 - `google_cloud_storage` (Block List) The `google_cloud_storage` destination stores logs in a Google Cloud Storage (GCS) bucket. (see [below for nested schema](#nestedblock--config--destination--google_cloud_storage))
 - `google_pubsub` (Block List) The `google_pubsub` destination publishes logs to a Google Cloud Pub/Sub topic. (see [below for nested schema](#nestedblock--config--destination--google_pubsub))
+- `google_secops` (Block List) The `google_chronicle` destination sends logs to Google Chronicle. (see [below for nested schema](#nestedblock--config--destination--google_secops))
 - `http_client` (Block List) The `http_client` destination sends data to an HTTP endpoint. (see [below for nested schema](#nestedblock--config--destination--http_client))
 - `kafka` (Block List) The `kafka` destination sends logs to Apache Kafka topics. (see [below for nested schema](#nestedblock--config--destination--kafka))
 - `microsoft_sentinel` (Block List) The `microsoft_sentinel` destination forwards logs to Microsoft Sentinel. (see [below for nested schema](#nestedblock--config--destination--microsoft_sentinel))
@@ -309,25 +309,6 @@ Optional:
 
 
 
-<a id="nestedblock--config--destination--google_chronicle"></a>
-### Nested Schema for `config.destination.google_chronicle`
-
-Optional:
-
-- `auth` (Block List) GCP credentials used to authenticate with Google Cloud services. (see [below for nested schema](#nestedblock--config--destination--google_chronicle--auth))
-- `customer_id` (String) The Google Chronicle customer ID.
-- `encoding` (String) The encoding format for the logs sent to Chronicle.
-- `log_type` (String) The log type metadata associated with the Chronicle destination.
-
-<a id="nestedblock--config--destination--google_chronicle--auth"></a>
-### Nested Schema for `config.destination.google_chronicle.auth`
-
-Required:
-
-- `credentials_file` (String) Path to the GCP service account key file.
-
-
-
 <a id="nestedblock--config--destination--google_cloud_storage"></a>
 ### Nested Schema for `config.destination.google_cloud_storage`
 
@@ -394,6 +375,28 @@ Optional:
 
 - `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
 - `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
+
+
+
+<a id="nestedblock--config--destination--google_secops"></a>
+### Nested Schema for `config.destination.google_secops`
+
+Required:
+
+- `customer_id` (String) The Google Chronicle customer ID.
+- `encoding` (String) The encoding format for the logs sent to Chronicle. Valid values are `json`, `raw_message`.
+- `log_type` (String) The log type metadata associated with the Chronicle destination.
+
+Optional:
+
+- `auth` (Block List) GCP credentials used to authenticate with Google Cloud services. (see [below for nested schema](#nestedblock--config--destination--google_secops--auth))
+
+<a id="nestedblock--config--destination--google_secops--auth"></a>
+### Nested Schema for `config.destination.google_secops.auth`
+
+Required:
+
+- `credentials_file` (String) Path to the GCP service account key file.
 
 
 
