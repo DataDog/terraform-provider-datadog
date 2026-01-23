@@ -18,7 +18,7 @@ func TestAccIntegrationAwsEventBridgeBasic(t *testing.T) {
 	}
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
-	accountID := uniqueAWSAccountID(ctx, t)
+	accountID := "694513996623"
 	uniq := uniqueEntityName(ctx, t)
 
 	resource.Test(t, resource.TestCase{
