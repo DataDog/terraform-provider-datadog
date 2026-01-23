@@ -167,7 +167,7 @@ func (r *onCallScheduleResource) Schema(_ context.Context, _ resource.SchemaRequ
 						},
 						"users": schema.ListAttribute{
 							Required:    true,
-							Description: "List of user IDs for the layer. Can either be a valid user id or null",
+							Description: "List of user IDs for the layer. Can either be a valid user id or `null` to represent No-one.",
 							ElementType: types.StringType,
 							Validators:  []validator.List{listvalidator.SizeAtLeast(1)},
 						},
