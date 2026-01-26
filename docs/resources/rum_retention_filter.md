@@ -33,7 +33,7 @@ resource "datadog_rum_retention_filter" "testing_rum_retention_filter" {
 - `application_id` (String) RUM application ID.
 - `event_type` (String) The type of RUM events to filter on.
 - `name` (String) The name of a RUM retention filter.
-- `sample_rate` (Number) The sample rate for a RUM retention filter, between 0.1 and 100. Supports one decimal place (e.g., 50.5).
+- `sample_rate` (Number) The sample rate for a RUM retention filter, between 0.1 and 100. Supports one decimal place (for example, 50.5).
 
 ### Optional
 

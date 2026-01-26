@@ -75,7 +75,7 @@ func (r *rumRetentionFilterResource) Schema(_ context.Context, _ resource.Schema
 				Required:    true,
 			},
 			"sample_rate": schema.Float64Attribute{
-				Description: "The sample rate for a RUM retention filter, between 0.1 and 100. Supports one decimal place (e.g., 50.5).",
+				Description: "The sample rate for a RUM retention filter, between 0.1 and 100. Supports one decimal place (for example, 50.5).",
 				Required:    true,
 			},
 			"query": schema.StringAttribute{
