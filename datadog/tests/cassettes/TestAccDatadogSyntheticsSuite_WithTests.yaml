@@ -1,0 +1,545 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 422
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","url":"https://www.example.org"}},"locations":["aws:us-east-2"],"message":"Test 2","name":"tf-TestAccDatadogSyntheticsSuite_WithTests-local-1769177372-test2","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900},"status":"paused","subtype":"http","tags":["test:2"],"type":"api"}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"4eu-hfa-5cq","name":"tf-TestAccDatadogSyntheticsSuite_WithTests-local-1769177372-test2","status":"paused","type":"api","subtype":"http","tags":["test:2"],"created_at":"2026-01-23T14:09:34.874219+00:00","modified_at":"2026-01-23T14:09:34.874219+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","url":"https://www.example.org"}},"message":"Test 2","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900},"locations":["aws:us-east-2"],"created_by":{"name":"Frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"deleted_at":null,"monitor_id":253217933,"org_id":569509,"modified_by":{"name":"Frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"creation_source":"terraform"}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 610.201708ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 422
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","url":"https://www.example.com"}},"locations":["aws:us-east-2"],"message":"Test 1","name":"tf-TestAccDatadogSyntheticsSuite_WithTests-local-1769177372-test1","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900},"status":"paused","subtype":"http","tags":["test:1"],"type":"api"}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"th4-559-zgj","name":"tf-TestAccDatadogSyntheticsSuite_WithTests-local-1769177372-test1","status":"paused","type":"api","subtype":"http","tags":["test:1"],"created_at":"2026-01-23T14:09:34.929037+00:00","modified_at":"2026-01-23T14:09:34.929037+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","url":"https://www.example.com"}},"message":"Test 1","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900},"locations":["aws:us-east-2"],"created_by":{"name":"Frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"deleted_at":null,"monitor_id":253217934,"org_id":569509,"modified_by":{"name":"Frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"creation_source":"terraform"}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 645.231209ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/4eu-hfa-5cq
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"4eu-hfa-5cq","name":"tf-TestAccDatadogSyntheticsSuite_WithTests-local-1769177372-test2","status":"paused","type":"api","subtype":"http","tags":["test:2"],"created_at":"2026-01-23T14:09:34.874219+00:00","modified_at":"2026-01-23T14:09:34.874219+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","url":"https://www.example.org"}},"message":"Test 2","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900},"locations":["aws:us-east-2"],"monitor_id":253217933,"creator":{"name":"Frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 184.667541ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/th4-559-zgj
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"th4-559-zgj","name":"tf-TestAccDatadogSyntheticsSuite_WithTests-local-1769177372-test1","status":"paused","type":"api","subtype":"http","tags":["test:1"],"created_at":"2026-01-23T14:09:34.929037+00:00","modified_at":"2026-01-23T14:09:34.929037+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","url":"https://www.example.com"}},"message":"Test 1","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900},"locations":["aws:us-east-2"],"monitor_id":253217934,"creator":{"name":"Frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 178.864084ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 344
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"message":"Suite with tests","name":"tf-TestAccDatadogSyntheticsSuite_WithTests-local-1769177372","options":{"alerting_threshold":0.6},"tags":["env:test"],"tests":[{"alerting_criticality":"critical","public_id":"th4-559-zgj"},{"alerting_criticality":"ignore","public_id":"4eu-hfa-5cq"}],"type":"suite"},"type":"suites"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/synthetics/suites
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"suites","id":"22a-sgc-2z3","attributes":{"created_by":{"handle":"frog@datadoghq.com","email":"frog@datadoghq.com","name":"Frog"},"name":"tf-TestAccDatadogSyntheticsSuite_WithTests-local-1769177372","public_id":"22a-sgc-2z3","created_at":"2026-01-23T14:09:35.386123+00:00","message":"Suite with tests","tests":[{"public_id":"th4-559-zgj","alerting_criticality":"critical"},{"public_id":"4eu-hfa-5cq","alerting_criticality":"ignore"}],"type":"suite","org_id":569509,"options":{"alerting_threshold":0.6},"modified_at":"2026-01-23T14:09:35.386123+00:00","modified_by":{"handle":"frog@datadoghq.com","email":"frog@datadoghq.com","name":"Frog"},"tags":["env:test"],"monitor_id":253217936}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 327.026375ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/synthetics/suites/22a-sgc-2z3
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"suites","attributes":{"created_at":"2026-01-23T14:09:35.386123+00:00","type":"suite","modified_at":"2026-01-23T14:09:35.386123+00:00","name":"tf-TestAccDatadogSyntheticsSuite_WithTests-local-1769177372","org_id":569509,"version":1,"message":"Suite with tests","version_uuid":"2592d176-f865-11f0-b992-da7ad0901002","monitor_id":253217936,"public_id":"22a-sgc-2z3","modified_by":{"handle":"frog@datadoghq.com","email":"frog@datadoghq.com","name":"Frog"},"created_by":{"handle":"frog@datadoghq.com","email":"frog@datadoghq.com","name":"Frog"},"tests":[{"public_id":"th4-559-zgj","alerting_criticality":"critical"},{"public_id":"4eu-hfa-5cq","alerting_criticality":"ignore"}],"tags":["env:test"],"options":{"alerting_threshold":0.6}},"id":"22a-sgc-2z3"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 295.8365ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/4eu-hfa-5cq
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"4eu-hfa-5cq","name":"tf-TestAccDatadogSyntheticsSuite_WithTests-local-1769177372-test2","status":"paused","type":"api","subtype":"http","tags":["test:2"],"created_at":"2026-01-23T14:09:34.874219+00:00","modified_at":"2026-01-23T14:09:34.874219+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","url":"https://www.example.org"}},"message":"Test 2","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900},"locations":["aws:us-east-2"],"monitor_id":253217933,"creator":{"name":"Frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 176.655625ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/th4-559-zgj
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"th4-559-zgj","name":"tf-TestAccDatadogSyntheticsSuite_WithTests-local-1769177372-test1","status":"paused","type":"api","subtype":"http","tags":["test:1"],"created_at":"2026-01-23T14:09:34.929037+00:00","modified_at":"2026-01-23T14:09:34.929037+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","url":"https://www.example.com"}},"message":"Test 1","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900},"locations":["aws:us-east-2"],"monitor_id":253217934,"creator":{"name":"Frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 187.592125ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/4eu-hfa-5cq
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"4eu-hfa-5cq","name":"tf-TestAccDatadogSyntheticsSuite_WithTests-local-1769177372-test2","status":"paused","type":"api","subtype":"http","tags":["test:2"],"created_at":"2026-01-23T14:09:34.874219+00:00","modified_at":"2026-01-23T14:09:34.874219+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","url":"https://www.example.org"}},"message":"Test 2","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900},"locations":["aws:us-east-2"],"monitor_id":253217933,"creator":{"name":"Frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 215.745708ms
+    - id: 9
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/th4-559-zgj
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"th4-559-zgj","name":"tf-TestAccDatadogSyntheticsSuite_WithTests-local-1769177372-test1","status":"paused","type":"api","subtype":"http","tags":["test:1"],"created_at":"2026-01-23T14:09:34.929037+00:00","modified_at":"2026-01-23T14:09:34.929037+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","url":"https://www.example.com"}},"message":"Test 1","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900},"locations":["aws:us-east-2"],"monitor_id":253217934,"creator":{"name":"Frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 359.142875ms
+    - id: 10
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/synthetics/suites/22a-sgc-2z3
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"suites","attributes":{"created_by":{"name":"Frog","email":"frog@datadoghq.com","handle":"frog@datadoghq.com"},"options":{"alerting_threshold":0.6},"monitor_id":253217936,"modified_by":{"name":"Frog","email":"frog@datadoghq.com","handle":"frog@datadoghq.com"},"tests":[{"public_id":"th4-559-zgj","alerting_criticality":"critical"},{"public_id":"4eu-hfa-5cq","alerting_criticality":"ignore"}],"public_id":"22a-sgc-2z3","version_uuid":"2592d176-f865-11f0-b992-da7ad0901002","message":"Suite with tests","created_at":"2026-01-23T14:09:35.386123+00:00","name":"tf-TestAccDatadogSyntheticsSuite_WithTests-local-1769177372","modified_at":"2026-01-23T14:09:35.386123+00:00","tags":["env:test"],"type":"suite","version":1,"org_id":569509},"id":"22a-sgc-2z3"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 192.336166ms
+    - id: 11
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 86
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"public_ids":["22a-sgc-2z3"]},"type":"delete_suites_request"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/synthetics/suites/bulk-delete
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":[{"type":"suites","attributes":{"public_id":"22a-sgc-2z3","deleted_at":"2026-01-23 14:09:37.666231"},"id":"22a-sgc-2z3"}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 432.650125ms
+    - id: 12
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 31
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"public_ids":["4eu-hfa-5cq"]}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/delete
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"deleted_tests":[{"public_id":"4eu-hfa-5cq","deleted_at":"2026-01-23T14:09:38.122263+00:00"}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 437.120709ms
+    - id: 13
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 31
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"public_ids":["th4-559-zgj"]}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/delete
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"deleted_tests":[{"public_id":"th4-559-zgj","deleted_at":"2026-01-23T14:09:38.141886+00:00"}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 437.159ms
+    - id: 14
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/synthetics/suites/22a-sgc-2z3
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"errors":["Synthetics test not found"]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 128.220167ms
