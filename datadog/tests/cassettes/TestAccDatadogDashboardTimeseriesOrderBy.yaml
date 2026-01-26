@@ -1,0 +1,210 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 834
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"description":"Created using the Datadog provider in Terraform","id":"","layout_type":"ordered","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardTimeseriesOrderBy-local-1770063151","widgets":[{"definition":{"requests":[{"display_type":"line","on_right_yaxis":false,"q":"avg:system.cpu.user{*} by {host}","style":{"line_type":"solid","line_width":"normal","order_by":"values","palette":"dog_classic"}}],"show_legend":false,"title":"Timeseries Ordered by Values","type":"timeseries"}},{"definition":{"requests":[{"display_type":"line","on_right_yaxis":false,"q":"avg:system.mem.used{*} by {host}","style":{"line_type":"dashed","line_width":"thick","order_by":"tags","palette":"warm"}}],"show_legend":false,"title":"Timeseries Ordered by Tags","type":"timeseries"}}]}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"rup-z59-9hd","title":"tf-TestAccDatadogDashboardTimeseriesOrderBy-local-1770063151","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/rup-z59-9hd/tf-testaccdatadogdashboardtimeseriesorderby-local-1770063151","template_variables":[],"widgets":[{"definition":{"requests":[{"display_type":"line","on_right_yaxis":false,"q":"avg:system.cpu.user{*} by {host}","style":{"line_type":"solid","line_width":"normal","order_by":"values","palette":"dog_classic"}}],"show_legend":false,"title":"Timeseries Ordered by Values","type":"timeseries"},"id":8383691139980181},{"definition":{"requests":[{"display_type":"line","on_right_yaxis":false,"q":"avg:system.mem.used{*} by {host}","style":{"line_type":"dashed","line_width":"thick","order_by":"tags","palette":"warm"}}],"show_legend":false,"title":"Timeseries Ordered by Tags","type":"timeseries"},"id":8317690586189963}],"notify_list":[],"created_at":"2026-02-02T20:12:33.056574+00:00","modified_at":"2026-02-02T20:12:33.056574+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 189.115167ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/rup-z59-9hd
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"rup-z59-9hd","title":"tf-TestAccDatadogDashboardTimeseriesOrderBy-local-1770063151","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/rup-z59-9hd/tf-testaccdatadogdashboardtimeseriesorderby-local-1770063151","template_variables":[],"widgets":[{"definition":{"requests":[{"display_type":"line","on_right_yaxis":false,"q":"avg:system.cpu.user{*} by {host}","style":{"line_type":"solid","line_width":"normal","order_by":"values","palette":"dog_classic"}}],"show_legend":false,"title":"Timeseries Ordered by Values","type":"timeseries"},"id":8383691139980181},{"definition":{"requests":[{"display_type":"line","on_right_yaxis":false,"q":"avg:system.mem.used{*} by {host}","style":{"line_type":"dashed","line_width":"thick","order_by":"tags","palette":"warm"}}],"show_legend":false,"title":"Timeseries Ordered by Tags","type":"timeseries"},"id":8317690586189963}],"notify_list":[],"created_at":"2026-02-02T20:12:33.056574+00:00","modified_at":"2026-02-02T20:12:33.056574+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 97.1625ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/rup-z59-9hd
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"rup-z59-9hd","title":"tf-TestAccDatadogDashboardTimeseriesOrderBy-local-1770063151","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/rup-z59-9hd/tf-testaccdatadogdashboardtimeseriesorderby-local-1770063151","template_variables":[],"widgets":[{"definition":{"requests":[{"display_type":"line","on_right_yaxis":false,"q":"avg:system.cpu.user{*} by {host}","style":{"line_type":"solid","line_width":"normal","order_by":"values","palette":"dog_classic"}}],"show_legend":false,"title":"Timeseries Ordered by Values","type":"timeseries"},"id":8383691139980181},{"definition":{"requests":[{"display_type":"line","on_right_yaxis":false,"q":"avg:system.mem.used{*} by {host}","style":{"line_type":"dashed","line_width":"thick","order_by":"tags","palette":"warm"}}],"show_legend":false,"title":"Timeseries Ordered by Tags","type":"timeseries"},"id":8317690586189963}],"notify_list":[],"created_at":"2026-02-02T20:12:33.056574+00:00","modified_at":"2026-02-02T20:12:33.056574+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 91.681125ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/rup-z59-9hd
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"rup-z59-9hd","title":"tf-TestAccDatadogDashboardTimeseriesOrderBy-local-1770063151","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/rup-z59-9hd/tf-testaccdatadogdashboardtimeseriesorderby-local-1770063151","template_variables":[],"widgets":[{"definition":{"requests":[{"display_type":"line","on_right_yaxis":false,"q":"avg:system.cpu.user{*} by {host}","style":{"line_type":"solid","line_width":"normal","order_by":"values","palette":"dog_classic"}}],"show_legend":false,"title":"Timeseries Ordered by Values","type":"timeseries"},"id":8383691139980181},{"definition":{"requests":[{"display_type":"line","on_right_yaxis":false,"q":"avg:system.mem.used{*} by {host}","style":{"line_type":"dashed","line_width":"thick","order_by":"tags","palette":"warm"}}],"show_legend":false,"title":"Timeseries Ordered by Tags","type":"timeseries"},"id":8317690586189963}],"notify_list":[],"created_at":"2026-02-02T20:12:33.056574+00:00","modified_at":"2026-02-02T20:12:33.056574+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 92.928875ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/rup-z59-9hd
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"deleted_dashboard_id":"rup-z59-9hd"}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 352.588458ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/rup-z59-9hd
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"errors":["Dashboard with ID rup-z59-9hd not found"]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 73.313042ms
