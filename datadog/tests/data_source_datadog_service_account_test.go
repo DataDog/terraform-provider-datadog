@@ -12,6 +12,9 @@ import (
 )
 
 func TestAccDatadogServiceAccountDatasourceMatchFilter(t *testing.T) {
+	if !isReplaying() {
+		t.Skip("This test only supports replaying - eventual consistency with service account creation")
+	}
 	t.Parallel()
 	ctx, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	unique_hash := fmt.Sprintf("%x", sha256.Sum256([]byte(uniqueEntityName(ctx, t))))

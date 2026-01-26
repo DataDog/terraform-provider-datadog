@@ -221,6 +221,9 @@ func TestAccDatadogUser_UpdateRole(t *testing.T) {
 }
 
 func TestAccDatadogUser_ReEnableRoleUpdate(t *testing.T) {
+	if !isReplaying() {
+		t.Skip("This test only supports replaying - user disable state not preserved between steps in live mode")
+	}
 	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	username := strings.ToLower(uniqueEntityName(ctx, t)) + "@example.com"

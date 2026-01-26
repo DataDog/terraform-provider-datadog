@@ -9,6 +9,9 @@ import (
 )
 
 func TestAccDatadogMetricActiveTagsAndAggregationsDatasource(t *testing.T) {
+	if !isReplaying() {
+		t.Skip("This test only supports replaying - requires specific metric data in test account")
+	}
 	t.Parallel()
 	_, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	metric := "foo.bar"
