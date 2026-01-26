@@ -28,13 +28,13 @@ interactions:
         trailer: {}
         content_length: 76
         uncompressed: false
-        body: '{"data":{"id":"0ee6710b-0e8a-4980-affc-4991531c91ad","type":"sync_configs"}}'
+        body: '{"data":{"id":"ed9ff927-e6c1-453c-b063-7c661a3bcb8d","type":"sync_configs"}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 114.386209ms
+        duration: 140.673334ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -51,7 +51,7 @@ interactions:
         headers:
             Content-Type:
                 - application/json
-        url: https://api.datad0g.com/api/v2/cloudinventoryservice/syncconfigs/0ee6710b-0e8a-4980-affc-4991531c91ad
+        url: https://api.datad0g.com/api/v2/cloudinventoryservice/syncconfigs/ed9ff927-e6c1-453c-b063-7c661a3bcb8d
         method: GET
       response:
         proto: HTTP/2.0
@@ -61,13 +61,13 @@ interactions:
         trailer: {}
         content_length: 253
         uncompressed: false
-        body: '{"data":{"id":"0ee6710b-0e8a-4980-affc-4991531c91ad","type":"sync_configs","attributes":{"aws_account_id":"123456789012","aws_bucket_name":"test-inventory-bucket","aws_region":"us-east-1","cloud_provider":"aws","error":"SUCCESS","prefix":"inventory/"}}}'
+        body: '{"data":{"id":"ed9ff927-e6c1-453c-b063-7c661a3bcb8d","type":"sync_configs","attributes":{"aws_account_id":"123456789012","aws_bucket_name":"test-inventory-bucket","aws_region":"us-east-1","cloud_provider":"aws","error":"SUCCESS","prefix":"inventory/"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 105.799458ms
+        duration: 140.657708ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -84,7 +84,7 @@ interactions:
         headers:
             Content-Type:
                 - application/json
-        url: https://api.datad0g.com/api/v2/cloudinventoryservice/syncconfigs/0ee6710b-0e8a-4980-affc-4991531c91ad
+        url: https://api.datad0g.com/api/v2/cloudinventoryservice/syncconfigs/ed9ff927-e6c1-453c-b063-7c661a3bcb8d
         method: GET
       response:
         proto: HTTP/2.0
@@ -94,13 +94,13 @@ interactions:
         trailer: {}
         content_length: 253
         uncompressed: false
-        body: '{"data":{"id":"0ee6710b-0e8a-4980-affc-4991531c91ad","type":"sync_configs","attributes":{"aws_account_id":"123456789012","aws_bucket_name":"test-inventory-bucket","aws_region":"us-east-1","cloud_provider":"aws","error":"SUCCESS","prefix":"inventory/"}}}'
+        body: '{"data":{"id":"ed9ff927-e6c1-453c-b063-7c661a3bcb8d","type":"sync_configs","attributes":{"aws_account_id":"123456789012","aws_bucket_name":"test-inventory-bucket","aws_region":"us-east-1","cloud_provider":"aws","error":"SUCCESS","prefix":"inventory/"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 116.674625ms
+        duration: 83.439875ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -117,7 +117,7 @@ interactions:
         headers:
             Content-Type:
                 - application/json
-        url: https://api.datad0g.com/api/v2/cloudinventoryservice/syncconfigs/0ee6710b-0e8a-4980-affc-4991531c91ad
+        url: https://api.datad0g.com/api/v2/cloudinventoryservice/syncconfigs/ed9ff927-e6c1-453c-b063-7c661a3bcb8d
         method: DELETE
       response:
         proto: HTTP/2.0
@@ -131,7 +131,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 75.105ms
+        duration: 40.703625ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -148,7 +148,7 @@ interactions:
         headers:
             Content-Type:
                 - application/json
-        url: https://api.datad0g.com/api/v2/cloudinventoryservice/syncconfigs/0ee6710b-0e8a-4980-affc-4991531c91ad
+        url: https://api.datad0g.com/api/v2/cloudinventoryservice/syncconfigs/ed9ff927-e6c1-453c-b063-7c661a3bcb8d
         method: GET
       response:
         proto: HTTP/2.0
@@ -158,10 +158,10 @@ interactions:
         trailer: {}
         content_length: 112
         uncompressed: false
-        body: '{"errors":[{"title":"Not Found","detail":"sync config with ID 0ee6710b-0e8a-4980-affc-4991531c91ad not found"}]}'
+        body: '{"errors":[{"title":"Not Found","detail":"sync config with ID ed9ff927-e6c1-453c-b063-7c661a3bcb8d not found"}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 404 Not Found
         code: 404
-        duration: 147.968834ms
+        duration: 83.432167ms
