@@ -23,7 +23,7 @@ Provides a Datadog Synthetics Suite resource. This can be used to create and man
 
 - `message` (String) Message of the Synthetics suite.
 - `options` (Block List) Options for the Synthetics suite. (see [below for nested schema](#nestedblock--options))
-- `tags` (List of String) A list of tags to associate with your synthetics suite.
+- `tags` (Set of String) A set of tags to associate with your synthetics suite.
 - `tests` (Block List) List of tests in the Synthetics suite. Can be empty but the field is always sent to the API. (see [below for nested schema](#nestedblock--tests))
 
 ### Read-Only
@@ -35,7 +35,7 @@ Provides a Datadog Synthetics Suite resource. This can be used to create and man
 
 Required:
 
-- `alerting_threshold` (Number) Alerting threshold for the suite. Must be between 0 and 1. Value must be between 0.000000 and 1.000000.
+- `alerting_threshold` (Number) Alerting threshold for the suite. Value must be between 0.000000 and 1.000000.
 
 
 <a id="nestedblock--tests"></a>
@@ -47,4 +47,4 @@ Required:
 
 Optional:
 
-- `alerting_criticality` (String) Alerting criticality for the test. Valid values are `ignore`, `critical`. Valid values are `ignore`, `critical`.
+- `alerting_criticality` (String) Alerting criticality for the test. Valid values are `ignore`, `critical`.
