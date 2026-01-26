@@ -31,7 +31,7 @@ type SyntheticsSuiteModel struct {
 	ID      types.String `tfsdk:"id"`
 	Name    types.String `tfsdk:"name"`
 	Message types.String `tfsdk:"message"`
-	Tags    types.List   `tfsdk:"tags"`
+	Tags    types.Set    `tfsdk:"tags"`
 	Options types.List   `tfsdk:"options"`
 	Tests   types.List   `tfsdk:"tests"`
 }
@@ -86,8 +86,8 @@ func (r *syntheticsSuiteResource) Schema(_ context.Context, _ resource.SchemaReq
 				Description: "Message of the Synthetics suite.",
 				Optional:    true,
 			},
-			"tags": schema.ListAttribute{
-				Description: "A list of tags to associate with your synthetics suite.",
+			"tags": schema.SetAttribute{
+				Description: "A set of tags to associate with your synthetics suite.",
 				ElementType: types.StringType,
 				Optional:    true,
 			},
@@ -98,7 +98,7 @@ func (r *syntheticsSuiteResource) Schema(_ context.Context, _ resource.SchemaReq
 				NestedObject: schema.NestedBlockObject{
 					Attributes: map[string]schema.Attribute{
 						"alerting_threshold": schema.Float64Attribute{
-							Description: "Alerting threshold for the suite. Must be between 0 and 1.",
+							Description: "Alerting threshold for the suite.",
 							Required:    true,
 							Validators: []validator.Float64{
 								float64validator.Between(0, 1),
@@ -116,7 +116,7 @@ func (r *syntheticsSuiteResource) Schema(_ context.Context, _ resource.SchemaReq
 							Required:    true,
 						},
 						"alerting_criticality": schema.StringAttribute{
-							Description: "Alerting criticality for the test. Valid values are `ignore`, `critical`.",
+							Description: "Alerting criticality for the test.",
 							Optional:    true,
 							Validators: []validator.String{
 								stringvalidator.OneOf("ignore", "critical"),
@@ -374,11 +374,11 @@ func (r *syntheticsSuiteResource) updateState(ctx context.Context, state *Synthe
 
 		// Update tags
 		if tags, ok := attrs.GetTagsOk(); ok {
-			tagsList, d := types.ListValueFrom(ctx, types.StringType, *tags)
+			tagsSet, d := types.SetValueFrom(ctx, types.StringType, *tags)
 			diags.Append(d...)
-			state.Tags = tagsList
+			state.Tags = tagsSet
 		} else {
-			state.Tags = types.ListNull(types.StringType)
+			state.Tags = types.SetNull(types.StringType)
 		}
 	}
 }
