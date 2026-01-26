@@ -434,6 +434,42 @@ func resourceDatadogMonitor() *schema.Resource {
 					Default:          string(datadogV1.MONITORDRAFTSTATUS_PUBLISHED),
 					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewMonitorDraftStatusFromValue),
 				},
+				"assets": {
+					Description: "List of monitor assets (for example, runbooks, dashboards, workflows) tied to this monitor.",
+					Type:        schema.TypeList,
+					Optional:    true,
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"name": {
+								Description: "Name for the monitor asset.",
+								Type:        schema.TypeString,
+								Required:    true,
+							},
+							"url": {
+								Description: "URL for the asset.",
+								Type:        schema.TypeString,
+								Required:    true,
+							},
+							"category": {
+								Description:      "Type of asset the entity represents on a monitor.",
+								Type:             schema.TypeString,
+								Required:         true,
+								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewMonitorAssetCategoryFromValue),
+							},
+							"resource_key": {
+								Description: "Identifier of the internal Datadog resource that this asset represents.",
+								Type:        schema.TypeString,
+								Optional:    true,
+							},
+							"resource_type": {
+								Description:      "Type of internal Datadog resource associated with a monitor asset.",
+								Type:             schema.TypeString,
+								Optional:         true,
+								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewMonitorAssetResourceTypeFromValue),
+							},
+						},
+					},
+				},
 			}
 		},
 	}
@@ -589,6 +625,89 @@ func getMonitorFormulaQuerySchema() *schema.Schema {
 								Type:        schema.TypeString,
 								Required:    true,
 								Description: "The name of the query for use in formulas.",
+							},
+						},
+					},
+				},
+				"data_quality_query": {
+					Type:        schema.TypeList,
+					Optional:    true,
+					MaxItems:    5,
+					Description: "The Data Quality query using formulas and functions.",
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"name": {
+								Type:        schema.TypeString,
+								Required:    true,
+								Description: "The name of the query for use in formulas.",
+							},
+							"data_source": {
+								Type:             schema.TypeString,
+								Required:         true,
+								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewMonitorFormulaAndFunctionDataQualityDataSourceFromValue),
+								Description:      "The data source for data quality queries. Valid value is `data_quality_metrics`.",
+							},
+							"schema_version": {
+								Type:        schema.TypeString,
+								Optional:    true,
+								Description: "Schema version for the data quality query.",
+							},
+							"measure": {
+								Type:        schema.TypeString,
+								Required:    true,
+								Description: "The measure to query. Common values include `bytes`, `cardinality`, `custom`, `freshness`, `max`, `mean`, `min`, `nullness`, `percent_negative`, `percent_zero`, `row_count`, `stddev`, `sum`, `uniqueness`. Additional values may be supported.",
+							},
+							"filter": {
+								Type:        schema.TypeString,
+								Required:    true,
+								Description: "Filter expression used to match on data entities. Uses AAstra query syntax.",
+							},
+							"scope": {
+								Type:        schema.TypeString,
+								Optional:    true,
+								Description: "Optional scoping expression to further filter metrics.",
+							},
+							"group_by": {
+								Type:        schema.TypeList,
+								Optional:    true,
+								Elem:        &schema.Schema{Type: schema.TypeString},
+								Description: "Optional grouping fields for aggregation.",
+							},
+							"monitor_options": {
+								Type:        schema.TypeList,
+								Optional:    true,
+								MaxItems:    1,
+								Description: "Monitor configuration options for data quality queries.",
+								Elem: &schema.Resource{
+									Schema: map[string]*schema.Schema{
+										"custom_sql": {
+											Type:        schema.TypeString,
+											Optional:    true,
+											Description: "Custom SQL query for the monitor.",
+										},
+										"custom_where": {
+											Type:        schema.TypeString,
+											Optional:    true,
+											Description: "Custom WHERE clause for the query.",
+										},
+										"group_by_columns": {
+											Type:        schema.TypeList,
+											Optional:    true,
+											Elem:        &schema.Schema{Type: schema.TypeString},
+											Description: "Columns to group results by.",
+										},
+										"crontab_override": {
+											Type:        schema.TypeString,
+											Optional:    true,
+											Description: "Crontab expression to override the default schedule.",
+										},
+										"model_type_override": {
+											Type:        schema.TypeString,
+											Optional:    true,
+											Description: "Override for the model type. Valid values are `freshness`, `percentage`, `any`.",
+										},
+									},
+								},
 							},
 						},
 					},
@@ -772,6 +891,12 @@ func buildMonitorStruct(d utils.Resource) (*datadogV1.Monitor, *datadogV1.Monito
 						monitorVariables = append(monitorVariables, *buildMonitorFormulaAndFunctionCloudCostQuery(q.(map[string]interface{})))
 					}
 				}
+				if query, ok := m["data_quality_query"]; ok {
+					queries := query.([]interface{})
+					for _, q := range queries {
+						monitorVariables = append(monitorVariables, *buildMonitorFormulaAndFunctionDataQualityQuery(q.(map[string]interface{})))
+					}
+				}
 				o.SetVariables(monitorVariables)
 			}
 		}
@@ -811,14 +936,16 @@ func buildMonitorStruct(d utils.Resource) (*datadogV1.Monitor, *datadogV1.Monito
 		o.SetNotificationPresetName(datadogV1.MonitorOptionsNotificationPresets(attr.(string)))
 	}
 
-	m := datadogV1.NewMonitor(d.Get("query").(string), monitorType)
+	query := d.Get("query").(string)
+
+	m := datadogV1.NewMonitor(query, monitorType)
 	m.SetName(d.Get("name").(string))
 	m.SetMessage(d.Get("message").(string))
 	m.SetOptions(o)
 
 	u := datadogV1.NewMonitorUpdateRequest()
 	u.SetType(monitorType)
-	u.SetQuery(d.Get("query").(string))
+	u.SetQuery(query)
 	u.SetName(d.Get("name").(string))
 	u.SetMessage(d.Get("message").(string))
 	u.SetOptions(o)
@@ -857,6 +984,16 @@ func buildMonitorStruct(d utils.Resource) (*datadogV1.Monitor, *datadogV1.Monito
 	}
 	m.SetTags(tags)
 	u.SetTags(tags)
+
+	// Assets
+	if attr, ok := d.GetOk("assets"); ok {
+		tfAssets := attr.([]interface{})
+		assets := buildMonitorAssets(tfAssets)
+		if len(assets) > 0 {
+			m.SetAssets(assets)
+			u.SetAssets(assets)
+		}
+	}
 
 	return m, u
 }
@@ -943,6 +1080,63 @@ func buildMonitorFormulaAndFunctionCloudCostQuery(data map[string]interface{}) *
 	datadogV1.MonitorFormulaAndFunctionCostQueryDefinitionAsMonitorFormulaAndFunctionQueryDefinition(cloudCostQuery)
 
 	definition := datadogV1.MonitorFormulaAndFunctionCostQueryDefinitionAsMonitorFormulaAndFunctionQueryDefinition(cloudCostQuery)
+	return &definition
+}
+
+func buildMonitorFormulaAndFunctionDataQualityQuery(data map[string]interface{}) *datadogV1.MonitorFormulaAndFunctionQueryDefinition {
+	dataSource := datadogV1.MonitorFormulaAndFunctionDataQualityDataSource(data["data_source"].(string))
+	measure := data["measure"].(string)
+	name := data["name"].(string)
+	filter := data["filter"].(string)
+
+	dataQualityQuery := datadogV1.NewMonitorFormulaAndFunctionDataQualityQueryDefinition(dataSource, filter, measure, name)
+
+	// Optional fields
+	if v, ok := data["schema_version"].(string); ok && len(v) > 0 {
+		dataQualityQuery.SetSchemaVersion(v)
+	}
+
+	if v, ok := data["scope"].(string); ok && len(v) > 0 {
+		dataQualityQuery.SetScope(v)
+	}
+
+	// Group by
+	if groupByList, ok := data["group_by"].([]interface{}); ok && len(groupByList) > 0 {
+		groupBys := make([]string, len(groupByList))
+		for i, g := range groupByList {
+			groupBys[i] = g.(string)
+		}
+		dataQualityQuery.SetGroupBy(groupBys)
+	}
+
+	// Monitor options
+	if monitorOptionsList, ok := data["monitor_options"].([]interface{}); ok && len(monitorOptionsList) > 0 {
+		monitorOptionsData := monitorOptionsList[0].(map[string]interface{})
+		monitorOptions := datadogV1.NewMonitorFormulaAndFunctionDataQualityMonitorOptions()
+
+		if v, ok := monitorOptionsData["custom_sql"].(string); ok && len(v) > 0 {
+			monitorOptions.SetCustomSql(v)
+		}
+		if v, ok := monitorOptionsData["custom_where"].(string); ok && len(v) > 0 {
+			monitorOptions.SetCustomWhere(v)
+		}
+		if groupByColsList, ok := monitorOptionsData["group_by_columns"].([]interface{}); ok && len(groupByColsList) > 0 {
+			cols := make([]string, len(groupByColsList))
+			for i, c := range groupByColsList {
+				cols[i] = c.(string)
+			}
+			monitorOptions.SetGroupByColumns(cols)
+		}
+		if v, ok := monitorOptionsData["crontab_override"].(string); ok && len(v) > 0 {
+			monitorOptions.SetCrontabOverride(v)
+		}
+		if v, ok := monitorOptionsData["model_type_override"].(string); ok && len(v) > 0 {
+			monitorOptions.SetModelTypeOverride(datadogV1.MonitorFormulaAndFunctionDataQualityModelTypeOverride(v))
+		}
+		dataQualityQuery.SetMonitorOptions(*monitorOptions)
+	}
+
+	definition := datadogV1.MonitorFormulaAndFunctionDataQualityQueryDefinitionAsMonitorFormulaAndFunctionQueryDefinition(dataQualityQuery)
 	return &definition
 }
 
@@ -1160,6 +1354,11 @@ func updateMonitorState(d *schema.ResourceData, meta interface{}, m *datadogV1.M
 			if err := d.Set("variables", terraformVariables); err != nil {
 				return diag.FromErr(err)
 			}
+		} else if m.GetType() == datadogV1.MonitorType("data-quality alert") {
+			terraformVariables := buildTerraformDataQualityMonitorVariables(*variables)
+			if err := d.Set("variables", terraformVariables); err != nil {
+				return diag.FromErr(err)
+			}
 		} else {
 			terraformVariables := buildTerraformMonitorVariables(*variables)
 			if err := d.Set("variables", terraformVariables); err != nil {
@@ -1234,6 +1433,14 @@ func updateMonitorState(d *schema.ResourceData, meta interface{}, m *datadogV1.M
 
 	if err := d.Set("notification_preset_name", m.Options.GetNotificationPresetName()); err != nil {
 		return diag.FromErr(err)
+	}
+
+	// Assets -> state
+	if assets, ok := m.GetAssetsOk(); ok && assets != nil {
+		terraformAssets := buildTerraformMonitorAssets(*assets)
+		if err := d.Set("assets", terraformAssets); err != nil {
+			return diag.FromErr(err)
+		}
 	}
 
 	return nil
@@ -1341,6 +1548,64 @@ func buildTerraformCostMonitorVariables(datadogVariables []datadogV1.MonitorForm
 	return terraformVariables
 }
 
+func buildTerraformDataQualityMonitorVariables(datadogVariables []datadogV1.MonitorFormulaAndFunctionQueryDefinition) []map[string]interface{} {
+	queries := make([]map[string]interface{}, len(datadogVariables))
+
+	for i, query := range datadogVariables {
+		terraformQuery := map[string]interface{}{}
+		terraformDataQualityQueryDefinition := query.MonitorFormulaAndFunctionDataQualityQueryDefinition
+		if terraformDataQualityQueryDefinition != nil {
+			if dataSource, ok := terraformDataQualityQueryDefinition.GetDataSourceOk(); ok {
+				terraformQuery["data_source"] = dataSource
+			}
+			if name, ok := terraformDataQualityQueryDefinition.GetNameOk(); ok {
+				terraformQuery["name"] = name
+			}
+			if schemaVersion, ok := terraformDataQualityQueryDefinition.GetSchemaVersionOk(); ok {
+				terraformQuery["schema_version"] = schemaVersion
+			}
+			if measure, ok := terraformDataQualityQueryDefinition.GetMeasureOk(); ok {
+				terraformQuery["measure"] = measure
+			}
+			if filter, ok := terraformDataQualityQueryDefinition.GetFilterOk(); ok {
+				terraformQuery["filter"] = filter
+			}
+			if scope, ok := terraformDataQualityQueryDefinition.GetScopeOk(); ok {
+				terraformQuery["scope"] = scope
+			}
+			if groupBy, ok := terraformDataQualityQueryDefinition.GetGroupByOk(); ok {
+				terraformQuery["group_by"] = groupBy
+			}
+			// Monitor options
+			if monitorOptions, ok := terraformDataQualityQueryDefinition.GetMonitorOptionsOk(); ok {
+				terraformMonitorOptions := map[string]interface{}{}
+				if customSql, ok := monitorOptions.GetCustomSqlOk(); ok {
+					terraformMonitorOptions["custom_sql"] = customSql
+				}
+				if customWhere, ok := monitorOptions.GetCustomWhereOk(); ok {
+					terraformMonitorOptions["custom_where"] = customWhere
+				}
+				if groupByCols, ok := monitorOptions.GetGroupByColumnsOk(); ok {
+					terraformMonitorOptions["group_by_columns"] = groupByCols
+				}
+				if crontabOverride, ok := monitorOptions.GetCrontabOverrideOk(); ok {
+					terraformMonitorOptions["crontab_override"] = crontabOverride
+				}
+				if modelTypeOverride, ok := monitorOptions.GetModelTypeOverrideOk(); ok {
+					terraformMonitorOptions["model_type_override"] = modelTypeOverride
+				}
+				terraformQuery["monitor_options"] = []map[string]interface{}{terraformMonitorOptions}
+			}
+			queries[i] = terraformQuery
+		}
+	}
+	terraformVariables := make([]map[string]interface{}, 1)
+	terraformVariables[0] = map[string]interface{}{"data_quality_query": queries}
+
+	log.Printf("[INFO] data_quality_query variables: %+v", terraformVariables)
+	return terraformVariables
+}
+
 func resourceDatadogMonitorRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
@@ -1355,7 +1620,7 @@ func resourceDatadogMonitorRead(ctx context.Context, d *schema.ResourceData, met
 		httpresp *http.Response
 	)
 	if err = retry.RetryContext(ctx, d.Timeout(schema.TimeoutRead), func() *retry.RetryError {
-		m, httpresp, err = apiInstances.GetMonitorsApiV1().GetMonitor(auth, i)
+		m, httpresp, err = apiInstances.GetMonitorsApiV1().GetMonitor(auth, i, *datadogV1.NewGetMonitorOptionalParameters().WithWithAssets(true))
 		if err != nil {
 			if httpresp != nil {
 				if httpresp.StatusCode == 404 {
@@ -1460,4 +1725,52 @@ func getEnv(key, fallback string) string {
 		return value
 	}
 	return fallback
+}
+
+// buildMonitorAssets converts Terraform assets into API MonitorAsset slice.
+func buildMonitorAssets(tfAssets []interface{}) []datadogV1.MonitorAsset {
+	if len(tfAssets) == 0 {
+		return nil
+	}
+	assets := make([]datadogV1.MonitorAsset, 0, len(tfAssets))
+	for _, raw := range tfAssets {
+		aMap, ok := raw.(map[string]interface{})
+		if !ok {
+			continue
+		}
+		categoryStr, _ := aMap["category"].(string)
+		nameStr, _ := aMap["name"].(string)
+		urlStr, _ := aMap["url"].(string)
+		category := datadogV1.MonitorAssetCategory(categoryStr)
+		asset := datadogV1.NewMonitorAsset(category, nameStr, urlStr)
+		if rk, ok := aMap["resource_key"].(string); ok && rk != "" {
+			asset.SetResourceKey(rk)
+		}
+		if rt, ok := aMap["resource_type"].(string); ok && rt != "" {
+			rtEnum := datadogV1.MonitorAssetResourceType(rt)
+			asset.SetResourceType(rtEnum)
+		}
+		assets = append(assets, *asset)
+	}
+	return assets
+}
+
+// buildTerraformMonitorAssets flattens API assets into Terraform state shape.
+func buildTerraformMonitorAssets(apiAssets []datadogV1.MonitorAsset) []map[string]interface{} {
+	tfAssets := make([]map[string]interface{}, 0, len(apiAssets))
+	for _, a := range apiAssets {
+		tf := map[string]interface{}{
+			"name":     a.GetName(),
+			"url":      a.GetUrl(),
+			"category": string(a.GetCategory()),
+		}
+		if rk, ok := a.GetResourceKeyOk(); ok && rk != nil {
+			tf["resource_key"] = *rk
+		}
+		if rt, ok := a.GetResourceTypeOk(); ok && rt != nil {
+			tf["resource_type"] = string(*rt)
+		}
+		tfAssets = append(tfAssets, tf)
+	}
+	return tfAssets
 }

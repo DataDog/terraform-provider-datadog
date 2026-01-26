@@ -9,7 +9,6 @@ resource "datadog_dashboard" "scatterplot_dashboard" {
 	title         = "{{uniq}}"
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "ordered"
-	is_read_only  = "true"
 
 	widget {
 		scatterplot_definition {
@@ -60,7 +59,6 @@ resource "datadog_dashboard" "scatterplot_dashboard" {
 	title         = "{{uniq}}"
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "ordered"
-	is_read_only  = "true"
 
 	widget {
 		scatterplot_definition {
@@ -106,7 +104,6 @@ resource "datadog_dashboard" "scatterplot_dashboard" {
 	title         = "{{uniq}}"
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "ordered"
-	is_read_only  = "true"
 
 	widget {
 		scatterplot_definition {
@@ -146,7 +143,6 @@ resource "datadog_dashboard" "scatterplot_dashboard" {
 
 var datadogDashboardScatterplotFormulaAsserts = []string{
 	"title = {{uniq}}",
-	"is_read_only = true",
 	"layout_type = ordered",
 	"description = Created using the Datadog provider in Terraform",
 	"widget.0.scatterplot_definition.0.request.0.scatterplot_table.0.formula.0.formula_expression = my_query_1",
@@ -171,7 +167,6 @@ var datadogDashboardScatterplotAsserts = []string{
 	"widget.0.scatterplot_definition.0.title = system.mem.used and system.cpu.user by service,team,app colored by app",
 	"widget.0.scatterplot_definition.0.xaxis.0.max = 100",
 	"widget.0.scatterplot_definition.0.yaxis.0.scale = log",
-	"is_read_only = true",
 	"widget.0.scatterplot_definition.0.title_size = 16",
 	"widget.0.scatterplot_definition.0.yaxis.0.min = 1",
 	"widget.0.scatterplot_definition.0.yaxis.0.label = mem (Gib)",

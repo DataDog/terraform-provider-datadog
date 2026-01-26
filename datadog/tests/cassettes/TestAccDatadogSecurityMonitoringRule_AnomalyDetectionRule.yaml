@@ -1,0 +1,576 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 796
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"cases":[{"condition":"my_query \u003e 0.95","name":"","notifications":["@user"],"status":"high"}],"hasExtendedTitle":false,"isEnabled":false,"message":"anomaly detection rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_AnomalyDetectionRule-local-1766510044","options":{"anomalyDetectionOptions":{"bucketDuration":300,"detectionTolerance":5,"learningDuration":24,"learningPeriodBaseline":0},"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"anomaly_detection","evaluationWindow":1800,"keepAlive":10800,"maxSignalDuration":10800},"queries":[{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"my_query","query":"*"}],"tags":["u:tomato","i:tomato"],"type":"log_detection"}
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/validation
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 60.389708ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 796
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"cases":[{"condition":"my_query \u003e 0.95","name":"","notifications":["@user"],"status":"high"}],"hasExtendedTitle":false,"isEnabled":false,"message":"anomaly detection rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_AnomalyDetectionRule-local-1766510044","options":{"anomalyDetectionOptions":{"bucketDuration":300,"detectionTolerance":5,"learningDuration":24,"learningPeriodBaseline":0},"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"anomaly_detection","evaluationWindow":1800,"keepAlive":10800,"maxSignalDuration":10800},"queries":[{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"my_query","query":"*"}],"tags":["u:tomato","i:tomato"],"type":"log_detection"}
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/validation
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 58.561875ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 796
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"cases":[{"condition":"my_query \u003e 0.95","name":"","notifications":["@user"],"status":"high"}],"hasExtendedTitle":false,"isEnabled":false,"message":"anomaly detection rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_AnomalyDetectionRule-local-1766510044","options":{"anomalyDetectionOptions":{"bucketDuration":300,"detectionTolerance":5,"learningDuration":24,"learningPeriodBaseline":0},"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"anomaly_detection","evaluationWindow":1800,"keepAlive":10800,"maxSignalDuration":10800},"queries":[{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"my_query","query":"*"}],"tags":["u:tomato","i:tomato"],"type":"log_detection"}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_AnomalyDetectionRule-local-1766510044","createdAt":1766510045783,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"*","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"my_query","dataSource":"logs"}],"options":{"evaluationWindow":1800,"detectionMethod":"anomaly_detection","maxSignalDuration":10800,"keepAlive":10800,"anomalyDetectionOptions":{"bucketDuration":300,"learningDuration":24,"detectionTolerance":5,"instantaneousBaseline":false,"instantaneousBaselineTimeoutMinutes":30},"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"","status":"high","notifications":["@user"],"condition":"my_query \u003e 0.95"}],"message":"anomaly detection rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":1,"id":"0kp-ngs-dch","blocking":false,"metadata":{"entities":null,"sources":null},"creationAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"","name":""}}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 72.106916ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/0kp-ngs-dch
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_AnomalyDetectionRule-local-1766510044","createdAt":1766510045783,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"*","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"my_query","dataSource":"logs"}],"options":{"evaluationWindow":1800,"detectionMethod":"anomaly_detection","maxSignalDuration":10800,"keepAlive":10800,"anomalyDetectionOptions":{"bucketDuration":300,"learningDuration":24,"detectionTolerance":5,"instantaneousBaseline":false,"instantaneousBaselineTimeoutMinutes":30},"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"","status":"high","notifications":["@user"],"condition":"my_query \u003e 0.95"}],"message":"anomaly detection rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":1,"id":"0kp-ngs-dch","blocking":false,"metadata":{"entities":null,"sources":null},"creationAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"","name":""}}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 61.928167ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 796
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"cases":[{"condition":"my_query \u003e 0.95","name":"","notifications":["@user"],"status":"high"}],"hasExtendedTitle":false,"isEnabled":false,"message":"anomaly detection rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_AnomalyDetectionRule-local-1766510044","options":{"anomalyDetectionOptions":{"bucketDuration":300,"detectionTolerance":5,"learningDuration":24,"learningPeriodBaseline":0},"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"anomaly_detection","evaluationWindow":1800,"keepAlive":10800,"maxSignalDuration":10800},"queries":[{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"my_query","query":"*"}],"tags":["u:tomato","i:tomato"],"type":"log_detection"}
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/validation
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 55.476375ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/0kp-ngs-dch
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_AnomalyDetectionRule-local-1766510044","createdAt":1766510045783,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"*","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"my_query","dataSource":"logs"}],"options":{"evaluationWindow":1800,"detectionMethod":"anomaly_detection","maxSignalDuration":10800,"keepAlive":10800,"anomalyDetectionOptions":{"bucketDuration":300,"learningDuration":24,"detectionTolerance":5,"instantaneousBaseline":false,"instantaneousBaselineTimeoutMinutes":30},"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"","status":"high","notifications":["@user"],"condition":"my_query \u003e 0.95"}],"message":"anomaly detection rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":1,"id":"0kp-ngs-dch","blocking":false,"metadata":{"entities":null,"sources":null},"creationAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"","name":""}}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 64.211375ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 796
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"cases":[{"condition":"my_query \u003e 0.95","name":"","notifications":["@user"],"status":"high"}],"hasExtendedTitle":false,"isEnabled":false,"message":"anomaly detection rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_AnomalyDetectionRule-local-1766510044","options":{"anomalyDetectionOptions":{"bucketDuration":300,"detectionTolerance":5,"learningDuration":24,"learningPeriodBaseline":0},"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"anomaly_detection","evaluationWindow":1800,"keepAlive":10800,"maxSignalDuration":10800},"queries":[{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"my_query","query":"*"}],"tags":["u:tomato","i:tomato"],"type":"log_detection"}
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/validation
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 59.369333ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/0kp-ngs-dch
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_AnomalyDetectionRule-local-1766510044","createdAt":1766510045783,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"*","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"my_query","dataSource":"logs"}],"options":{"evaluationWindow":1800,"detectionMethod":"anomaly_detection","maxSignalDuration":10800,"keepAlive":10800,"anomalyDetectionOptions":{"bucketDuration":300,"learningDuration":24,"detectionTolerance":5,"instantaneousBaseline":false,"instantaneousBaselineTimeoutMinutes":30},"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"","status":"high","notifications":["@user"],"condition":"my_query \u003e 0.95"}],"message":"anomaly detection rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":1,"id":"0kp-ngs-dch","blocking":false,"metadata":{"entities":null,"sources":null},"creationAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"","name":""}}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 115.502417ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 823
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"cases":[{"condition":"my_updated_query \u003e 0.99","name":"","notifications":["@user"],"status":"high"}],"hasExtendedTitle":false,"isEnabled":false,"message":"anomaly detection rule triggered (updated)","name":"tf-TestAccDatadogSecurityMonitoringRule_AnomalyDetectionRule-local-1766510044","options":{"anomalyDetectionOptions":{"bucketDuration":600,"detectionTolerance":4,"learningDuration":48,"learningPeriodBaseline":10},"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"anomaly_detection","evaluationWindow":1800,"keepAlive":10800,"maxSignalDuration":10800},"queries":[{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"my_updated_query","query":"*"}],"tags":["u:tomato","i:tomato"],"type":"log_detection"}
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/validation
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 56.353709ms
+    - id: 9
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 823
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"cases":[{"condition":"my_updated_query \u003e 0.99","name":"","notifications":["@user"],"status":"high"}],"hasExtendedTitle":false,"isEnabled":false,"message":"anomaly detection rule triggered (updated)","name":"tf-TestAccDatadogSecurityMonitoringRule_AnomalyDetectionRule-local-1766510044","options":{"anomalyDetectionOptions":{"bucketDuration":600,"detectionTolerance":4,"learningDuration":48,"learningPeriodBaseline":10},"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"anomaly_detection","evaluationWindow":1800,"keepAlive":10800,"maxSignalDuration":10800},"queries":[{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"my_updated_query","query":"*"}],"tags":["u:tomato","i:tomato"],"type":"log_detection"}
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/validation
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 61.549208ms
+    - id: 10
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 860
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"calculatedFields":[],"cases":[{"condition":"my_updated_query \u003e 0.99","name":"","notifications":["@user"],"status":"high"}],"filters":[],"hasExtendedTitle":false,"isEnabled":false,"message":"anomaly detection rule triggered (updated)","name":"tf-TestAccDatadogSecurityMonitoringRule_AnomalyDetectionRule-local-1766510044","options":{"anomalyDetectionOptions":{"bucketDuration":600,"detectionTolerance":4,"learningDuration":48,"learningPeriodBaseline":10},"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"anomaly_detection","evaluationWindow":1800,"keepAlive":10800,"maxSignalDuration":10800},"queries":[{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"my_updated_query","query":"*"}],"schedulingOptions":null,"tags":["u:tomato","i:tomato"]}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/0kp-ngs-dch
+        method: PUT
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_AnomalyDetectionRule-local-1766510044","isEnabled":false,"queries":[{"query":"*","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"my_updated_query","dataSource":"logs"}],"options":{"evaluationWindow":1800,"detectionMethod":"anomaly_detection","maxSignalDuration":10800,"keepAlive":10800,"anomalyDetectionOptions":{"bucketDuration":600,"learningDuration":48,"detectionTolerance":4,"instantaneousBaseline":false,"instantaneousBaselineTimeoutMinutes":30,"learningPeriodBaseline":10},"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"","status":"high","notifications":["@user"],"condition":"my_updated_query \u003e 0.99"}],"message":"anomaly detection rule triggered (updated)","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"log_detection","filters":[],"id":"0kp-ngs-dch","version":2,"createdAt":1766510045783,"creationAuthorId":1445416,"updateAuthorId":1445416,"updatedAt":1766510047154,"isDefault":false,"blocking":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"metadata":{"entities":null,"sources":null}}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 143.79925ms
+    - id: 11
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/0kp-ngs-dch
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_AnomalyDetectionRule-local-1766510044","createdAt":1766510045783,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"*","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"my_updated_query","dataSource":"logs"}],"options":{"evaluationWindow":1800,"detectionMethod":"anomaly_detection","maxSignalDuration":10800,"keepAlive":10800,"anomalyDetectionOptions":{"bucketDuration":600,"learningDuration":48,"detectionTolerance":4,"instantaneousBaseline":false,"instantaneousBaselineTimeoutMinutes":30,"learningPeriodBaseline":10},"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"","status":"high","notifications":["@user"],"condition":"my_updated_query \u003e 0.99"}],"message":"anomaly detection rule triggered (updated)","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":2,"id":"0kp-ngs-dch","updatedAt":1766510047154,"blocking":false,"metadata":{"entities":null,"sources":null},"creationAuthorId":1445416,"updateAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"frog@datadoghq.com","name":"frog"}}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 56.183ms
+    - id: 12
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 823
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"cases":[{"condition":"my_updated_query \u003e 0.99","name":"","notifications":["@user"],"status":"high"}],"hasExtendedTitle":false,"isEnabled":false,"message":"anomaly detection rule triggered (updated)","name":"tf-TestAccDatadogSecurityMonitoringRule_AnomalyDetectionRule-local-1766510044","options":{"anomalyDetectionOptions":{"bucketDuration":600,"detectionTolerance":4,"learningDuration":48,"learningPeriodBaseline":10},"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"anomaly_detection","evaluationWindow":1800,"keepAlive":10800,"maxSignalDuration":10800},"queries":[{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"my_updated_query","query":"*"}],"tags":["u:tomato","i:tomato"],"type":"log_detection"}
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/validation
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 58.729417ms
+    - id: 13
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/0kp-ngs-dch
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_AnomalyDetectionRule-local-1766510044","createdAt":1766510045783,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"*","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"my_updated_query","dataSource":"logs"}],"options":{"evaluationWindow":1800,"detectionMethod":"anomaly_detection","maxSignalDuration":10800,"keepAlive":10800,"anomalyDetectionOptions":{"bucketDuration":600,"learningDuration":48,"detectionTolerance":4,"instantaneousBaseline":false,"instantaneousBaselineTimeoutMinutes":30,"learningPeriodBaseline":10},"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"","status":"high","notifications":["@user"],"condition":"my_updated_query \u003e 0.99"}],"message":"anomaly detection rule triggered (updated)","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":2,"id":"0kp-ngs-dch","updatedAt":1766510047154,"blocking":false,"metadata":{"entities":null,"sources":null},"creationAuthorId":1445416,"updateAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"frog@datadoghq.com","name":"frog"}}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 86.513917ms
+    - id: 14
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 823
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"cases":[{"condition":"my_updated_query \u003e 0.99","name":"","notifications":["@user"],"status":"high"}],"hasExtendedTitle":false,"isEnabled":false,"message":"anomaly detection rule triggered (updated)","name":"tf-TestAccDatadogSecurityMonitoringRule_AnomalyDetectionRule-local-1766510044","options":{"anomalyDetectionOptions":{"bucketDuration":600,"detectionTolerance":4,"learningDuration":48,"learningPeriodBaseline":10},"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"anomaly_detection","evaluationWindow":1800,"keepAlive":10800,"maxSignalDuration":10800},"queries":[{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"my_updated_query","query":"*"}],"tags":["u:tomato","i:tomato"],"type":"log_detection"}
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/validation
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 52.80725ms
+    - id: 15
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/0kp-ngs-dch
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 326.371875ms
+    - id: 16
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/0kp-ngs-dch
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 86
+        uncompressed: false
+        body: '{"error":{"code":"NotFound","message":"Threat detection rule not found: 0kp-ngs-dch"}}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 46.412708ms

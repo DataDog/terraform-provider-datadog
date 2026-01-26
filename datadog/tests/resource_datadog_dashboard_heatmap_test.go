@@ -9,7 +9,6 @@ resource "datadog_dashboard" "heatmap_dashboard" {
 	title         = "{{uniq}}"
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "ordered"
-	is_read_only  = "true"
 
 	widget {
 		heatmap_definition {
@@ -51,7 +50,6 @@ var datadogDashboardHeatMapAsserts = []string{
 	"title = {{uniq}}",
 	"description = Created using the Datadog provider in Terraform",
 	"layout_type = ordered",
-	"is_read_only = true",
 	"widget.0.heatmap_definition.0.title = Avg of system.cpu.user over account:prod by app",
 	"widget.0.heatmap_definition.0.title_align = center",
 	"widget.0.heatmap_definition.0.title_size = 16",
@@ -80,7 +78,6 @@ resource "datadog_dashboard" "heatmap_dashboard" {
 	title         = "{{uniq}}"
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "ordered"
-	is_read_only  = "true"
 
 	widget {
 		heatmap_definition {
@@ -131,7 +128,6 @@ var datadogDashboardHeatMapFormulaAndFunctionAsserts = []string{
 	"title = {{uniq}}",
 	"description = Created using the Datadog provider in Terraform",
 	"layout_type = ordered",
-	"is_read_only = true",
 	"widget.0.heatmap_definition.0.title = Avg of system.cpu.user over account:prod by app",
 	"widget.0.heatmap_definition.0.title_align = center",
 	"widget.0.heatmap_definition.0.title_size = 16",
@@ -163,7 +159,6 @@ resource "datadog_dashboard" "heatmap_dashboard" {
 	title         = "{{uniq}}"
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "ordered"
-	is_read_only  = "true"
 
 	widget {
 		heatmap_definition {

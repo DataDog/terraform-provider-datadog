@@ -844,6 +844,7 @@ Required:
 
 Optional:
 
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -873,6 +874,7 @@ Optional:
 Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--change_definition--custom_link))
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple request blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--change_definition--request))
 - `title` (String) The title of the widget.
@@ -1303,6 +1305,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--change_definition--request--query--process_query"></a>
@@ -1486,6 +1489,7 @@ Optional:
 
 - `group` (String) The check group to use in the widget.
 - `group_by` (List of String) When `grouping = "cluster"`, indicates a list of tags to use for grouping.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `tags` (List of String) A list of tags to use in the widget.
 - `title` (String) The title of the widget.
@@ -1498,6 +1502,7 @@ Optional:
 
 Optional:
 
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `legend_size` (String) The size of the legend displayed in the widget.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple request blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--distribution_definition--request))
@@ -1866,6 +1871,7 @@ Required:
 Optional:
 
 - `event_size` (String) The size to use to display an event. Valid values are `s`, `l`.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `tags_execution` (String) The execution method for multi-value filters, options: `and` or `or`.
 - `title` (String) The title of the widget.
@@ -1882,6 +1888,7 @@ Required:
 
 Optional:
 
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `tags_execution` (String) The execution method for multi-value filters, options: `and` or `or`.
 - `title` (String) The title of the widget.
@@ -1913,6 +1920,7 @@ Required:
 Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--geomap_definition--custom_link))
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `log_query` or `rum_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--geomap_definition--request))
 - `style` (Block List, Max: 1) The style of the widget graph. One nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--geomap_definition--style))
@@ -2265,6 +2273,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--geomap_definition--request--query--process_query"></a>
@@ -2449,6 +2458,7 @@ Required:
 
 Optional:
 
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -2478,6 +2488,7 @@ Optional:
 Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--custom_link))
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple request blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request))
 - `title` (String) The title of the widget.
@@ -2908,6 +2919,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--group_definition--widget--change_definition--request--query--process_query"></a>
@@ -3091,6 +3103,7 @@ Optional:
 
 - `group` (String) The check group to use in the widget.
 - `group_by` (List of String) When `grouping = "cluster"`, indicates a list of tags to use for grouping.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `tags` (List of String) A list of tags to use in the widget.
 - `title` (String) The title of the widget.
@@ -3103,6 +3116,7 @@ Optional:
 
 Optional:
 
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `legend_size` (String) The size of the legend displayed in the widget.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple request blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request))
@@ -3471,6 +3485,7 @@ Required:
 Optional:
 
 - `event_size` (String) The size to use to display an event. Valid values are `s`, `l`.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `tags_execution` (String) The execution method for multi-value filters, options: `and` or `or`.
 - `title` (String) The title of the widget.
@@ -3487,6 +3502,7 @@ Required:
 
 Optional:
 
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `tags_execution` (String) The execution method for multi-value filters, options: `and` or `or`.
 - `title` (String) The title of the widget.
@@ -3518,6 +3534,7 @@ Required:
 Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--custom_link))
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `log_query` or `rum_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request))
 - `style` (Block List, Max: 1) The style of the widget graph. One nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--style))
@@ -3870,6 +3887,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--group_definition--widget--geomap_definition--request--query--process_query"></a>
@@ -3993,6 +4011,7 @@ Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--custom_link))
 - `event` (Block List) The definition of the event to overlay on the graph. Multiple `event` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--event))
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `legend_size` (String) The size of the legend displayed in the widget.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request))
@@ -4433,6 +4452,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--group_definition--widget--heatmap_definition--request--query--process_query"></a>
@@ -5339,6 +5359,7 @@ Required:
 Optional:
 
 - `columns` (List of String) Stringified list of columns to use, for example: `["column1","column2","column3"]`.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `indexes` (List of String) An array of index names to query in the stream.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `message_display` (String) The number of log lines to display. Valid values are `inline`, `expanded-md`, `expanded-lg`.
@@ -5458,6 +5479,7 @@ Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--custom_link))
 - `has_search_bar` (String) Controls the display of the search bar. Valid values are `always`, `never`, `auto`.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query`, `apm_stats_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request))
 - `title` (String) The title of the widget.
@@ -5950,6 +5972,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--group_definition--widget--query_table_definition--request--query--process_query"></a>
@@ -6174,6 +6197,7 @@ Optional:
 - `autoscale` (Boolean) A Boolean indicating whether to automatically scale the tile.
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--custom_link))
 - `custom_unit` (String) The unit for the value displayed in the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `precision` (Number) The precision to use when displaying the tile.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request))
@@ -6687,6 +6711,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--group_definition--widget--query_value_definition--request--query--process_query"></a>
@@ -6892,6 +6917,7 @@ Required:
 Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--run_workflow_definition--custom_link))
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `input` (Block List) Array of workflow inputs to map to dashboard template variables. (see [below for nested schema](#nestedblock--widget--group_definition--widget--run_workflow_definition--input))
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `title` (String) The title of the widget.
@@ -6926,6 +6952,7 @@ Optional:
 
 - `color_by_groups` (List of String) List of groups used for colors.
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--custom_link))
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List, Max: 1) A nested block describing the request to use when displaying the widget. Exactly one `request` block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request))
 - `title` (String) The title of the widget.
@@ -7123,6 +7150,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--query--process_query"></a>
@@ -7863,6 +7891,7 @@ Required:
 Optional:
 
 - `has_uniform_y_axes` (Boolean) Normalize y axes across graphs.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `title` (String) The title of the widget.
 
@@ -7887,6 +7916,7 @@ Optional:
 Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--change_definition--custom_link))
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple request blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--change_definition--request))
 - `title` (String) The title of the widget.
@@ -8317,6 +8347,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--change_definition--request--query--process_query"></a>
@@ -8498,6 +8529,7 @@ Required:
 Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--geomap_definition--custom_link))
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `log_query` or `rum_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--geomap_definition--request))
 - `style` (Block List, Max: 1) The style of the widget graph. One nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--geomap_definition--style))
@@ -8850,6 +8882,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--geomap_definition--request--query--process_query"></a>
@@ -8973,6 +9006,7 @@ Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_table_definition--custom_link))
 - `has_search_bar` (String) Controls the display of the search bar. Valid values are `always`, `never`, `auto`.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query`, `apm_stats_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_table_definition--request))
 - `title` (String) The title of the widget.
@@ -9465,6 +9499,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_table_definition--request--query--process_query"></a>
@@ -9689,6 +9724,7 @@ Optional:
 - `autoscale` (Boolean) A Boolean indicating whether to automatically scale the tile.
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_value_definition--custom_link))
 - `custom_unit` (String) The unit for the value displayed in the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `precision` (Number) The precision to use when displaying the tile.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_value_definition--request))
@@ -10202,6 +10238,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_value_definition--request--query--process_query"></a>
@@ -10404,6 +10441,7 @@ Optional:
 
 - `color_by_groups` (List of String) List of groups used for colors.
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--scatterplot_definition--custom_link))
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List, Max: 1) A nested block describing the request to use when displaying the widget. Exactly one `request` block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request))
 - `title` (String) The title of the widget.
@@ -10601,6 +10639,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--query--process_query"></a>
@@ -11243,6 +11282,7 @@ Optional:
 Optional:
 
 - `custom_link` (Block List) Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--sunburst_definition--custom_link))
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `hide_total` (Boolean) Whether or not to show the total value in the widget.
 - `legend_inline` (Block List, Max: 1) Used to configure the inline legend. Cannot be used in conjunction with legend_table. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--sunburst_definition--legend_inline))
 - `legend_table` (Block List, Max: 1) Used to configure the table legend. Cannot be used in conjunction with legend_inline. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--sunburst_definition--legend_table))
@@ -11822,6 +11862,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--query--process_query"></a>
@@ -12008,6 +12049,7 @@ Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--timeseries_definition--custom_link))
 - `event` (Block List) The definition of the event to overlay on the graph. Multiple `event` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--timeseries_definition--event))
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `legend_columns` (Set of String) A list of columns to display in the legend. Valid values are `value`, `avg`, `sum`, `min`, `max`.
 - `legend_layout` (String) The layout of the legend displayed in the widget. Valid values are `auto`, `horizontal`, `vertical`.
 - `legend_size` (String) The size of the legend displayed in the widget.
@@ -12610,6 +12652,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--query--process_query"></a>
@@ -12821,6 +12864,7 @@ Optional:
 Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--toplist_definition--custom_link))
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--toplist_definition--request))
 - `style` (Block List) The style of the widget (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--toplist_definition--style))
@@ -13332,6 +13376,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--toplist_definition--request--query--process_query"></a>
@@ -13808,6 +13853,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--treemap_definition--request--query--process_query"></a>
@@ -13922,6 +13968,7 @@ Required:
 Optional:
 
 - `custom_link` (Block List) Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--custom_link))
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `hide_total` (Boolean) Whether or not to show the total value in the widget.
 - `legend_inline` (Block List, Max: 1) Used to configure the inline legend. Cannot be used in conjunction with legend_table. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--legend_inline))
 - `legend_table` (Block List, Max: 1) Used to configure the table legend. Cannot be used in conjunction with legend_inline. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--legend_table))
@@ -14501,6 +14548,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--query--process_query"></a>
@@ -14687,6 +14735,7 @@ Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--custom_link))
 - `event` (Block List) The definition of the event to overlay on the graph. Multiple `event` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--event))
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `legend_columns` (Set of String) A list of columns to display in the legend. Valid values are `value`, `avg`, `sum`, `min`, `max`.
 - `legend_layout` (String) The layout of the legend displayed in the widget. Valid values are `auto`, `horizontal`, `vertical`.
 - `legend_size` (String) The size of the legend displayed in the widget.
@@ -15289,6 +15338,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--query--process_query"></a>
@@ -15500,6 +15550,7 @@ Optional:
 Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--custom_link))
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request))
 - `style` (Block List) The style of the widget (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--style))
@@ -16011,6 +16062,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--group_definition--widget--toplist_definition--request--query--process_query"></a>
@@ -16262,6 +16314,7 @@ Required:
 Optional:
 
 - `display_format` (String) The number of columns to display. Valid values are `one_column`, `two_column`, `three_column`.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `show_breakdown` (Boolean) Whether to show the latency breakdown or not.
 - `show_distribution` (Boolean) Whether to show the latency distribution or not.
@@ -16554,6 +16607,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--group_definition--widget--treemap_definition--request--query--process_query"></a>
@@ -16621,6 +16675,7 @@ Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--heatmap_definition--custom_link))
 - `event` (Block List) The definition of the event to overlay on the graph. Multiple `event` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--heatmap_definition--event))
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `legend_size` (String) The size of the legend displayed in the widget.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--heatmap_definition--request))
@@ -17061,6 +17116,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--heatmap_definition--request--query--process_query"></a>
@@ -17967,6 +18023,7 @@ Required:
 Optional:
 
 - `columns` (List of String) Stringified list of columns to use, for example: `["column1","column2","column3"]`.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `indexes` (List of String) An array of index names to query in the stream.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `message_display` (String) The number of log lines to display. Valid values are `inline`, `expanded-md`, `expanded-lg`.
@@ -18086,6 +18143,7 @@ Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--query_table_definition--custom_link))
 - `has_search_bar` (String) Controls the display of the search bar. Valid values are `always`, `never`, `auto`.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query`, `apm_stats_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--query_table_definition--request))
 - `title` (String) The title of the widget.
@@ -18578,6 +18636,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--query_table_definition--request--query--process_query"></a>
@@ -18802,6 +18861,7 @@ Optional:
 - `autoscale` (Boolean) A Boolean indicating whether to automatically scale the tile.
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--query_value_definition--custom_link))
 - `custom_unit` (String) The unit for the value displayed in the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `precision` (Number) The precision to use when displaying the tile.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--query_value_definition--request))
@@ -19315,6 +19375,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--query_value_definition--request--query--process_query"></a>
@@ -19520,6 +19581,7 @@ Required:
 Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--run_workflow_definition--custom_link))
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `input` (Block List) Array of workflow inputs to map to dashboard template variables. (see [below for nested schema](#nestedblock--widget--run_workflow_definition--input))
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `title` (String) The title of the widget.
@@ -19554,6 +19616,7 @@ Optional:
 
 - `color_by_groups` (List of String) List of groups used for colors.
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--custom_link))
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List, Max: 1) A nested block describing the request to use when displaying the widget. Exactly one `request` block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request))
 - `title` (String) The title of the widget.
@@ -19751,6 +19814,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--scatterplot_definition--request--scatterplot_table--query--process_query"></a>
@@ -20491,6 +20555,7 @@ Required:
 Optional:
 
 - `has_uniform_y_axes` (Boolean) Normalize y axes across graphs.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `title` (String) The title of the widget.
 
@@ -20515,6 +20580,7 @@ Optional:
 Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--change_definition--custom_link))
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple request blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--change_definition--request))
 - `title` (String) The title of the widget.
@@ -20945,6 +21011,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--change_definition--request--query--process_query"></a>
@@ -21126,6 +21193,7 @@ Required:
 Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition--custom_link))
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `log_query` or `rum_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition--request))
 - `style` (Block List, Max: 1) The style of the widget graph. One nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition--style))
@@ -21478,6 +21546,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition--request--query--process_query"></a>
@@ -21601,6 +21670,7 @@ Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--custom_link))
 - `has_search_bar` (String) Controls the display of the search bar. Valid values are `always`, `never`, `auto`.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query`, `apm_stats_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request))
 - `title` (String) The title of the widget.
@@ -22093,6 +22163,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--query--process_query"></a>
@@ -22317,6 +22388,7 @@ Optional:
 - `autoscale` (Boolean) A Boolean indicating whether to automatically scale the tile.
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--custom_link))
 - `custom_unit` (String) The unit for the value displayed in the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `precision` (Number) The precision to use when displaying the tile.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request))
@@ -22830,6 +22902,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--query--process_query"></a>
@@ -23032,6 +23105,7 @@ Optional:
 
 - `color_by_groups` (List of String) List of groups used for colors.
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--custom_link))
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List, Max: 1) A nested block describing the request to use when displaying the widget. Exactly one `request` block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request))
 - `title` (String) The title of the widget.
@@ -23229,6 +23303,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--query--process_query"></a>
@@ -23871,6 +23946,7 @@ Optional:
 Optional:
 
 - `custom_link` (Block List) Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--custom_link))
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `hide_total` (Boolean) Whether or not to show the total value in the widget.
 - `legend_inline` (Block List, Max: 1) Used to configure the inline legend. Cannot be used in conjunction with legend_table. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--legend_inline))
 - `legend_table` (Block List, Max: 1) Used to configure the table legend. Cannot be used in conjunction with legend_inline. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--legend_table))
@@ -24450,6 +24526,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--query--process_query"></a>
@@ -24636,6 +24713,7 @@ Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--custom_link))
 - `event` (Block List) The definition of the event to overlay on the graph. Multiple `event` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--event))
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `legend_columns` (Set of String) A list of columns to display in the legend. Valid values are `value`, `avg`, `sum`, `min`, `max`.
 - `legend_layout` (String) The layout of the legend displayed in the widget. Valid values are `auto`, `horizontal`, `vertical`.
 - `legend_size` (String) The size of the legend displayed in the widget.
@@ -25238,6 +25316,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--query--process_query"></a>
@@ -25449,6 +25528,7 @@ Optional:
 Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--custom_link))
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request))
 - `style` (Block List) The style of the widget (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--style))
@@ -25960,6 +26040,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--query--process_query"></a>
@@ -26436,6 +26517,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request--query--process_query"></a>
@@ -26550,6 +26632,7 @@ Required:
 Optional:
 
 - `custom_link` (Block List) Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--sunburst_definition--custom_link))
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `hide_total` (Boolean) Whether or not to show the total value in the widget.
 - `legend_inline` (Block List, Max: 1) Used to configure the inline legend. Cannot be used in conjunction with legend_table. (see [below for nested schema](#nestedblock--widget--sunburst_definition--legend_inline))
 - `legend_table` (Block List, Max: 1) Used to configure the table legend. Cannot be used in conjunction with legend_inline. (see [below for nested schema](#nestedblock--widget--sunburst_definition--legend_table))
@@ -27129,6 +27212,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--sunburst_definition--request--query--process_query"></a>
@@ -27315,6 +27399,7 @@ Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--custom_link))
 - `event` (Block List) The definition of the event to overlay on the graph. Multiple `event` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--event))
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `legend_columns` (Set of String) A list of columns to display in the legend. Valid values are `value`, `avg`, `sum`, `min`, `max`.
 - `legend_layout` (String) The layout of the legend displayed in the widget. Valid values are `auto`, `horizontal`, `vertical`.
 - `legend_size` (String) The size of the legend displayed in the widget.
@@ -27917,6 +28002,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--timeseries_definition--request--query--process_query"></a>
@@ -28128,6 +28214,7 @@ Optional:
 Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--toplist_definition--custom_link))
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--toplist_definition--request))
 - `style` (Block List) The style of the widget (see [below for nested schema](#nestedblock--widget--toplist_definition--style))
@@ -28639,6 +28726,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--toplist_definition--request--query--process_query"></a>
@@ -28890,6 +28978,7 @@ Required:
 Optional:
 
 - `display_format` (String) The number of columns to display. Valid values are `one_column`, `two_column`, `three_column`.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `show_breakdown` (Boolean) Whether to show the latency breakdown or not.
 - `show_distribution` (Boolean) Whether to show the latency distribution or not.
@@ -29182,6 +29271,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--treemap_definition--request--query--process_query"></a>

@@ -4,6 +4,8 @@
 
 # All your base
 *                                         @DataDog/api-reliability
+# Except cassettes
+datadog/tests/cassettes/
 
 /.generator                               @DataDog/api-reliability
 
@@ -57,9 +59,11 @@ datadog/**/*datadog_integration_gcp*             @DataDog/api-reliability @DataD
 datadog/**/*datadog_integration_microsoft_teams* @DataDog/api-reliability @DataDog/chat-integrations
 datadog/**/*datadog_integration_ms_teams*        @DataDog/api-reliability @DataDog/chat-integrations
 datadog/**/*datadog_ip_ranges*                   @DataDog/api-reliability @DataDog/team-aaa
+datadog/**/*datadog_on_call*                     @DataDog/on-call
 datadog/**/*datadog_open_api*                    @DataDog/api-reliability @DataDog/service-catalog
 datadog/**/*datadog_organization_settings*       @DataDog/api-reliability @DataDog/aaa-omg @DataDog/trust-and-safety
 datadog/**/*datadog_restriction_policy*          @DataDog/api-reliability @DataDog/aaa-granular-access
+datadog/**/*datadog_logs_restriction_query*      @DataDog/api-reliability @DataDog/aaa-granular-access
 datadog/**/*datadog_sensitive_data_scanner*      @DataDog/api-reliability @DataDog/sensitive-data-scanner
 datadog/**/*datadog_service_account*             @DataDog/api-reliability @DataDog/team-aaa
 datadog/**/*datadog_software_catalog*            @DataDog/api-reliability @DataDog/service-catalog
@@ -82,4 +86,7 @@ datadog/**/*datadog_azure_uc_config*             @DataDog/api-reliability @DataD
 datadog/**/*datadog_gcp_uc_config*               @DataDog/api-reliability @DataDog/cloud-cost-management
 datadog/**/*datadog_cost_budget*                 @DataDog/api-reliability @DataDog/cloud-cost-management
 datadog/**/*datadog_tag_pipeline_ruleset*        @DataDog/api-reliability @DataDog/cloud-cost-management
+datadog/**/*datadog_deployment_gate*             @DataDog/api-reliability @DataDog/ci-app-backend
+datadog/**/*observability_pipeline*              @DataDog/observability-pipelines
+docs/resources/observability_pipeline.md         @DataDog/observability-pipelines
 scripts/*cloud-cost-import-existing-resources*   @DataDog/cloud-cost-management

@@ -14,6 +14,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 )
 
 func resourceDatadogPowerpack() *schema.Resource {
@@ -33,7 +34,12 @@ func resourceDatadogPowerpack() *schema.Resource {
 					Optional:    true,
 					Description: "The description of the powerpack.",
 				},
-				"live_span": getWidgetLiveSpanSchema(),
+				"live_span": {
+					Description:      "The timeframe to use when displaying the powerpack.",
+					Type:             schema.TypeString,
+					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetLiveSpanFromValue),
+					Optional:         true,
+				},
 				"name": {
 					Type:        schema.TypeString,
 					Optional:    true,
@@ -442,7 +448,7 @@ func updatePowerpackState(d *schema.ResourceData, powerpack *datadogV2.Powerpack
 		return diag.FromErr(err)
 	}
 
-	// Set tags
+	// Set live_span
 	if err := d.Set("live_span", powerpack.Data.Attributes.GroupWidget.GetLiveSpan()); err != nil {
 		return diag.FromErr(err)
 	}

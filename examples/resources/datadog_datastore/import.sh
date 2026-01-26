@@ -1,0 +1,1 @@
+terraform import datadog_datastore.foo "datastore-id"

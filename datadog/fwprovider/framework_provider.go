@@ -54,6 +54,7 @@ var Resources = []func() resource.Resource{
 	NewIntegrationFastlyServiceResource,
 	NewIntegrationGcpResource,
 	NewIntegrationGcpStsResource,
+	NewCloudInventorySyncConfigResource,
 	NewIpAllowListResource,
 	NewMonitorNotificationRuleResource,
 	NewSecurityNotificationRuleResource,
@@ -68,17 +69,21 @@ var Resources = []func() resource.Resource{
 	NewSyntheticsConcurrencyCapResource,
 	NewSyntheticsGlobalVariableResource,
 	NewSyntheticsPrivateLocationResource,
+	NewSyntheticsSuiteResource,
 	NewTeamLinkResource,
 	NewTeamMembershipResource,
+	NewTeamNotificationRuleResource,
 	NewTeamPermissionSettingResource,
 	NewTeamResource,
 	NewTeamHierarchyLinksResource,
 	NewUserRoleResource,
 	NewSecurityMonitoringSuppressionResource,
+	NewSecurityMonitoringCriticalAssetResource,
 	NewServiceAccountResource,
 	NewWebhookResource,
 	NewWebhookCustomVariableResource,
 	NewLogsCustomDestinationResource,
+	NewLogsRestrictionQueryResource,
 	NewTenantBasedHandleResource,
 	NewAppsecWafExclusionFilterResource,
 	NewAppsecWafCustomRuleResource,
@@ -90,6 +95,8 @@ var Resources = []func() resource.Resource{
 	NewOnCallEscalationPolicyResource,
 	NewOnCallScheduleResource,
 	NewOnCallTeamRoutingRulesResource,
+	NewOnCallUserNotificationChannelResource,
+	NewOnCallUserNotificationRuleResource,
 	NewOrgConnectionResource,
 	NewComplianceResourceEvaluationFilter,
 	NewSecurityMonitoringRuleJSONResource,
@@ -108,7 +115,10 @@ var Resources = []func() resource.Resource{
 	NewDatadogCustomAllocationRuleResource,
 	NewCustomAllocationRulesResource,
 	NewAzureUcConfigResource,
+	NewDeploymentGateResource,
 	NewReferenceTableResource,
+	NewDatastoreResource,
+	NewDatastoreItemResource,
 }
 
 var Datasources = []func() datasource.DataSource{
@@ -133,6 +143,8 @@ var Datasources = []func() datasource.DataSource{
 	NewDatadogTeamDataSource,
 	NewDatadogTeamHierarchyLinksDataSource,
 	NewDatadogTeamMembershipsDataSource,
+	NewDatadogTeamNotificationRuleDataSource,
+	NewDatadogTeamNotificationRulesDataSource,
 	NewHostsDataSource,
 	NewIPRangesDataSource,
 	NewRumApplicationDataSource,
@@ -141,6 +153,8 @@ var Datasources = []func() datasource.DataSource{
 	NewDatadogUsersDataSource,
 	NewDatadogRoleUsersDataSource,
 	NewSecurityMonitoringSuppressionDataSource,
+	NewSecurityMonitoringCriticalAssetDataSource,
+	NewSecurityMonitoringCriticalAssetsDataSource,
 	NewLogsPipelinesOrderDataSource,
 	NewDatadogTeamsDataSource,
 	NewDatadogActionConnectionDataSource,
@@ -161,6 +175,9 @@ var Datasources = []func() datasource.DataSource{
 	NewDatadogAzureUcConfigDataSource,
 	NewDatadogReferenceTableDataSource,
 	NewDatadogReferenceTableRowsDataSource,
+	NewOrganizationSettingsDataSource,
+	NewDatadogDatastoreDataSource,
+	NewDatastoreItemDataSource,
 }
 
 // FrameworkProvider struct
@@ -588,6 +605,14 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateDataset", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteDataset", true)
 
+	// Enable Logs Restriction Queries
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateRestrictionQuery", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetRestrictionQuery", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateRestrictionQuery", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteRestrictionQuery", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.AddRoleToRestrictionQuery", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.RemoveRoleFromRestrictionQuery", true)
+
 	// Enable Observability Pipelines
 	ddClientConfig.SetUnstableOperationEnabled("v2.CreatePipeline", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.GetPipeline", true)
@@ -625,6 +650,17 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.ListCostAWSCURConfigs", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateCostAWSCURConfig", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteCostAWSCURConfig", true)
+
+	// Enable Deployment Gates & Rules
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateDeploymentGate", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateDeploymentGate", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteDeploymentGate", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetDeploymentGate", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateDeploymentRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateDeploymentRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteDeploymentRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetDeploymentRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetDeploymentGateRules", true)
 
 	if !config.ApiUrl.IsNull() && config.ApiUrl.ValueString() != "" {
 		parsedAPIURL, parseErr := url.Parse(config.ApiUrl.ValueString())

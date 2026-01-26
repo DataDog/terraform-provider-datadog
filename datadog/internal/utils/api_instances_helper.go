@@ -45,6 +45,7 @@ type ApiInstances struct {
 
 	//V2 APIs
 	actionConnectionApiV2          *datadogV2.ActionConnectionApi
+	actionsDatastoresApiV2         *datadogV2.ActionsDatastoresApi
 	agentlessScanningApiV2         *datadogV2.AgentlessScanningApi
 	apiManagementAPIV2             *datadogV2.APIManagementApi
 	apmRetentionFiltersApiV2       *datadogV2.APMRetentionFiltersApi
@@ -73,6 +74,7 @@ type ApiInstances struct {
 	logsArchivesApiV2              *datadogV2.LogsArchivesApi
 	logsCustomDestinationsApiV2    *datadogV2.LogsCustomDestinationsApi
 	logsMetricsApiV2               *datadogV2.LogsMetricsApi
+	logsRestrictionQueriesApiV2    *datadogV2.LogsRestrictionQueriesApi
 	metricsApiV2                   *datadogV2.MetricsApi
 	microsoftTeamsIntegrationApiV2 *datadogV2.MicrosoftTeamsIntegrationApi
 	monitorsApiV2                  *datadogV2.MonitorsApi
@@ -100,6 +102,7 @@ type ApiInstances struct {
 	usersApiV2                     *datadogV2.UsersApi
 	workflowAutomationApiV2        *datadogV2.WorkflowAutomationApi
 	ccmApiV2                       *datadogV2.CloudCostManagementApi
+	deploymentGatesV2              *datadogV2.DeploymentGatesApi
 }
 
 // GetAuthenticationApiV1 get instance of AuthenticationApi
@@ -517,6 +520,14 @@ func (i *ApiInstances) GetLogsMetricsApiV2() *datadogV2.LogsMetricsApi {
 	return i.logsMetricsApiV2
 }
 
+// GetLogsRestrictionQueriesApiV2 get instance of LogsRestrictionQueriesApi
+func (i *ApiInstances) GetLogsRestrictionQueriesApiV2() *datadogV2.LogsRestrictionQueriesApi {
+	if i.logsRestrictionQueriesApiV2 == nil {
+		i.logsRestrictionQueriesApiV2 = datadogV2.NewLogsRestrictionQueriesApi(i.HttpClient)
+	}
+	return i.logsRestrictionQueriesApiV2
+}
+
 // GetMetricsApiV2 get instance of MetricsApi
 func (i *ApiInstances) GetMetricsApiV2() *datadogV2.MetricsApi {
 	if i.metricsApiV2 == nil {
@@ -764,6 +775,14 @@ func (i *ApiInstances) GetActionConnectionApiV2() *datadogV2.ActionConnectionApi
 	return i.actionConnectionApiV2
 }
 
+// GetActionsDatastoresApiV2 get instance of ActionsDatastoresApi
+func (i *ApiInstances) GetActionsDatastoresApiV2() *datadogV2.ActionsDatastoresApi {
+	if i.actionsDatastoresApiV2 == nil {
+		i.actionsDatastoresApiV2 = datadogV2.NewActionsDatastoresApi(i.HttpClient)
+	}
+	return i.actionsDatastoresApiV2
+}
+
 // GetAppBuilderApiV2 get instance of AppBuilderApi
 func (i *ApiInstances) GetAppBuilderApiV2() *datadogV2.AppBuilderApi {
 	if i.appBuilderApiV2 == nil {
@@ -786,6 +805,14 @@ func (i *ApiInstances) GetCloudCostManagementApiV2() *datadogV2.CloudCostManagem
 		i.ccmApiV2 = datadogV2.NewCloudCostManagementApi(i.HttpClient)
 	}
 	return i.ccmApiV2
+}
+
+// GetDeploymentGatesApiV2 get instance of DeploymentGatesApi
+func (i *ApiInstances) GetDeploymentGatesApiV2() *datadogV2.DeploymentGatesApi {
+	if i.deploymentGatesV2 == nil {
+		i.deploymentGatesV2 = datadogV2.NewDeploymentGatesApi(i.HttpClient)
+	}
+	return i.deploymentGatesV2
 }
 
 // GetReferenceTablesApiV2 get instance of ReferenceTablesApi

@@ -1,112 +1,210 @@
+---
 version: 2
 interactions:
-- request:
-    body: |
-      {"description":"Created using the Datadog provider in Terraform","id":"","is_read_only":true,"layout_type":"ordered","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardCheckStatus-local-1682003513","widgets":[{"definition":{"check":"aws.ec2.host_status","group_by":["app"],"grouping":"cluster","tags":["account:prod"],"title":"Agent Up","title_align":"center","title_size":"16","type":"check_status"}}]}
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard
-    method: POST
-    id: 0
-  response:
-    body: |
-      {"id":"pwt-t49-qa6","title":"tf-TestAccDatadogDashboardCheckStatus-local-1682003513","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/pwt-t49-qa6/tf-testaccdatadogdashboardcheckstatus-local-1682003513","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"check":"aws.ec2.host_status","group_by":["app"],"grouping":"cluster","tags":["account:prod"],"title":"Agent Up","title_align":"center","title_size":"16","type":"check_status"},"id":7273339007512174}],"notify_list":[],"created_at":"2023-04-20T15:11:54.994278+00:00","modified_at":"2023-04-20T15:11:54.994278+00:00","template_variable_presets":[],"tags":[]}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/pwt-t49-qa6
-    method: GET
-    id: 1
-  response:
-    body: |
-      {"id":"pwt-t49-qa6","title":"tf-TestAccDatadogDashboardCheckStatus-local-1682003513","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/pwt-t49-qa6/tf-testaccdatadogdashboardcheckstatus-local-1682003513","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"check":"aws.ec2.host_status","group_by":["app"],"grouping":"cluster","tags":["account:prod"],"title":"Agent Up","title_align":"center","title_size":"16","type":"check_status"},"id":7273339007512174}],"notify_list":[],"created_at":"2023-04-20T15:11:54.994278+00:00","modified_at":"2023-04-20T15:11:54.994278+00:00","template_variable_presets":[],"tags":[]}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/pwt-t49-qa6
-    method: GET
-    id: 2
-  response:
-    body: |
-      {"id":"pwt-t49-qa6","title":"tf-TestAccDatadogDashboardCheckStatus-local-1682003513","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/pwt-t49-qa6/tf-testaccdatadogdashboardcheckstatus-local-1682003513","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"check":"aws.ec2.host_status","group_by":["app"],"grouping":"cluster","tags":["account:prod"],"title":"Agent Up","title_align":"center","title_size":"16","type":"check_status"},"id":7273339007512174}],"notify_list":[],"created_at":"2023-04-20T15:11:54.994278+00:00","modified_at":"2023-04-20T15:11:54.994278+00:00","template_variable_presets":[],"tags":[]}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/pwt-t49-qa6
-    method: GET
-    id: 3
-  response:
-    body: |
-      {"id":"pwt-t49-qa6","title":"tf-TestAccDatadogDashboardCheckStatus-local-1682003513","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/pwt-t49-qa6/tf-testaccdatadogdashboardcheckstatus-local-1682003513","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"check":"aws.ec2.host_status","group_by":["app"],"grouping":"cluster","tags":["account:prod"],"title":"Agent Up","title_align":"center","title_size":"16","type":"check_status"},"id":7273339007512174}],"notify_list":[],"created_at":"2023-04-20T15:11:54.994278+00:00","modified_at":"2023-04-20T15:11:54.994278+00:00","template_variable_presets":[],"tags":[]}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/pwt-t49-qa6
-    method: DELETE
-    id: 4
-  response:
-    body: |
-      {"deleted_dashboard_id":"pwt-t49-qa6"}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/pwt-t49-qa6
-    method: GET
-    id: 5
-  response:
-    body: '{"errors":["Dashboard with ID pwt-t49-qa6 not found"]}'
-    headers:
-      Content-Type:
-      - application/json
-    status: 404 Not Found
-    code: 404
-    duration: "0ms"
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 450
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"description":"Created using the Datadog provider in Terraform","id":"","layout_type":"ordered","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardCheckStatus-local-1767988478","widgets":[{"definition":{"check":"aws.ec2.host_status","group_by":["app"],"grouping":"cluster","tags":["account:prod"],"title":"Agent Up","title_align":"center","title_size":"16","type":"check_status"}}]}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"xdk-6ui-gyd","title":"tf-TestAccDatadogDashboardCheckStatus-local-1767988478","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/xdk-6ui-gyd/tf-testaccdatadogdashboardcheckstatus-local-1767988478","template_variables":[],"widgets":[{"definition":{"check":"aws.ec2.host_status","group_by":["app"],"grouping":"cluster","tags":["account:prod"],"title":"Agent Up","title_align":"center","title_size":"16","type":"check_status"},"id":1580314276225652}],"notify_list":[],"created_at":"2026-01-09T19:54:39.431446+00:00","modified_at":"2026-01-09T19:54:39.431446+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 140.504959ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/xdk-6ui-gyd
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"xdk-6ui-gyd","title":"tf-TestAccDatadogDashboardCheckStatus-local-1767988478","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/xdk-6ui-gyd/tf-testaccdatadogdashboardcheckstatus-local-1767988478","template_variables":[],"widgets":[{"definition":{"check":"aws.ec2.host_status","group_by":["app"],"grouping":"cluster","tags":["account:prod"],"title":"Agent Up","title_align":"center","title_size":"16","type":"check_status"},"id":1580314276225652}],"notify_list":[],"created_at":"2026-01-09T19:54:39.431446+00:00","modified_at":"2026-01-09T19:54:39.431446+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 97.455292ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/xdk-6ui-gyd
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"xdk-6ui-gyd","title":"tf-TestAccDatadogDashboardCheckStatus-local-1767988478","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/xdk-6ui-gyd/tf-testaccdatadogdashboardcheckstatus-local-1767988478","template_variables":[],"widgets":[{"definition":{"check":"aws.ec2.host_status","group_by":["app"],"grouping":"cluster","tags":["account:prod"],"title":"Agent Up","title_align":"center","title_size":"16","type":"check_status"},"id":1580314276225652}],"notify_list":[],"created_at":"2026-01-09T19:54:39.431446+00:00","modified_at":"2026-01-09T19:54:39.431446+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 118.948625ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/xdk-6ui-gyd
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"xdk-6ui-gyd","title":"tf-TestAccDatadogDashboardCheckStatus-local-1767988478","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/xdk-6ui-gyd/tf-testaccdatadogdashboardcheckstatus-local-1767988478","template_variables":[],"widgets":[{"definition":{"check":"aws.ec2.host_status","group_by":["app"],"grouping":"cluster","tags":["account:prod"],"title":"Agent Up","title_align":"center","title_size":"16","type":"check_status"},"id":1580314276225652}],"notify_list":[],"created_at":"2026-01-09T19:54:39.431446+00:00","modified_at":"2026-01-09T19:54:39.431446+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 96.110209ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/xdk-6ui-gyd
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"deleted_dashboard_id":"xdk-6ui-gyd"}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 341.632667ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/xdk-6ui-gyd
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"errors":["Dashboard with ID xdk-6ui-gyd not found"]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 100.223ms

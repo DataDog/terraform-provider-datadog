@@ -74,7 +74,7 @@ Required:
 - `interval` (Block List) Rotation interval for this layer. (see [below for nested schema](#nestedblock--layer--interval))
 - `name` (String) The name of this layer. Should be unique within the schedule.
 - `rotation_start` (String) The date/time when the rotation for this layer starts (in ISO 8601).
-- `users` (List of String) List of user IDs for the layer. Can either be a valid user id or null
+- `users` (List of String) List of user IDs for the layer. Can either be a valid user id or `null` to represent No-one.
 
 Optional:
 

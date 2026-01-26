@@ -6,21 +6,21 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 446
+        content_length: 565
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"config":{"destinations":[{"id":"destination-1","inputs":["add-env-1"],"type":"datadog_logs"}],"processors":[{"id":"add-env-1","include":"*","inputs":["source-1"],"type":"add_env_vars","variables":[{"field":"log.environment.region","name":"AWS_REGION"},{"field":"log.environment.account","name":"AWS_ACCOUNT_ID"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]},"name":"add-env-vars pipeline"},"type":"pipelines"}}
+            {"data":{"attributes":{"config":{"destinations":[{"id":"destination-1","inputs":["add-env-group-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[{"enabled":true,"id":"add-env-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"add-env-1","include":"*","type":"add_env_vars","variables":[{"field":"log.environment.region","name":"AWS_REGION"},{"field":"log.environment.account","name":"AWS_ACCOUNT_ID"}]}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]},"name":"add-env-vars pipeline"},"type":"pipelines"}}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines
         method: POST
       response:
         proto: HTTP/1.1
@@ -28,16 +28,16 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 490
+        content_length: 914
         uncompressed: false
         body: |
-            {"data":{"id":"ed6b6e0a-24e0-11f0-be89-da7ad0900002","type":"pipelines","attributes":{"name":"add-env-vars pipeline","config":{"destinations":[{"id":"destination-1","inputs":["add-env-1"],"type":"datadog_logs"}],"processors":[{"id":"add-env-1","include":"*","inputs":["source-1"],"type":"add_env_vars","variables":[{"field":"log.environment.region","name":"AWS_REGION"},{"field":"log.environment.account","name":"AWS_ACCOUNT_ID"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"d9eeeef2-f20c-11f0-8688-da7ad0900002","type":"pipelines","attributes":{"name":"add-env-vars pipeline","config":{"destinations":[{"id":"destination-1","inputs":["add-env-group-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[{"enabled":true,"id":"add-env-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"add-env-1","include":"*","type":"add_env_vars","variables":[{"field":"log.environment.region","name":"AWS_REGION"},{"field":"log.environment.account","name":"AWS_ACCOUNT_ID"}]}]}],"processors":[{"enabled":true,"id":"add-env-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"add-env-1","include":"*","type":"add_env_vars","variables":[{"field":"log.environment.region","name":"AWS_REGION"},{"field":"log.environment.account","name":"AWS_ACCOUNT_ID"}]}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
-                - application/json
+                - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 603.051542ms
+        duration: 495.675125ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -54,7 +54,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/ed6b6e0a-24e0-11f0-be89-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/d9eeeef2-f20c-11f0-8688-da7ad0900002
         method: GET
       response:
         proto: HTTP/1.1
@@ -62,16 +62,16 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 490
+        content_length: 914
         uncompressed: false
         body: |
-            {"data":{"id":"ed6b6e0a-24e0-11f0-be89-da7ad0900002","type":"pipelines","attributes":{"name":"add-env-vars pipeline","config":{"destinations":[{"id":"destination-1","inputs":["add-env-1"],"type":"datadog_logs"}],"processors":[{"id":"add-env-1","include":"*","inputs":["source-1"],"type":"add_env_vars","variables":[{"field":"log.environment.region","name":"AWS_REGION"},{"field":"log.environment.account","name":"AWS_ACCOUNT_ID"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"d9eeeef2-f20c-11f0-8688-da7ad0900002","type":"pipelines","attributes":{"name":"add-env-vars pipeline","config":{"destinations":[{"id":"destination-1","inputs":["add-env-group-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[{"enabled":true,"id":"add-env-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"add-env-1","include":"*","type":"add_env_vars","variables":[{"field":"log.environment.region","name":"AWS_REGION"},{"field":"log.environment.account","name":"AWS_ACCOUNT_ID"}]}]}],"processors":[{"enabled":true,"id":"add-env-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"add-env-1","include":"*","type":"add_env_vars","variables":[{"field":"log.environment.region","name":"AWS_REGION"},{"field":"log.environment.account","name":"AWS_ACCOUNT_ID"}]}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
-                - application/json
+                - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 282.020458ms
+        duration: 226.351ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -88,7 +88,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/remote_config/products/obs_pipelines/pipelines/ed6b6e0a-24e0-11f0-be89-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/d9eeeef2-f20c-11f0-8688-da7ad0900002
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -104,4 +104,4 @@ interactions:
                 - application/json
         status: 204 No Content
         code: 204
-        duration: 718.711292ms
+        duration: 337.222667ms

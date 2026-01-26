@@ -2,7 +2,9 @@ package observability_pipeline
 
 import (
 	datadogV2 "github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -10,19 +12,19 @@ import (
 
 // SocketSourceModel represents the Terraform model for socket source configuration
 type SocketSourceModel struct {
-	Id      types.String       `tfsdk:"id"`
-	Mode    types.String       `tfsdk:"mode"`
-	Framing SocketFramingModel `tfsdk:"framing"`
-	Tls     *tlsModel          `tfsdk:"tls"`
+	Mode    types.String         `tfsdk:"mode"`
+	Framing []SocketFramingModel `tfsdk:"framing"`
+	Tls     []TlsModel           `tfsdk:"tls"`
 }
 
 // ExpandSocketSource converts the Terraform model to the Datadog API model
-func ExpandSocketSource(src *SocketSourceModel) datadogV2.ObservabilityPipelineConfigSourceItem {
+func ExpandSocketSource(src *SocketSourceModel, id string) (datadogV2.ObservabilityPipelineConfigSourceItem, diag.Diagnostics) {
+	var diags diag.Diagnostics
 	s := datadogV2.NewObservabilityPipelineSocketSourceWithDefaults()
-	s.SetId(src.Id.ValueString())
+	s.SetId(id)
 	s.SetMode(datadogV2.ObservabilityPipelineSocketSourceMode(src.Mode.ValueString()))
 
-	switch src.Framing.Method.ValueString() {
+	switch src.Framing[0].Method.ValueString() {
 	case "newline_delimited":
 		s.Framing = datadogV2.ObservabilityPipelineSocketSourceFraming{
 			ObservabilityPipelineSocketSourceFramingNewlineDelimited: &datadogV2.ObservabilityPipelineSocketSourceFramingNewlineDelimited{
@@ -36,11 +38,14 @@ func ExpandSocketSource(src *SocketSourceModel) datadogV2.ObservabilityPipelineC
 			},
 		}
 	case "character_delimited":
+		charDelimited := &datadogV2.ObservabilityPipelineSocketSourceFramingCharacterDelimited{
+			Method: "character_delimited",
+		}
+		if len(src.Framing[0].CharacterDelimited) > 0 {
+			charDelimited.Delimiter = src.Framing[0].CharacterDelimited[0].Delimiter.ValueString()
+		}
 		s.Framing = datadogV2.ObservabilityPipelineSocketSourceFraming{
-			ObservabilityPipelineSocketSourceFramingCharacterDelimited: &datadogV2.ObservabilityPipelineSocketSourceFramingCharacterDelimited{
-				Method:    "character_delimited",
-				Delimiter: src.Framing.CharacterDelimited.Delimiter.ValueString(),
-			},
+			ObservabilityPipelineSocketSourceFramingCharacterDelimited: charDelimited,
 		}
 	case "octet_counting":
 		s.Framing = datadogV2.ObservabilityPipelineSocketSourceFraming{
@@ -55,14 +60,12 @@ func ExpandSocketSource(src *SocketSourceModel) datadogV2.ObservabilityPipelineC
 			},
 		}
 	}
-
-	if src.Tls != nil {
+	if len(src.Tls) > 0 {
 		s.Tls = ExpandTls(src.Tls)
 	}
-
 	return datadogV2.ObservabilityPipelineConfigSourceItem{
 		ObservabilityPipelineSocketSource: s,
-	}
+	}, diags
 }
 
 // FlattenSocketSource converts the Datadog API model to the Terraform model
@@ -72,30 +75,30 @@ func FlattenSocketSource(src *datadogV2.ObservabilityPipelineSocketSource) *Sock
 	}
 
 	out := &SocketSourceModel{
-		Id:   types.StringValue(src.GetId()),
 		Mode: types.StringValue(string(src.GetMode())),
 	}
 
 	if src.Tls != nil {
-		tls := FlattenTls(src.Tls)
-		out.Tls = &tls
+		out.Tls = FlattenTls(src.Tls)
 	}
 
+	outFraming := SocketFramingModel{}
 	switch {
 	case src.Framing.ObservabilityPipelineSocketSourceFramingNewlineDelimited != nil:
-		out.Framing.Method = types.StringValue("newline_delimited")
+		outFraming.Method = types.StringValue("newline_delimited")
 	case src.Framing.ObservabilityPipelineSocketSourceFramingBytes != nil:
-		out.Framing.Method = types.StringValue("bytes")
+		outFraming.Method = types.StringValue("bytes")
 	case src.Framing.ObservabilityPipelineSocketSourceFramingCharacterDelimited != nil:
-		out.Framing.Method = types.StringValue("character_delimited")
-		out.Framing.CharacterDelimited = &SocketFramingCharacterDelimitedModel{
+		outFraming.Method = types.StringValue("character_delimited")
+		outFraming.CharacterDelimited = []SocketFramingCharacterDelimitedModel{SocketFramingCharacterDelimitedModel{
 			Delimiter: types.StringValue(src.Framing.ObservabilityPipelineSocketSourceFramingCharacterDelimited.Delimiter),
-		}
+		}}
 	case src.Framing.ObservabilityPipelineSocketSourceFramingOctetCounting != nil:
-		out.Framing.Method = types.StringValue("octet_counting")
+		outFraming.Method = types.StringValue("octet_counting")
 	case src.Framing.ObservabilityPipelineSocketSourceFramingChunkedGelf != nil:
-		out.Framing.Method = types.StringValue("chunked_gelf")
+		outFraming.Method = types.StringValue("chunked_gelf")
 	}
+	out.Framing = []SocketFramingModel{outFraming}
 
 	return out
 }
@@ -106,10 +109,6 @@ func SocketSourceSchema() schema.ListNestedBlock {
 		Description: "The `socket` source ingests logs over TCP or UDP.",
 		NestedObject: schema.NestedBlockObject{
 			Attributes: map[string]schema.Attribute{
-				"id": schema.StringAttribute{
-					Required:    true,
-					Description: "The unique identifier for this component.",
-				},
 				"mode": schema.StringAttribute{
 					Required:    true,
 					Description: "The protocol used to receive logs.",
@@ -119,33 +118,47 @@ func SocketSourceSchema() schema.ListNestedBlock {
 				},
 			},
 			Blocks: map[string]schema.Block{
-				"framing": schema.SingleNestedBlock{
+				"framing": schema.ListNestedBlock{
 					Description: "Defines the framing method for incoming messages.",
-					Attributes: map[string]schema.Attribute{
-						"method": schema.StringAttribute{
-							Optional:    true, // must be optional to make the block optional
-							Description: "The framing method.",
-							Validators: []validator.String{
-								stringvalidator.OneOf(
-									"newline_delimited",
-									"bytes",
-									"character_delimited",
-									"octet_counting",
-									"chunked_gelf",
-								),
-							},
-						},
-					},
-					Blocks: map[string]schema.Block{
-						"character_delimited": schema.SingleNestedBlock{
-							Description: "Used when `method` is `character_delimited`. Specifies the delimiter character.",
-							Attributes: map[string]schema.Attribute{
-								"delimiter": schema.StringAttribute{
-									Optional:    true, // must be optional to make the block optional
-									Description: "A single ASCII character used as a delimiter.",
+					NestedObject: schema.NestedBlockObject{
+						Attributes: map[string]schema.Attribute{
+							"method": schema.StringAttribute{
+								Required:    true,
+								Description: "The framing method.",
+								Validators: []validator.String{
+									stringvalidator.OneOf(
+										"newline_delimited",
+										"bytes",
+										"character_delimited",
+										"octet_counting",
+										"chunked_gelf",
+									),
 								},
 							},
 						},
+						Blocks: map[string]schema.Block{
+							"character_delimited": schema.ListNestedBlock{
+								Description: "Used when `method` is `character_delimited`. Specifies the delimiter character.",
+								NestedObject: schema.NestedBlockObject{
+									Attributes: map[string]schema.Attribute{
+										"delimiter": schema.StringAttribute{
+											Required:    true,
+											Description: "A single ASCII character used as a delimiter.",
+										},
+									},
+								},
+								Validators: []validator.List{
+									listvalidator.SizeAtMost(1),
+								},
+							},
+						},
+						Validators: []validator.Object{
+							SocketFramingValidator{},
+						},
+					},
+					Validators: []validator.List{
+						listvalidator.IsRequired(),
+						listvalidator.SizeAtMost(1),
 					},
 				},
 				"tls": TlsSchema(),
