@@ -48,7 +48,6 @@ func CloudPremDestinationSchema() schema.ListNestedBlock {
 			Blocks:     map[string]schema.Block{},
 		},
 		Validators: []validator.List{
-			listvalidator.SizeAtLeast(1),
 			listvalidator.SizeAtMost(1),
 		},
 	}

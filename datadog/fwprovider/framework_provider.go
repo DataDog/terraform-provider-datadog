@@ -77,6 +77,7 @@ var Resources = []func() resource.Resource{
 	NewTeamHierarchyLinksResource,
 	NewUserRoleResource,
 	NewSecurityMonitoringSuppressionResource,
+	NewSecurityMonitoringCriticalAssetResource,
 	NewServiceAccountResource,
 	NewWebhookResource,
 	NewWebhookCustomVariableResource,
@@ -94,6 +95,7 @@ var Resources = []func() resource.Resource{
 	NewOnCallScheduleResource,
 	NewOnCallTeamRoutingRulesResource,
 	NewOnCallUserNotificationChannelResource,
+	NewOnCallUserNotificationRuleResource,
 	NewOrgConnectionResource,
 	NewComplianceResourceEvaluationFilter,
 	NewSecurityMonitoringRuleJSONResource,
@@ -114,6 +116,8 @@ var Resources = []func() resource.Resource{
 	NewAzureUcConfigResource,
 	NewDeploymentGateResource,
 	NewReferenceTableResource,
+	NewDatastoreResource,
+	NewDatastoreItemResource,
 }
 
 var Datasources = []func() datasource.DataSource{
@@ -148,6 +152,8 @@ var Datasources = []func() datasource.DataSource{
 	NewDatadogUsersDataSource,
 	NewDatadogRoleUsersDataSource,
 	NewSecurityMonitoringSuppressionDataSource,
+	NewSecurityMonitoringCriticalAssetDataSource,
+	NewSecurityMonitoringCriticalAssetsDataSource,
 	NewLogsPipelinesOrderDataSource,
 	NewDatadogTeamsDataSource,
 	NewDatadogActionConnectionDataSource,
@@ -169,6 +175,8 @@ var Datasources = []func() datasource.DataSource{
 	NewDatadogReferenceTableDataSource,
 	NewDatadogReferenceTableRowsDataSource,
 	NewOrganizationSettingsDataSource,
+	NewDatadogDatastoreDataSource,
+	NewDatastoreItemDataSource,
 }
 
 // FrameworkProvider struct
