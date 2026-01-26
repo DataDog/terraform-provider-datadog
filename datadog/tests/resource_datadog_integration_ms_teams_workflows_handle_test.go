@@ -14,6 +14,9 @@ import (
 )
 
 func TestAccMSTeamsWorkflowsWebhookHandlesBasic(t *testing.T) {
+	if !isReplaying() {
+		t.Skip("This test only supports replaying - requires valid MS Teams workflow URL")
+	}
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := strings.ToLower(uniqueEntityName(ctx, t))
