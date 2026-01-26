@@ -18,7 +18,7 @@ interactions:
         headers:
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/unstable/cloudinventoryservice/syncconfigs
+        url: https://api.datadoghq.com/api/v2/cloudinventoryservice/syncconfigs
         method: PUT
       response:
         proto: HTTP/2.0
@@ -34,7 +34,7 @@ interactions:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 109.101708ms
+        duration: 140.673334ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -51,7 +51,7 @@ interactions:
         headers:
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/unstable/cloudinventoryservice/syncconfigs/3526615b-4d65-4d9b-947a-d89c18faf0dc
+        url: https://api.datadoghq.com/api/v2/cloudinventoryservice/syncconfigs/3526615b-4d65-4d9b-947a-d89c18faf0dc
         method: GET
       response:
         proto: HTTP/2.0
@@ -67,7 +67,7 @@ interactions:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 121.08825ms
+        duration: 140.657708ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -84,7 +84,7 @@ interactions:
         headers:
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/unstable/cloudinventoryservice/syncconfigs/3526615b-4d65-4d9b-947a-d89c18faf0dc
+        url: https://api.datadoghq.com/api/v2/cloudinventoryservice/syncconfigs/3526615b-4d65-4d9b-947a-d89c18faf0dc
         method: GET
       response:
         proto: HTTP/2.0
@@ -100,7 +100,7 @@ interactions:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 59.8885ms
+        duration: 83.439875ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -117,7 +117,7 @@ interactions:
         headers:
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/unstable/cloudinventoryservice/syncconfigs/3526615b-4d65-4d9b-947a-d89c18faf0dc
+        url: https://api.datadoghq.com/api/v2/cloudinventoryservice/syncconfigs/3526615b-4d65-4d9b-947a-d89c18faf0dc
         method: DELETE
       response:
         proto: HTTP/2.0
@@ -131,7 +131,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 31.590167ms
+        duration: 40.703625ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -148,7 +148,7 @@ interactions:
         headers:
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/unstable/cloudinventoryservice/syncconfigs/3526615b-4d65-4d9b-947a-d89c18faf0dc
+        url: https://api.datadoghq.com/api/v2/cloudinventoryservice/syncconfigs/3526615b-4d65-4d9b-947a-d89c18faf0dc
         method: GET
       response:
         proto: HTTP/2.0
@@ -164,4 +164,4 @@ interactions:
                 - application/vnd.api+json
         status: 404 Not Found
         code: 404
-        duration: 65.854625ms
+        duration: 83.432167ms
