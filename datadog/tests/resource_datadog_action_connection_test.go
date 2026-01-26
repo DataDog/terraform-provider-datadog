@@ -46,6 +46,9 @@ func TestAccDatadogActionConnectionResource_AWS_AssumeRole(t *testing.T) {
 }
 
 func TestAccDatadogActionConnectionResource_HTTP_TokenAuth(t *testing.T) {
+	if !isReplaying() {
+		t.Skip("This test only supports replaying - requires actions API access permission on API key")
+	}
 	t.Parallel()
 
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
