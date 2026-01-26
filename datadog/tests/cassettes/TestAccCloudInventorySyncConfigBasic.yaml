@@ -9,7 +9,7 @@ interactions:
         content_length: 225
         transfer_encoding: []
         trailer: {}
-        host: api.datadoghq.com
+        host: api.datad0g.com
         remote_addr: ""
         request_uri: ""
         body: |
@@ -18,7 +18,7 @@ interactions:
         headers:
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/cloudinventoryservice/syncconfigs
+        url: https://api.datad0g.com/api/v2/cloudinventoryservice/syncconfigs
         method: PUT
       response:
         proto: HTTP/2.0
@@ -28,13 +28,13 @@ interactions:
         trailer: {}
         content_length: 76
         uncompressed: false
-        body: '{"data":{"id":"3526615b-4d65-4d9b-947a-d89c18faf0dc","type":"sync_configs"}}'
+        body: '{"data":{"id":"0ee6710b-0e8a-4980-affc-4991531c91ad","type":"sync_configs"}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 109.101708ms
+        duration: 114.386209ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -43,7 +43,7 @@ interactions:
         content_length: 0
         transfer_encoding: []
         trailer: {}
-        host: api.datadoghq.com
+        host: api.datad0g.com
         remote_addr: ""
         request_uri: ""
         body: ""
@@ -51,7 +51,7 @@ interactions:
         headers:
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/cloudinventoryservice/syncconfigs/3526615b-4d65-4d9b-947a-d89c18faf0dc
+        url: https://api.datad0g.com/api/v2/cloudinventoryservice/syncconfigs/0ee6710b-0e8a-4980-affc-4991531c91ad
         method: GET
       response:
         proto: HTTP/2.0
@@ -61,13 +61,13 @@ interactions:
         trailer: {}
         content_length: 253
         uncompressed: false
-        body: '{"data":{"id":"3526615b-4d65-4d9b-947a-d89c18faf0dc","type":"sync_configs","attributes":{"aws_account_id":"123456789012","aws_bucket_name":"test-inventory-bucket","aws_region":"us-east-1","cloud_provider":"aws","error":"SUCCESS","prefix":"inventory/"}}}'
+        body: '{"data":{"id":"0ee6710b-0e8a-4980-affc-4991531c91ad","type":"sync_configs","attributes":{"aws_account_id":"123456789012","aws_bucket_name":"test-inventory-bucket","aws_region":"us-east-1","cloud_provider":"aws","error":"SUCCESS","prefix":"inventory/"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 121.08825ms
+        duration: 105.799458ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -76,7 +76,7 @@ interactions:
         content_length: 0
         transfer_encoding: []
         trailer: {}
-        host: api.datadoghq.com
+        host: api.datad0g.com
         remote_addr: ""
         request_uri: ""
         body: ""
@@ -84,7 +84,7 @@ interactions:
         headers:
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/cloudinventoryservice/syncconfigs/3526615b-4d65-4d9b-947a-d89c18faf0dc
+        url: https://api.datad0g.com/api/v2/cloudinventoryservice/syncconfigs/0ee6710b-0e8a-4980-affc-4991531c91ad
         method: GET
       response:
         proto: HTTP/2.0
@@ -94,13 +94,13 @@ interactions:
         trailer: {}
         content_length: 253
         uncompressed: false
-        body: '{"data":{"id":"3526615b-4d65-4d9b-947a-d89c18faf0dc","type":"sync_configs","attributes":{"aws_account_id":"123456789012","aws_bucket_name":"test-inventory-bucket","aws_region":"us-east-1","cloud_provider":"aws","error":"SUCCESS","prefix":"inventory/"}}}'
+        body: '{"data":{"id":"0ee6710b-0e8a-4980-affc-4991531c91ad","type":"sync_configs","attributes":{"aws_account_id":"123456789012","aws_bucket_name":"test-inventory-bucket","aws_region":"us-east-1","cloud_provider":"aws","error":"SUCCESS","prefix":"inventory/"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 59.8885ms
+        duration: 116.674625ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -109,7 +109,7 @@ interactions:
         content_length: 0
         transfer_encoding: []
         trailer: {}
-        host: api.datadoghq.com
+        host: api.datad0g.com
         remote_addr: ""
         request_uri: ""
         body: ""
@@ -117,7 +117,7 @@ interactions:
         headers:
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/cloudinventoryservice/syncconfigs/3526615b-4d65-4d9b-947a-d89c18faf0dc
+        url: https://api.datad0g.com/api/v2/cloudinventoryservice/syncconfigs/0ee6710b-0e8a-4980-affc-4991531c91ad
         method: DELETE
       response:
         proto: HTTP/2.0
@@ -131,7 +131,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 31.590167ms
+        duration: 75.105ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -140,7 +140,7 @@ interactions:
         content_length: 0
         transfer_encoding: []
         trailer: {}
-        host: api.datadoghq.com
+        host: api.datad0g.com
         remote_addr: ""
         request_uri: ""
         body: ""
@@ -148,7 +148,7 @@ interactions:
         headers:
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/cloudinventoryservice/syncconfigs/3526615b-4d65-4d9b-947a-d89c18faf0dc
+        url: https://api.datad0g.com/api/v2/cloudinventoryservice/syncconfigs/0ee6710b-0e8a-4980-affc-4991531c91ad
         method: GET
       response:
         proto: HTTP/2.0
@@ -158,10 +158,10 @@ interactions:
         trailer: {}
         content_length: 112
         uncompressed: false
-        body: '{"errors":[{"title":"Not Found","detail":"sync config with ID 3526615b-4d65-4d9b-947a-d89c18faf0dc not found"}]}'
+        body: '{"errors":[{"title":"Not Found","detail":"sync config with ID 0ee6710b-0e8a-4980-affc-4991531c91ad not found"}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 404 Not Found
         code: 404
-        duration: 65.854625ms
+        duration: 147.968834ms
