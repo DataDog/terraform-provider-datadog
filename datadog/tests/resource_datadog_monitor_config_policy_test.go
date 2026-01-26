@@ -15,8 +15,11 @@ import (
 
 func TestAccDatadogMonitorConfigPolicy_Basic(t *testing.T) {
 	t.Parallel()
-	_, accProviders := testAccProviders(context.Background(), t)
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
+	uniqueName := uniqueEntityName(ctx, t)
+	tagKey := "tagkey" + uniqueName[len(uniqueName)-8:]           // Use suffix for unique tag key
+	tagKeyUpdated := "tagkeyupd" + uniqueName[len(uniqueName)-8:] // Use suffix for unique updated tag key
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:          func() { testAccPreCheck(t) },
@@ -24,12 +27,12 @@ func TestAccDatadogMonitorConfigPolicy_Basic(t *testing.T) {
 		CheckDestroy:      testAccCheckDatadogMonitorConfigPolicyDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogMonitorConfigPolicyConfig("test", "tagKey"),
-				Check:  createTestCheckFunc(accProvider, "tagKey"),
+				Config: testAccCheckDatadogMonitorConfigPolicyConfig("test", tagKey),
+				Check:  createTestCheckFunc(accProvider, tagKey),
 			},
 			{
-				Config: testAccCheckDatadogMonitorConfigPolicyConfig("test", "tagKeyUpdated"),
-				Check:  createTestCheckFunc(accProvider, "tagKeyUpdated"),
+				Config: testAccCheckDatadogMonitorConfigPolicyConfig("test", tagKeyUpdated),
+				Check:  createTestCheckFunc(accProvider, tagKeyUpdated),
 			},
 		},
 	})
