@@ -4165,7 +4165,7 @@ func TestAccDatadogObservabilityPipeline_socketSource_framingValidation(t *testi
 	_, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
 				Config: `
