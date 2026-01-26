@@ -14,6 +14,9 @@ import (
 )
 
 func TestAccDatadogAgentlessScanningAwsScanOptions_Basic(t *testing.T) {
+	if !isReplaying() {
+		t.Skip("This test only supports replaying - requires AWS account integrated with agentless scanning")
+	}
 	t.Parallel()
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	accountID := "123456789012" // Test AWS account ID
@@ -57,6 +60,9 @@ func TestAccDatadogAgentlessScanningAwsScanOptions_InvalidAccountID(t *testing.T
 }
 
 func TestAccDatadogAgentlessScanningAwsScanOptions_Update(t *testing.T) {
+	if !isReplaying() {
+		t.Skip("This test only supports replaying - requires AWS account integrated with agentless scanning")
+	}
 	t.Parallel()
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	accountID := "123456789012" // Test AWS account ID
@@ -89,6 +95,9 @@ func TestAccDatadogAgentlessScanningAwsScanOptions_Update(t *testing.T) {
 }
 
 func TestAccDatadogAgentlessScanningAwsScanOptions_Import(t *testing.T) {
+	if !isReplaying() {
+		t.Skip("This test only supports replaying - requires AWS account integrated with agentless scanning")
+	}
 	t.Parallel()
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	accountID := "123456789012" // Test AWS account ID

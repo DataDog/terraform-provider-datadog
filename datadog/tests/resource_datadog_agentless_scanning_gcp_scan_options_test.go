@@ -55,6 +55,9 @@ func TestAccDatadogAgentlessScanningGcpScanOptions_InvalidProjectID(t *testing.T
 }
 
 func TestAccDatadogAgentlessScanningGcpScanOptions_Update(t *testing.T) {
+	if !isReplaying() {
+		t.Skip("This test only supports replaying - requires GCP project integrated with agentless scanning")
+	}
 	t.Parallel()
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	projectID := "test-project" // Test GCP project ID

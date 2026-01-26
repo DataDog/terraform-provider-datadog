@@ -14,6 +14,9 @@ import (
 )
 
 func TestAccDatadogIntegrationAWSExternalIDDatasource(t *testing.T) {
+	if !isReplaying() {
+		t.Skip("This test only supports replaying - requires AWS integration configured")
+	}
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
 	resource.Test(t, resource.TestCase{
