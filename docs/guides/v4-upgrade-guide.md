@@ -81,6 +81,45 @@ Brief description of the breaking change.
 ================================================================================
 -->
 
+### Removed import support for `datadog_application_key`
+
+Import functionality has been removed for the `datadog_application_key` resource. This was previously deprecated with a warning.
+
+Application keys contain sensitive credentials that cannot be retrieved after creation. When you import an existing application key, the `key` attribute cannot be populated from the API, which leads to state inconsistencies and potential security issues.
+
+**Note:** If your organization has [One-Time Read mode](https://docs.datadoghq.com/account_management/api-app-keys/#one-time-read-mode) enabled for Application Keys, then no action is needed to migrate for this resource because import is already unavailable.
+
+**Before (v3.x):**
+
+```shell
+# Import command
+terraform import datadog_application_key.foo 11111111-2222-3333-4444-555555555555
+```
+
+```terraform
+# Import block (Terraform 1.5+)
+import {
+  to = datadog_application_key.foo
+  id = "11111111-2222-3333-4444-555555555555"
+}
+```
+
+**After (v4.0.0):**
+
+Import is no longer supported. Attempting to import will result in:
+
+```
+Error: Resource Import Not Implemented
+
+This resource does not support import.
+```
+
+**Migration steps:**
+
+1. If you have `import` blocks for `datadog_application_key` resources, ensure they have been applied before upgrading, then remove the import blocks from your configuration.
+2. Previously imported application keys continue to work after upgrading. No action is required for keys already in your Terraform state.
+3. For new application keys, use the `datadog_application_key` resource to create them directly and securely store the key values using a secret management system.
+
 ### Removed `locked` on `datadog_monitor`
 
 Removed `locked` and changed the default behavior of `restricted_roles` on `datadog_monitor`. These changes are intended 
