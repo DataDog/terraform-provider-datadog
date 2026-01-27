@@ -6,12 +6,11 @@ import (
 	"regexp"
 	"testing"
 
+	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
-
-	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
 
 func TestAccDatadogObservabilityPipelineImport(t *testing.T) {
@@ -5736,4 +5735,125 @@ resource "datadog_observability_pipeline" "elasticsearch_datastream" {
 			},
 		},
 	})
+}
+
+func TestAccDatadogObservabilityPipeline_datadogLogsDestination(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	resourceName := "datadog_observability_pipeline.datadog_logs_routes_test"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccObservabilityPipelineDatadogLogsDestinationMinimal(),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "datadog logs routes pipeline"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.id", "destination-logs-routes"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "group-logs-routes"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.datadog_logs.#", "1"),
+					resource.TestCheckNoResourceAttr(resourceName, "config.0.destination.0.datadog_logs.0.routes.#"),
+				),
+			},
+			{
+				Config: testAccObservabilityPipelineDatadogLogsDestinationFull(),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(resourceName, "name", "datadog logs routes pipeline updated"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "group-logs-routes"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.datadog_logs.#", "1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.datadog_logs.0.routes.#", "1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.datadog_logs.0.routes.0.route_id", "route-us1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.datadog_logs.0.routes.0.include", "service:api"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.datadog_logs.0.routes.0.site", "us1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.datadog_logs.0.routes.0.api_key_key", "API_KEY_IDENT"),
+				),
+			},
+		},
+	})
+}
+
+func testAccObservabilityPipelineDatadogLogsDestinationMinimal() string {
+	return `
+resource "datadog_observability_pipeline" "datadog_logs_routes_test" {
+  name = "datadog logs routes pipeline"
+
+  config {
+    source {
+      id = "source-logs-routes"
+      datadog_agent {}
+    }
+
+    processor_group {
+      id      = "group-logs-routes"
+      enabled = true
+      include = "*"
+      inputs  = ["source-logs-routes"]
+
+      processor {
+        id      = "processor-logs-routes"
+        enabled = true
+        include = "*"
+
+        parse_json {
+          field = "message"
+        }
+      }
+    }
+
+    destination {
+      id     = "destination-logs-routes"
+      inputs = ["group-logs-routes"]
+
+      datadog_logs {}
+    }
+  }
+}
+`
+}
+
+func testAccObservabilityPipelineDatadogLogsDestinationFull() string {
+	return `
+resource "datadog_observability_pipeline" "datadog_logs_routes_test" {
+  name = "datadog logs routes pipeline updated"
+
+  config {
+    source {
+      id = "source-logs-routes"
+      datadog_agent {}
+    }
+
+    processor_group {
+      id      = "group-logs-routes"
+      enabled = true
+      include = "*"
+      inputs  = ["source-logs-routes"]
+
+      processor {
+        id      = "processor-logs-routes"
+        enabled = true
+        include = "*"
+
+        parse_json {
+          field = "message"
+        }
+      }
+    }
+
+    destination {
+      id     = "destination-logs-routes"
+      inputs = ["group-logs-routes"]
+
+      datadog_logs {
+        routes {
+          route_id   = "route-us1"
+          include    = "service:api"
+          site       = "us1"
+          api_key_key = "API_KEY_IDENT"
+        }
+      }
+    }
+  }
+}
+`
 }

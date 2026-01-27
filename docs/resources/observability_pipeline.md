@@ -284,6 +284,21 @@ Optional:
 <a id="nestedblock--config--destination--datadog_logs"></a>
 ### Nested Schema for `config.destination.datadog_logs`
 
+Optional:
+
+- `routes` (Block List) A list of routing rules that forward matching logs to Datadog using dedicated API keys. (see [below for nested schema](#nestedblock--config--destination--datadog_logs--routes))
+
+<a id="nestedblock--config--destination--datadog_logs--routes"></a>
+### Nested Schema for `config.destination.datadog_logs.routes`
+
+Required:
+
+- `api_key_key` (String) Name of the environment variable or secret that stores the Datadog API key used by this route.
+- `include` (String) A Datadog search query that determines which logs are forwarded using this route.
+- `route_id` (String) Unique identifier for this route within the destination.
+- `site` (String) Datadog site where matching logs are sent (for example, `us1`).
+
+
 
 <a id="nestedblock--config--destination--datadog_metrics"></a>
 ### Nested Schema for `config.destination.datadog_metrics`
