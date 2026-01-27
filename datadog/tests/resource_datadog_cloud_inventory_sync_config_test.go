@@ -13,7 +13,7 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
-const syncConfigByIDPath = "/api/unstable/cloudinventoryservice/syncconfigs/%s"
+const syncConfigByIDPath = "/api/v2/cloudinventoryservice/syncconfigs/%s"
 
 func TestAccCloudInventorySyncConfigBasic(t *testing.T) {
 	t.Parallel()
