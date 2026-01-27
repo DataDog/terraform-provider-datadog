@@ -67,7 +67,7 @@ func IntegrationAwsEventBridgeDestroyHelper(auth context.Context, s *terraform.S
 				continue
 			}
 
-			_, httpResp, err := apiInstances.GetAWSIntegrationApiV1().ListAWSEventBridgeSources(auth)
+			_, httpResp, err := apiInstances.GetAWSIntegrationApiV2().ListAWSEventBridgeSources(auth)
 			if err != nil {
 				if httpResp != nil && httpResp.StatusCode == 404 {
 					return nil
@@ -99,7 +99,7 @@ func integrationAwsEventBridgeExistsHelper(auth context.Context, s *terraform.St
 			continue
 		}
 
-		_, httpResp, err := apiInstances.GetAWSIntegrationApiV1().ListAWSEventBridgeSources(auth)
+		_, httpResp, err := apiInstances.GetAWSIntegrationApiV2().ListAWSEventBridgeSources(auth)
 		if err != nil {
 			return utils.TranslateClientError(err, httpResp, "error retrieving IntegrationAwsEventBridge")
 		}
