@@ -81,6 +81,16 @@ Brief description of the breaking change.
 ================================================================================
 -->
 
+### Removed `datadog_application_key` data source
+
+The `datadog_application_key` data source has been removed. This data source was deprecated because when One-Time Read Only mode is enabled for Application Keys, the key secret is no longer available except when the key is created.
+
+**Note:** If your organization has One-Time Read Only mode enabled for Application Keys, then no action is needed to migrate for this data source because it is already unavailable.
+
+**Migration steps:**
+1. Store existing application key values in a secure secret manager or use Terraform to create and manage them as resources
+2. Remove any `data "datadog_application_key"` blocks from your configuration
+
 ### Removed `locked` on `datadog_monitor`
 
 Removed `locked` and changed the default behavior of `restricted_roles` on `datadog_monitor`. These changes are intended 
