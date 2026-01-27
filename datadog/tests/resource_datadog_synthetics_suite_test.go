@@ -20,7 +20,7 @@ func TestAccDatadogSyntheticsSuite_importBasic(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testSyntheticsSuiteIsDestroyed(frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -42,7 +42,7 @@ func TestAccDatadogSyntheticsSuite_Basic(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testSyntheticsSuiteIsDestroyed(frameworkProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsSuiteStep(ctx, frameworkProvider, t),
@@ -57,7 +57,7 @@ func TestAccDatadogSyntheticsSuite_Updated(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testSyntheticsSuiteIsDestroyed(frameworkProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsSuiteStep(ctx, frameworkProvider, t),
@@ -73,7 +73,7 @@ func TestAccDatadogSyntheticsSuite_WithTests(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testSyntheticsSuiteIsDestroyed(frameworkProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsSuiteWithTestsStep(ctx, frameworkProvider, t),
