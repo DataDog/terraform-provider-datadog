@@ -373,6 +373,14 @@ type googlePubSubDestinationModel struct {
 }
 
 type datadogLogsDestinationModel struct {
+	Routes []datadogLogsDestinationRouteModel `tfsdk:"routes"`
+}
+
+type datadogLogsDestinationRouteModel struct {
+	RouteId   types.String `tfsdk:"route_id"`
+	Include   types.String `tfsdk:"include"`
+	Site      types.String `tfsdk:"site"`
+	ApiKeyKey types.String `tfsdk:"api_key_key"`
 }
 
 type parseGrokProcessorModel struct {
@@ -1899,8 +1907,37 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 								},
 								Blocks: map[string]schema.Block{
 									"datadog_logs": schema.ListNestedBlock{
-										Description:  "The `datadog_logs` destination forwards logs to Datadog Log Management.",
-										NestedObject: schema.NestedBlockObject{},
+										Description: "The `datadog_logs` destination forwards logs to Datadog Log Management.",
+										NestedObject: schema.NestedBlockObject{
+											Blocks: map[string]schema.Block{
+												"routes": schema.ListNestedBlock{
+													Description: "A list of routing rules that forward matching logs to Datadog using dedicated API keys.",
+													NestedObject: schema.NestedBlockObject{
+														Attributes: map[string]schema.Attribute{
+															"route_id": schema.StringAttribute{
+																Required:    true,
+																Description: "Unique identifier for this route within the destination.",
+															},
+															"include": schema.StringAttribute{
+																Required:    true,
+																Description: "A Datadog search query that determines which logs are forwarded using this route.",
+															},
+															"site": schema.StringAttribute{
+																Required:    true,
+																Description: "Datadog site where matching logs are sent (for example, `us1`).",
+															},
+															"api_key_key": schema.StringAttribute{
+																Required:    true,
+																Description: "Name of the environment variable or secret that stores the Datadog API key used by this route.",
+															},
+														},
+													},
+													Validators: []validator.List{
+														listvalidator.SizeAtMost(100),
+													},
+												},
+											},
+										},
 									},
 									"datadog_metrics": schema.ListNestedBlock{
 										Description:  "The `datadog_metrics` destination forwards metrics to Datadog.",
@@ -4369,7 +4406,22 @@ func flattenDatadogLogsDestination(ctx context.Context, src *datadogV2.Observabi
 	if src == nil {
 		return nil
 	}
-	return &datadogLogsDestinationModel{}
+	out := &datadogLogsDestinationModel{}
+
+	if routes := src.GetRoutes(); len(routes) > 0 {
+		out.Routes = make([]datadogLogsDestinationRouteModel, 0, len(routes))
+		for _, route := range routes {
+			routeModel := datadogLogsDestinationRouteModel{}
+
+			routeModel.RouteId = types.StringValue(route.GetRouteId())
+			routeModel.Include = types.StringValue(route.GetInclude())
+			routeModel.Site = types.StringValue(route.GetSite())
+			routeModel.ApiKeyKey = types.StringValue(route.GetApiKeyKey())
+			out.Routes = append(out.Routes, routeModel)
+		}
+	}
+
+	return out
 }
 
 func expandDatadogLogsDestination(ctx context.Context, dest *destinationModel, src *datadogLogsDestinationModel) datadogV2.ObservabilityPipelineConfigDestinationItem {
@@ -4378,6 +4430,21 @@ func expandDatadogLogsDestination(ctx context.Context, dest *destinationModel, s
 	var inputs []string
 	dest.Inputs.ElementsAs(ctx, &inputs, false)
 	d.SetInputs(inputs)
+
+	if len(src.Routes) > 0 {
+		routes := make([]datadogV2.ObservabilityPipelineDatadogLogsDestinationRoute, 0, len(src.Routes))
+		for _, route := range src.Routes {
+			apiRoute := datadogV2.ObservabilityPipelineDatadogLogsDestinationRoute{}
+			apiRoute.SetRouteId(route.RouteId.ValueString())
+			apiRoute.SetInclude(route.Include.ValueString())
+			apiRoute.SetSite(route.Site.ValueString())
+			apiRoute.SetApiKeyKey(route.ApiKeyKey.ValueString())
+			routes = append(routes, apiRoute)
+		}
+
+		d.SetRoutes(routes)
+	}
+
 	return datadogV2.ObservabilityPipelineConfigDestinationItem{
 		ObservabilityPipelineDatadogLogsDestination: d,
 	}
