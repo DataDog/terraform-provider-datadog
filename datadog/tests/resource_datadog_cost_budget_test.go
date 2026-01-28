@@ -542,7 +542,7 @@ resource "datadog_cost_budget" "foo" {
 }`,
 			expectError: `tag_key\s+must be one of the values inside the tags array`,
 		},
-		// Validate entries exist
+		// Validate entries or budget_line exist
 		{
 			name: "NoEntries",
 			config: `
@@ -552,7 +552,7 @@ resource "datadog_cost_budget" "foo" {
   start_month = 202501
   end_month = 202501
 }`,
-			expectError: `entries\s+are required`,
+			expectError: `Either 'entries' or 'budget_line' must be specified`,
 		},
 		// Validate all tag combinations have entries for all months
 		{
