@@ -1,3 +1,28 @@
+## 3.86.0 (January 28, 2026)
+
+### BUGFIXES
+* [datadog_observability_pipeline] Improve framing validation for socket source and destination by @vladimir-dd in https://github.com/DataDog/terraform-provider-datadog/pull/3448
+* [datadog_observability_pipeline] Fix Google SecOps destination by @vladimir-dd in https://github.com/DataDog/terraform-provider-datadog/pull/3451
+### IMPROVEMENTS
+* [datadog_synthetics_suite] Create Synthetics suite resource by @romainberger in https://github.com/DataDog/terraform-provider-datadog/pull/3447
+* [datadog_cloud_inventory_sync_config] move to v2 apis from unstable endpoints | STGMON-352 by @denozor-dog in https://github.com/DataDog/terraform-provider-datadog/pull/3453
+* [datadog_rum_retention_filter] Support decimal sample_rate values by @davis-rule in https://github.com/DataDog/terraform-provider-datadog/pull/3367
+* [datadog_cost_budget] Add plan-time validation for cost budget resources by @zeinageb in https://github.com/DataDog/terraform-provider-datadog/pull/3457
+### FEATURES
+* [datadog_datastore] new datastore TF provider and datastore item TF provider by @ameesha in https://github.com/DataDog/terraform-provider-datadog/pull/3388
+* [datadog_monitor] Add data-quality alert monitor type support by @pkalmakis in https://github.com/DataDog/terraform-provider-datadog/pull/3415
+* [datadog_security_monitoring_critical_asset] Add terraform provider for critical assets by @sabraham2 in https://github.com/DataDog/terraform-provider-datadog/pull/3431
+* [datadog_observability_pipeline] Add support for multiple datadog org logs destination by @emilychendd in https://github.com/DataDog/terraform-provider-datadog/pull/3454
+* [datadog_observability_pipeline] Expose use_legacy_search_syntax flag by @vladimir-dd in https://github.com/DataDog/terraform-provider-datadog/pull/3465
+
+## New Contributors
+* @ameesha made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3388
+* @pkalmakis made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3415
+* @davis-rule made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3367
+* @emilychendd made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3454
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.85.0...v3.86.0
+
 ## 3.85.0 (January 21, 2026)
 
 ### BUGFIXES
