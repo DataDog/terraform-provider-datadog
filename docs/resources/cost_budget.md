@@ -143,12 +143,54 @@ resource "datadog_cost_budget" "hierarchical" {
 
 ### Optional
 
-- `entries` (Block List) The entries of the budget. **Note:** You must provide entries for all months in the budget period. For hierarchical budgets, each unique tag combination must have entries for all months. (see [below for nested schema](#nestedblock--entries))
+- `budget_line` (Block Set) Budget lines that group monthly amounts by tag combination. Use this instead of `entries` for a more convenient schema. **Note:** The order of budget_line blocks does not matter. (see [below for nested schema](#nestedblock--budget_line))
+- `entries` (Block List, Deprecated) The entries of the budget. **Note:** You must provide entries for all months in the budget period. For hierarchical budgets, each unique tag combination must have entries for all months. (see [below for nested schema](#nestedblock--entries))
 - `id` (String) The ID of the budget.
 
 ### Read-Only
 
 - `total_amount` (Number) The sum of all budget entries' amounts.
+
+<a id="nestedblock--budget_line"></a>
+### Nested Schema for `budget_line`
+
+Required:
+
+- `amounts` (Map of Number) Map of month (YYYYMM) to budget amount. Example: {"202601": 1000.0, "202602": 1200.0}
+
+Optional:
+
+- `child_tag_filters` (Block List) Child tag filters for hierarchical budgets. **Note:** Must be used with parent_tag_filters. Cannot be used with tag_filters. (see [below for nested schema](#nestedblock--budget_line--child_tag_filters))
+- `parent_tag_filters` (Block List) Parent tag filters for hierarchical budgets. **Note:** Must be used with child_tag_filters. Cannot be used with tag_filters. (see [below for nested schema](#nestedblock--budget_line--parent_tag_filters))
+- `tag_filters` (Block List) Tag filters for non-hierarchical budgets. **Note:** Cannot be used with parent_tag_filters/child_tag_filters. (see [below for nested schema](#nestedblock--budget_line--tag_filters))
+
+<a id="nestedblock--budget_line--child_tag_filters"></a>
+### Nested Schema for `budget_line.child_tag_filters`
+
+Required:
+
+- `tag_key` (String) Must be one of the tags from the `metrics_query`.
+- `tag_value` (String)
+
+
+<a id="nestedblock--budget_line--parent_tag_filters"></a>
+### Nested Schema for `budget_line.parent_tag_filters`
+
+Required:
+
+- `tag_key` (String) Must be one of the tags from the `metrics_query`.
+- `tag_value` (String)
+
+
+<a id="nestedblock--budget_line--tag_filters"></a>
+### Nested Schema for `budget_line.tag_filters`
+
+Required:
+
+- `tag_key` (String) Must be one of the tags from the `metrics_query`.
+- `tag_value` (String)
+
+
 
 <a id="nestedblock--entries"></a>
 ### Nested Schema for `entries`
