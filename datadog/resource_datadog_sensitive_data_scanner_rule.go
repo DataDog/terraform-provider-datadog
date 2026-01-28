@@ -80,6 +80,7 @@ func resourceDatadogSensitiveDataScannerRule() *schema.Resource {
 				"included_keyword_configuration": {
 					Type:        schema.TypeList,
 					Optional:    true,
+					Computed:    true,
 					MaxItems:    1,
 					Description: "Object defining a set of keywords and a number of characters that help reduce noise. You can provide a list of keywords you would like to check within a defined proximity of the matching pattern. If any of the keywords are found within the proximity check then the match is kept. If none are found, the match is discarded. If the rule has the `standard_pattern_id` field, then discarding this field will apply the recommended keywords. Setting the `create_before_destroy` lifecycle Meta-argument to `true` is highly recommended if modifying this field to avoid unexpectedly disabling Sensitive Data Scanner groups.",
 					Elem: &schema.Resource{
