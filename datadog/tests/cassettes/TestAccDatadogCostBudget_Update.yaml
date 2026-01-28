@@ -13,109 +13,79 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"end_month":202412,"entries":[{"amount":1000,"month":202401},{"amount":1000,"month":202402},{"amount":1000,"month":202403},{"amount":1000,"month":202404},{"amount":1000,"month":202405},{"amount":1000,"month":202406},{"amount":1000,"month":202407},{"amount":1000,"month":202408},{"amount":1000,"month":202409},{"amount":1000,"month":202410},{"amount":1000,"month":202411},{"amount":1000,"month":202412}],"metrics_query":"sum:aws.cost.amortized{*}","name":"tf-TestAccDatadogCostBudget_Update-local-1765804913","start_month":202401},"type":"budget"}}
+            {"data":{"attributes":{"end_month":202412,"entries":[{"amount":1000,"month":202401},{"amount":1000,"month":202402},{"amount":1000,"month":202403},{"amount":1000,"month":202404},{"amount":1000,"month":202405},{"amount":1000,"month":202406},{"amount":1000,"month":202407},{"amount":1000,"month":202408},{"amount":1000,"month":202409},{"amount":1000,"month":202410},{"amount":1000,"month":202411},{"amount":1000,"month":202412}],"metrics_query":"sum:aws.cost.amortized{*}","name":"tf-TestAccDatadogCostBudget_Update-local-1769431101","start_month":202401},"type":"budget"}}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/cost/budget
-        method: PUT
+        url: https://api.datadoghq.com/api/v2/cost/budget/validate
+        method: POST
       response:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 1013
+        content_length: 90
         uncompressed: false
-        body: '{"data":{"id":"ffa1c8a5-922b-46d8-bf97-9073665236ff","type":"budget","attributes":{"created_at":1765804915886,"created_by":"cb0fe8fe-673a-4678-8ff5-7936a9af21ba","end_month":202412,"entries":[{"month":202401,"amount":1000,"tag_filters":[]},{"month":202402,"amount":1000,"tag_filters":[]},{"month":202403,"amount":1000,"tag_filters":[]},{"month":202404,"amount":1000,"tag_filters":[]},{"month":202405,"amount":1000,"tag_filters":[]},{"month":202406,"amount":1000,"tag_filters":[]},{"month":202407,"amount":1000,"tag_filters":[]},{"month":202408,"amount":1000,"tag_filters":[]},{"month":202409,"amount":1000,"tag_filters":[]},{"month":202410,"amount":1000,"tag_filters":[]},{"month":202411,"amount":1000,"tag_filters":[]},{"month":202412,"amount":1000,"tag_filters":[]}],"metrics_query":"sum:aws.cost.amortized{*}","name":"tf-TestAccDatadogCostBudget_Update-local-1765804913","org_id":321813,"start_month":202401,"total_amount":12000,"updated_at":1765804915886,"updated_by":"cb0fe8fe-673a-4678-8ff5-7936a9af21ba"}}}'
+        body: '{"data":{"id":"budget_validation","type":"budget_validation","attributes":{"valid":true}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 142.158875ms
+        duration: 99.047792ms
     - id: 1
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 0
-        transfer_encoding: []
-        trailer: {}
-        host: api.datadoghq.com
-        remote_addr: ""
-        request_uri: ""
-        body: ""
-        form: {}
-        headers:
-            Accept:
-                - application/json
-        url: https://api.datadoghq.com/api/v2/cost/budget/ffa1c8a5-922b-46d8-bf97-9073665236ff
-        method: GET
-      response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        transfer_encoding: []
-        trailer: {}
-        content_length: 1013
-        uncompressed: false
-        body: '{"data":{"id":"ffa1c8a5-922b-46d8-bf97-9073665236ff","type":"budget","attributes":{"created_at":1765804915886,"created_by":"cb0fe8fe-673a-4678-8ff5-7936a9af21ba","end_month":202412,"entries":[{"month":202401,"amount":1000,"tag_filters":[]},{"month":202402,"amount":1000,"tag_filters":[]},{"month":202403,"amount":1000,"tag_filters":[]},{"month":202404,"amount":1000,"tag_filters":[]},{"month":202405,"amount":1000,"tag_filters":[]},{"month":202406,"amount":1000,"tag_filters":[]},{"month":202407,"amount":1000,"tag_filters":[]},{"month":202408,"amount":1000,"tag_filters":[]},{"month":202409,"amount":1000,"tag_filters":[]},{"month":202410,"amount":1000,"tag_filters":[]},{"month":202411,"amount":1000,"tag_filters":[]},{"month":202412,"amount":1000,"tag_filters":[]}],"metrics_query":"sum:aws.cost.amortized{*}","name":"tf-TestAccDatadogCostBudget_Update-local-1765804913","org_id":321813,"start_month":202401,"total_amount":12000,"updated_at":1765804915886,"updated_by":"cb0fe8fe-673a-4678-8ff5-7936a9af21ba"}}}'
-        headers:
-            Content-Type:
-                - application/vnd.api+json
-        status: 200 OK
-        code: 200
-        duration: 149.341791ms
-    - id: 2
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 0
-        transfer_encoding: []
-        trailer: {}
-        host: api.datadoghq.com
-        remote_addr: ""
-        request_uri: ""
-        body: ""
-        form: {}
-        headers:
-            Accept:
-                - application/json
-        url: https://api.datadoghq.com/api/v2/cost/budget/ffa1c8a5-922b-46d8-bf97-9073665236ff
-        method: GET
-      response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        transfer_encoding: []
-        trailer: {}
-        content_length: 1013
-        uncompressed: false
-        body: '{"data":{"id":"ffa1c8a5-922b-46d8-bf97-9073665236ff","type":"budget","attributes":{"created_at":1765804915886,"created_by":"cb0fe8fe-673a-4678-8ff5-7936a9af21ba","end_month":202412,"entries":[{"month":202401,"amount":1000,"tag_filters":[]},{"month":202402,"amount":1000,"tag_filters":[]},{"month":202403,"amount":1000,"tag_filters":[]},{"month":202404,"amount":1000,"tag_filters":[]},{"month":202405,"amount":1000,"tag_filters":[]},{"month":202406,"amount":1000,"tag_filters":[]},{"month":202407,"amount":1000,"tag_filters":[]},{"month":202408,"amount":1000,"tag_filters":[]},{"month":202409,"amount":1000,"tag_filters":[]},{"month":202410,"amount":1000,"tag_filters":[]},{"month":202411,"amount":1000,"tag_filters":[]},{"month":202412,"amount":1000,"tag_filters":[]}],"metrics_query":"sum:aws.cost.amortized{*}","name":"tf-TestAccDatadogCostBudget_Update-local-1765804913","org_id":321813,"start_month":202401,"total_amount":12000,"updated_at":1765804915886,"updated_by":"cb0fe8fe-673a-4678-8ff5-7936a9af21ba"}}}'
-        headers:
-            Content-Type:
-                - application/vnd.api+json
-        status: 200 OK
-        code: 200
-        duration: 131.835833ms
-    - id: 3
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 623
+        content_length: 571
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"end_month":202412,"entries":[{"amount":2000,"month":202401},{"amount":2000,"month":202402},{"amount":2000,"month":202403},{"amount":2000,"month":202404},{"amount":2000,"month":202405},{"amount":2000,"month":202406},{"amount":2000,"month":202407},{"amount":2000,"month":202408},{"amount":2000,"month":202409},{"amount":2000,"month":202410},{"amount":2000,"month":202411},{"amount":2000,"month":202412}],"metrics_query":"sum:aws.cost.amortized{*}","name":"tf-TestAccDatadogCostBudget_Update-local-1765804913updated!","start_month":202401},"id":"ffa1c8a5-922b-46d8-bf97-9073665236ff","type":"budget"}}
+            {"data":{"attributes":{"end_month":202412,"entries":[{"amount":1000,"month":202401},{"amount":1000,"month":202402},{"amount":1000,"month":202403},{"amount":1000,"month":202404},{"amount":1000,"month":202405},{"amount":1000,"month":202406},{"amount":1000,"month":202407},{"amount":1000,"month":202408},{"amount":1000,"month":202409},{"amount":1000,"month":202410},{"amount":1000,"month":202411},{"amount":1000,"month":202412}],"metrics_query":"sum:aws.cost.amortized{*}","name":"tf-TestAccDatadogCostBudget_Update-local-1769431101","start_month":202401},"type":"budget"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cost/budget/validate
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 90
+        uncompressed: false
+        body: '{"data":{"id":"budget_validation","type":"budget_validation","attributes":{"valid":true}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 104.566541ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 571
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"end_month":202412,"entries":[{"amount":1000,"month":202401},{"amount":1000,"month":202402},{"amount":1000,"month":202403},{"amount":1000,"month":202404},{"amount":1000,"month":202405},{"amount":1000,"month":202406},{"amount":1000,"month":202407},{"amount":1000,"month":202408},{"amount":1000,"month":202409},{"amount":1000,"month":202410},{"amount":1000,"month":202411},{"amount":1000,"month":202412}],"metrics_query":"sum:aws.cost.amortized{*}","name":"tf-TestAccDatadogCostBudget_Update-local-1769431101","start_month":202401},"type":"budget"}}
         form: {}
         headers:
             Accept:
@@ -130,15 +100,51 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 987
+        content_length: 1013
         uncompressed: false
-        body: '{"data":{"id":"ffa1c8a5-922b-46d8-bf97-9073665236ff","type":"budget","attributes":{"created_at":-62135596800000,"created_by":"","end_month":202412,"entries":[{"month":202401,"amount":2000,"tag_filters":[]},{"month":202402,"amount":2000,"tag_filters":[]},{"month":202403,"amount":2000,"tag_filters":[]},{"month":202404,"amount":2000,"tag_filters":[]},{"month":202405,"amount":2000,"tag_filters":[]},{"month":202406,"amount":2000,"tag_filters":[]},{"month":202407,"amount":2000,"tag_filters":[]},{"month":202408,"amount":2000,"tag_filters":[]},{"month":202409,"amount":2000,"tag_filters":[]},{"month":202410,"amount":2000,"tag_filters":[]},{"month":202411,"amount":2000,"tag_filters":[]},{"month":202412,"amount":2000,"tag_filters":[]}],"metrics_query":"sum:aws.cost.amortized{*}","name":"tf-TestAccDatadogCostBudget_Update-local-1765804913updated!","org_id":321813,"start_month":202401,"total_amount":24000,"updated_at":1765804917077,"updated_by":"cb0fe8fe-673a-4678-8ff5-7936a9af21ba"}}}'
+        body: '{"data":{"id":"6ddf9702-b599-48b4-9a0e-2216a8599103","type":"budget","attributes":{"created_at":1769431103022,"created_by":"cb0fe8fe-673a-4678-8ff5-7936a9af21ba","end_month":202412,"entries":[{"month":202401,"amount":1000,"tag_filters":[]},{"month":202402,"amount":1000,"tag_filters":[]},{"month":202403,"amount":1000,"tag_filters":[]},{"month":202404,"amount":1000,"tag_filters":[]},{"month":202405,"amount":1000,"tag_filters":[]},{"month":202406,"amount":1000,"tag_filters":[]},{"month":202407,"amount":1000,"tag_filters":[]},{"month":202408,"amount":1000,"tag_filters":[]},{"month":202409,"amount":1000,"tag_filters":[]},{"month":202410,"amount":1000,"tag_filters":[]},{"month":202411,"amount":1000,"tag_filters":[]},{"month":202412,"amount":1000,"tag_filters":[]}],"metrics_query":"sum:aws.cost.amortized{*}","name":"tf-TestAccDatadogCostBudget_Update-local-1769431101","org_id":321813,"start_month":202401,"total_amount":12000,"updated_at":1769431103022,"updated_by":"cb0fe8fe-673a-4678-8ff5-7936a9af21ba"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 194.102333ms
+        duration: 213.528792ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 615
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"end_month":202412,"entries":[{"amount":1000,"month":202401},{"amount":1000,"month":202402},{"amount":1000,"month":202403},{"amount":1000,"month":202404},{"amount":1000,"month":202405},{"amount":1000,"month":202406},{"amount":1000,"month":202407},{"amount":1000,"month":202408},{"amount":1000,"month":202409},{"amount":1000,"month":202410},{"amount":1000,"month":202411},{"amount":1000,"month":202412}],"metrics_query":"sum:aws.cost.amortized{*}","name":"tf-TestAccDatadogCostBudget_Update-local-1769431101","start_month":202401},"id":"6ddf9702-b599-48b4-9a0e-2216a8599103","type":"budget"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cost/budget/validate
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 90
+        uncompressed: false
+        body: '{"data":{"id":"budget_validation","type":"budget_validation","attributes":{"valid":true}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 99.301625ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -155,7 +161,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/cost/budget/ffa1c8a5-922b-46d8-bf97-9073665236ff
+        url: https://api.datadoghq.com/api/v2/cost/budget/6ddf9702-b599-48b4-9a0e-2216a8599103
         method: GET
       response:
         proto: HTTP/1.1
@@ -163,46 +169,51 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 1021
+        content_length: 1013
         uncompressed: false
-        body: '{"data":{"id":"ffa1c8a5-922b-46d8-bf97-9073665236ff","type":"budget","attributes":{"created_at":1765804915886,"created_by":"cb0fe8fe-673a-4678-8ff5-7936a9af21ba","end_month":202412,"entries":[{"month":202401,"amount":2000,"tag_filters":[]},{"month":202402,"amount":2000,"tag_filters":[]},{"month":202403,"amount":2000,"tag_filters":[]},{"month":202404,"amount":2000,"tag_filters":[]},{"month":202405,"amount":2000,"tag_filters":[]},{"month":202406,"amount":2000,"tag_filters":[]},{"month":202407,"amount":2000,"tag_filters":[]},{"month":202408,"amount":2000,"tag_filters":[]},{"month":202409,"amount":2000,"tag_filters":[]},{"month":202410,"amount":2000,"tag_filters":[]},{"month":202411,"amount":2000,"tag_filters":[]},{"month":202412,"amount":2000,"tag_filters":[]}],"metrics_query":"sum:aws.cost.amortized{*}","name":"tf-TestAccDatadogCostBudget_Update-local-1765804913updated!","org_id":321813,"start_month":202401,"total_amount":24000,"updated_at":1765804917077,"updated_by":"cb0fe8fe-673a-4678-8ff5-7936a9af21ba"}}}'
+        body: '{"data":{"id":"6ddf9702-b599-48b4-9a0e-2216a8599103","type":"budget","attributes":{"created_at":1769431103022,"created_by":"cb0fe8fe-673a-4678-8ff5-7936a9af21ba","end_month":202412,"entries":[{"month":202401,"amount":1000,"tag_filters":[]},{"month":202402,"amount":1000,"tag_filters":[]},{"month":202403,"amount":1000,"tag_filters":[]},{"month":202404,"amount":1000,"tag_filters":[]},{"month":202405,"amount":1000,"tag_filters":[]},{"month":202406,"amount":1000,"tag_filters":[]},{"month":202407,"amount":1000,"tag_filters":[]},{"month":202408,"amount":1000,"tag_filters":[]},{"month":202409,"amount":1000,"tag_filters":[]},{"month":202410,"amount":1000,"tag_filters":[]},{"month":202411,"amount":1000,"tag_filters":[]},{"month":202412,"amount":1000,"tag_filters":[]}],"metrics_query":"sum:aws.cost.amortized{*}","name":"tf-TestAccDatadogCostBudget_Update-local-1769431101","org_id":321813,"start_month":202401,"total_amount":12000,"updated_at":1769431103022,"updated_by":"cb0fe8fe-673a-4678-8ff5-7936a9af21ba"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 133.342917ms
+        duration: 188.523834ms
     - id: 5
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 0
+        content_length: 615
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
-        body: ""
+        body: |
+            {"data":{"attributes":{"end_month":202412,"entries":[{"amount":1000,"month":202401},{"amount":1000,"month":202402},{"amount":1000,"month":202403},{"amount":1000,"month":202404},{"amount":1000,"month":202405},{"amount":1000,"month":202406},{"amount":1000,"month":202407},{"amount":1000,"month":202408},{"amount":1000,"month":202409},{"amount":1000,"month":202410},{"amount":1000,"month":202411},{"amount":1000,"month":202412}],"metrics_query":"sum:aws.cost.amortized{*}","name":"tf-TestAccDatadogCostBudget_Update-local-1769431101","start_month":202401},"id":"6ddf9702-b599-48b4-9a0e-2216a8599103","type":"budget"}}
         form: {}
         headers:
             Accept:
-                - '*/*'
-        url: https://api.datadoghq.com/api/v2/cost/budget/ffa1c8a5-922b-46d8-bf97-9073665236ff
-        method: DELETE
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cost/budget/validate
+        method: POST
       response:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 0
+        content_length: 90
         uncompressed: false
-        body: ""
-        headers: {}
-        status: 204 No Content
-        code: 204
-        duration: 229.343125ms
+        body: '{"data":{"id":"budget_validation","type":"budget_validation","attributes":{"valid":true}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 222.366834ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -219,7 +230,284 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/cost/budget/ffa1c8a5-922b-46d8-bf97-9073665236ff
+        url: https://api.datadoghq.com/api/v2/cost/budget/6ddf9702-b599-48b4-9a0e-2216a8599103
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 1013
+        uncompressed: false
+        body: '{"data":{"id":"6ddf9702-b599-48b4-9a0e-2216a8599103","type":"budget","attributes":{"created_at":1769431103022,"created_by":"cb0fe8fe-673a-4678-8ff5-7936a9af21ba","end_month":202412,"entries":[{"month":202401,"amount":1000,"tag_filters":[]},{"month":202402,"amount":1000,"tag_filters":[]},{"month":202403,"amount":1000,"tag_filters":[]},{"month":202404,"amount":1000,"tag_filters":[]},{"month":202405,"amount":1000,"tag_filters":[]},{"month":202406,"amount":1000,"tag_filters":[]},{"month":202407,"amount":1000,"tag_filters":[]},{"month":202408,"amount":1000,"tag_filters":[]},{"month":202409,"amount":1000,"tag_filters":[]},{"month":202410,"amount":1000,"tag_filters":[]},{"month":202411,"amount":1000,"tag_filters":[]},{"month":202412,"amount":1000,"tag_filters":[]}],"metrics_query":"sum:aws.cost.amortized{*}","name":"tf-TestAccDatadogCostBudget_Update-local-1769431101","org_id":321813,"start_month":202401,"total_amount":12000,"updated_at":1769431103022,"updated_by":"cb0fe8fe-673a-4678-8ff5-7936a9af21ba"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 123.899667ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 579
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"end_month":202412,"entries":[{"amount":2000,"month":202401},{"amount":2000,"month":202402},{"amount":2000,"month":202403},{"amount":2000,"month":202404},{"amount":2000,"month":202405},{"amount":2000,"month":202406},{"amount":2000,"month":202407},{"amount":2000,"month":202408},{"amount":2000,"month":202409},{"amount":2000,"month":202410},{"amount":2000,"month":202411},{"amount":2000,"month":202412}],"metrics_query":"sum:aws.cost.amortized{*}","name":"tf-TestAccDatadogCostBudget_Update-local-1769431101updated!","start_month":202401},"type":"budget"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cost/budget/validate
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 90
+        uncompressed: false
+        body: '{"data":{"id":"budget_validation","type":"budget_validation","attributes":{"valid":true}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 100.213583ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 579
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"end_month":202412,"entries":[{"amount":2000,"month":202401},{"amount":2000,"month":202402},{"amount":2000,"month":202403},{"amount":2000,"month":202404},{"amount":2000,"month":202405},{"amount":2000,"month":202406},{"amount":2000,"month":202407},{"amount":2000,"month":202408},{"amount":2000,"month":202409},{"amount":2000,"month":202410},{"amount":2000,"month":202411},{"amount":2000,"month":202412}],"metrics_query":"sum:aws.cost.amortized{*}","name":"tf-TestAccDatadogCostBudget_Update-local-1769431101updated!","start_month":202401},"type":"budget"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cost/budget/validate
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 90
+        uncompressed: false
+        body: '{"data":{"id":"budget_validation","type":"budget_validation","attributes":{"valid":true}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 100.887125ms
+    - id: 9
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 623
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"end_month":202412,"entries":[{"amount":2000,"month":202401},{"amount":2000,"month":202402},{"amount":2000,"month":202403},{"amount":2000,"month":202404},{"amount":2000,"month":202405},{"amount":2000,"month":202406},{"amount":2000,"month":202407},{"amount":2000,"month":202408},{"amount":2000,"month":202409},{"amount":2000,"month":202410},{"amount":2000,"month":202411},{"amount":2000,"month":202412}],"metrics_query":"sum:aws.cost.amortized{*}","name":"tf-TestAccDatadogCostBudget_Update-local-1769431101updated!","start_month":202401},"id":"6ddf9702-b599-48b4-9a0e-2216a8599103","type":"budget"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cost/budget
+        method: PUT
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 987
+        uncompressed: false
+        body: '{"data":{"id":"6ddf9702-b599-48b4-9a0e-2216a8599103","type":"budget","attributes":{"created_at":-62135596800000,"created_by":"","end_month":202412,"entries":[{"month":202401,"amount":2000,"tag_filters":[]},{"month":202402,"amount":2000,"tag_filters":[]},{"month":202403,"amount":2000,"tag_filters":[]},{"month":202404,"amount":2000,"tag_filters":[]},{"month":202405,"amount":2000,"tag_filters":[]},{"month":202406,"amount":2000,"tag_filters":[]},{"month":202407,"amount":2000,"tag_filters":[]},{"month":202408,"amount":2000,"tag_filters":[]},{"month":202409,"amount":2000,"tag_filters":[]},{"month":202410,"amount":2000,"tag_filters":[]},{"month":202411,"amount":2000,"tag_filters":[]},{"month":202412,"amount":2000,"tag_filters":[]}],"metrics_query":"sum:aws.cost.amortized{*}","name":"tf-TestAccDatadogCostBudget_Update-local-1769431101updated!","org_id":321813,"start_month":202401,"total_amount":24000,"updated_at":1769431104874,"updated_by":"cb0fe8fe-673a-4678-8ff5-7936a9af21ba"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 149.017458ms
+    - id: 10
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 623
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"end_month":202412,"entries":[{"amount":2000,"month":202401},{"amount":2000,"month":202402},{"amount":2000,"month":202403},{"amount":2000,"month":202404},{"amount":2000,"month":202405},{"amount":2000,"month":202406},{"amount":2000,"month":202407},{"amount":2000,"month":202408},{"amount":2000,"month":202409},{"amount":2000,"month":202410},{"amount":2000,"month":202411},{"amount":2000,"month":202412}],"metrics_query":"sum:aws.cost.amortized{*}","name":"tf-TestAccDatadogCostBudget_Update-local-1769431101updated!","start_month":202401},"id":"6ddf9702-b599-48b4-9a0e-2216a8599103","type":"budget"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cost/budget/validate
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 90
+        uncompressed: false
+        body: '{"data":{"id":"budget_validation","type":"budget_validation","attributes":{"valid":true}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 101.327916ms
+    - id: 11
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cost/budget/6ddf9702-b599-48b4-9a0e-2216a8599103
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 1021
+        uncompressed: false
+        body: '{"data":{"id":"6ddf9702-b599-48b4-9a0e-2216a8599103","type":"budget","attributes":{"created_at":1769431103022,"created_by":"cb0fe8fe-673a-4678-8ff5-7936a9af21ba","end_month":202412,"entries":[{"month":202401,"amount":2000,"tag_filters":[]},{"month":202402,"amount":2000,"tag_filters":[]},{"month":202403,"amount":2000,"tag_filters":[]},{"month":202404,"amount":2000,"tag_filters":[]},{"month":202405,"amount":2000,"tag_filters":[]},{"month":202406,"amount":2000,"tag_filters":[]},{"month":202407,"amount":2000,"tag_filters":[]},{"month":202408,"amount":2000,"tag_filters":[]},{"month":202409,"amount":2000,"tag_filters":[]},{"month":202410,"amount":2000,"tag_filters":[]},{"month":202411,"amount":2000,"tag_filters":[]},{"month":202412,"amount":2000,"tag_filters":[]}],"metrics_query":"sum:aws.cost.amortized{*}","name":"tf-TestAccDatadogCostBudget_Update-local-1769431101updated!","org_id":321813,"start_month":202401,"total_amount":24000,"updated_at":1769431104874,"updated_by":"cb0fe8fe-673a-4678-8ff5-7936a9af21ba"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 114.70075ms
+    - id: 12
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 623
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"end_month":202412,"entries":[{"amount":2000,"month":202401},{"amount":2000,"month":202402},{"amount":2000,"month":202403},{"amount":2000,"month":202404},{"amount":2000,"month":202405},{"amount":2000,"month":202406},{"amount":2000,"month":202407},{"amount":2000,"month":202408},{"amount":2000,"month":202409},{"amount":2000,"month":202410},{"amount":2000,"month":202411},{"amount":2000,"month":202412}],"metrics_query":"sum:aws.cost.amortized{*}","name":"tf-TestAccDatadogCostBudget_Update-local-1769431101updated!","start_month":202401},"id":"6ddf9702-b599-48b4-9a0e-2216a8599103","type":"budget"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cost/budget/validate
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 90
+        uncompressed: false
+        body: '{"data":{"id":"budget_validation","type":"budget_validation","attributes":{"valid":true}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 98.67125ms
+    - id: 13
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/cost/budget/6ddf9702-b599-48b4-9a0e-2216a8599103
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 151.581042ms
+    - id: 14
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cost/budget/6ddf9702-b599-48b4-9a0e-2216a8599103
         method: GET
       response:
         proto: HTTP/1.1
@@ -235,4 +523,4 @@ interactions:
                 - application/vnd.api+json
         status: 404 Not Found
         code: 404
-        duration: 126.891334ms
+        duration: 111.077167ms

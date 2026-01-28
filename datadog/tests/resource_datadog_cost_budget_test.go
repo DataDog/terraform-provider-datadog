@@ -396,7 +396,7 @@ resource "datadog_cost_budget" "foo" {
     }
   }
 }`,
-			expectError: "tags must have 0, 1 or 2 elements",
+			expectError: `tags\s+must have 0, 1 or 2 elements`,
 		},
 		// Validate tags are unique
 		{
@@ -420,7 +420,7 @@ resource "datadog_cost_budget" "foo" {
     }
   }
 }`,
-			expectError: "tags must be unique",
+			expectError: `tags\s+must be unique`,
 		},
 		// Validate start_month > 0
 		{
@@ -436,7 +436,7 @@ resource "datadog_cost_budget" "foo" {
     month = 202501
   }
 }`,
-			expectError: "start_month must be greater than 0",
+			expectError: `start_month\s+must be greater than 0`,
 		},
 		// Validate end_month > 0
 		{
@@ -452,7 +452,7 @@ resource "datadog_cost_budget" "foo" {
     month = 202501
   }
 }`,
-			expectError: "end_month must be greater than 0",
+			expectError: `end_month\s+must be greater than 0`,
 		},
 		// Validate end_month >= start_month
 		{
@@ -468,7 +468,7 @@ resource "datadog_cost_budget" "foo" {
     month = 202501
   }
 }`,
-			expectError: "end_month must be greater than or equal to start_month",
+			expectError: `end_month\s+must be greater than or equal to start_month`,
 		},
 		// Validate entry month in range
 		{
@@ -484,7 +484,7 @@ resource "datadog_cost_budget" "foo" {
     month = 202506
   }
 }`,
-			expectError: "entry month must be between start_month and end_month",
+			expectError: `entry\s+month must be between start_month and end_month`,
 		},
 		// Validate entry amount >= 0
 		{
@@ -500,7 +500,7 @@ resource "datadog_cost_budget" "foo" {
     month = 202501
   }
 }`,
-			expectError: "entry amount must be greater than or equal to 0",
+			expectError: `entry\s+amount must be greater than or equal to 0`,
 		},
 		// Validate tag_filters count matches tags
 		{
@@ -520,7 +520,7 @@ resource "datadog_cost_budget" "foo" {
     }
   }
 }`,
-			expectError: "entry tag_filters must include all group by tags",
+			expectError: `entry\s+tag_filters must include all group by tags`,
 		},
 		// Validate tag_key is in metrics_query tags
 		{
@@ -540,7 +540,7 @@ resource "datadog_cost_budget" "foo" {
     }
   }
 }`,
-			expectError: "tag_key must be one of the values inside the tags array",
+			expectError: `tag_key\s+must be one of the values inside the tags array`,
 		},
 		// Validate entries exist
 		{
@@ -552,7 +552,7 @@ resource "datadog_cost_budget" "foo" {
   start_month = 202501
   end_month = 202501
 }`,
-			expectError: "entries are required",
+			expectError: `entries\s+are required`,
 		},
 		// Validate all tag combinations have entries for all months
 		{
@@ -568,7 +568,7 @@ resource "datadog_cost_budget" "foo" {
     month = 202501
   }
 }`,
-			expectError: "missing entries for tag value pair",
+			expectError: `missing\s+entries for one or more tag combinations`,
 		},
 	}
 
