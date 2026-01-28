@@ -7,10 +7,10 @@
 * [datadog_synthetics_suite] Create Synthetics suite resource by @romainberger in https://github.com/DataDog/terraform-provider-datadog/pull/3447
 * [datadog_cloud_inventory_sync_config] move to v2 apis from unstable endpoints | STGMON-352 by @denozor-dog in https://github.com/DataDog/terraform-provider-datadog/pull/3453
 * [datadog_rum_retention_filter] Support decimal sample_rate values by @davis-rule in https://github.com/DataDog/terraform-provider-datadog/pull/3367
-* [CCT-705] [CCT-706] [datadog_cost_budget] Add plan-time validation for cost budget resources by @zeinageb in https://github.com/DataDog/terraform-provider-datadog/pull/3457
+* [datadog_cost_budget] Add plan-time validation for cost budget resources by @zeinageb in https://github.com/DataDog/terraform-provider-datadog/pull/3457
 ### FEATURES
-* [datastore] new datastore TF provider and datastore item TF provider by @ameesha in https://github.com/DataDog/terraform-provider-datadog/pull/3388
-* [monitor] Add data-quality alert monitor type support by @pkalmakis in https://github.com/DataDog/terraform-provider-datadog/pull/3415
+* [datadog_datastore] new datastore TF provider and datastore item TF provider by @ameesha in https://github.com/DataDog/terraform-provider-datadog/pull/3388
+* [datadog_monitor] Add data-quality alert monitor type support by @pkalmakis in https://github.com/DataDog/terraform-provider-datadog/pull/3415
 * [datadog_security_monitoring_critical_asset] Add terraform provider for critical assets by @sabraham2 in https://github.com/DataDog/terraform-provider-datadog/pull/3431
 * [datadog_observability_pipeline] Add support for multiple datadog org logs destination by @emilychendd in https://github.com/DataDog/terraform-provider-datadog/pull/3454
 * [datadog_observability_pipeline] Expose use_legacy_search_syntax flag by @vladimir-dd in https://github.com/DataDog/terraform-provider-datadog/pull/3465
