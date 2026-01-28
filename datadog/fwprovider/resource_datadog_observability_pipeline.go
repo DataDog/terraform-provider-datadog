@@ -1878,6 +1878,9 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 																			ElementType: types.StringType,
 																			Required:    true,
 																			Description: "A list of tag keys to include or exclude.",
+																			Validators: []validator.List{
+																				listvalidator.SizeAtLeast(1),
+																			},
 																		},
 																	},
 																},
