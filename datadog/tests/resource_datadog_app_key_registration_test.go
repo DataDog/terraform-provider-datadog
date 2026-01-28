@@ -14,6 +14,9 @@ import (
 var testAppKeyRegistrationID = "22222222-2222-2222-2222-222222222222"
 
 func TestAccDatadogAppKeyRegistrationResource(t *testing.T) {
+	if !isReplaying() {
+		t.Skip("This test only supports replaying - requires actions API access on API key")
+	}
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
 	resourceName := "datadog_app_key_registration.my_registration"

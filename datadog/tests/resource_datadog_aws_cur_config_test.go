@@ -14,6 +14,9 @@ import (
 )
 
 func TestAccAwsCurConfigBasic(t *testing.T) {
+	if !isReplaying() {
+		t.Skip("This test only supports replaying")
+	}
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)
@@ -63,6 +66,9 @@ func TestAccAwsCurConfigBasic(t *testing.T) {
 }
 
 func TestAccAwsCurConfigWithAccountFilters(t *testing.T) {
+	if !isReplaying() {
+		t.Skip("This test only supports replaying")
+	}
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)
@@ -102,6 +108,9 @@ func TestAccAwsCurConfigWithAccountFilters(t *testing.T) {
 }
 
 func TestAccAwsCurConfigImport(t *testing.T) {
+	if !isReplaying() {
+		t.Skip("This test only supports replaying")
+	}
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)

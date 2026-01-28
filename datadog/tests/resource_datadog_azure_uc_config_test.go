@@ -14,6 +14,9 @@ import (
 )
 
 func TestAccAzureUcConfigBasic(t *testing.T) {
+	if !isReplaying() {
+		t.Skip("This test only supports replaying")
+	}
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)
@@ -87,6 +90,9 @@ func TestAccAzureUcConfigBasic(t *testing.T) {
 }
 
 func TestAccAzureUcConfigImport(t *testing.T) {
+	if !isReplaying() {
+		t.Skip("This test only supports replaying")
+	}
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)

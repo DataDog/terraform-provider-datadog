@@ -9,6 +9,9 @@ import (
 )
 
 func TestAccDatadogPowerpackDatasource(t *testing.T) {
+	if !isReplaying() {
+		t.Skip("This test only supports replaying - API timeouts in live mode")
+	}
 	t.Parallel()
 	ctx, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)

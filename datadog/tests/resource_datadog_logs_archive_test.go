@@ -38,6 +38,9 @@ resource "datadog_logs_archive" "my_azure_archive" {
 }
 
 func TestAccDatadogLogsArchiveAzure_basic(t *testing.T) {
+	if !isReplaying() {
+		t.Skip("This test only supports replaying")
+	}
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	unique_hash := fmt.Sprintf("%x", sha256.Sum256([]byte(uniqueEntityName(ctx, t))))
@@ -168,6 +171,9 @@ resource "datadog_logs_archive" "my_s3_archive" {
 }
 
 func TestAccDatadogLogsArchiveS3_basic(t *testing.T) {
+	if !isReplaying() {
+		t.Skip("This test only supports replaying")
+	}
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	accountID := uniqueAWSAccountID(ctx, t)

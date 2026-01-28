@@ -13,6 +13,9 @@ import (
 const RumRetentionFiltersDataSourceTestAppId = "5c2f3e68-adae-4f4e-9e91-7c31bb70329b"
 
 func TestAccRumRetentionFiltersDatasource(t *testing.T) {
+	if !isReplaying() {
+		t.Skip("This test only supports replaying - requires specific RUM retention filter names in test environment")
+	}
 	t.Parallel()
 
 	_, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
