@@ -266,6 +266,11 @@ func resourceDatadogLogsIndexDelete(ctx context.Context, d *schema.ResourceData,
 
 	logsIndexMutex.Lock()
 	defer logsIndexMutex.Unlock()
+
+	if d.Id() == "main" {
+		return diag.Errorf("Deleting the 'main' logs index is not allowed")
+	}
+
 	httpResponse, err := apiInstances.GetLogsIndexesApiV1().DeleteLogsIndex(auth, d.Id())
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error deleting logs index")
