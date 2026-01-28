@@ -49,7 +49,7 @@ func TestAccRumRetentionFilterDecimalSampleRate(t *testing.T) {
 	name := uniqueEntityName(ctx, t)
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogRumRetentionFilterDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{

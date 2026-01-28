@@ -5742,7 +5742,7 @@ func TestAccDatadogObservabilityPipeline_datadogLogsDestination(t *testing.T) {
 	resourceName := "datadog_observability_pipeline.datadog_logs_routes_test"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
