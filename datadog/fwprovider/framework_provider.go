@@ -122,6 +122,7 @@ var Resources = []func() resource.Resource{
 }
 
 var Datasources = []func() datasource.DataSource{
+	NewAgentlessScanningAwsScanOptionsDataSource,
 	NewAPIKeyDataSource,
 	NewApplicationKeyDataSource,
 	NewAwsAvailableNamespacesDataSource,
