@@ -13,7 +13,79 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"end_month":202412,"entries":[{"amount":1000,"month":202401,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"amount":1000,"month":202402,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"amount":1000,"month":202403,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"amount":1000,"month":202404,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"amount":1000,"month":202405,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"amount":1000,"month":202406,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"amount":1000,"month":202407,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"amount":1000,"month":202408,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"amount":1000,"month":202409,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"amount":1000,"month":202410,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"amount":1000,"month":202411,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"amount":1000,"month":202412,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]}],"metrics_query":"sum:aws.cost.amortized{*} by {account}","name":"tf-TestAccDatadogCostBudget_WithTagFilters-local-1748003612","start_month":202401},"type":"budget"}}
+            {"data":{"attributes":{"end_month":202412,"entries":[{"amount":1000,"month":202401,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"amount":1000,"month":202402,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"amount":1000,"month":202403,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"amount":1000,"month":202404,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"amount":1000,"month":202405,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"amount":1000,"month":202406,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"amount":1000,"month":202407,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"amount":1000,"month":202408,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"amount":1000,"month":202409,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"amount":1000,"month":202410,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"amount":1000,"month":202411,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"amount":1000,"month":202412,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]}],"metrics_query":"sum:aws.cost.amortized{*} by {account}","name":"tf-TestAccDatadogCostBudget_WithTagFilters-local-1769431101","start_month":202401},"type":"budget"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cost/budget/validate
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 90
+        uncompressed: false
+        body: '{"data":{"id":"budget_validation","type":"budget_validation","attributes":{"valid":true}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 208.789875ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1264
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"end_month":202412,"entries":[{"amount":1000,"month":202401,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"amount":1000,"month":202402,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"amount":1000,"month":202403,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"amount":1000,"month":202404,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"amount":1000,"month":202405,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"amount":1000,"month":202406,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"amount":1000,"month":202407,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"amount":1000,"month":202408,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"amount":1000,"month":202409,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"amount":1000,"month":202410,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"amount":1000,"month":202411,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"amount":1000,"month":202412,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]}],"metrics_query":"sum:aws.cost.amortized{*} by {account}","name":"tf-TestAccDatadogCostBudget_WithTagFilters-local-1769431101","start_month":202401},"type":"budget"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cost/budget/validate
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 90
+        uncompressed: false
+        body: '{"data":{"id":"budget_validation","type":"budget_validation","attributes":{"valid":true}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 105.846084ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1264
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"end_month":202412,"entries":[{"amount":1000,"month":202401,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"amount":1000,"month":202402,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"amount":1000,"month":202403,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"amount":1000,"month":202404,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"amount":1000,"month":202405,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"amount":1000,"month":202406,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"amount":1000,"month":202407,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"amount":1000,"month":202408,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"amount":1000,"month":202409,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"amount":1000,"month":202410,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"amount":1000,"month":202411,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"amount":1000,"month":202412,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]}],"metrics_query":"sum:aws.cost.amortized{*} by {account}","name":"tf-TestAccDatadogCostBudget_WithTagFilters-local-1769431101","start_month":202401},"type":"budget"}}
         form: {}
         headers:
             Accept:
@@ -30,14 +102,50 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"data":{"id":"7e139181-2a19-4f75-aa3e-d5221ceb8d33","type":"budget","attributes":{"created_at":1748003613902,"created_by":"3ad549bf-eba0-11e9-a77a-0705486660d0","end_month":202412,"entries":[{"month":202401,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"month":202402,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"month":202403,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"month":202404,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"month":202405,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"month":202406,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"month":202407,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"month":202408,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"month":202409,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"month":202410,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"month":202411,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"month":202412,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]}],"metrics_query":"sum:aws.cost.amortized{*} by {account}","name":"tf-TestAccDatadogCostBudget_WithTagFilters-local-1748003612","org_id":321813,"start_month":202401,"total_amount":12000,"updated_at":1748003613902,"updated_by":"3ad549bf-eba0-11e9-a77a-0705486660d0"}}}'
+        body: '{"data":{"id":"ed9e80c3-8ee5-4b69-afdb-67f0d27b7357","type":"budget","attributes":{"created_at":1769431103169,"created_by":"cb0fe8fe-673a-4678-8ff5-7936a9af21ba","end_month":202412,"entries":[{"month":202401,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"month":202402,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"month":202403,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"month":202404,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"month":202405,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"month":202406,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"month":202407,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"month":202408,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"month":202409,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"month":202410,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"month":202411,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"month":202412,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]}],"metrics_query":"sum:aws.cost.amortized{*} by {account}","name":"tf-TestAccDatadogCostBudget_WithTagFilters-local-1769431101","org_id":321813,"start_month":202401,"total_amount":12000,"updated_at":1769431103169,"updated_by":"cb0fe8fe-673a-4678-8ff5-7936a9af21ba"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 413.420041ms
-    - id: 1
+        duration: 232.114417ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1308
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"end_month":202412,"entries":[{"amount":1000,"month":202401,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"amount":1000,"month":202402,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"amount":1000,"month":202403,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"amount":1000,"month":202404,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"amount":1000,"month":202405,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"amount":1000,"month":202406,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"amount":1000,"month":202407,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"amount":1000,"month":202408,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"amount":1000,"month":202409,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"amount":1000,"month":202410,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"amount":1000,"month":202411,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"amount":1000,"month":202412,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]}],"metrics_query":"sum:aws.cost.amortized{*} by {account}","name":"tf-TestAccDatadogCostBudget_WithTagFilters-local-1769431101","start_month":202401},"id":"ed9e80c3-8ee5-4b69-afdb-67f0d27b7357","type":"budget"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cost/budget/validate
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 90
+        uncompressed: false
+        body: '{"data":{"id":"budget_validation","type":"budget_validation","attributes":{"valid":true}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 102.384666ms
+    - id: 4
       request:
         proto: HTTP/1.1
         proto_major: 1
@@ -53,7 +161,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/cost/budget/7e139181-2a19-4f75-aa3e-d5221ceb8d33
+        url: https://api.datadoghq.com/api/v2/cost/budget/ed9e80c3-8ee5-4b69-afdb-67f0d27b7357
         method: GET
       response:
         proto: HTTP/1.1
@@ -63,14 +171,50 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"data":{"id":"7e139181-2a19-4f75-aa3e-d5221ceb8d33","type":"budget","attributes":{"created_at":1748003613902,"created_by":"3ad549bf-eba0-11e9-a77a-0705486660d0","end_month":202412,"entries":[{"month":202401,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"month":202402,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"month":202403,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"month":202404,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"month":202405,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"month":202406,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"month":202407,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"month":202408,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"month":202409,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"month":202410,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"month":202411,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"month":202412,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]}],"metrics_query":"sum:aws.cost.amortized{*} by {account}","name":"tf-TestAccDatadogCostBudget_WithTagFilters-local-1748003612","org_id":321813,"start_month":202401,"total_amount":12000,"updated_at":1748003613902,"updated_by":"3ad549bf-eba0-11e9-a77a-0705486660d0"}}}'
+        body: '{"data":{"id":"ed9e80c3-8ee5-4b69-afdb-67f0d27b7357","type":"budget","attributes":{"created_at":1769431103169,"created_by":"cb0fe8fe-673a-4678-8ff5-7936a9af21ba","end_month":202412,"entries":[{"month":202401,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"month":202402,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"month":202403,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"month":202404,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"month":202405,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"month":202406,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"month":202407,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"month":202408,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"month":202409,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"month":202410,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"month":202411,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"month":202412,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]}],"metrics_query":"sum:aws.cost.amortized{*} by {account}","name":"tf-TestAccDatadogCostBudget_WithTagFilters-local-1769431101","org_id":321813,"start_month":202401,"total_amount":12000,"updated_at":1769431103169,"updated_by":"cb0fe8fe-673a-4678-8ff5-7936a9af21ba"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 132.672958ms
-    - id: 2
+        duration: 238.195083ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1308
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"end_month":202412,"entries":[{"amount":1000,"month":202401,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"amount":1000,"month":202402,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"amount":1000,"month":202403,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"amount":1000,"month":202404,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"amount":1000,"month":202405,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"amount":1000,"month":202406,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"amount":1000,"month":202407,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"amount":1000,"month":202408,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"amount":1000,"month":202409,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"amount":1000,"month":202410,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"amount":1000,"month":202411,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]},{"amount":1000,"month":202412,"tag_filters":[{"tag_key":"account","tag_value":"ec2"}]}],"metrics_query":"sum:aws.cost.amortized{*} by {account}","name":"tf-TestAccDatadogCostBudget_WithTagFilters-local-1769431101","start_month":202401},"id":"ed9e80c3-8ee5-4b69-afdb-67f0d27b7357","type":"budget"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cost/budget/validate
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 90
+        uncompressed: false
+        body: '{"data":{"id":"budget_validation","type":"budget_validation","attributes":{"valid":true}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 115.419958ms
+    - id: 6
       request:
         proto: HTTP/1.1
         proto_major: 1
@@ -86,7 +230,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/cost/budget/7e139181-2a19-4f75-aa3e-d5221ceb8d33
+        url: https://api.datadoghq.com/api/v2/cost/budget/ed9e80c3-8ee5-4b69-afdb-67f0d27b7357
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -100,8 +244,8 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 138.527166ms
-    - id: 3
+        duration: 142.852542ms
+    - id: 7
       request:
         proto: HTTP/1.1
         proto_major: 1
@@ -117,7 +261,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/cost/budget/7e139181-2a19-4f75-aa3e-d5221ceb8d33
+        url: https://api.datadoghq.com/api/v2/cost/budget/ed9e80c3-8ee5-4b69-afdb-67f0d27b7357
         method: GET
       response:
         proto: HTTP/1.1
@@ -125,12 +269,12 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 49
+        content_length: 100
         uncompressed: false
-        body: '{"errors":[{"status":"404","title":"Not Found"}]}'
+        body: '{"errors":[{"title":"Generic Error","detail":"rpc error: code = NotFound desc = budget not found"}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 404 Not Found
         code: 404
-        duration: 115.366ms
+        duration: 120.090834ms

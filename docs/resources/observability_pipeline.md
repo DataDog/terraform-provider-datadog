@@ -105,6 +105,7 @@ Optional:
 - `pipeline_type` (String) The type of data being ingested. Defaults to `logs` if not specified. Valid values are `logs`, `metrics`.
 - `processor_group` (Block List) A processor group containing common configuration and nested processors. (see [below for nested schema](#nestedblock--config--processor_group))
 - `source` (Block List) List of sources. (see [below for nested schema](#nestedblock--config--source))
+- `use_legacy_search_syntax` (Boolean) Set to `true` to continue using the legacy search syntax while migrating filter queries. After migrating all queries to the new syntax, set to `false`. The legacy syntax is deprecated and will eventually be removed. Requires Observability Pipelines Worker 2.11 or later. See https://docs.datadoghq.com/observability_pipelines/guide/upgrade_your_filter_queries_to_the_new_search_syntax/ for more information.
 
 <a id="nestedblock--config--destination"></a>
 ### Nested Schema for `config.destination`

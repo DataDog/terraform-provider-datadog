@@ -46,10 +46,11 @@ type observabilityPipelineModel struct {
 }
 
 type configModel struct {
-	PipelineType    types.String           `tfsdk:"pipeline_type"`
-	Sources         []*sourceModel         `tfsdk:"source"`
-	ProcessorGroups []*processorGroupModel `tfsdk:"processor_group"`
-	Destinations    []*destinationModel    `tfsdk:"destination"`
+	PipelineType          types.String           `tfsdk:"pipeline_type"`
+	UseLegacySearchSyntax types.Bool             `tfsdk:"use_legacy_search_syntax"`
+	Sources               []*sourceModel         `tfsdk:"source"`
+	ProcessorGroups       []*processorGroupModel `tfsdk:"processor_group"`
+	Destinations          []*destinationModel    `tfsdk:"destination"`
 }
 
 type destinationModel struct {
@@ -675,6 +676,14 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 							Validators: []validator.String{
 								stringvalidator.OneOf("logs", "metrics"),
 							},
+						},
+						"use_legacy_search_syntax": schema.BoolAttribute{
+							Optional: true,
+							Description: "Set to `true` to continue using the legacy search syntax while migrating filter queries. " +
+								"After migrating all queries to the new syntax, set to `false`. " +
+								"The legacy syntax is deprecated and will eventually be removed. " +
+								"Requires Observability Pipelines Worker 2.11 or later. " +
+								"See https://docs.datadoghq.com/observability_pipelines/guide/upgrade_your_filter_queries_to_the_new_search_syntax/ for more information.",
 						},
 					},
 					Blocks: map[string]schema.Block{
@@ -2516,6 +2525,10 @@ func expandPipeline(ctx context.Context, state *observabilityPipelineModel) (*da
 	}
 	config.SetPipelineType(datadogV2.ObservabilityPipelineConfigPipelineType(pipelineType))
 
+	if len(state.Config) > 0 && !state.Config[0].UseLegacySearchSyntax.IsNull() && !state.Config[0].UseLegacySearchSyntax.IsUnknown() {
+		config.SetUseLegacySearchSyntax(state.Config[0].UseLegacySearchSyntax.ValueBool())
+	}
+
 	// Sources
 	for _, sourceBlock := range state.Config[0].Sources {
 		sourceId := sourceBlock.Id.ValueString()
@@ -2683,6 +2696,12 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 		// Set it explicitly to avoid state drift
 		outCfg.PipelineType = types.StringValue("logs")
 	}
+
+	useLegacySearchSyntax := types.BoolNull()
+	if v, ok := cfg.GetUseLegacySearchSyntaxOk(); ok {
+		useLegacySearchSyntax = types.BoolValue(*v)
+	}
+	outCfg.UseLegacySearchSyntax = useLegacySearchSyntax
 
 	for _, src := range cfg.GetSources() {
 		sourceBlock := &sourceModel{}

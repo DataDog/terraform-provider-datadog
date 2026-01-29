@@ -1,3 +1,399 @@
 ---
 version: 2
-interactions: []
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 368
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"end_month":202501,"entries":[{"amount":1000,"month":202501,"tag_filters":[{"tag_key":"team","tag_value":"backend"},{"tag_key":"account","tag_value":"staging"},{"tag_key":"region","tag_value":"us-east-1"}]}],"metrics_query":"sum:aws.cost.amortized{*} by {team,account,region}","name":"test-too-many-tags","start_month":202501},"type":"budget"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cost/budget/validate
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 138
+        uncompressed: false
+        body: '{"data":{"id":"budget_validation","type":"budget_validation","attributes":{"errors":["tags must have 0, 1 or 2 elements"],"valid":false}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 400 Bad Request
+        code: 400
+        duration: 105.787875ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 312
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"end_month":202501,"entries":[{"amount":1000,"month":202501,"tag_filters":[{"tag_key":"team","tag_value":"backend"},{"tag_key":"team","tag_value":"frontend"}]}],"metrics_query":"sum:aws.cost.amortized{*} by {team,team}","name":"test-duplicate-tags","start_month":202501},"type":"budget"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cost/budget/validate
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 124
+        uncompressed: false
+        body: '{"data":{"id":"budget_validation","type":"budget_validation","attributes":{"errors":["tags must be unique"],"valid":false}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 400 Bad Request
+        code: 400
+        duration: 238.915291ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 198
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"end_month":202501,"entries":[{"amount":1000,"month":202501}],"metrics_query":"sum:aws.cost.amortized{*}","name":"test-invalid-start-month","start_month":0},"type":"budget"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cost/budget/validate
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 164
+        uncompressed: false
+        body: '{"data":{"id":"budget_validation","type":"budget_validation","attributes":{"errors":["start_month must be greater than 0 and of the format YYYYMM"],"valid":false}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 400 Bad Request
+        code: 400
+        duration: 106.592375ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 196
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"end_month":0,"entries":[{"amount":1000,"month":202501}],"metrics_query":"sum:aws.cost.amortized{*}","name":"test-invalid-end-month","start_month":202501},"type":"budget"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cost/budget/validate
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 162
+        uncompressed: false
+        body: '{"data":{"id":"budget_validation","type":"budget_validation","attributes":{"errors":["end_month must be greater than 0 and of the format YYYYMM"],"valid":false}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 400 Bad Request
+        code: 400
+        duration: 99.442ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 200
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"end_month":202501,"entries":[{"amount":1000,"month":202501}],"metrics_query":"sum:aws.cost.amortized{*}","name":"test-end-before-start","start_month":202512},"type":"budget"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cost/budget/validate
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 159
+        uncompressed: false
+        body: '{"data":{"id":"budget_validation","type":"budget_validation","attributes":{"errors":["end_month must be greater than or equal to start_month"],"valid":false}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 400 Bad Request
+        code: 400
+        duration: 138.407375ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 202
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"end_month":202503,"entries":[{"amount":1000,"month":202506}],"metrics_query":"sum:aws.cost.amortized{*}","name":"test-month-out-of-range","start_month":202501},"type":"budget"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cost/budget/validate
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 158
+        uncompressed: false
+        body: '{"data":{"id":"budget_validation","type":"budget_validation","attributes":{"errors":["entry month must be between start_month and end_month"],"valid":false}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 400 Bad Request
+        code: 400
+        duration: 99.700791ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 199
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"end_month":202501,"entries":[{"amount":-100,"month":202501}],"metrics_query":"sum:aws.cost.amortized{*}","name":"test-negative-amount","start_month":202501},"type":"budget"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cost/budget/validate
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 152
+        uncompressed: false
+        body: '{"data":{"id":"budget_validation","type":"budget_validation","attributes":{"errors":["entry amount must be greater than or equal to 0"],"valid":false}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 400 Bad Request
+        code: 400
+        duration: 160.63975ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 274
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"end_month":202501,"entries":[{"amount":1000,"month":202501,"tag_filters":[{"tag_key":"team","tag_value":"backend"}]}],"metrics_query":"sum:aws.cost.amortized{*} by {team,account}","name":"test-wrong-tag-count","start_month":202501},"type":"budget"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cost/budget/validate
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 153
+        uncompressed: false
+        body: '{"data":{"id":"budget_validation","type":"budget_validation","attributes":{"errors":["entry tag_filters must include all group by tags"],"valid":false}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 400 Bad Request
+        code: 400
+        duration: 103.369042ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 272
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"end_month":202501,"entries":[{"amount":1000,"month":202501,"tag_filters":[{"tag_key":"wrong_tag","tag_value":"value"}]}],"metrics_query":"sum:aws.cost.amortized{*} by {account}","name":"test-invalid-tag-key","start_month":202501},"type":"budget"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cost/budget/validate
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 160
+        uncompressed: false
+        body: '{"data":{"id":"budget_validation","type":"budget_validation","attributes":{"errors":["tag_key must be one of the values inside the tags array"],"valid":false}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 400 Bad Request
+        code: 400
+        duration: 104.9065ms
+    - id: 9
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 151
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"end_month":202501,"metrics_query":"sum:aws.cost.amortized{*}","name":"test-no-entries","start_month":202501},"type":"budget"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cost/budget/validate
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 125
+        uncompressed: false
+        body: '{"data":{"id":"budget_validation","type":"budget_validation","attributes":{"errors":["entries are required"],"valid":false}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 400 Bad Request
+        code: 400
+        duration: 126.327ms
+    - id: 10
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 198
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"end_month":202503,"entries":[{"amount":1000,"month":202501}],"metrics_query":"sum:aws.cost.amortized{*}","name":"test-missing-months","start_month":202501},"type":"budget"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cost/budget/validate
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 153
+        uncompressed: false
+        body: '{"data":{"id":"budget_validation","type":"budget_validation","attributes":{"errors":["missing entries for one or more tag combinations"],"valid":false}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 400 Bad Request
+        code: 400
+        duration: 102.288ms
