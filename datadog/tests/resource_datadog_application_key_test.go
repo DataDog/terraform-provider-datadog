@@ -88,31 +88,26 @@ func TestAccDatadogApplicationKey_Error(t *testing.T) {
 	})
 }
 
-// func TestDatadogApplicationKey_import(t *testing.T) {
-// 	if isRecording() || isReplaying() {
-// 		t.Skip("This test doesn't support recording or replaying")
-// 	}
-// 	t.Parallel()
-// 	resourceName := "datadog_application_key.foo"
-// 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
-// 	applicationKeyName := uniqueEntityName(ctx, t)
+func TestAccDatadogApplicationKey_ImportNotSupported(t *testing.T) {
+	if isRecording() || isReplaying() {
+		t.Skip("This test doesn't support recording or replaying")
+	}
+	t.Parallel()
+	_, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
-// 	resource.Test(t, resource.TestCase{
-// 		PreCheck:                 func() { testAccPreCheck(t) },
-// 		ProtoV6ProviderFactories: accProviders,
-// 		CheckDestroy:             testAccCheckDatadogApplicationKeyDestroy(providers.frameworkProvider),
-// 		Steps: []resource.TestStep{
-// 			{
-// 				Config: testAccCheckDatadogApplicationKeyConfigRequired(applicationKeyName),
-// 			},
-// 			{
-// 				ResourceName:      resourceName,
-// 				ImportState:       true,
-// 				ImportStateVerify: true,
-// 			},
-// 		},
-// 	})
-// }
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		Steps: []resource.TestStep{
+			{
+				Config:        `resource "datadog_application_key" "test" { name = "test" }`,
+				ResourceName:  "datadog_application_key.test",
+				ImportState:   true,
+				ImportStateId: "fake-id",
+				ExpectError:   regexp.MustCompile(`Resource Import Not Implemented`),
+			},
+		},
+	})
+}
 
 func testAccCheckDatadogApplicationKeyConfigRequired(uniq string) string {
 	return fmt.Sprintf(`
