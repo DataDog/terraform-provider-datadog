@@ -2213,7 +2213,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 											},
 											Blocks: map[string]schema.Block{
 												"auth": schema.ListNestedBlock{
-													Description: "Authentication settings for Amazon OpenSearch. If omitted, basic authentication is used.",
+													Description: "Authentication settings for Amazon OpenSearch.",
 													NestedObject: schema.NestedBlockObject{
 														Attributes: map[string]schema.Attribute{
 															"strategy": schema.StringAttribute{

@@ -146,7 +146,7 @@ Optional:
 
 Optional:
 
-- `auth` (Block List) Authentication settings for Amazon OpenSearch. If omitted, basic authentication is used. (see [below for nested schema](#nestedblock--config--destination--amazon_opensearch--auth))
+- `auth` (Block List) Authentication settings for Amazon OpenSearch. (see [below for nested schema](#nestedblock--config--destination--amazon_opensearch--auth))
 - `bulk_index` (String) The index or datastream to write logs to.
 
 <a id="nestedblock--config--destination--amazon_opensearch--auth"></a>
