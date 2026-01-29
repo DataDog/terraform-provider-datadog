@@ -5527,49 +5527,28 @@ func expandAmazonOpenSearchDestination(ctx context.Context, dest *destinationMod
 		amazonopensearch.SetBulkIndex(src.BulkIndex.ValueString())
 	}
 
-	if len(src.Auth) == 0 {
-		diags.AddError("Invalid Amazon OpenSearch auth configuration", "auth is required.")
-		return datadogV2.ObservabilityPipelineConfigDestinationItem{}, diags
-	}
-
-	authSrc := src.Auth[0]
-	if authSrc.Strategy.IsNull() || authSrc.Strategy.IsUnknown() {
-		diags.AddError("Invalid Amazon OpenSearch auth configuration", "auth.strategy is required.")
-		return datadogV2.ObservabilityPipelineConfigDestinationItem{}, diags
-	}
-	strategy := authSrc.Strategy.ValueString()
-	hasAws := len(authSrc.Aws) > 0
-
-	if strategy == "aws" && !hasAws {
-		diags.AddError("Invalid Amazon OpenSearch auth configuration", "auth.strategy is set to aws but auth.aws is not configured.")
-		return datadogV2.ObservabilityPipelineConfigDestinationItem{}, diags
-	}
-	if strategy == "basic" && hasAws {
-		diags.AddError("Invalid Amazon OpenSearch auth configuration", "auth.aws is not allowed when using basic auth.")
-		return datadogV2.ObservabilityPipelineConfigDestinationItem{}, diags
-	}
-
-	auth := datadogV2.ObservabilityPipelineAmazonOpenSearchDestinationAuth{
-		Strategy: datadogV2.ObservabilityPipelineAmazonOpenSearchDestinationAuthStrategy(strategy),
-	}
-	if strategy == "aws" && hasAws {
-		awsSrc := authSrc.Aws[0]
-		if awsSrc.AwsRegion.IsNull() || awsSrc.AwsRegion.IsUnknown() {
-			diags.AddError("Invalid Amazon OpenSearch auth configuration", "auth.aws.aws_region is required when using aws strategy.")
-			return datadogV2.ObservabilityPipelineConfigDestinationItem{}, diags
+	if len(src.Auth) > 0 {
+		authSrc := src.Auth[0]
+		auth := datadogV2.ObservabilityPipelineAmazonOpenSearchDestinationAuth{
+			Strategy: datadogV2.ObservabilityPipelineAmazonOpenSearchDestinationAuthStrategy(authSrc.Strategy.ValueString()),
 		}
-		auth.AwsRegion = awsSrc.AwsRegion.ValueStringPointer()
-		if !awsSrc.AssumeRole.IsNull() {
-			auth.AssumeRole = awsSrc.AssumeRole.ValueStringPointer()
+		if len(authSrc.Aws) > 0 {
+			awsSrc := authSrc.Aws[0]
+			if !awsSrc.AwsRegion.IsNull() {
+				auth.AwsRegion = awsSrc.AwsRegion.ValueStringPointer()
+			}
+			if !awsSrc.AssumeRole.IsNull() {
+				auth.AssumeRole = awsSrc.AssumeRole.ValueStringPointer()
+			}
+			if !awsSrc.ExternalId.IsNull() {
+				auth.ExternalId = awsSrc.ExternalId.ValueStringPointer()
+			}
+			if !awsSrc.SessionName.IsNull() {
+				auth.SessionName = awsSrc.SessionName.ValueStringPointer()
+			}
 		}
-		if !awsSrc.ExternalId.IsNull() {
-			auth.ExternalId = awsSrc.ExternalId.ValueStringPointer()
-		}
-		if !awsSrc.SessionName.IsNull() {
-			auth.SessionName = awsSrc.SessionName.ValueStringPointer()
-		}
+		amazonopensearch.SetAuth(auth)
 	}
-	amazonopensearch.SetAuth(auth)
 
 	return datadogV2.ObservabilityPipelineConfigDestinationItem{
 		ObservabilityPipelineAmazonOpenSearchDestination: amazonopensearch,
