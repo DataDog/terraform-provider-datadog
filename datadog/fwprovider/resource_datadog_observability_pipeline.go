@@ -2667,12 +2667,7 @@ func expandPipeline(ctx context.Context, state *observabilityPipelineModel) (*da
 			config.Destinations = append(config.Destinations, expandOpenSearchDestination(ctx, dest, d))
 		}
 		for _, d := range dest.AmazonOpenSearchDestination {
-			item, d := expandAmazonOpenSearchDestination(ctx, dest, d)
-			diags.Append(d...)
-			if d.HasError() {
-				return nil, diags
-			}
-			config.Destinations = append(config.Destinations, item)
+			config.Destinations = append(config.Destinations, expandAmazonOpenSearchDestination(ctx, dest, d))
 		}
 		for _, d := range dest.SocketDestination {
 			item, socketDiags := observability_pipeline.ExpandSocketDestination(ctx, dest.Id.ValueString(), dest.Inputs, d)
@@ -5514,8 +5509,7 @@ func flattenOpenSearchDestination(ctx context.Context, src *datadogV2.Observabil
 	return out
 }
 
-func expandAmazonOpenSearchDestination(ctx context.Context, dest *destinationModel, src *amazonOpenSearchDestinationModel) (datadogV2.ObservabilityPipelineConfigDestinationItem, diag.Diagnostics) {
-	diags := diag.Diagnostics{}
+func expandAmazonOpenSearchDestination(ctx context.Context, dest *destinationModel, src *amazonOpenSearchDestinationModel) datadogV2.ObservabilityPipelineConfigDestinationItem {
 	amazonopensearch := datadogV2.NewObservabilityPipelineAmazonOpenSearchDestinationWithDefaults()
 	amazonopensearch.SetId(dest.Id.ValueString())
 
@@ -5552,7 +5546,7 @@ func expandAmazonOpenSearchDestination(ctx context.Context, dest *destinationMod
 
 	return datadogV2.ObservabilityPipelineConfigDestinationItem{
 		ObservabilityPipelineAmazonOpenSearchDestination: amazonopensearch,
-	}, diags
+	}
 }
 
 func flattenAmazonOpenSearchDestination(src *datadogV2.ObservabilityPipelineAmazonOpenSearchDestination) *amazonOpenSearchDestinationModel {
@@ -5569,7 +5563,7 @@ func flattenAmazonOpenSearchDestination(src *datadogV2.ObservabilityPipelineAmaz
 	authModel := amazonOpenSearchAuthModel{
 		Strategy: types.StringValue(string(src.Auth.Strategy)),
 	}
-	if string(src.Auth.Strategy) == "aws" || src.Auth.AwsRegion != nil || src.Auth.AssumeRole != nil || src.Auth.ExternalId != nil || src.Auth.SessionName != nil {
+	if string(src.Auth.Strategy) == "aws" {
 		authModel.Aws = []amazonOpenSearchAwsAuthModel{
 			{
 				AwsRegion:   types.StringPointerValue(src.Auth.AwsRegion),
