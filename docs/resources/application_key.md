@@ -3,12 +3,12 @@
 page_title: "datadog_application_key Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Provides a Datadog Application Key resource. This can be used to create and manage Datadog Application Keys. Import functionality for this resource is deprecated and will be removed in a future release with prior notice. Securely store your application keys using a secret management system or use this resource to create and manage new application keys.
+  Provides a Datadog Application Key resource. This can be used to create and manage Datadog Application Keys. Import is not supported for this resource. Securely store your application keys using a secret management system or use this resource to create and manage new application keys.
 ---
 
 # datadog_application_key (Resource)
 
-Provides a Datadog Application Key resource. This can be used to create and manage Datadog Application Keys. Import functionality for this resource is deprecated and will be removed in a future release with prior notice. Securely store your application keys using a secret management system or use this resource to create and manage new application keys.
+Provides a Datadog Application Key resource. This can be used to create and manage Datadog Application Keys. Import is not supported for this resource. Securely store your application keys using a secret management system or use this resource to create and manage new application keys.
 
 ## Example Usage
 
@@ -47,13 +47,3 @@ resource "datadog_application_key" "monitor_management_key" {
 
 - `id` (String) The ID of this resource.
 - `key` (String, Sensitive) The value of the Application Key.
-
-## Import
-
-Import is supported using the following syntax:
-
-The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
-
-```shell
-terraform import datadog_application_key.foo 11111111-2222-3333-4444-555555555555
-```
