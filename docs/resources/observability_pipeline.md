@@ -146,7 +146,7 @@ Optional:
 
 Optional:
 
-- `auth` (Block List) (see [below for nested schema](#nestedblock--config--destination--amazon_opensearch--auth))
+- `auth` (Block List) Authentication settings for Amazon OpenSearch. If omitted, basic authentication is used. (see [below for nested schema](#nestedblock--config--destination--amazon_opensearch--auth))
 - `bulk_index` (String) The index or datastream to write logs to.
 
 <a id="nestedblock--config--destination--amazon_opensearch--auth"></a>
@@ -154,14 +154,25 @@ Optional:
 
 Required:
 
-- `strategy` (String) The authentication strategy to use (e.g. aws or basic).
+- `strategy` (String) The authentication strategy to use (e.g. aws or basic). Valid values are `aws`, `basic`.
+
+Optional:
+
+- `aws` (Block List) AWS authentication settings. (see [below for nested schema](#nestedblock--config--destination--amazon_opensearch--auth--aws))
+
+<a id="nestedblock--config--destination--amazon_opensearch--auth--aws"></a>
+### Nested Schema for `config.destination.amazon_opensearch.auth.aws`
+
+Required:
+
+- `aws_region` (String) AWS region override (if applicable).
 
 Optional:
 
 - `assume_role` (String) ARN of the role to assume.
-- `aws_region` (String) AWS region override (if applicable).
 - `external_id` (String) External ID for assumed role.
 - `session_name` (String) Session name for assumed role.
+
 
 
 

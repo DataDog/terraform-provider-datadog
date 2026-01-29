@@ -339,7 +339,11 @@ type amazonOpenSearchDestinationModel struct {
 }
 
 type amazonOpenSearchAuthModel struct {
-	Strategy    types.String `tfsdk:"strategy"`
+	Strategy types.String                   `tfsdk:"strategy"`
+	Aws      []amazonOpenSearchAwsAuthModel `tfsdk:"aws"`
+}
+
+type amazonOpenSearchAwsAuthModel struct {
 	AwsRegion   types.String `tfsdk:"aws_region"`
 	AssumeRole  types.String `tfsdk:"assume_role"`
 	ExternalId  types.String `tfsdk:"external_id"`
@@ -2209,27 +2213,43 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 											},
 											Blocks: map[string]schema.Block{
 												"auth": schema.ListNestedBlock{
+													Description: "Authentication settings for Amazon OpenSearch. If omitted, basic authentication is used.",
 													NestedObject: schema.NestedBlockObject{
 														Attributes: map[string]schema.Attribute{
 															"strategy": schema.StringAttribute{
 																Required:    true,
 																Description: "The authentication strategy to use (e.g. aws or basic).",
+																Validators: []validator.String{
+																	stringvalidator.OneOf("aws", "basic"),
+																},
 															},
-															"aws_region": schema.StringAttribute{
-																Optional:    true,
-																Description: "AWS region override (if applicable).",
-															},
-															"assume_role": schema.StringAttribute{
-																Optional:    true,
-																Description: "ARN of the role to assume.",
-															},
-															"external_id": schema.StringAttribute{
-																Optional:    true,
-																Description: "External ID for assumed role.",
-															},
-															"session_name": schema.StringAttribute{
-																Optional:    true,
-																Description: "Session name for assumed role.",
+														},
+														Blocks: map[string]schema.Block{
+															"aws": schema.ListNestedBlock{
+																Description: "AWS authentication settings.",
+																NestedObject: schema.NestedBlockObject{
+																	Attributes: map[string]schema.Attribute{
+																		"aws_region": schema.StringAttribute{
+																			Required:    true,
+																			Description: "AWS region override (if applicable).",
+																		},
+																		"assume_role": schema.StringAttribute{
+																			Optional:    true,
+																			Description: "ARN of the role to assume.",
+																		},
+																		"external_id": schema.StringAttribute{
+																			Optional:    true,
+																			Description: "External ID for assumed role.",
+																		},
+																		"session_name": schema.StringAttribute{
+																			Optional:    true,
+																			Description: "Session name for assumed role.",
+																		},
+																	},
+																},
+																Validators: []validator.List{
+																	listvalidator.SizeAtMost(1),
+																},
 															},
 														},
 													},
@@ -2647,7 +2667,12 @@ func expandPipeline(ctx context.Context, state *observabilityPipelineModel) (*da
 			config.Destinations = append(config.Destinations, expandOpenSearchDestination(ctx, dest, d))
 		}
 		for _, d := range dest.AmazonOpenSearchDestination {
-			config.Destinations = append(config.Destinations, expandAmazonOpenSearchDestination(ctx, dest, d))
+			item, d := expandAmazonOpenSearchDestination(ctx, dest, d)
+			diags.Append(d...)
+			if d.HasError() {
+				return nil, diags
+			}
+			config.Destinations = append(config.Destinations, item)
 		}
 		for _, d := range dest.SocketDestination {
 			item, socketDiags := observability_pipeline.ExpandSocketDestination(ctx, dest.Id.ValueString(), dest.Inputs, d)
@@ -5489,7 +5514,8 @@ func flattenOpenSearchDestination(ctx context.Context, src *datadogV2.Observabil
 	return out
 }
 
-func expandAmazonOpenSearchDestination(ctx context.Context, dest *destinationModel, src *amazonOpenSearchDestinationModel) datadogV2.ObservabilityPipelineConfigDestinationItem {
+func expandAmazonOpenSearchDestination(ctx context.Context, dest *destinationModel, src *amazonOpenSearchDestinationModel) (datadogV2.ObservabilityPipelineConfigDestinationItem, diag.Diagnostics) {
+	diags := diag.Diagnostics{}
 	amazonopensearch := datadogV2.NewObservabilityPipelineAmazonOpenSearchDestinationWithDefaults()
 	amazonopensearch.SetId(dest.Id.ValueString())
 
@@ -5501,29 +5527,53 @@ func expandAmazonOpenSearchDestination(ctx context.Context, dest *destinationMod
 		amazonopensearch.SetBulkIndex(src.BulkIndex.ValueString())
 	}
 
-	if len(src.Auth) > 0 {
-		authSrc := src.Auth[0]
-		auth := datadogV2.ObservabilityPipelineAmazonOpenSearchDestinationAuth{
-			Strategy: datadogV2.ObservabilityPipelineAmazonOpenSearchDestinationAuthStrategy(authSrc.Strategy.ValueString()),
-		}
-		if !authSrc.AwsRegion.IsNull() {
-			auth.AwsRegion = authSrc.AwsRegion.ValueStringPointer()
-		}
-		if !authSrc.AssumeRole.IsNull() {
-			auth.AssumeRole = authSrc.AssumeRole.ValueStringPointer()
-		}
-		if !authSrc.ExternalId.IsNull() {
-			auth.ExternalId = authSrc.ExternalId.ValueStringPointer()
-		}
-		if !authSrc.SessionName.IsNull() {
-			auth.SessionName = authSrc.SessionName.ValueStringPointer()
-		}
-		amazonopensearch.SetAuth(auth)
+	if len(src.Auth) == 0 {
+		diags.AddError("Invalid Amazon OpenSearch auth configuration", "auth is required.")
+		return datadogV2.ObservabilityPipelineConfigDestinationItem{}, diags
 	}
+
+	authSrc := src.Auth[0]
+	if authSrc.Strategy.IsNull() || authSrc.Strategy.IsUnknown() {
+		diags.AddError("Invalid Amazon OpenSearch auth configuration", "auth.strategy is required.")
+		return datadogV2.ObservabilityPipelineConfigDestinationItem{}, diags
+	}
+	strategy := authSrc.Strategy.ValueString()
+	hasAws := len(authSrc.Aws) > 0
+
+	if strategy == "aws" && !hasAws {
+		diags.AddError("Invalid Amazon OpenSearch auth configuration", "auth.strategy is set to aws but auth.aws is not configured.")
+		return datadogV2.ObservabilityPipelineConfigDestinationItem{}, diags
+	}
+	if strategy == "basic" && hasAws {
+		diags.AddError("Invalid Amazon OpenSearch auth configuration", "auth.aws is not allowed when using basic auth.")
+		return datadogV2.ObservabilityPipelineConfigDestinationItem{}, diags
+	}
+
+	auth := datadogV2.ObservabilityPipelineAmazonOpenSearchDestinationAuth{
+		Strategy: datadogV2.ObservabilityPipelineAmazonOpenSearchDestinationAuthStrategy(strategy),
+	}
+	if strategy == "aws" && hasAws {
+		awsSrc := authSrc.Aws[0]
+		if awsSrc.AwsRegion.IsNull() || awsSrc.AwsRegion.IsUnknown() {
+			diags.AddError("Invalid Amazon OpenSearch auth configuration", "auth.aws.aws_region is required when using aws strategy.")
+			return datadogV2.ObservabilityPipelineConfigDestinationItem{}, diags
+		}
+		auth.AwsRegion = awsSrc.AwsRegion.ValueStringPointer()
+		if !awsSrc.AssumeRole.IsNull() {
+			auth.AssumeRole = awsSrc.AssumeRole.ValueStringPointer()
+		}
+		if !awsSrc.ExternalId.IsNull() {
+			auth.ExternalId = awsSrc.ExternalId.ValueStringPointer()
+		}
+		if !awsSrc.SessionName.IsNull() {
+			auth.SessionName = awsSrc.SessionName.ValueStringPointer()
+		}
+	}
+	amazonopensearch.SetAuth(auth)
 
 	return datadogV2.ObservabilityPipelineConfigDestinationItem{
 		ObservabilityPipelineAmazonOpenSearchDestination: amazonopensearch,
-	}
+	}, diags
 }
 
 func flattenAmazonOpenSearchDestination(src *datadogV2.ObservabilityPipelineAmazonOpenSearchDestination) *amazonOpenSearchDestinationModel {
@@ -5537,15 +5587,20 @@ func flattenAmazonOpenSearchDestination(src *datadogV2.ObservabilityPipelineAmaz
 		model.BulkIndex = types.StringValue(*v)
 	}
 
-	model.Auth = []amazonOpenSearchAuthModel{
-		{
-			Strategy:    types.StringValue(string(src.Auth.Strategy)),
-			AwsRegion:   types.StringPointerValue(src.Auth.AwsRegion),
-			AssumeRole:  types.StringPointerValue(src.Auth.AssumeRole),
-			ExternalId:  types.StringPointerValue(src.Auth.ExternalId),
-			SessionName: types.StringPointerValue(src.Auth.SessionName),
-		},
+	authModel := amazonOpenSearchAuthModel{
+		Strategy: types.StringValue(string(src.Auth.Strategy)),
 	}
+	if string(src.Auth.Strategy) == "aws" || src.Auth.AwsRegion != nil || src.Auth.AssumeRole != nil || src.Auth.ExternalId != nil || src.Auth.SessionName != nil {
+		authModel.Aws = []amazonOpenSearchAwsAuthModel{
+			{
+				AwsRegion:   types.StringPointerValue(src.Auth.AwsRegion),
+				AssumeRole:  types.StringPointerValue(src.Auth.AssumeRole),
+				ExternalId:  types.StringPointerValue(src.Auth.ExternalId),
+				SessionName: types.StringPointerValue(src.Auth.SessionName),
+			},
+		}
+	}
+	model.Auth = []amazonOpenSearchAuthModel{authModel}
 
 	return model
 }

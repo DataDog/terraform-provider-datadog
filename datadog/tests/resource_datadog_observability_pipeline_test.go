@@ -3517,11 +3517,13 @@ resource "datadog_observability_pipeline" "amazon_opensearch" {
         bulk_index = "logs-datastream"
 
         auth {
-          strategy     = "aws"
-          aws_region   = "us-east-1"
-          assume_role  = "arn:aws:iam::123456789012:role/example-role"
-          external_id  = "external-id-123"
-          session_name = "aos-session"
+          strategy = "aws"
+          aws {
+            aws_region   = "us-east-1"
+            assume_role  = "arn:aws:iam::123456789012:role/example-role"
+            external_id  = "external-id-123"
+            session_name = "aos-session"
+          }
         }
       }
     }
@@ -3533,12 +3535,11 @@ resource "datadog_observability_pipeline" "amazon_opensearch" {
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.id", "aos-dest-1"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "source-1"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_opensearch.0.bulk_index", "logs-datastream"),
-
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_opensearch.0.auth.0.strategy", "aws"),
-					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_opensearch.0.auth.0.aws_region", "us-east-1"),
-					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_opensearch.0.auth.0.assume_role", "arn:aws:iam::123456789012:role/example-role"),
-					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_opensearch.0.auth.0.external_id", "external-id-123"),
-					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_opensearch.0.auth.0.session_name", "aos-session"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_opensearch.0.auth.0.aws.0.aws_region", "us-east-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_opensearch.0.auth.0.aws.0.assume_role", "arn:aws:iam::123456789012:role/example-role"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_opensearch.0.auth.0.aws.0.external_id", "external-id-123"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_opensearch.0.auth.0.aws.0.session_name", "aos-session"),
 				),
 			},
 		},
