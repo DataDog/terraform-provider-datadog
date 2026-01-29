@@ -5941,3 +5941,139 @@ resource "datadog_observability_pipeline" "datadog_logs_routes_test" {
 }
 `
 }
+
+func TestAccDatadogObservabilityPipeline_elasticsearchValidation(t *testing.T) {
+	t.Parallel()
+	_, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		Steps: []resource.TestStep{
+			{
+				// Neither bulk_index nor data_stream specified
+				Config: `
+resource "datadog_observability_pipeline" "elasticsearch_validation" {
+  name = "elasticsearch-validation-pipeline"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+    
+    destination {
+      id     = "elasticsearch-destination-1"
+      inputs = ["source-1"]
+            
+      elasticsearch {
+        api_version = "v7"
+      }
+    }
+  }
+}
+`,
+				ExpectError: regexp.MustCompile(`(?s).*exactly one of these attributes must be configured.*bulk_index.*data_stream.*`),
+			},
+			{
+				// Both bulk_index and data_stream specified
+				Config: `
+resource "datadog_observability_pipeline" "elasticsearch_validation" {
+  name = "elasticsearch-validation-pipeline"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+    
+    destination {
+      id     = "elasticsearch-destination-1"
+      inputs = ["source-1"]
+            
+      elasticsearch {
+        api_version = "v7"
+        bulk_index  = "logs-index"
+        data_stream {
+          dtype     = "logs"
+          dataset   = "my-app"
+          namespace = "production"
+        }
+      }
+    }
+  }
+}
+`,
+				ExpectError: regexp.MustCompile(`(?s).*exactly one of these attributes must be configured.*bulk_index.*data_stream.*`),
+			},
+		},
+	})
+}
+
+func TestAccDatadogObservabilityPipeline_opensearchValidation(t *testing.T) {
+	t.Parallel()
+	_, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		Steps: []resource.TestStep{
+			{
+				// Neither bulk_index nor data_stream specified
+				Config: `
+resource "datadog_observability_pipeline" "opensearch_validation" {
+  name = "opensearch-validation-pipeline"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+    
+    destination {
+      id     = "opensearch-destination-1"
+      inputs = ["source-1"]
+            
+      opensearch {
+      }
+    }
+  }
+}
+`,
+				ExpectError: regexp.MustCompile(`(?s).*exactly one of these attributes must be configured.*bulk_index.*data_stream.*`),
+			},
+			{
+				// Both bulk_index and data_stream specified
+				Config: `
+resource "datadog_observability_pipeline" "opensearch_validation" {
+  name = "opensearch-validation-pipeline"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+    
+    destination {
+      id     = "opensearch-destination-1"
+      inputs = ["source-1"]
+            
+      opensearch {
+        bulk_index = "logs-index"
+        data_stream {
+          dtype     = "logs"
+          dataset   = "my-app"
+          namespace = "production"
+        }
+      }
+    }
+  }
+}
+`,
+				ExpectError: regexp.MustCompile(`(?s).*exactly one of these attributes must be configured.*bulk_index.*data_stream.*`),
+			},
+		},
+	})
+}

@@ -7,7 +7,7 @@ import (
 	"os"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
-	"github.com/hashicorp/terraform-plugin-framework-validators/resourcevalidator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 
@@ -23,9 +23,8 @@ import (
 )
 
 var (
-	_ resource.ResourceWithConfigure        = &observabilityPipelineResource{}
-	_ resource.ResourceWithImportState      = &observabilityPipelineResource{}
-	_ resource.ResourceWithConfigValidators = &observabilityPipelineResource{}
+	_ resource.ResourceWithConfigure   = &observabilityPipelineResource{}
+	_ resource.ResourceWithImportState = &observabilityPipelineResource{}
 )
 
 type observabilityPipelineResource struct {
@@ -658,21 +657,6 @@ func (r *observabilityPipelineResource) Configure(_ context.Context, request res
 
 func (r *observabilityPipelineResource) Metadata(_ context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
 	response.TypeName = "observability_pipeline"
-}
-
-func (r *observabilityPipelineResource) ConfigValidators(ctx context.Context) []resource.ConfigValidator {
-	return []resource.ConfigValidator{
-		// ElasticSearch destination: require exactly one of bulk_index or data_stream
-		resourcevalidator.ExactlyOneOf(
-			frameworkPath.MatchRoot("config").AtAnyListIndex().AtName("destination").AtAnyListIndex().AtName("elasticsearch").AtAnyListIndex().AtName("bulk_index"),
-			frameworkPath.MatchRoot("config").AtAnyListIndex().AtName("destination").AtAnyListIndex().AtName("elasticsearch").AtAnyListIndex().AtName("data_stream"),
-		),
-		// OpenSearch destination: require exactly one of bulk_index or data_stream
-		resourcevalidator.ExactlyOneOf(
-			frameworkPath.MatchRoot("config").AtAnyListIndex().AtName("destination").AtAnyListIndex().AtName("opensearch").AtAnyListIndex().AtName("bulk_index"),
-			frameworkPath.MatchRoot("config").AtAnyListIndex().AtName("destination").AtAnyListIndex().AtName("opensearch").AtAnyListIndex().AtName("data_stream"),
-		),
-	}
 }
 
 func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
@@ -2208,6 +2192,12 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 													},
 												},
 											},
+											Validators: []validator.Object{
+												objectvalidator.ExactlyOneOf(
+													frameworkPath.MatchRelative().AtName("bulk_index"),
+													frameworkPath.MatchRelative().AtName("data_stream"),
+												),
+											},
 										},
 									},
 									"opensearch": schema.ListNestedBlock{
@@ -2242,6 +2232,12 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 														listvalidator.SizeAtMost(1),
 													},
 												},
+											},
+											Validators: []validator.Object{
+												objectvalidator.ExactlyOneOf(
+													frameworkPath.MatchRelative().AtName("bulk_index"),
+													frameworkPath.MatchRelative().AtName("data_stream"),
+												),
 											},
 										},
 									},
