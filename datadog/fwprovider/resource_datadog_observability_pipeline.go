@@ -5528,18 +5528,10 @@ func expandAmazonOpenSearchDestination(ctx context.Context, dest *destinationMod
 		}
 		if len(authSrc.Aws) > 0 {
 			awsSrc := authSrc.Aws[0]
-			if !awsSrc.AwsRegion.IsNull() {
-				auth.AwsRegion = awsSrc.AwsRegion.ValueStringPointer()
-			}
-			if !awsSrc.AssumeRole.IsNull() {
-				auth.AssumeRole = awsSrc.AssumeRole.ValueStringPointer()
-			}
-			if !awsSrc.ExternalId.IsNull() {
-				auth.ExternalId = awsSrc.ExternalId.ValueStringPointer()
-			}
-			if !awsSrc.SessionName.IsNull() {
-				auth.SessionName = awsSrc.SessionName.ValueStringPointer()
-			}
+			auth.AwsRegion = awsSrc.AwsRegion.ValueStringPointer()
+			auth.AssumeRole = awsSrc.AssumeRole.ValueStringPointer()
+			auth.ExternalId = awsSrc.ExternalId.ValueStringPointer()
+			auth.SessionName = awsSrc.SessionName.ValueStringPointer()
 		}
 		amazonopensearch.SetAuth(auth)
 	}
