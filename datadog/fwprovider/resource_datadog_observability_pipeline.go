@@ -7,7 +7,6 @@ import (
 	"os"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
-	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 
@@ -2189,14 +2188,9 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 													},
 													Validators: []validator.List{
 														listvalidator.SizeAtMost(1),
+														listvalidator.ConflictsWith(frameworkPath.MatchRelative().AtParent().AtName("bulk_index")),
 													},
 												},
-											},
-											Validators: []validator.Object{
-												objectvalidator.ExactlyOneOf(
-													frameworkPath.MatchRelative().AtName("bulk_index"),
-													frameworkPath.MatchRelative().AtName("data_stream"),
-												),
 											},
 										},
 									},
@@ -2230,14 +2224,9 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 													},
 													Validators: []validator.List{
 														listvalidator.SizeAtMost(1),
+														listvalidator.ConflictsWith(frameworkPath.MatchRelative().AtParent().AtName("bulk_index")),
 													},
 												},
-											},
-											Validators: []validator.Object{
-												objectvalidator.ExactlyOneOf(
-													frameworkPath.MatchRelative().AtName("bulk_index"),
-													frameworkPath.MatchRelative().AtName("data_stream"),
-												),
 											},
 										},
 									},

@@ -5950,32 +5950,6 @@ func TestAccDatadogObservabilityPipeline_elasticsearchValidation(t *testing.T) {
 		ProtoV5ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
-				// Neither bulk_index nor data_stream specified
-				Config: `
-resource "datadog_observability_pipeline" "elasticsearch_validation" {
-  name = "elasticsearch-validation-pipeline"
-
-  config {
-    source {
-      id = "source-1"
-      datadog_agent {
-      }
-    }
-    
-    destination {
-      id     = "elasticsearch-destination-1"
-      inputs = ["source-1"]
-            
-      elasticsearch {
-        api_version = "v7"
-      }
-    }
-  }
-}
-`,
-				ExpectError: regexp.MustCompile(`(?s).*exactly one of these attributes must be configured.*bulk_index.*data_stream.*`),
-			},
-			{
 				// Both bulk_index and data_stream specified
 				Config: `
 resource "datadog_observability_pipeline" "elasticsearch_validation" {
@@ -6005,7 +5979,7 @@ resource "datadog_observability_pipeline" "elasticsearch_validation" {
   }
 }
 `,
-				ExpectError: regexp.MustCompile(`(?s).*exactly one of these attributes must be configured.*bulk_index.*data_stream.*`),
+				ExpectError: regexp.MustCompile(`Invalid Attribute Combination`),
 			},
 		},
 	})
@@ -6018,31 +5992,6 @@ func TestAccDatadogObservabilityPipeline_opensearchValidation(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		ProtoV5ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
-			{
-				// Neither bulk_index nor data_stream specified
-				Config: `
-resource "datadog_observability_pipeline" "opensearch_validation" {
-  name = "opensearch-validation-pipeline"
-
-  config {
-    source {
-      id = "source-1"
-      datadog_agent {
-      }
-    }
-    
-    destination {
-      id     = "opensearch-destination-1"
-      inputs = ["source-1"]
-            
-      opensearch {
-      }
-    }
-  }
-}
-`,
-				ExpectError: regexp.MustCompile(`(?s).*exactly one of these attributes must be configured.*bulk_index.*data_stream.*`),
-			},
 			{
 				// Both bulk_index and data_stream specified
 				Config: `
@@ -6072,7 +6021,7 @@ resource "datadog_observability_pipeline" "opensearch_validation" {
   }
 }
 `,
-				ExpectError: regexp.MustCompile(`(?s).*exactly one of these attributes must be configured.*bulk_index.*data_stream.*`),
+				ExpectError: regexp.MustCompile(`Invalid Attribute Combination`),
 			},
 		},
 	})
