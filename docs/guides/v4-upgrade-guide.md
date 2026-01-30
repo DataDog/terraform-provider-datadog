@@ -199,7 +199,7 @@ The following deprecated AWS integration resources have been removed in v4.0.0:
 - `datadog_integration_aws_log_collection`
 - `datadog_integration_aws_lambda_arn`
 
-These resources have been replaced by the `datadog_integration_aws_account` resource, which provides a unified way to manage AWS integrations.
+These resources have been replaced by the [`datadog_integration_aws_account`](https://registry.terraform.io/providers/DataDog/datadog/latest/docs/resources/integration_aws_account) resource, which provides a unified way to manage AWS integrations.
 
 **Before (v3.x):**
 
