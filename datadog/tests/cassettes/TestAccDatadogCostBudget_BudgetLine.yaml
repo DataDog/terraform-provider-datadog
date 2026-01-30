@@ -1,0 +1,526 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 796
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"end_month":202603,"entries":[{"amount":1000,"month":202601,"tag_filters":[{"tag_key":"environment","tag_value":"production"}]},{"amount":1100,"month":202602,"tag_filters":[{"tag_key":"environment","tag_value":"production"}]},{"amount":1200,"month":202603,"tag_filters":[{"tag_key":"environment","tag_value":"production"}]},{"amount":600,"month":202603,"tag_filters":[{"tag_key":"environment","tag_value":"staging"}]},{"amount":500,"month":202601,"tag_filters":[{"tag_key":"environment","tag_value":"staging"}]},{"amount":550,"month":202602,"tag_filters":[{"tag_key":"environment","tag_value":"staging"}]}],"metrics_query":"sum:aws.cost.amortized{*} by {environment}","name":"tf-TestAccDatadogCostBudget_BudgetLine-local-1769768620","start_month":202601},"type":"budget"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cost/budget/validate
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 90
+        uncompressed: false
+        body: '{"data":{"id":"budget_validation","type":"budget_validation","attributes":{"valid":true}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 140.598875ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 796
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"end_month":202603,"entries":[{"amount":1000,"month":202601,"tag_filters":[{"tag_key":"environment","tag_value":"production"}]},{"amount":1100,"month":202602,"tag_filters":[{"tag_key":"environment","tag_value":"production"}]},{"amount":1200,"month":202603,"tag_filters":[{"tag_key":"environment","tag_value":"production"}]},{"amount":600,"month":202603,"tag_filters":[{"tag_key":"environment","tag_value":"staging"}]},{"amount":500,"month":202601,"tag_filters":[{"tag_key":"environment","tag_value":"staging"}]},{"amount":550,"month":202602,"tag_filters":[{"tag_key":"environment","tag_value":"staging"}]}],"metrics_query":"sum:aws.cost.amortized{*} by {environment}","name":"tf-TestAccDatadogCostBudget_BudgetLine-local-1769768620","start_month":202601},"type":"budget"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cost/budget/validate
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 90
+        uncompressed: false
+        body: '{"data":{"id":"budget_validation","type":"budget_validation","attributes":{"valid":true}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 101.015875ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 796
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"end_month":202603,"entries":[{"amount":1100,"month":202602,"tag_filters":[{"tag_key":"environment","tag_value":"production"}]},{"amount":1200,"month":202603,"tag_filters":[{"tag_key":"environment","tag_value":"production"}]},{"amount":1000,"month":202601,"tag_filters":[{"tag_key":"environment","tag_value":"production"}]},{"amount":550,"month":202602,"tag_filters":[{"tag_key":"environment","tag_value":"staging"}]},{"amount":600,"month":202603,"tag_filters":[{"tag_key":"environment","tag_value":"staging"}]},{"amount":500,"month":202601,"tag_filters":[{"tag_key":"environment","tag_value":"staging"}]}],"metrics_query":"sum:aws.cost.amortized{*} by {environment}","name":"tf-TestAccDatadogCostBudget_BudgetLine-local-1769768620","start_month":202601},"type":"budget"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cost/budget
+        method: PUT
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":{"id":"92ba1b6c-830c-4089-a7a0-1c4b94fd320c","type":"budget","attributes":{"created_at":1769768623491,"created_by":"cb0fe8fe-673a-4678-8ff5-7936a9af21ba","end_month":202603,"entries":[{"month":202602,"amount":1100,"tag_filters":[{"tag_key":"environment","tag_value":"production"}]},{"month":202603,"amount":1200,"tag_filters":[{"tag_key":"environment","tag_value":"production"}]},{"month":202601,"amount":1000,"tag_filters":[{"tag_key":"environment","tag_value":"production"}]},{"month":202602,"amount":550,"tag_filters":[{"tag_key":"environment","tag_value":"staging"}]},{"month":202603,"amount":600,"tag_filters":[{"tag_key":"environment","tag_value":"staging"}]},{"month":202601,"amount":500,"tag_filters":[{"tag_key":"environment","tag_value":"staging"}]}],"metrics_query":"sum:aws.cost.amortized{*} by {environment}","name":"tf-TestAccDatadogCostBudget_BudgetLine-local-1769768620","org_id":321813,"start_month":202601,"total_amount":4950,"updated_at":1769768623491,"updated_by":"cb0fe8fe-673a-4678-8ff5-7936a9af21ba"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 135.580583ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 840
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"end_month":202603,"entries":[{"amount":1100,"month":202602,"tag_filters":[{"tag_key":"environment","tag_value":"production"}]},{"amount":1200,"month":202603,"tag_filters":[{"tag_key":"environment","tag_value":"production"}]},{"amount":1000,"month":202601,"tag_filters":[{"tag_key":"environment","tag_value":"production"}]},{"amount":550,"month":202602,"tag_filters":[{"tag_key":"environment","tag_value":"staging"}]},{"amount":600,"month":202603,"tag_filters":[{"tag_key":"environment","tag_value":"staging"}]},{"amount":500,"month":202601,"tag_filters":[{"tag_key":"environment","tag_value":"staging"}]}],"metrics_query":"sum:aws.cost.amortized{*} by {environment}","name":"tf-TestAccDatadogCostBudget_BudgetLine-local-1769768620","start_month":202601},"id":"92ba1b6c-830c-4089-a7a0-1c4b94fd320c","type":"budget"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cost/budget/validate
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 90
+        uncompressed: false
+        body: '{"data":{"id":"budget_validation","type":"budget_validation","attributes":{"valid":true}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 163.461ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cost/budget/92ba1b6c-830c-4089-a7a0-1c4b94fd320c
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":{"id":"92ba1b6c-830c-4089-a7a0-1c4b94fd320c","type":"budget","attributes":{"created_at":1769768623491,"created_by":"cb0fe8fe-673a-4678-8ff5-7936a9af21ba","end_month":202603,"entries":[{"month":202602,"amount":1100,"tag_filters":[{"tag_key":"environment","tag_value":"production"}]},{"month":202603,"amount":1200,"tag_filters":[{"tag_key":"environment","tag_value":"production"}]},{"month":202601,"amount":1000,"tag_filters":[{"tag_key":"environment","tag_value":"production"}]},{"month":202602,"amount":550,"tag_filters":[{"tag_key":"environment","tag_value":"staging"}]},{"month":202603,"amount":600,"tag_filters":[{"tag_key":"environment","tag_value":"staging"}]},{"month":202601,"amount":500,"tag_filters":[{"tag_key":"environment","tag_value":"staging"}]}],"metrics_query":"sum:aws.cost.amortized{*} by {environment}","name":"tf-TestAccDatadogCostBudget_BudgetLine-local-1769768620","org_id":321813,"start_month":202601,"total_amount":4950,"updated_at":1769768623491,"updated_by":"cb0fe8fe-673a-4678-8ff5-7936a9af21ba"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 119.886292ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 840
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"end_month":202603,"entries":[{"amount":1200,"month":202603,"tag_filters":[{"tag_key":"environment","tag_value":"production"}]},{"amount":1000,"month":202601,"tag_filters":[{"tag_key":"environment","tag_value":"production"}]},{"amount":1100,"month":202602,"tag_filters":[{"tag_key":"environment","tag_value":"production"}]},{"amount":500,"month":202601,"tag_filters":[{"tag_key":"environment","tag_value":"staging"}]},{"amount":550,"month":202602,"tag_filters":[{"tag_key":"environment","tag_value":"staging"}]},{"amount":600,"month":202603,"tag_filters":[{"tag_key":"environment","tag_value":"staging"}]}],"metrics_query":"sum:aws.cost.amortized{*} by {environment}","name":"tf-TestAccDatadogCostBudget_BudgetLine-local-1769768620","start_month":202601},"id":"92ba1b6c-830c-4089-a7a0-1c4b94fd320c","type":"budget"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cost/budget/validate
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 90
+        uncompressed: false
+        body: '{"data":{"id":"budget_validation","type":"budget_validation","attributes":{"valid":true}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 105.622583ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cost/budget/92ba1b6c-830c-4089-a7a0-1c4b94fd320c
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":{"id":"92ba1b6c-830c-4089-a7a0-1c4b94fd320c","type":"budget","attributes":{"created_at":1769768623491,"created_by":"cb0fe8fe-673a-4678-8ff5-7936a9af21ba","end_month":202603,"entries":[{"month":202602,"amount":1100,"tag_filters":[{"tag_key":"environment","tag_value":"production"}]},{"month":202603,"amount":1200,"tag_filters":[{"tag_key":"environment","tag_value":"production"}]},{"month":202601,"amount":1000,"tag_filters":[{"tag_key":"environment","tag_value":"production"}]},{"month":202602,"amount":550,"tag_filters":[{"tag_key":"environment","tag_value":"staging"}]},{"month":202603,"amount":600,"tag_filters":[{"tag_key":"environment","tag_value":"staging"}]},{"month":202601,"amount":500,"tag_filters":[{"tag_key":"environment","tag_value":"staging"}]}],"metrics_query":"sum:aws.cost.amortized{*} by {environment}","name":"tf-TestAccDatadogCostBudget_BudgetLine-local-1769768620","org_id":321813,"start_month":202601,"total_amount":4950,"updated_at":1769768623491,"updated_by":"cb0fe8fe-673a-4678-8ff5-7936a9af21ba"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 128.673ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 807
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"end_month":202603,"entries":[{"amount":1100,"month":202603,"tag_filters":[{"tag_key":"environment","tag_value":"staging"}]},{"amount":1000,"month":202601,"tag_filters":[{"tag_key":"environment","tag_value":"staging"}]},{"amount":1050,"month":202602,"tag_filters":[{"tag_key":"environment","tag_value":"staging"}]},{"amount":2200,"month":202603,"tag_filters":[{"tag_key":"environment","tag_value":"production"}]},{"amount":2000,"month":202601,"tag_filters":[{"tag_key":"environment","tag_value":"production"}]},{"amount":2100,"month":202602,"tag_filters":[{"tag_key":"environment","tag_value":"production"}]}],"metrics_query":"sum:aws.cost.amortized{*} by {environment}","name":"tf-TestAccDatadogCostBudget_BudgetLine-local-1769768620 Updated","start_month":202601},"type":"budget"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cost/budget/validate
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 90
+        uncompressed: false
+        body: '{"data":{"id":"budget_validation","type":"budget_validation","attributes":{"valid":true}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 106.450083ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 807
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"end_month":202603,"entries":[{"amount":1050,"month":202602,"tag_filters":[{"tag_key":"environment","tag_value":"staging"}]},{"amount":1100,"month":202603,"tag_filters":[{"tag_key":"environment","tag_value":"staging"}]},{"amount":1000,"month":202601,"tag_filters":[{"tag_key":"environment","tag_value":"staging"}]},{"amount":2000,"month":202601,"tag_filters":[{"tag_key":"environment","tag_value":"production"}]},{"amount":2100,"month":202602,"tag_filters":[{"tag_key":"environment","tag_value":"production"}]},{"amount":2200,"month":202603,"tag_filters":[{"tag_key":"environment","tag_value":"production"}]}],"metrics_query":"sum:aws.cost.amortized{*} by {environment}","name":"tf-TestAccDatadogCostBudget_BudgetLine-local-1769768620 Updated","start_month":202601},"type":"budget"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cost/budget/validate
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 90
+        uncompressed: false
+        body: '{"data":{"id":"budget_validation","type":"budget_validation","attributes":{"valid":true}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 95.014417ms
+    - id: 9
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 851
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"end_month":202603,"entries":[{"amount":1050,"month":202602,"tag_filters":[{"tag_key":"environment","tag_value":"staging"}]},{"amount":1100,"month":202603,"tag_filters":[{"tag_key":"environment","tag_value":"staging"}]},{"amount":1000,"month":202601,"tag_filters":[{"tag_key":"environment","tag_value":"staging"}]},{"amount":2200,"month":202603,"tag_filters":[{"tag_key":"environment","tag_value":"production"}]},{"amount":2000,"month":202601,"tag_filters":[{"tag_key":"environment","tag_value":"production"}]},{"amount":2100,"month":202602,"tag_filters":[{"tag_key":"environment","tag_value":"production"}]}],"metrics_query":"sum:aws.cost.amortized{*} by {environment}","name":"tf-TestAccDatadogCostBudget_BudgetLine-local-1769768620 Updated","start_month":202601},"id":"92ba1b6c-830c-4089-a7a0-1c4b94fd320c","type":"budget"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cost/budget
+        method: PUT
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 1010
+        uncompressed: false
+        body: '{"data":{"id":"92ba1b6c-830c-4089-a7a0-1c4b94fd320c","type":"budget","attributes":{"created_at":-62135596800000,"created_by":"","end_month":202603,"entries":[{"month":202602,"amount":1050,"tag_filters":[{"tag_key":"environment","tag_value":"staging"}]},{"month":202603,"amount":1100,"tag_filters":[{"tag_key":"environment","tag_value":"staging"}]},{"month":202601,"amount":1000,"tag_filters":[{"tag_key":"environment","tag_value":"staging"}]},{"month":202603,"amount":2200,"tag_filters":[{"tag_key":"environment","tag_value":"production"}]},{"month":202601,"amount":2000,"tag_filters":[{"tag_key":"environment","tag_value":"production"}]},{"month":202602,"amount":2100,"tag_filters":[{"tag_key":"environment","tag_value":"production"}]}],"metrics_query":"sum:aws.cost.amortized{*} by {environment}","name":"tf-TestAccDatadogCostBudget_BudgetLine-local-1769768620 Updated","org_id":321813,"start_month":202601,"total_amount":9450,"updated_at":1769768625568,"updated_by":"cb0fe8fe-673a-4678-8ff5-7936a9af21ba"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 138.474833ms
+    - id: 10
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 851
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"end_month":202603,"entries":[{"amount":1000,"month":202601,"tag_filters":[{"tag_key":"environment","tag_value":"staging"}]},{"amount":1050,"month":202602,"tag_filters":[{"tag_key":"environment","tag_value":"staging"}]},{"amount":1100,"month":202603,"tag_filters":[{"tag_key":"environment","tag_value":"staging"}]},{"amount":2200,"month":202603,"tag_filters":[{"tag_key":"environment","tag_value":"production"}]},{"amount":2000,"month":202601,"tag_filters":[{"tag_key":"environment","tag_value":"production"}]},{"amount":2100,"month":202602,"tag_filters":[{"tag_key":"environment","tag_value":"production"}]}],"metrics_query":"sum:aws.cost.amortized{*} by {environment}","name":"tf-TestAccDatadogCostBudget_BudgetLine-local-1769768620 Updated","start_month":202601},"id":"92ba1b6c-830c-4089-a7a0-1c4b94fd320c","type":"budget"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cost/budget/validate
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 90
+        uncompressed: false
+        body: '{"data":{"id":"budget_validation","type":"budget_validation","attributes":{"valid":true}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 100.709834ms
+    - id: 11
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cost/budget/92ba1b6c-830c-4089-a7a0-1c4b94fd320c
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":{"id":"92ba1b6c-830c-4089-a7a0-1c4b94fd320c","type":"budget","attributes":{"created_at":1769768623491,"created_by":"cb0fe8fe-673a-4678-8ff5-7936a9af21ba","end_month":202603,"entries":[{"month":202602,"amount":1050,"tag_filters":[{"tag_key":"environment","tag_value":"staging"}]},{"month":202603,"amount":1100,"tag_filters":[{"tag_key":"environment","tag_value":"staging"}]},{"month":202601,"amount":1000,"tag_filters":[{"tag_key":"environment","tag_value":"staging"}]},{"month":202603,"amount":2200,"tag_filters":[{"tag_key":"environment","tag_value":"production"}]},{"month":202601,"amount":2000,"tag_filters":[{"tag_key":"environment","tag_value":"production"}]},{"month":202602,"amount":2100,"tag_filters":[{"tag_key":"environment","tag_value":"production"}]}],"metrics_query":"sum:aws.cost.amortized{*} by {environment}","name":"tf-TestAccDatadogCostBudget_BudgetLine-local-1769768620 Updated","org_id":321813,"start_month":202601,"total_amount":9450,"updated_at":1769768625568,"updated_by":"cb0fe8fe-673a-4678-8ff5-7936a9af21ba"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 112.045375ms
+    - id: 12
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 851
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"end_month":202603,"entries":[{"amount":1100,"month":202603,"tag_filters":[{"tag_key":"environment","tag_value":"staging"}]},{"amount":1000,"month":202601,"tag_filters":[{"tag_key":"environment","tag_value":"staging"}]},{"amount":1050,"month":202602,"tag_filters":[{"tag_key":"environment","tag_value":"staging"}]},{"amount":2100,"month":202602,"tag_filters":[{"tag_key":"environment","tag_value":"production"}]},{"amount":2200,"month":202603,"tag_filters":[{"tag_key":"environment","tag_value":"production"}]},{"amount":2000,"month":202601,"tag_filters":[{"tag_key":"environment","tag_value":"production"}]}],"metrics_query":"sum:aws.cost.amortized{*} by {environment}","name":"tf-TestAccDatadogCostBudget_BudgetLine-local-1769768620 Updated","start_month":202601},"id":"92ba1b6c-830c-4089-a7a0-1c4b94fd320c","type":"budget"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cost/budget/validate
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 90
+        uncompressed: false
+        body: '{"data":{"id":"budget_validation","type":"budget_validation","attributes":{"valid":true}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 105.793125ms
+    - id: 13
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/cost/budget/92ba1b6c-830c-4089-a7a0-1c4b94fd320c
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 142.503542ms
+    - id: 14
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cost/budget/92ba1b6c-830c-4089-a7a0-1c4b94fd320c
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 100
+        uncompressed: false
+        body: '{"errors":[{"title":"Generic Error","detail":"rpc error: code = NotFound desc = budget not found"}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 404 Not Found
+        code: 404
+        duration: 115.305875ms
