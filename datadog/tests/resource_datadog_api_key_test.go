@@ -90,6 +90,33 @@ func TestAccDatadogApiKey_Update(t *testing.T) {
 	})
 }
 
+func TestAccDatadogApiKey_StoreKeyFalse(t *testing.T) {
+	if isRecording() || isReplaying() {
+		t.Skip("This test doesn't support recording or replaying")
+	}
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	apiKeyName := uniqueEntityName(ctx, t)
+	resourceName := "datadog_api_key.foo"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogApiKeyDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogApiKeyConfigStoreKeyFalse(apiKeyName),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogApiKeyExists(providers.frameworkProvider, resourceName),
+					resource.TestCheckResourceAttr(resourceName, "name", apiKeyName),
+					resource.TestCheckResourceAttr(resourceName, "store_key", "false"),
+					// Key should not be stored in state when store_key is false
+					resource.TestCheckNoResourceAttr(resourceName, "key"),
+				),
+			},
+		},
+	})
+}
+
 func TestDatadogApiKey_import(t *testing.T) {
 	if isRecording() || isReplaying() {
 		t.Skip("This test doesn't support recording or replaying")
@@ -126,6 +153,14 @@ resource "datadog_api_key" "foo" {
   name = "%s"
   %s
 }`, uniq, remoteConfigParam)
+}
+
+func testAccCheckDatadogApiKeyConfigStoreKeyFalse(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_api_key" "foo" {
+  name      = "%s"
+  store_key = false
+}`, uniq)
 }
 
 func testAccCheckDatadogApiKeyExists(accProvider *fwprovider.FrameworkProvider, n string) resource.TestCheckFunc {
