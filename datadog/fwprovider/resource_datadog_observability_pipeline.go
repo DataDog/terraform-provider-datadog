@@ -887,7 +887,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 													Optional:    true,
 													Description: "Optional authentication strategy for HTTP requests.",
 													Validators: []validator.String{
-														stringvalidator.OneOf("none", "basic", "bearer"),
+														stringvalidator.OneOf("none", "basic", "bearer", "custom"),
 													},
 												},
 											},

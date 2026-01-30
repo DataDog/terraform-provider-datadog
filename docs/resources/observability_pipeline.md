@@ -1490,7 +1490,7 @@ Required:
 
 Optional:
 
-- `auth_strategy` (String) Optional authentication strategy for HTTP requests. Valid values are `none`, `basic`, `bearer`.
+- `auth_strategy` (String) Optional authentication strategy for HTTP requests. Valid values are `none`, `basic`, `bearer`, `custom`.
 - `scrape_interval_secs` (Number) The interval (in seconds) between HTTP scrape requests.
 - `scrape_timeout_secs` (Number) The timeout (in seconds) for each scrape request.
 - `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--source--http_client--tls))
