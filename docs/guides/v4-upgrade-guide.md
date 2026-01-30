@@ -190,6 +190,121 @@ resource "datadog_restriction_policy" "bar" {
 1. Remove the `locked` or `restricted_roles` field from monitor resources.
 2. Create a `datadog_restriction_policy` the associated monitor ID and the roles you want to restrict.
 
+### Removed deprecated AWS integration resources
+
+The following deprecated AWS integration resources have been removed in v4.0.0:
+
+- `datadog_integration_aws`
+- `datadog_integration_aws_tag_filter`
+- `datadog_integration_aws_log_collection`
+- `datadog_integration_aws_lambda_arn`
+
+These resources have been replaced by the [`datadog_integration_aws_account`](https://registry.terraform.io/providers/DataDog/datadog/latest/docs/resources/integration_aws_account) resource, which provides a unified way to manage AWS integrations.
+
+**Before (v3.x):**
+
+```terraform
+resource "datadog_integration_aws" "foo" {
+  account_id  = "123456789012"
+  role_name   = "DatadogAWSIntegrationRole"
+  filter_tags = ["key:value"]
+  host_tags   = ["key:value", "key2:value2"]
+  account_specific_namespace_rules = {
+    auto_scaling = false
+    opsworks     = false
+  }
+  excluded_regions = ["us-east-1", "us-west-2"]
+}
+
+resource "datadog_integration_aws_tag_filter" "foo" {
+  account_id     = "123456789012"
+  namespace      = "sqs"
+  tag_filter_str = "key:value"
+}
+
+resource "datadog_integration_aws_log_collection" "main" {
+  account_id = "123456789012"
+  services   = ["lambda"]
+}
+
+resource "datadog_integration_aws_lambda_arn" "main_collector" {
+  account_id = "123456789012"
+  lambda_arn = "arn:aws:lambda:us-east-1:123456789012:function:datadog-forwarder-Forwarder"
+}
+```
+
+**After (v4.0.0):**
+
+```terraform
+resource "datadog_integration_aws_account" "foo" {
+  account_tags   = ["env:prod"]
+  aws_account_id = "123456789012"
+  aws_partition  = "aws"
+  aws_regions {
+    include_all = true
+  }
+
+  auth_config {
+    aws_auth_config_role {
+      role_name = "DatadogIntegrationRole"
+    }
+  }
+  logs_config {
+    lambda_forwarder {
+      lambdas = ["arn:aws:lambda:us-east-1:123456789012:function:my-lambda"]
+      sources = ["s3"]
+      log_source_config {
+        tag_filters {
+          source = "s3"
+          tags   = ["env:prod", "team:backend"]
+        }
+      }
+    }
+  }
+  metrics_config {
+    automute_enabled          = true
+    collect_cloudwatch_alarms = true
+    collect_custom_metrics    = true
+    enabled                   = true
+    namespace_filters {
+      exclude_only = ["AWS/SQS", "AWS/ElasticMapReduce", "AWS/Usage"]
+    }
+    tag_filters {
+      namespace = "AWS/EC2"
+      tags      = ["datadog:true"]
+    }
+  }
+  resources_config {
+    cloud_security_posture_management_collection = true
+    extended_collection                          = true
+  }
+  traces_config {
+    xray_services {
+      include_all = true
+    }
+  }
+}
+```
+
+**Migration steps:**
+
+1. Import your integrated AWS accounts into `datadog_integration_aws_account` resources using the import command:
+
+   ```shell
+   terraform import datadog_integration_aws_account.example "<datadog-aws-account-config-id>"
+   ```
+
+   The AWS Account Config ID can be retrieved by using the [List all AWS integrations](https://docs.datadoghq.com/api/latest/aws-integration/#list-all-aws-integrations) endpoint and querying by AWS Account ID.
+
+2. Once successfully imported, remove all resources of the deprecated types from your Terraform state:
+
+   ```shell
+   terraform state rm datadog_integration_aws.example
+   terraform state rm datadog_integration_aws_lambda_arn.example
+   terraform state rm datadog_integration_aws_log_collection.example
+   terraform state rm datadog_integration_aws_tag_filter.example
+   ```
+
 ## Getting Help
 
 If you encounter issues upgrading to v4.0.0:
