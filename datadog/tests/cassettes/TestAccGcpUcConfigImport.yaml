@@ -1,202 +1,202 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 334
-        transfer_encoding: []
-        trailer: {}
-        host: api.datadoghq.com
-        remote_addr: ""
-        request_uri: ""
-        body: |
-            {"data":{"attributes":{"billing_account_id":"123456_ABCDEF_123456","bucket_name":"test-gcp-bucket","export_dataset_name":"billing","export_prefix":"datadog_cloud_cost_detailed_usage_export","export_project_name":"test-gcp-project","service_account":"test-service-account@test-project.iam.gserviceaccount.com"},"type":"gcp_uc_config_post_request"}}
-        form: {}
-        headers:
-            Accept:
-                - application/json
-            Content-Type:
-                - application/json
-        url: https://api.datadoghq.com/api/v2/cost/gcp_uc_config
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
-        content_length: 512
-        uncompressed: false
-        body: '{"data":{"id":"616","type":"gcp_uc_config","attributes":{"account_id":"123456_ABCDEF_123456","bucket_name":"test-gcp-bucket","created_at":"2025-10-01T18:20:01.687597","dataset":"billing","error_messages":null,"export_prefix":"datadog_cloud_cost_detailed_usage_export","export_project_name":"test-gcp-project","months":15,"project_id":"","service_account":"test-service-account@test-project.iam.gserviceaccount.com","status":"active","status_updated_at":"2025-10-01T18:20:01.684913","updated_at":"2025-10-01T18:20:01.687597"}}}'
-        headers:
-            Content-Type:
-                - application/vnd.api+json
-        status: 200 OK
-        code: 200
-        duration: 15.8829445s
-    - id: 1
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 0
-        transfer_encoding: []
-        trailer: {}
-        host: api.datadoghq.com
-        remote_addr: ""
-        request_uri: ""
-        body: ""
-        form: {}
-        headers:
-            Accept:
-                - application/json
-        url: https://api.datadoghq.com/api/v2/cost/gcp_uc_config/616
-        method: GET
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
-        content_length: 512
-        uncompressed: false
-        body: '{"data":{"id":"616","type":"gcp_uc_config","attributes":{"account_id":"123456_ABCDEF_123456","bucket_name":"test-gcp-bucket","created_at":"2025-10-01T18:20:01.687597","dataset":"billing","error_messages":null,"export_prefix":"datadog_cloud_cost_detailed_usage_export","export_project_name":"test-gcp-project","months":15,"project_id":"","service_account":"test-service-account@test-project.iam.gserviceaccount.com","status":"active","status_updated_at":"2025-10-01T18:20:01.684913","updated_at":"2025-10-01T18:20:01.687597"}}}'
-        headers:
-            Content-Type:
-                - application/vnd.api+json
-        status: 200 OK
-        code: 200
-        duration: 79.388291ms
-    - id: 2
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 0
-        transfer_encoding: []
-        trailer: {}
-        host: api.datadoghq.com
-        remote_addr: ""
-        request_uri: ""
-        body: ""
-        form: {}
-        headers:
-            Accept:
-                - application/json
-        url: https://api.datadoghq.com/api/v2/cost/gcp_uc_config/616
-        method: GET
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
-        content_length: 512
-        uncompressed: false
-        body: '{"data":{"id":"616","type":"gcp_uc_config","attributes":{"account_id":"123456_ABCDEF_123456","bucket_name":"test-gcp-bucket","created_at":"2025-10-01T18:20:01.687597","dataset":"billing","error_messages":null,"export_prefix":"datadog_cloud_cost_detailed_usage_export","export_project_name":"test-gcp-project","months":15,"project_id":"","service_account":"test-service-account@test-project.iam.gserviceaccount.com","status":"active","status_updated_at":"2025-10-01T18:20:01.684913","updated_at":"2025-10-01T18:20:01.687597"}}}'
-        headers:
-            Content-Type:
-                - application/vnd.api+json
-        status: 200 OK
-        code: 200
-        duration: 55.873333ms
-    - id: 3
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 0
-        transfer_encoding: []
-        trailer: {}
-        host: api.datadoghq.com
-        remote_addr: ""
-        request_uri: ""
-        body: ""
-        form: {}
-        headers:
-            Accept:
-                - application/json
-        url: https://api.datadoghq.com/api/v2/cost/gcp_uc_config/616
-        method: GET
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
-        content_length: 512
-        uncompressed: false
-        body: '{"data":{"id":"616","type":"gcp_uc_config","attributes":{"account_id":"123456_ABCDEF_123456","bucket_name":"test-gcp-bucket","created_at":"2025-10-01T18:20:01.687597","dataset":"billing","error_messages":null,"export_prefix":"datadog_cloud_cost_detailed_usage_export","export_project_name":"test-gcp-project","months":15,"project_id":"","service_account":"test-service-account@test-project.iam.gserviceaccount.com","status":"active","status_updated_at":"2025-10-01T18:20:01.684913","updated_at":"2025-10-01T18:20:01.687597"}}}'
-        headers:
-            Content-Type:
-                - application/vnd.api+json
-        status: 200 OK
-        code: 200
-        duration: 56.365583ms
-    - id: 4
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 0
-        transfer_encoding: []
-        trailer: {}
-        host: api.datadoghq.com
-        remote_addr: ""
-        request_uri: ""
-        body: ""
-        form: {}
-        headers:
-            Accept:
-                - '*/*'
-        url: https://api.datadoghq.com/api/v2/cost/gcp_uc_config/616
-        method: DELETE
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
-        content_length: 0
-        uncompressed: false
-        body: ""
-        headers: {}
-        status: 204 No Content
-        code: 204
-        duration: 2.554551584s
-    - id: 5
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 0
-        transfer_encoding: []
-        trailer: {}
-        host: api.datadoghq.com
-        remote_addr: ""
-        request_uri: ""
-        body: ""
-        form: {}
-        headers:
-            Accept:
-                - application/json
-        url: https://api.datadoghq.com/api/v2/cost/gcp_uc_config/616
-        method: GET
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
-        content_length: 514
-        uncompressed: false
-        body: '{"data":{"id":"616","type":"gcp_uc_config","attributes":{"account_id":"123456_ABCDEF_123456","bucket_name":"test-gcp-bucket","created_at":"2025-10-01T18:20:01.687597","dataset":"billing","error_messages":null,"export_prefix":"datadog_cloud_cost_detailed_usage_export","export_project_name":"test-gcp-project","months":15,"project_id":"","service_account":"test-service-account@test-project.iam.gserviceaccount.com","status":"archived","status_updated_at":"2025-10-01T18:20:09.428253","updated_at":"2025-10-01T18:20:01.687597"}}}'
-        headers:
-            Content-Type:
-                - application/vnd.api+json
-        status: 200 OK
-        code: 200
-        duration: 55.549584ms
+  - id: 0
+    request:
+      proto: HTTP/1.1
+      proto_major: 1
+      proto_minor: 1
+      content_length: 337
+      transfer_encoding: []
+      trailer: {}
+      host: api.datadoghq.com
+      remote_addr: ""
+      request_uri: ""
+      body: |
+        {"data":{"attributes":{"billing_account_id":"123456_ABCDEF_123456","bucket_name":"test-gcp-bucket","export_dataset_name":"billing","export_prefix":"datadog_cloud_cost_detailed_usage_export","export_project_name":"test-gcp-project","service_account":"test-service-account@test-project.iam.gserviceaccount.com"},"type":"gcp_uc_config_post_request"},"meta":{"setup_method":"terraform"}}
+      form: {}
+      headers:
+        Accept:
+          - application/json
+        Content-Type:
+          - application/json
+      url: https://api.datadoghq.com/api/v2/cost/gcp_uc_config
+      method: POST
+    response:
+      proto: HTTP/2.0
+      proto_major: 2
+      proto_minor: 0
+      transfer_encoding: []
+      trailer: {}
+      content_length: 512
+      uncompressed: false
+      body: '{"data":{"id":"616","type":"gcp_uc_config","attributes":{"account_id":"123456_ABCDEF_123456","bucket_name":"test-gcp-bucket","created_at":"2025-10-01T18:20:01.687597","dataset":"billing","error_messages":null,"export_prefix":"datadog_cloud_cost_detailed_usage_export","export_project_name":"test-gcp-project","months":15,"project_id":"","service_account":"test-service-account@test-project.iam.gserviceaccount.com","status":"active","status_updated_at":"2025-10-01T18:20:01.684913","updated_at":"2025-10-01T18:20:01.687597"}}}'
+      headers:
+        Content-Type:
+          - application/vnd.api+json
+      status: 200 OK
+      code: 200
+      duration: 15.8829445s
+  - id: 1
+    request:
+      proto: HTTP/1.1
+      proto_major: 1
+      proto_minor: 1
+      content_length: 0
+      transfer_encoding: []
+      trailer: {}
+      host: api.datadoghq.com
+      remote_addr: ""
+      request_uri: ""
+      body: ""
+      form: {}
+      headers:
+        Accept:
+          - application/json
+      url: https://api.datadoghq.com/api/v2/cost/gcp_uc_config/616
+      method: GET
+    response:
+      proto: HTTP/2.0
+      proto_major: 2
+      proto_minor: 0
+      transfer_encoding: []
+      trailer: {}
+      content_length: 512
+      uncompressed: false
+      body: '{"data":{"id":"616","type":"gcp_uc_config","attributes":{"account_id":"123456_ABCDEF_123456","bucket_name":"test-gcp-bucket","created_at":"2025-10-01T18:20:01.687597","dataset":"billing","error_messages":null,"export_prefix":"datadog_cloud_cost_detailed_usage_export","export_project_name":"test-gcp-project","months":15,"project_id":"","service_account":"test-service-account@test-project.iam.gserviceaccount.com","status":"active","status_updated_at":"2025-10-01T18:20:01.684913","updated_at":"2025-10-01T18:20:01.687597"}}}'
+      headers:
+        Content-Type:
+          - application/vnd.api+json
+      status: 200 OK
+      code: 200
+      duration: 79.388291ms
+  - id: 2
+    request:
+      proto: HTTP/1.1
+      proto_major: 1
+      proto_minor: 1
+      content_length: 0
+      transfer_encoding: []
+      trailer: {}
+      host: api.datadoghq.com
+      remote_addr: ""
+      request_uri: ""
+      body: ""
+      form: {}
+      headers:
+        Accept:
+          - application/json
+      url: https://api.datadoghq.com/api/v2/cost/gcp_uc_config/616
+      method: GET
+    response:
+      proto: HTTP/2.0
+      proto_major: 2
+      proto_minor: 0
+      transfer_encoding: []
+      trailer: {}
+      content_length: 512
+      uncompressed: false
+      body: '{"data":{"id":"616","type":"gcp_uc_config","attributes":{"account_id":"123456_ABCDEF_123456","bucket_name":"test-gcp-bucket","created_at":"2025-10-01T18:20:01.687597","dataset":"billing","error_messages":null,"export_prefix":"datadog_cloud_cost_detailed_usage_export","export_project_name":"test-gcp-project","months":15,"project_id":"","service_account":"test-service-account@test-project.iam.gserviceaccount.com","status":"active","status_updated_at":"2025-10-01T18:20:01.684913","updated_at":"2025-10-01T18:20:01.687597"}}}'
+      headers:
+        Content-Type:
+          - application/vnd.api+json
+      status: 200 OK
+      code: 200
+      duration: 55.873333ms
+  - id: 3
+    request:
+      proto: HTTP/1.1
+      proto_major: 1
+      proto_minor: 1
+      content_length: 0
+      transfer_encoding: []
+      trailer: {}
+      host: api.datadoghq.com
+      remote_addr: ""
+      request_uri: ""
+      body: ""
+      form: {}
+      headers:
+        Accept:
+          - application/json
+      url: https://api.datadoghq.com/api/v2/cost/gcp_uc_config/616
+      method: GET
+    response:
+      proto: HTTP/2.0
+      proto_major: 2
+      proto_minor: 0
+      transfer_encoding: []
+      trailer: {}
+      content_length: 512
+      uncompressed: false
+      body: '{"data":{"id":"616","type":"gcp_uc_config","attributes":{"account_id":"123456_ABCDEF_123456","bucket_name":"test-gcp-bucket","created_at":"2025-10-01T18:20:01.687597","dataset":"billing","error_messages":null,"export_prefix":"datadog_cloud_cost_detailed_usage_export","export_project_name":"test-gcp-project","months":15,"project_id":"","service_account":"test-service-account@test-project.iam.gserviceaccount.com","status":"active","status_updated_at":"2025-10-01T18:20:01.684913","updated_at":"2025-10-01T18:20:01.687597"}}}'
+      headers:
+        Content-Type:
+          - application/vnd.api+json
+      status: 200 OK
+      code: 200
+      duration: 56.365583ms
+  - id: 4
+    request:
+      proto: HTTP/1.1
+      proto_major: 1
+      proto_minor: 1
+      content_length: 0
+      transfer_encoding: []
+      trailer: {}
+      host: api.datadoghq.com
+      remote_addr: ""
+      request_uri: ""
+      body: ""
+      form: {}
+      headers:
+        Accept:
+          - "*/*"
+      url: https://api.datadoghq.com/api/v2/cost/gcp_uc_config/616
+      method: DELETE
+    response:
+      proto: HTTP/2.0
+      proto_major: 2
+      proto_minor: 0
+      transfer_encoding: []
+      trailer: {}
+      content_length: 0
+      uncompressed: false
+      body: ""
+      headers: {}
+      status: 204 No Content
+      code: 204
+      duration: 2.554551584s
+  - id: 5
+    request:
+      proto: HTTP/1.1
+      proto_major: 1
+      proto_minor: 1
+      content_length: 0
+      transfer_encoding: []
+      trailer: {}
+      host: api.datadoghq.com
+      remote_addr: ""
+      request_uri: ""
+      body: ""
+      form: {}
+      headers:
+        Accept:
+          - application/json
+      url: https://api.datadoghq.com/api/v2/cost/gcp_uc_config/616
+      method: GET
+    response:
+      proto: HTTP/2.0
+      proto_major: 2
+      proto_minor: 0
+      transfer_encoding: []
+      trailer: {}
+      content_length: 514
+      uncompressed: false
+      body: '{"data":{"id":"616","type":"gcp_uc_config","attributes":{"account_id":"123456_ABCDEF_123456","bucket_name":"test-gcp-bucket","created_at":"2025-10-01T18:20:01.687597","dataset":"billing","error_messages":null,"export_prefix":"datadog_cloud_cost_detailed_usage_export","export_project_name":"test-gcp-project","months":15,"project_id":"","service_account":"test-service-account@test-project.iam.gserviceaccount.com","status":"archived","status_updated_at":"2025-10-01T18:20:09.428253","updated_at":"2025-10-01T18:20:01.687597"}}}'
+      headers:
+        Content-Type:
+          - application/vnd.api+json
+      status: 200 OK
+      code: 200
+      duration: 55.549584ms

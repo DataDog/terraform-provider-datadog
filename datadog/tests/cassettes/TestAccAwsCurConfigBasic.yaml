@@ -3,398 +3,398 @@ version: 2
 interactions:
     - id: 0
       request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 248
-        transfer_encoding: []
-        trailer: {}
-        host: api.datadoghq.com
-        remote_addr: ""
-        request_uri: ""
-        body: |
-            {"data":{"attributes":{"account_id":"123456789012","bucket_name":"test-cur-bucket","bucket_region":"us-east-1","report_name":"test-cur-report","report_prefix":"test-cur-prefix"},"type":"aws_cur_config_post_request"}}
-        form: {}
-        headers:
-            Accept:
-                - application/json
-            Content-Type:
-                - application/json
-        url: https://api.datadoghq.com/api/v2/cost/aws_cur_config
-        method: POST
+          proto: HTTP/1.1
+          proto_major: 1
+          proto_minor: 1
+          content_length: 252
+          transfer_encoding: []
+          trailer: {}
+          host: api.datadoghq.com
+          remote_addr: ""
+          request_uri: ""
+          body: |
+              {"data":{"attributes":{"account_id":"123456789012","bucket_name":"test-cur-bucket","bucket_region":"us-east-1","report_name":"test-cur-report","report_prefix":"test-cur-prefix"},"type":"aws_cur_config_post_request"},"meta":{"setup_method":"terraform"}}
+          form: {}
+          headers:
+              Accept:
+                  - application/json
+              Content-Type:
+                  - application/json
+          url: https://api.datadoghq.com/api/v2/cost/aws_cur_config
+          method: POST
       response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
-        content_length: 478
-        uncompressed: false
-        body: '{"data":{"id":"616","type":"aws_cur_config","attributes":{"account_filters":{"include_new_accounts":null},"account_id":"123456789012","bucket_name":"test-cur-bucket","bucket_region":"us-east-1","created_at":"2025-09-29T18:41:50.589656","error_messages":null,"months":15,"report_name":"test-cur-report","report_prefix":"test-cur-prefix","status":"active","status_updated_at":"2025-09-29T18:41:50.586351","updated_at":"2025-09-29T18:41:50.589656"}}}'
-        headers:
-            Content-Type:
-                - application/vnd.api+json
-        status: 200 OK
-        code: 200
-        duration: 933.999125ms
+          proto: HTTP/2.0
+          proto_major: 2
+          proto_minor: 0
+          transfer_encoding: []
+          trailer: {}
+          content_length: 478
+          uncompressed: false
+          body: '{"data":{"id":"616","type":"aws_cur_config","attributes":{"account_filters":{"include_new_accounts":null},"account_id":"123456789012","bucket_name":"test-cur-bucket","bucket_region":"us-east-1","created_at":"2025-09-29T18:41:50.589656","error_messages":null,"months":15,"report_name":"test-cur-report","report_prefix":"test-cur-prefix","status":"active","status_updated_at":"2025-09-29T18:41:50.586351","updated_at":"2025-09-29T18:41:50.589656"}}}'
+          headers:
+              Content-Type:
+                  - application/vnd.api+json
+          status: 200 OK
+          code: 200
+          duration: 933.999125ms
     - id: 1
       request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 0
-        transfer_encoding: []
-        trailer: {}
-        host: api.datadoghq.com
-        remote_addr: ""
-        request_uri: ""
-        body: ""
-        form: {}
-        headers:
-            Accept:
-                - application/json
-        url: https://api.datadoghq.com/api/v2/cost/aws_cur_config/616
-        method: GET
+          proto: HTTP/1.1
+          proto_major: 1
+          proto_minor: 1
+          content_length: 0
+          transfer_encoding: []
+          trailer: {}
+          host: api.datadoghq.com
+          remote_addr: ""
+          request_uri: ""
+          body: ""
+          form: {}
+          headers:
+              Accept:
+                  - application/json
+          url: https://api.datadoghq.com/api/v2/cost/aws_cur_config/616
+          method: GET
       response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
-        content_length: 478
-        uncompressed: false
-        body: '{"data":{"id":"616","type":"aws_cur_config","attributes":{"account_filters":{"include_new_accounts":null},"account_id":"123456789012","bucket_name":"test-cur-bucket","bucket_region":"us-east-1","created_at":"2025-09-29T18:41:50.589656","error_messages":null,"months":15,"report_name":"test-cur-report","report_prefix":"test-cur-prefix","status":"active","status_updated_at":"2025-09-29T18:41:50.586351","updated_at":"2025-09-29T18:41:50.589656"}}}'
-        headers:
-            Content-Type:
-                - application/vnd.api+json
-        status: 200 OK
-        code: 200
-        duration: 57.965708ms
+          proto: HTTP/2.0
+          proto_major: 2
+          proto_minor: 0
+          transfer_encoding: []
+          trailer: {}
+          content_length: 478
+          uncompressed: false
+          body: '{"data":{"id":"616","type":"aws_cur_config","attributes":{"account_filters":{"include_new_accounts":null},"account_id":"123456789012","bucket_name":"test-cur-bucket","bucket_region":"us-east-1","created_at":"2025-09-29T18:41:50.589656","error_messages":null,"months":15,"report_name":"test-cur-report","report_prefix":"test-cur-prefix","status":"active","status_updated_at":"2025-09-29T18:41:50.586351","updated_at":"2025-09-29T18:41:50.589656"}}}'
+          headers:
+              Content-Type:
+                  - application/vnd.api+json
+          status: 200 OK
+          code: 200
+          duration: 57.965708ms
     - id: 2
       request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 0
-        transfer_encoding: []
-        trailer: {}
-        host: api.datadoghq.com
-        remote_addr: ""
-        request_uri: ""
-        body: ""
-        form: {}
-        headers:
-            Accept:
-                - application/json
-        url: https://api.datadoghq.com/api/v2/cost/aws_cur_config/616
-        method: GET
+          proto: HTTP/1.1
+          proto_major: 1
+          proto_minor: 1
+          content_length: 0
+          transfer_encoding: []
+          trailer: {}
+          host: api.datadoghq.com
+          remote_addr: ""
+          request_uri: ""
+          body: ""
+          form: {}
+          headers:
+              Accept:
+                  - application/json
+          url: https://api.datadoghq.com/api/v2/cost/aws_cur_config/616
+          method: GET
       response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
-        content_length: 478
-        uncompressed: false
-        body: '{"data":{"id":"616","type":"aws_cur_config","attributes":{"account_filters":{"include_new_accounts":null},"account_id":"123456789012","bucket_name":"test-cur-bucket","bucket_region":"us-east-1","created_at":"2025-09-29T18:41:50.589656","error_messages":null,"months":15,"report_name":"test-cur-report","report_prefix":"test-cur-prefix","status":"active","status_updated_at":"2025-09-29T18:41:50.586351","updated_at":"2025-09-29T18:41:50.589656"}}}'
-        headers:
-            Content-Type:
-                - application/vnd.api+json
-        status: 200 OK
-        code: 200
-        duration: 51.128ms
+          proto: HTTP/2.0
+          proto_major: 2
+          proto_minor: 0
+          transfer_encoding: []
+          trailer: {}
+          content_length: 478
+          uncompressed: false
+          body: '{"data":{"id":"616","type":"aws_cur_config","attributes":{"account_filters":{"include_new_accounts":null},"account_id":"123456789012","bucket_name":"test-cur-bucket","bucket_region":"us-east-1","created_at":"2025-09-29T18:41:50.589656","error_messages":null,"months":15,"report_name":"test-cur-report","report_prefix":"test-cur-prefix","status":"active","status_updated_at":"2025-09-29T18:41:50.586351","updated_at":"2025-09-29T18:41:50.589656"}}}'
+          headers:
+              Content-Type:
+                  - application/vnd.api+json
+          status: 200 OK
+          code: 200
+          duration: 51.128ms
     - id: 3
       request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 0
-        transfer_encoding: []
-        trailer: {}
-        host: api.datadoghq.com
-        remote_addr: ""
-        request_uri: ""
-        body: ""
-        form: {}
-        headers:
-            Accept:
-                - application/json
-        url: https://api.datadoghq.com/api/v2/cost/aws_cur_config/616
-        method: GET
+          proto: HTTP/1.1
+          proto_major: 1
+          proto_minor: 1
+          content_length: 0
+          transfer_encoding: []
+          trailer: {}
+          host: api.datadoghq.com
+          remote_addr: ""
+          request_uri: ""
+          body: ""
+          form: {}
+          headers:
+              Accept:
+                  - application/json
+          url: https://api.datadoghq.com/api/v2/cost/aws_cur_config/616
+          method: GET
       response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
-        content_length: 478
-        uncompressed: false
-        body: '{"data":{"id":"616","type":"aws_cur_config","attributes":{"account_filters":{"include_new_accounts":null},"account_id":"123456789012","bucket_name":"test-cur-bucket","bucket_region":"us-east-1","created_at":"2025-09-29T18:41:50.589656","error_messages":null,"months":15,"report_name":"test-cur-report","report_prefix":"test-cur-prefix","status":"active","status_updated_at":"2025-09-29T18:41:50.586351","updated_at":"2025-09-29T18:41:50.589656"}}}'
-        headers:
-            Content-Type:
-                - application/vnd.api+json
-        status: 200 OK
-        code: 200
-        duration: 48.509542ms
+          proto: HTTP/2.0
+          proto_major: 2
+          proto_minor: 0
+          transfer_encoding: []
+          trailer: {}
+          content_length: 478
+          uncompressed: false
+          body: '{"data":{"id":"616","type":"aws_cur_config","attributes":{"account_filters":{"include_new_accounts":null},"account_id":"123456789012","bucket_name":"test-cur-bucket","bucket_region":"us-east-1","created_at":"2025-09-29T18:41:50.589656","error_messages":null,"months":15,"report_name":"test-cur-report","report_prefix":"test-cur-prefix","status":"active","status_updated_at":"2025-09-29T18:41:50.586351","updated_at":"2025-09-29T18:41:50.589656"}}}'
+          headers:
+              Content-Type:
+                  - application/vnd.api+json
+          status: 200 OK
+          code: 200
+          duration: 48.509542ms
     - id: 4
       request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 0
-        transfer_encoding: []
-        trailer: {}
-        host: api.datadoghq.com
-        remote_addr: ""
-        request_uri: ""
-        body: ""
-        form: {}
-        headers:
-            Accept:
-                - application/json
-        url: https://api.datadoghq.com/api/v2/cost/aws_cur_config/616
-        method: GET
+          proto: HTTP/1.1
+          proto_major: 1
+          proto_minor: 1
+          content_length: 0
+          transfer_encoding: []
+          trailer: {}
+          host: api.datadoghq.com
+          remote_addr: ""
+          request_uri: ""
+          body: ""
+          form: {}
+          headers:
+              Accept:
+                  - application/json
+          url: https://api.datadoghq.com/api/v2/cost/aws_cur_config/616
+          method: GET
       response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
-        content_length: 478
-        uncompressed: false
-        body: '{"data":{"id":"616","type":"aws_cur_config","attributes":{"account_filters":{"include_new_accounts":null},"account_id":"123456789012","bucket_name":"test-cur-bucket","bucket_region":"us-east-1","created_at":"2025-09-29T18:41:50.589656","error_messages":null,"months":15,"report_name":"test-cur-report","report_prefix":"test-cur-prefix","status":"active","status_updated_at":"2025-09-29T18:41:50.586351","updated_at":"2025-09-29T18:41:50.589656"}}}'
-        headers:
-            Content-Type:
-                - application/vnd.api+json
-        status: 200 OK
-        code: 200
-        duration: 49.7975ms
+          proto: HTTP/2.0
+          proto_major: 2
+          proto_minor: 0
+          transfer_encoding: []
+          trailer: {}
+          content_length: 478
+          uncompressed: false
+          body: '{"data":{"id":"616","type":"aws_cur_config","attributes":{"account_filters":{"include_new_accounts":null},"account_id":"123456789012","bucket_name":"test-cur-bucket","bucket_region":"us-east-1","created_at":"2025-09-29T18:41:50.589656","error_messages":null,"months":15,"report_name":"test-cur-report","report_prefix":"test-cur-prefix","status":"active","status_updated_at":"2025-09-29T18:41:50.586351","updated_at":"2025-09-29T18:41:50.589656"}}}'
+          headers:
+              Content-Type:
+                  - application/vnd.api+json
+          status: 200 OK
+          code: 200
+          duration: 49.7975ms
     - id: 5
       request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 0
-        transfer_encoding: []
-        trailer: {}
-        host: api.datadoghq.com
-        remote_addr: ""
-        request_uri: ""
-        body: ""
-        form: {}
-        headers:
-            Accept:
-                - application/json
-        url: https://api.datadoghq.com/api/v2/cost/aws_cur_config/616
-        method: GET
+          proto: HTTP/1.1
+          proto_major: 1
+          proto_minor: 1
+          content_length: 0
+          transfer_encoding: []
+          trailer: {}
+          host: api.datadoghq.com
+          remote_addr: ""
+          request_uri: ""
+          body: ""
+          form: {}
+          headers:
+              Accept:
+                  - application/json
+          url: https://api.datadoghq.com/api/v2/cost/aws_cur_config/616
+          method: GET
       response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
-        content_length: 478
-        uncompressed: false
-        body: '{"data":{"id":"616","type":"aws_cur_config","attributes":{"account_filters":{"include_new_accounts":null},"account_id":"123456789012","bucket_name":"test-cur-bucket","bucket_region":"us-east-1","created_at":"2025-09-29T18:41:50.589656","error_messages":null,"months":15,"report_name":"test-cur-report","report_prefix":"test-cur-prefix","status":"active","status_updated_at":"2025-09-29T18:41:50.586351","updated_at":"2025-09-29T18:41:50.589656"}}}'
-        headers:
-            Content-Type:
-                - application/vnd.api+json
-        status: 200 OK
-        code: 200
-        duration: 49.683458ms
+          proto: HTTP/2.0
+          proto_major: 2
+          proto_minor: 0
+          transfer_encoding: []
+          trailer: {}
+          content_length: 478
+          uncompressed: false
+          body: '{"data":{"id":"616","type":"aws_cur_config","attributes":{"account_filters":{"include_new_accounts":null},"account_id":"123456789012","bucket_name":"test-cur-bucket","bucket_region":"us-east-1","created_at":"2025-09-29T18:41:50.589656","error_messages":null,"months":15,"report_name":"test-cur-report","report_prefix":"test-cur-prefix","status":"active","status_updated_at":"2025-09-29T18:41:50.586351","updated_at":"2025-09-29T18:41:50.589656"}}}'
+          headers:
+              Content-Type:
+                  - application/vnd.api+json
+          status: 200 OK
+          code: 200
+          duration: 49.683458ms
     - id: 6
       request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 0
-        transfer_encoding: []
-        trailer: {}
-        host: api.datadoghq.com
-        remote_addr: ""
-        request_uri: ""
-        body: ""
-        form: {}
-        headers:
-            Accept:
-                - application/json
-        url: https://api.datadoghq.com/api/v2/cost/aws_cur_config/616
-        method: GET
+          proto: HTTP/1.1
+          proto_major: 1
+          proto_minor: 1
+          content_length: 0
+          transfer_encoding: []
+          trailer: {}
+          host: api.datadoghq.com
+          remote_addr: ""
+          request_uri: ""
+          body: ""
+          form: {}
+          headers:
+              Accept:
+                  - application/json
+          url: https://api.datadoghq.com/api/v2/cost/aws_cur_config/616
+          method: GET
       response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
-        content_length: 478
-        uncompressed: false
-        body: '{"data":{"id":"616","type":"aws_cur_config","attributes":{"account_filters":{"include_new_accounts":null},"account_id":"123456789012","bucket_name":"test-cur-bucket","bucket_region":"us-east-1","created_at":"2025-09-29T18:41:50.589656","error_messages":null,"months":15,"report_name":"test-cur-report","report_prefix":"test-cur-prefix","status":"active","status_updated_at":"2025-09-29T18:41:50.586351","updated_at":"2025-09-29T18:41:50.589656"}}}'
-        headers:
-            Content-Type:
-                - application/vnd.api+json
-        status: 200 OK
-        code: 200
-        duration: 59.235625ms
+          proto: HTTP/2.0
+          proto_major: 2
+          proto_minor: 0
+          transfer_encoding: []
+          trailer: {}
+          content_length: 478
+          uncompressed: false
+          body: '{"data":{"id":"616","type":"aws_cur_config","attributes":{"account_filters":{"include_new_accounts":null},"account_id":"123456789012","bucket_name":"test-cur-bucket","bucket_region":"us-east-1","created_at":"2025-09-29T18:41:50.589656","error_messages":null,"months":15,"report_name":"test-cur-report","report_prefix":"test-cur-prefix","status":"active","status_updated_at":"2025-09-29T18:41:50.586351","updated_at":"2025-09-29T18:41:50.589656"}}}'
+          headers:
+              Content-Type:
+                  - application/vnd.api+json
+          status: 200 OK
+          code: 200
+          duration: 59.235625ms
     - id: 7
       request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 0
-        transfer_encoding: []
-        trailer: {}
-        host: api.datadoghq.com
-        remote_addr: ""
-        request_uri: ""
-        body: ""
-        form: {}
-        headers:
-            Accept:
-                - application/json
-        url: https://api.datadoghq.com/api/v2/cost/aws_cur_config/616
-        method: GET
+          proto: HTTP/1.1
+          proto_major: 1
+          proto_minor: 1
+          content_length: 0
+          transfer_encoding: []
+          trailer: {}
+          host: api.datadoghq.com
+          remote_addr: ""
+          request_uri: ""
+          body: ""
+          form: {}
+          headers:
+              Accept:
+                  - application/json
+          url: https://api.datadoghq.com/api/v2/cost/aws_cur_config/616
+          method: GET
       response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
-        content_length: 478
-        uncompressed: false
-        body: '{"data":{"id":"616","type":"aws_cur_config","attributes":{"account_filters":{"include_new_accounts":null},"account_id":"123456789012","bucket_name":"test-cur-bucket","bucket_region":"us-east-1","created_at":"2025-09-29T18:41:50.589656","error_messages":null,"months":15,"report_name":"test-cur-report","report_prefix":"test-cur-prefix","status":"active","status_updated_at":"2025-09-29T18:41:50.586351","updated_at":"2025-09-29T18:41:50.589656"}}}'
-        headers:
-            Content-Type:
-                - application/vnd.api+json
-        status: 200 OK
-        code: 200
-        duration: 49.641292ms
+          proto: HTTP/2.0
+          proto_major: 2
+          proto_minor: 0
+          transfer_encoding: []
+          trailer: {}
+          content_length: 478
+          uncompressed: false
+          body: '{"data":{"id":"616","type":"aws_cur_config","attributes":{"account_filters":{"include_new_accounts":null},"account_id":"123456789012","bucket_name":"test-cur-bucket","bucket_region":"us-east-1","created_at":"2025-09-29T18:41:50.589656","error_messages":null,"months":15,"report_name":"test-cur-report","report_prefix":"test-cur-prefix","status":"active","status_updated_at":"2025-09-29T18:41:50.586351","updated_at":"2025-09-29T18:41:50.589656"}}}'
+          headers:
+              Content-Type:
+                  - application/vnd.api+json
+          status: 200 OK
+          code: 200
+          duration: 49.641292ms
     - id: 8
       request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 0
-        transfer_encoding: []
-        trailer: {}
-        host: api.datadoghq.com
-        remote_addr: ""
-        request_uri: ""
-        body: ""
-        form: {}
-        headers:
-            Accept:
-                - application/json
-        url: https://api.datadoghq.com/api/v2/cost/aws_cur_config/616
-        method: GET
+          proto: HTTP/1.1
+          proto_major: 1
+          proto_minor: 1
+          content_length: 0
+          transfer_encoding: []
+          trailer: {}
+          host: api.datadoghq.com
+          remote_addr: ""
+          request_uri: ""
+          body: ""
+          form: {}
+          headers:
+              Accept:
+                  - application/json
+          url: https://api.datadoghq.com/api/v2/cost/aws_cur_config/616
+          method: GET
       response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
-        content_length: 478
-        uncompressed: false
-        body: '{"data":{"id":"616","type":"aws_cur_config","attributes":{"account_filters":{"include_new_accounts":null},"account_id":"123456789012","bucket_name":"test-cur-bucket","bucket_region":"us-east-1","created_at":"2025-09-29T18:41:50.589656","error_messages":null,"months":15,"report_name":"test-cur-report","report_prefix":"test-cur-prefix","status":"active","status_updated_at":"2025-09-29T18:41:50.586351","updated_at":"2025-09-29T18:41:50.589656"}}}'
-        headers:
-            Content-Type:
-                - application/vnd.api+json
-        status: 200 OK
-        code: 200
-        duration: 48.795375ms
+          proto: HTTP/2.0
+          proto_major: 2
+          proto_minor: 0
+          transfer_encoding: []
+          trailer: {}
+          content_length: 478
+          uncompressed: false
+          body: '{"data":{"id":"616","type":"aws_cur_config","attributes":{"account_filters":{"include_new_accounts":null},"account_id":"123456789012","bucket_name":"test-cur-bucket","bucket_region":"us-east-1","created_at":"2025-09-29T18:41:50.589656","error_messages":null,"months":15,"report_name":"test-cur-report","report_prefix":"test-cur-prefix","status":"active","status_updated_at":"2025-09-29T18:41:50.586351","updated_at":"2025-09-29T18:41:50.589656"}}}'
+          headers:
+              Content-Type:
+                  - application/vnd.api+json
+          status: 200 OK
+          code: 200
+          duration: 48.795375ms
     - id: 9
       request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 0
-        transfer_encoding: []
-        trailer: {}
-        host: api.datadoghq.com
-        remote_addr: ""
-        request_uri: ""
-        body: ""
-        form: {}
-        headers:
-            Accept:
-                - application/json
-        url: https://api.datadoghq.com/api/v2/cost/aws_cur_config/616
-        method: GET
+          proto: HTTP/1.1
+          proto_major: 1
+          proto_minor: 1
+          content_length: 0
+          transfer_encoding: []
+          trailer: {}
+          host: api.datadoghq.com
+          remote_addr: ""
+          request_uri: ""
+          body: ""
+          form: {}
+          headers:
+              Accept:
+                  - application/json
+          url: https://api.datadoghq.com/api/v2/cost/aws_cur_config/616
+          method: GET
       response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
-        content_length: 478
-        uncompressed: false
-        body: '{"data":{"id":"616","type":"aws_cur_config","attributes":{"account_filters":{"include_new_accounts":null},"account_id":"123456789012","bucket_name":"test-cur-bucket","bucket_region":"us-east-1","created_at":"2025-09-29T18:41:50.589656","error_messages":null,"months":15,"report_name":"test-cur-report","report_prefix":"test-cur-prefix","status":"active","status_updated_at":"2025-09-29T18:41:50.586351","updated_at":"2025-09-29T18:41:50.589656"}}}'
-        headers:
-            Content-Type:
-                - application/vnd.api+json
-        status: 200 OK
-        code: 200
-        duration: 50.020708ms
+          proto: HTTP/2.0
+          proto_major: 2
+          proto_minor: 0
+          transfer_encoding: []
+          trailer: {}
+          content_length: 478
+          uncompressed: false
+          body: '{"data":{"id":"616","type":"aws_cur_config","attributes":{"account_filters":{"include_new_accounts":null},"account_id":"123456789012","bucket_name":"test-cur-bucket","bucket_region":"us-east-1","created_at":"2025-09-29T18:41:50.589656","error_messages":null,"months":15,"report_name":"test-cur-report","report_prefix":"test-cur-prefix","status":"active","status_updated_at":"2025-09-29T18:41:50.586351","updated_at":"2025-09-29T18:41:50.589656"}}}'
+          headers:
+              Content-Type:
+                  - application/vnd.api+json
+          status: 200 OK
+          code: 200
+          duration: 50.020708ms
     - id: 10
       request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 0
-        transfer_encoding: []
-        trailer: {}
-        host: api.datadoghq.com
-        remote_addr: ""
-        request_uri: ""
-        body: ""
-        form: {}
-        headers:
-            Accept:
-                - '*/*'
-        url: https://api.datadoghq.com/api/v2/cost/aws_cur_config/616
-        method: DELETE
+          proto: HTTP/1.1
+          proto_major: 1
+          proto_minor: 1
+          content_length: 0
+          transfer_encoding: []
+          trailer: {}
+          host: api.datadoghq.com
+          remote_addr: ""
+          request_uri: ""
+          body: ""
+          form: {}
+          headers:
+              Accept:
+                  - "*/*"
+          url: https://api.datadoghq.com/api/v2/cost/aws_cur_config/616
+          method: DELETE
       response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
-        content_length: 0
-        uncompressed: false
-        body: ""
-        headers: {}
-        status: 204 No Content
-        code: 204
-        duration: 119.238708ms
+          proto: HTTP/2.0
+          proto_major: 2
+          proto_minor: 0
+          transfer_encoding: []
+          trailer: {}
+          content_length: 0
+          uncompressed: false
+          body: ""
+          headers: {}
+          status: 204 No Content
+          code: 204
+          duration: 119.238708ms
     - id: 11
       request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 0
-        transfer_encoding: []
-        trailer: {}
-        host: api.datadoghq.com
-        remote_addr: ""
-        request_uri: ""
-        body: ""
-        form: {}
-        headers:
-            Accept:
-                - application/json
-        url: https://api.datadoghq.com/api/v2/cost/aws_cur_config/616
-        method: GET
+          proto: HTTP/1.1
+          proto_major: 1
+          proto_minor: 1
+          content_length: 0
+          transfer_encoding: []
+          trailer: {}
+          host: api.datadoghq.com
+          remote_addr: ""
+          request_uri: ""
+          body: ""
+          form: {}
+          headers:
+              Accept:
+                  - application/json
+          url: https://api.datadoghq.com/api/v2/cost/aws_cur_config/616
+          method: GET
       response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
-        content_length: 480
-        uncompressed: false
-        body: '{"data":{"id":"616","type":"aws_cur_config","attributes":{"account_filters":{"include_new_accounts":null},"account_id":"123456789012","bucket_name":"test-cur-bucket","bucket_region":"us-east-1","created_at":"2025-09-29T18:41:50.589656","error_messages":null,"months":15,"report_name":"test-cur-report","report_prefix":"test-cur-prefix","status":"archived","status_updated_at":"2025-09-29T18:41:52.496821","updated_at":"2025-09-29T18:41:50.589656"}}}'
-        headers:
-            Content-Type:
-                - application/vnd.api+json
-        status: 200 OK
-        code: 200
-        duration: 48.819666ms
+          proto: HTTP/2.0
+          proto_major: 2
+          proto_minor: 0
+          transfer_encoding: []
+          trailer: {}
+          content_length: 480
+          uncompressed: false
+          body: '{"data":{"id":"616","type":"aws_cur_config","attributes":{"account_filters":{"include_new_accounts":null},"account_id":"123456789012","bucket_name":"test-cur-bucket","bucket_region":"us-east-1","created_at":"2025-09-29T18:41:50.589656","error_messages":null,"months":15,"report_name":"test-cur-report","report_prefix":"test-cur-prefix","status":"archived","status_updated_at":"2025-09-29T18:41:52.496821","updated_at":"2025-09-29T18:41:50.589656"}}}'
+          headers:
+              Content-Type:
+                  - application/vnd.api+json
+          status: 200 OK
+          code: 200
+          duration: 48.819666ms
