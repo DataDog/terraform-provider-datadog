@@ -57,7 +57,6 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/data_source_datadog_api_key_test":                                             "api_keys",
 	"tests/data_source_datadog_apm_retention_filters_order_test":                         "apm_retention_filters_order",
 	"tests/data_source_datadog_app_builder_app_test":                                     "app_builder_app",
-	"tests/data_source_datadog_application_key_test":                                     "application_keys",
 	"tests/data_source_datadog_cloud_workload_security_agent_rules_test":                 "cloud-workload-security",
 	"tests/data_source_datadog_action_connection_test":                                   "action_connection",
 	"tests/data_source_datadog_csm_threats_agent_rule_test":                              "cloud-workload-security",

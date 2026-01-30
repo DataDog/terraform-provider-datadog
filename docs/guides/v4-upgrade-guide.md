@@ -120,6 +120,22 @@ This resource does not support import.
 2. Previously imported application keys continue to work after upgrading. No action is required for keys already in your Terraform state.
 3. For new application keys, use the `datadog_application_key` resource to create them directly and securely store the key values using a secret management system.
 
+### Removed `datadog_application_key` data source
+
+The `datadog_application_key` data source has been removed. This data source was deprecated because when [One-Time Read mode](https://docs.datadoghq.com/account_management/api-app-keys/#one-time-read-mode) is enabled for Application Keys, the key secret is no longer available except when the key is created.
+
+**Note:** If your organization has [One-Time Read mode](https://docs.datadoghq.com/account_management/api-app-keys/#one-time-read-mode) enabled for Application Keys, then no action is needed to migrate for this data source because it is already unavailable.
+
+**Migration steps:**
+1. Store existing application key values in a secure secret manager or use Terraform to create and manage them as resources
+2. Remove any `data "datadog_application_key"` blocks from your configuration:
+
+```terraform
+data "datadog_application_key" "example" {
+  name = "my-key"
+}
+```
+
 ### Removed `locked` on `datadog_monitor`
 
 Removed `locked` and changed the default behavior of `restricted_roles` on `datadog_monitor`. These changes are intended 
