@@ -3488,6 +3488,90 @@ resource "datadog_observability_pipeline" "opensearch" {
 	})
 }
 
+func TestAccDatadogObservabilityPipeline_opensearchDestinationDataStream(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	resourceName := "datadog_observability_pipeline.opensearch_datastream"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				// Minimal config - only data_stream with dtype
+				Config: `
+resource "datadog_observability_pipeline" "opensearch_datastream" {
+  name = "opensearch-datastream-pipeline"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+    
+    destination {
+      id     = "opensearch-destination-1"
+      inputs = ["source-1"]
+            
+      opensearch {
+        data_stream {
+          dtype = "logs"
+        }
+      }
+    }
+  }
+}
+`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "opensearch-datastream-pipeline"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.id", "opensearch-destination-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.opensearch.0.data_stream.0.dtype", "logs"),
+				),
+			},
+			{
+				// Full config - data_stream with all fields
+				Config: `
+resource "datadog_observability_pipeline" "opensearch_datastream" {
+  name = "opensearch-datastream-pipeline-updated"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+    
+    destination {
+      id     = "opensearch-destination-1"
+      inputs = ["source-1"]
+            
+      opensearch {
+        data_stream {
+          dtype     = "logs"
+          dataset   = "my-application"
+          namespace = "production"
+        }
+      }
+    }
+  }
+}
+`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "opensearch-datastream-pipeline-updated"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.id", "opensearch-destination-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.opensearch.0.data_stream.0.dtype", "logs"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.opensearch.0.data_stream.0.dataset", "my-application"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.opensearch.0.data_stream.0.namespace", "production"),
+				),
+			},
+		},
+	})
+}
+
 func TestAccDatadogObservabilityPipeline_amazonOpenSearchDestination(t *testing.T) {
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
@@ -5856,4 +5940,89 @@ resource "datadog_observability_pipeline" "datadog_logs_routes_test" {
   }
 }
 `
+}
+
+func TestAccDatadogObservabilityPipeline_elasticsearchValidation(t *testing.T) {
+	t.Parallel()
+	_, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		Steps: []resource.TestStep{
+			{
+				// Both bulk_index and data_stream specified
+				Config: `
+resource "datadog_observability_pipeline" "elasticsearch_validation" {
+  name = "elasticsearch-validation-pipeline"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+    
+    destination {
+      id     = "elasticsearch-destination-1"
+      inputs = ["source-1"]
+            
+      elasticsearch {
+        api_version = "v7"
+        bulk_index  = "logs-index"
+        data_stream {
+          dtype     = "logs"
+          dataset   = "my-app"
+          namespace = "production"
+        }
+      }
+    }
+  }
+}
+`,
+				ExpectError: regexp.MustCompile(`Invalid Attribute Combination`),
+			},
+		},
+	})
+}
+
+func TestAccDatadogObservabilityPipeline_opensearchValidation(t *testing.T) {
+	t.Parallel()
+	_, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		Steps: []resource.TestStep{
+			{
+				// Both bulk_index and data_stream specified
+				Config: `
+resource "datadog_observability_pipeline" "opensearch_validation" {
+  name = "opensearch-validation-pipeline"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+    
+    destination {
+      id     = "opensearch-destination-1"
+      inputs = ["source-1"]
+            
+      opensearch {
+        bulk_index = "logs-index"
+        data_stream {
+          dtype     = "logs"
+          dataset   = "my-app"
+          namespace = "production"
+        }
+      }
+    }
+  }
+}
+`,
+				ExpectError: regexp.MustCompile(`Invalid Attribute Combination`),
+			},
+		},
+	})
 }

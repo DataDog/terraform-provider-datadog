@@ -528,6 +528,17 @@ Required:
 Optional:
 
 - `bulk_index` (String) The index or datastream to write logs to.
+- `data_stream` (Block List) Configuration options for writing to OpenSearch Data Streams instead of a fixed index. (see [below for nested schema](#nestedblock--config--destination--opensearch--data_stream))
+
+<a id="nestedblock--config--destination--opensearch--data_stream"></a>
+### Nested Schema for `config.destination.opensearch.data_stream`
+
+Optional:
+
+- `dataset` (String) The data stream dataset for your logs. This groups logs by their source or application.
+- `dtype` (String) The data stream type for your logs. This determines how logs are categorized within the data stream.
+- `namespace` (String) The data stream namespace for your logs. This separates logs into different environments or domains.
+
 
 
 <a id="nestedblock--config--destination--rsyslog"></a>
