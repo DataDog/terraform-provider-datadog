@@ -3,6 +3,7 @@ package fwprovider
 import (
 	"context"
 	"strconv"
+	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -449,6 +450,67 @@ func convertBudgetLineToFlatEntries(ctx context.Context, budgetLines []budgetLin
 	return flatEntries
 }
 
+// convertFlatEntriesToBudgetLine converts flat API entries to budget_line (grouped schema)
+func convertFlatEntriesToBudgetLine(ctx context.Context, flatEntries []budgetEntry) []budgetLine {
+	type tagGroup struct {
+		tags   []tagFilter
+		months map[string]float64
+	}
+
+	groups := make(map[string]*tagGroup)
+
+	for _, entry := range flatEntries {
+		var tags []tagFilter
+		if !entry.TagFilters.IsNull() && !entry.TagFilters.IsUnknown() {
+			entry.TagFilters.ElementsAs(ctx, &tags, false)
+		}
+
+		key := tagSignature(tags)
+		if groups[key] == nil {
+			groups[key] = &tagGroup{tags: tags, months: make(map[string]float64)}
+		}
+		groups[key].months[strconv.FormatInt(entry.Month.ValueInt64(), 10)] = entry.Amount.ValueFloat64()
+	}
+
+	budgetLines := make([]budgetLine, 0, len(groups))
+	tagObjType := types.ObjectType{AttrTypes: tagFilterAttrTypes()}
+
+	for _, group := range groups {
+		amountsMap, _ := types.MapValueFrom(ctx, types.Float64Type, group.months)
+		line := budgetLine{Amounts: amountsMap}
+
+		if len(group.tags) == 2 {
+			line.ParentTagFilters, _ = types.ListValueFrom(ctx, tagObjType, []tagFilter{group.tags[0]})
+			line.ChildTagFilters, _ = types.ListValueFrom(ctx, tagObjType, []tagFilter{group.tags[1]})
+			line.TagFilters = types.ListNull(tagObjType)
+		} else {
+			line.ParentTagFilters = types.ListNull(tagObjType)
+			line.ChildTagFilters = types.ListNull(tagObjType)
+			if len(group.tags) > 0 {
+				line.TagFilters, _ = types.ListValueFrom(ctx, tagObjType, group.tags)
+			} else {
+				line.TagFilters = types.ListNull(tagObjType)
+			}
+		}
+
+		budgetLines = append(budgetLines, line)
+	}
+
+	return budgetLines
+}
+
+// tagSignature creates a unique identifier for grouping entries by tag combination
+func tagSignature(tags []tagFilter) string {
+	if len(tags) == 0 {
+		return ""
+	}
+	var parts []string
+	for _, t := range tags {
+		parts = append(parts, t.TagKey.ValueString()+"="+t.TagValue.ValueString())
+	}
+	return strings.Join(parts, ",")
+}
+
 func buildBudgetWithEntriesFromModel(ctx context.Context, plan costBudgetModel) datadogV2.BudgetWithEntries {
 	var planEntries []budgetEntry
 
@@ -515,10 +577,8 @@ func setModelFromBudgetWithEntries(ctx context.Context, model *costBudgetModel, 
 	if apiResp.Data == nil || apiResp.Data.Attributes == nil {
 		return
 	}
-	data := apiResp.Data
-	attr := data.Attributes
+	data, attr := apiResp.Data, apiResp.Data.Attributes
 
-	// Set top-level fields
 	if data.Id != nil {
 		model.ID = types.StringValue(*data.Id)
 	}
@@ -538,59 +598,38 @@ func setModelFromBudgetWithEntries(ctx context.Context, model *costBudgetModel, 
 		model.TotalAmount = types.Float64Value(*attr.TotalAmount)
 	}
 
-	// Set entries
-	var entries []budgetEntry
-	for _, apiEntry := range attr.Entries {
-		var tagFilters []tagFilter
+	entries := apiEntriesToBudgetEntries(ctx, attr.Entries)
+	usingBudgetLine := !model.BudgetLine.IsNull() && !model.BudgetLine.IsUnknown()
+
+	if usingBudgetLine {
+		model.BudgetLine, _ = types.SetValueFrom(ctx, types.ObjectType{AttrTypes: budgetLineAttrTypes()}, convertFlatEntriesToBudgetLine(ctx, entries))
+		model.Entries = types.ListNull(types.ObjectType{AttrTypes: budgetEntryAttrTypes()})
+	} else {
+		model.Entries, _ = types.ListValueFrom(ctx, types.ObjectType{AttrTypes: budgetEntryAttrTypes()}, entries)
+		model.BudgetLine = types.SetNull(types.ObjectType{AttrTypes: budgetLineAttrTypes()})
+	}
+}
+
+// apiEntriesToBudgetEntries converts API entries to internal budgetEntry model
+func apiEntriesToBudgetEntries(ctx context.Context, apiEntries []datadogV2.BudgetWithEntriesDataAttributesEntriesItems) []budgetEntry {
+	entries := make([]budgetEntry, 0, len(apiEntries))
+	tagObjType := types.ObjectType{AttrTypes: tagFilterAttrTypes()}
+
+	for _, apiEntry := range apiEntries {
+		tagFilters := make([]tagFilter, 0, len(apiEntry.TagFilters))
 		for _, tf := range apiEntry.TagFilters {
-			var tagKey, tagValue types.String
-			if tf.TagKey != nil {
-				tagKey = types.StringValue(*tf.TagKey)
-			} else {
-				tagKey = types.StringNull()
-			}
-			if tf.TagValue != nil {
-				tagValue = types.StringValue(*tf.TagValue)
-			} else {
-				tagValue = types.StringNull()
-			}
 			tagFilters = append(tagFilters, tagFilter{
-				TagKey:   tagKey,
-				TagValue: tagValue,
+				TagKey:   types.StringPointerValue(tf.TagKey),
+				TagValue: types.StringPointerValue(tf.TagValue),
 			})
 		}
 
-		var amount types.Float64
-		if apiEntry.Amount != nil {
-			amount = types.Float64Value(*apiEntry.Amount)
-		} else {
-			amount = types.Float64Null()
-		}
-		var month types.Int64
-		if apiEntry.Month != nil {
-			month = types.Int64Value(*apiEntry.Month)
-		} else {
-			month = types.Int64Null()
-		}
-
-		// Convert []tagFilter to types.List
-		tagFiltersList, _ := types.ListValueFrom(
-			ctx,
-			types.ObjectType{AttrTypes: tagFilterAttrTypes()},
-			tagFilters,
-		)
-
+		tagFiltersList, _ := types.ListValueFrom(ctx, tagObjType, tagFilters)
 		entries = append(entries, budgetEntry{
-			Amount:     amount,
-			Month:      month,
+			Amount:     types.Float64PointerValue(apiEntry.Amount),
+			Month:      types.Int64PointerValue(apiEntry.Month),
 			TagFilters: tagFiltersList,
 		})
 	}
-
-	// Convert []budgetEntry to types.List
-	model.Entries, _ = types.ListValueFrom(
-		ctx,
-		types.ObjectType{AttrTypes: budgetEntryAttrTypes()},
-		entries,
-	)
+	return entries
 }
