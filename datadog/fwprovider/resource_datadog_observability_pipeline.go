@@ -5527,23 +5527,16 @@ func flattenOpenSearchDestination(ctx context.Context, src *datadogV2.Observabil
 		return nil
 	}
 
-	out := &opensearchDestinationModel{}
-	if v, ok := src.GetBulkIndexOk(); ok {
-		out.BulkIndex = types.StringValue(*v)
+	out := &opensearchDestinationModel{
+		BulkIndex: types.StringPointerValue(src.BulkIndex),
 	}
 
 	if ds, ok := src.GetDataStreamOk(); ok && ds != nil {
-		dsModel := opensearchDestinationDataStreamModel{}
-		if v, ok := ds.GetDtypeOk(); ok {
-			dsModel.Dtype = types.StringValue(*v)
-		}
-		if v, ok := ds.GetDatasetOk(); ok {
-			dsModel.Dataset = types.StringValue(*v)
-		}
-		if v, ok := ds.GetNamespaceOk(); ok {
-			dsModel.Namespace = types.StringValue(*v)
-		}
-		out.DataStream = []opensearchDestinationDataStreamModel{dsModel}
+		out.DataStream = []opensearchDestinationDataStreamModel{{
+			Dtype:     types.StringPointerValue(ds.Dtype),
+			Dataset:   types.StringPointerValue(ds.Dataset),
+			Namespace: types.StringPointerValue(ds.Namespace),
+		}}
 	}
 
 	return out
