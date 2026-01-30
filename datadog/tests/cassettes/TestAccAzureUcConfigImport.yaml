@@ -1,202 +1,202 @@
 ---
 version: 2
 interactions:
-  - id: 0
-    request:
-      proto: HTTP/1.1
-      proto_major: 1
-      proto_minor: 1
-      content_length: 590
-      transfer_encoding: []
-      trailer: {}
-      host: api.datadoghq.com
-      remote_addr: ""
-      request_uri: ""
-      body: |
-        {"data":{"attributes":{"account_id":"12345678-1234-1234-1234-123456789012","actual_bill_config":{"export_name":"test-actual-export","export_path":"/actual-cost","storage_account":"teststorageaccount","storage_container":"test-container"},"amortized_bill_config":{"export_name":"test-amortized-export","export_path":"/amortized-cost","storage_account":"teststorageaccount","storage_container":"test-container"},"client_id":"87654321-4321-4321-4321-210987654321","scope":"/subscriptions/12345678-1234-1234-1234-123456789012"},"type":"azure_uc_config_post_request"},"meta":{"setup_method":"terraform"}}
-      form: {}
-      headers:
-        Accept:
-          - application/json
-        Content-Type:
-          - application/json
-      url: https://api.datadoghq.com/api/v2/cost/azure_uc_config
-      method: POST
-    response:
-      proto: HTTP/2.0
-      proto_major: 2
-      proto_minor: 0
-      transfer_encoding: []
-      trailer: {}
-      content_length: -1
-      uncompressed: true
-      body: '{"data":{"id":"673","type":"azure_uc_configs","attributes":{"configs":[{"account_id":"12345678-1234-1234-1234-123456789012","client_id":"87654321-4321-4321-4321-210987654321","status":"active","status_updated_at":"2025-10-03T18:51:55.061600","error_messages":null,"id":"223","dataset_type":"amortized","storage_account":"teststorageaccount","storage_container":"test-container","export_name":"test-amortized-export","export_path":"/amortized-cost","scope":"/subscriptions/12345678-1234-1234-1234-123456789012","months":15,"created_at":"2025-10-03T18:51:55.061600","updated_at":"2025-10-03T18:51:55.061600"},{"account_id":"12345678-1234-1234-1234-123456789012","client_id":"87654321-4321-4321-4321-210987654321","status":"active","status_updated_at":"2025-10-03T18:51:55.061600","error_messages":null,"id":"222","dataset_type":"actual","storage_account":"teststorageaccount","storage_container":"test-container","export_name":"test-actual-export","export_path":"/actual-cost","scope":"/subscriptions/12345678-1234-1234-1234-123456789012","months":15,"created_at":"2025-10-03T18:51:55.061600","updated_at":"2025-10-03T18:51:55.061600"}]}}}'
-      headers:
-        Content-Type:
-          - application/vnd.api+json
-      status: 200 OK
-      code: 200
-      duration: 3.625349583s
-  - id: 1
-    request:
-      proto: HTTP/1.1
-      proto_major: 1
-      proto_minor: 1
-      content_length: 0
-      transfer_encoding: []
-      trailer: {}
-      host: api.datadoghq.com
-      remote_addr: ""
-      request_uri: ""
-      body: ""
-      form: {}
-      headers:
-        Accept:
-          - application/json
-      url: https://api.datadoghq.com/api/v2/cost/azure_uc_config/673
-      method: GET
-    response:
-      proto: HTTP/2.0
-      proto_major: 2
-      proto_minor: 0
-      transfer_encoding: []
-      trailer: {}
-      content_length: -1
-      uncompressed: true
-      body: '{"data":{"id":"673","type":"azure_uc_configs","attributes":{"configs":[{"account_id":"12345678-1234-1234-1234-123456789012","client_id":"87654321-4321-4321-4321-210987654321","status":"active","status_updated_at":"2025-10-03T18:51:55.061600","error_messages":null,"id":"223","dataset_type":"amortized","storage_account":"teststorageaccount","storage_container":"test-container","export_name":"test-amortized-export","export_path":"/amortized-cost","scope":"/subscriptions/12345678-1234-1234-1234-123456789012","months":15,"created_at":"2025-10-03T18:51:55.061600","updated_at":"2025-10-03T18:51:55.061600"},{"account_id":"12345678-1234-1234-1234-123456789012","client_id":"87654321-4321-4321-4321-210987654321","status":"active","status_updated_at":"2025-10-03T18:51:55.061600","error_messages":null,"id":"222","dataset_type":"actual","storage_account":"teststorageaccount","storage_container":"test-container","export_name":"test-actual-export","export_path":"/actual-cost","scope":"/subscriptions/12345678-1234-1234-1234-123456789012","months":15,"created_at":"2025-10-03T18:51:55.061600","updated_at":"2025-10-03T18:51:55.061600"}]}}}'
-      headers:
-        Content-Type:
-          - application/vnd.api+json
-      status: 200 OK
-      code: 200
-      duration: 67.568708ms
-  - id: 2
-    request:
-      proto: HTTP/1.1
-      proto_major: 1
-      proto_minor: 1
-      content_length: 0
-      transfer_encoding: []
-      trailer: {}
-      host: api.datadoghq.com
-      remote_addr: ""
-      request_uri: ""
-      body: ""
-      form: {}
-      headers:
-        Accept:
-          - application/json
-      url: https://api.datadoghq.com/api/v2/cost/azure_uc_config/673
-      method: GET
-    response:
-      proto: HTTP/2.0
-      proto_major: 2
-      proto_minor: 0
-      transfer_encoding: []
-      trailer: {}
-      content_length: -1
-      uncompressed: true
-      body: '{"data":{"id":"673","type":"azure_uc_configs","attributes":{"configs":[{"account_id":"12345678-1234-1234-1234-123456789012","client_id":"87654321-4321-4321-4321-210987654321","status":"active","status_updated_at":"2025-10-03T18:51:55.061600","error_messages":null,"id":"223","dataset_type":"amortized","storage_account":"teststorageaccount","storage_container":"test-container","export_name":"test-amortized-export","export_path":"/amortized-cost","scope":"/subscriptions/12345678-1234-1234-1234-123456789012","months":15,"created_at":"2025-10-03T18:51:55.061600","updated_at":"2025-10-03T18:51:55.061600"},{"account_id":"12345678-1234-1234-1234-123456789012","client_id":"87654321-4321-4321-4321-210987654321","status":"active","status_updated_at":"2025-10-03T18:51:55.061600","error_messages":null,"id":"222","dataset_type":"actual","storage_account":"teststorageaccount","storage_container":"test-container","export_name":"test-actual-export","export_path":"/actual-cost","scope":"/subscriptions/12345678-1234-1234-1234-123456789012","months":15,"created_at":"2025-10-03T18:51:55.061600","updated_at":"2025-10-03T18:51:55.061600"}]}}}'
-      headers:
-        Content-Type:
-          - application/vnd.api+json
-      status: 200 OK
-      code: 200
-      duration: 100.005083ms
-  - id: 3
-    request:
-      proto: HTTP/1.1
-      proto_major: 1
-      proto_minor: 1
-      content_length: 0
-      transfer_encoding: []
-      trailer: {}
-      host: api.datadoghq.com
-      remote_addr: ""
-      request_uri: ""
-      body: ""
-      form: {}
-      headers:
-        Accept:
-          - application/json
-      url: https://api.datadoghq.com/api/v2/cost/azure_uc_config/673
-      method: GET
-    response:
-      proto: HTTP/2.0
-      proto_major: 2
-      proto_minor: 0
-      transfer_encoding: []
-      trailer: {}
-      content_length: -1
-      uncompressed: true
-      body: '{"data":{"id":"673","type":"azure_uc_configs","attributes":{"configs":[{"account_id":"12345678-1234-1234-1234-123456789012","client_id":"87654321-4321-4321-4321-210987654321","status":"active","status_updated_at":"2025-10-03T18:51:55.061600","error_messages":null,"id":"223","dataset_type":"amortized","storage_account":"teststorageaccount","storage_container":"test-container","export_name":"test-amortized-export","export_path":"/amortized-cost","scope":"/subscriptions/12345678-1234-1234-1234-123456789012","months":15,"created_at":"2025-10-03T18:51:55.061600","updated_at":"2025-10-03T18:51:55.061600"},{"account_id":"12345678-1234-1234-1234-123456789012","client_id":"87654321-4321-4321-4321-210987654321","status":"active","status_updated_at":"2025-10-03T18:51:55.061600","error_messages":null,"id":"222","dataset_type":"actual","storage_account":"teststorageaccount","storage_container":"test-container","export_name":"test-actual-export","export_path":"/actual-cost","scope":"/subscriptions/12345678-1234-1234-1234-123456789012","months":15,"created_at":"2025-10-03T18:51:55.061600","updated_at":"2025-10-03T18:51:55.061600"}]}}}'
-      headers:
-        Content-Type:
-          - application/vnd.api+json
-      status: 200 OK
-      code: 200
-      duration: 57.39875ms
-  - id: 4
-    request:
-      proto: HTTP/1.1
-      proto_major: 1
-      proto_minor: 1
-      content_length: 0
-      transfer_encoding: []
-      trailer: {}
-      host: api.datadoghq.com
-      remote_addr: ""
-      request_uri: ""
-      body: ""
-      form: {}
-      headers:
-        Accept:
-          - "*/*"
-      url: https://api.datadoghq.com/api/v2/cost/azure_uc_config/673
-      method: DELETE
-    response:
-      proto: HTTP/2.0
-      proto_major: 2
-      proto_minor: 0
-      transfer_encoding: []
-      trailer: {}
-      content_length: 0
-      uncompressed: false
-      body: ""
-      headers: {}
-      status: 204 No Content
-      code: 204
-      duration: 111.008292ms
-  - id: 5
-    request:
-      proto: HTTP/1.1
-      proto_major: 1
-      proto_minor: 1
-      content_length: 0
-      transfer_encoding: []
-      trailer: {}
-      host: api.datadoghq.com
-      remote_addr: ""
-      request_uri: ""
-      body: ""
-      form: {}
-      headers:
-        Accept:
-          - application/json
-      url: https://api.datadoghq.com/api/v2/cost/azure_uc_config/673
-      method: GET
-    response:
-      proto: HTTP/2.0
-      proto_major: 2
-      proto_minor: 0
-      transfer_encoding: []
-      trailer: {}
-      content_length: 114
-      uncompressed: false
-      body: '{"errors":[{"status":"404","title":"Cloud account not found","detail":"Cloud account with ID 673 was not found"}]}'
-      headers:
-        Content-Type:
-          - application/vnd.api+json
-      status: 404 Not Found
-      code: 404
-      duration: 58.221166ms
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 622
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"account_id":"12345678-1234-1234-1234-123456789012","actual_bill_config":{"export_name":"test-actual-export","export_path":"/actual-cost","storage_account":"teststorageaccount","storage_container":"test-container"},"amortized_bill_config":{"export_name":"test-amortized-export","export_path":"/amortized-cost","storage_account":"teststorageaccount","storage_container":"test-container"},"client_id":"87654321-4321-4321-4321-210987654321","scope":"/subscriptions/12345678-1234-1234-1234-123456789012"},"type":"azure_uc_config_post_request"},"meta":{"setup_method":"terraform"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cost/azure_uc_config
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":{"id":"1271","type":"azure_uc_configs","attributes":{"configs":[{"account_id":"12345678-1234-1234-1234-123456789012","client_id":"87654321-4321-4321-4321-210987654321","status":"active","status_updated_at":"2026-01-30T21:30:01Z","error_messages":null,"id":"344","dataset_type":"amortized","storage_account":"teststorageaccount","storage_container":"test-container","export_name":"test-amortized-export","export_path":"/amortized-cost","scope":"/subscriptions/12345678-1234-1234-1234-123456789012","months":15,"created_at":"2026-01-30T21:30:01Z","updated_at":"2026-01-30T21:30:01Z"},{"account_id":"12345678-1234-1234-1234-123456789012","client_id":"87654321-4321-4321-4321-210987654321","status":"active","status_updated_at":"2026-01-30T21:30:01Z","error_messages":null,"id":"343","dataset_type":"actual","storage_account":"teststorageaccount","storage_container":"test-container","export_name":"test-actual-export","export_path":"/actual-cost","scope":"/subscriptions/12345678-1234-1234-1234-123456789012","months":15,"created_at":"2026-01-30T21:30:01Z","updated_at":"2026-01-30T21:30:01Z"}]}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 3.838866375s
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cost/azure_uc_config/1271
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":{"id":"1271","type":"azure_uc_configs","attributes":{"configs":[{"account_id":"12345678-1234-1234-1234-123456789012","client_id":"87654321-4321-4321-4321-210987654321","status":"active","status_updated_at":"2026-01-30T21:30:01Z","error_messages":null,"id":"344","dataset_type":"amortized","storage_account":"teststorageaccount","storage_container":"test-container","export_name":"test-amortized-export","export_path":"/amortized-cost","scope":"/subscriptions/12345678-1234-1234-1234-123456789012","months":15,"created_at":"2026-01-30T21:30:01Z","updated_at":"2026-01-30T21:30:01Z"},{"account_id":"12345678-1234-1234-1234-123456789012","client_id":"87654321-4321-4321-4321-210987654321","status":"active","status_updated_at":"2026-01-30T21:30:01Z","error_messages":null,"id":"343","dataset_type":"actual","storage_account":"teststorageaccount","storage_container":"test-container","export_name":"test-actual-export","export_path":"/actual-cost","scope":"/subscriptions/12345678-1234-1234-1234-123456789012","months":15,"created_at":"2026-01-30T21:30:01Z","updated_at":"2026-01-30T21:30:01Z"}]}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 47.475625ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cost/azure_uc_config/1271
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":{"id":"1271","type":"azure_uc_configs","attributes":{"configs":[{"account_id":"12345678-1234-1234-1234-123456789012","client_id":"87654321-4321-4321-4321-210987654321","status":"active","status_updated_at":"2026-01-30T21:30:01Z","error_messages":null,"id":"344","dataset_type":"amortized","storage_account":"teststorageaccount","storage_container":"test-container","export_name":"test-amortized-export","export_path":"/amortized-cost","scope":"/subscriptions/12345678-1234-1234-1234-123456789012","months":15,"created_at":"2026-01-30T21:30:01Z","updated_at":"2026-01-30T21:30:01Z"},{"account_id":"12345678-1234-1234-1234-123456789012","client_id":"87654321-4321-4321-4321-210987654321","status":"active","status_updated_at":"2026-01-30T21:30:01Z","error_messages":null,"id":"343","dataset_type":"actual","storage_account":"teststorageaccount","storage_container":"test-container","export_name":"test-actual-export","export_path":"/actual-cost","scope":"/subscriptions/12345678-1234-1234-1234-123456789012","months":15,"created_at":"2026-01-30T21:30:01Z","updated_at":"2026-01-30T21:30:01Z"}]}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 35.9405ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cost/azure_uc_config/1271
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":{"id":"1271","type":"azure_uc_configs","attributes":{"configs":[{"account_id":"12345678-1234-1234-1234-123456789012","client_id":"87654321-4321-4321-4321-210987654321","status":"active","status_updated_at":"2026-01-30T21:30:01Z","error_messages":null,"id":"344","dataset_type":"amortized","storage_account":"teststorageaccount","storage_container":"test-container","export_name":"test-amortized-export","export_path":"/amortized-cost","scope":"/subscriptions/12345678-1234-1234-1234-123456789012","months":15,"created_at":"2026-01-30T21:30:01Z","updated_at":"2026-01-30T21:30:01Z"},{"account_id":"12345678-1234-1234-1234-123456789012","client_id":"87654321-4321-4321-4321-210987654321","status":"active","status_updated_at":"2026-01-30T21:30:01Z","error_messages":null,"id":"343","dataset_type":"actual","storage_account":"teststorageaccount","storage_container":"test-container","export_name":"test-actual-export","export_path":"/actual-cost","scope":"/subscriptions/12345678-1234-1234-1234-123456789012","months":15,"created_at":"2026-01-30T21:30:01Z","updated_at":"2026-01-30T21:30:01Z"}]}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 43.084ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/cost/azure_uc_config/1271
+        method: DELETE
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 81.017542ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cost/azure_uc_config/1271
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 115
+        uncompressed: false
+        body: '{"errors":[{"status":"404","title":"Cloud account not found","detail":"Cloud account with ID 1271 was not found"}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 404 Not Found
+        code: 404
+        duration: 37.604875ms
