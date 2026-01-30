@@ -13,9 +13,12 @@ import (
 )
 
 func TestAccIntegrationAwsEventBridgeBasic(t *testing.T) {
+	if !isReplaying() {
+		t.Skip("This test only supports replaying")
+	}
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
-	accountID := uniqueAWSAccountID(ctx, t)
+	accountID := "694513996623"
 	uniq := uniqueEntityName(ctx, t)
 
 	resource.Test(t, resource.TestCase{
@@ -34,18 +37,12 @@ func TestAccIntegrationAwsEventBridgeBasic(t *testing.T) {
 
 func testAccCheckDatadogIntegrationAwsEventBridge(accountID string, uniq string) string {
 	return fmt.Sprintf(`
-	resource "datadog_integration_aws" "account" {
-		account_id                       = "%s"
-		role_name                        = "testacc-datadog-integration-role"
-	  }
-
 	resource "datadog_integration_aws_event_bridge" "foo" {
 		account_id = "%s"
 		event_generator_name = "%s"
 		create_event_bus = false
 		region = "us-east-1"
-		depends_on = [datadog_integration_aws.account]
-	}`, accountID, accountID, uniq)
+	}`, accountID, uniq)
 }
 
 func testAccCheckDatadogIntegrationAwsEventBridgeDestroy(accProvider *fwprovider.FrameworkProvider) func(*terraform.State) error {

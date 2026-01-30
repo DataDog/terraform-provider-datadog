@@ -7,27 +7,11 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 
-	"github.com/terraform-providers/terraform-provider-datadog/datadog"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
 )
-
-func logsArchiveOrderCheckCount(accProvider func() (*schema.Provider, error)) func(state *terraform.State) error {
-	return func(state *terraform.State) error {
-		provider, _ := accProvider()
-		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		auth := providerConf.Auth
-		apiInstances := providerConf.DatadogApiInstances
-
-		logsArchiveOrder, _, err := apiInstances.GetLogsArchivesApiV2().GetLogsArchiveOrder(auth)
-		if err != nil {
-			return err
-		}
-		return logsArchiveOrderCount(state, len(logsArchiveOrder.Data.Attributes.ArchiveIds))
-	}
-}
 
 func logsArchiveOrderCount(state *terraform.State, responseCount int) error {
 	resourceAttributes := state.RootModule().Resources["data.datadog_logs_archives_order.order"].Primary.Attributes
@@ -40,15 +24,28 @@ func logsArchiveOrderCount(state *terraform.State, responseCount int) error {
 	return nil
 }
 
+func logsArchiveOrderCheckCountV2(accProvider *fwprovider.FrameworkProvider) func(state *terraform.State) error {
+	return func(state *terraform.State) error {
+		apiInstances := accProvider.DatadogApiInstances
+		auth := accProvider.Auth
+
+		logsArchiveOrder, _, err := apiInstances.GetLogsArchivesApiV2().GetLogsArchiveOrder(auth)
+		if err != nil {
+			return err
+		}
+		return logsArchiveOrderCount(state, len(logsArchiveOrder.Data.Attributes.ArchiveIds))
+	}
+}
+
 func TestAccDatadogLogsArchivesOrderDatasource(t *testing.T) {
+	t.Skip("This test doesn't support recording or replaying")
 	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
-	accProvider := testAccProvider(t, accProviders)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := uniqueAWSAccountID(ctx, t)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
 				Config: `data "datadog_logs_archives_order" "order" {}`,
@@ -57,7 +54,7 @@ func TestAccDatadogLogsArchivesOrderDatasource(t *testing.T) {
 			{
 				Config: testAccDatasourceDatadogLogsArchiveOrderWithArchive(uniq),
 				Check: resource.ComposeTestCheckFunc(
-					logsArchiveOrderCheckCount(accProvider),
+					logsArchiveOrderCheckCountV2(providers.frameworkProvider),
 				),
 			},
 		},
@@ -70,18 +67,35 @@ data "datadog_logs_archives_order" "order" {
 	depends_on = ["datadog_logs_archive.sample_archive"]
 }
 
-resource "datadog_integration_aws" "account" {
-	account_id         = "%[1]s"
-	role_name          = "testacc-datadog-integration-role"
+resource "datadog_integration_aws_account" "account" {
+	aws_account_id = "%[1]s"
+	aws_partition  = "aws"
+	aws_regions {}
+	auth_config {
+		aws_auth_config_role {
+			role_name = "testacc-datadog-integration-role"
+		}
+	}
+	logs_config {
+		lambda_forwarder {}
+	}
+	metrics_config {
+		namespace_filters {}
+	}
+	resources_config {}
+	traces_config {
+		xray_services {}
+	}
 }
 
 resource "datadog_logs_archive" "sample_archive" {
+	depends_on = ["datadog_integration_aws_account.account"]
 	name = "my first s3 archive"
 	query = "service:tutu"
 	s3_archive {
 		bucket 		 = "my-bucket"
 		path 		 = "/path/foo"
-		account_id   = datadog_integration_aws.account.account_id
+		account_id   = datadog_integration_aws_account.account.aws_account_id
 		role_name    = "testacc-datadog-integration-role"
 	}
 	rehydration_tags = ["team:intake", "team:app"]
