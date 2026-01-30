@@ -18,6 +18,9 @@ import (
 // It verifies that all attributes (table_name, source, description, file_metadata, schema, tags)
 // are correctly set on the created resource.
 func TestAccReferenceTableS3_Basic(t *testing.T) {
+	if !isReplaying() {
+		t.Skip("This test only supports replaying")
+	}
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)
@@ -63,6 +66,9 @@ func TestAccReferenceTableS3_Basic(t *testing.T) {
 // 1. Schema fields are correctly set on initial creation
 // 2. Schema is preserved after the table reaches DONE status (file processing complete)
 func TestAccReferenceTable_SchemaOnCreate(t *testing.T) {
+	if !isReplaying() {
+		t.Skip("This test only supports replaying")
+	}
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)
@@ -108,6 +114,9 @@ func TestAccReferenceTable_SchemaOnCreate(t *testing.T) {
 // 1. Creates a table with sync_enabled=true
 // 2. Updates to sync_enabled=false and verifies the change is applied
 func TestAccReferenceTable_UpdateSyncEnabled(t *testing.T) {
+	if !isReplaying() {
+		t.Skip("This test only supports replaying")
+	}
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)
@@ -142,6 +151,9 @@ func TestAccReferenceTable_UpdateSyncEnabled(t *testing.T) {
 // 1. A table can be created normally
 // 2. The table can be imported by ID and all attributes match the original configuration
 func TestAccReferenceTable_Import(t *testing.T) {
+	if !isReplaying() {
+		t.Skip("This test only supports replaying")
+	}
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)
