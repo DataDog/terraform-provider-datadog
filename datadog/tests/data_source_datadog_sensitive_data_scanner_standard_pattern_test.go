@@ -75,6 +75,36 @@ func TestAccDatadogStandardPatternDatasourceErrorNotFound(t *testing.T) {
 	})
 }
 
+// TestAccDatadogStandardPatternDatasourceExactMatch tests that exact match takes priority
+// over partial match. This addresses issue #3370 where searching for "US Tax..." would
+// incorrectly match "Cyprus Tax..." due to the "us" substring.
+func TestAccDatadogStandardPatternDatasourceExactMatch(t *testing.T) {
+	t.Parallel()
+	if isRecording() || isReplaying() {
+		t.Skip("This test doesn't support recording or replaying")
+	}
+
+	_, accProviders := testAccProviders(context.Background(), t)
+
+	// Use a pattern name that could potentially match multiple patterns via substring
+	// but should return exactly the one we're looking for via exact match
+	exactName := "US Tax Identification Number Scanner"
+	datasourceName := "data.datadog_sensitive_data_scanner_standard_pattern.sample_sp"
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: testAccDatasourceStandardPatternConfig(exactName),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(datasourceName, "name", exactName),
+				),
+			},
+		},
+	})
+}
+
 func testAccDatasourceStandardPatternConfig(name string) string {
 	return fmt.Sprintf(`
 data "datadog_sensitive_data_scanner_standard_pattern" "sample_sp" {
