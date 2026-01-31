@@ -2,6 +2,7 @@ package fwprovider
 
 import (
 	"context"
+	"strconv"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -33,7 +34,8 @@ type costBudgetModel struct {
 	StartMonth   types.Int64   `tfsdk:"start_month"`
 	EndMonth     types.Int64   `tfsdk:"end_month"`
 	TotalAmount  types.Float64 `tfsdk:"total_amount"`
-	Entries      types.List    `tfsdk:"entries"`
+	Entries      types.List    `tfsdk:"entries"`     // Deprecated: use BudgetLine
+	BudgetLine   types.Set     `tfsdk:"budget_line"` // New grouped schema (unordered)
 }
 
 type budgetEntry struct {
@@ -45,6 +47,14 @@ type budgetEntry struct {
 type tagFilter struct {
 	TagKey   types.String `tfsdk:"tag_key"`
 	TagValue types.String `tfsdk:"tag_value"`
+}
+
+// New structs for budget_line (grouped schema)
+type budgetLine struct {
+	Amounts          types.Map  `tfsdk:"amounts"`            // map[month]amount
+	TagFilters       types.List `tfsdk:"tag_filters"`        // For non-hierarchical budgets
+	ParentTagFilters types.List `tfsdk:"parent_tag_filters"` // For hierarchical budgets (parent tag)
+	ChildTagFilters  types.List `tfsdk:"child_tag_filters"`  // For hierarchical budgets (child tag)
 }
 
 func (r *costBudgetResource) Metadata(_ context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
@@ -83,7 +93,8 @@ func (r *costBudgetResource) Schema(_ context.Context, _ resource.SchemaRequest,
 		},
 		Blocks: map[string]schema.Block{
 			"entries": schema.ListNestedBlock{
-				Description: "The entries of the budget. **Note:** You must provide entries for all months in the budget period. For hierarchical budgets, each unique tag combination must have entries for all months.",
+				DeprecationMessage: "Use budget_line instead. This field will be removed in a future version.",
+				Description:        "The entries of the budget. **Note:** You must provide entries for all months in the budget period. For hierarchical budgets, each unique tag combination must have entries for all months.",
 				NestedObject: schema.NestedBlockObject{
 					Attributes: map[string]schema.Attribute{
 						"amount": schema.Float64Attribute{
@@ -102,6 +113,62 @@ func (r *costBudgetResource) Schema(_ context.Context, _ resource.SchemaRequest,
 										Description: "**Note:** Must be one of the tags from the `metrics_query`.",
 									},
 									"tag_value": schema.StringAttribute{Required: true},
+								},
+							},
+						},
+					},
+				},
+			},
+			"budget_line": schema.SetNestedBlock{
+				Description: "Budget lines that group monthly amounts by tag combination. Use this instead of `entries` for a more convenient schema. **Note:** The order of budget_line blocks does not matter.",
+				NestedObject: schema.NestedBlockObject{
+					Attributes: map[string]schema.Attribute{
+						"amounts": schema.MapAttribute{
+							Required:    true,
+							ElementType: types.Float64Type,
+							Description: "Map of month (YYYYMM) to budget amount. Example: {\"202601\": 1000.0, \"202602\": 1200.0}",
+						},
+					},
+					Blocks: map[string]schema.Block{
+						"tag_filters": schema.ListNestedBlock{
+							Description: "Tag filters for non-hierarchical budgets. **Note:** Cannot be used with parent_tag_filters/child_tag_filters.",
+							NestedObject: schema.NestedBlockObject{
+								Attributes: map[string]schema.Attribute{
+									"tag_key": schema.StringAttribute{
+										Required:    true,
+										Description: "Must be one of the tags from the `metrics_query`.",
+									},
+									"tag_value": schema.StringAttribute{
+										Required: true,
+									},
+								},
+							},
+						},
+						"parent_tag_filters": schema.ListNestedBlock{
+							Description: "Parent tag filters for hierarchical budgets. **Note:** Must be used with child_tag_filters. Cannot be used with tag_filters.",
+							NestedObject: schema.NestedBlockObject{
+								Attributes: map[string]schema.Attribute{
+									"tag_key": schema.StringAttribute{
+										Required:    true,
+										Description: "Must be one of the tags from the `metrics_query`.",
+									},
+									"tag_value": schema.StringAttribute{
+										Required: true,
+									},
+								},
+							},
+						},
+						"child_tag_filters": schema.ListNestedBlock{
+							Description: "Child tag filters for hierarchical budgets. **Note:** Must be used with parent_tag_filters. Cannot be used with tag_filters.",
+							NestedObject: schema.NestedBlockObject{
+								Attributes: map[string]schema.Attribute{
+									"tag_key": schema.StringAttribute{
+										Required:    true,
+										Description: "Must be one of the tags from the `metrics_query`.",
+									},
+									"tag_value": schema.StringAttribute{
+										Required: true,
+									},
 								},
 							},
 						},
@@ -218,8 +285,33 @@ func (r *costBudgetResource) ModifyPlan(ctx context.Context, req resource.Modify
 		return
 	}
 
+	// Ensure entries and budget_line are mutually exclusive
+	hasEntries := !plan.Entries.IsNull() && !plan.Entries.IsUnknown()
+	hasBudgetLine := !plan.BudgetLine.IsNull() && !plan.BudgetLine.IsUnknown()
+
+	if hasEntries && hasBudgetLine {
+		resp.Diagnostics.AddError(
+			"Conflicting Configuration",
+			"Cannot use both 'entries' and 'budget_line' simultaneously. Please use 'budget_line' (entries is deprecated).",
+		)
+		return
+	}
+
+	if !hasEntries && !hasBudgetLine {
+		resp.Diagnostics.AddError(
+			"Missing Configuration",
+			"Either 'entries' or 'budget_line' must be specified.",
+		)
+		return
+	}
+
 	// Skip validation if required fields are unknown
-	if plan.MetricsQuery.IsUnknown() || plan.StartMonth.IsUnknown() || plan.EndMonth.IsUnknown() || plan.Entries.IsUnknown() {
+	if plan.MetricsQuery.IsUnknown() || plan.StartMonth.IsUnknown() || plan.EndMonth.IsUnknown() {
+		return
+	}
+
+	// Also skip if the schema fields are unknown
+	if (hasEntries && plan.Entries.IsUnknown()) || (hasBudgetLine && plan.BudgetLine.IsUnknown()) {
 		return
 	}
 
@@ -278,11 +370,98 @@ func budgetEntryAttrTypes() map[string]attr.Type {
 	}
 }
 
+func budgetLineAttrTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"amounts": types.MapType{ElemType: types.Float64Type},
+		"tag_filters": types.ListType{
+			ElemType: types.ObjectType{
+				AttrTypes: tagFilterAttrTypes(),
+			},
+		},
+		"parent_tag_filters": types.ListType{
+			ElemType: types.ObjectType{
+				AttrTypes: tagFilterAttrTypes(),
+			},
+		},
+		"child_tag_filters": types.ListType{
+			ElemType: types.ObjectType{
+				AttrTypes: tagFilterAttrTypes(),
+			},
+		},
+	}
+}
+
 // --- Helper functions to map between model and API types go here ---
+
+// convertBudgetLineToFlatEntries converts budget_line (grouped schema) to flat API entries
+func convertBudgetLineToFlatEntries(ctx context.Context, budgetLines []budgetLine) []budgetEntry {
+	var flatEntries []budgetEntry
+
+	for _, line := range budgetLines {
+		// Extract the amounts map
+		amounts := make(map[string]float64)
+		line.Amounts.ElementsAs(ctx, &amounts, false)
+
+		// Extract tag filters (for non-hierarchical budgets)
+		var tagFilters []tagFilter
+		if !line.TagFilters.IsNull() && !line.TagFilters.IsUnknown() {
+			line.TagFilters.ElementsAs(ctx, &tagFilters, false)
+		}
+
+		// Extract parent and child tag filters (for hierarchical budgets)
+		var parentTagFilters []tagFilter
+		if !line.ParentTagFilters.IsNull() && !line.ParentTagFilters.IsUnknown() {
+			line.ParentTagFilters.ElementsAs(ctx, &parentTagFilters, false)
+		}
+
+		var childTagFilters []tagFilter
+		if !line.ChildTagFilters.IsNull() && !line.ChildTagFilters.IsUnknown() {
+			line.ChildTagFilters.ElementsAs(ctx, &childTagFilters, false)
+		}
+
+		// Combine all tag filters
+		var allTagFilters []tagFilter
+		allTagFilters = append(allTagFilters, tagFilters...)
+		allTagFilters = append(allTagFilters, parentTagFilters...)
+		allTagFilters = append(allTagFilters, childTagFilters...)
+
+		// Create an entry for each month in the amounts map
+		for monthStr, amount := range amounts {
+			// Convert month string to int64
+			month, err := strconv.ParseInt(monthStr, 10, 64)
+			if err != nil {
+				continue // Skip invalid months
+			}
+
+			// Convert tag filters to types.List
+			tagFiltersList, _ := types.ListValueFrom(ctx, types.ObjectType{
+				AttrTypes: tagFilterAttrTypes(),
+			}, allTagFilters)
+
+			flatEntries = append(flatEntries, budgetEntry{
+				Month:      types.Int64Value(month),
+				Amount:     types.Float64Value(amount),
+				TagFilters: tagFiltersList,
+			})
+		}
+	}
+
+	return flatEntries
+}
+
 func buildBudgetWithEntriesFromModel(ctx context.Context, plan costBudgetModel) datadogV2.BudgetWithEntries {
-	// Convert types.List to []budgetEntry
 	var planEntries []budgetEntry
-	plan.Entries.ElementsAs(ctx, &planEntries, false)
+
+	// Check if budget_line is used (new schema)
+	if !plan.BudgetLine.IsNull() && !plan.BudgetLine.IsUnknown() {
+		// Convert budget_line to flat entries
+		var budgetLines []budgetLine
+		plan.BudgetLine.ElementsAs(ctx, &budgetLines, false)
+		planEntries = convertBudgetLineToFlatEntries(ctx, budgetLines)
+	} else {
+		// Use legacy entries schema
+		plan.Entries.ElementsAs(ctx, &planEntries, false)
+	}
 
 	// Convert entries to API format
 	var entries []datadogV2.BudgetWithEntriesDataAttributesEntriesItems
