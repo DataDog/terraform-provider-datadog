@@ -316,7 +316,10 @@ func resourceDatadogSensitiveDataScannerGroupDelete(ctx context.Context, d *sche
 
 	_, httpResp, err := apiInstances.GetSensitiveDataScannerApiV2().DeleteScanningGroup(auth, id, *body)
 	if err != nil {
-		// The resource is assumed to still exist, and all prior state is preserved.
+		// API returns 404 when the specific group id doesn't exist through DELETE request.
+		if httpResp != nil && httpResp.StatusCode == 404 {
+			return nil
+		}
 		return utils.TranslateClientErrorDiag(err, httpResp, "error deleting SensitiveDataScannerGroup")
 	}
 
