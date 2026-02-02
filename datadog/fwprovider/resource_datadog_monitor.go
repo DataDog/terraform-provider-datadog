@@ -1336,6 +1336,10 @@ func (r *monitorResource) buildDataQualityQueryStruct(ctx context.Context, dataQ
 			fwutils.SetOptString(opt.CustomWhere, monitorOptsReq.SetCustomWhere)
 			fwutils.SetOptString(opt.CrontabOverride, monitorOptsReq.SetCrontabOverride)
 			fwutils.SetOptStringList(opt.GroupByColumns, monitorOptsReq.SetGroupByColumns, ctx)
+			// Handle empty array edge case - convert to nil to avoid API errors
+			if groupByCols, ok := monitorOptsReq.GetGroupByColumnsOk(); ok && len(*groupByCols) == 0 {
+				monitorOptsReq.GroupByColumns = nil
+			}
 			if !opt.ModelTypeOverride.IsNull() {
 				monitorOptsReq.SetModelTypeOverride(datadogV1.MonitorFormulaAndFunctionDataQualityModelTypeOverride(opt.ModelTypeOverride.ValueString()))
 			}
@@ -1385,8 +1389,13 @@ func (r *monitorResource) updateState(ctx context.Context, state *monitorResourc
 	}
 
 	if query, ok := m.GetQueryOk(); ok && query != nil {
-		state.Query = customtypes.TrimSpaceStringValue{
-			StringValue: types.StringValue(*query),
+		// For data-quality and other formula-based monitors, the API may normalize/rewrite queries
+		// (e.g., stripping anomalies() wrappers). Only update if state query is empty/unknown,
+		// otherwise preserve the user's original query to avoid unwanted drifts.
+		if state.Query.IsNull() || state.Query.IsUnknown() {
+			state.Query = customtypes.TrimSpaceStringValue{
+				StringValue: types.StringValue(*query),
+			}
 		}
 	}
 
@@ -1629,7 +1638,7 @@ func (r *monitorResource) buildDataQualityQueryState(ctx context.Context, dataQu
 			CustomWhere:     fwutils.ToTerraformStr(monitorOpts.GetCustomWhereOk()),
 			CrontabOverride: fwutils.ToTerraformStr(monitorOpts.GetCrontabOverrideOk()),
 		}
-		if groupByCols, ok := monitorOpts.GetGroupByColumnsOk(); ok && groupByCols != nil {
+		if groupByCols, ok := monitorOpts.GetGroupByColumnsOk(); ok && groupByCols != nil && len(*groupByCols) > 0 {
 			monitorOptsState.GroupByColumns, _ = types.ListValueFrom(ctx, types.StringType, groupByCols)
 		}
 		if modelTypeOverride, ok := monitorOpts.GetModelTypeOverrideOk(); ok && modelTypeOverride != nil {

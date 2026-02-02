@@ -1120,12 +1120,15 @@ func buildMonitorFormulaAndFunctionDataQualityQuery(data map[string]interface{})
 		if v, ok := monitorOptionsData["custom_where"].(string); ok && len(v) > 0 {
 			monitorOptions.SetCustomWhere(v)
 		}
-		if groupByColsList, ok := monitorOptionsData["group_by_columns"].([]interface{}); ok && len(groupByColsList) > 0 {
-			cols := make([]string, len(groupByColsList))
-			for i, c := range groupByColsList {
-				cols[i] = c.(string)
+		if groupByColsList, ok := monitorOptionsData["group_by_columns"].([]interface{}); ok {
+			// Only set if non-empty to avoid nil pointer issues
+			if len(groupByColsList) > 0 {
+				cols := make([]string, len(groupByColsList))
+				for i, c := range groupByColsList {
+					cols[i] = c.(string)
+				}
+				monitorOptions.SetGroupByColumns(cols)
 			}
-			monitorOptions.SetGroupByColumns(cols)
 		}
 		if v, ok := monitorOptionsData["crontab_override"].(string); ok && len(v) > 0 {
 			monitorOptions.SetCrontabOverride(v)
@@ -1239,8 +1242,13 @@ func updateMonitorState(d *schema.ResourceData, meta interface{}, m *datadogV1.M
 	if err := d.Set("message", m.GetMessage()); err != nil {
 		return diag.FromErr(err)
 	}
-	if err := d.Set("query", m.GetQuery()); err != nil {
-		return diag.FromErr(err)
+	// For data-quality and other formula-based monitors, the API may normalize/rewrite queries
+	// (e.g., stripping anomalies() wrappers). Only update if not already set in state,
+	// otherwise preserve the user's original query to avoid unwanted drifts.
+	if _, ok := d.GetOk("query"); !ok {
+		if err := d.Set("query", m.GetQuery()); err != nil {
+			return diag.FromErr(err)
+		}
 	}
 	if err := d.Set("type", m.GetType()); err != nil {
 		return diag.FromErr(err)
@@ -1585,7 +1593,7 @@ func buildTerraformDataQualityMonitorVariables(datadogVariables []datadogV1.Moni
 				if customWhere, ok := monitorOptions.GetCustomWhereOk(); ok {
 					terraformMonitorOptions["custom_where"] = customWhere
 				}
-				if groupByCols, ok := monitorOptions.GetGroupByColumnsOk(); ok {
+				if groupByCols, ok := monitorOptions.GetGroupByColumnsOk(); ok && len(*groupByCols) > 0 {
 					terraformMonitorOptions["group_by_columns"] = groupByCols
 				}
 				if crontabOverride, ok := monitorOptions.GetCrontabOverrideOk(); ok {

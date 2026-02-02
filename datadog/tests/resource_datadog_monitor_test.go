@@ -2347,3 +2347,59 @@ resource "datadog_monitor" "data_quality_basic" {
   }
 }`, uniq)
 }
+
+// TestAccDatadogMonitor_DataQuality_WithMonitorOptions tests data quality monitor with monitor_options
+func TestAccDatadogMonitor_DataQuality_WithMonitorOptions(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	monitorName := uniqueEntityName(ctx, t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogMonitorDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogDataQualityMonitorWithOptions(monitorName),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.data_quality_options", "name", monitorName),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.data_quality_options", "type", "data-quality alert"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.data_quality_options", "variables.0.data_quality_query.0.monitor_options.#", "1"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.data_quality_options", "variables.0.data_quality_query.0.monitor_options.0.model_type_override", "freshness"),
+				),
+			},
+		},
+	})
+}
+
+func testAccCheckDatadogDataQualityMonitorWithOptions(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_monitor" "data_quality_options" {
+  name    = "%s"
+  type    = "data-quality alert"
+  message = "Data quality threshold exceeded"
+  query   = "formula(\"query1\").last(\"30m\") > 1000"
+
+  monitor_thresholds {
+    critical = 1000
+  }
+
+  variables {
+    data_quality_query {
+      name        = "query1"
+      data_source = "data_quality_metrics"
+      measure     = "row_count"
+      filter      = "search for column where `+"`"+`database:production AND table:users`+"`"+`"
+      monitor_options {
+        model_type_override = "freshness"
+      }
+    }
+  }
+}`, uniq)
+}
+
