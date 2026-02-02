@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 1265
+        content_length: 801
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"end_month":202412,"entries":[{"amount":1000,"month":202401,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"amount":1000,"month":202402,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"amount":1000,"month":202403,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"amount":1000,"month":202404,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"amount":1000,"month":202405,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"amount":1000,"month":202406,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"amount":1000,"month":202407,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"amount":1000,"month":202408,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"amount":1000,"month":202409,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"amount":1000,"month":202410,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"amount":1000,"month":202411,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"amount":1000,"month":202412,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]}],"metrics_query":"sum:aws.cost.amortized{*} by {account}","name":"tf-TestAccDatadogCostBudgetDataSource_Basic-local-1769431101","start_month":202401},"type":"budget"}}
+            {"data":{"attributes":{"end_month":202603,"entries":[{"amount":1000,"month":202601,"tag_filters":[{"tag_key":"environment","tag_value":"production"}]},{"amount":1100,"month":202602,"tag_filters":[{"tag_key":"environment","tag_value":"production"}]},{"amount":1200,"month":202603,"tag_filters":[{"tag_key":"environment","tag_value":"production"}]},{"amount":500,"month":202601,"tag_filters":[{"tag_key":"environment","tag_value":"staging"}]},{"amount":550,"month":202602,"tag_filters":[{"tag_key":"environment","tag_value":"staging"}]},{"amount":600,"month":202603,"tag_filters":[{"tag_key":"environment","tag_value":"staging"}]}],"metrics_query":"sum:aws.cost.amortized{*} by {environment}","name":"tf-TestAccDatadogCostBudgetDataSource_Basic-local-1769789950","start_month":202601},"type":"budget"}}
         form: {}
         headers:
             Accept:
@@ -36,20 +36,20 @@ interactions:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 195.889333ms
+        duration: 201.890666ms
     - id: 1
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 1265
+        content_length: 801
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"end_month":202412,"entries":[{"amount":1000,"month":202401,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"amount":1000,"month":202402,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"amount":1000,"month":202403,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"amount":1000,"month":202404,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"amount":1000,"month":202405,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"amount":1000,"month":202406,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"amount":1000,"month":202407,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"amount":1000,"month":202408,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"amount":1000,"month":202409,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"amount":1000,"month":202410,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"amount":1000,"month":202411,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"amount":1000,"month":202412,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]}],"metrics_query":"sum:aws.cost.amortized{*} by {account}","name":"tf-TestAccDatadogCostBudgetDataSource_Basic-local-1769431101","start_month":202401},"type":"budget"}}
+            {"data":{"attributes":{"end_month":202603,"entries":[{"amount":1200,"month":202603,"tag_filters":[{"tag_key":"environment","tag_value":"production"}]},{"amount":1000,"month":202601,"tag_filters":[{"tag_key":"environment","tag_value":"production"}]},{"amount":1100,"month":202602,"tag_filters":[{"tag_key":"environment","tag_value":"production"}]},{"amount":550,"month":202602,"tag_filters":[{"tag_key":"environment","tag_value":"staging"}]},{"amount":600,"month":202603,"tag_filters":[{"tag_key":"environment","tag_value":"staging"}]},{"amount":500,"month":202601,"tag_filters":[{"tag_key":"environment","tag_value":"staging"}]}],"metrics_query":"sum:aws.cost.amortized{*} by {environment}","name":"tf-TestAccDatadogCostBudgetDataSource_Basic-local-1769789950","start_month":202601},"type":"budget"}}
         form: {}
         headers:
             Accept:
@@ -72,20 +72,20 @@ interactions:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 109.813125ms
+        duration: 185.571458ms
     - id: 2
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 1265
+        content_length: 801
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"end_month":202412,"entries":[{"amount":1000,"month":202401,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"amount":1000,"month":202402,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"amount":1000,"month":202403,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"amount":1000,"month":202404,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"amount":1000,"month":202405,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"amount":1000,"month":202406,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"amount":1000,"month":202407,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"amount":1000,"month":202408,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"amount":1000,"month":202409,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"amount":1000,"month":202410,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"amount":1000,"month":202411,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"amount":1000,"month":202412,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]}],"metrics_query":"sum:aws.cost.amortized{*} by {account}","name":"tf-TestAccDatadogCostBudgetDataSource_Basic-local-1769431101","start_month":202401},"type":"budget"}}
+            {"data":{"attributes":{"end_month":202603,"entries":[{"amount":1100,"month":202602,"tag_filters":[{"tag_key":"environment","tag_value":"production"}]},{"amount":1200,"month":202603,"tag_filters":[{"tag_key":"environment","tag_value":"production"}]},{"amount":1000,"month":202601,"tag_filters":[{"tag_key":"environment","tag_value":"production"}]},{"amount":500,"month":202601,"tag_filters":[{"tag_key":"environment","tag_value":"staging"}]},{"amount":550,"month":202602,"tag_filters":[{"tag_key":"environment","tag_value":"staging"}]},{"amount":600,"month":202603,"tag_filters":[{"tag_key":"environment","tag_value":"staging"}]}],"metrics_query":"sum:aws.cost.amortized{*} by {environment}","name":"tf-TestAccDatadogCostBudgetDataSource_Basic-local-1769789950","start_month":202601},"type":"budget"}}
         form: {}
         headers:
             Accept:
@@ -102,13 +102,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"data":{"id":"b4105577-7e95-4d37-99f0-2957d8f6a47c","type":"budget","attributes":{"created_at":1769431103083,"created_by":"cb0fe8fe-673a-4678-8ff5-7936a9af21ba","end_month":202412,"entries":[{"month":202401,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"month":202402,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"month":202403,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"month":202404,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"month":202405,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"month":202406,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"month":202407,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"month":202408,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"month":202409,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"month":202410,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"month":202411,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"month":202412,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]}],"metrics_query":"sum:aws.cost.amortized{*} by {account}","name":"tf-TestAccDatadogCostBudgetDataSource_Basic-local-1769431101","org_id":321813,"start_month":202401,"total_amount":12000,"updated_at":1769431103083,"updated_by":"cb0fe8fe-673a-4678-8ff5-7936a9af21ba"}}}'
+        body: '{"data":{"id":"884330a8-5d19-4aa1-9e39-96e7aef6315e","type":"budget","attributes":{"created_at":1769789953372,"created_by":"cb0fe8fe-673a-4678-8ff5-7936a9af21ba","end_month":202603,"entries":[{"month":202602,"amount":1100,"tag_filters":[{"tag_key":"environment","tag_value":"production"}]},{"month":202603,"amount":1200,"tag_filters":[{"tag_key":"environment","tag_value":"production"}]},{"month":202601,"amount":1000,"tag_filters":[{"tag_key":"environment","tag_value":"production"}]},{"month":202601,"amount":500,"tag_filters":[{"tag_key":"environment","tag_value":"staging"}]},{"month":202602,"amount":550,"tag_filters":[{"tag_key":"environment","tag_value":"staging"}]},{"month":202603,"amount":600,"tag_filters":[{"tag_key":"environment","tag_value":"staging"}]}],"metrics_query":"sum:aws.cost.amortized{*} by {environment}","name":"tf-TestAccDatadogCostBudgetDataSource_Basic-local-1769789950","org_id":321813,"start_month":202601,"total_amount":4950,"updated_at":1769789953372,"updated_by":"cb0fe8fe-673a-4678-8ff5-7936a9af21ba"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 154.198ms
+        duration: 315.020792ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -125,7 +125,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/cost/budget/b4105577-7e95-4d37-99f0-2957d8f6a47c
+        url: https://api.datadoghq.com/api/v2/cost/budget/884330a8-5d19-4aa1-9e39-96e7aef6315e
         method: GET
       response:
         proto: HTTP/1.1
@@ -135,26 +135,26 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"data":{"id":"b4105577-7e95-4d37-99f0-2957d8f6a47c","type":"budget","attributes":{"created_at":1769431103083,"created_by":"cb0fe8fe-673a-4678-8ff5-7936a9af21ba","end_month":202412,"entries":[{"month":202401,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"month":202402,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"month":202403,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"month":202404,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"month":202405,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"month":202406,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"month":202407,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"month":202408,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"month":202409,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"month":202410,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"month":202411,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"month":202412,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]}],"metrics_query":"sum:aws.cost.amortized{*} by {account}","name":"tf-TestAccDatadogCostBudgetDataSource_Basic-local-1769431101","org_id":321813,"start_month":202401,"total_amount":12000,"updated_at":1769431103083,"updated_by":"cb0fe8fe-673a-4678-8ff5-7936a9af21ba"}}}'
+        body: '{"data":{"id":"884330a8-5d19-4aa1-9e39-96e7aef6315e","type":"budget","attributes":{"created_at":1769789953372,"created_by":"cb0fe8fe-673a-4678-8ff5-7936a9af21ba","end_month":202603,"entries":[{"month":202602,"amount":1100,"tag_filters":[{"tag_key":"environment","tag_value":"production"}]},{"month":202603,"amount":1200,"tag_filters":[{"tag_key":"environment","tag_value":"production"}]},{"month":202601,"amount":1000,"tag_filters":[{"tag_key":"environment","tag_value":"production"}]},{"month":202601,"amount":500,"tag_filters":[{"tag_key":"environment","tag_value":"staging"}]},{"month":202602,"amount":550,"tag_filters":[{"tag_key":"environment","tag_value":"staging"}]},{"month":202603,"amount":600,"tag_filters":[{"tag_key":"environment","tag_value":"staging"}]}],"metrics_query":"sum:aws.cost.amortized{*} by {environment}","name":"tf-TestAccDatadogCostBudgetDataSource_Basic-local-1769789950","org_id":321813,"start_month":202601,"total_amount":4950,"updated_at":1769789953372,"updated_by":"cb0fe8fe-673a-4678-8ff5-7936a9af21ba"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 125.448958ms
+        duration: 128.729042ms
     - id: 4
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 1309
+        content_length: 845
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"end_month":202412,"entries":[{"amount":1000,"month":202401,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"amount":1000,"month":202402,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"amount":1000,"month":202403,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"amount":1000,"month":202404,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"amount":1000,"month":202405,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"amount":1000,"month":202406,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"amount":1000,"month":202407,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"amount":1000,"month":202408,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"amount":1000,"month":202409,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"amount":1000,"month":202410,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"amount":1000,"month":202411,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"amount":1000,"month":202412,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]}],"metrics_query":"sum:aws.cost.amortized{*} by {account}","name":"tf-TestAccDatadogCostBudgetDataSource_Basic-local-1769431101","start_month":202401},"id":"b4105577-7e95-4d37-99f0-2957d8f6a47c","type":"budget"}}
+            {"data":{"attributes":{"end_month":202603,"entries":[{"amount":1200,"month":202603,"tag_filters":[{"tag_key":"environment","tag_value":"production"}]},{"amount":1000,"month":202601,"tag_filters":[{"tag_key":"environment","tag_value":"production"}]},{"amount":1100,"month":202602,"tag_filters":[{"tag_key":"environment","tag_value":"production"}]},{"amount":600,"month":202603,"tag_filters":[{"tag_key":"environment","tag_value":"staging"}]},{"amount":500,"month":202601,"tag_filters":[{"tag_key":"environment","tag_value":"staging"}]},{"amount":550,"month":202602,"tag_filters":[{"tag_key":"environment","tag_value":"staging"}]}],"metrics_query":"sum:aws.cost.amortized{*} by {environment}","name":"tf-TestAccDatadogCostBudgetDataSource_Basic-local-1769789950","start_month":202601},"id":"884330a8-5d19-4aa1-9e39-96e7aef6315e","type":"budget"}}
         form: {}
         headers:
             Accept:
@@ -177,7 +177,7 @@ interactions:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 97.658417ms
+        duration: 239.925084ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -194,7 +194,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/cost/budget/b4105577-7e95-4d37-99f0-2957d8f6a47c
+        url: https://api.datadoghq.com/api/v2/cost/budget/884330a8-5d19-4aa1-9e39-96e7aef6315e
         method: GET
       response:
         proto: HTTP/1.1
@@ -204,13 +204,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"data":{"id":"b4105577-7e95-4d37-99f0-2957d8f6a47c","type":"budget","attributes":{"created_at":1769431103083,"created_by":"cb0fe8fe-673a-4678-8ff5-7936a9af21ba","end_month":202412,"entries":[{"month":202401,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"month":202402,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"month":202403,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"month":202404,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"month":202405,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"month":202406,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"month":202407,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"month":202408,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"month":202409,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"month":202410,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"month":202411,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"month":202412,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]}],"metrics_query":"sum:aws.cost.amortized{*} by {account}","name":"tf-TestAccDatadogCostBudgetDataSource_Basic-local-1769431101","org_id":321813,"start_month":202401,"total_amount":12000,"updated_at":1769431103083,"updated_by":"cb0fe8fe-673a-4678-8ff5-7936a9af21ba"}}}'
+        body: '{"data":{"id":"884330a8-5d19-4aa1-9e39-96e7aef6315e","type":"budget","attributes":{"created_at":1769789953372,"created_by":"cb0fe8fe-673a-4678-8ff5-7936a9af21ba","end_month":202603,"entries":[{"month":202602,"amount":1100,"tag_filters":[{"tag_key":"environment","tag_value":"production"}]},{"month":202603,"amount":1200,"tag_filters":[{"tag_key":"environment","tag_value":"production"}]},{"month":202601,"amount":1000,"tag_filters":[{"tag_key":"environment","tag_value":"production"}]},{"month":202601,"amount":500,"tag_filters":[{"tag_key":"environment","tag_value":"staging"}]},{"month":202602,"amount":550,"tag_filters":[{"tag_key":"environment","tag_value":"staging"}]},{"month":202603,"amount":600,"tag_filters":[{"tag_key":"environment","tag_value":"staging"}]}],"metrics_query":"sum:aws.cost.amortized{*} by {environment}","name":"tf-TestAccDatadogCostBudgetDataSource_Basic-local-1769789950","org_id":321813,"start_month":202601,"total_amount":4950,"updated_at":1769789953372,"updated_by":"cb0fe8fe-673a-4678-8ff5-7936a9af21ba"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 129.569083ms
+        duration: 137.728083ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -227,7 +227,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/cost/budget/b4105577-7e95-4d37-99f0-2957d8f6a47c
+        url: https://api.datadoghq.com/api/v2/cost/budget/884330a8-5d19-4aa1-9e39-96e7aef6315e
         method: GET
       response:
         proto: HTTP/1.1
@@ -237,26 +237,26 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"data":{"id":"b4105577-7e95-4d37-99f0-2957d8f6a47c","type":"budget","attributes":{"created_at":1769431103083,"created_by":"cb0fe8fe-673a-4678-8ff5-7936a9af21ba","end_month":202412,"entries":[{"month":202401,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"month":202402,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"month":202403,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"month":202404,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"month":202405,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"month":202406,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"month":202407,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"month":202408,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"month":202409,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"month":202410,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"month":202411,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"month":202412,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]}],"metrics_query":"sum:aws.cost.amortized{*} by {account}","name":"tf-TestAccDatadogCostBudgetDataSource_Basic-local-1769431101","org_id":321813,"start_month":202401,"total_amount":12000,"updated_at":1769431103083,"updated_by":"cb0fe8fe-673a-4678-8ff5-7936a9af21ba"}}}'
+        body: '{"data":{"id":"884330a8-5d19-4aa1-9e39-96e7aef6315e","type":"budget","attributes":{"created_at":1769789953372,"created_by":"cb0fe8fe-673a-4678-8ff5-7936a9af21ba","end_month":202603,"entries":[{"month":202602,"amount":1100,"tag_filters":[{"tag_key":"environment","tag_value":"production"}]},{"month":202603,"amount":1200,"tag_filters":[{"tag_key":"environment","tag_value":"production"}]},{"month":202601,"amount":1000,"tag_filters":[{"tag_key":"environment","tag_value":"production"}]},{"month":202601,"amount":500,"tag_filters":[{"tag_key":"environment","tag_value":"staging"}]},{"month":202602,"amount":550,"tag_filters":[{"tag_key":"environment","tag_value":"staging"}]},{"month":202603,"amount":600,"tag_filters":[{"tag_key":"environment","tag_value":"staging"}]}],"metrics_query":"sum:aws.cost.amortized{*} by {environment}","name":"tf-TestAccDatadogCostBudgetDataSource_Basic-local-1769789950","org_id":321813,"start_month":202601,"total_amount":4950,"updated_at":1769789953372,"updated_by":"cb0fe8fe-673a-4678-8ff5-7936a9af21ba"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 200.315084ms
+        duration: 155.345208ms
     - id: 7
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 1309
+        content_length: 845
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"end_month":202412,"entries":[{"amount":1000,"month":202401,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"amount":1000,"month":202402,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"amount":1000,"month":202403,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"amount":1000,"month":202404,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"amount":1000,"month":202405,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"amount":1000,"month":202406,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"amount":1000,"month":202407,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"amount":1000,"month":202408,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"amount":1000,"month":202409,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"amount":1000,"month":202410,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"amount":1000,"month":202411,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"amount":1000,"month":202412,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]}],"metrics_query":"sum:aws.cost.amortized{*} by {account}","name":"tf-TestAccDatadogCostBudgetDataSource_Basic-local-1769431101","start_month":202401},"id":"b4105577-7e95-4d37-99f0-2957d8f6a47c","type":"budget"}}
+            {"data":{"attributes":{"end_month":202603,"entries":[{"amount":1100,"month":202602,"tag_filters":[{"tag_key":"environment","tag_value":"production"}]},{"amount":1200,"month":202603,"tag_filters":[{"tag_key":"environment","tag_value":"production"}]},{"amount":1000,"month":202601,"tag_filters":[{"tag_key":"environment","tag_value":"production"}]},{"amount":550,"month":202602,"tag_filters":[{"tag_key":"environment","tag_value":"staging"}]},{"amount":600,"month":202603,"tag_filters":[{"tag_key":"environment","tag_value":"staging"}]},{"amount":500,"month":202601,"tag_filters":[{"tag_key":"environment","tag_value":"staging"}]}],"metrics_query":"sum:aws.cost.amortized{*} by {environment}","name":"tf-TestAccDatadogCostBudgetDataSource_Basic-local-1769789950","start_month":202601},"id":"884330a8-5d19-4aa1-9e39-96e7aef6315e","type":"budget"}}
         form: {}
         headers:
             Accept:
@@ -279,7 +279,7 @@ interactions:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 98.843042ms
+        duration: 172.135458ms
     - id: 8
       request:
         proto: HTTP/1.1
@@ -296,7 +296,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/cost/budget/b4105577-7e95-4d37-99f0-2957d8f6a47c
+        url: https://api.datadoghq.com/api/v2/cost/budget/884330a8-5d19-4aa1-9e39-96e7aef6315e
         method: GET
       response:
         proto: HTTP/1.1
@@ -306,13 +306,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"data":{"id":"b4105577-7e95-4d37-99f0-2957d8f6a47c","type":"budget","attributes":{"created_at":1769431103083,"created_by":"cb0fe8fe-673a-4678-8ff5-7936a9af21ba","end_month":202412,"entries":[{"month":202401,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"month":202402,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"month":202403,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"month":202404,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"month":202405,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"month":202406,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"month":202407,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"month":202408,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"month":202409,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"month":202410,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"month":202411,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]},{"month":202412,"amount":1000,"tag_filters":[{"tag_key":"account","tag_value":"foo"}]}],"metrics_query":"sum:aws.cost.amortized{*} by {account}","name":"tf-TestAccDatadogCostBudgetDataSource_Basic-local-1769431101","org_id":321813,"start_month":202401,"total_amount":12000,"updated_at":1769431103083,"updated_by":"cb0fe8fe-673a-4678-8ff5-7936a9af21ba"}}}'
+        body: '{"data":{"id":"884330a8-5d19-4aa1-9e39-96e7aef6315e","type":"budget","attributes":{"created_at":1769789953372,"created_by":"cb0fe8fe-673a-4678-8ff5-7936a9af21ba","end_month":202603,"entries":[{"month":202602,"amount":1100,"tag_filters":[{"tag_key":"environment","tag_value":"production"}]},{"month":202603,"amount":1200,"tag_filters":[{"tag_key":"environment","tag_value":"production"}]},{"month":202601,"amount":1000,"tag_filters":[{"tag_key":"environment","tag_value":"production"}]},{"month":202601,"amount":500,"tag_filters":[{"tag_key":"environment","tag_value":"staging"}]},{"month":202602,"amount":550,"tag_filters":[{"tag_key":"environment","tag_value":"staging"}]},{"month":202603,"amount":600,"tag_filters":[{"tag_key":"environment","tag_value":"staging"}]}],"metrics_query":"sum:aws.cost.amortized{*} by {environment}","name":"tf-TestAccDatadogCostBudgetDataSource_Basic-local-1769789950","org_id":321813,"start_month":202601,"total_amount":4950,"updated_at":1769789953372,"updated_by":"cb0fe8fe-673a-4678-8ff5-7936a9af21ba"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 125.674166ms
+        duration: 119.474875ms
     - id: 9
       request:
         proto: HTTP/1.1
@@ -329,7 +329,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/cost/budget/b4105577-7e95-4d37-99f0-2957d8f6a47c
+        url: https://api.datadoghq.com/api/v2/cost/budget/884330a8-5d19-4aa1-9e39-96e7aef6315e
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -343,7 +343,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 154.38675ms
+        duration: 191.609792ms
     - id: 10
       request:
         proto: HTTP/1.1
@@ -360,7 +360,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/cost/budget/b4105577-7e95-4d37-99f0-2957d8f6a47c
+        url: https://api.datadoghq.com/api/v2/cost/budget/884330a8-5d19-4aa1-9e39-96e7aef6315e
         method: GET
       response:
         proto: HTTP/1.1
@@ -376,7 +376,7 @@ interactions:
                 - application/vnd.api+json
         status: 404 Not Found
         code: 404
-        duration: 114.5455ms
+        duration: 119.695167ms
     - id: 11
       request:
         proto: HTTP/1.1
@@ -393,7 +393,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/cost/budget/b4105577-7e95-4d37-99f0-2957d8f6a47c
+        url: https://api.datadoghq.com/api/v2/cost/budget/884330a8-5d19-4aa1-9e39-96e7aef6315e
         method: GET
       response:
         proto: HTTP/1.1
@@ -409,4 +409,4 @@ interactions:
                 - application/vnd.api+json
         status: 404 Not Found
         code: 404
-        duration: 116.463667ms
+        duration: 117.998958ms
