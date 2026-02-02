@@ -18,7 +18,7 @@ func TestAccIntegrationAwsEventBridgeBasic(t *testing.T) {
 	}
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
-	accountID := "694513996623"
+	accountID := uniqueAWSAccountID(ctx, t)
 	uniq := uniqueEntityName(ctx, t)
 
 	resource.Test(t, resource.TestCase{
@@ -37,12 +37,35 @@ func TestAccIntegrationAwsEventBridgeBasic(t *testing.T) {
 
 func testAccCheckDatadogIntegrationAwsEventBridge(accountID string, uniq string) string {
 	return fmt.Sprintf(`
+	resource "datadog_integration_aws_account" "account" {
+		aws_account_id = "%s"
+		aws_partition = "aws"
+		aws_regions {}
+		auth_config {
+			aws_auth_config_role {
+				role_name = "DatadogIntegrationRole"
+				external_id = "8b424c40dafa4034ab825bd16ccc74dd"
+			}
+		}
+		logs_config {
+			lambda_forwarder {}
+		}
+		metrics_config {
+			namespace_filters {}
+		}
+		resources_config {}
+		traces_config {
+			xray_services {}
+		}
+	}
+
 	resource "datadog_integration_aws_event_bridge" "foo" {
 		account_id = "%s"
 		event_generator_name = "%s"
 		create_event_bus = false
 		region = "us-east-1"
-	}`, accountID, uniq)
+		depends_on = [datadog_integration_aws_account.account]
+	}`, accountID, accountID, uniq)
 }
 
 func testAccCheckDatadogIntegrationAwsEventBridgeDestroy(accProvider *fwprovider.FrameworkProvider) func(*terraform.State) error {
@@ -64,7 +87,7 @@ func IntegrationAwsEventBridgeDestroyHelper(auth context.Context, s *terraform.S
 				continue
 			}
 
-			_, httpResp, err := apiInstances.GetAWSIntegrationApiV1().ListAWSEventBridgeSources(auth)
+			_, httpResp, err := apiInstances.GetAWSIntegrationApiV2().ListAWSEventBridgeSources(auth)
 			if err != nil {
 				if httpResp != nil && httpResp.StatusCode == 404 {
 					return nil
@@ -96,7 +119,7 @@ func integrationAwsEventBridgeExistsHelper(auth context.Context, s *terraform.St
 			continue
 		}
 
-		_, httpResp, err := apiInstances.GetAWSIntegrationApiV1().ListAWSEventBridgeSources(auth)
+		_, httpResp, err := apiInstances.GetAWSIntegrationApiV2().ListAWSEventBridgeSources(auth)
 		if err != nil {
 			return utils.TranslateClientError(err, httpResp, "error retrieving IntegrationAwsEventBridge")
 		}
