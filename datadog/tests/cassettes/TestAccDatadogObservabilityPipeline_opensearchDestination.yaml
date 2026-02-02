@@ -31,13 +31,13 @@ interactions:
         content_length: 356
         uncompressed: false
         body: |
-            {"data":{"id":"ea07f342-f20c-11f0-9dec-da7ad0900002","type":"pipelines","attributes":{"name":"opensearch pipeline","config":{"destinations":[{"bulk_index":"logs-datastream","id":"destination-1","inputs":["source-1"],"type":"opensearch"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"d3adc9e8-fdc2-11f0-a5b7-da7ad0900002","type":"pipelines","attributes":{"name":"opensearch pipeline","config":{"destinations":[{"bulk_index":"logs-datastream","id":"destination-1","inputs":["source-1"],"type":"opensearch"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 397.529084ms
+        duration: 776.596ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -54,7 +54,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/ea07f342-f20c-11f0-9dec-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/d3adc9e8-fdc2-11f0-a5b7-da7ad0900002
         method: GET
       response:
         proto: HTTP/1.1
@@ -65,13 +65,13 @@ interactions:
         content_length: 356
         uncompressed: false
         body: |
-            {"data":{"id":"ea07f342-f20c-11f0-9dec-da7ad0900002","type":"pipelines","attributes":{"name":"opensearch pipeline","config":{"destinations":[{"bulk_index":"logs-datastream","id":"destination-1","inputs":["source-1"],"type":"opensearch"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"d3adc9e8-fdc2-11f0-a5b7-da7ad0900002","type":"pipelines","attributes":{"name":"opensearch pipeline","config":{"destinations":[{"bulk_index":"logs-datastream","id":"destination-1","inputs":["source-1"],"type":"opensearch"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 291.181208ms
+        duration: 252.201333ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -88,7 +88,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/ea07f342-f20c-11f0-9dec-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/d3adc9e8-fdc2-11f0-a5b7-da7ad0900002
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -104,4 +104,4 @@ interactions:
                 - application/json
         status: 204 No Content
         code: 204
-        duration: 461.03325ms
+        duration: 482.620917ms

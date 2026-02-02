@@ -3,13 +3,13 @@
 page_title: "datadog_observability_pipeline Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Provides a Datadog Observability Pipeline resource. Observability Pipelines allows you to collect and process logs within your own infrastructure, and then route them to downstream integrations. This resource is in Preview. Reach out to Datadog support to enable it for your account.
+  Provides a Datadog Observability Pipeline resource. Observability Pipelines allows you to collect and process logs within your own infrastructure, and then route them to downstream integrations.
   Datadog recommends using the -parallelism=1 option to apply this resource.
 ---
 
 # datadog_observability_pipeline (Resource)
 
-Provides a Datadog Observability Pipeline resource. Observability Pipelines allows you to collect and process logs within your own infrastructure, and then route them to downstream integrations. This resource is in **Preview**. Reach out to Datadog support to enable it for your account.   
+Provides a Datadog Observability Pipeline resource. Observability Pipelines allows you to collect and process logs within your own infrastructure, and then route them to downstream integrations. 
 
 Datadog recommends using the `-parallelism=1` option to apply this resource.
 
@@ -528,6 +528,17 @@ Required:
 Optional:
 
 - `bulk_index` (String) The index or datastream to write logs to.
+- `data_stream` (Block List) Configuration options for writing to OpenSearch Data Streams instead of a fixed index. (see [below for nested schema](#nestedblock--config--destination--opensearch--data_stream))
+
+<a id="nestedblock--config--destination--opensearch--data_stream"></a>
+### Nested Schema for `config.destination.opensearch.data_stream`
+
+Optional:
+
+- `dataset` (String) The data stream dataset for your logs. This groups logs by their source or application.
+- `dtype` (String) The data stream type for your logs. This determines how logs are categorized within the data stream.
+- `namespace` (String) The data stream namespace for your logs. This separates logs into different environments or domains.
+
 
 
 <a id="nestedblock--config--destination--rsyslog"></a>
@@ -1479,7 +1490,7 @@ Required:
 
 Optional:
 
-- `auth_strategy` (String) Optional authentication strategy for HTTP requests. Valid values are `none`, `basic`, `bearer`.
+- `auth_strategy` (String) Optional authentication strategy for HTTP requests. Valid values are `none`, `basic`, `bearer`, `custom`.
 - `scrape_interval_secs` (Number) The interval (in seconds) between HTTP scrape requests.
 - `scrape_timeout_secs` (Number) The timeout (in seconds) for each scrape request.
 - `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--source--http_client--tls))

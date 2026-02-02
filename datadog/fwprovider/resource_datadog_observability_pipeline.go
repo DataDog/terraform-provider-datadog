@@ -7,7 +7,6 @@ import (
 	"os"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
-
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 
@@ -347,7 +346,14 @@ type amazonOpenSearchAuthModel struct {
 }
 
 type opensearchDestinationModel struct {
-	BulkIndex types.String `tfsdk:"bulk_index"`
+	BulkIndex  types.String                           `tfsdk:"bulk_index"`
+	DataStream []opensearchDestinationDataStreamModel `tfsdk:"data_stream"`
+}
+
+type opensearchDestinationDataStreamModel struct {
+	Dtype     types.String `tfsdk:"dtype"`
+	Dataset   types.String `tfsdk:"dataset"`
+	Namespace types.String `tfsdk:"namespace"`
 }
 
 type sentinelOneDestinationModel struct {
@@ -654,8 +660,7 @@ func (r *observabilityPipelineResource) Metadata(_ context.Context, request reso
 
 func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "Provides a Datadog Observability Pipeline resource. Observability Pipelines allows you to collect and process logs within your own infrastructure, and then route them to downstream integrations. " +
-			"This resource is in **Preview**. Reach out to Datadog support to enable it for your account.   \n\n" +
+		Description: "Provides a Datadog Observability Pipeline resource. Observability Pipelines allows you to collect and process logs within your own infrastructure, and then route them to downstream integrations. \n\n" +
 			"Datadog recommends using the `-parallelism=1` option to apply this resource.",
 		Attributes: map[string]schema.Attribute{
 			"id": utils.ResourceIDAttribute(),
@@ -882,7 +887,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 													Optional:    true,
 													Description: "Optional authentication strategy for HTTP requests.",
 													Validators: []validator.String{
-														stringvalidator.OneOf("none", "basic", "bearer"),
+														stringvalidator.OneOf("none", "basic", "bearer", "custom"),
 													},
 												},
 											},
@@ -2185,6 +2190,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 													},
 													Validators: []validator.List{
 														listvalidator.SizeAtMost(1),
+														listvalidator.ConflictsWith(frameworkPath.MatchRelative().AtParent().AtName("bulk_index")),
 													},
 												},
 											},
@@ -2197,6 +2203,31 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 												"bulk_index": schema.StringAttribute{
 													Optional:    true,
 													Description: "The index or datastream to write logs to.",
+												},
+											},
+											Blocks: map[string]schema.Block{
+												"data_stream": schema.ListNestedBlock{
+													Description: "Configuration options for writing to OpenSearch Data Streams instead of a fixed index.",
+													NestedObject: schema.NestedBlockObject{
+														Attributes: map[string]schema.Attribute{
+															"dtype": schema.StringAttribute{
+																Optional:    true,
+																Description: "The data stream type for your logs. This determines how logs are categorized within the data stream.",
+															},
+															"dataset": schema.StringAttribute{
+																Optional:    true,
+																Description: "The data stream dataset for your logs. This groups logs by their source or application.",
+															},
+															"namespace": schema.StringAttribute{
+																Optional:    true,
+																Description: "The data stream namespace for your logs. This separates logs into different environments or domains.",
+															},
+														},
+													},
+													Validators: []validator.List{
+														listvalidator.SizeAtMost(1),
+														listvalidator.ConflictsWith(frameworkPath.MatchRelative().AtParent().AtName("bulk_index")),
+													},
 												},
 											},
 										},
@@ -5474,6 +5505,20 @@ func expandOpenSearchDestination(ctx context.Context, dest *destinationModel, sr
 		opensearch.SetBulkIndex(src.BulkIndex.ValueString())
 	}
 
+	if len(src.DataStream) > 0 {
+		ds := datadogV2.NewObservabilityPipelineOpenSearchDestinationDataStream()
+		if !src.DataStream[0].Dtype.IsNull() {
+			ds.SetDtype(src.DataStream[0].Dtype.ValueString())
+		}
+		if !src.DataStream[0].Dataset.IsNull() {
+			ds.SetDataset(src.DataStream[0].Dataset.ValueString())
+		}
+		if !src.DataStream[0].Namespace.IsNull() {
+			ds.SetNamespace(src.DataStream[0].Namespace.ValueString())
+		}
+		opensearch.DataStream = ds
+	}
+
 	return datadogV2.ObservabilityPipelineConfigDestinationItem{
 		ObservabilityPipelineOpenSearchDestination: opensearch,
 	}
@@ -5484,9 +5529,16 @@ func flattenOpenSearchDestination(ctx context.Context, src *datadogV2.Observabil
 		return nil
 	}
 
-	out := &opensearchDestinationModel{}
-	if v, ok := src.GetBulkIndexOk(); ok {
-		out.BulkIndex = types.StringValue(*v)
+	out := &opensearchDestinationModel{
+		BulkIndex: types.StringPointerValue(src.BulkIndex),
+	}
+
+	if ds, ok := src.GetDataStreamOk(); ok && ds != nil {
+		out.DataStream = []opensearchDestinationDataStreamModel{{
+			Dtype:     types.StringPointerValue(ds.Dtype),
+			Dataset:   types.StringPointerValue(ds.Dataset),
+			Namespace: types.StringPointerValue(ds.Namespace),
+		}}
 	}
 
 	return out
