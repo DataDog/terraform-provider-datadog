@@ -824,7 +824,6 @@ Optional:
 - `encoding` (Block List) (see [below for nested schema](#nestedblock--config--processor_group--processor--enrichment_table--file--encoding))
 - `key` (Block List) Key fields used to look up enrichment values. (see [below for nested schema](#nestedblock--config--processor_group--processor--enrichment_table--file--key))
 - `path` (String) Path to the CSV file.
-- `schema` (Block List) Schema defining column names and their types. (see [below for nested schema](#nestedblock--config--processor_group--processor--enrichment_table--file--schema))
 
 <a id="nestedblock--config--processor_group--processor--enrichment_table--file--encoding"></a>
 ### Nested Schema for `config.processor_group.processor.enrichment_table.file.encoding`
@@ -847,15 +846,6 @@ Optional:
 - `column` (String) The `items` `column`.
 - `comparison` (String) The comparison method (e.g. equals).
 - `field` (String) The `items` `field`.
-
-
-<a id="nestedblock--config--processor_group--processor--enrichment_table--file--schema"></a>
-### Nested Schema for `config.processor_group.processor.enrichment_table.file.schema`
-
-Optional:
-
-- `column` (String) The `items` `column`.
-- `type` (String) The type of the column (e.g. string, boolean, integer, etc.).
 
 
 
