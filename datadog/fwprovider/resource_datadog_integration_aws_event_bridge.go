@@ -104,7 +104,7 @@ func (r *integrationAwsEventBridgeResource) Read(ctx context.Context, request re
 			response.State.RemoveResource(ctx)
 			return
 		}
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "Error listing AWS EventBridge Event Sources"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error listing AWS EventBridge Event Sources"))
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {
@@ -167,7 +167,7 @@ func (r *integrationAwsEventBridgeResource) Create(ctx context.Context, request 
 
 	resp, _, err := r.Api.CreateAWSEventBridgeSource(r.Auth, *body)
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "Error creating AWS EventBridge Event Source"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error creating AWS EventBridge Event Source"))
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {
@@ -217,10 +217,9 @@ func (r *integrationAwsEventBridgeResource) Delete(ctx context.Context, request 
 	_, httpResp, err := r.Api.DeleteAWSEventBridgeSource(r.Auth, *req)
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == 404 {
-			response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "AWS EventBridge Event Source not found"))
 			return
 		}
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "Error deleting AWS EventBridge Event Source"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error deleting AWS EventBridge Event Source"))
 		return
 	}
 }
