@@ -3493,7 +3493,7 @@ func TestAccDatadogObservabilityPipeline_opensearchDestinationDataStream(t *test
 	resourceName := "datadog_observability_pipeline.opensearch_datastream"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -5947,7 +5947,7 @@ func TestAccDatadogObservabilityPipeline_elasticsearchValidation(t *testing.T) {
 	_, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
 				// Both bulk_index and data_stream specified
@@ -5990,7 +5990,7 @@ func TestAccDatadogObservabilityPipeline_opensearchValidation(t *testing.T) {
 	_, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
 				// Both bulk_index and data_stream specified
