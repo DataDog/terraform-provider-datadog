@@ -470,3 +470,68 @@ func testAccCheckDatadogSensitiveDataScannerRuleRecommendedKeywords(accProvider 
 		return nil
 	}
 }
+
+func TestAccSensitiveDataScannerRule_DeleteAlreadyDeleted(t *testing.T) {
+	if isRecording() || isReplaying() {
+		t.Skip("This test doesn't support recording or replaying")
+	}
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	uniq := uniqueEntityName(ctx, t)
+	accProvider := testAccProvider(t, accProviders)
+
+	var ruleId string
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogSensitiveDataScannerRuleDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogSensitiveDataScannerRule(uniq),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogSensitiveDataScannerRuleExists(accProvider, "datadog_sensitive_data_scanner_rule.sample_rule"),
+					// Capture the rule ID for deletion
+					func(s *terraform.State) error {
+						ruleId = s.RootModule().Resources["datadog_sensitive_data_scanner_rule.sample_rule"].Primary.ID
+						return nil
+					},
+				),
+			},
+			{
+				// Delete the rule via API before Terraform tries to destroy it
+				PreConfig: func() {
+					provider, _ := accProvider()
+					providerConf := provider.Meta().(*datadog.ProviderConfiguration)
+					apiInstances := providerConf.DatadogApiInstances
+					auth := providerConf.Auth
+
+					body := datadogV2.NewSensitiveDataScannerRuleDeleteRequestWithDefaults()
+					_, _, err := apiInstances.GetSensitiveDataScannerApiV2().DeleteScanningRule(auth, ruleId, *body)
+					if err != nil {
+						t.Logf("Warning: failed to delete rule via API: %v", err)
+					}
+				},
+				// Empty config to trigger destroy - should succeed even though resource is already deleted
+				Config: testAccCheckDatadogSensitiveDataScannerGroupOnly(uniq),
+			},
+		},
+	})
+}
+
+func testAccCheckDatadogSensitiveDataScannerGroupOnly(name string) string {
+	return fmt.Sprintf(`
+resource "datadog_sensitive_data_scanner_group" "sample_group" {
+	name = "my group %s"
+	is_enabled = true
+	product_list = ["logs"]
+	filter {
+		query = "*"
+	}
+	samplings {
+		product = "logs"
+		rate    = 100
+	}
+}
+`, name)
+}
