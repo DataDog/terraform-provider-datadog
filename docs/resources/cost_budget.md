@@ -143,7 +143,7 @@ resource "datadog_cost_budget" "hierarchical" {
 
 ### Optional
 
-- `budget_line` (Block Set) Budget lines that group monthly amounts by tag combination. Use this instead of `entries` for a more convenient schema. **Note:** The order of budget_line blocks does not matter. (see [below for nested schema](#nestedblock--budget_line))
+- `budget_line` (Block Set) Budget lines that group monthly amounts by tag combination. Use this instead of `entries` for a more convenient schema. **Note:** The order of `budget_line` blocks does not matter. (see [below for nested schema](#nestedblock--budget_line))
 - `entries` (Block List, Deprecated) The entries of the budget. **Note:** You must provide entries for all months in the budget period. For hierarchical budgets, each unique tag combination must have entries for all months. (see [below for nested schema](#nestedblock--entries))
 - `id` (String) The ID of the budget.
 
