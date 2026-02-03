@@ -160,7 +160,7 @@ Required:
 
 Optional:
 
-- `child_tag_filters` (Block List) Child tag filters for hierarchical budgets. **Note:** Must be used with parent_tag_filters. Cannot be used with tag_filters. (see [below for nested schema](#nestedblock--budget_line--child_tag_filters))
+- `child_tag_filters` (Block List) Child tag filters for hierarchical budgets. **Note:** Must be used with `parent_tag_filters`. Cannot be used with `tag_filters`. (see [below for nested schema](#nestedblock--budget_line--child_tag_filters))
 - `parent_tag_filters` (Block List) Parent tag filters for hierarchical budgets. **Note:** Must be used with child_tag_filters. Cannot be used with tag_filters. (see [below for nested schema](#nestedblock--budget_line--parent_tag_filters))
 - `tag_filters` (Block List) Tag filters for non-hierarchical budgets. **Note:** Cannot be used with parent_tag_filters/child_tag_filters. (see [below for nested schema](#nestedblock--budget_line--tag_filters))
 
