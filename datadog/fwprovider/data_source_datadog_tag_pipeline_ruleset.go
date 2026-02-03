@@ -4,8 +4,12 @@ import (
 	"context"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+	"github.com/hashicorp/terraform-plugin-framework-validators/boolvalidator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/path"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
@@ -84,8 +88,20 @@ func (d *tagPipelineRulesetDataSource) Schema(_ context.Context, _ datasource.Sc
 									Computed:    true,
 								},
 								"if_not_exists": schema.BoolAttribute{
-									Description: "Whether to apply the mapping only if the destination key doesn't exist.",
+									Description:        "Whether to apply the mapping only if the destination key doesn't exist.",
+									Computed:           true,
+									DeprecationMessage: "Use `if_tag_exists` instead. This field will be removed in a future release.",
+									Validators: []validator.Bool{
+										boolvalidator.ConflictsWith(path.MatchRelative().AtParent().AtName("if_tag_exists")),
+									},
+								},
+								"if_tag_exists": schema.StringAttribute{
+									Description: "Behavior when the tag already exists. Valid values: `append` (only apply if tag doesn't exist), `replace` (replace existing tag value), `do_not_apply` (never apply if tag exists).",
 									Computed:    true,
+									Validators: []validator.String{
+										stringvalidator.OneOf("append", "replace", "do_not_apply"),
+										stringvalidator.ConflictsWith(path.MatchRelative().AtParent().AtName("if_not_exists")),
+									},
 								},
 								"source_keys": schema.ListAttribute{
 									ElementType: types.StringType,
@@ -102,8 +118,20 @@ func (d *tagPipelineRulesetDataSource) Schema(_ context.Context, _ datasource.Sc
 									Computed:    true,
 								},
 								"if_not_exists": schema.BoolAttribute{
-									Description: "Whether to apply the query only if the key doesn't exist.",
+									Description:        "Whether to apply the query only if the key doesn't exist.",
+									Computed:           true,
+									DeprecationMessage: "Use `if_tag_exists` instead. This field will be removed in a future release.",
+									Validators: []validator.Bool{
+										boolvalidator.ConflictsWith(path.MatchRelative().AtParent().AtName("if_tag_exists")),
+									},
+								},
+								"if_tag_exists": schema.StringAttribute{
+									Description: "Behavior when the tag already exists. Valid values: `append` (only apply if tag doesn't exist), `replace` (replace existing tag value), `do_not_apply` (never apply if tag exists).",
 									Computed:    true,
+									Validators: []validator.String{
+										stringvalidator.OneOf("append", "replace", "do_not_apply"),
+										stringvalidator.ConflictsWith(path.MatchRelative().AtParent().AtName("if_not_exists")),
+									},
 								},
 								"query": schema.StringAttribute{
 									Description: "The query string.",
@@ -134,8 +162,20 @@ func (d *tagPipelineRulesetDataSource) Schema(_ context.Context, _ datasource.Sc
 									Computed:    true,
 								},
 								"if_not_exists": schema.BoolAttribute{
-									Description: "Whether to apply the reference table only if the key doesn't exist.",
+									Description:        "Whether to apply the reference table only if the key doesn't exist.",
+									Computed:           true,
+									DeprecationMessage: "Use `if_tag_exists` instead. This field will be removed in a future release.",
+									Validators: []validator.Bool{
+										boolvalidator.ConflictsWith(path.MatchRelative().AtParent().AtName("if_tag_exists")),
+									},
+								},
+								"if_tag_exists": schema.StringAttribute{
+									Description: "Behavior when the tag already exists. Valid values: `append` (only apply if tag doesn't exist), `replace` (replace existing tag value), `do_not_apply` (never apply if tag exists).",
 									Computed:    true,
+									Validators: []validator.String{
+										stringvalidator.OneOf("append", "replace", "do_not_apply"),
+										stringvalidator.ConflictsWith(path.MatchRelative().AtParent().AtName("if_not_exists")),
+									},
 								},
 								"source_keys": schema.ListAttribute{
 									ElementType: types.StringType,
@@ -258,8 +298,19 @@ func setDataSourceModelFromRulesetResp(model *tagPipelineRulesetDataSourceModel,
 				}
 				rule.Mapping = &ruleMapping{
 					DestinationKey: types.StringValue(mappingVal.DestinationKey),
-					IfNotExists:    types.BoolValue(mappingVal.IfNotExists),
-					SourceKeys:     sourceKeys,
+					IfNotExists: func() types.Bool {
+						if mappingVal.IfNotExists != nil {
+							return types.BoolValue(*mappingVal.IfNotExists)
+						}
+						return types.BoolNull()
+					}(),
+					IfTagExists: func() types.String {
+						if mappingVal.IfTagExists != nil {
+							return types.StringValue(string(*mappingVal.IfTagExists))
+						}
+						return types.StringNull()
+					}(),
+					SourceKeys: sourceKeys,
 				}
 			}
 		}
@@ -275,8 +326,19 @@ func setDataSourceModelFromRulesetResp(model *tagPipelineRulesetDataSourceModel,
 						}
 						return types.BoolNull()
 					}(),
-					IfNotExists: types.BoolValue(queryVal.IfNotExists),
-					Query:       types.StringValue(queryVal.Query),
+					IfNotExists: func() types.Bool {
+						if queryVal.IfNotExists != nil {
+							return types.BoolValue(*queryVal.IfNotExists)
+						}
+						return types.BoolNull()
+					}(),
+					IfTagExists: func() types.String {
+						if queryVal.IfTagExists != nil {
+							return types.StringValue(string(*queryVal.IfTagExists))
+						}
+						return types.StringNull()
+					}(),
+					Query: types.StringValue(queryVal.Query),
 				}
 				if queryVal.Addition.IsSet() {
 					additionVal := queryVal.Addition.Get()
@@ -319,6 +381,12 @@ func setDataSourceModelFromRulesetResp(model *tagPipelineRulesetDataSourceModel,
 							return types.BoolValue(*refTableVal.IfNotExists)
 						}
 						return types.BoolNull()
+					}(),
+					IfTagExists: func() types.String {
+						if refTableVal.IfTagExists != nil {
+							return types.StringValue(string(*refTableVal.IfTagExists))
+						}
+						return types.StringNull()
 					}(),
 					SourceKeys: sourceKeys,
 					TableName:  types.StringValue(refTableVal.TableName),
