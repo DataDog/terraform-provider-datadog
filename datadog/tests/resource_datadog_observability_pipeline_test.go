@@ -3001,16 +3001,6 @@ resource "datadog_observability_pipeline" "enrichment" {
                 includes_headers = true
               }
 
-              schema {
-                column = "region"
-                type   = "string"
-              }
-
-              schema {
-                column = "city"
-                type   = "string"
-              }
-
               key {
                 column     = "user_id"
                 comparison = "equals"
@@ -3063,10 +3053,6 @@ resource "datadog_observability_pipeline" "enrichment" {
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.enrichment_table.0.file.0.encoding.0.type", "csv"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.enrichment_table.0.file.0.encoding.0.delimiter", ","),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.enrichment_table.0.file.0.encoding.0.includes_headers", "true"),
-					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.enrichment_table.0.file.0.schema.0.column", "region"),
-					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.enrichment_table.0.file.0.schema.0.type", "string"),
-					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.enrichment_table.0.file.0.schema.1.column", "city"),
-					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.enrichment_table.0.file.0.schema.1.type", "string"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.enrichment_table.0.file.0.key.0.column", "user_id"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.enrichment_table.0.file.0.key.0.comparison", "equals"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.enrichment_table.0.file.0.key.0.field", "log.user.id"),

@@ -1,3 +1,21 @@
+## 3.87.0 (February 2, 2026)
+
+### BUGFIXES
+* [datadog_observability_pipeline] Adding datastream to opensearch and updating exactlyoneof rules by @taylorchandleryoung in https://github.com/DataDog/terraform-provider-datadog/pull/3459
+### IMPROVEMENTS
+* [datadog_aws_cur_config] [datadog_azure_uc_config] [datadog_gcp_uc_config] Add meta setup_method:terraform to cloud config POST request by @mgndu in https://github.com/DataDog/terraform-provider-datadog/pull/3475
+* [datadog_observability_pipelines] Make datadog_tags keys required to contain at least one element by @20agbekodo in https://github.com/DataDog/terraform-provider-datadog/pull/3469
+* [datadog_sensitive_data_scanner_rule] compute included_keyword_configuration when not explicitly defined by @OBe95 in https://github.com/DataDog/terraform-provider-datadog/pull/3463
+### FEATURES
+* [datadog_observability_pipeline] add custom auth_strategy for http_client source by @vladimir-dd in https://github.com/DataDog/terraform-provider-datadog/pull/3472
+### NOTES
+* [datadog_observability_pipeline] remove schema for the enrichment table processor by @vladimir-dd in https://github.com/DataDog/terraform-provider-datadog/pull/3483
+
+## New Contributors
+* @mgndu made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3475
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.86.0...v3.87.0
+
 ## 3.86.0 (January 28, 2026)
 
 ### BUGFIXES
