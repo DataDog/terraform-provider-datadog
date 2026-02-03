@@ -156,3 +156,53 @@ func findSensitiveDataScannerGroupHelper(groupId string, response datadogV2.Sens
 
 	return nil
 }
+
+func TestAccDatadogSensitiveDataScannerGroup_DeleteAlreadyDeleted(t *testing.T) {
+	if isRecording() || isReplaying() {
+		t.Skip("This test doesn't support recording or replaying")
+	}
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	accProvider := testAccProvider(t, accProviders)
+
+	uniq := strings.ToLower(strings.ReplaceAll(uniqueEntityName(ctx, t), "_", "-"))
+	var groupId string
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogSensitiveDataScannerGroupDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogSensitiveDataScannerGroup(uniq),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogSensitiveDataScannerGroupExists(accProvider, "datadog_sensitive_data_scanner_group.sample_group"),
+					// Capture the group ID for deletion
+					func(s *terraform.State) error {
+						groupId = s.RootModule().Resources["datadog_sensitive_data_scanner_group.sample_group"].Primary.ID
+						return nil
+					},
+				),
+			},
+			{
+				// Delete the group via API before Terraform tries to destroy it
+				PreConfig: func() {
+					provider, _ := accProvider()
+					providerConf := provider.Meta().(*datadog.ProviderConfiguration)
+					apiInstances := providerConf.DatadogApiInstances
+					auth := providerConf.Auth
+
+					body := datadogV2.NewSensitiveDataScannerGroupDeleteRequestWithDefaults()
+					metaVar := datadogV2.NewSensitiveDataScannerMetaVersionOnlyWithDefaults()
+					body.SetMeta(*metaVar)
+					_, _, err := apiInstances.GetSensitiveDataScannerApiV2().DeleteScanningGroup(auth, groupId, *body)
+					if err != nil {
+						t.Logf("Warning: failed to delete group via API: %v", err)
+					}
+				},
+				// Empty config to trigger destroy - should succeed even though resource is already deleted
+				Config: `# Empty config`,
+			},
+		},
+	})
+}
