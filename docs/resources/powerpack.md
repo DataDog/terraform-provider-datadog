@@ -7057,6 +7057,7 @@ Optional:
 
 - `line_type` (String) The type of lines displayed. Valid values are `dashed`, `dotted`, `solid`.
 - `line_width` (String) The width of line displayed. Valid values are `normal`, `thick`, `thin`.
+- `order_by` (String) How to order series in timeseries visualizations. Valid values are `tags`, `values`.
 - `palette` (String) A color palette to apply to the widget. The available options are available at: https://docs.datadoghq.com/dashboards/widgets/timeseries/#appearance.
 
 
