@@ -143,7 +143,7 @@ resource "datadog_cost_budget" "hierarchical" {
 
 ### Optional
 
-- `budget_line` (Block Set) Budget lines that group monthly amounts by tag combination. Use this instead of `entries` for a more convenient schema. **Note:** The order of `budget_line` blocks does not matter. (see [below for nested schema](#nestedblock--budget_line))
+- `budget_line` (Block Set) Budget lines that group monthly amounts by tag combination. Use this instead of `entries` for a more convenient schema. **Note:** The order of budget_line blocks does not matter. (see [below for nested schema](#nestedblock--budget_line))
 - `entries` (Block List, Deprecated) The entries of the budget. **Note:** You must provide entries for all months in the budget period. For hierarchical budgets, each unique tag combination must have entries for all months. (see [below for nested schema](#nestedblock--entries))
 - `id` (String) The ID of the budget.
 
@@ -160,9 +160,9 @@ Required:
 
 Optional:
 
-- `child_tag_filters` (Block List) Child tag filters for hierarchical budgets. **Note:** Must be used with `parent_tag_filters`. Cannot be used with `tag_filters`. (see [below for nested schema](#nestedblock--budget_line--child_tag_filters))
-- `parent_tag_filters` (Block List) Parent tag filters for hierarchical budgets. **Note:** Must be used with `child_tag_filters`. Cannot be used with `tag_filters`. (see [below for nested schema](#nestedblock--budget_line--parent_tag_filters))
-- `tag_filters` (Block List) Tag filters for non-hierarchical budgets. **Note:** Cannot be used with `parent_tag_filters` or `child_tag_filters`. (see [below for nested schema](#nestedblock--budget_line--tag_filters))
+- `child_tag_filters` (Block List) Child tag filters for hierarchical budgets. **Note:** Must be used with parent_tag_filters. Cannot be used with tag_filters. (see [below for nested schema](#nestedblock--budget_line--child_tag_filters))
+- `parent_tag_filters` (Block List) Parent tag filters for hierarchical budgets. **Note:** Must be used with child_tag_filters. Cannot be used with tag_filters. (see [below for nested schema](#nestedblock--budget_line--parent_tag_filters))
+- `tag_filters` (Block List) Tag filters for non-hierarchical budgets. **Note:** Cannot be used with parent_tag_filters/child_tag_filters. (see [below for nested schema](#nestedblock--budget_line--tag_filters))
 
 <a id="nestedblock--budget_line--child_tag_filters"></a>
 ### Nested Schema for `budget_line.child_tag_filters`
