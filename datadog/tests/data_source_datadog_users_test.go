@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
@@ -20,7 +21,14 @@ func TestAccDatadogUsersDatasourceFilter(t *testing.T) {
 		ProtoV5ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccDatasourceUsersFilterConfig(uniq, email),
+				// Step 1: Create users first to allow time for API indexing
+				Config: testAccDatasourceUsersFilterConfigUsersOnly(uniq),
+				Check:  resource.TestCheckResourceAttr("datadog_user.user_0", "email", email),
+			},
+			{
+				// Step 2: Wait for API indexing, then add the data source lookup
+				PreConfig: func() { time.Sleep(5 * time.Second) },
+				Config:    testAccDatasourceUsersFilterConfig(uniq, email),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr("data.datadog_users.all_users", "users.0.email", email),
 					checkRessourceAttributeRegex("data.datadog_users.all_users", "users.0.icon", "https://secure.gravatar.com/avatar/.*"),
@@ -47,7 +55,14 @@ func TestAccDatadogUsersDatasourceFilterStatus(t *testing.T) {
 		ProtoV5ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccDatasourceUsersFilterStatusConfig(uniq, expectedUserName, status),
+				// Step 1: Create users first to allow time for API indexing
+				Config: testAccDatasourceUsersFilterConfigUsersOnly(uniq),
+				Check:  resource.TestCheckResourceAttr("datadog_user.user_0", "name", expectedUserName),
+			},
+			{
+				// Step 2: Wait for API indexing, then add the data source lookup
+				PreConfig: func() { time.Sleep(5 * time.Second) },
+				Config:    testAccDatasourceUsersFilterStatusConfig(uniq, expectedUserName, status),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr("data.datadog_users.all_users", "users.0.name", expectedUserName),
 					checkRessourceAttributeRegex("data.datadog_users.all_users", "users.0.icon", "https://secure.gravatar.com/avatar/.*"),
@@ -55,6 +70,26 @@ func TestAccDatadogUsersDatasourceFilterStatus(t *testing.T) {
 			},
 		},
 	})
+}
+
+func testAccDatasourceUsersFilterConfigUsersOnly(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_user" "user_0" {
+	name = "user 0"
+	email = "%[1]s0@example.com"
+	send_user_invitation = false
+}
+resource "datadog_user" "user_1" {
+	name = "user 1"
+	email = "%[1]s1@example.com"
+	send_user_invitation = false
+}
+resource "datadog_user" "user_2" {
+	name = "user 2"
+	email = "%[1]s2@example.com"
+	send_user_invitation = false
+}
+`, uniq)
 }
 
 func testAccDatasourceUsersFilterConfig(uniq, filter string) string {
@@ -71,14 +106,17 @@ data "datadog_users" "all_users" {
 resource "datadog_user" "user_0" {
 	name = "user 0"
 	email = "%[1]s0@example.com"
+	send_user_invitation = false
 }
 resource "datadog_user" "user_1" {
 	name = "user 1"
 	email = "%[1]s1@example.com"
+	send_user_invitation = false
 }
 resource "datadog_user" "user_2" {
 	name = "user 2"
 	email = "%[1]s2@example.com"
+	send_user_invitation = false
 }
 `, uniq, filter)
 }
@@ -98,14 +136,17 @@ data "datadog_users" "all_users" {
 resource "datadog_user" "user_0" {
 	name = "user 0"
 	email = "%[1]s0@example.com"
+	send_user_invitation = false
 }
 resource "datadog_user" "user_1" {
 	name = "user 1"
 	email = "%[1]s1@example.com"
+	send_user_invitation = false
 }
 resource "datadog_user" "user_2" {
 	name = "user 2"
 	email = "%[1]s2@example.com"
+	send_user_invitation = false
 }
 `, uniq, filter, filterStatus)
 }
