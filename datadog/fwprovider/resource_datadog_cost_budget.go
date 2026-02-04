@@ -2,6 +2,7 @@ package fwprovider
 
 import (
 	"context"
+	"sort"
 	"strconv"
 	"strings"
 
@@ -426,8 +427,16 @@ func convertBudgetLineToFlatEntries(ctx context.Context, budgetLines []budgetLin
 		allTagFilters = append(allTagFilters, parentTagFilters...)
 		allTagFilters = append(allTagFilters, childTagFilters...)
 
-		// Create an entry for each month in the amounts map
-		for monthStr, amount := range amounts {
+		// Sort months to ensure consistent ordering (Go map iteration is non-deterministic)
+		monthStrs := make([]string, 0, len(amounts))
+		for monthStr := range amounts {
+			monthStrs = append(monthStrs, monthStr)
+		}
+		sort.Strings(monthStrs)
+
+		// Create an entry for each month in sorted order
+		for _, monthStr := range monthStrs {
+			amount := amounts[monthStr]
 			// Convert month string to int64
 			month, err := strconv.ParseInt(monthStr, 10, 64)
 			if err != nil {
