@@ -6,39 +6,74 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 159
+        content_length: 733
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"account_id":"694513996623","create_event_bus":false,"event_generator_name":"tf-TestAccIntegrationAwsEventBridgeBasic-local-1769176248","region":"us-east-1"}
+            {"data":{"attributes":{"account_tags":[],"auth_config":{"external_id":"8b424c40dafa4034ab825bd16ccc74dd","role_name":"DatadogIntegrationRole"},"aws_account_id":"495754985450","aws_partition":"aws","aws_regions":{"include_all":true},"logs_config":{"lambda_forwarder":{"lambdas":[],"log_source_config":{"tag_filters":[]},"sources":[]}},"metrics_config":{"automute_enabled":true,"collect_cloudwatch_alarms":false,"collect_custom_metrics":false,"enabled":true,"namespace_filters":{"exclude_only":["AWS/SQS","AWS/ElasticMapReduce","AWS/Usage"]},"tag_filters":[]},"resources_config":{"cloud_security_posture_management_collection":false,"extended_collection":true},"traces_config":{"xray_services":{"include_only":[]}}},"type":"account"}}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/integration/aws/event_bridge
+        url: https://api.datadoghq.com/api/v2/integration/aws/accounts
         method: POST
       response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: -1
-        uncompressed: true
-        body: |
-            {"region":"us-east-1","has_bus":false,"status":"created","event_source_name":"tf-TestAccIntegrationAwsEventBridgeBasic-local-1769176248-ddg3zysk"}
+        content_length: 871
+        uncompressed: false
+        body: '{"data":{"id":"bb5d83c9-fcc5-4717-b4a7-e3b4dc5d8da2","type":"account","attributes":{"account_tags":null,"auth_config":{"role_name":"DatadogIntegrationRole","external_id":"8b424c40dafa4034ab825bd16ccc74dd"},"aws_account_id":"495754985450","aws_partition":"aws","aws_regions":{"include_all":true},"created_at":"2026-02-02T19:12:42.481006419Z","logs_config":{"lambda_forwarder":{"lambdas":[],"sources":[],"log_source_config":{"tag_filters":[]}}},"metrics_config":{"enabled":true,"automute_enabled":true,"collect_custom_metrics":false,"collect_cloudwatch_alarms":false,"tag_filters":[],"namespace_filters":{"exclude_only":["AWS/SQS","AWS/ElasticMapReduce","AWS/Usage"]}},"modified_at":"2026-02-02T19:12:42.481006419Z","resources_config":{"cloud_security_posture_management_collection":false,"extended_collection":true},"traces_config":{"xray_services":{"include_only":[]}}}}}'
         headers:
             Content-Type:
-                - application/json
+                - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 1.175425959s
+        duration: 1.24641275s
     - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 205
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"account_id":"495754985450","create_event_bus":false,"event_generator_name":"tf-TestAccIntegrationAwsEventBridgeBasic-local-1770059559","region":"us-east-1"},"type":"event_bridge"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/integration/aws/event_bridge
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 219
+        uncompressed: false
+        body: '{"data":{"id":"create_event_bridge","type":"event_bridge","attributes":{"event_source_name":"tf-TestAccIntegrationAwsEventBridgeBasic-local-1770059559-0qpvzxfg","has_bus":false,"region":"us-east-1","status":"created"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 506.745208ms
+    - id: 2
       request:
         proto: HTTP/1.1
         proto_major: 1
@@ -54,58 +89,120 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/integration/aws/event_bridge
+        url: https://api.datadoghq.com/api/v2/integration/aws/accounts/%22bb5d83c9-fcc5-4717-b4a7-e3b4dc5d8da2%22
         method: GET
       response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: -1
-        uncompressed: true
-        body: |
-            {"accounts":[{"accountId":"074787506366","tags":[],"eventHubs":[]},{"accountId":"584647299176","tags":["account:staging","team:kubernetes-experiences","terraform:true"],"eventHubs":[{"name":"hugo-ferreira-event-bridge-test-h2f7hfds","region":"us-east-1"}]},{"accountId":"202749265359","tags":[],"eventHubs":[]},{"accountId":"789012345678","tags":[],"eventHubs":[]},{"accountId":"352312075024","tags":[],"eventHubs":[]},{"accountId":"152767366405","tags":["account:staging","team:k9-findings-prioritization","terraform:true"],"eventHubs":[]},{"accountId":"714338498832","tags":[],"eventHubs":[]},{"accountId":"181875954905","tags":[],"eventHubs":[]},{"accountId":"771964207833","tags":["account:clip-sandbox","team:cloud-integrations-platform"],"eventHubs":[]},{"accountId":"658666054722","tags":["aws_account:658666054722"],"eventHubs":[]},{"accountId":"802015701852","tags":[],"eventHubs":[]},{"accountId":"694513996623","tags":["account:aws-ints-team-playground"],"eventHubs":[{"name":"david-test-z6h7efxe","region":"us-east-1"},{"name":"david-test2-z6h7efxe","region":"us-east-1"},{"name":"tf-TestAccIntegrationAwsEventBridgeBasic-local-1769176248-ddg3zysk","region":"us-east-1"}]},{"accountId":"133196541728","tags":["aws_account:133196541728"],"eventHubs":[]},{"accountId":"814089332430","tags":["aws_account:814089332430"],"eventHubs":[]},{"accountId":"432198765432","tags":[],"eventHubs":[]},{"accountId":"123456789001","tags":[],"eventHubs":[]},{"accountId":"835065443644","tags":["account:staging","team:cloud-integrations-platform","terraform:true"],"eventHubs":[]},{"accountId":"525049101575","tags":[],"eventHubs":[]},{"accountId":"157734766654","tags":["dylan:true","aws_account: 157734766654"],"eventHubs":[{"name":"event-bus-0731","region":"us-east-1"},{"name":"event-hub-0731b","region":"us-east-1"},{"name":"event-hub-0731c","region":"us-east-1"},{"name":"event-bus-0804","region":"us-east-1"},{"name":"event-bus-0804b","region":"us-east-1"},{"name":"zero-permission-0823","region":"us-east-1"}]},{"accountId":"777777777777","tags":[],"eventHubs":[]},{"accountId":"600123456789","tags":["aws_account:600123456789"],"eventHubs":[]},{"accountId":"924305315327","tags":["account:staging","team:reference-tables","terraform:true"],"eventHubs":[]},{"accountId":"516101717515","tags":["csm:hackathon"],"eventHubs":[]},{"accountId":"123123123123","tags":[],"eventHubs":[]},{"accountId":"560092257702","tags":["aws_account:AKIAYE2AZTWTP2RYLZPM"],"eventHubs":[]},{"accountId":"992030191021","tags":["secres-extended","aws_account:992030191021"],"eventHubs":[]},{"accountId":"594331569254","tags":["account:nwl-sandbox-june"],"eventHubs":[]},{"accountId":"425362996713","tags":["team:serverless"],"eventHubs":[]},{"accountId":"995454102505","tags":["key:value","key2:value2"],"eventHubs":[]},{"accountId":"989851561025","tags":[],"eventHubs":[]},{"accountId":"722560224213","tags":["team:pde-cloud-security","account:dev-pde-cloud-security-infra-detections"],"eventHubs":[]},{"accountId":"169136537249","tags":["aws_account:169136537249"],"eventHubs":[]},{"accountId":"196980042069","tags":[],"eventHubs":[]},{"accountId":"123734022431","tags":["account:cloudcraftdev"],"eventHubs":[]},{"accountId":"438591666028","tags":["account:action-platform-dev"],"eventHubs":[]},{"accountId":"390198823880","tags":[],"eventHubs":[]},{"accountId":"412511581388","tags":["ray:true"],"eventHubs":[]},{"accountId":"727006795293","tags":["account:staging","aws_account:727006795293","env:staging"],"eventHubs":[{"name":"task2944okay-57x31xz8","region":"us-east-1"}]},{"accountId":"149007321863","tags":["aws_account:149007321863"],"eventHubs":[]},{"accountId":"137246511834","tags":["team:advocacy","aws_account:137246511834","pathfinder-labs-prod"],"eventHubs":[]},{"accountId":"486234852809","tags":["account:build-stable","env:build-stable","datacenter:us1.ddbuild.io"],"eventHubs":[]},{"accountId":"011443870961","tags":["account:011443870961","secres:sandbox1"],"eventHubs":[]},{"accountId":"211980371382","tags":["aws_account:211980371382","team:kubernetes_experiences"],"eventHubs":[]},{"accountId":"332504859562","tags":["aws_account:332504859562","pathfinder-labs-ops","team:advocacy"],"eventHubs":[]},{"accountId":"507519853410","tags":["aws_account:507519853410","pathfinder-labs-dev","team:advocacy"],"eventHubs":[]},{"accountId":"122417831130","tags":[],"eventHubs":[]},{"accountId":"869935089289","tags":["account:detection-engineering-product-sandbox","aws_account:869935089289"],"eventHubs":[]},{"accountId":"123321321321","tags":[],"eventHubs":[]},{"accountId":"787878787878","tags":[],"eventHubs":[]},{"accountId":"601427279990","tags":[],"eventHubs":[{"name":"wf-runtime-staging","region":"us-east-1"},{"name":"wf-runtime-staging2","region":"us-east-1"},{"name":"raytest10-109dwkwb","region":"us-east-1"},{"name":"kipsbay","region":"us-east-1"},{"name":"alphabetcity","region":"us-west-1"},{"name":"bushwick","region":"us-east-2"},{"name":"clintonhill","region":"us-east-1"},{"name":"batterypark","region":"us-east-1"},{"name":"katietest-109dwkwb","region":"us-east-1"}]},{"accountId":"937274899171","tags":["aws_account:937274899171","account:ct_test_saleel","aws_test_tag","katie:test"],"eventHubs":[{"name":"test","region":"us-east-1"},{"name":"asdf-fhdk2fy1","region":"us-east-1"}]},{"accountId":"677301038893","tags":["account:securityresearch"],"eventHubs":[]},{"accountId":"363443184989","tags":["account:prod-core-obs-wom-b","team:observability-telemetry"],"eventHubs":[]},{"accountId":"100123456788","tags":[],"eventHubs":[]},{"accountId":"734986933288","tags":["account:k9s-sidescanning-dogfood"],"eventHubs":[]},{"accountId":"123456789012","tags":[],"eventHubs":[]}],"isInstalled":true}
+        content_length: 863
+        uncompressed: false
+        body: '{"data":{"id":"bb5d83c9-fcc5-4717-b4a7-e3b4dc5d8da2","type":"account","attributes":{"account_tags":[],"auth_config":{"role_name":"DatadogIntegrationRole","external_id":"8b424c40dafa4034ab825bd16ccc74dd"},"aws_account_id":"495754985450","aws_partition":"aws","aws_regions":{"include_all":true},"created_at":"2026-02-02T19:12:42.481006Z","logs_config":{"lambda_forwarder":{"lambdas":[],"sources":[],"log_source_config":{"tag_filters":[]}}},"metrics_config":{"enabled":true,"automute_enabled":true,"collect_custom_metrics":false,"collect_cloudwatch_alarms":false,"tag_filters":[],"namespace_filters":{"exclude_only":["AWS/SQS","AWS/ElasticMapReduce","AWS/Usage"]}},"modified_at":"2026-02-02T19:12:42.481006Z","resources_config":{"cloud_security_posture_management_collection":false,"extended_collection":true},"traces_config":{"xray_services":{"include_only":[]}}}}}'
         headers:
             Content-Type:
-                - application/json
+                - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 85.701542ms
-    - id: 2
+        duration: 85.761042ms
+    - id: 3
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 143
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/integration/aws/event_bridge
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 370
+        uncompressed: false
+        body: '{"data":{"id":"get_event_bridge","type":"event_bridge","attributes":{"accounts":[{"account_id":"123123123123","tags":[],"event_hubs":[]},{"account_id":"694513996623","tags":[],"event_hubs":[]},{"account_id":"495754985450","tags":[],"event_hubs":[{"name":"tf-TestAccIntegrationAwsEventBridgeBasic-local-1770059559-0qpvzxfg","region":"us-east-1"}]}],"is_installed":true}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 69.657667ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 189
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"account_id":"694513996623","event_generator_name":"tf-TestAccIntegrationAwsEventBridgeBasic-local-1769176248-ddg3zysk","region":"us-east-1"}
+            {"data":{"attributes":{"account_id":"495754985450","event_generator_name":"tf-TestAccIntegrationAwsEventBridgeBasic-local-1770059559-0qpvzxfg","region":"us-east-1"},"type":"event_bridge"}}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/integration/aws/event_bridge
+        url: https://api.datadoghq.com/api/v2/integration/aws/event_bridge
         method: DELETE
       response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 19
+        content_length: 91
         uncompressed: false
-        body: |
-            {"status":"empty"}
+        body: '{"data":{"id":"delete_event_bridge","type":"event_bridge","attributes":{"status":"empty"}}}'
         headers:
             Content-Type:
-                - application/json
+                - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 1.093380917s
+        duration: 221.4385ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/integration/aws/accounts/%22bb5d83c9-fcc5-4717-b4a7-e3b4dc5d8da2%22
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 148.868125ms
