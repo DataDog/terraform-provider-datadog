@@ -2145,7 +2145,8 @@ func testAccCheckDatadogMonitorWithTagConfig(monitorName string, tagKey string) 
 }
 
 func TestAccDatadogMonitor_WithTagConfig(t *testing.T) {
-	t.Parallel()
+	// Do not run in parallel - this test creates a global monitor config policy
+	// that affects all monitors, causing parallel monitor tests to fail
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
 	monitorName := uniqueEntityName(ctx, t)
