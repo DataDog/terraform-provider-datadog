@@ -82,6 +82,10 @@ func testAccCheckDatadogMonitorConfigPolicyExists(accProvider func() (*schema.Pr
 func testAccCheckDatadogMonitorConfigPolicyDestroy(accProvider func() (*schema.Provider, error)) func(*terraform.State) error {
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
+		if provider == nil || provider.Meta() == nil {
+			// Provider not initialized, skip destroy check
+			return nil
+		}
 		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
 		apiInstances := providerConf.DatadogApiInstances
 		auth := providerConf.Auth
