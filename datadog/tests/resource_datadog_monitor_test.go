@@ -2122,12 +2122,12 @@ func verifyRestrictedRolesSize(accProvider *fwprovider.FrameworkProvider, expect
 	}
 }
 
-func testAccCheckDatadogMonitorWithTagConfig(uniqueName string) string {
+func testAccCheckDatadogMonitorWithTagConfig(monitorName string, tagKey string) string {
 	return fmt.Sprintf(`
 		resource "datadog_monitor_config_policy" "foo" {
 			policy_type = "tag"
 			tag_policy {
-				tag_key          = "foo"
+				tag_key          = "%s"
 				tag_key_required = true
 				valid_tag_values = ["bar"]
 			}
@@ -2141,28 +2141,31 @@ func testAccCheckDatadogMonitorWithTagConfig(uniqueName string) string {
 			monitor_thresholds {
 				critical = "2.0"
 			}
-		}`, uniqueName)
+		}`, tagKey, monitorName)
 }
 
 func TestAccDatadogMonitor_WithTagConfig(t *testing.T) {
 	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
+	monitorName := uniqueEntityName(ctx, t)
+	tagKey := "tagkey" + monitorName[len(monitorName)-8:] // Use suffix for unique tag key
 	resource.Test(t, resource.TestCase{
-		PreCheck: func() { testAccPreCheck(t) },
+		PreCheck:     func() { testAccPreCheck(t) },
+		CheckDestroy: testAccCheckDatadogMonitorConfigPolicyDestroy(accProvider),
 		ProviderFactories: map[string]func() (*schema.Provider, error){
 			"datadog": withDefaultTags(accProvider, map[string]interface{}{
-				"foo": "bar",
+				tagKey: "bar",
 			}),
 		},
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogMonitorWithTagConfig(uniqueEntityName(ctx, t)),
+				Config: testAccCheckDatadogMonitorWithTagConfig(monitorName, tagKey),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.bar", "tags.#", "1"),
 					resource.TestCheckTypeSetElemAttr(
-						"datadog_monitor.bar", "tags.*", "foo:bar"),
+						"datadog_monitor.bar", "tags.*", tagKey+":bar"),
 				),
 			},
 		},
