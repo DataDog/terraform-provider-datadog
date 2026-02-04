@@ -21,12 +21,51 @@ Use this data source to retrieve information about an existing Datadog cost budg
 
 ### Read-Only
 
+- `budget_line` (Block Set) Budget entries grouped by tag combination with amounts map (month -> amount). (see [below for nested schema](#nestedblock--budget_line))
 - `end_month` (Number) The month when the budget ends (YYYYMM).
-- `entries` (Block List) The entries of the budget. (see [below for nested schema](#nestedblock--entries))
+- `entries` (Block List, Deprecated) The flat list of budget entries (deprecated - use budget_line instead). (see [below for nested schema](#nestedblock--entries))
 - `metrics_query` (String) The cost query used to track against the budget.
 - `name` (String) The name of the budget.
 - `start_month` (Number) The month when the budget starts (YYYYMM).
 - `total_amount` (Number) The sum of all budget entries' amounts.
+
+<a id="nestedblock--budget_line"></a>
+### Nested Schema for `budget_line`
+
+Read-Only:
+
+- `amounts` (Map of Number) Map of month (YYYYMM as string) to budget amount.
+- `child_tag_filters` (Block List) Child tag filters for hierarchical budgets (second tag in 'by' clause). (see [below for nested schema](#nestedblock--budget_line--child_tag_filters))
+- `parent_tag_filters` (Block List) Parent tag filters for hierarchical budgets (first tag in 'by' clause). (see [below for nested schema](#nestedblock--budget_line--parent_tag_filters))
+- `tag_filters` (Block List) Tag filters for non-hierarchical budgets (single tag or no tags). (see [below for nested schema](#nestedblock--budget_line--tag_filters))
+
+<a id="nestedblock--budget_line--child_tag_filters"></a>
+### Nested Schema for `budget_line.child_tag_filters`
+
+Read-Only:
+
+- `tag_key` (String)
+- `tag_value` (String)
+
+
+<a id="nestedblock--budget_line--parent_tag_filters"></a>
+### Nested Schema for `budget_line.parent_tag_filters`
+
+Read-Only:
+
+- `tag_key` (String)
+- `tag_value` (String)
+
+
+<a id="nestedblock--budget_line--tag_filters"></a>
+### Nested Schema for `budget_line.tag_filters`
+
+Read-Only:
+
+- `tag_key` (String)
+- `tag_value` (String)
+
+
 
 <a id="nestedblock--entries"></a>
 ### Nested Schema for `entries`

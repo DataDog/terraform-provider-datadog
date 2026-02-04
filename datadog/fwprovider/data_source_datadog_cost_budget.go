@@ -26,6 +26,7 @@ type costBudgetDataSourceModel struct {
 	EndMonth     types.Int64   `tfsdk:"end_month"`
 	TotalAmount  types.Float64 `tfsdk:"total_amount"`
 	Entries      types.List    `tfsdk:"entries"`
+	BudgetLine   types.Set     `tfsdk:"budget_line"`
 }
 
 func (d *costBudgetDataSource) Metadata(_ context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
@@ -63,7 +64,8 @@ func (d *costBudgetDataSource) Schema(_ context.Context, _ datasource.SchemaRequ
 		},
 		Blocks: map[string]schema.Block{
 			"entries": schema.ListNestedBlock{
-				Description: "The entries of the budget.",
+				DeprecationMessage: "Use budget_line instead. The entries block will be removed in a future version.",
+				Description:        "The flat list of budget entries (deprecated - use budget_line instead).",
 				NestedObject: schema.NestedBlockObject{
 					Attributes: map[string]schema.Attribute{
 						"amount": schema.Float64Attribute{
@@ -75,6 +77,47 @@ func (d *costBudgetDataSource) Schema(_ context.Context, _ datasource.SchemaRequ
 					},
 					Blocks: map[string]schema.Block{
 						"tag_filters": schema.ListNestedBlock{
+							NestedObject: schema.NestedBlockObject{
+								Attributes: map[string]schema.Attribute{
+									"tag_key":   schema.StringAttribute{Computed: true},
+									"tag_value": schema.StringAttribute{Computed: true},
+								},
+							},
+						},
+					},
+				},
+			},
+			"budget_line": schema.SetNestedBlock{
+				Description: "Budget entries grouped by tag combination with amounts map (month -> amount).",
+				NestedObject: schema.NestedBlockObject{
+					Attributes: map[string]schema.Attribute{
+						"amounts": schema.MapAttribute{
+							Description: "Map of month (YYYYMM as string) to budget amount.",
+							Computed:    true,
+							ElementType: types.Float64Type,
+						},
+					},
+					Blocks: map[string]schema.Block{
+						"tag_filters": schema.ListNestedBlock{
+							Description: "Tag filters for non-hierarchical budgets (single tag or no tags).",
+							NestedObject: schema.NestedBlockObject{
+								Attributes: map[string]schema.Attribute{
+									"tag_key":   schema.StringAttribute{Computed: true},
+									"tag_value": schema.StringAttribute{Computed: true},
+								},
+							},
+						},
+						"parent_tag_filters": schema.ListNestedBlock{
+							Description: "Parent tag filters for hierarchical budgets (first tag in 'by' clause).",
+							NestedObject: schema.NestedBlockObject{
+								Attributes: map[string]schema.Attribute{
+									"tag_key":   schema.StringAttribute{Computed: true},
+									"tag_value": schema.StringAttribute{Computed: true},
+								},
+							},
+						},
+						"child_tag_filters": schema.ListNestedBlock{
+							Description: "Child tag filters for hierarchical budgets (second tag in 'by' clause).",
 							NestedObject: schema.NestedBlockObject{
 								Attributes: map[string]schema.Attribute{
 									"tag_key":   schema.StringAttribute{Computed: true},
@@ -117,8 +160,7 @@ func setDataSourceModelFromBudgetWithEntries(ctx context.Context, model *costBud
 	if apiResp.Data == nil || apiResp.Data.Attributes == nil {
 		return
 	}
-	data := apiResp.Data
-	attr := data.Attributes
+	data, attr := apiResp.Data, apiResp.Data.Attributes
 
 	// Set top-level fields
 	if data.Id != nil {
@@ -140,59 +182,10 @@ func setDataSourceModelFromBudgetWithEntries(ctx context.Context, model *costBud
 		model.TotalAmount = types.Float64Value(*attr.TotalAmount)
 	}
 
-	// Set entries
-	var entries []budgetEntry
-	for _, apiEntry := range attr.Entries {
-		var tagFilters []tagFilter
-		for _, tf := range apiEntry.TagFilters {
-			var tagKey, tagValue types.String
-			if tf.TagKey != nil {
-				tagKey = types.StringValue(*tf.TagKey)
-			} else {
-				tagKey = types.StringNull()
-			}
-			if tf.TagValue != nil {
-				tagValue = types.StringValue(*tf.TagValue)
-			} else {
-				tagValue = types.StringNull()
-			}
-			tagFilters = append(tagFilters, tagFilter{
-				TagKey:   tagKey,
-				TagValue: tagValue,
-			})
-		}
+	// Convert API entries to internal model
+	entries := apiEntriesToBudgetEntries(ctx, attr.Entries)
 
-		var amount types.Float64
-		if apiEntry.Amount != nil {
-			amount = types.Float64Value(*apiEntry.Amount)
-		} else {
-			amount = types.Float64Null()
-		}
-		var month types.Int64
-		if apiEntry.Month != nil {
-			month = types.Int64Value(*apiEntry.Month)
-		} else {
-			month = types.Int64Null()
-		}
-
-		// Convert []tagFilter to types.List
-		tagFiltersList, _ := types.ListValueFrom(
-			ctx,
-			types.ObjectType{AttrTypes: tagFilterAttrTypes()},
-			tagFilters,
-		)
-
-		entries = append(entries, budgetEntry{
-			Amount:     amount,
-			Month:      month,
-			TagFilters: tagFiltersList,
-		})
-	}
-
-	// Convert []budgetEntry to types.List
-	model.Entries, _ = types.ListValueFrom(
-		ctx,
-		types.ObjectType{AttrTypes: budgetEntryAttrTypes()},
-		entries,
-	)
+	// Populate both schemas for backward compatibility
+	model.Entries, _ = types.ListValueFrom(ctx, types.ObjectType{AttrTypes: budgetEntryAttrTypes()}, entries)
+	model.BudgetLine, _ = types.SetValueFrom(ctx, types.ObjectType{AttrTypes: budgetLineAttrTypes()}, convertFlatEntriesToBudgetLine(ctx, entries))
 }
