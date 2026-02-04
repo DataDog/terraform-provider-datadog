@@ -96,7 +96,7 @@ func (d *tagPipelineRulesetDataSource) Schema(_ context.Context, _ datasource.Sc
 									},
 								},
 								"if_tag_exists": schema.StringAttribute{
-									Description: "Behavior when the tag already exists. Valid values: `append` (only apply if tag doesn't exist), `replace` (replace existing tag value), `do_not_apply` (never apply if tag exists).",
+									Description: "Behavior when the tag already exists. Valid values: `append` (append to the existing tag value), `replace` (replace existing tag value), `do_not_apply` (never apply if tag already exists).",
 									Computed:    true,
 									Validators: []validator.String{
 										stringvalidator.OneOf("append", "replace", "do_not_apply"),
@@ -126,7 +126,7 @@ func (d *tagPipelineRulesetDataSource) Schema(_ context.Context, _ datasource.Sc
 									},
 								},
 								"if_tag_exists": schema.StringAttribute{
-									Description: "Behavior when the tag already exists. Valid values: `append` (only apply if tag doesn't exist), `replace` (replace existing tag value), `do_not_apply` (never apply if tag exists).",
+									Description: "Behavior when the tag already exists. Valid values: `append` (append to the existing tag value), `replace` (replace existing tag value), `do_not_apply` (never apply if tag already exists).",
 									Computed:    true,
 									Validators: []validator.String{
 										stringvalidator.OneOf("append", "replace", "do_not_apply"),
@@ -170,7 +170,7 @@ func (d *tagPipelineRulesetDataSource) Schema(_ context.Context, _ datasource.Sc
 									},
 								},
 								"if_tag_exists": schema.StringAttribute{
-									Description: "Behavior when the tag already exists. Valid values: `append` (only apply if tag doesn't exist), `replace` (replace existing tag value), `do_not_apply` (never apply if tag exists).",
+									Description: "Behavior when the tag already exists. Valid values: `append` (append to the existing tag value), `replace` (replace existing tag value), `do_not_apply` (never apply if tag already exists).",
 									Computed:    true,
 									Validators: []validator.String{
 										stringvalidator.OneOf("append", "replace", "do_not_apply"),

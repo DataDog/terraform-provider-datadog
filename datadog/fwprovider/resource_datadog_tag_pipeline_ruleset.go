@@ -154,7 +154,7 @@ func (r *tagPipelineRulesetResource) Schema(_ context.Context, _ resource.Schema
 								"if_tag_exists": schema.StringAttribute{
 									Optional:    true,
 									Computed:    true,
-									Description: "Behavior when the tag already exists. Valid values: `append` (only apply if tag doesn't exist), `replace` (replace existing tag value), `do_not_apply` (never apply if tag exists).",
+									Description: "Behavior when the tag already exists. Valid values: `append` (append to the existing tag value), `replace` (replace existing tag value), `do_not_apply` (never apply if tag already exists).",
 									Validators: []validator.String{
 										stringvalidator.OneOf("append", "replace", "do_not_apply"),
 										stringvalidator.ConflictsWith(path.MatchRelative().AtParent().AtName("if_not_exists")),
@@ -187,7 +187,7 @@ func (r *tagPipelineRulesetResource) Schema(_ context.Context, _ resource.Schema
 								"if_tag_exists": schema.StringAttribute{
 									Optional:    true,
 									Computed:    true,
-									Description: "Behavior when the tag already exists. Valid values: `append` (only apply if tag doesn't exist), `replace` (replace existing tag value), `do_not_apply` (never apply if tag exists).",
+									Description: "Behavior when the tag already exists. Valid values: `append` (append to the existing tag value), `replace` (replace existing tag value), `do_not_apply` (never apply if tag already exists).",
 									Validators: []validator.String{
 										stringvalidator.OneOf("append", "replace", "do_not_apply"),
 										stringvalidator.ConflictsWith(path.MatchRelative().AtParent().AtName("if_not_exists")),
@@ -234,7 +234,7 @@ func (r *tagPipelineRulesetResource) Schema(_ context.Context, _ resource.Schema
 								"if_tag_exists": schema.StringAttribute{
 									Optional:    true,
 									Computed:    true,
-									Description: "Behavior when the tag already exists. Valid values: `append` (only apply if tag doesn't exist), `replace` (replace existing tag value), `do_not_apply` (never apply if tag exists).",
+									Description: "Behavior when the tag already exists. Valid values: `append` (append to the existing tag value), `replace` (replace existing tag value), `do_not_apply` (never apply if tag already exists).",
 									Validators: []validator.String{
 										stringvalidator.OneOf("append", "replace", "do_not_apply"),
 										stringvalidator.ConflictsWith(path.MatchRelative().AtParent().AtName("if_not_exists")),
@@ -564,19 +564,12 @@ func buildCreateRulesetRequestFromModel(plan tagPipelineRulesetModel) datadogV2.
 				DestinationKey: r.Mapping.DestinationKey.ValueString(),
 				SourceKeys:     convertSourceKeys(r.Mapping.SourceKeys),
 			}
-			// Prefer if_tag_exists, fall back to if_not_exists for backwards compatibility
-			if !r.Mapping.IfTagExists.IsNull() {
+			// Send whichever field the user specified - API handles conversion
+			if !r.Mapping.IfTagExists.IsNull() && !r.Mapping.IfTagExists.IsUnknown() {
 				mapping.IfTagExists = datadogV2.DataAttributesRulesItemsIfTagExists(r.Mapping.IfTagExists.ValueString()).Ptr()
-			} else if !r.Mapping.IfNotExists.IsNull() {
-				// Convert deprecated bool to new string field
-				if r.Mapping.IfNotExists.ValueBool() {
-					mapping.IfTagExists = datadogV2.DATAATTRIBUTESRULESITEMSIFTAGEXISTS_REPLACE.Ptr()
-				} else {
-					mapping.IfTagExists = datadogV2.DATAATTRIBUTESRULESITEMSIFTAGEXISTS_DO_NOT_APPLY.Ptr()
-				}
-			} else {
-				// Default to "do_not_apply" (equivalent to old if_not_exists: false)
-				mapping.IfTagExists = datadogV2.DATAATTRIBUTESRULESITEMSIFTAGEXISTS_DO_NOT_APPLY.Ptr()
+			} else if !r.Mapping.IfNotExists.IsNull() && !r.Mapping.IfNotExists.IsUnknown() {
+				val := r.Mapping.IfNotExists.ValueBool()
+				mapping.IfNotExists = &val
 			}
 			rule.Mapping = *datadogV2.NewNullableDataAttributesRulesItemsMapping(&mapping)
 		} else {
@@ -595,19 +588,12 @@ func buildCreateRulesetRequestFromModel(plan tagPipelineRulesetModel) datadogV2.
 				}(),
 				Query: r.Query.Query.ValueString(),
 			}
-			// Prefer if_tag_exists, fall back to if_not_exists for backwards compatibility
-			if !r.Query.IfTagExists.IsNull() {
+			// Send whichever field the user specified - API handles conversion
+			if !r.Query.IfTagExists.IsNull() && !r.Query.IfTagExists.IsUnknown() {
 				query.IfTagExists = datadogV2.DataAttributesRulesItemsIfTagExists(r.Query.IfTagExists.ValueString()).Ptr()
-			} else if !r.Query.IfNotExists.IsNull() {
-				// Convert deprecated bool to new string field
-				if r.Query.IfNotExists.ValueBool() {
-					query.IfTagExists = datadogV2.DATAATTRIBUTESRULESITEMSIFTAGEXISTS_APPEND.Ptr()
-				} else {
-					query.IfTagExists = datadogV2.DATAATTRIBUTESRULESITEMSIFTAGEXISTS_DO_NOT_APPLY.Ptr()
-				}
-			} else {
-				// Default to "do_not_apply" (equivalent to old if_not_exists: false)
-				query.IfTagExists = datadogV2.DATAATTRIBUTESRULESITEMSIFTAGEXISTS_DO_NOT_APPLY.Ptr()
+			} else if !r.Query.IfNotExists.IsNull() && !r.Query.IfNotExists.IsUnknown() {
+				val := r.Query.IfNotExists.ValueBool()
+				query.IfNotExists = &val
 			}
 			// Addition is required for query rules
 			if r.Query.Addition != nil {
@@ -643,19 +629,12 @@ func buildCreateRulesetRequestFromModel(plan tagPipelineRulesetModel) datadogV2.
 				SourceKeys: convertSourceKeys(r.ReferenceTable.SourceKeys),
 				TableName:  r.ReferenceTable.TableName.ValueString(),
 			}
-			// Prefer if_tag_exists, fall back to if_not_exists for backwards compatibility
-			if !r.ReferenceTable.IfTagExists.IsNull() {
+			// Send whichever field the user specified - API handles conversion
+			if !r.ReferenceTable.IfTagExists.IsNull() && !r.ReferenceTable.IfTagExists.IsUnknown() {
 				refTable.IfTagExists = datadogV2.DataAttributesRulesItemsIfTagExists(r.ReferenceTable.IfTagExists.ValueString()).Ptr()
-			} else if !r.ReferenceTable.IfNotExists.IsNull() {
-				// Convert deprecated bool to new string field
-				if r.ReferenceTable.IfNotExists.ValueBool() {
-					refTable.IfTagExists = datadogV2.DATAATTRIBUTESRULESITEMSIFTAGEXISTS_APPEND.Ptr()
-				} else {
-					refTable.IfTagExists = datadogV2.DATAATTRIBUTESRULESITEMSIFTAGEXISTS_DO_NOT_APPLY.Ptr()
-				}
-			} else {
-				// Default to "do_not_apply" (equivalent to old if_not_exists: false)
-				refTable.IfTagExists = datadogV2.DATAATTRIBUTESRULESITEMSIFTAGEXISTS_DO_NOT_APPLY.Ptr()
+			} else if !r.ReferenceTable.IfNotExists.IsNull() && !r.ReferenceTable.IfNotExists.IsUnknown() {
+				val := r.ReferenceTable.IfNotExists.ValueBool()
+				refTable.IfNotExists = &val
 			}
 			rule.ReferenceTable = *datadogV2.NewNullableCreateRulesetRequestDataAttributesRulesItemsReferenceTable(&refTable)
 		} else {
@@ -716,19 +695,12 @@ func buildUpdateRulesetRequestFromModel(plan tagPipelineRulesetModel) datadogV2.
 				DestinationKey: r.Mapping.DestinationKey.ValueString(),
 				SourceKeys:     convertSourceKeys(r.Mapping.SourceKeys),
 			}
-			// Prefer if_tag_exists, fall back to if_not_exists for backwards compatibility
-			if !r.Mapping.IfTagExists.IsNull() {
+			// Send whichever field the user specified - API handles conversion
+			if !r.Mapping.IfTagExists.IsNull() && !r.Mapping.IfTagExists.IsUnknown() {
 				mapping.IfTagExists = datadogV2.DataAttributesRulesItemsIfTagExists(r.Mapping.IfTagExists.ValueString()).Ptr()
-			} else if !r.Mapping.IfNotExists.IsNull() {
-				// Convert deprecated bool to new string field
-				if r.Mapping.IfNotExists.ValueBool() {
-					mapping.IfTagExists = datadogV2.DATAATTRIBUTESRULESITEMSIFTAGEXISTS_REPLACE.Ptr()
-				} else {
-					mapping.IfTagExists = datadogV2.DATAATTRIBUTESRULESITEMSIFTAGEXISTS_DO_NOT_APPLY.Ptr()
-				}
-			} else {
-				// Default to "do_not_apply" (equivalent to old if_not_exists: false)
-				mapping.IfTagExists = datadogV2.DATAATTRIBUTESRULESITEMSIFTAGEXISTS_DO_NOT_APPLY.Ptr()
+			} else if !r.Mapping.IfNotExists.IsNull() && !r.Mapping.IfNotExists.IsUnknown() {
+				val := r.Mapping.IfNotExists.ValueBool()
+				mapping.IfNotExists = &val
 			}
 			rule.Mapping = *datadogV2.NewNullableDataAttributesRulesItemsMapping(&mapping)
 		} else {
@@ -747,19 +719,12 @@ func buildUpdateRulesetRequestFromModel(plan tagPipelineRulesetModel) datadogV2.
 				}(),
 				Query: r.Query.Query.ValueString(),
 			}
-			// Prefer if_tag_exists, fall back to if_not_exists for backwards compatibility
-			if !r.Query.IfTagExists.IsNull() {
+			// Send whichever field the user specified - API handles conversion
+			if !r.Query.IfTagExists.IsNull() && !r.Query.IfTagExists.IsUnknown() {
 				query.IfTagExists = datadogV2.DataAttributesRulesItemsIfTagExists(r.Query.IfTagExists.ValueString()).Ptr()
-			} else if !r.Query.IfNotExists.IsNull() {
-				// Convert deprecated bool to new string field
-				if r.Query.IfNotExists.ValueBool() {
-					query.IfTagExists = datadogV2.DATAATTRIBUTESRULESITEMSIFTAGEXISTS_APPEND.Ptr()
-				} else {
-					query.IfTagExists = datadogV2.DATAATTRIBUTESRULESITEMSIFTAGEXISTS_DO_NOT_APPLY.Ptr()
-				}
-			} else {
-				// Default to "do_not_apply" (equivalent to old if_not_exists: false)
-				query.IfTagExists = datadogV2.DATAATTRIBUTESRULESITEMSIFTAGEXISTS_DO_NOT_APPLY.Ptr()
+			} else if !r.Query.IfNotExists.IsNull() && !r.Query.IfNotExists.IsUnknown() {
+				val := r.Query.IfNotExists.ValueBool()
+				query.IfNotExists = &val
 			}
 			// Addition is required for query rules
 			if r.Query.Addition != nil {
@@ -795,19 +760,12 @@ func buildUpdateRulesetRequestFromModel(plan tagPipelineRulesetModel) datadogV2.
 				SourceKeys: convertSourceKeys(r.ReferenceTable.SourceKeys),
 				TableName:  r.ReferenceTable.TableName.ValueString(),
 			}
-			// Prefer if_tag_exists, fall back to if_not_exists for backwards compatibility
-			if !r.ReferenceTable.IfTagExists.IsNull() {
+			// Send whichever field the user specified - API handles conversion
+			if !r.ReferenceTable.IfTagExists.IsNull() && !r.ReferenceTable.IfTagExists.IsUnknown() {
 				refTable.IfTagExists = datadogV2.DataAttributesRulesItemsIfTagExists(r.ReferenceTable.IfTagExists.ValueString()).Ptr()
-			} else if !r.ReferenceTable.IfNotExists.IsNull() {
-				// Convert deprecated bool to new string field
-				if r.ReferenceTable.IfNotExists.ValueBool() {
-					refTable.IfTagExists = datadogV2.DATAATTRIBUTESRULESITEMSIFTAGEXISTS_APPEND.Ptr()
-				} else {
-					refTable.IfTagExists = datadogV2.DATAATTRIBUTESRULESITEMSIFTAGEXISTS_DO_NOT_APPLY.Ptr()
-				}
-			} else {
-				// Default to "do_not_apply" (equivalent to old if_not_exists: false)
-				refTable.IfTagExists = datadogV2.DATAATTRIBUTESRULESITEMSIFTAGEXISTS_DO_NOT_APPLY.Ptr()
+			} else if !r.ReferenceTable.IfNotExists.IsNull() && !r.ReferenceTable.IfNotExists.IsUnknown() {
+				val := r.ReferenceTable.IfNotExists.ValueBool()
+				refTable.IfNotExists = &val
 			}
 			rule.ReferenceTable = *datadogV2.NewNullableUpdateRulesetRequestDataAttributesRulesItemsReferenceTable(&refTable)
 		} else {
