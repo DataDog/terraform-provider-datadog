@@ -176,7 +176,6 @@ func (r *integrationAwsEventBridgeResource) Create(ctx context.Context, request 
 	}
 	r.updateStateAfterWrite(ctx, &state, &resp)
 
-	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
