@@ -2,6 +2,8 @@ package test
 
 import (
 	"context"
+	"fmt"
+	"strings"
 	"testing"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog"
@@ -18,15 +20,16 @@ func TestAccDatadogMetricMetadata_Basic(t *testing.T) {
 	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
+	metricName := strings.ReplaceAll(uniqueEntityName(ctx, t), "-", "_")
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:          func() { testAccPreCheck(t) },
 		ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogMetricMetadataConfig,
+				Config: testAccCheckDatadogMetricMetadataConfigWithName(metricName),
 				Check: resource.ComposeTestCheckFunc(
-					checkPostEvent(accProvider, clockFromContext(ctx)),
+					checkPostEvent(accProvider, clockFromContext(ctx), metricName),
 					checkMetricMetadataExists(accProvider),
 					resource.TestCheckResourceAttr(
 						"datadog_metric_metadata.foo", "short_name", "short name for metric_metadata foo"),
@@ -50,15 +53,16 @@ func TestAccDatadogMetricMetadata_Updated(t *testing.T) {
 	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
+	metricName := strings.ReplaceAll(uniqueEntityName(ctx, t), "-", "_")
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:          func() { testAccPreCheck(t) },
 		ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogMetricMetadataConfig,
+				Config: testAccCheckDatadogMetricMetadataConfigWithName(metricName),
 				Check: resource.ComposeTestCheckFunc(
-					checkPostEvent(accProvider, clockFromContext(ctx)),
+					checkPostEvent(accProvider, clockFromContext(ctx), metricName),
 					checkMetricMetadataExists(accProvider),
 					resource.TestCheckResourceAttr(
 						"datadog_metric_metadata.foo", "short_name", "short name for metric_metadata foo"),
@@ -75,7 +79,7 @@ func TestAccDatadogMetricMetadata_Updated(t *testing.T) {
 				),
 			},
 			{
-				Config: testAccCheckDatadogMetricMetadataConfigUpdated,
+				Config: testAccCheckDatadogMetricMetadataConfigUpdatedWithName(metricName),
 				Check: resource.ComposeTestCheckFunc(
 					checkMetricMetadataExists(accProvider),
 					resource.TestCheckResourceAttr(
@@ -125,7 +129,7 @@ func checkMetricMetadataExists(accProvider func() (*schema.Provider, error)) res
 	}
 }
 
-func checkPostEvent(accProvider func() (*schema.Provider, error), clock clockwork.FakeClock) resource.TestCheckFunc {
+func checkPostEvent(accProvider func() (*schema.Provider, error), clock clockwork.FakeClock, metricName string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
 		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
@@ -133,7 +137,7 @@ func checkPostEvent(accProvider func() (*schema.Provider, error), clock clockwor
 		datapointUnixTime := float64(clock.Now().Unix())
 		datapointValue := float64(1)
 		metric := communityClient.Metric{
-			Metric: communityClient.String("foo"),
+			Metric: communityClient.String(metricName),
 			Points: []communityClient.DataPoint{{&datapointUnixTime, &datapointValue}},
 		}
 		if err := client.PostMetrics([]communityClient.Metric{metric}); err != nil {
@@ -166,3 +170,31 @@ resource "datadog_metric_metadata" "foo" {
   statsd_interval = "1"
 }
 `
+
+func testAccCheckDatadogMetricMetadataConfigWithName(metricName string) string {
+	return fmt.Sprintf(`
+resource "datadog_metric_metadata" "foo" {
+  metric = "%s"
+  short_name = "short name for metric_metadata foo"
+  type = "gauge"
+  description = "some description"
+  unit = "byte"
+  per_unit = "second"
+  statsd_interval = "1"
+}
+`, metricName)
+}
+
+func testAccCheckDatadogMetricMetadataConfigUpdatedWithName(metricName string) string {
+	return fmt.Sprintf(`
+resource "datadog_metric_metadata" "foo" {
+  metric = "%s"
+  short_name = "short name for metric_metadata foo"
+  type = "gauge"
+  description = "a different description"
+  unit = "byte"
+  per_unit = "second"
+  statsd_interval = "1"
+}
+`, metricName)
+}
