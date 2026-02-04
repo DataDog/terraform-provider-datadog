@@ -1074,3 +1074,69 @@ func TestAccDatadogDashboardTimeseriesSemanticMode(t *testing.T) {
 func TestAccDatadogDashboardTimeseriesSemanticMode_import(t *testing.T) {
 	testAccDatadogDashboardWidgetUtilImport(t, datadogDashboardTimeseriesSemanticModeConfig, "datadog_dashboard.timeseries_dashboard")
 }
+
+const datadogDashboardTimeseriesOrderByConfig = `
+resource "datadog_dashboard" "timeseries_dashboard" {
+	title         = "{{uniq}}"
+	description   = "Created using the Datadog provider in Terraform"
+	layout_type   = "ordered"
+	widget {
+		timeseries_definition {
+			title = "Timeseries Ordered by Values"
+			request {
+				q = "avg:system.cpu.user{*} by {host}"
+				style {
+					palette = "dog_classic"
+					line_type = "solid"
+					line_width = "normal"
+					order_by = "values"
+				}
+				display_type = "line"
+			}
+		}
+	}
+	widget {
+		timeseries_definition {
+			title = "Timeseries Ordered by Tags"
+			request {
+				q = "avg:system.mem.used{*} by {host}"
+				style {
+					palette = "warm"
+					line_type = "dashed"
+					line_width = "thick"
+					order_by = "tags"
+				}
+				display_type = "line"
+			}
+		}
+	}
+}
+`
+
+var datadogDashboardTimeseriesOrderByAsserts = []string{
+	"title = {{uniq}}",
+	"description = Created using the Datadog provider in Terraform",
+	"layout_type = ordered",
+	"widget.0.timeseries_definition.0.title = Timeseries Ordered by Values",
+	"widget.0.timeseries_definition.0.request.0.q = avg:system.cpu.user{*} by {host}",
+	"widget.0.timeseries_definition.0.request.0.style.0.palette = dog_classic",
+	"widget.0.timeseries_definition.0.request.0.style.0.line_type = solid",
+	"widget.0.timeseries_definition.0.request.0.style.0.line_width = normal",
+	"widget.0.timeseries_definition.0.request.0.style.0.order_by = values",
+	"widget.0.timeseries_definition.0.request.0.display_type = line",
+	"widget.1.timeseries_definition.0.title = Timeseries Ordered by Tags",
+	"widget.1.timeseries_definition.0.request.0.q = avg:system.mem.used{*} by {host}",
+	"widget.1.timeseries_definition.0.request.0.style.0.palette = warm",
+	"widget.1.timeseries_definition.0.request.0.style.0.line_type = dashed",
+	"widget.1.timeseries_definition.0.request.0.style.0.line_width = thick",
+	"widget.1.timeseries_definition.0.request.0.style.0.order_by = tags",
+	"widget.1.timeseries_definition.0.request.0.display_type = line",
+}
+
+func TestAccDatadogDashboardTimeseriesOrderBy(t *testing.T) {
+	testAccDatadogDashboardWidgetUtil(t, datadogDashboardTimeseriesOrderByConfig, "datadog_dashboard.timeseries_dashboard", datadogDashboardTimeseriesOrderByAsserts)
+}
+
+func TestAccDatadogDashboardTimeseriesOrderBy_import(t *testing.T) {
+	testAccDatadogDashboardWidgetUtilImport(t, datadogDashboardTimeseriesOrderByConfig, "datadog_dashboard.timeseries_dashboard")
+}

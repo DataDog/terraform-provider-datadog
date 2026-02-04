@@ -1,0 +1,210 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 841
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"description":"Created using the Datadog provider in Terraform","id":"","layout_type":"ordered","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardTimeseriesOrderBy_import-local-1770063151","widgets":[{"definition":{"requests":[{"display_type":"line","on_right_yaxis":false,"q":"avg:system.cpu.user{*} by {host}","style":{"line_type":"solid","line_width":"normal","order_by":"values","palette":"dog_classic"}}],"show_legend":false,"title":"Timeseries Ordered by Values","type":"timeseries"}},{"definition":{"requests":[{"display_type":"line","on_right_yaxis":false,"q":"avg:system.mem.used{*} by {host}","style":{"line_type":"dashed","line_width":"thick","order_by":"tags","palette":"warm"}}],"show_legend":false,"title":"Timeseries Ordered by Tags","type":"timeseries"}}]}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"b4a-t9n-yke","title":"tf-TestAccDatadogDashboardTimeseriesOrderBy_import-local-1770063151","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/b4a-t9n-yke/tf-testaccdatadogdashboardtimeseriesorderbyimport-local-1770063151","template_variables":[],"widgets":[{"definition":{"requests":[{"display_type":"line","on_right_yaxis":false,"q":"avg:system.cpu.user{*} by {host}","style":{"line_type":"solid","line_width":"normal","order_by":"values","palette":"dog_classic"}}],"show_legend":false,"title":"Timeseries Ordered by Values","type":"timeseries"},"id":2904076713058762},{"definition":{"requests":[{"display_type":"line","on_right_yaxis":false,"q":"avg:system.mem.used{*} by {host}","style":{"line_type":"dashed","line_width":"thick","order_by":"tags","palette":"warm"}}],"show_legend":false,"title":"Timeseries Ordered by Tags","type":"timeseries"},"id":7662538728109794}],"notify_list":[],"created_at":"2026-02-02T20:12:33.140721+00:00","modified_at":"2026-02-02T20:12:33.140721+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 189.468833ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/b4a-t9n-yke
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"b4a-t9n-yke","title":"tf-TestAccDatadogDashboardTimeseriesOrderBy_import-local-1770063151","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/b4a-t9n-yke/tf-testaccdatadogdashboardtimeseriesorderbyimport-local-1770063151","template_variables":[],"widgets":[{"definition":{"requests":[{"display_type":"line","on_right_yaxis":false,"q":"avg:system.cpu.user{*} by {host}","style":{"line_type":"solid","line_width":"normal","order_by":"values","palette":"dog_classic"}}],"show_legend":false,"title":"Timeseries Ordered by Values","type":"timeseries"},"id":2904076713058762},{"definition":{"requests":[{"display_type":"line","on_right_yaxis":false,"q":"avg:system.mem.used{*} by {host}","style":{"line_type":"dashed","line_width":"thick","order_by":"tags","palette":"warm"}}],"show_legend":false,"title":"Timeseries Ordered by Tags","type":"timeseries"},"id":7662538728109794}],"notify_list":[],"created_at":"2026-02-02T20:12:33.140721+00:00","modified_at":"2026-02-02T20:12:33.140721+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 97.098ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/b4a-t9n-yke
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"b4a-t9n-yke","title":"tf-TestAccDatadogDashboardTimeseriesOrderBy_import-local-1770063151","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/b4a-t9n-yke/tf-testaccdatadogdashboardtimeseriesorderbyimport-local-1770063151","template_variables":[],"widgets":[{"definition":{"requests":[{"display_type":"line","on_right_yaxis":false,"q":"avg:system.cpu.user{*} by {host}","style":{"line_type":"solid","line_width":"normal","order_by":"values","palette":"dog_classic"}}],"show_legend":false,"title":"Timeseries Ordered by Values","type":"timeseries"},"id":2904076713058762},{"definition":{"requests":[{"display_type":"line","on_right_yaxis":false,"q":"avg:system.mem.used{*} by {host}","style":{"line_type":"dashed","line_width":"thick","order_by":"tags","palette":"warm"}}],"show_legend":false,"title":"Timeseries Ordered by Tags","type":"timeseries"},"id":7662538728109794}],"notify_list":[],"created_at":"2026-02-02T20:12:33.140721+00:00","modified_at":"2026-02-02T20:12:33.140721+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 101.913459ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/b4a-t9n-yke
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"b4a-t9n-yke","title":"tf-TestAccDatadogDashboardTimeseriesOrderBy_import-local-1770063151","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/b4a-t9n-yke/tf-testaccdatadogdashboardtimeseriesorderbyimport-local-1770063151","template_variables":[],"widgets":[{"definition":{"requests":[{"display_type":"line","on_right_yaxis":false,"q":"avg:system.cpu.user{*} by {host}","style":{"line_type":"solid","line_width":"normal","order_by":"values","palette":"dog_classic"}}],"show_legend":false,"title":"Timeseries Ordered by Values","type":"timeseries"},"id":2904076713058762},{"definition":{"requests":[{"display_type":"line","on_right_yaxis":false,"q":"avg:system.mem.used{*} by {host}","style":{"line_type":"dashed","line_width":"thick","order_by":"tags","palette":"warm"}}],"show_legend":false,"title":"Timeseries Ordered by Tags","type":"timeseries"},"id":7662538728109794}],"notify_list":[],"created_at":"2026-02-02T20:12:33.140721+00:00","modified_at":"2026-02-02T20:12:33.140721+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 90.889417ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/b4a-t9n-yke
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"deleted_dashboard_id":"b4a-t9n-yke"}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 375.898625ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/b4a-t9n-yke
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"errors":["Dashboard with ID b4a-t9n-yke not found"]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 79.303792ms
