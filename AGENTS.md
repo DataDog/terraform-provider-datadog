@@ -19,6 +19,10 @@ RECORD=false TESTARGS="-run TestName" make testacc     # Acceptance tests
 
 Raw `go test` bypasses `gotestsum` and test infrastructure.
 
+### Testing Details
+
+For full testing details (unit vs acceptance, RECORD modes, examples), see [TESTING.md](./TESTING.md). The Claude test runner skill also includes expanded test-running guidance.
+
 ### ALWAYS Add Schema Descriptions
 
 All schema attributes MUST have `Description` fields - required for `make docs` generation.
@@ -45,10 +49,12 @@ Some docs are manually maintained and excluded from auto generation. Check `scri
 ## Quality Gates
 
 ### Quick Checks (before any commit)
+
 - [ ] `make fmtcheck` passes
 - [ ] `make test` passes
 
 ### Full Validation (before push)
+
 - [ ] `make docs && make check-docs` passes
 - [ ] `make vet` and `make errcheck` pass
 - [ ] Acceptance tests pass with `RECORD=none` for changed resources
