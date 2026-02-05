@@ -64,7 +64,7 @@ Required:
 
 Optional:
 
-- `scope` (String) A scope expression composed by key:value pairs (e.g. env:prod) with boolean operators (AND, OR, NOT) and parentheses for grouping.
+- `scope` (String) A scope expression composed of `key:value` pairs (such as `env:prod`) with boolean operators (AND, OR, NOT) and parentheses for grouping.
 - `tags` (Set of String) A list of tag key:value pairs (e.g. team:product). All tags must match (AND semantics).
 
 ## Import
