@@ -55,7 +55,7 @@ Optional:
 Required:
 
 - `recipients` (Set of String) A list of recipients to notify. Uses the same format as the monitor message field. Must not start with an '@'.
-- `scope` (String) Defines the condition under which the recipients are notified. Supported formats: Monitor status condition using transition_type:<status> (for example transition_type:is_alert) or a single tag key:value pair (for example env:prod).
+- `scope` (String) Defines the condition under which the recipients are notified. Supported formats: Monitor status condition using `transition_type:<status>` (for example `transition_type:is_alert`) or a single tag `key:value pair` (for example `env:prod`).
 
 
 
