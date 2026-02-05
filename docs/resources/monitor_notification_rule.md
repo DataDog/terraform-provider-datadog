@@ -13,9 +13,9 @@ Provides a Datadog MonitorNotificationRule resource.
 ## Example Usage
 
 ```terraform
-resource "datadog_monitor_notification_rule" "team_payment_notification_rule" {
-  name       = "Route alerts from payment team"
-  recipients = ["slack-payment-ops", "jira-payment"]
+resource "datadog_monitor_notification_rule" "team_checkout_notification_rule" {
+  name       = "Route alerts from checkout team"
+  recipients = ["slack-checkout-ops", "jira-checkout"]
   filter {
     tags = ["team:payment"]
   }
@@ -29,7 +29,7 @@ resource "datadog_monitor_notification_rule" "team_payment_notification_rule" {
   conditional_recipients {
     conditions {
       scope = "priority:p1"
-      recipients = ["oncall-payment"]
+      recipients = ["oncall-payment", "slack-payment"]
     }
     conditions {
       scope = "priority:p5"
