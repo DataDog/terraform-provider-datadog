@@ -956,6 +956,9 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 									"processor": schema.ListNestedBlock{
 										Description: "The processor contained in this group.",
 										NestedObject: schema.NestedBlockObject{
+											Validators: []validator.Object{
+												observability_pipeline.ExactlyOneProcessorValidator{},
+											},
 											Attributes: map[string]schema.Attribute{
 												"id": schema.StringAttribute{
 													Required:    true,
