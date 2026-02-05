@@ -1,3 +1,17 @@
+## 3.88.0 (February 5, 2026)
+
+### BUGFIXES
+* [datadog_sensitive_data_scanner_rule] Handle missing resource on deletion gracefully by @vinckama in https://github.com/DataDog/terraform-provider-datadog/pull/3486
+### IMPROVEMENTS
+* [datadog_dashboard] Adds support for the order_by field in timeseries widget request by @archana-asokan in https://github.com/DataDog/terraform-provider-datadog/pull/3456
+### FEATURES
+* [CCT-698] [datadog_cost_budget] Add budget_line schema and deprecate entries by @zeinageb in https://github.com/DataDog/terraform-provider-datadog/pull/3460
+
+## New Contributors
+* @archana-asokan made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3456
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.87.0...v3.88.0
+
 ## 3.87.0 (February 2, 2026)
 
 ### BUGFIXES
