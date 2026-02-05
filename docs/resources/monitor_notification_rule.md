@@ -34,7 +34,7 @@ resource "datadog_monitor_notification_rule" "foo" {
 ### Optional
 
 - `conditional_recipients` (Block, Optional) Use conditional recipients to define different recipients for different situations. Cannot be used with `recipients`. (see [below for nested schema](#nestedblock--conditional_recipients))
-- `filter` (Block, Optional) (see [below for nested schema](#nestedblock--filter))
+- `filter` (Block, Optional) Specifies the matching criteria for monitor notifications.(see [below for nested schema](#nestedblock--filter))
 - `recipients` (Set of String) List of recipients to notify. Cannot be used with `conditional_recipients`.
 
 ### Read-Only
@@ -54,8 +54,8 @@ Optional:
 
 Required:
 
-- `recipients` (Set of String) List of recipients to notify.
-- `scope` (String) The scope to which the monitor applied.
+- `recipients` (Set of String) A list of recipients to notify. Uses the same format as the monitor message field. Must not start with an '@'.
+- `scope` (String) Defines the condition under which the recipients are notified. Supported formats: Monitor status condition using transition_type:<status> (for example transition_type:is_alert) or a single tag key:value pair (for example env:prod).
 
 
 
@@ -64,8 +64,8 @@ Required:
 
 Optional:
 
-- `scope` (String) The scope to which the monitor applied.
-- `tags` (Set of String) All tags that target monitors must match.
+- `scope` (String) A scope expression composed by key:value pairs (e.g. env:prod) with boolean operators (AND, OR, NOT) and parentheses for grouping.
+- `tags` (Set of String) A list of tag key:value pairs (e.g. team:product). All tags must match (AND semantics).
 
 ## Import
 
