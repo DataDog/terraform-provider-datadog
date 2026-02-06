@@ -7,11 +7,15 @@ import (
 	"regexp"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
 
 func TestAccDatadogServiceAccountDatasourceMatchFilter(t *testing.T) {
+	if !isReplaying() {
+		t.Skip("This test only supports replaying - eventual consistency with service account creation")
+	}
 	t.Parallel()
 	ctx, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	unique_hash := fmt.Sprintf("%x", sha256.Sum256([]byte(uniqueEntityName(ctx, t))))
@@ -130,7 +134,16 @@ func TestAccDatadogServiceAccountDatasourcePagination(t *testing.T) {
 		ProtoV5ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccDatasourceServiceAccountPaginationConfig(emailSuffix, namePrefix),
+				// Step 1: Create service accounts first
+				Config: testAccDatasourceServiceAccountPaginationResourcesOnly(emailSuffix, namePrefix),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr("datadog_service_account.test.19", "name", fmt.Sprintf("%s-20", namePrefix)),
+				),
+			},
+			{
+				// Step 2: Wait for indexing, then query the datasource
+				PreConfig: func() { time.Sleep(5 * time.Second) },
+				Config:    testAccDatasourceServiceAccountPaginationConfig(emailSuffix, namePrefix),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr("data.datadog_service_account.foo", "email", fmt.Sprintf("20-%s", emailSuffix)),
 					resource.TestCheckResourceAttr("data.datadog_service_account.foo", "name", fmt.Sprintf("%s-20", namePrefix)),
@@ -138,6 +151,15 @@ func TestAccDatadogServiceAccountDatasourcePagination(t *testing.T) {
 			},
 		},
 	})
+}
+
+func testAccDatasourceServiceAccountPaginationResourcesOnly(emailSuffix, namePrefix string) string {
+	return fmt.Sprintf(`
+	resource "datadog_service_account" "test" {
+		count = 20
+		email = "${count.index + 1}-%[1]s"
+		name  = "%[2]s-${count.index + 1}"
+	}`, emailSuffix, namePrefix)
 }
 
 func testAccDatasourceServiceAccountPaginationConfig(emailSuffix, namePrefix string) string {

@@ -9,6 +9,9 @@ import (
 )
 
 func TestAccDatadogMetricsDatasource(t *testing.T) {
+	if !isReplaying() {
+		t.Skip("This test only supports replaying - requires specific metrics in test account")
+	}
 	t.Parallel()
 	_, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	query := "foo."

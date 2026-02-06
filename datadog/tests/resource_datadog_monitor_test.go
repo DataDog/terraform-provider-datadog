@@ -2122,12 +2122,12 @@ func verifyRestrictedRolesSize(accProvider *fwprovider.FrameworkProvider, expect
 	}
 }
 
-func testAccCheckDatadogMonitorWithTagConfig(uniqueName string) string {
+func testAccCheckDatadogMonitorWithTagConfig(monitorName string, tagKey string) string {
 	return fmt.Sprintf(`
 		resource "datadog_monitor_config_policy" "foo" {
 			policy_type = "tag"
 			tag_policy {
-				tag_key          = "foo"
+				tag_key          = "%s"
 				tag_key_required = true
 				valid_tag_values = ["bar"]
 			}
@@ -2141,28 +2141,32 @@ func testAccCheckDatadogMonitorWithTagConfig(uniqueName string) string {
 			monitor_thresholds {
 				critical = "2.0"
 			}
-		}`, uniqueName)
+		}`, tagKey, monitorName)
 }
 
 func TestAccDatadogMonitor_WithTagConfig(t *testing.T) {
-	t.Parallel()
+	// Do not run in parallel - this test creates a global monitor config policy
+	// that affects all monitors, causing parallel monitor tests to fail
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
+	monitorName := uniqueEntityName(ctx, t)
+	tagKey := "tagkey" + monitorName[len(monitorName)-8:] // Use suffix for unique tag key
 	resource.Test(t, resource.TestCase{
-		PreCheck: func() { testAccPreCheck(t) },
+		PreCheck:     func() { testAccPreCheck(t) },
+		CheckDestroy: testAccCheckDatadogMonitorConfigPolicyDestroy(accProvider),
 		ProviderFactories: map[string]func() (*schema.Provider, error){
 			"datadog": withDefaultTags(accProvider, map[string]interface{}{
-				"foo": "bar",
+				tagKey: "bar",
 			}),
 		},
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogMonitorWithTagConfig(uniqueEntityName(ctx, t)),
+				Config: testAccCheckDatadogMonitorWithTagConfig(monitorName, tagKey),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.bar", "tags.#", "1"),
 					resource.TestCheckTypeSetElemAttr(
-						"datadog_monitor.bar", "tags.*", "foo:bar"),
+						"datadog_monitor.bar", "tags.*", tagKey+":bar"),
 				),
 			},
 		},
@@ -2187,14 +2191,18 @@ func TestAccDatadogMonitor_Assets(t *testing.T) {
 					resource.TestCheckResourceAttr("datadog_monitor.foo", "name", monitorName),
 					resource.TestCheckResourceAttr("datadog_monitor.foo", "type", "query alert"),
 					resource.TestCheckResourceAttr("datadog_monitor.foo", "assets.#", "2"),
-					resource.TestCheckResourceAttr("datadog_monitor.foo", "assets.0.name", "Datadog Runbook"),
-					resource.TestCheckResourceAttr("datadog_monitor.foo", "assets.0.url", "/notebook/1234"),
-					resource.TestCheckResourceAttr("datadog_monitor.foo", "assets.0.category", "runbook"),
-					resource.TestCheckResourceAttr("datadog_monitor.foo", "assets.0.resource_key", "1234"),
-					resource.TestCheckResourceAttr("datadog_monitor.foo", "assets.0.resource_type", "notebook"),
-					resource.TestCheckResourceAttr("datadog_monitor.foo", "assets.1.name", "Confluence Runbook"),
-					resource.TestCheckResourceAttr("datadog_monitor.foo", "assets.1.url", "https://datadoghq.atlassian.net/wiki/spaces/ENG/pages/12345/Runbook"),
-					resource.TestCheckResourceAttr("datadog_monitor.foo", "assets.1.category", "runbook"),
+					resource.TestCheckTypeSetElemNestedAttrs("datadog_monitor.foo", "assets.*", map[string]string{
+						"name":          "Datadog Runbook",
+						"url":           "/notebook/1234",
+						"category":      "runbook",
+						"resource_key":  "1234",
+						"resource_type": "notebook",
+					}),
+					resource.TestCheckTypeSetElemNestedAttrs("datadog_monitor.foo", "assets.*", map[string]string{
+						"name":     "Confluence Runbook",
+						"url":      "https://datadoghq.atlassian.net/wiki/spaces/ENG/pages/12345/Runbook",
+						"category": "runbook",
+					}),
 				),
 			},
 			{
@@ -2204,17 +2212,23 @@ func TestAccDatadogMonitor_Assets(t *testing.T) {
 					resource.TestCheckResourceAttr("datadog_monitor.foo", "name", monitorName),
 					resource.TestCheckResourceAttr("datadog_monitor.foo", "type", "query alert"),
 					resource.TestCheckResourceAttr("datadog_monitor.foo", "assets.#", "3"),
-					resource.TestCheckResourceAttr("datadog_monitor.foo", "assets.0.name", "Datadog Runbook 2"),
-					resource.TestCheckResourceAttr("datadog_monitor.foo", "assets.0.url", "/notebook/5678"),
-					resource.TestCheckResourceAttr("datadog_monitor.foo", "assets.0.category", "runbook"),
-					resource.TestCheckResourceAttr("datadog_monitor.foo", "assets.0.resource_key", "5678"),
-					resource.TestCheckResourceAttr("datadog_monitor.foo", "assets.0.resource_type", "notebook"),
-					resource.TestCheckResourceAttr("datadog_monitor.foo", "assets.1.name", "Confluence Runbook"),
-					resource.TestCheckResourceAttr("datadog_monitor.foo", "assets.1.url", "https://datadoghq.atlassian.net/wiki/spaces/ENG/pages/12345/Runbook"),
-					resource.TestCheckResourceAttr("datadog_monitor.foo", "assets.1.category", "runbook"),
-					resource.TestCheckResourceAttr("datadog_monitor.foo", "assets.2.name", "Google Doc Runbook"),
-					resource.TestCheckResourceAttr("datadog_monitor.foo", "assets.2.url", "https://docs.google.com/runbook"),
-					resource.TestCheckResourceAttr("datadog_monitor.foo", "assets.2.category", "runbook"),
+					resource.TestCheckTypeSetElemNestedAttrs("datadog_monitor.foo", "assets.*", map[string]string{
+						"name":          "Datadog Runbook 2",
+						"url":           "/notebook/5678",
+						"category":      "runbook",
+						"resource_key":  "5678",
+						"resource_type": "notebook",
+					}),
+					resource.TestCheckTypeSetElemNestedAttrs("datadog_monitor.foo", "assets.*", map[string]string{
+						"name":     "Confluence Runbook",
+						"url":      "https://datadoghq.atlassian.net/wiki/spaces/ENG/pages/12345/Runbook",
+						"category": "runbook",
+					}),
+					resource.TestCheckTypeSetElemNestedAttrs("datadog_monitor.foo", "assets.*", map[string]string{
+						"name":     "Google Doc Runbook",
+						"url":      "https://docs.google.com/runbook",
+						"category": "runbook",
+					}),
 				),
 			},
 		},
