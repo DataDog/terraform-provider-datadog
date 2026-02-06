@@ -14,7 +14,7 @@ resource "datadog_tag_pipeline_ruleset" "first" {
 
     mapping {
       destination_key = "env"
-      if_not_exists   = true
+      if_tag_exists   = "replace"
       source_keys     = ["environment", "stage"]
     }
   }
@@ -30,7 +30,7 @@ resource "datadog_tag_pipeline_ruleset" "second" {
 
     query {
       query         = "service:web* OR service:api*"
-      if_not_exists = false
+      if_tag_exists = "do_not_apply"
 
       addition {
         key   = "team"
@@ -51,7 +51,7 @@ resource "datadog_tag_pipeline_ruleset" "third" {
     reference_table {
       table_name         = "service_catalog"
       case_insensitivity = true
-      if_not_exists      = true
+      if_tag_exists      = "append"
       source_keys        = ["service"]
 
       field_pairs {
@@ -89,7 +89,7 @@ resource "datadog_tag_pipeline_ruleset" "managed_first" {
 
     mapping {
       destination_key = "env"
-      if_not_exists   = true
+      if_tag_exists   = "replace"
       source_keys     = ["environment", "stage"]
     }
   }
@@ -105,7 +105,7 @@ resource "datadog_tag_pipeline_ruleset" "managed_second" {
 
     query {
       query         = "service:web*"
-      if_not_exists = false
+      if_tag_exists = "do_not_apply"
 
       addition {
         key   = "team"
@@ -146,7 +146,7 @@ resource "datadog_tag_pipeline_ruleset" "preserve_first" {
 
     mapping {
       destination_key = "env"
-      if_not_exists   = true
+      if_tag_exists   = "replace"
       source_keys     = ["environment", "stage"]
     }
   }
@@ -162,7 +162,7 @@ resource "datadog_tag_pipeline_ruleset" "preserve_second" {
 
     query {
       query         = "service:web*"
-      if_not_exists = false
+      if_tag_exists = "do_not_apply"
 
       addition {
         key   = "team"
