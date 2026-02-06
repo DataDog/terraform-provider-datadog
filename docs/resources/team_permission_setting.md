@@ -38,3 +38,12 @@ resource "datadog_team_permission_setting" "foo" {
 ### Read-Only
 
 - `id` (String) The ID of this resource.
+
+## Import
+
+This resource can be imported using the [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import). For example:
+
+```shell
+# This resource is imported using team_id and action separated by `:`.
+terraform import datadog_team_permission_setting.example "${team_id}:${action}"
+```
