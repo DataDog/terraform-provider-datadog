@@ -19,9 +19,11 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
 
+// BUMP
+
 func resourceDatadogDashboard() *schema.Resource {
 	return &schema.Resource{
-		Description:   "Provides a Datadog dashboard resource. This can be used to create and manage Datadog dashboards.\n\n!> The `is_read_only` field is deprecated and non-functional. Use `restricted_roles` instead to define which roles are required to edit the dashboard.",
+		Description:   "[BUMP] Provides a Datadog dashboard resource. This can be used to create and manage Datadog dashboards.\n\n!> The `is_read_only` field is deprecated and non-functional. Use `restricted_roles` instead to define which roles are required to edit the dashboard.",
 		CreateContext: resourceDatadogDashboardCreate,
 		UpdateContext: resourceDatadogDashboardUpdate,
 		ReadContext:   resourceDatadogDashboardRead,
