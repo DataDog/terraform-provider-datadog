@@ -9,7 +9,7 @@ interactions:
         content_length: 2288
         transfer_encoding: []
         trailer: {}
-        host: api.datad0g.com
+        host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
@@ -20,7 +20,7 @@ interactions:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datad0g.com/api/v1/monitor/validate
+        url: https://api.datadoghq.com/api/v1/monitor/validate
         method: POST
       response:
         proto: HTTP/2.0
@@ -46,7 +46,7 @@ interactions:
         content_length: 2288
         transfer_encoding: []
         trailer: {}
-        host: api.datad0g.com
+        host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
@@ -57,7 +57,7 @@ interactions:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datad0g.com/api/v1/monitor/validate
+        url: https://api.datadoghq.com/api/v1/monitor/validate
         method: POST
       response:
         proto: HTTP/2.0
@@ -83,7 +83,7 @@ interactions:
         content_length: 2265
         transfer_encoding: []
         trailer: {}
-        host: api.datad0g.com
+        host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
@@ -94,7 +94,7 @@ interactions:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datad0g.com/api/v1/monitor
+        url: https://api.datadoghq.com/api/v1/monitor
         method: POST
       response:
         proto: HTTP/2.0
@@ -120,7 +120,7 @@ interactions:
         content_length: 0
         transfer_encoding: []
         trailer: {}
-        host: api.datad0g.com
+        host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: ""
@@ -128,7 +128,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datad0g.com/api/v1/monitor/25571041
+        url: https://api.datadoghq.com/api/v1/monitor/25571041
         method: GET
       response:
         proto: HTTP/2.0
@@ -154,7 +154,7 @@ interactions:
         content_length: 2288
         transfer_encoding: []
         trailer: {}
-        host: api.datad0g.com
+        host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
@@ -165,7 +165,7 @@ interactions:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datad0g.com/api/v1/monitor/25571041/validate
+        url: https://api.datadoghq.com/api/v1/monitor/25571041/validate
         method: POST
       response:
         proto: HTTP/2.0
@@ -191,7 +191,7 @@ interactions:
         content_length: 0
         transfer_encoding: []
         trailer: {}
-        host: api.datad0g.com
+        host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: ""
@@ -199,7 +199,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datad0g.com/api/v1/monitor/25571041?with_assets=true
+        url: https://api.datadoghq.com/api/v1/monitor/25571041?with_assets=true
         method: GET
       response:
         proto: HTTP/2.0
@@ -225,7 +225,7 @@ interactions:
         content_length: 2288
         transfer_encoding: []
         trailer: {}
-        host: api.datad0g.com
+        host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
@@ -236,7 +236,7 @@ interactions:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datad0g.com/api/v1/monitor/25571041/validate
+        url: https://api.datadoghq.com/api/v1/monitor/25571041/validate
         method: POST
       response:
         proto: HTTP/2.0
@@ -262,7 +262,7 @@ interactions:
         content_length: 0
         transfer_encoding: []
         trailer: {}
-        host: api.datad0g.com
+        host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: ""
@@ -270,7 +270,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datad0g.com/api/v1/monitor/25571041
+        url: https://api.datadoghq.com/api/v1/monitor/25571041
         method: DELETE
       response:
         proto: HTTP/2.0
@@ -296,7 +296,7 @@ interactions:
         content_length: 0
         transfer_encoding: []
         trailer: {}
-        host: api.datad0g.com
+        host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: ""
@@ -304,7 +304,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datad0g.com/api/v1/monitor/25571041
+        url: https://api.datadoghq.com/api/v1/monitor/25571041
         method: GET
       response:
         proto: HTTP/2.0
