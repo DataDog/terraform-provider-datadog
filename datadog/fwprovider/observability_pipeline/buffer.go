@@ -16,12 +16,14 @@ type BufferOptionsModel struct {
 }
 
 type DiskBufferOptionsModel struct {
-	MaxSize types.Int64 `tfsdk:"max_size"`
+	MaxSize  types.Int64  `tfsdk:"max_size"`
+	WhenFull types.String `tfsdk:"when_full"`
 }
 
 type MemoryBufferOptionsModel struct {
-	MaxSize   types.Int64 `tfsdk:"max_size"`
-	MaxEvents types.Int64 `tfsdk:"max_events"`
+	MaxSize   types.Int64  `tfsdk:"max_size"`
+	MaxEvents types.Int64  `tfsdk:"max_events"`
+	WhenFull  types.String `tfsdk:"when_full"`
 }
 
 func ExpandBufferOptions(src BufferOptionsModel) *datadogV2.ObservabilityPipelineBufferOptions {
@@ -31,6 +33,9 @@ func ExpandBufferOptions(src BufferOptionsModel) *datadogV2.ObservabilityPipelin
 
 		if !diskBuf.MaxSize.IsNull() {
 			buffer.SetMaxSize(diskBuf.MaxSize.ValueInt64())
+		}
+		if !diskBuf.WhenFull.IsNull() {
+			buffer.SetWhenFull(datadogV2.ObservabilityPipelineBufferOptionsWhenFull(diskBuf.WhenFull.ValueString()))
 		}
 		buffer.SetType(datadogV2.ObservabilityPipelineBufferOptionsDiskType("disk"))
 
@@ -46,6 +51,9 @@ func ExpandBufferOptions(src BufferOptionsModel) *datadogV2.ObservabilityPipelin
 			buffer := datadogV2.NewObservabilityPipelineMemoryBufferSizeOptionsWithDefaults()
 			buffer.SetType(datadogV2.ObservabilityPipelineBufferOptionsMemoryType("memory"))
 			buffer.SetMaxEvents(memBuf.MaxEvents.ValueInt64())
+			if !memBuf.WhenFull.IsNull() {
+				// buffer.SetWhenFull(datadogV2.ObservabilityPipelineBufferOptionsWhenFull(memBuf.WhenFull.ValueString()))
+			}
 
 			return &datadogV2.ObservabilityPipelineBufferOptions{
 				ObservabilityPipelineMemoryBufferSizeOptions: buffer,
@@ -54,6 +62,9 @@ func ExpandBufferOptions(src BufferOptionsModel) *datadogV2.ObservabilityPipelin
 			buffer := datadogV2.NewObservabilityPipelineMemoryBufferOptionsWithDefaults()
 			buffer.SetType(datadogV2.ObservabilityPipelineBufferOptionsMemoryType("memory"))
 			buffer.SetMaxSize(memBuf.MaxSize.ValueInt64())
+			if !memBuf.WhenFull.IsNull() {
+				// buffer.SetWhenFull(datadogV2.ObservabilityPipelineBufferOptionsWhenFull(memBuf.WhenFull.ValueString()))
+			}
 
 			return &datadogV2.ObservabilityPipelineBufferOptions{
 				ObservabilityPipelineMemoryBufferOptions: buffer,
@@ -70,34 +81,43 @@ func FlattenBufferOptions(src *datadogV2.ObservabilityPipelineBufferOptions) *Bu
 	}
 
 	if diskBuf := src.ObservabilityPipelineDiskBufferOptions; diskBuf != nil {
+		model := DiskBufferOptionsModel{
+			MaxSize:  types.Int64Value(diskBuf.GetMaxSize()),
+			WhenFull: types.StringNull(),
+		}
+		if whenFull, ok := diskBuf.GetWhenFullOk(); ok {
+			model.WhenFull = types.StringValue(string(*whenFull))
+		}
 		return &BufferOptionsModel{
-			DiskBuffer: []DiskBufferOptionsModel{
-				{
-					MaxSize: types.Int64Value(diskBuf.GetMaxSize()),
-				},
-			},
+			DiskBuffer: []DiskBufferOptionsModel{model},
 		}
 	}
 
 	if memBufSize := src.ObservabilityPipelineMemoryBufferSizeOptions; memBufSize != nil {
+		model := MemoryBufferOptionsModel{
+			MaxEvents: types.Int64Value(memBufSize.GetMaxEvents()),
+			MaxSize:   types.Int64Null(),
+			WhenFull:  types.StringNull(),
+		}
+		if whenFull, ok := memBufSize.GetWhenFullOk(); ok {
+			model.WhenFull = types.StringValue(string(*whenFull))
+		}
 		return &BufferOptionsModel{
-			MemoryBuffer: []MemoryBufferOptionsModel{
-				{
-					MaxEvents: types.Int64Value(memBufSize.GetMaxEvents()),
-					MaxSize:   types.Int64Null(),
-				},
-			},
+			MemoryBuffer: []MemoryBufferOptionsModel{model},
 		}
 	}
 
 	if memBuf := src.ObservabilityPipelineMemoryBufferOptions; memBuf != nil {
+		model := MemoryBufferOptionsModel{
+			MaxSize:   types.Int64Value(memBuf.GetMaxSize()),
+			MaxEvents: types.Int64Null(),
+			WhenFull:  types.StringNull(),
+		}
+		if whenFull, ok := memBuf.GetWhenFullOk(); ok {
+			model.WhenFull = types.StringValue(string(*whenFull))
+		}
 		return &BufferOptionsModel{
-			MemoryBuffer: []MemoryBufferOptionsModel{
-				{
-					MaxSize:   types.Int64Value(memBuf.GetMaxSize()),
-					MaxEvents: types.Int64Null(),
-				},
-			},
+			MemoryBuffer: []MemoryBufferOptionsModel{model},
 		}
 	}
 
@@ -116,6 +136,10 @@ func BufferOptionsSchema() schema.ListNestedBlock {
 							"max_size": schema.Int64Attribute{
 								Optional:    true,
 								Description: "Maximum size of the disk buffer (in bytes).",
+							},
+							"when_full": schema.StringAttribute{
+								Optional:    true,
+								Description: "Behavior when the buffer is full. Valid values are `block` or `drop_newest`.",
 							},
 						},
 					},
@@ -138,6 +162,10 @@ func BufferOptionsSchema() schema.ListNestedBlock {
 							"max_events": schema.Int64Attribute{
 								Optional:    true,
 								Description: "Maximum events for the memory buffer.",
+							},
+							"when_full": schema.StringAttribute{
+								Optional:    true,
+								Description: "Behavior when the buffer is full. Valid values are `block` or `drop_newest`.",
 							},
 						},
 					},
