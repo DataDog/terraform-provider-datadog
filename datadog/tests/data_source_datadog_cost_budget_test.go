@@ -24,13 +24,46 @@ func TestAccDatadogCostBudgetDataSource_Basic(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"data.datadog_cost_budget.foo", "name", budgetName),
 					resource.TestCheckResourceAttr(
-						"data.datadog_cost_budget.foo", "metrics_query", "sum:aws.cost.amortized{*} by {account}"),
+						"data.datadog_cost_budget.foo", "metrics_query", "sum:aws.cost.amortized{*} by {environment}"),
 					resource.TestCheckResourceAttr(
-						"data.datadog_cost_budget.foo", "start_month", "202401"),
+						"data.datadog_cost_budget.foo", "start_month", "202601"),
 					resource.TestCheckResourceAttr(
-						"data.datadog_cost_budget.foo", "end_month", "202412"),
+						"data.datadog_cost_budget.foo", "end_month", "202603"),
 					resource.TestCheckResourceAttr(
-						"data.datadog_cost_budget.foo", "entries.#", "12"),
+						"data.datadog_cost_budget.foo", "entries.#", "6"),
+					resource.TestCheckResourceAttr(
+						"data.datadog_cost_budget.foo", "budget_line.#", "2"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogCostBudgetDataSource_Hierarchical(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	budgetName := uniqueEntityName(ctx, t)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogCostBudgetDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogCostBudgetDataSourceHierarchicalConfig(budgetName),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(
+						"data.datadog_cost_budget.foo", "name", budgetName),
+					resource.TestCheckResourceAttr(
+						"data.datadog_cost_budget.foo", "metrics_query", "sum:aws.cost.amortized{*} by {team,environment}"),
+					resource.TestCheckResourceAttr(
+						"data.datadog_cost_budget.foo", "start_month", "202601"),
+					resource.TestCheckResourceAttr(
+						"data.datadog_cost_budget.foo", "end_month", "202602"),
+					resource.TestCheckResourceAttr(
+						"data.datadog_cost_budget.foo", "entries.#", "4"),
+					resource.TestCheckResourceAttr(
+						"data.datadog_cost_budget.foo", "budget_line.#", "2"),
 				),
 			},
 		},
@@ -41,104 +74,76 @@ func testAccCheckDatadogCostBudgetDataSourceConfig(uniq string) string {
 	return fmt.Sprintf(`
 resource "datadog_cost_budget" "foo" {
   name = "%s"
-  metrics_query = "sum:aws.cost.amortized{*} by {account}"
-  start_month = 202401
-  end_month = 202412
-  entries {
-    amount = 1000
-    month = 202401
-	tag_filters {
-	  tag_key = "account"
-	  tag_value = "foo"
-	}
+  metrics_query = "sum:aws.cost.amortized{*} by {environment}"
+  start_month = 202601
+  end_month = 202603
+
+  budget_line {
+    amounts = {
+      "202601" = 1000
+      "202602" = 1100
+      "202603" = 1200
+    }
+    tag_filters {
+      tag_key = "environment"
+      tag_value = "production"
+    }
   }
-  entries {
-    amount = 1000
-    month = 202402
-	tag_filters {
-	  tag_key = "account"
-	  tag_value = "foo"
-	}
+
+  budget_line {
+    amounts = {
+      "202601" = 500
+      "202602" = 550
+      "202603" = 600
+    }
+    tag_filters {
+      tag_key = "environment"
+      tag_value = "staging"
+    }
   }
-  entries {
-    amount = 1000
-    month = 202403
-	tag_filters {
-	  tag_key = "account"
-	  tag_value = "foo"
-	}
+}
+
+data "datadog_cost_budget" "foo" {
+  id = datadog_cost_budget.foo.id
+}`, uniq)
+}
+
+func testAccCheckDatadogCostBudgetDataSourceHierarchicalConfig(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_cost_budget" "foo" {
+  name = "%s"
+  metrics_query = "sum:aws.cost.amortized{*} by {team,environment}"
+  start_month = 202601
+  end_month = 202602
+
+  budget_line {
+    amounts = {
+      "202601" = 1000
+      "202602" = 1100
+    }
+    parent_tag_filters {
+      tag_key = "team"
+      tag_value = "backend"
+    }
+    child_tag_filters {
+      tag_key = "environment"
+      tag_value = "production"
+    }
   }
-  entries {
-    amount = 1000
-    month = 202404
-	tag_filters {
-	  tag_key = "account"
-	  tag_value = "foo"
-	}
-  }
-  entries {
-    amount = 1000
-    month = 202405
-	tag_filters {
-	  tag_key = "account"
-	  tag_value = "foo"
-	}
-  }
-  entries {
-    amount = 1000
-    month = 202406
-	tag_filters {
-	  tag_key = "account"
-	  tag_value = "foo"
-	}
-  }
-  entries {
-    amount = 1000
-    month = 202407
-	tag_filters {
-	  tag_key = "account"
-	  tag_value = "foo"
-	}
-  }
-  entries {
-    amount = 1000
-    month = 202408
-	tag_filters {
-	  tag_key = "account"
-	  tag_value = "foo"
-	}
-  }
-  entries {
-    amount = 1000
-    month = 202409
-	tag_filters {
-	  tag_key = "account"
-	  tag_value = "foo"
-	}
-  }
-  entries {
-    amount = 1000
-    month = 202410
-	tag_filters {
-	  tag_key = "account"
-	  tag_value = "foo"
-	}
-  }
-  entries {
-    amount = 1000
-    month = 202411
-	tag_filters {
-	  tag_key = "account"
-	  tag_value = "foo"
-	}
-  }
-  entries {
-    amount = 1000
-    month = 202412
-	tag_filters {
-	  tag_key = "account"
-	  tag_value = "foo"
-	}
+
+  budget_line {
+    amounts = {
+      "202601" = 500
+      "202602" = 550
+    }
+    parent_tag_filters {
+      tag_key = "team"
+      tag_value = "frontend"
+    }
+    child_tag_filters {
+      tag_key = "environment"
+      tag_value = "staging"
+    }
   }
 }
 
