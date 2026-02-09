@@ -1,0 +1,323 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 604
+        transfer_encoding: []
+        trailer: {}
+        host: api.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"draft_status":"published","message":"Data quality threshold exceeded","name":"tf-TestAccDatadogMonitor_DataQuality_EmptyGroupBy-local-1770661996","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":1000},"variables":[{"data_source":"data_quality_metrics","filter":"search for column where `database:production AND table:users`","measure":"row_count","name":"query1"}]},"priority":null,"query":"formula(\"query1\").last(\"30m\") \u003e 1000","restricted_roles":null,"tags":[],"type":"data-quality alert"}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datad0g.com/api/v1/monitor/validate
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 3
+        uncompressed: false
+        body: |
+            {}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 51.691416ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 604
+        transfer_encoding: []
+        trailer: {}
+        host: api.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"draft_status":"published","message":"Data quality threshold exceeded","name":"tf-TestAccDatadogMonitor_DataQuality_EmptyGroupBy-local-1770661996","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":1000},"variables":[{"data_source":"data_quality_metrics","filter":"search for column where `database:production AND table:users`","measure":"row_count","name":"query1"}]},"priority":null,"query":"formula(\"query1\").last(\"30m\") \u003e 1000","restricted_roles":null,"tags":[],"type":"data-quality alert"}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datad0g.com/api/v1/monitor/validate
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 3
+        uncompressed: false
+        body: |
+            {}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 48.584417ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 581
+        transfer_encoding: []
+        trailer: {}
+        host: api.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"draft_status":"published","message":"Data quality threshold exceeded","name":"tf-TestAccDatadogMonitor_DataQuality_EmptyGroupBy-local-1770661996","options":{"include_tags":true,"new_host_delay":300,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":1000},"variables":[{"data_source":"data_quality_metrics","filter":"search for column where `database:production AND table:users`","measure":"row_count","name":"query1"}]},"priority":null,"query":"formula(\"query1\").last(\"30m\") \u003e 1000","restricted_roles":null,"tags":[],"type":"data-quality alert"}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datad0g.com/api/v1/monitor
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":25571037,"org_id":2,"type":"data-quality alert","name":"tf-TestAccDatadogMonitor_DataQuality_EmptyGroupBy-local-1770661996","message":"Data quality threshold exceeded","tags":[],"query":"formula(\"query1\").last(\"30m\") > 1000","options":{"include_tags":true,"new_host_delay":300,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":1000.0},"variables":[{"data_source":"data_quality_metrics","filter":"search for column where `database:production AND table:users`","measure":"row_count","name":"query1"}],"notify_audit":false,"silenced":{},"avalanche_window":10},"multi":false,"created_at":1770661998000,"created":"2026-02-09T18:33:18.162727+00:00","modified":"2026-02-09T18:33:18.162727+00:00","deleted":null,"priority":null,"restricted_roles":null,"restriction_policy":null,"draft_status":"published","assets":[],"overall_state_modified":null,"overall_state":"No Data","creator":{"name":"Peter Kalmakis","handle":"peter.kalmakis@datadoghq.com","email":"peter.kalmakis@datadoghq.com","id":39408},"run_as":null,"restricted":false}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 149.566291ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datad0g.com/api/v1/monitor/25571037
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":25571037,"org_id":2,"type":"data-quality alert","name":"tf-TestAccDatadogMonitor_DataQuality_EmptyGroupBy-local-1770661996","message":"Data quality threshold exceeded","tags":[],"query":"formula(\"query1\").last(\"30m\") > 1000","options":{"include_tags":true,"new_host_delay":300,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":1000.0},"variables":[{"data_source":"data_quality_metrics","filter":"search for column where `database:production AND table:users`","measure":"row_count","name":"query1"}],"notify_audit":false,"silenced":{},"avalanche_window":10},"multi":false,"created_at":1770661998000,"created":"2026-02-09T18:33:18.162727+00:00","modified":"2026-02-09T18:33:18.162727+00:00","deleted":null,"priority":null,"restricted_roles":null,"draft_status":"published","overall_state_modified":null,"overall_state":"No Data","creator":{"name":"Peter Kalmakis","email":"peter.kalmakis@datadoghq.com","handle":"peter.kalmakis@datadoghq.com","id":39408},"run_as":null,"restricted":false}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 125.251708ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 604
+        transfer_encoding: []
+        trailer: {}
+        host: api.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"draft_status":"published","message":"Data quality threshold exceeded","name":"tf-TestAccDatadogMonitor_DataQuality_EmptyGroupBy-local-1770661996","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":1000},"variables":[{"data_source":"data_quality_metrics","filter":"search for column where `database:production AND table:users`","measure":"row_count","name":"query1"}]},"priority":null,"query":"formula(\"query1\").last(\"30m\") \u003e 1000","restricted_roles":null,"tags":[],"type":"data-quality alert"}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datad0g.com/api/v1/monitor/25571037/validate
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 3
+        uncompressed: false
+        body: |
+            {}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 83.318291ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datad0g.com/api/v1/monitor/25571037?with_assets=true
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":25571037,"org_id":2,"type":"data-quality alert","name":"tf-TestAccDatadogMonitor_DataQuality_EmptyGroupBy-local-1770661996","message":"Data quality threshold exceeded","tags":[],"query":"formula(\"query1\").last(\"30m\") > 1000","options":{"include_tags":true,"new_host_delay":300,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":1000.0},"variables":[{"data_source":"data_quality_metrics","filter":"search for column where `database:production AND table:users`","measure":"row_count","name":"query1"}],"notify_audit":false,"silenced":{},"avalanche_window":10},"multi":false,"created_at":1770661998000,"created":"2026-02-09T18:33:18.162727+00:00","modified":"2026-02-09T18:33:18.162727+00:00","deleted":null,"priority":null,"restricted_roles":null,"draft_status":"published","assets":[],"overall_state_modified":null,"overall_state":"No Data","creator":{"name":"Peter Kalmakis","email":"peter.kalmakis@datadoghq.com","handle":"peter.kalmakis@datadoghq.com","id":39408},"run_as":null,"restricted":false}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 140.06375ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 604
+        transfer_encoding: []
+        trailer: {}
+        host: api.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"draft_status":"published","message":"Data quality threshold exceeded","name":"tf-TestAccDatadogMonitor_DataQuality_EmptyGroupBy-local-1770661996","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":1000},"variables":[{"data_source":"data_quality_metrics","filter":"search for column where `database:production AND table:users`","measure":"row_count","name":"query1"}]},"priority":null,"query":"formula(\"query1\").last(\"30m\") \u003e 1000","restricted_roles":null,"tags":[],"type":"data-quality alert"}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datad0g.com/api/v1/monitor/25571037/validate
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 3
+        uncompressed: false
+        body: |
+            {}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 87.934792ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datad0g.com/api/v1/monitor/25571037
+        method: DELETE
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"deleted_monitor_id":25571037}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 198.57825ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datad0g.com/api/v1/monitor/25571037
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"errors":["Monitor not found"]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 152.962833ms
