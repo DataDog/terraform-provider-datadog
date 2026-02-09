@@ -1,88 +1,179 @@
+---
 version: 2
 interactions:
-- request:
-    body: |
-      {"end":1735765200,"message":"tf-TestAccDatadogDowntime_BasicUntilOccurrencesRecurrence-local-1650558391","monitor_tags":["*"],"recurrence":{"period":1,"type":"days","until_occurrences":5},"scope":["host:UntilOccurrencesRecurrence"],"start":1735707600,"timezone":"UTC"}
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/downtime
-    method: POST
-    id: 0
-  response:
-    body: '{"recurrence":{"until_date":null,"until_occurrences":5,"week_days":null,"type":"days","period":1},"end":1735765200,"monitor_tags":["*"],"child_id":null,"canceled":null,"monitor_id":null,"mute_first_recovery_notification":false,"created":1650558447,"org_id":321813,"modified":1650558447,"disabled":false,"start":1735707600,"creator_id":1445416,"parent_id":null,"timezone":"UTC","active":false,"scope":["host:UntilOccurrencesRecurrence"],"message":"tf-TestAccDatadogDowntime_BasicUntilOccurrencesRecurrence-local-1650558391","downtime_type":1,"id":1895964971,"updater_id":null}'
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/downtime/1895964971
-    method: GET
-    id: 1
-  response:
-    body: '{"recurrence":{"until_date":null,"until_occurrences":5,"week_days":null,"type":"days","period":1},"end":1735765200,"monitor_tags":["*"],"child_id":null,"canceled":null,"monitor_id":null,"mute_first_recovery_notification":false,"created":1650558447,"org_id":321813,"modified":1650558447,"disabled":false,"start":1735707600,"creator_id":1445416,"parent_id":null,"timezone":"UTC","active":false,"scope":["host:UntilOccurrencesRecurrence"],"message":"tf-TestAccDatadogDowntime_BasicUntilOccurrencesRecurrence-local-1650558391","downtime_type":1,"id":1895964971,"updater_id":null}'
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/downtime/1895964971
-    method: GET
-    id: 2
-  response:
-    body: '{"recurrence":{"until_date":null,"until_occurrences":5,"week_days":null,"type":"days","period":1},"end":1735765200,"monitor_tags":["*"],"child_id":null,"canceled":null,"monitor_id":null,"mute_first_recovery_notification":false,"created":1650558447,"org_id":321813,"modified":1650558447,"disabled":false,"start":1735707600,"creator_id":1445416,"parent_id":null,"timezone":"UTC","active":false,"scope":["host:UntilOccurrencesRecurrence"],"message":"tf-TestAccDatadogDowntime_BasicUntilOccurrencesRecurrence-local-1650558391","downtime_type":1,"id":1895964971,"updater_id":null}'
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - '*/*'
-    url: https://api.datadoghq.com/api/v1/downtime/1895964971
-    method: DELETE
-    id: 3
-  response:
-    body: ""
-    headers: {}
-    status: 204 No Content
-    code: 204
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/downtime/1895964971
-    method: GET
-    id: 4
-  response:
-    body: '{"recurrence":{"until_date":null,"until_occurrences":5,"week_days":null,"type":"days","period":1},"end":1735765200,"monitor_tags":["*"],"child_id":null,"canceled":1650558518,"monitor_id":null,"mute_first_recovery_notification":false,"created":1650558447,"org_id":321813,"modified":1650558518,"disabled":true,"start":1735707600,"creator_id":1445416,"parent_id":null,"timezone":"UTC","active":false,"scope":["host:UntilOccurrencesRecurrence"],"message":"tf-TestAccDatadogDowntime_BasicUntilOccurrencesRecurrence-local-1650558391","downtime_type":1,"id":1895964971,"updater_id":1445416}'
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 269
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"end":1770639223,"message":"tf-TestAccDatadogDowntime_BasicUntilOccurrencesRecurrence-local-1770632023","monitor_tags":["*"],"recurrence":{"period":1,"type":"days","until_occurrences":5},"scope":["host:UntilOccurrencesRecurrence"],"start":1770635623,"timezone":"UTC"}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/downtime
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":6344496715,"monitor_id":null,"org_id":321813,"start":1770635623,"end":1770639223,"canceled":null,"created":1770632025,"modified":1770632025,"message":"tf-TestAccDatadogDowntime_BasicUntilOccurrencesRecurrence-local-1770632023","active":false,"disabled":false,"recurrence":{"type":"days","period":1,"week_days":null,"until_occurrences":5,"until_date":null},"timezone":"UTC","parent_id":null,"child_id":null,"creator_id":21235577,"updater_id":null,"downtime_type":1,"status":"scheduled","monitor_tags":["*"],"mute_first_recovery_notification":false,"notify_end_types":["expired"],"notify_end_states":["alert","no data","warn"],"uuid":"b022998c-2244-4d35-b403-781afa8375d8","scope":["host:UntilOccurrencesRecurrence"]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 2.88066375s
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/downtime/6344496715
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":6344496715,"monitor_id":null,"org_id":321813,"start":1770635623,"end":1770639223,"canceled":null,"created":1770632025,"modified":1770632025,"message":"tf-TestAccDatadogDowntime_BasicUntilOccurrencesRecurrence-local-1770632023","active":false,"disabled":false,"recurrence":{"type":"days","period":1,"week_days":null,"until_occurrences":5,"until_date":null},"timezone":"UTC","parent_id":null,"child_id":null,"creator_id":21235577,"updater_id":null,"downtime_type":1,"status":"scheduled","monitor_tags":["*"],"mute_first_recovery_notification":false,"notify_end_types":["expired"],"notify_end_states":["alert","no data","warn"],"uuid":"b022998c-2244-4d35-b403-781afa8375d8","scope":["host:UntilOccurrencesRecurrence"]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 220.180792ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/downtime/6344496715
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":6344496715,"monitor_id":null,"org_id":321813,"start":1770635623,"end":1770639223,"canceled":null,"created":1770632025,"modified":1770632025,"message":"tf-TestAccDatadogDowntime_BasicUntilOccurrencesRecurrence-local-1770632023","active":false,"disabled":false,"recurrence":{"type":"days","period":1,"week_days":null,"until_occurrences":5,"until_date":null},"timezone":"UTC","parent_id":null,"child_id":null,"creator_id":21235577,"updater_id":null,"downtime_type":1,"status":"scheduled","monitor_tags":["*"],"mute_first_recovery_notification":false,"notify_end_types":["expired"],"notify_end_states":["alert","no data","warn"],"uuid":"b022998c-2244-4d35-b403-781afa8375d8","scope":["host:UntilOccurrencesRecurrence"]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 176.227292ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v1/downtime/6344496715
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Content-Type:
+                - text/html; charset=utf-8
+        status: 204 No Content
+        code: 204
+        duration: 2.872266542s
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/downtime/6344496715
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":6344496715,"monitor_id":null,"org_id":321813,"start":1770635623,"end":1770639223,"canceled":1770632029,"created":1770632025,"modified":1770632029,"message":"tf-TestAccDatadogDowntime_BasicUntilOccurrencesRecurrence-local-1770632023","active":false,"disabled":true,"recurrence":{"type":"days","period":1,"week_days":null,"until_occurrences":5,"until_date":null},"timezone":"UTC","parent_id":null,"child_id":null,"creator_id":21235577,"updater_id":21235577,"downtime_type":1,"status":"canceled","monitor_tags":["*"],"mute_first_recovery_notification":false,"notify_end_types":["expired"],"notify_end_states":["alert","no data","warn"],"uuid":"b022998c-2244-4d35-b403-781afa8375d8","scope":["host:UntilOccurrencesRecurrence"]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 149.246708ms
