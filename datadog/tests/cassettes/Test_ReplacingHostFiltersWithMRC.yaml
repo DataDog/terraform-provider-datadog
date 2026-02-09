@@ -1,0 +1,411 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 907
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"auth_provider_x509_cert_url":"https://www.googleapis.com/oauth2/v1/certs","auth_uri":"https://accounts.google.com/o/oauth2/auth","automute":false,"client_email":"tf-Test_ReplacingHostFiltersWithMRC-local-1770658907@awesome-project-id.iam.gserviceaccount.com","client_id":"123456789012345678901","client_x509_cert_url":"https://www.googleapis.com/robot/v1/metadata/x509/tf-Test_ReplacingHostFiltersWithMRC-local-1770658907@awesome-project-id.iam.gserviceaccount.com","cloud_run_revision_filters":[],"host_filters":"host:one","is_cspm_enabled":false,"is_security_command_center_enabled":false,"monitored_resource_configs":[],"private_key":"-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n","private_key_id":"1234567890123456789012345678901234567890","project_id":"tf-Test_ReplacingHostFiltersWithMRC-local-1770658907","token_uri":"https://oauth2.googleapis.com/token","type":"service_account"}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/integration/gcp
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 2
+        uncompressed: false
+        body: '{}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 79.67475ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/integration/gcp
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 951
+        uncompressed: false
+        body: '[{"project_id":"","client_email":"teddymonitoringsubfolder@datadog-gcp-ints-test-d.iam.gserviceaccount.com","id":"7fb848c2-28ed-4f19-9e95-8c3a82d38ae4","host_filters":"","automute":true,"is_cspm_enabled":false,"resource_collection_enabled":true,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"monitored_resource_configs":[],"errors":[]},{"project_id":"tf-Test_ReplacingHostFiltersWithMRC-local-1770658907","client_email":"tf-Test_ReplacingHostFiltersWithMRC-local-1770658907@awesome-project-id.iam.gserviceaccount.com","id":"027f59c2-e868-449b-bc05-1de4ec818c56","host_filters":"host:one","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":true,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"monitored_resource_configs":[{"type":"gce_instance","filters":["host:one"]}],"errors":[]}]'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 38.970167ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/integration/gcp
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 951
+        uncompressed: false
+        body: '[{"project_id":"","client_email":"teddymonitoringsubfolder@datadog-gcp-ints-test-d.iam.gserviceaccount.com","id":"7fb848c2-28ed-4f19-9e95-8c3a82d38ae4","host_filters":"","automute":true,"is_cspm_enabled":false,"resource_collection_enabled":true,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"monitored_resource_configs":[],"errors":[]},{"project_id":"tf-Test_ReplacingHostFiltersWithMRC-local-1770658907","client_email":"tf-Test_ReplacingHostFiltersWithMRC-local-1770658907@awesome-project-id.iam.gserviceaccount.com","id":"027f59c2-e868-449b-bc05-1de4ec818c56","host_filters":"host:one","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":true,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"monitored_resource_configs":[{"type":"gce_instance","filters":["host:one"]}],"errors":[]}]'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 37.045209ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/integration/gcp
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 951
+        uncompressed: false
+        body: '[{"project_id":"","client_email":"teddymonitoringsubfolder@datadog-gcp-ints-test-d.iam.gserviceaccount.com","id":"7fb848c2-28ed-4f19-9e95-8c3a82d38ae4","host_filters":"","automute":true,"is_cspm_enabled":false,"resource_collection_enabled":true,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"monitored_resource_configs":[],"errors":[]},{"project_id":"tf-Test_ReplacingHostFiltersWithMRC-local-1770658907","client_email":"tf-Test_ReplacingHostFiltersWithMRC-local-1770658907@awesome-project-id.iam.gserviceaccount.com","id":"027f59c2-e868-449b-bc05-1de4ec818c56","host_filters":"host:one","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":true,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"monitored_resource_configs":[{"type":"gce_instance","filters":["host:one"]}],"errors":[]}]'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 35.551541ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/integration/gcp
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 951
+        uncompressed: false
+        body: '[{"project_id":"","client_email":"teddymonitoringsubfolder@datadog-gcp-ints-test-d.iam.gserviceaccount.com","id":"7fb848c2-28ed-4f19-9e95-8c3a82d38ae4","host_filters":"","automute":true,"is_cspm_enabled":false,"resource_collection_enabled":true,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"monitored_resource_configs":[],"errors":[]},{"project_id":"tf-Test_ReplacingHostFiltersWithMRC-local-1770658907","client_email":"tf-Test_ReplacingHostFiltersWithMRC-local-1770658907@awesome-project-id.iam.gserviceaccount.com","id":"027f59c2-e868-449b-bc05-1de4ec818c56","host_filters":"host:one","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":true,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"monitored_resource_configs":[{"type":"gce_instance","filters":["host:one"]}],"errors":[]}]'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 33.93375ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 183
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"client_email":"tf-Test_ReplacingHostFiltersWithMRC-local-1770658907@awesome-project-id.iam.gserviceaccount.com","project_id":"tf-Test_ReplacingHostFiltersWithMRC-local-1770658907"}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/integration/gcp
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 2
+        uncompressed: false
+        body: '{}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 134.264292ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 936
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"auth_provider_x509_cert_url":"https://www.googleapis.com/oauth2/v1/certs","auth_uri":"https://accounts.google.com/o/oauth2/auth","automute":true,"client_email":"tf-Test_ReplacingHostFiltersWithMRC-local-1770658907@awesome-project-id.iam.gserviceaccount.com","client_id":"123456789012345678901","client_x509_cert_url":"https://www.googleapis.com/robot/v1/metadata/x509/tf-Test_ReplacingHostFiltersWithMRC-local-1770658907@awesome-project-id.iam.gserviceaccount.com","cloud_run_revision_filters":[],"is_cspm_enabled":false,"is_security_command_center_enabled":false,"monitored_resource_configs":[{"filters":["host:one"],"type":"gce_instance"}],"private_key":"-----BEGIN PRIVATE KEY-----\n key updated \n-----END PRIVATE KEY-----\n","private_key_id":"1234567890123456789012345678901234567890","project_id":"tf-Test_ReplacingHostFiltersWithMRC-local-1770658907","token_uri":"https://oauth2.googleapis.com/token","type":"service_account"}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/integration/gcp
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 2
+        uncompressed: false
+        body: '{}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 61.803959ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/integration/gcp
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 950
+        uncompressed: false
+        body: '[{"project_id":"","client_email":"teddymonitoringsubfolder@datadog-gcp-ints-test-d.iam.gserviceaccount.com","id":"7fb848c2-28ed-4f19-9e95-8c3a82d38ae4","host_filters":"","automute":true,"is_cspm_enabled":false,"resource_collection_enabled":true,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"monitored_resource_configs":[],"errors":[]},{"project_id":"tf-Test_ReplacingHostFiltersWithMRC-local-1770658907","client_email":"tf-Test_ReplacingHostFiltersWithMRC-local-1770658907@awesome-project-id.iam.gserviceaccount.com","id":"7a35236d-45e1-4bdf-8181-087707a46ec7","host_filters":"host:one","automute":true,"is_cspm_enabled":false,"resource_collection_enabled":true,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"monitored_resource_configs":[{"type":"gce_instance","filters":["host:one"]}],"errors":[]}]'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 37.4795ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/integration/gcp
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 950
+        uncompressed: false
+        body: '[{"project_id":"","client_email":"teddymonitoringsubfolder@datadog-gcp-ints-test-d.iam.gserviceaccount.com","id":"7fb848c2-28ed-4f19-9e95-8c3a82d38ae4","host_filters":"","automute":true,"is_cspm_enabled":false,"resource_collection_enabled":true,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"monitored_resource_configs":[],"errors":[]},{"project_id":"tf-Test_ReplacingHostFiltersWithMRC-local-1770658907","client_email":"tf-Test_ReplacingHostFiltersWithMRC-local-1770658907@awesome-project-id.iam.gserviceaccount.com","id":"7a35236d-45e1-4bdf-8181-087707a46ec7","host_filters":"host:one","automute":true,"is_cspm_enabled":false,"resource_collection_enabled":true,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"monitored_resource_configs":[{"type":"gce_instance","filters":["host:one"]}],"errors":[]}]'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 35.231167ms
+    - id: 9
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/integration/gcp
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 950
+        uncompressed: false
+        body: '[{"project_id":"","client_email":"teddymonitoringsubfolder@datadog-gcp-ints-test-d.iam.gserviceaccount.com","id":"7fb848c2-28ed-4f19-9e95-8c3a82d38ae4","host_filters":"","automute":true,"is_cspm_enabled":false,"resource_collection_enabled":true,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"monitored_resource_configs":[],"errors":[]},{"project_id":"tf-Test_ReplacingHostFiltersWithMRC-local-1770658907","client_email":"tf-Test_ReplacingHostFiltersWithMRC-local-1770658907@awesome-project-id.iam.gserviceaccount.com","id":"7a35236d-45e1-4bdf-8181-087707a46ec7","host_filters":"host:one","automute":true,"is_cspm_enabled":false,"resource_collection_enabled":true,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"monitored_resource_configs":[{"type":"gce_instance","filters":["host:one"]}],"errors":[]}]'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 41.1575ms
+    - id: 10
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 183
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"client_email":"tf-Test_ReplacingHostFiltersWithMRC-local-1770658907@awesome-project-id.iam.gserviceaccount.com","project_id":"tf-Test_ReplacingHostFiltersWithMRC-local-1770658907"}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/integration/gcp
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 2
+        uncompressed: false
+        body: '{}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 53.449833ms
+    - id: 11
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/integration/gcp
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 411
+        uncompressed: false
+        body: '[{"project_id":"","client_email":"teddymonitoringsubfolder@datadog-gcp-ints-test-d.iam.gserviceaccount.com","id":"7fb848c2-28ed-4f19-9e95-8c3a82d38ae4","host_filters":"","automute":true,"is_cspm_enabled":false,"resource_collection_enabled":true,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"monitored_resource_configs":[],"errors":[]}]'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 28.28425ms
