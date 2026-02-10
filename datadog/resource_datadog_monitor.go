@@ -381,7 +381,7 @@ func resourceDatadogMonitor() *schema.Resource {
 											Optional:    true,
 										},
 										"timezone": {
-											Description: "The timezone of the time of the day of the cumulative evaluation window start.",
+											Description: "The timezone for the cumulative evaluation window start time.",
 											Type:        schema.TypeString,
 											Optional:    true,
 										},

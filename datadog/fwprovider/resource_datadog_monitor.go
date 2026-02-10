@@ -618,7 +618,7 @@ func (r *monitorResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 									},
 									"timezone": schema.StringAttribute{
 										Optional:    true,
-										Description: "The timezone of the time of the day of the cumulative evaluation window start.",
+										Description: "The timezone for the cumulative evaluation window start time.",
 									},
 								},
 							},

@@ -166,7 +166,7 @@ Optional:
 - `day_starts` (String) The time of the day at which a one day cumulative evaluation window starts. Must be defined in UTC time in `HH:mm` format.
 - `hour_starts` (Number) The minute of the hour at which a one hour cumulative evaluation window starts. Must be between 0 and 59.
 - `month_starts` (Number) The day of the month at which a one month cumulative evaluation window starts. Must be a value of 1.
-- `timezone` (String) The timezone of the time of the day of the cumulative evaluation window start.
+- `timezone` (String) The timezone for the cumulative evaluation window start time.
 
 
 
