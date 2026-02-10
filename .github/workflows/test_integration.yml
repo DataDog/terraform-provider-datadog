@@ -25,7 +25,7 @@ env:
 jobs:
   integration_tests:
     runs-on: ubuntu-latest
-    if: (github.event_name == 'pull_request' && github.event.pull_request.draft == false && contains(github.event.pull_request.labels.*.name, 'ci/integrations')) || github.event_name == 'schedule'
+    if: (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'ci/integrations')) || github.event_name == 'schedule'
     steps:
       - name: Start the Datadog Agent locally
         uses: datadog/agent-github-action@8240b406d73cb84cd5085a3919a78f59c258da3a

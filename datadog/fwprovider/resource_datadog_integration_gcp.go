@@ -4,14 +4,12 @@ import (
 	"context"
 	"sync"
 
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
-
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -117,7 +115,6 @@ func (r *integrationGcpResource) Schema(_ context.Context, _ resource.SchemaRequ
 				Optional:           true,
 				Computed:           true,
 				Description:        "List of filters to limit the VM instances that are pulled into Datadog by using tags. Only VM instance resources that apply to specified filters are imported into Datadog.",
-				Default:            stringdefault.StaticString(""),
 				DeprecationMessage: "**Note:** This field is deprecated. Instead, use `monitored_resource_configs` with `type=gce_instance`",
 			},
 			"cloud_run_revision_filters": schema.SetAttribute{
@@ -388,7 +385,10 @@ func (r *integrationGcpResource) addOptionalFieldsToBody(ctx context.Context, bo
 		body.SetIsResourceChangeCollectionEnabled(state.IsResourceChangeCollectionEnabled.ValueBool())
 	}
 
-	body.SetHostFilters(state.HostFilters.ValueString())
+	if !state.HostFilters.IsUnknown() {
+		body.SetHostFilters(state.HostFilters.ValueString())
+	}
+
 	body.SetCloudRunRevisionFilters(tfCollectionToSlice[string](ctx, diags, state.CloudRunRevisionFilters))
 	mrcs := make([]datadogV1.GCPMonitoredResourceConfig, 0)
 	for _, mrc := range tfCollectionToSlice[*MonitoredResourceConfigModel](ctx, diags, state.MonitoredResourceConfigs) {

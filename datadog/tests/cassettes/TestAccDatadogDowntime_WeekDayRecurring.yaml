@@ -1,94 +1,179 @@
+---
 version: 2
 interactions:
-- request:
-    body: |
-      {"end":1735732799,"message":"tf-TestAccDatadogDowntime_WeekDayRecurring-local-1677784627","monitor_tags":["*"],"recurrence":{"period":1,"type":"weeks","week_days":["Sat","Sun"]},"scope":["scope:WeekDaysRecurrence"],"start":1735646400,"timezone":"UTC"}
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/downtime
-    method: POST
-    id: 0
-  response:
-    body: |
-      {"id":2718959975,"monitor_id":null,"org_id":321813,"start":1735646400,"end":1735732799,"canceled":null,"created":1677784628,"modified":1677784628,"message":"tf-TestAccDatadogDowntime_WeekDayRecurring-local-1677784627","active":false,"disabled":false,"recurrence":{"type":"weeks","period":1,"week_days":["Sat","Sun"],"until_occurrences":null,"until_date":null},"timezone":"UTC","parent_id":null,"child_id":null,"creator_id":1445416,"updater_id":null,"downtime_type":2,"status":"scheduled","monitor_tags":["*"],"mute_first_recovery_notification":false,"notify_end_types":["expired"],"notify_end_states":["alert","no data","warn"],"scope":["scope:WeekDaysRecurrence"]}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/downtime/2718959975
-    method: GET
-    id: 1
-  response:
-    body: |
-      {"id":2718959975,"monitor_id":null,"org_id":321813,"start":1735646400,"end":1735732799,"canceled":null,"created":1677784628,"modified":1677784628,"message":"tf-TestAccDatadogDowntime_WeekDayRecurring-local-1677784627","active":false,"disabled":false,"recurrence":{"type":"weeks","period":1,"week_days":["Sat","Sun"],"until_occurrences":null,"until_date":null},"timezone":"UTC","parent_id":null,"child_id":null,"creator_id":1445416,"updater_id":null,"downtime_type":2,"status":"scheduled","monitor_tags":["*"],"mute_first_recovery_notification":false,"notify_end_types":["expired"],"notify_end_states":["alert","no data","warn"],"scope":["scope:WeekDaysRecurrence"]}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/downtime/2718959975
-    method: GET
-    id: 2
-  response:
-    body: |
-      {"id":2718959975,"monitor_id":null,"org_id":321813,"start":1735646400,"end":1735732799,"canceled":null,"created":1677784628,"modified":1677784628,"message":"tf-TestAccDatadogDowntime_WeekDayRecurring-local-1677784627","active":false,"disabled":false,"recurrence":{"type":"weeks","period":1,"week_days":["Sat","Sun"],"until_occurrences":null,"until_date":null},"timezone":"UTC","parent_id":null,"child_id":null,"creator_id":1445416,"updater_id":null,"downtime_type":2,"status":"scheduled","monitor_tags":["*"],"mute_first_recovery_notification":false,"notify_end_types":["expired"],"notify_end_states":["alert","no data","warn"],"scope":["scope:WeekDaysRecurrence"]}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - '*/*'
-    url: https://api.datadoghq.com/api/v1/downtime/2718959975
-    method: DELETE
-    id: 3
-  response:
-    body: ""
-    headers:
-      Content-Type:
-      - text/html; charset=utf-8
-    status: 204 No Content
-    code: 204
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/downtime/2718959975
-    method: GET
-    id: 4
-  response:
-    body: |
-      {"id":2718959975,"monitor_id":null,"org_id":321813,"start":1735646400,"end":1735732799,"canceled":1677784629,"created":1677784628,"modified":1677784629,"message":"tf-TestAccDatadogDowntime_WeekDayRecurring-local-1677784627","active":false,"disabled":true,"recurrence":{"type":"weeks","period":1,"week_days":["Sat","Sun"],"until_occurrences":null,"until_date":null},"timezone":"UTC","parent_id":null,"child_id":null,"creator_id":1445416,"updater_id":1445416,"downtime_type":2,"status":"canceled","monitor_tags":["*"],"mute_first_recovery_notification":false,"notify_end_types":["expired"],"notify_end_states":["alert","no data","warn"],"scope":["scope:WeekDaysRecurrence"]}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 252
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"end":1770721631,"message":"tf-TestAccDatadogDowntime_WeekDayRecurring-local-1770631631","monitor_tags":["*"],"recurrence":{"period":1,"type":"weeks","week_days":["Sat","Sun"]},"scope":["scope:WeekDaysRecurrence"],"start":1770635231,"timezone":"UTC"}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/downtime
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":6344473397,"monitor_id":null,"org_id":321813,"start":1770635231,"end":1770721631,"canceled":null,"created":1770631633,"modified":1770631633,"message":"tf-TestAccDatadogDowntime_WeekDayRecurring-local-1770631631","active":false,"disabled":false,"recurrence":{"type":"weeks","period":1,"week_days":["Sat","Sun"],"until_occurrences":null,"until_date":null},"timezone":"UTC","parent_id":null,"child_id":null,"creator_id":21235577,"updater_id":null,"downtime_type":2,"status":"scheduled","monitor_tags":["*"],"mute_first_recovery_notification":false,"notify_end_types":["expired"],"notify_end_states":["alert","no data","warn"],"uuid":"d7256aaf-3968-4966-bdcd-957f1d50efbf","scope":["scope:WeekDaysRecurrence"]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 468.4475ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/downtime/6344473397
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":6344473397,"monitor_id":null,"org_id":321813,"start":1770635231,"end":1770721631,"canceled":null,"created":1770631633,"modified":1770631633,"message":"tf-TestAccDatadogDowntime_WeekDayRecurring-local-1770631631","active":false,"disabled":false,"recurrence":{"type":"weeks","period":1,"week_days":["Sat","Sun"],"until_occurrences":null,"until_date":null},"timezone":"UTC","parent_id":null,"child_id":null,"creator_id":21235577,"updater_id":null,"downtime_type":2,"status":"scheduled","monitor_tags":["*"],"mute_first_recovery_notification":false,"notify_end_types":["expired"],"notify_end_states":["alert","no data","warn"],"uuid":"d7256aaf-3968-4966-bdcd-957f1d50efbf","scope":["scope:WeekDaysRecurrence"]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 178.8035ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/downtime/6344473397
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":6344473397,"monitor_id":null,"org_id":321813,"start":1770635231,"end":1770721631,"canceled":null,"created":1770631633,"modified":1770631633,"message":"tf-TestAccDatadogDowntime_WeekDayRecurring-local-1770631631","active":false,"disabled":false,"recurrence":{"type":"weeks","period":1,"week_days":["Sat","Sun"],"until_occurrences":null,"until_date":null},"timezone":"UTC","parent_id":null,"child_id":null,"creator_id":21235577,"updater_id":null,"downtime_type":2,"status":"scheduled","monitor_tags":["*"],"mute_first_recovery_notification":false,"notify_end_types":["expired"],"notify_end_states":["alert","no data","warn"],"uuid":"d7256aaf-3968-4966-bdcd-957f1d50efbf","scope":["scope:WeekDaysRecurrence"]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 202.306125ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v1/downtime/6344473397
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Content-Type:
+                - text/html; charset=utf-8
+        status: 204 No Content
+        code: 204
+        duration: 289.929333ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/downtime/6344473397
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":6344473397,"monitor_id":null,"org_id":321813,"start":1770635231,"end":1770721631,"canceled":1770631635,"created":1770631633,"modified":1770631635,"message":"tf-TestAccDatadogDowntime_WeekDayRecurring-local-1770631631","active":false,"disabled":true,"recurrence":{"type":"weeks","period":1,"week_days":["Sat","Sun"],"until_occurrences":null,"until_date":null},"timezone":"UTC","parent_id":null,"child_id":null,"creator_id":21235577,"updater_id":21235577,"downtime_type":2,"status":"canceled","monitor_tags":["*"],"mute_first_recovery_notification":false,"notify_end_types":["expired"],"notify_end_states":["alert","no data","warn"],"uuid":"d7256aaf-3968-4966-bdcd-957f1d50efbf","scope":["scope:WeekDaysRecurrence"]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 171.107458ms
