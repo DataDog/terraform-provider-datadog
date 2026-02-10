@@ -22,7 +22,7 @@ func Test_ReplacingHostFiltersWithMRC(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             checkIntegrationGCPDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
