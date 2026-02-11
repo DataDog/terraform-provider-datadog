@@ -328,15 +328,7 @@ func (r *referenceTableResource) ValidateConfig(ctx context.Context, request res
 		)
 		return
 	}
-
-	// Validate that fields are provided in schema
-	if len(config.Schema.Fields) == 0 {
-		response.Diagnostics.AddError(
-			"Missing schema fields",
-			"The 'schema' block must include at least one field definition.",
-		)
-		return
-	}
+	// Note: fields are validated by listvalidator.SizeAtLeast(1) in the schema definition
 }
 
 func (r *referenceTableResource) ModifyPlan(ctx context.Context, request resource.ModifyPlanRequest, response *resource.ModifyPlanResponse) {
