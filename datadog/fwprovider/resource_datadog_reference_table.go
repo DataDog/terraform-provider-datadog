@@ -217,7 +217,7 @@ func (r *referenceTableResource) Schema(_ context.Context, _ resource.SchemaRequ
 				},
 				Attributes: map[string]schema.Attribute{
 					"primary_keys": schema.ListAttribute{
-						Optional:    true,
+						Required:    true,
 						Computed:    true,
 						Description: "List of field names that serve as primary keys for the table. Currently only one primary key is supported.",
 						ElementType: types.StringType,
@@ -241,7 +241,7 @@ func (r *referenceTableResource) Schema(_ context.Context, _ resource.SchemaRequ
 						NestedObject: schema.NestedBlockObject{
 							Attributes: map[string]schema.Attribute{
 								"name": schema.StringAttribute{
-									Optional:    true,
+									Required:    true,
 									Computed:    true,
 									Description: "The name of the field.",
 									PlanModifiers: []planmodifier.String{
@@ -249,7 +249,7 @@ func (r *referenceTableResource) Schema(_ context.Context, _ resource.SchemaRequ
 									},
 								},
 								"type": schema.StringAttribute{
-									Optional:    true,
+									Required:    true,
 									Computed:    true,
 									Description: "The data type of the field. Must be one of: STRING, INT32.",
 									Validators: []validator.String{
@@ -341,7 +341,7 @@ func (r *referenceTableResource) ValidateConfig(ctx context.Context, request res
 			}
 		}
 	}
-	// Note: schema.fields and schema.primary_keys validation is handled by listvalidator.SizeAtLeast(1) in schema definition
+	// Note: schema.primary_keys is marked as Required in schema definition; schema.fields uses listvalidator.SizeAtLeast(1)
 }
 
 func (r *referenceTableResource) ModifyPlan(ctx context.Context, request resource.ModifyPlanRequest, response *resource.ModifyPlanResponse) {
