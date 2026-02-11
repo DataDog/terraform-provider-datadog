@@ -52,7 +52,7 @@ func ExpandBufferOptions(src BufferOptionsModel) *datadogV2.ObservabilityPipelin
 			buffer.SetType(datadogV2.ObservabilityPipelineBufferOptionsMemoryType("memory"))
 			buffer.SetMaxEvents(memBuf.MaxEvents.ValueInt64())
 			if !memBuf.WhenFull.IsNull() {
-				// buffer.SetWhenFull(datadogV2.ObservabilityPipelineBufferOptionsWhenFull(memBuf.WhenFull.ValueString()))
+				buffer.SetWhenFull(datadogV2.ObservabilityPipelineBufferOptionsWhenFull(memBuf.WhenFull.ValueString()))
 			}
 
 			return &datadogV2.ObservabilityPipelineBufferOptions{
@@ -63,7 +63,7 @@ func ExpandBufferOptions(src BufferOptionsModel) *datadogV2.ObservabilityPipelin
 			buffer.SetType(datadogV2.ObservabilityPipelineBufferOptionsMemoryType("memory"))
 			buffer.SetMaxSize(memBuf.MaxSize.ValueInt64())
 			if !memBuf.WhenFull.IsNull() {
-				// buffer.SetWhenFull(datadogV2.ObservabilityPipelineBufferOptionsWhenFull(memBuf.WhenFull.ValueString()))
+				buffer.SetWhenFull(datadogV2.ObservabilityPipelineBufferOptionsWhenFull(memBuf.WhenFull.ValueString()))
 			}
 
 			return &datadogV2.ObservabilityPipelineBufferOptions{
