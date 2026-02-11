@@ -31,8 +31,9 @@ func cleanupSensitiveDataScannerGroups(t *testing.T) {
 	})
 }
 
-// TestSweepSensitiveDataScannerGroups is a standalone test for CI / manual
+// TestSweepSensitiveDataScannerGroups is a standalone sweep test for CI / manual
 // invocation via `go test -run TestSweep` or `make sweep`.
+// In CI it also runs as a dedicated step before integration tests (see test_integration.yml).
 func TestSweepSensitiveDataScannerGroups(t *testing.T) {
 	doSweepSensitiveDataScannerGroups(t)
 }
