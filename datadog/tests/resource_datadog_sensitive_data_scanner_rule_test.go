@@ -15,6 +15,7 @@ import (
 )
 
 func TestAccSensitiveDataScannerRuleBasic(t *testing.T) {
+	cleanupSensitiveDataScannerGroups(t)
 	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)
@@ -127,6 +128,7 @@ func TestAccSensitiveDataScannerRuleBasic(t *testing.T) {
 }
 
 func TestAccSensitiveDataScannerRuleWithStandardPattern(t *testing.T) {
+	cleanupSensitiveDataScannerGroups(t)
 	t.Parallel()
 	if isRecording() || isReplaying() {
 		t.Skip("This test doesn't support recording or replaying")
@@ -475,6 +477,7 @@ func TestAccSensitiveDataScannerRule_DeleteAlreadyDeleted(t *testing.T) {
 	if isRecording() || isReplaying() {
 		t.Skip("This test doesn't support recording or replaying")
 	}
+	cleanupSensitiveDataScannerGroups(t)
 	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)
