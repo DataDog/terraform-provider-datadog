@@ -135,12 +135,13 @@ func TestAccSensitiveDataScannerRuleWithStandardPattern(t *testing.T) {
 	}
 
 	ctx, accProviders := testAccProviders(context.Background(), t)
-	uniq1 := uniqueEntityName(ctx, t)
-	uniq2 := uniqueEntityName(ctx, t)
+	_ = uniqueEntityName(ctx, t) // consume unique names for deterministic cassette naming
+	_ = uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource_name_1 := "datadog_sensitive_data_scanner_rule.sp_rule_1"
 	resource_name_2 := "datadog_sensitive_data_scanner_rule.sp_rule_2"
+	sp_data_source := "data.datadog_sensitive_data_scanner_standard_pattern.sample_sp"
 
 	value_true := true
 	value_false := false
@@ -151,15 +152,15 @@ func TestAccSensitiveDataScannerRuleWithStandardPattern(t *testing.T) {
 		CheckDestroy:      testAccCheckDatadogSensitiveDataScannerRuleDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogSensitiveDataScannerRuleWithStandardPattern(uniq1, uniq2),
+				Config: testAccCheckDatadogSensitiveDataScannerRuleWithStandardPattern(),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogSensitiveDataScannerRuleExists(accProvider, resource_name_1),
-					resource.TestCheckResourceAttr(
-						resource_name_1, "description", "a description"),
+					resource.TestCheckResourceAttrPair(
+						resource_name_1, "name", sp_data_source, "name"),
+					resource.TestCheckResourceAttrPair(
+						resource_name_1, "description", sp_data_source, "description"),
 					resource.TestCheckResourceAttr(
 						resource_name_1, "is_enabled", "true"),
-					resource.TestCheckResourceAttr(
-						resource_name_1, "name", uniq1),
 					resource.TestCheckResourceAttr(
 						resource_name_1, "excluded_namespaces.0", "username"),
 					resource.TestCheckResourceAttr(
@@ -175,12 +176,12 @@ func TestAccSensitiveDataScannerRuleWithStandardPattern(t *testing.T) {
 					testAccCheckDatadogSensitiveDataScannerRuleRecommendedKeywords(accProvider, resource_name_1, &value_false),
 					// assertions on resource 2
 					testAccCheckDatadogSensitiveDataScannerRuleExists(accProvider, resource_name_2),
-					resource.TestCheckResourceAttr(
-						resource_name_2, "description", "a description"),
+					resource.TestCheckResourceAttrPair(
+						resource_name_2, "name", sp_data_source, "name"),
+					resource.TestCheckResourceAttrPair(
+						resource_name_2, "description", sp_data_source, "description"),
 					resource.TestCheckResourceAttr(
 						resource_name_2, "is_enabled", "true"),
-					resource.TestCheckResourceAttr(
-						resource_name_2, "name", uniq2),
 					testAccCheckDatadogSensitiveDataScannerRuleRecommendedKeywords(accProvider, resource_name_2, &value_true),
 				),
 			},
@@ -341,8 +342,8 @@ resource "datadog_sensitive_data_scanner_rule" "sample_rule" {
 `, name)
 }
 
-func testAccCheckDatadogSensitiveDataScannerRuleWithStandardPattern(name1, name2 string) string {
-	return fmt.Sprintf(`
+func testAccCheckDatadogSensitiveDataScannerRuleWithStandardPattern() string {
+	return `
 resource "datadog_sensitive_data_scanner_group" "sample_group" {
 	name = "my group"
 	is_enabled = true
@@ -361,8 +362,8 @@ data "datadog_sensitive_data_scanner_standard_pattern" "sample_sp" {
 }
 
 resource "datadog_sensitive_data_scanner_rule" "sp_rule_1" {
-	name = "%s"
-	description = "a description"
+	name = data.datadog_sensitive_data_scanner_standard_pattern.sample_sp.name
+	description = data.datadog_sensitive_data_scanner_standard_pattern.sample_sp.description
 	excluded_namespaces = ["username"]
 	is_enabled = true
 	group_id = datadog_sensitive_data_scanner_group.sample_group.id
@@ -379,14 +380,14 @@ resource "datadog_sensitive_data_scanner_rule" "sp_rule_1" {
 }
 
 resource "datadog_sensitive_data_scanner_rule" "sp_rule_2" {
-	name = "%s"
-	description = "a description"
+	name = data.datadog_sensitive_data_scanner_standard_pattern.sample_sp.name
+	description = data.datadog_sensitive_data_scanner_standard_pattern.sample_sp.description
 	excluded_namespaces = ["username"]
 	is_enabled = true
 	group_id = datadog_sensitive_data_scanner_group.sample_group.id
 	standard_pattern_id = data.datadog_sensitive_data_scanner_standard_pattern.sample_sp.id
 }
-`, name1, name2)
+`
 }
 
 func testAccCheckDatadogSensitiveDataScannerRuleDestroy(accProvider func() (*schema.Provider, error)) func(*terraform.State) error {
