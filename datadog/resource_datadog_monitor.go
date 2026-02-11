@@ -875,9 +875,19 @@ func buildMonitorStruct(d utils.Resource) (*datadogV1.Monitor, *datadogV1.Monito
 					}
 				}
 				if query, ok := m["data_quality_query"]; ok {
-					queries := query.([]interface{})
-					for _, q := range queries {
-						monitorVariables = append(monitorVariables, *buildMonitorFormulaAndFunctionDataQualityQuery(q.(map[string]interface{})))
+					queries, ok := query.([]interface{})
+					if !ok {
+						panic("variables.data_quality_query: expected a list but got invalid type")
+					}
+					for i, q := range queries {
+						if q == nil {
+							continue // Skip nil query entries
+						}
+						queryMap, ok := q.(map[string]interface{})
+						if !ok {
+							panic(fmt.Sprintf("variables.data_quality_query[%d]: expected a map/object but got invalid type", i))
+						}
+						monitorVariables = append(monitorVariables, *buildMonitorFormulaAndFunctionDataQualityQuery(queryMap))
 					}
 				}
 				o.SetVariables(monitorVariables)
@@ -1066,57 +1076,109 @@ func buildMonitorFormulaAndFunctionCloudCostQuery(data map[string]interface{}) *
 	return &definition
 }
 
+// getRequiredString safely extracts a required string field from a map with helpful error messages
+func getRequiredString(data map[string]interface{}, fieldName, context string) string {
+	val, ok := data[fieldName].(string)
+	if !ok || val == "" {
+		panic(fmt.Sprintf("%s: '%s' is required and must be a non-empty string", context, fieldName))
+	}
+	return val
+}
+
+// getOptionalString safely extracts an optional string field from a map
+func getOptionalString(data map[string]interface{}, fieldName string) (string, bool) {
+	val, ok := data[fieldName].(string)
+	return val, ok && len(val) > 0
+}
+
+// getOptionalStringSlice safely extracts an optional string slice from a map, filtering out nil and empty values
+func getOptionalStringSlice(data map[string]interface{}, fieldName string) []string {
+	list, ok := data[fieldName].([]interface{})
+	if !ok || len(list) == 0 {
+		return nil
+	}
+	result := make([]string, 0, len(list))
+	for _, item := range list {
+		if item == nil {
+			continue
+		}
+		if strVal, ok := item.(string); ok && strVal != "" {
+			result = append(result, strVal)
+		}
+	}
+	if len(result) == 0 {
+		return nil
+	}
+	return result
+}
+
+// buildDataQualityMonitorOptions builds monitor options from a map, returning nil if no options are set
+func buildDataQualityMonitorOptions(data map[string]interface{}) *datadogV1.MonitorFormulaAndFunctionDataQualityMonitorOptions {
+	opts := datadogV1.NewMonitorFormulaAndFunctionDataQualityMonitorOptions()
+	hasAnyOption := false
+
+	if v, ok := getOptionalString(data, "custom_sql"); ok {
+		opts.SetCustomSql(v)
+		hasAnyOption = true
+	}
+	if v, ok := getOptionalString(data, "custom_where"); ok {
+		opts.SetCustomWhere(v)
+		hasAnyOption = true
+	}
+	if cols := getOptionalStringSlice(data, "group_by_columns"); cols != nil {
+		opts.SetGroupByColumns(cols)
+		hasAnyOption = true
+	}
+	if v, ok := getOptionalString(data, "crontab_override"); ok {
+		opts.SetCrontabOverride(v)
+		hasAnyOption = true
+	}
+	if v, ok := getOptionalString(data, "model_type_override"); ok {
+		opts.SetModelTypeOverride(datadogV1.MonitorFormulaAndFunctionDataQualityModelTypeOverride(v))
+		hasAnyOption = true
+	}
+
+	if !hasAnyOption {
+		return nil
+	}
+	return opts
+}
+
 func buildMonitorFormulaAndFunctionDataQualityQuery(data map[string]interface{}) *datadogV1.MonitorFormulaAndFunctionQueryDefinition {
-	dataSource := datadogV1.MonitorFormulaAndFunctionDataQualityDataSource(data["data_source"].(string))
-	measure := data["measure"].(string)
-	name := data["name"].(string)
-	filter := data["filter"].(string)
+	// Validate required fields with helpful error messages
+	dataSourceVal := getRequiredString(data, "data_source", "data_quality_query")
+	dataSource := datadogV1.MonitorFormulaAndFunctionDataQualityDataSource(dataSourceVal)
+
+	measure := getRequiredString(data, "measure", "data_quality_query")
+	name := getRequiredString(data, "name", "data_quality_query")
+	filter := getRequiredString(data, "filter", "data_quality_query")
 
 	dataQualityQuery := datadogV1.NewMonitorFormulaAndFunctionDataQualityQueryDefinition(dataSource, filter, measure, name)
 
 	// Optional fields
-	if v, ok := data["schema_version"].(string); ok && len(v) > 0 {
+	if v, ok := getOptionalString(data, "schema_version"); ok {
 		dataQualityQuery.SetSchemaVersion(v)
 	}
 
-	if v, ok := data["scope"].(string); ok && len(v) > 0 {
+	if v, ok := getOptionalString(data, "scope"); ok {
 		dataQualityQuery.SetScope(v)
 	}
 
-	// Group by
-	if groupByList, ok := data["group_by"].([]interface{}); ok && len(groupByList) > 0 {
-		groupBys := make([]string, len(groupByList))
-		for i, g := range groupByList {
-			groupBys[i] = g.(string)
-		}
+	// Group by - handle nil and empty arrays safely
+	if groupBys := getOptionalStringSlice(data, "group_by"); groupBys != nil {
 		dataQualityQuery.SetGroupBy(groupBys)
 	}
 
-	// Monitor options
-	if monitorOptionsList, ok := data["monitor_options"].([]interface{}); ok && len(monitorOptionsList) > 0 {
-		monitorOptionsData := monitorOptionsList[0].(map[string]interface{})
-		monitorOptions := datadogV1.NewMonitorFormulaAndFunctionDataQualityMonitorOptions()
+	// Monitor options - handle nil, empty arrays, and empty maps safely
+	if monitorOptionsList, ok := data["monitor_options"].([]interface{}); ok && len(monitorOptionsList) > 0 && monitorOptionsList[0] != nil {
+		monitorOptionsData, ok := monitorOptionsList[0].(map[string]interface{})
+		if !ok {
+			panic("data_quality_query.monitor_options: expected a map/object but got invalid type. Ensure monitor_options is properly formatted as a block.")
+		}
 
-		if v, ok := monitorOptionsData["custom_sql"].(string); ok && len(v) > 0 {
-			monitorOptions.SetCustomSql(v)
+		if opts := buildDataQualityMonitorOptions(monitorOptionsData); opts != nil {
+			dataQualityQuery.SetMonitorOptions(*opts)
 		}
-		if v, ok := monitorOptionsData["custom_where"].(string); ok && len(v) > 0 {
-			monitorOptions.SetCustomWhere(v)
-		}
-		if groupByColsList, ok := monitorOptionsData["group_by_columns"].([]interface{}); ok && len(groupByColsList) > 0 {
-			cols := make([]string, len(groupByColsList))
-			for i, c := range groupByColsList {
-				cols[i] = c.(string)
-			}
-			monitorOptions.SetGroupByColumns(cols)
-		}
-		if v, ok := monitorOptionsData["crontab_override"].(string); ok && len(v) > 0 {
-			monitorOptions.SetCrontabOverride(v)
-		}
-		if v, ok := monitorOptionsData["model_type_override"].(string); ok && len(v) > 0 {
-			monitorOptions.SetModelTypeOverride(datadogV1.MonitorFormulaAndFunctionDataQualityModelTypeOverride(v))
-		}
-		dataQualityQuery.SetMonitorOptions(*monitorOptions)
 	}
 
 	definition := datadogV1.MonitorFormulaAndFunctionDataQualityQueryDefinitionAsMonitorFormulaAndFunctionQueryDefinition(dataQualityQuery)

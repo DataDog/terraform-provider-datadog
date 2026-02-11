@@ -2344,3 +2344,330 @@ resource "datadog_monitor" "data_quality_basic" {
   }
 }`, uniq)
 }
+
+// TestAccDatadogMonitor_DataQuality_WithoutMonitorOptions tests that monitors work without monitor_options block
+// This verifies that optional monitor_options can be omitted entirely
+func TestAccDatadogMonitor_DataQuality_WithoutMonitorOptions(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	monitorName := uniqueEntityName(ctx, t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogMonitorDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogDataQualityMonitorWithoutOptions(monitorName),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogMonitorExists(accProvider),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.data_quality_no_options", "name", monitorName),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.data_quality_no_options", "type", "data-quality alert"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.data_quality_no_options", "query", `formula("query1").last("30m") > 129600`),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.data_quality_no_options", "variables.#", "1"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.data_quality_no_options", "variables.0.data_quality_query.#", "1"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.data_quality_no_options", "variables.0.data_quality_query.0.name", "query1"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.data_quality_no_options", "variables.0.data_quality_query.0.data_source", "data_quality_metrics"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.data_quality_no_options", "variables.0.data_quality_query.0.measure", "freshness"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.data_quality_no_options", "variables.0.data_quality_query.0.schema_version", "0.0.1"),
+					// Verify monitor_options is not present (optional block omitted)
+					resource.TestCheckNoResourceAttr(
+						"datadog_monitor.data_quality_no_options", "variables.0.data_quality_query.0.monitor_options.#"),
+				),
+			},
+		},
+	})
+}
+
+func testAccCheckDatadogDataQualityMonitorWithoutOptions(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_monitor" "data_quality_no_options" {
+  name                     = "%s"
+  type                     = "data-quality alert"
+  message                  = <<-EOT
+    {{#is_alert}}
+    To debug this alert, 
+    1. Follow the error logs and see what errors the stream is encountering. 
+    2. If you do not find any errors, check that the table is being referenced by DBT entities because Pyairbyte is only triggered in those cases.
+    
+    {{/is_alert}}
+    
+    {{#is_renotify}}
+    {{table.name}} is still stale and has not been refreshed since {{eval "round(value/86400, 2)"}} days.
+    {{/is_renotify}}
+    
+    {{#is_alert_recovery}}
+    {{table.name}} had a successful sync and is fresh!
+    {{/is_alert_recovery}}
+    
+    
+    [View stream error logs](https://app.datadoghq.com/logs?query=service:%%28mortar-luigi-runner%%20OR%%20mortar-kubernetes-job%%29%%20-status:debug%%20stream_name:{{eval "strip(table.name, '_airbyte_raw_')"}}&agg_m=count&agg_m_source=base&agg_t=count&cols=host%%2Cservice&fromUser=true&index=mortar%%2Cdata-eng&messageDisplay=inline&refresh_mode=sliding&storage=hot&stream_sort=desc&viz=stream&from_ts=1770298423747&to_ts=1770903223747&live=true)
+    [View lineage](https://app.datadoghq.com/data-obs/lineage?anchors=search%%20for%%20%%2A%%20where%%20%%60name%%3A{{table.name}}%%60&fromUser=false&group_id=&mode=map&scope_types=&start=1769778454487&end=1770383254487&paused=false)
+    
+    @slack-dna-integrations-ops-low-prio
+  EOT
+  query                    = "formula(\"query1\").last(\"30m\") > 129600"
+  new_host_delay           = 300
+  notification_preset_name = "hide_all"
+  notify_no_data           = false
+  priority                 = "3"
+  renotify_interval        = 1440
+  renotify_statuses        = ["alert"]
+  require_full_window      = false
+  tags                     = [
+    "team:analytics-data-platform-integrations",
+    "terraform:true",
+    "terraform_path:prod/data-and-analytics-integrations",
+    "terraform_repo:DataDog/terraform-config",
+  ]
+
+  monitor_thresholds {
+    critical = "129600"
+  }
+
+  variables {
+    data_quality_query {
+      data_source    = "data_quality_metrics"
+      filter         = "search for database_table where `+"`"+`name:_airbyte_raw_* -schema:(staging_* OR test_*)`+"`"+`"
+      group_by       = [
+        "entity_id",
+        "table",
+        "schema",
+        "database",
+      ]
+      measure        = "freshness"
+      name           = "query1"
+      schema_version = "0.0.1"
+
+      # monitor_options block is optional and can be omitted
+    }
+  }
+}`, uniq)
+}
+
+// TestAccDatadogMonitor_DataQuality_EmptyMonitorOptions tests that monitors work with empty monitor_options blocks
+// This verifies the fix for the bug where empty monitor_options blocks cause panics
+func TestAccDatadogMonitor_DataQuality_EmptyMonitorOptions(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	monitorName := uniqueEntityName(ctx, t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogMonitorDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogDataQualityMonitorEmptyOptions(monitorName),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogMonitorExists(accProvider),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.data_quality_empty_options", "name", monitorName),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.data_quality_empty_options", "type", "data-quality alert"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.data_quality_empty_options", "query", `formula("query1").last("30m") > 1000`),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.data_quality_empty_options", "variables.#", "1"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.data_quality_empty_options", "variables.0.data_quality_query.#", "1"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.data_quality_empty_options", "variables.0.data_quality_query.0.name", "query1"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.data_quality_empty_options", "variables.0.data_quality_query.0.data_source", "data_quality_metrics"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.data_quality_empty_options", "variables.0.data_quality_query.0.measure", "row_count"),
+					// Verify monitor_options is not present (empty blocks are not returned by API and not preserved in state)
+					resource.TestCheckNoResourceAttr(
+						"datadog_monitor.data_quality_empty_options", "variables.0.data_quality_query.0.monitor_options.#"),
+				),
+				// Empty optional blocks cause a harmless drift - config has it but state doesn't
+				// This is expected behavior: empty blocks are skipped when sending to API
+				ExpectNonEmptyPlan: true,
+			},
+		},
+	})
+}
+
+func testAccCheckDatadogDataQualityMonitorEmptyOptions(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_monitor" "data_quality_empty_options" {
+  name    = "%s"
+  type    = "data-quality alert"
+  message = "Data quality threshold exceeded"
+  query   = "formula(\"query1\").last(\"30m\") > 1000"
+
+  monitor_thresholds {
+    critical = 1000
+  }
+
+  variables {
+    data_quality_query {
+      name        = "query1"
+      data_source = "data_quality_metrics"
+      measure     = "row_count"
+      filter      = "search for column where `+"`"+`database:production AND table:users`+"`"+`"
+      group_by    = ["entity_id"]
+      
+      # Empty monitor_options block - should work with the fix
+      monitor_options {
+        group_by_columns = []
+      }
+    }
+  }
+}`, uniq)
+}
+
+// TestAccDatadogMonitor_DataQuality_WithMonitorOptions tests that monitors work with fully populated monitor_options
+// This verifies all monitor_options fields are properly handled
+func TestAccDatadogMonitor_DataQuality_WithMonitorOptions(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	monitorName := uniqueEntityName(ctx, t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogMonitorDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogDataQualityMonitorWithOptions(monitorName),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogMonitorExists(accProvider),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.data_quality_with_options", "name", monitorName),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.data_quality_with_options", "type", "data-quality alert"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.data_quality_with_options", "query", `formula("query1").last("30m") > 1000`),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.data_quality_with_options", "variables.#", "1"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.data_quality_with_options", "variables.0.data_quality_query.#", "1"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.data_quality_with_options", "variables.0.data_quality_query.0.name", "query1"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.data_quality_with_options", "variables.0.data_quality_query.0.data_source", "data_quality_metrics"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.data_quality_with_options", "variables.0.data_quality_query.0.measure", "row_count"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.data_quality_with_options", "variables.0.data_quality_query.0.schema_version", "0.0.1"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.data_quality_with_options", "variables.0.data_quality_query.0.monitor_options.#", "1"),
+				),
+			},
+		},
+	})
+}
+
+func testAccCheckDatadogDataQualityMonitorWithOptions(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_monitor" "data_quality_with_options" {
+  name    = "%s"
+  type    = "data-quality alert"
+  message = "Data quality threshold exceeded"
+  query   = "formula(\"query1\").last(\"30m\") > 1000"
+
+  monitor_thresholds {
+    critical = 1000
+  }
+
+  variables {
+    data_quality_query {
+      name           = "query1"
+      data_source    = "data_quality_metrics"
+      measure        = "row_count"
+      filter         = "search for column where `+"`"+`database:production AND table:users`+"`"+`"
+      schema_version = "0.0.1"
+      scope          = "database:production"
+      group_by       = ["entity_id"]
+
+      monitor_options {
+        custom_sql          = "SELECT * FROM table"
+        custom_where        = "database = 'production'"
+        group_by_columns   = ["column1", "column2"]
+        crontab_override   = "0 0 * * *"
+        model_type_override = "freshness"
+      }
+    }
+  }
+}`, uniq)
+}
+
+// TestAccDatadogMonitor_DataQuality_EmptyGroupBy tests that monitors work with empty group_by arrays
+// This verifies empty arrays are handled safely
+func TestAccDatadogMonitor_DataQuality_EmptyGroupBy(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	monitorName := uniqueEntityName(ctx, t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogMonitorDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogDataQualityMonitorEmptyGroupBy(monitorName),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogMonitorExists(accProvider),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.data_quality_empty_group_by", "name", monitorName),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.data_quality_empty_group_by", "type", "data-quality alert"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.data_quality_empty_group_by", "query", `formula("query1").last("30m") > 1000`),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.data_quality_empty_group_by", "variables.#", "1"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.data_quality_empty_group_by", "variables.0.data_quality_query.#", "1"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.data_quality_empty_group_by", "variables.0.data_quality_query.0.name", "query1"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.data_quality_empty_group_by", "variables.0.data_quality_query.0.data_source", "data_quality_metrics"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.data_quality_empty_group_by", "variables.0.data_quality_query.0.measure", "row_count"),
+					// Verify group_by is not set when empty
+					resource.TestCheckNoResourceAttr(
+						"datadog_monitor.data_quality_empty_group_by", "variables.0.data_quality_query.0.group_by.#"),
+				),
+			},
+		},
+	})
+}
+
+func testAccCheckDatadogDataQualityMonitorEmptyGroupBy(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_monitor" "data_quality_empty_group_by" {
+  name    = "%s"
+  type    = "data-quality alert"
+  message = "Data quality threshold exceeded"
+  query   = "formula(\"query1\").last(\"30m\") > 1000"
+
+  monitor_thresholds {
+    critical = 1000
+  }
+
+  variables {
+    data_quality_query {
+      name        = "query1"
+      data_source = "data_quality_metrics"
+      measure     = "row_count"
+      filter      = "search for column where `+"`"+`database:production AND table:users`+"`"+`"
+      group_by    = []
+    }
+  }
+}`, uniq)
+}

@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"draft_status":"published","message":"Data quality threshold exceeded","name":"tf-TestAccDatadogMonitor_DataQuality_Basic-local-1769092472","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":1000},"variables":[{"data_source":"data_quality_metrics","filter":"search for column where `database:production AND table:users`","group_by":["entity_id"],"measure":"row_count","name":"query1"}]},"priority":null,"query":"formula(\"query1\").last(\"30m\") \u003e 1000","restricted_roles":null,"tags":[],"type":"data-quality alert"}
+            {"draft_status":"published","message":"Data quality threshold exceeded","name":"tf-TestAccDatadogMonitor_DataQuality_Basic-local-1770661996","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":1000},"variables":[{"data_source":"data_quality_metrics","filter":"search for column where `database:production AND table:users`","group_by":["entity_id"],"measure":"row_count","name":"query1"}]},"priority":null,"query":"formula(\"query1\").last(\"30m\") \u003e 1000","restricted_roles":null,"tags":[],"type":"data-quality alert"}
         form: {}
         headers:
             Accept:
@@ -37,7 +37,7 @@ interactions:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 71.419166ms
+        duration: 43.198208ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -50,7 +50,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"draft_status":"published","message":"Data quality threshold exceeded","name":"tf-TestAccDatadogMonitor_DataQuality_Basic-local-1769092472","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":1000},"variables":[{"data_source":"data_quality_metrics","filter":"search for column where `database:production AND table:users`","group_by":["entity_id"],"measure":"row_count","name":"query1"}]},"priority":null,"query":"formula(\"query1\").last(\"30m\") \u003e 1000","restricted_roles":null,"tags":[],"type":"data-quality alert"}
+            {"draft_status":"published","message":"Data quality threshold exceeded","name":"tf-TestAccDatadogMonitor_DataQuality_Basic-local-1770661996","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":1000},"variables":[{"data_source":"data_quality_metrics","filter":"search for column where `database:production AND table:users`","group_by":["entity_id"],"measure":"row_count","name":"query1"}]},"priority":null,"query":"formula(\"query1\").last(\"30m\") \u003e 1000","restricted_roles":null,"tags":[],"type":"data-quality alert"}
         form: {}
         headers:
             Accept:
@@ -74,7 +74,7 @@ interactions:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 47.232292ms
+        duration: 43.434625ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -87,7 +87,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"draft_status":"published","message":"Data quality threshold exceeded","name":"tf-TestAccDatadogMonitor_DataQuality_Basic-local-1769092472","options":{"include_tags":true,"new_host_delay":300,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":1000},"variables":[{"data_source":"data_quality_metrics","filter":"search for column where `database:production AND table:users`","group_by":["entity_id"],"measure":"row_count","name":"query1"}]},"priority":null,"query":"formula(\"query1\").last(\"30m\") \u003e 1000","restricted_roles":null,"tags":[],"type":"data-quality alert"}
+            {"draft_status":"published","message":"Data quality threshold exceeded","name":"tf-TestAccDatadogMonitor_DataQuality_Basic-local-1770661996","options":{"include_tags":true,"new_host_delay":300,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":1000},"variables":[{"data_source":"data_quality_metrics","filter":"search for column where `database:production AND table:users`","group_by":["entity_id"],"measure":"row_count","name":"query1"}]},"priority":null,"query":"formula(\"query1\").last(\"30m\") \u003e 1000","restricted_roles":null,"tags":[],"type":"data-quality alert"}
         form: {}
         headers:
             Accept:
@@ -105,13 +105,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":25327310,"org_id":2,"type":"data-quality alert","name":"tf-TestAccDatadogMonitor_DataQuality_Basic-local-1769092472","message":"Data quality threshold exceeded","tags":[],"query":"formula(\"query1\").last(\"30m\") > 1000","options":{"include_tags":true,"new_host_delay":300,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":1000.0},"variables":[{"data_source":"data_quality_metrics","filter":"search for column where `database:production AND table:users`","group_by":["entity_id"],"measure":"row_count","name":"query1"}],"notify_audit":false,"silenced":{},"avalanche_window":10},"multi":false,"created_at":1769092474000,"created":"2026-01-22T14:34:34.953907+00:00","modified":"2026-01-22T14:34:34.953907+00:00","deleted":null,"priority":null,"restricted_roles":null,"restriction_policy":null,"draft_status":"published","assets":[],"overall_state_modified":null,"overall_state":"No Data","creator":{"name":"Peter Kalmakis","handle":"peter.kalmakis@datadoghq.com","email":"peter.kalmakis@datadoghq.com","id":39408},"run_as":null,"restricted":false}
+            {"id":25571039,"org_id":2,"type":"data-quality alert","name":"tf-TestAccDatadogMonitor_DataQuality_Basic-local-1770661996","message":"Data quality threshold exceeded","tags":[],"query":"formula(\"query1\").last(\"30m\") > 1000","options":{"include_tags":true,"new_host_delay":300,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":1000.0},"variables":[{"data_source":"data_quality_metrics","filter":"search for column where `database:production AND table:users`","group_by":["entity_id"],"measure":"row_count","name":"query1"}],"notify_audit":false,"silenced":{},"avalanche_window":10},"multi":false,"created_at":1770661998000,"created":"2026-02-09T18:33:18.257718+00:00","modified":"2026-02-09T18:33:18.257718+00:00","deleted":null,"priority":null,"restricted_roles":null,"restriction_policy":null,"draft_status":"published","assets":[],"overall_state_modified":null,"overall_state":"No Data","creator":{"name":"Peter Kalmakis","handle":"peter.kalmakis@datadoghq.com","email":"peter.kalmakis@datadoghq.com","id":39408},"run_as":null,"restricted":false}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 192.852667ms
+        duration: 149.894084ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -124,14 +124,14 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"draft_status":"published","message":"Data quality threshold exceeded","name":"tf-TestAccDatadogMonitor_DataQuality_Basic-local-1769092472","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":1000},"variables":[{"data_source":"data_quality_metrics","filter":"search for column where `database:production AND table:users`","group_by":["entity_id"],"measure":"row_count","name":"query1"}]},"priority":null,"query":"formula(\"query1\").last(\"30m\") \u003e 1000","restricted_roles":null,"tags":[],"type":"data-quality alert"}
+            {"draft_status":"published","message":"Data quality threshold exceeded","name":"tf-TestAccDatadogMonitor_DataQuality_Basic-local-1770661996","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":1000},"variables":[{"data_source":"data_quality_metrics","filter":"search for column where `database:production AND table:users`","group_by":["entity_id"],"measure":"row_count","name":"query1"}]},"priority":null,"query":"formula(\"query1\").last(\"30m\") \u003e 1000","restricted_roles":null,"tags":[],"type":"data-quality alert"}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/25327310/validate
+        url: https://api.datadoghq.com/api/v1/monitor/25571039/validate
         method: POST
       response:
         proto: HTTP/2.0
@@ -148,7 +148,7 @@ interactions:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 61.461875ms
+        duration: 62.914916ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -165,7 +165,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/25327310?with_assets=true
+        url: https://api.datadoghq.com/api/v1/monitor/25571039?with_assets=true
         method: GET
       response:
         proto: HTTP/2.0
@@ -176,13 +176,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":25327310,"org_id":2,"type":"data-quality alert","name":"tf-TestAccDatadogMonitor_DataQuality_Basic-local-1769092472","message":"Data quality threshold exceeded","tags":[],"query":"formula(\"query1\").last(\"30m\") > 1000","options":{"include_tags":true,"new_host_delay":300,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":1000.0},"variables":[{"data_source":"data_quality_metrics","filter":"search for column where `database:production AND table:users`","group_by":["entity_id"],"measure":"row_count","name":"query1"}],"notify_audit":false,"silenced":{},"avalanche_window":10},"multi":false,"created_at":1769092474000,"created":"2026-01-22T14:34:34.953907+00:00","modified":"2026-01-22T14:34:34.953907+00:00","deleted":null,"priority":null,"restricted_roles":null,"draft_status":"published","assets":[],"overall_state_modified":null,"overall_state":"No Data","creator":{"name":"Peter Kalmakis","email":"peter.kalmakis@datadoghq.com","handle":"peter.kalmakis@datadoghq.com","id":39408},"run_as":null,"restricted":false}
+            {"id":25571039,"org_id":2,"type":"data-quality alert","name":"tf-TestAccDatadogMonitor_DataQuality_Basic-local-1770661996","message":"Data quality threshold exceeded","tags":[],"query":"formula(\"query1\").last(\"30m\") > 1000","options":{"include_tags":true,"new_host_delay":300,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":1000.0},"variables":[{"data_source":"data_quality_metrics","filter":"search for column where `database:production AND table:users`","group_by":["entity_id"],"measure":"row_count","name":"query1"}],"notify_audit":false,"silenced":{},"avalanche_window":10},"multi":false,"created_at":1770661998000,"created":"2026-02-09T18:33:18.257718+00:00","modified":"2026-02-09T18:33:18.257718+00:00","deleted":null,"priority":null,"restricted_roles":null,"draft_status":"published","assets":[],"overall_state_modified":null,"overall_state":"No Data","creator":{"name":"Peter Kalmakis","email":"peter.kalmakis@datadoghq.com","handle":"peter.kalmakis@datadoghq.com","id":39408},"run_as":null,"restricted":false}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 181.80625ms
+        duration: 129.234542ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -195,14 +195,14 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"draft_status":"published","message":"Data quality threshold exceeded","name":"tf-TestAccDatadogMonitor_DataQuality_Basic-local-1769092472","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":1000},"variables":[{"data_source":"data_quality_metrics","filter":"search for column where `database:production AND table:users`","group_by":["entity_id"],"measure":"row_count","name":"query1"}]},"priority":null,"query":"formula(\"query1\").last(\"30m\") \u003e 1000","restricted_roles":null,"tags":[],"type":"data-quality alert"}
+            {"draft_status":"published","message":"Data quality threshold exceeded","name":"tf-TestAccDatadogMonitor_DataQuality_Basic-local-1770661996","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":1000},"variables":[{"data_source":"data_quality_metrics","filter":"search for column where `database:production AND table:users`","group_by":["entity_id"],"measure":"row_count","name":"query1"}]},"priority":null,"query":"formula(\"query1\").last(\"30m\") \u003e 1000","restricted_roles":null,"tags":[],"type":"data-quality alert"}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/25327310/validate
+        url: https://api.datadoghq.com/api/v1/monitor/25571039/validate
         method: POST
       response:
         proto: HTTP/2.0
@@ -219,7 +219,7 @@ interactions:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 85.285125ms
+        duration: 62.851042ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -236,7 +236,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/25327310
+        url: https://api.datadoghq.com/api/v1/monitor/25571039
         method: DELETE
       response:
         proto: HTTP/2.0
@@ -247,13 +247,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"deleted_monitor_id":25327310}
+            {"deleted_monitor_id":25571039}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 174.55575ms
+        duration: 172.564125ms
     - id: 7
       request:
         proto: HTTP/1.1
@@ -270,7 +270,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/25327310
+        url: https://api.datadoghq.com/api/v1/monitor/25571039
         method: GET
       response:
         proto: HTTP/2.0
@@ -286,4 +286,4 @@ interactions:
                 - application/json
         status: 404 Not Found
         code: 404
-        duration: 107.155917ms
+        duration: 128.680541ms
