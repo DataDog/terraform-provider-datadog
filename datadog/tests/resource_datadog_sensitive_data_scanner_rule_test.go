@@ -134,9 +134,7 @@ func TestAccSensitiveDataScannerRuleWithStandardPattern(t *testing.T) {
 		t.Skip("This test doesn't support recording or replaying")
 	}
 
-	ctx, accProviders := testAccProviders(context.Background(), t)
-	_ = uniqueEntityName(ctx, t) // consume unique names for deterministic cassette naming
-	_ = uniqueEntityName(ctx, t)
+	_, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource_name_1 := "datadog_sensitive_data_scanner_rule.sp_rule_1"
