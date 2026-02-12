@@ -41,7 +41,9 @@ resource "datadog_team_permission_setting" "foo" {
 
 ## Import
 
-This resource can be imported using the [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import). For example:
+Import is supported using the following syntax:
+
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
 
 ```shell
 # This resource is imported using team_id and action separated by `:`.
