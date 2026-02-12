@@ -74,6 +74,7 @@ datadog/**/*datadog_user*                        @DataDog/api-reliability @DataD
 datadog/**/*datadog_webhook*                     @DataDog/api-reliability @DataDog/collaboration-integrations
 datadog/**/*datadog_workflow_automation*         @DataDog/api-reliability @DataDog/workflow-automation-backend
 datadog/**/*datadog_powerpack*                   @DataDog/api-reliability @DataDog/dashboards-backend
+datadog/**/*datadog_reference_table*             @DataDog/api-reliability @DataDog/redapl-experiences
 datadog/**/*datadog_role_users*                  @DataDog/api-reliability @DataDog/team-aaa
 datadog/**/*datadog_rum*                         @DataDog/api-reliability @DataDog/rum-backend
 datadog/**/*datadog_security*                    @DataDog/api-reliability @DataDog/k9-cloud-security-platform
