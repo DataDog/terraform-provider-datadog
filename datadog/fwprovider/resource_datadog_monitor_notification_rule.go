@@ -101,17 +101,18 @@ func (r *MonitorNotificationRuleResource) Schema(_ context.Context, _ resource.S
 		},
 		Blocks: map[string]schema.Block{
 			"filter": schema.SingleNestedBlock{
+				Description: "Specifies the matching criteria for monitor notifications.",
 				Attributes: map[string]schema.Attribute{
 					"tags": schema.SetAttribute{
 						ElementType: types.StringType,
 						Optional:    true,
-						Description: "All tags that target monitors must match.",
+						Description: "A list of tag key:value pairs (e.g. team:product). All tags must match (AND semantics).",
 						Validators: []validator.Set{
 							setvalidator.SizeAtLeast(1),
 						},
 					},
 					"scope": schema.StringAttribute{
-						Description: "The scope to which the monitor applied.",
+						Description: "A scope expression composed of `key:value` pairs (such as `env:prod`) with boolean operators (AND, OR, NOT) and parentheses for grouping.",
 						Optional:    true,
 					},
 				},
@@ -141,11 +142,11 @@ func (r *MonitorNotificationRuleResource) Schema(_ context.Context, _ resource.S
 							Attributes: map[string]schema.Attribute{
 								"scope": schema.StringAttribute{
 									Required:    true,
-									Description: "The scope to which the monitor applied.",
+									Description: "Defines the condition under which the recipients are notified. Supported formats: Monitor status condition using `transition_type:<status>` (for example `transition_type:is_alert`) or a single tag `key:value pair` (for example `env:prod`).",
 								},
 								"recipients": schema.SetAttribute{
 									ElementType: types.StringType,
-									Description: "List of recipients to notify.",
+									Description: "A list of recipients to notify. Uses the same format as the monitor message field. Must not start with an '@'.",
 									Required:    true,
 									Validators: []validator.Set{
 										setvalidator.SizeAtLeast(1),
