@@ -1,13 +1,10 @@
 package test
 
 import (
-	"context"
-	"os"
 	"strings"
 	"sync"
 	"testing"
 
-	common "github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 )
 
@@ -41,23 +38,11 @@ func TestSweepSensitiveDataScannerGroups(t *testing.T) {
 func doSweepSensitiveDataScannerGroups(t *testing.T) {
 	t.Helper()
 
-	apiKey := os.Getenv(testAPIKeyEnvName)
-	appKey := os.Getenv(testAPPKeyEnvName)
-	apiURL := os.Getenv(testAPIUrlEnvName)
-
-	if apiKey == "" || appKey == "" {
-		t.Log("SDS sweep: DD_TEST_CLIENT_API_KEY or DD_TEST_CLIENT_APP_KEY not set, skipping cleanup")
+	ctx, client := newSweepAPIClient(t)
+	if client == nil {
 		return
 	}
 
-	ctx, err := buildContext(context.Background(), apiKey, appKey, apiURL)
-	if err != nil {
-		t.Logf("SDS sweep: failed to build API context: %v", err)
-		return
-	}
-
-	cfg := common.NewConfiguration()
-	client := common.NewAPIClient(cfg)
 	api := datadogV2.NewSensitiveDataScannerApi(client)
 
 	resp, _, err := api.ListScanningGroups(ctx)
