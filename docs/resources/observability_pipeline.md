@@ -351,13 +351,13 @@ Required:
 
 Required:
 
+- `encoding` (String) Encoding format for log events. Valid values: `json`, `raw_message`.
 - `project` (String) The GCP project ID that owns the Pub/Sub topic.
 - `topic` (String) The Pub/Sub topic name to publish logs to.
 
 Optional:
 
 - `auth` (Block List) GCP credentials used to authenticate with Google Cloud services. (see [below for nested schema](#nestedblock--config--destination--google_pubsub--auth))
-- `encoding` (String) Encoding format for log events. Valid values: `json`, `raw_message`.
 - `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--destination--google_pubsub--tls))
 
 <a id="nestedblock--config--destination--google_pubsub--auth"></a>
