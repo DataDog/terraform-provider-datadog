@@ -174,6 +174,107 @@ resource "datadog_service_level_objective" "foo" {
 }`, uniq)
 }
 
+func testAccCheckDatadogServiceLevelObjectiveCountSpecConfig(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_service_level_objective" "foo" {
+  name = "%s"
+  type = "metric"
+  description = "some description about foo SLO"
+  sli_specification {
+    count {
+      good_events_formula  = "query1"
+      total_events_formula = "query2"
+
+      queries {
+        metric_query {
+          name        = "query1"
+          data_source = "metrics"
+          query       = "sum:my.metric{status:good}.as_count()"
+        }
+      }
+
+      queries {
+        metric_query {
+          name        = "query2"
+          data_source = "metrics"
+          query       = "sum:my.metric{*}.as_count()"
+        }
+      }
+    }
+  }
+
+  thresholds {
+    timeframe = "7d"
+    target    = 99.5
+    warning   = 99.8
+  }
+
+  thresholds {
+    timeframe = "30d"
+    target    = 99
+  }
+
+  timeframe = "7d"
+
+  target_threshold = 99.5
+
+  warning_threshold = 99.8
+
+  tags = ["foo:bar", "baz"]
+}`, uniq)
+}
+
+func testAccCheckDatadogServiceLevelObjectiveCountSpecConfigUpdated(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_service_level_objective" "foo" {
+  name = "%s"
+  type = "metric"
+  description = "updated description about foo SLO"
+  sli_specification {
+    count {
+      good_events_formula  = "query1"
+      total_events_formula = "query2"
+
+      queries {
+        metric_query {
+          name        = "query1"
+          data_source = "metrics"
+          query       = "sum:my.metric{status:ok}.as_count()"
+        }
+      }
+
+      queries {
+        metric_query {
+          name        = "query2"
+          data_source = "metrics"
+          query       = "sum:my.metric{*}.as_count()"
+        }
+      }
+    }
+  }
+
+  thresholds {
+    timeframe = "7d"
+    target    = 99.5
+    warning   = 99.8
+  }
+
+  thresholds {
+    timeframe = "30d"
+    target    = 98
+    warning   = 99
+  }
+
+  timeframe = "7d"
+
+  target_threshold = 99.5
+
+  warning_threshold = 99.8
+
+  tags = ["foo:bar", "baz"]
+}`, uniq)
+}
+
 func testAccCheckDatadogServiceLevelObjectiveInvalidMonitorConfig(uniq string) string {
 	return fmt.Sprintf(`
 resource "datadog_service_level_objective" "bar" {
@@ -433,6 +534,136 @@ func TestAccDatadogServiceLevelObjective_TimeSlice(t *testing.T) {
 						"datadog_service_level_objective.foo", "target_threshold", "99"),
 					resource.TestCheckResourceAttr(
 						"datadog_service_level_objective.foo", "warning_threshold", "99.5"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "tags.#", "2"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_service_level_objective.foo", "tags.*", "baz"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_service_level_objective.foo", "tags.*", "foo:bar"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogServiceLevelObjective_CountSpec(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	sloName := uniqueEntityName(ctx, t)
+	sloNameUpdated := sloName + "-updated"
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogServiceLevelObjectiveDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogServiceLevelObjectiveCountSpecConfig(sloName),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogServiceLevelObjectiveExists(accProvider, "datadog_service_level_objective.foo"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "name", sloName),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "description", "some description about foo SLO"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "type", "metric"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "sli_specification.#", "1"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "sli_specification.0.count.#", "1"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "sli_specification.0.count.0.good_events_formula", "query1"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "sli_specification.0.count.0.total_events_formula", "query2"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "sli_specification.0.count.0.queries.#", "2"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "sli_specification.0.count.0.queries.0.metric_query.#", "1"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "sli_specification.0.count.0.queries.0.metric_query.0.name", "query1"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "sli_specification.0.count.0.queries.0.metric_query.0.data_source", "metrics"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "sli_specification.0.count.0.queries.0.metric_query.0.query", "sum:my.metric{status:good}.as_count()"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "sli_specification.0.count.0.queries.1.metric_query.#", "1"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "sli_specification.0.count.0.queries.1.metric_query.0.name", "query2"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "sli_specification.0.count.0.queries.1.metric_query.0.data_source", "metrics"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "sli_specification.0.count.0.queries.1.metric_query.0.query", "sum:my.metric{*}.as_count()"),
+					// Thresholds
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "thresholds.#", "2"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "thresholds.0.timeframe", "7d"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "thresholds.0.target", "99.5"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "thresholds.0.warning", "99.8"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "thresholds.1.timeframe", "30d"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "thresholds.1.target", "99"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "timeframe", "7d"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "target_threshold", "99.5"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "warning_threshold", "99.8"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "tags.#", "2"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_service_level_objective.foo", "tags.*", "baz"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_service_level_objective.foo", "tags.*", "foo:bar"),
+				),
+			},
+			{
+				Config: testAccCheckDatadogServiceLevelObjectiveCountSpecConfigUpdated(sloNameUpdated),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogServiceLevelObjectiveExists(accProvider, "datadog_service_level_objective.foo"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "name", sloNameUpdated),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "description", "updated description about foo SLO"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "type", "metric"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "sli_specification.#", "1"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "sli_specification.0.count.#", "1"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "sli_specification.0.count.0.good_events_formula", "query1"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "sli_specification.0.count.0.total_events_formula", "query2"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "sli_specification.0.count.0.queries.#", "2"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "sli_specification.0.count.0.queries.0.metric_query.0.name", "query1"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "sli_specification.0.count.0.queries.0.metric_query.0.query", "sum:my.metric{status:ok}.as_count()"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "sli_specification.0.count.0.queries.1.metric_query.0.name", "query2"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "sli_specification.0.count.0.queries.1.metric_query.0.query", "sum:my.metric{*}.as_count()"),
+					// Updated thresholds
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "thresholds.#", "2"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "thresholds.0.timeframe", "7d"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "thresholds.0.target", "99.5"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "thresholds.0.warning", "99.8"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "thresholds.1.timeframe", "30d"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "thresholds.1.target", "98"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "thresholds.1.warning", "99"),
 					resource.TestCheckResourceAttr(
 						"datadog_service_level_objective.foo", "tags.#", "2"),
 					resource.TestCheckTypeSetElemAttr(
