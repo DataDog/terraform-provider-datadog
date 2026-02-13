@@ -380,6 +380,11 @@ func resourceDatadogMonitor() *schema.Resource {
 											Type:        schema.TypeInt,
 											Optional:    true,
 										},
+										"timezone": {
+											Description: "The timezone for the cumulative evaluation window start time.",
+											Type:        schema.TypeString,
+											Optional:    true,
+										},
 									},
 								},
 							},
@@ -777,6 +782,9 @@ func buildMonitorStruct(d utils.Resource) (*datadogV1.Monitor, *datadogV1.Monito
 					}
 					if hour_starts, ok := evaluation_window_map["hour_starts"].(int); ok && !day_month_scheduling {
 						evaluation_window.SetHourStarts(int32(hour_starts))
+					}
+					if timezone, ok := evaluation_window_map["timezone"].(string); ok && timezone != "" {
+						evaluation_window.SetTimezone(timezone)
 					}
 					scheduling_options.SetEvaluationWindow(*evaluation_window)
 				}
@@ -1458,6 +1466,9 @@ func updateMonitorState(d *schema.ResourceData, meta interface{}, m *datadogV1.M
 		}
 		if m, ok := e.GetMonthStartsOk(); ok {
 			evaluation_window["month_starts"] = m
+		}
+		if timezone, ok := e.GetTimezoneOk(); ok {
+			evaluation_window["timezone"] = *timezone
 		}
 	}
 	custom_schedule := make(map[string]interface{})
