@@ -198,3 +198,83 @@ resource "datadog_logs_index" "sample_index" {
 }
 `, name)
 }
+
+func TestAccDatadogLogsIndex_WithTags(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	uniq := strings.ToLower(strings.ReplaceAll(uniqueEntityName(ctx, t), "_", "-"))
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogLogsIndexWithTagsConfig(uniq),
+				Check: resource.ComposeTestCheckFunc(
+					sleep(),
+					resource.TestCheckResourceAttr("datadog_logs_index.tagged_index", "name", uniq),
+					resource.TestCheckResourceAttr("datadog_logs_index.tagged_index", "tags.#", "2"),
+					resource.TestCheckTypeSetElemAttr("datadog_logs_index.tagged_index", "tags.*", "team:backend"),
+					resource.TestCheckTypeSetElemAttr("datadog_logs_index.tagged_index", "tags.*", "env:test"),
+				),
+			},
+			{
+				Config: testAccCheckDatadogLogsIndexWithTagsUpdatedConfig(uniq),
+				Check: resource.ComposeTestCheckFunc(
+					sleep(),
+					resource.TestCheckResourceAttr("datadog_logs_index.tagged_index", "name", uniq),
+					resource.TestCheckResourceAttr("datadog_logs_index.tagged_index", "tags.#", "3"),
+					resource.TestCheckTypeSetElemAttr("datadog_logs_index.tagged_index", "tags.*", "team:frontend"),
+					resource.TestCheckTypeSetElemAttr("datadog_logs_index.tagged_index", "tags.*", "env:staging"),
+					resource.TestCheckTypeSetElemAttr("datadog_logs_index.tagged_index", "tags.*", "service:api"),
+				),
+			},
+			{
+				Config: testAccCheckDatadogLogsIndexWithoutTagsConfig(uniq),
+				Check: resource.ComposeTestCheckFunc(
+					sleep(),
+					resource.TestCheckResourceAttr("datadog_logs_index.tagged_index", "name", uniq),
+					resource.TestCheckResourceAttr("datadog_logs_index.tagged_index", "tags.#", "0"),
+				),
+			},
+		},
+	})
+}
+
+func testAccCheckDatadogLogsIndexWithTagsConfig(name string) string {
+	return fmt.Sprintf(`
+resource "datadog_logs_index" "tagged_index" {
+  name           = "%s"
+  retention_days = 15
+  filter {
+    query = "non-existent-tags-query"
+  }
+  tags = ["team:backend", "env:test"]
+}
+`, name)
+}
+
+func testAccCheckDatadogLogsIndexWithTagsUpdatedConfig(name string) string {
+	return fmt.Sprintf(`
+resource "datadog_logs_index" "tagged_index" {
+  name           = "%s"
+  retention_days = 15
+  filter {
+    query = "non-existent-tags-query"
+  }
+  tags = ["team:frontend", "env:staging", "service:api"]
+}
+`, name)
+}
+
+func testAccCheckDatadogLogsIndexWithoutTagsConfig(name string) string {
+	return fmt.Sprintf(`
+resource "datadog_logs_index" "tagged_index" {
+  name           = "%s"
+  retention_days = 15
+  filter {
+    query = "non-existent-tags-query"
+  }
+}
+`, name)
+}
