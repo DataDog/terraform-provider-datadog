@@ -2202,22 +2202,7 @@ func buildDatadogChangeRequests(terraformRequests *[]interface{}) *[]datadogV1.C
 			processQuery := v[0].(map[string]interface{})
 			datadogChangeRequest.ProcessQuery = buildDatadogProcessQuery(processQuery)
 		} else if v, ok := terraformRequest["query"].([]interface{}); ok && len(v) > 0 {
-			queries := make([]datadogV1.FormulaAndFunctionQueryDefinition, len(v))
-			for i, q := range v {
-				query := q.(map[string]interface{})
-				if w, ok := query["event_query"].([]interface{}); ok && len(w) > 0 {
-					queries[i] = *buildDatadogEventQuery(w[0].(map[string]interface{}))
-				} else if w, ok := query["metric_query"].([]interface{}); ok && len(w) > 0 {
-					queries[i] = *buildDatadogMetricQuery(w[0].(map[string]interface{}))
-				} else if w, ok := query["process_query"].([]interface{}); ok && len(w) > 0 {
-					queries[i] = *buildDatadogFormulaAndFunctionProcessQuery(w[0].(map[string]interface{}))
-				} else if w, ok := query["slo_query"].([]interface{}); ok && len(w) > 0 {
-					queries[i] = *buildDatadogFormulaAndFunctionSLOQuery(w[0].(map[string]interface{}))
-				} else if w, ok := query["cloud_cost_query"].([]interface{}); ok && len(w) > 0 {
-					queries[i] = *buildDatadogFormulaAndFunctionCloudCostQuery(w[0].(map[string]interface{}))
-				}
-			}
-			datadogChangeRequest.SetQueries(queries)
+			datadogChangeRequest.SetQueries(buildFormulaQuery(v))
 			// Change request for formulas and functions always have a response format of "scalar"
 			datadogChangeRequest.SetResponseFormat(datadogV1.FormulaAndFunctionResponseFormat("scalar"))
 		}
@@ -3105,20 +3090,7 @@ func buildDatadogHeatmapRequests(terraformRequests *[]interface{}) *[]datadogV1.
 			securityQuery := v[0].(map[string]interface{})
 			datadogHeatmapRequest.SecurityQuery = buildDatadogApmOrLogQuery(securityQuery)
 		} else if v, ok := terraformRequest["query"].([]interface{}); ok && len(v) > 0 {
-			queries := make([]datadogV1.FormulaAndFunctionQueryDefinition, len(v))
-			for i, q := range v {
-				query := q.(map[string]interface{})
-				if w, ok := query["event_query"].([]interface{}); ok && len(w) > 0 {
-					queries[i] = *buildDatadogEventQuery(w[0].(map[string]interface{}))
-				} else if w, ok := query["metric_query"].([]interface{}); ok && len(w) > 0 {
-					queries[i] = *buildDatadogMetricQuery(w[0].(map[string]interface{}))
-				} else if w, ok := query["process_query"].([]interface{}); ok && len(w) > 0 {
-					queries[i] = *buildDatadogFormulaAndFunctionProcessQuery(w[0].(map[string]interface{}))
-				} else if w, ok := query["slo_query"].([]interface{}); ok && len(w) > 0 {
-					queries[i] = *buildDatadogFormulaAndFunctionSLOQuery(w[0].(map[string]interface{}))
-				}
-			}
-			datadogHeatmapRequest.SetQueries(queries)
+			datadogHeatmapRequest.SetQueries(buildFormulaQuery(v))
 			datadogHeatmapRequest.SetResponseFormat(datadogV1.FormulaAndFunctionResponseFormat("timeseries"))
 		}
 		if v, ok := terraformRequest["formula"].([]interface{}); ok && len(v) > 0 {
@@ -4327,22 +4299,7 @@ func buildDatadogQueryValueRequests(terraformRequests *[]interface{}) *[]datadog
 			auditQuery := v[0].(map[string]interface{})
 			datadogQueryValueRequest.AuditQuery = buildDatadogApmOrLogQuery(auditQuery)
 		} else if v, ok := terraformRequest["query"].([]interface{}); ok && len(v) > 0 {
-			queries := make([]datadogV1.FormulaAndFunctionQueryDefinition, len(v))
-			for i, q := range v {
-				query := q.(map[string]interface{})
-				if w, ok := query["event_query"].([]interface{}); ok && len(w) > 0 {
-					queries[i] = *buildDatadogEventQuery(w[0].(map[string]interface{}))
-				} else if w, ok := query["metric_query"].([]interface{}); ok && len(w) > 0 {
-					queries[i] = *buildDatadogMetricQuery(w[0].(map[string]interface{}))
-				} else if w, ok := query["process_query"].([]interface{}); ok && len(w) > 0 {
-					queries[i] = *buildDatadogFormulaAndFunctionProcessQuery(w[0].(map[string]interface{}))
-				} else if w, ok := query["slo_query"].([]interface{}); ok && len(w) > 0 {
-					queries[i] = *buildDatadogFormulaAndFunctionSLOQuery(w[0].(map[string]interface{}))
-				} else if w, ok := query["cloud_cost_query"].([]interface{}); ok && len(w) > 0 {
-					queries[i] = *buildDatadogFormulaAndFunctionCloudCostQuery(w[0].(map[string]interface{}))
-				}
-			}
-			datadogQueryValueRequest.SetQueries(queries)
+			datadogQueryValueRequest.SetQueries(buildFormulaQuery(v))
 			// Query Value requests for formulas and functions always has a response format of "scalar"
 			datadogQueryValueRequest.SetResponseFormat(datadogV1.FormulaAndFunctionResponseFormat("scalar"))
 		}
@@ -4648,26 +4605,7 @@ func buildDatadogQueryTableRequests(terraformRequests *[]interface{}) *[]datadog
 			apmStatsQuery := v[0].(map[string]interface{})
 			datadogQueryTableRequest.ApmStatsQuery = buildDatadogApmStatsQuery(apmStatsQuery)
 		} else if v, ok := terraformRequest["query"].([]interface{}); ok && len(v) > 0 {
-			queries := make([]datadogV1.FormulaAndFunctionQueryDefinition, len(v))
-			for i, q := range v {
-				query := q.(map[string]interface{})
-				if w, ok := query["event_query"].([]interface{}); ok && len(w) > 0 {
-					queries[i] = *buildDatadogEventQuery(w[0].(map[string]interface{}))
-				} else if w, ok := query["metric_query"].([]interface{}); ok && len(w) > 0 {
-					queries[i] = *buildDatadogMetricQuery(w[0].(map[string]interface{}))
-				} else if w, ok := query["process_query"].([]interface{}); ok && len(w) > 0 {
-					queries[i] = *buildDatadogFormulaAndFunctionProcessQuery(w[0].(map[string]interface{}))
-				} else if w, ok := query["apm_dependency_stats_query"].([]interface{}); ok && len(w) > 0 {
-					queries[i] = *buildDatadogFormulaAndFunctionAPMDependencyStatsQuery(w[0].(map[string]interface{}))
-				} else if w, ok := query["apm_resource_stats_query"].([]interface{}); ok && len(w) > 0 {
-					queries[i] = *buildDatadogFormulaAndFunctionAPMResourceStatsQuery(w[0].(map[string]interface{}))
-				} else if w, ok := query["slo_query"].([]interface{}); ok && len(w) > 0 {
-					queries[i] = *buildDatadogFormulaAndFunctionSLOQuery(w[0].(map[string]interface{}))
-				} else if w, ok := query["cloud_cost_query"].([]interface{}); ok && len(w) > 0 {
-					queries[i] = *buildDatadogFormulaAndFunctionCloudCostQuery(w[0].(map[string]interface{}))
-				}
-			}
-			datadogQueryTableRequest.SetQueries(queries)
+			datadogQueryTableRequest.SetQueries(buildFormulaQuery(v))
 			// Query Table request for formulas and functions always have a response format of "scalar"
 			datadogQueryTableRequest.SetResponseFormat(datadogV1.FormulaAndFunctionResponseFormat("scalar"))
 		}
@@ -5144,22 +5082,7 @@ func buildDatadogScatterplotTableRequest(terraformRequest map[string]interface{}
 	datadogScatterplotTableRequest := datadogV1.NewScatterplotTableRequest()
 
 	if v, ok := terraformRequest["query"].([]interface{}); ok && len(v) > 0 {
-		queries := make([]datadogV1.FormulaAndFunctionQueryDefinition, len(v))
-		for i, q := range v {
-			query := q.(map[string]interface{})
-			if w, ok := query["event_query"].([]interface{}); ok && len(w) > 0 {
-				queries[i] = *buildDatadogEventQuery(w[0].(map[string]interface{}))
-			} else if w, ok := query["metric_query"].([]interface{}); ok && len(w) > 0 {
-				queries[i] = *buildDatadogMetricQuery(w[0].(map[string]interface{}))
-			} else if w, ok := query["process_query"].([]interface{}); ok && len(w) > 0 {
-				queries[i] = *buildDatadogFormulaAndFunctionProcessQuery(w[0].(map[string]interface{}))
-			} else if w, ok := query["slo_query"].([]interface{}); ok && len(w) > 0 {
-				queries[i] = *buildDatadogFormulaAndFunctionSLOQuery(w[0].(map[string]interface{}))
-			} else if w, ok := query["cloud_cost_query"].([]interface{}); ok && len(w) > 0 {
-				queries[i] = *buildDatadogFormulaAndFunctionCloudCostQuery(w[0].(map[string]interface{}))
-			}
-		}
-		datadogScatterplotTableRequest.SetQueries(queries)
+		datadogScatterplotTableRequest.SetQueries(buildFormulaQuery(v))
 		datadogScatterplotTableRequest.SetResponseFormat(datadogV1.FormulaAndFunctionResponseFormat("scalar"))
 	}
 
@@ -6268,20 +6191,7 @@ func buildDatadogGeomapRequests(terraformRequests *[]interface{}) *[]datadogV1.G
 			rumQuery := v[0].(map[string]interface{})
 			datadogGeomapRequest.RumQuery = buildDatadogApmOrLogQuery(rumQuery)
 		} else if v, ok := terraformRequest["query"].([]interface{}); ok && len(v) > 0 {
-			queries := make([]datadogV1.FormulaAndFunctionQueryDefinition, len(v))
-			for i, q := range v {
-				query := q.(map[string]interface{})
-				if w, ok := query["event_query"].([]interface{}); ok && len(w) > 0 {
-					queries[i] = *buildDatadogEventQuery(w[0].(map[string]interface{}))
-				} else if w, ok := query["metric_query"].([]interface{}); ok && len(w) > 0 {
-					queries[i] = *buildDatadogMetricQuery(w[0].(map[string]interface{}))
-				} else if w, ok := query["process_query"].([]interface{}); ok && len(w) > 0 {
-					queries[i] = *buildDatadogFormulaAndFunctionProcessQuery(w[0].(map[string]interface{}))
-				} else if w, ok := query["slo_query"].([]interface{}); ok && len(w) > 0 {
-					queries[i] = *buildDatadogFormulaAndFunctionSLOQuery(w[0].(map[string]interface{}))
-				}
-			}
-			datadogGeomapRequest.SetQueries(queries)
+			datadogGeomapRequest.SetQueries(buildFormulaQuery(v))
 			// Geomap requests for formulas and functions always has a response format of "scalar"
 			datadogGeomapRequest.SetResponseFormat(datadogV1.FormulaAndFunctionResponseFormat("scalar"))
 		}
@@ -6779,22 +6689,7 @@ func buildDatadogSunburstRequests(terraformRequests *[]interface{}) *[]datadogV1
 			auditQuery := v[0].(map[string]interface{})
 			datadogSunburstRequest.AuditQuery = buildDatadogApmOrLogQuery(auditQuery)
 		} else if v, ok := terraformRequest["query"].([]interface{}); ok && len(v) > 0 {
-			queries := make([]datadogV1.FormulaAndFunctionQueryDefinition, len(v))
-			for i, q := range v {
-				query := q.(map[string]interface{})
-				if w, ok := query["event_query"].([]interface{}); ok && len(w) > 0 {
-					queries[i] = *buildDatadogEventQuery(w[0].(map[string]interface{}))
-				} else if w, ok := query["metric_query"].([]interface{}); ok && len(w) > 0 {
-					queries[i] = *buildDatadogMetricQuery(w[0].(map[string]interface{}))
-				} else if w, ok := query["process_query"].([]interface{}); ok && len(w) > 0 {
-					queries[i] = *buildDatadogFormulaAndFunctionProcessQuery(w[0].(map[string]interface{}))
-				} else if w, ok := query["slo_query"].([]interface{}); ok && len(w) > 0 {
-					queries[i] = *buildDatadogFormulaAndFunctionSLOQuery(w[0].(map[string]interface{}))
-				} else if w, ok := query["cloud_cost_query"].([]interface{}); ok && len(w) > 0 {
-					queries[i] = *buildDatadogFormulaAndFunctionCloudCostQuery(w[0].(map[string]interface{}))
-				}
-			}
-			datadogSunburstRequest.SetQueries(queries)
+			datadogSunburstRequest.SetQueries(buildFormulaQuery(v))
 			datadogSunburstRequest.SetResponseFormat(datadogV1.FormulaAndFunctionResponseFormat("scalar"))
 		}
 		if v, ok := terraformRequest["formula"].([]interface{}); ok && len(v) > 0 {
@@ -7074,6 +6969,29 @@ func getFormulaSchema() *schema.Schema {
 			},
 		},
 	}
+}
+
+func buildFormulaQuery(qs []interface{}) []datadogV1.FormulaAndFunctionQueryDefinition {
+	queries := make([]datadogV1.FormulaAndFunctionQueryDefinition, len(qs))
+	for i, q := range qs {
+		query := q.(map[string]interface{})
+		if w, ok := query["event_query"].([]interface{}); ok && len(w) > 0 {
+			queries[i] = *buildDatadogEventQuery(w[0].(map[string]interface{}))
+		} else if w, ok := query["metric_query"].([]interface{}); ok && len(w) > 0 {
+			queries[i] = *buildDatadogMetricQuery(w[0].(map[string]interface{}))
+		} else if w, ok := query["process_query"].([]interface{}); ok && len(w) > 0 {
+			queries[i] = *buildDatadogFormulaAndFunctionProcessQuery(w[0].(map[string]interface{}))
+		} else if w, ok := query["apm_dependency_stats_query"].([]interface{}); ok && len(w) > 0 {
+			queries[i] = *buildDatadogFormulaAndFunctionAPMDependencyStatsQuery(w[0].(map[string]interface{}))
+		} else if w, ok := query["apm_resource_stats_query"].([]interface{}); ok && len(w) > 0 {
+			queries[i] = *buildDatadogFormulaAndFunctionAPMResourceStatsQuery(w[0].(map[string]interface{}))
+		} else if w, ok := query["slo_query"].([]interface{}); ok && len(w) > 0 {
+			queries[i] = *buildDatadogFormulaAndFunctionSLOQuery(w[0].(map[string]interface{}))
+		} else if w, ok := query["cloud_cost_query"].([]interface{}); ok && len(w) > 0 {
+			queries[i] = *buildDatadogFormulaAndFunctionCloudCostQuery(w[0].(map[string]interface{}))
+		}
+	}
+	return queries
 }
 
 func getFormulaQuerySchema() *schema.Schema {
@@ -8018,22 +7936,7 @@ func buildDatadogTimeseriesRequests(terraformRequests *[]interface{}) *[]datadog
 			auditQuery := v[0].(map[string]interface{})
 			datadogTimeseriesRequest.AuditQuery = buildDatadogApmOrLogQuery(auditQuery)
 		} else if v, ok := terraformRequest["query"].([]interface{}); ok && len(v) > 0 {
-			queries := make([]datadogV1.FormulaAndFunctionQueryDefinition, len(v))
-			for i, q := range v {
-				query := q.(map[string]interface{})
-				if w, ok := query["event_query"].([]interface{}); ok && len(w) > 0 {
-					queries[i] = *buildDatadogEventQuery(w[0].(map[string]interface{}))
-				} else if w, ok := query["metric_query"].([]interface{}); ok && len(w) > 0 {
-					queries[i] = *buildDatadogMetricQuery(w[0].(map[string]interface{}))
-				} else if w, ok := query["process_query"].([]interface{}); ok && len(w) > 0 {
-					queries[i] = *buildDatadogFormulaAndFunctionProcessQuery(w[0].(map[string]interface{}))
-				} else if w, ok := query["slo_query"].([]interface{}); ok && len(w) > 0 {
-					queries[i] = *buildDatadogFormulaAndFunctionSLOQuery(w[0].(map[string]interface{}))
-				} else if w, ok := query["cloud_cost_query"].([]interface{}); ok && len(w) > 0 {
-					queries[i] = *buildDatadogFormulaAndFunctionCloudCostQuery(w[0].(map[string]interface{}))
-				}
-			}
-			datadogTimeseriesRequest.SetQueries(queries)
+			datadogTimeseriesRequest.SetQueries(buildFormulaQuery(v))
 			datadogTimeseriesRequest.SetResponseFormat(datadogV1.FormulaAndFunctionResponseFormat("timeseries"))
 		}
 		if v, ok := terraformRequest["formula"].([]interface{}); ok && len(v) > 0 {
@@ -8347,22 +8250,7 @@ func buildDatadogToplistRequests(terraformRequests *[]interface{}) *[]datadogV1.
 			auditQuery := v[0].(map[string]interface{})
 			datadogToplistRequest.AuditQuery = buildDatadogApmOrLogQuery(auditQuery)
 		} else if v, ok := terraformRequest["query"].([]interface{}); ok && len(v) > 0 {
-			queries := make([]datadogV1.FormulaAndFunctionQueryDefinition, len(v))
-			for i, q := range v {
-				query := q.(map[string]interface{})
-				if w, ok := query["event_query"].([]interface{}); ok && len(w) > 0 {
-					queries[i] = *buildDatadogEventQuery(w[0].(map[string]interface{}))
-				} else if w, ok := query["metric_query"].([]interface{}); ok && len(w) > 0 {
-					queries[i] = *buildDatadogMetricQuery(w[0].(map[string]interface{}))
-				} else if w, ok := query["process_query"].([]interface{}); ok && len(w) > 0 {
-					queries[i] = *buildDatadogFormulaAndFunctionProcessQuery(w[0].(map[string]interface{}))
-				} else if w, ok := query["slo_query"].([]interface{}); ok && len(w) > 0 {
-					queries[i] = *buildDatadogFormulaAndFunctionSLOQuery(w[0].(map[string]interface{}))
-				} else if w, ok := query["cloud_cost_query"].([]interface{}); ok && len(w) > 0 {
-					queries[i] = *buildDatadogFormulaAndFunctionCloudCostQuery(w[0].(map[string]interface{}))
-				}
-			}
-			datadogToplistRequest.SetQueries(queries)
+			datadogToplistRequest.SetQueries(buildFormulaQuery(v))
 			// Toplist requests for formulas and functions always has a response format of "scalar"
 			datadogToplistRequest.SetResponseFormat(datadogV1.FormulaAndFunctionResponseFormat("scalar"))
 		}
@@ -9270,22 +9158,7 @@ func buildDatadogTreemapRequests(terraformRequests *[]interface{}) *[]datadogV1.
 		// Build Treemap request
 		datadogTreemapRequest := datadogV1.NewTreeMapWidgetRequest()
 		if v, ok := terraformRequest["query"].([]interface{}); ok && len(v) > 0 {
-			queries := make([]datadogV1.FormulaAndFunctionQueryDefinition, len(v))
-			for i, q := range v {
-				query := q.(map[string]interface{})
-				if w, ok := query["event_query"].([]interface{}); ok && len(w) > 0 {
-					queries[i] = *buildDatadogEventQuery(w[0].(map[string]interface{}))
-				} else if w, ok := query["metric_query"].([]interface{}); ok && len(w) > 0 {
-					queries[i] = *buildDatadogMetricQuery(w[0].(map[string]interface{}))
-				} else if w, ok := query["process_query"].([]interface{}); ok && len(w) > 0 {
-					queries[i] = *buildDatadogFormulaAndFunctionProcessQuery(w[0].(map[string]interface{}))
-				} else if w, ok := query["slo_query"].([]interface{}); ok && len(w) > 0 {
-					queries[i] = *buildDatadogFormulaAndFunctionSLOQuery(w[0].(map[string]interface{}))
-				} else if w, ok := query["cloud_cost_query"].([]interface{}); ok && len(w) > 0 {
-					queries[i] = *buildDatadogFormulaAndFunctionCloudCostQuery(w[0].(map[string]interface{}))
-				}
-			}
-			datadogTreemapRequest.SetQueries(queries)
+			datadogTreemapRequest.SetQueries(buildFormulaQuery(v))
 			datadogTreemapRequest.SetResponseFormat(datadogV1.FormulaAndFunctionResponseFormat("scalar"))
 		}
 		if v, ok := terraformRequest["formula"].([]interface{}); ok && len(v) > 0 {
