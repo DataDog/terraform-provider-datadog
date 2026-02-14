@@ -70,6 +70,9 @@ get-test-deps:
 	gotestsum --version || go install gotest.tools/gotestsum@latest
 	which goimports || go install golang.org/x/tools/cmd/goimports@latest
 
+sweep:
+	TF_ACC=1 go test ./datadog/tests/ -run TestSweep -v -timeout 10m
+
 license-check:
 	@sh -c "'$(CURDIR)/scripts/license-check.sh'"
 
@@ -87,4 +90,4 @@ check-docs: docs
 		echo "Success: No generated documentation changes detected"; \
 	fi
 
-.PHONY: build check-docs docs test testall testacc cassettes vet fmt fmtcheck errcheck test-compile tools get-test-deps license-check
+.PHONY: build check-docs docs test testall testacc cassettes vet fmt fmtcheck errcheck test-compile tools get-test-deps license-check sweep
