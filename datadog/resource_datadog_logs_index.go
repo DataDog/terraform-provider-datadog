@@ -103,6 +103,13 @@ var indexSchema = map[string]*schema.Schema{
 			Schema: exclusionFilterSchema,
 		},
 	},
+	"tags": {
+		Description: "A list of tags for this index. Tags must be in `key:value` format.",
+		Type:        schema.TypeSet,
+		Optional:    true,
+		Computed:    true,
+		Elem:        &schema.Schema{Type: schema.TypeString},
+	},
 }
 
 var exclusionFilterSchema = map[string]*schema.Schema{
@@ -217,6 +224,9 @@ func updateLogsIndexState(d *schema.ResourceData, index *datadogV1.LogsIndex) di
 	if err := d.Set("exclusion_filter", buildTerraformExclusionFilters(index.GetExclusionFilters())); err != nil {
 		return diag.FromErr(err)
 	}
+	if err := d.Set("tags", index.GetTags()); err != nil {
+		return diag.FromErr(err)
+	}
 	return nil
 }
 
@@ -299,6 +309,15 @@ func buildDatadogIndexUpdateRequest(d *schema.ResourceData) *datadogV1.LogsIndex
 	}
 
 	ddIndex.ExclusionFilters = *buildDatadogExclusionFilters(d.Get("exclusion_filter").([]interface{}))
+	if v, ok := d.GetOk("tags"); ok {
+		tags := []string{}
+		for _, s := range v.(*schema.Set).List() {
+			tags = append(tags, s.(string))
+		}
+		ddIndex.SetTags(tags)
+	} else {
+		ddIndex.SetTags([]string{})
+	}
 	return &ddIndex
 }
 
@@ -330,6 +349,13 @@ func buildDatadogIndexCreateRequest(d *schema.ResourceData) *datadogV1.LogsIndex
 		}
 	}
 	ddIndex.ExclusionFilters = *buildDatadogExclusionFilters(d.Get("exclusion_filter").([]interface{}))
+	if v, ok := d.GetOk("tags"); ok {
+		tags := []string{}
+		for _, s := range v.(*schema.Set).List() {
+			tags = append(tags, s.(string))
+		}
+		ddIndex.SetTags(tags)
+	}
 	return &ddIndex
 }
 

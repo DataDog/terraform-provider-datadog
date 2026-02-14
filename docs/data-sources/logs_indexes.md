@@ -37,6 +37,7 @@ Read-Only:
 - `flex_retention_days` (Number)
 - `name` (String)
 - `retention_days` (Number)
+- `tags` (List of String)
 
 <a id="nestedobjatt--logs_indexes--daily_limit_reset"></a>
 ### Nested Schema for `logs_indexes.daily_limit_reset`
