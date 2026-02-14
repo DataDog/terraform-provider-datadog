@@ -29,4 +29,5 @@ resource "datadog_logs_index" "sample_index" {
       sample_rate = 1.0
     }
   }
+  tags = ["team:backend", "env:production"]
 }
