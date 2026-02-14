@@ -350,3 +350,19 @@ func isTokenChar(r rune) bool {
 	}
 	return false
 }
+
+// ValidateSecurityMonitoringDataSource validates the data_source field and warns about deprecated app_sec_spans value
+func ValidateSecurityMonitoringDataSource(enumValidator schema.SchemaValidateDiagFunc) schema.SchemaValidateDiagFunc {
+	return func(val interface{}, path cty.Path) diag.Diagnostics {
+		var diags diag.Diagnostics
+		if stringVal, ok := val.(string); ok && stringVal == "app_sec_spans" {
+			diags = append(diags, diag.Diagnostic{
+				Severity:      diag.Warning,
+				Summary:       "app_sec_spans datasource is deprecated",
+				Detail:        "Use data_source = \"spans\" and add @appsec.security_activity:* to your query to keep the same behavior",
+				AttributePath: path,
+			})
+		}
+		return append(diags, enumValidator(val, path)...)
+	}
+}
