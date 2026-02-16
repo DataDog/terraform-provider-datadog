@@ -719,3 +719,63 @@ resource "datadog_synthetics_test" "test_grpc_health" {
     tick_every = 900
   }
 }
+
+# Example Usage (Synthetics Network Path UDP test)
+# Create a new Datadog Synthetics Network Path test using UDP protocol
+resource "datadog_synthetics_test" "test_network_udp" {
+  name      = "Network Path UDP test on example.com"
+  type      = "network"
+  subtype   = "udp"
+  status    = "live"
+  message   = "Notify @pagerduty"
+  locations = ["aws:us-east-1"]
+  tags      = ["network:udp", "env:prod"]
+
+  request_definition {
+    host                = "example.com"
+    port                = "53"
+    e2e_queries         = 5
+    max_ttl             = 30
+    traceroute_queries  = 3
+    timeout             = 10
+    destination_service = "dns-server"
+    source_service      = "monitoring"
+  }
+
+  assertion {
+    type     = "latency"
+    operator = "lessThan"
+    property = "avg"
+    target   = "100"
+  }
+
+  assertion {
+    type     = "jitter"
+    operator = "lessThan"
+    target   = "10"
+  }
+
+  assertion {
+    type     = "packet_loss_percentage"
+    operator = "lessThan"
+    target   = "5.0"
+  }
+
+  assertion {
+    type     = "multi_network_hop"
+    operator = "lessThan"
+    property = "max"
+    target   = "15"
+  }
+
+  options_list {
+    tick_every = 900
+    retry {
+      count    = 2
+      interval = 300
+    }
+    monitor_options {
+      renotify_interval = 120
+    }
+  }
+}
