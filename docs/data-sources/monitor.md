@@ -117,3 +117,4 @@ Read-Only:
 - `day_starts` (String)
 - `hour_starts` (Number)
 - `month_starts` (Number)
+- `timezone` (String)

@@ -124,6 +124,7 @@ type EvaluationWindow struct {
 	DayStarts   types.String `tfsdk:"day_starts"`
 	MonthStarts types.Int32  `tfsdk:"month_starts"`
 	HourStarts  types.Int32  `tfsdk:"hour_starts"`
+	Timezone    types.String `tfsdk:"timezone"`
 }
 
 type CustomSchedule struct {
@@ -604,6 +605,10 @@ func (r *monitorResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 										Validators: []validator.Int32{
 											int32validator.Between(0, 59),
 										},
+									},
+									"timezone": schema.StringAttribute{
+										Optional:    true,
+										Description: "The timezone for the cumulative evaluation window start time.",
 									},
 								},
 							},
@@ -1178,6 +1183,7 @@ func (r *monitorResource) buildSchedulingOptionsStruct(ctx context.Context, sche
 		fwutils.SetOptString(evalWindow.DayStarts, evaluationWindowReq.SetDayStarts)
 		fwutils.SetOptInt32(evalWindow.HourStarts, evaluationWindowReq.SetHourStarts)
 		fwutils.SetOptInt32(evalWindow.MonthStarts, evaluationWindowReq.SetMonthStarts)
+		fwutils.SetOptString(evalWindow.Timezone, evaluationWindowReq.SetTimezone)
 		schedulingOptionsReq.SetEvaluationWindow(evaluationWindowReq)
 	}
 	if customSchedules := schedulingOption.CustomSchedule; len(customSchedules) > 0 {
@@ -1484,6 +1490,7 @@ func (r *monitorResource) updateSchedulingOptionState(state *monitorResourceMode
 			DayStarts:   fwutils.ToTerraformStr(evalWindow.GetDayStartsOk()),
 			MonthStarts: fwutils.ToTerraformInt32(evalWindow.GetMonthStartsOk()),
 			HourStarts:  fwutils.ToTerraformInt32(evalWindow.GetHourStartsOk()),
+			Timezone:    fwutils.ToTerraformStr(evalWindow.GetTimezoneOk()),
 		}}
 	}
 	if customSchedule, ok := schedulingOptions.GetCustomScheduleOk(); ok && customSchedule != nil && customSchedule.GetRecurrences() != nil &&

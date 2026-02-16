@@ -1066,6 +1066,8 @@ func TestAccDatadogMonitor_SchedulingOptionsHourStart(t *testing.T) {
 						"datadog_monitor.foo", "name", monitorName),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "scheduling_options.0.evaluation_window.0.hour_starts", "0"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "scheduling_options.0.evaluation_window.0.timezone", "Europe/Amsterdam"),
 				),
 			},
 		},
@@ -1089,6 +1091,7 @@ resource "datadog_monitor" "foo" {
   scheduling_options {
 	evaluation_window {
 	  hour_starts = "0"
+	  timezone = "Europe/Amsterdam"
 	}
   }
 }`, uniq)
@@ -2119,12 +2122,12 @@ func verifyRestrictedRolesSize(accProvider *fwprovider.FrameworkProvider, expect
 	}
 }
 
-func testAccCheckDatadogMonitorWithTagConfig(uniqueName string) string {
+func testAccCheckDatadogMonitorWithTagConfig(uniqueName string, tagKey string) string {
 	return fmt.Sprintf(`
 		resource "datadog_monitor_config_policy" "foo" {
 			policy_type = "tag"
 			tag_policy {
-				tag_key          = "foo"
+				tag_key          = "%s"
 				tag_key_required = true
 				valid_tag_values = ["bar"]
 			}
@@ -2138,28 +2141,29 @@ func testAccCheckDatadogMonitorWithTagConfig(uniqueName string) string {
 			monitor_thresholds {
 				critical = "2.0"
 			}
-		}`, uniqueName)
+		}`, tagKey, uniqueName)
 }
 
 func TestAccDatadogMonitor_WithTagConfig(t *testing.T) {
-	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
+	uniqueName := uniqueEntityName(ctx, t)
+	uniqueTagKey := fmt.Sprintf(`tag_key_%s`, uniqueName)
 	resource.Test(t, resource.TestCase{
 		PreCheck: func() { testAccPreCheck(t) },
 		ProviderFactories: map[string]func() (*schema.Provider, error){
 			"datadog": withDefaultTags(accProvider, map[string]interface{}{
-				"foo": "bar",
+				uniqueTagKey: "bar",
 			}),
 		},
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogMonitorWithTagConfig(uniqueEntityName(ctx, t)),
+				Config: testAccCheckDatadogMonitorWithTagConfig(uniqueName, uniqueTagKey),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.bar", "tags.#", "1"),
 					resource.TestCheckTypeSetElemAttr(
-						"datadog_monitor.bar", "tags.*", "foo:bar"),
+						"datadog_monitor.bar", "tags.*", fmt.Sprintf(`%s:bar`, uniqueTagKey)),
 				),
 			},
 		},
