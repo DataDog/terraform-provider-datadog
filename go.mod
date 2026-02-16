@@ -105,4 +105,6 @@ require (
 	google.golang.org/protobuf v1.36.6 // indirect
 )
 
+replace github.com/DataDog/datadog-api-client-go/v2 => ../datadog-api-client-go
+
 go 1.23.0
