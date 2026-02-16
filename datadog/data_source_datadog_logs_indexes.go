@@ -92,7 +92,7 @@ func dataSourceDatadogLogsIndexes() *schema.Resource {
 							},
 							"tags": {
 								Description: "A list of tags for this index. Tags are in `key:value` format.",
-								Type:        schema.TypeList,
+								Type:        schema.TypeSet,
 								Computed:    true,
 								Elem:        &schema.Schema{Type: schema.TypeString},
 							},
