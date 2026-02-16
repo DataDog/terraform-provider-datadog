@@ -2,14 +2,14 @@
 
 Terraform provides helpful [Extending Terraform][1] documentation for best practices around writing provider code. This document provides some guidelines for working with this project.
 
-## Prerequisites:
+## Prerequisites
 
--   [Terraform][2] 0.12.x and higher.
-    - The [`tfenv`](https://github.com/tfutils/tfenv) project lets you easily install and switch between terraform versions
--   [Go][3] 1.23 (to build the provider plugin)
--   A clone of this repository and the [\$GOPATH environment variable][7] set
--   [tfplugindocs][8]
--   [gotestsum][9] (to run project tests) `gotestsum` executable binary is installed into `$GOPATH/bin` when running `make get-test-deps`. Add the `$GOPATH/bin` directory to your `$PATH`
+- [Terraform][2] 0.12.x and higher.
+  - The [`tfenv`](https://github.com/tfutils/tfenv) project lets you easily install and switch between terraform versions
+- [Go][3] 1.23 (to build the provider plugin)
+- A clone of this repository and the [\$GOPATH environment variable][7] set
+- [tfplugindocs][8]
+- [gotestsum][9] (to run project tests) `gotestsum` executable binary is installed into `$GOPATH/bin` when running `make get-test-deps`. Add the `$GOPATH/bin` directory to your `$PATH`
 
 ## Adding new resources
 
@@ -20,6 +20,10 @@ Terraform provides helpful [Extending Terraform][1] documentation for best pract
 - When developing a datasource, plan to write 2 data-sources :
   - One that will have a singular name (ex: `datadog_user`) which returns exactly one objects (and fails if there is 0 or more than 0)
   - One that will have a plural name (ex: `datadog_users`) which returns a list of objects and succeed in all cases (0, 1 or more than 1 objects)
+
+## Write-Only Arguments
+
+When adding secret/sensitive attributes to Framework resources, use the write-only helpers in [`datadog/internal/fwutils`](./datadog/internal/fwutils/README.md#write-only-secret-helpers-writeonly_helpersgo). These generate the three-attribute pattern (`<attr>`, `<attr>_wo`, `<attr>_wo_version`) required by Terraform 1.11+ write-only support while maintaining backwards compatibility.
 
 ## Makefile
 
@@ -48,8 +52,8 @@ provider_installation {
  }
 ```
 
-2. Create a directory to put HCL files in, for example `terraform_examples`
-3. Create a `main.tf` file:
+1. Create a directory to put HCL files in, for example `terraform_examples`
+2. Create a `main.tf` file:
 
 ```shell
 # terraform_examples/main.tf
@@ -69,10 +73,10 @@ provider "datadog" {
 # ... any resource config
 ```
 
-5. In your `terraform_examples` folder, run `terraform init` once to initialize the directory
-6. In the datadog terraform provider folder, run `make`, which will build and place the binary in \$GOPATH/bin
-7. Run `terraform plan|apply` in your `terraform_examples` folder to use your locally built provider.
-8. Iterate by making changes to the provider, running `make`, and just running `terraform plan|apply` in your `terraform_examples` folder.
+1. In your `terraform_examples` folder, run `terraform init` once to initialize the directory
+2. In the datadog terraform provider folder, run `make`, which will build and place the binary in \$GOPATH/bin
+3. Run `terraform plan|apply` in your `terraform_examples` folder to use your locally built provider.
+4. Iterate by making changes to the provider, running `make`, and just running `terraform plan|apply` in your `terraform_examples` folder.
 
 ## Testing the Provider
 
@@ -80,16 +84,7 @@ The Datadog terraform provider uses the standard [Terraform Testing Framework][6
 
 **NOTE** Use the API and APP keys for a sandbox/test organization, never an account hosting production data. This test suite will create/update/delete real resources.
 
--   `DD_TEST_CLIENT_API_KEY="<api_key>" DD_TEST_CLIENT_APP_KEY=<app_key> make testall` will run the test suite against the real Datadog API.
-
-We also use `cassettes` to record API request/responses, which allows the test suite to be reliable and run very quickly. There are a few environment variables that can control this behavior (All commands are assumed to be prefixed with `DD_TEST_CLIENT_API_KEY=` and `DD_TEST_CLIENT_APP_KEY=`). You can configure the api url of the test suite using `DD_TEST_SITE_URL="<api_url>"`.
-
--   `TESTARGS`: Allows passing extra flags directly to the underlying `go test` command. Most often used to run individual tests:
-    -   Ex: `TESTARGS="-run TestAccDatadogServiceLevelObjective_Basic" make testall`
--   `RECORD`: This denotes whether the test suite should interact with the real Datadog API. Available options are:
-    -   `RECORD=none make testall`: Run against the real Datadog API.
-    -   `RECORD=true make testall`: Run against the real Datadog API and record the request/response to be used later.
-    -   `RECORD=false make testall`: Don't interact with the real Datadog API, instead playback against the recorded cassettes.
+Testing commands, `RECORD` modes, required environment variables, and examples are documented in [TESTING.md](./TESTING.md).
 
 ## Debugging the Provider
 
@@ -99,9 +94,9 @@ Follow the [official documentation][10]
 
 Documentation for this provider is autogenerated using the [`tfplugindocs`][8] CLI.
 
--   Ensure each Schema attribute in the code contains a `Description` field
--   Place example HCL configuration files or import scripts in the `examples` folder under your resource/data-source
--   Run `make docs` to retrieve the `tfplugindocs` binary and generate documentation
+- Ensure each Schema attribute in the code contains a `Description` field
+- Place example HCL configuration files or import scripts in the `examples` folder under your resource/data-source
+- Run `make docs` to retrieve the `tfplugindocs` binary and generate documentation
 
 ## Updating the underlying Datadog SDK Clients
 
@@ -113,8 +108,8 @@ API_CLIENT_VERSION=vx.y.z ZORKIAN_VERSION=vx.y.z make update-go-client
 
 where:
 
--   `API_CLIENT_VERSION` is the version or commit ref of the https://github.com/DataDog/datadog-api-client-go client.
--   `ZORKIAN_VERSION` is the version or commit ref of the https://github.com/zorkian/go-datadog-api client.
+- `API_CLIENT_VERSION` is the version or commit ref of the <https://github.com/DataDog/datadog-api-client-go> client.
+- `ZORKIAN_VERSION` is the version or commit ref of the <https://github.com/zorkian/go-datadog-api> client.
 
 **NOTE** If you run this command just after a release of the underlying clients, this will automatically pick up the latest tag without needing to specify the version.
 

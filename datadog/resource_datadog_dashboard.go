@@ -7600,6 +7600,12 @@ func getTimeseriesRequestSchema() map[string]*schema.Schema {
 						ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetLineWidthFromValue),
 						Optional:         true,
 					},
+					"order_by": {
+						Description:      "How to order series in timeseries visualizations.",
+						Type:             schema.TypeString,
+						ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetStyleOrderByFromValue),
+						Optional:         true,
+					},
 				},
 			},
 		},
@@ -11061,6 +11067,9 @@ func buildDatadogWidgetRequestStyle(terraformStyle map[string]interface{}) *data
 	if v, ok := terraformStyle["line_width"].(string); ok && len(v) != 0 {
 		datadogStyle.SetLineWidth(datadogV1.WidgetLineWidth(v))
 	}
+	if v, ok := terraformStyle["order_by"].(string); ok && len(v) != 0 {
+		datadogStyle.SetOrderBy(datadogV1.WidgetStyleOrderBy(v))
+	}
 
 	return datadogStyle
 }
@@ -11074,6 +11083,9 @@ func buildTerraformWidgetRequestStyle(datadogStyle datadogV1.WidgetRequestStyle)
 	}
 	if v, ok := datadogStyle.GetLineWidthOk(); ok {
 		terraformStyle["line_width"] = v
+	}
+	if v, ok := datadogStyle.GetOrderByOk(); ok {
+		terraformStyle["order_by"] = v
 	}
 	return terraformStyle
 }

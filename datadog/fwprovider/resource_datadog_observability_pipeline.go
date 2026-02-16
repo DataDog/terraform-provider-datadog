@@ -971,6 +971,9 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 									"processor": schema.ListNestedBlock{
 										Description: "The processor contained in this group.",
 										NestedObject: schema.NestedBlockObject{
+											Validators: []validator.Object{
+												observability_pipeline.ExactlyOneProcessorValidator{},
+											},
 											Attributes: map[string]schema.Attribute{
 												"id": schema.StringAttribute{
 													Required:    true,
@@ -2053,7 +2056,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 													Description: "The Pub/Sub topic name to publish logs to.",
 												},
 												"encoding": schema.StringAttribute{
-													Optional:    true,
+													Required:    true,
 													Description: "Encoding format for log events. Valid values: `json`, `raw_message`.",
 												},
 											},

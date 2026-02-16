@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"end_month":202412,"entries":[{"amount":1000,"month":202401},{"amount":1000,"month":202402},{"amount":1000,"month":202403},{"amount":1000,"month":202404},{"amount":1000,"month":202405},{"amount":1000,"month":202406},{"amount":1000,"month":202407},{"amount":1000,"month":202408},{"amount":1000,"month":202409},{"amount":1000,"month":202410},{"amount":1000,"month":202411},{"amount":1000,"month":202412}],"metrics_query":"sum:aws.cost.amortized{*}","name":"tf-TestAccDatadogCostBudget_Basic-local-1769431101","start_month":202401},"type":"budget"}}
+            {"data":{"attributes":{"end_month":202412,"entries":[{"amount":1000,"month":202401},{"amount":1000,"month":202402},{"amount":1000,"month":202403},{"amount":1000,"month":202404},{"amount":1000,"month":202405},{"amount":1000,"month":202406},{"amount":1000,"month":202407},{"amount":1000,"month":202408},{"amount":1000,"month":202409},{"amount":1000,"month":202410},{"amount":1000,"month":202411},{"amount":1000,"month":202412}],"metrics_query":"sum:aws.cost.amortized{*}","name":"tf-TestAccDatadogCostBudget_Basic-local-1770213471","start_month":202401},"type":"budget"}}
         form: {}
         headers:
             Accept:
@@ -36,7 +36,7 @@ interactions:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 107.076458ms
+        duration: 361.991584ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -49,7 +49,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"end_month":202412,"entries":[{"amount":1000,"month":202401},{"amount":1000,"month":202402},{"amount":1000,"month":202403},{"amount":1000,"month":202404},{"amount":1000,"month":202405},{"amount":1000,"month":202406},{"amount":1000,"month":202407},{"amount":1000,"month":202408},{"amount":1000,"month":202409},{"amount":1000,"month":202410},{"amount":1000,"month":202411},{"amount":1000,"month":202412}],"metrics_query":"sum:aws.cost.amortized{*}","name":"tf-TestAccDatadogCostBudget_Basic-local-1769431101","start_month":202401},"type":"budget"}}
+            {"data":{"attributes":{"end_month":202412,"entries":[{"amount":1000,"month":202401},{"amount":1000,"month":202402},{"amount":1000,"month":202403},{"amount":1000,"month":202404},{"amount":1000,"month":202405},{"amount":1000,"month":202406},{"amount":1000,"month":202407},{"amount":1000,"month":202408},{"amount":1000,"month":202409},{"amount":1000,"month":202410},{"amount":1000,"month":202411},{"amount":1000,"month":202412}],"metrics_query":"sum:aws.cost.amortized{*}","name":"tf-TestAccDatadogCostBudget_Basic-local-1770213471","start_month":202401},"type":"budget"}}
         form: {}
         headers:
             Accept:
@@ -72,7 +72,7 @@ interactions:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 100.683458ms
+        duration: 141.599958ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -85,7 +85,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"end_month":202412,"entries":[{"amount":1000,"month":202401},{"amount":1000,"month":202402},{"amount":1000,"month":202403},{"amount":1000,"month":202404},{"amount":1000,"month":202405},{"amount":1000,"month":202406},{"amount":1000,"month":202407},{"amount":1000,"month":202408},{"amount":1000,"month":202409},{"amount":1000,"month":202410},{"amount":1000,"month":202411},{"amount":1000,"month":202412}],"metrics_query":"sum:aws.cost.amortized{*}","name":"tf-TestAccDatadogCostBudget_Basic-local-1769431101","start_month":202401},"type":"budget"}}
+            {"data":{"attributes":{"end_month":202412,"entries":[{"amount":1000,"month":202401},{"amount":1000,"month":202402},{"amount":1000,"month":202403},{"amount":1000,"month":202404},{"amount":1000,"month":202405},{"amount":1000,"month":202406},{"amount":1000,"month":202407},{"amount":1000,"month":202408},{"amount":1000,"month":202409},{"amount":1000,"month":202410},{"amount":1000,"month":202411},{"amount":1000,"month":202412}],"metrics_query":"sum:aws.cost.amortized{*}","name":"tf-TestAccDatadogCostBudget_Basic-local-1770213471","start_month":202401},"type":"budget"}}
         form: {}
         headers:
             Accept:
@@ -102,13 +102,13 @@ interactions:
         trailer: {}
         content_length: 1012
         uncompressed: false
-        body: '{"data":{"id":"fa192185-3462-4ea9-b705-0374a1027593","type":"budget","attributes":{"created_at":1769431103057,"created_by":"cb0fe8fe-673a-4678-8ff5-7936a9af21ba","end_month":202412,"entries":[{"month":202401,"amount":1000,"tag_filters":[]},{"month":202402,"amount":1000,"tag_filters":[]},{"month":202403,"amount":1000,"tag_filters":[]},{"month":202404,"amount":1000,"tag_filters":[]},{"month":202405,"amount":1000,"tag_filters":[]},{"month":202406,"amount":1000,"tag_filters":[]},{"month":202407,"amount":1000,"tag_filters":[]},{"month":202408,"amount":1000,"tag_filters":[]},{"month":202409,"amount":1000,"tag_filters":[]},{"month":202410,"amount":1000,"tag_filters":[]},{"month":202411,"amount":1000,"tag_filters":[]},{"month":202412,"amount":1000,"tag_filters":[]}],"metrics_query":"sum:aws.cost.amortized{*}","name":"tf-TestAccDatadogCostBudget_Basic-local-1769431101","org_id":321813,"start_month":202401,"total_amount":12000,"updated_at":1769431103057,"updated_by":"cb0fe8fe-673a-4678-8ff5-7936a9af21ba"}}}'
+        body: '{"data":{"id":"d92734b4-7627-4d7a-b677-5f6ed1301305","type":"budget","attributes":{"created_at":1770213473195,"created_by":"cb0fe8fe-673a-4678-8ff5-7936a9af21ba","end_month":202412,"entries":[{"month":202401,"amount":1000,"tag_filters":[]},{"month":202402,"amount":1000,"tag_filters":[]},{"month":202403,"amount":1000,"tag_filters":[]},{"month":202404,"amount":1000,"tag_filters":[]},{"month":202405,"amount":1000,"tag_filters":[]},{"month":202406,"amount":1000,"tag_filters":[]},{"month":202407,"amount":1000,"tag_filters":[]},{"month":202408,"amount":1000,"tag_filters":[]},{"month":202409,"amount":1000,"tag_filters":[]},{"month":202410,"amount":1000,"tag_filters":[]},{"month":202411,"amount":1000,"tag_filters":[]},{"month":202412,"amount":1000,"tag_filters":[]}],"metrics_query":"sum:aws.cost.amortized{*}","name":"tf-TestAccDatadogCostBudget_Basic-local-1770213471","org_id":321813,"start_month":202401,"total_amount":12000,"updated_at":1770213473195,"updated_by":"cb0fe8fe-673a-4678-8ff5-7936a9af21ba"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 229.739334ms
+        duration: 153.453375ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -121,7 +121,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"end_month":202412,"entries":[{"amount":1000,"month":202401},{"amount":1000,"month":202402},{"amount":1000,"month":202403},{"amount":1000,"month":202404},{"amount":1000,"month":202405},{"amount":1000,"month":202406},{"amount":1000,"month":202407},{"amount":1000,"month":202408},{"amount":1000,"month":202409},{"amount":1000,"month":202410},{"amount":1000,"month":202411},{"amount":1000,"month":202412}],"metrics_query":"sum:aws.cost.amortized{*}","name":"tf-TestAccDatadogCostBudget_Basic-local-1769431101","start_month":202401},"id":"fa192185-3462-4ea9-b705-0374a1027593","type":"budget"}}
+            {"data":{"attributes":{"end_month":202412,"entries":[{"amount":1000,"month":202401},{"amount":1000,"month":202402},{"amount":1000,"month":202403},{"amount":1000,"month":202404},{"amount":1000,"month":202405},{"amount":1000,"month":202406},{"amount":1000,"month":202407},{"amount":1000,"month":202408},{"amount":1000,"month":202409},{"amount":1000,"month":202410},{"amount":1000,"month":202411},{"amount":1000,"month":202412}],"metrics_query":"sum:aws.cost.amortized{*}","name":"tf-TestAccDatadogCostBudget_Basic-local-1770213471","start_month":202401},"id":"d92734b4-7627-4d7a-b677-5f6ed1301305","type":"budget"}}
         form: {}
         headers:
             Accept:
@@ -144,7 +144,7 @@ interactions:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 99.982542ms
+        duration: 176.11ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -161,7 +161,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/cost/budget/fa192185-3462-4ea9-b705-0374a1027593
+        url: https://api.datadoghq.com/api/v2/cost/budget/d92734b4-7627-4d7a-b677-5f6ed1301305
         method: GET
       response:
         proto: HTTP/1.1
@@ -171,13 +171,13 @@ interactions:
         trailer: {}
         content_length: 1012
         uncompressed: false
-        body: '{"data":{"id":"fa192185-3462-4ea9-b705-0374a1027593","type":"budget","attributes":{"created_at":1769431103057,"created_by":"cb0fe8fe-673a-4678-8ff5-7936a9af21ba","end_month":202412,"entries":[{"month":202401,"amount":1000,"tag_filters":[]},{"month":202402,"amount":1000,"tag_filters":[]},{"month":202403,"amount":1000,"tag_filters":[]},{"month":202404,"amount":1000,"tag_filters":[]},{"month":202405,"amount":1000,"tag_filters":[]},{"month":202406,"amount":1000,"tag_filters":[]},{"month":202407,"amount":1000,"tag_filters":[]},{"month":202408,"amount":1000,"tag_filters":[]},{"month":202409,"amount":1000,"tag_filters":[]},{"month":202410,"amount":1000,"tag_filters":[]},{"month":202411,"amount":1000,"tag_filters":[]},{"month":202412,"amount":1000,"tag_filters":[]}],"metrics_query":"sum:aws.cost.amortized{*}","name":"tf-TestAccDatadogCostBudget_Basic-local-1769431101","org_id":321813,"start_month":202401,"total_amount":12000,"updated_at":1769431103057,"updated_by":"cb0fe8fe-673a-4678-8ff5-7936a9af21ba"}}}'
+        body: '{"data":{"id":"d92734b4-7627-4d7a-b677-5f6ed1301305","type":"budget","attributes":{"created_at":1770213473195,"created_by":"cb0fe8fe-673a-4678-8ff5-7936a9af21ba","end_month":202412,"entries":[{"month":202401,"amount":1000,"tag_filters":[]},{"month":202402,"amount":1000,"tag_filters":[]},{"month":202403,"amount":1000,"tag_filters":[]},{"month":202404,"amount":1000,"tag_filters":[]},{"month":202405,"amount":1000,"tag_filters":[]},{"month":202406,"amount":1000,"tag_filters":[]},{"month":202407,"amount":1000,"tag_filters":[]},{"month":202408,"amount":1000,"tag_filters":[]},{"month":202409,"amount":1000,"tag_filters":[]},{"month":202410,"amount":1000,"tag_filters":[]},{"month":202411,"amount":1000,"tag_filters":[]},{"month":202412,"amount":1000,"tag_filters":[]}],"metrics_query":"sum:aws.cost.amortized{*}","name":"tf-TestAccDatadogCostBudget_Basic-local-1770213471","org_id":321813,"start_month":202401,"total_amount":12000,"updated_at":1770213473195,"updated_by":"cb0fe8fe-673a-4678-8ff5-7936a9af21ba"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 169.451417ms
+        duration: 148.456291ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -190,7 +190,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"end_month":202412,"entries":[{"amount":1000,"month":202401},{"amount":1000,"month":202402},{"amount":1000,"month":202403},{"amount":1000,"month":202404},{"amount":1000,"month":202405},{"amount":1000,"month":202406},{"amount":1000,"month":202407},{"amount":1000,"month":202408},{"amount":1000,"month":202409},{"amount":1000,"month":202410},{"amount":1000,"month":202411},{"amount":1000,"month":202412}],"metrics_query":"sum:aws.cost.amortized{*}","name":"tf-TestAccDatadogCostBudget_Basic-local-1769431101","start_month":202401},"id":"fa192185-3462-4ea9-b705-0374a1027593","type":"budget"}}
+            {"data":{"attributes":{"end_month":202412,"entries":[{"amount":1000,"month":202401},{"amount":1000,"month":202402},{"amount":1000,"month":202403},{"amount":1000,"month":202404},{"amount":1000,"month":202405},{"amount":1000,"month":202406},{"amount":1000,"month":202407},{"amount":1000,"month":202408},{"amount":1000,"month":202409},{"amount":1000,"month":202410},{"amount":1000,"month":202411},{"amount":1000,"month":202412}],"metrics_query":"sum:aws.cost.amortized{*}","name":"tf-TestAccDatadogCostBudget_Basic-local-1770213471","start_month":202401},"id":"d92734b4-7627-4d7a-b677-5f6ed1301305","type":"budget"}}
         form: {}
         headers:
             Accept:
@@ -213,7 +213,7 @@ interactions:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 192.919708ms
+        duration: 130.282416ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -230,7 +230,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/cost/budget/fa192185-3462-4ea9-b705-0374a1027593
+        url: https://api.datadoghq.com/api/v2/cost/budget/d92734b4-7627-4d7a-b677-5f6ed1301305
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -244,7 +244,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 157.190292ms
+        duration: 149.475416ms
     - id: 7
       request:
         proto: HTTP/1.1
@@ -261,7 +261,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/cost/budget/fa192185-3462-4ea9-b705-0374a1027593
+        url: https://api.datadoghq.com/api/v2/cost/budget/d92734b4-7627-4d7a-b677-5f6ed1301305
         method: GET
       response:
         proto: HTTP/1.1
@@ -277,4 +277,4 @@ interactions:
                 - application/vnd.api+json
         status: 404 Not Found
         code: 404
-        duration: 112.060166ms
+        duration: 133.0945ms
