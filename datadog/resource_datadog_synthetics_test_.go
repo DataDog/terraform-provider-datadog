@@ -553,7 +553,7 @@ func syntheticsAPIAssertion() *schema.Schema {
 					),
 				},
 				"property": {
-					Description: "For `header` and `grpcMetadata`, this is the header name. In other cases, this is an aggregation property: `avg`, `min`, `max` or `stddev`",
+					Description: "If assertion type is `header` or `grpcMetadata`, this is the header name. For other assertion types, this is an aggregation property: `avg`, `min`, `max` or `stddev`.",
 					Type:        schema.TypeString,
 					Optional:    true,
 				},
