@@ -776,15 +776,11 @@ resource "datadog_synthetics_test" "network_tcp" {
   }
 
   options_list {
-    tick_every           = 900
-    min_failure_duration = 0
-    min_location_failed  = 1
-
+    tick_every = 900
     retry {
       count    = 2
       interval = 300
     }
-
     monitor_options {
       renotify_interval = 120
     }
@@ -831,22 +827,19 @@ resource "datadog_synthetics_test" "network_udp" {
   }
 
   options_list {
-    tick_every           = 900
-    min_failure_duration = 0
-    min_location_failed  = 1
-
+    tick_every = 900
     retry {
       count    = 2
       interval = 300
     }
-
     monitor_options {
       renotify_interval = 120
     }
   }
 }
 
-# Network Path ICMP Test
+# Example Usage (Network Path ICMP Test)
+# Create a new Datadog Network Path ICMP test to example.com
 resource "datadog_synthetics_test" "network_icmp" {
   name      = "Network Path ICMP Test"
   type      = "network"
@@ -857,7 +850,7 @@ resource "datadog_synthetics_test" "network_icmp" {
   tags      = ["foo:bar", "foo", "env:test"]
 
   request_definition {
-    host               = "www.example.com"
+    host               = "example.com"
     e2e_queries        = 5
     max_ttl            = 30
     traceroute_queries = 3
@@ -898,15 +891,11 @@ resource "datadog_synthetics_test" "network_icmp" {
   }
 
   options_list {
-    tick_every           = 900
-    min_failure_duration = 0
-    min_location_failed  = 1
-
+    tick_every = 900
     retry {
       count    = 2
       interval = 300
     }
-
     monitor_options {
       renotify_interval = 120
     }
