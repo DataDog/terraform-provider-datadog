@@ -205,7 +205,7 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 					MaxItems:      1,
 					Optional:      true,
 					ConflictsWith: []string{"monitor_ids", "sli_specification", "groups"},
-					Description:   "The metric query of good / total events",
+					Description:   "The metric query of good / total events. Use this for metric SLOs as an alternative to `sli_specification`.",
 					Elem: &schema.Resource{
 						Schema: map[string]*schema.Schema{
 							"numerator": {
