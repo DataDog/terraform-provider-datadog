@@ -275,6 +275,120 @@ resource "datadog_service_level_objective" "foo" {
 }`, uniq)
 }
 
+func testAccCheckDatadogServiceLevelObjectiveMetricTransitionQueryConfig(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_service_level_objective" "foo" {
+  name = "%s"
+  type = "metric"
+  description = "transition test metric SLO using query"
+  query {
+    numerator   = "sum:my.metric{status:good}.as_count()"
+    denominator = "sum:my.metric{*}.as_count()"
+  }
+
+  thresholds {
+    timeframe = "7d"
+    target    = 99.5
+    warning   = 99.8
+  }
+
+  thresholds {
+    timeframe = "30d"
+    target    = 99
+  }
+
+  timeframe = "7d"
+
+  target_threshold = 99.5
+
+  warning_threshold = 99.8
+
+  tags = ["foo:bar", "baz"]
+}`, uniq)
+}
+
+func testAccCheckDatadogServiceLevelObjectiveMetricTransitionQueryConfigUpdated(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_service_level_objective" "foo" {
+  name = "%s"
+  type = "metric"
+  description = "transition test metric SLO using updated query"
+  query {
+    numerator   = "sum:my.metric{status:good}.as_count() - sum:my.metric{status:bad}.as_count()"
+    denominator = "sum:my.metric{*}.as_count()"
+  }
+
+  thresholds {
+    timeframe = "7d"
+    target    = 99.5
+    warning   = 99.8
+  }
+
+  thresholds {
+    timeframe = "30d"
+    target    = 99
+  }
+
+  timeframe = "7d"
+
+  target_threshold = 99.5
+
+  warning_threshold = 99.8
+
+  tags = ["foo:bar", "baz"]
+}`, uniq)
+}
+
+func testAccCheckDatadogServiceLevelObjectiveMetricTransitionCountSpecConfig(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_service_level_objective" "foo" {
+  name = "%s"
+  type = "metric"
+  description = "transition test metric SLO using count spec"
+  sli_specification {
+    count {
+      good_events_formula  = "query1"
+      total_events_formula = "query2"
+
+      queries {
+        metric_query {
+          name        = "query1"
+          data_source = "metrics"
+          query       = "sum:my.metric{status:good}.as_count()"
+        }
+      }
+
+      queries {
+        metric_query {
+          name        = "query2"
+          data_source = "metrics"
+          query       = "sum:my.metric{*}.as_count()"
+        }
+      }
+    }
+  }
+
+  thresholds {
+    timeframe = "7d"
+    target    = 99.5
+    warning   = 99.8
+  }
+
+  thresholds {
+    timeframe = "30d"
+    target    = 99
+  }
+
+  timeframe = "7d"
+
+  target_threshold = 99.5
+
+  warning_threshold = 99.8
+
+  tags = ["foo:bar", "baz"]
+}`, uniq)
+}
+
 func testAccCheckDatadogServiceLevelObjectiveInvalidMonitorConfig(uniq string) string {
 	return fmt.Sprintf(`
 resource "datadog_service_level_objective" "bar" {
@@ -671,6 +785,120 @@ func TestAccDatadogServiceLevelObjective_CountSpec(t *testing.T) {
 					resource.TestCheckTypeSetElemAttr(
 						"datadog_service_level_objective.foo", "tags.*", "foo:bar"),
 				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogServiceLevelObjective_MetricQueryToCountTransition(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	sloName := uniqueEntityName(ctx, t)
+	sloNameUpdated := sloName + "-updated"
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogServiceLevelObjectiveDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogServiceLevelObjectiveMetricTransitionQueryConfig(sloName),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogServiceLevelObjectiveExists(accProvider, "datadog_service_level_objective.foo"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "name", sloName),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "query.#", "1"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "query.0.numerator", "sum:my.metric{status:good}.as_count()"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "query.0.denominator", "sum:my.metric{*}.as_count()"),
+					resource.TestCheckNoResourceAttr(
+						"datadog_service_level_objective.foo", "sli_specification.#"),
+				),
+			},
+			{
+				Config:   testAccCheckDatadogServiceLevelObjectiveMetricTransitionQueryConfig(sloName),
+				PlanOnly: true,
+			},
+			{
+				Config: testAccCheckDatadogServiceLevelObjectiveMetricTransitionQueryConfigUpdated(sloNameUpdated),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogServiceLevelObjectiveExists(accProvider, "datadog_service_level_objective.foo"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "name", sloNameUpdated),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "query.#", "1"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "query.0.numerator", "sum:my.metric{status:good}.as_count() - sum:my.metric{status:bad}.as_count()"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "query.0.denominator", "sum:my.metric{*}.as_count()"),
+					resource.TestCheckNoResourceAttr(
+						"datadog_service_level_objective.foo", "sli_specification.#"),
+				),
+			},
+			{
+				Config:   testAccCheckDatadogServiceLevelObjectiveMetricTransitionQueryConfigUpdated(sloNameUpdated),
+				PlanOnly: true,
+			},
+			{
+				Config: testAccCheckDatadogServiceLevelObjectiveMetricTransitionCountSpecConfig(sloNameUpdated),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogServiceLevelObjectiveExists(accProvider, "datadog_service_level_objective.foo"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "name", sloNameUpdated),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "sli_specification.#", "1"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "sli_specification.0.count.#", "1"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "sli_specification.0.count.0.good_events_formula", "query1"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "sli_specification.0.count.0.total_events_formula", "query2"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "sli_specification.0.count.0.queries.#", "2"),
+					resource.TestCheckNoResourceAttr(
+						"datadog_service_level_objective.foo", "query.#"),
+				),
+			},
+			{
+				Config:   testAccCheckDatadogServiceLevelObjectiveMetricTransitionCountSpecConfig(sloNameUpdated),
+				PlanOnly: true,
+			},
+		},
+	})
+}
+
+func TestAccDatadogServiceLevelObjective_CountSpecImport(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	sloName := uniqueEntityName(ctx, t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogServiceLevelObjectiveDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogServiceLevelObjectiveMetricTransitionCountSpecConfig(sloName),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogServiceLevelObjectiveExists(accProvider, "datadog_service_level_objective.foo"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "sli_specification.#", "1"),
+					resource.TestCheckNoResourceAttr(
+						"datadog_service_level_objective.foo", "query.#"),
+				),
+			},
+			{
+				ResourceName:      "datadog_service_level_objective.foo",
+				ImportState:       true,
+				ImportStateVerify: true,
+			},
+			{
+				Config:   testAccCheckDatadogServiceLevelObjectiveMetricTransitionCountSpecConfig(sloName),
+				PlanOnly: true,
 			},
 		},
 	})

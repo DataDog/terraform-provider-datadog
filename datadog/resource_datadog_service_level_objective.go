@@ -787,6 +787,19 @@ func buildTerraformCountSpecification(countSpec *datadogV1.SLOCountSpec) []map[s
 	}
 }
 
+// metricSLOUsesSliSpecInState chooses which metric-SLO representation to keep in state.
+// Preserve whichever field already exists in state; on import (no prior choice), prefer
+// sli_specification when the API response includes it.
+func metricSLOUsesSliSpecInState(d *schema.ResourceData, responseHasSliSpec bool) bool {
+	if _, hasStateSliSpec := d.GetOk("sli_specification"); hasStateSliSpec {
+		return true
+	}
+	if _, hasStateQuery := d.GetOk("query"); hasStateQuery {
+		return false
+	}
+	return responseHasSliSpec
+}
+
 func updateSLOState(d *schema.ResourceData, slo *datadogV1.ServiceLevelObjective) diag.Diagnostics {
 	thresholds := make([]map[string]interface{}, 0)
 	for _, threshold := range slo.GetThresholds() {
@@ -861,8 +874,9 @@ func updateSLOState(d *schema.ResourceData, slo *datadogV1.ServiceLevelObjective
 		// metric type - only set the field the user configured (query or sli_specification)
 		// to avoid sending both on subsequent updates and to prevent phantom diffs.
 		// Explicitly clear the unused field so it never appears in state.
-		if _, hasSliSpec := d.GetOk("sli_specification"); hasSliSpec {
-			if slo.HasSliSpecification() {
+		responseHasSliSpec := slo.HasSliSpecification()
+		if metricSLOUsesSliSpecInState(d, responseHasSliSpec) {
+			if responseHasSliSpec {
 				sliSpec := slo.GetSliSpecification()
 				if sliSpec.SLOTimeSliceSpec != nil || sliSpec.SLOCountSpec != nil {
 					tfSliSpec := buildTerraformSliSpecification(&sliSpec)
@@ -871,11 +885,10 @@ func updateSLOState(d *schema.ResourceData, slo *datadogV1.ServiceLevelObjective
 					}
 				}
 			}
-			// If the API didn't return sli_specification, don't overwrite the value in d.
-			// For Create/Update, d retains the config value; for Read, d retains the state value.
+			// Some metric-SLO responses omit sli_specification; keep existing state in that case.
 			d.Set("query", nil)
 		} else {
-			// Default to query (also handles import where neither is in state)
+			// Keep query in state and clear sli_specification.
 			query := make(map[string]interface{})
 			q := slo.GetQuery()
 			query["numerator"] = q.GetNumerator()
@@ -964,8 +977,9 @@ func updateSLOStateFromRead(d *schema.ResourceData, slo *datadogV1.SLOResponseDa
 		// metric type - only set the field the user configured (query or sli_specification)
 		// to avoid sending both on subsequent updates and to prevent phantom diffs.
 		// Explicitly clear the unused field so it never appears in state.
-		if _, hasSliSpec := d.GetOk("sli_specification"); hasSliSpec {
-			if slo.HasSliSpecification() {
+		responseHasSliSpec := slo.HasSliSpecification()
+		if metricSLOUsesSliSpecInState(d, responseHasSliSpec) {
+			if responseHasSliSpec {
 				sliSpec := slo.GetSliSpecification()
 				if sliSpec.SLOTimeSliceSpec != nil || sliSpec.SLOCountSpec != nil {
 					tfSliSpec := buildTerraformSliSpecification(&sliSpec)
@@ -974,11 +988,10 @@ func updateSLOStateFromRead(d *schema.ResourceData, slo *datadogV1.SLOResponseDa
 					}
 				}
 			}
-			// If the API didn't return sli_specification, don't overwrite the value in d.
-			// For Create/Update, d retains the config value; for Read, d retains the state value.
+			// Some metric-SLO responses omit sli_specification; keep existing state in that case.
 			d.Set("query", nil)
 		} else {
-			// Default to query (also handles import where neither is in state)
+			// Keep query in state and clear sli_specification.
 			query := make(map[string]interface{})
 			q := slo.GetQuery()
 			query["numerator"] = q.GetNumerator()
