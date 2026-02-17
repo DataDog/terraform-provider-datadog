@@ -716,6 +716,9 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 													Required:    true,
 													Description: "A list of Kafka topic names to subscribe to. The source ingests messages from each topic specified.",
 													ElementType: types.StringType,
+													Validators: []validator.List{
+														listvalidator.SizeAtLeast(1),
+													},
 												},
 											},
 											Blocks: map[string]schema.Block{
@@ -1126,6 +1129,9 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 																Required:    true,
 																Description: "List of fields to remove from the events.",
 																ElementType: types.StringType,
+																Validators: []validator.List{
+																	listvalidator.SizeAtLeast(1),
+																},
 															},
 														},
 													},
@@ -1497,6 +1503,10 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 														Blocks: map[string]schema.Block{
 															"rule": schema.ListNestedBlock{
 																Description: "The list of Grok parsing rules. If multiple parsing rules are provided, they are evaluated in order. The first successful match is applied.",
+																Validators: []validator.List{
+																	listvalidator.IsRequired(),
+																	listvalidator.SizeAtLeast(1),
+																},
 																NestedObject: schema.NestedBlockObject{
 																	Attributes: map[string]schema.Attribute{
 																		"source": schema.StringAttribute{
@@ -1507,6 +1517,10 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 																	Blocks: map[string]schema.Block{
 																		"match_rule": schema.ListNestedBlock{
 																			Description: "A list of Grok parsing rules that define how to extract fields from the source field. Each rule must contain a name and a valid Grok pattern.",
+																			Validators: []validator.List{
+																				listvalidator.IsRequired(),
+																				listvalidator.SizeAtLeast(1),
+																			},
 																			NestedObject: schema.NestedBlockObject{
 																				Attributes: map[string]schema.Attribute{
 																					"name": schema.StringAttribute{
@@ -1571,6 +1585,9 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 																Required:    true,
 																ElementType: types.StringType,
 																Description: "A list of log field paths to check for duplicates.",
+																Validators: []validator.List{
+																	listvalidator.SizeAtLeast(1),
+																},
 															},
 															"mode": schema.StringAttribute{
 																Required:    true,
@@ -1595,6 +1612,10 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 														Blocks: map[string]schema.Block{
 															"merge_strategy": schema.ListNestedBlock{
 																Description: "List of merge strategies defining how values from grouped events should be combined.",
+																Validators: []validator.List{
+																	listvalidator.IsRequired(),
+																	listvalidator.SizeAtLeast(1),
+																},
 																NestedObject: schema.NestedBlockObject{
 																	Attributes: map[string]schema.Attribute{
 																		"path": schema.StringAttribute{
@@ -2037,7 +2058,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 													Description: "The Pub/Sub topic name to publish logs to.",
 												},
 												"encoding": schema.StringAttribute{
-													Optional:    true,
+													Required:    true,
 													Description: "Encoding format for log events. Valid values: `json`, `raw_message`.",
 												},
 											},

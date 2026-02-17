@@ -3,6 +3,7 @@ package test
 import (
 	"context"
 	"fmt"
+	"regexp"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
@@ -213,6 +214,124 @@ func TestAccDatadogTagPipelineRuleset_Import(t *testing.T) {
 	})
 }
 
+// Tests for the new if_tag_exists field
+
+func TestAccDatadogTagPipelineRuleset_MappingRuleIfTagExists(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	uniq := uniqueEntityName(ctx, t)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogTagPipelineRulesetDestroy(ctx, providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogTagPipelineRulesetConfigMappingIfTagExists(uniq, "replace"),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogTagPipelineRulesetExists("datadog_tag_pipeline_ruleset.foo"),
+					resource.TestCheckResourceAttr("datadog_tag_pipeline_ruleset.foo", "rules.0.mapping.if_tag_exists", "replace"),
+				),
+			},
+			{
+				Config: testAccCheckDatadogTagPipelineRulesetConfigMappingIfTagExists(uniq, "append"),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr("datadog_tag_pipeline_ruleset.foo", "rules.0.mapping.if_tag_exists", "append"),
+				),
+			},
+			{
+				Config: testAccCheckDatadogTagPipelineRulesetConfigMappingIfTagExists(uniq, "do_not_apply"),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr("datadog_tag_pipeline_ruleset.foo", "rules.0.mapping.if_tag_exists", "do_not_apply"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogTagPipelineRuleset_QueryRuleIfTagExists(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	uniq := uniqueEntityName(ctx, t)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogTagPipelineRulesetDestroy(ctx, providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogTagPipelineRulesetConfigQueryIfTagExists(uniq, "append"),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogTagPipelineRulesetExists("datadog_tag_pipeline_ruleset.foo"),
+					resource.TestCheckResourceAttr("datadog_tag_pipeline_ruleset.foo", "rules.0.query.if_tag_exists", "append"),
+				),
+			},
+			{
+				Config: testAccCheckDatadogTagPipelineRulesetConfigQueryIfTagExists(uniq, "replace"),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr("datadog_tag_pipeline_ruleset.foo", "rules.0.query.if_tag_exists", "replace"),
+				),
+			},
+			{
+				Config: testAccCheckDatadogTagPipelineRulesetConfigQueryIfTagExists(uniq, "do_not_apply"),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr("datadog_tag_pipeline_ruleset.foo", "rules.0.query.if_tag_exists", "do_not_apply"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogTagPipelineRuleset_ReferenceTableRuleIfTagExists(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	uniq := uniqueEntityName(ctx, t)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogTagPipelineRulesetDestroy(ctx, providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogTagPipelineRulesetConfigReferenceTableIfTagExists(uniq, "replace"),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogTagPipelineRulesetExists("datadog_tag_pipeline_ruleset.foo"),
+					resource.TestCheckResourceAttr("datadog_tag_pipeline_ruleset.foo", "rules.0.reference_table.if_tag_exists", "replace"),
+				),
+			},
+			{
+				Config: testAccCheckDatadogTagPipelineRulesetConfigReferenceTableIfTagExists(uniq, "append"),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr("datadog_tag_pipeline_ruleset.foo", "rules.0.reference_table.if_tag_exists", "append"),
+				),
+			},
+			{
+				Config: testAccCheckDatadogTagPipelineRulesetConfigReferenceTableIfTagExists(uniq, "do_not_apply"),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr("datadog_tag_pipeline_ruleset.foo", "rules.0.reference_table.if_tag_exists", "do_not_apply"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogTagPipelineRuleset_ConflictingFields(t *testing.T) {
+	t.Parallel()
+	ctx, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	uniq := uniqueEntityName(ctx, t)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		Steps: []resource.TestStep{
+			{
+				Config:      testAccCheckDatadogTagPipelineRulesetConfigConflicting(uniq),
+				ExpectError: regexp.MustCompile(`cannot be specified when`),
+			},
+		},
+	})
+}
+
 func testAccCheckDatadogTagPipelineRulesetExists(resourceName string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		return nil
@@ -407,26 +526,116 @@ resource "datadog_tag_pipeline_ruleset" "foo" {
   rules {
     name    = "updated-rule"
     enabled = true
-    
+
     mapping {
       destination_key = "environment"
       if_not_exists   = false
       source_keys     = ["env"]
     }
   }
-  
+
   rules {
     name    = "new-rule"
     enabled = false
-    
+
     query {
       query         = "service:updated-service"
       if_not_exists = false
-      
+
       addition {
         key   = "tier"
         value = "backend"
       }
+    }
+  }
+}`, uniq)
+}
+
+// Config helpers for if_tag_exists tests
+
+func testAccCheckDatadogTagPipelineRulesetConfigMappingIfTagExists(uniq string, ifTagExists string) string {
+	return fmt.Sprintf(`
+resource "datadog_tag_pipeline_ruleset" "foo" {
+  name    = "tf-test-mapping-ite-ruleset-%s"
+  enabled = true
+
+  rules {
+    name    = "mapping-rule"
+    enabled = true
+
+    mapping {
+      destination_key = "env"
+      if_tag_exists   = "%s"
+      source_keys     = ["environment", "stage"]
+    }
+  }
+}`, uniq, ifTagExists)
+}
+
+func testAccCheckDatadogTagPipelineRulesetConfigQueryIfTagExists(uniq string, ifTagExists string) string {
+	return fmt.Sprintf(`
+resource "datadog_tag_pipeline_ruleset" "foo" {
+  name    = "tf-test-query-ite-ruleset-%s"
+  enabled = true
+
+  rules {
+    name    = "query-rule"
+    enabled = true
+
+    query {
+      query              = "source:app AND env:prod"
+      case_insensitivity = true
+      if_tag_exists      = "%s"
+
+      addition {
+        key   = "team"
+        value = "backend"
+      }
+    }
+  }
+}`, uniq, ifTagExists)
+}
+
+func testAccCheckDatadogTagPipelineRulesetConfigReferenceTableIfTagExists(uniq string, ifTagExists string) string {
+	return fmt.Sprintf(`
+resource "datadog_tag_pipeline_ruleset" "foo" {
+  name    = "tf-test-ref-table-ite-ruleset-%s"
+  enabled = true
+
+  rules {
+    name    = "ref-table-rule"
+    enabled = true
+
+    reference_table {
+      table_name         = "service_mapping"
+      case_insensitivity = true
+      if_tag_exists      = "%s"
+      source_keys        = ["service"]
+
+      field_pairs {
+        input_column = "service_name"
+        output_key   = "service"
+      }
+    }
+  }
+}`, uniq, ifTagExists)
+}
+
+func testAccCheckDatadogTagPipelineRulesetConfigConflicting(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_tag_pipeline_ruleset" "foo" {
+  name    = "tf-test-conflicting-ruleset-%s"
+  enabled = true
+
+  rules {
+    name    = "conflicting-rule"
+    enabled = true
+
+    mapping {
+      destination_key = "env"
+      if_not_exists   = true
+      if_tag_exists   = "replace"
+      source_keys     = ["environment"]
     }
   }
 }`, uniq)
