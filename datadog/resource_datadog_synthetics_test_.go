@@ -2184,20 +2184,9 @@ func resourceDatadogSyntheticsTestRead(ctx context.Context, d *schema.ResourceDa
 	syntheticsTest, httpresp, err = apiInstances.GetSyntheticsApiV1().GetTest(auth, d.Id())
 	if err != nil {
 		if httpresp != nil && httpresp.StatusCode == 404 {
-			// Try V2 API for Network tests
-			networkTest, httprespV2, errV2 := apiInstances.GetSyntheticsApiV2().GetSyntheticsNetworkTest(auth, d.Id())
-			if errV2 != nil {
-				if httprespV2 != nil && httprespV2.StatusCode == 404 {
-					// Delete the resource from the local state since it doesn't exist anymore in the actual state
-					d.SetId("")
-					return nil
-				}
-				return utils.TranslateClientErrorDiag(errV2, httprespV2, "error getting synthetics network test")
-			}
-			if err := utils.CheckForUnparsed(networkTest); err != nil {
-				return diag.FromErr(err)
-			}
-			return updateSyntheticsNetworkTestLocalState(d, &networkTest)
+			// Delete the resource from the local state since it doesn't exist anymore in the actual state
+			d.SetId("")
+			return nil
 		}
 		return utils.TranslateClientErrorDiag(err, httpresp, "error getting synthetics test")
 	}
