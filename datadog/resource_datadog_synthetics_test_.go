@@ -536,19 +536,57 @@ func syntheticsAPIAssertion() *schema.Schema {
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
 				"type": {
-					Description:      "Type of assertion. **Note:** Only some combinations of `type` and `operator` are valid. Refer to `config.assertions` in the [Datadog API reference](https://docs.datadoghq.com/api/latest/synthetics/#create-an-api-test).",
-					Type:             schema.TypeString,
-					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsAssertionTypeFromValue, datadogV1.NewSyntheticsAssertionBodyHashTypeFromValue, datadogV1.NewSyntheticsAssertionJavascriptTypeFromValue),
-					Required:         true,
+					// TODO: update network test link if needed
+					Description: "Type of assertion. **Note:** Only some combinations of `type` and `operator` are valid. For API tests, refer to `config.assertions` in the [Datadog API reference](https://docs.datadoghq.com/api/latest/synthetics/#create-an-api-test). For Network Path tests, refer to `config.assertions` in the [Datadog API reference](https://docs.datadoghq.com/api/latest/synthetics/#create-a-network-path-test).",
+					Type:        schema.TypeString,
+					ValidateDiagFunc: validators.ValidateStringEnumValue(
+						// datadogV1.NewSyntheticsAssertionTypeFromValue
+						datadogV1.SYNTHETICSASSERTIONTYPE_BODY,
+						datadogV1.SYNTHETICSASSERTIONTYPE_HEADER,
+						datadogV1.SYNTHETICSASSERTIONTYPE_STATUS_CODE,
+						datadogV1.SYNTHETICSASSERTIONTYPE_CERTIFICATE,
+						datadogV1.SYNTHETICSASSERTIONTYPE_RESPONSE_TIME,
+						datadogV1.SYNTHETICSASSERTIONTYPE_PROPERTY,
+						datadogV1.SYNTHETICSASSERTIONTYPE_RECORD_EVERY,
+						datadogV1.SYNTHETICSASSERTIONTYPE_RECORD_SOME,
+						datadogV1.SYNTHETICSASSERTIONTYPE_TLS_VERSION,
+						datadogV1.SYNTHETICSASSERTIONTYPE_MIN_TLS_VERSION,
+						datadogV1.SYNTHETICSASSERTIONTYPE_LATENCY,
+						datadogV1.SYNTHETICSASSERTIONTYPE_PACKET_LOSS_PERCENTAGE,
+						datadogV1.SYNTHETICSASSERTIONTYPE_PACKETS_RECEIVED,
+						datadogV1.SYNTHETICSASSERTIONTYPE_NETWORK_HOP,
+						datadogV1.SYNTHETICSASSERTIONTYPE_RECEIVED_MESSAGE,
+						datadogV1.SYNTHETICSASSERTIONTYPE_GRPC_HEALTHCHECK_STATUS,
+						datadogV1.SYNTHETICSASSERTIONTYPE_GRPC_METADATA,
+						datadogV1.SYNTHETICSASSERTIONTYPE_GRPC_PROTO,
+						datadogV1.SYNTHETICSASSERTIONTYPE_CONNECTION,
+						// datadogV1.NewSyntheticsAssertionBodyHashTypeFromValue
+						datadogV1.SYNTHETICSASSERTIONBODYHASHTYPE_BODY_HASH,
+						// datadogV1.NewSyntheticsAssertionJavascriptTypeFromValue
+						datadogV1.SYNTHETICSASSERTIONJAVASCRIPTTYPE_JAVASCRIPT,
+						// V2 Network Path test assertion types
+						datadogV2.SYNTHETICSNETWORKASSERTIONLATENCYTYPE_LATENCY,
+						datadogV2.SYNTHETICSNETWORKASSERTIONJITTERTYPE_JITTER,
+						datadogV2.SYNTHETICSNETWORKASSERTIONPACKETLOSSPERCENTAGETYPE_PACKET_LOSS_PERCENTAGE,
+						datadogV2.SYNTHETICSNETWORKASSERTIONMULTINETWORKHOPTYPE_MULTI_NETWORK_HOP,
+					),
+					Required: true,
 				},
 				"operator": {
-					Description:  "Assertion operator. **Note:** Only some combinations of `type` and `operator` are valid. Refer to `config.assertions` in the [Datadog API reference](https://docs.datadoghq.com/api/latest/synthetics/#create-an-api-test).",
-					Type:         schema.TypeString,
-					Optional:     true,
-					ValidateFunc: validateSyntheticsAssertionOperator,
+					Description: "Assertion operator. **Note:** Only some combinations of `type` and `operator` are valid. Refer to `config.assertions` in the [Datadog API reference](https://docs.datadoghq.com/api/latest/synthetics/#create-an-api-test).",
+					Type:        schema.TypeString,
+					Optional:    true,
+					ValidateDiagFunc: validators.ValidateEnumValue(
+						datadogV1.NewSyntheticsAssertionOperatorFromValue,
+						datadogV1.NewSyntheticsAssertionJSONPathOperatorFromValue,
+						datadogV1.NewSyntheticsAssertionJSONSchemaOperatorFromValue,
+						datadogV1.NewSyntheticsAssertionXPathOperatorFromValue,
+						datadogV1.NewSyntheticsAssertionBodyHashOperatorFromValue,
+						datadogV2.NewSyntheticsNetworkAssertionOperatorFromValue,
+					),
 				},
 				"property": {
-					Description: "If assertion type is `header`, this is the header name.",
+					Description: "For `header` and `grpcMetadata`, this is the header name. In other cases, this is an aggregation property: `avg`, `min`, `max` or `stddev`",
 					Type:        schema.TypeString,
 					Optional:    true,
 				},
@@ -3789,7 +3827,7 @@ func buildDatadogNetworkAssertions(attr []interface{}) ([]datadogV2.SyntheticsNe
 			)
 			assertions = append(assertions, datadogV2.SyntheticsNetworkAssertionJitterAsSyntheticsNetworkAssertion(assertionJitter))
 
-		case "packet_loss_percentage":
+		case "packetLossPercentage":
 			assertionPacketLoss := datadogV2.NewSyntheticsNetworkAssertionPacketLossPercentage(
 				operator,
 				target,
@@ -3797,7 +3835,7 @@ func buildDatadogNetworkAssertions(attr []interface{}) ([]datadogV2.SyntheticsNe
 			)
 			assertions = append(assertions, datadogV2.SyntheticsNetworkAssertionPacketLossPercentageAsSyntheticsNetworkAssertion(assertionPacketLoss))
 
-		case "multi_network_hop":
+		case "multiNetworkHop":
 			property := datadogV2.SyntheticsNetworkAssertionProperty(assertionMap["property"].(string))
 			assertionMultiHop := datadogV2.NewSyntheticsNetworkAssertionMultiNetworkHop(
 				operator,
@@ -6441,23 +6479,6 @@ func isApiSubtype(subtype datadogV1.SyntheticsAPITestStepSubtype) bool {
 		subtype == datadogV1.SYNTHETICSAPITESTSTEPSUBTYPE_UDP ||
 		subtype == datadogV1.SYNTHETICSAPITESTSTEPSUBTYPE_ICMP ||
 		subtype == datadogV1.SYNTHETICSAPITESTSTEPSUBTYPE_WEBSOCKET
-}
-
-func validateSyntheticsAssertionOperator(val interface{}, key string) (warns []string, errs []error) {
-	_, err := datadogV1.NewSyntheticsAssertionOperatorFromValue(val.(string))
-	if err != nil {
-		_, err2 := datadogV1.NewSyntheticsAssertionJSONPathOperatorFromValue(val.(string))
-		_, err3 := datadogV1.NewSyntheticsAssertionJSONSchemaOperatorFromValue(val.(string))
-		_, err4 := datadogV1.NewSyntheticsAssertionXPathOperatorFromValue(val.(string))
-		_, err5 := datadogV1.NewSyntheticsAssertionBodyHashOperatorFromValue(val.(string))
-
-		if err2 == nil || err3 == nil || err4 == nil || err5 == nil {
-			return
-		} else {
-			errs = append(errs, err, err2, err3, err4, err5)
-		}
-	}
-	return
 }
 
 func getConfigCertAndKeyContent(d *schema.ResourceData, stepIndex int) (*string, *string) {
