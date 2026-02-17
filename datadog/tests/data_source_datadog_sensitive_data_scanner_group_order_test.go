@@ -11,6 +11,7 @@ import (
 )
 
 func TestAccDatadogSDSGroupOrderDatasource(t *testing.T) {
+	cleanupSensitiveDataScannerGroups(t)
 	t.Parallel()
 	ctx, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := strings.ToLower(strings.ReplaceAll(uniqueEntityName(ctx, t), "_", "-"))
