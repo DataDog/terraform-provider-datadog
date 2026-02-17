@@ -2979,28 +2979,28 @@ func buildTerraformNetworkAssertions(assertions []datadogV2.SyntheticsNetworkAss
 		if assertion.SyntheticsNetworkAssertionLatency != nil {
 			latency := assertion.SyntheticsNetworkAssertionLatency
 			localAssertion["type"] = "latency"
-			localAssertion["operator"] = string(latency.GetOperator())
-			localAssertion["property"] = string(latency.GetProperty())
-			localAssertion["target"] = fmt.Sprintf("%.0f", latency.GetTarget())
+			localAssertion["operator"] = latency.GetOperator()
+			localAssertion["property"] = latency.GetProperty()
+			localAssertion["target"] = fmt.Sprintf("%v", latency.GetTarget()) // manually convert float to string
 
 		} else if assertion.SyntheticsNetworkAssertionJitter != nil {
 			jitter := assertion.SyntheticsNetworkAssertionJitter
 			localAssertion["type"] = "jitter"
-			localAssertion["operator"] = string(jitter.GetOperator())
-			localAssertion["target"] = fmt.Sprintf("%.0f", jitter.GetTarget())
+			localAssertion["operator"] = jitter.GetOperator()
+			localAssertion["target"] = fmt.Sprintf("%v", jitter.GetTarget()) // manually convert float to string
 
 		} else if assertion.SyntheticsNetworkAssertionPacketLossPercentage != nil {
 			packetLoss := assertion.SyntheticsNetworkAssertionPacketLossPercentage
-			localAssertion["type"] = "packet_loss_percentage"
-			localAssertion["operator"] = string(packetLoss.GetOperator())
-			localAssertion["target"] = fmt.Sprintf("%.1f", packetLoss.GetTarget())
+			localAssertion["type"] = "packetLossPercentage"
+			localAssertion["operator"] = packetLoss.GetOperator()
+			localAssertion["target"] = fmt.Sprintf("%v", packetLoss.GetTarget()) // manually convert float to string
 
 		} else if assertion.SyntheticsNetworkAssertionMultiNetworkHop != nil {
 			multiHop := assertion.SyntheticsNetworkAssertionMultiNetworkHop
-			localAssertion["type"] = "multi_network_hop"
-			localAssertion["operator"] = string(multiHop.GetOperator())
-			localAssertion["property"] = string(multiHop.GetProperty())
-			localAssertion["target"] = fmt.Sprintf("%.0f", multiHop.GetTarget())
+			localAssertion["type"] = "multiNetworkHop"
+			localAssertion["operator"] = multiHop.GetOperator()
+			localAssertion["property"] = multiHop.GetProperty()
+			localAssertion["target"] = fmt.Sprintf("%v", multiHop.GetTarget()) // manually convert float to string
 
 		} else {
 			diags = append(diags, diag.Diagnostic{
@@ -6347,6 +6347,9 @@ func convertV1OptionsToV2(v1Opts *datadogV1.SyntheticsTestOptions) datadogV2.Syn
 // convertV2OptionsToV1 converts datadogV2.SyntheticsTestOptions back to datadogV1.SyntheticsTestOptions
 func convertV2OptionsToV1(v2Opts datadogV2.SyntheticsTestOptions) *datadogV1.SyntheticsTestOptions {
 	v1Opts := datadogV1.NewSyntheticsTestOptionsWithDefaults()
+
+	// Default values for properties that do not exist for Network Path tests
+	v1Opts.SetHttpVersion(datadogV1.SYNTHETICSTESTOPTIONSHTTPVERSION_ANY)
 
 	// Copy common monitoring fields back
 	if v2Opts.HasTickEvery() {
