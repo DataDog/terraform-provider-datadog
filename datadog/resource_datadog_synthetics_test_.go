@@ -46,16 +46,10 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 		SchemaFunc: func() map[string]*schema.Schema {
 			return map[string]*schema.Schema{
 				"type": {
-					Description: "The type of Synthetics test.",
-					Type:        schema.TypeString,
-					Required:    true,
-					ValidateDiagFunc: validators.ValidateStringEnumValue(
-						// XXX: Use `validators.ValidateEnumValue()` when all test types are supported by API v2.
-						datadogV1.SYNTHETICSTESTDETAILSTYPE_API,
-						datadogV1.SYNTHETICSTESTDETAILSTYPE_BROWSER,
-						datadogV1.SYNTHETICSTESTDETAILSTYPE_MOBILE,
-						datadogV2.SYNTHETICSNETWORKTESTTYPE_NETWORK,
-					),
+					Description:      "The type of Synthetics test.",
+					Type:             schema.TypeString,
+					Required:         true,
+					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsTestDetailsTypeFromValue),
 				},
 				"subtype": {
 					Description: "The subtype for API or Network Path tests. For API tests, defaults to `http`. For Network Path tests, only `tcp`, `udp`, `icmp` are available.",
@@ -536,39 +530,12 @@ func syntheticsAPIAssertion() *schema.Schema {
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
 				"type": {
-					// TODO: update network test link if needed
-					Description: "Type of assertion. **Note:** Only some combinations of `type` and `operator` are valid. For API tests, refer to `config.assertions` in the [Datadog API reference](https://docs.datadoghq.com/api/latest/synthetics/#create-an-api-test). For Network Path tests, refer to `config.assertions` in the [Datadog API reference](https://docs.datadoghq.com/api/latest/synthetics/#create-a-network-path-test).",
+					Description: "Type of assertion. **Note:** Only some combinations of `type` and `operator` are valid. For API tests, refer to `config.assertions` in the [Datadog API reference](https://docs.datadoghq.com/api/latest/synthetics/#create-an-api-test). For Network Path tests, refer to `config.assertions` in the [Datadog API reference](https://docs.datadoghq.com/api/latest/synthetics/#synthetics-create-a-network-path-test).",
 					Type:        schema.TypeString,
-					ValidateDiagFunc: validators.ValidateStringEnumValue(
-						// datadogV1.NewSyntheticsAssertionTypeFromValue
-						datadogV1.SYNTHETICSASSERTIONTYPE_BODY,
-						datadogV1.SYNTHETICSASSERTIONTYPE_HEADER,
-						datadogV1.SYNTHETICSASSERTIONTYPE_STATUS_CODE,
-						datadogV1.SYNTHETICSASSERTIONTYPE_CERTIFICATE,
-						datadogV1.SYNTHETICSASSERTIONTYPE_RESPONSE_TIME,
-						datadogV1.SYNTHETICSASSERTIONTYPE_PROPERTY,
-						datadogV1.SYNTHETICSASSERTIONTYPE_RECORD_EVERY,
-						datadogV1.SYNTHETICSASSERTIONTYPE_RECORD_SOME,
-						datadogV1.SYNTHETICSASSERTIONTYPE_TLS_VERSION,
-						datadogV1.SYNTHETICSASSERTIONTYPE_MIN_TLS_VERSION,
-						datadogV1.SYNTHETICSASSERTIONTYPE_LATENCY,
-						datadogV1.SYNTHETICSASSERTIONTYPE_PACKET_LOSS_PERCENTAGE,
-						datadogV1.SYNTHETICSASSERTIONTYPE_PACKETS_RECEIVED,
-						datadogV1.SYNTHETICSASSERTIONTYPE_NETWORK_HOP,
-						datadogV1.SYNTHETICSASSERTIONTYPE_RECEIVED_MESSAGE,
-						datadogV1.SYNTHETICSASSERTIONTYPE_GRPC_HEALTHCHECK_STATUS,
-						datadogV1.SYNTHETICSASSERTIONTYPE_GRPC_METADATA,
-						datadogV1.SYNTHETICSASSERTIONTYPE_GRPC_PROTO,
-						datadogV1.SYNTHETICSASSERTIONTYPE_CONNECTION,
-						// datadogV1.NewSyntheticsAssertionBodyHashTypeFromValue
-						datadogV1.SYNTHETICSASSERTIONBODYHASHTYPE_BODY_HASH,
-						// datadogV1.NewSyntheticsAssertionJavascriptTypeFromValue
-						datadogV1.SYNTHETICSASSERTIONJAVASCRIPTTYPE_JAVASCRIPT,
-						// V2 Network Path test assertion types
-						datadogV2.SYNTHETICSNETWORKASSERTIONLATENCYTYPE_LATENCY,
-						datadogV2.SYNTHETICSNETWORKASSERTIONJITTERTYPE_JITTER,
-						datadogV2.SYNTHETICSNETWORKASSERTIONPACKETLOSSPERCENTAGETYPE_PACKET_LOSS_PERCENTAGE,
-						datadogV2.SYNTHETICSNETWORKASSERTIONMULTINETWORKHOPTYPE_MULTI_NETWORK_HOP,
+					ValidateDiagFunc: validators.ValidateEnumValue(
+						datadogV1.NewSyntheticsAssertionTypeFromValue,
+						datadogV1.NewSyntheticsAssertionBodyHashTypeFromValue,
+						datadogV1.NewSyntheticsAssertionJavascriptTypeFromValue,
 					),
 					Required: true,
 				},
@@ -2003,9 +1970,9 @@ func resourceDatadogSyntheticsTestCreate(ctx context.Context, d *schema.Resource
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 
-	testType := d.Get("type").(string)
+	testType := getSyntheticsTestType(d)
 
-	if testType == string(datadogV1.SYNTHETICSTESTDETAILSTYPE_API) {
+	if *testType == datadogV1.SYNTHETICSTESTDETAILSTYPE_API {
 		syntheticsTest, buildDiags := buildDatadogSyntheticsAPITest(d)
 		diags = append(diags, buildDiags...)
 		if diags.HasError() {
@@ -2047,7 +2014,7 @@ func resourceDatadogSyntheticsTestCreate(ctx context.Context, d *schema.Resource
 		updateDiags := updateSyntheticsAPITestLocalState(d, &getSyntheticsApiTestResponse, false)
 		return append(diags, updateDiags...)
 
-	} else if testType == string(datadogV1.SYNTHETICSTESTDETAILSTYPE_BROWSER) {
+	} else if *testType == datadogV1.SYNTHETICSTESTDETAILSTYPE_BROWSER {
 		syntheticsTest, buildDiags := buildDatadogSyntheticsBrowserTest(d)
 		diags = append(diags, buildDiags...)
 		if diags.HasError() {
@@ -2088,7 +2055,7 @@ func resourceDatadogSyntheticsTestCreate(ctx context.Context, d *schema.Resource
 
 		updateDiags := updateSyntheticsBrowserTestLocalState(d, &getSyntheticsBrowserTestResponse)
 		return append(diags, updateDiags...)
-	} else if testType == string(datadogV1.SYNTHETICSTESTDETAILSTYPE_MOBILE) {
+	} else if *testType == datadogV1.SYNTHETICSTESTDETAILSTYPE_MOBILE {
 		syntheticsTest := buildDatadogSyntheticsMobileTest(d)
 		createdSyntheticsTest, httpResponse, err := apiInstances.GetSyntheticsApiV1().CreateSyntheticsMobileTest(auth, *syntheticsTest)
 		if err != nil {
@@ -2125,7 +2092,7 @@ func resourceDatadogSyntheticsTestCreate(ctx context.Context, d *schema.Resource
 		updateDiags := updateSyntheticsMobileTestLocalState(d, &getSyntheticsMobileTestResponse)
 		return append(diags, updateDiags...)
 
-	} else if testType == string(datadogV2.SYNTHETICSNETWORKTESTTYPE_NETWORK) {
+	} else if *testType == datadogV1.SYNTHETICSTESTDETAILSTYPE_NETWORK {
 		syntheticsTest, buildDiags := buildDatadogSyntheticsNetworkTest(d)
 		diags = append(diags, buildDiags...)
 		if diags.HasError() {
@@ -2247,9 +2214,9 @@ func resourceDatadogSyntheticsTestUpdate(ctx context.Context, d *schema.Resource
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 
-	testType := d.Get("type").(string)
+	testType := getSyntheticsTestType(d)
 
-	if testType == string(datadogV1.SYNTHETICSTESTDETAILSTYPE_API) {
+	if *testType == datadogV1.SYNTHETICSTESTDETAILSTYPE_API {
 		syntheticsTest, buildDiags := buildDatadogSyntheticsAPITest(d)
 		diags = append(diags, buildDiags...)
 		if diags.HasError() {
@@ -2268,7 +2235,7 @@ func resourceDatadogSyntheticsTestUpdate(ctx context.Context, d *schema.Resource
 		updateDiags := updateSyntheticsAPITestLocalState(d, &updatedTest, false)
 		return append(diags, updateDiags...)
 
-	} else if testType == string(datadogV1.SYNTHETICSTESTDETAILSTYPE_BROWSER) {
+	} else if *testType == datadogV1.SYNTHETICSTESTDETAILSTYPE_BROWSER {
 		syntheticsTest, buildDiags := buildDatadogSyntheticsBrowserTest(d)
 		diags = append(diags, buildDiags...)
 		if diags.HasError() {
@@ -2286,7 +2253,7 @@ func resourceDatadogSyntheticsTestUpdate(ctx context.Context, d *schema.Resource
 
 		updateDiags := updateSyntheticsBrowserTestLocalState(d, &updatedTest)
 		return append(diags, updateDiags...)
-	} else if testType == string(datadogV1.SYNTHETICSTESTDETAILSTYPE_MOBILE) {
+	} else if *testType == datadogV1.SYNTHETICSTESTDETAILSTYPE_MOBILE {
 		syntheticsTest := buildDatadogSyntheticsMobileTest(d)
 		updatedTest, httpResponse, err := apiInstances.GetSyntheticsApiV1().UpdateMobileTest(auth, d.Id(), *syntheticsTest)
 		if err != nil {
@@ -2300,7 +2267,7 @@ func resourceDatadogSyntheticsTestUpdate(ctx context.Context, d *schema.Resource
 		updateDiags := updateSyntheticsMobileTestLocalState(d, &updatedTest)
 		return append(diags, updateDiags...)
 
-	} else if testType == string(datadogV2.SYNTHETICSNETWORKTESTTYPE_NETWORK) {
+	} else if *testType == datadogV1.SYNTHETICSTESTDETAILSTYPE_NETWORK {
 		syntheticsTest, buildDiags := buildDatadogSyntheticsNetworkTest(d)
 		diags = append(diags, buildDiags...)
 		if diags.HasError() {
@@ -6269,6 +6236,11 @@ func buildDatadogParamsElementForMobileStep(stepParamsElements map[string]interf
 	return elements
 }
 
+func getSyntheticsTestType(d *schema.ResourceData) *datadogV1.SyntheticsTestDetailsType {
+	v := datadogV1.SyntheticsTestDetailsType(d.Get("type").(string))
+	return &v
+}
+
 // convertV1OptionsToV2 converts datadogV1.SyntheticsTestOptions to datadogV2.SyntheticsTestOptions
 // Only converts common fields that are applicable to Network tests
 func convertV1OptionsToV2(v1Opts *datadogV1.SyntheticsTestOptions) datadogV2.SyntheticsTestOptions {
@@ -6309,36 +6281,36 @@ func convertV1OptionsToV2(v1Opts *datadogV1.SyntheticsTestOptions) datadogV2.Syn
 
 	// Copy scheduling options
 	if v1Opts.HasScheduling() {
-		v1Sched := v1Opts.GetScheduling()
-		v1Timeframes := v1Sched.GetTimeframes()
+		v1Scheduling := v1Opts.GetScheduling()
+		v1Timeframes := v1Scheduling.GetTimeframes()
 		var v2Timeframes []datadogV2.SyntheticsTestOptionsSchedulingTimeframe
 		for _, v1tf := range v1Timeframes {
 			v2tf := datadogV2.NewSyntheticsTestOptionsSchedulingTimeframe(v1tf.Day, v1tf.From, v1tf.To)
 			v2Timeframes = append(v2Timeframes, *v2tf)
 		}
 		// V2 scheduling requires both timeframes and timezone
-		timezone := v1Sched.GetTimezone()
-		v2Sched := datadogV2.NewSyntheticsTestOptionsScheduling(v2Timeframes, timezone)
-		v2Opts.SetScheduling(*v2Sched)
+		timezone := v1Scheduling.GetTimezone()
+		v2Scheduling := datadogV2.NewSyntheticsTestOptionsScheduling(v2Timeframes, timezone)
+		v2Opts.SetScheduling(*v2Scheduling)
 	}
 
 	// Copy monitor options
 	if v1Opts.HasMonitorOptions() {
-		v1MonOpts := v1Opts.GetMonitorOptions()
-		v2MonOpts := datadogV2.NewSyntheticsTestOptionsMonitorOptionsWithDefaults()
-		if v1MonOpts.HasRenotifyInterval() {
-			v2MonOpts.SetRenotifyInterval(v1MonOpts.GetRenotifyInterval())
+		v1MonitorOptions := v1Opts.GetMonitorOptions()
+		v2MonitorOptions := datadogV2.NewSyntheticsTestOptionsMonitorOptionsWithDefaults()
+		if v1MonitorOptions.HasRenotifyInterval() {
+			v2MonitorOptions.SetRenotifyInterval(v1MonitorOptions.GetRenotifyInterval())
 		}
-		if v1MonOpts.HasRenotifyOccurrences() {
-			v2MonOpts.SetRenotifyOccurrences(v1MonOpts.GetRenotifyOccurrences())
+		if v1MonitorOptions.HasRenotifyOccurrences() {
+			v2MonitorOptions.SetRenotifyOccurrences(v1MonitorOptions.GetRenotifyOccurrences())
 		}
-		if v1MonOpts.HasEscalationMessage() {
-			v2MonOpts.SetEscalationMessage(v1MonOpts.GetEscalationMessage())
+		if v1MonitorOptions.HasEscalationMessage() {
+			v2MonitorOptions.SetEscalationMessage(v1MonitorOptions.GetEscalationMessage())
 		}
-		if v1MonOpts.HasNotificationPresetName() {
-			v2MonOpts.SetNotificationPresetName(datadogV2.SyntheticsTestOptionsMonitorOptionsNotificationPresetName(v1MonOpts.GetNotificationPresetName()))
+		if v1MonitorOptions.HasNotificationPresetName() {
+			v2MonitorOptions.SetNotificationPresetName(datadogV2.SyntheticsTestOptionsMonitorOptionsNotificationPresetName(v1MonitorOptions.GetNotificationPresetName()))
 		}
-		v2Opts.SetMonitorOptions(*v2MonOpts)
+		v2Opts.SetMonitorOptions(*v2MonitorOptions)
 	}
 
 	return *v2Opts
