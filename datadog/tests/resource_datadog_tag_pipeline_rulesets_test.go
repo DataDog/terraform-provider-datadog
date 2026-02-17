@@ -446,7 +446,7 @@ resource "datadog_tag_pipeline_ruleset" "first" {
     
     query {
       query = "service:first"
-      if_not_exists = false
+      if_tag_exists = "replace"
       
       addition {
         key   = "env"
@@ -466,7 +466,7 @@ resource "datadog_tag_pipeline_ruleset" "second" {
     
     query {
       query = "service:second"
-      if_not_exists = false
+      if_tag_exists = "replace"
       
       addition {
         key   = "env"
@@ -486,7 +486,7 @@ resource "datadog_tag_pipeline_ruleset" "third" {
     
     query {
       query = "service:third"
-      if_not_exists = false
+      if_tag_exists = "replace"
       
       addition {
         key   = "env"
@@ -517,7 +517,7 @@ resource "datadog_tag_pipeline_ruleset" "first" {
     
     query {
       query = "service:first"
-      if_not_exists = false
+      if_tag_exists = "replace"
       
       addition {
         key   = "env"
@@ -537,7 +537,7 @@ resource "datadog_tag_pipeline_ruleset" "second" {
     
     query {
       query = "service:second"
-      if_not_exists = false
+      if_tag_exists = "replace"
       
       addition {
         key   = "env"
@@ -557,7 +557,7 @@ resource "datadog_tag_pipeline_ruleset" "third" {
     
     query {
       query = "service:third"
-      if_not_exists = false
+      if_tag_exists = "replace"
       
       addition {
         key   = "env"
@@ -588,7 +588,7 @@ resource "datadog_tag_pipeline_ruleset" "first" {
     
     query {
       query = "service:first"
-      if_not_exists = false
+      if_tag_exists = "replace"
       
       addition {
         key   = "env"
@@ -608,7 +608,7 @@ resource "datadog_tag_pipeline_ruleset" "second" {
     
     query {
       query = "service:second"
-      if_not_exists = false
+      if_tag_exists = "replace"
       
       addition {
         key   = "env"
@@ -628,7 +628,7 @@ resource "datadog_tag_pipeline_ruleset" "third" {
     
     query {
       query = "service:third"
-      if_not_exists = false
+      if_tag_exists = "replace"
       
       addition {
         key   = "env"
@@ -648,7 +648,7 @@ resource "datadog_tag_pipeline_ruleset" "fourth" {
     
     query {
       query = "service:fourth"
-      if_not_exists = false
+      if_tag_exists = "replace"
       
       addition {
         key   = "env"
@@ -680,7 +680,7 @@ resource "datadog_tag_pipeline_ruleset" "first" {
     
     query {
       query = "service:first"
-      if_not_exists = false
+      if_tag_exists = "replace"
       
       addition {
         key   = "env"
@@ -700,7 +700,7 @@ resource "datadog_tag_pipeline_ruleset" "second" {
     
     query {
       query = "service:second"
-      if_not_exists = false
+      if_tag_exists = "replace"
       
       addition {
         key   = "env"
@@ -720,7 +720,7 @@ resource "datadog_tag_pipeline_ruleset" "third" {
     
     query {
       query = "service:third"
-      if_not_exists = false
+      if_tag_exists = "replace"
       
       addition {
         key   = "env"
@@ -740,7 +740,7 @@ resource "datadog_tag_pipeline_ruleset" "fourth" {
     
     query {
       query = "service:fourth"
-      if_not_exists = false
+      if_tag_exists = "replace"
       
       addition {
         key   = "env"
@@ -770,7 +770,7 @@ resource "datadog_tag_pipeline_ruleset" "single" {
     
     query {
       query = "service:single"
-      if_not_exists = false
+      if_tag_exists = "replace"
       
       addition {
         key   = "env"
@@ -799,7 +799,7 @@ resource "datadog_tag_pipeline_ruleset" "first" {
     
     query {
       query = "service:first"
-      if_not_exists = false
+      if_tag_exists = "replace"
       
       addition {
         key   = "env"
@@ -819,7 +819,7 @@ resource "datadog_tag_pipeline_ruleset" "second" {
     
     query {
       query = "service:second"
-      if_not_exists = false
+      if_tag_exists = "replace"
       
       addition {
         key   = "env"
@@ -839,7 +839,7 @@ resource "datadog_tag_pipeline_ruleset" "third" {
     
     query {
       query = "service:third"
-      if_not_exists = false
+      if_tag_exists = "replace"
       
       addition {
         key   = "env"
@@ -871,7 +871,7 @@ resource "datadog_tag_pipeline_ruleset" "unmanaged_first" {
     
     query {
       query = "service:unmanaged-first"
-      if_not_exists = false
+      if_tag_exists = "replace"
       
       addition {
         key   = "env"
@@ -891,7 +891,7 @@ resource "datadog_tag_pipeline_ruleset" "unmanaged_second" {
     
     query {
       query = "service:unmanaged-second"
-      if_not_exists = false
+      if_tag_exists = "replace"
       
       addition {
         key   = "env"
@@ -914,7 +914,7 @@ resource "datadog_tag_pipeline_ruleset" "first" {
     
     query {
       query = "service:first"
-      if_not_exists = false
+      if_tag_exists = "replace"
       
       addition {
         key   = "env"
@@ -934,7 +934,7 @@ resource "datadog_tag_pipeline_ruleset" "second" {
     
     query {
       query = "service:second"
-      if_not_exists = false
+      if_tag_exists = "replace"
       
       addition {
         key   = "env"
@@ -954,7 +954,7 @@ resource "datadog_tag_pipeline_ruleset" "third" {
     
     query {
       query = "service:third"
-      if_not_exists = false
+      if_tag_exists = "replace"
       
       addition {
         key   = "env"
@@ -1030,7 +1030,7 @@ resource "datadog_tag_pipeline_ruleset" "first" {
     
     query {
       query = "service:first"
-      if_not_exists = false
+      if_tag_exists = "replace"
       
       addition {
         key   = "env"
@@ -1050,7 +1050,7 @@ resource "datadog_tag_pipeline_ruleset" "second" {
     
     query {
       query = "service:second"
-      if_not_exists = false
+      if_tag_exists = "replace"
       
       addition {
         key   = "env"
@@ -1070,7 +1070,7 @@ resource "datadog_tag_pipeline_ruleset" "third" {
     
     query {
       query = "service:third"
-      if_not_exists = false
+      if_tag_exists = "replace"
       
       addition {
         key   = "env"
@@ -1102,7 +1102,7 @@ resource "datadog_tag_pipeline_ruleset" "first" {
     
     query {
       query = "service:first"
-      if_not_exists = false
+      if_tag_exists = "replace"
       
       addition {
         key   = "env"
@@ -1122,7 +1122,7 @@ resource "datadog_tag_pipeline_ruleset" "second" {
     
     query {
       query = "service:second"
-      if_not_exists = false
+      if_tag_exists = "replace"
       
       addition {
         key   = "env"
@@ -1142,7 +1142,7 @@ resource "datadog_tag_pipeline_ruleset" "third" {
     
     query {
       query = "service:third"
-      if_not_exists = false
+      if_tag_exists = "replace"
       
       addition {
         key   = "env"
@@ -1163,7 +1163,7 @@ resource "datadog_tag_pipeline_ruleset" "unmanaged_first" {
     
     query {
       query = "service:unmanaged-first"
-      if_not_exists = false
+      if_tag_exists = "replace"
       
       addition {
         key   = "env"
@@ -1183,7 +1183,7 @@ resource "datadog_tag_pipeline_ruleset" "unmanaged_second" {
     
     query {
       query = "service:unmanaged-second"
-      if_not_exists = false
+      if_tag_exists = "replace"
       
       addition {
         key   = "env"
@@ -1215,7 +1215,7 @@ resource "datadog_tag_pipeline_ruleset" "first" {
     
     query {
       query = "service:first"
-      if_not_exists = false
+      if_tag_exists = "replace"
       
       addition {
         key   = "env"
@@ -1235,7 +1235,7 @@ resource "datadog_tag_pipeline_ruleset" "second" {
     
     query {
       query = "service:second"
-      if_not_exists = false
+      if_tag_exists = "replace"
       
       addition {
         key   = "env"
@@ -1255,7 +1255,7 @@ resource "datadog_tag_pipeline_ruleset" "third" {
     
     query {
       query = "service:third"
-      if_not_exists = false
+      if_tag_exists = "replace"
       
       addition {
         key   = "env"
@@ -1276,7 +1276,7 @@ resource "datadog_tag_pipeline_ruleset" "unmanaged_first" {
     
     query {
       query = "service:unmanaged-first"
-      if_not_exists = false
+      if_tag_exists = "replace"
       
       addition {
         key   = "env"
@@ -1296,7 +1296,7 @@ resource "datadog_tag_pipeline_ruleset" "unmanaged_second" {
     
     query {
       query = "service:unmanaged-second"
-      if_not_exists = false
+      if_tag_exists = "replace"
       
       addition {
         key   = "env"
