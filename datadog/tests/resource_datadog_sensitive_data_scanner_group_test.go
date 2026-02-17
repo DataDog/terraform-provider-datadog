@@ -19,6 +19,7 @@ func TestAccDatadogSensitiveDataScannerGroup_Basic(t *testing.T) {
 	//if isRecording() || isReplaying() {
 	//	t.Skip("This test doesn't support recording or replaying")
 	//}
+	cleanupSensitiveDataScannerGroups(t)
 	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
@@ -161,6 +162,7 @@ func TestAccDatadogSensitiveDataScannerGroup_DeleteAlreadyDeleted(t *testing.T) 
 	if isRecording() || isReplaying() {
 		t.Skip("This test doesn't support recording or replaying")
 	}
+	cleanupSensitiveDataScannerGroups(t)
 	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
