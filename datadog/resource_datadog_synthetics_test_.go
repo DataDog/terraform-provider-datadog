@@ -2925,13 +2925,24 @@ func updateSyntheticsNetworkTestLocalState(d *schema.ResourceData, response *dat
 	}
 
 	// Convert and set options
-	v2Options := networkTest.GetOptions()
-	v1Options := convertV2OptionsToV1(v2Options)
-	localOptionsList := buildTerraformTestOptions(*v1Options)
+	// V2 options is currently a subset of V1 options
+	optionsV2 := networkTest.GetOptions()
+	optionsJSON, err := optionsV2.MarshalJSON()
+	if err != nil {
+		return diag.FromErr(err)
+	}
+	optionsV1 := datadogV1.NewSyntheticsTestOptions()
+	if err := optionsV1.UnmarshalJSON(optionsJSON); err != nil {
+		return diag.FromErr(err)
+	}
+	if httpVersion, ok := d.GetOk("options_list.0.http_version"); ok {
+		optionsV1.SetHttpVersion(datadogV1.SyntheticsTestOptionsHTTPVersion(httpVersion.(string)))
+	}
+
+	localOptionsList := buildTerraformTestOptions(*optionsV1)
 	if err := d.Set("options_list", localOptionsList); err != nil {
 		return diag.FromErr(err)
 	}
-
 	return nil
 }
 
@@ -3740,9 +3751,17 @@ func buildDatadogSyntheticsNetworkTest(d *schema.ResourceData) (*datadogV2.Synth
 	networkTest.SetConfig(*config)
 
 	// Convert and set options
-	v1Options := buildDatadogTestOptions(d)
-	v2Options := convertV1OptionsToV2(v1Options)
-	networkTest.SetOptions(v2Options)
+	// V1 options is currently a superset of V2 options
+	optionsV1 := buildDatadogTestOptions(d)
+	optionsJSON, err := optionsV1.MarshalJSON()
+	if err != nil {
+		diags = append(diags, diag.FromErr(err)...)
+	}
+	optionsV2 := datadogV2.NewSyntheticsTestOptions()
+	if err := optionsV2.UnmarshalJSON(optionsJSON); err != nil {
+		diags = append(diags, diag.FromErr(err)...)
+	}
+	networkTest.SetOptions(*optionsV2)
 
 	// Wrap in edit request structure
 	testEdit := datadogV2.NewSyntheticsNetworkTestEdit(*networkTest, datadogV2.SYNTHETICSNETWORKTESTTYPE_NETWORK)
@@ -6239,158 +6258,6 @@ func buildDatadogParamsElementForMobileStep(stepParamsElements map[string]interf
 func getSyntheticsTestType(d *schema.ResourceData) *datadogV1.SyntheticsTestDetailsType {
 	v := datadogV1.SyntheticsTestDetailsType(d.Get("type").(string))
 	return &v
-}
-
-// convertV1OptionsToV2 converts datadogV1.SyntheticsTestOptions to datadogV2.SyntheticsTestOptions
-// Only converts common fields that are applicable to Network tests
-func convertV1OptionsToV2(v1Opts *datadogV1.SyntheticsTestOptions) datadogV2.SyntheticsTestOptions {
-	v2Opts := datadogV2.NewSyntheticsTestOptionsWithDefaults()
-
-	// Copy common monitoring fields
-	if v1Opts.HasTickEvery() {
-		v2Opts.SetTickEvery(v1Opts.GetTickEvery())
-	}
-	if v1Opts.HasMinLocationFailed() {
-		v2Opts.SetMinLocationFailed(v1Opts.GetMinLocationFailed())
-	}
-	if v1Opts.HasMinFailureDuration() {
-		v2Opts.SetMinFailureDuration(v1Opts.GetMinFailureDuration())
-	}
-	if v1Opts.HasMonitorName() {
-		v2Opts.SetMonitorName(v1Opts.GetMonitorName())
-	}
-	if v1Opts.HasMonitorPriority() {
-		v2Opts.SetMonitorPriority(v1Opts.GetMonitorPriority())
-	}
-	if v1Opts.HasRestrictedRoles() {
-		v2Opts.SetRestrictedRoles(v1Opts.GetRestrictedRoles())
-	}
-
-	// Copy retry options
-	if v1Opts.HasRetry() {
-		v1Retry := v1Opts.GetRetry()
-		v2Retry := datadogV2.NewSyntheticsTestOptionsRetryWithDefaults()
-		if v1Retry.HasCount() {
-			v2Retry.SetCount(v1Retry.GetCount())
-		}
-		if v1Retry.HasInterval() {
-			v2Retry.SetInterval(v1Retry.GetInterval())
-		}
-		v2Opts.SetRetry(*v2Retry)
-	}
-
-	// Copy scheduling options
-	if v1Opts.HasScheduling() {
-		v1Scheduling := v1Opts.GetScheduling()
-		v1Timeframes := v1Scheduling.GetTimeframes()
-		var v2Timeframes []datadogV2.SyntheticsTestOptionsSchedulingTimeframe
-		for _, v1tf := range v1Timeframes {
-			v2tf := datadogV2.NewSyntheticsTestOptionsSchedulingTimeframe(v1tf.Day, v1tf.From, v1tf.To)
-			v2Timeframes = append(v2Timeframes, *v2tf)
-		}
-		// V2 scheduling requires both timeframes and timezone
-		timezone := v1Scheduling.GetTimezone()
-		v2Scheduling := datadogV2.NewSyntheticsTestOptionsScheduling(v2Timeframes, timezone)
-		v2Opts.SetScheduling(*v2Scheduling)
-	}
-
-	// Copy monitor options
-	if v1Opts.HasMonitorOptions() {
-		v1MonitorOptions := v1Opts.GetMonitorOptions()
-		v2MonitorOptions := datadogV2.NewSyntheticsTestOptionsMonitorOptionsWithDefaults()
-		if v1MonitorOptions.HasRenotifyInterval() {
-			v2MonitorOptions.SetRenotifyInterval(v1MonitorOptions.GetRenotifyInterval())
-		}
-		if v1MonitorOptions.HasRenotifyOccurrences() {
-			v2MonitorOptions.SetRenotifyOccurrences(v1MonitorOptions.GetRenotifyOccurrences())
-		}
-		if v1MonitorOptions.HasEscalationMessage() {
-			v2MonitorOptions.SetEscalationMessage(v1MonitorOptions.GetEscalationMessage())
-		}
-		if v1MonitorOptions.HasNotificationPresetName() {
-			v2MonitorOptions.SetNotificationPresetName(datadogV2.SyntheticsTestOptionsMonitorOptionsNotificationPresetName(v1MonitorOptions.GetNotificationPresetName()))
-		}
-		v2Opts.SetMonitorOptions(*v2MonitorOptions)
-	}
-
-	return *v2Opts
-}
-
-// convertV2OptionsToV1 converts datadogV2.SyntheticsTestOptions back to datadogV1.SyntheticsTestOptions
-func convertV2OptionsToV1(v2Opts datadogV2.SyntheticsTestOptions) *datadogV1.SyntheticsTestOptions {
-	v1Opts := datadogV1.NewSyntheticsTestOptionsWithDefaults()
-
-	// Default values for properties that do not exist for Network Path tests
-	v1Opts.SetHttpVersion(datadogV1.SYNTHETICSTESTOPTIONSHTTPVERSION_ANY)
-
-	// Copy common monitoring fields back
-	if v2Opts.HasTickEvery() {
-		v1Opts.SetTickEvery(v2Opts.GetTickEvery())
-	}
-	if v2Opts.HasMinLocationFailed() {
-		v1Opts.SetMinLocationFailed(v2Opts.GetMinLocationFailed())
-	}
-	if v2Opts.HasMinFailureDuration() {
-		v1Opts.SetMinFailureDuration(v2Opts.GetMinFailureDuration())
-	}
-	if v2Opts.HasMonitorName() {
-		v1Opts.SetMonitorName(v2Opts.GetMonitorName())
-	}
-	if v2Opts.HasMonitorPriority() {
-		v1Opts.SetMonitorPriority(v2Opts.GetMonitorPriority())
-	}
-	if v2Opts.HasRestrictedRoles() {
-		v1Opts.SetRestrictedRoles(v2Opts.GetRestrictedRoles())
-	}
-
-	// Copy retry options back
-	if v2Opts.HasRetry() {
-		v2Retry := v2Opts.GetRetry()
-		v1Retry := datadogV1.NewSyntheticsTestOptionsRetryWithDefaults()
-		if v2Retry.HasCount() {
-			v1Retry.SetCount(v2Retry.GetCount())
-		}
-		if v2Retry.HasInterval() {
-			v1Retry.SetInterval(v2Retry.GetInterval())
-		}
-		v1Opts.SetRetry(*v1Retry)
-	}
-
-	// Copy scheduling options back
-	if v2Opts.HasScheduling() {
-		v2Sched := v2Opts.GetScheduling()
-		v1Sched := datadogV1.NewSyntheticsTestOptionsSchedulingWithDefaults()
-		v1Sched.SetTimezone(v2Sched.GetTimezone())
-		v2Timeframes := v2Sched.GetTimeframes()
-		var v1Timeframes []datadogV1.SyntheticsTestOptionsSchedulingTimeframe
-		for _, v2tf := range v2Timeframes {
-			v1tf := datadogV1.NewSyntheticsTestOptionsSchedulingTimeframe(v2tf.Day, v2tf.From, v2tf.To)
-			v1Timeframes = append(v1Timeframes, *v1tf)
-		}
-		v1Sched.SetTimeframes(v1Timeframes)
-		v1Opts.SetScheduling(*v1Sched)
-	}
-
-	// Copy monitor options back
-	if v2Opts.HasMonitorOptions() {
-		v2MonOpts := v2Opts.GetMonitorOptions()
-		v1MonOpts := datadogV1.NewSyntheticsTestOptionsMonitorOptionsWithDefaults()
-		if v2MonOpts.HasRenotifyInterval() {
-			v1MonOpts.SetRenotifyInterval(v2MonOpts.GetRenotifyInterval())
-		}
-		if v2MonOpts.HasRenotifyOccurrences() {
-			v1MonOpts.SetRenotifyOccurrences(v2MonOpts.GetRenotifyOccurrences())
-		}
-		if v2MonOpts.HasEscalationMessage() {
-			v1MonOpts.SetEscalationMessage(v2MonOpts.GetEscalationMessage())
-		}
-		if v2MonOpts.HasNotificationPresetName() {
-			v1MonOpts.SetNotificationPresetName(datadogV1.SyntheticsTestOptionsMonitorOptionsNotificationPresetName(v2MonOpts.GetNotificationPresetName()))
-		}
-		v1Opts.SetMonitorOptions(*v1MonOpts)
-	}
-
-	return v1Opts
 }
 
 func isCertHash(content string) bool {
