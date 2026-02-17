@@ -280,29 +280,21 @@ func resourceDatadogSecurityMonitoringDefaultRuleRead(ctx context.Context, d *sc
 
 	d.Set("enabled", *rule.IsEnabled)
 
-	if v, ok := d.GetOk("case"); ok {
-		tfCasesRaw := v.([]interface{})
-		readNotifications := make([][]string, len(tfCasesRaw))
-		for i, tfCaseRaw := range tfCasesRaw {
-			tfCase := tfCaseRaw.(map[string]interface{})
-			var ruleCase *datadogV2.SecurityMonitoringRuleCase
-			tfStatus := datadogV2.SecurityMonitoringRuleSeverity(tfCase["status"].(string))
-			for _, rc := range rule.GetCases() {
-				if *rc.Status == tfStatus {
-					ruleCase = &rc
-					break
-				}
-			}
-			if ruleCase == nil {
-				return diag.FromErr(errors.New("error: no rule case with status " + string(tfStatus)))
-			}
-			readNotifications[i] = ruleCase.GetNotifications()
+	// Always read cases from API response to ensure state is populated after import
+	apiCases := rule.GetCases()
+	stateCases := make([]map[string]interface{}, len(apiCases))
+	for i, apiCase := range apiCases {
+		stateCase := map[string]interface{}{
+			"status":        string(apiCase.GetStatus()),
+			"notifications": apiCase.GetNotifications(),
 		}
-
-		for i, notification := range readNotifications {
-			d.Set(fmt.Sprintf("case.%d.notifications", i), notification)
+		// Only set custom_status if it's present
+		if customStatus, ok := apiCase.GetCustomStatusOk(); ok && customStatus != nil {
+			stateCase["custom_status"] = string(*customStatus)
 		}
+		stateCases[i] = stateCase
 	}
+	d.Set("case", stateCases)
 
 	ruleFilters := make([]map[string]interface{}, len(rule.GetFilters()))
 	for idx, responseRuleFilter := range rule.GetFilters() {
@@ -328,59 +320,45 @@ func resourceDatadogSecurityMonitoringDefaultRuleRead(ctx context.Context, d *sc
 
 	d.Set("options", &ruleOptions)
 
-	// Set query fields from API response - these are computed fields that show current state
-	if v, ok := d.GetOk("query"); ok {
-		tfQueries := v.([]interface{})
-		responseQueries := rule.GetQueries()
-		stateQueries := make([]map[string]interface{}, len(tfQueries))
+	// Always read queries from API response to ensure state is populated after import
+	responseQueries := rule.GetQueries()
+	stateQueries := make([]map[string]interface{}, len(responseQueries))
 
-		for idx, tfQuery := range tfQueries {
-			tfQueryMap := tfQuery.(map[string]interface{})
-			stateQuery := make(map[string]interface{})
+	for idx, responseQuery := range responseQueries {
+		stateQuery := make(map[string]interface{})
 
-			// Copy the configuration values first
-			for key, value := range tfQueryMap {
-				stateQuery[key] = value
-			}
-
-			// Then populate computed values from API response
-			if idx < len(responseQueries) {
-				responseQuery := responseQueries[idx]
-
-				if agg, ok := responseQuery.GetAggregationOk(); ok {
-					stateQuery["aggregation"] = string(*agg)
-				}
-				if gbf, ok := responseQuery.GetGroupByFieldsOk(); ok {
-					stateQuery["group_by_fields"] = *gbf
-				}
-				if hasGbf, ok := responseQuery.GetHasOptionalGroupByFieldsOk(); ok {
-					stateQuery["has_optional_group_by_fields"] = *hasGbf
-				}
-				if df, ok := responseQuery.GetDistinctFieldsOk(); ok {
-					stateQuery["distinct_fields"] = *df
-				}
-				if ds, ok := responseQuery.GetDataSourceOk(); ok {
-					stateQuery["data_source"] = string(*ds)
-				}
-				if m, ok := responseQuery.GetMetricsOk(); ok {
-					stateQuery["metrics"] = *m
-				}
-				if n, ok := responseQuery.GetNameOk(); ok {
-					stateQuery["name"] = *n
-				}
-				if q, ok := responseQuery.GetQueryOk(); ok {
-					stateQuery["query"] = *q
-				}
-				if cqe, ok := responseQuery.GetCustomQueryExtensionOk(); ok {
-					stateQuery["custom_query_extension"] = *cqe
-				}
-			}
-
-			stateQueries[idx] = stateQuery
+		if agg, ok := responseQuery.GetAggregationOk(); ok {
+			stateQuery["aggregation"] = string(*agg)
+		}
+		if gbf, ok := responseQuery.GetGroupByFieldsOk(); ok {
+			stateQuery["group_by_fields"] = *gbf
+		}
+		if hasGbf, ok := responseQuery.GetHasOptionalGroupByFieldsOk(); ok {
+			stateQuery["has_optional_group_by_fields"] = *hasGbf
+		}
+		if df, ok := responseQuery.GetDistinctFieldsOk(); ok {
+			stateQuery["distinct_fields"] = *df
+		}
+		if ds, ok := responseQuery.GetDataSourceOk(); ok {
+			stateQuery["data_source"] = string(*ds)
+		}
+		if m, ok := responseQuery.GetMetricsOk(); ok {
+			stateQuery["metrics"] = *m
+		}
+		if n, ok := responseQuery.GetNameOk(); ok {
+			stateQuery["name"] = *n
+		}
+		if q, ok := responseQuery.GetQueryOk(); ok {
+			stateQuery["query"] = *q
+		}
+		if cqe, ok := responseQuery.GetCustomQueryExtensionOk(); ok {
+			stateQuery["custom_query_extension"] = *cqe
 		}
 
-		d.Set("query", stateQueries)
+		stateQueries[idx] = stateQuery
 	}
+
+	d.Set("query", stateQueries)
 
 	defaultTags := make(map[string]bool)
 	for _, defaultTag := range rule.GetDefaultTags() {
