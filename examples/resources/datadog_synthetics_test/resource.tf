@@ -720,60 +720,193 @@ resource "datadog_synthetics_test" "test_grpc_health" {
   }
 }
 
-# Example Usage (Synthetics Network Path UDP test)
-# Create a new Datadog Synthetics Network Path test using UDP protocol
-resource "datadog_synthetics_test" "test_network_udp" {
-  name      = "Network Path UDP test on example.com"
+# Example Usage (Network Path TCP Test)
+# Create a new Datadog Network Path TCP test to example.com on port 443
+# using the TCP traceroute strategy "syn"
+resource "datadog_synthetics_test" "network_tcp" {
+  name      = "Network Path TCP Test"
   type      = "network"
-  subtype   = "udp"
+  subtype   = "tcp"
   status    = "live"
-  message   = "Notify @pagerduty"
-  locations = ["aws:us-east-1"]
-  tags      = ["network:udp", "env:prod"]
+  message   = "Network Path TCP test"
+  locations = ["aws:eu-central-1"]
+  tags      = ["foo:bar", "foo", "env:test"]
 
   request_definition {
-    host                = "example.com"
-    port                = "53"
-    e2e_queries         = 5
-    max_ttl             = 30
-    traceroute_queries  = 3
-    timeout             = 10
-    destination_service = "dns-server"
-    source_service      = "monitoring"
+    host               = "example.com"
+    port               = "443"
+    e2e_queries        = 5
+    max_ttl            = 30
+    traceroute_queries = 3
+    tcp_method         = "syn"
+    timeout            = 10
   }
 
   assertion {
     type     = "latency"
     operator = "lessThan"
     property = "avg"
-    target   = "100"
+    target   = 200
+  }
+
+  assertion {
+    type     = "latency"
+    operator = "lessThan"
+    property = "max"
+    target   = 500
   }
 
   assertion {
     type     = "jitter"
     operator = "lessThan"
-    target   = "10"
+    target   = 50
   }
 
   assertion {
-    type     = "packet_loss_percentage"
+    type     = "packetLossPercentage"
     operator = "lessThan"
-    target   = "5.0"
+    target   = 0.5
   }
 
   assertion {
-    type     = "multi_network_hop"
+    type     = "multiNetworkHop"
     operator = "lessThan"
     property = "max"
-    target   = "15"
+    target   = 20
   }
 
   options_list {
-    tick_every = 900
+    tick_every           = 900
+    min_failure_duration = 0
+    min_location_failed  = 1
+
     retry {
       count    = 2
       interval = 300
     }
+
+    monitor_options {
+      renotify_interval = 120
+    }
+  }
+}
+
+# Example Usage (Network Path UDP Test)
+# Create a new Datadog Network Path UDP test to example.com on port 53
+resource "datadog_synthetics_test" "network_udp" {
+  name      = "Network Path UDP Test"
+  type      = "network"
+  subtype   = "udp"
+  status    = "live"
+  message   = "Network Path UDP test"
+  locations = ["aws:eu-central-1"]
+  tags      = ["foo:bar", "foo", "env:test"]
+
+  request_definition {
+    host               = "example.com"
+    port               = "53"
+    e2e_queries        = 5
+    max_ttl            = 30
+    traceroute_queries = 3
+    timeout            = 10
+  }
+
+  assertion {
+    type     = "latency"
+    operator = "lessThan"
+    property = "avg"
+    target   = 100.2
+  }
+
+  assertion {
+    type     = "jitter"
+    operator = "lessThan"
+    target   = 20
+  }
+
+  assertion {
+    type     = "packetLossPercentage"
+    operator = "lessThan"
+    target   = 0.1
+  }
+
+  options_list {
+    tick_every           = 900
+    min_failure_duration = 0
+    min_location_failed  = 1
+
+    retry {
+      count    = 2
+      interval = 300
+    }
+
+    monitor_options {
+      renotify_interval = 120
+    }
+  }
+}
+
+# Network Path ICMP Test
+resource "datadog_synthetics_test" "network_icmp" {
+  name      = "Network Path ICMP Test"
+  type      = "network"
+  subtype   = "icmp"
+  status    = "live"
+  message   = "Network Path ICMP test"
+  locations = ["aws:eu-central-1"]
+  tags      = ["foo:bar", "foo", "env:test"]
+
+  request_definition {
+    host               = "www.example.com"
+    e2e_queries        = 5
+    max_ttl            = 30
+    traceroute_queries = 3
+    timeout            = 10
+  }
+
+  assertion {
+    type     = "latency"
+    operator = "lessThan"
+    property = "avg"
+    target   = 150
+  }
+
+  assertion {
+    type     = "latency"
+    operator = "lessThan"
+    property = "max"
+    target   = 300
+  }
+
+  assertion {
+    type     = "jitter"
+    operator = "lessThan"
+    target   = 30
+  }
+
+  assertion {
+    type     = "packetLossPercentage"
+    operator = "lessThan"
+    target   = 0.5
+  }
+
+  assertion {
+    type     = "multiNetworkHop"
+    operator = "lessThan"
+    property = "avg"
+    target   = 15
+  }
+
+  options_list {
+    tick_every           = 900
+    min_failure_duration = 0
+    min_location_failed  = 1
+
+    retry {
+      count    = 2
+      interval = 300
+    }
+
     monitor_options {
       renotify_interval = 120
     }
