@@ -105,6 +105,12 @@ data "datadog_security_monitoring_rules" "bruteforce" {
 }
 
 resource "datadog_security_monitoring_default_rule" "acceptance_test" {
+	query {
+	}
+	case {
+		status        = "medium"
+		notifications = []
+	}
 }
 `
 }
@@ -112,6 +118,13 @@ resource "datadog_security_monitoring_default_rule" "acceptance_test" {
 func testAccDatadogSecurityMonitoringDefaultRuleDynamicCriticality() string {
 	return `
 resource "datadog_security_monitoring_default_rule" "acceptance_test" {
+	query {
+	}
+    case {
+		status        = "medium"
+		notifications = []
+	}
+
 	options {
 		decrease_criticality_based_on_env = true
 	}
@@ -133,6 +146,12 @@ func testAccCheckDatadogSecurityMonitoringDefaultDynamicCriticality() resource.T
 func testAccDatadogSecurityMonitoringDefaultRuleAddTag() string {
 	return `
 resource "datadog_security_monitoring_default_rule" "acceptance_test" {
+	query {
+	}
+    case {
+		status        = "medium"
+		notifications = []
+	}
 	options {
 		decrease_criticality_based_on_env = true
 	}
