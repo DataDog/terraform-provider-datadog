@@ -2177,6 +2177,7 @@ func resourceDatadogSyntheticsTestRead(ctx context.Context, d *schema.ResourceDa
 	var syntheticsAPITest datadogV1.SyntheticsAPITest
 	var syntheticsBrowserTest datadogV1.SyntheticsBrowserTest
 	var syntheticsMobileTest datadogV1.SyntheticsMobileTest
+	var syntheticsNetworkTestResponse datadogV2.SyntheticsNetworkTestResponse
 	var err error
 	var httpresp *_nethttp.Response
 
@@ -2198,6 +2199,8 @@ func resourceDatadogSyntheticsTestRead(ctx context.Context, d *schema.ResourceDa
 		syntheticsBrowserTest, _, err = apiInstances.GetSyntheticsApiV1().GetBrowserTest(auth, d.Id())
 	} else if syntheticsTest.GetType() == datadogV1.SYNTHETICSTESTDETAILSTYPE_MOBILE {
 		syntheticsMobileTest, _, err = apiInstances.GetSyntheticsApiV1().GetMobileTest(auth, d.Id())
+	} else if syntheticsTest.GetType() == datadogV1.SYNTHETICSTESTDETAILSTYPE_NETWORK {
+		syntheticsNetworkTestResponse, _, err = apiInstances.GetSyntheticsApiV2().GetSyntheticsNetworkTest(auth, d.Id())
 	} else {
 		syntheticsAPITest, _, err = apiInstances.GetSyntheticsApiV1().GetAPITest(auth, d.Id())
 	}
@@ -2223,6 +2226,13 @@ func resourceDatadogSyntheticsTestRead(ctx context.Context, d *schema.ResourceDa
 			return diag.FromErr(err)
 		}
 		return updateSyntheticsMobileTestLocalState(d, &syntheticsMobileTest)
+	}
+
+	if syntheticsTest.GetType() == datadogV1.SYNTHETICSTESTDETAILSTYPE_NETWORK {
+		if err := utils.CheckForUnparsed(syntheticsNetworkTestResponse); err != nil {
+			return diag.FromErr(err)
+		}
+		return updateSyntheticsNetworkTestLocalState(d, &syntheticsNetworkTestResponse)
 	}
 
 	if err := utils.CheckForUnparsed(syntheticsAPITest); err != nil {
