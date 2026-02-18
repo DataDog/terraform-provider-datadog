@@ -167,7 +167,7 @@ Optional:
 Optional:
 
 - `max_size` (Number) Maximum size of the disk buffer (in bytes).
-- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`.
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
 
 
 <a id="nestedblock--config--destination--amazon_opensearch--buffer--memory"></a>
@@ -177,7 +177,7 @@ Optional:
 
 - `max_events` (Number) Maximum events for the memory buffer.
 - `max_size` (Number) Maximum size of the memory buffer (in bytes).
-- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`.
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
 
 
 
@@ -221,7 +221,7 @@ Optional:
 Optional:
 
 - `max_size` (Number) Maximum size of the disk buffer (in bytes).
-- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`.
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
 
 
 <a id="nestedblock--config--destination--amazon_s3--buffer--memory"></a>
@@ -231,7 +231,7 @@ Optional:
 
 - `max_events` (Number) Maximum events for the memory buffer.
 - `max_size` (Number) Maximum size of the memory buffer (in bytes).
-- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`.
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
 
 
 
@@ -275,7 +275,7 @@ Optional:
 Optional:
 
 - `max_size` (Number) Maximum size of the disk buffer (in bytes).
-- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`.
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
 
 
 <a id="nestedblock--config--destination--amazon_security_lake--buffer--memory"></a>
@@ -285,7 +285,7 @@ Optional:
 
 - `max_events` (Number) Maximum events for the memory buffer.
 - `max_size` (Number) Maximum size of the memory buffer (in bytes).
-- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`.
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
 
 
 
@@ -329,7 +329,7 @@ Optional:
 Optional:
 
 - `max_size` (Number) Maximum size of the disk buffer (in bytes).
-- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`.
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
 
 
 <a id="nestedblock--config--destination--azure_storage--buffer--memory"></a>
@@ -339,7 +339,7 @@ Optional:
 
 - `max_events` (Number) Maximum events for the memory buffer.
 - `max_size` (Number) Maximum size of the memory buffer (in bytes).
-- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`.
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
 
 
 
@@ -375,7 +375,7 @@ Optional:
 Optional:
 
 - `max_size` (Number) Maximum size of the disk buffer (in bytes).
-- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`.
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
 
 
 <a id="nestedblock--config--destination--crowdstrike_next_gen_siem--buffer--memory"></a>
@@ -385,7 +385,7 @@ Optional:
 
 - `max_events` (Number) Maximum events for the memory buffer.
 - `max_size` (Number) Maximum size of the memory buffer (in bytes).
-- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`.
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
 
 
 
@@ -450,7 +450,7 @@ Optional:
 Optional:
 
 - `max_size` (Number) Maximum size of the disk buffer (in bytes).
-- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`.
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
 
 
 <a id="nestedblock--config--destination--datadog_logs--routes--buffer--memory"></a>
@@ -460,7 +460,7 @@ Optional:
 
 - `max_events` (Number) Maximum events for the memory buffer.
 - `max_size` (Number) Maximum size of the memory buffer (in bytes).
-- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`.
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
 
 
 
@@ -494,7 +494,7 @@ Optional:
 Optional:
 
 - `max_size` (Number) Maximum size of the disk buffer (in bytes).
-- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`.
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
 
 
 <a id="nestedblock--config--destination--elasticsearch--buffer--memory"></a>
@@ -504,7 +504,7 @@ Optional:
 
 - `max_events` (Number) Maximum events for the memory buffer.
 - `max_size` (Number) Maximum size of the memory buffer (in bytes).
-- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`.
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
 
 
 
@@ -557,7 +557,7 @@ Optional:
 Optional:
 
 - `max_size` (Number) Maximum size of the disk buffer (in bytes).
-- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`.
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
 
 
 <a id="nestedblock--config--destination--google_cloud_storage--buffer--memory"></a>
@@ -567,7 +567,7 @@ Optional:
 
 - `max_events` (Number) Maximum events for the memory buffer.
 - `max_size` (Number) Maximum size of the memory buffer (in bytes).
-- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`.
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
 
 
 
@@ -618,7 +618,7 @@ Optional:
 Optional:
 
 - `max_size` (Number) Maximum size of the disk buffer (in bytes).
-- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`.
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
 
 
 <a id="nestedblock--config--destination--google_pubsub--buffer--memory"></a>
@@ -628,7 +628,7 @@ Optional:
 
 - `max_events` (Number) Maximum events for the memory buffer.
 - `max_size` (Number) Maximum size of the memory buffer (in bytes).
-- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`.
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
 
 
 
@@ -682,7 +682,7 @@ Optional:
 Optional:
 
 - `max_size` (Number) Maximum size of the disk buffer (in bytes).
-- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`.
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
 
 
 <a id="nestedblock--config--destination--google_secops--buffer--memory"></a>
@@ -692,7 +692,7 @@ Optional:
 
 - `max_events` (Number) Maximum events for the memory buffer.
 - `max_size` (Number) Maximum size of the memory buffer (in bytes).
-- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`.
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
 
 
 
@@ -812,7 +812,7 @@ Optional:
 Optional:
 
 - `max_size` (Number) Maximum size of the disk buffer (in bytes).
-- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`.
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
 
 
 <a id="nestedblock--config--destination--microsoft_sentinel--buffer--memory"></a>
@@ -822,7 +822,7 @@ Optional:
 
 - `max_events` (Number) Maximum events for the memory buffer.
 - `max_size` (Number) Maximum size of the memory buffer (in bytes).
-- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`.
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
 
 
 
@@ -852,7 +852,7 @@ Optional:
 Optional:
 
 - `max_size` (Number) Maximum size of the disk buffer (in bytes).
-- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`.
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
 
 
 <a id="nestedblock--config--destination--new_relic--buffer--memory"></a>
@@ -862,7 +862,7 @@ Optional:
 
 - `max_events` (Number) Maximum events for the memory buffer.
 - `max_size` (Number) Maximum size of the memory buffer (in bytes).
-- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`.
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
 
 
 
@@ -890,7 +890,7 @@ Optional:
 Optional:
 
 - `max_size` (Number) Maximum size of the disk buffer (in bytes).
-- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`.
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
 
 
 <a id="nestedblock--config--destination--opensearch--buffer--memory"></a>
@@ -900,7 +900,7 @@ Optional:
 
 - `max_events` (Number) Maximum events for the memory buffer.
 - `max_size` (Number) Maximum size of the memory buffer (in bytes).
-- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`.
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
 
 
 
@@ -938,7 +938,7 @@ Optional:
 Optional:
 
 - `max_size` (Number) Maximum size of the disk buffer (in bytes).
-- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`.
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
 
 
 <a id="nestedblock--config--destination--rsyslog--buffer--memory"></a>
@@ -948,7 +948,7 @@ Optional:
 
 - `max_events` (Number) Maximum events for the memory buffer.
 - `max_size` (Number) Maximum size of the memory buffer (in bytes).
-- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`.
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
 
 
 
@@ -991,7 +991,7 @@ Optional:
 Optional:
 
 - `max_size` (Number) Maximum size of the disk buffer (in bytes).
-- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`.
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
 
 
 <a id="nestedblock--config--destination--sentinel_one--buffer--memory"></a>
@@ -1001,7 +1001,7 @@ Optional:
 
 - `max_events` (Number) Maximum events for the memory buffer.
 - `max_size` (Number) Maximum size of the memory buffer (in bytes).
-- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`.
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
 
 
 
@@ -1034,7 +1034,7 @@ Optional:
 Optional:
 
 - `max_size` (Number) Maximum size of the disk buffer (in bytes).
-- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`.
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
 
 
 <a id="nestedblock--config--destination--socket--buffer--memory"></a>
@@ -1044,7 +1044,7 @@ Optional:
 
 - `max_events` (Number) Maximum events for the memory buffer.
 - `max_size` (Number) Maximum size of the memory buffer (in bytes).
-- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`.
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
 
 
 
@@ -1110,7 +1110,7 @@ Optional:
 Optional:
 
 - `max_size` (Number) Maximum size of the disk buffer (in bytes).
-- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`.
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
 
 
 <a id="nestedblock--config--destination--splunk_hec--buffer--memory"></a>
@@ -1120,7 +1120,7 @@ Optional:
 
 - `max_events` (Number) Maximum events for the memory buffer.
 - `max_size` (Number) Maximum size of the memory buffer (in bytes).
-- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`.
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
 
 
 
@@ -1151,7 +1151,7 @@ Optional:
 Optional:
 
 - `max_size` (Number) Maximum size of the disk buffer (in bytes).
-- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`.
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
 
 
 <a id="nestedblock--config--destination--sumo_logic--buffer--memory"></a>
@@ -1161,7 +1161,7 @@ Optional:
 
 - `max_events` (Number) Maximum events for the memory buffer.
 - `max_size` (Number) Maximum size of the memory buffer (in bytes).
-- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`.
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
 
 
 
@@ -1198,7 +1198,7 @@ Optional:
 Optional:
 
 - `max_size` (Number) Maximum size of the disk buffer (in bytes).
-- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`.
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
 
 
 <a id="nestedblock--config--destination--syslog_ng--buffer--memory"></a>
@@ -1208,7 +1208,7 @@ Optional:
 
 - `max_events` (Number) Maximum events for the memory buffer.
 - `max_size` (Number) Maximum size of the memory buffer (in bytes).
-- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`.
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
 
 
 
