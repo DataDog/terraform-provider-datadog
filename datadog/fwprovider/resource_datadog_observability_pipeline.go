@@ -385,10 +385,11 @@ type datadogLogsDestinationModel struct {
 }
 
 type datadogLogsDestinationRouteModel struct {
-	RouteId   types.String `tfsdk:"route_id"`
-	Include   types.String `tfsdk:"include"`
-	Site      types.String `tfsdk:"site"`
-	ApiKeyKey types.String `tfsdk:"api_key_key"`
+	RouteId   types.String                                `tfsdk:"route_id"`
+	Include   types.String                                `tfsdk:"include"`
+	Site      types.String                                `tfsdk:"site"`
+	ApiKeyKey types.String                                `tfsdk:"api_key_key"`
+	Buffer    []observability_pipeline.BufferOptionsModel `tfsdk:"buffer"`
 }
 
 type parseGrokProcessorModel struct {
@@ -1945,6 +1946,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 										Description: "The `datadog_logs` destination forwards logs to Datadog Log Management.",
 										NestedObject: schema.NestedBlockObject{
 											Blocks: map[string]schema.Block{
+												"buffer": observability_pipeline.BufferOptionsSchema(),
 												"routes": schema.ListNestedBlock{
 													Description: "A list of routing rules that forward matching logs to Datadog using dedicated API keys.",
 													NestedObject: schema.NestedBlockObject{
