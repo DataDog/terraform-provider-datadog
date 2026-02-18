@@ -36,7 +36,7 @@ func TestAccDatadogTagPipelineRulesetDataSource_Basic(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"data.datadog_tag_pipeline_ruleset.foo", "rules.0.query.case_insensitivity", "true"),
 					resource.TestCheckResourceAttr(
-						"data.datadog_tag_pipeline_ruleset.foo", "rules.0.query.if_not_exists", "true"),
+						"data.datadog_tag_pipeline_ruleset.foo", "rules.0.query.if_tag_exists", "do_not_apply"),
 					resource.TestCheckResourceAttr(
 						"data.datadog_tag_pipeline_ruleset.foo", "rules.0.query.addition.key", "team"),
 					resource.TestCheckResourceAttr(
@@ -62,7 +62,7 @@ func TestAccDatadogTagPipelineRulesetDataSource_MappingRule(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr("data.datadog_tag_pipeline_ruleset.foo", "name", fmt.Sprintf("tf-test-mapping-ruleset-%s", uniq)),
 					resource.TestCheckResourceAttr("data.datadog_tag_pipeline_ruleset.foo", "rules.0.mapping.destination_key", "env"),
-					resource.TestCheckResourceAttr("data.datadog_tag_pipeline_ruleset.foo", "rules.0.mapping.if_not_exists", "true"),
+					resource.TestCheckResourceAttr("data.datadog_tag_pipeline_ruleset.foo", "rules.0.mapping.if_tag_exists", "append"),
 					resource.TestCheckResourceAttr("data.datadog_tag_pipeline_ruleset.foo", "rules.0.mapping.source_keys.#", "2"),
 					resource.TestCheckTypeSetElemAttr("data.datadog_tag_pipeline_ruleset.foo", "rules.0.mapping.source_keys.*", "environment"),
 					resource.TestCheckTypeSetElemAttr("data.datadog_tag_pipeline_ruleset.foo", "rules.0.mapping.source_keys.*", "stage"),
@@ -88,7 +88,7 @@ func TestAccDatadogTagPipelineRulesetDataSource_ReferenceTableRule(t *testing.T)
 					resource.TestCheckResourceAttr("data.datadog_tag_pipeline_ruleset.foo", "name", fmt.Sprintf("tf-test-ref-table-ruleset-%s", uniq)),
 					resource.TestCheckResourceAttr("data.datadog_tag_pipeline_ruleset.foo", "rules.0.reference_table.table_name", "service_mapping"),
 					resource.TestCheckResourceAttr("data.datadog_tag_pipeline_ruleset.foo", "rules.0.reference_table.case_insensitivity", "true"),
-					resource.TestCheckResourceAttr("data.datadog_tag_pipeline_ruleset.foo", "rules.0.reference_table.if_not_exists", "false"),
+					resource.TestCheckResourceAttr("data.datadog_tag_pipeline_ruleset.foo", "rules.0.reference_table.if_tag_exists", "replace"),
 					resource.TestCheckResourceAttr("data.datadog_tag_pipeline_ruleset.foo", "rules.0.reference_table.source_keys.#", "1"),
 					resource.TestCheckTypeSetElemAttr("data.datadog_tag_pipeline_ruleset.foo", "rules.0.reference_table.source_keys.*", "service"),
 					resource.TestCheckResourceAttr("data.datadog_tag_pipeline_ruleset.foo", "rules.0.reference_table.field_pairs.#", "2"),
@@ -113,7 +113,7 @@ resource "datadog_tag_pipeline_ruleset" "foo" {
     query {
       query = "service:web-api"
       case_insensitivity = true
-      if_not_exists = true
+      if_tag_exists = "do_not_apply"
       addition {
         key = "team"
         value = "backend"
@@ -139,7 +139,7 @@ resource "datadog_tag_pipeline_ruleset" "foo" {
     
     mapping {
       destination_key = "env"
-      if_not_exists   = true
+      if_tag_exists   = "append"
       source_keys     = ["environment", "stage"]
     }
   }
@@ -163,14 +163,14 @@ resource "datadog_tag_pipeline_ruleset" "foo" {
     reference_table {
       table_name         = "service_mapping"
       case_insensitivity = true
-      if_not_exists      = false
+      if_tag_exists      = "replace"
       source_keys        = ["service"]
-      
+
       field_pairs {
         input_column = "service_name"
         output_key   = "service"
       }
-      
+
       field_pairs {
         input_column = "team_name"
         output_key   = "team"

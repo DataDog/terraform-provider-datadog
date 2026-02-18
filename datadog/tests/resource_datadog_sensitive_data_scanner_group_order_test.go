@@ -34,6 +34,7 @@ resource "datadog_sensitive_data_scanner_group" "mygroup" {
 }
 
 func TestAccDatadogSDSGroupOrder_basic(t *testing.T) {
+	cleanupSensitiveDataScannerGroups(t)
 	t.Parallel()
 	ctx, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := strings.ToLower(strings.ReplaceAll(uniqueEntityName(ctx, t), "_", "-"))

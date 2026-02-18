@@ -8,7 +8,7 @@ resource "datadog_tag_pipeline_ruleset" "example" {
 
     mapping {
       destination_key = "env"
-      if_not_exists   = true
+      if_tag_exists   = "replace"
       source_keys     = ["environment", "stage", "tier"]
     }
   }
@@ -20,7 +20,7 @@ resource "datadog_tag_pipeline_ruleset" "example" {
     query {
       query              = "service:web* OR service:frontend*"
       case_insensitivity = true
-      if_not_exists      = true
+      if_tag_exists      = "append"
 
       addition {
         key   = "team"
@@ -36,7 +36,7 @@ resource "datadog_tag_pipeline_ruleset" "example" {
     reference_table {
       table_name         = "service_catalog"
       case_insensitivity = true
-      if_not_exists      = true
+      if_tag_exists      = "append"
       source_keys        = ["service"]
 
       field_pairs {
