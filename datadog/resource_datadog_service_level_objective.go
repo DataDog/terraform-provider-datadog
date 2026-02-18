@@ -205,7 +205,7 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 					MaxItems:      1,
 					Optional:      true,
 					ConflictsWith: []string{"monitor_ids", "sli_specification", "groups"},
-					Description:   "The metric query of good / total events",
+					Description:   "The metric query of good / total events. Use this for metric SLOs as an alternative to `sli_specification`.",
 					Elem: &schema.Resource{
 						Schema: map[string]*schema.Schema{
 							"numerator": {
@@ -235,21 +235,21 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 					Elem:          &schema.Schema{Type: schema.TypeInt, MinItems: 1},
 				},
 
-				// Time-Slice SLO
+				// Time-Slice and Count-based SLO
 				"sli_specification": {
 					Type:          schema.TypeList,
 					MinItems:      1,
 					MaxItems:      1,
 					Optional:      true,
 					ConflictsWith: []string{"query", "monitor_ids", "groups"},
-					Description:   "A map of SLI specifications to use as part of the SLO.",
+					Description:   "A generic SLI specification. This is used for both time-slice SLOs and count-based (metric) SLOs.",
 					Elem: &schema.Resource{
 						Schema: map[string]*schema.Schema{
 							"time_slice": {
 								Type:        schema.TypeList,
 								MinItems:    1,
 								MaxItems:    1,
-								Required:    true,
+								Optional:    true,
 								Description: "The time slice condition, composed of 3 parts: 1. The timeseries query, 2. The comparator, and 3. The threshold. Optionally, a fourth part, the query interval, can be provided.",
 								Elem: &schema.Resource{
 									Schema: map[string]*schema.Schema{
@@ -271,6 +271,62 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 											Default:          300,
 											Description:      "The interval used when querying data, which defines the size of a time slice.",
 											ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSLOTimeSliceIntervalFromValue),
+										},
+									},
+								},
+							},
+							"count": {
+								Type:        schema.TypeList,
+								MaxItems:    1,
+								Optional:    true,
+								Description: "A count-based (metric) SLI specification. Composed of a good events formula, a total events formula, and the underlying metric queries.",
+								Elem: &schema.Resource{
+									Schema: map[string]*schema.Schema{
+										"good_events_formula": {
+											Type:        schema.TypeString,
+											Required:    true,
+											Description: "The formula that specifies how to compute the good events.",
+										},
+										"total_events_formula": {
+											Type:        schema.TypeString,
+											Required:    true,
+											Description: "The formula that specifies how to compute the total events.",
+										},
+										"queries": {
+											Type:        schema.TypeList,
+											Required:    true,
+											MinItems:    1,
+											Description: "A list of data-source-specific queries that are referenced in the formulas.",
+											Elem: &schema.Resource{
+												Schema: map[string]*schema.Schema{
+													"metric_query": {
+														Type:        schema.TypeList,
+														Optional:    true,
+														MaxItems:    1,
+														Description: "A timeseries formula and functions metrics query.",
+														Elem: &schema.Resource{
+															Schema: map[string]*schema.Schema{
+																"data_source": {
+																	Type:        schema.TypeString,
+																	Optional:    true,
+																	Default:     "metrics",
+																	Description: "The data source for metrics queries.",
+																},
+																"query": {
+																	Type:        schema.TypeString,
+																	Required:    true,
+																	Description: "The metrics query definition.",
+																},
+																"name": {
+																	Type:        schema.TypeString,
+																	Required:    true,
+																	Description: "The name of the query for use in formulas.",
+																},
+															},
+														},
+													},
+												},
+											},
 										},
 									},
 								},
@@ -369,6 +425,41 @@ func buildSLOTimeSliceQueryStruct(d []interface{}) *datadogV1.SLOTimeSliceQuery 
 	return ret
 }
 
+func buildSLOCountSpec(d []interface{}) *datadogV1.SLOCountSpec {
+	if len(d) == 0 {
+		return nil
+	}
+	raw, ok := d[0].(map[string]interface{})
+	if !ok {
+		return nil
+	}
+
+	goodEventsFormula := *datadogV1.NewSLOFormula(raw["good_events_formula"].(string))
+	totalEventsFormula := *datadogV1.NewSLOFormula(raw["total_events_formula"].(string))
+
+	queries := make([]datadogV1.SLODataSourceQueryDefinition, 0)
+	if rawQueries, ok := raw["queries"].([]interface{}); ok {
+		for _, rawQueryEl := range rawQueries {
+			rawQuery := rawQueryEl.(map[string]interface{})
+			rawMetricQueries := rawQuery["metric_query"].([]interface{})
+			if len(rawMetricQueries) >= 1 {
+				if rawMetricQuery, ok := rawMetricQueries[0].(map[string]interface{}); ok {
+					name := rawMetricQuery["name"].(string)
+					query := rawMetricQuery["query"].(string)
+					rawDataSource := rawMetricQuery["data_source"].(string)
+					dataSource, _ := datadogV1.NewFormulaAndFunctionMetricDataSourceFromValue(rawDataSource)
+					queries = append(queries,
+						datadogV1.FormulaAndFunctionMetricQueryDefinitionAsSLODataSourceQueryDefinition(
+							datadogV1.NewFormulaAndFunctionMetricQueryDefinition(*dataSource, name, query)))
+				}
+			}
+		}
+	}
+
+	countDef := datadogV1.NewSLOCountDefinition(goodEventsFormula, queries, totalEventsFormula)
+	return datadogV1.NewSLOCountSpec(*countDef)
+}
+
 func buildServiceLevelObjectiveStructs(d *schema.ResourceData) (*datadogV1.ServiceLevelObjective, *datadogV1.ServiceLevelObjectiveRequest, error) {
 
 	slo := datadogV1.NewServiceLevelObjectiveWithDefaults()
@@ -442,8 +533,22 @@ func buildServiceLevelObjectiveStructs(d *schema.ResourceData) (*datadogV1.Servi
 		slo.SetSliSpecification(sliSpec)
 		slor.SetSliSpecification(sliSpec)
 	default:
-		// metric type
-		if attr, ok := d.GetOk("query"); ok {
+		// metric type - supports either query or sli_specification with count
+		if attr, ok := d.GetOk("sli_specification"); ok {
+			raw := attr.([]interface{})
+			if len(raw) >= 1 {
+				rawSliSpec := raw[0].(map[string]interface{})
+				if rawCountList, ok := rawSliSpec["count"]; ok {
+					rawCount := rawCountList.([]interface{})
+					if len(rawCount) >= 1 {
+						countSpec := buildSLOCountSpec(rawCount)
+						sliSpec := datadogV1.SLOCountSpecAsSLOSliSpec(countSpec)
+						slo.SetSliSpecification(sliSpec)
+						slor.SetSliSpecification(sliSpec)
+					}
+				}
+			}
+		} else if attr, ok := d.GetOk("query"); ok {
 			queries := make([]map[string]interface{}, 0)
 			raw := attr.([]interface{})
 			for _, rawQuery := range raw {
@@ -461,7 +566,7 @@ func buildServiceLevelObjectiveStructs(d *schema.ResourceData) (*datadogV1.Servi
 					queries[0]["numerator"].(string)))
 			}
 		} else {
-			return nil, nil, fmt.Errorf("query is required for metric SLOs")
+			return nil, nil, fmt.Errorf("query or sli_specification is required for metric SLOs")
 		}
 	}
 
@@ -604,6 +709,8 @@ func resourceDatadogServiceLevelObjectiveRead(ctx context.Context, d *schema.Res
 // Builds the corresponding terraform representation of the SLO's SLI specification
 func buildTerraformSliSpecification(sliSpec *datadogV1.SLOSliSpec) []map[string]interface{} {
 	rawSliSpec := make([]map[string]interface{}, 0)
+	sliSpecMap := make(map[string]interface{})
+
 	if sliSpec.SLOTimeSliceSpec != nil {
 		rawTimeSliceSpec := make([]map[string]interface{}, 0)
 		comparator := sliSpec.SLOTimeSliceSpec.TimeSlice.GetComparator()
@@ -639,9 +746,58 @@ func buildTerraformSliSpecification(sliSpec *datadogV1.SLOSliSpec) []map[string]
 			rawTimeSliceCond["query_interval_seconds"] = *queryInterval
 		}
 		rawTimeSliceSpec = append(rawTimeSliceSpec, rawTimeSliceCond)
-		rawSliSpec = append(rawSliSpec, map[string]interface{}{"time_slice": rawTimeSliceSpec})
+		sliSpecMap["time_slice"] = rawTimeSliceSpec
+	}
+
+	if sliSpec.SLOCountSpec != nil {
+		sliSpecMap["count"] = buildTerraformCountSpecification(sliSpec.SLOCountSpec)
+	}
+
+	if len(sliSpecMap) > 0 {
+		rawSliSpec = append(rawSliSpec, sliSpecMap)
 	}
 	return rawSliSpec
+}
+
+// Builds the corresponding terraform representation of the SLO's count-based SLI specification
+func buildTerraformCountSpecification(countSpec *datadogV1.SLOCountSpec) []map[string]interface{} {
+	countDef := countSpec.GetCount()
+
+	rawQueries := make([]map[string]interface{}, 0)
+	for _, q := range countDef.GetQueries() {
+		rawMetricQueries := make([]map[string]interface{}, 0)
+		rawQuery := map[string]interface{}{
+			"name":        q.FormulaAndFunctionMetricQueryDefinition.GetName(),
+			"data_source": q.FormulaAndFunctionMetricQueryDefinition.GetDataSource(),
+			"query":       q.FormulaAndFunctionMetricQueryDefinition.GetQuery(),
+		}
+		rawMetricQueries = append(rawMetricQueries, rawQuery)
+		rawQueries = append(rawQueries, map[string]interface{}{"metric_query": rawMetricQueries})
+	}
+
+	goodFormula := countDef.GetGoodEventsFormula()
+	totalFormula := countDef.GetTotalEventsFormula()
+
+	return []map[string]interface{}{
+		{
+			"good_events_formula":  goodFormula.GetFormula(),
+			"total_events_formula": totalFormula.GetFormula(),
+			"queries":              rawQueries,
+		},
+	}
+}
+
+// metricSLOUsesSliSpecInState chooses which metric-SLO representation to keep in state.
+// Preserve whichever field already exists in state; on import (no prior choice), prefer
+// sli_specification when the API response includes it.
+func metricSLOUsesSliSpecInState(d *schema.ResourceData, responseHasSliSpec bool) bool {
+	if _, hasStateSliSpec := d.GetOk("sli_specification"); hasStateSliSpec {
+		return true
+	}
+	if _, hasStateQuery := d.GetOk("query"); hasStateQuery {
+		return false
+	}
+	return responseHasSliSpec
 }
 
 func updateSLOState(d *schema.ResourceData, slo *datadogV1.ServiceLevelObjective) diag.Diagnostics {
@@ -715,13 +871,32 @@ func updateSLOState(d *schema.ResourceData, slo *datadogV1.ServiceLevelObjective
 			return diag.FromErr(err)
 		}
 	default:
-		// metric type
-		query := make(map[string]interface{})
-		q := slo.GetQuery()
-		query["numerator"] = q.GetNumerator()
-		query["denominator"] = q.GetDenominator()
-		if err := d.Set("query", []map[string]interface{}{query}); err != nil {
-			return diag.FromErr(err)
+		// metric type - only set the field the user configured (query or sli_specification)
+		// to avoid sending both on subsequent updates and to prevent phantom diffs.
+		// Explicitly clear the unused field so it never appears in state.
+		responseHasSliSpec := slo.HasSliSpecification()
+		if metricSLOUsesSliSpecInState(d, responseHasSliSpec) {
+			if responseHasSliSpec {
+				sliSpec := slo.GetSliSpecification()
+				if sliSpec.SLOTimeSliceSpec != nil || sliSpec.SLOCountSpec != nil {
+					tfSliSpec := buildTerraformSliSpecification(&sliSpec)
+					if err := d.Set("sli_specification", tfSliSpec); err != nil {
+						return diag.FromErr(err)
+					}
+				}
+			}
+			// Some metric-SLO responses omit sli_specification; keep existing state in that case.
+			d.Set("query", nil)
+		} else {
+			// Keep query in state and clear sli_specification.
+			query := make(map[string]interface{})
+			q := slo.GetQuery()
+			query["numerator"] = q.GetNumerator()
+			query["denominator"] = q.GetDenominator()
+			if err := d.Set("query", []map[string]interface{}{query}); err != nil {
+				return diag.FromErr(err)
+			}
+			d.Set("sli_specification", nil)
 		}
 	}
 	return nil
@@ -799,13 +974,32 @@ func updateSLOStateFromRead(d *schema.ResourceData, slo *datadogV1.SLOResponseDa
 			return diag.FromErr(err)
 		}
 	default:
-		// metric type
-		query := make(map[string]interface{})
-		q := slo.GetQuery()
-		query["numerator"] = q.GetNumerator()
-		query["denominator"] = q.GetDenominator()
-		if err := d.Set("query", []map[string]interface{}{query}); err != nil {
-			return diag.FromErr(err)
+		// metric type - only set the field the user configured (query or sli_specification)
+		// to avoid sending both on subsequent updates and to prevent phantom diffs.
+		// Explicitly clear the unused field so it never appears in state.
+		responseHasSliSpec := slo.HasSliSpecification()
+		if metricSLOUsesSliSpecInState(d, responseHasSliSpec) {
+			if responseHasSliSpec {
+				sliSpec := slo.GetSliSpecification()
+				if sliSpec.SLOTimeSliceSpec != nil || sliSpec.SLOCountSpec != nil {
+					tfSliSpec := buildTerraformSliSpecification(&sliSpec)
+					if err := d.Set("sli_specification", tfSliSpec); err != nil {
+						return diag.FromErr(err)
+					}
+				}
+			}
+			// Some metric-SLO responses omit sli_specification; keep existing state in that case.
+			d.Set("query", nil)
+		} else {
+			// Keep query in state and clear sli_specification.
+			query := make(map[string]interface{})
+			q := slo.GetQuery()
+			query["numerator"] = q.GetNumerator()
+			query["denominator"] = q.GetDenominator()
+			if err := d.Set("query", []map[string]interface{}{query}); err != nil {
+				return diag.FromErr(err)
+			}
+			d.Set("sli_specification", nil)
 		}
 	}
 	return nil

@@ -1,0 +1,555 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 459
+        transfer_encoding: []
+        trailer: {}
+        host: dd.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"description":"transition test metric SLO using query","name":"tf-TestAccDatadogServiceLevelObjective_MetricQueryToCountTransition-local-1771364480","query":{"denominator":"sum:my.metric{*}.as_count()","numerator":"sum:my.metric{status:good}.as_count()"},"tags":["foo:bar","baz"],"target_threshold":99.5,"thresholds":[{"target":99.5,"timeframe":"7d","warning":99.8},{"target":99,"timeframe":"30d"}],"timeframe":"7d","type":"metric","warning_threshold":99.8}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://dd.datad0g.com/api/v1/slo
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":[{"id":"250751060243507abad1faca76980b52","name":"tf-TestAccDatadogServiceLevelObjective_MetricQueryToCountTransition-local-1771364480","tags":["baz","foo:bar"],"monitor_tags":[],"thresholds":[{"timeframe":"7d","target":99.5,"target_display":"99.5","warning":99.8,"warning_display":"99.8"},{"timeframe":"30d","target":99.0,"target_display":"99."}],"type":"metric","type_id":1,"description":"transition test metric SLO using query","timeframe":"7d","warning_threshold":99.8,"target_threshold":99.5,"query":{"denominator":"sum:my.metric{*}.as_count()","numerator":"sum:my.metric{status:good}.as_count()"},"creator":{"name":"Blaise von Ohlen","handle":"blaise.vonohlen@datadoghq.com","email":"blaise.vonohlen@datadoghq.com"},"created_at":1771364483,"modified_at":1771364483,"sli_specification":{"count":{"queries":[{"data_source":"metrics","name":"query1","query":"sum:my.metric{status:good}.as_count()"},{"data_source":"metrics","name":"query2","query":"sum:my.metric{*}.as_count()"}],"good_events_formula":{"formula":"query1"},"total_events_formula":{"formula":"query2"}}}}],"error":null}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 205.21425ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: dd.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://dd.datad0g.com/api/v1/slo/250751060243507abad1faca76980b52
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"250751060243507abad1faca76980b52","name":"tf-TestAccDatadogServiceLevelObjective_MetricQueryToCountTransition-local-1771364480","tags":["baz","foo:bar"],"monitor_tags":[],"thresholds":[{"timeframe":"7d","target":99.5,"target_display":"99.5","warning":99.8,"warning_display":"99.8"},{"timeframe":"30d","target":99.0,"target_display":"99."}],"type":"metric","type_id":1,"description":"transition test metric SLO using query","timeframe":"7d","warning_threshold":99.8,"target_threshold":99.5,"query":{"denominator":"sum:my.metric{*}.as_count()","numerator":"sum:my.metric{status:good}.as_count()"},"creator":{"name":"Blaise von Ohlen","handle":"blaise.vonohlen@datadoghq.com","email":"blaise.vonohlen@datadoghq.com"},"created_at":1771364483,"modified_at":1771364483,"sli_specification":{"count":{"queries":[{"data_source":"metrics","name":"query1","query":"sum:my.metric{status:good}.as_count()"},{"data_source":"metrics","name":"query2","query":"sum:my.metric{*}.as_count()"}],"good_events_formula":{"formula":"query1"},"total_events_formula":{"formula":"query2"}}}},"error":null}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 100.081292ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: dd.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://dd.datad0g.com/api/v1/slo/250751060243507abad1faca76980b52
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"250751060243507abad1faca76980b52","name":"tf-TestAccDatadogServiceLevelObjective_MetricQueryToCountTransition-local-1771364480","tags":["baz","foo:bar"],"monitor_tags":[],"thresholds":[{"timeframe":"7d","target":99.5,"target_display":"99.5","warning":99.8,"warning_display":"99.8"},{"timeframe":"30d","target":99.0,"target_display":"99."}],"type":"metric","type_id":1,"description":"transition test metric SLO using query","timeframe":"7d","warning_threshold":99.8,"target_threshold":99.5,"query":{"denominator":"sum:my.metric{*}.as_count()","numerator":"sum:my.metric{status:good}.as_count()"},"creator":{"name":"Blaise von Ohlen","handle":"blaise.vonohlen@datadoghq.com","email":"blaise.vonohlen@datadoghq.com"},"created_at":1771364483,"modified_at":1771364483,"sli_specification":{"count":{"queries":[{"data_source":"metrics","name":"query1","query":"sum:my.metric{status:good}.as_count()"},{"data_source":"metrics","name":"query2","query":"sum:my.metric{*}.as_count()"}],"good_events_formula":{"formula":"query1"},"total_events_formula":{"formula":"query2"}}}},"error":null}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 60.945542ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: dd.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://dd.datad0g.com/api/v1/slo/250751060243507abad1faca76980b52
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"250751060243507abad1faca76980b52","name":"tf-TestAccDatadogServiceLevelObjective_MetricQueryToCountTransition-local-1771364480","tags":["baz","foo:bar"],"monitor_tags":[],"thresholds":[{"timeframe":"7d","target":99.5,"target_display":"99.5","warning":99.8,"warning_display":"99.8"},{"timeframe":"30d","target":99.0,"target_display":"99."}],"type":"metric","type_id":1,"description":"transition test metric SLO using query","timeframe":"7d","warning_threshold":99.8,"target_threshold":99.5,"query":{"denominator":"sum:my.metric{*}.as_count()","numerator":"sum:my.metric{status:good}.as_count()"},"creator":{"name":"Blaise von Ohlen","handle":"blaise.vonohlen@datadoghq.com","email":"blaise.vonohlen@datadoghq.com"},"created_at":1771364483,"modified_at":1771364483,"sli_specification":{"count":{"queries":[{"data_source":"metrics","name":"query1","query":"sum:my.metric{status:good}.as_count()"},{"data_source":"metrics","name":"query2","query":"sum:my.metric{*}.as_count()"}],"good_events_formula":{"formula":"query1"},"total_events_formula":{"formula":"query2"}}}},"error":null}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 88.093958ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: dd.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://dd.datad0g.com/api/v1/slo/250751060243507abad1faca76980b52
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"250751060243507abad1faca76980b52","name":"tf-TestAccDatadogServiceLevelObjective_MetricQueryToCountTransition-local-1771364480","tags":["baz","foo:bar"],"monitor_tags":[],"thresholds":[{"timeframe":"7d","target":99.5,"target_display":"99.5","warning":99.8,"warning_display":"99.8"},{"timeframe":"30d","target":99.0,"target_display":"99."}],"type":"metric","type_id":1,"description":"transition test metric SLO using query","timeframe":"7d","warning_threshold":99.8,"target_threshold":99.5,"query":{"denominator":"sum:my.metric{*}.as_count()","numerator":"sum:my.metric{status:good}.as_count()"},"creator":{"name":"Blaise von Ohlen","handle":"blaise.vonohlen@datadoghq.com","email":"blaise.vonohlen@datadoghq.com"},"created_at":1771364483,"modified_at":1771364483,"sli_specification":{"count":{"queries":[{"data_source":"metrics","name":"query1","query":"sum:my.metric{status:good}.as_count()"},{"data_source":"metrics","name":"query2","query":"sum:my.metric{*}.as_count()"}],"good_events_formula":{"formula":"query1"},"total_events_formula":{"formula":"query2"}}}},"error":null}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 88.978ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 554
+        transfer_encoding: []
+        trailer: {}
+        host: dd.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"description":"transition test metric SLO using updated query","id":"250751060243507abad1faca76980b52","name":"tf-TestAccDatadogServiceLevelObjective_MetricQueryToCountTransition-local-1771364480-updated","query":{"denominator":"sum:my.metric{*}.as_count()","numerator":"sum:my.metric{status:good}.as_count() - sum:my.metric{status:bad}.as_count()"},"tags":["foo:bar","baz"],"target_threshold":99.5,"thresholds":[{"target":99.5,"timeframe":"7d","warning":99.8},{"target":99,"timeframe":"30d"}],"timeframe":"7d","type":"metric","warning_threshold":99.8}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://dd.datad0g.com/api/v1/slo/250751060243507abad1faca76980b52
+        method: PUT
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":[{"id":"250751060243507abad1faca76980b52","name":"tf-TestAccDatadogServiceLevelObjective_MetricQueryToCountTransition-local-1771364480-updated","tags":["foo:bar","baz"],"monitor_tags":[],"thresholds":[{"timeframe":"7d","target":99.5,"target_display":"99.5","warning":99.8,"warning_display":"99.8"},{"timeframe":"30d","target":99.0,"target_display":"99."}],"type":"metric","type_id":1,"description":"transition test metric SLO using updated query","timeframe":"7d","warning_threshold":99.8,"target_threshold":99.5,"query":{"denominator":"sum:my.metric{*}.as_count()","numerator":"sum:my.metric{status:good}.as_count() - sum:my.metric{status:bad}.as_count()"},"creator":{"name":"Blaise von Ohlen","handle":"blaise.vonohlen@datadoghq.com","email":"blaise.vonohlen@datadoghq.com"},"created_at":1771364483,"modified_at":1771364485,"sli_specification":{"count":{"queries":[{"data_source":"metrics","name":"query1","query":"sum:my.metric{status:good}.as_count()"},{"data_source":"metrics","name":"query2","query":"sum:my.metric{status:bad}.as_count()"},{"data_source":"metrics","name":"query3","query":"sum:my.metric{*}.as_count()"}],"good_events_formula":{"formula":"(query1 - query2)"},"total_events_formula":{"formula":"query3"}}}}],"error":null}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 258.493666ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: dd.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://dd.datad0g.com/api/v1/slo/250751060243507abad1faca76980b52
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"250751060243507abad1faca76980b52","name":"tf-TestAccDatadogServiceLevelObjective_MetricQueryToCountTransition-local-1771364480-updated","tags":["baz","foo:bar"],"monitor_tags":[],"thresholds":[{"timeframe":"7d","target":99.5,"target_display":"99.5","warning":99.8,"warning_display":"99.8"},{"timeframe":"30d","target":99.0,"target_display":"99."}],"type":"metric","type_id":1,"description":"transition test metric SLO using updated query","timeframe":"7d","warning_threshold":99.8,"target_threshold":99.5,"query":{"denominator":"sum:my.metric{*}.as_count()","numerator":"sum:my.metric{status:good}.as_count() - sum:my.metric{status:bad}.as_count()"},"creator":{"name":"Blaise von Ohlen","handle":"blaise.vonohlen@datadoghq.com","email":"blaise.vonohlen@datadoghq.com"},"created_at":1771364483,"modified_at":1771364485,"sli_specification":{"count":{"queries":[{"data_source":"metrics","name":"query1","query":"sum:my.metric{status:good}.as_count()"},{"data_source":"metrics","name":"query2","query":"sum:my.metric{status:bad}.as_count()"},{"data_source":"metrics","name":"query3","query":"sum:my.metric{*}.as_count()"}],"good_events_formula":{"formula":"(query1 - query2)"},"total_events_formula":{"formula":"query3"}}}},"error":null}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 63.488083ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: dd.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://dd.datad0g.com/api/v1/slo/250751060243507abad1faca76980b52
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"250751060243507abad1faca76980b52","name":"tf-TestAccDatadogServiceLevelObjective_MetricQueryToCountTransition-local-1771364480-updated","tags":["baz","foo:bar"],"monitor_tags":[],"thresholds":[{"timeframe":"7d","target":99.5,"target_display":"99.5","warning":99.8,"warning_display":"99.8"},{"timeframe":"30d","target":99.0,"target_display":"99."}],"type":"metric","type_id":1,"description":"transition test metric SLO using updated query","timeframe":"7d","warning_threshold":99.8,"target_threshold":99.5,"query":{"denominator":"sum:my.metric{*}.as_count()","numerator":"sum:my.metric{status:good}.as_count() - sum:my.metric{status:bad}.as_count()"},"creator":{"name":"Blaise von Ohlen","handle":"blaise.vonohlen@datadoghq.com","email":"blaise.vonohlen@datadoghq.com"},"created_at":1771364483,"modified_at":1771364485,"sli_specification":{"count":{"queries":[{"data_source":"metrics","name":"query1","query":"sum:my.metric{status:good}.as_count()"},{"data_source":"metrics","name":"query2","query":"sum:my.metric{status:bad}.as_count()"},{"data_source":"metrics","name":"query3","query":"sum:my.metric{*}.as_count()"}],"good_events_formula":{"formula":"(query1 - query2)"},"total_events_formula":{"formula":"query3"}}}},"error":null}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 90.621459ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: dd.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://dd.datad0g.com/api/v1/slo/250751060243507abad1faca76980b52
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"250751060243507abad1faca76980b52","name":"tf-TestAccDatadogServiceLevelObjective_MetricQueryToCountTransition-local-1771364480-updated","tags":["baz","foo:bar"],"monitor_tags":[],"thresholds":[{"timeframe":"7d","target":99.5,"target_display":"99.5","warning":99.8,"warning_display":"99.8"},{"timeframe":"30d","target":99.0,"target_display":"99."}],"type":"metric","type_id":1,"description":"transition test metric SLO using updated query","timeframe":"7d","warning_threshold":99.8,"target_threshold":99.5,"query":{"denominator":"sum:my.metric{*}.as_count()","numerator":"sum:my.metric{status:good}.as_count() - sum:my.metric{status:bad}.as_count()"},"creator":{"name":"Blaise von Ohlen","handle":"blaise.vonohlen@datadoghq.com","email":"blaise.vonohlen@datadoghq.com"},"created_at":1771364483,"modified_at":1771364485,"sli_specification":{"count":{"queries":[{"data_source":"metrics","name":"query1","query":"sum:my.metric{status:good}.as_count()"},{"data_source":"metrics","name":"query2","query":"sum:my.metric{status:bad}.as_count()"},{"data_source":"metrics","name":"query3","query":"sum:my.metric{*}.as_count()"}],"good_events_formula":{"formula":"(query1 - query2)"},"total_events_formula":{"formula":"query3"}}}},"error":null}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 115.894917ms
+    - id: 9
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: dd.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://dd.datad0g.com/api/v1/slo/250751060243507abad1faca76980b52
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"250751060243507abad1faca76980b52","name":"tf-TestAccDatadogServiceLevelObjective_MetricQueryToCountTransition-local-1771364480-updated","tags":["baz","foo:bar"],"monitor_tags":[],"thresholds":[{"timeframe":"7d","target":99.5,"target_display":"99.5","warning":99.8,"warning_display":"99.8"},{"timeframe":"30d","target":99.0,"target_display":"99."}],"type":"metric","type_id":1,"description":"transition test metric SLO using updated query","timeframe":"7d","warning_threshold":99.8,"target_threshold":99.5,"query":{"denominator":"sum:my.metric{*}.as_count()","numerator":"sum:my.metric{status:good}.as_count() - sum:my.metric{status:bad}.as_count()"},"creator":{"name":"Blaise von Ohlen","handle":"blaise.vonohlen@datadoghq.com","email":"blaise.vonohlen@datadoghq.com"},"created_at":1771364483,"modified_at":1771364485,"sli_specification":{"count":{"queries":[{"data_source":"metrics","name":"query1","query":"sum:my.metric{status:good}.as_count()"},{"data_source":"metrics","name":"query2","query":"sum:my.metric{status:bad}.as_count()"},{"data_source":"metrics","name":"query3","query":"sum:my.metric{*}.as_count()"}],"good_events_formula":{"formula":"(query1 - query2)"},"total_events_formula":{"formula":"query3"}}}},"error":null}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 100.107166ms
+    - id: 10
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 707
+        transfer_encoding: []
+        trailer: {}
+        host: dd.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"description":"transition test metric SLO using count spec","id":"250751060243507abad1faca76980b52","name":"tf-TestAccDatadogServiceLevelObjective_MetricQueryToCountTransition-local-1771364480-updated","sli_specification":{"count":{"good_events_formula":{"formula":"query1"},"queries":[{"data_source":"metrics","name":"query1","query":"sum:my.metric{status:good}.as_count()"},{"data_source":"metrics","name":"query2","query":"sum:my.metric{*}.as_count()"}],"total_events_formula":{"formula":"query2"}}},"tags":["foo:bar","baz"],"target_threshold":99.5,"thresholds":[{"target":99.5,"timeframe":"7d","warning":99.8},{"target":99,"timeframe":"30d"}],"timeframe":"7d","type":"metric","warning_threshold":99.8}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://dd.datad0g.com/api/v1/slo/250751060243507abad1faca76980b52
+        method: PUT
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":[{"id":"250751060243507abad1faca76980b52","name":"tf-TestAccDatadogServiceLevelObjective_MetricQueryToCountTransition-local-1771364480-updated","tags":["baz","foo:bar"],"monitor_tags":[],"thresholds":[{"timeframe":"7d","target":99.5,"target_display":"99.5","warning":99.8,"warning_display":"99.8"},{"timeframe":"30d","target":99.0,"target_display":"99."}],"type":"metric","type_id":1,"description":"transition test metric SLO using count spec","timeframe":"7d","warning_threshold":99.8,"target_threshold":99.5,"query":{"numerator":"sum:my.metric{status:good}.as_count()","denominator":"sum:my.metric{*}.as_count()"},"creator":{"name":"Blaise von Ohlen","handle":"blaise.vonohlen@datadoghq.com","email":"blaise.vonohlen@datadoghq.com"},"created_at":1771364483,"modified_at":1771364487,"sli_specification":{"count":{"good_events_formula":{"formula":"query1"},"queries":[{"data_source":"metrics","name":"query1","query":"sum:my.metric{status:good}.as_count()"},{"data_source":"metrics","name":"query2","query":"sum:my.metric{*}.as_count()"}],"total_events_formula":{"formula":"query2"}}}}],"error":null}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 251.172584ms
+    - id: 11
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: dd.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://dd.datad0g.com/api/v1/slo/250751060243507abad1faca76980b52
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"250751060243507abad1faca76980b52","name":"tf-TestAccDatadogServiceLevelObjective_MetricQueryToCountTransition-local-1771364480-updated","tags":["foo:bar","baz"],"monitor_tags":[],"thresholds":[{"timeframe":"7d","target":99.5,"target_display":"99.5","warning":99.8,"warning_display":"99.8"},{"timeframe":"30d","target":99.0,"target_display":"99."}],"type":"metric","type_id":1,"description":"transition test metric SLO using count spec","timeframe":"7d","warning_threshold":99.8,"target_threshold":99.5,"query":{"denominator":"sum:my.metric{*}.as_count()","numerator":"sum:my.metric{status:good}.as_count()"},"creator":{"name":"Blaise von Ohlen","handle":"blaise.vonohlen@datadoghq.com","email":"blaise.vonohlen@datadoghq.com"},"created_at":1771364483,"modified_at":1771364487,"sli_specification":{"count":{"good_events_formula":{"formula":"query1"},"queries":[{"data_source":"metrics","name":"query1","query":"sum:my.metric{status:good}.as_count()"},{"data_source":"metrics","name":"query2","query":"sum:my.metric{*}.as_count()"}],"total_events_formula":{"formula":"query2"}}}},"error":null}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 65.900833ms
+    - id: 12
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: dd.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://dd.datad0g.com/api/v1/slo/250751060243507abad1faca76980b52
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"250751060243507abad1faca76980b52","name":"tf-TestAccDatadogServiceLevelObjective_MetricQueryToCountTransition-local-1771364480-updated","tags":["baz","foo:bar"],"monitor_tags":[],"thresholds":[{"timeframe":"7d","target":99.5,"target_display":"99.5","warning":99.8,"warning_display":"99.8"},{"timeframe":"30d","target":99.0,"target_display":"99."}],"type":"metric","type_id":1,"description":"transition test metric SLO using count spec","timeframe":"7d","warning_threshold":99.8,"target_threshold":99.5,"query":{"denominator":"sum:my.metric{*}.as_count()","numerator":"sum:my.metric{status:good}.as_count()"},"creator":{"name":"Blaise von Ohlen","handle":"blaise.vonohlen@datadoghq.com","email":"blaise.vonohlen@datadoghq.com"},"created_at":1771364483,"modified_at":1771364487,"sli_specification":{"count":{"good_events_formula":{"formula":"query1"},"queries":[{"data_source":"metrics","name":"query1","query":"sum:my.metric{status:good}.as_count()"},{"data_source":"metrics","name":"query2","query":"sum:my.metric{*}.as_count()"}],"total_events_formula":{"formula":"query2"}}}},"error":null}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 89.793584ms
+    - id: 13
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: dd.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://dd.datad0g.com/api/v1/slo/250751060243507abad1faca76980b52
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"250751060243507abad1faca76980b52","name":"tf-TestAccDatadogServiceLevelObjective_MetricQueryToCountTransition-local-1771364480-updated","tags":["baz","foo:bar"],"monitor_tags":[],"thresholds":[{"timeframe":"7d","target":99.5,"target_display":"99.5","warning":99.8,"warning_display":"99.8"},{"timeframe":"30d","target":99.0,"target_display":"99."}],"type":"metric","type_id":1,"description":"transition test metric SLO using count spec","timeframe":"7d","warning_threshold":99.8,"target_threshold":99.5,"query":{"denominator":"sum:my.metric{*}.as_count()","numerator":"sum:my.metric{status:good}.as_count()"},"creator":{"name":"Blaise von Ohlen","handle":"blaise.vonohlen@datadoghq.com","email":"blaise.vonohlen@datadoghq.com"},"created_at":1771364483,"modified_at":1771364487,"sli_specification":{"count":{"good_events_formula":{"formula":"query1"},"queries":[{"data_source":"metrics","name":"query1","query":"sum:my.metric{status:good}.as_count()"},{"data_source":"metrics","name":"query2","query":"sum:my.metric{*}.as_count()"}],"total_events_formula":{"formula":"query2"}}}},"error":null}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 85.103583ms
+    - id: 14
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: dd.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://dd.datad0g.com/api/v1/slo/250751060243507abad1faca76980b52
+        method: DELETE
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":["250751060243507abad1faca76980b52"],"error":null}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 756.028875ms
+    - id: 15
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: dd.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://dd.datad0g.com/api/v1/slo/250751060243507abad1faca76980b52
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"errors":["SLO not found: 250751060243507abad1faca76980b52 not found"]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 117.549709ms
