@@ -6,6 +6,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
@@ -139,6 +140,8 @@ func BufferOptionsSchema() schema.ListNestedBlock {
 							},
 							"when_full": schema.StringAttribute{
 								Optional:    true,
+								Computed:    true,
+								Default:     stringdefault.StaticString("block"),
 								Description: "Behavior when the buffer is full. Valid values are `block` or `drop_newest`.",
 							},
 						},
@@ -165,6 +168,8 @@ func BufferOptionsSchema() schema.ListNestedBlock {
 							},
 							"when_full": schema.StringAttribute{
 								Optional:    true,
+								Computed:    true,
+								Default:     stringdefault.StaticString("block"),
 								Description: "Behavior when the buffer is full. Valid values are `block` or `drop_newest`.",
 							},
 						},
