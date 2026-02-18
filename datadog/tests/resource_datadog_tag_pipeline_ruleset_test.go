@@ -223,7 +223,7 @@ func TestAccDatadogTagPipelineRuleset_MappingRuleIfTagExists(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogTagPipelineRulesetDestroy(ctx, providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -256,7 +256,7 @@ func TestAccDatadogTagPipelineRuleset_QueryRuleIfTagExists(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogTagPipelineRulesetDestroy(ctx, providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -289,7 +289,7 @@ func TestAccDatadogTagPipelineRuleset_ReferenceTableRuleIfTagExists(t *testing.T
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogTagPipelineRulesetDestroy(ctx, providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -322,7 +322,7 @@ func TestAccDatadogTagPipelineRuleset_ConflictingFields(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
 				Config:      testAccCheckDatadogTagPipelineRulesetConfigConflicting(uniq),
