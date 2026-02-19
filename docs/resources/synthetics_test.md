@@ -1029,7 +1029,7 @@ Optional:
 
 - `code` (String) If assertion type is `javascript`, this is the JavaScript code that performs the assertions.
 - `operator` (String) Assertion operator. **Note:** Only some combinations of `type` and `operator` are valid. Refer to `config.assertions` in the [Datadog API reference](https://docs.datadoghq.com/api/latest/synthetics/#create-an-api-test). Valid values are `contains`, `doesNotContain`, `is`, `isNot`, `lessThan`, `lessThanOrEqual`, `moreThan`, `moreThanOrEqual`, `matches`, `doesNotMatch`, `validates`, `isInMoreThan`, `isInLessThan`, `doesNotExist`, `isUndefined`, `validatesJSONPath`, `validatesJSONSchema`, `validatesXPath`, `md5`, `sha1`, `sha256`, `is`, `isNot`, `lessThan`, `lessThanOrEqual`, `moreThan`, `moreThanOrEqual`.
-- `property` (String) If assertion type is `header` or `grpcMetadata`, this is the header name. For other assertion types, this is an aggregation property: `avg`, `min`, `max` or `stddev`.
+- `property` (String) If assertion type is `header` or `grpcMetadata`, this is the header name. For other assertion types, this is an aggregation property: `avg`, `min`, `max`, or `stddev`.
 - `target` (String) Expected value. **Note:** Depends on the assertion type. Refer to `config.assertions` in the [Datadog API reference](https://docs.datadoghq.com/api/latest/synthetics/#create-an-api-test).
 - `targetjsonpath` (Block List, Max: 1) Expected structure if `operator` is `validatesJSONPath`. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--api_step--assertion--targetjsonpath))
 - `targetjsonschema` (Block List, Max: 1) Expected structure if `operator` is `validatesJSONSchema`. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--api_step--assertion--targetjsonschema))
@@ -1170,14 +1170,14 @@ Optional:
 - `disable_aia_intermediate_fetching` (Boolean) For SSL tests, whether or not the test should disable fetching intermediate certificates from AIA
 - `dns_server` (String) DNS server to use for DNS tests (`subtype = "dns"`).
 - `dns_server_port` (String) DNS server port to use for DNS tests.
-- `e2e_queries` (Number) For Network Path tests, the number of packets sent to probe the destination to measure packet loss, latency and jitter.
+- `e2e_queries` (Number) For Network Path tests, the number of packets sent to probe the destination to measure packet loss, latency, and jitter.
 - `follow_redirects` (Boolean) Determines whether or not the API HTTP test should follow redirects.
 - `form` (Map of String) Form data to be sent when `body_type` is `multipart/form-data`.
 - `host` (String) Host name to perform the test with.
 - `http_version` (String) HTTP version to use for an HTTP request in an API test or step. Valid values are `http1`, `http2`, `any`. Defaults to `"any"`.
 - `is_message_base64_encoded` (Boolean) For Websocket tests, whether the message is treated as a base64-encoded string in the server.
 - `max_ttl` (Number) For Network Path tests, the maximum time-to-live (max number of hops) used in outgoing probe packets.
-- `message` (String) For gRPC, UDP and Websocket tests, message to send with the request.
+- `message` (String) For gRPC, UDP, and Websocket tests, message to send with the request.
 - `method` (String) Either the HTTP method/verb to use or a gRPC method available on the service set in the `service` field. Required if `subtype` is `HTTP` or if `subtype` is `grpc` and `callType` is `unary`.
 - `no_saving_response_body` (Boolean) Determines whether or not to save the response body.
 - `number_of_packets` (Number) Number of pings to use per test for ICMP tests (`subtype = "icmp"`) between 0 and 10.
@@ -1247,7 +1247,7 @@ Optional:
 
 - `code` (String) If assertion type is `javascript`, this is the JavaScript code that performs the assertions.
 - `operator` (String) Assertion operator. **Note:** Only some combinations of `type` and `operator` are valid. Refer to `config.assertions` in the [Datadog API reference](https://docs.datadoghq.com/api/latest/synthetics/#create-an-api-test). Valid values are `contains`, `doesNotContain`, `is`, `isNot`, `lessThan`, `lessThanOrEqual`, `moreThan`, `moreThanOrEqual`, `matches`, `doesNotMatch`, `validates`, `isInMoreThan`, `isInLessThan`, `doesNotExist`, `isUndefined`, `validatesJSONPath`, `validatesJSONSchema`, `validatesXPath`, `md5`, `sha1`, `sha256`, `is`, `isNot`, `lessThan`, `lessThanOrEqual`, `moreThan`, `moreThanOrEqual`.
-- `property` (String) If assertion type is `header` or `grpcMetadata`, this is the header name. For other assertion types, this is an aggregation property: `avg`, `min`, `max` or `stddev`.
+- `property` (String) If assertion type is `header` or `grpcMetadata`, this is the header name. For other assertion types, this is an aggregation property: `avg`, `min`, `max`, or `stddev`.
 - `target` (String) Expected value. **Note:** Depends on the assertion type. Refer to `config.assertions` in the [Datadog API reference](https://docs.datadoghq.com/api/latest/synthetics/#create-an-api-test).
 - `targetjsonpath` (Block List, Max: 1) Expected structure if `operator` is `validatesJSONPath`. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--assertion--targetjsonpath))
 - `targetjsonschema` (Block List, Max: 1) Expected structure if `operator` is `validatesJSONSchema`. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--assertion--targetjsonschema))
@@ -1775,13 +1775,13 @@ Optional:
 - `destination_service` (String) For Network Path tests, an optional label displayed for the destination host in the Network Path visualization.
 - `dns_server` (String) DNS server to use for DNS tests (`subtype = "dns"`).
 - `dns_server_port` (String) DNS server port to use for DNS tests.
-- `e2e_queries` (Number) For Network Path tests, the number of packets sent to probe the destination to measure packet loss, latency and jitter.
+- `e2e_queries` (Number) For Network Path tests, the number of packets sent to probe the destination to measure packet loss, latency, and jitter.
 - `form` (Map of String) Form data to be sent when `body_type` is `multipart/form-data`.
 - `host` (String) Host name to perform the test with.
 - `http_version` (String, Deprecated) HTTP version to use for an HTTP request in an API test or step. **Deprecated.** Use `http_version` in the `options_list` field instead.
 - `is_message_base64_encoded` (Boolean) For Websocket tests, whether the message is treated as a base64-encoded string in the server.
 - `max_ttl` (Number) For Network Path tests, the maximum time-to-live (max number of hops) used in outgoing probe packets.
-- `message` (String) For gRPC, UDP and Websocket tests, message to send with the request.
+- `message` (String) For gRPC, UDP, and Websocket tests, message to send with the request.
 - `method` (String) Either the HTTP method/verb to use or a gRPC method available on the service set in the `service` field. Required if `subtype` is `HTTP` or if `subtype` is `grpc` and `callType` is `unary`.
 - `no_saving_response_body` (Boolean) Determines whether or not to save the response body.
 - `number_of_packets` (Number) Number of pings to use per test for ICMP tests (`subtype = "icmp"`) between 0 and 10.
