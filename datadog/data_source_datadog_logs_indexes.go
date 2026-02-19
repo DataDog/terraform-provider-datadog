@@ -90,6 +90,12 @@ func dataSourceDatadogLogsIndexes() *schema.Resource {
 									Schema: dataSourceLogsIndexesExclusionFilterSchema,
 								},
 							},
+							"tags": {
+								Description: "A list of tags for this index. Tags are in `key:value` format.",
+								Type:        schema.TypeSet,
+								Computed:    true,
+								Elem:        &schema.Schema{Type: schema.TypeString},
+							},
 						},
 					},
 				},
@@ -160,6 +166,7 @@ func dataSourceDatadogLogsIndexesRead(ctx context.Context, d *schema.ResourceDat
 			"flex_retention_days": l.GetNumFlexLogsRetentionDays(),
 			"filter":              buildTerraformIndexFilter(l.GetFilter()),
 			"exclusion_filter":    buildTerraformExclusionFilters(l.GetExclusionFilters()),
+			"tags":                l.GetTags(),
 		}
 	}
 	if err := d.Set("logs_indexes", tfLogsIndexes); err != nil {
