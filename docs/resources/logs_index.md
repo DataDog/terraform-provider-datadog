@@ -44,6 +44,7 @@ resource "datadog_logs_index" "sample_index" {
       sample_rate = 1.0
     }
   }
+  tags = ["team:backend", "env:production"]
 }
 ```
 
@@ -64,6 +65,7 @@ resource "datadog_logs_index" "sample_index" {
 - `exclusion_filter` (Block List) List of exclusion filters. (see [below for nested schema](#nestedblock--exclusion_filter))
 - `flex_retention_days` (Number) The total number of days logs are stored in Standard and Flex Tier before being deleted from the index.
 - `retention_days` (Number) The number of days logs are stored in Standard Tier before aging into the Flex Tier or being deleted from the index.
+- `tags` (Set of String) A list of tags for this index. Tags must be in `key:value` format. If default tags are present at the provider level, they will be added to this resource.
 
 ### Read-Only
 

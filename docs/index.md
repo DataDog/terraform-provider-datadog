@@ -57,7 +57,7 @@ provider "datadog" {
 - `aws_session_token` (String, Sensitive) The AWS session token; used for cloud-provider-based authentication. This can also be set using the `AWS_SESSION_TOKEN` environment variable. Required when using `cloud_provider_type` set to `aws` and using temporary credentials.
 - `cloud_provider_region` (String) The cloud provider region specifier; used for cloud-provider-based authentication. For example, `us-east-1` for AWS.
 - `cloud_provider_type` (String) Specifies the cloud provider used for cloud-provider-based authentication, enabling keyless access without API or app keys. Only [`aws`] is supported. This feature is in Preview. If you'd like to enable it for your organization, contact [support](https://docs.datadoghq.com/help/).
-- `default_tags` (Block List, Max: 1) [Experimental - Logs Pipelines, Monitors Security Monitoring Rules, and Service Level Objectives only] Configuration block containing settings to apply default resource tags across all resources. (see [below for nested schema](#nestedblock--default_tags))
+- `default_tags` (Block List, Max: 1) [Experimental - Logs Indexes, Logs Pipelines, Monitors Security Monitoring Rules, and Service Level Objectives only] Configuration block containing settings to apply default resource tags across all resources. (see [below for nested schema](#nestedblock--default_tags))
 - `http_client_retry_backoff_base` (Number) The HTTP request retry back off base. Defaults to 2.
 - `http_client_retry_backoff_multiplier` (Number) The HTTP request retry back off multiplier. Defaults to 2.
 - `http_client_retry_enabled` (String) Enables request retries on HTTP status codes 429 and 5xx. Valid values are [`true`, `false`]. Defaults to `true`.
@@ -71,4 +71,4 @@ provider "datadog" {
 
 Optional:
 
-- `tags` (Map of String) [Experimental - Logs Pipelines, Monitors Security Monitoring Rules, and Service Level Objectives only] Resource tags to be applied by default across all resources.
+- `tags` (Map of String) [Experimental - Logs Indexes, Logs Pipelines, Monitors Security Monitoring Rules, and Service Level Objectives only] Resource tags to be applied by default across all resources.
