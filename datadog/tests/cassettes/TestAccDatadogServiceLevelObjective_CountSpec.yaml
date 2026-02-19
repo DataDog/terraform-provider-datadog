@@ -1,0 +1,306 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 627
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"description":"some description about foo SLO","name":"tf-TestAccDatadogServiceLevelObjective_CountSpec-local-1771346675","sli_specification":{"count":{"good_events_formula":{"formula":"query1"},"queries":[{"data_source":"metrics","name":"query1","query":"sum:my.metric{status:good}.as_count()"},{"data_source":"metrics","name":"query2","query":"sum:my.metric{*}.as_count()"}],"total_events_formula":{"formula":"query2"}}},"tags":["foo:bar","baz"],"target_threshold":99.5,"thresholds":[{"target":99.5,"timeframe":"7d","warning":99.8},{"target":99,"timeframe":"30d"}],"timeframe":"7d","type":"metric","warning_threshold":99.8}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/slo
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data": [{"id": "6e2642d19841557abceddf6925d6b448", "name": "tf-TestAccDatadogServiceLevelObjective_CountSpec-local-1771346675", "tags": ["baz", "foo:bar"], "monitor_tags": [], "thresholds": [{"timeframe": "7d", "target": 99.5, "target_display": "99.5", "warning": 99.8, "warning_display": "99.8"}, {"timeframe": "30d", "target": 99.0, "target_display": "99."}], "type": "metric", "type_id": 1, "description": "some description about foo SLO", "timeframe": "7d", "warning_threshold": 99.8, "target_threshold": 99.5, "query": {"numerator": "sum:my.metric{status:good}.as_count()", "denominator": "sum:my.metric{*}.as_count()"}, "creator": {"name": "Blaise von Ohlen", "handle": "blaise.vonohlen@datadoghq.com", "email": "blaise.vonohlen@datadoghq.com"}, "created_at": 1771346677, "modified_at": 1771346677}], "error": null}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 123.716708ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/slo/6e2642d19841557abceddf6925d6b448
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data": {"id": "6e2642d19841557abceddf6925d6b448", "name": "tf-TestAccDatadogServiceLevelObjective_CountSpec-local-1771346675", "tags": ["baz", "foo:bar"], "monitor_tags": [], "thresholds": [{"timeframe": "7d", "target": 99.5, "target_display": "99.5", "warning": 99.8, "warning_display": "99.8"}, {"timeframe": "30d", "target": 99.0, "target_display": "99."}], "type": "metric", "type_id": 1, "description": "some description about foo SLO", "timeframe": "7d", "warning_threshold": 99.8, "target_threshold": 99.5, "query": {"denominator": "sum:my.metric{*}.as_count()", "numerator": "sum:my.metric{status:good}.as_count()"}, "creator": {"name": "Blaise von Ohlen", "handle": "blaise.vonohlen@datadoghq.com", "email": "blaise.vonohlen@datadoghq.com"}, "created_at": 1771346677, "modified_at": 1771346677}, "error": null}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 57.004958ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/slo/6e2642d19841557abceddf6925d6b448
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data": {"id": "6e2642d19841557abceddf6925d6b448", "name": "tf-TestAccDatadogServiceLevelObjective_CountSpec-local-1771346675", "tags": ["foo:bar", "baz"], "monitor_tags": [], "thresholds": [{"timeframe": "7d", "target": 99.5, "target_display": "99.5", "warning": 99.8, "warning_display": "99.8"}, {"timeframe": "30d", "target": 99.0, "target_display": "99."}], "type": "metric", "type_id": 1, "description": "some description about foo SLO", "timeframe": "7d", "warning_threshold": 99.8, "target_threshold": 99.5, "query": {"denominator": "sum:my.metric{*}.as_count()", "numerator": "sum:my.metric{status:good}.as_count()"}, "creator": {"name": "Blaise von Ohlen", "handle": "blaise.vonohlen@datadoghq.com", "email": "blaise.vonohlen@datadoghq.com"}, "created_at": 1771346677, "modified_at": 1771346677}, "error": null}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 72.287666ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/slo/6e2642d19841557abceddf6925d6b448
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data": {"id": "6e2642d19841557abceddf6925d6b448", "name": "tf-TestAccDatadogServiceLevelObjective_CountSpec-local-1771346675", "tags": ["foo:bar", "baz"], "monitor_tags": [], "thresholds": [{"timeframe": "7d", "target": 99.5, "target_display": "99.5", "warning": 99.8, "warning_display": "99.8"}, {"timeframe": "30d", "target": 99.0, "target_display": "99."}], "type": "metric", "type_id": 1, "description": "some description about foo SLO", "timeframe": "7d", "warning_threshold": 99.8, "target_threshold": 99.5, "query": {"denominator": "sum:my.metric{*}.as_count()", "numerator": "sum:my.metric{status:good}.as_count()"}, "creator": {"name": "Blaise von Ohlen", "handle": "blaise.vonohlen@datadoghq.com", "email": "blaise.vonohlen@datadoghq.com"}, "created_at": 1771346677, "modified_at": 1771346677}, "error": null}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 66.905291ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 689
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"description":"updated description about foo SLO","id":"6e2642d19841557abceddf6925d6b448","name":"tf-TestAccDatadogServiceLevelObjective_CountSpec-local-1771346675-updated","sli_specification":{"count":{"good_events_formula":{"formula":"query1"},"queries":[{"data_source":"metrics","name":"query1","query":"sum:my.metric{status:ok}.as_count()"},{"data_source":"metrics","name":"query2","query":"sum:my.metric{*}.as_count()"}],"total_events_formula":{"formula":"query2"}}},"tags":["foo:bar","baz"],"target_threshold":99.5,"thresholds":[{"target":99.5,"timeframe":"7d","warning":99.8},{"target":98,"timeframe":"30d","warning":99}],"timeframe":"7d","type":"metric","warning_threshold":99.8}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/slo/6e2642d19841557abceddf6925d6b448
+        method: PUT
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data": [{"id": "6e2642d19841557abceddf6925d6b448", "name": "tf-TestAccDatadogServiceLevelObjective_CountSpec-local-1771346675-updated", "tags": ["foo:bar", "baz"], "monitor_tags": [], "thresholds": [{"timeframe": "7d", "target": 99.5, "target_display": "99.5", "warning": 99.8, "warning_display": "99.8"}, {"timeframe": "30d", "target": 98.0, "target_display": "98.", "warning": 99.0, "warning_display": "99."}], "type": "metric", "type_id": 1, "description": "updated description about foo SLO", "timeframe": "7d", "warning_threshold": 99.8, "target_threshold": 99.5, "query": {"numerator": "sum:my.metric{status:ok}.as_count()", "denominator": "sum:my.metric{*}.as_count()"}, "creator": {"name": "Blaise von Ohlen", "handle": "blaise.vonohlen@datadoghq.com", "email": "blaise.vonohlen@datadoghq.com"}, "created_at": 1771346677, "modified_at": 1771346679}], "error": null}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 187.447208ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/slo/6e2642d19841557abceddf6925d6b448
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data": {"id": "6e2642d19841557abceddf6925d6b448", "name": "tf-TestAccDatadogServiceLevelObjective_CountSpec-local-1771346675-updated", "tags": ["baz", "foo:bar"], "monitor_tags": [], "thresholds": [{"timeframe": "7d", "target": 99.5, "target_display": "99.5", "warning": 99.8, "warning_display": "99.8"}, {"timeframe": "30d", "target": 98.0, "target_display": "98.", "warning": 99.0, "warning_display": "99."}], "type": "metric", "type_id": 1, "description": "updated description about foo SLO", "timeframe": "7d", "warning_threshold": 99.8, "target_threshold": 99.5, "query": {"denominator": "sum:my.metric{*}.as_count()", "numerator": "sum:my.metric{status:ok}.as_count()"}, "creator": {"name": "Blaise von Ohlen", "handle": "blaise.vonohlen@datadoghq.com", "email": "blaise.vonohlen@datadoghq.com"}, "created_at": 1771346677, "modified_at": 1771346679}, "error": null}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 67.975292ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/slo/6e2642d19841557abceddf6925d6b448
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data": {"id": "6e2642d19841557abceddf6925d6b448", "name": "tf-TestAccDatadogServiceLevelObjective_CountSpec-local-1771346675-updated", "tags": ["foo:bar", "baz"], "monitor_tags": [], "thresholds": [{"timeframe": "7d", "target": 99.5, "target_display": "99.5", "warning": 99.8, "warning_display": "99.8"}, {"timeframe": "30d", "target": 98.0, "target_display": "98.", "warning": 99.0, "warning_display": "99."}], "type": "metric", "type_id": 1, "description": "updated description about foo SLO", "timeframe": "7d", "warning_threshold": 99.8, "target_threshold": 99.5, "query": {"denominator": "sum:my.metric{*}.as_count()", "numerator": "sum:my.metric{status:ok}.as_count()"}, "creator": {"name": "Blaise von Ohlen", "handle": "blaise.vonohlen@datadoghq.com", "email": "blaise.vonohlen@datadoghq.com"}, "created_at": 1771346677, "modified_at": 1771346679}, "error": null}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 65.039375ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/slo/6e2642d19841557abceddf6925d6b448
+        method: DELETE
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data": ["6e2642d19841557abceddf6925d6b448"], "error": null}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 195.266458ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/slo/6e2642d19841557abceddf6925d6b448
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"errors": ["SLO not found: 6e2642d19841557abceddf6925d6b448 not found"]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 77.211417ms

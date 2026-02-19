@@ -43,6 +43,52 @@ resource "datadog_service_level_objective" "foo" {
   tags = ["foo:bar", "baz"]
 }
 
+# Metric-Based SLO using sli_specification.count
+# Create a new Datadog service level objective
+resource "datadog_service_level_objective" "metric_count_spec_slo" {
+  name        = "Example Metric Count Spec SLO"
+  type        = "metric"
+  description = "My custom metric count spec SLO"
+  sli_specification {
+    count {
+      good_events_formula  = "query1"
+      total_events_formula = "query2"
+
+      queries {
+        metric_query {
+          name  = "query1"
+          query = "sum:my.custom.count.metric{type:good_events}.as_count()"
+        }
+      }
+
+      queries {
+        metric_query {
+          name  = "query2"
+          query = "sum:my.custom.count.metric{*}.as_count()"
+        }
+      }
+    }
+  }
+
+  thresholds {
+    timeframe = "7d"
+    target    = 99.9
+    warning   = 99.99
+  }
+
+  thresholds {
+    timeframe = "30d"
+    target    = 99.9
+    warning   = 99.99
+  }
+
+  timeframe         = "30d"
+  target_threshold  = 99.9
+  warning_threshold = 99.99
+
+  tags = ["foo:bar", "baz"]
+}
+
 
 # Monitor-Based SLO
 # Create a new Datadog service level objective
@@ -122,8 +168,8 @@ resource "datadog_service_level_objective" "time_slice_slo" {
 - `force_delete` (Boolean) A boolean indicating whether this monitor can be deleted even if it's referenced by other resources (for example, dashboards).
 - `groups` (Set of String) A static set of groups to filter monitor-based SLOs
 - `monitor_ids` (Set of Number) A static set of monitor IDs to use as part of the SLO
-- `query` (Block List, Max: 1) The metric query of good / total events (see [below for nested schema](#nestedblock--query))
-- `sli_specification` (Block List, Max: 1) A map of SLI specifications to use as part of the SLO. (see [below for nested schema](#nestedblock--sli_specification))
+- `query` (Block List, Max: 1) The metric query of good / total events. Use this for metric SLOs as an alternative to `sli_specification`. (see [below for nested schema](#nestedblock--query))
+- `sli_specification` (Block List, Max: 1) A generic SLI specification. This is used for both time-slice SLOs and count-based (metric) SLOs. (see [below for nested schema](#nestedblock--sli_specification))
 - `tags` (Set of String) A list of tags to associate with your service level objective. This can help you categorize and filter service level objectives in the service level objectives page of the UI. **Note**: it's not currently possible to filter by these tags when querying via the API. If default tags are present at the provider level, they will be added to this resource.
 - `target_threshold` (Number) The objective's target in `(0,100)`. This must match the corresponding thresholds of the primary time frame.
 - `timeframe` (String) The primary time frame for the objective. The mapping from these types to the types found in the Datadog Web UI can be found in the Datadog API documentation page. Valid values are `7d`, `30d`, `90d`, `custom`.
@@ -164,9 +210,41 @@ Required:
 <a id="nestedblock--sli_specification"></a>
 ### Nested Schema for `sli_specification`
 
+Optional:
+
+- `count` (Block List, Max: 1) A count-based (metric) SLI specification. Composed of a good events formula, a total events formula, and the underlying metric queries. (see [below for nested schema](#nestedblock--sli_specification--count))
+- `time_slice` (Block List, Max: 1) The time slice condition, composed of 3 parts: 1. The timeseries query, 2. The comparator, and 3. The threshold. Optionally, a fourth part, the query interval, can be provided. (see [below for nested schema](#nestedblock--sli_specification--time_slice))
+
+<a id="nestedblock--sli_specification--count"></a>
+### Nested Schema for `sli_specification.count`
+
 Required:
 
-- `time_slice` (Block List, Min: 1, Max: 1) The time slice condition, composed of 3 parts: 1. The timeseries query, 2. The comparator, and 3. The threshold. Optionally, a fourth part, the query interval, can be provided. (see [below for nested schema](#nestedblock--sli_specification--time_slice))
+- `good_events_formula` (String) The formula that specifies how to compute the good events.
+- `queries` (Block List, Min: 1) A list of data-source-specific queries that are referenced in the formulas. (see [below for nested schema](#nestedblock--sli_specification--count--queries))
+- `total_events_formula` (String) The formula that specifies how to compute the total events.
+
+<a id="nestedblock--sli_specification--count--queries"></a>
+### Nested Schema for `sli_specification.count.queries`
+
+Optional:
+
+- `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--sli_specification--count--queries--metric_query))
+
+<a id="nestedblock--sli_specification--count--queries--metric_query"></a>
+### Nested Schema for `sli_specification.count.queries.metric_query`
+
+Required:
+
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The metrics query definition.
+
+Optional:
+
+- `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
+
+
+
 
 <a id="nestedblock--sli_specification--time_slice"></a>
 ### Nested Schema for `sli_specification.time_slice`
