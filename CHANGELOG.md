@@ -1,3 +1,24 @@
+## 3.89.0 (February 18, 2026)
+
+### BUGFIXES
+* [datadog_observability_pipeline] Enforce only one type per processor by @taylorchandleryoung in https://github.com/DataDog/terraform-provider-datadog/pull/3498
+* [datadog_integration_gcp] Remove default value for HostFilters by @katherinekim-51 in https://github.com/DataDog/terraform-provider-datadog/pull/3489
+* [datadog_monitor] Fix panic with empty monitor_options in data quality monitors by @pkalmakis in https://github.com/DataDog/terraform-provider-datadog/pull/3505
+* [datadog_observability_pipeline] Updating field that should be marked as required by @taylorchandleryoung in https://github.com/DataDog/terraform-provider-datadog/pull/3516
+* [datadog_observability_pipeline] Updating schema to require at least one for a handful of fields by @taylorchandleryoung in https://github.com/DataDog/terraform-provider-datadog/pull/3520
+* [datadog_security_monitoring_default_rule] Fix false diffs after import for case and query blocks by @alvizi-dd in https://github.com/DataDog/terraform-provider-datadog/pull/3521
+### FEATURES
+* [datadog_monitor] Add support to timezone on evaluation window by @shaneyuandd in https://github.com/DataDog/terraform-provider-datadog/pull/3506
+* [datadog_tag_pipeline_ruleset] Add if_tag_exists feature to Cloud Cost tag pipelines and deprecate if_not_exists field by @ashleyyip in https://github.com/DataDog/terraform-provider-datadog/pull/3500
+* [datadog_service_level_objective] Add sli_specification support for count SLOs by @peachprosecutor in https://github.com/DataDog/terraform-provider-datadog/pull/3507
+
+## New Contributors
+* @alvizi-dd made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3521
+* @ashleyyip made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3500
+* @peachprosecutor made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3507
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.88.0...v3.89.0
+
 ## 3.88.0 (February 5, 2026)
 
 ### BUGFIXES
