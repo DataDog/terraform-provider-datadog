@@ -96,7 +96,7 @@ func (d *datadogMetricMetadataDataSource) Read(ctx context.Context, req datasour
 		return
 	}
 
-	ddResp, _, err := d.Api.GetMetricMetadata(d.Auth, state.MetricName.String())
+	ddResp, _, err := d.Api.GetMetricMetadata(d.Auth, state.MetricName.ValueString())
 	if err != nil {
 		resp.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error getting metric metadata"))
 		return
