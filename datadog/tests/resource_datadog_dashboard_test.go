@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -1310,7 +1311,7 @@ func checkDashboardExists(accProvider func() (*schema.Provider, error)) resource
 		auth := providerConf.Auth
 
 		for _, r := range s.RootModule().Resources {
-			if r.Type != "datadog_dashboard" && r.Type != "datadog_dashboard_json" {
+			if r.Type != "datadog_dashboard" && r.Type != "datadog_dashboard_v2" && r.Type != "datadog_dashboard_json" {
 				continue
 			}
 			if _, _, err := apiInstances.GetDashboardsApiV1().GetDashboard(auth, r.Primary.ID); err != nil {
@@ -1330,7 +1331,7 @@ func checkDashboardDestroy(accProvider func() (*schema.Provider, error)) resourc
 
 		err := utils.Retry(2, 10, func() error {
 			for _, r := range s.RootModule().Resources {
-				if r.Type != "datadog_dashboard" && r.Type != "datadog_dashboard_json" {
+				if r.Type != "datadog_dashboard" && r.Type != "datadog_dashboard_v2" && r.Type != "datadog_dashboard_json" {
 					continue
 				}
 				if _, httpResp, err := apiInstances.GetDashboardsApiV1().GetDashboard(auth, r.Primary.ID); err != nil {
@@ -1396,6 +1397,102 @@ func testAccDatadogDashboardWidgetUtilImport(t *testing.T, config string, name s
 			},
 		},
 	})
+}
+
+// testAccDatadogDashboardV2WidgetUtil runs a v2 dashboard test reusing the cassette from v1TestName.
+// The config should use datadog_dashboard_v2 as the resource type; the entity name is derived from
+// the v1 test so that the cassette's recorded dashboard title matches.
+func testAccDatadogDashboardV2WidgetUtil(t *testing.T, v1TestName string, config string, name string, assertions []string) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProvidersWithCassette(context.Background(), t, v1TestName)
+	uniq := withUniqueSurrounding(clockFromContext(ctx), v1TestName)
+	replacer := strings.NewReplacer("{{uniq}}", uniq)
+	config = replacer.Replace(config)
+	for i := range assertions {
+		assertions[i] = replacer.Replace(assertions[i])
+	}
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             checkDashboardDestroyFW(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: config,
+				Check: resource.ComposeTestCheckFunc(
+					testCheckResourceAttrs(name, checkDashboardExistsFW(providers.frameworkProvider), assertions)...,
+				),
+			},
+		},
+	})
+}
+
+// testAccDatadogDashboardV2WidgetUtilImport runs a v2 dashboard import test reusing the cassette from v1TestName.
+func testAccDatadogDashboardV2WidgetUtilImport(t *testing.T, v1TestName string, config string, name string) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProvidersWithCassette(context.Background(), t, v1TestName)
+	uniq := withUniqueSurrounding(clockFromContext(ctx), v1TestName)
+	replacer := strings.NewReplacer("{{uniq}}", uniq)
+	config = replacer.Replace(config)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             checkDashboardDestroyFW(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: config,
+			},
+			{
+				ResourceName:      name,
+				ImportState:       true,
+				ImportStateVerify: true,
+			},
+		},
+	})
+}
+
+// checkDashboardDestroyFW checks that a datadog_dashboard_v2 resource has been destroyed.
+func checkDashboardDestroyFW(frameworkProvider *fwprovider.FrameworkProvider) resource.TestCheckFunc {
+	return func(s *terraform.State) error {
+		apiInstances := frameworkProvider.DatadogApiInstances
+		auth := frameworkProvider.Auth
+
+		err := utils.Retry(2, 10, func() error {
+			for _, r := range s.RootModule().Resources {
+				if r.Type != "datadog_dashboard_v2" {
+					continue
+				}
+				if _, httpResp, err := apiInstances.GetDashboardsApiV1().GetDashboard(auth, r.Primary.ID); err != nil {
+					if httpResp != nil && httpResp.StatusCode == 404 {
+						return nil
+					}
+					return &utils.RetryableError{Prob: fmt.Sprintf("received an error retrieving Dashboard %s", err)}
+				}
+				return &utils.RetryableError{Prob: "Dashboard still exists"}
+			}
+			return nil
+		})
+		return err
+	}
+}
+
+// checkDashboardExistsFW checks that a datadog_dashboard_v2 resource exists.
+func checkDashboardExistsFW(frameworkProvider *fwprovider.FrameworkProvider) resource.TestCheckFunc {
+	return func(s *terraform.State) error {
+		apiInstances := frameworkProvider.DatadogApiInstances
+		auth := frameworkProvider.Auth
+
+		for _, r := range s.RootModule().Resources {
+			if r.Type != "datadog_dashboard_v2" {
+				continue
+			}
+			if _, _, err := apiInstances.GetDashboardsApiV1().GetDashboard(auth, r.Primary.ID); err != nil {
+				return fmt.Errorf("received an error retrieving dashboard %s", err)
+			}
+		}
+		return nil
+	}
 }
 
 func datadogOpenDashboardConfig(uniqueDashboardName string) string {
