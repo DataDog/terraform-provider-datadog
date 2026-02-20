@@ -135,6 +135,7 @@ Optional:
 Optional:
 
 - `auth` (Block List) (see [below for nested schema](#nestedblock--config--destination--amazon_opensearch--auth))
+- `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--amazon_opensearch--buffer))
 - `bulk_index` (String) The index or datastream to write logs to.
 
 <a id="nestedblock--config--destination--amazon_opensearch--auth"></a>
@@ -152,6 +153,34 @@ Optional:
 - `session_name` (String) Session name for assumed role.
 
 
+<a id="nestedblock--config--destination--amazon_opensearch--buffer"></a>
+### Nested Schema for `config.destination.amazon_opensearch.buffer`
+
+Optional:
+
+- `disk` (Block List) Options for configuring a disk buffer. Cannot be used with `memory`. (see [below for nested schema](#nestedblock--config--destination--amazon_opensearch--buffer--disk))
+- `memory` (Block List) Options for configuring a memory buffer. Cannot be used with `disk`. (see [below for nested schema](#nestedblock--config--destination--amazon_opensearch--buffer--memory))
+
+<a id="nestedblock--config--destination--amazon_opensearch--buffer--disk"></a>
+### Nested Schema for `config.destination.amazon_opensearch.buffer.disk`
+
+Optional:
+
+- `max_size` (Number) Maximum size of the disk buffer (in bytes).
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
+
+
+<a id="nestedblock--config--destination--amazon_opensearch--buffer--memory"></a>
+### Nested Schema for `config.destination.amazon_opensearch.buffer.memory`
+
+Optional:
+
+- `max_events` (Number) Maximum events for the memory buffer.
+- `max_size` (Number) Maximum size of the memory buffer (in bytes).
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
+
+
+
 
 <a id="nestedblock--config--destination--amazon_s3"></a>
 ### Nested Schema for `config.destination.amazon_s3`
@@ -166,6 +195,7 @@ Required:
 Optional:
 
 - `auth` (Block List) AWS authentication credentials used for accessing AWS services. If omitted, the system's default credentials are used (for example, the IAM role and environment variables). (see [below for nested schema](#nestedblock--config--destination--amazon_s3--auth))
+- `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--amazon_s3--buffer))
 
 <a id="nestedblock--config--destination--amazon_s3--auth"></a>
 ### Nested Schema for `config.destination.amazon_s3.auth`
@@ -175,6 +205,34 @@ Optional:
 - `assume_role` (String) The Amazon Resource Name (ARN) of the role to assume.
 - `external_id` (String) A unique identifier for cross-account role assumption.
 - `session_name` (String) A session identifier used for logging and tracing the assumed role session.
+
+
+<a id="nestedblock--config--destination--amazon_s3--buffer"></a>
+### Nested Schema for `config.destination.amazon_s3.buffer`
+
+Optional:
+
+- `disk` (Block List) Options for configuring a disk buffer. Cannot be used with `memory`. (see [below for nested schema](#nestedblock--config--destination--amazon_s3--buffer--disk))
+- `memory` (Block List) Options for configuring a memory buffer. Cannot be used with `disk`. (see [below for nested schema](#nestedblock--config--destination--amazon_s3--buffer--memory))
+
+<a id="nestedblock--config--destination--amazon_s3--buffer--disk"></a>
+### Nested Schema for `config.destination.amazon_s3.buffer.disk`
+
+Optional:
+
+- `max_size` (Number) Maximum size of the disk buffer (in bytes).
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
+
+
+<a id="nestedblock--config--destination--amazon_s3--buffer--memory"></a>
+### Nested Schema for `config.destination.amazon_s3.buffer.memory`
+
+Optional:
+
+- `max_events` (Number) Maximum events for the memory buffer.
+- `max_size` (Number) Maximum size of the memory buffer (in bytes).
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
+
 
 
 
@@ -190,6 +248,7 @@ Required:
 Optional:
 
 - `auth` (Block List) AWS authentication credentials used for accessing AWS services. If omitted, the system's default credentials are used (for example, the IAM role and environment variables). (see [below for nested schema](#nestedblock--config--destination--amazon_security_lake--auth))
+- `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--amazon_security_lake--buffer))
 - `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--destination--amazon_security_lake--tls))
 
 <a id="nestedblock--config--destination--amazon_security_lake--auth"></a>
@@ -200,6 +259,34 @@ Optional:
 - `assume_role` (String) The Amazon Resource Name (ARN) of the role to assume.
 - `external_id` (String) A unique identifier for cross-account role assumption.
 - `session_name` (String) A session identifier used for logging and tracing the assumed role session.
+
+
+<a id="nestedblock--config--destination--amazon_security_lake--buffer"></a>
+### Nested Schema for `config.destination.amazon_security_lake.buffer`
+
+Optional:
+
+- `disk` (Block List) Options for configuring a disk buffer. Cannot be used with `memory`. (see [below for nested schema](#nestedblock--config--destination--amazon_security_lake--buffer--disk))
+- `memory` (Block List) Options for configuring a memory buffer. Cannot be used with `disk`. (see [below for nested schema](#nestedblock--config--destination--amazon_security_lake--buffer--memory))
+
+<a id="nestedblock--config--destination--amazon_security_lake--buffer--disk"></a>
+### Nested Schema for `config.destination.amazon_security_lake.buffer.disk`
+
+Optional:
+
+- `max_size` (Number) Maximum size of the disk buffer (in bytes).
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
+
+
+<a id="nestedblock--config--destination--amazon_security_lake--buffer--memory"></a>
+### Nested Schema for `config.destination.amazon_security_lake.buffer.memory`
+
+Optional:
+
+- `max_events` (Number) Maximum events for the memory buffer.
+- `max_size` (Number) Maximum size of the memory buffer (in bytes).
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
+
 
 
 <a id="nestedblock--config--destination--amazon_security_lake--tls"></a>
@@ -226,6 +313,35 @@ Required:
 Optional:
 
 - `blob_prefix` (String) Optional prefix for blobs written to the container.
+- `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--azure_storage--buffer))
+
+<a id="nestedblock--config--destination--azure_storage--buffer"></a>
+### Nested Schema for `config.destination.azure_storage.buffer`
+
+Optional:
+
+- `disk` (Block List) Options for configuring a disk buffer. Cannot be used with `memory`. (see [below for nested schema](#nestedblock--config--destination--azure_storage--buffer--disk))
+- `memory` (Block List) Options for configuring a memory buffer. Cannot be used with `disk`. (see [below for nested schema](#nestedblock--config--destination--azure_storage--buffer--memory))
+
+<a id="nestedblock--config--destination--azure_storage--buffer--disk"></a>
+### Nested Schema for `config.destination.azure_storage.buffer.disk`
+
+Optional:
+
+- `max_size` (Number) Maximum size of the disk buffer (in bytes).
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
+
+
+<a id="nestedblock--config--destination--azure_storage--buffer--memory"></a>
+### Nested Schema for `config.destination.azure_storage.buffer.memory`
+
+Optional:
+
+- `max_events` (Number) Maximum events for the memory buffer.
+- `max_size` (Number) Maximum size of the memory buffer (in bytes).
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
+
+
 
 
 <a id="nestedblock--config--destination--cloud_prem"></a>
@@ -241,8 +357,37 @@ Required:
 
 Optional:
 
+- `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--crowdstrike_next_gen_siem--buffer))
 - `compression` (Block List) Compression configuration for log events. (see [below for nested schema](#nestedblock--config--destination--crowdstrike_next_gen_siem--compression))
 - `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--destination--crowdstrike_next_gen_siem--tls))
+
+<a id="nestedblock--config--destination--crowdstrike_next_gen_siem--buffer"></a>
+### Nested Schema for `config.destination.crowdstrike_next_gen_siem.buffer`
+
+Optional:
+
+- `disk` (Block List) Options for configuring a disk buffer. Cannot be used with `memory`. (see [below for nested schema](#nestedblock--config--destination--crowdstrike_next_gen_siem--buffer--disk))
+- `memory` (Block List) Options for configuring a memory buffer. Cannot be used with `disk`. (see [below for nested schema](#nestedblock--config--destination--crowdstrike_next_gen_siem--buffer--memory))
+
+<a id="nestedblock--config--destination--crowdstrike_next_gen_siem--buffer--disk"></a>
+### Nested Schema for `config.destination.crowdstrike_next_gen_siem.buffer.disk`
+
+Optional:
+
+- `max_size` (Number) Maximum size of the disk buffer (in bytes).
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
+
+
+<a id="nestedblock--config--destination--crowdstrike_next_gen_siem--buffer--memory"></a>
+### Nested Schema for `config.destination.crowdstrike_next_gen_siem.buffer.memory`
+
+Optional:
+
+- `max_events` (Number) Maximum events for the memory buffer.
+- `max_size` (Number) Maximum size of the memory buffer (in bytes).
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
+
+
 
 <a id="nestedblock--config--destination--crowdstrike_next_gen_siem--compression"></a>
 ### Nested Schema for `config.destination.crowdstrike_next_gen_siem.compression`
@@ -275,7 +420,36 @@ Optional:
 
 Optional:
 
+- `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--datadog_logs--buffer))
 - `routes` (Block List) A list of routing rules that forward matching logs to Datadog using dedicated API keys. (see [below for nested schema](#nestedblock--config--destination--datadog_logs--routes))
+
+<a id="nestedblock--config--destination--datadog_logs--buffer"></a>
+### Nested Schema for `config.destination.datadog_logs.buffer`
+
+Optional:
+
+- `disk` (Block List) Options for configuring a disk buffer. Cannot be used with `memory`. (see [below for nested schema](#nestedblock--config--destination--datadog_logs--buffer--disk))
+- `memory` (Block List) Options for configuring a memory buffer. Cannot be used with `disk`. (see [below for nested schema](#nestedblock--config--destination--datadog_logs--buffer--memory))
+
+<a id="nestedblock--config--destination--datadog_logs--buffer--disk"></a>
+### Nested Schema for `config.destination.datadog_logs.buffer.disk`
+
+Optional:
+
+- `max_size` (Number) Maximum size of the disk buffer (in bytes).
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
+
+
+<a id="nestedblock--config--destination--datadog_logs--buffer--memory"></a>
+### Nested Schema for `config.destination.datadog_logs.buffer.memory`
+
+Optional:
+
+- `max_events` (Number) Maximum events for the memory buffer.
+- `max_size` (Number) Maximum size of the memory buffer (in bytes).
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
+
+
 
 <a id="nestedblock--config--destination--datadog_logs--routes"></a>
 ### Nested Schema for `config.destination.datadog_logs.routes`
@@ -286,6 +460,38 @@ Required:
 - `include` (String) A Datadog search query that determines which logs are forwarded using this route.
 - `route_id` (String) Unique identifier for this route within the destination.
 - `site` (String) Datadog site where matching logs are sent (for example, `us1`).
+
+Optional:
+
+- `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--datadog_logs--routes--buffer))
+
+<a id="nestedblock--config--destination--datadog_logs--routes--buffer"></a>
+### Nested Schema for `config.destination.datadog_logs.routes.buffer`
+
+Optional:
+
+- `disk` (Block List) Options for configuring a disk buffer. Cannot be used with `memory`. (see [below for nested schema](#nestedblock--config--destination--datadog_logs--routes--buffer--disk))
+- `memory` (Block List) Options for configuring a memory buffer. Cannot be used with `disk`. (see [below for nested schema](#nestedblock--config--destination--datadog_logs--routes--buffer--memory))
+
+<a id="nestedblock--config--destination--datadog_logs--routes--buffer--disk"></a>
+### Nested Schema for `config.destination.datadog_logs.routes.buffer.disk`
+
+Optional:
+
+- `max_size` (Number) Maximum size of the disk buffer (in bytes).
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
+
+
+<a id="nestedblock--config--destination--datadog_logs--routes--buffer--memory"></a>
+### Nested Schema for `config.destination.datadog_logs.routes.buffer.memory`
+
+Optional:
+
+- `max_events` (Number) Maximum events for the memory buffer.
+- `max_size` (Number) Maximum size of the memory buffer (in bytes).
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
+
+
 
 
 
@@ -299,8 +505,37 @@ Required:
 Optional:
 
 - `api_version` (String) The Elasticsearch API version to use. Set to `auto` to auto-detect.
+- `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--elasticsearch--buffer))
 - `bulk_index` (String) The index or datastream to write logs to in Elasticsearch.
 - `data_stream` (Block List) Configuration options for writing to Elasticsearch Data Streams instead of a fixed index. (see [below for nested schema](#nestedblock--config--destination--elasticsearch--data_stream))
+
+<a id="nestedblock--config--destination--elasticsearch--buffer"></a>
+### Nested Schema for `config.destination.elasticsearch.buffer`
+
+Optional:
+
+- `disk` (Block List) Options for configuring a disk buffer. Cannot be used with `memory`. (see [below for nested schema](#nestedblock--config--destination--elasticsearch--buffer--disk))
+- `memory` (Block List) Options for configuring a memory buffer. Cannot be used with `disk`. (see [below for nested schema](#nestedblock--config--destination--elasticsearch--buffer--memory))
+
+<a id="nestedblock--config--destination--elasticsearch--buffer--disk"></a>
+### Nested Schema for `config.destination.elasticsearch.buffer.disk`
+
+Optional:
+
+- `max_size` (Number) Maximum size of the disk buffer (in bytes).
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
+
+
+<a id="nestedblock--config--destination--elasticsearch--buffer--memory"></a>
+### Nested Schema for `config.destination.elasticsearch.buffer.memory`
+
+Optional:
+
+- `max_events` (Number) Maximum events for the memory buffer.
+- `max_size` (Number) Maximum size of the memory buffer (in bytes).
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
+
+
 
 <a id="nestedblock--config--destination--elasticsearch--data_stream"></a>
 ### Nested Schema for `config.destination.elasticsearch.data_stream`
@@ -325,6 +560,7 @@ Optional:
 
 - `acl` (String) Access control list setting for objects written to the bucket.
 - `auth` (Block List) GCP credentials used to authenticate with Google Cloud services. (see [below for nested schema](#nestedblock--config--destination--google_cloud_storage--auth))
+- `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--google_cloud_storage--buffer))
 - `key_prefix` (String) Optional prefix for object keys within the GCS bucket.
 - `metadata` (Block List) Custom metadata key-value pairs added to each object. (see [below for nested schema](#nestedblock--config--destination--google_cloud_storage--metadata))
 
@@ -334,6 +570,34 @@ Optional:
 Required:
 
 - `credentials_file` (String) Path to the GCP service account key file.
+
+
+<a id="nestedblock--config--destination--google_cloud_storage--buffer"></a>
+### Nested Schema for `config.destination.google_cloud_storage.buffer`
+
+Optional:
+
+- `disk` (Block List) Options for configuring a disk buffer. Cannot be used with `memory`. (see [below for nested schema](#nestedblock--config--destination--google_cloud_storage--buffer--disk))
+- `memory` (Block List) Options for configuring a memory buffer. Cannot be used with `disk`. (see [below for nested schema](#nestedblock--config--destination--google_cloud_storage--buffer--memory))
+
+<a id="nestedblock--config--destination--google_cloud_storage--buffer--disk"></a>
+### Nested Schema for `config.destination.google_cloud_storage.buffer.disk`
+
+Optional:
+
+- `max_size` (Number) Maximum size of the disk buffer (in bytes).
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
+
+
+<a id="nestedblock--config--destination--google_cloud_storage--buffer--memory"></a>
+### Nested Schema for `config.destination.google_cloud_storage.buffer.memory`
+
+Optional:
+
+- `max_events` (Number) Maximum events for the memory buffer.
+- `max_size` (Number) Maximum size of the memory buffer (in bytes).
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
+
 
 
 <a id="nestedblock--config--destination--google_cloud_storage--metadata"></a>
@@ -358,6 +622,7 @@ Required:
 Optional:
 
 - `auth` (Block List) GCP credentials used to authenticate with Google Cloud services. (see [below for nested schema](#nestedblock--config--destination--google_pubsub--auth))
+- `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--google_pubsub--buffer))
 - `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--destination--google_pubsub--tls))
 
 <a id="nestedblock--config--destination--google_pubsub--auth"></a>
@@ -366,6 +631,34 @@ Optional:
 Required:
 
 - `credentials_file` (String) Path to the GCP service account key file.
+
+
+<a id="nestedblock--config--destination--google_pubsub--buffer"></a>
+### Nested Schema for `config.destination.google_pubsub.buffer`
+
+Optional:
+
+- `disk` (Block List) Options for configuring a disk buffer. Cannot be used with `memory`. (see [below for nested schema](#nestedblock--config--destination--google_pubsub--buffer--disk))
+- `memory` (Block List) Options for configuring a memory buffer. Cannot be used with `disk`. (see [below for nested schema](#nestedblock--config--destination--google_pubsub--buffer--memory))
+
+<a id="nestedblock--config--destination--google_pubsub--buffer--disk"></a>
+### Nested Schema for `config.destination.google_pubsub.buffer.disk`
+
+Optional:
+
+- `max_size` (Number) Maximum size of the disk buffer (in bytes).
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
+
+
+<a id="nestedblock--config--destination--google_pubsub--buffer--memory"></a>
+### Nested Schema for `config.destination.google_pubsub.buffer.memory`
+
+Optional:
+
+- `max_events` (Number) Maximum events for the memory buffer.
+- `max_size` (Number) Maximum size of the memory buffer (in bytes).
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
+
 
 
 <a id="nestedblock--config--destination--google_pubsub--tls"></a>
@@ -394,6 +687,7 @@ Required:
 Optional:
 
 - `auth` (Block List) GCP credentials used to authenticate with Google Cloud services. (see [below for nested schema](#nestedblock--config--destination--google_secops--auth))
+- `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--google_secops--buffer))
 
 <a id="nestedblock--config--destination--google_secops--auth"></a>
 ### Nested Schema for `config.destination.google_secops.auth`
@@ -401,6 +695,34 @@ Optional:
 Required:
 
 - `credentials_file` (String) Path to the GCP service account key file.
+
+
+<a id="nestedblock--config--destination--google_secops--buffer"></a>
+### Nested Schema for `config.destination.google_secops.buffer`
+
+Optional:
+
+- `disk` (Block List) Options for configuring a disk buffer. Cannot be used with `memory`. (see [below for nested schema](#nestedblock--config--destination--google_secops--buffer--disk))
+- `memory` (Block List) Options for configuring a memory buffer. Cannot be used with `disk`. (see [below for nested schema](#nestedblock--config--destination--google_secops--buffer--memory))
+
+<a id="nestedblock--config--destination--google_secops--buffer--disk"></a>
+### Nested Schema for `config.destination.google_secops.buffer.disk`
+
+Optional:
+
+- `max_size` (Number) Maximum size of the disk buffer (in bytes).
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
+
+
+<a id="nestedblock--config--destination--google_secops--buffer--memory"></a>
+### Nested Schema for `config.destination.google_secops.buffer.memory`
+
+Optional:
+
+- `max_events` (Number) Maximum events for the memory buffer.
+- `max_size` (Number) Maximum size of the memory buffer (in bytes).
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
+
 
 
 
@@ -501,6 +823,38 @@ Required:
 - `table` (String) The name of the Log Analytics table where logs will be sent.
 - `tenant_id` (String) Azure AD tenant ID.
 
+Optional:
+
+- `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--microsoft_sentinel--buffer))
+
+<a id="nestedblock--config--destination--microsoft_sentinel--buffer"></a>
+### Nested Schema for `config.destination.microsoft_sentinel.buffer`
+
+Optional:
+
+- `disk` (Block List) Options for configuring a disk buffer. Cannot be used with `memory`. (see [below for nested schema](#nestedblock--config--destination--microsoft_sentinel--buffer--disk))
+- `memory` (Block List) Options for configuring a memory buffer. Cannot be used with `disk`. (see [below for nested schema](#nestedblock--config--destination--microsoft_sentinel--buffer--memory))
+
+<a id="nestedblock--config--destination--microsoft_sentinel--buffer--disk"></a>
+### Nested Schema for `config.destination.microsoft_sentinel.buffer.disk`
+
+Optional:
+
+- `max_size` (Number) Maximum size of the disk buffer (in bytes).
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
+
+
+<a id="nestedblock--config--destination--microsoft_sentinel--buffer--memory"></a>
+### Nested Schema for `config.destination.microsoft_sentinel.buffer.memory`
+
+Optional:
+
+- `max_events` (Number) Maximum events for the memory buffer.
+- `max_size` (Number) Maximum size of the memory buffer (in bytes).
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
+
+
+
 
 <a id="nestedblock--config--destination--new_relic"></a>
 ### Nested Schema for `config.destination.new_relic`
@@ -509,14 +863,75 @@ Required:
 
 - `region` (String) The New Relic region.
 
+Optional:
+
+- `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--new_relic--buffer))
+
+<a id="nestedblock--config--destination--new_relic--buffer"></a>
+### Nested Schema for `config.destination.new_relic.buffer`
+
+Optional:
+
+- `disk` (Block List) Options for configuring a disk buffer. Cannot be used with `memory`. (see [below for nested schema](#nestedblock--config--destination--new_relic--buffer--disk))
+- `memory` (Block List) Options for configuring a memory buffer. Cannot be used with `disk`. (see [below for nested schema](#nestedblock--config--destination--new_relic--buffer--memory))
+
+<a id="nestedblock--config--destination--new_relic--buffer--disk"></a>
+### Nested Schema for `config.destination.new_relic.buffer.disk`
+
+Optional:
+
+- `max_size` (Number) Maximum size of the disk buffer (in bytes).
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
+
+
+<a id="nestedblock--config--destination--new_relic--buffer--memory"></a>
+### Nested Schema for `config.destination.new_relic.buffer.memory`
+
+Optional:
+
+- `max_events` (Number) Maximum events for the memory buffer.
+- `max_size` (Number) Maximum size of the memory buffer (in bytes).
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
+
+
+
 
 <a id="nestedblock--config--destination--opensearch"></a>
 ### Nested Schema for `config.destination.opensearch`
 
 Optional:
 
+- `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--opensearch--buffer))
 - `bulk_index` (String) The index or datastream to write logs to.
 - `data_stream` (Block List) Configuration options for writing to OpenSearch Data Streams instead of a fixed index. (see [below for nested schema](#nestedblock--config--destination--opensearch--data_stream))
+
+<a id="nestedblock--config--destination--opensearch--buffer"></a>
+### Nested Schema for `config.destination.opensearch.buffer`
+
+Optional:
+
+- `disk` (Block List) Options for configuring a disk buffer. Cannot be used with `memory`. (see [below for nested schema](#nestedblock--config--destination--opensearch--buffer--disk))
+- `memory` (Block List) Options for configuring a memory buffer. Cannot be used with `disk`. (see [below for nested schema](#nestedblock--config--destination--opensearch--buffer--memory))
+
+<a id="nestedblock--config--destination--opensearch--buffer--disk"></a>
+### Nested Schema for `config.destination.opensearch.buffer.disk`
+
+Optional:
+
+- `max_size` (Number) Maximum size of the disk buffer (in bytes).
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
+
+
+<a id="nestedblock--config--destination--opensearch--buffer--memory"></a>
+### Nested Schema for `config.destination.opensearch.buffer.memory`
+
+Optional:
+
+- `max_events` (Number) Maximum events for the memory buffer.
+- `max_size` (Number) Maximum size of the memory buffer (in bytes).
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
+
+
 
 <a id="nestedblock--config--destination--opensearch--data_stream"></a>
 ### Nested Schema for `config.destination.opensearch.data_stream`
@@ -534,8 +949,37 @@ Optional:
 
 Optional:
 
+- `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--rsyslog--buffer))
 - `keepalive` (Number) Optional socket keepalive duration in milliseconds.
 - `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--destination--rsyslog--tls))
+
+<a id="nestedblock--config--destination--rsyslog--buffer"></a>
+### Nested Schema for `config.destination.rsyslog.buffer`
+
+Optional:
+
+- `disk` (Block List) Options for configuring a disk buffer. Cannot be used with `memory`. (see [below for nested schema](#nestedblock--config--destination--rsyslog--buffer--disk))
+- `memory` (Block List) Options for configuring a memory buffer. Cannot be used with `disk`. (see [below for nested schema](#nestedblock--config--destination--rsyslog--buffer--memory))
+
+<a id="nestedblock--config--destination--rsyslog--buffer--disk"></a>
+### Nested Schema for `config.destination.rsyslog.buffer.disk`
+
+Optional:
+
+- `max_size` (Number) Maximum size of the disk buffer (in bytes).
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
+
+
+<a id="nestedblock--config--destination--rsyslog--buffer--memory"></a>
+### Nested Schema for `config.destination.rsyslog.buffer.memory`
+
+Optional:
+
+- `max_events` (Number) Maximum events for the memory buffer.
+- `max_size` (Number) Maximum size of the memory buffer (in bytes).
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
+
+
 
 <a id="nestedblock--config--destination--rsyslog--tls"></a>
 ### Nested Schema for `config.destination.rsyslog.tls`
@@ -558,6 +1002,38 @@ Required:
 
 - `region` (String) The SentinelOne region to send logs to.
 
+Optional:
+
+- `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--sentinel_one--buffer))
+
+<a id="nestedblock--config--destination--sentinel_one--buffer"></a>
+### Nested Schema for `config.destination.sentinel_one.buffer`
+
+Optional:
+
+- `disk` (Block List) Options for configuring a disk buffer. Cannot be used with `memory`. (see [below for nested schema](#nestedblock--config--destination--sentinel_one--buffer--disk))
+- `memory` (Block List) Options for configuring a memory buffer. Cannot be used with `disk`. (see [below for nested schema](#nestedblock--config--destination--sentinel_one--buffer--memory))
+
+<a id="nestedblock--config--destination--sentinel_one--buffer--disk"></a>
+### Nested Schema for `config.destination.sentinel_one.buffer.disk`
+
+Optional:
+
+- `max_size` (Number) Maximum size of the disk buffer (in bytes).
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
+
+
+<a id="nestedblock--config--destination--sentinel_one--buffer--memory"></a>
+### Nested Schema for `config.destination.sentinel_one.buffer.memory`
+
+Optional:
+
+- `max_events` (Number) Maximum events for the memory buffer.
+- `max_size` (Number) Maximum size of the memory buffer (in bytes).
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
+
+
+
 
 <a id="nestedblock--config--destination--socket"></a>
 ### Nested Schema for `config.destination.socket`
@@ -569,8 +1045,37 @@ Required:
 
 Optional:
 
+- `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--socket--buffer))
 - `framing` (Block List) Defines the framing method for outgoing messages. (see [below for nested schema](#nestedblock--config--destination--socket--framing))
 - `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--destination--socket--tls))
+
+<a id="nestedblock--config--destination--socket--buffer"></a>
+### Nested Schema for `config.destination.socket.buffer`
+
+Optional:
+
+- `disk` (Block List) Options for configuring a disk buffer. Cannot be used with `memory`. (see [below for nested schema](#nestedblock--config--destination--socket--buffer--disk))
+- `memory` (Block List) Options for configuring a memory buffer. Cannot be used with `disk`. (see [below for nested schema](#nestedblock--config--destination--socket--buffer--memory))
+
+<a id="nestedblock--config--destination--socket--buffer--disk"></a>
+### Nested Schema for `config.destination.socket.buffer.disk`
+
+Optional:
+
+- `max_size` (Number) Maximum size of the disk buffer (in bytes).
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
+
+
+<a id="nestedblock--config--destination--socket--buffer--memory"></a>
+### Nested Schema for `config.destination.socket.buffer.memory`
+
+Optional:
+
+- `max_events` (Number) Maximum events for the memory buffer.
+- `max_size` (Number) Maximum size of the memory buffer (in bytes).
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
+
+
 
 <a id="nestedblock--config--destination--socket--framing"></a>
 ### Nested Schema for `config.destination.socket.framing`
@@ -616,8 +1121,37 @@ Required:
 Optional:
 
 - `auto_extract_timestamp` (Boolean) If `true`, Splunk tries to extract timestamps from incoming log events.
+- `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--splunk_hec--buffer))
 - `index` (String) Optional name of the Splunk index where logs are written.
 - `sourcetype` (String) The Splunk sourcetype to assign to log events.
+
+<a id="nestedblock--config--destination--splunk_hec--buffer"></a>
+### Nested Schema for `config.destination.splunk_hec.buffer`
+
+Optional:
+
+- `disk` (Block List) Options for configuring a disk buffer. Cannot be used with `memory`. (see [below for nested schema](#nestedblock--config--destination--splunk_hec--buffer--disk))
+- `memory` (Block List) Options for configuring a memory buffer. Cannot be used with `disk`. (see [below for nested schema](#nestedblock--config--destination--splunk_hec--buffer--memory))
+
+<a id="nestedblock--config--destination--splunk_hec--buffer--disk"></a>
+### Nested Schema for `config.destination.splunk_hec.buffer.disk`
+
+Optional:
+
+- `max_size` (Number) Maximum size of the disk buffer (in bytes).
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
+
+
+<a id="nestedblock--config--destination--splunk_hec--buffer--memory"></a>
+### Nested Schema for `config.destination.splunk_hec.buffer.memory`
+
+Optional:
+
+- `max_events` (Number) Maximum events for the memory buffer.
+- `max_size` (Number) Maximum size of the memory buffer (in bytes).
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
+
+
 
 
 <a id="nestedblock--config--destination--sumo_logic"></a>
@@ -625,11 +1159,40 @@ Optional:
 
 Optional:
 
+- `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--sumo_logic--buffer))
 - `encoding` (String) The output encoding format.
 - `header_custom_field` (Block List) A list of custom headers to include in the request to Sumo Logic. (see [below for nested schema](#nestedblock--config--destination--sumo_logic--header_custom_field))
 - `header_host_name` (String) Optional override for the host name header.
 - `header_source_category` (String) Optional override for the source category header.
 - `header_source_name` (String) Optional override for the source name header.
+
+<a id="nestedblock--config--destination--sumo_logic--buffer"></a>
+### Nested Schema for `config.destination.sumo_logic.buffer`
+
+Optional:
+
+- `disk` (Block List) Options for configuring a disk buffer. Cannot be used with `memory`. (see [below for nested schema](#nestedblock--config--destination--sumo_logic--buffer--disk))
+- `memory` (Block List) Options for configuring a memory buffer. Cannot be used with `disk`. (see [below for nested schema](#nestedblock--config--destination--sumo_logic--buffer--memory))
+
+<a id="nestedblock--config--destination--sumo_logic--buffer--disk"></a>
+### Nested Schema for `config.destination.sumo_logic.buffer.disk`
+
+Optional:
+
+- `max_size` (Number) Maximum size of the disk buffer (in bytes).
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
+
+
+<a id="nestedblock--config--destination--sumo_logic--buffer--memory"></a>
+### Nested Schema for `config.destination.sumo_logic.buffer.memory`
+
+Optional:
+
+- `max_events` (Number) Maximum events for the memory buffer.
+- `max_size` (Number) Maximum size of the memory buffer (in bytes).
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
+
+
 
 <a id="nestedblock--config--destination--sumo_logic--header_custom_field"></a>
 ### Nested Schema for `config.destination.sumo_logic.header_custom_field`
@@ -646,8 +1209,37 @@ Optional:
 
 Optional:
 
+- `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--syslog_ng--buffer))
 - `keepalive` (Number) Optional socket keepalive duration in milliseconds.
 - `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--destination--syslog_ng--tls))
+
+<a id="nestedblock--config--destination--syslog_ng--buffer"></a>
+### Nested Schema for `config.destination.syslog_ng.buffer`
+
+Optional:
+
+- `disk` (Block List) Options for configuring a disk buffer. Cannot be used with `memory`. (see [below for nested schema](#nestedblock--config--destination--syslog_ng--buffer--disk))
+- `memory` (Block List) Options for configuring a memory buffer. Cannot be used with `disk`. (see [below for nested schema](#nestedblock--config--destination--syslog_ng--buffer--memory))
+
+<a id="nestedblock--config--destination--syslog_ng--buffer--disk"></a>
+### Nested Schema for `config.destination.syslog_ng.buffer.disk`
+
+Optional:
+
+- `max_size` (Number) Maximum size of the disk buffer (in bytes).
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
+
+
+<a id="nestedblock--config--destination--syslog_ng--buffer--memory"></a>
+### Nested Schema for `config.destination.syslog_ng.buffer.memory`
+
+Optional:
+
+- `max_events` (Number) Maximum events for the memory buffer.
+- `max_size` (Number) Maximum size of the memory buffer (in bytes).
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
+
+
 
 <a id="nestedblock--config--destination--syslog_ng--tls"></a>
 ### Nested Schema for `config.destination.syslog_ng.tls`
