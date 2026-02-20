@@ -204,8 +204,44 @@ type ocsfMapperProcessorModel struct {
 }
 
 type ocsfMappingModel struct {
-	Include        types.String `tfsdk:"include"`
-	LibraryMapping types.String `tfsdk:"library_mapping"`
+	Include        types.String             `tfsdk:"include"`
+	LibraryMapping types.String             `tfsdk:"library_mapping"`
+	CustomMapping  []ocsfMappingCustomModel `tfsdk:"custom_mapping"`
+}
+
+type ocsfMappingCustomModel struct {
+	Version      types.Int64                          `tfsdk:"version"`
+	Metadata     []ocsfMappingCustomMetadataModel     `tfsdk:"metadata"`
+	FieldMapping []ocsfMappingCustomFieldMappingModel `tfsdk:"field_mapping"`
+}
+
+type ocsfMappingCustomMetadataModel struct {
+	Class    types.String   `tfsdk:"class"`
+	Version  types.String   `tfsdk:"version"`
+	Profiles []types.String `tfsdk:"profiles"`
+}
+
+type ocsfMappingCustomFieldMappingModel struct {
+	Dest    types.String                   `tfsdk:"dest"`
+	Source  types.String                   `tfsdk:"source"`
+	Sources []types.String                 `tfsdk:"sources"`
+	Value   types.String                   `tfsdk:"value"`
+	Default types.String                   `tfsdk:"default"`
+	Lookup  []ocsfMappingCustomLookupModel `tfsdk:"lookup"`
+}
+
+type ocsfMappingCustomLookupModel struct {
+	Default types.String                             `tfsdk:"default"`
+	Table   []ocsfMappingCustomLookupTableEntryModel `tfsdk:"table"`
+}
+
+type ocsfMappingCustomLookupTableEntryModel struct {
+	Contains     types.String `tfsdk:"contains"`
+	Equals       types.String `tfsdk:"equals"`
+	EqualsSource types.String `tfsdk:"equals_source"`
+	Matches      types.String `tfsdk:"matches"`
+	NotMatches   types.String `tfsdk:"not_matches"`
+	Value        types.String `tfsdk:"value"`
 }
 
 type enrichmentTableProcessorModel struct {
@@ -1829,32 +1865,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 														},
 													},
 												},
-												"ocsf_mapper": schema.ListNestedBlock{
-													Description: "The `ocsf_mapper` processor transforms logs into the OCSF schema using predefined library mappings.",
-													Validators: []validator.List{
-														listvalidator.SizeAtMost(1),
-													},
-													NestedObject: schema.NestedBlockObject{
-														Attributes: map[string]schema.Attribute{},
-														Blocks: map[string]schema.Block{
-															"mapping": schema.ListNestedBlock{
-																Description: "List of OCSF mapping entries using library mapping.",
-																NestedObject: schema.NestedBlockObject{
-																	Attributes: map[string]schema.Attribute{
-																		"include": schema.StringAttribute{
-																			Required:    true,
-																			Description: "Search query for selecting which logs the mapping applies to.",
-																		},
-																		"library_mapping": schema.StringAttribute{
-																			Required:    true,
-																			Description: "Predefined library mapping for log transformation.",
-																		},
-																	},
-																},
-															},
-														},
-													},
-												},
+												"ocsf_mapper":      observability_pipeline.OcsfMapperProcessorSchema(),
 												"datadog_tags":     observability_pipeline.DatadogTagsProcessorSchema(),
 												"custom_processor": observability_pipeline.CustomProcessorSchema(),
 												"metric_tags": schema.ListNestedBlock{
@@ -3766,10 +3777,119 @@ func flattenOcsfMapperProcessor(ctx context.Context, src *datadogV2.Observabilit
 		if mapping.Mapping.ObservabilityPipelineOcsfMappingLibrary != nil {
 			m.LibraryMapping = types.StringValue(string(*mapping.Mapping.ObservabilityPipelineOcsfMappingLibrary))
 		}
+		if mapping.Mapping.ObservabilityPipelineOcsfMappingCustom != nil {
+			m.CustomMapping = []ocsfMappingCustomModel{flattenOcsfMappingCustom(mapping.Mapping.ObservabilityPipelineOcsfMappingCustom)}
+		}
 		ocsf.Mapping = append(ocsf.Mapping, m)
 	}
 	model.OcsfMapperProcessor = append(model.OcsfMapperProcessor, ocsf)
 	return model
+}
+
+func flattenOcsfMappingCustom(src *datadogV2.ObservabilityPipelineOcsfMappingCustom) ocsfMappingCustomModel {
+	out := ocsfMappingCustomModel{}
+	if src == nil {
+		return out
+	}
+	out.Version = types.Int64Value(src.GetVersion())
+	meta := src.GetMetadata()
+	profiles := make([]types.String, 0, len(meta.GetProfiles()))
+	for _, p := range meta.GetProfiles() {
+		profiles = append(profiles, types.StringValue(p))
+	}
+	out.Metadata = []ocsfMappingCustomMetadataModel{{
+		Class:    types.StringValue(meta.GetClass()),
+		Version:  types.StringValue(meta.GetVersion()),
+		Profiles: profiles,
+	}}
+	for _, fm := range src.GetMapping() {
+		out.FieldMapping = append(out.FieldMapping, flattenOcsfMappingCustomFieldMapping(&fm))
+	}
+	return out
+}
+
+func flattenOcsfMappingCustomFieldMapping(src *datadogV2.ObservabilityPipelineOcsfMappingCustomFieldMapping) ocsfMappingCustomFieldMappingModel {
+	out := ocsfMappingCustomFieldMappingModel{}
+	if src == nil {
+		return out
+	}
+	out.Dest = types.StringValue(src.GetDest())
+	if v, ok := src.GetSourceOk(); ok && v != nil {
+		if s, ok := (*v).(string); ok {
+			out.Source = types.StringValue(s)
+		}
+	}
+	if v, ok := src.GetSourcesOk(); ok && v != nil {
+		if sl, ok := (*v).([]interface{}); ok {
+			sources := make([]types.String, 0, len(sl))
+			for _, s := range sl {
+				if str, ok := s.(string); ok {
+					sources = append(sources, types.StringValue(str))
+				}
+			}
+			out.Sources = sources
+		}
+	}
+	if v, ok := src.GetValueOk(); ok && v != nil {
+		if s, ok := (*v).(string); ok {
+			out.Value = types.StringValue(s)
+		}
+	}
+	if v, ok := src.GetDefaultOk(); ok && v != nil {
+		if s, ok := (*v).(string); ok {
+			out.Default = types.StringValue(s)
+		}
+	}
+	if lookup, ok := src.GetLookupOk(); ok && lookup != nil {
+		out.Lookup = []ocsfMappingCustomLookupModel{flattenOcsfMappingCustomLookup(lookup)}
+	}
+	return out
+}
+
+func flattenOcsfMappingCustomLookup(src *datadogV2.ObservabilityPipelineOcsfMappingCustomLookup) ocsfMappingCustomLookupModel {
+	out := ocsfMappingCustomLookupModel{}
+	if src == nil {
+		return out
+	}
+	if v, ok := src.GetDefaultOk(); ok && v != nil {
+		if s, ok := (*v).(string); ok {
+			out.Default = types.StringValue(s)
+		}
+	}
+	for _, e := range src.GetTable() {
+		out.Table = append(out.Table, flattenOcsfMappingCustomLookupTableEntry(&e))
+	}
+	return out
+}
+
+func flattenOcsfMappingCustomLookupTableEntry(src *datadogV2.ObservabilityPipelineOcsfMappingCustomLookupTableEntry) ocsfMappingCustomLookupTableEntryModel {
+	out := ocsfMappingCustomLookupTableEntryModel{}
+	if src == nil {
+		return out
+	}
+	if v, ok := src.GetContainsOk(); ok && v != nil {
+		out.Contains = types.StringValue(*v)
+	}
+	if v, ok := src.GetEqualsOk(); ok && v != nil {
+		if s, ok := (*v).(string); ok {
+			out.Equals = types.StringValue(s)
+		}
+	}
+	if v, ok := src.GetEqualsSourceOk(); ok && v != nil {
+		out.EqualsSource = types.StringValue(*v)
+	}
+	if v, ok := src.GetMatchesOk(); ok && v != nil {
+		out.Matches = types.StringValue(*v)
+	}
+	if v, ok := src.GetNotMatchesOk(); ok && v != nil {
+		out.NotMatches = types.StringValue(*v)
+	}
+	if v, ok := src.GetValueOk(); ok && v != nil {
+		if s, ok := (*v).(string); ok {
+			out.Value = types.StringValue(s)
+		}
+	}
+	return out
 }
 
 func flattenDatadogTagsProcessor(ctx context.Context, src *datadogV2.ObservabilityPipelineDatadogTagsProcessor) *processorModel {
@@ -4031,8 +4151,14 @@ func expandOcsfMapperProcessorItem(ctx context.Context, common observability_pip
 
 	var mappings []datadogV2.ObservabilityPipelineOcsfMapperProcessorMapping
 	for _, m := range src.Mapping {
-		libMapping := datadogV2.ObservabilityPipelineOcsfMappingLibrary(m.LibraryMapping.ValueString())
-		mapping := datadogV2.ObservabilityPipelineOcsfMappingLibraryAsObservabilityPipelineOcsfMapperProcessorMappingMapping(&libMapping)
+		var mapping datadogV2.ObservabilityPipelineOcsfMapperProcessorMappingMapping
+		if len(m.CustomMapping) > 0 {
+			custom := expandOcsfMappingCustom(&m.CustomMapping[0])
+			mapping = datadogV2.ObservabilityPipelineOcsfMappingCustomAsObservabilityPipelineOcsfMapperProcessorMappingMapping(custom)
+		} else {
+			libMapping := datadogV2.ObservabilityPipelineOcsfMappingLibrary(m.LibraryMapping.ValueString())
+			mapping = datadogV2.ObservabilityPipelineOcsfMappingLibraryAsObservabilityPipelineOcsfMapperProcessorMappingMapping(&libMapping)
+		}
 		mappings = append(mappings, datadogV2.ObservabilityPipelineOcsfMapperProcessorMapping{
 			Include: m.Include.ValueString(),
 			Mapping: mapping,
@@ -4041,6 +4167,109 @@ func expandOcsfMapperProcessorItem(ctx context.Context, common observability_pip
 	proc.SetMappings(mappings)
 
 	return datadogV2.ObservabilityPipelineOcsfMapperProcessorAsObservabilityPipelineConfigProcessorItem(proc)
+}
+
+func expandOcsfMappingCustom(src *ocsfMappingCustomModel) *datadogV2.ObservabilityPipelineOcsfMappingCustom {
+	if src == nil {
+		return nil
+	}
+	out := datadogV2.NewObservabilityPipelineOcsfMappingCustomWithDefaults()
+	out.SetVersion(src.Version.ValueInt64())
+
+	if len(src.Metadata) > 0 {
+		meta := datadogV2.NewObservabilityPipelineOcsfMappingCustomMetadataWithDefaults()
+		meta.SetClass(src.Metadata[0].Class.ValueString())
+		meta.SetVersion(src.Metadata[0].Version.ValueString())
+		if len(src.Metadata[0].Profiles) > 0 {
+			profiles := make([]string, 0, len(src.Metadata[0].Profiles))
+			for _, p := range src.Metadata[0].Profiles {
+				profiles = append(profiles, p.ValueString())
+			}
+			meta.SetProfiles(profiles)
+		}
+		out.SetMetadata(*meta)
+	}
+
+	var fieldMappings []datadogV2.ObservabilityPipelineOcsfMappingCustomFieldMapping
+	for _, fm := range src.FieldMapping {
+		fieldMappings = append(fieldMappings, *expandOcsfMappingCustomFieldMapping(&fm))
+	}
+	out.SetMapping(fieldMappings)
+
+	return out
+}
+
+func expandOcsfMappingCustomFieldMapping(src *ocsfMappingCustomFieldMappingModel) *datadogV2.ObservabilityPipelineOcsfMappingCustomFieldMapping {
+	if src == nil {
+		return nil
+	}
+	out := datadogV2.NewObservabilityPipelineOcsfMappingCustomFieldMappingWithDefaults()
+	out.SetDest(src.Dest.ValueString())
+
+	if !src.Source.IsNull() && !src.Source.IsUnknown() {
+		out.SetSource(src.Source.ValueString())
+	}
+	if len(src.Sources) > 0 {
+		sources := make([]interface{}, 0, len(src.Sources))
+		for _, s := range src.Sources {
+			sources = append(sources, s.ValueString())
+		}
+		out.SetSources(sources)
+	}
+	if !src.Value.IsNull() && !src.Value.IsUnknown() {
+		out.SetValue(src.Value.ValueString())
+	}
+	if !src.Default.IsNull() && !src.Default.IsUnknown() {
+		out.SetDefault(src.Default.ValueString())
+	}
+	if len(src.Lookup) > 0 {
+		out.SetLookup(*expandOcsfMappingCustomLookup(&src.Lookup[0]))
+	}
+	return out
+}
+
+func expandOcsfMappingCustomLookup(src *ocsfMappingCustomLookupModel) *datadogV2.ObservabilityPipelineOcsfMappingCustomLookup {
+	if src == nil {
+		return nil
+	}
+	out := datadogV2.NewObservabilityPipelineOcsfMappingCustomLookupWithDefaults()
+	if !src.Default.IsNull() && !src.Default.IsUnknown() {
+		out.SetDefault(src.Default.ValueString())
+	}
+	if len(src.Table) > 0 {
+		var table []datadogV2.ObservabilityPipelineOcsfMappingCustomLookupTableEntry
+		for _, e := range src.Table {
+			table = append(table, *expandOcsfMappingCustomLookupTableEntry(&e))
+		}
+		out.SetTable(table)
+	}
+	return out
+}
+
+func expandOcsfMappingCustomLookupTableEntry(src *ocsfMappingCustomLookupTableEntryModel) *datadogV2.ObservabilityPipelineOcsfMappingCustomLookupTableEntry {
+	if src == nil {
+		return nil
+	}
+	out := datadogV2.NewObservabilityPipelineOcsfMappingCustomLookupTableEntryWithDefaults()
+	if !src.Contains.IsNull() && !src.Contains.IsUnknown() {
+		out.SetContains(src.Contains.ValueString())
+	}
+	if !src.Equals.IsNull() && !src.Equals.IsUnknown() {
+		out.SetEquals(src.Equals.ValueString())
+	}
+	if !src.EqualsSource.IsNull() && !src.EqualsSource.IsUnknown() {
+		out.SetEqualsSource(src.EqualsSource.ValueString())
+	}
+	if !src.Matches.IsNull() && !src.Matches.IsUnknown() {
+		out.SetMatches(src.Matches.ValueString())
+	}
+	if !src.NotMatches.IsNull() && !src.NotMatches.IsUnknown() {
+		out.SetNotMatches(src.NotMatches.ValueString())
+	}
+	if !src.Value.IsNull() && !src.Value.IsUnknown() {
+		out.SetValue(src.Value.ValueString())
+	}
+	return out
 }
 
 func expandParseGrokProcessorItem(ctx context.Context, common observability_pipeline.BaseProcessorFields, src *parseGrokProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
