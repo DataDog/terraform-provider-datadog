@@ -3,7 +3,9 @@
 
 terraform import datadog_reference_table.imported_table "00000000-0000-0000-0000-000000000000"
 
-# After importing, add the resource configuration to your .tf file:
+# After importing, you must add the full resource configuration to your .tf file.
+# Use `terraform state show datadog_reference_table.imported_table` to view the imported schema
+# and other attributes, then add the matching configuration:
 # 
 # resource "datadog_reference_table" "imported_table" {
 #   table_name  = "existing_table"
