@@ -239,7 +239,7 @@ func syntheticsTestRequest() *schema.Resource {
 				Optional:    true,
 			},
 			"message": {
-				Description: "For gRPC, UDP and Websocket tests, message to send with the request.",
+				Description: "For gRPC, UDP, and Websocket tests, message to send with the request.",
 				Type:        schema.TypeString,
 				Optional:    true,
 			},
@@ -291,7 +291,7 @@ func syntheticsTestRequest() *schema.Resource {
 			},
 			// Network Path tests
 			"e2e_queries": {
-				Description:  "For Network Path tests, the number of packets sent to probe the destination to measure packet loss, latency and jitter.",
+				Description:  "For Network Path tests, the number of packets sent to probe the destination to measure packet loss, latency, and jitter.",
 				Type:         schema.TypeInt,
 				Optional:     true,
 				ValidateFunc: validation.IntBetween(1, 10),
@@ -309,7 +309,7 @@ func syntheticsTestRequest() *schema.Resource {
 				ValidateFunc: validation.IntBetween(1, 10),
 			},
 			"tcp_method": {
-				Description:  "For TCP Network Path tests, the TCP traceroute strategy.",
+				Description:  "For Network Path TCP tests, the TCP traceroute strategy.",
 				Type:         schema.TypeString,
 				Optional:     true,
 				ValidateFunc: validation.StringInSlice([]string{"prefer_sack", "syn", "sack"}, false),
@@ -553,7 +553,7 @@ func syntheticsAPIAssertion() *schema.Schema {
 					),
 				},
 				"property": {
-					Description: "If assertion type is `header` or `grpcMetadata`, this is the header name. For other assertion types, this is an aggregation property: `avg`, `min`, `max` or `stddev`.",
+					Description: "If assertion type is `header` or `grpcMetadata`, this is the header name. For other assertion types, this is an aggregation property: `avg`, `min`, `max`, or `stddev`.",
 					Type:        schema.TypeString,
 					Optional:    true,
 				},
