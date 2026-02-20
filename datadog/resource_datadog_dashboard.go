@@ -344,58 +344,6 @@ func updateDashboardLists(d *schema.ResourceData, providerConf *ProviderConfigur
 	}
 }
 
-func buildDatadogDashboard(d *schema.ResourceData) (*datadogV1.Dashboard, error) {
-	var dashboard datadogV1.Dashboard
-
-	dashboard.SetId(d.Id())
-
-	if v, ok := d.GetOk("title"); ok {
-		dashboard.SetTitle(v.(string))
-	}
-	if v, ok := d.GetOk("layout_type"); ok {
-		dashboard.SetLayoutType(datadogV1.DashboardLayoutType(v.(string)))
-	}
-	if v, ok := d.GetOk("reflow_type"); ok {
-		dashboard.SetReflowType(datadogV1.DashboardReflowType(v.(string)))
-	}
-	if v, ok := d.GetOk("description"); ok {
-		dashboard.SetDescription(v.(string))
-	}
-	if v, ok := d.GetOk("is_read_only"); ok {
-		dashboard.SetIsReadOnly(v.(bool))
-	}
-	if v, ok := d.GetOk("restricted_roles"); ok && !dashboard.GetIsReadOnly() {
-		// do not set when 'is_read_only = true' because this takes priority on requests
-		dashboard.RestrictedRoles = *buildDatadogRestrictedRoles(v.(*schema.Set))
-	}
-
-	// Build Widgets
-	terraformWidgets := d.Get("widget").([]interface{})
-	datadogWidgets, err := buildDatadogWidgets(&terraformWidgets)
-	if err != nil {
-		return nil, err
-	}
-	dashboard.SetWidgets(*datadogWidgets)
-
-	// Build NotifyList
-	notifyList := d.Get("notify_list").(*schema.Set)
-	dashboard.SetNotifyList(*buildDatadogNotifyList(notifyList))
-
-	// Build Tags
-	tags := utils.GetStringSlice(d, "tags")
-	dashboard.SetTags(tags)
-
-	// Build TemplateVariables
-	templateVariables := d.Get("template_variable").([]interface{})
-	dashboard.TemplateVariables = *buildDatadogTemplateVariables(&templateVariables)
-
-	// Build TemplateVariablePresets
-	templateVariablePresets := d.Get("template_variable_preset").([]interface{})
-	dashboard.TemplateVariablePresets = *buildDatadogTemplateVariablePresets(&templateVariablePresets)
-
-	return &dashboard, nil
-}
-
 //
 // Template Variable helpers
 //
@@ -524,70 +472,6 @@ func buildTerraformPowerpackTVarContents(tVarContents []datadogV1.PowerpackTempl
 	return ppkTvarContents
 }
 
-func buildDatadogTemplateVariables(terraformTemplateVariables *[]interface{}) *[]datadogV1.DashboardTemplateVariable {
-	datadogTemplateVariables := make([]datadogV1.DashboardTemplateVariable, len(*terraformTemplateVariables))
-	for i, ttv := range *terraformTemplateVariables {
-		if ttv == nil {
-			continue
-		}
-		terraformTemplateVariable := ttv.(map[string]interface{})
-		var datadogTemplateVariable datadogV1.DashboardTemplateVariable
-		if v, ok := terraformTemplateVariable["name"].(string); ok && len(v) != 0 {
-			datadogTemplateVariable.SetName(v)
-		}
-		if v, ok := terraformTemplateVariable["prefix"].(string); ok && len(v) != 0 {
-			datadogTemplateVariable.SetPrefix(v)
-		}
-		if v, ok := terraformTemplateVariable["defaults"].([]interface{}); ok && len(v) != 0 {
-			var defaults []string
-			for _, s := range v {
-				defaults = append(defaults, s.(string))
-			}
-			datadogTemplateVariable.SetDefaults(defaults)
-		} else if v, ok := terraformTemplateVariable["default"].(string); ok && len(v) != 0 {
-			datadogTemplateVariable.SetDefault(v)
-		}
-		if v, ok := terraformTemplateVariable["available_values"].([]interface{}); ok && len(v) > 0 {
-			availableValues := make([]string, len(v))
-			for i, availableValue := range v {
-				availableValues[i] = availableValue.(string)
-			}
-			datadogTemplateVariable.SetAvailableValues(availableValues)
-		}
-		datadogTemplateVariables[i] = datadogTemplateVariable
-	}
-	return &datadogTemplateVariables
-}
-
-func buildTerraformTemplateVariables(datadogTemplateVariables *[]datadogV1.DashboardTemplateVariable) *[]map[string]interface{} {
-	terraformTemplateVariables := make([]map[string]interface{}, len(*datadogTemplateVariables))
-	for i, templateVariable := range *datadogTemplateVariables {
-		terraformTemplateVariable := map[string]interface{}{}
-		if v, ok := templateVariable.GetNameOk(); ok {
-			terraformTemplateVariable["name"] = *v
-		}
-		if v := templateVariable.GetPrefix(); len(v) > 0 {
-			terraformTemplateVariable["prefix"] = v
-		}
-		if v, ok := templateVariable.GetDefaultsOk(); ok && len(*v) > 0 {
-			var tags []string
-			tags = append(tags, *v...)
-			terraformTemplateVariable["defaults"] = tags
-		} else if v, ok := templateVariable.GetDefaultOk(); ok {
-			terraformTemplateVariable["default"] = *v
-		}
-		if v, ok := templateVariable.GetAvailableValuesOk(); ok {
-			availableValues := make([]string, len(*v))
-			for i, availableValue := range *v {
-				availableValues[i] = availableValue
-			}
-			terraformTemplateVariable["available_values"] = availableValues
-		}
-		terraformTemplateVariables[i] = terraformTemplateVariable
-	}
-	return &terraformTemplateVariables
-}
-
 //
 // Template Variable Preset Helpers
 //
@@ -636,109 +520,9 @@ func getTemplateVariablePresetValueSchema() map[string]*schema.Schema {
 	}
 }
 
-func buildDatadogTemplateVariablePresets(terraformTemplateVariablePresets *[]interface{}) *[]datadogV1.DashboardTemplateVariablePreset {
-	datadogTemplateVariablePresets := make([]datadogV1.DashboardTemplateVariablePreset, len(*terraformTemplateVariablePresets))
-
-	for i, tvp := range *terraformTemplateVariablePresets {
-		if tvp == nil {
-			continue
-		}
-		templateVariablePreset := tvp.(map[string]interface{})
-		var datadogTemplateVariablePreset datadogV1.DashboardTemplateVariablePreset
-
-		if v, ok := templateVariablePreset["name"].(string); ok && len(v) != 0 {
-			datadogTemplateVariablePreset.SetName(v)
-		}
-
-		if templateVariablePresetValues, ok := templateVariablePreset["template_variable"].([]interface{}); ok {
-			datadogTemplateVariablePresetValues := make([]datadogV1.DashboardTemplateVariablePresetValue, len(templateVariablePresetValues))
-
-			for j, tvp := range templateVariablePresetValues {
-				if tvp == nil {
-					continue
-				}
-				templateVariablePresetValue := tvp.(map[string]interface{})
-				var datadogTemplateVariablePresetValue datadogV1.DashboardTemplateVariablePresetValue
-
-				if w, ok := templateVariablePresetValue["name"].(string); ok && len(w) != 0 {
-					datadogTemplateVariablePresetValue.SetName(w)
-				}
-
-				if w, ok := templateVariablePresetValue["values"].([]interface{}); ok && len(w) != 0 {
-					var presets []string
-					for _, s := range w {
-						presets = append(presets, s.(string))
-					}
-					datadogTemplateVariablePresetValue.SetValues(presets)
-				} else if w, ok := templateVariablePresetValue["value"].(string); ok && len(w) != 0 {
-					datadogTemplateVariablePresetValue.SetValue(w)
-				}
-
-				datadogTemplateVariablePresetValues[j] = datadogTemplateVariablePresetValue
-			}
-
-			datadogTemplateVariablePreset.SetTemplateVariables(datadogTemplateVariablePresetValues)
-		}
-
-		datadogTemplateVariablePresets[i] = datadogTemplateVariablePreset
-	}
-
-	return &datadogTemplateVariablePresets
-}
-
-func buildTerraformTemplateVariablePresets(datadogTemplateVariablePresets *[]datadogV1.DashboardTemplateVariablePreset) *[]map[string]interface{} {
-	// Allocate final resting place for tf/hash version
-	terraformTemplateVariablePresets := make([]map[string]interface{}, len(*datadogTemplateVariablePresets))
-
-	//iterate over preset objects
-	for i, templateVariablePreset := range *datadogTemplateVariablePresets {
-		// Allocate for this preset group, a map of string key to obj (string for name, array for preset values
-		terraformTemplateVariablePreset := make(map[string]interface{})
-		if v, ok := templateVariablePreset.GetNameOk(); ok {
-			terraformTemplateVariablePreset["name"] = v
-		}
-
-		// allocate for array of preset values (names = name,value, values = name, template variable)
-
-		terraformTemplateVariablePresetValues := make([]map[string]interface{}, len(templateVariablePreset.GetTemplateVariables()))
-		for j, templateVariablePresetValue := range templateVariablePreset.GetTemplateVariables() {
-			// allocate map for name => name value => value
-			terraformTemplateVariablePresetValue := make(map[string]interface{})
-			if v, ok := templateVariablePresetValue.GetNameOk(); ok {
-				terraformTemplateVariablePresetValue["name"] = *v
-			}
-			if v, ok := templateVariablePresetValue.GetValuesOk(); ok && len(*v) > 0 {
-				var tags []string
-				tags = append(tags, *v...)
-				terraformTemplateVariablePresetValue["values"] = tags
-			} else if v, ok := templateVariablePresetValue.GetValueOk(); ok {
-				terraformTemplateVariablePresetValue["value"] = *v
-			}
-
-			terraformTemplateVariablePresetValues[j] = terraformTemplateVariablePresetValue
-		}
-
-		// Set template_variable to the array of values we just created
-		terraformTemplateVariablePreset["template_variable"] = terraformTemplateVariablePresetValues
-
-		// put the preset group into the output var
-		terraformTemplateVariablePresets[i] = terraformTemplateVariablePreset
-	}
-
-	return &terraformTemplateVariablePresets
-}
-
 //
 // Restricted Roles helpers
 //
-
-func buildDatadogRestrictedRoles(terraformRestrictedRoles *schema.Set) *[]string {
-	roles := make([]string, 0)
-	for _, r := range terraformRestrictedRoles.List() {
-		roles = append(roles, r.(string))
-	}
-	return &roles
-}
 
 func buildTerraformRestrictedRoles(datadogRestrictedRoles *[]string) *[]string {
 	if datadogRestrictedRoles == nil {
@@ -750,30 +534,6 @@ func buildTerraformRestrictedRoles(datadogRestrictedRoles *[]string) *[]string {
 		terraformRestrictedRoles[i] = roleUUID
 	}
 	return &terraformRestrictedRoles
-}
-
-//
-// Notify List helpers
-//
-
-func buildDatadogNotifyList(terraformNotifyList *schema.Set) *[]string {
-	datadogNotifyList := make([]string, len(terraformNotifyList.List()))
-	for i, authorHandle := range terraformNotifyList.List() {
-		datadogNotifyList[i] = authorHandle.(string)
-	}
-	return &datadogNotifyList
-}
-
-func buildTerraformNotifyList(datadogNotifyList *[]string) *[]string {
-	if datadogNotifyList == nil {
-		terraformNotifyList := make([]string, 0)
-		return &terraformNotifyList
-	}
-	terraformNotifyList := make([]string, len(*datadogNotifyList))
-	for i, authorHandle := range *datadogNotifyList {
-		terraformNotifyList[i] = authorHandle
-	}
-	return &terraformNotifyList
 }
 
 //
@@ -1477,20 +1237,6 @@ func buildDatadogSourceWidgetDefinition(terraformWidget map[string]interface{}) 
 	}
 
 	return &definition, nil
-}
-
-// Helper to build a list of Terraform widgets from a list of Datadog widgets
-func buildTerraformWidgets(datadogWidgets *[]datadogV1.Widget, d *schema.ResourceData) (*[]map[string]interface{}, error) {
-
-	terraformWidgets := make([]map[string]interface{}, len(*datadogWidgets))
-	for i, datadogWidget := range *datadogWidgets {
-		terraformWidget, err := buildTerraformWidget(&datadogWidget)
-		if err != nil {
-			return nil, err
-		}
-		terraformWidgets[i] = terraformWidget
-	}
-	return &terraformWidgets, nil
 }
 
 // Helper to build a Terraform widget from a Datadog widget
