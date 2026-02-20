@@ -8261,3 +8261,321 @@ resource "datadog_synthetics_test" "foo" {
 	status = "paused"
 }`, uniq, uniq)
 }
+
+func TestAccDatadogSyntheticsNetworkTest_importBasic(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	testName := uniqueEntityName(ctx, t)
+	accProvider := providers.sdkV2Provider
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: createSyntheticsNetworkTestConfig(testName),
+			},
+			{
+				ResourceName:            "datadog_synthetics_test.network",
+				ImportState:             true,
+				ImportStateVerify:       true,
+				ImportStateVerifyIgnore: []string{"options_list.0.http_version"},
+			},
+		},
+	})
+}
+
+func TestAccDatadogSyntheticsNetworkTest_Basic(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	accProvider := providers.sdkV2Provider
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
+		Steps: []resource.TestStep{
+			createSyntheticsNetworkTestStep(ctx, accProvider, t),
+		},
+	})
+}
+
+func TestAccDatadogSyntheticsNetworkTest_Updated(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	accProvider := providers.sdkV2Provider
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
+		Steps: []resource.TestStep{
+			createSyntheticsNetworkTestStep(ctx, accProvider, t),
+			updateSyntheticsNetworkTestStep(ctx, accProvider, t),
+		},
+	})
+}
+
+func createSyntheticsNetworkTestStep(ctx context.Context, accProvider *schema.Provider, t *testing.T) resource.TestStep {
+	testName := uniqueEntityName(ctx, t)
+	return resource.TestStep{
+		Config: createSyntheticsNetworkTestConfig(testName),
+		Check: resource.ComposeTestCheckFunc(
+			testSyntheticsTestExists(accProvider),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.network", "type", "network"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.network", "subtype", "udp"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.network", "request_definition.0.host", "example.com"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.network", "request_definition.0.port", "53"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.network", "request_definition.0.e2e_queries", "5"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.network", "request_definition.0.max_ttl", "30"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.network", "request_definition.0.traceroute_queries", "3"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.network", "request_definition.0.timeout", "10"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.network", "request_definition.0.destination_service", "dns-server"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.network", "request_definition.0.source_service", "monitoring"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.network", "assertion.#", "4"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.network", "assertion.0.type", "latency"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.network", "assertion.0.operator", "lessThan"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.network", "assertion.0.property", "max"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.network", "assertion.0.target", "100"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.network", "assertion.1.type", "jitter"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.network", "assertion.1.operator", "lessThan"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.network", "assertion.1.target", "10"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.network", "assertion.2.type", "packetLossPercentage"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.network", "assertion.2.operator", "lessThan"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.network", "assertion.2.target", "0.05"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.network", "assertion.3.type", "multiNetworkHop"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.network", "assertion.3.operator", "lessThan"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.network", "assertion.3.property", "max"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.network", "assertion.3.target", "15"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.network", "locations.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.network", "locations.0", "aws:us-east-1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.network", "options_list.0.tick_every", "900"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.network", "name", testName),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.network", "message", "Notify @pagerduty"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.network", "tags.#", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.network", "tags.0", "network:udp"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.network", "tags.1", "env:prod"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.network", "status", "paused"),
+		),
+	}
+}
+
+func updateSyntheticsNetworkTestStep(ctx context.Context, accProvider *schema.Provider, t *testing.T) resource.TestStep {
+	testName := uniqueEntityName(ctx, t) + "-updated"
+	return resource.TestStep{
+		Config: updateSyntheticsNetworkTestConfig(testName),
+		Check: resource.ComposeTestCheckFunc(
+			testSyntheticsTestExists(accProvider),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.network", "type", "network"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.network", "subtype", "udp"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.network", "request_definition.0.host", "updated-example.com"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.network", "request_definition.0.port", "443"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.network", "request_definition.0.e2e_queries", "10"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.network", "request_definition.0.max_ttl", "60"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.network", "request_definition.0.traceroute_queries", "5"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.network", "request_definition.0.timeout", "20"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.network", "request_definition.0.destination_service", "updated-service"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.network", "request_definition.0.source_service", "updated-monitoring"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.network", "assertion.#", "3"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.network", "assertion.0.type", "latency"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.network", "assertion.0.operator", "lessThan"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.network", "assertion.0.property", "max"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.network", "assertion.0.target", "200"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.network", "assertion.1.type", "jitter"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.network", "assertion.1.operator", "lessThan"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.network", "assertion.1.target", "20"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.network", "assertion.2.type", "packetLossPercentage"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.network", "assertion.2.operator", "lessThan"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.network", "assertion.2.target", "0.1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.network", "locations.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.network", "locations.0", "aws:eu-west-1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.network", "options_list.0.tick_every", "1800"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.network", "name", testName),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.network", "message", "Notify @devops"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.network", "tags.#", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.network", "tags.0", "network:udp"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.network", "tags.1", "env:staging"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.network", "status", "live"),
+		),
+	}
+}
+
+func createSyntheticsNetworkTestConfig(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_synthetics_test" "network" {
+	name      = "%s"
+	type      = "network"
+	subtype   = "udp"
+	status    = "paused"
+	message   = "Notify @pagerduty"
+	locations = ["aws:us-east-1"]
+	tags      = ["network:udp", "env:prod"]
+
+	request_definition {
+		host                = "example.com"
+		port                = "53"
+		e2e_queries         = 5
+		max_ttl             = 30
+		traceroute_queries  = 3
+		timeout             = 10
+		destination_service = "dns-server"
+		source_service      = "monitoring"
+	}
+
+	assertion {
+		type     = "latency"
+		operator = "lessThan"
+		property = "max"
+		target   = 100
+	}
+
+	assertion {
+		type     = "jitter"
+		operator = "lessThan"
+		target   = 10
+	}
+
+	assertion {
+		type     = "packetLossPercentage"
+		operator = "lessThan"
+		target   = 0.05
+	}
+
+	assertion {
+		type     = "multiNetworkHop"
+		operator = "lessThan"
+		property = "max"
+		target   = 15
+	}
+
+	options_list {
+		tick_every = 900
+		retry {
+			count    = 2
+			interval = 300
+		}
+		monitor_options {
+			renotify_interval = 120
+		}
+	}
+}`, uniq)
+}
+
+func updateSyntheticsNetworkTestConfig(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_synthetics_test" "network" {
+	name      = "%s"
+	type      = "network"
+	subtype   = "udp"
+	status    = "live"
+	message   = "Notify @devops"
+	locations = ["aws:eu-west-1"]
+	tags      = ["network:udp", "env:staging"]
+
+	request_definition {
+		host                = "updated-example.com"
+		port                = "443"
+		e2e_queries         = 10
+		max_ttl             = 60
+		traceroute_queries  = 5
+		timeout             = 20
+		destination_service = "updated-service"
+		source_service      = "updated-monitoring"
+	}
+
+	assertion {
+		type     = "latency"
+		operator = "lessThan"
+		property = "max"
+		target   = 200
+	}
+
+	assertion {
+		type     = "jitter"
+		operator = "lessThan"
+		target   = 20
+	}
+
+	assertion {
+		type     = "packetLossPercentage"
+		operator = "lessThan"
+		target   = 0.1
+	}
+
+	options_list {
+		tick_every = 1800
+		retry {
+			count    = 3
+			interval = 600
+		}
+		monitor_options {
+			renotify_interval = 240
+		}
+	}
+}`, uniq)
+}
