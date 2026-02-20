@@ -761,15 +761,15 @@ resource "datadog_synthetics_test" "test_grpc_health" {
   }
 }
 
-# Example Usage (Network Path TCP Test)
-# Create a new Datadog Network Path TCP test to example.com on port 443
+# Example Usage (TCP Network Path Test)
+# Create a new Datadog TCP Network Path test to example.com on port 443
 # using the TCP traceroute strategy "syn"
 resource "datadog_synthetics_test" "network_tcp" {
-  name      = "Network Path TCP Test"
+  name      = "TCP Network Path Test"
   type      = "network"
   subtype   = "tcp"
   status    = "live"
-  message   = "Network Path TCP test"
+  message   = "Notify @pagerduty"
   locations = ["aws:eu-central-1"]
   tags      = ["foo:bar", "foo", "env:test"]
 
@@ -828,14 +828,14 @@ resource "datadog_synthetics_test" "network_tcp" {
   }
 }
 
-# Example Usage (Network Path UDP Test)
-# Create a new Datadog Network Path UDP test to example.com on port 53
+# Example Usage (UDP Network Path Test)
+# Create a new Datadog UDP Network Path test to example.com on port 53
 resource "datadog_synthetics_test" "network_udp" {
-  name      = "Network Path UDP Test"
+  name      = "UDP Network Path Test"
   type      = "network"
   subtype   = "udp"
   status    = "live"
-  message   = "Network Path UDP test"
+  message   = "Notify @pagerduty"
   locations = ["aws:eu-central-1"]
   tags      = ["foo:bar", "foo", "env:test"]
 
@@ -879,14 +879,14 @@ resource "datadog_synthetics_test" "network_udp" {
   }
 }
 
-# Example Usage (Network Path ICMP Test)
-# Create a new Datadog Network Path ICMP test to example.com
+# Example Usage (ICMP Network Path Test)
+# Create a new Datadog ICMP Network Path test to example.com
 resource "datadog_synthetics_test" "network_icmp" {
-  name      = "Network Path ICMP Test"
+  name      = "ICMP Network Path Test"
   type      = "network"
   subtype   = "icmp"
   status    = "live"
-  message   = "Network Path ICMP test"
+  message   = "Notify @pagerduty"
   locations = ["aws:eu-central-1"]
   tags      = ["foo:bar", "foo", "env:test"]
 
@@ -1189,7 +1189,7 @@ Optional:
 - `service` (String) The gRPC service on which you want to perform the gRPC call.
 - `should_track_hops` (Boolean) This will turn on a traceroute probe to discover all gateways along the path to the host destination. For ICMP tests (`subtype = "icmp"`).
 - `source_service` (String) For Network Path tests, an optional label displayed for the source host in the Network Path visualization
-- `tcp_method` (String) For Network Path TCP tests, the TCP traceroute strategy.
+- `tcp_method` (String) For TCP Network Path tests, the TCP traceroute strategy.
 - `timeout` (Number) Timeout in seconds for the test.
 - `traceroute_queries` (Number) For Network Path tests, the number of traceroute path tracings.
 - `url` (String) The URL to send the request to.
@@ -1793,7 +1793,7 @@ Optional:
 - `service` (String) The gRPC service on which you want to perform the gRPC call.
 - `should_track_hops` (Boolean) This will turn on a traceroute probe to discover all gateways along the path to the host destination. For ICMP tests (`subtype = "icmp"`).
 - `source_service` (String) For Network Path tests, an optional label displayed for the source host in the Network Path visualization
-- `tcp_method` (String) For Network Path TCP tests, the TCP traceroute strategy.
+- `tcp_method` (String) For TCP Network Path tests, the TCP traceroute strategy.
 - `timeout` (Number) Timeout in seconds for the test.
 - `traceroute_queries` (Number) For Network Path tests, the number of traceroute path tracings.
 - `url` (String) The URL to send the request to.
