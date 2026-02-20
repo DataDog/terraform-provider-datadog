@@ -36,8 +36,19 @@ func TestAccDatadogMetricMetadataDatasource(t *testing.T) {
 
 func testAccDatasourceMetricMetadataConfig(metric string) string {
 	return fmt.Sprintf(`
-data "datadog_metric_metadata" "foo" {
-	metric_name = "%s"
+resource "datadog_metric_metadata" "foo" {
+  metric          = "%s"
+  short_name      = "short name for metric_metadata foo"
+  type            = "gauge"
+  description     = "some description"
+  unit            = "byte"
+  per_unit        = "second"
+  statsd_interval = "1"
 }
-`, metric)
+
+data "datadog_metric_metadata" "foo" {
+  metric_name = "%s"
+  depends_on  = [datadog_metric_metadata.foo]
+}
+`, metric, metric)
 }

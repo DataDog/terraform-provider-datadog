@@ -107,7 +107,7 @@ func (d *datadogMetricMetadataDataSource) Read(ctx context.Context, req datasour
 }
 
 func (d *datadogMetricMetadataDataSource) updateState(ctx context.Context, state *datadogMetricMetadataModel, metricMetadata datadogV1.MetricMetadata) {
-	state.ID = types.StringValue(utils.ConvertToSha256(state.MetricName.String()))
+	state.ID = types.StringValue(utils.ConvertToSha256(state.MetricName.ValueString()))
 	state.Type = types.StringValue(metricMetadata.GetType())
 	state.ShortName = types.StringValue(metricMetadata.GetShortName())
 	state.Description = types.StringValue(metricMetadata.GetDescription())
