@@ -77,8 +77,32 @@ var timeseriesWidgetSpec = WidgetSpec{
 	},
 }
 
-// allWidgetSpecs is the registry of all implemented WidgetSpecs.
-// Phase 1: timeseries only.
-var allWidgetSpecs = []WidgetSpec{
+// allWidgetSpecs is the complete registry of all implemented widget types.
+// It is assembled from per-batch sub-slices so that parallel agents can each
+// work in their own file without merge conflicts on this registry.
+//
+// Batch files:
+//
+//	widgets_simple.go   — Batch A: no-request widgets (alert_graph, note, image, etc.)
+//	widgets_requests.go — Batch B: request-based widgets (change, heatmap, toplist, etc.)
+//	widgets_complex.go  — Batch C: complex/structural widgets (table, list_stream, slo, group, etc.)
+var allWidgetSpecs = concatWidgetSpecs(
+	coreWidgetSpecs,
+	simpleWidgetSpecs,
+	requestWidgetSpecs,
+	complexWidgetSpecs,
+)
+
+// coreWidgetSpecs contains the Phase 1 timeseries implementation.
+var coreWidgetSpecs = []WidgetSpec{
 	timeseriesWidgetSpec,
+}
+
+// concatWidgetSpecs merges multiple WidgetSpec slices into one.
+func concatWidgetSpecs(slices ...[]WidgetSpec) []WidgetSpec {
+	var result []WidgetSpec
+	for _, s := range slices {
+		result = append(result, s...)
+	}
+	return result
 }

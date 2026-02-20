@@ -129,6 +129,67 @@ var processQueryDefinitionFields = []FieldSpec{
 	{HCLKey: "limit", Type: TypeInt, OmitEmpty: true},
 }
 
+// standardQueryFields are the legacy query-source fields present on most request types.
+// Used by: change, distribution, heatmap, query_value, toplist, sunburst requests.
+var standardQueryFields = []FieldSpec{
+	{HCLKey: "log_query", Type: TypeBlock, OmitEmpty: true, Children: logQueryDefinitionFields},
+	{HCLKey: "apm_query", Type: TypeBlock, OmitEmpty: true, Children: logQueryDefinitionFields},
+	{HCLKey: "rum_query", Type: TypeBlock, OmitEmpty: true, Children: logQueryDefinitionFields},
+	{HCLKey: "security_query", Type: TypeBlock, OmitEmpty: true, Children: logQueryDefinitionFields},
+	{HCLKey: "process_query", Type: TypeBlock, OmitEmpty: true, Children: processQueryDefinitionFields},
+}
+
+// ============================================================
+// WidgetFormula Field Groups
+// ============================================================
+
+// widgetFormulaLimitFields corresponds to OpenAPI components/schemas/WidgetFormulaLimit.
+// Used inside widgetFormulaFields as the "limit" block.
+var widgetFormulaLimitFields = []FieldSpec{
+	{HCLKey: "count", Type: TypeInt, OmitEmpty: true},
+	{HCLKey: "order", Type: TypeString, OmitEmpty: true},
+}
+
+// widgetFormulaStyleFields corresponds to OpenAPI components/schemas/WidgetFormulaStyle.
+// Styling options for a single formula (per-formula palette and palette_index).
+// Distinct from request-level style (which has palette, line_type, line_width for timeseries).
+var widgetFormulaStyleFields = []FieldSpec{
+	{HCLKey: "palette", Type: TypeString, OmitEmpty: true},
+	{HCLKey: "palette_index", Type: TypeInt, OmitEmpty: true},
+}
+
+// widgetFormulaCellDisplayModeOptionsFields corresponds to OpenAPI
+// components/schemas/WidgetFormulaCellDisplayModeOptions.
+// Only meaningful when cell_display_mode == "trend".
+var widgetFormulaCellDisplayModeOptionsFields = []FieldSpec{
+	{HCLKey: "trend_type", Type: TypeString, OmitEmpty: true},
+	{HCLKey: "y_scale", Type: TypeString, OmitEmpty: true},
+}
+
+// widgetFormulaFields corresponds to OpenAPI components/schemas/WidgetFormula.
+// Used by all formula-capable widgets for the per-formula FieldSpec mapping.
+// Applied via BuildEngineJSON/FlattenEngineJSON in the per-formula loops of
+// buildFormulaQueryRequestJSON and buildScalarFormulaQueryRequestJSON.
+//
+// number_format is excluded — its polymorphic unit structure (oneOf canonical/custom)
+// requires custom build/flatten logic and cannot be expressed as a FieldSpec.
+//
+// Note: "style" here is the per-formula style (palette, palette_index), distinct from
+// the request-level style block (palette, line_type, line_width on timeseries). The
+// two styles live at different JSON levels and do not conflict.
+var widgetFormulaFields = []FieldSpec{
+	// formula_expression (HCL) → formula (JSON)
+	{HCLKey: "formula_expression", JSONKey: "formula", Type: TypeString, OmitEmpty: false},
+	{HCLKey: "alias", Type: TypeString, OmitEmpty: true},
+	{HCLKey: "limit", Type: TypeBlock, OmitEmpty: true, Children: widgetFormulaLimitFields},
+	{HCLKey: "cell_display_mode", Type: TypeString, OmitEmpty: true},
+	{HCLKey: "cell_display_mode_options", Type: TypeBlock, OmitEmpty: true,
+		Children: widgetFormulaCellDisplayModeOptionsFields},
+	{HCLKey: "conditional_formats", Type: TypeBlockList, OmitEmpty: true,
+		Children: widgetConditionalFormatFields},
+	{HCLKey: "style", Type: TypeBlock, OmitEmpty: true, Children: widgetFormulaStyleFields},
+}
+
 // ============================================================
 // Common Widget Fields
 // ============================================================
@@ -175,7 +236,8 @@ var templateVariablePresetValueFields = []FieldSpec{
 var templateVariablePresetFields = []FieldSpec{
 	{HCLKey: "name", Type: TypeString, OmitEmpty: true},
 	// template_variable (singular HCL) → template_variables (plural JSON)
-	{HCLKey: "template_variable", JSONKey: "template_variables", Type: TypeBlockList, OmitEmpty: true,
+	// OmitEmpty: false — even empty presets get "template_variables": [] (cassette-verified)
+	{HCLKey: "template_variable", JSONKey: "template_variables", Type: TypeBlockList, OmitEmpty: false,
 		Children: templateVariablePresetValueFields},
 }
 

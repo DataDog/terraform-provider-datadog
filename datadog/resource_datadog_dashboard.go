@@ -6914,32 +6914,11 @@ func getScatterplotFormulaSchema() *schema.Schema {
 	}
 }
 
+// getQueryTableFormulaSchema returns the formula schema for query_table widgets.
+// cell_display_mode_options is now included in getFormulaSchema() for all formula-capable
+// widgets, so this function is an alias.
 func getQueryTableFormulaSchema() *schema.Schema {
-	queryTableFormulaSchema := getFormulaSchema()
-	queryTableFormulaSchema.Elem.(*schema.Resource).Schema["cell_display_mode_options"] = &schema.Schema{
-		Description: "A list of display modes for each table cell.",
-		Type:        schema.TypeList,
-		MinItems:    0,
-		MaxItems:    1,
-		Optional:    true,
-		Elem: &schema.Resource{
-			Schema: map[string]*schema.Schema{
-				"trend_type": {
-					Type:             schema.TypeString,
-					Optional:         true,
-					Description:      "The type of trend line to display.",
-					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetFormulaCellDisplayModeOptionsTrendTypeFromValue),
-				},
-				"y_scale": {
-					Type:             schema.TypeString,
-					Optional:         true,
-					Description:      "The scale of the y-axis.",
-					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetFormulaCellDisplayModeOptionsYScaleFromValue),
-				},
-			},
-		},
-	}
-	return queryTableFormulaSchema
+	return getFormulaSchema()
 }
 
 func getFormulaSchema() *schema.Schema {
@@ -6989,10 +6968,33 @@ func getFormulaSchema() *schema.Schema {
 					},
 				},
 				"cell_display_mode": {
-					Description:      "A list of display modes for each table cell.",
+					Description:      "A list of display modes for each table cell. Valid values are `number`, `bar`, and `trend`.",
 					Type:             schema.TypeString,
 					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewTableWidgetCellDisplayModeFromValue),
 					Optional:         true,
+				},
+				"cell_display_mode_options": {
+					Description: "Options for the cell display mode. Only used when `cell_display_mode` is set to `trend`.",
+					Type:        schema.TypeList,
+					MinItems:    0,
+					MaxItems:    1,
+					Optional:    true,
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"trend_type": {
+								Type:             schema.TypeString,
+								Optional:         true,
+								Description:      "The type of trend line to display. Valid values are `area`, `line`, and `bars`.",
+								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetFormulaCellDisplayModeOptionsTrendTypeFromValue),
+							},
+							"y_scale": {
+								Type:             schema.TypeString,
+								Optional:         true,
+								Description:      "The scale of the y-axis. Valid values are `shared` and `independent`.",
+								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetFormulaCellDisplayModeOptionsYScaleFromValue),
+							},
+						},
+					},
 				},
 				"style": {
 					Type:        schema.TypeList,
