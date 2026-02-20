@@ -30,6 +30,8 @@ var changeWidgetSpec = WidgetSpec{
 var distributionWidgetRequestFields = append([]FieldSpec{
 	{HCLKey: "q", Type: TypeString, OmitEmpty: true},
 	{HCLKey: "style", Type: TypeBlock, OmitEmpty: true, Children: widgetRequestStyleFields},
+	// apm_stats_query is supported by distribution requests (OpenAPI DistributionWidgetRequest)
+	{HCLKey: "apm_stats_query", Type: TypeBlock, OmitEmpty: true, Children: apmStatsQueryFields},
 }, standardQueryFields...)
 
 // distributionWidgetXAxisFields corresponds to OpenAPI DistributionWidgetXAxis.
@@ -236,9 +238,12 @@ var treemapWidgetSpec = WidgetSpec{
 }
 
 // topologyMapWidgetSpec corresponds to OpenAPI TopologyMapWidgetDefinition.
+// Note: TopologyRequest.Query is a singular struct (*TopologyQuery) in the API,
+// so "query" maps to a JSON object (TypeBlock), not a list (TypeBlockList).
+// The HCL schema uses TypeList with an implicit single element.
 var topologyRequestFields = []FieldSpec{
 	{HCLKey: "request_type", Type: TypeString, OmitEmpty: false},
-	{HCLKey: "query", Type: TypeBlockList, OmitEmpty: false, Children: topologyQueryFields},
+	{HCLKey: "query", Type: TypeBlock, OmitEmpty: false, Children: topologyQueryFields},
 }
 
 var topologyMapWidgetSpec = WidgetSpec{

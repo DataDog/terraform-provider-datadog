@@ -1637,6 +1637,20 @@ func flattenTemplateVariablePresets(tvps []interface{}) []interface{} {
 	return result
 }
 
+// BuildWidgetEngineJSON is the exported entry point for building a single widget's JSON map
+// from ResourceData. widgetPath is the dotted HCL path to the widget block, e.g. "widget.0".
+// Returns nil if no recognized widget type is found at that path.
+func BuildWidgetEngineJSON(d *schema.ResourceData, widgetPath string) map[string]interface{} {
+	return buildWidgetEngineJSON(d, widgetPath)
+}
+
+// FlattenWidgetEngineJSON is the exported entry point for flattening a single widget's JSON map
+// into HCL state suitable for setting on a TypeList field in schema.ResourceData.
+// Returns nil if the widget type is not recognized.
+func FlattenWidgetEngineJSON(widgetData map[string]interface{}) map[string]interface{} {
+	return flattenWidgetEngineJSON(widgetData)
+}
+
 // MarshalDashboardJSON marshals the dashboard JSON body from ResourceData.
 // The trailing newline matches behavior of json.NewEncoder used when cassettes were recorded.
 func MarshalDashboardJSON(d *schema.ResourceData) (string, error) {

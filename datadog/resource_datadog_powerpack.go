@@ -2,6 +2,7 @@ package datadog
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"net/http"
 
@@ -13,6 +14,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/retry"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/dashboardmapping"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 )
@@ -330,10 +332,6 @@ func buildDatadogPowerpack(ctx context.Context, d *schema.ResourceData) (*datado
 		definition.SetTitle(v.(string))
 	}
 
-	// Fetch widgets in the request form
-	terraformWidgets := d.Get("widget").([]interface{})
-	datadogWidgets, _ := buildDatadogWidgets(&terraformWidgets)
-
 	var columnWidth int64
 	if v, ok := d.GetOk("layout"); ok {
 		unparsedLayout := v.([]interface{})[0].(map[string]interface{})
@@ -351,11 +349,21 @@ func buildDatadogPowerpack(ctx context.Context, d *schema.ResourceData) (*datado
 		groupWidget.SetLayout(*layout)
 	}
 
-	// Finally, build JSON Powerpack API compatible widgets
-	powerpackWidgets, diags := dashboardWidgetsToPpkWidgets(datadogWidgets, columnWidth)
-
-	if diags != nil {
-		return nil, diags
+	// Build JSON Powerpack API compatible widgets using the FieldSpec engine
+	widgetCount := d.Get("widget.#").(int)
+	powerpackWidgets := make([]datadogV2.PowerpackInnerWidgets, widgetCount)
+	for i := 0; i < widgetCount; i++ {
+		widgetMap := dashboardmapping.BuildWidgetEngineJSON(d, fmt.Sprintf("widget.%d", i))
+		widgetJSON, err := json.Marshal(widgetMap)
+		if err != nil {
+			return nil, diag.FromErr(err)
+		}
+		var ppkWidget datadogV2.PowerpackInnerWidgets
+		if err := ppkWidget.UnmarshalJSON(widgetJSON); err != nil {
+			return nil, diag.FromErr(err)
+		}
+		ppkWidget.AdditionalProperties = nil
+		powerpackWidgets[i] = ppkWidget
 	}
 
 	// Set Widget
@@ -389,44 +397,43 @@ func buildDatadogPowerpack(ctx context.Context, d *schema.ResourceData) (*datado
 
 }
 
-func dashboardWidgetsToPpkWidgets(terraformWidgets *[]datadogV1.Widget, columnWidth int64) ([]datadogV2.PowerpackInnerWidgets, diag.Diagnostics) {
-	var diags diag.Diagnostics
-
-	widgets := make([]datadogV2.PowerpackInnerWidgets, len(*terraformWidgets))
-	for i, terraformWidget := range *terraformWidgets {
-		dashJsonBytes, _ := terraformWidget.MarshalJSON()
-		var newPowerpackWidget datadogV2.PowerpackInnerWidgets
-		newPowerpackWidget.UnmarshalJSON(dashJsonBytes)
-		// Explicitly set additionalProperties as nil so we don't send bad definitions
-		newPowerpackWidget.AdditionalProperties = nil
-
-		widgets[i] = newPowerpackWidget
-	}
-
-	return widgets, diags
-}
-
 func ppkWidgetsToTerraformWidgets(ppkWidgets []datadogV2.PowerpackInnerWidgets) (*[]map[string]interface{}, diag.Diagnostics) {
-	var diags diag.Diagnostics
 	terraformWidgets := make([]map[string]interface{}, len(ppkWidgets))
 
 	for i, ppkWidget := range ppkWidgets {
-		serializedMap, err := ppkWidget.MarshalJSON()
+		widgetJSON, err := ppkWidget.MarshalJSON()
 		if err != nil {
 			return nil, diag.FromErr(err)
 		}
-
-		var ddV1Widget datadogV1.Widget
-		ddV1Widget.UnmarshalJSON(serializedMap)
-
-		tfWidget, err := buildTerraformWidget(&ddV1Widget)
-		if err != nil {
+		var widgetData map[string]interface{}
+		if err := json.Unmarshal(widgetJSON, &widgetData); err != nil {
 			return nil, diag.FromErr(err)
 		}
-
+		tfWidget := dashboardmapping.FlattenWidgetEngineJSON(widgetData)
+		if tfWidget == nil {
+			tfWidget = map[string]interface{}{}
+		}
+		// Flatten widget_layout from JSON "layout" object (present on powerpack inner widgets).
+		// The API returns layout as {"x":5,"y":5,"width":5,"height":4} at the widget level.
+		if layout, ok := widgetData["layout"].(map[string]interface{}); ok {
+			layoutState := map[string]interface{}{}
+			for _, key := range []string{"x", "y", "width", "height"} {
+				if v, ok := layout[key]; ok {
+					switch iv := v.(type) {
+					case float64:
+						layoutState[key] = int(iv)
+					case int:
+						layoutState[key] = iv
+					}
+				}
+			}
+			if len(layoutState) > 0 {
+				tfWidget["widget_layout"] = []interface{}{layoutState}
+			}
+		}
 		terraformWidgets[i] = tfWidget
 	}
-	return &terraformWidgets, diags
+	return &terraformWidgets, nil
 }
 
 func updatePowerpackState(d *schema.ResourceData, powerpack *datadogV2.PowerpackResponse) diag.Diagnostics {
