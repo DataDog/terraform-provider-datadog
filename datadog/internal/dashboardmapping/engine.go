@@ -1,43 +1,33 @@
-package datadog
+package dashboardmapping
 
-// resource_datadog_dashboard_engine.go
+// engine.go
 //
 // FieldSpec bidirectional mapping engine for the dashboard resource.
-// This file contains the generic engine types (FieldSpec, WidgetSpec, FieldType)
-// and all reusable FieldSpec groups mirroring OpenAPI schema components.
-//
-// Each reusable []FieldSpec variable is named after the OpenAPI
-// components/schemas/ entry it corresponds to (camelCase). A comment
-// identifies the OpenAPI schema and which widget types use it.
-//
-// Phase 1 implements: timeseries widget.
+// This file contains the generic engine types (FieldSpec, WidgetSpec, FieldType),
+// the HCL↔JSON engine functions, path helpers, and the dashboard-level build/flatten
+// entry points.
 
 import (
-	"context"
 	"encoding/json"
-	"errors"
 	"fmt"
-	"net/http"
 	"strings"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/retry"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
 // FieldType drives serialization/deserialization behavior in the engine.
 type FieldType int
 
 const (
-	TypeString    FieldType = iota // plain string
-	TypeBool                       // bool
-	TypeInt                        // int
-	TypeFloat                      // float64
-	TypeStringList                 // []string (TypeList or TypeSet of strings)
-	TypeIntList                    // []int
-	TypeBlock                      // single nested block (MaxItems:1 in schema)
-	TypeBlockList                  // list of blocks
+	TypeString     FieldType = iota // plain string
+	TypeBool                        // bool
+	TypeInt                         // int
+	TypeFloat                       // float64
+	TypeStringList                  // []string (TypeList or TypeSet of strings)
+	TypeIntList                     // []int
+	TypeBlock                       // single nested block (MaxItems:1 in schema)
+	TypeBlockList                   // list of blocks
 )
 
 // FieldSpec declares the bidirectional mapping for a single field.
@@ -99,278 +89,17 @@ type WidgetSpec struct {
 	JSONType string
 
 	// Fields are the widget-specific fields.
-	// CommonWidgetFields are automatically merged in by the engine.
+	// commonWidgetFields are automatically merged in by the engine.
 	Fields []FieldSpec
-}
-
-// ============================================================
-// Reusable FieldSpec Groups (mirroring OpenAPI $ref schemas)
-// ============================================================
-
-// widgetCustomLinkFields corresponds to OpenAPI components/schemas/WidgetCustomLink.
-// Used by: timeseries, toplist, query_value, change, distribution, heatmap, hostmap,
-//          geomap, scatterplot, service_map, sunburst, table, topology_map, treemap,
-//          run_workflow (15 widget types).
-// HCL key: "custom_link" (singular Terraform convention)
-// JSON key: "custom_links" (plural, matching OpenAPI)
-var widgetCustomLinkFields = []FieldSpec{
-	{HCLKey: "label", Type: TypeString, OmitEmpty: true},
-	{HCLKey: "link", Type: TypeString, OmitEmpty: false},
-	{HCLKey: "is_hidden", Type: TypeBool, OmitEmpty: true},
-	{HCLKey: "override_label", Type: TypeString, OmitEmpty: true},
-}
-
-// widgetTimeField corresponds to OpenAPI components/schemas/WidgetLegacyLiveSpan
-// (the live_span variant of WidgetTime, which is the form used by HCL).
-// HCL flattens this to a single "live_span" string field on the widget definition,
-// which maps to {"time": {"live_span": "..."}} in JSON via JSONPath.
-// Used by: 21+ widget types.
-var widgetTimeField = FieldSpec{
-	HCLKey:    "live_span",
-	JSONPath:  "time.live_span",
-	Type:      TypeString,
-	OmitEmpty: true,
-}
-
-// widgetAxisFields corresponds to OpenAPI components/schemas/WidgetAxis.
-// Used by: timeseries (yaxis + right_yaxis), distribution, heatmap, scatterplot.
-var widgetAxisFields = []FieldSpec{
-	{HCLKey: "label", Type: TypeString, OmitEmpty: true},
-	{HCLKey: "min", Type: TypeString, OmitEmpty: true},
-	{HCLKey: "max", Type: TypeString, OmitEmpty: true},
-	{HCLKey: "scale", Type: TypeString, OmitEmpty: true},
-	// include_zero is always emitted even when false (OmitEmpty: false)
-	// confirmed by cassette: "include_zero": false appears in right_yaxis
-	{HCLKey: "include_zero", Type: TypeBool, OmitEmpty: false},
-}
-
-// widgetMarkerFields corresponds to OpenAPI components/schemas/WidgetMarker.
-// Used by: timeseries, distribution, heatmap.
-// HCL key: "marker" (singular), JSON key: "markers" (plural).
-var widgetMarkerFields = []FieldSpec{
-	{HCLKey: "value", Type: TypeString, OmitEmpty: false}, // required in OpenAPI
-	{HCLKey: "display_type", Type: TypeString, OmitEmpty: true},
-	{HCLKey: "label", Type: TypeString, OmitEmpty: true},
-}
-
-// widgetEventFields corresponds to OpenAPI components/schemas/WidgetEvent.
-// Used by: timeseries, heatmap.
-// HCL key: "event" (singular), JSON key: "events" (plural).
-var widgetEventFields = []FieldSpec{
-	{HCLKey: "q", Type: TypeString, OmitEmpty: false},             // required in OpenAPI
-	{HCLKey: "tags_execution", Type: TypeString, OmitEmpty: true}, // omit when empty
-}
-
-// logQueryDefinitionGroupBySortFields corresponds to OpenAPI
-// components/schemas/LogQueryDefinitionGroupBySort.
-var logQueryDefinitionGroupBySortFields = []FieldSpec{
-	{HCLKey: "aggregation", Type: TypeString, OmitEmpty: false},
-	{HCLKey: "order", Type: TypeString, OmitEmpty: false},
-	{HCLKey: "facet", Type: TypeString, OmitEmpty: true},
-}
-
-// logQueryDefinitionGroupByFields corresponds to OpenAPI
-// components/schemas/LogQueryDefinitionGroupBy.
-var logQueryDefinitionGroupByFields = []FieldSpec{
-	{HCLKey: "facet", Type: TypeString, OmitEmpty: false}, // required in OpenAPI
-	{HCLKey: "limit", Type: TypeInt, OmitEmpty: true},
-	// HCL key: "sort_query" (disambiguates from other sort fields in HCL)
-	// JSON key: "sort" (OpenAPI property name)
-	{HCLKey: "sort_query", JSONKey: "sort", Type: TypeBlock, OmitEmpty: true,
-		Children: logQueryDefinitionGroupBySortFields},
-}
-
-// logsQueryComputeFields corresponds to OpenAPI components/schemas/LogsQueryCompute.
-var logsQueryComputeFields = []FieldSpec{
-	{HCLKey: "aggregation", Type: TypeString, OmitEmpty: false}, // required in OpenAPI
-	{HCLKey: "facet", Type: TypeString, OmitEmpty: true},
-	{HCLKey: "interval", Type: TypeInt, OmitEmpty: true},
-}
-
-// logQueryDefinitionFields corresponds to OpenAPI components/schemas/LogQueryDefinition.
-// Used by request fields: log_query, apm_query, rum_query, network_query,
-//                         security_query, audit_query, event_query, profile_metrics_query.
-// That is: the same FieldSpec is reused for all 8 query-type fields on a request.
-// HCL flattens "search.query" to "search_query" via JSONPath.
-// HCL uses "compute_query" instead of "compute" (disambiguates from other uses); JSONKey: "compute".
-var logQueryDefinitionFields = []FieldSpec{
-	{HCLKey: "index", Type: TypeString, OmitEmpty: false},
-	// search_query (flat HCL) → {"search": {"query": "..."}} (nested JSON) via JSONPath
-	{HCLKey: "search_query", JSONPath: "search.query", Type: TypeString, OmitEmpty: false},
-	// HCL "compute_query" → JSON "compute" (renamed to avoid ambiguity in HCL)
-	{HCLKey: "compute_query", JSONKey: "compute", Type: TypeBlock, OmitEmpty: true,
-		Children: logsQueryComputeFields},
-	// multi_compute → JSON "multi_compute" (same key, list of compute objects)
-	{HCLKey: "multi_compute", Type: TypeBlockList, OmitEmpty: true,
-		Children: logsQueryComputeFields},
-	// HCL key: "group_by" (same in HCL and JSON — no pluralization applied to this field)
-	{HCLKey: "group_by", Type: TypeBlockList, OmitEmpty: true,
-		Children: logQueryDefinitionGroupByFields},
-}
-
-// processQueryDefinitionFields corresponds to OpenAPI
-// components/schemas/ProcessQueryDefinition.
-// Used by timeseries and other widgets that support process metrics.
-var processQueryDefinitionFields = []FieldSpec{
-	{HCLKey: "metric", Type: TypeString, OmitEmpty: false},    // required in OpenAPI
-	{HCLKey: "search_by", Type: TypeString, OmitEmpty: true},  // omit when empty
-	{HCLKey: "filter_by", Type: TypeStringList, OmitEmpty: true},
-	{HCLKey: "limit", Type: TypeInt, OmitEmpty: true},
-}
-
-// ============================================================
-// Common Widget Fields
-// ============================================================
-
-// commonWidgetFields are the FieldSpecs shared by most widget definition types.
-// They are merged automatically into every WidgetSpec by the engine.
-var commonWidgetFields = []FieldSpec{
-	// Inline properties on widget definitions (no OpenAPI $ref, common by convention)
-	{HCLKey: "title", Type: TypeString, OmitEmpty: true},
-	{HCLKey: "title_size", Type: TypeString, OmitEmpty: true},
-	{HCLKey: "title_align", Type: TypeString, OmitEmpty: true},
-	// WidgetTime: live_span (HCL) → {"time": {"live_span": "..."}} (JSON)
-	widgetTimeField,
-	// WidgetCustomLink: HCL "custom_link" (singular) → JSON "custom_links" (plural)
-	{HCLKey: "custom_link", JSONKey: "custom_links", Type: TypeBlockList, OmitEmpty: true,
-		Children: widgetCustomLinkFields},
-}
-
-// ============================================================
-// Timeseries Widget
-// ============================================================
-
-// timeseriesWidgetRequestStyleFields corresponds to OpenAPI
-// components/schemas/WidgetRequestStyle (inline on TimeseriesWidgetRequest).
-var timeseriesWidgetRequestStyleFields = []FieldSpec{
-	{HCLKey: "palette", Type: TypeString, OmitEmpty: true},
-	{HCLKey: "line_type", Type: TypeString, OmitEmpty: true},
-	{HCLKey: "line_width", Type: TypeString, OmitEmpty: true},
-	{HCLKey: "order_by", Type: TypeString, OmitEmpty: true},
-}
-
-// timeseriesWidgetMetadataFields corresponds to the inline metadata object
-// on TimeseriesWidgetRequest (no standalone OpenAPI $ref; defined inline).
-var timeseriesWidgetMetadataFields = []FieldSpec{
-	{HCLKey: "expression", Type: TypeString, OmitEmpty: false},
-	{HCLKey: "alias_name", Type: TypeString, OmitEmpty: true},
-}
-
-// timeseriesWidgetRequestFields corresponds to OpenAPI
-// components/schemas/TimeseriesWidgetRequest.
-// HCL key: "request" (singular), JSON key: "requests" (plural).
-var timeseriesWidgetRequestFields = []FieldSpec{
-	{HCLKey: "q", Type: TypeString, OmitEmpty: true},
-	{HCLKey: "display_type", Type: TypeString, OmitEmpty: true},
-	// on_right_yaxis is always emitted even when false — cassette confirms both true and false appear
-	{HCLKey: "on_right_yaxis", Type: TypeBool, OmitEmpty: false},
-	{HCLKey: "style", Type: TypeBlock, OmitEmpty: true, Children: timeseriesWidgetRequestStyleFields},
-	{HCLKey: "metadata", Type: TypeBlockList, OmitEmpty: true, Children: timeseriesWidgetMetadataFields},
-	// The following 7 fields all use logQueryDefinitionFields (same OpenAPI $ref,
-	// different JSON key per query source type):
-	{HCLKey: "log_query", Type: TypeBlock, OmitEmpty: true, Children: logQueryDefinitionFields},
-	{HCLKey: "apm_query", Type: TypeBlock, OmitEmpty: true, Children: logQueryDefinitionFields},
-	{HCLKey: "rum_query", Type: TypeBlock, OmitEmpty: true, Children: logQueryDefinitionFields},
-	{HCLKey: "network_query", Type: TypeBlock, OmitEmpty: true, Children: logQueryDefinitionFields},
-	{HCLKey: "security_query", Type: TypeBlock, OmitEmpty: true, Children: logQueryDefinitionFields},
-	{HCLKey: "audit_query", Type: TypeBlock, OmitEmpty: true, Children: logQueryDefinitionFields},
-	{HCLKey: "profile_metrics_query", Type: TypeBlock, OmitEmpty: true, Children: logQueryDefinitionFields},
-	// ProcessQueryDefinition
-	{HCLKey: "process_query", Type: TypeBlock, OmitEmpty: true, Children: processQueryDefinitionFields},
-}
-
-// timeseriesWidgetSpec corresponds to OpenAPI
-// components/schemas/TimeseriesWidgetDefinition.
-var timeseriesWidgetSpec = WidgetSpec{
-	HCLKey:   "timeseries_definition",
-	JSONType: "timeseries",
-	Fields: []FieldSpec{
-		// show_legend is always emitted even when false — cassette confirms false appears when not set
-		{HCLKey: "show_legend", Type: TypeBool, OmitEmpty: false},
-		{HCLKey: "legend_size", Type: TypeString, OmitEmpty: true},
-		{HCLKey: "legend_layout", Type: TypeString, OmitEmpty: true},
-		{HCLKey: "legend_columns", Type: TypeStringList, OmitEmpty: true},
-		// WidgetAxis — used twice for the two y-axes
-		{HCLKey: "yaxis", Type: TypeBlock, OmitEmpty: true, Children: widgetAxisFields},
-		{HCLKey: "right_yaxis", Type: TypeBlock, OmitEmpty: true, Children: widgetAxisFields},
-		// WidgetMarker: HCL singular "marker" → JSON plural "markers"
-		{HCLKey: "marker", JSONKey: "markers", Type: TypeBlockList, OmitEmpty: true, Children: widgetMarkerFields},
-		// WidgetEvent: HCL singular "event" → JSON plural "events"
-		{HCLKey: "event", JSONKey: "events", Type: TypeBlockList, OmitEmpty: true, Children: widgetEventFields},
-		// TimeseriesWidgetRequest: HCL singular "request" → JSON plural "requests"
-		// OmitEmpty: false — always emit even if empty (matches SDK behavior in cassettes)
-		{HCLKey: "request", JSONKey: "requests", Type: TypeBlockList, OmitEmpty: false,
-			Children: timeseriesWidgetRequestFields},
-	},
-}
-
-// allWidgetSpecs is the registry of all implemented WidgetSpecs.
-// Phase 1: timeseries only.
-var allWidgetSpecs = []WidgetSpec{
-	timeseriesWidgetSpec,
-}
-
-// ============================================================
-// Dashboard Top Level
-// ============================================================
-
-// templateVariableFields corresponds to OpenAPI DashboardTemplateVariable.
-// HCL key: "template_variable" (singular), JSON key: "template_variables" (plural).
-var templateVariableFields = []FieldSpec{
-	{HCLKey: "name", Type: TypeString, OmitEmpty: false},
-	{HCLKey: "prefix", Type: TypeString, OmitEmpty: true},
-	{HCLKey: "default", Type: TypeString, OmitEmpty: true},
-	{HCLKey: "defaults", Type: TypeStringList, OmitEmpty: true},
-	{HCLKey: "available_values", Type: TypeStringList, OmitEmpty: true},
-}
-
-// templateVariablePresetValueFields corresponds to OpenAPI DashboardTemplateVariablePresetValue.
-// Used inside template_variable_preset blocks.
-// HCL key: "template_variable" (singular), JSON key: "template_variables" (plural).
-var templateVariablePresetValueFields = []FieldSpec{
-	{HCLKey: "name", Type: TypeString, OmitEmpty: true},
-	{HCLKey: "value", Type: TypeString, OmitEmpty: true},
-	{HCLKey: "values", Type: TypeStringList, OmitEmpty: true},
-}
-
-// templateVariablePresetFields corresponds to OpenAPI DashboardTemplateVariablePreset.
-// HCL key: "template_variable_preset" (singular), JSON key: "template_variable_presets" (plural).
-var templateVariablePresetFields = []FieldSpec{
-	{HCLKey: "name", Type: TypeString, OmitEmpty: true},
-	// template_variable (singular HCL) → template_variables (plural JSON)
-	{HCLKey: "template_variable", JSONKey: "template_variables", Type: TypeBlockList, OmitEmpty: true,
-		Children: templateVariablePresetValueFields},
-}
-
-// dashboardTopLevelFields are the top-level fields of the Dashboard object.
-var dashboardTopLevelFields = []FieldSpec{
-	{HCLKey: "title", Type: TypeString, OmitEmpty: false},
-	{HCLKey: "description", Type: TypeString, OmitEmpty: false},
-	{HCLKey: "layout_type", Type: TypeString, OmitEmpty: false},
-	{HCLKey: "reflow_type", Type: TypeString, OmitEmpty: true},
-	// notify_list: always send [], never omit (OmitEmpty: false)
-	{HCLKey: "notify_list", Type: TypeStringList, OmitEmpty: false},
-	// tags: always send [], never omit
-	{HCLKey: "tags", Type: TypeStringList, OmitEmpty: false},
-	// template_variable (HCL singular) → template_variables (JSON plural)
-	{HCLKey: "template_variable", JSONKey: "template_variables", Type: TypeBlockList, OmitEmpty: false,
-		Children: templateVariableFields},
-	// template_variable_preset (HCL singular) → template_variable_presets (JSON plural)
-	{HCLKey: "template_variable_preset", JSONKey: "template_variable_presets", Type: TypeBlockList, OmitEmpty: false,
-		Children: templateVariablePresetFields},
-	// restricted_roles: omit when empty
-	{HCLKey: "restricted_roles", Type: TypeStringList, OmitEmpty: true},
-	// is_read_only: kept in schema for backward compat; omit when false
-	{HCLKey: "is_read_only", Type: TypeBool, OmitEmpty: true},
 }
 
 // ============================================================
 // Generic Engine: HCL → JSON (build direction)
 // ============================================================
 
-// buildEngineJSON converts schema.ResourceData at the given HCL path prefix to a JSON map.
+// BuildEngineJSON converts schema.ResourceData at the given HCL path prefix to a JSON map.
 // hclPrefix is the dotted path to the parent block, e.g., "widget.0.timeseries_definition.0"
-func buildEngineJSON(d *schema.ResourceData, hclPrefix string, fields []FieldSpec) map[string]interface{} {
+func BuildEngineJSON(d *schema.ResourceData, hclPrefix string, fields []FieldSpec) map[string]interface{} {
 	result := map[string]interface{}{}
 	for _, f := range fields {
 		var hclPath string
@@ -451,7 +180,7 @@ func buildEngineJSON(d *schema.ResourceData, hclPrefix string, fields []FieldSpe
 			if count == 0 {
 				continue
 			}
-			nested := buildEngineJSON(d, hclPath+".0", f.Children)
+			nested := BuildEngineJSON(d, hclPath+".0", f.Children)
 			if len(nested) == 0 && f.OmitEmpty {
 				continue
 			}
@@ -461,7 +190,7 @@ func buildEngineJSON(d *schema.ResourceData, hclPrefix string, fields []FieldSpe
 			count, _ := d.Get(hclPath + ".#").(int)
 			items := make([]interface{}, count)
 			for i := 0; i < count; i++ {
-				items[i] = buildEngineJSON(d, fmt.Sprintf("%s.%d", hclPath, i), f.Children)
+				items[i] = BuildEngineJSON(d, fmt.Sprintf("%s.%d", hclPath, i), f.Children)
 			}
 			if f.OmitEmpty && len(items) == 0 {
 				continue
@@ -492,9 +221,9 @@ func setAtJSONPath(m map[string]interface{}, path string, val interface{}) {
 // Generic Engine: JSON → HCL (flatten direction)
 // ============================================================
 
-// flattenEngineJSON converts a JSON map into a map[string]interface{} suitable
+// FlattenEngineJSON converts a JSON map into a map[string]interface{} suitable
 // for setting on a TypeList field in schema.ResourceData.
-func flattenEngineJSON(fields []FieldSpec, data map[string]interface{}) map[string]interface{} {
+func FlattenEngineJSON(fields []FieldSpec, data map[string]interface{}) map[string]interface{} {
 	result := map[string]interface{}{}
 	for _, f := range fields {
 		jsonVal := getAtJSONPath(data, f.effectiveJSONPath())
@@ -526,7 +255,7 @@ func flattenEngineJSON(fields []FieldSpec, data map[string]interface{}) map[stri
 
 		case TypeBlock:
 			if m, ok := jsonVal.(map[string]interface{}); ok {
-				result[f.HCLKey] = []interface{}{flattenEngineJSON(f.Children, m)}
+				result[f.HCLKey] = []interface{}{FlattenEngineJSON(f.Children, m)}
 			}
 
 		case TypeBlockList:
@@ -534,7 +263,7 @@ func flattenEngineJSON(fields []FieldSpec, data map[string]interface{}) map[stri
 				list := make([]interface{}, len(items))
 				for i, item := range items {
 					if m, ok := item.(map[string]interface{}); ok {
-						list[i] = flattenEngineJSON(f.Children, m)
+						list[i] = FlattenEngineJSON(f.Children, m)
 					}
 				}
 				result[f.HCLKey] = list
@@ -591,7 +320,7 @@ func buildWidgetEngineJSON(d *schema.ResourceData, widgetIdx int) map[string]int
 		allFields := make([]FieldSpec, 0, len(commonWidgetFields)+len(spec.Fields))
 		allFields = append(allFields, commonWidgetFields...)
 		allFields = append(allFields, spec.Fields...)
-		defJSON := buildEngineJSON(d, defHCLPath, allFields)
+		defJSON := BuildEngineJSON(d, defHCLPath, allFields)
 		defJSON["type"] = spec.JSONType
 
 		// For timeseries widgets, post-process requests to handle formula/query blocks.
@@ -942,7 +671,7 @@ func flattenWidgetEngineJSON(widgetData map[string]interface{}) map[string]inter
 		allFields := make([]FieldSpec, 0, len(commonWidgetFields)+len(spec.Fields))
 		allFields = append(allFields, commonWidgetFields...)
 		allFields = append(allFields, spec.Fields...)
-		defState := flattenEngineJSON(allFields, def)
+		defState := FlattenEngineJSON(allFields, def)
 
 		// For timeseries widgets, post-process requests to handle formula/query
 		if spec.JSONType == "timeseries" {
@@ -964,7 +693,7 @@ func flattenWidgetEngineJSON(widgetData map[string]interface{}) map[string]inter
 						if existingRequests, ok := defState["request"].([]interface{}); ok && ri < len(existingRequests) {
 							flatRequests[ri] = existingRequests[ri]
 						} else {
-							flatRequests[ri] = flattenEngineJSON(timeseriesWidgetRequestFields, reqMap)
+							flatRequests[ri] = FlattenEngineJSON(timeseriesWidgetRequestFields, reqMap)
 						}
 					}
 				}
@@ -1264,11 +993,12 @@ func flattenCloudCostQueryJSON(q map[string]interface{}) map[string]interface{} 
 // Dashboard-Level Build and Flatten
 // ============================================================
 
-const dashboardAPIPath = "/api/v1/dashboard"
+// DashboardAPIPath is the Datadog API path for dashboards.
+const DashboardAPIPath = "/api/v1/dashboard"
 
-// buildDashboardEngineJSON builds the full dashboard JSON body from ResourceData.
-func buildDashboardEngineJSON(d *schema.ResourceData) map[string]interface{} {
-	result := buildEngineJSON(d, "", dashboardTopLevelFields)
+// BuildDashboardEngineJSON builds the full dashboard JSON body from ResourceData.
+func BuildDashboardEngineJSON(d *schema.ResourceData) map[string]interface{} {
+	result := BuildEngineJSON(d, "", dashboardTopLevelFields)
 
 	// SDK sends "id": "" in POST bodies — replicate for cassette compatibility.
 	// On create d.Id() is "" (zero value), on update d.Id() is the real ID.
@@ -1286,8 +1016,8 @@ func buildDashboardEngineJSON(d *schema.ResourceData) map[string]interface{} {
 	return result
 }
 
-// updateDashboardEngineState sets ResourceData state from the dashboard API response map.
-func updateDashboardEngineState(d *schema.ResourceData, resp map[string]interface{}) diag.Diagnostics {
+// UpdateDashboardEngineState sets ResourceData state from the dashboard API response map.
+func UpdateDashboardEngineState(d *schema.ResourceData, resp map[string]interface{}) diag.Diagnostics {
 	// Set simple top-level fields from response
 	if v, ok := resp["title"]; ok {
 		if err := d.Set("title", fmt.Sprintf("%v", v)); err != nil {
@@ -1515,128 +1245,12 @@ func flattenTemplateVariablePresets(tvps []interface{}) []interface{} {
 	return result
 }
 
-// ============================================================
-// CRUD Functions (raw HTTP, replacing SDK-based versions)
-// ============================================================
-
-func resourceDatadogDashboardCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	providerConf := meta.(*ProviderConfiguration)
-	apiInstances := providerConf.DatadogApiInstances
-	auth := providerConf.Auth
-
-	body, err := json.Marshal(buildDashboardEngineJSON(d))
+// MarshalDashboardJSON marshals the dashboard JSON body from ResourceData.
+// The trailing newline matches behavior of json.NewEncoder used when cassettes were recorded.
+func MarshalDashboardJSON(d *schema.ResourceData) (string, error) {
+	body, err := json.Marshal(BuildDashboardEngineJSON(d))
 	if err != nil {
-		return diag.FromErr(fmt.Errorf("error marshaling dashboard JSON: %s", err))
+		return "", fmt.Errorf("error marshaling dashboard JSON: %s", err)
 	}
-	// The SDK uses json.NewEncoder which appends \n; cassettes were recorded with that behavior.
-	// Add \n to match cassette body format.
-	bodyStr := string(body) + "\n"
-
-	respByte, httpresp, err := utils.SendRequest(auth, apiInstances.HttpClient, "POST", dashboardAPIPath, &bodyStr)
-	if err != nil {
-		return utils.TranslateClientErrorDiag(err, httpresp, "error creating dashboard")
-	}
-
-	respMap, err := utils.ConvertResponseByteToMap(respByte)
-	if err != nil {
-		return diag.FromErr(err)
-	}
-
-	id, ok := respMap["id"]
-	if !ok {
-		return diag.FromErr(errors.New("error retrieving id from response"))
-	}
-	d.SetId(fmt.Sprintf("%v", id))
-
-	layoutType, ok := respMap["layout_type"]
-	if !ok {
-		return diag.FromErr(errors.New("error retrieving layout_type from response"))
-	}
-
-	var httpResponse *http.Response
-	retryErr := retry.RetryContext(ctx, d.Timeout(schema.TimeoutCreate), func() *retry.RetryError {
-		_, httpResponse, err = utils.SendRequest(auth, apiInstances.HttpClient, "GET", dashboardAPIPath+"/"+d.Id(), nil)
-		if err != nil {
-			if httpResponse != nil && httpResponse.StatusCode == 404 {
-				return retry.RetryableError(fmt.Errorf("dashboard not created yet"))
-			}
-			return retry.NonRetryableError(err)
-		}
-		// We only log the error, as failing to update the list shouldn't fail dashboard creation
-		updateDashboardLists(d, providerConf, d.Id(), fmt.Sprintf("%v", layoutType))
-		return nil
-	})
-	if retryErr != nil {
-		return diag.FromErr(retryErr)
-	}
-
-	return updateDashboardEngineState(d, respMap)
-}
-
-func resourceDatadogDashboardRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	providerConf := meta.(*ProviderConfiguration)
-	apiInstances := providerConf.DatadogApiInstances
-	auth := providerConf.Auth
-
-	respByte, httpresp, err := utils.SendRequest(auth, apiInstances.HttpClient, "GET", dashboardAPIPath+"/"+d.Id(), nil)
-	if err != nil {
-		if httpresp != nil && httpresp.StatusCode == 404 {
-			d.SetId("")
-			return nil
-		}
-		return utils.TranslateClientErrorDiag(err, httpresp, "error getting dashboard")
-	}
-
-	respMap, err := utils.ConvertResponseByteToMap(respByte)
-	if err != nil {
-		return diag.FromErr(err)
-	}
-
-	return updateDashboardEngineState(d, respMap)
-}
-
-func resourceDatadogDashboardUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	providerConf := meta.(*ProviderConfiguration)
-	apiInstances := providerConf.DatadogApiInstances
-	auth := providerConf.Auth
-
-	body, err := json.Marshal(buildDashboardEngineJSON(d))
-	if err != nil {
-		return diag.FromErr(fmt.Errorf("error marshaling dashboard JSON: %s", err))
-	}
-	// The SDK uses json.NewEncoder which appends \n; cassettes were recorded with that behavior.
-	// Add \n to match cassette body format.
-	bodyStr := string(body) + "\n"
-
-	respByte, httpresp, err := utils.SendRequest(auth, apiInstances.HttpClient, "PUT", dashboardAPIPath+"/"+d.Id(), &bodyStr)
-	if err != nil {
-		return utils.TranslateClientErrorDiag(err, httpresp, "error updating dashboard")
-	}
-
-	respMap, err := utils.ConvertResponseByteToMap(respByte)
-	if err != nil {
-		return diag.FromErr(err)
-	}
-
-	layoutType, ok := respMap["layout_type"]
-	if !ok {
-		return diag.FromErr(errors.New("error retrieving layout_type from response"))
-	}
-
-	updateDashboardLists(d, providerConf, d.Id(), fmt.Sprintf("%v", layoutType))
-
-	return updateDashboardEngineState(d, respMap)
-}
-
-func resourceDatadogDashboardDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	providerConf := meta.(*ProviderConfiguration)
-	apiInstances := providerConf.DatadogApiInstances
-	auth := providerConf.Auth
-
-	_, httpresp, err := utils.SendRequest(auth, apiInstances.HttpClient, "DELETE", dashboardAPIPath+"/"+d.Id(), nil)
-	if err != nil {
-		return utils.TranslateClientErrorDiag(err, httpresp, "error deleting dashboard")
-	}
-
-	return nil
+	return string(body) + "\n", nil
 }
