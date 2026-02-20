@@ -17,7 +17,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/metrics/%22foo%22
+        url: https://api.datadoghq.com/api/v1/metrics/foo
         method: GET
       response:
         proto: HTTP/1.1
@@ -52,7 +52,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/metrics/%22foo%22
+        url: https://api.datadoghq.com/api/v1/metrics/foo
         method: GET
       response:
         proto: HTTP/1.1
@@ -87,7 +87,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/metrics/%22foo%22
+        url: https://api.datadoghq.com/api/v1/metrics/foo
         method: GET
       response:
         proto: HTTP/1.1
