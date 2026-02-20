@@ -57,6 +57,46 @@ type FieldSpec struct {
 
 	// Children: for TypeBlock and TypeBlockList, the nested field specs.
 	Children []FieldSpec
+
+	// ── Terraform schema metadata ──────────────────────────────────────
+	// Description is shown in `make docs` output. Required for docs generation.
+	Description string
+
+	// Required: true → schema.Required; false (default) → schema.Optional
+	Required bool
+
+	// Computed: true for fields set by the API (e.g. widget IDs, URLs)
+	Computed bool
+
+	// Default: default value emitted in schema (e.g. true for has_background)
+	Default interface{}
+
+	// MaxItems: override for TypeBlockList (default 0 = unlimited)
+	// TypeBlock always uses MaxItems: 1 automatically.
+	MaxItems int
+
+	// Sensitive: mask this field in logs and UI
+	Sensitive bool
+
+	// Deprecated: non-empty string = deprecation message
+	Deprecated string
+
+	// ValidValues: valid string values for enum fields.
+	// Generates validators.ValidateEnumValue automatically.
+	// Use instead of SDK-based enum validators.
+	ValidValues []string
+
+	// ValidateDiag: arbitrary validator (escape hatch for complex cases).
+	// Use ValidValues for simple enums; ValidateDiag for everything else.
+	ValidateDiag schema.SchemaValidateDiagFunc
+
+	// ConflictsWith: field paths this field conflicts with.
+	// Populated post-generation for the rare fields that need it.
+	ConflictsWith []string
+
+	// UseSet: use schema.TypeSet instead of schema.TypeList for list fields.
+	// Rare — only for fields that require set semantics.
+	UseSet bool
 }
 
 // effectiveJSONKey returns the JSON key or path root for a FieldSpec.
@@ -88,8 +128,11 @@ type WidgetSpec struct {
 	// Example: "timeseries"
 	JSONType string
 
+	// Description is shown in `make docs` output for the outer widget definition block.
+	Description string
+
 	// Fields are the widget-specific fields.
-	// commonWidgetFields are automatically merged in by the engine.
+	// CommonWidgetFields are automatically merged in by the engine.
 	Fields []FieldSpec
 }
 
@@ -340,8 +383,8 @@ func buildWidgetEngineJSON(d *schema.ResourceData, widgetPath string) map[string
 			continue
 		}
 		defHCLPath := fmt.Sprintf("%s.%s.0", widgetPath, spec.HCLKey)
-		allFields := make([]FieldSpec, 0, len(commonWidgetFields)+len(spec.Fields))
-		allFields = append(allFields, commonWidgetFields...)
+		allFields := make([]FieldSpec, 0, len(CommonWidgetFields)+len(spec.Fields))
+		allFields = append(allFields, CommonWidgetFields...)
 		allFields = append(allFields, spec.Fields...)
 		defJSON := BuildEngineJSON(d, defHCLPath, allFields)
 		defJSON["type"] = spec.JSONType
@@ -803,8 +846,8 @@ func flattenWidgetEngineJSON(widgetData map[string]interface{}) map[string]inter
 		if spec.JSONType != widgetType {
 			continue
 		}
-		allFields := make([]FieldSpec, 0, len(commonWidgetFields)+len(spec.Fields))
-		allFields = append(allFields, commonWidgetFields...)
+		allFields := make([]FieldSpec, 0, len(CommonWidgetFields)+len(spec.Fields))
+		allFields = append(allFields, CommonWidgetFields...)
 		allFields = append(allFields, spec.Fields...)
 		defState := FlattenEngineJSON(allFields, def)
 

@@ -19,19 +19,32 @@ import (
 // Query Table Widget
 // ============================================================
 
-// queryTableWidgetSpec corresponds to OpenAPI
+// QueryTableWidgetSpec corresponds to OpenAPI
 // components/schemas/TableWidgetDefinition.
 // Formula requests are handled by post-processing (buildQueryTableFormulaRequestsJSON).
-var queryTableWidgetSpec = WidgetSpec{
-	HCLKey:   "query_table_definition",
-	JSONType: "query_table",
+var QueryTableWidgetSpec = WidgetSpec{
+	HCLKey:      "query_table_definition",
+	JSONType:    "query_table",
+	Description: "The definition for a Query Table widget.",
 	Fields: []FieldSpec{
 		// has_search_bar: OmitEmpty — only present when explicitly set
-		{HCLKey: "has_search_bar", Type: TypeString, OmitEmpty: true},
+		{
+			HCLKey:      "has_search_bar",
+			Type:        TypeString,
+			OmitEmpty:   true,
+			Description: "Controls the display of the search bar.",
+			ValidValues: []string{"always", "never", "auto"},
+		},
 		// request: HCL singular "request" → JSON plural "requests"
 		// OmitEmpty: false — always emit even if empty
-		{HCLKey: "request", JSONKey: "requests", Type: TypeBlockList, OmitEmpty: false,
-			Children: queryTableOldRequestFields},
+		{
+			HCLKey:      "request",
+			JSONKey:     "requests",
+			Type:        TypeBlockList,
+			OmitEmpty:   false,
+			Description: "A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query`, `apm_stats_query` or `process_query` is required within the `request` block).",
+			Children:    queryTableOldRequestFields,
+		},
 	},
 }
 
@@ -692,15 +705,23 @@ func flattenQueryTableTextFormatsJSON(textFormats []interface{}) []interface{} {
 // List Stream Widget
 // ============================================================
 
-// listStreamWidgetSpec corresponds to OpenAPI
+// ListStreamWidgetSpec corresponds to OpenAPI
 // components/schemas/ListStreamWidgetDefinition.
-var listStreamWidgetSpec = WidgetSpec{
-	HCLKey:   "list_stream_definition",
-	JSONType: "list_stream",
+var ListStreamWidgetSpec = WidgetSpec{
+	HCLKey:      "list_stream_definition",
+	JSONType:    "list_stream",
+	Description: "The definition for a List Stream widget.",
 	Fields: []FieldSpec{
 		// request: HCL singular "request" → JSON plural "requests"
-		{HCLKey: "request", JSONKey: "requests", Type: TypeBlockList, OmitEmpty: false,
-			Children: listStreamRequestFields},
+		{
+			HCLKey:      "request",
+			JSONKey:     "requests",
+			Type:        TypeBlockList,
+			OmitEmpty:   false,
+			Required:    true,
+			Description: "Nested block describing the requests to use when displaying the widget. Multiple `request` blocks are allowed with the structure below.",
+			Children:    listStreamRequestFields,
+		},
 	},
 }
 
@@ -708,21 +729,48 @@ var listStreamWidgetSpec = WidgetSpec{
 // SLO Widget
 // ============================================================
 
-// sloWidgetSpec corresponds to OpenAPI
+// SLOWidgetSpec corresponds to OpenAPI
 // components/schemas/SLOWidgetDefinition.
-var sloWidgetSpec = WidgetSpec{
-	HCLKey:   "service_level_objective_definition",
-	JSONType: "slo",
+var SLOWidgetSpec = WidgetSpec{
+	HCLKey:      "service_level_objective_definition",
+	JSONType:    "slo",
+	Description: "The definition for a Service Level Objective widget.",
 	Fields: []FieldSpec{
-		// Required fields (not OmitEmpty)
-		{HCLKey: "slo_id", Type: TypeString, OmitEmpty: false},
-		{HCLKey: "view_type", Type: TypeString, OmitEmpty: false},
-		{HCLKey: "view_mode", Type: TypeString, OmitEmpty: false},
-		{HCLKey: "time_windows", Type: TypeStringList, OmitEmpty: false},
+		// Required fields
+		{
+			HCLKey:      "slo_id",
+			Type:        TypeString,
+			OmitEmpty:   false,
+			Required:    true,
+			Description: "The ID of the service level objective used by the widget.",
+		},
+		{
+			HCLKey:      "view_type",
+			Type:        TypeString,
+			OmitEmpty:   false,
+			Required:    true,
+			Description: "The type of view to use when displaying the widget. Only `detail` is supported.",
+		},
+		{
+			HCLKey:      "view_mode",
+			Type:        TypeString,
+			OmitEmpty:   false,
+			Required:    true,
+			Description: "The view mode for the widget.",
+			ValidValues: []string{"overall", "component", "both"},
+		},
+		{
+			HCLKey:      "time_windows",
+			Type:        TypeStringList,
+			OmitEmpty:   false,
+			Required:    true,
+			Description: "A list of time windows to display in the widget.",
+			ValidValues: []string{"7d", "30d", "90d", "week_to_date", "previous_week", "month_to_date", "previous_month", "global_time"},
+		},
 		// Optional fields
-		{HCLKey: "show_error_budget", Type: TypeBool, OmitEmpty: true},
-		{HCLKey: "global_time_target", Type: TypeString, OmitEmpty: true},
-		{HCLKey: "additional_query_filters", Type: TypeString, OmitEmpty: true},
+		{HCLKey: "show_error_budget", Type: TypeBool, OmitEmpty: true, Description: "Whether to show the error budget or not."},
+		{HCLKey: "global_time_target", Type: TypeString, OmitEmpty: true, Description: "The global time target of the widget."},
+		{HCLKey: "additional_query_filters", Type: TypeString, OmitEmpty: true, Description: "Additional filters applied to the SLO query."},
 	},
 }
 
@@ -730,15 +778,23 @@ var sloWidgetSpec = WidgetSpec{
 // SLO List Widget
 // ============================================================
 
-// sloListWidgetSpec corresponds to OpenAPI
+// SLOListWidgetSpec corresponds to OpenAPI
 // components/schemas/SLOListWidgetDefinition.
-var sloListWidgetSpec = WidgetSpec{
-	HCLKey:   "slo_list_definition",
-	JSONType: "slo_list",
+var SLOListWidgetSpec = WidgetSpec{
+	HCLKey:      "slo_list_definition",
+	JSONType:    "slo_list",
+	Description: "The definition for a SLO List widget.",
 	Fields: []FieldSpec{
 		// request: HCL singular "request" → JSON plural "requests"
-		{HCLKey: "request", JSONKey: "requests", Type: TypeBlockList, OmitEmpty: false,
-			Children: sloListRequestFields},
+		{
+			HCLKey:      "request",
+			JSONKey:     "requests",
+			Type:        TypeBlockList,
+			OmitEmpty:   false,
+			Required:    true,
+			Description: "A nested block describing the request to use when displaying the widget. Exactly one `request` block is allowed.",
+			Children:    sloListRequestFields,
+		},
 	},
 }
 
@@ -746,21 +802,35 @@ var sloListWidgetSpec = WidgetSpec{
 // Split Graph Widget
 // ============================================================
 
-// splitGraphWidgetSpec corresponds to OpenAPI
+// SplitGraphWidgetSpec corresponds to OpenAPI
 // components/schemas/SplitGraphWidgetDefinition.
 // The JSON type is "split_group" (not "split_graph").
 // source_widget_definition is handled by post-processing (buildSplitGraphSourceWidgetJSON).
-var splitGraphWidgetSpec = WidgetSpec{
-	HCLKey:   "split_graph_definition",
-	JSONType: "split_group",
+var SplitGraphWidgetSpec = WidgetSpec{
+	HCLKey:      "split_graph_definition",
+	JSONType:    "split_group",
+	Description: "The definition for a Split Graph widget.",
 	Fields: []FieldSpec{
-		{HCLKey: "size", Type: TypeString, OmitEmpty: false},
+		{
+			HCLKey:      "size",
+			Type:        TypeString,
+			OmitEmpty:   false,
+			Required:    true,
+			Description: "Size of the individual graphs in the split.",
+		},
 		// has_uniform_y_axes: always emitted (OmitEmpty: false) — cassette shows false when not set
-		{HCLKey: "has_uniform_y_axes", Type: TypeBool, OmitEmpty: false},
+		{HCLKey: "has_uniform_y_axes", Type: TypeBool, OmitEmpty: false, Description: "Normalize y axes across graphs."},
 		// split_config: TypeBlock (MaxItems:1, Required)
-		{HCLKey: "split_config", Type: TypeBlock, OmitEmpty: false, Children: splitConfigFields},
+		{
+			HCLKey:      "split_config",
+			Type:        TypeBlock,
+			OmitEmpty:   false,
+			Required:    true,
+			Description: "Encapsulates all user choices about how to split a graph.",
+			Children:    splitConfigFields,
+		},
 		// source_widget_definition: handled by post-processing
-		// title is in commonWidgetFields
+		// title is in CommonWidgetFields
 	},
 }
 
@@ -864,8 +934,8 @@ func buildSplitGraphSourceWidgetJSON(d *schema.ResourceData, defHCLPath string) 
 			continue
 		}
 		innerPath := sourcePath + "." + spec.HCLKey + ".0"
-		allFields := make([]FieldSpec, 0, len(commonWidgetFields)+len(spec.Fields))
-		allFields = append(allFields, commonWidgetFields...)
+		allFields := make([]FieldSpec, 0, len(CommonWidgetFields)+len(spec.Fields))
+		allFields = append(allFields, CommonWidgetFields...)
 		allFields = append(allFields, spec.Fields...)
 		defJSON := BuildEngineJSON(d, innerPath, allFields)
 		defJSON["type"] = spec.JSONType
@@ -884,8 +954,8 @@ func flattenSplitGraphSourceWidgetJSON(srcDef map[string]interface{}) map[string
 		if spec.JSONType != widgetType {
 			continue
 		}
-		allFields := make([]FieldSpec, 0, len(commonWidgetFields)+len(spec.Fields))
-		allFields = append(allFields, commonWidgetFields...)
+		allFields := make([]FieldSpec, 0, len(CommonWidgetFields)+len(spec.Fields))
+		allFields = append(allFields, CommonWidgetFields...)
 		allFields = append(allFields, spec.Fields...)
 		defState := FlattenEngineJSON(allFields, srcDef)
 		// Apply the same per-widget post-processing as the main flatten engine
@@ -901,19 +971,28 @@ func flattenSplitGraphSourceWidgetJSON(srcDef map[string]interface{}) map[string
 // Group Widget
 // ============================================================
 
-// groupWidgetSpec corresponds to OpenAPI
+// GroupWidgetSpec corresponds to OpenAPI
 // components/schemas/GroupWidgetDefinition.
 // The nested "widget" list is handled by post-processing (buildGroupWidgetsJSON).
-var groupWidgetSpec = WidgetSpec{
-	HCLKey:   "group_definition",
-	JSONType: "group",
+var GroupWidgetSpec = WidgetSpec{
+	HCLKey:      "group_definition",
+	JSONType:    "group",
+	Description: "The definition for a Group widget.",
 	Fields: []FieldSpec{
-		{HCLKey: "layout_type", Type: TypeString, OmitEmpty: false},
-		{HCLKey: "background_color", Type: TypeString, OmitEmpty: true},
-		{HCLKey: "banner_img", Type: TypeString, OmitEmpty: true},
-		{HCLKey: "show_title", Type: TypeBool, OmitEmpty: true},
+		{
+			HCLKey:      "layout_type",
+			Type:        TypeString,
+			OmitEmpty:   false,
+			Required:    true,
+			Description: "The layout type of the group.",
+			ValidValues: []string{"ordered"},
+		},
+		{HCLKey: "background_color", Type: TypeString, OmitEmpty: true, Description: "The background color of the group title, options: `vivid_blue`, `vivid_purple`, `vivid_pink`, `vivid_orange`, `vivid_yellow`, `vivid_green`, `blue`, `purple`, `pink`, `orange`, `yellow`, `green`, `gray` or `white`"},
+		{HCLKey: "banner_img", Type: TypeString, OmitEmpty: true, Description: "The image URL to display as a banner for the group."},
+		// Default: true — preserved from original schema (show_title defaults to visible)
+		{HCLKey: "show_title", Type: TypeBool, OmitEmpty: false, Default: true, Description: "Whether to show the title or not."},
 		// "widget" is handled by post-processing
-		// title is in commonWidgetFields
+		// title is in CommonWidgetFields
 	},
 }
 
@@ -996,20 +1075,26 @@ func flattenGroupWidgetsJSON(widgets []interface{}) []interface{} {
 // Powerpack Widget
 // ============================================================
 
-// powerpackWidgetSpec corresponds to OpenAPI
+// PowerpackWidgetSpec corresponds to OpenAPI
 // components/schemas/PowerpackWidgetDefinition.
-var powerpackWidgetSpec = WidgetSpec{
-	HCLKey:   "powerpack_definition",
-	JSONType: "powerpack",
+var PowerpackWidgetSpec = WidgetSpec{
+	HCLKey:      "powerpack_definition",
+	JSONType:    "powerpack",
+	Description: "The definition for a Powerpack widget.",
 	Fields: []FieldSpec{
-		{HCLKey: "powerpack_id", Type: TypeString, OmitEmpty: false},
-		{HCLKey: "background_color", Type: TypeString, OmitEmpty: true},
-		{HCLKey: "banner_img", Type: TypeString, OmitEmpty: true},
-		{HCLKey: "show_title", Type: TypeBool, OmitEmpty: true},
+		{HCLKey: "powerpack_id", Type: TypeString, OmitEmpty: false, Required: true, Description: "UUID of the associated powerpack."},
+		{HCLKey: "background_color", Type: TypeString, OmitEmpty: true, Description: "The background color of the powerpack title."},
+		{HCLKey: "banner_img", Type: TypeString, OmitEmpty: true, Description: "URL of image to display as a banner for the powerpack."},
+		{HCLKey: "show_title", Type: TypeBool, OmitEmpty: true, Description: "Whether to show the title of the powerpack."},
 		// template_variables: TypeBlock (MaxItems:1) containing two TypeBlockLists
-		{HCLKey: "template_variables", Type: TypeBlock, OmitEmpty: true,
-			Children: powerpackTemplateVariableFields},
-		// title is in commonWidgetFields
+		{
+			HCLKey:      "template_variables",
+			Type:        TypeBlock,
+			OmitEmpty:   true,
+			Description: "The list of template variables for this powerpack.",
+			Children:    powerpackTemplateVariableFields,
+		},
+		// title is in CommonWidgetFields
 	},
 }
 
@@ -1205,11 +1290,11 @@ func flattenWidgetPostProcess(spec WidgetSpec, def map[string]interface{}, defSt
 
 // complexWidgetSpecs is populated by Batch C implementation.
 var complexWidgetSpecs = []WidgetSpec{
-	queryTableWidgetSpec,
-	listStreamWidgetSpec,
-	sloWidgetSpec,
-	sloListWidgetSpec,
-	splitGraphWidgetSpec,
-	groupWidgetSpec,
-	powerpackWidgetSpec,
+	QueryTableWidgetSpec,
+	ListStreamWidgetSpec,
+	SLOWidgetSpec,
+	SLOListWidgetSpec,
+	SplitGraphWidgetSpec,
+	GroupWidgetSpec,
+	PowerpackWidgetSpec,
 }

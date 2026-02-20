@@ -6,5 +6,5 @@ package dashboardmapping
 // All groups are named after their OpenAPI components/schemas/ counterparts.
 //
 // Note: widgetFieldSortFields (2 fields) and runWorkflowWidgetInputFields (2 fields)
-// have been inlined into their single-use sites (logStreamWidgetSpec and
-// runWorkflowWidgetSpec respectively) per the single-use inlining policy.
+// have been inlined into their single-use sites (LogStreamWidgetSpec and
+// RunWorkflowWidgetSpec respectively) per the single-use inlining policy.

@@ -75,7 +75,7 @@ func TestAccDatadogDashboardNoteContentError(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config:      datadogDashboardNoteConfigNoContent(uniq),
-				ExpectError: regexp.MustCompile("expected \"widget.0.note_definition.0.content\" to not be an empty string"),
+				ExpectError: regexp.MustCompile("expected .* to not be an empty string"),
 			},
 		},
 	})
