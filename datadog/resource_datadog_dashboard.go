@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
-	"net/http"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
@@ -13,8 +12,6 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/retry"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
@@ -151,168 +148,9 @@ func resourceDatadogDashboard() *schema.Resource {
 	}
 }
 
-func resourceDatadogDashboardCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	providerConf := meta.(*ProviderConfiguration)
-	apiInstances := providerConf.DatadogApiInstances
-	auth := providerConf.Auth
-	dashboardPayload, err := buildDatadogDashboard(d)
-	if err != nil {
-		return diag.Errorf("failed to parse resource configuration: %s", err.Error())
-	}
-	dashboard, httpresp, err := apiInstances.GetDashboardsApiV1().CreateDashboard(auth, *dashboardPayload)
-	if err != nil {
-		return utils.TranslateClientErrorDiag(err, httpresp, "error creating dashboard")
-	}
-	if err := utils.CheckForUnparsed(dashboard); err != nil {
-		return diag.FromErr(err)
-	}
-	d.SetId(*dashboard.Id)
-
-	var getDashboard datadogV1.Dashboard
-	var httpResponse *http.Response
-	err = retry.RetryContext(ctx, d.Timeout(schema.TimeoutCreate), func() *retry.RetryError {
-		getDashboard, httpResponse, err = apiInstances.GetDashboardsApiV1().GetDashboard(auth, *dashboard.Id)
-		if err != nil {
-			if httpResponse != nil && httpResponse.StatusCode == 404 {
-				return retry.RetryableError(fmt.Errorf("dashboard not created yet"))
-			}
-
-			return retry.NonRetryableError(err)
-		}
-		if err := utils.CheckForUnparsed(getDashboard); err != nil {
-			return retry.NonRetryableError(err)
-		}
-
-		// We only log the error, as failing to update the list shouldn't fail dashboard creation
-		updateDashboardLists(d, providerConf, *dashboard.Id, d.Get("layout_type").(string))
-
-		return nil
-	})
-	if err != nil {
-		return diag.FromErr(err)
-	}
-
-	return updateDashboardState(d, &getDashboard)
-}
-
-func resourceDatadogDashboardUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	providerConf := meta.(*ProviderConfiguration)
-	apiInstances := providerConf.DatadogApiInstances
-	auth := providerConf.Auth
-	id := d.Id()
-	dashboard, err := buildDatadogDashboard(d)
-	if err != nil {
-		return diag.Errorf("failed to parse resource configuration: %s", err.Error())
-	}
-	updatedDashboard, httpresp, err := apiInstances.GetDashboardsApiV1().UpdateDashboard(auth, id, *dashboard)
-	if err != nil {
-		return utils.TranslateClientErrorDiag(err, httpresp, "error updating dashboard")
-	}
-	if err := utils.CheckForUnparsed(updatedDashboard); err != nil {
-		return diag.FromErr(err)
-	}
-
-	updateDashboardLists(d, providerConf, *dashboard.Id, d.Get("layout_type").(string))
-
-	return updateDashboardState(d, &updatedDashboard)
-}
-
-func updateDashboardLists(d *schema.ResourceData, providerConf *ProviderConfiguration, dashboardID string, layoutType string) {
-	dashTypeString := "custom_screenboard"
-	if layoutType == "ordered" {
-		dashTypeString = "custom_timeboard"
-	}
-	dashType := datadogV2.DashboardType(dashTypeString)
-	itemsRequest := []datadogV2.DashboardListItemRequest{*datadogV2.NewDashboardListItemRequest(dashboardID, dashType)}
-	apiInstances := providerConf.DatadogApiInstances
-	auth := providerConf.Auth
-
-	if v, ok := d.GetOk("dashboard_lists"); ok && v.(*schema.Set).Len() > 0 {
-		items := datadogV2.NewDashboardListAddItemsRequest()
-		items.SetDashboards(itemsRequest)
-
-		for _, id := range v.(*schema.Set).List() {
-			_, _, err := apiInstances.GetDashboardListsApiV2().CreateDashboardListItems(auth, int64(id.(int)), *items)
-			if err != nil {
-				log.Printf("[DEBUG] Got error adding to dashboard list %d: %v", id.(int), err)
-			}
-		}
-	}
-
-	if v, ok := d.GetOk("dashboard_lists_removed"); ok && v.(*schema.Set).Len() > 0 {
-		items := datadogV2.NewDashboardListDeleteItemsRequest()
-		items.SetDashboards(itemsRequest)
-
-		for _, id := range v.(*schema.Set).List() {
-			_, _, err := apiInstances.GetDashboardListsApiV2().DeleteDashboardListItems(auth, int64(id.(int)), *items)
-			if err != nil {
-				log.Printf("[DEBUG] Got error removing from dashboard list %d: %v", id.(int), err)
-			}
-		}
-	}
-}
-
-func updateDashboardState(d *schema.ResourceData, dashboard *datadogV1.Dashboard) diag.Diagnostics {
-	if err := d.Set("title", dashboard.GetTitle()); err != nil {
-		return diag.FromErr(err)
-	}
-	if err := d.Set("layout_type", dashboard.GetLayoutType()); err != nil {
-		return diag.FromErr(err)
-	}
-	if err := d.Set("reflow_type", dashboard.GetReflowType()); err != nil {
-		return diag.FromErr(err)
-	}
-	if err := d.Set("description", dashboard.GetDescription()); err != nil {
-		return diag.FromErr(err)
-	}
-	if err := d.Set("url", dashboard.GetUrl()); err != nil {
-		return diag.FromErr(err)
-	}
-
-	// Set RBAC role settings
-	if err := d.Set("is_read_only", dashboard.GetIsReadOnly()); err != nil {
-		return diag.FromErr(err)
-	}
-	restrictedRoles := buildTerraformRestrictedRoles(&dashboard.RestrictedRoles)
-	if err := d.Set("restricted_roles", restrictedRoles); err != nil {
-		return diag.FromErr(err)
-	}
-
-	// Set widgets
-	terraformWidgets, err := buildTerraformWidgets(&dashboard.Widgets, d)
-	if err != nil {
-		return diag.FromErr(err)
-	}
-	if err := d.Set("widget", terraformWidgets); err != nil {
-		return diag.FromErr(err)
-	}
-
-	// Set template variables
-	templateVariables := buildTerraformTemplateVariables(&dashboard.TemplateVariables)
-	if err := d.Set("template_variable", templateVariables); err != nil {
-		return diag.FromErr(err)
-	}
-
-	// Set template variable presets
-	templateVariablePresets := buildTerraformTemplateVariablePresets(&dashboard.TemplateVariablePresets)
-	if err := d.Set("template_variable_preset", templateVariablePresets); err != nil {
-		return diag.FromErr(err)
-	}
-
-	// Set notify list
-	notifyList := buildTerraformNotifyList(dashboard.NotifyList.Get())
-	if err := d.Set("notify_list", notifyList); err != nil {
-		return diag.FromErr(err)
-	}
-
-	// Set tags
-	tags := dashboard.GetTags()
-	if err := d.Set("tags", tags); err != nil {
-		return diag.FromErr(err)
-	}
-
-	return nil
-}
+// resourceDatadogDashboardCreate, resourceDatadogDashboardRead,
+// resourceDatadogDashboardUpdate, and resourceDatadogDashboardDelete are defined
+// in resource_datadog_dashboard_engine.go (FieldSpec bidirectional mapping engine).
 
 // isWidgetTimeUnparsedObject checks if an unparsed object is a WidgetTime.
 // WidgetTime can be unparsed due to oneOf ambiguity between legacy and new formats.
@@ -350,47 +188,41 @@ func isWidgetTimeUnparsedObject(obj interface{}) bool {
 	return false
 }
 
-// checkForUnparsedDashboard checks for unparsed elements but allows WidgetTime unparsed objects.
-// WidgetTime can be unparsed due to oneOf ambiguity, which we handle separately.
-func checkForUnparsedDashboard(dashboard datadogV1.Dashboard) error {
-	if unparsed, invalidPart := datadog.ContainsUnparsedObject(dashboard); unparsed {
-		if !isWidgetTimeUnparsedObject(invalidPart) {
-			return fmt.Errorf("dashboard contains unparsed element: %+v", invalidPart)
-		}
-		// WidgetTime unparsed objects are expected and handled by buildTerraformWidgetTime
+func updateDashboardLists(d *schema.ResourceData, providerConf *ProviderConfiguration, dashboardID string, layoutType string) {
+	dashTypeString := "custom_screenboard"
+	if layoutType == "ordered" {
+		dashTypeString = "custom_timeboard"
 	}
-	return nil
-}
-
-func resourceDatadogDashboardRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	providerConf := meta.(*ProviderConfiguration)
+	dashType := datadogV2.DashboardType(dashTypeString)
+	itemsRequest := []datadogV2.DashboardListItemRequest{*datadogV2.NewDashboardListItemRequest(dashboardID, dashType)}
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
-	id := d.Id()
-	dashboard, httpresp, err := apiInstances.GetDashboardsApiV1().GetDashboard(auth, id)
-	if err != nil {
-		if httpresp != nil && httpresp.StatusCode == 404 {
-			d.SetId("")
-			return nil
+
+	if v, ok := d.GetOk("dashboard_lists"); ok && v.(*schema.Set).Len() > 0 {
+		items := datadogV2.NewDashboardListAddItemsRequest()
+		items.SetDashboards(itemsRequest)
+
+		for _, id := range v.(*schema.Set).List() {
+			_, _, err := apiInstances.GetDashboardListsApiV2().CreateDashboardListItems(auth, int64(id.(int)), *items)
+			if err != nil {
+				log.Printf("[DEBUG] Got error adding to dashboard list %d: %v", id.(int), err)
+			}
 		}
-		return utils.TranslateClientErrorDiag(err, httpresp, "error getting dashboard")
 	}
-	if err := checkForUnparsedDashboard(dashboard); err != nil {
-		return diag.FromErr(err)
+
+	if v, ok := d.GetOk("dashboard_lists_removed"); ok && v.(*schema.Set).Len() > 0 {
+		items := datadogV2.NewDashboardListDeleteItemsRequest()
+		items.SetDashboards(itemsRequest)
+
+		for _, id := range v.(*schema.Set).List() {
+			_, _, err := apiInstances.GetDashboardListsApiV2().DeleteDashboardListItems(auth, int64(id.(int)), *items)
+			if err != nil {
+				log.Printf("[DEBUG] Got error removing from dashboard list %d: %v", id.(int), err)
+			}
+		}
 	}
-	return updateDashboardState(d, &dashboard)
 }
 
-func resourceDatadogDashboardDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	providerConf := meta.(*ProviderConfiguration)
-	apiInstances := providerConf.DatadogApiInstances
-	auth := providerConf.Auth
-	id := d.Id()
-	if _, httpresp, err := apiInstances.GetDashboardsApiV1().DeleteDashboard(auth, id); err != nil {
-		return utils.TranslateClientErrorDiag(err, httpresp, "error deleting dashboard")
-	}
-	return nil
-}
 
 func buildDatadogDashboard(d *schema.ResourceData) (*datadogV1.Dashboard, error) {
 	var dashboard datadogV1.Dashboard
