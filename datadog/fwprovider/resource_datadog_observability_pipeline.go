@@ -210,9 +210,9 @@ type ocsfMappingModel struct {
 }
 
 type ocsfMappingCustomModel struct {
-	Version      types.Int64                          `tfsdk:"version"`
-	Metadata     []ocsfMappingCustomMetadataModel     `tfsdk:"metadata"`
-	Mapping []ocsfMappingCustomFieldMappingModel `tfsdk:"mapping"`
+	Version  types.Int64                          `tfsdk:"version"`
+	Metadata []ocsfMappingCustomMetadataModel     `tfsdk:"metadata"`
+	Mapping  []ocsfMappingCustomFieldMappingModel `tfsdk:"mapping"`
 }
 
 type ocsfMappingCustomMetadataModel struct {

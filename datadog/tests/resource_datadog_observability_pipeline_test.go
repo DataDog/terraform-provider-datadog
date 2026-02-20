@@ -3521,15 +3521,15 @@ resource "datadog_observability_pipeline" "ocsf_custom" {
                 version  = "1.3.0"
                 profiles = ["container"]
               }
-              field_mapping {
+              mapping {
                 dest   = "device.type"
                 source = "host.type"
               }
-              field_mapping {
+              mapping {
                 dest  = "event.type"
                 value = "static_value"
               }
-              field_mapping {
+              mapping {
                 dest   = "device.name"
                 source = "hostname"
                 lookup {
@@ -3564,8 +3564,8 @@ resource "datadog_observability_pipeline" "ocsf_custom" {
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.ocsf_mapper.0.mapping.0.custom_mapping.0.version", "1"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.ocsf_mapper.0.mapping.0.custom_mapping.0.metadata.0.class", "Device Inventory Info"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.ocsf_mapper.0.mapping.0.custom_mapping.0.metadata.0.version", "1.3.0"),
-					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.ocsf_mapper.0.mapping.0.custom_mapping.0.field_mapping.0.dest", "device.type"),
-					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.ocsf_mapper.0.mapping.0.custom_mapping.0.field_mapping.0.source", "host.type"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.ocsf_mapper.0.mapping.0.custom_mapping.0.mapping.0.dest", "device.type"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.ocsf_mapper.0.mapping.0.custom_mapping.0.mapping.0.source", "host.type"),
 				),
 			},
 		},

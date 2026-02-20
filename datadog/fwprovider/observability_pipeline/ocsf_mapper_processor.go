@@ -1,9 +1,9 @@
 package observability_pipeline
 
 import (
-	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
+	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -29,10 +29,10 @@ func OcsfMapperProcessorSchema() schema.ListNestedBlock {
 								Description: "Search query for selecting which logs the mapping applies to.",
 							},
 							"library_mapping": schema.StringAttribute{
-								Optional: true,
+								Optional:    true,
 								Description: "Predefined library mapping for log transformation. Use this or custom_mapping, not both.",
 								Validators: []validator.String{
-									stringvalidator.ConflictsWith(path.MatchRelative().AtName("custom_mapping")),
+									stringvalidator.ConflictsWith(path.MatchRelative().AtParent().AtName("custom_mapping")),
 								},
 							},
 						},
@@ -41,7 +41,7 @@ func OcsfMapperProcessorSchema() schema.ListNestedBlock {
 								Description: "Custom OCSF mapping configuration for transforming logs.",
 								Validators: []validator.List{
 									listvalidator.SizeAtMost(1),
-									listvalidator.ConflictsWith(path.MatchRelative().AtName("library_mapping")),
+									listvalidator.ConflictsWith(path.MatchRelative().AtParent().AtName("library_mapping")),
 								},
 								NestedObject: schema.NestedBlockObject{
 									Attributes: map[string]schema.Attribute{
