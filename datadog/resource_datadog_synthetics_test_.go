@@ -309,7 +309,7 @@ func syntheticsTestRequest() *schema.Resource {
 				ValidateFunc: validation.IntBetween(1, 10),
 			},
 			"tcp_method": {
-				Description:  "For Network Path TCP tests, the TCP traceroute strategy.",
+				Description:  "For TCP Network Path tests, the TCP traceroute strategy.",
 				Type:         schema.TypeString,
 				Optional:     true,
 				ValidateFunc: validation.StringInSlice([]string{"prefer_sack", "syn", "sack"}, false),
