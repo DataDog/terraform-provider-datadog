@@ -319,10 +319,7 @@ func buildSensitiveDataScannerRuleAttributes(d *schema.ResourceData) *datadogV2.
 
 		if shouldSaveMatch, ok := d.GetOk("text_replacement.0.should_save_match"); ok {
 			if typeVar, ok := d.GetOk("text_replacement.0.type"); ok && typeVar.(string) == "replacement_string" {
-				if textReplacement.AdditionalProperties == nil {
-					textReplacement.AdditionalProperties = map[string]interface{}{}
-				}
-				textReplacement.AdditionalProperties["should_save_match"] = shouldSaveMatch.(bool)
+				textReplacement.SetShouldSaveMatch(shouldSaveMatch.(bool))
 			}
 		}
 
@@ -460,13 +457,9 @@ func updateSensitiveDataScannerRuleState(d *schema.ResourceData, ruleAttributes 
 		if replacementString, ok := tR.GetReplacementStringOk(); ok {
 			textReplacement["replacement_string"] = replacementString
 		}
-		if tR.AdditionalProperties != nil {
-			// `should_save_match` should be supported starting in `datadog-api-client-go` v2.45
-			// Additional properties is used until then.
-			if shouldSaveMatch, ok := tR.AdditionalProperties["should_save_match"]; ok {
-				if replacementType, ok := tR.GetTypeOk(); ok && *replacementType == datadogV2.SENSITIVEDATASCANNERTEXTREPLACEMENTTYPE_REPLACEMENT_STRING {
-					textReplacement["should_save_match"] = shouldSaveMatch
-				}
+		if shouldSaveMatch, ok := tR.GetShouldSaveMatchOk(); ok {
+			if replacementType, ok := tR.GetTypeOk(); ok && *replacementType == datadogV2.SENSITIVEDATASCANNERTEXTREPLACEMENTTYPE_REPLACEMENT_STRING {
+				textReplacement["should_save_match"] = shouldSaveMatch
 			}
 		}
 		if replacementType, ok := tR.GetTypeOk(); ok {
