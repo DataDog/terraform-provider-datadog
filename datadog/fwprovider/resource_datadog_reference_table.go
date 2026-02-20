@@ -12,10 +12,6 @@ import (
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/listplanmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/objectplanmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
@@ -211,52 +207,34 @@ func (r *referenceTableResource) Schema(_ context.Context, _ resource.SchemaRequ
 				},
 			},
 			"schema": schema.SingleNestedBlock{
-				Description: "The schema definition for the reference table, including field definitions and primary keys. Schema is only set on create; updates are derived from the file asynchronously.",
-				PlanModifiers: []planmodifier.Object{
-					objectplanmodifier.UseStateForUnknown(),
-				},
+				Description: "The schema definition for the reference table, including field definitions and primary keys. This block is required. Schema is only set on create; updates are derived from the file asynchronously.",
 				Attributes: map[string]schema.Attribute{
 					"primary_keys": schema.ListAttribute{
-						Optional:    true,
-						Computed:    true,
+						Required:    true,
 						Description: "List of field names that serve as primary keys for the table. Currently only one primary key is supported.",
 						ElementType: types.StringType,
 						Validators: []validator.List{
 							listvalidator.SizeAtLeast(1),
 						},
-						PlanModifiers: []planmodifier.List{
-							listplanmodifier.UseStateForUnknown(),
-						},
 					},
 				},
 				Blocks: map[string]schema.Block{
 					"fields": schema.ListNestedBlock{
-						Description: "List of fields in the table schema. Must include at least one field. Schema is only set on create.",
+						Description: "List of fields in the table schema. At least one field is required. Schema is only set on create.",
 						Validators: []validator.List{
 							listvalidator.SizeAtLeast(1),
-						},
-						PlanModifiers: []planmodifier.List{
-							listplanmodifier.UseStateForUnknown(),
 						},
 						NestedObject: schema.NestedBlockObject{
 							Attributes: map[string]schema.Attribute{
 								"name": schema.StringAttribute{
-									Optional:    true,
-									Computed:    true,
+									Required:    true,
 									Description: "The name of the field.",
-									PlanModifiers: []planmodifier.String{
-										stringplanmodifier.UseStateForUnknown(),
-									},
 								},
 								"type": schema.StringAttribute{
-									Optional:    true,
-									Computed:    true,
+									Required:    true,
 									Description: "The data type of the field. Must be one of: STRING, INT32.",
 									Validators: []validator.String{
 										stringvalidator.OneOf("STRING", "INT32"),
-									},
-									PlanModifiers: []planmodifier.String{
-										stringplanmodifier.UseStateForUnknown(),
 									},
 								},
 							},
@@ -341,7 +319,16 @@ func (r *referenceTableResource) ValidateConfig(ctx context.Context, request res
 			}
 		}
 	}
-	// Note: schema.fields and schema.primary_keys validation is handled by listvalidator.SizeAtLeast(1) in schema definition
+
+	// Validate that schema is provided
+	if config.Schema == nil {
+		response.Diagnostics.AddError(
+			"Missing schema configuration",
+			"The 'schema' block is required and must include primary_keys and at least one field.",
+		)
+		return
+	}
+	// Note: fields are validated by listvalidator.SizeAtLeast(1) in the schema definition
 }
 
 func (r *referenceTableResource) ModifyPlan(ctx context.Context, request resource.ModifyPlanRequest, response *resource.ModifyPlanResponse) {
