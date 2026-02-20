@@ -1,7 +1,9 @@
 package observability_pipeline
 
 import (
+	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -27,8 +29,11 @@ func OcsfMapperProcessorSchema() schema.ListNestedBlock {
 								Description: "Search query for selecting which logs the mapping applies to.",
 							},
 							"library_mapping": schema.StringAttribute{
-								Optional:    true,
+								Optional: true,
 								Description: "Predefined library mapping for log transformation. Use this or custom_mapping, not both.",
+								Validators: []validator.String{
+									stringvalidator.ConflictsWith(path.MatchRelative().AtName("custom_mapping")),
+								},
 							},
 						},
 						Blocks: map[string]schema.Block{
@@ -36,6 +41,7 @@ func OcsfMapperProcessorSchema() schema.ListNestedBlock {
 								Description: "Custom OCSF mapping configuration for transforming logs.",
 								Validators: []validator.List{
 									listvalidator.SizeAtMost(1),
+									listvalidator.ConflictsWith(path.MatchRelative().AtName("library_mapping")),
 								},
 								NestedObject: schema.NestedBlockObject{
 									Attributes: map[string]schema.Attribute{
@@ -69,7 +75,7 @@ func OcsfMapperProcessorSchema() schema.ListNestedBlock {
 												},
 											},
 										},
-										"field_mapping": schema.ListNestedBlock{
+										"mapping": schema.ListNestedBlock{
 											Description: "A list of field mapping rules for transforming log fields to OCSF schema fields.",
 											NestedObject: schema.NestedBlockObject{
 												Attributes: map[string]schema.Attribute{

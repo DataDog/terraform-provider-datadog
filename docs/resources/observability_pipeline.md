@@ -701,7 +701,7 @@ Optional:
 - `filter` (Block List) The `filter` processor allows conditional processing of logs based on a Datadog search query. Logs that match the `include` query are passed through; others are discarded. (see [below for nested schema](#nestedblock--config--processor_group--processor--filter))
 - `generate_datadog_metrics` (Block List) The `generate_datadog_metrics` processor creates custom metrics from logs. Metrics can be counters, gauges, or distributions and optionally grouped by log fields. (see [below for nested schema](#nestedblock--config--processor_group--processor--generate_datadog_metrics))
 - `metric_tags` (Block List) The `metric_tags` processor filters metrics based on their tags using Datadog tag key patterns. (see [below for nested schema](#nestedblock--config--processor_group--processor--metric_tags))
-- `ocsf_mapper` (Block List) The `ocsf_mapper` processor transforms logs into the OCSF schema using predefined library mappings. (see [below for nested schema](#nestedblock--config--processor_group--processor--ocsf_mapper))
+- `ocsf_mapper` (Block List) The `ocsf_mapper` processor transforms logs into the OCSF schema using predefined library mappings or custom mapping configuration. (see [below for nested schema](#nestedblock--config--processor_group--processor--ocsf_mapper))
 - `parse_grok` (Block List) The `parse_grok` processor extracts structured fields from unstructured log messages using Grok patterns. (see [below for nested schema](#nestedblock--config--processor_group--processor--parse_grok))
 - `parse_json` (Block List) The `parse_json` processor extracts JSON from a specified field and flattens it into the event. This is useful when logs contain embedded JSON as a string. (see [below for nested schema](#nestedblock--config--processor_group--processor--parse_json))
 - `parse_xml` (Block List) The `parse_xml` processor parses XML from a specified field and extracts it into the event. (see [below for nested schema](#nestedblock--config--processor_group--processor--parse_xml))
@@ -924,7 +924,7 @@ Required:
 
 Optional:
 
-- `mapping` (Block List) List of OCSF mapping entries using library mapping. (see [below for nested schema](#nestedblock--config--processor_group--processor--ocsf_mapper--mapping))
+- `mapping` (Block List) List of OCSF mapping entries. Each entry uses either a library mapping or a custom mapping. (see [below for nested schema](#nestedblock--config--processor_group--processor--ocsf_mapper--mapping))
 
 <a id="nestedblock--config--processor_group--processor--ocsf_mapper--mapping"></a>
 ### Nested Schema for `config.processor_group.processor.ocsf_mapper.mapping`
@@ -932,7 +932,75 @@ Optional:
 Required:
 
 - `include` (String) Search query for selecting which logs the mapping applies to.
-- `library_mapping` (String) Predefined library mapping for log transformation.
+
+Optional:
+
+- `custom_mapping` (Block List) Custom OCSF mapping configuration for transforming logs. (see [below for nested schema](#nestedblock--config--processor_group--processor--ocsf_mapper--mapping--custom_mapping))
+- `library_mapping` (String) Predefined library mapping for log transformation. Use this or custom_mapping, not both.
+
+<a id="nestedblock--config--processor_group--processor--ocsf_mapper--mapping--custom_mapping"></a>
+### Nested Schema for `config.processor_group.processor.ocsf_mapper.mapping.custom_mapping`
+
+Required:
+
+- `version` (Number) The version of the custom mapping configuration.
+
+Optional:
+
+- `mapping` (Block List) A list of field mapping rules for transforming log fields to OCSF schema fields. (see [below for nested schema](#nestedblock--config--processor_group--processor--ocsf_mapper--mapping--custom_mapping--mapping))
+- `metadata` (Block List) Metadata for the custom OCSF mapping. (see [below for nested schema](#nestedblock--config--processor_group--processor--ocsf_mapper--mapping--custom_mapping--metadata))
+
+<a id="nestedblock--config--processor_group--processor--ocsf_mapper--mapping--custom_mapping--mapping"></a>
+### Nested Schema for `config.processor_group.processor.ocsf_mapper.mapping.custom_mapping.mapping`
+
+Required:
+
+- `dest` (String) The destination OCSF field path.
+
+Optional:
+
+- `default` (String) The default value to use if the source field is missing or empty.
+- `lookup` (Block List) Lookup table configuration for mapping source values to destination values. (see [below for nested schema](#nestedblock--config--processor_group--processor--ocsf_mapper--mapping--custom_mapping--mapping--lookup))
+- `source` (String) The source field path from the log event.
+- `sources` (List of String) Multiple source field paths for combined mapping.
+- `value` (String) A static value to use for the destination field.
+
+<a id="nestedblock--config--processor_group--processor--ocsf_mapper--mapping--custom_mapping--mapping--lookup"></a>
+### Nested Schema for `config.processor_group.processor.ocsf_mapper.mapping.custom_mapping.mapping.lookup`
+
+Optional:
+
+- `default` (String) The default value to use if no lookup match is found.
+- `table` (Block List) A list of lookup table entries for value transformation. (see [below for nested schema](#nestedblock--config--processor_group--processor--ocsf_mapper--mapping--custom_mapping--mapping--lookup--table))
+
+<a id="nestedblock--config--processor_group--processor--ocsf_mapper--mapping--custom_mapping--mapping--lookup--table"></a>
+### Nested Schema for `config.processor_group.processor.ocsf_mapper.mapping.custom_mapping.mapping.lookup.table`
+
+Optional:
+
+- `contains` (String) The substring to match in the source value.
+- `equals` (String) The exact value to match in the source.
+- `equals_source` (String) The source field to match against.
+- `matches` (String) A regex pattern to match in the source value.
+- `not_matches` (String) A regex pattern that must not match the source value.
+- `value` (String) The value to use when a match is found.
+
+
+
+
+<a id="nestedblock--config--processor_group--processor--ocsf_mapper--mapping--custom_mapping--metadata"></a>
+### Nested Schema for `config.processor_group.processor.ocsf_mapper.mapping.custom_mapping.metadata`
+
+Required:
+
+- `class` (String) The OCSF event class name.
+- `version` (String) The OCSF schema version.
+
+Optional:
+
+- `profiles` (List of String) A list of OCSF profiles to apply.
+
+
 
 
 

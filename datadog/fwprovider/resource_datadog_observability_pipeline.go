@@ -212,7 +212,7 @@ type ocsfMappingModel struct {
 type ocsfMappingCustomModel struct {
 	Version      types.Int64                          `tfsdk:"version"`
 	Metadata     []ocsfMappingCustomMetadataModel     `tfsdk:"metadata"`
-	FieldMapping []ocsfMappingCustomFieldMappingModel `tfsdk:"field_mapping"`
+	Mapping []ocsfMappingCustomFieldMappingModel `tfsdk:"mapping"`
 }
 
 type ocsfMappingCustomMetadataModel struct {
@@ -3803,7 +3803,7 @@ func flattenOcsfMappingCustom(src *datadogV2.ObservabilityPipelineOcsfMappingCus
 		Profiles: profiles,
 	}}
 	for _, fm := range src.GetMapping() {
-		out.FieldMapping = append(out.FieldMapping, flattenOcsfMappingCustomFieldMapping(&fm))
+		out.Mapping = append(out.Mapping, flattenOcsfMappingCustomFieldMapping(&fm))
 	}
 	return out
 }
@@ -4191,7 +4191,7 @@ func expandOcsfMappingCustom(src *ocsfMappingCustomModel) *datadogV2.Observabili
 	}
 
 	var fieldMappings []datadogV2.ObservabilityPipelineOcsfMappingCustomFieldMapping
-	for _, fm := range src.FieldMapping {
+	for _, fm := range src.Mapping {
 		fieldMappings = append(fieldMappings, *expandOcsfMappingCustomFieldMapping(&fm))
 	}
 	out.SetMapping(fieldMappings)
