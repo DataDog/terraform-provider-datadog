@@ -2,17 +2,21 @@ package dashboardmapping
 
 // field_groups.go
 //
-// Reusable []FieldSpec variables that mirror OpenAPI components/schemas/ entries.
+// All reusable []FieldSpec variables that mirror OpenAPI components/schemas/ entries.
 // Each variable is named after the OpenAPI schema it corresponds to (camelCase).
 // A comment on each variable identifies the OpenAPI schema and which widget types use it.
 //
-// Also contains:
-//   - commonWidgetFields: FieldSpecs shared by most widget definition types
-//   - Dashboard top-level fields and template variable field groups
+// Sections:
+//   - Shared Widget Field Groups (OpenAPI: WidgetCustomLink, WidgetTime, etc.)
+//   - Query Field Groups (OpenAPI: LogQueryDefinition, etc.)
+//   - Formula Field Groups (OpenAPI: WidgetFormula, etc.)
+//   - Widget-level Field Groups (per widget type: hostmap, geomap, scatterplot, etc.)
+//   - Dashboard Top-Level Field Groups
 
 // ============================================================
-// Reusable FieldSpec Groups (mirroring OpenAPI $ref schemas)
+// Shared Widget Field Groups (OpenAPI: WidgetCustomLink, etc.)
 // ============================================================
+// (base groups used by commonWidgetFields)
 
 // widgetCustomLinkFields corresponds to OpenAPI components/schemas/WidgetCustomLink.
 // Used by: timeseries, toplist, query_value, change, distribution, heatmap, hostmap,
@@ -84,6 +88,11 @@ var widgetEventFields = []FieldSpec{
 	{HCLKey: "tags_execution", Type: TypeString, OmitEmpty: true,
 		Description: "The execution method for multi-value filters."},
 }
+
+// ============================================================
+// Query Field Groups (OpenAPI: LogQueryDefinition, etc.)
+// ============================================================
+// (log/apm/rum/process query groups + standardQueryFields)
 
 // logQueryDefinitionGroupBySortFields corresponds to OpenAPI
 // components/schemas/LogQueryDefinitionGroupBySort.
@@ -162,10 +171,6 @@ var processQueryDefinitionFields = []FieldSpec{
 	{HCLKey: "limit", Type: TypeInt, OmitEmpty: true,
 		Description: "The max number of items in the filter list."},
 }
-
-// ============================================================
-// FormulaAndFunction Query Field Groups
-// ============================================================
 
 // formulaAndFunctionMetricQueryFields corresponds to OpenAPI
 // FormulaAndFunctionMetricQueryDefinition.
@@ -436,8 +441,9 @@ var standardQueryFields = []FieldSpec{
 }
 
 // ============================================================
-// WidgetFormula Field Groups
+// Formula Field Groups (OpenAPI: WidgetFormula, etc.)
 // ============================================================
+// (widgetFormulaFields and its sub-groups, widgetConditionalFormatFields)
 
 // widgetFormulaLimitFields corresponds to OpenAPI components/schemas/WidgetFormulaLimit.
 // Used inside widgetFormulaFields as the "limit" block.
@@ -548,6 +554,624 @@ var widgetFormulaFields = []FieldSpec{
 		Children:    widgetNumberFormatFields},
 }
 
+// widgetConditionalFormatFields corresponds to OpenAPI WidgetConditionalFormat.
+// Used by: query_value, toplist requests and formula fields.
+var widgetConditionalFormatFields = []FieldSpec{
+	{HCLKey: "comparator", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "The comparator to use.",
+		ValidValues: []string{"<", "<=", ">", ">="}},
+	{HCLKey: "value", Type: TypeFloat, OmitEmpty: false, Required: true,
+		Description: "A value for the comparator."},
+	{HCLKey: "palette", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "The color palette to apply.",
+		ValidValues: []string{"blue", "custom_bg", "custom_image", "custom_text", "gray_on_white", "grey", "green", "orange", "red", "red_on_white", "white_on_gray", "white_on_green", "green_on_white", "white_on_red", "white_on_yellow", "yellow_on_white", "black_on_light_yellow", "black_on_light_green", "black_on_light_red"}},
+	{HCLKey: "custom_bg_color", Type: TypeString, OmitEmpty: true,
+		Description: "The color palette to apply to the background, same values available as palette."},
+	{HCLKey: "custom_fg_color", Type: TypeString, OmitEmpty: true,
+		Description: "The color palette to apply to the foreground, same values available as palette."},
+	{HCLKey: "image_url", Type: TypeString, OmitEmpty: true,
+		Description: "Displays an image as the background."},
+	// Emitted even when false (cassette-verified)
+	{HCLKey: "hide_value", Type: TypeBool, OmitEmpty: false,
+		Description: "Setting this to True hides values."},
+	{HCLKey: "timeframe", Type: TypeString, OmitEmpty: true,
+		Description: "Defines the displayed timeframe."},
+	{HCLKey: "metric", Type: TypeString, OmitEmpty: true,
+		Description: "The metric from the request to correlate with this conditional format."},
+}
+
+// ============================================================
+// Widget-level Field Groups (per widget type)
+// ============================================================
+// (hostmap, geomap, scatterplot, sunburst, toplist, distribution axes,
+//
+//	timeseries background, query table, list stream, slo, split graph, powerpack groups)
+
+// widgetRequestStyleFields corresponds to OpenAPI WidgetStyle.
+// Used by: distribution, heatmap, sunburst, toplist (request-level style).
+var widgetRequestStyleFields = []FieldSpec{
+	{HCLKey: "palette", Type: TypeString, OmitEmpty: true,
+		Description: "A color palette to apply to the widget. The available options are available at: https://docs.datadoghq.com/dashboards/widgets/timeseries/#appearance."},
+}
+
+// hostmapRequestFillSizeFields corresponds to OpenAPI HostMapRequest.
+// Used by: hostmap fill and size sub-blocks.
+var hostmapRequestFillSizeFields = append([]FieldSpec{
+	{HCLKey: "q", Type: TypeString, OmitEmpty: true,
+		Description: "The metric query to use for this widget."},
+}, standardQueryFields...)
+
+// hostmapStyleFields corresponds to the inline style block on HostMapWidgetDefinition.
+var hostmapStyleFields = []FieldSpec{
+	{HCLKey: "palette", Type: TypeString, OmitEmpty: true,
+		Description: "A color palette to apply to the widget. The available options are available at: https://docs.datadoghq.com/dashboards/widgets/timeseries/#appearance."},
+	{HCLKey: "palette_flip", Type: TypeBool, OmitEmpty: true,
+		Description: "A Boolean indicating whether to flip the palette tones."},
+	{HCLKey: "fill_min", Type: TypeString, OmitEmpty: true,
+		Description: "The min value to use to color the map."},
+	{HCLKey: "fill_max", Type: TypeString, OmitEmpty: true,
+		Description: "The max value to use to color the map."},
+}
+
+// geomapStyleFields corresponds to the style block on GeomapWidgetDefinition.
+var geomapStyleFields = []FieldSpec{
+	// Both required — emitted even when false
+	{HCLKey: "palette", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "The color palette to apply to the widget."},
+	{HCLKey: "palette_flip", Type: TypeBool, OmitEmpty: false, Required: true,
+		Description: "A Boolean indicating whether to flip the palette tones."},
+}
+
+// sunburstLegendInlineFields corresponds to OpenAPI SunburstWidgetLegendInlineAutomatic.
+// Kept named (3 fields); sunburstLegendTableFields (1 field) inlined into sunburstWidgetSpec.
+// geomapViewFields (1 field) inlined into geomapWidgetSpec.
+var sunburstLegendInlineFields = []FieldSpec{
+	{HCLKey: "type", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "The type of legend (inline or automatic)."},
+	// Emitted even when false (cassette-verified)
+	{HCLKey: "hide_value", Type: TypeBool, OmitEmpty: false,
+		Description: "Whether to hide the values of the groups."},
+	{HCLKey: "hide_percent", Type: TypeBool, OmitEmpty: false,
+		Description: "Whether to hide the percentages of the groups."},
+}
+
+// timeseriesBackgroundFields corresponds to OpenAPI TimeseriesBackground.
+// Used by: query_value timeseries_background block.
+var timeseriesBackgroundFields = []FieldSpec{
+	{HCLKey: "type", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Whether the Timeseries is made using an area or bars.",
+		ValidValues: []string{"area", "bars"}},
+	{HCLKey: "yaxis", Type: TypeBlock, OmitEmpty: true,
+		Description: "A nested block describing the Y-Axis Controls. Exactly one nested block is allowed using the structure below.",
+		Children:    widgetAxisFields},
+}
+
+// scatterplotXYRequestFields corresponds to OpenAPI ScatterPlotRequest.
+// Used by: scatterplot x and y sub-blocks.
+var scatterplotXYRequestFields = append([]FieldSpec{
+	{HCLKey: "q", Type: TypeString, OmitEmpty: true,
+		Description: "The metric query to use for this widget."},
+	{HCLKey: "aggregator", Type: TypeString, OmitEmpty: true,
+		Description: "Aggregator used for the request.",
+		ValidValues: []string{"avg", "last", "max", "min", "sum", "percentile"}},
+}, standardQueryFields...)
+
+// scatterplotFormulaFields corresponds to OpenAPI ScatterplotWidgetFormula.
+// Used in the scatterplot_table sub-block (different from widgetFormulaFields).
+var scatterplotFormulaFields = []FieldSpec{
+	{HCLKey: "formula_expression", JSONKey: "formula", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "A string expression built from queries, formulas, and functions."},
+	{HCLKey: "dimension", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Dimension of the Scatterplot.",
+		ValidValues: []string{"x", "y", "radius", "color"}},
+	{HCLKey: "alias", Type: TypeString, OmitEmpty: true,
+		Description: "An expression alias."},
+}
+
+// scatterplotTableRequestFields corresponds to OpenAPI ScatterplotTableRequest.
+// Used by: scatterplot scatterplot_table sub-block.
+var scatterplotTableRequestFields = []FieldSpec{
+	{HCLKey: "query", Type: TypeBlockList, OmitEmpty: true,
+		Description: "A list of queries to use in the widget.",
+		Children:    formulaAndFunctionQueryFields},
+	{HCLKey: "formula", Type: TypeBlockList, OmitEmpty: true,
+		Description: "A list of formulas to use in the widget.",
+		Children:    scatterplotFormulaFields},
+}
+
+// toplistWidgetStyleDisplayFields corresponds to the display sub-block inside toplist style.
+var toplistWidgetStyleDisplayFields = []FieldSpec{
+	{HCLKey: "type", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "The display type for the widget."},
+}
+
+// toplistWidgetStyleFields corresponds to OpenAPI ToplistWidgetStyle.
+// Note: "display" is a single JSON object (MaxItems:1 in HCL); we use TypeBlock
+// to emit a single object rather than an array.
+var toplistWidgetStyleFields = []FieldSpec{
+	{HCLKey: "display", Type: TypeBlock, OmitEmpty: true,
+		Description: "The display mode for the widget.",
+		Children:    toplistWidgetStyleDisplayFields},
+	{HCLKey: "palette", Type: TypeString, OmitEmpty: true,
+		Description: "The color palette for the widget."},
+	{HCLKey: "scaling", Type: TypeString, OmitEmpty: true,
+		Description: "The scaling mode for the widget."},
+}
+
+// topologyQueryFields corresponds to the inline query block on TopologyRequest.
+var topologyQueryFields = []FieldSpec{
+	{HCLKey: "data_source", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "The data source for the Topology request ('service_map' or 'data_streams')."},
+	{HCLKey: "service", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "The ID of the service to map."},
+	{HCLKey: "filters", Type: TypeStringList, OmitEmpty: false, Required: true,
+		Description: "Your environment and primary tag (or `*` if enabled for your account)."},
+}
+
+// apmStatsQueryColumnFields corresponds to column entries inside
+// ApmStatsQueryDefinition.columns.
+var apmStatsQueryColumnFields = []FieldSpec{
+	{
+		HCLKey:      "name",
+		Type:        TypeString,
+		OmitEmpty:   false,
+		Required:    true,
+		Description: "The column name.",
+	},
+	{
+		HCLKey:      "alias",
+		Type:        TypeString,
+		OmitEmpty:   true,
+		Description: "A user-assigned alias for the column.",
+	},
+	{
+		HCLKey:      "order",
+		Type:        TypeString,
+		OmitEmpty:   true,
+		Description: "Widget sorting methods.",
+		ValidValues: []string{"asc", "desc"},
+	},
+	{
+		HCLKey:      "cell_display_mode",
+		Type:        TypeString,
+		OmitEmpty:   true,
+		Description: "A list of display modes for each table cell.",
+		ValidValues: []string{"number", "bar", "trend"},
+	},
+}
+
+// apmStatsQueryFields corresponds to OpenAPI
+// components/schemas/ApmStatsQueryDefinition.
+// Used by query_table apm_stats_query requests.
+var apmStatsQueryFields = []FieldSpec{
+	{
+		HCLKey:      "service",
+		Type:        TypeString,
+		OmitEmpty:   false,
+		Required:    true,
+		Description: "The service name.",
+	},
+	{
+		HCLKey:      "name",
+		Type:        TypeString,
+		OmitEmpty:   false,
+		Required:    true,
+		Description: "The operation name associated with the service.",
+	},
+	{
+		HCLKey:      "env",
+		Type:        TypeString,
+		OmitEmpty:   false,
+		Required:    true,
+		Description: "The environment name.",
+	},
+	{
+		HCLKey:      "primary_tag",
+		Type:        TypeString,
+		OmitEmpty:   false,
+		Required:    true,
+		Description: "The organization's host group name and value.",
+	},
+	{
+		HCLKey:      "row_type",
+		Type:        TypeString,
+		OmitEmpty:   false,
+		Required:    true,
+		Description: "The level of detail for the request.",
+		ValidValues: []string{"service", "resource", "span"},
+	},
+	{
+		HCLKey:      "resource",
+		Type:        TypeString,
+		OmitEmpty:   true,
+		Description: "The resource name.",
+	},
+	{
+		HCLKey:      "columns",
+		Type:        TypeBlockList,
+		OmitEmpty:   true,
+		Description: "Column properties used by the front end for display.",
+		Children:    apmStatsQueryColumnFields,
+	},
+}
+
+// tableWidgetTextFormatMatchFields corresponds to TableWidgetTextFormatMatch.
+var tableWidgetTextFormatMatchFields = []FieldSpec{
+	{HCLKey: "type", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Match or compare option.",
+		ValidValues: []string{"is", "is_not", "contains", "does_not_contain", "starts_with", "ends_with"}},
+	{HCLKey: "value", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Table Widget Match String."},
+}
+
+// tableWidgetTextFormatReplaceFields corresponds to TableWidgetTextFormatReplace.
+var tableWidgetTextFormatReplaceFields = []FieldSpec{
+	{HCLKey: "type", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Table widget text format replace all type.",
+		ValidValues: []string{"all", "substring"}},
+	{HCLKey: "with", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Table Widget Match String."},
+	{HCLKey: "substring", Type: TypeString, OmitEmpty: true,
+		Description: "Text that will be replaced. Must be used with type `substring`."},
+}
+
+// tableWidgetTextFormatRuleFields corresponds to a single text_format rule block
+// inside the text_formats list.
+var tableWidgetTextFormatRuleFields = []FieldSpec{
+	{HCLKey: "match", Type: TypeBlock, OmitEmpty: false, Required: true,
+		Description: "Match rule for the table widget text format.",
+		Children:    tableWidgetTextFormatMatchFields},
+	{HCLKey: "palette", Type: TypeString, OmitEmpty: true,
+		Description: "The color palette to apply.",
+		ValidValues: []string{"white_on_red", "white_on_yellow", "white_on_green", "black_on_light_red", "black_on_light_yellow", "black_on_light_green", "red_on_white", "yellow_on_white", "green_on_white", "custom_bg", "custom_text"}},
+	{HCLKey: "replace", Type: TypeBlock, OmitEmpty: true,
+		Description: "Match rule for the table widget text format.",
+		Children:    tableWidgetTextFormatReplaceFields},
+	{HCLKey: "custom_bg_color", Type: TypeString, OmitEmpty: true,
+		Description: "The custom color palette to apply to the background."},
+	{HCLKey: "custom_fg_color", Type: TypeString, OmitEmpty: true,
+		Description: "The custom color palette to apply to the foreground text."},
+}
+
+// tableWidgetTextFormatsFields is the outer text_formats block containing text_format rules.
+// text_formats is a list, each element of which is a list of text_format rules.
+var tableWidgetTextFormatsFields = []FieldSpec{
+	{HCLKey: "text_format", Type: TypeBlockList, OmitEmpty: true,
+		Description: "The text format to apply to the items in a table widget column.",
+		Children:    tableWidgetTextFormatRuleFields},
+}
+
+// queryTableOldRequestFields corresponds to OpenAPI
+// components/schemas/TableWidgetRequest for the old-style (non-formula) requests.
+// Includes: q, apm_query, log_query, rum_query, security_query, apm_stats_query,
+// process_query, conditional_formats, aggregator, alias, limit, order, cell_display_mode.
+// Formula requests are handled via post-processing (buildQueryTableFormulaRequestJSON).
+var queryTableOldRequestFields = []FieldSpec{
+	{HCLKey: "q", Type: TypeString, OmitEmpty: true, Description: "The metric query to use for this widget."},
+	{HCLKey: "apm_query", Type: TypeBlock, OmitEmpty: true, Description: "The query to use for this widget.", Children: logQueryDefinitionFields},
+	{HCLKey: "log_query", Type: TypeBlock, OmitEmpty: true, Description: "The query to use for this widget.", Children: logQueryDefinitionFields},
+	{HCLKey: "process_query", Type: TypeBlock, OmitEmpty: true, Description: "The process query to use in the widget.", Children: processQueryDefinitionFields},
+	{HCLKey: "rum_query", Type: TypeBlock, OmitEmpty: true, Description: "The query to use for this widget.", Children: logQueryDefinitionFields},
+	{HCLKey: "security_query", Type: TypeBlock, OmitEmpty: true, Description: "The query to use for this widget.", Children: logQueryDefinitionFields},
+	{HCLKey: "apm_stats_query", Type: TypeBlock, OmitEmpty: true, Children: apmStatsQueryFields},
+	// conditional_formats (old-style requests have these at the request level)
+	{
+		HCLKey:      "conditional_formats",
+		Type:        TypeBlockList,
+		OmitEmpty:   true,
+		Description: "Conditional formats allow you to set the color of your widget content or background, depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below.",
+		Children:    widgetConditionalFormatFields,
+	},
+	{
+		HCLKey:      "aggregator",
+		Type:        TypeString,
+		OmitEmpty:   true,
+		Description: "The aggregator to use for time aggregation.",
+		ValidValues: []string{"avg", "last", "max", "min", "sum", "percentile"},
+	},
+	{HCLKey: "alias", Type: TypeString, OmitEmpty: true, Description: "The alias for the column name (defaults to metric name)."},
+	{HCLKey: "limit", Type: TypeInt, OmitEmpty: true, Description: "The number of lines to show in the table."},
+	{
+		HCLKey:      "order",
+		Type:        TypeString,
+		OmitEmpty:   true,
+		Description: "The sort order for the rows.",
+		ValidValues: []string{"asc", "desc"},
+	},
+	// cell_display_mode is a []string in old-style requests
+	{
+		HCLKey:      "cell_display_mode",
+		Type:        TypeStringList,
+		OmitEmpty:   true,
+		Description: "A list of display modes for each table cell.",
+	},
+	// text_formats: each element is a list of text_format blocks
+	{HCLKey: "text_formats", Type: TypeBlockList, OmitEmpty: true,
+		Description: "Text formats define how to format text in table widget content. Multiple `text_formats` blocks are allowed using the structure below. This resource is in beta and is subject to change.",
+		Children:    tableWidgetTextFormatsFields},
+	// FormulaAndFunction query/formula fields
+	{HCLKey: "query", Type: TypeBlockList, OmitEmpty: true,
+		Description: "A list of queries to use in the widget.",
+		Children:    formulaAndFunctionQueryFields},
+	{HCLKey: "formula", Type: TypeBlockList, OmitEmpty: true,
+		Description: "A list of formulas to use in the widget.",
+		Children:    widgetFormulaFields},
+}
+
+// listStreamColumnFields corresponds to OpenAPI
+// components/schemas/ListStreamColumn.
+var listStreamColumnFields = []FieldSpec{
+	{HCLKey: "field", Type: TypeString, OmitEmpty: false, Description: "Widget column field."},
+	{
+		HCLKey:      "width",
+		Type:        TypeString,
+		OmitEmpty:   false,
+		Description: "Widget column width.",
+		ValidValues: []string{"auto", "compact", "full"},
+	},
+}
+
+// listStreamGroupByFields corresponds to the group_by block inside
+// ListStreamQuery.
+var listStreamGroupByFields = []FieldSpec{
+	{HCLKey: "facet", Type: TypeString, OmitEmpty: false, Required: true, Description: "Facet name"},
+}
+
+// listStreamSortFields corresponds to the sort block inside ListStreamQuery.
+var listStreamSortFields = []FieldSpec{
+	{HCLKey: "column", Type: TypeString, OmitEmpty: false, Required: true, Description: "The facet path for the column."},
+	{
+		HCLKey:      "order",
+		Type:        TypeString,
+		OmitEmpty:   false,
+		Required:    true,
+		Description: "Widget sorting methods.",
+		ValidValues: []string{"asc", "desc"},
+	},
+}
+
+// listStreamQueryFields corresponds to OpenAPI
+// components/schemas/ListStreamQuery.
+var listStreamQueryFields = []FieldSpec{
+	{
+		HCLKey:      "data_source",
+		Type:        TypeString,
+		OmitEmpty:   false,
+		Required:    true,
+		Description: "Source from which to query items to display in the stream.",
+		ValidValues: []string{
+			"logs_stream", "audit_stream", "ci_pipeline_stream", "ci_test_stream",
+			"rum_issue_stream", "apm_issue_stream", "trace_stream", "logs_issue_stream",
+			"logs_pattern_stream", "logs_transaction_stream", "event_stream", "rum_stream",
+			"llm_observability_stream",
+		},
+	},
+	{HCLKey: "query_string", Type: TypeString, OmitEmpty: false, Description: "Widget query."},
+	{
+		HCLKey:      "event_size",
+		Type:        TypeString,
+		OmitEmpty:   true,
+		Description: "Size of events displayed in widget. Required if `data_source` is `event_stream`.",
+		ValidValues: []string{"s", "l"},
+	},
+	{HCLKey: "clustering_pattern_field_path", Type: TypeString, OmitEmpty: true, Description: "Specifies the field for logs pattern clustering. Can only be used with `logs_pattern_stream`."},
+	{HCLKey: "storage", Type: TypeString, OmitEmpty: true, Description: "Storage location (private beta)."},
+	// indexes: OmitEmpty — only present when set in HCL
+	{HCLKey: "indexes", Type: TypeStringList, OmitEmpty: true, Description: "List of indexes."},
+	// group_by: TypeBlockList
+	{
+		HCLKey:      "group_by",
+		Type:        TypeBlockList,
+		OmitEmpty:   true,
+		Description: "Group by configuration for the List Stream widget. Group by can only be used with `logs_pattern_stream` (up to 4 items) or `logs_transaction_stream` (one group by item is required) list stream source.",
+		Children:    listStreamGroupByFields,
+	},
+	// sort: TypeBlock (MaxItems:1)
+	{
+		HCLKey:      "sort",
+		Type:        TypeBlock,
+		OmitEmpty:   true,
+		Description: "The facet and order to sort the data, for example: `{\"column\": \"time\", \"order\": \"desc\"}`.",
+		Children:    listStreamSortFields,
+	},
+}
+
+// listStreamRequestFields corresponds to OpenAPI
+// components/schemas/ListStreamWidgetRequest.
+var listStreamRequestFields = []FieldSpec{
+	// columns: HCL plural → JSON plural (same key)
+	{
+		HCLKey:      "columns",
+		Type:        TypeBlockList,
+		OmitEmpty:   false,
+		Required:    true,
+		Description: "Widget columns.",
+		Children:    listStreamColumnFields,
+	},
+	// response_format is required
+	{
+		HCLKey:      "response_format",
+		Type:        TypeString,
+		OmitEmpty:   false,
+		Required:    true,
+		Description: "Widget response format.",
+		ValidValues: []string{"event_list"},
+	},
+	// query: TypeBlock (MaxItems:1)
+	{
+		HCLKey:      "query",
+		Type:        TypeBlock,
+		OmitEmpty:   false,
+		Required:    true,
+		Description: "Updated list stream widget.",
+		Children:    listStreamQueryFields,
+	},
+}
+
+// sloListSortFields corresponds to the sort block inside SLOListWidgetQuery.
+var sloListSortFields = []FieldSpec{
+	{HCLKey: "column", Type: TypeString, OmitEmpty: false, Required: true, Description: "The facet path for the column."},
+	{
+		HCLKey:      "order",
+		Type:        TypeString,
+		OmitEmpty:   false,
+		Required:    true,
+		Description: "Widget sorting methods.",
+		ValidValues: []string{"asc", "desc"},
+	},
+}
+
+// sloListQueryFields corresponds to OpenAPI
+// components/schemas/SLOListWidgetQuery.
+var sloListQueryFields = []FieldSpec{
+	{HCLKey: "query_string", Type: TypeString, OmitEmpty: false, Required: true, Description: "Widget query."},
+	{HCLKey: "limit", Type: TypeInt, OmitEmpty: true, Description: "Maximum number of results to display in the table."},
+	// sort: TypeBlockList (can be multiple)
+	{
+		HCLKey:      "sort",
+		Type:        TypeBlockList,
+		OmitEmpty:   true,
+		Description: "The facet and order to sort the data, for example: `{\"column\": \"status.sli\", \"order\": \"desc\"}`.",
+		Children:    sloListSortFields,
+	},
+}
+
+// sloListRequestFields corresponds to OpenAPI
+// components/schemas/SLOListWidgetRequest.
+var sloListRequestFields = []FieldSpec{
+	{
+		HCLKey:      "request_type",
+		Type:        TypeString,
+		OmitEmpty:   false,
+		Required:    true,
+		Description: "The request type for the SLO List request.",
+		ValidValues: []string{"slo_list"},
+	},
+	// query: TypeBlock (MaxItems:1)
+	{
+		HCLKey:      "query",
+		Type:        TypeBlock,
+		OmitEmpty:   false,
+		Required:    true,
+		Description: "Updated SLO List widget.",
+		Children:    sloListQueryFields,
+	},
+}
+
+// splitDimensionFields corresponds to OpenAPI
+// components/schemas/SplitDimension.
+var splitDimensionFields = []FieldSpec{
+	{
+		HCLKey:      "one_graph_per",
+		Type:        TypeString,
+		OmitEmpty:   false,
+		Required:    true,
+		Description: "The system interprets this attribute differently depending on the data source of the query being split. For metrics, it's a tag. For the events platform, it's an attribute or tag.",
+	},
+}
+
+// splitSortComputeFields corresponds to OpenAPI
+// components/schemas/SplitConfigSortCompute.
+var splitSortComputeFields = []FieldSpec{
+	{HCLKey: "aggregation", Type: TypeString, OmitEmpty: true, Description: "How to aggregate the sort metric for the purposes of ordering."},
+	{HCLKey: "metric", Type: TypeString, OmitEmpty: false, Required: true, Description: "The metric to use for sorting graphs."},
+}
+
+// splitSortFields corresponds to OpenAPI
+// components/schemas/SplitSort.
+var splitSortFields = []FieldSpec{
+	{
+		HCLKey:      "order",
+		Type:        TypeString,
+		OmitEmpty:   false,
+		Required:    true,
+		Description: "Widget sorting methods.",
+		ValidValues: []string{"asc", "desc"},
+	},
+	// compute: optional single-element block
+	{
+		HCLKey:      "compute",
+		Type:        TypeBlock,
+		OmitEmpty:   true,
+		Description: "Defines the metric and aggregation used as the sort value",
+		Children:    splitSortComputeFields,
+	},
+}
+
+// splitVectorEntryFields corresponds to the split_vector entry items.
+var splitVectorEntryFields = []FieldSpec{
+	{HCLKey: "tag_key", Type: TypeString, OmitEmpty: false, Required: true},
+	{HCLKey: "tag_values", Type: TypeStringList, OmitEmpty: false, Required: true},
+}
+
+// staticSplitsEntryFields corresponds to the static_splits item
+// (a single block with split_vector list).
+var staticSplitsEntryFields = []FieldSpec{
+	{
+		HCLKey:      "split_vector",
+		Type:        TypeBlockList,
+		OmitEmpty:   false,
+		Required:    true,
+		Description: "The split graph list contains a graph for each value of the split dimension.",
+		Children:    splitVectorEntryFields,
+	},
+}
+
+// splitConfigFields corresponds to OpenAPI
+// components/schemas/SplitConfig.
+// Note: static_splits is NOT included here because it maps to a 2D JSON array
+// that requires custom handling. See buildSplitConfigStaticSplitsJSON.
+var splitConfigFields = []FieldSpec{
+	// split_dimensions: HCL plural → JSON plural
+	{
+		HCLKey:      "split_dimensions",
+		Type:        TypeBlockList,
+		OmitEmpty:   false,
+		Required:    true,
+		Description: "The property by which the graph splits",
+		Children:    splitDimensionFields,
+	},
+	{HCLKey: "limit", Type: TypeInt, OmitEmpty: true, Description: "Maximum number of graphs to display in the widget."},
+	// sort: TypeBlock (MaxItems:1, Required in HCL)
+	{
+		HCLKey:      "sort",
+		Type:        TypeBlock,
+		OmitEmpty:   false,
+		Required:    true,
+		Description: "Controls the order in which graphs appear in the split.",
+		Children:    splitSortFields,
+	},
+	// static_splits handled by custom code (buildSplitConfigStaticSplitsJSON)
+}
+
+// powerpackTVarContentFields corresponds to OpenAPI
+// components/schemas/PowerpackTemplateVariableContents.
+var powerpackTVarContentFields = []FieldSpec{
+	{HCLKey: "name", Type: TypeString, OmitEmpty: false, Required: true, Description: "The name of the variable."},
+	{HCLKey: "prefix", Type: TypeString, OmitEmpty: true, Description: "The tag prefix associated with the variable. Only tags with this prefix appear in the variable dropdown."},
+	{HCLKey: "values", Type: TypeStringList, OmitEmpty: false, Required: true, Description: "One or many template variable values within the saved view, which will be unioned together using `OR` if more than one is specified."},
+}
+
+// powerpackTemplateVariableFields corresponds to the template_variables block
+// inside PowerpackWidgetDefinition. Contains controlled_externally and
+// controlled_by_powerpack sub-blocks, each a list of tvar content objects.
+var powerpackTemplateVariableFields = []FieldSpec{
+	{
+		HCLKey:      "controlled_externally",
+		Type:        TypeBlockList,
+		OmitEmpty:   true,
+		Description: "Template variables controlled by the external resource, such as the dashboard this powerpack is on.",
+		Children:    powerpackTVarContentFields,
+	},
+	{
+		HCLKey:      "controlled_by_powerpack",
+		Type:        TypeBlockList,
+		OmitEmpty:   true,
+		Description: "Template variables controlled at the powerpack level.",
+		Children:    powerpackTVarContentFields,
+	},
+}
+
 // ============================================================
 // Common Widget Fields
 // ============================================================
@@ -572,8 +1196,9 @@ var CommonWidgetFields = []FieldSpec{
 }
 
 // ============================================================
-// Dashboard Top-Level Fields
+// Dashboard Top-Level Field Groups
 // ============================================================
+// (template variable fields, dashboardTopLevelFields)
 
 // templateVariableFields corresponds to OpenAPI DashboardTemplateVariable.
 // HCL key: "template_variable" (singular), JSON key: "template_variables" (plural).
