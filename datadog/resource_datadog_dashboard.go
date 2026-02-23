@@ -9,14 +9,11 @@ import (
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/dashboardmapping"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 
-	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/retry"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
 
 func resourceDatadogDashboard() *schema.Resource {
@@ -46,107 +43,15 @@ func resourceDatadogDashboard() *schema.Resource {
 			StateContext: schema.ImportStatePassthroughContext,
 		},
 		SchemaFunc: func() map[string]*schema.Schema {
-			return map[string]*schema.Schema{
-				"title": {
-					Type:        schema.TypeString,
-					Required:    true,
-					Description: "The title of the dashboard.",
-				},
-				"widget": {
-					Type:        schema.TypeList,
-					Optional:    true,
-					Description: "The list of widgets to display on the dashboard.",
-					Elem: &schema.Resource{
-						Schema: getWidgetSchema(),
-					},
-				},
-				"layout_type": {
-					Type:             schema.TypeString,
-					Required:         true,
-					ForceNew:         true,
-					Description:      "The layout type of the dashboard.",
-					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewDashboardLayoutTypeFromValue),
-				},
-				"reflow_type": {
-					Type:             schema.TypeString,
-					Optional:         true,
-					Description:      "The reflow type of a new dashboard layout. Set this only when layout type is `ordered`. If set to `fixed`, the dashboard expects all widgets to have a layout, and if it's set to `auto`, widgets should not have layouts.",
-					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewDashboardReflowTypeFromValue),
-				},
-				"description": {
-					Type:        schema.TypeString,
-					Optional:    true,
-					Description: "The description of the dashboard.",
-				},
-				"url": {
-					Type:        schema.TypeString,
-					Optional:    true,
-					Computed:    true,
-					Description: "The URL of the dashboard.",
-					DiffSuppressFunc: func(_, _, _ string, _ *schema.ResourceData) bool {
-						// This value is computed and cannot be updated.
-						// To maintain backward compatibility, always suppress diff rather
-						// than converting the attribute to `Computed` only
-						return true
-					},
-				},
-				"restricted_roles": {
-					Type:          schema.TypeSet,
-					Optional:      true,
-					Elem:          &schema.Schema{Type: schema.TypeString},
-					ConflictsWith: []string{"is_read_only"},
-					Description:   "UUIDs of roles whose associated users are authorized to edit the dashboard.",
-				},
-				"template_variable": {
-					Type:        schema.TypeList,
-					Optional:    true,
-					Description: "The list of template variables for this dashboard.",
-					Elem: &schema.Resource{
-						Schema: getTemplateVariableSchema(),
-					},
-				},
-				"template_variable_preset": {
-					Type:        schema.TypeList,
-					Optional:    true,
-					Description: "The list of selectable template variable presets for this dashboard.",
-					Elem: &schema.Resource{
-						Schema: getTemplateVariablePresetSchema(),
-					},
-				},
-				"notify_list": {
-					Type:        schema.TypeSet,
-					Optional:    true,
-					Description: "The list of handles for the users to notify when changes are made to this dashboard.",
-					Elem:        &schema.Schema{Type: schema.TypeString},
-				},
-				"dashboard_lists": {
-					Type:        schema.TypeSet,
-					Optional:    true,
-					Description: "A list of dashboard lists this dashboard belongs to. This attribute should not be set if managing the corresponding dashboard lists using Terraform as it causes inconsistent behavior.",
-					Elem:        &schema.Schema{Type: schema.TypeInt},
-				},
-				"dashboard_lists_removed": {
-					Type:        schema.TypeSet,
-					Computed:    true,
-					Description: "A list of dashboard lists this dashboard should be removed from. Internal only.",
-					Elem:        &schema.Schema{Type: schema.TypeInt},
-				},
-				"is_read_only": {
-					Type:          schema.TypeBool,
-					Optional:      true,
-					Default:       false,
-					ConflictsWith: []string{"restricted_roles"},
-					Description:   "Whether this dashboard is read-only.",
-					Deprecated:    "This field is deprecated and non-functional. Use `restricted_roles` instead to define which roles are required to edit the dashboard.",
-				},
-				"tags": {
-					Type:        schema.TypeList,
-					Optional:    true,
-					MaxItems:    5,
-					Description: "A list of tags assigned to the Dashboard. Only team names of the form `team:<name>` are supported.",
-					Elem:        &schema.Schema{Type: schema.TypeString},
-				},
+			s := dashboardmapping.FieldSpecsToSchema(dashboardmapping.DashboardTopLevelFields)
+			// widget is special: uses AllWidgetSchemasMap for full widget type dispatch
+			s["widget"] = &schema.Schema{
+				Type:        schema.TypeList,
+				Optional:    true,
+				Description: "The list of widgets to display on the dashboard.",
+				Elem:        &schema.Resource{Schema: getWidgetSchema()},
 			}
+			return s
 		},
 	}
 }
@@ -303,94 +208,6 @@ func updateDashboardLists(d *schema.ResourceData, providerConf *ProviderConfigur
 				log.Printf("[DEBUG] Got error removing from dashboard list %d: %v", id.(int), err)
 			}
 		}
-	}
-}
-
-//
-// Template Variable helpers
-//
-
-func getTemplateVariableSchema() map[string]*schema.Schema {
-	return map[string]*schema.Schema{
-		"name": {
-			Type:        schema.TypeString,
-			Required:    true,
-			Description: "The name of the variable.",
-		},
-		"prefix": {
-			Type:        schema.TypeString,
-			Optional:    true,
-			Description: "The tag prefix associated with the variable. Only tags with this prefix appear in the variable dropdown.",
-		},
-		"default": {
-			Type:        schema.TypeString,
-			Optional:    true,
-			Deprecated:  "Use `defaults` instead.",
-			Description: "The default value for the template variable on dashboard load. Cannot be used in conjunction with `defaults`.",
-		},
-		"defaults": {
-			Type:     schema.TypeList,
-			Optional: true,
-			Elem: &schema.Schema{
-				Type:         schema.TypeString,
-				ValidateFunc: validation.StringIsNotEmpty,
-			},
-			Description: "One or many default values for template variables on load. If more than one default is specified, they will be unioned together with `OR`. Cannot be used in conjunction with `default`.",
-		},
-		"available_values": {
-			Type:        schema.TypeList,
-			Optional:    true,
-			Elem:        &schema.Schema{Type: schema.TypeString},
-			Description: "The list of values that the template variable drop-down is be limited to",
-		},
-	}
-}
-
-//
-// Template Variable Preset Helpers
-//
-
-func getTemplateVariablePresetSchema() map[string]*schema.Schema {
-	return map[string]*schema.Schema{
-		"name": {
-			Type:        schema.TypeString,
-			Optional:    true,
-			Description: "The name of the preset.",
-		},
-		"template_variable": {
-			Type:        schema.TypeList,
-			Optional:    true,
-			Description: "The template variable names and assumed values under the given preset",
-			Elem: &schema.Resource{
-				Schema: getTemplateVariablePresetValueSchema(),
-			},
-		},
-	}
-}
-
-func getTemplateVariablePresetValueSchema() map[string]*schema.Schema {
-	return map[string]*schema.Schema{
-		"name": {
-			Type:        schema.TypeString,
-			Description: "The name of the template variable",
-			Optional:    true,
-		},
-		"value": {
-			Type:        schema.TypeString,
-			Description: "The value that should be assumed by the template variable in this preset. Cannot be used in conjunction with `values`.",
-			Optional:    true,
-			Deprecated:  "Use `values` instead.",
-		},
-		"values": {
-			Type:     schema.TypeList,
-			Optional: true,
-			MinItems: 1,
-			Elem: &schema.Schema{
-				Type:         schema.TypeString,
-				ValidateFunc: validation.StringIsNotEmpty,
-			},
-			Description: "One or many template variable values within the saved view, which will be unioned together using `OR` if more than one is specified. Cannot be used in conjunction with `value`.",
-		},
 	}
 }
 

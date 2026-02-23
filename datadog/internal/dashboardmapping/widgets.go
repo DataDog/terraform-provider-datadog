@@ -1,6 +1,9 @@
 package dashboardmapping
 
-import "github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+import (
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
+)
 
 // widgets.go
 //
@@ -200,12 +203,14 @@ var NoteWidgetSpec = WidgetSpec{
 	Description: "The definition for a Note widget.",
 	Fields: []FieldSpec{
 		{
-			HCLKey:       "content",
-			Type:         TypeString,
-			OmitEmpty:    false,
-			Required:     true,
-			Description:  "The content of the note.",
-			ValidateDiag: ValidateStringIsNotEmpty,
+			HCLKey:      "content",
+			Type:        TypeString,
+			OmitEmpty:   false,
+			Required:    true,
+			Description: "The content of the note.",
+			// Use Validate (not ValidateDiag) so the error message includes the
+			// full attribute path, matching the existing test assertion.
+			Validate: validation.StringIsNotEmpty,
 		},
 		{
 			HCLKey:      "background_color",

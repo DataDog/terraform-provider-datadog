@@ -1,5 +1,7 @@
 package dashboardmapping
 
+import "github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+
 // field_groups.go
 //
 // All reusable []FieldSpec variables that mirror OpenAPI components/schemas/ entries.
@@ -1198,55 +1200,68 @@ var CommonWidgetFields = []FieldSpec{
 // ============================================================
 // Dashboard Top-Level Field Groups
 // ============================================================
-// (template variable fields, dashboardTopLevelFields)
+// (moved to field_groups_dashboard.go: dashboardTemplateVariableFields,
+//  dashboardTemplateVariablePresetValueFields, dashboardTemplateVariablePresetFields)
 
-// templateVariableFields corresponds to OpenAPI DashboardTemplateVariable.
-// HCL key: "template_variable" (singular), JSON key: "template_variables" (plural).
-var templateVariableFields = []FieldSpec{
-	{HCLKey: "name", Type: TypeString, OmitEmpty: false},
-	{HCLKey: "prefix", Type: TypeString, OmitEmpty: true},
-	{HCLKey: "default", Type: TypeString, OmitEmpty: true},
-	{HCLKey: "defaults", Type: TypeStringList, OmitEmpty: true},
-	{HCLKey: "available_values", Type: TypeStringList, OmitEmpty: true},
-}
+// DashboardTopLevelFields are the top-level fields of the Dashboard object.
+// Exported for use in resource_datadog_dashboard.go SchemaFunc.
+// Descriptions and valid values are sourced from OpenAPI components/schemas/Dashboard.
+var DashboardTopLevelFields = []FieldSpec{
+	{HCLKey: "title", Type: TypeString, Required: true, OmitEmpty: false,
+		Description: "The title of the dashboard."},
 
-// templateVariablePresetValueFields corresponds to OpenAPI DashboardTemplateVariablePresetValue.
-// Used inside template_variable_preset blocks.
-// HCL key: "template_variable" (singular), JSON key: "template_variables" (plural).
-var templateVariablePresetValueFields = []FieldSpec{
-	{HCLKey: "name", Type: TypeString, OmitEmpty: true},
-	{HCLKey: "value", Type: TypeString, OmitEmpty: true},
-	{HCLKey: "values", Type: TypeStringList, OmitEmpty: true},
-}
+	// DashboardLayoutType enum: ordered | free (OpenAPI DashboardLayoutType)
+	{HCLKey: "layout_type", Type: TypeString, Required: true, OmitEmpty: false,
+		ForceNew:    true,
+		ValidValues: []string{"ordered", "free"},
+		Description: "Layout type of the dashboard."},
 
-// templateVariablePresetFields corresponds to OpenAPI DashboardTemplateVariablePreset.
-// HCL key: "template_variable_preset" (singular), JSON key: "template_variable_presets" (plural).
-var templateVariablePresetFields = []FieldSpec{
-	{HCLKey: "name", Type: TypeString, OmitEmpty: true},
-	// template_variable (singular HCL) → template_variables (plural JSON)
-	// OmitEmpty: false — even empty presets get "template_variables": [] (cassette-verified)
-	{HCLKey: "template_variable", JSONKey: "template_variables", Type: TypeBlockList, OmitEmpty: false,
-		Children: templateVariablePresetValueFields},
-}
+	// DashboardReflowType enum: auto | fixed (OpenAPI DashboardReflowType)
+	{HCLKey: "reflow_type", Type: TypeString, OmitEmpty: true,
+		ValidValues: []string{"auto", "fixed"},
+		Description: "Reflow type for a **new dashboard layout** dashboard. Set this only when layout type is `ordered`. If set to `fixed`, the dashboard expects all widgets to have a layout, and if it's set to `auto`, widgets should not have layouts."},
 
-// dashboardTopLevelFields are the top-level fields of the Dashboard object.
-var dashboardTopLevelFields = []FieldSpec{
-	{HCLKey: "title", Type: TypeString, OmitEmpty: false},
-	{HCLKey: "description", Type: TypeString, OmitEmpty: false},
-	{HCLKey: "layout_type", Type: TypeString, OmitEmpty: false},
-	{HCLKey: "reflow_type", Type: TypeString, OmitEmpty: true},
-	// notify_list: always send [], never omit (OmitEmpty: false)
-	{HCLKey: "notify_list", Type: TypeStringList, OmitEmpty: false},
-	// tags: always send [], never omit
-	{HCLKey: "tags", Type: TypeStringList, OmitEmpty: false},
+	{HCLKey: "description", Type: TypeString, OmitEmpty: false,
+		Description: "The description of the dashboard."},
+
+	// url: Computed+Optional. Always suppress diff — value is assigned by API and cannot be updated.
+	{HCLKey: "url", Type: TypeString, Computed: true, OmitEmpty: true,
+		DiffSuppress: func(_, _, _ string, _ *schema.ResourceData) bool { return true },
+		Description:  "The URL of the dashboard."},
+
+	{HCLKey: "restricted_roles", Type: TypeStringList, UseSet: true, OmitEmpty: true,
+		ConflictsWith: []string{"is_read_only"},
+		Description:   "UUIDs of roles whose associated users are authorized to edit the dashboard."},
+
 	// template_variable (HCL singular) → template_variables (JSON plural)
-	{HCLKey: "template_variable", JSONKey: "template_variables", Type: TypeBlockList, OmitEmpty: false,
-		Children: templateVariableFields},
+	{HCLKey: "template_variable", JSONKey: "template_variables",
+		Type: TypeBlockList, OmitEmpty: false,
+		Description: "The list of template variables for this dashboard.",
+		Children:    dashboardTemplateVariableFields},
+
 	// template_variable_preset (HCL singular) → template_variable_presets (JSON plural)
-	{HCLKey: "template_variable_preset", JSONKey: "template_variable_presets", Type: TypeBlockList, OmitEmpty: false,
-		Children: templateVariablePresetFields},
-	// restricted_roles: omit when empty
-	{HCLKey: "restricted_roles", Type: TypeStringList, OmitEmpty: true},
-	// is_read_only: kept in schema for backward compat; omit when false
-	{HCLKey: "is_read_only", Type: TypeBool, OmitEmpty: true},
+	{HCLKey: "template_variable_preset", JSONKey: "template_variable_presets",
+		Type: TypeBlockList, OmitEmpty: false,
+		Description: "The list of selectable template variable presets for this dashboard.",
+		Children:    dashboardTemplateVariablePresetFields},
+
+	// notify_list: always send [], never omit (OmitEmpty: false)
+	{HCLKey: "notify_list", Type: TypeStringList, UseSet: true, OmitEmpty: false,
+		Description: "The list of handles for the users to notify when changes are made to this dashboard."},
+
+	{HCLKey: "dashboard_lists", Type: TypeIntList, UseSet: true, OmitEmpty: false,
+		Description: "A list of dashboard lists this dashboard belongs to. This attribute should not be set if managing the corresponding dashboard lists using Terraform as it causes inconsistent behavior."},
+
+	// dashboard_lists_removed: computed only via CustomizeDiff, never sent in JSON
+	{HCLKey: "dashboard_lists_removed", Type: TypeIntList, UseSet: true, Computed: true,
+		Description: "A list of dashboard lists this dashboard should be removed from. Internal only."},
+
+	{HCLKey: "is_read_only", Type: TypeBool, Default: false, OmitEmpty: true,
+		ConflictsWith: []string{"restricted_roles"},
+		Deprecated:    "This field is deprecated and non-functional. Use `restricted_roles` instead to define which roles are required to edit the dashboard.",
+		Description:   "Whether this dashboard is read-only."},
+
+	// tags: always send [], never omit
+	{HCLKey: "tags", Type: TypeStringList, MaxItems: 5, OmitEmpty: false,
+		Description: "A list of tags assigned to the Dashboard. Only team names of the form `team:<name>` are supported."},
 }

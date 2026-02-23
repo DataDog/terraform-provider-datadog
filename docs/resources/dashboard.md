@@ -734,16 +734,17 @@ resource "datadog_dashboard" "free_dashboard" {
 
 ### Required
 
-- `layout_type` (String) The layout type of the dashboard. Valid values are `ordered`, `free`.
+- `layout_type` (String) Layout type of the dashboard.
 - `title` (String) The title of the dashboard.
 
 ### Optional
 
 - `dashboard_lists` (Set of Number) A list of dashboard lists this dashboard belongs to. This attribute should not be set if managing the corresponding dashboard lists using Terraform as it causes inconsistent behavior.
+- `dashboard_lists_removed` (Set of Number) A list of dashboard lists this dashboard should be removed from. Internal only.
 - `description` (String) The description of the dashboard.
 - `is_read_only` (Boolean, Deprecated) Whether this dashboard is read-only. **Deprecated.** This field is deprecated and non-functional. Use `restricted_roles` instead to define which roles are required to edit the dashboard. Defaults to `false`.
 - `notify_list` (Set of String) The list of handles for the users to notify when changes are made to this dashboard.
-- `reflow_type` (String) The reflow type of a new dashboard layout. Set this only when layout type is `ordered`. If set to `fixed`, the dashboard expects all widgets to have a layout, and if it's set to `auto`, widgets should not have layouts. Valid values are `auto`, `fixed`.
+- `reflow_type` (String) Reflow type for a **new dashboard layout** dashboard. Set this only when layout type is `ordered`. If set to `fixed`, the dashboard expects all widgets to have a layout, and if it's set to `auto`, widgets should not have layouts.
 - `restricted_roles` (Set of String) UUIDs of roles whose associated users are authorized to edit the dashboard.
 - `tags` (List of String) A list of tags assigned to the Dashboard. Only team names of the form `team:<name>` are supported.
 - `template_variable` (Block List) The list of template variables for this dashboard. (see [below for nested schema](#nestedblock--template_variable))
@@ -753,7 +754,6 @@ resource "datadog_dashboard" "free_dashboard" {
 
 ### Read-Only
 
-- `dashboard_lists_removed` (Set of Number) A list of dashboard lists this dashboard should be removed from. Internal only.
 - `id` (String) The ID of this resource.
 
 <a id="nestedblock--template_variable"></a>
@@ -765,10 +765,11 @@ Required:
 
 Optional:
 
-- `available_values` (List of String) The list of values that the template variable drop-down is be limited to
-- `default` (String, Deprecated) The default value for the template variable on dashboard load. Cannot be used in conjunction with `defaults`. **Deprecated.** Use `defaults` instead.
+- `available_values` (List of String) The list of values that the template variable drop-down is limited to.
+- `default` (String, Deprecated) (deprecated) The default value for the template variable on dashboard load. Cannot be used in conjunction with `defaults`. **Deprecated.** Use `defaults` instead.
 - `defaults` (List of String) One or many default values for template variables on load. If more than one default is specified, they will be unioned together with `OR`. Cannot be used in conjunction with `default`.
-- `prefix` (String) The tag prefix associated with the variable. Only tags with this prefix appear in the variable dropdown.
+- `prefix` (String) The tag prefix associated with the variable. Only tags with this prefix appear in the variable drop-down.
+- `type` (String) The type of variable. This is to differentiate between filter variables (interpolated in query) and group by variables (interpolated into group by).
 
 
 <a id="nestedblock--template_variable_preset"></a>
@@ -776,16 +777,16 @@ Optional:
 
 Optional:
 
-- `name` (String) The name of the preset.
-- `template_variable` (Block List) The template variable names and assumed values under the given preset (see [below for nested schema](#nestedblock--template_variable_preset--template_variable))
+- `name` (String) The name of the variable.
+- `template_variable` (Block List) List of variables. (see [below for nested schema](#nestedblock--template_variable_preset--template_variable))
 
 <a id="nestedblock--template_variable_preset--template_variable"></a>
 ### Nested Schema for `template_variable_preset.template_variable`
 
 Optional:
 
-- `name` (String) The name of the template variable
-- `value` (String, Deprecated) The value that should be assumed by the template variable in this preset. Cannot be used in conjunction with `values`. **Deprecated.** Use `values` instead.
+- `name` (String) The name of the variable.
+- `value` (String, Deprecated) (deprecated) The value of the template variable within the saved view. Cannot be used in conjunction with `values`. **Deprecated.** Use `values` instead.
 - `values` (List of String) One or many template variable values within the saved view, which will be unioned together using `OR` if more than one is specified. Cannot be used in conjunction with `value`.
 
 
@@ -2838,6 +2839,7 @@ Optional:
 - `event_timeline_definition` (Block List, Max: 1) The definition for an Event Timeline widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--event_timeline_definition))
 - `free_text_definition` (Block List, Max: 1) The definition for a Free Text widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--free_text_definition))
 - `geomap_definition` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition))
+- `group_definition` (Block List, Max: 1) The definition for a Group widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--group_definition))
 - `heatmap_definition` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition))
 - `hostmap_definition` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition))
 - `iframe_definition` (Block List, Max: 1) The definition for an IFrame widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--iframe_definition))
@@ -4824,6 +4826,36 @@ Required:
 Required:
 
 - `focus` (String) The two-letter ISO code of a country to focus the map on (or `WORLD`).
+
+
+
+<a id="nestedblock--widget--group_definition--widget--group_definition"></a>
+### Nested Schema for `widget.group_definition.widget.group_definition`
+
+Required:
+
+- `layout_type` (String) The layout type of the group.
+
+Optional:
+
+- `background_color` (String) The background color of the group title, options: `vivid_blue`, `vivid_purple`, `vivid_pink`, `vivid_orange`, `vivid_yellow`, `vivid_green`, `blue`, `purple`, `pink`, `orange`, `yellow`, `green`, `gray` or `white`
+- `banner_img` (String) The image URL to display as a banner for the group.
+- `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--group_definition--custom_link))
+- `live_span` (String) The timeframe to use when displaying the widget.
+- `show_title` (Boolean) Whether to show the title or not. Defaults to `true`.
+- `title` (String) The title of the widget.
+- `title_align` (String) The alignment of the widget's title.
+- `title_size` (String) The size of the widget's title (defaults to 16).
+
+<a id="nestedblock--widget--group_definition--widget--group_definition--custom_link"></a>
+### Nested Schema for `widget.group_definition.widget.group_definition.custom_link`
+
+Optional:
+
+- `is_hidden` (Boolean) The flag for toggling context menu link visibility.
+- `label` (String) The label for the custom link URL.
+- `link` (String) The URL of the custom link.
+- `override_label` (String) The label ID that refers to a context menu link item. When `override_label` is provided, the client request omits the label field.
 
 
 
@@ -12976,7 +13008,7 @@ Required:
 
 Optional:
 
-- `is_column_break` (Boolean) Whether the widget should be the first one on the second column in high density or not. Only one widget in the dashboard should have this property set to `true`.
+- `is_column_break` (Boolean) The number of columns the widget occupies on the dashboard.
 
 
 
@@ -21130,7 +21162,7 @@ Required:
 
 Optional:
 
-- `is_column_break` (Boolean) Whether the widget should be the first one on the second column in high density or not. Only one widget in the dashboard should have this property set to `true`.
+- `is_column_break` (Boolean) The number of columns the widget occupies on the dashboard.
 
 ## Import
 

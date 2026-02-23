@@ -42,6 +42,12 @@ func FieldSpecToSchemaElem(f FieldSpec) *schema.Schema {
 	if len(f.ConflictsWith) > 0 {
 		s.ConflictsWith = f.ConflictsWith
 	}
+	if f.ForceNew {
+		s.ForceNew = true
+	}
+	if f.DiffSuppress != nil {
+		s.DiffSuppressFunc = f.DiffSuppress
+	}
 	// Type and Elem
 	listType := schema.TypeList
 	if f.UseSet {
@@ -53,6 +59,8 @@ func FieldSpecToSchemaElem(f FieldSpec) *schema.Schema {
 		s.Type = schema.TypeString
 		if len(f.ValidValues) > 0 {
 			s.ValidateDiagFunc = validation.ToDiagFunc(validation.StringInSlice(f.ValidValues, false))
+		} else if f.Validate != nil {
+			s.ValidateFunc = f.Validate
 		} else if f.ValidateDiag != nil {
 			s.ValidateDiagFunc = f.ValidateDiag
 		}

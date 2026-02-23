@@ -90,6 +90,11 @@ type FieldSpec struct {
 	// Use ValidValues for simple enums; ValidateDiag for everything else.
 	ValidateDiag schema.SchemaValidateDiagFunc
 
+	// Validate: legacy-style SchemaValidateFunc. Use when the error message
+	// format must match an existing test (ValidateFunc includes the full
+	// attribute path in the error, ValidateDiag may not).
+	Validate schema.SchemaValidateFunc
+
 	// ConflictsWith: field paths this field conflicts with.
 	// Populated post-generation for the rare fields that need it.
 	ConflictsWith []string
@@ -97,6 +102,12 @@ type FieldSpec struct {
 	// UseSet: use schema.TypeSet instead of schema.TypeList for list fields.
 	// Rare — only for fields that require set semantics.
 	UseSet bool
+
+	// ForceNew: when true, changing this field forces resource replacement.
+	ForceNew bool
+
+	// DiffSuppress: custom diff suppression function.
+	DiffSuppress schema.SchemaDiffSuppressFunc
 }
 
 // effectiveJSONKey returns the JSON key or path root for a FieldSpec.
@@ -2472,7 +2483,7 @@ const DashboardAPIPath = "/api/v1/dashboard"
 
 // BuildDashboardEngineJSON builds the full dashboard JSON body from ResourceData.
 func BuildDashboardEngineJSON(d *schema.ResourceData) map[string]interface{} {
-	result := BuildEngineJSON(d, "", dashboardTopLevelFields)
+	result := BuildEngineJSON(d, "", DashboardTopLevelFields)
 
 	// SDK sends "id": "" in POST bodies — replicate for cassette compatibility.
 	// On create d.Id() is "" (zero value), on update d.Id() is the real ID.
@@ -2691,6 +2702,9 @@ func flattenTemplateVariables(tvs []interface{}) []interface{} {
 				availVals[j] = fmt.Sprintf("%v", av)
 			}
 			item["available_values"] = availVals
+		}
+		if v, ok := m["type"]; ok && v != nil {
+			item["type"] = fmt.Sprintf("%v", v)
 		}
 		result[i] = item
 	}

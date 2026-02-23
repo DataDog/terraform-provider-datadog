@@ -97,6 +97,7 @@ Optional:
 - `event_timeline_definition` (Block List, Max: 1) The definition for an Event Timeline widget. (see [below for nested schema](#nestedblock--widget--event_timeline_definition))
 - `free_text_definition` (Block List, Max: 1) The definition for a Free Text widget. (see [below for nested schema](#nestedblock--widget--free_text_definition))
 - `geomap_definition` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--geomap_definition))
+- `group_definition` (Block List, Max: 1) The definition for a Group widget. (see [below for nested schema](#nestedblock--widget--group_definition))
 - `heatmap_definition` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--heatmap_definition))
 - `hostmap_definition` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--hostmap_definition))
 - `iframe_definition` (Block List, Max: 1) The definition for an IFrame widget. (see [below for nested schema](#nestedblock--widget--iframe_definition))
@@ -2081,6 +2082,36 @@ Required:
 Required:
 
 - `focus` (String) The two-letter ISO code of a country to focus the map on (or `WORLD`).
+
+
+
+<a id="nestedblock--widget--group_definition"></a>
+### Nested Schema for `widget.group_definition`
+
+Required:
+
+- `layout_type` (String) The layout type of the group.
+
+Optional:
+
+- `background_color` (String) The background color of the group title, options: `vivid_blue`, `vivid_purple`, `vivid_pink`, `vivid_orange`, `vivid_yellow`, `vivid_green`, `blue`, `purple`, `pink`, `orange`, `yellow`, `green`, `gray` or `white`
+- `banner_img` (String) The image URL to display as a banner for the group.
+- `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--custom_link))
+- `live_span` (String) The timeframe to use when displaying the widget.
+- `show_title` (Boolean) Whether to show the title or not. Defaults to `true`.
+- `title` (String) The title of the widget.
+- `title_align` (String) The alignment of the widget's title.
+- `title_size` (String) The size of the widget's title (defaults to 16).
+
+<a id="nestedblock--widget--group_definition--custom_link"></a>
+### Nested Schema for `widget.group_definition.custom_link`
+
+Optional:
+
+- `is_hidden` (Boolean) The flag for toggling context menu link visibility.
+- `label` (String) The label for the custom link URL.
+- `link` (String) The URL of the custom link.
+- `override_label` (String) The label ID that refers to a context menu link item. When `override_label` is provided, the client request omits the label field.
 
 
 
@@ -10093,7 +10124,7 @@ Required:
 
 Optional:
 
-- `is_column_break` (Boolean) Whether the widget should be the first one on the second column in high density or not. Only one widget in the dashboard should have this property set to `true`.
+- `is_column_break` (Boolean) The number of columns the widget occupies on the dashboard.
 
 ## Import
 
