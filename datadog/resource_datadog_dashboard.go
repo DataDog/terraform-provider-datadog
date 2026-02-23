@@ -2,7 +2,6 @@ package datadog
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"log"
@@ -10,7 +9,10 @@ import (
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/dashboardmapping"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/retry"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -63,13 +65,13 @@ func resourceDatadogDashboard() *schema.Resource {
 					Required:         true,
 					ForceNew:         true,
 					Description:      "The layout type of the dashboard.",
-					ValidateDiagFunc: validation.ToDiagFunc(validation.StringInSlice([]string{"ordered", "free"}, false)),
+					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewDashboardLayoutTypeFromValue),
 				},
 				"reflow_type": {
 					Type:             schema.TypeString,
 					Optional:         true,
 					Description:      "The reflow type of a new dashboard layout. Set this only when layout type is `ordered`. If set to `fixed`, the dashboard expects all widgets to have a layout, and if it's set to `auto`, widgets should not have layouts.",
-					ValidateDiagFunc: validation.ToDiagFunc(validation.StringInSlice([]string{"auto", "fixed"}, false)),
+					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewDashboardReflowTypeFromValue),
 				},
 				"description": {
 					Type:        schema.TypeString,
@@ -274,35 +276,17 @@ func updateDashboardLists(d *schema.ResourceData, providerConf *ProviderConfigur
 	if layoutType == "ordered" {
 		dashTypeString = "custom_timeboard"
 	}
-
-	type dashboardListItem struct {
-		Type string `json:"type"`
-		ID   string `json:"id"`
-	}
-	type dashboardListRequest struct {
-		Dashboards []dashboardListItem `json:"dashboards"`
-	}
-
-	requestBody := dashboardListRequest{
-		Dashboards: []dashboardListItem{
-			{Type: dashTypeString, ID: dashboardID},
-		},
-	}
-
-	bodyBytes, err := json.Marshal(requestBody)
-	if err != nil {
-		log.Printf("[DEBUG] Got error marshaling dashboard list request: %v", err)
-		return
-	}
-	bodyStr := string(bodyBytes)
-
+	dashType := datadogV2.DashboardType(dashTypeString)
+	itemsRequest := []datadogV2.DashboardListItemRequest{*datadogV2.NewDashboardListItemRequest(dashboardID, dashType)}
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 
 	if v, ok := d.GetOk("dashboard_lists"); ok && v.(*schema.Set).Len() > 0 {
+		items := datadogV2.NewDashboardListAddItemsRequest()
+		items.SetDashboards(itemsRequest)
+
 		for _, id := range v.(*schema.Set).List() {
-			path := fmt.Sprintf("/api/v2/dashboard/lists/manual/%d/dashboards", id.(int))
-			_, _, err := utils.SendRequest(auth, apiInstances.HttpClient, "POST", path, &bodyStr)
+			_, _, err := apiInstances.GetDashboardListsApiV2().CreateDashboardListItems(auth, int64(id.(int)), *items)
 			if err != nil {
 				log.Printf("[DEBUG] Got error adding to dashboard list %d: %v", id.(int), err)
 			}
@@ -310,9 +294,11 @@ func updateDashboardLists(d *schema.ResourceData, providerConf *ProviderConfigur
 	}
 
 	if v, ok := d.GetOk("dashboard_lists_removed"); ok && v.(*schema.Set).Len() > 0 {
+		items := datadogV2.NewDashboardListDeleteItemsRequest()
+		items.SetDashboards(itemsRequest)
+
 		for _, id := range v.(*schema.Set).List() {
-			path := fmt.Sprintf("/api/v2/dashboard/lists/manual/%d/dashboards", id.(int))
-			_, _, err := utils.SendRequest(auth, apiInstances.HttpClient, "DELETE", path, &bodyStr)
+			_, _, err := apiInstances.GetDashboardListsApiV2().DeleteDashboardListItems(auth, int64(id.(int)), *items)
 			if err != nil {
 				log.Printf("[DEBUG] Got error removing from dashboard list %d: %v", id.(int), err)
 			}
